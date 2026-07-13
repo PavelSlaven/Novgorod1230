@@ -20,7 +20,7 @@ export async function inspectWorldBaseSchema({ root = '.' } = {}) {
     texts.push(await readFile(partPath, 'utf8'));
   }
 
-  const ddl = texts.join('\n');
+  const ddl = [entryText, ...texts].join('\n');
   const tableNames = [...ddl.matchAll(/CREATE\s+TABLE\s+world_base\.([a-z_][a-z0-9_]*)/giu)].map((match) => match[1]);
   const seen = new Set();
   const duplicates = new Set();

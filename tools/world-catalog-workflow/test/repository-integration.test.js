@@ -4,6 +4,7 @@ import { createHash } from 'node:crypto';
 import { readFile, readdir, stat } from 'node:fs/promises';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { validateDocumentationTree as validateBaseDocumentationTree } from '../../docs-tools/src/documentation.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../../..');
 
@@ -35,6 +36,13 @@ test('active world catalogs are governed by their source registry, not the legac
   assert.ok(Array.isArray(registry.sources) && registry.sources.length > 0);
   assert.ok(registry.sources.every((source) => source.schema_version === 'rus.world_catalog_source.v1'));
   assert.ok(registry.sources.every((source) => /^[a-f0-9]{64}$/u.test(source.source_manifest_digest)));
+});
+
+test('base documentation validator does not classify active world catalogs as legacy runtime data', async () => {
+  const validation = await validateBaseDocumentationTree(root);
+  const falsePositives = validation.errors.filter((error) => String(error).startsWith('data/world-catalogs/')
+    && String(error).endsWith(': legacy runtime data is not declared in manifest'));
+  assert.deepEqual(falsePositives, []);
 });
 
 test('workflow, schemas and world-catalog files produce a stable deterministic checksum set', async () => {

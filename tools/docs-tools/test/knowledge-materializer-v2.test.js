@@ -134,3 +134,87 @@ test('knowledge materializer rejects invalid semantic graph source locations', a
     );
   }
 });
+
+test('knowledge materializer rejects invalid link and hyperedge provenance', async () => {
+  const fixtureRoot = await materializerFixture();
+  const sourceRoot = join(fixtureRoot, 'data/knowledge-source');
+  const graphPath = join(sourceRoot, 'imports/graph/graph.json');
+  const original = JSON.parse(await readFile(graphPath, 'utf8'));
+  const manifest = JSON.parse(await readFile(join(sourceRoot, 'corpus-manifest.json'), 'utf8'));
+  const cases = [
+    ['missing location', (_location, entity) => { delete entity.source_location; }, /source_location is missing/u],
+    ['missing source_file', (_location, entity) => { delete entity.source_file; }, /source_file is missing/u],
+    ['source_file traversal', (_location, entity) => { entity.source_file = '../escape.md'; }, /invalid source_file/u],
+    ['source_file mismatch', (_location, entity) => { entity.source_file = 'DOCUMENTS/character_parameters.txt'; }, /source_file differs from source_location\.file/u],
+    ['one line after EOF', (location, entity, lineCount) => { location.line_end = lineCount + 1; }, /line_end exceeds/u],
+    ['inverted range', (location) => { location.line_start = 2; location.line_end = 1; }, /inverted line range/u]
+  ];
+
+  for (const collection of ['links', 'hyperedges']) {
+    for (const [label, corrupt, pattern] of cases) {
+      const graph = structuredClone(original);
+      const entity = graph[collection][0];
+      const file = basename(String(entity.source_location.file));
+      const record = manifest.documents.find((item) => item.file_name === file);
+      const text = await readFile(join(sourceRoot, record.canonical_path), 'utf8');
+      const lineCount = text.split(/\r?\n/u).length - (text.endsWith('\n') ? 1 : 0);
+      corrupt(entity.source_location, entity, lineCount);
+      await writeFile(graphPath, JSON.stringify(graph));
+      await assert.rejects(
+        () => buildKnowledgeSourceOutputsV2({ root: fixtureRoot }),
+        pattern,
+        `${collection}: ${label}`
+      );
+    }
+  }
+});
+
+test('knowledge materializer rejects graph semantics outside the approved embedding set', async () => {
+  const fixtureRoot = await materializerFixture();
+  const sourceRoot = join(fixtureRoot, 'data/knowledge-source');
+  const graphPath = join(sourceRoot, 'imports/graph/graph.json');
+  const graph = JSON.parse(await readFile(graphPath, 'utf8'));
+  const manifest = JSON.parse(await readFile(join(sourceRoot, 'corpus-manifest.json'), 'utf8'));
+  const nativeRecord = manifest.documents.find((record) => record.document_id === 'development-rules');
+  graph.nodes.push({
+    ...structuredClone(graph.nodes[0]),
+    id: 'unapproved-native-semantic-node',
+    source_file: `DOCUMENTS/${nativeRecord.file_name}`,
+    source_location: { file: nativeRecord.file_name, line_start: 1, line_end: 1 }
+  });
+  graph.links.push({
+    ...structuredClone(graph.links[0]),
+    source: graph.nodes[0].id,
+    target: 'unapproved-native-semantic-node',
+    source_file: `DOCUMENTS/${nativeRecord.file_name}`,
+    source_location: { file: nativeRecord.file_name, line_start: 1, line_end: 1 }
+  });
+  await writeFile(graphPath, JSON.stringify(graph));
+
+  await assert.rejects(
+    () => buildKnowledgeSourceOutputsV2({ root: fixtureRoot }),
+    /not approved for semantic graph/u
+  );
+});
+
+test('knowledge materializer rejects links and hyperedges touching structural document nodes', async () => {
+  const fixtureRoot = await materializerFixture();
+  const graphPath = join(fixtureRoot, 'data/knowledge-source/imports/graph/graph.json');
+  const original = JSON.parse(await readFile(graphPath, 'utf8'));
+  const structuralId = 'canonical-document:development-rules';
+  const cases = [
+    ['link', (graph) => graph.links.push({ ...structuredClone(graph.links[0]), source: structuralId })],
+    ['hyperedge', (graph) => graph.hyperedges.push({ ...structuredClone(graph.hyperedges[0]), id: 'invalid-structural-hyperedge', nodes: [...graph.hyperedges[0].nodes, structuralId] })]
+  ];
+
+  for (const [label, mutate] of cases) {
+    const graph = structuredClone(original);
+    mutate(graph);
+    await writeFile(graphPath, JSON.stringify(graph));
+    await assert.rejects(
+      () => buildKnowledgeSourceOutputsV2({ root: fixtureRoot }),
+      /semantic relation touches structural-only node/u,
+      label
+    );
+  }
+});

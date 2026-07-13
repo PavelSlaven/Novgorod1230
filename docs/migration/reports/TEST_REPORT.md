@@ -2,8 +2,8 @@
 
 Дата: 2026-07-13
 Ветка: `agent/restore-canonical-docs-generated-ci`
-Последний проверенный implementation commit: `4f12cad27e991a54a68a6f288f7d5b03c7c931b5`
-GitHub Actions run: `#66` (`29275637037`), job `86903889998`
+Последний проверенный implementation commit: `b38e2954aefa122c594c918f2bfb4f96c9906f61`
+GitHub Actions run: `#67` (`29276773280`), job `86907721340`
 
 ## Clean-clone pipeline
 
@@ -24,9 +24,9 @@ GitHub Actions run: `#66` (`29275637037`), job `86903889998`
 
 GitHub Actions completed the full job with conclusion `success`. The workflow summary does not expose reliable per-suite test counts, therefore this report does not repeat stale historic totals.
 
-Run `#66` выполнил schema-reference и PostgreSQL gates в чистом checkout. PostgreSQL service принял весь DDL; подтверждены 62 таблицы, одна не-привилегированная роль `world_reader`, `USAGE` без `CREATE`, 62 `SELECT` grants и 0 write grants.
+Run `#67` выполнил schema-reference и PostgreSQL gates в чистом checkout. PostgreSQL service принял весь DDL; подтверждены 62 таблицы, одна не-привилегированная роль `world_reader`, `USAGE` без `CREATE`, 62 `SELECT` grants и 0 write grants.
 
-В run `#66` прошли regression tests semantic snapshot parity, graph validation, native-preserving re-import и runtime artifact digests. Четвёртый critic audit обнаружил неполный graph provenance contract и hardcoded legacy inventory counts. Negative tests воспроизвели отсутствие полей, traversal, рассогласование путей и выход за логический EOF; текущий remediation и exact manifest-derived inventory локально проходят полный `test:knowledge-source`.
+В run `#67` прошли regression tests полного node provenance/EOF contract и exact manifest-derived inventory. Пятый critic audit обнаружил отсутствие тех же provenance checks для links/hyperedges, exact graph/RAG semantic-set boundary, structural endpoint guard и collision-before-write. Negative tests воспроизвели все дефекты; текущий remediation локально проходит `test:knowledge-source` 17/17.
 
 ## Verified contracts
 
@@ -39,8 +39,10 @@ Run `#66` выполнил schema-reference и PostgreSQL gates в чистом 
 - deterministic structural graph coverage for native documents;
 - deterministic lexical-only RAG coverage where approved embeddings are absent;
 - semantic subset hash and exact ordered chunk parity before approved vectors are accepted;
-- semantic graph provenance validation: required and matching `source_file`/`source_location.file`, safe canonical path and range within logical EOF;
+- semantic graph provenance validation for every node/link/hyperedge: required matching source paths, safe canonical path, logical EOF and exact approved embedding document set;
+- semantic relations cannot touch structural-only node IDs;
 - native-preserving repeat legacy import;
+- complete collision validation before the first legacy-import write;
 - separate provenance, semantic-index and lexical-index digests;
 - production startup rejection of missing or stale generated knowledge artifacts;
 - CI workflow contract preventing false-green truncated workflows.
@@ -58,9 +60,9 @@ Run `#66` выполнил schema-reference и PostgreSQL gates в чистом 
 
 ## Remaining release gates
 
-- новый clean-clone execution после round4 remediation;
+- новый clean-clone execution после round5 remediation;
 - следующий independent code critic audit;
 - owner disposition of the byte-only critic-rule conflict;
 - repeat audit after any `CHANGES REQUIRED` or `REJECT` result.
 
-Decision: `run_66_green_round4_changes_required_remediated_locally`.
+Decision: `run_67_green_round5_changes_required_remediated_locally`.

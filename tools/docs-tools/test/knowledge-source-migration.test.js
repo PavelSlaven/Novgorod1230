@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { cp, mkdtemp, readFile, rename } from 'node:fs/promises';
+import { cp, mkdtemp, readFile, rename, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { basename, join, resolve } from 'node:path';
 import {
@@ -134,4 +134,29 @@ test('re-importing legacy sources preserves native records, aliases and files', 
     assert.deepEqual(await readFile(join(sourceRoot, record.canonical_path)), nativeBytes.get(record.document_id));
   }
   for (const [alias, documentId] of Object.entries(nativeAliases)) assert.equal(afterAliases[alias], documentId);
+});
+
+test('legacy import rejects native collisions before changing canonical state', { concurrency: false }, async () => {
+  const fixtureRoot = await mkdtemp(join(tmpdir(), 'rus-knowledge-import-collision-'));
+  await cp(resolve(root, 'data/knowledge-source'), join(fixtureRoot, 'data/knowledge-source'), { recursive: true });
+  await cp(resolve(root, 'legacy/DOCUMENTS/documents-kg'), join(fixtureRoot, 'legacy/DOCUMENTS/documents-kg'), { recursive: true });
+  const sourceRoot = join(fixtureRoot, 'data/knowledge-source');
+  const manifestPath = join(sourceRoot, 'corpus-manifest.json');
+  const aliasesPath = join(sourceRoot, 'source-aliases.json');
+  const manifestBefore = await readFile(manifestPath);
+  const aliasesBefore = await readFile(aliasesPath);
+  const manifest = JSON.parse(manifestBefore.toString('utf8'));
+  const nativeRecord = manifest.documents.find((record) => record.document_id === 'development-rules');
+  const nativePath = join(sourceRoot, nativeRecord.canonical_path);
+  const nativeBefore = await readFile(nativePath);
+  const collisionPath = join(fixtureRoot, 'legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS', nativeRecord.file_name);
+  await writeFile(collisionPath, 'malicious legacy collision\n');
+
+  await assert.rejects(
+    () => importKnowledgeSourceFromLegacy({ root: fixtureRoot }),
+    /Legacy import conflicts with native document/u
+  );
+  assert.deepEqual(await readFile(manifestPath), manifestBefore);
+  assert.deepEqual(await readFile(aliasesPath), aliasesBefore);
+  assert.deepEqual(await readFile(nativePath), nativeBefore);
 });

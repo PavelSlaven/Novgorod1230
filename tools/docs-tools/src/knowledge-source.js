@@ -246,6 +246,9 @@ export async function importKnowledgeSourceFromLegacy({ root = '.', importedAt =
   const nativeIds = new Set(nativeDocuments.map((record) => record.document_id));
   const nativePaths = new Set(nativeDocuments.map((record) => record.canonical_path));
   const legacyDocuments = [];
+  const legacyWrites = [];
+  const plannedLegacyIds = new Set();
+  const plannedLegacyPaths = new Set();
   const aliases = { ...(currentAliases?.aliases ?? {}) };
   for (const item of inventory.files.filter((entry) => entry.classification === 'canonical_source')) {
     const fileName = basename(item.relative_path);
@@ -253,12 +256,18 @@ export async function importKnowledgeSourceFromLegacy({ root = '.', importedAt =
     const canonicalPath = `corpus/DOCUMENTS/${fileName}`;
     const sourcePath = join(projectRoot, item.legacy_path);
     const targetPath = join(sourceRoot, canonicalPath);
-    await mkdir(dirname(targetPath), { recursive: true });
     const bytes = await readFile(sourcePath);
-    await writeFile(targetPath, bytes);
     if (nativeIds.has(documentId) || nativePaths.has(canonicalPath)) {
       throw new Error(`Legacy import conflicts with native document: ${documentId}`);
     }
+    if (plannedLegacyIds.has(documentId) || plannedLegacyPaths.has(canonicalPath)) {
+      throw new Error(`Duplicate legacy import target: ${documentId}`);
+    }
+    if (Object.hasOwn(aliases, fileName) && aliases[fileName] !== documentId) {
+      throw new Error(`Legacy alias conflicts with existing alias: ${fileName}`);
+    }
+    plannedLegacyIds.add(documentId);
+    plannedLegacyPaths.add(canonicalPath);
     legacyDocuments.push({
       document_id: documentId,
       canonical_path: canonicalPath,
@@ -269,6 +278,7 @@ export async function importKnowledgeSourceFromLegacy({ root = '.', importedAt =
       source_legacy_path: item.legacy_path
     });
     aliases[fileName] = documentId;
+    legacyWrites.push({ targetPath, bytes });
   }
   const documents = [...nativeDocuments, ...legacyDocuments];
   documents.sort((left, right) => left.document_id.localeCompare(right.document_id));
@@ -284,12 +294,7 @@ export async function importKnowledgeSourceFromLegacy({ root = '.', importedAt =
   for (const [alias, documentId] of Object.entries(aliases)) {
     if (!documentIds.has(documentId)) throw new Error(`Alias ${alias} references unknown document ${documentId}`);
   }
-  await mkdir(join(sourceRoot, 'imports'), { recursive: true });
-  await writeFile(manifestPath, stableJson(corpusManifest));
-  await writeFile(aliasesPath, stableJson({ schema_version: 'rus.knowledge_source_aliases.v1', aliases }));
-  await writeFile(join(projectRoot, INVENTORY_PATH), stableJson(inventory));
-  await appendImportHistory({ sourceRoot, inventory, documents: legacyDocuments, importedAt });
-
+  const importWrites = [];
   for (const item of inventory.files.filter((entry) => entry.classification !== 'canonical_source')) {
     const category = item.classification === 'generated_graph' ? 'graph'
       : item.classification === 'generated_rag' ? 'rag'
@@ -299,9 +304,24 @@ export async function importKnowledgeSourceFromLegacy({ root = '.', importedAt =
       : item.classification === 'generated_rag'
         ? item.relative_path.replace(/^rag-index\//u, '')
         : item.relative_path;
-    const targetPath = join(sourceRoot, 'imports', category, suffix);
+    importWrites.push({
+      targetPath: join(sourceRoot, 'imports', category, suffix),
+      bytes: await readFile(join(projectRoot, item.legacy_path))
+    });
+  }
+  for (const { targetPath, bytes } of legacyWrites) {
     await mkdir(dirname(targetPath), { recursive: true });
-    await writeFile(targetPath, await readFile(join(projectRoot, item.legacy_path)));
+    await writeFile(targetPath, bytes);
+  }
+  await mkdir(join(sourceRoot, 'imports'), { recursive: true });
+  await writeFile(manifestPath, stableJson(corpusManifest));
+  await writeFile(aliasesPath, stableJson({ schema_version: 'rus.knowledge_source_aliases.v1', aliases }));
+  await writeFile(join(projectRoot, INVENTORY_PATH), stableJson(inventory));
+  await appendImportHistory({ sourceRoot, inventory, documents: legacyDocuments, importedAt });
+
+  for (const { targetPath, bytes } of importWrites) {
+    await mkdir(dirname(targetPath), { recursive: true });
+    await writeFile(targetPath, bytes);
   }
   return Object.freeze({ document_count: documents.length, legacy_document_count: legacyDocuments.length, inventory_count: inventory.files.length });
 }

@@ -13,12 +13,15 @@ export async function buildKnowledgeSourceOutputsV2({ root = '.' } = {}) {
   const graphSnapshotBytes = await readFile(join(projectRoot, SOURCE_ROOT, 'imports/graph/graph.json'));
   const ragSnapshotBytes = await readFile(join(projectRoot, SOURCE_ROOT, 'imports/rag/index.json'));
   const graphSnapshot = JSON.parse(graphSnapshotBytes.toString('utf8'));
-  const graphErrors = validateGraphSnapshotSources(graphSnapshot, corpusFiles);
-  if (graphErrors.length) throw new Error(`Knowledge graph snapshot is incompatible with corpus:\n${graphErrors.join('\n')}`);
-  const graph = addStructuralDocumentNodes(graphSnapshot, manifest, corpusFiles);
   const approvedSemantic = validateApprovedSemanticSnapshot(JSON.parse(ragSnapshotBytes.toString('utf8')), corpusFiles);
   const semanticIndex = approvedSemantic.index;
   const semanticFiles = approvedSemantic.files;
+  const graphErrors = [
+    ...validateGraphSnapshotSources(graphSnapshot, corpusFiles, semanticFiles),
+    ...validateStructuralGraphBoundary(graphSnapshot, manifest, semanticFiles)
+  ];
+  if (graphErrors.length) throw new Error(`Knowledge graph snapshot is incompatible with corpus:\n${graphErrors.join('\n')}`);
+  const graph = addStructuralDocumentNodes(graphSnapshot, manifest, corpusFiles, semanticFiles);
   const lexicalOnlyFiles = Object.fromEntries(Object.entries(corpusFiles).filter(([file]) => !semanticFiles.has(file)));
   const lexicalChunks = buildCorpusChunks(lexicalOnlyFiles).map(({ embedding, ...chunk }) => chunk);
   const coverage = manifest.documents.map((record) => {
@@ -49,8 +52,8 @@ export async function buildKnowledgeSourceOutputsV2({ root = '.' } = {}) {
     source_snapshot: `${SOURCE_ROOT}/imports/graph/graph.json`,
     source_snapshot_sha256: sha256(graphSnapshotBytes),
     source_document_count: manifest.documents.length,
-    semantic_document_count: new Set(referencedGraphFiles(graphSnapshotBytes)).size,
-    structural_only_document_count: manifest.documents.length - new Set(referencedGraphFiles(graphSnapshotBytes)).size,
+    semantic_document_count: semanticFiles.size,
+    structural_only_document_count: manifest.documents.length - semanticFiles.size,
     node_count: Array.isArray(graph.nodes) ? graph.nodes.length : 0,
     link_count: Array.isArray(graph.links) ? graph.links.length : 0,
     hyperedge_count: Array.isArray(graph.hyperedges) ? graph.hyperedges.length : 0,
@@ -153,50 +156,74 @@ export function validateApprovedSemanticSnapshot(snapshot, corpusFiles) {
   });
 }
 
-export function validateGraphSnapshotSources(graph, corpusFiles) {
+export function validateGraphSnapshotSources(graph, corpusFiles, approvedSemanticFiles = null) {
   const errors = [];
-  for (const node of graph?.nodes ?? []) {
-    const location = node?.source_location ?? node?.sourceLocation;
-    if (!location) {
-      errors.push(`node ${node.id ?? '?'}: source_location is missing`);
-      continue;
+  const nodeFiles = new Set();
+  const collections = [
+    ['node', graph?.nodes ?? []],
+    ['link', graph?.links ?? []],
+    ['hyperedge', graph?.hyperedges ?? []]
+  ];
+  for (const [kind, entities] of collections) {
+    for (const entity of entities) {
+      const file = validateGraphEntitySource(entity, kind, corpusFiles, approvedSemanticFiles, errors);
+      if (kind === 'node' && file) nodeFiles.add(file);
     }
-    const rawFile = String(location.file ?? '');
-    if (!rawFile) {
-      errors.push(`node ${node.id ?? '?'}: source_location.file is missing`);
-      continue;
+  }
+  if (approvedSemanticFiles) {
+    for (const file of approvedSemanticFiles) {
+      if (!nodeFiles.has(file)) errors.push(`approved semantic file is missing from graph nodes: ${file}`);
     }
-    if (!/^(?:DOCUMENTS\/)?[^/\\]+$/u.test(rawFile)) {
-      errors.push(`node ${node.id ?? '?'} has invalid source path ${rawFile}`);
-      continue;
-    }
-    const rawSourceFile = String(node.source_file ?? '');
-    if (!rawSourceFile) {
-      errors.push(`node ${node.id ?? '?'}: source_file is missing`);
-      continue;
-    }
-    if (!/^(?:DOCUMENTS\/)?[^/\\]+$/u.test(rawSourceFile)) {
-      errors.push(`node ${node.id ?? '?'} has invalid source_file ${rawSourceFile}`);
-      continue;
-    }
-    const file = basename(rawFile);
-    if (basename(rawSourceFile) !== file) {
-      errors.push(`node ${node.id ?? '?'}: source_file differs from source_location.file`);
-      continue;
-    }
-    if (!file || !Object.hasOwn(corpusFiles, file)) {
-      errors.push(`node ${node.id ?? '?'} references missing file ${file || '?'}`);
-      continue;
-    }
-    const lineCount = logicalLineCount(corpusFiles[file]);
-    const start = Number(location.line_start ?? location.lineStart);
-    const end = Number(location.line_end ?? location.lineEnd);
-    if (!Number.isInteger(start) || start < 1) errors.push(`${node.id ?? '?'}: invalid line_start`);
-    if (!Number.isInteger(end) || end < 1) errors.push(`${node.id ?? '?'}: invalid line_end`);
-    if (Number.isInteger(end) && end > lineCount) errors.push(`${node.id ?? '?'}: line_end exceeds ${file}`);
-    if (Number.isInteger(start) && Number.isInteger(end) && end < start) errors.push(`${node.id ?? '?'}: inverted line range`);
   }
   return Object.freeze(errors);
+}
+
+function validateGraphEntitySource(entity, kind, corpusFiles, approvedSemanticFiles, errors) {
+  const label = graphEntityLabel(entity, kind);
+  const location = entity?.source_location ?? entity?.sourceLocation;
+  if (!location) {
+    errors.push(`${label}: source_location is missing`);
+    return null;
+  }
+  const rawFile = String(location.file ?? '');
+  if (!rawFile) {
+    errors.push(`${label}: source_location.file is missing`);
+    return null;
+  }
+  if (!/^(?:DOCUMENTS\/)?[^/\\]+$/u.test(rawFile)) {
+    errors.push(`${label} has invalid source path ${rawFile}`);
+    return null;
+  }
+  const rawSourceFile = String(entity.source_file ?? '');
+  if (!rawSourceFile) {
+    errors.push(`${label}: source_file is missing`);
+    return null;
+  }
+  if (!/^(?:DOCUMENTS\/)?[^/\\]+$/u.test(rawSourceFile)) {
+    errors.push(`${label} has invalid source_file ${rawSourceFile}`);
+    return null;
+  }
+  const file = basename(rawFile);
+  if (basename(rawSourceFile) !== file) {
+    errors.push(`${label}: source_file differs from source_location.file`);
+    return null;
+  }
+  if (!file || !Object.hasOwn(corpusFiles, file)) {
+    errors.push(`${label} references missing file ${file || '?'}`);
+    return null;
+  }
+  if (approvedSemanticFiles && !approvedSemanticFiles.has(file)) {
+    errors.push(`${label} references ${file}, which is not approved for semantic graph coverage`);
+    return file;
+  }
+  const lineCount = logicalLineCount(corpusFiles[file]);
+  const start = Number(location.line_start ?? location.lineStart);
+  const end = Number(location.line_end ?? location.lineEnd);
+  if (!Number.isInteger(start) || start < 1) errors.push(`${label}: invalid line_start`);
+  if (!Number.isInteger(end) || end < 1) errors.push(`${label}: invalid line_end`);
+  if (Number.isInteger(end) && end > lineCount) errors.push(`${label}: line_end exceeds ${file}`);
+  if (Number.isInteger(start) && Number.isInteger(end) && end < start) errors.push(`${label}: inverted line range`);
+  return file;
 }
 
 export async function writeKnowledgeSourceOutputsV2({ root = '.' } = {}) {
@@ -223,12 +250,11 @@ async function loadCorpus(projectRoot) {
   return { manifestBytes, manifest, corpusFiles };
 }
 
-function addStructuralDocumentNodes(snapshot, manifest, corpusFiles) {
+function addStructuralDocumentNodes(snapshot, manifest, corpusFiles, semanticFiles) {
   const graph = structuredClone(snapshot);
   graph.nodes = Array.isArray(graph.nodes) ? graph.nodes : [];
-  const referenced = new Set(referencedGraphFiles(Buffer.from(JSON.stringify(snapshot))));
   for (const record of manifest.documents ?? []) {
-    if (referenced.has(record.file_name)) continue;
+    if (semanticFiles.has(record.file_name)) continue;
     const lineEnd = logicalLineCount(corpusFiles[record.file_name]);
     graph.nodes.push({
       id: `canonical-document:${record.document_id}`,
@@ -243,9 +269,28 @@ function addStructuralDocumentNodes(snapshot, manifest, corpusFiles) {
   return graph;
 }
 
-function referencedGraphFiles(snapshotBytes) {
-  const graph = JSON.parse(snapshotBytes.toString('utf8'));
-  return (graph.nodes ?? []).map((node) => basename(String(node?.source_location?.file ?? node?.sourceLocation?.file ?? node?.source_file ?? ''))).filter(Boolean);
+function validateStructuralGraphBoundary(graph, manifest, semanticFiles) {
+  const errors = [];
+  const structuralIds = new Set((manifest.documents ?? [])
+    .filter((record) => !semanticFiles.has(record.file_name))
+    .map((record) => `canonical-document:${record.document_id}`));
+  for (const node of graph?.nodes ?? []) {
+    if (structuralIds.has(String(node?.id ?? ''))) errors.push(`semantic graph uses reserved structural-only node id ${node.id}`);
+  }
+  for (const link of graph?.links ?? []) {
+    const endpoints = [link?.source, link?.target, link?.from, link?.to].filter((value) => typeof value === 'string');
+    if (endpoints.some((id) => structuralIds.has(id))) errors.push(`semantic relation touches structural-only node: ${graphEntityLabel(link, 'link')}`);
+  }
+  for (const hyperedge of graph?.hyperedges ?? []) {
+    const endpoints = Array.isArray(hyperedge?.nodes) ? hyperedge.nodes : [];
+    if (endpoints.some((id) => structuralIds.has(String(id)))) errors.push(`semantic relation touches structural-only node: ${graphEntityLabel(hyperedge, 'hyperedge')}`);
+  }
+  return Object.freeze(errors);
+}
+
+function graphEntityLabel(entity, kind) {
+  if (kind === 'link') return `link ${entity?.id ?? `${entity?.source ?? '?'}->${entity?.target ?? '?'}`}`;
+  return `${kind} ${entity?.id ?? '?'}`;
 }
 
 function logicalLineCount(value) {

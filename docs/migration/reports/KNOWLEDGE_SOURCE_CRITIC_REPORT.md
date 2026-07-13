@@ -115,3 +115,28 @@ Remediation после аудита:
 - migration/test evidence синхронизирован с run `#66`.
 
 Для допуска обязательны полный локальный цикл, новый clean-clone run и пятый независимый аудит.
+
+## Пятый аудит head `b38e2954...`
+
+GitHub Actions run `#67` (`29276773280`), job `86907721340`: PASS по всем workflow steps.
+
+Итог: `CHANGES REQUIRED`.
+
+Подтверждено закрытие findings четвёртого цикла. Найдены дополнительные MAJOR:
+
+- provenance links и hyperedges не проходил обязательную path/EOF validation;
+- graph semantic source set не был связан с exact approved RAG semantic set, поэтому native-документ мог вытеснить обязательный structural node;
+- links/hyperedges не проверялись на endpoints structural-only nodes;
+- legacy import записывал target bytes до обнаружения native ID/path collision;
+- migration/test evidence оставался на run `#66` вместо фактического run `#67`.
+
+Remediation после аудита:
+
+- единый validator проверяет `source_file`, `source_location.file`, path safety и logical line range у каждого node, link и hyperedge;
+- любой semantic provenance вне approved embedding document set отклоняется, а отсутствующий approved semantic graph source считается ошибкой;
+- reserved structural-only IDs запрещены в semantic snapshot и в endpoints links/hyperedges;
+- legacy import строит и валидирует полный план, включая aliases/IDs/paths и все входные bytes, до первой записи;
+- добавлены отрицательные тесты corrupted link/hyperedge provenance, graph/RAG set mismatch, structural endpoints и native collision without mutation;
+- evidence синхронизирован с run `#67`.
+
+Для допуска обязательны полный локальный цикл, новый clean-clone run и шестой независимый аудит.

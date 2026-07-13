@@ -29,7 +29,7 @@ canonical document without approved embeddings
 
 The public `@rus/docs-tools.writeKnowledgeSourceOutputs` API and both `knowledge:generate` and `docs:generate` use the same v2 materializer. The legacy writer is not part of the package public API.
 
-The v2 materializer accepts approved embeddings only when the semantic subset hash and every ordered chunk field match the current corpus. It validates every semantic graph source file and line range. `knowledge:import` refreshes legacy-owned records while preserving verified native records, aliases and files.
+The v2 materializer accepts approved embeddings only when the semantic subset hash and every ordered chunk field match the current corpus. It validates matching source paths and logical line ranges for every semantic node, link and hyperedge, requires the exact approved semantic document set, and rejects relations touching structural-only nodes. `knowledge:import` validates its complete plan before writing, then refreshes legacy-owned records while preserving verified native records, aliases and files.
 
 ## Public API
 

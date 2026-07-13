@@ -10,5 +10,5 @@ This directory contains 26 canonical documents: 19 byte-faithful sources migrate
 - `generated/knowledge-source` contains reproducible runtime artifacts.
 - Runtime code must access documents only through `@rus/knowledge-source`.
 
-`npm run knowledge:import` refreshes legacy-owned records only. Verified native records, aliases and files remain registered and unchanged.
-- Native documents without approved embeddings receive structural graph nodes and lexical-only chunks; the generator never fabricates semantic links or vectors.
+`npm run knowledge:import` validates the complete import plan before its first write, then refreshes legacy-owned records only. Verified native records, aliases and files remain registered and unchanged, including on a rejected collision.
+- Native documents without approved embeddings receive structural graph nodes and lexical-only chunks; nodes, links and hyperedges from the semantic snapshot may reference only the exact approved embedding document set, and no semantic relation may touch a structural-only node.

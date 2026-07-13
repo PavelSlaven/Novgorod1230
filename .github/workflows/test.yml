@@ -56,7 +56,13 @@ jobs:
         run: npm run knowledge:check-corpus
 
       - name: Generate deterministic documentation and knowledge artifacts
-        run: npm run docs:generate
+        run: |
+          mkdir -p artifacts/ci
+          set +e
+          npm run docs:generate > artifacts/ci/docs-generate.log 2>&1
+          status=$?
+          cat artifacts/ci/docs-generate.log
+          exit "$status"
 
       - name: Verify generated files are reproducible
         run: git diff --exit-code -- MODULE_INDEX.md generated/

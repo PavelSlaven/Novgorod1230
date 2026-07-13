@@ -93,3 +93,25 @@ Remediation после аудита:
 - добавлены отрицательные тесты semantic drift, graph corruption, repeat import, registry corruption и runtime digest/missing artifacts.
 
 Для допуска обязательны новый clean-clone run и следующий независимый аудит.
+
+## Четвёртый аудит head `4f12cad2...`
+
+GitHub Actions run `#66` (`29275637037`), job `86903889998`: PASS по всем workflow steps.
+
+Итог: `CHANGES REQUIRED`.
+
+Подтверждено закрытие всех findings третьего цикла. Найдены дополнительные gaps:
+
+- graph snapshot допускал отсутствие `source_location`, не проверял `source_file` и мог принять traversal либо рассогласованные source-пути;
+- строка после завершающего newline ошибочно считалась существующей, поэтому structural nodes шести native-документов имели `line_end` на единицу больше логического EOF;
+- legacy verifier и migration test сохраняли hardcoded значения `29`/`19`, а contract map описывал фиксированные 19 входных файлов;
+- migration/test evidence всё ещё ссылался на run `#65` вместо фактического run `#66`.
+
+Remediation после аудита:
+
+- оба graph source-поля обязательны, проходят path-safety и должны ссылаться на один canonical corpus file;
+- line ranges проверяются по логическому числу строк без фиктивной строки после terminal newline; structural nodes получают те же согласованные provenance-поля;
+- legacy inventory verifier и тест сравнивают точные множества путей, вычисленные из текущего manifest; contract map больше не фиксирует число файлов;
+- migration/test evidence синхронизирован с run `#66`.
+
+Для допуска обязательны полный локальный цикл, новый clean-clone run и пятый независимый аудит.

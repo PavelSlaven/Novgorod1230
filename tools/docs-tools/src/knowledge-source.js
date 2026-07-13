@@ -140,8 +140,6 @@ export async function verifyKnowledgeSourceMigration({ root = '.' } = {}) {
   });
   const unknown = inventory.files.filter((item) => item.classification === 'unknown');
   if (unknown.length) errors.push(`stored inventory contains unknown files: ${unknown.map((item) => item.relative_path).join(', ')}`);
-  if (inventory.files.length !== 29) errors.push(`stored inventory file count differs: ${inventory.files.length}`);
-  if (inventory.files.filter((item) => item.classification === 'canonical_source').length !== 19) errors.push('stored inventory canonical source count differs');
 
   const loaded = await loadCorpus(projectRoot).catch((error) => {
     errors.push(error.message);
@@ -149,13 +147,28 @@ export async function verifyKnowledgeSourceMigration({ root = '.' } = {}) {
   });
   const { manifestBytes, manifest } = loaded;
   const inventoryByLegacyPath = new Map(inventory.files.map((item) => [item.legacy_path, item]));
+  const expectedLegacyPaths = new Set((manifest.documents ?? []).filter((record) => record.source_legacy_path).map((record) => record.source_legacy_path));
+  const actualLegacyPaths = new Set(inventory.files.filter((item) => item.classification === 'canonical_source').map((item) => item.legacy_path));
+  for (const path of expectedLegacyPaths) if (!actualLegacyPaths.has(path)) errors.push(`stored inventory is missing manifest legacy source: ${path}`);
+  for (const path of actualLegacyPaths) if (!expectedLegacyPaths.has(path)) errors.push(`stored inventory has unregistered canonical source: ${path}`);
   let hashParity = true;
   let legacyCompared = 0;
+  let legacyDocumentCount = 0;
+  let nativeDocumentCount = 0;
   for (const record of manifest.documents ?? []) {
     const current = await readFile(join(projectRoot, SOURCE_ROOT, record.canonical_path)).catch(() => null);
+    if (!current || sha256(current) !== record.sha256 || current.length !== record.bytes) {
+      hashParity = false;
+      errors.push(`${record.document_id}: canonical corpus parity failed`);
+      continue;
+    }
+    if (!record.source_legacy_path) {
+      nativeDocumentCount += 1;
+      continue;
+    }
+    legacyDocumentCount += 1;
     const inventoryRecord = inventoryByLegacyPath.get(record.source_legacy_path);
-    if (!current || !inventoryRecord || sha256(current) !== record.sha256 || current.length !== record.bytes
-      || inventoryRecord.sha256 !== record.sha256 || inventoryRecord.bytes !== record.bytes) {
+    if (!inventoryRecord || inventoryRecord.sha256 !== record.sha256 || inventoryRecord.bytes !== record.bytes) {
       hashParity = false;
       errors.push(`${record.document_id}: corpus/inventory parity failed`);
       continue;
@@ -190,6 +203,8 @@ export async function verifyKnowledgeSourceMigration({ root = '.' } = {}) {
     inventory_count: inventory.files.length,
     unknown_count: unknown.length,
     document_count: manifest.documents?.length ?? 0,
+    legacy_document_count: legacyDocumentCount,
+    native_document_count: nativeDocumentCount,
     hash_parity: hashParity,
     legacy_sources_compared: legacyCompared,
     legacy_required: false,

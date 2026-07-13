@@ -2086,10 +2086,11 @@
       "type": "canonical_document",
       "label": "base_turn_orchestration.txt",
       "structural_only": true,
+      "source_file": "DOCUMENTS/base_turn_orchestration.txt",
       "source_location": {
         "file": "base_turn_orchestration.txt",
         "line_start": 1,
-        "line_end": 869
+        "line_end": 868
       }
     },
     {
@@ -2097,10 +2098,11 @@
       "type": "canonical_document",
       "label": "code_critic_invocation_rule.txt",
       "structural_only": true,
+      "source_file": "DOCUMENTS/code_critic_invocation_rule.txt",
       "source_location": {
         "file": "code_critic_invocation_rule.txt",
         "line_start": 1,
-        "line_end": 150
+        "line_end": 149
       }
     },
     {
@@ -2108,10 +2110,11 @@
       "type": "canonical_document",
       "label": "development_rules.txt",
       "structural_only": true,
+      "source_file": "DOCUMENTS/development_rules.txt",
       "source_location": {
         "file": "development_rules.txt",
         "line_start": 1,
-        "line_end": 660
+        "line_end": 659
       }
     },
     {
@@ -2119,6 +2122,7 @@
       "type": "canonical_document",
       "label": "g1_g5_generation_rules.txt",
       "structural_only": true,
+      "source_file": "DOCUMENTS/g1_g5_generation_rules.txt",
       "source_location": {
         "file": "g1_g5_generation_rules.txt",
         "line_start": 1,
@@ -2130,10 +2134,11 @@
       "type": "canonical_document",
       "label": "map_g0_g4_workflow.txt",
       "structural_only": true,
+      "source_file": "DOCUMENTS/map_g0_g4_workflow.txt",
       "source_location": {
         "file": "map_g0_g4_workflow.txt",
         "line_start": 1,
-        "line_end": 2331
+        "line_end": 2330
       }
     },
     {
@@ -2141,10 +2146,11 @@
       "type": "canonical_document",
       "label": "new_game_start_pipeline.txt",
       "structural_only": true,
+      "source_file": "DOCUMENTS/new_game_start_pipeline.txt",
       "source_location": {
         "file": "new_game_start_pipeline.txt",
         "line_start": 1,
-        "line_end": 78
+        "line_end": 77
       }
     },
     {
@@ -2152,10 +2158,11 @@
       "type": "canonical_document",
       "label": "read_only_database_and_graph_architecture.md",
       "structural_only": true,
+      "source_file": "DOCUMENTS/read_only_database_and_graph_architecture.md",
       "source_location": {
         "file": "read_only_database_and_graph_architecture.md",
         "line_start": 1,
-        "line_end": 3992
+        "line_end": 3991
       }
     },
     {

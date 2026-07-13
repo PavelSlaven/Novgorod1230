@@ -5,7 +5,7 @@
   "files": [
     {
       "path": "generated/knowledge-source/graph/GRAPH_REPORT.md",
-      "sha256": "29b13502c6dd411f319b91156c3e53ba9b426e7820b52e0e69aa2cad19375a46",
+      "sha256": "631e81b8edbb0e1f7e88ae005ee48f72b23e1da762bed9bb73b2145fb2f85d16",
       "bytes": 492
     },
     {
@@ -15,12 +15,12 @@
     },
     {
       "path": "generated/knowledge-source/graph/graph.json",
-      "sha256": "f2761538e80b4d4a180950c7e87acd27d15cd13168a411af6c29423606bc412d",
-      "bytes": 4033694
+      "sha256": "65274664c96dd884f0b957661f31366053ee8e026133eab0e37c59789a87561e",
+      "bytes": 4034137
     },
     {
       "path": "generated/knowledge-source/graph/manifest.json",
-      "sha256": "bfe9ac933ff409204daf0dc5a6caa9354aa8d51c0f2ba95e2cdef931b0426419",
+      "sha256": "e7b5aca1648e2ca7988ee72930d1db784baeab38e6240148d6636331937945c3",
       "bytes": 788
     },
     {

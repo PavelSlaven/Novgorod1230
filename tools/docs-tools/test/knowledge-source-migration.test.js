@@ -23,11 +23,13 @@ async function readSemanticGraphFiles() {
   return new Set((graph.nodes ?? []).map((node) => basename(String(node?.source_location?.file ?? node?.sourceLocation?.file ?? node?.source_file ?? ''))).filter(Boolean));
 }
 
-test('stored legacy DOCUMENTS inventory classifies every file and approves exactly 19 canonical sources', async () => {
+test('stored legacy DOCUMENTS inventory exactly covers manifest legacy records', async () => {
+  const manifest = await readCorpusManifest();
   const inventory = await readKnowledgeSourceInventory({ root });
-  assert.equal(inventory.files.length, 29);
   assert.equal(inventory.files.some((item) => item.classification === 'unknown'), false);
-  assert.equal(inventory.files.filter((item) => item.classification === 'canonical_source').length, 19);
+  const expectedLegacyPaths = new Set(manifest.documents.filter((record) => record.source_legacy_path).map((record) => record.source_legacy_path));
+  const actualLegacyPaths = new Set(inventory.files.filter((item) => item.classification === 'canonical_source').map((item) => item.legacy_path));
+  assert.deepEqual(actualLegacyPaths, expectedLegacyPaths);
 });
 
 test('migrated corpus and generated provenance verify without requiring legacy', { concurrency: false }, async () => {

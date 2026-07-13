@@ -98,19 +98,34 @@ test('knowledge materializer rejects changed semantic text even when its manifes
 
 test('knowledge materializer rejects invalid semantic graph source locations', async () => {
   const fixtureRoot = await materializerFixture();
+  const sourceRoot = join(fixtureRoot, 'data/knowledge-source');
   const graphPath = join(fixtureRoot, 'data/knowledge-source/imports/graph/graph.json');
   const original = JSON.parse(await readFile(graphPath, 'utf8'));
+  const firstFile = basename(String(original.nodes[0].source_location.file));
+  const manifest = JSON.parse(await readFile(join(sourceRoot, 'corpus-manifest.json'), 'utf8'));
+  const firstRecord = manifest.documents.find((record) => record.file_name === firstFile);
+  const firstText = await readFile(join(sourceRoot, firstRecord.canonical_path), 'utf8');
+  const actualLineCount = firstText.split(/\r?\n/u).length - (firstText.endsWith('\n') ? 1 : 0);
   const cases = [
-    ['missing file', (location) => { location.file = 'DOCUMENTS/missing-source.md'; }, /references missing file/u],
+    ['missing location', (_location, node) => { delete node.source_location; }, /source_location is missing/u],
+    ['missing location file', (location) => { delete location.file; }, /source_location\.file is missing/u],
+    ['missing source_file', (_location, node) => { delete node.source_file; }, /source_file is missing/u],
+    ['missing file', (location, node) => {
+      location.file = 'DOCUMENTS/missing-source.md';
+      node.source_file = location.file;
+    }, /references missing file/u],
     ['source path traversal', (location) => { location.file = '../README.md'; }, /invalid source path/u],
+    ['source_file traversal', (_location, node) => { node.source_file = '../README.md'; }, /invalid source_file/u],
+    ['source_file mismatch', (_location, node) => { node.source_file = 'DOCUMENTS/character_parameters.txt'; }, /source_file differs from source_location\.file/u],
     ['line below one', (location) => { location.line_start = 0; }, /invalid line_start/u],
+    ['one line after EOF', (location) => { location.line_end = actualLineCount + 1; }, /line_end exceeds/u],
     ['line beyond EOF', (location) => { location.line_end = Number.MAX_SAFE_INTEGER; }, /line_end exceeds/u],
     ['inverted range', (location) => { location.line_start = 2; location.line_end = 1; }, /inverted line range/u]
   ];
 
   for (const [label, corrupt, pattern] of cases) {
     const graph = structuredClone(original);
-    corrupt(graph.nodes[0].source_location);
+    corrupt(graph.nodes[0].source_location, graph.nodes[0]);
     await writeFile(graphPath, JSON.stringify(graph));
     await assert.rejects(
       () => buildKnowledgeSourceOutputsV2({ root: fixtureRoot }),

@@ -157,18 +157,38 @@ export function validateGraphSnapshotSources(graph, corpusFiles) {
   const errors = [];
   for (const node of graph?.nodes ?? []) {
     const location = node?.source_location ?? node?.sourceLocation;
-    if (!location) continue;
-    const rawFile = String(location.file ?? node.source_file ?? '');
+    if (!location) {
+      errors.push(`node ${node.id ?? '?'}: source_location is missing`);
+      continue;
+    }
+    const rawFile = String(location.file ?? '');
+    if (!rawFile) {
+      errors.push(`node ${node.id ?? '?'}: source_location.file is missing`);
+      continue;
+    }
     if (!/^(?:DOCUMENTS\/)?[^/\\]+$/u.test(rawFile)) {
-      errors.push(`node ${node.id ?? '?'} has invalid source path ${rawFile || '?'}`);
+      errors.push(`node ${node.id ?? '?'} has invalid source path ${rawFile}`);
+      continue;
+    }
+    const rawSourceFile = String(node.source_file ?? '');
+    if (!rawSourceFile) {
+      errors.push(`node ${node.id ?? '?'}: source_file is missing`);
+      continue;
+    }
+    if (!/^(?:DOCUMENTS\/)?[^/\\]+$/u.test(rawSourceFile)) {
+      errors.push(`node ${node.id ?? '?'} has invalid source_file ${rawSourceFile}`);
       continue;
     }
     const file = basename(rawFile);
+    if (basename(rawSourceFile) !== file) {
+      errors.push(`node ${node.id ?? '?'}: source_file differs from source_location.file`);
+      continue;
+    }
     if (!file || !Object.hasOwn(corpusFiles, file)) {
       errors.push(`node ${node.id ?? '?'} references missing file ${file || '?'}`);
       continue;
     }
-    const lineCount = String(corpusFiles[file]).split(/\r?\n/u).length;
+    const lineCount = logicalLineCount(corpusFiles[file]);
     const start = Number(location.line_start ?? location.lineStart);
     const end = Number(location.line_end ?? location.lineEnd);
     if (!Number.isInteger(start) || start < 1) errors.push(`${node.id ?? '?'}: invalid line_start`);
@@ -209,12 +229,13 @@ function addStructuralDocumentNodes(snapshot, manifest, corpusFiles) {
   const referenced = new Set(referencedGraphFiles(Buffer.from(JSON.stringify(snapshot))));
   for (const record of manifest.documents ?? []) {
     if (referenced.has(record.file_name)) continue;
-    const lineEnd = String(corpusFiles[record.file_name] ?? '').split(/\r?\n/u).length;
+    const lineEnd = logicalLineCount(corpusFiles[record.file_name]);
     graph.nodes.push({
       id: `canonical-document:${record.document_id}`,
       type: 'canonical_document',
       label: record.file_name,
       structural_only: true,
+      source_file: `DOCUMENTS/${record.file_name}`,
       source_location: { file: record.file_name, line_start: 1, line_end: lineEnd }
     });
   }
@@ -225,6 +246,12 @@ function addStructuralDocumentNodes(snapshot, manifest, corpusFiles) {
 function referencedGraphFiles(snapshotBytes) {
   const graph = JSON.parse(snapshotBytes.toString('utf8'));
   return (graph.nodes ?? []).map((node) => basename(String(node?.source_location?.file ?? node?.sourceLocation?.file ?? node?.source_file ?? ''))).filter(Boolean);
+}
+
+function logicalLineCount(value) {
+  const content = String(value ?? '');
+  if (!content) return 0;
+  return content.split(/\r?\n/u).length - (content.endsWith('\n') ? 1 : 0);
 }
 
 function renderGraphReport(manifest) {

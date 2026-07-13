@@ -45,6 +45,12 @@ export async function verifyKnowledgeSourceMigrationV2({ root = '.' } = {}) {
   });
   const manifest = safeJson(manifestBytes, errors, 'corpus manifest');
   const inventoryByLegacyPath = new Map((inventory.files ?? []).map((item) => [item.legacy_path, item]));
+  const unknownInventory = (inventory.files ?? []).filter((item) => item.classification === 'unknown');
+  if (unknownInventory.length) errors.push(`stored inventory contains unknown files: ${unknownInventory.map((item) => item.relative_path).join(', ')}`);
+  const expectedLegacyPaths = new Set((manifest.documents ?? []).filter((record) => record.source_legacy_path).map((record) => record.source_legacy_path));
+  const actualLegacyPaths = new Set((inventory.files ?? []).filter((item) => item.classification === 'canonical_source').map((item) => item.legacy_path));
+  for (const path of expectedLegacyPaths) if (!actualLegacyPaths.has(path)) errors.push(`stored inventory is missing manifest legacy source: ${path}`);
+  for (const path of actualLegacyPaths) if (!expectedLegacyPaths.has(path)) errors.push(`stored inventory has unregistered canonical source: ${path}`);
   let hashParity = true;
   let legacyCompared = 0;
   let legacyDocumentCount = 0;

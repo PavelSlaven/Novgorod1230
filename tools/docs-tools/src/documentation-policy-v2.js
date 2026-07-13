@@ -4,6 +4,7 @@ import {
   buildDocumentationOutputs as buildLegacyDocumentationOutputs,
   validateDocumentationTree as validateLegacyDocumentationTree
 } from './documentation.js';
+import { validateCanonicalCorpusDelegation } from './canonical-corpus-registry.js';
 import { verifyKnowledgeSourceMigrationV2 } from './knowledge-v2-api.js';
 
 export const buildDocumentationOutputs = buildLegacyDocumentationOutputs;
@@ -38,5 +39,9 @@ export async function checkDocumentationOutputs(rootDir = '.') {
 }
 
 export async function validateDocumentationTree(rootDir = '.') {
-  return validateLegacyDocumentationTree(rootDir);
+  const root = resolve(rootDir);
+  const legacy = await validateLegacyDocumentationTree(root);
+  const corpusDelegation = await validateCanonicalCorpusDelegation({ root });
+  const errors = [...legacy.errors, ...corpusDelegation.errors];
+  return Object.freeze({ ok: errors.length === 0, errors: Object.freeze(errors) });
 }

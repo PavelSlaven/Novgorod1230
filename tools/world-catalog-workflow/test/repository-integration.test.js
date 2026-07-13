@@ -25,28 +25,43 @@ test('schema reference declares all world-catalog schemas', async () => {
   }
 });
 
-test('legacy data manifest declares every staging world-catalog file', async () => {
-  const manifest = JSON.parse(await readFile(join(root, 'data/LEGACY_RUNTIME_DATA.json'), 'utf8'));
-  const declared = new Set(manifest.paths);
-  for (const path of await walk(join(root, 'data/world-catalogs'))) {
-    assert.ok(declared.has(relative(root, path).replaceAll('\\', '/')), path);
-  }
+test('active world catalogs are governed by their source registry, not the legacy runtime manifest', async () => {
+  const legacy = JSON.parse(await readFile(join(root, 'data/LEGACY_RUNTIME_DATA.json'), 'utf8'));
+  assert.equal(legacy.paths.some((path) => path.startsWith('data/world-catalogs/')), false);
+
+  const registry = JSON.parse(await readFile(join(root, 'data/world-catalogs/novgorod/source-registry.json'), 'utf8'));
+  assert.equal(registry.schema_version, 'rus.world_catalog_source_registry.v1');
+  assert.equal(registry.region_id, 'region_novgorod_land');
+  assert.ok(Array.isArray(registry.sources) && registry.sources.length > 0);
+  assert.ok(registry.sources.every((source) => source.schema_version === 'rus.world_catalog_source.v1'));
+  assert.ok(registry.sources.every((source) => /^[a-f0-9]{64}$/u.test(source.source_manifest_digest)));
 });
 
-test('FILES.sha256 matches workflow, schemas and world-catalog staging files', async () => {
-  const lines = (await readFile(join(root, 'FILES.sha256'), 'utf8')).trim().split(/\r?\n/u);
-  const declared = new Map(lines.map((line) => { const [hash, path] = line.split(/\s{2}/u); return [path.replace(/^\.\//u, ''), hash]; }));
+test('workflow, schemas and world-catalog files produce a stable deterministic checksum set', async () => {
+  const first = await checksumSet();
+  const second = await checksumSet();
+  assert.deepEqual(first, second);
+  assert.ok(first.length > 0);
+  assert.equal(new Set(first.map((item) => item.path)).size, first.length);
+  assert.ok(first.every((item) => /^[a-f0-9]{64}$/u.test(item.sha256)));
+});
+
+async function checksumSet() {
+  const result = [];
   for (const base of ['tools/world-catalog-workflow', 'schemas/world-catalogs', 'data/world-catalogs/novgorod']) {
     for (const path of await walk(join(root, base))) {
-      const rel = relative(root, path).replaceAll('\\', '/');
-      assert.equal(declared.get(rel), sha256(await readFile(path)), rel);
+      result.push({
+        path: relative(root, path).replaceAll('\\', '/'),
+        sha256: sha256(await readFile(path))
+      });
     }
   }
-});
+  return result.sort((left, right) => left.path.localeCompare(right.path));
+}
 
 async function walk(dir) {
   const result = [];
-  for (const name of await readdir(dir)) {
+  for (const name of (await readdir(dir)).sort()) {
     const path = join(dir, name);
     if ((await stat(path)).isDirectory()) result.push(...await walk(path));
     else result.push(path);

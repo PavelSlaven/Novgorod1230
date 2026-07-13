@@ -73,3 +73,4 @@ export {
   writeKnowledgeSourceOutputs
 } from './knowledge-source.js';
 export { importKnowledgeSourceFromLegacy } from './knowledge-source.js';
+export { verifyCanonicalCorpus } from './knowledge-corpus-verifier.js';

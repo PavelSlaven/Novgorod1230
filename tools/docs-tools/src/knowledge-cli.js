@@ -4,9 +4,9 @@ import {
   importKnowledgeSourceFromLegacy,
   inventoryLegacyKnowledgeSource,
   verifyCanonicalCorpus,
-  verifyKnowledgeSourceMigration,
-  writeKnowledgeSourceOutputs
+  verifyKnowledgeSourceMigration
 } from './index.js';
+import { writeKnowledgeSourceOutputsV2 } from './knowledge-materializer-v2.js';
 
 const command = process.argv[2] ?? 'check';
 const rootIndex = process.argv.indexOf('--root');
@@ -18,7 +18,7 @@ if (command === 'inventory') {
   const result = await importKnowledgeSourceFromLegacy({ root });
   console.log(`Knowledge source imported: ${result.document_count} documents, ${result.inventory_count} legacy files classified.`);
 } else if (command === 'generate') {
-  const result = await writeKnowledgeSourceOutputs({ root });
+  const result = await writeKnowledgeSourceOutputsV2({ root });
   console.log(`Knowledge source generated: ${result.files.join(', ')}`);
 } else if (command === 'check-corpus') {
   const result = await verifyCanonicalCorpus({ root });

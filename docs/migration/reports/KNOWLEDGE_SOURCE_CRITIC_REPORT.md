@@ -56,3 +56,16 @@ Handoff `Правило вызова агента-критика.txt`: 9109 byte
 `CHANGES REQUIRED`
 
 PR остаётся draft. После исправлений обязательны полный тестовый цикл, новый clean-clone CI и повторный независимый critic audit.
+
+## Повторный аудит head `c0d1716d...`
+
+GitHub Actions run `#64` (`29273051182`), job `86895239724`: PASS по всем шагам, включая real PostgreSQL DDL, generation/reproducibility и full tests.
+
+Итог: `CHANGES REQUIRED`.
+
+- public writer remediation подтверждён как закрытый;
+- PR body подтверждён актуальным;
+- обнаружен hardcoded числовой порог в `canonical-corpus-registry.test.js` вместо exact-сравнения с manifest;
+- `MIGRATION_STATUS.md` и `TEST_REPORT.md` требовали синхронизации с run `#64`.
+
+Порог заменён чтением `corpus-manifest.json` и сравнением с `manifest.documents.length`; отчёты синхронизированы. Для допуска обязательны новый clean-clone run и очередной независимый аудит.

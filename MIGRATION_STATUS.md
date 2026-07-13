@@ -45,7 +45,7 @@
 
 ## Последняя автоматическая проверка
 
-Последний подтверждённый clean-clone GitHub Actions run: `#63` (`29271952334`) на commit `63600d93b76312ccd95305dea78281dd9874d6b0`:
+Последний подтверждённый clean-clone implementation run: `#64` (`29273051182`), job `86895239724`, на commit `c0d1716d62d18665150e4d9611accf53bbfdc5e8`:
 
 - clean checkout: PASS;
 - dependency install: PASS;
@@ -59,10 +59,9 @@
 
 ## В работе
 
-1. Повторный clean-clone run после исправления public writer, найденного независимым critic audit.
-2. Синхронизация PR description с итоговым commit/run evidence.
-3. Повторный независимый critic audit после нового зелёного CI.
-4. Решение владельца по byte-конфликту critic rule: handoff-файл имеет 9109 bytes/CRLF и SHA-256 `b3049ee06f6462081641bffdc0d12dc2596905ba401560e740f1c98c3192ec96`, существующий canonical файл — 8960 bytes/LF и SHA-256 `7a0d690a18f39e264cd39eca3b83eae5c943de97e4219b3f8034b98da9289165`; нормализованный текст совпадает, автоматическая замена запрещена.
+Run `#64` подтвердил исправление public writer. Второй независимый аудит на `c0d1716d...` подтвердил закрытие этого MAJOR и выявил оставшийся устаревший числовой порог в delegation test; порог заменён exact-сравнением с `manifest.documents.length`. Следующий admission verdict определяется новым clean-clone run и независимым аудитом этого изменения.
+
+Остаётся решение владельца по byte-конфликту critic rule: handoff-файл имеет 9109 bytes/CRLF и SHA-256 `b3049ee06f6462081641bffdc0d12dc2596905ba401560e740f1c98c3192ec96`, существующий canonical файл — 8960 bytes/LF и SHA-256 `7a0d690a18f39e264cd39eca3b83eae5c943de97e4219b3f8034b98da9289165`; нормализованный текст совпадает, автоматическая замена запрещена.
 
 ## Блокирующие условия
 
@@ -75,5 +74,5 @@ PR нельзя переводить из draft и объединять, пок�
 - агент критики вернул `PASS` или допустимый `PASS WITH NOTES`;
 - после `CHANGES REQUIRED` или `REJECT` выполнены исправления, повторные тесты и повторный аудит.
 
-Текущий итоговый статус: `clean_clone_green_critic_changes_required_fix_in_progress`.
+Текущий итоговый статус: `run_64_green_round2_changes_required_threshold_fixed`.
 Legacy deletion allowed: false.

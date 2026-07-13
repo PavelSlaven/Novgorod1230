@@ -2,8 +2,8 @@
 
 Дата: 2026-07-13
 Ветка: `agent/restore-canonical-docs-generated-ci`
-Последний проверенный commit: `63600d93b76312ccd95305dea78281dd9874d6b0`
-GitHub Actions run: `#63` (`29271952334`), job `86891569589`
+Последний проверенный implementation commit: `c0d1716d62d18665150e4d9611accf53bbfdc5e8`
+GitHub Actions run: `#64` (`29273051182`), job `86895239724`
 
 ## Clean-clone pipeline
 
@@ -24,9 +24,9 @@ GitHub Actions run: `#63` (`29271952334`), job `86891569589`
 
 GitHub Actions completed the full job with conclusion `success`. The workflow summary does not expose reliable per-suite test counts, therefore this report does not repeat stale historic totals.
 
-Run `#63` выполнил новые schema-reference и PostgreSQL gates в чистом checkout. PostgreSQL service принял весь DDL; подтверждены 62 таблицы, одна не-привилегированная роль `world_reader`, `USAGE` без `CREATE`, 62 `SELECT` grants и 0 write grants.
+Run `#64` выполнил schema-reference и PostgreSQL gates в чистом checkout. PostgreSQL service принял весь DDL; подтверждены 62 таблицы, одна не-привилегированная роль `world_reader`, `USAGE` без `CREATE`, 62 `SELECT` grants и 0 write grants.
 
-После run `#63` независимый critic audit выявил рассогласование публичного `@rus/docs-tools.writeKnowledgeSourceOutputs` с v2 CLI path. Regression test воспроизвёл legacy failure; public export исправлен на v2 и ожидает повторного clean-clone run.
+В run `#64` прошёл regression test public `@rus/docs-tools.writeKnowledgeSourceOutputs`: public export использует v2 path и создаёт ожидаемый structural/lexical output. Второй critic audit подтвердил это исправление, но обнаружил устаревший числовой порог в delegation test. Порог заменён exact-сравнением с текущим `manifest.documents.length`.
 
 ## Verified contracts
 
@@ -55,10 +55,9 @@ Run `#63` выполнил новые schema-reference и PostgreSQL gates в ч
 
 ## Remaining release gates
 
-- clean-clone execution после исправления public writer;
-- PR description synchronization with final run evidence;
-- повторный independent code critic audit;
+- новый clean-clone execution после удаления hardcoded threshold;
+- следующий independent code critic audit;
 - owner disposition of the byte-only critic-rule conflict;
 - repeat audit after any `CHANGES REQUIRED` or `REJECT` result.
 
-Decision: `run_63_green_critic_changes_required_fix_pending_ci`.
+Decision: `run_64_green_round2_changes_required_threshold_fixed`.

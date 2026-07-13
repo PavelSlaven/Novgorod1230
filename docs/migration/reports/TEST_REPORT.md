@@ -2,8 +2,8 @@
 
 Дата: 2026-07-13
 Ветка: `agent/restore-canonical-docs-generated-ci`
-Последний проверенный implementation commit: `c759f45f4212a08dd94b043212caa5a797ef878a`
-GitHub Actions run: `#68` (`29277900087`), job `86911487538`
+Последний проверенный implementation commit: `3cb8eab2c7acc0f272d792018d39d659a829fba9`
+GitHub Actions run: `#70` (`29279548326`), job `86917091894`
 
 ## Clean-clone pipeline
 
@@ -24,11 +24,13 @@ GitHub Actions run: `#68` (`29277900087`), job `86911487538`
 
 GitHub Actions completed the full job with conclusion `success`. The workflow summary does not expose reliable per-suite test counts, therefore this report does not repeat stale historic totals.
 
-Run `#68` выполнил schema-reference и PostgreSQL gates в чистом checkout. PostgreSQL service принял весь DDL; подтверждены 62 таблицы, одна не-привилегированная роль `world_reader`, `USAGE` без `CREATE`, 62 `SELECT` grants и 0 write grants.
+Run `#70` выполнил schema-reference и PostgreSQL gates в чистом checkout. PostgreSQL service принял весь DDL; подтверждены 62 таблицы, одна не-привилегированная роль `world_reader`, `USAGE` без `CREATE`, 62 `SELECT` grants и 0 write grants.
 
 Run `#68` подтвердил remediation пятого аудита: provenance checks для nodes/links/hyperedges, exact graph/RAG semantic-set boundary, structural endpoint guard и collision-before-write. В clean clone прошли generation/reproducibility и полный `npm test`; локальный обязательный цикл также прошёл полностью.
 
 Evidence-only commit `afed3740e6fecb5de57d9aa961cdb77abcabf75a` прошёл run `#69` (`29278114051`), job `86912220316`, со всеми теми же gates. Шестой critic audit выявил непроверенные `hyperedge.member_source_files` и import-history conflict после записи. Новые negative tests воспроизвели оба дефекта; текущий remediation проходит targeted tests.
+
+Run `#70` подтвердил исправления шестого аудита в clean clone: member-source provenance и import-history preflight tests прошли вместе с generation/reproducibility и полным `npm test`.
 
 ## Verified contracts
 
@@ -62,9 +64,8 @@ Evidence-only commit `afed3740e6fecb5de57d9aa961cdb77abcabf75a` прошёл run
 
 ## Remaining release gates
 
-- новый clean-clone execution после round6 remediation;
 - следующий independent code critic audit;
 - owner disposition of the byte-only critic-rule conflict;
 - repeat audit after any `CHANGES REQUIRED` or `REJECT` result.
 
-Decision: `run_69_green_round6_changes_required_remediated_locally`.
+Decision: `run_70_green_round6_remediation_pending_critic`.

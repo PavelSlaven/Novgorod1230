@@ -49,7 +49,7 @@
 
 ## Последняя автоматическая проверка
 
-Последний подтверждённый clean-clone implementation run: `#68` (`29277900087`), job `86911487538`, на commit `c759f45f4212a08dd94b043212caa5a797ef878a`:
+Последний подтверждённый clean-clone implementation run: `#70` (`29279548326`), job `86917091894`, на commit `3cb8eab2c7acc0f272d792018d39d659a829fba9`:
 
 - clean checkout: PASS;
 - dependency install: PASS;
@@ -63,7 +63,7 @@
 
 ## В работе
 
-Шестой независимый аудит evidence head `afed3740...` и успешного run `#69` выявил два дополнительных обхода: `hyperedge.member_source_files` не входили в semantic provenance gate, а import-history conflict возникал после записи canonical state. Negative TDD воспроизвёл оба дефекта. Текущий remediation валидирует member sources и формирует проверенные import-history bytes в полном preflight-плане до первой записи. Для допуска нужны полный локальный цикл, новый clean-clone run и повторный независимый аудит.
+Шестой независимый аудит evidence head `afed3740...` и успешного run `#69` выявил два дополнительных обхода: `hyperedge.member_source_files` не входили в semantic provenance gate, а import-history conflict возникал после записи canonical state. Negative TDD воспроизвёл оба дефекта. Commit `3cb8eab2...` валидирует member sources и формирует проверенные import-history bytes в полном preflight-плане до первой записи. Полный локальный цикл и clean-clone run `#70` прошли; для допуска остаётся повторный независимый аудит evidence head.
 
 Остаётся решение владельца по byte-конфликту critic rule: handoff-файл имеет 9109 bytes/CRLF и SHA-256 `b3049ee06f6462081641bffdc0d12dc2596905ba401560e740f1c98c3192ec96`, существующий canonical файл — 8960 bytes/LF и SHA-256 `7a0d690a18f39e264cd39eca3b83eae5c943de97e4219b3f8034b98da9289165`; нормализованный текст совпадает, автоматическая замена запрещена.
 
@@ -78,5 +78,5 @@ PR нельзя переводить из draft и объединять, пок�
 - агент критики вернул `PASS` или допустимый `PASS WITH NOTES`;
 - после `CHANGES REQUIRED` или `REJECT` выполнены исправления, повторные тесты и повторный аудит.
 
-Текущий итоговый статус: `run_69_green_round6_changes_required_remediated_locally`.
+Текущий итоговый статус: `run_70_green_round6_remediation_pending_critic`.
 Legacy deletion allowed: false.

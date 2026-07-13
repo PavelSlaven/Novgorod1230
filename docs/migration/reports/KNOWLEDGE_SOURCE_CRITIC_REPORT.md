@@ -165,3 +165,9 @@ Remediation после аудита:
 - добавлены negative tests native/missing/traversal member sources и history conflict without mutation.
 
 Для допуска обязательны полный локальный цикл, новый clean-clone run и следующий независимый аудит.
+
+## Проверка remediation шестого аудита
+
+Implementation commit `3cb8eab2c7acc0f272d792018d39d659a829fba9` прошёл clean-clone run `#70` (`29279548326`), job `86917091894`. Все workflow steps завершились `success`, включая PostgreSQL 16 DDL, corpus, generation/reproducibility и full tests.
+
+Финальный admission verdict требует независимого аудита evidence head после синхронизации этих отчётов.

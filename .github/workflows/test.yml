@@ -35,6 +35,9 @@ jobs:
       - name: Validate canonical world_base schema
         run: npm run world-db:schema-check
 
+      - name: Validate canonical knowledge corpus
+        run: npm run knowledge:check-corpus
+
       - name: Generate deterministic documentation and knowledge artifacts
         run: npm run docs:generate
 

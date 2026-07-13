@@ -57,11 +57,10 @@ jobs:
 
       - name: Generate deterministic documentation and knowledge artifacts
         run: |
-          mkdir -p artifacts/ci
           set +e
-          npm run docs:generate > artifacts/ci/docs-generate.log 2>&1
+          npm run docs:generate > "$RUNNER_TEMP/docs-generate.log" 2>&1
           status=$?
-          cat artifacts/ci/docs-generate.log
+          cat "$RUNNER_TEMP/docs-generate.log"
           exit "$status"
 
       - name: Verify generated files are reproducible
@@ -79,4 +78,4 @@ jobs:
           path: |
             generated/
             MODULE_INDEX.md
-            artifacts/
+            ${{ runner.temp }}/docs-generate.log

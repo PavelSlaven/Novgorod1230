@@ -38,6 +38,10 @@ Evidence-only commit `a0821be3ddf9663c49b80b0a7bcb1010b7d0e3aa` прошёл run
 
 Run `#72` подтвердил remediation седьмого аудита в clean clone: migration-summary contract, malformed-history fail-before-write regression, generation/reproducibility и полный `npm test` прошли.
 
+Evidence-only commit `97d7c29aa53582d5f00c1f07a2920497708eb559` прошёл run `#73` (`29281176623`), job `86922469253`; все обязательные workflow steps завершились `success`. Восьмой critic audit выявил отдельный stale corpus migration report, не охваченный первым summary contract. Расширенный contract сначала воспроизвёл старые totals/verdict, затем прошёл после делегирования canonical manifests и evidence reports.
+
+Локальный remediation-цикл восьмого аудита завершён: schema, schema-reference, corpus, graph/RAG, knowledge-source (19/19), docs (6/6), integration (11/11) и полный `npm test` прошли; architecture PASS. Browser E2E корректно отмечен skipped из-за отсутствующего локального Chromium.
+
 ## Verified contracts
 
 - executable `world_base` entrypoint and eight ordered SQL parts;
@@ -58,6 +62,7 @@ Run `#72` подтвердил remediation седьмого аудита в clea
 - CI workflow contract preventing false-green truncated workflows.
 - root migration summaries delegate mutable counts to canonical manifests and evidence reports;
 - malformed import history is rejected before any canonical write, with byte-preservation regression coverage.
+- every knowledge-source migration summary rejects stale historic test totals and delegates current evidence.
 
 ## Coverage state
 
@@ -72,8 +77,9 @@ Run `#72` подтвердил remediation седьмого аудита в clea
 
 ## Remaining release gates
 
+- новый clean-clone CI после remediation восьмого аудита;
 - следующий independent code critic audit;
 - owner disposition of the byte-only critic-rule conflict;
 - repeat audit after any `CHANGES REQUIRED` or `REJECT` result.
 
-Decision: `run_72_green_round7_remediation_pending_critic`.
+Decision: `round8_remediation_local_green_pending_ci`.

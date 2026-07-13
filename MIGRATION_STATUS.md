@@ -63,7 +63,7 @@
 
 ## В работе
 
-Седьмой независимый аудит evidence head `a0821be3...` и успешного run `#71` (`29279761828`, job `86917792948`) подтвердил remediation шестого раунда, но обнаружил устаревшие mutable counts и critic/test evidence в `MIGRATION_PHASES_SHORT.md` и `MIGRATION_MANIFEST.json`, а также отсутствие regression-теста malformed import history. Корневые сводки переведены на канонические manifests/reports, добавлен integration contract и fail-before-write negative test. Targeted tests, полный локальный цикл и clean-clone run `#72` прошли; для допуска остаётся повторный независимый аудит evidence head.
+Восьмой независимый аудит evidence head `97d7c29...` и успешного run `#73` (`29281176623`, job `86922469253`) подтвердил remediation седьмого раунда, но обнаружил отдельный stale `KNOWLEDGE_SOURCE_CORPUS_MIGRATION_REPORT.md` со старыми test totals и critic verdict. Отчёт переведён на делегирование canonical manifests, `TEST_REPORT.md` и `KNOWLEDGE_SOURCE_CRITIC_REPORT.md`; integration contract расширен на все knowledge-source summaries и сначала воспроизвёл дефект. Targeted tests и полный локальный цикл проходят; для допуска остаются новый clean-clone CI и повторный независимый аудит.
 
 Остаётся решение владельца по byte-конфликту critic rule: handoff-файл имеет 9109 bytes/CRLF и SHA-256 `b3049ee06f6462081641bffdc0d12dc2596905ba401560e740f1c98c3192ec96`, существующий canonical файл — 8960 bytes/LF и SHA-256 `7a0d690a18f39e264cd39eca3b83eae5c943de97e4219b3f8034b98da9289165`; нормализованный текст совпадает, автоматическая замена запрещена.
 
@@ -78,5 +78,5 @@ PR нельзя переводить из draft и объединять, пок�
 - агент критики вернул `PASS` или допустимый `PASS WITH NOTES`;
 - после `CHANGES REQUIRED` или `REJECT` выполнены исправления, повторные тесты и повторный аудит.
 
-Текущий итоговый статус: `run_72_green_round7_remediation_pending_critic`.
+Текущий итоговый статус: `round8_remediation_local_green_pending_ci`.
 Legacy deletion allowed: false.

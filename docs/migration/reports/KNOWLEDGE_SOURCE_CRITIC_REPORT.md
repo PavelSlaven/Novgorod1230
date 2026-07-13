@@ -193,3 +193,19 @@ Remediation после аудита:
 Implementation commit `c04dcd59a40bf30332a5cc11288840a833e816f0` прошёл clean-clone run `#72` (`29281004340`), job `86921895682`. Все workflow steps завершились `success`, включая PostgreSQL 16 DDL, corpus, deterministic generation/reproducibility и full tests.
 
 Финальный admission verdict требует независимого аудита evidence head после синхронизации этих отчётов.
+
+## Восьмой аудит head `97d7c29...`
+
+Evidence-head run `#73` (`29281176623`), job `86922469253`: PASS по всем workflow steps.
+
+Итог: `CHANGES REQUIRED`.
+
+- `KNOWLEDGE_SOURCE_CORPUS_MIGRATION_REPORT.md` сохранял stale значения 19 total documents, 1295 total graph nodes, test totals `9/9` и `310/310`, а также старый `PASS WITH NOTES` как текущеподобный admission verdict;
+- migration-summary contract покрывал только корневые сводки и не блокировал возврат stale evidence в остальных knowledge-source reports.
+
+Remediation после аудита:
+
+- corpus migration report делегирует mutable counts и coverage canonical corpus/graph/RAG manifests, а test/critic evidence — соответствующим отчётам;
+- integration contract проверяет corpus migration report и запрещает stale `9/9`/`310/310` во всех `KNOWLEDGE_SOURCE*.md`;
+- negative contract сначала воспроизвёл stale report и после исправления проходит;
+- targeted tests и полный локальный цикл проходят; для допуска остаются новый clean-clone CI и повторный независимый аудит.

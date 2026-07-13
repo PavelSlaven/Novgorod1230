@@ -134,11 +134,13 @@ async function generatedStatus(storage, kind, currentHash, schemaVersion) {
   if (String(value.corpus_manifest_sha256 ?? '') !== currentHash) return { status: 'stale', reason: 'corpus_manifest_hash_mismatch' };
 
   if (kind === 'rag' && value.generation_mode === 'approved_semantic_snapshot_plus_deterministic_lexical_coverage') {
+    if (!value.semantic_index_sha256 || !value.lexical_index_sha256) return { status: 'stale', reason: 'manifest_contract_invalid' };
     const semantic = await storage.readGeneratedArtifact('rag', 'index.json').catch(() => null);
     if (!semantic) return { status: 'missing', reason: 'semantic_artifact_missing' };
-    if (String(value.source_snapshot_sha256 ?? '') !== semantic.sha256) return { status: 'stale', reason: 'semantic_snapshot_hash_mismatch' };
+    if (String(value.semantic_index_sha256) !== semantic.sha256) return { status: 'stale', reason: 'semantic_artifact_hash_mismatch' };
     const lexical = await storage.readGeneratedArtifact('rag', 'lexical-index.json').catch(() => null);
     if (!lexical) return { status: 'missing', reason: 'lexical_artifact_missing' };
+    if (String(value.lexical_index_sha256) !== lexical.sha256) return { status: 'stale', reason: 'lexical_artifact_hash_mismatch' };
     return {
       status: 'current',
       manifest_sha256: createHash('sha256').update(raw.bytes).digest('hex'),

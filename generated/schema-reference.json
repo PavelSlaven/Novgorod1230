@@ -1,0 +1,650 @@
+{
+  "contract_schemas": [
+    {
+      "constant": "STAGE25_TRANSACTION_INPUT_SCHEMA",
+      "schema": "approved_party_transaction_input",
+      "source": "packages/new-game/src/stages/stage-25-party-commit/policy/constants.js"
+    },
+    {
+      "constant": "STAGE24_MANIFEST_SCHEMA",
+      "schema": "approved_pipeline_manifest",
+      "source": "packages/contracts/src/stage24-boundary.js"
+    },
+    {
+      "constant": "STAGE18_OUTPUT_SCHEMA",
+      "schema": "character_knowledge_map",
+      "source": "packages/contracts/src/time-knowledge-hidden-boundary.js"
+    },
+    {
+      "constant": "STAGE18_AUDIT_SCHEMA",
+      "schema": "character_knowledge_map_audit",
+      "source": "packages/contracts/src/time-knowledge-hidden-boundary.js"
+    },
+    {
+      "constant": "STAGE18_PRECHECK_SCHEMA",
+      "schema": "character_knowledge_map_code_precheck",
+      "source": "packages/contracts/src/time-knowledge-hidden-boundary.js"
+    },
+    {
+      "constant": "STAGE18_INPUT_SCHEMA",
+      "schema": "character_knowledge_map_input",
+      "source": "packages/contracts/src/time-knowledge-hidden-boundary.js"
+    },
+    {
+      "constant": "STAGE18_WRITE_PLAN_SCHEMA",
+      "schema": "character_knowledge_write_projection",
+      "source": "packages/contracts/src/time-knowledge-hidden-boundary.js"
+    },
+    {
+      "constant": "STAGE25_INPUT_SCHEMA",
+      "schema": "commit_gate_input",
+      "source": "packages/new-game/src/stages/stage-25-party-commit/policy/constants.js"
+    },
+    {
+      "constant": "STAGE25_GATE_SCHEMA",
+      "schema": "commit_gate_result",
+      "source": "packages/new-game/src/stages/stage-25-party-commit/policy/constants.js"
+    },
+    {
+      "constant": "FIRST_GAME_SCREEN_SCHEMA",
+      "schema": "first_game_screen",
+      "source": "packages/presentation/src/read-models/contracts.js"
+    },
+    {
+      "constant": "STAGE26_SCREEN_SCHEMA",
+      "schema": "first_game_screen",
+      "source": "packages/new-game/src/stages/stage-26-first-game-screen/policy/constants.js"
+    },
+    {
+      "constant": "STAGE26_INPUT_SCHEMA",
+      "schema": "first_game_screen_input",
+      "source": "packages/new-game/src/stages/stage-26-first-game-screen/policy/constants.js"
+    },
+    {
+      "constant": "STAGE26_ACTION_AUDIT_SCHEMA",
+      "schema": "first_screen_action_label_audit",
+      "source": "packages/new-game/src/stages/stage-26-first-game-screen/policy/constants.js"
+    },
+    {
+      "constant": "STAGE26_PRECHECK_SCHEMA",
+      "schema": "first_screen_code_precheck",
+      "source": "packages/new-game/src/stages/stage-26-first-game-screen/policy/constants.js"
+    },
+    {
+      "constant": "STAGE26_CODE_VALIDATION_SCHEMA",
+      "schema": "first_screen_code_validation",
+      "source": "packages/new-game/src/stages/stage-26-first-game-screen/policy/constants.js"
+    },
+    {
+      "constant": "FIRST_SCREEN_DELIVERY_ACK_SCHEMA",
+      "schema": "first_screen_delivery_ack",
+      "source": "packages/contracts/src/schema-names.js"
+    },
+    {
+      "constant": "FIRST_SCREEN_DELIVERY_ACK_RESULT_SCHEMA",
+      "schema": "first_screen_delivery_ack_result",
+      "source": "packages/contracts/src/schema-names.js"
+    },
+    {
+      "constant": "STAGE26_DELIVERY_POLICY_SCHEMA",
+      "schema": "first_screen_delivery_policy",
+      "source": "packages/new-game/src/stages/stage-26-first-game-screen/policy/constants.js"
+    },
+    {
+      "constant": "STAGE26_SAFETY_AUDIT_SCHEMA",
+      "schema": "first_screen_safety_audit",
+      "source": "packages/new-game/src/stages/stage-26-first-game-screen/policy/constants.js"
+    },
+    {
+      "constant": "STAGE27_FIRST_TURN_INPUT_SCHEMA",
+      "schema": "first_turn_pipeline_input",
+      "source": "packages/contracts/src/schema-names.js"
+    },
+    {
+      "constant": "STAGE19_OUTPUT_SCHEMA",
+      "schema": "full_hidden_scene_state",
+      "source": "packages/contracts/src/time-knowledge-hidden-boundary.js"
+    },
+    {
+      "constant": "STAGE19_AUDIT_SCHEMA",
+      "schema": "full_hidden_state_audit",
+      "source": "packages/contracts/src/time-knowledge-hidden-boundary.js"
+    },
+    {
+      "constant": "STAGE19_PRECHECK_SCHEMA",
+      "schema": "full_hidden_state_code_precheck",
+      "source": "packages/contracts/src/time-knowledge-hidden-boundary.js"
+    },
+    {
+      "constant": "STAGE13_INPUT_SCHEMA",
+      "schema": "g5_materialization_input",
+      "source": "packages/contracts/src/g5-placement-boundary.js"
+    },
+    {
+      "constant": "STAGE14_OUTPUT_SCHEMA",
+      "schema": "g5_scene_audit",
+      "source": "packages/contracts/src/g5-placement-boundary.js"
+    },
+    {
+      "constant": "STAGE14_INPUT_SCHEMA",
+      "schema": "g5_scene_audit_input",
+      "source": "packages/contracts/src/g5-placement-boundary.js"
+    },
+    {
+      "constant": "STAGE13_CODE_PRECHECK_SCHEMA",
+      "schema": "g5_scene_code_precheck",
+      "source": "packages/contracts/src/g5-placement-boundary.js"
+    },
+    {
+      "constant": "STAGE14_CODE_PRECHECK_SCHEMA",
+      "schema": "g5_scene_code_precheck",
+      "source": "packages/contracts/src/g5-placement-boundary.js"
+    },
+    {
+      "constant": "STAGE13_OUTPUT_SCHEMA",
+      "schema": "g5_scene_graph_draft",
+      "source": "packages/contracts/src/g5-placement-boundary.js"
+    },
+    {
+      "constant": "STAGE19_INPUT_SCHEMA",
+      "schema": "hidden_state_builder_input",
+      "source": "packages/contracts/src/time-knowledge-hidden-boundary.js"
+    },
+    {
+      "constant": "STAGE16_AUDIT_SCHEMA",
+      "schema": "initial_item_placement_audit",
+      "source": "packages/contracts/src/g5-placement-boundary.js"
+    },
+    {
+      "constant": "STAGE16_PRECHECK_SCHEMA",
+      "schema": "initial_item_placement_code_precheck",
+      "source": "packages/contracts/src/g5-placement-boundary.js"
+    },
+    {
+      "constant": "STAGE16_DRAFT_SCHEMA",
+      "schema": "initial_item_placement_draft",
+      "source": "packages/contracts/src/g5-placement-boundary.js"
+    },
+    {
+      "constant": "STAGE15_AUDIT_SCHEMA",
+      "schema": "initial_npc_placement_audit",
+      "source": "packages/contracts/src/g5-placement-boundary.js"
+    },
+    {
+      "constant": "STAGE15_PRECHECK_SCHEMA",
+      "schema": "initial_npc_placement_code_precheck",
+      "source": "packages/contracts/src/g5-placement-boundary.js"
+    },
+    {
+      "constant": "STAGE15_DRAFT_SCHEMA",
+      "schema": "initial_npc_placement_draft",
+      "source": "packages/contracts/src/g5-placement-boundary.js"
+    },
+    {
+      "constant": "STAGE16_INPUT_SCHEMA",
+      "schema": "item_placement_input",
+      "source": "packages/contracts/src/g5-placement-boundary.js"
+    },
+    {
+      "constant": "STAGE8_OUTPUT_SCHEMA",
+      "schema": "item_profile_candidate_set",
+      "source": "packages/new-game/src/stages/stage-8-item-profile-candidates/policy.js"
+    },
+    {
+      "constant": "STAGE8_INPUT_SCHEMA",
+      "schema": "item_profile_retriever_input",
+      "source": "packages/new-game/src/stages/stage-8-item-profile-candidates/policy.js"
+    },
+    {
+      "constant": "NARRATION_AUDIT_SCHEMA",
+      "schema": "narration_audit",
+      "source": "packages/narration/src/contracts.js"
+    },
+    {
+      "constant": "NARRATION_FLOW_RESULT_SCHEMA",
+      "schema": "narration_flow_result",
+      "source": "packages/narration/src/contracts.js"
+    },
+    {
+      "constant": "NARRATION_OUTPUT_SCHEMA",
+      "schema": "narration_output",
+      "source": "packages/narration/src/contracts.js"
+    },
+    {
+      "constant": "NARRATION_REPAIR_ROUTE_SCHEMA",
+      "schema": "narration_repair_route",
+      "source": "packages/narration/src/contracts.js"
+    },
+    {
+      "constant": "NARRATION_REQUEST_SCHEMA",
+      "schema": "narration_request",
+      "source": "packages/narration/src/contracts.js"
+    },
+    {
+      "constant": "STAGE23_AUDIT_SCHEMA",
+      "schema": "narrator_prose_audit",
+      "source": "packages/contracts/src/narrator-boundary.js"
+    },
+    {
+      "constant": "NARRATOR_PROSE_AUDIT_APPROVAL_SCHEMA",
+      "schema": "narrator_prose_audit_approval",
+      "source": "packages/contracts/src/schema-names.js"
+    },
+    {
+      "constant": "STAGE23_INPUT_SCHEMA",
+      "schema": "narrator_prose_audit_input",
+      "source": "packages/contracts/src/narrator-boundary.js"
+    },
+    {
+      "constant": "STAGE23_ROUTE_SCHEMA",
+      "schema": "narrator_prose_audit_route",
+      "source": "packages/contracts/src/narrator-boundary.js"
+    },
+    {
+      "constant": "STAGE23_PRECHECK_SCHEMA",
+      "schema": "narrator_prose_code_precheck",
+      "source": "packages/contracts/src/narrator-boundary.js"
+    },
+    {
+      "constant": "STAGE22_PRECHECK_SCHEMA",
+      "schema": "narrator_start_code_precheck",
+      "source": "packages/contracts/src/narrator-boundary.js"
+    },
+    {
+      "constant": "STAGE22_INPUT_SCHEMA",
+      "schema": "narrator_start_input",
+      "source": "packages/contracts/src/narrator-boundary.js"
+    },
+    {
+      "constant": "STAGE22_OUTPUT_SCHEMA",
+      "schema": "narrator_starting_prose",
+      "source": "packages/contracts/src/narrator-boundary.js"
+    },
+    {
+      "constant": "STAGE15_INPUT_SCHEMA",
+      "schema": "npc_placement_input",
+      "source": "packages/contracts/src/g5-placement-boundary.js"
+    },
+    {
+      "constant": "STAGE25_IDEMPOTENCY_SCHEMA",
+      "schema": "party_commit_idempotency_result",
+      "source": "packages/new-game/src/stages/stage-25-party-commit/policy/constants.js"
+    },
+    {
+      "constant": "PARTY_DB_SCHEMA_SNAPSHOT_SCHEMA",
+      "schema": "party_database_schema_snapshot",
+      "source": "packages/contracts/src/stage24-boundary.js"
+    },
+    {
+      "constant": "STAGE24_PLAN_SCHEMA",
+      "schema": "party_db_write_plan",
+      "source": "packages/contracts/src/stage24-boundary.js"
+    },
+    {
+      "constant": "STAGE24_AUDIT_SCHEMA",
+      "schema": "party_db_write_plan_audit",
+      "source": "packages/contracts/src/stage24-boundary.js"
+    },
+    {
+      "constant": "STAGE24_PRECHECK_SCHEMA",
+      "schema": "party_db_write_plan_code_precheck",
+      "source": "packages/contracts/src/stage24-boundary.js"
+    },
+    {
+      "constant": "STAGE24_INPUT_SCHEMA",
+      "schema": "party_db_write_plan_input",
+      "source": "packages/contracts/src/stage24-boundary.js"
+    },
+    {
+      "constant": "STAGE24_ROUTE_SCHEMA",
+      "schema": "party_db_write_plan_repair_route",
+      "source": "packages/contracts/src/stage24-boundary.js"
+    },
+    {
+      "constant": "FIRST_SCREEN_DELIVERY_ATTEMPT_SCHEMA",
+      "schema": "party_first_screen_delivery_attempt",
+      "source": "packages/contracts/src/schema-names.js"
+    },
+    {
+      "constant": "STAGE25_MAPPING_REPORT_SCHEMA",
+      "schema": "party_physical_plan_mapping_report",
+      "source": "packages/new-game/src/stages/stage-25-party-commit/policy/constants.js"
+    },
+    {
+      "constant": "STAGE25_PHYSICAL_PLAN_SCHEMA",
+      "schema": "party_physical_write_plan",
+      "source": "packages/new-game/src/stages/stage-25-party-commit/policy/constants.js"
+    },
+    {
+      "constant": "STAGE25_POSTCOMMIT_READ_SCHEMA",
+      "schema": "party_postcommit_read_input",
+      "source": "packages/new-game/src/stages/stage-25-party-commit/policy/constants.js"
+    },
+    {
+      "constant": "STAGE25_POSTCOMMIT_STATE_SCHEMA",
+      "schema": "party_postcommit_state",
+      "source": "packages/new-game/src/stages/stage-25-party-commit/policy/constants.js"
+    },
+    {
+      "constant": "STAGE25_POSTCOMMIT_SCHEMA",
+      "schema": "party_postcommit_validation",
+      "source": "packages/new-game/src/stages/stage-25-party-commit/policy/constants.js"
+    },
+    {
+      "constant": "PARTY_PUBLIC_STATE_SCHEMA",
+      "schema": "party_public_state",
+      "source": "packages/contracts/src/schema-names.js"
+    },
+    {
+      "constant": "STAGE25_TRANSACTION_SCHEMA",
+      "schema": "party_transaction_result",
+      "source": "packages/new-game/src/stages/stage-25-party-commit/policy/constants.js"
+    },
+    {
+      "constant": "STAGE25_DRY_RUN_INPUT_SCHEMA",
+      "schema": "party_write_plan_dry_run_input",
+      "source": "packages/new-game/src/stages/stage-25-party-commit/policy/constants.js"
+    },
+    {
+      "constant": "STAGE25_DRY_RUN_SCHEMA",
+      "schema": "party_write_plan_dry_run_result",
+      "source": "packages/new-game/src/stages/stage-25-party-commit/policy/constants.js"
+    },
+    {
+      "constant": "STAGE12_OUTPUT_SCHEMA",
+      "schema": "player_character_audit",
+      "source": "packages/new-game/src/stages/stage-12-player-character-audit/constants.js"
+    },
+    {
+      "constant": "STAGE12_INPUT_SCHEMA",
+      "schema": "player_character_audit_input",
+      "source": "packages/new-game/src/stages/stage-12-player-character-audit/constants.js"
+    },
+    {
+      "constant": "STAGE12_CODE_PRECHECK_SCHEMA",
+      "schema": "player_character_code_precheck",
+      "source": "packages/new-game/src/stages/stage-12-player-character-audit/constants.js"
+    },
+    {
+      "constant": "STAGE11_DOSSIER_SCHEMA",
+      "schema": "player_character_dossier",
+      "source": "packages/new-game/src/stages/stage-12-player-character-audit/constants.js"
+    },
+    {
+      "constant": "STAGE11_OUTPUT_SCHEMA",
+      "schema": "player_character_dossier",
+      "source": "packages/new-game/src/stages/stage-11-player-character/constants.js"
+    },
+    {
+      "constant": "STAGE11_GAME_PROFILE_SCHEMA",
+      "schema": "player_character_game_profile",
+      "source": "packages/new-game/src/stages/stage-11-player-character/constants.js"
+    },
+    {
+      "constant": "STAGE11_INPUT_SCHEMA",
+      "schema": "player_character_generator_input",
+      "source": "packages/new-game/src/stages/stage-11-player-character/constants.js"
+    },
+    {
+      "constant": "PLAYER_FIRST_TURN_INPUT_SCHEMA",
+      "schema": "player_first_turn_input",
+      "source": "packages/contracts/src/schema-names.js"
+    },
+    {
+      "constant": "PANEL_SCHEMA",
+      "schema": "presentation_panel",
+      "source": "packages/presentation/src/read-models/contracts.js"
+    },
+    {
+      "constant": "STAGE9_OUTPUT_SCHEMA",
+      "schema": "selected_start_node",
+      "source": "packages/new-game/src/stages/stage-9-start-node-selection/constants.js"
+    },
+    {
+      "constant": "STAGE18_RESULT_SCHEMA",
+      "schema": "stage18_character_knowledge_result",
+      "source": "packages/contracts/src/time-knowledge-hidden-boundary.js"
+    },
+    {
+      "constant": "STAGE19_RESULT_SCHEMA",
+      "schema": "stage19_hidden_state_result",
+      "source": "packages/contracts/src/time-knowledge-hidden-boundary.js"
+    },
+    {
+      "constant": "STAGE20_RESULT_SCHEMA",
+      "schema": "stage20_visible_context_result",
+      "source": "packages/contracts/src/visible-context-boundary.js"
+    },
+    {
+      "constant": "STAGE21_RESULT_SCHEMA",
+      "schema": "stage21_visible_context_audit_result",
+      "source": "packages/contracts/src/visible-context-boundary.js"
+    },
+    {
+      "constant": "STAGE22_RESULT_SCHEMA",
+      "schema": "stage22_narrator_prose_result",
+      "source": "packages/contracts/src/narrator-boundary.js"
+    },
+    {
+      "constant": "STAGE23_RESULT_SCHEMA",
+      "schema": "stage23_narrator_prose_audit_result",
+      "source": "packages/contracts/src/narrator-boundary.js"
+    },
+    {
+      "constant": "STAGE23_UPSTREAM_REPAIR_SCHEMA",
+      "schema": "stage23_upstream_repair_request",
+      "source": "packages/contracts/src/narrator-boundary.js"
+    },
+    {
+      "constant": "STAGE24_APPROVAL_SCHEMA",
+      "schema": "stage24_party_db_write_plan_approval",
+      "source": "packages/contracts/src/stage24-boundary.js"
+    },
+    {
+      "constant": "STAGE24_RESULT_SCHEMA",
+      "schema": "stage24_party_db_write_plan_result",
+      "source": "packages/contracts/src/stage24-boundary.js"
+    },
+    {
+      "constant": "STAGE25_PREFLIGHT_SCHEMA",
+      "schema": "stage25_commit_preflight",
+      "source": "packages/new-game/src/stages/stage-25-party-commit/policy/constants.js"
+    },
+    {
+      "constant": "STAGE25_PARTY_COMMIT_APPROVAL_SCHEMA",
+      "schema": "stage25_party_commit_approval",
+      "source": "packages/contracts/src/schema-names.js"
+    },
+    {
+      "constant": "STAGE25_RESULT_SCHEMA",
+      "schema": "stage25_party_start_commit_result",
+      "source": "packages/new-game/src/stages/stage-25-party-commit/policy/constants.js"
+    },
+    {
+      "constant": "STAGE26_FIRST_GAME_SCREEN_RESULT_SCHEMA",
+      "schema": "stage26_first_game_screen_result",
+      "source": "packages/contracts/src/schema-names.js"
+    },
+    {
+      "constant": "STAGE26_RESULT_SCHEMA",
+      "schema": "stage26_first_game_screen_result",
+      "source": "packages/new-game/src/stages/stage-26-first-game-screen/policy/constants.js"
+    },
+    {
+      "constant": "STAGE26_SCREEN_APPROVAL_SCHEMA",
+      "schema": "stage26_screen_approval",
+      "source": "packages/contracts/src/schema-names.js"
+    },
+    {
+      "constant": "STAGE9_INPUT_SCHEMA",
+      "schema": "start_node_selector_input",
+      "source": "packages/new-game/src/stages/stage-9-start-node-selection/constants.js"
+    },
+    {
+      "constant": "STAGE10_OUTPUT_SCHEMA",
+      "schema": "start_place_audit",
+      "source": "packages/new-game/src/stages/stage-10-start-place-audit/constants.js"
+    },
+    {
+      "constant": "STAGE10_INPUT_SCHEMA",
+      "schema": "start_place_audit_input",
+      "source": "packages/new-game/src/stages/stage-10-start-place-audit/constants.js"
+    },
+    {
+      "constant": "STAGE17_ROUTE_SCHEMA",
+      "schema": "time_light_audit_route",
+      "source": "packages/contracts/src/time-knowledge-hidden-boundary.js"
+    },
+    {
+      "constant": "STAGE17_PRECHECK_SCHEMA",
+      "schema": "time_light_code_precheck",
+      "source": "packages/contracts/src/time-knowledge-hidden-boundary.js"
+    },
+    {
+      "constant": "STAGE17_AUDIT_SCHEMA",
+      "schema": "time_light_consistency_audit",
+      "source": "packages/contracts/src/time-knowledge-hidden-boundary.js"
+    },
+    {
+      "constant": "STAGE17_INPUT_SCHEMA",
+      "schema": "time_light_consistency_input",
+      "source": "packages/contracts/src/time-knowledge-hidden-boundary.js"
+    },
+    {
+      "constant": "TURN_SCREEN_SCHEMA",
+      "schema": "turn_screen",
+      "source": "packages/presentation/src/read-models/contracts.js"
+    },
+    {
+      "constant": "STAGE21_OUTPUT_SCHEMA",
+      "schema": "visible_context_audit",
+      "source": "packages/contracts/src/visible-context-boundary.js"
+    },
+    {
+      "constant": "VISIBLE_CONTEXT_AUDIT_APPROVAL_SCHEMA",
+      "schema": "visible_context_audit_approval",
+      "source": "packages/contracts/src/schema-names.js"
+    },
+    {
+      "constant": "STAGE21_PRECHECK_SCHEMA",
+      "schema": "visible_context_audit_code_precheck",
+      "source": "packages/contracts/src/visible-context-boundary.js"
+    },
+    {
+      "constant": "STAGE21_INPUT_SCHEMA",
+      "schema": "visible_context_audit_input",
+      "source": "packages/contracts/src/visible-context-boundary.js"
+    },
+    {
+      "constant": "STAGE21_ROUTE_SCHEMA",
+      "schema": "visible_context_audit_repair_route",
+      "source": "packages/contracts/src/visible-context-boundary.js"
+    },
+    {
+      "constant": "STAGE20_INPUT_SCHEMA",
+      "schema": "visible_context_builder_input",
+      "source": "packages/contracts/src/visible-context-boundary.js"
+    },
+    {
+      "constant": "STAGE20_PRECHECK_SCHEMA",
+      "schema": "visible_context_code_precheck",
+      "source": "packages/contracts/src/visible-context-boundary.js"
+    },
+    {
+      "constant": "STAGE20_OUTPUT_SCHEMA",
+      "schema": "visible_context_package",
+      "source": "packages/contracts/src/visible-context-boundary.js"
+    },
+    {
+      "constant": "STAGE20_VISIBILITY_FILTER_SCHEMA",
+      "schema": "visible_context_visibility_filter",
+      "source": "packages/contracts/src/visible-context-boundary.js"
+    },
+    {
+      "constant": "WEATHER_STATE_SCHEMA",
+      "schema": "weather_state",
+      "source": "packages/contracts/src/weather-state.js"
+    },
+    {
+      "constant": "WORLD_BASE_REFERENCE_SCHEMA",
+      "schema": "world_base_reference_snapshot",
+      "source": "packages/contracts/src/stage24-boundary.js"
+    }
+  ],
+  "external_schemas": [
+    {
+      "bytes": 1228,
+      "path": "schemas/knowledge-source/corpus-manifest.schema.json",
+      "sha256": "cab81c96ab6921d40629528b3981e1ba892c83361972342c361165355cacbf5d",
+      "type": "json"
+    },
+    {
+      "bytes": 1076,
+      "path": "schemas/knowledge-source/graph-manifest.schema.json",
+      "sha256": "b1a7a96fffec9843630415c5e6b456f58f50ab5be97be1c1bd86232874fda4ca",
+      "type": "json"
+    },
+    {
+      "bytes": 1047,
+      "path": "schemas/knowledge-source/import-history.schema.json",
+      "sha256": "b608e70c982acee2df00aac19c9a72ed557966e8e9ba83756c6d202053aeaef7",
+      "type": "json"
+    },
+    {
+      "bytes": 1154,
+      "path": "schemas/knowledge-source/rag-manifest.schema.json",
+      "sha256": "a02253c557403a0b9e021611692fda448c74011f8e2a255341ebdefa27fb190d",
+      "type": "json"
+    },
+    {
+      "bytes": 413,
+      "path": "schemas/knowledge-source/source-aliases.schema.json",
+      "sha256": "ae253bb3e5a0030d67835dc8b965dc2450b3486abaecb87921e7186ff09ad90f",
+      "type": "json"
+    },
+    {
+      "bytes": 912,
+      "path": "schemas/party-db/001_party_runtime.sql",
+      "sha256": "87aa96d2d4761c1908367b43ae9ec976766a79889efbe7a987e8f55de0c3105e",
+      "type": "sql"
+    },
+    {
+      "bytes": 1199,
+      "path": "schemas/world-catalogs/g1-boundary-contract.schema.json",
+      "sha256": "9a255c612dc382e4ead28c5566ae6583878840651904a134f364bb1b1291f3aa",
+      "type": "json"
+    },
+    {
+      "bytes": 1794,
+      "path": "schemas/world-catalogs/g1-cell-package.schema.json",
+      "sha256": "d917ec67f99c965c0257f7dbc1b2498e123aff756f4b71c68e7da0f1b6fe8381",
+      "type": "json"
+    },
+    {
+      "bytes": 1686,
+      "path": "schemas/world-catalogs/g1-mask-record.schema.json",
+      "sha256": "b7e681769d7aa72c8717fc98dac2b1dbaf7d1e9a33ed163dfb7ede788f2b0a53",
+      "type": "json"
+    },
+    {
+      "bytes": 1358,
+      "path": "schemas/world-catalogs/g1-work-queue.schema.json",
+      "sha256": "5ee65e8ee26f8b511d9ecc44e4d704bb979fe9d758310f7523ddd612ddba2f3f",
+      "type": "json"
+    },
+    {
+      "bytes": 1737,
+      "path": "schemas/world-catalogs/region-map-revision.schema.json",
+      "sha256": "6da5c76805856aaba0e6013dfc2afe1e7cc1786520e0e865058ae5a14987656c",
+      "type": "json"
+    },
+    {
+      "bytes": 1051,
+      "path": "schemas/world-catalogs/world-catalog-source.schema.json",
+      "sha256": "2a3bf14480e022e91ff65af0faad00348c960648907b90f0b16513851273605b",
+      "type": "json"
+    }
+  ],
+  "release": "0.23.0-migration.23",
+  "schema_version": "rus.generated_schema_reference.v1"
+}

@@ -1,0 +1,47 @@
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { dirname, join, resolve } from 'node:path';
+import {
+  buildDocumentationOutputs as buildLegacyDocumentationOutputs,
+  validateDocumentationTree as validateLegacyDocumentationTree
+} from './documentation.js';
+import { validateCanonicalCorpusDelegation } from './canonical-corpus-registry.js';
+import { verifyKnowledgeSourceMigrationV2 } from './knowledge-v2-api.js';
+
+export const buildDocumentationOutputs = buildLegacyDocumentationOutputs;
+
+export async function writeDocumentationOutputs(rootDir = '.') {
+  const root = resolve(rootDir);
+  const outputs = await buildDocumentationOutputs(root);
+  for (const [rel, content] of outputs) {
+    const target = join(root, rel);
+    await mkdir(dirname(target), { recursive: true });
+    await writeFile(target, content, 'utf8');
+  }
+  const validation = await validateDocumentationTree(root);
+  if (!validation.ok) throw new Error(validation.errors.join('\n'));
+  return Object.freeze({ ok: true, files: [...outputs.keys()].sort() });
+}
+
+export async function checkDocumentationOutputs(rootDir = '.') {
+  const root = resolve(rootDir);
+  const expected = await buildDocumentationOutputs(root);
+  const errors = [];
+  for (const [rel, content] of expected) {
+    const actual = await readFile(join(root, rel), 'utf8').catch(() => null);
+    if (actual === null) errors.push(`${rel}: generated file is missing`);
+    else if (actual !== content) errors.push(`${rel}: generated file is stale; run npm run docs:generate`);
+  }
+  const validation = await validateDocumentationTree(root);
+  errors.push(...validation.errors);
+  const knowledge = await verifyKnowledgeSourceMigrationV2({ root });
+  errors.push(...knowledge.errors.map((item) => `knowledge-source: ${item}`));
+  return Object.freeze({ ok: errors.length === 0, errors, checked_files: [...expected.keys()].sort() });
+}
+
+export async function validateDocumentationTree(rootDir = '.') {
+  const root = resolve(rootDir);
+  const legacy = await validateLegacyDocumentationTree(root);
+  const corpusDelegation = await validateCanonicalCorpusDelegation({ root });
+  const errors = [...legacy.errors, ...corpusDelegation.errors];
+  return Object.freeze({ ok: errors.length === 0, errors: Object.freeze(errors) });
+}

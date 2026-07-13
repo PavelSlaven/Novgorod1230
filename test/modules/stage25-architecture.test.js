@@ -2,9 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile, readdir } from 'node:fs/promises';
 import { join, extname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import * as publicApi from '@rus/new-game/stages/stage-25';
 
-const root = new URL('../../', import.meta.url).pathname;
+const root = fileURLToPath(new URL('../../', import.meta.url));
 const stageRoot = join(root, 'packages/new-game/src/stages/stage-25-party-commit');
 
 async function walk(dir) {

@@ -3,9 +3,10 @@ import { resolve } from 'node:path';
 import {
   importKnowledgeSourceFromLegacy,
   inventoryLegacyKnowledgeSource,
-  verifyKnowledgeSourceMigration,
-  writeKnowledgeSourceOutputs
-} from './knowledge-source.js';
+  verifyCanonicalCorpus,
+  verifyKnowledgeSourceMigration
+} from './index.js';
+import { writeKnowledgeSourceOutputsV2 } from './knowledge-materializer-v2.js';
 
 const command = process.argv[2] ?? 'check';
 const rootIndex = process.argv.indexOf('--root');
@@ -17,8 +18,16 @@ if (command === 'inventory') {
   const result = await importKnowledgeSourceFromLegacy({ root });
   console.log(`Knowledge source imported: ${result.document_count} documents, ${result.inventory_count} legacy files classified.`);
 } else if (command === 'generate') {
-  const result = await writeKnowledgeSourceOutputs({ root });
+  const result = await writeKnowledgeSourceOutputsV2({ root });
   console.log(`Knowledge source generated: ${result.files.join(', ')}`);
+} else if (command === 'check-corpus') {
+  const result = await verifyCanonicalCorpus({ root });
+  if (!result.ok) {
+    console.error(`Canonical corpus check failed:\n${result.errors.map((item) => `- ${item}`).join('\n')}`);
+    process.exitCode = 1;
+  } else {
+    console.log(`Canonical corpus: OK (${result.document_count} documents; ${result.legacy_document_count} with legacy provenance)`);
+  }
 } else if (command === 'check') {
   const result = await verifyKnowledgeSourceMigration({ root });
   if (!result.ok) {

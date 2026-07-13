@@ -1,5 +1,5 @@
 import { pathToFileURL } from 'node:url';
-import { resolve } from 'node:path';
+import { isAbsolute, resolve } from 'node:path';
 import { serverError } from '../errors.js';
 
 export async function loadConfiguredComposition(moduleReference, context = {}) {
@@ -9,7 +9,7 @@ export async function loadConfiguredComposition(moduleReference, context = {}) {
     const { createProductionCompositionRoot } = await import('../composition/production.js');
     return validateRoot(await createProductionCompositionRoot(context));
   }
-  const specifier = reference.startsWith('.') || reference.startsWith('/') ? pathToFileURL(resolve(reference)).href : reference;
+  const specifier = reference.startsWith('.') || isAbsolute(reference) ? pathToFileURL(resolve(reference)).href : reference;
   const loaded = await import(specifier);
   const factory = loaded.createCompositionRoot ?? loaded.default;
   if (typeof factory !== 'function') throw serverError('COMPOSITION_FACTORY_INVALID', 'Composition module must export createCompositionRoot or a default factory.');

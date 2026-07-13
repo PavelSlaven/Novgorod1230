@@ -62,14 +62,22 @@ export {
   checkDocumentationOutputs,
   validateDocumentationTree,
   writeDocumentationOutputs
-} from './documentation.js';
+} from './documentation-policy-v2.js';
 
 export {
-  buildKnowledgeGraphFromSnapshot,
-  buildRagIndexFromSnapshot,
   inventoryLegacyKnowledgeSource,
   readKnowledgeSourceInventory,
-  verifyKnowledgeSourceMigration,
-  writeKnowledgeSourceOutputs
+  importKnowledgeSourceFromLegacy
 } from './knowledge-source.js';
-export { importKnowledgeSourceFromLegacy } from './knowledge-source.js';
+
+export {
+  writeKnowledgeSourceOutputsV2 as writeKnowledgeSourceOutputs
+} from './knowledge-materializer-v2.js';
+
+export {
+  buildKnowledgeGraphFromSnapshotV2 as buildKnowledgeGraphFromSnapshot,
+  buildRagIndexFromSnapshotV2 as buildRagIndexFromSnapshot,
+  verifyKnowledgeSourceMigrationV2 as verifyKnowledgeSourceMigration
+} from './knowledge-v2-api.js';
+
+export { verifyCanonicalCorpus } from './knowledge-corpus-verifier.js';

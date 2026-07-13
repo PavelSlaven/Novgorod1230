@@ -2,11 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const src = new URL('../src/', import.meta.url);
 
 test('pure modules have no hidden filesystem, network, time or randomness dependencies', async () => {
-  const dir = src.pathname;
+  const dir = fileURLToPath(src);
   for (const file of await readdir(dir)) {
     if (!file.endsWith('.js') || file === 'cli.js') continue;
     const text = await readFile(join(dir, file), 'utf8');

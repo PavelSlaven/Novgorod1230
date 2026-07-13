@@ -1,11 +1,11 @@
 import { pathToFileURL } from 'node:url';
-import { resolve } from 'node:path';
+import { isAbsolute, resolve } from 'node:path';
 import { serverError } from '../errors.js';
 
 export async function loadRuntimeBindings(moduleReference, context = {}) {
   const reference = String(moduleReference ?? '').trim();
   if (!reference) throw serverError('RUNTIME_BINDINGS_MODULE_REQUIRED', 'RUS_RUNTIME_BINDINGS_MODULE is required for production composition.');
-  const specifier = reference.startsWith('.') || reference.startsWith('/') ? pathToFileURL(resolve(reference)).href : reference;
+  const specifier = reference.startsWith('.') || isAbsolute(reference) ? pathToFileURL(resolve(reference)).href : reference;
   const loaded = await import(specifier);
   const factory = loaded.createRuntimeBindings ?? loaded.default;
   if (typeof factory !== 'function') throw serverError('RUNTIME_BINDINGS_FACTORY_INVALID', 'Runtime bindings module must export createRuntimeBindings or default factory.');

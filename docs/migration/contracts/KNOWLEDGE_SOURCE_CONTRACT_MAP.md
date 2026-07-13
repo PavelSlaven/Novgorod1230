@@ -2,7 +2,7 @@
 
 | Контракт | Владелец | Вход | Выход / ошибка |
 |---|---|---|---|
-| Corpus manifest | `data/knowledge-source` | 19 зарегистрированных файлов | стабильные IDs, paths, SHA-256, bytes |
+| Corpus manifest | `data/knowledge-source` | все записи актуального `corpus-manifest.json` | стабильные IDs, paths, SHA-256, bytes |
 | File storage adapter | `@rus/knowledge-source` | explicit source/generated roots | bytes или typed file/integrity failure |
 | Document reader | `@rus/knowledge-source` | `document_id` | неизменяемый исходный текст |
 | Source location | `@rus/knowledge-source` | ID + line range | source-backed excerpt |

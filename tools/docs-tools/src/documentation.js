@@ -245,7 +245,7 @@ async function validateDataPolicy(root) {
   const legacy = await readJson(join(root, 'data/LEGACY_RUNTIME_DATA.json')).catch(() => null);
   if (legacy?.schema_version !== 'rus.legacy_runtime_data_manifest.v1') errors.push('data/LEGACY_RUNTIME_DATA.json: invalid manifest');
   const declared = new Set(legacy?.paths ?? []);
-  for (const folder of ['data/regional-summary-cache', 'data/world-catalogs', 'data/world-sessions']) {
+  for (const folder of ['data/regional-summary-cache', 'data/world-sessions']) {
     for (const file of await walk(join(root, folder))) {
       const rel = relative(root, file).replaceAll('\\', '/');
       if (!declared.has(rel)) errors.push(`${rel}: legacy runtime data is not declared in manifest`);

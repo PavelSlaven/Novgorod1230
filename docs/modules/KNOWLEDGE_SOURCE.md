@@ -21,7 +21,15 @@ canonical corpus + approved embedding snapshot
 → deterministic rechunk
 → exact chunk/text/vector parity
 → generated RAG
+
+canonical document without approved embeddings
+→ structural-only graph node
+→ lexical-only chunks without `embedding`
 ```
+
+The public `@rus/docs-tools.writeKnowledgeSourceOutputs` API and both `knowledge:generate` and `docs:generate` use the same v2 materializer. The legacy writer is not part of the package public API.
+
+The v2 materializer accepts approved embeddings only when the semantic subset hash and every ordered chunk field match the current corpus. It validates matching source paths and logical line ranges for every semantic node, link and hyperedge, validates every hyperedge member source, requires the exact approved semantic document set, and rejects relations touching structural-only nodes. `knowledge:import` preflights corpus targets, manifest, aliases, inventory, imported snapshots and import history before writing.
 
 ## Public API
 

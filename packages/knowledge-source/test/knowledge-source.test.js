@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, rename, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
@@ -41,6 +41,7 @@ async function fixture() {
   }));
   const graphText = JSON.stringify({ nodes: [] });
   const ragText = JSON.stringify({ schema_version: 'rus.rag_index.v1', chunks: [] });
+  const lexicalText = JSON.stringify({ schema_version: 'rus.lexical_index.v1', chunks: [] });
   await writeFile(join(generated, 'graph', 'graph.json'), graphText);
   await writeFile(join(generated, 'graph', 'manifest.json'), JSON.stringify({
     schema_version: 'rus.knowledge_graph_manifest.v1',
@@ -48,10 +49,15 @@ async function fixture() {
     graph_sha256: sha256(graphText)
   }));
   await writeFile(join(generated, 'rag', 'index.json'), ragText);
+  await writeFile(join(generated, 'rag', 'lexical-index.json'), lexicalText);
   await writeFile(join(generated, 'rag', 'manifest.json'), JSON.stringify({
     schema_version: 'rus.knowledge_rag_manifest.v1',
     corpus_manifest_sha256: sha256(await readFile(join(root, 'corpus-manifest.json'))),
-    index_sha256: sha256(ragText)
+    generation_mode: 'approved_semantic_snapshot_plus_deterministic_lexical_coverage',
+    semantic_index_sha256: sha256(ragText),
+    lexical_index_sha256: sha256(lexicalText),
+    semantic_document_count: 1,
+    lexical_only_document_count: 0
   }));
   return { root, corpus, generated, text };
 }
@@ -113,4 +119,30 @@ test('generated status detects stale corpus binding', async () => {
   const stale = await reader.getGeneratedIndexStatus({});
   assert.equal(stale.graph.status, 'stale');
   assert.equal(stale.rag.status, 'stale');
+});
+
+test('v2 generated status rejects invalid, missing and corrupt semantic or lexical artifacts', async () => {
+  const cases = [
+    ['semantic digest mismatch', async (fx) => writeFile(join(fx.generated, 'rag', 'index.json'), '{"changed":true}'), 'stale', 'semantic_artifact_hash_mismatch'],
+    ['semantic artifact missing', async (fx) => rename(join(fx.generated, 'rag', 'index.json'), join(fx.generated, 'rag', 'index.json.missing')), 'missing', 'semantic_artifact_missing'],
+    ['lexical digest mismatch', async (fx) => writeFile(join(fx.generated, 'rag', 'lexical-index.json'), '{"changed":true}'), 'stale', 'lexical_artifact_hash_mismatch'],
+    ['lexical artifact missing', async (fx) => rename(join(fx.generated, 'rag', 'lexical-index.json'), join(fx.generated, 'rag', 'lexical-index.json.missing')), 'missing', 'lexical_artifact_missing'],
+    ['invalid digest contract', async (fx) => {
+      const path = join(fx.generated, 'rag', 'manifest.json');
+      const manifest = JSON.parse(await readFile(path, 'utf8'));
+      delete manifest.semantic_index_sha256;
+      await writeFile(path, JSON.stringify(manifest));
+    }, 'stale', 'manifest_contract_invalid']
+  ];
+
+  for (const [label, corrupt, status, reason] of cases) {
+    const fx = await fixture();
+    await corrupt(fx);
+    const reader = createKnowledgeSourceReader({
+      storage: createFileSystemKnowledgeSourceStorage({ sourceRoot: fx.root, generatedRoot: fx.generated })
+    });
+    const result = await reader.getGeneratedIndexStatus({});
+    assert.equal(result.rag.status, status, label);
+    assert.equal(result.rag.reason, reason, label);
+  }
 });

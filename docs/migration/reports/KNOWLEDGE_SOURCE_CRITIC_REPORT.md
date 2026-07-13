@@ -140,3 +140,9 @@ Remediation после аудита:
 - evidence синхронизирован с run `#67`.
 
 Для допуска обязательны полный локальный цикл, новый clean-clone run и шестой независимый аудит.
+
+## Проверка remediation пятого аудита
+
+Implementation commit `c759f45f4212a08dd94b043212caa5a797ef878a` прошёл clean-clone GitHub Actions run `#68` (`29277900087`), job `86911487538`. Все фактические steps завершились `success`, включая PostgreSQL 16 DDL, corpus gate, deterministic generation, reproducibility и full test suite.
+
+Этот evidence update не меняет implementation. Финальный admission verdict требует независимого шестого аудита evidence head.

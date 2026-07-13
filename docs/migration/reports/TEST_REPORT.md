@@ -2,8 +2,8 @@
 
 Дата: 2026-07-13
 Ветка: `agent/restore-canonical-docs-generated-ci`
-Последний проверенный implementation commit: `b38e2954aefa122c594c918f2bfb4f96c9906f61`
-GitHub Actions run: `#67` (`29276773280`), job `86907721340`
+Последний проверенный implementation commit: `c759f45f4212a08dd94b043212caa5a797ef878a`
+GitHub Actions run: `#68` (`29277900087`), job `86911487538`
 
 ## Clean-clone pipeline
 
@@ -24,9 +24,9 @@ GitHub Actions run: `#67` (`29276773280`), job `86907721340`
 
 GitHub Actions completed the full job with conclusion `success`. The workflow summary does not expose reliable per-suite test counts, therefore this report does not repeat stale historic totals.
 
-Run `#67` выполнил schema-reference и PostgreSQL gates в чистом checkout. PostgreSQL service принял весь DDL; подтверждены 62 таблицы, одна не-привилегированная роль `world_reader`, `USAGE` без `CREATE`, 62 `SELECT` grants и 0 write grants.
+Run `#68` выполнил schema-reference и PostgreSQL gates в чистом checkout. PostgreSQL service принял весь DDL; подтверждены 62 таблицы, одна не-привилегированная роль `world_reader`, `USAGE` без `CREATE`, 62 `SELECT` grants и 0 write grants.
 
-В run `#67` прошли regression tests полного node provenance/EOF contract и exact manifest-derived inventory. Пятый critic audit обнаружил отсутствие тех же provenance checks для links/hyperedges, exact graph/RAG semantic-set boundary, structural endpoint guard и collision-before-write. Negative tests воспроизвели все дефекты; текущий remediation локально проходит `test:knowledge-source` 17/17.
+Run `#68` подтвердил remediation пятого аудита: provenance checks для nodes/links/hyperedges, exact graph/RAG semantic-set boundary, structural endpoint guard и collision-before-write. В clean clone прошли generation/reproducibility и полный `npm test`; локальный обязательный цикл также прошёл полностью.
 
 ## Verified contracts
 
@@ -60,9 +60,8 @@ Run `#67` выполнил schema-reference и PostgreSQL gates в чистом 
 
 ## Remaining release gates
 
-- новый clean-clone execution после round5 remediation;
 - следующий independent code critic audit;
 - owner disposition of the byte-only critic-rule conflict;
 - repeat audit after any `CHANGES REQUIRED` or `REJECT` result.
 
-Decision: `run_67_green_round5_changes_required_remediated_locally`.
+Decision: `run_68_green_round5_remediation_pending_critic`.

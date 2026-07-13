@@ -1,0 +1,25 @@
+name: Bootstrap project import
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/bootstrap.yml
+
+permissions:
+  contents: write
+
+jobs:
+  import-project:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout bootstrap commit
+        uses: actions/checkout@v4
+
+      - name: Download project archive
+        run: |
+          python -m pip install --disable-pip-version-check gdown
+          gdown --id 1oN2IUSlQW_Jm9PpNDbNvV2Gdvgg-auWq --output project.zip
+          test -s project.zip
+
+      - name: Extract and clean

@@ -1,16 +1,16 @@
 import { resolve } from 'node:path';
 import { createFileSystemKnowledgeSourceStorage, createKnowledgeSourceReader } from '@rus/knowledge-source';
-import { createNewGameWorkflowAdapter, createTurnWorkflowAdapter } from '../adapters/workflows.js';
-import { createPostgresPools, probePostgresPool } from '../infrastructure/postgres/pools.js';
-import { runPartyRuntimeMigrations } from '../infrastructure/postgres/migrations.js';
-import { createPostgresSessionStore, createPostgresDeliveryStore } from '../infrastructure/postgres/session-store.js';
-import { createPostgresWorldBaseReader } from '../infrastructure/postgres/world-base.js';
-import { createPostgresStage25Ports } from '../infrastructure/postgres/stage25.js';
-import { createProductionLlmRoleRunner, probeLlmProvider } from '../infrastructure/provider/deepseek.js';
-import { loadRuntimeBindings } from '../runtime/load-bindings.js';
+import { createNewGameWorkflowAdapter, createTurnWorkflowAdapter } from './adapters/workflows.js';
+import { createPostgresPools, probePostgresPool } from './infrastructure/postgres/pools.js';
+import { runPartyRuntimeMigrations } from './infrastructure/postgres/migrations.js';
+import { createPostgresSessionStore, createPostgresDeliveryStore } from './infrastructure/postgres/session-store.js';
+import { createPostgresWorldBaseReader } from './infrastructure/postgres/world-base.js';
+import { createPostgresStage25Ports } from './infrastructure/postgres/stage25.js';
+import { createProductionLlmRoleRunner, probeLlmProvider } from './infrastructure/provider/deepseek.js';
+import { loadRuntimeBindings } from './runtime/load-bindings.js';
 
-export { runPartyRuntimeMigrations } from '../infrastructure/postgres/migrations.js';
-export { createPostgresSessionStore, createPostgresDeliveryStore } from '../infrastructure/postgres/session-store.js';
+export { runPartyRuntimeMigrations } from './infrastructure/postgres/migrations.js';
+export { createPostgresSessionStore, createPostgresDeliveryStore } from './infrastructure/postgres/session-store.js';
 
 export async function createProductionCompositionRoot({ env = process.env, config = {}, PoolClass, now } = {}) {
   const { createGameCompositionRoot } = await import('./root.js');

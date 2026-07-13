@@ -187,3 +187,30 @@ test('legacy import rejects history conflicts before changing canonical state', 
   assert.deepEqual(await readFile(inventoryPath), inventoryBefore);
   for (const [canonicalPath, bytes] of corpusBefore) assert.deepEqual(await readFile(join(sourceRoot, canonicalPath)), bytes, canonicalPath);
 });
+
+test('legacy import rejects malformed history before changing canonical state', { concurrency: false }, async () => {
+  const fixtureRoot = await mkdtemp(join(tmpdir(), 'rus-knowledge-import-invalid-history-'));
+  await cp(resolve(root, 'data/knowledge-source'), join(fixtureRoot, 'data/knowledge-source'), { recursive: true });
+  await cp(resolve(root, 'legacy/DOCUMENTS/documents-kg'), join(fixtureRoot, 'legacy/DOCUMENTS/documents-kg'), { recursive: true });
+  const sourceRoot = join(fixtureRoot, 'data/knowledge-source');
+  const manifestPath = join(sourceRoot, 'corpus-manifest.json');
+  const aliasesPath = join(sourceRoot, 'source-aliases.json');
+  const inventoryPath = join(sourceRoot, 'imports/legacy-inventory.json');
+  const historyPath = join(sourceRoot, 'import-history.json');
+  const manifestBefore = await readFile(manifestPath);
+  const aliasesBefore = await readFile(aliasesPath);
+  const inventoryBefore = await readFile(inventoryPath);
+  const manifest = JSON.parse(manifestBefore.toString('utf8'));
+  const corpusBefore = new Map();
+  for (const record of manifest.documents) corpusBefore.set(record.canonical_path, await readFile(join(sourceRoot, record.canonical_path)));
+  await writeFile(historyPath, '{ invalid json\n');
+
+  await assert.rejects(
+    () => importKnowledgeSourceFromLegacy({ root: fixtureRoot }),
+    /Invalid knowledge-source import history/u
+  );
+  assert.deepEqual(await readFile(manifestPath), manifestBefore);
+  assert.deepEqual(await readFile(aliasesPath), aliasesBefore);
+  assert.deepEqual(await readFile(inventoryPath), inventoryBefore);
+  for (const [canonicalPath, bytes] of corpusBefore) assert.deepEqual(await readFile(join(sourceRoot, canonicalPath)), bytes, canonicalPath);
+});

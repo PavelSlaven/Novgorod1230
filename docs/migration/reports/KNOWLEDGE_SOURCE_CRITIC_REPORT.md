@@ -171,3 +171,19 @@ Remediation после аудита:
 Implementation commit `3cb8eab2c7acc0f272d792018d39d659a829fba9` прошёл clean-clone run `#70` (`29279548326`), job `86917091894`. Все workflow steps завершились `success`, включая PostgreSQL 16 DDL, corpus, generation/reproducibility и full tests.
 
 Финальный admission verdict требует независимого аудита evidence head после синхронизации этих отчётов.
+
+## Седьмой аудит head `a0821be3...`
+
+Evidence-head run `#71` (`29279761828`), job `86917792948`: PASS по всем workflow steps.
+
+Итог: `CHANGES REQUIRED`.
+
+- `MIGRATION_PHASES_SHORT.md` и `MIGRATION_MANIFEST.json` дублировали mutable corpus/graph/RAG/test counts и старый critic verdict вместо делегирования каноническим manifests и evidence reports;
+- malformed JSON import history корректно отклонялся до записи, но эта fail-before-write ветка не была закреплена автоматическим regression test.
+
+Remediation после аудита:
+
+- корневые migration summaries делегируют corpus, graph и RAG counts соответствующим manifests, а test/critic evidence — каноническим отчётам;
+- отдельный integration contract запрещает возврат дублируемых mutable counts и проверяет согласованность corpus/graph/RAG document coverage;
+- negative test malformed import history подтверждает byte-неизменность manifest, aliases, inventory и всех corpus targets;
+- targeted tests и полный локальный цикл проходят; для допуска остаются новый clean-clone CI и повторный независимый аудит.

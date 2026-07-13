@@ -20,14 +20,16 @@
 16. **Shadow run и сравнение** — выполнено.
 17. **Cutover** — выполнено; rollback route сохранён.
 18. **Финализация 0.22.0** — автоматическая часть выполнена, ручное удаление запрещено.
-19. **Knowledge Source и corpus 0.23.0** — 29 legacy-файлов классифицированы, 19 canonical sources перенесены byte-for-byte, graph/RAG привязаны к новому corpus, runtime port интегрирован.
+19. **Knowledge Source и corpus 0.23.0** — 29 legacy-файлов классифицированы, утверждённые legacy canonical sources перенесены byte-for-byte, native-расширение зарегистрировано в manifest, graph/RAG привязаны к единому corpus, runtime port интегрирован.
 
 ## Текущая точка
 
 - Релиз: `0.23.0-migration.23`.
-- Canonical corpus: 19 документов.
+- Canonical corpus и разбиение legacy/native: `data/knowledge-source/corpus-manifest.json`.
 - Unique-file review: выполнен, unknown = 0.
-- Graph: 1295 nodes, 3602 links, 11 hyperedges.
-- RAG: 813 chunks, approved embedding snapshot.
+- Graph coverage и counts: `generated/knowledge-source/graph/manifest.json`.
+- RAG coverage и counts: `generated/knowledge-source/rag/manifest.json`; approved semantic snapshot остаётся неизменным.
+- Test evidence: `docs/migration/reports/TEST_REPORT.md`.
+- Critic evidence: `docs/migration/reports/KNOWLEDGE_SOURCE_CRITIC_REPORT.md`.
 - Production legacy DOCUMENTS fallback: отсутствует.
 - Legacy deletion allowed: false.

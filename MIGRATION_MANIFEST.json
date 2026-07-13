@@ -12,19 +12,19 @@
   },
   "knowledge_source": {
     "corpus_schema": "rus.knowledge_corpus_manifest.v1",
-    "document_count": 19,
+    "corpus_manifest": "data/knowledge-source/corpus-manifest.json",
     "legacy_inventory_count": 29,
     "unknown_file_count": 0,
     "byte_parity": "passed",
     "sha256_parity": "passed",
     "unique_file_review": "completed",
     "graph_manifest_schema": "rus.knowledge_graph_manifest.v1",
-    "graph_node_count": 1295,
-    "graph_link_count": 3602,
-    "graph_hyperedge_count": 11,
+    "graph_manifest": "generated/knowledge-source/graph/manifest.json",
     "graph_parity": "accepted",
     "rag_manifest_schema": "rus.knowledge_rag_manifest.v1",
-    "rag_chunk_count": 813,
+    "rag_manifest": "generated/knowledge-source/rag/manifest.json",
+    "approved_semantic_document_count": 19,
+    "approved_semantic_chunk_count": 813,
     "rag_model": "jina-embeddings-v3",
     "rag_dimensions": 1024,
     "rag_parity": "accepted",
@@ -36,25 +36,12 @@
   },
   "test_result": {
     "status": "passed",
-    "total": 310,
-    "passed": 310,
-    "failed": 0,
-    "knowledge_source": 9,
-    "suites": {
-      "modules": 218,
-      "domain": 34,
-      "applications": 11,
-      "tools": 32,
-      "shadow": 6,
-      "cutover": 4,
-      "integration": 4,
-      "browser_e2e": 1
-    }
+    "report": "docs/migration/reports/TEST_REPORT.md"
   },
   "documentation_check": "passed",
   "architecture_check": "passed",
   "release_hygiene": "passed_clean_tree",
-  "critic_result": "PASS WITH NOTES",
+  "critic_report": "docs/migration/reports/KNOWLEDGE_SOURCE_CRITIC_REPORT.md",
   "legacy_deletion_allowed": false,
   "limitations": [
     "live production deployment configuration requires operator evidence",
@@ -64,8 +51,7 @@
   ],
   "release_archive_verification": "passed_clean_restore",
   "clean_restore_test_result": {
-    "total": 310,
-    "passed": 310,
-    "failed": 0
+    "status": "passed",
+    "evidence": "docs/migration/reports/TEST_REPORT.md"
   }
 }

@@ -32,6 +32,10 @@ Evidence-only commit `afed3740e6fecb5de57d9aa961cdb77abcabf75a` прошёл run
 
 Run `#70` подтвердил исправления шестого аудита в clean clone: member-source provenance и import-history preflight tests прошли вместе с generation/reproducibility и полным `npm test`.
 
+Evidence-only commit `a0821be3ddf9663c49b80b0a7bcb1010b7d0e3aa` прошёл run `#71` (`29279761828`), job `86917792948`; каждый обязательный workflow step завершился `success`. Седьмой critic audit выявил stale mutable counts/evidence в корневых migration summaries и отсутствие автоматического malformed-history regression. Новый integration contract сначала воспроизвёл stale summaries, после делегирования manifests/reports прошёл; malformed-history test подтверждает отсутствие изменений manifest, aliases, inventory и всех corpus targets.
+
+Локальный remediation-цикл седьмого аудита завершён: schema, schema-reference, corpus, graph/RAG, knowledge-source (19/19), docs (6/6), integration (11/11) и полный `npm test` прошли. В полном наборе: modules 218, domain 35, apps 11, tools 76, shadow 6, cutover 4 и integration 11; architecture PASS. Browser E2E корректно отмечен skipped из-за отсутствующего локального Chromium.
+
 ## Verified contracts
 
 - executable `world_base` entrypoint and eight ordered SQL parts;
@@ -50,6 +54,8 @@ Run `#70` подтвердил исправления шестого аудит�
 - separate provenance, semantic-index and lexical-index digests;
 - production startup rejection of missing or stale generated knowledge artifacts;
 - CI workflow contract preventing false-green truncated workflows.
+- root migration summaries delegate mutable counts to canonical manifests and evidence reports;
+- malformed import history is rejected before any canonical write, with byte-preservation regression coverage.
 
 ## Coverage state
 
@@ -64,8 +70,9 @@ Run `#70` подтвердил исправления шестого аудит�
 
 ## Remaining release gates
 
+- новый clean-clone CI после remediation седьмого аудита;
 - следующий independent code critic audit;
 - owner disposition of the byte-only critic-rule conflict;
 - repeat audit after any `CHANGES REQUIRED` or `REJECT` result.
 
-Decision: `run_70_green_round6_remediation_pending_critic`.
+Decision: `round7_remediation_local_green_pending_ci`.

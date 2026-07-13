@@ -65,12 +65,16 @@ export {
 } from './documentation-policy-v2.js';
 
 export {
-  buildKnowledgeGraphFromSnapshot,
-  buildRagIndexFromSnapshot,
   inventoryLegacyKnowledgeSource,
   readKnowledgeSourceInventory,
-  verifyKnowledgeSourceMigration,
-  writeKnowledgeSourceOutputs
+  writeKnowledgeSourceOutputs,
+  importKnowledgeSourceFromLegacy
 } from './knowledge-source.js';
-export { importKnowledgeSourceFromLegacy } from './knowledge-source.js';
+
+export {
+  buildKnowledgeGraphFromSnapshotV2 as buildKnowledgeGraphFromSnapshot,
+  buildRagIndexFromSnapshotV2 as buildRagIndexFromSnapshot,
+  verifyKnowledgeSourceMigrationV2 as verifyKnowledgeSourceMigration
+} from './knowledge-v2-api.js';
+
 export { verifyCanonicalCorpus } from './knowledge-corpus-verifier.js';

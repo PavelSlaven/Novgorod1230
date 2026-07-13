@@ -29,10 +29,24 @@ jobs:
           node-version: 22
           cache: npm
 
+      - name: Normalize lockfile registry
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFile, writeFile } from 'node:fs/promises';
+          const path = 'package-lock.json';
+          const privatePrefix = 'https://packages.applied-caas-gateway1.internal.api.openai.org/artifactory/api/npm/npm-public/';
+          const publicPrefix = 'https://registry.npmjs.org/';
+          const source = await readFile(path, 'utf8');
+          const normalized = source.replaceAll(privatePrefix, publicPrefix);
+          if (normalized === source) {
+            throw new Error('Expected private registry prefix was not found in package-lock.json');
+          }
+          await writeFile(path, normalized);
+          NODE
+
       - name: Install dependencies
         env:
           npm_config_registry: https://registry.npmjs.org/
-          npm_config_replace_registry_host: always
         run: npm ci
 
       - name: Validate canonical world_base schema

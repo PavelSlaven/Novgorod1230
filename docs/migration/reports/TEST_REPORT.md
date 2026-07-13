@@ -2,8 +2,8 @@
 
 Дата: 2026-07-13
 Ветка: `agent/restore-canonical-docs-generated-ci`
-Последний проверенный baseline commit: `eb88619c4304849515a22428e1c05f6e3c32d7de`
-Baseline GitHub Actions run: `#62` (`29267544106`)
+Последний проверенный commit: `63600d93b76312ccd95305dea78281dd9874d6b0`
+GitHub Actions run: `#63` (`29271952334`), job `86891569589`
 
 ## Clean-clone pipeline
 
@@ -14,14 +14,19 @@ Baseline GitHub Actions run: `#62` (`29267544106`)
 | Lockfile registry normalization | PASS |
 | `npm ci` | PASS |
 | `npm run world-db:schema-check` | PASS |
+| `npm run world-db:schema-doc-check` | PASS |
+| PostgreSQL 16: DDL с `ON_ERROR_STOP=1`, 62 таблицы, `world_reader`, read-only grants | PASS |
 | `npm run knowledge:check-corpus` | PASS |
 | Deterministic documentation and knowledge generation | PASS |
-| `git diff --exit-code -- MODULE_INDEX.md generated/` | PASS |
+| `git diff --exit-code -- MODULE_INDEX.md generated/ infra/world-base/SCHEMA_REFERENCE.md` | PASS |
+| Проверка отсутствия untracked generated outputs | PASS |
 | Full `npm test` | PASS |
 
 GitHub Actions completed the full job with conclusion `success`. The workflow summary does not expose reliable per-suite test counts, therefore this report does not repeat stale historic totals.
 
-Текущая ветка локально дополнена обязательными `world-db:schema-doc-check` и PostgreSQL 16 execution gate. Финальный clean-clone run для этих новых gates ещё должен быть зафиксирован после push.
+Run `#63` выполнил новые schema-reference и PostgreSQL gates в чистом checkout. PostgreSQL service принял весь DDL; подтверждены 62 таблицы, одна не-привилегированная роль `world_reader`, `USAGE` без `CREATE`, 62 `SELECT` grants и 0 write grants.
+
+После run `#63` независимый critic audit выявил рассогласование публичного `@rus/docs-tools.writeKnowledgeSourceOutputs` с v2 CLI path. Regression test воспроизвёл legacy failure; public export исправлен на v2 и ожидает повторного clean-clone run.
 
 ## Verified contracts
 
@@ -50,10 +55,10 @@ GitHub Actions completed the full job with conclusion `success`. The workflow su
 
 ## Remaining release gates
 
-- clean-clone execution of the new PostgreSQL 16 gate;
-- migration report and PR description synchronization with final run evidence;
-- mandatory independent code critic audit;
+- clean-clone execution после исправления public writer;
+- PR description synchronization with final run evidence;
+- повторный independent code critic audit;
 - owner disposition of the byte-only critic-rule conflict;
 - repeat audit after any `CHANGES REQUIRED` or `REJECT` result.
 
-Decision: `automation_green_migration_incomplete_critic_pending`.
+Decision: `run_63_green_critic_changes_required_fix_pending_ci`.

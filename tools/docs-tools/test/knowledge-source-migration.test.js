@@ -8,6 +8,7 @@ import {
   buildKnowledgeGraphFromSnapshot,
   buildRagIndexFromSnapshot
 } from '../src/index.js';
+import { writeKnowledgeSourceOutputs as writePublicKnowledgeSourceOutputs } from '@rus/docs-tools';
 
 const root = resolve(import.meta.dirname, '../../..');
 
@@ -73,4 +74,28 @@ test('graph and RAG materializers are deterministic and preserve approved semant
   const legacyManifest = JSON.parse(await readFile(resolve(root, 'legacy/DOCUMENTS/documents-kg/rag-index/manifest.json'), 'utf8'));
   assert.notEqual(ragA.manifest.corpus_root, legacyManifest.corpus_dir);
   assert.equal(ragA.manifest.corpus_root, 'data/knowledge-source/corpus/DOCUMENTS');
+});
+
+test('public knowledge writer uses the v2 structural and lexical materializer', { concurrency: false }, async () => {
+  const result = await writePublicKnowledgeSourceOutputs({ root });
+  assert.deepEqual(result.files, [
+    'generated/knowledge-source/graph/GRAPH_REPORT.md',
+    'generated/knowledge-source/graph/graph.html',
+    'generated/knowledge-source/graph/graph.json',
+    'generated/knowledge-source/graph/manifest.json',
+    'generated/knowledge-source/manifests/inventory.json',
+    'generated/knowledge-source/manifests/knowledge-source-generated-manifest.json',
+    'generated/knowledge-source/rag/index.json',
+    'generated/knowledge-source/rag/lexical-index.json',
+    'generated/knowledge-source/rag/manifest.json'
+  ]);
+
+  const graph = JSON.parse(await readFile(resolve(root, 'generated/knowledge-source/graph/graph.json'), 'utf8'));
+  const ragManifest = JSON.parse(await readFile(resolve(root, 'generated/knowledge-source/rag/manifest.json'), 'utf8'));
+  const lexicalIndex = JSON.parse(await readFile(resolve(root, 'generated/knowledge-source/rag/lexical-index.json'), 'utf8'));
+  assert.equal(graph.nodes.filter((node) => node.structural_only === true).length, 7);
+  assert.equal(ragManifest.semantic_document_count, 19);
+  assert.equal(ragManifest.lexical_only_document_count, 7);
+  assert.equal(lexicalIndex.chunk_count, 346);
+  assert.equal(lexicalIndex.chunks.some((chunk) => Object.hasOwn(chunk, 'embedding')), false);
 });

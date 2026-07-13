@@ -27,6 +27,8 @@ canonical document without approved embeddings
 → lexical-only chunks without `embedding`
 ```
 
+The public `@rus/docs-tools.writeKnowledgeSourceOutputs` API and both `knowledge:generate` and `docs:generate` use the same v2 materializer. The legacy writer is not part of the package public API.
+
 ## Public API
 
 - `listDocuments({})`;

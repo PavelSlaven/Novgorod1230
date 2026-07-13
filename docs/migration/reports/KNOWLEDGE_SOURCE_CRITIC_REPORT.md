@@ -1,116 +1,58 @@
-# Отчёт критического аудита: canonical docs, world_base и knowledge-source
+# Отчёт независимого критического аудита: canonical docs, world_base и knowledge-source
 
-Дата: 2026-07-13  
-Релиз: `0.23.0-migration.23`  
-Проверенный head: `0ca4c99b052acf1fe23b514622316215a230de96`  
-GitHub Actions: run `#61` (`29267437099`)
-
-Нормативная база:
-
-- `Правила разработки.txt`;
-- `Правило вызова агента-критика.txt`;
-- `Работа с картой G0-G4.txt`;
-- `docs/migration/plans/KNOWLEDGE_CORPUS_EXTENSION_GATE.md`.
+Дата: 2026-07-13
+Релиз: `0.23.0-migration.23`
+Проверенный head: `63600d93b76312ccd95305dea78281dd9874d6b0`
+GitHub Actions: run `#63` (`29271952334`), job `86891569589`
 
 ## Метод
 
-Проведён отдельный структурированный критический проход по полному diff PR №2, изменённым runtime-контрактам, DDL, генераторам, валидаторам, тестам и фактическому clean-clone CI evidence.
-
-Отдельный внешний процесс агента-критика в доступной среде отсутствует. Поэтому настоящий документ не выдаёт внутренний независимый проход за вызов внешнего агента. До интеграции требуется либо доступный внешний аудит, либо явно принятая владельцем процедура эквивалентного независимого review.
-
-## Проверенная область
-
-- полный GitHub Actions workflow и защита от false-green;
-- `world_base` entrypoint и восемь SQL-частей;
-- schema checker и read-only permissions;
-- canonical corpus verifier, manifest и aliases;
-- делегирование владения corpus из `CANONICAL_PATHS.json`;
-- graph/RAG materializer v2;
-- runtime generated-artifact status checks;
-- production composition root;
-- отделение active world catalogs от legacy runtime policy;
-- migration status, test report и tools inventory;
-- все новые и изменённые тесты.
-
-## Найденные замечания и исправления
-
-### MAJOR-1 — команда `knowledge:generate` использовала legacy materializer
-
-Статус: **исправлено**.
-
-`tools/docs-tools/src/knowledge-cli.js` вызывал `writeKnowledgeSourceOutputs`, тогда как `docs:generate` уже использовал v2 materializer. Это создавало два различных пути генерации под одним контрактом.
-
-Исправление: CLI теперь явно вызывает `writeKnowledgeSourceOutputsV2`.
-
-### MAJOR-2 — RAG coverage неверно объявлял все документы lexical-indexed
-
-Статус: **исправлено**.
-
-`lexical-index.json` содержит только документы без approved embeddings, однако manifest ставил `lexical_indexed: true` всем 22 документам.
-
-Исправление:
-
-- semantic documents: `semantic_indexed: true`, `lexical_indexed: false`;
-- native documents без approved embeddings: `semantic_indexed: false`, `lexical_indexed: true`;
-- тест проверяет точное совпадение множества lexical coverage files с файлами lexical chunks.
-
-### MAJOR-3 — нормализация lockfile не была идемпотентной
-
-Статус: **исправлено**.
-
-Workflow падал, если внутренний registry prefix уже отсутствовал. Исправление допускает уже нормализованный lockfile и fail-closed проверяет, что запрещённый prefix не остался после преобразования.
+После полного зелёного clean-clone CI отдельный агент-критик в read-only режиме прочитал `CRITIC_PROMPT.md`, handoff-нормативы, действующие инструкции репозитория, полный diff PR №2, контракты, тесты, generated artifacts и предыдущий critic report. Фактический CI evidence перепроверен через GitHub CLI.
 
 ## Подтверждённые свойства
 
-- код не создаёт смысловые факты мира;
-- новые corpus-документы не получают придуманных semantic links;
-- отсутствующие embeddings не заменяются нулевыми, случайными или копированными vectors;
-- approved semantic snapshot сохраняется отдельно от deterministic lexical coverage;
-- provenance digest отделён от digest сгенерированного semantic artifact;
-- production startup отклоняет повреждённые или stale graph/RAG artifacts;
-- active world catalogs не маскируются строковой фильтрацией ошибок;
-- production composition имеет одну реализацию и публичный re-export entrypoint;
-- clean-clone CI выполняет все обязательные gates, а не только setup-шаги.
+- все 13 файлов handoff-пакета прошли `sha256sum -c CHECKSUMS.sha256`;
+- четыре новых норматива импортированы byte-for-byte с ожидаемыми bytes и SHA-256;
+- corpus: 26 документов, 19 legacy и 7 native;
+- graph: 19 semantic и 7 structural-only документов, 1302 nodes, 3602 links, 11 hyperedges;
+- у structural-only nodes нет новых semantic links;
+- RAG: 813 approved semantic chunks и 346 lexical-only chunks без embeddings;
+- `coverage.lexical_indexed` точно совпадает с файлами lexical index;
+- schema reference содержит ровно 62 текущие DDL-таблицы и 1679 колонок; 790 отсутствующих описаний отмечены явно;
+- описания используются только из утверждённого `field-descriptions.js`;
+- run `#63` реально выполнил DDL в PostgreSQL 16 с `ON_ERROR_STOP=1` и проверил 62 таблицы, `world_reader`, `USAGE`, отсутствие `CREATE`, 62 `SELECT` grants и отсутствие write grants;
+- generation и повторная generation в clean clone дали пустой diff.
 
-## Автоматическая проверка
+## Findings
 
-Run `#61` завершён с conclusion `success`:
+### MAJOR-1 — public writer оставался legacy
 
-- checkout: PASS;
-- lockfile normalization: PASS;
-- `npm ci`: PASS;
-- `world-db:schema-check`: PASS;
-- `knowledge:check-corpus`: PASS;
-- deterministic generation: PASS;
-- generated reproducibility: PASS;
-- full `npm test`: PASS.
+Статус на проверенном head: **CHANGES REQUIRED**.
 
-## Оставшиеся блокеры
+`tools/docs-tools/src/index.js` экспортировал `writeKnowledgeSourceOutputs` из legacy `knowledge-source.js`, хотя `knowledge:generate` и `docs:generate` использовали v2 materializer. Публичный writer падал на семи native-документах и мог расходиться с CLI output.
 
-### BLOCKER-1 — не завершён побайтовый перенос обязательных нормативов
+Исправление после аудита:
 
-Не зарегистрированы в canonical corpus:
+- public export перенаправлен на `writeKnowledgeSourceOutputsV2` под каноническим именем;
+- добавлен regression test через public package import;
+- тест проверяет полный v2 output map, 7 structural nodes, coverage 19/7, 346 lexical chunks и отсутствие embeddings.
 
-- `Правила разработки.txt`;
-- `Работа с картой G0-G4.txt`;
-- `base_turn_orcestration.txt`.
+Исправление требует нового full test, clean-clone CI и повторного независимого аудита.
 
-Доступный GitHub connector не принимает локальный файл как file-параметр, а непрозрачные бинарные/base64 payload блокируются защитой. Перенос нельзя объявлять завершённым до фактической загрузки, повторного чтения из GitHub и проверки bytes/SHA-256.
+### MAJOR-2 — release evidence был устаревшим
 
-### MAJOR-4 — schema gate является статическим, а не исполняемым PostgreSQL proof
+Статус на проверенном head: **CHANGES REQUIRED**.
 
-Текущий checker подтверждает количество таблиц, порядок include, permissions и ряд запрещённых конструкций через анализ DDL. Он не выполняет весь DDL в настоящем PostgreSQL instance. До финального release желательно добавить отдельный PostgreSQL execution gate. Это не отменяет текущий зелёный статический gate, но ограничивает доказательство исполняемости схемы.
+`MIGRATION_STATUS.md`, `TEST_REPORT.md` и PR body не отражали run `#63` и фактические 26/19/7 документов. Репозиторные отчёты обновлены этим циклом; PR body должен быть синхронизирован после финального CI.
 
-### BLOCKER-2 — требуется повторный аудит после окончательного corpus expansion
+### NOTE — byte-policy critic rule
 
-После добавления оставшихся нормативов изменятся manifest, aliases, graph/RAG coverage и generated digests. По правилу проекта после этих изменений обязательны:
+Handoff `Правило вызова агента-критика.txt`: 9109 bytes, SHA-256 `b3049ee06f6462081641bffdc0d12dc2596905ba401560e740f1c98c3192ec96`. Canonical `code_critic_invocation_rule.txt`: 8960 bytes, SHA-256 `7a0d690a18f39e264cd39eca3b83eae5c943de97e4219b3f8034b98da9289165`.
 
-1. повторная генерация;
-2. полный clean-clone CI;
-3. повторный критический аудит полного diff.
+Различие ограничено CRLF/LF; нормализованный текст идентичен. Согласно handoff-инструкции второй canonical document не создан и тексты самостоятельно не объединялись. Требуется только решение владельца по byte-policy; автоматическое изменение запрещено.
 
-## Итог
+## Итог аудита для head `63600d93...`
 
 `CHANGES REQUIRED`
 
-PR должен оставаться draft. Допуск к интеграции возможен только после закрытия BLOCKER-1, повторного полного CI и повторного аудита с итогом `PASS` или допустимым `PASS WITH NOTES`.
+PR остаётся draft. После исправлений обязательны полный тестовый цикл, новый clean-clone CI и повторный независимый critic audit.

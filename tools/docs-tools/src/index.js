@@ -67,9 +67,12 @@ export {
 export {
   inventoryLegacyKnowledgeSource,
   readKnowledgeSourceInventory,
-  writeKnowledgeSourceOutputs,
   importKnowledgeSourceFromLegacy
 } from './knowledge-source.js';
+
+export {
+  writeKnowledgeSourceOutputsV2 as writeKnowledgeSourceOutputs
+} from './knowledge-materializer-v2.js';
 
 export {
   buildKnowledgeGraphFromSnapshotV2 as buildKnowledgeGraphFromSnapshot,

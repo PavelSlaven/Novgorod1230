@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import test from 'node:test';
 import { readFile } from 'node:fs/promises';
-import { resolve } from 'node:path';
+import { basename, resolve } from 'node:path';
 import { buildKnowledgeSourceOutputsV2 } from '../src/knowledge-materializer-v2.js';
 
 const root = resolve(import.meta.dirname, '../../..');
@@ -11,7 +11,7 @@ function sha256(value) {
   return createHash('sha256').update(value).digest('hex');
 }
 
-test('knowledge materializer preserves approved semantic vectors and marks native documents lexical-only', async () => {
+test('knowledge materializer preserves approved semantic vectors and indexes only native documents lexically', async () => {
   const outputs = await buildKnowledgeSourceOutputsV2({ root });
   const ragManifest = JSON.parse(outputs.get('generated/knowledge-source/rag/manifest.json'));
   const semanticIndex = JSON.parse(outputs.get('generated/knowledge-source/rag/index.json'));
@@ -20,11 +20,17 @@ test('knowledge materializer preserves approved semantic vectors and marks nativ
   assert.equal(ragManifest.source_document_count, 22);
   assert.equal(ragManifest.semantic_document_count, 19);
   assert.equal(ragManifest.lexical_only_document_count, 3);
-  assert.equal(ragManifest.coverage.filter((item) => !item.semantic_indexed).length, 3);
+  assert.equal(ragManifest.coverage.filter((item) => item.semantic_indexed).length, 19);
+  assert.equal(ragManifest.coverage.filter((item) => item.lexical_indexed).length, 3);
+  assert.ok(ragManifest.coverage.every((item) => item.semantic_indexed !== item.lexical_indexed));
   assert.equal(semanticIndex.chunk_count, 813);
   assert.ok(semanticIndex.chunks.every((chunk) => Array.isArray(chunk.embedding) && chunk.embedding.length === semanticIndex.dimensions));
   assert.ok(lexicalIndex.chunk_count > 0);
   assert.ok(lexicalIndex.chunks.every((chunk) => !Object.hasOwn(chunk, 'embedding')));
+
+  const lexicalCoverageFiles = new Set(ragManifest.coverage.filter((item) => item.lexical_indexed).map((item) => item.file_name));
+  const lexicalChunkFiles = new Set(lexicalIndex.chunks.map((chunk) => basename(String(chunk.file ?? ''))));
+  assert.deepEqual(lexicalChunkFiles, lexicalCoverageFiles);
 });
 
 test('RAG manifest separates source provenance from generated artifact digests', async () => {

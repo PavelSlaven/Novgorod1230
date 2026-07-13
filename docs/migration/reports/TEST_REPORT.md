@@ -28,6 +28,8 @@ Run `#68` выполнил schema-reference и PostgreSQL gates в чистом 
 
 Run `#68` подтвердил remediation пятого аудита: provenance checks для nodes/links/hyperedges, exact graph/RAG semantic-set boundary, structural endpoint guard и collision-before-write. В clean clone прошли generation/reproducibility и полный `npm test`; локальный обязательный цикл также прошёл полностью.
 
+Evidence-only commit `afed3740e6fecb5de57d9aa961cdb77abcabf75a` прошёл run `#69` (`29278114051`), job `86912220316`, со всеми теми же gates. Шестой critic audit выявил непроверенные `hyperedge.member_source_files` и import-history conflict после записи. Новые negative tests воспроизвели оба дефекта; текущий remediation проходит targeted tests.
+
 ## Verified contracts
 
 - executable `world_base` entrypoint and eight ordered SQL parts;
@@ -60,8 +62,9 @@ Run `#68` подтвердил remediation пятого аудита: provenance
 
 ## Remaining release gates
 
+- новый clean-clone execution после round6 remediation;
 - следующий independent code critic audit;
 - owner disposition of the byte-only critic-rule conflict;
 - repeat audit after any `CHANGES REQUIRED` or `REJECT` result.
 
-Decision: `run_68_green_round5_remediation_pending_critic`.
+Decision: `run_69_green_round6_changes_required_remediated_locally`.

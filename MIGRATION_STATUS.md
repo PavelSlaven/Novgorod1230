@@ -63,7 +63,7 @@
 
 ## В работе
 
-Пятый независимый аудит на `b38e295...` выявил отсутствие provenance validation у links/hyperedges, exact graph/RAG semantic-set boundary, structural endpoint guard и collision-before-write у legacy import. Negative TDD воспроизвёл все дефекты. Implementation commit `c759f45f...` проверяет все semantic entities, запрещает relations к structural-only IDs и полностью валидирует import plan до первой записи. Локальный полный цикл и clean-clone run `#68` прошли; для допуска остаётся шестой независимый аудит evidence head.
+Шестой независимый аудит evidence head `afed3740...` и успешного run `#69` выявил два дополнительных обхода: `hyperedge.member_source_files` не входили в semantic provenance gate, а import-history conflict возникал после записи canonical state. Negative TDD воспроизвёл оба дефекта. Текущий remediation валидирует member sources и формирует проверенные import-history bytes в полном preflight-плане до первой записи. Для допуска нужны полный локальный цикл, новый clean-clone run и повторный независимый аудит.
 
 Остаётся решение владельца по byte-конфликту critic rule: handoff-файл имеет 9109 bytes/CRLF и SHA-256 `b3049ee06f6462081641bffdc0d12dc2596905ba401560e740f1c98c3192ec96`, существующий canonical файл — 8960 bytes/LF и SHA-256 `7a0d690a18f39e264cd39eca3b83eae5c943de97e4219b3f8034b98da9289165`; нормализованный текст совпадает, автоматическая замена запрещена.
 
@@ -78,5 +78,5 @@ PR нельзя переводить из draft и объединять, пок�
 - агент критики вернул `PASS` или допустимый `PASS WITH NOTES`;
 - после `CHANGES REQUIRED` или `REJECT` выполнены исправления, повторные тесты и повторный аудит.
 
-Текущий итоговый статус: `run_68_green_round5_remediation_pending_critic`.
+Текущий итоговый статус: `run_69_green_round6_changes_required_remediated_locally`.
 Legacy deletion allowed: false.

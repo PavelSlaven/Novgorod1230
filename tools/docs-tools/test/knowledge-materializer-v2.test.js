@@ -218,3 +218,25 @@ test('knowledge materializer rejects links and hyperedges touching structural do
     );
   }
 });
+
+test('knowledge materializer rejects invalid hyperedge member source files', async () => {
+  const fixtureRoot = await materializerFixture();
+  const graphPath = join(fixtureRoot, 'data/knowledge-source/imports/graph/graph.json');
+  const original = JSON.parse(await readFile(graphPath, 'utf8'));
+  const cases = [
+    ['native structural source', 'DOCUMENTS/development_rules.txt', /not approved for semantic graph/u],
+    ['missing source', 'DOCUMENTS/missing-source.md', /references missing member source/u],
+    ['source traversal', '../escape.md', /invalid member source path/u]
+  ];
+
+  for (const [label, memberSource, pattern] of cases) {
+    const graph = structuredClone(original);
+    graph.hyperedges[0].member_source_files[memberSource] = 1;
+    await writeFile(graphPath, JSON.stringify(graph));
+    await assert.rejects(
+      () => buildKnowledgeSourceOutputsV2({ root: fixtureRoot }),
+      pattern,
+      label
+    );
+  }
+});

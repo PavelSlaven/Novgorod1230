@@ -146,3 +146,22 @@ Remediation после аудита:
 Implementation commit `c759f45f4212a08dd94b043212caa5a797ef878a` прошёл clean-clone GitHub Actions run `#68` (`29277900087`), job `86911487538`. Все фактические steps завершились `success`, включая PostgreSQL 16 DDL, corpus gate, deterministic generation, reproducibility и full test suite.
 
 Этот evidence update не меняет implementation. Финальный admission verdict требует независимого шестого аудита evidence head.
+
+## Шестой аудит head `afed3740...`
+
+Evidence-head run `#69` (`29278114051`), job `86912220316`: PASS по всем workflow steps.
+
+Итог: `CHANGES REQUIRED`.
+
+- `hyperedge.member_source_files` обходил exact approved semantic set, включая native, missing и traversal paths;
+- import-history conflict проверялся после записи legacy targets, manifest, aliases и inventory;
+- parity report сохранял исторические mode names вместо текущих generated contracts.
+
+Remediation после аудита:
+
+- каждый member source проходит path safety, corpus existence и approved semantic-set checks и учитывается в graph provenance set;
+- import history разбирается, валидируется и материализуется в memory до первой записи import plan; conflict не меняет manifest, aliases, inventory или corpus targets;
+- parity report синхронизирован с текущими graph/RAG generation modes;
+- добавлены negative tests native/missing/traversal member sources и history conflict without mutation.
+
+Для допуска обязательны полный локальный цикл, новый clean-clone run и следующий независимый аудит.

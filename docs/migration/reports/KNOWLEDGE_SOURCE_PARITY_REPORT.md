@@ -14,7 +14,7 @@
 
 ## Graph
 
-- Materialization mode: `approved_snapshot_materialization`.
+- Materialization mode: `approved_semantic_snapshot_plus_structural_document_nodes`.
 - Documents referenced: 19.
 - Structural-only documents: 7.
 - Nodes: 1295.
@@ -27,7 +27,7 @@ Generated graph after structural extension: 1302 nodes, 3602 links and 11 hypere
 
 ## RAG
 
-- Materialization mode: `corpus_rechunk_with_approved_embedding_snapshot`.
+- Materialization mode: `approved_semantic_snapshot_plus_deterministic_lexical_coverage`.
 - Chunks: 813.
 - Lexical-only chunks: 346 across 7 native documents.
 - Model: `jina-embeddings-v3`.

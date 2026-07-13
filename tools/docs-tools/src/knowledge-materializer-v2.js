@@ -158,7 +158,7 @@ export function validateApprovedSemanticSnapshot(snapshot, corpusFiles) {
 
 export function validateGraphSnapshotSources(graph, corpusFiles, approvedSemanticFiles = null) {
   const errors = [];
-  const nodeFiles = new Set();
+  const referencedFiles = new Set();
   const collections = [
     ['node', graph?.nodes ?? []],
     ['link', graph?.links ?? []],
@@ -167,12 +167,15 @@ export function validateGraphSnapshotSources(graph, corpusFiles, approvedSemanti
   for (const [kind, entities] of collections) {
     for (const entity of entities) {
       const file = validateGraphEntitySource(entity, kind, corpusFiles, approvedSemanticFiles, errors);
-      if (kind === 'node' && file) nodeFiles.add(file);
+      if (file) referencedFiles.add(file);
+      if (kind === 'hyperedge') {
+        for (const memberFile of validateHyperedgeMemberSources(entity, corpusFiles, approvedSemanticFiles, errors)) referencedFiles.add(memberFile);
+      }
     }
   }
   if (approvedSemanticFiles) {
     for (const file of approvedSemanticFiles) {
-      if (!nodeFiles.has(file)) errors.push(`approved semantic file is missing from graph nodes: ${file}`);
+      if (!referencedFiles.has(file)) errors.push(`approved semantic file is missing from graph provenance: ${file}`);
     }
   }
   return Object.freeze(errors);
@@ -224,6 +227,33 @@ function validateGraphEntitySource(entity, kind, corpusFiles, approvedSemanticFi
   if (Number.isInteger(end) && end > lineCount) errors.push(`${label}: line_end exceeds ${file}`);
   if (Number.isInteger(start) && Number.isInteger(end) && end < start) errors.push(`${label}: inverted line range`);
   return file;
+}
+
+function validateHyperedgeMemberSources(hyperedge, corpusFiles, approvedSemanticFiles, errors) {
+  const files = [];
+  const members = hyperedge?.member_source_files;
+  if (members === undefined) return files;
+  if (!members || typeof members !== 'object' || Array.isArray(members)) {
+    errors.push(`${graphEntityLabel(hyperedge, 'hyperedge')}: member_source_files is invalid`);
+    return files;
+  }
+  for (const rawFile of Object.keys(members)) {
+    if (!/^(?:DOCUMENTS\/)?[^/\\]+$/u.test(rawFile)) {
+      errors.push(`${graphEntityLabel(hyperedge, 'hyperedge')} has invalid member source path ${rawFile}`);
+      continue;
+    }
+    const file = basename(rawFile);
+    if (!Object.hasOwn(corpusFiles, file)) {
+      errors.push(`${graphEntityLabel(hyperedge, 'hyperedge')} references missing member source ${file}`);
+      continue;
+    }
+    if (approvedSemanticFiles && !approvedSemanticFiles.has(file)) {
+      errors.push(`${graphEntityLabel(hyperedge, 'hyperedge')} member source ${file} is not approved for semantic graph coverage`);
+      continue;
+    }
+    files.push(file);
+  }
+  return files;
 }
 
 export async function writeKnowledgeSourceOutputsV2({ root = '.' } = {}) {

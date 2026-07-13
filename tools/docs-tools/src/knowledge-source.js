@@ -309,6 +309,7 @@ export async function importKnowledgeSourceFromLegacy({ root = '.', importedAt =
       bytes: await readFile(join(projectRoot, item.legacy_path))
     });
   }
+  const historyWrite = await prepareImportHistory({ sourceRoot, inventory, documents: legacyDocuments, importedAt });
   for (const { targetPath, bytes } of legacyWrites) {
     await mkdir(dirname(targetPath), { recursive: true });
     await writeFile(targetPath, bytes);
@@ -317,7 +318,7 @@ export async function importKnowledgeSourceFromLegacy({ root = '.', importedAt =
   await writeFile(manifestPath, stableJson(corpusManifest));
   await writeFile(aliasesPath, stableJson({ schema_version: 'rus.knowledge_source_aliases.v1', aliases }));
   await writeFile(join(projectRoot, INVENTORY_PATH), stableJson(inventory));
-  await appendImportHistory({ sourceRoot, inventory, documents: legacyDocuments, importedAt });
+  if (historyWrite) await writeFile(historyWrite.targetPath, historyWrite.bytes);
 
   for (const { targetPath, bytes } of importWrites) {
     await mkdir(dirname(targetPath), { recursive: true });
@@ -351,9 +352,15 @@ async function buildKnowledgeSourceOutputMap(projectRoot) {
   return outputs;
 }
 
-async function appendImportHistory({ sourceRoot, inventory, documents, importedAt }) {
+async function prepareImportHistory({ sourceRoot, inventory, documents, importedAt }) {
   const path = join(sourceRoot, 'import-history.json');
-  const existing = await readJson(path).catch(() => ({ schema_version: 'rus.knowledge_import_history.v1', entries: [] }));
+  let existing;
+  try {
+    existing = await readJson(path);
+  } catch (error) {
+    if (error?.code !== 'ENOENT') throw new Error(`Invalid knowledge-source import history: ${error.message}`);
+    existing = { schema_version: 'rus.knowledge_import_history.v1', entries: [] };
+  }
   if (existing?.schema_version !== 'rus.knowledge_import_history.v1' || !Array.isArray(existing.entries)) {
     throw new Error('Invalid knowledge-source import history.');
   }
@@ -372,9 +379,9 @@ async function appendImportHistory({ sourceRoot, inventory, documents, importedA
     for (const field of ['source_release', 'source_root', 'target_root', 'document_count', 'inventory_sha256', 'status']) {
       if (previous[field] !== entry[field]) throw new Error(`Import history conflict for ${entry.migration_id}: ${field}`);
     }
-    return;
+    return null;
   }
-  await writeFile(path, stableJson({ ...existing, entries: [...existing.entries, entry] }));
+  return Object.freeze({ targetPath: path, bytes: stableJson({ ...existing, entries: [...existing.entries, entry] }) });
 }
 
 async function loadCorpus(projectRoot) {

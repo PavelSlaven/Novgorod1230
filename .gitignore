@@ -1,0 +1,13 @@
+node_modules/
+.env
+.env.*
+!.env.example
+generated/*
+!generated/.gitkeep
+artifacts/*
+!artifacts/.gitkeep
+releases/*
+!releases/.gitkeep
+legacy/data/new-game-process/
+legacy/data/regional-summary-cache/
+*.log

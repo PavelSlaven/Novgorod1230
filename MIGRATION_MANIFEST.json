@@ -1,0 +1,71 @@
+{
+  "schema": "rus_modules_migration_manifest",
+  "version": 1,
+  "release": "0.23.0-migration.23",
+  "date": "2026-07-12",
+  "source_release": "0.22.0-migration.22",
+  "source_archive": "Rus_modules-migration-0.22.0.zip",
+  "source_archive_sha256": "a52e5bfed859973677f317e8a7b66e18347885c60f17b6b0beba7aabac72921c",
+  "phase": {
+    "name": "knowledge_source_corpus",
+    "status": "complete"
+  },
+  "knowledge_source": {
+    "corpus_schema": "rus.knowledge_corpus_manifest.v1",
+    "document_count": 19,
+    "legacy_inventory_count": 29,
+    "unknown_file_count": 0,
+    "byte_parity": "passed",
+    "sha256_parity": "passed",
+    "unique_file_review": "completed",
+    "graph_manifest_schema": "rus.knowledge_graph_manifest.v1",
+    "graph_node_count": 1295,
+    "graph_link_count": 3602,
+    "graph_hyperedge_count": 11,
+    "graph_parity": "accepted",
+    "rag_manifest_schema": "rus.knowledge_rag_manifest.v1",
+    "rag_chunk_count": 813,
+    "rag_model": "jina-embeddings-v3",
+    "rag_dimensions": 1024,
+    "rag_parity": "accepted",
+    "production_legacy_documents_fallback": false,
+    "stored_inventory_provenance": true,
+    "autonomous_without_legacy_documents": true,
+    "generated_provenance_complete": true,
+    "runtime_artifact_hash_verification": true
+  },
+  "test_result": {
+    "status": "passed",
+    "total": 310,
+    "passed": 310,
+    "failed": 0,
+    "knowledge_source": 9,
+    "suites": {
+      "modules": 218,
+      "domain": 34,
+      "applications": 11,
+      "tools": 32,
+      "shadow": 6,
+      "cutover": 4,
+      "integration": 4,
+      "browser_e2e": 1
+    }
+  },
+  "documentation_check": "passed",
+  "architecture_check": "passed",
+  "release_hygiene": "passed_clean_tree",
+  "critic_result": "PASS WITH NOTES",
+  "legacy_deletion_allowed": false,
+  "limitations": [
+    "live production deployment configuration requires operator evidence",
+    "external read-only archive of the old folder requires operator action",
+    "manual deletion requires explicit project-owner approval",
+    "automatic legacy deletion is forbidden"
+  ],
+  "release_archive_verification": "passed_clean_restore",
+  "clean_restore_test_result": {
+    "total": 310,
+    "passed": 310,
+    "failed": 0
+  }
+}

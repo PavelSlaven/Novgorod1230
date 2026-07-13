@@ -1,0 +1,20 @@
+{
+  "g1_id": "gn_nov_g1_xp017_yp026",
+  "base_revision": "content_revision_002",
+  "candidate_revision": "content_revision_003_production_candidate",
+  "base_package_digest": "6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b",
+  "production_profile_digest": "75950772a494e197f37c04f075819ecde943d6aaeabe392d552399eedbb9ace8",
+  "status": "candidate_not_active",
+  "created_from": "gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip",
+  "created_at": "2026-07-13T09:25:27Z",
+  "changed_semantic_data": false,
+  "added_runtime_data": [
+    "start-node profiles",
+    "G5 profiles and assignments",
+    "NPC rules",
+    "item/container/property/resource bindings",
+    "seasonal profile",
+    "start fixture",
+    "canonical world_base projection"
+  ]
+}

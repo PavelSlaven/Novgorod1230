@@ -1,0 +1,210 @@
+{
+  "schema_version": "rus.production_bundle_manifest.v1",
+  "g1_id": "gn_nov_g1_xp017_yp026",
+  "candidate_revision": "content_revision_003_production_candidate",
+  "created_at": "2026-07-13T09:25:27Z",
+  "manifest_scope": "immutable import payload and governance inputs; downstream validation reports excluded",
+  "excluded_paths": [
+    "03-validation/**",
+    "production-bundle-manifest.json"
+  ],
+  "files": [
+    {
+      "path": "00-governance/module-reuse-audit.json",
+      "size": 3651,
+      "sha256": "bf6328a5dff15bbceb165deeb0fac523f391f4c4e724437985460b7642ce828c",
+      "contract_version": "rus.module_reuse_audit.v1",
+      "record_count": 1,
+      "dependencies": [
+        "content_revision_002"
+      ],
+      "import_order": 1
+    },
+    {
+      "path": "00-governance/production-readiness-gap-report.json",
+      "size": 1625,
+      "sha256": "6ee9328463c6d975dea976621cc4010a31179177071ab526986ead668420e36f",
+      "contract_version": "rus.production_readiness_gap_report.v1",
+      "record_count": 1,
+      "dependencies": [
+        "content_revision_002"
+      ],
+      "import_order": 2
+    },
+    {
+      "path": "00-governance/production-readiness-normative-snapshot.json",
+      "size": 2786,
+      "sha256": "8e78d393186c3385c5f1400805705728f9e08429433358eb92508fb44974bccf",
+      "contract_version": "rus.production_readiness_normative_snapshot.v1",
+      "record_count": 1,
+      "dependencies": [
+        "content_revision_002"
+      ],
+      "import_order": 3
+    },
+    {
+      "path": "00-governance/schema-capability-audit.json",
+      "size": 1379,
+      "sha256": "b9b97bb21da95c64586cd06131af972101a2b78eb0f9de6c38068aa99cb5ffc2",
+      "contract_version": "rus.schema_capability_audit.v1",
+      "record_count": 1,
+      "dependencies": [
+        "content_revision_002"
+      ],
+      "import_order": 4
+    },
+    {
+      "path": "01-profiles/container-profile-bindings.json",
+      "size": 1912,
+      "sha256": "84173e76dce8e3f30b75d61dceac068710ed777d7b61f357428ad8ab2bdfadfb",
+      "contract_version": null,
+      "record_count": 3,
+      "dependencies": [
+        "content_revision_002"
+      ],
+      "import_order": 5
+    },
+    {
+      "path": "01-profiles/g5-materialization-profiles.json",
+      "size": 57231,
+      "sha256": "921371f2c9aec444b595a5231c601a8f1b1048a35b64556fe8cb443da1abea62",
+      "contract_version": null,
+      "record_count": 17,
+      "dependencies": [
+        "content_revision_002"
+      ],
+      "import_order": 6
+    },
+    {
+      "path": "01-profiles/g5-profile-assignments.json",
+      "size": 45150,
+      "sha256": "2c0fbd23d74ae31686fbc286dd00c8d841dd82e9eeffab6846dada0e695af921",
+      "contract_version": null,
+      "record_count": 195,
+      "dependencies": [
+        "content_revision_002"
+      ],
+      "import_order": 7
+    },
+    {
+      "path": "01-profiles/item-profile-bindings.json",
+      "size": 3203,
+      "sha256": "bbde86a244b49322ccc5348ad90a7e71e095dde7434841c1df31f525d1885b5a",
+      "contract_version": null,
+      "record_count": 4,
+      "dependencies": [
+        "content_revision_002"
+      ],
+      "import_order": 8
+    },
+    {
+      "path": "01-profiles/npc-materialization-rules.json",
+      "size": 23050,
+      "sha256": "94ff291f86d277f1e388e2191008d35b977738246d1c17daf4a8e8af35d8bd7d",
+      "contract_version": null,
+      "record_count": 6,
+      "dependencies": [
+        "content_revision_002"
+      ],
+      "import_order": 9
+    },
+    {
+      "path": "01-profiles/property-rule-bindings.json",
+      "size": 2059,
+      "sha256": "fce743ec8b1c64cf973ffe41c5802e14fb14db36eccdf04931321de38fd80b31",
+      "contract_version": null,
+      "record_count": 4,
+      "dependencies": [
+        "content_revision_002"
+      ],
+      "import_order": 10
+    },
+    {
+      "path": "01-profiles/resource-profile-bindings.json",
+      "size": 1353,
+      "sha256": "d7f7a9c0032b6078d1d1e70ef0894b55fcf48d6a9f774c7f26888fc930922a1d",
+      "contract_version": null,
+      "record_count": 3,
+      "dependencies": [
+        "content_revision_002"
+      ],
+      "import_order": 11
+    },
+    {
+      "path": "01-profiles/seasonal-start-runtime-profile.json",
+      "size": 436573,
+      "sha256": "db884ad738f2030346470050054c1968e65a37c3af95e4fa3380aeebe5b8afea",
+      "contract_version": null,
+      "record_count": 1,
+      "dependencies": [
+        "content_revision_002"
+      ],
+      "import_order": 12
+    },
+    {
+      "path": "01-profiles/start-node-profiles.json",
+      "size": 6052,
+      "sha256": "9b883121f0250e195189b52cb7623eb023416949d4fe24d5ce6805a11d8a4e95",
+      "contract_version": null,
+      "record_count": 3,
+      "dependencies": [
+        "content_revision_002"
+      ],
+      "import_order": 13
+    },
+    {
+      "path": "01-profiles/start-runtime-fixtures.json",
+      "size": 2360,
+      "sha256": "7e8d9964e9b719674616da3a2fa2aa15d9222851f927c518a0daf2e9c7d9efa0",
+      "contract_version": null,
+      "record_count": 1,
+      "dependencies": [
+        "content_revision_002"
+      ],
+      "import_order": 14
+    },
+    {
+      "path": "02-import/graph-edges.production.json",
+      "size": 741501,
+      "sha256": "be6c6380b8f4fba39000d8aa1864ba9f136ff69879b22fc23c78cfcbbe957b59",
+      "contract_version": null,
+      "record_count": 716,
+      "dependencies": [
+        "content_revision_002"
+      ],
+      "import_order": 15
+    },
+    {
+      "path": "02-import/graph-nodes.production.json",
+      "size": 186832,
+      "sha256": "05c8a5477bbb327feea74cfff683595a0e14ee2fcc5628a25cdc2422b9c545a9",
+      "contract_version": null,
+      "record_count": 243,
+      "dependencies": [
+        "content_revision_002"
+      ],
+      "import_order": 16
+    },
+    {
+      "path": "gn_nov_g1_xp017_yp026.production-bundle.json",
+      "size": 2072920,
+      "sha256": "c42374523d429bdbfa432f62447f3e45e59a136aee368991d3aeacd5e117afac",
+      "contract_version": "rus.g1_production_bundle.v1",
+      "record_count": 1422,
+      "dependencies": [
+        "content_revision_002"
+      ],
+      "import_order": 17
+    },
+    {
+      "path": "production-candidate-metadata.json",
+      "size": 769,
+      "sha256": "4a96b6a9302ea13e836a6fae36d53f63ccdb52512802a1b04a60a62d0ba9d6ba",
+      "contract_version": null,
+      "record_count": 1,
+      "dependencies": [],
+      "import_order": 18
+    }
+  ],
+  "bundle_digest": "aab30365527560554c4282e6043c6a1d23e6a3e4b9d7491eecaaef89c29ae10a"
+}

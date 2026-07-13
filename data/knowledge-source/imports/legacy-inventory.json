@@ -1,0 +1,209 @@
+{
+  "schema_version": "rus.knowledge_source_inventory.v1",
+  "source_root": "legacy/DOCUMENTS/documents-kg",
+  "files": [
+    {
+      "legacy_path": "legacy/DOCUMENTS/documents-kg/CHANGELOG_3.2.md",
+      "relative_path": "CHANGELOG_3.2.md",
+      "bytes": 1080,
+      "sha256": "8797180fd4dc6b0b2054f068fa506027f940508a787e03c8ac06bdff08c8b5cb",
+      "classification": "documentation"
+    },
+    {
+      "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/character_inventory_equipment.txt",
+      "relative_path": "corpus/DOCUMENTS/character_inventory_equipment.txt",
+      "bytes": 18244,
+      "sha256": "b1618bcfa43bfc2cbd92bf1f0f464c28459e652b94ef763d36fdb996cbe80e87",
+      "classification": "canonical_source"
+    },
+    {
+      "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/character_parameters.txt",
+      "relative_path": "corpus/DOCUMENTS/character_parameters.txt",
+      "bytes": 21167,
+      "sha256": "7a84abd27da7898c20abf8e493342fb0a6c5dca1852098063e8ffaffa9a29b30",
+      "classification": "canonical_source"
+    },
+    {
+      "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/combat_system.md",
+      "relative_path": "corpus/DOCUMENTS/combat_system.md",
+      "bytes": 58749,
+      "sha256": "a5b566d638e7e0666dc80e32805a89aedc7dcaaad305db978bc46c77eefad8a3",
+      "classification": "canonical_source"
+    },
+    {
+      "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/formulas.md",
+      "relative_path": "corpus/DOCUMENTS/formulas.md",
+      "bytes": 108044,
+      "sha256": "6a077a511b198351c8dd39eedb223cdeb4f69659b0457c3bda9d14677b6dcbaa",
+      "classification": "canonical_source"
+    },
+    {
+      "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/historical_events_and_figures.txt",
+      "relative_path": "corpus/DOCUMENTS/historical_events_and_figures.txt",
+      "bytes": 9432,
+      "sha256": "68e6e4cebddb4590d5c22d2dadf739d54e8ab1da077807f03bcdf6ffca44d88a",
+      "classification": "canonical_source"
+    },
+    {
+      "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/information_sources_llm_prompts.md",
+      "relative_path": "corpus/DOCUMENTS/information_sources_llm_prompts.md",
+      "bytes": 55409,
+      "sha256": "6dd11ad27a5d5cf0cf2a10672b92bba3056a78b2f7a08782666641e1f5cdfd4d",
+      "classification": "canonical_source"
+    },
+    {
+      "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/interface_ux.md",
+      "relative_path": "corpus/DOCUMENTS/interface_ux.md",
+      "bytes": 58862,
+      "sha256": "7933ef4a806dc821c4d90db05d9d7959212830a5d25281238f2ac7aa17a651f5",
+      "classification": "canonical_source"
+    },
+    {
+      "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/items_and_property.txt",
+      "relative_path": "corpus/DOCUMENTS/items_and_property.txt",
+      "bytes": 33159,
+      "sha256": "adedfc10485108516f6c48a76ffde0a179e334bd3618fb1f7e55a2f19ab6537d",
+      "classification": "canonical_source"
+    },
+    {
+      "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/llm_agent_prompt_templates.md",
+      "relative_path": "corpus/DOCUMENTS/llm_agent_prompt_templates.md",
+      "bytes": 50220,
+      "sha256": "d370aeab9771b514573b0a986969ed84c4ecc6c84196eaf4f9802f0f9be12b1d",
+      "classification": "canonical_source"
+    },
+    {
+      "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/llm_documentation_navigation.md",
+      "relative_path": "corpus/DOCUMENTS/llm_documentation_navigation.md",
+      "bytes": 28635,
+      "sha256": "fbbefcb2a5ccf4441a8426e397a8fc91d029c3a24ad87bc1a5515a088770abba",
+      "classification": "canonical_source"
+    },
+    {
+      "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/movement_locations_regions.txt",
+      "relative_path": "corpus/DOCUMENTS/movement_locations_regions.txt",
+      "bytes": 52411,
+      "sha256": "30f0cc88277c827d7480ebb2b9bd421db73d83254f5c10056d520b7e12fe789a",
+      "classification": "canonical_source"
+    },
+    {
+      "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/npc_generation_profiles.txt",
+      "relative_path": "corpus/DOCUMENTS/npc_generation_profiles.txt",
+      "bytes": 21177,
+      "sha256": "ca906167838b4faa6b3c27dc43f7a22c7ad5c04df07c5518403fcf9f572dbde2",
+      "classification": "canonical_source"
+    },
+    {
+      "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/npc_inventory_item_marks.txt",
+      "relative_path": "corpus/DOCUMENTS/npc_inventory_item_marks.txt",
+      "bytes": 8051,
+      "sha256": "0422429fff076f229beb9eed79adc0d1d1b8c85d43bf331b1ab2aa79175a3a06",
+      "classification": "canonical_source"
+    },
+    {
+      "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/player_character_generation.txt",
+      "relative_path": "corpus/DOCUMENTS/player_character_generation.txt",
+      "bytes": 44986,
+      "sha256": "4d0f6e4cdc2ecbb2b1ccd1bd5f84d903fd0aa62999a27bfc57848782aa79d68f",
+      "classification": "canonical_source"
+    },
+    {
+      "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/README.md",
+      "relative_path": "corpus/DOCUMENTS/README.md",
+      "bytes": 4274,
+      "sha256": "c96e46b1a29da96e0272c089786fbddafe324e2f34937e5a7c41450d072fbdb9",
+      "classification": "canonical_source"
+    },
+    {
+      "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/time_system.txt",
+      "relative_path": "corpus/DOCUMENTS/time_system.txt",
+      "bytes": 10539,
+      "sha256": "a9c9c82e18288c5c3cc0b1c99fc81bef28c7750202ddcbcba88ef066198ccde3",
+      "classification": "canonical_source"
+    },
+    {
+      "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/weapons_and_armor.txt",
+      "relative_path": "corpus/DOCUMENTS/weapons_and_armor.txt",
+      "bytes": 48437,
+      "sha256": "644a41b98cd8a1bb37aee27185aa99e746af68c14df87ff7b5d4d908fecfaecf",
+      "classification": "canonical_source"
+    },
+    {
+      "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/world_generation_and_turns.txt",
+      "relative_path": "corpus/DOCUMENTS/world_generation_and_turns.txt",
+      "bytes": 71231,
+      "sha256": "b1fbf6343d479a2f5c9296b7c5dc2f35f0b93e2eb15fab867d23b9201bd01b3e",
+      "classification": "canonical_source"
+    },
+    {
+      "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/world_regions.txt",
+      "relative_path": "corpus/DOCUMENTS/world_regions.txt",
+      "bytes": 13189,
+      "sha256": "9d82d0dcd39047fdfd11516458a57e5e0f1de312da975b5840e5149718855b55",
+      "classification": "canonical_source"
+    },
+    {
+      "legacy_path": "legacy/DOCUMENTS/documents-kg/graphify-out/.graphify_labels.json",
+      "relative_path": "graphify-out/.graphify_labels.json",
+      "bytes": 430,
+      "sha256": "3acdfbac4592ada307a4da5e93488a68de65e6828f5471ce82c7fc649ff98a3c",
+      "classification": "generated_graph"
+    },
+    {
+      "legacy_path": "legacy/DOCUMENTS/documents-kg/graphify-out/.graphify_root",
+      "relative_path": "graphify-out/.graphify_root",
+      "bytes": 38,
+      "sha256": "9cd4fa12a3fdd00c854050969936daeb1aff043f9ffacdd84337905047345fa2",
+      "classification": "generated_graph"
+    },
+    {
+      "legacy_path": "legacy/DOCUMENTS/documents-kg/graphify-out/cache/stat-index.json",
+      "relative_path": "graphify-out/cache/stat-index.json",
+      "bytes": 463,
+      "sha256": "ee49747e30829ecac1cec0628dd319026134bc8d9d62b8a12a169ac23a11f8b7",
+      "classification": "generated_graph"
+    },
+    {
+      "legacy_path": "legacy/DOCUMENTS/documents-kg/graphify-out/GRAPH_REPORT.md",
+      "relative_path": "graphify-out/GRAPH_REPORT.md",
+      "bytes": 3855,
+      "sha256": "b7b7835aec6d218d0e1014ddb12181cf9d2adf1e393b59fda36d6ff239e1e761",
+      "classification": "generated_graph"
+    },
+    {
+      "legacy_path": "legacy/DOCUMENTS/documents-kg/graphify-out/graph.html",
+      "relative_path": "graphify-out/graph.html",
+      "bytes": 2784381,
+      "sha256": "17b967eb5c3d71d28b3fbd6798052cfdf550d6c6263edcd0ee01563a70ab005f",
+      "classification": "generated_graph"
+    },
+    {
+      "legacy_path": "legacy/DOCUMENTS/documents-kg/graphify-out/graph.json",
+      "relative_path": "graphify-out/graph.json",
+      "bytes": 4045121,
+      "sha256": "b70f50a053634f717aa6665e87ee7a9fab655db11c08faef6129b8b3f54652fc",
+      "classification": "generated_graph"
+    },
+    {
+      "legacy_path": "legacy/DOCUMENTS/documents-kg/rag-index/index.json",
+      "relative_path": "rag-index/index.json",
+      "bytes": 10491872,
+      "sha256": "b89d573dd6c3fec6c9e42eca8ba629475098a3ba96b147d9a205ae4e37bc383e",
+      "classification": "generated_rag"
+    },
+    {
+      "legacy_path": "legacy/DOCUMENTS/documents-kg/rag-index/manifest.json",
+      "relative_path": "rag-index/manifest.json",
+      "bytes": 449,
+      "sha256": "7a85daf8c2d2cc87bb81c430b6b213255c6bcd78688d5d7c31eb75df26b1c771",
+      "classification": "generated_rag"
+    },
+    {
+      "legacy_path": "legacy/DOCUMENTS/documents-kg/readme.txt",
+      "relative_path": "readme.txt",
+      "bytes": 3659,
+      "sha256": "23044d446176c214aa9a3f6fc7f613b29e84b3c59a687a5bf81f6eef1ec09722",
+      "classification": "documentation"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "rebuilt_at": "2026-06-25",
+  "nodes": 1295,
+  "edges": 3602,
+  "hyperedges": 11,
+  "extracted_edges": 3592,
+  "secondary_inferred_edges": 10,
+  "index_catalog_edges": 1448,
+  "semantic_supports_edges": 22,
+  "isolated_nodes": 0,
+  "non_document_degree_1_nodes_raw_graph": 0,
+  "non_document_semantic_isolated_excluding_index_and_semantic_supports": 0,
+  "non_document_semantic_degree_lte_1_excluding_index_and_semantic_supports": 525,
+  "source_files": 19
+}

@@ -1,0 +1,6 @@
+import { STAGE17_ROUTE_SCHEMA } from '../policy/constants.js';
+import { validateStage17TimeLightRoute } from '../validation/audit-validation.js';
+export async function callRole(fn,input,role){if(typeof fn!=='function')throw new Error(`${role} requires an executor.`);const out=await fn(structuredClone(input));if(typeof out==='string'){try{return JSON.parse(out);}catch{return out;}}return out;}
+export async function routeFailure(router,payload){if(typeof router!=='function')return defaultRoute('blocked','TIME_LIGHT_ROUTE_MISSING');const route=await callRole(router,payload,'TimeLightAuditRouter');const concerns=validateStage17TimeLightRoute(route);if(concerns.length)return defaultRoute('blocked','TIME_LIGHT_ROUTE_INVALID');return route;}
+export function defaultRoute(route,reason_code){return{version:1,schema:STAGE17_ROUTE_SCHEMA,route,reason_code,evidence:[{kind:'code_route_fallback'}]};}
+export function stage17Error(message,concerns,route,snapshots={}){const e=new Error(message);e.lifecycle={stage_id:17,stage_slug:'time_light_gate',stage_type:'code_first_semantic_audit',failed_gate:'time_light_gate',concerns:concerns??[],terminal_status:'stage_failed',...snapshots};e.semanticRecoveryRoute={repair_kind:'semantic',return_to_stage:route?.route??'blocked',rerun_from_stage:17,reason_code:route?.reason_code??'TIME_LIGHT_FAILED',route};return e;}

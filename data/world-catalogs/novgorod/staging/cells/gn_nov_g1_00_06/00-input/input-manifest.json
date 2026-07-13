@@ -1,0 +1,27 @@
+{
+  "schema_version": "rus.cell_work_input_manifest.v1",
+  "map_revision_id": "novgorod_1230_research_revision_001",
+  "g1_id": "gn_nov_g1_00_06",
+  "input_files": [
+    {
+      "path": "00-input/legacy-snapshot.json",
+      "sha256": "a280d5382a6c5296a36d1476ef7f96b9aa9e462f66dc5039cc4acd1b42b3b338"
+    }
+  ],
+  "required_neighbor_context": "pending_global_mask_approval",
+  "forbidden_changes": [
+    "other_g1_content",
+    "approved_neighbor_boundaries",
+    "source_claims_without_provenance",
+    "automatic_semantic_defaults"
+  ],
+  "status": "prepared_but_blocked",
+  "blocking_reasons": [
+    "global_g1_mask_not_approved",
+    "missing_control_status",
+    "missing_subregion_id",
+    "missing_land_fraction",
+    "missing_water_fraction",
+    "missing_playability_status"
+  ]
+}

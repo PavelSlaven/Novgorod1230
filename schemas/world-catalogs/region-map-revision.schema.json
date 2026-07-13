@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rus.region_map_revision.v1",
+  "title": "Region map revision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "map_revision_id", "region_id", "historical_horizon", "grid_coordinate_system", "g1_cell_size_km", "active_cell_count", "grid_extent", "legacy_id_policy", "source_manifest_digest", "status"],
+  "properties": {
+    "schema_version": { "const": "rus.region_map_revision.v1" },
+    "map_revision_id": { "type": "string", "minLength": 1 },
+    "region_id": { "type": "string", "minLength": 1 },
+    "historical_horizon": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["year", "mode"],
+      "properties": {
+        "year": { "const": 1230 },
+        "mode": { "enum": ["permanent_baseline"] }
+      }
+    },
+    "grid_coordinate_system": { "enum": ["regional_square_32km"] },
+    "g1_cell_size_km": { "const": 32 },
+    "active_cell_count": { "type": "integer", "minimum": 0 },
+    "grid_extent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["min_x", "max_x", "min_y", "max_y"],
+      "properties": {
+        "min_x": { "type": "integer" }, "max_x": { "type": "integer" },
+        "min_y": { "type": "integer" }, "max_y": { "type": "integer" }
+      }
+    },
+    "parent_revision_id": { "type": ["string", "null"] },
+    "legacy_id_policy": { "enum": ["preserve_same_entity"] },
+    "source_manifest_digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "graph_digest": { "type": ["string", "null"], "pattern": "^[a-f0-9]{64}$" },
+    "status": { "enum": ["draft", "staging", "mask_review", "approved", "deprecated", "rejected"] }
+  }
+}

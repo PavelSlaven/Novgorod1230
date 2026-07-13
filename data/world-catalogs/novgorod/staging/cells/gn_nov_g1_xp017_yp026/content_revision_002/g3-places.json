@@ -1,0 +1,1532 @@
+[
+  {
+    "id": "gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+    "parent_node_id": "gn_nov_g2_xp017_yp026_r2_south_main_channel",
+    "name": "Южный входной плёс",
+    "name_status": "functional_descriptive",
+    "place_type": "river_reach",
+    "spatial_precision": "local_area_topological",
+    "permanence": "stable_functional_place_geometry_variable",
+    "seasonal_use": [
+      "open-water and winter accessibility differ",
+      "spring flood may restrict access"
+    ],
+    "population_presence": "transient_or_none_by_default",
+    "control": "tributary_relation_only; local authority unknown",
+    "economic_function": [
+      "movement",
+      "subsistence/resource use",
+      "local habitation only where archaeologically or textually supported"
+    ],
+    "g4_requirements": [
+      "Верхний подход",
+      "Глубокий ход",
+      "Кромка мелей",
+      "Подветренный береговой карман",
+      "Береговой ориентир",
+      "Нижний подход"
+    ],
+    "gameplay_actions": [
+      "navigate",
+      "observe",
+      "rest where safe",
+      "gather or fish where profile permits",
+      "investigate traces",
+      "seek local route knowledge"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+      "SRC_G1R2_CHALOV_DVINA_2012",
+      "SRC_G1R2_GSHHS",
+      "SRC_G1R2_MASK_REV002"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_DVINA_CORRIDOR",
+      "CLM_G1R2_MULTICHANNEL"
+    ],
+    "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined."
+  },
+  {
+    "id": "gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+    "parent_node_id": "gn_nov_g2_xp017_yp026_r2_south_main_channel",
+    "name": "Защищённый внутренний плёс",
+    "name_status": "functional_descriptive",
+    "place_type": "river_reach",
+    "spatial_precision": "local_area_topological",
+    "permanence": "stable_functional_place_geometry_variable",
+    "seasonal_use": [
+      "open-water and winter accessibility differ",
+      "spring flood may restrict access"
+    ],
+    "population_presence": "transient_or_none_by_default",
+    "control": "tributary_relation_only; local authority unknown",
+    "economic_function": [
+      "movement",
+      "subsistence/resource use",
+      "local habitation only where archaeologically or textually supported"
+    ],
+    "g4_requirements": [
+      "Верхний подход",
+      "Глубокий ход",
+      "Кромка мелей",
+      "Подветренный береговой карман",
+      "Береговой ориентир",
+      "Нижний подход"
+    ],
+    "gameplay_actions": [
+      "navigate",
+      "observe",
+      "rest where safe",
+      "gather or fish where profile permits",
+      "investigate traces",
+      "seek local route knowledge"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+      "SRC_G1R2_CHALOV_DVINA_2012",
+      "SRC_G1R2_GSHHS",
+      "SRC_G1R2_MASK_REV002"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_DVINA_CORRIDOR",
+      "CLM_G1R2_MULTICHANNEL"
+    ],
+    "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined."
+  },
+  {
+    "id": "gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+    "parent_node_id": "gn_nov_g2_xp017_yp026_r2_central_main_channel",
+    "name": "Средний судоходный плёс",
+    "name_status": "functional_descriptive",
+    "place_type": "river_reach",
+    "spatial_precision": "local_area_topological",
+    "permanence": "stable_functional_place_geometry_variable",
+    "seasonal_use": [
+      "open-water and winter accessibility differ",
+      "spring flood may restrict access"
+    ],
+    "population_presence": "transient_or_none_by_default",
+    "control": "tributary_relation_only; local authority unknown",
+    "economic_function": [
+      "movement",
+      "subsistence/resource use",
+      "local habitation only where archaeologically or textually supported"
+    ],
+    "g4_requirements": [
+      "Верхний подход",
+      "Глубокий ход",
+      "Кромка мелей",
+      "Подветренный береговой карман",
+      "Береговой ориентир",
+      "Нижний подход"
+    ],
+    "gameplay_actions": [
+      "navigate",
+      "observe",
+      "rest where safe",
+      "gather or fish where profile permits",
+      "investigate traces",
+      "seek local route knowledge"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+      "SRC_G1R2_CHALOV_DVINA_2012",
+      "SRC_G1R2_MASK_REV002"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_DVINA_CORRIDOR",
+      "CLM_G1R2_NAVIGATION_KNOWLEDGE"
+    ],
+    "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined."
+  },
+  {
+    "id": "gn_nov_g3_xp017_yp026_r2_central_current_split",
+    "parent_node_id": "gn_nov_g2_xp017_yp026_r2_central_main_channel",
+    "name": "Срединное разделение течений",
+    "name_status": "functional_descriptive",
+    "place_type": "channel_split",
+    "spatial_precision": "local_area_topological",
+    "permanence": "stable_functional_place_geometry_variable",
+    "seasonal_use": [
+      "open-water and winter accessibility differ",
+      "spring flood may restrict access"
+    ],
+    "population_presence": "transient_or_none_by_default",
+    "control": "tributary_relation_only; local authority unknown",
+    "economic_function": [
+      "movement",
+      "subsistence/resource use",
+      "local habitation only where archaeologically or textually supported"
+    ],
+    "g4_requirements": [
+      "Подход к разделению",
+      "Раздел потока",
+      "Быстрый рукав",
+      "Тихий рукав",
+      "Кромка островка",
+      "Сход рукавов"
+    ],
+    "gameplay_actions": [
+      "navigate",
+      "observe",
+      "rest where safe",
+      "gather or fish where profile permits",
+      "investigate traces",
+      "seek local route knowledge"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+      "SRC_G1R2_CHALOV_DVINA_2012",
+      "SRC_G1R2_MASK_REV002"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_DVINA_CORRIDOR",
+      "CLM_G1R2_NAVIGATION_KNOWLEDGE"
+    ],
+    "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined."
+  },
+  {
+    "id": "gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+    "parent_node_id": "gn_nov_g2_xp017_yp026_r2_north_main_channel",
+    "name": "Северный выходной плёс",
+    "name_status": "functional_descriptive",
+    "place_type": "river_reach",
+    "spatial_precision": "local_area_topological",
+    "permanence": "stable_functional_place_geometry_variable",
+    "seasonal_use": [
+      "open-water and winter accessibility differ",
+      "spring flood may restrict access"
+    ],
+    "population_presence": "transient_or_none_by_default",
+    "control": "tributary_relation_only; local authority unknown",
+    "economic_function": [
+      "movement",
+      "subsistence/resource use",
+      "local habitation only where archaeologically or textually supported"
+    ],
+    "g4_requirements": [
+      "Верхний подход",
+      "Глубокий ход",
+      "Кромка мелей",
+      "Подветренный береговой карман",
+      "Береговой ориентир",
+      "Нижний подход"
+    ],
+    "gameplay_actions": [
+      "navigate",
+      "observe",
+      "rest where safe",
+      "gather or fish where profile permits",
+      "investigate traces",
+      "seek local route knowledge"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+      "SRC_G1R2_MASK_REV002"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_DVINA_CORRIDOR",
+      "CLM_G1R2_NORTH_EXIT"
+    ],
+    "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined."
+  },
+  {
+    "id": "gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+    "parent_node_id": "gn_nov_g2_xp017_yp026_r2_north_main_channel",
+    "name": "Открытый поворот устьевого хода",
+    "name_status": "functional_descriptive",
+    "place_type": "river_reach",
+    "spatial_precision": "local_area_topological",
+    "permanence": "stable_functional_place_geometry_variable",
+    "seasonal_use": [
+      "open-water and winter accessibility differ",
+      "spring flood may restrict access"
+    ],
+    "population_presence": "transient_or_none_by_default",
+    "control": "tributary_relation_only; local authority unknown",
+    "economic_function": [
+      "movement",
+      "subsistence/resource use",
+      "local habitation only where archaeologically or textually supported"
+    ],
+    "g4_requirements": [
+      "Верхний подход",
+      "Глубокий ход",
+      "Кромка мелей",
+      "Подветренный береговой карман",
+      "Береговой ориентир",
+      "Нижний подход"
+    ],
+    "gameplay_actions": [
+      "navigate",
+      "observe",
+      "rest where safe",
+      "gather or fish where profile permits",
+      "investigate traces",
+      "seek local route knowledge"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+      "SRC_G1R2_MASK_REV002"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_DVINA_CORRIDOR",
+      "CLM_G1R2_NORTH_EXIT"
+    ],
+    "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined."
+  },
+  {
+    "id": "gn_nov_g3_xp017_yp026_r2_west_side_channel",
+    "parent_node_id": "gn_nov_g2_xp017_yp026_r2_west_distributary_belt",
+    "name": "Западная боковая протока",
+    "name_status": "functional_descriptive",
+    "place_type": "side_channel",
+    "spatial_precision": "local_area_topological",
+    "permanence": "stable_functional_place_geometry_variable",
+    "seasonal_use": [
+      "open-water and winter accessibility differ",
+      "spring flood may restrict access"
+    ],
+    "population_presence": "transient_or_none_by_default",
+    "control": "tributary_relation_only; local authority unknown",
+    "economic_function": [
+      "movement",
+      "subsistence/resource use",
+      "local habitation only where archaeologically or textually supported"
+    ],
+    "g4_requirements": [
+      "Вход в протоку",
+      "Узкий ход",
+      "Тихий плёс",
+      "Илистый берег",
+      "Сезонная преграда",
+      "Выход из протоки"
+    ],
+    "gameplay_actions": [
+      "navigate",
+      "observe",
+      "rest where safe",
+      "gather or fish where profile permits",
+      "investigate traces",
+      "seek local route knowledge"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_CHALOV_DVINA_2012",
+      "SRC_G1R2_GSHHS",
+      "SRC_G1R2_MASK_REV002"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_MULTICHANNEL",
+      "CLM_G1R2_SHORELINE_LIMIT"
+    ],
+    "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined."
+  },
+  {
+    "id": "gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+    "parent_node_id": "gn_nov_g2_xp017_yp026_r2_west_distributary_belt",
+    "name": "Западный скрытый затон",
+    "name_status": "functional_descriptive",
+    "place_type": "backwater",
+    "spatial_precision": "local_area_topological",
+    "permanence": "stable_functional_place_geometry_variable",
+    "seasonal_use": [
+      "open-water and winter accessibility differ",
+      "spring flood may restrict access"
+    ],
+    "population_presence": "transient_or_none_by_default",
+    "control": "tributary_relation_only; local authority unknown",
+    "economic_function": [
+      "movement",
+      "subsistence/resource use",
+      "local habitation only where archaeologically or textually supported"
+    ],
+    "g4_requirements": [
+      "Устье затона",
+      "Тихая вода",
+      "Кромка зарослей",
+      "Топкий берег",
+      "Сухой береговой пятачок",
+      "Скрытый выход"
+    ],
+    "gameplay_actions": [
+      "navigate",
+      "observe",
+      "rest where safe",
+      "gather or fish where profile permits",
+      "investigate traces",
+      "seek local route knowledge"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_CHALOV_DVINA_2012",
+      "SRC_G1R2_GSHHS",
+      "SRC_G1R2_MASK_REV002"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_MULTICHANNEL",
+      "CLM_G1R2_SHORELINE_LIMIT"
+    ],
+    "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined."
+  },
+  {
+    "id": "gn_nov_g3_xp017_yp026_r2_east_side_channel",
+    "parent_node_id": "gn_nov_g2_xp017_yp026_r2_east_distributary_belt",
+    "name": "Восточная боковая протока",
+    "name_status": "functional_descriptive",
+    "place_type": "side_channel",
+    "spatial_precision": "local_area_topological",
+    "permanence": "stable_functional_place_geometry_variable",
+    "seasonal_use": [
+      "open-water and winter accessibility differ",
+      "spring flood may restrict access"
+    ],
+    "population_presence": "transient_or_none_by_default",
+    "control": "tributary_relation_only; local authority unknown",
+    "economic_function": [
+      "movement",
+      "subsistence/resource use",
+      "local habitation only where archaeologically or textually supported"
+    ],
+    "g4_requirements": [
+      "Вход в протоку",
+      "Узкий ход",
+      "Тихий плёс",
+      "Илистый берег",
+      "Сезонная преграда",
+      "Выход из протоки"
+    ],
+    "gameplay_actions": [
+      "navigate",
+      "observe",
+      "rest where safe",
+      "gather or fish where profile permits",
+      "investigate traces",
+      "seek local route knowledge"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_CHALOV_DVINA_2012",
+      "SRC_G1R2_GSHHS",
+      "SRC_G1R2_MASK_REV002"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_MULTICHANNEL",
+      "CLM_G1R2_SHORELINE_LIMIT"
+    ],
+    "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined."
+  },
+  {
+    "id": "gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+    "parent_node_id": "gn_nov_g2_xp017_yp026_r2_east_distributary_belt",
+    "name": "Восточный паводковый обход",
+    "name_status": "functional_descriptive",
+    "place_type": "side_channel",
+    "spatial_precision": "local_area_topological",
+    "permanence": "stable_functional_place_geometry_variable",
+    "seasonal_use": [
+      "open-water and winter accessibility differ",
+      "spring flood may restrict access"
+    ],
+    "population_presence": "transient_or_none_by_default",
+    "control": "tributary_relation_only; local authority unknown",
+    "economic_function": [
+      "movement",
+      "subsistence/resource use",
+      "local habitation only where archaeologically or textually supported"
+    ],
+    "g4_requirements": [
+      "Вход в протоку",
+      "Узкий ход",
+      "Тихий плёс",
+      "Илистый берег",
+      "Сезонная преграда",
+      "Выход из протоки"
+    ],
+    "gameplay_actions": [
+      "navigate",
+      "observe",
+      "rest where safe",
+      "gather or fish where profile permits",
+      "investigate traces",
+      "seek local route knowledge"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_CHALOV_DVINA_2012",
+      "SRC_G1R2_GSHHS",
+      "SRC_G1R2_MASK_REV002"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_MULTICHANNEL",
+      "CLM_G1R2_SHORELINE_LIMIT"
+    ],
+    "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined."
+  },
+  {
+    "id": "gn_nov_g3_xp017_yp026_r2_large_island_head",
+    "parent_node_id": "gn_nov_g2_xp017_yp026_r2_island_head_mosaic",
+    "name": "Голова крупного пойменного острова",
+    "name_status": "functional_descriptive",
+    "place_type": "island_head",
+    "spatial_precision": "local_area_topological",
+    "permanence": "stable_functional_place_geometry_variable",
+    "seasonal_use": [
+      "open-water and winter accessibility differ",
+      "spring flood may restrict access"
+    ],
+    "population_presence": "transient_or_none_by_default",
+    "control": "tributary_relation_only; local authority unknown",
+    "economic_function": [
+      "movement",
+      "subsistence/resource use",
+      "local habitation only where archaeologically or textually supported"
+    ],
+    "g4_requirements": [
+      "Верхняя оконечность",
+      "Западный обход",
+      "Восточный обход",
+      "Высокая кромка",
+      "Внутреннее понижение",
+      "Нижняя оконечность"
+    ],
+    "gameplay_actions": [
+      "navigate",
+      "observe",
+      "rest where safe",
+      "gather or fish where profile permits",
+      "investigate traces",
+      "seek local route knowledge"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_CHALOV_DVINA_2012",
+      "SRC_G1R2_GSHHS"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_MULTICHANNEL"
+    ],
+    "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined."
+  },
+  {
+    "id": "gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+    "parent_node_id": "gn_nov_g2_xp017_yp026_r2_island_head_mosaic",
+    "name": "Островок у разделения русел",
+    "name_status": "functional_descriptive",
+    "place_type": "island_head",
+    "spatial_precision": "local_area_topological",
+    "permanence": "stable_functional_place_geometry_variable",
+    "seasonal_use": [
+      "open-water and winter accessibility differ",
+      "spring flood may restrict access"
+    ],
+    "population_presence": "transient_or_none_by_default",
+    "control": "tributary_relation_only; local authority unknown",
+    "economic_function": [
+      "movement",
+      "subsistence/resource use",
+      "local habitation only where archaeologically or textually supported"
+    ],
+    "g4_requirements": [
+      "Верхняя оконечность",
+      "Западный обход",
+      "Восточный обход",
+      "Высокая кромка",
+      "Внутреннее понижение",
+      "Нижняя оконечность"
+    ],
+    "gameplay_actions": [
+      "navigate",
+      "observe",
+      "rest where safe",
+      "gather or fish where profile permits",
+      "investigate traces",
+      "seek local route knowledge"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_CHALOV_DVINA_2012",
+      "SRC_G1R2_GSHHS"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_MULTICHANNEL"
+    ],
+    "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined."
+  },
+  {
+    "id": "gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+    "parent_node_id": "gn_nov_g2_xp017_yp026_r2_inner_floodplain",
+    "name": "Сухая островная грива",
+    "name_status": "functional_descriptive",
+    "place_type": "island_ridge",
+    "spatial_precision": "local_area_topological",
+    "permanence": "stable_functional_place_geometry_variable",
+    "seasonal_use": [
+      "open-water and winter accessibility differ",
+      "spring flood may restrict access"
+    ],
+    "population_presence": "transient_or_none_by_default",
+    "control": "tributary_relation_only; local authority unknown",
+    "economic_function": [
+      "movement",
+      "subsistence/resource use",
+      "local habitation only where archaeologically or textually supported"
+    ],
+    "g4_requirements": [
+      "Береговая высадка",
+      "Гребень гривы",
+      "Лесная кромка",
+      "Влажная ложбина",
+      "Стояночная площадка",
+      "Нижний выход"
+    ],
+    "gameplay_actions": [
+      "navigate",
+      "observe",
+      "rest where safe",
+      "gather or fish where profile permits",
+      "investigate traces",
+      "seek local route knowledge"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_CHALOV_DVINA_2012",
+      "SRC_G1R2_GSHHS"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_MULTICHANNEL",
+      "CLM_G1R2_FLOODPLAIN_RIDGES"
+    ],
+    "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined."
+  },
+  {
+    "id": "gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+    "parent_node_id": "gn_nov_g2_xp017_yp026_r2_inner_floodplain",
+    "name": "Внутренняя затапливаемая котловина",
+    "name_status": "functional_descriptive",
+    "place_type": "floodplain_basin",
+    "spatial_precision": "local_area_topological",
+    "permanence": "stable_functional_place_geometry_variable",
+    "seasonal_use": [
+      "open-water and winter accessibility differ",
+      "spring flood may restrict access"
+    ],
+    "population_presence": "transient_or_none_by_default",
+    "control": "tributary_relation_only; local authority unknown",
+    "economic_function": [
+      "movement",
+      "subsistence/resource use",
+      "local habitation only where archaeologically or textually supported"
+    ],
+    "g4_requirements": [
+      "Паводковый вход",
+      "Мелководная котловина",
+      "Заросшая кромка",
+      "Сухой бугор",
+      "Переливная протока",
+      "Болотная окраина"
+    ],
+    "gameplay_actions": [
+      "navigate",
+      "observe",
+      "rest where safe",
+      "gather or fish where profile permits",
+      "investigate traces",
+      "seek local route knowledge"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_CHALOV_DVINA_2012",
+      "SRC_G1R2_GSHHS"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_MULTICHANNEL",
+      "CLM_G1R2_FLOODPLAIN_RIDGES"
+    ],
+    "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined."
+  },
+  {
+    "id": "gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+    "parent_node_id": "gn_nov_g2_xp017_yp026_r2_shoal_bar_field",
+    "name": "Поле меняющихся мелей",
+    "name_status": "functional_descriptive",
+    "place_type": "shoal_field",
+    "spatial_precision": "local_area_topological",
+    "permanence": "stable_functional_place_geometry_variable",
+    "seasonal_use": [
+      "open-water and winter accessibility differ",
+      "spring flood may restrict access"
+    ],
+    "population_presence": "transient_or_none_by_default",
+    "control": "tributary_relation_only; local authority unknown",
+    "economic_function": [
+      "movement",
+      "subsistence/resource use",
+      "local habitation only where archaeologically or textually supported"
+    ],
+    "g4_requirements": [
+      "Предупредительный плёс",
+      "Глубокая струя",
+      "Мелкие гряды",
+      "Поперечное течение",
+      "Аварийная высадка",
+      "Зимняя трещинная полоса"
+    ],
+    "gameplay_actions": [
+      "navigate",
+      "observe",
+      "rest where safe",
+      "gather or fish where profile permits",
+      "investigate traces",
+      "seek local route knowledge"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_CHALOV_DVINA_2012",
+      "SRC_G1R2_GSHHS"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_MULTICHANNEL",
+      "CLM_G1R2_NAVIGATION_KNOWLEDGE"
+    ],
+    "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined."
+  },
+  {
+    "id": "gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+    "parent_node_id": "gn_nov_g2_xp017_yp026_r2_shoal_bar_field",
+    "name": "Наносная гряда с плавником",
+    "name_status": "functional_descriptive",
+    "place_type": "driftwood_bar",
+    "spatial_precision": "local_area_topological",
+    "permanence": "stable_functional_place_geometry_variable",
+    "seasonal_use": [
+      "open-water and winter accessibility differ",
+      "spring flood may restrict access"
+    ],
+    "population_presence": "transient_or_none_by_default",
+    "control": "tributary_relation_only; local authority unknown",
+    "economic_function": [
+      "movement",
+      "subsistence/resource use",
+      "local habitation only where archaeologically or textually supported"
+    ],
+    "g4_requirements": [
+      "Верхняя кромка наноса",
+      "Полоса плавника",
+      "Мелкий затон",
+      "Сухая вершина гряды",
+      "Нижний промыв"
+    ],
+    "gameplay_actions": [
+      "navigate",
+      "observe",
+      "rest where safe",
+      "gather or fish where profile permits",
+      "investigate traces",
+      "seek local route knowledge"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_CHALOV_DVINA_2012",
+      "SRC_G1R2_GSHHS"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_MULTICHANNEL",
+      "CLM_G1R2_NAVIGATION_KNOWLEDGE"
+    ],
+    "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined."
+  },
+  {
+    "id": "gn_nov_g3_xp017_yp026_r2_reed_backwater",
+    "parent_node_id": "gn_nov_g2_xp017_yp026_r2_backwater_wetlands",
+    "name": "Камышовый затон",
+    "name_status": "functional_descriptive",
+    "place_type": "reed_backwater",
+    "spatial_precision": "local_area_topological",
+    "permanence": "stable_functional_place_geometry_variable",
+    "seasonal_use": [
+      "open-water and winter accessibility differ",
+      "spring flood may restrict access"
+    ],
+    "population_presence": "transient_or_none_by_default",
+    "control": "tributary_relation_only; local authority unknown",
+    "economic_function": [
+      "movement",
+      "subsistence/resource use",
+      "local habitation only where archaeologically or textually supported"
+    ],
+    "g4_requirements": [
+      "Вход в заросший затон",
+      "Открытая заводь",
+      "Тростниковый проход",
+      "Птичье мелководье",
+      "Илистый берег",
+      "Полоса тонкого льда"
+    ],
+    "gameplay_actions": [
+      "navigate",
+      "observe",
+      "rest where safe",
+      "gather or fish where profile permits",
+      "investigate traces",
+      "seek local route knowledge"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+      "SRC_G1R2_CHALOV_DVINA_2012",
+      "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+      "SRC_G1R2_GSHHS"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_MULTICHANNEL",
+      "CLM_G1R2_RESOURCE_USE"
+    ],
+    "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined."
+  },
+  {
+    "id": "gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+    "parent_node_id": "gn_nov_g2_xp017_yp026_r2_backwater_wetlands",
+    "name": "Староречный плёс",
+    "name_status": "functional_descriptive",
+    "place_type": "old_channel",
+    "spatial_precision": "local_area_topological",
+    "permanence": "stable_functional_place_geometry_variable",
+    "seasonal_use": [
+      "open-water and winter accessibility differ",
+      "spring flood may restrict access"
+    ],
+    "population_presence": "transient_or_none_by_default",
+    "control": "tributary_relation_only; local authority unknown",
+    "economic_function": [
+      "movement",
+      "subsistence/resource use",
+      "local habitation only where archaeologically or textually supported"
+    ],
+    "g4_requirements": [
+      "Старое устье",
+      "Глубокий омут",
+      "Заиленный участок",
+      "Ивовая кромка",
+      "Сухой переход",
+      "Скрытая протока"
+    ],
+    "gameplay_actions": [
+      "navigate",
+      "observe",
+      "rest where safe",
+      "gather or fish where profile permits",
+      "investigate traces",
+      "seek local route knowledge"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+      "SRC_G1R2_CHALOV_DVINA_2012",
+      "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+      "SRC_G1R2_GSHHS"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_MULTICHANNEL",
+      "CLM_G1R2_RESOURCE_USE"
+    ],
+    "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined."
+  },
+  {
+    "id": "gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+    "parent_node_id": "gn_nov_g2_xp017_yp026_r2_dry_ridge_belt",
+    "name": "Проход по сухой пойменной гриве",
+    "name_status": "functional_descriptive",
+    "place_type": "dry_ridge_route",
+    "spatial_precision": "local_area_topological",
+    "permanence": "stable_functional_place_geometry_variable",
+    "seasonal_use": [
+      "open-water and winter accessibility differ",
+      "spring flood may restrict access"
+    ],
+    "population_presence": "transient_or_none_by_default",
+    "control": "tributary_relation_only; local authority unknown",
+    "economic_function": [
+      "movement",
+      "subsistence/resource use",
+      "local habitation only where archaeologically or textually supported"
+    ],
+    "g4_requirements": [
+      "Южный подход к гриве",
+      "Ход по гребню",
+      "Спуск к воде",
+      "Лесное укрытие",
+      "Мокрый разрыв",
+      "Северный сход"
+    ],
+    "gameplay_actions": [
+      "navigate",
+      "observe",
+      "rest where safe",
+      "gather or fish where profile permits",
+      "investigate traces",
+      "seek local route knowledge"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_CHALOV_DVINA_2012"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_FLOODPLAIN_RIDGES"
+    ],
+    "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined."
+  },
+  {
+    "id": "gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+    "parent_node_id": "gn_nov_g2_xp017_yp026_r2_dry_ridge_belt",
+    "name": "Защищённая береговая терраса",
+    "name_status": "functional_descriptive",
+    "place_type": "landing_terrace",
+    "spatial_precision": "local_area_topological",
+    "permanence": "stable_functional_place_geometry_variable",
+    "seasonal_use": [
+      "open-water and winter accessibility differ",
+      "spring flood may restrict access"
+    ],
+    "population_presence": "transient_or_none_by_default",
+    "control": "tributary_relation_only; local authority unknown",
+    "economic_function": [
+      "movement",
+      "subsistence/resource use",
+      "local habitation only where archaeologically or textually supported"
+    ],
+    "g4_requirements": [
+      "Водный подход",
+      "Береговая кромка",
+      "Высокая площадка",
+      "Место набора воды",
+      "Тропа в глубь суши",
+      "Граница половодья"
+    ],
+    "gameplay_actions": [
+      "navigate",
+      "observe",
+      "rest where safe",
+      "gather or fish where profile permits",
+      "investigate traces",
+      "seek local route knowledge"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_CHALOV_DVINA_2012"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_FLOODPLAIN_RIDGES"
+    ],
+    "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined."
+  },
+  {
+    "id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+    "parent_node_id": "gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area",
+    "name": "Вихтуй: зона локализации",
+    "name_status": "attested_variant",
+    "place_type": "vikhtuy_locality",
+    "spatial_precision": "local_area",
+    "permanence": "attested_locality_exact_form_unknown",
+    "seasonal_use": [
+      "open-water and winter accessibility differ",
+      "spring flood may restrict access"
+    ],
+    "population_presence": "local_or_seasonal_possible",
+    "control": "tributary_relation_only; local authority unknown",
+    "economic_function": [
+      "movement",
+      "subsistence/resource use",
+      "local habitation only where archaeologically or textually supported"
+    ],
+    "g4_requirements": [
+      "Речной подход к Вихтую",
+      "Высадка у Вихтуя: зона-кандидат",
+      "Площадка возможного обитания",
+      "Дворовый участок: реконструкция",
+      "Хозяйственно-складская зона: реконструкция",
+      "Местный водный доступ",
+      "Ход к лесным ресурсам",
+      "Открытая площадка контакта: реконструкция"
+    ],
+    "gameplay_actions": [
+      "navigate",
+      "observe",
+      "rest where safe",
+      "gather or fish where profile permits",
+      "investigate traces",
+      "seek local route knowledge"
+    ],
+    "evidence_status": "source_backed_with_localization_uncertainty",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_ARKHANGELSK_HOARD_1992",
+      "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+      "SRC_G1R2_SCHAPOV_1976_CHARTER"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_VIKHTUY",
+      "CLM_G1R2_VIKHTUY_LOCALIZATION",
+      "CLM_G1R2_1230_CONTINUITY"
+    ],
+    "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined."
+  },
+  {
+    "id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+    "parent_node_id": "gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area",
+    "name": "Речной подход к Вихтую",
+    "name_status": "functional_descriptive",
+    "place_type": "landing_terrace",
+    "spatial_precision": "local_area_topological",
+    "permanence": "stable_functional_place_geometry_variable",
+    "seasonal_use": [
+      "open-water and winter accessibility differ",
+      "spring flood may restrict access"
+    ],
+    "population_presence": "local_or_seasonal_possible",
+    "control": "tributary_relation_only; local authority unknown",
+    "economic_function": [
+      "movement",
+      "subsistence/resource use",
+      "local habitation only where archaeologically or textually supported"
+    ],
+    "g4_requirements": [
+      "Водный подход",
+      "Береговая кромка",
+      "Высокая площадка",
+      "Место набора воды",
+      "Тропа в глубь суши",
+      "Граница половодья"
+    ],
+    "gameplay_actions": [
+      "navigate",
+      "observe",
+      "rest where safe",
+      "gather or fish where profile permits",
+      "investigate traces",
+      "seek local route knowledge"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_ARKHANGELSK_HOARD_1992",
+      "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+      "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+      "SRC_G1R2_MASK_REV002",
+      "SRC_G1R2_SCHAPOV_1976_CHARTER"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_VIKHTUY_LOCALIZATION",
+      "CLM_G1R2_DVINA_CORRIDOR"
+    ],
+    "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined."
+  },
+  {
+    "id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+    "parent_node_id": "gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area",
+    "name": "Ресурсная окраина Вихтуйской зоны",
+    "name_status": "functional_descriptive",
+    "place_type": "forest_tract",
+    "spatial_precision": "local_area_topological",
+    "permanence": "stable_functional_place_geometry_variable",
+    "seasonal_use": [
+      "open-water and winter accessibility differ",
+      "spring flood may restrict access"
+    ],
+    "population_presence": "local_or_seasonal_possible",
+    "control": "tributary_relation_only; local authority unknown",
+    "economic_function": [
+      "movement",
+      "subsistence/resource use",
+      "local habitation only where archaeologically or textually supported"
+    ],
+    "g4_requirements": [
+      "Выход к реке",
+      "Влажная лесная низина",
+      "Сухой лесной островок",
+      "Звериная тропа",
+      "Промысловый участок",
+      "Глубокий лес"
+    ],
+    "gameplay_actions": [
+      "navigate",
+      "observe",
+      "rest where safe",
+      "gather or fish where profile permits",
+      "investigate traces",
+      "seek local route knowledge"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+      "SRC_G1R2_CHALOV_DVINA_2012",
+      "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+      "SRC_G1R2_GSHHS"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_RESOURCE_USE",
+      "CLM_G1R2_FOREST_HINTERLAND"
+    ],
+    "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined."
+  },
+  {
+    "id": "gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+    "parent_node_id": "gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area",
+    "name": "Заостровский поселенческий участок",
+    "name_status": "functional_descriptive",
+    "place_type": "archaeological_settlement",
+    "spatial_precision": "local_area",
+    "permanence": "archaeological_place_extent_unknown",
+    "seasonal_use": [
+      "open-water and winter accessibility differ",
+      "spring flood may restrict access"
+    ],
+    "population_presence": "local_or_seasonal_possible",
+    "control": "tributary_relation_only; local authority unknown",
+    "economic_function": [
+      "movement",
+      "subsistence/resource use",
+      "local habitation only where archaeologically or textually supported"
+    ],
+    "g4_requirements": [
+      "Береговой подход",
+      "Высадочная площадка: реконструкция",
+      "Жилая терраса: реконструкция",
+      "Дворовый комплекс: реконструкция",
+      "Хозяйственная рабочая зона: реконструкция",
+      "Зона хранения: реконструкция",
+      "Доступ к воде",
+      "Выход к лесу и лугам"
+    ],
+    "gameplay_actions": [
+      "navigate",
+      "observe",
+      "rest where safe",
+      "gather or fish where profile permits",
+      "investigate traces",
+      "seek local route knowledge"
+    ],
+    "evidence_status": "archaeologically_supported_with_access_limit",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_ARKHANGELSK_HOARD_1992",
+      "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+      "SRC_G1R2_SCHAPOV_1976_CHARTER"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_ZAOSTROVYE",
+      "CLM_G1R2_1230_CONTINUITY"
+    ],
+    "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined."
+  },
+  {
+    "id": "gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+    "parent_node_id": "gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area",
+    "name": "Заостровская погребальная зона",
+    "name_status": "functional_descriptive",
+    "place_type": "burial_area",
+    "spatial_precision": "local_area",
+    "permanence": "archaeological_place_extent_unknown",
+    "seasonal_use": [
+      "open-water and winter accessibility differ",
+      "spring flood may restrict access"
+    ],
+    "population_presence": "local_or_seasonal_possible",
+    "control": "tributary_relation_only; local authority unknown",
+    "economic_function": [
+      "movement",
+      "subsistence/resource use",
+      "local habitation only where archaeologically or textually supported"
+    ],
+    "g4_requirements": [
+      "Подход к погребальной зоне",
+      "Внешняя граница",
+      "Погребальный участок: археологическая модель",
+      "Обрядовая кромка: реконструкция",
+      "Лесная полоса",
+      "Влажная граница"
+    ],
+    "gameplay_actions": [
+      "navigate",
+      "observe",
+      "rest where safe",
+      "gather or fish where profile permits",
+      "investigate traces",
+      "seek local route knowledge"
+    ],
+    "evidence_status": "archaeologically_supported_with_access_limit",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_ZAOSTROVYE"
+    ],
+    "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined."
+  },
+  {
+    "id": "gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+    "parent_node_id": "gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area",
+    "name": "Заостровский береговой подход",
+    "name_status": "functional_descriptive",
+    "place_type": "local_landing",
+    "spatial_precision": "local_area_topological",
+    "permanence": "stable_functional_place_geometry_variable",
+    "seasonal_use": [
+      "open-water and winter accessibility differ",
+      "spring flood may restrict access"
+    ],
+    "population_presence": "local_or_seasonal_possible",
+    "control": "tributary_relation_only; local authority unknown",
+    "economic_function": [
+      "movement",
+      "subsistence/resource use",
+      "local habitation only where archaeologically or textually supported"
+    ],
+    "g4_requirements": [
+      "Речной подход",
+      "Высадочная кромка",
+      "Место вытаскивания лодок",
+      "Сухая площадка",
+      "Путь к поселенческому участку",
+      "Граница высокой воды"
+    ],
+    "gameplay_actions": [
+      "navigate",
+      "observe",
+      "rest where safe",
+      "gather or fish where profile permits",
+      "investigate traces",
+      "seek local route knowledge"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+      "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+      "SRC_G1R2_MASK_REV002"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_ZAOSTROVYE",
+      "CLM_G1R2_DVINA_CORRIDOR"
+    ],
+    "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined."
+  },
+  {
+    "id": "gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+    "parent_node_id": "gn_nov_g2_xp017_yp026_r2_forest_hinterland",
+    "name": "Влажный хвойный лес",
+    "name_status": "functional_descriptive",
+    "place_type": "forest_tract",
+    "spatial_precision": "local_area_topological",
+    "permanence": "stable_functional_place_geometry_variable",
+    "seasonal_use": [
+      "open-water and winter accessibility differ",
+      "spring flood may restrict access"
+    ],
+    "population_presence": "transient_or_none_by_default",
+    "control": "tributary_relation_only; local authority unknown",
+    "economic_function": [
+      "movement",
+      "subsistence/resource use",
+      "local habitation only where archaeologically or textually supported"
+    ],
+    "g4_requirements": [
+      "Выход к реке",
+      "Влажная лесная низина",
+      "Сухой лесной островок",
+      "Звериная тропа",
+      "Промысловый участок",
+      "Глубокий лес"
+    ],
+    "gameplay_actions": [
+      "navigate",
+      "observe",
+      "rest where safe",
+      "gather or fish where profile permits",
+      "investigate traces",
+      "seek local route knowledge"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+      "SRC_G1R2_CHALOV_DVINA_2012",
+      "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+      "SRC_G1R2_GSHHS"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_FOREST_HINTERLAND",
+      "CLM_G1R2_RESOURCE_USE"
+    ],
+    "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined."
+  },
+  {
+    "id": "gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+    "parent_node_id": "gn_nov_g2_xp017_yp026_r2_forest_hinterland",
+    "name": "Сухая лесная гряда",
+    "name_status": "functional_descriptive",
+    "place_type": "pine_ridge",
+    "spatial_precision": "local_area_topological",
+    "permanence": "stable_functional_place_geometry_variable",
+    "seasonal_use": [
+      "open-water and winter accessibility differ",
+      "spring flood may restrict access"
+    ],
+    "population_presence": "transient_or_none_by_default",
+    "control": "tributary_relation_only; local authority unknown",
+    "economic_function": [
+      "movement",
+      "subsistence/resource use",
+      "local habitation only where archaeologically or textually supported"
+    ],
+    "g4_requirements": [
+      "Подход к гряде",
+      "Сухой гребень",
+      "Сосновый участок",
+      "Просвет обзора",
+      "Песчаная ложбина",
+      "Северный спуск"
+    ],
+    "gameplay_actions": [
+      "navigate",
+      "observe",
+      "rest where safe",
+      "gather or fish where profile permits",
+      "investigate traces",
+      "seek local route knowledge"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+      "SRC_G1R2_CHALOV_DVINA_2012",
+      "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+      "SRC_G1R2_GSHHS"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_FOREST_HINTERLAND",
+      "CLM_G1R2_RESOURCE_USE"
+    ],
+    "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined."
+  },
+  {
+    "id": "gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+    "parent_node_id": "gn_nov_g2_xp017_yp026_r2_small_stream_network",
+    "name": "Устье малого водотока",
+    "name_status": "functional_descriptive",
+    "place_type": "tributary_mouth",
+    "spatial_precision": "local_area_topological",
+    "permanence": "stable_functional_place_geometry_variable",
+    "seasonal_use": [
+      "open-water and winter accessibility differ",
+      "spring flood may restrict access"
+    ],
+    "population_presence": "transient_or_none_by_default",
+    "control": "tributary_relation_only; local authority unknown",
+    "economic_function": [
+      "movement",
+      "subsistence/resource use",
+      "local habitation only where archaeologically or textually supported"
+    ],
+    "g4_requirements": [
+      "Подход с Двины",
+      "Устьевая мель",
+      "Нижний ход ручья",
+      "Болотистый берег",
+      "Переход через ручей",
+      "Путь вверх по водотоку"
+    ],
+    "gameplay_actions": [
+      "navigate",
+      "observe",
+      "rest where safe",
+      "gather or fish where profile permits",
+      "investigate traces",
+      "seek local route knowledge"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_CHALOV_DVINA_2012",
+      "SRC_G1R2_GSHHS"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_MULTICHANNEL",
+      "CLM_G1R2_FOREST_HINTERLAND"
+    ],
+    "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined."
+  },
+  {
+    "id": "gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+    "parent_node_id": "gn_nov_g2_xp017_yp026_r2_small_stream_network",
+    "name": "Лесной ручьевой ход",
+    "name_status": "functional_descriptive",
+    "place_type": "forest_stream",
+    "spatial_precision": "local_area_topological",
+    "permanence": "stable_functional_place_geometry_variable",
+    "seasonal_use": [
+      "open-water and winter accessibility differ",
+      "spring flood may restrict access"
+    ],
+    "population_presence": "transient_or_none_by_default",
+    "control": "tributary_relation_only; local authority unknown",
+    "economic_function": [
+      "movement",
+      "subsistence/resource use",
+      "local habitation only where archaeologically or textually supported"
+    ],
+    "g4_requirements": [
+      "Нижний ручьевой ход",
+      "Тропа по берегу",
+      "Завал",
+      "Лесной омут",
+      "Болотный переход",
+      "Разделение истоков"
+    ],
+    "gameplay_actions": [
+      "navigate",
+      "observe",
+      "rest where safe",
+      "gather or fish where profile permits",
+      "investigate traces",
+      "seek local route knowledge"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_CHALOV_DVINA_2012",
+      "SRC_G1R2_GSHHS"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_MULTICHANNEL",
+      "CLM_G1R2_FOREST_HINTERLAND"
+    ],
+    "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined."
+  },
+  {
+    "id": "gn_nov_g3_xp017_yp026_r2_mixing_reach",
+    "parent_node_id": "gn_nov_g2_xp017_yp026_r2_river_sea_transition",
+    "name": "Плёс речного и морского смешения",
+    "name_status": "functional_descriptive",
+    "place_type": "estuary_mixing",
+    "spatial_precision": "local_area_topological",
+    "permanence": "stable_functional_place_geometry_variable",
+    "seasonal_use": [
+      "open-water and winter accessibility differ",
+      "spring flood may restrict access"
+    ],
+    "population_presence": "transient_or_none_by_default",
+    "control": "tributary_relation_only; local authority unknown",
+    "economic_function": [
+      "movement",
+      "subsistence/resource use",
+      "local habitation only where archaeologically or textually supported"
+    ],
+    "g4_requirements": [
+      "Внутренний подход",
+      "Полоса смешения течений",
+      "Открытая вода",
+      "Защищённая кромка",
+      "Кромка морского льда",
+      "Внешний ход"
+    ],
+    "gameplay_actions": [
+      "navigate",
+      "observe",
+      "rest where safe",
+      "gather or fish where profile permits",
+      "investigate traces",
+      "seek local route knowledge"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+      "SRC_G1R2_CHALOV_DVINA_2012",
+      "SRC_G1R2_MASK_REV002"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_DVINA_CORRIDOR",
+      "CLM_G1R2_NORTH_EXIT",
+      "CLM_G1R2_SEASONAL_WATER"
+    ],
+    "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined."
+  },
+  {
+    "id": "gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+    "parent_node_id": "gn_nov_g2_xp017_yp026_r2_river_sea_transition",
+    "name": "Открытый внешний подход",
+    "name_status": "functional_descriptive",
+    "place_type": "outer_exposed",
+    "spatial_precision": "local_area_topological",
+    "permanence": "stable_functional_place_geometry_variable",
+    "seasonal_use": [
+      "open-water and winter accessibility differ",
+      "spring flood may restrict access"
+    ],
+    "population_presence": "transient_or_none_by_default",
+    "control": "tributary_relation_only; local authority unknown",
+    "economic_function": [
+      "movement",
+      "subsistence/resource use",
+      "local habitation only where archaeologically or textually supported"
+    ],
+    "g4_requirements": [
+      "Речная сторона",
+      "Открытый ветровой плёс",
+      "Внешняя мель",
+      "Защищённый карман",
+      "Полоса ломки льда",
+      "Выход к Белому морю"
+    ],
+    "gameplay_actions": [
+      "navigate",
+      "observe",
+      "rest where safe",
+      "gather or fish where profile permits",
+      "investigate traces",
+      "seek local route knowledge"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+      "SRC_G1R2_CHALOV_DVINA_2012",
+      "SRC_G1R2_MASK_REV002"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_DVINA_CORRIDOR",
+      "CLM_G1R2_NORTH_EXIT",
+      "CLM_G1R2_SEASONAL_WATER"
+    ],
+    "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined."
+  }
+]

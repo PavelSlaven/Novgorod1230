@@ -1,0 +1,9 @@
+{
+  "name": "@rus/cutover",
+  "version": "0.21.0",
+  "private": true,
+  "type": "module",
+  "exports": "./src/index.js",
+  "bin": { "rus-cutover": "./src/cli.js" },
+  "dependencies": { "@rus/shadow-run": "0.20.0" }
+}

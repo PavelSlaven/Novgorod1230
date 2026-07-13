@@ -1,0 +1,2 @@
+import { assertStage17Ports } from './ports.js'; import { runStage17TimeLightGateBlock } from './orchestration/run-stage-17.js';
+export const stage17Definition=Object.freeze({id:17,name:'time-light-gate',version:1,async execute({input,services={}}={}){const ports=assertStage17Ports(services.stage17??services);const result=await runStage17TimeLightGateBlock({input,...ports});return{status:result?.pass===true?'approved':'blocked',artifact:result};}});

@@ -1,0 +1,20 @@
+{
+  "communities": {
+    "0": "Project",
+    "1": "LLM architecture",
+    "2": "World and regions",
+    "3": "Combat",
+    "4": "Formulas",
+    "5": "World and turns",
+    "6": "Characters",
+    "7": "Inventory and items",
+    "8": "UI and visibility",
+    "9": "Historical layer",
+    "10": "Movement",
+    "11": "Time",
+    "12": "NPC",
+    "13": "Knowledge base",
+    "14": "Source priority",
+    "15": "Character states"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "schema_version": "rus.g1_mask_independent_validation.v1",
+  "map_revision_id": "novgorod_1230_research_revision_002",
+  "result": "PASS",
+  "errors": [],
+  "warnings": [],
+  "metrics": {
+    "cells_total": 180,
+    "active_non_external": 173,
+    "external": 7,
+    "legacy_preserved": 70,
+    "new_cells": 110,
+    "sources": 13,
+    "source_references_checked": 1630,
+    "claims": 13,
+    "anchors": 9,
+    "corridors": 13,
+    "conflicts": 6,
+    "contested_cells": 60
+  },
+  "criteria": {
+    "all_active_have_activation_reason": true,
+    "all_active_have_sources_or_reconstruction": true,
+    "no_invented_sources": true,
+    "no_unsupported_exact_borders": true,
+    "no_modern_boundary_transfer": true,
+    "no_automatic_late_settlement_transfer": true,
+    "retrogression_justified": true,
+    "archaeology_dated": true,
+    "spatial_precision_complete": true,
+    "political_basis_complete": true,
+    "contested_zones_preserved": true,
+    "pskov_beloozero_separate_g0": true,
+    "internal_territories_not_duplicated_as_g0": true,
+    "major_routes_connected": true,
+    "external_transitions_present": true,
+    "unresolved_conflicts_recorded": true,
+    "old_70_migration_status": true,
+    "new_ids_stable": true,
+    "historical_audit_completed": true,
+    "structural_validation_passed": true,
+    "critic_has_no_blockers": true
+  },
+  "source_reference_failures": [],
+  "method_notes": [
+    "This validator recomputes criteria from the package instead of trusting boolean flags in the original validation report.",
+    "Modern GSHHS geometry is checked only as a marked technical proxy and is not treated as a 1230 shoreline.",
+    "Historical content still requires per-cell source refinement during G1 work."
+  ]
+}

@@ -1,0 +1,10 @@
+import { STAGE17_PRECHECK_SCHEMA } from '../policy/constants.js';
+import { validateStage17TimeLightInput } from '../input/input-boundary.js';
+import { buildNormalizedVisibilityConstraints } from '../../../time-light/visibility-constraints.js';
+import { runTimeLightChecks } from '../../../time-light/consistency-checks.js';
+import { authoritativeFrame, hasCode, hasPrefix } from '../../../time-light/shared.js';
+export { buildNormalizedVisibilityConstraints } from '../../../time-light/visibility-constraints.js';
+export function buildStage17TimeLightCodePrecheck(input) {
+  const concerns=validateStage17TimeLightInput(input); if(concerns.length===0)runTimeLightChecks(input,concerns); const normalized=buildNormalizedVisibilityConstraints(input);
+  return {version:1,schema:STAGE17_PRECHECK_SCHEMA,request_id:input?.request_id??null,pass:concerns.every((x)=>x.severity==='warning'),checks:{clock_schema_valid:!hasCode(concerns,'TIME_LIGHT_CLOCK_SCHEMA_INVALID'),clock_moment_valid:!hasPrefix(concerns,'TIME_LIGHT_CLOCK_MOMENT'),season_weather_basic_match:!hasPrefix(concerns,'TIME_LIGHT_SEASON_WEATHER'),light_profile_valid:!hasPrefix(concerns,'TIME_LIGHT_TIME_OF_DAY_LIGHT'),g5_visibility_basic_match:!hasPrefix(concerns,'TIME_LIGHT_G5_VISIBILITY'),npc_visibility_basic_match:!hasPrefix(concerns,'TIME_LIGHT_NPC_'),item_visibility_basic_match:!hasPrefix(concerns,'TIME_LIGHT_ITEM_'),body_weather_match:!hasCode(concerns,'TIME_LIGHT_BODY_WEATHER_CONFLICT'),visible_scene_forbidden_terms_absent:!hasCode(concerns,'TIME_LIGHT_VISIBLE_SCENE_CLOCK_CONFLICT'),visible_changes_forbidden_terms_absent:!hasCode(concerns,'TIME_LIGHT_VISIBLE_CHANGES_CLOCK_CONFLICT'),no_hidden_items_revealed:!hasCode(concerns,'TIME_LIGHT_HIDDEN_ITEM_VISIBLE'),no_closed_container_contents_visible:!hasCode(concerns,'TIME_LIGHT_CLOSED_CONTAINER_CONTENT_VISIBLE'),evidence_present:true},authoritative_frame:authoritativeFrame(input),normalized_visibility_constraints:normalized,concerns,evidence:[{kind:'time_light_code_precheck',clock:structuredClone(input?.historical_frame?.clock??null),weather_state:structuredClone(input?.weather_state??null)}]};
+}

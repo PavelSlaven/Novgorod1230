@@ -1,0 +1,143 @@
+[
+  {
+    "claim_id": "CLM_G1_002_NORTHERN_TRIBUTE_NETWORK",
+    "statement": "Academic synthesis and archaeological-toponymic evidence support a Novgorod-linked tribute network in the Onega and Northern Dvina basins, but not a precise administrative boundary in this cell.",
+    "subject_type": "tribute",
+    "temporal_range": {
+      "from": 1000,
+      "to": 1250
+    },
+    "spatial_precision": "corridor",
+    "source_ids": [
+      "SRC_G1_002_BRISBANE_MAKAROV_NOSOV",
+      "SRC_G1_002_MAKAROV_2003"
+    ],
+    "evidence_status": "source_backed",
+    "confidence": "high",
+    "limitations": [
+      "Basin-scale evidence does not establish direct local administration or permanent occupation."
+    ],
+    "review_status": "approved"
+  },
+  {
+    "claim_id": "CLM_G1_002_DVINA_CORRIDOR_CONTINUITY",
+    "statement": "The approved COR_DVINA_WHITE_SEA corridor crosses this cell from the eastern neighbour to the northern neighbour; exact medieval channel geometry is not claimed.",
+    "subject_type": "route",
+    "temporal_range": {
+      "from": 1150,
+      "to": 1250
+    },
+    "spatial_precision": "corridor",
+    "source_ids": [
+      "SRC_G1_002_BRISBANE_MAKAROV_NOSOV",
+      "SRC_G1_002_REV002_MASK",
+      "SRC_G1_002_CORRIDOR_REGISTER",
+      "SRC_G1_002_GRID"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "confidence": "medium",
+    "reconstruction_method": "Preserve continuity of the approved lower-Dvina route as a broad functional corridor across the 32 km cell.",
+    "limitations": [
+      "No exact route line, bank, landing point or channel is asserted."
+    ],
+    "review_status": "approved"
+  },
+  {
+    "claim_id": "CLM_G1_002_CONTROL_LIMIT",
+    "statement": "Tributary is the strongest permissible political classification for the cell; direct administration, exclusive control and a precise border are not demonstrated.",
+    "subject_type": "control",
+    "temporal_range": {
+      "from": 1150,
+      "to": 1250
+    },
+    "spatial_precision": "macrozone",
+    "source_ids": [
+      "SRC_G1_002_BRISBANE_MAKAROV_NOSOV",
+      "SRC_G1_002_REV002_MASK"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "confidence": "medium",
+    "reconstruction_method": "Use the weakest control category consistent with basin-scale fiscal evidence.",
+    "limitations": [
+      "Local authority and collection frequency are unknown."
+    ],
+    "review_status": "approved"
+  },
+  {
+    "claim_id": "CLM_G1_002_NO_LOCAL_ANCHOR",
+    "statement": "Revision 002 contains no approved historical or archaeological anchor inside this cell; no permanent settlement, church, monastery, fortification, estate or named landing is created.",
+    "subject_type": "negative_constraint",
+    "temporal_range": {
+      "from": 1230,
+      "to": 1230
+    },
+    "spatial_precision": "cell",
+    "source_ids": [
+      "SRC_G1_002_REV002_MASK"
+    ],
+    "evidence_status": "project_audit_constraint",
+    "confidence": "high",
+    "limitations": [
+      "Absence from the approved anchor register is not proof that no people ever used the area; it prevents baseline invention."
+    ],
+    "review_status": "approved"
+  },
+  {
+    "claim_id": "CLM_G1_002_HYDROGRAPHY_LIMIT",
+    "statement": "The mask land/water proxy reports the cell as land because GSHHS shoreline geometry does not represent internal river water at this resolution; this value cannot erase the approved Northern Dvina corridor.",
+    "subject_type": "technical_geography",
+    "temporal_range": {
+      "from": 2026,
+      "to": 2026
+    },
+    "spatial_precision": "technical_grid_cell",
+    "source_ids": [
+      "SRC_G1_002_GSHHS",
+      "SRC_G1_002_REV002_MASK",
+      "SRC_G1_002_CORRIDOR_REGISTER"
+    ],
+    "evidence_status": "technical_constraint",
+    "confidence": "high",
+    "limitations": [
+      "No numeric medieval river-water fraction is inferred."
+    ],
+    "review_status": "approved"
+  },
+  {
+    "claim_id": "CLM_G1_002_BOUNDARY_MATCH",
+    "statement": "The northern river-corridor exit of this cell matches the approved southern exit of gn_nov_g1_xp017_yp026; the eastern continuation remains pending the next cell.",
+    "subject_type": "graph_integration",
+    "temporal_range": {
+      "from": 1230,
+      "to": 1230
+    },
+    "spatial_precision": "boundary_contract",
+    "source_ids": [
+      "SRC_G1_002_PREVIOUS_CELL",
+      "SRC_G1_002_CORRIDOR_REGISTER"
+    ],
+    "evidence_status": "approved_project_integration",
+    "confidence": "high",
+    "limitations": [
+      "Matching validates graph continuity, not an exact historical crossing point."
+    ],
+    "review_status": "approved"
+  },
+  {
+    "claim_id": "CLM_G1_002_NO_MODERN_SETTLEMENT_PROJECTION",
+    "statement": "Modern settlements and modern transport infrastructure inside or near the technical cell are not projected into the 1230 baseline.",
+    "subject_type": "negative_constraint",
+    "temporal_range": {
+      "from": 1230,
+      "to": 1230
+    },
+    "spatial_precision": "cell",
+    "source_ids": [
+      "SRC_G1_002_REV002_MASK",
+      "SRC_G1_002_GRID"
+    ],
+    "evidence_status": "project_audit_constraint",
+    "confidence": "high",
+    "review_status": "approved"
+  }
+]

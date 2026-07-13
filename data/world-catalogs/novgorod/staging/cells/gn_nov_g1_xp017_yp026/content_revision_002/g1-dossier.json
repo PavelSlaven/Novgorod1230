@@ -1,0 +1,284 @@
+{
+  "id": "gn_nov_g1_xp017_yp026",
+  "title": "Нижнедвинская устьевая ячейка: расширенная историко-игровая реконструкция",
+  "historical_horizon": 1230,
+  "cell_class": [
+    "dense_river_road",
+    "mixed",
+    "historical_local_areas"
+  ],
+  "coordinates": {
+    "global_grid_x": 17,
+    "global_grid_y": 26,
+    "cell_size_km": 32,
+    "technical_bounds": {
+      "spatial_precision": "technical_grid_cell",
+      "center_wgs84": {
+        "longitude": 40.6322,
+        "latitude": 64.5805
+      },
+      "corners_wgs84": [
+        {
+          "name": "southwest",
+          "longitude": 40.2557,
+          "latitude": 64.4585
+        },
+        {
+          "name": "southeast",
+          "longitude": 40.9121,
+          "latitude": 64.418
+        },
+        {
+          "name": "northeast",
+          "longitude": 41.012,
+          "latitude": 64.7015
+        },
+        {
+          "name": "northwest",
+          "longitude": 40.349,
+          "latitude": 64.7425
+        }
+      ],
+      "limitations": [
+        "Coordinates define the technical 32 km cell only; they are not a medieval boundary."
+      ]
+    }
+  },
+  "activation_basis": {
+    "schema_version": "rus.g1_activation_review.v1",
+    "review_id": "activation_review_gn_nov_g1_xp017_yp026_001",
+    "g1_id": "gn_nov_g1_xp017_yp026",
+    "decision": "retain_active",
+    "activation_reasons": [
+      "approved lower-Northern-Dvina / White-Sea river-maritime corridor",
+      "source-backed northern fiscal network",
+      "attested Vikh Tuy name retained only as a non-exact local-area candidate"
+    ],
+    "binding_source_ids": [
+      "SRC_G1_001_SCHAPOV_1976_CHARTER",
+      "SRC_G1_001_BRISBANE_MAKAROV_NOSOV",
+      "SRC_G1_001_REV002_MASK"
+    ],
+    "reconstruction_method": "Retain the technical cell as a broad corridor/estuary transition. Do not infer exact settlement, shoreline, channel, ethnic composition or direct administration.",
+    "spatial_precision": "corridor",
+    "control_status": "tributary",
+    "control_confidence": "medium",
+    "evidence_status": "comparative_reconstruction",
+    "limitations": [
+      "The Vikh Tuy identification is not upgraded to exact_site.",
+      "The full Arkhangelsk Hoard publication is unavailable and is excluded from binding reasoning.",
+      "Northward maritime continuation is not represented by an approved external transition."
+    ],
+    "audit_result": "RETAIN_ACTIVE_REBUILD_REQUIRED"
+  },
+  "geographic_profile": {
+    "summary": "Техническая ячейка 32×32 км в нижнедвинской устьевой среде. Внутренняя модель топологическая: основной речной ход, боковые протоки, островные и пойменные зоны, лесной тыл и локальные археологические участки.",
+    "land_fraction_modern_proxy": 0.686,
+    "water_fraction_modern_proxy": 0.314,
+    "precision": "cell/corridor/local_area; no exact 1230 polygon"
+  },
+  "hydrology_profile": {
+    "supported_at_macro_scale": [
+      "lower Northern Dvina and river-sea transition",
+      "multi-channel floodplain/delta environment"
+    ],
+    "reconstructed_functional_elements": [
+      "main channel reaches",
+      "side-channel belts",
+      "island heads",
+      "shoals and bars",
+      "backwaters",
+      "floodplain ridges",
+      "small stream drainage"
+    ],
+    "unknown": [
+      "exact 1230 channels",
+      "exact shoreline",
+      "exact depths and shoal positions",
+      "exact winter crossing lines"
+    ]
+  },
+  "historical_anchors": [
+    {
+      "anchor_id": "ANCH_G1R2_VIKHTUY",
+      "type": "attested_toponym_fiscal_locality",
+      "name": "оу Вихтоуга / Вихтуй",
+      "spatial_precision": "local_area",
+      "evidence_status": "source_backed_with_localization_uncertainty",
+      "claim_ids": [
+        "CLM_G1R2_VIKHTUY",
+        "CLM_G1R2_VIKHTUY_LOCALIZATION"
+      ]
+    },
+    {
+      "anchor_id": "ANCH_G1R2_ARKHANGELSK_HOARD",
+      "type": "archaeological_find_context",
+      "name": "Архангельский клад 1130-х годов",
+      "spatial_precision": "local_area",
+      "evidence_status": "archaeologically_supported_with_access_limit",
+      "claim_ids": [
+        "CLM_G1R2_HOARD"
+      ],
+      "gameplay_rule": "Не является заранее известным кладом или G4."
+    },
+    {
+      "anchor_id": "ANCH_G1R2_ZAOSTROVYE",
+      "type": "archaeological_settlement_and_burial_context",
+      "name": "Заостровский археологический участок",
+      "spatial_precision": "local_area",
+      "evidence_status": "archaeologically_supported_with_access_limit",
+      "claim_ids": [
+        "CLM_G1R2_ZAOSTROVYE",
+        "CLM_G1R2_1230_CONTINUITY"
+      ]
+    }
+  ],
+  "settlement_model": {
+    "permanent_habitation": "possible in Vikh Tuy/Zaostrovye local areas; exact continuity and scale in 1230 uncertain",
+    "settlement_count": "not asserted",
+    "household_count": "not asserted",
+    "urban_node": "forbidden",
+    "other_territory": "predominantly river, floodplain, wetland and forest functional zones"
+  },
+  "economic_profile": {
+    "supported_or_contextual": [
+      "river movement",
+      "northern dues/tribute network",
+      "long-distance exchange context"
+    ],
+    "reconstructed": [
+      "fishing",
+      "hunting and fur-resource use",
+      "gathering",
+      "boat landing and repair",
+      "household-scale storage and work in habitation zones"
+    ],
+    "not_asserted": [
+      "large market",
+      "port administration",
+      "monastery economy",
+      "exact tribute volume"
+    ]
+  },
+  "political_control_profile": {
+    "control_status": "tributary",
+    "direct_administration": false,
+    "exclusive_control": false,
+    "local_authority": "unknown",
+    "basis_claim_ids": [
+      "CLM_G1R2_TRIBUTARY",
+      "CLM_G1R2_NO_DIRECT_RULE"
+    ]
+  },
+  "ethnocultural_profile": {
+    "status": "local northern population with contacts and cultural interaction; exact identity composition not fixed",
+    "forbidden": [
+      "ethnic percentages",
+      "automatic identity assignment"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_NO_ETHNIC_PERCENT"
+    ]
+  },
+  "transport_profile": {
+    "primary": "lower Dvina river-maritime corridor",
+    "alternatives": [
+      "side channels",
+      "sheltered backwaters",
+      "dry floodplain ridges",
+      "small-stream/forest approaches",
+      "conditional winter ice network"
+    ],
+    "seasonal_networks": [
+      "open water",
+      "freeze-up disruption",
+      "winter conditional",
+      "spring break-up/flood disruption"
+    ]
+  },
+  "gameplay_profile": {
+    "movement": [
+      "main channel",
+      "side channels",
+      "dry-ridge paths",
+      "forest paths",
+      "winter alternatives"
+    ],
+    "exploration": [
+      "hidden backwaters",
+      "channel splits",
+      "archaeological local areas",
+      "forest resource tracts"
+    ],
+    "survival": [
+      "safe dry ground search",
+      "fuel",
+      "water",
+      "shelter from wind",
+      "ice and flood assessment"
+    ],
+    "economy": [
+      "fishing",
+      "hunting",
+      "resource transport",
+      "household and landing activity where grounded"
+    ],
+    "social": [
+      "local households and river users only when materialized causally",
+      "tribute-related contact possible but not automatic"
+    ]
+  },
+  "risk_profile": [
+    "shifting channels",
+    "shoals",
+    "current",
+    "wind exposure",
+    "flooding",
+    "thin or moving ice",
+    "boggy ground",
+    "orientation error",
+    "social uncertainty around local rights"
+  ],
+  "uncertainties": [
+    "exact Vikh Tuy site and scale",
+    "exact Zaostrovye layout and 1230 continuity",
+    "exact channel network",
+    "population size",
+    "local authority",
+    "northward external transition"
+  ],
+  "source_bindings": [
+    {
+      "field": "Vikh Tuy",
+      "claim_ids": [
+        "CLM_G1R2_VIKHTUY",
+        "CLM_G1R2_VIKHTUY_LOCALIZATION"
+      ]
+    },
+    {
+      "field": "archaeological habitation",
+      "claim_ids": [
+        "CLM_G1R2_HOARD",
+        "CLM_G1R2_ZAOSTROVYE",
+        "CLM_G1R2_1230_CONTINUITY"
+      ]
+    },
+    {
+      "field": "hydrology and routes",
+      "claim_ids": [
+        "CLM_G1R2_DVINA_CORRIDOR",
+        "CLM_G1R2_MULTICHANNEL",
+        "CLM_G1R2_SEASONAL_WATER"
+      ]
+    },
+    {
+      "field": "control",
+      "claim_ids": [
+        "CLM_G1R2_TRIBUTARY",
+        "CLM_G1R2_NO_DIRECT_RULE"
+      ]
+    }
+  ],
+  "evidence_status": "mixed_source_backed_archaeologically_supported_and_reconstructed",
+  "playability_status": "approved_with_constraints"
+}

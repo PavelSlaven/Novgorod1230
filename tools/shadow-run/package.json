@@ -1,0 +1,10 @@
+{
+  "name": "@rus/shadow-run",
+  "version": "0.20.0",
+  "private": true,
+  "type": "module",
+  "exports": "./src/index.js",
+  "bin": {
+    "rus-shadow-run": "./src/cli.js"
+  }
+}

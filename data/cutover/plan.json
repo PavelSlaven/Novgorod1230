@@ -1,0 +1,24 @@
+{
+  "schema_version": "rus.cutover_plan.v1",
+  "version": 1,
+  "plan_id": "rus-staged-cutover-2026-07-12",
+  "source_release": "0.20.0-migration.20",
+  "default_after_cutover": "modular",
+  "rollback_route": "legacy",
+  "required_gates": ["smoke", "shadow", "db_dry_run", "diagnostics", "rollback"],
+  "steps": [
+    {"id":1,"name":"contracts-kernel","enable":{"RUS_MODULES_ENABLED":"true"}},
+    {"id":2,"name":"llm-runtime","enable":{"RUS_LLM_RUNTIME_MODULES_ENABLED":"true"}},
+    {"id":3,"name":"world-base-knowledge-source","enable":{"RUS_DATA_MODULES_ENABLED":"true"}},
+    {"id":4,"name":"party-store","enable":{"RUS_PARTY_STORE_MODULES_ENABLED":"true"}},
+    {"id":5,"name":"new-game-stages-24-26","enable":{"RUS_NEW_GAME_WAVE_24_26_ENABLED":"true"}},
+    {"id":6,"name":"new-game-stages-20-23","enable":{"RUS_NEW_GAME_WAVE_20_23_ENABLED":"true"}},
+    {"id":7,"name":"remaining-new-game-stages","enable":{"RUS_NEW_GAME_ALL_STAGES_ENABLED":"true"}},
+    {"id":8,"name":"new-game-orchestrator","enable":{"RUS_NEW_GAME_MODULES_ENABLED":"true"}},
+    {"id":9,"name":"turn-workflow","enable":{"RUS_TURN_MODULES_ENABLED":"true"}},
+    {"id":10,"name":"presentation","enable":{"RUS_PRESENTATION_MODULES_ENABLED":"true"}},
+    {"id":11,"name":"game-server","enable":{"RUS_GAME_SERVER_MODULES_ENABLED":"true"}},
+    {"id":12,"name":"game-web","enable":{"RUS_UI_MODULES_ENABLED":"true","RUS_RUNTIME_ROUTE":"modular"}},
+    {"id":13,"name":"tools-release-pipeline","enable":{"RUS_TOOLS_MODULES_ENABLED":"true","RUS_CUTOVER_COMPLETE":"true"}}
+  ]
+}

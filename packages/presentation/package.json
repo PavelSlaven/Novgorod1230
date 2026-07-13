@@ -1,0 +1,14 @@
+{
+  "name": "@rus/presentation",
+  "version": "0.15.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js",
+    "./opening-delivery": "./src/opening-delivery/index.js"
+  },
+  "dependencies": {
+    "@rus/contracts": "0.9.0",
+    "@rus/kernel": "0.9.0",
+    "@rus/visibility-knowledge-memory": "0.13.0"
+  }
+}

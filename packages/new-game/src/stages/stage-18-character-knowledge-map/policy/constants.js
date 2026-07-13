@@ -1,0 +1,10 @@
+import { STAGE18_INPUT_SCHEMA, STAGE18_OUTPUT_SCHEMA, STAGE18_PRECHECK_SCHEMA, STAGE18_AUDIT_SCHEMA, STAGE18_WRITE_PLAN_SCHEMA, STAGE18_RESULT_SCHEMA, STAGE18_KNOWLEDGE_STATUSES, STAGE18_ALLOWED_KNOWLEDGE_BASES } from '@rus/contracts/time-knowledge-hidden-boundary';
+import { isObject } from '../shared/utils.js';
+export { STAGE18_INPUT_SCHEMA, STAGE18_OUTPUT_SCHEMA, STAGE18_PRECHECK_SCHEMA, STAGE18_AUDIT_SCHEMA, STAGE18_WRITE_PLAN_SCHEMA, STAGE18_RESULT_SCHEMA };
+export const DEFAULT_STAGE18_KNOWLEDGE_POLICY=Object.freeze({require_knowledge_basis:true,require_source_trace:true,separate_player_and_character_knowledge:true,separate_known_and_visible:true,separate_fact_and_rumor:true,separate_exact_and_approximate_routes:true,allow_mistaken_beliefs:true,allow_uncertain_knowledge:true,do_not_grant_full_map:true,do_not_grant_hidden_state:true,do_not_create_new_routes:true,do_not_create_new_places:true,do_not_create_new_npcs:true,do_not_write_visible_scene:true,do_not_write_intro_prose:true});
+export const KNOWLEDGE_ARRAYS=Object.freeze(['known_routes','known_nearby_paths','known_places','known_addresses','known_landmarks','known_people','known_authorities','known_dangers','known_social_rules','known_resources','rumors','mistaken_beliefs','uncertain_knowledge','forbidden_knowledge','knowledge_gaps','source_trace']);
+export const KNOWN_ARRAYS=Object.freeze(['known_routes','known_nearby_paths','known_places','known_addresses','known_landmarks','known_people','known_authorities','known_dangers','known_social_rules','known_resources']);
+export const ALLOWED_BASIS=new Set(STAGE18_ALLOWED_KNOWLEDGE_BASES); export const STATUS=new Set(STAGE18_KNOWLEDGE_STATUSES);
+export const FORMAT_OUTPUT_CODES=new Set(['KNOWLEDGE_MAP_INVALID_JSON','KNOWLEDGE_MAP_SCHEMA_MISMATCH','KNOWLEDGE_MAP_REQUIRED_BLOCK_MISSING','KNOWLEDGE_MAP_ARRAY_INVALID']);
+export const FORMAT_AUDIT_CODES=new Set(['KNOWLEDGE_MAP_AUDIT_INVALID_JSON','KNOWLEDGE_MAP_AUDIT_SCHEMA_MISMATCH','KNOWLEDGE_MAP_AUDIT_REQUIRED_BLOCK_MISSING']);
+export function normalizeStage18KnowledgePolicy(policy={}){return Object.freeze({...DEFAULT_STAGE18_KNOWLEDGE_POLICY,...(isObject(policy)?policy:{})});}

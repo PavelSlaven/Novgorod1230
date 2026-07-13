@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rus.knowledge_import_history.v1",
+  "type": "object",
+  "required": ["schema_version", "entries"],
+  "properties": {
+    "schema_version": { "const": "rus.knowledge_import_history.v1" },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["migration_id", "imported_at", "source_release", "source_root", "target_root", "document_count", "inventory_sha256", "status"],
+        "properties": {
+          "migration_id": { "type": "string" },
+          "imported_at": { "type": "string" },
+          "source_release": { "type": "string" },
+          "source_root": { "type": "string" },
+          "target_root": { "type": "string" },
+          "document_count": { "type": "integer", "minimum": 1 },
+          "inventory_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "status": { "const": "verified" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

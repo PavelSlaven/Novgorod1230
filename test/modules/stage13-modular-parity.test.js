@@ -1,0 +1,5 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import * as baseline from '../fixtures/stage13-16-baseline/stage13-g5-materialization-0.8.0.js';import * as modular from '@rus/new-game/stages/stage-13/compat';import {makeStage13Input,makeG5Draft} from '../fixtures/stage13-16-fixtures.mjs';
+test('Stage 13 compatibility exports preserve baseline',()=>assert.deepEqual(Object.keys(modular).sort(),Object.keys(baseline).sort()));
+test('Stage 13 validation and precheck preserve baseline',()=>{const i=makeStage13Input(),d=makeG5Draft();assert.deepEqual(modular.validateStage13G5MaterializationInput(i),baseline.validateStage13G5MaterializationInput(i));assert.deepEqual(modular.validateStage13G5SceneGraphDraft(d,i),baseline.validateStage13G5SceneGraphDraft(d,i));assert.deepEqual(modular.buildStage13G5CodePrecheck(d,i),baseline.buildStage13G5CodePrecheck(d,i));});
+test('Stage 13 successful block preserves baseline',async()=>{const input=makeStage13Input(),d=makeG5Draft(),opts={input,materialize:async()=>d};assert.deepEqual(await modular.runStage13G5MaterializationBlock(opts),await baseline.runStage13G5MaterializationBlock(opts));});

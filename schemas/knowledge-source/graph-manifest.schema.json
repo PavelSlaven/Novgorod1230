@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rus.knowledge_graph_manifest.v1",
+  "type": "object",
+  "required": ["schema_version", "generation_mode", "corpus_root", "corpus_manifest_sha256", "source_snapshot_sha256", "source_document_count", "node_count", "link_count", "hyperedge_count", "graph_sha256"],
+  "properties": {
+    "schema_version": { "const": "rus.knowledge_graph_manifest.v1" },
+    "generation_mode": { "const": "approved_snapshot_materialization" },
+    "corpus_root": { "const": "data/knowledge-source/corpus/DOCUMENTS" },
+    "corpus_manifest_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "source_snapshot_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "source_document_count": { "type": "integer", "minimum": 1 },
+    "node_count": { "type": "integer", "minimum": 1 },
+    "link_count": { "type": "integer", "minimum": 1 },
+    "hyperedge_count": { "type": "integer", "minimum": 0 },
+    "graph_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  },
+  "additionalProperties": true
+}

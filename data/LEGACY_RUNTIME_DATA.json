@@ -1,0 +1,27 @@
+{
+  "schema_version": "rus.legacy_runtime_data_manifest.v1",
+  "status": "read_only_compatibility_data_until_cutover",
+  "canonical_seed": false,
+  "paths": [
+    "data/regional-summary-cache/1241-5c3cc00b-0.json",
+    "data/regional-summary-cache/1241-central-europe-9406410b-0.json",
+    "data/regional-summary-cache/default-pack-6525994e-0.json",
+    "data/regional-summary-cache/default-pack-94737238-0.json",
+    "data/world-catalogs/1242-%D0%BB%D0%B5%D1%81%D0%BD%D0%B0%D1%8F-%D0%B4%D0%B5%D1%80%D0%B5%D0%B2%D0%BD%D1%8F-%D0%BD%D0%B0-%D0%BD%D0%B8%D0%B7%D0%BA%D0%BE%D0%B9-%D0%B7%D0%B5%D0%BC%D0%BB%D0%B5%3Avillage.json",
+    "data/world-catalogs/novgorod/README.md",
+    "data/world-catalogs/novgorod/manifests/novgorod_v6_legacy_baseline.json",
+    "data/world-catalogs/novgorod/reports/WORKFLOW_STATUS.md",
+    "data/world-catalogs/novgorod/reports/g1-mask-validation.json",
+    "data/world-catalogs/novgorod/revisions/novgorod_1230_research_revision_001.json",
+    "data/world-catalogs/novgorod/source-registry.json",
+    "data/world-catalogs/novgorod/staging/cells/gn_nov_g1_00_06/00-input/input-manifest.json",
+    "data/world-catalogs/novgorod/staging/cells/gn_nov_g1_00_06/00-input/legacy-snapshot.json",
+    "data/world-catalogs/novgorod/staging/g1-mask/novgorod_1230_research_revision_001.g1-mask.json",
+    "data/world-catalogs/novgorod/staging/g1-work-queue.json",
+    "data/world-catalogs/novgorod/templates/boundary-contract.template.json",
+    "data/world-catalogs/novgorod/templates/g1-cell-package.template.json",
+    "data/world-catalogs/novgorod/templates/research-brief.template.json",
+    "data/world-catalogs/novgorod/templates/source-ledger.template.json",
+    "data/world-sessions/1242-%D0%BB%D0%B5%D1%81%D0%BD%D0%B0%D1%8F-%D0%B4%D0%B5%D1%80%D0%B5%D0%B2%D0%BD%D1%8F-%D0%BD%D0%B0-%D0%BD%D0%B8%D0%B7%D0%BA%D0%BE%D0%B9-%D0%B7%D0%B5%D0%BC%D0%BB%D0%B5%3Avillage.json"
+  ]
+}

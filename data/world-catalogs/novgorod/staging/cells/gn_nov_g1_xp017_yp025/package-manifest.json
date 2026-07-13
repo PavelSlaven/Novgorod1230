@@ -1,0 +1,315 @@
+{
+  "schema_version": "rus.g1_package_manifest.v1",
+  "package_id": "pkg_gn_nov_g1_xp017_yp025_r002_001",
+  "g1_id": "gn_nov_g1_xp017_yp025",
+  "map_revision_id": "novgorod_1230_research_revision_002",
+  "package_status": "approved_local",
+  "package_digest": "ba93f20b248e32ef754b62643e88008ab04a5cc43342e2694d87878a5bdd49e7",
+  "graph_digest": "f930c20b219bf01533bfb466474da08634879fb44c12047c8e862701724b6cbb",
+  "files": [
+    {
+      "path": "00-input/cell-work-snapshot.json",
+      "sha256": "6fbcd2638e11b582645ccd70d59863ebb0b3a421a267fe51622ac5afff19b486",
+      "size_bytes": 5168
+    },
+    {
+      "path": "00-input/input-manifest.json",
+      "sha256": "78d053ce317a7d26ed53749c8f4f11a2b2256c5a4d76502e133a03d1e1f81029",
+      "size_bytes": 1281
+    },
+    {
+      "path": "00-input/mask-evidence.json",
+      "sha256": "5c7a5803796fa4c5e705fc4d7cb6375dbd8c9f4d878fb5030bb3eddce6dc8d71",
+      "size_bytes": 660
+    },
+    {
+      "path": "00-input/neighbor-summary.json",
+      "sha256": "cd257ee02682b47fd30189aaa548fb5f674f84aaad10715a8f10a5192b551465",
+      "size_bytes": 986
+    },
+    {
+      "path": "01-activation-review/activation-audit.md",
+      "sha256": "19eb6ef11e9e9b0ecb1de42acbdd19c5ff7cb1e984041af506fd42c8d26e7040",
+      "size_bytes": 382
+    },
+    {
+      "path": "01-activation-review/activation-review.json",
+      "sha256": "38a54c4b0c9d0962b7ad5a409b3f7581138821560270010640ca2f36be1af819",
+      "size_bytes": 1144
+    },
+    {
+      "path": "02-research/bibliography.json",
+      "sha256": "1ea3e2eec9a83f2ac55fad1bb84f311e25c48ee644444aa13cb8161300ba4b23",
+      "size_bytes": 3904
+    },
+    {
+      "path": "02-research/claim-ledger.json",
+      "sha256": "a48200b3b01394153b837d4cc2c3a16c6869aae5de5dbee2e2cbab16a03a018e",
+      "size_bytes": 5192
+    },
+    {
+      "path": "02-research/conflict-register.json",
+      "sha256": "9d5dafff4a98d4c1b5f9504b4bbe1d008b9db5053d5db3862b7ae31a657bbded",
+      "size_bytes": 713
+    },
+    {
+      "path": "02-research/research-brief.json",
+      "sha256": "416d25fb2afcf3d9c217ca7f4a65a20dd1b2c0ba6df69fff5ea9dfa326e70cdd",
+      "size_bytes": 1533
+    },
+    {
+      "path": "02-research/source-ledger.json",
+      "sha256": "d240553246c262bdf15ec3aafaf31cc5ddf6399e4ae291385ef77231a745a674",
+      "size_bytes": 3647
+    },
+    {
+      "path": "02-research/unresolved-questions.json",
+      "sha256": "b5b0d9b341e67401e859a3cef132da2a2719171f14cb7abd11f65648dd8ae651",
+      "size_bytes": 423
+    },
+    {
+      "path": "03-g1/g1-dossier.json",
+      "sha256": "0caa36d9e7bdc49521e16c2c5b495bbb7528cb2470967d114a5899ea404dc117",
+      "size_bytes": 5600
+    },
+    {
+      "path": "03-g1/g1-historicity-audit.md",
+      "sha256": "b10470eb430c293d4a262981af8a62e5e8034712ba4afe3df74fb7f568bbee6b",
+      "size_bytes": 682
+    },
+    {
+      "path": "04-g2/g2-audit.md",
+      "sha256": "3742084b7ed79279344d4f36e011f04c954552ad19dbeb27152e301747084aac",
+      "size_bytes": 278
+    },
+    {
+      "path": "04-g2/g2-graph.json",
+      "sha256": "419b1d5bce43eb6fc9b1f986d6952ffa0be4e14fdacf7564d21236177e3b5485",
+      "size_bytes": 4135
+    },
+    {
+      "path": "04-g2/g2-zones.json",
+      "sha256": "8671f75400011ba9db9d0a27256b3591c438186cff38630bba56ef2f077f1f6e",
+      "size_bytes": 4345
+    },
+    {
+      "path": "05-g3/g3-places.json",
+      "sha256": "279217ca511f4f3fbfae1a96f35316d8751c5b9fb8000c4a21ee46baaf03f36e",
+      "size_bytes": 4263
+    },
+    {
+      "path": "06-g4/g4-locations.json",
+      "sha256": "eb52c31f222a0b7a9aaecc03994a3175465db9ee3b8b35c43318d552c794e4f6",
+      "size_bytes": 9415
+    },
+    {
+      "path": "06-g4/interior-profiles.json",
+      "sha256": "9d8b37a533f6acac9032569d14b80831b16f1f03ca074f1f6dfc4e4aa8bc7de5",
+      "size_bytes": 1438
+    },
+    {
+      "path": "06-g4/property-profiles.json",
+      "sha256": "eb89f83dee1c3d56968b039549364f8cd1b9e7b2de94d3bf564e107a83dad266",
+      "size_bytes": 596
+    },
+    {
+      "path": "07-materialization/container-profiles.json",
+      "sha256": "cf3cf0ddf78c4ed2d8ace1805c211da2be797d7044fb308e8f8beffd9427e2b5",
+      "size_bytes": 524
+    },
+    {
+      "path": "07-materialization/fauna-profiles.json",
+      "sha256": "6450ecc3e15ef833aa7498db2351707cdea1fd9e0e2efb9e0c92c4380e3475d7",
+      "size_bytes": 798
+    },
+    {
+      "path": "07-materialization/item-profiles.json",
+      "sha256": "c59ebec213cdbb81168833827256641ac9397351c26517bd10e811254b0b43c8",
+      "size_bytes": 1315
+    },
+    {
+      "path": "07-materialization/npc-materialization-rules.json",
+      "sha256": "0a66fe40bcfa4c8707791069a2610fd43d376a5bd5cbe8d3096049fac8fef3a2",
+      "size_bytes": 201
+    },
+    {
+      "path": "07-materialization/population-profiles.json",
+      "sha256": "dd9296f6f4e85fabdb76e5516ad1635875e8b1056a520f761ee0eaf13e146e4b",
+      "size_bytes": 1663
+    },
+    {
+      "path": "07-materialization/property-profiles.json",
+      "sha256": "eb89f83dee1c3d56968b039549364f8cd1b9e7b2de94d3bf564e107a83dad266",
+      "size_bytes": 596
+    },
+    {
+      "path": "07-materialization/seasonal-rules.json",
+      "sha256": "5c2409fd71a6a2565969d6d6fbff343e7d432fb069f6c55ac2c961c08eaec118",
+      "size_bytes": 824
+    },
+    {
+      "path": "08-graph/boundary-contracts.json",
+      "sha256": "8d0e1034eb2a574a1a7af67e29e44e2a77ee9bf1564a1347c6431df74b7caca3",
+      "size_bytes": 1520
+    },
+    {
+      "path": "08-graph/boundary-match-overlay-001.json",
+      "sha256": "a9de6d02f53fb61daabe396610c73fbda413bdfaa5986759e9a41c87e30de26a",
+      "size_bytes": 711
+    },
+    {
+      "path": "08-graph/graph-edges.json",
+      "sha256": "c52e5df01226a05ed6aae1864aa9250982b195a22b77d1d872a597d884dbafb6",
+      "size_bytes": 6622
+    },
+    {
+      "path": "08-graph/graph-nodes.json",
+      "sha256": "9befe9f9e6ac73c85723ec3580f0a95160cdbf7aae5eef337b5db43acb6f084e",
+      "size_bytes": 4063
+    },
+    {
+      "path": "09-toponymy/naming-register.json",
+      "sha256": "1ecf5f12270b536979b5f7a9d7a25de5f904f8da8b49979eb99983bcef529a3e",
+      "size_bytes": 9592
+    },
+    {
+      "path": "09-toponymy/toponymy-audit.md",
+      "sha256": "5ac03202693568c8f76ed6cb7dc8a240be274163ba209efc3ba743beb438991e",
+      "size_bytes": 218
+    },
+    {
+      "path": "10-validation/critic-report.md",
+      "sha256": "a4134e9944b4a7c2b61c389c5ffac7e4e1755337e839a4b9c0c803f7d9453f70",
+      "size_bytes": 3192
+    },
+    {
+      "path": "10-validation/historical-audit.md",
+      "sha256": "e77d89d6496c32aa6faab5d56167c65e5078ba92e893d12964b15954db9aedc1",
+      "size_bytes": 266
+    },
+    {
+      "path": "10-validation/provenance-validation.json",
+      "sha256": "55d429d8cbfa7c728a6efa560525241071877665695a418e6a801b56285d5cc7",
+      "size_bytes": 198
+    },
+    {
+      "path": "10-validation/repair-history.json",
+      "sha256": "b71e53723ada2bea6688e91ccdee07ba4eb9efee123008eed4b4d560f5e43344",
+      "size_bytes": 635
+    },
+    {
+      "path": "10-validation/semantic-audit.md",
+      "sha256": "a6b53c823a6ee8be14367e44c4871226275363124eb76dfa2373628325df86fe",
+      "size_bytes": 339
+    },
+    {
+      "path": "10-validation/structural-validation.json",
+      "sha256": "622678169cde972128ccd9dbf22c268fd993d2f338255ed822ebb92ac6bfa846",
+      "size_bytes": 1383
+    },
+    {
+      "path": "11-layout/layout-quality-report.json",
+      "sha256": "75584e2b24c337d25ea73db7de04e29717ce0789c9f0d5e8c133192ec5a1cd11",
+      "size_bytes": 186
+    },
+    {
+      "path": "11-layout/layout-sidecar.json",
+      "sha256": "c1679a9e3d11f72a7d14bee191489630c46b29d8af0b25bf7acb85dea8e09bbd",
+      "size_bytes": 1845
+    },
+    {
+      "path": "11-layout/preview.svg",
+      "sha256": "1eac957f7ccf74b57e5376a234ae3b000db8c01c759d852d3bcdb96510de91d9",
+      "size_bytes": 5084
+    },
+    {
+      "path": "12-approval/g1-work-queue-progress-002.json",
+      "sha256": "3f892f7ea1f4f461f366f15787ce225d7e2e6e1d158c5b88d7b2580318a1dbf7",
+      "size_bytes": 1229
+    },
+    {
+      "path": "12-approval/integration-status.json",
+      "sha256": "ee050682234a79c8592bbdcefb714237f5a5ce25b39db77086078b58393ac790",
+      "size_bytes": 253
+    },
+    {
+      "path": "12-approval/local-approval.json",
+      "sha256": "b437aa730d74313195cbdae6c21f56e35a59fad71b59b57bd39056bc54ac2fb3",
+      "size_bytes": 786
+    },
+    {
+      "path": "12-approval/neighbor-integration-update-yp026.json",
+      "sha256": "c09c448fc052dc544795d0948dd0b200a1d2c279a5e81c6d7ea8a0684eb21590",
+      "size_bytes": 347
+    },
+    {
+      "path": "PLAN.md",
+      "sha256": "6135393a493599a2d68dc9d0a2049d8bbde475d6fbdada1bc543e4098172d7f0",
+      "size_bytes": 1394
+    },
+    {
+      "path": "PLAN_COPY.md",
+      "sha256": "6135393a493599a2d68dc9d0a2049d8bbde475d6fbdada1bc543e4098172d7f0",
+      "size_bytes": 1394
+    },
+    {
+      "path": "boundary-match-overlay-001.json",
+      "sha256": "a9de6d02f53fb61daabe396610c73fbda413bdfaa5986759e9a41c87e30de26a",
+      "size_bytes": 711
+    },
+    {
+      "path": "claim-ledger.json",
+      "sha256": "a48200b3b01394153b837d4cc2c3a16c6869aae5de5dbee2e2cbab16a03a018e",
+      "size_bytes": 5192
+    },
+    {
+      "path": "critic-report.md",
+      "sha256": "a4134e9944b4a7c2b61c389c5ffac7e4e1755337e839a4b9c0c803f7d9453f70",
+      "size_bytes": 3192
+    },
+    {
+      "path": "g1-work-queue-progress-002.json",
+      "sha256": "3f892f7ea1f4f461f366f15787ce225d7e2e6e1d158c5b88d7b2580318a1dbf7",
+      "size_bytes": 1229
+    },
+    {
+      "path": "gn_nov_g1_xp017_yp025.package.json",
+      "sha256": "ba93f20b248e32ef754b62643e88008ab04a5cc43342e2694d87878a5bdd49e7",
+      "size_bytes": 60698
+    },
+    {
+      "path": "local-approval.json",
+      "sha256": "b437aa730d74313195cbdae6c21f56e35a59fad71b59b57bd39056bc54ac2fb3",
+      "size_bytes": 786
+    },
+    {
+      "path": "preview.svg",
+      "sha256": "1eac957f7ccf74b57e5376a234ae3b000db8c01c759d852d3bcdb96510de91d9",
+      "size_bytes": 5084
+    },
+    {
+      "path": "source-ledger.json",
+      "sha256": "d240553246c262bdf15ec3aafaf31cc5ddf6399e4ae291385ef77231a745a674",
+      "size_bytes": 3647
+    },
+    {
+      "path": "structural-validation.json",
+      "sha256": "622678169cde972128ccd9dbf22c268fd993d2f338255ed822ebb92ac6bfa846",
+      "size_bytes": 1383
+    }
+  ],
+  "source_count": 7,
+  "claim_count": 7,
+  "g2_count": 4,
+  "g3_count": 4,
+  "g4_count": 8,
+  "node_count": 17,
+  "edge_count": 26,
+  "boundary_contract_count": 2,
+  "validation_result": "PASS",
+  "historical_audit": "PASS_WITH_NOTES",
+  "semantic_audit": "PASS_WITH_NOTES",
+  "critic_result": "PASS_WITH_NOTES",
+  "integration_status": "partial_matched",
+  "production_import_status": "not_authorized"
+}

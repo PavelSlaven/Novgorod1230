@@ -1,0 +1,561 @@
+{
+  "schema_version": "rus.canonical_document_paths.v1",
+  "policy": "Each document has one canonical path. previous_paths are historical aliases and must not coexist as files.",
+  "documents": [
+    {
+      "canonical_path": "CHANGELOG.md",
+      "category": "root",
+      "previous_paths": [
+        "CHANGELOG.md"
+      ]
+    },
+    {
+      "canonical_path": "MIGRATION_PHASES_SHORT.md",
+      "category": "root",
+      "previous_paths": [
+        "MIGRATION_PHASES_SHORT.md"
+      ]
+    },
+    {
+      "canonical_path": "MIGRATION_STATUS.md",
+      "category": "root",
+      "previous_paths": [
+        "MIGRATION_STATUS.md"
+      ]
+    },
+    {
+      "canonical_path": "MODULE_INDEX.md",
+      "category": "root",
+      "previous_paths": []
+    },
+    {
+      "canonical_path": "README.md",
+      "category": "root",
+      "previous_paths": [
+        "README.md"
+      ]
+    },
+    {
+      "canonical_path": "data/knowledge-source/README.md",
+      "category": "knowledge-source",
+      "previous_paths": []
+    },
+    {
+      "canonical_path": "data/knowledge-source/corpus-manifest.json",
+      "category": "knowledge-source",
+      "previous_paths": []
+    },
+    {
+      "canonical_path": "data/knowledge-source/import-history.json",
+      "category": "knowledge-source",
+      "previous_paths": []
+    },
+    {
+      "canonical_path": "data/knowledge-source/source-aliases.json",
+      "category": "knowledge-source",
+      "previous_paths": []
+    },
+    {
+      "canonical_path": "docs/architecture/CONTRACT_POLICY.md",
+      "category": "architecture",
+      "previous_paths": []
+    },
+    {
+      "canonical_path": "docs/architecture/DEPENDENCY_RULES.md",
+      "category": "architecture",
+      "previous_paths": []
+    },
+    {
+      "canonical_path": "docs/architecture/KNOWLEDGE_SOURCE_POLICY.md",
+      "category": "architecture",
+      "previous_paths": []
+    },
+    {
+      "canonical_path": "docs/architecture/MODULE_RULES.md",
+      "category": "architecture",
+      "previous_paths": []
+    },
+    {
+      "canonical_path": "docs/domain/OWNERSHIP_MAP.md",
+      "category": "domain",
+      "previous_paths": [
+        "DOMAIN_OWNERSHIP_MAP.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/README.md",
+      "category": "migration",
+      "previous_paths": []
+    },
+    {
+      "canonical_path": "docs/migration/SOURCE_PROVENANCE.md",
+      "category": "migration",
+      "previous_paths": [
+        "SOURCE_PROVENANCE.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/contracts/CUTOVER_CONTRACT_MAP.md",
+      "category": "migration",
+      "previous_paths": []
+    },
+    {
+      "canonical_path": "docs/migration/contracts/DOCUMENTATION_GENERATED_DATA_CONTRACT_MAP.md",
+      "category": "migration",
+      "previous_paths": []
+    },
+    {
+      "canonical_path": "docs/migration/contracts/FINALIZATION_CONTRACT_MAP.md",
+      "category": "migration",
+      "previous_paths": []
+    },
+    {
+      "canonical_path": "docs/migration/contracts/GAME_SERVER_WEB_CONTRACT_MAP.md",
+      "category": "migration",
+      "previous_paths": [
+        "GAME_SERVER_WEB_CONTRACT_MAP.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/contracts/KNOWLEDGE_SOURCE_CONTRACT_MAP.md",
+      "category": "migration",
+      "previous_paths": []
+    },
+    {
+      "canonical_path": "docs/migration/contracts/MAPMAKER_TOOLS_CONTRACT_MAP.md",
+      "category": "migration",
+      "previous_paths": [
+        "MAPMAKER_TOOLS_CONTRACT_MAP.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/contracts/NARRATION_PRESENTATION_CONTRACT_MAP.md",
+      "category": "migration",
+      "previous_paths": [
+        "NARRATION_PRESENTATION_CONTRACT_MAP.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/contracts/PRODUCTION_INTEGRATION_CONTRACT_MAP.md",
+      "category": "migration",
+      "previous_paths": [
+        "PRODUCTION_INTEGRATION_CONTRACT_MAP.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/contracts/SHADOW_RUN_CONTRACT_MAP.md",
+      "category": "migration",
+      "previous_paths": []
+    },
+    {
+      "canonical_path": "docs/migration/contracts/TURN_WORKFLOW_CONTRACT_MAP.md",
+      "category": "migration",
+      "previous_paths": [
+        "TURN_WORKFLOW_CONTRACT_MAP.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/finalization/MANUAL_DELETE_CHECKLIST.md",
+      "category": "migration",
+      "previous_paths": []
+    },
+    {
+      "canonical_path": "docs/migration/finalization/OPERATOR_REVIEW.md",
+      "category": "migration",
+      "previous_paths": []
+    },
+    {
+      "canonical_path": "docs/migration/parity/STAGE10_PARITY_REPORT.md",
+      "category": "migration",
+      "previous_paths": [
+        "STAGE10_PARITY_REPORT.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/parity/STAGE11_PARITY_REPORT.md",
+      "category": "migration",
+      "previous_paths": [
+        "STAGE11_PARITY_REPORT.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/parity/STAGE12_PARITY_REPORT.md",
+      "category": "migration",
+      "previous_paths": [
+        "STAGE12_PARITY_REPORT.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/parity/STAGE13_PARITY_REPORT.md",
+      "category": "migration",
+      "previous_paths": [
+        "STAGE13_PARITY_REPORT.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/parity/STAGE14_PARITY_REPORT.md",
+      "category": "migration",
+      "previous_paths": [
+        "STAGE14_PARITY_REPORT.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/parity/STAGE15_PARITY_REPORT.md",
+      "category": "migration",
+      "previous_paths": [
+        "STAGE15_PARITY_REPORT.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/parity/STAGE16_PARITY_REPORT.md",
+      "category": "migration",
+      "previous_paths": [
+        "STAGE16_PARITY_REPORT.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/parity/STAGE17_PARITY_REPORT.md",
+      "category": "migration",
+      "previous_paths": [
+        "STAGE17_PARITY_REPORT.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/parity/STAGE18_PARITY_REPORT.md",
+      "category": "migration",
+      "previous_paths": [
+        "STAGE18_PARITY_REPORT.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/parity/STAGE19_PARITY_REPORT.md",
+      "category": "migration",
+      "previous_paths": [
+        "STAGE19_PARITY_REPORT.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/parity/STAGE20_PARITY_REPORT.md",
+      "category": "migration",
+      "previous_paths": [
+        "STAGE20_PARITY_REPORT.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/parity/STAGE21_PARITY_REPORT.md",
+      "category": "migration",
+      "previous_paths": [
+        "STAGE21_PARITY_REPORT.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/parity/STAGE22_PARITY_REPORT.md",
+      "category": "migration",
+      "previous_paths": [
+        "STAGE22_PARITY_REPORT.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/parity/STAGE23_PARITY_REPORT.md",
+      "category": "migration",
+      "previous_paths": [
+        "STAGE23_PARITY_REPORT.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/parity/STAGE24_PARITY_REPORT.md",
+      "category": "migration",
+      "previous_paths": [
+        "STAGE24_PARITY_REPORT.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/parity/STAGE25_PARITY_REPORT.md",
+      "category": "migration",
+      "previous_paths": [
+        "STAGE25_PARITY_REPORT.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/parity/STAGE25_TRANSACTION_REPORT.md",
+      "category": "migration",
+      "previous_paths": [
+        "STAGE25_TRANSACTION_REPORT.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/parity/STAGE26_PARITY_REPORT.md",
+      "category": "migration",
+      "previous_paths": [
+        "STAGE26_PARITY_REPORT.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/parity/STAGE9_PARITY_REPORT.md",
+      "category": "migration",
+      "previous_paths": [
+        "STAGE9_PARITY_REPORT.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/plans/CUTOVER_MIGRATION_PLAN.md",
+      "category": "migration",
+      "previous_paths": []
+    },
+    {
+      "canonical_path": "docs/migration/plans/DOCUMENTATION_GENERATED_DATA_MIGRATION_PLAN.md",
+      "category": "migration",
+      "previous_paths": []
+    },
+    {
+      "canonical_path": "docs/migration/plans/DOMAIN_MODULES_MIGRATION_PLAN.md",
+      "category": "migration",
+      "previous_paths": [
+        "DOMAIN_MODULES_MIGRATION_PLAN.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/plans/FINALIZATION_MIGRATION_PLAN.md",
+      "category": "migration",
+      "previous_paths": []
+    },
+    {
+      "canonical_path": "docs/migration/plans/GAME_SERVER_WEB_MIGRATION_PLAN.md",
+      "category": "migration",
+      "previous_paths": [
+        "GAME_SERVER_WEB_MIGRATION_PLAN.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/plans/KNOWLEDGE_SOURCE_CORPUS_MIGRATION_PLAN.md",
+      "category": "migration",
+      "previous_paths": []
+    },
+    {
+      "canonical_path": "docs/migration/plans/MAPMAKER_TOOLS_MIGRATION_PLAN.md",
+      "category": "migration",
+      "previous_paths": [
+        "MAPMAKER_TOOLS_MIGRATION_PLAN.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/plans/NARRATION_PRESENTATION_MIGRATION_PLAN.md",
+      "category": "migration",
+      "previous_paths": [
+        "NARRATION_PRESENTATION_MIGRATION_PLAN.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/plans/NEW_GAME_ORCHESTRATOR_MIGRATION_PLAN.md",
+      "category": "migration",
+      "previous_paths": [
+        "NEW_GAME_ORCHESTRATOR_MIGRATION_PLAN.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/plans/PRODUCTION_INTEGRATION_BROWSER_E2E_MIGRATION_PLAN.md",
+      "category": "migration",
+      "previous_paths": [
+        "PRODUCTION_INTEGRATION_BROWSER_E2E_MIGRATION_PLAN.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/plans/SHADOW_RUN_MIGRATION_PLAN.md",
+      "category": "migration",
+      "previous_paths": []
+    },
+    {
+      "canonical_path": "docs/migration/plans/STAGES2_8_MIGRATION_PLAN.md",
+      "category": "migration",
+      "previous_paths": [
+        "STAGES2_8_MIGRATION_PLAN.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/plans/STAGES9_12_MIGRATION_PLAN.md",
+      "category": "migration",
+      "previous_paths": [
+        "STAGES9_12_MIGRATION_PLAN.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/plans/TURN_WORKFLOW_MIGRATION_PLAN.md",
+      "category": "migration",
+      "previous_paths": [
+        "TURN_WORKFLOW_MIGRATION_PLAN.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/reports/ARCHITECTURE_REPORT.md",
+      "category": "migration",
+      "previous_paths": [
+        "ARCHITECTURE_REPORT.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/reports/CUTOVER_PHASE_REPORT.md",
+      "category": "migration",
+      "previous_paths": []
+    },
+    {
+      "canonical_path": "docs/migration/reports/DOCUMENTATION_GENERATED_DATA_PHASE_REPORT.md",
+      "category": "migration",
+      "previous_paths": []
+    },
+    {
+      "canonical_path": "docs/migration/reports/DOMAIN_MODULES_PHASE_REPORT.md",
+      "category": "migration",
+      "previous_paths": [
+        "DOMAIN_MODULES_PHASE_REPORT.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/reports/FINALIZATION_PHASE_REPORT.md",
+      "category": "migration",
+      "previous_paths": []
+    },
+    {
+      "canonical_path": "docs/migration/reports/G5_PLACEMENT_PIPELINE_REPORT.md",
+      "category": "migration",
+      "previous_paths": [
+        "G5_PLACEMENT_PIPELINE_REPORT.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/reports/GAME_SERVER_WEB_PHASE_REPORT.md",
+      "category": "migration",
+      "previous_paths": [
+        "GAME_SERVER_WEB_PHASE_REPORT.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/reports/HIDDEN_STATE_PIPELINE_REPORT.md",
+      "category": "migration",
+      "previous_paths": [
+        "HIDDEN_STATE_PIPELINE_REPORT.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/reports/KNOWLEDGE_SOURCE_CORPUS_MIGRATION_REPORT.md",
+      "category": "migration",
+      "previous_paths": []
+    },
+    {
+      "canonical_path": "docs/migration/reports/KNOWLEDGE_SOURCE_CRITIC_REPORT.md",
+      "category": "migration",
+      "previous_paths": []
+    },
+    {
+      "canonical_path": "docs/migration/reports/KNOWLEDGE_SOURCE_PARITY_REPORT.md",
+      "category": "migration",
+      "previous_paths": []
+    },
+    {
+      "canonical_path": "docs/migration/reports/LEGACY_DOCUMENTS_UNIQUE_FILE_REVIEW.md",
+      "category": "migration",
+      "previous_paths": []
+    },
+    {
+      "canonical_path": "docs/migration/reports/MAPMAKER_TOOLS_PHASE_REPORT.md",
+      "category": "migration",
+      "previous_paths": [
+        "MAPMAKER_TOOLS_PHASE_REPORT.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/reports/NARRATION_PRESENTATION_PHASE_REPORT.md",
+      "category": "migration",
+      "previous_paths": [
+        "NARRATION_PRESENTATION_PHASE_REPORT.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/reports/NARRATOR_PIPELINE_REPORT.md",
+      "category": "migration",
+      "previous_paths": [
+        "NARRATOR_PIPELINE_REPORT.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/reports/NEW_GAME_ORCHESTRATOR_PHASE_REPORT.md",
+      "category": "migration",
+      "previous_paths": [
+        "NEW_GAME_ORCHESTRATOR_PHASE_REPORT.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/reports/PRODUCTION_INTEGRATION_BROWSER_E2E_PHASE_REPORT.md",
+      "category": "migration",
+      "previous_paths": [
+        "PRODUCTION_INTEGRATION_BROWSER_E2E_PHASE_REPORT.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/reports/ROLLBACK_RESTORE_REPORT.md",
+      "category": "migration",
+      "previous_paths": []
+    },
+    {
+      "canonical_path": "docs/migration/reports/SHADOW_RUN_PHASE_REPORT.md",
+      "category": "migration",
+      "previous_paths": []
+    },
+    {
+      "canonical_path": "docs/migration/reports/STAGES2_8_PHASE_REPORT.md",
+      "category": "migration",
+      "previous_paths": [
+        "STAGES2_8_PHASE_REPORT.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/reports/STAGES9_12_PHASE_REPORT.md",
+      "category": "migration",
+      "previous_paths": [
+        "STAGES9_12_PHASE_REPORT.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/reports/TEST_REPORT.md",
+      "category": "migration",
+      "previous_paths": [
+        "TEST_REPORT.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/reports/TURN_WORKFLOW_PHASE_REPORT.md",
+      "category": "migration",
+      "previous_paths": [
+        "TURN_WORKFLOW_PHASE_REPORT.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/migration/reports/VISIBLE_CONTEXT_PIPELINE_REPORT.md",
+      "category": "migration",
+      "previous_paths": [
+        "VISIBLE_CONTEXT_PIPELINE_REPORT.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/modules/KNOWLEDGE_SOURCE.md",
+      "category": "modules",
+      "previous_paths": []
+    },
+    {
+      "canonical_path": "docs/modules/TOOLS_INVENTORY.md",
+      "category": "modules",
+      "previous_paths": [
+        "TOOLS_INVENTORY.md"
+      ]
+    },
+    {
+      "canonical_path": "docs/pipelines/new-game.md",
+      "category": "pipelines",
+      "previous_paths": []
+    },
+    {
+      "canonical_path": "docs/pipelines/turn.md",
+      "category": "pipelines",
+      "previous_paths": []
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "name": "@rus/game-web",
+  "version": "0.21.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js",
+    "./api": "./src/api/index.js",
+    "./store": "./src/app/store.js",
+    "./router": "./src/app/router.js"
+  }
+}

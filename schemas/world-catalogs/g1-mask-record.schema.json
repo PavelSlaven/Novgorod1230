@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rus.g1_mask_record.v1",
+  "title": "G1 mask record",
+  "type": "object",
+  "required": ["id", "region_id", "node_type", "scale_level", "global_grid_x", "global_grid_y", "grid_z", "cell_size_km", "cell_active", "region_cell_status", "control_status", "subregion_id", "land_fraction", "water_fraction", "evidence_status", "playability_status", "source_ids"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "region_id": { "type": "string", "minLength": 1 },
+    "node_type": { "const": "region_cell" },
+    "scale_level": { "const": "G1" },
+    "global_grid_x": { "type": "integer" },
+    "global_grid_y": { "type": "integer" },
+    "grid_z": { "const": 0 },
+    "cell_size_km": { "const": 32 },
+    "cell_active": { "type": "boolean" },
+    "region_cell_status": { "enum": ["active", "partial", "border", "outside_region", "water_only"] },
+    "control_status": { "enum": ["core", "directly_administered", "special_status", "dependent", "tributary", "contested", "influence_zone", "external"] },
+    "subregion_id": { "type": "string", "minLength": 1 },
+    "land_fraction": { "type": "number", "minimum": 0, "maximum": 1 },
+    "water_fraction": { "type": "number", "minimum": 0, "maximum": 1 },
+    "evidence_status": { "enum": ["source_backed", "archaeologically_supported", "comparative_reconstruction", "regional_typology", "gameplay_abstraction", "unknown"] },
+    "playability_status": { "enum": ["draft", "usable_with_constraints", "approved", "blocked", "deprecated"] },
+    "source_ids": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true }
+  }
+}

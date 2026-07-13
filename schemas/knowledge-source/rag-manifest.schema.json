@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rus.knowledge_rag_manifest.v1",
+  "type": "object",
+  "required": ["schema_version", "generation_mode", "corpus_root", "corpus_manifest_sha256", "corpus_hash", "source_snapshot_sha256", "source_document_count", "chunk_count", "model", "dimensions", "index_sha256"],
+  "properties": {
+    "schema_version": { "const": "rus.knowledge_rag_manifest.v1" },
+    "generation_mode": { "const": "corpus_rechunk_with_approved_embedding_snapshot" },
+    "corpus_root": { "const": "data/knowledge-source/corpus/DOCUMENTS" },
+    "corpus_manifest_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "corpus_hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "source_snapshot_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "source_document_count": { "type": "integer", "minimum": 1 },
+    "chunk_count": { "type": "integer", "minimum": 1 },
+    "model": { "type": "string", "minLength": 1 },
+    "dimensions": { "type": "integer", "minimum": 1 },
+    "index_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  },
+  "additionalProperties": true
+}

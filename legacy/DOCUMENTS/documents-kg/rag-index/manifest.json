@@ -1,0 +1,9 @@
+{
+  "built_at": "2026-06-27T09:38:05.323Z",
+  "model": "jina-embeddings-v3",
+  "dimensions": 1024,
+  "corpus_hash": "1047cac6b27857b826ba57f3b5389619e06601c395d059d73334136ba7364627",
+  "chunk_count": 813,
+  "corpus_dir": "C:\\Users\\Slaven\\Documents\\Одним ПРОМТОМ\\DOCUMENTS\\documents-kg\\corpus\\DOCUMENTS",
+  "index_path": "C:\\Users\\Slaven\\Documents\\Одним ПРОМТОМ\\DOCUMENTS\\documents-kg\\rag-index\\index.json"
+}

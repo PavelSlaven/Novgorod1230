@@ -1,0 +1,597 @@
+[
+  {
+    "id": "gn_nov_g2_xp017_yp026_r2_south_main_channel",
+    "parent_node_id": "gn_nov_g1_xp017_yp026",
+    "name": "Южный входной речной коридор",
+    "name_status": "functional_descriptive",
+    "zone_type": "river_corridor",
+    "function": "Вход в ячейку с юга и переход к внутренним рукавам.",
+    "spatial_precision": "cell_subarea_topological",
+    "access": {
+      "summer": "conditional",
+      "winter": "conditional",
+      "exact_geometry": "not_claimed"
+    },
+    "seasonality": [
+      "open-water network differs from winter network",
+      "spring flood and break-up can block normal passage"
+    ],
+    "hazards": [
+      "orientation error",
+      "water/ice conditions",
+      "flooding or wet ground"
+    ],
+    "human_use": [
+      "movement",
+      "resource use where causally supported",
+      "local residence only in historical/archaeological areas"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+      "SRC_G1R2_CHALOV_DVINA_2012",
+      "SRC_G1R2_GSHHS",
+      "SRC_G1R2_MASK_REV002"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_DVINA_CORRIDOR",
+      "CLM_G1R2_MULTICHANNEL"
+    ],
+    "reconstruction_method": "Topological zone reconstructed from approved claims; boundaries are not exact medieval polygons."
+  },
+  {
+    "id": "gn_nov_g2_xp017_yp026_r2_central_main_channel",
+    "parent_node_id": "gn_nov_g1_xp017_yp026",
+    "name": "Средний сход русловых потоков",
+    "name_status": "functional_descriptive",
+    "zone_type": "river_corridor",
+    "function": "Основная связующая водная зона между южным входом, боковыми рукавами и северным выходом.",
+    "spatial_precision": "cell_subarea_topological",
+    "access": {
+      "summer": "conditional",
+      "winter": "conditional",
+      "exact_geometry": "not_claimed"
+    },
+    "seasonality": [
+      "open-water network differs from winter network",
+      "spring flood and break-up can block normal passage"
+    ],
+    "hazards": [
+      "orientation error",
+      "water/ice conditions",
+      "flooding or wet ground"
+    ],
+    "human_use": [
+      "movement",
+      "resource use where causally supported",
+      "local residence only in historical/archaeological areas"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+      "SRC_G1R2_CHALOV_DVINA_2012",
+      "SRC_G1R2_MASK_REV002"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_DVINA_CORRIDOR",
+      "CLM_G1R2_NAVIGATION_KNOWLEDGE"
+    ],
+    "reconstruction_method": "Topological zone reconstructed from approved claims; boundaries are not exact medieval polygons."
+  },
+  {
+    "id": "gn_nov_g2_xp017_yp026_r2_north_main_channel",
+    "parent_node_id": "gn_nov_g1_xp017_yp026",
+    "name": "Северный устьевой ход",
+    "name_status": "functional_descriptive",
+    "zone_type": "river_maritime_corridor",
+    "function": "Переход от внутренней реки к более открытому устьевому движению.",
+    "spatial_precision": "cell_subarea_topological",
+    "access": {
+      "summer": "conditional",
+      "winter": "conditional",
+      "exact_geometry": "not_claimed"
+    },
+    "seasonality": [
+      "open-water network differs from winter network",
+      "spring flood and break-up can block normal passage"
+    ],
+    "hazards": [
+      "orientation error",
+      "water/ice conditions",
+      "flooding or wet ground"
+    ],
+    "human_use": [
+      "movement",
+      "resource use where causally supported",
+      "local residence only in historical/archaeological areas"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+      "SRC_G1R2_MASK_REV002"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_DVINA_CORRIDOR",
+      "CLM_G1R2_NORTH_EXIT"
+    ],
+    "reconstruction_method": "Topological zone reconstructed from approved claims; boundaries are not exact medieval polygons."
+  },
+  {
+    "id": "gn_nov_g2_xp017_yp026_r2_west_distributary_belt",
+    "parent_node_id": "gn_nov_g1_xp017_yp026",
+    "name": "Западная полоса боковых проток",
+    "name_status": "functional_descriptive",
+    "zone_type": "side_channel_belt",
+    "function": "Система более тихих и переменных водных ходов западной части топологической модели.",
+    "spatial_precision": "cell_subarea_topological",
+    "access": {
+      "summer": "conditional",
+      "winter": "conditional",
+      "exact_geometry": "not_claimed"
+    },
+    "seasonality": [
+      "open-water network differs from winter network",
+      "spring flood and break-up can block normal passage"
+    ],
+    "hazards": [
+      "orientation error",
+      "water/ice conditions",
+      "flooding or wet ground"
+    ],
+    "human_use": [
+      "movement",
+      "resource use where causally supported",
+      "local residence only in historical/archaeological areas"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_CHALOV_DVINA_2012",
+      "SRC_G1R2_GSHHS",
+      "SRC_G1R2_MASK_REV002"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_MULTICHANNEL",
+      "CLM_G1R2_SHORELINE_LIMIT"
+    ],
+    "reconstruction_method": "Topological zone reconstructed from approved claims; boundaries are not exact medieval polygons."
+  },
+  {
+    "id": "gn_nov_g2_xp017_yp026_r2_east_distributary_belt",
+    "parent_node_id": "gn_nov_g1_xp017_yp026",
+    "name": "Восточная полоса боковых проток",
+    "name_status": "functional_descriptive",
+    "zone_type": "side_channel_belt",
+    "function": "Система боковых проток и паводковых обходов восточной части топологической модели.",
+    "spatial_precision": "cell_subarea_topological",
+    "access": {
+      "summer": "conditional",
+      "winter": "conditional",
+      "exact_geometry": "not_claimed"
+    },
+    "seasonality": [
+      "open-water network differs from winter network",
+      "spring flood and break-up can block normal passage"
+    ],
+    "hazards": [
+      "orientation error",
+      "water/ice conditions",
+      "flooding or wet ground"
+    ],
+    "human_use": [
+      "movement",
+      "resource use where causally supported",
+      "local residence only in historical/archaeological areas"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_CHALOV_DVINA_2012",
+      "SRC_G1R2_GSHHS",
+      "SRC_G1R2_MASK_REV002"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_MULTICHANNEL",
+      "CLM_G1R2_SHORELINE_LIMIT"
+    ],
+    "reconstruction_method": "Topological zone reconstructed from approved claims; boundaries are not exact medieval polygons."
+  },
+  {
+    "id": "gn_nov_g2_xp017_yp026_r2_island_head_mosaic",
+    "parent_node_id": "gn_nov_g1_xp017_yp026",
+    "name": "Островные головы и разделения русел",
+    "name_status": "functional_descriptive",
+    "zone_type": "island_channel_mosaic",
+    "function": "Участки разделения потока у верхних концов островов.",
+    "spatial_precision": "cell_subarea_topological",
+    "access": {
+      "summer": "conditional",
+      "winter": "conditional",
+      "exact_geometry": "not_claimed"
+    },
+    "seasonality": [
+      "open-water network differs from winter network",
+      "spring flood and break-up can block normal passage"
+    ],
+    "hazards": [
+      "orientation error",
+      "water/ice conditions",
+      "flooding or wet ground"
+    ],
+    "human_use": [
+      "movement",
+      "resource use where causally supported",
+      "local residence only in historical/archaeological areas"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_CHALOV_DVINA_2012",
+      "SRC_G1R2_GSHHS"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_MULTICHANNEL"
+    ],
+    "reconstruction_method": "Topological zone reconstructed from approved claims; boundaries are not exact medieval polygons."
+  },
+  {
+    "id": "gn_nov_g2_xp017_yp026_r2_inner_floodplain",
+    "parent_node_id": "gn_nov_g1_xp017_yp026",
+    "name": "Внутренняя пойменно-островная зона",
+    "name_status": "functional_descriptive",
+    "zone_type": "floodplain_island_mosaic",
+    "function": "Затапливаемые понижения, сухие гряды и островные внутренние пространства.",
+    "spatial_precision": "cell_subarea_topological",
+    "access": {
+      "summer": "conditional",
+      "winter": "conditional",
+      "exact_geometry": "not_claimed"
+    },
+    "seasonality": [
+      "open-water network differs from winter network",
+      "spring flood and break-up can block normal passage"
+    ],
+    "hazards": [
+      "orientation error",
+      "water/ice conditions",
+      "flooding or wet ground"
+    ],
+    "human_use": [
+      "movement",
+      "resource use where causally supported",
+      "local residence only in historical/archaeological areas"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_CHALOV_DVINA_2012",
+      "SRC_G1R2_GSHHS"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_MULTICHANNEL",
+      "CLM_G1R2_FLOODPLAIN_RIDGES"
+    ],
+    "reconstruction_method": "Topological zone reconstructed from approved claims; boundaries are not exact medieval polygons."
+  },
+  {
+    "id": "gn_nov_g2_xp017_yp026_r2_shoal_bar_field",
+    "parent_node_id": "gn_nov_g1_xp017_yp026",
+    "name": "Полоса мелей и наносных гряд",
+    "name_status": "functional_descriptive",
+    "zone_type": "shoal_bar_field",
+    "function": "Навигационно опасная зона с меняющимися мелями, косами и наносами.",
+    "spatial_precision": "cell_subarea_topological",
+    "access": {
+      "summer": "conditional",
+      "winter": "conditional",
+      "exact_geometry": "not_claimed"
+    },
+    "seasonality": [
+      "open-water network differs from winter network",
+      "spring flood and break-up can block normal passage"
+    ],
+    "hazards": [
+      "orientation error",
+      "water/ice conditions",
+      "flooding or wet ground"
+    ],
+    "human_use": [
+      "movement",
+      "resource use where causally supported",
+      "local residence only in historical/archaeological areas"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_CHALOV_DVINA_2012",
+      "SRC_G1R2_GSHHS"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_MULTICHANNEL",
+      "CLM_G1R2_NAVIGATION_KNOWLEDGE"
+    ],
+    "reconstruction_method": "Topological zone reconstructed from approved claims; boundaries are not exact medieval polygons."
+  },
+  {
+    "id": "gn_nov_g2_xp017_yp026_r2_backwater_wetlands",
+    "parent_node_id": "gn_nov_g1_xp017_yp026",
+    "name": "Затоны и староречные понижения",
+    "name_status": "functional_descriptive",
+    "zone_type": "backwater_wetlands",
+    "function": "Тиховодные участки, старицы, заболоченные кромки и сезонные водоёмы.",
+    "spatial_precision": "cell_subarea_topological",
+    "access": {
+      "summer": "conditional",
+      "winter": "conditional",
+      "exact_geometry": "not_claimed"
+    },
+    "seasonality": [
+      "open-water network differs from winter network",
+      "spring flood and break-up can block normal passage"
+    ],
+    "hazards": [
+      "orientation error",
+      "water/ice conditions",
+      "flooding or wet ground"
+    ],
+    "human_use": [
+      "movement",
+      "resource use where causally supported",
+      "local residence only in historical/archaeological areas"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+      "SRC_G1R2_CHALOV_DVINA_2012",
+      "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+      "SRC_G1R2_GSHHS"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_MULTICHANNEL",
+      "CLM_G1R2_RESOURCE_USE"
+    ],
+    "reconstruction_method": "Topological zone reconstructed from approved claims; boundaries are not exact medieval polygons."
+  },
+  {
+    "id": "gn_nov_g2_xp017_yp026_r2_dry_ridge_belt",
+    "parent_node_id": "gn_nov_g1_xp017_yp026",
+    "name": "Сухие пойменные гряды",
+    "name_status": "functional_descriptive",
+    "zone_type": "dry_floodplain_ridges",
+    "function": "Относительно высокие участки, пригодные для прохода, остановки и локального использования.",
+    "spatial_precision": "cell_subarea_topological",
+    "access": {
+      "summer": "conditional",
+      "winter": "conditional",
+      "exact_geometry": "not_claimed"
+    },
+    "seasonality": [
+      "open-water network differs from winter network",
+      "spring flood and break-up can block normal passage"
+    ],
+    "hazards": [
+      "orientation error",
+      "water/ice conditions",
+      "flooding or wet ground"
+    ],
+    "human_use": [
+      "movement",
+      "resource use where causally supported",
+      "local residence only in historical/archaeological areas"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_CHALOV_DVINA_2012"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_FLOODPLAIN_RIDGES"
+    ],
+    "reconstruction_method": "Topological zone reconstructed from approved claims; boundaries are not exact medieval polygons."
+  },
+  {
+    "id": "gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area",
+    "parent_node_id": "gn_nov_g1_xp017_yp026",
+    "name": "Вихтуйская локализационная зона",
+    "name_status": "attested_normalized",
+    "zone_type": "historical_local_area",
+    "function": "Зона источникового топонима и связанного с ним локального человеческого присутствия без точной границы.",
+    "spatial_precision": "local_area",
+    "access": {
+      "summer": "conditional",
+      "winter": "conditional",
+      "exact_geometry": "not_claimed"
+    },
+    "seasonality": [
+      "open-water network differs from winter network",
+      "spring flood and break-up can block normal passage"
+    ],
+    "hazards": [
+      "orientation error",
+      "water/ice conditions",
+      "flooding or wet ground"
+    ],
+    "human_use": [
+      "movement",
+      "resource use where causally supported",
+      "local residence only in historical/archaeological areas"
+    ],
+    "evidence_status": "source_backed_with_localization_uncertainty",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_ARKHANGELSK_HOARD_1992",
+      "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+      "SRC_G1R2_SCHAPOV_1976_CHARTER"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_VIKHTUY",
+      "CLM_G1R2_VIKHTUY_LOCALIZATION"
+    ],
+    "reconstruction_method": "Topological zone reconstructed from approved claims; boundaries are not exact medieval polygons."
+  },
+  {
+    "id": "gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area",
+    "parent_node_id": "gn_nov_g1_xp017_yp026",
+    "name": "Заостровский археологический участок",
+    "name_status": "functional_descriptive",
+    "zone_type": "archaeological_local_area",
+    "function": "Локальная зона поселенческого и погребального археологического контекста.",
+    "spatial_precision": "local_area",
+    "access": {
+      "summer": "conditional",
+      "winter": "conditional",
+      "exact_geometry": "not_claimed"
+    },
+    "seasonality": [
+      "open-water network differs from winter network",
+      "spring flood and break-up can block normal passage"
+    ],
+    "hazards": [
+      "orientation error",
+      "water/ice conditions",
+      "flooding or wet ground"
+    ],
+    "human_use": [
+      "movement",
+      "resource use where causally supported",
+      "local residence only in historical/archaeological areas"
+    ],
+    "evidence_status": "archaeologically_supported_with_access_limit",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_ARKHANGELSK_HOARD_1992",
+      "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+      "SRC_G1R2_SCHAPOV_1976_CHARTER"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_ZAOSTROVYE",
+      "CLM_G1R2_1230_CONTINUITY"
+    ],
+    "reconstruction_method": "Topological zone reconstructed from approved claims; boundaries are not exact medieval polygons."
+  },
+  {
+    "id": "gn_nov_g2_xp017_yp026_r2_forest_hinterland",
+    "parent_node_id": "gn_nov_g1_xp017_yp026",
+    "name": "Пойменно-таёжный тыл",
+    "name_status": "functional_descriptive",
+    "zone_type": "forest_wetland_hinterland",
+    "function": "Лесные и влажные участки вне основных водных ходов, используемые эпизодически.",
+    "spatial_precision": "cell_subarea_topological",
+    "access": {
+      "summer": "conditional",
+      "winter": "conditional",
+      "exact_geometry": "not_claimed"
+    },
+    "seasonality": [
+      "open-water network differs from winter network",
+      "spring flood and break-up can block normal passage"
+    ],
+    "hazards": [
+      "orientation error",
+      "water/ice conditions",
+      "flooding or wet ground"
+    ],
+    "human_use": [
+      "movement",
+      "resource use where causally supported",
+      "local residence only in historical/archaeological areas"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+      "SRC_G1R2_CHALOV_DVINA_2012",
+      "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+      "SRC_G1R2_GSHHS"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_FOREST_HINTERLAND",
+      "CLM_G1R2_RESOURCE_USE"
+    ],
+    "reconstruction_method": "Topological zone reconstructed from approved claims; boundaries are not exact medieval polygons."
+  },
+  {
+    "id": "gn_nov_g2_xp017_yp026_r2_small_stream_network",
+    "parent_node_id": "gn_nov_g1_xp017_yp026",
+    "name": "Ручьи и внутренние стоки",
+    "name_status": "functional_descriptive",
+    "zone_type": "small_stream_lake_network",
+    "function": "Мелкие водотоки и внутренние водосборы, связывающие лес и пойму с Двиной.",
+    "spatial_precision": "cell_subarea_topological",
+    "access": {
+      "summer": "conditional",
+      "winter": "conditional",
+      "exact_geometry": "not_claimed"
+    },
+    "seasonality": [
+      "open-water network differs from winter network",
+      "spring flood and break-up can block normal passage"
+    ],
+    "hazards": [
+      "orientation error",
+      "water/ice conditions",
+      "flooding or wet ground"
+    ],
+    "human_use": [
+      "movement",
+      "resource use where causally supported",
+      "local residence only in historical/archaeological areas"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_CHALOV_DVINA_2012",
+      "SRC_G1R2_GSHHS"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_MULTICHANNEL",
+      "CLM_G1R2_FOREST_HINTERLAND"
+    ],
+    "reconstruction_method": "Topological zone reconstructed from approved claims; boundaries are not exact medieval polygons."
+  },
+  {
+    "id": "gn_nov_g2_xp017_yp026_r2_river_sea_transition",
+    "parent_node_id": "gn_nov_g1_xp017_yp026",
+    "name": "Открытая речная устьевая переходная зона",
+    "name_status": "functional_descriptive",
+    "zone_type": "river_sea_transition",
+    "function": "Наиболее открытая и ветровая часть перехода к Белому морю.",
+    "spatial_precision": "cell_subarea_topological",
+    "access": {
+      "summer": "conditional",
+      "winter": "conditional",
+      "exact_geometry": "not_claimed"
+    },
+    "seasonality": [
+      "open-water network differs from winter network",
+      "spring flood and break-up can block normal passage"
+    ],
+    "hazards": [
+      "orientation error",
+      "water/ice conditions",
+      "flooding or wet ground"
+    ],
+    "human_use": [
+      "movement",
+      "resource use where causally supported",
+      "local residence only in historical/archaeological areas"
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints",
+    "source_ids": [
+      "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+      "SRC_G1R2_CHALOV_DVINA_2012",
+      "SRC_G1R2_MASK_REV002"
+    ],
+    "claim_ids": [
+      "CLM_G1R2_DVINA_CORRIDOR",
+      "CLM_G1R2_NORTH_EXIT",
+      "CLM_G1R2_SEASONAL_WATER"
+    ],
+    "reconstruction_method": "Topological zone reconstructed from approved claims; boundaries are not exact medieval polygons."
+  }
+]

@@ -1,0 +1,23 @@
+{
+  "schema_version": "rus.g1_boundary_match_overlay.v1",
+  "match_id": "MATCH_DVINA_YP025_YP026_001",
+  "corridor_id": "COR_DVINA_WHITE_SEA",
+  "status": "matched",
+  "cell_a": {
+    "g1_id": "gn_nov_g1_xp017_yp025",
+    "boundary_id": "BND_G1_002_NORTH_DVINA",
+    "node_id": "gn_nov_g4_xp017_yp025_navigation_corridor",
+    "side": "north"
+  },
+  "cell_b": {
+    "g1_id": "gn_nov_g1_xp017_yp026",
+    "boundary_id": "BND_G1_001_SOUTH_DVINA",
+    "node_id": "gn_nov_g4_xp017_yp026_navigation_corridor",
+    "side": "south"
+  },
+  "semantic_scope": "broad river-corridor continuity only; no exact crossing coordinate",
+  "source_ids": [
+    "SRC_G1_002_PREVIOUS_CELL",
+    "SRC_G1_002_CORRIDOR_REGISTER"
+  ]
+}

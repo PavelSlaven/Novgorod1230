@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rus.g1_boundary_contract.v1",
+  "title": "G1 boundary contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "boundary_id", "from_g1_id", "to_g1_id", "from_exit_node_id", "boundary_side", "route_type", "evidence_status", "status"],
+  "properties": {
+    "schema_version": { "const": "rus.g1_boundary_contract.v1" },
+    "boundary_id": { "type": "string", "minLength": 1 },
+    "from_g1_id": { "type": "string", "minLength": 1 },
+    "to_g1_id": { "type": "string", "minLength": 1 },
+    "from_exit_node_id": { "type": "string", "minLength": 1 },
+    "expected_to_entry": { "type": ["string", "null"] },
+    "boundary_side": { "enum": ["north", "east", "south", "west"] },
+    "route_type": { "type": "string", "minLength": 1 },
+    "corridor_id": { "type": ["string", "null"] },
+    "seasonality": { "type": ["object", "null"] },
+    "access": { "type": ["object", "null"] },
+    "risk": { "type": ["object", "null"] },
+    "evidence_status": { "type": "string", "minLength": 1 },
+    "status": { "enum": ["pending_neighbor_confirmation", "matched", "conflict", "deprecated"] }
+  }
+}

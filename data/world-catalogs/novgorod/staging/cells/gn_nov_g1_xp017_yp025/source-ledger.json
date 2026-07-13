@@ -1,0 +1,80 @@
+[
+  {
+    "source_id": "SRC_G1_002_BRISBANE_MAKAROV_NOSOV",
+    "full_citation": "Brisbane, M. A.; Makarov, N. A.; Nosov, E. N. Medieval Novgorod in Its Wider Context.",
+    "source_class": "academic_historical_archaeology",
+    "source_access": "complete_pdf",
+    "access_location": "https://eprints.bournemouth.ac.uk/23438/1/01%20Novgorod%20IV.pdf",
+    "relevant_locator": "sections on northern tribute districts and Novgorod wider context",
+    "use_status": "binding",
+    "limitations": [
+      "Evidence supports basin-scale tribute and movement networks, not an exact local settlement, border or administration in this cell."
+    ]
+  },
+  {
+    "source_id": "SRC_G1_002_MAKAROV_2003",
+    "full_citation": "Макаров Н. А. «Заволоцкие топонимы» новгородских берестяных грамот и деревянных цилиндров на археологической карте // Берестяные грамоты: 50 лет открытия и изучения. М.: Индрик, 2003. С. 149–164.",
+    "source_class": "archaeology_toponymy",
+    "source_access": "bibliographic_verified_secondary_summary",
+    "access_location": null,
+    "use_status": "corroborative_only",
+    "limitations": [
+      "Full text was not available in the current research environment; no unique binding claim is based solely on this entry."
+    ]
+  },
+  {
+    "source_id": "SRC_G1_002_REV002_MASK",
+    "full_citation": "RUS13 project. Novgorod 1230 G1 mask revision 002.",
+    "source_class": "approved_project_derivative",
+    "source_access": "complete_local",
+    "access_location": "novgorod_1230_candidate_g1_mask.json",
+    "use_status": "binding_technical",
+    "limitations": [
+      "Carries approved research decisions but is not an independent historical source."
+    ]
+  },
+  {
+    "source_id": "SRC_G1_002_CORRIDOR_REGISTER",
+    "full_citation": "RUS13 project. Novgorod 1230 corridor register revision 002, COR_DVINA_WHITE_SEA.",
+    "source_class": "approved_project_derivative",
+    "source_access": "complete_local",
+    "access_location": "novgorod_1230_corridor_register.geojson",
+    "use_status": "binding_technical",
+    "limitations": [
+      "The line represents a broad reconstructed corridor, not an exact medieval channel."
+    ]
+  },
+  {
+    "source_id": "SRC_G1_002_GRID",
+    "full_citation": "RUS13 project. WGS84 / local AEQD 32 km grid definition.",
+    "source_class": "technical_method",
+    "source_access": "complete_local",
+    "access_location": "grid_definition.json",
+    "use_status": "binding_technical",
+    "limitations": [
+      "The grid is technical and has no historical boundary semantics."
+    ]
+  },
+  {
+    "source_id": "SRC_G1_002_GSHHS",
+    "full_citation": "GSHHS/GSHHG shoreline geometry used in revision 002.",
+    "source_class": "modern_technical_geography",
+    "source_access": "project_derivative",
+    "access_location": "revision 002 land/water calculation",
+    "use_status": "technical_proxy_only",
+    "limitations": [
+      "Modern coastline proxy only; at this resolution it omits internal river water and cannot reconstruct the 1230 channel or floodplain."
+    ]
+  },
+  {
+    "source_id": "SRC_G1_002_PREVIOUS_CELL",
+    "full_citation": "RUS13 project. Approved-local package gn_nov_g1_xp017_yp026, revision 002.",
+    "source_class": "approved_project_derivative",
+    "source_access": "complete_local",
+    "access_location": "gn_nov_g1_xp017_yp026.package.json",
+    "use_status": "binding_integration",
+    "limitations": [
+      "Used only to match the shared boundary and preserve neighbour-approved facts."
+    ]
+  }
+]

@@ -1,0 +1,24 @@
+{
+  "name": "xiii-century-world-sim",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node src/ui-server.js",
+    "start:cli": "node src/index.js",
+    "test": "node --test ./test/*.test.js",
+    "release:guard": "node scripts/release-guard.js",
+    "release:build": "node scripts/build-release.js",
+    "release:zip": "npm run release:guard && npm run release:build && node scripts/zip-release.js",
+    "release:verify": "node scripts/verify-release-archive.js",
+    "docs:graph:verify": "node scripts/docs-graph-verify.js",
+    "docs:rag:build": "node scripts/docs-rag-build.js",
+    "docs:rag:query": "node scripts/docs-rag-query.js",
+    "docs:rag:verify": "node scripts/docs-rag-verify.js",
+    "audit:pack": "node scripts/audit-pack.js",
+    "audit:submission": "node scripts/audit-submission.js"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

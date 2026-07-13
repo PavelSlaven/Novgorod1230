@@ -1,33 +1,55 @@
-# Test report — 0.22.0-migration.22
+# Test report — 0.23.0-migration.23
 
-Дата: 2026-07-12
+Дата: 2026-07-13
+Ветка: `agent/restore-canonical-docs-generated-ci`
+Проверенный commit: `1169090878d28a3e661a25ba67532570096d1a8f`
+GitHub Actions run: `#53` (`29266053035`)
 
-## Full regression suite
+## Clean-clone pipeline
 
-| Suite | Passed | Failed |
-|---|---:|---:|
-| Module tests | 217 | 0 |
-| Domain/package tests | 30 | 0 |
-| Application tests | 11 | 0 |
-| Tool tests | 29 | 0 |
-| Shadow tests | 6 | 0 |
-| Cutover tests | 4 | 0 |
-| Production integration | 3 | 0 |
-| Chromium E2E | 1 | 0 |
-| **Total** | **301** | **0** |
+| Gate | Result |
+|---|---|
+| Checkout clean clone | PASS |
+| Node.js 22 setup | PASS |
+| Lockfile registry normalization | PASS |
+| `npm ci` | PASS |
+| `npm run world-db:schema-check` | PASS |
+| `npm run knowledge:check-corpus` | PASS |
+| Deterministic documentation and knowledge generation | PASS |
+| `git diff --exit-code -- MODULE_INDEX.md generated/` | PASS |
+| Full `npm test` | PASS |
 
-`npm test`: passed.
+GitHub Actions completed the full job with conclusion `success`. The workflow summary does not expose reliable per-suite test counts, therefore this report does not repeat stale historic totals.
 
-## Finalization
+## Verified contracts
 
-- finalization tool tests: 4/4;
-- automated finalization gates: 11/11;
-- manual gates: 0/4, intentionally pending;
-- decision: `automation_complete_manual_hold`;
-- automatic legacy deletion: forbidden.
+- executable `world_base` entrypoint and eight ordered SQL parts;
+- 62 unique `world_base` tables and read-only schema permissions;
+- canonical corpus file bytes and SHA-256;
+- corpus ownership delegation from `CANONICAL_PATHS.json` to `corpus-manifest.json`;
+- approved semantic graph/RAG snapshot preservation;
+- deterministic structural graph coverage for native documents;
+- deterministic lexical-only RAG coverage where approved embeddings are absent;
+- separate provenance, semantic-index and lexical-index digests;
+- production startup rejection of missing or stale generated knowledge artifacts;
+- CI workflow contract preventing false-green truncated workflows.
 
-## Additional gates
+## Coverage state
 
-- `npm run docs:check`: passed;
-- `npm run architecture:check`: passed;
-- `npm run release:check`: passed; clean candidate archive restore and full 301/301 regression: passed.
+- Corpus documents: 22.
+- Legacy documents with provenance: 19.
+- Native project documents: 3.
+- Semantic documents: 19.
+- Structural-only graph documents: 3.
+- Lexical-only RAG documents: 3.
+- Approved semantic chunks: 813.
+
+## Remaining release gates
+
+- byte-for-byte import and registration of the remaining normative documents;
+- regeneration after the final corpus expansion;
+- migration report and PR description synchronization;
+- mandatory independent code critic audit;
+- repeat audit after any `CHANGES REQUIRED` or `REJECT` result.
+
+Decision: `automation_green_migration_incomplete_critic_pending`.

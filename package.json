@@ -60,8 +60,9 @@
     "knowledge:inventory": "node tools/docs-tools/src/knowledge-cli.js inventory --root .",
     "knowledge:import": "node tools/docs-tools/src/knowledge-cli.js import --root .",
     "knowledge:generate": "node tools/docs-tools/src/knowledge-cli.js generate --root .",
+    "knowledge:check-corpus": "node tools/docs-tools/src/knowledge-cli.js check-corpus --root .",
     "knowledge:check": "node tools/docs-tools/src/knowledge-cli.js check --root .",
-    "test:knowledge-source": "node --test packages/knowledge-source/test/*.test.js tools/docs-tools/test/knowledge-source-migration.test.js test/modules/knowledge-source-architecture.test.js test/integration/knowledge-source-production.test.js",
+    "test:knowledge-source": "node --test packages/knowledge-source/test/*.test.js tools/docs-tools/test/knowledge-source-migration.test.js tools/docs-tools/test/knowledge-corpus-verifier.test.js test/modules/knowledge-source-architecture.test.js test/integration/knowledge-source-production.test.js",
     "test:world-catalog": "node --test tools/world-catalog-workflow/test/*.test.js",
     "world-catalog:validate-novgorod-revision": "node tools/world-catalog-workflow/src/cli.js validate-revision --revision data/world-catalogs/novgorod/revisions/novgorod_1230_research_revision_001.json",
     "world-db:schema-check": "node scripts/check-world-base-schema.mjs"

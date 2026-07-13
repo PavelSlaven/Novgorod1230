@@ -67,7 +67,12 @@ jobs:
         run: git diff --exit-code -- MODULE_INDEX.md generated/
 
       - name: Run full test suite
-        run: npm test
+        run: |
+          set +e
+          npm test > "$RUNNER_TEMP/npm-test.log" 2>&1
+          status=$?
+          cat "$RUNNER_TEMP/npm-test.log"
+          exit "$status"
 
       - name: Upload generated evidence on failure
         if: failure()
@@ -79,3 +84,4 @@ jobs:
             generated/
             MODULE_INDEX.md
             ${{ runner.temp }}/docs-generate.log
+            ${{ runner.temp }}/npm-test.log

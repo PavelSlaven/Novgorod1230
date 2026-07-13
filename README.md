@@ -1,8 +1,72 @@
-# Rus_modules
+# Русь XIII век
 
-Текущий релиз: `0.23.0-migration.23`.
+**«Русь XIII век»** — историческая текстовая RPG-симуляция с постоянным миром, свободным вводом действий и LLM-управляемым повествованием.
 
-Проект содержит modular new-game Stages 2–26, общий orchestrator, domain packages, turn workflow, narration/presentation, game-server/game-web, production DB/provider adapters, MapMaker/tools и автономный нормативный корпус через `@rus/knowledge-source`.
+Игрок действует как человек своей эпохи: путешествует, общается, торгует, работает, исследует местность, вступает в конфликты и сталкивается с последствиями собственных решений. Мир сохраняет время, положение персонажа, состояние мест, NPC, предметы, отношения, знания и произошедшие события.
+
+LLM создаёт персонажей, сцены и последствия в пределах исторических, социальных и игровых правил. Код не сочиняет мир: он хранит и проверяет утверждённое состояние, выполняет расчёты и управляет модульными конвейерами новой игры и игрового хода.
+
+Первым подробно разрабатываемым регионом является Новгородская земля около 1230 года. Карта строится как вложенный граф G0–G5: от исторического региона и дневных территорий до конкретных мест, локаций и точек сцены.
+
+Проект находится в активной разработке и пока не является законченной игрой.
+
+## Основные принципы
+
+- свободный текстовый ввод вместо жёсткого списка команд;
+- устойчивое состояние мира и память последствий;
+- разделение видимой игроку информации и скрытого состояния симуляции;
+- историческая, социальная и материальная правдоподобность;
+- модульные LLM-этапы с отдельными валидацией, аудитом и repair;
+- read-only база канонического мира и отдельное изменяемое состояние каждой партии;
+- вложенная графовая карта G0–G5 и карта знаний персонажа.
+
+## Архитектура
+
+Проект организован как набор изолированных модулей с формальными контрактами.
+
+- `packages/new-game` — конвейер создания новой игры, Stages 2–26;
+- `packages/turn` — обработка игрового хода;
+- `packages/narration` — генерация player-facing прозы из разрешённого видимого контекста;
+- `packages/presentation` — модели первого экрана и игрового хода;
+- `apps/game-server` — сервер и production composition;
+- `apps/game-web` — игровой веб-интерфейс;
+- `infra/world-base` — read-only схема канонической базы мира;
+- `data/knowledge-source` — нормативный корпус проекта;
+- `tools/world-catalog-workflow` — подготовка и проверка региональной карты.
+
+Главное архитектурное правило:
+
+```text
+LLM создаёт и проверяет смысловые сущности мира.
+Код хранит, передаёт, валидирует структуру, выполняет утверждённые формулы и фиксирует состояние.
+```
+
+## Быстрый запуск
+
+Требуется Node.js 22+.
+
+```bash
+npm ci
+npm test
+npm start
+```
+
+CLI-запуск:
+
+```bash
+npm run start:cli
+```
+
+## Основная документация
+
+- [Индекс модулей](MODULE_INDEX.md)
+- [Правила модулей](docs/architecture/MODULE_RULES.md)
+- [Правила зависимостей](docs/architecture/DEPENDENCY_RULES.md)
+- [Политика контрактов](docs/architecture/CONTRACT_POLICY.md)
+- [Политика knowledge-source](docs/architecture/KNOWLEDGE_SOURCE_POLICY.md)
+- [Конвейер новой игры](docs/pipelines/new-game.md)
+- [Конвейер игрового хода](docs/pipelines/turn.md)
+- [Схема world_base](infra/world-base/SCHEMA_REFERENCE.md)
 
 ## Нормативный корпус
 
@@ -12,55 +76,17 @@
 data/knowledge-source/corpus/DOCUMENTS
 ```
 
-Runtime получает их только через injected `KnowledgeSourceReader`. Production fallback в `legacy/DOCUMENTS` отсутствует. Graph и RAG находятся в `generated/knowledge-source` и проверяются против corpus manifest.
-
-Команды:
+Проверка и генерация производных представлений:
 
 ```bash
-npm run knowledge:inventory
 npm run knowledge:check
 npm run knowledge:generate
-npm run test:knowledge-source
-```
-
-`knowledge:import` является миграционной командой: она обновляет только legacy-owned записи и сохраняет проверенные native records, aliases и файлы; в обычной разработке она не требуется.
-
-## Каноническая документация
-
-- [MODULE_INDEX.md](MODULE_INDEX.md);
-- [Правила модулей](docs/architecture/MODULE_RULES.md);
-- [Правила зависимостей](docs/architecture/DEPENDENCY_RULES.md);
-- [Политика контрактов](docs/architecture/CONTRACT_POLICY.md);
-- [Политика knowledge-source](docs/architecture/KNOWLEDGE_SOURCE_POLICY.md);
-- [Generated world_base schema reference](infra/world-base/SCHEMA_REFERENCE.md);
-- [New-game pipeline](docs/pipelines/new-game.md);
-- [Turn pipeline](docs/pipelines/turn.md);
-- [Canonical path registry](docs/migration/CANONICAL_PATHS.json).
-
-## Generated data
-
-```bash
-npm run docs:generate
 npm run docs:check
 ```
 
-`docs:check` также проверяет byte parity корпуса и актуальность generated graph/RAG.
+Graph и RAG являются производными представлениями корпуса и хранятся в `generated/knowledge-source`.
 
-## Проверка релиза
-
-```bash
-npm ci --ignore-scripts
-npm test
-npm run release:check
-npm run migration:status
-npm run world-db:schema-check
-npm run world-db:schema-doc-check
-```
-
-## Граница релиза
-
-Modular runtime является default. Legacy сохраняется как explicit rollback route и read-only evidence. Автоматическое удаление legacy запрещено; для удаления нужны отдельные операторские и владельческие подтверждения.
-## Новгородская карта и поячеечный workflow
+## Карта Новгородской земли
 
 Технический контур подготовки региональной карты находится в:
 
@@ -70,15 +96,15 @@ data/world-catalogs/novgorod
 schemas/world-catalogs
 ```
 
-Инструмент валидирует ревизию карты и G1-пакеты, строит очередь `global_grid_y DESC, global_grid_x ASC` и формирует dry-run импорта. Он не создаёт исторические факты, названия, маршруты, NPC или предметы и не записывает данные в production `world_base`.
-
-Текущая ревизия `novgorod_1230_research_revision_001` является staging-ревизией поверх read-only baseline v6. Все 70 legacy G1 заблокированы до утверждения расширенной исторической маски и обязательных полей `control_status`, `subregion_id`, `land_fraction`, `water_fraction` и `playability_status`.
-
-Команды:
+Проверка ревизии карты:
 
 ```bash
 npm run test:world-catalog
 npm run world-catalog:validate-novgorod-revision
 ```
 
-Подробности: `docs/migration/NOVGOROD_WORLD_CATALOG_WORKFLOW.md`.
+Инструменты карты валидируют утверждённые данные и формируют планы импорта, но не создают исторические факты, названия, маршруты, NPC или предметы.
+
+## Архив разработки
+
+Завершённые планы, отчёты, parity-материалы и evidence предыдущей архитектурной перестройки сохранены в [архиве](docs/migration/README.md). Они не описывают текущий статус игры и не являются основной точкой входа в документацию.

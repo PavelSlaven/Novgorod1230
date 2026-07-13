@@ -38,12 +38,5 @@ export async function checkDocumentationOutputs(rootDir = '.') {
 }
 
 export async function validateDocumentationTree(rootDir = '.') {
-  const legacy = await validateLegacyDocumentationTree(rootDir);
-  const errors = legacy.errors.filter((error) => !isActiveWorldCatalogFalsePositive(error));
-  return Object.freeze({ ok: errors.length === 0, errors: Object.freeze(errors) });
-}
-
-function isActiveWorldCatalogFalsePositive(error) {
-  return String(error).startsWith('data/world-catalogs/')
-    && String(error).endsWith(': legacy runtime data is not declared in manifest');
+  return validateLegacyDocumentationTree(rootDir);
 }

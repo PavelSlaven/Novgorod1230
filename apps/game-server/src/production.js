@@ -1,6 +1,5 @@
 import { resolve } from 'node:path';
 import { createFileSystemKnowledgeSourceStorage, createKnowledgeSourceReader } from '@rus/knowledge-source';
-import { createGameCompositionRoot } from './root.js';
 import { createNewGameWorkflowAdapter, createTurnWorkflowAdapter } from '../adapters/workflows.js';
 import { createPostgresPools, probePostgresPool } from '../infrastructure/postgres/pools.js';
 import { runPartyRuntimeMigrations } from '../infrastructure/postgres/migrations.js';
@@ -10,7 +9,11 @@ import { createPostgresStage25Ports } from '../infrastructure/postgres/stage25.j
 import { createProductionLlmRoleRunner, probeLlmProvider } from '../infrastructure/provider/deepseek.js';
 import { loadRuntimeBindings } from '../runtime/load-bindings.js';
 
+export { runPartyRuntimeMigrations } from '../infrastructure/postgres/migrations.js';
+export { createPostgresSessionStore, createPostgresDeliveryStore } from '../infrastructure/postgres/session-store.js';
+
 export async function createProductionCompositionRoot({ env = process.env, config = {}, PoolClass, now } = {}) {
+  const { createGameCompositionRoot } = await import('./root.js');
   const pools = createPostgresPools({ env, PoolClass });
   try {
     if (config.runMigrations !== false) await runPartyRuntimeMigrations(pools.partyPool);

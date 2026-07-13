@@ -1,10 +1,18 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, mkdir, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
 import { verifyCanonicalCorpus } from '../src/knowledge-corpus-verifier.js';
+
+const repositoryRoot = join(import.meta.dirname, '../../..');
+const requiredNormatives = [
+  ['development-rules', 'development_rules.txt', 45078, '432e66d1efa4e83f3f1f414d5f368c696f786df9f47c22a3a92d856ba049c441'],
+  ['map-g0-g4-workflow', 'map_g0_g4_workflow.txt', 82456, 'a1f91b6b354163c2d502a402faba005be443aeefa01a79b38b18c558c7a181e3'],
+  ['base-turn-orchestration', 'base_turn_orchestration.txt', 46599, 'e6b474d691060d57c6b02290aac7ddd02cd62f029566e09f076b0e25a7f114fd'],
+  ['read-only-database-and-graph-architecture', 'read_only_database_and_graph_architecture.md', 89475, '99200f3d47053419acc8c1155ff7663609945253682624ce7c84bebbcbeef9b5']
+];
 
 async function fixture({ corrupt = false } = {}) {
   const root = await mkdtemp(join(tmpdir(), 'rus-corpus-'));
@@ -53,4 +61,32 @@ test('rejects a registered document with a stale digest', async () => {
   const result = await verifyCanonicalCorpus({ root: await fixture({ corrupt: true }) });
   assert.equal(result.ok, false);
   assert.match(result.errors.join('\n'), /native: document hash or size mismatch/u);
+});
+
+test('repository registers the handed-off normatives byte-for-byte with canonical aliases', async () => {
+  const sourceRoot = join(repositoryRoot, 'data/knowledge-source');
+  const manifest = JSON.parse(await readFile(join(sourceRoot, 'corpus-manifest.json'), 'utf8'));
+  const aliases = JSON.parse(await readFile(join(sourceRoot, 'source-aliases.json'), 'utf8')).aliases;
+  const byId = new Map(manifest.documents.map((record) => [record.document_id, record]));
+
+  for (const [documentId, fileName, bytes, digest] of requiredNormatives) {
+    const record = byId.get(documentId);
+    assert.ok(record, `${documentId} is missing from corpus manifest`);
+    assert.equal(record.file_name, fileName);
+    assert.equal(record.canonical_path, `corpus/DOCUMENTS/${fileName}`);
+    assert.equal(record.bytes, bytes);
+    assert.equal(record.sha256, digest);
+    assert.equal(Object.hasOwn(record, 'source_legacy_path'), false);
+    const content = await readFile(join(sourceRoot, record.canonical_path));
+    assert.equal(content.length, bytes);
+    assert.equal(createHash('sha256').update(content).digest('hex'), digest);
+  }
+
+  assert.equal(aliases['development_rules.txt'], 'development-rules');
+  assert.equal(aliases['Правила разработки.txt'], 'development-rules');
+  assert.equal(aliases['map_g0_g4_workflow.txt'], 'map-g0-g4-workflow');
+  assert.equal(aliases['Работа с картой G0-G4.txt'], 'map-g0-g4-workflow');
+  assert.equal(aliases['base_turn_orchestration.txt'], 'base-turn-orchestration');
+  assert.equal(aliases['base_turn_orcestration.txt'], 'base-turn-orchestration');
+  assert.equal(aliases['read_only_database_and_graph_architecture.md'], 'read-only-database-and-graph-architecture');
 });

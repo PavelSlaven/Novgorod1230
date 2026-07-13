@@ -23,3 +23,5 @@ Production consumers получают `KnowledgeSourceReader` через composi
 ## Изменение корпуса
 
 Изменение документа требует обновления manifest, пересборки graph/RAG, parity-проверки, полного regression и аудита критика. Ручное редактирование generated output запрещено.
+
+Документ без утверждённого semantic/embedding snapshot получает только structural graph node и lexical-only chunks. Semantic relations, embedding vectors и признаки `semantic_indexed` не создаются эвристически.

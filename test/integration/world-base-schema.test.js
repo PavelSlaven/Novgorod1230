@@ -15,5 +15,8 @@ test('world_base schema keeps the read-only runtime role', async () => {
   const result = await inspectWorldBaseSchema({ root: process.cwd() });
   assert.equal(result.has_world_reader_role, true);
   assert.equal(result.revokes_public_create, true);
+  assert.equal(result.grants_world_reader_usage, true);
   assert.equal(result.grants_world_reader_select, true);
+  assert.equal(result.grants_default_world_reader_select, true);
+  assert.equal(result.grants_world_reader_write, false);
 });

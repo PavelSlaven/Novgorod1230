@@ -32,6 +32,7 @@ npm run test:knowledge-source
 - [Правила зависимостей](docs/architecture/DEPENDENCY_RULES.md);
 - [Политика контрактов](docs/architecture/CONTRACT_POLICY.md);
 - [Политика knowledge-source](docs/architecture/KNOWLEDGE_SOURCE_POLICY.md);
+- [Generated world_base schema reference](infra/world-base/SCHEMA_REFERENCE.md);
 - [New-game pipeline](docs/pipelines/new-game.md);
 - [Turn pipeline](docs/pipelines/turn.md);
 - [Canonical path registry](docs/migration/CANONICAL_PATHS.json).
@@ -52,6 +53,8 @@ npm ci --ignore-scripts
 npm test
 npm run release:check
 npm run migration:status
+npm run world-db:schema-check
+npm run world-db:schema-doc-check
 ```
 
 ## Граница релиза
@@ -79,4 +82,3 @@ npm run world-catalog:validate-novgorod-revision
 ```
 
 Подробности: `docs/migration/NOVGOROD_WORLD_CATALOG_WORKFLOW.md`.
-

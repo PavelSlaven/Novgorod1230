@@ -65,7 +65,9 @@
     "test:knowledge-source": "node --test packages/knowledge-source/test/*.test.js tools/docs-tools/test/knowledge-source-migration.test.js tools/docs-tools/test/knowledge-corpus-verifier.test.js test/modules/knowledge-source-architecture.test.js test/integration/knowledge-source-production.test.js",
     "test:world-catalog": "node --test tools/world-catalog-workflow/test/*.test.js",
     "world-catalog:validate-novgorod-revision": "node tools/world-catalog-workflow/src/cli.js validate-revision --revision data/world-catalogs/novgorod/revisions/novgorod_1230_research_revision_001.json",
-    "world-db:schema-check": "node scripts/check-world-base-schema.mjs"
+    "world-db:schema-check": "node scripts/check-world-base-schema.mjs",
+    "world-db:schema-doc": "node scripts/generate-world-base-schema-reference.mjs --write",
+    "world-db:schema-doc-check": "node scripts/generate-world-base-schema-reference.mjs --check"
   },
   "dependencies": {
     "pg": "^8.22.0"

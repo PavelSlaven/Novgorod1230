@@ -8,12 +8,14 @@ Read-only база утверждённых справочных данных м
 - [`schema/`](./schema/) — восемь упорядоченных SQL-частей;
 - [`IMPORT.md`](./IMPORT.md) — правила импорта и аудита.
 
-Архитектурное описание разделения read-only project DB и party DB пока находится в очереди побайтовой миграции в canonical knowledge corpus. До завершения переноса статус и SHA-256 источника фиксируются в [`MIGRATION_STATUS.md`](../../MIGRATION_STATUS.md). README не подменяет этот нормативный документ.
+Архитектурное описание разделения read-only project DB и party DB хранится в canonical knowledge corpus как `read_only_database_and_graph_architecture.md`. README не подменяет этот нормативный документ.
 
 ## Проверка схемы
 
 ```bash
 npm run world-db:schema-check
+npm run world-db:schema-doc
+npm run world-db:schema-doc-check
 ```
 
 Проверка подтверждает:
@@ -24,6 +26,10 @@ npm run world-db:schema-check
 - отсутствие небезопасных include-путей;
 - запрет `PUBLIC CREATE`;
 - наличие read-only роли и разрешений чтения.
+
+`world-db:schema-doc` детерминированно строит [`SCHEMA_REFERENCE.md`](./SCHEMA_REFERENCE.md) из текущего DDL. Таблицы, колонки, типы, FK и constraints извлекаются из SQL; смысловые описания берутся только из [`field-descriptions.js`](./field-descriptions.js). Неописанные поля остаются явно неописанными.
+
+GitHub Actions дополнительно исполняет весь entrypoint в PostgreSQL 16 с `ON_ERROR_STOP=1`, подтверждает 62 таблицы, роль `world_reader`, `USAGE`/`SELECT` и отсутствие `CREATE`/write grants.
 
 ## Слои данных
 
@@ -36,14 +42,14 @@ npm run world-db:schema-check
 | Места | `place_templates`, `region_place_templates`, `places`, `place_locations` |
 | Хозяйство | `land_use_templates`, `region_land_use_templates` |
 | Регион | `regions`, `region_neighbors`, `region_laws`, `region_economy` |
-| Социальный слой | `universal_social_classes`, `universal_social_role_archetypes`, `universal_occupation_archetypes`, `universal_skills`, `occupation_skill_defaults` |
+| Социальный слой | `social_classes`, `social_role_archetypes`, `occupation_archetypes`, `skill_catalog`, `occupation_skill_defaults` |
 | История и источники | `historical_*`, `source_records`, `record_sources`, `audit_log` |
 
 ## Источник истины
 
 `infra/world-base/schema.sql` и восемь файлов `infra/world-base/schema/*.sql` являются единственным исполняемым источником истины для структуры базы.
 
-Справочник полей не должен редактироваться вручную или существовать как независимая нормативная копия. Его генератор и `SCHEMA_REFERENCE.md` ещё не восстановлены в этой ветке. До их восстановления README не объявляет несуществующую команду или файл доступными.
+Справочник полей является generated representation и не должен редактироваться вручную или существовать как независимая нормативная копия. Единственный исполняемый источник структуры — текущий DDL; `field-descriptions.js` владеет только утверждёнными пояснениями.
 
 ## Ограничения
 

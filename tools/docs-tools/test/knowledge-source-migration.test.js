@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile, rename } from 'node:fs/promises';
-import { resolve } from 'node:path';
+import { basename, resolve } from 'node:path';
 import {
   readKnowledgeSourceInventory,
   verifyKnowledgeSourceMigration,
@@ -11,6 +11,15 @@ import {
 
 const root = resolve(import.meta.dirname, '../../..');
 
+async function readCorpusManifest() {
+  return JSON.parse(await readFile(resolve(root, 'data/knowledge-source/corpus-manifest.json'), 'utf8'));
+}
+
+async function readSemanticGraphFiles() {
+  const graph = JSON.parse(await readFile(resolve(root, 'data/knowledge-source/imports/graph/graph.json'), 'utf8'));
+  return new Set((graph.nodes ?? []).map((node) => basename(String(node?.source_location?.file ?? node?.sourceLocation?.file ?? node?.source_file ?? ''))).filter(Boolean));
+}
+
 test('stored legacy DOCUMENTS inventory classifies every file and approves exactly 19 canonical sources', async () => {
   const inventory = await readKnowledgeSourceInventory({ root });
   assert.equal(inventory.files.length, 29);
@@ -19,15 +28,17 @@ test('stored legacy DOCUMENTS inventory classifies every file and approves exact
 });
 
 test('migrated corpus and generated provenance verify without requiring legacy', { concurrency: false }, async () => {
+  const manifest = await readCorpusManifest();
+  const legacyCount = manifest.documents.filter((record) => record.source_legacy_path).length;
   const legacy = resolve(root, 'legacy/DOCUMENTS');
   const hidden = resolve(root, 'legacy/DOCUMENTS.__knowledge_source_test__');
   await rename(legacy, hidden);
   try {
     const result = await verifyKnowledgeSourceMigration({ root });
     assert.equal(result.ok, true, result.errors.join('\n'));
-    assert.equal(result.document_count, 22);
-    assert.equal(result.legacy_document_count, 19);
-    assert.equal(result.native_document_count, 3);
+    assert.equal(result.document_count, manifest.documents.length);
+    assert.equal(result.legacy_document_count, legacyCount);
+    assert.equal(result.native_document_count, manifest.documents.length - legacyCount);
     assert.equal(result.hash_parity, true);
     assert.equal(result.legacy_sources_compared, 0);
     assert.equal(result.legacy_required, false);
@@ -40,18 +51,21 @@ test('migrated corpus and generated provenance verify without requiring legacy',
 });
 
 test('graph and RAG materializers are deterministic and preserve approved semantic coverage', async () => {
+  const manifest = await readCorpusManifest();
+  const semanticGraphFiles = await readSemanticGraphFiles();
+  const expectedStructuralOnlyCount = manifest.documents.filter((record) => !semanticGraphFiles.has(record.file_name)).length;
   const graphA = await buildKnowledgeGraphFromSnapshot({ root });
   const graphB = await buildKnowledgeGraphFromSnapshot({ root });
   assert.equal(JSON.stringify(graphA), JSON.stringify(graphB));
-  assert.equal(graphA.manifest.source_document_count, 22);
-  assert.equal(graphA.manifest.structural_only_document_count, 3);
+  assert.equal(graphA.manifest.source_document_count, manifest.documents.length);
+  assert.equal(graphA.manifest.structural_only_document_count, expectedStructuralOnlyCount);
 
   const ragA = await buildRagIndexFromSnapshot({ root });
   const ragB = await buildRagIndexFromSnapshot({ root });
   assert.equal(JSON.stringify(ragA), JSON.stringify(ragB));
-  assert.equal(ragA.manifest.source_document_count, 22);
+  assert.equal(ragA.manifest.source_document_count, manifest.documents.length);
   assert.equal(ragA.manifest.semantic_document_count, 19);
-  assert.equal(ragA.manifest.lexical_only_document_count, 3);
+  assert.equal(ragA.manifest.lexical_only_document_count, manifest.documents.length - 19);
   assert.equal(ragA.index.chunk_count, 813);
   assert.ok(ragA.lexical_index.chunk_count > 0);
   assert.equal(ragA.lexical_index.chunks.some((chunk) => Object.hasOwn(chunk, 'embedding')), false);

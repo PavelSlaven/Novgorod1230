@@ -6,6 +6,8 @@ import { resolve } from 'node:path';
 test('GitHub Actions clean-clone workflow keeps all required gates in order', async () => {
   const workflow = await readFile(resolve(process.cwd(), '.github/workflows/test.yml'), 'utf8');
   const requiredFragments = [
+    'services:',
+    'image: postgres:16',
     'name: Normalize lockfile registry',
     'packages.applied-caas-gateway1.internal.api.openai.org/artifactory/api/npm/npm-public/',
     'https://registry.npmjs.org/',
@@ -13,12 +15,23 @@ test('GitHub Actions clean-clone workflow keeps all required gates in order', as
     'npm ci',
     'name: Validate canonical world_base schema',
     'npm run world-db:schema-check',
+    'npm run world-db:schema-doc-check',
+    'name: Execute world_base DDL in PostgreSQL',
+    'if pg_isready --dbname postgres',
+    'createdb',
+    'ON_ERROR_STOP=1',
+    '-f infra/world-base/schema.sql',
+    'information_schema.tables',
+    'pg_roles',
+    'has_schema_privilege',
+    'information_schema.role_table_grants',
     'name: Validate canonical knowledge corpus',
     'npm run knowledge:check-corpus',
     'name: Generate deterministic documentation and knowledge artifacts',
     'npm run docs:generate',
     'name: Verify generated files are reproducible',
-    'git diff --exit-code -- MODULE_INDEX.md generated/',
+    'git diff --exit-code -- MODULE_INDEX.md generated/ infra/world-base/SCHEMA_REFERENCE.md',
+    'git status --porcelain --untracked-files=all -- MODULE_INDEX.md generated/ infra/world-base/SCHEMA_REFERENCE.md',
     'name: Run full test suite',
     'npm test'
   ];

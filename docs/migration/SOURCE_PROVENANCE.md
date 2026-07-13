@@ -10,9 +10,11 @@
 
 - Legacy source: `legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS`.
 - Canonical target: `data/knowledge-source/corpus/DOCUMENTS`.
-- Documents: 19.
+- Documents: 26 total: 19 legacy sources with provenance and 7 native project normatives.
 - Copy mode: byte-for-byte.
 - Integrity evidence: `corpus-manifest.json` and parity report.
+
+The four handoff normatives added in this extension retain their supplied bytes and SHA-256. The handed-off critic rule differs from the existing canonical copy only by CRLF/LF bytes; no second copy or automatic merge was created, and the conflict remains explicit pending owner disposition.
 
 ## Generated provenance
 

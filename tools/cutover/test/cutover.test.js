@@ -1,8 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { fileURLToPath } from 'node:url';
 import { buildCutoverProfile, loadCutoverPlan, validateCutoverPlan } from '../src/index.js';
 
-const root = new URL('../../..', import.meta.url).pathname;
+const root = fileURLToPath(new URL('../../..', import.meta.url));
 
 test('cutover plan contains the normative 13 ordered steps and all gates', async () => {
   const plan = await loadCutoverPlan(root);

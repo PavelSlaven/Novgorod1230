@@ -1,0 +1,47 @@
+{
+  "schema_version": "rus.knowledge_generated_manifest.v1",
+  "release": "0.23.0-migration.23",
+  "generator": "npm run knowledge:generate",
+  "files": [
+    {
+      "path": "generated/knowledge-source/graph/GRAPH_REPORT.md",
+      "sha256": "29b13502c6dd411f319b91156c3e53ba9b426e7820b52e0e69aa2cad19375a46",
+      "bytes": 492
+    },
+    {
+      "path": "generated/knowledge-source/graph/graph.html",
+      "sha256": "ee3c898f38d32b77952d4196aecda65e84d9f61019ceebc7c3a7823b4c1641fa",
+      "bytes": 234
+    },
+    {
+      "path": "generated/knowledge-source/graph/graph.json",
+      "sha256": "f2761538e80b4d4a180950c7e87acd27d15cd13168a411af6c29423606bc412d",
+      "bytes": 4033694
+    },
+    {
+      "path": "generated/knowledge-source/graph/manifest.json",
+      "sha256": "bfe9ac933ff409204daf0dc5a6caa9354aa8d51c0f2ba95e2cdef931b0426419",
+      "bytes": 788
+    },
+    {
+      "path": "generated/knowledge-source/manifests/inventory.json",
+      "sha256": "e17b8429803bb35efce9887f58252957fd5c33ddf8cf3c09f3500f2fe88530c2",
+      "bytes": 9212
+    },
+    {
+      "path": "generated/knowledge-source/rag/index.json",
+      "sha256": "9a369aa16c7ea3eff422453e101c47b40db067d9eee9a0642cecd136b3f528de",
+      "bytes": 18050365
+    },
+    {
+      "path": "generated/knowledge-source/rag/lexical-index.json",
+      "sha256": "4a7da4d0d6459c796034243c0334470f14823487527525b12e4d2ecafc29a6c8",
+      "bytes": 416544
+    },
+    {
+      "path": "generated/knowledge-source/rag/manifest.json",
+      "sha256": "39caa63e0b5062cf8d7551c560b3d22fbd35c18a044d522943db690817f542e7",
+      "bytes": 7077
+    }
+  ]
+}

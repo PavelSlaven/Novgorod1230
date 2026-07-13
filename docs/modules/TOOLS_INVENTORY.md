@@ -8,6 +8,7 @@ Tools are autonomous and are not imported by production runtime.
 | `@rus/db-tools` | Build and validate dry-run/approval packages | No SQL execution |
 | `@rus/docs-tools` | Deterministic documentation generation, canonical-path validation, corpus delegation checks, graph/RAG materialization and migration verification | Writes generated documentation only through explicit CLI |
 | `scripts/check-world-base-schema.mjs` | Validate the executable 62-table `world_base` DDL, ordered SQL parts and read-only permissions | Read-only source inspection |
+| `scripts/generate-world-base-schema-reference.mjs` | Extract tables, columns, types, FK and constraints from current DDL and apply only approved field descriptions | Writes only generated `infra/world-base/SCHEMA_REFERENCE.md` through explicit commands/docs CLI |
 | `tools/docs-tools/src/knowledge-corpus-verifier.js` | Validate corpus manifest, aliases, file existence, bytes and SHA-256 | Read-only corpus inspection |
 | `tools/docs-tools/src/canonical-corpus-registry.js` | Enforce that `CANONICAL_PATHS.json` delegates corpus ownership to the single corpus manifest and does not duplicate corpus paths | Read-only registry inspection |
 | `tools/docs-tools/src/knowledge-materializer-v2.js` | Preserve approved semantic graph/RAG snapshots and add deterministic structural/lexical coverage for native documents without fabricated embeddings | Writes only declared `generated/knowledge-source/*` outputs through the docs CLI |
@@ -24,11 +25,12 @@ Tools are autonomous and are not imported by production runtime.
 2. Node.js setup;
 3. lockfile registry normalization;
 4. `npm ci`;
-5. `world-db:schema-check`;
-6. `knowledge:check-corpus`;
-7. deterministic documentation and knowledge generation;
-8. generated-file reproducibility check;
-9. full `npm test`.
+5. static `world-db:schema-check` and deterministic `world-db:schema-doc-check`;
+6. real PostgreSQL 16 DDL execution with table, role and read-only grant checks;
+7. `knowledge:check-corpus`;
+8. deterministic documentation and knowledge generation;
+9. generated-file reproducibility check, including `infra/world-base/SCHEMA_REFERENCE.md`;
+10. full `npm test`.
 
 `test/integration/ci-workflow-contract.test.js` prevents a false-green workflow that omits mandatory gates.
 

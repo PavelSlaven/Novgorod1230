@@ -13,15 +13,19 @@ function sha256(value) {
 
 test('knowledge materializer preserves approved semantic vectors and indexes only native documents lexically', async () => {
   const outputs = await buildKnowledgeSourceOutputsV2({ root });
+  const corpusManifest = JSON.parse(await readFile(resolve(root, 'data/knowledge-source/corpus-manifest.json'), 'utf8'));
   const ragManifest = JSON.parse(outputs.get('generated/knowledge-source/rag/manifest.json'));
   const semanticIndex = JSON.parse(outputs.get('generated/knowledge-source/rag/index.json'));
   const lexicalIndex = JSON.parse(outputs.get('generated/knowledge-source/rag/lexical-index.json'));
+  const semanticFiles = new Set(semanticIndex.chunks.map((chunk) => basename(String(chunk.file ?? ''))));
+  const semanticDocumentCount = corpusManifest.documents.filter((record) => semanticFiles.has(record.file_name)).length;
+  const lexicalOnlyDocumentCount = corpusManifest.documents.length - semanticDocumentCount;
 
-  assert.equal(ragManifest.source_document_count, 22);
-  assert.equal(ragManifest.semantic_document_count, 19);
-  assert.equal(ragManifest.lexical_only_document_count, 3);
-  assert.equal(ragManifest.coverage.filter((item) => item.semantic_indexed).length, 19);
-  assert.equal(ragManifest.coverage.filter((item) => item.lexical_indexed).length, 3);
+  assert.equal(ragManifest.source_document_count, corpusManifest.documents.length);
+  assert.equal(ragManifest.semantic_document_count, semanticDocumentCount);
+  assert.equal(ragManifest.lexical_only_document_count, lexicalOnlyDocumentCount);
+  assert.equal(ragManifest.coverage.filter((item) => item.semantic_indexed).length, semanticDocumentCount);
+  assert.equal(ragManifest.coverage.filter((item) => item.lexical_indexed).length, lexicalOnlyDocumentCount);
   assert.ok(ragManifest.coverage.every((item) => item.semantic_indexed !== item.lexical_indexed));
   assert.equal(semanticIndex.chunk_count, 813);
   assert.ok(semanticIndex.chunks.every((chunk) => Array.isArray(chunk.embedding) && chunk.embedding.length === semanticIndex.dimensions));
@@ -49,12 +53,16 @@ test('RAG manifest separates source provenance from generated artifact digests',
 
 test('knowledge materializer adds structural graph nodes without invented semantic links', async () => {
   const outputs = await buildKnowledgeSourceOutputsV2({ root });
+  const corpusManifest = JSON.parse(await readFile(resolve(root, 'data/knowledge-source/corpus-manifest.json'), 'utf8'));
+  const graphSnapshot = JSON.parse(await readFile(resolve(root, 'data/knowledge-source/imports/graph/graph.json'), 'utf8'));
   const graphManifest = JSON.parse(outputs.get('generated/knowledge-source/graph/manifest.json'));
   const graph = JSON.parse(outputs.get('generated/knowledge-source/graph/graph.json'));
   const structuralNodes = graph.nodes.filter((node) => node.structural_only === true);
+  const semanticFiles = new Set((graphSnapshot.nodes ?? []).map((node) => basename(String(node?.source_location?.file ?? node?.sourceLocation?.file ?? node?.source_file ?? ''))).filter(Boolean));
+  const structuralOnlyDocumentCount = corpusManifest.documents.filter((record) => !semanticFiles.has(record.file_name)).length;
 
-  assert.equal(graphManifest.source_document_count, 22);
-  assert.equal(graphManifest.structural_only_document_count, 3);
-  assert.equal(structuralNodes.length, 3);
+  assert.equal(graphManifest.source_document_count, corpusManifest.documents.length);
+  assert.equal(graphManifest.structural_only_document_count, structuralOnlyDocumentCount);
+  assert.equal(structuralNodes.length, structuralOnlyDocumentCount);
   assert.ok(structuralNodes.every((node) => node.type === 'canonical_document'));
 });

@@ -22,21 +22,25 @@
 - Runtime reader проверяет corpus hash, generation mode, semantic artifact digest и lexical artifact digest раздельно.
 - Активный `data/world-catalogs` отделён от legacy runtime policy без строковой фильтрации ошибок.
 - Production composition имеет одну реализацию в `apps/game-server/src/composition/production.js`; верхний entrypoint содержит только публичные re-export.
+- Побайтово импортированы `development_rules.txt`, `map_g0_g4_workflow.txt`, `base_turn_orchestration.txt` и `read_only_database_and_graph_architecture.md`.
+- Восстановлен DDL-driven генератор `infra/world-base/SCHEMA_REFERENCE.md`; отсутствующие описания остаются явно отсутствующими.
+- Workflow contract требует реального исполнения DDL в PostgreSQL 16 и проверки роли/read-only grants.
 
 ## Фактические показатели
 
-- Corpus documents: 22.
+- Corpus documents: 26.
 - Legacy documents with provenance: 19.
-- Native project documents: 3.
+- Native project documents: 7.
 - Approved semantic documents: 19.
-- Structural-only graph documents: 3.
-- Lexical-only RAG documents: 3.
+- Structural-only graph documents: 7.
+- Lexical-only RAG documents: 7.
 - Approved semantic chunks: 813.
+- Lexical-only chunks: 346.
 - `world_base` tables: 62.
 
 ## Последняя автоматическая проверка
 
-GitHub Actions run `#53` (`29266053035`) на commit `1169090878d28a3e661a25ba67532570096d1a8f`:
+Последний подтверждённый baseline GitHub Actions до текущих изменений: run `#62` (`29267544106`) на commit `eb88619c4304849515a22428e1c05f6e3c32d7de`:
 
 - clean checkout: PASS;
 - dependency install: PASS;
@@ -48,17 +52,10 @@ GitHub Actions run `#53` (`29266053035`) на commit `1169090878d28a3e661a25ba67
 
 ## В работе
 
-1. Побайтовый перенос и регистрация оставшихся нормативных документов:
-   - `Правила разработки.txt`;
-   - `Работа с картой G0-G4.txt`;
-   - `base_turn_orcestration.txt`.
-2. Определение канонического владения архитектурными документами:
-   - `read_only_database_and_graph_architecture.md`;
-   - `world_base_schema_reference.md`.
-   Они не должны одновременно существовать как независимый narrative corpus и как инфраструктурный источник истины.
-3. Финальная regeneration graph/RAG после расширения corpus.
-4. Синхронизация migration reports и PR description после окончательного состава файлов.
-5. Обязательный независимый critic audit по полному diff и clean-clone evidence.
+1. Первый clean-clone run с новым PostgreSQL execution gate.
+2. Синхронизация PR description с итоговым commit/run evidence.
+3. Обязательный независимый critic audit по полному diff и последнему зелёному CI.
+4. Решение владельца по byte-конфликту critic rule: handoff-файл имеет CRLF и SHA-256 `b3049e...`, существующий canonical файл — LF и SHA-256 `7a0d69...`; нормализованный текст совпадает, автоматическая замена запрещена.
 
 ## Блокирующие условия
 
@@ -66,9 +63,10 @@ PR нельзя переводить из draft и объединять, пок�
 
 - завершён полный перенос утверждённых нормативов;
 - после последнего corpus-изменения повторно прошёл полный clean-clone CI;
+- реальный PostgreSQL 16 gate прошёл на финальном head;
 - generated tree воспроизводим и не имеет незакоммиченного diff;
 - агент критики вернул `PASS` или допустимый `PASS WITH NOTES`;
 - после `CHANGES REQUIRED` или `REJECT` выполнены исправления, повторные тесты и повторный аудит.
 
-Текущий итоговый статус: `automation_green_migration_incomplete_critic_pending`.
+Текущий итоговый статус: `local_gates_green_clean_clone_and_critic_pending`.
 Legacy deletion allowed: false.

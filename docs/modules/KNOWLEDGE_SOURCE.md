@@ -21,6 +21,10 @@ canonical corpus + approved embedding snapshot
 → deterministic rechunk
 → exact chunk/text/vector parity
 → generated RAG
+
+canonical document without approved embeddings
+→ structural-only graph node
+→ lexical-only chunks without `embedding`
 ```
 
 ## Public API

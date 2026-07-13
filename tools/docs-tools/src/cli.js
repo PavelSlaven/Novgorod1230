@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { resolve } from 'node:path';
-import { checkDocumentationOutputs, writeDocumentationOutputs } from './documentation.js';
+import { checkDocumentationOutputs, writeDocumentationOutputs } from './documentation-policy-v2.js';
 import { writeKnowledgeSourceOutputsV2 } from './knowledge-materializer-v2.js';
 
 const command = process.argv[2] ?? 'check';

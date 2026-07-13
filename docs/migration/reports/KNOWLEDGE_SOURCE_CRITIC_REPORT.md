@@ -209,3 +209,9 @@ Remediation после аудита:
 - integration contract проверяет corpus migration report и запрещает stale `9/9`/`310/310` во всех `KNOWLEDGE_SOURCE*.md`;
 - negative contract сначала воспроизвёл stale report и после исправления проходит;
 - targeted tests и полный локальный цикл проходят; для допуска остаются новый clean-clone CI и повторный независимый аудит.
+
+## Проверка remediation восьмого аудита
+
+Implementation commit `cfb98442aeda85495da42af7071af05fe18d6dac` прошёл clean-clone run `#74` (`29282256574`), job `86926064785`. Все workflow steps завершились `success`, включая PostgreSQL 16 DDL, corpus, deterministic generation/reproducibility и full tests.
+
+Финальный admission verdict требует независимого аудита evidence head после синхронизации этих отчётов.

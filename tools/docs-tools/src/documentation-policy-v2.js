@@ -4,7 +4,7 @@ import {
   buildDocumentationOutputs as buildLegacyDocumentationOutputs,
   validateDocumentationTree as validateLegacyDocumentationTree
 } from './documentation.js';
-import { verifyKnowledgeSourceMigration } from './knowledge-source.js';
+import { verifyKnowledgeSourceMigrationV2 } from './knowledge-v2-api.js';
 
 export const buildDocumentationOutputs = buildLegacyDocumentationOutputs;
 
@@ -32,7 +32,7 @@ export async function checkDocumentationOutputs(rootDir = '.') {
   }
   const validation = await validateDocumentationTree(root);
   errors.push(...validation.errors);
-  const knowledge = await verifyKnowledgeSourceMigration({ root });
+  const knowledge = await verifyKnowledgeSourceMigrationV2({ root });
   errors.push(...knowledge.errors.map((item) => `knowledge-source: ${item}`));
   return Object.freeze({ ok: errors.length === 0, errors, checked_files: [...expected.keys()].sort() });
 }

@@ -49,7 +49,7 @@
 
 ## Последняя автоматическая проверка
 
-Последний подтверждённый clean-clone implementation run: `#70` (`29279548326`), job `86917091894`, на commit `3cb8eab2c7acc0f272d792018d39d659a829fba9`:
+Последний подтверждённый clean-clone implementation run: `#72` (`29281004340`), job `86921895682`, на commit `c04dcd59a40bf30332a5cc11288840a833e816f0`:
 
 - clean checkout: PASS;
 - dependency install: PASS;
@@ -63,7 +63,7 @@
 
 ## В работе
 
-Седьмой независимый аудит evidence head `a0821be3...` и успешного run `#71` (`29279761828`, job `86917792948`) подтвердил remediation шестого раунда, но обнаружил устаревшие mutable counts и critic/test evidence в `MIGRATION_PHASES_SHORT.md` и `MIGRATION_MANIFEST.json`, а также отсутствие regression-теста malformed import history. Корневые сводки переведены на канонические manifests/reports, добавлен integration contract и fail-before-write negative test. Targeted tests и полный локальный цикл проходят; для допуска остаются новый clean-clone CI и повторный независимый аудит.
+Седьмой независимый аудит evidence head `a0821be3...` и успешного run `#71` (`29279761828`, job `86917792948`) подтвердил remediation шестого раунда, но обнаружил устаревшие mutable counts и critic/test evidence в `MIGRATION_PHASES_SHORT.md` и `MIGRATION_MANIFEST.json`, а также отсутствие regression-теста malformed import history. Корневые сводки переведены на канонические manifests/reports, добавлен integration contract и fail-before-write negative test. Targeted tests, полный локальный цикл и clean-clone run `#72` прошли; для допуска остаётся повторный независимый аудит evidence head.
 
 Остаётся решение владельца по byte-конфликту critic rule: handoff-файл имеет 9109 bytes/CRLF и SHA-256 `b3049ee06f6462081641bffdc0d12dc2596905ba401560e740f1c98c3192ec96`, существующий canonical файл — 8960 bytes/LF и SHA-256 `7a0d690a18f39e264cd39eca3b83eae5c943de97e4219b3f8034b98da9289165`; нормализованный текст совпадает, автоматическая замена запрещена.
 
@@ -78,5 +78,5 @@ PR нельзя переводить из draft и объединять, пок�
 - агент критики вернул `PASS` или допустимый `PASS WITH NOTES`;
 - после `CHANGES REQUIRED` или `REJECT` выполнены исправления, повторные тесты и повторный аудит.
 
-Текущий итоговый статус: `round7_remediation_local_green_pending_ci`.
+Текущий итоговый статус: `run_72_green_round7_remediation_pending_critic`.
 Legacy deletion allowed: false.

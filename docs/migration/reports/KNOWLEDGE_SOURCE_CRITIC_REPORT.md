@@ -187,3 +187,9 @@ Remediation после аудита:
 - отдельный integration contract запрещает возврат дублируемых mutable counts и проверяет согласованность corpus/graph/RAG document coverage;
 - negative test malformed import history подтверждает byte-неизменность manifest, aliases, inventory и всех corpus targets;
 - targeted tests и полный локальный цикл проходят; для допуска остаются новый clean-clone CI и повторный независимый аудит.
+
+## Проверка remediation седьмого аудита
+
+Implementation commit `c04dcd59a40bf30332a5cc11288840a833e816f0` прошёл clean-clone run `#72` (`29281004340`), job `86921895682`. Все workflow steps завершились `success`, включая PostgreSQL 16 DDL, corpus, deterministic generation/reproducibility и full tests.
+
+Финальный admission verdict требует независимого аудита evidence head после синхронизации этих отчётов.

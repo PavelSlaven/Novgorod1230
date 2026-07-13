@@ -2,8 +2,8 @@
 
 Дата: 2026-07-13
 Ветка: `agent/restore-canonical-docs-generated-ci`
-Последний проверенный implementation commit: `3cb8eab2c7acc0f272d792018d39d659a829fba9`
-GitHub Actions run: `#70` (`29279548326`), job `86917091894`
+Последний проверенный implementation commit: `c04dcd59a40bf30332a5cc11288840a833e816f0`
+GitHub Actions run: `#72` (`29281004340`), job `86921895682`
 
 ## Clean-clone pipeline
 
@@ -24,7 +24,7 @@ GitHub Actions run: `#70` (`29279548326`), job `86917091894`
 
 GitHub Actions completed the full job with conclusion `success`. The workflow summary does not expose reliable per-suite test counts, therefore this report does not repeat stale historic totals.
 
-Run `#70` выполнил schema-reference и PostgreSQL gates в чистом checkout. PostgreSQL service принял весь DDL; подтверждены 62 таблицы, одна не-привилегированная роль `world_reader`, `USAGE` без `CREATE`, 62 `SELECT` grants и 0 write grants.
+Run `#72` выполнил schema-reference и PostgreSQL gates в чистом checkout. PostgreSQL service принял весь DDL; подтверждены 62 таблицы, одна не-привилегированная роль `world_reader`, `USAGE` без `CREATE`, 62 `SELECT` grants и 0 write grants.
 
 Run `#68` подтвердил remediation пятого аудита: provenance checks для nodes/links/hyperedges, exact graph/RAG semantic-set boundary, structural endpoint guard и collision-before-write. В clean clone прошли generation/reproducibility и полный `npm test`; локальный обязательный цикл также прошёл полностью.
 
@@ -35,6 +35,8 @@ Run `#70` подтвердил исправления шестого аудит�
 Evidence-only commit `a0821be3ddf9663c49b80b0a7bcb1010b7d0e3aa` прошёл run `#71` (`29279761828`), job `86917792948`; каждый обязательный workflow step завершился `success`. Седьмой critic audit выявил stale mutable counts/evidence в корневых migration summaries и отсутствие автоматического malformed-history regression. Новый integration contract сначала воспроизвёл stale summaries, после делегирования manifests/reports прошёл; malformed-history test подтверждает отсутствие изменений manifest, aliases, inventory и всех corpus targets.
 
 Локальный remediation-цикл седьмого аудита завершён: schema, schema-reference, corpus, graph/RAG, knowledge-source (19/19), docs (6/6), integration (11/11) и полный `npm test` прошли. В полном наборе: modules 218, domain 35, apps 11, tools 76, shadow 6, cutover 4 и integration 11; architecture PASS. Browser E2E корректно отмечен skipped из-за отсутствующего локального Chromium.
+
+Run `#72` подтвердил remediation седьмого аудита в clean clone: migration-summary contract, malformed-history fail-before-write regression, generation/reproducibility и полный `npm test` прошли.
 
 ## Verified contracts
 
@@ -70,9 +72,8 @@ Evidence-only commit `a0821be3ddf9663c49b80b0a7bcb1010b7d0e3aa` прошёл run
 
 ## Remaining release gates
 
-- новый clean-clone CI после remediation седьмого аудита;
 - следующий independent code critic audit;
 - owner disposition of the byte-only critic-rule conflict;
 - repeat audit after any `CHANGES REQUIRED` or `REJECT` result.
 
-Decision: `round7_remediation_local_green_pending_ci`.
+Decision: `run_72_green_round7_remediation_pending_critic`.

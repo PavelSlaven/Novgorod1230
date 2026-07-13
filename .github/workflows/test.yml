@@ -1,0 +1,54 @@
+name: test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: test-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  clean-clone-generation-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout clean clone
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate deterministic documentation and knowledge artifacts
+        run: npm run docs:generate
+
+      - name: Verify generated files are reproducible
+        run: |
+          git diff --exit-code -- MODULE_INDEX.md generated/
+
+      - name: Run full test suite
+        run: npm test
+
+      - name: Upload generated evidence on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-and-test-evidence
+          if-no-files-found: ignore
+          path: |
+            generated/
+            MODULE_INDEX.md
+            artifacts/

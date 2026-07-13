@@ -3,9 +3,10 @@ import { resolve } from 'node:path';
 import {
   importKnowledgeSourceFromLegacy,
   inventoryLegacyKnowledgeSource,
+  verifyCanonicalCorpus,
   verifyKnowledgeSourceMigration,
   writeKnowledgeSourceOutputs
-} from './knowledge-source.js';
+} from './index.js';
 
 const command = process.argv[2] ?? 'check';
 const rootIndex = process.argv.indexOf('--root');
@@ -19,6 +20,14 @@ if (command === 'inventory') {
 } else if (command === 'generate') {
   const result = await writeKnowledgeSourceOutputs({ root });
   console.log(`Knowledge source generated: ${result.files.join(', ')}`);
+} else if (command === 'check-corpus') {
+  const result = await verifyCanonicalCorpus({ root });
+  if (!result.ok) {
+    console.error(`Canonical corpus check failed:\n${result.errors.map((item) => `- ${item}`).join('\n')}`);
+    process.exitCode = 1;
+  } else {
+    console.log(`Canonical corpus: OK (${result.document_count} documents; ${result.legacy_document_count} with legacy provenance)`);
+  }
 } else if (command === 'check') {
   const result = await verifyKnowledgeSourceMigration({ root });
   if (!result.ok) {

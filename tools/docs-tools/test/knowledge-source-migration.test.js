@@ -56,7 +56,7 @@ test('graph and RAG materializers are deterministic and preserve approved semant
   assert.ok(ragA.lexical_index.chunk_count > 0);
   assert.equal(ragA.lexical_index.chunks.some((chunk) => Object.hasOwn(chunk, 'embedding')), false);
 
-  const legacyManifest = JSON.parse(await readFile(resolve(root, 'legacy/DOCUMENTS/documents-kg/rag-index/manifest.json'), 'utf8');
+  const legacyManifest = JSON.parse(await readFile(resolve(root, 'legacy/DOCUMENTS/documents-kg/rag-index/manifest.json'), 'utf8'));
   assert.notEqual(ragA.manifest.corpus_root, legacyManifest.corpus_dir);
   assert.equal(ragA.manifest.corpus_root, 'data/knowledge-source/corpus/DOCUMENTS');
 });

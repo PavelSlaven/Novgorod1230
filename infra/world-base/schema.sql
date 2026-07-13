@@ -1,0 +1,9 @@
+-- Canonical world_base DDL entrypoint. Keep parts ordered.
+\ir schema/01.sql
+\ir schema/02.sql
+\ir schema/03.sql
+\ir schema/04.sql
+\ir schema/05.sql
+\ir schema/06.sql
+\ir schema/07.sql
+\ir schema/08.sql

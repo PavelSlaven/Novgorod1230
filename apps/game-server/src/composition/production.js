@@ -1,3 +1,5 @@
+import { resolve } from 'node:path';
+import { createFileSystemKnowledgeSourceStorage, createKnowledgeSourceReader } from '@rus/knowledge-source';
 import { createGameCompositionRoot } from './root.js';
 import { createNewGameWorkflowAdapter, createTurnWorkflowAdapter } from '../adapters/workflows.js';
 import { createPostgresPools, probePostgresPool } from '../infrastructure/postgres/pools.js';
@@ -14,7 +16,19 @@ export async function createProductionCompositionRoot({ env = process.env, confi
     if (config.runMigrations !== false) await runPartyRuntimeMigrations(pools.partyPool);
     const worldBase = createPostgresWorldBaseReader({ pool: pools.worldPool });
     const llmRoleRunner = createProductionLlmRoleRunner({ env, telemetry: config.telemetry ?? null });
-    const basePorts = Object.freeze({ worldBase, llmRoleRunner, worldPool: pools.worldPool, partyPool: pools.partyPool });
+    const knowledgeSource = createKnowledgeSourceReader({
+      storage: createFileSystemKnowledgeSourceStorage({
+        sourceRoot: resolve(config.knowledgeSourceRoot ?? env.RUS_KNOWLEDGE_SOURCE_ROOT ?? 'data/knowledge-source'),
+        generatedRoot: resolve(config.generatedKnowledgeRoot ?? env.RUS_GENERATED_KNOWLEDGE_ROOT ?? 'generated/knowledge-source')
+      })
+    });
+    const corpusStatus = await knowledgeSource.verifyCorpus();
+    if (!corpusStatus.ok) throw new Error(`Knowledge source verification failed: ${corpusStatus.errors.map((item) => item.message).join('; ')}`);
+    const generatedStatus = await knowledgeSource.getGeneratedIndexStatus();
+    if (generatedStatus.graph.status !== 'current' || generatedStatus.rag.status !== 'current') {
+      throw new Error(`Knowledge source generated artifacts are not current: graph=${generatedStatus.graph.status}, rag=${generatedStatus.rag.status}`);
+    }
+    const basePorts = Object.freeze({ knowledgeSource, worldBase, llmRoleRunner, worldPool: pools.worldPool, partyPool: pools.partyPool });
     const bindings = await loadRuntimeBindings(config.runtimeBindingsModule ?? env.RUS_RUNTIME_BINDINGS_MODULE, { env, config, ports: basePorts });
     const stage25 = createPostgresStage25Ports({ pool: pools.partyPool, postcommitProjector: bindings.stage25PostcommitProjector });
     const ports = Object.freeze({ ...basePorts, stage25 });

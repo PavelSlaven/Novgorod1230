@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rus13.local/contracts/G5CurrentPositionCommitPlan.schema.json",
+  "title": "G5CurrentPositionCommitPlan",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "selected_minilocation_temp_id",
+    "selected_anchor_temp_id",
+    "current_node_temp_id",
+    "position_visible_text",
+    "last_route_temp_id",
+    "current_position_fields"
+  ],
+  "properties": {
+    "selected_minilocation_temp_id": {
+      "description": "Required by G5CurrentPositionCommitPlan.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "selected_anchor_temp_id": {
+      "description": "Required by G5CurrentPositionCommitPlan.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "current_node_temp_id": {
+      "description": "Required by G5CurrentPositionCommitPlan.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "position_visible_text": {
+      "description": "Required by G5CurrentPositionCommitPlan.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "last_route_temp_id": {
+      "description": "Required by G5CurrentPositionCommitPlan.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "current_position_fields": {
+      "description": "Required by G5CurrentPositionCommitPlan.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    }
+  },
+  "x_step_id": "g5_08_current_position_selection",
+  "x_writes_to": "party_llm_steps",
+  "x_blocking_validations": "full current_position can be written"
+}

@@ -1,0 +1,11 @@
+﻿policy_key,policy_value
+g5_is_not_precreated_for_whole_map,True
+g5_created_only_inside_existing_g4,True
+requires_causal_basis,True
+respects_generation_limits,True
+player_request_does_not_create_anchor,True
+anchor_must_match_place_function,True
+anchor_must_match_history_and_economy,True
+anchor_must_define_visibility_access_risk,True
+examples_are_not_exhaustive,True
+extension_policy,"Списки задания являются минимальным ядром, а не пределом. Новые контейнеры, слухи, события, предметные и социальные профили допустимы только при историко-бытовом, хозяйственном или социальном основании, со статусом, уверенностью и возможностью ручного аудита."

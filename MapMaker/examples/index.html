@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>MapMaker — обозреватель G1–G4</title>
+  <link rel="stylesheet" href="/dist/styles/map-maker.css">
+  <style>
+    :root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#25221d;color:#eadfbe;font:15px/1.4 system-ui,sans-serif}
+    .app{max-width:1500px;margin:auto;padding:18px}.top{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:15px}
+    h1{font:700 25px Georgia,serif;margin:0 0 4px}.warning{color:#d7b876;font-size:13px}.workspace{display:grid;grid-template-columns:minmax(230px,290px) minmax(0,1fr);gap:16px;align-items:start}
+    .panel,#map{background:#e9ddbd;color:#30291f;border:1px solid #776344;border-radius:7px;padding:14px}.panel{display:grid;gap:12px;position:sticky;top:14px}
+    label{display:grid;gap:5px;font-weight:650}select,button{width:100%;border:1px solid #897450;border-radius:4px;padding:8px;background:#fff8e6;color:#30291f;font:inherit}
+    button{cursor:pointer;background:#57462f;color:#fff4d6;font-weight:700}button:hover{background:#705a3d}.status{min-height:21px;font-size:13px}.error{color:#9b221e}
+    .stats{display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:13px}.stat{background:#d9cba6;padding:7px;border-radius:4px}.stat b{display:block;font-size:17px}
+    .help{font-size:12px;color:#66583f}.legend{display:flex;flex-wrap:wrap;gap:5px}.legend span{border:1px solid #aa9670;border-radius:12px;padding:2px 7px;font-size:11px}
+    #map{min-width:0}.mm-square{margin-inline:auto}.mm-details{font-family:system-ui,sans-serif}.mm-header{gap:12px}
+    @media(max-width:760px){.app{padding:8px}.top{display:block}.workspace{grid-template-columns:1fr}.panel{position:static}.panel-controls{display:grid;grid-template-columns:1fr 2fr;gap:8px}.panel button{grid-column:1/-1}}
+  </style>
+  <script type="importmap">{"imports":{"cytoscape":"/node_modules/cytoscape/dist/cytoscape.esm.min.mjs"}}</script>
+</head>
+<body>
+  <main class="app">
+    <header class="top">
+      <div><h1>MapMaker: Новгородская земля</h1><div class="warning">Локальный dev-only обозреватель полного канонического графа</div></div>
+      <div id="generated-at"></div>
+    </header>
+    <div class="workspace">
+      <aside class="panel">
+        <div class="panel-controls">
+          <label>Уровень
+            <select id="level" data-testid="level-select"><option>G1</option><option>G2</option><option>G3</option><option>G4</option></select>
+          </label>
+          <label>Локальный граф
+            <select id="parent" data-testid="parent-select"></select>
+          </label>
+          <button id="open" data-testid="open-map" type="button">Открыть карту</button>
+        </div>
+        <div id="status" class="status" data-testid="status">Загрузка индекса…</div>
+        <div class="stats">
+          <div class="stat"><b id="node-count">—</b>узлов в DTO</div>
+          <div class="stat"><b id="edge-count">—</b>связей в DTO</div>
+        </div>
+        <div id="selection" class="help">Щёлкните узел или связь для просмотра известных сведений.</div>
+        <div id="legend" class="legend"></div>
+        <div class="help">Один клик — выбрать. Двойной клик по узлу — открыть следующий уровень. Хлебные крошки возвращают к родительской карте. Клик не перемещает персонажа.</div>
+      </aside>
+      <section id="map" data-testid="map-host"></section>
+    </div>
+  </main>
+  <script type="module">
+    import { MapMaker } from "/dist/index.js";
+
+    const levelSelect = document.querySelector("#level");
+    const parentSelect = document.querySelector("#parent");
+    const status = document.querySelector("#status");
+    const nodeCount = document.querySelector("#node-count");
+    const edgeCount = document.querySelector("#edge-count");
+    const selection = document.querySelector("#selection");
+    const legend = document.querySelector("#legend");
+    const levels = ["G1", "G2", "G3", "G4"];
+    let manifest;
+    let currentView;
+    let navigation = [];
+
+    const setStatus = (message, failed = false) => {
+      status.textContent = message;
+      status.classList.toggle("error", failed);
+    };
+
+    const map = new MapMaker(document.querySelector("#map"), {
+      mode: "full",
+      onNodeSelect(nodeId) {
+        const node = currentView?.nodes.find((item) => item.id === nodeId);
+        if (node) selection.textContent = `${node.title} · ${node.knowledgeState}${node.hasKnownChildren ? " · есть дочерняя карта" : ""}`;
+      },
+      onEdgeSelect(edgeId) {
+        const edge = currentView?.edges.find((item) => item.id === edgeId);
+        if (edge) selection.textContent = `${edge.edgeType} · ${edge.traversalState} · ${edge.knowledgeState}`;
+      },
+      onOpenChildren(nodeId) {
+        const index = levels.indexOf(currentView.layout.level);
+        const nextLevel = levels[index + 1];
+        const node = currentView.nodes.find((item) => item.id === nodeId);
+        if (nextLevel && node?.hasKnownChildren) {
+          const nextNavigation = [...navigation, { nodeId, title: node.title, level: nextLevel }];
+          loadMap(nextLevel, nodeId, nextNavigation);
+        }
+      },
+      onNavigate(parentNodeId, level) {
+        const index = navigation.findIndex((item) => item.nodeId === parentNodeId && item.level === level);
+        loadMap(level, parentNodeId, index >= 0 ? navigation.slice(0, index + 1) : undefined);
+      }
+    });
+
+    function layoutsFor(level) { return manifest.layouts.filter((item) => item.level === level); }
+
+    function fillParents(level, preferred) {
+      const layouts = layoutsFor(level);
+      parentSelect.replaceChildren(...layouts.map((item) => {
+        const option = document.createElement("option");
+        option.value = item.parentNodeId;
+        option.textContent = `${item.parentTitle ?? item.parentNodeId} — ${item.parentNodeId} · ${item.nodeCount} узл.`;
+        return option;
+      }));
+      if (preferred && layouts.some((item) => item.parentNodeId === preferred)) parentSelect.value = preferred;
+    }
+
+    async function loadMap(level, parentNodeId, nextNavigation) {
+      setStatus(`Загрузка ${level}…`);
+      try {
+        const params = new URLSearchParams({ level, parentNodeId });
+        const response = await fetch(`/dev-api/view?${params}`);
+        const payload = await response.json();
+        if (!response.ok) throw new Error(payload.hint ?? payload.message ?? payload.error);
+        const layoutEntry = manifest.layouts.find((item) => item.level === level && item.parentNodeId === parentNodeId);
+        navigation = nextNavigation ?? [{ nodeId: parentNodeId, title: layoutEntry?.parentTitle ?? parentNodeId, level }];
+        payload.breadcrumbs = navigation;
+        currentView = payload;
+        map.setView(payload);
+        levelSelect.value = level;
+        fillParents(level, parentNodeId);
+        nodeCount.textContent = String(payload.nodes.length);
+        edgeCount.textContent = String(payload.edges.length);
+        legend.replaceChildren(...payload.legend.map((item) => {
+          const chip = document.createElement("span"); chip.textContent = item.label; return chip;
+        }));
+        selection.textContent = "Карта загружена. Выберите узел или связь.";
+        setStatus(`${level} · ${parentNodeId}`);
+        history.replaceState(null, "", `?level=${level}&parent=${encodeURIComponent(parentNodeId)}`);
+      } catch (error) { setStatus(error instanceof Error ? error.message : String(error), true); }
+    }
+
+    levelSelect.addEventListener("change", () => fillParents(levelSelect.value));
+    document.querySelector("#open").addEventListener("click", () => loadMap(levelSelect.value, parentSelect.value));
+
+    try {
+      const response = await fetch("/dev-api/manifest");
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.hint ?? payload.error);
+      manifest = payload;
+      document.querySelector("#generated-at").textContent = `Раскладка: ${new Date(payload.generatedAt).toLocaleString("ru-RU")}`;
+      const query = new URLSearchParams(location.search);
+      const requestedLevel = levels.includes(query.get("level")) ? query.get("level") : "G1";
+      const available = layoutsFor(requestedLevel);
+      const requestedParent = available.some((item) => item.parentNodeId === query.get("parent")) ? query.get("parent") : available[0]?.parentNodeId;
+      fillParents(requestedLevel, requestedParent);
+      if (requestedParent) await loadMap(requestedLevel, requestedParent);
+    } catch (error) { setStatus(error instanceof Error ? error.message : String(error), true); }
+  </script>
+</body>
+</html>

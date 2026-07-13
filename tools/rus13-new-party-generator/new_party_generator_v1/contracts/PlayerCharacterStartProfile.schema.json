@@ -1,0 +1,297 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rus13.local/contracts/PlayerCharacterStartProfile.schema.json",
+  "title": "PlayerCharacterStartProfile",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "character_id",
+    "name_or_label",
+    "age_range",
+    "status",
+    "origin",
+    "body",
+    "numeric_states",
+    "active_states",
+    "attributes",
+    "skills",
+    "knowledge",
+    "memory",
+    "goals",
+    "fears",
+    "obligations",
+    "inventory",
+    "property_outside_inventory",
+    "relationships",
+    "start_position",
+    "reason_here",
+    "risk_profile"
+  ],
+  "properties": {
+    "character_id": {
+      "description": "Required by PlayerCharacterStartProfile.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "name_or_label": {
+      "description": "Required by PlayerCharacterStartProfile.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "age_range": {
+      "description": "Required by PlayerCharacterStartProfile.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "status": {
+      "description": "Required by PlayerCharacterStartProfile.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "origin": {
+      "description": "Required by PlayerCharacterStartProfile.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "body": {
+      "description": "Required by PlayerCharacterStartProfile.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "numeric_states": {
+      "description": "Required by PlayerCharacterStartProfile.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "active_states": {
+      "description": "Required by PlayerCharacterStartProfile.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "attributes": {
+      "description": "Required by PlayerCharacterStartProfile.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "skills": {
+      "description": "Required by PlayerCharacterStartProfile.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "knowledge": {
+      "description": "Required by PlayerCharacterStartProfile.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "memory": {
+      "description": "Required by PlayerCharacterStartProfile.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "goals": {
+      "description": "Required by PlayerCharacterStartProfile.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "fears": {
+      "description": "Required by PlayerCharacterStartProfile.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "obligations": {
+      "description": "Required by PlayerCharacterStartProfile.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "inventory": {
+      "description": "Required by PlayerCharacterStartProfile.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "property_outside_inventory": {
+      "description": "Required by PlayerCharacterStartProfile.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "relationships": {
+      "description": "Required by PlayerCharacterStartProfile.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "start_position": {
+      "description": "Required by PlayerCharacterStartProfile.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "reason_here": {
+      "description": "Required by PlayerCharacterStartProfile.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "risk_profile": {
+      "description": "Required by PlayerCharacterStartProfile.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    }
+  },
+  "x_writes_to": [
+    "party_player_characters",
+    "party_items",
+    "party_inventory_entries",
+    "party_map_knowledge",
+    "party_journal_entries"
+  ],
+  "x_blocking_validations": [
+    "status has rights/risks",
+    "attributes and skills balanced",
+    "inventory has owners/holders/access/risk",
+    "reason_here linked to place"
+  ]
+}

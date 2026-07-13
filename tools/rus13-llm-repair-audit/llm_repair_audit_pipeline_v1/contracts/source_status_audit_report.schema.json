@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SourceStatusAuditReport",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "is_source_clean",
+    "missing_sources",
+    "status_laundering_issues",
+    "allowed_warnings"
+  ],
+  "properties": {
+    "is_source_clean": {
+      "type": "boolean"
+    },
+    "missing_sources": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "status_laundering_issues": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "allowed_warnings": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  }
+}

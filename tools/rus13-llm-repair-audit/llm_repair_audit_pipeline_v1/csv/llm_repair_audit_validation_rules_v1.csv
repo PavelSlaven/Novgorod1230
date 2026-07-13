@@ -1,0 +1,11 @@
+﻿rule_id,category,rule,blocking,source_id
+vr_001_no_code_semantic_repair,architecture,"Code may parse, validate, store and route errors, but may not create or semantically repair world facts.",yes,doc_world_generation_repair_rule
+vr_002_no_silent_stub,architecture,"If LLM fails, returns invalid data or fails validation, the pipeline must not create hidden placeholders as accepted world facts.",yes,doc_world_generation_repair_rule
+vr_003_structuring_no_new_facts,agent_boundary,"Structuring and repair agents cannot add new events, NPCs, items, routes, motives or consequences.",yes,doc_structuring_agent
+vr_004_hidden_removed_before_prose,visibility,Hidden data must be removed before prose generation; it is not enough to give prose agent an instruction not to reveal it.,yes,doc_agent_role_split
+vr_005_character_knowledge_separation,visibility,"Visible layer must distinguish character knowledge, rumor, uncertainty and hidden facts.",yes,doc_info_visibility
+vr_006_source_status_preserved,sources,A record source status cannot be upgraded during repair or import; unresolved sources remain needs_review.,yes,doc_world_generation_repair_rule
+vr_007_consistency_scope_full,semantic,"Audits must check year, region, season, authority, law, roles, events, items, routes, map, position, memory, knowledge, NPC knowledge, hidden layers, visible scene, property, access, body and tensions.",yes,doc_world_generation_consistency_check
+vr_008_no_partial_commit,commit,"No authoritative party-state write occurs until schema, source, semantic, visibility and DB-write audits pass.",yes,artifact_party_database_v1
+vr_009_retry_budget,operations,Repair loops must have fixed attempt limits; repeated failure escalates instead of infinite auto-editing.,yes,doc_repair_agent
+vr_010_audit_trail_complete,operations,"Each LLM step records raw result, repair attempts, validation issues, audit reports and final commit decision.",yes,artifact_party_database_v1

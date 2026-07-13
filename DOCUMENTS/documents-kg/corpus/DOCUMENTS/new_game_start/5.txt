@@ -1,0 +1,1611 @@
+# Этап 5. Подбор допустимых стартовых G1–G4 кандидатов
+
+## 1. Назначение этапа
+
+Подбор допустимых стартовых G1–G4 кандидатов — это пятый этап запуска новой партии. Он получает:
+
+* нормализованную заявку игрока;
+* утверждённую историческую рамку;
+* загруженный региональный контекст;
+* канонический граф региона из `world_base`.
+
+На выходе этап возвращает не одно стартовое место, а список допустимых стартовых кандидатов.
+
+Кандидат — это не готовая сцена. Это допустимая точка старта на уровне G1–G4, где позже можно будет:
+
+* выбрать конкретное стартовое место;
+* сгенерировать персонажа;
+* материализовать G5;
+* разместить NPC;
+* разместить причинно обоснованные предметы;
+* сформировать hidden state и visible context.
+
+Короткая формула:
+
+```text id="f6s0s6"
+historical_frame
++ regional_context_package
++ world_base graph G1–G4
++ player normalized request
+→ start_candidate_set
+```
+
+## 2. Главное правило этапа
+
+Код выбирает список допустимых кандидатов из уже существующего графа и региональных ограничений.
+
+Код не создаёт новые места.
+LLM не создаёт новые места.
+LLM не выбирает стартовую сцену.
+LLM не создаёт NPC, предметы или G5-якоря.
+
+На этом этапе разрешено:
+
+* читать `world_base.graph_nodes`;
+* читать `world_base.graph_edges`;
+* читать региональные правила мест;
+* читать place templates;
+* читать landscape/water/land_use/route constraints;
+* читать сезонные и временные ограничения;
+* фильтровать узлы;
+* проверять родительскую цепочку G1→G2→G3→G4;
+* проверять соседние связи;
+* проверять доступность по времени суток и сезону;
+* формировать список кандидатов;
+* группировать кандидатов;
+* ранжировать кандидатов техническим scoring;
+* запускать LLM только для аудита, сжатия или пояснения уже найденного списка.
+
+На этом этапе запрещено:
+
+* создавать новый G1/G2/G3/G4;
+* создавать G5;
+* выбирать финальный стартовый узел;
+* создавать NPC;
+* создавать предметы;
+* создавать стартовую прозу;
+* создавать событие;
+* менять историческую рамку;
+* исправлять карту через LLM;
+* подставлять “похожее место”, если подходящих узлов нет;
+* использовать общий текстовый prompt вместо `world_base` candidate retrieval.
+
+## 3. Место этапа в pipeline
+
+```text id="fq8lpg"
+1. Заявка игрока
+2. Нормализация заявки
+3. Выбор исторической рамки
+4. Загрузка регионального контекста из world_base
+5. Подбор допустимых стартовых G1–G4 кандидатов
+6. Выбор одного стартового места из candidate set
+7. Генерация персонажа
+8. Материализация стартовой G5-сцены
+```
+
+Этап 5 не завершает старт игры. Он только создаёт безопасное поле выбора для этапа 6.
+
+## 4. Вход этапа
+
+```json id="wpi77z"
+{
+  "version": 1,
+  "schema": "start_candidate_retriever_input",
+  "request_id": "string",
+
+  "normalized_request": {
+    "version": 1,
+    "schema": "new_game_normalized_request"
+  },
+
+  "historical_frame": {
+    "version": 1,
+    "schema": "historical_frame",
+    "year": {
+      "value": 0
+    },
+    "calendar": {
+      "season": "spring | summer | autumn | winter"
+    },
+    "clock": {
+      "day": 1,
+      "hour": 0,
+      "minute": 0,
+      "time_of_day": "morning | day | evening | night | deep_night",
+      "light_profile": "dark | dim | daylight | twilight"
+    },
+    "region": {
+      "region_id": "string"
+    }
+  },
+
+  "regional_context_package": {
+    "version": 1,
+    "schema": "regional_context_package"
+  },
+
+  "candidate_policy": {
+    "target_candidate_count_min": 12,
+    "target_candidate_count_max": 80,
+    "include_g1": true,
+    "include_g2": true,
+    "include_g3": true,
+    "include_g4": true,
+    "prefer_g4_for_start": true,
+    "allow_g3_if_no_g4": true,
+    "allow_g2_if_no_g3": false,
+    "allow_g1_only_as_context": true,
+    "require_full_parent_chain": true,
+    "require_at_least_one_access_edge": true,
+    "require_place_template_match": true,
+    "require_region_rule_match": true,
+    "require_time_compatibility": true,
+    "require_season_compatibility": true,
+    "require_sources": true,
+    "reject_rejected_or_conflict_records": true
+  }
+}
+```
+
+## 5. Выход этапа
+
+```json id="k1226j"
+{
+  "version": 1,
+  "schema": "start_candidate_set",
+  "request_id": "string",
+
+  "selection_status": "ready | empty | blocked | requires_repair",
+
+  "frame": {
+    "region_id": "string",
+    "year": 0,
+    "season": "spring | summer | autumn | winter",
+    "clock": {
+      "day": 1,
+      "hour": 0,
+      "minute": 0,
+      "time_of_day": "string",
+      "light_profile": "string"
+    }
+  },
+
+  "candidate_summary": {
+    "total_candidates": 0,
+    "g1_count": 0,
+    "g2_count": 0,
+    "g3_count": 0,
+    "g4_count": 0,
+    "preferred_scale": "G4",
+    "fallback_scale_used": null
+  },
+
+  "candidates": [],
+
+  "rejected_candidates": [],
+
+  "candidate_groups": [],
+
+  "downstream_constraints": {
+    "must_choose_from_candidate_ids": [],
+    "must_preserve": [],
+    "must_not_create_yet": [],
+    "must_resolve_later": []
+  },
+
+  "source_trace": [],
+
+  "audit": {
+    "pass": true,
+    "concerns": [],
+    "evidence": []
+  }
+}
+```
+
+## 6. Что такое стартовый кандидат
+
+Стартовый кандидат — это узел G1–G4, который может быть использован следующим этапом как допустимый стартовый узел или часть стартовой иерархии.
+
+Предпочтительно стартовать с G4, потому что G4 ближе всего к конкретной игровой локации. Но кандидат должен хранить полную цепочку:
+
+```text id="lu0vpb"
+G1 region cell
+→ G2 zone
+→ G3 place
+→ G4 location
+```
+
+Для G4-кандидата обязательна структура:
+
+```json id="edkv5j"
+{
+  "candidate_id": "start_candidate_...",
+  "preferred_start_scale": "G4",
+
+  "node_chain": {
+    "g1_node_id": "string",
+    "g2_node_id": "string",
+    "g3_node_id": "string",
+    "g4_node_id": "string"
+  },
+
+  "canonical_node": {
+    "node_id": "string",
+    "scale_level": "G4",
+    "node_type": "string",
+    "title": "string",
+    "slug": "string",
+    "parent_node_id": "string",
+    "region_id": "string"
+  },
+
+  "template_links": {
+    "place_template_id": "string | null",
+    "landscape_template_id": "string | null",
+    "water_body_template_id": "string | null",
+    "land_use_template_ids": [],
+    "route_template_ids_nearby": []
+  },
+
+  "compatibility": {
+    "region_match": true,
+    "year_match": true,
+    "season_match": true,
+    "clock_match": true,
+    "place_rule_match": true,
+    "access_rule_match": true,
+    "player_request_match": "exact | partial | neutral | weak",
+    "social_context_match": true,
+    "route_context_match": true
+  },
+
+  "access": {
+    "has_entry_edge": true,
+    "has_exit_edge": true,
+    "entry_edge_ids": [],
+    "exit_edge_ids": [],
+    "access_notes": [],
+    "night_or_season_warnings": []
+  },
+
+  "start_use": {
+    "can_start_here": true,
+    "start_risk_level": "none | low | medium | high | blocked",
+    "requires_later_resolution": [],
+    "why_candidate_is_allowed": []
+  },
+
+  "source_trace": []
+}
+```
+
+## 7. Какие масштабы допустимы
+
+### 7.1. G1
+
+G1 — крупная региональная ячейка. Она может быть кандидатом только как контекст, но не как точная стартовая позиция.
+
+Разрешено:
+
+```text id="xd2qjc"
+использовать G1 для ограничения региона, природной среды, соседства, больших дорог, исторических якорей
+```
+
+Запрещено:
+
+```text id="wte8lt"
+стартовать только в G1 без G2/G3/G4, если база содержит более глубокие узлы
+```
+
+Если доступен только G1, этап должен вернуть `requires_repair` или `blocked`, если политика требует точного старта.
+
+### 7.2. G2
+
+G2 — внутренняя зона G1: дорога, лесной массив, береговая зона, окрестность поселения, участок реки, полевая зона.
+
+G2 может быть fallback-кандидатом, если нет G3/G4, но для старта он недостаточно точен.
+
+Разрешено:
+
+```text id="j4ogjk"
+использовать G2 для будущего выбора G3/G4-кандидатов
+```
+
+Запрещено:
+
+```text id="fuif7f"
+считать G2 финальной сценической стартовой позицией
+```
+
+### 7.3. G3
+
+G3 — конкретное место: село, погост, монастырь, городская часть, переправа, двор, торг, пристань, лесной стан.
+
+G3 может быть стартовым кандидатом, если:
+
+* у него есть допустимый place template;
+* есть доступные дочерние G4 или допустима последующая материализация G4;
+* он совместим с временем, сезоном и региональными правилами.
+
+### 7.4. G4
+
+G4 — конкретная локация внутри места: двор, ворота, пристань, участок дороги, амбарная зона, берег у переправы, торг, сени, опушка, вход в монастырский двор.
+
+G4 — предпочтительный стартовый уровень.
+
+G4-кандидат должен иметь:
+
+```text id="mmo97d"
+полную цепочку G1→G2→G3→G4
+допустимый тип места
+совместимые правила региона
+минимум один вход/выход
+совместимость с сезоном
+совместимость с временем суток
+возможность будущей G5-материализации
+```
+
+## 8. Источники данных
+
+Этап читает следующие группы `world_base`.
+
+### 8.1. Graph nodes
+
+```text id="g4d78y"
+world_base.graph_nodes
+```
+
+Обязательные поля:
+
+```text id="ro0dmx"
+id
+slug
+title
+node_type
+scale_level
+parent_node_id
+region_id
+place_template_id
+primary_landscape_template_id
+primary_water_body_template_id
+land_use_template_ids
+status
+confidence
+sources
+game_use
+limits
+audit_notes
+```
+
+### 8.2. Graph edges
+
+```text id="u42upv"
+world_base.graph_edges
+```
+
+Обязательные поля:
+
+```text id="k08a9y"
+id
+from_node_id
+to_node_id
+scale_level
+edge_type
+route_template_id
+landscape_template_id
+water_body_template_id
+base_time
+base_gu
+access_rule
+seasonal_rule
+risk_level
+known_by_default
+status
+confidence
+sources
+```
+
+### 8.3. Place rules
+
+```text id="8mq623"
+world_base.place_templates
+world_base.region_place_generation_rules
+world_base.place_generation_limits
+world_base.region_template_links
+```
+
+Используются для проверки:
+
+```text id="qvk1hn"
+может ли такой тип места существовать в регионе
+может ли он быть стартовым
+какие масштабы допустимы
+какая экономика нужна
+какие социальные роли допустимы
+какие ландшафты/водные объекты/пути совместимы
+```
+
+### 8.4. Landscape / water / land use
+
+```text id="pxs276"
+world_base.landscape_templates
+world_base.region_landscape_templates
+world_base.water_body_templates
+world_base.region_water_body_templates
+world_base.land_use_templates
+world_base.region_land_use_templates
+```
+
+Используются для проверки природной и хозяйственной совместимости узла.
+
+### 8.5. Route rules
+
+```text id="ytoxtm"
+world_base.route_templates
+world_base.graph_edge_modifiers
+world_base.route_knowledge_rules
+world_base.route_season_modifiers
+```
+
+Используются для проверки входов/выходов, сезонной доступности и знания маршрутов.
+
+### 8.6. Weather and clock constraints
+
+```text id="kj7s7m"
+historical_frame.clock
+regional_context_package.weather_and_season_context
+regional_context_package.route_context
+```
+
+Используются для проверки, не противоречит ли стартовый узел текущему времени.
+
+Пример:
+
+```text id="g6n8mc"
+если clock.time_of_day = deep_night,
+нельзя пропустить кандидат как дневной открытый старт,
+если правила места говорят, что ночью вход закрыт,
+если при этом нет допустимого способа доступа.
+```
+
+## 9. Алгоритм этапа
+
+### 9.1. Проверить вход
+
+Код проверяет:
+
+```text id="t4otf5"
+normalized_request.schema = new_game_normalized_request
+historical_frame.schema = historical_frame
+historical_frame.audit.pass = true
+regional_context_package.schema = regional_context_package
+regional_context_package.audit.pass = true
+region_id задан
+year задан
+season задан
+clock задан
+```
+
+Если `clock` не содержит `hour`, `minute`, `time_of_day`, `light_profile`, этап блокируется.
+
+### 9.2. Загрузить узлы региона
+
+Код загружает все G1–G4 узлы выбранного региона:
+
+```sql id="qz5zpo"
+SELECT *
+FROM world_base.graph_nodes
+WHERE region_id = :region_id
+  AND scale_level IN ('G1', 'G2', 'G3', 'G4')
+  AND status IN (:allowed_statuses);
+```
+
+Если граф хранит G1 как региональные ячейки, а G2–G4 связаны через `parent_node_id`, код обязан загрузить всю родительскую цепочку.
+
+### 9.3. Загрузить связи
+
+```sql id="acauxu"
+SELECT *
+FROM world_base.graph_edges
+WHERE status IN (:allowed_statuses)
+  AND (
+    from_node_id IN (:loaded_node_ids)
+    OR to_node_id IN (:loaded_node_ids)
+  );
+```
+
+Связи нужны не для движения сейчас, а для проверки, что кандидат не является изолированной точкой без входа и выхода.
+
+### 9.4. Построить parent chain
+
+Для каждого узла G4 код восстанавливает:
+
+```text id="tso6hu"
+G4.parent = G3
+G3.parent = G2
+G2.parent = G1
+G1.region_id = historical_frame.region_id
+```
+
+Если цепочка неполная, кандидат отбрасывается или отправляется в `rejected_candidates`.
+
+Ошибка:
+
+```text id="wumgdd"
+START_CANDIDATE_BROKEN_PARENT_CHAIN
+```
+
+### 9.5. Проверить регион
+
+Каждый кандидат должен относиться к выбранному региону.
+
+```text id="zjk9ou"
+candidate.region_id == historical_frame.region.region_id
+```
+
+Если узел связан с другим регионом, он не может быть стартовым кандидатом, даже если географически “похож”.
+
+### 9.6. Проверить год
+
+Если у узла, place template или regional rule есть период применимости:
+
+```text id="m03ekl"
+start_year <= historical_frame.year.value <= end_year
+```
+
+Если период несовместим, кандидат отбрасывается.
+
+### 9.7. Проверить season
+
+Код проверяет:
+
+```text id="e470e1"
+seasonal_rule
+route_season_modifiers
+weather_season_rules
+land_use seasonal pattern
+water crossing seasonality
+route availability
+```
+
+Кандидат может остаться допустимым с предупреждением, если старт возможен, но есть риск.
+
+Пример:
+
+```json id="d3gg3w"
+{
+  "night_or_season_warnings": [
+    "Route nearby is slower in winter.",
+    "Water crossing requires later check before movement."
+  ]
+}
+```
+
+Но если место невозможно использовать в выбранный сезон, кандидат отбрасывается.
+
+### 9.8. Проверить time_of_day
+
+Код сверяет:
+
+```text id="eaa3r0"
+clock.time_of_day
+clock.light_profile
+access rules
+NPC/work rhythm rules
+route access
+place opening/closing rules
+safety constraints
+```
+
+Старт ночью допустим, если:
+
+* выбранный узел может существовать ночью;
+* персонаж может находиться там без немедленного противоречия;
+* дальнейшая стартовая сцена сможет объяснить доступ;
+* нет правила, прямо запрещающего нахождение там ночью.
+
+Старт ночью не допустим, если:
+
+* место должно быть закрыто;
+* доступ невозможен;
+* узел требует дневной активности;
+* региональные правила запрещают такой старт;
+* будущая visible scene неизбежно противоречит `clock.light_profile`.
+
+### 9.9. Проверить place template
+
+Если кандидат имеет `place_template_id`, он должен входить в `regional_context_package.settlement_and_place_rules.allowed_place_templates`.
+
+```text id="7mmk84"
+candidate.place_template_id ∈ allowed_place_template_ids
+```
+
+Если `place_template_id` отсутствует у G4, код может наследовать его от G3, если это разрешено схемой.
+
+Если невозможно установить тип места, кандидат отбрасывается.
+
+### 9.10. Проверить landscape/water/land_use
+
+Код проверяет:
+
+```text id="yjam89"
+primary_landscape_template_id ∈ allowed_landscapes
+primary_water_body_template_id ∈ allowed_water_body_templates, если задан
+land_use_template_ids ⊆ allowed_land_use_templates
+```
+
+Если узел содержит несовместимый ландшафт, воду или хозяйственное использование, он отбрасывается.
+
+### 9.11. Проверить route/access edges
+
+Кандидат должен иметь минимум один валидный вход или выход:
+
+```text id="vh6t2t"
+entry_edge_ids.length + exit_edge_ids.length >= 1
+```
+
+Для G4 желательно:
+
+```text id="0veivx"
+минимум один путь к родительскому G3
+или минимум один локальный проход
+или минимум один edge к соседнему G4
+```
+
+Если кандидат изолирован, он не может быть стартовым местом.
+
+### 9.12. Проверить совместимость с заявкой игрока
+
+Код не должен “понимать художественно”, но может сопоставлять нормализованные поля с метаданными:
+
+```text id="ec6rtl"
+start_place_request.value
+tone_request.value
+difficulty_request.value
+hard_constraints
+soft_preferences
+forbidden_content
+```
+
+Примеры:
+
+```text id="xoel22"
+если игрок запретил город → отбрасывать urban candidates
+если игрок просил дорогу → повышать score route/roadside candidates
+если игрок просил быт → повышать score household/rural/domestic candidates
+если игрок просил случайно → не фильтровать по месту, только по допустимости
+```
+
+Если нет запроса, это не ошибка. Поле трактуется как `random`.
+
+### 9.13. Проверить будущую G5-материализацию
+
+Этап не создаёт G5, но должен проверить, что для выбранного G4-типа существуют допустимые G5-шаблоны.
+
+```text id="63e0g7"
+g4_type_id ∈ g5_context.g4_type_to_allowed_anchor_rules
+```
+
+Если G5-шаблонов нет, кандидат можно оставить только если политика разрешает будущий repair. Для полноценного старта такой кандидат лучше отклонять.
+
+### 9.14. Сформировать score
+
+Scoring не создаёт мир. Он только сортирует уже допустимых кандидатов.
+
+Пример технического scoring:
+
+```text id="a9j0s8"
+score =
+  base_allowed_score
++ request_match_score
++ full_parent_chain_score
++ access_edge_score
++ place_rule_score
++ season_match_score
++ time_match_score
++ g5_ready_score
+- warning_penalty
+- weak_source_penalty
+```
+
+Рекомендуемая шкала:
+
+```text id="tyj64b"
+90–100 = excellent
+70–89 = good
+50–69 = usable
+30–49 = weak
+0–29 = reject
+```
+
+Кандидаты ниже порога не попадают в основной список.
+
+### 9.15. Сформировать группы
+
+Чтобы этап 6 не выбирал из хаотического списка, код группирует кандидатов:
+
+```text id="esrfyb"
+by scale
+by place_template
+by start tone
+by risk level
+by social environment
+by route accessibility
+by landscape
+by urban/rural/wild/road/water
+```
+
+Пример:
+
+```json id="ozzm3w"
+{
+  "candidate_groups": [
+    {
+      "group_id": "rural_household_low_risk",
+      "title": "Rural household starts, low risk",
+      "candidate_ids": [],
+      "group_tags": [
+        "rural",
+        "domestic",
+        "low_risk"
+      ]
+    }
+  ]
+}
+```
+
+## 10. Кандидат не равен выбору
+
+На этом этапе нельзя писать:
+
+```json id="ac9l2q"
+{
+  "selected_start_node_id": "..."
+}
+```
+
+Нужно писать только:
+
+```json id="98eqr6"
+{
+  "candidates": [
+    {
+      "candidate_id": "...",
+      "canonical_node": {
+        "node_id": "..."
+      }
+    }
+  ]
+}
+```
+
+Финальный выбор одного старта — это следующий этап.
+
+## 11. Формат кандидата
+
+```json id="fw8ppe"
+{
+  "candidate_id": "start_candidate_001",
+
+  "candidate_status": "allowed | weak | rejected",
+
+  "score": {
+    "value": 0,
+    "band": "excellent | good | usable | weak | reject",
+    "score_reasons": [],
+    "score_penalties": []
+  },
+
+  "node_chain": {
+    "g1_node_id": "string | null",
+    "g2_node_id": "string | null",
+    "g3_node_id": "string | null",
+    "g4_node_id": "string | null"
+  },
+
+  "canonical_node": {
+    "node_id": "string",
+    "scale_level": "G1 | G2 | G3 | G4",
+    "node_type": "string",
+    "title": "string",
+    "slug": "string",
+    "parent_node_id": "string | null",
+    "region_id": "string"
+  },
+
+  "context_tags": {
+    "environment": "urban | rural | wild | road | water | mixed | unknown",
+    "social_environment": "household | trade | religious | military | travel | labor | wilderness | unknown",
+    "risk_level": "none | low | medium | high",
+    "start_tone_fit": []
+  },
+
+  "template_links": {
+    "place_template_id": "string | null",
+    "landscape_template_id": "string | null",
+    "water_body_template_id": "string | null",
+    "land_use_template_ids": [],
+    "route_template_ids_nearby": [],
+    "g5_template_group_ids_possible": []
+  },
+
+  "compatibility": {
+    "region_match": true,
+    "year_match": true,
+    "season_match": true,
+    "clock_match": true,
+    "place_rule_match": true,
+    "access_rule_match": true,
+    "route_rule_match": true,
+    "player_request_match": "exact | partial | neutral | weak | conflict",
+    "g5_ready": true
+  },
+
+  "access": {
+    "has_entry_edge": true,
+    "has_exit_edge": true,
+    "entry_edge_ids": [],
+    "exit_edge_ids": [],
+    "known_by_default": false,
+    "access_notes": [],
+    "warnings": []
+  },
+
+  "why_allowed": [],
+
+  "why_rejected": [],
+
+  "source_trace": [
+    {
+      "record_id": "string",
+      "table": "world_base.graph_nodes",
+      "source_ids": [],
+      "supports": [
+        "canonical_node"
+      ],
+      "status": "approved",
+      "confidence": "medium_high"
+    }
+  ]
+}
+```
+
+## 12. Формат rejected candidate
+
+Отклонённые кандидаты полезно сохранять для диагностики.
+
+```json id="jv2cg7"
+{
+  "candidate_id": "rejected_001",
+  "node_id": "string",
+  "scale_level": "G4",
+  "rejection_code": "START_CANDIDATE_CLOCK_CONFLICT",
+  "rejection_reason": "Node access rules are incompatible with selected time_of_day.",
+  "evidence": [
+    "clock.time_of_day=deep_night",
+    "node.access_rule=day_only"
+  ]
+}
+```
+
+Rejected candidates не передаются этапу 6 как допустимые варианты.
+
+## 13. Hard gates
+
+Кандидат должен быть отклонён без LLM, если нарушено одно из правил:
+
+```text id="b4ae7y"
+region_id mismatch
+missing parent chain
+missing canonical node
+missing source when require_sources=true
+status=rejected
+status=conflict
+place_template not allowed in region
+landscape template not allowed in region
+water body template not allowed in region
+land use template not allowed in region
+no access edges
+clock/access conflict
+season impossible
+G5 materialization impossible
+player hard constraint conflict
+```
+
+Эти проверки выполняются кодом. Это не генерация мира, а валидация ссылок и ограничений.
+
+## 14. SQL-псевдозапросы
+
+### 14.1. Загрузка узлов
+
+```sql id="n5hu3d"
+SELECT
+  id,
+  slug,
+  title,
+  node_type,
+  scale_level,
+  parent_node_id,
+  region_id,
+  place_template_id,
+  primary_landscape_template_id,
+  primary_water_body_template_id,
+  land_use_template_ids,
+  status,
+  confidence,
+  sources,
+  game_use,
+  limits,
+  audit_notes
+FROM world_base.graph_nodes
+WHERE region_id = :region_id
+  AND scale_level IN ('G1', 'G2', 'G3', 'G4')
+  AND status IN (:allowed_statuses);
+```
+
+### 14.2. Загрузка связей
+
+```sql id="kg6g8y"
+SELECT
+  id,
+  from_node_id,
+  to_node_id,
+  scale_level,
+  edge_type,
+  route_template_id,
+  landscape_template_id,
+  water_body_template_id,
+  base_time,
+  base_gu,
+  access_rule,
+  seasonal_rule,
+  risk_level,
+  known_by_default,
+  status,
+  confidence,
+  sources
+FROM world_base.graph_edges
+WHERE status IN (:allowed_statuses)
+  AND (
+    from_node_id = ANY(:node_ids)
+    OR to_node_id = ANY(:node_ids)
+  );
+```
+
+### 14.3. Проверка allowed place templates
+
+```sql id="fddsn2"
+SELECT place_template_id
+FROM world_base.region_place_templates
+WHERE region_id = :region_id
+  AND is_allowed = true
+  AND status IN (:allowed_statuses);
+```
+
+### 14.4. Проверка regional place rules
+
+```sql id="d4gm23"
+SELECT *
+FROM world_base.region_place_generation_rules
+WHERE region_id = :region_id
+  AND status IN (:allowed_statuses);
+```
+
+### 14.5. Проверка G5 readiness
+
+```sql id="ggx226"
+SELECT *
+FROM world_base.g5_scene_templates
+WHERE g4_type_id = :g4_type_id
+  AND status IN (:allowed_statuses);
+```
+
+Если G5-шаблоны хранятся как региональный JSON, код должен заранее построить индекс:
+
+```text id="puhjsk"
+g4_type_id → allowed_g5_anchor_types
+```
+
+## 15. Работа LLM на этом этапе
+
+Базовый этап должен работать без LLM. Основной retrieval и hard filtering выполняются кодом.
+
+LLM допускается только в трёх вспомогательных режимах:
+
+1. `StartCandidateSetCompressor` — сжать большой список кандидатов для следующего LLM-этапа.
+2. `StartCandidateSetAuditor` — проверить, нет ли смысловых противоречий в уже собранном списке.
+3. `StartCandidateExplanationWriter` — сформировать технические пояснения для разработчика, не для игрока.
+
+LLM не имеет права:
+
+* добавлять новые candidate IDs;
+* менять node IDs;
+* менять scores;
+* добавлять узлы вне `world_base`;
+* выбирать один финальный старт;
+* создавать сцену.
+
+## 16. LLM-параметры
+
+### 16.1. StartCandidateSetCompressor
+
+Назначение: сжать список кандидатов, сохранив ID, причины допустимости, warnings и source trace.
+
+Рекомендуемые параметры:
+
+```json id="yvgj9m"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-flash",
+  "thinking": {
+    "type": "disabled"
+  },
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "max_tokens": 6000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 40000,
+    "hard_input_limit_tokens": 100000,
+    "reserve_output_tokens": 6000
+  }
+}
+```
+
+Используется только если candidate list слишком большой для этапа 6.
+
+### 16.2. StartCandidateSetAuditor
+
+Назначение: проверить список кандидатов на скрытые противоречия: время, сезон, регион, доступ, forbidden constraints, отсутствие G5-ready.
+
+Рекомендуемые параметры:
+
+```json id="ej1s27"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 5000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 50000,
+    "hard_input_limit_tokens": 140000,
+    "reserve_output_tokens": 5000
+  }
+}
+```
+
+В thinking mode не передавать `temperature`, `top_p`, `presence_penalty`, `frequency_penalty`, если текущий API не поддерживает их совместное использование с reasoning.
+
+### 16.3. StartCandidateFormatRepairer
+
+Назначение: исправить только JSON-формат результата LLM-аудита или compressor-выхода.
+
+```json id="j5p4el"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-flash",
+  "thinking": {
+    "type": "disabled"
+  },
+  "temperature": 0.0,
+  "max_tokens": 3000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 20000,
+    "hard_input_limit_tokens": 60000,
+    "reserve_output_tokens": 3000
+  }
+}
+```
+
+## 17. Prompt: StartCandidateSetCompressor
+
+```md id="nohy8n"
+# Роль
+
+Ты StartCandidateSetCompressor для исторической текстовой RPG.
+
+# Задача
+
+Сожми уже найденный кодом start_candidate_set, сохранив все candidate_id, node_id, scale_level, score, warnings, why_allowed и source_trace.
+
+# Главное правило
+
+Ты не создаёшь кандидатов.
+Ты не удаляешь кандидатов без указания причины.
+Ты не выбираешь один старт.
+Ты не создаёшь сцену.
+Ты не создаёшь NPC.
+Ты не создаёшь предметы.
+Ты не создаёшь G5.
+Ты не меняешь score.
+
+# Источники
+
+Используй только:
+- start_candidate_set_raw;
+- historical_frame;
+- regional_context_package;
+- normalized_request.
+
+# Разрешено
+
+- сгруппировать кандидатов;
+- сократить длинные пояснения;
+- убрать повторяющиеся текстовые фрагменты;
+- сохранить ID и traceability;
+- сформировать compact_candidate_set.
+
+# Запрещено
+
+- добавлять новый candidate_id;
+- менять canonical_node.node_id;
+- менять node_chain;
+- менять compatibility flags;
+- менять access flags;
+- менять score;
+- выбирать selected_start_node_id.
+
+# Формат
+
+Верни только JSON.
+schema должен быть "start_candidate_set".
+version должен быть 1.
+```
+
+## 18. Prompt: StartCandidateSetAuditor
+
+```md id="du9f9m"
+# Роль
+
+Ты StartCandidateSetAuditor для исторической текстовой RPG.
+
+# Задача
+
+Проверь start_candidate_set на соответствие normalized_request, historical_frame, regional_context_package и world_base trace.
+
+# Главное правило
+
+Ты не создаёшь мир.
+Ты не добавляешь кандидатов.
+Ты не выбираешь один старт.
+Ты только проверяешь список.
+
+# Проверить
+
+1. Все candidates имеют candidate_id.
+2. Все candidates имеют canonical_node.node_id.
+3. Все canonical_node.region_id совпадают с historical_frame.region.region_id.
+4. Все G4-кандидаты имеют полную цепочку G1→G2→G3→G4.
+5. Все place_template_id входят в allowed_place_templates.
+6. Все landscape_template_id входят в allowed_landscapes.
+7. Все water_body_template_id входят в allowed_water_body_templates или null.
+8. Все land_use_template_ids входят в allowed_land_use_templates.
+9. У каждого candidate есть минимум один access edge.
+10. Кандидаты не противоречат historical_frame.clock.
+11. Кандидаты не противоречат selected season.
+12. Кандидаты не нарушают hard_constraints игрока.
+13. Кандидаты не создают сцену, NPC, предметы или G5.
+14. Если candidate marked allowed, why_allowed не пустой.
+15. Если candidate has warnings, warnings не скрывают hard conflict.
+16. source_trace есть и не пустой, если require_sources=true.
+
+# Формат
+
+Верни только JSON:
+
+{
+  "version": 1,
+  "schema": "start_candidate_set_audit",
+  "pass": true,
+  "concerns": [],
+  "evidence": []
+}
+
+Если pass=false, concerns не должен быть пустым.
+evidence не должен быть пустым.
+```
+
+## 19. Prompt: StartCandidateFormatRepairer
+
+```md id="q8ioxn"
+# Роль
+
+Ты StartCandidateFormatRepairer.
+
+# Задача
+
+Исправь только формат JSON для start_candidate_set или start_candidate_set_audit.
+
+# Главное правило
+
+Не меняй смысл.
+Не добавляй кандидатов.
+Не удаляй кандидатов.
+Не меняй node_id.
+Не меняй score.
+Не меняй compatibility.
+Не выбирай финальный старт.
+
+# Разрешено
+
+- добавить отсутствующие обязательные служебные поля;
+- привести schema/version к нужному виду;
+- убрать markdown;
+- переименовать ошибочные поля;
+- перенести лишний текст в notes;
+- если исправление невозможно без изменения смысла, верни audit.pass=false.
+
+# Формат
+
+Верни только JSON.
+```
+
+## 20. Validation rules
+
+Код обязан проверить:
+
+1. `schema === "start_candidate_set"`.
+2. `version === 1`.
+3. `selection_status` входит в enum: `ready`, `empty`, `blocked`, `requires_repair`.
+4. Если `selection_status=ready`, `candidates.length >= candidate_policy.target_candidate_count_min`, если это возможно.
+5. Каждый `candidate_id` уникален.
+6. Каждый `canonical_node.node_id` существует в `world_base.graph_nodes`.
+7. Каждый кандидат относится к `historical_frame.region.region_id`.
+8. Каждый G4-кандидат имеет полную parent chain G1→G2→G3→G4.
+9. Каждый G3-кандидат имеет parent chain G1→G2→G3.
+10. Каждый place template допустим в регионе.
+11. Каждый landscape template допустим в регионе.
+12. Каждый water body template допустим в регионе или null.
+13. Каждый land use template допустим в регионе.
+14. Каждый route template nearby допустим.
+15. У каждого allowed-кандидата есть минимум один entry/exit edge.
+16. `clock_match=true` у всех allowed-кандидатов.
+17. `season_match=true` у всех allowed-кандидатов.
+18. `player_request_match != conflict`.
+19. `g5_ready=true` у всех G4-кандидатов, если `prefer_g4_for_start=true`.
+20. Нет `selected_start_node_id`.
+21. Нет `visible_scene`.
+22. Нет `intro_prose`.
+23. Нет `npc_ids`.
+24. Нет `items`.
+25. Нет `g5_anchor_id`.
+26. `source_trace` не пустой, если `require_sources=true`.
+27. Все source IDs существуют в `source_records`.
+28. `audit.evidence` не пустой.
+29. Если `audit.pass=false`, `audit.concerns` не пустой.
+
+## 21. Error codes
+
+```text id="x35ep2"
+START_CANDIDATE_INVALID_JSON
+START_CANDIDATE_SCHEMA_MISMATCH
+START_CANDIDATE_REGION_MISMATCH
+START_CANDIDATE_NODE_NOT_FOUND
+START_CANDIDATE_EDGE_NOT_FOUND
+START_CANDIDATE_BROKEN_PARENT_CHAIN
+START_CANDIDATE_PLACE_TEMPLATE_NOT_ALLOWED
+START_CANDIDATE_LANDSCAPE_NOT_ALLOWED
+START_CANDIDATE_WATER_TEMPLATE_NOT_ALLOWED
+START_CANDIDATE_LAND_USE_NOT_ALLOWED
+START_CANDIDATE_ROUTE_TEMPLATE_NOT_ALLOWED
+START_CANDIDATE_NO_ACCESS_EDGE
+START_CANDIDATE_CLOCK_CONFLICT
+START_CANDIDATE_SEASON_CONFLICT
+START_CANDIDATE_PLAYER_HARD_CONSTRAINT_CONFLICT
+START_CANDIDATE_G5_NOT_READY
+START_CANDIDATE_SOURCE_MISSING
+START_CANDIDATE_REJECTED_RECORD_USED
+START_CANDIDATE_CREATED_SCENE
+START_CANDIDATE_CREATED_NPC
+START_CANDIDATE_CREATED_ITEM
+START_CANDIDATE_CREATED_G5
+START_CANDIDATE_SELECTED_FINAL_NODE_TOO_EARLY
+START_CANDIDATE_EMPTY_AUDIT_EVIDENCE
+NO_ALLOWED_START_CANDIDATES
+```
+
+## 22. DB write на этом этапе
+
+Разрешено писать:
+
+```text id="snq6pd"
+pipeline_step_status
+start_candidate_set_snapshot
+start_candidate_rejected_snapshot
+start_candidate_audit_result
+start_candidate_validation_issues
+retrieved_graph_node_ids
+retrieved_graph_edge_ids
+source_trace_snapshot
+```
+
+Запрещено писать:
+
+```text id="d84hk1"
+party_current_position
+party_player_characters
+party_npcs
+party_items
+party_scene_anchors
+party_events
+party_map_knowledge
+selected_start_node_id
+visible_scene
+intro_prose
+```
+
+Этот этап ещё не создаёт партию как игровое состояние. Он создаёт только список допустимых вариантов для следующего этапа.
+
+## 23. Commit gate этапа
+
+Этап считается успешным, если:
+
+```text id="nx8qf6"
+start_candidate_set валиден,
+есть хотя бы один allowed-кандидат,
+каждый allowed-кандидат существует в world_base,
+каждый allowed-кандидат совместим с historical_frame,
+каждый allowed-кандидат совместим с regional_context_package,
+каждый allowed-кандидат имеет путь доступа,
+каждый allowed G4-кандидат готов к будущей G5-материализации,
+нет созданных downstream-сущностей,
+audit.pass=true.
+```
+
+Если кандидатов нет, pipeline не должен передавать LLM задачу “придумай место”. Он должен:
+
+1. ослабить только разрешённые soft preferences;
+2. попробовать fallback scale G3, если policy позволяет;
+3. вернуть `blocked`, если hard constraints не позволяют выбор;
+4. вернуть `requires_clarification`, если игрок запретил случайную замену;
+5. записать `NO_ALLOWED_START_CANDIDATES`.
+
+## 24. Передача в следующий этап
+
+Следующий этап получает:
+
+```json id="rra9v9"
+{
+  "version": 1,
+  "schema": "start_place_selector_input",
+  "request_id": "string",
+  "normalized_request": {},
+  "historical_frame": {},
+  "regional_context_package": {},
+  "start_candidate_set": {
+    "version": 1,
+    "schema": "start_candidate_set",
+    "selection_status": "ready",
+    "candidates": []
+  }
+}
+```
+
+Следующий этап обязан выбрать один стартовый узел только из:
+
+```text id="eirx0r"
+start_candidate_set.candidates[*].candidate_id
+```
+
+Если LLM выбирает ID, которого нет в candidate set, результат отклоняется без repair.
+
+## 25. Минимальный успешный результат
+
+```json id="k2cdak"
+{
+  "version": 1,
+  "schema": "start_candidate_set",
+  "request_id": "req_001",
+  "selection_status": "ready",
+
+  "frame": {
+    "region_id": "region_001",
+    "year": 1230,
+    "season": "winter",
+    "clock": {
+      "day": 1,
+      "hour": 6,
+      "minute": 30,
+      "time_of_day": "morning",
+      "light_profile": "dim"
+    }
+  },
+
+  "candidate_summary": {
+    "total_candidates": 12,
+    "g1_count": 0,
+    "g2_count": 0,
+    "g3_count": 2,
+    "g4_count": 10,
+    "preferred_scale": "G4",
+    "fallback_scale_used": null
+  },
+
+  "candidates": [
+    {
+      "candidate_id": "start_candidate_001",
+      "candidate_status": "allowed",
+      "score": {
+        "value": 84,
+        "band": "good",
+        "score_reasons": [
+          "Full G1-G4 parent chain exists.",
+          "Place template is allowed in selected region.",
+          "Clock and season are compatible.",
+          "Candidate has valid access edges.",
+          "G5 materialization rules exist for this G4 type."
+        ],
+        "score_penalties": []
+      },
+      "node_chain": {
+        "g1_node_id": "g1_001",
+        "g2_node_id": "g2_001",
+        "g3_node_id": "g3_001",
+        "g4_node_id": "g4_001"
+      },
+      "canonical_node": {
+        "node_id": "g4_001",
+        "scale_level": "G4",
+        "node_type": "location",
+        "title": "Location title",
+        "slug": "location_slug",
+        "parent_node_id": "g3_001",
+        "region_id": "region_001"
+      },
+      "context_tags": {
+        "environment": "rural",
+        "social_environment": "household",
+        "risk_level": "low",
+        "start_tone_fit": [
+          "domestic",
+          "survival"
+        ]
+      },
+      "template_links": {
+        "place_template_id": "place_template_001",
+        "landscape_template_id": "landscape_001",
+        "water_body_template_id": null,
+        "land_use_template_ids": [
+          "land_use_001"
+        ],
+        "route_template_ids_nearby": [
+          "route_template_001"
+        ],
+        "g5_template_group_ids_possible": [
+          "g5_group_001"
+        ]
+      },
+      "compatibility": {
+        "region_match": true,
+        "year_match": true,
+        "season_match": true,
+        "clock_match": true,
+        "place_rule_match": true,
+        "access_rule_match": true,
+        "route_rule_match": true,
+        "player_request_match": "neutral",
+        "g5_ready": true
+      },
+      "access": {
+        "has_entry_edge": true,
+        "has_exit_edge": true,
+        "entry_edge_ids": [
+          "edge_001"
+        ],
+        "exit_edge_ids": [
+          "edge_002"
+        ],
+        "known_by_default": false,
+        "access_notes": [],
+        "warnings": []
+      },
+      "why_allowed": [
+        "Candidate exists in canonical graph.",
+        "Candidate is compatible with selected historical frame.",
+        "Candidate can be expanded into G5 later."
+      ],
+      "why_rejected": [],
+      "source_trace": [
+        {
+          "record_id": "g4_001",
+          "table": "world_base.graph_nodes",
+          "source_ids": [
+            "source_001"
+          ],
+          "supports": [
+            "canonical_node"
+          ],
+          "status": "approved",
+          "confidence": "medium_high"
+        }
+      ]
+    }
+  ],
+
+  "rejected_candidates": [],
+
+  "candidate_groups": [
+    {
+      "group_id": "group_001",
+      "title": "Allowed G4 starts",
+      "candidate_ids": [
+        "start_candidate_001"
+      ],
+      "group_tags": [
+        "G4",
+        "low_risk"
+      ]
+    }
+  ],
+
+  "downstream_constraints": {
+    "must_choose_from_candidate_ids": [
+      "start_candidate_001"
+    ],
+    "must_preserve": [
+      "region_id",
+      "year",
+      "season",
+      "clock",
+      "node_chain",
+      "canonical_node.node_id"
+    ],
+    "must_not_create_yet": [
+      "player_character",
+      "npc",
+      "items",
+      "g5_anchor",
+      "visible_scene",
+      "intro_prose"
+    ],
+    "must_resolve_later": [
+      "selected_start_candidate",
+      "player_character",
+      "g5_scene",
+      "initial_npcs",
+      "initial_items"
+    ]
+  },
+
+  "source_trace": [
+    {
+      "record_id": "g4_001",
+      "table": "world_base.graph_nodes",
+      "source_ids": [
+        "source_001"
+      ],
+      "supports": [
+        "candidate"
+      ],
+      "status": "approved",
+      "confidence": "medium_high"
+    }
+  ],
+
+  "audit": {
+    "pass": true,
+    "concerns": [],
+    "evidence": [
+      "All candidates exist in world_base.graph_nodes.",
+      "All candidates match selected region.",
+      "All allowed candidates have valid access edges.",
+      "No final start node was selected.",
+      "No scene, NPC, item or G5 anchor was created."
+    ]
+  }
+}
+```

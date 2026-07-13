@@ -1,0 +1,13 @@
+﻿field,required,meaning
+temp_id,yes,Temporary ID used until DB commit maps it to party_scene_anchors.id.
+anchor_type,yes,Concrete scene anchor type; must be allowed by matched G4 template and must not be forbidden.
+anchor_category,yes,"Functional category such as boundary, action point, witness/visibility, storage, danger, trace or service point."
+parent_minilocation_temp_id,yes,Parent G5 minilocation inside selected G4.
+visible_description,yes,What the character can perceive without hidden knowledge.
+physical_state,yes,"Physical condition, size, placement, light/noise/cover relevance."
+access_state,yes,Open/closed/blocked/needs permission/key/payment/skill; includes current time/season effects.
+ownership_state,conditional,"Required for owned, controlled, stored, carried, sacred, official or disputed things."
+witness_state,yes,"Who can see/hear interactions with the anchor, including background groups."
+risk_state,yes,"Social, legal, physical, secrecy, theft, combat or environmental risk."
+hidden_state,allowed,Only facts not visible to character; never passed to prose except as visible signs.
+materialization_reason,yes,"Why this anchor exists here now: place function, economy, NPC role, item profile, start cause or visible environment."

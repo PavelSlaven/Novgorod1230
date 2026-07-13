@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rus13.local/contracts/InitialTensionEventLayer.schema.json",
+  "title": "InitialTensionEventLayer",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "visible_tensions",
+    "hidden_processes",
+    "deferred_events",
+    "triggers",
+    "affected_entities",
+    "visible_signs",
+    "consequences"
+  ],
+  "properties": {
+    "visible_tensions": {
+      "description": "Required by InitialTensionEventLayer.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "hidden_processes": {
+      "description": "Required by InitialTensionEventLayer.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "deferred_events": {
+      "description": "Required by InitialTensionEventLayer.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "triggers": {
+      "description": "Required by InitialTensionEventLayer.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "affected_entities": {
+      "description": "Required by InitialTensionEventLayer.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "visible_signs": {
+      "description": "Required by InitialTensionEventLayer.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "consequences": {
+      "description": "Required by InitialTensionEventLayer.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    }
+  },
+  "x_writes_to": [
+    "party_events",
+    "party_journal_entries"
+  ],
+  "x_blocking_validations": [
+    "each event has cause and trigger",
+    "visible/hidden split explicit",
+    "no quest hook without world cause"
+  ]
+}

@@ -1,0 +1,1704 @@
+# Этап 4. Загрузка регионального контекста из `world_base`
+
+## 1. Назначение этапа
+
+Загрузка регионального контекста — это четвёртый этап запуска новой партии. Он получает утверждённую историческую рамку и собирает из `world_base` региональный пакет данных, необходимый для последующего выбора стартовой карты, места, персонажа, NPC, предметов, погоды, маршрутов и G5-сцены.
+
+На этом этапе код не создаёт мир. Он только читает уже утверждённые записи из `world_base`, проверяет их применимость к выбранной исторической рамке и собирает компактный `regional_context_package`.
+
+Этот пакет нужен, чтобы следующие LLM-этапы работали не по общим знаниям модели, а по конкретным разрешённым данным проекта.
+
+Короткая формула:
+
+```text
+historical_frame
+→ world_base queries
+→ regional_context_package
+→ regional_context_audit
+→ candidate retrieval для стартовой карты
+```
+
+## 2. Главное правило этапа
+
+Код достаёт данные. LLM не выбирает и не придумывает региональные правила.
+
+На этом этапе запрещено:
+
+* создавать новую локацию;
+* выбирать стартовый G1–G4 узел;
+* материализовать G5;
+* создавать персонажа игрока;
+* создавать NPC;
+* создавать предметы;
+* создавать стартовое событие;
+* писать вводную прозу;
+* подменять отсутствующие записи догадками;
+* расширять региональную базу через LLM.
+
+Разрешено:
+
+* читать `world_base`;
+* фильтровать записи по `region_id`, году, сезону, статусу и источникам;
+* собирать допустимые списки;
+* отсекать неподходящие записи;
+* формировать компактный пакет контекста;
+* вызывать LLM только для упаковки/сжатия/аудита уже извлечённых записей, если это нужно;
+* возвращать ошибку, если критических данных не хватает.
+
+## 3. Место этапа в pipeline
+
+```text
+1. Заявка игрока
+2. Нормализация заявки
+3. Выбор исторической рамки
+4. Загрузка регионального контекста
+5. Подбор допустимых стартовых G1–G4 кандидатов
+6. Выбор стартового места
+7. Генерация персонажа
+8. Материализация G5
+9. NPC / предметы / visible context / narrator
+```
+
+Этап 4 получает `historical_frame` и возвращает `regional_context_package`.
+
+Следующие этапы не должны напрямую обращаться к общей базе “как попало”. Они должны получать от этапа 4 ограниченный пакет разрешённых данных или запрашивать дополнительный контекст через контролируемый `ContextRetriever`.
+
+## 4. Вход этапа
+
+```json id="d257xv"
+{
+  "version": 1,
+  "schema": "regional_context_loader_input",
+  "request_id": "string",
+
+  "normalized_request": {
+    "version": 1,
+    "schema": "new_game_normalized_request"
+  },
+
+  "historical_frame": {
+    "version": 1,
+    "schema": "historical_frame",
+    "region": {
+      "region_id": "string"
+    },
+    "year": {
+      "value": 0
+    },
+    "calendar": {
+      "party_day": 1,
+      "season": "spring | summer | autumn | winter"
+    },
+    "clock": {
+      "day": 1,
+      "hour": 0,
+      "minute": 0,
+      "time_of_day": "morning | day | evening | night | deep_night",
+      "light_profile": "dark | dim | daylight | twilight"
+    }
+  },
+
+  "load_policy": {
+    "prefer_approved": true,
+    "allow_usable_with_caution": true,
+    "allow_draft": false,
+    "allow_needs_review": false,
+    "reject_conflict": true,
+    "reject_rejected": true,
+    "require_sources": true,
+    "max_records_per_group": 200,
+    "include_audit_notes": true
+  }
+}
+```
+
+## 5. Выход этапа
+
+```json id="nkr6lb"
+{
+  "version": 1,
+  "schema": "regional_context_package",
+  "request_id": "string",
+
+  "region_identity": {},
+  "historical_context": {},
+  "social_context": {},
+  "occupation_context": {},
+  "settlement_and_place_rules": {},
+  "landscape_context": {},
+  "water_context": {},
+  "land_use_context": {},
+  "route_context": {},
+  "weather_and_season_context": {},
+  "item_context": {},
+  "container_context": {},
+  "property_context": {},
+  "npc_context": {},
+  "knowledge_context": {},
+  "g5_context": {},
+  "source_trace": [],
+
+  "missing_or_weak_context": [],
+  "downstream_context_index": {},
+
+  "audit": {
+    "pass": true,
+    "concerns": [],
+    "evidence": []
+  }
+}
+```
+
+## 6. Какие данные код должен загрузить
+
+### 6.1. Профиль региона
+
+Назначение: дать базовую идентичность региона и рамки применимости.
+
+Источник:
+
+```text
+world_base.regions
+```
+
+Минимальные поля:
+
+```text
+id
+slug
+canonical_name
+display_name
+alt_names
+region_type
+parent_region_id
+period_start_year
+period_end_year
+summary
+geographic_scope
+natural_landscape
+climate_summary
+seasonal_rules
+waterways_summary
+roads_summary
+settlement_logic_summary
+political_summary
+social_summary
+economic_summary
+game_use
+limits
+status
+confidence
+sources
+audit_notes
+```
+
+Фильтр:
+
+```text
+regions.id = historical_frame.region.region_id
+year.value BETWEEN period_start_year AND period_end_year
+status IN allowed_statuses
+```
+
+Выходной блок:
+
+```json id="a17gxr"
+{
+  "region_identity": {
+    "region_id": "string",
+    "slug": "string",
+    "title": "string",
+    "region_type": "string",
+    "period": {
+      "start_year": 0,
+      "end_year": 0
+    },
+    "summary": "string",
+    "geographic_scope": "string",
+    "natural_landscape": "string",
+    "climate_summary": "string",
+    "settlement_logic_summary": "string",
+    "game_use": "string",
+    "limits": "string",
+    "status": "approved | usable_with_caution | draft | needs_review",
+    "confidence": "unknown | low | medium_low | medium | medium_high | high",
+    "sources": []
+  }
+}
+```
+
+Нельзя выводить из профиля региона конкретную стартовую сцену. Профиль региона — это фон и ограничитель.
+
+### 6.2. Timeline / исторические события / исторические фазы
+
+Назначение: дать политическое и социальное давление выбранного периода.
+
+Источники:
+
+```text
+world_base.historical_events
+world_base.historical_periods
+world_base.historical_anchors
+world_base.regional_historical_timeline
+```
+
+Если в конкретной реализации названия таблиц отличаются, обязательна смысловая группа:
+
+```text
+исторические события региона
+исторические фазы региона
+исторические якоря карты
+политические изменения
+кризисы
+внешние угрозы
+социально-экономическое давление
+```
+
+Фильтр:
+
+```text
+region_id = selected region
+event_start_year <= selected year
+event_end_year >= selected year
+status IN allowed_statuses
+```
+
+Выходной блок:
+
+```json id="rm8t2f"
+{
+  "historical_context": {
+    "year": 0,
+    "active_periods": [],
+    "active_events": [],
+    "political_pressures": [],
+    "social_pressures": [],
+    "economic_pressures": [],
+    "forbidden_assumptions": [
+      "Do not create a specific battle, envoy, riot, trial, tax collection or raid unless later selected by valid event/template data."
+    ]
+  }
+}
+```
+
+Timeline не создаёт событие старта. Он только задаёт фон и ограничения.
+
+### 6.3. Social roles
+
+Назначение: определить допустимые социальные роли персонажа, NPC и групп.
+
+Источник:
+
+```text
+world_base.region_social_roles
+```
+
+Минимальные поля:
+
+```text
+id
+region_id
+slug
+title
+summary
+status_group
+legal_status
+wealth_band
+rights_summary
+obligations_summary
+can_own_property
+can_travel_freely
+can_bear_weapons
+typical_occupations
+gender_age_limits
+game_use
+limits
+status
+confidence
+sources
+audit_notes
+```
+
+Фильтр:
+
+```text
+region_id = selected region
+year compatible with role period if present
+status IN allowed_statuses
+```
+
+Выходной блок:
+
+```json id="47mldf"
+{
+  "social_context": {
+    "allowed_social_roles": [
+      {
+        "social_role_id": "string",
+        "slug": "string",
+        "title": "string",
+        "status_group": "string",
+        "legal_status": "string",
+        "wealth_band": "string",
+        "rights_summary": "string",
+        "obligations_summary": "string",
+        "typical_occupation_ids": [],
+        "game_use": "string",
+        "limits": "string",
+        "status": "string",
+        "confidence": "string",
+        "sources": []
+      }
+    ],
+    "disallowed_social_assumptions": []
+  }
+}
+```
+
+Нельзя на этом этапе назначать персонажу роль. Роли только загружаются как допустимые кандидаты.
+
+### 6.4. Occupations
+
+Назначение: определить допустимые занятия, профессии, трудовые и хозяйственные функции.
+
+Источник:
+
+```text
+world_base.region_occupations
+```
+
+Минимальные поля:
+
+```text
+id
+region_id
+slug
+title
+summary
+occupation_group
+required_social_roles
+typical_places
+seasonal_pattern
+tools_or_items
+wealth_band
+mobility
+risk_profile
+game_use
+limits
+status
+confidence
+sources
+audit_notes
+```
+
+Фильтр:
+
+```text
+region_id = selected region
+status IN allowed_statuses
+```
+
+Дополнительная сезонная фильтрация:
+
+```text
+seasonal_pattern compatible with historical_frame.calendar.season
+```
+
+Выходной блок:
+
+```json id="o83svc"
+{
+  "occupation_context": {
+    "allowed_occupations": [
+      {
+        "occupation_id": "string",
+        "slug": "string",
+        "title": "string",
+        "occupation_group": "string",
+        "required_social_role_ids": [],
+        "typical_place_template_ids": [],
+        "seasonal_pattern": "string",
+        "tools_or_item_profile_ids": [],
+        "game_use": "string",
+        "limits": "string",
+        "status": "string",
+        "confidence": "string",
+        "sources": []
+      }
+    ]
+  }
+}
+```
+
+Нельзя создавать профессию вне списка. Если игрок просил конкретную профессию, она должна быть сопоставлена с этими кандидатами позже.
+
+### 6.5. Place rules / place templates / settlement rules
+
+Назначение: определить допустимые типы мест и поселений в регионе.
+
+Источники:
+
+```text
+world_base.place_templates
+world_base.region_place_generation_rules
+world_base.region_place_templates
+world_base.place_generation_limits
+world_base.regional_place_generation_rules
+```
+
+Если реализация использует одно или несколько названий, смысловая группа должна покрывать:
+
+```text
+глобальные типы мест
+региональные разрешения на типы мест
+экономические лимиты
+социальные лимиты
+масштабные лимиты
+условия появления места
+```
+
+Минимальные поля:
+
+```text
+place_template_id
+region_id
+is_allowed
+is_common
+is_rare
+generation_weight
+allowed_scale_levels
+allowed_node_types
+required_landscape_template_ids
+compatible_landscape_template_ids
+compatible_water_body_template_ids
+compatible_land_use_template_ids
+required_route_template_ids
+social_role_constraints
+occupation_constraints
+economic_constraints
+population_or_household_limits
+regional_limits
+game_use
+limits
+status
+confidence
+sources
+audit_notes
+```
+
+Выходной блок:
+
+```json id="8jtpzx"
+{
+  "settlement_and_place_rules": {
+    "allowed_place_templates": [],
+    "regional_place_generation_rules": [],
+    "place_generation_limits": [],
+    "forbidden_place_assumptions": [
+      "Do not create a place type not present in allowed_place_templates.",
+      "Do not create settlement scale or economy beyond regional limits."
+    ]
+  }
+}
+```
+
+На этом этапе нельзя выбрать конкретный стартовый двор, город, дорогу или пристань. Можно только загрузить разрешённые типы и правила.
+
+### 6.6. Landscape context
+
+Назначение: определить допустимые природные среды региона.
+
+Источники:
+
+```text
+world_base.landscape_templates
+world_base.region_landscape_templates
+```
+
+Фильтр:
+
+```text
+region_landscape_templates.region_id = selected region
+is_allowed = true
+status IN allowed_statuses
+```
+
+Выходной блок:
+
+```json id="hj3czp"
+{
+  "landscape_context": {
+    "allowed_landscapes": [
+      {
+        "landscape_template_id": "string",
+        "title": "string",
+        "landscape_group": "string",
+        "base_environment": "string",
+        "base_movement_multiplier": 1.0,
+        "default_orientation_difficulty": "none | easy | ordinary | hard | dangerous | extreme",
+        "base_risk_level": "none | low | medium | high | extreme",
+        "is_common": true,
+        "is_dominant": false,
+        "is_rare": false,
+        "allowed_scale_levels": [],
+        "allowed_node_types": [],
+        "regional_limits": "string",
+        "sources": []
+      }
+    ]
+  }
+}
+```
+
+Ландшафт не является поселением, дорогой или водным объектом. Он задаёт базовую среду.
+
+### 6.7. Water context
+
+Назначение: определить допустимые типы водных объектов и водных переходов.
+
+Источники:
+
+```text
+world_base.water_body_templates
+world_base.region_water_body_templates
+```
+
+Фильтр:
+
+```text
+region_id = selected region
+is_allowed = true
+status IN allowed_statuses
+```
+
+Выходной блок:
+
+```json id="s8p6dc"
+{
+  "water_context": {
+    "allowed_water_body_templates": [
+      {
+        "water_body_template_id": "string",
+        "title": "string",
+        "water_body_type": "string",
+        "salinity": "string",
+        "flow_type": "string",
+        "supports_boat": false,
+        "supports_ford": false,
+        "supports_ferry": false,
+        "supports_bridge": false,
+        "supports_winter_crossing": false,
+        "freeze_pattern": "string",
+        "flood_risk": "string",
+        "base_crossing_risk": "string",
+        "regional_limits": "string",
+        "sources": []
+      }
+    ]
+  }
+}
+```
+
+Водный контекст не создаёт конкретную реку или брод. Он разрешает или запрещает типы водной среды.
+
+### 6.8. Land use context
+
+Назначение: определить допустимые хозяйственные слои поверх среды.
+
+Источники:
+
+```text
+world_base.land_use_templates
+world_base.region_land_use_templates
+```
+
+Фильтр:
+
+```text
+region_id = selected region
+is_allowed = true
+seasonal_pattern compatible with selected season if present
+status IN allowed_statuses
+```
+
+Выходной блок:
+
+```json id="8o4nk3"
+{
+  "land_use_context": {
+    "allowed_land_use_templates": [
+      {
+        "land_use_template_id": "string",
+        "title": "string",
+        "land_use_kind": "string",
+        "requires_settlement_nearby": false,
+        "requires_water_nearby": false,
+        "compatible_landscape_template_ids": [],
+        "compatible_water_body_template_ids": [],
+        "seasonal_pattern": "string",
+        "labor_intensity": "string",
+        "economic_use": "string",
+        "movement_effect": "string",
+        "risk_effect": "string",
+        "regional_limits": "string",
+        "sources": []
+      }
+    ]
+  }
+}
+```
+
+Хозяйственный слой не заменяет ландшафт и не создаёт место. Например, пашня, покос, выгон или промысловый лес — это слой использования среды.
+
+### 6.9. Route rules / route templates / edge knowledge
+
+Назначение: определить допустимые типы маршрутов, сезонные изменения, риски и знания о путях.
+
+Источники:
+
+```text
+world_base.route_templates
+world_base.graph_edge_modifiers
+world_base.graph_edges
+world_base.graph_edge_knowledge_rules
+world_base.regional_route_knowledge_rules
+world_base.regional_route_season_modifiers
+```
+
+Минимальная загрузка:
+
+```text
+route_templates
+graph_edge_modifiers applicable to selected season
+graph_edge_knowledge_rules for selected region
+regional route season rules
+regional route knowledge rules
+```
+
+Фильтр:
+
+```text
+region_id = selected region where applicable
+applies_to_season = selected season OR applies_to_season is null
+status IN allowed_statuses
+```
+
+Выходной блок:
+
+```json id="pc7szr"
+{
+  "route_context": {
+    "allowed_route_templates": [],
+    "seasonal_route_modifiers": [],
+    "edge_knowledge_rules": [],
+    "movement_modifiers": [],
+    "forbidden_route_assumptions": [
+      "Do not create a road, ferry, ford, bridge, winter road or portage unless allowed by route templates and graph edges.",
+      "Do not give the character exact route knowledge unless allowed by map knowledge or edge knowledge rules."
+    ]
+  }
+}
+```
+
+На этом этапе нельзя создавать маршрут партии. Только загружаются правила.
+
+### 6.10. Weather and season context
+
+Назначение: дать правила погоды, света, сезонности и телесных рисков.
+
+Источники:
+
+```text
+world_base.weather_season_rules
+world_base.regional_weather_rules
+world_base.graph_edge_modifiers
+world_base.regions.seasonal_rules
+```
+
+Минимальные данные:
+
+```text
+season
+temperature_band_rules
+precipitation_rules
+wind_rules
+snow_or_mud_rules
+daylight_profile
+night_profile
+exposure_risk
+route_effects
+work_rhythm_effects
+visibility_effects
+```
+
+Фильтр:
+
+```text
+region_id = selected region
+season = selected season
+status IN allowed_statuses
+```
+
+Выходной блок:
+
+```json id="rdve8s"
+{
+  "weather_and_season_context": {
+    "season": "spring | summer | autumn | winter",
+    "clock": {
+      "time_of_day": "string",
+      "light_profile": "string"
+    },
+    "allowed_weather_profiles": [],
+    "seasonal_visibility_rules": [],
+    "seasonal_route_effects": [],
+    "seasonal_work_rhythm": [],
+    "exposure_risk_rules": [],
+    "forbidden_weather_assumptions": [
+      "Do not create exact weather unless selected by a later weather/materialization step.",
+      "Do not describe daylight if clock.light_profile is dark."
+    ]
+  }
+}
+```
+
+Этот блок не выбирает конкретную погоду. Он задаёт допустимые погодные и сезонные профили.
+
+### 6.11. Item profiles
+
+Назначение: определить, какие предметы могут появиться в каких местах и по каким причинам.
+
+Источники:
+
+```text
+world_base.item_profiles
+world_base.regional_item_profiles
+world_base.goods_prices
+world_base.trade_rules
+```
+
+Минимальные поля:
+
+```text
+item_profile_id
+title
+item_group
+typical_place_template_ids
+typical_social_role_ids
+typical_occupation_ids
+ownership_default
+materialization_conditions
+rarity
+value_band
+legal_or_social_risk
+seasonal_limits
+game_use
+limits
+status
+confidence
+sources
+```
+
+Выходной блок:
+
+```json id="3w8vs9"
+{
+  "item_context": {
+    "allowed_item_profiles": [],
+    "goods_price_references": [],
+    "trade_rules": [],
+    "forbidden_item_assumptions": [
+      "Do not create items from player request alone.",
+      "Every materialized item must have item_profile_id and materialization_reason.",
+      "Ownership and access must be checked against property rules."
+    ]
+  }
+}
+```
+
+Предмет не появляется из желания игрока. Он появляется только при причинном основании и в пределах профиля места.
+
+### 6.12. Container profiles
+
+Назначение: определить допустимые контейнеры для мест, имущества и предметов.
+
+Источники:
+
+```text
+world_base.container_profiles
+world_base.regional_container_profiles
+```
+
+Примеры смысловых категорий:
+
+```text
+мешок
+кошель
+сундук
+ларь
+амбарный отсек
+бочка
+корзина
+телега
+сани
+кладовая
+```
+
+Выходной блок:
+
+```json id="zebgpt"
+{
+  "container_context": {
+    "allowed_container_profiles": [],
+    "container_access_rules": [],
+    "forbidden_container_assumptions": [
+      "Do not create a container unless it is appropriate for selected place and ownership profile.",
+      "Do not expose contents unless visibility/access rules allow it."
+    ]
+  }
+}
+```
+
+### 6.13. Property rules
+
+Назначение: определить правила владения, доступа, чужого имущества, кражи, свидетельства и риска.
+
+Источники:
+
+```text
+world_base.property_rules
+world_base.regional_property_rules
+```
+
+Выходной блок:
+
+```json id="6a47ls"
+{
+  "property_context": {
+    "ownership_rules": [],
+    "access_rules": [],
+    "theft_risk_rules": [],
+    "witness_rules": [],
+    "household_property_rules": [],
+    "forbidden_property_assumptions": [
+      "Do not mark an item as owned by the player without explicit character generation result.",
+      "Do not let player freely take property unless ownership/access rules allow it."
+    ]
+  }
+}
+```
+
+### 6.14. NPC pools
+
+Назначение: определить допустимые типы NPC, роли, имена и стартовые NPC-кандидаты.
+
+Источники:
+
+```text
+world_base.npc_archetypes
+world_base.regional_npc_archetypes
+world_base.npc_name_pools
+world_base.key_npc_seeds
+world_base.region_social_roles
+world_base.region_occupations
+```
+
+Минимальные поля:
+
+```text
+npc_archetype_id
+title
+role_group
+allowed_social_role_ids
+allowed_occupation_ids
+typical_place_template_ids
+typical_behavior
+visibility_profile
+memory_profile
+relationship_limits
+generation_limits
+status
+confidence
+sources
+```
+
+Выходной блок:
+
+```json id="q9zsex"
+{
+  "npc_context": {
+    "allowed_npc_archetypes": [],
+    "name_pools": [],
+    "key_npc_seeds": [],
+    "social_role_links": [],
+    "occupation_links": [],
+    "forbidden_npc_assumptions": [
+      "Do not create NPC outside allowed archetypes, social roles and occupations.",
+      "Do not create key NPC unless selected from key_npc_seeds or explicitly materialized later with audit.",
+      "Do not assign hidden motives at regional context loading stage."
+    ]
+  }
+}
+```
+
+На этом этапе NPC не создаются. Загружаются только пулы.
+
+### 6.15. Knowledge context
+
+Назначение: определить, что обычно знают жители региона, профессии и социальные роли.
+
+Источники:
+
+```text
+world_base.common_knowledge
+world_base.route_knowledge_rules
+world_base.graph_edge_knowledge_rules
+world_base.rumor_templates
+world_base.historical_context_rules
+```
+
+Выходной блок:
+
+```json id="t7zreb"
+{
+  "knowledge_context": {
+    "common_knowledge": [],
+    "role_based_knowledge_rules": [],
+    "occupation_based_knowledge_rules": [],
+    "route_knowledge_rules": [],
+    "rumor_templates": [],
+    "forbidden_knowledge_assumptions": [
+      "Do not give the player complete map knowledge.",
+      "Do not give exact route knowledge unless role, occupation or prior knowledge allows it.",
+      "Rumors are not facts unless separately verified."
+    ]
+  }
+}
+```
+
+### 6.16. G5 context
+
+Назначение: загрузить правила будущей сценической материализации.
+
+Источники:
+
+```text
+world_base.g5_scene_templates
+world_base.regional_g5_scene_templates
+world_base.place_templates
+world_base.region_place_generation_rules
+```
+
+Выходной блок:
+
+```json id="6uh5zp"
+{
+  "g5_context": {
+    "g5_template_index": [],
+    "g4_type_to_allowed_anchor_rules": [],
+    "visibility_rules": [],
+    "access_rules": [],
+    "forbidden_g5_assumptions": [
+      "Do not precreate all G5 for the region.",
+      "Materialize G5 only after selected G4 start location is known.",
+      "Every G5 anchor must be allowed by selected G4 type."
+    ]
+  }
+}
+```
+
+G5 на этом этапе не создаётся. Загружаются только правила.
+
+## 7. Приоритет статусов
+
+При загрузке код должен применять единый фильтр.
+
+Рекомендуемая политика:
+
+```text
+approved → использовать
+usable_with_caution → использовать с audit note
+draft → не использовать для стартовой партии, если policy не разрешает
+needs_review → не использовать для стартовой партии, если policy не разрешает
+conflict → запрещено
+rejected → запрещено
+```
+
+Если критическая группа содержит только `draft` или `needs_review`, этап должен вернуть предупреждение или ошибку, а не молча использовать слабую запись.
+
+## 8. Источники и traceability
+
+Каждая запись, попавшая в `regional_context_package`, должна сохранять:
+
+```text
+id
+status
+confidence
+sources
+game_use
+limits
+audit_notes
+```
+
+В итоговом пакете должен быть `source_trace`.
+
+```json id="edplwq"
+{
+  "source_trace": [
+    {
+      "record_id": "string",
+      "table": "string",
+      "source_ids": [],
+      "supports": [
+        "social_context",
+        "route_context"
+      ],
+      "status": "approved",
+      "confidence": "medium_high"
+    }
+  ]
+}
+```
+
+Если источник отсутствует, а `load_policy.require_sources=true`, запись не должна попадать в основной пакет. Её можно поместить в `missing_or_weak_context`.
+
+## 9. Компактность пакета
+
+`regional_context_package` не должен быть полным дампом `world_base`.
+
+Он должен содержать:
+
+* записи, применимые к выбранному региону;
+* записи, применимые к выбранному году;
+* записи, применимые к выбранному сезону;
+* записи, необходимые следующим этапам;
+* краткие поля `summary`, `game_use`, `limits`;
+* ID для последующей точной проверки.
+
+Плохо:
+
+```text id="90wtmn"
+передать в LLM всю документацию проекта, все регионы, все правила, все графы и все таблицы
+```
+
+Хорошо:
+
+```text id="qntotz"
+передать только применимые к выбранной рамке записи, плюс source_trace и limits
+```
+
+## 10. Что делает код
+
+Код выполняет:
+
+1. принимает `historical_frame`;
+2. проверяет `historical_frame.audit.pass=true`;
+3. проверяет `region_id`, `year`, `season`, `clock`;
+4. собирает список допустимых статусов;
+5. делает SQL-запросы к `world_base`;
+6. нормализует записи в единый формат;
+7. проверяет источники;
+8. проверяет `status` и `confidence`;
+9. собирает `regional_context_package`;
+10. строит `downstream_context_index`;
+11. выполняет структурную валидацию;
+12. при необходимости запускает LLM-аудит или LLM-сжатие;
+13. возвращает пакет следующему этапу.
+
+## 11. Что не делает код
+
+Код не должен:
+
+* создавать смысловые сущности;
+* заполнять недостающие правила догадкой;
+* выбирать стартовое место без отдельного candidate retrieval;
+* создавать NPC из `social_roles`;
+* создавать предметы из `item_profiles`;
+* превращать `weather_rules` в конкретную погоду;
+* превращать `route_templates` в конкретный маршрут;
+* превращать `place_templates` в конкретное место;
+* писать художественную прозу;
+* показывать игроку этот пакет.
+
+## 12. SQL-псевдозапросы
+
+### 12.1. Регион
+
+```sql id="mey23f"
+SELECT *
+FROM world_base.regions
+WHERE id = :region_id
+  AND :year BETWEEN period_start_year AND period_end_year
+  AND status IN (:allowed_statuses);
+```
+
+### 12.2. Социальные роли
+
+```sql id="h83agf"
+SELECT *
+FROM world_base.region_social_roles
+WHERE region_id = :region_id
+  AND status IN (:allowed_statuses);
+```
+
+### 12.3. Занятия
+
+```sql id="f6xjqg"
+SELECT *
+FROM world_base.region_occupations
+WHERE region_id = :region_id
+  AND status IN (:allowed_statuses);
+```
+
+### 12.4. Региональные правила мест
+
+```sql id="gc47ev"
+SELECT *
+FROM world_base.region_place_generation_rules
+WHERE region_id = :region_id
+  AND status IN (:allowed_statuses);
+```
+
+### 12.5. Допустимые ландшафты
+
+```sql id="7xvqhp"
+SELECT rlt.*, lt.*
+FROM world_base.region_landscape_templates rlt
+JOIN world_base.landscape_templates lt
+  ON lt.id = rlt.landscape_template_id
+WHERE rlt.region_id = :region_id
+  AND rlt.is_allowed = true
+  AND rlt.status IN (:allowed_statuses)
+  AND lt.status IN (:allowed_statuses);
+```
+
+### 12.6. Допустимые водные объекты
+
+```sql id="czjepq"
+SELECT rwt.*, wt.*
+FROM world_base.region_water_body_templates rwt
+JOIN world_base.water_body_templates wt
+  ON wt.id = rwt.water_body_template_id
+WHERE rwt.region_id = :region_id
+  AND rwt.is_allowed = true
+  AND rwt.status IN (:allowed_statuses)
+  AND wt.status IN (:allowed_statuses);
+```
+
+### 12.7. Допустимое хозяйственное использование
+
+```sql id="27taad"
+SELECT rlut.*, lut.*
+FROM world_base.region_land_use_templates rlut
+JOIN world_base.land_use_templates lut
+  ON lut.id = rlut.land_use_template_id
+WHERE rlut.region_id = :region_id
+  AND rlut.is_allowed = true
+  AND rlut.status IN (:allowed_statuses)
+  AND lut.status IN (:allowed_statuses);
+```
+
+### 12.8. Route templates and modifiers
+
+```sql id="6y021w"
+SELECT *
+FROM world_base.route_templates
+WHERE status IN (:allowed_statuses);
+
+SELECT *
+FROM world_base.graph_edge_modifiers
+WHERE status IN (:allowed_statuses)
+  AND (
+    applies_to_season IS NULL
+    OR applies_to_season = :season
+  );
+```
+
+### 12.9. Route knowledge
+
+```sql id="x6x0h7"
+SELECT *
+FROM world_base.graph_edge_knowledge_rules
+WHERE region_id = :region_id
+  AND status IN (:allowed_statuses);
+```
+
+### 12.10. Graph nodes and graph edges index
+
+На этом этапе можно загружать не полный граф, а индекс его доступности для следующего этапа.
+
+```sql id="vlxj8q"
+SELECT id, slug, title, node_type, scale_level, parent_node_id, region_id,
+       place_template_id, primary_landscape_template_id,
+       primary_water_body_template_id, land_use_template_ids,
+       status, confidence, sources
+FROM world_base.graph_nodes
+WHERE region_id = :region_id
+  AND status IN (:allowed_statuses);
+```
+
+```sql id="2mr8y3"
+SELECT id, from_node_id, to_node_id, scale_level, edge_type,
+       route_template_id, landscape_template_id, water_body_template_id,
+       seasonal_rule, access_rule, risk_level,
+       status, confidence, sources
+FROM world_base.graph_edges
+WHERE status IN (:allowed_statuses)
+  AND (
+    from_node_id IN (:region_node_ids)
+    OR to_node_id IN (:region_node_ids)
+  );
+```
+
+## 13. Структура `downstream_context_index`
+
+Этот индекс нужен, чтобы следующие этапы не искали всё заново и не получали лишний контекст.
+
+```json id="yiozns"
+{
+  "downstream_context_index": {
+    "for_start_candidate_retriever": {
+      "region_id": "string",
+      "year": 0,
+      "season": "string",
+      "clock": {},
+      "allowed_place_template_ids": [],
+      "allowed_landscape_template_ids": [],
+      "allowed_water_body_template_ids": [],
+      "allowed_land_use_template_ids": [],
+      "graph_node_index_available": true,
+      "graph_edge_index_available": true
+    },
+
+    "for_player_character_generator": {
+      "allowed_social_role_ids": [],
+      "allowed_occupation_ids": [],
+      "regional_status_rules_available": true,
+      "regional_name_pools_available": true
+    },
+
+    "for_npc_generator": {
+      "allowed_npc_archetype_ids": [],
+      "allowed_social_role_ids": [],
+      "allowed_occupation_ids": [],
+      "name_pool_ids": []
+    },
+
+    "for_item_materializer": {
+      "allowed_item_profile_ids": [],
+      "allowed_container_profile_ids": [],
+      "property_rule_ids": [],
+      "goods_price_reference_ids": []
+    },
+
+    "for_g5_materialization": {
+      "g5_template_index_available": true,
+      "place_template_to_g5_rules_available": true
+    }
+  }
+}
+```
+
+## 14. Работа LLM на этом этапе
+
+Базовая версия этапа может работать без LLM. Код сам собирает контекст из `world_base`.
+
+LLM допускается только в трёх вспомогательных подэтапах:
+
+1. `RegionalContextPackShaper` — компактно упаковать извлечённые записи в единый JSON.
+2. `RegionalContextAuditor` — проверить полноту, противоречия и отсутствие downstream-сущностей.
+3. `RegionalContextRepairer` — исправить только формат или классификацию ошибок, не добавляя новых фактов.
+
+LLM не должна читать всю базу напрямую и не должна делать самостоятельный поиск “по памяти”. Ей передаётся только результат SQL-запросов и уже выбранная историческая рамка.
+
+## 15. LLM-параметры
+
+### 15.1. RegionalContextPackShaper
+
+Назначение: сжать и структурировать уже извлечённый контекст.
+
+Рекомендуемые параметры:
+
+```json id="aadg64"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-flash",
+  "thinking": {
+    "type": "disabled"
+  },
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "max_tokens": 6000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 30000,
+    "hard_input_limit_tokens": 80000,
+    "reserve_output_tokens": 6000
+  }
+}
+```
+
+Использовать `deepseek-v4-flash` достаточно, потому что задача не требует глубокого рассуждения: модель только упаковывает данные, которые уже достал код.
+
+### 15.2. RegionalContextAuditor
+
+Назначение: проверить, что пакет полон, не противоречит рамке и не создаёт сущностей.
+
+Рекомендуемые параметры:
+
+```json id="uczc0l"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 4000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 40000,
+    "hard_input_limit_tokens": 120000,
+    "reserve_output_tokens": 4000
+  }
+}
+```
+
+В thinking mode параметры `temperature`, `top_p`, `presence_penalty` и `frequency_penalty` не должны использоваться как управляющие. Для совместимости их лучше не передавать.
+
+### 15.3. RegionalContextRepairer
+
+Назначение: исправить формат ответа или аккуратно вернуть `audit.pass=false`.
+
+Для format-only repair:
+
+```json id="ow3dpm"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-flash",
+  "thinking": {
+    "type": "disabled"
+  },
+  "temperature": 0.0,
+  "max_tokens": 3000,
+  "response_format": {
+    "type": "json_object"
+  }
+}
+```
+
+Для semantic repair:
+
+```json id="83l6i6"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "max_tokens": 4000,
+  "response_format": {
+    "type": "json_object"
+  }
+}
+```
+
+## 16. Prompt: RegionalContextPackShaper
+
+```md id="5t49ks"
+# Роль
+
+Ты RegionalContextPackShaper для исторической текстовой RPG.
+
+# Задача
+
+Упакуй уже извлечённые из world_base записи в строгий JSON regional_context_package.
+
+# Главное правило
+
+Ты не создаёшь мир.
+Ты не добавляешь факты.
+Ты не выбираешь стартовую локацию.
+Ты не создаёшь персонажа.
+Ты не создаёшь NPC.
+Ты не создаёшь предметы.
+Ты не создаёшь события.
+Ты не пишешь прозу.
+
+Ты только структурируешь и сжимаешь переданные записи.
+
+# Источники
+
+Используй только:
+- historical_frame;
+- extracted_world_base_records;
+- load_policy.
+
+Если записи нет во входе, не добавляй её.
+
+# Обязательная трассировка
+
+Каждая группа контекста должна сохранять:
+- id записи;
+- table;
+- status;
+- confidence;
+- sources;
+- game_use;
+- limits.
+
+# Формат
+
+Верни только json.
+schema должен быть "regional_context_package".
+version должен быть 1.
+
+# Запрещённые поля
+
+Не возвращай:
+- start_location_id;
+- g1_id;
+- g2_id;
+- g3_id;
+- g4_id;
+- g5_anchor_id;
+- npc_ids;
+- items;
+- visible_scene;
+- intro_prose;
+- hidden_event;
+- player_character.
+
+# Если данных не хватает
+
+Не придумывай.
+Добавь запись в missing_or_weak_context.
+```
+
+## 17. Prompt: RegionalContextAuditor
+
+```md id="a8fdnn"
+# Роль
+
+Ты RegionalContextAuditor для исторической текстовой RPG.
+
+# Задача
+
+Проверь regional_context_package на полноту, применимость к historical_frame и отсутствие созданных downstream-сущностей.
+
+# Проверить
+
+1. region_identity соответствует historical_frame.region.region_id.
+2. Все записи относятся к выбранному региону или являются глобальными шаблонами, явно связанными с регионом.
+3. Все записи совместимы с selected year, если у них есть период.
+4. Все season-specific записи совместимы с selected season.
+5. Нет записей со status conflict или rejected.
+6. Draft/needs_review использованы только если load_policy разрешает.
+7. Источники не пустые, если require_sources=true.
+8. Пакет содержит social roles.
+9. Пакет содержит occupations.
+10. Пакет содержит place rules.
+11. Пакет содержит route rules.
+12. Пакет содержит weather/season rules.
+13. Пакет содержит item/property/NPC pools или явно сообщает, чего не хватает.
+14. Пакет не содержит конкретной стартовой сцены.
+15. Пакет не содержит созданных NPC, предметов, событий или G5 anchors.
+
+# Формат
+
+Верни только json.
+
+Единственная допустимая схема:
+
+{
+  "version": 1,
+  "schema": "regional_context_audit",
+  "pass": true,
+  "concerns": [],
+  "evidence": []
+}
+
+Если pass=false, concerns не должен быть пустым.
+evidence никогда не должен быть пустым.
+```
+
+## 18. Prompt: RegionalContextRepairer
+
+```md id="lqf8i7"
+# Роль
+
+Ты RegionalContextRepairer.
+
+# Задача
+
+Исправь regional_context_package только по validationErrors.
+
+# Главное правило
+
+Не добавляй новых записей.
+Не придумывай недостающие правила.
+Не создавай мир.
+Не создавай NPC.
+Не создавай предметы.
+Не создавай стартовую сцену.
+
+# Разрешено
+
+- переименовать поля к схеме;
+- удалить запрещённые downstream-поля;
+- перенести слабые/отсутствующие группы в missing_or_weak_context;
+- восстановить source_trace из уже переданных записей;
+- выставить audit.pass=false, если пакет нельзя исправить без новых фактов.
+
+# Запрещено
+
+- добавлять region_id, которого не было;
+- добавлять source_id, которого не было;
+- создавать place template;
+- создавать NPC archetype;
+- создавать item profile;
+- создавать weather rule;
+- создавать route rule.
+
+# Формат
+
+Верни только json regional_context_package.
+```
+
+## 19. Validation rules
+
+После загрузки и возможной LLM-упаковки код обязан проверить:
+
+1. `schema === "regional_context_package"`.
+2. `version === 1`.
+3. `region_identity.region_id === historical_frame.region.region_id`.
+4. Все региональные записи имеют нужный `region_id`.
+5. Глобальные шаблоны используются только через региональные связки или явные FK.
+6. Все записи имеют допустимый `status`.
+7. Нет `status=conflict`.
+8. Нет `status=rejected`.
+9. `sources` не пустой, если `require_sources=true`.
+10. Все `source_id` существуют в `source_records`.
+11. Все `confidence` входят в enum.
+12. Все `game_use` и `limits` сохранены.
+13. Пакет содержит social roles или объясняет отсутствие в `missing_or_weak_context`.
+14. Пакет содержит occupations или объясняет отсутствие.
+15. Пакет содержит place rules или объясняет отсутствие.
+16. Пакет содержит route rules или объясняет отсутствие.
+17. Пакет содержит weather/season context или объясняет отсутствие.
+18. Пакет содержит item/property context или объясняет отсутствие.
+19. Пакет содержит NPC context или объясняет отсутствие.
+20. Пакет не содержит конкретных NPC.
+21. Пакет не содержит конкретных предметов.
+22. Пакет не содержит стартовой позиции.
+23. Пакет не содержит G5 anchors.
+24. Пакет не содержит `visible_scene`.
+25. Пакет не содержит `intro_prose`.
+26. `audit.evidence` не пустой.
+27. Если `audit.pass=false`, `audit.concerns` не пустой.
+
+## 20. Error codes
+
+```text id="b1u72e"
+REGIONAL_CONTEXT_INVALID_JSON
+REGIONAL_CONTEXT_SCHEMA_MISMATCH
+REGIONAL_CONTEXT_REGION_MISMATCH
+REGIONAL_CONTEXT_MISSING_REGION_PROFILE
+REGIONAL_CONTEXT_MISSING_TIMELINE
+REGIONAL_CONTEXT_MISSING_SOCIAL_ROLES
+REGIONAL_CONTEXT_MISSING_OCCUPATIONS
+REGIONAL_CONTEXT_MISSING_PLACE_RULES
+REGIONAL_CONTEXT_MISSING_ROUTE_RULES
+REGIONAL_CONTEXT_MISSING_WEATHER_RULES
+REGIONAL_CONTEXT_MISSING_ITEM_PROFILES
+REGIONAL_CONTEXT_MISSING_NPC_POOLS
+REGIONAL_CONTEXT_SOURCE_MISSING
+REGIONAL_CONTEXT_SOURCE_NOT_FOUND
+REGIONAL_CONTEXT_REJECTED_RECORD_USED
+REGIONAL_CONTEXT_CONFLICT_RECORD_USED
+REGIONAL_CONTEXT_DRAFT_RECORD_NOT_ALLOWED
+REGIONAL_CONTEXT_CREATED_LOCATION
+REGIONAL_CONTEXT_CREATED_NPC
+REGIONAL_CONTEXT_CREATED_ITEM
+REGIONAL_CONTEXT_CREATED_G5
+REGIONAL_CONTEXT_CREATED_VISIBLE_SCENE
+REGIONAL_CONTEXT_EMPTY_AUDIT_EVIDENCE
+```
+
+## 21. DB write на этом этапе
+
+На этом этапе не создаётся party-мир.
+
+Разрешено писать:
+
+```text
+pipeline_step_status
+regional_context_package_snapshot
+regional_context_audit_result
+regional_context_validation_issues
+retrieved_record_ids
+source_trace_snapshot
+```
+
+Запрещено писать:
+
+```text
+party_current_position
+party_player_characters
+party_npcs
+party_items
+party_scene_anchors
+party_events
+party_map_knowledge
+visible_scene
+intro_prose
+```
+
+`regional_context_package` можно сохранять как startup snapshot, но не как игровое событие.
+
+## 22. Commit gate этапа
+
+Этап считается успешным, если:
+
+```text id="tg0b8g"
+regional_context_package валиден,
+регион совпадает с historical_frame,
+все критические группы загружены или явно отмечены как missing_or_weak_context,
+нет запрещённых статусов,
+все source IDs проверены,
+не создано ни одной downstream-сущности,
+audit.pass=true.
+```
+
+Если критических данных не хватает, pipeline не должен переходить к подбору стартовых G1–G4 кандидатов.
+
+## 23. Передача в следующий этап
+
+Следующий этап получает:
+
+```json id="je1qau"
+{
+  "version": 1,
+  "schema": "start_candidate_retriever_input",
+  "request_id": "string",
+  "normalized_request": {},
+  "historical_frame": {},
+  "regional_context_package": {},
+  "required_region_id": "string",
+  "required_year": 0,
+  "required_season": "spring | summer | autumn | winter",
+  "required_clock": {}
+}
+```
+
+Следующий этап обязан выбирать стартовые G1–G4 кандидаты только внутри загруженного регионального контекста и канонического графа `world_base`.
+
+Если следующий этапу нужны дополнительные данные, он должен запросить их через контролируемый `ContextRetriever`, а не дать LLM свободно придумывать недостающий контекст.

@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rus13.local/contracts/G5AnchorAccessVisibilityPackage.schema.json",
+  "title": "G5AnchorAccessVisibilityPackage",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "anchor_visibility",
+    "anchor_access",
+    "ownership_or_control",
+    "witnesses",
+    "risk_state",
+    "hidden_signs",
+    "audit_findings"
+  ],
+  "properties": {
+    "anchor_visibility": {
+      "description": "Required by G5AnchorAccessVisibilityPackage.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "anchor_access": {
+      "description": "Required by G5AnchorAccessVisibilityPackage.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "ownership_or_control": {
+      "description": "Required by G5AnchorAccessVisibilityPackage.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "witnesses": {
+      "description": "Required by G5AnchorAccessVisibilityPackage.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "risk_state": {
+      "description": "Required by G5AnchorAccessVisibilityPackage.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "hidden_signs": {
+      "description": "Required by G5AnchorAccessVisibilityPackage.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "audit_findings": {
+      "description": "Required by G5AnchorAccessVisibilityPackage.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    }
+  },
+  "x_step_id": "g5_05_visibility_access_ownership_audit",
+  "x_writes_to": "party_llm_steps, party_validation_issues",
+  "x_blocking_validations": "visibility/access/ownership/risk complete for each significant anchor"
+}

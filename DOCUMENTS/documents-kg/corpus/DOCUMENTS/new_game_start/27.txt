@@ -1,0 +1,108 @@
+# Этап 27. Приём первого хода игрока
+
+# ПРИОРИТЕТНАЯ РЕДАКЦИЯ 1 — APPROVED SCREEN, ACKNOWLEDGED DELIVERY И INTENT-NOT-FACT
+
+## 0. Архитектурный контракт
+
+Stage 27 — отдельный входной блок первого базового хода. Он не создаёт мир и не применяет действие игрока. Он принимает только exact `first_turn_input`, сформированный после успешного Stage 26 screen approval и подтверждённой доставки первого экрана.
+
+Короткая формула:
+
+```text
+stage26_screen_approval
++ acknowledged first-screen delivery
++ raw player input / approved selected action
+→ first_turn_input
+→ базовый ход
+```
+
+Слова игрока всегда являются заявкой-намерением, а не фактом мира.
+
+## 0.1. Exact input
+
+```text
+first_turn_input:
+  version/schema/request_id
+  stage26_screen_approval
+  party_id
+  transaction_id
+  current_turn_number=1
+  party_state
+  current_position
+  last_visible_context_package_digest
+  last_narrator_output_id
+  screen_digest
+  delivery_ack_id
+  player_input
+  turn_policy
+```
+
+`player_input` содержит:
+
+```text
+raw_text
+selected_action_option_id | null
+input_source=free_text|suggested_action|mixed
+received_at
+interpretation_status=pending
+contract=intent_not_fact
+```
+
+## 0.2. Обязательный handoff gate
+
+Stage 27 разрешён только при:
+
+- Stage 26 result `pass=true`;
+- `screen_status=ready`;
+- текущем `screen_digest`;
+- delivery attempt `status=acknowledged`;
+- ACK, совпадающем по party ID, transaction ID, message ID и screen digest;
+- `can_accept_first_turn_intent=true`;
+- включённом free-text input;
+- `input_contract=intent_not_fact`;
+- party state `ready` и phase `awaiting_player_input`.
+
+До ACK Stage 27 блокируется.
+
+## 0.3. Suggested action boundary
+
+Если передан `selected_action_option_id`, он обязан существовать в approved Stage 26 `action_panel.suggested_actions`.
+
+Stage 27 не может:
+
+- создавать новый action option;
+- менять action target;
+- считать action выполненным;
+- применять outcome, time cost или state changes;
+- использовать stale/parallel UI payload.
+
+## 0.4. Free-text intent
+
+Свободный текст может содержать любое намерение игрока, но код не превращает его в world facts. Следующий pipeline обязан:
+
+```text
+прочитать current committed state
+нормализовать заявку
+проверить доступность/видимость/знания
+определить время, риск и последствия через утверждённые процедуры
+только затем изменить party state
+```
+
+## 0.5. Запрещённые обходы
+
+Запрещены:
+
+```text
+запуск при blocked/failed Stage 26
+запуск до delivery ACK
+stale screen digest
+caller-provided screen approval
+selected action вне approved screen
+party_screen_payload вместо Stage 26 screen
+трактовка raw_text как свершившегося факта
+изменение мира внутри Stage 27 input block
+```
+
+## 0.6. Failure output
+
+Невалидный handoff возвращает structured blocked result с concern codes, evidence и без изменений мира. Player input может быть повторно отправлен после восстановления корректного screen/delivery binding.

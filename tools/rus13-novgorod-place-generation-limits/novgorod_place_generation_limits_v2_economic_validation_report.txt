@@ -1,0 +1,17 @@
+novgorod_place_generation_limits_v2_economic validation report
+generated_at: 2026-07-01T20:44:11.567888+00:00
+input_limit_rows: 38 [ok]
+updated_limit_rows: 38 [ok]
+g1_cells_used: 27 [ok]
+rule_reference_rows: 38 [ok]
+missing_region_place_generation_rule_refs: 0 [ok]
+rows_with_explicit_max_total: 6 [ok]
+needs_review_rows: 4 [ok]
+source_rows: 6 [ok]
+status_summary:
+  needs_review: 4
+  usable_with_caution: 34
+notes:
+- max_total remains blank for categories without a named 1230-era anchor or unique economic centre.
+- Numeric caps are generation guards for the current 32x32 km G1 mask, not a census.
+- needs_review means the rule has required_economy not yet represented in current G1 land_use_template_ids.

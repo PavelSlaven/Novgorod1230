@@ -1,0 +1,897 @@
+{
+  "id": "new_party_generator_v1",
+  "title": "Генератор новой партии v1",
+  "created_at": "2026-07-06T19:28:30Z",
+  "scope": "Specification and executable orchestration skeleton for creating one new game party from free player input using world_base and party_database_v1.",
+  "non_goals": [
+    "No code-side semantic world invention",
+    "No random fallback characters/places/items",
+    "No hidden state passed to player-facing prose",
+    "No source status upgrade"
+  ],
+  "basis_source_ids": [
+    "doc_interface_ux_new_game",
+    "doc_world_generation_start",
+    "doc_player_character_generation",
+    "doc_read_only_party_split",
+    "artifact_world_base_importer_v1",
+    "artifact_party_database_v1"
+  ],
+  "pipeline": [
+    {
+      "order": 1,
+      "step_id": "ng_01_request_intake",
+      "human_stage": "Разбор заявки игрока",
+      "agent": "request_normalizer",
+      "input_sources": "player_free_text; UI context; project constraints",
+      "output_contract": "StartRequestNormalized",
+      "writes_to_party_tables": "party_llm_steps",
+      "validation_gates": "Request is treated as desire, not fact; no world entities are fixed yet; modern/impossible terms are flagged.",
+      "repair_on_fail": "Ask LLM to restate request as historically adaptable intent; preserve player core idea.",
+      "hidden_allowed": "no",
+      "player_visible": "progress label only",
+      "notes": "No character sheet, no class picker, no deterministic defaults."
+    },
+    {
+      "order": 2,
+      "step_id": "ng_02_historical_frame",
+      "human_stage": "Выбор исторической рамки",
+      "agent": "historical_frame_selector",
+      "input_sources": "StartRequestNormalized; world_base.regions; historical_events; historical_figures; source_records",
+      "output_contract": "HistoricalFrameDraft",
+      "writes_to_party_tables": "party_state; party_events; party_llm_steps",
+      "validation_gates": "year in 1230-1250; season set; region exists; historical pressure references source_records or approved/usable records.",
+      "repair_on_fail": "Return frame to LLM with missing/invalid fields and allowed region/year list.",
+      "hidden_allowed": "yes, for historical pressure not known to character",
+      "player_visible": "no raw data; only progress text",
+      "notes": "If user did not specify year/region, LLM selects within project bounds and fixes before later steps."
+    },
+    {
+      "order": 3,
+      "step_id": "ng_03_region_context_retrieval",
+      "human_stage": "Выбор региона и сезона",
+      "agent": "region_context_retriever",
+      "input_sources": "HistoricalFrameDraft; world_base region templates; graph nodes/edges; weather and seasonal rules",
+      "output_contract": "ActiveRegionContext",
+      "writes_to_party_tables": "party_state; party_llm_steps",
+      "validation_gates": "Only approved/usable_with_caution/draft-with-label records used; no source status upgrade; neighboring regions kept as outlines.",
+      "repair_on_fail": "Fail closed; require explicit list of missing regional records.",
+      "hidden_allowed": "yes",
+      "player_visible": "progress label only",
+      "notes": "Retrieval step, not generation step."
+    },
+    {
+      "order": 4,
+      "step_id": "ng_04_historical_pressure",
+      "human_stage": "Уточнение исторического давления",
+      "agent": "historical_pressure_selector",
+      "input_sources": "ActiveRegionContext; historical timeline; current year/season; source_records",
+      "output_contract": "HistoricalPressurePackage",
+      "writes_to_party_tables": "party_events; party_journal_entries (only visible rumor/history subset)",
+      "validation_gates": "No future-certainty leaks; each event has phase/current signs/what PC can know vs cannot know.",
+      "repair_on_fail": "Ask LLM to separate objective hidden event state from character knowledge.",
+      "hidden_allowed": "yes",
+      "player_visible": "only visible signs later through visible context",
+      "notes": "Historical pressure creates world movement, not rails."
+    },
+    {
+      "order": 5,
+      "step_id": "ng_05_start_place_selection",
+      "human_stage": "Создание стартового места",
+      "agent": "start_place_selector",
+      "input_sources": "ActiveRegionContext; graph_nodes G1-G4; place templates; route templates; player request",
+      "output_contract": "StartPlaceDraft",
+      "writes_to_party_tables": "party_graph_nodes; party_graph_edges; party_places; party_locations; party_llm_steps",
+      "validation_gates": "selected nodes exist or are materialized by LLM with cause; place has function, controller, access, routes, season, reason to start.",
+      "repair_on_fail": "Return to LLM with failed reason: missing route/function/controller/season/access/graph chain.",
+      "hidden_allowed": "yes for non-visible place state",
+      "player_visible": "no raw data",
+      "notes": "Prefer canonical G1-G4 from world_base; local additions must be marked party-created."
+    },
+    {
+      "order": 6,
+      "step_id": "ng_06_location_chain",
+      "human_stage": "Разворачивание локации, минилокации и точки сцены",
+      "agent": "start_position_materializer",
+      "input_sources": "StartPlaceDraft; G4 location profiles; G5 template rules; current season/time/weather",
+      "output_contract": "StartPositionChain",
+      "writes_to_party_tables": "party_locations; party_minilocations; party_scene_anchors; party_current_position",
+      "validation_gates": "region_id/place_id/location_id/minilocation_id/anchor_id all set; anchor is physically useful for access/visibility/actions.",
+      "repair_on_fail": "Ask LLM to produce concrete minilocation and anchor grounded in selected G4 type.",
+      "hidden_allowed": "yes, but not passed to prose directly",
+      "player_visible": "later as visible place description",
+      "notes": "This is the entry point for startup G5 materialization; detailed G5 pack comes in next project step."
+    },
+    {
+      "order": 7,
+      "step_id": "ng_07_player_character_generation",
+      "human_stage": "Создание персонажа игрока",
+      "agent": "player_character_generator",
+      "input_sources": "StartRequestNormalized; HistoricalFrameDraft; StartPositionChain; social roles; occupations; item profiles",
+      "output_contract": "PlayerCharacterStartProfile",
+      "writes_to_party_tables": "party_player_characters; party_items; party_inventory_entries; party_map_knowledge; party_journal_entries",
+      "validation_gates": "status/provenance/body/skills/items/knowledge/obligations all grounded; request adapted; balance rules applied; no impossible status without cost.",
+      "repair_on_fail": "Return profile with explicit violations: epoch/status/body/skills/inventory/position/knowledge.",
+      "hidden_allowed": "limited: unknowns and false beliefs may be encoded separately",
+      "player_visible": "only final visible identity and sensations",
+      "notes": "Character is a historically situated person, not an abstract camera."
+    },
+    {
+      "order": 8,
+      "step_id": "ng_08_bind_character_to_place",
+      "human_stage": "Связывание персонажа со стартовым местом",
+      "agent": "start_causal_linker",
+      "input_sources": "PlayerCharacterStartProfile; StartPlaceDraft; HistoricalPressurePackage",
+      "output_contract": "StartCausalLink",
+      "writes_to_party_tables": "party_journal_entries; party_events; party_npcs (if relationship requires person)",
+      "validation_gates": "why here/why now is explicit; link uses work/road/debt/threat/order/illness/family/service/trade/captivity/etc.; no empty start.",
+      "repair_on_fail": "Ask LLM to create causally grounded link or downgrade character/status/request.",
+      "hidden_allowed": "yes for hidden pressure, but visible reason must exist",
+      "player_visible": "visible reason in intro prose",
+      "notes": "Prevents floating protagonist problem."
+    },
+    {
+      "order": 9,
+      "step_id": "ng_09_people_nearby",
+      "human_stage": "Создание людей рядом",
+      "agent": "npc_initializer",
+      "input_sources": "StartPositionChain; NPC generation profiles; social roles; occupations; place function",
+      "output_contract": "InitialNpcLayer",
+      "writes_to_party_tables": "party_npcs; party_journal_entries for known people",
+      "validation_gates": "NPC profile level is background/scene/key by memory needs; visible fields separated from hidden motives.",
+      "repair_on_fail": "Reduce over-detailed NPCs or add missing witness/access/relationship fields.",
+      "hidden_allowed": "yes for scene/key NPCs",
+      "player_visible": "only visible participants and known facts",
+      "notes": "NPC depth depends on state that must be remembered, not prose length."
+    },
+    {
+      "order": 10,
+      "step_id": "ng_10_item_property_layer",
+      "human_stage": "Создание предметного слоя",
+      "agent": "item_property_initializer",
+      "input_sources": "StartPositionChain; item profiles; container profiles; property rules; place templates",
+      "output_contract": "InitialItemPropertyLayer",
+      "writes_to_party_tables": "party_items; party_inventory_entries; party_journal_entries for property/obligations",
+      "validation_gates": "significant items have class/material/state/placement/visibility/owner/holder/access/risk; containers pre-profiled before opening.",
+      "repair_on_fail": "Ask LLM to add missing owner/holder/access/risk or remove ungrounded item.",
+      "hidden_allowed": "yes for hidden objects/containers, not in visible prose unless signs exist",
+      "player_visible": "visible/known items only",
+      "notes": "Player request must not retro-create an item."
+    },
+    {
+      "order": 11,
+      "step_id": "ng_11_initial_routes_map_knowledge",
+      "human_stage": "Создание начальных маршрутов и карты знаний",
+      "agent": "route_knowledge_initializer",
+      "input_sources": "graph_edges; graph_edge_knowledge_rules; character origin/status/occupation; current position",
+      "output_contract": "InitialMapKnowledge",
+      "writes_to_party_tables": "party_graph_edges; party_map_knowledge; party_route_journal",
+      "validation_gates": "known path != factual map; character knowledge level set; hidden routes not shown; access/season/risk copied or materialized.",
+      "repair_on_fail": "Ask LLM to separate factual routes from character-known routes.",
+      "hidden_allowed": "yes",
+      "player_visible": "only known/rough/rumored paths",
+      "notes": "Map shown to player is character knowledge, not complete graph."
+    },
+    {
+      "order": 12,
+      "step_id": "ng_12_initial_tensions_hidden_processes",
+      "human_stage": "Создание начальных напряжений",
+      "agent": "initial_tension_initializer",
+      "input_sources": "HistoricalPressurePackage; StartCausalLink; NPC layer; item/property layer; scene state",
+      "output_contract": "InitialTensionEventLayer",
+      "writes_to_party_tables": "party_events; party_journal_entries visible subset",
+      "validation_gates": "each tension has cause, trigger/time, affected subjects, visible signs, hidden/visible split.",
+      "repair_on_fail": "Reject free-floating quest hooks; require cause and consequences.",
+      "hidden_allowed": "yes",
+      "player_visible": "visible tension only",
+      "notes": "World starts moving; not all pressure is immediately visible."
+    },
+    {
+      "order": 13,
+      "step_id": "ng_13_consistency_audit",
+      "human_stage": "Проверка связности и реализма",
+      "agent": "start_consistency_auditor",
+      "input_sources": "all prior contracts; world_base FK/audit summaries; party schema rules",
+      "output_contract": "StartConsistencyAuditReport",
+      "writes_to_party_tables": "party_validation_issues; party_llm_steps",
+      "validation_gates": "no contradictions in year/region/season/position/status/NPC/items/routes/hidden/visible; all required party writes planned.",
+      "repair_on_fail": "Route failed contract back to responsible agent, not code fallback.",
+      "hidden_allowed": "yes",
+      "player_visible": "no",
+      "notes": "Semantic audit belongs to LLM; structural validation belongs to code."
+    },
+    {
+      "order": 14,
+      "step_id": "ng_14_persist_party_start",
+      "human_stage": "Сохранение партии",
+      "agent": "persistence_planner_and_code_writer",
+      "input_sources": "audit-approved contracts only",
+      "output_contract": "PartyStartTransactionPlan",
+      "writes_to_party_tables": "all target party tables in transaction order",
+      "validation_gates": "atomic transaction; no unresolved blocking issue; party_current_position complete; player-visible knowledge generated after hidden split.",
+      "repair_on_fail": "Rollback transaction; write validation issue; return failing contract to LLM repair.",
+      "hidden_allowed": "yes in DB; not in UI",
+      "player_visible": "no raw data",
+      "notes": "Code writes approved data; code does not invent missing semantics."
+    },
+    {
+      "order": 15,
+      "step_id": "ng_15_visible_context_intro_prose",
+      "human_stage": "Подготовка вводной прозы",
+      "agent": "visible_context_selector_then_intro_prose_writer",
+      "input_sources": "persisted party state; visible-only projection; character knowledge; sensory state",
+      "output_contract": "InitialVisibleSceneAndIntroProse",
+      "writes_to_party_tables": "party_turns; party_journal_entries; party_llm_steps",
+      "validation_gates": "prose receives no hidden motives/items/future events/raw JSON; explains who/where/why/body/need/people/change.",
+      "repair_on_fail": "Regenerate visible packet first if hidden data leaked; then prose.",
+      "hidden_allowed": "visible selector yes; prose writer no",
+      "player_visible": "yes",
+      "notes": "First player-facing output is generated only after persistence and visible projection."
+    }
+  ],
+  "contracts": [
+    {
+      "contract_id": "StartRequestNormalized",
+      "step_id": "ng_01_request_intake",
+      "purpose": "Convert free player text into historically adaptable intent without fixing world facts.",
+      "required_fields": [
+        "raw_player_text",
+        "core_intent",
+        "requested_identity",
+        "requested_status",
+        "requested_place_or_region",
+        "requested_year_or_period",
+        "requested_goal_or_problem",
+        "tone_preferences",
+        "must_preserve",
+        "must_adapt_or_reject",
+        "uncertainties"
+      ],
+      "writes_to": [
+        "party_llm_steps"
+      ],
+      "blocking_validations": [
+        "raw_player_text stored",
+        "core_intent present or empty-start flag",
+        "modern/impossible terms flagged"
+      ]
+    },
+    {
+      "contract_id": "HistoricalFrameDraft",
+      "step_id": "ng_02_historical_frame",
+      "purpose": "Fix year, season, region and historical boundary before character/place generation.",
+      "required_fields": [
+        "year",
+        "season",
+        "region_id",
+        "region_title",
+        "historical_background_summary",
+        "authority_context",
+        "season_context",
+        "known_limits",
+        "source_ids",
+        "hidden_world_notes",
+        "character_possible_knowledge"
+      ],
+      "writes_to": [
+        "party_state",
+        "party_events"
+      ],
+      "blocking_validations": [
+        "1230 <= year <= 1250",
+        "region_id exists in world_base.regions",
+        "source_ids exist or unresolved source placeholder is needs_review"
+      ]
+    },
+    {
+      "contract_id": "ActiveRegionContext",
+      "step_id": "ng_03_region_context_retrieval",
+      "purpose": "Retrieve region-relevant canonical data and template constraints from world_base.",
+      "required_fields": [
+        "region_id",
+        "allowed_landscapes",
+        "allowed_water_bodies",
+        "allowed_routes",
+        "allowed_land_use",
+        "allowed_place_templates",
+        "social_roles",
+        "occupations",
+        "seasonal_rules",
+        "known_historical_anchors",
+        "source_ids"
+      ],
+      "writes_to": [
+        "party_state"
+      ],
+      "blocking_validations": [
+        "No invented template IDs",
+        "all IDs exist in world_base or are marked missing"
+      ]
+    },
+    {
+      "contract_id": "HistoricalPressurePackage",
+      "step_id": "ng_04_historical_pressure",
+      "purpose": "Select relevant historical pressure and split objective event state from character knowledge.",
+      "required_fields": [
+        "events",
+        "figures",
+        "regional_effects",
+        "visible_signs",
+        "character_knowledge",
+        "hidden_facts",
+        "source_ids"
+      ],
+      "writes_to": [
+        "party_events",
+        "party_journal_entries"
+      ],
+      "blocking_validations": [
+        "no exact future knowledge in character_knowledge",
+        "event phases have date/trigger/visible signs"
+      ]
+    },
+    {
+      "contract_id": "StartPlaceDraft",
+      "step_id": "ng_05_start_place_selection",
+      "purpose": "Choose or materialize start place and G1-G4 chain as a grounded graph node chain.",
+      "required_fields": [
+        "region_id",
+        "g1_node_id",
+        "g2_node_id",
+        "g3_place_id",
+        "g4_location_id",
+        "place_function",
+        "controller_or_owner",
+        "access_rules",
+        "connected_routes",
+        "seasonal_conditions",
+        "start_reason",
+        "source_ids",
+        "party_created_flags"
+      ],
+      "writes_to": [
+        "party_graph_nodes",
+        "party_graph_edges",
+        "party_places",
+        "party_locations"
+      ],
+      "blocking_validations": [
+        "G1-G4 chain valid",
+        "place function and controller present",
+        "at least one route or physical access relation present"
+      ]
+    },
+    {
+      "contract_id": "StartPositionChain",
+      "step_id": "ng_06_location_chain",
+      "purpose": "Create concrete start minilocation and anchor for current_position.",
+      "required_fields": [
+        "region_id",
+        "place_id",
+        "location_id",
+        "minilocation_id",
+        "anchor_id",
+        "last_route_id",
+        "position_prose",
+        "visibility_context",
+        "access_context",
+        "nearby_objects",
+        "nearby_npc_labels"
+      ],
+      "writes_to": [
+        "party_minilocations",
+        "party_scene_anchors",
+        "party_current_position"
+      ],
+      "blocking_validations": [
+        "all position IDs present",
+        "anchor has physical function",
+        "position supports first actions"
+      ]
+    },
+    {
+      "contract_id": "PlayerCharacterStartProfile",
+      "step_id": "ng_07_player_character_generation",
+      "purpose": "Create historically constrained player character linked to start frame.",
+      "required_fields": [
+        "character_id",
+        "name_or_label",
+        "age_range",
+        "status",
+        "origin",
+        "body",
+        "numeric_states",
+        "active_states",
+        "attributes",
+        "skills",
+        "knowledge",
+        "memory",
+        "goals",
+        "fears",
+        "obligations",
+        "inventory",
+        "property_outside_inventory",
+        "relationships",
+        "start_position",
+        "reason_here",
+        "risk_profile"
+      ],
+      "writes_to": [
+        "party_player_characters",
+        "party_items",
+        "party_inventory_entries",
+        "party_map_knowledge",
+        "party_journal_entries"
+      ],
+      "blocking_validations": [
+        "status has rights/risks",
+        "attributes and skills balanced",
+        "inventory has owners/holders/access/risk",
+        "reason_here linked to place"
+      ]
+    },
+    {
+      "contract_id": "StartCausalLink",
+      "step_id": "ng_08_bind_character_to_place",
+      "purpose": "Explain why this character is here now and why the first scene matters.",
+      "required_fields": [
+        "link_type",
+        "visible_reason",
+        "hidden_reason_if_any",
+        "related_npc_ids",
+        "related_item_ids",
+        "related_event_ids",
+        "risk_if_no_action",
+        "source_or_basis"
+      ],
+      "writes_to": [
+        "party_journal_entries",
+        "party_events"
+      ],
+      "blocking_validations": [
+        "visible reason present",
+        "hidden reason not required for player comprehension",
+        "no disconnected protagonist"
+      ]
+    },
+    {
+      "contract_id": "InitialNpcLayer",
+      "step_id": "ng_09_people_nearby",
+      "purpose": "Create initial people/groups near the character at appropriate depth.",
+      "required_fields": [
+        "background_npcs",
+        "scene_npcs",
+        "key_npcs",
+        "visibility",
+        "witness_risk",
+        "known_to_character",
+        "hidden_profiles"
+      ],
+      "writes_to": [
+        "party_npcs",
+        "party_journal_entries"
+      ],
+      "blocking_validations": [
+        "each NPC has profile level",
+        "visible fields separated from hidden fields",
+        "scene/key NPCs have memory requirements"
+      ]
+    },
+    {
+      "contract_id": "InitialItemPropertyLayer",
+      "step_id": "ng_10_item_property_layer",
+      "purpose": "Create visible/significant item and property layer for first scene.",
+      "required_fields": [
+        "visible_items",
+        "hidden_items_with_signs",
+        "containers",
+        "ownership_claims",
+        "access_rules",
+        "inventory_links",
+        "property_links",
+        "risk_notes"
+      ],
+      "writes_to": [
+        "party_items",
+        "party_inventory_entries",
+        "party_journal_entries"
+      ],
+      "blocking_validations": [
+        "significant items have owner/holder/placement/access/risk",
+        "containers pre-profiled if significant",
+        "no player-request retrocreation"
+      ]
+    },
+    {
+      "contract_id": "InitialMapKnowledge",
+      "step_id": "ng_11_initial_routes_map_knowledge",
+      "purpose": "Initialize what the character knows about routes and places.",
+      "required_fields": [
+        "known_nodes",
+        "known_edges",
+        "rough_directions",
+        "rumored_paths",
+        "unknown_but_existing_paths",
+        "false_beliefs",
+        "knowledge_sources",
+        "limits"
+      ],
+      "writes_to": [
+        "party_graph_edges",
+        "party_map_knowledge",
+        "party_route_journal"
+      ],
+      "blocking_validations": [
+        "factual graph not exposed as map knowledge",
+        "knowledge level set for every visible path",
+        "season/access/risk copied where character can know it"
+      ]
+    },
+    {
+      "contract_id": "InitialTensionEventLayer",
+      "step_id": "ng_12_initial_tensions_hidden_processes",
+      "purpose": "Create immediate tensions and hidden timers with causes.",
+      "required_fields": [
+        "visible_tensions",
+        "hidden_processes",
+        "deferred_events",
+        "triggers",
+        "affected_entities",
+        "visible_signs",
+        "consequences"
+      ],
+      "writes_to": [
+        "party_events",
+        "party_journal_entries"
+      ],
+      "blocking_validations": [
+        "each event has cause and trigger",
+        "visible/hidden split explicit",
+        "no quest hook without world cause"
+      ]
+    },
+    {
+      "contract_id": "StartConsistencyAuditReport",
+      "step_id": "ng_13_consistency_audit",
+      "purpose": "Run LLM semantic audit and code structural checks before persistence.",
+      "required_fields": [
+        "blocking_issues",
+        "warnings",
+        "passed_checks",
+        "repair_targets",
+        "approval_status",
+        "audit_notes"
+      ],
+      "writes_to": [
+        "party_validation_issues",
+        "party_llm_steps"
+      ],
+      "blocking_validations": [
+        "approval_status == approved_to_persist",
+        "blocking_issues empty"
+      ]
+    },
+    {
+      "contract_id": "PartyStartTransactionPlan",
+      "step_id": "ng_14_persist_party_start",
+      "purpose": "Define atomic insert/update order into party DB.",
+      "required_fields": [
+        "party_id",
+        "transaction_order",
+        "table_writes",
+        "foreign_key_order",
+        "rollback_policy",
+        "post_write_checks"
+      ],
+      "writes_to": [
+        "party_state",
+        "party_current_position",
+        "party_*"
+      ],
+      "blocking_validations": [
+        "atomic transaction possible",
+        "FK references resolvable",
+        "current_position complete",
+        "post-write visible projection possible"
+      ]
+    },
+    {
+      "contract_id": "InitialVisibleSceneAndIntroProse",
+      "step_id": "ng_15_visible_context_intro_prose",
+      "purpose": "Create first player-facing visible scene and opening prose.",
+      "required_fields": [
+        "visible_scene",
+        "visible_changes",
+        "sensory_details",
+        "visible_npc",
+        "visible_objects",
+        "known_context",
+        "uncertainties",
+        "allowed_tensions",
+        "do_not_imply",
+        "intro_prose",
+        "suggestion_seed"
+      ],
+      "writes_to": [
+        "party_turns",
+        "party_journal_entries",
+        "party_llm_steps"
+      ],
+      "blocking_validations": [
+        "prose contains no hidden fields",
+        "intro answers who/where/why/body/need/who nearby/what changes"
+      ]
+    }
+  ],
+  "validation_rules": [
+    {
+      "rule_id": "v001",
+      "step_id": "all",
+      "severity": "blocking",
+      "check_type": "no_code_world_creation",
+      "rule": "Code may not create semantic world entities; missing semantics must return to LLM repair.",
+      "repair_target": "ng_13_consistency_audit"
+    },
+    {
+      "rule_id": "v002",
+      "step_id": "ng_02_historical_frame",
+      "severity": "blocking",
+      "check_type": "year_range",
+      "rule": "year must be integer between 1230 and 1250.",
+      "repair_target": "ng_02_historical_frame"
+    },
+    {
+      "rule_id": "v003",
+      "step_id": "ng_02_historical_frame",
+      "severity": "blocking",
+      "check_type": "region_fk",
+      "rule": "region_id must exist in world_base.regions.",
+      "repair_target": "ng_02_historical_frame"
+    },
+    {
+      "rule_id": "v004",
+      "step_id": "ng_05_start_place_selection",
+      "severity": "blocking",
+      "check_type": "graph_chain",
+      "rule": "G1-G4 chain must be valid or marked as party-created by LLM with cause.",
+      "repair_target": "ng_05_start_place_selection"
+    },
+    {
+      "rule_id": "v005",
+      "step_id": "ng_06_location_chain",
+      "severity": "blocking",
+      "check_type": "current_position_complete",
+      "rule": "region_id/place_id/location_id/minilocation_id/anchor_id must be present.",
+      "repair_target": "ng_06_location_chain"
+    },
+    {
+      "rule_id": "v006",
+      "step_id": "ng_07_player_character_generation",
+      "severity": "blocking",
+      "check_type": "character_balance",
+      "rule": "Start attributes/skills must obey documented balance and biographical basis.",
+      "repair_target": "ng_07_player_character_generation"
+    },
+    {
+      "rule_id": "v007",
+      "step_id": "ng_10_item_property_layer",
+      "severity": "blocking",
+      "check_type": "item_causality",
+      "rule": "Significant item must have place/status/owner/holder/access/risk or be removed.",
+      "repair_target": "ng_10_item_property_layer"
+    },
+    {
+      "rule_id": "v008",
+      "step_id": "ng_11_initial_routes_map_knowledge",
+      "severity": "blocking",
+      "check_type": "visible_map_split",
+      "rule": "character map knowledge must not equal factual hidden graph by default.",
+      "repair_target": "ng_11_initial_routes_map_knowledge"
+    },
+    {
+      "rule_id": "v009",
+      "step_id": "ng_12_initial_tensions_hidden_processes",
+      "severity": "blocking",
+      "check_type": "event_causality",
+      "rule": "Tension/deferred event requires cause, trigger/time, result, and visible manifestation.",
+      "repair_target": "ng_12_initial_tensions_hidden_processes"
+    },
+    {
+      "rule_id": "v010",
+      "step_id": "ng_15_visible_context_intro_prose",
+      "severity": "blocking",
+      "check_type": "hidden_leak",
+      "rule": "Prose writer must not receive hidden motives/items/future dates/raw JSON.",
+      "repair_target": "ng_15_visible_context_intro_prose"
+    },
+    {
+      "rule_id": "v011",
+      "step_id": "ng_14_persist_party_start",
+      "severity": "blocking",
+      "check_type": "atomic_persistence",
+      "rule": "Party start writes must be one transaction or rollback on failure.",
+      "repair_target": "ng_14_persist_party_start"
+    },
+    {
+      "rule_id": "v012",
+      "step_id": "ng_13_consistency_audit",
+      "severity": "warning",
+      "check_type": "draft_source_status",
+      "rule": "Draft/needs_review source may be used only with status preserved and audit note.",
+      "repair_target": "ng_03_region_context_retrieval"
+    }
+  ],
+  "db_writes": [
+    {
+      "step_id": "ng_02_historical_frame",
+      "table_name": "party_state",
+      "operation": "insert/update",
+      "required_fields": "party_id, year, season, active_region_id, historical_frame_json, created_at",
+      "source_contract": "LLM-approved HistoricalFrameDraft"
+    },
+    {
+      "step_id": "ng_04_historical_pressure",
+      "table_name": "party_events",
+      "operation": "insert",
+      "required_fields": "event_id, party_id, event_type, phase, hidden_state, visible_signs, trigger_json",
+      "source_contract": "HistoricalPressurePackage"
+    },
+    {
+      "step_id": "ng_05_start_place_selection",
+      "table_name": "party_graph_nodes",
+      "operation": "insert",
+      "required_fields": "node_id, party_id, canonical_node_id, scale_level, node_type, title, state_json",
+      "source_contract": "StartPlaceDraft"
+    },
+    {
+      "step_id": "ng_05_start_place_selection",
+      "table_name": "party_places",
+      "operation": "insert",
+      "required_fields": "place_id, party_id, canonical_place_id, function, controller, access_state, place_state_json",
+      "source_contract": "StartPlaceDraft"
+    },
+    {
+      "step_id": "ng_06_location_chain",
+      "table_name": "party_current_position",
+      "operation": "insert/update",
+      "required_fields": "party_id, region_id, place_id, location_id, minilocation_id, anchor_id, last_route_id",
+      "source_contract": "StartPositionChain"
+    },
+    {
+      "step_id": "ng_07_player_character_generation",
+      "table_name": "party_player_characters",
+      "operation": "insert",
+      "required_fields": "character_id, party_id, profile_json, attributes_json, skills_json, body_state_json",
+      "source_contract": "PlayerCharacterStartProfile"
+    },
+    {
+      "step_id": "ng_07_player_character_generation",
+      "table_name": "party_inventory_entries",
+      "operation": "insert",
+      "required_fields": "entry_id, party_id, character_id, item_id, carried_location, access_level",
+      "source_contract": "PlayerCharacterStartProfile"
+    },
+    {
+      "step_id": "ng_09_people_nearby",
+      "table_name": "party_npcs",
+      "operation": "insert",
+      "required_fields": "npc_id, party_id, profile_level, visible_profile_json, hidden_profile_json, current_location_id",
+      "source_contract": "InitialNpcLayer"
+    },
+    {
+      "step_id": "ng_10_item_property_layer",
+      "table_name": "party_items",
+      "operation": "insert",
+      "required_fields": "item_id, party_id, item_class, owner_id, holder_id, placement, visible_state, hidden_state, risk_json",
+      "source_contract": "InitialItemPropertyLayer"
+    },
+    {
+      "step_id": "ng_11_initial_routes_map_knowledge",
+      "table_name": "party_graph_edges",
+      "operation": "insert",
+      "required_fields": "edge_id, party_id, canonical_edge_id, from_node_id, to_node_id, access_state, risk_state",
+      "source_contract": "InitialMapKnowledge"
+    },
+    {
+      "step_id": "ng_11_initial_routes_map_knowledge",
+      "table_name": "party_map_knowledge",
+      "operation": "insert",
+      "required_fields": "knowledge_id, party_id, subject_type, subject_id, knowledge_level, known_to_character, known_to_player",
+      "source_contract": "InitialMapKnowledge"
+    },
+    {
+      "step_id": "ng_12_initial_tensions_hidden_processes",
+      "table_name": "party_events",
+      "operation": "insert",
+      "required_fields": "event_id, party_id, trigger_json, hidden_state, visible_signs, affected_entities",
+      "source_contract": "InitialTensionEventLayer"
+    },
+    {
+      "step_id": "ng_13_consistency_audit",
+      "table_name": "party_validation_issues",
+      "operation": "insert",
+      "required_fields": "issue_id, party_id, severity, step_id, message, repair_target",
+      "source_contract": "StartConsistencyAuditReport"
+    },
+    {
+      "step_id": "ng_14_persist_party_start",
+      "table_name": "party_turns",
+      "operation": "insert",
+      "required_fields": "turn_id, party_id, turn_index, visible_context_json, resulting_state_hash",
+      "source_contract": "PartyStartTransactionPlan"
+    },
+    {
+      "step_id": "ng_15_visible_context_intro_prose",
+      "table_name": "party_journal_entries",
+      "operation": "insert",
+      "required_fields": "entry_id, party_id, journal_type, visible_text, knowledge_scope, related_entities",
+      "source_contract": "InitialVisibleSceneAndIntroProse"
+    }
+  ],
+  "prompts": [
+    {
+      "agent_id": "request_normalizer",
+      "role": "Агент нормализации заявки новой партии",
+      "task": "Преобразовать свободный текст игрока в адаптируемое намерение, не фиксируя игровые факты.",
+      "hidden_allowed": "no",
+      "output_contract": "StartRequestNormalized",
+      "guardrails": "Заявка игрока — желание, не истина. Современное/невозможное/слишком удобное помечать для адаптации."
+    },
+    {
+      "agent_id": "historical_frame_selector",
+      "role": "Агент исторической рамки",
+      "task": "Выбрать или принять год, сезон, регион и общий исторический фон в границах 1230–1250.",
+      "hidden_allowed": "yes",
+      "output_contract": "HistoricalFrameDraft",
+      "guardrails": "Не выдавать персонажу знание будущего. Сначала зафиксировать рамку, потом генерировать место и персонажа."
+    },
+    {
+      "agent_id": "start_place_selector",
+      "role": "Агент стартового места",
+      "task": "Выбрать или материализовать стартовое место, связанное с регионом, хозяйством, дорогами, властью и текущим временем.",
+      "hidden_allowed": "yes",
+      "output_contract": "StartPlaceDraft",
+      "guardrails": "Стартовое место не декорация. Нужны функция, держатель, доступ, связи и причина для старта."
+    },
+    {
+      "agent_id": "player_character_generator",
+      "role": "Агент генерации персонажа игрока",
+      "task": "Создать исторически правдоподобного персонажа внутри стартовой рамки и сцены.",
+      "hidden_allowed": "limited",
+      "output_contract": "PlayerCharacterStartProfile",
+      "guardrails": "Персонаж связан с эпохой, статусом, телом, знаниями, имуществом, долгами и причиной действовать."
+    },
+    {
+      "agent_id": "npc_initializer",
+      "role": "Агент начальных NPC",
+      "task": "Создать людей рядом на уровне фоновых, сценических и ключевых NPC по необходимости памяти мира.",
+      "hidden_allowed": "yes",
+      "output_contract": "InitialNpcLayer",
+      "guardrails": "Не раскрывать скрытые мотивы в видимом слое. Глубина NPC зависит от требуемой памяти последствий."
+    },
+    {
+      "agent_id": "item_property_initializer",
+      "role": "Агент предметного слоя",
+      "task": "Создать видимые и значимые предметы, контейнеры, владельцев, держателей, доступ и риск.",
+      "hidden_allowed": "yes",
+      "output_contract": "InitialItemPropertyLayer",
+      "guardrails": "Предмет не возникает из заявки игрока. Значимый контейнер профилируется до открытия."
+    },
+    {
+      "agent_id": "start_consistency_auditor",
+      "role": "Агент смыслового аудита старта",
+      "task": "Проверить старт на историчность, связность, причинность и отсутствие утечки скрытого.",
+      "hidden_allowed": "yes",
+      "output_contract": "StartConsistencyAuditReport",
+      "guardrails": "Код не исправляет смысл. При ошибке вернуть конкретный контракт на repair."
+    },
+    {
+      "agent_id": "visible_context_selector_then_intro_prose_writer",
+      "role": "Агент видимого контекста и вводной прозы",
+      "task": "Сначала отделить видимое от скрытого, затем написать вводную сцену только из видимого пакета.",
+      "hidden_allowed": "selector yes, prose writer no",
+      "output_contract": "InitialVisibleSceneAndIntroProse",
+      "guardrails": "Проза не получает скрытые мотивы, тайные вещи, будущие события, raw JSON и внутренние расчёты."
+    }
+  ]
+}

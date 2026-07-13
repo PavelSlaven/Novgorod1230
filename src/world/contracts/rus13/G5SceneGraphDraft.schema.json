@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rus13.local/contracts/G5SceneGraphDraft.schema.json",
+  "title": "G5SceneGraphDraft",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "materialization_reason",
+    "minilocations",
+    "scene_anchors",
+    "primary_anchor_temp_id",
+    "required_categories_covered",
+    "visible_scene_logic",
+    "hidden_scene_logic",
+    "template_limits_used"
+  ],
+  "properties": {
+    "materialization_reason": {
+      "description": "Required by G5SceneGraphDraft.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "minilocations": {
+      "description": "Required by G5SceneGraphDraft.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "scene_anchors": {
+      "description": "Required by G5SceneGraphDraft.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "primary_anchor_temp_id": {
+      "description": "Required by G5SceneGraphDraft.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "required_categories_covered": {
+      "description": "Required by G5SceneGraphDraft.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "visible_scene_logic": {
+      "description": "Required by G5SceneGraphDraft.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "hidden_scene_logic": {
+      "description": "Required by G5SceneGraphDraft.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "template_limits_used": {
+      "description": "Required by G5SceneGraphDraft.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    }
+  },
+  "x_step_id": "g5_04_scene_graph_draft",
+  "x_writes_to": "party_llm_steps",
+  "x_blocking_validations": "anchors inside G4; allowed anchor types; no forbidden anchors"
+}

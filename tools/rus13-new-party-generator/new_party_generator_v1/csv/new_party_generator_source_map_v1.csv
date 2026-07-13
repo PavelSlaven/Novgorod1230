@@ -1,0 +1,7 @@
+source_id,title,file,line_range,use,status
+doc_interface_ux_new_game,interface_ux.md — Новая игра / Экран создания мира,interface_ux.md,L184-L259,"UI flow: free-text request, progress screen, 14 human stages of new game creation.",approved_project_doc
+doc_world_generation_start,world_generation_and_turns.txt — В начале партии,world_generation_and_turns.txt,"L1-L16, L474-L690","Core rule: LLM creates meaning; code stores. Start frame, place, G5, scene state, PC, NPC, items and hidden layers.",approved_project_doc
+doc_player_character_generation,player_character_generation.txt — Генерация персонажа игрока,player_character_generation.txt,L1-L58,"Player character generation contract: request is desire, not truth; historical adaptation and minimum start frame.",approved_project_doc
+doc_read_only_party_split,read_only_database_and_graph_architecture.md — Разделение world_base и party-базы,read_only_database_and_graph_architecture.md,"L11-L24, L79-L120",Data architecture: read-only canonical DB vs mutable per-party DB.,approved_project_doc
+artifact_world_base_importer_v1,world_base_importer_v1.zip,world_base_importer_v1.zip,artifact,Existing world_base import package; generator assumes world_base has been loaded and FK-audited.,generated_project_artifact
+artifact_party_database_v1,party_database_v1.zip,party_database_v1.zip,artifact,Target mutable party schema for generated start state.,generated_project_artifact

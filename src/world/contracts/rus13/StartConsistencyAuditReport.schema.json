@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rus13.local/contracts/StartConsistencyAuditReport.schema.json",
+  "title": "StartConsistencyAuditReport",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "blocking_issues",
+    "warnings",
+    "passed_checks",
+    "repair_targets",
+    "approval_status",
+    "audit_notes"
+  ],
+  "properties": {
+    "blocking_issues": {
+      "description": "Required by StartConsistencyAuditReport.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "warnings": {
+      "description": "Required by StartConsistencyAuditReport.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "passed_checks": {
+      "description": "Required by StartConsistencyAuditReport.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "repair_targets": {
+      "description": "Required by StartConsistencyAuditReport.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "approval_status": {
+      "description": "Required by StartConsistencyAuditReport.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "audit_notes": {
+      "description": "Required by StartConsistencyAuditReport.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    }
+  },
+  "x_writes_to": [
+    "party_validation_issues",
+    "party_llm_steps"
+  ],
+  "x_blocking_validations": [
+    "approval_status == approved_to_persist",
+    "blocking_issues empty"
+  ]
+}

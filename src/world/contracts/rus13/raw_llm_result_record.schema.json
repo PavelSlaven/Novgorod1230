@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RawLlmResultRecord",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "party_id",
+    "step_id",
+    "agent_id",
+    "prompt_hash",
+    "raw_response",
+    "created_at",
+    "status"
+  ],
+  "properties": {
+    "party_id": {
+      "type": "string"
+    },
+    "step_id": {
+      "type": "string"
+    },
+    "agent_id": {
+      "type": "string"
+    },
+    "prompt_hash": {
+      "type": "string"
+    },
+    "raw_response": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "raw_captured",
+        "infrastructure_error"
+      ]
+    },
+    "model_metadata": {
+      "type": "object"
+    }
+  }
+}

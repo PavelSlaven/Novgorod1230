@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SemanticAuditReport",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "is_consistent",
+    "blocking_issues",
+    "warnings",
+    "checked_dimensions"
+  ],
+  "properties": {
+    "is_consistent": {
+      "type": "boolean"
+    },
+    "blocking_issues": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "checked_dimensions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "recommended_repair_target": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

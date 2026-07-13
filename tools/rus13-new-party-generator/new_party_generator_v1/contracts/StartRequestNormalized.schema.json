@@ -1,0 +1,162 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rus13.local/contracts/StartRequestNormalized.schema.json",
+  "title": "StartRequestNormalized",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "raw_player_text",
+    "core_intent",
+    "requested_identity",
+    "requested_status",
+    "requested_place_or_region",
+    "requested_year_or_period",
+    "requested_goal_or_problem",
+    "tone_preferences",
+    "must_preserve",
+    "must_adapt_or_reject",
+    "uncertainties"
+  ],
+  "properties": {
+    "raw_player_text": {
+      "description": "Required by StartRequestNormalized.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "core_intent": {
+      "description": "Required by StartRequestNormalized.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "requested_identity": {
+      "description": "Required by StartRequestNormalized.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "requested_status": {
+      "description": "Required by StartRequestNormalized.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "requested_place_or_region": {
+      "description": "Required by StartRequestNormalized.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "requested_year_or_period": {
+      "description": "Required by StartRequestNormalized.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "requested_goal_or_problem": {
+      "description": "Required by StartRequestNormalized.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "tone_preferences": {
+      "description": "Required by StartRequestNormalized.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "must_preserve": {
+      "description": "Required by StartRequestNormalized.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "must_adapt_or_reject": {
+      "description": "Required by StartRequestNormalized.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "uncertainties": {
+      "description": "Required by StartRequestNormalized.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    }
+  },
+  "x_writes_to": [
+    "party_llm_steps"
+  ],
+  "x_blocking_validations": [
+    "raw_player_text stored",
+    "core_intent present or empty-start flag",
+    "modern/impossible terms flagged"
+  ]
+}

@@ -1,0 +1,164 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rus13.local/contracts/StartPositionChain.schema.json",
+  "title": "StartPositionChain",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "region_id",
+    "place_id",
+    "location_id",
+    "minilocation_id",
+    "anchor_id",
+    "last_route_id",
+    "position_prose",
+    "visibility_context",
+    "access_context",
+    "nearby_objects",
+    "nearby_npc_labels"
+  ],
+  "properties": {
+    "region_id": {
+      "description": "Required by StartPositionChain.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "place_id": {
+      "description": "Required by StartPositionChain.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "location_id": {
+      "description": "Required by StartPositionChain.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "minilocation_id": {
+      "description": "Required by StartPositionChain.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "anchor_id": {
+      "description": "Required by StartPositionChain.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "last_route_id": {
+      "description": "Required by StartPositionChain.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "position_prose": {
+      "description": "Required by StartPositionChain.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "visibility_context": {
+      "description": "Required by StartPositionChain.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "access_context": {
+      "description": "Required by StartPositionChain.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "nearby_objects": {
+      "description": "Required by StartPositionChain.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "nearby_npc_labels": {
+      "description": "Required by StartPositionChain.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    }
+  },
+  "x_writes_to": [
+    "party_minilocations",
+    "party_scene_anchors",
+    "party_current_position"
+  ],
+  "x_blocking_validations": [
+    "all position IDs present",
+    "anchor has physical function",
+    "position supports first actions"
+  ]
+}

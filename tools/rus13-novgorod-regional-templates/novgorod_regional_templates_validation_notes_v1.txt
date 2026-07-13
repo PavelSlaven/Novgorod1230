@@ -1,0 +1,50 @@
+novgorod regional templates validation notes v1
+created_at_utc: 2026-07-05T12:30:00Z
+files_created: 17
+
+counts:
+- g5_scene_templates: 198
+- g4_types_in_map: 198
+- item_categories: 47
+- container_profiles: 32
+- npc_archetypes_total: 13
+- historical_key_npc_seeds: 12
+- non_historical_key_npc_seed_templates: 8
+- rumor_templates: 53
+- knowledge_categories: 20
+- route_knowledge_levels: 6
+- goods_price_rows: 65
+- wealth_profiles: 23
+- season_profiles: 12
+- route_modifiers: 29
+- conflict_templates: 40
+- deferred_event_templates: 41
+- blocking_issues_total: 0
+
+validation_summary:
+- novgorod_g5_scene_templates_v1.json: {'valid_json': True, 'size_bytes': 1944720, 'top_level_keys': ['metadata', 'materialization_policy', 'g4_type_category_index', 'g4_scene_templates', 'validation'], 'blocking_issues': []}
+- novgorod_item_profiles_v1.json: {'valid_json': True, 'size_bytes': 236969, 'top_level_keys': ['metadata', 'materialization_policy', 'item_categories', 'place_item_profiles', 'occupation_item_profiles', 'status_item_profiles', 'seasonal_item_variants', 'risk_and_ownership_rules', 'validation'], 'blocking_issues': []}
+- novgorod_container_profiles_v1.json: {'valid_json': True, 'size_bytes': 147934, 'top_level_keys': ['metadata', 'container_materialization_policy', 'container_profiles', 'container_content_resolution_rules', 'validation'], 'blocking_issues': []}
+- novgorod_property_rules_v1.json: {'valid_json': True, 'size_bytes': 13382, 'top_level_keys': ['metadata', 'property_layers', 'ownership_statuses', 'access_rules', 'theft_and_recognition_rules', 'debt_and_pledge_rules', 'church_and_monastery_property_rules', 'market_property_rules', 'llm_materialization_rules', 'validation'], 'blocking_issues': []}
+- novgorod_npc_archetypes_v1.json: {'valid_json': True, 'size_bytes': 73382, 'top_level_keys': ['metadata', 'npc_depth_policy', 'background_npc_archetypes', 'scene_npc_archetypes', 'key_npc_archetypes', 'place_population_profiles', 'occupation_presence_rules', 'npc_reaction_rules', 'npc_memory_rules', 'validation'], 'blocking_issues': []}
+- novgorod_key_npc_seeds_v1.json: {'valid_json': True, 'size_bytes': 55865, 'top_level_keys': ['metadata', 'historical_key_npc_seeds', 'non_historical_key_npc_seed_templates', 'promotion_rules', 'validation'], 'blocking_issues': []}
+- novgorod_npc_name_pools_v1.json: {'valid_json': True, 'size_bytes': 29469, 'top_level_keys': ['metadata', 'male_name_pool', 'female_name_pool', 'monastic_name_pool', 'nickname_patterns', 'patronymic_patterns', 'status_based_address', 'foreign_or_neighbor_name_notes', 'llm_name_rules', 'validation'], 'blocking_issues': []}
+- novgorod_rumor_templates_v1.json: {'valid_json': True, 'size_bytes': 78843, 'top_level_keys': ['metadata', 'rumor_truth_policy', 'rumor_templates', 'rumor_channels', 'rumor_distortion_rules', 'rumor_memory_rules', 'validation'], 'blocking_issues': []}
+- novgorod_common_knowledge_v1.json: {'valid_json': True, 'size_bytes': 40453, 'top_level_keys': ['metadata', 'knowledge_categories', 'social_group_knowledge_profiles', 'false_or_outdated_knowledge_profiles', 'player_knowledge_rules', 'validation'], 'blocking_issues': []}
+- novgorod_route_knowledge_rules_v1.json: {'valid_json': True, 'size_bytes': 27600, 'top_level_keys': ['metadata', 'route_knowledge_levels', 'social_group_route_knowledge', 'seasonal_route_knowledge', 'guide_rules', 'wrong_route_and_getting_lost_rules', 'map_knowledge_update_rules', 'validation'], 'blocking_issues': []}
+- novgorod_trade_rules_v1.json: {'valid_json': True, 'size_bytes': 21599, 'top_level_keys': ['metadata', 'exchange_forms', 'trade_place_rules', 'status_restrictions', 'seasonal_trade_rules', 'debt_pledge_and_witness_rules', 'market_conflict_rules', 'llm_trade_limits', 'validation'], 'blocking_issues': []}
+- novgorod_household_wealth_profiles_v1.json: {'valid_json': True, 'size_bytes': 70787, 'top_level_keys': ['metadata', 'wealth_profiles', 'profile_selection_rules', 'validation'], 'blocking_issues': []}
+- novgorod_weather_season_rules_v1.json: {'valid_json': True, 'size_bytes': 31912, 'top_level_keys': ['metadata', 'season_profiles', 'weather_profiles', 'body_state_effects', 'npc_schedule_effects', 'place_state_effects', 'scene_description_guidance', 'validation'], 'blocking_issues': []}
+- novgorod_route_season_modifiers_v1.json: {'valid_json': True, 'size_bytes': 44803, 'top_level_keys': ['metadata', 'route_modifier_profiles', 'edge_type_season_rules', 'transport_rules', 'crossing_rules', 'getting_lost_rules', 'risk_escalation_rules', 'validation'], 'blocking_issues': []}
+- novgorod_local_conflict_templates_v1.json: {'valid_json': True, 'size_bytes': 142914, 'top_level_keys': ['metadata', 'conflict_templates', 'conflict_escalation_rules', 'conflict_resolution_rules', 'status_and_law_effects', 'validation'], 'blocking_issues': []}
+- novgorod_deferred_event_templates_v1.json: {'valid_json': True, 'size_bytes': 123053, 'top_level_keys': ['metadata', 'deferred_event_templates', 'timer_rules', 'visibility_rules', 'memory_rules', 'validation'], 'blocking_issues': []}
+- novgorod_goods_prices_v1.tsv: {'valid_tsv': True, 'rows': 65, 'columns': 20, 'size_bytes': 80395}
+
+policy_checks:
+- no new permanent G1-G4 nodes created
+- G5 templates cover all map G4 location types but do not precreate party G5 anchors
+- no concrete non-historical party NPCs created
+- no concrete party items created
+- rumor truth remains unknown player-facing
+- exact goods prices are relative bands pending human historical audit
+- requires_human_historical_audit remains true in JSON validations

@@ -1,0 +1,18 @@
+﻿code,severity,layer,meaning,repair_route,commit_allowed
+E_JSON_PARSE,blocking,schema,Output is not valid JSON where JSON is required.,repair_agent_format_only,no
+E_SCHEMA_REQUIRED_FIELD,blocking,schema,Required contract field is missing.,repair_agent_format_only,no
+E_SCHEMA_ENUM,blocking,schema,Value is outside allowed enum/check list.,repair_agent_format_only,no
+E_UNKNOWN_CONFIDENT_FILL,blocking,repair,Repair filled an unknown with a confident invented fact.,retry_with_stricter_repair_prompt,no
+E_NEW_FACT_IN_REPAIR,blocking,repair,"Repair introduced a new NPC, item, route, event, motive or consequence.",discard_repair_retry_or_original_agent,no
+E_SOURCE_MISSING,blocking_or_warning,source,Result references a source ID not in source_records.,metadata_repair_or_needs_review_placeholder,only_if_marked_needs_review_and_not_used_as_approved
+E_SOURCE_STATUS_LAUNDERING,blocking,source,Draft/unresolved source used as approved or high confidence.,source_status_repair,no
+E_PARTY_FACT_CONFLICT,blocking,semantic,Result contradicts already fixed party fact.,semantic_repair_by_responsible_llm_agent,no
+E_WORLD_BASE_CONFLICT,blocking,semantic,Result contradicts approved world_base record without explicit conflict procedure.,semantic_repair_or_conflict_record,no
+E_POSITION_INCOMPLETE,blocking,semantic,Current or generated position lacks region/place/location/minilocation/anchor.,semantic_repair_position_chain,no
+E_ITEM_OWNERSHIP_INCOMPLETE,blocking,semantic,Significant item lacks owner/holder/location/access/risk.,semantic_repair_item_layer,no
+E_VISIBILITY_LEAK_HIDDEN_FACT,blocking,visibility,Visible/prose output reveals hidden state or objective truth not known to character.,visible_context_repair_then_prose_rewrite,no
+E_VISIBLE_PROSE_HAS_TECHNICAL_DATA,blocking,visibility,"Player-facing prose contains IDs, raw JSON, DCs, hidden modifiers or internal calculations.",prose_rewrite_from_visible_package_only,no
+E_DB_FK_MISSING,blocking,db_write_plan,Write plan references missing world_base or party record.,structuring_repair_or regenerate materialization,no
+E_PARTIAL_COMMIT_RISK,blocking,commit,Some required writes would be missing or out of order.,write_plan_repair,no
+W_LOW_CONFIDENCE_ALLOWED,warning,source,Low confidence/draft material used only as labeled background or draft party note.,none,yes_with_warning
+W_VISIBLE_UNCERTAINTY,warning,visibility,Output includes uncertainty correctly marked as rumor/guess/limited knowledge.,none,yes

@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SchemaValidationReport",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_id",
+    "is_valid",
+    "errors",
+    "repairable"
+  ],
+  "properties": {
+    "schema_id": {
+      "type": "string"
+    },
+    "is_valid": {
+      "type": "boolean"
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "code",
+          "path",
+          "message"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "severity": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "repairable": {
+      "type": "boolean"
+    },
+    "recommended_repair_agent": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

@@ -1,0 +1,1642 @@
+# Этап 20. Формирование visible context package
+
+## 0.1. Digest binding Stage 20 → Stage 21 → Stage 22
+
+Stage 20 после успешного code precheck вычисляет `visible_context_package_digest` как SHA-256 канонического JSON `visible_context_package`. Digest является технической защитой и не создаёт смысловых сущностей мира.
+
+`stage20_visible_context_result` обязан содержать:
+
+```json
+{
+  "visible_context_package": {},
+  "visible_context_package_digest": "sha256:<canonical-json-digest>",
+  "visible_context_code_precheck": {}
+}
+```
+
+Stage 21 принимает пакет только вместе с этим digest и независимо пересчитывает его. Stage 22 получает пакет только после совпадения digest Stage 20, Stage 21 result и `visible_context_audit`.
+
+## 1. Назначение этапа
+
+Формирование `visible_context_package` — это этап, на котором система собирает безопасный пакет видимого контекста для narrator.
+
+Этап 20 формирует кандидат `visible_context_package`, выполняет структурную, ссылочную и boundary-проверку кодом и возвращает технический `stage20_visible_context_result`.
+
+Этап 20 не является независимым semantic audit gate и не разрешает передачу пакета narrator. После успешного code precheck кандидат обязательно передаётся на отдельный этап 21 — аудит visible context.
+
+Только успешный этап 21 может разрешить:
+
+- передачу `visible_context_package` narrator;
+- запись утверждённого visible context snapshot;
+- генерацию player-facing prose.
+
+Narrator получает пакет только после Stage 21.
+Narrator не получает полный `hidden_state`.
+Narrator не получает внутреннюю правду сцены.
+Narrator не получает скрытые мотивы NPC, закрытое содержимое контейнеров, будущие события, private knowledge или системные причины.
+
+Короткая формула:
+
+```text id="bo3hvx"
+full_hidden_scene_state
++ character_knowledge_map
++ g5_scene_graph
++ NPC visibility
++ item visibility
++ time/light/weather constraints
++ player current position
+→ visible_context_package candidate
+→ visible_context_code_precheck
+→ stage20_visible_context_result
+→ Stage 21 independent semantic audit
+→ narrator
+```
+
+Главный вопрос этапа:
+
+```text id="6vu6i3"
+Что персонаж прямо сейчас может воспринять, вспомнить, знать, предположить или заметить без раскрытия hidden state?
+```
+
+## 2. Главное правило этапа
+
+`visible_context_package` — это не пересказ всей сцены.
+
+Это безопасная выборка из утверждённого состояния партии.
+
+В пакет попадает только:
+
+```text id="w7h6t7"
+видимое;
+слышимое;
+ощутимое телом;
+известное персонажу;
+разумно предполагаемое персонажем;
+уже раскрытое через reveal condition;
+явные видимые следы скрытого;
+доступные игроку направления действия.
+```
+
+В пакет не попадает:
+
+```text id="zu5nmk"
+скрытый мотив NPC;
+истинное содержимое закрытого контейнера;
+истинный владелец предмета, если персонаж этого не знает;
+будущий таймер события;
+offscreen-действие без видимого признака;
+точная причина чужого поведения;
+скрытая опасность без признаков;
+истинность слуха;
+полная карта;
+raw JSON;
+audit;
+repair;
+system notes;
+prompt;
+```
+
+Если факт есть только в `hidden_state`, но нет reveal condition, он не попадает в visible context.
+
+## 3. Место этапа в pipeline
+
+```text id="uwvdum"
+1. Заявка игрока
+2. Нормализация заявки
+3. Выбор исторической рамки
+4. Загрузка регионального контекста
+5. Подбор стартовых G1–G4 кандидатов
+6. Подбор place templates
+7. Подбор NPC-кандидатов
+8. Подбор предметных профилей
+9. Выбор стартового узла
+10. Аудит стартового места
+11. Генерация персонажа
+12. Аудит персонажа
+13. Материализация G5-сцены
+14. Аудит G5-сцены
+15. Размещение стартовых NPC
+16. Размещение стартовых предметов
+17. Проверка времени и света
+18. Формирование карты знаний персонажа
+19. Формирование полного hidden state
+20. Формирование visible context package
+21. Аудит visible context package
+22. Narrator prose
+```
+
+Этап 20 должен быть последним смысловым фильтром перед narrator. Если он ошибается, narrator неизбежно получит неверный или слишком широкий контекст.
+
+## 4. Разделение слоёв
+
+### 4.1. Full hidden state
+
+Хранит внутреннюю правду сцены:
+
+```text id="kfvm6x"
+NPC лжёт;
+дверь закрыта не случайно;
+сундук чужой;
+контейнер содержит предмет, но закрыт;
+у NPC есть тайный мотив;
+через 5 минут кто-то войдёт;
+в темноте есть риск;
+вещь примечена владельцем;
+```
+
+### 4.2. Character knowledge map
+
+Хранит знание персонажа:
+
+```text id="e0hpn0"
+персонаж знает местный обычай;
+персонаж слышал слух;
+персонаж знает ближайший путь;
+персонаж не знает, что в контейнере;
+персонаж ошибочно считает, что путь безопасен;
+```
+
+### 4.3. Visible context package
+
+Хранит только то, что можно передать narrator:
+
+```text id="7d2axo"
+дверь закрыта;
+у NPC настороженный вид;
+сундук стоит у стены;
+в темноте видны только силуэты;
+из-за двери слышен звук;
+персонаж знает, что чужое брать рискованно;
+```
+
+## 5. Вход этапа
+
+```json id="x2sv75"
+{
+  "version": 1,
+  "schema": "visible_context_builder_input",
+  "request_id": "string",
+
+  "historical_frame": {
+    "version": 1,
+    "schema": "historical_frame",
+    "region": {
+      "region_id": "string"
+    },
+    "year": {
+      "value": 0
+    },
+    "calendar": {
+      "season": "spring | summer | autumn | winter"
+    },
+    "clock": {
+      "day": 1,
+      "hour": 0,
+      "minute": 0,
+      "time_of_day": "dawn | morning | day | afternoon | evening | dusk | night | deep_night",
+      "light_profile": "dark | dim | daylight | twilight | indoor_lit | firelit | moonlit | obscured"
+    }
+  },
+
+  "weather_state": {
+    "version": 1,
+    "schema": "weather_state"
+  },
+
+  "selected_start_node": {
+    "version": 1,
+    "schema": "selected_start_node"
+  },
+
+  "player_character": {
+    "version": 1,
+    "schema": "player_character_game_profile"
+  },
+
+  "current_position": {
+    "region_id": "string",
+    "place_id": "string",
+    "location_id": "string",
+    "minilocation_id": "string",
+    "anchor_id": "string",
+    "last_route_id": "string | null"
+  },
+
+  "g5_scene_graph": {
+    "version": 1,
+    "schema": "g5_scene_graph_draft"
+  },
+
+  "g5_scene_audit": {
+    "version": 1,
+    "schema": "g5_scene_audit",
+    "pass": true
+  },
+
+  "initial_npc_placement": {
+    "version": 1,
+    "schema": "initial_npc_placement_draft"
+  },
+
+  "npc_placement_audit": {
+    "version": 1,
+    "schema": "initial_npc_placement_audit",
+    "pass": true
+  },
+
+  "initial_item_placement": {
+    "version": 1,
+    "schema": "initial_item_placement_draft"
+  },
+
+  "item_placement_audit": {
+    "version": 1,
+    "schema": "initial_item_placement_audit",
+    "pass": true
+  },
+
+  "time_light_consistency_audit": {
+    "version": 1,
+    "schema": "time_light_consistency_audit",
+    "pass": true,
+    "normalized_visibility_constraints": {}
+  },
+
+  "character_knowledge_map": {
+    "version": 1,
+    "schema": "character_knowledge_map"
+  },
+
+  "character_knowledge_map_audit": {
+    "version": 1,
+    "schema": "character_knowledge_map_audit",
+    "pass": true
+  },
+
+  "full_hidden_scene_state": {
+    "version": 1,
+    "schema": "full_hidden_scene_state"
+  },
+
+  "full_hidden_state_audit": {
+    "version": 1,
+    "schema": "full_hidden_state_audit",
+    "pass": true
+  },
+
+  "visible_context_policy": {
+    "require_current_position_match": true,
+    "require_time_light_consistency": true,
+    "require_character_knowledge_boundary": true,
+    "require_hidden_state_filter": true,
+    "require_reveal_conditions": true,
+    "require_source_trace": true,
+    "allow_visible_hints_from_hidden_state": true,
+    "allow_reasonable_character_inference": true,
+    "reject_hidden_truth_leak": true,
+    "reject_private_motives": true,
+    "reject_closed_container_contents": true,
+    "reject_future_events": true,
+    "reject_unknown_exact_routes": true,
+    "reject_unseen_items": true,
+    "reject_raw_json_output_to_narrator": true,
+    "do_not_create_new_world_facts": true,
+    "do_not_change_clock": true,
+    "do_not_change_scene_state": true
+  }
+}
+```
+
+### 5.1. Единственный источник current_position до initial commit
+
+`current_position` формируется оркестратором только из утверждённого результата Stage 13:
+
+```text
+g5_scene_graph.player_start_position
++ g5_scene_graph.parent_location
+→ current_position
+```
+
+Использование `selected_start_node`, `historical_frame`, `player_seed_contract` или других параллельных fallback-источников для заполнения отсутствующих полей позиции запрещено. Эти слои используются только для проверки согласованности. Если Stage 13 не содержит полного `player_start_position` или его ссылки не существуют в G5, Stage 20 блокируется и возвращается к Stage 13/14.
+
+После initial commit единственным источником является текущий read model `party_current_position`.
+
+## 6. Выход этапа
+
+Stage 20 возвращает единый технический bundle:
+
+```json
+{
+  "version": 1,
+  "schema": "stage20_visible_context_result",
+  "request_id": "string",
+  "pass": true,
+
+  "input_snapshot": {},
+
+  "visibility_filter": {
+    "version": 1,
+    "schema": "visible_context_visibility_filter",
+    "current_anchor_id": "string",
+    "current_minilocation_id": "string",
+    "visible_anchor_ids": [],
+    "audible_anchor_ids": [],
+    "reachable_anchor_ids": [],
+    "visible_npc_ids": [],
+    "audible_npc_ids": [],
+    "identified_npc_ids": [],
+    "visible_item_ids": [],
+    "inspectable_item_ids": [],
+    "visible_container_ids": [],
+    "known_but_not_visible_refs": [],
+    "hidden_until_action_refs": [],
+    "allowed_visible_hint_refs": [],
+    "forbidden_hidden_fact_ids": []
+  },
+
+  "visible_context_package": {
+    "version": 1,
+    "schema": "visible_context_package",
+    "request_id": "string",
+    "visible_context_status": "formed | empty_limited | blocked | requires_repair",
+    "frame": {},
+    "position": {},
+    "narrator_scope": {},
+    "visible_scene_facts": [],
+    "visible_anchors": [],
+    "visible_exits": [],
+    "visible_npcs": [],
+    "visible_items": [],
+    "visible_containers": [],
+    "visible_risks": [],
+    "audible_context": [],
+    "smell_context": [],
+    "touch_body_context": [],
+    "weather_light_context": [],
+    "known_context": [],
+    "rumor_context": [],
+    "uncertain_context": [],
+    "available_actions_context": [],
+    "hidden_filtered_out": [],
+    "visible_scene_dossier": {},
+    "source_trace": [],
+    "audit_self_check": {}
+  },
+
+  "visible_context_package_digest": "sha256:<canonical-json-digest>",
+
+  "visible_context_code_precheck": {
+    "version": 1,
+    "schema": "visible_context_code_precheck",
+    "pass": true,
+    "checks": {},
+    "concerns": [],
+    "evidence": []
+  },
+
+  "repair_history": [],
+  "diagnostics": {},
+
+  "commit_permission": {
+    "can_continue_to_visible_context_audit": true,
+    "can_send_to_narrator": false,
+    "can_write_visible_context_snapshot": false,
+    "can_generate_player_facing_prose": false,
+    "reasons": []
+  }
+}
+```
+
+Под ключом Stage 20 хранится весь bundle. Семантический пакет извлекается только как `stage20_visible_context_result.visible_context_package`.
+
+## 7. Что visible context обязан дать narrator
+
+Narrator должен получить достаточно данных, чтобы написать первый игровой текст, но не достаточно, чтобы раскрыть скрытую правду.
+
+Пакет должен отвечать на вопросы:
+
+```text id="dlh7u3"
+где персонаж сейчас;
+какое время и свет;
+какая погода;
+что он видит прямо перед собой;
+что слышит;
+что ощущает телом;
+какие NPC заметны;
+какие NPC не опознаны;
+какие предметы видны;
+какие контейнеры видны, но закрыты;
+какие выходы/пути видны;
+что персонаж знает о месте;
+что персонаж не знает;
+какие риски можно намекнуть;
+какие действия разумно доступны;
+что narrator не имеет права раскрывать.
+```
+
+## 8. Что narrator не должен получать
+
+Narrator не должен получать:
+
+```text id="zp56g9"
+full_hidden_scene_state целиком;
+private_motives;
+true_ownership_unknown_to_character;
+closed_container_contents;
+hidden_event_timers;
+future reactions;
+NPC private knowledge;
+offscreen truth;
+system-only discovery rules;
+truth_status_for_system for rumors;
+actual_truth_hidden_from_character;
+audit internals;
+repair internals;
+raw prompts;
+validation errors;
+source-only notes;
+```
+
+Если narratorу нужно знать запреты, он получает только `must_not_include` и `forbidden_surfaces`, а не саму полную скрытую правду.
+
+## 9. Источники видимого
+
+### 9.1. G5 scene graph
+
+Из G5 берутся:
+
+```text id="ngqh33"
+текущий anchor;
+текущая minilocation;
+visible_anchor_ids;
+audible_anchor_ids;
+reachable_anchor_ids;
+visible exits;
+access states;
+blocked/closed/locked visible states;
+light source anchors;
+cover/obstacle anchors;
+```
+
+G5 не даёт narratorу скрытые причины. Только видимое положение и доступ.
+
+### 9.2. NPC placement
+
+Из NPC берутся только player-facing слои:
+
+```text id="3pi06o"
+display_label;
+visible_to_player;
+audible_to_player;
+identified_by_player;
+visible activity;
+attention hint;
+witness hint;
+interaction availability;
+visible disposition;
+known relation if character knows it;
+```
+
+Не берутся:
+
+```text id="dcrsla"
+private motive;
+private knowledge;
+full biography;
+future reaction;
+true loyalty;
+hidden fear;
+hidden debt;
+```
+
+### 9.3. Item placement
+
+Из предметов берутся:
+
+```text id="ksgv59"
+visible_to_player_now;
+visible_if_inspected;
+known_to_player_now;
+item title or vague label;
+size;
+placement;
+condition if visible;
+access_state visible layer;
+risk hint;
+```
+
+Не берутся:
+
+```text id="t8xkvj"
+hidden true value;
+hidden owner;
+closed container contents;
+hidden markings;
+unseen item;
+future consequence of taking item;
+```
+
+### 9.4. Hidden state
+
+Из hidden state можно брать только:
+
+```text id="h067m9"
+visible_hint;
+allowed_substitute;
+already_triggered reveal;
+reveal_condition result if already satisfied;
+risk cue if visible_hint_level != none;
+forbidden_output_rules;
+```
+
+Нельзя брать:
+
+```text id="d2k2qc"
+hidden fact itself;
+private motive itself;
+closed contents itself;
+future event timer itself;
+offscreen truth itself;
+```
+
+### 9.5. Character knowledge map
+
+Из карты знаний берутся:
+
+```text id="vz9dc7"
+known routes;
+known nearby paths;
+known people;
+known social rules;
+known dangers;
+known resources;
+rumors as rumors;
+uncertain knowledge as uncertainty;
+knowledge gaps;
+forbidden knowledge boundaries;
+```
+
+Слухи не превращаются в факты.
+Ошибочные знания не подаются как авторская истина.
+Незнание должно сохраняться.
+
+### 9.6. Time/light audit
+
+Из проверки времени и света берутся:
+
+```text id="5a7lw4"
+normalized_visibility_constraints;
+forbidden daylight/night terms;
+visible_without_action;
+visible_only_on_inspection;
+audible_but_not_visible;
+hidden_until_action;
+required_visible_scene_terms;
+```
+
+Это защищает narrator от ошибки, когда ночь превращается в “световой день”.
+
+## 10. Алгоритм этапа
+
+### 10.1. Проверить gate-условия
+
+Код проверяет:
+
+```text id="posw2d"
+g5_scene_audit.pass = true
+npc_placement_audit.pass = true
+item_placement_audit.pass = true
+time_light_consistency_audit.pass = true
+character_knowledge_map_audit.pass = true
+full_hidden_state_audit.pass = true
+current_position заполнена
+```
+
+Если любой gate провален, visible context не формируется.
+
+### 10.2. Построить visibility filter
+
+Код формирует фильтр:
+
+```json id="xay45p"
+{
+  "visibility_filter": {
+    "current_anchor_id": "string",
+    "visible_anchor_ids": [],
+    "audible_anchor_ids": [],
+    "visible_npc_ids": [],
+    "audible_npc_ids": [],
+    "visible_item_ids": [],
+    "visible_container_ids": [],
+    "known_but_not_visible_refs": [],
+    "hidden_until_action_refs": [],
+    "forbidden_hidden_fact_ids": []
+  }
+}
+```
+
+### 10.3. Отобрать видимые anchors
+
+Для каждого anchor проверяется:
+
+```text id="ydbkzf"
+anchor exists
+anchor is in selected G4
+anchor visibility allows output
+anchor not hidden_from_player
+anchor not forbidden by time/light
+anchor is within visible range or audible range
+```
+
+### 10.4. Отобрать видимые exits
+
+Выход может быть видимым, даже если неизвестно, куда он ведёт.
+
+Формат:
+
+```json id="4t37lj"
+{
+  "visible_exit_id": "visible_exit_001",
+  "anchor_id": "g5_anchor_002",
+  "exit_label": "string",
+  "access_state_visible": "open | closed | locked | guarded | blocked | unknown",
+  "known_destination": "string | null",
+  "destination_known_level": "unknown | guessed | known_label | exact",
+  "can_attempt_now": true,
+  "risk_hint": "none | low | medium | high | unknown",
+  "must_not_claim_exact_destination": true
+}
+```
+
+### 10.5. Отобрать видимых NPC
+
+Для каждого NPC проверяется:
+
+```text id="jltwi3"
+visible_to_player=true
+или audible_to_player=true
+или character already knows this NPC is present
+или reveal condition already triggered
+```
+
+В visible context попадает только player-facing label.
+
+Пример:
+
+```json id="evxiov"
+{
+  "visible_npc_id": "visible_npc_001",
+  "npc_instance_id": "npc_001",
+  "display_label": "мужик у ворот",
+  "identity_known_to_player": false,
+  "name": null,
+  "visible_activity": "чинит упряжь",
+  "visible_disposition_hint": "занят, но может заметить громкое действие",
+  "attention_hint": "смотрит не постоянно",
+  "interaction_available": "can_approach | can_address | risky | unavailable",
+  "must_not_reveal": [
+    "private_motive",
+    "private_knowledge",
+    "future_reaction"
+  ]
+}
+```
+
+### 10.6. Отобрать видимые предметы
+
+Для каждого предмета проверяется:
+
+```text id="yvt6e1"
+visible_to_player_now=true
+или known_to_player_now=true
+или visible_if_inspected=true and can be mentioned as searchable detail
+```
+
+Видимое описание должно соответствовать знанию персонажа.
+
+Пример:
+
+```json id="b6l2s5"
+{
+  "visible_item_id": "visible_item_001",
+  "item_instance_id": "item_001",
+  "visible_label": "рабочий инструмент на лавке",
+  "exact_identity_known": false,
+  "visible_condition": "обычный",
+  "access_hint": "лежит близко, но может быть чужим",
+  "risk_hint": "возможен свидетель",
+  "can_take_now": false,
+  "can_inspect_now": true,
+  "must_not_reveal": [
+    "true_owner_if_unknown",
+    "hidden_value",
+    "hidden_markings"
+  ]
+}
+```
+
+### 10.7. Отобрать видимые контейнеры
+
+Контейнер может быть видимым, но его содержимое остаётся скрытым.
+
+```json id="f4atjr"
+{
+  "visible_container_id": "visible_container_001",
+  "container_instance_id": "container_001",
+  "visible_label": "закрытый ларь у стены",
+  "visible_state": "closed",
+  "content_visible": false,
+  "content_summary": null,
+  "access_hint": "открытие может потребовать разрешения",
+  "risk_hint": "рядом есть люди",
+  "can_open_now": false,
+  "can_inspect_now": true,
+  "must_not_reveal": [
+    "content_truth",
+    "true_owner_if_unknown",
+    "hidden_traces_without_inspection"
+  ]
+}
+```
+
+### 10.8. Отобрать слышимое
+
+Слышимое может быть важнее видимого, особенно ночью.
+
+```json id="wdfdct"
+{
+  "audible_context_id": "audible_001",
+  "source_ref": {
+    "anchor_id": "g5_anchor_003",
+    "npc_instance_id": "npc_001 | null",
+    "hidden_fact_id": "string | null"
+  },
+  "audible_label": "глухой звук за дверью",
+  "direction_known": "yes | no | approximate",
+  "source_known": false,
+  "confidence": "low | medium | high",
+  "must_not_reveal": [
+    "actual_source_if_hidden",
+    "private_action_if_unknown"
+  ]
+}
+```
+
+### 10.9. Отобрать запах, температуру, телесные ощущения
+
+```json id="k5mmk7"
+{
+  "touch_body_context": [
+    {
+      "body_context_id": "body_visible_001",
+      "sense_type": "cold | heat | pain | hunger | fatigue | wet | weight | smell | smoke | noise",
+      "visible_label": "холод пробирает через одежду",
+      "mechanical_basis_ref": "player_character.body.vigor",
+      "urgency": "none | low | medium | high",
+      "must_not_claim_hidden_cause": true
+    }
+  ]
+}
+```
+
+### 10.10. Отобрать known context
+
+Из `character_knowledge_map` берётся только то, что полезно текущей сцене:
+
+```text id="rtsrtd"
+известный ближайший путь;
+известный человек в сцене;
+известное социальное правило;
+известная опасность;
+слух, относящийся к текущему месту;
+пробел знания, который может стать действием;
+```
+
+Пример:
+
+```json id="d5r8lc"
+{
+  "known_context_id": "known_context_001",
+  "knowledge_type": "social_rule",
+  "summary_for_narrator": "персонаж понимает, что чужое брать рискованно",
+  "confidence": "high",
+  "should_surface_to_player": true,
+  "surface_mode": "hint | explicit | optional",
+  "must_not_explain_hidden_truth": true
+}
+```
+
+### 10.11. Сформировать доступные действия
+
+Visible context может дать narrator и UI список action affordances, но только из видимого/известного.
+
+```json id="f3q5eu"
+{
+  "available_action_context": [
+    {
+      "action_context_id": "action_001",
+      "action_kind": "move | inspect | ask | listen | wait | take | open | warm_up | hide | leave | call | trade | rest",
+      "target_ref": {
+        "anchor_id": "string | null",
+        "npc_instance_id": "string | null",
+        "item_instance_id": "string | null",
+        "container_instance_id": "string | null"
+      },
+      "player_facing_label_basis": "visible | known | audible | inferred",
+      "risk_hint": "none | low | medium | high | unknown",
+      "must_not_reveal_hidden_truth": true
+    }
+  ]
+}
+```
+
+Пример допустимого label:
+
+```text id="26um5m"
+Осмотреть закрытый ларь.
+```
+
+Пример недопустимого label:
+
+```text id="szwgpe"
+Открыть ларь, где лежит украденная грамота.
+```
+
+## 11. Visible scene dossier
+
+`visible_scene_dossier` — это не финальная проза. Это сжатая заготовка для narrator.
+
+```json id="l1rhrc"
+{
+  "visible_scene_dossier": {
+    "summary": "Ночная зимняя сцена в текущей минилокации; видимость ограничена, рядом заметны закрытая дверь, один занятый человек и закрытый контейнер.",
+    "must_include": [
+      "current position",
+      "time/light marker",
+      "weather/body pressure",
+      "immediate visible anchors",
+      "visible NPC labels",
+      "visible exits or lack of exits",
+      "immediate need or pressure if character knows it"
+    ],
+    "may_include": [
+      "audible cues",
+      "uncertain hints",
+      "visible risks",
+      "known social rule"
+    ],
+    "must_not_include": [
+      "private NPC motives",
+      "closed container contents",
+      "true ownership if unknown",
+      "future event timers",
+      "hidden route truth",
+      "system-only facts"
+    ]
+  }
+}
+```
+
+Narrator получает этот dossier, но не получает право расширять его новыми фактами.
+
+## 12. Правила отбора из hidden state
+
+### 12.1. Скрытый мотив NPC
+
+Hidden fact:
+
+```text id="i4gr1w"
+NPC хочет не пустить персонажа к ларю.
+```
+
+Visible output allowed:
+
+```text id="i6xt52"
+NPC стоит достаточно близко, чтобы заметить движение к ларю.
+```
+
+Visible output forbidden:
+
+```text id="8ht32c"
+NPC не хочет подпускать тебя к ларю.
+```
+
+### 12.2. Закрытый контейнер
+
+Hidden fact:
+
+```text id="5ma1ep"
+В ларе лежит предмет.
+```
+
+Visible output allowed:
+
+```text id="ux72g9"
+Закрытый ларь стоит у стены.
+```
+
+Visible output forbidden:
+
+```text id="0tb4eu"
+В закрытом ларе лежит предмет.
+```
+
+### 12.3. Чужая вещь
+
+Hidden fact:
+
+```text id="ez1mvw"
+Инструмент принадлежит хозяину.
+```
+
+Visible output allowed:
+
+```text id="i6izzw"
+Инструмент выглядит не брошенным; брать его на виду может быть рискованно.
+```
+
+Visible output forbidden:
+
+```text id="tdahya"
+Это инструмент хозяина, и он рассердится.
+```
+
+### 12.4. Будущий timer
+
+Hidden fact:
+
+```text id="u3ke3i"
+Через 5 минут войдёт сторож.
+```
+
+Visible output allowed:
+
+```text id="j45wnv"
+За дверью временами слышен глухой звук.
+```
+
+Visible output forbidden:
+
+```text id="t9e2js"
+Через пять минут войдёт сторож.
+```
+
+## 13. Работа LLM на этапе
+
+LLM на этом этапе допустима и часто нужна, потому что фильтрация visible context — смысловая задача.
+
+Код может проверить ID, статусы, visibility flags, forbidden refs и schema, но код не должен сам решать, как аккуратно превратить скрытый факт в безопасный видимый намёк.
+
+LLM делает:
+
+```text id="zcve0k"
+сжимает видимый слой;
+формулирует безопасные labels;
+отделяет видимое от скрытого;
+выбирает, какие знания персонажа релевантны;
+собирает narrator_scope;
+создаёт must_include/must_not_include;
+формирует доступные action affordances без hidden leak;
+```
+
+LLM не делает:
+
+```text id="rqo2qf"
+не создаёт новые факты;
+не меняет состояние мира;
+не меняет hidden state;
+не меняет карту знаний;
+не меняет время/свет;
+не пишет финальную narrator prose;
+не раскрывает скрытую правду.
+```
+
+## 14. LLM-параметры
+
+### 14.1. `VisibleContextBuilder`
+
+Назначение: собрать безопасный visible context package для narrator.
+
+```json id="gmo95w"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 10000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 100000,
+    "hard_input_limit_tokens": 240000,
+    "reserve_output_tokens": 10000
+  }
+}
+```
+
+Используется reasoning-модель, потому что этап требует отделить видимое, слышимое, известное и осторожно предполагаемое от скрытой системной правды. DeepSeek reasoning/thinking mode включается через `thinking`, а JSON output — через `response_format: {"type":"json_object"}`.
+
+### 14.2. Независимый auditor вынесен в Stage 21
+
+Stage 20 не вызывает `VisibleContextAuditor` и не создаёт независимый semantic audit.
+
+Единственный независимый semantic auditor — `VisibleContextSemanticAuditor` этапа 21. Он получает кандидат `visible_context_package`, code precheck и authoritative inputs. Только Stage 21 может вернуть разрешение narrator.
+
+### 14.3. `VisibleContextFormatRepairer`
+
+Назначение: исправить только JSON-формат.
+
+```json id="ddhot6"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-flash",
+  "thinking": {
+    "type": "disabled"
+  },
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "max_tokens": 5000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 40000,
+    "hard_input_limit_tokens": 100000,
+    "reserve_output_tokens": 5000
+  }
+}
+```
+
+Для JSON output нужно передавать `response_format: {"type":"json_object"}`, явно использовать слово `json` в prompt, дать пример требуемого формата и выделять достаточный `max_tokens`, чтобы ответ не был обрезан.
+
+### 14.4. `VisibleContextSemanticRepairer`
+
+Назначение: исправить смысловые ошибки visible context без изменения world state.
+
+```json id="vv11go"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 10000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 100000,
+    "hard_input_limit_tokens": 240000,
+    "reserve_output_tokens": 10000
+  }
+}
+```
+
+## 15. Prompt: VisibleContextBuilder
+
+```md id="ygahjj"
+# Роль
+
+Ты VisibleContextBuilder для исторической текстовой RPG.
+
+# Задача
+
+Собери visible_context_package для narrator.
+
+# Главное правило
+
+Ты не создаёшь мир.
+Ты не создаёшь новые места.
+Ты не создаёшь новых NPC.
+Ты не создаёшь новые предметы.
+Ты не меняешь hidden state.
+Ты не меняешь character knowledge.
+Ты не пишешь финальную прозу.
+Ты только отбираешь безопасный видимый/слышимый/известный персонажу контекст.
+
+# Источники
+
+Используй только:
+- historical_frame
+- weather_state
+- current_position
+- player_character
+- g5_scene_graph
+- initial_npc_placement
+- initial_item_placement
+- time_light_consistency_audit
+- character_knowledge_map
+- full_hidden_scene_state
+- visible_context_policy
+
+# Обязательные правила
+
+1. В visible context попадает только то, что персонаж видит, слышит, чувствует, знает или может осторожно предположить.
+2. Hidden state нельзя раскрывать напрямую.
+3. Private NPC motives нельзя раскрывать.
+4. Closed container contents нельзя раскрывать.
+5. Future event timers нельзя раскрывать.
+6. True ownership нельзя раскрывать, если character_knowledge_map не знает это.
+7. Слух нельзя подавать как факт.
+8. Mistaken belief нельзя подавать как авторскую истину.
+9. Нельзя показывать unseen items.
+10. Нельзя давать exact route destination, если персонаж его не знает.
+11. Нельзя менять clock/light/weather.
+12. Нельзя использовать daylight terms at night или night terms at day.
+13. Дай narrator_scope: что можно и что нельзя включать narrator.
+14. Сформируй must_include, may_include, must_not_include.
+
+# Формат
+
+Верни только json.
+
+schema:
+"visible_context_package"
+
+version:
+1
+```
+
+## 16. Независимый semantic audit
+
+Prompt независимого аудитора не исполняется внутри Stage 20. Он определён в нормативе Stage 21.
+
+Stage 20 передаёт в Stage 21:
+
+- `visible_context_package`;
+- `visible_context_code_precheck`;
+- authoritative frame/position/weather/light;
+- G5, NPC и item placement layers;
+- character knowledge map;
+- full hidden state и его audit.
+
+Stage 21 не исправляет пакет молча. При ошибке он возвращает `pass=false`, concerns, evidence и repair route.
+
+## 17. Prompt: VisibleContextFormatRepairer
+
+```md id="gmez4w"
+# Роль
+
+Ты VisibleContextFormatRepairer.
+
+# Задача
+
+Исправь только формат JSON visible_context_package. Формат visible_context_audit относится исключительно к Stage 21.
+
+# Главное правило
+
+Не меняй смысл.
+Не добавляй видимые факты.
+Не удаляй факты.
+Не меняй refs.
+Не раскрывай hidden state.
+Не создавай narrator prose.
+
+# Разрешено
+
+- убрать markdown;
+- привести schema/version;
+- переименовать ошибочные поля;
+- добавить отсутствующие служебные поля как null/[];
+- перенести свободный текст в notes;
+- удалить raw prose, если она выходит за формат.
+
+# Запрещено
+
+- создавать NPC;
+- создавать items;
+- создавать routes;
+- создавать anchors;
+- менять clock/weather/light;
+- раскрывать hidden facts;
+- писать финальную prose.
+
+# Формат
+
+Верни только json.
+```
+
+## 18. Prompt: VisibleContextSemanticRepairer
+
+```md id="81xgx3"
+# Роль
+
+Ты VisibleContextSemanticRepairer.
+
+# Задача
+
+Исправь visible_context_package по validationErrors и audit concerns.
+
+# Главное правило
+
+Исправляй только visible context.
+Не меняй world state.
+Не меняй hidden state.
+Не меняй character knowledge.
+Не меняй time/light/weather.
+Не создавай новые факты.
+
+# Источники
+
+Используй только:
+- validationErrors
+- audit.concerns
+- исходный visible_context_package
+- historical_frame
+- weather_state
+- current_position
+- g5_scene_graph
+- initial_npc_placement
+- initial_item_placement
+- character_knowledge_map
+- full_hidden_scene_state
+
+# Если обнаружен hidden leak
+
+Удали прямое раскрытие или замени на разрешённый visible hint из forbidden_output_rules / allowed_substitute / visible_hint.
+
+# Если факт не имеет visible/known basis
+
+Перенеси его в hidden_filtered_out или удали из visible context.
+
+# Запрещено
+
+- раскрывать private motive;
+- раскрывать closed container contents;
+- раскрывать future timer;
+- раскрывать exact route unknown to character;
+- писать narrator prose.
+
+# Формат
+
+Верни только json visible_context_package.
+```
+
+## 19. Code precheck
+
+Перед передачей кандидата в Stage 21 код должен выполнить hard validation:
+
+```json id="c527xe"
+{
+  "version": 1,
+  "schema": "visible_context_code_precheck",
+  "pass": true,
+  "checks": {
+    "schema_valid": true,
+    "current_position_matches": true,
+    "clock_matches": true,
+    "season_matches": true,
+    "weather_matches": true,
+    "light_profile_matches": true,
+    "all_visible_anchor_refs_exist": true,
+    "all_visible_npc_refs_exist": true,
+    "all_visible_item_refs_exist": true,
+    "all_visible_container_refs_exist": true,
+    "no_hidden_fact_ids_in_visible_output": true,
+    "no_private_motives_revealed": true,
+    "no_closed_container_contents_revealed": true,
+    "no_future_events_revealed": true,
+    "no_unknown_true_ownership_revealed": true,
+    "no_unseen_items_revealed": true,
+    "no_new_world_entities_created": true,
+    "no_narrator_prose_created": true,
+    "source_trace_present": true
+  },
+  "concerns": [],
+  "evidence": []
+}
+```
+
+Если code precheck провален, Stage 21 не запускается. Кандидат и ошибки precheck передаются в Stage 20 semantic repair.
+
+## 20. Validation rules
+
+Код обязан проверить:
+
+1. `schema === "visible_context_package"`.
+2. `version === 1`.
+3. `visible_context_status` входит в enum.
+4. `position` совпадает с `current_position`.
+5. `frame.clock` совпадает с `historical_frame.clock`.
+6. `frame.season` совпадает с `historical_frame.calendar.season`.
+7. `frame.weather_state` совпадает с `weather_state`.
+8. `frame.light_profile` совпадает с `clock.light_profile` или утверждённым normalized light.
+9. Все visible anchors существуют.
+10. Все visible NPC существуют.
+11. Все visible items существуют.
+12. Все visible containers существуют.
+13. Все visible exits ссылаются на G5 anchor/edge.
+14. Visible NPC не содержит private motives.
+15. Visible NPC не содержит private knowledge.
+16. Visible item не содержит hidden value/owner/markings, если unknown.
+17. Visible container не содержит closed contents.
+18. Audible context не раскрывает hidden source без reveal.
+19. Known context имеет basis из character knowledge map.
+20. Rumor context помечен как rumor.
+21. Uncertain context помечен как uncertain.
+22. Available actions не содержат hidden truth.
+23. Hidden filtered out содержит ссылки на удалённые скрытые факты без раскрытия их смысла.
+24. `visible_scene_dossier.summary` не является финальной narrator prose.
+25. `must_not_include` не пустой, если hidden state содержит sensitive facts.
+26. Нет новых NPC.
+27. Нет новых items.
+28. Нет новых containers.
+29. Нет новых anchors.
+30. Нет новых routes.
+31. Нет hidden event timers.
+32. Нет raw JSON для narrator.
+33. Нет audit/repair/debug текста.
+34. `source_trace` не пустой, если require_source_trace=true.
+35. `audit_self_check.evidence` не пустой.
+36. Если `audit_self_check.pass=false`, concerns не пустой.
+
+## 21. Error codes
+
+```text id="y9xzqh"
+VISIBLE_CONTEXT_INVALID_JSON
+VISIBLE_CONTEXT_SCHEMA_MISMATCH
+VISIBLE_CONTEXT_POSITION_MISMATCH
+VISIBLE_CONTEXT_CLOCK_MISMATCH
+VISIBLE_CONTEXT_SEASON_MISMATCH
+VISIBLE_CONTEXT_WEATHER_MISMATCH
+VISIBLE_CONTEXT_LIGHT_MISMATCH
+VISIBLE_CONTEXT_ANCHOR_REF_NOT_FOUND
+VISIBLE_CONTEXT_NPC_REF_NOT_FOUND
+VISIBLE_CONTEXT_ITEM_REF_NOT_FOUND
+VISIBLE_CONTEXT_CONTAINER_REF_NOT_FOUND
+VISIBLE_CONTEXT_EXIT_REF_NOT_FOUND
+VISIBLE_CONTEXT_PRIVATE_MOTIVE_LEAK
+VISIBLE_CONTEXT_PRIVATE_KNOWLEDGE_LEAK
+VISIBLE_CONTEXT_CLOSED_CONTAINER_CONTENTS_LEAK
+VISIBLE_CONTEXT_HIDDEN_ITEM_LEAK
+VISIBLE_CONTEXT_TRUE_OWNERSHIP_LEAK
+VISIBLE_CONTEXT_FUTURE_EVENT_LEAK
+VISIBLE_CONTEXT_HIDDEN_ROUTE_TRUTH_LEAK
+VISIBLE_CONTEXT_RUMOR_TREATED_AS_FACT
+VISIBLE_CONTEXT_UNCERTAIN_TREATED_AS_FACT
+VISIBLE_CONTEXT_ACTION_LABEL_USES_HIDDEN_TRUTH
+VISIBLE_CONTEXT_CREATED_NPC
+VISIBLE_CONTEXT_CREATED_ITEM
+VISIBLE_CONTEXT_CREATED_CONTAINER
+VISIBLE_CONTEXT_CREATED_ANCHOR
+VISIBLE_CONTEXT_CREATED_ROUTE
+VISIBLE_CONTEXT_CREATED_WORLD_FACT
+VISIBLE_CONTEXT_CREATED_NARRATOR_PROSE
+VISIBLE_CONTEXT_RAW_JSON_TO_NARRATOR
+VISIBLE_CONTEXT_AUDIT_TEXT_LEAK
+VISIBLE_CONTEXT_SOURCE_MISSING
+VISIBLE_CONTEXT_EMPTY_AUDIT_EVIDENCE
+VISIBLE_CONTEXT_KNOWLEDGE_BASIS_MISSING
+VISIBLE_CONTEXT_NOT_VISIBLE
+VISIBLE_CONTEXT_NOT_AUDIBLE
+VISIBLE_CONTEXT_NARRATOR_SCOPE_INVALID
+VISIBLE_CONTEXT_MUST_NOT_INCLUDE_MISSING
+VISIBLE_CONTEXT_HIDDEN_FACT_LEAK
+```
+
+### Источник карты знаний до и после initial commit
+
+На старте до общей транзакции этот этап получает утверждённый `character_knowledge_map` Stage 18 и его независимый audit через собственный input.
+
+После initial commit и во время базового хода прямое использование стартового snapshot запрещено как источника текущего состояния. Оркестратор обязан передать read model, собранный из текущего `party_character_knowledge_layer`:
+
+```text
+party_character_knowledge_maps where is_current=true
++ active party_character_known_*
+→ buildCurrentCharacterKnowledgeView()
+→ строго определённый input этапа
+```
+
+Код при сборке read model только читает и преобразует утверждённые записи. Он не создаёт знания, не повышает confidence, не превращает слух в факт и не раскрывает forbidden knowledge.
+
+`party_character_knowledge_snapshots` используется только для аудита, восстановления и сравнения версий, но не как mutable runtime-state.
+
+## 22. DB write на этом этапе
+
+До аудита разрешено писать:
+
+```text id="vd2fju"
+pipeline_step_status
+visible_context_package_draft_snapshot
+visible_context_code_precheck_snapshot
+visible_context_validation_issues
+visible_context_repair_attempts
+source_trace_snapshot
+```
+
+После успешного Stage 21 audit и общего commit gate разрешено писать:
+
+```text id="z6o5e5"
+party_visible_context_package
+party_visible_anchor_state
+party_visible_npc_state
+party_visible_item_state
+party_visible_container_state
+party_visible_exit_state
+party_visible_action_context
+party_visible_context_boundary
+```
+
+Запрещено писать:
+
+```text id="zuiiqd"
+narrator_output
+intro_prose
+new_world_entities
+hidden_state_changes
+character_knowledge_changes_without_discovery
+raw_hidden_state_to_player
+```
+
+Stage 20 готовит только кандидат. Утверждённые player-visible таблицы не записываются до успешного Stage 21 и общего commit gate; Stage 20 не пишет финальную прозу.
+
+## 23. Commit gate этапа
+
+Stage 20 считается локально успешным, если:
+
+```text
+visible_context_package валиден;
+position совпадает с current_position;
+clock/season/weather/light совпадают с authoritative frame;
+все refs существуют и входят в visibility filter;
+hidden state не раскрыт;
+private motives, closed contents и future timers не раскрыты;
+слухи и неопределённость не стали фактами;
+available actions не используют hidden truth;
+visible_context_code_precheck.pass = true.
+```
+
+Успешный Stage 20 возвращает только:
+
+```json
+{
+  "commit_permission": {
+    "can_continue_to_visible_context_audit": true,
+    "can_send_to_narrator": false,
+    "can_write_visible_context_snapshot": false,
+    "can_generate_player_facing_prose": false
+  }
+}
+```
+
+Stage 20 не может разрешить narrator. Если локальный gate не пройден, Stage 21 и narrator не запускаются.
+
+## 24. Передача в Stage 21
+
+Stage 21 получает точный `visible_context_audit_input`:
+
+```json
+{
+  "version": 1,
+  "schema": "visible_context_audit_input",
+  "request_id": "string",
+  "historical_frame": {},
+  "weather_state": {},
+  "current_position": {},
+  "g5_scene_graph": {},
+  "g5_scene_audit": {},
+  "initial_npc_placement": {},
+  "npc_placement_audit": {},
+  "initial_item_placement": {},
+  "item_placement_audit": {},
+  "time_light_consistency_audit": {},
+  "character_knowledge_map": {},
+  "character_knowledge_map_audit": {},
+  "full_hidden_scene_state": {},
+  "full_hidden_state_audit": {},
+  "visible_context_package": {},
+  "visible_context_code_precheck": {},
+  "visible_context_audit_policy": {}
+}
+```
+
+Stage 21 не получает repair history, diagnostics, prompts, role configuration или global pipeline context.
+
+Только после успешного Stage 21 и проверки совпадения `visible_context_package_digest` narrator получает `visible_context_package` и `visible_context_audit`. Narrator не получает полный hidden state, полную character knowledge map, visibility filter, precheck, repair history или diagnostics.
+
+## 25. Минимальный успешный результат
+
+```json
+{
+  "version": 1,
+  "schema": "stage20_visible_context_result",
+  "request_id": "req_001",
+  "pass": true,
+  "input_snapshot": {
+    "schema": "visible_context_builder_input"
+  },
+  "visibility_filter": {
+    "version": 1,
+    "schema": "visible_context_visibility_filter",
+    "current_anchor_id": "g5_anchor_001",
+    "current_minilocation_id": "g5_miniloc_001",
+    "visible_anchor_ids": ["g5_anchor_001"],
+    "audible_anchor_ids": [],
+    "reachable_anchor_ids": ["g5_anchor_001", "g5_anchor_002"],
+    "visible_npc_ids": ["npc_001"],
+    "audible_npc_ids": [],
+    "identified_npc_ids": [],
+    "visible_item_ids": ["item_001"],
+    "inspectable_item_ids": [],
+    "visible_container_ids": ["container_001"],
+    "known_but_not_visible_refs": [],
+    "hidden_until_action_refs": [],
+    "allowed_visible_hint_refs": [],
+    "forbidden_hidden_fact_ids": ["hidden_npc_001", "hidden_container_001"]
+  },
+  "visible_context_package": {
+    "version": 1,
+    "schema": "visible_context_package",
+    "request_id": "req_001",
+    "visible_context_status": "formed",
+    "frame": {
+      "region_id": "region_001",
+      "year": 1230,
+      "season": "winter",
+      "clock": {
+        "day": 1,
+        "hour": 3,
+        "minute": 45,
+        "time_of_day": "deep_night",
+        "light_profile": "dark"
+      },
+      "weather_state": {
+        "version": 1,
+        "schema": "weather_state"
+      },
+      "light_profile": "dark"
+    },
+    "position": {
+      "region_id": "region_001",
+      "place_id": "place_001",
+      "location_id": "g4_001",
+      "minilocation_id": "g5_miniloc_001",
+      "anchor_id": "g5_anchor_001"
+    },
+    "narrator_scope": {
+      "allowed_surfaces": ["current position", "visible entities", "player-safe knowledge"],
+      "forbidden_surfaces": ["hidden state", "private motives", "future events"],
+      "style_constraints": ["do not add facts"],
+      "knowledge_boundary": {}
+    },
+    "visible_scene_facts": [],
+    "visible_anchors": [{"visible_anchor_id": "visible_anchor_001", "anchor_id": "g5_anchor_001"}],
+    "visible_exits": [],
+    "visible_npcs": [{"visible_npc_id": "visible_npc_001", "npc_instance_id": "npc_001"}],
+    "visible_items": [{"visible_item_id": "visible_item_001", "item_instance_id": "item_001", "can_inspect_now": true}],
+    "visible_containers": [{"visible_container_id": "visible_container_001", "container_instance_id": "container_001", "content_visible": false, "content_summary": null}],
+    "visible_risks": [],
+    "audible_context": [],
+    "smell_context": [],
+    "touch_body_context": [],
+    "weather_light_context": [],
+    "known_context": [],
+    "rumor_context": [],
+    "uncertain_context": [],
+    "available_actions_context": [],
+    "hidden_filtered_out": [
+      {"hidden_fact_id": "hidden_npc_001", "filter_reason": "private_motive"},
+      {"hidden_fact_id": "hidden_container_001", "filter_reason": "closed_container"}
+    ],
+    "visible_scene_dossier": {
+      "summary": "Technical narrator dossier for the current night scene.",
+      "must_include": ["current position", "night marker"],
+      "may_include": [],
+      "must_not_include": ["private motives", "closed contents", "future timers"]
+    },
+    "source_trace": [{"record_id": "g5_anchor_001"}],
+    "audit_self_check": {
+      "pass": true,
+      "concerns": [],
+      "evidence": ["Only approved visible references were used."]
+    }
+  },
+  "visible_context_package_digest": "sha256:<canonical-json-digest>",
+
+  "visible_context_code_precheck": {
+    "version": 1,
+    "schema": "visible_context_code_precheck",
+    "pass": true,
+    "checks": {},
+    "concerns": [],
+    "evidence": []
+  },
+  "repair_history": [],
+  "diagnostics": {},
+  "commit_permission": {
+    "can_continue_to_visible_context_audit": true,
+    "can_send_to_narrator": false,
+    "can_write_visible_context_snapshot": false,
+    "can_generate_player_facing_prose": false,
+    "reasons": []
+  }
+}
+```

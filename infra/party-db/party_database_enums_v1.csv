@@ -1,0 +1,100 @@
+enum_name,value,sort_order,source_basis
+party_status,draft,1,technical lifecycle for saved party state
+party_status,active,2,technical lifecycle for saved party state
+party_status,paused,3,technical lifecycle for saved party state
+party_status,completed,4,technical lifecycle for saved party state
+party_status,abandoned,5,technical lifecycle for saved party state
+party_status,error,6,technical lifecycle for saved party state
+party_status,archived,7,technical lifecycle for saved party state
+party_entity_status,active,1,technical lifecycle for party entities
+party_entity_status,inactive,2,technical lifecycle for party entities
+party_entity_status,dead,3,technical lifecycle for party entities
+party_entity_status,destroyed,4,technical lifecycle for party entities
+party_entity_status,missing,5,technical lifecycle for party entities
+party_entity_status,resolved,6,technical lifecycle for party entities
+party_entity_status,needs_review,7,technical lifecycle for party entities
+scale_level,G0,1,project graph scale G0-G5
+scale_level,G1,2,project graph scale G0-G5
+scale_level,G2,3,project graph scale G0-G5
+scale_level,G3,4,project graph scale G0-G5
+scale_level,G4,5,project graph scale G0-G5
+scale_level,G5,6,project graph scale G0-G5
+node_type,world_region,1,world_base graph_nodes.node_type
+node_type,region_cell,2,world_base graph_nodes.node_type
+node_type,cell_subgraph,3,world_base graph_nodes.node_type
+node_type,map_corridor,4,world_base graph_nodes.node_type
+node_type,geographic_landmark,5,world_base graph_nodes.node_type
+node_type,historical_landmark,6,world_base graph_nodes.node_type
+node_type,subregion,7,world_base graph_nodes.node_type
+node_type,place,8,world_base graph_nodes.node_type
+node_type,location,9,world_base graph_nodes.node_type
+node_type,minilocation,10,world_base graph_nodes.node_type
+node_type,scene_anchor,11,world_base graph_nodes.node_type
+node_type,route_junction,12,world_base graph_nodes.node_type
+node_type,river_junction,13,world_base graph_nodes.node_type
+node_type,ford,14,world_base graph_nodes.node_type
+node_type,ferry,15,world_base graph_nodes.node_type
+node_type,gate,16,world_base graph_nodes.node_type
+node_type,road_segment,17,world_base graph_nodes.node_type
+node_type,water_segment,18,world_base graph_nodes.node_type
+node_type,border_crossing,19,world_base graph_nodes.node_type
+node_type,sea_crossing,20,world_base graph_nodes.node_type
+node_type,mountain_pass,21,world_base graph_nodes.node_type
+node_type,desert_oasis,22,world_base graph_nodes.node_type
+node_type,steppe_camp,23,world_base graph_nodes.node_type
+edge_type,road,1,world_base graph_edges.edge_type
+edge_type,path,2,world_base graph_edges.edge_type
+edge_type,river,3,world_base graph_edges.edge_type
+edge_type,lake_route,4,world_base graph_edges.edge_type
+edge_type,sea_route,5,world_base graph_edges.edge_type
+edge_type,winter_road,6,world_base graph_edges.edge_type
+edge_type,ford,7,world_base graph_edges.edge_type
+edge_type,ferry,8,world_base graph_edges.edge_type
+edge_type,bridge,9,world_base graph_edges.edge_type
+edge_type,gate,10,world_base graph_edges.edge_type
+edge_type,street,11,world_base graph_edges.edge_type
+edge_type,door,12,world_base graph_edges.edge_type
+edge_type,yard_passage,13,world_base graph_edges.edge_type
+edge_type,forest_track,14,world_base graph_edges.edge_type
+edge_type,offroad_crossing,15,world_base graph_edges.edge_type
+edge_type,mountain_pass,16,world_base graph_edges.edge_type
+edge_type,desert_route,17,world_base graph_edges.edge_type
+edge_type,steppe_route,18,world_base graph_edges.edge_type
+edge_type,border_transition,19,world_base graph_edges.edge_type
+edge_type,corridor_segment,20,world_base graph_edges.edge_type
+edge_type,portage,21,world_base graph_edges.edge_type
+knowledge_type,known_exact,1,read_only_database_and_graph_architecture.md §14.3
+knowledge_type,known_rough,2,read_only_database_and_graph_architecture.md §14.3
+knowledge_type,heard_rumor,3,read_only_database_and_graph_architecture.md §14.3
+knowledge_type,seen_from_distance,4,read_only_database_and_graph_architecture.md §14.3
+knowledge_type,inferred,5,read_only_database_and_graph_architecture.md §14.3
+knowledge_type,unknown,6,read_only_database_and_graph_architecture.md §14.3
+knowledge_type,false_belief,7,read_only_database_and_graph_architecture.md §14.3
+knowledge_accuracy,accurate,1,party map knowledge accuracy state
+knowledge_accuracy,approximate,2,party map knowledge accuracy state
+knowledge_accuracy,outdated,3,party map knowledge accuracy state
+knowledge_accuracy,distorted,4,party map knowledge accuracy state
+knowledge_accuracy,false,5,party map knowledge accuracy state
+knowledge_accuracy,unknown,6,party map knowledge accuracy state
+npc_profile_type,background,1,npc_generation_profiles.txt
+npc_profile_type,scene,2,npc_generation_profiles.txt
+npc_profile_type,key,3,npc_generation_profiles.txt
+npc_profile_type,group,4,npc_generation_profiles.txt
+visibility_state,visible,1,visible/hidden information model
+visibility_state,partly_visible,2,visible/hidden information model
+visibility_state,hidden,3,visible/hidden information model
+visibility_state,known,4,visible/hidden information model
+visibility_state,suspected,5,visible/hidden information model
+visibility_state,unknown,6,visible/hidden information model
+party_event_status,scheduled,1,time_system.txt deferred events and historical_events phases
+party_event_status,active,2,time_system.txt deferred events and historical_events phases
+party_event_status,resolved,3,time_system.txt deferred events and historical_events phases
+party_event_status,cancelled,4,time_system.txt deferred events and historical_events phases
+party_event_status,hidden,5,time_system.txt deferred events and historical_events phases
+party_event_status,needs_review,6,time_system.txt deferred events and historical_events phases
+llm_step_status,draft,1,world_generation_and_turns.txt repair/audit rule
+llm_step_status,accepted,2,world_generation_and_turns.txt repair/audit rule
+llm_step_status,rejected,3,world_generation_and_turns.txt repair/audit rule
+llm_step_status,needs_repair,4,world_generation_and_turns.txt repair/audit rule
+llm_step_status,repaired,5,world_generation_and_turns.txt repair/audit rule
+llm_step_status,failed,6,world_generation_and_turns.txt repair/audit rule

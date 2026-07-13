@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rus13.local/contracts/PartyStartTransactionPlan.schema.json",
+  "title": "PartyStartTransactionPlan",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "party_id",
+    "transaction_order",
+    "table_writes",
+    "foreign_key_order",
+    "rollback_policy",
+    "post_write_checks"
+  ],
+  "properties": {
+    "party_id": {
+      "description": "Required by PartyStartTransactionPlan.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "transaction_order": {
+      "description": "Required by PartyStartTransactionPlan.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "table_writes": {
+      "description": "Required by PartyStartTransactionPlan.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "foreign_key_order": {
+      "description": "Required by PartyStartTransactionPlan.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "rollback_policy": {
+      "description": "Required by PartyStartTransactionPlan.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "post_write_checks": {
+      "description": "Required by PartyStartTransactionPlan.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    }
+  },
+  "x_writes_to": [
+    "party_state",
+    "party_current_position",
+    "party_*"
+  ],
+  "x_blocking_validations": [
+    "atomic transaction possible",
+    "FK references resolvable",
+    "current_position complete",
+    "post-write visible projection possible"
+  ]
+}

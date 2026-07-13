@@ -1,0 +1,9 @@
+﻿source_id,title,source_file,line_range,used_for,status
+doc_world_generation_repair_rule,world_generation_and_turns.txt — LLM creates meaning; repair on invalid result,world_generation_and_turns.txt,L1-L17,"Hard rule: code cannot invent, silently stub, or semantically repair the world; failed LLM result returns to LLM with errors.",approved_project_doc
+doc_world_generation_consistency_check,world_generation_and_turns.txt — consistency audit scope,world_generation_and_turns.txt,L735-L763,Defines semantic consistency checklist and states that code does not do semantic checking instead of LLM.,approved_project_doc
+doc_agent_role_split,llm_agent_prompt_templates.md — role split and hidden information boundary,llm_agent_prompt_templates.md,L3-L23,"Agent separation: consequence, visible-context, prose, memory, source enrichment, structuring. Hidden state must be removed before prose.",approved_project_doc
+doc_structuring_agent,llm_agent_prompt_templates.md — structuring agent,llm_agent_prompt_templates.md,L803-L807,Structuring agent turns accepted meaning into JSON and does not add new facts.,approved_project_doc
+doc_repair_agent,llm_agent_prompt_templates.md — repair agent,llm_agent_prompt_templates.md,L858-L862,Repair is used when JSON/format/field separation fails; repair cannot add facts or hide unfixable errors.,approved_project_doc
+doc_info_visibility,"information_sources_llm_prompts.md — character knowledge, rumor, hidden fact",information_sources_llm_prompts.md,L6.4-L6.6,"Defines knowledge, rumors and hidden facts; prevents hidden-state leaks in player-facing layers.",approved_project_doc
+artifact_party_database_v1,party_database_v1.zip,party_database_v1.zip,artifact,Target storage for party_llm_steps and party_validation_issues.,generated_project_artifact
+artifact_new_party_generator_v1,new_party_generator_v1.zip,new_party_generator_v1.zip,artifact,Upstream generator whose steps need repair/audit gates.,generated_project_artifact

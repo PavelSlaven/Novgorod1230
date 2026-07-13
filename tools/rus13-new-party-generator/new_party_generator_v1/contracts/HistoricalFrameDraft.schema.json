@@ -1,0 +1,163 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rus13.local/contracts/HistoricalFrameDraft.schema.json",
+  "title": "HistoricalFrameDraft",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "year",
+    "season",
+    "region_id",
+    "region_title",
+    "historical_background_summary",
+    "authority_context",
+    "season_context",
+    "known_limits",
+    "source_ids",
+    "hidden_world_notes",
+    "character_possible_knowledge"
+  ],
+  "properties": {
+    "year": {
+      "description": "Required by HistoricalFrameDraft.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "season": {
+      "description": "Required by HistoricalFrameDraft.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "region_id": {
+      "description": "Required by HistoricalFrameDraft.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "region_title": {
+      "description": "Required by HistoricalFrameDraft.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "historical_background_summary": {
+      "description": "Required by HistoricalFrameDraft.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "authority_context": {
+      "description": "Required by HistoricalFrameDraft.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "season_context": {
+      "description": "Required by HistoricalFrameDraft.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "known_limits": {
+      "description": "Required by HistoricalFrameDraft.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "source_ids": {
+      "description": "Required by HistoricalFrameDraft.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "hidden_world_notes": {
+      "description": "Required by HistoricalFrameDraft.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "character_possible_knowledge": {
+      "description": "Required by HistoricalFrameDraft.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    }
+  },
+  "x_writes_to": [
+    "party_state",
+    "party_events"
+  ],
+  "x_blocking_validations": [
+    "1230 <= year <= 1250",
+    "region_id exists in world_base.regions",
+    "source_ids exist or unresolved source placeholder is needs_review"
+  ]
+}

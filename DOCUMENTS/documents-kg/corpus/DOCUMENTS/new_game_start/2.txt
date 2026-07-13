@@ -1,0 +1,1207 @@
+# Этап 2. Нормализация заявки новой игры
+
+## 1. Назначение этапа
+
+Нормализация заявки — это первый технический LLM-этап после получения свободного текста игрока. Его задача — превратить неструктурированную заявку игрока в строгий машинночитаемый запрос на старт новой партии.
+
+На этом этапе LLM не создаёт мир, не выбирает конкретную локацию, не создаёт персонажа, NPC, предметы, события или стартовую сцену. LLM только извлекает из заявки игрока явные пожелания, помечает отсутствующие поля как `random`, фиксирует ограничения и формирует структурированный запрос для следующих этапов.
+
+Этап нужен для того, чтобы дальнейший pipeline работал не с произвольным текстом игрока, а с единым контрактом:
+
+```text
+свободная заявка игрока
+→ нормализованный стартовый запрос
+→ подбор исторической рамки
+→ загрузка региональной базы
+→ выбор допустимых кандидатов
+```
+
+## 2. Главное правило этапа
+
+Нормализатор не имеет права придумывать факты мира.
+
+Разрешено:
+
+* извлекать явно сказанное игроком;
+* классифицировать желание игрока;
+* отмечать неизвестное как `random`;
+* отмечать противоречия;
+* переводить бытовые формулировки в технические поля;
+* фиксировать мягкие предпочтения;
+* фиксировать жёсткие запреты игрока;
+* возвращать запрос на уточнение только при критической невозможности запуска.
+
+Запрещено:
+
+* выбирать конкретный регион, если игрок его не указал и нет отдельного правила выбора;
+* выбирать конкретную локацию;
+* создавать NPC;
+* создавать предметы;
+* назначать социальный статус как факт, если игрок только пожелал “хочу быть купцом/воином/бродягой”;
+* исправлять заявку игрока в сторону “более интересного сюжета”;
+* добавлять скрытую цель персонажа;
+* подменять “случайно” собственным содержанием;
+* превращать заявку игрока в готовую стартовую сцену.
+
+Параметры LLM для этапа 2
+Этап 2 — Нормализация заявки
+
+Задача простая: извлечение полей, классификация explicit/random/constrained_random/unresolved, строгий JSON. Здесь не нужен дорогой reasoning.
+
+Параметр	Значение
+model	deepseek-v4-flash
+thinking	disabled
+reasoning_effort	не задавать
+temperature	0.0
+top_p	1
+max_tokens	2500–4000
+response_format	{ "type": "json_object" }
+stream	false
+retries	1 format-only repair + 1 semantic repair
+timeout	20–30s
+context_budget	8k–20k input tokens
+
+Для DeepSeek JSON output надо не только просить JSON в промте, но и включать response_format: {"type":"json_object"}, добавить слово “json” в prompt, дать пример нужного JSON и выделить достаточно max_tokens, чтобы объект не оборвался.
+
+Рекомендуемый API-конфиг:
+
+{
+  "model": "deepseek-v4-flash",
+  "temperature": 0,
+  "top_p": 1,
+  "max_tokens": 3500,
+  "response_format": {
+    "type": "json_object"
+  },
+  "stream": false,
+  "extra_body": {
+    "thinking": {
+      "type": "disabled"
+    }
+  }
+}
+
+Допустимый fallback: если deepseek-v4-flash дважды нарушил схему, один раз повторить на deepseek-v4-pro без thinking, тоже с temperature: 0 и JSON mode.
+
+Этап 2 — Repair
+
+Format-only repair лучше делать локальным кодом, если возможно. Это не создание мира, а нормализация структуры.
+
+Если всё же через LLM:
+
+Параметр	Значение
+model	deepseek-v4-flash
+thinking	disabled
+temperature	0.0
+max_tokens	2500–3500
+response_format	{ "type": "json_object" }
+retries	1
+
+Запретить repair-agent менять смысл. Только поля, enum, schema, version, пустые блоки.
+
+## 3. Вход этапа
+
+Этап получает:
+
+```json
+{
+  "version": 1,
+  "schema": "new_game_raw_request",
+  "request_id": "string",
+  "player_text": "string",
+  "ui_fields": {
+    "era": "string | null",
+    "region": "string | null",
+    "character_type": "string | null",
+    "start_place": "string | null",
+    "tone": "string | null",
+    "difficulty": "string | null",
+    "additional_constraints": "string | null"
+  },
+  "client_defaults": {
+    "language": "string",
+    "allow_random_if_missing": true,
+    "default_unknown_policy": "random"
+  }
+}
+```
+
+`player_text` — свободный текст игрока. Например:
+
+```text
+Хочу начать случайно.
+```
+
+или:
+
+```text
+Хочу играть бедным человеком, где-нибудь на окраине, без магии, исторично.
+```
+
+или:
+
+```text
+1230 год, любой регион, случайный персонаж.
+```
+
+`ui_fields` — поля интерфейса, если они есть. Если игрок не заполнял поля, они передаются как `null`.
+
+`client_defaults.allow_random_if_missing = true` означает: отсутствие значения не является ошибкой. Оно трактуется как `random`.
+
+## 4. Принцип “пустое поле = случайно”
+
+Если игрок не указал эпоху, регион, тип персонажа, место старта, социальный статус, профессию, цель или тон игры, нормализатор не должен останавливаться.
+
+Отсутствующее поле записывается так:
+
+```json
+{
+  "value": null,
+  "selection_mode": "random",
+  "source": "missing",
+  "confidence": "high"
+}
+```
+
+Если игрок прямо написал “случайно”, “на твоё усмотрение”, “как получится”, “пусть игра выберет”, поле также получает `selection_mode = "random"`, но `source = "explicit_player_random"`.
+
+Пример:
+
+```json
+{
+  "region_request": {
+    "value": null,
+    "selection_mode": "random",
+    "source": "explicit_player_random",
+    "confidence": "high"
+  }
+}
+```
+
+Это не значит, что LLM уже выбрала регион. Это значит, что следующий этап получит право подобрать допустимые кандидаты из базы.
+
+## 5. Типы значений
+
+Каждое значимое поле нормализуется не просто как строка, а как объект:
+
+```json
+{
+  "value": "string | null",
+  "selection_mode": "explicit | random | constrained_random | inferred | unresolved",
+  "source": "ui_field | player_text | explicit_player_random | missing | inferred_from_text",
+  "confidence": "low | medium | high",
+  "notes": "string | null"
+}
+```
+
+### 5.1. `explicit`
+
+Игрок явно указал значение.
+
+Пример:
+
+```text
+Хочу начать в 1230 году.
+```
+
+Результат:
+
+```json
+{
+  "year_request": {
+    "value": 1230,
+    "selection_mode": "explicit",
+    "source": "player_text",
+    "confidence": "high"
+  }
+}
+```
+
+### 5.2. `random`
+
+Игрок ничего не указал или прямо попросил случайность.
+
+Пример:
+
+```text
+Случайный персонаж.
+```
+
+Результат:
+
+```json
+{
+  "character_request": {
+    "value": null,
+    "selection_mode": "random",
+    "source": "explicit_player_random",
+    "confidence": "high"
+  }
+}
+```
+
+### 5.3. `constrained_random`
+
+Игрок задал рамку, но не точное значение.
+
+Пример:
+
+```text
+Хочу бедного персонажа где-нибудь в сельской местности.
+```
+
+Результат:
+
+```json
+{
+  "character_status_request": {
+    "value": "low_wealth_or_dependent_status",
+    "selection_mode": "constrained_random",
+    "source": "player_text",
+    "confidence": "medium"
+  },
+  "start_place_request": {
+    "value": "rural",
+    "selection_mode": "constrained_random",
+    "source": "player_text",
+    "confidence": "high"
+  }
+}
+```
+
+### 5.4. `inferred`
+
+Значение не сказано прямо, но осторожно выводится из формулировки.
+
+Пример:
+
+```text
+Хочу играть торговцем на большом торге.
+```
+
+Можно вывести:
+
+```json
+{
+  "character_activity_request": {
+    "value": "trade_related",
+    "selection_mode": "inferred",
+    "source": "inferred_from_text",
+    "confidence": "medium"
+  }
+}
+```
+
+Но нельзя сразу создавать профессию, имущество, лавку или связи.
+
+### 5.5. `unresolved`
+
+Игрок указал значение, которое нельзя безопасно нормализовать.
+
+Пример:
+
+```text
+Хочу начать в городе, которого нет в базе.
+```
+
+Результат:
+
+```json
+{
+  "region_request": {
+    "value": "raw_player_value",
+    "selection_mode": "unresolved",
+    "source": "player_text",
+    "confidence": "low",
+    "notes": "Value must be resolved against world_base candidate regions."
+  }
+}
+```
+
+## 6. Выход этапа
+
+Этап возвращает только JSON.
+
+Основной контракт:
+
+```json
+{
+  "version": 1,
+  "schema": "new_game_normalized_request",
+  "request_id": "string",
+  "language": "ru",
+  "start_mode": "new_party",
+  "player_intent_summary": "string",
+
+  "era_request": {
+    "value": "string | null",
+    "selection_mode": "explicit | random | constrained_random | inferred | unresolved",
+    "source": "ui_field | player_text | explicit_player_random | missing | inferred_from_text",
+    "confidence": "low | medium | high",
+    "notes": "string | null"
+  },
+
+  "year_request": {
+    "value": "number | null",
+    "selection_mode": "explicit | random | constrained_random | inferred | unresolved",
+    "source": "ui_field | player_text | explicit_player_random | missing | inferred_from_text",
+    "confidence": "low | medium | high",
+    "notes": "string | null"
+  },
+
+  "season_request": {
+    "value": "spring | summer | autumn | winter | null",
+    "selection_mode": "explicit | random | constrained_random | inferred | unresolved",
+    "source": "ui_field | player_text | explicit_player_random | missing | inferred_from_text",
+    "confidence": "low | medium | high",
+    "notes": "string | null"
+  },
+
+  "time_of_day_request": {
+    "value": "morning | day | evening | night | deep_night | null",
+    "selection_mode": "explicit | random | constrained_random | inferred | unresolved",
+    "source": "ui_field | player_text | explicit_player_random | missing | inferred_from_text",
+    "confidence": "low | medium | high",
+    "notes": "string | null"
+  },
+
+  "region_request": {
+    "value": "string | null",
+    "selection_mode": "explicit | random | constrained_random | inferred | unresolved",
+    "source": "ui_field | player_text | explicit_player_random | missing | inferred_from_text",
+    "confidence": "low | medium | high",
+    "notes": "string | null"
+  },
+
+  "start_place_request": {
+    "value": "string | null",
+    "selection_mode": "explicit | random | constrained_random | inferred | unresolved",
+    "source": "ui_field | player_text | explicit_player_random | missing | inferred_from_text",
+    "confidence": "low | medium | high",
+    "notes": "string | null"
+  },
+
+  "character_request": {
+    "type": "string | null",
+    "status": "string | null",
+    "occupation": "string | null",
+    "wealth": "string | null",
+    "gender": "string | null",
+    "age_band": "string | null",
+    "selection_mode": "explicit | random | constrained_random | inferred | unresolved",
+    "source": "ui_field | player_text | explicit_player_random | missing | inferred_from_text",
+    "confidence": "low | medium | high",
+    "notes": "string | null"
+  },
+
+  "tone_request": {
+    "value": "historical | survival | political | domestic | travel | trade | combat | random | null",
+    "selection_mode": "explicit | random | constrained_random | inferred | unresolved",
+    "source": "ui_field | player_text | explicit_player_random | missing | inferred_from_text",
+    "confidence": "low | medium | high",
+    "notes": "string | null"
+  },
+
+  "difficulty_request": {
+    "value": "low | normal | hard | harsh | null",
+    "selection_mode": "explicit | random | constrained_random | inferred | unresolved",
+    "source": "ui_field | player_text | explicit_player_random | missing | inferred_from_text",
+    "confidence": "low | medium | high",
+    "notes": "string | null"
+  },
+
+  "hard_constraints": [],
+  "soft_preferences": [],
+  "forbidden_content": [],
+  "unknowns_to_resolve": [],
+  "requires_clarification": false,
+  "clarification_questions": [],
+
+  "audit": {
+    "pass": true,
+    "concerns": [],
+    "evidence": []
+  }
+}
+```
+
+## 7. Обязательные поля
+
+Нормализатор всегда обязан вернуть:
+
+* `version`;
+* `schema`;
+* `request_id`;
+* `language`;
+* `start_mode`;
+* `player_intent_summary`;
+* все блоки `*_request`;
+* `hard_constraints`;
+* `soft_preferences`;
+* `forbidden_content`;
+* `unknowns_to_resolve`;
+* `requires_clarification`;
+* `clarification_questions`;
+* `audit`.
+
+Нельзя опускать блок только потому, что игрок ничего не указал. Если данных нет, ставится `value = null`, `selection_mode = "random"` или `selection_mode = "unresolved"`.
+
+## 8. Что считается жёстким ограничением
+
+Жёсткое ограничение — это то, что следующие этапы не имеют права нарушать.
+
+Примеры:
+
+```text
+без магии
+без фэнтези
+исторично
+не хочу играть воином
+не хочу начинать в городе
+не хочу дворянина
+не хочу боевой старт
+без заранее заданной цели
+```
+
+Формат:
+
+```json
+{
+  "hard_constraints": [
+    {
+      "id": "no_fantasy_elements",
+      "text": "без магии и фэнтези",
+      "source": "player_text"
+    }
+  ]
+}
+```
+
+Жёсткое ограничение не создаёт контент. Оно только запрещает будущие варианты.
+
+## 9. Что считается мягким предпочтением
+
+Мягкое предпочтение — это желательное направление, но не запрет.
+
+Примеры:
+
+```text
+лучше где-нибудь на окраине
+хочу больше быта
+интересна торговля
+пусть будет сурово
+хочу почувствовать обычную жизнь
+```
+
+Формат:
+
+```json
+{
+  "soft_preferences": [
+    {
+      "id": "domestic_survival_tone",
+      "text": "бытовой и выживательный старт",
+      "source": "player_text"
+    }
+  ]
+}
+```
+
+Следующие этапы учитывают такие предпочтения при выборе кандидатов, но могут отклониться, если база не содержит подходящего допустимого варианта.
+
+## 10. Что считается неизвестным
+
+Неизвестное — это поле, которое надо будет решить позже через `world_base`, правила региона или LLM-выбор внутри candidate set.
+
+Примеры:
+
+* игрок не указал регион;
+* игрок не указал год;
+* игрок не указал социальный статус;
+* игрок написал “где-нибудь на дороге”, но не указал конкретное место;
+* игрок написал “случайный человек”;
+* игрок написал “обычный житель”, но не указал род занятий.
+
+Формат:
+
+```json
+{
+  "unknowns_to_resolve": [
+    {
+      "field": "region_request",
+      "resolution_stage": "historical_frame_selector",
+      "policy": "choose_from_world_base_candidates"
+    },
+    {
+      "field": "start_place_request",
+      "resolution_stage": "start_candidate_retriever",
+      "policy": "choose_from_allowed_start_nodes"
+    }
+  ]
+}
+```
+
+## 11. Когда нужны уточняющие вопросы
+
+По умолчанию новая игра должна стартовать без уточняющих вопросов. Если игрок ничего не заполнил, это трактуется как `random`.
+
+Уточнение требуется только в критических случаях:
+
+1. Игрок дал взаимоисключающие жёсткие ограничения.
+2. Игрок запросил невозможный режим, который нельзя привести к базе.
+3. Игрок требует конкретный регион/эпоху, которых нет в базе, и при этом запрещает случайную замену.
+4. Игрок просит начать с сущности, запрещённой правилами проекта.
+5. Игрокская заявка не содержит вообще никакого стартового намерения и `allow_random_if_missing = false`.
+
+Пример:
+
+```json
+{
+  "requires_clarification": true,
+  "clarification_questions": [
+    "Вы указали конкретный регион, которого нет в базе, и запретили случайную замену. Вы хотите выбрать другой регион из доступных?"
+  ]
+}
+```
+
+Если `allow_random_if_missing = true`, отсутствие полей не является причиной для уточнения.
+
+## 12. Обработка “случайно”
+
+Фраза “случайно” не означает, что LLM может придумать любой старт.
+
+Она означает:
+
+```text
+следующий этап должен получить разрешение выбрать допустимый вариант из базы
+```
+
+Пример:
+
+```text
+Игрок: “Случайный персонаж в случайном месте.”
+```
+
+Нормализатор возвращает:
+
+```json
+{
+  "region_request": {
+    "value": null,
+    "selection_mode": "random",
+    "source": "explicit_player_random",
+    "confidence": "high",
+    "notes": "Region must be selected from available world_base regions."
+  },
+  "start_place_request": {
+    "value": null,
+    "selection_mode": "random",
+    "source": "explicit_player_random",
+    "confidence": "high",
+    "notes": "Start place must be selected from allowed candidate nodes."
+  },
+  "character_request": {
+    "type": null,
+    "status": null,
+    "occupation": null,
+    "wealth": null,
+    "gender": null,
+    "age_band": null,
+    "selection_mode": "random",
+    "source": "explicit_player_random",
+    "confidence": "high",
+    "notes": "Character must be generated after historical frame and start place are selected."
+  }
+}
+```
+
+## 13. Нормализация эпохи
+
+Если игрок указал конкретный год, он сохраняется как число.
+
+Если игрок указал период словами, он сохраняется как строка и отправляется на следующий этап для разрешения через базу.
+
+Примеры:
+
+```text
+1230 год
+XIII век
+раннее средневековье
+время раздробленности
+любая эпоха
+случайно
+```
+
+Нормализатор не обязан сам выбирать точный год, если игрок указал только широкий период.
+
+Пример:
+
+```json
+{
+  "era_request": {
+    "value": "XIII век",
+    "selection_mode": "constrained_random",
+    "source": "player_text",
+    "confidence": "high",
+    "notes": "Exact year must be selected by historical_frame_selector."
+  },
+  "year_request": {
+    "value": null,
+    "selection_mode": "constrained_random",
+    "source": "inferred_from_text",
+    "confidence": "high",
+    "notes": "Select a valid year inside requested era from available world_base frames."
+  }
+}
+```
+
+## 14. Нормализация региона
+
+Если игрок указал регион, нормализатор сохраняет исходное значение и помечает, что оно должно быть проверено через `world_base`.
+
+Нормализатор не должен сам подтверждать, что регион существует, если у него нет candidate set из базы.
+
+Пример:
+
+```json
+{
+  "region_request": {
+    "value": "raw player region name",
+    "selection_mode": "explicit",
+    "source": "player_text",
+    "confidence": "medium",
+    "notes": "Must be resolved against world_base.regions."
+  }
+}
+```
+
+Если регион не указан:
+
+```json
+{
+  "region_request": {
+    "value": null,
+    "selection_mode": "random",
+    "source": "missing",
+    "confidence": "high",
+    "notes": "Select from available world_base regions."
+  }
+}
+```
+
+## 15. Нормализация места старта
+
+Нормализатор различает:
+
+* конкретное место;
+* тип места;
+* социальную среду;
+* географическую среду;
+* полностью случайный старт.
+
+Примеры:
+
+```text
+в городе
+на дороге
+в деревне
+в лесу
+на торгу
+в монастыре
+у реки
+где-нибудь опасно
+случайно
+```
+
+Результат не должен быть конкретной локацией. Это только запрос для будущего candidate retrieval.
+
+Пример:
+
+```json
+{
+  "start_place_request": {
+    "value": "rural_or_roadside",
+    "selection_mode": "constrained_random",
+    "source": "player_text",
+    "confidence": "medium",
+    "notes": "Candidate nodes must be selected from allowed G1-G4 graph and regional place rules."
+  }
+}
+```
+
+## 16. Нормализация персонажа
+
+Игрок может указать:
+
+* профессию;
+* социальный статус;
+* богатство;
+* пол;
+* возраст;
+* происхождение;
+* стиль игры;
+* запреты.
+
+Нормализатор не создаёт готового персонажа. Он только передаёт пожелания.
+
+Пример:
+
+```text
+Хочу быть бедным ремесленником.
+```
+
+Результат:
+
+```json
+{
+  "character_request": {
+    "type": "craft_related",
+    "status": "low_or_modest_free_status",
+    "occupation": "craft",
+    "wealth": "low_or_modest",
+    "gender": null,
+    "age_band": null,
+    "selection_mode": "constrained_random",
+    "source": "player_text",
+    "confidence": "medium",
+    "notes": "Exact character profile must be generated after region, year, social roles and occupations are loaded from world_base."
+  }
+}
+```
+
+Если игрок написал “случайный персонаж”:
+
+```json
+{
+  "character_request": {
+    "type": null,
+    "status": null,
+    "occupation": null,
+    "wealth": null,
+    "gender": null,
+    "age_band": null,
+    "selection_mode": "random",
+    "source": "explicit_player_random",
+    "confidence": "high",
+    "notes": "Character generator must choose from allowed regional social roles and occupation profiles."
+  }
+}
+```
+
+## 17. Нормализация тона игры
+
+Тон игры — это не жанровая вольность, а предпочтение для подбора стартовой ситуации.
+
+Допустимые значения:
+
+```text
+historical
+domestic
+survival
+travel
+trade
+political
+combat
+low_pressure
+random
+```
+
+Если игрок пишет “исторично”, это должно попасть в `hard_constraints` или `tone_request`, в зависимости от формулировки.
+
+Пример:
+
+```json
+{
+  "tone_request": {
+    "value": "historical",
+    "selection_mode": "explicit",
+    "source": "player_text",
+    "confidence": "high",
+    "notes": "Historical consistency is required."
+  },
+  "hard_constraints": [
+    {
+      "id": "historical_consistency_required",
+      "text": "исторично",
+      "source": "player_text"
+    }
+  ]
+}
+```
+
+## 18. Проверка противоречий
+
+Нормализатор обязан выявлять явные противоречия.
+
+Примеры:
+
+```text
+Хочу полностью случайно, но только конкретно в этом городе.
+```
+
+Это не ошибка. Это `constrained_random`.
+
+```text
+Хочу начать без боя, но обязательно в боевой засаде.
+```
+
+Это противоречие.
+
+```text
+Хочу исторично, но с магией.
+```
+
+Это противоречие, если режим игры запрещает фантастику.
+
+Формат:
+
+```json
+{
+  "audit": {
+    "pass": false,
+    "concerns": [
+      {
+        "code": "CONFLICTING_PLAYER_CONSTRAINTS",
+        "message": "Player requested both no combat and forced combat start."
+      }
+    ],
+    "evidence": [
+      "player_text contains 'без боя'",
+      "player_text contains 'в боевой засаде'"
+    ]
+  }
+}
+```
+
+Если противоречия не критичны, `requires_clarification` может оставаться `false`, а конфликт передаётся в следующий этап как ограничение.
+
+## 19. Минимальный успешный результат
+
+Даже при пустой заявке нормализатор должен вернуть валидный результат.
+
+Вход:
+
+```json
+{
+  "player_text": "",
+  "ui_fields": {
+    "era": null,
+    "region": null,
+    "character_type": null,
+    "start_place": null,
+    "tone": null,
+    "difficulty": null,
+    "additional_constraints": null
+  },
+  "client_defaults": {
+    "allow_random_if_missing": true,
+    "default_unknown_policy": "random"
+  }
+}
+```
+
+Выход:
+
+```json
+{
+  "version": 1,
+  "schema": "new_game_normalized_request",
+  "request_id": "req_...",
+  "language": "ru",
+  "start_mode": "new_party",
+  "player_intent_summary": "Игрок не задал конкретных условий; требуется случайный допустимый старт из базы.",
+
+  "era_request": {
+    "value": null,
+    "selection_mode": "random",
+    "source": "missing",
+    "confidence": "high",
+    "notes": "Select from available historical frames."
+  },
+
+  "year_request": {
+    "value": null,
+    "selection_mode": "random",
+    "source": "missing",
+    "confidence": "high",
+    "notes": "Select valid year from selected historical frame."
+  },
+
+  "season_request": {
+    "value": null,
+    "selection_mode": "random",
+    "source": "missing",
+    "confidence": "high",
+    "notes": "Select valid season from selected region/time rules."
+  },
+
+  "time_of_day_request": {
+    "value": null,
+    "selection_mode": "random",
+    "source": "missing",
+    "confidence": "high",
+    "notes": "Select valid time of day from start policy and region rules."
+  },
+
+  "region_request": {
+    "value": null,
+    "selection_mode": "random",
+    "source": "missing",
+    "confidence": "high",
+    "notes": "Select from available world_base regions."
+  },
+
+  "start_place_request": {
+    "value": null,
+    "selection_mode": "random",
+    "source": "missing",
+    "confidence": "high",
+    "notes": "Select from allowed start candidates after region is resolved."
+  },
+
+  "character_request": {
+    "type": null,
+    "status": null,
+    "occupation": null,
+    "wealth": null,
+    "gender": null,
+    "age_band": null,
+    "selection_mode": "random",
+    "source": "missing",
+    "confidence": "high",
+    "notes": "Generate character after region, time and start place are resolved."
+  },
+
+  "tone_request": {
+    "value": null,
+    "selection_mode": "random",
+    "source": "missing",
+    "confidence": "high",
+    "notes": "Choose tone compatible with selected historical frame and start place."
+  },
+
+  "difficulty_request": {
+    "value": null,
+    "selection_mode": "random",
+    "source": "missing",
+    "confidence": "high",
+    "notes": "Choose default or allowed difficulty policy."
+  },
+
+  "hard_constraints": [],
+  "soft_preferences": [],
+  "forbidden_content": [],
+  "unknowns_to_resolve": [
+    {
+      "field": "era_request",
+      "resolution_stage": "historical_frame_selector",
+      "policy": "choose_from_available_frames"
+    },
+    {
+      "field": "region_request",
+      "resolution_stage": "region_resolver",
+      "policy": "choose_from_world_base_regions"
+    },
+    {
+      "field": "start_place_request",
+      "resolution_stage": "start_candidate_retriever",
+      "policy": "choose_from_allowed_start_nodes"
+    },
+    {
+      "field": "character_request",
+      "resolution_stage": "player_character_generator",
+      "policy": "choose_from_allowed_social_roles_and_occupations"
+    }
+  ],
+  "requires_clarification": false,
+  "clarification_questions": [],
+
+  "audit": {
+    "pass": true,
+    "concerns": [],
+    "evidence": [
+      "Missing fields are allowed by client_defaults.allow_random_if_missing=true.",
+      "All unspecified fields were marked as random."
+    ]
+  }
+}
+```
+
+## 20. Prompt для LLM-нормализатора
+
+```md
+# Роль
+
+Ты RequestNormalizer для начала новой партии исторической текстовой RPG.
+
+# Задача
+
+Преобразуй свободную заявку игрока и UI-поля в строгий JSON `new_game_normalized_request`.
+
+# Главное правило
+
+Ты не создаёшь мир, персонажа, NPC, предметы, стартовую сцену, конфликт, цель или локацию.
+Ты только нормализуешь заявку игрока.
+
+# Пустые поля
+
+Если поле не заполнено, трактуй его как `random`, если `allow_random_if_missing=true`.
+Если игрок написал "случайно", "на твоё усмотрение", "любой", "пусть игра выберет", это тоже `random`.
+
+# Разрешено
+
+- Извлекать явно сказанное игроком.
+- Переводить заявку в технические поля.
+- Отмечать отсутствующее как random.
+- Отмечать широкое пожелание как constrained_random.
+- Отмечать неоднозначное как unresolved.
+- Фиксировать hard_constraints и soft_preferences.
+- Фиксировать unknowns_to_resolve.
+
+# Запрещено
+
+- Выбирать конкретный регион без candidate set.
+- Выбирать конкретное место.
+- Создавать персонажа.
+- Создавать NPC.
+- Создавать предметы.
+- Добавлять скрытые мотивы.
+- Добавлять стартовое событие.
+- Добавлять художественную сцену.
+- Подменять случайность своим содержанием.
+
+# Формат ответа
+
+Верни только JSON.
+Не используй markdown.
+Не добавляй пояснений.
+
+# Обязательные поля
+
+Верни все поля схемы:
+- version
+- schema
+- request_id
+- language
+- start_mode
+- player_intent_summary
+- era_request
+- year_request
+- season_request
+- time_of_day_request
+- region_request
+- start_place_request
+- character_request
+- tone_request
+- difficulty_request
+- hard_constraints
+- soft_preferences
+- forbidden_content
+- unknowns_to_resolve
+- requires_clarification
+- clarification_questions
+- audit
+
+# Схема
+
+schema должно быть ровно:
+`new_game_normalized_request`
+
+version должно быть ровно:
+`1`
+
+# Политика уточнений
+
+Не задавай уточняющие вопросы, если все неизвестные можно пометить как random.
+Ставь `requires_clarification=true` только при критическом противоречии или невозможности продолжить.
+
+# Приоритет источников
+
+1. Явные UI-поля.
+2. Явный текст игрока.
+3. Прямое указание "случайно".
+4. Отсутствие значения = random.
+5. Осторожные выводы из текста = inferred.
+6. Неясное или непроверяемое = unresolved.
+
+# Выход
+
+Верни валидный JSON `new_game_normalized_request`.
+```
+
+## 21. Validation rules
+
+После ответа LLM код обязан проверить:
+
+1. `schema === "new_game_normalized_request"`.
+2. `version === 1`.
+3. Все обязательные поля присутствуют.
+4. Все `selection_mode` входят в допустимый enum.
+5. Все `source` входят в допустимый enum.
+6. Все `confidence` входят в допустимый enum.
+7. Если поле отсутствует у игрока, оно не должно стать `explicit`.
+8. Если игрок написал “случайно”, поле должно быть `random`, а не придуманным значением.
+9. Если `requires_clarification=false`, `clarification_questions` должен быть пустым массивом.
+10. Если `audit.pass=false`, `audit.concerns` и `audit.evidence` не должны быть пустыми.
+11. Никакие конкретные `location_id`, `npc_id`, `item_id`, `g4_id`, `g5_anchor_id` не должны появляться на этом этапе.
+12. Любой конкретный регион, место или социальная роль должны быть помечены как требующие проверки через `world_base`.
+
+## 22. Ошибки этапа
+
+Типовые ошибки:
+
+```text
+NORMALIZER_INVALID_JSON
+NORMALIZER_SCHEMA_MISMATCH
+NORMALIZER_MISSING_REQUIRED_FIELD
+NORMALIZER_RANDOM_FIELD_FILLED_WITH_INVENTED_VALUE
+NORMALIZER_CREATED_WORLD_ENTITY
+NORMALIZER_CREATED_CHARACTER_FACT
+NORMALIZER_CREATED_NPC
+NORMALIZER_CREATED_ITEM
+NORMALIZER_UNRESOLVED_CONFLICT
+NORMALIZER_EMPTY_AUDIT_EVIDENCE
+```
+
+Любая ошибка формата отправляется в format-only repair.
+
+Любая ошибка смысла отправляется в semantic repair.
+
+Но repair не имеет права создавать новые факты. Он только исправляет структуру или возвращает противоречие.
+
+## 23. DB write на этом этапе
+
+На этом этапе в party-базу ещё не пишется стартовый мир.
+
+Разрешённые записи:
+
+* raw request log;
+* normalized request log;
+* validation issues;
+* pipeline step status.
+
+Запрещённые записи:
+
+* `party_state`;
+* `party_current_position`;
+* `party_player_characters`;
+* `party_npcs`;
+* `party_items`;
+* `party_scene_anchors`;
+* `party_events`.
+
+Нормализованная заявка — это ещё не партия. Это только вход для следующего этапа.
+
+## 24. Критерий готовности этапа
+
+Этап считается успешным, если:
+
+```text
+получен валидный new_game_normalized_request
+и все неизвестные поля либо явно заполнены игроком,
+либо помечены как random/constrained_random/unresolved,
+и не создано ни одной новой сущности мира.
+```
+
+После успешной нормализации pipeline переходит к выбору исторической рамки.
+*******************************************

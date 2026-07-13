@@ -1,0 +1,1795 @@
+# Этап 15. Размещение стартовых NPC
+
+## 1. Назначение этапа
+
+Размещение стартовых NPC — это этап запуска новой партии, на котором LLM выбирает конкретных стартовых NPC только из заранее подготовленного `npc_candidate_set` и привязывает их к утверждённым G5-якорям.
+
+Этот этап впервые может материализовать NPC как сущности партии, но только в пределах:
+
+* выбранного региона;
+* выбранной исторической рамки;
+* выбранного G4;
+* утверждённой G5-сцены;
+* допустимых G5-якорей;
+* региональных социальных ролей;
+* региональных занятий;
+* NPC-архетипов;
+* именных пулов;
+* правил видимости, доступа и риска.
+
+Короткая формула:
+
+```text id="ltx9oe"
+g5_scene_graph
++ g5_scene_audit
++ npc_candidate_set
++ player_character
++ historical_frame
++ selected_start_node
+→ initial_npc_placement_draft
+```
+
+LLM не придумывает людей “по ощущению сцены”. Она выбирает и материализует только разрешённые NPC-кандидаты.
+
+## 2. Главное правило этапа
+
+NPC может появиться в стартовой сцене только если:
+
+```text id="y6crlc"
+npc_candidate_id существует в npc_candidate_set
+и npc_candidate совместим с выбранным place_template
+и npc_candidate совместим с G5-якорем
+и npc_candidate совместим с временем суток
+и npc_candidate совместим с социальным порядком места
+и причина присутствия объяснена
+```
+
+Запрещено:
+
+* создавать NPC вне `npc_candidate_set`;
+* создавать новую социальную роль;
+* создавать новый NPC-архетип;
+* создавать новую профессию;
+* создавать новый именной пул;
+* размещать NPC на несуществующий G5-якорь;
+* размещать NPC на anchor, который не поддерживает NPC;
+* размещать NPC в закрытую/скрытую зону без причины и access model;
+* давать NPC невозможные знания;
+* давать NPC предметы вне будущих item/property правил;
+* писать диалог;
+* писать стартовую прозу;
+* менять G5-сцену для удобства размещения NPC.
+
+## 3. Место этапа в pipeline
+
+```text id="o7j2tx"
+1. Заявка игрока
+2. Нормализация заявки
+3. Выбор исторической рамки
+4. Загрузка регионального контекста
+5. Подбор стартовых G1–G4 кандидатов
+6. Подбор place templates
+7. Подбор NPC-кандидатов
+8. Подбор предметных профилей
+9. Выбор стартового узла
+10. Аудит стартового места
+11. Генерация персонажа
+12. Аудит персонажа
+13. Материализация стартовой G5-сцены
+14. Аудит G5-сцены
+15. Размещение стартовых NPC
+16. Размещение стартовых предметов
+17. Проверка времени и света
+18. Формирование visible context
+```
+
+Этап 15 идёт после G5-аудита, потому что NPC должен быть поставлен в конкретную точку сцены.
+
+## 4. Вход этапа
+
+```json id="dff3ft"
+{
+  "version": 1,
+  "schema": "npc_placement_input",
+  "request_id": "string",
+
+  "historical_frame": {
+    "version": 1,
+    "schema": "historical_frame",
+    "region": {
+      "region_id": "string"
+    },
+    "year": {
+      "value": 0
+    },
+    "calendar": {
+      "season": "spring | summer | autumn | winter"
+    },
+    "clock": {
+      "day": 1,
+      "hour": 0,
+      "minute": 0,
+      "time_of_day": "morning | day | evening | night | deep_night",
+      "light_profile": "dark | dim | daylight | twilight"
+    }
+  },
+
+  "selected_start_node": {
+    "version": 1,
+    "schema": "selected_start_node"
+  },
+
+  "start_place_audit": {
+    "version": 1,
+    "schema": "start_place_audit",
+    "pass": true
+  },
+
+  "player_character": {
+    "version": 1,
+    "schema": "player_character_game_profile"
+  },
+
+  "player_character_audit": {
+    "version": 1,
+    "schema": "player_character_audit",
+    "pass": true
+  },
+
+  "g5_scene_graph": {
+    "version": 1,
+    "schema": "g5_scene_graph_draft",
+    "materialization_status": "materialized"
+  },
+
+  "g5_scene_audit": {
+    "version": 1,
+    "schema": "g5_scene_audit",
+    "pass": true
+  },
+
+  "npc_candidate_set": {
+    "version": 1,
+    "schema": "npc_candidate_set",
+    "selection_status": "ready",
+    "npc_candidates": []
+  },
+
+  "item_profile_candidate_set": {
+    "version": 1,
+    "schema": "item_profile_candidate_set"
+  },
+
+  "npc_placement_policy": {
+    "target_visible_background_npcs_min": 0,
+    "target_visible_background_npcs_max": 6,
+    "target_scene_npcs_min": 0,
+    "target_scene_npcs_max": 3,
+    "target_key_seed_npcs_max": 1,
+    "allow_empty_scene_if_place_supports_it": true,
+    "require_anchor_supports_npc": true,
+    "require_anchor_visibility_match": true,
+    "require_time_of_day_match": true,
+    "require_reason_for_presence": true,
+    "require_profile_level_limits": true,
+    "require_name_pool_for_named_scene_or_key_npc": true,
+    "allow_unnamed_background_npc": true,
+    "require_source_trace": true,
+    "do_not_write_intro_prose": true,
+    "do_not_create_dialogue": true,
+    "do_not_create_items_for_npc_yet": true,
+    "do_not_change_g5_scene": true
+  }
+}
+```
+
+## 5. Выход этапа
+
+```json id="oqej1g"
+{
+  "version": 1,
+  "schema": "initial_npc_placement_draft",
+  "request_id": "string",
+
+  "placement_status": "placed | empty_allowed | blocked | requires_repair",
+
+  "frame": {
+    "region_id": "string",
+    "year": 0,
+    "season": "spring | summer | autumn | winter",
+    "clock": {}
+  },
+
+  "parent_scene": {
+    "g4_node_id": "string",
+    "selected_place_template_id": "string",
+    "g5_scene_id": "string | null"
+  },
+
+  "npc_instances": [],
+
+  "npc_anchor_bindings": [],
+
+  "npc_visibility_state": [],
+
+  "npc_attention_and_witness_state": [],
+
+  "npc_schedule_state": [],
+
+  "rejected_npc_placements": [],
+
+  "downstream_constraints": {
+    "must_preserve": [],
+    "must_not_create_yet": [],
+    "must_resolve_later": []
+  },
+
+  "source_trace": [],
+
+  "audit_self_check": {
+    "pass": true,
+    "concerns": [],
+    "evidence": []
+  }
+}
+```
+
+## 6. Что считается размещением NPC
+
+Размещение NPC — это создание конкретной записи NPC партии и привязка этой записи к G5-якорю.
+
+Минимальная формула:
+
+```text id="gllsly"
+npc_candidate_id
++ profile_level
++ g5_anchor_id
++ visibility
++ current_presence_reason
++ initial_attention
++ witness capability
+→ npc_instance
+```
+
+Размещение не равно диалогу.
+Размещение не равно квесту.
+Размещение не равно полному биографическому архиву.
+
+## 7. Типы NPC на этом этапе
+
+### 7.1. Фоновый NPC
+
+Фоновый NPC создаётся для видимости сцены, атмосферы, шума, порядка, свидетелей и бытового движения.
+
+Фоновому NPC нужны:
+
+```text id="x5l8gk"
+краткая роль
+видимый признак
+текущее занятие
+позиция на G5-якоре
+видимость для персонажа
+способность заметить действие
+базовое настроение
+отношение к порядку сцены
+примерный режим ухода/движения
+```
+
+Фоновому NPC не нужны:
+
+```text id="j0p8ff"
+полная биография
+тайный мотив
+полные характеристики
+полный инвентарь
+долговременные отношения
+имя, если оно не нужно
+диалог
+```
+
+### 7.2. Сценический NPC
+
+Сценический NPC создаётся, если в стартовой сцене должен быть адресный участник взаимодействия.
+
+Сценическому NPC нужны:
+
+```text id="0imxs9"
+имя или краткое описание
+роль и статус
+причина быть здесь
+текущее действие
+отношение к игроку или чужаку
+отношение к месту и порядку
+знания в пределах роли
+ближайшая цель
+страх или ограничение
+границы доступа
+релевантные навыки, только если нужны
+```
+
+Сценический NPC не должен получать полный жизненный архив.
+
+### 7.3. Ключевой NPC
+
+Ключевой NPC создаётся только если:
+
+```text id="9wxso1"
+есть key_npc_seed
+или npc_candidate_set разрешает key_seed profile
+и стартовая сцена требует долговременной памяти
+и G5/место поддерживает его присутствие
+```
+
+Ключевой NPC нужен, если он должен помнить игрока, контролировать ресурс, влиять на будущие последствия или быть связан с долгом, обещанием, тайной, конфликтом, зависимостью, властью или повторной встречей.
+
+На стартовом размещении ключевой NPC всё ещё не должен превращаться в энциклопедическую биографию.
+
+## 8. Источники данных
+
+### 8.1. `npc_candidate_set`
+
+Главный allowlist.
+
+Используются:
+
+```text id="tc6c9t"
+npc_candidate_id
+profile_level
+npc_archetype_id
+social_role_id
+occupation_id
+name_pool_ids
+allowed_candidate_place_template_link_ids
+allowed_place_template_ids
+allowed_start_candidate_ids
+game_function_candidates
+time_and_season_compatibility
+key_seed
+source_trace
+```
+
+Если NPC-кандидата нет в `npc_candidate_set`, NPC не может быть создан.
+
+### 8.2. `g5_scene_graph`
+
+Используются:
+
+```text id="zc8pi2"
+g5_anchors
+g5_edges
+player_start_position
+visibility_model
+access_model
+npc_materialization_slots
+```
+
+NPC может быть привязан только к существующему `anchor_id`.
+
+Anchor должен поддерживать NPC:
+
+```text id="oeu185"
+anchor.supports.can_hold_npc = true
+```
+
+Если G5 содержит `npc_materialization_slots`, предпочтительно использовать их.
+
+### 8.3. `historical_frame.clock`
+
+Время суток и свет ограничивают NPC.
+
+Проверяются:
+
+```text id="o9lr83"
+time_of_day
+light_profile
+season
+hour
+minute
+```
+
+Если `time_of_day=night/deep_night`, нельзя размещать дневную толпу, дневную торговлю, дневных чиновников, активный рынок или обычную дневную работу без специального основания.
+
+### 8.4. `player_character`
+
+Используется для:
+
+```text id="yqma8c"
+видимости NPC для игрока
+знает ли персонаж NPC
+является ли NPC своим/чужим
+может ли NPC быть свидетелем
+может ли NPC контролировать доступ
+имеет ли NPC основание заметить персонажа
+```
+
+Персонаж игрока не должен автоматически знать имя, статус и скрытые мотивы NPC.
+
+### 8.5. `item_profile_candidate_set`
+
+На этом этапе item set используется только для будущих ресурсов NPC.
+
+NPC может иметь указание:
+
+```text id="l7epyp"
+may_control_item_profiles_later
+may_hold_item_profiles_later
+may_guard_container_profiles_later
+```
+
+Но конкретные вещи NPC не создаются, если policy запрещает.
+
+## 9. Алгоритм этапа
+
+### 9.1. Проверить вход
+
+Код проверяет:
+
+```text id="r2vji2"
+g5_scene_audit.pass = true
+player_character_audit.pass = true
+npc_candidate_set.selection_status = ready
+g5_scene_graph.g5_anchors не пуст
+```
+
+Если NPC-кандидатов нет, но `allow_empty_scene_if_place_supports_it=true`, этап может вернуть `empty_allowed`.
+
+Если место требует NPC, но кандидатов нет, этап блокируется.
+
+### 9.2. Построить индекс NPC-кандидатов
+
+Код строит:
+
+```json id="n35kmx"
+{
+  "npc_candidate_by_id": {},
+  "npc_candidates_by_profile_level": {},
+  "npc_candidates_by_place_template_link_id": {},
+  "npc_candidates_by_anchor_function": {},
+  "npc_candidates_by_can_witness": {},
+  "npc_candidates_by_can_control_access": {},
+  "npc_candidates_by_can_trade": {},
+  "npc_candidates_by_can_guide": {},
+  "npc_candidates_by_can_share_knowledge": {}
+}
+```
+
+### 9.3. Построить индекс G5-якорей
+
+Код строит:
+
+```json id="yq38qe"
+{
+  "anchor_by_id": {},
+  "anchors_supporting_npc": [],
+  "visible_anchor_ids": [],
+  "audible_anchor_ids": [],
+  "reachable_anchor_ids": [],
+  "permission_required_anchor_ids": [],
+  "hidden_anchor_ids": [],
+  "npc_slots_by_anchor_id": {}
+}
+```
+
+### 9.4. Отфильтровать NPC по месту
+
+NPC-кандидат допустим для сцены, если:
+
+```text id="rwcr7r"
+selected_candidate_place_template_link_id ∈ npc_candidate.place_compatibility.allowed_candidate_place_template_link_ids
+или selected_place_template_id ∈ npc_candidate.place_compatibility.allowed_place_template_ids
+или selected_start_candidate_id ∈ npc_candidate.place_compatibility.allowed_start_candidate_ids
+```
+
+Если связи с выбранным местом нет, NPC-кандидат не размещается.
+
+### 9.5. Отфильтровать NPC по времени суток
+
+Проверка:
+
+```text id="xosh6z"
+npc_candidate.time_and_season_compatibility.time_of_day_match = true
+```
+
+Дополнительно LLM проверяет смысл:
+
+```text id="db8gte"
+может ли такой NPC находиться здесь именно сейчас
+не является ли его занятие дневным
+не требует ли его присутствие открытого дневного режима места
+не нарушает ли ночной/закрытый доступ
+```
+
+Если NPC дневной, а сцена ночная:
+
+```text id="99m7xj"
+NPC_PLACEMENT_TIME_OF_DAY_CONFLICT
+```
+
+### 9.6. Отфильтровать NPC по сезону
+
+Проверка:
+
+```text id="ftktsi"
+npc_candidate.time_and_season_compatibility.season_match = true
+```
+
+Если занятие NPC сезонно невозможно, кандидат отклоняется.
+
+### 9.7. Отфильтровать G5-якоря
+
+NPC можно поставить только на anchor, где:
+
+```text id="kxe4zg"
+anchor.supports.can_hold_npc = true
+anchor.access.access_state != forbidden
+anchor exists in g5_scene_graph.g5_anchors
+```
+
+Если NPC должен быть видимым, anchor должен быть видимым или слышимым по visibility model.
+
+Если NPC должен быть скрытым или offscreen, anchor должен поддерживать hidden/offscreen presence.
+
+### 9.8. Выбрать количество NPC
+
+LLM выбирает количество NPC в пределах policy.
+
+Правила:
+
+```text id="p3j4xs"
+не заполнять сцену людьми без необходимости
+не добавлять толпу, если G5 маленькая
+не добавлять ключевого NPC без key_seed
+не добавлять сценического NPC без функции взаимодействия
+не делать пустую сцену, если place/access logic требует присутствия человека
+```
+
+Если место может быть пустым, возвращается:
+
+```json id="p13gh3"
+{
+  "placement_status": "empty_allowed",
+  "npc_instances": []
+}
+```
+
+### 9.9. Выбрать profile level
+
+LLM выбирает уровень каждого NPC по необходимости:
+
+```text id="ywqlrk"
+background — видимость, шум, свидетель, быт
+scene — адресное взаимодействие, доступ, помощь, препятствие, информация
+key_seed — долговременные последствия, память, ресурс, власть, долг, конфликт
+```
+
+Нельзя повышать NPC до ключевого только потому, что он “интересный”.
+
+### 9.10. Сформировать NPC instance
+
+Для каждого выбранного NPC создаётся `npc_instance`.
+
+Минимум:
+
+```text id="2j8z82"
+npc_instance_id
+npc_candidate_id
+profile_level
+social_role_id
+occupation_id
+npc_archetype_id
+g5_anchor_id
+visibility_state
+current_activity
+presence_reason
+attention_state
+witness_capability
+schedule_state
+```
+
+### 9.11. Назначить имя
+
+Имя задаётся только если нужно.
+
+Правила:
+
+```text id="wtxkp0"
+background NPC может быть unnamed
+scene NPC может иметь имя, прозвище или visible label
+key NPC должен иметь identity или stable label
+name_pool_id обязателен для named NPC
+player does not automatically know full name
+```
+
+Если имя неизвестно персонажу игрока, в visible layer позже должен попасть label, а не полное имя.
+
+### 9.12. Назначить текущее действие
+
+Текущее действие NPC должно быть:
+
+* совместимо с ролью;
+* совместимо с занятием;
+* совместимо с G5-якорем;
+* совместимо с временем суток;
+* совместимо с сезоном;
+* не создавать новую сцену.
+
+Примеры допустимого формата:
+
+```json id="6kl4cj"
+{
+  "current_activity": {
+    "activity_type": "work | watch | rest | pass_through | wait | guard | trade | speak_to_someone | avoid_attention | sleep | unknown",
+    "short_label": "string",
+    "activity_basis": "string",
+    "can_be_interrupted": true,
+    "time_until_change_minutes": 10
+  }
+}
+```
+
+Нельзя писать длинную прозу или диалог.
+
+### 9.13. Настроить видимость NPC
+
+Для каждого NPC:
+
+```text id="r1dg6p"
+visible_to_player
+audible_to_player
+known_to_player
+identified_by_player
+requires_attention_check
+requires_approach
+hidden_from_player
+```
+
+Если `clock.light_profile=dark`, NPC может быть:
+
+```text id="2gnpdb"
+слышен, но не различим
+виден как силуэт
+заметен только близко
+не виден без света
+```
+
+Нельзя показывать имя, статус и намерения NPC, если персонаж их не знает.
+
+### 9.14. Настроить внимание и свидетельство
+
+NPC должен иметь состояние внимания:
+
+```text id="avspqy"
+focused_elsewhere
+watching_player
+watching_area
+busy
+asleep
+distracted
+alert
+afraid
+drunk
+injured
+absent_minded
+```
+
+И способность быть свидетелем:
+
+```text id="fbw8og"
+can_witness_player_action
+can_hear_conversation
+can_identify_player
+can_notice_theft
+can_notice_violence
+can_call_others
+can_block_access
+```
+
+Это нужно для честных последствий.
+
+### 9.15. Настроить доступность NPC
+
+Для сценического NPC:
+
+```text id="h8ig9q"
+can_be_addressed_now
+requires_approach
+requires_permission
+will_ignore_if_busy
+will_react_to_threat
+will_react_to_theft
+will_react_to_player_identity
+```
+
+Для фонового NPC обычно достаточно witness/attention state.
+
+### 9.16. Настроить память NPC
+
+Фоновый NPC:
+
+```text id="xx9ozu"
+обычно не имеет долговременной памяти
+может стать witness memory только если увидит значимое действие
+```
+
+Сценический NPC:
+
+```text id="gwvdxx"
+имеет краткую память текущего взаимодействия
+может быть повышен до key при последствиях
+```
+
+Ключевой NPC:
+
+```text id="3djyib"
+имеет persistent memory profile
+но только если key_seed или policy это разрешает
+```
+
+### 9.17. Не создавать предметы NPC
+
+На этом этапе запрещено создавать полный NPC inventory.
+
+Разрешено только:
+
+```json id="urqsg7"
+{
+  "npc_resource_hints": {
+    "may_control_item_profile_candidate_ids": [],
+    "may_hold_item_profile_candidate_ids": [],
+    "may_guard_container_profile_candidate_ids": [],
+    "requires_item_placement_later": true
+  }
+}
+```
+
+Конкретные вещи NPC создаются на этапе предметов или при взаимодействии, через item profile и property rules.
+
+## 10. Формат NPC instance
+
+```json id="uhgz33"
+{
+  "npc_instance_id": "npc_001",
+
+  "npc_candidate_id": "npc_cand_001",
+
+  "profile_level": "background | scene | key",
+
+  "identity": {
+    "name_status": "unnamed | visible_label | known_name | nickname | hidden",
+    "display_label": "string",
+    "name": "string | null",
+    "name_pool_id": "string | null",
+    "identity_known_to_player": false
+  },
+
+  "base_refs": {
+    "npc_archetype_id": "string",
+    "social_role_id": "string",
+    "occupation_id": "string | null",
+    "key_npc_seed_id": "string | null"
+  },
+
+  "placement": {
+    "g5_anchor_id": "string",
+    "g5_minilocation_id": "string",
+    "parent_g4_node_id": "string",
+    "placement_basis": "string",
+    "presence_reason": "string",
+    "right_to_be_here": "yes | no | disputed | temporary | hidden | unknown"
+  },
+
+  "current_activity": {
+    "activity_type": "work | watch | rest | pass_through | wait | guard | trade | speak_to_someone | avoid_attention | sleep | unknown",
+    "short_label": "string",
+    "activity_basis": "string",
+    "can_be_interrupted": true,
+    "time_until_change_minutes": 0
+  },
+
+  "visibility_state": {
+    "visible_to_player": true,
+    "audible_to_player": false,
+    "identified_by_player": false,
+    "requires_attention_check": false,
+    "requires_approach": false,
+    "hidden_from_player": false,
+    "visibility_basis": "string"
+  },
+
+  "attention_state": {
+    "attention_mode": "focused_elsewhere | watching_player | watching_area | busy | asleep | distracted | alert | afraid | drunk | injured",
+    "can_notice_player": true,
+    "can_notice_subtle_action": false,
+    "can_notice_loud_action": true,
+    "attention_basis": "string"
+  },
+
+  "witness_state": {
+    "can_witness_player_action": true,
+    "can_hear_conversation": true,
+    "can_identify_player": false,
+    "can_notice_theft": false,
+    "can_notice_violence": true,
+    "can_call_others": false,
+    "witness_risk": "none | low | medium | high"
+  },
+
+  "interaction_state": {
+    "can_be_addressed_now": false,
+    "requires_approach": true,
+    "requires_permission": false,
+    "initial_disposition": "friendly | neutral | wary | hostile | afraid | busy | indifferent | unknown",
+    "first_reaction_basis": "string"
+  },
+
+  "knowledge_scope": {
+    "known_facts_now": [],
+    "rumors_now": [],
+    "mistaken_beliefs": [],
+    "forbidden_knowledge": [],
+    "knowledge_limits": []
+  },
+
+  "motivation_scope": {
+    "immediate_goal": "string | null",
+    "fear_or_constraint": "string | null",
+    "what_would_change_behavior": []
+  },
+
+  "schedule_state": {
+    "available_now": true,
+    "likely_to_leave_minutes": 0,
+    "movement_options_anchor_ids": [],
+    "movement_trigger_conditions": []
+  },
+
+  "npc_resource_hints": {
+    "may_control_item_profile_candidate_ids": [],
+    "may_hold_item_profile_candidate_ids": [],
+    "may_guard_container_profile_candidate_ids": [],
+    "requires_item_placement_later": false
+  },
+
+  "profile_promotion_rules": {
+    "can_promote_to_scene": true,
+    "can_promote_to_key": false,
+    "promotion_triggers": []
+  },
+
+  "source_trace": []
+}
+```
+
+## 11. Формат anchor binding
+
+```json id="fhg55s"
+{
+  "npc_anchor_binding_id": "npc_anchor_binding_001",
+  "npc_instance_id": "npc_001",
+  "g5_anchor_id": "g5_anchor_001",
+  "binding_type": "standing_at | sitting_at | working_at | guarding | passing_through | hidden_near | sleeping_at | controlling_access | observing",
+  "distance_to_player_band": "same_anchor | near | short | medium | far | offscreen",
+  "line_of_sight_to_player": "clear | partial | blocked | unknown",
+  "line_of_hearing_to_player": "clear | muffled | blocked | unknown",
+  "can_block_player_movement": false,
+  "can_block_access_to_anchor_ids": []
+}
+```
+
+## 12. Формат rejected NPC placement
+
+```json id="twcj9y"
+{
+  "rejected_npc_placement_id": "rejected_npc_place_001",
+  "npc_candidate_id": "npc_cand_001",
+  "g5_anchor_id": "g5_anchor_001",
+  "rejection_code": "NPC_PLACEMENT_ANCHOR_CANNOT_HOLD_NPC",
+  "rejection_reason": "Selected anchor does not support NPC placement.",
+  "evidence": [
+    "anchor.supports.can_hold_npc=false",
+    "npc_candidate requires physical presence"
+  ]
+}
+```
+
+## 13. Профильная глубина
+
+### 13.1. Background NPC minimum
+
+```json id="jgyk8k"
+{
+  "profile_level": "background",
+  "required_fields": [
+    "npc_candidate_id",
+    "display_label",
+    "g5_anchor_id",
+    "current_activity.short_label",
+    "visible_or_audible_state",
+    "attention_state",
+    "witness_state",
+    "source_trace"
+  ]
+}
+```
+
+### 13.2. Scene NPC minimum
+
+```json id="wltmxl"
+{
+  "profile_level": "scene",
+  "required_fields": [
+    "npc_candidate_id",
+    "identity",
+    "base_refs",
+    "placement",
+    "current_activity",
+    "visibility_state",
+    "attention_state",
+    "interaction_state",
+    "knowledge_scope",
+    "motivation_scope",
+    "schedule_state",
+    "source_trace"
+  ]
+}
+```
+
+### 13.3. Key NPC minimum
+
+```json id="xunpcj"
+{
+  "profile_level": "key",
+  "required_fields": [
+    "npc_candidate_id",
+    "key_npc_seed_id",
+    "identity",
+    "base_refs",
+    "placement",
+    "memory_profile",
+    "motivation_scope",
+    "knowledge_scope",
+    "relationship_persistence",
+    "consequence_model",
+    "source_trace"
+  ]
+}
+```
+
+## 14. Работа LLM на этапе
+
+На этом этапе LLM обязательна, потому что размещение NPC — это смысловая материализация людей в конкретной сцене.
+
+LLM выбирает:
+
+* каких NPC-кандидатов материализовать;
+* сколько NPC нужно;
+* какой у каждого profile level;
+* на какой G5-якорь поставить NPC;
+* виден ли NPC игроку;
+* слышен ли NPC игроку;
+* чем NPC занят;
+* может ли NPC быть свидетелем;
+* может ли NPC взаимодействовать сейчас;
+* какие ограничения и риски создаёт его присутствие.
+
+LLM не выбирает:
+
+* новые социальные роли;
+* новые профессии;
+* новые архетипы;
+* новые именные пулы;
+* новые G5-якоря;
+* новые предметы;
+* диалог;
+* стартовую прозу;
+* скрытый сюжет.
+
+## 15. LLM-параметры
+
+### 15.1. `InitialNpcPlacer`
+
+Назначение: выбрать стартовых NPC из `npc_candidate_set` и привязать их к G5-якорям.
+
+```json id="m96iye"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 9000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 90000,
+    "hard_input_limit_tokens": 220000,
+    "reserve_output_tokens": 9000
+  }
+}
+```
+
+Используется `deepseek-v4-pro`, потому что размещение NPC требует смыслового выбора между ролями, anchor-доступностью, видимостью, временем суток, социальным порядком и будущими последствиями. DeepSeek API поддерживает `deepseek-v4-pro`, `deepseek-v4-flash`, `thinking` и `reasoning_effort`; для сложных запросов используется `reasoning_effort: "high"`.
+
+### 15.2. `InitialNpcPlacementAuditor`
+
+Назначение: проверить, что все NPC выбраны из candidate set и корректно привязаны к G5.
+
+```json id="a26zl4"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 7000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 90000,
+    "hard_input_limit_tokens": 220000,
+    "reserve_output_tokens": 7000
+  }
+}
+```
+
+### 15.3. `InitialNpcPlacementFormatRepairer`
+
+Назначение: исправить только JSON-формат.
+
+```json id="q9of5r"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-flash",
+  "thinking": {
+    "type": "disabled"
+  },
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "max_tokens": 4500,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 35000,
+    "hard_input_limit_tokens": 90000,
+    "reserve_output_tokens": 4500
+  }
+}
+```
+
+Для DeepSeek JSON mode нужно передавать `response_format: {"type":"json_object"}`, включать слово `json` в prompt, давать пример требуемого JSON и выставлять достаточный `max_tokens`, чтобы ответ не был обрезан.
+
+### 15.4. `InitialNpcPlacementSemanticRepairer`
+
+Назначение: исправить смысловые ошибки размещения NPC, не выходя за `npc_candidate_set` и G5 anchors.
+
+```json id="jdcxxc"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 9000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 90000,
+    "hard_input_limit_tokens": 220000,
+    "reserve_output_tokens": 9000
+  }
+}
+```
+
+Thinking mode в DeepSeek включается через `thinking`; он предназначен для повышения точности финального ответа при сложном рассуждении.
+
+## 16. Prompt: InitialNpcPlacer
+
+```md id="aaaw9u"
+# Роль
+
+Ты InitialNpcPlacer для исторической текстовой RPG.
+
+# Задача
+
+Размести стартовых NPC в утверждённой G5-сцене.
+
+# Главное правило
+
+Ты выбираешь NPC только из npc_candidate_set.
+Ты ставишь NPC только на существующие G5 anchors.
+Ты не создаёшь новые социальные роли.
+Ты не создаёшь новые профессии.
+Ты не создаёшь новые NPC-архетипы.
+Ты не создаёшь новые G5 anchors.
+Ты не создаёшь предметы.
+Ты не пишешь диалог.
+Ты не пишешь intro_prose.
+Ты не пишешь visible_scene.
+
+# Источники
+
+Используй только:
+- historical_frame
+- selected_start_node
+- start_place_audit
+- player_character
+- player_character_audit
+- g5_scene_graph
+- g5_scene_audit
+- npc_candidate_set
+- item_profile_candidate_set
+- npc_placement_policy
+
+Если npc_candidate_id нет в npc_candidate_set, его нельзя использовать.
+Если anchor_id нет в g5_scene_graph.g5_anchors, его нельзя использовать.
+
+# Обязательные правила
+
+1. Каждый NPC должен иметь npc_candidate_id.
+2. Каждый NPC должен ссылаться на social_role_id из npc_candidate.
+3. Каждый NPC должен ссылаться на npc_archetype_id из npc_candidate.
+4. Каждый NPC должен быть совместим с selected place template.
+5. Каждый NPC должен быть совместим с time_of_day and season.
+6. Каждый NPC должен иметь g5_anchor_id.
+7. Anchor должен support can_hold_npc=true.
+8. Visibility NPC должна соответствовать anchor visibility and clock.light_profile.
+9. Background NPC может быть unnamed.
+10. Scene/key NPC должен иметь name_pool_id, если получает имя.
+11. NPC не должен знать hidden/player-only facts.
+12. NPC не должен иметь concrete inventory на этом этапе.
+13. NPC должен иметь reason for presence.
+14. NPC должен иметь attention/witness state.
+
+# Размер сцены
+
+Не заполняй сцену людьми без причины.
+Соблюдай policy:
+- background NPC max;
+- scene NPC max;
+- key NPC max.
+
+Если сцена может быть пустой, верни empty_allowed.
+
+# Формат
+
+Верни только json.
+
+schema:
+"initial_npc_placement_draft"
+
+version:
+1
+```
+
+## 17. Prompt: InitialNpcPlacementAuditor
+
+```md id="qk9s41"
+# Роль
+
+Ты InitialNpcPlacementAuditor.
+
+# Задача
+
+Проверь initial_npc_placement_draft.
+
+# Главное правило
+
+Ты не исправляешь размещение.
+Ты не создаёшь NPC.
+Ты только аудируешь.
+
+# Проверить
+
+1. Все npc_instance_id уникальны.
+2. Каждый npc_candidate_id существует в npc_candidate_set.
+3. Каждый social_role_id совпадает с candidate.
+4. Каждый occupation_id совпадает с candidate или допустим как null.
+5. Каждый npc_archetype_id совпадает с candidate.
+6. Каждый key_npc_seed_id существует, если profile_level=key.
+7. Каждый g5_anchor_id существует.
+8. Каждый anchor supports can_hold_npc=true.
+9. Каждый g5_minilocation_id существует.
+10. NPC time_of_day совместим с historical_frame.clock.
+11. NPC season совместим с historical_frame.calendar.season.
+12. Visibility NPC не противоречит G5 visibility.
+13. Hidden NPC не показан как visible.
+14. Visible NPC не раскрывает имя, если identity_known_to_player=false.
+15. Background NPC не содержит лишней биографии.
+16. Scene NPC содержит достаточные interaction fields.
+17. Key NPC разрешён key seed.
+18. NPC не имеет concrete inventory.
+19. NPC не содержит dialogue.
+20. NPC не содержит intro_prose или visible_scene.
+21. source_trace достаточен.
+
+# Формат
+
+Верни только json:
+
+{
+  "version": 1,
+  "schema": "initial_npc_placement_audit",
+  "pass": true,
+  "concerns": [],
+  "evidence": []
+}
+
+Если pass=false, concerns не должен быть пустым.
+evidence не должен быть пустым.
+```
+
+## 18. Prompt: InitialNpcPlacementFormatRepairer
+
+```md id="tfor7e"
+# Роль
+
+Ты InitialNpcPlacementFormatRepairer.
+
+# Задача
+
+Исправь только формат JSON initial_npc_placement_draft или initial_npc_placement_audit.
+
+# Главное правило
+
+Не меняй смысл.
+Не добавляй NPC.
+Не меняй npc_candidate_id.
+Не меняй g5_anchor_id.
+Не создавай предметы.
+Не создавай диалог.
+Не создавай прозу.
+
+# Разрешено
+
+- убрать markdown;
+- привести schema/version;
+- переименовать ошибочные поля;
+- добавить отсутствующие служебные поля как null/[];
+- удалить запрещённые prose-поля;
+- перенести свободный текст в notes.
+
+# Запрещено
+
+- создавать npc_candidate_id;
+- создавать source_id;
+- создавать anchor_id;
+- создавать item_id;
+- создавать dialogue;
+- создавать visible_scene.
+
+# Формат
+
+Верни только json.
+```
+
+## 19. Prompt: InitialNpcPlacementSemanticRepairer
+
+```md id="y9w5bk"
+# Роль
+
+Ты InitialNpcPlacementSemanticRepairer.
+
+# Задача
+
+Исправь initial_npc_placement_draft по validationErrors и audit concerns.
+
+# Главное правило
+
+Исправляй только внутри:
+- npc_candidate_set;
+- g5_scene_graph.g5_anchors;
+- historical_frame;
+- selected_start_node.
+
+# Запрещено
+
+- создавать NPC вне npc_candidate_set;
+- создавать новые anchors;
+- менять G5 scene;
+- менять player_character;
+- менять historical_frame;
+- создавать предметы;
+- писать dialogue;
+- писать visible_scene;
+- писать intro_prose.
+
+# Если исправление невозможно
+
+Верни placement_status="blocked" или "empty_allowed" с evidence.
+
+# Формат
+
+Верни только json initial_npc_placement_draft.
+```
+
+## 20. Code precheck
+
+Перед LLM-аудитом код должен проверить:
+
+```json id="ti8t94"
+{
+  "version": 1,
+  "schema": "initial_npc_placement_code_precheck",
+  "pass": true,
+  "checks": {
+    "schema_valid": true,
+    "all_npc_candidates_exist": true,
+    "all_anchors_exist": true,
+    "all_anchors_support_npc": true,
+    "profile_levels_valid": true,
+    "time_and_season_valid": true,
+    "visibility_valid": true,
+    "no_items_created": true,
+    "no_dialogue_created": true,
+    "no_prose_created": true,
+    "source_trace_present": true
+  },
+  "concerns": [],
+  "evidence": []
+}
+```
+
+Если `code_precheck.pass=false`, semantic audit можно не запускать. Результат отправляется в repair.
+
+## 21. Validation rules
+
+Код обязан проверить:
+
+1. `schema === "initial_npc_placement_draft"`.
+2. `version === 1`.
+3. `placement_status` входит в enum.
+4. Каждый `npc_instance_id` уникален.
+5. Каждый `npc_candidate_id` существует в `npc_candidate_set`.
+6. Каждый `profile_level` входит в enum.
+7. `profile_level` не выше разрешённого candidate.
+8. Каждый `social_role_id` совпадает с candidate.
+9. Каждый `occupation_id` совпадает с candidate или null допустим.
+10. Каждый `npc_archetype_id` совпадает с candidate.
+11. `key_npc_seed_id` существует для key NPC.
+12. Каждый `g5_anchor_id` существует.
+13. Каждый `g5_minilocation_id` существует.
+14. Anchor supports `can_hold_npc=true`.
+15. Anchor belongs to selected G4.
+16. NPC совместим с selected place template.
+17. NPC совместим с season.
+18. NPC совместим с time_of_day.
+19. Visibility NPC совместима с anchor visibility.
+20. NPC не видим, если anchor hidden and no reason.
+21. Name pool exists for named NPC.
+22. Background NPC не имеет excessive profile.
+23. Scene NPC имеет interaction state.
+24. Key NPC имеет persistence basis.
+25. NPC knowledge не содержит hidden/player-only facts.
+26. NPC resource hints не создают concrete items.
+27. Нет `item_id`.
+28. Нет `dialogue`.
+29. Нет `visible_scene`.
+30. Нет `intro_prose`.
+31. Нет `hidden_event`.
+32. `source_trace` не пустой, если require_source_trace=true.
+33. `audit_self_check.evidence` не пустой.
+34. Если `audit_self_check.pass=false`, concerns не пустой.
+
+## 22. Error codes
+
+```text id="ckbc5q"
+NPC_PLACEMENT_INVALID_JSON
+NPC_PLACEMENT_SCHEMA_MISMATCH
+NPC_PLACEMENT_CANDIDATE_NOT_FOUND
+NPC_PLACEMENT_PROFILE_LEVEL_NOT_ALLOWED
+NPC_PLACEMENT_SOCIAL_ROLE_MISMATCH
+NPC_PLACEMENT_OCCUPATION_MISMATCH
+NPC_PLACEMENT_ARCHETYPE_MISMATCH
+NPC_PLACEMENT_KEY_SEED_MISSING
+NPC_PLACEMENT_ANCHOR_NOT_FOUND
+NPC_PLACEMENT_MINILOCATION_NOT_FOUND
+NPC_PLACEMENT_ANCHOR_OUTSIDE_G4
+NPC_PLACEMENT_ANCHOR_CANNOT_HOLD_NPC
+NPC_PLACEMENT_PLACE_TEMPLATE_MISMATCH
+NPC_PLACEMENT_TIME_OF_DAY_CONFLICT
+NPC_PLACEMENT_SEASON_CONFLICT
+NPC_PLACEMENT_VISIBILITY_CONFLICT
+NPC_PLACEMENT_HIDDEN_NPC_VISIBLE
+NPC_PLACEMENT_NAME_POOL_MISSING
+NPC_PLACEMENT_BACKGROUND_PROFILE_TOO_DEEP
+NPC_PLACEMENT_SCENE_PROFILE_TOO_SHALLOW
+NPC_PLACEMENT_KEY_PROFILE_WITHOUT_PERSISTENCE_BASIS
+NPC_PLACEMENT_KNOWLEDGE_LEAK
+NPC_PLACEMENT_CREATED_ITEM_TOO_EARLY
+NPC_PLACEMENT_CREATED_DIALOGUE_TOO_EARLY
+NPC_PLACEMENT_CREATED_VISIBLE_SCENE_TOO_EARLY
+NPC_PLACEMENT_CREATED_INTRO_PROSE_TOO_EARLY
+NPC_PLACEMENT_CREATED_HIDDEN_EVENT
+NPC_PLACEMENT_SOURCE_MISSING
+NPC_PLACEMENT_EMPTY_AUDIT_EVIDENCE
+NO_ALLOWED_NPC_PLACEMENT
+```
+
+## 23. DB write на этом этапе
+
+До аудита разрешено писать:
+
+```text id="c7zsnv"
+pipeline_step_status
+initial_npc_placement_draft_snapshot
+initial_npc_placement_code_precheck_snapshot
+initial_npc_placement_validation_issues
+initial_npc_placement_repair_attempts
+source_trace_snapshot
+```
+
+После успешного аудита и commit gate разрешено писать:
+
+```text id="zbsqfc"
+party_npcs
+party_npc_anchor_bindings
+party_npc_visibility_state
+party_npc_attention_state
+party_npc_witness_state
+party_npc_schedule_state
+party_npc_knowledge_scope
+party_npc_relation_state
+```
+
+Запрещено писать на этом этапе:
+
+```text id="hxr82z"
+party_items
+party_npc_inventory
+party_container_contents
+visible_scene
+intro_prose
+narrator_output
+hidden_event
+```
+
+## 24. Commit gate этапа
+
+Этап считается успешным, если:
+
+```text id="ccyrc5"
+initial_npc_placement_draft валиден,
+все NPC выбраны из npc_candidate_set,
+все NPC привязаны к существующим G5 anchors,
+все anchors могут держать NPC,
+все NPC совместимы с местом, сезоном и временем,
+видимость NPC корректна,
+background/scene/key глубина соблюдена,
+не созданы предметы, диалог, visible_scene или intro_prose,
+audit pass=true.
+```
+
+Если commit gate не пройден, pipeline не должен переходить к размещению предметов или visible context.
+
+## 25. Передача в следующий этап
+
+```json id="99uplk"
+{
+  "version": 1,
+  "schema": "item_placement_input",
+  "request_id": "string",
+
+  "historical_frame": {},
+  "selected_start_node": {},
+  "player_character": {},
+  "g5_scene_graph": {},
+  "g5_scene_audit": {},
+
+  "initial_npc_placement": {
+    "version": 1,
+    "schema": "initial_npc_placement_draft",
+    "placement_status": "placed"
+  },
+
+  "npc_placement_audit": {
+    "version": 1,
+    "schema": "initial_npc_placement_audit",
+    "pass": true
+  },
+
+  "item_profile_candidate_set": {},
+
+  "constraints": {
+    "preserve_npc_instance_ids": true,
+    "preserve_npc_anchor_bindings": true,
+    "preserve_npc_visibility_state": true,
+    "place_items_only_from_item_profile_candidate_set": true,
+    "do_not_change_npc_without_repair": true
+  }
+}
+```
+
+## 26. Минимальный успешный результат
+
+```json id="i8z9n6"
+{
+  "version": 1,
+  "schema": "initial_npc_placement_draft",
+  "request_id": "req_001",
+
+  "placement_status": "placed",
+
+  "frame": {
+    "region_id": "region_001",
+    "year": 1230,
+    "season": "winter",
+    "clock": {
+      "day": 1,
+      "hour": 6,
+      "minute": 30,
+      "time_of_day": "morning",
+      "light_profile": "dim"
+    }
+  },
+
+  "parent_scene": {
+    "g4_node_id": "g4_001",
+    "selected_place_template_id": "place_template_001",
+    "g5_scene_id": null
+  },
+
+  "npc_instances": [
+    {
+      "npc_instance_id": "npc_001",
+      "npc_candidate_id": "npc_cand_001",
+      "profile_level": "background",
+
+      "identity": {
+        "name_status": "visible_label",
+        "display_label": "background person",
+        "name": null,
+        "name_pool_id": null,
+        "identity_known_to_player": false
+      },
+
+      "base_refs": {
+        "npc_archetype_id": "npc_arch_001",
+        "social_role_id": "social_role_001",
+        "occupation_id": "occupation_001",
+        "key_npc_seed_id": null
+      },
+
+      "placement": {
+        "g5_anchor_id": "g5_anchor_001",
+        "g5_minilocation_id": "g5_miniloc_001",
+        "parent_g4_node_id": "g4_001",
+        "placement_basis": "anchor supports NPC and candidate is compatible with selected place template",
+        "presence_reason": "ordinary presence compatible with role and place",
+        "right_to_be_here": "yes"
+      },
+
+      "current_activity": {
+        "activity_type": "work",
+        "short_label": "occupied with ordinary work",
+        "activity_basis": "compatible with occupation and anchor",
+        "can_be_interrupted": true,
+        "time_until_change_minutes": 10
+      },
+
+      "visibility_state": {
+        "visible_to_player": true,
+        "audible_to_player": false,
+        "identified_by_player": false,
+        "requires_attention_check": false,
+        "requires_approach": true,
+        "hidden_from_player": false,
+        "visibility_basis": "anchor is visible and light allows general recognition"
+      },
+
+      "attention_state": {
+        "attention_mode": "busy",
+        "can_notice_player": true,
+        "can_notice_subtle_action": false,
+        "can_notice_loud_action": true,
+        "attention_basis": "NPC is occupied but present nearby"
+      },
+
+      "witness_state": {
+        "can_witness_player_action": true,
+        "can_hear_conversation": true,
+        "can_identify_player": false,
+        "can_notice_theft": false,
+        "can_notice_violence": true,
+        "can_call_others": false,
+        "witness_risk": "medium"
+      },
+
+      "interaction_state": {
+        "can_be_addressed_now": false,
+        "requires_approach": true,
+        "requires_permission": false,
+        "initial_disposition": "busy",
+        "first_reaction_basis": "background NPC is focused on ordinary work"
+      },
+
+      "knowledge_scope": {
+        "known_facts_now": [],
+        "rumors_now": [],
+        "mistaken_beliefs": [],
+        "forbidden_knowledge": [],
+        "knowledge_limits": [
+          "does not know hidden scene state",
+          "does not know player-only facts"
+        ]
+      },
+
+      "motivation_scope": {
+        "immediate_goal": "continue current task",
+        "fear_or_constraint": "avoid disrupting local order",
+        "what_would_change_behavior": [
+          "loud threat",
+          "violence",
+          "theft",
+          "direct address"
+        ]
+      },
+
+      "schedule_state": {
+        "available_now": true,
+        "likely_to_leave_minutes": 10,
+        "movement_options_anchor_ids": [
+          "g5_anchor_002"
+        ],
+        "movement_trigger_conditions": [
+          "task ends",
+          "someone calls",
+          "danger appears"
+        ]
+      },
+
+      "npc_resource_hints": {
+        "may_control_item_profile_candidate_ids": [],
+        "may_hold_item_profile_candidate_ids": [],
+        "may_guard_container_profile_candidate_ids": [],
+        "requires_item_placement_later": false
+      },
+
+      "profile_promotion_rules": {
+        "can_promote_to_scene": true,
+        "can_promote_to_key": false,
+        "promotion_triggers": [
+          "player addresses NPC",
+          "NPC witnesses serious action",
+          "NPC blocks access",
+          "NPC becomes source of consequence"
+        ]
+      },
+
+      "source_trace": [
+        {
+          "record_id": "npc_cand_001",
+          "table": "startup.npc_candidate_set",
+          "source_ids": [
+            "source_001"
+          ],
+          "supports": [
+            "npc_instance"
+          ]
+        },
+        {
+          "record_id": "g5_anchor_001",
+          "table": "party_scene_anchors",
+          "source_ids": [
+            "source_002"
+          ],
+          "supports": [
+            "anchor_binding"
+          ]
+        }
+      ]
+    }
+  ],
+
+  "npc_anchor_bindings": [
+    {
+      "npc_anchor_binding_id": "npc_anchor_binding_001",
+      "npc_instance_id": "npc_001",
+      "g5_anchor_id": "g5_anchor_001",
+      "binding_type": "working_at",
+      "distance_to_player_band": "near",
+      "line_of_sight_to_player": "partial",
+      "line_of_hearing_to_player": "clear",
+      "can_block_player_movement": false,
+      "can_block_access_to_anchor_ids": []
+    }
+  ],
+
+  "npc_visibility_state": [
+    {
+      "npc_instance_id": "npc_001",
+      "visible_to_player": true,
+      "identified_by_player": false,
+      "visible_label_for_player": "background person",
+      "hidden_details": [
+        "name",
+        "private motive",
+        "full knowledge"
+      ]
+    }
+  ],
+
+  "npc_attention_and_witness_state": [
+    {
+      "npc_instance_id": "npc_001",
+      "attention_mode": "busy",
+      "witness_risk": "medium",
+      "can_notice_loud_action": true,
+      "can_notice_subtle_action": false
+    }
+  ],
+
+  "npc_schedule_state": [
+    {
+      "npc_instance_id": "npc_001",
+      "available_now": true,
+      "likely_to_leave_minutes": 10,
+      "movement_options_anchor_ids": [
+        "g5_anchor_002"
+      ]
+    }
+  ],
+
+  "rejected_npc_placements": [],
+
+  "downstream_constraints": {
+    "must_preserve": [
+      "npc_instance_id",
+      "npc_candidate_id",
+      "g5_anchor_id",
+      "profile_level",
+      "visibility_state",
+      "witness_state"
+    ],
+    "must_not_create_yet": [
+      "npc_inventory",
+      "dialogue",
+      "visible_scene",
+      "intro_prose",
+      "hidden_event"
+    ],
+    "must_resolve_later": [
+      "npc_item_control",
+      "npc_dialogue_if_addressed",
+      "npc_profile_promotion_if_needed"
+    ]
+  },
+
+  "source_trace": [
+    {
+      "record_id": "npc_cand_001",
+      "table": "startup.npc_candidate_set",
+      "source_ids": [
+        "source_001"
+      ],
+      "supports": [
+        "npc_placement"
+      ]
+    }
+  ],
+
+  "audit_self_check": {
+    "pass": true,
+    "concerns": [],
+    "evidence": [
+      "All NPCs are selected from npc_candidate_set.",
+      "All NPCs are bound to existing G5 anchors.",
+      "All anchors support NPC placement.",
+      "NPC visibility follows G5 visibility and clock light profile.",
+      "No NPC inventory, dialogue, visible scene or intro prose was created."
+    ]
+  }
+}
+```

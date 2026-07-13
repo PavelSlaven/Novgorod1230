@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rus13.local/contracts/G5TemplateMatch.schema.json",
+  "title": "G5TemplateMatch",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "g4_type_id",
+    "template_source",
+    "category",
+    "allowed_g5_anchor_types",
+    "required_anchor_categories",
+    "optional_anchor_categories",
+    "forbidden_anchor_types",
+    "generation_limit_profile",
+    "status",
+    "confidence",
+    "sources"
+  ],
+  "properties": {
+    "g4_type_id": {
+      "description": "Required by G5TemplateMatch.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "template_source": {
+      "description": "Required by G5TemplateMatch.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "category": {
+      "description": "Required by G5TemplateMatch.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "allowed_g5_anchor_types": {
+      "description": "Required by G5TemplateMatch.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "required_anchor_categories": {
+      "description": "Required by G5TemplateMatch.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "optional_anchor_categories": {
+      "description": "Required by G5TemplateMatch.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "forbidden_anchor_types": {
+      "description": "Required by G5TemplateMatch.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "generation_limit_profile": {
+      "description": "Required by G5TemplateMatch.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "status": {
+      "description": "Required by G5TemplateMatch.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "confidence": {
+      "description": "Required by G5TemplateMatch.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "sources": {
+      "description": "Required by G5TemplateMatch.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    }
+  },
+  "x_step_id": "g5_02_template_match",
+  "x_writes_to": "party_llm_steps",
+  "x_blocking_validations": "exact template match or explicit needs_review fallback"
+}

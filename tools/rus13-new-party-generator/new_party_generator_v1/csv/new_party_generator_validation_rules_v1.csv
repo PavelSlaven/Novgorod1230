@@ -1,0 +1,13 @@
+rule_id,step_id,severity,check_type,rule,repair_target
+v001,all,blocking,no_code_world_creation,Code may not create semantic world entities; missing semantics must return to LLM repair.,ng_13_consistency_audit
+v002,ng_02_historical_frame,blocking,year_range,year must be integer between 1230 and 1250.,ng_02_historical_frame
+v003,ng_02_historical_frame,blocking,region_fk,region_id must exist in world_base.regions.,ng_02_historical_frame
+v004,ng_05_start_place_selection,blocking,graph_chain,G1-G4 chain must be valid or marked as party-created by LLM with cause.,ng_05_start_place_selection
+v005,ng_06_location_chain,blocking,current_position_complete,region_id/place_id/location_id/minilocation_id/anchor_id must be present.,ng_06_location_chain
+v006,ng_07_player_character_generation,blocking,character_balance,Start attributes/skills must obey documented balance and biographical basis.,ng_07_player_character_generation
+v007,ng_10_item_property_layer,blocking,item_causality,Significant item must have place/status/owner/holder/access/risk or be removed.,ng_10_item_property_layer
+v008,ng_11_initial_routes_map_knowledge,blocking,visible_map_split,character map knowledge must not equal factual hidden graph by default.,ng_11_initial_routes_map_knowledge
+v009,ng_12_initial_tensions_hidden_processes,blocking,event_causality,"Tension/deferred event requires cause, trigger/time, result, and visible manifestation.",ng_12_initial_tensions_hidden_processes
+v010,ng_15_visible_context_intro_prose,blocking,hidden_leak,Prose writer must not receive hidden motives/items/future dates/raw JSON.,ng_15_visible_context_intro_prose
+v011,ng_14_persist_party_start,blocking,atomic_persistence,Party start writes must be one transaction or rollback on failure.,ng_14_persist_party_start
+v012,ng_13_consistency_audit,warning,draft_source_status,Draft/needs_review source may be used only with status preserved and audit note.,ng_03_region_context_retrieval

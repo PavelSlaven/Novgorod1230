@@ -1,0 +1,1275 @@
+{
+  "metadata": {
+    "file_name": "novgorod_route_season_modifiers_v1.json",
+    "version": "1.0.0",
+    "project": "RUS13",
+    "region_id": "novgorod_land",
+    "region_id_aliases": [
+      "region_novgorod_land"
+    ],
+    "region_title": "Новгородская земля",
+    "period": "1230-1250",
+    "purpose": "Сезонные модификаторы маршрутов, переправ, транспорта и риска пути",
+    "created_at_utc": "2026-07-05T12:30:00Z",
+    "status": "draft",
+    "confidence": "medium",
+    "requires_human_audit": true,
+    "list_expansion_policy": "Списки задания являются минимальным ядром, а не пределом. Новые контейнеры, слухи, события, предметные и социальные профили допустимы только при историко-бытовом, хозяйственном или социальном основании, со статусом, уверенностью и возможностью ручного аудита.",
+    "source_registry": [
+      "project_archive:novgorod_full_graph_g1_g4_v6_game_ready.zip",
+      "project_data:novgorod_region_generation_limits_v1.json",
+      "project_data:novgorod_region_profile_v1.json",
+      "project_data:novgorod_historical_timeline_1230_1250_v1.json",
+      "project_data:novgorod_neighbor_regions_v1.json",
+      "project_data:novgorod_social_roles_v1.tsv",
+      "project_data:novgorod_occupations_v1.tsv",
+      "project_data:novgorod_status_rules_v1.json",
+      "project_doc:items_and_property.txt",
+      "project_doc:npc_generation_profiles.txt",
+      "project_doc:movement_locations_regions.txt",
+      "project_doc:time_system.txt",
+      "project_doc:historical_events_and_figures.txt",
+      "project_doc:information_sources_llm_prompts.md"
+    ]
+  },
+  "route_modifier_profiles": [
+    {
+      "modifier_id": "mod_winter_sledge_good",
+      "applies_to_edge_types": [
+        "road",
+        "winter_road",
+        "field_track"
+      ],
+      "applies_to_seasons": [
+        "season_winter"
+      ],
+      "movement_effect": "санный ход ускоряет перевоз груза по устойчивому снегу/льду",
+      "time_multiplier_hint": "x0.75_to_x1",
+      "risk_change": "risk_lower_if_weather_clear",
+      "requires_check": "проверка обычно не нужна при местном пути",
+      "requires_equipment_or_transport": [
+        "sledge",
+        "draft_animal_or_pull_team"
+      ],
+      "visible_warning_signs": [
+        "ровный санный след",
+        "утоптанный снег"
+      ],
+      "failure_consequences": [
+        "поломка саней",
+        "усталость животного"
+      ],
+      "llm_limits": [
+        "числа являются ориентирами; итоговый риск выводится из сцены, состояния, груза и навыка",
+        "не применять модификатор без сезонного основания"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "modifier_id": "mod_deep_snow",
+      "applies_to_edge_types": [
+        "road",
+        "forest_path",
+        "field_track"
+      ],
+      "applies_to_seasons": [
+        "season_winter",
+        "season_late_winter"
+      ],
+      "movement_effect": "глубокий снег замедляет пеших и животных",
+      "time_multiplier_hint": "x1.5_to_x3",
+      "risk_change": "risk_up",
+      "requires_check": "Выносливость или Внимание при долгом пути",
+      "requires_equipment_or_transport": [
+        "warm_clothing",
+        "snow_knowledge"
+      ],
+      "visible_warning_signs": [
+        "нет твёрдого следа",
+        "проваливающиеся ноги"
+      ],
+      "failure_consequences": [
+        "усталость",
+        "обморожение",
+        "ночёвка в пути"
+      ],
+      "llm_limits": [
+        "числа являются ориентирами; итоговый риск выводится из сцены, состояния, груза и навыка",
+        "не применять модификатор без сезонного основания"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "modifier_id": "mod_blizzard",
+      "applies_to_edge_types": [
+        "all_travel"
+      ],
+      "applies_to_seasons": [
+        "season_winter",
+        "season_late_winter"
+      ],
+      "movement_effect": "метель может остановить путь",
+      "time_multiplier_hint": "x2_to_impossible",
+      "risk_change": "risk_high",
+      "requires_check": "Внимание/Выносливость; без проводника опасно",
+      "requires_equipment_or_transport": [
+        "shelter",
+        "guide",
+        "warm_clothing"
+      ],
+      "visible_warning_signs": [
+        "белая мгла",
+        "засыпанный след",
+        "люди прячутся"
+      ],
+      "failure_consequences": [
+        "заблудиться",
+        "обморожение",
+        "потеря груза"
+      ],
+      "llm_limits": [
+        "числа являются ориентирами; итоговый риск выводится из сцены, состояния, груза и навыка",
+        "не применять модификатор без сезонного основания"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "modifier_id": "mod_hard_frost",
+      "applies_to_edge_types": [
+        "road",
+        "river_ice",
+        "yard"
+      ],
+      "applies_to_seasons": [
+        "season_winter"
+      ],
+      "movement_effect": "крепкий мороз держит лёд, но опасен телу",
+      "time_multiplier_hint": "x1",
+      "risk_change": "body_risk_up",
+      "requires_check": "проверка состояния при долгом пути",
+      "requires_equipment_or_transport": [
+        "warm_clothing",
+        "food"
+      ],
+      "visible_warning_signs": [
+        "скрип снега",
+        "иней",
+        "жёсткий лёд"
+      ],
+      "failure_consequences": [
+        "холод",
+        "обморожение",
+        "животное слабеет"
+      ],
+      "llm_limits": [
+        "числа являются ориентирами; итоговый риск выводится из сцены, состояния, груза и навыка",
+        "не применять модификатор без сезонного основания"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "modifier_id": "mod_thaw_ice",
+      "applies_to_edge_types": [
+        "river_ice",
+        "winter_road",
+        "ferry"
+      ],
+      "applies_to_seasons": [
+        "season_thaw",
+        "season_late_winter"
+      ],
+      "movement_effect": "оттепель разрушает лёд и зимник",
+      "time_multiplier_hint": "x1.5_to_impossible",
+      "risk_change": "risk_high",
+      "requires_check": "Внимание; часто нужен местный источник",
+      "requires_equipment_or_transport": [
+        "guide",
+        "ice_pole"
+      ],
+      "visible_warning_signs": [
+        "вода на льду",
+        "тёмные пятна",
+        "треск"
+      ],
+      "failure_consequences": [
+        "провал",
+        "закрытие переправы",
+        "возврат"
+      ],
+      "llm_limits": [
+        "числа являются ориентирами; итоговый риск выводится из сцены, состояния, груза и навыка",
+        "не применять модификатор без сезонного основания"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "modifier_id": "mod_spring_rasputitsa",
+      "applies_to_edge_types": [
+        "road",
+        "field_track",
+        "yard_exit"
+      ],
+      "applies_to_seasons": [
+        "season_rasputitsa"
+      ],
+      "movement_effect": "грязь и вода замедляют телегу и пешего",
+      "time_multiplier_hint": "x2_to_x3",
+      "risk_change": "risk_up",
+      "requires_check": "Выносливость/управление грузом",
+      "requires_equipment_or_transport": [
+        "boots",
+        "guide",
+        "lighter_load"
+      ],
+      "visible_warning_signs": [
+        "колеи с водой",
+        "липкая грязь"
+      ],
+      "failure_consequences": [
+        "застрять",
+        "сломать колесо",
+        "потерять время"
+      ],
+      "llm_limits": [
+        "числа являются ориентирами; итоговый риск выводится из сцены, состояния, груза и навыка",
+        "не применять модификатор без сезонного основания"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "modifier_id": "mod_flood_road",
+      "applies_to_edge_types": [
+        "road",
+        "lowland",
+        "ford"
+      ],
+      "applies_to_seasons": [
+        "season_flood"
+      ],
+      "movement_effect": "вода закрывает низины и броды",
+      "time_multiplier_hint": "x2_to_impossible",
+      "risk_change": "risk_high",
+      "requires_check": "Внимание; проверка переправы",
+      "requires_equipment_or_transport": [
+        "boat_or_ferry",
+        "guide"
+      ],
+      "visible_warning_signs": [
+        "затопленный берег",
+        "быстрая вода"
+      ],
+      "failure_consequences": [
+        "обход",
+        "потеря груза",
+        "утопление"
+      ],
+      "llm_limits": [
+        "числа являются ориентирами; итоговый риск выводится из сцены, состояния, груза и навыка",
+        "не применять модификатор без сезонного основания"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "modifier_id": "mod_flood_ferry",
+      "applies_to_edge_types": [
+        "ferry",
+        "landing"
+      ],
+      "applies_to_seasons": [
+        "season_flood"
+      ],
+      "movement_effect": "перевозчик может отказать или поднять требования",
+      "time_multiplier_hint": "x1.5_to_impossible",
+      "risk_change": "risk_high",
+      "requires_check": "социальная проверка или ожидание",
+      "requires_equipment_or_transport": [
+        "boat",
+        "ferryman",
+        "permission"
+      ],
+      "visible_warning_signs": [
+        "лодки отвязаны выше",
+        "люди ждут"
+      ],
+      "failure_consequences": [
+        "задержка",
+        "конфликт",
+        "плата растёт"
+      ],
+      "llm_limits": [
+        "числа являются ориентирами; итоговый риск выводится из сцены, состояния, груза и навыка",
+        "не применять модификатор без сезонного основания"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "modifier_id": "mod_dangerous_river_current",
+      "applies_to_edge_types": [
+        "river",
+        "landing",
+        "boat_route"
+      ],
+      "applies_to_seasons": [
+        "season_flood",
+        "season_navigation"
+      ],
+      "movement_effect": "течение и ветер усложняют лодочный ход",
+      "time_multiplier_hint": "x1.5",
+      "risk_change": "risk_up",
+      "requires_check": "навык лодки/Внимание",
+      "requires_equipment_or_transport": [
+        "boat",
+        "oars",
+        "experienced_boatman"
+      ],
+      "visible_warning_signs": [
+        "сильная струя",
+        "пена",
+        "крен лодки"
+      ],
+      "failure_consequences": [
+        "намокший груз",
+        "поломка",
+        "утопление"
+      ],
+      "llm_limits": [
+        "числа являются ориентирами; итоговый риск выводится из сцены, состояния, груза и навыка",
+        "не применять модификатор без сезонного основания"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "modifier_id": "mod_summer_boats",
+      "applies_to_edge_types": [
+        "river",
+        "lake",
+        "boat_route",
+        "landing"
+      ],
+      "applies_to_seasons": [
+        "season_navigation",
+        "season_summer"
+      ],
+      "movement_effect": "водный путь доступен при лодке и погоде",
+      "time_multiplier_hint": "x1",
+      "risk_change": "risk_normal",
+      "requires_check": "проверка при шторме, грузе или незнании мелей",
+      "requires_equipment_or_transport": [
+        "boat",
+        "oars",
+        "boatman"
+      ],
+      "visible_warning_signs": [
+        "мостки",
+        "канаты",
+        "лодки"
+      ],
+      "failure_consequences": [
+        "задержка",
+        "мель",
+        "повреждение лодки"
+      ],
+      "llm_limits": [
+        "числа являются ориентирами; итоговый риск выводится из сцены, состояния, груза и навыка",
+        "не применять модификатор без сезонного основания"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "modifier_id": "mod_summer_swamp",
+      "applies_to_edge_types": [
+        "forest_path",
+        "swamp_edge",
+        "lowland"
+      ],
+      "applies_to_seasons": [
+        "season_summer",
+        "season_spring"
+      ],
+      "movement_effect": "болота и влажные низины затрудняют путь",
+      "time_multiplier_hint": "x1.5_to_x3",
+      "risk_change": "risk_up",
+      "requires_check": "Внимание/Выносливость; проводник полезен",
+      "requires_equipment_or_transport": [
+        "guide",
+        "pole",
+        "proper_footwear"
+      ],
+      "visible_warning_signs": [
+        "мошкара",
+        "мягкая земля",
+        "камыш"
+      ],
+      "failure_consequences": [
+        "застрять",
+        "потеря обуви",
+        "обход"
+      ],
+      "llm_limits": [
+        "числа являются ориентирами; итоговый риск выводится из сцены, состояния, груза и навыка",
+        "не применять модификатор без сезонного основания"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "modifier_id": "mod_mosquitoes_background",
+      "applies_to_edge_types": [
+        "forest_path",
+        "swamp_edge",
+        "river_bank"
+      ],
+      "applies_to_seasons": [
+        "season_summer"
+      ],
+      "movement_effect": "комары и мошка мешают отдыху и вниманию, но не являются главным препятствием",
+      "time_multiplier_hint": "x1",
+      "risk_change": "minor_risk_up",
+      "requires_check": "обычно без броска; учитывается при ночлеге",
+      "requires_equipment_or_transport": [
+        "smoke",
+        "covered_clothing"
+      ],
+      "visible_warning_signs": [
+        "мошкара",
+        "дымокуры"
+      ],
+      "failure_consequences": [
+        "плохой сон",
+        "раздражение"
+      ],
+      "llm_limits": [
+        "числа являются ориентирами; итоговый риск выводится из сцены, состояния, груза и навыка",
+        "не применять модификатор без сезонного основания"
+      ],
+      "status": "usable_with_caution",
+      "confidence": "medium"
+    },
+    {
+      "modifier_id": "mod_autumn_mud",
+      "applies_to_edge_types": [
+        "road",
+        "yard_exit",
+        "field_track"
+      ],
+      "applies_to_seasons": [
+        "season_autumn",
+        "season_late_autumn"
+      ],
+      "movement_effect": "осенняя грязь замедляет телеги и людей",
+      "time_multiplier_hint": "x1.5_to_x2",
+      "risk_change": "risk_up",
+      "requires_check": "Выносливость или ремонт при поломке",
+      "requires_equipment_or_transport": [
+        "boots",
+        "cart_repair_tools"
+      ],
+      "visible_warning_signs": [
+        "глубокие колеи",
+        "хлюпающая дорога"
+      ],
+      "failure_consequences": [
+        "поломка",
+        "задержка",
+        "ночёвка"
+      ],
+      "llm_limits": [
+        "числа являются ориентирами; итоговый риск выводится из сцены, состояния, груза и навыка",
+        "не применять модификатор без сезонного основания"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "modifier_id": "mod_late_autumn_dark",
+      "applies_to_edge_types": [
+        "road",
+        "forest_path",
+        "street"
+      ],
+      "applies_to_seasons": [
+        "season_late_autumn"
+      ],
+      "movement_effect": "короткий день повышает риск ночного пути",
+      "time_multiplier_hint": "x1_to_x1.5",
+      "risk_change": "risk_up_at_evening",
+      "requires_check": "Внимание при сумерках",
+      "requires_equipment_or_transport": [
+        "torch",
+        "guide",
+        "lodging_plan"
+      ],
+      "visible_warning_signs": [
+        "ранние сумерки",
+        "туман"
+      ],
+      "failure_consequences": [
+        "заблудиться",
+        "столкнуться с закрытыми воротами"
+      ],
+      "llm_limits": [
+        "числа являются ориентирами; итоговый риск выводится из сцены, состояния, груза и навыка",
+        "не применять модификатор без сезонного основания"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "modifier_id": "mod_ice_forming",
+      "applies_to_edge_types": [
+        "ferry",
+        "river",
+        "landing"
+      ],
+      "applies_to_seasons": [
+        "season_ice_forming"
+      ],
+      "movement_effect": "ледостав временно закрывает часть водных и ледовых путей",
+      "time_multiplier_hint": "impossible_or_wait",
+      "risk_change": "risk_high",
+      "requires_check": "решает местный источник; проверка льда опасна",
+      "requires_equipment_or_transport": [
+        "local_knowledge"
+      ],
+      "visible_warning_signs": [
+        "тонкий лёд у берега",
+        "пустые лодки"
+      ],
+      "failure_consequences": [
+        "ожидание",
+        "обход",
+        "провал"
+      ],
+      "llm_limits": [
+        "числа являются ориентирами; итоговый риск выводится из сцены, состояния, груза и навыка",
+        "не применять модификатор без сезонного основания"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "modifier_id": "mod_thin_ice",
+      "applies_to_edge_types": [
+        "river_ice",
+        "lake_ice"
+      ],
+      "applies_to_seasons": [
+        "season_ice_forming",
+        "season_thaw"
+      ],
+      "movement_effect": "тонкий лёд не должен считаться дорогой",
+      "time_multiplier_hint": "impossible_without_strong_basis",
+      "risk_change": "risk_extreme",
+      "requires_check": "не разрешать как обычный маршрут",
+      "requires_equipment_or_transport": [
+        "local_test",
+        "rope",
+        "guide"
+      ],
+      "visible_warning_signs": [
+        "тёмный лёд",
+        "вода у камыша"
+      ],
+      "failure_consequences": [
+        "утопление",
+        "потеря снаряжения"
+      ],
+      "llm_limits": [
+        "числа являются ориентирами; итоговый риск выводится из сцены, состояния, груза и навыка",
+        "не применять модификатор без сезонного основания"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "modifier_id": "mod_closed_ferry",
+      "applies_to_edge_types": [
+        "ferry"
+      ],
+      "applies_to_seasons": [
+        "all"
+      ],
+      "movement_effect": "переправа закрыта приказом, водой, ночью, болезнью или отсутствием перевозчика",
+      "time_multiplier_hint": "wait_or_detour",
+      "risk_change": "risk_social_or_route",
+      "requires_check": "социальная проверка при просьбе открыть",
+      "requires_equipment_or_transport": [
+        "permission",
+        "payment",
+        "authority"
+      ],
+      "visible_warning_signs": [
+        "запертая лодка",
+        "сторож",
+        "люди ждут"
+      ],
+      "failure_consequences": [
+        "конфликт",
+        "задержка",
+        "поиск ночлега"
+      ],
+      "llm_limits": [
+        "числа являются ориентирами; итоговый риск выводится из сцены, состояния, груза и навыка",
+        "не применять модификатор без сезонного основания"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "modifier_id": "mod_low_water_drag",
+      "applies_to_edge_types": [
+        "boat_route",
+        "landing"
+      ],
+      "applies_to_seasons": [
+        "season_summer"
+      ],
+      "movement_effect": "мель заставляет тянуть лодку или искать глубину",
+      "time_multiplier_hint": "x1.5_to_x2",
+      "risk_change": "risk_medium",
+      "requires_check": "Внимание/навык лодки",
+      "requires_equipment_or_transport": [
+        "boatman",
+        "poles",
+        "labor"
+      ],
+      "visible_warning_signs": [
+        "видны мели",
+        "лодка скребёт"
+      ],
+      "failure_consequences": [
+        "намокший груз",
+        "поломка",
+        "задержка"
+      ],
+      "llm_limits": [
+        "числа являются ориентирами; итоговый риск выводится из сцены, состояния, груза и навыка",
+        "не применять модификатор без сезонного основания"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "modifier_id": "mod_forest_overgrowth",
+      "applies_to_edge_types": [
+        "forest_path",
+        "hidden_path"
+      ],
+      "applies_to_seasons": [
+        "season_summer",
+        "season_autumn"
+      ],
+      "movement_effect": "заросшая тропа теряется без местного знания",
+      "time_multiplier_hint": "x1.5_to_x2",
+      "risk_change": "risk_up",
+      "requires_check": "Внимание/проводник",
+      "requires_equipment_or_transport": [
+        "knife_or_axe",
+        "guide"
+      ],
+      "visible_warning_signs": [
+        "заросший ход",
+        "сломанные ветки"
+      ],
+      "failure_consequences": [
+        "потеря пути",
+        "царапины",
+        "выход не туда"
+      ],
+      "llm_limits": [
+        "числа являются ориентирами; итоговый риск выводится из сцены, состояния, груза и навыка",
+        "не применять модификатор без сезонного основания"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "modifier_id": "mod_fallen_trees",
+      "applies_to_edge_types": [
+        "forest_path",
+        "road"
+      ],
+      "applies_to_seasons": [
+        "after_storm",
+        "season_autumn",
+        "season_spring"
+      ],
+      "movement_effect": "поваленные деревья требуют обхода или работы",
+      "time_multiplier_hint": "x1.5_to_x3",
+      "risk_change": "risk_medium",
+      "requires_check": "Сила/работа инструментом при расчистке",
+      "requires_equipment_or_transport": [
+        "axe",
+        "helpers"
+      ],
+      "visible_warning_signs": [
+        "бурелом",
+        "свежие сколы"
+      ],
+      "failure_consequences": [
+        "обход",
+        "усталость",
+        "травма"
+      ],
+      "llm_limits": [
+        "числа являются ориентирами; итоговый риск выводится из сцены, состояния, груза и навыка",
+        "не применять модификатор без сезонного основания"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "modifier_id": "mod_wolf_winter_risk",
+      "applies_to_edge_types": [
+        "forest_path",
+        "road",
+        "field_track"
+      ],
+      "applies_to_seasons": [
+        "season_winter",
+        "season_late_winter"
+      ],
+      "movement_effect": "голодное зверьё повышает страх и риск для скота/одиночек",
+      "time_multiplier_hint": "x1",
+      "risk_change": "risk_up_at_night",
+      "requires_check": "Внимание при следах",
+      "requires_equipment_or_transport": [
+        "fire",
+        "group",
+        "dog"
+      ],
+      "visible_warning_signs": [
+        "вой",
+        "следы",
+        "нервный скот"
+      ],
+      "failure_consequences": [
+        "потеря животного",
+        "бегство",
+        "бой"
+      ],
+      "llm_limits": [
+        "числа являются ориентирами; итоговый риск выводится из сцены, состояния, груза и навыка",
+        "не применять модификатор без сезонного основания"
+      ],
+      "status": "usable_with_caution",
+      "confidence": "medium"
+    },
+    {
+      "modifier_id": "mod_fog_water",
+      "applies_to_edge_types": [
+        "river",
+        "landing",
+        "boat_route"
+      ],
+      "applies_to_seasons": [
+        "season_spring",
+        "season_autumn",
+        "season_navigation"
+      ],
+      "movement_effect": "туман скрывает берег, мели и лодки",
+      "time_multiplier_hint": "x1.5",
+      "risk_change": "risk_up",
+      "requires_check": "Внимание/навык лодки",
+      "requires_equipment_or_transport": [
+        "boatman",
+        "waiting_time"
+      ],
+      "visible_warning_signs": [
+        "молочная мгла",
+        "звуки с воды"
+      ],
+      "failure_consequences": [
+        "сбиться",
+        "столкновение",
+        "задержка"
+      ],
+      "llm_limits": [
+        "числа являются ориентирами; итоговый риск выводится из сцены, состояния, груза и навыка",
+        "не применять модификатор без сезонного основания"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "modifier_id": "mod_heavy_load",
+      "applies_to_edge_types": [
+        "road",
+        "ferry",
+        "boat_route",
+        "volok"
+      ],
+      "applies_to_seasons": [
+        "all"
+      ],
+      "movement_effect": "тяжёлый груз замедляет путь и усложняет переправу",
+      "time_multiplier_hint": "x1.5_to_x3",
+      "risk_change": "risk_up",
+      "requires_check": "проверка нагрузки/организации",
+      "requires_equipment_or_transport": [
+        "helpers",
+        "cart_or_sledge",
+        "rope"
+      ],
+      "visible_warning_signs": [
+        "согнутые спины",
+        "скрип телеги"
+      ],
+      "failure_consequences": [
+        "бросить груз",
+        "задержка",
+        "поломка"
+      ],
+      "llm_limits": [
+        "числа являются ориентирами; итоговый риск выводится из сцены, состояния, груза и навыка",
+        "не применять модификатор без сезонного основания"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "modifier_id": "mod_livestock_drive",
+      "applies_to_edge_types": [
+        "road",
+        "field_track",
+        "ford"
+      ],
+      "applies_to_seasons": [
+        "spring",
+        "summer",
+        "autumn"
+      ],
+      "movement_effect": "скот идёт медленнее и требует контроля",
+      "time_multiplier_hint": "x1.5",
+      "risk_change": "risk_medium",
+      "requires_check": "Влияние/Внимание/помощники",
+      "requires_equipment_or_transport": [
+        "herders",
+        "rope"
+      ],
+      "visible_warning_signs": [
+        "мычание",
+        "разбредание"
+      ],
+      "failure_consequences": [
+        "потеря скота",
+        "спор с хозяевами полей"
+      ],
+      "llm_limits": [
+        "числа являются ориентирами; итоговый риск выводится из сцены, состояния, груза и навыка",
+        "не применять модификатор без сезонного основания"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "modifier_id": "mod_night_travel",
+      "applies_to_edge_types": [
+        "all_travel"
+      ],
+      "applies_to_seasons": [
+        "all"
+      ],
+      "movement_effect": "ночной путь опаснее и социально подозрительнее",
+      "time_multiplier_hint": "x1.5",
+      "risk_change": "risk_up",
+      "requires_check": "Внимание; иногда социальная проверка при воротах",
+      "requires_equipment_or_transport": [
+        "light",
+        "guide",
+        "reason"
+      ],
+      "visible_warning_signs": [
+        "закрытые ворота",
+        "темнота"
+      ],
+      "failure_consequences": [
+        "заблудиться",
+        "отказ в доступе",
+        "подозрение"
+      ],
+      "llm_limits": [
+        "числа являются ориентирами; итоговый риск выводится из сцены, состояния, груза и навыка",
+        "не применять модификатор без сезонного основания"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "modifier_id": "mod_guide_required_forest",
+      "applies_to_edge_types": [
+        "forest_path",
+        "hidden_path",
+        "swamp_edge"
+      ],
+      "applies_to_seasons": [
+        "all"
+      ],
+      "movement_effect": "без местного проводника путь известен только примерно",
+      "time_multiplier_hint": "impossible_without_guide_or_prior_knowledge",
+      "risk_change": "risk_high",
+      "requires_check": "проверка Внимания при попытке идти одному",
+      "requires_equipment_or_transport": [
+        "guide",
+        "prior_exact_knowledge"
+      ],
+      "visible_warning_signs": [
+        "нет явного входа",
+        "местные молчат"
+      ],
+      "failure_consequences": [
+        "заблудиться",
+        "потерять день",
+        "выйти к чужим"
+      ],
+      "llm_limits": [
+        "числа являются ориентирами; итоговый риск выводится из сцены, состояния, груза и навыка",
+        "не применять модификатор без сезонного основания"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "modifier_id": "mod_volok_mud",
+      "applies_to_edge_types": [
+        "volok"
+      ],
+      "applies_to_seasons": [
+        "season_rasputitsa",
+        "season_autumn"
+      ],
+      "movement_effect": "волок по грязи требует людей, верёвок и времени",
+      "time_multiplier_hint": "x2_to_x4",
+      "risk_change": "risk_high",
+      "requires_check": "Сила/Выносливость/организация",
+      "requires_equipment_or_transport": [
+        "rope",
+        "helpers",
+        "logs_or_skids"
+      ],
+      "visible_warning_signs": [
+        "глина",
+        "следы волока"
+      ],
+      "failure_consequences": [
+        "поломка лодки",
+        "травма",
+        "конфликт за помощь"
+      ],
+      "llm_limits": [
+        "числа являются ориентирами; итоговый риск выводится из сцены, состояния, груза и навыка",
+        "не применять модификатор без сезонного основания"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "modifier_id": "mod_authority_closure",
+      "applies_to_edge_types": [
+        "road",
+        "gate",
+        "ferry",
+        "market"
+      ],
+      "applies_to_seasons": [
+        "all"
+      ],
+      "movement_effect": "дорога, ворота или торг закрыты приказом власти, тревогой или пожаром",
+      "time_multiplier_hint": "wait_or_permission",
+      "risk_change": "risk_social_high",
+      "requires_check": "Влияние/статус/разрешение",
+      "requires_equipment_or_transport": [
+        "permission",
+        "witness",
+        "patron"
+      ],
+      "visible_warning_signs": [
+        "стража",
+        "толпа",
+        "ворота закрыты"
+      ],
+      "failure_consequences": [
+        "отказ",
+        "задержание",
+        "конфликт"
+      ],
+      "llm_limits": [
+        "числа являются ориентирами; итоговый риск выводится из сцены, состояния, груза и навыка",
+        "не применять модификатор без сезонного основания"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "modifier_id": "mod_market_day_congestion",
+      "applies_to_edge_types": [
+        "street",
+        "torg",
+        "landing",
+        "gate"
+      ],
+      "applies_to_seasons": [
+        "market_day"
+      ],
+      "movement_effect": "людный день замедляет движение, но даёт слухи и свидетелей",
+      "time_multiplier_hint": "x1.25_to_x1.5",
+      "risk_change": "witness_risk_up",
+      "requires_check": "обычно без проверки; скрытность сложнее",
+      "requires_equipment_or_transport": [
+        "patience",
+        "social_skill"
+      ],
+      "visible_warning_signs": [
+        "толпа",
+        "крики",
+        "телеги"
+      ],
+      "failure_consequences": [
+        "потеря времени",
+        "кража",
+        "свидетель"
+      ],
+      "llm_limits": [
+        "числа являются ориентирами; итоговый риск выводится из сцены, состояния, груза и навыка",
+        "не применять модификатор без сезонного основания"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    }
+  ],
+  "edge_type_season_rules": [
+    {
+      "edge_type": "river_or_boat_route",
+      "best_seasons": [
+        "season_navigation"
+      ],
+      "danger_seasons": [
+        "season_flood",
+        "season_ice_forming",
+        "season_thaw"
+      ],
+      "notes": "требует лодку, лодочника или личное знание"
+    },
+    {
+      "edge_type": "winter_road",
+      "best_seasons": [
+        "season_winter"
+      ],
+      "danger_seasons": [
+        "season_thaw",
+        "season_ice_forming",
+        "season_late_winter"
+      ],
+      "notes": "не считать открытым без свежего знания"
+    },
+    {
+      "edge_type": "dry_road",
+      "best_seasons": [
+        "season_summer",
+        "season_autumn_before_mud"
+      ],
+      "danger_seasons": [
+        "season_rasputitsa",
+        "season_flood",
+        "season_late_autumn"
+      ],
+      "notes": "телега и пеший путь меняются по-разному"
+    },
+    {
+      "edge_type": "forest_path",
+      "best_seasons": [
+        "season_winter",
+        "season_summer"
+      ],
+      "danger_seasons": [
+        "season_rasputitsa",
+        "season_blizzard",
+        "season_late_autumn"
+      ],
+      "notes": "часто нужен местный проводник"
+    },
+    {
+      "edge_type": "ford",
+      "best_seasons": [
+        "low_water",
+        "stable_local_conditions"
+      ],
+      "danger_seasons": [
+        "season_flood",
+        "season_ice_forming"
+      ],
+      "notes": "брод быстро устаревает как знание"
+    }
+  ],
+  "transport_rules": [
+    {
+      "transport_id": "transport_foot",
+      "title": "Пешком",
+      "good_for": [
+        "город",
+        "лес",
+        "короткий путь"
+      ],
+      "bad_for": [
+        "тяжёлый груз",
+        "глубокий снег",
+        "болото"
+      ],
+      "notes": "состояние тела важно"
+    },
+    {
+      "transport_id": "transport_cart",
+      "title": "Телега",
+      "good_for": [
+        "сухая дорога",
+        "товар"
+      ],
+      "bad_for": [
+        "распутица",
+        "лесная тропа",
+        "брод без подготовки"
+      ],
+      "notes": "колёса ломаются, нужен возчик/животное"
+    },
+    {
+      "transport_id": "transport_sledge",
+      "title": "Сани",
+      "good_for": [
+        "зима",
+        "снег",
+        "устойчивый лед/дорога"
+      ],
+      "bad_for": [
+        "оттепель",
+        "грязь",
+        "тонкий лёд"
+      ],
+      "notes": "корм и животное имеют значение"
+    },
+    {
+      "transport_id": "transport_boat",
+      "title": "Лодка",
+      "good_for": [
+        "навигация",
+        "река",
+        "озеро"
+      ],
+      "bad_for": [
+        "ледостав",
+        "шторм",
+        "мель без знания"
+      ],
+      "notes": "нужны лодочные вещи и человек, умеющий управлять"
+    },
+    {
+      "transport_id": "transport_pack_animal",
+      "title": "Вьючное/тягловое животное",
+      "good_for": [
+        "груз",
+        "дорога"
+      ],
+      "bad_for": [
+        "болото",
+        "гололёд",
+        "болезнь животного"
+      ],
+      "notes": "корм и уход становятся частью цены и риска"
+    }
+  ],
+  "crossing_rules": [
+    {
+      "crossing_rule_id": "crossing_ford_check",
+      "title": "Брод",
+      "rule": "Проверить глубину, течение, дно, груз, сезон, животных и свежесть знания."
+    },
+    {
+      "crossing_rule_id": "crossing_ferry_access",
+      "title": "Перевоз",
+      "rule": "Проверить перевозчика, лодку, цену/обязанность, очередь, приказ и воду."
+    },
+    {
+      "crossing_rule_id": "crossing_ice",
+      "title": "Лёд",
+      "rule": "Лёд не является дорогой без свежего местного основания; оттепель и ледостав повышают риск."
+    },
+    {
+      "crossing_rule_id": "crossing_boat_landing",
+      "title": "Пристань/берег",
+      "rule": "Нужны место разгрузки, мокрый спуск, грузчики, видимость и право пристать."
+    }
+  ],
+  "getting_lost_rules": [
+    {
+      "rule_id": "lost_weather",
+      "trigger": "туман, метель, ночь, дождь",
+      "risk": "ориентиры пропадают; слуховой маршрут падает на уровень false_belief"
+    },
+    {
+      "rule_id": "lost_wrong_season",
+      "trigger": "маршрут известен в другом сезоне",
+      "risk": "зимник летом или брод в паводок не работает"
+    },
+    {
+      "rule_id": "lost_no_guide",
+      "trigger": "лес, болото, скрытая тропа без проводника",
+      "risk": "задержка, выход к чужому двору, телесный расход"
+    },
+    {
+      "rule_id": "lost_social_lie",
+      "trigger": "NPC дал неполный путь",
+      "risk": "конфликт, ограбление, вымогательство или обход"
+    }
+  ],
+  "risk_escalation_rules": [
+    {
+      "rule_id": "risk_escalate_body",
+      "condition": "усталость, холод, голод или рана",
+      "effect": "увеличить риск пути и вероятность отказа NPC идти дальше"
+    },
+    {
+      "rule_id": "risk_escalate_load",
+      "condition": "тяжёлый груз, чужой товар, животные",
+      "effect": "увеличить время, свидетелей и конфликт за перевоз"
+    },
+    {
+      "rule_id": "risk_escalate_alarm",
+      "condition": "военная тревога, разбой, приказ власти",
+      "effect": "дороги закрываются, стража спрашивает, проводники отказывают"
+    },
+    {
+      "rule_id": "risk_escalate_time",
+      "condition": "вечер или ночь",
+      "effect": "ворота закрыты, свет хуже, социальный риск выше"
+    },
+    {
+      "rule_id": "risk_escalate_memory",
+      "condition": "у персонажа есть плохая репутация или долг",
+      "effect": "отказ в проводнике, переправе или ночлеге вероятнее"
+    }
+  ],
+  "validation": {
+    "file_is_valid_json": true,
+    "does_not_create_party_state": true,
+    "does_not_create_new_g1_g4_nodes": true,
+    "does_not_precreate_full_g5_map": true,
+    "uses_existing_map_as_context": true,
+    "respects_generation_limits": true,
+    "separates_visible_hidden_and_unmaterialized": true,
+    "distinguishes_fact_from_rumor": true,
+    "requires_human_historical_audit": true,
+    "blocking_issues": [],
+    "open_questions": [],
+    "route_modifier_count": 29,
+    "edge_type_rule_count": 5
+  }
+}

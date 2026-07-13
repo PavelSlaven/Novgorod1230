@@ -1,0 +1,163 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rus13.local/contracts/InitialVisibleSceneAndIntroProse.schema.json",
+  "title": "InitialVisibleSceneAndIntroProse",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "visible_scene",
+    "visible_changes",
+    "sensory_details",
+    "visible_npc",
+    "visible_objects",
+    "known_context",
+    "uncertainties",
+    "allowed_tensions",
+    "do_not_imply",
+    "intro_prose",
+    "suggestion_seed"
+  ],
+  "properties": {
+    "visible_scene": {
+      "description": "Required by InitialVisibleSceneAndIntroProse.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "visible_changes": {
+      "description": "Required by InitialVisibleSceneAndIntroProse.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "sensory_details": {
+      "description": "Required by InitialVisibleSceneAndIntroProse.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "visible_npc": {
+      "description": "Required by InitialVisibleSceneAndIntroProse.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "visible_objects": {
+      "description": "Required by InitialVisibleSceneAndIntroProse.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "known_context": {
+      "description": "Required by InitialVisibleSceneAndIntroProse.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "uncertainties": {
+      "description": "Required by InitialVisibleSceneAndIntroProse.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "allowed_tensions": {
+      "description": "Required by InitialVisibleSceneAndIntroProse.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "do_not_imply": {
+      "description": "Required by InitialVisibleSceneAndIntroProse.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "intro_prose": {
+      "description": "Required by InitialVisibleSceneAndIntroProse.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "suggestion_seed": {
+      "description": "Required by InitialVisibleSceneAndIntroProse.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    }
+  },
+  "x_writes_to": [
+    "party_turns",
+    "party_journal_entries",
+    "party_llm_steps"
+  ],
+  "x_blocking_validations": [
+    "prose contains no hidden fields",
+    "intro answers who/where/why/body/need/who nearby/what changes"
+  ]
+}

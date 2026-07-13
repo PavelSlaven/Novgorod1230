@@ -1,0 +1,125 @@
+{
+  "mode": "staged",
+  "summary": {
+    "tables": 19,
+    "rows": 42393,
+    "errors": 0,
+    "warnings": 0
+  },
+  "table_summary": [
+    {
+      "table": "graph_edge_modifiers",
+      "rows": 49
+    },
+    {
+      "table": "graph_edges",
+      "rows": 30248
+    },
+    {
+      "table": "graph_nodes",
+      "rows": 11359
+    },
+    {
+      "table": "graph_scale_rules",
+      "rows": 6
+    },
+    {
+      "table": "historical_anchors",
+      "rows": 28
+    },
+    {
+      "table": "land_use_templates",
+      "rows": 45
+    },
+    {
+      "table": "landscape_templates",
+      "rows": 70
+    },
+    {
+      "table": "place_templates",
+      "rows": 64
+    },
+    {
+      "table": "region_land_use_templates",
+      "rows": 31
+    },
+    {
+      "table": "region_landscape_templates",
+      "rows": 34
+    },
+    {
+      "table": "region_neighbors",
+      "rows": 6
+    },
+    {
+      "table": "region_occupations",
+      "rows": 68
+    },
+    {
+      "table": "region_place_templates",
+      "rows": 39
+    },
+    {
+      "table": "region_social_roles",
+      "rows": 71
+    },
+    {
+      "table": "region_water_body_templates",
+      "rows": 24
+    },
+    {
+      "table": "regions",
+      "rows": 7
+    },
+    {
+      "table": "route_templates",
+      "rows": 21
+    },
+    {
+      "table": "source_records",
+      "rows": 182
+    },
+    {
+      "table": "water_body_templates",
+      "rows": 41
+    }
+  ],
+  "rule_summary": [],
+  "violations": [],
+  "audited_rules": {
+    "direct_fk_rules": 25,
+    "json_ref_rules": 5,
+    "source_ref_rule": "all non-source_records tables with sources[]",
+    "conditional_edge_rules": {
+      "route_template_required_for": [
+        "corridor_segment",
+        "forest_track",
+        "path",
+        "portage",
+        "road",
+        "winter_road"
+      ],
+      "water_body_template_required_for": [
+        "bridge",
+        "ferry",
+        "ford",
+        "lake_route",
+        "river",
+        "sea_route"
+      ],
+      "landscape_template_required_for": [
+        "offroad_crossing"
+      ]
+    },
+    "g1_region_cell_required_fields": [
+      "grid_x",
+      "grid_y",
+      "grid_z",
+      "cell_size_km",
+      "crossing_base_gu",
+      "crossing_base_time_hours",
+      "region_cell_status",
+      "primary_landscape_template_id"
+    ]
+  }
+}

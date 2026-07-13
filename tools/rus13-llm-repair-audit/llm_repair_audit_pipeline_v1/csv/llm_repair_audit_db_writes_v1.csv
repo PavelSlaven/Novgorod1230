@@ -1,0 +1,12 @@
+﻿pipeline_step,table,operation,required_fields,notes
+ra_01_capture_raw_result,party_llm_steps,insert,"party_id, step_id, agent_id, prompt_hash, raw_response, status=raw_captured",No semantic write.
+ra_02_parse_and_schema_validate,party_llm_steps,update,"parsed_payload nullable, schema_id, schema_validation_status",Parsed payload is not committed to world state yet.
+ra_02_parse_and_schema_validate,party_validation_issues,insert on error,"issue_code, severity, layer=schema, payload_path, message, repairable",Feeds repair agent.
+ra_03_repair_format_only,party_llm_steps,insert linked repair attempt,"parent_step_id, agent_id=repair_agent, raw_response, repaired_payload, repair_attempt_number",Preserve original and repair chain.
+ra_04_source_status_audit,party_validation_issues,insert/update,"issue_code, source_id, source_status, allowed_use",Unresolved source is not accepted as approved.
+ra_05_semantic_consistency_audit,party_validation_issues,insert/update,"issue_code, affected_entity_type, affected_entity_id, project_rule_source, recommended_repair_step",LLM auditor output remains diagnostic until repaired.
+ra_06_visibility_leak_audit,party_validation_issues,insert/update,"issue_code, hidden_field_reference, visible_output_reference, repair_target_agent",Blocks player-facing output until resolved.
+ra_07_db_write_plan_validate,party_validation_issues,insert/update,"issue_code, target_table, target_field, fk_reference, transaction_order",No commit if any blocking issue remains.
+ra_08_commit_gate,party_* target tables,atomic transaction,all validated writes from result contract,Only point at which authoritative party state changes.
+ra_08_commit_gate,party_llm_steps,update,"status=committed|rolled_back, committed_revision, commit_report",Commit decision is auditable.
+ra_09_post_commit_audit_snapshot,party_llm_steps,insert/update,"post_commit_snapshot, affected_tables, final_visible_output_hash",Protects against stale prose and partial state.

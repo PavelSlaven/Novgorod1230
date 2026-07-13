@@ -1,0 +1,1228 @@
+{
+  "metadata": {
+    "file_name": "novgorod_key_npc_seeds_v1.json",
+    "version": "1.0.0",
+    "project": "RUS13",
+    "region_id": "novgorod_land",
+    "region_id_aliases": [
+      "region_novgorod_land"
+    ],
+    "region_title": "Новгородская земля",
+    "period": "1230-1250",
+    "purpose": "Семена исторических ключевых NPC и шаблоны неисторических ключевых NPC Новгородской земли",
+    "created_at_utc": "2026-07-05T12:30:00Z",
+    "status": "draft",
+    "confidence": "medium",
+    "requires_human_audit": true,
+    "list_expansion_policy": "Списки задания являются минимальным ядром, а не пределом. Новые контейнеры, слухи, события, предметные и социальные профили допустимы только при историко-бытовом, хозяйственном или социальном основании, со статусом, уверенностью и возможностью ручного аудита.",
+    "source_registry": [
+      "project_archive:novgorod_full_graph_g1_g4_v6_game_ready.zip",
+      "project_data:novgorod_region_generation_limits_v1.json",
+      "project_data:novgorod_region_profile_v1.json",
+      "project_data:novgorod_historical_timeline_1230_1250_v1.json",
+      "project_data:novgorod_neighbor_regions_v1.json",
+      "project_data:novgorod_social_roles_v1.tsv",
+      "project_data:novgorod_occupations_v1.tsv",
+      "project_data:novgorod_status_rules_v1.json",
+      "project_doc:items_and_property.txt",
+      "project_doc:npc_generation_profiles.txt",
+      "project_doc:movement_locations_regions.txt",
+      "project_doc:time_system.txt",
+      "project_doc:historical_events_and_figures.txt",
+      "project_doc:information_sources_llm_prompts.md"
+    ]
+  },
+  "historical_key_npc_seeds": [
+    {
+      "npc_seed_id": "seed_hist_npc_aleksandr_yaroslavich",
+      "historical": true,
+      "name": "Александр Ярославич",
+      "name_variants": [
+        "Александр Невский",
+        "князь Александр"
+      ],
+      "role": "князь новгородский в части периода; сын Ярослава Всеволодовича",
+      "years_relevant": [
+        "1236-1240",
+        "1241-1250"
+      ],
+      "relationship_to_novgorod": "связан с Новгородом через княжение, оборону северо-западных направлений и княжескую политику",
+      "influence_methods": [
+        "слухи",
+        "послы",
+        "приказы",
+        "движение дружины или людей двора",
+        "изменение страха, дорог, цен или доступа"
+      ],
+      "possible_map_bindings": [
+        {
+          "node_id": "gn_nov_g1_03_04_g3_001_novgorod",
+          "node_title": "Новгород",
+          "scale_level": "G3",
+          "binding_confidence": "high",
+          "binding_reason": "существующий узел карты используется как региональный якорь влияния, а не гарантия прямого присутствия"
+        },
+        {
+          "node_id": "gn_nov_g1_03_04_g3_009_dvor_vlasti_v_novgorode",
+          "node_title": "Двор власти в Новгороде",
+          "scale_level": "G3",
+          "binding_confidence": "medium",
+          "binding_reason": "существующий узел карты используется как региональный якорь влияния, а не гарантия прямого присутствия"
+        },
+        {
+          "node_id": "gn_nov_g1_03_04_g3_007_novgorodskaya_pristan_na_volhove",
+          "node_title": "Новгородская пристань на Волхове",
+          "scale_level": "G3",
+          "binding_confidence": "medium",
+          "binding_reason": "существующий узел карты используется как региональный якорь влияния, а не гарантия прямого присутствия"
+        },
+        {
+          "node_id": "gn_nov_g1_09_00_g3_001_torzhokskiy_pogranichnyy_torg",
+          "node_title": "Торжок",
+          "scale_level": "G3",
+          "binding_confidence": "low",
+          "binding_reason": "существующий узел карты используется как региональный якорь влияния, а не гарантия прямого присутствия"
+        }
+      ],
+      "direct_encounter_allowed": "conditional",
+      "direct_encounter_conditions": [
+        "только при исторически допустимом годе, политическом доступе, месте и причине; обычный персонаж чаще слышит о нём через слухи, дружинников и распоряжения"
+      ],
+      "rumors_about_them": [
+        "слухи не выдавать как факт",
+        "содержание слуха зависит от года, дороги, сословия и источника"
+      ],
+      "orders_or_pressures": [
+        "сбор людей",
+        "охрана ворот или двора",
+        "изменение доступа к дороге",
+        "давление на торговлю или повинности по событию"
+      ],
+      "forbidden_uses": [
+        "не ставить случайно на дороге",
+        "не раскрывать планы как объективную истину",
+        "не убивать и не менять роль без исторического основания",
+        "не делать квестодателем без причинной связи",
+        "не перемещать историческое лицо произвольно",
+        "не раскрывать планы персонажу без источника знания"
+      ],
+      "status": "approved",
+      "confidence": "high",
+      "sources": [
+        "src_novgorod_first_chronicle",
+        "src_psrl",
+        "src_yanin_novgorod_posadniki",
+        "src_project_timeline_v1",
+        "src_project_map_v6"
+      ],
+      "social_class_id": "ruling_dynastic_elite",
+      "role_archetype_id": "ruler",
+      "social_position_archetype_id": "regional_dynastic_ruler",
+      "occupation_archetype_id": null
+    },
+    {
+      "npc_seed_id": "seed_hist_npc_yaroslav_vsevolodovich",
+      "historical": true,
+      "name": "Ярослав Всеволодович",
+      "name_variants": [
+        "князь Ярослав",
+        "отец Александра"
+      ],
+      "role": "великий князь владимирский; князь, связанный с Новгородом",
+      "years_relevant": [
+        "1230-1246"
+      ],
+      "relationship_to_novgorod": "влияет на Новгород через княжение, сыновей, договоры и внешнюю политику",
+      "influence_methods": [
+        "слухи",
+        "послы",
+        "приказы",
+        "движение дружины или людей двора",
+        "изменение страха, дорог, цен или доступа"
+      ],
+      "possible_map_bindings": [
+        {
+          "node_id": "gn_nov_g1_03_04_g3_001_novgorod",
+          "node_title": "Новгород",
+          "scale_level": "G3",
+          "binding_confidence": "medium",
+          "binding_reason": "существующий узел карты используется как региональный якорь влияния, а не гарантия прямого присутствия"
+        },
+        {
+          "node_id": "gn_nov_g1_03_04_g3_009_dvor_vlasti_v_novgorode",
+          "node_title": "Двор власти в Новгороде",
+          "scale_level": "G3",
+          "binding_confidence": "medium",
+          "binding_reason": "существующий узел карты используется как региональный якорь влияния, а не гарантия прямого присутствия"
+        },
+        {
+          "node_id": "gn_nov_g1_09_00_g3_001_torzhokskiy_pogranichnyy_torg",
+          "node_title": "Торжок",
+          "scale_level": "G3",
+          "binding_confidence": "low",
+          "binding_reason": "существующий узел карты используется как региональный якорь влияния, а не гарантия прямого присутствия"
+        }
+      ],
+      "direct_encounter_allowed": "conditional",
+      "direct_encounter_conditions": [
+        "прямое появление возможно только при точной исторической сцене и доступе к княжескому двору"
+      ],
+      "rumors_about_them": [
+        "слухи не выдавать как факт",
+        "содержание слуха зависит от года, дороги, сословия и источника"
+      ],
+      "orders_or_pressures": [
+        "сбор людей",
+        "охрана ворот или двора",
+        "изменение доступа к дороге",
+        "давление на торговлю или повинности по событию"
+      ],
+      "forbidden_uses": [
+        "не ставить случайно на дороге",
+        "не раскрывать планы как объективную истину",
+        "не убивать и не менять роль без исторического основания",
+        "не делать квестодателем без причинной связи",
+        "не перемещать историческое лицо произвольно",
+        "не раскрывать планы персонажу без источника знания"
+      ],
+      "status": "approved",
+      "confidence": "high",
+      "sources": [
+        "src_novgorod_first_chronicle",
+        "src_psrl",
+        "src_yanin_novgorod_posadniki",
+        "src_project_timeline_v1",
+        "src_project_map_v6"
+      ],
+      "social_class_id": "ruling_dynastic_elite",
+      "role_archetype_id": "ruler",
+      "social_position_archetype_id": "regional_dynastic_ruler",
+      "occupation_archetype_id": null
+    },
+    {
+      "npc_seed_id": "seed_hist_npc_fedor_yaroslavich",
+      "historical": true,
+      "name": "Фёдор Ярославич",
+      "name_variants": [
+        "князь Фёдор",
+        "сын Ярослава"
+      ],
+      "role": "новгородский князь в 1230-х",
+      "years_relevant": [
+        "1230-1233"
+      ],
+      "relationship_to_novgorod": "связан с Новгородом через княжеский двор и ранний период 1230-х",
+      "influence_methods": [
+        "слухи",
+        "послы",
+        "приказы",
+        "движение дружины или людей двора",
+        "изменение страха, дорог, цен или доступа"
+      ],
+      "possible_map_bindings": [
+        {
+          "node_id": "gn_nov_g1_03_04_g3_001_novgorod",
+          "node_title": "Новгород",
+          "scale_level": "G3",
+          "binding_confidence": "medium",
+          "binding_reason": "существующий узел карты используется как региональный якорь влияния, а не гарантия прямого присутствия"
+        },
+        {
+          "node_id": "gn_nov_g1_03_04_g3_009_dvor_vlasti_v_novgorode",
+          "node_title": "Двор власти в Новгороде",
+          "scale_level": "G3",
+          "binding_confidence": "medium",
+          "binding_reason": "существующий узел карты используется как региональный якорь влияния, а не гарантия прямого присутствия"
+        }
+      ],
+      "direct_encounter_allowed": "conditional",
+      "direct_encounter_conditions": [
+        "только до смерти и при исторически допустимой дате; после смерти только память, слух или последствие"
+      ],
+      "rumors_about_them": [
+        "слухи не выдавать как факт",
+        "содержание слуха зависит от года, дороги, сословия и источника"
+      ],
+      "orders_or_pressures": [
+        "сбор людей",
+        "охрана ворот или двора",
+        "изменение доступа к дороге",
+        "давление на торговлю или повинности по событию"
+      ],
+      "forbidden_uses": [
+        "не ставить случайно на дороге",
+        "не раскрывать планы как объективную истину",
+        "не убивать и не менять роль без исторического основания",
+        "не делать квестодателем без причинной связи",
+        "не перемещать историческое лицо произвольно",
+        "не раскрывать планы персонажу без источника знания"
+      ],
+      "status": "approved",
+      "confidence": "medium_high",
+      "sources": [
+        "src_novgorod_first_chronicle",
+        "src_psrl",
+        "src_yanin_novgorod_posadniki",
+        "src_project_timeline_v1",
+        "src_project_map_v6"
+      ],
+      "social_class_id": "ruling_dynastic_elite",
+      "role_archetype_id": "ruler",
+      "social_position_archetype_id": "regional_dynastic_ruler",
+      "occupation_archetype_id": null
+    },
+    {
+      "npc_seed_id": "seed_hist_npc_spiridon_archbishop",
+      "historical": true,
+      "name": "Спиридон",
+      "name_variants": [
+        "архиепископ Спиридон",
+        "владыка Спиридон"
+      ],
+      "role": "архиепископ новгородский",
+      "years_relevant": [
+        "1230-1249"
+      ],
+      "relationship_to_novgorod": "глава новгородской церкви, влияет на клятвы, суд, дворы, письмо, имущество и репутацию",
+      "influence_methods": [
+        "слухи",
+        "послы",
+        "приказы",
+        "движение дружины или людей двора",
+        "изменение страха, дорог, цен или доступа"
+      ],
+      "possible_map_bindings": [
+        {
+          "node_id": "gn_nov_g1_03_04_g3_024_podbore_gorod",
+          "node_title": "Владычный двор у Софии",
+          "scale_level": "G3",
+          "binding_confidence": "high",
+          "binding_reason": "владычный двор у Софии как прямой церковный якорь"
+        },
+        {
+          "node_id": "gn_nov_g1_03_04_g4_001_novgorod_05_detinets_bishop_core",
+          "node_title": "Новгород: детинец и владычное ядро",
+          "scale_level": "G4",
+          "binding_confidence": "medium",
+          "binding_reason": "существующий узел карты используется как региональный якорь влияния, а не гарантия прямого присутствия"
+        },
+        {
+          "node_id": "gn_nov_g1_03_04_g3_001_novgorod",
+          "node_title": "Новгород",
+          "scale_level": "G3",
+          "binding_confidence": "medium",
+          "binding_reason": "существующий узел карты используется как региональный якорь влияния, а не гарантия прямого присутствия"
+        }
+      ],
+      "direct_encounter_allowed": "conditional",
+      "direct_encounter_conditions": [
+        "прямой доступ только у элит, церковных людей, послов, просителей или при сильной сценической причине"
+      ],
+      "rumors_about_them": [
+        "слухи не выдавать как факт",
+        "содержание слуха зависит от года, дороги, сословия и источника"
+      ],
+      "orders_or_pressures": [
+        "сбор людей",
+        "охрана ворот или двора",
+        "изменение доступа к дороге",
+        "давление на торговлю или повинности по событию"
+      ],
+      "forbidden_uses": [
+        "не ставить случайно на дороге",
+        "не раскрывать планы как объективную истину",
+        "не убивать и не менять роль без исторического основания",
+        "не делать квестодателем без причинной связи",
+        "не перемещать историческое лицо произвольно",
+        "не раскрывать планы персонажу без источника знания"
+      ],
+      "status": "approved",
+      "confidence": "high",
+      "sources": [
+        "src_novgorod_first_chronicle",
+        "src_psrl",
+        "src_yanin_novgorod_posadniki",
+        "src_project_timeline_v1",
+        "src_project_map_v6"
+      ],
+      "social_class_id": "ecclesiastical_elite",
+      "role_archetype_id": "cleric",
+      "social_position_archetype_id": "high_ecclesiastical_ruler",
+      "occupation_archetype_id": null
+    },
+    {
+      "npc_seed_id": "seed_hist_npc_dalmat_archbishop",
+      "historical": true,
+      "name": "Далмат",
+      "name_variants": [
+        "архиепископ Далмат",
+        "владыка Далмат"
+      ],
+      "role": "архиепископ новгородский",
+      "years_relevant": [
+        "1249-1250"
+      ],
+      "relationship_to_novgorod": "сменяет церковный центр после Спиридона; для 1249-1250 влияет на владычный двор и церковный порядок",
+      "influence_methods": [
+        "слухи",
+        "послы",
+        "приказы",
+        "движение дружины или людей двора",
+        "изменение страха, дорог, цен или доступа"
+      ],
+      "possible_map_bindings": [
+        {
+          "node_id": "gn_nov_g1_03_04_g3_024_podbore_gorod",
+          "node_title": "Владычный двор у Софии",
+          "scale_level": "G3",
+          "binding_confidence": "high",
+          "binding_reason": "существующий узел карты используется как региональный якорь влияния, а не гарантия прямого присутствия"
+        },
+        {
+          "node_id": "gn_nov_g1_03_04_g4_001_novgorod_05_detinets_bishop_core",
+          "node_title": "Новгород: детинец и владычное ядро",
+          "scale_level": "G4",
+          "binding_confidence": "medium",
+          "binding_reason": "существующий узел карты используется как региональный якорь влияния, а не гарантия прямого присутствия"
+        }
+      ],
+      "direct_encounter_allowed": "conditional",
+      "direct_encounter_conditions": [
+        "использовать только с 1249 года; до этого не делать действующим владыкой"
+      ],
+      "rumors_about_them": [
+        "слухи не выдавать как факт",
+        "содержание слуха зависит от года, дороги, сословия и источника"
+      ],
+      "orders_or_pressures": [
+        "сбор людей",
+        "охрана ворот или двора",
+        "изменение доступа к дороге",
+        "давление на торговлю или повинности по событию"
+      ],
+      "forbidden_uses": [
+        "не ставить случайно на дороге",
+        "не раскрывать планы как объективную истину",
+        "не убивать и не менять роль без исторического основания",
+        "не делать квестодателем без причинной связи",
+        "не перемещать историческое лицо произвольно",
+        "не раскрывать планы персонажу без источника знания"
+      ],
+      "status": "approved",
+      "confidence": "medium_high",
+      "sources": [
+        "src_novgorod_first_chronicle",
+        "src_psrl",
+        "src_yanin_novgorod_posadniki",
+        "src_project_timeline_v1",
+        "src_project_map_v6"
+      ],
+      "social_class_id": "ecclesiastical_elite",
+      "role_archetype_id": "cleric",
+      "social_position_archetype_id": "high_ecclesiastical_ruler",
+      "occupation_archetype_id": null
+    },
+    {
+      "npc_seed_id": "seed_hist_npc_stepan_tverdislavich",
+      "historical": true,
+      "name": "Степан Твердиславич",
+      "name_variants": [
+        "посадник Степан",
+        "Степан Твердиславич"
+      ],
+      "role": "новгородский посадник",
+      "years_relevant": [
+        "1230-1240-е"
+      ],
+      "relationship_to_novgorod": "влияет через посадничий порядок, боярские сети, суд и городскую политику",
+      "influence_methods": [
+        "слухи",
+        "послы",
+        "приказы",
+        "движение дружины или людей двора",
+        "изменение страха, дорог, цен или доступа"
+      ],
+      "possible_map_bindings": [
+        {
+          "node_id": "gn_nov_g1_03_04_g3_009_dvor_vlasti_v_novgorode",
+          "node_title": "Двор власти в Новгороде",
+          "scale_level": "G3",
+          "binding_confidence": "medium",
+          "binding_reason": "существующий узел карты используется как региональный якорь влияния, а не гарантия прямого присутствия"
+        },
+        {
+          "node_id": "gn_nov_g1_03_04_g3_003_novgorodskiy_torg",
+          "node_title": "Новгородский торг",
+          "scale_level": "G3",
+          "binding_confidence": "medium",
+          "binding_reason": "существующий узел карты используется как региональный якорь влияния, а не гарантия прямого присутствия"
+        },
+        {
+          "node_id": "gn_nov_g1_03_04_g3_001_novgorod",
+          "node_title": "Новгород",
+          "scale_level": "G3",
+          "binding_confidence": "medium",
+          "binding_reason": "существующий узел карты используется как региональный якорь влияния, а не гарантия прямого присутствия"
+        }
+      ],
+      "direct_encounter_allowed": "conditional",
+      "direct_encounter_conditions": [
+        "не выводить как случайного собеседника; доступ через двор, спор, посольство, элитное дело"
+      ],
+      "rumors_about_them": [
+        "слухи не выдавать как факт",
+        "содержание слуха зависит от года, дороги, сословия и источника"
+      ],
+      "orders_or_pressures": [
+        "сбор людей",
+        "охрана ворот или двора",
+        "изменение доступа к дороге",
+        "давление на торговлю или повинности по событию"
+      ],
+      "forbidden_uses": [
+        "не ставить случайно на дороге",
+        "не раскрывать планы как объективную истину",
+        "не убивать и не менять роль без исторического основания",
+        "не делать квестодателем без причинной связи",
+        "не перемещать историческое лицо произвольно",
+        "не раскрывать планы персонажу без источника знания"
+      ],
+      "status": "usable_with_caution",
+      "confidence": "medium",
+      "sources": [
+        "src_novgorod_first_chronicle",
+        "src_psrl",
+        "src_yanin_novgorod_posadniki",
+        "src_project_timeline_v1",
+        "src_project_map_v6"
+      ],
+      "social_class_id": "urban_elite",
+      "role_archetype_id": "official_manager",
+      "social_position_archetype_id": "urban_elite_office_holder",
+      "occupation_archetype_id": null
+    },
+    {
+      "npc_seed_id": "seed_hist_npc_mikhail_stepanich",
+      "historical": true,
+      "name": "Михаил Степанич",
+      "name_variants": [
+        "Михаил Степанович",
+        "посадник Михаил"
+      ],
+      "role": "новгородский посадник / городской деятель",
+      "years_relevant": [
+        "1230-1250"
+      ],
+      "relationship_to_novgorod": "возможный представитель посадничьей среды периода; использовать осторожно",
+      "influence_methods": [
+        "слухи",
+        "послы",
+        "приказы",
+        "движение дружины или людей двора",
+        "изменение страха, дорог, цен или доступа"
+      ],
+      "possible_map_bindings": [
+        {
+          "node_id": "gn_nov_g1_03_04_g3_009_dvor_vlasti_v_novgorode",
+          "node_title": "Двор власти в Новгороде",
+          "scale_level": "G3",
+          "binding_confidence": "low",
+          "binding_reason": "существующий узел карты используется как региональный якорь влияния, а не гарантия прямого присутствия"
+        },
+        {
+          "node_id": "gn_nov_g1_03_04_g3_001_novgorod",
+          "node_title": "Новгород",
+          "scale_level": "G3",
+          "binding_confidence": "low",
+          "binding_reason": "существующий узел карты используется как региональный якорь влияния, а не гарантия прямого присутствия"
+        }
+      ],
+      "direct_encounter_allowed": "conditional",
+      "direct_encounter_conditions": [
+        "только после ручной сверки конкретного года и источника"
+      ],
+      "rumors_about_them": [
+        "слухи не выдавать как факт",
+        "содержание слуха зависит от года, дороги, сословия и источника"
+      ],
+      "orders_or_pressures": [
+        "сбор людей",
+        "охрана ворот или двора",
+        "изменение доступа к дороге",
+        "давление на торговлю или повинности по событию"
+      ],
+      "forbidden_uses": [
+        "не ставить случайно на дороге",
+        "не раскрывать планы как объективную истину",
+        "не убивать и не менять роль без исторического основания",
+        "не делать квестодателем без причинной связи",
+        "не перемещать историческое лицо произвольно",
+        "не раскрывать планы персонажу без источника знания"
+      ],
+      "status": "needs_review",
+      "confidence": "medium_low",
+      "sources": [
+        "src_novgorod_first_chronicle",
+        "src_psrl",
+        "src_yanin_novgorod_posadniki",
+        "src_project_timeline_v1",
+        "src_project_map_v6"
+      ],
+      "social_class_id": "urban_elite",
+      "role_archetype_id": "official_manager",
+      "social_position_archetype_id": "urban_elite_office_holder",
+      "occupation_archetype_id": null
+    },
+    {
+      "npc_seed_id": "seed_hist_npc_batu_khan",
+      "historical": true,
+      "name": "Батый",
+      "name_variants": [
+        "хан Батый",
+        "Бату"
+      ],
+      "role": "монгольский правитель и военный лидер",
+      "years_relevant": [
+        "1237-1243"
+      ],
+      "relationship_to_novgorod": "не находится в Новгороде как обычный NPC, но создаёт страх, слухи, беженцев, рынок и княжескую зависимость",
+      "influence_methods": [
+        "слухи",
+        "послы",
+        "приказы",
+        "движение дружины или людей двора",
+        "изменение страха, дорог, цен или доступа"
+      ],
+      "possible_map_bindings": [
+        {
+          "node_id": "gn_nov_g1_09_00_g3_001_torzhokskiy_pogranichnyy_torg",
+          "node_title": "Торжок",
+          "scale_level": "G3",
+          "binding_confidence": "low",
+          "binding_reason": "юго-восточный торгово-дорожный якорь для слухов и давления, не место присутствия Батыя"
+        },
+        {
+          "node_id": "gn_nov_g1_03_04_g3_001_novgorod",
+          "node_title": "Новгород",
+          "scale_level": "G3",
+          "binding_confidence": "low",
+          "binding_reason": "существующий узел карты используется как региональный якорь влияния, а не гарантия прямого присутствия"
+        }
+      ],
+      "direct_encounter_allowed": "no",
+      "direct_encounter_conditions": [
+        "только фоновое и косвенное влияние; не создавать прямую встречу в Новгородской земле"
+      ],
+      "rumors_about_them": [
+        "слухи не выдавать как факт",
+        "содержание слуха зависит от года, дороги, сословия и источника"
+      ],
+      "orders_or_pressures": [
+        "сбор людей",
+        "охрана ворот или двора",
+        "изменение доступа к дороге",
+        "давление на торговлю или повинности по событию"
+      ],
+      "forbidden_uses": [
+        "не ставить случайно на дороге",
+        "не раскрывать планы как объективную истину",
+        "не убивать и не менять роль без исторического основания",
+        "не делать квестодателем без причинной связи",
+        "не перемещать историческое лицо произвольно",
+        "не раскрывать планы персонажу без источника знания"
+      ],
+      "status": "approved",
+      "confidence": "high",
+      "sources": [
+        "src_novgorod_first_chronicle",
+        "src_psrl",
+        "src_yanin_novgorod_posadniki",
+        "src_project_timeline_v1",
+        "src_project_map_v6"
+      ],
+      "social_class_id": "ruling_dynastic_elite",
+      "role_archetype_id": "ruler",
+      "social_position_archetype_id": "regional_dynastic_ruler",
+      "occupation_archetype_id": null,
+      "mapping_notes": "nearest universal ruler; steppe_imperial_ruler proposal pending review"
+    },
+    {
+      "npc_seed_id": "seed_hist_npc_birger_magnusson",
+      "historical": true,
+      "name": "Биргер Магнуссон",
+      "name_variants": [
+        "Биргер ярл",
+        "Birger Magnusson"
+      ],
+      "role": "шведский ярл / представитель западного давления",
+      "years_relevant": [
+        "1240-е"
+      ],
+      "relationship_to_novgorod": "связан со слухами о шведской угрозе и Невском направлении; прямую роль в Невской битве отмечать осторожно",
+      "influence_methods": [
+        "слухи",
+        "послы",
+        "приказы",
+        "движение дружины или людей двора",
+        "изменение страха, дорог, цен или доступа"
+      ],
+      "possible_map_bindings": [
+        {
+          "node_id": "gn_nov_g1_03_04_g3_007_novgorodskaya_pristan_na_volhove",
+          "node_title": "Новгородская пристань на Волхове",
+          "scale_level": "G3",
+          "binding_confidence": "low",
+          "binding_reason": "водный новгородский якорь слухов о северо-западной угрозе"
+        },
+        {
+          "node_id": "gn_nov_g1_03_04_g3_001_novgorod",
+          "node_title": "Новгород",
+          "scale_level": "G3",
+          "binding_confidence": "low",
+          "binding_reason": "существующий узел карты используется как региональный якорь влияния, а не гарантия прямого присутствия"
+        }
+      ],
+      "direct_encounter_allowed": "no",
+      "direct_encounter_conditions": [
+        "только слухи и внешнее давление; не помещать в Новгородскую сцену"
+      ],
+      "rumors_about_them": [
+        "слухи не выдавать как факт",
+        "содержание слуха зависит от года, дороги, сословия и источника"
+      ],
+      "orders_or_pressures": [
+        "сбор людей",
+        "охрана ворот или двора",
+        "изменение доступа к дороге",
+        "давление на торговлю или повинности по событию"
+      ],
+      "forbidden_uses": [
+        "не ставить случайно на дороге",
+        "не раскрывать планы как объективную истину",
+        "не убивать и не менять роль без исторического основания",
+        "не делать квестодателем без причинной связи",
+        "не перемещать историческое лицо произвольно",
+        "не раскрывать планы персонажу без источника знания"
+      ],
+      "status": "needs_review",
+      "confidence": "medium_low",
+      "sources": [
+        "src_novgorod_first_chronicle",
+        "src_psrl",
+        "src_yanin_novgorod_posadniki",
+        "src_project_timeline_v1",
+        "src_project_map_v6"
+      ],
+      "social_class_id": "ruling_dynastic_elite",
+      "role_archetype_id": "ruler",
+      "social_position_archetype_id": "regional_dynastic_ruler",
+      "occupation_archetype_id": null
+    },
+    {
+      "npc_seed_id": "seed_hist_npc_hermann_dorpat",
+      "historical": true,
+      "name": "Герман фон Буксгевден",
+      "name_variants": [
+        "Hermann of Dorpat",
+        "епископ Дерптский Герман"
+      ],
+      "role": "епископ Дерпта; западный церковно-политический актор",
+      "years_relevant": [
+        "1240-1242"
+      ],
+      "relationship_to_novgorod": "влияет через угрозу западных земель, слухи о немцах, военную тревогу и церковно-политический страх",
+      "influence_methods": [
+        "слухи",
+        "послы",
+        "приказы",
+        "движение дружины или людей двора",
+        "изменение страха, дорог, цен или доступа"
+      ],
+      "possible_map_bindings": [
+        {
+          "node_id": "gn_nov_g1_03_04_g3_001_novgorod",
+          "node_title": "Новгород",
+          "scale_level": "G3",
+          "binding_confidence": "low",
+          "binding_reason": "существующий узел карты используется как региональный якорь влияния, а не гарантия прямого присутствия"
+        },
+        {
+          "node_id": "gn_nov_g1_03_04_g3_003_novgorodskiy_torg",
+          "node_title": "Новгородский торг",
+          "scale_level": "G3",
+          "binding_confidence": "low",
+          "binding_reason": "существующий узел карты используется как региональный якорь влияния, а не гарантия прямого присутствия"
+        }
+      ],
+      "direct_encounter_allowed": "no",
+      "direct_encounter_conditions": [
+        "не создавать прямую встречу; только слухи, пленные, послы, военное давление"
+      ],
+      "rumors_about_them": [
+        "слухи не выдавать как факт",
+        "содержание слуха зависит от года, дороги, сословия и источника"
+      ],
+      "orders_or_pressures": [
+        "сбор людей",
+        "охрана ворот или двора",
+        "изменение доступа к дороге",
+        "давление на торговлю или повинности по событию"
+      ],
+      "forbidden_uses": [
+        "не ставить случайно на дороге",
+        "не раскрывать планы как объективную истину",
+        "не убивать и не менять роль без исторического основания",
+        "не делать квестодателем без причинной связи",
+        "не перемещать историческое лицо произвольно",
+        "не раскрывать планы персонажу без источника знания"
+      ],
+      "status": "usable_with_caution",
+      "confidence": "medium",
+      "sources": [
+        "src_novgorod_first_chronicle",
+        "src_psrl",
+        "src_yanin_novgorod_posadniki",
+        "src_project_timeline_v1",
+        "src_project_map_v6"
+      ],
+      "social_class_id": "ecclesiastical_elite",
+      "role_archetype_id": "cleric",
+      "social_position_archetype_id": "high_ecclesiastical_ruler",
+      "occupation_archetype_id": null
+    },
+    {
+      "npc_seed_id": "seed_hist_npc_andreas_von_velven",
+      "historical": true,
+      "name": "Андреас фон Вельвен",
+      "name_variants": [
+        "Andreas von Velven",
+        "магистр ордена Андрей"
+      ],
+      "role": "ливонский орденский магистр / западный военный актор",
+      "years_relevant": [
+        "1240-1242"
+      ],
+      "relationship_to_novgorod": "возможная фигура западного давления на Псковско-Новгородское направление",
+      "influence_methods": [
+        "слухи",
+        "послы",
+        "приказы",
+        "движение дружины или людей двора",
+        "изменение страха, дорог, цен или доступа"
+      ],
+      "possible_map_bindings": [
+        {
+          "node_id": "gn_nov_g1_03_04_g3_001_novgorod",
+          "node_title": "Новгород",
+          "scale_level": "G3",
+          "binding_confidence": "low",
+          "binding_reason": "существующий узел карты используется как региональный якорь влияния, а не гарантия прямого присутствия"
+        },
+        {
+          "node_id": "gn_nov_g1_09_00_g3_001_torzhokskiy_pogranichnyy_torg",
+          "node_title": "Торжок",
+          "scale_level": "G3",
+          "binding_confidence": "low",
+          "binding_reason": "существующий узел карты используется как региональный якорь влияния, а не гарантия прямого присутствия"
+        }
+      ],
+      "direct_encounter_allowed": "no",
+      "direct_encounter_conditions": [
+        "только косвенно через слухи, тревогу, пленных, западных купцов или военных людей"
+      ],
+      "rumors_about_them": [
+        "слухи не выдавать как факт",
+        "содержание слуха зависит от года, дороги, сословия и источника"
+      ],
+      "orders_or_pressures": [
+        "сбор людей",
+        "охрана ворот или двора",
+        "изменение доступа к дороге",
+        "давление на торговлю или повинности по событию"
+      ],
+      "forbidden_uses": [
+        "не ставить случайно на дороге",
+        "не раскрывать планы как объективную истину",
+        "не убивать и не менять роль без исторического основания",
+        "не делать квестодателем без причинной связи",
+        "не перемещать историческое лицо произвольно",
+        "не раскрывать планы персонажу без источника знания"
+      ],
+      "status": "needs_review",
+      "confidence": "medium_low",
+      "sources": [
+        "src_novgorod_first_chronicle",
+        "src_psrl",
+        "src_yanin_novgorod_posadniki",
+        "src_project_timeline_v1",
+        "src_project_map_v6"
+      ],
+      "social_class_id": "ruling_dynastic_elite",
+      "role_archetype_id": "armed_retainer",
+      "social_position_archetype_id": "military_officer_elite",
+      "occupation_archetype_id": null
+    },
+    {
+      "npc_seed_id": "seed_hist_npc_mindaugas",
+      "historical": true,
+      "name": "Миндовг",
+      "name_variants": [
+        "Mindaugas",
+        "литовский князь Миндовг"
+      ],
+      "role": "литовский князь",
+      "years_relevant": [
+        "1240-е"
+      ],
+      "relationship_to_novgorod": "влияет через слухи о литовских землях, военной тревоге, беглецах и западно-южных дорогах",
+      "influence_methods": [
+        "слухи",
+        "послы",
+        "приказы",
+        "движение дружины или людей двора",
+        "изменение страха, дорог, цен или доступа"
+      ],
+      "possible_map_bindings": [
+        {
+          "node_id": "gn_nov_g1_03_04_g3_001_novgorod",
+          "node_title": "Новгород",
+          "scale_level": "G3",
+          "binding_confidence": "low",
+          "binding_reason": "существующий узел карты используется как региональный якорь влияния, а не гарантия прямого присутствия"
+        },
+        {
+          "node_id": "gn_nov_g1_03_02_g3_001_rusa_staraya_russa",
+          "node_title": "Руса (Старая Русса)",
+          "scale_level": "G3",
+          "binding_confidence": "low",
+          "binding_reason": "существующий узел карты используется как региональный якорь влияния, а не гарантия прямого присутствия"
+        },
+        {
+          "node_id": "gn_nov_g1_09_00_g3_001_torzhokskiy_pogranichnyy_torg",
+          "node_title": "Торжок",
+          "scale_level": "G3",
+          "binding_confidence": "low",
+          "binding_reason": "существующий узел карты используется как региональный якорь влияния, а не гарантия прямого присутствия"
+        }
+      ],
+      "direct_encounter_allowed": "no",
+      "direct_encounter_conditions": [
+        "не помещать в сцену Новгородской земли без смены региона и сильного исторического основания"
+      ],
+      "rumors_about_them": [
+        "слухи не выдавать как факт",
+        "содержание слуха зависит от года, дороги, сословия и источника"
+      ],
+      "orders_or_pressures": [
+        "сбор людей",
+        "охрана ворот или двора",
+        "изменение доступа к дороге",
+        "давление на торговлю или повинности по событию"
+      ],
+      "forbidden_uses": [
+        "не ставить случайно на дороге",
+        "не раскрывать планы как объективную истину",
+        "не убивать и не менять роль без исторического основания",
+        "не делать квестодателем без причинной связи",
+        "не перемещать историческое лицо произвольно",
+        "не раскрывать планы персонажу без источника знания"
+      ],
+      "status": "usable_with_caution",
+      "confidence": "medium",
+      "sources": [
+        "src_novgorod_first_chronicle",
+        "src_psrl",
+        "src_yanin_novgorod_posadniki",
+        "src_project_timeline_v1",
+        "src_project_map_v6"
+      ],
+      "social_class_id": "ruling_dynastic_elite",
+      "role_archetype_id": "ruler",
+      "social_position_archetype_id": "regional_dynastic_ruler",
+      "occupation_archetype_id": null
+    }
+  ],
+  "non_historical_key_npc_seed_templates": [
+    {
+      "seed_template_id": "seed_template_local_elder",
+      "historical": false,
+      "template_role": "местный старший/староста",
+      "when_to_create": [
+        "долгий конфликт",
+        "поручительство",
+        "спор о дороге или долге"
+      ],
+      "required_causal_basis": [
+        "долговременные последствия для партии",
+        "NPC должен помнить долг, доступ, лицо или конфликт"
+      ],
+      "required_place_context": [
+        "село",
+        "погост",
+        "деревня",
+        "городская улица"
+      ],
+      "required_social_context": [
+        "статус",
+        "свидетели",
+        "имущество или долг"
+      ],
+      "memory_persistence_rules": [
+        "помнит решения, долги, лица, обещания, обиды и поручителей"
+      ],
+      "do_not_create_at_start": true,
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "seed_template_id": "seed_template_merchant_house_head",
+      "historical": false,
+      "template_role": "старший купеческого двора",
+      "when_to_create": [
+        "крупный долг",
+        "спор о товаре",
+        "повторная торговая связь"
+      ],
+      "required_causal_basis": [
+        "долговременные последствия для партии",
+        "NPC должен помнить долг, доступ, лицо или конфликт"
+      ],
+      "required_place_context": [
+        "торг",
+        "склад",
+        "пристань",
+        "купеческий двор"
+      ],
+      "required_social_context": [
+        "статус",
+        "свидетели",
+        "имущество или долг"
+      ],
+      "memory_persistence_rules": [
+        "помнит решения, долги, лица, обещания, обиды и поручителей"
+      ],
+      "do_not_create_at_start": true,
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "seed_template_id": "seed_template_monastery_steward",
+      "historical": false,
+      "template_role": "монастырский хозяйственный старший",
+      "when_to_create": [
+        "гость просит защиты",
+        "спор о монастырском имуществе",
+        "долг монастырю"
+      ],
+      "required_causal_basis": [
+        "долговременные последствия для партии",
+        "NPC должен помнить долг, доступ, лицо или конфликт"
+      ],
+      "required_place_context": [
+        "монастырь",
+        "гостевой двор",
+        "монастырская клеть"
+      ],
+      "required_social_context": [
+        "статус",
+        "свидетели",
+        "имущество или долг"
+      ],
+      "memory_persistence_rules": [
+        "помнит решения, долги, лица, обещания, обиды и поручителей"
+      ],
+      "do_not_create_at_start": true,
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "seed_template_id": "seed_template_ferry_keeper",
+      "historical": false,
+      "template_role": "держатель переправы",
+      "when_to_create": [
+        "переправа становится повторным узлом",
+        "плата или риск воды меняет партию"
+      ],
+      "required_causal_basis": [
+        "долговременные последствия для партии",
+        "NPC должен помнить долг, доступ, лицо или конфликт"
+      ],
+      "required_place_context": [
+        "перевоз",
+        "брод",
+        "пристань"
+      ],
+      "required_social_context": [
+        "статус",
+        "свидетели",
+        "имущество или долг"
+      ],
+      "memory_persistence_rules": [
+        "помнит решения, долги, лица, обещания, обиды и поручителей"
+      ],
+      "do_not_create_at_start": true,
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "seed_template_id": "seed_template_boyar_house_agent",
+      "historical": false,
+      "template_role": "боярский человек/управитель",
+      "when_to_create": [
+        "конфликт с боярским двором",
+        "имущество высокого статуса",
+        "приказ или обыск"
+      ],
+      "required_causal_basis": [
+        "долговременные последствия для партии",
+        "NPC должен помнить долг, доступ, лицо или конфликт"
+      ],
+      "required_place_context": [
+        "боярский двор",
+        "торг",
+        "дорога",
+        "административный двор"
+      ],
+      "required_social_context": [
+        "статус",
+        "свидетели",
+        "имущество или долг"
+      ],
+      "memory_persistence_rules": [
+        "помнит решения, долги, лица, обещания, обиды и поручителей"
+      ],
+      "do_not_create_at_start": true,
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "seed_template_id": "seed_template_master_craftsperson",
+      "historical": false,
+      "template_role": "мастер ремесленного двора",
+      "when_to_create": [
+        "заказ ремонта",
+        "порча сырья",
+        "долговой спор"
+      ],
+      "required_causal_basis": [
+        "долговременные последствия для партии",
+        "NPC должен помнить долг, доступ, лицо или конфликт"
+      ],
+      "required_place_context": [
+        "мастерская",
+        "ремесленная улица",
+        "посад"
+      ],
+      "required_social_context": [
+        "статус",
+        "свидетели",
+        "имущество или долг"
+      ],
+      "memory_persistence_rules": [
+        "помнит решения, долги, лица, обещания, обиды и поручителей"
+      ],
+      "do_not_create_at_start": true,
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "seed_template_id": "seed_template_road_guide_with_memory",
+      "historical": false,
+      "template_role": "проводник с долговременной ролью",
+      "when_to_create": [
+        "дальняя дорога",
+        "опасный лес",
+        "повторная проводка"
+      ],
+      "required_causal_basis": [
+        "долговременные последствия для партии",
+        "NPC должен помнить долг, доступ, лицо или конфликт"
+      ],
+      "required_place_context": [
+        "дорога",
+        "лесной стан",
+        "переправа",
+        "зимник"
+      ],
+      "required_social_context": [
+        "статус",
+        "свидетели",
+        "имущество или долг"
+      ],
+      "memory_persistence_rules": [
+        "помнит решения, долги, лица, обещания, обиды и поручителей"
+      ],
+      "do_not_create_at_start": true,
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "seed_template_id": "seed_template_widow_householder",
+      "historical": false,
+      "template_role": "вдова-хозяйка как ключевой двор",
+      "when_to_create": [
+        "спор о дворе",
+        "долг",
+        "защита сирот"
+      ],
+      "required_causal_basis": [
+        "долговременные последствия для партии",
+        "NPC должен помнить долг, доступ, лицо или конфликт"
+      ],
+      "required_place_context": [
+        "двор",
+        "деревня",
+        "погост"
+      ],
+      "required_social_context": [
+        "статус",
+        "свидетели",
+        "имущество или долг"
+      ],
+      "memory_persistence_rules": [
+        "помнит решения, долги, лица, обещания, обиды и поручителей"
+      ],
+      "do_not_create_at_start": true,
+      "status": "draft",
+      "confidence": "medium"
+    }
+  ],
+  "promotion_rules": [
+    {
+      "rule_id": "nonhistorical_key_requires_cause",
+      "rule": "неисторический key_npc создаётся только при долговременном последствии, повторной роли, долге, конфликте, собственности или власти",
+      "status": "draft",
+      "confidence": "high"
+    },
+    {
+      "rule_id": "historical_direct_encounter_strict",
+      "rule": "исторический NPC может появиться прямо только при сильном историческом, пространственном и социальном основании",
+      "status": "draft",
+      "confidence": "high"
+    },
+    {
+      "rule_id": "key_memory_scope",
+      "rule": "ключевой NPC хранит память только о фактах, которые мог узнать",
+      "status": "draft",
+      "confidence": "high"
+    }
+  ],
+  "validation": {
+    "file_is_valid_json": true,
+    "does_not_create_party_state": true,
+    "does_not_create_new_g1_g4_nodes": true,
+    "does_not_precreate_full_g5_map": true,
+    "uses_existing_map_as_context": true,
+    "respects_generation_limits": true,
+    "separates_visible_hidden_and_unmaterialized": true,
+    "distinguishes_fact_from_rumor": true,
+    "requires_human_historical_audit": true,
+    "blocking_issues": [],
+    "open_questions": [
+      "Исторические NPC перенесены из novgorod_status_rules_v1.json; требуется отдельный источниковедческий аудит состава и дат."
+    ],
+    "historical_key_npc_seed_count": 12,
+    "non_historical_seed_template_count": 8,
+    "non_historical_npcs_not_instantiated_as_party_npcs": true
+  }
+}

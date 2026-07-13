@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rus13.local/contracts/StartCausalLink.schema.json",
+  "title": "StartCausalLink",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "link_type",
+    "visible_reason",
+    "hidden_reason_if_any",
+    "related_npc_ids",
+    "related_item_ids",
+    "related_event_ids",
+    "risk_if_no_action",
+    "source_or_basis"
+  ],
+  "properties": {
+    "link_type": {
+      "description": "Required by StartCausalLink.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "visible_reason": {
+      "description": "Required by StartCausalLink.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "hidden_reason_if_any": {
+      "description": "Required by StartCausalLink.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "related_npc_ids": {
+      "description": "Required by StartCausalLink.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "related_item_ids": {
+      "description": "Required by StartCausalLink.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "related_event_ids": {
+      "description": "Required by StartCausalLink.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "risk_if_no_action": {
+      "description": "Required by StartCausalLink.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "source_or_basis": {
+      "description": "Required by StartCausalLink.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    }
+  },
+  "x_writes_to": [
+    "party_journal_entries",
+    "party_events"
+  ],
+  "x_blocking_validations": [
+    "visible reason present",
+    "hidden reason not required for player comprehension",
+    "no disconnected protagonist"
+  ]
+}

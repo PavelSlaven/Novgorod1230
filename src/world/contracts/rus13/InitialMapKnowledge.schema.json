@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rus13.local/contracts/InitialMapKnowledge.schema.json",
+  "title": "InitialMapKnowledge",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "known_nodes",
+    "known_edges",
+    "rough_directions",
+    "rumored_paths",
+    "unknown_but_existing_paths",
+    "false_beliefs",
+    "knowledge_sources",
+    "limits"
+  ],
+  "properties": {
+    "known_nodes": {
+      "description": "Required by InitialMapKnowledge.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "known_edges": {
+      "description": "Required by InitialMapKnowledge.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "rough_directions": {
+      "description": "Required by InitialMapKnowledge.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "rumored_paths": {
+      "description": "Required by InitialMapKnowledge.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "unknown_but_existing_paths": {
+      "description": "Required by InitialMapKnowledge.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "false_beliefs": {
+      "description": "Required by InitialMapKnowledge.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "knowledge_sources": {
+      "description": "Required by InitialMapKnowledge.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "limits": {
+      "description": "Required by InitialMapKnowledge.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    }
+  },
+  "x_writes_to": [
+    "party_graph_edges",
+    "party_map_knowledge",
+    "party_route_journal"
+  ],
+  "x_blocking_validations": [
+    "factual graph not exposed as map knowledge",
+    "knowledge level set for every visible path",
+    "season/access/risk copied where character can know it"
+  ]
+}

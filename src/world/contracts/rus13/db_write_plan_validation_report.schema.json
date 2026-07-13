@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DbWritePlanValidationReport",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "is_write_plan_valid",
+    "target_tables",
+    "missing_fields",
+    "fk_errors",
+    "transaction_order_ok"
+  ],
+  "properties": {
+    "is_write_plan_valid": {
+      "type": "boolean"
+    },
+    "target_tables": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "missing_fields": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "fk_errors": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "transaction_order_ok": {
+      "type": "boolean"
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RepairResult",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "repaired_payload",
+    "changed_fields",
+    "new_facts_added",
+    "unfixable",
+    "unfixable_reasons"
+  ],
+  "properties": {
+    "repaired_payload": {
+      "type": "object"
+    },
+    "changed_fields": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "new_facts_added": {
+      "type": "boolean"
+    },
+    "unfixable": {
+      "type": "boolean"
+    },
+    "unfixable_reasons": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "notes": {
+      "type": "string"
+    }
+  }
+}

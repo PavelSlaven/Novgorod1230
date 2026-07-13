@@ -1,0 +1,872 @@
+{
+  "metadata": {
+    "file_name": "novgorod_common_knowledge_v1.json",
+    "version": "1.0.0",
+    "project": "RUS13",
+    "region_id": "novgorod_land",
+    "region_id_aliases": [
+      "region_novgorod_land"
+    ],
+    "region_title": "Новгородская земля",
+    "period": "1230-1250",
+    "purpose": "База обычного знания социальных групп Новгородской земли",
+    "created_at_utc": "2026-07-05T12:30:00Z",
+    "status": "draft",
+    "confidence": "medium",
+    "requires_human_audit": true,
+    "list_expansion_policy": "Списки задания являются минимальным ядром, а не пределом. Новые контейнеры, слухи, события, предметные и социальные профили допустимы только при историко-бытовом, хозяйственном или социальном основании, со статусом, уверенностью и возможностью ручного аудита.",
+    "source_registry": [
+      "project_archive:novgorod_full_graph_g1_g4_v6_game_ready.zip",
+      "project_data:novgorod_region_generation_limits_v1.json",
+      "project_data:novgorod_region_profile_v1.json",
+      "project_data:novgorod_historical_timeline_1230_1250_v1.json",
+      "project_data:novgorod_neighbor_regions_v1.json",
+      "project_data:novgorod_social_roles_v1.tsv",
+      "project_data:novgorod_occupations_v1.tsv",
+      "project_data:novgorod_status_rules_v1.json",
+      "project_doc:items_and_property.txt",
+      "project_doc:npc_generation_profiles.txt",
+      "project_doc:movement_locations_regions.txt",
+      "project_doc:time_system.txt",
+      "project_doc:historical_events_and_figures.txt",
+      "project_doc:information_sources_llm_prompts.md"
+    ]
+  },
+  "knowledge_categories": [
+    {
+      "knowledge_category_id": "knowledge_local_roads",
+      "title": "Местные дороги и проходы",
+      "summary": "Где идти в соседний двор, к погосту, к броду, по сухой гриве или вдоль реки.",
+      "player_visibility_rule": "Показывать как знание персонажа, предположение или слух по источнику, а не как объективную правду.",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "knowledge_category_id": "knowledge_river_paths",
+      "title": "Речные пути",
+      "summary": "Куда идёт вода, где пристать, где мель, где нужен лодочник.",
+      "player_visibility_rule": "Показывать как знание персонажа, предположение или слух по источнику, а не как объективную правду.",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "knowledge_category_id": "knowledge_fords_ferries",
+      "title": "Броды и перевозы",
+      "summary": "Кто держит переправу, когда вода опасна, где ждут очередь.",
+      "player_visibility_rule": "Показывать как знание персонажа, предположение или слух по источнику, а не как объективную правду.",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "knowledge_category_id": "knowledge_prices",
+      "title": "Обычные цены и обмен",
+      "summary": "Что дорого, что дешево, что дают в долг, где нужен свидетель.",
+      "player_visibility_rule": "Показывать как знание персонажа, предположение или слух по источнику, а не как объективную правду.",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "knowledge_category_id": "knowledge_law_custom",
+      "title": "Право и обычай",
+      "summary": "К кому идти с жалобой, кто свидетель, что значит чужой двор и чужая вещь.",
+      "player_visibility_rule": "Показывать как знание персонажа, предположение или слух по источнику, а не как объективную правду.",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "knowledge_category_id": "knowledge_church_calendar",
+      "title": "Церковный календарь",
+      "summary": "Пост, праздник, служба, когда закрыты ворота, когда люди идут к церкви.",
+      "player_visibility_rule": "Показывать как знание персонажа, предположение или слух по источнику, а не как объективную правду.",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "knowledge_category_id": "knowledge_elites",
+      "title": "Кто кому служит",
+      "summary": "Какие дворы сильны, чьих людей опасно злить, кто может приказать.",
+      "player_visibility_rule": "Показывать как знание персонажа, предположение или слух по источнику, а не как объективную правду.",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "knowledge_category_id": "knowledge_debts",
+      "title": "Долги и залоги",
+      "summary": "Кто должен, кому поручились, чей товар в залоге.",
+      "player_visibility_rule": "Показывать как знание персонажа, предположение или слух по источнику, а не как объективную правду.",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "knowledge_category_id": "knowledge_danger",
+      "title": "Опасные места и люди",
+      "summary": "Где разбой, зверьё, дурная дорога, пьяные или вооружённые люди.",
+      "player_visibility_rule": "Показывать как знание персонажа, предположение или слух по источнику, а не как объективную правду.",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "knowledge_category_id": "knowledge_lodging",
+      "title": "Ночлег и пища в дороге",
+      "summary": "Где пустят, кому нужно платить, где нужен поручитель.",
+      "player_visibility_rule": "Показывать как знание персонажа, предположение или слух по источнику, а не как объективную правду.",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "knowledge_category_id": "knowledge_seasonal_closures",
+      "title": "Сезонно закрытые пути",
+      "summary": "Распутица, ледостав, паводок, метель, закрытая переправа.",
+      "player_visibility_rule": "Показывать как знание персонажа, предположение или слух по источнику, а не как объективную правду.",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "knowledge_category_id": "knowledge_neighbors",
+      "title": "Соседние земли",
+      "summary": "Грубое направление и характер вестей из Пскова, Ладоги, Карелии, Заволочья, Белозерья, Низа.",
+      "player_visibility_rule": "Показывать как знание персонажа, предположение или слух по источнику, а не как объективную правду.",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "knowledge_category_id": "knowledge_rumors",
+      "title": "Слухи",
+      "summary": "Кто что говорит, но без гарантии истинности.",
+      "player_visibility_rule": "Показывать как знание персонажа, предположение или слух по источнику, а не как объективную правду.",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "knowledge_category_id": "knowledge_foreigners",
+      "title": "Чужие люди",
+      "summary": "Как узнают пришлого по речи, одежде, поведению, отсутствию поручителя.",
+      "player_visibility_rule": "Показывать как знание персонажа, предположение или слух по источнику, а не как объективную правду.",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "knowledge_category_id": "knowledge_war",
+      "title": "Военная тревога",
+      "summary": "Где видели вооружённых, куда пошли дружинники, какие дороги стали опасны.",
+      "player_visibility_rule": "Показывать как знание персонажа, предположение или слух по источнику, а не как объективную правду.",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "knowledge_category_id": "knowledge_dues",
+      "title": "Пошлины, сборы и повинности",
+      "summary": "Что требуют на торге, переправе, погосте или при дворе.",
+      "player_visibility_rule": "Показывать как знание персонажа, предположение или слух по источнику, а не как объективную правду.",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "knowledge_category_id": "knowledge_weather_signs",
+      "title": "Погодные признаки",
+      "summary": "Как по воде, небу, ветру, снегу и грязи судят о ближайшем пути.",
+      "player_visibility_rule": "Показывать как знание персонажа, предположение или слух по источнику, а не как объективную правду.",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "knowledge_category_id": "knowledge_property_marks",
+      "title": "Метки вещей",
+      "summary": "Как узнают чужой нож, мешок, телегу, скот, лодку или церковную вещь.",
+      "player_visibility_rule": "Показывать как знание персонажа, предположение или слух по источнику, а не как объективную правду.",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "knowledge_category_id": "knowledge_social_address",
+      "title": "Формы обращения",
+      "summary": "К кому как говорить, когда молчать, когда искать старшего.",
+      "player_visibility_rule": "Показывать как знание персонажа, предположение или слух по источнику, а не как объективную правду.",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "knowledge_category_id": "knowledge_work_opportunities",
+      "title": "Работа и наём",
+      "summary": "Где зовут грузчиков, проводников, работников на покос, лодку, ремонт, сторожбу.",
+      "player_visibility_rule": "Показывать как знание персонажа, предположение или слух по источнику, а не как объективную правду.",
+      "status": "draft",
+      "confidence": "medium"
+    }
+  ],
+  "social_group_knowledge_profiles": [
+    {
+      "social_group_id": "group_local_commoners",
+      "title": "Местные жители",
+      "typical_knowledge_categories": [
+        "knowledge_local_roads",
+        "knowledge_fords_ferries",
+        "knowledge_law_custom",
+        "knowledge_debts",
+        "knowledge_danger",
+        "knowledge_lodging",
+        "knowledge_weather_signs",
+        "knowledge_property_marks"
+      ],
+      "knowledge_depth": "local_and_practical",
+      "how_they_know": [
+        "личный опыт",
+        "работа",
+        "родня",
+        "повторяющиеся разговоры в месте"
+      ],
+      "what_they_often_misunderstand": [
+        "дальние политические причины",
+        "точные цены вне своей округи"
+      ],
+      "what_they_may_hide": [
+        "личные долги",
+        "семейный конфликт",
+        "то, что может навлечь наказание"
+      ],
+      "player_visible_form": "как личный опыт, осторожное предположение, слух или отказ говорить",
+      "llm_limits": [
+        "не превращать знание группы в энциклопедическую карту",
+        "не раскрывать скрытую истину сверх восприятия персонажа",
+        "учитывать статус, страх, выгоду и свежесть знания"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "social_group_id": "group_townspeople",
+      "title": "Горожане Новгорода",
+      "typical_knowledge_categories": [
+        "knowledge_prices",
+        "knowledge_elites",
+        "knowledge_law_custom",
+        "knowledge_dues",
+        "knowledge_rumors",
+        "knowledge_social_address",
+        "knowledge_work_opportunities"
+      ],
+      "knowledge_depth": "local_and_practical",
+      "how_they_know": [
+        "личный опыт",
+        "работа",
+        "родня",
+        "повторяющиеся разговоры в месте"
+      ],
+      "what_they_often_misunderstand": [
+        "лесные тропы и отдалённые броды",
+        "промысловые тайны"
+      ],
+      "what_they_may_hide": [
+        "личные долги",
+        "семейный конфликт",
+        "то, что может навлечь наказание"
+      ],
+      "player_visible_form": "как личный опыт, осторожное предположение, слух или отказ говорить",
+      "llm_limits": [
+        "не превращать знание группы в энциклопедическую карту",
+        "не раскрывать скрытую истину сверх восприятия персонажа",
+        "учитывать статус, страх, выгоду и свежесть знания"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "social_group_id": "group_villagers",
+      "title": "Деревенские",
+      "typical_knowledge_categories": [
+        "knowledge_local_roads",
+        "knowledge_fords_ferries",
+        "knowledge_law_custom",
+        "knowledge_weather_signs",
+        "knowledge_property_marks",
+        "knowledge_work_opportunities"
+      ],
+      "knowledge_depth": "local_and_practical",
+      "how_they_know": [
+        "личный опыт",
+        "работа",
+        "родня",
+        "повторяющиеся разговоры в месте"
+      ],
+      "what_they_often_misunderstand": [
+        "городскую политику",
+        "дальние торговые вести"
+      ],
+      "what_they_may_hide": [
+        "личные долги",
+        "семейный конфликт",
+        "то, что может навлечь наказание"
+      ],
+      "player_visible_form": "как личный опыт, осторожное предположение, слух или отказ говорить",
+      "llm_limits": [
+        "не превращать знание группы в энциклопедическую карту",
+        "не раскрывать скрытую истину сверх восприятия персонажа",
+        "учитывать статус, страх, выгоду и свежесть знания"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "social_group_id": "group_merchants",
+      "title": "Купцы и приказчики",
+      "typical_knowledge_categories": [
+        "knowledge_prices",
+        "knowledge_river_paths",
+        "knowledge_neighbors",
+        "knowledge_lodging",
+        "knowledge_dues",
+        "knowledge_war",
+        "knowledge_debts",
+        "knowledge_work_opportunities"
+      ],
+      "knowledge_depth": "local_and_practical",
+      "how_they_know": [
+        "личный опыт",
+        "работа",
+        "родня",
+        "повторяющиеся разговоры в месте"
+      ],
+      "what_they_often_misunderstand": [
+        "скрытые промысловые тропы",
+        "домашние дела низких дворов"
+      ],
+      "what_they_may_hide": [
+        "точный выгодный путь",
+        "условия сделки",
+        "чужие долги",
+        "опасный участок, если выгодно промолчать"
+      ],
+      "player_visible_form": "как личный опыт, осторожное предположение, слух или отказ говорить",
+      "llm_limits": [
+        "не превращать знание группы в энциклопедическую карту",
+        "не раскрывать скрытую истину сверх восприятия персонажа",
+        "учитывать статус, страх, выгоду и свежесть знания"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "social_group_id": "group_clergy",
+      "title": "Духовенство",
+      "typical_knowledge_categories": [
+        "knowledge_church_calendar",
+        "knowledge_law_custom",
+        "knowledge_debts",
+        "knowledge_lodging",
+        "knowledge_rumors",
+        "knowledge_social_address"
+      ],
+      "knowledge_depth": "local_and_practical",
+      "how_they_know": [
+        "личный опыт",
+        "работа",
+        "родня",
+        "повторяющиеся разговоры в месте"
+      ],
+      "what_they_often_misunderstand": [
+        "точные торговые выгоды",
+        "военные планы"
+      ],
+      "what_they_may_hide": [
+        "личные долги",
+        "семейный конфликт",
+        "то, что может навлечь наказание"
+      ],
+      "player_visible_form": "как личный опыт, осторожное предположение, слух или отказ говорить",
+      "llm_limits": [
+        "не превращать знание группы в энциклопедическую карту",
+        "не раскрывать скрытую истину сверх восприятия персонажа",
+        "учитывать статус, страх, выгоду и свежесть знания"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "social_group_id": "group_hunters",
+      "title": "Охотники и лесные промысловики",
+      "typical_knowledge_categories": [
+        "knowledge_local_roads",
+        "knowledge_danger",
+        "knowledge_weather_signs",
+        "knowledge_fords_ferries",
+        "knowledge_work_opportunities"
+      ],
+      "knowledge_depth": "local_and_practical",
+      "how_they_know": [
+        "личный опыт",
+        "работа",
+        "родня",
+        "повторяющиеся разговоры в месте"
+      ],
+      "what_they_often_misunderstand": [
+        "политику города",
+        "торговые цены"
+      ],
+      "what_they_may_hide": [
+        "точный выгодный путь",
+        "условия сделки",
+        "чужие долги",
+        "опасный участок, если выгодно промолчать"
+      ],
+      "player_visible_form": "как личный опыт, осторожное предположение, слух или отказ говорить",
+      "llm_limits": [
+        "не превращать знание группы в энциклопедическую карту",
+        "не раскрывать скрытую истину сверх восприятия персонажа",
+        "учитывать статус, страх, выгоду и свежесть знания"
+      ],
+      "status": "draft",
+      "confidence": "medium_high"
+    },
+    {
+      "social_group_id": "group_fishermen",
+      "title": "Рыбаки",
+      "typical_knowledge_categories": [
+        "knowledge_river_paths",
+        "knowledge_fords_ferries",
+        "knowledge_weather_signs",
+        "knowledge_prices",
+        "knowledge_work_opportunities"
+      ],
+      "knowledge_depth": "local_and_practical",
+      "how_they_know": [
+        "личный опыт",
+        "работа",
+        "родня",
+        "повторяющиеся разговоры в месте"
+      ],
+      "what_they_often_misunderstand": [
+        "дальние сухопутные дороги",
+        "дворовые долги"
+      ],
+      "what_they_may_hide": [
+        "личные долги",
+        "семейный конфликт",
+        "то, что может навлечь наказание"
+      ],
+      "player_visible_form": "как личный опыт, осторожное предположение, слух или отказ говорить",
+      "llm_limits": [
+        "не превращать знание группы в энциклопедическую карту",
+        "не раскрывать скрытую истину сверх восприятия персонажа",
+        "учитывать статус, страх, выгоду и свежесть знания"
+      ],
+      "status": "draft",
+      "confidence": "medium_high"
+    },
+    {
+      "social_group_id": "group_boatmen",
+      "title": "Лодочники и перевозчики",
+      "typical_knowledge_categories": [
+        "knowledge_river_paths",
+        "knowledge_fords_ferries",
+        "knowledge_prices",
+        "knowledge_dues",
+        "knowledge_lodging",
+        "knowledge_weather_signs"
+      ],
+      "knowledge_depth": "local_and_practical",
+      "how_they_know": [
+        "личный опыт",
+        "работа",
+        "родня",
+        "повторяющиеся разговоры в месте"
+      ],
+      "what_they_often_misunderstand": [
+        "лесные тайники",
+        "чужие домашние дела"
+      ],
+      "what_they_may_hide": [
+        "точный выгодный путь",
+        "условия сделки",
+        "чужие долги",
+        "опасный участок, если выгодно промолчать"
+      ],
+      "player_visible_form": "как личный опыт, осторожное предположение, слух или отказ говорить",
+      "llm_limits": [
+        "не превращать знание группы в энциклопедическую карту",
+        "не раскрывать скрытую истину сверх восприятия персонажа",
+        "учитывать статус, страх, выгоду и свежесть знания"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "social_group_id": "group_guides",
+      "title": "Проводники",
+      "typical_knowledge_categories": [
+        "knowledge_local_roads",
+        "knowledge_fords_ferries",
+        "knowledge_seasonal_closures",
+        "knowledge_danger",
+        "knowledge_lodging",
+        "knowledge_neighbors"
+      ],
+      "knowledge_depth": "local_and_practical",
+      "how_they_know": [
+        "личный опыт",
+        "работа",
+        "родня",
+        "повторяющиеся разговоры в месте"
+      ],
+      "what_they_often_misunderstand": [
+        "скрытые политические причины"
+      ],
+      "what_they_may_hide": [
+        "точный выгодный путь",
+        "условия сделки",
+        "чужие долги",
+        "опасный участок, если выгодно промолчать"
+      ],
+      "player_visible_form": "как личный опыт, осторожное предположение, слух или отказ говорить",
+      "llm_limits": [
+        "не превращать знание группы в энциклопедическую карту",
+        "не раскрывать скрытую истину сверх восприятия персонажа",
+        "учитывать статус, страх, выгоду и свежесть знания"
+      ],
+      "status": "draft",
+      "confidence": "medium_high"
+    },
+    {
+      "social_group_id": "group_boyars",
+      "title": "Бояре и старшие люди",
+      "typical_knowledge_categories": [
+        "knowledge_elites",
+        "knowledge_law_custom",
+        "knowledge_dues",
+        "knowledge_debts",
+        "knowledge_war",
+        "knowledge_social_address"
+      ],
+      "knowledge_depth": "broad_but_interest_filtered",
+      "how_they_know": [
+        "личный опыт",
+        "работа",
+        "родня",
+        "повторяющиеся разговоры в месте"
+      ],
+      "what_they_often_misunderstand": [
+        "низовая фактическая бедность может быть невидима",
+        "полевые детали пути без слуг"
+      ],
+      "what_they_may_hide": [
+        "личные долги",
+        "семейный конфликт",
+        "то, что может навлечь наказание"
+      ],
+      "player_visible_form": "как личный опыт, осторожное предположение, слух или отказ говорить",
+      "llm_limits": [
+        "не превращать знание группы в энциклопедическую карту",
+        "не раскрывать скрытую истину сверх восприятия персонажа",
+        "учитывать статус, страх, выгоду и свежесть знания"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "social_group_id": "group_princely_people",
+      "title": "Княжьи люди и дружинники",
+      "typical_knowledge_categories": [
+        "knowledge_war",
+        "knowledge_dues",
+        "knowledge_danger",
+        "knowledge_elites",
+        "knowledge_law_custom",
+        "knowledge_social_address"
+      ],
+      "knowledge_depth": "local_and_practical",
+      "how_they_know": [
+        "личный опыт",
+        "работа",
+        "родня",
+        "повторяющиеся разговоры в месте"
+      ],
+      "what_they_often_misunderstand": [
+        "местные родственные сети",
+        "промысловые хозяйственные детали"
+      ],
+      "what_they_may_hide": [
+        "личные долги",
+        "семейный конфликт",
+        "то, что может навлечь наказание"
+      ],
+      "player_visible_form": "как личный опыт, осторожное предположение, слух или отказ говорить",
+      "llm_limits": [
+        "не превращать знание группы в энциклопедическую карту",
+        "не раскрывать скрытую истину сверх восприятия персонажа",
+        "учитывать статус, страх, выгоду и свежесть знания"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "social_group_id": "group_strangers",
+      "title": "Пришлые",
+      "typical_knowledge_categories": [
+        "knowledge_rumors",
+        "knowledge_lodging",
+        "knowledge_prices"
+      ],
+      "knowledge_depth": "local_and_practical",
+      "how_they_know": [
+        "личный опыт",
+        "работа",
+        "родня",
+        "повторяющиеся разговоры в месте"
+      ],
+      "what_they_often_misunderstand": [
+        "местный обычай",
+        "родственные связи",
+        "точные пути",
+        "кто имеет власть"
+      ],
+      "what_they_may_hide": [
+        "личные долги",
+        "семейный конфликт",
+        "то, что может навлечь наказание"
+      ],
+      "player_visible_form": "как личный опыт, осторожное предположение, слух или отказ говорить",
+      "llm_limits": [
+        "не превращать знание группы в энциклопедическую карту",
+        "не раскрывать скрытую истину сверх восприятия персонажа",
+        "учитывать статус, страх, выгоду и свежесть знания"
+      ],
+      "status": "draft",
+      "confidence": "medium_low"
+    },
+    {
+      "social_group_id": "group_household_women",
+      "title": "Хозяйки, вдовы и женщины двора",
+      "typical_knowledge_categories": [
+        "knowledge_debts",
+        "knowledge_property_marks",
+        "knowledge_lodging",
+        "knowledge_rumors",
+        "knowledge_church_calendar",
+        "knowledge_prices"
+      ],
+      "knowledge_depth": "local_and_practical",
+      "how_they_know": [
+        "личный опыт",
+        "работа",
+        "родня",
+        "повторяющиеся разговоры в месте"
+      ],
+      "what_they_often_misunderstand": [
+        "дальние военные причины",
+        "закрытые решения старших"
+      ],
+      "what_they_may_hide": [
+        "личные долги",
+        "семейный конфликт",
+        "то, что может навлечь наказание"
+      ],
+      "player_visible_form": "как личный опыт, осторожное предположение, слух или отказ говорить",
+      "llm_limits": [
+        "не превращать знание группы в энциклопедическую карту",
+        "не раскрывать скрытую истину сверх восприятия персонажа",
+        "учитывать статус, страх, выгоду и свежесть знания"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "social_group_id": "group_monastery_workers",
+      "title": "Монастырские работники",
+      "typical_knowledge_categories": [
+        "knowledge_church_calendar",
+        "knowledge_lodging",
+        "knowledge_debts",
+        "knowledge_dues",
+        "knowledge_work_opportunities",
+        "knowledge_property_marks"
+      ],
+      "knowledge_depth": "local_and_practical",
+      "how_they_know": [
+        "личный опыт",
+        "работа",
+        "родня",
+        "повторяющиеся разговоры в месте"
+      ],
+      "what_they_often_misunderstand": [
+        "городские политические интриги вне монастыря"
+      ],
+      "what_they_may_hide": [
+        "личные долги",
+        "семейный конфликт",
+        "то, что может навлечь наказание"
+      ],
+      "player_visible_form": "как личный опыт, осторожное предположение, слух или отказ говорить",
+      "llm_limits": [
+        "не превращать знание группы в энциклопедическую карту",
+        "не раскрывать скрытую истину сверх восприятия персонажа",
+        "учитывать статус, страх, выгоду и свежесть знания"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "social_group_id": "group_dependent_people",
+      "title": "Холопы, зависимые и работники",
+      "typical_knowledge_categories": [
+        "knowledge_property_marks",
+        "knowledge_rumors",
+        "knowledge_elites",
+        "knowledge_danger",
+        "knowledge_work_opportunities"
+      ],
+      "knowledge_depth": "local_and_practical",
+      "how_they_know": [
+        "личный опыт",
+        "работа",
+        "родня",
+        "повторяющиеся разговоры в месте"
+      ],
+      "what_they_often_misunderstand": [
+        "право и дальние причины; могут знать факты двора, но боятся говорить"
+      ],
+      "what_they_may_hide": [
+        "сведения о хозяине",
+        "следы кражи",
+        "собственный страх или долг"
+      ],
+      "player_visible_form": "как личный опыт, осторожное предположение, слух или отказ говорить",
+      "llm_limits": [
+        "не превращать знание группы в энциклопедическую карту",
+        "не раскрывать скрытую истину сверх восприятия персонажа",
+        "учитывать статус, страх, выгоду и свежесть знания"
+      ],
+      "status": "draft",
+      "confidence": "medium_low"
+    },
+    {
+      "social_group_id": "group_children",
+      "title": "Дети и подростки",
+      "typical_knowledge_categories": [
+        "knowledge_local_roads",
+        "knowledge_rumors",
+        "knowledge_property_marks",
+        "knowledge_danger"
+      ],
+      "knowledge_depth": "local_and_practical",
+      "how_they_know": [
+        "личный опыт",
+        "работа",
+        "родня",
+        "повторяющиеся разговоры в месте"
+      ],
+      "what_they_often_misunderstand": [
+        "причины и правовой смысл увиденного"
+      ],
+      "what_they_may_hide": [
+        "личные долги",
+        "семейный конфликт",
+        "то, что может навлечь наказание"
+      ],
+      "player_visible_form": "как личный опыт, осторожное предположение, слух или отказ говорить",
+      "llm_limits": [
+        "не превращать знание группы в энциклопедическую карту",
+        "не раскрывать скрытую истину сверх восприятия персонажа",
+        "учитывать статус, страх, выгоду и свежесть знания"
+      ],
+      "status": "draft",
+      "confidence": "medium_low"
+    }
+  ],
+  "false_or_outdated_knowledge_profiles": [
+    {
+      "profile_id": "false_route_after_flood",
+      "title": "Старый путь после паводка",
+      "source_groups": [
+        "group_strangers",
+        "group_merchants"
+      ],
+      "why_wrong": "вода изменила брод или берег",
+      "player_visible_form": "говорят уверенно, но без свежего подтверждения",
+      "risk": "delay; crossing_risk; getting_lost"
+    },
+    {
+      "profile_id": "outdated_winter_road",
+      "title": "Зимник по прошлому льду",
+      "source_groups": [
+        "group_villagers",
+        "group_guides"
+      ],
+      "why_wrong": "оттепель, снег или сломанный мосток",
+      "player_visible_form": "знание с оговоркой по времени",
+      "risk": "ice_danger; wrong_route"
+    },
+    {
+      "profile_id": "false_price_memory",
+      "title": "Старая цена до дефицита",
+      "source_groups": [
+        "group_strangers",
+        "group_villagers"
+      ],
+      "why_wrong": "сезон, голод, война, пришедший товар",
+      "player_visible_form": "примерная цена, не гарантия",
+      "risk": "failed_trade; debt"
+    },
+    {
+      "profile_id": "biased_elite_story",
+      "title": "Слух боярской или княжьей стороны",
+      "source_groups": [
+        "group_boyars",
+        "group_princely_people"
+      ],
+      "why_wrong": "выгодная версия конфликта",
+      "player_visible_form": "политический слух",
+      "risk": "reputation; authority_conflict"
+    },
+    {
+      "profile_id": "moralized_omen",
+      "title": "Знамение как объяснение беды",
+      "source_groups": [
+        "group_clergy",
+        "group_children",
+        "group_beggars"
+      ],
+      "why_wrong": "человеческая вера смешана с фактом",
+      "player_visible_form": "люди верят или боятся",
+      "risk": "fear; crowd; no_magic_fact"
+    },
+    {
+      "profile_id": "hidden_route_lie",
+      "title": "Намеренно скрытый или ложный путь",
+      "source_groups": [
+        "group_guides",
+        "group_hunters",
+        "group_boatmen"
+      ],
+      "why_wrong": "выгода, страх, промысловая тайна",
+      "player_visible_form": "уклончивый ответ или слишком удобный совет",
+      "risk": "ambush; extortion; getting_lost"
+    }
+  ],
+  "player_knowledge_rules": {
+    "objective_map_not_player_visible": true,
+    "knowledge_must_have_source": true,
+    "personal_observation_overrides_rumor_only_for_observed_facts": true,
+    "rumor_remains_rumor_until_checked": true,
+    "route_knowledge_has_freshness": true,
+    "show_uncertainty_in_prose": true,
+    "do_not_show_hidden_motives": true,
+    "do_not_show_exact_future_dates": true,
+    "knowledge_update_chain": "услышал → запомнил как слух → проверил лично или через надёжного свидетеля → обновил карту знаний персонажа"
+  },
+  "validation": {
+    "file_is_valid_json": true,
+    "does_not_create_party_state": true,
+    "does_not_create_new_g1_g4_nodes": true,
+    "does_not_precreate_full_g5_map": true,
+    "uses_existing_map_as_context": true,
+    "respects_generation_limits": true,
+    "separates_visible_hidden_and_unmaterialized": true,
+    "distinguishes_fact_from_rumor": true,
+    "requires_human_historical_audit": true,
+    "blocking_issues": [],
+    "open_questions": [],
+    "knowledge_category_count": 20,
+    "social_group_profile_count": 16,
+    "false_or_outdated_profile_count": 6,
+    "objective_map_hidden_from_player": true
+  }
+}

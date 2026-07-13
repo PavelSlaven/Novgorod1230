@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rus13.local/contracts/G5ObjectNpcBinding.schema.json",
+  "title": "G5ObjectNpcBinding",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "bound_items",
+    "bound_containers",
+    "bound_npcs",
+    "materialization_reasons",
+    "visibility_split",
+    "ownership_risk_checks"
+  ],
+  "properties": {
+    "bound_items": {
+      "description": "Required by G5ObjectNpcBinding.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "bound_containers": {
+      "description": "Required by G5ObjectNpcBinding.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "bound_npcs": {
+      "description": "Required by G5ObjectNpcBinding.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "materialization_reasons": {
+      "description": "Required by G5ObjectNpcBinding.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "visibility_split": {
+      "description": "Required by G5ObjectNpcBinding.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "ownership_risk_checks": {
+      "description": "Required by G5ObjectNpcBinding.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    }
+  },
+  "x_step_id": "g5_06_objects_npcs_binding",
+  "x_writes_to": "party_llm_steps",
+  "x_blocking_validations": "items/NPCs have causal basis and anchor placement"
+}

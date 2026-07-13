@@ -1,0 +1,292 @@
+{
+  "metadata": {
+    "file_name": "novgorod_property_rules_v1.json",
+    "version": "1.0.0",
+    "project": "RUS13",
+    "region_id": "novgorod_land",
+    "region_id_aliases": [
+      "region_novgorod_land"
+    ],
+    "region_title": "Новгородская земля",
+    "period": "1230-1250",
+    "purpose": "Правила имущества, владения, доступа, залога и чужих вещей в Новгородской земле",
+    "created_at_utc": "2026-07-05T12:30:00Z",
+    "status": "draft",
+    "confidence": "medium",
+    "requires_human_audit": true,
+    "list_expansion_policy": "Списки задания являются минимальным ядром, а не пределом. Новые контейнеры, слухи, события, предметные и социальные профили допустимы только при историко-бытовом, хозяйственном или социальном основании, со статусом, уверенностью и возможностью ручного аудита.",
+    "source_registry": [
+      "project_archive:novgorod_full_graph_g1_g4_v6_game_ready.zip",
+      "project_data:novgorod_region_generation_limits_v1.json",
+      "project_data:novgorod_region_profile_v1.json",
+      "project_data:novgorod_historical_timeline_1230_1250_v1.json",
+      "project_data:novgorod_neighbor_regions_v1.json",
+      "project_data:novgorod_social_roles_v1.tsv",
+      "project_data:novgorod_occupations_v1.tsv",
+      "project_data:novgorod_status_rules_v1.json",
+      "project_doc:items_and_property.txt",
+      "project_doc:npc_generation_profiles.txt",
+      "project_doc:movement_locations_regions.txt",
+      "project_doc:time_system.txt",
+      "project_doc:historical_events_and_figures.txt",
+      "project_doc:information_sources_llm_prompts.md"
+    ]
+  },
+  "property_layers": [
+    {
+      "layer_id": "inventory",
+      "title": "Инвентарь",
+      "definition": "предметы физически при персонаже или NPC и доступные в текущей сцене",
+      "rules": [
+        "имущество вне сцены не является инвентарём",
+        "чужая вещь при персонаже сохраняет владельца"
+      ],
+      "status": "draft",
+      "confidence": "high"
+    },
+    {
+      "layer_id": "property",
+      "title": "Имущество",
+      "definition": "вещи, запасы, животные, строения, инструменты и права двора, человека, церкви, монастыря, купца, боярина или службы",
+      "rules": [
+        "не всё имущество находится при владельце",
+        "держатель и владелец могут различаться"
+      ],
+      "status": "draft",
+      "confidence": "high"
+    },
+    {
+      "layer_id": "access",
+      "title": "Доступ",
+      "definition": "практическая возможность взять, открыть, использовать или осмотреть вещь",
+      "rules": [
+        "доступ не означает владение",
+        "доступ зависит от статуса, ключа, свидетелей, времени и разрешения"
+      ],
+      "status": "draft",
+      "confidence": "high"
+    },
+    {
+      "layer_id": "claim",
+      "title": "Претензия",
+      "definition": "социальное или правовое основание требовать вещь, долг, возврат, плату или наказание",
+      "rules": [
+        "претензия может быть спорной",
+        "нужны свидетели, метки, память или статус"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    }
+  ],
+  "ownership_statuses": [
+    {
+      "ownership_status_id": "owned_by_person",
+      "title": "Личное имущество",
+      "risk": "владелец, родня или знакомые могут узнать вещь",
+      "status": "draft",
+      "confidence": "high"
+    },
+    {
+      "ownership_status_id": "household_common",
+      "title": "Общее имущество двора",
+      "risk": "распоряжается старший или хозяйка; взять без разрешения значит спор со всем двором",
+      "status": "draft",
+      "confidence": "high"
+    },
+    {
+      "ownership_status_id": "church_property",
+      "title": "Церковное имущество",
+      "risk": "сакральный, социальный и правовой риск",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "ownership_status_id": "monastery_property",
+      "title": "Монастырское имущество",
+      "risk": "контролируется братией, игуменом, хозяйственными людьми",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "ownership_status_id": "merchant_goods",
+      "title": "Купеческий товар",
+      "risk": "меры, метки, свидетели, долг, пошлина и репутация",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "ownership_status_id": "boyar_property",
+      "title": "Боярское имущество",
+      "risk": "высокий риск власти, слуг и долговых последствий",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "ownership_status_id": "service_item",
+      "title": "Служебная вещь",
+      "risk": "держатель отвечает перед старшим, вещь может принадлежать службе",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "ownership_status_id": "pledged_item",
+      "title": "Вещь в залоге",
+      "risk": "владелец и держатель разные; самовольное взятие нарушает долг",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "ownership_status_id": "disputed_item",
+      "title": "Спорная вещь",
+      "risk": "несколько претензий; нужны свидетели и признаки",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "ownership_status_id": "found_item",
+      "title": "Найденная вещь",
+      "risk": "не автоматически бесхозная; важны метки и место находки",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "ownership_status_id": "stolen_item",
+      "title": "Краденая вещь",
+      "risk": "метки, слухи, обыск, свидетели, попытка сбыта",
+      "status": "draft",
+      "confidence": "high"
+    }
+  ],
+  "access_rules": [
+    {
+      "access_rule_id": "free_visible_not_free_to_take",
+      "rule": "открыто видимый предмет не означает свободный доступ к нему",
+      "examples": [
+        "ведро у колодца",
+        "весы на торге",
+        "весло у лодки"
+      ],
+      "status": "draft",
+      "confidence": "high"
+    },
+    {
+      "access_rule_id": "permission_by_status",
+      "rule": "статус, поручитель и причина могут открыть доступ без права собственности",
+      "status": "draft",
+      "confidence": "high"
+    },
+    {
+      "access_rule_id": "closed_container_requires_time",
+      "rule": "закрытый контейнер требует времени, способа открытия и риска свидетелей",
+      "status": "draft",
+      "confidence": "high"
+    },
+    {
+      "access_rule_id": "sacred_property_restricted",
+      "rule": "церковное и монастырское имущество требует отдельного основания доступа",
+      "status": "draft",
+      "confidence": "medium"
+    }
+  ],
+  "theft_and_recognition_rules": [
+    {
+      "rule_id": "recognition_formula_reference",
+      "rule": "узнавание = явность метки + знакомство NPC с вещью + видимость - сокрытие - плохие условия",
+      "status": "draft",
+      "confidence": "high"
+    },
+    {
+      "rule_id": "marks_required_for_important_items",
+      "rule": "для значимой чужой вещи фиксируются явные, бытовые, личные, служебные или событийные метки",
+      "status": "draft",
+      "confidence": "high"
+    },
+    {
+      "rule_id": "stolen_goods_market_risk",
+      "rule": "сбыт заметной вещи на торге может создать слух, свидетеля и конфликт с владельцем",
+      "status": "draft",
+      "confidence": "medium"
+    }
+  ],
+  "debt_and_pledge_rules": [
+    {
+      "rule_id": "pledge_holder_not_owner",
+      "rule": "держатель залога не всегда владелец; возврат зависит от долга, свидетелей и срока",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "work_debt",
+      "rule": "долг может возвращаться работой, товаром, услугой, перевозом или поручительством",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "witness_for_debt",
+      "rule": "серьёзная сделка или спор о долге требует свидетеля, старшего или памяти места",
+      "status": "draft",
+      "confidence": "medium"
+    }
+  ],
+  "church_and_monastery_property_rules": [
+    {
+      "rule_id": "church_object_not_loot",
+      "rule": "священная вещь не является обычной добычей или случайной наградой",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "monastery_economy_property",
+      "rule": "монастырь владеет церковными и хозяйственными запасами, землёй, работой и гостевым порядком",
+      "status": "draft",
+      "confidence": "medium"
+    }
+  ],
+  "market_property_rules": [
+    {
+      "rule_id": "goods_have_context",
+      "rule": "товар на торге имеет продавца, владельца, меру, цену/обмен и свидетелей",
+      "status": "draft",
+      "confidence": "high"
+    },
+    {
+      "rule_id": "underweight_conflict",
+      "rule": "недовес или спорная мера создаёт конфликт, а не автоматически бой",
+      "status": "draft",
+      "confidence": "medium"
+    }
+  ],
+  "llm_materialization_rules": {
+    "must_check_before_item_use": [
+      "существует ли предмет уже",
+      "где он физически",
+      "кто владелец",
+      "кто держатель",
+      "виден ли",
+      "можно ли достать",
+      "кто видит",
+      "какой риск"
+    ],
+    "must_not_do": [
+      "не создавать магию, фэнтези, современные профессии, современные деньги и MMO-логику",
+      "не создавать новые постоянные G1-G4 узлы и не расширять каноническую карту в runtime",
+      "не создавать состояние конкретной партии, конкретных неисторических NPC или конкретные предметы партии",
+      "не превращать заявку игрока в причину появления нужного объекта",
+      "не раскрывать игроку скрытые причины, объективную карту, будущие события и истинность слухов"
+    ],
+    "extension_policy": "Списки задания являются минимальным ядром, а не пределом. Новые контейнеры, слухи, события, предметные и социальные профили допустимы только при историко-бытовом, хозяйственном или социальном основании, со статусом, уверенностью и возможностью ручного аудита."
+  },
+  "validation": {
+    "file_is_valid_json": true,
+    "does_not_create_party_state": true,
+    "does_not_create_new_g1_g4_nodes": true,
+    "does_not_precreate_full_g5_map": true,
+    "uses_existing_map_as_context": true,
+    "respects_generation_limits": true,
+    "separates_visible_hidden_and_unmaterialized": true,
+    "distinguishes_fact_from_rumor": true,
+    "requires_human_historical_audit": true,
+    "blocking_issues": [],
+    "open_questions": []
+  }
+}

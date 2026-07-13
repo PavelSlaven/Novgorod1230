@@ -1,0 +1,1970 @@
+# Этап 21. Аудит visible context
+
+## 0. Нормативная редакция 2: изолированный audit block
+
+Этот раздел имеет приоритет над всеми более старыми формулировками ниже, если между ними есть противоречие.
+
+Этап 21 является отдельным изолированным блоком. Он получает только точный `visible_context_audit_input`, не читает global context, stage registry, mutable pipeline state или произвольные outputs других этапов и не изменяет `visible_context_package`.
+
+```text id="stage21-isolated-contract"
+exact visible_context_audit_input
+→ independent visible_context_audit_code_precheck
+→ VisibleContextSemanticAuditor
+→ VisibleContextAuditFormatRepairer только при format error
+→ SeniorVisibleContextSemanticAuditor при повторной semantic inconsistency
+→ VisibleContextAuditRouter при pass=false
+→ code validation repair route
+→ stage21_visible_context_audit_result
+```
+
+Stage 21 не исправляет мир и не переписывает visible context. Локальная ошибка проекции направляется в targeted `VisibleContextSemanticRepairer` Stage 20 вместе с concerns/evidence. Upstream-ошибка направляется только в соответствующий Stage 13–19. После любого ремонта Stage 21 запускается заново.
+
+Подмена готового результата Stage 21 запрещена во всех окружениях. Тесты подменяют только role executors.
+
+`visible_context_package` связывается со Stage 21 и Stage 22 через SHA-256 digest канонического JSON. Narrator может получить только пакет, digest которого совпадает с digest, проверенным Stage 21.
+
+Успешный audit обязан содержать непустой `evidence`. Пустой evidence запрещён и при `pass=true`.
+
+## 0.1. Enum аудита и маршрутизации
+
+Допустимые severity:
+
+```text id="stage21-severity-enum"
+warning
+repairable
+hard_block
+upstream_block
+```
+
+Допустимые concern codes и их значения фиксируются кодом Stage 21. Произвольный code запрещён. Минимальный нормативный набор включает schema/request/digest conflicts, position/time/weather/light conflicts, invalid refs, unseen NPC/items, hidden leaks, rumor/uncertainty violations, knowledge boundary conflicts, new world facts, narrator prose, source trace и must_not_include failures.
+
+## 1. Назначение этапа
+
+Аудит `visible_context_package` — это gate-этап перед narrator.
+
+Он проверяет, что пакет видимого контекста:
+
+* не содержит утечек hidden state;
+* не раскрывает скрытые мотивы NPC;
+* не раскрывает закрытые контейнеры;
+* не раскрывает будущие события;
+* не раскрывает истинных владельцев, если персонаж этого не знает;
+* не показывает невидимые предметы;
+* не превращает слухи в факты;
+* не превращает неопределённость в авторскую истину;
+* не противоречит времени, свету и погоде;
+* не противоречит текущей позиции персонажа;
+* не ссылается на несуществующие G5-якоря;
+* не ссылается на несуществующих NPC;
+* не ссылается на несуществующие предметы и контейнеры;
+* не создаёт новые факты мира;
+* безопасен для передачи narrator.
+
+Короткая формула:
+
+```text id="8t3kum"
+visible_context_package
++ full_hidden_scene_state
++ character_knowledge_map
++ time_light_consistency_audit
++ g5_scene_graph
++ NPC placement
++ item placement
++ current_position
+→ visible_context_audit
+```
+
+Главный вопрос этапа:
+
+```text id="7zpm5h"
+Может ли narrator получить этот visible_context_package без риска раскрыть скрытую информацию, исказить время/место или добавить несуществующие факты?
+```
+
+## 2. Главное правило этапа
+
+Аудит visible context не исправляет пакет молча.
+
+Если пакет неверен, этап возвращает:
+
+```text id="mmxb2t"
+pass=false
++ concerns
++ evidence
++ repair_route
+```
+
+Запрещено:
+
+* молча удалять скрытую утечку;
+* молча менять время;
+* молча менять позицию;
+* молча менять NPC;
+* молча менять предметы;
+* молча переписывать visible_scene_dossier;
+* пропускать пакет narrator при hard conflict.
+
+Любое исправление должно идти через отдельный repair-этап.
+
+## 3. Место этапа в pipeline
+
+```text id="hpjvp2"
+1. Заявка игрока
+2. Нормализация заявки
+3. Выбор исторической рамки
+4. Загрузка регионального контекста
+5. Подбор стартовых G1–G4 кандидатов
+6. Подбор place templates
+7. Подбор NPC-кандидатов
+8. Подбор предметных профилей
+9. Выбор стартового узла
+10. Аудит стартового места
+11. Генерация персонажа
+12. Аудит персонажа
+13. Материализация G5-сцены
+14. Аудит G5-сцены
+15. Размещение стартовых NPC
+16. Размещение стартовых предметов
+17. Проверка времени и света
+18. Формирование карты знаний персонажа
+19. Формирование полного hidden state
+20. Формирование visible context package
+21. Аудит visible context
+22. Narrator prose
+```
+
+Без успешного этапа 21 narrator не запускается.
+
+## 4. Что именно проверяется
+
+Этап проверяет три класса ошибок.
+
+Первый класс — структурные ошибки:
+
+```text id="7jxau0"
+неверная schema;
+нет version;
+нет frame;
+нет position;
+битые ссылки на G5;
+битые ссылки на NPC;
+битые ссылки на item/container;
+отсутствует evidence;
+неверные enum;
+пустой must_not_include при наличии hidden state.
+```
+
+Второй класс — смысловые ошибки:
+
+```text id="lzxslq"
+пакет показывает то, что персонаж не может видеть;
+пакет показывает то, что персонаж не знает;
+пакет раскрывает скрытую причину видимого намёка;
+пакет превращает подозрение в факт;
+пакет даёт точный маршрут, которого персонаж не знает;
+пакет даёт точное имя NPC, если персонаж его не знает;
+пакет раскрывает владельца предмета, если это не известно.
+```
+
+Третий класс — temporal/spatial mismatch:
+
+```text id="zg0g87"
+clock говорит ночь, visible context говорит день;
+position указывает один anchor, visible context описывает другой;
+G5 visibility запрещает объект, но пакет показывает его;
+weather/light снижает видимость, но пакет показывает всё ясно;
+visible exits указывают несуществующие anchors;
+NPC находится в закрытой зоне, но описан как видимый.
+```
+
+## 5. Вход этапа
+
+```json id="9qcbyk"
+{
+  "version": 1,
+  "schema": "visible_context_audit_input",
+  "request_id": "string",
+
+  "historical_frame": {
+    "version": 1,
+    "schema": "historical_frame",
+    "region": {
+      "region_id": "string"
+    },
+    "year": {
+      "value": 0
+    },
+    "calendar": {
+      "season": "spring | summer | autumn | winter"
+    },
+    "clock": {
+      "day": 1,
+      "hour": 0,
+      "minute": 0,
+      "time_of_day": "dawn | morning | day | afternoon | evening | dusk | night | deep_night",
+      "light_profile": "dark | dim | daylight | twilight | indoor_lit | firelit | moonlit | obscured"
+    }
+  },
+
+  "weather_state": {
+    "version": 1,
+    "schema": "weather_state"
+  },
+
+  "current_position": {
+    "region_id": "string",
+    "place_id": "string",
+    "location_id": "string",
+    "minilocation_id": "string",
+    "anchor_id": "string",
+    "last_route_id": "string | null"
+  },
+
+  "g5_scene_graph": {
+    "version": 1,
+    "schema": "g5_scene_graph_draft"
+  },
+
+  "g5_scene_audit": {
+    "version": 1,
+    "schema": "g5_scene_audit",
+    "pass": true
+  },
+
+  "initial_npc_placement": {
+    "version": 1,
+    "schema": "initial_npc_placement_draft"
+  },
+
+  "npc_placement_audit": {
+    "version": 1,
+    "schema": "initial_npc_placement_audit",
+    "pass": true
+  },
+
+  "initial_item_placement": {
+    "version": 1,
+    "schema": "initial_item_placement_draft"
+  },
+
+  "item_placement_audit": {
+    "version": 1,
+    "schema": "initial_item_placement_audit",
+    "pass": true
+  },
+
+  "time_light_consistency_audit": {
+    "version": 1,
+    "schema": "time_light_consistency_audit",
+    "pass": true,
+    "normalized_visibility_constraints": {}
+  },
+
+  "character_knowledge_map": {
+    "version": 1,
+    "schema": "character_knowledge_map"
+  },
+
+  "character_knowledge_map_audit": {
+    "version": 1,
+    "schema": "character_knowledge_map_audit",
+    "pass": true
+  },
+
+  "full_hidden_scene_state": {
+    "version": 1,
+    "schema": "full_hidden_scene_state"
+  },
+
+  "full_hidden_state_audit": {
+    "version": 1,
+    "schema": "full_hidden_state_audit",
+    "pass": true
+  },
+
+  "visible_context_package": {
+    "version": 1,
+    "schema": "visible_context_package"
+  },
+
+  "visible_context_package_digest": "sha256:<canonical-json-digest>",
+
+  "visible_context_code_precheck": {
+    "version": 1,
+    "schema": "visible_context_code_precheck",
+    "request_id": "string",
+    "pass": true,
+    "checks": {},
+    "concerns": [],
+    "evidence": []
+  },
+
+  "visible_context_audit_policy": {
+    "require_schema": true,
+    "require_position_match": true,
+    "require_clock_match": true,
+    "require_weather_match": true,
+    "require_light_match": true,
+    "require_all_refs_exist": true,
+    "require_hidden_state_filter": true,
+    "require_character_knowledge_boundary": true,
+    "require_narrator_scope": true,
+    "require_must_not_include": true,
+    "require_source_trace": true,
+    "require_nonempty_success_evidence": true,
+    "require_package_digest_match": true,
+    "reject_private_motive_leak": true,
+    "reject_private_knowledge_leak": true,
+    "reject_closed_container_contents_leak": true,
+    "reject_future_event_leak": true,
+    "reject_true_ownership_leak_if_unknown": true,
+    "reject_hidden_route_truth_leak": true,
+    "reject_unseen_items": true,
+    "reject_unseen_npcs": true,
+    "reject_rumor_as_fact": true,
+    "reject_uncertainty_as_fact": true,
+    "reject_action_labels_using_hidden_truth": true,
+    "reject_new_world_facts": true,
+    "reject_narrator_prose": true
+  }
+}
+```
+
+## 6. Выход этапа
+
+```json id="8qd38x"
+{
+  "version": 1,
+  "schema": "visible_context_audit",
+  "request_id": "string",
+  "visible_context_package_digest": "sha256:<canonical-json-digest>",
+
+  "pass": true,
+
+  "checks": {
+    "schema_and_structure": {},
+    "position_consistency": {},
+    "time_weather_light_consistency": {},
+    "g5_anchor_consistency": {},
+    "npc_consistency": {},
+    "item_consistency": {},
+    "container_consistency": {},
+    "hidden_state_leak_check": {},
+    "character_knowledge_boundary_check": {},
+    "rumor_uncertainty_check": {},
+    "available_actions_check": {},
+    "narrator_scope_check": {},
+    "source_trace_check": {},
+    "package_digest_check": {},
+    "commit_readiness": {}
+  },
+
+  "concerns": [],
+  "evidence": [
+    { "kind": "position_verified" },
+    { "kind": "time_weather_light_verified" },
+    { "kind": "hidden_boundary_verified" },
+    { "kind": "knowledge_boundary_verified" },
+    { "kind": "package_digest_verified" }
+  ],
+
+  "repair_route": null,
+
+  "commit_permission": {
+    "can_send_to_narrator": true,
+    "can_write_visible_context_snapshot": true,
+    "can_generate_player_facing_prose": true
+  }
+}
+```
+
+Если аудит провален:
+
+```json id="1yhhd6"
+{
+  "version": 1,
+  "schema": "visible_context_audit",
+  "request_id": "string",
+  "visible_context_package_digest": "sha256:<canonical-json-digest>",
+
+  "pass": false,
+
+  "checks": {},
+
+  "concerns": [
+    {
+      "code": "VISIBLE_CONTEXT_CLOSED_CONTAINER_CONTENTS_LEAK",
+      "severity": "hard_block",
+      "message": "Visible context reveals contents of a closed container."
+    }
+  ],
+
+  "evidence": [
+    "visible_containers[0].content_summary is not null",
+    "hidden_container_state[container_001].content_known_to_character=false"
+  ],
+
+  "repair_route": {
+    "return_to_stage": "stage20_visible_context",
+    "repair_kind": "remove_hidden_leak"
+  },
+
+  "commit_permission": {
+    "can_send_to_narrator": false,
+    "can_write_visible_context_snapshot": false,
+    "can_generate_player_facing_prose": false
+  }
+}
+```
+
+
+### 6.1. Технический результат Stage 21
+
+Под ключом Stage 21 хранится не голый audit, а единый bundle:
+
+```json id="stage21-result-bundle"
+{
+  "version": 1,
+  "schema": "stage21_visible_context_audit_result",
+  "request_id": "string",
+  "pass": true,
+  "visible_context_package_digest": "sha256:<canonical-json-digest>",
+  "input_snapshot_digest": "sha256:<technical-input-digest>",
+  "audit_code_precheck": {
+    "version": 1,
+    "schema": "visible_context_audit_code_precheck",
+    "pass": true
+  },
+  "visible_context_audit": {
+    "version": 1,
+    "schema": "visible_context_audit",
+    "pass": true
+  },
+  "repair_route": null,
+  "audit_history": [],
+  "diagnostics": {
+    "auditor_attempts": 1,
+    "format_repair_attempts": 0,
+    "senior_auditor_attempts": 0,
+    "router_attempts": 0,
+    "last_error_codes": []
+  },
+  "commit_permission": {
+    "can_send_to_narrator": true,
+    "can_write_visible_context_snapshot": true,
+    "can_generate_player_facing_prose": true
+  }
+}
+```
+
+Stage 22 извлекает только `visible_context_audit` и получает `visible_context_package` отдельно из Stage 20 после проверки совпадения digest. `audit_history`, diagnostics, router internals и hidden inputs Stage 22 не получает.
+
+### 6.2. Нормативный repair route
+
+```json id="stage21-repair-route"
+{
+  "version": 1,
+  "schema": "visible_context_audit_repair_route",
+  "request_id": "string",
+  "visible_context_package_digest": "sha256:<canonical-json-digest>",
+  "return_to_stage": "stage20_visible_context | stage19_hidden_state | stage18_character_knowledge | stage17_time_light | stage16_item_placement | stage15_npc_placement | stage14_g5_audit | stage13_g5_materialization",
+  "repair_kind": "repair_visible_context_projection | remove_hidden_leak | repair_knowledge_boundary_projection | repair_hidden_state | repair_character_knowledge | repair_time_light | repair_item_placement | repair_npc_placement | repair_g5_audit | repair_g5_graph",
+  "concern_codes": [],
+  "evidence_refs": [],
+  "allowed_mutable_paths": [],
+  "forbidden_mutable_paths": [],
+  "requires_reaudit_from_stage": 21
+}
+```
+
+Router является LLM-ролью, но его результат всегда проверяется кодом: enum, соответствие concern/target, существование evidence refs, допустимые mutable paths и обязательный возврат на повторный Stage 21.
+
+
+## 7. Code precheck
+
+Перед LLM-аудитом код выполняет hard validation.
+
+```json id="zx376v"
+{
+  "version": 1,
+  "schema": "visible_context_audit_code_precheck",
+  "request_id": "string",
+  "visible_context_package_digest": "sha256:<canonical-json-digest>",
+  "pass": true,
+
+  "checks": {
+    "schema_valid": true,
+    "version_valid": true,
+    "position_matches_current_position": true,
+    "clock_matches_historical_frame": true,
+    "season_matches_historical_frame": true,
+    "weather_matches_weather_state": true,
+    "light_profile_matches_time_light_audit": true,
+    "visible_anchor_refs_exist": true,
+    "visible_exit_refs_exist": true,
+    "visible_npc_refs_exist": true,
+    "visible_item_refs_exist": true,
+    "visible_container_refs_exist": true,
+    "available_action_target_refs_exist": true,
+    "no_hidden_fact_ids_in_player_surfaces": true,
+    "no_private_motive_strings": true,
+    "no_closed_container_contents": true,
+    "no_future_event_timers": true,
+    "no_raw_json_for_narrator": true,
+    "no_audit_debug_text": true,
+    "source_trace_present": true
+  },
+
+  "concerns": [],
+  "evidence": [
+    { "kind": "stage20_precheck_digest_verified" },
+    { "kind": "position_snapshot_verified" },
+    { "kind": "reference_integrity_verified" }
+  ]
+}
+```
+
+Если `code_precheck.pass=false`, LLM-аудит не запускается. Блок возвращает технический hard block и нормативный repair target; пакет не передаётся narrator.
+
+## 8. Проверка schema and structure
+
+Проверяется:
+
+```text id="4x23lx"
+schema = visible_context_package
+version = 1
+visible_context_status exists
+frame exists
+position exists
+narrator_scope exists
+visible_scene_facts exists
+visible_anchors exists
+visible_exits exists
+visible_npcs exists
+visible_items exists
+visible_containers exists
+visible_risks exists
+available_actions_context exists
+hidden_filtered_out exists
+visible_scene_dossier exists
+audit_self_check exists
+```
+
+Ошибки:
+
+```text id="0h2tys"
+VISIBLE_CONTEXT_INVALID_JSON
+VISIBLE_CONTEXT_SCHEMA_MISMATCH
+VISIBLE_CONTEXT_REQUIRED_BLOCK_MISSING
+VISIBLE_CONTEXT_EMPTY_AUDIT_EVIDENCE
+```
+
+## 9. Проверка position consistency
+
+Позиция в visible context должна совпадать с `current_position`.
+
+Проверяются:
+
+```text id="1932o9"
+position.region_id
+position.place_id
+position.location_id
+position.minilocation_id
+position.anchor_id
+```
+
+Hard conflict:
+
+```text id="03l2h2"
+current_position.anchor_id = g5_anchor_001
+visible_context.position.anchor_id = g5_anchor_009
+```
+
+Ошибка:
+
+```text id="ldn0iu"
+VISIBLE_CONTEXT_POSITION_MISMATCH
+```
+
+Также проверяется, что `visible_scene_dossier.summary` не описывает другую минилокацию или другой anchor.
+
+Ошибка:
+
+```text id="9xlg5o"
+VISIBLE_CONTEXT_PROSE_DOSSIER_POSITION_CONFLICT
+```
+
+## 10. Проверка time/weather/light consistency
+
+Проверяются:
+
+```text id="t4r1go"
+frame.clock
+frame.season
+frame.weather_state
+frame.light_profile
+weather_light_context
+visible_scene_dossier
+visible_scene_facts
+```
+
+Hard conflicts:
+
+```text id="v4xz6s"
+clock.time_of_day = deep_night
+visible_scene_dossier.summary contains daylight/daytime marker
+```
+
+```text id="54h2qr"
+light_profile = dark
+visible_items include small distant item as clearly visible
+```
+
+Ошибки:
+
+```text id="pg2ww7"
+VISIBLE_CONTEXT_CLOCK_MISMATCH
+VISIBLE_CONTEXT_SEASON_MISMATCH
+VISIBLE_CONTEXT_WEATHER_MISMATCH
+VISIBLE_CONTEXT_LIGHT_MISMATCH
+VISIBLE_CONTEXT_DAYLIGHT_TERM_AT_NIGHT
+VISIBLE_CONTEXT_NIGHT_TERM_AT_DAY
+VISIBLE_CONTEXT_WEATHER_VISIBILITY_CONFLICT
+```
+
+## 11. Проверка G5 anchor consistency
+
+Каждый anchor в visible context должен существовать в `g5_scene_graph`.
+
+Проверяются:
+
+```text id="5y9qh9"
+visible_anchors[*].anchor_id
+visible_exits[*].anchor_id
+visible_scene_facts[*].source_refs
+available_actions_context[*].target_ref.anchor_id
+audible_context[*].source_ref.anchor_id
+```
+
+Также проверяется, что anchor:
+
+```text id="ukoxc8"
+принадлежит выбранному G4;
+не hidden_from_player;
+допущен time/light constraints;
+видим, слышим или известен персонажу;
+не требует inspection, если подан как fully visible.
+```
+
+Ошибки:
+
+```text id="0plrti"
+VISIBLE_CONTEXT_ANCHOR_REF_NOT_FOUND
+VISIBLE_CONTEXT_ANCHOR_OUTSIDE_CURRENT_G4
+VISIBLE_CONTEXT_HIDDEN_ANCHOR_VISIBLE
+VISIBLE_CONTEXT_REQUIRES_INSPECTION_TREATED_AS_VISIBLE
+VISIBLE_CONTEXT_ANCHOR_LIGHT_CONFLICT
+```
+
+## 12. Проверка visible exits
+
+Visible exit может быть показан только если он видим, слышим, известен персонажу или непосредственно доступен из текущего G5.
+
+Проверяются:
+
+```text id="ueg7a9"
+visible_exit_id
+anchor_id
+exit_label
+access_state_visible
+known_destination
+destination_known_level
+can_attempt_now
+risk_hint
+must_not_claim_exact_destination
+```
+
+Hard conflicts:
+
+```text id="fnwupc"
+destination_known_level = exact
+но character_knowledge_map не содержит exact route/place knowledge
+```
+
+```text id="f6o10q"
+exit references anchor not in g5_scene_graph
+```
+
+Ошибки:
+
+```text id="4w3fhc"
+VISIBLE_CONTEXT_EXIT_REF_NOT_FOUND
+VISIBLE_CONTEXT_EXIT_DESTINATION_KNOWLEDGE_LEAK
+VISIBLE_CONTEXT_HIDDEN_ROUTE_TRUTH_LEAK
+VISIBLE_CONTEXT_UNKNOWN_ROUTE_MARKED_EXACT
+```
+
+## 13. Проверка NPC consistency
+
+Каждый visible NPC должен существовать в `initial_npc_placement`.
+
+Проверяются:
+
+```text id="h0tzlt"
+visible_npc_id
+npc_instance_id
+display_label
+identity_known_to_player
+name
+visible_activity
+visible_disposition_hint
+attention_hint
+interaction_available
+must_not_reveal
+```
+
+Hard conflicts:
+
+```text id="zgb7qu"
+name != null
+но identity_known_to_player=false
+и character_knowledge_map не знает имя
+```
+
+```text id="hdwbam"
+visible_disposition_hint раскрывает private motive
+```
+
+```text id="xe2gcl"
+visible_activity описывает hidden action behind closed zone
+```
+
+Ошибки:
+
+```text id="bdbcaq"
+VISIBLE_CONTEXT_NPC_REF_NOT_FOUND
+VISIBLE_CONTEXT_UNSEEN_NPC_VISIBLE
+VISIBLE_CONTEXT_NPC_NAME_LEAK
+VISIBLE_CONTEXT_PRIVATE_MOTIVE_LEAK
+VISIBLE_CONTEXT_PRIVATE_KNOWLEDGE_LEAK
+VISIBLE_CONTEXT_NPC_HIDDEN_ACTION_LEAK
+VISIBLE_CONTEXT_NPC_VISIBILITY_LIGHT_CONFLICT
+```
+
+## 14. Проверка item consistency
+
+Каждый visible item должен существовать в `initial_item_placement`.
+
+Проверяются:
+
+```text id="4nfdae"
+visible_item_id
+item_instance_id
+visible_label
+exact_identity_known
+visible_condition
+access_hint
+risk_hint
+can_take_now
+can_inspect_now
+must_not_reveal
+```
+
+Hard conflicts:
+
+```text id="640kua"
+visible item ссылается на item_instance_id, которого нет
+```
+
+```text id="silqme"
+true owner показан, но character_knowledge_map его не знает
+```
+
+```text id="393sw2"
+hidden_value/hidden_markings раскрыты в visible_label
+```
+
+Ошибки:
+
+```text id="ot8l13"
+VISIBLE_CONTEXT_ITEM_REF_NOT_FOUND
+VISIBLE_CONTEXT_UNSEEN_ITEM_VISIBLE
+VISIBLE_CONTEXT_HIDDEN_ITEM_LEAK
+VISIBLE_CONTEXT_TRUE_OWNERSHIP_LEAK
+VISIBLE_CONTEXT_HIDDEN_VALUE_LEAK
+VISIBLE_CONTEXT_HIDDEN_MARKINGS_LEAK
+VISIBLE_CONTEXT_ITEM_ACCESS_CONFLICT
+```
+
+## 15. Проверка container consistency
+
+Каждый visible container должен существовать в `initial_item_placement.container_instances`.
+
+Проверяются:
+
+```text id="e0swk4"
+visible_container_id
+container_instance_id
+visible_label
+visible_state
+content_visible
+content_summary
+access_hint
+risk_hint
+can_open_now
+can_inspect_now
+must_not_reveal
+```
+
+Hard conflicts:
+
+```text id="g9o942"
+content_visible=true
+но hidden_container_state.content_known_to_character=false
+```
+
+```text id="46wmxm"
+content_summary != null
+но контейнер закрыт и не открыт
+```
+
+Ошибки:
+
+```text id="1804cn"
+VISIBLE_CONTEXT_CONTAINER_REF_NOT_FOUND
+VISIBLE_CONTEXT_CLOSED_CONTAINER_CONTENTS_LEAK
+VISIBLE_CONTEXT_CONTAINER_ACCESS_CONFLICT
+VISIBLE_CONTEXT_CONTAINER_TRUE_OWNER_LEAK
+VISIBLE_CONTEXT_CONTAINER_HIDDEN_TRACE_LEAK
+```
+
+## 16. Проверка hidden state leak
+
+Это центральная проверка этапа.
+
+Проверяется, что visible context не содержит:
+
+```text id="3atwef"
+hidden_npc_state.private_motives;
+hidden_npc_state.private_knowledge;
+hidden_access_state.access_truth, если не раскрыт;
+hidden_property_state.ownership_truth, если персонаж не знает;
+hidden_container_state.content_truth;
+hidden_item_state.hidden_properties;
+hidden_risk_state.what_is_hidden;
+hidden_event_state.timer;
+hidden_social_state.hidden_rule, если нет reveal;
+hidden_route_state.actual_state, если персонаж не знает;
+hidden_environment_state.actual_condition, если нет признака.
+```
+
+Разрешено выводить только:
+
+```text id="cw3z8y"
+visible_hint;
+allowed_substitute;
+already revealed fact;
+in-character knowledge;
+safe risk cue;
+uncertain phrasing;
+```
+
+Ошибки:
+
+```text id="1atgcm"
+VISIBLE_CONTEXT_HIDDEN_STATE_LEAK
+VISIBLE_CONTEXT_PRIVATE_MOTIVE_LEAK
+VISIBLE_CONTEXT_CLOSED_CONTAINER_CONTENTS_LEAK
+VISIBLE_CONTEXT_FUTURE_EVENT_LEAK
+VISIBLE_CONTEXT_HIDDEN_RISK_TRUTH_LEAK
+VISIBLE_CONTEXT_HIDDEN_SOCIAL_RULE_LEAK
+VISIBLE_CONTEXT_HIDDEN_ROUTE_TRUTH_LEAK
+VISIBLE_CONTEXT_HIDDEN_ENVIRONMENT_TRUTH_LEAK
+```
+
+## 17. Проверка character knowledge boundary
+
+Visible context может использовать только те знания, которые есть в `character_knowledge_map`.
+
+Проверяются:
+
+```text id="k5gs8w"
+known_context
+rumor_context
+uncertain_context
+visible_exits.known_destination
+visible_npcs.identity_known_to_player
+visible_items.exact_identity_known
+available_actions_context
+visible_scene_dossier.summary
+```
+
+Hard conflicts:
+
+```text id="3xx5vp"
+known_context говорит, что персонаж знает владельца,
+но character_knowledge_map содержит owner as forbidden_knowledge
+```
+
+```text id="23wr51"
+visible exit даёт точный destination,
+но route knowledge = visible_only
+```
+
+Ошибки:
+
+```text id="fnr54w"
+VISIBLE_CONTEXT_CHARACTER_KNOWLEDGE_CONFLICT
+VISIBLE_CONTEXT_PLAYER_KNOWLEDGE_LEAK
+VISIBLE_CONTEXT_ROUTE_KNOWLEDGE_TOO_STRONG
+VISIBLE_CONTEXT_NPC_IDENTITY_TOO_STRONG
+VISIBLE_CONTEXT_ITEM_IDENTITY_TOO_STRONG
+```
+
+## 18. Проверка rumors and uncertainty
+
+Слухи и неопределённость должны оставаться помеченными.
+
+Проверяются:
+
+```text id="1fi3ea"
+rumor_context[*].must_not_upgrade_to_fact
+uncertain_context[*].must_not_upgrade_to_fact
+visible_scene_dossier.must_include/may_include
+known_context.surface_mode
+```
+
+Hard conflict:
+
+```text id="0px70f"
+rumor truth_status = unknown,
+но visible_context сообщает это как установленный факт
+```
+
+Ошибки:
+
+```text id="4wp9xk"
+VISIBLE_CONTEXT_RUMOR_TREATED_AS_FACT
+VISIBLE_CONTEXT_UNCERTAIN_TREATED_AS_FACT
+VISIBLE_CONTEXT_MISTAKEN_BELIEF_TREATED_AS_TRUTH
+```
+
+## 19. Проверка available actions
+
+Action context должен использовать только видимое, слышимое, известное или безопасно предполагаемое.
+
+Проверяются:
+
+```text id="8wab4g"
+action_kind
+target_ref
+player_facing_label_basis
+risk_hint
+must_not_reveal_hidden_truth
+```
+
+Недопустимые action labels:
+
+```text id="42g0b7"
+Открыть сундук, где лежит серебро.
+Поговорить с человеком, который скрывает долг.
+Идти по тайному ходу к амбару.
+Украсть вещь хозяина, пока он не видит.
+```
+
+Допустимые action labels:
+
+```text id="k9ll4d"
+Осмотреть закрытый сундук.
+Заговорить с человеком у двери.
+Проверить тёмный проход.
+Попробовать взять вещь, рискуя привлечь внимание.
+```
+
+Ошибки:
+
+```text id="5ofoc2"
+VISIBLE_CONTEXT_ACTION_LABEL_USES_HIDDEN_TRUTH
+VISIBLE_CONTEXT_ACTION_TARGET_REF_NOT_FOUND
+VISIBLE_CONTEXT_ACTION_REVEALS_FUTURE_RESULT
+VISIBLE_CONTEXT_ACTION_REVEALS_CLOSED_CONTENTS
+```
+
+## 20. Проверка narrator_scope
+
+`narrator_scope` должен явно запретить narrator выходить за visible context.
+
+Проверяются:
+
+```text id="ua6ckj"
+allowed_surfaces
+forbidden_surfaces
+style_constraints
+knowledge_boundary
+```
+
+Обязательные forbidden surfaces:
+
+```text id="z3dukh"
+hidden state
+private NPC motives
+closed container contents
+future event timers
+true ownership if unknown
+hidden route truth
+raw JSON
+audit
+repair
+debug
+source-only notes
+```
+
+Ошибки:
+
+```text id="g0jy1t"
+VISIBLE_CONTEXT_NARRATOR_SCOPE_MISSING
+VISIBLE_CONTEXT_NARRATOR_SCOPE_TOO_BROAD
+VISIBLE_CONTEXT_MUST_NOT_INCLUDE_MISSING
+VISIBLE_CONTEXT_RAW_JSON_TO_NARRATOR
+VISIBLE_CONTEXT_AUDIT_TEXT_LEAK
+```
+
+## 21. Проверка visible_scene_dossier
+
+`visible_scene_dossier` не должен быть финальной прозой. Это структурный summary для narrator.
+
+Проверяются:
+
+```text id="vd877d"
+summary
+must_include
+may_include
+must_not_include
+```
+
+Hard conflicts:
+
+```text id="xi17xd"
+summary содержит скрытый мотив;
+summary содержит содержимое закрытого контейнера;
+summary создаёт новый предмет;
+summary меняет время суток;
+summary описывает NPC, которого нет;
+summary превращается в полную prose-сцену с новыми фактами.
+```
+
+Ошибки:
+
+```text id="sdx3f9"
+VISIBLE_CONTEXT_DOSSIER_HIDDEN_LEAK
+VISIBLE_CONTEXT_DOSSIER_CREATED_WORLD_FACT
+VISIBLE_CONTEXT_DOSSIER_TIME_CONFLICT
+VISIBLE_CONTEXT_DOSSIER_NPC_REF_CONFLICT
+VISIBLE_CONTEXT_CREATED_NARRATOR_PROSE
+```
+
+## 22. Проверка новых фактов
+
+Visible context не может создавать новые факты.
+
+Новые факты запрещены в:
+
+```text id="m73vpf"
+visible_scene_facts;
+visible_anchors;
+visible_exits;
+visible_npcs;
+visible_items;
+visible_containers;
+audible_context;
+known_context;
+available_actions_context;
+visible_scene_dossier;
+```
+
+Ошибки:
+
+```text id="4dcd2i"
+VISIBLE_CONTEXT_CREATED_WORLD_FACT
+VISIBLE_CONTEXT_CREATED_NPC
+VISIBLE_CONTEXT_CREATED_ITEM
+VISIBLE_CONTEXT_CREATED_CONTAINER
+VISIBLE_CONTEXT_CREATED_ANCHOR
+VISIBLE_CONTEXT_CREATED_ROUTE
+VISIBLE_CONTEXT_CREATED_EVENT
+```
+
+## 23. Работа LLM на этапе
+
+LLM на этом этапе используется как semantic auditor.
+
+Код обязан проверить:
+
+```text id="b4k7qa"
+schema;
+enum;
+ID refs;
+position;
+clock/weather/light;
+presence of required blocks;
+forbidden exact IDs;
+known hard leaks.
+```
+
+LLM проверяет:
+
+```text id="awy3vp"
+смысловые утечки hidden state;
+скрытые мотивы, замаскированные как visible hints;
+неоправданно точные формулировки;
+превращение слуха в факт;
+несоответствие видимого и знания персонажа;
+опасные action labels;
+слишком широкие narrator constraints;
+противоречия visible_scene_dossier.
+```
+
+LLM не имеет права:
+
+```text id="d6vpz4"
+исправлять visible context внутри audit;
+добавлять видимые факты;
+удалять факты;
+менять world state;
+менять hidden state;
+менять character knowledge;
+писать narrator prose.
+```
+
+## 24. LLM-параметры
+
+### 24.1. `VisibleContextSemanticAuditor`
+
+Назначение: смысловой аудит visible context перед narrator.
+
+```json id="o4ka95"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 9000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 110000,
+    "hard_input_limit_tokens": 260000,
+    "reserve_output_tokens": 9000
+  }
+}
+```
+
+Используется reasoning-режим, потому что аудит должен сравнивать visible context сразу с hidden state, knowledge map, G5, NPC, предметами, временем, светом и narrator constraints.
+
+### 24.2. `VisibleContextAuditRouter`
+
+Назначение: выбрать правильный repair route.
+
+```json id="minemq"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 4000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 60000,
+    "hard_input_limit_tokens": 160000,
+    "reserve_output_tokens": 4000
+  }
+}
+```
+
+Router не исправляет пакет. Он только выбирает, куда вернуть pipeline.
+
+### 24.3. `VisibleContextAuditFormatRepairer`
+
+Назначение: исправить только JSON-формат аудита.
+
+```json id="8zjnpn"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-flash",
+  "thinking": {
+    "type": "disabled"
+  },
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "max_tokens": 4500,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 40000,
+    "hard_input_limit_tokens": 100000,
+    "reserve_output_tokens": 4500
+  }
+}
+```
+
+### 24.4. `SeniorVisibleContextSemanticAuditor`
+
+```json id="stage21-senior-auditor-config"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": { "type": "enabled" },
+  "reasoning_effort": "high",
+  "response_format": { "type": "json_object" },
+  "max_tokens": 12000
+}
+```
+
+Senior auditor вызывается только после неустранённой semantic inconsistency в результате обычного auditor. Он не исправляет пакет, не создаёт repair route вместо Router и не пишет narrator prose.
+
+### 24.5. `VisibleContextSemanticRepairer`
+
+Назначение: исправить visible context по audit concerns, не меняя world state.
+
+```json id="j1gkwh"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 10000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 110000,
+    "hard_input_limit_tokens": 260000,
+    "reserve_output_tokens": 10000
+  }
+}
+```
+
+Repairer относится к следующему ремонтному шагу, но параметры фиксируются здесь, потому что audit должен вернуть совместимый `repair_route`.
+
+## 25. Prompt: VisibleContextSemanticAuditor
+
+```md id="iozknb"
+# Роль
+
+Ты VisibleContextSemanticAuditor для исторической текстовой RPG.
+
+# Задача
+
+Проверь visible_context_package перед передачей narrator.
+
+# Главное правило
+
+Ты не исправляешь visible context.
+Ты не создаёшь новые факты.
+Ты не меняешь hidden state.
+Ты не меняешь character knowledge.
+Ты не меняешь G5.
+Ты не меняешь NPC.
+Ты не меняешь items.
+Ты не пишешь narrator prose.
+Ты только аудируешь.
+
+# Используй только входные данные
+
+- historical_frame
+- weather_state
+- current_position
+- g5_scene_graph
+- initial_npc_placement
+- initial_item_placement
+- time_light_consistency_audit
+- character_knowledge_map
+- full_hidden_scene_state
+- visible_context_package
+- code_precheck
+
+Если факта нет во входе, не добавляй его.
+
+# Проверить
+
+1. visible_context_package имеет schema visible_context_package и version 1.
+2. position совпадает с current_position.
+3. clock/season/weather/light совпадают с authoritative frame.
+4. Все visible anchors существуют в G5.
+5. Все visible exits ссылаются на существующие anchors/edges.
+6. Все visible NPC существуют в initial_npc_placement.
+7. Все visible items существуют в initial_item_placement.
+8. Все visible containers существуют в initial_item_placement.
+9. Visible context не раскрывает hidden NPC motives.
+10. Visible context не раскрывает NPC private knowledge.
+11. Visible context не раскрывает closed container contents.
+12. Visible context не раскрывает future event timers.
+13. Visible context не раскрывает true ownership, если character_knowledge_map этого не знает.
+14. Visible context не раскрывает hidden item value/markings.
+15. Visible context не раскрывает hidden route truth.
+16. Rumors остаются rumors.
+17. Uncertain knowledge остаётся uncertain.
+18. Mistaken beliefs не подаются как truth.
+19. Available actions не используют hidden truth.
+20. visible_scene_dossier не является финальной narrator prose и не создаёт новые факты.
+21. narrator_scope запрещает hidden state, raw JSON, audit, repair, debug.
+22. source_trace достаточен.
+23. must_not_include покрывает sensitive hidden facts.
+
+# Критическое правило
+
+Если найден hard leak hidden state, pass=false.
+Не превращай hidden leak в warning.
+
+# Формат
+
+Верни только json:
+
+{
+  "version": 1,
+  "schema": "visible_context_audit",
+  "request_id": "...",
+  "visible_context_package_digest": "sha256:<canonical-json-digest>",
+  "pass": true,
+  "checks": {
+    "schema_and_structure": { "pass": true },
+    "position_consistency": { "pass": true },
+    "time_weather_light_consistency": { "pass": true },
+    "g5_anchor_consistency": { "pass": true },
+    "npc_consistency": { "pass": true },
+    "item_consistency": { "pass": true },
+    "container_consistency": { "pass": true },
+    "hidden_state_leak_check": { "pass": true },
+    "character_knowledge_boundary_check": { "pass": true },
+    "rumor_uncertainty_check": { "pass": true },
+    "available_actions_check": { "pass": true },
+    "narrator_scope_check": { "pass": true },
+    "source_trace_check": { "pass": true },
+    "package_digest_check": { "pass": true },
+    "commit_readiness": { "pass": true }
+  },
+  "concerns": [],
+  "evidence": [
+    { "kind": "position_verified" },
+    { "kind": "time_weather_light_verified" },
+    { "kind": "hidden_boundary_verified" },
+    { "kind": "knowledge_boundary_verified" },
+    { "kind": "package_digest_verified" }
+  ],
+  "repair_route": null,
+  "commit_permission": {
+    "can_send_to_narrator": true,
+    "can_write_visible_context_snapshot": true,
+    "can_generate_player_facing_prose": true
+  }
+}
+
+Если pass=false:
+- concerns не должен быть пустым;
+- evidence не должен быть пустым;
+- repair_route должен быть заполнен;
+- все commit_permission должны быть false.
+
+Если pass=true:
+- evidence не должен быть пустым.
+```
+
+## 26. Prompt: VisibleContextAuditRouter
+
+```md id="pjkbst"
+# Роль
+
+Ты VisibleContextAuditRouter.
+
+# Задача
+
+По failed `visible_context_audit` выбери смысловой target ремонта. Ты не исправляешь пакет и не создаёшь новые concerns/evidence. Код после тебя обязательно проверит enum, совместимость concern/target, evidence refs и mutable paths.
+
+# Допустимые return_to_stage
+
+- stage20_visible_context
+- stage19_hidden_state
+- stage18_character_knowledge
+- stage17_time_light
+- stage16_item_placement
+- stage15_npc_placement
+- stage14_g5_audit
+- stage13_g5_materialization
+
+# Правила маршрутизации
+
+- Ошибка только в проекции корректных upstream-данных: `stage20_visible_context`.
+- Ошибка или неполнота hidden state: `stage19_hidden_state`.
+- Ошибка карты знаний: `stage18_character_knowledge`.
+- Ошибка authoritative time/weather/light: `stage17_time_light`.
+- Ошибка item placement: `stage16_item_placement`.
+- Ошибка NPC placement: `stage15_npc_placement`.
+- Ошибка только в G5 audit interpretation: `stage14_g5_audit`.
+- Ошибка самого G5 graph: `stage13_g5_materialization`.
+
+Format error самого audit не является repair route к Stage 20: его обрабатывает `VisibleContextAuditFormatRepairer` внутри Stage 21.
+
+# Формат
+
+Верни только JSON:
+
+{
+  "version": 1,
+  "schema": "visible_context_audit_repair_route",
+  "request_id": "...",
+  "visible_context_package_digest": "sha256:<canonical-json-digest>",
+  "return_to_stage": "stage20_visible_context",
+  "repair_kind": "repair_visible_context_projection",
+  "concern_codes": ["VISIBLE_CONTEXT_PRIVATE_MOTIVE_LEAK"],
+  "evidence_refs": [0],
+  "allowed_mutable_paths": ["visible_context_package.visible_scene_facts"],
+  "forbidden_mutable_paths": ["full_hidden_scene_state", "character_knowledge_map"],
+  "requires_reaudit_from_stage": 21
+}
+```
+
+## 27. Prompt: VisibleContextAuditFormatRepairer
+
+```md id="jxwsss"
+# Роль
+
+Ты VisibleContextAuditFormatRepairer.
+
+# Задача
+
+Исправь только формат JSON visible_context_audit.
+
+# Главное правило
+
+Не меняй смысл.
+Не меняй pass/fail без evidence.
+Не исправляй visible_context_package.
+Не создавай новые concerns без evidence.
+Не создавай world facts.
+Не раскрывай hidden state.
+
+# Разрешено
+
+- убрать markdown;
+- привести schema к visible_context_audit;
+- привести version к 1;
+- добавить отсутствующие служебные поля как null/[];
+- перенести свободный текст в concerns/evidence;
+- удалить неразрешённые поля.
+
+# Запрещено
+
+- менять visible_context_package;
+- менять hidden state;
+- менять character knowledge;
+- менять frame;
+- менять refs;
+- писать narrator prose;
+- создавать repair_route без evidence.
+
+# Формат
+
+Верни только json.
+```
+
+## 28. Prompt: VisibleContextSemanticRepairer
+
+```md id="fvvsks"
+# Роль
+
+Ты VisibleContextSemanticRepairer.
+
+# Задача
+
+Исправь visible_context_package по validationErrors и visible_context_audit.concerns.
+
+# Главное правило
+
+Исправляй только visible context.
+Не меняй world state.
+Не меняй hidden state.
+Не меняй character knowledge.
+Не меняй G5.
+Не меняй NPC.
+Не меняй items.
+Не меняй clock/weather/light.
+Не пиши narrator prose.
+
+# Источники
+
+Используй только:
+- validationErrors
+- visible_context_audit.concerns
+- исходный visible_context_package
+- historical_frame
+- weather_state
+- current_position
+- g5_scene_graph
+- initial_npc_placement
+- initial_item_placement
+- time_light_consistency_audit
+- character_knowledge_map
+- full_hidden_scene_state
+
+# Правила ремонта
+
+Если факт раскрывает hidden state:
+- удалить прямое раскрытие;
+- заменить только на allowed_substitute/visible_hint, если он есть;
+- иначе перенести в hidden_filtered_out.
+
+Если item/NPC/container/anchor ref не существует:
+- удалить visible entry;
+- записать repair evidence.
+
+Если слух подан как факт:
+- перенести в rumor_context.
+
+Если uncertainty подана как факт:
+- перенести в uncertain_context.
+
+Если action label раскрывает hidden truth:
+- заменить на neutral visible action label.
+
+# Запрещено
+
+- раскрывать private motives;
+- раскрывать closed container contents;
+- раскрывать future timers;
+- раскрывать true owner if unknown;
+- создавать новые entities;
+- писать финальную prose.
+
+# Формат
+
+Верни только json visible_context_package.
+```
+
+## 29. Validation rules
+
+Код обязан проверить `visible_context_audit`:
+
+1. `schema === "visible_context_audit"`.
+2. `version === 1`.
+3. `pass` является boolean.
+4. `checks` присутствует.
+5. `evidence` не пустой.
+6. Если `pass=false`, `concerns` не пустой.
+7. Если `pass=false`, `repair_route` заполнен.
+8. Если `pass=true`, `commit_permission.can_send_to_narrator=true`.
+9. Если `pass=false`, все `commit_permission` false.
+10. Все concern codes входят в enum.
+11. Все severity входят в enum.
+12. Audit не содержит изменённый visible_context_package.
+13. Audit не содержит narrator prose.
+14. Audit не содержит hidden state details сверх evidence.
+15. `repair_route.return_to_stage` входит в допустимый enum.
+
+Код также валидирует сам `visible_context_package`:
+
+16. `schema === "visible_context_package"`.
+17. `version === 1`.
+18. `position` совпадает с `current_position`.
+19. `frame.clock` совпадает с `historical_frame.clock`.
+20. `frame.season` совпадает с `historical_frame.calendar.season`.
+21. `frame.weather_state` совпадает с `weather_state`.
+22. `frame.light_profile` совпадает с authoritative light.
+23. Все visible anchor refs существуют.
+24. Все visible exit refs существуют.
+25. Все visible NPC refs существуют.
+26. Все visible item refs существуют.
+27. Все visible container refs существуют.
+28. Все action target refs существуют.
+29. Нет private motives.
+30. Нет private knowledge.
+31. Нет closed container contents.
+32. Нет future event timers.
+33. Нет true ownership leak.
+34. Нет hidden item value/markings.
+35. Нет hidden route truth.
+36. Нет unseen items.
+37. Нет unseen NPC.
+38. Нет rumor as fact.
+39. Нет uncertainty as fact.
+40. Нет hidden truth in action labels.
+41. Нет new world facts.
+42. Нет raw JSON to narrator.
+43. Нет audit/repair/debug text.
+44. `source_trace` не пустой, если policy требует.
+45. `audit_self_check.evidence` не пустой.
+
+## 30. Error codes
+
+```text id="8y6hdl"
+VISIBLE_CONTEXT_AUDIT_INVALID_JSON
+VISIBLE_CONTEXT_AUDIT_SCHEMA_MISMATCH
+VISIBLE_CONTEXT_AUDIT_EMPTY_EVIDENCE
+VISIBLE_CONTEXT_AUDIT_REPAIR_ROUTE_MISSING
+
+VISIBLE_CONTEXT_INVALID_JSON
+VISIBLE_CONTEXT_SCHEMA_MISMATCH
+VISIBLE_CONTEXT_REQUIRED_BLOCK_MISSING
+VISIBLE_CONTEXT_POSITION_MISMATCH
+VISIBLE_CONTEXT_CLOCK_MISMATCH
+VISIBLE_CONTEXT_SEASON_MISMATCH
+VISIBLE_CONTEXT_WEATHER_MISMATCH
+VISIBLE_CONTEXT_LIGHT_MISMATCH
+VISIBLE_CONTEXT_DAYLIGHT_TERM_AT_NIGHT
+VISIBLE_CONTEXT_NIGHT_TERM_AT_DAY
+VISIBLE_CONTEXT_WEATHER_VISIBILITY_CONFLICT
+
+VISIBLE_CONTEXT_ANCHOR_REF_NOT_FOUND
+VISIBLE_CONTEXT_ANCHOR_OUTSIDE_CURRENT_G4
+VISIBLE_CONTEXT_HIDDEN_ANCHOR_VISIBLE
+VISIBLE_CONTEXT_REQUIRES_INSPECTION_TREATED_AS_VISIBLE
+VISIBLE_CONTEXT_ANCHOR_LIGHT_CONFLICT
+
+VISIBLE_CONTEXT_EXIT_REF_NOT_FOUND
+VISIBLE_CONTEXT_EXIT_DESTINATION_KNOWLEDGE_LEAK
+VISIBLE_CONTEXT_HIDDEN_ROUTE_TRUTH_LEAK
+VISIBLE_CONTEXT_UNKNOWN_ROUTE_MARKED_EXACT
+
+VISIBLE_CONTEXT_NPC_REF_NOT_FOUND
+VISIBLE_CONTEXT_UNSEEN_NPC_VISIBLE
+VISIBLE_CONTEXT_NPC_NAME_LEAK
+VISIBLE_CONTEXT_PRIVATE_MOTIVE_LEAK
+VISIBLE_CONTEXT_PRIVATE_KNOWLEDGE_LEAK
+VISIBLE_CONTEXT_NPC_HIDDEN_ACTION_LEAK
+VISIBLE_CONTEXT_NPC_VISIBILITY_LIGHT_CONFLICT
+
+VISIBLE_CONTEXT_ITEM_REF_NOT_FOUND
+VISIBLE_CONTEXT_UNSEEN_ITEM_VISIBLE
+VISIBLE_CONTEXT_HIDDEN_ITEM_LEAK
+VISIBLE_CONTEXT_TRUE_OWNERSHIP_LEAK
+VISIBLE_CONTEXT_HIDDEN_VALUE_LEAK
+VISIBLE_CONTEXT_HIDDEN_MARKINGS_LEAK
+VISIBLE_CONTEXT_ITEM_ACCESS_CONFLICT
+
+VISIBLE_CONTEXT_CONTAINER_REF_NOT_FOUND
+VISIBLE_CONTEXT_CLOSED_CONTAINER_CONTENTS_LEAK
+VISIBLE_CONTEXT_CONTAINER_ACCESS_CONFLICT
+VISIBLE_CONTEXT_CONTAINER_TRUE_OWNER_LEAK
+VISIBLE_CONTEXT_CONTAINER_HIDDEN_TRACE_LEAK
+
+VISIBLE_CONTEXT_HIDDEN_STATE_LEAK
+VISIBLE_CONTEXT_FUTURE_EVENT_LEAK
+VISIBLE_CONTEXT_HIDDEN_RISK_TRUTH_LEAK
+VISIBLE_CONTEXT_HIDDEN_SOCIAL_RULE_LEAK
+VISIBLE_CONTEXT_HIDDEN_ENVIRONMENT_TRUTH_LEAK
+
+VISIBLE_CONTEXT_CHARACTER_KNOWLEDGE_CONFLICT
+VISIBLE_CONTEXT_PLAYER_KNOWLEDGE_LEAK
+VISIBLE_CONTEXT_ROUTE_KNOWLEDGE_TOO_STRONG
+VISIBLE_CONTEXT_NPC_IDENTITY_TOO_STRONG
+VISIBLE_CONTEXT_ITEM_IDENTITY_TOO_STRONG
+
+VISIBLE_CONTEXT_RUMOR_TREATED_AS_FACT
+VISIBLE_CONTEXT_UNCERTAIN_TREATED_AS_FACT
+VISIBLE_CONTEXT_MISTAKEN_BELIEF_TREATED_AS_TRUTH
+
+VISIBLE_CONTEXT_ACTION_LABEL_USES_HIDDEN_TRUTH
+VISIBLE_CONTEXT_ACTION_TARGET_REF_NOT_FOUND
+VISIBLE_CONTEXT_ACTION_REVEALS_FUTURE_RESULT
+VISIBLE_CONTEXT_ACTION_REVEALS_CLOSED_CONTENTS
+
+VISIBLE_CONTEXT_NARRATOR_SCOPE_MISSING
+VISIBLE_CONTEXT_NARRATOR_SCOPE_TOO_BROAD
+VISIBLE_CONTEXT_MUST_NOT_INCLUDE_MISSING
+VISIBLE_CONTEXT_RAW_JSON_TO_NARRATOR
+VISIBLE_CONTEXT_AUDIT_TEXT_LEAK
+
+VISIBLE_CONTEXT_DOSSIER_HIDDEN_LEAK
+VISIBLE_CONTEXT_DOSSIER_CREATED_WORLD_FACT
+VISIBLE_CONTEXT_DOSSIER_TIME_CONFLICT
+VISIBLE_CONTEXT_DOSSIER_NPC_REF_CONFLICT
+VISIBLE_CONTEXT_CREATED_NARRATOR_PROSE
+
+VISIBLE_CONTEXT_CREATED_WORLD_FACT
+VISIBLE_CONTEXT_CREATED_NPC
+VISIBLE_CONTEXT_CREATED_ITEM
+VISIBLE_CONTEXT_CREATED_CONTAINER
+VISIBLE_CONTEXT_CREATED_ANCHOR
+VISIBLE_CONTEXT_CREATED_ROUTE
+VISIBLE_CONTEXT_CREATED_EVENT
+
+VISIBLE_CONTEXT_SOURCE_MISSING
+VISIBLE_CONTEXT_EMPTY_SELF_AUDIT_EVIDENCE
+```
+
+### Источник карты знаний до и после initial commit
+
+На старте до общей транзакции этот этап получает утверждённый `character_knowledge_map` Stage 18 и его независимый audit через собственный input.
+
+После initial commit и во время базового хода прямое использование стартового snapshot запрещено как источника текущего состояния. Оркестратор обязан передать read model, собранный из текущего `party_character_knowledge_layer`:
+
+```text
+party_character_knowledge_maps where is_current=true
++ active party_character_known_*
+→ buildCurrentCharacterKnowledgeView()
+→ строго определённый input этапа
+```
+
+Код при сборке read model только читает и преобразует утверждённые записи. Он не создаёт знания, не повышает confidence, не превращает слух в факт и не раскрывает forbidden knowledge.
+
+`party_character_knowledge_snapshots` используется только для аудита, восстановления и сравнения версий, но не как mutable runtime-state.
+
+## 31. DB write на этом этапе
+
+До успешного аудита разрешено писать:
+
+```text id="xrkn2h"
+pipeline_step_status
+visible_context_code_precheck_snapshot
+visible_context_audit_snapshot
+visible_context_validation_issues
+visible_context_repair_route
+visible_context_audit_attempts
+source_trace_snapshot
+```
+
+После успешного аудита и commit gate разрешено писать:
+
+```text id="j6x8lv"
+party_visible_context_audit
+party_visible_context_approved_snapshot
+party_narrator_input_ready_flag
+```
+
+Запрещено писать на этом этапе:
+
+```text id="v1xw92"
+narrator_output
+intro_prose
+new_world_entities
+hidden_state_changes
+character_knowledge_changes
+visible_context_silent_patch
+player_facing_text
+```
+
+Аудит не пишет прозу. Он только разрешает или запрещает narrator.
+
+## 32. Commit gate этапа
+
+Этап считается успешным, если:
+
+```text id="t25qd4"
+visible_context_audit.pass=true
+и visible_context_package валиден
+и position совпадает с current_position
+и clock/season/weather/light совпадают с authoritative frame
+и все G5/NPC/item/container refs существуют
+и hidden state не раскрыт
+и private motives не раскрыты
+и closed container contents не раскрыты
+и future timers не раскрыты
+и слухи не стали фактами
+и uncertainty не стала фактом
+и available actions не раскрывают hidden truth
+и narrator_scope достаточно строгий
+и visible_scene_dossier безопасен
+и source_trace/evidence не пустые
+```
+
+После этого можно передать пакет narrator.
+
+Если gate не пройден, narrator не запускается.
+
+## 33. Передача в narrator
+
+Narrator получает только:
+
+```json id="d3q68a"
+{
+  "version": 1,
+  "schema": "narrator_input",
+  "request_id": "string",
+
+  "visible_context_package": {
+    "version": 1,
+    "schema": "visible_context_package",
+    "visible_context_status": "formed"
+  },
+
+  "visible_context_audit": {
+    "version": 1,
+    "schema": "visible_context_audit",
+    "pass": true
+  },
+
+  "narrator_constraints": {
+    "use_only_visible_context_package": true,
+    "respect_visible_context_audit": true,
+    "do_not_add_new_world_facts": true,
+    "do_not_reveal_hidden_state": true,
+    "do_not_explain_private_motives": true,
+    "do_not_reveal_closed_container_contents": true,
+    "do_not_reveal_future_events": true,
+    "do_not_upgrade_rumors_to_facts": true,
+    "do_not_upgrade_uncertainty_to_fact": true,
+    "do_not_change_clock_weather_light": true,
+    "do_not_change_position": true,
+    "respect_must_include": true,
+    "respect_must_not_include": true,
+    "write_player_facing_prose_only": true
+  }
+}
+```
+
+Narrator не получает:
+
+```text id="bs9m01"
+full_hidden_scene_state;
+raw character_knowledge_map;
+audit internals;
+repair internals;
+debug logs;
+source-only notes;
+validation errors.
+```
+
+## 34. Минимальный успешный результат
+
+```json id="zxpl8a"
+{
+  "version": 1,
+  "schema": "visible_context_audit",
+  "request_id": "req_001",
+
+  "pass": true,
+
+  "checks": {
+    "schema_and_structure": {
+      "pass": true,
+      "evidence": [
+        "visible_context_package has schema=visible_context_package and version=1"
+      ]
+    },
+
+    "position_consistency": {
+      "pass": true,
+      "evidence": [
+        "visible_context_package.position matches current_position"
+      ]
+    },
+
+    "time_weather_light_consistency": {
+      "pass": true,
+      "evidence": [
+        "clock, season, weather_state and light_profile match authoritative frame"
+      ]
+    },
+
+    "g5_anchor_consistency": {
+      "pass": true,
+      "evidence": [
+        "all visible anchor and exit references exist in g5_scene_graph"
+      ]
+    },
+
+    "npc_consistency": {
+      "pass": true,
+      "evidence": [
+        "all visible NPC references exist and do not reveal private motives or knowledge"
+      ]
+    },
+
+    "item_consistency": {
+      "pass": true,
+      "evidence": [
+        "all visible item references exist and do not reveal hidden owner, value or markings"
+      ]
+    },
+
+    "container_consistency": {
+      "pass": true,
+      "evidence": [
+        "all visible containers exist and closed contents are not revealed"
+      ]
+    },
+
+    "hidden_state_leak_check": {
+      "pass": true,
+      "evidence": [
+        "private motives, closed contents, future timers, hidden risks and route truth are absent from visible player-facing surfaces"
+      ]
+    },
+
+    "character_knowledge_boundary_check": {
+      "pass": true,
+      "evidence": [
+        "known_context does not exceed character_knowledge_map"
+      ]
+    },
+
+    "rumor_uncertainty_check": {
+      "pass": true,
+      "evidence": [
+        "rumors and uncertain knowledge remain marked and are not presented as facts"
+      ]
+    },
+
+    "available_actions_check": {
+      "pass": true,
+      "evidence": [
+        "available actions use only visible, audible, known or safe inferred targets"
+      ]
+    },
+
+    "narrator_scope_check": {
+      "pass": true,
+      "evidence": [
+        "narrator_scope includes forbidden hidden surfaces and must_not_include constraints"
+      ]
+    },
+
+    "source_trace_check": {
+      "pass": true,
+      "evidence": [
+        "source_trace is present for visible anchors, NPCs, items and containers"
+      ]
+    },
+
+    "commit_readiness": {
+      "pass": true,
+      "evidence": [
+        "visible context can be safely sent to narrator"
+      ]
+    }
+  },
+
+  "concerns": [],
+
+  "evidence": [
+    "Visible context matches current position.",
+    "Visible context preserves clock, season, weather and light.",
+    "All visible G5, NPC, item and container refs exist.",
+    "Hidden state is filtered out.",
+    "Closed container contents and private NPC motives are not exposed.",
+    "Narrator constraints are strict enough to prevent new facts and hidden leaks."
+  ],
+
+  "repair_route": null,
+
+  "commit_permission": {
+    "can_send_to_narrator": true,
+    "can_write_visible_context_snapshot": true,
+    "can_generate_player_facing_prose": true
+  }
+}
+```

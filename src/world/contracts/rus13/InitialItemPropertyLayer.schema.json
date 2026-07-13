@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rus13.local/contracts/InitialItemPropertyLayer.schema.json",
+  "title": "InitialItemPropertyLayer",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "visible_items",
+    "hidden_items_with_signs",
+    "containers",
+    "ownership_claims",
+    "access_rules",
+    "inventory_links",
+    "property_links",
+    "risk_notes"
+  ],
+  "properties": {
+    "visible_items": {
+      "description": "Required by InitialItemPropertyLayer.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "hidden_items_with_signs": {
+      "description": "Required by InitialItemPropertyLayer.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "containers": {
+      "description": "Required by InitialItemPropertyLayer.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "ownership_claims": {
+      "description": "Required by InitialItemPropertyLayer.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "access_rules": {
+      "description": "Required by InitialItemPropertyLayer.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "inventory_links": {
+      "description": "Required by InitialItemPropertyLayer.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "property_links": {
+      "description": "Required by InitialItemPropertyLayer.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "risk_notes": {
+      "description": "Required by InitialItemPropertyLayer.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    }
+  },
+  "x_writes_to": [
+    "party_items",
+    "party_inventory_entries",
+    "party_journal_entries"
+  ],
+  "x_blocking_validations": [
+    "significant items have owner/holder/placement/access/risk",
+    "containers pre-profiled if significant",
+    "no player-request retrocreation"
+  ]
+}

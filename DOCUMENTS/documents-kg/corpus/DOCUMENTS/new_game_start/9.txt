@@ -1,0 +1,1290 @@
+# Этап 9. Выбор стартового узла из candidate set
+
+## 1. Назначение этапа
+
+Выбор стартового узла — это первый этап запуска новой партии, где LLM действительно делает выбор из уже подготовленного списка.
+
+До этого момента код и предыдущие этапы подготовили:
+
+* нормализованную заявку игрока;
+* историческую рамку;
+* региональный контекст;
+* список допустимых стартовых G1–G4 кандидатов;
+* допустимые place templates для этих кандидатов;
+* допустимые NPC-кандидаты;
+* допустимые item/container/property-профили.
+
+На этом этапе LLM выбирает ровно один стартовый кандидат из `start_candidate_set` и одну допустимую связку `candidate ↔ place_template` из `candidate_place_template_set`.
+
+LLM не придумывает место.
+LLM не создаёт новую локацию.
+LLM не создаёт G5.
+LLM не создаёт NPC.
+LLM не создаёт предметы.
+LLM не пишет стартовую прозу.
+
+Короткая формула:
+
+```text id="w4ef29"
+start_candidate_set
++ candidate_place_template_set
++ normalized_request
++ historical_frame
++ regional_context_package
++ npc_candidate_set
++ item_profile_candidate_set
+→ selected_start_node
+```
+
+## 2. Главное правило этапа
+
+LLM выбирает только из candidate set.
+
+Допустимый выбор:
+
+```json id="res5so"
+{
+  "selected_candidate_id": "start_candidate_001",
+  "selected_candidate_place_template_link_id": "cptl_001"
+}
+```
+
+Недопустимый выбор:
+
+```json id="alw55e"
+{
+  "new_place": "двор у старой дороги",
+  "reason": "подходит для начала"
+}
+```
+
+Если LLM возвращает `candidate_id`, которого нет во входном `start_candidate_set`, результат отклоняется без смыслового repair.
+
+Если LLM возвращает `place_template_id`, которого нет в `candidate_place_template_set`, результат отклоняется без смыслового repair.
+
+## 3. Место этапа в pipeline
+
+```text id="uvcmoi"
+1. Заявка игрока
+2. Нормализация заявки
+3. Выбор исторической рамки
+4. Загрузка регионального контекста
+5. Подбор допустимых стартовых G1–G4 кандидатов
+6. Подбор допустимых place templates
+7. Подбор допустимых NPC-кандидатов
+8. Подбор допустимых предметных профилей
+9. LLM выбирает стартовый узел из candidate set
+10. Аудит выбора стартового места
+11. Генерация персонажа игрока
+12. Материализация стартовой G5-сцены
+```
+
+Этап 9 не создаёт игровую сцену. Он только фиксирует, какой уже допустимый узел будет разворачиваться дальше.
+
+## 4. Вход этапа
+
+```json id="f5ztgu"
+{
+  "version": 1,
+  "schema": "start_node_selector_input",
+  "request_id": "string",
+
+  "normalized_request": {
+    "version": 1,
+    "schema": "new_game_normalized_request"
+  },
+
+  "historical_frame": {
+    "version": 1,
+    "schema": "historical_frame",
+    "year": {
+      "value": 0
+    },
+    "calendar": {
+      "season": "spring | summer | autumn | winter"
+    },
+    "clock": {
+      "day": 1,
+      "hour": 0,
+      "minute": 0,
+      "time_of_day": "morning | day | evening | night | deep_night",
+      "light_profile": "dark | dim | daylight | twilight"
+    },
+    "region": {
+      "region_id": "string"
+    }
+  },
+
+  "regional_context_package": {
+    "version": 1,
+    "schema": "regional_context_package"
+  },
+
+  "start_candidate_set": {
+    "version": 1,
+    "schema": "start_candidate_set",
+    "selection_status": "ready",
+    "candidates": []
+  },
+
+  "candidate_place_template_set": {
+    "version": 1,
+    "schema": "candidate_place_template_set",
+    "selection_status": "ready",
+    "candidate_template_links": []
+  },
+
+  "npc_candidate_set": {
+    "version": 1,
+    "schema": "npc_candidate_set",
+    "selection_status": "ready",
+    "npc_candidates": []
+  },
+
+  "item_profile_candidate_set": {
+    "version": 1,
+    "schema": "item_profile_candidate_set",
+    "selection_status": "ready",
+    "item_profile_candidates": [],
+    "container_profile_candidates": [],
+    "property_rule_candidates": []
+  },
+
+  "selection_policy": {
+    "prefer_g4": true,
+    "allow_g3_fallback": true,
+    "allow_g2_fallback": false,
+    "allow_g1_fallback": false,
+    "require_candidate_place_template_link": true,
+    "require_npc_candidate_support": false,
+    "require_item_profile_support": false,
+    "prefer_player_request_match": true,
+    "prefer_low_contradiction_risk": true,
+    "prefer_g5_ready": true,
+    "prefer_full_parent_chain": true,
+    "require_sources": true,
+    "do_not_create_world_entities": true
+  }
+}
+```
+
+## 5. Выход этапа
+
+```json id="tpkavf"
+{
+  "version": 1,
+  "schema": "selected_start_node",
+  "request_id": "string",
+
+  "selection_status": "selected | blocked | requires_repair",
+
+  "selected": {
+    "selected_candidate_id": "string",
+    "selected_candidate_place_template_link_id": "string",
+    "selected_scale_level": "G1 | G2 | G3 | G4",
+    "selected_node_id": "string",
+    "selected_place_template_id": "string"
+  },
+
+  "selected_node_chain": {
+    "g1_node_id": "string | null",
+    "g2_node_id": "string | null",
+    "g3_node_id": "string | null",
+    "g4_node_id": "string | null"
+  },
+
+  "selection_reasoning": {
+    "primary_reason": "string",
+    "request_match": "exact | partial | neutral | weak",
+    "historical_frame_match": "string",
+    "regional_context_match": "string",
+    "place_template_match": "string",
+    "npc_candidate_support": "string | null",
+    "item_profile_support": "string | null",
+    "risk_notes": [],
+    "rejected_alternatives_summary": []
+  },
+
+  "downstream_constraints": {
+    "must_preserve": [],
+    "must_not_create_yet": [],
+    "must_resolve_later": []
+  },
+
+  "source_trace": [],
+
+  "audit": {
+    "pass": true,
+    "concerns": [],
+    "evidence": []
+  }
+}
+```
+
+## 6. Что именно выбирает LLM
+
+LLM выбирает две связанные вещи:
+
+1. `selected_candidate_id` — один кандидат из `start_candidate_set.candidates`.
+2. `selected_candidate_place_template_link_id` — одну связку из `candidate_place_template_set.candidate_template_links`, относящуюся к выбранному кандидату.
+
+Пример:
+
+```json id="xmzha0"
+{
+  "selected_candidate_id": "start_candidate_014",
+  "selected_candidate_place_template_link_id": "cptl_027"
+}
+```
+
+Если `selected_candidate_place_template_link_id` относится к другому `candidate_id`, результат невалиден.
+
+## 7. Что LLM не выбирает
+
+На этом этапе LLM не выбирает:
+
+```text id="g9wd35"
+G5 anchor
+minilocation_id
+anchor_id
+NPC
+имя NPC
+предметы
+содержимое контейнеров
+погоду как конкретное событие
+стартовую прозу
+тайный конфликт
+цель персонажа
+стартовый квест
+владельца предметов
+маршрут, которым персонаж пришёл
+```
+
+Эти элементы создаются позже отдельными этапами.
+
+## 8. Предпочтительный масштаб выбора
+
+### 8.1. G4
+
+G4 — предпочтительный стартовый уровень, потому что он уже является конкретной локацией внутри места.
+
+Если есть допустимые G4-кандидаты с:
+
+```text id="b01qr9"
+полной parent chain
+допустимым place_template
+совместимым временем
+совместимым сезоном
+минимальным доступом
+G5-ready
+```
+
+LLM должна выбрать один из них.
+
+### 8.2. G3
+
+G3 допустим только как fallback, если:
+
+```text id="yty404"
+нет валидных G4-кандидатов
+или все G4 нарушают hard constraints
+или selection_policy.allow_g3_fallback=true
+```
+
+При выборе G3 следующий этап обязан сначала создать или выбрать G4 внутри выбранного G3 через отдельный controlled materialization/retrieval.
+
+### 8.3. G2
+
+G2 допустим только при явном разрешении policy. Обычно G2 слишком широк для стартовой позиции.
+
+G2 можно выбрать, если старт задуман как “зона пути / окрестность / крупная природная зона”, но следующий этап обязан уточнить G3/G4 до G5.
+
+### 8.4. G1
+
+G1 не должен быть финальным стартовым узлом, если система требует точную позицию персонажа. G1 может быть только контекстом.
+
+Если LLM выбирает G1 при `allow_g1_fallback=false`, результат отклоняется.
+
+## 9. Логика выбора
+
+LLM должна выбрать кандидат, который лучше всего сочетает:
+
+```text id="h0u5lr"
+заявку игрока
+историческую рамку
+региональные ограничения
+тип места
+доступность по сезону
+доступность по времени суток
+наличие полного node_chain
+наличие G5-ready
+наличие NPC-кандидатной поддержки
+наличие item/property-кандидатной поддержки
+низкий риск противоречий
+достаточную игровую конкретность
+```
+
+LLM не должна выбирать “самый драматичный” кандидат, если он хуже по ограничениям.
+
+Приоритеты:
+
+```text id="8tx16g"
+1. Hard constraints игрока
+2. Historical frame
+3. Region compatibility
+4. Candidate validity
+5. Place template validity
+6. Time/season/access compatibility
+7. G5 readiness
+8. Full parent chain
+9. Player soft preferences
+10. Narrative usefulness
+```
+
+Narrative usefulness находится последним. Он не может перевесить hard constraints.
+
+## 10. Обработка random-заявки
+
+Если игрок ничего не указал или указал “случайно”, LLM не получает свободу придумывать место.
+
+Правильное поведение:
+
+```text id="czmq0f"
+выбрать один допустимый candidate_id из candidate set
+и объяснить, почему он лучше подходит для безопасного старта
+```
+
+Неправильное поведение:
+
+```text id="ukl03d"
+создать новый двор, лесную дорогу, село, монастырь или берег, которых нет в candidate set
+```
+
+При random-заявке критерии выбора:
+
+```text id="x2ldkk"
+низкий риск противоречий
+G4 > G3 > G2 > G1
+полная parent chain
+есть допустимый place template
+есть G5-ready
+есть базовая NPC/item support
+нет явного clock/season conflict
+```
+
+## 11. Обработка частично заданной заявки
+
+Если игрок указал мягкое предпочтение:
+
+```text id="gq0iiq"
+хочу в дороге
+хочу бытовой старт
+хочу в поселении
+хочу опасный старт
+хочу без боя
+хочу торговлю
+```
+
+LLM должна выбрать кандидат с лучшим `player_request_match`, но только если он не нарушает hard constraints.
+
+Если лучший по заявке кандидат имеет warnings, LLM может выбрать более безопасный кандидат и объяснить это:
+
+```text id="gq8fe9"
+не выбран кандидат с лучшим request_match, потому что у него night access warning и weak G5 readiness
+```
+
+## 12. Обработка hard constraints
+
+Если игрок запретил тип старта:
+
+```text id="ym8kvl"
+без города
+без боя
+без религии
+без торговли
+без дикой местности
+без дворян
+без военных людей
+```
+
+LLM не может выбрать кандидат, у которого:
+
+```text id="f7x1tc"
+player_request_match = conflict
+или compatibility.player_hard_constraints_match = false
+или score.band = reject
+```
+
+Если все кандидаты конфликтуют с hard constraints, LLM возвращает:
+
+```json id="g6vqbk"
+{
+  "selection_status": "blocked",
+  "selected": null
+}
+```
+
+Нельзя выбрать “наименее плохой” вариант, если он нарушает hard constraint.
+
+## 13. Формат выбранного узла
+
+```json id="0y4cdu"
+{
+  "selected": {
+    "selected_candidate_id": "start_candidate_001",
+    "selected_candidate_place_template_link_id": "cptl_001",
+    "selected_scale_level": "G4",
+    "selected_node_id": "g4_001",
+    "selected_place_template_id": "place_template_001"
+  }
+}
+```
+
+Все эти значения должны быть уже во входе.
+
+LLM не должна возвращать только название места. Нужны ID.
+
+## 14. Формат node chain
+
+```json id="p1rs9v"
+{
+  "selected_node_chain": {
+    "g1_node_id": "g1_001",
+    "g2_node_id": "g2_001",
+    "g3_node_id": "g3_001",
+    "g4_node_id": "g4_001"
+  }
+}
+```
+
+Если выбран G3:
+
+```json id="mlrf6z"
+{
+  "selected_node_chain": {
+    "g1_node_id": "g1_001",
+    "g2_node_id": "g2_001",
+    "g3_node_id": "g3_001",
+    "g4_node_id": null
+  }
+}
+```
+
+Если выбран G3, в `downstream_constraints.must_resolve_later` обязательно добавляется:
+
+```text id="tj0bjr"
+select_or_materialize_g4_inside_selected_g3
+```
+
+## 15. Формат объяснения выбора
+
+LLM должна объяснять выбор технически, не художественно.
+
+Правильно:
+
+```json id="jgwujr"
+{
+  "selection_reasoning": {
+    "primary_reason": "Selected candidate has G4 scale, full parent chain, valid place template link, season/time compatibility and sufficient downstream NPC/item support.",
+    "request_match": "neutral",
+    "historical_frame_match": "Candidate region, year, season and clock are compatible.",
+    "regional_context_match": "Candidate uses allowed regional place template and allowed environment.",
+    "place_template_match": "Selected template link is allowed and has no hard warnings.",
+    "npc_candidate_support": "At least one compatible background NPC candidate exists.",
+    "item_profile_support": "At least one compatible ordinary item profile and property rule exists.",
+    "risk_notes": [],
+    "rejected_alternatives_summary": [
+      "start_candidate_002 had lower score due to weak access edge.",
+      "start_candidate_003 had time-of-day warning."
+    ]
+  }
+}
+```
+
+Неправильно:
+
+```json id="mt38uy"
+{
+  "selection_reasoning": {
+    "primary_reason": "Это место выглядит интересным для начала приключения."
+  }
+}
+```
+
+## 16. Source trace
+
+Выбор должен сохранять трассировку:
+
+```json id="l0kr4t"
+{
+  "source_trace": [
+    {
+      "record_id": "start_candidate_001",
+      "table": "startup.start_candidate_set",
+      "source_ids": [],
+      "supports": ["selected_candidate"]
+    },
+    {
+      "record_id": "g4_001",
+      "table": "world_base.graph_nodes",
+      "source_ids": [],
+      "supports": ["selected_node"]
+    },
+    {
+      "record_id": "cptl_001",
+      "table": "startup.candidate_place_template_set",
+      "source_ids": [],
+      "supports": ["selected_place_template_link"]
+    }
+  ]
+}
+```
+
+Если source trace отсутствует при `require_sources=true`, результат невалиден.
+
+## 17. Downstream constraints
+
+Выбранный стартовый узел должен сформировать ограничения для следующих этапов.
+
+```json id="u6df8g"
+{
+  "downstream_constraints": {
+    "must_preserve": [
+      "selected_candidate_id",
+      "selected_candidate_place_template_link_id",
+      "selected_node_id",
+      "selected_place_template_id",
+      "selected_node_chain",
+      "historical_frame.region_id",
+      "historical_frame.year",
+      "historical_frame.season",
+      "historical_frame.clock"
+    ],
+    "must_not_create_yet": [
+      "player_character",
+      "g5_scene",
+      "npc",
+      "item",
+      "container_contents",
+      "visible_scene",
+      "intro_prose",
+      "hidden_event"
+    ],
+    "must_resolve_later": [
+      "player_character",
+      "g5_scene_anchors",
+      "current_position_g5_anchor",
+      "initial_npcs",
+      "initial_items",
+      "visible_context_package"
+    ]
+  }
+}
+```
+
+Если выбран G3/G2 fallback, добавляются дополнительные пункты:
+
+```text id="ypuxfj"
+select_or_materialize_child_g4
+then materialize_g5
+```
+
+## 18. Работа LLM на этом этапе
+
+На этом этапе LLM обязательна, потому что требуется выбрать один вариант из допустимых кандидатов с учётом:
+
+* заявки игрока;
+* soft preferences;
+* рисков противоречий;
+* готовности к будущей материализации;
+* качества стартовой точки для дальнейшей игры.
+
+Но LLM работает строго внутри candidate set.
+
+LLM-режимы этапа:
+
+1. `StartNodeSelector` — основной выбор одного узла.
+2. `StartNodeSelectionAuditor` — аудит выбранного узла.
+3. `StartNodeSelectionRepairer` — repair только при ошибках формата или выборе несуществующего ID.
+
+## 19. LLM-параметры
+
+### 19.1. `StartNodeSelector`
+
+Назначение: выбрать один стартовый узел из candidate set.
+
+Рекомендуемые параметры:
+
+```json id="qg86ng"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 5000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 50000,
+    "hard_input_limit_tokens": 140000,
+    "reserve_output_tokens": 5000
+  }
+}
+```
+
+Обоснование: выбор требует смыслового сравнения вариантов и проверки ограничений. Поэтому используется thinking mode.
+
+Если список кандидатов уже короткий и хорошо отсортирован кодом, допустим более дешёвый режим:
+
+```json id="n2m4e1"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-flash",
+  "thinking": {
+    "type": "disabled"
+  },
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "max_tokens": 4000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 25000,
+    "hard_input_limit_tokens": 80000,
+    "reserve_output_tokens": 4000
+  }
+}
+```
+
+Но default для этого этапа — `deepseek-v4-pro` с thinking enabled.
+
+### 19.2. `StartNodeSelectionAuditor`
+
+Назначение: проверить, что выбранный ID существует, все связи валидны, ничего не создано сверх candidate set.
+
+```json id="ecfi1l"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 4000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 50000,
+    "hard_input_limit_tokens": 140000,
+    "reserve_output_tokens": 4000
+  }
+}
+```
+
+### 19.3. `StartNodeSelectionFormatRepairer`
+
+Назначение: исправить только формат JSON.
+
+```json id="wad2i0"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-flash",
+  "thinking": {
+    "type": "disabled"
+  },
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "max_tokens": 2500,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 20000,
+    "hard_input_limit_tokens": 60000,
+    "reserve_output_tokens": 2500
+  }
+}
+```
+
+### 19.4. `StartNodeSelectionSemanticRepairer`
+
+Назначение: если LLM выбрала невалидный ID или нарушила constraints, выбрать заново только из candidate set.
+
+```json id="egql4a"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 4000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 50000,
+    "hard_input_limit_tokens": 140000,
+    "reserve_output_tokens": 4000
+  }
+}
+```
+
+## 20. Prompt: StartNodeSelector
+
+```md id="yinkcf"
+# Роль
+
+Ты StartNodeSelector для исторической текстовой RPG.
+
+# Задача
+
+Выбери один стартовый узел из переданного JSON candidate set.
+
+# Главное правило
+
+Ты не придумываешь место.
+Ты не создаёшь новый node.
+Ты не создаёшь G5.
+Ты не создаёшь NPC.
+Ты не создаёшь предметы.
+Ты не создаёшь сцену.
+Ты не пишешь прозу.
+
+Ты выбираешь только:
+- selected_candidate_id из start_candidate_set.candidates
+- selected_candidate_place_template_link_id из candidate_place_template_set.candidate_template_links
+
+# Источники
+
+Используй только:
+- normalized_request
+- historical_frame
+- regional_context_package
+- start_candidate_set
+- candidate_place_template_set
+- npc_candidate_set
+- item_profile_candidate_set
+- selection_policy
+
+Если ID нет во входных данных, его нельзя выбрать.
+
+# Приоритеты выбора
+
+1. Hard constraints игрока.
+2. Совместимость с historical_frame.
+3. Совместимость с region_id/year/season/clock.
+4. Кандидат должен быть allowed, не rejected.
+5. Place template link должен быть allowed.
+6. Предпочитай G4, если есть валидный G4.
+7. Предпочитай full parent chain.
+8. Предпочитай g5_ready.
+9. Предпочитай меньше warnings.
+10. Учитывай soft preferences игрока.
+11. Narrative usefulness учитывай только после всех проверок.
+
+# Random policy
+
+Если заявка игрока случайная или пустая, выбери самый безопасный и хорошо подготовленный допустимый кандидат:
+- G4
+- full parent chain
+- valid place template link
+- no hard warnings
+- G5-ready
+- есть NPC/item support, если возможно
+
+# Запрещено
+
+Не возвращай:
+- new_place
+- generated_place_name
+- g5_anchor_id
+- minilocation_id
+- npc_id
+- item_id
+- visible_scene
+- intro_prose
+- hidden_event
+- character
+- weather_event
+
+# Формат ответа
+
+Верни только json.
+
+schema должно быть ровно:
+"selected_start_node"
+
+version должно быть ровно:
+1
+
+# Обязательный JSON
+
+{
+  "version": 1,
+  "schema": "selected_start_node",
+  "request_id": "...",
+  "selection_status": "selected",
+  "selected": {
+    "selected_candidate_id": "...",
+    "selected_candidate_place_template_link_id": "...",
+    "selected_scale_level": "G4",
+    "selected_node_id": "...",
+    "selected_place_template_id": "..."
+  },
+  "selected_node_chain": {
+    "g1_node_id": "...",
+    "g2_node_id": "...",
+    "g3_node_id": "...",
+    "g4_node_id": "..."
+  },
+  "selection_reasoning": {
+    "primary_reason": "...",
+    "request_match": "exact | partial | neutral | weak",
+    "historical_frame_match": "...",
+    "regional_context_match": "...",
+    "place_template_match": "...",
+    "npc_candidate_support": "...",
+    "item_profile_support": "...",
+    "risk_notes": [],
+    "rejected_alternatives_summary": []
+  },
+  "downstream_constraints": {
+    "must_preserve": [],
+    "must_not_create_yet": [],
+    "must_resolve_later": []
+  },
+  "source_trace": [],
+  "audit": {
+    "pass": true,
+    "concerns": [],
+    "evidence": []
+  }
+}
+```
+
+## 21. Prompt: StartNodeSelectionAuditor
+
+```md id="ahisx5"
+# Роль
+
+Ты StartNodeSelectionAuditor для исторической текстовой RPG.
+
+# Задача
+
+Проверь selected_start_node.
+
+# Главное правило
+
+Ты не выбираешь новый узел.
+Ты не создаёшь мир.
+Ты только проверяешь результат выбора.
+
+# Проверить
+
+1. schema = selected_start_node.
+2. version = 1.
+3. selected_candidate_id существует в start_candidate_set.candidates.
+4. selected_candidate_place_template_link_id существует в candidate_place_template_set.
+5. selected_candidate_place_template_link_id относится к selected_candidate_id.
+6. selected_node_id совпадает с canonical node выбранного кандидата.
+7. selected_place_template_id совпадает с выбранным template link.
+8. selected scale разрешён selection_policy.
+9. Если есть валидные G4 и prefer_g4=true, G3/G2/G1 fallback объяснён.
+10. Candidate не rejected.
+11. Template link не rejected.
+12. Candidate compatible with historical_frame.
+13. Candidate compatible with clock and season.
+14. Candidate does not violate player hard constraints.
+15. В результате нет новых мест, NPC, предметов, G5, visible_scene или intro_prose.
+16. source_trace не пустой, если require_sources=true.
+17. audit.evidence не пустой.
+
+# Формат
+
+Верни только json:
+
+{
+  "version": 1,
+  "schema": "selected_start_node_audit",
+  "pass": true,
+  "concerns": [],
+  "evidence": []
+}
+
+Если pass=false, concerns не должен быть пустым.
+evidence не должен быть пустым.
+```
+
+## 22. Prompt: StartNodeSelectionFormatRepairer
+
+```md id="i0aysb"
+# Роль
+
+Ты StartNodeSelectionFormatRepairer.
+
+# Задача
+
+Исправь только формат JSON selected_start_node.
+
+# Главное правило
+
+Не меняй смысл.
+Не выбирай новый candidate_id.
+Не выбирай новый place_template_link_id.
+Не создавай место.
+Не создавай NPC.
+Не создавай предметы.
+Не создавай G5.
+Не пиши сцену.
+
+# Разрешено
+
+- убрать markdown;
+- привести schema/version к нужному виду;
+- переименовать ошибочные поля;
+- добавить отсутствующие служебные поля из уже имеющихся данных;
+- удалить запрещённые downstream-поля;
+- если исправление невозможно без изменения смысла, верни audit.pass=false.
+
+# Формат
+
+Верни только json.
+```
+
+## 23. Prompt: StartNodeSelectionSemanticRepairer
+
+```md id="r7vzse"
+# Роль
+
+Ты StartNodeSelectionSemanticRepairer.
+
+# Задача
+
+Исправь selected_start_node по validationErrors.
+
+# Главное правило
+
+Если selected_candidate_id не существует, выбери другой candidate_id только из start_candidate_set.candidates.
+Если selected_candidate_place_template_link_id не существует, выбери другой link только из candidate_place_template_set.candidate_template_links.
+Если подходящего варианта нет, верни selection_status="blocked".
+
+# Источники
+
+Используй только:
+- validationErrors
+- normalized_request
+- historical_frame
+- regional_context_package
+- start_candidate_set
+- candidate_place_template_set
+- npc_candidate_set
+- item_profile_candidate_set
+- selection_policy
+
+# Запрещено
+
+- придумывать candidate_id;
+- придумывать place_template_link_id;
+- создавать новое место;
+- создавать G5;
+- создавать NPC;
+- создавать предметы;
+- писать прозу.
+
+# Формат
+
+Верни только json selected_start_node.
+```
+
+## 24. Validation rules
+
+Код обязан проверить:
+
+1. `schema === "selected_start_node"`.
+2. `version === 1`.
+3. `selection_status` входит в enum: `selected`, `blocked`, `requires_repair`.
+4. Если `selection_status=selected`, блок `selected` не null.
+5. `selected.selected_candidate_id` существует в `start_candidate_set.candidates`.
+6. `selected.selected_candidate_place_template_link_id` существует в `candidate_place_template_set.candidate_template_links`.
+7. Выбранный template link относится к выбранному candidate.
+8. `selected.selected_node_id` совпадает с `canonical_node.node_id` выбранного candidate.
+9. `selected.selected_place_template_id` совпадает с `place_template.place_template_id` выбранного template link.
+10. `selected.selected_scale_level` совпадает с scale выбранного node.
+11. Если `prefer_g4=true` и есть валидные G4, выбор G3/G2/G1 требует объяснения.
+12. Если `allow_g3_fallback=false`, G3 не может быть выбран.
+13. Если `allow_g2_fallback=false`, G2 не может быть выбран.
+14. Если `allow_g1_fallback=false`, G1 не может быть выбран.
+15. Candidate status не `rejected`.
+16. Template link status не `rejected`.
+17. Candidate совместим с `historical_frame.region_id`.
+18. Candidate совместим с `year`.
+19. Candidate совместим с `season`.
+20. Candidate совместим с `clock.time_of_day` и `light_profile`.
+21. Candidate не нарушает hard constraints игрока.
+22. Candidate имеет source trace, если `require_sources=true`.
+23. Template link имеет source trace, если `require_sources=true`.
+24. Все source IDs существуют.
+25. Нет `generated_place_name`.
+26. Нет `new_place`.
+27. Нет `g5_anchor_id`.
+28. Нет `minilocation_id`.
+29. Нет `npc_id`.
+30. Нет `item_id`.
+31. Нет `visible_scene`.
+32. Нет `intro_prose`.
+33. Нет `hidden_event`.
+34. `audit.evidence` не пустой.
+35. Если `audit.pass=false`, `audit.concerns` не пустой.
+
+## 25. Error codes
+
+```text id="d0hhux"
+START_NODE_INVALID_JSON
+START_NODE_SCHEMA_MISMATCH
+START_NODE_MISSING_SELECTED_BLOCK
+START_NODE_CANDIDATE_NOT_FOUND
+START_NODE_TEMPLATE_LINK_NOT_FOUND
+START_NODE_TEMPLATE_LINK_CANDIDATE_MISMATCH
+START_NODE_NODE_ID_MISMATCH
+START_NODE_PLACE_TEMPLATE_ID_MISMATCH
+START_NODE_SCALE_POLICY_VIOLATION
+START_NODE_G4_PREFERRED_BUT_NOT_SELECTED
+START_NODE_CANDIDATE_REJECTED
+START_NODE_TEMPLATE_LINK_REJECTED
+START_NODE_REGION_CONFLICT
+START_NODE_YEAR_CONFLICT
+START_NODE_SEASON_CONFLICT
+START_NODE_CLOCK_CONFLICT
+START_NODE_PLAYER_HARD_CONSTRAINT_CONFLICT
+START_NODE_SOURCE_MISSING
+START_NODE_CREATED_PLACE
+START_NODE_CREATED_G5
+START_NODE_CREATED_NPC
+START_NODE_CREATED_ITEM
+START_NODE_CREATED_VISIBLE_SCENE
+START_NODE_CREATED_INTRO_PROSE
+START_NODE_EMPTY_AUDIT_EVIDENCE
+NO_SELECTABLE_START_NODE
+```
+
+## 26. DB write на этом этапе
+
+Разрешено писать:
+
+```text id="w2uf2d"
+pipeline_step_status
+selected_start_node_snapshot
+selected_start_node_audit_result
+selected_start_node_validation_issues
+selected_candidate_id
+selected_candidate_place_template_link_id
+selected_node_chain_snapshot
+source_trace_snapshot
+```
+
+Запрещено писать:
+
+```text id="w6bkgz"
+party_current_position
+party_player_characters
+party_npcs
+party_items
+party_scene_anchors
+party_events
+visible_scene
+intro_prose
+g5_anchor
+minilocation
+container_contents
+hidden_state
+```
+
+Этот этап ещё не фиксирует полную позицию персонажа, потому что G5, mini-location и anchor ещё не выбраны.
+
+## 27. Commit gate этапа
+
+Этап считается успешным, если:
+
+```text id="pjim3l"
+selected_start_node валиден,
+selected_candidate_id существует в candidate set,
+selected_candidate_place_template_link_id существует и относится к выбранному candidate,
+выбранный node совместим с historical_frame,
+выбранный template link совместим с region/place rules,
+не создано ни одного нового места,
+не создано NPC/предметов/G5/сцены,
+audit.pass=true.
+```
+
+Если выбор невозможен, pipeline не должен просить LLM “придумать старт”. Он должен:
+
+1. вернуться к candidate retrieval;
+2. ослабить только soft preferences;
+3. применить fallback scale, если policy разрешает;
+4. вернуть `blocked`;
+5. запросить уточнение только если игрок запретил случайную замену.
+
+## 28. Передача в следующий этап
+
+Следующий этап получает:
+
+```json id="j0cvgy"
+{
+  "version": 1,
+  "schema": "start_place_audit_input",
+  "request_id": "string",
+
+  "normalized_request": {},
+  "historical_frame": {},
+  "regional_context_package": {},
+  "start_candidate_set": {},
+  "candidate_place_template_set": {},
+  "npc_candidate_set": {},
+  "item_profile_candidate_set": {},
+
+  "selected_start_node": {
+    "version": 1,
+    "schema": "selected_start_node",
+    "selection_status": "selected"
+  }
+}
+```
+
+Следующий этап обязан проверить выбор перед тем, как разрешить генерацию персонажа или G5.
+
+## 29. Минимальный успешный результат
+
+```json id="nny3u3"
+{
+  "version": 1,
+  "schema": "selected_start_node",
+  "request_id": "req_001",
+
+  "selection_status": "selected",
+
+  "selected": {
+    "selected_candidate_id": "start_candidate_001",
+    "selected_candidate_place_template_link_id": "cptl_001",
+    "selected_scale_level": "G4",
+    "selected_node_id": "g4_001",
+    "selected_place_template_id": "place_template_001"
+  },
+
+  "selected_node_chain": {
+    "g1_node_id": "g1_001",
+    "g2_node_id": "g2_001",
+    "g3_node_id": "g3_001",
+    "g4_node_id": "g4_001"
+  },
+
+  "selection_reasoning": {
+    "primary_reason": "Selected candidate is the strongest valid G4 start: it has a full parent chain, allowed place template link, compatible season and clock, and downstream support for G5, NPC and item materialization.",
+    "request_match": "neutral",
+    "historical_frame_match": "Candidate region, year, season and clock match the selected historical frame.",
+    "regional_context_match": "Candidate is compatible with the regional context and allowed place rules.",
+    "place_template_match": "Selected place template link is allowed for the candidate and region.",
+    "npc_candidate_support": "Compatible NPC candidates exist for later materialization.",
+    "item_profile_support": "Compatible item/container/property profiles exist for later materialization.",
+    "risk_notes": [],
+    "rejected_alternatives_summary": [
+      "Alternative candidates with lower scores were not selected because they had weaker access, weaker G5 readiness or more warnings."
+    ]
+  },
+
+  "downstream_constraints": {
+    "must_preserve": [
+      "selected_candidate_id",
+      "selected_candidate_place_template_link_id",
+      "selected_node_id",
+      "selected_place_template_id",
+      "selected_node_chain",
+      "historical_frame.region_id",
+      "historical_frame.year",
+      "historical_frame.season",
+      "historical_frame.clock"
+    ],
+    "must_not_create_yet": [
+      "player_character",
+      "g5_scene",
+      "npc",
+      "item",
+      "container_contents",
+      "visible_scene",
+      "intro_prose",
+      "hidden_event"
+    ],
+    "must_resolve_later": [
+      "player_character",
+      "g5_scene_anchors",
+      "current_position_g5_anchor",
+      "initial_npcs",
+      "initial_items",
+      "visible_context_package"
+    ]
+  },
+
+  "source_trace": [
+    {
+      "record_id": "start_candidate_001",
+      "table": "startup.start_candidate_set",
+      "source_ids": [
+        "source_001"
+      ],
+      "supports": [
+        "selected_candidate"
+      ],
+      "status": "derived_from_approved_records",
+      "confidence": "medium_high"
+    },
+    {
+      "record_id": "g4_001",
+      "table": "world_base.graph_nodes",
+      "source_ids": [
+        "source_002"
+      ],
+      "supports": [
+        "selected_node"
+      ],
+      "status": "approved",
+      "confidence": "medium_high"
+    },
+    {
+      "record_id": "cptl_001",
+      "table": "startup.candidate_place_template_set",
+      "source_ids": [
+        "source_003"
+      ],
+      "supports": [
+        "selected_place_template_link"
+      ],
+      "status": "derived_from_approved_records",
+      "confidence": "medium_high"
+    }
+  ],
+
+  "audit": {
+    "pass": true,
+    "concerns": [],
+    "evidence": [
+      "selected_candidate_id exists in start_candidate_set.",
+      "selected_candidate_place_template_link_id exists in candidate_place_template_set.",
+      "selected template link belongs to selected candidate.",
+      "selected node is a valid G4 candidate.",
+      "selected node preserves historical_frame region, year, season and clock.",
+      "no new place, G5, NPC, item, visible scene or intro prose was created."
+    ]
+  }
+}
+```

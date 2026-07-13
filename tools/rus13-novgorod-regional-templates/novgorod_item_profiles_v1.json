@@ -1,0 +1,5995 @@
+{
+  "metadata": {
+    "file_name": "novgorod_item_profiles_v1.json",
+    "version": "1.0.0",
+    "project": "RUS13",
+    "region_id": "novgorod_land",
+    "region_id_aliases": [
+      "region_novgorod_land"
+    ],
+    "region_title": "Новгородская земля",
+    "period": "1230-1250",
+    "purpose": "Региональные профили предметных категорий и правил материализации предметов Новгородской земли",
+    "created_at_utc": "2026-07-05T12:30:00Z",
+    "status": "draft",
+    "confidence": "medium",
+    "requires_human_audit": true,
+    "list_expansion_policy": "Списки задания являются минимальным ядром, а не пределом. Новые контейнеры, слухи, события, предметные и социальные профили допустимы только при историко-бытовом, хозяйственном или социальном основании, со статусом, уверенностью и возможностью ручного аудита.",
+    "source_registry": [
+      "project_archive:novgorod_full_graph_g1_g4_v6_game_ready.zip",
+      "project_data:novgorod_region_generation_limits_v1.json",
+      "project_data:novgorod_region_profile_v1.json",
+      "project_data:novgorod_historical_timeline_1230_1250_v1.json",
+      "project_data:novgorod_neighbor_regions_v1.json",
+      "project_data:novgorod_social_roles_v1.tsv",
+      "project_data:novgorod_occupations_v1.tsv",
+      "project_data:novgorod_status_rules_v1.json",
+      "project_doc:items_and_property.txt",
+      "project_doc:npc_generation_profiles.txt",
+      "project_doc:movement_locations_regions.txt",
+      "project_doc:time_system.txt",
+      "project_doc:historical_events_and_figures.txt",
+      "project_doc:information_sources_llm_prompts.md"
+    ],
+    "item_category_count": 47
+  },
+  "materialization_policy": {
+    "main_chain": "заявка игрока -> уже зафиксированные предметы -> профиль места -> причинное основание -> лимит -> материализация или отказ",
+    "player_request_does_not_create_item": true,
+    "requires_place_function": true,
+    "requires_owner_or_holder_context": true,
+    "requires_visibility_access_risk": true,
+    "respects_container_and_item_limits": true,
+    "examples_are_not_exhaustive": true,
+    "expansion_policy": "Списки задания являются минимальным ядром, а не пределом. Новые контейнеры, слухи, события, предметные и социальные профили допустимы только при историко-бытовом, хозяйственном или социальном основании, со статусом, уверенностью и возможностью ручного аудита."
+  },
+  "item_categories": [
+    {
+      "item_category_id": "food_bread",
+      "title": "Хлеб и хлебная пища",
+      "historical_basis": "Базовая пища, зависящая от урожая, запасов и рынка",
+      "where_common": [
+        "изба",
+        "двор",
+        "торг",
+        "погост",
+        "монастырь",
+        "дорога"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "ordinary",
+      "weight_band": "small_to_bulk",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "food_grain",
+      "title": "Зерно и мука",
+      "historical_basis": "Хозяйственный запас и товар, чувствительный к голоду и хранению",
+      "where_common": [
+        "амбар",
+        "клеть",
+        "торг",
+        "монастырский двор",
+        "село"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "ordinary",
+      "weight_band": "bulk",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "food_fish_fresh",
+      "title": "Свежая рыба",
+      "historical_basis": "Речной и озёрный продукт, быстро портится",
+      "where_common": [
+        "берег",
+        "рыбацкий стан",
+        "торг",
+        "пристань"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "low_to_ordinary",
+      "weight_band": "small_to_bulk",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "food_fish_dried",
+      "title": "Сушёная или солёная рыба",
+      "historical_basis": "Транспортабельный пищевой запас и товар",
+      "where_common": [
+        "торг",
+        "кладовая",
+        "лодка",
+        "монастырь",
+        "дорога"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "ordinary",
+      "weight_band": "small_to_bulk",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "food_salt",
+      "title": "Соль",
+      "historical_basis": "Ценный расходный товар для пищи, хранения и торговли",
+      "where_common": [
+        "торг",
+        "склад",
+        "купеческий двор",
+        "монастырская клеть"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "valuable",
+      "weight_band": "small_to_bulk",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "drink_water",
+      "title": "Вода",
+      "historical_basis": "Бытовая необходимость, доступ зависит от колодца, реки и права входа",
+      "where_common": [
+        "колодец",
+        "река",
+        "двор",
+        "монастырь",
+        "лесной стан"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "low",
+      "weight_band": "container_dependent",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "drink_kvass",
+      "title": "Квас или слабое питьё",
+      "historical_basis": "Бытовое питьё в доме, дворе, дороге или торге",
+      "where_common": [
+        "изба",
+        "двор",
+        "постоялый двор",
+        "торг"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "low_to_ordinary",
+      "weight_band": "container_dependent",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "clothing_linen_wool",
+      "title": "Одежда льняная и шерстяная",
+      "historical_basis": "Видимый слой статуса, труда и сезона",
+      "where_common": [
+        "при персонаже",
+        "изба",
+        "сундук",
+        "торг",
+        "монастырь"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "ordinary_to_valuable",
+      "weight_band": "wearable",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "footwear",
+      "title": "Обувь",
+      "historical_basis": "Бытовая и дорожная необходимость, влияет на путь",
+      "where_common": [
+        "при персонаже",
+        "двор",
+        "торг",
+        "мастерская"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "low_to_ordinary",
+      "weight_band": "wearable",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "belt_items",
+      "title": "Поясные вещи",
+      "historical_basis": "Нож, кошель, огниво, мелкая тара и личные вещи",
+      "where_common": [
+        "при NPC",
+        "дорога",
+        "торг",
+        "двор"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "variable",
+      "weight_band": "small",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "household_utensils",
+      "title": "Бытовая утварь",
+      "historical_basis": "Предметы готовки, хранения, уборки и домашней работы",
+      "where_common": [
+        "изба",
+        "сени",
+        "двор",
+        "постоялый двор",
+        "монастырская кухня"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "low_to_ordinary",
+      "weight_band": "small_to_medium",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "cooking_vessels",
+      "title": "Посуда и ёмкости для пищи",
+      "historical_basis": "Горшки, миски, ковши, кадки и рабочая тара",
+      "where_common": [
+        "изба",
+        "кухня",
+        "двор",
+        "торг"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "low_to_ordinary",
+      "weight_band": "small_to_medium",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "tools_general",
+      "title": "Общие инструменты",
+      "historical_basis": "Рабочие предметы двора, дороги, леса и ремесла",
+      "where_common": [
+        "двор",
+        "мастерская",
+        "лесной стан",
+        "лодочная зона",
+        "поле"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "ordinary_to_valuable",
+      "weight_band": "small_to_heavy",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "agricultural_tools",
+      "title": "Земледельческие орудия",
+      "historical_basis": "Серп, коса, соха/части, вилы, лопата по сезону",
+      "where_common": [
+        "поле",
+        "двор",
+        "амбар",
+        "село"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "ordinary",
+      "weight_band": "medium_to_heavy",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "fishing_gear",
+      "title": "Рыбацкие снасти",
+      "historical_basis": "Сети, верши, крючья, садки, вехи и лодочные мелочи",
+      "where_common": [
+        "берег",
+        "рыбацкий стан",
+        "лодка",
+        "садок",
+        "торг"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "ordinary_to_valuable",
+      "weight_band": "small_to_bulk",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "hunting_gear",
+      "title": "Охотничьи вещи",
+      "historical_basis": "Снасти, лук, ловушки, ножи и мешки для добычи",
+      "where_common": [
+        "лесной стан",
+        "охотничья тропа",
+        "двор промысловика"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "ordinary_to_valuable",
+      "weight_band": "small_to_medium",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "beekeeping_bort",
+      "title": "Бортнические вещи",
+      "historical_basis": "Верёвки, топор, дым, метки дерева, ёмкости для мёда и воска",
+      "where_common": [
+        "лес",
+        "бортная зона",
+        "двор промысловика",
+        "торг"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "valuable",
+      "weight_band": "small_to_bulk",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "craft_blacksmith",
+      "title": "Кузнечные инструменты",
+      "historical_basis": "Молот, клещи, меха, уголь, железный материал",
+      "where_common": [
+        "кузня",
+        "ремесленный двор",
+        "город",
+        "погост"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "valuable",
+      "weight_band": "heavy_or_fixed",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "craft_carpenter",
+      "title": "Плотницкие и лодейные инструменты",
+      "historical_basis": "Топор, тесло, сверло, клин, смола, дерево",
+      "where_common": [
+        "плотницкая зона",
+        "верфь",
+        "двор",
+        "лесной стан"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "ordinary_to_valuable",
+      "weight_band": "small_to_heavy",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "craft_leather",
+      "title": "Кожевенные и сапожные инструменты",
+      "historical_basis": "Шило, нож, кожа, нитки, колодка, ёмкость обработки",
+      "where_common": [
+        "кожевенное место",
+        "сапожный двор",
+        "посад"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "ordinary",
+      "weight_band": "small",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "craft_pottery",
+      "title": "Гончарные вещи",
+      "historical_basis": "Глина, рабочая доска, печь, сушильное место",
+      "where_common": [
+        "гончарное место",
+        "ремесленный двор",
+        "торг"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "low_to_ordinary",
+      "weight_band": "small_to_bulk",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "trade_fur",
+      "title": "Мех и шкуры",
+      "historical_basis": "Промысловый и торговый товар, важны происхождение и метки",
+      "where_common": [
+        "торг",
+        "купеческий двор",
+        "лесной стан",
+        "склад"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "valuable_to_high_value",
+      "weight_band": "small_to_bulk",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "trade_wax_honey",
+      "title": "Воск и мёд",
+      "historical_basis": "Промысловый товар, связанный с лесом, церковью и хранением",
+      "where_common": [
+        "торг",
+        "монастырь",
+        "церковь",
+        "бортная зона",
+        "склад"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "valuable",
+      "weight_band": "small_to_bulk",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "trade_cloth",
+      "title": "Ткань и полотно",
+      "historical_basis": "Материал одежды, обмена, статуса и долга",
+      "where_common": [
+        "торг",
+        "купеческий двор",
+        "сундук",
+        "монастырь"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "ordinary_to_high_value",
+      "weight_band": "small_to_bulk",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "measures_weights",
+      "title": "Мерные и весовые вещи",
+      "historical_basis": "Мерки, весы, гири/заменители и контроль обмена",
+      "where_common": [
+        "торг",
+        "склад",
+        "купеческий двор",
+        "сбор пошлины"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "valuable",
+      "weight_band": "small_to_medium",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "bags_packaging",
+      "title": "Мешки, упаковка, тюки",
+      "historical_basis": "Тара для товара, еды, одежды, меха и дороги",
+      "where_common": [
+        "торг",
+        "двор",
+        "склад",
+        "лодка",
+        "сани",
+        "дорога"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "low_to_ordinary",
+      "weight_band": "small_to_bulk",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "ropes_lines",
+      "title": "Верёвки, канаты и привязи",
+      "historical_basis": "Дорожная, лодочная, дворовая, промысловая необходимость",
+      "where_common": [
+        "лодка",
+        "пристань",
+        "двор",
+        "хлев",
+        "лесной стан",
+        "торг"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "low_to_ordinary",
+      "weight_band": "small_to_bulk",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "boat_gear",
+      "title": "Лодочные вещи",
+      "historical_basis": "Вёсла, шесты, канаты, смола, черпак и грузовая обвязка",
+      "where_common": [
+        "пристань",
+        "лодка",
+        "берег",
+        "верфь"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "ordinary_to_valuable",
+      "weight_band": "medium_to_heavy",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "sledge_horse_gear",
+      "title": "Санные и конские вещи",
+      "historical_basis": "Упряжь, сани, повод, корм, ремонтные мелочи",
+      "where_common": [
+        "дорога",
+        "двор",
+        "постоялый двор",
+        "торг",
+        "зимник"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "valuable_to_high_value",
+      "weight_band": "bulk",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "weapons_common",
+      "title": "Оружие бытовое и боевое",
+      "historical_basis": "Ножи, топоры, копья, луки по статусу и занятию",
+      "where_common": [
+        "охотник",
+        "дружинник",
+        "страж",
+        "лесной стан",
+        "двор"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "ordinary_to_high_value",
+      "weight_band": "small_to_medium",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "shields",
+      "title": "Щиты",
+      "historical_basis": "Военное снаряжение, не обычная бытовая вещь",
+      "where_common": [
+        "дружинник",
+        "сторожевой двор",
+        "княжий человек",
+        "кризис"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "valuable",
+      "weight_band": "medium",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "usable_with_caution",
+      "confidence": "medium_low",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "armor",
+      "title": "Броня",
+      "historical_basis": "Дорогое и статусное военное снаряжение",
+      "where_common": [
+        "дружина",
+        "боярский двор",
+        "княжий двор",
+        "военная тревога"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "high_value",
+      "weight_band": "wearable_heavy",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "usable_with_caution",
+      "confidence": "medium_low",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "church_objects",
+      "title": "Церковные предметы",
+      "historical_basis": "Предметы обряда, света, почитания, даров и церковного хранения",
+      "where_common": [
+        "церковь",
+        "монастырь",
+        "церковный двор"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "sacred",
+      "weight_band": "small_to_medium",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "monastic_property",
+      "title": "Монастырское имущество",
+      "historical_basis": "Хозяйственные и церковные вещи монастыря",
+      "where_common": [
+        "монастырь",
+        "монастырский двор",
+        "монастырский амбар"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "variable",
+      "weight_band": "small_to_bulk",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "writing_accounting",
+      "title": "Письменные и учётные предметы",
+      "historical_basis": "Редкие предметы записи, счёта, меток и долговой памяти",
+      "where_common": [
+        "владычный двор",
+        "торг",
+        "купеческий двор",
+        "монастырь",
+        "административный двор"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "noticeable_on_inspection",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "valuable",
+      "weight_band": "small",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "usable_with_caution",
+      "confidence": "medium_low",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "child_items",
+      "title": "Детские вещи",
+      "historical_basis": "Игрушки, малая одежда, простая посуда двора и семьи",
+      "where_common": [
+        "двор",
+        "изба",
+        "улица",
+        "погост"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "low",
+      "weight_band": "small",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "old_broken_patched",
+      "title": "Старые, сломанные и латанные вещи",
+      "historical_basis": "Обычный слой бедности, труда и повторного использования",
+      "where_common": [
+        "почти все бытовые места"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "worthless_to_low",
+      "weight_band": "small_to_medium",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "work_traces",
+      "title": "Следы труда",
+      "historical_basis": "Зола, щепа, чешуя, навоз, грязь и иные признаки работы",
+      "where_common": [
+        "мастерская",
+        "поле",
+        "двор",
+        "берег",
+        "лесной стан"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "worthless",
+      "weight_band": "not_carried",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "evidence_traces",
+      "title": "Улики и следы события",
+      "historical_basis": "Кровь, грязь, сломанная вещь, след взлома, свежий отпечаток",
+      "where_common": [
+        "место конфликта",
+        "дорога",
+        "двор",
+        "склад",
+        "берег"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "noticeable_on_inspection",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "variable",
+      "weight_band": "small_or_trace",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "lighting_fire",
+      "title": "Огонь, светцы и освещение",
+      "historical_basis": "Свет, тепло, риск пожара и возможность видеть ночью",
+      "where_common": [
+        "изба",
+        "церковь",
+        "мастерская",
+        "сторожевое место",
+        "лесной стан"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "low_to_ordinary",
+      "weight_band": "small_to_fixed",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "fuel_firewood",
+      "title": "Топливо и дрова",
+      "historical_basis": "Запас тепла, пищи, ремесла и выживания зимой",
+      "where_common": [
+        "двор",
+        "лесной стан",
+        "монастырь",
+        "мастерская"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "low_to_ordinary",
+      "weight_band": "bulk",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "animal_property",
+      "title": "Живое имущество",
+      "historical_basis": "Скот, лошадь, птица и признаки владения",
+      "where_common": [
+        "двор",
+        "хлев",
+        "пастбище",
+        "дорога",
+        "торг"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "valuable_to_high_value",
+      "weight_band": "living",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "medicine_care",
+      "title": "Лечебные и уходовые вещи",
+      "historical_basis": "Травы, тряпицы, повязки, тёплая вода; не современная медицина",
+      "where_common": [
+        "изба",
+        "монастырь",
+        "дорога",
+        "постоялый двор"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "low_to_ordinary",
+      "weight_band": "small",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "usable_with_caution",
+      "confidence": "medium_low",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "personal_marks",
+      "title": "Метки владения",
+      "historical_basis": "Зарубки, узлы, вышивка, след ремонта, знак двора или мастера",
+      "where_common": [
+        "почти все значимые вещи"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "noticeable_on_inspection",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "variable",
+      "weight_band": "trace",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "ritual_belief_tokens",
+      "title": "Предметы веры и обета",
+      "historical_basis": "Крестик, образок, свеча, обетный дар; не магический предмет",
+      "where_common": [
+        "церковь",
+        "при персонаже",
+        "монастырь",
+        "дорога"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "sacred",
+      "weight_band": "small",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "road_supplies",
+      "title": "Дорожный запас",
+      "historical_basis": "Сухари, мешок, верёвка, нож, тёплая одежда, вода",
+      "where_common": [
+        "дорога",
+        "постоялый двор",
+        "лодка",
+        "сани",
+        "лесной стан"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "ordinary",
+      "weight_band": "small_to_bulk",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    },
+    {
+      "item_category_id": "tax_dues_goods",
+      "title": "Пошлинные и повинностные вещи",
+      "historical_basis": "Товар или запись, связанная со сбором, долгом, пошлиной",
+      "where_common": [
+        "торг",
+        "переправа",
+        "погост",
+        "административный двор"
+      ],
+      "where_rare": [],
+      "where_forbidden_or_suspicious": [],
+      "typical_materials": [
+        "дерево",
+        "лён",
+        "шерсть",
+        "кожа",
+        "железо как ограниченный материал",
+        "глина",
+        "береста"
+      ],
+      "typical_condition": [
+        "рабочее",
+        "изношенное",
+        "чинёное",
+        "грязное по функции",
+        "целое при хорошем хозяйстве"
+      ],
+      "typical_owner_status": [
+        "двор",
+        "свободный хозяин",
+        "зависимый держатель",
+        "купец",
+        "церковь/монастырь",
+        "боярский двор",
+        "служба"
+      ],
+      "typical_holder": [
+        "владелец",
+        "держатель",
+        "работник",
+        "слуга",
+        "старший двора",
+        "хозяин места"
+      ],
+      "visibility_default": "visible",
+      "access_default": "depends_on_owner_place_status_and_witnesses",
+      "value_band": "variable",
+      "weight_band": "small_to_bulk",
+      "social_risk": "зависит от статуса, владельца и свидетелей",
+      "legal_risk": "low_to_high_by_context",
+      "materialization_requirements": [
+        "функция места допускает предмет",
+        "есть владелец/держатель или объяснено отсутствие",
+        "не превышен лимит",
+        "предмет нужен сцене, труду, торговле, конфликту или осмотру"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать по заявке игрока без причинного основания",
+        "не делать бесхозным без проверки контекста",
+        "не использовать как универсальную награду"
+      ],
+      "status": "usable_with_caution",
+      "confidence": "medium_low",
+      "sources": [
+        "project_doc:items_and_property",
+        "novgorod_region_profile_v1",
+        "novgorod_region_generation_limits_v1"
+      ],
+      "source_note": "Категории основаны на назначении места, статусе владельца, хозяйственной функции и правилах материализации; конкретные вещи создаются только в партии."
+    }
+  ],
+  "place_item_profiles": [
+    {
+      "place_template_id": "pt_administrative_court",
+      "observed_place_count_in_map": 6,
+      "usual_item_categories": [
+        "food_bread",
+        "food_grain",
+        "tools_general",
+        "household_utensils",
+        "road_supplies",
+        "old_broken_patched"
+      ],
+      "rare_item_categories": [
+        "writing_accounting",
+        "weapons_common",
+        "evidence_traces",
+        "personal_marks"
+      ],
+      "forbidden_without_cause": [
+        "armor",
+        "hidden treasure",
+        "modern goods",
+        "church_objects outside church/monastery"
+      ],
+      "materialization_rule": "предмет создаётся только внутри существующего G4/G5 при связи с функцией места, владельцем, сезоном, статусом и лимитом",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_boat_landing",
+      "observed_place_count_in_map": 7,
+      "usual_item_categories": [
+        "food_bread",
+        "food_grain",
+        "tools_general",
+        "household_utensils",
+        "road_supplies",
+        "old_broken_patched"
+      ],
+      "rare_item_categories": [
+        "writing_accounting",
+        "weapons_common",
+        "evidence_traces",
+        "personal_marks"
+      ],
+      "forbidden_without_cause": [
+        "armor",
+        "hidden treasure",
+        "modern goods",
+        "church_objects outside church/monastery"
+      ],
+      "materialization_rule": "предмет создаётся только внутри существующего G4/G5 при связи с функцией места, владельцем, сезоном, статусом и лимитом",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_city_major_center",
+      "observed_place_count_in_map": 1,
+      "usual_item_categories": [
+        "food_bread",
+        "food_grain",
+        "tools_general",
+        "household_utensils",
+        "road_supplies",
+        "old_broken_patched"
+      ],
+      "rare_item_categories": [
+        "writing_accounting",
+        "weapons_common",
+        "evidence_traces",
+        "personal_marks"
+      ],
+      "forbidden_without_cause": [
+        "armor",
+        "hidden treasure",
+        "modern goods",
+        "church_objects outside church/monastery"
+      ],
+      "materialization_rule": "предмет создаётся только внутри существующего G4/G5 при связи с функцией места, владельцем, сезоном, статусом и лимитом",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_crossroads",
+      "observed_place_count_in_map": 21,
+      "usual_item_categories": [
+        "food_bread",
+        "food_grain",
+        "tools_general",
+        "household_utensils",
+        "road_supplies",
+        "old_broken_patched"
+      ],
+      "rare_item_categories": [
+        "writing_accounting",
+        "weapons_common",
+        "evidence_traces",
+        "personal_marks"
+      ],
+      "forbidden_without_cause": [
+        "armor",
+        "hidden treasure",
+        "modern goods",
+        "church_objects outside church/monastery"
+      ],
+      "materialization_rule": "предмет создаётся только внутри существующего G4/G5 при связи с функцией места, владельцем, сезоном, статусом и лимитом",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_estate_center",
+      "observed_place_count_in_map": 2,
+      "usual_item_categories": [
+        "food_bread",
+        "food_grain",
+        "tools_general",
+        "household_utensils",
+        "road_supplies",
+        "old_broken_patched"
+      ],
+      "rare_item_categories": [
+        "writing_accounting",
+        "weapons_common",
+        "evidence_traces",
+        "personal_marks"
+      ],
+      "forbidden_without_cause": [
+        "armor",
+        "hidden treasure",
+        "modern goods",
+        "church_objects outside church/monastery"
+      ],
+      "materialization_rule": "предмет создаётся только внутри существующего G4/G5 при связи с функцией места, владельцем, сезоном, статусом и лимитом",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_ferry_place",
+      "observed_place_count_in_map": 17,
+      "usual_item_categories": [
+        "food_bread",
+        "food_grain",
+        "tools_general",
+        "household_utensils",
+        "road_supplies",
+        "old_broken_patched"
+      ],
+      "rare_item_categories": [
+        "writing_accounting",
+        "weapons_common",
+        "evidence_traces",
+        "personal_marks"
+      ],
+      "forbidden_without_cause": [
+        "armor",
+        "hidden treasure",
+        "modern goods",
+        "church_objects outside church/monastery"
+      ],
+      "materialization_rule": "предмет создаётся только внутри существующего G4/G5 при связи с функцией места, владельцем, сезоном, статусом и лимитом",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_fish_weir_site",
+      "observed_place_count_in_map": 4,
+      "usual_item_categories": [
+        "food_bread",
+        "food_grain",
+        "tools_general",
+        "household_utensils",
+        "road_supplies",
+        "old_broken_patched"
+      ],
+      "rare_item_categories": [
+        "writing_accounting",
+        "weapons_common",
+        "evidence_traces",
+        "personal_marks"
+      ],
+      "forbidden_without_cause": [
+        "armor",
+        "hidden treasure",
+        "modern goods",
+        "church_objects outside church/monastery"
+      ],
+      "materialization_rule": "предмет создаётся только внутри существующего G4/G5 при связи с функцией места, владельцем, сезоном, статусом и лимитом",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_fishing_station",
+      "observed_place_count_in_map": 7,
+      "usual_item_categories": [
+        "food_bread",
+        "food_grain",
+        "tools_general",
+        "household_utensils",
+        "road_supplies",
+        "old_broken_patched"
+      ],
+      "rare_item_categories": [
+        "writing_accounting",
+        "weapons_common",
+        "evidence_traces",
+        "personal_marks"
+      ],
+      "forbidden_without_cause": [
+        "armor",
+        "hidden treasure",
+        "modern goods",
+        "church_objects outside church/monastery"
+      ],
+      "materialization_rule": "предмет создаётся только внутри существующего G4/G5 при связи с функцией места, владельцем, сезоном, статусом и лимитом",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_ford_place",
+      "observed_place_count_in_map": 108,
+      "usual_item_categories": [
+        "food_bread",
+        "food_grain",
+        "tools_general",
+        "household_utensils",
+        "road_supplies",
+        "old_broken_patched"
+      ],
+      "rare_item_categories": [
+        "writing_accounting",
+        "weapons_common",
+        "evidence_traces",
+        "personal_marks"
+      ],
+      "forbidden_without_cause": [
+        "armor",
+        "hidden treasure",
+        "modern goods",
+        "church_objects outside church/monastery"
+      ],
+      "materialization_rule": "предмет создаётся только внутри существующего G4/G5 при связи с функцией места, владельцем, сезоном, статусом и лимитом",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_forest_work_camp",
+      "observed_place_count_in_map": 10,
+      "usual_item_categories": [
+        "food_bread",
+        "food_grain",
+        "tools_general",
+        "household_utensils",
+        "road_supplies",
+        "old_broken_patched"
+      ],
+      "rare_item_categories": [
+        "writing_accounting",
+        "weapons_common",
+        "evidence_traces",
+        "personal_marks"
+      ],
+      "forbidden_without_cause": [
+        "armor",
+        "hidden treasure",
+        "modern goods",
+        "church_objects outside church/monastery"
+      ],
+      "materialization_rule": "предмет создаётся только внутри существующего G4/G5 при связи с функцией места, владельцем, сезоном, статусом и лимитом",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_hamlet",
+      "observed_place_count_in_map": 144,
+      "usual_item_categories": [
+        "food_bread",
+        "food_grain",
+        "tools_general",
+        "household_utensils",
+        "road_supplies",
+        "old_broken_patched"
+      ],
+      "rare_item_categories": [
+        "writing_accounting",
+        "weapons_common",
+        "evidence_traces",
+        "personal_marks"
+      ],
+      "forbidden_without_cause": [
+        "armor",
+        "hidden treasure",
+        "modern goods",
+        "church_objects outside church/monastery"
+      ],
+      "materialization_rule": "предмет создаётся только внутри существующего G4/G5 при связи с функцией места, владельцем, сезоном, статусом и лимитом",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_hillfort_gorodishche",
+      "observed_place_count_in_map": 5,
+      "usual_item_categories": [
+        "food_bread",
+        "food_grain",
+        "tools_general",
+        "household_utensils",
+        "road_supplies",
+        "old_broken_patched"
+      ],
+      "rare_item_categories": [
+        "writing_accounting",
+        "weapons_common",
+        "evidence_traces",
+        "personal_marks"
+      ],
+      "forbidden_without_cause": [
+        "armor",
+        "hidden treasure",
+        "modern goods",
+        "church_objects outside church/monastery"
+      ],
+      "materialization_rule": "предмет создаётся только внутри существующего G4/G5 при связи с функцией места, владельцем, сезоном, статусом и лимитом",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_hunting_camp",
+      "observed_place_count_in_map": 48,
+      "usual_item_categories": [
+        "food_bread",
+        "food_grain",
+        "tools_general",
+        "household_utensils",
+        "road_supplies",
+        "old_broken_patched"
+      ],
+      "rare_item_categories": [
+        "writing_accounting",
+        "weapons_common",
+        "evidence_traces",
+        "personal_marks"
+      ],
+      "forbidden_without_cause": [
+        "armor",
+        "hidden treasure",
+        "modern goods",
+        "church_objects outside church/monastery"
+      ],
+      "materialization_rule": "предмет создаётся только внутри существующего G4/G5 при связи с функцией места, владельцем, сезоном, статусом и лимитом",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_isolated_farmstead",
+      "observed_place_count_in_map": 18,
+      "usual_item_categories": [
+        "food_bread",
+        "food_grain",
+        "tools_general",
+        "household_utensils",
+        "road_supplies",
+        "old_broken_patched"
+      ],
+      "rare_item_categories": [
+        "writing_accounting",
+        "weapons_common",
+        "evidence_traces",
+        "personal_marks"
+      ],
+      "forbidden_without_cause": [
+        "armor",
+        "hidden treasure",
+        "modern goods",
+        "church_objects outside church/monastery"
+      ],
+      "materialization_rule": "предмет создаётся только внутри существующего G4/G5 при связи с функцией места, владельцем, сезоном, статусом и лимитом",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_market_place",
+      "observed_place_count_in_map": 33,
+      "usual_item_categories": [
+        "food_bread",
+        "food_grain",
+        "tools_general",
+        "household_utensils",
+        "road_supplies",
+        "old_broken_patched"
+      ],
+      "rare_item_categories": [
+        "writing_accounting",
+        "weapons_common",
+        "evidence_traces",
+        "personal_marks"
+      ],
+      "forbidden_without_cause": [
+        "armor",
+        "hidden treasure",
+        "modern goods",
+        "church_objects outside church/monastery"
+      ],
+      "materialization_rule": "предмет создаётся только внутри существующего G4/G5 при связи с функцией места, владельцем, сезоном, статусом и лимитом",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_monastery",
+      "observed_place_count_in_map": 5,
+      "usual_item_categories": [
+        "food_bread",
+        "food_grain",
+        "tools_general",
+        "household_utensils",
+        "road_supplies",
+        "old_broken_patched"
+      ],
+      "rare_item_categories": [
+        "writing_accounting",
+        "weapons_common",
+        "evidence_traces",
+        "personal_marks"
+      ],
+      "forbidden_without_cause": [
+        "armor",
+        "hidden treasure",
+        "modern goods",
+        "church_objects outside church/monastery"
+      ],
+      "materialization_rule": "предмет создаётся только внутри существующего G4/G5 при связи с функцией места, владельцем, сезоном, статусом и лимитом",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_pogost_center",
+      "observed_place_count_in_map": 21,
+      "usual_item_categories": [
+        "food_bread",
+        "food_grain",
+        "tools_general",
+        "household_utensils",
+        "road_supplies",
+        "old_broken_patched"
+      ],
+      "rare_item_categories": [
+        "writing_accounting",
+        "weapons_common",
+        "evidence_traces",
+        "personal_marks"
+      ],
+      "forbidden_without_cause": [
+        "armor",
+        "hidden treasure",
+        "modern goods",
+        "church_objects outside church/monastery"
+      ],
+      "materialization_rule": "предмет создаётся только внутри существующего G4/G5 при связи с функцией места, владельцем, сезоном, статусом и лимитом",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_posad_suburb",
+      "observed_place_count_in_map": 18,
+      "usual_item_categories": [
+        "food_bread",
+        "food_grain",
+        "tools_general",
+        "household_utensils",
+        "road_supplies",
+        "old_broken_patched"
+      ],
+      "rare_item_categories": [
+        "writing_accounting",
+        "weapons_common",
+        "evidence_traces",
+        "personal_marks"
+      ],
+      "forbidden_without_cause": [
+        "armor",
+        "hidden treasure",
+        "modern goods",
+        "church_objects outside church/monastery"
+      ],
+      "materialization_rule": "предмет создаётся только внутри существующего G4/G5 при связи с функцией места, владельцем, сезоном, статусом и лимитом",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_river_landing",
+      "observed_place_count_in_map": 188,
+      "usual_item_categories": [
+        "food_bread",
+        "food_grain",
+        "tools_general",
+        "household_utensils",
+        "road_supplies",
+        "old_broken_patched"
+      ],
+      "rare_item_categories": [
+        "writing_accounting",
+        "weapons_common",
+        "evidence_traces",
+        "personal_marks"
+      ],
+      "forbidden_without_cause": [
+        "armor",
+        "hidden treasure",
+        "modern goods",
+        "church_objects outside church/monastery"
+      ],
+      "materialization_rule": "предмет создаётся только внутри существующего G4/G5 при связи с функцией места, владельцем, сезоном, статусом и лимитом",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_rural_church_center",
+      "observed_place_count_in_map": 10,
+      "usual_item_categories": [
+        "food_bread",
+        "food_grain",
+        "tools_general",
+        "household_utensils",
+        "road_supplies",
+        "old_broken_patched"
+      ],
+      "rare_item_categories": [
+        "writing_accounting",
+        "weapons_common",
+        "evidence_traces",
+        "personal_marks"
+      ],
+      "forbidden_without_cause": [
+        "armor",
+        "hidden treasure",
+        "modern goods",
+        "church_objects outside church/monastery"
+      ],
+      "materialization_rule": "предмет создаётся только внутри существующего G4/G5 при связи с функцией места, владельцем, сезоном, статусом и лимитом",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_saltworks",
+      "observed_place_count_in_map": 1,
+      "usual_item_categories": [
+        "food_bread",
+        "food_grain",
+        "tools_general",
+        "household_utensils",
+        "road_supplies",
+        "old_broken_patched"
+      ],
+      "rare_item_categories": [
+        "writing_accounting",
+        "weapons_common",
+        "evidence_traces",
+        "personal_marks"
+      ],
+      "forbidden_without_cause": [
+        "armor",
+        "hidden treasure",
+        "modern goods",
+        "church_objects outside church/monastery"
+      ],
+      "materialization_rule": "предмет создаётся только внутри существующего G4/G5 при связи с функцией места, владельцем, сезоном, статусом и лимитом",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_shipyard_boatyard",
+      "observed_place_count_in_map": 3,
+      "usual_item_categories": [
+        "food_bread",
+        "food_grain",
+        "tools_general",
+        "household_utensils",
+        "road_supplies",
+        "old_broken_patched"
+      ],
+      "rare_item_categories": [
+        "writing_accounting",
+        "weapons_common",
+        "evidence_traces",
+        "personal_marks"
+      ],
+      "forbidden_without_cause": [
+        "armor",
+        "hidden treasure",
+        "modern goods",
+        "church_objects outside church/monastery"
+      ],
+      "materialization_rule": "предмет создаётся только внутри существующего G4/G5 при связи с функцией места, владельцем, сезоном, статусом и лимитом",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_town",
+      "observed_place_count_in_map": 2,
+      "usual_item_categories": [
+        "food_bread",
+        "food_grain",
+        "tools_general",
+        "household_utensils",
+        "road_supplies",
+        "old_broken_patched"
+      ],
+      "rare_item_categories": [
+        "writing_accounting",
+        "weapons_common",
+        "evidence_traces",
+        "personal_marks"
+      ],
+      "forbidden_without_cause": [
+        "armor",
+        "hidden treasure",
+        "modern goods",
+        "church_objects outside church/monastery"
+      ],
+      "materialization_rule": "предмет создаётся только внутри существующего G4/G5 при связи с функцией места, владельцем, сезоном, статусом и лимитом",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_village",
+      "observed_place_count_in_map": 198,
+      "usual_item_categories": [
+        "food_bread",
+        "food_grain",
+        "tools_general",
+        "household_utensils",
+        "road_supplies",
+        "old_broken_patched"
+      ],
+      "rare_item_categories": [
+        "writing_accounting",
+        "weapons_common",
+        "evidence_traces",
+        "personal_marks"
+      ],
+      "forbidden_without_cause": [
+        "armor",
+        "hidden treasure",
+        "modern goods",
+        "church_objects outside church/monastery"
+      ],
+      "materialization_rule": "предмет создаётся только внутри существующего G4/G5 при связи с функцией места, владельцем, сезоном, статусом и лимитом",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_wintering_hut",
+      "observed_place_count_in_map": 34,
+      "usual_item_categories": [
+        "food_bread",
+        "food_grain",
+        "tools_general",
+        "household_utensils",
+        "road_supplies",
+        "old_broken_patched"
+      ],
+      "rare_item_categories": [
+        "writing_accounting",
+        "weapons_common",
+        "evidence_traces",
+        "personal_marks"
+      ],
+      "forbidden_without_cause": [
+        "armor",
+        "hidden treasure",
+        "modern goods",
+        "church_objects outside church/monastery"
+      ],
+      "materialization_rule": "предмет создаётся только внутри существующего G4/G5 при связи с функцией места, владельцем, сезоном, статусом и лимитом",
+      "status": "draft",
+      "confidence": "medium"
+    }
+  ],
+  "occupation_item_profiles": [
+    {
+      "occupation_id": "nov_occ_princely_service_agent",
+      "occupation_title": "княжий служилый человек",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_druzhina_warrior",
+      "occupation_title": "дружинник",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_junior_retainer",
+      "occupation_title": "младший дружинный слуга",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_gate_guard",
+      "occupation_title": "страж ворот",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_market_guard",
+      "occupation_title": "страж торга",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_crossing_guard",
+      "occupation_title": "сторож брода или переправы",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_toll_dues_collector",
+      "occupation_title": "сборщик пошлины",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_court_clerk_service",
+      "occupation_title": "писцовый служитель двора власти",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_posadnik_household_service",
+      "occupation_title": "служитель посадничьего двора",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_tysyatsky_public_order",
+      "occupation_title": "люди тысяцкого при порядке",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_bishop_court_service",
+      "occupation_title": "владычный дворцовый служитель",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_boyar_yard_manager",
+      "occupation_title": "управляющий боярским двором",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_long_distance_merchant",
+      "occupation_title": "дальний купец",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_local_trader",
+      "occupation_title": "местный торговец",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_market_stall_seller",
+      "occupation_title": "лавочный продавец",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_merchant_clerk",
+      "occupation_title": "купеческий доверенный",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_measurer_weigher",
+      "occupation_title": "мерщик или весовщик",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_storehouse_keeper",
+      "occupation_title": "сторож или держатель склада",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_debt_account_keeper",
+      "occupation_title": "человек купеческого долга",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_blacksmith",
+      "occupation_title": "кузнец",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_carpenter",
+      "occupation_title": "плотник",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_cooper",
+      "occupation_title": "бондарь или клетный мастер",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_leatherworker",
+      "occupation_title": "кожевник",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_shoemaker",
+      "occupation_title": "сапожник",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_potter",
+      "occupation_title": "гончар",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_weaver_cloth_worker",
+      "occupation_title": "ткач или работник ткани",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_tailor_mender",
+      "occupation_title": "портной или чинитель одежды",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_boatbuilder",
+      "occupation_title": "лодейный мастер",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_pitch_tar_worker",
+      "occupation_title": "смольщик или дегтярь",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_cart_driver",
+      "occupation_title": "возчик",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_porter",
+      "occupation_title": "грузчик",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_landing_worker",
+      "occupation_title": "работник пристани",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_boatman",
+      "occupation_title": "лодочник",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_helmsman",
+      "occupation_title": "кормщик",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_ferryman",
+      "occupation_title": "перевозчик",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_route_guide",
+      "occupation_title": "проводник",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_portage_worker",
+      "occupation_title": "работник волока",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_winter_road_worker",
+      "occupation_title": "работник зимника",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_ploughman",
+      "occupation_title": "пахарь",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_haymaker",
+      "occupation_title": "сенокосец",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_herder",
+      "occupation_title": "пастух или скотник",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_fisher",
+      "occupation_title": "рыбак",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_fish_weir_keeper",
+      "occupation_title": "работник рыбного запора",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_hunter_trapper",
+      "occupation_title": "охотник и зверолов",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_bortnik",
+      "occupation_title": "бортник",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_forest_worker",
+      "occupation_title": "лесной промысловик",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_saltworker",
+      "occupation_title": "солевар или работник соли",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_miller",
+      "occupation_title": "мельник",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_pogost_service_worker",
+      "occupation_title": "работник погоста",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_monastic_laborer",
+      "occupation_title": "монастырский работник",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_monastery_steward",
+      "occupation_title": "монастырский хозяйственный старший",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_parish_priest_service",
+      "occupation_title": "приходской священник",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_deacon_service",
+      "occupation_title": "дьяконская служба",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_monk_service",
+      "occupation_title": "монах",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_novice_work",
+      "occupation_title": "послушник",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_church_guard",
+      "occupation_title": "церковный сторож",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_ponomar",
+      "occupation_title": "пономарь",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_scribe",
+      "occupation_title": "писец",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_cook_baker",
+      "occupation_title": "повар или хлебник двора",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_household_servant",
+      "occupation_title": "дворовый слуга",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_day_laborer",
+      "occupation_title": "подённый работник",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_stable_worker",
+      "occupation_title": "конюший или работник конюшни",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_cattle_keeper",
+      "occupation_title": "работник скотного двора",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_midwife_birth_helper",
+      "occupation_title": "родовспомогательная женщина",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_healer_herbal_helper",
+      "occupation_title": "знахарь или травник бытового уровня",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_beggar_alms",
+      "occupation_title": "нищий у церкви или торга",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_pilgrim_traveler",
+      "occupation_title": "богомолец или странник",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "occupation_id": "nov_occ_messenger_runner",
+      "occupation_title": "гонец или посыльный",
+      "usual_visible_categories": [
+        "clothing_linen_wool",
+        "belt_items",
+        "tools_general",
+        "old_broken_patched"
+      ],
+      "possible_hidden_categories": [
+        "belt_items",
+        "personal_marks",
+        "evidence_traces",
+        "small_pledge"
+      ],
+      "property_not_inventory": [
+        "дворовые запасы",
+        "орудия хозяина",
+        "товар купца",
+        "монастырское имущество",
+        "семейный сундук"
+      ],
+      "materialization_rule": "не создавать полный инвентарь без сценического основания; для фонового NPC достаточно видимого признака и свидетеля",
+      "status": "draft",
+      "confidence": "medium"
+    }
+  ],
+  "status_item_profiles": [
+    {
+      "status_profile_id": "elite_boyar_or_princely",
+      "typical_categories": [
+        "trade_cloth",
+        "weapons_common",
+        "writing_accounting",
+        "animal_property",
+        "sledge_horse_gear"
+      ],
+      "risk_rule": "дорогие вещи требуют статуса; кража вызывает сильную власть и память",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "status_profile_id": "merchant",
+      "typical_categories": [
+        "measures_weights",
+        "bags_packaging",
+        "trade_fur",
+        "food_salt",
+        "trade_wax_honey"
+      ],
+      "risk_rule": "товар редко бесхозен; спор требует свидетелей, меры и поручительства",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "status_profile_id": "ordinary_rural",
+      "typical_categories": [
+        "food_grain",
+        "agricultural_tools",
+        "animal_property",
+        "household_utensils"
+      ],
+      "risk_rule": "имущество связано с двором и роднёй",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "status_profile_id": "dependent_or_poor",
+      "typical_categories": [
+        "old_broken_patched",
+        "clothing_linen_wool",
+        "footwear",
+        "food_bread"
+      ],
+      "risk_rule": "дорогой предмет у низкого статуса требует объяснения",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "status_profile_id": "church_or_monastery",
+      "typical_categories": [
+        "church_objects",
+        "monastic_property",
+        "writing_accounting",
+        "food_grain"
+      ],
+      "risk_rule": "церковное имущество имеет высокий социальный риск",
+      "status": "draft",
+      "confidence": "medium"
+    }
+  ],
+  "seasonal_item_variants": [
+    {
+      "season": "winter",
+      "more_common": [
+        "fuel_firewood",
+        "sledge_horse_gear",
+        "road_supplies",
+        "clothing_linen_wool"
+      ],
+      "risk": "холод, снег, следы, дефицит топлива",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "season": "spring_rasputitsa",
+      "more_common": [
+        "footwear",
+        "ropes_lines",
+        "boat_gear",
+        "evidence_traces"
+      ],
+      "risk": "грязь, паводок, порча запасов",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "season": "summer",
+      "more_common": [
+        "fishing_gear",
+        "agricultural_tools",
+        "food_fish_fresh",
+        "beekeeping_bort"
+      ],
+      "risk": "порча пищи, насекомые, полевые споры",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "season": "autumn",
+      "more_common": [
+        "food_grain",
+        "fuel_firewood",
+        "animal_property",
+        "bags_packaging"
+      ],
+      "risk": "заготовки, грязь, подготовка к зиме",
+      "status": "draft",
+      "confidence": "medium"
+    }
+  ],
+  "risk_and_ownership_rules": [
+    {
+      "rule_id": "item_owner_required",
+      "rule": "для значимого предмета указывается владелец, держатель, доступность и риск",
+      "status": "draft",
+      "confidence": "high"
+    },
+    {
+      "rule_id": "hidden_item_requires_cause",
+      "rule": "скрытый предмет создаётся только при профиле контейнера/места, лимите, событии или ранее установленном факте",
+      "status": "draft",
+      "confidence": "high"
+    },
+    {
+      "rule_id": "evidence_not_truth",
+      "rule": "улика показывает след, но не раскрывает скрытую причину без проверки и знания персонажа",
+      "status": "draft",
+      "confidence": "high"
+    }
+  ],
+  "validation": {
+    "file_is_valid_json": true,
+    "does_not_create_party_state": true,
+    "does_not_create_new_g1_g4_nodes": true,
+    "does_not_precreate_full_g5_map": true,
+    "uses_existing_map_as_context": true,
+    "respects_generation_limits": true,
+    "separates_visible_hidden_and_unmaterialized": true,
+    "distinguishes_fact_from_rumor": true,
+    "requires_human_historical_audit": true,
+    "blocking_issues": [],
+    "open_questions": [
+      "Нужен источниковедческий audit для точных терминов редких инструментов, письменных предметов и денежно-весовых единиц."
+    ],
+    "item_category_count": 47,
+    "place_item_profile_count": 25,
+    "occupation_item_profile_count": 68
+  }
+}

@@ -1,0 +1,2195 @@
+# Этап 19. Формирование полного hidden state
+
+## 1. Назначение этапа
+
+Формирование полного `hidden_state` — это этап запуска партии, на котором система сохраняет полную внутреннюю правду стартовой сцены, не предназначенную для прямого вывода игроку.
+
+Этот слой хранит:
+
+* скрытые мотивы NPC;
+* скрытые знания NPC;
+* закрытые двери и зоны;
+* замки, ключи, запреты, разрешения;
+* чужие вещи и владельческие риски;
+* содержимое закрытых контейнеров, если оно уже причинно определено;
+* скрытые или неочевидные риски;
+* текущие таймеры;
+* отложенные события;
+* внутренние причины поведения NPC;
+* offscreen-состояние ближайших зон;
+* условия раскрытия скрытой информации;
+* последствия действий игрока, которые ещё не стали видимыми.
+
+Короткая формула:
+
+```text id="7g8hdk"
+g5_scene_graph
++ initial_npc_placement
++ initial_item_placement
++ character_knowledge_map
++ time_light_consistency_audit
++ regional_context_package
++ hidden_state_policy
+→ full_hidden_scene_state
+```
+
+Главное отличие:
+
+```text id="5lnip3"
+visible_context = что персонаж может воспринять
+character_knowledge_map = что персонаж знает или считает
+hidden_state = что система знает как внутреннюю правду сцены
+```
+
+## 2. Главное правило этапа
+
+`hidden_state` не выводится игроку.
+
+Нельзя напрямую переносить hidden state в:
+
+```text id="cdw64c"
+visible_scene
+visible_changes
+choice labels
+map UI
+journal text
+narrator prose
+NPC реплики
+подсказки интерфейса
+```
+
+Hidden state может стать видимым только через разрешённый канал раскрытия:
+
+```text id="uqt64c"
+осмотр;
+успешная проверка;
+диалог;
+наблюдение;
+действие игрока;
+ошибка NPC;
+шум;
+след;
+открытие двери;
+вскрытие контейнера;
+свидетельство;
+прошедшее время;
+изменение света;
+изменение погоды;
+перемещение в другую точку сцены;
+```
+
+Если нет условия раскрытия, скрытый факт остаётся закрытым.
+
+## 3. Место этапа в pipeline
+
+```text id="kw0vp1"
+1. Заявка игрока
+2. Нормализация заявки
+3. Выбор исторической рамки
+4. Загрузка регионального контекста
+5. Подбор стартовых G1–G4 кандидатов
+6. Подбор place templates
+7. Подбор NPC-кандидатов
+8. Подбор предметных профилей
+9. Выбор стартового узла
+10. Аудит стартового места
+11. Генерация персонажа
+12. Аудит персонажа
+13. Материализация G5-сцены
+14. Аудит G5-сцены
+15. Размещение стартовых NPC
+16. Размещение стартовых предметов
+17. Проверка времени и света
+18. Формирование карты знаний персонажа
+19. Формирование полного hidden state
+20. Аудит hidden state
+21. Формирование visible context
+22. Narrator prose
+```
+
+Этап 19 идёт после карты знаний персонажа, потому что hidden state должен явно знать, какие факты нельзя раскрывать персонажу.
+
+## 4. Что создаёт этап
+
+Этап создаёт `full_hidden_scene_state`.
+
+В него входят:
+
+```text id="fcp6mk"
+hidden_npc_state
+hidden_access_state
+hidden_property_state
+hidden_container_state
+hidden_item_state
+hidden_risk_state
+hidden_event_state
+hidden_social_state
+hidden_route_state
+hidden_environment_state
+discovery_rules
+reveal_conditions
+consequence_hooks
+forbidden_output_rules
+```
+
+Этап не создаёт:
+
+```text id="ql9h5e"
+новые G1/G2/G3/G4/G5-узлы;
+новые NPC вне уже размещённых;
+новые предметы вне item placement;
+новые контейнеры вне item placement;
+новые социальные роли;
+новые профессии;
+новые исторические события;
+visible_scene;
+intro_prose;
+player-facing подсказки;
+```
+
+## 5. Вход этапа
+
+```json id="l9fb7m"
+{
+  "version": 1,
+  "schema": "hidden_state_builder_input",
+  "request_id": "string",
+
+  "historical_frame": {
+    "version": 1,
+    "schema": "historical_frame",
+    "region": {
+      "region_id": "string"
+    },
+    "year": {
+      "value": 0
+    },
+    "calendar": {
+      "season": "spring | summer | autumn | winter"
+    },
+    "clock": {
+      "day": 1,
+      "hour": 0,
+      "minute": 0,
+      "time_of_day": "dawn | morning | day | afternoon | evening | dusk | night | deep_night",
+      "light_profile": "dark | dim | daylight | twilight | indoor_lit | firelit | moonlit | obscured"
+    }
+  },
+
+  "weather_state": {
+    "version": 1,
+    "schema": "weather_state"
+  },
+
+  "selected_start_node": {
+    "version": 1,
+    "schema": "selected_start_node"
+  },
+
+  "player_character": {
+    "version": 1,
+    "schema": "player_character_game_profile"
+  },
+
+  "g5_scene_graph": {
+    "version": 1,
+    "schema": "g5_scene_graph_draft"
+  },
+
+  "g5_scene_audit": {
+    "version": 1,
+    "schema": "g5_scene_audit",
+    "pass": true
+  },
+
+  "initial_npc_placement": {
+    "version": 1,
+    "schema": "initial_npc_placement_draft"
+  },
+
+  "npc_placement_audit": {
+    "version": 1,
+    "schema": "initial_npc_placement_audit",
+    "pass": true
+  },
+
+  "initial_item_placement": {
+    "version": 1,
+    "schema": "initial_item_placement_draft"
+  },
+
+  "item_placement_audit": {
+    "version": 1,
+    "schema": "initial_item_placement_audit",
+    "pass": true
+  },
+
+  "time_light_consistency_audit": {
+    "version": 1,
+    "schema": "time_light_consistency_audit",
+    "pass": true
+  },
+
+  "character_knowledge_map": {
+    "version": 1,
+    "schema": "character_knowledge_map"
+  },
+
+  "character_knowledge_map_audit": {
+    "version": 1,
+    "schema": "character_knowledge_map_audit",
+    "pass": true
+  },
+
+  "regional_context_package": {
+    "version": 1,
+    "schema": "regional_context_package",
+    "social_context": {},
+    "property_context": {},
+    "event_context": {},
+    "conflict_context": {},
+    "danger_context": {},
+    "authority_context": {},
+    "npc_context": {},
+    "item_context": {}
+  },
+
+  "hidden_state_policy": {
+    "require_no_player_output": true,
+    "require_reveal_conditions_for_every_hidden_fact": true,
+    "require_source_trace": true,
+    "require_hidden_fact_ids": true,
+    "require_risk_triggers": true,
+    "require_consequence_hooks": true,
+    "require_npc_private_state_for_scene_or_key_npcs": true,
+    "allow_minimal_background_npc_hidden_state": true,
+    "allow_unresolved_container_contents": true,
+    "allow_materialized_container_contents_only_with_causal_basis": true,
+    "do_not_create_new_npcs": true,
+    "do_not_create_new_items": true,
+    "do_not_create_new_places": true,
+    "do_not_write_visible_scene": true,
+    "do_not_write_intro_prose": true
+  }
+}
+```
+
+## 6. Выход этапа
+
+```json id="f8yz6v"
+{
+  "version": 1,
+  "schema": "full_hidden_scene_state",
+  "request_id": "string",
+
+  "hidden_state_status": "formed | empty_limited | blocked | requires_repair",
+
+  "frame": {
+    "region_id": "string",
+    "year": 0,
+    "season": "spring | summer | autumn | winter",
+    "clock": {},
+    "weather_state": {}
+  },
+
+  "parent_scene": {
+    "g4_node_id": "string",
+    "g5_scene_id": "string | null",
+    "player_current_anchor_id": "string"
+  },
+
+  "hidden_npc_state": [],
+  "hidden_access_state": [],
+  "hidden_property_state": [],
+  "hidden_container_state": [],
+  "hidden_item_state": [],
+  "hidden_risk_state": [],
+  "hidden_event_state": [],
+  "hidden_social_state": [],
+  "hidden_route_state": [],
+  "hidden_environment_state": [],
+
+  "discovery_rules": [],
+  "reveal_conditions": [],
+  "consequence_hooks": [],
+  "forbidden_output_rules": [],
+
+  "player_facing_boundary": {},
+
+  "source_trace": [],
+
+  "audit_self_check": {
+    "pass": true,
+    "concerns": [],
+    "evidence": []
+  }
+}
+```
+
+## 7. Hidden state и visible context
+
+### 7.1. Hidden state
+
+Хранит внутреннюю правду:
+
+```text id="zywum5"
+NPC лжёт;
+дверь закрыта изнутри;
+у NPC есть причина избегать разговора;
+в контейнере что-то есть, но игрок не знает;
+предмет чужой;
+у предмета есть владелец;
+доступ контролирует конкретный NPC;
+в темноте можно не заметить свидетеля;
+после шума кто-то придёт через 3 минуты;
+дорога за воротами опасна, но персонаж этого не знает;
+```
+
+### 7.2. Visible context
+
+Показывает только воспринимаемое:
+
+```text id="y4igby"
+мужик отводит взгляд;
+дверь закрыта;
+ларь стоит у стены;
+замок виден;
+в углу темнее;
+из-за двери слышен звук;
+чужая вещь выглядит ухоженной;
+рядом есть человек, который может заметить действие;
+```
+
+### 7.3. Character knowledge map
+
+Показывает, что персонаж знает или считает:
+
+```text id="n4p3ez"
+персонаж знает, что чужие вещи нельзя брать;
+персонаж не знает, кто владелец сундука;
+персонаж слышал слух о дороге;
+персонаж ошибочно считает, что дверь ведёт наружу;
+```
+
+## 8. Hidden NPC state
+
+Скрытое состояние NPC хранит частные мотивы, ограничения, память и внутренние реакции.
+
+```json id="yxrkc9"
+{
+  "hidden_npc_state_id": "hidden_npc_001",
+
+  "npc_instance_id": "npc_001",
+
+  "npc_profile_level": "background | scene | key",
+
+  "private_motives": [
+    {
+      "motive_id": "motive_001",
+      "motive_type": "fear | greed | duty | shame | debt | loyalty | suspicion | fatigue | hunger | authority_pressure | concealment | protection | unknown",
+      "motive_summary": "string",
+      "strength": "low | medium | high",
+      "known_to_player": false,
+      "known_to_character": false,
+      "reveal_condition_ids": []
+    }
+  ],
+
+  "private_constraints": [
+    {
+      "constraint_id": "npc_constraint_001",
+      "constraint_type": "cannot_leave | must_obey | must_hide_fact | must_guard | must_finish_work | fears_authority | owes_debt | protects_someone | avoids_witness",
+      "constraint_summary": "string",
+      "trigger_conditions": [],
+      "reveal_condition_ids": []
+    }
+  ],
+
+  "private_knowledge": [
+    {
+      "private_knowledge_id": "npc_private_knowledge_001",
+      "topic": "person | place | item | route | event | danger | authority | property | hidden_state",
+      "knowledge_summary": "string",
+      "can_tell_player": "yes | no | maybe | only_if_trust | only_if_paid | only_if_threatened | only_if_ordered",
+      "truth_status": "true | false | mixed | uncertain",
+      "must_not_surface_without_trigger": true,
+      "reveal_condition_ids": []
+    }
+  ],
+
+  "reaction_model": {
+    "if_player_approaches": "string",
+    "if_player_asks": "string",
+    "if_player_threatens": "string",
+    "if_player_steals": "string",
+    "if_player_uses_violence": "string",
+    "if_player_respects_order": "string",
+    "if_witnesses_present": "string"
+  },
+
+  "memory_hooks": [],
+  "consequence_hooks": [],
+  "source_trace": []
+}
+```
+
+### 8.1. Background NPC
+
+Для фонового NPC hidden state может быть минимальным:
+
+```text id="1gircz"
+attention bias;
+witness ability;
+whether they will call others;
+whether they can identify the character;
+what makes them leave;
+what makes them become scene NPC.
+```
+
+### 8.2. Scene NPC
+
+Для сценического NPC hidden state должен хранить:
+
+```text id="h27mxy"
+private motive;
+private constraint;
+what they know but do not say;
+reaction to player actions;
+condition for trust/hostility;
+memory hooks;
+```
+
+### 8.3. Key NPC
+
+Для ключевого NPC hidden state должен хранить:
+
+```text id="n8k6qa"
+persistent motive;
+memory model;
+relationship state;
+consequence model;
+schedule hooks;
+authority or property control;
+future reaction triggers;
+```
+
+## 9. Hidden access state
+
+Этот блок хранит закрытые двери, ворота, проходы, запреты, замки и доступ к зонам.
+
+```json id="33wxup"
+{
+  "hidden_access_state_id": "hidden_access_001",
+
+  "access_target": {
+    "target_type": "g5_anchor | g5_edge | minilocation | door | gate | container | route | offscreen_zone",
+    "target_id": "string"
+  },
+
+  "access_truth": {
+    "actual_state": "open | closed | locked | barred | guarded | forbidden | hidden | blocked | broken | unknown",
+    "visible_state": "open | closed | appears_locked | appears_open | unknown | not_visible",
+    "state_known_to_player": false,
+    "state_known_to_character": false
+  },
+
+  "access_requirements": {
+    "requires_key": false,
+    "requires_tool": false,
+    "requires_force": false,
+    "requires_permission": false,
+    "requires_skill_check": false,
+    "requires_time_minutes": 0,
+    "requires_social_status": "string | null",
+    "requires_npc_permission_id": "string | null"
+  },
+
+  "control": {
+    "controller_type": "npc | authority | household | lock | custom | none | unknown",
+    "controller_id": "string | null",
+    "controller_knows_state": true
+  },
+
+  "risk_if_attempted": {
+    "noise_risk": "none | low | medium | high",
+    "witness_risk": "none | low | medium | high",
+    "damage_risk": "none | low | medium | high",
+    "social_risk": "none | low | medium | high | severe",
+    "violence_risk": "none | low | medium | high"
+  },
+
+  "reveal_condition_ids": [],
+  "consequence_hook_ids": [],
+  "source_trace": []
+}
+```
+
+Важно: закрытая дверь как факт может быть видимой, но причина закрытия, способ открыть и кто контролирует доступ могут быть hidden.
+
+## 10. Hidden property state
+
+Этот блок хранит полную правду о чужих вещах, собственности, контроле и последствиях.
+
+```json id="e1swk6"
+{
+  "hidden_property_state_id": "hidden_property_001",
+
+  "property_target": {
+    "target_type": "item | container | anchor | animal | tool | stock | money | document | weapon | sacred_object",
+    "target_id": "string"
+  },
+
+  "ownership_truth": {
+    "owner_model": "player | npc | household | workplace | authority | sacred | communal | disputed | unknown",
+    "owner_id": "string | null",
+    "holder_model": "player | npc | container | anchor | fixed | unknown",
+    "holder_id": "string | null",
+    "controller_model": "npc | authority | household | lock | custom | none | unknown",
+    "controller_id": "string | null",
+    "known_to_player": false,
+    "known_to_character": false
+  },
+
+  "property_status": {
+    "legal_or_social_status": "free | owned | borrowed | entrusted | stolen | service | trade_stock | sacred | disputed | found | unknown",
+    "is_takeable_without_consequence": false,
+    "is_tradeable": false,
+    "is_sacred_or_taboo": false,
+    "is_authority_controlled": false
+  },
+
+  "risk_truth": {
+    "theft_risk": "none | low | medium | high | severe",
+    "witness_risk": "none | low | medium | high",
+    "punishment_risk": "none | low | medium | high | severe",
+    "reputation_risk": "none | low | medium | high",
+    "violence_risk": "none | low | medium | high",
+    "risk_basis": []
+  },
+
+  "reveal_condition_ids": [],
+  "consequence_hook_ids": [],
+  "source_trace": []
+}
+```
+
+Visible context может сказать “вещь лежит рядом”. Hidden state хранит, чья она, кто заметит, что случится при краже и какие права нарушаются.
+
+## 11. Hidden container state
+
+Контейнер — отдельная сущность доступа, хранения и сокрытия.
+
+```json id="d415ox"
+{
+  "hidden_container_state_id": "hidden_container_001",
+
+  "container_instance_id": "container_001",
+
+  "container_truth": {
+    "actual_state": "open | closed | locked | sealed | empty | partly_full | full | damaged | trapped | unknown",
+    "visible_state": "visible | visible_closed | hidden | not_visible | ambiguous",
+    "known_to_player": false,
+    "known_to_character": false
+  },
+
+  "content_truth": {
+    "content_policy": "not_materialized | materialized_hidden | partially_materialized | empty_confirmed | unknown_until_opened",
+    "content_known_to_player": false,
+    "content_known_to_character": false,
+    "content_instance_ids": [],
+    "content_summary_for_system": "string | null",
+    "content_must_not_be_regenerated_after_defined": true,
+    "content_must_not_be_revealed_without_condition": true
+  },
+
+  "access_truth": {
+    "can_open_freely": false,
+    "requires_key": false,
+    "requires_tool": false,
+    "requires_force": false,
+    "requires_permission": true,
+    "controller_id": "npc_001 | null",
+    "time_to_open_minutes": 0
+  },
+
+  "intervention_traces": {
+    "has_visible_damage": false,
+    "has_hidden_damage": false,
+    "has_recent_use_trace": false,
+    "has_foreign_access_trace": false,
+    "trace_reveal_condition_ids": []
+  },
+
+  "risk_truth": {
+    "opening_risk": "none | low | medium | high | severe",
+    "noise_risk": "none | low | medium | high",
+    "witness_risk": "none | low | medium | high",
+    "damage_risk": "none | low | medium | high",
+    "punishment_risk": "none | low | medium | high | severe"
+  },
+
+  "reveal_condition_ids": [],
+  "consequence_hook_ids": [],
+  "source_trace": []
+}
+```
+
+Правило: если содержимое не материализовано, hidden state фиксирует это как `not_materialized`, а не выдумывает список предметов.
+
+## 12. Hidden item state
+
+Этот блок хранит скрытые свойства уже размещённых предметов.
+
+```json id="6fmlp7"
+{
+  "hidden_item_state_id": "hidden_item_001",
+
+  "item_instance_id": "item_001",
+
+  "hidden_properties": {
+    "true_value_band": "worthless | low | medium | high | rare | unknown",
+    "true_condition": "ordinary | damaged | fake | altered | marked | stolen | sacred | dangerous | unknown",
+    "true_origin": "string | null",
+    "true_owner_id": "string | null",
+    "hidden_markings": [],
+    "hidden_use": "string | null",
+    "hidden_risk": "string | null"
+  },
+
+  "known_layers": {
+    "visible_to_player": [],
+    "known_to_character": [],
+    "unknown_to_character": [],
+    "known_to_npc_ids": []
+  },
+
+  "reveal_condition_ids": [],
+  "consequence_hook_ids": [],
+  "source_trace": []
+}
+```
+
+Примеры:
+
+```text id="8ba4ib"
+нож обычный на вид, но чужой;
+мешок выглядит пустым, но тяжёлый;
+монета узнаваема владельцем;
+предмет выглядит простым, но связан с властью;
+вещь повреждена, но это видно только при осмотре;
+```
+
+## 13. Hidden risk state
+
+Риски должны храниться отдельно, чтобы система могла честно обрабатывать действия игрока.
+
+```json id="tn48ub"
+{
+  "hidden_risk_state_id": "hidden_risk_001",
+
+  "risk_target": {
+    "target_type": "npc | item | container | anchor | edge | action | place | route",
+    "target_id": "string"
+  },
+
+  "risk_type": "theft | witness | violence | authority | property | weather | darkness | disease | fire | collapse | animal | social | reputation | route | hidden_person",
+
+  "actual_severity": "none | low | medium | high | severe",
+
+  "visible_hint_level": "none | faint | visible | obvious",
+
+  "what_player_can_notice": "string | null",
+
+  "what_is_hidden": "string",
+
+  "trigger_conditions": [],
+
+  "consequence_hook_ids": [],
+
+  "reveal_condition_ids": [],
+
+  "source_trace": []
+}
+```
+
+Visible context может показать только `what_player_can_notice`, но не `what_is_hidden`, если нет раскрытия.
+
+## 14. Hidden event state
+
+Скрытые события — это timers, delayed events, NPC movement, worsening weather, calls for help, guard reaction, deterioration, approaching danger, changing access.
+
+```json id="e3m4um"
+{
+  "hidden_event_state_id": "hidden_event_001",
+
+  "event_type": "timer | delayed_event | npc_reaction | weather_shift | access_change | witness_report | sound_source | route_change | social_escalation | item_discovery | container_change",
+
+  "event_status": "armed | pending | triggered | resolved | cancelled | dormant",
+
+  "event_visibility": {
+    "known_to_player": false,
+    "known_to_character": false,
+    "visible_hint_now": "string | null",
+    "must_not_reveal_until_triggered": true
+  },
+
+  "trigger": {
+    "trigger_type": "time_passed | player_action | noise | theft | violence | conversation | inspection | movement | weather | npc_schedule | failed_check | successful_check",
+    "trigger_params": {}
+  },
+
+  "effect": {
+    "effect_type": "npc_moves | npc_reacts | door_opens | door_closes | witness_arrives | danger_increases | item_state_changes | weather_changes | route_blocks | social_risk_increases",
+    "effect_summary_for_system": "string",
+    "writes_to_tables": []
+  },
+
+  "timer": {
+    "starts_at_clock": "string | null",
+    "fires_after_minutes": 0,
+    "expires_after_minutes": 0,
+    "paused": false
+  },
+
+  "source_trace": []
+}
+```
+
+Скрытое событие не должно быть “сюжетом ради сюжета”. Оно должно вытекать из уже утверждённых NPC, места, времени, погоды, предметов, доступа или рисков.
+
+## 15. Hidden social state
+
+Скрытые социальные условия сцены.
+
+```json id="gxppp3"
+{
+  "hidden_social_state_id": "hidden_social_001",
+
+  "social_context_type": "authority_pressure | property_order | taboo | debt | household_order | community_rule | guard_order | patronage | conflict | reputation",
+
+  "applies_to": {
+    "npc_instance_ids": [],
+    "item_instance_ids": [],
+    "container_instance_ids": [],
+    "anchor_ids": [],
+    "player_character_id": "string"
+  },
+
+  "hidden_rule": "string",
+
+  "visible_hint": "string | null",
+
+  "risk_if_violated": "none | low | medium | high | severe",
+
+  "who_enforces": {
+    "npc_instance_ids": [],
+    "authority_ref": "string | null"
+  },
+
+  "reveal_condition_ids": [],
+  "consequence_hook_ids": [],
+  "source_trace": []
+}
+```
+
+Пример: игрок видит чужой ларь, но не знает, что его открытие нарушит порядок конкретного двора и заставит NPC звать хозяина.
+
+## 16. Hidden route state
+
+Скрытое состояние ближайших путей и проходов.
+
+```json id="wlyr9i"
+{
+  "hidden_route_state_id": "hidden_route_001",
+
+  "route_ref": {
+    "g5_edge_id": "string | null",
+    "graph_edge_id": "string | null",
+    "route_id": "string | null"
+  },
+
+  "actual_state": "open | blocked | dangerous | watched | unknown | one_way | seasonally_limited | hidden",
+
+  "visible_state": "visible_open | visible_closed | uncertain | not_visible",
+
+  "known_to_character": "yes | no | partly | mistaken",
+
+  "hidden_risks": [],
+
+  "triggered_changes": [],
+
+  "reveal_condition_ids": [],
+  "source_trace": []
+}
+```
+
+Если персонаж видит проход, это не значит, что он знает, безопасен ли путь за ним.
+
+## 17. Hidden environment state
+
+Скрытые или неочевидные условия среды.
+
+```json id="mgad88"
+{
+  "hidden_environment_state_id": "hidden_env_001",
+
+  "environment_target": {
+    "target_type": "anchor | minilocation | edge | whole_scene | route",
+    "target_id": "string"
+  },
+
+  "hidden_condition_type": "slippery | weak_floor | smoke | unstable_object | cold_pocket | water_depth | mud | ice | animal_trace | old_fire | recent_movement | concealed_sound | smell",
+
+  "actual_condition": "string",
+
+  "visible_hint": "string | null",
+
+  "detectable_by": [
+    "inspection",
+    "attention_check",
+    "survival_check",
+    "craft_check",
+    "smell",
+    "sound",
+    "touch",
+    "light"
+  ],
+
+  "risk_if_ignored": "none | low | medium | high | severe",
+
+  "reveal_condition_ids": [],
+  "source_trace": []
+}
+```
+
+## 18. Discovery rules
+
+`discovery_rules` описывают, как скрытое становится известным.
+
+```json id="ousdol"
+{
+  "discovery_rule_id": "discovery_001",
+
+  "hidden_fact_ids": [],
+
+  "discovery_method": "look | inspect | search | listen | smell | touch | ask_npc | threaten | pay | wait | follow | open | break | move_closer | use_item | skill_check | accidental",
+
+  "requirements": {
+    "required_anchor_id": "string | null",
+    "required_distance_band": "same_anchor | near | short | medium | any",
+    "required_light": "none | dim | daylight | firelit | any",
+    "required_tool_item_id": "string | null",
+    "required_npc_id": "string | null",
+    "required_skill": "string | null",
+    "required_permission": false,
+    "required_time_minutes": 0
+  },
+
+  "difficulty": {
+    "check_required": false,
+    "check_type": "attention | craft | survival | stealth | communication | force | custom | none",
+    "difficulty_band": "trivial | easy | ordinary | hard | very_hard | impossible_without_condition"
+  },
+
+  "result_if_success": {
+    "reveals_to_character": [],
+    "moves_to_visible_context": [],
+    "adds_to_character_knowledge": []
+  },
+
+  "result_if_failure": {
+    "nothing_happens": true,
+    "risk_trigger_ids": [],
+    "consequence_hook_ids": []
+  }
+}
+```
+
+## 19. Reveal conditions
+
+`reveal_conditions` — машинный слой для visible context и narrator.
+
+```json id="2zznqu"
+{
+  "reveal_condition_id": "reveal_001",
+
+  "hidden_fact_id": "hidden_fact_001",
+
+  "can_reveal_to": "player | character | npc | system_only",
+
+  "reveal_channel": "visible_context | narrator_after_action | journal_after_discovery | npc_dialogue | map_update | inventory_update | consequence",
+
+  "condition_type": "immediate_visible | inspection_success | action_success | dialogue_success | time_trigger | witness_report | forced_open | moved_closer | light_changed | weather_changed",
+
+  "condition_params": {},
+
+  "reveal_text_policy": {
+    "allowed_summary_level": "hint | partial | full",
+    "must_not_reveal_extra": true,
+    "must_not_explain_hidden_cause": true
+  }
+}
+```
+
+## 20. Consequence hooks
+
+`consequence_hooks` описывают, что произойдёт, если игрок взаимодействует со скрытым состоянием.
+
+```json id="hc6uos"
+{
+  "consequence_hook_id": "consequence_001",
+
+  "hook_type": "witness_reacts | npc_attitude_changes | npc_moves | authority_called | item_transfers | item_damaged | door_state_changes | risk_increases | event_timer_starts | route_state_changes | reputation_changes | combat_starts",
+
+  "trigger_conditions": [],
+
+  "effect_scope": "current_g5 | current_g4 | place | route | npc | item | party | region",
+
+  "effect_summary_for_system": "string",
+
+  "writes": [
+    {
+      "table": "string",
+      "operation": "insert | update",
+      "record_ref": "string"
+    }
+  ],
+
+  "visible_after_trigger": "none | hint | partial | full",
+
+  "source_trace": []
+}
+```
+
+## 21. Forbidden output rules
+
+```json id="wu0x9g"
+{
+  "forbidden_output_rule_id": "forbidden_output_001",
+
+  "hidden_fact_ids": [],
+
+  "forbidden_surface": "visible_scene | visible_changes | narrator_prose | choice_label | map_ui | journal | npc_dialogue | item_label",
+
+  "rule": "do_not_reveal | reveal_only_as_hint | reveal_only_after_condition | never_reveal_directly",
+
+  "allowed_substitute": "string | null",
+
+  "reason": "hidden_state | npc_private_motive | closed_container | future_event | offscreen_fact | character_does_not_know | player_only_boundary"
+}
+```
+
+Пример:
+
+```text id="13tdtw"
+Нельзя писать: "мужик скрывает, что видел кражу".
+Можно писать после проверки: "мужик слишком быстро отвёл взгляд".
+```
+
+## 22. Player-facing boundary
+
+```json id="xy5icg"
+{
+  "player_facing_boundary": {
+    "must_not_show": [
+      "npc_private_motives",
+      "closed_container_contents",
+      "hidden_event_timers",
+      "true_owner_if_unknown",
+      "hidden_route_dangers",
+      "future_reactions",
+      "offscreen_state"
+    ],
+    "can_show_as_hint": [
+      "visible traces",
+      "odd behavior",
+      "sounds",
+      "locked state",
+      "watchful NPC",
+      "risk cues"
+    ],
+    "can_show_after_action": [
+      "inspection result",
+      "opened container content",
+      "NPC confession",
+      "witness reaction",
+      "map update after travel"
+    ],
+    "choice_label_policy": {
+      "choices_must_not_use_hidden_truth": true,
+      "choices_can_use_visible_hints": true,
+      "choices_can_offer_investigation": true
+    }
+  }
+}
+```
+
+## 23. Алгоритм этапа
+
+### 23.1. Проверить входы
+
+Код проверяет:
+
+```text id="czkr90"
+g5_scene_audit.pass = true
+npc_placement_audit.pass = true
+item_placement_audit.pass = true
+time_light_consistency_audit.pass = true
+character_knowledge_map_audit.pass = true
+```
+
+Если эти gates не пройдены, hidden state формировать нельзя.
+
+### 23.2. Собрать уже утверждённые сущности
+
+Код передаёт LLM только:
+
+```text id="z9cmvq"
+существующие NPC;
+существующие G5 anchors;
+существующие предметы;
+существующие контейнеры;
+существующие property bindings;
+существующие routes/edges;
+существующую карту знаний персонажа;
+существующие риски;
+```
+
+### 23.3. Определить скрытые факты
+
+LLM создаёт скрытые факты только для уже существующих сущностей.
+
+Допустимые типы:
+
+```text id="w883m6"
+npc_private_motive
+npc_private_knowledge
+npc_reaction_trigger
+closed_access_truth
+property_truth
+container_content_truth
+hidden_item_property
+risk_truth
+event_timer
+social_rule_truth
+route_truth
+environment_truth
+```
+
+### 23.4. Указать condition раскрытия
+
+Каждый скрытый факт обязан иметь:
+
+```text id="9n9p6v"
+reveal_condition_id
+или discovery_rule_id
+или explicit system_only flag
+```
+
+Если скрытый факт не может быть раскрыт вообще, он должен иметь:
+
+```text id="ptl8oj"
+system_only=true
+reason_why_never_directly_revealed
+```
+
+### 23.5. Сформировать consequence hooks
+
+Если скрытый факт влияет на игру, он должен иметь hook.
+
+Пример:
+
+```text id="1v97o1"
+если игрок берёт чужую вещь → witness risk → NPC reaction
+если игрок шумит у закрытой двери → NPC wakes up
+если игрок ждёт 10 минут → event timer fires
+если игрок вскрывает контейнер → container content materializes/reveals
+```
+
+### 23.6. Сформировать forbidden output rules
+
+Для каждого опасного скрытого факта:
+
+```text id="hwupk5"
+private motive
+closed content
+future event
+true ownership
+hidden danger
+offscreen actor
+```
+
+создаётся правило, запрещающее прямой вывод в visible/narrator.
+
+## 24. Что LLM делает на этапе
+
+LLM обязательна, потому что hidden state — это смысловой слой причин, мотивов, рисков и условий раскрытия.
+
+LLM делает:
+
+```text id="9qy1g3"
+задаёт скрытые мотивы NPC;
+задаёт скрытые условия доступа;
+задаёт скрытую правду собственности;
+задаёт скрытые последствия;
+задаёт timer/event hooks;
+задаёт условия раскрытия;
+разделяет system truth и player-visible hints;
+```
+
+LLM не делает:
+
+```text id="l46pm9"
+не создаёт новые места;
+не создаёт новых NPC;
+не создаёт новые предметы;
+не пишет visible scene;
+не пишет narrator prose;
+не меняет clock/season/weather;
+не меняет character knowledge;
+не раскрывает hidden state игроку.
+```
+
+## 25. LLM-параметры
+
+### 25.1. `FullHiddenStateBuilder`
+
+Назначение: сформировать полный hidden state сцены.
+
+```json id="42jx2o"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 11000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 110000,
+    "hard_input_limit_tokens": 260000,
+    "reserve_output_tokens": 11000
+  }
+}
+```
+
+Использовать reasoning-режим, потому что этап связывает NPC-мотивы, доступ, имущество, закрытые контейнеры, риски, события, правила раскрытия и запреты на вывод.
+
+### 25.2. `FullHiddenStateAuditor`
+
+Назначение: проверить hidden state на утечки, несоответствие сущностям и отсутствие условий раскрытия.
+
+```json id="5ew0fq"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 8500,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 110000,
+    "hard_input_limit_tokens": 260000,
+    "reserve_output_tokens": 8500
+  }
+}
+```
+
+### 25.3. `FullHiddenStateFormatRepairer`
+
+Назначение: исправить только JSON-формат.
+
+```json id="u3gznd"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-flash",
+  "thinking": {
+    "type": "disabled"
+  },
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "max_tokens": 5500,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 45000,
+    "hard_input_limit_tokens": 110000,
+    "reserve_output_tokens": 5500
+  }
+}
+```
+
+### 25.4. `FullHiddenStateSemanticRepairer`
+
+Назначение: исправить смысловые ошибки hidden state.
+
+```json id="rb4cag"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 11000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 110000,
+    "hard_input_limit_tokens": 260000,
+    "reserve_output_tokens": 11000
+  }
+}
+```
+
+## 26. Prompt: FullHiddenStateBuilder
+
+```md id="nnk4lg"
+# Роль
+
+Ты FullHiddenStateBuilder для исторической текстовой RPG.
+
+# Задача
+
+Сформируй полный hidden state текущей стартовой сцены.
+
+# Главное правило
+
+Ты создаёшь только скрытое состояние уже утверждённой сцены.
+Ты не создаёшь новые места.
+Ты не создаёшь новых NPC.
+Ты не создаёшь новые предметы.
+Ты не создаёшь новые G5 anchors.
+Ты не пишешь visible_scene.
+Ты не пишешь intro_prose.
+Ты не раскрываешь hidden state игроку.
+
+# Используй только входные данные
+
+- historical_frame
+- weather_state
+- selected_start_node
+- player_character
+- g5_scene_graph
+- initial_npc_placement
+- initial_item_placement
+- time_light_consistency_audit
+- character_knowledge_map
+- regional_context_package
+- hidden_state_policy
+
+# Обязательные правила
+
+1. Каждый hidden fact должен иметь stable id.
+2. Каждый hidden fact должен ссылаться на существующую сущность.
+3. Нельзя создавать npc_id, item_id, container_id, anchor_id, route_id, которых нет во входе.
+4. Каждый hidden fact должен иметь reveal_condition или discovery_rule.
+5. Если hidden fact никогда не раскрывается напрямую, укажи system_only=true и причину.
+6. Каждый риск должен иметь trigger.
+7. Каждый consequence hook должен ссылаться на существующую сущность.
+8. NPC private motive нельзя показывать в player-facing text.
+9. Closed container contents нельзя показывать без открытия/осмотра/условия.
+10. True ownership нельзя раскрывать, если персонаж этого не знает.
+11. Future event timers нельзя раскрывать напрямую.
+12. Hidden state не должен противоречить character_knowledge_map.
+
+# Формат
+
+Верни только json.
+
+schema:
+"full_hidden_scene_state"
+
+version:
+1
+```
+
+## 27. Prompt: FullHiddenStateAuditor
+
+```md id="zso6om"
+# Роль
+
+Ты FullHiddenStateAuditor.
+
+# Задача
+
+Проверь full_hidden_scene_state.
+
+# Главное правило
+
+Ты не исправляешь hidden state.
+Ты только аудируешь.
+
+# Проверить
+
+1. schema = full_hidden_scene_state.
+2. version = 1.
+3. Все hidden facts имеют id.
+4. Все refs указывают на существующие NPC/items/containers/anchors/routes.
+5. Нет новых NPC.
+6. Нет новых items.
+7. Нет новых containers.
+8. Нет новых anchors.
+9. Каждый hidden fact имеет reveal_condition/discovery_rule или system_only reason.
+10. NPC private motives не отмечены как visible.
+11. Closed container contents не отмечены как visible.
+12. True ownership не раскрывается, если character_knowledge_map не знает этого.
+13. Future events не раскрываются visible context.
+14. Каждый risk имеет trigger.
+15. Каждый consequence hook имеет trigger and target.
+16. forbidden_output_rules покрывают private motives, container contents, future events, hidden ownership.
+17. Hidden state не противоречит character_knowledge_map.
+18. Hidden state не содержит visible_scene.
+19. Hidden state не содержит intro_prose.
+20. source_trace достаточен.
+
+# Формат
+
+Верни только json:
+
+{
+  "version": 1,
+  "schema": "full_hidden_state_audit",
+  "pass": true,
+  "concerns": [],
+  "evidence": []
+}
+
+Если pass=false:
+- concerns не должен быть пустым;
+- evidence не должен быть пустым.
+```
+
+## 28. Prompt: FullHiddenStateFormatRepairer
+
+```md id="yn2r0t"
+# Роль
+
+Ты FullHiddenStateFormatRepairer.
+
+# Задача
+
+Исправь только формат JSON full_hidden_scene_state или audit.
+
+# Главное правило
+
+Не меняй смысл.
+Не добавляй hidden facts.
+Не удаляй hidden facts.
+Не создавай NPC, item, container, anchor, route.
+Не создавай visible_scene.
+Не создавай intro_prose.
+
+# Разрешено
+
+- убрать markdown;
+- привести schema/version;
+- переименовать ошибочные поля;
+- добавить отсутствующие служебные поля как null/[];
+- перенести свободный текст в notes;
+- удалить player-facing prose.
+
+# Формат
+
+Верни только json.
+```
+
+## 29. Prompt: FullHiddenStateSemanticRepairer
+
+```md id="pxfj2a"
+# Роль
+
+Ты FullHiddenStateSemanticRepairer.
+
+# Задача
+
+Исправь full_hidden_scene_state по validationErrors и audit concerns.
+
+# Главное правило
+
+Исправляй только скрытое состояние уже существующих сущностей.
+
+# Источники
+
+Используй только:
+- validationErrors
+- audit.concerns
+- исходный full_hidden_scene_state
+- historical_frame
+- selected_start_node
+- player_character
+- g5_scene_graph
+- initial_npc_placement
+- initial_item_placement
+- character_knowledge_map
+- regional_context_package
+
+# Запрещено
+
+- создавать новые NPC;
+- создавать новые предметы;
+- создавать новые контейнеры;
+- создавать новые G5 anchors;
+- менять visible knowledge персонажа без отдельного этапа;
+- писать visible_scene;
+- писать intro_prose;
+- раскрывать hidden state.
+
+# Если hidden fact не имеет основания
+
+Переведи его в blocked/unresolved hidden gap или удали, если он не связан с существующей сущностью.
+
+# Формат
+
+Верни только json full_hidden_scene_state.
+```
+
+## 30. Code precheck
+
+Перед LLM-аудитом код должен проверить:
+
+```json id="klf40a"
+{
+  "version": 1,
+  "schema": "full_hidden_state_code_precheck",
+  "pass": true,
+  "checks": {
+    "schema_valid": true,
+    "all_hidden_fact_ids_present": true,
+    "all_npc_refs_exist": true,
+    "all_item_refs_exist": true,
+    "all_container_refs_exist": true,
+    "all_anchor_refs_exist": true,
+    "all_route_refs_exist": true,
+    "no_new_entities_created": true,
+    "reveal_conditions_present": true,
+    "discovery_rules_present": true,
+    "consequence_hooks_valid": true,
+    "forbidden_output_rules_present": true,
+    "no_visible_scene_created": true,
+    "no_intro_prose_created": true,
+    "source_trace_present": true
+  },
+  "concerns": [],
+  "evidence": []
+}
+```
+
+Если code precheck провален, semantic audit можно не запускать. Результат отправляется в repair.
+
+## 31. Validation rules
+
+Код обязан проверить:
+
+1. `schema === "full_hidden_scene_state"`.
+2. `version === 1`.
+3. `hidden_state_status` входит в enum.
+4. Каждый hidden block имеет id.
+5. Каждый `npc_instance_id` существует.
+6. Каждый `item_instance_id` существует.
+7. Каждый `container_instance_id` существует.
+8. Каждый `g5_anchor_id` существует.
+9. Каждый `g5_edge_id` существует, если указан.
+10. Каждый `route_id` существует, если указан.
+11. Нет новых NPC.
+12. Нет новых items.
+13. Нет новых containers.
+14. Нет новых G5 anchors.
+15. Нет новых G4/G3/G2/G1.
+16. Каждый hidden fact имеет `reveal_condition_ids` или `discovery_rule_ids` или `system_only=true`.
+17. Каждый risk имеет trigger.
+18. Каждый event имеет trigger.
+19. Каждый consequence hook имеет target.
+20. Каждый consequence hook имеет effect scope.
+21. Closed container contents не marked visible.
+22. NPC private motives не marked visible.
+23. True ownership не marked visible, если character does not know.
+24. Future event timers не marked visible.
+25. Forbidden output rules покрывают все sensitive hidden facts.
+26. Hidden state не противоречит character_knowledge_map.
+27. Hidden state не противоречит time_light_consistency_audit.
+28. Hidden state не противоречит item/access/property bindings.
+29. Hidden state не содержит `visible_scene`.
+30. Hidden state не содержит `intro_prose`.
+31. Hidden state не содержит `narrator_text`.
+32. `source_trace` не пустой, если require_source_trace=true.
+33. `audit_self_check.evidence` не пустой.
+34. Если `audit_self_check.pass=false`, concerns не пустой.
+
+## 32. Error codes
+
+```text id="sqjdkz"
+HIDDEN_STATE_INVALID_JSON
+HIDDEN_STATE_SCHEMA_MISMATCH
+HIDDEN_STATE_MISSING_HIDDEN_FACT_ID
+HIDDEN_STATE_NPC_REF_NOT_FOUND
+HIDDEN_STATE_ITEM_REF_NOT_FOUND
+HIDDEN_STATE_CONTAINER_REF_NOT_FOUND
+HIDDEN_STATE_ANCHOR_REF_NOT_FOUND
+HIDDEN_STATE_ROUTE_REF_NOT_FOUND
+HIDDEN_STATE_CREATED_NPC
+HIDDEN_STATE_CREATED_ITEM
+HIDDEN_STATE_CREATED_CONTAINER
+HIDDEN_STATE_CREATED_G5_ANCHOR
+HIDDEN_STATE_CREATED_PARENT_LOCATION
+HIDDEN_STATE_NO_REVEAL_CONDITION
+HIDDEN_STATE_NO_DISCOVERY_RULE
+HIDDEN_STATE_NO_SYSTEM_ONLY_REASON
+HIDDEN_STATE_RISK_WITHOUT_TRIGGER
+HIDDEN_STATE_EVENT_WITHOUT_TRIGGER
+HIDDEN_STATE_CONSEQUENCE_WITHOUT_TARGET
+HIDDEN_STATE_CONSEQUENCE_WITHOUT_EFFECT
+HIDDEN_STATE_CONTAINER_CONTENTS_VISIBLE
+HIDDEN_STATE_NPC_PRIVATE_MOTIVE_VISIBLE
+HIDDEN_STATE_TRUE_OWNERSHIP_VISIBLE
+HIDDEN_STATE_FUTURE_EVENT_VISIBLE
+HIDDEN_STATE_FORBIDDEN_OUTPUT_RULE_MISSING
+HIDDEN_STATE_CHARACTER_KNOWLEDGE_CONFLICT
+HIDDEN_STATE_TIME_LIGHT_CONFLICT
+HIDDEN_STATE_PROPERTY_CONFLICT
+HIDDEN_STATE_CREATED_VISIBLE_SCENE
+HIDDEN_STATE_CREATED_INTRO_PROSE
+HIDDEN_STATE_CREATED_NARRATOR_TEXT
+HIDDEN_STATE_SOURCE_MISSING
+HIDDEN_STATE_EMPTY_AUDIT_EVIDENCE
+```
+
+## 33. DB write на этом этапе
+
+До аудита разрешено писать:
+
+```text id="rpjz20"
+pipeline_step_status
+full_hidden_scene_state_draft_snapshot
+full_hidden_state_code_precheck_snapshot
+full_hidden_state_validation_issues
+full_hidden_state_repair_attempts
+source_trace_snapshot
+```
+
+После успешного аудита и commit gate разрешено писать:
+
+```text id="w5xxln"
+party_hidden_npc_state
+party_hidden_access_state
+party_hidden_property_state
+party_hidden_container_state
+party_hidden_item_state
+party_hidden_risk_state
+party_hidden_event_state
+party_hidden_social_state
+party_hidden_route_state
+party_hidden_environment_state
+party_discovery_rules
+party_reveal_conditions
+party_consequence_hooks
+party_forbidden_output_rules
+party_player_facing_boundary
+```
+
+Запрещено писать:
+
+```text id="a5s5d2"
+visible_scene
+intro_prose
+narrator_output
+player_choice_labels
+map_ui_visible_labels
+journal_player_text
+new_world_entities
+```
+
+## 34. Commit gate этапа
+
+Этап считается успешным, если:
+
+```text id="9mf6s6"
+full_hidden_scene_state валиден,
+все hidden facts связаны с существующими сущностями,
+нет новых NPC/items/containers/anchors/routes,
+каждый hidden fact имеет reveal/discovery/system_only правило,
+каждый риск и событие имеют trigger,
+private NPC motives закрыты,
+closed container contents закрыты,
+true ownership закрыт, если персонаж этого не знает,
+future timers закрыты,
+forbidden_output_rules покрывают скрытые факты,
+нет visible_scene/intro_prose/narrator_text,
+audit pass=true.
+```
+
+Если commit gate не пройден, pipeline не должен переходить к visible context.
+
+## 35. Передача в следующий этап
+
+```json id="m2b94z"
+{
+  "version": 1,
+  "schema": "visible_context_builder_input",
+  "request_id": "string",
+
+  "historical_frame": {},
+  "weather_state": {},
+  "selected_start_node": {},
+  "player_character": {},
+  "g5_scene_graph": {},
+  "initial_npc_placement": {},
+  "initial_item_placement": {},
+  "time_light_consistency_audit": {},
+  "character_knowledge_map": {},
+
+  "full_hidden_scene_state": {
+    "version": 1,
+    "schema": "full_hidden_scene_state",
+    "hidden_state_status": "formed"
+  },
+
+  "full_hidden_state_audit": {
+    "version": 1,
+    "schema": "full_hidden_state_audit",
+    "pass": true
+  },
+
+  "constraints": {
+    "visible_context_must_not_show_hidden_state": true,
+    "visible_context_must_use_reveal_conditions": true,
+    "visible_context_must_respect_character_knowledge_map": true,
+    "choice_labels_must_not_use_hidden_truth": true,
+    "narrator_must_not_explain_hidden_causes": true,
+    "closed_container_contents_hidden_until_opened": true,
+    "npc_private_motives_hidden_until_revealed": true,
+    "future_event_timers_hidden_until_triggered": true
+  }
+}
+```
+
+## 36. Минимальный успешный результат
+
+```json id="ackjyx"
+{
+  "version": 1,
+  "schema": "full_hidden_scene_state",
+  "request_id": "req_001",
+
+  "hidden_state_status": "formed",
+
+  "frame": {
+    "region_id": "region_001",
+    "year": 1230,
+    "season": "winter",
+    "clock": {
+      "day": 1,
+      "hour": 3,
+      "minute": 45,
+      "time_of_day": "deep_night",
+      "light_profile": "dark"
+    },
+    "weather_state": {
+      "weather_kind": "cloudy",
+      "temperature_band": "cold",
+      "visibility_weather_modifier": "reduced"
+    }
+  },
+
+  "parent_scene": {
+    "g4_node_id": "g4_001",
+    "g5_scene_id": null,
+    "player_current_anchor_id": "g5_anchor_001"
+  },
+
+  "hidden_npc_state": [
+    {
+      "hidden_npc_state_id": "hidden_npc_001",
+      "npc_instance_id": "npc_001",
+      "npc_profile_level": "scene",
+      "private_motives": [
+        {
+          "motive_id": "motive_001",
+          "motive_type": "duty",
+          "motive_summary": "NPC wants to keep order around controlled property.",
+          "strength": "medium",
+          "known_to_player": false,
+          "known_to_character": false,
+          "reveal_condition_ids": [
+            "reveal_001"
+          ]
+        }
+      ],
+      "private_constraints": [
+        {
+          "constraint_id": "npc_constraint_001",
+          "constraint_type": "must_guard",
+          "constraint_summary": "NPC will react if controlled property is touched without permission.",
+          "trigger_conditions": [
+            "player_touches_controlled_item",
+            "player_opens_controlled_container"
+          ],
+          "reveal_condition_ids": [
+            "reveal_002"
+          ]
+        }
+      ],
+      "private_knowledge": [],
+      "reaction_model": {
+        "if_player_approaches": "watch cautiously",
+        "if_player_asks": "answer briefly if social risk is low",
+        "if_player_threatens": "call for help or withdraw",
+        "if_player_steals": "try to stop player or call witnesses",
+        "if_player_uses_violence": "flee, call others, or defend depending distance",
+        "if_player_respects_order": "remain neutral",
+        "if_witnesses_present": "become more confident"
+      },
+      "memory_hooks": [
+        "remembers_player_if_theft_or_threat_occurs"
+      ],
+      "consequence_hooks": [
+        "consequence_001"
+      ],
+      "source_trace": [
+        {
+          "record_id": "npc_001",
+          "table": "party_npcs",
+          "source_ids": [
+            "source_001"
+          ],
+          "supports": [
+            "hidden_npc_state"
+          ]
+        }
+      ]
+    }
+  ],
+
+  "hidden_access_state": [
+    {
+      "hidden_access_state_id": "hidden_access_001",
+      "access_target": {
+        "target_type": "g5_anchor",
+        "target_id": "g5_anchor_002"
+      },
+      "access_truth": {
+        "actual_state": "closed",
+        "visible_state": "closed",
+        "state_known_to_player": true,
+        "state_known_to_character": true
+      },
+      "access_requirements": {
+        "requires_key": false,
+        "requires_tool": false,
+        "requires_force": false,
+        "requires_permission": true,
+        "requires_skill_check": false,
+        "requires_time_minutes": 0,
+        "requires_social_status": null,
+        "requires_npc_permission_id": "npc_001"
+      },
+      "control": {
+        "controller_type": "npc",
+        "controller_id": "npc_001",
+        "controller_knows_state": true
+      },
+      "risk_if_attempted": {
+        "noise_risk": "low",
+        "witness_risk": "medium",
+        "damage_risk": "low",
+        "social_risk": "medium",
+        "violence_risk": "low"
+      },
+      "reveal_condition_ids": [
+        "reveal_003"
+      ],
+      "consequence_hook_ids": [
+        "consequence_002"
+      ],
+      "source_trace": []
+    }
+  ],
+
+  "hidden_property_state": [
+    {
+      "hidden_property_state_id": "hidden_property_001",
+      "property_target": {
+        "target_type": "item",
+        "target_id": "item_001"
+      },
+      "ownership_truth": {
+        "owner_model": "household",
+        "owner_id": null,
+        "holder_model": "anchor",
+        "holder_id": "g5_anchor_001",
+        "controller_model": "npc",
+        "controller_id": "npc_001",
+        "known_to_player": false,
+        "known_to_character": false
+      },
+      "property_status": {
+        "legal_or_social_status": "owned",
+        "is_takeable_without_consequence": false,
+        "is_tradeable": false,
+        "is_sacred_or_taboo": false,
+        "is_authority_controlled": false
+      },
+      "risk_truth": {
+        "theft_risk": "medium",
+        "witness_risk": "medium",
+        "punishment_risk": "medium",
+        "reputation_risk": "medium",
+        "violence_risk": "low",
+        "risk_basis": [
+          "item is not player property",
+          "nearby NPC can witness interaction"
+        ]
+      },
+      "reveal_condition_ids": [
+        "reveal_004"
+      ],
+      "consequence_hook_ids": [
+        "consequence_001"
+      ],
+      "source_trace": []
+    }
+  ],
+
+  "hidden_container_state": [
+    {
+      "hidden_container_state_id": "hidden_container_001",
+      "container_instance_id": "container_001",
+      "container_truth": {
+        "actual_state": "closed",
+        "visible_state": "visible_closed",
+        "known_to_player": true,
+        "known_to_character": true
+      },
+      "content_truth": {
+        "content_policy": "not_materialized",
+        "content_known_to_player": false,
+        "content_known_to_character": false,
+        "content_instance_ids": [],
+        "content_summary_for_system": null,
+        "content_must_not_be_regenerated_after_defined": true,
+        "content_must_not_be_revealed_without_condition": true
+      },
+      "access_truth": {
+        "can_open_freely": false,
+        "requires_key": false,
+        "requires_tool": false,
+        "requires_force": false,
+        "requires_permission": true,
+        "controller_id": "npc_001",
+        "time_to_open_minutes": 1
+      },
+      "intervention_traces": {
+        "has_visible_damage": false,
+        "has_hidden_damage": false,
+        "has_recent_use_trace": false,
+        "has_foreign_access_trace": false,
+        "trace_reveal_condition_ids": []
+      },
+      "risk_truth": {
+        "opening_risk": "medium",
+        "noise_risk": "low",
+        "witness_risk": "medium",
+        "damage_risk": "low",
+        "punishment_risk": "medium"
+      },
+      "reveal_condition_ids": [
+        "reveal_005"
+      ],
+      "consequence_hook_ids": [
+        "consequence_002"
+      ],
+      "source_trace": []
+    }
+  ],
+
+  "hidden_item_state": [],
+
+  "hidden_risk_state": [
+    {
+      "hidden_risk_state_id": "hidden_risk_001",
+      "risk_target": {
+        "target_type": "action",
+        "target_id": "touch_or_take_item_001"
+      },
+      "risk_type": "witness",
+      "actual_severity": "medium",
+      "visible_hint_level": "faint",
+      "what_player_can_notice": "nearby NPC may be able to see the item",
+      "what_is_hidden": "NPC is specifically watching controlled property more closely than it first appears",
+      "trigger_conditions": [
+        "player_touches_item_001",
+        "player_takes_item_001"
+      ],
+      "consequence_hook_ids": [
+        "consequence_001"
+      ],
+      "reveal_condition_ids": [
+        "reveal_001"
+      ],
+      "source_trace": []
+    }
+  ],
+
+  "hidden_event_state": [
+    {
+      "hidden_event_state_id": "hidden_event_001",
+      "event_type": "npc_reaction",
+      "event_status": "armed",
+      "event_visibility": {
+        "known_to_player": false,
+        "known_to_character": false,
+        "visible_hint_now": null,
+        "must_not_reveal_until_triggered": true
+      },
+      "trigger": {
+        "trigger_type": "theft",
+        "trigger_params": {
+          "item_instance_id": "item_001",
+          "witness_npc_id": "npc_001"
+        }
+      },
+      "effect": {
+        "effect_type": "npc_reacts",
+        "effect_summary_for_system": "NPC challenges player or calls for help.",
+        "writes_to_tables": [
+          "party_npc_attention_state",
+          "party_consequence_log"
+        ]
+      },
+      "timer": {
+        "starts_at_clock": null,
+        "fires_after_minutes": 0,
+        "expires_after_minutes": 0,
+        "paused": false
+      },
+      "source_trace": []
+    }
+  ],
+
+  "hidden_social_state": [
+    {
+      "hidden_social_state_id": "hidden_social_001",
+      "social_context_type": "property_order",
+      "applies_to": {
+        "npc_instance_ids": [
+          "npc_001"
+        ],
+        "item_instance_ids": [
+          "item_001"
+        ],
+        "container_instance_ids": [
+          "container_001"
+        ],
+        "anchor_ids": [
+          "g5_anchor_001"
+        ],
+        "player_character_id": "player_character_001"
+      },
+      "hidden_rule": "Taking or opening controlled property without permission will be treated as a violation of local order.",
+      "visible_hint": "NPC appears able to notice nearby actions.",
+      "risk_if_violated": "medium",
+      "who_enforces": {
+        "npc_instance_ids": [
+          "npc_001"
+        ],
+        "authority_ref": null
+      },
+      "reveal_condition_ids": [
+        "reveal_006"
+      ],
+      "consequence_hook_ids": [
+        "consequence_001"
+      ],
+      "source_trace": []
+    }
+  ],
+
+  "hidden_route_state": [],
+
+  "hidden_environment_state": [],
+
+  "discovery_rules": [
+    {
+      "discovery_rule_id": "discovery_001",
+      "hidden_fact_ids": [
+        "hidden_property_001",
+        "hidden_risk_001"
+      ],
+      "discovery_method": "inspect",
+      "requirements": {
+        "required_anchor_id": "g5_anchor_001",
+        "required_distance_band": "near",
+        "required_light": "any",
+        "required_tool_item_id": null,
+        "required_npc_id": null,
+        "required_skill": "attention",
+        "required_permission": false,
+        "required_time_minutes": 1
+      },
+      "difficulty": {
+        "check_required": true,
+        "check_type": "attention",
+        "difficulty_band": "ordinary"
+      },
+      "result_if_success": {
+        "reveals_to_character": [
+          "item appears controlled by someone nearby"
+        ],
+        "moves_to_visible_context": [
+          "property risk hint"
+        ],
+        "adds_to_character_knowledge": [
+          "possible owner/controller unknown"
+        ]
+      },
+      "result_if_failure": {
+        "nothing_happens": true,
+        "risk_trigger_ids": [],
+        "consequence_hook_ids": []
+      }
+    }
+  ],
+
+  "reveal_conditions": [
+    {
+      "reveal_condition_id": "reveal_001",
+      "hidden_fact_id": "hidden_npc_001",
+      "can_reveal_to": "character",
+      "reveal_channel": "visible_context",
+      "condition_type": "inspection_success",
+      "condition_params": {
+        "discovery_rule_id": "discovery_001"
+      },
+      "reveal_text_policy": {
+        "allowed_summary_level": "hint",
+        "must_not_reveal_extra": true,
+        "must_not_explain_hidden_cause": true
+      }
+    }
+  ],
+
+  "consequence_hooks": [
+    {
+      "consequence_hook_id": "consequence_001",
+      "hook_type": "witness_reacts",
+      "trigger_conditions": [
+        "player_takes_item_001_without_permission"
+      ],
+      "effect_scope": "current_g5",
+      "effect_summary_for_system": "NPC notices the violation and reacts according to attention state.",
+      "writes": [
+        {
+          "table": "party_npc_attention_state",
+          "operation": "update",
+          "record_ref": "npc_001"
+        }
+      ],
+      "visible_after_trigger": "partial",
+      "source_trace": []
+    }
+  ],
+
+  "forbidden_output_rules": [
+    {
+      "forbidden_output_rule_id": "forbidden_output_001",
+      "hidden_fact_ids": [
+        "hidden_npc_001",
+        "hidden_property_001",
+        "hidden_event_001"
+      ],
+      "forbidden_surface": "visible_scene",
+      "rule": "reveal_only_as_hint",
+      "allowed_substitute": "NPC appears watchful or close enough to notice.",
+      "reason": "npc_private_motive"
+    },
+    {
+      "forbidden_output_rule_id": "forbidden_output_002",
+      "hidden_fact_ids": [
+        "hidden_container_001"
+      ],
+      "forbidden_surface": "visible_scene",
+      "rule": "do_not_reveal",
+      "allowed_substitute": "The container is closed.",
+      "reason": "closed_container"
+    }
+  ],
+
+  "player_facing_boundary": {
+    "must_not_show": [
+      "npc_private_motives",
+      "closed_container_contents",
+      "hidden_event_timers",
+      "true_owner_if_unknown",
+      "future_reactions"
+    ],
+    "can_show_as_hint": [
+      "watchful NPC",
+      "closed container",
+      "risk cues",
+      "visible traces"
+    ],
+    "can_show_after_action": [
+      "inspection result",
+      "opened container content",
+      "NPC reaction",
+      "witness consequence"
+    ],
+    "choice_label_policy": {
+      "choices_must_not_use_hidden_truth": true,
+      "choices_can_use_visible_hints": true,
+      "choices_can_offer_investigation": true
+    }
+  },
+
+  "source_trace": [
+    {
+      "record_id": "npc_001",
+      "table": "party_npcs",
+      "source_ids": [
+        "source_001"
+      ],
+      "supports": [
+        "hidden_npc_state"
+      ]
+    },
+    {
+      "record_id": "container_001",
+      "table": "party_containers",
+      "source_ids": [
+        "source_002"
+      ],
+      "supports": [
+        "hidden_container_state"
+      ]
+    }
+  ],
+
+  "audit_self_check": {
+    "pass": true,
+    "concerns": [],
+    "evidence": [
+      "All hidden facts reference existing scene entities.",
+      "No new NPC, item, container or G5 anchor was created.",
+      "Each hidden fact has reveal condition, discovery rule or system-only boundary.",
+      "Closed container contents are not visible.",
+      "NPC private motives are not visible.",
+      "Forbidden output rules prevent hidden state from leaking into visible scene or narrator prose."
+    ]
+  }
+}
+```

@@ -1,0 +1,1626 @@
+# Этап 13. Материализация стартовой G5-сцены
+
+## 1. Назначение этапа
+
+Материализация стартовой G5-сцены — это этап запуска новой партии, на котором выбранная G4-локация разворачивается в точный сценический граф: минилокации, G5-якоря, связи между ними, доступность, видимость, базовые зоны действия и стартовая позиция персонажа внутри сцены.
+
+Этот этап впервые создаёт конкретную стартовую сценическую геометрию партии.
+
+До этого уже утверждены:
+
+* историческая рамка;
+* регион;
+* сезон;
+* точное время суток;
+* выбранный стартовый G1–G4 узел;
+* разрешённый `place_template`;
+* персонаж игрока;
+* NPC-кандидаты;
+* item/container/property-профили.
+
+На этом этапе LLM не придумывает новую G4-локацию. Она разворачивает уже выбранную G4-локацию в G5 только по допустимым G5-шаблонам.
+
+Короткая формула:
+
+```text
+selected_start_node.G4
++ selected_place_template
++ allowed_g5_templates_for_g4_type
++ historical_frame.clock
++ player_character
++ npc_candidate_set
++ item_profile_candidate_set
+→ g5_scene_graph_draft
+```
+
+## 2. Главное правило этапа
+
+G5 создаётся только внутри выбранной G4-локации.
+
+Запрещено:
+
+* менять G4;
+* менять G3/G2/G1;
+* создавать новое место;
+* создавать новый `place_template`;
+* создавать G5-якоря вне разрешённых G5-шаблонов;
+* создавать NPC вне `npc_candidate_set`;
+* создавать предметы вне `item_profile_candidate_set`;
+* писать стартовую прозу;
+* создавать hidden event;
+* менять персонажа игрока;
+* подменять время суток;
+* описывать дневную сцену при ночном `clock`;
+* создавать все G5 для региона заранее.
+
+Разрешено:
+
+* создать стартовые G5-якоря внутри выбранного G4;
+* создать минилокации внутри выбранного G4;
+* создать локальные связи G5↔G5;
+* назначить стартовую точку персонажа;
+* задать видимость и доступность якорей;
+* подготовить места, куда позже могут быть привязаны NPC и предметы;
+* обозначить, какие якоря видимы, скрыты, закрыты или требуют действия;
+* вернуть audit-ready JSON.
+
+## 3. Место этапа в pipeline
+
+```text
+1. Заявка игрока
+2. Нормализация заявки
+3. Выбор исторической рамки
+4. Загрузка регионального контекста
+5. Подбор стартовых G1–G4 кандидатов
+6. Подбор place templates
+7. Подбор NPC-кандидатов
+8. Подбор предметных профилей
+9. Выбор стартового узла
+10. Аудит стартового места
+11. Генерация персонажа
+12. Аудит персонажа
+13. Материализация стартовой G5-сцены
+14. Аудит G5-сцены
+15. Размещение стартовых NPC
+16. Размещение стартовых предметов
+```
+
+Этап 13 создаёт сценическую геометрию, но ещё не обязан размещать всех NPC и предметы. Их можно привязывать позже, уже к утверждённым G5-якорям.
+
+## 4. Вход этапа
+
+```json
+{
+  "version": 1,
+  "schema": "g5_materialization_input",
+  "request_id": "string",
+
+  "normalized_request": {
+    "version": 1,
+    "schema": "new_game_normalized_request"
+  },
+
+  "historical_frame": {
+    "version": 1,
+    "schema": "historical_frame",
+    "region": {
+      "region_id": "string"
+    },
+    "year": {
+      "value": 0
+    },
+    "calendar": {
+      "season": "spring | summer | autumn | winter"
+    },
+    "clock": {
+      "day": 1,
+      "hour": 0,
+      "minute": 0,
+      "time_of_day": "morning | day | evening | night | deep_night",
+      "light_profile": "dark | dim | daylight | twilight"
+    }
+  },
+
+  "regional_context_package": {
+    "version": 1,
+    "schema": "regional_context_package",
+    "g5_context": {},
+    "weather_and_season_context": {},
+    "route_context": {},
+    "property_context": {},
+    "item_context": {},
+    "npc_context": {}
+  },
+
+  "selected_start_node": {
+    "version": 1,
+    "schema": "selected_start_node",
+    "selected": {
+      "selected_candidate_id": "string",
+      "selected_node_id": "string",
+      "selected_scale_level": "G4",
+      "selected_place_template_id": "string"
+    },
+    "selected_node_chain": {
+      "g1_node_id": "string",
+      "g2_node_id": "string",
+      "g3_node_id": "string",
+      "g4_node_id": "string"
+    }
+  },
+
+  "start_place_audit": {
+    "version": 1,
+    "schema": "start_place_audit",
+    "pass": true
+  },
+
+  "player_character": {
+    "version": 1,
+    "schema": "player_character_game_profile"
+  },
+
+  "player_character_audit": {
+    "version": 1,
+    "schema": "player_character_audit",
+    "pass": true
+  },
+
+  "npc_candidate_set": {
+    "version": 1,
+    "schema": "npc_candidate_set"
+  },
+
+  "item_profile_candidate_set": {
+    "version": 1,
+    "schema": "item_profile_candidate_set"
+  },
+
+  "allowed_g5_template_set": {
+    "version": 1,
+    "schema": "allowed_g5_template_set",
+    "selected_g4_type_id": "string",
+    "allowed_g5_templates": []
+  },
+
+  "materialization_policy": {
+    "materialize_only_selected_g4": true,
+    "require_g5_template_match": true,
+    "require_start_anchor": true,
+    "require_minilocation": true,
+    "require_edges_between_reachable_anchors": true,
+    "require_visibility_model": true,
+    "require_access_model": true,
+    "require_clock_light_consistency": true,
+    "require_source_trace": true,
+    "do_not_place_final_npcs_yet": true,
+    "do_not_place_final_items_yet": true,
+    "do_not_write_intro_prose": true,
+    "do_not_create_hidden_event": true
+  }
+}
+```
+
+## 5. Выход этапа
+
+```json
+{
+  "version": 1,
+  "schema": "g5_scene_graph_draft",
+  "request_id": "string",
+
+  "materialization_status": "materialized | blocked | requires_repair",
+
+  "frame": {
+    "region_id": "string",
+    "year": 0,
+    "season": "spring | summer | autumn | winter",
+    "clock": {}
+  },
+
+  "parent_location": {
+    "g1_node_id": "string",
+    "g2_node_id": "string",
+    "g3_node_id": "string",
+    "g4_node_id": "string",
+    "place_template_id": "string",
+    "g4_type_id": "string"
+  },
+
+  "g5_minilocations": [],
+
+  "g5_anchors": [],
+
+  "g5_edges": [],
+
+  "player_start_position": {},
+
+  "visibility_model": {},
+
+  "access_model": {},
+
+  "npc_materialization_slots": [],
+
+  "item_materialization_slots": [],
+
+  "unmaterialized_possible_details": [],
+
+  "downstream_constraints": {
+    "must_preserve": [],
+    "must_not_create_yet": [],
+    "must_resolve_later": []
+  },
+
+  "source_trace": [],
+
+  "audit_self_check": {
+    "pass": true,
+    "concerns": [],
+    "evidence": []
+  }
+}
+```
+
+## 6. Что такое минилокация
+
+Минилокация — точная сценическая зона внутри G4-локации. Она отвечает на вопрос:
+
+```text
+в какой части локации персонаж реально стоит или может действовать прямо сейчас
+```
+
+Примеры универсальных минилокаций:
+
+```text
+у входа
+под навесом
+у стены
+внутри ворот
+на середине двора
+у печи
+у стола
+возле лавки
+возле воды
+возле повозки
+за перегородкой
+у запертой двери
+```
+
+Минилокация не обязана быть отдельным историческим объектом. Это сцена действия, нужна для видимости, доступа, расстояний, быстрых действий и локального перемещения.
+
+## 7. Что такое G5-якорь
+
+G5-якорь — ближайшая опорная точка внутри минилокации.
+
+Якорь отвечает на вопросы:
+
+* что рядом с персонажем;
+* до чего можно дотянуться;
+* кто кого видит;
+* что закрывает обзор;
+* где может стоять NPC;
+* где может лежать предмет;
+* куда можно сделать короткое перемещение;
+* где может начаться разговор, кража, драка, осмотр или скрытность.
+
+Примеры универсальных якорей:
+
+```text
+дверь
+ворота
+очаг
+стол
+лавка
+сундук
+колодец
+телега
+лодка
+костёр
+стена
+окно
+лестница
+проход
+тень
+сухое место
+запертый ларь
+```
+
+Якорь не является художественным украшением. Это механическая точка доступа.
+
+## 8. Что материализуется на этом этапе
+
+Материализуются:
+
+1. минимальный набор минилокаций внутри выбранного G4;
+2. стартовая минилокация персонажа;
+3. стартовый G5-якорь персонажа;
+4. соседние якоря, которые нужны для первого хода;
+5. связи между якорями;
+6. видимость;
+7. доступ;
+8. потенциальные слоты для NPC;
+9. потенциальные слоты для предметов;
+10. запреты и ограничения для последующей видимой сцены.
+
+Не материализуются полностью:
+
+* все комнаты;
+* все здания;
+* все предметы;
+* все жители;
+* все тайники;
+* все закрытые контейнеры;
+* вся история места;
+* все будущие события.
+
+## 9. Источники данных
+
+### 9.1. `selected_start_node`
+
+Главный родитель G5.
+
+Используются:
+
+```text
+selected_candidate_id
+selected_node_id
+selected_scale_level
+selected_place_template_id
+selected_node_chain.g1_node_id
+selected_node_chain.g2_node_id
+selected_node_chain.g3_node_id
+selected_node_chain.g4_node_id
+```
+
+Если выбран не G4, этап должен быть заблокирован или должен сначала пройти отдельный этап выбора/материализации G4 внутри G3/G2.
+
+### 9.2. `allowed_g5_template_set`
+
+Главный allowlist для G5.
+
+Минимальная структура:
+
+```json
+{
+  "selected_g4_type_id": "string",
+  "allowed_g5_templates": [
+    {
+      "g5_template_id": "string",
+      "g4_type_id": "string",
+      "anchor_type": "string",
+      "minilocation_type": "string",
+      "visibility_default": "visible | visible_on_inspection | hidden | blocked",
+      "access_default": "open | limited | permission_required | closed | locked | forbidden",
+      "supports_npc_slot": true,
+      "supports_item_slot": true,
+      "supports_player_start": true,
+      "requires_light": false,
+      "requires_container_profile_ids": [],
+      "compatible_item_profile_ids": [],
+      "compatible_npc_archetype_ids": [],
+      "edge_rules": [],
+      "game_use": "string",
+      "limits": "string",
+      "status": "approved | usable_with_caution | draft | needs_review | conflict | rejected",
+      "confidence": "string",
+      "sources": []
+    }
+  ]
+}
+```
+
+LLM может использовать только эти шаблоны. Если нужного якоря нет в списке, он не создаётся.
+
+### 9.3. `historical_frame.clock`
+
+Время сцены является source of truth.
+
+Проверяются:
+
+```text
+day
+hour
+minute
+time_of_day
+light_profile
+season
+```
+
+Правило:
+
+```text
+Если clock.light_profile = dark,
+G5 visibility не может автоматически показывать мелкие, дальние или закрытые объекты как ясно видимые.
+```
+
+Если `time_of_day = night/deep_night`, G5-якоря дневной активности допустимы только если шаблон и место разрешают их ночное наличие.
+
+### 9.4. `player_character`
+
+Используется для выбора стартовой позиции.
+
+Проверяются:
+
+```text
+right_to_be_here
+reason_here
+body state
+inventory
+hands occupied
+knowledge limits
+social status
+immediate need
+```
+
+Например, если персонаж ранен, связан, несёт тяжёлый груз или прячется, стартовая минилокация должна это учитывать.
+
+### 9.5. `npc_candidate_set`
+
+Используется только для будущих NPC-слотов.
+
+На этом этапе нельзя создавать конкретных NPC, если policy `do_not_place_final_npcs_yet=true`.
+
+Разрешено создать слот:
+
+```json
+{
+  "npc_slot_id": "npc_slot_001",
+  "allowed_npc_candidate_ids": ["npc_cand_001"],
+  "allowed_anchor_ids": ["g5_anchor_001"],
+  "visibility": "visible | audible | hidden | offscreen",
+  "materialization_required_later": true
+}
+```
+
+### 9.6. `item_profile_candidate_set`
+
+Используется только для будущих item-слотов.
+
+Разрешено создать слот:
+
+```json
+{
+  "item_slot_id": "item_slot_001",
+  "allowed_item_profile_candidate_ids": ["item_prof_cand_001"],
+  "allowed_anchor_ids": ["g5_anchor_001"],
+  "visibility": "visible_on_inspection",
+  "materialization_required_later": true
+}
+```
+
+Нельзя создать конкретный предмет без materialization reason и property rule.
+
+## 10. Алгоритм этапа
+
+### 10.1. Проверить вход
+
+Код проверяет:
+
+```text
+start_place_audit.pass = true
+player_character_audit.pass = true
+selected_start_node.selected_scale_level = G4
+selected_start_node.selected_node_chain.g4_node_id не null
+allowed_g5_template_set не пуст
+allowed_g5_template_set.selected_g4_type_id соответствует выбранному G4
+```
+
+Если выбран G3/G2/G1, этот этап не должен пытаться напрямую создать G5. Нужен отдельный шаг выбора или материализации G4.
+
+### 10.2. Подобрать G5-шаблоны для выбранного G4
+
+Код передаёт LLM только шаблоны:
+
+```text
+template.g4_type_id = selected_g4_type_id
+template.status ∈ allowed_statuses
+template not conflict/rejected
+```
+
+Если шаблон имеет `supports_player_start=false`, он не может быть стартовым якорем.
+
+### 10.3. Сформировать минимальный G5-граф
+
+LLM создаёт только достаточный стартовый граф:
+
+```text
+1 стартовая минилокация
+2–6 ближайших G5-якорей
+1–8 локальных ребер
+0–N потенциальных NPC slots
+0–N потенциальных item slots
+```
+
+Размер должен быть ограничен. Стартовая G5-сцена не должна превращаться в полный план здания или поселения.
+
+Рекомендуемый лимит:
+
+```text
+minilocations: 1–3
+anchors: 3–9
+edges: 2–12
+npc slots: 0–6
+item slots: 0–8
+```
+
+### 10.4. Назначить стартовую позицию персонажа
+
+Обязательные поля:
+
+```json
+{
+  "player_start_position": {
+    "region_id": "string",
+    "place_id": "string",
+    "location_id": "string",
+    "minilocation_id": "string",
+    "anchor_id": "string",
+    "last_route_id": "string | null",
+    "position_reason": "string"
+  }
+}
+```
+
+`minilocation_id` и `anchor_id` должны быть созданы в этом же `g5_scene_graph_draft`.
+
+### 10.5. Проверить видимость
+
+Для каждого якоря:
+
+```text
+visible_now
+audible_now
+requires_light
+requires_inspection
+blocked_by
+hidden_from_player
+known_to_character
+```
+
+Если `clock.light_profile=dark`, visible_now должен быть ограничен.
+
+Запрещено:
+
+```text
+ночью показать всё как при дневном свете
+показать содержимое закрытого контейнера
+показать скрытый предмет
+показать NPC за закрытой дверью как видимого
+```
+
+### 10.6. Проверить доступ
+
+Для каждого якоря:
+
+```text
+access_state
+can_reach_from_start
+requires_permission
+requires_key
+requires_tool
+requires_noise
+requires_time
+risk_on_access
+```
+
+Доступ не равен видимости. Видимый объект может быть недоступен. Доступный объект может быть чужим. Чужой доступный объект может иметь property risk.
+
+### 10.7. Сформировать локальные G5-рёбра
+
+Каждое ребро должно иметь:
+
+```text
+from_anchor_id
+to_anchor_id
+edge_type
+base_time_seconds_or_minutes
+movement_difficulty
+visibility_change
+access_condition
+risk
+```
+
+Примеры edge types:
+
+```text
+step
+cross_open_space
+pass_through_door
+go_behind_object
+approach_container
+move_into_shadow
+climb
+crawl
+enter_shelter
+```
+
+### 10.8. Подготовить NPC slots
+
+Если policy разрешает только слоты:
+
+```text
+не создавать NPC
+не давать им имена
+не давать им реплики
+не давать им current_action как факт
+не помещать их в party_npcs
+```
+
+Слот описывает, где и какой тип NPC может быть размещён позже.
+
+### 10.9. Подготовить item slots
+
+Если policy разрешает только слоты:
+
+```text
+не создавать конкретный item_id
+не создавать содержимое контейнера
+не создавать деньги
+не создавать оружие
+не создавать тайник
+```
+
+Слот описывает потенциальное место для будущей материализации предмета, если позже будет causal basis.
+
+### 10.10. Самопроверка LLM
+
+LLM должна сама вернуть `audit_self_check`:
+
+```json
+{
+  "audit_self_check": {
+    "pass": true,
+    "concerns": [],
+    "evidence": [
+      "All G5 anchors reference allowed G5 templates.",
+      "Player start anchor exists in g5_anchors.",
+      "No concrete NPC or item was materialized."
+    ]
+  }
+}
+```
+
+## 11. Формат минилокации
+
+```json
+{
+  "minilocation_id": "g5_miniloc_001",
+  "parent_g4_node_id": "g4_001",
+  "minilocation_type": "entry_zone | working_zone | shelter_zone | threshold | interior_corner | open_space | storage_zone | road_edge | water_edge | shadow_zone",
+  "title": "string",
+  "summary": "string",
+  "allowed_g5_template_ids_used": [],
+  "light_state": "dark | dim | daylight | twilight | obstructed",
+  "weather_exposure": "none | low | medium | high",
+  "sound_profile": "quiet | ordinary | noisy | muffled",
+  "movement_space": "cramped | narrow | ordinary | open",
+  "visibility_notes": [],
+  "access_notes": [],
+  "source_trace": []
+}
+```
+
+## 12. Формат G5-якоря
+
+```json
+{
+  "anchor_id": "g5_anchor_001",
+  "parent_minilocation_id": "g5_miniloc_001",
+  "parent_g4_node_id": "g4_001",
+
+  "g5_template_id": "g5_template_001",
+  "anchor_type": "door | gate | hearth | table | bench | chest | cart | wall | shadow | passage | water_edge | tool_area | animal_area | storage | threshold | open_ground",
+
+  "title": "string",
+  "summary": "string",
+
+  "spatial_role": "start | exit | cover | obstacle | container | work_point | social_point | light_source | sound_source | passage | hazard | background",
+
+  "visibility": {
+    "visible_now": true,
+    "audible_now": false,
+    "requires_light": false,
+    "requires_inspection": false,
+    "hidden_from_player": false,
+    "visibility_reason": "string"
+  },
+
+  "access": {
+    "access_state": "open | reachable | limited | blocked | closed | locked | forbidden | unknown",
+    "can_reach_from_start": true,
+    "requires_permission": false,
+    "requires_key": false,
+    "requires_tool": false,
+    "requires_time_minutes": 0,
+    "risk_on_access": "none | low | medium | high"
+  },
+
+  "supports": {
+    "can_hold_player": true,
+    "can_hold_npc": true,
+    "can_hold_item": true,
+    "can_hold_container": false,
+    "can_start_dialogue": true,
+    "can_start_search": true,
+    "can_start_theft": false,
+    "can_start_combat": true,
+    "can_hide": false,
+    "can_block_line_of_sight": false
+  },
+
+  "property_context_hint": {
+    "ownership_sensitive": false,
+    "requires_property_rule_later": false,
+    "possible_property_rule_candidate_ids": []
+  },
+
+  "source_trace": []
+}
+```
+
+## 13. Формат G5-ребра
+
+```json
+{
+  "edge_id": "g5_edge_001",
+  "from_anchor_id": "g5_anchor_001",
+  "to_anchor_id": "g5_anchor_002",
+  "edge_type": "step | approach | pass_through | climb | crawl | cross | enter | exit | reach | inspect",
+  "base_time_seconds": 10,
+  "base_time_minutes": 0.2,
+  "movement_difficulty": "none | easy | ordinary | hard | dangerous",
+  "visibility_change": "none | better | worse | blocked | unknown",
+  "access_condition": "open | permission_required | blocked | locked | requires_tool | risky",
+  "noise_risk": "none | low | medium | high",
+  "witness_risk": "none | low | medium | high",
+  "source_trace": []
+}
+```
+
+## 14. Формат стартовой позиции
+
+```json
+{
+  "player_start_position": {
+    "region_id": "region_001",
+    "place_id": "place_001",
+    "location_id": "g4_001",
+    "minilocation_id": "g5_miniloc_001",
+    "anchor_id": "g5_anchor_001",
+    "last_route_id": null,
+    "position_reason": "compatible with player_character.start_place_connection.reason_here",
+    "body_position": "standing | sitting | lying | crouching | kneeling | hidden | constrained",
+    "hands_state": "free | one_hand_occupied | both_hands_occupied",
+    "immediate_reach_anchor_ids": [],
+    "visible_anchor_ids": [],
+    "audible_anchor_ids": []
+  }
+}
+```
+
+`anchor_id` должен существовать в `g5_anchors`.
+`minilocation_id` должен существовать в `g5_minilocations`.
+`location_id` должен совпадать с выбранным G4.
+
+## 15. Формат NPC slot
+
+```json
+{
+  "npc_slot_id": "npc_slot_001",
+  "slot_status": "possible | likely | blocked | requires_later_choice",
+  "allowed_npc_candidate_ids": [],
+  "allowed_anchor_ids": [],
+  "visibility_default": "visible | audible | hidden | offscreen",
+  "presence_reason_required_later": true,
+  "not_materialized_yet": true,
+  "limits": [
+    "Do not create concrete NPC name or action at this stage."
+  ]
+}
+```
+
+## 16. Формат item slot
+
+```json
+{
+  "item_slot_id": "item_slot_001",
+  "slot_status": "possible | likely | blocked | requires_later_choice",
+  "allowed_item_profile_candidate_ids": [],
+  "allowed_container_profile_candidate_ids": [],
+  "allowed_property_rule_candidate_ids": [],
+  "allowed_anchor_ids": [],
+  "visibility_default": "visible | visible_on_inspection | searchable | hidden | inaccessible",
+  "causal_basis_required_later": true,
+  "not_materialized_yet": true,
+  "limits": [
+    "Do not create concrete item instance or container contents at this stage."
+  ]
+}
+```
+
+## 17. Что нельзя возвращать
+
+`g5_scene_graph_draft` не должен содержать:
+
+```text
+intro_prose
+visible_scene prose
+narrator text
+final NPC names
+npc dialogue
+concrete item IDs
+container contents
+new G4/G3/G2/G1 nodes
+new place_template_id
+new item_profile_id
+new npc_archetype_id
+hidden event
+future scene outcome
+quest
+```
+
+Если это появилось, результат отклоняется.
+
+## 18. Работа LLM на этапе
+
+На этом этапе LLM обязательна, потому что G5-сцена является новой смысловой материализацией мира внутри уже утверждённого места.
+
+LLM-режимы:
+
+1. `G5SceneMaterializer` — создаёт G5-граф.
+2. `G5SceneSemanticAuditor` — проверяет G5-граф.
+3. `G5SceneFormatRepairer` — чинит только JSON-формат.
+4. `G5SceneSemanticRepairer` — исправляет G5 по audit concerns, не выходя за шаблоны.
+
+## 19. LLM-параметры
+
+### 19.1. `G5SceneMaterializer`
+
+Назначение: материализовать стартовую G5-сцену из разрешённых шаблонов.
+
+```json
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 9000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 80000,
+    "hard_input_limit_tokens": 200000,
+    "reserve_output_tokens": 9000
+  }
+}
+```
+
+Используется `deepseek-v4-pro` с thinking, потому что этап требует пространственного и причинного согласования G4, G5-шаблонов, времени суток, видимости, доступа и персонажа. В DeepSeek thinking mode включается через `thinking: {"type":"enabled"}`, а усилие задаётся через `reasoning_effort`; API-пример DeepSeek показывает `deepseek-v4-pro` с `thinking` и `reasoning_effort: "high"`.
+
+### 19.2. `G5SceneSemanticAuditor`
+
+Назначение: проверить G5-граф на соответствие шаблонам, времени, месту, персонажу и запретам.
+
+```json
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 7000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 90000,
+    "hard_input_limit_tokens": 220000,
+    "reserve_output_tokens": 7000
+  }
+}
+```
+
+### 19.3. `G5SceneFormatRepairer`
+
+Назначение: исправить только JSON-формат.
+
+```json
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-flash",
+  "thinking": {
+    "type": "disabled"
+  },
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "max_tokens": 4500,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 35000,
+    "hard_input_limit_tokens": 90000,
+    "reserve_output_tokens": 4500
+  }
+}
+```
+
+Для JSON-режима нужно задать `response_format: {"type":"json_object"}`, включить слово `json` в prompt, дать пример формата и выставить достаточный `max_tokens`, чтобы JSON не обрезался.
+
+### 19.4. `G5SceneSemanticRepairer`
+
+Назначение: исправить G5-граф по audit concerns.
+
+```json
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 9000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 90000,
+    "hard_input_limit_tokens": 220000,
+    "reserve_output_tokens": 9000
+  }
+}
+```
+
+Список актуальных API-моделей должен использовать `deepseek-v4-pro` и `deepseek-v4-flash`; DeepSeek указывает, что старые имена `deepseek-chat` и `deepseek-reasoner` должны быть прекращены 2026-07-24.
+
+## 20. Prompt: G5SceneMaterializer
+
+```md
+# Роль
+
+Ты G5SceneMaterializer для исторической текстовой RPG.
+
+# Задача
+
+Материализуй стартовую G5-сцену внутри уже выбранной G4-локации.
+
+# Главное правило
+
+Ты не выбираешь новое место.
+Ты не меняешь G4.
+Ты не меняешь G3/G2/G1.
+Ты не меняешь historical_frame.
+Ты не меняешь player_character.
+Ты не создаёшь NPC.
+Ты не создаёшь конкретные предметы.
+Ты не пишешь intro_prose.
+Ты не пишешь visible_scene.
+
+Ты создаёшь только:
+- g5_minilocations;
+- g5_anchors;
+- g5_edges;
+- player_start_position;
+- visibility_model;
+- access_model;
+- npc_materialization_slots;
+- item_materialization_slots.
+
+# Источники
+
+Используй только:
+- historical_frame;
+- selected_start_node;
+- start_place_audit;
+- player_character;
+- player_character_audit;
+- regional_context_package;
+- allowed_g5_template_set;
+- npc_candidate_set;
+- item_profile_candidate_set;
+- materialization_policy.
+
+Если G5 template нет в allowed_g5_template_set, его нельзя использовать.
+
+# Обязательные правила
+
+1. Все g5_anchors должны ссылаться на g5_template_id из allowed_g5_template_set.
+2. Все minilocations должны быть внутри selected G4.
+3. player_start_position.anchor_id должен существовать в g5_anchors.
+4. player_start_position.minilocation_id должен существовать в g5_minilocations.
+5. location_id должен совпадать с selected_start_node.selected_node_id.
+6. Видимость должна соответствовать clock.light_profile.
+7. Доступ должен отличаться от видимости.
+8. Закрытые/скрытые/чужие объекты нельзя делать свободно доступными.
+9. NPC можно создавать только как slots, если policy запрещает финальное размещение.
+10. Items можно создавать только как slots, если policy запрещает финальное размещение.
+11. Не создавай container contents.
+12. Не создавай prose.
+
+# Размер сцены
+
+Создай минимальный стартовый граф:
+- 1–3 minilocations;
+- 3–9 anchors;
+- 2–12 edges;
+- 0–6 npc slots;
+- 0–8 item slots.
+
+# Время и свет
+
+Если clock.light_profile = dark:
+- не показывай мелкие предметы как ясно видимые;
+- не показывай дальние детали;
+- не описывай daylight;
+- используй visibility ограниченно.
+
+Если time_of_day = night или deep_night:
+- дневные activity anchors допустимы только как физические места, а не как активная дневная сцена.
+
+# Формат
+
+Верни только json.
+
+schema:
+"g5_scene_graph_draft"
+
+version:
+1
+```
+
+## 21. Prompt: G5SceneSemanticAuditor
+
+```md
+# Роль
+
+Ты G5SceneSemanticAuditor.
+
+# Задача
+
+Проверь g5_scene_graph_draft на соответствие selected_start_node, allowed_g5_template_set, historical_frame, player_character и materialization_policy.
+
+# Главное правило
+
+Ты не исправляешь G5.
+Ты не создаёшь новые anchors.
+Ты только аудируешь.
+
+# Проверить
+
+1. schema = g5_scene_graph_draft.
+2. Все minilocations находятся внутри selected G4.
+3. Все anchors находятся внутри minilocations.
+4. Все anchors используют g5_template_id из allowed_g5_template_set.
+5. Все anchor types разрешены для selected_g4_type_id.
+6. player_start_position.anchor_id существует.
+7. player_start_position.minilocation_id существует.
+8. G5 edges ссылаются только на существующие anchors.
+9. Нет isolated required anchor без edges.
+10. Visibility соответствует clock.light_profile.
+11. Access model не смешан с visibility.
+12. Ночью нет daylight contradiction.
+13. Нет созданных NPC, если policy запрещает.
+14. Нет созданных items, если policy запрещает.
+15. Нет container contents.
+16. Нет visible_scene prose.
+17. Нет intro_prose.
+18. Нет hidden event.
+19. source_trace достаточен.
+20. audit_self_check не пустой.
+
+# Формат
+
+Верни только json:
+
+{
+  "version": 1,
+  "schema": "g5_scene_audit",
+  "pass": true,
+  "concerns": [],
+  "evidence": []
+}
+
+Если pass=false, concerns не должен быть пустым.
+evidence не должен быть пустым.
+```
+
+## 22. Prompt: G5SceneFormatRepairer
+
+```md
+# Роль
+
+Ты G5SceneFormatRepairer.
+
+# Задача
+
+Исправь только формат JSON g5_scene_graph_draft или g5_scene_audit.
+
+# Главное правило
+
+Не меняй смысл.
+Не добавляй anchors.
+Не добавляй NPC.
+Не добавляй items.
+Не меняй selected G4.
+Не меняй historical_frame.
+Не меняй player_character.
+
+# Разрешено
+
+- убрать markdown;
+- привести schema/version;
+- переименовать ошибочные поля;
+- добавить отсутствующие служебные поля как null/[];
+- удалить запрещённые prose-поля;
+- перенести свободный текст в notes.
+
+# Запрещено
+
+- придумывать g5_template_id;
+- создавать source_id;
+- создавать новый anchor;
+- создавать item/NPC;
+- писать visible_scene или intro_prose.
+
+# Формат
+
+Верни только json.
+```
+
+## 23. Prompt: G5SceneSemanticRepairer
+
+```md
+# Роль
+
+Ты G5SceneSemanticRepairer.
+
+# Задача
+
+Исправь g5_scene_graph_draft по validationErrors и g5_scene_audit.concerns.
+
+# Главное правило
+
+Исправляй только внутри selected G4 и только через allowed_g5_template_set.
+
+# Источники
+
+Используй только:
+- validationErrors;
+- g5_scene_audit.concerns;
+- historical_frame;
+- selected_start_node;
+- player_character;
+- allowed_g5_template_set;
+- npc_candidate_set;
+- item_profile_candidate_set;
+- исходный g5_scene_graph_draft.
+
+# Запрещено
+
+- менять selected_start_node;
+- менять historical_frame;
+- менять player_character;
+- использовать g5_template_id вне allowed_g5_template_set;
+- создавать NPC;
+- создавать item;
+- создавать prose;
+- создавать hidden event.
+
+# Формат
+
+Верни только json g5_scene_graph_draft.
+```
+
+## 24. Code precheck
+
+Перед LLM-аудитом код должен проверить:
+
+```json
+{
+  "version": 1,
+  "schema": "g5_scene_code_precheck",
+  "pass": true,
+  "checks": {
+    "schema_valid": true,
+    "selected_g4_valid": true,
+    "all_minilocations_inside_selected_g4": true,
+    "all_anchors_have_allowed_templates": true,
+    "player_start_anchor_exists": true,
+    "player_start_minilocation_exists": true,
+    "all_edges_reference_existing_anchors": true,
+    "clock_light_consistency": true,
+    "no_npcs_materialized": true,
+    "no_items_materialized": true,
+    "no_intro_prose": true,
+    "source_trace_present": true
+  },
+  "concerns": [],
+  "evidence": []
+}
+```
+
+Если `code_precheck.pass=false`, semantic audit можно не запускать. Сразу отправлять в repair.
+
+## 25. Validation rules
+
+Код обязан проверить:
+
+1. `schema === "g5_scene_graph_draft"`.
+2. `version === 1`.
+3. `materialization_status` входит в enum.
+4. `parent_location.g4_node_id === selected_start_node.selected_node_chain.g4_node_id`.
+5. `parent_location.place_template_id === selected_start_node.selected.selected_place_template_id`.
+6. Все `g5_minilocations.parent_g4_node_id` равны выбранному G4.
+7. Каждый `anchor.parent_minilocation_id` существует.
+8. Каждый `anchor.parent_g4_node_id` равен выбранному G4.
+9. Каждый `anchor.g5_template_id` есть в `allowed_g5_template_set`.
+10. Каждый `anchor.anchor_type` разрешён выбранным шаблоном.
+11. `player_start_position.minilocation_id` существует.
+12. `player_start_position.anchor_id` существует.
+13. `player_start_position.location_id` равен выбранному G4.
+14. Каждый `edge.from_anchor_id` существует.
+15. Каждый `edge.to_anchor_id` существует.
+16. `edge.from_anchor_id != edge.to_anchor_id`, если loop не разрешён.
+17. Есть хотя бы один достижимый anchor от start anchor.
+18. Visibility соответствует `clock.light_profile`.
+19. Если `clock.light_profile=dark`, мелкие/дальние/закрытые anchors не marked clearly visible без основания.
+20. Access model присутствует.
+21. Видимость не равна автоматическому доступу.
+22. Закрытый/locked/forbidden anchor не marked freely reachable.
+23. NPC не материализованы, если policy запрещает.
+24. Items не материализованы, если policy запрещает.
+25. Container contents не созданы.
+26. Нет `visible_scene`.
+27. Нет `intro_prose`.
+28. Нет `hidden_event`.
+29. Нет новых G4/G3/G2/G1 node IDs.
+30. `source_trace` не пустой, если require_sources=true.
+31. `audit_self_check.evidence` не пустой.
+32. Если `audit_self_check.pass=false`, concerns не пустой.
+
+## 26. Error codes
+
+```text
+G5_SCENE_INVALID_JSON
+G5_SCENE_SCHEMA_MISMATCH
+G5_SCENE_SELECTED_G4_MISMATCH
+G5_SCENE_MINILOC_OUTSIDE_G4
+G5_SCENE_ANCHOR_OUTSIDE_MINILOCATION
+G5_SCENE_TEMPLATE_NOT_ALLOWED
+G5_SCENE_ANCHOR_TYPE_NOT_ALLOWED
+G5_SCENE_PLAYER_START_ANCHOR_MISSING
+G5_SCENE_PLAYER_START_MINILOCATION_MISSING
+G5_SCENE_EDGE_ANCHOR_NOT_FOUND
+G5_SCENE_EDGE_ISOLATION
+G5_SCENE_CLOCK_LIGHT_CONFLICT
+G5_SCENE_NIGHT_DAYLIGHT_CONFLICT
+G5_SCENE_VISIBILITY_ACCESS_CONFUSION
+G5_SCENE_LOCKED_ANCHOR_FREELY_ACCESSIBLE
+G5_SCENE_CREATED_NPC_TOO_EARLY
+G5_SCENE_CREATED_ITEM_TOO_EARLY
+G5_SCENE_CREATED_CONTAINER_CONTENTS_TOO_EARLY
+G5_SCENE_CREATED_VISIBLE_SCENE_TOO_EARLY
+G5_SCENE_CREATED_INTRO_PROSE_TOO_EARLY
+G5_SCENE_CREATED_HIDDEN_EVENT
+G5_SCENE_CREATED_PARENT_LOCATION
+G5_SCENE_SOURCE_MISSING
+G5_SCENE_EMPTY_AUDIT_EVIDENCE
+NO_ALLOWED_G5_TEMPLATES
+```
+
+## 27. DB write на этом этапе
+
+До аудита разрешено писать только:
+
+```text
+pipeline_step_status
+g5_scene_graph_draft_snapshot
+g5_scene_code_precheck_snapshot
+g5_scene_validation_issues
+g5_scene_repair_attempts
+source_trace_snapshot
+```
+
+После успешного аудита и commit gate разрешено писать:
+
+```text
+party_scene_minilocations
+party_scene_anchors
+party_scene_edges
+party_current_position
+party_g5_visibility_state
+party_g5_access_state
+```
+
+Запрещено писать на этом этапе:
+
+```text
+party_npcs
+party_items
+party_container_contents
+visible_scene
+intro_prose
+hidden_event
+```
+
+NPC и предметы размещаются следующими отдельными этапами.
+
+## 28. Commit gate этапа
+
+Этап считается успешным, если:
+
+```text
+g5_scene_graph_draft валиден,
+все anchors используют allowed_g5_templates,
+все anchors находятся внутри selected G4,
+player_start_position указывает на существующие minilocation_id и anchor_id,
+clock/light не противоречат visibility,
+access model отделён от visibility,
+не созданы NPC и предметы раньше времени,
+не создана prose,
+audit pass=true.
+```
+
+Если commit gate не пройден, pipeline не должен переходить к NPC, items, visible context или narrator.
+
+## 29. Передача в следующий этап
+
+```json
+{
+  "version": 1,
+  "schema": "g5_scene_audit_input",
+  "request_id": "string",
+
+  "historical_frame": {},
+  "selected_start_node": {},
+  "player_character": {},
+  "npc_candidate_set": {},
+  "item_profile_candidate_set": {},
+
+  "g5_scene_graph_draft": {
+    "version": 1,
+    "schema": "g5_scene_graph_draft",
+    "materialization_status": "materialized"
+  }
+}
+```
+
+После аудита G5 следующий этап получает уже утверждённый сценический граф и может размещать NPC только по `npc_candidate_set`, а предметы только по `item_profile_candidate_set`.
+
+## 30. Минимальный успешный результат
+
+```json
+{
+  "version": 1,
+  "schema": "g5_scene_graph_draft",
+  "request_id": "req_001",
+
+  "materialization_status": "materialized",
+
+  "frame": {
+    "region_id": "region_001",
+    "year": 1230,
+    "season": "winter",
+    "clock": {
+      "day": 1,
+      "hour": 6,
+      "minute": 30,
+      "time_of_day": "morning",
+      "light_profile": "dim"
+    }
+  },
+
+  "parent_location": {
+    "g1_node_id": "g1_001",
+    "g2_node_id": "g2_001",
+    "g3_node_id": "g3_001",
+    "g4_node_id": "g4_001",
+    "place_template_id": "place_template_001",
+    "g4_type_id": "g4_type_001"
+  },
+
+  "g5_minilocations": [
+    {
+      "minilocation_id": "g5_miniloc_001",
+      "parent_g4_node_id": "g4_001",
+      "minilocation_type": "entry_zone",
+      "title": "Entry zone",
+      "summary": "Starting minilocation inside selected G4.",
+      "allowed_g5_template_ids_used": [
+        "g5_template_001"
+      ],
+      "light_state": "dim",
+      "weather_exposure": "low",
+      "sound_profile": "ordinary",
+      "movement_space": "ordinary",
+      "visibility_notes": [],
+      "access_notes": [],
+      "source_trace": []
+    }
+  ],
+
+  "g5_anchors": [
+    {
+      "anchor_id": "g5_anchor_001",
+      "parent_minilocation_id": "g5_miniloc_001",
+      "parent_g4_node_id": "g4_001",
+      "g5_template_id": "g5_template_001",
+      "anchor_type": "threshold",
+      "title": "Starting threshold",
+      "summary": "Anchor where the player character begins.",
+      "spatial_role": "start",
+      "visibility": {
+        "visible_now": true,
+        "audible_now": false,
+        "requires_light": false,
+        "requires_inspection": false,
+        "hidden_from_player": false,
+        "visibility_reason": "Starting anchor is immediately known to the character."
+      },
+      "access": {
+        "access_state": "reachable",
+        "can_reach_from_start": true,
+        "requires_permission": false,
+        "requires_key": false,
+        "requires_tool": false,
+        "requires_time_minutes": 0,
+        "risk_on_access": "none"
+      },
+      "supports": {
+        "can_hold_player": true,
+        "can_hold_npc": true,
+        "can_hold_item": false,
+        "can_hold_container": false,
+        "can_start_dialogue": true,
+        "can_start_search": false,
+        "can_start_theft": false,
+        "can_start_combat": true,
+        "can_hide": false,
+        "can_block_line_of_sight": false
+      },
+      "property_context_hint": {
+        "ownership_sensitive": false,
+        "requires_property_rule_later": false,
+        "possible_property_rule_candidate_ids": []
+      },
+      "source_trace": [
+        {
+          "record_id": "g5_template_001",
+          "table": "world_base.g5_scene_templates",
+          "source_ids": [
+            "source_001"
+          ],
+          "supports": [
+            "anchor"
+          ]
+        }
+      ]
+    }
+  ],
+
+  "g5_edges": [
+    {
+      "edge_id": "g5_edge_001",
+      "from_anchor_id": "g5_anchor_001",
+      "to_anchor_id": "g5_anchor_002",
+      "edge_type": "approach",
+      "base_time_seconds": 10,
+      "base_time_minutes": 0.2,
+      "movement_difficulty": "ordinary",
+      "visibility_change": "none",
+      "access_condition": "open",
+      "noise_risk": "low",
+      "witness_risk": "low",
+      "source_trace": []
+    }
+  ],
+
+  "player_start_position": {
+    "region_id": "region_001",
+    "place_id": "place_001",
+    "location_id": "g4_001",
+    "minilocation_id": "g5_miniloc_001",
+    "anchor_id": "g5_anchor_001",
+    "last_route_id": null,
+    "position_reason": "Compatible with player_character.start_place_connection.reason_here.",
+    "body_position": "standing",
+    "hands_state": "free",
+    "immediate_reach_anchor_ids": [
+      "g5_anchor_001"
+    ],
+    "visible_anchor_ids": [
+      "g5_anchor_001"
+    ],
+    "audible_anchor_ids": []
+  },
+
+  "visibility_model": {
+    "light_profile": "dim",
+    "global_visibility_limit": "nearby anchors only",
+    "hidden_details_policy": "do not expose hidden or closed contents",
+    "visible_anchor_ids": [
+      "g5_anchor_001"
+    ],
+    "requires_inspection_anchor_ids": []
+  },
+
+  "access_model": {
+    "start_anchor_id": "g5_anchor_001",
+    "reachable_anchor_ids": [
+      "g5_anchor_001"
+    ],
+    "blocked_anchor_ids": [],
+    "permission_required_anchor_ids": [],
+    "locked_anchor_ids": []
+  },
+
+  "npc_materialization_slots": [],
+
+  "item_materialization_slots": [],
+
+  "unmaterialized_possible_details": [
+    {
+      "detail_type": "distant_area",
+      "reason_not_materialized": "Not needed for immediate start scene."
+    }
+  ],
+
+  "downstream_constraints": {
+    "must_preserve": [
+      "parent_location.g4_node_id",
+      "player_start_position.minilocation_id",
+      "player_start_position.anchor_id",
+      "historical_frame.clock",
+      "g5_anchors[*].g5_template_id"
+    ],
+    "must_not_create_yet": [
+      "final_npc",
+      "final_item",
+      "container_contents",
+      "visible_scene",
+      "intro_prose",
+      "hidden_event"
+    ],
+    "must_resolve_later": [
+      "npc_placement",
+      "item_placement",
+      "visible_context_package"
+    ]
+  },
+
+  "source_trace": [
+    {
+      "record_id": "g5_template_001",
+      "table": "world_base.g5_scene_templates",
+      "source_ids": [
+        "source_001"
+      ],
+      "supports": [
+        "g5_anchor"
+      ]
+    }
+  ],
+
+  "audit_self_check": {
+    "pass": true,
+    "concerns": [],
+    "evidence": [
+      "All anchors use allowed G5 templates.",
+      "All minilocations are inside selected G4.",
+      "Player start anchor exists.",
+      "Visibility follows clock.light_profile.",
+      "No NPC, item, visible_scene or intro_prose was created."
+    ]
+  }
+}
+```

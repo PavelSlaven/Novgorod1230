@@ -1,0 +1,65 @@
+Novgorod region_place_generation_rules v2 expanded validation
+=========================================================
+OK	JSON parse errors	0
+OK	missing_lt_refs	0
+OK	missing_lu_refs	0
+OK	missing_rt_refs	0
+OK	missing_wb_refs	0
+OK	missing_pt_refs	0
+OK	missing_src_refs	0
+OK	missing_enum_refs	0
+INFO	region_allowed_place_templates_total	39
+OK	covered_place_templates_total	39
+OK	uncovered_place_template_ids	0
+INFO	row_count	38
+INFO	expanded_template_type_count	46
+
+Expanded template_type values:
+- village
+- fishing_village
+- forest_camp
+- charcoal_burner_camp
+- logging_camp
+- winter_hut
+- pogost
+- ferry
+- ford
+- roadside_inn
+- market_site
+- monastery_dependency
+- watch_post
+- hunting_camp
+- beekeeping_site
+- isolated_farmstead
+- hamlet
+- nucleated_village
+- dispersed_settlement_cluster
+- rural_church_center
+- estate_center
+- monastic_grange
+- monastery
+- hermitage_skete
+- pilgrimage_shrine
+- forest_work_camp
+- fishing_station
+- fish_weir_site
+- river_landing
+- boat_landing
+- periodic_fairground
+- town
+- city_major_center
+- fortified_town
+- posad_suburb
+- crossroads
+- bridge_site
+- portage
+- hillfort_gorodishche
+- administrative_court
+- toll_customs_post
+- watermill_site
+- saltworks
+- clay_pit_pottery_site
+- iron_smelting_site
+- shipyard_boatyard
+
+SQL patch is included in workbook sheet Schema_SQL_patch.

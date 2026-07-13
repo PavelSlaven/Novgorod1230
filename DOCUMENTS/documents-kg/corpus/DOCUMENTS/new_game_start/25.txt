@@ -1,0 +1,2236 @@
+# ПРИОРИТЕТНАЯ РЕДАКЦИЯ 3 — ИЗОЛИРОВАННЫЙ STAGE 25 И REAL-COMMIT BOUNDARY
+
+Эта редакция имеет приоритет над несовместимыми примерами ниже.
+
+## 0. Архитектурный контракт
+
+Stage 25 — единый обязательный `isolated_code_block`. Он получает только exact `commit_gate_input`, не читает global context, registry, mutable stage outputs, UI или LLM-состояние и возвращает только `stage25_party_start_commit_result`.
+
+Stage 25 не создаёт и не исправляет смыслы мира. Он технически проверяет утверждённый Stage 24 plan, материализует physical plan, выполняет обязательный dry-run, применяет тот же physical plan атомарной транзакцией, проверяет postconditions, читает live-state из party-базы и выполняет postcommit validation.
+
+Provided `commit_gate_result`, `transaction_result`, `postcommit_result`, `party_start_committed`, `party_state_after_commit` и готовый Stage 25 output запрещены во всех окружениях. Для тестов разрешается подменять только infrastructure executors; каждый их результат проходит реальные validators.
+
+## 0.1. Exact input
+
+```text
+commit_gate_input:
+  version/schema/request_id
+  party_creation_context
+  stage24_result_approval
+  party_db_write_plan
+  party_database_schema
+  world_base_reference_snapshot
+  approved_pipeline_manifest
+  commit_policy
+```
+
+`party_creation_context` обязательно содержит `party_id`, `player_character_id`, `schema_version`, `idempotency_key` и `payload_hash`. `stage24_result_approval` подтверждает Stage 24 pass, plan/schema/world-base/manifest digests и три handoff permissions.
+
+`commit_policy` неослабляема. Обязательны atomic transaction, dry-run, idempotency, schema/FK/enum/constraint/reference validation, rollback, postconditions, postcommit readback, запрет `world_base` mutation, silent repair, partial commit и player output до полного завершения Stage 25.
+
+## 0.2. Полная последовательность
+
+```text
+exact input validation
+→ stage25_commit_preflight
+→ logical plan digest validation
+→ isolated physical schema adapter
+→ physical plan digest
+→ idempotency gate
+→ mandatory dry-run exact physical plan
+→ strict dry-run result validation
+→ commit_gate_result
+→ approved atomic transaction exact physical plan
+→ postconditions before COMMIT
+→ COMMIT
+→ live-state readback
+→ party_postcommit_validation
+→ stage25_party_start_commit_result
+→ Stage 26 approval
+```
+
+Пропуск transaction, dry-run или postcommit readback запрещён. Отсутствующий executor означает hard block.
+
+## 0.3. Digest binding
+
+Stage 25 повторно вычисляет и проверяет:
+
+```text
+party_db_write_plan_digest
+party_database_schema_digest
+world_base_reference_digest
+approved_pipeline_manifest_digest
+logical_plan_digest
+physical_plan_digest
+dry_run_result_digest
+transaction_result_digest
+postcommit_state_digest
+```
+
+Dry-run и commit обязаны использовать один и тот же immutable physical plan и `physical_plan_digest`. Повторный запуск adapter между dry-run и commit запрещён.
+
+## 0.4. Preflight и technical firewall
+
+`stage25_commit_preflight` проверяет:
+
+- exact input и единый request ID;
+- party/player IDs, idempotency key и payload hash;
+- Stage 24 approval, permissions и digests;
+- структуру approved manifest и полноту audit chain;
+- актуальный immutable party DB schema snapshot;
+- таблицы, колонки, operations, data types, not-null, enum, unique, check и FK constraints;
+- source/candidate/graph/G5/NPC/item/container/property/route references;
+- current position и player character bindings;
+- character knowledge projection hash, counts и record keys;
+- hidden/public boundary и запрет `world_base` writes;
+- полный batch graph, dependencies, write order, rollback и postconditions;
+- наличие idempotency, dry-run, transaction и postcommit executors.
+
+Код не выбирает замену для битой ссылки, не создаёт missing record и не удаляет конфликтующую запись.
+
+## 0.5. Dry-run contract
+
+Dry-run выполняется транзакционно и всегда заканчивается `ROLLBACK`. Его output:
+
+```text
+party_write_plan_dry_run_result:
+  version/schema/request_id
+  physical_write_plan_digest
+  pass
+  checks
+  simulated_batches
+  batch_results/row_counts
+  constraint_checks
+  postcondition_checks
+  rollback_completed
+  concerns/evidence
+```
+
+`pass=false`, неверная schema, digest mismatch, отсутствующий check, пустое evidence или `rollback_completed=false` блокируют commit. Отсутствие exception не считается успехом.
+
+## 0.6. Idempotency
+
+До dry-run Stage 25 проверяет `idempotency_key + payload_hash + party_id`:
+
+```text
+new key → continue
+same key + same hash + committed → return validated prior committed result
+same key + same hash + in_progress → block concurrent run
+same key + different hash → hard block
+active party with incompatible key/payload → hard block
+```
+
+`ON CONFLICT DO NOTHING` не заменяет idempotency validation. Любой zero-row insert/update/upsert анализируется и не считается автоматическим успехом.
+
+## 0.7. Atomic transaction
+
+Transaction executor принимает только `approved_party_transaction_input`, содержащий успешный commit-gate approval и exact physical plan digest. Голый write plan не исполняется.
+
+Порядок:
+
+```text
+BEGIN
+→ validate exact approved physical plan
+→ execute every batch once in validated dependency order
+→ validate rowCount and returned IDs
+→ execute postconditions
+→ final ready batch last
+→ COMMIT
+```
+
+При любой ошибке до COMMIT выполняется `ROLLBACK`; partial commit запрещён. Postconditions обязательны и выполняются до COMMIT.
+
+## 0.8. Postcommit readback
+
+После COMMIT Stage 25 читает live-state из party-базы по `party_id` и `transaction_id`. Committed state запрещено выводить из write plan или pipeline context.
+
+`party_postcommit_validation` проверяет как минимум:
+
+- party state ready и player output allowed;
+- current position, clock и player character;
+- anchors/routes/NPC/items/containers against plan;
+- current knowledge map, hash и counts;
+- visible context и narrator prose digests;
+- audit snapshots и source trace;
+- hidden/public boundary;
+- committed idempotency record.
+
+Postcommit failure возвращает `commit_status=commit_error`, блокирует player output и требует manual recovery; фиктивный `party_start_committed` не создаётся.
+
+## 0.9. Result bundle
+
+Успешный Stage 25 возвращает immutable:
+
+```text
+stage25_party_start_commit_result:
+  version/schema/request_id/pass=true
+  commit_status=committed
+  party_id/transaction_id/idempotency_key/payload_hash
+  logical/physical/dry-run/transaction/postcommit digests
+  commit_preflight
+  physical_plan_mapping_report
+  dry_run_result
+  commit_gate_result
+  transaction_result
+  postcommit_state
+  postcommit_validation
+  party_start_committed
+  party_public_state
+  handoff_permission
+```
+
+Failure возвращается тем же schema с `pass=false`, `failed_phase`, `commit_status`, concerns/evidence, rollback status, blocked player output и repair route. Обычный exception не является нормативным Stage 25 output.
+
+## 0.10. Stage 25 → 26
+
+Stage 26 разрешён только при:
+
+```text
+Stage 25 result pass=true
+commit_status=committed
+transaction_result.commit_status=committed
+postcommit_validation.pass=true
+party_state ready
+current position present
+player output reference present
+all digests current
+can_start_stage_26=true
+can_show_player_output=true
+can_accept_player_input=true
+```
+
+`commit_gate_result.pass=true` сам по себе не означает, что партия committed, и не разрешает Stage 26.
+
+---
+# ПРИОРИТЕТНАЯ РЕДАКЦИЯ 2 — STRICT STAGE 24 → STAGE 25 HANDOFF
+
+Эта редакция имеет приоритет над несовместимыми примерами ниже.
+
+## 0. Архитектурный контракт
+
+Stage 25 — code-only commit gate и atomic transaction executor. Он не строит, не исправляет и не переосмысливает Stage 24 plan.
+
+Stage 25 принимает только утверждённый digest-bound Stage 24 result bundle через exact `commit_gate_input`:
+
+```text
+request_id
+party_creation_context
+stage24_result_approval
+party_db_write_plan
+party_database_schema
+world_base_reference_snapshot
+approved_pipeline_manifest
+commit_policy
+```
+
+`stage24_result_approval` обязан подтверждать:
+
+```text
+Stage 24 pass=true
+party_db_write_plan_digest
+party_database_schema_digest
+world_base_reference_digest
+approved_pipeline_manifest_digest
+can_send_to_commit_gate=true
+can_execute_transaction=true
+can_write_party_snapshots=true
+```
+
+## 0.1. Обязательный повторный gate
+
+До dry-run Stage 25 повторно проверяет:
+
+- schema/version/request ID approval и plan;
+- Stage 24 permissions;
+- SHA-256 digest текущего plan;
+- digest и полноту party database schema;
+- digest и полноту world-base reference snapshot;
+- digest approved pipeline manifest;
+- atomic/idempotent transaction contract;
+- запрет `world_base` mutation;
+- adapter safety и hidden/public boundary;
+- наличие dry-run callback.
+
+Несовпадение любого digest означает stale/substituted handoff и блокирует commit.
+
+## 0.2. Dry-run и transaction
+
+Порядок Stage 25:
+
+```text
+strict handoff validation
+→ physical schema adapter validation
+→ mandatory dry-run
+→ commit_gate_result.pass=true
+→ atomic transaction
+→ postconditions
+→ party ready
+```
+
+При ошибке:
+
+```text
+commit_gate_result.pass=false
+repair_route.return_to_stage=24
+никакой live write
+никакой player-visible output
+никакой partial commit
+```
+
+Stage 25 не создаёт missing FK, не заменяет IDs, не удаляет проблемные records и не исправляет plan. Любая смысловая проблема возвращается в Stage 24 или соответствующий upstream repair route.
+
+---
+
+# Этап 25. Commit gate
+
+## 1. Назначение этапа
+
+Commit gate — это финальный технический шлюз перед записью стартовой партии в `party`-базу.
+
+На этом этапе код проверяет:
+
+* схемы;
+* enum;
+* обязательные поля;
+* foreign keys;
+* source IDs;
+* candidate IDs;
+* graph node IDs;
+* G5 anchor IDs;
+* NPC IDs;
+* item/container IDs;
+* property rule IDs;
+* route/edge IDs;
+* audit pass flags;
+* idempotency;
+* запрет записи в `world_base`;
+* запрет скрытых данных в player-visible таблицах;
+* порядок транзакции;
+* возможность rollback.
+
+Только после этого код выполняет атомарную запись стартовой партии.
+
+Короткая формула:
+
+```text id="zwrn84"
+party_db_write_plan
++ all_approved_pipeline_outputs
++ party_database_schema
++ FK/index/schema/enum/source/candidate validation
+→ commit_gate_result
+→ atomic transaction
+→ party_start_committed
+```
+
+Главный вопрос этапа:
+
+```text id="3q2l7x"
+Можно ли безопасно и атомарно записать старт партии в party-базу без новых фактов, битых ссылок, скрытых утечек и противоречий?
+```
+
+## 2. Главное правило этапа
+
+Commit gate выполняется кодом.
+
+Код не исправляет смысловые ошибки.
+Код не создаёт недостающие сущности.
+Код не заменяет отсутствующий ID заглушкой.
+Код не выбирает альтернативного NPC, предмет, route или anchor.
+Код не меняет narrator prose.
+Код не меняет hidden state.
+Код не меняет visible context.
+Код не меняет write plan по смыслу.
+
+Если проверка провалена, commit блокируется.
+
+Допустимые действия кода при ошибке:
+
+```text id="rvpwlb"
+зафиксировать validation issue;
+сформировать machine-readable error report;
+вернуть pipeline на repair route;
+не писать live-state;
+не отправлять player-visible output;
+не ставить party_state.status=ready.
+```
+
+Недопустимые действия:
+
+```text id="tvpekl"
+создать missing FK;
+заменить candidate_id ближайшим похожим;
+переписать enum;
+удалить проблемный item/NPC молча;
+исправить time/light/position молча;
+записать частичную партию;
+показать игроку narrator prose до commit;
+пометить party ready при ошибке.
+```
+
+## 3. Место этапа в pipeline
+
+```text id="if03fh"
+1. Заявка игрока
+2. Нормализация заявки
+3. Выбор исторической рамки
+4. Загрузка регионального контекста
+5. Подбор стартовых G1–G4 кандидатов
+6. Подбор place templates
+7. Подбор NPC-кандидатов
+8. Подбор предметных профилей
+9. Выбор стартового узла
+10. Аудит стартового места
+11. Генерация персонажа
+12. Аудит персонажа
+13. Материализация G5-сцены
+14. Аудит G5-сцены
+15. Размещение стартовых NPC
+16. Размещение стартовых предметов
+17. Проверка времени и света
+18. Формирование карты знаний персонажа
+19. Формирование полного hidden state
+20. Формирование visible context package
+21. Аудит visible context
+22. Генерация стартовой прозы narrator
+23. Аудит стартовой прозы narrator
+24. План записи в party-базу
+25. Commit gate и атомарная запись в party-базу
+26. Первый игровой экран
+```
+
+Если commit gate или атомарная транзакция не прошли, этап 26 не запускается.
+
+## 4. Что входит в Commit gate
+
+Commit gate состоит из пяти фаз:
+
+```text id="c1fub2"
+1. Preflight validation.
+2. Schema/enum validation.
+3. Referential integrity validation.
+4. Write plan safety validation.
+5. Dry-run transaction validation.
+```
+
+Только после этого возможен:
+
+```text id="tmzl4u"
+6. Atomic commit.
+```
+
+## 5. Вход этапа
+
+```json id="ebrsco"
+{
+  "version": 1,
+  "schema": "commit_gate_input",
+  "request_id": "string",
+
+  "party_creation_context": {
+    "party_id": "string",
+    "player_character_id": "string",
+    "campaign_id": "string | null",
+    "schema_version": "string",
+    "idempotency_key": "string",
+    "payload_hash": "string"
+  },
+
+  "party_db_write_plan": {
+    "version": 1,
+    "schema": "party_db_write_plan",
+    "plan_status": "formed"
+  },
+
+  "party_db_write_plan_audit": {
+    "version": 1,
+    "schema": "party_db_write_plan_audit",
+    "pass": true,
+    "commit_permission": {
+      "can_execute_transaction": true
+    }
+  },
+
+  "approved_pipeline_outputs": {
+    "historical_frame": {},
+    "weather_state": {},
+    "selected_start_node": {},
+    "start_place_audit": {},
+    "player_character": {},
+    "player_character_audit": {},
+    "g5_scene_graph": {},
+    "g5_scene_audit": {},
+    "initial_npc_placement": {},
+    "npc_placement_audit": {},
+    "initial_item_placement": {},
+    "item_placement_audit": {},
+    "time_light_consistency_audit": {},
+    "character_knowledge_map": {},
+    "character_knowledge_map_audit": {},
+    "character_knowledge_write_projection": {},
+    "full_hidden_scene_state": {},
+    "full_hidden_state_audit": {},
+    "visible_context_package": {},
+    "visible_context_audit": {},
+    "narrator_starting_prose": {},
+    "narrator_prose_audit": {}
+  },
+
+  "party_database_schema": {
+    "version": 1,
+    "schema": "party_database_schema_snapshot",
+    "tables": [],
+    "columns": [],
+    "foreign_keys": [],
+    "unique_constraints": [],
+    "check_constraints": [],
+    "enum_definitions": [],
+    "indexes": [],
+    "allowed_operations": []
+  },
+
+  "world_base_reference_snapshot": {
+    "version": 1,
+    "schema": "world_base_reference_snapshot",
+    "allowed_region_ids": [],
+    "allowed_graph_node_ids": [],
+    "allowed_graph_edge_ids": [],
+    "allowed_place_template_ids": [],
+    "allowed_candidate_ids": [],
+    "allowed_source_ids": [],
+    "readonly_checksum": "string"
+  },
+
+  "commit_policy": {
+    "require_all_previous_audits_passed": true,
+    "require_write_plan_audit_passed": true,
+    "require_atomic_transaction": true,
+    "require_dry_run": true,
+    "require_idempotency_check": true,
+    "require_fk_validation": true,
+    "require_enum_validation": true,
+    "require_schema_validation": true,
+    "require_source_id_validation": true,
+    "require_candidate_id_validation": true,
+    "require_no_world_base_mutation": true,
+    "require_no_hidden_state_public_leak": true,
+    "require_rollback_available": true,
+    "reject_partial_commit": true,
+    "reject_silent_repair": true,
+    "reject_player_output_before_commit": true
+  }
+}
+```
+
+## 6. Выход этапа
+
+```json id="q8wlo4"
+{
+  "version": 1,
+  "schema": "commit_gate_result",
+  "request_id": "string",
+
+  "pass": true,
+
+  "transaction_permission": {
+    "can_execute_atomic_commit": true,
+    "can_mark_party_ready": true,
+    "can_prepare_player_output_after_commit": true
+  },
+
+  "checks": {
+    "preflight": {},
+    "audit_chain": {},
+    "schema_validation": {},
+    "enum_validation": {},
+    "fk_validation": {},
+    "candidate_id_validation": {},
+    "source_id_validation": {},
+    "graph_reference_validation": {},
+    "position_validation": {},
+    "npc_validation": {},
+    "item_container_validation": {},
+    "knowledge_validation": {},
+    "hidden_visible_boundary_validation": {},
+    "write_plan_order_validation": {},
+    "idempotency_validation": {},
+    "world_base_immutability_validation": {},
+    "dry_run_validation": {},
+    "rollback_validation": {}
+  },
+
+  "commit_execution_plan": {
+    "transaction_id": "string",
+    "write_order": [],
+    "dry_run_required": true,
+    "rollback_strategy": "full_transaction_rollback"
+  },
+
+  "concerns": [],
+  "evidence": [],
+
+  "repair_route": null
+}
+```
+
+Если commit gate провален:
+
+```json id="nacmoc"
+{
+  "version": 1,
+  "schema": "commit_gate_result",
+  "request_id": "string",
+
+  "pass": false,
+
+  "transaction_permission": {
+    "can_execute_atomic_commit": false,
+    "can_mark_party_ready": false,
+    "can_prepare_player_output_after_commit": false
+  },
+
+  "checks": {},
+
+  "concerns": [
+    {
+      "code": "COMMIT_GATE_FK_MISSING",
+      "severity": "hard_block",
+      "message": "Write plan references a G5 anchor that is absent from approved G5 scene."
+    }
+  ],
+
+  "evidence": [
+    {
+      "path": "write_batches.batch_current_position.records[0].anchor_id",
+      "value": "g5_anchor_009",
+      "expected": "one of approved g5_scene_graph.g5_anchors[*].anchor_id"
+    }
+  ],
+
+  "repair_route": {
+    "return_to_stage": "party_db_write_plan_semantic_repair",
+    "repair_kind": "fix_invalid_fk_reference"
+  }
+}
+```
+
+## 7. Phase 1: Preflight validation
+
+Preflight проверяет, что commit вообще можно запускать.
+
+Проверяются:
+
+```text id="6hjj66"
+commit_gate_input.schema;
+commit_gate_input.version;
+party_id;
+player_character_id;
+idempotency_key;
+payload_hash;
+party_db_write_plan exists;
+party_db_write_plan_audit.pass=true;
+all required approved_pipeline_outputs exist;
+party_database_schema exists;
+world_base_reference_snapshot exists;
+commit_policy exists.
+```
+
+Hard block:
+
+```text id="b1o7yp"
+нет party_db_write_plan;
+нет party_db_write_plan_audit;
+любой обязательный upstream audit pass=false;
+party_id пустой;
+idempotency_key пустой;
+party_database_schema отсутствует.
+```
+
+Error codes:
+
+```text id="7fpzus"
+COMMIT_GATE_INPUT_SCHEMA_INVALID
+COMMIT_GATE_PARTY_ID_MISSING
+COMMIT_GATE_PLAYER_CHARACTER_ID_MISSING
+COMMIT_GATE_IDEMPOTENCY_KEY_MISSING
+COMMIT_GATE_PAYLOAD_HASH_MISSING
+COMMIT_GATE_WRITE_PLAN_MISSING
+COMMIT_GATE_WRITE_PLAN_AUDIT_MISSING
+COMMIT_GATE_DB_SCHEMA_MISSING
+COMMIT_GATE_WORLD_BASE_REFERENCE_MISSING
+```
+
+## 8. Phase 2: Audit chain validation
+
+Код проверяет цепочку всех предыдущих аудитов.
+
+Обязательные pass=true:
+
+```text id="hl71nm"
+start_place_audit.pass;
+player_character_audit.pass;
+g5_scene_audit.pass;
+npc_placement_audit.pass;
+item_placement_audit.pass;
+time_light_consistency_audit.pass;
+character_knowledge_map_audit.pass;
+full_hidden_state_audit.pass;
+visible_context_audit.pass;
+narrator_prose_audit.pass;
+party_db_write_plan_audit.pass.
+```
+
+Если хотя бы один audit не прошёл:
+
+```text id="65ssu9"
+commit запрещён.
+```
+
+Error codes:
+
+```text id="inmlyu"
+COMMIT_GATE_UPSTREAM_AUDIT_FAILED
+COMMIT_GATE_UPSTREAM_AUDIT_MISSING
+COMMIT_GATE_WRITE_PLAN_AUDIT_FAILED
+```
+
+## 9. Phase 3: Schema validation
+
+Код валидирует каждый объект against JSON Schema.
+
+Проверяются:
+
+```text id="xauj7k"
+party_db_write_plan;
+each write_batch;
+each record payload;
+commit_gate_input;
+approved_pipeline_outputs;
+narrator_starting_prose;
+visible_context_package;
+full_hidden_scene_state;
+character_knowledge_map;
+initial_item_placement;
+initial_npc_placement;
+g5_scene_graph;
+player_character.
+```
+
+Правила:
+
+```text id="7paz15"
+обязательные поля должны быть заполнены;
+типы должны совпадать;
+null разрешён только там, где schema допускает null;
+array не должен заменяться строкой;
+object не должен заменяться свободным текстом;
+date/time должны иметь разрешённый формат;
+record payload должен соответствовать target_table columns.
+```
+
+Error codes:
+
+```text id="ydtl4l"
+COMMIT_GATE_SCHEMA_INVALID
+COMMIT_GATE_REQUIRED_FIELD_MISSING
+COMMIT_GATE_FIELD_TYPE_MISMATCH
+COMMIT_GATE_RECORD_SHAPE_INVALID
+COMMIT_GATE_UNKNOWN_COLUMN
+COMMIT_GATE_NULL_NOT_ALLOWED
+COMMIT_GATE_ARRAY_EXPECTED
+COMMIT_GATE_OBJECT_EXPECTED
+```
+
+## 10. Phase 4: Enum validation
+
+Код проверяет все enum-значения.
+
+Проверяются enum из:
+
+```text id="2jqa5m"
+party_state.status;
+party_state.current_phase;
+time_of_day;
+light_profile;
+season;
+weather_kind;
+temperature_band;
+visibility states;
+access states;
+npc profile levels;
+npc attention modes;
+item size bands;
+item condition;
+property ownership models;
+risk levels;
+knowledge levels;
+event statuses;
+operation modes;
+batch target tables;
+repair route stages.
+```
+
+Пример:
+
+```json id="gbmxee"
+{
+  "field_path": "initial_npc_placement.npc_instances[0].profile_level",
+  "value": "important",
+  "allowed": ["background", "scene", "key"],
+  "result": "invalid"
+}
+```
+
+Error codes:
+
+```text id="ka4qf9"
+COMMIT_GATE_ENUM_INVALID
+COMMIT_GATE_OPERATION_MODE_INVALID
+COMMIT_GATE_STATUS_INVALID
+COMMIT_GATE_PROFILE_LEVEL_INVALID
+COMMIT_GATE_TIME_OF_DAY_INVALID
+COMMIT_GATE_LIGHT_PROFILE_INVALID
+COMMIT_GATE_RISK_LEVEL_INVALID
+```
+
+## 11. Phase 5: Candidate ID validation
+
+Код проверяет, что все candidate IDs, выбранные LLM, существуют в соответствующих candidate sets.
+
+Проверяются:
+
+```text id="gzja3z"
+selected_start_node.selected_candidate_id ∈ start_candidate_set;
+selected_start_node.selected_candidate_place_template_link_id ∈ candidate_place_template_set;
+player_character.selected_candidate_refs.* ∈ allowed candidate sets;
+npc_instance.npc_candidate_id ∈ npc_candidate_set.npc_candidates;
+item_instance.item_profile_candidate_id ∈ item_profile_candidate_set.item_profile_candidates;
+container_instance.container_profile_candidate_id ∈ item_profile_candidate_set.container_profile_candidates;
+property_binding.property_rule_candidate_id ∈ item_profile_candidate_set.property_rule_candidates;
+known routes/places/people refs ∈ approved refs or explicitly approximate;
+hidden state refs ∈ approved scene refs.
+```
+
+Hard block:
+
+```text id="npogwq"
+любой concrete entity ссылается на candidate_id, которого не было в approved candidate set.
+```
+
+Error codes:
+
+```text id="tju7s2"
+COMMIT_GATE_CANDIDATE_ID_NOT_FOUND
+COMMIT_GATE_START_CANDIDATE_ID_NOT_FOUND
+COMMIT_GATE_PLACE_TEMPLATE_CANDIDATE_ID_NOT_FOUND
+COMMIT_GATE_NPC_CANDIDATE_ID_NOT_FOUND
+COMMIT_GATE_ITEM_PROFILE_CANDIDATE_ID_NOT_FOUND
+COMMIT_GATE_CONTAINER_PROFILE_CANDIDATE_ID_NOT_FOUND
+COMMIT_GATE_PROPERTY_RULE_CANDIDATE_ID_NOT_FOUND
+COMMIT_GATE_CHARACTER_CANDIDATE_REF_NOT_FOUND
+```
+
+## 12. Phase 6: Source ID validation
+
+Код проверяет `source_trace` и `source_ids`.
+
+Проверяются:
+
+```text id="3ar5vf"
+source_trace exists for key records;
+source_ids exist in world_base_reference_snapshot.allowed_source_ids or approved source snapshot;
+source_ids are not invented;
+source ids are attached to correct table/record;
+source_trace supports claimed entity;
+audit snapshots preserve source_trace.
+```
+
+Ключевые записи, где source trace обязателен:
+
+```text id="qgskmw"
+selected_start_node;
+player_character;
+g5_scene_graph;
+initial_npc_placement;
+initial_item_placement;
+character_knowledge_map;
+full_hidden_scene_state;
+visible_context_package;
+narrator_starting_prose;
+party_db_write_plan.
+```
+
+Error codes:
+
+```text id="il8ay6"
+COMMIT_GATE_SOURCE_TRACE_MISSING
+COMMIT_GATE_SOURCE_ID_NOT_FOUND
+COMMIT_GATE_SOURCE_ID_SCOPE_MISMATCH
+COMMIT_GATE_SOURCE_TRACE_UNSUPPORTED_CLAIM
+COMMIT_GATE_SOURCE_TRACE_EMPTY
+```
+
+## 13. Phase 7: Graph reference validation
+
+Код проверяет графовые ссылки.
+
+Проверяются:
+
+```text id="k36ihw"
+region_id;
+place_id;
+location_id;
+minilocation_id;
+anchor_id;
+g5_edge_id;
+graph_node_id;
+graph_edge_id;
+route_id;
+parent_g4_node_id;
+parent_minilocation_id;
+from_anchor_id;
+to_anchor_id.
+```
+
+Правила:
+
+```text id="fvbhss"
+current_position.anchor_id должен существовать в g5_scene_graph.g5_anchors;
+current_position.minilocation_id должен существовать в g5_scene_graph.g5_minilocations;
+anchor.parent_minilocation_id должен существовать;
+edge.from_anchor_id and edge.to_anchor_id должны существовать;
+anchor.parent_g4_node_id должен совпадать с selected_start_node.G4;
+scene refs не должны выходить за selected_start_node;
+visible refs не должны ссылаться на hidden-only anchors без reveal.
+```
+
+Error codes:
+
+```text id="3bhjuj"
+COMMIT_GATE_GRAPH_NODE_NOT_FOUND
+COMMIT_GATE_GRAPH_EDGE_NOT_FOUND
+COMMIT_GATE_G5_MINILOCATION_NOT_FOUND
+COMMIT_GATE_G5_ANCHOR_NOT_FOUND
+COMMIT_GATE_G5_EDGE_NOT_FOUND
+COMMIT_GATE_ANCHOR_PARENT_MISMATCH
+COMMIT_GATE_EDGE_ENDPOINT_NOT_FOUND
+COMMIT_GATE_SELECTED_G4_MISMATCH
+COMMIT_GATE_ROUTE_REF_NOT_FOUND
+```
+
+## 14. Phase 8: Position validation
+
+`current_position` — один из главных объектов commit.
+
+Проверяется:
+
+```text id="3xfbjr"
+current_position.region_id = selected/historical region;
+current_position.place_id matches selected_start_node;
+current_position.location_id = selected G4;
+current_position.minilocation_id exists in committed G5 scene;
+current_position.anchor_id exists in committed G5 anchors;
+current_position.last_route_id is null or approved;
+current_position is referenced by visible_context_package.position;
+narrator prose does not imply different position.
+```
+
+Hard block:
+
+```text id="rnheht"
+позиция ссылается на anchor, которого нет в стартовой G5-сцене.
+```
+
+Hard block:
+
+```text id="w7ryy2"
+visible_context.position и party_current_position расходятся.
+```
+
+Error codes:
+
+```text id="ydkly0"
+COMMIT_GATE_POSITION_REGION_MISMATCH
+COMMIT_GATE_POSITION_PLACE_MISMATCH
+COMMIT_GATE_POSITION_LOCATION_MISMATCH
+COMMIT_GATE_POSITION_MINILOCATION_MISSING
+COMMIT_GATE_POSITION_ANCHOR_MISSING
+COMMIT_GATE_POSITION_VISIBLE_CONTEXT_MISMATCH
+COMMIT_GATE_POSITION_NARRATOR_CONFLICT
+```
+
+## 15. Phase 9: NPC validation
+
+Код проверяет NPC перед записью.
+
+Проверяются:
+
+```text id="det3n2"
+npc_instance_id unique;
+npc_candidate_id exists;
+profile_level enum valid;
+social_role_id matches candidate;
+occupation_id matches candidate or allowed null;
+npc_archetype_id matches candidate;
+key_npc_seed_id exists if profile_level=key;
+npc anchor binding references existing npc and anchor;
+visibility state valid;
+attention state valid;
+witness state valid;
+schedule state valid;
+hidden_npc_state references existing npc;
+visible_npc references existing npc.
+```
+
+Hard block:
+
+```text id="hyy016"
+hidden_npc_state ссылается на NPC, которого нет в party_npcs.
+```
+
+Hard block:
+
+```text id="zmh9l1"
+visible_npc в visible context ссылается на NPC, которого нет в initial_npc_placement.
+```
+
+Error codes:
+
+```text id="g89ntf"
+COMMIT_GATE_NPC_ID_DUPLICATE
+COMMIT_GATE_NPC_REF_NOT_FOUND
+COMMIT_GATE_NPC_CANDIDATE_NOT_FOUND
+COMMIT_GATE_NPC_ROLE_MISMATCH
+COMMIT_GATE_NPC_OCCUPATION_MISMATCH
+COMMIT_GATE_NPC_ARCHETYPE_MISMATCH
+COMMIT_GATE_NPC_KEY_SEED_MISSING
+COMMIT_GATE_NPC_ANCHOR_BINDING_INVALID
+COMMIT_GATE_NPC_VISIBILITY_INVALID
+COMMIT_GATE_HIDDEN_NPC_REF_NOT_FOUND
+COMMIT_GATE_VISIBLE_NPC_REF_NOT_FOUND
+```
+
+## 16. Phase 10: Item/container validation
+
+Код проверяет предметы, контейнеры и их связи.
+
+Проверяются:
+
+```text id="55gkax"
+item_instance_id unique;
+item_profile_candidate_id exists;
+item_profile_id matches candidate;
+container_instance_id unique;
+container_profile_candidate_id exists;
+container_profile_id matches candidate;
+property_rule_candidate_id exists;
+item anchor binding references existing item and anchor;
+container anchor binding references existing container and anchor;
+item in container references existing container;
+item held by NPC references existing NPC;
+item held by player references existing player_character;
+closed container does not expose contents publicly;
+hidden item state references existing item;
+visible item references existing visible item only.
+```
+
+Hard block:
+
+```text id="s84fu5"
+property binding ссылается на item/container/NPC/anchor, которого не будет в транзакции.
+```
+
+Hard block:
+
+```text id="vbdw3b"
+container content записывается как visible, хотя hidden state говорит content_known_to_character=false.
+```
+
+Error codes:
+
+```text id="tqq29j"
+COMMIT_GATE_ITEM_ID_DUPLICATE
+COMMIT_GATE_ITEM_REF_NOT_FOUND
+COMMIT_GATE_ITEM_PROFILE_CANDIDATE_NOT_FOUND
+COMMIT_GATE_CONTAINER_ID_DUPLICATE
+COMMIT_GATE_CONTAINER_REF_NOT_FOUND
+COMMIT_GATE_CONTAINER_PROFILE_CANDIDATE_NOT_FOUND
+COMMIT_GATE_PROPERTY_RULE_CANDIDATE_NOT_FOUND
+COMMIT_GATE_ITEM_ANCHOR_BINDING_INVALID
+COMMIT_GATE_CONTAINER_ANCHOR_BINDING_INVALID
+COMMIT_GATE_ITEM_CONTAINER_BINDING_INVALID
+COMMIT_GATE_ITEM_NPC_HOLDER_REF_NOT_FOUND
+COMMIT_GATE_ITEM_PLAYER_HOLDER_REF_NOT_FOUND
+COMMIT_GATE_CLOSED_CONTAINER_PUBLIC_CONTENT_LEAK
+COMMIT_GATE_HIDDEN_ITEM_REF_NOT_FOUND
+COMMIT_GATE_VISIBLE_ITEM_REF_NOT_FOUND
+```
+
+## 17. Phase 11: Knowledge layer validation
+
+Код проверяет одновременно утверждённый Stage 18 output, root version, immutable snapshot и нормализованную проекцию.
+
+Обязательные проверки:
+
+```text
+character_knowledge_map и audit присутствуют;
+party_character_knowledge_maps root batch существует;
+root status=pending и is_current=false до projection validation;
+party_character_knowledge_snapshots batch существует;
+snapshot содержит исходный approved character_knowledge_map;
+snapshot content_hash совпадает с approved Stage 18 output;
+все normalized knowledge records имеют тот же knowledge_map_id;
+expected_counts совпадают с actual_counts;
+нет missing normalized records;
+нет extra normalized records;
+все source_trace refs разрешаются;
+known_route refs существуют или явно approximate;
+known_place refs существуют или approximate;
+known_person refs существуют или abstract with basis;
+known_address precision не превышает утверждённую;
+rumors имеют source/source_type и не хранятся как facts;
+mistaken beliefs отделены;
+forbidden knowledge присутствует как массив;
+knowledge gaps присутствуют, когда релевантны;
+нет hidden state или future knowledge в known facts;
+known_nearby_paths отображены в party_character_known_routes с knowledge_kind=nearby_path;
+ровно одна knowledge map становится current после успешной проверки;
+mark-current batch расположен после всех knowledge batches и до visible context.
+```
+
+Hard block:
+
+```text
+нет root или snapshot;
+snapshot hash не совпадает;
+projection incomplete;
+есть extra knowledge record;
+knowledge_map_id расходится;
+есть более одной current map;
+source trace broken;
+nearby path записан как самостоятельная world-route или в неподдерживаемую таблицу.
+```
+
+Error codes:
+
+```text
+COMMIT_GATE_KNOWLEDGE_ROOT_MISSING
+COMMIT_GATE_KNOWLEDGE_SNAPSHOT_MISSING
+COMMIT_GATE_KNOWLEDGE_SNAPSHOT_HASH_MISMATCH
+COMMIT_GATE_KNOWLEDGE_PROJECTION_INCOMPLETE
+COMMIT_GATE_KNOWLEDGE_PROJECTION_EXTRA_RECORD
+COMMIT_GATE_KNOWLEDGE_MAP_ID_MISMATCH
+COMMIT_GATE_MULTIPLE_CURRENT_KNOWLEDGE_MAPS
+COMMIT_GATE_KNOWLEDGE_SOURCE_TRACE_BROKEN
+COMMIT_GATE_NEARBY_PATH_MAPPING_INVALID
+COMMIT_GATE_KNOWLEDGE_ROUTE_REF_NOT_FOUND
+COMMIT_GATE_KNOWLEDGE_PLACE_REF_NOT_FOUND
+COMMIT_GATE_KNOWLEDGE_PERSON_REF_NOT_FOUND
+COMMIT_GATE_KNOWLEDGE_ADDRESS_PRECISION_INVALID
+COMMIT_GATE_RUMOR_SOURCE_MISSING
+COMMIT_GATE_RUMOR_TREATED_AS_FACT
+COMMIT_GATE_MISTAKEN_BELIEF_TREATED_AS_FACT
+COMMIT_GATE_FORBIDDEN_KNOWLEDGE_MISSING
+COMMIT_GATE_HIDDEN_STATE_IN_KNOWN_FACTS
+COMMIT_GATE_FUTURE_KNOWLEDGE_LEAK
+```
+
+Полная физическая модель определена в `party_character_knowledge_layer.md`.
+
+## 18. Phase 12: Hidden/visible boundary validation
+
+Код проверяет, что hidden state не попадёт в player-visible таблицы.
+
+Запрещено в public/visible/narrator/player tables:
+
+```text id="whnvii"
+private_motives;
+private_knowledge;
+closed container contents;
+hidden event timers;
+true ownership if unknown;
+hidden item value;
+hidden route truth;
+hidden risk truth;
+system-only facts;
+truth_status_for_system;
+actual_truth_hidden_from_character.
+```
+
+Проверяются таблицы:
+
+```text id="qf1z37"
+party_visible_context_package;
+party_visible_npc_state;
+party_visible_item_state;
+party_visible_container_state;
+party_visible_action_context;
+party_narrator_output;
+party_player_visible_message;
+party_available_action_options;
+party_journal_player_text.
+```
+
+Error codes:
+
+```text id="xih53s"
+COMMIT_GATE_HIDDEN_STATE_PUBLIC_LEAK
+COMMIT_GATE_PRIVATE_MOTIVE_PUBLIC_LEAK
+COMMIT_GATE_PRIVATE_KNOWLEDGE_PUBLIC_LEAK
+COMMIT_GATE_CLOSED_CONTAINER_CONTENT_PUBLIC_LEAK
+COMMIT_GATE_FUTURE_EVENT_PUBLIC_LEAK
+COMMIT_GATE_TRUE_OWNERSHIP_PUBLIC_LEAK
+COMMIT_GATE_HIDDEN_ROUTE_PUBLIC_LEAK
+COMMIT_GATE_SYSTEM_ONLY_FACT_PUBLIC_LEAK
+```
+
+## 19. Phase 13: Write plan order validation
+
+Код проверяет, что batch order не нарушает зависимости.
+
+Правила:
+
+```text id="czo3x2"
+party_state before all party child tables;
+party_scene_minilocations before party_scene_anchors;
+party_scene_anchors before party_scene_edges;
+party_scene_anchors before current_position;
+party_npcs before npc_anchor_bindings;
+party_items before item_anchor_bindings;
+party_containers before container contents/bindings;
+property targets before property_bindings;
+hidden fact records before reveal_conditions;
+hidden fact records before consequence_hooks;
+visible_context after hidden/knowledge state;
+narrator_output after visible_context_audit and narrator_prose_audit;
+party_ready flag last.
+```
+
+Hard block:
+
+```text id="jw54ik"
+batch_mark_party_ready идёт не последним.
+```
+
+Error codes:
+
+```text id="bmzn2v"
+COMMIT_GATE_WRITE_ORDER_INVALID
+COMMIT_GATE_WRITE_DEPENDENCY_MISSING
+COMMIT_GATE_WRITE_DEPENDENCY_CYCLE
+COMMIT_GATE_WRITE_ORDER_VIOLATES_FK
+COMMIT_GATE_READY_FLAG_NOT_LAST
+COMMIT_GATE_NARRATOR_OUTPUT_BEFORE_AUDIT
+COMMIT_GATE_PLAYER_OUTPUT_BEFORE_COMMIT
+```
+
+## 20. Phase 14: World base immutability validation
+
+Commit gate обязан доказать, что `world_base` не изменяется.
+
+Запрещены операции:
+
+```text id="f0mnl7"
+insert into world_base.*;
+update world_base.*;
+delete from world_base.*;
+upsert into world_base.*;
+alter world_base.*;
+write to canonical graph_nodes/graph_edges/templates/source_records.
+```
+
+Разрешено:
+
+```text id="x7hthf"
+читать world_base;
+ссылаться на world_base IDs;
+сохранять source_trace refs;
+сохранять snapshots в party audit tables;
+сохранять readonly checksum.
+```
+
+Error codes:
+
+```text id="hgg2wf"
+COMMIT_GATE_WORLD_BASE_MUTATION
+COMMIT_GATE_WORLD_BASE_CHECKSUM_CHANGED
+COMMIT_GATE_CANONICAL_SOURCE_MUTATION
+COMMIT_GATE_CANONICAL_GRAPH_MUTATION
+```
+
+## 21. Phase 15: Idempotency validation
+
+Код проверяет, что старт партии не будет записан дважды.
+
+Проверяются:
+
+```text id="z2flhc"
+idempotency_key exists;
+payload_hash exists;
+idempotency_key not used;
+or existing key has same payload_hash and same final status;
+party_id not already active;
+player_character_id not already attached to another active party unless allowed.
+```
+
+Поведение:
+
+```text id="98y4h6"
+same key + same hash + committed → return existing committed result;
+same key + different hash → block;
+same party_id active → block;
+same party_id rolled_back → allow only explicit recovery mode;
+```
+
+Error codes:
+
+```text id="pwvofw"
+COMMIT_GATE_IDEMPOTENCY_KEY_MISSING
+COMMIT_GATE_IDEMPOTENCY_CONFLICT
+COMMIT_GATE_PARTY_ALREADY_EXISTS
+COMMIT_GATE_PARTY_ALREADY_ACTIVE
+COMMIT_GATE_PAYLOAD_HASH_MISMATCH
+```
+
+## 22. Phase 16: Dry-run transaction validation
+
+Перед настоящим commit код должен выполнить dry-run.
+
+Dry-run проверяет:
+
+```text id="tz82vj"
+все insert/update операции синтаксически валидны;
+все FK разрешаются;
+unique constraints не нарушаются;
+check constraints не нарушаются;
+enum constraints не нарушаются;
+not-null constraints не нарушаются;
+batch order исполним;
+rollback доступен;
+нет external side effects;
+нет player-visible output.
+```
+
+Dry-run не пишет live-state.
+
+Error codes:
+
+```text id="gb6lgv"
+COMMIT_GATE_DRY_RUN_FAILED
+COMMIT_GATE_DRY_RUN_FK_FAILED
+COMMIT_GATE_DRY_RUN_UNIQUE_FAILED
+COMMIT_GATE_DRY_RUN_CHECK_FAILED
+COMMIT_GATE_DRY_RUN_NOT_NULL_FAILED
+COMMIT_GATE_DRY_RUN_EXTERNAL_SIDE_EFFECT
+```
+
+## 23. Phase 17: Rollback validation
+
+Перед commit код проверяет rollback.
+
+Rollback должен быть:
+
+```text id="59eaw2"
+full transaction rollback;
+automatic on any batch failure;
+preserve diagnostics;
+not require player-facing correction;
+not leave party_state.ready=true;
+not send narrator output before commit.
+```
+
+Error codes:
+
+```text id="e9tvfm"
+COMMIT_GATE_ROLLBACK_PLAN_MISSING
+COMMIT_GATE_ROLLBACK_NOT_ATOMIC
+COMMIT_GATE_ROLLBACK_CANNOT_PRESERVE_DIAGNOSTICS
+COMMIT_GATE_ROLLBACK_AFTER_PLAYER_OUTPUT_IMPOSSIBLE
+```
+
+## 24. Atomic commit
+
+Если все проверки пройдены:
+
+```text id="ls7hxq"
+begin transaction;
+execute write batches in validated order;
+check postconditions;
+set party_state.status=ready;
+commit transaction;
+prepare player-visible output;
+mark opening_scene_presented only after client delivery acknowledgement, if UI supports acknowledgement.
+```
+
+Если ошибка во время commit:
+
+```text id="zhf0ri"
+rollback transaction;
+write diagnostics outside live party state;
+do not show player output;
+return repair route or system error;
+party_state must not be ready.
+```
+
+## 25. Postcommit validation
+
+После commit код проверяет live-state.
+
+Проверяется:
+
+```text id="oj4wwy"
+party_state.status=ready;
+party_state.is_ready_for_player=true;
+party_current_position exists;
+party_clock exists;
+party_player_character exists;
+party_scene_anchors exist;
+party_npcs inserted;
+party_items/containers inserted if expected;
+party_hidden_state inserted;
+party_character_knowledge_maps root inserted;
+party_character_knowledge_snapshots immutable snapshot inserted;
+all expected party_character_known_* records inserted;
+knowledge projection counts and hashes verified;
+exactly one current knowledge map exists for the player character;
+all knowledge records reference the current knowledge_map_id;
+party_visible_context inserted;
+party_narrator_output approved;
+source_trace inserted;
+audit snapshots inserted;
+no world_base mutation;
+no hidden state public leak.
+```
+
+Если postcommit validation не проходит:
+
+```text id="tlhqs0"
+transaction must rollback if still inside transaction;
+if already committed, mark party_state.status=commit_error and block player output;
+manual recovery required.
+```
+
+## 26. Commit gate result schema
+
+```json id="uup4ek"
+{
+  "version": 1,
+  "schema": "commit_gate_result",
+  "request_id": "string",
+
+  "pass": true,
+
+  "transaction_permission": {
+    "can_execute_atomic_commit": true,
+    "can_mark_party_ready": true,
+    "can_prepare_player_output_after_commit": true
+  },
+
+  "checks": {
+    "preflight": {
+      "pass": true,
+      "evidence": []
+    },
+    "audit_chain": {
+      "pass": true,
+      "evidence": []
+    },
+    "schema_validation": {
+      "pass": true,
+      "evidence": []
+    },
+    "enum_validation": {
+      "pass": true,
+      "evidence": []
+    },
+    "fk_validation": {
+      "pass": true,
+      "evidence": []
+    },
+    "candidate_id_validation": {
+      "pass": true,
+      "evidence": []
+    },
+    "source_id_validation": {
+      "pass": true,
+      "evidence": []
+    },
+    "graph_reference_validation": {
+      "pass": true,
+      "evidence": []
+    },
+    "position_validation": {
+      "pass": true,
+      "evidence": []
+    },
+    "npc_validation": {
+      "pass": true,
+      "evidence": []
+    },
+    "item_container_validation": {
+      "pass": true,
+      "evidence": []
+    },
+    "knowledge_validation": {
+      "pass": true,
+      "evidence": []
+    },
+    "hidden_visible_boundary_validation": {
+      "pass": true,
+      "evidence": []
+    },
+    "write_plan_order_validation": {
+      "pass": true,
+      "evidence": []
+    },
+    "idempotency_validation": {
+      "pass": true,
+      "evidence": []
+    },
+    "world_base_immutability_validation": {
+      "pass": true,
+      "evidence": []
+    },
+    "dry_run_validation": {
+      "pass": true,
+      "evidence": []
+    },
+    "rollback_validation": {
+      "pass": true,
+      "evidence": []
+    }
+  },
+
+  "commit_execution_plan": {
+    "transaction_id": "string",
+    "write_order": [],
+    "dry_run_required": true,
+    "rollback_strategy": "full_transaction_rollback"
+  },
+
+  "concerns": [],
+
+  "evidence": [
+    "All upstream audits passed.",
+    "All write batches match party database schema.",
+    "All foreign keys resolve.",
+    "All candidate IDs exist in approved candidate sets.",
+    "All source IDs resolve.",
+    "Current position resolves to approved G5 anchor.",
+    "No world_base mutation detected.",
+    "No hidden state public leak detected.",
+    "Dry-run transaction succeeded.",
+    "Rollback strategy is available."
+  ],
+
+  "repair_route": null
+}
+```
+
+## 27. DB write на этом этапе
+
+До успешного commit gate разрешено писать только diagnostics:
+
+```text id="p4ezrt"
+pipeline_step_status;
+commit_gate_code_precheck_snapshot;
+commit_gate_validation_issues;
+commit_gate_result_snapshot;
+commit_gate_dry_run_result;
+commit_gate_repair_route;
+commit_gate_diagnostics.
+```
+
+После успешного commit gate, но до atomic commit, live-state ещё не должен быть изменён.
+
+Live-state пишется только внутри atomic transaction:
+
+```text id="kz9hya"
+party_state;
+party_clock;
+party_environment_state;
+party_current_position;
+party_player_characters;
+party_scene_minilocations;
+party_scene_anchors;
+party_scene_edges;
+party_npcs;
+party_items;
+party_containers;
+party_property_bindings;
+party_hidden_state tables;
+party_character_knowledge tables;
+party_visible_context tables;
+party_narrator_output;
+party_audit_snapshots;
+party_source_trace.
+```
+
+Запрещено:
+
+```text id="h1m7gp"
+частично писать party_state до проверки;
+писать player-visible message до commit success;
+писать в world_base;
+обновлять canonical source records;
+делать silent repair inside commit;
+помечать party ready до postconditions.
+```
+
+## 28. Роль LLM на этапе
+
+Основной Commit gate — code-only.
+
+LLM не должна решать, прошёл ли commit.
+LLM не должна override-ить FK, schema, enum, source ID или candidate ID checks.
+LLM не должна “объяснять”, почему битая ссылка допустима.
+LLM не должна создавать missing ID.
+
+Опционально LLM можно использовать только после провала code gate:
+
+```text id="5g7ial"
+для human-readable diagnostics;
+для классификации repair route;
+для группировки validation errors;
+для объяснения, какой предыдущий этап нужно вернуть на repair.
+```
+
+LLM-диагност не меняет live-state и не разрешает commit.
+
+## 29. Опциональные LLM-параметры
+
+### 29.1. `CommitGateDiagnosticSummarizer`
+
+Назначение: сгруппировать ошибки commit gate в понятный repair report.
+
+```json id="fe2mox"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 5000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 70000,
+    "hard_input_limit_tokens": 180000,
+    "reserve_output_tokens": 5000
+  }
+}
+```
+
+### 29.2. `CommitGateRepairRouter`
+
+Назначение: выбрать repair route по machine validation errors.
+
+```json id="s38c91"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 4000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 60000,
+    "hard_input_limit_tokens": 160000,
+    "reserve_output_tokens": 4000
+  }
+}
+```
+
+### 29.3. `CommitGateReportFormatRepairer`
+
+Назначение: исправить только JSON-формат diagnostic report или repair route.
+
+```json id="viouuq"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-flash",
+  "thinking": {
+    "type": "disabled"
+  },
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "max_tokens": 3000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 30000,
+    "hard_input_limit_tokens": 90000,
+    "reserve_output_tokens": 3000
+  }
+}
+```
+
+## 30. Prompt: CommitGateDiagnosticSummarizer
+
+```md id="s1zmbm"
+# Роль
+
+Ты CommitGateDiagnosticSummarizer для исторической текстовой RPG.
+
+# Задача
+
+Сгруппируй machine validation errors Commit gate в понятный diagnostic report.
+
+# Главное правило
+
+Ты не разрешаешь commit.
+Ты не исправляешь данные.
+Ты не создаёшь missing IDs.
+Ты не меняешь write plan.
+Ты только объясняешь ошибки и группируешь их.
+
+# Источники
+
+Используй только:
+- commit_gate_result
+- validation_errors
+- party_db_write_plan
+- party_database_schema
+- approved_pipeline_outputs summaries
+
+# Запрещено
+
+- менять pass/fail;
+- игнорировать hard_block;
+- придумывать missing source_id;
+- придумывать candidate_id;
+- исправлять FK;
+- предлагать silent patch;
+- писать SQL;
+- выполнять транзакцию.
+
+# Формат
+
+Верни только JSON:
+
+{
+  "version": 1,
+  "schema": "commit_gate_diagnostic_report",
+  "request_id": "...",
+  "summary": "...",
+  "error_groups": [],
+  "hard_blocks": [],
+  "repair_recommendations": [],
+  "must_not_commit": true
+}
+```
+
+## 31. Prompt: CommitGateRepairRouter
+
+```md id="tmoe5k"
+# Роль
+
+Ты CommitGateRepairRouter.
+
+# Задача
+
+По failed commit_gate_result выбери правильный repair route.
+
+# Главное правило
+
+Ты не исправляешь данные.
+Ты только выбираешь return_to_stage.
+
+# Возможные return_to_stage
+
+- party_db_write_plan_format_repair
+- party_db_write_plan_semantic_repair
+- narrator_prose_semantic_repair
+- visible_context_semantic_repair
+- full_hidden_state_semantic_repair
+- character_knowledge_map_semantic_repair
+- item_placement_semantic_repair
+- npc_placement_semantic_repair
+- g5_scene_semantic_repair
+- player_character_semantic_repair
+- selected_start_node_semantic_repair
+- source_trace_repair
+- blocked
+
+# Правила маршрутизации
+
+Если ошибка только в форме write plan:
+return_to_stage = party_db_write_plan_format_repair
+
+Если batch order, target_table, records или dependencies неверны:
+return_to_stage = party_db_write_plan_semantic_repair
+
+Если source_id отсутствует или невалиден:
+return_to_stage = source_trace_repair
+
+Если current_position ссылается на неверный anchor:
+return_to_stage = g5_scene_semantic_repair или party_db_write_plan_semantic_repair
+
+Если NPC FK невалиден:
+return_to_stage = npc_placement_semantic_repair
+
+Если item/container/property FK невалиден:
+return_to_stage = item_placement_semantic_repair
+
+Если hidden state ссылается на несуществующий объект:
+return_to_stage = full_hidden_state_semantic_repair
+
+Если visible context ссылается на несуществующий object:
+return_to_stage = visible_context_semantic_repair
+
+Если narrator output содержит unapproved facts:
+return_to_stage = narrator_prose_semantic_repair
+
+Если невозможно исправить без пересоздания стартового узла:
+return_to_stage = blocked
+
+# Формат
+
+Верни только JSON:
+
+{
+  "version": 1,
+  "schema": "commit_gate_repair_route",
+  "return_to_stage": "...",
+  "repair_kind": "...",
+  "reason": "...",
+  "evidence": []
+}
+```
+
+## 32. Validation rules для commit_gate_result
+
+Код обязан проверить собственный результат gate:
+
+1. `schema === "commit_gate_result"`.
+2. `version === 1`.
+3. `pass` boolean.
+4. Если `pass=true`, all checks pass.
+5. Если `pass=false`, concerns не пустой.
+6. Если `pass=false`, evidence не пустой.
+7. Если `pass=false`, repair_route заполнен.
+8. Если `pass=false`, transaction_permission all false.
+9. Если `pass=true`, transaction_permission.can_execute_atomic_commit=true.
+10. `commit_execution_plan.transaction_id` заполнен при pass=true.
+11. `commit_execution_plan.write_order` совпадает с audited write plan.
+12. `evidence` не пустой.
+13. Нет LLM-generated override.
+14. Нет silent repair marker.
+15. Нет player-visible output в gate result.
+
+## 33. Общий список error codes
+
+```text id="isp91f"
+COMMIT_GATE_INPUT_SCHEMA_INVALID
+COMMIT_GATE_PARTY_ID_MISSING
+COMMIT_GATE_PLAYER_CHARACTER_ID_MISSING
+COMMIT_GATE_IDEMPOTENCY_KEY_MISSING
+COMMIT_GATE_PAYLOAD_HASH_MISSING
+COMMIT_GATE_WRITE_PLAN_MISSING
+COMMIT_GATE_WRITE_PLAN_AUDIT_MISSING
+COMMIT_GATE_DB_SCHEMA_MISSING
+COMMIT_GATE_WORLD_BASE_REFERENCE_MISSING
+
+COMMIT_GATE_UPSTREAM_AUDIT_FAILED
+COMMIT_GATE_UPSTREAM_AUDIT_MISSING
+COMMIT_GATE_WRITE_PLAN_AUDIT_FAILED
+
+COMMIT_GATE_SCHEMA_INVALID
+COMMIT_GATE_REQUIRED_FIELD_MISSING
+COMMIT_GATE_FIELD_TYPE_MISMATCH
+COMMIT_GATE_RECORD_SHAPE_INVALID
+COMMIT_GATE_UNKNOWN_COLUMN
+COMMIT_GATE_NULL_NOT_ALLOWED
+COMMIT_GATE_ARRAY_EXPECTED
+COMMIT_GATE_OBJECT_EXPECTED
+
+COMMIT_GATE_ENUM_INVALID
+COMMIT_GATE_OPERATION_MODE_INVALID
+COMMIT_GATE_STATUS_INVALID
+COMMIT_GATE_PROFILE_LEVEL_INVALID
+COMMIT_GATE_TIME_OF_DAY_INVALID
+COMMIT_GATE_LIGHT_PROFILE_INVALID
+COMMIT_GATE_RISK_LEVEL_INVALID
+
+COMMIT_GATE_CANDIDATE_ID_NOT_FOUND
+COMMIT_GATE_START_CANDIDATE_ID_NOT_FOUND
+COMMIT_GATE_PLACE_TEMPLATE_CANDIDATE_ID_NOT_FOUND
+COMMIT_GATE_NPC_CANDIDATE_ID_NOT_FOUND
+COMMIT_GATE_ITEM_PROFILE_CANDIDATE_ID_NOT_FOUND
+COMMIT_GATE_CONTAINER_PROFILE_CANDIDATE_ID_NOT_FOUND
+COMMIT_GATE_PROPERTY_RULE_CANDIDATE_ID_NOT_FOUND
+COMMIT_GATE_CHARACTER_CANDIDATE_REF_NOT_FOUND
+
+COMMIT_GATE_SOURCE_TRACE_MISSING
+COMMIT_GATE_SOURCE_ID_NOT_FOUND
+COMMIT_GATE_SOURCE_ID_SCOPE_MISMATCH
+COMMIT_GATE_SOURCE_TRACE_UNSUPPORTED_CLAIM
+COMMIT_GATE_SOURCE_TRACE_EMPTY
+
+COMMIT_GATE_GRAPH_NODE_NOT_FOUND
+COMMIT_GATE_GRAPH_EDGE_NOT_FOUND
+COMMIT_GATE_G5_MINILOCATION_NOT_FOUND
+COMMIT_GATE_G5_ANCHOR_NOT_FOUND
+COMMIT_GATE_G5_EDGE_NOT_FOUND
+COMMIT_GATE_ANCHOR_PARENT_MISMATCH
+COMMIT_GATE_EDGE_ENDPOINT_NOT_FOUND
+COMMIT_GATE_SELECTED_G4_MISMATCH
+COMMIT_GATE_ROUTE_REF_NOT_FOUND
+
+COMMIT_GATE_POSITION_REGION_MISMATCH
+COMMIT_GATE_POSITION_PLACE_MISMATCH
+COMMIT_GATE_POSITION_LOCATION_MISMATCH
+COMMIT_GATE_POSITION_MINILOCATION_MISSING
+COMMIT_GATE_POSITION_ANCHOR_MISSING
+COMMIT_GATE_POSITION_VISIBLE_CONTEXT_MISMATCH
+COMMIT_GATE_POSITION_NARRATOR_CONFLICT
+
+COMMIT_GATE_NPC_ID_DUPLICATE
+COMMIT_GATE_NPC_REF_NOT_FOUND
+COMMIT_GATE_NPC_CANDIDATE_NOT_FOUND
+COMMIT_GATE_NPC_ROLE_MISMATCH
+COMMIT_GATE_NPC_OCCUPATION_MISMATCH
+COMMIT_GATE_NPC_ARCHETYPE_MISMATCH
+COMMIT_GATE_NPC_KEY_SEED_MISSING
+COMMIT_GATE_NPC_ANCHOR_BINDING_INVALID
+COMMIT_GATE_NPC_VISIBILITY_INVALID
+COMMIT_GATE_HIDDEN_NPC_REF_NOT_FOUND
+COMMIT_GATE_VISIBLE_NPC_REF_NOT_FOUND
+
+COMMIT_GATE_ITEM_ID_DUPLICATE
+COMMIT_GATE_ITEM_REF_NOT_FOUND
+COMMIT_GATE_ITEM_PROFILE_CANDIDATE_NOT_FOUND
+COMMIT_GATE_CONTAINER_ID_DUPLICATE
+COMMIT_GATE_CONTAINER_REF_NOT_FOUND
+COMMIT_GATE_CONTAINER_PROFILE_CANDIDATE_NOT_FOUND
+COMMIT_GATE_PROPERTY_RULE_CANDIDATE_NOT_FOUND
+COMMIT_GATE_ITEM_ANCHOR_BINDING_INVALID
+COMMIT_GATE_CONTAINER_ANCHOR_BINDING_INVALID
+COMMIT_GATE_ITEM_CONTAINER_BINDING_INVALID
+COMMIT_GATE_ITEM_NPC_HOLDER_REF_NOT_FOUND
+COMMIT_GATE_ITEM_PLAYER_HOLDER_REF_NOT_FOUND
+COMMIT_GATE_CLOSED_CONTAINER_PUBLIC_CONTENT_LEAK
+COMMIT_GATE_HIDDEN_ITEM_REF_NOT_FOUND
+COMMIT_GATE_VISIBLE_ITEM_REF_NOT_FOUND
+
+COMMIT_GATE_KNOWLEDGE_ROUTE_REF_NOT_FOUND
+COMMIT_GATE_KNOWLEDGE_PLACE_REF_NOT_FOUND
+COMMIT_GATE_KNOWLEDGE_PERSON_REF_NOT_FOUND
+COMMIT_GATE_KNOWLEDGE_ADDRESS_PRECISION_INVALID
+COMMIT_GATE_RUMOR_SOURCE_MISSING
+COMMIT_GATE_RUMOR_TREATED_AS_FACT
+COMMIT_GATE_MISTAKEN_BELIEF_TREATED_AS_FACT
+COMMIT_GATE_FORBIDDEN_KNOWLEDGE_MISSING
+COMMIT_GATE_HIDDEN_STATE_IN_KNOWN_FACTS
+COMMIT_GATE_FUTURE_KNOWLEDGE_LEAK
+COMMIT_GATE_KNOWLEDGE_ROOT_MISSING
+COMMIT_GATE_KNOWLEDGE_SNAPSHOT_MISSING
+COMMIT_GATE_KNOWLEDGE_SNAPSHOT_HASH_MISMATCH
+COMMIT_GATE_KNOWLEDGE_PROJECTION_INCOMPLETE
+COMMIT_GATE_KNOWLEDGE_PROJECTION_EXTRA_RECORD
+COMMIT_GATE_KNOWLEDGE_MAP_ID_MISMATCH
+COMMIT_GATE_MULTIPLE_CURRENT_KNOWLEDGE_MAPS
+COMMIT_GATE_KNOWLEDGE_SOURCE_TRACE_BROKEN
+COMMIT_GATE_NEARBY_PATH_MAPPING_INVALID
+
+COMMIT_GATE_HIDDEN_STATE_PUBLIC_LEAK
+COMMIT_GATE_PRIVATE_MOTIVE_PUBLIC_LEAK
+COMMIT_GATE_PRIVATE_KNOWLEDGE_PUBLIC_LEAK
+COMMIT_GATE_CLOSED_CONTAINER_CONTENT_PUBLIC_LEAK
+COMMIT_GATE_FUTURE_EVENT_PUBLIC_LEAK
+COMMIT_GATE_TRUE_OWNERSHIP_PUBLIC_LEAK
+COMMIT_GATE_HIDDEN_ROUTE_PUBLIC_LEAK
+COMMIT_GATE_SYSTEM_ONLY_FACT_PUBLIC_LEAK
+
+COMMIT_GATE_WRITE_ORDER_INVALID
+COMMIT_GATE_WRITE_DEPENDENCY_MISSING
+COMMIT_GATE_WRITE_DEPENDENCY_CYCLE
+COMMIT_GATE_WRITE_ORDER_VIOLATES_FK
+COMMIT_GATE_READY_FLAG_NOT_LAST
+COMMIT_GATE_NARRATOR_OUTPUT_BEFORE_AUDIT
+COMMIT_GATE_PLAYER_OUTPUT_BEFORE_COMMIT
+
+COMMIT_GATE_WORLD_BASE_MUTATION
+COMMIT_GATE_WORLD_BASE_CHECKSUM_CHANGED
+COMMIT_GATE_CANONICAL_SOURCE_MUTATION
+COMMIT_GATE_CANONICAL_GRAPH_MUTATION
+
+COMMIT_GATE_IDEMPOTENCY_CONFLICT
+COMMIT_GATE_PARTY_ALREADY_EXISTS
+COMMIT_GATE_PARTY_ALREADY_ACTIVE
+COMMIT_GATE_PAYLOAD_HASH_MISMATCH
+
+COMMIT_GATE_DRY_RUN_FAILED
+COMMIT_GATE_DRY_RUN_FK_FAILED
+COMMIT_GATE_DRY_RUN_UNIQUE_FAILED
+COMMIT_GATE_DRY_RUN_CHECK_FAILED
+COMMIT_GATE_DRY_RUN_NOT_NULL_FAILED
+COMMIT_GATE_DRY_RUN_EXTERNAL_SIDE_EFFECT
+
+COMMIT_GATE_ROLLBACK_PLAN_MISSING
+COMMIT_GATE_ROLLBACK_NOT_ATOMIC
+COMMIT_GATE_ROLLBACK_CANNOT_PRESERVE_DIAGNOSTICS
+COMMIT_GATE_ROLLBACK_AFTER_PLAYER_OUTPUT_IMPOSSIBLE
+```
+
+## 34. Commit success output
+
+После успешной транзакции код формирует:
+
+```json id="8dwqel"
+{
+  "version": 1,
+  "schema": "party_start_committed",
+  "request_id": "string",
+
+  "commit_status": "committed",
+
+  "party_id": "string",
+  "transaction_id": "string",
+
+  "party_state": {
+    "status": "ready",
+    "is_ready_for_player": true,
+    "current_phase": "awaiting_player_input",
+    "current_turn_number": 0
+  },
+
+  "current_position": {
+    "region_id": "string",
+    "place_id": "string",
+    "location_id": "string",
+    "minilocation_id": "string",
+    "anchor_id": "string",
+    "last_route_id": "string | null"
+  },
+
+  "player_output_ref": {
+    "narrator_output_id": "string",
+    "player_visible_message_ready": true,
+    "opening_scene_presented": false
+  },
+
+  "postcommit_checks": {
+    "pass": true,
+    "evidence": []
+  }
+}
+```
+
+`opening_scene_presented=false` может оставаться до подтверждения UI, что текст реально показан игроку.
+
+## 35. Commit failure output
+
+```json id="w3zvbg"
+{
+  "version": 1,
+  "schema": "party_start_commit_failed",
+  "request_id": "string",
+
+  "commit_status": "blocked | dry_run_failed | rolled_back | commit_error",
+
+  "party_id": "string | null",
+  "transaction_id": "string | null",
+
+  "failed_phase": "preflight | schema | enum | fk | candidate_ids | source_ids | graph_refs | position | npc | items | knowledge | hidden_visible_boundary | write_order | idempotency | world_base_immutability | dry_run | transaction | postcommit",
+
+  "concerns": [],
+  "evidence": [],
+
+  "repair_route": {},
+
+  "player_output_status": {
+    "shown_to_player": false,
+    "must_not_show": true
+  },
+
+  "party_state_status": {
+    "ready": false,
+    "live_state_written": false,
+    "rollback_completed": true
+  }
+}
+```
+
+## 36. Минимальный успешный результат
+
+```json id="2oq31z"
+{
+  "version": 1,
+  "schema": "commit_gate_result",
+  "request_id": "req_001",
+
+  "pass": true,
+
+  "transaction_permission": {
+    "can_execute_atomic_commit": true,
+    "can_mark_party_ready": true,
+    "can_prepare_player_output_after_commit": true
+  },
+
+  "checks": {
+    "preflight": {
+      "pass": true,
+      "evidence": [
+        "party_id, player_character_id, idempotency_key, write_plan and schema snapshot are present"
+      ]
+    },
+    "audit_chain": {
+      "pass": true,
+      "evidence": [
+        "all upstream audits have pass=true"
+      ]
+    },
+    "schema_validation": {
+      "pass": true,
+      "evidence": [
+        "write plan and record payloads match party database schema"
+      ]
+    },
+    "enum_validation": {
+      "pass": true,
+      "evidence": [
+        "all enum fields use allowed values"
+      ]
+    },
+    "fk_validation": {
+      "pass": true,
+      "evidence": [
+        "all foreign keys resolve inside approved transaction or readonly reference snapshots"
+      ]
+    },
+    "candidate_id_validation": {
+      "pass": true,
+      "evidence": [
+        "NPC, item, container and property candidate IDs exist in approved candidate sets"
+      ]
+    },
+    "source_id_validation": {
+      "pass": true,
+      "evidence": [
+        "source trace is present and source IDs resolve"
+      ]
+    },
+    "graph_reference_validation": {
+      "pass": true,
+      "evidence": [
+        "G5 minilocations, anchors and edges resolve"
+      ]
+    },
+    "position_validation": {
+      "pass": true,
+      "evidence": [
+        "current_position resolves to approved start G5 anchor"
+      ]
+    },
+    "npc_validation": {
+      "pass": true,
+      "evidence": [
+        "NPC records and bindings reference approved NPC candidates and G5 anchors"
+      ]
+    },
+    "item_container_validation": {
+      "pass": true,
+      "evidence": [
+        "items, containers and property bindings reference approved profiles and existing targets"
+      ]
+    },
+    "knowledge_validation": {
+      "pass": true,
+      "evidence": [
+        "character knowledge records do not contain hidden or future facts"
+      ]
+    },
+    "hidden_visible_boundary_validation": {
+      "pass": true,
+      "evidence": [
+        "hidden state is not written to public or player-visible tables"
+      ]
+    },
+    "write_plan_order_validation": {
+      "pass": true,
+      "evidence": [
+        "write batches satisfy dependency order and ready flag is last"
+      ]
+    },
+    "idempotency_validation": {
+      "pass": true,
+      "evidence": [
+        "idempotency key is unused for a different payload"
+      ]
+    },
+    "world_base_immutability_validation": {
+      "pass": true,
+      "evidence": [
+        "write plan contains no world_base mutation"
+      ]
+    },
+    "dry_run_validation": {
+      "pass": true,
+      "evidence": [
+        "dry-run transaction succeeded"
+      ]
+    },
+    "rollback_validation": {
+      "pass": true,
+      "evidence": [
+        "full transaction rollback is available until commit success"
+      ]
+    }
+  },
+
+  "commit_execution_plan": {
+    "transaction_id": "tx_party_start_001",
+    "write_order": [
+      "batch_party_state",
+      "batch_clock_environment",
+      "batch_scene_minilocations",
+      "batch_scene_anchors",
+      "batch_scene_edges",
+      "batch_current_position",
+      "batch_player_character",
+      "batch_character_inventory",
+      "batch_npcs",
+      "batch_npc_anchor_bindings",
+      "batch_items",
+      "batch_containers",
+      "batch_property_bindings",
+      "batch_hidden_state",
+      "batch_reveal_discovery_consequence",
+      "batch_character_knowledge",
+      "batch_visible_context",
+      "batch_narrator_output",
+      "batch_events",
+      "batch_audit_snapshots",
+      "batch_source_trace",
+      "batch_mark_party_ready"
+    ],
+    "dry_run_required": true,
+    "rollback_strategy": "full_transaction_rollback"
+  },
+
+  "concerns": [],
+
+  "evidence": [
+    "All upstream audits passed.",
+    "All schemas, enums, foreign keys, source IDs and candidate IDs are valid.",
+    "Current position resolves to approved G5 scene.",
+    "No world_base mutation is present.",
+    "No hidden state is written to player-visible tables.",
+    "Dry-run succeeded.",
+    "Atomic commit is permitted."
+  ],
+
+  "repair_route": null
+}
+```

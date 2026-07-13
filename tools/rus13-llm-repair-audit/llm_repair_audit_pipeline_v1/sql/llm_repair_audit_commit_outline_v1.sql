@@ -1,0 +1,33 @@
+-- llm_repair_audit_pipeline_v1 transaction outline
+-- This file does not create world facts. It shows ordering for party-state commit after all audits pass.
+
+BEGIN;
+
+-- 1. lock party revision to avoid committing stale audit result
+-- SELECT revision FROM party_state WHERE id = :party_id FOR UPDATE;
+
+-- 2. assert no blocking validation issues for the current llm_step / pipeline_run
+-- SELECT count(*) FROM party_validation_issues
+-- WHERE party_id = :party_id AND pipeline_run_id = :pipeline_run_id AND severity = 'blocking' AND status <> 'resolved';
+
+-- 3. if count > 0: ROLLBACK outside this script
+
+-- 4. insert/update target party_* tables from validated write_plan in dependency order
+-- INSERT INTO party_graph_nodes ...
+-- INSERT INTO party_places ...
+-- INSERT INTO party_locations ...
+-- INSERT INTO party_minilocations ...
+-- INSERT INTO party_scene_anchors ...
+-- INSERT INTO party_current_position ...
+-- INSERT INTO party_npcs ...
+-- INSERT INTO party_items ...
+-- INSERT INTO party_events ...
+-- INSERT INTO party_journal_entries ...
+
+-- 5. update llm step/audit status
+-- UPDATE party_llm_steps SET status='committed', committed_at=now(), commit_report=:commit_report WHERE id=:llm_step_id;
+
+-- 6. advance party revision
+-- UPDATE party_state SET revision = revision + 1, updated_at = now() WHERE id=:party_id;
+
+COMMIT;

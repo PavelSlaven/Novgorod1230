@@ -1,0 +1,63 @@
+{
+  "artifact": "novgorod_graphify_g1_g4_full",
+  "outputs": [
+    "graphify-out/graph.html",
+    "graphify-out/graph.json",
+    "graphify-out/GRAPH_REPORT.md",
+    "graphify-out/nodes.csv",
+    "graphify-out/edges.csv"
+  ],
+  "summary": {
+    "name": "Новгородская земля — полный граф G1-G4 v6",
+    "source_archive": "novgorod_full_graph_g1_g4_v6_game_ready.zip",
+    "source_files": {
+      "nodes": "tsv_import/novgorod_graph_nodes_g1_g4_full_v6.tsv",
+      "edges": "tsv_import/novgorod_graph_edges_g1_g4_full_v6.tsv"
+    },
+    "note": "Graphify-compatible node-link graph generated from supplied TSV tables. Links include all canonical graph_edges plus contains edges extracted from parent_node_id for full G1-G4 hierarchy traversal.",
+    "node_counts_by_level": {
+      "G1": 70,
+      "G2": 1046,
+      "G3": 911,
+      "G4": 9332
+    },
+    "link_counts_by_relation_top": {
+      "contains": 11289,
+      "path": 8566,
+      "yard_passage": 5872,
+      "forest_track": 3098,
+      "road": 2512,
+      "river": 2266,
+      "door": 2192,
+      "street": 1308,
+      "gate": 1264,
+      "ferry": 848,
+      "ford": 680,
+      "bridge": 510,
+      "offroad_crossing": 302,
+      "winter_road": 280,
+      "lake_route": 212,
+      "border_transition": 188,
+      "corridor_segment": 150
+    },
+    "canonical_edge_count": 30248,
+    "hierarchy_edge_count": 11289,
+    "total_nodes": 11359,
+    "total_links": 41537,
+    "missing_edge_ids": [],
+    "missing_edge_count": 0,
+    "community_labels": {
+      "0": "G1 regional cells",
+      "1": "G2 cell subgraphs",
+      "2": "G3 places",
+      "3": "G4 locations"
+    }
+  },
+  "sha256": {
+    "graphify-out/graph.html": "d71ff8dcb27055357a47bf5b54aa948a2f362ad275b8a513a9a537be17e4b020",
+    "graphify-out/graph.json": "e3473d2d4afc46178c6512e8a2cc2e1414e8a2a625a9e551cd4670413cd157af",
+    "graphify-out/GRAPH_REPORT.md": "389ae7bdf1add132a98161d612a666343992d85bdbb04d12ebac0d27271f5769",
+    "graphify-out/nodes.csv": "c5365488162006267b51dff8724827105fe387c02ef6f08c5e2030cb1f4d9ba7",
+    "graphify-out/edges.csv": "12a1086b6b70f00066f1347eb7feb6ce1ca291571393833a863f521aaa38493a"
+  }
+}

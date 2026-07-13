@@ -1,0 +1,849 @@
+{
+  "metadata": {
+    "file_name": "novgorod_weather_season_rules_v1.json",
+    "version": "1.0.0",
+    "project": "RUS13",
+    "region_id": "novgorod_land",
+    "region_id_aliases": [
+      "region_novgorod_land"
+    ],
+    "region_title": "Новгородская земля",
+    "period": "1230-1250",
+    "purpose": "Погодные и сезонные правила Новгородской земли 1230-1250",
+    "created_at_utc": "2026-07-05T12:30:00Z",
+    "status": "draft",
+    "confidence": "medium",
+    "requires_human_audit": true,
+    "list_expansion_policy": "Списки задания являются минимальным ядром, а не пределом. Новые контейнеры, слухи, события, предметные и социальные профили допустимы только при историко-бытовом, хозяйственном или социальном основании, со статусом, уверенностью и возможностью ручного аудита.",
+    "source_registry": [
+      "project_archive:novgorod_full_graph_g1_g4_v6_game_ready.zip",
+      "project_data:novgorod_region_generation_limits_v1.json",
+      "project_data:novgorod_region_profile_v1.json",
+      "project_data:novgorod_historical_timeline_1230_1250_v1.json",
+      "project_data:novgorod_neighbor_regions_v1.json",
+      "project_data:novgorod_social_roles_v1.tsv",
+      "project_data:novgorod_occupations_v1.tsv",
+      "project_data:novgorod_status_rules_v1.json",
+      "project_doc:items_and_property.txt",
+      "project_doc:npc_generation_profiles.txt",
+      "project_doc:movement_locations_regions.txt",
+      "project_doc:time_system.txt",
+      "project_doc:historical_events_and_figures.txt",
+      "project_doc:information_sources_llm_prompts.md"
+    ]
+  },
+  "season_profiles": [
+    {
+      "season_id": "season_winter",
+      "title": "Зима",
+      "approximate_months": [
+        "December",
+        "January",
+        "February"
+      ],
+      "source_precision": "regional_approximation; exact dates vary by year and local conditions",
+      "temperature_profile": "мороз, снег, короткий свет",
+      "water_state": "реки и озёра могут встать льдом, но безопасность зависит от толщины",
+      "road_state": "сани и зимники возможны; глубокий снег и метель опасны",
+      "field_work": "полевые работы минимальны; ремонт, лес, домашний труд",
+      "trade_effects": "сани, корм, тёплая одежда, дрова, ночлег важнее",
+      "npc_behavior_effects": [
+        "люди держатся ближе к печи",
+        "дорога группами",
+        "стража мёрзнет и раздражена"
+      ],
+      "body_risks": [
+        "холод",
+        "обморожение",
+        "усталость",
+        "голод при бедности"
+      ],
+      "visibility_and_light": "короткий день, долгая ночь, снег усиливает или скрывает следы",
+      "common_scene_signs": [
+        "скрип снега",
+        "дым из изб",
+        "иней",
+        "закрытые ворота"
+      ],
+      "llm_limits": [
+        "не фиксировать календарную дату как точную без источника",
+        "учитывать локальную погоду",
+        "не делать сезон одинаковым во всех местах"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "season_id": "season_late_winter",
+      "title": "Поздняя зима",
+      "approximate_months": [
+        "February",
+        "March"
+      ],
+      "source_precision": "regional_approximation; exact dates vary by year and local conditions",
+      "temperature_profile": "морозы перемежаются оттепелями",
+      "water_state": "лёд может быть обманчивым",
+      "road_state": "дороги ещё зимние, но риск провалов и истощения запасов растёт",
+      "field_work": "подготовка к весне; нехватка корма",
+      "trade_effects": "хлеб, корм и соль дорожают",
+      "npc_behavior_effects": [
+        "бедные дворы тревожнее",
+        "возчики спешат до распутицы"
+      ],
+      "body_risks": [
+        "голод",
+        "слабость",
+        "опасный лёд"
+      ],
+      "visibility_and_light": "свет больше, но ночи холодные",
+      "common_scene_signs": [
+        "слежавшийся снег",
+        "пустые закрома",
+        "сухой кашель"
+      ],
+      "llm_limits": [
+        "не фиксировать календарную дату как точную без источника",
+        "учитывать локальную погоду",
+        "не делать сезон одинаковым во всех местах"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "season_id": "season_spring",
+      "title": "Весна",
+      "approximate_months": [
+        "March",
+        "April",
+        "May"
+      ],
+      "source_precision": "regional_approximation; exact dates vary by year and local conditions",
+      "temperature_profile": "переменная; холодные ночи и тёплый день",
+      "water_state": "лёд ломается, вода прибывает",
+      "road_state": "дороги нестабильны",
+      "field_work": "подготовка к полям, починка, первые работы",
+      "trade_effects": "локальный дефицит до устойчивого подвоза",
+      "npc_behavior_effects": [
+        "люди заняты дворами и полем",
+        "путников оценивают осторожно"
+      ],
+      "body_risks": [
+        "промокание",
+        "грязь",
+        "простуда"
+      ],
+      "visibility_and_light": "свет растёт, грязь и вода ухудшают видимость",
+      "common_scene_signs": [
+        "капель",
+        "грязные подолы",
+        "ремонтные работы"
+      ],
+      "llm_limits": [
+        "не фиксировать календарную дату как точную без источника",
+        "учитывать локальную погоду",
+        "не делать сезон одинаковым во всех местах"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "season_id": "season_rasputitsa",
+      "title": "Весенняя распутица",
+      "approximate_months": [
+        "March",
+        "April"
+      ],
+      "source_precision": "regional_approximation; exact dates vary by year and local conditions",
+      "temperature_profile": "сырость, грязь, переменная температура",
+      "water_state": "ручьи и низины разливаются",
+      "road_state": "телеги вязнут; часть дорог непроходима",
+      "field_work": "работы рваны по погоде",
+      "trade_effects": "задержка товара, рост местных цен",
+      "npc_behavior_effects": [
+        "меньше дальних поездок",
+        "проводники ценнее"
+      ],
+      "body_risks": [
+        "промокание",
+        "переохлаждение",
+        "усталость"
+      ],
+      "visibility_and_light": "серые дни, плохие следы",
+      "common_scene_signs": [
+        "колеи с водой",
+        "снятая обувь",
+        "палки у дороги"
+      ],
+      "llm_limits": [
+        "не фиксировать календарную дату как точную без источника",
+        "учитывать локальную погоду",
+        "не делать сезон одинаковым во всех местах"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "season_id": "season_flood",
+      "title": "Паводок",
+      "approximate_months": [
+        "April",
+        "May"
+      ],
+      "source_precision": "regional_approximation; exact dates vary by year and local conditions",
+      "temperature_profile": "прохладно или умеренно",
+      "water_state": "вода высокая, броды опасны",
+      "road_state": "сухопутные участки и переправы меняются",
+      "field_work": "полевая работа зависит от воды",
+      "trade_effects": "перевоз, лодки, хранение груза становятся критичными",
+      "npc_behavior_effects": [
+        "лодочники востребованы",
+        "перевозчик может отказать"
+      ],
+      "body_risks": [
+        "утопление",
+        "мокрая одежда",
+        "задержка"
+      ],
+      "visibility_and_light": "блики воды, туман, шум течения",
+      "common_scene_signs": [
+        "затопленный берег",
+        "оторванные колья",
+        "лодки выше по берегу"
+      ],
+      "llm_limits": [
+        "не фиксировать календарную дату как точную без источника",
+        "учитывать локальную погоду",
+        "не делать сезон одинаковым во всех местах"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "season_id": "season_summer",
+      "title": "Лето",
+      "approximate_months": [
+        "June",
+        "July",
+        "August"
+      ],
+      "source_precision": "regional_approximation; exact dates vary by year and local conditions",
+      "temperature_profile": "тепло, иногда жара или грозы",
+      "water_state": "навигация активна; мелководье местами",
+      "road_state": "дороги суше, но лес и болото имеют свои риски",
+      "field_work": "покос, сенокос, рыбалка, промыслы",
+      "trade_effects": "активный торг, лодки, работа на пристанях",
+      "npc_behavior_effects": [
+        "люди рано встают",
+        "днём работают вне избы",
+        "ночь короче"
+      ],
+      "body_risks": [
+        "перегрев редко, усталость, укусы, жажда"
+      ],
+      "visibility_and_light": "длинный день, густая зелень скрывает обзор",
+      "common_scene_signs": [
+        "запах сена",
+        "комары",
+        "лодки у берега"
+      ],
+      "llm_limits": [
+        "не фиксировать календарную дату как точную без источника",
+        "учитывать локальную погоду",
+        "не делать сезон одинаковым во всех местах"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "season_id": "season_heat",
+      "title": "Жара и сухость",
+      "approximate_months": [
+        "June",
+        "July"
+      ],
+      "source_precision": "regional_approximation; exact dates vary by year and local conditions",
+      "temperature_profile": "жарко для региона, духота",
+      "water_state": "вода нужна людям и скоту; мелководье",
+      "road_state": "пыльные дороги, лесной пожарный страх",
+      "field_work": "работают утром и вечером",
+      "trade_effects": "вода, тень, ремонт бочек и посуды важнее",
+      "npc_behavior_effects": [
+        "люди раздражительнее",
+        "днём ищут тень"
+      ],
+      "body_risks": [
+        "жажда",
+        "усталость",
+        "головокружение"
+      ],
+      "visibility_and_light": "яркий свет, марево, пыль",
+      "common_scene_signs": [
+        "сухая трава",
+        "тяжёлый запах",
+        "люди у воды"
+      ],
+      "llm_limits": "usable_with_caution",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "season_id": "season_autumn",
+      "title": "Осень",
+      "approximate_months": [
+        "September",
+        "October"
+      ],
+      "source_precision": "regional_approximation; exact dates vary by year and local conditions",
+      "temperature_profile": "прохлада, дождь, ветер",
+      "water_state": "вода холоднее, навигация ухудшается",
+      "road_state": "грязь, колеи, темнеет раньше",
+      "field_work": "жатва, запасы, подготовка к зиме",
+      "trade_effects": "запасы пополняются, ремонт и хранение важны",
+      "npc_behavior_effects": [
+        "люди заняты заготовкой",
+        "путников торопят до темноты"
+      ],
+      "body_risks": [
+        "промокание",
+        "холод",
+        "усталость"
+      ],
+      "visibility_and_light": "день убывает, дождь глушит звук",
+      "common_scene_signs": [
+        "мокрые листья",
+        "дым с огородов",
+        "загруженные сани/телеги"
+      ],
+      "llm_limits": [
+        "не фиксировать календарную дату как точную без источника",
+        "учитывать локальную погоду",
+        "не делать сезон одинаковым во всех местах"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "season_id": "season_late_autumn",
+      "title": "Поздняя осень",
+      "approximate_months": [
+        "October",
+        "November"
+      ],
+      "source_precision": "regional_approximation; exact dates vary by year and local conditions",
+      "temperature_profile": "холод, сырость, первые морозы",
+      "water_state": "ледостав начинается, вода опасна",
+      "road_state": "ни телега, ни сани не всегда удобны",
+      "field_work": "завершение работ, починка, запасы",
+      "trade_effects": "дороги и переправы ненадёжны",
+      "npc_behavior_effects": [
+        "меньше дальних поездок",
+        "ворота закрывают раньше"
+      ],
+      "body_risks": [
+        "переохлаждение",
+        "болезнь",
+        "опасная вода"
+      ],
+      "visibility_and_light": "темно рано, туман и дождь",
+      "common_scene_signs": [
+        "серый лёд у берега",
+        "грязь",
+        "сумерки"
+      ],
+      "llm_limits": [
+        "не фиксировать календарную дату как точную без источника",
+        "учитывать локальную погоду",
+        "не делать сезон одинаковым во всех местах"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "season_id": "season_thaw",
+      "title": "Оттепель",
+      "approximate_months": [
+        "winter_variable"
+      ],
+      "source_precision": "regional_approximation; exact dates vary by year and local conditions",
+      "temperature_profile": "мороз сменяется мокрым теплом",
+      "water_state": "лёд слабеет, снег мокнет",
+      "road_state": "зимники портятся, следы смешиваются",
+      "field_work": "полевых работ нет, двор становится мокрым",
+      "trade_effects": "перевоз и сани становятся рискованными",
+      "npc_behavior_effects": [
+        "люди спорят, идти ли",
+        "проводники осторожны"
+      ],
+      "body_risks": [
+        "промокание",
+        "провал под лёд",
+        "холод после сырости"
+      ],
+      "visibility_and_light": "тусклый свет, мокрый снег",
+      "common_scene_signs": [
+        "капель с крыш",
+        "тёмный лёд",
+        "мокрые лапти"
+      ],
+      "llm_limits": [
+        "не фиксировать календарную дату как точную без источника",
+        "учитывать локальную погоду",
+        "не делать сезон одинаковым во всех местах"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "season_id": "season_ice_forming",
+      "title": "Ледостав",
+      "approximate_months": [
+        "November",
+        "early_winter"
+      ],
+      "source_precision": "regional_approximation; exact dates vary by year and local conditions",
+      "temperature_profile": "морозы начинаются, но нестабильно",
+      "water_state": "лёд появляется, но ещё опасен",
+      "road_state": "переправы могут закрыться до крепкого льда",
+      "field_work": "работы в основном дворовые",
+      "trade_effects": "задержки товара и путников",
+      "npc_behavior_effects": [
+        "перевозчики отказывают",
+        "местные проверяют лёд"
+      ],
+      "body_risks": [
+        "утопление",
+        "переохлаждение"
+      ],
+      "visibility_and_light": "сумерки и тонкий лёд",
+      "common_scene_signs": [
+        "треск льда",
+        "пустой берег",
+        "ожидающие люди"
+      ],
+      "llm_limits": [
+        "не фиксировать календарную дату как точную без источника",
+        "учитывать локальную погоду",
+        "не делать сезон одинаковым во всех местах"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "season_id": "season_navigation",
+      "title": "Навигационный сезон",
+      "approximate_months": [
+        "late_spring",
+        "summer",
+        "early_autumn"
+      ],
+      "source_precision": "regional_approximation; exact dates vary by year and local conditions",
+      "temperature_profile": "зависит от месяца",
+      "water_state": "реки и озёра открыты, но мели и штормы возможны",
+      "road_state": "водные пути активны",
+      "field_work": "рыба, перевоз, груз, ремонт лодок",
+      "trade_effects": "торг и пристани оживлены",
+      "npc_behavior_effects": [
+        "лодочники, грузчики, купцы активнее"
+      ],
+      "body_risks": [
+        "утопление",
+        "мокрый холод",
+        "усталость"
+      ],
+      "visibility_and_light": "свет зависит от сезона; берег шумнее",
+      "common_scene_signs": [
+        "мостки",
+        "канаты",
+        "грузовые кучи"
+      ],
+      "llm_limits": [
+        "не фиксировать календарную дату как точную без источника",
+        "учитывать локальную погоду",
+        "не делать сезон одинаковым во всех местах"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    }
+  ],
+  "weather_profiles": [
+    {
+      "weather_id": "weather_clear_frost",
+      "title": "Ясный мороз",
+      "typical_seasons": [
+        "season_winter"
+      ],
+      "scene_effects": [
+        "звук дальше слышен",
+        "дыхание видно",
+        "ночь опасна"
+      ],
+      "route_effects": [
+        "хороший санный ход при крепком снегу",
+        "риск холода"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "weather_id": "weather_snowfall",
+      "title": "Снегопад",
+      "typical_seasons": [
+        "season_winter",
+        "season_late_winter"
+      ],
+      "scene_effects": [
+        "следы быстро закрываются",
+        "видимость падает"
+      ],
+      "route_effects": [
+        "время пути растёт",
+        "ориентиры хуже"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "weather_id": "weather_blizzard",
+      "title": "Метель",
+      "typical_seasons": [
+        "season_winter",
+        "season_late_winter"
+      ],
+      "scene_effects": [
+        "шум, слепота, закрытые ворота"
+      ],
+      "route_effects": [
+        "путь может стать невозможным без укрытия"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "weather_id": "weather_thaw",
+      "title": "Оттепель",
+      "typical_seasons": [
+        "season_thaw",
+        "season_late_winter"
+      ],
+      "scene_effects": [
+        "влажный холод",
+        "грязный снег"
+      ],
+      "route_effects": [
+        "лёд и зимники опасны"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "weather_id": "weather_cold_rain",
+      "title": "Холодный дождь",
+      "typical_seasons": [
+        "season_spring",
+        "season_autumn"
+      ],
+      "scene_effects": [
+        "плохой свет",
+        "мокрая одежда"
+      ],
+      "route_effects": [
+        "грязь, усталость, следы смываются"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "weather_id": "weather_spring_flood",
+      "title": "Подъём воды",
+      "typical_seasons": [
+        "season_flood"
+      ],
+      "scene_effects": [
+        "шум воды",
+        "затопленные берега"
+      ],
+      "route_effects": [
+        "броды закрыты; лодка нужна"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "weather_id": "weather_summer_rain",
+      "title": "Летний дождь",
+      "typical_seasons": [
+        "season_summer"
+      ],
+      "scene_effects": [
+        "запах мокрой земли",
+        "люди ищут навес"
+      ],
+      "route_effects": [
+        "дороги временно вязнут"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "weather_id": "weather_fog",
+      "title": "Туман",
+      "typical_seasons": [
+        "season_spring",
+        "season_autumn",
+        "season_navigation"
+      ],
+      "scene_effects": [
+        "видимость низкая",
+        "звуки близки"
+      ],
+      "route_effects": [
+        "лодки и дороги опаснее"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "weather_id": "weather_hot_dry",
+      "title": "Сухая жара",
+      "typical_seasons": [
+        "season_heat"
+      ],
+      "scene_effects": [
+        "жажда",
+        "люди у тени и воды"
+      ],
+      "route_effects": [
+        "пыль и усталость"
+      ],
+      "status": "usable_with_caution",
+      "confidence": "medium"
+    },
+    {
+      "weather_id": "weather_autumn_mud",
+      "title": "Осенняя грязь",
+      "typical_seasons": [
+        "season_autumn",
+        "season_late_autumn"
+      ],
+      "scene_effects": [
+        "грязные дворы",
+        "скользкие доски"
+      ],
+      "route_effects": [
+        "телеги ломаются; время растёт"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "weather_id": "weather_ice_breaking",
+      "title": "Ломка льда",
+      "typical_seasons": [
+        "season_spring",
+        "season_flood"
+      ],
+      "scene_effects": [
+        "треск, вода, страх берега"
+      ],
+      "route_effects": [
+        "переправа опасна"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "weather_id": "weather_dark_windy_night",
+      "title": "Тёмная ветреная ночь",
+      "typical_seasons": [
+        "all"
+      ],
+      "scene_effects": [
+        "плохая видимость",
+        "свидетели слышат хуже или пугаются"
+      ],
+      "route_effects": [
+        "заблудиться проще"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    }
+  ],
+  "body_state_effects": [
+    {
+      "effect_id": "body_cold",
+      "when": [
+        "winter",
+        "late_autumn",
+        "wet_weather"
+      ],
+      "state_effect": "холод/промокание как активное состояние; вред здоровью только при опасном продолжении",
+      "llm_limit": "не прибавлять состояние 0-100 к броску напрямую"
+    },
+    {
+      "effect_id": "body_hunger",
+      "when": [
+        "late_winter",
+        "famine",
+        "long_travel"
+      ],
+      "state_effect": "сытость падает; слабость влияет на проверки через модификатор состояния",
+      "llm_limit": "учесть доступ к еде и статус"
+    },
+    {
+      "effect_id": "body_fatigue_travel",
+      "when": [
+        "long_road",
+        "mud",
+        "deep_snow",
+        "volok"
+      ],
+      "state_effect": "бодрость падает; нужны отдых, сон, пища",
+      "llm_limit": "не штрафовать всё подряд"
+    },
+    {
+      "effect_id": "body_wet",
+      "when": [
+        "rain",
+        "flood",
+        "fall_into_water"
+      ],
+      "state_effect": "промокание, холод, риск болезни/вреда при длительности",
+      "llm_limit": "отличать мокрую одежду от мгновенного урона"
+    },
+    {
+      "effect_id": "body_heat_thirst",
+      "when": [
+        "hot_dry",
+        "summer_work"
+      ],
+      "state_effect": "жажда и усталость",
+      "llm_limit": "для региона не делать жару постоянной нормой"
+    }
+  ],
+  "npc_schedule_effects": [
+    {
+      "effect_id": "npc_schedule_daylight",
+      "rule": "работа и путь чаще при свете; ночью ворота, дворы и монастыри закрываются или требуют причины"
+    },
+    {
+      "effect_id": "npc_schedule_weather",
+      "rule": "дождь, метель, паводок и опасный лёд меняют доступность NPC; путник может искать кров"
+    },
+    {
+      "effect_id": "npc_schedule_seasonal_work",
+      "rule": "покос, жатва, рыбалка, ремонт, лесной промысел и торг меняют место NPC по сезону"
+    },
+    {
+      "effect_id": "npc_schedule_church",
+      "rule": "служба, пост и праздник меняют расписание духовенства, прихожан и торговли"
+    },
+    {
+      "effect_id": "npc_schedule_crisis",
+      "rule": "пожар, война, голод, болезнь, слух или приказ могут сорвать обычный день"
+    }
+  ],
+  "place_state_effects": [
+    {
+      "effect_id": "place_mud",
+      "place_types": [
+        "road",
+        "yard",
+        "torg"
+      ],
+      "effects": [
+        "грязь",
+        "следы",
+        "задержки",
+        "скользкость"
+      ]
+    },
+    {
+      "effect_id": "place_ice",
+      "place_types": [
+        "river",
+        "ford",
+        "ferry",
+        "winter_road"
+      ],
+      "effects": [
+        "закрытие переправы",
+        "опасный лёд",
+        "санный ход при крепком льду"
+      ]
+    },
+    {
+      "effect_id": "place_flood",
+      "place_types": [
+        "bank",
+        "landing",
+        "ford"
+      ],
+      "effects": [
+        "поднятая вода",
+        "смытые мостки",
+        "перенесённое место ожидания"
+      ]
+    },
+    {
+      "effect_id": "place_darkness",
+      "place_types": [
+        "street",
+        "yard",
+        "forest",
+        "road"
+      ],
+      "effects": [
+        "меньше видимости",
+        "больше страха",
+        "свидетели не всё видят"
+      ]
+    },
+    {
+      "effect_id": "place_heat_or_dry",
+      "place_types": [
+        "field",
+        "road",
+        "yard"
+      ],
+      "effects": [
+        "жажда",
+        "пыль",
+        "пожарный страх при сухости"
+      ],
+      "status": "usable_with_caution"
+    }
+  ],
+  "scene_description_guidance": [
+    {
+      "guidance_id": "weather_visible_first",
+      "rule": "Описывать видимые признаки: снег, грязь, дым, вода, свет, запах, одежда, следы; не выдавать скрытые таблицы погоды."
+    },
+    {
+      "guidance_id": "weather_affects_action",
+      "rule": "Погода должна влиять на путь, тело, NPC и доступ, если это причинно важно."
+    },
+    {
+      "guidance_id": "avoid_modern_meteorology",
+      "rule": "Не использовать современные метеосводки, точные градусы без причины, атмосферное давление и современные термины."
+    },
+    {
+      "guidance_id": "local_variation",
+      "rule": "Одна и та же дата может давать разное состояние в городе, лесу, болоте, на реке и дороге."
+    }
+  ],
+  "validation": {
+    "file_is_valid_json": true,
+    "does_not_create_party_state": true,
+    "does_not_create_new_g1_g4_nodes": true,
+    "does_not_precreate_full_g5_map": true,
+    "uses_existing_map_as_context": true,
+    "respects_generation_limits": true,
+    "separates_visible_hidden_and_unmaterialized": true,
+    "distinguishes_fact_from_rumor": true,
+    "requires_human_historical_audit": true,
+    "blocking_issues": [],
+    "open_questions": [],
+    "season_profile_count": 12,
+    "weather_profile_count": 12
+  }
+}

@@ -1,0 +1,69 @@
+source_occupation_id,source_occupation_title,source_historical_term,source_occupation_group,proposed_occupation_archetype_id,proposed_primary_skill_ids,proposed_secondary_skill_ids,mapping_method,confidence,review_required,ambiguity_reason
+nov_occ_princely_service_agent,княжий служилый человек,княжий человек,военное,military_security,"[""melee_combat"", ""athletics""]","[""ranged_combat"", ""observation""]",group_base,medium,true,group=военное
+nov_occ_druzhina_warrior,дружинник,дружинник,военное,military_security,"[""melee_combat"", ""athletics""]","[""ranged_combat"", ""observation""]",group_base,medium,true,group=военное
+nov_occ_junior_retainer,младший дружинный слуга,отрок / младший служилый,военное,military_security,"[""melee_combat"", ""athletics""]","[""ranged_combat"", ""observation""]",group_base,medium,true,group=военное
+nov_occ_gate_guard,страж ворот,сторож ворот,военное,military_security,"[""melee_combat"", ""athletics""]","[""ranged_combat"", ""observation""]",title_override,medium,true,title contains страж
+nov_occ_market_guard,страж торга,сторож торга,военное,military_security,"[""melee_combat"", ""athletics""]","[""ranged_combat"", ""observation""]",manual_map,high,false,
+nov_occ_crossing_guard,сторож брода или переправы,сторож брода,дорога,transport_guiding,"[""travel_transport"", ""survival""]","[""observation"", ""communication_trade""]",group_base,medium,true,group=дорога
+nov_occ_toll_dues_collector,сборщик пошлины,пошлинник / мытарь,власть,administration_law,"[""custom_law_literacy"", ""communication_trade""]","[""observation""]",group_base,medium,true,group=власть
+nov_occ_court_clerk_service,писцовый служитель двора власти,писец / счетчик,власть,administration_law,"[""custom_law_literacy"", ""communication_trade""]","[""observation""]",group_base,medium,true,group=власть
+nov_occ_posadnik_household_service,служитель посадничьего двора,дворовый человек посадника,власть,administration_law,"[""custom_law_literacy"", ""communication_trade""]","[""observation""]",title_override,medium,true,title contains посад
+nov_occ_tysyatsky_public_order,люди тысяцкого при порядке,люди тысяцкого,власть,administration_law,"[""custom_law_literacy"", ""communication_trade""]","[""observation""]",group_base,medium,true,group=власть
+nov_occ_bishop_court_service,владычный дворцовый служитель,владычный человек,церковь,religious_literate,"[""custom_law_literacy""]","[""healing"", ""communication_trade""]",group_base,medium,true,group=церковь
+nov_occ_boyar_yard_manager,управляющий боярским двором,ключник / старший двора,город,craft_production,"[""craft""]","[""observation""]",group_base,medium,true,group=город
+nov_occ_long_distance_merchant,дальний купец,гость / купец,торговля,trade_exchange,"[""communication_trade""]","[""observation"", ""craft""]",title_override,medium,true,title contains купец
+nov_occ_local_trader,местный торговец,торговый человек,торговля,trade_exchange,"[""communication_trade""]","[""observation"", ""craft""]",group_base,medium,true,group=торговля
+nov_occ_market_stall_seller,лавочный продавец,лавочник / продавец,торговля,trade_exchange,"[""communication_trade""]","[""observation"", ""craft""]",group_base,medium,true,group=торговля
+nov_occ_merchant_clerk,купеческий доверенный,приказчик / доверенный,торговля,trade_exchange,"[""communication_trade""]","[""observation"", ""craft""]",group_base,medium,true,group=торговля
+nov_occ_measurer_weigher,мерщик или весовщик,мерщик / весовщик,торговля,trade_exchange,"[""communication_trade""]","[""observation"", ""craft""]",group_base,medium,true,group=торговля
+nov_occ_storehouse_keeper,сторож или держатель склада,сторож клети,торговля,trade_exchange,"[""communication_trade""]","[""observation"", ""craft""]",group_base,medium,true,group=торговля
+nov_occ_debt_account_keeper,человек купеческого долга,счетчик долга,торговля,trade_exchange,"[""communication_trade""]","[""observation"", ""craft""]",group_base,medium,true,group=торговля
+nov_occ_blacksmith,кузнец,кузнец,ремесло,craft_production,"[""craft""]","[""observation""]",group_base,medium,true,group=ремесло
+nov_occ_carpenter,плотник,плотник,ремесло,craft_production,"[""craft""]","[""observation""]",group_base,medium,true,group=ремесло
+nov_occ_cooper,бондарь или клетный мастер,бондарь / мастер сосудов,ремесло,craft_production,"[""craft""]","[""observation""]",group_base,medium,true,group=ремесло
+nov_occ_leatherworker,кожевник,кожевник,ремесло,craft_production,"[""craft""]","[""observation""]",group_base,medium,true,group=ремесло
+nov_occ_shoemaker,сапожник,сапожник,ремесло,craft_production,"[""craft""]","[""observation""]",group_base,medium,true,group=ремесло
+nov_occ_potter,гончар,гончар,ремесло,craft_production,"[""craft""]","[""observation""]",group_base,medium,true,group=ремесло
+nov_occ_weaver_cloth_worker,ткач или работник ткани,ткач / пряха / суконный работник,ремесло,craft_production,"[""craft""]","[""observation""]",group_base,medium,true,group=ремесло
+nov_occ_tailor_mender,портной или чинитель одежды,портной / швец одежды,ремесло,craft_production,"[""craft""]","[""observation""]",group_base,medium,true,group=ремесло
+nov_occ_boatbuilder,лодейный мастер,лодейник / плотник лодейный,ремесло,craft_production,"[""craft""]","[""observation""]",group_base,medium,true,group=ремесло
+nov_occ_pitch_tar_worker,смольщик или дегтярь,смольщик / дегтярь,промысел,forest_hunting,"[""survival"", ""stealth""]","[""ranged_combat"", ""craft""]",group_base,medium,true,group=промысел
+nov_occ_cart_driver,возчик,возчик,дорога,transport_guiding,"[""travel_transport"", ""survival""]","[""observation"", ""communication_trade""]",group_base,medium,true,group=дорога
+nov_occ_porter,грузчик,носильщик / грузчик,дорога,transport_guiding,"[""travel_transport"", ""survival""]","[""observation"", ""communication_trade""]",group_base,medium,true,group=дорога
+nov_occ_landing_worker,работник пристани,пристанский работник,дорога,transport_guiding,"[""travel_transport"", ""survival""]","[""observation"", ""communication_trade""]",group_base,medium,true,group=дорога
+nov_occ_boatman,лодочник,лодочник,дорога,transport_guiding,"[""travel_transport"", ""survival""]","[""observation"", ""communication_trade""]",group_base,medium,true,group=дорога
+nov_occ_helmsman,кормщик,кормщик,дорога,transport_guiding,"[""travel_transport"", ""survival""]","[""observation"", ""communication_trade""]",group_base,medium,true,group=дорога
+nov_occ_ferryman,перевозчик,перевозчик,дорога,transport_guiding,"[""travel_transport"", ""survival""]","[""observation"", ""communication_trade""]",manual_map,high,false,
+nov_occ_route_guide,проводник,проводник,дорога,transport_guiding,"[""travel_transport"", ""survival""]","[""observation"", ""communication_trade""]",group_base,medium,true,group=дорога
+nov_occ_portage_worker,работник волока,работник волока,дорога,transport_guiding,"[""travel_transport"", ""survival""]","[""observation"", ""communication_trade""]",group_base,medium,true,group=дорога
+nov_occ_winter_road_worker,работник зимника,человек зимника,дорога,transport_guiding,"[""travel_transport"", ""survival""]","[""observation"", ""communication_trade""]",group_base,medium,true,group=дорога
+nov_occ_ploughman,пахарь,пахарь / ратай,село,agriculture,"[""household"", ""survival""]","[""athletics""]",manual_map,high,false,
+nov_occ_haymaker,сенокосец,сенокосец,село,agriculture,"[""household"", ""survival""]","[""athletics""]",group_base,medium,true,group=село
+nov_occ_herder,пастух или скотник,пастух / скотник,село,animal_husbandry,"[""household""]","[""survival"", ""travel_transport""]",title_override,medium,true,title contains скот
+nov_occ_fisher,рыбак,рыбак,промысел,fishing_water,"[""survival""]","[""craft"", ""household""]",title_override,medium,true,title contains рыб
+nov_occ_fish_weir_keeper,работник рыбного запора,рыбный запорщик,промысел,fishing_water,"[""survival""]","[""craft"", ""household""]",title_override,medium,true,title contains рыб
+nov_occ_hunter_trapper,охотник и зверолов,ловец / зверолов,промысел,forest_hunting,"[""survival"", ""stealth""]","[""ranged_combat"", ""craft""]",title_override,medium,true,title contains охот
+nov_occ_bortnik,бортник,бортник,промысел,forest_hunting,"[""survival"", ""stealth""]","[""ranged_combat"", ""craft""]",group_base,medium,true,group=промысел
+nov_occ_forest_worker,лесной промысловик,промысловик,промысел,forest_hunting,"[""survival"", ""stealth""]","[""ranged_combat"", ""craft""]",title_override,medium,true,title contains лес
+nov_occ_saltworker,солевар или работник соли,солевар / соляной работник,промысел,forest_hunting,"[""survival"", ""stealth""]","[""ranged_combat"", ""craft""]",group_base,medium,true,group=промысел
+nov_occ_miller,мельник,мельник,село,agriculture,"[""household"", ""survival""]","[""athletics""]",group_base,medium,true,group=село
+nov_occ_pogost_service_worker,работник погоста,погостовый человек,село,trade_exchange,"[""communication_trade""]","[""observation"", ""craft""]",title_override,medium,true,title contains гост
+nov_occ_monastic_laborer,монастырский работник,монастырский работник,церковь,religious_literate,"[""custom_law_literacy""]","[""healing"", ""communication_trade""]",group_base,medium,true,group=церковь
+nov_occ_monastery_steward,монастырский хозяйственный старший,келарь / старший хозяйства,церковь,religious_literate,"[""custom_law_literacy""]","[""healing"", ""communication_trade""]",group_base,medium,true,group=церковь
+nov_occ_parish_priest_service,приходской священник,поп,церковь,religious_literate,"[""custom_law_literacy""]","[""healing"", ""communication_trade""]",group_base,medium,true,group=церковь
+nov_occ_deacon_service,дьяконская служба,дьякон,церковь,religious_literate,"[""custom_law_literacy""]","[""healing"", ""communication_trade""]",group_base,medium,true,group=церковь
+nov_occ_monk_service,монах,монах,церковь,religious_literate,"[""custom_law_literacy""]","[""healing"", ""communication_trade""]",group_base,medium,true,group=церковь
+nov_occ_novice_work,послушник,послушник,церковь,religious_literate,"[""custom_law_literacy""]","[""healing"", ""communication_trade""]",group_base,medium,true,group=церковь
+nov_occ_church_guard,церковный сторож,церковный сторож,церковь,religious_literate,"[""custom_law_literacy""]","[""healing"", ""communication_trade""]",group_base,medium,true,group=церковь
+nov_occ_ponomar,пономарь,пономарь,церковь,religious_literate,"[""custom_law_literacy""]","[""healing"", ""communication_trade""]",group_base,medium,true,group=церковь
+nov_occ_scribe,писец,писец,церковь,religious_literate,"[""custom_law_literacy""]","[""healing"", ""communication_trade""]",group_base,medium,true,group=церковь
+nov_occ_cook_baker,повар или хлебник двора,повар / хлебник,город,craft_production,"[""craft""]","[""observation""]",group_base,medium,true,group=город
+nov_occ_household_servant,дворовый слуга,слуга,зависимые,domestic_service,"[""household""]","[""stealth"", ""communication_trade""]",group_base,medium,true,group=зависимые
+nov_occ_day_laborer,подённый работник,работник / батрак,зависимые,domestic_service,"[""household""]","[""stealth"", ""communication_trade""]",group_base,medium,true,group=зависимые
+nov_occ_stable_worker,конюший или работник конюшни,конюх,зависимые,domestic_service,"[""household""]","[""stealth"", ""communication_trade""]",group_base,medium,true,group=зависимые
+nov_occ_cattle_keeper,работник скотного двора,скотник,село,animal_husbandry,"[""household""]","[""survival"", ""travel_transport""]",title_override,medium,true,title contains скот
+nov_occ_midwife_birth_helper,родовспомогательная женщина,повитуха / опытная женщина,село,agriculture,"[""household"", ""survival""]","[""athletics""]",group_base,medium,true,group=село
+nov_occ_healer_herbal_helper,знахарь или травник бытового уровня,травник / лечец,село,agriculture,"[""household"", ""survival""]","[""athletics""]",group_base,medium,true,group=село
+nov_occ_beggar_alms,нищий у церкви или торга,нищий,низкий_статус,illicit_marginal,"[""stealth""]","[""survival"", ""melee_combat""]",title_override,medium,true,title contains нищ
+nov_occ_pilgrim_traveler,богомолец или странник,богомолец / странник,церковь,religious_literate,"[""custom_law_literacy""]","[""healing"", ""communication_trade""]",group_base,medium,true,group=церковь
+nov_occ_messenger_runner,гонец или посыльный,посыльный / гонец,дорога,transport_guiding,"[""travel_transport"", ""survival""]","[""observation"", ""communication_trade""]",group_base,medium,true,group=дорога

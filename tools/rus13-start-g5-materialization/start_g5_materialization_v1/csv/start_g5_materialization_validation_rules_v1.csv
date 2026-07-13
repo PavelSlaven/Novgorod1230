@@ -1,0 +1,15 @@
+﻿rule_id,step_id,severity,check_type,rule,contract
+g5_val_001,g5_01_start_context_lock,blocking,required_context,"Start context must include party_id, character_id, region_id, place_id, location_id, canonical_g4_node_id or explicit party_location_id, g4_type_id, season, time and cause.",G5StartInputContext
+g5_val_002,g5_02_template_match,blocking,template_match,G4 type must match a G5 template. Category fallback is allowed only with needs_review validation issue; no generic anchors.,G5TemplateMatch
+g5_val_003,g5_04_scene_graph_draft,blocking,no_new_g1_g4,G5 materialization must not create new G1-G4 nodes or change canonical graph.,G5SceneGraphDraft
+g5_val_004,g5_04_scene_graph_draft,blocking,inside_parent_g4,"Every minilocation, scene anchor and G5 edge must belong to the selected G4 location.",G5SceneGraphDraft
+g5_val_005,g5_04_scene_graph_draft,blocking,required_anchor_categories,Required anchor categories from the matched template must be covered or explicitly waived by an audit issue.,G5SceneGraphDraft
+g5_val_006,g5_04_scene_graph_draft,blocking,forbidden_anchors,"No anchor may match forbidden anchor types: magic, modern object, quest marker, ownerless treasure, new G4 node.",G5SceneGraphDraft
+g5_val_007,g5_05_visibility_access_ownership_audit,blocking,anchor_fields,"Every significant anchor must have visibility, access, ownership/control, witness and risk fields.",G5AnchorAccessVisibilityPackage
+g5_val_008,g5_06_objects_npcs_binding,blocking,item_materialization,Items can only be created with causal reason and allowed place/profile category; player request alone is insufficient.,G5ObjectNpcBinding
+g5_val_009,g5_07_edges_movement_graph,blocking,g5_edge_time,G5 edge base_time_minutes must be between 0 and 5 unless explicitly blocked as impossible.,G5SceneEdgePackage
+g5_val_010,g5_08_current_position_selection,blocking,current_position_complete,"party_current_position must include region_id, place_id, location_id, minilocation_id, anchor_id and current_node_id.",G5CurrentPositionCommitPlan
+g5_val_011,g5_09_visible_start_package,blocking,no_visibility_leak,"Visible package must not include hidden motives, hidden items, exact future events, objective map or internal calculations.",G5VisibleStartPackage
+g5_val_012,g5_10_commit_gate_audit,blocking,commit_gate,Commit is blocked if any prior blocking validation failed.,G5AuditReport
+g5_val_013,g5_11_db_write_plan_and_commit,blocking,atomic_transaction,DB writes must be atomic; partial G5 scene without current_position is invalid.,G5CommitResult
+g5_val_014,g5_11_db_write_plan_and_commit,warning,source_status,Draft/needs_review source status is preserved; source confidence cannot be upgraded by materialization.,G5CommitResult

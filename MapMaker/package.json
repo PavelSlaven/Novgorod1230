@@ -1,0 +1,34 @@
+{
+  "name": "@rus13/map-maker",
+  "version": "0.2.0",
+  "description": "Secure framework-agnostic G1-G4 character-knowledge map renderer and projection pipeline",
+  "type": "module",
+  "sideEffects": ["./dist/styles/map-maker.css"],
+  "files": ["dist", "scripts", "examples", "sql", "config", "README.md"],
+  "exports": {
+    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" },
+    "./node": { "types": "./dist/node.d.ts", "import": "./dist/node.js" },
+    "./styles.css": "./dist/styles/map-maker.css"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "npm run clean && tsc -p tsconfig.json --emitDeclarationOnly && esbuild src/index.ts --bundle --format=esm --platform=browser --outfile=dist/index.js --sourcemap && esbuild src/node.ts --bundle --format=esm --platform=node --packages=external --outfile=dist/node.js --sourcemap && esbuild test/browser-harness.ts --bundle --format=iife --platform=browser --outfile=dist/browser-harness.js && node scripts/copy-assets.mjs",
+    "test:unit": "node --test test/unit-*.test.mjs test/pipeline-*.test.mjs test/production-api.test.mjs",
+    "test:security": "node --test test/security.test.mjs",
+    "test:e2e": "node --test test/browser-e2e.test.mjs",
+    "test": "npm run build && npm run test:unit && npm run test:security && npm run test:e2e",
+    "compile:novgorod": "npm run build && node scripts/compile-novgorod.mjs",
+    "demo": "npm run build && node scripts/demo-server.mjs"
+  },
+  "dependencies": {
+    "cytoscape": "^3.33.1",
+    "elkjs": "^0.11.0"
+  },
+  "devDependencies": {
+    "@types/cytoscape": "^3.21.9",
+    "esbuild": "^0.25.6",
+    "playwright-core": "^1.54.1",
+    "typescript": "^5.9.2"
+  },
+  "engines": { "node": ">=22" }
+}

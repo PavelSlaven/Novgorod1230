@@ -1,0 +1,1654 @@
+# Этап 6. Подбор допустимых place templates для стартовых кандидатов
+
+## 1. Назначение этапа
+
+Подбор допустимых `place templates` — это этап запуска новой партии, который получает список допустимых стартовых G1–G4 кандидатов и уточняет, какие типы мест разрешены для каждого кандидата.
+
+Этот этап не выбирает финальное стартовое место. Он не создаёт новое место. Он не создаёт сцену. Его задача — связать уже найденные стартовые узлы графа с разрешёнными типами мест из базы.
+
+Короткая формула:
+
+```text
+start_candidate_set
++ regional_context_package.settlement_and_place_rules
++ world_base.place_templates
++ world_base.region_place_templates
++ world_base.region_place_generation_rules
++ world_base.place_generation_limits
+→ candidate_place_template_set
+```
+
+Иначе говоря, если предыдущий этап нашёл узлы карты, этот этап отвечает на вопрос:
+
+```text
+Какие типы мест из базы допустимы для каждого найденного стартового узла?
+```
+
+## 2. Главное правило этапа
+
+Тип места выбирается только из базы.
+
+Код не должен делать вывод:
+
+```text
+узел похож на двор, значит это двор
+```
+
+Код должен проверять:
+
+```text
+у узла есть place_template_id
+или допустимые place_template_id могут быть выведены из региональных правил,
+и каждый такой place_template_id разрешён в region_place_templates
+```
+
+LLM не имеет права придумывать `place_template`. Если нужного типа нет в базе, этап возвращает ошибку или пустой список, а не создаёт новый тип.
+
+## 3. Место этапа в pipeline
+
+```text
+1. Заявка игрока
+2. Нормализация заявки
+3. Выбор исторической рамки
+4. Загрузка регионального контекста из world_base
+5. Подбор допустимых стартовых G1–G4 кандидатов
+6. Подбор допустимых place templates для кандидатов
+7. Выбор одного стартового места из candidate set
+8. Генерация персонажа
+9. Материализация G5
+```
+
+Этап 6 уточняет стартовые кандидаты, но не выбирает один из них.
+
+## 4. Вход этапа
+
+```json
+{
+  "version": 1,
+  "schema": "candidate_place_template_input",
+  "request_id": "string",
+
+  "normalized_request": {
+    "version": 1,
+    "schema": "new_game_normalized_request"
+  },
+
+  "historical_frame": {
+    "version": 1,
+    "schema": "historical_frame",
+    "year": {
+      "value": 0
+    },
+    "calendar": {
+      "season": "spring | summer | autumn | winter"
+    },
+    "clock": {
+      "day": 1,
+      "hour": 0,
+      "minute": 0,
+      "time_of_day": "morning | day | evening | night | deep_night",
+      "light_profile": "dark | dim | daylight | twilight"
+    },
+    "region": {
+      "region_id": "string"
+    }
+  },
+
+  "regional_context_package": {
+    "version": 1,
+    "schema": "regional_context_package",
+    "settlement_and_place_rules": {},
+    "landscape_context": {},
+    "water_context": {},
+    "land_use_context": {},
+    "route_context": {},
+    "social_context": {},
+    "occupation_context": {}
+  },
+
+  "start_candidate_set": {
+    "version": 1,
+    "schema": "start_candidate_set",
+    "selection_status": "ready",
+    "candidates": []
+  },
+
+  "template_policy": {
+    "require_region_place_template_link": true,
+    "require_place_template_status_allowed": true,
+    "require_candidate_environment_compatibility": true,
+    "require_scale_level_compatibility": true,
+    "require_node_type_compatibility": true,
+    "require_generation_rule_if_candidate_has_no_place_template_id": true,
+    "require_generation_limits_check": true,
+    "require_sources": true,
+    "prefer_existing_candidate_place_template_id": true,
+    "allow_multiple_templates_per_candidate": true,
+    "allow_weak_templates": false
+  }
+}
+```
+
+## 5. Выход этапа
+
+```json
+{
+  "version": 1,
+  "schema": "candidate_place_template_set",
+  "request_id": "string",
+
+  "selection_status": "ready | empty | blocked | requires_repair",
+
+  "frame": {
+    "region_id": "string",
+    "year": 0,
+    "season": "spring | summer | autumn | winter",
+    "clock": {}
+  },
+
+  "summary": {
+    "candidate_count": 0,
+    "candidates_with_templates": 0,
+    "candidates_without_templates": 0,
+    "total_template_links": 0,
+    "rejected_template_links": 0
+  },
+
+  "candidate_template_links": [],
+
+  "rejected_template_links": [],
+
+  "template_index": {},
+
+  "downstream_constraints": {
+    "must_choose_candidate_template_link_id": [],
+    "must_preserve": [],
+    "must_not_create_yet": [],
+    "must_resolve_later": []
+  },
+
+  "source_trace": [],
+
+  "audit": {
+    "pass": true,
+    "concerns": [],
+    "evidence": []
+  }
+}
+```
+
+## 6. Смысловая граница этапа
+
+Этап работает с типами мест, но не с конкретными местами.
+
+Разрешённый результат:
+
+```json
+{
+  "candidate_id": "start_candidate_001",
+  "allowed_place_template_ids": [
+    "place_template_001",
+    "place_template_002"
+  ]
+}
+```
+
+Запрещённый результат:
+
+```json
+{
+  "place_name": "Большой двор у старого моста",
+  "owner": "старший двора",
+  "visible_scene": "Во дворе стоят сани..."
+}
+```
+
+Причина: имя места, владелец и видимая сцена создаются позже, после выбора конкретного стартового кандидата и в пределах отдельного LLM-пайплайна.
+
+## 7. Источники данных
+
+### 7.1. `place_templates`
+
+Глобальный справочник типов мест.
+
+Используется для проверки:
+
+```text
+что это за тип места;
+какой у него place_kind;
+какой тип узла ожидается;
+может ли он существовать внутри ландшафта;
+нужна ли вода рядом;
+нужен ли путь рядом;
+нужно ли хозяйственное использование;
+с какими ландшафтами совместим;
+с какими водными объектами совместим;
+с какими route templates совместим;
+с какими land use templates совместим;
+каковы access/social/economic/defense logic;
+каковы game_use и limits.
+```
+
+Минимальные поля:
+
+```text
+id
+slug
+title
+summary
+place_kind
+default_node_type
+can_exist_inside_landscape
+requires_water_nearby
+requires_route_nearby
+requires_land_use
+compatible_landscape_template_ids
+compatible_water_body_template_ids
+compatible_route_template_ids
+compatible_land_use_template_ids
+typical_scale_level
+access_logic
+social_logic
+economic_logic
+defense_logic
+game_use
+limits
+status
+confidence
+sources
+audit_notes
+```
+
+### 7.2. `region_place_templates`
+
+Региональная связка разрешённых типов мест.
+
+Используется как главный allowlist.
+
+Минимальные поля:
+
+```text
+id
+region_id
+place_template_id
+is_allowed
+is_common
+is_rare
+generation_weight
+allowed_scale_levels
+allowed_node_types
+regional_limits
+game_use
+limits
+status
+confidence
+sources
+audit_notes
+```
+
+Если `place_template_id` отсутствует в `region_place_templates` выбранного региона, он не может быть использован для стартового кандидата.
+
+### 7.3. `region_place_generation_rules`
+
+Расширенные региональные правила генерации типовых мест.
+
+Используются, когда:
+
+```text
+кандидат не имеет прямого place_template_id;
+кандидат является зоной или локацией, требующей уточнения типа места;
+нужно проверить экономику, доступ, воду, дорогу, население, власть, типичные роли и типичные занятия.
+```
+
+Поля смысловой проверки:
+
+```text
+region_id
+template_type
+generation_allowed
+required_landscape
+required_economy
+required_route_access
+required_water_access
+seasonal_availability
+typical_population_band
+typical_household_count
+typical_wealth_level
+typical_authority
+typical_social_roles
+typical_occupations
+layout_rules
+access_rules
+trade_rules
+defense_rules
+npc_generation_rules
+item_generation_rules
+route_generation_rules
+historical_plausibility_rules
+game_use
+limits
+status
+confidence
+sources
+```
+
+### 7.4. `place_generation_limits`
+
+Лимиты допустимости места.
+
+Используются для проверки:
+
+```text
+не превышен ли лимит типа места;
+нужна ли экономическая основа;
+нужна ли дорога;
+нужна ли вода;
+нужна ли власть;
+нужен ли исторический якорь;
+какие типы мест разрешены рядом;
+какие типы мест запрещены рядом;
+какая плотность допустима.
+```
+
+Минимальные поля:
+
+```text
+region_id
+place_template_id
+max_total
+max_per_subregion
+min_total_if_region_active
+economic_basis_required
+route_basis_required
+water_basis_required
+authority_basis_required
+historical_anchor_basis_required
+allowed_near_place_types
+forbidden_near_place_types
+minimum_distance_band
+maximum_distance_band
+density_logic
+duplication_policy
+game_use
+limits
+status
+confidence
+sources
+```
+
+### 7.5. `graph_nodes`
+
+Используются для проверки самого кандидата.
+
+Критичные поля:
+
+```text
+id
+node_type
+scale_level
+parent_node_id
+region_id
+place_template_id
+primary_landscape_template_id
+secondary_landscape_template_ids
+primary_water_body_template_id
+secondary_water_body_template_ids
+land_use_template_ids
+terrain_profile
+water_profile
+road_profile
+settlement_density
+dominant_content
+summary
+status
+confidence
+sources
+```
+
+Важно: `terrain_profile`, `water_profile`, `road_profile`, `settlement_density`, `dominant_content` являются подсказками редактора, но не источником истины. Источник истины — FK и JSON-поля шаблонов.
+
+### 7.6. `graph_edges` и `route_templates`
+
+Используются, если `place_template.requires_route_nearby=true` или template требует конкретный route type.
+
+Проверяются:
+
+```text
+есть ли рядом edge;
+какой edge_type;
+какой route_template_id;
+доступен ли путь в сезон;
+не противоречит ли access_rule;
+не требует ли путь лодку/лошадь/сани/разрешение.
+```
+
+### 7.7. Landscape / water / land use allowlists
+
+Используются для проверки совместимости:
+
+```text
+region_landscape_templates
+region_water_body_templates
+region_land_use_templates
+```
+
+Если place template требует ландшафт, воду или хозяйственное использование, все ссылки должны быть разрешены региональными связками.
+
+## 8. Алгоритм этапа
+
+### 8.1. Проверить входы
+
+Код проверяет:
+
+```text
+historical_frame.audit.pass = true
+regional_context_package.audit.pass = true
+start_candidate_set.audit.pass = true
+start_candidate_set.selection_status = ready
+region_id задан
+year задан
+season задан
+clock задан
+```
+
+Если `start_candidate_set` пуст, этап возвращает `selection_status="empty"`.
+
+### 8.2. Загрузить региональные allowed place templates
+
+```sql
+SELECT
+  rpt.id AS region_place_template_link_id,
+  rpt.region_id,
+  rpt.place_template_id,
+  rpt.is_allowed,
+  rpt.is_common,
+  rpt.is_rare,
+  rpt.generation_weight,
+  rpt.allowed_scale_levels,
+  rpt.allowed_node_types,
+  rpt.regional_limits,
+  rpt.game_use AS regional_game_use,
+  rpt.limits AS regional_limits_text,
+  rpt.status AS region_link_status,
+  rpt.confidence AS region_link_confidence,
+  rpt.sources AS region_link_sources,
+  pt.*
+FROM world_base.region_place_templates rpt
+JOIN world_base.place_templates pt
+  ON pt.id = rpt.place_template_id
+WHERE rpt.region_id = :region_id
+  AND rpt.is_allowed = true
+  AND rpt.status IN (:allowed_statuses)
+  AND pt.status IN (:allowed_statuses);
+```
+
+Это главный список допустимых типов мест для региона.
+
+### 8.3. Построить индекс
+
+Код строит:
+
+```json
+{
+  "allowed_place_template_ids": [],
+  "place_template_by_id": {},
+  "region_place_template_link_by_template_id": {},
+  "allowed_scale_levels_by_template_id": {},
+  "allowed_node_types_by_template_id": {},
+  "generation_weight_by_template_id": {},
+  "regional_limits_by_template_id": {}
+}
+```
+
+### 8.4. Для каждого стартового кандидата получить исходный `place_template_id`
+
+Кандидат может иметь:
+
+1. прямой `canonical_node.place_template_id`;
+2. унаследованный `place_template_id` от G3;
+3. унаследованный `place_template_id` от parent place;
+4. отсутствие `place_template_id`.
+
+Если у G4 нет `place_template_id`, но у G3 он есть, код может создать связь:
+
+```text
+candidate G4 inherits place context from parent G3
+```
+
+Но это должно быть отмечено:
+
+```json
+{
+  "template_source": "inherited_from_parent_g3"
+}
+```
+
+Если нет ни прямого, ни унаследованного template, кандидат отправляется в режим “template inference from allowed rules”, но без выдумывания нового template.
+
+### 8.5. Проверить прямой `place_template_id`
+
+Для каждого прямого template:
+
+```text
+place_template_id ∈ allowed_place_template_ids
+```
+
+Если нет — rejected link:
+
+```text
+PLACE_TEMPLATE_NOT_ALLOWED_IN_REGION
+```
+
+### 8.6. Проверить scale level
+
+Код сверяет:
+
+```text
+candidate.canonical_node.scale_level ∈ region_place_templates.allowed_scale_levels
+или allowed_scale_levels пустой и place_template.typical_scale_level совместим
+```
+
+Пример ошибки:
+
+```text
+PLACE_TEMPLATE_SCALE_LEVEL_MISMATCH
+```
+
+### 8.7. Проверить node type
+
+Код сверяет:
+
+```text
+candidate.canonical_node.node_type ∈ region_place_templates.allowed_node_types
+или candidate.canonical_node.node_type = place_templates.default_node_type
+или допустимо через explicit regional rule
+```
+
+Если node type не подходит, template link отклоняется.
+
+### 8.8. Проверить ландшафт
+
+Если `place_template.compatible_landscape_template_ids` не пуст:
+
+```text
+candidate.primary_landscape_template_id ∈ compatible_landscape_template_ids
+или один из candidate.secondary_landscape_template_ids ∈ compatible_landscape_template_ids
+```
+
+Также все candidate landscape template IDs должны быть разрешены в `region_landscape_templates`.
+
+Если `place_template.can_exist_inside_landscape=false`, а кандидат является чисто природным узлом без place context, template link отклоняется.
+
+### 8.9. Проверить водные требования
+
+Если `place_template.requires_water_nearby=true`, код должен найти:
+
+```text
+candidate.primary_water_body_template_id
+или candidate.secondary_water_body_template_ids
+или соседний graph_edge с water_body_template_id
+или соседний node с water body template
+```
+
+Если вода требуется, но не найдена:
+
+```text
+PLACE_TEMPLATE_REQUIRES_WATER_BUT_NONE_FOUND
+```
+
+Если `compatible_water_body_template_ids` задан, водный template должен входить в этот список и быть разрешён в регионе.
+
+### 8.10. Проверить route requirements
+
+Если `place_template.requires_route_nearby=true`, код должен найти минимум одно соседнее ребро:
+
+```text
+graph_edges.from_node_id = candidate.node_id
+или graph_edges.to_node_id = candidate.node_id
+```
+
+Если `compatible_route_template_ids` задан, рядом должен быть route edge с соответствующим `route_template_id`.
+
+Если route требуется, но отсутствует:
+
+```text
+PLACE_TEMPLATE_REQUIRES_ROUTE_BUT_NONE_FOUND
+```
+
+### 8.11. Проверить land use requirements
+
+Если `place_template.requires_land_use=true`, код проверяет:
+
+```text
+candidate.land_use_template_ids не пуст
+и каждый land_use_template_id разрешён в регионе
+и хотя бы один входит в compatible_land_use_template_ids, если список задан
+```
+
+Если land use требуется, но отсутствует:
+
+```text
+PLACE_TEMPLATE_REQUIRES_LAND_USE_BUT_NONE_FOUND
+```
+
+### 8.12. Проверить региональные generation rules
+
+Если кандидат не имеет прямого template, но может быть связан с одним или несколькими типами мест через региональные правила, код применяет `region_place_generation_rules`.
+
+Правило допустимо, если:
+
+```text
+region_id совпадает
+generation_allowed = true
+status допустим
+seasonal_availability совместима с выбранным сезоном
+required_landscape совместим с candidate landscape
+required_route_access совместим с candidate edges
+required_water_access совместим с candidate water context
+required_economy совместима с candidate land use / nearby places
+```
+
+Результатом является не новое место, а допустимый `place_template_id` или `region_place_generation_rule_id`, связанный с кандидатом.
+
+### 8.13. Проверить generation limits
+
+Если `place_generation_limits` требуют основу:
+
+```text
+economic_basis_required
+route_basis_required
+water_basis_required
+authority_basis_required
+historical_anchor_basis_required
+```
+
+код проверяет наличие соответствующих оснований.
+
+Если основания нет, template link отклоняется.
+
+Пример:
+
+```json
+{
+  "rejection_code": "PLACE_TEMPLATE_MISSING_ECONOMIC_BASIS",
+  "evidence": [
+    "place_generation_limits.economic_basis_required=true",
+    "candidate has no compatible land_use_template_id or economic context"
+  ]
+}
+```
+
+### 8.14. Проверить социальную совместимость
+
+Если template или generation rule содержит типичные social roles / occupations, код не создаёт NPC, но проверяет, что эти роли существуют в `regional_context_package.social_context` и `occupation_context`.
+
+Если тип места требует социальных ролей, которых нет в регионе, template link отклоняется.
+
+### 8.15. Проверить время суток и access logic
+
+Код не создаёт сцену, но проверяет, не противоречит ли тип места выбранному времени суток.
+
+Пример:
+
+```text
+если clock.time_of_day=deep_night
+и place_template.access_logic=day_only
+и нет допустимого exception rule,
+то template link получает hard warning или отклоняется.
+```
+
+Важно: ночной старт не запрещён сам по себе. Запрещён конфликт, когда тип места требует дневного открытого доступа, а рамка фиксирует ночь.
+
+### 8.16. Проверить hard constraints игрока
+
+Из `normalized_request.hard_constraints`:
+
+```text
+no_city_start
+no_religious_start
+no_combat_start
+no_wilderness_start
+no_noble_environment
+historical_consistency_required
+```
+
+Код сопоставляет constraints с `place_kind`, `social_logic`, `defense_logic`, `risk tags`.
+
+Если hard constraint нарушен, template link отклоняется.
+
+### 8.17. Сформировать template link
+
+Каждая допустимая связь candidate ↔ place_template оформляется отдельно.
+
+```json
+{
+  "candidate_place_template_link_id": "cptl_001",
+  "candidate_id": "start_candidate_001",
+  "node_id": "g4_001",
+  "place_template_id": "place_template_001",
+  "region_place_template_link_id": "region_place_template_001",
+  "template_source": "direct_node_fk | inherited_from_parent_g3 | inferred_from_region_rule",
+  "compatibility": {},
+  "basis": {},
+  "warnings": [],
+  "score": {},
+  "source_trace": []
+}
+```
+
+## 9. Формат допустимой связи
+
+```json
+{
+  "candidate_place_template_link_id": "cptl_001",
+
+  "candidate_id": "start_candidate_001",
+  "node_id": "g4_001",
+
+  "place_template": {
+    "place_template_id": "place_template_001",
+    "slug": "string",
+    "title": "string",
+    "place_kind": "string",
+    "default_node_type": "string",
+    "typical_scale_level": "G4"
+  },
+
+  "region_link": {
+    "region_place_template_link_id": "region_place_template_001",
+    "is_common": true,
+    "is_rare": false,
+    "generation_weight": 0,
+    "allowed_scale_levels": [],
+    "allowed_node_types": [],
+    "regional_limits": "string | null"
+  },
+
+  "template_source": "direct_node_fk | inherited_from_parent_g3 | inherited_from_parent_place | inferred_from_region_rule",
+
+  "generation_rule": {
+    "region_place_generation_rule_id": "string | null",
+    "generation_allowed": true,
+    "matched_requirements": []
+  },
+
+  "generation_limits": {
+    "place_generation_limit_id": "string | null",
+    "limits_checked": [],
+    "limits_warnings": []
+  },
+
+  "compatibility": {
+    "region_match": true,
+    "scale_level_match": true,
+    "node_type_match": true,
+    "landscape_match": true,
+    "water_match": true,
+    "route_match": true,
+    "land_use_match": true,
+    "season_match": true,
+    "clock_access_match": true,
+    "social_context_match": true,
+    "occupation_context_match": true,
+    "player_hard_constraints_match": true
+  },
+
+  "basis": {
+    "landscape_basis": [],
+    "water_basis": [],
+    "route_basis": [],
+    "land_use_basis": [],
+    "economic_basis": [],
+    "authority_basis": [],
+    "historical_anchor_basis": []
+  },
+
+  "warnings": [],
+
+  "score": {
+    "value": 0,
+    "band": "excellent | good | usable | weak | reject",
+    "score_reasons": [],
+    "score_penalties": []
+  },
+
+  "source_trace": [
+    {
+      "record_id": "place_template_001",
+      "table": "world_base.place_templates",
+      "source_ids": [],
+      "supports": [
+        "place_template"
+      ],
+      "status": "approved",
+      "confidence": "medium_high"
+    }
+  ]
+}
+```
+
+## 10. Rejected template link
+
+```json
+{
+  "candidate_id": "start_candidate_001",
+  "node_id": "g4_001",
+  "place_template_id": "place_template_001",
+  "rejection_code": "PLACE_TEMPLATE_NOT_ALLOWED_IN_REGION",
+  "rejection_reason": "Template exists globally but is not allowed for selected region.",
+  "evidence": [
+    "place_template_id exists in world_base.place_templates",
+    "no matching allowed row in world_base.region_place_templates"
+  ]
+}
+```
+
+Rejected links не передаются следующему этапу как допустимые.
+
+## 11. Scoring
+
+Scoring сортирует допустимые связи, но не создаёт факты.
+
+Рекомендуемая формула:
+
+```text
+score =
+  region_link_score
++ direct_fk_score
++ scale_match_score
++ node_type_match_score
++ landscape_match_score
++ route_match_score
++ water_match_score
++ land_use_match_score
++ season_match_score
++ clock_access_match_score
++ player_request_match_score
++ source_confidence_score
+- weak_basis_penalty
+- warning_penalty
+```
+
+Шкала:
+
+```text
+90–100 = excellent
+70–89 = good
+50–69 = usable
+30–49 = weak
+0–29 = reject
+```
+
+Если `template_policy.allow_weak_templates=false`, weak links не попадают в основной список.
+
+## 12. Hard gates
+
+Template link отклоняется без LLM, если:
+
+```text
+place_template_id отсутствует в world_base.place_templates
+place_template_id не разрешён в region_place_templates
+region_place_templates.is_allowed=false
+status=conflict
+status=rejected
+candidate.region_id != historical_frame.region_id
+scale level несовместим
+node type несовместим
+requires_water_nearby=true, но воды нет
+requires_route_nearby=true, но route edge нет
+requires_land_use=true, но land_use нет
+template compatible lists не совпадают с candidate context
+generation_allowed=false
+generation limits требуют basis, которого нет
+hard constraint игрока нарушен
+clock/access conflict является hard conflict
+source missing при require_sources=true
+```
+
+Эти проверки выполняет код.
+
+## 13. SQL-псевдозапросы
+
+### 13.1. Загрузка allowed place templates
+
+```sql
+SELECT
+  rpt.id AS region_place_template_link_id,
+  rpt.region_id,
+  rpt.place_template_id,
+  rpt.is_allowed,
+  rpt.is_common,
+  rpt.is_rare,
+  rpt.generation_weight,
+  rpt.allowed_scale_levels,
+  rpt.allowed_node_types,
+  rpt.regional_limits,
+  rpt.game_use AS region_game_use,
+  rpt.limits AS region_limits,
+  rpt.status AS region_link_status,
+  rpt.confidence AS region_link_confidence,
+  rpt.sources AS region_link_sources,
+
+  pt.id,
+  pt.slug,
+  pt.title,
+  pt.summary,
+  pt.place_kind,
+  pt.default_node_type,
+  pt.can_exist_inside_landscape,
+  pt.requires_water_nearby,
+  pt.requires_route_nearby,
+  pt.requires_land_use,
+  pt.compatible_landscape_template_ids,
+  pt.compatible_water_body_template_ids,
+  pt.compatible_route_template_ids,
+  pt.compatible_land_use_template_ids,
+  pt.typical_scale_level,
+  pt.access_logic,
+  pt.social_logic,
+  pt.economic_logic,
+  pt.defense_logic,
+  pt.game_use,
+  pt.limits,
+  pt.status,
+  pt.confidence,
+  pt.sources
+FROM world_base.region_place_templates rpt
+JOIN world_base.place_templates pt
+  ON pt.id = rpt.place_template_id
+WHERE rpt.region_id = :region_id
+  AND rpt.is_allowed = true
+  AND rpt.status IN (:allowed_statuses)
+  AND pt.status IN (:allowed_statuses);
+```
+
+### 13.2. Загрузка generation rules
+
+```sql
+SELECT *
+FROM world_base.region_place_generation_rules
+WHERE region_id = :region_id
+  AND generation_allowed = true
+  AND status IN (:allowed_statuses);
+```
+
+### 13.3. Загрузка generation limits
+
+```sql
+SELECT *
+FROM world_base.place_generation_limits
+WHERE region_id = :region_id
+  AND status IN (:allowed_statuses);
+```
+
+### 13.4. Проверка кандидатов
+
+```sql
+SELECT *
+FROM world_base.graph_nodes
+WHERE id = ANY(:candidate_node_ids)
+  AND status IN (:allowed_statuses);
+```
+
+### 13.5. Проверка соседних рёбер
+
+```sql
+SELECT *
+FROM world_base.graph_edges
+WHERE status IN (:allowed_statuses)
+  AND (
+    from_node_id = ANY(:candidate_node_ids)
+    OR to_node_id = ANY(:candidate_node_ids)
+  );
+```
+
+## 14. Работа LLM на этом этапе
+
+Базовый этап должен работать без LLM. Главный подбор `place_template` выполняется кодом через `world_base`.
+
+LLM допускается только в трёх вспомогательных режимах:
+
+1. `PlaceTemplateLinkAuditor` — проверить смысловую совместимость already-built template links.
+2. `PlaceTemplateSetCompressor` — сжать большой список связей для следующего этапа.
+3. `PlaceTemplateFormatRepairer` — исправить только формат JSON-аудита или сжатого пакета.
+
+LLM запрещено:
+
+* добавлять новый `place_template_id`;
+* менять `candidate_id`;
+* менять `node_id`;
+* менять `region_place_template_link_id`;
+* создавать место;
+* создавать название места;
+* создавать NPC;
+* создавать предметы;
+* создавать G5;
+* выбирать финальный старт;
+* писать сцену.
+
+## 15. LLM-параметры
+
+### 15.1. `PlaceTemplateSetCompressor`
+
+Назначение: сжать большой список связей `candidate ↔ place_template`, сохранив ID, score, warnings и traceability.
+
+Рекомендуемые параметры:
+
+```json
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-flash",
+  "thinking": {
+    "type": "disabled"
+  },
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "max_tokens": 6000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 40000,
+    "hard_input_limit_tokens": 100000,
+    "reserve_output_tokens": 6000
+  }
+}
+```
+
+Для этой задачи достаточно non-thinking модели, потому что она не должна рассуждать о мире, а только сжимать уже проверенный список.
+
+### 15.2. `PlaceTemplateLinkAuditor`
+
+Назначение: проверить, что связи candidate ↔ template не содержат скрытых противоречий.
+
+Рекомендуемые параметры:
+
+```json
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 5000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 50000,
+    "hard_input_limit_tokens": 140000,
+    "reserve_output_tokens": 5000
+  }
+}
+```
+
+Использовать только для аудита сложных списков или при спорных связках. Для обычного случая достаточно кода.
+
+### 15.3. `PlaceTemplateFormatRepairer`
+
+Назначение: исправить только JSON-формат ответа LLM.
+
+```json
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-flash",
+  "thinking": {
+    "type": "disabled"
+  },
+  "temperature": 0.0,
+  "max_tokens": 3000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 20000,
+    "hard_input_limit_tokens": 60000,
+    "reserve_output_tokens": 3000
+  }
+}
+```
+
+Для DeepSeek JSON-режима обязательно использовать API-level `response_format: {"type":"json_object"}`, слово `json` в prompt и пример требуемого JSON, а `max_tokens` должен быть достаточным, чтобы ответ не обрезался. Если используется thinking-аудит, thinking включается через `thinking: {"type":"enabled"}`, а effort — через `reasoning_effort`, где обычный рекомендуемый режим для сложного аудита — `high`.
+
+## 16. Prompt: PlaceTemplateSetCompressor
+
+```md
+# Роль
+
+Ты PlaceTemplateSetCompressor для исторической текстовой RPG.
+
+# Задача
+
+Сожми уже построенный кодом JSON candidate_place_template_set.
+
+# Главное правило
+
+Ты не создаёшь типы мест.
+Ты не добавляешь place_template_id.
+Ты не добавляешь candidate_id.
+Ты не меняешь node_id.
+Ты не меняешь score.
+Ты не выбираешь финальный старт.
+Ты не создаёшь сцену, NPC, предметы или G5.
+
+# Источники
+
+Используй только:
+- candidate_place_template_set_raw;
+- historical_frame;
+- regional_context_package;
+- start_candidate_set.
+
+# Разрешено
+
+- сгруппировать связи;
+- сократить повторяющиеся текстовые пояснения;
+- сохранить все ID;
+- сохранить все rejection codes;
+- сохранить score;
+- сохранить source_trace;
+- сохранить warnings.
+
+# Запрещено
+
+- добавлять новые template links;
+- удалять template links без переноса в rejected_template_links;
+- менять compatibility flags;
+- менять basis;
+- менять source_trace;
+- писать художественный текст.
+
+# Формат
+
+Верни только json.
+schema должен быть "candidate_place_template_set".
+version должен быть 1.
+```
+
+## 17. Prompt: PlaceTemplateLinkAuditor
+
+```md
+# Роль
+
+Ты PlaceTemplateLinkAuditor для исторической текстовой RPG.
+
+# Задача
+
+Проверь candidate_place_template_set на соответствие historical_frame, regional_context_package, start_candidate_set и world_base trace.
+
+# Главное правило
+
+Ты не создаёшь мир.
+Ты не добавляешь template links.
+Ты не выбираешь один старт.
+Ты только проверяешь список.
+
+# Проверить
+
+1. Каждый candidate_id существует в start_candidate_set.
+2. Каждый node_id соответствует candidate_id.
+3. Каждый place_template_id существует в place_templates.
+4. Каждый place_template_id разрешён через region_place_templates.
+5. Каждый region_place_template_link_id относится к выбранному region_id.
+6. Scale level кандидата совместим с allowed_scale_levels или typical_scale_level.
+7. Node type кандидата совместим с allowed_node_types или default_node_type.
+8. Landscape context кандидата совместим с template requirements.
+9. Water context кандидата совместим с template requirements.
+10. Route context кандидата совместим с template requirements.
+11. Land use context кандидата совместим с template requirements.
+12. Season совместим с generation rules.
+13. Clock/time_of_day не создаёт access conflict.
+14. Generation limits не нарушены.
+15. Hard constraints игрока не нарушены.
+16. В пакете нет созданной сцены, NPC, предметов, G5 или final selected start.
+
+# Формат
+
+Верни только json:
+
+{
+  "version": 1,
+  "schema": "candidate_place_template_audit",
+  "pass": true,
+  "concerns": [],
+  "evidence": []
+}
+
+Если pass=false, concerns не должен быть пустым.
+evidence не должен быть пустым.
+```
+
+## 18. Prompt: PlaceTemplateFormatRepairer
+
+```md
+# Роль
+
+Ты PlaceTemplateFormatRepairer.
+
+# Задача
+
+Исправь только формат JSON для candidate_place_template_set или candidate_place_template_audit.
+
+# Главное правило
+
+Не меняй смысл.
+Не добавляй candidate_id.
+Не добавляй place_template_id.
+Не меняй node_id.
+Не меняй score.
+Не меняй compatibility.
+Не выбирай финальный старт.
+
+# Разрешено
+
+- убрать markdown;
+- добавить отсутствующие служебные поля;
+- привести schema/version к нужному виду;
+- переименовать ошибочные поля;
+- перенести лишний текст в notes;
+- если исправление невозможно без изменения смысла, верни audit.pass=false.
+
+# Формат
+
+Верни только json.
+```
+
+## 19. Validation rules
+
+Код обязан проверить:
+
+1. `schema === "candidate_place_template_set"`.
+2. `version === 1`.
+3. `selection_status` входит в enum: `ready`, `empty`, `blocked`, `requires_repair`.
+4. Каждый `candidate_place_template_link_id` уникален.
+5. Каждый `candidate_id` существует в `start_candidate_set`.
+6. Каждый `node_id` соответствует candidate.
+7. Каждый `place_template_id` существует в `world_base.place_templates`.
+8. Каждый `place_template_id` разрешён в `world_base.region_place_templates`.
+9. `region_place_templates.region_id === historical_frame.region.region_id`.
+10. `region_place_templates.is_allowed === true`.
+11. Status template и region link не `conflict` и не `rejected`.
+12. Scale level совместим.
+13. Node type совместим.
+14. Landscape compatibility пройдена.
+15. Water compatibility пройдена.
+16. Route compatibility пройдена.
+17. Land use compatibility пройдена.
+18. Season compatibility пройдена.
+19. Clock/access compatibility пройдена.
+20. Generation rule compatibility пройдена, если использовалась.
+21. Generation limits compatibility пройдена, если включена policy.
+22. Hard constraints игрока не нарушены.
+23. Source trace не пустой, если `require_sources=true`.
+24. Все source IDs существуют в `source_records`.
+25. Нет `selected_start_node_id`.
+26. Нет `visible_scene`.
+27. Нет `intro_prose`.
+28. Нет `npc_ids`.
+29. Нет `items`.
+30. Нет `g5_anchor_id`.
+31. `audit.evidence` не пустой.
+32. Если `audit.pass=false`, `audit.concerns` не пустой.
+
+## 20. Error codes
+
+```text
+PLACE_TEMPLATE_INVALID_JSON
+PLACE_TEMPLATE_SCHEMA_MISMATCH
+PLACE_TEMPLATE_CANDIDATE_NOT_FOUND
+PLACE_TEMPLATE_NODE_MISMATCH
+PLACE_TEMPLATE_NOT_FOUND
+PLACE_TEMPLATE_NOT_ALLOWED_IN_REGION
+PLACE_TEMPLATE_REGION_LINK_NOT_FOUND
+PLACE_TEMPLATE_REGION_MISMATCH
+PLACE_TEMPLATE_REJECTED_RECORD_USED
+PLACE_TEMPLATE_CONFLICT_RECORD_USED
+PLACE_TEMPLATE_SCALE_LEVEL_MISMATCH
+PLACE_TEMPLATE_NODE_TYPE_MISMATCH
+PLACE_TEMPLATE_LANDSCAPE_MISMATCH
+PLACE_TEMPLATE_WATER_MISMATCH
+PLACE_TEMPLATE_ROUTE_MISMATCH
+PLACE_TEMPLATE_LAND_USE_MISMATCH
+PLACE_TEMPLATE_SEASON_CONFLICT
+PLACE_TEMPLATE_CLOCK_ACCESS_CONFLICT
+PLACE_TEMPLATE_GENERATION_NOT_ALLOWED
+PLACE_TEMPLATE_MISSING_ECONOMIC_BASIS
+PLACE_TEMPLATE_MISSING_ROUTE_BASIS
+PLACE_TEMPLATE_MISSING_WATER_BASIS
+PLACE_TEMPLATE_MISSING_AUTHORITY_BASIS
+PLACE_TEMPLATE_PLAYER_HARD_CONSTRAINT_CONFLICT
+PLACE_TEMPLATE_SOURCE_MISSING
+PLACE_TEMPLATE_CREATED_LOCATION
+PLACE_TEMPLATE_CREATED_SCENE
+PLACE_TEMPLATE_CREATED_NPC
+PLACE_TEMPLATE_CREATED_ITEM
+PLACE_TEMPLATE_CREATED_G5
+PLACE_TEMPLATE_SELECTED_FINAL_START_TOO_EARLY
+PLACE_TEMPLATE_EMPTY_AUDIT_EVIDENCE
+NO_ALLOWED_PLACE_TEMPLATES_FOR_CANDIDATES
+```
+
+## 21. DB write на этом этапе
+
+Разрешено писать:
+
+```text
+pipeline_step_status
+candidate_place_template_set_snapshot
+candidate_place_template_rejected_snapshot
+candidate_place_template_audit_result
+candidate_place_template_validation_issues
+retrieved_place_template_ids
+retrieved_region_place_template_link_ids
+retrieved_generation_rule_ids
+retrieved_generation_limit_ids
+source_trace_snapshot
+```
+
+Запрещено писать:
+
+```text
+party_current_position
+party_player_characters
+party_npcs
+party_items
+party_scene_anchors
+party_events
+party_map_knowledge
+selected_start_node_id
+visible_scene
+intro_prose
+generated_place_name
+owner
+hidden_state
+```
+
+Этот этап ещё не создаёт игру как состояние партии.
+
+## 22. Commit gate этапа
+
+Этап считается успешным, если:
+
+```text
+candidate_place_template_set валиден,
+у каждого allowed-кандидата есть хотя бы один допустимый place_template_link,
+каждый place_template_link существует в world_base,
+каждый place_template_link разрешён в регионе,
+каждый place_template_link совместим с node scale/type/environment/route/water/land_use,
+нет нарушения сезона, времени, access logic и hard constraints,
+нет созданных downstream-сущностей,
+audit.pass=true.
+```
+
+Если для кандидатов не найдено ни одного разрешённого типа места, pipeline не должен просить LLM “придумать подходящий тип”. Он должен вернуть:
+
+```text
+NO_ALLOWED_PLACE_TEMPLATES_FOR_CANDIDATES
+```
+
+После этого возможны только технические варианты:
+
+1. ослабить soft preferences;
+2. вернуться к этапу подбора стартовых G1–G4 кандидатов;
+3. вернуть `blocked`;
+4. запросить уточнение, если игрок запретил случайную замену.
+
+## 23. Передача в следующий этап
+
+Следующий этап получает:
+
+```json
+{
+  "version": 1,
+  "schema": "start_place_selector_input",
+  "request_id": "string",
+
+  "normalized_request": {},
+  "historical_frame": {},
+  "regional_context_package": {},
+  "start_candidate_set": {},
+  "candidate_place_template_set": {
+    "version": 1,
+    "schema": "candidate_place_template_set",
+    "selection_status": "ready",
+    "candidate_template_links": []
+  }
+}
+```
+
+Следующий этап обязан выбрать конкретную стартовую связку только из:
+
+```text
+candidate_place_template_set.candidate_template_links[*].candidate_place_template_link_id
+```
+
+Если LLM выбирает `candidate_id` или `place_template_id`, которого нет в пакете, результат отклоняется без смыслового repair.
+
+## 24. Минимальный успешный результат
+
+```json
+{
+  "version": 1,
+  "schema": "candidate_place_template_set",
+  "request_id": "req_001",
+  "selection_status": "ready",
+
+  "frame": {
+    "region_id": "region_001",
+    "year": 1230,
+    "season": "winter",
+    "clock": {
+      "day": 1,
+      "hour": 6,
+      "minute": 30,
+      "time_of_day": "morning",
+      "light_profile": "dim"
+    }
+  },
+
+  "summary": {
+    "candidate_count": 12,
+    "candidates_with_templates": 12,
+    "candidates_without_templates": 0,
+    "total_template_links": 18,
+    "rejected_template_links": 4
+  },
+
+  "candidate_template_links": [
+    {
+      "candidate_place_template_link_id": "cptl_001",
+      "candidate_id": "start_candidate_001",
+      "node_id": "g4_001",
+
+      "place_template": {
+        "place_template_id": "place_template_001",
+        "slug": "generic_place_template_slug",
+        "title": "Generic place template title",
+        "place_kind": "household_or_settlement_related",
+        "default_node_type": "location",
+        "typical_scale_level": "G4"
+      },
+
+      "region_link": {
+        "region_place_template_link_id": "rpt_001",
+        "is_common": true,
+        "is_rare": false,
+        "generation_weight": 10,
+        "allowed_scale_levels": [
+          "G3",
+          "G4"
+        ],
+        "allowed_node_types": [
+          "place",
+          "location"
+        ],
+        "regional_limits": "Use only where economic and social basis exists."
+      },
+
+      "template_source": "direct_node_fk",
+
+      "generation_rule": {
+        "region_place_generation_rule_id": null,
+        "generation_allowed": null,
+        "matched_requirements": []
+      },
+
+      "generation_limits": {
+        "place_generation_limit_id": "pgl_001",
+        "limits_checked": [
+          "economic_basis",
+          "route_basis",
+          "density_logic"
+        ],
+        "limits_warnings": []
+      },
+
+      "compatibility": {
+        "region_match": true,
+        "scale_level_match": true,
+        "node_type_match": true,
+        "landscape_match": true,
+        "water_match": true,
+        "route_match": true,
+        "land_use_match": true,
+        "season_match": true,
+        "clock_access_match": true,
+        "social_context_match": true,
+        "occupation_context_match": true,
+        "player_hard_constraints_match": true
+      },
+
+      "basis": {
+        "landscape_basis": [
+          "candidate primary landscape is allowed in region"
+        ],
+        "water_basis": [],
+        "route_basis": [
+          "candidate has nearby route edge"
+        ],
+        "land_use_basis": [
+          "candidate has compatible land use"
+        ],
+        "economic_basis": [
+          "place generation limits satisfied by land use and route context"
+        ],
+        "authority_basis": [],
+        "historical_anchor_basis": []
+      },
+
+      "warnings": [],
+
+      "score": {
+        "value": 86,
+        "band": "good",
+        "score_reasons": [
+          "Template is directly linked to candidate node.",
+          "Template is allowed in region.",
+          "Scale and node type match.",
+          "Environmental requirements are satisfied."
+        ],
+        "score_penalties": []
+      },
+
+      "source_trace": [
+        {
+          "record_id": "place_template_001",
+          "table": "world_base.place_templates",
+          "source_ids": [
+            "source_001"
+          ],
+          "supports": [
+            "place_template"
+          ],
+          "status": "approved",
+          "confidence": "medium_high"
+        },
+        {
+          "record_id": "rpt_001",
+          "table": "world_base.region_place_templates",
+          "source_ids": [
+            "source_002"
+          ],
+          "supports": [
+            "regional_allowlist"
+          ],
+          "status": "approved",
+          "confidence": "medium_high"
+        }
+      ]
+    }
+  ],
+
+  "rejected_template_links": [],
+
+  "template_index": {
+    "allowed_place_template_ids": [
+      "place_template_001"
+    ],
+    "candidate_ids_with_templates": [
+      "start_candidate_001"
+    ]
+  },
+
+  "downstream_constraints": {
+    "must_choose_candidate_template_link_id": [
+      "cptl_001"
+    ],
+    "must_preserve": [
+      "region_id",
+      "year",
+      "season",
+      "clock",
+      "candidate_id",
+      "node_id",
+      "place_template_id"
+    ],
+    "must_not_create_yet": [
+      "player_character",
+      "npc",
+      "items",
+      "g5_anchor",
+      "visible_scene",
+      "intro_prose",
+      "generated_place_name"
+    ],
+    "must_resolve_later": [
+      "selected_start_candidate_template_link",
+      "player_character",
+      "g5_scene",
+      "initial_npcs",
+      "initial_items"
+    ]
+  },
+
+  "source_trace": [
+    {
+      "record_id": "place_template_001",
+      "table": "world_base.place_templates",
+      "source_ids": [
+        "source_001"
+      ],
+      "supports": [
+        "candidate_template_link"
+      ],
+      "status": "approved",
+      "confidence": "medium_high"
+    }
+  ],
+
+  "audit": {
+    "pass": true,
+    "concerns": [],
+    "evidence": [
+      "All allowed place_template_ids exist in world_base.place_templates.",
+      "All allowed place_template_ids are allowed through world_base.region_place_templates.",
+      "All candidate/template links match region, scale, node type and environmental requirements.",
+      "No final start was selected.",
+      "No scene, NPC, item, G5 anchor or generated place name was created."
+    ]
+  }
+}
+```

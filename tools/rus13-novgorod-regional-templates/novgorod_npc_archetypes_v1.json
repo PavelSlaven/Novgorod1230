@@ -1,0 +1,1883 @@
+{
+  "metadata": {
+    "file_name": "novgorod_npc_archetypes_v1.json",
+    "version": "1.0.0",
+    "project": "RUS13",
+    "region_id": "novgorod_land",
+    "region_id_aliases": [
+      "region_novgorod_land"
+    ],
+    "region_title": "Новгородская земля",
+    "period": "1230-1250",
+    "purpose": "Региональные NPC-архетипы для фоновых, сценических и ключевых шаблонов Новгородской земли",
+    "created_at_utc": "2026-07-05T12:30:00Z",
+    "status": "draft",
+    "confidence": "medium",
+    "requires_human_audit": true,
+    "list_expansion_policy": "Списки задания являются минимальным ядром, а не пределом. Новые контейнеры, слухи, события, предметные и социальные профили допустимы только при историко-бытовом, хозяйственном или социальном основании, со статусом, уверенностью и возможностью ручного аудита.",
+    "source_registry": [
+      "project_archive:novgorod_full_graph_g1_g4_v6_game_ready.zip",
+      "project_data:novgorod_region_generation_limits_v1.json",
+      "project_data:novgorod_region_profile_v1.json",
+      "project_data:novgorod_historical_timeline_1230_1250_v1.json",
+      "project_data:novgorod_neighbor_regions_v1.json",
+      "project_data:novgorod_social_roles_v1.tsv",
+      "project_data:novgorod_occupations_v1.tsv",
+      "project_data:novgorod_status_rules_v1.json",
+      "project_doc:items_and_property.txt",
+      "project_doc:npc_generation_profiles.txt",
+      "project_doc:movement_locations_regions.txt",
+      "project_doc:time_system.txt",
+      "project_doc:historical_events_and_figures.txt",
+      "project_doc:information_sources_llm_prompts.md"
+    ]
+  },
+  "npc_depth_policy": {
+    "background": "видимое занятие, роль, положение, настроение, возможность быть свидетелем; без имени и биографии без причины",
+    "scene": "имя/прозвище при необходимости, статус, цель, страх, знания, ресурсы, реакция и ближайшие последствия",
+    "key": "долговременная память, связи, имущество, расписание, долги и последствия; неисторические key создаются только из seed_template при причине",
+    "historical_key": "исторические лица существуют в историческом слое, но прямые встречи требуют сильного основания",
+    "respects_limits": true
+  },
+  "background_npc_archetypes": [
+    {
+      "archetype_id": "bg_market_onlooker",
+      "title": "Фоновый свидетель на торге",
+      "npc_depth": "background",
+      "typical_places": [
+        "торг",
+        "пристань",
+        "улица"
+      ],
+      "typical_g4_locations": [
+        "market_square",
+        "trade_rows"
+      ],
+      "visible_signs": [
+        "мешок",
+        "взгляд на спор"
+      ],
+      "typical_current_actions": [
+        "торгуется",
+        "ждёт",
+        "слушает"
+      ],
+      "typical_mood_range": [
+        "занят",
+        "устал",
+        "насторожен",
+        "спокоен",
+        "раздражён",
+        "испуган в кризисе"
+      ],
+      "typical_first_reactions": [
+        "оценивает статус",
+        "смотрит на поручителя",
+        "отвечает кратко если занят",
+        "может позвать старшего или свидетеля"
+      ],
+      "typical_goals": [
+        "сохранить товар",
+        "не ввязаться"
+      ],
+      "typical_fears": [
+        "страж",
+        "недовес",
+        "кража"
+      ],
+      "typical_knowledge": [
+        "цены",
+        "слухи",
+        "кто сторожит"
+      ],
+      "typical_resources": [
+        "свидетельство",
+        "краткий слух"
+      ],
+      "typical_inventory_categories": [
+        "belt_items",
+        "bags_packaging"
+      ],
+      "typical_property_access": [
+        "небольшой товар или чужой груз"
+      ],
+      "family_or_dependency_pattern": [
+        "родня/артель/хозяин по роли",
+        "зависимость от двора, старшего, купца, монастыря или службы"
+      ],
+      "debt_or_obligation_pattern": [
+        "плата, долг работой, товаром, службой или поручительством по ситуации"
+      ],
+      "promotion_to_key_conditions": [
+        "видел кражу",
+        "вступил в торг"
+      ],
+      "llm_materialization_rules": [
+        "не создавать полную биографию для фонового NPC",
+        "проверить место, сезон, время, статус, профессию и лимиты",
+        "не делать NPC готовым говорить без причины",
+        "не выдавать скрытую мотивацию в player-facing прозу"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать магию, фэнтези, современные профессии, современные деньги и MMO-логику",
+        "не создавать новые постоянные G1-G4 узлы и не расширять каноническую карту в runtime",
+        "не создавать состояние конкретной партии, конкретных неисторических NPC или конкретные предметы партии",
+        "не превращать заявку игрока в причину появления нужного объекта",
+        "не раскрывать игроку скрытые причины, объективную карту, будущие события и истинность слухов"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "novgorod_social_roles_v1.tsv",
+        "novgorod_occupations_v1.tsv",
+        "novgorod_status_rules_v1.json",
+        "project_doc:npc_generation_profiles"
+      ],
+      "source_note": "Профиль связан с региональными ролями, профессиями, статусными ограничениями и правилами NPC.",
+      "allowed_regional_roles": [
+        "nov_role_townsman",
+        "nov_role_merchant"
+      ],
+      "allowed_regional_occupations": [
+        "nov_occ_market_guard",
+        "nov_occ_peddler_small_trader"
+      ],
+      "allowed_social_position_archetypes": [
+        "free_urban_householder",
+        "urban_merchant_trader"
+      ],
+      "allowed_occupation_archetypes": [
+        "trade_exchange"
+      ]
+    },
+    {
+      "archetype_id": "bg_yard_family_member",
+      "title": "Человек двора на виду",
+      "npc_depth": "background",
+      "typical_places": [
+        "двор",
+        "изба",
+        "огород"
+      ],
+      "typical_g4_locations": [
+        "household_yards",
+        "front_yard"
+      ],
+      "visible_signs": [
+        "ведро",
+        "рабочая одежда"
+      ],
+      "typical_current_actions": [
+        "несёт воду",
+        "кормит скот"
+      ],
+      "typical_mood_range": [
+        "занят",
+        "устал",
+        "насторожен",
+        "спокоен",
+        "раздражён",
+        "испуган в кризисе"
+      ],
+      "typical_first_reactions": [
+        "оценивает статус",
+        "смотрит на поручителя",
+        "отвечает кратко если занят",
+        "может позвать старшего или свидетеля"
+      ],
+      "typical_goals": [
+        "сберечь двор",
+        "не нарушить приказ старшего"
+      ],
+      "typical_fears": [
+        "чужак",
+        "пожар",
+        "пропажа"
+      ],
+      "typical_knowledge": [
+        "кто хозяин",
+        "где нельзя ходить"
+      ],
+      "typical_resources": [
+        "позвать хозяина",
+        "стать свидетелем"
+      ],
+      "typical_inventory_categories": [
+        "household_utensils",
+        "tools_general"
+      ],
+      "typical_property_access": [
+        "общие вещи двора"
+      ],
+      "family_or_dependency_pattern": [
+        "родня/артель/хозяин по роли",
+        "зависимость от двора, старшего, купца, монастыря или службы"
+      ],
+      "debt_or_obligation_pattern": [
+        "плата, долг работой, товаром, службой или поручительством по ситуации"
+      ],
+      "promotion_to_key_conditions": [
+        "чужак вошёл во двор",
+        "увидел нарушение"
+      ],
+      "llm_materialization_rules": [
+        "не создавать полную биографию для фонового NPC",
+        "проверить место, сезон, время, статус, профессию и лимиты",
+        "не делать NPC готовым говорить без причины",
+        "не выдавать скрытую мотивацию в player-facing прозу"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать магию, фэнтези, современные профессии, современные деньги и MMO-логику",
+        "не создавать новые постоянные G1-G4 узлы и не расширять каноническую карту в runtime",
+        "не создавать состояние конкретной партии, конкретных неисторических NPC или конкретные предметы партии",
+        "не превращать заявку игрока в причину появления нужного объекта",
+        "не раскрывать игроку скрытые причины, объективную карту, будущие события и истинность слухов"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "novgorod_social_roles_v1.tsv",
+        "novgorod_occupations_v1.tsv",
+        "novgorod_status_rules_v1.json",
+        "project_doc:npc_generation_profiles"
+      ],
+      "source_note": "Профиль связан с региональными ролями, профессиями, статусными ограничениями и правилами NPC.",
+      "allowed_regional_roles": [
+        "nov_role_householder",
+        "nov_role_housewife"
+      ],
+      "allowed_regional_occupations": [
+        "nov_occ_household_worker",
+        "nov_occ_farm_laborer"
+      ],
+      "allowed_social_position_archetypes": [
+        "free_urban_householder",
+        "dependent_servant_household"
+      ],
+      "allowed_occupation_archetypes": [
+        "domestic_service"
+      ]
+    },
+    {
+      "archetype_id": "bg_road_traveler",
+      "title": "Путник на дороге",
+      "npc_depth": "background",
+      "typical_places": [
+        "дорога",
+        "зимник",
+        "переправа"
+      ],
+      "typical_g4_locations": [
+        "road_approach",
+        "track_entry",
+        "waiting_bank"
+      ],
+      "visible_signs": [
+        "грязная обувь",
+        "дорожный мешок"
+      ],
+      "typical_current_actions": [
+        "идёт",
+        "ждёт перевоз"
+      ],
+      "typical_mood_range": [
+        "занят",
+        "устал",
+        "насторожен",
+        "спокоен",
+        "раздражён",
+        "испуган в кризисе"
+      ],
+      "typical_first_reactions": [
+        "оценивает статус",
+        "смотрит на поручителя",
+        "отвечает кратко если занят",
+        "может позвать старшего или свидетеля"
+      ],
+      "typical_goals": [
+        "дойти до места",
+        "найти ночлег"
+      ],
+      "typical_fears": [
+        "разбой",
+        "заблудиться",
+        "закрытая переправа"
+      ],
+      "typical_knowledge": [
+        "слухи дороги",
+        "примерные направления"
+      ],
+      "typical_resources": [
+        "обмен слухом",
+        "свидетель"
+      ],
+      "typical_inventory_categories": [
+        "road_supplies",
+        "footwear"
+      ],
+      "typical_property_access": [
+        "свой мешок"
+      ],
+      "family_or_dependency_pattern": [
+        "родня/артель/хозяин по роли",
+        "зависимость от двора, старшего, купца, монастыря или службы"
+      ],
+      "debt_or_obligation_pattern": [
+        "плата, долг работой, товаром, службой или поручительством по ситуации"
+      ],
+      "promotion_to_key_conditions": [
+        "пошёл вместе",
+        "видел событие"
+      ],
+      "llm_materialization_rules": [
+        "не создавать полную биографию для фонового NPC",
+        "проверить место, сезон, время, статус, профессию и лимиты",
+        "не делать NPC готовым говорить без причины",
+        "не выдавать скрытую мотивацию в player-facing прозу"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать магию, фэнтези, современные профессии, современные деньги и MMO-логику",
+        "не создавать новые постоянные G1-G4 узлы и не расширять каноническую карту в runtime",
+        "не создавать состояние конкретной партии, конкретных неисторических NPC или конкретные предметы партии",
+        "не превращать заявку игрока в причину появления нужного объекта",
+        "не раскрывать игроку скрытые причины, объективную карту, будущие события и истинность слухов"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "novgorod_social_roles_v1.tsv",
+        "novgorod_occupations_v1.tsv",
+        "novgorod_status_rules_v1.json",
+        "project_doc:npc_generation_profiles"
+      ],
+      "source_note": "Профиль связан с региональными ролями, профессиями, статусными ограничениями и правилами NPC.",
+      "allowed_regional_roles": [
+        "nov_role_stranger",
+        "nov_role_free_commoner"
+      ],
+      "allowed_regional_occupations": [
+        "nov_occ_carrier_cart_driver",
+        "nov_occ_guide"
+      ],
+      "allowed_social_position_archetypes": [
+        "transport_worker_itinerant",
+        "traveler_guide_itinerant"
+      ],
+      "allowed_occupation_archetypes": [
+        "transport_guiding"
+      ]
+    },
+    {
+      "archetype_id": "bg_church_parishioner",
+      "title": "Прихожанин или богомолец",
+      "npc_depth": "background",
+      "typical_places": [
+        "церковь",
+        "погост",
+        "монастырь"
+      ],
+      "typical_g4_locations": [
+        "church_yard",
+        "chapel_or_cross"
+      ],
+      "visible_signs": [
+        "тихое поведение",
+        "малый дар"
+      ],
+      "typical_current_actions": [
+        "молится",
+        "ждёт службы"
+      ],
+      "typical_mood_range": [
+        "занят",
+        "устал",
+        "насторожен",
+        "спокоен",
+        "раздражён",
+        "испуган в кризисе"
+      ],
+      "typical_first_reactions": [
+        "оценивает статус",
+        "смотрит на поручителя",
+        "отвечает кратко если занят",
+        "может позвать старшего или свидетеля"
+      ],
+      "typical_goals": [
+        "помянуть",
+        "не нарушить порядок"
+      ],
+      "typical_fears": [
+        "позор",
+        "болезнь",
+        "отказ священника"
+      ],
+      "typical_knowledge": [
+        "церковные слухи",
+        "кто умер"
+      ],
+      "typical_resources": [
+        "свидетельство",
+        "обращение к попу"
+      ],
+      "typical_inventory_categories": [
+        "ritual_belief_tokens",
+        "food_bread"
+      ],
+      "typical_property_access": [
+        "личная вещь и дар"
+      ],
+      "family_or_dependency_pattern": [
+        "родня/артель/хозяин по роли",
+        "зависимость от двора, старшего, купца, монастыря или службы"
+      ],
+      "debt_or_obligation_pattern": [
+        "плата, долг работой, товаром, службой или поручительством по ситуации"
+      ],
+      "promotion_to_key_conditions": [
+        "нарушен порядок",
+        "просит сведений"
+      ],
+      "llm_materialization_rules": [
+        "не создавать полную биографию для фонового NPC",
+        "проверить место, сезон, время, статус, профессию и лимиты",
+        "не делать NPC готовым говорить без причины",
+        "не выдавать скрытую мотивацию в player-facing прозу"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать магию, фэнтези, современные профессии, современные деньги и MMO-логику",
+        "не создавать новые постоянные G1-G4 узлы и не расширять каноническую карту в runtime",
+        "не создавать состояние конкретной партии, конкретных неисторических NPC или конкретные предметы партии",
+        "не превращать заявку игрока в причину появления нужного объекта",
+        "не раскрывать игроку скрытые причины, объективную карту, будущие события и истинность слухов"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "novgorod_social_roles_v1.tsv",
+        "novgorod_occupations_v1.tsv",
+        "novgorod_status_rules_v1.json",
+        "project_doc:npc_generation_profiles"
+      ],
+      "source_note": "Профиль связан с региональными ролями, профессиями, статусными ограничениями и правилами NPC.",
+      "allowed_regional_roles": [
+        "nov_role_parishioner"
+      ],
+      "allowed_regional_occupations": [
+        "nov_occ_pilgrim",
+        "nov_occ_church_helper"
+      ],
+      "allowed_social_position_archetypes": [
+        "parish_cleric",
+        "monastic_community_member",
+        "ecclesiastical_household_agent"
+      ],
+      "allowed_occupation_archetypes": [
+        "religious_literate"
+      ]
+    },
+    {
+      "archetype_id": "bg_forest_worker",
+      "title": "Лесной работник или промысловик",
+      "npc_depth": "background",
+      "typical_places": [
+        "лесной стан",
+        "зимовье"
+      ],
+      "typical_g4_locations": [
+        "camp_fire",
+        "forest_exit"
+      ],
+      "visible_signs": [
+        "топор",
+        "дымный запах"
+      ],
+      "typical_current_actions": [
+        "чинит снасть",
+        "смотрит следы"
+      ],
+      "typical_mood_range": [
+        "занят",
+        "устал",
+        "насторожен",
+        "спокоен",
+        "раздражён",
+        "испуган в кризисе"
+      ],
+      "typical_first_reactions": [
+        "оценивает статус",
+        "смотрит на поручителя",
+        "отвечает кратко если занят",
+        "может позвать старшего или свидетеля"
+      ],
+      "typical_goals": [
+        "сохранить добычу",
+        "не выдать место"
+      ],
+      "typical_fears": [
+        "болото",
+        "зверьё",
+        "чужая артель"
+      ],
+      "typical_knowledge": [
+        "тропы",
+        "следы",
+        "погодные признаки"
+      ],
+      "typical_resources": [
+        "проводник",
+        "может скрыть путь"
+      ],
+      "typical_inventory_categories": [
+        "hunting_gear",
+        "tools_general"
+      ],
+      "typical_property_access": [
+        "артельная кладь"
+      ],
+      "family_or_dependency_pattern": [
+        "родня/артель/хозяин по роли",
+        "зависимость от двора, старшего, купца, монастыря или службы"
+      ],
+      "debt_or_obligation_pattern": [
+        "плата, долг работой, товаром, службой или поручительством по ситуации"
+      ],
+      "promotion_to_key_conditions": [
+        "просит путь",
+        "чужая снасть"
+      ],
+      "llm_materialization_rules": [
+        "не создавать полную биографию для фонового NPC",
+        "проверить место, сезон, время, статус, профессию и лимиты",
+        "не делать NPC готовым говорить без причины",
+        "не выдавать скрытую мотивацию в player-facing прозу"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать магию, фэнтези, современные профессии, современные деньги и MMO-логику",
+        "не создавать новые постоянные G1-G4 узлы и не расширять каноническую карту в runtime",
+        "не создавать состояние конкретной партии, конкретных неисторических NPC или конкретные предметы партии",
+        "не превращать заявку игрока в причину появления нужного объекта",
+        "не раскрывать игроку скрытые причины, объективную карту, будущие события и истинность слухов"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "novgorod_social_roles_v1.tsv",
+        "novgorod_occupations_v1.tsv",
+        "novgorod_status_rules_v1.json",
+        "project_doc:npc_generation_profiles"
+      ],
+      "source_note": "Профиль связан с региональными ролями, профессиями, статусными ограничениями и правилами NPC.",
+      "allowed_regional_roles": [
+        "nov_role_promyslovik"
+      ],
+      "allowed_regional_occupations": [
+        "nov_occ_hunter",
+        "nov_occ_forest_worker"
+      ],
+      "allowed_social_position_archetypes": [
+        "forest_water_producer_commoner"
+      ],
+      "allowed_occupation_archetypes": [
+        "forest_hunting",
+        "fishing_water"
+      ]
+    }
+  ],
+  "scene_npc_archetypes": [
+    {
+      "archetype_id": "scene_ferryman",
+      "title": "Перевозчик",
+      "npc_depth": "scene",
+      "typical_places": [
+        "перевоз",
+        "брод",
+        "пристань"
+      ],
+      "typical_g4_locations": [
+        "ferry_mooring",
+        "waiting_bank"
+      ],
+      "visible_signs": [
+        "мокрые руки",
+        "шест"
+      ],
+      "typical_current_actions": [
+        "оценивает плату",
+        "смотрит воду"
+      ],
+      "typical_mood_range": [
+        "занят",
+        "устал",
+        "насторожен",
+        "спокоен",
+        "раздражён",
+        "испуган в кризисе"
+      ],
+      "typical_first_reactions": [
+        "оценивает статус",
+        "смотрит на поручителя",
+        "отвечает кратко если занят",
+        "может позвать старшего или свидетеля"
+      ],
+      "typical_goals": [
+        "перевезти безопасно",
+        "получить плату"
+      ],
+      "typical_fears": [
+        "паводок",
+        "ледоход",
+        "недоплата"
+      ],
+      "typical_knowledge": [
+        "состояние воды",
+        "кто переправлялся"
+      ],
+      "typical_resources": [
+        "лодка",
+        "верёвка",
+        "местное знание"
+      ],
+      "typical_inventory_categories": [
+        "boat_gear",
+        "ropes_lines"
+      ],
+      "typical_property_access": [
+        "лодка двора/артели"
+      ],
+      "family_or_dependency_pattern": [
+        "родня/артель/хозяин по роли",
+        "зависимость от двора, старшего, купца, монастыря или службы"
+      ],
+      "debt_or_obligation_pattern": [
+        "плата, долг работой, товаром, службой или поручительством по ситуации"
+      ],
+      "promotion_to_key_conditions": [
+        "переправа закрывается",
+        "спор о плате"
+      ],
+      "llm_materialization_rules": [
+        "не создавать полную биографию для фонового NPC",
+        "проверить место, сезон, время, статус, профессию и лимиты",
+        "не делать NPC готовым говорить без причины",
+        "не выдавать скрытую мотивацию в player-facing прозу"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать магию, фэнтези, современные профессии, современные деньги и MMO-логику",
+        "не создавать новые постоянные G1-G4 узлы и не расширять каноническую карту в runtime",
+        "не создавать состояние конкретной партии, конкретных неисторических NPC или конкретные предметы партии",
+        "не превращать заявку игрока в причину появления нужного объекта",
+        "не раскрывать игроку скрытые причины, объективную карту, будущие события и истинность слухов"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "novgorod_social_roles_v1.tsv",
+        "novgorod_occupations_v1.tsv",
+        "novgorod_status_rules_v1.json",
+        "project_doc:npc_generation_profiles"
+      ],
+      "source_note": "Профиль связан с региональными ролями, профессиями, статусными ограничениями и правилами NPC.",
+      "allowed_regional_roles": [
+        "nov_role_ferryman"
+      ],
+      "allowed_regional_occupations": [
+        "nov_occ_ferryman",
+        "nov_occ_boatman"
+      ],
+      "allowed_social_position_archetypes": [
+        "transport_worker_itinerant",
+        "traveler_guide_itinerant"
+      ],
+      "allowed_occupation_archetypes": [
+        "transport_guiding"
+      ]
+    },
+    {
+      "archetype_id": "scene_market_seller",
+      "title": "Продавец или купеческий человек",
+      "npc_depth": "scene",
+      "typical_places": [
+        "торг",
+        "склад",
+        "пристань"
+      ],
+      "typical_g4_locations": [
+        "trade_rows",
+        "market_square"
+      ],
+      "visible_signs": [
+        "товар",
+        "мерка"
+      ],
+      "typical_current_actions": [
+        "торгуется",
+        "следит за тюком"
+      ],
+      "typical_mood_range": [
+        "занят",
+        "устал",
+        "насторожен",
+        "спокоен",
+        "раздражён",
+        "испуган в кризисе"
+      ],
+      "typical_first_reactions": [
+        "оценивает статус",
+        "смотрит на поручителя",
+        "отвечает кратко если занят",
+        "может позвать старшего или свидетеля"
+      ],
+      "typical_goals": [
+        "продать",
+        "сохранить репутацию"
+      ],
+      "typical_fears": [
+        "недовес",
+        "кража",
+        "пошлина"
+      ],
+      "typical_knowledge": [
+        "цены",
+        "дороги",
+        "чужие купцы"
+      ],
+      "typical_resources": [
+        "товар",
+        "свидетели",
+        "приказчик"
+      ],
+      "typical_inventory_categories": [
+        "measures_weights",
+        "bags_packaging"
+      ],
+      "typical_property_access": [
+        "товар старшего купца"
+      ],
+      "family_or_dependency_pattern": [
+        "родня/артель/хозяин по роли",
+        "зависимость от двора, старшего, купца, монастыря или службы"
+      ],
+      "debt_or_obligation_pattern": [
+        "плата, долг работой, товаром, службой или поручительством по ситуации"
+      ],
+      "promotion_to_key_conditions": [
+        "спор о мере",
+        "запомнил персонажа"
+      ],
+      "llm_materialization_rules": [
+        "не создавать полную биографию для фонового NPC",
+        "проверить место, сезон, время, статус, профессию и лимиты",
+        "не делать NPC готовым говорить без причины",
+        "не выдавать скрытую мотивацию в player-facing прозу"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать магию, фэнтези, современные профессии, современные деньги и MMO-логику",
+        "не создавать новые постоянные G1-G4 узлы и не расширять каноническую карту в runtime",
+        "не создавать состояние конкретной партии, конкретных неисторических NPC или конкретные предметы партии",
+        "не превращать заявку игрока в причину появления нужного объекта",
+        "не раскрывать игроку скрытые причины, объективную карту, будущие события и истинность слухов"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "novgorod_social_roles_v1.tsv",
+        "novgorod_occupations_v1.tsv",
+        "novgorod_status_rules_v1.json",
+        "project_doc:npc_generation_profiles"
+      ],
+      "source_note": "Профиль связан с региональными ролями, профессиями, статусными ограничениями и правилами NPC.",
+      "allowed_regional_roles": [
+        "nov_role_merchant",
+        "nov_role_trader"
+      ],
+      "allowed_regional_occupations": [
+        "nov_occ_merchant",
+        "nov_occ_peddler_small_trader"
+      ],
+      "allowed_social_position_archetypes": [
+        "urban_merchant_trader",
+        "privileged_long_distance_merchant"
+      ],
+      "allowed_occupation_archetypes": [
+        "trade_exchange"
+      ]
+    },
+    {
+      "archetype_id": "scene_householder",
+      "title": "Хозяин двора",
+      "npc_depth": "scene",
+      "typical_places": [
+        "двор",
+        "изба",
+        "село"
+      ],
+      "typical_g4_locations": [
+        "yard_gate",
+        "front_yard"
+      ],
+      "visible_signs": [
+        "ключ",
+        "нож",
+        "старшая поза"
+      ],
+      "typical_current_actions": [
+        "спрашивает причину",
+        "решает пустить"
+      ],
+      "typical_mood_range": [
+        "занят",
+        "устал",
+        "насторожен",
+        "спокоен",
+        "раздражён",
+        "испуган в кризисе"
+      ],
+      "typical_first_reactions": [
+        "оценивает статус",
+        "смотрит на поручителя",
+        "отвечает кратко если занят",
+        "может позвать старшего или свидетеля"
+      ],
+      "typical_goals": [
+        "защитить двор",
+        "сохранить запас"
+      ],
+      "typical_fears": [
+        "кража",
+        "пожар",
+        "долг"
+      ],
+      "typical_knowledge": [
+        "кто местный",
+        "дорога до погоста"
+      ],
+      "typical_resources": [
+        "двор",
+        "родня",
+        "хозяйство"
+      ],
+      "typical_inventory_categories": [
+        "tools_general",
+        "belt_items"
+      ],
+      "typical_property_access": [
+        "общее имущество двора"
+      ],
+      "family_or_dependency_pattern": [
+        "родня/артель/хозяин по роли",
+        "зависимость от двора, старшего, купца, монастыря или службы"
+      ],
+      "debt_or_obligation_pattern": [
+        "плата, долг работой, товаром, службой или поручительством по ситуации"
+      ],
+      "promotion_to_key_conditions": [
+        "просит ночлег",
+        "вошёл без спроса"
+      ],
+      "llm_materialization_rules": [
+        "не создавать полную биографию для фонового NPC",
+        "проверить место, сезон, время, статус, профессию и лимиты",
+        "не делать NPC готовым говорить без причины",
+        "не выдавать скрытую мотивацию в player-facing прозу"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать магию, фэнтези, современные профессии, современные деньги и MMO-логику",
+        "не создавать новые постоянные G1-G4 узлы и не расширять каноническую карту в runtime",
+        "не создавать состояние конкретной партии, конкретных неисторических NPC или конкретные предметы партии",
+        "не превращать заявку игрока в причину появления нужного объекта",
+        "не раскрывать игроку скрытые причины, объективную карту, будущие события и истинность слухов"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "novgorod_social_roles_v1.tsv",
+        "novgorod_occupations_v1.tsv",
+        "novgorod_status_rules_v1.json",
+        "project_doc:npc_generation_profiles"
+      ],
+      "source_note": "Профиль связан с региональными ролями, профессиями, статусными ограничениями и правилами NPC.",
+      "allowed_regional_roles": [
+        "nov_role_householder",
+        "nov_role_smerd"
+      ],
+      "allowed_regional_occupations": [
+        "nov_occ_farmer",
+        "nov_occ_householder"
+      ],
+      "allowed_social_position_archetypes": [
+        "free_urban_householder",
+        "free_rural_householder_commoner"
+      ],
+      "allowed_occupation_archetypes": [
+        "agriculture",
+        "domestic_service",
+        "craft_production"
+      ]
+    },
+    {
+      "archetype_id": "scene_priest",
+      "title": "Священник или церковный служитель",
+      "npc_depth": "scene",
+      "typical_places": [
+        "церковь",
+        "погост"
+      ],
+      "typical_g4_locations": [
+        "church",
+        "church_yard"
+      ],
+      "visible_signs": [
+        "сдержанная речь",
+        "люди обращаются уважительно"
+      ],
+      "typical_current_actions": [
+        "слушает просьбу",
+        "ведёт службу"
+      ],
+      "typical_mood_range": [
+        "занят",
+        "устал",
+        "насторожен",
+        "спокоен",
+        "раздражён",
+        "испуган в кризисе"
+      ],
+      "typical_first_reactions": [
+        "оценивает статус",
+        "смотрит на поручителя",
+        "отвечает кратко если занят",
+        "может позвать старшего или свидетеля"
+      ],
+      "typical_goals": [
+        "сохранить порядок",
+        "защитить церковное"
+      ],
+      "typical_fears": [
+        "осквернение",
+        "ложная клятва"
+      ],
+      "typical_knowledge": [
+        "календарь",
+        "местные ссоры"
+      ],
+      "typical_resources": [
+        "авторитет",
+        "свидетельство"
+      ],
+      "typical_inventory_categories": [
+        "church_objects",
+        "writing_accounting"
+      ],
+      "typical_property_access": [
+        "церковные вещи не личные"
+      ],
+      "family_or_dependency_pattern": [
+        "родня/артель/хозяин по роли",
+        "зависимость от двора, старшего, купца, монастыря или службы"
+      ],
+      "debt_or_obligation_pattern": [
+        "плата, долг работой, товаром, службой или поручительством по ситуации"
+      ],
+      "promotion_to_key_conditions": [
+        "конфликт касается церкви"
+      ],
+      "llm_materialization_rules": [
+        "не создавать полную биографию для фонового NPC",
+        "проверить место, сезон, время, статус, профессию и лимиты",
+        "не делать NPC готовым говорить без причины",
+        "не выдавать скрытую мотивацию в player-facing прозу"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать магию, фэнтези, современные профессии, современные деньги и MMO-логику",
+        "не создавать новые постоянные G1-G4 узлы и не расширять каноническую карту в runtime",
+        "не создавать состояние конкретной партии, конкретных неисторических NPC или конкретные предметы партии",
+        "не превращать заявку игрока в причину появления нужного объекта",
+        "не раскрывать игроку скрытые причины, объективную карту, будущие события и истинность слухов"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "novgorod_social_roles_v1.tsv",
+        "novgorod_occupations_v1.tsv",
+        "novgorod_status_rules_v1.json",
+        "project_doc:npc_generation_profiles"
+      ],
+      "source_note": "Профиль связан с региональными ролями, профессиями, статусными ограничениями и правилами NPC.",
+      "allowed_regional_roles": [
+        "nov_role_priest",
+        "nov_role_deacon"
+      ],
+      "allowed_regional_occupations": [
+        "nov_occ_priest",
+        "nov_occ_deacon"
+      ],
+      "allowed_social_position_archetypes": [
+        "parish_cleric",
+        "ecclesiastical_official_manager"
+      ],
+      "allowed_occupation_archetypes": [
+        "religious_literate"
+      ]
+    },
+    {
+      "archetype_id": "scene_guard",
+      "title": "Сторож или страж",
+      "npc_depth": "scene",
+      "typical_places": [
+        "ворота",
+        "торг",
+        "переправа"
+      ],
+      "typical_g4_locations": [
+        "guard_place",
+        "town_gate"
+      ],
+      "visible_signs": [
+        "оружие или посох"
+      ],
+      "typical_current_actions": [
+        "спрашивает кто идёт",
+        "держит проход"
+      ],
+      "typical_mood_range": [
+        "занят",
+        "устал",
+        "насторожен",
+        "спокоен",
+        "раздражён",
+        "испуган в кризисе"
+      ],
+      "typical_first_reactions": [
+        "оценивает статус",
+        "смотрит на поручителя",
+        "отвечает кратко если занят",
+        "может позвать старшего или свидетеля"
+      ],
+      "typical_goals": [
+        "не пропустить опасного"
+      ],
+      "typical_fears": [
+        "обман",
+        "наказание старшего"
+      ],
+      "typical_knowledge": [
+        "порядок места",
+        "кто имеет право входа"
+      ],
+      "typical_resources": [
+        "доступ к проходу",
+        "зов помощи"
+      ],
+      "typical_inventory_categories": [
+        "weapons_common",
+        "belt_items"
+      ],
+      "typical_property_access": [
+        "служебное оружие"
+      ],
+      "family_or_dependency_pattern": [
+        "родня/артель/хозяин по роли",
+        "зависимость от двора, старшего, купца, монастыря или службы"
+      ],
+      "debt_or_obligation_pattern": [
+        "плата, долг работой, товаром, службой или поручительством по ситуации"
+      ],
+      "promotion_to_key_conditions": [
+        "остановил персонажа",
+        "видел нарушение"
+      ],
+      "llm_materialization_rules": [
+        "не создавать полную биографию для фонового NPC",
+        "проверить место, сезон, время, статус, профессию и лимиты",
+        "не делать NPC готовым говорить без причины",
+        "не выдавать скрытую мотивацию в player-facing прозу"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать магию, фэнтези, современные профессии, современные деньги и MMO-логику",
+        "не создавать новые постоянные G1-G4 узлы и не расширять каноническую карту в runtime",
+        "не создавать состояние конкретной партии, конкретных неисторических NPC или конкретные предметы партии",
+        "не превращать заявку игрока в причину появления нужного объекта",
+        "не раскрывать игроку скрытые причины, объективную карту, будущие события и истинность слухов"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "novgorod_social_roles_v1.tsv",
+        "novgorod_occupations_v1.tsv",
+        "novgorod_status_rules_v1.json",
+        "project_doc:npc_generation_profiles"
+      ],
+      "source_note": "Профиль связан с региональными ролями, профессиями, статусными ограничениями и правилами NPC.",
+      "allowed_regional_roles": [
+        "nov_role_guard",
+        "nov_role_princely_man"
+      ],
+      "allowed_regional_occupations": [
+        "nov_occ_gate_guard",
+        "nov_occ_market_guard"
+      ],
+      "allowed_social_position_archetypes": [
+        "guard_watchman_service",
+        "armed_retainer_service"
+      ],
+      "allowed_occupation_archetypes": [
+        "military_security"
+      ]
+    }
+  ],
+  "key_npc_archetypes": [
+    {
+      "archetype_id": "key_local_elder_template",
+      "title": "Шаблон местного старшего",
+      "npc_depth": "key",
+      "typical_places": [
+        "село",
+        "погост",
+        "улица"
+      ],
+      "typical_g4_locations": [
+        "elder_yard",
+        "administrative_yard"
+      ],
+      "visible_signs": [
+        "люди ждут его слова"
+      ],
+      "typical_current_actions": [
+        "разбирает спор",
+        "держит память долгов"
+      ],
+      "typical_mood_range": [
+        "занят",
+        "устал",
+        "насторожен",
+        "спокоен",
+        "раздражён",
+        "испуган в кризисе"
+      ],
+      "typical_first_reactions": [
+        "оценивает статус",
+        "смотрит на поручителя",
+        "отвечает кратко если занят",
+        "может позвать старшего или свидетеля"
+      ],
+      "typical_goals": [
+        "сохранить порядок"
+      ],
+      "typical_fears": [
+        "голод",
+        "власть",
+        "кровная ссора"
+      ],
+      "typical_knowledge": [
+        "долги",
+        "родня",
+        "границы",
+        "пути"
+      ],
+      "typical_resources": [
+        "авторитет",
+        "свидетели"
+      ],
+      "typical_inventory_categories": [
+        "belt_items",
+        "writing_accounting"
+      ],
+      "typical_property_access": [
+        "общинное доверие"
+      ],
+      "family_or_dependency_pattern": [
+        "родня/артель/хозяин по роли",
+        "зависимость от двора, старшего, купца, монастыря или службы"
+      ],
+      "debt_or_obligation_pattern": [
+        "плата, долг работой, товаром, службой или поручительством по ситуации"
+      ],
+      "promotion_to_key_conditions": [
+        "решает долгий конфликт",
+        "получено поручительство"
+      ],
+      "llm_materialization_rules": [
+        "не создавать полную биографию для фонового NPC",
+        "проверить место, сезон, время, статус, профессию и лимиты",
+        "не делать NPC готовым говорить без причины",
+        "не выдавать скрытую мотивацию в player-facing прозу"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать магию, фэнтези, современные профессии, современные деньги и MMO-логику",
+        "не создавать новые постоянные G1-G4 узлы и не расширять каноническую карту в runtime",
+        "не создавать состояние конкретной партии, конкретных неисторических NPC или конкретные предметы партии",
+        "не превращать заявку игрока в причину появления нужного объекта",
+        "не раскрывать игроку скрытые причины, объективную карту, будущие события и истинность слухов"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "novgorod_social_roles_v1.tsv",
+        "novgorod_occupations_v1.tsv",
+        "novgorod_status_rules_v1.json",
+        "project_doc:npc_generation_profiles"
+      ],
+      "source_note": "Профиль связан с региональными ролями, профессиями, статусными ограничениями и правилами NPC.",
+      "allowed_regional_roles": [
+        "nov_role_starosta",
+        "nov_role_city_elder"
+      ],
+      "allowed_regional_occupations": [
+        "nov_occ_elder",
+        "nov_occ_householder"
+      ],
+      "allowed_social_position_archetypes": [
+        "landholding_notable_rural",
+        "free_rural_householder_commoner",
+        "urban_elite_office_holder"
+      ],
+      "allowed_occupation_archetypes": [
+        "administration_law",
+        "agriculture"
+      ]
+    },
+    {
+      "archetype_id": "key_merchant_house_template",
+      "title": "Шаблон старшего купеческого двора",
+      "npc_depth": "key",
+      "typical_places": [
+        "торг",
+        "купеческий двор"
+      ],
+      "typical_g4_locations": [
+        "merchant_yards",
+        "storehouses"
+      ],
+      "visible_signs": [
+        "люди двора подчиняются"
+      ],
+      "typical_current_actions": [
+        "ведёт счёт",
+        "даёт поручение"
+      ],
+      "typical_mood_range": [
+        "занят",
+        "устал",
+        "насторожен",
+        "спокоен",
+        "раздражён",
+        "испуган в кризисе"
+      ],
+      "typical_first_reactions": [
+        "оценивает статус",
+        "смотрит на поручителя",
+        "отвечает кратко если занят",
+        "может позвать старшего или свидетеля"
+      ],
+      "typical_goals": [
+        "сохранить товар",
+        "получить долг"
+      ],
+      "typical_fears": [
+        "разбой",
+        "пошлина"
+      ],
+      "typical_knowledge": [
+        "цены",
+        "дальние слухи"
+      ],
+      "typical_resources": [
+        "товар",
+        "слуги",
+        "склад"
+      ],
+      "typical_inventory_categories": [
+        "measures_weights",
+        "writing_accounting"
+      ],
+      "typical_property_access": [
+        "товар артели/родни"
+      ],
+      "family_or_dependency_pattern": [
+        "родня/артель/хозяин по роли",
+        "зависимость от двора, старшего, купца, монастыря или службы"
+      ],
+      "debt_or_obligation_pattern": [
+        "плата, долг работой, товаром, службой или поручительством по ситуации"
+      ],
+      "promotion_to_key_conditions": [
+        "игрок взял долг",
+        "сорвал сделку"
+      ],
+      "llm_materialization_rules": [
+        "не создавать полную биографию для фонового NPC",
+        "проверить место, сезон, время, статус, профессию и лимиты",
+        "не делать NPC готовым говорить без причины",
+        "не выдавать скрытую мотивацию в player-facing прозу"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать магию, фэнтези, современные профессии, современные деньги и MMO-логику",
+        "не создавать новые постоянные G1-G4 узлы и не расширять каноническую карту в runtime",
+        "не создавать состояние конкретной партии, конкретных неисторических NPC или конкретные предметы партии",
+        "не превращать заявку игрока в причину появления нужного объекта",
+        "не раскрывать игроку скрытые причины, объективную карту, будущие события и истинность слухов"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "novgorod_social_roles_v1.tsv",
+        "novgorod_occupations_v1.tsv",
+        "novgorod_status_rules_v1.json",
+        "project_doc:npc_generation_profiles"
+      ],
+      "source_note": "Профиль связан с региональными ролями, профессиями, статусными ограничениями и правилами NPC.",
+      "allowed_regional_roles": [
+        "nov_role_merchant"
+      ],
+      "allowed_regional_occupations": [
+        "nov_occ_merchant"
+      ],
+      "allowed_social_position_archetypes": [
+        "urban_merchant_trader",
+        "privileged_long_distance_merchant"
+      ],
+      "allowed_occupation_archetypes": [
+        "trade_exchange"
+      ]
+    },
+    {
+      "archetype_id": "key_monastery_official_template",
+      "title": "Шаблон монастырского хозяйственного старшего",
+      "npc_depth": "key",
+      "typical_places": [
+        "монастырь",
+        "гостевой двор"
+      ],
+      "typical_g4_locations": [
+        "refectory",
+        "storage_kleti"
+      ],
+      "visible_signs": [
+        "монастырский порядок"
+      ],
+      "typical_current_actions": [
+        "разрешает доступ",
+        "ведёт хозяйство"
+      ],
+      "typical_mood_range": [
+        "занят",
+        "устал",
+        "насторожен",
+        "спокоен",
+        "раздражён",
+        "испуган в кризисе"
+      ],
+      "typical_first_reactions": [
+        "оценивает статус",
+        "смотрит на поручителя",
+        "отвечает кратко если занят",
+        "может позвать старшего или свидетеля"
+      ],
+      "typical_goals": [
+        "сохранить порядок"
+      ],
+      "typical_fears": [
+        "кража святого",
+        "голод"
+      ],
+      "typical_knowledge": [
+        "календарь",
+        "дары",
+        "долги"
+      ],
+      "typical_resources": [
+        "кладовые",
+        "гости"
+      ],
+      "typical_inventory_categories": [
+        "monastic_property",
+        "food_grain"
+      ],
+      "typical_property_access": [
+        "имущество монастыря"
+      ],
+      "family_or_dependency_pattern": [
+        "родня/артель/хозяин по роли",
+        "зависимость от двора, старшего, купца, монастыря или службы"
+      ],
+      "debt_or_obligation_pattern": [
+        "плата, долг работой, товаром, службой или поручительством по ситуации"
+      ],
+      "promotion_to_key_conditions": [
+        "просит защиту",
+        "нарушен порядок"
+      ],
+      "llm_materialization_rules": [
+        "не создавать полную биографию для фонового NPC",
+        "проверить место, сезон, время, статус, профессию и лимиты",
+        "не делать NPC готовым говорить без причины",
+        "не выдавать скрытую мотивацию в player-facing прозу"
+      ],
+      "llm_forbidden_uses": [
+        "не создавать магию, фэнтези, современные профессии, современные деньги и MMO-логику",
+        "не создавать новые постоянные G1-G4 узлы и не расширять каноническую карту в runtime",
+        "не создавать состояние конкретной партии, конкретных неисторических NPC или конкретные предметы партии",
+        "не превращать заявку игрока в причину появления нужного объекта",
+        "не раскрывать игроку скрытые причины, объективную карту, будущие события и истинность слухов"
+      ],
+      "status": "draft",
+      "confidence": "medium",
+      "sources": [
+        "novgorod_social_roles_v1.tsv",
+        "novgorod_occupations_v1.tsv",
+        "novgorod_status_rules_v1.json",
+        "project_doc:npc_generation_profiles"
+      ],
+      "source_note": "Профиль связан с региональными ролями, профессиями, статусными ограничениями и правилами NPC.",
+      "allowed_regional_roles": [
+        "nov_role_monk",
+        "nov_role_igumen"
+      ],
+      "allowed_regional_occupations": [
+        "nov_occ_abbot",
+        "nov_occ_monastery_household_manager"
+      ],
+      "allowed_social_position_archetypes": [
+        "ecclesiastical_official_manager",
+        "ecclesiastical_household_agent",
+        "high_ecclesiastical_ruler"
+      ],
+      "allowed_occupation_archetypes": [
+        "religious_literate",
+        "administration_law"
+      ]
+    }
+  ],
+  "place_population_profiles": [
+    {
+      "place_template_id": "pt_administrative_court",
+      "observed_count_in_map": 6,
+      "common_background_npc_archetypes": [
+        "bg_road_traveler"
+      ],
+      "common_scene_npc_archetypes": [
+        "scene_householder"
+      ],
+      "key_npc_seed_templates_allowed": [],
+      "population_rule": "фоновая масса не раскрывается поштучно; NPC материализуется по функции места и лимитам",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_boat_landing",
+      "observed_count_in_map": 7,
+      "common_background_npc_archetypes": [
+        "bg_road_traveler"
+      ],
+      "common_scene_npc_archetypes": [
+        "scene_ferryman"
+      ],
+      "key_npc_seed_templates_allowed": [],
+      "population_rule": "фоновая масса не раскрывается поштучно; NPC материализуется по функции места и лимитам",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_city_major_center",
+      "observed_count_in_map": 1,
+      "common_background_npc_archetypes": [
+        "bg_road_traveler"
+      ],
+      "common_scene_npc_archetypes": [
+        "scene_householder"
+      ],
+      "key_npc_seed_templates_allowed": [],
+      "population_rule": "фоновая масса не раскрывается поштучно; NPC материализуется по функции места и лимитам",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_crossroads",
+      "observed_count_in_map": 21,
+      "common_background_npc_archetypes": [
+        "bg_road_traveler"
+      ],
+      "common_scene_npc_archetypes": [
+        "scene_householder"
+      ],
+      "key_npc_seed_templates_allowed": [],
+      "population_rule": "фоновая масса не раскрывается поштучно; NPC материализуется по функции места и лимитам",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_estate_center",
+      "observed_count_in_map": 2,
+      "common_background_npc_archetypes": [
+        "bg_road_traveler"
+      ],
+      "common_scene_npc_archetypes": [
+        "scene_householder"
+      ],
+      "key_npc_seed_templates_allowed": [],
+      "population_rule": "фоновая масса не раскрывается поштучно; NPC материализуется по функции места и лимитам",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_ferry_place",
+      "observed_count_in_map": 17,
+      "common_background_npc_archetypes": [
+        "bg_road_traveler"
+      ],
+      "common_scene_npc_archetypes": [
+        "scene_ferryman"
+      ],
+      "key_npc_seed_templates_allowed": [],
+      "population_rule": "фоновая масса не раскрывается поштучно; NPC материализуется по функции места и лимитам",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_fish_weir_site",
+      "observed_count_in_map": 4,
+      "common_background_npc_archetypes": [
+        "bg_road_traveler"
+      ],
+      "common_scene_npc_archetypes": [
+        "scene_householder"
+      ],
+      "key_npc_seed_templates_allowed": [],
+      "population_rule": "фоновая масса не раскрывается поштучно; NPC материализуется по функции места и лимитам",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_fishing_station",
+      "observed_count_in_map": 7,
+      "common_background_npc_archetypes": [
+        "bg_road_traveler"
+      ],
+      "common_scene_npc_archetypes": [
+        "scene_householder"
+      ],
+      "key_npc_seed_templates_allowed": [],
+      "population_rule": "фоновая масса не раскрывается поштучно; NPC материализуется по функции места и лимитам",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_ford_place",
+      "observed_count_in_map": 108,
+      "common_background_npc_archetypes": [
+        "bg_road_traveler"
+      ],
+      "common_scene_npc_archetypes": [
+        "scene_ferryman"
+      ],
+      "key_npc_seed_templates_allowed": [],
+      "population_rule": "фоновая масса не раскрывается поштучно; NPC материализуется по функции места и лимитам",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_forest_work_camp",
+      "observed_count_in_map": 10,
+      "common_background_npc_archetypes": [
+        "bg_road_traveler"
+      ],
+      "common_scene_npc_archetypes": [
+        "scene_householder"
+      ],
+      "key_npc_seed_templates_allowed": [],
+      "population_rule": "фоновая масса не раскрывается поштучно; NPC материализуется по функции места и лимитам",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_hamlet",
+      "observed_count_in_map": 144,
+      "common_background_npc_archetypes": [
+        "bg_yard_family_member",
+        "bg_road_traveler"
+      ],
+      "common_scene_npc_archetypes": [
+        "scene_householder"
+      ],
+      "key_npc_seed_templates_allowed": [
+        "key_local_elder_template"
+      ],
+      "population_rule": "фоновая масса не раскрывается поштучно; NPC материализуется по функции места и лимитам",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_hillfort_gorodishche",
+      "observed_count_in_map": 5,
+      "common_background_npc_archetypes": [
+        "bg_road_traveler"
+      ],
+      "common_scene_npc_archetypes": [
+        "scene_householder"
+      ],
+      "key_npc_seed_templates_allowed": [],
+      "population_rule": "фоновая масса не раскрывается поштучно; NPC материализуется по функции места и лимитам",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_hunting_camp",
+      "observed_count_in_map": 48,
+      "common_background_npc_archetypes": [
+        "bg_road_traveler"
+      ],
+      "common_scene_npc_archetypes": [
+        "scene_householder"
+      ],
+      "key_npc_seed_templates_allowed": [],
+      "population_rule": "фоновая масса не раскрывается поштучно; NPC материализуется по функции места и лимитам",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_isolated_farmstead",
+      "observed_count_in_map": 18,
+      "common_background_npc_archetypes": [
+        "bg_road_traveler"
+      ],
+      "common_scene_npc_archetypes": [
+        "scene_householder"
+      ],
+      "key_npc_seed_templates_allowed": [],
+      "population_rule": "фоновая масса не раскрывается поштучно; NPC материализуется по функции места и лимитам",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_market_place",
+      "observed_count_in_map": 33,
+      "common_background_npc_archetypes": [
+        "bg_road_traveler"
+      ],
+      "common_scene_npc_archetypes": [
+        "scene_market_seller"
+      ],
+      "key_npc_seed_templates_allowed": [
+        "key_merchant_house_template"
+      ],
+      "population_rule": "фоновая масса не раскрывается поштучно; NPC материализуется по функции места и лимитам",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_monastery",
+      "observed_count_in_map": 5,
+      "common_background_npc_archetypes": [
+        "bg_road_traveler"
+      ],
+      "common_scene_npc_archetypes": [
+        "scene_priest"
+      ],
+      "key_npc_seed_templates_allowed": [
+        "key_monastery_official_template"
+      ],
+      "population_rule": "фоновая масса не раскрывается поштучно; NPC материализуется по функции места и лимитам",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_pogost_center",
+      "observed_count_in_map": 21,
+      "common_background_npc_archetypes": [
+        "bg_road_traveler"
+      ],
+      "common_scene_npc_archetypes": [
+        "scene_priest"
+      ],
+      "key_npc_seed_templates_allowed": [
+        "key_local_elder_template"
+      ],
+      "population_rule": "фоновая масса не раскрывается поштучно; NPC материализуется по функции места и лимитам",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_posad_suburb",
+      "observed_count_in_map": 18,
+      "common_background_npc_archetypes": [
+        "bg_road_traveler"
+      ],
+      "common_scene_npc_archetypes": [
+        "scene_householder"
+      ],
+      "key_npc_seed_templates_allowed": [],
+      "population_rule": "фоновая масса не раскрывается поштучно; NPC материализуется по функции места и лимитам",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_river_landing",
+      "observed_count_in_map": 188,
+      "common_background_npc_archetypes": [
+        "bg_road_traveler"
+      ],
+      "common_scene_npc_archetypes": [
+        "scene_ferryman"
+      ],
+      "key_npc_seed_templates_allowed": [],
+      "population_rule": "фоновая масса не раскрывается поштучно; NPC материализуется по функции места и лимитам",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_rural_church_center",
+      "observed_count_in_map": 10,
+      "common_background_npc_archetypes": [
+        "bg_road_traveler"
+      ],
+      "common_scene_npc_archetypes": [
+        "scene_priest"
+      ],
+      "key_npc_seed_templates_allowed": [],
+      "population_rule": "фоновая масса не раскрывается поштучно; NPC материализуется по функции места и лимитам",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_saltworks",
+      "observed_count_in_map": 1,
+      "common_background_npc_archetypes": [
+        "bg_road_traveler"
+      ],
+      "common_scene_npc_archetypes": [
+        "scene_householder"
+      ],
+      "key_npc_seed_templates_allowed": [],
+      "population_rule": "фоновая масса не раскрывается поштучно; NPC материализуется по функции места и лимитам",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_shipyard_boatyard",
+      "observed_count_in_map": 3,
+      "common_background_npc_archetypes": [
+        "bg_road_traveler"
+      ],
+      "common_scene_npc_archetypes": [
+        "scene_householder"
+      ],
+      "key_npc_seed_templates_allowed": [],
+      "population_rule": "фоновая масса не раскрывается поштучно; NPC материализуется по функции места и лимитам",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_town",
+      "observed_count_in_map": 2,
+      "common_background_npc_archetypes": [
+        "bg_road_traveler"
+      ],
+      "common_scene_npc_archetypes": [
+        "scene_householder"
+      ],
+      "key_npc_seed_templates_allowed": [
+        "key_local_elder_template"
+      ],
+      "population_rule": "фоновая масса не раскрывается поштучно; NPC материализуется по функции места и лимитам",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_village",
+      "observed_count_in_map": 198,
+      "common_background_npc_archetypes": [
+        "bg_yard_family_member",
+        "bg_road_traveler"
+      ],
+      "common_scene_npc_archetypes": [
+        "scene_householder"
+      ],
+      "key_npc_seed_templates_allowed": [
+        "key_local_elder_template"
+      ],
+      "population_rule": "фоновая масса не раскрывается поштучно; NPC материализуется по функции места и лимитам",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "place_template_id": "pt_wintering_hut",
+      "observed_count_in_map": 34,
+      "common_background_npc_archetypes": [
+        "bg_road_traveler"
+      ],
+      "common_scene_npc_archetypes": [
+        "scene_householder"
+      ],
+      "key_npc_seed_templates_allowed": [],
+      "population_rule": "фоновая масса не раскрывается поштучно; NPC материализуется по функции места и лимитам",
+      "status": "draft",
+      "confidence": "medium"
+    }
+  ],
+  "occupation_presence_rules": [
+    {
+      "rule_id": "occupation_requires_place_function",
+      "rule": "профессия появляется только там, где есть хозяйственная или социальная функция для её работы",
+      "status": "draft",
+      "confidence": "high"
+    },
+    {
+      "rule_id": "visitor_not_household",
+      "rule": "путник или торговец не становится постоянным жителем места без фиксации party-level факта",
+      "status": "draft",
+      "confidence": "high"
+    },
+    {
+      "rule_id": "crisis_changes_presence",
+      "rule": "голод, война, пожар, болезнь, распутица или приказ власти меняют расписание и присутствие NPC",
+      "status": "draft",
+      "confidence": "medium"
+    }
+  ],
+  "npc_reaction_rules": [
+    {
+      "rule_id": "status_first",
+      "rule": "NPC сначала оценивает статус, причину присутствия, угрозу и свидетелей",
+      "status": "draft",
+      "confidence": "high"
+    },
+    {
+      "rule_id": "work_interrupt_cost",
+      "rule": "занятый NPC может отказаться говорить, потребовать помощи/платы или позвать старшего",
+      "status": "draft",
+      "confidence": "high"
+    }
+  ],
+  "npc_memory_rules": [
+    {
+      "rule_id": "witness_memory",
+      "rule": "NPC, видевший значимое нарушение, может запомнить внешность, вещь, направление или имя, но не скрытую истину",
+      "status": "draft",
+      "confidence": "high"
+    },
+    {
+      "rule_id": "promotion_memory",
+      "rule": "фоновый NPC повышается до сценического/ключевого только при взаимодействии, конфликте, долге или повторной роли",
+      "status": "draft",
+      "confidence": "high"
+    }
+  ],
+  "validation": {
+    "file_is_valid_json": true,
+    "does_not_create_party_state": true,
+    "does_not_create_new_g1_g4_nodes": true,
+    "does_not_precreate_full_g5_map": true,
+    "uses_existing_map_as_context": true,
+    "respects_generation_limits": true,
+    "separates_visible_hidden_and_unmaterialized": true,
+    "distinguishes_fact_from_rumor": true,
+    "requires_human_historical_audit": true,
+    "blocking_issues": [],
+    "open_questions": [],
+    "background_archetype_count": 5,
+    "scene_archetype_count": 5,
+    "key_template_count": 3,
+    "place_population_profile_count": 25,
+    "non_historical_npcs_not_instantiated_as_party_npcs": true
+  }
+}

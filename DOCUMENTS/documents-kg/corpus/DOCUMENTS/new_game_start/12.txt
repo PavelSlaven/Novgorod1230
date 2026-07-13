@@ -1,0 +1,1567 @@
+# Этап 12. Аудит персонажа игрока
+
+## 1. Назначение этапа
+
+Аудит персонажа игрока — это gate-этап после генерации `player_character_dossier` и до материализации G5-сцены.
+
+Его задача — проверить, что персонаж:
+
+* исторически допустим;
+* социально допустим;
+* соответствует выбранному региону;
+* соответствует выбранному году, сезону и времени суток;
+* совместим со стартовым местом;
+* использует только разрешённые social roles;
+* использует только разрешённые occupations;
+* не имеет невозможного статуса;
+* не имеет невозможных предметов;
+* не имеет предметов вне разрешённых item profiles;
+* не имеет имущества без property/access model;
+* не знает невозможного;
+* не содержит скрыто созданных NPC, сцены, G5 или событий;
+* может быть безопасно передан в следующие этапы.
+
+Короткая формула:
+
+```text
+player_character_dossier
++ normalized_request
++ historical_frame
++ selected_start_node
++ start_place_audit
++ regional_context_package
++ npc_candidate_set
++ item_profile_candidate_set
+→ player_character_audit
+```
+
+Этот этап не улучшает персонажа художественно. Он проверяет, можно ли допустить персонажа к стартовой G5-материализации.
+
+## 2. Главное правило этапа
+
+Аудит не исправляет персонажа молча.
+
+Если персонаж невалиден, этап возвращает:
+
+```text
+pass=false
++ список ошибок
++ evidence
++ repair_route
+```
+
+Запрещено:
+
+* процедурно менять статус персонажа;
+* процедурно менять биографию;
+* процедурно убирать или добавлять предметы;
+* процедурно менять навыки;
+* процедурно менять здоровье;
+* процедурно переписывать цель;
+* подменять невозможную заявку “похожим” персонажем без LLM repair;
+* пропускать персонажа к G5, если есть hard block.
+
+Код проверяет структуру и ссылки.
+LLM проверяет смысловую совместимость.
+Repair делает LLM отдельным этапом по конкретным ошибкам.
+
+## 3. Место этапа в pipeline
+
+```text
+1. Заявка игрока
+2. Нормализация заявки
+3. Выбор исторической рамки
+4. Загрузка регионального контекста
+5. Подбор стартовых G1–G4 кандидатов
+6. Подбор place templates
+7. Подбор NPC-кандидатов
+8. Подбор предметных профилей
+9. Выбор стартового узла
+10. Аудит выбора стартового места
+11. Генерация персонажа игрока
+12. Аудит персонажа
+13. Материализация стартовой G5-сцены
+```
+
+Этап 12 должен быть обязательным. Без него нельзя переходить к G5, visible context или narrator.
+
+## 4. Вход этапа
+
+```json
+{
+  "version": 1,
+  "schema": "player_character_audit_input",
+  "request_id": "string",
+
+  "normalized_request": {
+    "version": 1,
+    "schema": "new_game_normalized_request"
+  },
+
+  "historical_frame": {
+    "version": 1,
+    "schema": "historical_frame",
+    "region": {
+      "region_id": "string"
+    },
+    "year": {
+      "value": 0
+    },
+    "calendar": {
+      "season": "spring | summer | autumn | winter"
+    },
+    "clock": {
+      "day": 1,
+      "hour": 0,
+      "minute": 0,
+      "time_of_day": "morning | day | evening | night | deep_night",
+      "light_profile": "dark | dim | daylight | twilight"
+    }
+  },
+
+  "regional_context_package": {
+    "version": 1,
+    "schema": "regional_context_package",
+    "social_context": {},
+    "occupation_context": {},
+    "knowledge_context": {},
+    "item_context": {},
+    "container_context": {},
+    "property_context": {}
+  },
+
+  "selected_start_node": {
+    "version": 1,
+    "schema": "selected_start_node"
+  },
+
+  "start_place_audit": {
+    "version": 1,
+    "schema": "start_place_audit",
+    "pass": true
+  },
+
+  "npc_candidate_set": {
+    "version": 1,
+    "schema": "npc_candidate_set"
+  },
+
+  "item_profile_candidate_set": {
+    "version": 1,
+    "schema": "item_profile_candidate_set"
+  },
+
+  "player_character_dossier": {
+    "version": 1,
+    "schema": "player_character_dossier"
+  },
+
+  "audit_policy": {
+    "require_historical_compatibility": true,
+    "require_region_compatibility": true,
+    "require_start_place_compatibility": true,
+    "require_social_role_from_candidate_set": true,
+    "require_occupation_from_candidate_set": true,
+    "allow_null_occupation_if_explained": true,
+    "require_inventory_from_item_profile_candidates": true,
+    "require_property_rules_for_inventory": true,
+    "require_weight_and_access_for_inventory": true,
+    "require_character_knowledge_limits": true,
+    "require_reason_here": true,
+    "require_immediate_need": true,
+    "require_attributes_balance": true,
+    "require_skill_basis": true,
+    "require_sources": true,
+    "reject_downstream_entities": true
+  }
+}
+```
+
+## 5. Выход этапа
+
+```json
+{
+  "version": 1,
+  "schema": "player_character_audit",
+  "request_id": "string",
+
+  "pass": true,
+
+  "checks": {
+    "schema_and_structure": {},
+    "historical_compatibility": {},
+    "region_compatibility": {},
+    "start_place_compatibility": {},
+    "social_status": {},
+    "occupation": {},
+    "origin": {},
+    "body_state": {},
+    "attributes": {},
+    "skills": {},
+    "inventory": {},
+    "property_and_access": {},
+    "knowledge": {},
+    "relations": {},
+    "goals": {},
+    "source_trace": {},
+    "downstream_entity_leak_check": {}
+  },
+
+  "concerns": [],
+  "evidence": [],
+
+  "repair_route": null,
+
+  "commit_permission": {
+    "can_shape_game_profile": true,
+    "can_continue_to_g5_materialization": true,
+    "can_write_player_character_after_commit_gate": true
+  }
+}
+```
+
+Если аудит провален:
+
+```json
+{
+  "version": 1,
+  "schema": "player_character_audit",
+  "request_id": "string",
+  "pass": false,
+  "checks": {},
+  "concerns": [
+    {
+      "code": "PLAYER_AUDIT_SOCIAL_ROLE_NOT_ALLOWED",
+      "severity": "hard_block",
+      "message": "Character social_role_id is not present in allowed regional social roles."
+    }
+  ],
+  "evidence": [
+    "character.social_status.social_role_id=social_role_x",
+    "allowed_social_role_ids does not contain social_role_x"
+  ],
+  "repair_route": {
+    "return_to_stage": "player_character_semantic_repair",
+    "repair_kind": "replace_invalid_social_role_from_allowed_set"
+  },
+  "commit_permission": {
+    "can_shape_game_profile": false,
+    "can_continue_to_g5_materialization": false,
+    "can_write_player_character_after_commit_gate": false
+  }
+}
+```
+
+## 6. Общий принцип аудита
+
+Аудит делится на два слоя.
+
+Первый слой — code precheck. Он проверяет:
+
+```text
+JSON schema
+required fields
+enum
+range
+ID existence
+candidate set membership
+status values
+source IDs
+absence of forbidden downstream fields
+```
+
+Второй слой — semantic audit. Он проверяет:
+
+```text
+историчность
+социальную правдоподобность
+связь статуса, занятия, вещей и стартового места
+знания персонажа
+причины, цели, ограничения и риски
+```
+
+Если code precheck уже обнаружил hard block, semantic LLM audit можно не запускать. Ошибка сразу уходит в repair route.
+
+## 7. Проверка историчности
+
+Проверяется, что персонаж не содержит:
+
+* современных профессий;
+* современных социальных категорий;
+* современной психологии как факта мира;
+* современных правовых понятий;
+* современных предметов;
+* современных денег, документов, оружия или одежды;
+* будущих знаний;
+* терминов и мотиваций, не адаптированных к эпохе.
+
+Проверка:
+
+```text
+character.origin
+character.social_status
+character.occupation
+character.inventory
+character.knowledge
+character.goals
+character.relations
+```
+
+Ошибка:
+
+```text
+PLAYER_AUDIT_HISTORICAL_ANACHRONISM
+```
+
+Пример evidence:
+
+```text
+inventory contains object kind not present in item_profile_candidate_set
+goal uses modern institutional concept not present in regional_context
+occupation_id is not in regional occupations
+```
+
+## 8. Проверка региона
+
+Персонаж должен быть совместим с выбранным регионом.
+
+Проверяются:
+
+```text
+social_role_id
+occupation_id
+name pool
+home region
+language/cultural notes
+known places
+known routes
+known authorities
+inventory profiles
+property rules
+```
+
+Если персонаж является чужаком, это допустимо, но должно быть явно оформлено:
+
+```json
+{
+  "local_belonging": "outsider",
+  "why_outsider_is_here": "string",
+  "social_risks": []
+}
+```
+
+Ошибка:
+
+```text
+PLAYER_AUDIT_REGION_MISMATCH
+```
+
+## 9. Проверка стартового места
+
+Персонаж должен иметь причину находиться в выбранном стартовом месте.
+
+Проверяются:
+
+```text
+start_place_connection.selected_candidate_id
+start_place_connection.selected_node_id
+start_place_connection.selected_place_template_id
+reason_here
+right_to_be_here
+arrival_context
+what_character_knows_about_place
+why_cannot_ignore_situation
+```
+
+Требования:
+
+1. `selected_candidate_id` совпадает с `selected_start_node`.
+2. `selected_node_id` совпадает с `selected_start_node`.
+3. `selected_place_template_id` совпадает с `selected_start_node`.
+4. `reason_here` не пустой.
+5. `right_to_be_here` совместим с social status.
+6. `arrival_context` совместим с clock/time_of_day.
+7. персонаж не должен знать о месте больше, чем допускает его роль/опыт.
+
+Ошибки:
+
+```text
+PLAYER_AUDIT_START_PLACE_ID_MISMATCH
+PLAYER_AUDIT_NO_REASON_HERE
+PLAYER_AUDIT_RIGHT_TO_BE_HERE_CONFLICT
+PLAYER_AUDIT_CLOCK_START_REASON_CONFLICT
+```
+
+## 10. Проверка социального статуса
+
+Социальный статус должен быть выбран из разрешённых `social roles`.
+
+Проверка:
+
+```text
+character.social_status.social_role_id ∈ regional_context_package.social_context.allowed_social_roles
+```
+
+Также проверяются:
+
+```text
+freedom_status
+wealth_band
+local_belonging
+rights
+obligations
+protector_or_guarantor
+authority_over_character
+who_can_punish_character
+social_risks
+```
+
+Статус должен быть совместим:
+
+* с заявкой игрока;
+* с выбранным местом;
+* с занятием;
+* с инвентарём;
+* с правом быть в месте;
+* с правом носить вещи;
+* с уровнем богатства;
+* с отношениями и долгами.
+
+Ошибки:
+
+```text
+PLAYER_AUDIT_SOCIAL_ROLE_NOT_ALLOWED
+PLAYER_AUDIT_SOCIAL_STATUS_PLACE_CONFLICT
+PLAYER_AUDIT_SOCIAL_STATUS_WEALTH_CONFLICT
+PLAYER_AUDIT_SOCIAL_STATUS_INVENTORY_CONFLICT
+PLAYER_AUDIT_SOCIAL_STATUS_PLAYER_REQUEST_CONFLICT
+```
+
+## 11. Проверка занятия
+
+Занятие должно быть выбрано из `occupation_context`.
+
+Проверка:
+
+```text
+character.occupation.occupation_id ∈ regional_context_package.occupation_context.allowed_occupations
+```
+
+Если `occupation_id=null`, должны быть заполнены:
+
+```text
+occupation_label
+occupation_group
+why_no_stable_occupation
+```
+
+Занятие проверяется против:
+
+* social role;
+* стартового места;
+* навыков;
+* инвентаря;
+* знаний;
+* seasonal pattern;
+* body state;
+* immediate need.
+
+Ошибки:
+
+```text
+PLAYER_AUDIT_OCCUPATION_NOT_ALLOWED
+PLAYER_AUDIT_OCCUPATION_SOCIAL_ROLE_CONFLICT
+PLAYER_AUDIT_OCCUPATION_PLACE_CONFLICT
+PLAYER_AUDIT_OCCUPATION_SKILL_CONFLICT
+PLAYER_AUDIT_NULL_OCCUPATION_NOT_EXPLAINED
+```
+
+## 12. Проверка происхождения
+
+Происхождение должно объяснять:
+
+* статус;
+* занятие;
+* навыки;
+* знания;
+* стартовую причину;
+* имущество;
+* обязательства;
+* страхи;
+* ограничения.
+
+Проверяются:
+
+```text
+birth_or_home_region
+home_status
+family_status
+cultural_environment
+usual_life
+how_left_home_or_usual_place
+why_origin_supports_current_status
+unresolved_origin_unknowns
+```
+
+Ошибки:
+
+```text
+PLAYER_AUDIT_ORIGIN_STATUS_CONFLICT
+PLAYER_AUDIT_ORIGIN_SKILL_CONFLICT
+PLAYER_AUDIT_ORIGIN_INVENTORY_CONFLICT
+PLAYER_AUDIT_ORIGIN_START_PLACE_CONFLICT
+PLAYER_AUDIT_ORIGIN_TOO_EMPTY
+```
+
+Происхождение не обязано быть подробным романом, но должно быть причинным.
+
+## 13. Проверка тела и состояния
+
+Проверяются:
+
+```text
+health
+satiety
+vigor
+active_conditions
+condition_causes
+mechanical_state_modifiers
+body_prose
+clothing_summary
+```
+
+Правила:
+
+```text
+health ∈ 0..100
+satiety ∈ 0..100
+vigor ∈ 0..100
+active condition требует cause
+state below 50 требует cause
+state 0 означает критическое состояние
+clothing_summary должен быть совместим с season, social status and inventory
+```
+
+Ошибки:
+
+```text
+PLAYER_AUDIT_BODY_STATE_OUT_OF_RANGE
+PLAYER_AUDIT_BODY_STATE_WITHOUT_CAUSE
+PLAYER_AUDIT_CONDITION_WITHOUT_EFFECT
+PLAYER_AUDIT_CLOTHING_SEASON_CONFLICT
+PLAYER_AUDIT_BODY_PROSE_NUMERIC_DUPLICATION
+```
+
+## 14. Проверка характеристик
+
+Проверяются:
+
+```text
+strength
+agility
+endurance
+reason
+attention
+influence
+attribute_array_used
+attribute_rationale
+```
+
+Рекомендуемое правило обычного старта:
+
+```text
+обычный массив: 14, 13, 12, 10, 9, 8
+диапазон: 3–18
+обычные люди: 8–13
+15+ требует сильного основания
+16+ только при особом основании
+17–18 не выдаются обычному старту
+```
+
+Hard checks:
+
+```text
+all attributes ∈ 3..18
+не больше двух характеристик 14+
+нет 17–18 без explicit policy
+high attribute has rationale
+character not universally strong
+```
+
+Ошибки:
+
+```text
+PLAYER_AUDIT_ATTRIBUTE_OUT_OF_RANGE
+PLAYER_AUDIT_ATTRIBUTE_ARRAY_MISMATCH
+PLAYER_AUDIT_TOO_MANY_HIGH_ATTRIBUTES
+PLAYER_AUDIT_HIGH_ATTRIBUTE_WITHOUT_BASIS
+PLAYER_AUDIT_OVERPOWERED_CHARACTER
+```
+
+## 15. Проверка навыков
+
+Проверяются все навыки:
+
+```text
+athletics
+stealth
+melee
+ranged
+craft
+household
+survival
+riding
+healing
+observation
+communication
+custom_and_law
+```
+
+Правила:
+
+```text
+skill bonus ∈ 0..4
++0 — нет опыта
++1 — знаком
++2 — умелый
++3 — опытный
++4 — мастер
+не больше одного +4
++4 требует сильного biography basis
+боевые навыки выше +1 требуют военного/охотничьего/силового основания
+каждый навык выше 0 должен иметь basis
+```
+
+Ошибки:
+
+```text
+PLAYER_AUDIT_SKILL_OUT_OF_RANGE
+PLAYER_AUDIT_SKILL_WITHOUT_BASIS
+PLAYER_AUDIT_TOO_MANY_MASTER_SKILLS
+PLAYER_AUDIT_COMBAT_SKILL_WITHOUT_BASIS
+PLAYER_AUDIT_SKILL_ORIGIN_CONFLICT
+```
+
+## 16. Проверка знаний
+
+Знания персонажа проверяются против:
+
+```text
+origin
+social status
+occupation
+home region
+selected_start_node
+knowledge_context
+route_knowledge_rules
+common_knowledge
+rumors
+```
+
+Запрещено:
+
+* знание скрытого состояния мира;
+* знание будущих событий;
+* знание полных карт;
+* знание точных route IDs без основания;
+* знание NPC, которые ещё не материализованы или не связаны с кандидатом;
+* знание содержимого закрытых контейнеров;
+* знание авторской информации из `hidden_state`.
+
+Ошибки:
+
+```text
+PLAYER_AUDIT_PLAYER_KNOWLEDGE_LEAK
+PLAYER_AUDIT_FUTURE_KNOWLEDGE_LEAK
+PLAYER_AUDIT_HIDDEN_STATE_KNOWLEDGE_LEAK
+PLAYER_AUDIT_ROUTE_KNOWLEDGE_WITHOUT_BASIS
+PLAYER_AUDIT_KNOWLEDGE_PLACE_CONFLICT
+```
+
+## 17. Проверка инвентаря
+
+Инвентарь — только то, что персонаж физически несёт при себе.
+
+Для каждого предмета проверяются:
+
+```text
+character_item_id
+item_profile_candidate_id
+item_profile_id
+title
+item_kind
+count
+weight
+size_band
+condition
+carried_where
+quick_access
+owner_model
+holder
+use
+movement_hindrance
+hands_occupied
+social_or_legal_risk
+property_rule_candidate_id
+why_character_has_it
+```
+
+Hard checks:
+
+```text
+item_profile_candidate_id exists in item_profile_candidate_set
+item_profile_id matches candidate
+property_rule_candidate_id exists
+weight is present
+condition is present
+carried_where is present
+quick_access is present
+owner_model is present
+holder = player_character or explained
+social_or_legal_risk is present
+rare/restricted item has causal basis
+```
+
+Ошибки:
+
+```text
+PLAYER_AUDIT_INVENTORY_ITEM_NOT_ALLOWED
+PLAYER_AUDIT_ITEM_PROFILE_MISMATCH
+PLAYER_AUDIT_ITEM_PROPERTY_RULE_MISSING
+PLAYER_AUDIT_ITEM_WEIGHT_MISSING
+PLAYER_AUDIT_ITEM_CONDITION_MISSING
+PLAYER_AUDIT_ITEM_ACCESS_MISSING
+PLAYER_AUDIT_ITEM_OWNER_MISSING
+PLAYER_AUDIT_RARE_ITEM_WITHOUT_CAUSAL_BASIS
+PLAYER_AUDIT_INVENTORY_TOO_RICH_FOR_STATUS
+PLAYER_AUDIT_INVENTORY_SEASON_CONFLICT
+```
+
+## 18. Проверка имущества вне инвентаря
+
+Имущество вне инвентаря не должно быть выдано как доступный ресурс.
+
+Проверяются:
+
+```text
+property_not_carried
+borrowed_or_entrusted_items
+disputed_items
+accessible_resources
+resources_not_currently_accessible
+obligations_to_return
+property_risks
+```
+
+Разделение:
+
+```text
+inventory = physically carried
+property_not_carried = belongs/linked but not here
+accessible_resources = can use under conditions
+resources_not_currently_accessible = cannot use now
+```
+
+Ошибки:
+
+```text
+PLAYER_AUDIT_INVENTORY_PROPERTY_CONFUSION
+PLAYER_AUDIT_REMOTE_PROPERTY_TREATED_AS_AVAILABLE
+PLAYER_AUDIT_ACCESSIBLE_RESOURCE_WITHOUT_RULE
+PLAYER_AUDIT_DISPUTED_ITEM_WITHOUT_RISK
+```
+
+## 19. Проверка веса и рук
+
+Проверяются:
+
+```text
+inventory.total_weight
+inventory.load_category
+inventory.occupied_hands
+load_effects
+hands_occupied per item
+movement_hindrance
+```
+
+Правила:
+
+* total_weight должен соответствовать сумме carried_items;
+* occupied_hands должен соответствовать предметам в руках;
+* тяжёлый груз должен иметь effects;
+* невозможно нести bulky/heavy items без последствий;
+* quick access должен быть совместим с carried_where.
+
+Ошибки:
+
+```text
+PLAYER_AUDIT_LOAD_NOT_CALCULATED
+PLAYER_AUDIT_LOAD_CATEGORY_MISMATCH
+PLAYER_AUDIT_HANDS_OCCUPIED_MISMATCH
+PLAYER_AUDIT_BULKY_ITEM_WITHOUT_HINDRANCE
+PLAYER_AUDIT_QUICK_ACCESS_CONFLICT
+```
+
+## 20. Проверка целей
+
+У персонажа должна быть причина действовать.
+
+Проверяются:
+
+```text
+immediate_need
+long_term_desire
+fear
+obligation
+reason_to_act_now
+consequence_of_inaction
+goal_visibility_to_player
+```
+
+Ошибки:
+
+```text
+PLAYER_AUDIT_NO_IMMEDIATE_NEED
+PLAYER_AUDIT_NO_REASON_TO_ACT_NOW
+PLAYER_AUDIT_NO_CONSEQUENCE_OF_INACTION
+PLAYER_AUDIT_GOAL_NOT_COMPATIBLE_WITH_START_PLACE
+PLAYER_AUDIT_GOAL_RAILROADS_PLAYER
+```
+
+Цель должна давать давление, но не должна превращать старт в жёсткую сюжетную рельсу.
+
+## 21. Проверка отношений
+
+Связи проверяются против `npc_candidate_set`.
+
+Допустимые варианты:
+
+1. связь с `npc_candidate_id`;
+2. abstract background relation без конкретного NPC;
+3. key seed relation, если есть valid key seed.
+
+Запрещено:
+
+* создавать конкретного NPC вне candidate set;
+* давать NPC имя без name pool/materialization stage;
+* создавать current action NPC;
+* создавать диалог;
+* создавать сцену встречи.
+
+Ошибки:
+
+```text
+PLAYER_AUDIT_RELATION_NPC_CANDIDATE_NOT_FOUND
+PLAYER_AUDIT_CREATED_NPC_OUTSIDE_CANDIDATES
+PLAYER_AUDIT_CREATED_NPC_NAME_TOO_EARLY
+PLAYER_AUDIT_CREATED_NPC_ACTION_TOO_EARLY
+PLAYER_AUDIT_RELATION_TOO_CONCRETE_FOR_STAGE
+```
+
+## 22. Проверка запрета downstream-сущностей
+
+В `player_character_dossier` не должно быть:
+
+```text
+visible_scene
+intro_prose
+g5_anchor_id
+minilocation_id
+scene_anchor
+scene_graph
+weather_event
+npc_id outside candidates
+concrete NPC action
+container_contents not tied to inventory
+hidden_world_event
+```
+
+Ошибка:
+
+```text
+PLAYER_AUDIT_CREATED_DOWNSTREAM_ENTITY
+```
+
+## 23. Code precheck
+
+Перед LLM-аудитом код формирует:
+
+```json
+{
+  "version": 1,
+  "schema": "player_character_code_precheck",
+  "pass": true,
+  "checks": {
+    "schema_valid": true,
+    "required_fields_present": true,
+    "social_role_id_allowed": true,
+    "occupation_id_allowed": true,
+    "item_profile_ids_allowed": true,
+    "property_rule_ids_allowed": true,
+    "state_ranges_valid": true,
+    "attributes_valid": true,
+    "skills_valid": true,
+    "source_trace_present": true,
+    "no_downstream_entities": true
+  },
+  "concerns": [],
+  "evidence": []
+}
+```
+
+Если `code_precheck.pass=false`, semantic audit можно не запускать. Результат направляется в repair.
+
+## 24. Работа LLM на этапе
+
+LLM на этом этапе обязательна для semantic audit, потому что историчность, социальная допустимость, причинность биографии и связь вещей со статусом не сводятся только к FK-проверкам.
+
+LLM-режимы:
+
+1. `PlayerCharacterSemanticAuditor` — основной смысловой аудит.
+2. `PlayerCharacterAuditRouter` — выбор маршрута repair при fail.
+3. `PlayerCharacterAuditFormatRepairer` — исправление JSON-формата аудита.
+
+LLM не имеет права:
+
+* переписывать персонажа;
+* исправлять статус;
+* удалять предметы;
+* добавлять причины;
+* менять навыки;
+* менять стартовое место;
+* создавать альтернативного персонажа.
+
+LLM только проверяет и возвращает audit.
+
+## 25. LLM-параметры
+
+### 25.1. `PlayerCharacterSemanticAuditor`
+
+Назначение: глубокий смысловой аудит персонажа.
+
+```json
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 8000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 80000,
+    "hard_input_limit_tokens": 200000,
+    "reserve_output_tokens": 8000
+  }
+}
+```
+
+Использовать `deepseek-v4-pro`, потому что аудит персонажа требует проверки причинности, социального статуса, инвентаря, прав владения, знаний и связи со стартовым местом.
+
+### 25.2. `PlayerCharacterAuditRouter`
+
+Назначение: выбрать корректный этап отката.
+
+```json
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 4000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 50000,
+    "hard_input_limit_tokens": 140000,
+    "reserve_output_tokens": 4000
+  }
+}
+```
+
+Router не исправляет персонажа. Он только выбирает `return_to_stage`.
+
+### 25.3. `PlayerCharacterAuditFormatRepairer`
+
+Назначение: исправить только JSON-формат аудита.
+
+```json
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-flash",
+  "thinking": {
+    "type": "disabled"
+  },
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "max_tokens": 3500,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 30000,
+    "hard_input_limit_tokens": 90000,
+    "reserve_output_tokens": 3500
+  }
+}
+```
+
+## 26. Prompt: PlayerCharacterSemanticAuditor
+
+```md
+# Роль
+
+Ты PlayerCharacterSemanticAuditor для исторической текстовой RPG.
+
+# Задача
+
+Проверь player_character_dossier на историчность, социальную допустимость, региональную совместимость, валидность инвентаря, знаний, статуса, навыков и стартовой причины.
+
+# Главное правило
+
+Ты не исправляешь персонажа.
+Ты не создаёшь нового персонажа.
+Ты не удаляешь и не добавляешь предметы.
+Ты не меняешь статус, профессию, навыки, цели или биографию.
+Ты только аудируешь.
+
+# Используй только входные данные
+
+- normalized_request
+- historical_frame
+- regional_context_package
+- selected_start_node
+- start_place_audit
+- npc_candidate_set
+- item_profile_candidate_set
+- player_character_dossier
+- code_precheck
+
+Если факта нет во входе, не добавляй его.
+
+# Проверить
+
+1. Персонаж исторически совместим с выбранной эпохой.
+2. Персонаж совместим с selected region.
+3. Social role выбран из allowed social roles.
+4. Occupation выбран из allowed occupations или null обоснован.
+5. Status совместим с occupation, place, inventory and player request.
+6. Origin объясняет status, occupation, skills, inventory and reason_here.
+7. Character has reason to be at selected_start_node.
+8. Character has immediate_need and consequence_of_inaction.
+9. Health/satiety/vigor are 0..100 and low values have causes.
+10. Attributes follow balance rules.
+11. Skills are 0..4 and have basis.
+12. Combat skills have appropriate basis.
+13. Inventory uses only item_profile_candidate_set.
+14. Inventory items have owner/holder/access/weight/condition/risk.
+15. Property_not_carried is not treated as inventory.
+16. Rare or restricted items have causal basis.
+17. Knowledge does not leak hidden/future/player-only facts.
+18. Relations do not create NPC outside npc_candidate_set.
+19. No visible_scene, intro_prose, G5, minilocation or scene anchor exists.
+20. source_trace is sufficient.
+
+# Формат
+
+Верни только json.
+
+Единственный допустимый формат:
+
+{
+  "version": 1,
+  "schema": "player_character_audit",
+  "request_id": "...",
+  "pass": true,
+  "checks": {},
+  "concerns": [],
+  "evidence": [],
+  "repair_route": null,
+  "commit_permission": {
+    "can_shape_game_profile": true,
+    "can_continue_to_g5_materialization": true,
+    "can_write_player_character_after_commit_gate": true
+  }
+}
+
+Если pass=false:
+- concerns не должен быть пустым;
+- evidence не должен быть пустым;
+- repair_route должен быть заполнен;
+- все commit_permission должны быть false.
+
+Если pass=true:
+- evidence не должен быть пустым.
+```
+
+## 27. Prompt: PlayerCharacterAuditRouter
+
+```md
+# Роль
+
+Ты PlayerCharacterAuditRouter.
+
+# Задача
+
+По failed player_character_audit выбери правильный этап отката pipeline.
+
+# Главное правило
+
+Ты не исправляешь персонажа.
+Ты не создаёшь нового персонажа.
+Ты только выбираешь return_to_stage и repair_kind.
+
+# Возможные return_to_stage
+
+- player_character_format_repair
+- player_character_semantic_repair
+- player_character_generator
+- item_profile_retriever
+- npc_candidate_retriever
+- start_place_audit
+- start_node_selector
+- regional_context_loader
+- historical_frame_selector
+- normalized_request_recheck
+- blocked
+
+# Правила маршрутизации
+
+Если проблема только в JSON-формате:
+return_to_stage = player_character_format_repair
+
+Если social_role/occupation неверны, но candidate sets достаточны:
+return_to_stage = player_character_semantic_repair
+
+Если инвентарь использует item вне candidate set:
+return_to_stage = player_character_semantic_repair
+
+Если item candidate set неполный:
+return_to_stage = item_profile_retriever
+
+Если отношения требуют NPC, которых нет:
+return_to_stage = npc_candidate_retriever
+
+Если персонаж несовместим со стартовым местом:
+return_to_stage = player_character_semantic_repair или start_place_audit, в зависимости от evidence
+
+Если selected_start_node сам делает допустимого персонажа невозможным:
+return_to_stage = start_node_selector
+
+Если региональный контекст неполный:
+return_to_stage = regional_context_loader
+
+Если историческая рамка конфликтует с заявкой:
+return_to_stage = historical_frame_selector
+
+Если заявка игрока невозможна без нарушения hard constraints:
+return_to_stage = normalized_request_recheck или blocked
+
+# Формат
+
+Верни только json:
+
+{
+  "version": 1,
+  "schema": "player_character_audit_route",
+  "return_to_stage": "...",
+  "repair_kind": "...",
+  "reason": "...",
+  "evidence": []
+}
+```
+
+## 28. Prompt: PlayerCharacterAuditFormatRepairer
+
+```md
+# Роль
+
+Ты PlayerCharacterAuditFormatRepairer.
+
+# Задача
+
+Исправь только формат JSON player_character_audit.
+
+# Главное правило
+
+Не меняй смысл.
+Не меняй pass/fail без основания.
+Не исправляй персонажа.
+Не добавляй новых фактов.
+Не создавай source_id.
+
+# Разрешено
+
+- убрать markdown;
+- привести schema к "player_character_audit";
+- привести version к 1;
+- добавить отсутствующие служебные поля как null/[];
+- перенести свободный текст в concerns/evidence;
+- удалить запрещённые поля.
+
+# Запрещено
+
+- менять player_character_dossier;
+- менять social_role_id;
+- менять occupation_id;
+- менять inventory;
+- менять attributes;
+- менять skills;
+- менять selected_start_node;
+- создавать repair_route без evidence.
+
+# Формат
+
+Верни только json.
+```
+
+## 29. Validation rules
+
+Код обязан проверить `player_character_audit`:
+
+1. `schema === "player_character_audit"`.
+2. `version === 1`.
+3. `pass` является boolean.
+4. `checks` присутствует.
+5. `evidence` не пустой.
+6. Если `pass=false`, `concerns` не пустой.
+7. Если `pass=false`, `repair_route` заполнен.
+8. Если `pass=true`, `commit_permission.can_shape_game_profile=true`.
+9. Если `pass=false`, все `commit_permission` false.
+10. Все concern codes входят в enum.
+11. Все severity входят в enum.
+12. Audit не содержит изменённого персонажа.
+13. Audit не содержит нового инвентаря.
+14. Audit не содержит новой биографии.
+15. Audit не содержит visible_scene.
+16. Audit не содержит intro_prose.
+17. Audit не содержит G5.
+18. Audit не содержит новых NPC.
+19. `repair_route.return_to_stage` входит в допустимый enum.
+
+Код также отдельно валидирует сам `player_character_dossier`:
+
+20. Social role ID exists.
+21. Occupation ID exists or null explained.
+22. Item profile candidate IDs exist.
+23. Property rule candidate IDs exist.
+24. NPC candidate refs exist.
+25. Health/satiety/vigor are 0..100.
+26. Attributes are 3..18.
+27. Skills are 0..4.
+28. Total weight is numeric.
+29. Source trace is present if required.
+30. No forbidden downstream fields are present.
+
+## 30. Error codes
+
+```text
+PLAYER_AUDIT_INVALID_JSON
+PLAYER_AUDIT_SCHEMA_MISMATCH
+PLAYER_AUDIT_EMPTY_EVIDENCE
+PLAYER_AUDIT_HISTORICAL_ANACHRONISM
+PLAYER_AUDIT_REGION_MISMATCH
+PLAYER_AUDIT_START_PLACE_ID_MISMATCH
+PLAYER_AUDIT_NO_REASON_HERE
+PLAYER_AUDIT_RIGHT_TO_BE_HERE_CONFLICT
+PLAYER_AUDIT_CLOCK_START_REASON_CONFLICT
+PLAYER_AUDIT_SOCIAL_ROLE_NOT_ALLOWED
+PLAYER_AUDIT_SOCIAL_STATUS_PLACE_CONFLICT
+PLAYER_AUDIT_SOCIAL_STATUS_WEALTH_CONFLICT
+PLAYER_AUDIT_SOCIAL_STATUS_INVENTORY_CONFLICT
+PLAYER_AUDIT_SOCIAL_STATUS_PLAYER_REQUEST_CONFLICT
+PLAYER_AUDIT_OCCUPATION_NOT_ALLOWED
+PLAYER_AUDIT_OCCUPATION_SOCIAL_ROLE_CONFLICT
+PLAYER_AUDIT_OCCUPATION_PLACE_CONFLICT
+PLAYER_AUDIT_OCCUPATION_SKILL_CONFLICT
+PLAYER_AUDIT_NULL_OCCUPATION_NOT_EXPLAINED
+PLAYER_AUDIT_ORIGIN_STATUS_CONFLICT
+PLAYER_AUDIT_ORIGIN_SKILL_CONFLICT
+PLAYER_AUDIT_ORIGIN_INVENTORY_CONFLICT
+PLAYER_AUDIT_ORIGIN_START_PLACE_CONFLICT
+PLAYER_AUDIT_ORIGIN_TOO_EMPTY
+PLAYER_AUDIT_BODY_STATE_OUT_OF_RANGE
+PLAYER_AUDIT_BODY_STATE_WITHOUT_CAUSE
+PLAYER_AUDIT_CONDITION_WITHOUT_EFFECT
+PLAYER_AUDIT_CLOTHING_SEASON_CONFLICT
+PLAYER_AUDIT_ATTRIBUTE_OUT_OF_RANGE
+PLAYER_AUDIT_ATTRIBUTE_ARRAY_MISMATCH
+PLAYER_AUDIT_TOO_MANY_HIGH_ATTRIBUTES
+PLAYER_AUDIT_HIGH_ATTRIBUTE_WITHOUT_BASIS
+PLAYER_AUDIT_OVERPOWERED_CHARACTER
+PLAYER_AUDIT_SKILL_OUT_OF_RANGE
+PLAYER_AUDIT_SKILL_WITHOUT_BASIS
+PLAYER_AUDIT_TOO_MANY_MASTER_SKILLS
+PLAYER_AUDIT_COMBAT_SKILL_WITHOUT_BASIS
+PLAYER_AUDIT_PLAYER_KNOWLEDGE_LEAK
+PLAYER_AUDIT_FUTURE_KNOWLEDGE_LEAK
+PLAYER_AUDIT_HIDDEN_STATE_KNOWLEDGE_LEAK
+PLAYER_AUDIT_ROUTE_KNOWLEDGE_WITHOUT_BASIS
+PLAYER_AUDIT_INVENTORY_ITEM_NOT_ALLOWED
+PLAYER_AUDIT_ITEM_PROFILE_MISMATCH
+PLAYER_AUDIT_ITEM_PROPERTY_RULE_MISSING
+PLAYER_AUDIT_ITEM_WEIGHT_MISSING
+PLAYER_AUDIT_ITEM_CONDITION_MISSING
+PLAYER_AUDIT_ITEM_ACCESS_MISSING
+PLAYER_AUDIT_ITEM_OWNER_MISSING
+PLAYER_AUDIT_RARE_ITEM_WITHOUT_CAUSAL_BASIS
+PLAYER_AUDIT_INVENTORY_TOO_RICH_FOR_STATUS
+PLAYER_AUDIT_INVENTORY_PROPERTY_CONFUSION
+PLAYER_AUDIT_REMOTE_PROPERTY_TREATED_AS_AVAILABLE
+PLAYER_AUDIT_ACCESSIBLE_RESOURCE_WITHOUT_RULE
+PLAYER_AUDIT_LOAD_NOT_CALCULATED
+PLAYER_AUDIT_LOAD_CATEGORY_MISMATCH
+PLAYER_AUDIT_HANDS_OCCUPIED_MISMATCH
+PLAYER_AUDIT_NO_IMMEDIATE_NEED
+PLAYER_AUDIT_NO_REASON_TO_ACT_NOW
+PLAYER_AUDIT_NO_CONSEQUENCE_OF_INACTION
+PLAYER_AUDIT_GOAL_RAILROADS_PLAYER
+PLAYER_AUDIT_RELATION_NPC_CANDIDATE_NOT_FOUND
+PLAYER_AUDIT_CREATED_NPC_OUTSIDE_CANDIDATES
+PLAYER_AUDIT_CREATED_NPC_NAME_TOO_EARLY
+PLAYER_AUDIT_CREATED_DOWNSTREAM_ENTITY
+PLAYER_AUDIT_SOURCE_MISSING
+PLAYER_AUDIT_REPAIR_ROUTE_MISSING
+```
+
+## 31. DB write на этом этапе
+
+Разрешено писать:
+
+```text
+pipeline_step_status
+player_character_code_precheck_snapshot
+player_character_audit_snapshot
+player_character_audit_validation_issues
+player_character_repair_route
+source_trace_snapshot
+```
+
+Если audit прошёл, можно пометить персонажа как:
+
+```text
+approved_for_game_profile_shape
+approved_for_g5_materialization_input
+```
+
+Запрещено писать до commit gate:
+
+```text
+party_current_position
+party_scene_anchors
+party_npcs
+party_items_in_scene
+visible_scene
+intro_prose
+g5_scene
+hidden_scene_state
+```
+
+Персонаж может быть сохранён как startup snapshot, но не должен запускать сцену без G5-материализации.
+
+## 32. Commit gate этапа
+
+Этап считается успешным, если:
+
+```text
+player_character_audit.pass = true
+и social_role_id допустим
+и occupation_id допустим или null обоснован
+и персонаж совместим с регионом, годом, сезоном, временем и стартовым местом
+и инвентарь использует только разрешённые item profiles
+и property/access rules есть
+и характеристики и навыки валидны
+и знания персонажа ограничены
+и нет downstream-сущностей
+и source_trace достаточен
+```
+
+После этого разрешается переходить к `PlayerCharacterGameProfileShaper` или сразу к G5 input, если dossier уже в игровом формате.
+
+Если audit failed, pipeline не должен продолжать генерацию сцены.
+
+## 33. Передача в следующий этап
+
+```json
+{
+  "version": 1,
+  "schema": "g5_materialization_input",
+  "request_id": "string",
+
+  "normalized_request": {},
+  "historical_frame": {},
+  "regional_context_package": {},
+  "selected_start_node": {},
+  "start_place_audit": {},
+
+  "player_character": {
+    "version": 1,
+    "schema": "player_character_game_profile"
+  },
+
+  "player_character_audit": {
+    "version": 1,
+    "schema": "player_character_audit",
+    "pass": true
+  },
+
+  "npc_candidate_set": {},
+  "item_profile_candidate_set": {},
+
+  "constraints": {
+    "preserve_player_character": true,
+    "preserve_social_status": true,
+    "preserve_occupation": true,
+    "preserve_inventory": true,
+    "preserve_character_knowledge_limits": true,
+    "do_not_change_player_character_without_repair": true
+  }
+}
+```
+
+Следующий этап не имеет права менять персонажа. Если G5-материализация показывает, что персонаж невозможен в выбранном месте, pipeline должен откатиться к character repair или start place selection, а не молча переписать персонажа.
+
+## 34. Минимальный успешный результат
+
+```json
+{
+  "version": 1,
+  "schema": "player_character_audit",
+  "request_id": "req_001",
+
+  "pass": true,
+
+  "checks": {
+    "schema_and_structure": {
+      "pass": true,
+      "evidence": [
+        "player_character_dossier has required schema, version and core fields"
+      ]
+    },
+    "historical_compatibility": {
+      "pass": true,
+      "evidence": [
+        "character contains no anachronistic role, item, knowledge or institution"
+      ]
+    },
+    "region_compatibility": {
+      "pass": true,
+      "evidence": [
+        "social role, occupation, knowledge and inventory are compatible with selected region"
+      ]
+    },
+    "start_place_compatibility": {
+      "pass": true,
+      "evidence": [
+        "character has reason_here and selected_node_id matches selected_start_node"
+      ]
+    },
+    "social_status": {
+      "pass": true,
+      "evidence": [
+        "social_role_id exists in allowed regional social roles"
+      ]
+    },
+    "occupation": {
+      "pass": true,
+      "evidence": [
+        "occupation_id exists in allowed regional occupations or null is explained"
+      ]
+    },
+    "origin": {
+      "pass": true,
+      "evidence": [
+        "origin explains status, occupation, skills and start place connection"
+      ]
+    },
+    "body_state": {
+      "pass": true,
+      "evidence": [
+        "health, satiety and vigor are within 0..100; active conditions have causes"
+      ]
+    },
+    "attributes": {
+      "pass": true,
+      "evidence": [
+        "attributes are within 3..18 and follow balance rules"
+      ]
+    },
+    "skills": {
+      "pass": true,
+      "evidence": [
+        "skills are within 0..4 and nonzero skills have basis"
+      ]
+    },
+    "inventory": {
+      "pass": true,
+      "evidence": [
+        "all carried items reference item_profile_candidate_set and have owner, holder, weight, condition, access and risk"
+      ]
+    },
+    "property_and_access": {
+      "pass": true,
+      "evidence": [
+        "inventory is separated from property not carried and accessible resources"
+      ]
+    },
+    "knowledge": {
+      "pass": true,
+      "evidence": [
+        "character knowledge does not include future, hidden or player-only facts"
+      ]
+    },
+    "relations": {
+      "pass": true,
+      "evidence": [
+        "relations do not create concrete NPC outside npc_candidate_set"
+      ]
+    },
+    "goals": {
+      "pass": true,
+      "evidence": [
+        "character has immediate_need, reason_to_act_now and consequence_of_inaction"
+      ]
+    },
+    "source_trace": {
+      "pass": true,
+      "evidence": [
+        "source_trace exists for social role, occupation and item profile references"
+      ]
+    },
+    "downstream_entity_leak_check": {
+      "pass": true,
+      "evidence": [
+        "character dossier contains no visible_scene, intro_prose, G5, minilocation, scene anchor or hidden event"
+      ]
+    }
+  },
+
+  "concerns": [],
+
+  "evidence": [
+    "Character uses allowed regional social role.",
+    "Character uses allowed regional occupation or a justified null occupation.",
+    "Character is compatible with selected start place.",
+    "Inventory uses only allowed item profile candidates.",
+    "No impossible status, impossible item, hidden knowledge leak or downstream scene entity was found."
+  ],
+
+  "repair_route": null,
+
+  "commit_permission": {
+    "can_shape_game_profile": true,
+    "can_continue_to_g5_materialization": true,
+    "can_write_player_character_after_commit_gate": true
+  }
+}
+```

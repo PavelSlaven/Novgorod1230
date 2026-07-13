@@ -1,0 +1,64 @@
+import { assertGatePassed, createGateResult } from '../gate.js';
+import { retrieveNpcCandidates, validateNpcCandidateSet } from '../retrievers/npc-candidates.js';
+
+export async function runStage7NpcCandidates(context, input = {}, deps = {}) {
+  const stageInput = {
+    request_id: context.requestId,
+    normalized_request: input.normalized_request ?? context.getStageOutput(2) ?? null,
+    historical_frame: input.historical_frame ?? context.getStageOutput(3) ?? null,
+    regional_context_package: input.regional_context_package ?? context.getStageOutput(4) ?? null,
+    start_candidate_set: input.start_candidate_set ?? context.getStageOutput(5) ?? null,
+    candidate_place_template_set: input.candidate_place_template_set ?? context.getStageOutput(6) ?? null,
+    npc_candidate_policy: input.npc_candidate_policy ?? {}
+  };
+  const output = await retrieveNpcCandidates(stageInput, deps);
+  const gate = runNpcCandidateSetGate(output, stageInput.npc_candidate_policy);
+  context.setGateResult(7, gate);
+  assertGatePassed(gate);
+  context.setStageOutput(7, output);
+  context.note(7, {
+    label: 'npc_candidates',
+    message: 'npc_candidates ready',
+    responseRaw: { gate }
+  });
+  return output;
+}
+
+export function runNpcCandidateSetGate(output, policy = {}) {
+  const validation = validateNpcCandidateSet(output, { policy });
+  return createGateResult({
+    stageId: 7,
+    stageSlug: 'npc_candidates',
+    gateKind: 'npc_candidate_set_gate',
+    pass: validation.pass,
+    concerns: validation.concerns,
+    evidence: validation.evidence
+  });
+}
+
+export function validateNpcCandidateSetGate(output, policy = {}) {
+  const gate = runNpcCandidateSetGate(output, policy);
+  return {
+    pass: gate.pass,
+    concerns: gate.concerns,
+    evidence: gate.evidence
+  };
+}
+
+export function buildStage7NpcCandidatesInput(context, {
+  normalizedRequest = null,
+  historicalFrame = null,
+  regionalContextPackage = null,
+  startCandidateSet = null,
+  candidatePlaceTemplateSet = null,
+  npcCandidatePolicy = {}
+} = {}) {
+  return {
+    normalized_request: normalizedRequest ?? context.getStageOutput(2) ?? null,
+    historical_frame: historicalFrame ?? context.getStageOutput(3) ?? null,
+    regional_context_package: regionalContextPackage ?? context.getStageOutput(4) ?? null,
+    start_candidate_set: startCandidateSet ?? context.getStageOutput(5) ?? null,
+    candidate_place_template_set: candidatePlaceTemplateSet ?? context.getStageOutput(6) ?? null,
+    npc_candidate_policy: npcCandidatePolicy
+  };
+}

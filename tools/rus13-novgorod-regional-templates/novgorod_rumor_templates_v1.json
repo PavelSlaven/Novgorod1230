@@ -1,0 +1,2603 @@
+{
+  "metadata": {
+    "file_name": "novgorod_rumor_templates_v1.json",
+    "version": "1.0.0",
+    "project": "RUS13",
+    "region_id": "novgorod_land",
+    "region_id_aliases": [
+      "region_novgorod_land"
+    ],
+    "region_title": "Новгородская земля",
+    "period": "1230-1250",
+    "purpose": "Шаблоны слухов Новгородской земли: дороги, цены, власть, война, быт, соседние регионы и локальные тревоги",
+    "created_at_utc": "2026-07-05T12:30:00Z",
+    "status": "draft",
+    "confidence": "medium",
+    "requires_human_audit": true,
+    "list_expansion_policy": "Списки задания являются минимальным ядром, а не пределом. Новые контейнеры, слухи, события, предметные и социальные профили допустимы только при историко-бытовом, хозяйственном или социальном основании, со статусом, уверенностью и возможностью ручного аудита.",
+    "source_registry": [
+      "project_archive:novgorod_full_graph_g1_g4_v6_game_ready.zip",
+      "project_data:novgorod_region_generation_limits_v1.json",
+      "project_data:novgorod_region_profile_v1.json",
+      "project_data:novgorod_historical_timeline_1230_1250_v1.json",
+      "project_data:novgorod_neighbor_regions_v1.json",
+      "project_data:novgorod_social_roles_v1.tsv",
+      "project_data:novgorod_occupations_v1.tsv",
+      "project_data:novgorod_status_rules_v1.json",
+      "project_doc:items_and_property.txt",
+      "project_doc:npc_generation_profiles.txt",
+      "project_doc:movement_locations_regions.txt",
+      "project_doc:time_system.txt",
+      "project_doc:historical_events_and_figures.txt",
+      "project_doc:information_sources_llm_prompts.md"
+    ]
+  },
+  "rumor_truth_policy": {
+    "rumor_is_not_fact": true,
+    "player_visible_truth_status_default": "unknown",
+    "truth_variants_allowed": [
+      "true",
+      "distorted",
+      "false",
+      "outdated",
+      "uncertain"
+    ],
+    "requires_source_context": true,
+    "requires_time_and_place_when_heard": true,
+    "must_preserve_uncertainty": true,
+    "must_not_reveal_future_events": true,
+    "must_not_reveal_hidden_causes": true,
+    "must_not_reveal_objective_map": true,
+    "omen_and_miracle_rumors_are_human_belief_not_magic": true,
+    "list_expansion_policy": "Списки задания являются минимальным ядром, а не пределом. Новые контейнеры, слухи, события, предметные и социальные профили допустимы только при историко-бытовом, хозяйственном или социальном основании, со статусом, уверенностью и возможностью ручного аудита."
+  },
+  "rumor_templates": [
+    {
+      "rumor_template_id": "rumor_road_mud_closed",
+      "title": "Дорога стала непроходимой",
+      "rumor_type": "road",
+      "typical_text_patterns": [
+        "говорят, телеги вязнут по ступицу",
+        "кто вчера шёл, вернулся по темноте",
+        "через низину теперь лучше не соваться"
+      ],
+      "who_spreads": [
+        "возчики",
+        "проводники",
+        "купеческие спутники"
+      ],
+      "where_heard": [
+        "торг",
+        "погост",
+        "постоялый двор",
+        "переправа"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "route_condition_check",
+        "delay",
+        "guide_needed",
+        "wrong_route_risk"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_ford_shallow_or_deep",
+      "title": "Брод изменился",
+      "rumor_type": "ford",
+      "typical_text_patterns": [
+        "брод будто ушёл под воду",
+        "старый переход теперь по грудь",
+        "ниже по течению ищут другое место"
+      ],
+      "who_spreads": [
+        "рыбаки",
+        "перевозчики",
+        "местные крестьяне"
+      ],
+      "where_heard": [
+        "брод",
+        "берег",
+        "погост",
+        "рыбацкий стан"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "crossing_risk",
+        "route_replan",
+        "npc_warning"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_ferry_refuses",
+      "title": "Перевозчик не берёт людей",
+      "rumor_type": "ferry",
+      "typical_text_patterns": [
+        "перевозчик ворота закрыл",
+        "лодку берегут, вода дурная",
+        "чужих без старшего не сажают"
+      ],
+      "who_spreads": [
+        "перевозчики",
+        "страж переправы",
+        "путники"
+      ],
+      "where_heard": [
+        "перевоз",
+        "берег ожидания",
+        "торг"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "access_denied",
+        "social_conflict",
+        "need_permission"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_price_grain_high",
+      "title": "Хлеб дорожает",
+      "rumor_type": "prices",
+      "typical_text_patterns": [
+        "муку держат в клетях",
+        "за зерно просят больше, чем на прошлой неделе",
+        "солью и рыбой уже не всякий берёт"
+      ],
+      "who_spreads": [
+        "торговцы",
+        "хозяйки",
+        "грузчики",
+        "нищие"
+      ],
+      "where_heard": [
+        "торг",
+        "погост",
+        "двор",
+        "пристань"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "price_modifier",
+        "hunger_pressure",
+        "theft_risk"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_salt_shortage",
+      "title": "Соль стала дорогой или редкой",
+      "rumor_type": "prices",
+      "typical_text_patterns": [
+        "соль привезли мокрую и мало",
+        "без соли рыба портится",
+        "купец держит мешки до лучшей цены"
+      ],
+      "who_spreads": [
+        "рыбаки",
+        "купцы",
+        "складские сторожа"
+      ],
+      "where_heard": [
+        "торг",
+        "пристань",
+        "рыбацкий стан"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "price_modifier",
+        "food_preservation_risk",
+        "trade_conflict"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_famine_memory",
+      "title": "Люди вспоминают голод",
+      "rumor_type": "famine",
+      "typical_text_patterns": [
+        "старики говорят, бывало хуже",
+        "крошки стали считать",
+        "у бедных дворов совсем тихо"
+      ],
+      "who_spreads": [
+        "старики",
+        "нищие",
+        "деревенские",
+        "женщины у колодца"
+      ],
+      "where_heard": [
+        "деревня",
+        "погост",
+        "городская окраина"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "body_risk",
+        "begging",
+        "grain_security"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_prince_arrival",
+      "title": "Князь или княжий человек близко",
+      "rumor_type": "prince",
+      "typical_text_patterns": [
+        "княжьих людей видели на дороге",
+        "будто князь ждёт ответа от Новгорода",
+        "дружинники спрашивали о корме"
+      ],
+      "who_spreads": [
+        "стража",
+        "купцы",
+        "городские люди"
+      ],
+      "where_heard": [
+        "ворота",
+        "торг",
+        "двор власти"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "authority_pressure",
+        "road_security_change",
+        "market_fear"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_posadnik_dispute",
+      "title": "О посаднике спорят",
+      "rumor_type": "posadnik",
+      "typical_text_patterns": [
+        "на Торгу спорили о людях посадника",
+        "старшие не сходятся",
+        "у боярских ворот было многолюдно"
+      ],
+      "who_spreads": [
+        "городские люди",
+        "слуги",
+        "торговцы"
+      ],
+      "where_heard": [
+        "торг",
+        "улица",
+        "боярский двор"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "political_tension",
+        "witness_risk",
+        "authority_response"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_vladyka_order",
+      "title": "Владыка что-то велел",
+      "rumor_type": "vladyka",
+      "typical_text_patterns": [
+        "владычный человек приходил к попу",
+        "при церкви велели смотреть за чужими",
+        "говорят, письмо пришло"
+      ],
+      "who_spreads": [
+        "церковные люди",
+        "прихожане",
+        "писцы"
+      ],
+      "where_heard": [
+        "церковь",
+        "церковный двор",
+        "монастырь"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "church_pressure",
+        "access_rule_change",
+        "rumor_spread"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_war_alarm_west",
+      "title": "Военная тревога с запада",
+      "rumor_type": "war",
+      "typical_text_patterns": [
+        "с Псковской стороны тревожно",
+        "чужие люди у дороги",
+        "послы и дружинники ходят чаще"
+      ],
+      "who_spreads": [
+        "купцы",
+        "дружинники",
+        "проводники"
+      ],
+      "where_heard": [
+        "дорога",
+        "торг",
+        "погост"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "security_risk",
+        "road_closure",
+        "armed_npc_presence"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_lithuanian_raid",
+      "title": "Литовская опасность как дальняя тревога",
+      "rumor_type": "war",
+      "typical_text_patterns": [
+        "говорят, Литва опять шевелится",
+        "на юго-западных дорогах стали осторожнее",
+        "кто с товаром, тот ищет спутников"
+      ],
+      "who_spreads": [
+        "путники",
+        "купцы",
+        "дружинники"
+      ],
+      "where_heard": [
+        "юго-западные дороги",
+        "торг",
+        "погост"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "escort_needed",
+        "rumor_only_pressure",
+        "route_fear"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "usable_with_caution",
+      "confidence": "medium_low"
+    },
+    {
+      "rumor_template_id": "rumor_strangers_seen",
+      "title": "Чужие люди в округе",
+      "rumor_type": "strangers",
+      "typical_text_patterns": [
+        "видели людей не из наших мест",
+        "говор говорят иной",
+        "шли не к погосту, а в сторону леса"
+      ],
+      "who_spreads": [
+        "дети",
+        "пастухи",
+        "сторожа",
+        "деревенские"
+      ],
+      "where_heard": [
+        "деревня",
+        "дорога",
+        "брод"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "suspicion",
+        "identity_check",
+        "possible_false_accusation"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_robbers",
+      "title": "Разбой или ночные люди",
+      "rumor_type": "robbery",
+      "typical_text_patterns": [
+        "ночью на дороге кричали",
+        "возчик вернулся без части груза",
+        "лучше идти не одному"
+      ],
+      "who_spreads": [
+        "возчики",
+        "нищие",
+        "проводники"
+      ],
+      "where_heard": [
+        "постоялый двор",
+        "дорога",
+        "переправа"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "ambush_risk",
+        "escort_value",
+        "false_alarm"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_wolves_near",
+      "title": "Волки или зверьё у дороги",
+      "rumor_type": "beasts",
+      "typical_text_patterns": [
+        "собаки ночью выли",
+        "скотину у края леса тронули",
+        "следы большие на снегу"
+      ],
+      "who_spreads": [
+        "пастухи",
+        "охотники",
+        "дети"
+      ],
+      "where_heard": [
+        "лесной выход",
+        "покос",
+        "деревня"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "animal_risk",
+        "night_travel_risk",
+        "livestock_guard"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_bear_forest",
+      "title": "Медведь или крупный зверь у промысла",
+      "rumor_type": "beasts",
+      "typical_text_patterns": [
+        "у бортей дерево содрано",
+        "мужики обходят тот лес",
+        "след у ручья видели"
+      ],
+      "who_spreads": [
+        "охотники",
+        "бортники",
+        "лесные промысловики"
+      ],
+      "where_heard": [
+        "лесной стан",
+        "бортная зона",
+        "погост"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "forest_risk",
+        "guide_needed"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "usable_with_caution",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_fire_city",
+      "title": "Пожар или страх пожара",
+      "rumor_type": "fire",
+      "typical_text_patterns": [
+        "дым видели за посадом",
+        "кто-то крикнул о печи",
+        "ночью люди с вёдрами бегали"
+      ],
+      "who_spreads": [
+        "городские жители",
+        "сторожа",
+        "дети"
+      ],
+      "where_heard": [
+        "городская улица",
+        "торг",
+        "двор"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "deferred_fire_check",
+        "crowd",
+        "property_loss"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_sickness",
+      "title": "Болезнь в дворе или дороге",
+      "rumor_type": "disease",
+      "typical_text_patterns": [
+        "у того двора кашель и жар",
+        "больного вынесли к печи",
+        "путник лёг и не встал"
+      ],
+      "who_spreads": [
+        "хозяйки",
+        "монастырские люди",
+        "поп"
+      ],
+      "where_heard": [
+        "двор",
+        "монастырь",
+        "постоялый двор"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "body_risk",
+        "access_denied",
+        "care_needed"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_debt_due",
+      "title": "Долг стал срочным",
+      "rumor_type": "debt",
+      "typical_text_patterns": [
+        "кредитор прислал человека",
+        "залог теперь требуют вернуть",
+        "без свидетеля спор не унять"
+      ],
+      "who_spreads": [
+        "купцы",
+        "соседи",
+        "слуги"
+      ],
+      "where_heard": [
+        "торг",
+        "двор",
+        "погост"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "deferred_debt_due",
+        "conflict",
+        "pledge_check"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_theft",
+      "title": "Пропала вещь",
+      "rumor_type": "theft",
+      "typical_text_patterns": [
+        "у хозяина из клети пропало",
+        "ищут чужого",
+        "говорят, видели чужой узел"
+      ],
+      "who_spreads": [
+        "соседи",
+        "слуги",
+        "сторожа"
+      ],
+      "where_heard": [
+        "двор",
+        "клеть",
+        "торг"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "search",
+        "accusation",
+        "item_recognition"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_monastery_gate",
+      "title": "Монастырь закрывает ворота",
+      "rumor_type": "monastery",
+      "typical_text_patterns": [
+        "после вечерни чужих не пустят",
+        "игумен велел беречь припасы",
+        "работных людей считают"
+      ],
+      "who_spreads": [
+        "монастырские работники",
+        "паломники",
+        "возчики"
+      ],
+      "where_heard": [
+        "монастырские ворота",
+        "гостевой двор",
+        "дорога"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "access_closed",
+        "lodging_denied",
+        "church_authority"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_market_measure",
+      "title": "На торге спор о мере",
+      "rumor_type": "market",
+      "typical_text_patterns": [
+        "мерник у него неверный",
+        "мешок легче, чем говорит",
+        "свидетелей зовут"
+      ],
+      "who_spreads": [
+        "торговцы",
+        "покупатели",
+        "страж торга"
+      ],
+      "where_heard": [
+        "торг",
+        "склад",
+        "прилавок"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "market_conflict",
+        "witness",
+        "price_change"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_death_road",
+      "title": "Смерть на дороге",
+      "rumor_type": "death",
+      "typical_text_patterns": [
+        "нашли человека у поворота",
+        "не знают, замёрз или убит",
+        "тело пока не трогают"
+      ],
+      "who_spreads": [
+        "путники",
+        "сторожа",
+        "поп"
+      ],
+      "where_heard": [
+        "дорога",
+        "погост",
+        "переправа"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "authority_response",
+        "fear",
+        "route_avoidance"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_runaway",
+      "title": "Беглый или человек без поручителя",
+      "rumor_type": "runaway",
+      "typical_text_patterns": [
+        "ищут беглого",
+        "без поручителя ночлег не дадут",
+        "говорят, прячется у родни"
+      ],
+      "who_spreads": [
+        "хозяева дворов",
+        "стража",
+        "слуги"
+      ],
+      "where_heard": [
+        "городская окраина",
+        "деревня",
+        "погост"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "identity_suspicion",
+        "lodging_denied",
+        "conflict"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_omen_belief",
+      "title": "Знамение как вера людей",
+      "rumor_type": "omen_belief",
+      "typical_text_patterns": [
+        "люди говорят, будто знак был",
+        "старухи шепчут у церкви",
+        "поп велел не болтать лишнего"
+      ],
+      "who_spreads": [
+        "прихожане",
+        "паломники",
+        "нищие"
+      ],
+      "where_heard": [
+        "церковь",
+        "кладбищенский край",
+        "торг"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "morale_change",
+        "church_response",
+        "rumor_distortion"
+      ],
+      "what_it_must_not_reveal": [
+        "объективную сверхъестественную истину",
+        "магическое объяснение",
+        "гарантированный исход"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_ice_thin",
+      "title": "Лёд опасен",
+      "rumor_type": "ice",
+      "typical_text_patterns": [
+        "лёд звенит нехорошо",
+        "у берега вода выступила",
+        "санный след оборвался"
+      ],
+      "who_spreads": [
+        "рыбаки",
+        "перевозчики",
+        "дети"
+      ],
+      "where_heard": [
+        "берег",
+        "переправа",
+        "зимник"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "crossing_check",
+        "route_closed",
+        "body_risk"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_flood_rising",
+      "title": "Вода прибывает",
+      "rumor_type": "flood",
+      "typical_text_patterns": [
+        "колья в воде скрылись",
+        "берег съедает",
+        "лодки отвязали выше"
+      ],
+      "who_spreads": [
+        "рыбаки",
+        "лодочники",
+        "береговые жители"
+      ],
+      "where_heard": [
+        "берег",
+        "пристань",
+        "погост"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "flood_timer",
+        "ferry_closed",
+        "road_delay"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_winter_road_open",
+      "title": "Зимник открыт или сомнителен",
+      "rumor_type": "winter_road",
+      "typical_text_patterns": [
+        "следы саней пошли через лес",
+        "по льду уже ходят местные",
+        "без проводника лучше рано"
+      ],
+      "who_spreads": [
+        "возчики",
+        "проводники",
+        "крестьяне"
+      ],
+      "where_heard": [
+        "зимник",
+        "погост",
+        "дорога"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "winter_route_access",
+        "guide_needed",
+        "false_belief_risk"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_bad_guide",
+      "title": "Проводник обманывает или боится",
+      "rumor_type": "guide",
+      "typical_text_patterns": [
+        "проводник берёт дорого",
+        "знает ли он путь, кто скажет",
+        "в прошлом году людей завёл не туда"
+      ],
+      "who_spreads": [
+        "путники",
+        "местные",
+        "купцы"
+      ],
+      "where_heard": [
+        "погост",
+        "постоялый двор",
+        "торг"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "guide_conflict",
+        "getting_lost",
+        "payment_dispute"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_tax_due",
+      "title": "Сбор или пошлина",
+      "rumor_type": "authority_dues",
+      "typical_text_patterns": [
+        "на переправе снова берут",
+        "с товара требуют показать мешки",
+        "без старшего спорить опасно"
+      ],
+      "who_spreads": [
+        "сборщики",
+        "торговцы",
+        "стража"
+      ],
+      "where_heard": [
+        "переправа",
+        "торг",
+        "двор власти"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "payment_required",
+        "authority_conflict",
+        "market_cost"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_fish_run",
+      "title": "Рыба пошла или ушла",
+      "rumor_type": "fish",
+      "typical_text_patterns": [
+        "рыба идёт не там",
+        "сети пустые",
+        "у того берега лучше ставят"
+      ],
+      "who_spreads": [
+        "рыбаки",
+        "женщины на берегу",
+        "торговцы"
+      ],
+      "where_heard": [
+        "рыбацкий стан",
+        "берег",
+        "торг"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "food_supply",
+        "price_modifier",
+        "work_schedule_change"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_livestock_missing",
+      "title": "Скотина пропала",
+      "rumor_type": "livestock",
+      "typical_text_patterns": [
+        "корову не нашли после выгону",
+        "след к лесу",
+        "соседей уже спрашивали"
+      ],
+      "who_spreads": [
+        "пастухи",
+        "дети",
+        "хозяйки"
+      ],
+      "where_heard": [
+        "деревня",
+        "покос",
+        "лесной выход"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "search",
+        "theft_accusation",
+        "animal_risk"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_forest_rights",
+      "title": "Спор о лесном пользовании",
+      "rumor_type": "forest",
+      "typical_text_patterns": [
+        "не всякому туда рубить",
+        "у бортей чужие ходили",
+        "старшие велели спросить разрешения"
+      ],
+      "who_spreads": [
+        "лесные люди",
+        "бортники",
+        "старосты"
+      ],
+      "where_heard": [
+        "лесной стан",
+        "деревня",
+        "погост"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "property_conflict",
+        "hidden_path_block",
+        "authority_check"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_hidden_path",
+      "title": "Скрытая или местная тропа",
+      "rumor_type": "route",
+      "typical_text_patterns": [
+        "есть ход короче, но не всякому показывают",
+        "тропа идёт за болотом",
+        "после дождя её не сыщешь"
+      ],
+      "who_spreads": [
+        "охотники",
+        "проводники",
+        "местные"
+      ],
+      "where_heard": [
+        "лесной выход",
+        "погост",
+        "дорога"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "guide_needed",
+        "map_knowledge_update",
+        "getting_lost"
+      ],
+      "what_it_must_not_reveal": [
+        "точное направление без проводника",
+        "объективную карту"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_bridge_damaged",
+      "title": "Мостки или переход повреждены",
+      "rumor_type": "road",
+      "typical_text_patterns": [
+        "доски унесло",
+        "возчик колесо сломал",
+        "сторож велел ждать"
+      ],
+      "who_spreads": [
+        "возчики",
+        "сторожа",
+        "местные"
+      ],
+      "where_heard": [
+        "мостки",
+        "дорога",
+        "пристань"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "route_delay",
+        "repair_needed",
+        "payment_conflict"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_merchant_caravan",
+      "title": "Купеческий обоз или лодки идут",
+      "rumor_type": "trade",
+      "typical_text_patterns": [
+        "товарные люди подходят",
+        "на пристани будет шум",
+        "сторожа ищут место под груз"
+      ],
+      "who_spreads": [
+        "купцы",
+        "грузчики",
+        "лодочники"
+      ],
+      "where_heard": [
+        "торг",
+        "пристань",
+        "постоялый двор"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "market_supply",
+        "npc_arrival",
+        "work_opportunity"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_pskov_news",
+      "title": "Вести из Псковской земли",
+      "rumor_type": "neighbor_pskov",
+      "typical_text_patterns": [
+        "с Пскова привезли тревожное",
+        "псковичи не всё говорят",
+        "дорога к Шелони неспокойна"
+      ],
+      "who_spreads": [
+        "купцы",
+        "послы",
+        "путники"
+      ],
+      "where_heard": [
+        "юго-западные дороги",
+        "торг",
+        "погост"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "neighbor_pressure",
+        "route_caution",
+        "political_tension"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "usable_with_caution",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_ladoga_news",
+      "title": "Вести с Ладожско-Ижорской стороны",
+      "rumor_type": "neighbor_ladoga_izhora",
+      "typical_text_patterns": [
+        "с Ладоги пришли люди с товаром",
+        "по Волхову говорят о чужих кораблях",
+        "на северной дороге стали смотреть строже"
+      ],
+      "who_spreads": [
+        "лодочники",
+        "купцы",
+        "стража"
+      ],
+      "where_heard": [
+        "Волхов",
+        "пристань",
+        "торг"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "water_route_pressure",
+        "security_change",
+        "trade_flow"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "usable_with_caution",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_karelian_news",
+      "title": "Карельские вести",
+      "rumor_type": "neighbor_karelia",
+      "typical_text_patterns": [
+        "с Карельской стороны слухи о промысле и тревоге",
+        "лесные люди говорят неохотно",
+        "товар севера идёт с задержкой"
+      ],
+      "who_spreads": [
+        "охотники",
+        "проводники",
+        "купцы"
+      ],
+      "where_heard": [
+        "лесной стан",
+        "торг",
+        "погост"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "forest_route_caution",
+        "fur_trade_effect",
+        "guide_needed"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "usable_with_caution",
+      "confidence": "medium_low"
+    },
+    {
+      "rumor_template_id": "rumor_zavolochye_news",
+      "title": "Вести из Заволочья",
+      "rumor_type": "neighbor_zavolochye",
+      "typical_text_patterns": [
+        "говорят о дальних промыслах",
+        "мех ждут поздно",
+        "люди оттуда знают долгие пути"
+      ],
+      "who_spreads": [
+        "купцы",
+        "промысловики",
+        "проводники"
+      ],
+      "where_heard": [
+        "торг",
+        "лесной стан",
+        "погост"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "fur_trade_effect",
+        "long_route_uncertainty",
+        "rumor_channel"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "usable_with_caution",
+      "confidence": "medium_low"
+    },
+    {
+      "rumor_template_id": "rumor_belozero_news",
+      "title": "Вести с Белозерья",
+      "rumor_type": "neighbor_belozero",
+      "typical_text_patterns": [
+        "с Белоозера идут вести небыстрые",
+        "говорят о дороге через воды и лес",
+        "у товара задержка"
+      ],
+      "who_spreads": [
+        "купцы",
+        "возчики",
+        "паломники"
+      ],
+      "where_heard": [
+        "торг",
+        "дорога",
+        "погост"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "trade_delay",
+        "route_uncertainty",
+        "lodging_demand"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "usable_with_caution",
+      "confidence": "medium_low"
+    },
+    {
+      "rumor_template_id": "rumor_vladimir_suzdal_news",
+      "title": "Вести из Владимиро-Суздальской земли",
+      "rumor_type": "neighbor_vladimir_suzdal",
+      "typical_text_patterns": [
+        "с Низа пришли люди",
+        "о княжеских делах говорят тихо",
+        "товар ждут по дороге через Торжок"
+      ],
+      "who_spreads": [
+        "купцы",
+        "дружинники",
+        "послы"
+      ],
+      "where_heard": [
+        "торг",
+        "дорога",
+        "двор власти"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "political_pressure",
+        "market_flow",
+        "road_security"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_tatar_pressure_distant",
+      "title": "Дальняя татарская/ордынская тревога",
+      "rumor_type": "distant_steppe_pressure",
+      "typical_text_patterns": [
+        "с Низа говорят о большой силе",
+        "князья осторожны",
+        "обычные люди знают больше страха, чем правды"
+      ],
+      "who_spreads": [
+        "купцы",
+        "послы",
+        "дружинники",
+        "беженцы"
+      ],
+      "where_heard": [
+        "торг",
+        "двор власти",
+        "погост"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "fear",
+        "political_pressure",
+        "price_uncertainty"
+      ],
+      "what_it_must_not_reveal": [
+        "точные планы хана",
+        "стратегическую правду",
+        "будущие даты"
+      ],
+      "status": "usable_with_caution",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_fast_or_feast",
+      "title": "Пост или праздник меняет поведение",
+      "rumor_type": "church_calendar",
+      "typical_text_patterns": [
+        "к службе зовут раньше",
+        "мяса сегодня не ищи",
+        "после службы будут говорить о сборе"
+      ],
+      "who_spreads": [
+        "поп",
+        "прихожане",
+        "монахи"
+      ],
+      "where_heard": [
+        "церковь",
+        "монастырь",
+        "двор"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "schedule_change",
+        "trade_availability",
+        "church_social_pressure"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_witness_talks",
+      "title": "Свидетель пересказывает увиденное",
+      "rumor_type": "witness",
+      "typical_text_patterns": [
+        "он видел, кто входил",
+        "у колодца уже говорят",
+        "к вечеру узнают на соседнем дворе"
+      ],
+      "who_spreads": [
+        "соседи",
+        "дети",
+        "слуги"
+      ],
+      "where_heard": [
+        "двор",
+        "колодец",
+        "улица"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "reputation_change",
+        "deferred_rumor_spread",
+        "authority_inquiry"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_bad_measure",
+      "title": "Плохая мера или вес",
+      "rumor_type": "market",
+      "typical_text_patterns": [
+        "мерка у него лживая",
+        "весы подкладывают",
+        "старшего зовут"
+      ],
+      "who_spreads": [
+        "покупатели",
+        "торговцы",
+        "сотские/стража торга"
+      ],
+      "where_heard": [
+        "торг",
+        "склад"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "market_conflict",
+        "inspection",
+        "trust_loss"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_grain_hidden",
+      "title": "Зерно прячут",
+      "rumor_type": "famine",
+      "typical_text_patterns": [
+        "клети закрыты",
+        "говорят, у богатых хлеб есть",
+        "бедным не продают без поручителя"
+      ],
+      "who_spreads": [
+        "бедные люди",
+        "слуги",
+        "женщины у колодца"
+      ],
+      "where_heard": [
+        "городская улица",
+        "деревня",
+        "торг"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "hunger_pressure",
+        "theft_risk",
+        "social_conflict"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_burned_yard",
+      "title": "Погорелый двор просит помощи",
+      "rumor_type": "fire",
+      "typical_text_patterns": [
+        "двор сгорел",
+        "детей приняли родичи",
+        "просят хлеба и крова"
+      ],
+      "who_spreads": [
+        "соседи",
+        "поп",
+        "погорельцы"
+      ],
+      "where_heard": [
+        "деревня",
+        "городская окраина",
+        "церковный двор"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "charity",
+        "property_loss",
+        "lodging_pressure"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_gates_close_early",
+      "title": "Ворота закроют раньше",
+      "rumor_type": "access",
+      "typical_text_patterns": [
+        "сторож сказал не ждать темноты",
+        "после заката чужих не пустят",
+        "приказ пришёл от старших"
+      ],
+      "who_spreads": [
+        "сторожа",
+        "возчики",
+        "путники"
+      ],
+      "where_heard": [
+        "городские ворота",
+        "монастырские ворота",
+        "двор"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "timer_gate_closed",
+        "lodging_search",
+        "authority_pressure"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_boat_broken",
+      "title": "Лодка сломана или течёт",
+      "rumor_type": "water_route",
+      "typical_text_patterns": [
+        "лодка воду берёт",
+        "смолу ищут",
+        "груз придётся ждать"
+      ],
+      "who_spreads": [
+        "лодочники",
+        "плотники",
+        "грузчики"
+      ],
+      "where_heard": [
+        "пристань",
+        "лодочная зона",
+        "перевоз"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "route_delay",
+        "repair_service",
+        "trade_delay"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_horse_sick",
+      "title": "Лошадь или тягло заболело",
+      "rumor_type": "transport",
+      "typical_text_patterns": [
+        "конь хромает",
+        "саням не идти без замены",
+        "возчик ругается с хозяином"
+      ],
+      "who_spreads": [
+        "возчики",
+        "конюхи",
+        "купеческие люди"
+      ],
+      "where_heard": [
+        "постоялый двор",
+        "конюшня",
+        "дорога"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "transport_delay",
+        "fodder_demand",
+        "service_conflict"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_pilgrim_news",
+      "title": "Богомольцы принесли вести",
+      "rumor_type": "pilgrimage",
+      "typical_text_patterns": [
+        "богомольцы ночевали у монастыря",
+        "они говорят о дороге и святых местах",
+        "не всё из их слов проверишь"
+      ],
+      "who_spreads": [
+        "паломники",
+        "монастырские работники",
+        "поп"
+      ],
+      "where_heard": [
+        "монастырь",
+        "церковь",
+        "погост"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "rumor_channel",
+        "lodging_pressure",
+        "church_context"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_work_needed",
+      "title": "Нужны рабочие руки",
+      "rumor_type": "labor",
+      "typical_text_patterns": [
+        "на пристани ищут грузчиков",
+        "к сену зовут",
+        "лодку надо тянуть на волоке"
+      ],
+      "who_spreads": [
+        "старосты",
+        "купцы",
+        "лодочники"
+      ],
+      "where_heard": [
+        "пристань",
+        "покос",
+        "волок",
+        "двор"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "work_opportunity",
+        "wage_or_food_exchange",
+        "obligation"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rumor_template_id": "rumor_court_summons",
+      "title": "Кого-то зовут на разбор",
+      "rumor_type": "law_custom",
+      "typical_text_patterns": [
+        "старшие велели явиться",
+        "без свидетелей не примут",
+        "двор уже знает"
+      ],
+      "who_spreads": [
+        "старосты",
+        "соседи",
+        "стража"
+      ],
+      "where_heard": [
+        "погост",
+        "двор власти",
+        "торг"
+      ],
+      "truth_variants": [
+        "true",
+        "distorted",
+        "false",
+        "outdated",
+        "uncertain"
+      ],
+      "player_visible_truth_status": "unknown",
+      "what_it_can_trigger": [
+        "authority_scene",
+        "witness",
+        "reputation_risk"
+      ],
+      "what_it_must_not_reveal": [
+        "истинность слуха",
+        "скрытые причины",
+        "точные будущие даты",
+        "объективную карту мира",
+        "скрытые мотивы NPC"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    }
+  ],
+  "rumor_channels": [
+    {
+      "channel_id": "rumor_channel_torg",
+      "title": "Торг и торговые ряды",
+      "who_hears": [
+        "купцы",
+        "горожане",
+        "пришлые",
+        "слуги"
+      ],
+      "typical_rumors": [
+        "prices",
+        "war",
+        "authority_dues",
+        "market"
+      ],
+      "distortion_risk": "high; много пересказов и выгоды"
+    },
+    {
+      "channel_id": "rumor_channel_ferry",
+      "title": "Переправа и берег ожидания",
+      "who_hears": [
+        "путники",
+        "перевозчики",
+        "рыбаки"
+      ],
+      "typical_rumors": [
+        "road",
+        "ferry",
+        "flood",
+        "ice"
+      ],
+      "distortion_risk": "medium; люди знают путь, но часто судят по вчерашнему"
+    },
+    {
+      "channel_id": "rumor_channel_church",
+      "title": "Церковный двор",
+      "who_hears": [
+        "прихожане",
+        "поп",
+        "нищие",
+        "вдовы"
+      ],
+      "typical_rumors": [
+        "death",
+        "disease",
+        "omen_belief",
+        "debt"
+      ],
+      "distortion_risk": "medium; моральная оценка усиливает слух"
+    },
+    {
+      "channel_id": "rumor_channel_monastery_guest",
+      "title": "Монастырский гостевой двор",
+      "who_hears": [
+        "паломники",
+        "монастырские работники",
+        "путники"
+      ],
+      "typical_rumors": [
+        "road",
+        "pilgrimage",
+        "neighbor"
+      ],
+      "distortion_risk": "medium_high; дальние вести смешиваются"
+    },
+    {
+      "channel_id": "rumor_channel_well",
+      "title": "Колодец и двор хозяйства",
+      "who_hears": [
+        "женщины двора",
+        "дети",
+        "слуги",
+        "соседи"
+      ],
+      "typical_rumors": [
+        "theft",
+        "sickness",
+        "debt",
+        "witness"
+      ],
+      "distortion_risk": "medium; близкие факты сильнее дальних"
+    },
+    {
+      "channel_id": "rumor_channel_road_camp",
+      "title": "Дорожный стан или ночлег",
+      "who_hears": [
+        "возчики",
+        "проводники",
+        "купеческие спутники"
+      ],
+      "typical_rumors": [
+        "robbery",
+        "road",
+        "guide",
+        "beasts"
+      ],
+      "distortion_risk": "high; страх дороги увеличивает опасность"
+    },
+    {
+      "channel_id": "rumor_channel_hunters",
+      "title": "Охотники и лесные люди",
+      "who_hears": [
+        "охотники",
+        "бортники",
+        "проводники"
+      ],
+      "typical_rumors": [
+        "forest",
+        "beasts",
+        "hidden_path"
+      ],
+      "distortion_risk": "medium; точные места могут скрываться намеренно"
+    },
+    {
+      "channel_id": "rumor_channel_fishermen",
+      "title": "Рыбаки и лодочники",
+      "who_hears": [
+        "рыбаки",
+        "лодочники",
+        "береговые жители"
+      ],
+      "typical_rumors": [
+        "fish",
+        "flood",
+        "ice",
+        "water_route"
+      ],
+      "distortion_risk": "medium_low; водные признаки обычно видимы"
+    },
+    {
+      "channel_id": "rumor_channel_servants",
+      "title": "Слуги и зависимые при дворах",
+      "who_hears": [
+        "слуги",
+        "холопы",
+        "работники"
+      ],
+      "typical_rumors": [
+        "boyar_yard",
+        "debt",
+        "authority",
+        "theft"
+      ],
+      "distortion_risk": "high; страх наказания и обрывки сведений"
+    },
+    {
+      "channel_id": "rumor_channel_guards",
+      "title": "Стража ворот, торга или двора",
+      "who_hears": [
+        "стража",
+        "княжьи люди",
+        "городские старшие"
+      ],
+      "typical_rumors": [
+        "access",
+        "authority",
+        "strangers",
+        "war"
+      ],
+      "distortion_risk": "medium; часть сведений намеренно скрывают"
+    },
+    {
+      "channel_id": "rumor_channel_children",
+      "title": "Дети и подростки",
+      "who_hears": [
+        "дети",
+        "подростки",
+        "дворовые"
+      ],
+      "typical_rumors": [
+        "strangers",
+        "fire",
+        "livestock",
+        "witness"
+      ],
+      "distortion_risk": "high; видят много, объясняют неточно"
+    },
+    {
+      "channel_id": "rumor_channel_beggars",
+      "title": "Нищие и уязвимые люди",
+      "who_hears": [
+        "нищие",
+        "больные",
+        "погорельцы"
+      ],
+      "typical_rumors": [
+        "famine",
+        "charity",
+        "death",
+        "sickness"
+      ],
+      "distortion_risk": "medium_high; слух связан с нуждой"
+    },
+    {
+      "channel_id": "rumor_channel_merchants",
+      "title": "Купеческие люди",
+      "who_hears": [
+        "купцы",
+        "приказчики",
+        "грузчики"
+      ],
+      "typical_rumors": [
+        "prices",
+        "neighbor",
+        "trade",
+        "road"
+      ],
+      "distortion_risk": "medium; часть сведений используется для торга"
+    },
+    {
+      "channel_id": "rumor_channel_pogost",
+      "title": "Погостовый сход и сбор",
+      "who_hears": [
+        "старосты",
+        "крестьяне",
+        "поп",
+        "сборщики"
+      ],
+      "typical_rumors": [
+        "dues",
+        "law_custom",
+        "road",
+        "church_calendar"
+      ],
+      "distortion_risk": "medium"
+    },
+    {
+      "channel_id": "rumor_channel_authority_yard",
+      "title": "Двор власти",
+      "who_hears": [
+        "посадничьи люди",
+        "княжьи люди",
+        "писцы",
+        "просители"
+      ],
+      "typical_rumors": [
+        "prince",
+        "posadnik",
+        "law_custom",
+        "war"
+      ],
+      "distortion_risk": "medium; простым людям доступна только часть"
+    }
+  ],
+  "rumor_distortion_rules": [
+    {
+      "rule_id": "rumor_distortion_distance",
+      "title": "Чем дальше источник, тем больше искажение",
+      "rule": "Дальняя весть теряет дату, место, число людей и причины; LLM должна сохранять это как неопределённость."
+    },
+    {
+      "rule_id": "rumor_distortion_interest",
+      "title": "Выгода и страх искажают слух",
+      "rule": "Купец может преувеличить дефицит, стража — опасность, должник — жестокость кредитора."
+    },
+    {
+      "rule_id": "rumor_distortion_season",
+      "title": "Сезон быстро устаривает дорожные слухи",
+      "rule": "Слух о броду, льде, распутице, воде и дороге должен иметь срок свежести."
+    },
+    {
+      "rule_id": "rumor_distortion_status",
+      "title": "Низкий статус хуже проверяет власть",
+      "rule": "Уязвимые NPC чаще знают последствия приказа, а не его точную причину."
+    },
+    {
+      "rule_id": "rumor_distortion_moralization",
+      "title": "Церковная и бытовая среда добавляет оценку",
+      "rule": "Слух о болезни, смерти, знамениях и кражах может смешиваться с моральной интерпретацией, но не становится сверхъестественным фактом."
+    },
+    {
+      "rule_id": "rumor_distortion_secret_route",
+      "title": "Ценные маршруты могут скрывать",
+      "rule": "Проводник, охотник или промысловик может умолчать точный путь, чтобы сохранить заработок или промысловую тайну."
+    }
+  ],
+  "rumor_memory_rules": [
+    {
+      "rule_id": "rumor_memory_heard_once",
+      "title": "Один раз услышанный слух",
+      "memory_effect": "Записывается как непроверенный слух с источником, временем и местом получения."
+    },
+    {
+      "rule_id": "rumor_memory_multiple_sources",
+      "title": "Несколько независимых источников",
+      "memory_effect": "Повышает доверие персонажа, но не превращает слух в объективный факт без наблюдения или проверки."
+    },
+    {
+      "rule_id": "rumor_memory_personal_confirmation",
+      "title": "Личное подтверждение",
+      "memory_effect": "Если персонаж сам видел последствия, память делится на наблюдённый факт и прежний слух."
+    },
+    {
+      "rule_id": "rumor_memory_outdated",
+      "title": "Устаревание",
+      "memory_effect": "Дорожные, ценовые, погодные и военные слухи требуют отметки свежести и могут стать outdated_knowledge."
+    },
+    {
+      "rule_id": "rumor_memory_dangerous_repeating",
+      "title": "Опасный пересказ",
+      "memory_effect": "Пересказ слуха о власти, воровстве, долге или беглом может создать свидетеля, репутационный риск или конфликт."
+    }
+  ],
+  "validation": {
+    "file_is_valid_json": true,
+    "does_not_create_party_state": true,
+    "does_not_create_new_g1_g4_nodes": true,
+    "does_not_precreate_full_g5_map": true,
+    "uses_existing_map_as_context": true,
+    "respects_generation_limits": true,
+    "separates_visible_hidden_and_unmaterialized": true,
+    "distinguishes_fact_from_rumor": true,
+    "requires_human_historical_audit": true,
+    "blocking_issues": [],
+    "open_questions": [],
+    "rumor_template_count": 53,
+    "rumor_channel_count": 15,
+    "expanded_beyond_prompt_examples": true,
+    "rumors_are_not_facts": true
+  }
+}

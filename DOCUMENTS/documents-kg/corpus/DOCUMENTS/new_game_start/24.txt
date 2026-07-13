@@ -1,0 +1,2483 @@
+# ПРИОРИТЕТНАЯ РЕДАКЦИЯ 2 — ИЗОЛИРОВАННЫЙ STAGE 24
+
+Эта редакция имеет приоритет над несовместимыми примерами ниже.
+
+## 0. Архитектурный контракт
+
+Stage 24 — обязательный изолированный LLM-блок. Он получает только `party_db_write_plan_input`, не читает global context, registry, lifecycle, базу данных, outputs других этапов или UI и возвращает единый `stage24_party_db_write_plan_result`.
+
+Builder, Auditor, Format Repairer, Router и Senior-роли получают только свои явно определённые payload. Передача им pipeline context или database handle запрещена. Provided `input`, `writePlan`, `audit` и готовый Stage 24 output запрещены во всех окружениях.
+
+Stage 24 не выполняет live-запись. Он только формирует, валидирует, независимо аудирует и утверждает план. Транзакция принадлежит Stage 25.
+
+## 0.1. Exact input
+
+```text
+party_db_write_plan_input:
+  version
+  schema
+  request_id
+  party_creation_context
+  approved_pipeline_outputs
+  approved_pipeline_manifest
+  party_database_schema
+  party_database_schema_digest
+  world_base_reference_snapshot
+  world_base_reference_digest
+  write_policy
+```
+
+Обязательны заранее выделенные `party_id` и утверждённый `player_character_id`. Технические fallback ID (`pc_001`, `party_<request_id>`) запрещены.
+
+`party_database_schema` обязан быть полным immutable snapshot с непустыми `tables`, а также `columns`, `foreign_keys`, `unique_constraints`, `check_constraints`, `enum_definitions`, `indexes`, `allowed_operations` и checksum. Пустой schema fallback запрещён.
+
+`world_base_reference_snapshot` содержит только разрешённые read-only ссылки и checksum. Stage 24 не обращается к `world_base` самостоятельно.
+
+`write_policy` включает неослабляемые требования атомарности, idempotency, source trace, rollback, запрета `world_base` mutation, запрета неутверждённых сущностей, точной knowledge projection и digest binding. Caller может только усиливать policy.
+
+## 0.2. Approved pipeline manifest и digest binding
+
+Каждый обязательный upstream artifact связан с:
+
+```text
+stage_id
+artifact_schema
+artifact_digest
+approval_stage_id
+approval_digest
+request_id
+```
+
+Stage 24 пересчитывает SHA-256 canonical JSON digests и блокирует отсутствующий, изменённый или не тем audit-ом утверждённый artifact.
+
+Обязательные digests:
+
+```text
+party_db_write_plan_input_digest
+party_database_schema_digest
+world_base_reference_digest
+approved_pipeline_manifest_digest
+party_db_write_plan_digest
+party_db_write_plan_audit_digest
+```
+
+Audit обязан ссылаться на точный `party_db_write_plan_digest`. Stage 25 повторно вычисляет все handoff digests.
+
+## 0.3. Code precheck
+
+До любого LLM-вызова код создаёт `party_db_write_plan_code_precheck` и проверяет:
+
+- exact input schema и единый request ID;
+- заранее выделенные party/player IDs;
+- наличие и успешность обязательных upstream approvals;
+- соответствие всех artifact digests manifest-у;
+- полноту и checksum party DB schema;
+- полноту и checksum world-base reference snapshot;
+- наличие и целостность character knowledge write projection;
+- утверждённые current position и narrator prose;
+- полноту и неослабляемость write policy;
+- отсутствие global context, live DB handles и запрещённых полей.
+
+При `precheck.pass=false` Builder и остальные роли не вызываются.
+
+## 0.4. Обязательные роли
+
+```text
+PartyDbWritePlanBuilder
+PartyDbWritePlanFormatRepairer
+PartyDbWritePlanAuditor
+PartyDbWritePlanAuditFormatRepairer
+PartyDbWritePlanAuditRouter
+PartyDbWritePlanSemanticRepairer
+SeniorPartyDbWritePlanSemanticRepairer
+SeniorPartyDbWritePlanBuilder
+SeniorPartyDbWritePlanAuditor
+```
+
+Builder и независимый Auditor обязательны. Code validation не заменяет LLM audit, а LLM audit не заменяет code validation.
+
+## 0.5. Plan contract и code validation
+
+`party_db_write_plan` обязан содержать:
+
+```text
+version/schema/request_id/plan_status
+source and schema digests
+transaction
+preconditions
+write_batches
+postconditions
+forbidden_writes
+derived_indexes
+audit_snapshots
+rollback_plan
+source_trace
+knowledge_projection_validation
+self_audit
+```
+
+Код проверяет:
+
+- atomic transaction, dry-run-first, idempotency и полный rollback;
+- реальные таблицы, колонки, operations, enums и ограничения schema snapshot;
+- уникальный и ациклический batch graph и корректный write order;
+- только утверждённые NPC, item, container, G5 anchor и route/edge IDs;
+- точное совпадение current position и player character;
+- точное совпадение knowledge projection: hash, counts и record keys, без missing/extra records;
+- отсутствие hidden state в player-visible targets;
+- запрет записи в `world_base`;
+- полный source trace и audit snapshots;
+- запрет player-visible output до commit.
+
+Код не выбирает замену для битой ссылки и не создаёт недостающую сущность.
+
+## 0.6. Independent audit
+
+`PartyDbWritePlanAuditor` получает только plan, его digest, approved manifest/outputs, schema snapshots и write policy.
+
+Audit schema: `party_db_write_plan_audit`. Он обязан содержать полный набор checks, непустое evidence, валидные concern codes/severity, точный plan digest и согласованные permissions. Audit не может содержать переписанный plan, hidden state или database handles.
+
+При `pass=true`: concerns пусты, route отсутствует, все commit permissions true.
+При `pass=false`: concerns/evidence непусты, permissions false, затем вызывается отдельный Router.
+
+## 0.7. Repair routing и escalation
+
+```text
+format error plan
+→ PartyDbWritePlanFormatRepairer
+→ полный validator
+→ новый independent audit
+
+format error audit
+→ PartyDbWritePlanAuditFormatRepairer
+→ полный audit validator
+
+semantic plan error
+→ PartyDbWritePlanAuditRouter
+→ PartyDbWritePlanSemanticRepairer
+→ полный validator
+→ новый independent audit
+
+второй semantic repair
+→ SeniorPartyDbWritePlanSemanticRepairer / senior roles
+→ полный validator
+→ новый independent audit
+
+failed senior repair
+→ blocked / manual_review
+```
+
+Format и semantic repair не взаимозаменяемы. Код только валидирует выбранный Router-ом route и его совместимость с concerns. Каждый repair обязательно завершается повторным audit; последний неаудированный repair запрещён.
+
+## 0.8. Result bundle
+
+Stage 24 возвращает только:
+
+```text
+stage24_party_db_write_plan_result:
+  version/schema/request_id/pass
+  input/schema/world-base/manifest/plan digests
+  party_db_write_plan_code_precheck
+  party_db_write_plan
+  party_db_write_plan_audit
+  repair_route
+  generation_history
+  audit_history
+  repair_history
+  diagnostics
+  handoff_permission
+```
+
+Успешный result bundle immutable и допускается к Stage 25 только если precheck, plan и audit успешны, route отсутствует и все handoff permissions true.
+
+---
+
+# Этап 24. План записи в party-базу
+
+## 1. Назначение этапа
+
+План записи в party-базу — это этап, на котором LLM/структурирующий агент формирует проверяемый `party_db_write_plan`.
+
+Этот этап не пишет данные в базу напрямую. Он только создаёт план транзакции:
+
+```text
+какие записи создать;
+какие записи обновить;
+какие связи установить;
+какие snapshot сохранить;
+какие таблицы нельзя трогать;
+в каком порядке выполнять операции;
+какие проверки выполнить до commit;
+как откатить операцию при ошибке.
+```
+
+Короткая формула:
+
+```text
+approved_pipeline_outputs
++ narrator_prose_audit.pass=true
++ party_database_schema
++ write_policy
+→ party_db_write_plan
+→ db_write_plan_audit
+→ transaction executor
+```
+
+Главное правило:
+
+```text
+LLM/структурирующий агент формирует только план записи.
+Код валидирует план.
+Код выполняет транзакцию.
+Код не сочиняет новые world facts.
+```
+
+## 2. Что фиксируется в party-базе
+
+Этап должен подготовить запись следующих слоёв:
+
+```text
+party_state;
+party_clock;
+party_current_position;
+party_player_character;
+party_character_body_state;
+party_inventory;
+party_property_and_access;
+party_scene_minilocations;
+party_scene_anchors;
+party_scene_edges;
+party_npcs;
+party_npc_anchor_bindings;
+party_items;
+party_containers;
+party_property_bindings;
+party_hidden_state;
+party_visible_context;
+party_character_knowledge_layer;
+party_events;
+party_reveal_conditions;
+party_consequence_hooks;
+party_narrator_output;
+party_audit_snapshots;
+party_source_trace;
+```
+
+Запись должна быть атомарной: либо вся стартовая партия фиксируется согласованно, либо ничего не записывается как live-state.
+
+## 3. Место этапа в pipeline
+
+```text
+1. Заявка игрока
+2. Нормализация заявки
+3. Выбор исторической рамки
+4. Загрузка регионального контекста
+5. Подбор стартовых G1–G4 кандидатов
+6. Подбор place templates
+7. Подбор NPC-кандидатов
+8. Подбор предметных профилей
+9. Выбор стартового узла
+10. Аудит стартового места
+11. Генерация персонажа
+12. Аудит персонажа
+13. Материализация G5-сцены
+14. Аудит G5-сцены
+15. Размещение стартовых NPC
+16. Размещение стартовых предметов
+17. Проверка времени и света
+18. Формирование карты знаний персонажа
+19. Формирование полного hidden state
+20. Формирование visible context package
+21. Аудит visible context
+22. Генерация стартовой прозы narrator
+23. Аудит стартовой прозы narrator
+24. План записи в party-базу и независимый аудит плана
+25. Commit gate и атомарная запись в party-базу
+26. Первый игровой экран
+```
+
+План записи формируется только после успешного аудита стартовой прозы. До этого нельзя фиксировать live-party как готовую.
+
+## 4. Вход этапа
+
+```json
+{
+  "version": 1,
+  "schema": "party_db_write_plan_input",
+  "request_id": "string",
+
+  "party_creation_context": {
+    "party_id": "string",
+    "player_character_id": "string",
+    "campaign_id": "string | null",
+    "created_at": "ISO-8601 string",
+    "schema_version": "string"
+  },
+
+  "historical_frame": {
+    "version": 1,
+    "schema": "historical_frame"
+  },
+
+  "weather_state": {
+    "version": 1,
+    "schema": "weather_state"
+  },
+
+  "selected_start_node": {
+    "version": 1,
+    "schema": "selected_start_node"
+  },
+
+  "start_place_audit": {
+    "version": 1,
+    "schema": "start_place_audit",
+    "pass": true
+  },
+
+  "player_character": {
+    "version": 1,
+    "schema": "player_character_game_profile"
+  },
+
+  "player_character_audit": {
+    "version": 1,
+    "schema": "player_character_audit",
+    "pass": true
+  },
+
+  "g5_scene_graph": {
+    "version": 1,
+    "schema": "g5_scene_graph_draft"
+  },
+
+  "g5_scene_audit": {
+    "version": 1,
+    "schema": "g5_scene_audit",
+    "pass": true
+  },
+
+  "initial_npc_placement": {
+    "version": 1,
+    "schema": "initial_npc_placement_draft"
+  },
+
+  "npc_placement_audit": {
+    "version": 1,
+    "schema": "initial_npc_placement_audit",
+    "pass": true
+  },
+
+  "initial_item_placement": {
+    "version": 1,
+    "schema": "initial_item_placement_draft"
+  },
+
+  "item_placement_audit": {
+    "version": 1,
+    "schema": "initial_item_placement_audit",
+    "pass": true
+  },
+
+  "time_light_consistency_audit": {
+    "version": 1,
+    "schema": "time_light_consistency_audit",
+    "pass": true
+  },
+
+  "character_knowledge_map": {
+    "version": 1,
+    "schema": "character_knowledge_map"
+  },
+
+  "character_knowledge_map_audit": {
+    "version": 1,
+    "schema": "character_knowledge_map_audit",
+    "pass": true
+  },
+
+  "character_knowledge_write_projection": {
+    "version": 1,
+    "schema": "character_knowledge_write_projection",
+    "projection_manifest": {
+      "source_content_hash": "string",
+      "expected_counts": {},
+      "expected_record_keys": []
+    }
+  },
+
+  "full_hidden_scene_state": {
+    "version": 1,
+    "schema": "full_hidden_scene_state"
+  },
+
+  "full_hidden_state_audit": {
+    "version": 1,
+    "schema": "full_hidden_state_audit",
+    "pass": true
+  },
+
+  "visible_context_package": {
+    "version": 1,
+    "schema": "visible_context_package"
+  },
+
+  "visible_context_audit": {
+    "version": 1,
+    "schema": "visible_context_audit",
+    "pass": true
+  },
+
+  "narrator_starting_prose": {
+    "version": 1,
+    "schema": "narrator_starting_prose",
+    "prose_status": "drafted"
+  },
+
+  "narrator_prose_audit": {
+    "version": 1,
+    "schema": "narrator_prose_audit",
+    "pass": true
+  },
+
+  "party_database_schema": {
+    "version": 1,
+    "schema": "party_database_schema_snapshot",
+    "tables": [],
+    "foreign_keys": [],
+    "unique_constraints": [],
+    "allowed_operations": []
+  },
+
+  "write_policy": {
+    "require_all_previous_audits_passed": true,
+    "require_atomic_transaction": true,
+    "require_idempotency_keys": true,
+    "require_fk_precheck": true,
+    "require_no_world_base_mutation": true,
+    "require_source_trace": true,
+    "require_rollback_plan": true,
+    "require_write_order": true,
+    "reject_unapproved_entities": true,
+    "reject_hidden_state_to_player_tables": true,
+    "reject_player_output_before_commit": true,
+    "allow_snapshot_tables": true
+  }
+}
+```
+
+## 5. Выход этапа
+
+```json
+{
+  "version": 1,
+  "schema": "party_db_write_plan",
+  "request_id": "string",
+
+  "plan_status": "formed | blocked | requires_repair",
+
+  "transaction": {
+    "transaction_id": "string",
+    "party_id": "string",
+    "idempotency_key": "string",
+    "is_atomic": true,
+    "is_dry_run_first": true,
+    "rollback_strategy": "full_transaction_rollback",
+    "write_order": []
+  },
+
+  "preconditions": [],
+  "write_batches": [],
+  "postconditions": [],
+  "forbidden_writes": [],
+  "derived_indexes": [],
+  "audit_snapshots": [],
+  "rollback_plan": {},
+  "source_trace": [],
+  "knowledge_projection_validation": {},
+
+  "self_audit": {
+    "pass": true,
+    "concerns": [],
+    "evidence": []
+  }
+}
+```
+
+## 6. Главное ограничение
+
+План записи не может создавать новые смыслы.
+
+Разрешено:
+
+```text
+переложить уже утверждённые сущности в таблицы;
+сформировать insert/update операции;
+сформировать связи между уже утверждёнными сущностями;
+сформировать snapshot аудитов;
+сформировать индексы и служебные derived records;
+задать порядок транзакции;
+задать rollback;
+задать idempotency keys.
+```
+
+Запрещено:
+
+```text
+создавать новый NPC;
+создавать новый предмет;
+создавать новый маршрут;
+создавать новый G5-якорь;
+создавать новое знание персонажа;
+создавать новое скрытое событие;
+менять narrator prose;
+менять hidden state;
+менять visible context;
+менять current_position;
+менять clock/weather/light;
+писать в world_base;
+писать player-visible output до успешного commit.
+```
+
+## 7. Общий порядок записи
+
+Поле `write_batches[*].order` — абсолютная уникальная последовательность batch внутри транзакции. Номер pipeline stage, номер раздела документа и order не смешиваются.
+
+Канонический порядок:
+
+```text
+1. party_state
+2. party_clock
+3. party_environment_state
+4. party_current_position
+5. party_player_characters
+6. party_character_inventory
+7. party_scene_minilocations
+8. party_scene_anchors
+9. party_scene_edges
+10. party_npcs
+11. party_npc_anchor_bindings
+12. party_items
+13. party_containers
+14. party_item_anchor_bindings
+15. party_property_bindings
+16. party_hidden_state blocks
+17. party_reveal_conditions / discovery / consequence hooks
+18. party_character_knowledge_maps root pending
+19. party_character_knowledge_snapshots
+20. party_character_known_routes
+21. party_character_known_places
+22. party_character_known_addresses
+23. party_character_known_landmarks
+24. party_character_known_people
+25. party_character_known_authorities
+26. party_character_known_dangers
+27. party_character_known_social_rules
+28. party_character_known_resources
+29. party_character_rumors
+30. party_character_mistaken_beliefs
+31. party_character_uncertain_knowledge
+32. party_character_forbidden_knowledge
+33. party_character_knowledge_gaps
+34. party_player_character_knowledge_boundary
+35. mark knowledge map current after projection validation
+36. party_visible_context_package
+37. party_narrator_output_approved
+38. party_available_action_options
+39. party_events / opening event journal
+40. audit snapshots
+41. party_source_trace
+42. final party_ready flag
+```
+
+Правило: зависимые записи пишутся после родительских.
+
+```text
+knowledge child records нельзя писать до party_character_knowledge_maps.
+knowledge map нельзя помечать current до snapshot и полной normalized projection.
+party_visible_context нельзя писать до hidden state и current knowledge boundary.
+party_narrator_output нельзя писать до narrator prose audit.
+final party_ready flag всегда последний.
+```
+
+## 8. Формат preconditions
+
+```json
+{
+  "precondition_id": "precond_001",
+  "check_type": "audit_passed | schema_valid | fk_available | no_forbidden_write | idempotency_not_used | source_trace_present",
+  "target_ref": {
+    "schema": "narrator_prose_audit",
+    "record_id": "request_id"
+  },
+  "expected": true,
+  "on_fail": {
+    "action": "block_transaction",
+    "error_code": "WRITE_PLAN_PRECONDITION_FAILED"
+  }
+}
+```
+
+Обязательные preconditions:
+
+```text
+start_place_audit.pass=true;
+player_character_audit.pass=true;
+g5_scene_audit.pass=true;
+npc_placement_audit.pass=true;
+item_placement_audit.pass=true;
+time_light_consistency_audit.pass=true;
+character_knowledge_map_audit.pass=true;
+full_hidden_state_audit.pass=true;
+visible_context_audit.pass=true;
+narrator_prose_audit.pass=true;
+party_id не занят активной партией;
+idempotency_key ещё не использован;
+world_base write operations absent;
+source_trace present;
+```
+
+## 9. Формат write batch
+
+```json
+{
+  "batch_id": "batch_001",
+  "batch_label": "write_party_state",
+  "order": 1,
+  "operation_mode": "insert_only | update_only | upsert_with_idempotency | snapshot_insert",
+  "target_table": "party_state",
+  "depends_on_batches": [],
+  "records": [],
+  "fk_checks": [],
+  "unique_checks": [],
+  "on_error": {
+    "action": "rollback_transaction",
+    "error_code": "WRITE_BATCH_FAILED"
+  }
+}
+```
+
+Все batch должны иметь:
+
+```text
+batch_id;
+order;
+target_table;
+operation_mode;
+records;
+dependency list;
+on_error;
+```
+
+## 10. Запись party_state
+
+`party_state` — корневая запись партии.
+
+```json
+{
+  "batch_id": "batch_party_state",
+  "order": 1,
+  "operation_mode": "insert_only",
+  "target_table": "party_state",
+  "records": [
+    {
+      "party_id": "party_001",
+      "campaign_id": null,
+      "player_character_id": "player_character_001",
+      "status": "initializing",
+      "schema_version": "1",
+      "created_at": "ISO-8601 string",
+      "opening_request_id": "request_id",
+      "current_turn_number": 0,
+      "current_phase": "opening_commit",
+      "world_base_region_id": "region_001",
+      "is_ready_for_player": false
+    }
+  ]
+}
+```
+
+Правило: `is_ready_for_player=false` до завершения всей транзакции и postcondition checks.
+
+## 11. Запись времени и среды
+
+```json
+{
+  "batch_id": "batch_clock_environment",
+  "order": 2,
+  "target_table": "party_clock",
+  "operation_mode": "insert_only",
+  "records": [
+    {
+      "party_id": "party_001",
+      "day": 1,
+      "hour": 3,
+      "minute": 45,
+      "time_of_day": "deep_night",
+      "light_profile": "dark",
+      "season": "winter",
+      "weather_state_id": "weather_state_001",
+      "source_schema": "historical_frame",
+      "source_request_id": "request_id"
+    }
+  ]
+}
+```
+
+Отдельно:
+
+```json
+{
+  "batch_id": "batch_environment",
+  "order": 3,
+  "target_table": "party_environment_state",
+  "operation_mode": "insert_only",
+  "records": [
+    {
+      "party_id": "party_001",
+      "weather_state_id": "weather_state_001",
+      "weather_kind": "cloudy",
+      "temperature_band": "cold",
+      "precipitation": "none",
+      "wind": "weak",
+      "visibility_weather_modifier": "reduced",
+      "ground_state": "snow",
+      "source_schema": "weather_state"
+    }
+  ]
+}
+```
+
+## 12. Запись current_position
+
+```json
+{
+  "batch_id": "batch_current_position",
+  "order": 4,
+  "target_table": "party_current_position",
+  "operation_mode": "insert_only",
+  "records": [
+    {
+      "party_id": "party_001",
+      "player_character_id": "player_character_001",
+      "region_id": "region_001",
+      "place_id": "place_001",
+      "location_id": "g4_001",
+      "minilocation_id": "g5_miniloc_001",
+      "anchor_id": "g5_anchor_001",
+      "last_route_id": null,
+      "position_status": "active",
+      "set_by_stage": "g5_scene_materialization",
+      "source_schema": "g5_scene_graph_draft"
+    }
+  ],
+  "fk_checks": [
+    "party_state.party_id exists",
+    "party_scene_minilocations.minilocation_id exists",
+    "party_scene_anchors.anchor_id exists"
+  ]
+}
+```
+
+Критично: `current_position` должен ссылаться на те же `minilocation_id` и `anchor_id`, которые уже есть в утверждённой G5-сцене.
+
+## 13. Запись персонажа
+
+```json
+{
+  "batch_id": "batch_player_character",
+  "order": 5,
+  "target_table": "party_player_characters",
+  "operation_mode": "insert_only",
+  "records": [
+    {
+      "party_id": "party_001",
+      "player_character_id": "player_character_001",
+      "identity": {},
+      "social_status": {},
+      "occupation": {},
+      "origin": {},
+      "goals": [],
+      "constraints": [],
+      "source_schema": "player_character_game_profile"
+    }
+  ]
+}
+```
+
+Дополнительные таблицы:
+
+```text
+party_character_attributes;
+party_character_skills;
+party_character_body_state;
+party_character_memory;
+party_character_goals;
+party_character_relations;
+party_character_obligations;
+party_character_limits;
+```
+
+## 14. Запись инвентаря персонажа
+
+```json
+{
+  "batch_id": "batch_character_inventory",
+  "order": 6,
+  "target_table": "party_character_inventory",
+  "operation_mode": "insert_only",
+  "records": [
+    {
+      "party_id": "party_001",
+      "player_character_id": "player_character_001",
+      "item_instance_id": "pc_item_001",
+      "item_profile_candidate_id": "item_prof_cand_001",
+      "carried_where": "belt | hands | bag | body | container",
+      "weight": 1.0,
+      "size_band": "hand",
+      "condition": "ordinary",
+      "quick_access": "quick | slow | packed | unavailable",
+      "owner_model": "player | borrowed | disputed | unknown",
+      "use_limits": [],
+      "risk_state": {},
+      "source_schema": "player_character_game_profile"
+    }
+  ]
+}
+```
+
+Если предмет уже был создан как часть player character inventory, он не должен повторно записываться как scene item без отдельной причины.
+
+## 15. Запись G5-сцены
+
+### 15.1. Минилокации
+
+```json
+{
+  "batch_id": "batch_scene_minilocations",
+  "order": 7,
+  "target_table": "party_scene_minilocations",
+  "operation_mode": "insert_only",
+  "records": [
+    {
+      "party_id": "party_001",
+      "minilocation_id": "g5_miniloc_001",
+      "parent_g4_node_id": "g4_001",
+      "minilocation_type": "string",
+      "light_state": "dark | dim | daylight | firelit | unknown",
+      "movement_space": "string",
+      "visibility_notes": "string",
+      "access_notes": "string",
+      "source_schema": "g5_scene_graph_draft"
+    }
+  ]
+}
+```
+
+### 15.2. Якоря
+
+```json
+{
+  "batch_id": "batch_scene_anchors",
+  "order": 8,
+  "target_table": "party_scene_anchors",
+  "operation_mode": "insert_only",
+  "records": [
+    {
+      "party_id": "party_001",
+      "anchor_id": "g5_anchor_001",
+      "parent_minilocation_id": "g5_miniloc_001",
+      "parent_g4_node_id": "g4_001",
+      "g5_template_id": "g5_template_001",
+      "anchor_type": "string",
+      "spatial_role": "string",
+      "visibility_state": {},
+      "access_state": {},
+      "supports": {},
+      "source_schema": "g5_scene_graph_draft"
+    }
+  ]
+}
+```
+
+### 15.3. Проходы
+
+```json
+{
+  "batch_id": "batch_scene_edges",
+  "order": 9,
+  "target_table": "party_scene_edges",
+  "operation_mode": "insert_only",
+  "records": [
+    {
+      "party_id": "party_001",
+      "edge_id": "g5_edge_001",
+      "from_anchor_id": "g5_anchor_001",
+      "to_anchor_id": "g5_anchor_002",
+      "edge_type": "passage | door | gate | path | stairs | opening | unknown",
+      "base_time_seconds": 10,
+      "movement_difficulty": "ordinary",
+      "access_condition": {},
+      "risk_state": {},
+      "source_schema": "g5_scene_graph_draft"
+    }
+  ]
+}
+```
+
+## 16. Запись NPC
+
+```json
+{
+  "batch_id": "batch_npcs",
+  "order": 10,
+  "target_table": "party_npcs",
+  "operation_mode": "insert_only",
+  "records": [
+    {
+      "party_id": "party_001",
+      "npc_instance_id": "npc_001",
+      "npc_candidate_id": "npc_cand_001",
+      "profile_level": "background | scene | key",
+      "identity": {},
+      "base_refs": {},
+      "current_activity": {},
+      "visibility_state": {},
+      "attention_state": {},
+      "witness_state": {},
+      "interaction_state": {},
+      "knowledge_scope": {},
+      "motivation_scope_public": {},
+      "schedule_state": {},
+      "source_schema": "initial_npc_placement_draft"
+    }
+  ]
+}
+```
+
+Привязки NPC:
+
+```json
+{
+  "batch_id": "batch_npc_anchor_bindings",
+  "order": 11,
+  "target_table": "party_npc_anchor_bindings",
+  "operation_mode": "insert_only",
+  "records": [
+    {
+      "party_id": "party_001",
+      "npc_anchor_binding_id": "npc_anchor_binding_001",
+      "npc_instance_id": "npc_001",
+      "g5_anchor_id": "g5_anchor_001",
+      "binding_type": "standing_at | sitting_at | working_at | guarding | hidden_near | sleeping_at | observing",
+      "distance_to_player_band": "same_anchor | near | short | medium | far | offscreen",
+      "line_of_sight_to_player": "clear | partial | blocked | unknown",
+      "line_of_hearing_to_player": "clear | muffled | blocked | unknown",
+      "source_schema": "initial_npc_placement_draft"
+    }
+  ]
+}
+```
+
+## 17. Запись предметов и контейнеров
+
+### 17.1. Предметы сцены
+
+```json
+{
+  "batch_id": "batch_items",
+  "order": 12,
+  "target_table": "party_items",
+  "operation_mode": "insert_only",
+  "records": [
+    {
+      "party_id": "party_001",
+      "item_instance_id": "item_001",
+      "item_profile_candidate_id": "item_prof_cand_001",
+      "item_profile_id": "item_profile_001",
+      "identity": {},
+      "physical_state": {},
+      "visibility_state": {},
+      "access_state": {},
+      "property_state": {},
+      "risk_state": {},
+      "game_function": {},
+      "source_schema": "initial_item_placement_draft"
+    }
+  ]
+}
+```
+
+### 17.2. Контейнеры
+
+```json
+{
+  "batch_id": "batch_containers",
+  "order": 13,
+  "target_table": "party_containers",
+  "operation_mode": "insert_only",
+  "records": [
+    {
+      "party_id": "party_001",
+      "container_instance_id": "container_001",
+      "container_profile_candidate_id": "container_prof_cand_001",
+      "container_profile_id": "container_profile_001",
+      "identity": {},
+      "physical_state": {},
+      "content_state": {},
+      "visibility_state": {},
+      "access_state": {},
+      "property_state": {},
+      "risk_state": {},
+      "source_schema": "initial_item_placement_draft"
+    }
+  ]
+}
+```
+
+### 17.3. Привязки предметов и контейнеров
+
+```json
+{
+  "batch_id": "batch_item_container_bindings",
+  "order": 14,
+  "target_table": "party_item_anchor_bindings",
+  "operation_mode": "insert_only",
+  "records": [
+    {
+      "party_id": "party_001",
+      "item_anchor_binding_id": "item_anchor_binding_001",
+      "item_instance_id": "item_001",
+      "g5_anchor_id": "g5_anchor_001",
+      "binding_type": "lying_on | fixed_to | hidden_near | stored_at | visible_background | searchable_detail",
+      "distance_to_player_band": "same_anchor | near | short | medium | far | offscreen",
+      "line_of_sight_to_player": "clear | partial | blocked | hidden | unknown",
+      "line_of_reach_to_player": "reachable | step_required | blocked | forbidden | unknown",
+      "source_schema": "initial_item_placement_draft"
+    }
+  ]
+}
+```
+
+## 18. Запись property bindings
+
+```json
+{
+  "batch_id": "batch_property_bindings",
+  "order": 15,
+  "target_table": "party_property_bindings",
+  "operation_mode": "insert_only",
+  "records": [
+    {
+      "party_id": "party_001",
+      "property_binding_id": "property_binding_001",
+      "property_rule_candidate_id": "property_rule_cand_001",
+      "applies_to_type": "item | container | anchor | npc",
+      "applies_to_id": "item_001",
+      "ownership_model": "personal | household | communal | service | trade_stock | sacred | authority_controlled | found | disputed | unknown",
+      "holder_model": "owner | temporary_holder | worker | keeper | trader | guard | borrower | container | fixed | unknown",
+      "controller_model": "owner | senior | official | household_head | guard | lock | none | unknown",
+      "access_model": {},
+      "risk_model": {},
+      "transfer_conditions": {},
+      "source_schema": "initial_item_placement_draft"
+    }
+  ]
+}
+```
+
+## 19. Запись hidden state
+
+Hidden state пишется в отдельные таблицы и никогда не смешивается с player-visible output.
+
+```json
+{
+  "batch_id": "batch_hidden_state",
+  "order": 16,
+  "target_table": "party_hidden_npc_state",
+  "operation_mode": "insert_only",
+  "records": [
+    {
+      "party_id": "party_001",
+      "hidden_npc_state_id": "hidden_npc_001",
+      "npc_instance_id": "npc_001",
+      "private_motives": [],
+      "private_constraints": [],
+      "private_knowledge": [],
+      "reaction_model": {},
+      "memory_hooks": [],
+      "consequence_hooks": [],
+      "source_schema": "full_hidden_scene_state"
+    }
+  ]
+}
+```
+
+Hidden state batch groups:
+
+```text
+party_hidden_npc_state;
+party_hidden_access_state;
+party_hidden_property_state;
+party_hidden_container_state;
+party_hidden_item_state;
+party_hidden_risk_state;
+party_hidden_event_state;
+party_hidden_social_state;
+party_hidden_route_state;
+party_hidden_environment_state;
+```
+
+Запрещено писать hidden state в:
+
+```text
+party_player_visible_message;
+party_narrator_output_public;
+party_visible_context_package;
+party_available_action_options public labels;
+```
+
+## 20. Запись reveal/discovery/consequence
+
+```json
+{
+  "batch_id": "batch_reveal_discovery_consequence",
+  "order": 17,
+  "target_table": "party_reveal_conditions",
+  "operation_mode": "insert_only",
+  "records": [
+    {
+      "party_id": "party_001",
+      "reveal_condition_id": "reveal_001",
+      "hidden_fact_id": "hidden_fact_001",
+      "can_reveal_to": "player | character | npc | system_only",
+      "reveal_channel": "visible_context | narrator_after_action | journal_after_discovery | npc_dialogue | map_update | inventory_update | consequence",
+      "condition_type": "inspection_success | action_success | dialogue_success | time_trigger | moved_closer | light_changed",
+      "condition_params": {},
+      "reveal_text_policy": {},
+      "source_schema": "full_hidden_scene_state"
+    }
+  ]
+}
+```
+
+Отдельно:
+
+```text
+party_discovery_rules;
+party_consequence_hooks;
+party_event_triggers;
+```
+
+## 21. Запись party_character_knowledge_layer
+
+`party_character_knowledge_layer` — логический атомарный блок, а не одна таблица.
+
+### 21.1. Корневая запись
+
+```json
+{
+  "batch_id": "batch_character_knowledge_root",
+  "order": 18,
+  "target_table": "party_character_knowledge_maps",
+  "operation_mode": "insert_only",
+  "records": [
+    {
+      "knowledge_map_id": "knowledge_map_001",
+      "party_id": "party_001",
+      "player_character_id": "player_character_001",
+      "map_version": 1,
+      "knowledge_status": "formed",
+      "knowledge_scope_summary": {},
+      "current_position_ref": {},
+      "status": "pending",
+      "is_current": false,
+      "source_schema": "character_knowledge_map"
+    }
+  ]
+}
+```
+
+### 21.2. Неизменяемый snapshot
+
+```json
+{
+  "batch_id": "batch_character_knowledge_snapshot",
+  "order": 19,
+  "target_table": "party_character_knowledge_snapshots",
+  "operation_mode": "snapshot_insert",
+  "depends_on_batches": ["batch_character_knowledge_root"],
+  "records": [
+    {
+      "knowledge_snapshot_id": "knowledge_snapshot_001",
+      "knowledge_map_id": "knowledge_map_001",
+      "party_id": "party_001",
+      "player_character_id": "player_character_001",
+      "stage_output_json": {},
+      "code_precheck_json": {},
+      "audit_json": {},
+      "write_projection_json": {},
+      "repair_history_json": [],
+      "content_hash": "string",
+      "immutable": true
+    }
+  ]
+}
+```
+
+### 21.3. Нормализованные группы
+
+Каждая запись имеет `knowledge_map_id`, `party_id`, `player_character_id`, basis, confidence и source trace.
+
+```text
+order 20 → party_character_known_routes
+order 21 → party_character_known_places
+order 22 → party_character_known_addresses
+order 23 → party_character_known_landmarks
+order 24 → party_character_known_people
+order 25 → party_character_known_authorities
+order 26 → party_character_known_dangers
+order 27 → party_character_known_social_rules
+order 28 → party_character_known_resources
+order 29 → party_character_rumors
+order 30 → party_character_mistaken_beliefs
+order 31 → party_character_uncertain_knowledge
+order 32 → party_character_forbidden_knowledge
+order 33 → party_character_knowledge_gaps
+order 34 → party_player_character_knowledge_boundary
+```
+
+Пример route knowledge:
+
+```json
+{
+  "batch_id": "batch_character_known_routes",
+  "order": 20,
+  "target_table": "party_character_known_routes",
+  "operation_mode": "insert_only",
+  "depends_on_batches": ["batch_character_knowledge_root"],
+  "records": [
+    {
+      "knowledge_record_id": "char_route_knowledge_001",
+      "knowledge_map_id": "knowledge_map_001",
+      "party_id": "party_001",
+      "player_character_id": "player_character_001",
+      "knowledge_kind": "route | nearby_path | immediate_exit",
+      "route_ref": {},
+      "knowledge_level": "visible_only | heard_of | approximate | directional | exact | personally_traveled",
+      "known_label": "string",
+      "basis": {},
+      "confidence": "low | medium | high",
+      "can_use_for_navigation": true,
+      "source_trace_ref": "string",
+      "is_active": true,
+      "source_schema": "character_knowledge_map"
+    }
+  ]
+}
+```
+
+`known_nearby_paths` записывается в `party_character_known_routes` с `knowledge_kind=nearby_path`. Отдельная таблица nearby paths запрещена.
+
+### 21.4. Projection validation и активация
+
+До активации root Stage 25 обязан проверить:
+
+```json
+{
+  "knowledge_projection_validation": {
+    "source_hash": "string",
+    "normalized_hash": "string",
+    "expected_counts": {},
+    "actual_counts": {},
+    "missing_records": [],
+    "extra_records": [],
+    "broken_source_traces": [],
+    "pass": true
+  }
+}
+```
+
+Только после `pass=true` выполняется order 35:
+
+```json
+{
+  "batch_id": "batch_character_knowledge_mark_current",
+  "order": 35,
+  "target_table": "party_character_knowledge_maps",
+  "operation_mode": "update_only",
+  "depends_on_batches": [
+    "batch_character_knowledge_snapshot",
+    "all_character_knowledge_normalized_batches"
+  ],
+  "records": [
+    {
+      "knowledge_map_id": "knowledge_map_001",
+      "status": "current",
+      "is_current": true
+    }
+  ]
+}
+```
+
+Полная физическая модель определена в `party_character_knowledge_layer.md`.
+
+## 22. Запись visible context
+
+```json
+{
+  "batch_id": "batch_visible_context",
+  "order": 36,
+  "target_table": "party_visible_context_package",
+  "operation_mode": "snapshot_insert",
+  "records": [
+    {
+      "party_id": "party_001",
+      "visible_context_snapshot_id": "visible_context_snapshot_001",
+      "request_id": "request_id",
+      "visible_context_package": {},
+      "visible_context_audit_id": "visible_context_audit_001",
+      "is_current": true,
+      "source_schema": "visible_context_package"
+    }
+  ]
+}
+```
+
+Служебные производные записи:
+
+```text
+party_visible_anchor_state;
+party_visible_npc_state;
+party_visible_item_state;
+party_visible_container_state;
+party_visible_exit_state;
+party_visible_action_context;
+party_visible_context_boundary;
+```
+
+## 23. Запись narrator output
+
+Пишется только approved draft после successful narrator prose audit.
+
+```json
+{
+  "batch_id": "batch_narrator_output",
+  "order": 37,
+  "target_table": "party_narrator_output",
+  "operation_mode": "insert_only",
+  "records": [
+    {
+      "party_id": "party_001",
+      "narrator_output_id": "narrator_output_001",
+      "request_id": "request_id",
+      "turn_number": 0,
+      "message_type": "opening_scene",
+      "prose": "string",
+      "action_options": [],
+      "narrator_prose_audit_id": "narrator_prose_audit_001",
+      "is_player_visible": true,
+      "is_approved": true,
+      "source_schema": "narrator_starting_prose"
+    }
+  ]
+}
+```
+
+Правило: `party_player_visible_message` создаётся только после успешного выполнения всей транзакции или как последний batch с `party_ready=true`.
+
+Если action options хранятся отдельно, используется самостоятельный batch:
+
+```json
+{
+  "batch_id": "batch_available_action_options",
+  "order": 38,
+  "target_table": "party_available_action_options",
+  "operation_mode": "insert_only",
+  "depends_on_batches": [
+    "batch_visible_context",
+    "batch_narrator_output"
+  ],
+  "records": []
+}
+```
+
+## 24. Запись событий
+
+Opening event должен фиксировать факт старта партии.
+
+```json
+{
+  "batch_id": "batch_events",
+  "order": 39,
+  "target_table": "party_events",
+  "operation_mode": "insert_only",
+  "records": [
+    {
+      "party_id": "party_001",
+      "event_id": "event_opening_001",
+      "turn_number": 0,
+      "event_type": "party_started | opening_scene_presented | position_set | scene_initialized",
+      "event_time": {
+        "day": 1,
+        "hour": 3,
+        "minute": 45
+      },
+      "event_scope": "party | current_g5 | player_character",
+      "event_summary_system": "Opening state committed.",
+      "player_visible": false,
+      "source_schema": "party_db_write_plan"
+    }
+  ]
+}
+```
+
+Visible player message — отдельный public event:
+
+```json
+{
+  "event_type": "player_message_ready",
+  "player_visible": true,
+  "message_ref": "narrator_output_001"
+}
+```
+
+## 25. Запись audit snapshots
+
+План должен сохранить все ключевые audit snapshots.
+
+```json
+{
+  "batch_id": "batch_audit_snapshots",
+  "order": 40,
+  "target_table": "party_audit_snapshots",
+  "operation_mode": "snapshot_insert",
+  "records": [
+    {
+      "party_id": "party_001",
+      "audit_snapshot_id": "audit_snapshot_001",
+      "stage": "narrator_prose_audit",
+      "schema": "narrator_prose_audit",
+      "pass": true,
+      "snapshot": {},
+      "created_at": "ISO-8601 string"
+    }
+  ]
+}
+```
+
+Сохраняются:
+
+```text
+start_place_audit;
+player_character_audit;
+g5_scene_audit;
+npc_placement_audit;
+item_placement_audit;
+time_light_consistency_audit;
+character_knowledge_map_audit;
+full_hidden_state_audit;
+visible_context_audit;
+narrator_prose_audit;
+db_write_plan_audit;
+```
+
+## 26. Запись source trace
+
+```json
+{
+  "batch_id": "batch_source_trace",
+  "order": 41,
+  "target_table": "party_source_trace",
+  "operation_mode": "insert_only",
+  "records": [
+    {
+      "party_id": "party_001",
+      "trace_id": "source_trace_001",
+      "record_table": "party_npcs",
+      "record_id": "npc_001",
+      "source_ids": [],
+      "source_schema": "initial_npc_placement_draft",
+      "supports": [
+        "npc_instance"
+      ]
+    }
+  ]
+}
+```
+
+Source trace нужен не для вывода игроку, а для аудита, repair и воспроизводимости.
+
+## 27. Финальный ready flag
+
+Последний batch:
+
+```json
+{
+  "batch_id": "batch_mark_party_ready",
+  "order": 42,
+  "target_table": "party_state",
+  "operation_mode": "update_only",
+  "records": [
+    {
+      "party_id": "party_001",
+      "status": "ready",
+      "is_ready_for_player": true,
+      "current_phase": "awaiting_player_input",
+      "opening_scene_presented": false,
+      "ready_at": "ISO-8601 string"
+    }
+  ],
+  "depends_on_batches": [
+    "all_previous_batches"
+  ]
+}
+```
+
+`opening_scene_presented` может оставаться `false`, пока UI реально не показал сообщение игроку. Это защищает от ситуации, где транзакция прошла, но клиент не получил текст.
+
+## 28. Forbidden writes
+
+План обязан явно перечислить запрещённые записи.
+
+```json
+{
+  "forbidden_writes": [
+    {
+      "target": "world_base.*",
+      "reason": "party initialization must not mutate canonical base"
+    },
+    {
+      "target": "party_player_visible_message before narrator_prose_audit.pass",
+      "reason": "player output is allowed only after narrator audit"
+    },
+    {
+      "target": "party_visible_context_package.hidden_state",
+      "reason": "hidden state must not be embedded in visible context"
+    },
+    {
+      "target": "new NPC outside initial_npc_placement",
+      "reason": "write plan cannot create semantic entities"
+    },
+    {
+      "target": "new item outside initial_item_placement",
+      "reason": "write plan cannot materialize items"
+    }
+  ]
+}
+```
+
+## 29. Idempotency
+
+Каждый write plan должен иметь idempotency layer.
+
+```json
+{
+  "idempotency": {
+    "idempotency_key": "party_start_request_id_hash",
+    "scope": "party_creation",
+    "on_duplicate": "return_existing_plan_if_same_hash | block_if_payload_differs",
+    "payload_hash": "sha256 string",
+    "expected_existing_status": "none | failed | rolled_back"
+  }
+}
+```
+
+Если повторный запрос с тем же key имеет другой payload hash:
+
+```text
+WRITE_PLAN_IDEMPOTENCY_CONFLICT
+```
+
+## 30. Rollback plan
+
+```json
+{
+  "rollback_plan": {
+    "strategy": "full_transaction_rollback",
+    "rollback_allowed_until": "commit_success",
+    "rollback_order": [
+      "reverse_write_order"
+    ],
+    "manual_recovery_required_if": [
+      "partial_commit_detected",
+      "external_side_effect_detected",
+      "player_visible_message_already_sent"
+    ],
+    "post_rollback_status": "party_creation_failed",
+    "preserve_diagnostics": true
+  }
+}
+```
+
+Критично: player-visible output не должен быть отправлен до commit success. Иначе rollback уже не сможет полностью скрыть ошибочный старт от игрока.
+
+## 31. Postconditions
+
+```json
+{
+  "postconditions": [
+    {
+      "postcondition_id": "postcond_001",
+      "check_type": "party_ready_flag",
+      "expected": true
+    },
+    {
+      "postcondition_id": "postcond_002",
+      "check_type": "current_position_resolves",
+      "expected": true
+    },
+    {
+      "postcondition_id": "postcond_003",
+      "check_type": "visible_output_has_approved_audit",
+      "expected": true
+    },
+    {
+      "postcondition_id": "postcond_004",
+      "check_type": "no_world_base_mutations",
+      "expected": true
+    }
+  ]
+}
+```
+
+После commit код обязан проверить:
+
+```text
+party_state.status=ready;
+current_position существует;
+player_character существует;
+G5 anchors существуют;
+NPC/item/container refs валидны;
+hidden state не попал в public tables;
+visible output approved;
+audit snapshots сохранены;
+source trace сохранён;
+world_base не изменён.
+```
+
+## 32. Работа LLM/структурирующего агента на этапе
+
+LLM/структурирующий агент допустим, потому что mapping из множества утверждённых pipeline outputs в DB write plan является сложной структурной задачей.
+
+Но роль агента ограничена.
+
+Агент делает:
+
+```text
+раскладывает утверждённые сущности по таблицам;
+формирует batch order;
+формирует insert/update/snapshot operations;
+формирует FK checks;
+формирует idempotency keys;
+формирует rollback plan;
+формирует forbidden writes;
+формирует postconditions;
+формирует audit snapshot plan.
+```
+
+Агент не делает:
+
+```text
+не создаёт новые world facts;
+не материализует новых NPC;
+не материализует новые items;
+не меняет hidden state;
+не меняет visible context;
+не меняет narrator prose;
+не пишет SQL напрямую;
+не исполняет транзакцию;
+не пишет в БД сам.
+```
+
+## 33. LLM-параметры
+
+### 33.1. `PartyDbWritePlanBuilder`
+
+Назначение: сформировать `party_db_write_plan`.
+
+```json
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 12000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 120000,
+    "hard_input_limit_tokens": 280000,
+    "reserve_output_tokens": 12000
+  }
+}
+```
+
+Использовать reasoning-модель, потому что этап требует согласовать много зависимых слоёв: `party_state`, позицию, G5, NPC, предметы, hidden state, visible state, знания, события, audit snapshots и транзакционный порядок.
+
+### 33.2. `PartyDbWritePlanAuditor`
+
+Назначение: проверить write plan до исполнения.
+
+```json
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 9000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 120000,
+    "hard_input_limit_tokens": 280000,
+    "reserve_output_tokens": 9000
+  }
+}
+```
+
+### 33.3. `PartyDbWritePlanFormatRepairer`
+
+Назначение: исправить только JSON-формат плана или аудита.
+
+```json
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-flash",
+  "thinking": {
+    "type": "disabled"
+  },
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "max_tokens": 6000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 50000,
+    "hard_input_limit_tokens": 120000,
+    "reserve_output_tokens": 6000
+  }
+}
+```
+
+### 33.4. `PartyDbWritePlanSemanticRepairer`
+
+Назначение: исправить смысловые ошибки write plan, не меняя утверждённые сущности.
+
+```json
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 12000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 120000,
+    "hard_input_limit_tokens": 280000,
+    "reserve_output_tokens": 12000
+  }
+}
+```
+
+## 34. Prompt: PartyDbWritePlanBuilder
+
+```md
+# Роль
+
+Ты PartyDbWritePlanBuilder для исторической текстовой RPG.
+
+# Задача
+
+Сформируй party_db_write_plan: транзакционный план записи утверждённого стартового состояния партии в party-базу.
+
+# Главное правило
+
+Ты не пишешь в базу.
+Ты не создаёшь новые факты.
+Ты не меняешь утверждённые сущности.
+Ты только раскладываешь уже утверждённые данные по таблицам и операциям записи.
+
+# Используй только входные данные
+
+- party_creation_context
+- historical_frame
+- weather_state
+- selected_start_node
+- player_character
+- g5_scene_graph
+- initial_npc_placement
+- initial_item_placement
+- character_knowledge_map
+- full_hidden_scene_state
+- visible_context_package
+- narrator_starting_prose
+- all audits
+- party_database_schema
+- write_policy
+
+# Обязательные условия
+
+1. Все предыдущие audits должны иметь pass=true.
+2. План должен быть атомарным.
+3. План должен иметь idempotency_key.
+4. План должен иметь write_order.
+5. План должен иметь rollback_plan.
+6. План должен иметь preconditions.
+7. План должен иметь postconditions.
+8. План должен иметь forbidden_writes.
+9. План не должен писать в world_base.
+10. План не должен создавать новые NPC/items/routes/anchors.
+11. План не должен писать hidden state в player-visible tables.
+12. План не должен выводить player-facing message до commit.
+13. Все refs должны указывать на утверждённые сущности.
+14. Все batches должны иметь target_table, operation_mode, records, dependencies and on_error.
+15. Все sensitive records должны иметь source_trace.
+
+# Формат
+
+Верни только JSON.
+
+schema:
+"party_db_write_plan"
+
+version:
+1
+```
+
+## 35. Prompt: PartyDbWritePlanAuditor
+
+```md
+# Роль
+
+Ты PartyDbWritePlanAuditor.
+
+# Задача
+
+Проверь party_db_write_plan перед исполнением транзакции.
+
+# Главное правило
+
+Ты не исправляешь план.
+Ты только аудируешь.
+
+# Проверить
+
+1. schema = party_db_write_plan.
+2. version = 1.
+3. Все предыдущие audits pass=true.
+4. transaction.is_atomic=true.
+5. idempotency_key есть.
+6. write_order есть.
+7. rollback_plan есть.
+8. preconditions есть.
+9. postconditions есть.
+10. forbidden_writes есть.
+11. Нет write operations в world_base.
+12. Нет новых NPC outside initial_npc_placement.
+13. Нет новых items outside initial_item_placement.
+14. Нет новых G5 anchors outside g5_scene_graph.
+15. current_position совпадает с G5 start position.
+16. Все FK зависимости соблюдены.
+17. Batch order не нарушает dependencies.
+18. Hidden state не пишется в visible/public tables.
+19. Narrator output имеет narrator_prose_audit.pass=true.
+20. Player visible message не пишется до final ready.
+21. Source trace присутствует.
+22. Audit snapshots сохраняются.
+23. Final ready flag идёт последним.
+
+# Формат
+
+Верни только JSON:
+
+{
+  "version": 1,
+  "schema": "party_db_write_plan_audit",
+  "pass": true,
+  "checks": {},
+  "concerns": [],
+  "evidence": [],
+  "repair_route": null,
+  "commit_permission": {
+    "can_execute_transaction": true
+  }
+}
+
+Если pass=false:
+- concerns не должен быть пустым;
+- evidence не должен быть пустым;
+- repair_route должен быть заполнен;
+- can_execute_transaction=false.
+```
+
+## 36. Prompt: PartyDbWritePlanFormatRepairer
+
+```md
+# Роль
+
+Ты PartyDbWritePlanFormatRepairer.
+
+# Задача
+
+Исправь только JSON-формат party_db_write_plan или party_db_write_plan_audit.
+
+# Главное правило
+
+Не меняй смысл.
+Не добавляй операции.
+Не удаляй операции.
+Не меняй target_table.
+Не меняй records.
+Не создавай новые refs.
+Не создавай world facts.
+
+# Разрешено
+
+- убрать markdown;
+- привести schema/version;
+- добавить отсутствующие служебные поля как null/[];
+- перенести свободный текст в notes;
+- нормализовать enum;
+- удалить неразрешённый debug/prose текст.
+
+# Запрещено
+
+- создавать новые records;
+- менять write_order по смыслу;
+- писать SQL;
+- исполнять транзакцию;
+- менять approved payload.
+
+# Формат
+
+Верни только JSON.
+```
+
+## 37. Prompt: PartyDbWritePlanSemanticRepairer
+
+```md
+# Роль
+
+Ты PartyDbWritePlanSemanticRepairer.
+
+# Задача
+
+Исправь party_db_write_plan по validationErrors и audit concerns.
+
+# Главное правило
+
+Исправляй только план записи.
+Не меняй утверждённые игровые сущности.
+Не создавай новые NPC/items/anchors/routes.
+Не меняй hidden state, visible context, narrator prose, character knowledge or clock.
+
+# Источники
+
+Используй только:
+- исходный party_db_write_plan
+- validationErrors
+- party_db_write_plan_audit.concerns
+- утверждённые pipeline outputs
+- party_database_schema
+- write_policy
+
+# Правила ремонта
+
+Если batch order нарушает FK:
+- переставь batch order без изменения records.
+
+Если отсутствует source_trace:
+- добавь source_trace только из уже существующих source_trace входов.
+
+Если hidden state попал в visible table:
+- вынеси его в hidden table или убери из public table.
+
+Если найден write в world_base:
+- удалить forbidden operation и добавить concern evidence.
+
+Если операция создаёт неутверждённую сущность:
+- удалить операцию и записать rejected_write.
+
+# Запрещено
+
+- создавать недостающий NPC;
+- создавать недостающий item;
+- создавать недостающий anchor;
+- создавать недостающий route;
+- заменять approved IDs;
+- исполнять SQL.
+
+# Формат
+
+Верни только JSON party_db_write_plan.
+```
+
+## 38. Validation rules
+
+Код обязан проверить `party_db_write_plan`:
+
+1. `schema === "party_db_write_plan"`.
+2. `version === 1`.
+3. `transaction.transaction_id` заполнен.
+4. `transaction.party_id` заполнен.
+5. `transaction.idempotency_key` заполнен.
+6. `transaction.is_atomic === true`.
+7. `transaction.write_order` не пустой.
+8. Все `preconditions` имеют `on_fail`.
+9. Все `write_batches` имеют `batch_id`.
+10. Все `write_batches` имеют `order`.
+11. Все `write_batches` имеют `target_table`.
+12. Все `write_batches` имеют `operation_mode`.
+13. Все `write_batches.records` являются array.
+14. Все `depends_on_batches` существуют.
+15. Нет циклов dependencies.
+16. Нет записей в `world_base.*`.
+17. Нет создания NPC outside approved NPC list.
+18. Нет создания items outside approved item list.
+19. Нет создания containers outside approved container list.
+20. Нет создания anchors outside approved G5.
+21. Нет создания routes outside approved route/edge set.
+22. `current_position` совпадает с утверждённой G5 позицией.
+23. Все NPC anchor bindings ссылаются на существующих NPC and anchors.
+24. Все item bindings ссылаются на существующие items/containers/anchors/NPC/player.
+25. Все property bindings ссылаются на существующие targets.
+26. Все hidden state refs существуют.
+27. Все reveal conditions ссылаются на existing hidden facts.
+28. Все consequence hooks ссылаются на existing targets.
+29. Hidden state не пишется в public/visible/player tables.
+30. Narrator output имеет approved audit.
+31. Player visible message не пишется до final ready batch.
+32. Final ready batch последний.
+33. Rollback plan есть.
+34. Source trace есть для ключевых records.
+35. Audit snapshots включают все gates.
+36. Postconditions включают ready flag and FK checks.
+37. `self_audit.evidence` не пустой.
+38. Если `self_audit.pass=false`, concerns не пустой.
+39. Есть root batch `party_character_knowledge_maps`.
+40. Есть immutable snapshot batch `party_character_knowledge_snapshots`.
+41. Все normalized knowledge records имеют один `knowledge_map_id`.
+42. `known_nearby_paths` отображены как `knowledge_kind=nearby_path`.
+43. `knowledge_projection_validation.pass=true` до mark-current batch.
+44. Нет missing или extra knowledge records относительно projection manifest.
+45. Mark-current batch идёт после всех knowledge batches и до visible context.
+
+## 39. Error codes
+
+```text
+WRITE_PLAN_INVALID_JSON
+WRITE_PLAN_SCHEMA_MISMATCH
+WRITE_PLAN_TRANSACTION_ID_MISSING
+WRITE_PLAN_PARTY_ID_MISSING
+WRITE_PLAN_IDEMPOTENCY_KEY_MISSING
+WRITE_PLAN_NOT_ATOMIC
+WRITE_PLAN_WRITE_ORDER_MISSING
+WRITE_PLAN_PRECONDITION_MISSING
+WRITE_PLAN_POSTCONDITION_MISSING
+WRITE_PLAN_ROLLBACK_PLAN_MISSING
+
+WRITE_PLAN_BATCH_ID_MISSING
+WRITE_PLAN_BATCH_ORDER_MISSING
+WRITE_PLAN_TARGET_TABLE_MISSING
+WRITE_PLAN_OPERATION_MODE_MISSING
+WRITE_PLAN_RECORDS_INVALID
+WRITE_PLAN_DEPENDENCY_NOT_FOUND
+WRITE_PLAN_DEPENDENCY_CYCLE
+WRITE_PLAN_ORDER_VIOLATES_FK
+
+WRITE_PLAN_WORLD_BASE_MUTATION
+WRITE_PLAN_CREATED_UNAPPROVED_NPC
+WRITE_PLAN_CREATED_UNAPPROVED_ITEM
+WRITE_PLAN_CREATED_UNAPPROVED_CONTAINER
+WRITE_PLAN_CREATED_UNAPPROVED_ANCHOR
+WRITE_PLAN_CREATED_UNAPPROVED_ROUTE
+
+WRITE_PLAN_POSITION_MISMATCH
+WRITE_PLAN_NPC_BINDING_REF_NOT_FOUND
+WRITE_PLAN_ITEM_BINDING_REF_NOT_FOUND
+WRITE_PLAN_PROPERTY_TARGET_REF_NOT_FOUND
+WRITE_PLAN_HIDDEN_STATE_REF_NOT_FOUND
+WRITE_PLAN_REVEAL_HIDDEN_FACT_NOT_FOUND
+WRITE_PLAN_CONSEQUENCE_TARGET_NOT_FOUND
+
+WRITE_PLAN_HIDDEN_STATE_PUBLIC_LEAK
+WRITE_PLAN_PLAYER_OUTPUT_BEFORE_AUDIT
+WRITE_PLAN_PLAYER_OUTPUT_BEFORE_COMMIT
+WRITE_PLAN_NARRATOR_OUTPUT_NOT_APPROVED
+WRITE_PLAN_FINAL_READY_NOT_LAST
+
+WRITE_PLAN_SOURCE_TRACE_MISSING
+WRITE_PLAN_AUDIT_SNAPSHOT_MISSING
+WRITE_PLAN_IDEMPOTENCY_CONFLICT
+WRITE_PLAN_EMPTY_SELF_AUDIT_EVIDENCE
+WRITE_PLAN_KNOWLEDGE_ROOT_MISSING
+WRITE_PLAN_KNOWLEDGE_SNAPSHOT_MISSING
+WRITE_PLAN_KNOWLEDGE_SNAPSHOT_HASH_MISMATCH
+WRITE_PLAN_KNOWLEDGE_PROJECTION_INCOMPLETE
+WRITE_PLAN_KNOWLEDGE_PROJECTION_EXTRA_RECORD
+WRITE_PLAN_KNOWLEDGE_MAP_ID_MISMATCH
+WRITE_PLAN_MULTIPLE_CURRENT_KNOWLEDGE_MAPS
+WRITE_PLAN_KNOWLEDGE_SOURCE_TRACE_BROKEN
+WRITE_PLAN_NEARBY_PATH_MAPPING_INVALID
+```
+
+## 40. DB write на этом этапе
+
+На этапе 24 сама party-база ещё не изменяется.
+
+Разрешено писать только технические snapshot-таблицы pipeline:
+
+```text
+pipeline_step_status;
+party_db_write_plan_draft_snapshot;
+party_db_write_plan_code_precheck_snapshot;
+party_db_write_plan_validation_issues;
+party_db_write_plan_repair_attempts;
+source_trace_snapshot;
+```
+
+Запрещено писать live-state:
+
+```text
+party_state;
+party_current_position;
+party_npcs;
+party_items;
+party_hidden_state;
+party_visible_context_package;
+party_narrator_output;
+party_player_visible_message;
+party_ready_flag;
+```
+
+Live-state пишется только на этапе транзакционного исполнения после аудита плана.
+
+## 41. Commit gate этапа
+
+Этап считается успешным, если:
+
+```text
+party_db_write_plan валиден;
+все previous audits pass=true;
+план атомарный;
+idempotency_key есть;
+write_order корректный;
+rollback_plan есть;
+preconditions/postconditions есть;
+нет world_base mutation;
+нет новых semantic entities;
+current_position корректен;
+все FK зависимости выполнимы;
+hidden state не попадёт в public tables;
+player-visible output не выйдет до commit;
+source_trace and audit snapshots включены;
+self_audit.pass=true.
+```
+
+После этого план передаётся в `db_write_plan_audit`.
+
+Если gate не пройден, транзакция не запускается.
+
+## 42. Передача в следующий этап
+
+```json
+{
+  "version": 1,
+  "schema": "db_write_plan_audit_input",
+  "request_id": "string",
+
+  "party_db_write_plan": {
+    "version": 1,
+    "schema": "party_db_write_plan",
+    "plan_status": "formed"
+  },
+
+  "approved_pipeline_outputs": {
+    "all_previous_audits_passed": true
+  },
+
+  "audit_policy": {
+    "reject_world_base_mutation": true,
+    "reject_unapproved_entities": true,
+    "reject_public_hidden_state": true,
+    "reject_fk_errors": true,
+    "reject_non_atomic_plan": true,
+    "reject_missing_rollback": true,
+    "reject_missing_idempotency": true,
+    "reject_player_output_before_commit": true
+  }
+}
+```
+
+## 43. Минимальный успешный результат
+
+```json
+{
+  "version": 1,
+  "schema": "party_db_write_plan",
+  "request_id": "req_001",
+
+  "plan_status": "formed",
+
+  "transaction": {
+    "transaction_id": "tx_party_start_001",
+    "party_id": "party_001",
+    "idempotency_key": "start_party_req_001_hash",
+    "is_atomic": true,
+    "is_dry_run_first": true,
+    "rollback_strategy": "full_transaction_rollback",
+    "write_order": [
+      "batch_party_state",
+      "batch_clock_environment",
+      "batch_scene_minilocations",
+      "batch_scene_anchors",
+      "batch_scene_edges",
+      "batch_current_position",
+      "batch_player_character",
+      "batch_character_inventory",
+      "batch_npcs",
+      "batch_npc_anchor_bindings",
+      "batch_items",
+      "batch_containers",
+      "batch_property_bindings",
+      "batch_hidden_state",
+      "batch_reveal_discovery_consequence",
+      "batch_character_knowledge_root",
+      "batch_character_knowledge_snapshot",
+      "batch_character_known_routes",
+      "batch_character_known_places",
+      "batch_character_known_addresses",
+      "batch_character_known_landmarks",
+      "batch_character_known_people",
+      "batch_character_known_authorities",
+      "batch_character_known_dangers",
+      "batch_character_known_social_rules",
+      "batch_character_known_resources",
+      "batch_character_rumors",
+      "batch_character_mistaken_beliefs",
+      "batch_character_uncertain_knowledge",
+      "batch_character_forbidden_knowledge",
+      "batch_character_knowledge_gaps",
+      "batch_player_character_knowledge_boundary",
+      "batch_character_knowledge_mark_current",
+      "batch_visible_context",
+      "batch_narrator_output",
+      "batch_available_action_options",
+      "batch_events",
+      "batch_audit_snapshots",
+      "batch_source_trace",
+      "batch_mark_party_ready"
+    ]
+  },
+
+  "preconditions": [
+    {
+      "precondition_id": "precond_all_audits",
+      "check_type": "audit_passed",
+      "target_ref": {
+        "schema": "all_previous_audits"
+      },
+      "expected": true,
+      "on_fail": {
+        "action": "block_transaction",
+        "error_code": "WRITE_PLAN_PRECONDITION_FAILED"
+      }
+    }
+  ],
+
+  "write_batches": [
+    {
+      "batch_id": "batch_party_state",
+      "batch_label": "write root party state",
+      "order": 1,
+      "operation_mode": "insert_only",
+      "target_table": "party_state",
+      "depends_on_batches": [],
+      "records": [
+        {
+          "party_id": "party_001",
+          "player_character_id": "player_character_001",
+          "status": "initializing",
+          "current_turn_number": 0,
+          "is_ready_for_player": false,
+          "opening_request_id": "req_001"
+        }
+      ],
+      "fk_checks": [],
+      "unique_checks": [
+        "party_id unique"
+      ],
+      "on_error": {
+        "action": "rollback_transaction",
+        "error_code": "WRITE_BATCH_FAILED"
+      }
+    },
+    {
+      "batch_id": "batch_current_position",
+      "batch_label": "write current position",
+      "order": 6,
+      "operation_mode": "insert_only",
+      "target_table": "party_current_position",
+      "depends_on_batches": [
+        "batch_party_state",
+        "batch_scene_minilocations",
+        "batch_scene_anchors"
+      ],
+      "records": [
+        {
+          "party_id": "party_001",
+          "player_character_id": "player_character_001",
+          "region_id": "region_001",
+          "place_id": "place_001",
+          "location_id": "g4_001",
+          "minilocation_id": "g5_miniloc_001",
+          "anchor_id": "g5_anchor_001",
+          "last_route_id": null,
+          "position_status": "active"
+        }
+      ],
+      "fk_checks": [
+        "party_state.party_id exists",
+        "party_scene_minilocations.minilocation_id exists",
+        "party_scene_anchors.anchor_id exists"
+      ],
+      "on_error": {
+        "action": "rollback_transaction",
+        "error_code": "WRITE_PLAN_POSITION_MISMATCH"
+      }
+    },
+    {
+      "batch_id": "batch_mark_party_ready",
+      "batch_label": "mark party ready",
+      "order": 42,
+      "operation_mode": "update_only",
+      "target_table": "party_state",
+      "depends_on_batches": [
+        "all_previous_batches"
+      ],
+      "records": [
+        {
+          "party_id": "party_001",
+          "status": "ready",
+          "is_ready_for_player": true,
+          "current_phase": "awaiting_player_input"
+        }
+      ],
+      "on_error": {
+        "action": "rollback_transaction",
+        "error_code": "WRITE_BATCH_FAILED"
+      }
+    }
+  ],
+
+  "postconditions": [
+    {
+      "postcondition_id": "postcond_ready",
+      "check_type": "party_ready_flag",
+      "expected": true
+    },
+    {
+      "postcondition_id": "postcond_position",
+      "check_type": "current_position_resolves",
+      "expected": true
+    },
+    {
+      "postcondition_id": "postcond_no_world_base",
+      "check_type": "no_world_base_mutations",
+      "expected": true
+    }
+  ],
+
+  "forbidden_writes": [
+    {
+      "target": "world_base.*",
+      "reason": "party initialization cannot mutate canonical base"
+    },
+    {
+      "target": "player-visible output before transaction commit",
+      "reason": "player output is allowed only after successful commit"
+    },
+    {
+      "target": "hidden state in public tables",
+      "reason": "hidden state must remain private"
+    }
+  ],
+
+  "derived_indexes": [
+    {
+      "index_id": "idx_party_current_position",
+      "purpose": "fast lookup of active party position",
+      "source_batches": [
+        "batch_current_position"
+      ]
+    }
+  ],
+
+  "audit_snapshots": [
+    {
+      "stage": "narrator_prose_audit",
+      "pass": true,
+      "snapshot_required": true
+    }
+  ],
+
+  "rollback_plan": {
+    "strategy": "full_transaction_rollback",
+    "rollback_order": [
+      "reverse_write_order"
+    ],
+    "preserve_diagnostics": true,
+    "post_rollback_status": "party_creation_failed"
+  },
+
+  "source_trace": [
+    {
+      "record_table": "party_current_position",
+      "record_id": "party_001:current_position",
+      "source_schema": "g5_scene_graph_draft",
+      "supports": [
+        "current_position"
+      ]
+    },
+    {
+      "record_table": "party_narrator_output",
+      "record_id": "narrator_output_001",
+      "source_schema": "narrator_starting_prose",
+      "supports": [
+        "approved opening text"
+      ]
+    }
+  ],
+
+  "self_audit": {
+    "pass": true,
+    "concerns": [],
+    "evidence": [
+      "All previous audit gates are required as preconditions.",
+      "Write plan is atomic and has rollback strategy.",
+      "No world_base writes are present.",
+      "Current position is written from approved G5 scene.",
+      "NPC, item and hidden state writes depend on approved upstream entities.",
+      "Player-visible output is written only after narrator prose audit and transaction commit."
+    ]
+  }
+}
+```

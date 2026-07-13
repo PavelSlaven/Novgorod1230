@@ -1,0 +1,1912 @@
+# Этап 8. Подбор допустимых предметных профилей
+
+## 1. Назначение этапа
+
+Подбор допустимых предметных профилей — это этап запуска новой партии, который формирует ограниченный список возможных предметных категорий, контейнеров и правил собственности для уже допустимых стартовых мест.
+
+Этот этап не создаёт конкретные предметы. Он не кладёт вещи в сцену. Он не создаёт инвентарь персонажа. Он не создаёт содержимое сундуков, мешков, лавок, амбаров, домов или тайников.
+
+Его задача — подготовить разрешённое предметное пространство:
+
+```text id="g07j3w"
+candidate_place_template_set
++ regional item profiles
++ container profiles
++ property rules
++ trade rules
++ goods prices
++ social roles
++ occupations
++ historical frame
+→ item_profile_candidate_set
+```
+
+Этап отвечает на вопрос:
+
+```text id="7jaw1n"
+Какие категории предметов, контейнеров и имущественных правил допустимы для таких стартовых мест?
+```
+
+Он не отвечает на вопрос:
+
+```text id="f8i0qr"
+Какие конкретные вещи сейчас лежат перед игроком?
+```
+
+## 2. Главное правило этапа
+
+Предмет не возникает из желания игрока.
+
+Если игрок написал:
+
+```text id="4x8u9n"
+хочу начать с мечом
+хочу найти деньги
+хочу чтобы рядом был сундук
+хочу украсть еду
+```
+
+это не создаёт предмет.
+
+Такая заявка может стать только ограничением или желанием, которое будущие этапы проверяют через:
+
+```text id="nh8809"
+место
+эпоху
+экономику
+социальный статус
+владельца
+контейнер
+доступ
+видимость
+причину появления
+риск
+```
+
+Предметный профиль допустим только если он разрешён базой и совместим с выбранным типом места.
+
+## 3. Место этапа в pipeline
+
+```text id="3w15a8"
+1. Заявка игрока
+2. Нормализация заявки
+3. Выбор исторической рамки
+4. Загрузка регионального контекста из world_base
+5. Подбор допустимых стартовых G1–G4 кандидатов
+6. Подбор допустимых place templates
+7. Подбор допустимых NPC-кандидатов
+8. Подбор допустимых предметных профилей
+9. Выбор стартового места
+10. Генерация персонажа
+11. Материализация G5
+12. Размещение NPC и предметов
+```
+
+Этап 8 должен идти после place templates, потому что допустимость предметов зависит от типа места. Он также использует NPC-кандидаты, потому что вещи часто связаны с социальными ролями, занятиями, владельцами, свидетелями и контролёрами доступа.
+
+## 4. Вход этапа
+
+```json id="1wi4bh"
+{
+  "version": 1,
+  "schema": "item_profile_retriever_input",
+  "request_id": "string",
+
+  "normalized_request": {
+    "version": 1,
+    "schema": "new_game_normalized_request"
+  },
+
+  "historical_frame": {
+    "version": 1,
+    "schema": "historical_frame",
+    "year": {
+      "value": 0
+    },
+    "calendar": {
+      "season": "spring | summer | autumn | winter"
+    },
+    "clock": {
+      "day": 1,
+      "hour": 0,
+      "minute": 0,
+      "time_of_day": "morning | day | evening | night | deep_night",
+      "light_profile": "dark | dim | daylight | twilight"
+    },
+    "region": {
+      "region_id": "string"
+    }
+  },
+
+  "regional_context_package": {
+    "version": 1,
+    "schema": "regional_context_package",
+    "item_context": {},
+    "container_context": {},
+    "property_context": {},
+    "social_context": {},
+    "occupation_context": {},
+    "npc_context": {},
+    "settlement_and_place_rules": {},
+    "trade_rules": {},
+    "goods_price_references": {}
+  },
+
+  "candidate_place_template_set": {
+    "version": 1,
+    "schema": "candidate_place_template_set",
+    "candidate_template_links": []
+  },
+
+  "npc_candidate_set": {
+    "version": 1,
+    "schema": "npc_candidate_set",
+    "npc_candidates": []
+  },
+
+  "item_profile_policy": {
+    "target_profiles_min": 20,
+    "target_profiles_max": 160,
+    "include_background_item_categories": true,
+    "include_interactable_item_profiles": true,
+    "include_container_profiles": true,
+    "include_property_rules": true,
+    "include_trade_and_price_references": true,
+    "do_not_materialize_items": true,
+    "require_place_template_match": true,
+    "require_region_match": true,
+    "require_year_or_period_match": true,
+    "require_season_match_when_applicable": true,
+    "require_owner_or_access_model": true,
+    "require_container_model_for_stored_items": true,
+    "require_sources": true,
+    "reject_rejected_or_conflict_records": true
+  }
+}
+```
+
+## 5. Выход этапа
+
+```json id="u7mfwi"
+{
+  "version": 1,
+  "schema": "item_profile_candidate_set",
+  "request_id": "string",
+
+  "selection_status": "ready | empty | blocked | requires_repair",
+
+  "frame": {
+    "region_id": "string",
+    "year": 0,
+    "season": "spring | summer | autumn | winter",
+    "clock": {}
+  },
+
+  "summary": {
+    "item_profile_count": 0,
+    "container_profile_count": 0,
+    "property_rule_count": 0,
+    "trade_rule_count": 0,
+    "rejected_profile_count": 0
+  },
+
+  "item_profile_candidates": [],
+  "container_profile_candidates": [],
+  "property_rule_candidates": [],
+  "trade_and_price_references": [],
+
+  "rejected_item_profile_candidates": [],
+
+  "item_profile_groups": [],
+
+  "downstream_constraints": {
+    "must_choose_from_item_profile_candidate_ids": [],
+    "must_choose_from_container_profile_candidate_ids": [],
+    "must_apply_property_rule_ids": [],
+    "must_preserve": [],
+    "must_not_create_yet": [],
+    "must_resolve_later": []
+  },
+
+  "source_trace": [],
+
+  "audit": {
+    "pass": true,
+    "concerns": [],
+    "evidence": []
+  }
+}
+```
+
+## 6. Что считается предметным профилем
+
+Предметный профиль — это не конкретный предмет, а разрешённая категория вещей.
+
+Пример допустимого профиля:
+
+```json id="da67hi"
+{
+  "item_profile_candidate_id": "item_prof_cand_001",
+  "item_profile_id": "item_profile_001",
+  "item_group": "food_or_household",
+  "allowed_place_template_ids": ["place_template_001"],
+  "typical_owner_model": "household_or_worker",
+  "typical_visibility": "visible_or_stored",
+  "can_be_materialized_later": true
+}
+```
+
+Это означает:
+
+```text id="zuv7to"
+в таком месте такие вещи могут быть допустимы
+```
+
+Это не означает:
+
+```text id="77n8as"
+конкретная вещь уже лежит в сцене
+```
+
+## 7. Разделение уровней предметной среды
+
+### 7.1. Категория предметов
+
+Категория описывает ожидаемый предметный слой места.
+
+Пример:
+
+```text id="g5cffo"
+бытовые вещи
+пища
+топливо
+инструменты
+упряжь
+торговый товар
+сакральные предметы
+служебные вещи
+оружие охраны
+письменные принадлежности
+дорожное снаряжение
+```
+
+Категория может быть частью стартового контекста, но не создаёт конкретного экземпляра.
+
+### 7.2. Значимый предмет
+
+Значимый предмет появляется только позже, если он:
+
+```text id="sbcoww"
+видим персонажу
+выбран для взаимодействия
+используется в действии
+ищется
+берётся
+продаётся
+ломается
+скрывается
+является уликой
+принадлежит кому-то важному
+создаёт риск
+влияет на проверку
+```
+
+Тогда он получает отдельную карточку с классом, материалом, состоянием, размещением, обнаружимостью, владением, функцией, ценностью, статусом, следами, доступностью и риском.
+
+### 7.3. Контейнер
+
+Контейнер — это объект хранения, доступа или сокрытия. Он не является “бесплатным списком предметов”.
+
+На этом этапе контейнерный профиль описывает:
+
+```text id="93jhjx"
+какие контейнеры возможны
+где они обычно стоят
+кто контролирует доступ
+можно ли их открыть
+какие риски есть
+когда содержимое надо определить заранее
+```
+
+Конкретное содержимое контейнера создаётся позже, когда контейнер попадает в активную сцену и становится причинно доступным.
+
+### 7.4. Правила собственности
+
+Property rules описывают:
+
+```text id="19mmqy"
+владельца
+держателя
+контролёра доступа
+право пользования
+право распоряжения
+риск кражи
+риск свидетелей
+местный обычай
+социальный статус предмета
+```
+
+Предмет может физически находиться у одного человека, принадлежать другому, контролироваться третьим и быть доступным четвёртому только по разрешению. Физическое ношение не равно праву владения.
+
+## 8. Источники данных
+
+### 8.1. `item_profiles`
+
+Основной справочник предметных профилей.
+
+Минимальные поля:
+
+```text id="kswklp"
+id
+region_id
+slug
+title
+summary
+item_group
+item_kind
+material_group
+typical_place_template_ids
+typical_social_role_ids
+typical_occupation_ids
+typical_npc_archetype_ids
+typical_container_profile_ids
+ownership_default
+holder_default
+access_default
+visibility_default
+rarity
+value_band
+weight_band
+size_band
+condition_default
+legal_or_social_risk
+seasonal_limits
+materialization_conditions
+forbidden_conditions
+game_use
+limits
+status
+confidence
+sources
+audit_notes
+```
+
+### 8.2. `container_profiles`
+
+Справочник контейнеров.
+
+Минимальные поля:
+
+```text id="fbom71"
+id
+region_id
+slug
+title
+summary
+container_group
+container_kind
+typical_place_template_ids
+typical_item_profile_ids
+typical_owner_social_role_ids
+typical_controller_npc_archetype_ids
+capacity_band
+mobility
+lockability
+visibility_default
+access_default
+content_visibility_default
+risk_profile
+materialization_conditions
+forbidden_conditions
+game_use
+limits
+status
+confidence
+sources
+audit_notes
+```
+
+### 8.3. `property_rules`
+
+Правила собственности, доступа и риска.
+
+Минимальные поля:
+
+```text id="00xvjc"
+id
+region_id
+slug
+title
+summary
+applies_to_item_profile_ids
+applies_to_container_profile_ids
+applies_to_place_template_ids
+applies_to_social_role_ids
+applies_to_occupation_ids
+ownership_model
+holder_model
+controller_model
+access_model
+permission_required
+witness_model
+theft_risk
+legal_risk
+reputation_risk
+confiscation_or_claim_rules
+transfer_conditions
+game_use
+limits
+status
+confidence
+sources
+audit_notes
+```
+
+### 8.4. `goods_prices`
+
+Ценовые и обменные ориентиры.
+
+Используются только как reference, а не как точная рыночная симуляция.
+
+Минимальные поля:
+
+```text id="9tvjc2"
+id
+region_id
+item_profile_id
+goods_group
+price_band
+exchange_value_band
+scarcity_band
+seasonal_variation
+trade_context
+status
+confidence
+sources
+audit_notes
+```
+
+### 8.5. `trade_rules`
+
+Правила торговли, обмена, долга, залога и доступа к товару.
+
+Минимальные поля:
+
+```text id="iq0enz"
+id
+region_id
+slug
+title
+summary
+applies_to_place_template_ids
+applies_to_item_profile_ids
+allowed_social_role_ids
+allowed_occupation_ids
+trade_access_model
+barter_allowed
+credit_or_debt_possible
+pledge_possible
+tax_or_fee_risk
+fraud_or_conflict_risk
+game_use
+limits
+status
+confidence
+sources
+audit_notes
+```
+
+### 8.6. `candidate_place_template_set`
+
+Используется как главный фильтр места.
+
+Предметный профиль допустим только если он совместим хотя бы с одной связкой:
+
+```text id="kgh3j9"
+candidate_place_template_link_id
+candidate_id
+node_id
+place_template_id
+```
+
+### 8.7. `npc_candidate_set`
+
+Используется для проверки потенциальных владельцев, держателей, свидетелей и контролёров доступа.
+
+На этом этапе NPC не материализуются, но item profile может требовать:
+
+```text id="y11m5l"
+типичного владельца
+типичного работника
+типичного торговца
+типичного сторожа
+типичного хозяина
+типичного свидетеля
+типичного контролёра контейнера
+```
+
+Если ни один NPC-кандидат не совместим с требуемой ролью владельца/контролёра, предметный профиль получает warning или отклоняется по policy.
+
+## 9. Алгоритм этапа
+
+### 9.1. Проверить входы
+
+Код проверяет:
+
+```text id="hxvm42"
+historical_frame.audit.pass = true
+regional_context_package.audit.pass = true
+candidate_place_template_set.audit.pass = true
+npc_candidate_set.audit.pass = true, если передан
+region_id задан
+year задан
+season задан
+clock задан
+candidate_place_template_set.selection_status = ready
+```
+
+Если нет допустимых place template links, предметные профили не подбираются.
+
+### 9.2. Загрузить item profiles
+
+```sql id="mk5qxo"
+SELECT *
+FROM world_base.item_profiles
+WHERE (region_id = :region_id OR region_id IS NULL)
+  AND status IN (:allowed_statuses);
+```
+
+Если есть региональная связка:
+
+```sql id="n0gwk0"
+SELECT rip.*, ip.*
+FROM world_base.region_item_profiles rip
+JOIN world_base.item_profiles ip
+  ON ip.id = rip.item_profile_id
+WHERE rip.region_id = :region_id
+  AND rip.is_allowed = true
+  AND rip.status IN (:allowed_statuses)
+  AND ip.status IN (:allowed_statuses);
+```
+
+### 9.3. Загрузить container profiles
+
+```sql id="kszjv4"
+SELECT *
+FROM world_base.container_profiles
+WHERE (region_id = :region_id OR region_id IS NULL)
+  AND status IN (:allowed_statuses);
+```
+
+Если контейнеры регионально связаны:
+
+```sql id="7de1u1"
+SELECT rcp.*, cp.*
+FROM world_base.region_container_profiles rcp
+JOIN world_base.container_profiles cp
+  ON cp.id = rcp.container_profile_id
+WHERE rcp.region_id = :region_id
+  AND rcp.is_allowed = true
+  AND rcp.status IN (:allowed_statuses)
+  AND cp.status IN (:allowed_statuses);
+```
+
+### 9.4. Загрузить property rules
+
+```sql id="e0ot0h"
+SELECT *
+FROM world_base.property_rules
+WHERE (region_id = :region_id OR region_id IS NULL)
+  AND status IN (:allowed_statuses);
+```
+
+Если правила регионально связаны:
+
+```sql id="w6w93z"
+SELECT *
+FROM world_base.regional_property_rules
+WHERE region_id = :region_id
+  AND status IN (:allowed_statuses);
+```
+
+### 9.5. Загрузить trade rules и goods prices
+
+```sql id="r2ql7p"
+SELECT *
+FROM world_base.trade_rules
+WHERE region_id = :region_id
+  AND status IN (:allowed_statuses);
+```
+
+```sql id="kg86n5"
+SELECT *
+FROM world_base.goods_prices
+WHERE region_id = :region_id
+  AND status IN (:allowed_statuses);
+```
+
+Если цены отсутствуют, это не всегда блокирует этап. Но предметы с торговой/обменной функцией должны получить warning:
+
+```text id="jxcdpx"
+ITEM_PROFILE_PRICE_REFERENCE_MISSING
+```
+
+### 9.6. Построить индексы
+
+Код строит:
+
+```json id="lgbmlp"
+{
+  "item_profile_by_id": {},
+  "container_profile_by_id": {},
+  "property_rule_by_id": {},
+  "trade_rule_by_id": {},
+  "goods_price_by_item_profile_id": {},
+  "place_template_links_by_place_template_id": {},
+  "npc_candidates_by_social_role_id": {},
+  "npc_candidates_by_occupation_id": {},
+  "npc_candidates_by_archetype_id": {}
+}
+```
+
+### 9.7. Сопоставить item profile ↔ place template
+
+Предметный профиль допустим, если:
+
+```text id="e4dqn9"
+item_profile.typical_place_template_ids пустой
+или place_template_id ∈ item_profile.typical_place_template_ids
+```
+
+Если item profile имеет жёсткий список place templates, выход за список запрещён.
+
+Если список пустой, профиль должен иметь другое основание:
+
+```text id="7id8nj"
+regional item rule
+occupation match
+social role match
+container match
+trade rule match
+property rule match
+```
+
+Без основания item profile отклоняется.
+
+### 9.8. Проверить social role / occupation basis
+
+Если item profile связан с ролями или занятиями:
+
+```text id="5jv9xs"
+typical_social_role_ids
+typical_occupation_ids
+typical_npc_archetype_ids
+```
+
+код проверяет, что такие роли, занятия и NPC-кандидаты существуют в региональном контексте.
+
+Если профиль требует ремесленника, торговца, хозяина, сторожа, служилого человека или иного держателя, но соответствующих кандидатов нет, профиль получает warning или reject.
+
+### 9.9. Проверить container basis
+
+Если item profile обычно хранится в контейнере:
+
+```text id="x834sd"
+typical_container_profile_ids
+```
+
+код проверяет наличие совместимого container profile.
+
+Если контейнера нет, но предмет может быть видимым/открытым, это может быть warning. Если предмет должен храниться только в контейнере, профиль отклоняется.
+
+### 9.10. Проверить property basis
+
+Каждый interactable item profile должен иметь хотя бы одно применимое правило собственности:
+
+```text id="be8hp0"
+ownership_default
+holder_default
+access_default
+или property_rule_id
+```
+
+Если предмет может стать объектом взаимодействия, но нет модели владения/доступа, он отклоняется.
+
+Ошибка:
+
+```text id="wra1rn"
+ITEM_PROFILE_PROPERTY_RULE_MISSING
+```
+
+### 9.11. Проверить сезон
+
+Если у предмета есть `seasonal_limits`, код сверяет их с `historical_frame.calendar.season`.
+
+Примеры:
+
+```text id="k97x06"
+сезонная пища
+зимняя упряжь
+летние сети
+сани
+лодочное снаряжение
+сухое топливо
+испорченная еда
+```
+
+Если профиль невозможен в сезоне, он отклоняется. Если возможен с ограничениями, добавляется warning.
+
+### 9.12. Проверить время суток и свет
+
+Время суток не запрещает предмет как категорию, но влияет на:
+
+```text id="xvwjx8"
+видимость
+доступность
+законность действия
+наличие свидетелей
+возможность покупки/обмена
+возможность вскрытия контейнера
+возможность заметить вещь
+```
+
+Если `clock.light_profile=dark`, будущий visible context не должен показывать мелкие предметы как явно видимые без света, близости или осмотра.
+
+На этом этапе фиксируется constraint:
+
+```text id="l7bt9p"
+dark light_profile → item visibility must be limited later
+```
+
+### 9.13. Проверить player request
+
+Если игрок просил конкретную вещь, это не создаёт item profile автоматически.
+
+Код может сделать только одно из трёх:
+
+1. если соответствующий item profile есть в базе и допустим для места — добавить высокий `player_request_match`;
+2. если profile есть, но не допустим — добавить rejected candidate;
+3. если profile отсутствует — добавить `unknown_or_unavailable_requested_item`.
+
+Пример:
+
+```json id="co0bci"
+{
+  "player_requested_item_handling": {
+    "raw_request": "хочу меч",
+    "matched_item_profile_id": null,
+    "result": "not_materialized",
+    "reason": "Player request does not create item. No allowed item profile match for current candidate place set."
+  }
+}
+```
+
+### 9.14. Проверить rarity / value / risk
+
+Редкий, дорогой, служебный, опасный или социально заметный item profile требует усиленного основания:
+
+```text id="zl5kzn"
+конкретный владелец
+служебный контекст
+торговый контекст
+тайник
+охрана
+долг
+залог
+след события
+трофей
+подарок
+обмен
+конфискация
+```
+
+На этом этапе такие профили можно оставить как `restricted`, но нельзя сделать обычным background item.
+
+### 9.15. Сформировать item profile candidate
+
+Каждая допустимая связка оформляется отдельно:
+
+```text id="z2ijn1"
+item_profile
++ candidate_place_template_link
++ container_profile, если нужен
++ property_rule
++ trade/price reference, если применимо
++ owner/access model
++ visibility model
++ score
+```
+
+## 10. Формат item profile candidate
+
+```json id="6ovcck"
+{
+  "item_profile_candidate_id": "item_prof_cand_001",
+
+  "candidate_status": "allowed | restricted | weak | rejected",
+
+  "item_profile": {
+    "item_profile_id": "item_profile_001",
+    "slug": "string",
+    "title": "string",
+    "item_group": "string",
+    "item_kind": "string",
+    "rarity": "common | ordinary | uncommon | rare | restricted",
+    "value_band": "none | low | modest | high | very_high",
+    "weight_band": "tiny | light | medium | heavy | very_heavy",
+    "size_band": "tiny | small | hand | carried | bulky | immovable"
+  },
+
+  "place_compatibility": {
+    "allowed_candidate_place_template_link_ids": [],
+    "allowed_place_template_ids": [],
+    "place_match_basis": []
+  },
+
+  "social_and_occupation_basis": {
+    "typical_social_role_ids": [],
+    "typical_occupation_ids": [],
+    "typical_npc_archetype_ids": [],
+    "matched_npc_candidate_ids": []
+  },
+
+  "container_compatibility": {
+    "requires_container": false,
+    "allowed_container_profile_candidate_ids": [],
+    "container_match_basis": []
+  },
+
+  "property_compatibility": {
+    "required_property_rule_ids": [],
+    "ownership_model": "owned | shared | controlled | service | traded | found | disputed | unknown",
+    "holder_model": "owner | worker | keeper | trader | guard | guest | unknown",
+    "access_model": "free | visible_only | permission_required | purchase_required | locked | hidden | forbidden | unknown",
+    "theft_or_misuse_risk": "none | low | medium | high | severe"
+  },
+
+  "visibility_constraints": {
+    "default_visibility": "visible | visible_on_inspection | searchable | hidden | inaccessible | unknown",
+    "light_sensitive": true,
+    "requires_search_or_action": false,
+    "darkness_warning": "string | null"
+  },
+
+  "materialization_constraints": {
+    "can_be_background_category": true,
+    "can_be_interactable_later": true,
+    "requires_causal_basis_for_instance": true,
+    "allowed_materialization_reasons": [],
+    "forbidden_materialization_reasons": []
+  },
+
+  "trade_and_value": {
+    "goods_price_reference_ids": [],
+    "trade_rule_ids": [],
+    "barter_or_sale_possible": false,
+    "scarcity_warnings": []
+  },
+
+  "season_and_time_compatibility": {
+    "season_match": true,
+    "time_of_day_match": true,
+    "season_warnings": [],
+    "clock_warnings": []
+  },
+
+  "player_request_match": {
+    "matched_player_request": false,
+    "raw_player_request": null,
+    "match_result": "not_requested | allowed_profile_only | rejected | unavailable"
+  },
+
+  "score": {
+    "value": 0,
+    "band": "excellent | good | usable | weak | reject",
+    "score_reasons": [],
+    "score_penalties": []
+  },
+
+  "why_allowed": [],
+  "warnings": [],
+
+  "source_trace": []
+}
+```
+
+## 11. Формат container profile candidate
+
+```json id="ehlb53"
+{
+  "container_profile_candidate_id": "container_prof_cand_001",
+
+  "candidate_status": "allowed | restricted | weak | rejected",
+
+  "container_profile": {
+    "container_profile_id": "container_profile_001",
+    "slug": "string",
+    "title": "string",
+    "container_group": "string",
+    "container_kind": "string",
+    "capacity_band": "tiny | small | medium | large | very_large",
+    "mobility": "portable | movable | heavy | fixed",
+    "lockability": "none | tied | latch | lock | guarded | sealed"
+  },
+
+  "place_compatibility": {
+    "allowed_candidate_place_template_link_ids": [],
+    "allowed_place_template_ids": [],
+    "place_match_basis": []
+  },
+
+  "access_model": {
+    "default_access": "open | closed | tied | locked | guarded | permission_required | inaccessible",
+    "controller_social_role_ids": [],
+    "controller_npc_candidate_ids": [],
+    "permission_required": false
+  },
+
+  "content_policy": {
+    "content_not_materialized_yet": true,
+    "content_must_be_fixed_when_active": true,
+    "content_must_not_be_regenerated_after_first_definition": true
+  },
+
+  "visibility_constraints": {
+    "container_visible_by_default": true,
+    "content_visible_by_default": false,
+    "darkness_warning": "string | null"
+  },
+
+  "risk_profile": {
+    "opening_risk": "none | low | medium | high",
+    "theft_risk": "none | low | medium | high",
+    "witness_risk": "none | low | medium | high"
+  },
+
+  "source_trace": []
+}
+```
+
+## 12. Формат property rule candidate
+
+```json id="al7wrx"
+{
+  "property_rule_candidate_id": "prop_rule_cand_001",
+
+  "property_rule_id": "property_rule_001",
+
+  "applies_to": {
+    "item_profile_candidate_ids": [],
+    "container_profile_candidate_ids": [],
+    "candidate_place_template_link_ids": [],
+    "social_role_ids": [],
+    "occupation_ids": []
+  },
+
+  "ownership_model": "personal | household | communal | service | trade_stock | sacred | authority_controlled | found | disputed",
+  "holder_model": "owner | temporary_holder | worker | keeper | trader | guard | borrower | thief | unknown",
+  "controller_model": "owner | senior | official | household_head | guard | priest | trader | none | unknown",
+
+  "access_model": {
+    "can_see": true,
+    "can_touch": false,
+    "can_take": false,
+    "can_buy": false,
+    "can_borrow": false,
+    "can_open": false,
+    "requires_permission": true,
+    "requires_payment": false,
+    "requires_key_or_tool": false
+  },
+
+  "risk_model": {
+    "witness_risk": "none | low | medium | high",
+    "legal_risk": "none | low | medium | high",
+    "reputation_risk": "none | low | medium | high",
+    "violence_or_punishment_risk": "none | low | medium | high"
+  },
+
+  "transfer_conditions": {
+    "can_transfer_to_player_later": true,
+    "allowed_transfer_reasons": [
+      "purchase",
+      "gift",
+      "wage",
+      "loan",
+      "permission",
+      "exchange",
+      "theft",
+      "confiscation",
+      "loot",
+      "found_with_claim_risk"
+    ],
+    "requires_causal_basis": true
+  },
+
+  "source_trace": []
+}
+```
+
+## 13. Rejected item profile
+
+```json id="1sk4cy"
+{
+  "item_profile_candidate_id": "rejected_item_prof_cand_001",
+  "item_profile_id": "item_profile_001",
+  "candidate_place_template_link_id": "cptl_001",
+  "rejection_code": "ITEM_PROFILE_PLACE_TEMPLATE_MISMATCH",
+  "rejection_reason": "Item profile is not allowed for this place template.",
+  "evidence": [
+    "item_profile.typical_place_template_ids does not include candidate place_template_id",
+    "no regional item rule matched"
+  ]
+}
+```
+
+Rejected profiles не передаются будущей материализации.
+
+## 14. Scoring
+
+Scoring не создаёт предмет. Он только сортирует допустимые профили.
+
+Рекомендуемая формула:
+
+```text id="ybojyz"
+score =
+  place_match_score
++ social_role_basis_score
++ occupation_basis_score
++ npc_controller_basis_score
++ container_basis_score
++ property_rule_score
++ season_match_score
++ trade_price_reference_score
++ source_confidence_score
++ player_request_match_score
+- rarity_penalty_without_basis
+- missing_container_penalty
+- missing_price_reference_penalty
+- warning_penalty
+```
+
+Шкала:
+
+```text id="n7qwns"
+90–100 = excellent
+70–89 = good
+50–69 = usable
+30–49 = weak
+0–29 = reject
+```
+
+## 15. Hard gates
+
+Профиль отклоняется без LLM, если:
+
+```text id="frqwoh"
+item_profile_id отсутствует в world_base
+container_profile_id отсутствует в world_base
+property_rule_id отсутствует в world_base
+status = rejected
+status = conflict
+region_id несовместим
+period/year несовместим
+place_template mismatch
+season hard conflict
+requires_container=true, но контейнерного профиля нет
+requires_property_rule=true, но property rule нет
+requires_owner_or_controller=true, но нет social/NPC basis
+player hard constraint conflict
+rare/restricted item lacks causal basis model
+source missing при require_sources=true
+```
+
+Эти проверки выполняет код, а не LLM.
+
+## 16. SQL-псевдозапросы
+
+### 16.1. Item profiles
+
+```sql id="q8ssmj"
+SELECT *
+FROM world_base.item_profiles
+WHERE (region_id = :region_id OR region_id IS NULL)
+  AND status IN (:allowed_statuses);
+```
+
+### 16.2. Regional item profiles
+
+```sql id="0k8e3x"
+SELECT rip.*, ip.*
+FROM world_base.region_item_profiles rip
+JOIN world_base.item_profiles ip
+  ON ip.id = rip.item_profile_id
+WHERE rip.region_id = :region_id
+  AND rip.is_allowed = true
+  AND rip.status IN (:allowed_statuses)
+  AND ip.status IN (:allowed_statuses);
+```
+
+### 16.3. Container profiles
+
+```sql id="3z5uv2"
+SELECT *
+FROM world_base.container_profiles
+WHERE (region_id = :region_id OR region_id IS NULL)
+  AND status IN (:allowed_statuses);
+```
+
+### 16.4. Regional container profiles
+
+```sql id="w49xcj"
+SELECT rcp.*, cp.*
+FROM world_base.region_container_profiles rcp
+JOIN world_base.container_profiles cp
+  ON cp.id = rcp.container_profile_id
+WHERE rcp.region_id = :region_id
+  AND rcp.is_allowed = true
+  AND rcp.status IN (:allowed_statuses)
+  AND cp.status IN (:allowed_statuses);
+```
+
+### 16.5. Property rules
+
+```sql id="l59gkg"
+SELECT *
+FROM world_base.property_rules
+WHERE (region_id = :region_id OR region_id IS NULL)
+  AND status IN (:allowed_statuses);
+```
+
+### 16.6. Goods prices
+
+```sql id="b1z3sp"
+SELECT *
+FROM world_base.goods_prices
+WHERE region_id = :region_id
+  AND status IN (:allowed_statuses);
+```
+
+### 16.7. Trade rules
+
+```sql id="i3v3ob"
+SELECT *
+FROM world_base.trade_rules
+WHERE region_id = :region_id
+  AND status IN (:allowed_statuses);
+```
+
+## 17. Работа LLM на этом этапе
+
+Базовый этап должен работать без LLM. Главный подбор предметных профилей выполняет код через `world_base`.
+
+LLM допускается только в четырёх вспомогательных режимах:
+
+1. `ItemProfileSetCompressor` — сжатие большого списка профилей.
+2. `ItemProfileSetAuditor` — смысловой аудит уже собранного списка.
+3. `ItemProfileExplanationWriter` — техническое пояснение для разработчика.
+4. `ItemProfileFormatRepairer` — repair JSON-формата.
+
+LLM запрещено:
+
+* добавлять `item_profile_id`;
+* добавлять `container_profile_id`;
+* добавлять `property_rule_id`;
+* создавать конкретный предмет;
+* создавать содержимое контейнера;
+* создавать владельца;
+* создавать тайник;
+* создавать деньги;
+* создавать оружие;
+* создавать торговый товар;
+* создавать “находку”;
+* создавать visible_scene;
+* создавать intro_prose.
+
+## 18. LLM-параметры
+
+### 18.1. `ItemProfileSetCompressor`
+
+Назначение: сжать большой `item_profile_candidate_set`, сохранив ID, score, warnings, rejected records и source trace.
+
+```json id="1dxvjr"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-flash",
+  "thinking": {
+    "type": "disabled"
+  },
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "max_tokens": 7000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 50000,
+    "hard_input_limit_tokens": 120000,
+    "reserve_output_tokens": 7000
+  }
+}
+```
+
+### 18.2. `ItemProfileSetAuditor`
+
+Назначение: проверить, что профильный список не содержит предметов вне места, владельцев без основания, контейнеров без доступа, property gaps и скрытой материализации предметов.
+
+```json id="lal07q"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 6000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 60000,
+    "hard_input_limit_tokens": 160000,
+    "reserve_output_tokens": 6000
+  }
+}
+```
+
+### 18.3. `ItemProfileFormatRepairer`
+
+Назначение: исправить только JSON-формат.
+
+```json id="k0fd8o"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-flash",
+  "thinking": {
+    "type": "disabled"
+  },
+  "temperature": 0.0,
+  "max_tokens": 3500,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 25000,
+    "hard_input_limit_tokens": 70000,
+    "reserve_output_tokens": 3500
+  }
+}
+```
+
+## 19. Prompt: ItemProfileSetCompressor
+
+```md id="c3pccf"
+# Роль
+
+Ты ItemProfileSetCompressor для исторической текстовой RPG.
+
+# Задача
+
+Сожми уже построенный кодом JSON item_profile_candidate_set.
+
+# Главное правило
+
+Ты не создаёшь предметы.
+Ты не добавляешь item_profile_id.
+Ты не добавляешь container_profile_id.
+Ты не добавляешь property_rule_id.
+Ты не создаёшь содержимое контейнера.
+Ты не создаёшь владельца, тайник, деньги, оружие, товар или находку.
+Ты не пишешь сцену.
+
+# Источники
+
+Используй только:
+- item_profile_candidate_set_raw;
+- historical_frame;
+- regional_context_package;
+- candidate_place_template_set;
+- npc_candidate_set.
+
+# Разрешено
+
+- сгруппировать профили;
+- сократить повторяющиеся пояснения;
+- сохранить все ID;
+- сохранить score;
+- сохранить warnings;
+- сохранить rejected records;
+- сохранить source_trace.
+
+# Запрещено
+
+- добавлять профили;
+- удалять профили без переноса в rejected_item_profile_candidates;
+- менять compatibility flags;
+- менять score;
+- менять source_trace;
+- материализовать предметы.
+
+# Формат
+
+Верни только json.
+schema должен быть "item_profile_candidate_set".
+version должен быть 1.
+```
+
+## 20. Prompt: ItemProfileSetAuditor
+
+```md id="g7vlr6"
+# Роль
+
+Ты ItemProfileSetAuditor для исторической текстовой RPG.
+
+# Задача
+
+Проверь item_profile_candidate_set на соответствие historical_frame, regional_context_package, candidate_place_template_set, npc_candidate_set и source_trace.
+
+# Главное правило
+
+Ты не создаёшь предметы.
+Ты не добавляешь профили.
+Ты только проверяешь список.
+
+# Проверить
+
+1. Каждый item_profile_candidate_id уникален.
+2. Каждый item_profile_id существует в regional_context_package.item_context или world_base snapshot.
+3. Каждый container_profile_id существует, если указан.
+4. Каждый property_rule_id существует, если указан.
+5. Каждый candidate_place_template_link_id существует в candidate_place_template_set.
+6. Item profile совместим с place_template.
+7. Item profile совместим с social/occupation/NPC basis, если они требуются.
+8. Container profile совместим с item profile.
+9. Property rule применим к item/container/place/social context.
+10. Season не конфликтует с item profile.
+11. Clock/light_profile не создаёт visibility contradiction.
+12. Player request не материализует предмет.
+13. Rare/restricted item не проходит как ordinary background item без causal basis model.
+14. Нет конкретного item_id.
+15. Нет конкретного содержимого контейнера.
+16. Нет владельца как конкретного NPC.
+17. Нет visible_scene.
+18. Нет intro_prose.
+19. source_trace не пустой, если require_sources=true.
+
+# Формат
+
+Верни только json:
+
+{
+  "version": 1,
+  "schema": "item_profile_candidate_set_audit",
+  "pass": true,
+  "concerns": [],
+  "evidence": []
+}
+
+Если pass=false, concerns не должен быть пустым.
+evidence не должен быть пустым.
+```
+
+## 21. Prompt: ItemProfileFormatRepairer
+
+```md id="95dmu8"
+# Роль
+
+Ты ItemProfileFormatRepairer.
+
+# Задача
+
+Исправь только формат JSON для item_profile_candidate_set или item_profile_candidate_set_audit.
+
+# Главное правило
+
+Не меняй смысл.
+Не добавляй предметы.
+Не добавляй профили.
+Не меняй ID.
+Не создавай содержимое контейнера.
+Не создавай владельца.
+Не создавай сцену.
+
+# Разрешено
+
+- убрать markdown;
+- добавить отсутствующие служебные поля;
+- привести schema/version к нужному виду;
+- переименовать ошибочные поля;
+- перенести лишний текст в notes;
+- если исправление невозможно без изменения смысла, верни audit.pass=false.
+
+# Формат
+
+Верни только json.
+```
+
+## 22. Validation rules
+
+Код обязан проверить:
+
+1. `schema === "item_profile_candidate_set"`.
+2. `version === 1`.
+3. `selection_status` входит в enum: `ready`, `empty`, `blocked`, `requires_repair`.
+4. Каждый `item_profile_candidate_id` уникален.
+5. Каждый `item_profile_id` существует в `item_profiles`.
+6. Каждый `container_profile_id` существует в `container_profiles`, если указан.
+7. Каждый `property_rule_id` существует в `property_rules`, если указан.
+8. Каждый `goods_price_reference_id` существует, если указан.
+9. Каждый `trade_rule_id` существует, если указан.
+10. Все records относятся к выбранному `region_id` или являются глобальными разрешёнными записями.
+11. Нет records со `status=conflict`.
+12. Нет records со `status=rejected`.
+13. Каждый `candidate_place_template_link_id` существует в `candidate_place_template_set`.
+14. Item profile совместим с place template.
+15. Item profile совместим с social role / occupation / NPC basis, если такие требования заданы.
+16. Если item profile требует контейнер, существует совместимый container profile.
+17. Если item profile интерактивный, существует property rule или встроенная access/ownership model.
+18. Season compatibility пройдена.
+19. Clock/light visibility constraints не нарушены.
+20. Player request не превратился в конкретный предмет.
+21. Rare/restricted profile не помечен ordinary без основания.
+22. Нет `item_id`.
+23. Нет `concrete_item_name`, если это не title профиля.
+24. Нет `container_contents`.
+25. Нет конкретного `owner_npc_id`.
+26. Нет `visible_scene`.
+27. Нет `intro_prose`.
+28. `source_trace` не пустой, если `require_sources=true`.
+29. Все source IDs существуют в `source_records`.
+30. `audit.evidence` не пустой.
+31. Если `audit.pass=false`, `audit.concerns` не пустой.
+
+## 23. Error codes
+
+```text id="tro95c"
+ITEM_PROFILE_INVALID_JSON
+ITEM_PROFILE_SCHEMA_MISMATCH
+ITEM_PROFILE_NOT_FOUND
+ITEM_PROFILE_CONTAINER_NOT_FOUND
+ITEM_PROFILE_PROPERTY_RULE_NOT_FOUND
+ITEM_PROFILE_PRICE_REFERENCE_NOT_FOUND
+ITEM_PROFILE_TRADE_RULE_NOT_FOUND
+ITEM_PROFILE_REGION_MISMATCH
+ITEM_PROFILE_REJECTED_RECORD_USED
+ITEM_PROFILE_CONFLICT_RECORD_USED
+ITEM_PROFILE_PLACE_TEMPLATE_MISMATCH
+ITEM_PROFILE_SOCIAL_BASIS_MISSING
+ITEM_PROFILE_OCCUPATION_BASIS_MISSING
+ITEM_PROFILE_NPC_CONTROLLER_BASIS_MISSING
+ITEM_PROFILE_CONTAINER_REQUIRED_BUT_MISSING
+ITEM_PROFILE_PROPERTY_RULE_MISSING
+ITEM_PROFILE_SEASON_CONFLICT
+ITEM_PROFILE_CLOCK_VISIBILITY_CONFLICT
+ITEM_PROFILE_PLAYER_REQUEST_MATERIALIZED_ITEM
+ITEM_PROFILE_RARE_ITEM_WITHOUT_CAUSAL_BASIS
+ITEM_PROFILE_SOURCE_MISSING
+ITEM_PROFILE_CREATED_ITEM
+ITEM_PROFILE_CREATED_CONTAINER_CONTENTS
+ITEM_PROFILE_CREATED_OWNER
+ITEM_PROFILE_CREATED_SCENE
+ITEM_PROFILE_EMPTY_AUDIT_EVIDENCE
+NO_ALLOWED_ITEM_PROFILES
+```
+
+## 24. DB write на этом этапе
+
+Разрешено писать:
+
+```text id="q3k79z"
+pipeline_step_status
+item_profile_candidate_set_snapshot
+container_profile_candidate_snapshot
+property_rule_candidate_snapshot
+rejected_item_profile_snapshot
+item_profile_audit_result
+item_profile_validation_issues
+retrieved_item_profile_ids
+retrieved_container_profile_ids
+retrieved_property_rule_ids
+retrieved_trade_rule_ids
+retrieved_goods_price_reference_ids
+source_trace_snapshot
+```
+
+Запрещено писать:
+
+```text id="kac7a8"
+party_items
+party_containers
+party_inventory
+party_property_links
+party_scene_objects
+container_contents
+concrete_item_instance
+item_owner_npc_id
+visible_scene
+intro_prose
+hidden_item_state
+```
+
+Этот этап ещё не создаёт предметов партии. Он создаёт только список разрешённых профилей для будущей материализации.
+
+## 25. Commit gate этапа
+
+Этап считается успешным, если:
+
+```text id="l75ztl"
+item_profile_candidate_set валиден,
+есть хотя бы один allowed item profile или явно допустимо отсутствие предметных профилей,
+каждый профиль ссылается только на записи world_base,
+каждый профиль совместим с candidate_place_template_set,
+контейнеры и property rules подтянуты для интерактивных предметов,
+нет материализованных предметов,
+нет содержимого контейнеров,
+нет конкретных владельцев,
+нет сцены,
+audit.pass=true.
+```
+
+Если профилей нет, pipeline не должен просить LLM “придумать вещи”. Он должен:
+
+1. ослабить только soft preferences;
+2. вернуться к place template stage;
+3. выбрать другой стартовый candidate set;
+4. вернуть `blocked`;
+5. записать `NO_ALLOWED_ITEM_PROFILES`.
+
+## 26. Передача в следующий этап
+
+Следующий этап получает:
+
+```json id="n9g6ez"
+{
+  "version": 1,
+  "schema": "start_place_selector_input",
+  "request_id": "string",
+
+  "normalized_request": {},
+  "historical_frame": {},
+  "regional_context_package": {},
+  "start_candidate_set": {},
+  "candidate_place_template_set": {},
+  "npc_candidate_set": {},
+  "item_profile_candidate_set": {
+    "version": 1,
+    "schema": "item_profile_candidate_set",
+    "selection_status": "ready",
+    "item_profile_candidates": [],
+    "container_profile_candidates": [],
+    "property_rule_candidates": []
+  }
+}
+```
+
+Будущий этап материализации предметов обязан выбирать только из:
+
+```text id="efua43"
+item_profile_candidate_set.item_profile_candidates[*].item_profile_candidate_id
+container_profile_candidates[*].container_profile_candidate_id
+property_rule_candidates[*].property_rule_candidate_id
+```
+
+Если LLM создаёт предмет вне candidate set, результат отклоняется без смыслового repair.
+
+## 27. Минимальный успешный результат
+
+```json id="n2aif1"
+{
+  "version": 1,
+  "schema": "item_profile_candidate_set",
+  "request_id": "req_001",
+  "selection_status": "ready",
+
+  "frame": {
+    "region_id": "region_001",
+    "year": 1230,
+    "season": "winter",
+    "clock": {
+      "day": 1,
+      "hour": 6,
+      "minute": 30,
+      "time_of_day": "morning",
+      "light_profile": "dim"
+    }
+  },
+
+  "summary": {
+    "item_profile_count": 18,
+    "container_profile_count": 6,
+    "property_rule_count": 8,
+    "trade_rule_count": 3,
+    "rejected_profile_count": 4
+  },
+
+  "item_profile_candidates": [
+    {
+      "item_profile_candidate_id": "item_prof_cand_001",
+      "candidate_status": "allowed",
+
+      "item_profile": {
+        "item_profile_id": "item_profile_001",
+        "slug": "generic_household_item",
+        "title": "Generic household item",
+        "item_group": "household",
+        "item_kind": "ordinary_tool_or_utensil",
+        "rarity": "ordinary",
+        "value_band": "low",
+        "weight_band": "light",
+        "size_band": "hand"
+      },
+
+      "place_compatibility": {
+        "allowed_candidate_place_template_link_ids": [
+          "cptl_001"
+        ],
+        "allowed_place_template_ids": [
+          "place_template_001"
+        ],
+        "place_match_basis": [
+          "item profile typical_place_template_ids includes selected place template"
+        ]
+      },
+
+      "social_and_occupation_basis": {
+        "typical_social_role_ids": [
+          "social_role_001"
+        ],
+        "typical_occupation_ids": [
+          "occupation_001"
+        ],
+        "typical_npc_archetype_ids": [],
+        "matched_npc_candidate_ids": [
+          "npc_cand_001"
+        ]
+      },
+
+      "container_compatibility": {
+        "requires_container": false,
+        "allowed_container_profile_candidate_ids": [
+          "container_prof_cand_001"
+        ],
+        "container_match_basis": [
+          "compatible household container exists"
+        ]
+      },
+
+      "property_compatibility": {
+        "required_property_rule_ids": [
+          "property_rule_001"
+        ],
+        "ownership_model": "household",
+        "holder_model": "worker",
+        "access_model": "permission_required",
+        "theft_or_misuse_risk": "medium"
+      },
+
+      "visibility_constraints": {
+        "default_visibility": "visible_on_inspection",
+        "light_sensitive": true,
+        "requires_search_or_action": false,
+        "darkness_warning": "If light_profile is dark, do not expose small items as clearly visible without light or inspection."
+      },
+
+      "materialization_constraints": {
+        "can_be_background_category": true,
+        "can_be_interactable_later": true,
+        "requires_causal_basis_for_instance": true,
+        "allowed_materialization_reasons": [
+          "visible in active place",
+          "used by NPC",
+          "stored in compatible container",
+          "selected for interaction",
+          "needed by action"
+        ],
+        "forbidden_materialization_reasons": [
+          "player requested it without causal basis"
+        ]
+      },
+
+      "trade_and_value": {
+        "goods_price_reference_ids": [
+          "goods_price_001"
+        ],
+        "trade_rule_ids": [],
+        "barter_or_sale_possible": false,
+        "scarcity_warnings": []
+      },
+
+      "season_and_time_compatibility": {
+        "season_match": true,
+        "time_of_day_match": true,
+        "season_warnings": [],
+        "clock_warnings": []
+      },
+
+      "player_request_match": {
+        "matched_player_request": false,
+        "raw_player_request": null,
+        "match_result": "not_requested"
+      },
+
+      "score": {
+        "value": 84,
+        "band": "good",
+        "score_reasons": [
+          "Item profile is compatible with selected place template.",
+          "Property rule exists.",
+          "Container profile exists if later storage is needed.",
+          "No concrete item was materialized."
+        ],
+        "score_penalties": []
+      },
+
+      "why_allowed": [
+        "Profile exists in world_base.",
+        "Profile is compatible with place, social and property context.",
+        "Future materialization still requires causal basis."
+      ],
+
+      "warnings": [],
+
+      "source_trace": [
+        {
+          "record_id": "item_profile_001",
+          "table": "world_base.item_profiles",
+          "source_ids": [
+            "source_001"
+          ],
+          "supports": [
+            "item_profile"
+          ],
+          "status": "approved",
+          "confidence": "medium_high"
+        },
+        {
+          "record_id": "property_rule_001",
+          "table": "world_base.property_rules",
+          "source_ids": [
+            "source_002"
+          ],
+          "supports": [
+            "property_rule"
+          ],
+          "status": "approved",
+          "confidence": "medium_high"
+        }
+      ]
+    }
+  ],
+
+  "container_profile_candidates": [
+    {
+      "container_profile_candidate_id": "container_prof_cand_001",
+      "candidate_status": "allowed",
+      "container_profile": {
+        "container_profile_id": "container_profile_001",
+        "slug": "generic_household_container",
+        "title": "Generic household container",
+        "container_group": "household_storage",
+        "container_kind": "portable_or_fixed_storage",
+        "capacity_band": "medium",
+        "mobility": "movable",
+        "lockability": "tied_or_latched"
+      },
+      "content_policy": {
+        "content_not_materialized_yet": true,
+        "content_must_be_fixed_when_active": true,
+        "content_must_not_be_regenerated_after_first_definition": true
+      },
+      "source_trace": []
+    }
+  ],
+
+  "property_rule_candidates": [
+    {
+      "property_rule_candidate_id": "prop_rule_cand_001",
+      "property_rule_id": "property_rule_001",
+      "ownership_model": "household",
+      "holder_model": "worker",
+      "controller_model": "household_head",
+      "access_model": {
+        "can_see": true,
+        "can_touch": false,
+        "can_take": false,
+        "requires_permission": true
+      },
+      "risk_model": {
+        "witness_risk": "medium",
+        "legal_risk": "medium",
+        "reputation_risk": "medium",
+        "violence_or_punishment_risk": "low"
+      },
+      "source_trace": []
+    }
+  ],
+
+  "rejected_item_profile_candidates": [],
+
+  "item_profile_groups": [
+    {
+      "group_id": "ordinary_household_items",
+      "title": "Ordinary household item profiles",
+      "item_profile_candidate_ids": [
+        "item_prof_cand_001"
+      ],
+      "group_tags": [
+        "household",
+        "ordinary",
+        "requires_causal_basis"
+      ]
+    }
+  ],
+
+  "downstream_constraints": {
+    "must_choose_from_item_profile_candidate_ids": [
+      "item_prof_cand_001"
+    ],
+    "must_choose_from_container_profile_candidate_ids": [
+      "container_prof_cand_001"
+    ],
+    "must_apply_property_rule_ids": [
+      "property_rule_001"
+    ],
+    "must_preserve": [
+      "region_id",
+      "year",
+      "season",
+      "clock",
+      "item_profile_id",
+      "container_profile_id",
+      "property_rule_id",
+      "candidate_place_template_link_ids"
+    ],
+    "must_not_create_yet": [
+      "item_id",
+      "concrete_item_instance",
+      "container_contents",
+      "owner_npc_id",
+      "visible_scene",
+      "intro_prose"
+    ],
+    "must_resolve_later": [
+      "which_items_are_materialized",
+      "item_g5_anchor_position",
+      "item_visibility",
+      "item_owner_or_holder",
+      "container_contents_if_active"
+    ]
+  },
+
+  "source_trace": [
+    {
+      "record_id": "item_prof_cand_001",
+      "table": "startup.item_profile_candidate_set",
+      "source_ids": [
+        "source_001",
+        "source_002"
+      ],
+      "supports": [
+        "item_profile_candidate"
+      ],
+      "status": "derived_from_approved_records",
+      "confidence": "medium_high"
+    }
+  ],
+
+  "audit": {
+    "pass": true,
+    "concerns": [],
+    "evidence": [
+      "All item profiles reference existing world_base records.",
+      "All item profiles are compatible with candidate_place_template_set.",
+      "Container and property rules were attached where needed.",
+      "No concrete item was materialized.",
+      "No container contents, owner NPC, visible scene or intro prose were created.",
+      "Future item materialization still requires causal basis."
+    ]
+  }
+}
+```

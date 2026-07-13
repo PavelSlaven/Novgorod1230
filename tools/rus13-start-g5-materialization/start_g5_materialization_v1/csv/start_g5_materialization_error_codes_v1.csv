@@ -1,0 +1,13 @@
+﻿error_code,severity,meaning
+G5_MISSING_CONTEXT,blocking,Required start context is missing.
+G5_TEMPLATE_NOT_FOUND,blocking,No exact G5 template for selected G4 type.
+G5_FORBIDDEN_ANCHOR,blocking,Draft includes forbidden or modern/fantasy anchor.
+G5_OUTSIDE_PARENT_G4,blocking,"Anchor, minilocation or edge is outside selected G4."
+G5_REQUIRED_CATEGORY_MISSING,blocking,Required anchor category not covered.
+G5_EDGE_TIME_INVALID,blocking,G5 edge time is not 0-5 minutes.
+G5_POSITION_INCOMPLETE,blocking,current_position cannot be written fully.
+G5_VISIBILITY_LEAK,blocking,Visible package includes hidden information.
+G5_ITEM_WITHOUT_CAUSE,blocking,Item was created without causal reason or profile support.
+G5_OWNER_ACCESS_RISK_MISSING,blocking,Significant anchor/item lacks ownership/access/risk data.
+G5_DUPLICATE_PARTY_FACT,blocking,Draft duplicates existing party state instead of reusing/updating.
+G5_SOURCE_STATUS_UPGRADE,warning,Draft tries to upgrade source status/confidence.

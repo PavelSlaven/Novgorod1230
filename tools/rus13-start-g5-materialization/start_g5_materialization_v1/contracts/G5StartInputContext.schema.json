@@ -1,0 +1,196 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rus13.local/contracts/G5StartInputContext.schema.json",
+  "title": "G5StartInputContext",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "party_id",
+    "character_id",
+    "region_id",
+    "place_id",
+    "location_id",
+    "canonical_g4_node_id",
+    "g4_type_id",
+    "g4_type_title",
+    "season",
+    "game_time",
+    "weather_state",
+    "start_cause",
+    "player_request_summary",
+    "locked_facts"
+  ],
+  "properties": {
+    "party_id": {
+      "description": "Required by G5StartInputContext.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "character_id": {
+      "description": "Required by G5StartInputContext.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "region_id": {
+      "description": "Required by G5StartInputContext.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "place_id": {
+      "description": "Required by G5StartInputContext.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "location_id": {
+      "description": "Required by G5StartInputContext.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "canonical_g4_node_id": {
+      "description": "Required by G5StartInputContext.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "g4_type_id": {
+      "description": "Required by G5StartInputContext.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "g4_type_title": {
+      "description": "Required by G5StartInputContext.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "season": {
+      "description": "Required by G5StartInputContext.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "game_time": {
+      "description": "Required by G5StartInputContext.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "weather_state": {
+      "description": "Required by G5StartInputContext.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "start_cause": {
+      "description": "Required by G5StartInputContext.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "player_request_summary": {
+      "description": "Required by G5StartInputContext.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "locked_facts": {
+      "description": "Required by G5StartInputContext.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    }
+  },
+  "x_step_id": "g5_01_start_context_lock",
+  "x_writes_to": "party_llm_steps",
+  "x_blocking_validations": "complete G4 context; no runtime G1-G4 creation"
+}

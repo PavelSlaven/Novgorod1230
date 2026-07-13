@@ -1,0 +1,1381 @@
+# Этап 10. Аудит выбора стартового места
+
+## 1. Назначение этапа
+
+Аудит выбора стартового места — это gate-этап после того, как LLM выбрала один стартовый узел из `start_candidate_set`.
+
+Этап проверяет, что выбранное стартовое место:
+
+* действительно существует в `world_base`;
+* было выбрано из ранее подготовленного candidate set;
+* принадлежит выбранному региону;
+* совместимо с годом, сезоном и временем суток;
+* совместимо с разрешённым `place_template`;
+* имеет валидную иерархию G1–G4;
+* имеет допустимые входы/выходы;
+* не нарушает заявку игрока;
+* не нарушает социальные ограничения будущего персонажа;
+* имеет поддержку для последующих этапов: NPC-кандидаты, предметные профили, property rules, G5-материализация;
+* не содержит новых сущностей, созданных LLM вне базы.
+
+Короткая формула:
+
+```text
+selected_start_node
++ world_base graph
++ historical_frame
++ regional_context_package
++ candidate_place_template_set
++ npc_candidate_set
++ item_profile_candidate_set
++ normalized_request
+→ start_place_audit
+```
+
+Этот этап не создаёт мир. Он проверяет, можно ли безопасно продолжать генерацию партии от выбранного места.
+
+## 2. Главное правило этапа
+
+Аудит не исправляет место молча.
+
+Если выбранный узел невалиден, аудит возвращает `pass=false` и указывает, куда откатить pipeline:
+
+```text
+selected_start_node repair
+или start_candidate_retriever
+или place_template_retriever
+или historical_frame_selector
+```
+
+Запрещено:
+
+* подставлять другой узел без отдельного repair-этапа;
+* создавать новое место;
+* создавать новый `place_template`;
+* создавать G5;
+* создавать NPC;
+* создавать предметы;
+* менять историческую рамку;
+* менять время суток;
+* менять регион;
+* писать стартовую прозу;
+* записывать `party_current_position`.
+
+## 3. Место этапа в pipeline
+
+```text
+1. Заявка игрока
+2. Нормализация заявки
+3. Выбор исторической рамки
+4. Загрузка регионального контекста
+5. Подбор допустимых стартовых G1–G4 кандидатов
+6. Подбор допустимых place templates
+7. Подбор допустимых NPC-кандидатов
+8. Подбор допустимых предметных профилей
+9. LLM выбирает стартовый узел из candidate set
+10. Аудит выбора стартового места
+11. Генерация персонажа игрока
+12. Материализация стартовой G5-сцены
+```
+
+Этап 10 должен быть последним gate перед генерацией персонажа и G5. Если он не пройден, дальнейшая генерация запрещена.
+
+## 4. Вход этапа
+
+```json
+{
+  "version": 1,
+  "schema": "start_place_audit_input",
+  "request_id": "string",
+
+  "normalized_request": {
+    "version": 1,
+    "schema": "new_game_normalized_request"
+  },
+
+  "historical_frame": {
+    "version": 1,
+    "schema": "historical_frame",
+    "region": {
+      "region_id": "string"
+    },
+    "year": {
+      "value": 0
+    },
+    "calendar": {
+      "season": "spring | summer | autumn | winter"
+    },
+    "clock": {
+      "day": 1,
+      "hour": 0,
+      "minute": 0,
+      "time_of_day": "morning | day | evening | night | deep_night",
+      "light_profile": "dark | dim | daylight | twilight"
+    }
+  },
+
+  "regional_context_package": {
+    "version": 1,
+    "schema": "regional_context_package"
+  },
+
+  "start_candidate_set": {
+    "version": 1,
+    "schema": "start_candidate_set"
+  },
+
+  "candidate_place_template_set": {
+    "version": 1,
+    "schema": "candidate_place_template_set"
+  },
+
+  "npc_candidate_set": {
+    "version": 1,
+    "schema": "npc_candidate_set"
+  },
+
+  "item_profile_candidate_set": {
+    "version": 1,
+    "schema": "item_profile_candidate_set"
+  },
+
+  "selected_start_node": {
+    "version": 1,
+    "schema": "selected_start_node"
+  },
+
+  "audit_policy": {
+    "require_world_base_node": true,
+    "require_candidate_set_membership": true,
+    "require_place_template_link": true,
+    "require_full_parent_chain_for_g4": true,
+    "require_region_match": true,
+    "require_year_match": true,
+    "require_season_match": true,
+    "require_clock_match": true,
+    "require_access_edge": true,
+    "require_player_hard_constraints_match": true,
+    "require_social_status_compatibility": true,
+    "require_npc_candidate_support": false,
+    "require_item_profile_support": false,
+    "require_g5_readiness": true,
+    "require_sources": true,
+    "reject_rejected_or_conflict_records": true
+  }
+}
+```
+
+## 5. Выход этапа
+
+```json
+{
+  "version": 1,
+  "schema": "start_place_audit",
+  "request_id": "string",
+
+  "pass": true,
+
+  "selected_start": {
+    "selected_candidate_id": "string",
+    "selected_candidate_place_template_link_id": "string",
+    "selected_node_id": "string",
+    "selected_scale_level": "G1 | G2 | G3 | G4",
+    "selected_place_template_id": "string"
+  },
+
+  "checks": {
+    "world_base_existence": {},
+    "candidate_set_membership": {},
+    "node_chain": {},
+    "region_compatibility": {},
+    "year_compatibility": {},
+    "season_compatibility": {},
+    "clock_compatibility": {},
+    "place_template_compatibility": {},
+    "access_compatibility": {},
+    "player_request_compatibility": {},
+    "social_status_compatibility": {},
+    "npc_support": {},
+    "item_support": {},
+    "g5_readiness": {},
+    "source_trace": {},
+    "downstream_entity_leak_check": {}
+  },
+
+  "concerns": [],
+  "evidence": [],
+  "repair_route": null,
+
+  "downstream_constraints": {
+    "must_preserve": [],
+    "must_not_create_yet": [],
+    "must_resolve_later": []
+  }
+}
+```
+
+Если аудит не пройден:
+
+```json
+{
+  "version": 1,
+  "schema": "start_place_audit",
+  "request_id": "string",
+  "pass": false,
+  "selected_start": null,
+  "checks": {},
+  "concerns": [
+    {
+      "code": "START_PLACE_REGION_MISMATCH",
+      "severity": "hard_block",
+      "message": "Selected node does not belong to the selected region."
+    }
+  ],
+  "evidence": [
+    "historical_frame.region.region_id=region_001",
+    "selected graph node region_id=region_002"
+  ],
+  "repair_route": {
+    "return_to_stage": "start_node_selector",
+    "repair_kind": "semantic_reselect_from_candidate_set"
+  },
+  "downstream_constraints": {
+    "must_preserve": [],
+    "must_not_create_yet": [
+      "player_character",
+      "g5_scene",
+      "npc",
+      "item",
+      "visible_scene",
+      "intro_prose"
+    ],
+    "must_resolve_later": []
+  }
+}
+```
+
+## 6. Что проверяется
+
+### 6.1. Существование места в `world_base`
+
+Код проверяет, что `selected_node_id` существует в `world_base.graph_nodes`.
+
+Проверка:
+
+```text
+selected_start_node.selected.selected_node_id ∈ world_base.graph_nodes.id
+```
+
+Если узла нет:
+
+```text
+START_PLACE_NODE_NOT_FOUND
+```
+
+Это hard block. Нельзя продолжать и нельзя просить LLM “описать похожее место”.
+
+### 6.2. Членство в candidate set
+
+Выбранный `selected_candidate_id` должен существовать в `start_candidate_set.candidates`.
+
+Проверка:
+
+```text
+selected_candidate_id ∈ start_candidate_set.candidates[*].candidate_id
+```
+
+Если LLM выбрала ID вне списка:
+
+```text
+START_PLACE_CANDIDATE_NOT_IN_SET
+```
+
+Это hard block. Repair может только выбрать другой ID из candidate set.
+
+### 6.3. Связь `candidate ↔ place_template`
+
+Выбранный `selected_candidate_place_template_link_id` должен существовать в `candidate_place_template_set.candidate_template_links` и относиться к выбранному `candidate_id`.
+
+Проверка:
+
+```text
+candidate_place_template_link.candidate_id == selected_candidate_id
+candidate_place_template_link.place_template_id == selected_place_template_id
+```
+
+Если link принадлежит другому кандидату:
+
+```text
+START_PLACE_TEMPLATE_LINK_CANDIDATE_MISMATCH
+```
+
+### 6.4. Иерархия G1–G4
+
+Для G4-старта обязательна полная цепочка:
+
+```text
+G1 → G2 → G3 → G4
+```
+
+Проверяются:
+
+```text
+g4.parent_node_id = g3.id
+g3.parent_node_id = g2.id
+g2.parent_node_id = g1.id
+g1.region_id = historical_frame.region.region_id
+```
+
+Если выбран G3 fallback, обязательна цепочка:
+
+```text
+G1 → G2 → G3
+```
+
+Если выбран G2 fallback, обязательна цепочка:
+
+```text
+G1 → G2
+```
+
+Если выбран G1, он допустим только если policy явно разрешает G1 fallback. В обычном старте G1 не должен быть финальной стартовой точкой.
+
+### 6.5. Регион
+
+Проверяется, что выбранный узел и вся его parent chain принадлежат выбранному региону.
+
+Проверка:
+
+```text
+selected_node.region_id == historical_frame.region.region_id
+all parent nodes region_id == historical_frame.region.region_id
+```
+
+Если регион не совпадает:
+
+```text
+START_PLACE_REGION_MISMATCH
+```
+
+### 6.6. Год
+
+Если у узла, `place_template`, regional link или generation rule есть период применимости, выбранный год должен попадать в этот период.
+
+Проверка:
+
+```text
+period_start_year <= historical_frame.year.value <= period_end_year
+```
+
+Если год несовместим:
+
+```text
+START_PLACE_YEAR_OUT_OF_RANGE
+```
+
+### 6.7. Сезон
+
+Проверяется совместимость выбранного места с сезоном:
+
+```text
+historical_frame.calendar.season
+candidate.compatibility.season_match
+candidate_place_template_link.compatibility.season_match
+regional route season rules
+weather season rules
+land use seasonal rules
+water/route seasonal constraints
+```
+
+Если место невозможно использовать в выбранный сезон:
+
+```text
+START_PLACE_SEASON_CONFLICT
+```
+
+Если место возможно, но есть риск или ограничение, аудит может пройти с warning.
+
+Пример warning:
+
+```json
+{
+  "code": "START_PLACE_SEASON_WARNING",
+  "severity": "warning",
+  "message": "Selected start place is usable in this season, but nearby route speed or access must be checked later."
+}
+```
+
+### 6.8. Время суток и свет
+
+Проверяются:
+
+```text
+clock.hour
+clock.minute
+clock.time_of_day
+clock.light_profile
+place access rules
+route access rules
+work rhythm rules
+NPC availability rules
+visibility constraints
+```
+
+Критическое правило:
+
+```text
+Если clock.time_of_day = night/deep_night,
+выбранное место не должно требовать дневного открытого доступа,
+дневной толпы,
+дневной торговли,
+дневной видимости
+или дневного режима работы без отдельного допустимого night exception.
+```
+
+Если место выбрано так, что дальнейшая сцена неизбежно станет дневной при ночном clock:
+
+```text
+START_PLACE_CLOCK_ACCESS_CONFLICT
+```
+
+Этот gate должен сработать до G5 и narrator.
+
+### 6.9. `place_template`
+
+Проверяется:
+
+```text
+selected_place_template_id существует в world_base.place_templates
+selected_place_template_id разрешён через region_place_templates
+region_place_template_link.is_allowed = true
+scale level совместим
+node type совместим
+landscape/water/land_use/route requirements соблюдены
+generation limits соблюдены
+```
+
+Если `place_template` не разрешён в регионе:
+
+```text
+START_PLACE_TEMPLATE_NOT_ALLOWED
+```
+
+### 6.10. Доступность места
+
+Проверяется, что у выбранного узла есть минимум один валидный вход/выход.
+
+Для G4:
+
+```text
+entry_edge_ids.length + exit_edge_ids.length >= 1
+```
+
+Для G3:
+
+```text
+есть хотя бы одна связь с G2/G4 или route edge
+```
+
+Если место изолировано:
+
+```text
+START_PLACE_NO_ACCESS_EDGE
+```
+
+### 6.11. Социальный статус
+
+На этом этапе персонаж ещё может быть не создан. Поэтому аудит проверяет не готовый статус персонажа, а совместимость выбранного места с `character_request` и допустимыми социальными ролями.
+
+Проверяются:
+
+```text
+normalized_request.character_request.status
+normalized_request.character_request.occupation
+normalized_request.character_request.wealth
+regional_context_package.social_context.allowed_social_roles
+regional_context_package.occupation_context.allowed_occupations
+candidate_place_template_set.social_context_match
+npc_candidate_set social roles
+place_template social_logic
+```
+
+Если игрок просил “бедного человека”, место не должно требовать стартового статуса, несовместимого с бедным/зависимым/низким социальным положением.
+
+Если игрок просил “ремесленника”, выбранное место должно иметь хотя бы потенциальную поддержку соответствующего occupation или не конфликтовать с ним.
+
+Если игрок просил “случайного персонажа”, аудит проверяет только, что для выбранного места есть допустимые социальные роли будущего персонажа.
+
+Ошибка:
+
+```text
+START_PLACE_SOCIAL_STATUS_CONFLICT
+```
+
+Важно: аудит не назначает статус персонажа. Он только запрещает место, где будущая генерация персонажа станет невозможной.
+
+### 6.12. Заявка игрока
+
+Проверяются:
+
+```text
+hard_constraints
+soft_preferences
+forbidden_content
+start_place_request
+tone_request
+difficulty_request
+character_request
+```
+
+Hard constraints обязательны.
+
+Soft preferences могут быть нарушены, если выбранный кандидат лучше по безопасности и совместимости, но это должно быть объяснено.
+
+Пример:
+
+```text
+игрок просил бытовой старт;
+выбранное место имеет domestic-compatible place_template;
+pass=true
+```
+
+Пример hard block:
+
+```text
+игрок запретил городской старт;
+выбранный place_template.place_kind=urban;
+pass=false
+```
+
+Ошибка:
+
+```text
+START_PLACE_PLAYER_HARD_CONSTRAINT_CONFLICT
+```
+
+### 6.13. NPC-поддержка
+
+Если `audit_policy.require_npc_candidate_support=true`, проверяется, что для выбранного `candidate_place_template_link_id` есть хотя бы один совместимый NPC-кандидат.
+
+Проверка:
+
+```text
+npc_candidate_set.npc_candidates[*].place_compatibility.allowed_candidate_place_template_link_ids
+contains selected_candidate_place_template_link_id
+```
+
+Если NPC-поддержки нет:
+
+```text
+START_PLACE_NPC_SUPPORT_MISSING
+```
+
+Если policy не требует NPC-поддержки, это warning.
+
+### 6.14. Предметная поддержка
+
+Если `audit_policy.require_item_profile_support=true`, проверяется, что для выбранного `candidate_place_template_link_id` есть хотя бы один допустимый item profile и property rule.
+
+Проверка:
+
+```text
+item_profile_candidate_set.item_profile_candidates[*].place_compatibility.allowed_candidate_place_template_link_ids
+contains selected_candidate_place_template_link_id
+```
+
+Если предметной поддержки нет:
+
+```text
+START_PLACE_ITEM_SUPPORT_MISSING
+```
+
+Если policy не требует item support, это warning.
+
+### 6.15. G5 readiness
+
+Выбранный G4/G3 должен быть пригоден для будущей G5-материализации.
+
+Для G4:
+
+```text
+selected G4 type has allowed G5 templates
+```
+
+Для G3 fallback:
+
+```text
+selected G3 has rules for selecting/materializing child G4
+```
+
+Если G5 невозможно материализовать:
+
+```text
+START_PLACE_G5_NOT_READY
+```
+
+### 6.16. Source trace
+
+Проверяется, что ключевые записи имеют источники:
+
+```text
+selected graph node
+parent chain nodes
+graph edges
+place_template
+region_place_template_link
+generation rules
+candidate records
+```
+
+Если `audit_policy.require_sources=true`, отсутствие source trace — hard block.
+
+Ошибка:
+
+```text
+START_PLACE_SOURCE_MISSING
+```
+
+### 6.17. Утечка downstream-сущностей
+
+Аудит проверяет, что `selected_start_node` не содержит:
+
+```text
+generated_place_name
+visible_scene
+intro_prose
+npc_id
+npc_name
+item_id
+container_contents
+g5_anchor_id
+minilocation_id
+hidden_event
+player_character
+```
+
+Если содержит:
+
+```text
+START_PLACE_CREATED_DOWNSTREAM_ENTITY
+```
+
+## 7. Что делает код
+
+Код выполняет hard validation:
+
+1. проверяет JSON-схему;
+2. проверяет наличие ID;
+3. сверяет ID с `world_base`;
+4. проверяет candidate set membership;
+5. проверяет parent chain;
+6. проверяет region/year/season/clock;
+7. проверяет place template link;
+8. проверяет access edges;
+9. проверяет source trace;
+10. проверяет отсутствие downstream-сущностей;
+11. строит `start_place_audit_precheck`;
+12. при необходимости передаёт пакет в LLM semantic auditor.
+
+Код не создаёт новых фактов. Код только валидирует ссылки, статусы и ограничения.
+
+## 8. Что делает LLM
+
+LLM на этом этапе не обязательна для базовой проверки. Основной hard audit выполняется кодом.
+
+LLM используется только для semantic audit, когда нужно проверить смысловую совместимость:
+
+* не слишком ли место противоречит заявке игрока;
+* не возникнет ли конфликт социального статуса;
+* не скрыт ли временной конфликт;
+* не создаёт ли выбранный узел невозможную стартовую ситуацию;
+* не маскируется ли hard conflict как warning;
+* не нарушен ли смысл `place_template`.
+
+LLM не имеет права:
+
+* выбрать новое место;
+* изменить `selected_candidate_id`;
+* изменить `selected_node_id`;
+* изменить `selected_place_template_id`;
+* исправить регион;
+* исправить время;
+* создать объясняющую сцену;
+* добавить NPC или предметы;
+* добавить G5.
+
+## 9. LLM-параметры
+
+### 9.1. `StartPlaceSemanticAuditor`
+
+Назначение: смысловой аудит выбранного стартового места.
+
+```json
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 5000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 50000,
+    "hard_input_limit_tokens": 140000,
+    "reserve_output_tokens": 5000
+  }
+}
+```
+
+Использовать для сложного смыслового аудита. В thinking mode не передавать `temperature`, `top_p`, `presence_penalty`, `frequency_penalty`, если текущий API не поддерживает их совместное использование с reasoning.
+
+### 9.2. `StartPlaceAuditFormatRepairer`
+
+Назначение: исправить только JSON-формат аудита.
+
+```json
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-flash",
+  "thinking": {
+    "type": "disabled"
+  },
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "max_tokens": 2500,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 20000,
+    "hard_input_limit_tokens": 60000,
+    "reserve_output_tokens": 2500
+  }
+}
+```
+
+### 9.3. `StartPlaceAuditRouter`
+
+Назначение: определить, куда откатить pipeline при `pass=false`.
+
+```json
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "max_tokens": 3000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 30000,
+    "hard_input_limit_tokens": 90000,
+    "reserve_output_tokens": 3000
+  }
+}
+```
+
+Router не выбирает новое место. Он только выбирает возвратный этап.
+
+## 10. Prompt: StartPlaceSemanticAuditor
+
+```md
+# Роль
+
+Ты StartPlaceSemanticAuditor для исторической текстовой RPG.
+
+# Задача
+
+Проверь выбранное стартовое место на соответствие базе, исторической рамке, региональному контексту, заявке игрока и downstream constraints.
+
+# Главное правило
+
+Ты не создаёшь мир.
+Ты не выбираешь новое место.
+Ты не исправляешь selected_start_node.
+Ты только аудируешь.
+
+# Используй только входные данные
+
+- normalized_request
+- historical_frame
+- regional_context_package
+- start_candidate_set
+- candidate_place_template_set
+- npc_candidate_set
+- item_profile_candidate_set
+- selected_start_node
+- code_precheck
+
+Если факта нет во входе, не добавляй его.
+
+# Проверить
+
+1. Выбранный node существует.
+2. Выбранный candidate существует в start_candidate_set.
+3. Выбранный place template link существует и относится к selected candidate.
+4. Node chain валиден.
+5. Регион совпадает.
+6. Год совместим.
+7. Сезон совместим.
+8. Clock/time_of_day/light_profile совместимы с place/access/rhythm rules.
+9. Place template разрешён в регионе.
+10. Access edge существует.
+11. Hard constraints игрока не нарушены.
+12. Социальный запрос будущего персонажа не конфликтует с местом.
+13. NPC support достаточен или корректно отмечен как optional warning.
+14. Item/property support достаточен или корректно отмечен как optional warning.
+15. G5 readiness достаточна.
+16. В результате нет созданных downstream-сущностей.
+17. source_trace достаточен.
+
+# Критическое правило времени
+
+Если clock.time_of_day = "night" или "deep_night", место не должно требовать дневного режима, дневного доступа, дневной толпы или daylight visibility без отдельного допустимого основания.
+
+# Формат
+
+Верни только json.
+
+Единственный допустимый формат:
+
+{
+  "version": 1,
+  "schema": "start_place_audit",
+  "request_id": "...",
+  "pass": true,
+  "selected_start": {},
+  "checks": {},
+  "concerns": [],
+  "evidence": [],
+  "repair_route": null,
+  "downstream_constraints": {}
+}
+
+Если pass=false:
+- concerns не должен быть пустым;
+- evidence не должен быть пустым;
+- repair_route должен быть заполнен.
+
+Если pass=true:
+- evidence не должен быть пустым.
+```
+
+## 11. Prompt: StartPlaceAuditFormatRepairer
+
+```md
+# Роль
+
+Ты StartPlaceAuditFormatRepairer.
+
+# Задача
+
+Исправь только формат JSON start_place_audit.
+
+# Главное правило
+
+Не меняй смысл.
+Не меняй pass/fail без основания.
+Не добавляй новых фактов.
+Не выбирай новое место.
+Не создавай node, NPC, item, G5 или сцену.
+
+# Разрешено
+
+- убрать markdown;
+- привести schema к "start_place_audit";
+- привести version к 1;
+- добавить отсутствующие служебные поля как null/[] при невозможности восстановления;
+- перенести свободный текст в concerns/evidence;
+- удалить запрещённые downstream-поля.
+
+# Запрещено
+
+- менять selected_candidate_id;
+- менять selected_node_id;
+- менять selected_place_template_id;
+- менять historical_frame;
+- создавать source_id;
+- создавать repair_route без validation evidence.
+
+# Формат
+
+Верни только json.
+```
+
+## 12. Prompt: StartPlaceAuditRouter
+
+```md
+# Роль
+
+Ты StartPlaceAuditRouter.
+
+# Задача
+
+По failed start_place_audit выбери правильный этап отката pipeline.
+
+# Главное правило
+
+Ты не исправляешь данные.
+Ты не выбираешь новое место.
+Ты только выбираешь return_to_stage и repair_kind.
+
+# Возможные return_to_stage
+
+- selected_start_node_format_repair
+- start_node_selector
+- start_candidate_retriever
+- place_template_retriever
+- regional_context_loader
+- historical_frame_selector
+- normalized_request_recheck
+- blocked
+
+# Правила маршрутизации
+
+Если проблема только в JSON-формате:
+return_to_stage = selected_start_node_format_repair
+
+Если selected_candidate_id не существует:
+return_to_stage = start_node_selector
+
+Если candidate set пуст или не содержит пригодных кандидатов:
+return_to_stage = start_candidate_retriever
+
+Если place_template_link невалиден:
+return_to_stage = place_template_retriever
+
+Если региональный контекст неполный:
+return_to_stage = regional_context_loader
+
+Если конфликт year/season/region/clock исходит из historical_frame:
+return_to_stage = historical_frame_selector
+
+Если игрокские hard constraints несовместимы со всеми кандидатами:
+return_to_stage = normalized_request_recheck или blocked
+
+# Формат
+
+Верни только json:
+
+{
+  "version": 1,
+  "schema": "start_place_audit_route",
+  "return_to_stage": "...",
+  "repair_kind": "...",
+  "reason": "...",
+  "evidence": []
+}
+```
+
+## 13. SQL-псевдозапросы
+
+### 13.1. Проверка выбранного узла
+
+```sql
+SELECT *
+FROM world_base.graph_nodes
+WHERE id = :selected_node_id
+  AND status IN (:allowed_statuses);
+```
+
+### 13.2. Проверка parent chain
+
+```sql
+WITH RECURSIVE parents AS (
+  SELECT id, parent_node_id, scale_level, region_id, status
+  FROM world_base.graph_nodes
+  WHERE id = :selected_node_id
+
+  UNION ALL
+
+  SELECT n.id, n.parent_node_id, n.scale_level, n.region_id, n.status
+  FROM world_base.graph_nodes n
+  JOIN parents p ON p.parent_node_id = n.id
+)
+SELECT *
+FROM parents;
+```
+
+### 13.3. Проверка place template
+
+```sql
+SELECT rpt.*, pt.*
+FROM world_base.region_place_templates rpt
+JOIN world_base.place_templates pt
+  ON pt.id = rpt.place_template_id
+WHERE rpt.region_id = :region_id
+  AND rpt.place_template_id = :selected_place_template_id
+  AND rpt.is_allowed = true
+  AND rpt.status IN (:allowed_statuses)
+  AND pt.status IN (:allowed_statuses);
+```
+
+### 13.4. Проверка access edges
+
+```sql
+SELECT *
+FROM world_base.graph_edges
+WHERE status IN (:allowed_statuses)
+  AND (
+    from_node_id = :selected_node_id
+    OR to_node_id = :selected_node_id
+  );
+```
+
+### 13.5. Проверка source IDs
+
+```sql
+SELECT id
+FROM world_base.source_records
+WHERE id = ANY(:source_ids);
+```
+
+## 14. Code precheck format
+
+Перед LLM-аудитом код формирует `code_precheck`.
+
+```json
+{
+  "version": 1,
+  "schema": "start_place_code_precheck",
+  "pass": true,
+  "checks": {
+    "node_exists": true,
+    "candidate_exists": true,
+    "template_link_exists": true,
+    "template_link_belongs_to_candidate": true,
+    "region_match": true,
+    "year_match": true,
+    "season_match": true,
+    "clock_match": true,
+    "parent_chain_valid": true,
+    "access_edges_exist": true,
+    "source_trace_present": true,
+    "no_downstream_entities": true
+  },
+  "concerns": [],
+  "evidence": []
+}
+```
+
+Если code precheck уже hard-failed, LLM semantic audit не нужен. Нужно сразу route repair.
+
+## 15. Validation rules
+
+Код обязан проверить итоговый `start_place_audit`:
+
+1. `schema === "start_place_audit"`.
+2. `version === 1`.
+3. `pass` является boolean.
+4. Если `pass=true`, `concerns` пустой или содержит только warnings.
+5. Если `pass=false`, `concerns` не пустой.
+6. `evidence` не пустой всегда.
+7. `selected_start.selected_candidate_id` существует.
+8. `selected_start.selected_node_id` существует.
+9. `selected_start.selected_place_template_id` существует.
+10. Выбранный template link относится к выбранному candidate.
+11. Parent chain валиден.
+12. Регион совпадает.
+13. Год совместим.
+14. Сезон совместим.
+15. Clock совместим.
+16. Access edge существует.
+17. Place template разрешён в регионе.
+18. Social status compatibility не hard-failed.
+19. Player hard constraints не нарушены.
+20. G5 readiness достаточна.
+21. Source trace достаточен.
+22. Нет downstream-сущностей.
+23. Если `pass=false`, `repair_route` заполнен.
+24. `repair_route.return_to_stage` входит в допустимый enum.
+
+## 16. Error codes
+
+```text
+START_PLACE_AUDIT_INVALID_JSON
+START_PLACE_AUDIT_SCHEMA_MISMATCH
+START_PLACE_AUDIT_EMPTY_EVIDENCE
+START_PLACE_NODE_NOT_FOUND
+START_PLACE_CANDIDATE_NOT_IN_SET
+START_PLACE_TEMPLATE_LINK_NOT_FOUND
+START_PLACE_TEMPLATE_LINK_CANDIDATE_MISMATCH
+START_PLACE_NODE_ID_MISMATCH
+START_PLACE_TEMPLATE_ID_MISMATCH
+START_PLACE_PARENT_CHAIN_BROKEN
+START_PLACE_REGION_MISMATCH
+START_PLACE_YEAR_OUT_OF_RANGE
+START_PLACE_SEASON_CONFLICT
+START_PLACE_CLOCK_ACCESS_CONFLICT
+START_PLACE_TEMPLATE_NOT_ALLOWED
+START_PLACE_NO_ACCESS_EDGE
+START_PLACE_PLAYER_HARD_CONSTRAINT_CONFLICT
+START_PLACE_SOCIAL_STATUS_CONFLICT
+START_PLACE_NPC_SUPPORT_MISSING
+START_PLACE_ITEM_SUPPORT_MISSING
+START_PLACE_G5_NOT_READY
+START_PLACE_SOURCE_MISSING
+START_PLACE_REJECTED_RECORD_USED
+START_PLACE_CONFLICT_RECORD_USED
+START_PLACE_CREATED_DOWNSTREAM_ENTITY
+START_PLACE_ROUTE_MISSING
+START_PLACE_REPAIR_ROUTE_MISSING
+```
+
+## 17. DB write на этом этапе
+
+Разрешено писать:
+
+```text
+pipeline_step_status
+start_place_code_precheck_snapshot
+start_place_audit_snapshot
+start_place_audit_validation_issues
+start_place_repair_route
+selected_start_node_audited_snapshot
+source_trace_snapshot
+```
+
+Запрещено писать:
+
+```text
+party_current_position
+party_player_characters
+party_npcs
+party_items
+party_scene_anchors
+party_events
+visible_scene
+intro_prose
+g5_scene
+container_contents
+hidden_state
+```
+
+Даже если аудит пройден, полная позиция партии ещё не фиксируется, потому что G5, минилокация и anchor ещё не материализованы.
+
+## 18. Commit gate этапа
+
+Этап считается успешным, если:
+
+```text
+start_place_audit.pass = true
+и selected node существует в world_base
+и selected candidate существует в candidate set
+и selected template link валиден
+и region/year/season/clock совместимы
+и hard constraints игрока не нарушены
+и социальный запрос будущего персонажа не конфликтует с местом
+и G5 readiness достаточна
+и нет downstream-сущностей
+```
+
+После успешного аудита pipeline может перейти к генерации персонажа игрока.
+
+Если audit failed, pipeline не должен продолжать к персонажу или G5.
+
+## 19. Передача в следующий этап
+
+```json
+{
+  "version": 1,
+  "schema": "player_character_generator_input",
+  "request_id": "string",
+
+  "normalized_request": {},
+  "historical_frame": {},
+  "regional_context_package": {},
+  "selected_start_node": {},
+  "start_place_audit": {
+    "version": 1,
+    "schema": "start_place_audit",
+    "pass": true
+  },
+
+  "allowed_social_roles": [],
+  "allowed_occupations": [],
+  "selected_place_constraints": {
+    "selected_candidate_id": "string",
+    "selected_node_id": "string",
+    "selected_place_template_id": "string",
+    "social_status_constraints": [],
+    "occupation_constraints": [],
+    "wealth_constraints": [],
+    "access_constraints": [],
+    "season_constraints": [],
+    "clock_constraints": []
+  }
+}
+```
+
+Генератор персонажа обязан использовать `selected_place_constraints`. Если он создаёт персонажа, несовместимого с выбранным местом, его результат должен быть отклонён.
+
+## 20. Минимальный успешный результат
+
+```json
+{
+  "version": 1,
+  "schema": "start_place_audit",
+  "request_id": "req_001",
+
+  "pass": true,
+
+  "selected_start": {
+    "selected_candidate_id": "start_candidate_001",
+    "selected_candidate_place_template_link_id": "cptl_001",
+    "selected_node_id": "g4_001",
+    "selected_scale_level": "G4",
+    "selected_place_template_id": "place_template_001"
+  },
+
+  "checks": {
+    "world_base_existence": {
+      "pass": true,
+      "evidence": [
+        "selected_node_id exists in world_base.graph_nodes"
+      ]
+    },
+    "candidate_set_membership": {
+      "pass": true,
+      "evidence": [
+        "selected_candidate_id exists in start_candidate_set"
+      ]
+    },
+    "node_chain": {
+      "pass": true,
+      "evidence": [
+        "G1→G2→G3→G4 chain is complete"
+      ]
+    },
+    "region_compatibility": {
+      "pass": true,
+      "evidence": [
+        "selected node and parent chain match historical_frame.region_id"
+      ]
+    },
+    "year_compatibility": {
+      "pass": true,
+      "evidence": [
+        "selected node and place template are compatible with selected year"
+      ]
+    },
+    "season_compatibility": {
+      "pass": true,
+      "evidence": [
+        "selected place is usable in selected season"
+      ]
+    },
+    "clock_compatibility": {
+      "pass": true,
+      "evidence": [
+        "selected place access does not contradict selected clock and light_profile"
+      ]
+    },
+    "place_template_compatibility": {
+      "pass": true,
+      "evidence": [
+        "selected place_template_id is allowed through regional place template link"
+      ]
+    },
+    "access_compatibility": {
+      "pass": true,
+      "evidence": [
+        "selected node has at least one valid access edge"
+      ]
+    },
+    "player_request_compatibility": {
+      "pass": true,
+      "evidence": [
+        "selected place does not violate player hard constraints"
+      ]
+    },
+    "social_status_compatibility": {
+      "pass": true,
+      "evidence": [
+        "selected place supports at least one allowed future character social role"
+      ]
+    },
+    "npc_support": {
+      "pass": true,
+      "evidence": [
+        "compatible NPC candidates exist for selected place template link"
+      ]
+    },
+    "item_support": {
+      "pass": true,
+      "evidence": [
+        "compatible item/property profiles exist for selected place template link"
+      ]
+    },
+    "g5_readiness": {
+      "pass": true,
+      "evidence": [
+        "selected G4 type can be materialized into G5 by later stage"
+      ]
+    },
+    "source_trace": {
+      "pass": true,
+      "evidence": [
+        "source trace exists for selected node, candidate and place template link"
+      ]
+    },
+    "downstream_entity_leak_check": {
+      "pass": true,
+      "evidence": [
+        "selected_start_node contains no NPC, item, G5, visible_scene or intro_prose"
+      ]
+    }
+  },
+
+  "concerns": [],
+
+  "evidence": [
+    "Selected start node exists in world_base.",
+    "Selected candidate belongs to start_candidate_set.",
+    "Selected place template link belongs to selected candidate.",
+    "Region, year, season and clock are compatible.",
+    "Player hard constraints are not violated.",
+    "No downstream entities were created."
+  ],
+
+  "repair_route": null,
+
+  "downstream_constraints": {
+    "must_preserve": [
+      "selected_candidate_id",
+      "selected_candidate_place_template_link_id",
+      "selected_node_id",
+      "selected_place_template_id",
+      "selected_node_chain",
+      "historical_frame.region_id",
+      "historical_frame.year",
+      "historical_frame.season",
+      "historical_frame.clock"
+    ],
+    "must_not_create_yet": [
+      "g5_scene",
+      "npc",
+      "item",
+      "visible_scene",
+      "intro_prose",
+      "hidden_event"
+    ],
+    "must_resolve_later": [
+      "player_character",
+      "g5_scene_anchors",
+      "current_position_g5_anchor",
+      "initial_npcs",
+      "initial_items",
+      "visible_context_package"
+    ]
+  }
+}
+```

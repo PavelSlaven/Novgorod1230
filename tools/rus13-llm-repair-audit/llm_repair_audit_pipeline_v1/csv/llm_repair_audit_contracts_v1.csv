@@ -1,0 +1,11 @@
+﻿contract_id,schema_file,purpose,producer,consumer
+RawLlmResultRecord,raw_llm_result_record.schema.json,Records unmodified model output and metadata before any parse/repair.,code,validator; audit log
+SchemaValidationReport,schema_validation_report.schema.json,Machine-readable structural validation errors.,code validator,repair_agent
+RepairRequest,repair_request.schema.json,"Payload sent to repair agent with raw result, schema errors, allowed operation and constraints.",pipeline,repair_agent
+RepairResult,repair_result.schema.json,Repaired result plus declaration of changed fields and whether any issue remains unfixable.,repair_agent,schema validator; semantic auditor
+SemanticAuditReport,semantic_audit_report.schema.json,LLM audit of contradictions against project rules and party facts.,consistency_auditor,commit gate
+VisibilityLeakAuditReport,visibility_leak_audit_report.schema.json,Audit that visible/prose/UI outputs contain no hidden state leaks.,visibility_auditor,commit gate
+SourceStatusAuditReport,source_status_audit_report.schema.json,"Audit source usage, unresolved IDs, confidence/status laundering and draft/approved separation.",source_auditor,commit gate
+DbWritePlanValidationReport,db_write_plan_validation_report.schema.json,"Checks target tables, write order, FK references and transaction readiness.",code validator,commit gate
+CommitGateReport,commit_gate_report.schema.json,Final pass/fail decision for atomic party-state write.,commit_gate,orchestrator; party_llm_steps
+PipelineRunSummary,pipeline_run_summary.schema.json,Top-level outcome for a repaired/audited LLM step.,orchestrator,debug UI; logs

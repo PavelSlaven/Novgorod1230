@@ -1,0 +1,1768 @@
+# ПРИОРИТЕТНАЯ РЕДАКЦИЯ 3 — ИЗОЛИРОВАННЫЙ STAGE 26, PLAYER-SAFE SCREEN И DELIVERY BOUNDARY
+
+Эта редакция имеет приоритет над всеми несовместимыми примерами ниже.
+
+## 0. Архитектурный контракт
+
+Stage 26 — отдельный `isolated_code_and_audit_block`. Он получает только exact `first_game_screen_input`, не читает global context, registry, mutable stage outputs, party DB, world_base, transport или UI framework и возвращает только immutable `stage26_first_game_screen_result`.
+
+Stage 26 ничего не создаёт в мире и не реконструирует committed state. Он детерминированно проецирует уже committed player-safe read model в первый экран, затем пропускает экран через code validation, `FirstScreenSafetyAuditor` и `FirstScreenActionLabelAuditor`.
+
+Provided input/output, caller-provided committed state, готовый screen, готовые audits и обход через параллельный UI payload запрещены во всех окружениях. Для тестов разрешается подменять только role executors; каждый результат проходит реальные validators.
+
+## 0.1. Exact input
+
+```text
+first_game_screen_input:
+  version/schema/request_id
+  stage25_party_commit_approval
+  party_start_committed
+  committed_public_read_model
+  approved_narrator_output
+  narrator_output_digest
+  narrator_prose_approval
+  approved_visible_context
+  visible_context_package_digest
+  visible_context_approval
+  screen_policy
+```
+
+`committed_public_read_model` формируется только из Stage 25 live postcommit readback и содержит собственный digest. Stage 20 visible context используется только для проверки provenance и не является fallback-источником данных панелей после commit.
+
+## 0.2. Digest binding
+
+До проекции код повторно вычисляет и сверяет:
+
+```text
+postcommit_state_digest
+party_start_committed_digest
+party_public_state_digest
+narrator_output_digest
+visible_context_package_digest
+first_game_screen_input_digest
+```
+
+Stage 25 approval обязан подтверждать `pass=true`, `commit_status=committed`, party/transaction IDs, physical plan digest, postcommit digest, committed/public-state digests и permissions `can_start_stage_26`, `can_show_player_output`, `can_accept_player_input`.
+
+Любой stale/substituted artifact блокирует Stage 26.
+
+## 0.3. Code precheck
+
+До screen projection формируется `first_screen_code_precheck`. Он проверяет:
+
+- exact input schema/version/request ID;
+- Stage 25 approval, permissions и digests;
+- полную структуру `party_start_committed`;
+- party state `ready`, current turn `0`, current position и committed narrator message reference;
+- committed public read model schema, party/transaction binding и live-readback provenance;
+- narrator output, narrator approval и digest;
+- visible context approval и digest;
+- неослабляемую screen policy;
+- отсутствие forbidden input fields, precommit fallback и synthetic message ID.
+
+При `pass=false` projection и LLM auditors не вызываются.
+
+## 0.4. Deterministic projection
+
+Экран строится только из:
+
+```text
+approved narrator prose
+committed public position/clock/weather/character labels
+committed visible NPC/item/container/exit/cue refs
+committed current knowledge map/routes
+approved narrator action options
+committed player-visible message ID
+```
+
+Код не создаёт labels, NPC, items, routes, targets, actions или message IDs. Approved refs и `option_id` сохраняются в output.
+
+## 0.5. Reference and consistency firewall
+
+Код обязан проверить:
+
+- attention refs принадлежат committed player-safe read model;
+- action option ID, action kind, target ref и basis refs принадлежат approved inputs;
+- action не обещает гарантированный результат и не использует hidden truth;
+- known nodes/routes принадлежат committed current knowledge;
+- unknown exits не раскрывают destination;
+- public position ref совпадает с committed current position;
+- public time/light/weather projection совпадает с committed clock projection;
+- narrator и visible-context approvals относятся к текущим digests;
+- все player-facing строки свободны от raw technical IDs, JSON/debug/audit/source text;
+- hidden/private/closed-container/future-event truth не попадает в экран.
+
+Boolean-поля `ui_safety_boundary` вычисляются только по результатам фактических code checks и двух semantic audits; они не выставляются заранее.
+
+## 0.6. Required semantic audits
+
+Успешный Stage 26 обязательно проходит:
+
+```text
+FirstScreenSafetyAuditor
+FirstScreenActionLabelAuditor
+```
+
+Оба аудитора получают только screen, approved narrator/visible artifacts, committed public read model, screen policy и safe reference index. Hidden state, global context, DB handles и полная audit history им не передаются.
+
+`FirstScreenSafetyAuditor` проверяет новые факты, hidden leaks, private motives, closed-container truth, future events, position/time contradiction и technical text.
+
+`FirstScreenActionLabelAuditor` проверяет attention/action labels, risk hints, unknown exits, outcome promises, target substitution, hidden truth и сохранение неопределённости.
+
+## 0.7. Repair and escalation
+
+Разрешены отдельные маршруты:
+
+```text
+first_screen_format_repair
+first_screen_label_semantic_repair
+first_screen_action_label_repair
+party_public_read_model_repair
+stage25_postcommit_repair
+narrator_prose_repair
+visible_context_repair
+delivery_state_repair
+blocked
+manual_review
+```
+
+Format repair меняет только форму JSON. Semantic repair может менять только presentation labels, но не refs, targets, topology, position, clock, narrator prose, message ID или digests.
+
+Каждый repair заканчивается полным code validation и повтором обоих audits. После исчерпания обычных циклов допускается один senior repair; затем Stage 26 блокируется.
+
+## 0.8. Result bundle and immutability
+
+Успешный Stage 26 возвращает immutable:
+
+```text
+stage26_first_game_screen_result:
+  pass=true
+  input/screen/public-state/narrator/visible/postcommit digests
+  first_screen_code_precheck
+  first_game_screen
+  first_screen_code_validation
+  first_screen_safety_audit
+  first_screen_action_label_audit
+  validation/audit/repair history
+  diagnostics
+  delivery_permission
+```
+
+`screen_digest` вычисляется по каноническому JSON. Доставляться может только тот же frozen screen, который прошёл validation и audits.
+
+Failure возвращается тем же result schema с `pass=false`, failed phase, concerns/evidence, repair route и запрещёнными delivery permissions.
+
+## 0.9. Delivery boundary
+
+Stage 26 только утверждает screen artifact. Доставка выполняется отдельным code-only блоком:
+
+```text
+approved Stage 26 result
+→ persisted party_first_screen_delivery_attempt
+→ transport send
+→ client acknowledgement
+```
+
+`message_id` берётся только из committed player-visible message record. Synthetic fallback запрещён.
+
+Повторная доставка того же party/message/screen digest идемпотентна и использует тот же delivery attempt binding.
+
+`opening_scene_presented=true` разрешается только после валидного ACK, связанного с party ID, transaction ID, message ID и screen digest. Идентичный повторный ACK идемпотентен; конфликтующий ACK блокируется.
+
+## 0.10. Stage 26 → Stage 27
+
+Stage 27 получает только approved Stage 26 screen, acknowledged delivery и player input с контрактом `intent_not_fact`.
+
+До handoff проверяются:
+
+```text
+Stage 26 pass=true
+screen_status=ready
+screen digest current
+delivery attempt acknowledged
+ACK matches message/screen/party/transaction
+free-text input enabled
+input contract=intent_not_fact
+selected action option belongs to approved screen
+```
+
+Слова игрока передаются как заявка-намерение и не становятся фактом мира до следующего pipeline.
+
+---
+# ПРИОРИТЕТНАЯ РЕДАКЦИЯ 2 — STRICT STAGE 25 → STAGE 26 HANDOFF
+
+Эта редакция имеет приоритет над несовместимыми примерами ниже.
+
+## 0. Архитектурный контракт
+
+Stage 26 запускается только после реального успешного Stage 25 commit и postcommit readback. Синтетический `party_start_committed`, write plan, один `commit_gate_result` или caller-provided party state не являются допустимым основанием для первого экрана.
+
+Exact handoff содержит:
+
+```text
+stage25_party_commit_approval
+party_start_committed, построенный только из live DB readback
+party_public_state, построенный только из committed player-safe read model
+approved narrator output
+approved narrator audit
+visible context package
+visible context approval
+screen policy
+```
+
+`stage25_party_commit_approval` обязан подтверждать:
+
+```text
+pass=true
+commit_status=committed
+party_id
+transaction_id
+physical_plan_digest
+postcommit_state_digest
+can_start_stage_26=true
+can_show_player_output=true
+can_accept_player_input=true
+```
+
+До построения экрана код повторно проверяет schema/version/request ID, party/transaction binding, успешный transaction result, `party_postcommit_validation.pass=true`, ready-state, current position, narrator output reference и текущие digests.
+
+Запрещены:
+
+```text
+options.partyStartCommitted
+options.partyStateAfterCommit
+options.currentPositionAfterCommit
+options.narratorOutputId
+options.partyPublicState
+ручной committed state
+Stage 24 write plan вместо live state
+запуск после dry-run или commit gate без transaction/postcommit
+```
+
+При любой ошибке Stage 25 или Stage 25→26 handoff первый экран не создаётся и player-facing output не отправляется.
+
+---
+# Этап 26. Первый игровой экран
+
+## 1. Назначение этапа
+
+Первый игровой экран — это первый player-facing экран после успешного commit стартовой партии.
+
+На этом этапе игрок получает:
+
+* стартовую прозу;
+* текущую воспринимаемую позицию;
+* время, свет и погодное давление, если они видимы или ощутимы;
+* ближайшие видимые NPC;
+* ближайшие видимые предметы и контейнеры;
+* видимые выходы, проходы и направления;
+* безопасные варианты внимания;
+* безопасные варианты действия;
+* поле свободного ввода для первого хода.
+
+Короткая формула:
+
+```text id="sa6y5f"
+party_start_committed
++ approved narrator output
++ visible_context_package
++ safe action options
++ current_position public label
+→ first_game_screen
+→ player first turn input
+```
+
+Главное правило:
+
+```text id="k1l7p7"
+Первый экран ничего не создаёт.
+Он только показывает игроку уже утверждённое и безопасное для персонажа состояние.
+```
+
+## 2. Главное правило этапа
+
+Первый игровой экран не является генератором мира.
+
+Экран не должен:
+
+* добавлять NPC;
+* добавлять предметы;
+* добавлять новые двери, проходы, маршруты;
+* добавлять новые угрозы;
+* менять время суток;
+* менять погоду;
+* менять позицию;
+* раскрывать hidden state;
+* показывать audit/debug/JSON;
+* показывать source trace;
+* показывать внутренние IDs, если UI не в debug mode;
+* показывать игроку то, что персонаж не знает.
+
+Экран должен:
+
+* отобразить только approved narrator prose;
+* отобразить только approved action options;
+* отобразить только character-safe current position;
+* отобразить только видимые/известные/слышимые элементы;
+* принять первый свободный ход игрока;
+* передать ход в следующий pipeline как заявку, а не как факт.
+
+## 3. Место этапа в pipeline
+
+```text id="kyy17k"
+1. Заявка игрока
+2. Нормализация заявки
+3. Выбор исторической рамки
+4. Загрузка регионального контекста
+5. Подбор стартовых G1–G4 кандидатов
+6. Подбор place templates
+7. Подбор NPC-кандидатов
+8. Подбор предметных профилей
+9. Выбор стартового узла
+10. Аудит стартового места
+11. Генерация персонажа
+12. Аудит персонажа
+13. Материализация G5-сцены
+14. Аудит G5-сцены
+15. Размещение стартовых NPC
+16. Размещение стартовых предметов
+17. Проверка времени и света
+18. Формирование карты знаний персонажа
+19. Формирование полного hidden state
+20. Формирование visible context package
+21. Аудит visible context
+22. Генерация стартовой прозы narrator
+23. Аудит стартовой прозы narrator
+24. План записи в party-базу
+25. Commit gate
+26. Первый игровой экран
+27. Первый ход игрока
+```
+
+Этап 26 не должен запускаться до успешного commit.
+
+## 4. Вход этапа
+
+```json id="kzuzrh"
+{
+  "version": 1,
+  "schema": "first_game_screen_input",
+  "request_id": "string",
+
+  "party_start_committed": {
+    "version": 1,
+    "schema": "party_start_committed",
+    "commit_status": "committed",
+    "party_id": "string",
+    "transaction_id": "string",
+    "party_state": {
+      "status": "ready",
+      "is_ready_for_player": true,
+      "current_phase": "awaiting_player_input",
+      "current_turn_number": 0
+    },
+    "current_position": {
+      "region_id": "string",
+      "place_id": "string",
+      "location_id": "string",
+      "minilocation_id": "string",
+      "anchor_id": "string",
+      "last_route_id": "string | null"
+    },
+    "player_output_ref": {
+      "narrator_output_id": "string",
+      "player_visible_message_ready": true,
+      "opening_scene_presented": false
+    }
+  },
+
+  "approved_narrator_output": {
+    "version": 1,
+    "schema": "narrator_starting_prose",
+    "prose_status": "drafted",
+    "prose": "string",
+    "action_options": [],
+    "used_visible_context_refs": [],
+    "self_constraints_check": {}
+  },
+
+  "narrator_prose_audit": {
+    "version": 1,
+    "schema": "narrator_prose_audit",
+    "pass": true,
+    "commit_permission": {
+      "can_show_to_player": true,
+      "can_write_player_visible_message": true,
+      "can_mark_opening_scene_presented": true
+    }
+  },
+
+  "visible_context_package": {
+    "version": 1,
+    "schema": "visible_context_package",
+    "visible_context_status": "formed"
+  },
+
+  "visible_context_audit": {
+    "version": 1,
+    "schema": "visible_context_audit",
+    "pass": true
+  },
+
+  "party_public_state": {
+    "version": 1,
+    "schema": "party_public_state",
+    "public_position_label": "string",
+    "public_time_label": "string",
+    "public_weather_label": "string | null",
+    "public_character_status": {},
+    "public_visible_map": {},
+    "public_known_routes": [],
+    "public_visible_npcs": [],
+    "public_visible_items": [],
+    "public_visible_containers": [],
+    "public_visible_exits": [],
+    "public_attention_targets": [],
+    "public_action_targets": []
+  },
+
+  "screen_policy": {
+    "show_narrator_prose": true,
+    "show_public_position": true,
+    "show_time_and_light": true,
+    "show_body_status": true,
+    "show_attention_options": true,
+    "show_action_options": true,
+    "show_free_text_input": true,
+    "show_debug_ids": false,
+    "show_json": false,
+    "show_audit": false,
+    "show_source_trace": false,
+    "show_hidden_state": false,
+    "require_safe_labels": true,
+    "require_action_options_from_approved_refs": true,
+    "require_first_turn_input_as_intent_not_fact": true
+  }
+}
+```
+
+### Источник карты и известных маршрутов после commit
+
+`party_public_state.public_known_routes`, `public_visible_map` и другие knowledge-derived UI-поля формируются только из текущего `party_character_knowledge_layer`:
+
+```text
+party_character_knowledge_maps where is_current=true
++ active party_character_known_*
+→ player-safe public read model
+→ first_game_screen_input.party_public_state
+```
+
+Первый экран не читает `party_character_knowledge_snapshots` как текущее состояние и не реконструирует знания из исходного Stage 18 JSON. Snapshot используется только для аудита и восстановления.
+
+`known_nearby_paths` может показываться в карте/выходах только через записи `party_character_known_routes` с `knowledge_kind=nearby_path` и только после player-safe фильтра.
+
+## 5. Выход этапа
+
+```json id="9jq8ay"
+{
+  "version": 1,
+  "schema": "first_game_screen",
+  "request_id": "string",
+
+  "screen_status": "ready | blocked | requires_repair",
+
+  "party_id": "string",
+  "turn_number": 0,
+
+  "main_prose": "string",
+
+  "position_panel": {
+    "public_position_label": "string",
+    "technical_position_hidden": true,
+    "debug_position": null
+  },
+
+  "time_panel": {
+    "public_time_label": "string",
+    "public_light_label": "string",
+    "public_weather_label": "string | null"
+  },
+
+  "character_panel": {
+    "public_character_label": "string",
+    "body_state_summary": [],
+    "inventory_summary": [],
+    "warning_badges": []
+  },
+
+  "attention_panel": {
+    "visible_npcs": [],
+    "visible_items": [],
+    "visible_containers": [],
+    "visible_exits": [],
+    "audible_or_sensory_cues": [],
+    "known_context_hints": []
+  },
+
+  "action_panel": {
+    "suggested_actions": [],
+    "free_text_input": {
+      "enabled": true,
+      "placeholder": "Что ты делаешь?",
+      "input_contract": "player_intent_not_world_fact"
+    }
+  },
+
+  "map_panel": {
+    "enabled": true,
+    "map_mode": "character_known_only",
+    "known_current_node": {},
+    "known_nearby_nodes": [],
+    "unknown_exits": [],
+    "must_not_show_hidden_nodes": true
+  },
+
+  "ui_safety_boundary": {
+    "hidden_state_not_included": true,
+    "audit_not_included": true,
+    "source_trace_not_included": true,
+    "raw_ids_not_included": true,
+    "player_sees_only_character_safe_context": true
+  },
+
+  "delivery_state": {
+    "message_id": "string",
+    "opening_scene_presented": false,
+    "awaiting_client_ack": true
+  }
+}
+```
+
+## 6. Что игрок видит
+
+Игрок видит только player-facing слой.
+
+Минимальный экран:
+
+```text id="8u559g"
+[Стартовая проза]
+
+Положение: <публичное описание места>
+Время: <публичное описание времени и света>
+Состояние: <короткие видимые/ощутимые состояния персонажа>
+
+Внимание:
+- <видимый NPC / звук / предмет / контейнер / выход>
+- <видимый риск или неопределённость>
+
+Можно:
+1. <безопасное действие>
+2. <безопасное действие>
+3. <безопасное действие>
+
+[Свободный ввод: Что ты делаешь?]
+```
+
+Игрок не обязан видеть:
+
+```text id="9gwroc"
+region_id;
+place_id;
+location_id;
+minilocation_id;
+anchor_id;
+npc_instance_id;
+item_instance_id;
+hidden_fact_id;
+audit ids;
+source ids;
+candidate ids.
+```
+
+Технические ID допустимы только в debug/developer mode, но не в обычном игровом экране.
+
+## 7. Что игрок не видит
+
+Первый экран не показывает:
+
+```text id="h94bkc"
+hidden_state;
+private NPC motives;
+private NPC knowledge;
+closed container contents;
+true ownership if unknown;
+future event timers;
+hidden route truth;
+hidden risk truth;
+truth_status_for_system;
+actual_truth_hidden_from_character;
+audit result;
+repair route;
+source trace;
+raw JSON;
+prompt;
+schema names;
+LLM diagnostics;
+DB transaction details.
+```
+
+Если UI должен объяснить риск, он показывает только player-safe hint:
+
+```text id="4bqj9b"
+Можно: "человек рядом может заметить резкое движение".
+Нельзя: "он специально сторожит ларь".
+```
+
+## 8. Структура первого экрана
+
+### 8.1. Main prose
+
+`main_prose` берётся строго из `approved_narrator_output.prose`.
+
+Правила:
+
+```text id="8s6l45"
+не редактировать на UI-слое;
+не добавлять вступительные фразы;
+не сокращать так, чтобы терялись условия;
+не расширять атмосферными деталями;
+не менять время/позицию/риски;
+не добавлять tutorial text внутрь prose.
+```
+
+Если нужен tutorial, он должен быть отдельным UI-block, а не частью narrator prose.
+
+### 8.2. Position panel
+
+`position_panel` показывает публичную позицию.
+
+```json id="hpijw1"
+{
+  "position_panel": {
+    "public_position_label": "У стены закрытого двора, рядом с тёмным проходом",
+    "technical_position_hidden": true,
+    "debug_position": null
+  }
+}
+```
+
+Правило:
+
+```text id="3ih6zq"
+Публичная позиция должна быть понятной игроку, но не раскрывать скрытые узлы карты.
+```
+
+Допустимо:
+
+```text id="m8g8c1"
+У закрытого ларя, в тёмном углу двора.
+У двери, рядом с человеком у стены.
+На краю освещённой комнаты.
+```
+
+Недопустимо:
+
+```text id="5qr5yz"
+G5_ANCHOR_001.
+Скрытая зона behind_guarded_door.
+Точка рядом с NPC, который скрывает долг.
+```
+
+### 8.3. Time panel
+
+`time_panel` показывает только player-safe время.
+
+```json id="btr8nf"
+{
+  "time_panel": {
+    "public_time_label": "глубокая ночь",
+    "public_light_label": "темно, видимость ограничена",
+    "public_weather_label": "холодно"
+  }
+}
+```
+
+Запрещено менять `clock`.
+
+Если в approved prose ночь, UI не может подписать экран как “день”.
+
+### 8.4. Character panel
+
+`character_panel` показывает краткое состояние персонажа.
+
+```json id="cv86r8"
+{
+  "character_panel": {
+    "public_character_label": "Ты",
+    "body_state_summary": [
+      "холод",
+      "усталость: слабая"
+    ],
+    "inventory_summary": [
+      "при себе только то, что уже утверждено в инвентаре"
+    ],
+    "warning_badges": [
+      "видимость ограничена"
+    ]
+  }
+}
+```
+
+Правила:
+
+```text id="6vo5j9"
+не показывать скрытые болезни, если персонаж их не ощущает;
+не показывать полный numerical stat sheet без UI-режима;
+не показывать hidden modifiers;
+не показывать неосмотренные предметы в инвентаре;
+не смешивать property and inventory.
+```
+
+### 8.5. Attention panel
+
+Показывает, на что персонаж может обратить внимание.
+
+Типы attention targets:
+
+```text id="3x2cds"
+visible_npc;
+visible_item;
+visible_container;
+visible_exit;
+audible_cue;
+smell_cue;
+body_sensation;
+known_context_hint;
+uncertain_context;
+risk_hint;
+```
+
+Формат:
+
+```json id="dbexjp"
+{
+  "attention_target_id": "attention_001",
+  "label": "закрытый ларь у стены",
+  "target_type": "visible_container",
+  "target_ref": {
+    "container_instance_id": "container_001"
+  },
+  "attention_mode": "inspect | approach | listen | ask | observe | remember | avoid",
+  "risk_hint": "medium",
+  "certainty": "visible | audible | known | uncertain",
+  "must_not_reveal_hidden_truth": true
+}
+```
+
+### 8.6. Action panel
+
+Показывает безопасные suggested actions.
+
+Формат:
+
+```json id="i3w0di"
+{
+  "suggested_action_id": "suggested_action_001",
+  "label": "Осмотреть закрытый ларь.",
+  "action_kind": "inspect",
+  "target_ref": {
+    "container_instance_id": "container_001"
+  },
+  "basis": "visible",
+  "risk_hint": "medium",
+  "will_consume_time": "maybe",
+  "requires_resolution_pipeline": true,
+  "must_not_reveal_hidden_truth": true
+}
+```
+
+Action option — это не результат.
+Action option — это возможная заявка.
+
+Допустимо:
+
+```text id="g6d9nn"
+Осмотреть закрытый ларь.
+Заговорить с человеком рядом.
+Прислушаться.
+Проверить тёмный проход.
+Подождать.
+```
+
+Недопустимо:
+
+```text id="txmz2u"
+Открыть ларь с серебром.
+Поговорить с человеком, который тебя подозревает.
+Пойти тайным ходом к складу.
+Подождать, пока войдёт сторож.
+```
+
+### 8.7. Free text input
+
+Свободный ввод — главный способ игры.
+
+Контракт поля ввода:
+
+```text id="mq7kyo"
+Игрок вводит намерение, а не факт мира.
+```
+
+Если игрок пишет:
+
+```text id="qw8ghd"
+Я беру нож со стола.
+```
+
+Система трактует это как:
+
+```text id="e883mz"
+персонаж пытается взять нож, если такой нож существует, видим, доступен или может быть найден.
+```
+
+Не как:
+
+```text id="m9jg1g"
+нож точно есть на столе и уже взят.
+```
+
+## 9. Карта на первом экране
+
+Карта, если показывается, должна быть картой знаний персонажа.
+
+Показывать можно:
+
+```text id="n0a17k"
+текущую известную точку;
+видимые выходы;
+известные персонажу ближайшие пути;
+неизвестные направления как неизвестные;
+посещённые узлы;
+слуховые ориентиры как слухи;
+опасности как известные/видимые/слуховые.
+```
+
+Нельзя показывать:
+
+```text id="ya5dns"
+полную фактическую карту;
+скрытые исторические якоря;
+закрытые зоны за дверью;
+точный destination unknown exit;
+hidden route truth;
+NPC offscreen position;
+события, которые ещё не проявились.
+```
+
+Формат:
+
+```json id="pfbwce"
+{
+  "map_panel": {
+    "enabled": true,
+    "map_mode": "character_known_only",
+    "current_node": {
+      "label": "текущая точка",
+      "certainty": "known_current"
+    },
+    "visible_exits": [
+      {
+        "label": "тёмный проход",
+        "destination": "unknown",
+        "certainty": "visible_but_unknown"
+      }
+    ],
+    "known_routes": [],
+    "unknown_or_hidden": {
+      "show_count": false,
+      "show_labels": false
+    }
+  }
+}
+```
+
+## 10. Первый экран и первый ход
+
+После показа первого экрана система переходит в состояние:
+
+```text id="0l0ptn"
+awaiting_player_input
+```
+
+Игрок может:
+
+```text id="s0qwrm"
+выбрать предложенное действие;
+написать свободное действие;
+задать вопрос;
+осмотреть объект;
+заговорить с NPC;
+идти к видимому выходу;
+ждать;
+проверить знание;
+попробовать взаимодействовать с предметом;
+ничего не делать.
+```
+
+Любой первый ход должен проходить через следующий turn pipeline:
+
+```text id="2j73hq"
+player_input
+→ normalize_player_intent
+→ resolve_against_current_state
+→ check_visibility_knowledge_access
+→ determine time cost/risk
+→ update world/party state
+→ build new visible context
+→ narrator response
+```
+
+Первый ход не должен напрямую менять БД как факт до обработки.
+
+## 11. Что считается корректным первым экраном
+
+Первый экран корректен, если:
+
+```text id="5bv62y"
+party_state.ready=true;
+commit завершён;
+approved narrator prose есть;
+narrator_prose_audit.pass=true;
+visible_context_audit.pass=true;
+current_position существует;
+public position label не раскрывает hidden state;
+action options ссылаются на approved visible actions;
+free text input включён;
+hidden state не показан;
+raw JSON/audit/source/debug не показаны;
+opening_scene_presented ещё не помечен true до фактической доставки.
+```
+
+## 12. Delivery acknowledgement
+
+Если UI поддерживает подтверждение доставки, используется двухфазная фиксация показа.
+
+До показа:
+
+```json id="3i6j8z"
+{
+  "opening_scene_presented": false,
+  "player_visible_message_ready": true,
+  "awaiting_client_ack": true
+}
+```
+
+После успешного показа клиентом:
+
+```json id="8zy8bj"
+{
+  "opening_scene_presented": true,
+  "shown_at": "ISO-8601 string",
+  "client_ack_id": "string"
+}
+```
+
+Если клиент не подтвердил показ:
+
+```text id="aoh52h"
+не создавать второй старт;
+не регенерировать prose;
+вернуть тот же approved narrator output по message_id;
+не запускать новый world generation.
+```
+
+## 13. Idempotency первого экрана
+
+Первый экран должен быть идемпотентным.
+
+Повторный запрос `GET /first-screen` с тем же `party_id` должен вернуть тот же approved screen, если:
+
+```text id="rytfam"
+party_state.ready=true;
+opening_scene_presented=false или true;
+narrator_output_id тот же;
+visible_context_snapshot_id тот же;
+current_turn_number=0.
+```
+
+Нельзя:
+
+```text id="2d07xq"
+перегенерировать стартовую прозу;
+перегенерировать action options;
+создать новый visible context;
+создать новых NPC/items;
+изменить время;
+пометить сцену показанной без client ack, если ack required.
+```
+
+## 14. Работа LLM на этапе
+
+Основной этап 26 должен быть code/UI-only.
+
+LLM не нужна для показа первого экрана, потому что:
+
+```text id="5dj4je"
+стартовая проза уже создана;
+проза уже прошла аудит;
+visible context уже утверждён;
+action options уже безопасны;
+party state уже закоммичен;
+UI должен только отобразить данные.
+```
+
+LLM допустима только как опциональный safety/formatting auditor до показа, если интерфейс дополнительно агрегирует panels из approved data.
+
+LLM не имеет права:
+
+```text id="r0is87"
+переписывать стартовую прозу;
+создавать новые action options;
+переименовывать NPC/items смыслово;
+расширять описание позиции;
+скрыто добавлять tutorial как факт мира;
+менять current_position;
+менять time/weather/light;
+добавлять hidden hints сверх approved visible context.
+```
+
+## 15. Опциональные LLM-параметры
+
+### 15.1. `FirstScreenSafetyAuditor`
+
+Назначение: проверить, что собранный UI-screen не содержит hidden leaks, raw IDs, JSON/debug и не добавляет факты сверх approved output.
+
+```json id="r8xv75"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 5000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 70000,
+    "hard_input_limit_tokens": 180000,
+    "reserve_output_tokens": 5000
+  }
+}
+```
+
+### 15.2. `FirstScreenFormatRepairer`
+
+Назначение: исправить только JSON-формат `first_game_screen` или `first_screen_safety_audit`.
+
+```json id="w6y3xf"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-flash",
+  "thinking": {
+    "type": "disabled"
+  },
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "max_tokens": 3000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 30000,
+    "hard_input_limit_tokens": 90000,
+    "reserve_output_tokens": 3000
+  }
+}
+```
+
+### 15.3. `FirstScreenActionLabelAuditor`
+
+Назначение: проверить labels действий и внимания на hidden leaks.
+
+```json id="agntsf"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 3500,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 50000,
+    "hard_input_limit_tokens": 140000,
+    "reserve_output_tokens": 3500
+  }
+}
+```
+
+## 16. Prompt: FirstScreenSafetyAuditor
+
+```md id="fx6n7x"
+# Роль
+
+Ты FirstScreenSafetyAuditor для исторической текстовой RPG.
+
+# Задача
+
+Проверь first_game_screen перед показом игроку.
+
+# Главное правило
+
+Ты не исправляешь экран.
+Ты не создаёшь текст.
+Ты не добавляешь action options.
+Ты только аудируешь.
+
+# Используй только входные данные
+
+- party_start_committed
+- approved_narrator_output
+- narrator_prose_audit
+- visible_context_package
+- visible_context_audit
+- party_public_state
+- first_game_screen
+
+# Проверить
+
+1. party_state.status=ready.
+2. narrator_prose_audit.pass=true.
+3. visible_context_audit.pass=true.
+4. main_prose equals approved_narrator_output.prose.
+5. position_panel не раскрывает hidden state.
+6. time_panel не меняет clock/light/weather.
+7. attention_panel использует только approved visible refs.
+8. action_panel использует только approved action options.
+9. map_panel показывает только character-known/visible nodes.
+10. screen не содержит hidden state.
+11. screen не содержит audit/debug/source_trace.
+12. screen не содержит raw JSON.
+13. screen не содержит private NPC motives.
+14. screen не содержит closed container contents.
+15. screen не содержит future event timers.
+16. free_text_input помечен как player intent, not world fact.
+17. opening_scene_presented не становится true без delivery ack.
+
+# Формат
+
+Верни только JSON:
+
+{
+  "version": 1,
+  "schema": "first_screen_safety_audit",
+  "pass": true,
+  "concerns": [],
+  "evidence": [],
+  "commit_permission": {
+    "can_show_to_player": true,
+    "can_accept_first_turn": true
+  }
+}
+
+Если pass=false:
+- concerns не должен быть пустым;
+- evidence не должен быть пустым;
+- can_show_to_player=false;
+- can_accept_first_turn=false.
+```
+
+## 17. Prompt: FirstScreenFormatRepairer
+
+```md id="gdn2w3"
+# Роль
+
+Ты FirstScreenFormatRepairer.
+
+# Задача
+
+Исправь только JSON-формат first_game_screen или first_screen_safety_audit.
+
+# Главное правило
+
+Не меняй смысл.
+Не меняй prose.
+Не меняй action labels.
+Не добавляй targets.
+Не раскрывай hidden state.
+
+# Разрешено
+
+- убрать markdown;
+- привести schema/version;
+- добавить отсутствующие служебные поля как null/[];
+- нормализовать enum;
+- перенести свободный текст в notes.
+
+# Запрещено
+
+- переписывать narrator prose;
+- создавать новые actions;
+- менять current position;
+- менять time/weather/light;
+- добавлять NPC/items/routes;
+- менять player-visible content по смыслу.
+
+# Формат
+
+Верни только JSON.
+```
+
+## 18. Prompt: FirstScreenActionLabelAuditor
+
+```md id="vdg2rh"
+# Роль
+
+Ты FirstScreenActionLabelAuditor.
+
+# Задача
+
+Проверь labels в attention_panel и action_panel.
+
+# Главное правило
+
+Labels должны быть основаны только на видимом/слышимом/известном персонажу.
+
+# Проверить
+
+1. label не раскрывает hidden truth.
+2. label не раскрывает closed container contents.
+3. label не раскрывает private NPC motive.
+4. label не раскрывает future event.
+5. label не обещает outcome.
+6. label не создаёт новый target.
+7. label не даёт точный destination unknown exit.
+8. label не превращает rumor into fact.
+9. label не превращает uncertainty into fact.
+
+# Формат
+
+Верни только JSON:
+
+{
+  "version": 1,
+  "schema": "first_screen_action_label_audit",
+  "pass": true,
+  "concerns": [],
+  "evidence": []
+}
+```
+
+## 19. Code validation
+
+Код обязан проверить первый экран без LLM.
+
+```json id="xjympi"
+{
+  "version": 1,
+  "schema": "first_screen_code_validation",
+  "pass": true,
+  "checks": {
+    "party_committed": true,
+    "party_ready": true,
+    "narrator_output_approved": true,
+    "visible_context_approved": true,
+    "main_prose_matches_approved_output": true,
+    "position_matches_committed_position": true,
+    "time_panel_matches_committed_clock": true,
+    "action_options_refs_valid": true,
+    "attention_refs_valid": true,
+    "map_uses_character_known_only": true,
+    "hidden_state_absent": true,
+    "audit_absent": true,
+    "source_trace_absent": true,
+    "raw_json_absent": true,
+    "free_text_input_enabled": true,
+    "first_turn_contract_visible": true
+  },
+  "concerns": [],
+  "evidence": []
+}
+```
+
+## 20. Validation rules
+
+Код проверяет:
+
+1. `first_game_screen.schema === "first_game_screen"`.
+2. `version === 1`.
+3. `screen_status === "ready"`.
+4. `party_start_committed.commit_status === "committed"`.
+5. `party_state.status === "ready"`.
+6. `party_state.is_ready_for_player === true`.
+7. `approved_narrator_output.prose_status === "drafted"`.
+8. `narrator_prose_audit.pass === true`.
+9. `visible_context_audit.pass === true`.
+10. `main_prose === approved_narrator_output.prose`.
+11. `position_panel.public_position_label` не пустой.
+12. `position_panel` не содержит hidden state.
+13. `time_panel` не противоречит committed clock.
+14. `attention_panel` ссылается только на approved visible refs.
+15. `action_panel.suggested_actions` ссылается только на approved action options.
+16. `map_panel.map_mode === "character_known_only"`.
+17. `map_panel` не содержит hidden nodes.
+18. `free_text_input.enabled === true`.
+19. `free_text_input.input_contract === "player_intent_not_world_fact"`.
+20. UI не содержит raw JSON.
+21. UI не содержит audit/debug/source_trace.
+22. UI не содержит private motives.
+23. UI не содержит closed container contents.
+24. UI не содержит future event timers.
+25. UI не содержит unknown true ownership.
+26. UI не содержит exact destination for unknown exit.
+27. `delivery_state.message_id` заполнен.
+28. `opening_scene_presented` не выставляется true без delivery ack, если ack требуется.
+
+## 21. Error codes
+
+```text id="h6jxdm"
+FIRST_SCREEN_INVALID_JSON
+FIRST_SCREEN_SCHEMA_MISMATCH
+FIRST_SCREEN_NOT_READY
+FIRST_SCREEN_PARTY_NOT_COMMITTED
+FIRST_SCREEN_PARTY_NOT_READY
+FIRST_SCREEN_NARRATOR_OUTPUT_NOT_APPROVED
+FIRST_SCREEN_VISIBLE_CONTEXT_NOT_APPROVED
+FIRST_SCREEN_MAIN_PROSE_MISMATCH
+FIRST_SCREEN_POSITION_MISMATCH
+FIRST_SCREEN_TIME_PANEL_CLOCK_CONFLICT
+FIRST_SCREEN_LIGHT_PANEL_CONFLICT
+FIRST_SCREEN_WEATHER_PANEL_CONFLICT
+
+FIRST_SCREEN_ATTENTION_REF_NOT_FOUND
+FIRST_SCREEN_ACTION_REF_NOT_FOUND
+FIRST_SCREEN_ACTION_LABEL_HIDDEN_LEAK
+FIRST_SCREEN_ACTION_PROMISES_OUTCOME
+FIRST_SCREEN_ACTION_CREATED_TARGET
+FIRST_SCREEN_MAP_HIDDEN_NODE_LEAK
+FIRST_SCREEN_MAP_FULL_FACTUAL_MAP_LEAK
+
+FIRST_SCREEN_HIDDEN_STATE_LEAK
+FIRST_SCREEN_PRIVATE_MOTIVE_LEAK
+FIRST_SCREEN_CLOSED_CONTAINER_CONTENTS_LEAK
+FIRST_SCREEN_FUTURE_EVENT_LEAK
+FIRST_SCREEN_TRUE_OWNERSHIP_LEAK
+FIRST_SCREEN_UNKNOWN_ROUTE_DESTINATION_LEAK
+
+FIRST_SCREEN_RAW_JSON_LEAK
+FIRST_SCREEN_AUDIT_TEXT_LEAK
+FIRST_SCREEN_SOURCE_TRACE_LEAK
+FIRST_SCREEN_DEBUG_TEXT_LEAK
+FIRST_SCREEN_RAW_ID_LEAK
+
+FIRST_SCREEN_FREE_TEXT_DISABLED
+FIRST_SCREEN_INPUT_CONTRACT_MISSING
+FIRST_SCREEN_DELIVERY_ID_MISSING
+FIRST_SCREEN_OPENING_PRESENTED_WITHOUT_ACK
+```
+
+## 22. DB write на этом этапе
+
+Разрешено писать:
+
+```text id="dks3fy"
+party_player_visible_message_delivery_attempt;
+party_first_screen_render_snapshot;
+party_first_screen_code_validation;
+party_opening_scene_delivery_state;
+```
+
+После client ack разрешено писать:
+
+```text id="mxvgq3"
+party_state.opening_scene_presented = true;
+party_state.opening_scene_presented_at = timestamp;
+party_state.current_phase = awaiting_player_input;
+party_message_delivery_ack;
+```
+
+Запрещено писать:
+
+```text id="a36puz"
+new world entities;
+new NPC;
+new items;
+new routes;
+new hidden state;
+new visible context;
+new narrator prose;
+time changes;
+position changes;
+character knowledge changes;
+event consequences from player action before player action exists.
+```
+
+## 23. First turn input contract
+
+Первый ввод игрока должен сохраняться как намерение.
+
+```json id="2ckztd"
+{
+  "version": 1,
+  "schema": "player_first_turn_input",
+  "party_id": "string",
+  "turn_number": 1,
+  "raw_text": "string",
+  "selected_action_option_id": "string | null",
+  "input_source": "free_text | suggested_action | mixed",
+  "received_at": "ISO-8601 string",
+  "interpretation_status": "pending",
+  "contract": "intent_not_fact"
+}
+```
+
+Если игрок выбирает suggested action, система всё равно должна обработать его как заявку.
+
+Пример:
+
+```text id="mwylj9"
+Игрок нажал: "Осмотреть закрытый ларь."
+```
+
+Это значит:
+
+```text id="t3bek2"
+персонаж пытается осмотреть ларь;
+нужно проверить видимость, доступ, время, риск, свидетелей и возможное раскрытие hidden state.
+```
+
+Не значит:
+
+```text id="zs814b"
+ларь автоматически открыт;
+содержимое известно;
+NPC не заметил;
+время не прошло.
+```
+
+## 24. Commit gate этапа
+
+Первый экран считается успешно подготовленным, если:
+
+```text id="i1gekb"
+party committed;
+party ready;
+approved narrator output exists;
+narrator prose audit passed;
+visible context audit passed;
+main prose equals approved prose;
+position/time panels match committed state;
+action options are safe;
+map shows only character-known data;
+free text input enabled;
+hidden/audit/source/debug absent;
+delivery_state ready;
+```
+
+После этого экран можно показать игроку.
+
+## 25. Передача в первый ход
+
+```json id="gn4a3n"
+{
+  "version": 1,
+  "schema": "first_turn_pipeline_input",
+  "party_id": "string",
+  "current_turn_number": 1,
+
+  "party_state": {
+    "status": "ready",
+    "current_phase": "awaiting_player_input"
+  },
+
+  "current_position": {
+    "region_id": "string",
+    "place_id": "string",
+    "location_id": "string",
+    "minilocation_id": "string",
+    "anchor_id": "string",
+    "last_route_id": "string | null"
+  },
+
+  "last_visible_context_package_id": "string",
+  "last_narrator_output_id": "string",
+
+  "player_input": {
+    "raw_text": "string",
+    "selected_action_option_id": "string | null",
+    "input_contract": "intent_not_fact"
+  },
+
+  "turn_policy": {
+    "must_resolve_against_current_state": true,
+    "must_not_treat_player_words_as_world_facts": true,
+    "must_check_visibility_access_knowledge": true,
+    "must_check_time_cost": true,
+    "must_check_risk_if_needed": true,
+    "must_update_world_before_next_prose": true
+  }
+}
+```
+
+## 26. Минимальный успешный результат
+
+```json id="3we39h"
+{
+  "version": 1,
+  "schema": "first_game_screen",
+  "request_id": "req_001",
+
+  "screen_status": "ready",
+
+  "party_id": "party_001",
+  "turn_number": 0,
+
+  "main_prose": "Глубокая ночь держит всё вокруг в темноте. Видно только ближайшее: край прохода, закрытый ларь у стены, смутные очертания двора и человека неподалёку. Холод давит всё сильнее, и с каждым вдохом становится яснее: долго стоять без дела нельзя.\n\nЧеловек рядом занят своим делом, но он достаточно близко, чтобы заметить резкое движение. Ларь закрыт; что внутри, отсюда не понять. Тёмный проход ведёт куда-то дальше, но его конец теряется во мраке.\n\nТы можешь осмотреть ларь, заговорить с человеком, прислушаться к звукам вокруг, проверить проход или немного подождать.",
+
+  "position_panel": {
+    "public_position_label": "у закрытого ларя, рядом с тёмным проходом",
+    "technical_position_hidden": true,
+    "debug_position": null
+  },
+
+  "time_panel": {
+    "public_time_label": "глубокая ночь",
+    "public_light_label": "темно, видимость ограничена",
+    "public_weather_label": "холодно"
+  },
+
+  "character_panel": {
+    "public_character_label": "Ты",
+    "body_state_summary": [
+      "ощущается холод"
+    ],
+    "inventory_summary": [],
+    "warning_badges": [
+      "видимость ограничена"
+    ]
+  },
+
+  "attention_panel": {
+    "visible_npcs": [
+      {
+        "attention_target_id": "attention_npc_001",
+        "label": "человек неподалёку",
+        "target_type": "visible_npc",
+        "attention_mode": "observe | ask",
+        "risk_hint": "low",
+        "certainty": "visible",
+        "must_not_reveal_hidden_truth": true
+      }
+    ],
+    "visible_items": [],
+    "visible_containers": [
+      {
+        "attention_target_id": "attention_container_001",
+        "label": "закрытый ларь у стены",
+        "target_type": "visible_container",
+        "attention_mode": "inspect",
+        "risk_hint": "medium",
+        "certainty": "visible",
+        "must_not_reveal_hidden_truth": true
+      }
+    ],
+    "visible_exits": [
+      {
+        "attention_target_id": "attention_exit_001",
+        "label": "тёмный проход",
+        "target_type": "visible_exit",
+        "attention_mode": "approach | inspect",
+        "risk_hint": "unknown",
+        "certainty": "visible_but_destination_unknown",
+        "must_not_reveal_hidden_truth": true
+      }
+    ],
+    "audible_or_sensory_cues": [
+      {
+        "attention_target_id": "attention_sense_001",
+        "label": "можно прислушаться к темноте",
+        "target_type": "audible_cue",
+        "attention_mode": "listen",
+        "risk_hint": "none",
+        "certainty": "uncertain",
+        "must_not_reveal_hidden_truth": true
+      }
+    ],
+    "known_context_hints": [
+      {
+        "attention_target_id": "attention_known_001",
+        "label": "чужие вещи здесь лучше не трогать без причины",
+        "target_type": "known_social_rule",
+        "attention_mode": "remember",
+        "risk_hint": "medium",
+        "certainty": "known",
+        "must_not_reveal_hidden_truth": true
+      }
+    ]
+  },
+
+  "action_panel": {
+    "suggested_actions": [
+      {
+        "suggested_action_id": "suggested_action_001",
+        "label": "Осмотреть закрытый ларь.",
+        "action_kind": "inspect",
+        "target_ref": {
+          "container_instance_id": "container_001"
+        },
+        "basis": "visible",
+        "risk_hint": "medium",
+        "will_consume_time": "maybe",
+        "requires_resolution_pipeline": true,
+        "must_not_reveal_hidden_truth": true
+      },
+      {
+        "suggested_action_id": "suggested_action_002",
+        "label": "Заговорить с человеком рядом.",
+        "action_kind": "ask",
+        "target_ref": {
+          "npc_instance_id": "npc_001"
+        },
+        "basis": "visible",
+        "risk_hint": "low",
+        "will_consume_time": "maybe",
+        "requires_resolution_pipeline": true,
+        "must_not_reveal_hidden_truth": true
+      },
+      {
+        "suggested_action_id": "suggested_action_003",
+        "label": "Проверить тёмный проход.",
+        "action_kind": "move",
+        "target_ref": {
+          "anchor_id": "g5_anchor_002"
+        },
+        "basis": "visible",
+        "risk_hint": "unknown",
+        "will_consume_time": "yes",
+        "requires_resolution_pipeline": true,
+        "must_not_reveal_hidden_truth": true
+      },
+      {
+        "suggested_action_id": "suggested_action_004",
+        "label": "Прислушаться.",
+        "action_kind": "listen",
+        "target_ref": {},
+        "basis": "audible",
+        "risk_hint": "none",
+        "will_consume_time": "maybe",
+        "requires_resolution_pipeline": true,
+        "must_not_reveal_hidden_truth": true
+      },
+      {
+        "suggested_action_id": "suggested_action_005",
+        "label": "Подождать.",
+        "action_kind": "wait",
+        "target_ref": {},
+        "basis": "inferred",
+        "risk_hint": "unknown",
+        "will_consume_time": "yes",
+        "requires_resolution_pipeline": true,
+        "must_not_reveal_hidden_truth": true
+      }
+    ],
+    "free_text_input": {
+      "enabled": true,
+      "placeholder": "Что ты делаешь?",
+      "input_contract": "player_intent_not_world_fact"
+    }
+  },
+
+  "map_panel": {
+    "enabled": true,
+    "map_mode": "character_known_only",
+    "known_current_node": {
+      "label": "текущая точка",
+      "certainty": "known_current"
+    },
+    "known_nearby_nodes": [],
+    "unknown_exits": [
+      {
+        "label": "тёмный проход",
+        "destination": "unknown",
+        "certainty": "visible_but_unknown"
+      }
+    ],
+    "must_not_show_hidden_nodes": true
+  },
+
+  "ui_safety_boundary": {
+    "hidden_state_not_included": true,
+    "audit_not_included": true,
+    "source_trace_not_included": true,
+    "raw_ids_not_included": true,
+    "player_sees_only_character_safe_context": true
+  },
+
+  "delivery_state": {
+    "message_id": "player_visible_opening_001",
+    "opening_scene_presented": false,
+    "awaiting_client_ack": true
+  }
+}
+```
+
+## 27. Некорректный первый экран
+
+```text id="7mtbbh"
+Положение: G5_ANCHOR_001, рядом с NPC_001, который сторожит ларь.
+
+Можно:
+1. Открыть ларь с серебром.
+2. Подождать, пока через пять минут войдёт хозяин.
+3. Пойти тайным ходом к складу.
+```
+
+Причины отклонения:
+
+```text id="sl6v0r"
+показаны raw ids;
+раскрыт hidden motive NPC;
+раскрыто закрытое содержимое контейнера;
+раскрыт future timer;
+раскрыт exact destination unknown route;
+actions используют hidden truth;
+UI создаёт факты, которых игрок не должен знать.
+```
+
+## 28. Корректная версия
+
+```text id="swlbbp"
+Положение: у закрытого ларя, рядом с тёмным проходом.
+Время: глубокая ночь, темно, холодно.
+
+Внимание:
+- человек неподалёку;
+- закрытый ларь у стены;
+- тёмный проход, куда отсюда не разглядеть;
+- можно прислушаться.
+
+Можно:
+1. Осмотреть закрытый ларь.
+2. Заговорить с человеком рядом.
+3. Проверить тёмный проход.
+4. Прислушаться.
+5. Подождать.
+
+Что ты делаешь?
+```
+
+Почему корректно:
+
+```text id="fla1s6"
+нет raw ids;
+нет hidden state;
+нет содержимого контейнера;
+нет future timer;
+нет точного назначения неизвестного прохода;
+есть свободный ввод;
+все действия являются заявками, а не результатами.
+```

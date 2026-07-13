@@ -1,0 +1,17 @@
+﻿validation_key,validation_value
+file_is_valid_json,True
+does_not_create_party_state,True
+does_not_create_new_g1_g4_nodes,True
+does_not_precreate_full_g5_map,True
+uses_existing_map_as_context,True
+respects_generation_limits,True
+separates_visible_hidden_and_unmaterialized,True
+distinguishes_fact_from_rumor,True
+requires_human_historical_audit,True
+blocking_issues,[]
+open_questions,[]
+covers_all_map_g4_location_types,True
+map_g4_location_type_count,198
+template_count,198
+missing_g4_location_types,[]
+does_not_create_concrete_g5_nodes,True

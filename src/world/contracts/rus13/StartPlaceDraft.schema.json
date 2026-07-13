@@ -1,0 +1,191 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rus13.local/contracts/StartPlaceDraft.schema.json",
+  "title": "StartPlaceDraft",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "region_id",
+    "g1_node_id",
+    "g2_node_id",
+    "g3_place_id",
+    "g4_location_id",
+    "place_function",
+    "controller_or_owner",
+    "access_rules",
+    "connected_routes",
+    "seasonal_conditions",
+    "start_reason",
+    "source_ids",
+    "party_created_flags"
+  ],
+  "properties": {
+    "region_id": {
+      "description": "Required by StartPlaceDraft.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "g1_node_id": {
+      "description": "Required by StartPlaceDraft.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "g2_node_id": {
+      "description": "Required by StartPlaceDraft.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "g3_place_id": {
+      "description": "Required by StartPlaceDraft.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "g4_location_id": {
+      "description": "Required by StartPlaceDraft.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "place_function": {
+      "description": "Required by StartPlaceDraft.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "controller_or_owner": {
+      "description": "Required by StartPlaceDraft.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "access_rules": {
+      "description": "Required by StartPlaceDraft.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "connected_routes": {
+      "description": "Required by StartPlaceDraft.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "seasonal_conditions": {
+      "description": "Required by StartPlaceDraft.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "start_reason": {
+      "description": "Required by StartPlaceDraft.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "source_ids": {
+      "description": "Required by StartPlaceDraft.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "party_created_flags": {
+      "description": "Required by StartPlaceDraft.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    }
+  },
+  "x_writes_to": [
+    "party_graph_nodes",
+    "party_graph_edges",
+    "party_places",
+    "party_locations"
+  ],
+  "x_blocking_validations": [
+    "G1-G4 chain valid",
+    "place function and controller present",
+    "at least one route or physical access relation present"
+  ]
+}

@@ -1,0 +1,7 @@
+﻿prompt_id,file,task
+repair_agent_format_only,repair_agent_format_only.md,Fix invalid JSON/format/field separation without adding facts.
+semantic_consistency_auditor,semantic_consistency_auditor.md,"Audit result against project rules, world_base and party facts."
+source_status_auditor,source_status_auditor.md,"Check source IDs, statuses, confidence and unresolved records."
+visibility_leak_auditor,visibility_leak_auditor.md,"Detect hidden-state leaks in visible context, prose, UI or journal."
+db_write_plan_structurer,db_write_plan_structurer.md,Turn accepted content into a DB write plan without adding facts.
+commit_gate_auditor,commit_gate_auditor.md,Make final pass/fail decision from all audit reports.

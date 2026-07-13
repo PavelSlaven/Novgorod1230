@@ -1,0 +1,2173 @@
+# Этап 18. Формирование карты знаний персонажа
+
+## 1. Назначение этапа
+
+Формирование карты знаний персонажа — это отдельный этап запуска партии, на котором система фиксирует не то, что существует в мире, а то, что конкретно знает персонаж игрока на старте.
+
+Этот этап создаёт `character_knowledge_map`: структурированную карту знаний персонажа о ближайших путях, людях, слухах, опасностях, адресах, ориентирах, правилах доступа, социальных рисках и границах незнания.
+
+Короткая формула:
+
+```text id="k9c7wf"
+player_character
++ selected_start_node
++ g5_scene_graph
++ initial_npc_placement
++ initial_item_placement
++ regional_context_package.common_knowledge
++ route_knowledge_rules
++ social_role
++ occupation
++ origin
++ visible_context constraints
+→ character_knowledge_map
+```
+
+Главный вопрос этапа:
+
+```text id="vdmi1g"
+Что персонаж реально знает на старте, почему он это знает, насколько уверенно, и чем это отличается от знания игрока и скрытого состояния мира?
+```
+
+## 2. Главное правило этапа
+
+Знание персонажа не равно знанию игрока.
+
+Если игрок знает, что в мире существует город, дорога, монастырь, переправа, известный человек, историческое событие или опасность, это не значит, что персонаж знает:
+
+```text id="3x3254"
+точный путь;
+расстояние;
+имена;
+адрес;
+социальный статус человека;
+причину события;
+скрытую угрозу;
+состояние дороги сейчас;
+содержимое закрытого места;
+внутренний конфликт NPC;
+будущий исход.
+```
+
+Персонаж может знать только то, для чего есть основание:
+
+```text id="6bcq4o"
+происхождение;
+место жизни;
+занятие;
+социальная роль;
+личный опыт;
+видимая сцена;
+известные маршруты;
+слухи;
+рассказы других;
+поручение;
+родственные/служебные связи;
+обычные знания региона;
+предыдущие события партии;
+```
+
+Если основания нет, знание не записывается.
+
+## 3. Место этапа в pipeline
+
+```text id="2ot83s"
+1. Заявка игрока
+2. Нормализация заявки
+3. Выбор исторической рамки
+4. Загрузка регионального контекста
+5. Подбор стартовых G1–G4 кандидатов
+6. Подбор place templates
+7. Подбор NPC-кандидатов
+8. Подбор предметных профилей
+9. Выбор стартового узла
+10. Аудит стартового места
+11. Генерация персонажа
+12. Аудит персонажа
+13. Материализация G5-сцены
+14. Аудит G5-сцены
+15. Размещение стартовых NPC
+16. Размещение стартовых предметов
+17. Проверка времени и света
+18. Формирование карты знаний персонажа
+19. Формирование полного hidden state
+20. Формирование visible context
+21. Аудит visible context
+22. Narrator prose
+23. Аудит narrator prose
+24. План записи в party-базу
+25. Commit gate
+26. Первый игровой экран
+```
+
+Этап 18 должен идти после времени/света, потому что часть знаний зависит от того, что персонаж реально видит или слышит сейчас.
+
+## 4. Что создаёт этап
+
+Этап создаёт:
+
+```text id="o1u4ry"
+known_routes
+known_nearby_paths
+known_places
+known_addresses
+known_landmarks
+known_people
+known_authorities
+known_social_rules
+known_dangers
+known_safe_options
+known_work_or_trade_options
+rumors
+uncertain_knowledge
+mistaken_beliefs
+forbidden_knowledge
+knowledge_gaps
+```
+
+Этап не создаёт:
+
+```text id="rf8m3i"
+новые места;
+новые дороги;
+новых NPC;
+новые предметы;
+новые слухи без источника;
+новые исторические события;
+новые тайны;
+новые скрытые угрозы;
+новые маршруты вне graph_edges;
+visible_scene;
+intro_prose;
+```
+
+## 5. Вход этапа
+
+```json id="77v3bx"
+{
+  "version": 1,
+  "schema": "character_knowledge_map_input",
+  "request_id": "string",
+
+  "historical_frame": {
+    "version": 1,
+    "schema": "historical_frame",
+    "region": {
+      "region_id": "string"
+    },
+    "year": {
+      "value": 0
+    },
+    "calendar": {
+      "season": "spring | summer | autumn | winter"
+    },
+    "clock": {
+      "day": 1,
+      "hour": 0,
+      "minute": 0,
+      "time_of_day": "dawn | morning | day | afternoon | evening | dusk | night | deep_night",
+      "light_profile": "dark | dim | daylight | twilight | indoor_lit | firelit | moonlit | obscured"
+    }
+  },
+
+  "weather_state": {
+    "version": 1,
+    "schema": "weather_state"
+  },
+
+  "selected_start_node": {
+    "version": 1,
+    "schema": "selected_start_node"
+  },
+
+  "start_place_audit": {
+    "version": 1,
+    "schema": "start_place_audit",
+    "pass": true
+  },
+
+  "player_character": {
+    "version": 1,
+    "schema": "player_character_game_profile"
+  },
+
+  "player_character_audit": {
+    "version": 1,
+    "schema": "player_character_audit",
+    "pass": true
+  },
+
+  "current_position": {
+    "region_id": "string",
+    "place_id": "string",
+    "location_id": "string",
+    "g1_node_id": "string",
+    "g2_node_id": "string",
+    "g3_node_id": "string",
+    "g4_node_id": "string",
+    "minilocation_id": "string",
+    "anchor_id": "string",
+    "last_route_id": null
+  },
+
+  "g5_scene_graph": {
+    "version": 1,
+    "schema": "g5_scene_graph_draft"
+  },
+
+  "g5_scene_audit": {
+    "version": 1,
+    "schema": "g5_scene_audit",
+    "pass": true
+  },
+
+  "initial_npc_placement": {
+    "version": 1,
+    "schema": "initial_npc_placement_draft"
+  },
+
+  "npc_placement_audit": {
+    "version": 1,
+    "schema": "initial_npc_placement_audit",
+    "pass": true
+  },
+
+  "initial_item_placement": {
+    "version": 1,
+    "schema": "initial_item_placement_draft"
+  },
+
+  "item_placement_audit": {
+    "version": 1,
+    "schema": "initial_item_placement_audit",
+    "pass": true
+  },
+
+  "time_light_consistency_audit": {
+    "version": 1,
+    "schema": "time_light_consistency_audit",
+    "pass": true
+  },
+
+  "regional_context_package": {
+    "version": 1,
+    "schema": "regional_context_package",
+    "common_knowledge": {},
+    "route_knowledge_rules": {},
+    "social_context": {},
+    "occupation_context": {},
+    "historical_context": {},
+    "danger_context": {},
+    "rumor_context": {},
+    "authority_context": {},
+    "landmark_context": {}
+  },
+
+  "world_base_route_snapshot": {
+    "version": 1,
+    "schema": "world_base_route_snapshot",
+    "nearby_graph_edges": [],
+    "known_route_candidates": [],
+    "historical_anchor_candidates": [],
+    "route_knowledge_rule_candidates": []
+  },
+
+  "knowledge_policy": {
+    "require_knowledge_basis": true,
+    "require_source_trace": true,
+    "separate_player_and_character_knowledge": true,
+    "separate_known_and_visible": true,
+    "separate_fact_and_rumor": true,
+    "separate_exact_and_approximate_routes": true,
+    "allow_mistaken_beliefs": true,
+    "allow_uncertain_knowledge": true,
+    "do_not_grant_full_map": true,
+    "do_not_grant_hidden_state": true,
+    "do_not_create_new_routes": true,
+    "do_not_create_new_places": true,
+    "do_not_create_new_npcs": true,
+    "do_not_write_visible_scene": true,
+    "do_not_write_intro_prose": true
+  }
+}
+```
+
+### 5.1. Источник current_position
+
+До initial commit поле `current_position` формируется оркестратором только из прошедшего аудит Stage 13 `g5_scene_graph.player_start_position` и его `parent_location`.
+
+Запрещены fallback-источники из Stage 9, historical frame, player seed, заявки игрока или текста. Код проверяет существование anchor/minilocation и их принадлежность, но не выбирает позицию самостоятельно. `last_route_id` до Stage 24–25 обязан быть `null`.
+
+## 6. Выход этапа
+
+```json id="xui4rp"
+{
+  "version": 1,
+  "schema": "character_knowledge_map",
+  "request_id": "string",
+
+  "knowledge_status": "formed | empty_limited | blocked | requires_repair",
+
+  "character_ref": {
+    "player_character_id": "string",
+    "social_role_id": "string",
+    "occupation_id": "string | null",
+    "origin_basis": []
+  },
+
+  "current_position_ref": {
+    "region_id": "string",
+    "g1_node_id": "string",
+    "g2_node_id": "string",
+    "g3_node_id": "string",
+    "g4_node_id": "string",
+    "minilocation_id": "string",
+    "anchor_id": "string"
+  },
+
+  "knowledge_scope_summary": {
+    "map_detail_level": "none | local_anchor | local_g5 | current_g4 | known_g3 | known_g2 | known_g1 | regional_fragments",
+    "route_knowledge_level": "none | immediate_exits | approximate_nearby | named_routes | exact_routes",
+    "social_knowledge_level": "none | ordinary_customs | local_people | local_authorities | professional_network",
+    "danger_knowledge_level": "none | visible_dangers | rumored_dangers | known_specific_dangers",
+    "confidence_profile": "low | mixed | medium | high"
+  },
+
+  "known_routes": [],
+  "known_nearby_paths": [],
+  "known_places": [],
+  "known_addresses": [],
+  "known_landmarks": [],
+  "known_people": [],
+  "known_authorities": [],
+  "known_dangers": [],
+  "known_social_rules": [],
+  "known_resources": [],
+  "rumors": [],
+  "mistaken_beliefs": [],
+  "uncertain_knowledge": [],
+  "forbidden_knowledge": [],
+  "knowledge_gaps": [],
+
+  "player_vs_character_knowledge_boundary": {},
+
+  "downstream_constraints": {
+    "must_preserve": [],
+    "must_not_reveal": [],
+    "must_resolve_later": []
+  },
+
+  "source_trace": [],
+
+  "audit_self_check": {
+    "pass": true,
+    "concerns": [],
+    "evidence": []
+  }
+}
+```
+
+## 7. Главные типы знания
+
+### 7.1. Непосредственно видимое
+
+Это то, что персонаж прямо сейчас видит или слышит из G5-сцены.
+
+Примеры:
+
+```text id="4op94h"
+ближайший проход;
+дверь;
+ворота;
+человек рядом;
+крупный предмет;
+источник света;
+шум;
+закрытая зона;
+опасный участок;
+след на снегу/грязи;
+```
+
+Источник:
+
+```text id="ocfk72"
+g5_scene_graph
+npc_visibility_state
+item_visibility_state
+time_light_consistency_audit.normalized_visibility_constraints
+```
+
+Важно: видимое не равно понятное. Персонаж может видеть ворота, но не знать, куда они ведут.
+
+### 7.2. Личное знание
+
+Это то, что персонаж знает из биографии.
+
+Источник:
+
+```text id="ledmwh"
+player_character.origin
+player_character.occupation
+player_character.social_status
+player_character.memory
+player_character.start_place_connection
+player_character.knowledge
+```
+
+Примеры:
+
+```text id="llpgri"
+родные места;
+обычные дороги своего круга;
+местные правила;
+профессионые ориентиры;
+чьи люди опасны;
+куда нельзя входить без разрешения;
+к кому обращаются за помощью;
+```
+
+### 7.3. Профессиональное знание
+
+Зависит от занятия.
+
+Примеры:
+
+```text id="q2ltgr"
+ремесленник знает мастерские и сырьё;
+возчик знает дороги и переправы;
+торговец знает торг, пошлины, меры и опасные места;
+охотник знает лесные ориентиры;
+служилый человек знает власть, караулы и запретные зоны;
+бедный работник знает ночлеги, подённую работу и опасных хозяев;
+```
+
+### 7.4. Социальное знание
+
+Зависит от social role.
+
+Примеры:
+
+```text id="hjz4bp"
+кто может наказать;
+кто имеет право требовать объяснений;
+кто может поручиться;
+к кому нельзя обращаться напрямую;
+где чужаку опасно;
+какой предмет считается чужим;
+что нельзя брать;
+```
+
+### 7.5. Слух
+
+Слух — это не факт мира для персонажа. Это запись с уровнем достоверности.
+
+Слух должен иметь:
+
+```text id="sq0b8y"
+источник;
+канал передачи;
+приблизительную давность;
+уровень уверенности;
+социальный слой, где он ходит;
+что персонаж понял;
+что может быть ложным;
+```
+
+Слух не должен напрямую раскрывать hidden state.
+
+### 7.6. Ошибочное знание
+
+Персонаж может ошибаться.
+
+Ошибочное знание полезно, если оно:
+
+```text id="4nmetx"
+исторически правдоподобно;
+имеет источник;
+не ломает механику;
+не заставляет систему выдавать ложь как факт;
+отдельно помечено как mistaken_belief;
+```
+
+## 8. Уровни точности знания
+
+Каждое знание должно иметь `precision_level`.
+
+```text id="uqrr4v"
+exact — точное знание;
+approximate — приблизительное знание;
+named_only — знает название, но не путь/адрес;
+directional — знает направление;
+heard_of — слышал;
+rumored — знает как слух;
+visible_only — видит сейчас, но не понимает;
+unknown — не знает.
+```
+
+Пример:
+
+```json id="t7g5to"
+{
+  "place_id": "place_001",
+  "knowledge_type": "known_place",
+  "precision_level": "named_only",
+  "known_name_or_label": "string",
+  "knows_exact_location": false,
+  "knows_route": false,
+  "basis": ["heard_from_others"]
+}
+```
+
+## 9. Known routes
+
+Маршрут можно записать как знание персонажа только если есть основание.
+
+```json id="6y6kix"
+{
+  "known_route_id": "char_route_knowledge_001",
+
+  "route_ref": {
+    "graph_edge_id": "edge_001 | null",
+    "route_id": "route_001 | null",
+    "from_node_id": "string | null",
+    "to_node_id": "string | null"
+  },
+
+  "knowledge_level": "none | heard_of | approximate | directional | exact | personally_traveled",
+
+  "known_label": "string",
+
+  "route_kind": "road | path | trail | river | ford | bridge | gate | door | winter_road | shortcut | unknown",
+
+  "knows_start": true,
+  "knows_end": false,
+  "knows_distance": "no | approximate | exact",
+  "knows_time_cost": "no | approximate | exact",
+  "knows_seasonal_condition": "no | approximate | exact",
+  "knows_current_condition": "no | approximate | exact",
+  "knows_risks": "no | rumored | partial | exact",
+
+  "basis": {
+    "basis_type": "origin | occupation | social_role | visible_exit | personal_travel | npc_told | rumor | order | common_knowledge | map_seen | previous_party_event",
+    "basis_detail": "string",
+    "source_ref": "string | null"
+  },
+
+  "confidence": "low | medium | high",
+  "can_use_for_navigation": true,
+  "can_explain_to_player": true,
+  "can_guide_others": false,
+
+  "limitations": [],
+  "source_trace": []
+}
+```
+
+Правила:
+
+1. Если персонаж видит ворота, это не значит, что он знает дорогу за воротами.
+2. Если персонаж слышал о месте, это не значит, что он знает маршрут.
+3. Если персонаж знает маршрут летом, это не значит, что он знает зимнюю проходимость.
+4. Если персонаж ходил там раньше, он может не знать текущих опасностей.
+5. Если маршрут скрытый, служебный или опасный, нужен отдельный источник знания.
+
+## 10. Known nearby paths
+
+Ближайшие пути — это не всегда route graph уровня G1–G4. Это может быть G5/G4-доступ.
+
+```json id="tyqkl2"
+{
+  "nearby_path_knowledge_id": "near_path_001",
+  "path_type": "visible_exit | door | gate | passage | trail_start | road_edge | river_edge | stairs | yard_exit | hidden_possible_exit",
+  "g5_anchor_id": "g5_anchor_001",
+  "leads_to_known": "yes | no | partly | unknown",
+  "known_destination_label": "string | null",
+  "precision_level": "visible_only | approximate | exact",
+  "access_known": "open | closed | locked | guarded | permission_required | unknown",
+  "risk_known": "none | visible | rumored | unknown",
+  "basis": ["visible_now"],
+  "source_trace": []
+}
+```
+
+Это слой для первого хода игрока: куда персонаж, по его мнению, может пойти прямо сейчас.
+
+## 11. Known places
+
+```json id="6z5vg7"
+{
+  "known_place_id": "known_place_001",
+
+  "place_ref": {
+    "node_id": "string | null",
+    "place_id": "string | null",
+    "historical_anchor_id": "string | null"
+  },
+
+  "known_label": "string",
+
+  "place_kind": "home | workplace | market | road | bridge | ford | gate | church | authority_place | shelter | danger_place | unknown",
+
+  "knowledge_level": "visible_only | heard_of | named_only | approximate_location | exact_location | personally_visited",
+
+  "knows_route": false,
+  "known_route_ids": [],
+
+  "known_for": [],
+  "access_knowledge": {
+    "can_enter": "yes | no | maybe | unknown",
+    "requires_permission": "yes | no | unknown",
+    "access_basis": "string | null"
+  },
+
+  "basis": {
+    "basis_type": "origin | occupation | social_role | personal_visit | visible_now | npc_told | rumor | common_knowledge | order | previous_party_event",
+    "basis_detail": "string"
+  },
+
+  "confidence": "low | medium | high",
+  "limitations": [],
+  "source_trace": []
+}
+```
+
+Исторический якорь может быть известен персонажу только как название. Это не означает точного маршрута.
+
+## 12. Known addresses
+
+Адрес — это точное или приблизительное знание, где найти человека, двор, лавку, мастерскую, монастырь, постоялый двор, ворота, пристань или другое место.
+
+```json id="nldzsh"
+{
+  "known_address_id": "known_address_001",
+
+  "addressed_entity": {
+    "entity_type": "npc | place | authority | workshop | household | market | shelter | unknown",
+    "entity_id": "string | null",
+    "known_label": "string"
+  },
+
+  "address_precision": "exact_anchor | exact_g4 | exact_g3 | approximate_area | direction_only | name_only",
+
+  "location_refs": {
+    "g1_node_id": "string | null",
+    "g2_node_id": "string | null",
+    "g3_node_id": "string | null",
+    "g4_node_id": "string | null",
+    "g5_anchor_id": "string | null"
+  },
+
+  "how_to_find": "string",
+  "access_notes": [],
+  "risk_notes": [],
+
+  "basis": {
+    "basis_type": "personal_visit | occupation | kinship | service | rumor | order | visible_sign | npc_told | common_knowledge",
+    "basis_detail": "string"
+  },
+
+  "confidence": "low | medium | high",
+  "source_trace": []
+}
+```
+
+Если персонаж знает “там где-то живёт такой человек”, это не exact address.
+
+## 13. Known landmarks
+
+Ориентир — это то, что помогает двигаться и понимать место.
+
+```json id="b7sldp"
+{
+  "known_landmark_id": "landmark_001",
+
+  "landmark_ref": {
+    "node_id": "string | null",
+    "anchor_id": "string | null",
+    "historical_anchor_id": "string | null"
+  },
+
+  "known_label": "string",
+  "landmark_type": "river | road | hill | gate | bridge | ford | tower | church | large_tree | market | house | sound | smell | light | terrain | unknown",
+
+  "visibility": {
+    "visible_now": false,
+    "visible_in_daylight": true,
+    "visible_in_dark": false,
+    "audible_or_smell": false
+  },
+
+  "use_for_navigation": true,
+  "precision_level": "visible_only | directional | approximate | exact",
+
+  "basis": {
+    "basis_type": "visible_now | personal_experience | common_knowledge | occupational | rumor | order",
+    "basis_detail": "string"
+  },
+
+  "confidence": "low | medium | high",
+  "source_trace": []
+}
+```
+
+Ночью дальний визуальный ориентир может быть известен, но не виден сейчас.
+
+## 14. Known people
+
+Известный человек — это не обязательно материализованный NPC в сцене.
+
+```json id="6bf4g7"
+{
+  "known_person_id": "known_person_001",
+
+  "person_ref": {
+    "npc_instance_id": "string | null",
+    "npc_candidate_id": "string | null",
+    "key_npc_seed_id": "string | null",
+    "abstract_person_ref": "string | null"
+  },
+
+  "known_label": "string",
+  "name_known": "yes | no | nickname | title_only | uncertain",
+  "role_known": "yes | no | approximate | mistaken",
+  "relationship_to_character": "kin | patron | creditor | debtor | authority | employer | neighbor | stranger_seen | rumored | unknown",
+
+  "knowledge_level": "visible_only | name_only | role_only | personally_known | heard_of | rumored",
+
+  "where_to_find_knowledge": {
+    "knows_address": false,
+    "known_address_id": "string | null",
+    "knows_general_area": false,
+    "area_label": "string | null"
+  },
+
+  "trust_level": "none | low | medium | high | dependent | afraid | hostile | unknown",
+
+  "basis": {
+    "basis_type": "personal_relation | occupation | social_role | visible_now | npc_told | rumor | authority | previous_party_event",
+    "basis_detail": "string"
+  },
+
+  "confidence": "low | medium | high",
+  "limitations": [],
+  "source_trace": []
+}
+```
+
+Если NPC стоит в сцене, персонаж может видеть “мужика у ворот”, но не знать имя, статус и мотив.
+
+## 15. Known authorities
+
+```json id="jkb2cz"
+{
+  "known_authority_id": "authority_001",
+
+  "authority_type": "household_head | elder | guard | official | priest | master | patron | landlord | military | community | unknown",
+
+  "known_label": "string",
+
+  "jurisdiction_or_power": "string",
+
+  "what_character_believes_they_can_do": [],
+
+  "access_to_authority": {
+    "can_approach_directly": "yes | no | maybe | unknown",
+    "requires_intermediary": "yes | no | unknown",
+    "risk_if_approached": "none | low | medium | high | unknown"
+  },
+
+  "basis": {
+    "basis_type": "social_role | occupation | common_knowledge | personal_experience | rumor | visible_now",
+    "basis_detail": "string"
+  },
+
+  "confidence": "low | medium | high",
+  "source_trace": []
+}
+```
+
+Этот блок нужен, чтобы персонаж понимал, кто может наказать, защитить, пустить, выгнать, дать работу, потребовать плату или поручиться.
+
+## 16. Known dangers
+
+```json id="d0tm5e"
+{
+  "known_danger_id": "danger_001",
+
+  "danger_type": "weather | cold | hunger | violence | theft | authority | animal | road | water | disease | fire | social | property | darkness | unknown",
+
+  "danger_label": "string",
+
+  "danger_scope": "current_anchor | current_g5 | current_g4 | route | place | region | social_context | unknown",
+
+  "related_refs": {
+    "g5_anchor_id": "string | null",
+    "npc_instance_id": "string | null",
+    "item_instance_id": "string | null",
+    "route_id": "string | null",
+    "place_id": "string | null"
+  },
+
+  "known_as": "visible_fact | inferred | rumor | personal_experience | warning | mistaken",
+
+  "severity_known": "low | medium | high | unknown",
+  "avoidance_known": "yes | no | partial | unknown",
+
+  "basis": {
+    "basis_type": "visible_now | body_state | weather_state | npc_warning | rumor | occupation | social_role | personal_experience",
+    "basis_detail": "string"
+  },
+
+  "confidence": "low | medium | high",
+  "source_trace": []
+}
+```
+
+Опасность может быть реальной или предполагаемой. Если это слух, она не должна писаться как доказанный факт.
+
+## 17. Known social rules
+
+```json id="n8hzta"
+{
+  "known_social_rule_id": "social_rule_001",
+
+  "rule_type": "property | greeting | access | authority | trade | shelter | kinship | debt | gender_role | status | violence | religious | work | unknown",
+
+  "rule_label": "string",
+
+  "applies_here": true,
+
+  "what_character_knows": "string",
+
+  "what_character_may_be_wrong_about": "string | null",
+
+  "risk_if_violated": "none | low | medium | high | severe | unknown",
+
+  "basis": {
+    "basis_type": "social_role | occupation | origin | common_knowledge | personal_experience | warning | visible_context",
+    "basis_detail": "string"
+  },
+
+  "confidence": "low | medium | high",
+  "source_trace": []
+}
+```
+
+Социальные правила важны для доступа, кражи, разговора, торговли, ночлега и взаимодействия с NPC.
+
+## 18. Known resources
+
+```json id="notw7i"
+{
+  "known_resource_id": "resource_001",
+
+  "resource_type": "food | shelter | work | water | fire | tool | trade | information | protection | transport | medical | unknown",
+
+  "resource_label": "string",
+
+  "availability_known": "available | maybe | unavailable | unknown",
+
+  "access_known": "free | permission_required | payment_required | exchange_required | risky | unknown",
+
+  "related_refs": {
+    "place_id": "string | null",
+    "g5_anchor_id": "string | null",
+    "npc_instance_id": "string | null",
+    "item_instance_id": "string | null"
+  },
+
+  "basis": {
+    "basis_type": "visible_now | occupation | social_role | common_knowledge | rumor | npc_told | personal_experience",
+    "basis_detail": "string"
+  },
+
+  "confidence": "low | medium | high",
+  "source_trace": []
+}
+```
+
+Ресурс — это не обязательно предмет. Это может быть возможность: где согреться, у кого спросить дорогу, где попросить ночлег, где найти работу.
+
+## 19. Rumors
+
+```json id="nk2l58"
+{
+  "rumor_id": "rumor_001",
+
+  "rumor_text_for_internal_use": "string",
+
+  "player_visible_summary": "string | null",
+
+  "rumor_topic": "route | person | danger | authority | trade | war | weather | place | theft | disease | social_conflict | unknown",
+
+  "rumor_source_type": "traveler | worker | trader | kin | authority | priest | guard | beggar | child | unknown",
+
+  "heard_when": "before_start | today | unknown",
+
+  "heard_where": "home | road | work | market | current_place | unknown",
+
+  "confidence": "low | medium | high",
+
+  "truth_status_for_system": "unknown | true | false | mixed | hidden_do_not_reveal",
+
+  "character_believes": "yes | no | unsure",
+
+  "actionability": "none | can_ask_about | can_investigate | can_follow_route | can_avoid_danger",
+
+  "must_not_reveal_as_fact": true,
+
+  "source_trace": []
+}
+```
+
+Важно: `truth_status_for_system` не должен попадать в visible prose, если персонаж этого не знает.
+
+## 20. Mistaken beliefs
+
+```json id="7y64dt"
+{
+  "mistaken_belief_id": "mistaken_001",
+
+  "belief_text": "string",
+
+  "belief_topic": "route | person | danger | place | property | authority | social_rule | event | unknown",
+
+  "why_character_believes_it": "string",
+
+  "actual_truth_hidden_from_character": "string | null",
+
+  "may_be_corrected_by": [
+    "seeing evidence",
+    "npc correction",
+    "travel failure",
+    "authority statement",
+    "finding object",
+    "conversation"
+  ],
+
+  "risk_caused_by_belief": "none | low | medium | high",
+
+  "source_trace": []
+}
+```
+
+Если `actual_truth_hidden_from_character` заполнен, он не должен попасть в player-visible текст.
+
+## 21. Forbidden knowledge
+
+Этот блок обязателен. Он фиксирует то, что персонаж не знает, хотя система или игрок могут знать.
+
+```json id="0x3d2i"
+{
+  "forbidden_knowledge_id": "forbidden_001",
+
+  "knowledge_topic": "hidden_route | hidden_npc_motive | container_contents | future_event | exact_map | secret_danger | political_state | item_owner | unknown",
+
+  "forbidden_fact_ref": "string | null",
+
+  "why_forbidden": "no_basis | hidden_state | future | not_visible | not_heard | social_access_missing | route_unknown | container_closed | npc_private_motive",
+
+  "must_not_show_in_visible_context": true,
+  "must_not_use_in_player_choice_labels": true,
+  "can_be_discovered_by": [],
+  "source_trace": []
+}
+```
+
+Этот блок нужен, чтобы narrator и visible context не раскрыли лишнее.
+
+## 22. Knowledge gaps
+
+```json id="8tjf5z"
+{
+  "knowledge_gap_id": "gap_001",
+
+  "gap_type": "route_unknown | person_unknown | place_unknown | danger_unknown | address_unknown | authority_unknown | item_owner_unknown | container_contents_unknown | current_condition_unknown",
+
+  "gap_label": "string",
+
+  "what_character_lacks": "string",
+
+  "how_to_resolve": [
+    "ask_npc",
+    "inspect",
+    "travel",
+    "follow_visible_path",
+    "pay_for_information",
+    "wait",
+    "use_skill",
+    "find_landmark"
+  ],
+
+  "risk_if_ignored": "none | low | medium | high | unknown"
+}
+```
+
+Пробел знания — это игровой ресурс. Он должен давать игроку честные вопросы: спросить, осмотреть, рискнуть, ждать, идти, платить, поверить слуху.
+
+## 23. Player vs character knowledge boundary
+
+```json id="m9h6eg"
+{
+  "player_vs_character_knowledge_boundary": {
+    "player_may_know_from_prompt": [],
+    "character_knows": [],
+    "character_does_not_know": [],
+    "character_may_suspect": [],
+    "must_not_surface_to_player_as_character_knowledge": [],
+    "ui_guidance": {
+      "choice_labels_must_use_character_knowledge": true,
+      "map_labels_must_separate_known_and_unknown": true,
+      "narrator_must_not_explain_hidden_truth": true
+    }
+  }
+}
+```
+
+Если интерфейс показывает карту игроку, он должен различать:
+
+```text id="zquhlt"
+известно персонажу;
+видно сейчас;
+слышал как слух;
+знает название;
+знает направление;
+не знает;
+скрыто от персонажа.
+```
+
+## 24. Алгоритм этапа
+
+### 24.1. Проверить входы
+
+Код проверяет:
+
+```text id="b77sbt"
+player_character_audit.pass = true
+g5_scene_audit.pass = true
+npc_placement_audit.pass = true
+item_placement_audit.pass = true
+time_light_consistency_audit.pass = true
+selected_start_node валиден
+current_position доступна
+```
+
+Если персонаж ещё не утверждён, карту знаний формировать нельзя.
+
+### 24.2. Собрать базовые знания персонажа
+
+Из `player_character` берутся:
+
+```text id="n2rav6"
+origin
+social_status
+occupation
+memory
+relations
+goals
+start_place_connection
+knowledge
+inventory
+property_and_access
+```
+
+### 24.3. Собрать видимое знание
+
+Из G5 и visibility берутся:
+
+```text id="jaq7co"
+visible anchors
+audible anchors
+visible NPC labels
+visible item labels
+visible exits
+closed zones
+dangerous anchors
+light sources
+weather effects
+```
+
+### 24.4. Собрать маршрутные кандидаты
+
+Код извлекает из `world_base_route_snapshot`:
+
+```text id="cb4242"
+nearby_graph_edges
+route_knowledge_rule_candidates
+historical_anchor_candidates
+route access rules
+route seasonal rules
+```
+
+Код не делает персонажа знающим все эти маршруты. Он только передаёт LLM кандидатный набор.
+
+### 24.5. Применить основания знания
+
+Для каждого знания LLM должна указать `basis`.
+
+Допустимые основания:
+
+```text id="ae8qxf"
+origin
+occupation
+social_role
+visible_now
+audible_now
+personal_travel
+personal_relation
+common_knowledge
+npc_told
+rumor
+order
+work_duty
+family_memory
+authority_instruction
+previous_party_event
+```
+
+Если basis отсутствует, знание отклоняется.
+
+### 24.6. Разделить факт, слух, ошибку и незнание
+
+LLM должна разнести записи по блокам:
+
+```text id="iewa7r"
+known_* — персонаж считает это знанием с основанием;
+rumors — персонаж слышал, но не уверен;
+mistaken_beliefs — персонаж ошибается или может ошибаться;
+uncertain_knowledge — есть неполная уверенность;
+forbidden_knowledge — персонаж не знает;
+knowledge_gaps — явно не хватает сведений.
+```
+
+### 24.7. Ограничить карту
+
+Персонаж не должен получать полную карту региона.
+
+Обычный стартовый предел:
+
+```text id="91m6rc"
+G5: что видно/слышно сейчас;
+G4: что понятно о текущей локации;
+G3: ближайшее место, если есть основание;
+G2: общая зона, направление или известная дорога;
+G1: только общий региональный контекст;
+дальше — только название/слух/исторический якорь без точного маршрута.
+```
+
+### 24.8. Проверить действие знаний на UI
+
+Карта знаний должна позволять честно формировать варианты действий:
+
+```text id="xvoxyv"
+пойти к видимому выходу;
+спросить NPC;
+осмотреть предмет;
+искать дорогу;
+идти по известному направлению;
+проверить слух;
+избегать опасности;
+искать ночлег/пищу/работу;
+```
+
+Но UI не должен показывать выборы, основанные на скрытых знаниях.
+
+## 25. Работа LLM на этапе
+
+На этом этапе LLM обязательна для смысловой сборки карты знаний.
+
+Причина: код может извлечь кандидаты из базы, но не должен сам решать, что персонаж “логично знает” по биографии, статусу и месту. Это смысловое решение.
+
+Код делает:
+
+```text id="9miqht"
+извлечение candidate facts;
+проверку ID;
+проверку route refs;
+проверку source_trace;
+проверку enum;
+проверку запрещённых знаний;
+сохранение результата.
+```
+
+LLM делает:
+
+```text id="6r563a"
+выбирает, какие candidate facts реально известны персонажу;
+указывает basis;
+задаёт precision_level;
+отделяет факты от слухов;
+отделяет знания от видимости;
+формирует forbidden_knowledge;
+формирует knowledge_gaps;
+```
+
+LLM не имеет права:
+
+```text id="vza0yi"
+создавать новые дороги;
+создавать новые места;
+создавать новых NPC;
+создавать новые слухи без источника;
+раскрывать hidden state;
+давать персонажу полную карту;
+давать будущие знания;
+писать visible_scene;
+писать narrator prose.
+```
+
+## 26. LLM-параметры
+
+### 26.1. `CharacterKnowledgeMapBuilder`
+
+Назначение: сформировать карту знаний персонажа.
+
+```json id="piqrse"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 10000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 100000,
+    "hard_input_limit_tokens": 240000,
+    "reserve_output_tokens": 10000
+  }
+}
+```
+
+Используется reasoning-модель, потому что этап требует согласования биографии, социального статуса, видимости, маршрутов, слухов и скрытых границ знания. Thinking mode в DeepSeek предназначен для повышения точности финального ответа перед выдачей результата.
+
+### 26.2. `CharacterKnowledgeMapAuditor`
+
+Назначение: проверить, что карта знаний не содержит hidden/player-only/future knowledge и что каждое знание имеет basis.
+
+```json id="6duvp9"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 8000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 100000,
+    "hard_input_limit_tokens": 240000,
+    "reserve_output_tokens": 8000
+  }
+}
+```
+
+### 26.3. `CharacterKnowledgeMapFormatRepairer`
+
+Назначение: исправить только JSON-формат.
+
+```json id="u79hcu"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-flash",
+  "thinking": {
+    "type": "disabled"
+  },
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "max_tokens": 5000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 40000,
+    "hard_input_limit_tokens": 100000,
+    "reserve_output_tokens": 5000
+  }
+}
+```
+
+Для JSON output нужно использовать `response_format: {"type":"json_object"}`, явно включить слово `json` в prompt, дать пример формата и задать достаточный `max_tokens`, иначе JSON может быть обрезан.
+
+### 26.4. `CharacterKnowledgeMapSemanticRepairer`
+
+Назначение: исправить смысловые ошибки карты знаний по audit concerns.
+
+```json id="alr6i8"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 10000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 100000,
+    "hard_input_limit_tokens": 240000,
+    "reserve_output_tokens": 10000
+  }
+}
+```
+
+## 27. Prompt: CharacterKnowledgeMapBuilder
+
+```md id="a7vk6j"
+# Роль
+
+Ты CharacterKnowledgeMapBuilder для исторической текстовой RPG.
+
+# Задача
+
+Сформируй карту знаний персонажа игрока на старте партии.
+
+# Главное правило
+
+Ты не создаёшь мир.
+Ты не создаёшь новые места.
+Ты не создаёшь новые маршруты.
+Ты не создаёшь новых NPC.
+Ты не создаёшь новые слухи без источника.
+Ты не пишешь visible_scene.
+Ты не пишешь intro_prose.
+
+Ты записываешь только то, что персонаж реально знает, слышал, видит, подозревает, ошибочно считает или не знает.
+
+# Используй только входные данные
+
+- historical_frame
+- weather_state
+- selected_start_node
+- player_character
+- g5_scene_graph
+- initial_npc_placement
+- initial_item_placement
+- time_light_consistency_audit
+- regional_context_package
+- world_base_route_snapshot
+- knowledge_policy
+
+# Обязательные правила
+
+1. Каждое знание должно иметь basis.
+2. Знание игрока не равно знанию персонажа.
+3. Видимый объект не означает знание его назначения.
+4. Исторический якорь не означает знание точной дороги.
+5. Слух не равен факту.
+6. Ошибка персонажа должна быть помечена как mistaken_belief.
+7. Скрытое состояние мира должно быть в forbidden_knowledge, а не в known facts.
+8. Нельзя давать персонажу полную карту.
+9. Нельзя давать будущие знания.
+10. Нельзя раскрывать содержимое закрытых контейнеров.
+11. Нельзя раскрывать скрытые мотивы NPC.
+12. Нельзя создавать route_id, node_id, npc_id или place_id, которых нет во входе.
+
+# Формат
+
+Верни только json.
+
+schema:
+"character_knowledge_map"
+
+version:
+1
+```
+
+## 28. Prompt: CharacterKnowledgeMapAuditor
+
+```md id="zk94ja"
+# Роль
+
+Ты CharacterKnowledgeMapAuditor.
+
+# Задача
+
+Проверь character_knowledge_map.
+
+# Главное правило
+
+Ты не исправляешь карту знаний.
+Ты только аудируешь.
+
+# Проверить
+
+1. schema = character_knowledge_map.
+2. version = 1.
+3. Все known routes ссылаются на существующие route/edge refs или явно approximate/no-ref.
+4. Все exact routes имеют basis.
+5. Все known places с точным location имеют basis.
+6. Все known people ссылаются на existing npc/candidate/key seed или abstract relation с basis.
+7. Все rumors имеют источник и truth_status не раскрыт как факт.
+8. Все mistaken beliefs отделены от known facts.
+9. forbidden_knowledge содержит hidden/player-only/future boundaries.
+10. knowledge_gaps не пусты, если карта неполная.
+11. Нет полной карты без основания.
+12. Нет hidden state knowledge.
+13. Нет future knowledge.
+14. Нет closed container contents.
+15. Нет private NPC motives без основания.
+16. Нет новых node_id/route_id/npc_id/item_id.
+17. Нет visible_scene.
+18. Нет intro_prose.
+19. source_trace достаточен.
+
+# Формат
+
+Верни только json:
+
+{
+  "version": 1,
+  "schema": "character_knowledge_map_audit",
+  "pass": true,
+  "concerns": [],
+  "evidence": []
+}
+
+Если pass=false:
+- concerns не должен быть пустым;
+- evidence не должен быть пустым.
+```
+
+## 29. Prompt: CharacterKnowledgeMapFormatRepairer
+
+```md id="q9sffg"
+# Роль
+
+Ты CharacterKnowledgeMapFormatRepairer.
+
+# Задача
+
+Исправь только формат JSON для character_knowledge_map или character_knowledge_map_audit.
+
+# Главное правило
+
+Не меняй смысл.
+Не добавляй знания.
+Не удаляй знания.
+Не меняй basis.
+Не меняй refs.
+Не создавай route_id, node_id, npc_id, place_id.
+Не создавай visible_scene.
+Не создавай intro_prose.
+
+# Разрешено
+
+- убрать markdown;
+- привести schema/version;
+- переименовать ошибочные поля;
+- добавить отсутствующие служебные поля как null/[];
+- перенести свободный текст в notes;
+- удалить запрещённые prose-поля.
+
+# Формат
+
+Верни только json.
+```
+
+## 30. Prompt: CharacterKnowledgeMapSemanticRepairer
+
+```md id="ly1fso"
+# Роль
+
+Ты CharacterKnowledgeMapSemanticRepairer.
+
+# Задача
+
+Исправь character_knowledge_map по validationErrors и audit concerns.
+
+# Главное правило
+
+Исправляй только карту знаний.
+Не меняй world state.
+Не меняй player_character.
+Не меняй G5.
+Не создавай новые routes, places, NPC or items.
+
+# Источники
+
+Используй только:
+- validationErrors
+- audit.concerns
+- исходный character_knowledge_map
+- historical_frame
+- selected_start_node
+- player_character
+- g5_scene_graph
+- initial_npc_placement
+- initial_item_placement
+- regional_context_package
+- world_base_route_snapshot
+
+# Если знание не имеет basis
+
+Перенеси его в:
+- uncertain_knowledge,
+- rumor,
+- mistaken_belief,
+- knowledge_gap,
+- forbidden_knowledge,
+
+или удали только если оно полностью не подтверждается.
+
+# Запрещено
+
+- давать персонажу полную карту;
+- раскрывать hidden state;
+- превращать слух в факт;
+- создавать новый слух без источника;
+- писать visible_scene;
+- писать intro_prose.
+
+# Формат
+
+Верни только json character_knowledge_map.
+```
+
+## 31. Code precheck
+
+Перед LLM-аудитом код должен проверить:
+
+```json id="ec8na5"
+{
+  "version": 1,
+  "schema": "character_knowledge_map_code_precheck",
+  "pass": true,
+  "checks": {
+    "schema_valid": true,
+    "character_ref_valid": true,
+    "current_position_ref_valid": true,
+    "route_refs_valid": true,
+    "place_refs_valid": true,
+    "npc_refs_valid": true,
+    "item_refs_valid": true,
+    "all_known_facts_have_basis": true,
+    "rumors_separated_from_facts": true,
+    "forbidden_knowledge_present": true,
+    "no_hidden_state_leak": true,
+    "no_future_knowledge": true,
+    "no_full_map_granted": true,
+    "no_new_world_entities_created": true,
+    "no_visible_scene_created": true,
+    "source_trace_present": true
+  },
+  "concerns": [],
+  "evidence": []
+}
+```
+
+Если `code_precheck.pass=false`, semantic audit можно не запускать. Результат отправляется в repair.
+
+## 32. Validation rules
+
+Код обязан проверить:
+
+1. `schema === "character_knowledge_map"`.
+2. `version === 1`.
+3. `knowledge_status` входит в enum.
+4. `player_character_id` совпадает с текущим персонажем.
+5. `current_position_ref` совпадает с утверждённой текущей позицией.
+6. Все exact route refs существуют.
+7. Все exact place refs существуют.
+8. Все exact NPC refs существуют.
+9. Все exact item refs существуют.
+10. Approximate knowledge может не иметь exact ref, но должно иметь basis.
+11. Каждая known запись имеет basis.
+12. Каждая basis входит в допустимый enum.
+13. Каждый rumor имеет source/source_type.
+14. Rumor не записан как known fact.
+15. Mistaken belief не записан как known fact.
+16. Forbidden knowledge содержит hidden boundaries.
+17. Hidden state не попал в known facts.
+18. Future knowledge не попал в known facts.
+19. Closed container contents не попали в known facts.
+20. Private NPC motives не попали в known facts.
+21. Route knowledge не превышает origin/occupation/social_role basis.
+22. Character does not get full map.
+23. UI boundary заполнен.
+24. Нет новых route_id.
+25. Нет новых node_id.
+26. Нет новых place_id.
+27. Нет новых npc_id.
+28. Нет новых item_id.
+29. Нет visible_scene.
+30. Нет intro_prose.
+31. `source_trace` не пустой, если require_source_trace=true.
+32. `audit_self_check.evidence` не пустой.
+33. Если `audit_self_check.pass=false`, concerns не пустой.
+
+## 33. Error codes
+
+```text id="radxkr"
+KNOWLEDGE_MAP_INVALID_JSON
+KNOWLEDGE_MAP_SCHEMA_MISMATCH
+KNOWLEDGE_MAP_CHARACTER_REF_MISMATCH
+KNOWLEDGE_MAP_POSITION_REF_MISMATCH
+KNOWLEDGE_MAP_ROUTE_REF_NOT_FOUND
+KNOWLEDGE_MAP_PLACE_REF_NOT_FOUND
+KNOWLEDGE_MAP_NPC_REF_NOT_FOUND
+KNOWLEDGE_MAP_ITEM_REF_NOT_FOUND
+KNOWLEDGE_MAP_KNOWLEDGE_WITHOUT_BASIS
+KNOWLEDGE_MAP_INVALID_BASIS
+KNOWLEDGE_MAP_RUMOR_WITHOUT_SOURCE
+KNOWLEDGE_MAP_RUMOR_TREATED_AS_FACT
+KNOWLEDGE_MAP_MISTAKEN_BELIEF_TREATED_AS_FACT
+KNOWLEDGE_MAP_FORBIDDEN_KNOWLEDGE_MISSING
+KNOWLEDGE_MAP_HIDDEN_STATE_LEAK
+KNOWLEDGE_MAP_FUTURE_KNOWLEDGE_LEAK
+KNOWLEDGE_MAP_CLOSED_CONTAINER_CONTENTS_LEAK
+KNOWLEDGE_MAP_PRIVATE_NPC_MOTIVE_LEAK
+KNOWLEDGE_MAP_ROUTE_KNOWLEDGE_TOO_STRONG
+KNOWLEDGE_MAP_FULL_MAP_GRANTED
+KNOWLEDGE_MAP_CREATED_ROUTE
+KNOWLEDGE_MAP_CREATED_PLACE
+KNOWLEDGE_MAP_CREATED_NPC
+KNOWLEDGE_MAP_CREATED_ITEM
+KNOWLEDGE_MAP_CREATED_VISIBLE_SCENE
+KNOWLEDGE_MAP_CREATED_INTRO_PROSE
+KNOWLEDGE_MAP_SOURCE_MISSING
+KNOWLEDGE_MAP_EMPTY_AUDIT_EVIDENCE
+KNOWLEDGE_MAP_WRITE_PROJECTION_INVALID
+KNOWLEDGE_MAP_PROJECTION_HASH_MISSING
+KNOWLEDGE_MAP_NEARBY_PATH_MAPPING_INVALID
+```
+
+## 34. Запись и write projection
+
+Stage 18 не пишет live party-state и не знает физическую реализацию party-базы.
+
+До общего commit разрешены только технические записи pipeline:
+
+```text
+pipeline_step_status
+character_knowledge_map_draft_snapshot
+character_knowledge_map_code_precheck_snapshot
+character_knowledge_map_validation_issues
+character_knowledge_map_repair_attempts
+source_trace_snapshot
+```
+
+Эти записи не являются игровым состоянием партии.
+
+После успешных Builder, code precheck и независимого Auditor Stage 18 возвращает декларативную проекцию:
+
+```json
+{
+  "version": 1,
+  "schema": "character_knowledge_write_projection",
+  "request_id": "string",
+  "knowledge_map_id": "string",
+  "root_record": {
+    "player_character_id": "string",
+    "knowledge_status": "formed | empty_limited",
+    "knowledge_scope_summary": {},
+    "current_position_ref": {},
+    "status": "pending",
+    "is_current": false
+  },
+  "normalized_groups": {
+    "known_routes": [],
+    "known_nearby_paths": [],
+    "known_places": [],
+    "known_addresses": [],
+    "known_landmarks": [],
+    "known_people": [],
+    "known_authorities": [],
+    "known_dangers": [],
+    "known_social_rules": [],
+    "known_resources": [],
+    "rumors": [],
+    "mistaken_beliefs": [],
+    "uncertain_knowledge": [],
+    "forbidden_knowledge": [],
+    "knowledge_gaps": [],
+    "player_vs_character_knowledge_boundary": {}
+  },
+  "snapshot_payload": {
+    "character_knowledge_map": {},
+    "code_precheck": {},
+    "audit": {},
+    "repair_history": []
+  },
+  "projection_manifest": {
+    "source_content_hash": "string",
+    "expected_counts": {},
+    "expected_record_keys": [],
+    "group_hashes": {},
+    "requires_snapshot": true,
+    "requires_root_record": true,
+    "requires_current_switch_after_validation": true
+  }
+}
+```
+
+`write_projection` не содержит SQL и не исполняет запись. Stage 24 сопоставляет смысловые группы с физическими таблицами только по переданному `party_database_schema_snapshot`.
+
+Физическое правило для nearby paths:
+
+```text
+known_nearby_paths
+→ party_character_known_routes
+→ knowledge_kind = nearby_path
+```
+
+Stage 18 запрещено писать:
+
+```text
+party_character_knowledge_maps
+party_character_knowledge_snapshots
+party_character_known_*
+party_player_character_knowledge_boundary
+new_world_routes
+new_world_places
+new_world_npcs
+new_world_items
+visible_scene
+intro_prose
+hidden_state_changes
+```
+
+Полная модель хранения определена в `party_character_knowledge_layer.md`.
+
+## 35. Commit gate этапа
+
+Этап считается успешным, если:
+
+```text id="xma1sd"
+character_knowledge_map валиден,
+каждое знание имеет basis,
+факты, слухи, ошибки и незнание разделены,
+route/place/person/address knowledge не превышает основания,
+персонаж не получил полную карту,
+hidden/player-only/future knowledge не раскрыто,
+UI boundary заполнен,
+нет новых world entities,
+audit pass=true,
+write_projection валиден и содержит projection_manifest,
+source_content_hash заполнен,
+known_nearby_paths подготовлены как отдельная смысловая группа без создания новой world-route.
+```
+
+Если commit gate не пройден, pipeline не должен переходить к Stage 19 — формированию полного hidden state.
+
+## 36. Передача в следующий этап
+
+Stage 19 получает точный `hidden_state_builder_input`; Stage 18 передаёт в него только утверждённые `character_knowledge_map` и `character_knowledge_map_audit`. Остальные authoritative inputs собирает оркестратор, а не Stage 18.
+
+```json
+{
+  "version": 1,
+  "schema": "hidden_state_builder_input",
+  "request_id": "string",
+  "historical_frame": {},
+  "weather_state": {},
+  "selected_start_node": {},
+  "player_character": {},
+  "g5_scene_graph": {},
+  "g5_scene_audit": {},
+  "initial_npc_placement": {},
+  "npc_placement_audit": {},
+  "initial_item_placement": {},
+  "item_placement_audit": {},
+  "time_light_consistency_audit": {},
+  "character_knowledge_map": {
+    "version": 1,
+    "schema": "character_knowledge_map",
+    "knowledge_status": "formed"
+  },
+  "character_knowledge_map_audit": {
+    "version": 1,
+    "schema": "character_knowledge_map_audit",
+    "pass": true
+  },
+  "regional_context_package": {},
+  "world_base_route_snapshot": {},
+  "hidden_state_policy": {}
+}
+```
+
+Stage 18 не вызывает Stage 19 напрямую, не читает global pipeline context и не передаёт в следующий блок repair history, prompts или role configuration.
+
+## 37. Минимальный успешный результат
+
+```json id="sj7fpu"
+{
+  "version": 1,
+  "schema": "character_knowledge_map",
+  "request_id": "req_001",
+
+  "knowledge_status": "formed",
+
+  "character_ref": {
+    "player_character_id": "player_character_001",
+    "social_role_id": "social_role_001",
+    "occupation_id": "occupation_001",
+    "origin_basis": [
+      "origin",
+      "occupation",
+      "social_role"
+    ]
+  },
+
+  "current_position_ref": {
+    "region_id": "region_001",
+    "g1_node_id": "g1_001",
+    "g2_node_id": "g2_001",
+    "g3_node_id": "g3_001",
+    "g4_node_id": "g4_001",
+    "minilocation_id": "g5_miniloc_001",
+    "anchor_id": "g5_anchor_001"
+  },
+
+  "knowledge_scope_summary": {
+    "map_detail_level": "current_g4",
+    "route_knowledge_level": "immediate_exits",
+    "social_knowledge_level": "ordinary_customs",
+    "danger_knowledge_level": "visible_dangers",
+    "confidence_profile": "mixed"
+  },
+
+  "known_routes": [
+    {
+      "known_route_id": "char_route_knowledge_001",
+      "route_ref": {
+        "graph_edge_id": "edge_001",
+        "route_id": null,
+        "from_node_id": "g5_anchor_001",
+        "to_node_id": "g5_anchor_002"
+      },
+      "knowledge_level": "visible_only",
+      "known_label": "visible nearby passage",
+      "route_kind": "passage",
+      "knows_start": true,
+      "knows_end": false,
+      "knows_distance": "approximate",
+      "knows_time_cost": "no",
+      "knows_seasonal_condition": "no",
+      "knows_current_condition": "approximate",
+      "knows_risks": "partial",
+      "basis": {
+        "basis_type": "visible_now",
+        "basis_detail": "The passage is visible from current G5 position.",
+        "source_ref": "g5_anchor_002"
+      },
+      "confidence": "medium",
+      "can_use_for_navigation": true,
+      "can_explain_to_player": true,
+      "can_guide_others": false,
+      "limitations": [
+        "character does not know where the passage leads beyond visible range"
+      ],
+      "source_trace": [
+        {
+          "record_id": "g5_anchor_002",
+          "table": "party_scene_anchors",
+          "source_ids": [
+            "source_001"
+          ],
+          "supports": [
+            "visible route knowledge"
+          ]
+        }
+      ]
+    }
+  ],
+
+  "known_places": [
+    {
+      "known_place_id": "known_place_001",
+      "place_ref": {
+        "node_id": "g4_001",
+        "place_id": null,
+        "historical_anchor_id": null
+      },
+      "known_label": "current place",
+      "place_kind": "workplace",
+      "knowledge_level": "visible_only",
+      "knows_route": false,
+      "known_route_ids": [],
+      "known_for": [
+        "current surroundings"
+      ],
+      "access_knowledge": {
+        "can_enter": "unknown",
+        "requires_permission": "unknown",
+        "access_basis": "current position only"
+      },
+      "basis": {
+        "basis_type": "visible_now",
+        "basis_detail": "Character is physically present here."
+      },
+      "confidence": "medium",
+      "limitations": [
+        "does not know full layout"
+      ],
+      "source_trace": []
+    }
+  ],
+
+  "known_people": [
+    {
+      "known_person_id": "known_person_001",
+      "person_ref": {
+        "npc_instance_id": "npc_001",
+        "npc_candidate_id": "npc_cand_001",
+        "key_npc_seed_id": null,
+        "abstract_person_ref": null
+      },
+      "known_label": "visible nearby person",
+      "name_known": "no",
+      "role_known": "approximate",
+      "relationship_to_character": "stranger_seen",
+      "knowledge_level": "visible_only",
+      "where_to_find_knowledge": {
+        "knows_address": false,
+        "known_address_id": null,
+        "knows_general_area": false,
+        "area_label": null
+      },
+      "trust_level": "unknown",
+      "basis": {
+        "basis_type": "visible_now",
+        "basis_detail": "NPC is visible in current G5 scene."
+      },
+      "confidence": "medium",
+      "limitations": [
+        "name and private motive are unknown"
+      ],
+      "source_trace": []
+    }
+  ],
+
+  "known_dangers": [
+    {
+      "known_danger_id": "danger_001",
+      "danger_type": "darkness",
+      "danger_label": "limited visibility",
+      "danger_scope": "current_g5",
+      "related_refs": {
+        "g5_anchor_id": "g5_anchor_001",
+        "npc_instance_id": null,
+        "item_instance_id": null,
+        "route_id": null,
+        "place_id": null
+      },
+      "known_as": "visible_fact",
+      "severity_known": "medium",
+      "avoidance_known": "partial",
+      "basis": {
+        "basis_type": "visible_now",
+        "basis_detail": "Current light profile limits visibility."
+      },
+      "confidence": "high",
+      "source_trace": []
+    }
+  ],
+
+  "known_social_rules": [
+    {
+      "known_social_rule_id": "social_rule_001",
+      "rule_type": "property",
+      "rule_label": "do not take things without permission",
+      "applies_here": true,
+      "what_character_knows": "Items in this place may belong to someone else and taking them may create risk.",
+      "what_character_may_be_wrong_about": null,
+      "risk_if_violated": "medium",
+      "basis": {
+        "basis_type": "social_role",
+        "basis_detail": "Ordinary property norms known from character social context."
+      },
+      "confidence": "high",
+      "source_trace": []
+    }
+  ],
+
+  "known_resources": [
+    {
+      "known_resource_id": "resource_001",
+      "resource_type": "information",
+      "resource_label": "nearby person may be asked",
+      "availability_known": "maybe",
+      "access_known": "risky",
+      "related_refs": {
+        "place_id": null,
+        "g5_anchor_id": "g5_anchor_001",
+        "npc_instance_id": "npc_001",
+        "item_instance_id": null
+      },
+      "basis": {
+        "basis_type": "visible_now",
+        "basis_detail": "A visible NPC is nearby, but disposition and willingness are uncertain."
+      },
+      "confidence": "medium",
+      "source_trace": []
+    }
+  ],
+
+  "rumors": [],
+
+  "mistaken_beliefs": [],
+
+  "uncertain_knowledge": [
+    {
+      "uncertain_knowledge_id": "uncertain_001",
+      "topic": "where nearby passage leads",
+      "what_character_thinks": "The visible passage may lead out of the current area.",
+      "uncertainty_reason": "Only the immediate exit is visible.",
+      "basis": {
+        "basis_type": "visible_now",
+        "basis_detail": "Visible passage, destination unknown."
+      },
+      "confidence": "low"
+    }
+  ],
+
+  "forbidden_knowledge": [
+    {
+      "forbidden_knowledge_id": "forbidden_001",
+      "knowledge_topic": "closed_container_contents",
+      "forbidden_fact_ref": null,
+      "why_forbidden": "container_closed",
+      "must_not_show_in_visible_context": true,
+      "must_not_use_in_player_choice_labels": true,
+      "can_be_discovered_by": [
+        "inspect",
+        "open_with_permission",
+        "force_open_with_risk"
+      ],
+      "source_trace": []
+    },
+    {
+      "forbidden_knowledge_id": "forbidden_002",
+      "knowledge_topic": "private_npc_motive",
+      "forbidden_fact_ref": "npc_001",
+      "why_forbidden": "npc_private_motive",
+      "must_not_show_in_visible_context": true,
+      "must_not_use_in_player_choice_labels": true,
+      "can_be_discovered_by": [
+        "conversation",
+        "observation",
+        "future interaction"
+      ],
+      "source_trace": []
+    }
+  ],
+
+  "knowledge_gaps": [
+    {
+      "knowledge_gap_id": "gap_001",
+      "gap_type": "route_unknown",
+      "gap_label": "where the visible passage leads",
+      "what_character_lacks": "The character sees a possible way but does not know its destination.",
+      "how_to_resolve": [
+        "go closer",
+        "ask_npc",
+        "inspect"
+      ],
+      "risk_if_ignored": "unknown"
+    }
+  ],
+
+  "player_vs_character_knowledge_boundary": {
+    "player_may_know_from_prompt": [],
+    "character_knows": [
+      "current visible surroundings",
+      "nearby visible person",
+      "ordinary property risk",
+      "limited visibility"
+    ],
+    "character_does_not_know": [
+      "closed container contents",
+      "private NPC motives",
+      "full map",
+      "exact destination of unseen routes"
+    ],
+    "character_may_suspect": [
+      "visible passage may lead elsewhere"
+    ],
+    "must_not_surface_to_player_as_character_knowledge": [
+      "hidden state",
+      "future events",
+      "unseen route destinations",
+      "closed container contents"
+    ],
+    "ui_guidance": {
+      "choice_labels_must_use_character_knowledge": true,
+      "map_labels_must_separate_known_and_unknown": true,
+      "narrator_must_not_explain_hidden_truth": true
+    }
+  },
+
+  "downstream_constraints": {
+    "must_preserve": [
+      "character_knowledge_map",
+      "player_vs_character_knowledge_boundary",
+      "forbidden_knowledge",
+      "knowledge_gaps"
+    ],
+    "must_not_reveal": [
+      "closed_container_contents",
+      "private_npc_motives",
+      "hidden_state",
+      "future_events",
+      "unknown_route_destinations"
+    ],
+    "must_resolve_later": [
+      "route_destination_if_traveled",
+      "npc_identity_if_asked_or_recognized",
+      "container_contents_if_opened",
+      "rumor_truth_if_investigated"
+    ]
+  },
+
+  "source_trace": [
+    {
+      "record_id": "player_character_001",
+      "table": "party_player_characters",
+      "source_ids": [
+        "source_001"
+      ],
+      "supports": [
+        "character knowledge basis"
+      ]
+    },
+    {
+      "record_id": "g5_anchor_001",
+      "table": "party_scene_anchors",
+      "source_ids": [
+        "source_002"
+      ],
+      "supports": [
+        "visible knowledge"
+      ]
+    }
+  ],
+
+  "audit_self_check": {
+    "pass": true,
+    "concerns": [],
+    "evidence": [
+      "Every known fact has a basis.",
+      "Visible knowledge is separated from exact knowledge.",
+      "Rumors and uncertain knowledge are not treated as facts.",
+      "Hidden state and future knowledge are excluded.",
+      "No new route, place, NPC or item was created.",
+      "Player knowledge and character knowledge are separated."
+    ]
+  }
+}
+```

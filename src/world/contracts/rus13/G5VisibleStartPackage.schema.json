@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rus13.local/contracts/G5VisibleStartPackage.schema.json",
+  "title": "G5VisibleStartPackage",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "visible_scene",
+    "visible_position",
+    "visible_npc",
+    "visible_objects",
+    "sensory_details",
+    "known_context",
+    "uncertainties",
+    "do_not_imply"
+  ],
+  "properties": {
+    "visible_scene": {
+      "description": "Required by G5VisibleStartPackage.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "visible_position": {
+      "description": "Required by G5VisibleStartPackage.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "visible_npc": {
+      "description": "Required by G5VisibleStartPackage.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "visible_objects": {
+      "description": "Required by G5VisibleStartPackage.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "sensory_details": {
+      "description": "Required by G5VisibleStartPackage.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "known_context": {
+      "description": "Required by G5VisibleStartPackage.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "uncertainties": {
+      "description": "Required by G5VisibleStartPackage.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "do_not_imply": {
+      "description": "Required by G5VisibleStartPackage.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    }
+  },
+  "x_step_id": "g5_09_visible_start_package",
+  "x_writes_to": "party_llm_steps, party_journal_entries",
+  "x_blocking_validations": "no hidden-state leak"
+}

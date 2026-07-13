@@ -1,0 +1,1466 @@
+# Этап 14. Аудит G5-сцены
+
+## 1. Назначение этапа
+
+Аудит G5-сцены — это gate-этап после материализации стартовой G5-сцены и до размещения стартовых NPC, предметов, visible context и narrator prose.
+
+Этап проверяет, что созданный `g5_scene_graph_draft`:
+
+* находится строго внутри выбранного G4;
+* использует только допустимые G5-шаблоны;
+* содержит только разрешённые anchors;
+* содержит валидные минилокации;
+* содержит валидные проходы/edges;
+* корректно разделяет видимость и доступ;
+* не раскрывает закрытые зоны;
+* не показывает скрытые объекты;
+* не создаёт NPC и предметы раньше времени;
+* не противоречит времени суток, свету, сезону и выбранному месту;
+* задаёт честные риски для движения, осмотра, доступа, скрытности, кражи, боя и свидетелей;
+* может быть безопасно записан в party-базу как стартовая сценическая геометрия.
+
+Короткая формула:
+
+```text
+g5_scene_graph_draft
++ selected_start_node
++ allowed_g5_template_set
++ historical_frame.clock
++ player_character
++ npc_candidate_set
++ item_profile_candidate_set
++ materialization_policy
+→ g5_scene_audit
+```
+
+## 2. Главное правило этапа
+
+Аудит G5 не исправляет сцену молча.
+
+Если G5-сцена невалидна, этап возвращает:
+
+```text
+pass=false
++ concerns
++ evidence
++ repair_route
+```
+
+Запрещено:
+
+* процедурно добавлять якоря;
+* процедурно удалять проблемные якоря;
+* процедурно менять доступ;
+* процедурно менять видимость;
+* процедурно менять стартовую позицию;
+* процедурно менять выбранный G4;
+* молча заменять G5-шаблон;
+* создавать NPC, предметы или prose для “объяснения” ошибки.
+
+Если ошибка смысловая, G5 возвращается в LLM repair. Если ошибка структурная, сначала запускается format repair или code-level rejection.
+
+## 3. Место этапа в pipeline
+
+```text
+1. Заявка игрока
+2. Нормализация заявки
+3. Выбор исторической рамки
+4. Загрузка регионального контекста
+5. Подбор стартовых G1–G4 кандидатов
+6. Подбор place templates
+7. Подбор NPC-кандидатов
+8. Подбор предметных профилей
+9. Выбор стартового узла
+10. Аудит стартового места
+11. Генерация персонажа
+12. Аудит персонажа
+13. Материализация стартовой G5-сцены
+14. Аудит G5-сцены
+15. Размещение стартовых NPC
+16. Размещение стартовых предметов
+17. Проверка времени и света
+18. Формирование visible context
+```
+
+Без успешного G5-аудита нельзя переходить к NPC, предметам, visible context или narrator prose.
+
+## 4. Вход этапа
+
+```json
+{
+  "version": 1,
+  "schema": "g5_scene_audit_input",
+  "request_id": "string",
+
+  "historical_frame": {
+    "version": 1,
+    "schema": "historical_frame",
+    "region": {
+      "region_id": "string"
+    },
+    "year": {
+      "value": 0
+    },
+    "calendar": {
+      "season": "spring | summer | autumn | winter"
+    },
+    "clock": {
+      "day": 1,
+      "hour": 0,
+      "minute": 0,
+      "time_of_day": "morning | day | evening | night | deep_night",
+      "light_profile": "dark | dim | daylight | twilight"
+    }
+  },
+
+  "selected_start_node": {
+    "version": 1,
+    "schema": "selected_start_node",
+    "selected": {
+      "selected_candidate_id": "string",
+      "selected_node_id": "string",
+      "selected_scale_level": "G4",
+      "selected_place_template_id": "string"
+    },
+    "selected_node_chain": {
+      "g1_node_id": "string",
+      "g2_node_id": "string",
+      "g3_node_id": "string",
+      "g4_node_id": "string"
+    }
+  },
+
+  "start_place_audit": {
+    "version": 1,
+    "schema": "start_place_audit",
+    "pass": true
+  },
+
+  "player_character": {
+    "version": 1,
+    "schema": "player_character_game_profile"
+  },
+
+  "player_character_audit": {
+    "version": 1,
+    "schema": "player_character_audit",
+    "pass": true
+  },
+
+  "allowed_g5_template_set": {
+    "version": 1,
+    "schema": "allowed_g5_template_set",
+    "selected_g4_type_id": "string",
+    "allowed_g5_templates": []
+  },
+
+  "g5_scene_graph_draft": {
+    "version": 1,
+    "schema": "g5_scene_graph_draft"
+  },
+
+  "npc_candidate_set": {
+    "version": 1,
+    "schema": "npc_candidate_set"
+  },
+
+  "item_profile_candidate_set": {
+    "version": 1,
+    "schema": "item_profile_candidate_set"
+  },
+
+  "audit_policy": {
+    "require_selected_g4_match": true,
+    "require_allowed_g5_template_ids": true,
+    "require_anchor_type_match": true,
+    "require_minilocation_parent_match": true,
+    "require_edges_between_existing_anchors": true,
+    "require_player_start_anchor": true,
+    "require_visibility_model": true,
+    "require_access_model": true,
+    "require_closed_zone_model": true,
+    "require_risk_model": true,
+    "require_clock_light_consistency": true,
+    "require_source_trace": true,
+    "reject_created_npcs": true,
+    "reject_created_items": true,
+    "reject_container_contents": true,
+    "reject_intro_prose": true,
+    "reject_visible_scene": true,
+    "reject_hidden_event": true
+  }
+}
+```
+
+## 5. Выход этапа
+
+```json
+{
+  "version": 1,
+  "schema": "g5_scene_audit",
+  "request_id": "string",
+
+  "pass": true,
+
+  "checks": {
+    "schema_and_structure": {},
+    "parent_g4_match": {},
+    "minilocations": {},
+    "anchors": {},
+    "allowed_templates": {},
+    "edges": {},
+    "player_start_position": {},
+    "visibility_model": {},
+    "access_model": {},
+    "closed_zones": {},
+    "visible_objects": {},
+    "risk_model": {},
+    "clock_light_consistency": {},
+    "npc_item_leak_check": {},
+    "source_trace": {},
+    "commit_readiness": {}
+  },
+
+  "concerns": [],
+  "evidence": [],
+
+  "repair_route": null,
+
+  "commit_permission": {
+    "can_commit_g5_scene_graph": true,
+    "can_continue_to_npc_placement": true,
+    "can_continue_to_item_placement": true,
+    "can_continue_to_visible_context": false
+  }
+}
+```
+
+`can_continue_to_visible_context` обычно остаётся `false`, пока не пройдены отдельные этапы размещения NPC и предметов.
+
+## 6. Что проверяется
+
+### 6.1. Schema and structure
+
+Проверяется:
+
+```text
+schema = g5_scene_graph_draft
+version = 1
+materialization_status = materialized
+g5_minilocations exists
+g5_anchors exists
+g5_edges exists
+player_start_position exists
+visibility_model exists
+access_model exists
+audit_self_check exists
+```
+
+Ошибки:
+
+```text
+G5_AUDIT_INVALID_JSON
+G5_AUDIT_SCHEMA_MISMATCH
+G5_AUDIT_REQUIRED_BLOCK_MISSING
+```
+
+### 6.2. Parent G4 match
+
+Каждая часть G5 должна быть внутри выбранного G4.
+
+Проверяются:
+
+```text
+parent_location.g4_node_id
+g5_minilocations[*].parent_g4_node_id
+g5_anchors[*].parent_g4_node_id
+player_start_position.location_id
+selected_start_node.selected_node_chain.g4_node_id
+```
+
+Все значения должны совпадать.
+
+Если G5-сцена ссылается на другой G4:
+
+```text
+G5_AUDIT_SELECTED_G4_MISMATCH
+```
+
+Если G5 пытается создать новый G4:
+
+```text
+G5_AUDIT_CREATED_PARENT_LOCATION
+```
+
+### 6.3. Minilocations
+
+Каждая минилокация должна:
+
+* иметь `minilocation_id`;
+* иметь `parent_g4_node_id`;
+* ссылаться на выбранный G4;
+* иметь допустимый `minilocation_type`;
+* иметь `light_state`;
+* иметь `movement_space`;
+* иметь `visibility_notes`;
+* иметь `access_notes`;
+* иметь source trace, если policy требует.
+
+Минилокация не может быть новым G4 или новым G3. Это только сценическая зона внутри выбранного G4.
+
+Ошибки:
+
+```text
+G5_AUDIT_MINILOC_ID_MISSING
+G5_AUDIT_MINILOC_OUTSIDE_G4
+G5_AUDIT_MINILOC_TYPE_NOT_ALLOWED
+G5_AUDIT_MINILOC_LIGHT_STATE_MISSING
+```
+
+### 6.4. Anchors
+
+Каждый anchor должен:
+
+* иметь `anchor_id`;
+* находиться внутри существующей минилокации;
+* находиться внутри выбранного G4;
+* иметь `g5_template_id`;
+* иметь `anchor_type`;
+* иметь `spatial_role`;
+* иметь visibility block;
+* иметь access block;
+* иметь supports block;
+* иметь source trace.
+
+Проверка:
+
+```text
+anchor.parent_minilocation_id ∈ g5_minilocations[*].minilocation_id
+anchor.parent_g4_node_id = selected G4
+anchor.g5_template_id ∈ allowed_g5_template_set.allowed_g5_templates[*].g5_template_id
+anchor.anchor_type соответствует template.anchor_type
+```
+
+Ошибки:
+
+```text
+G5_AUDIT_ANCHOR_ID_MISSING
+G5_AUDIT_ANCHOR_OUTSIDE_MINILOCATION
+G5_AUDIT_ANCHOR_OUTSIDE_G4
+G5_AUDIT_TEMPLATE_NOT_ALLOWED
+G5_AUDIT_ANCHOR_TYPE_NOT_ALLOWED
+```
+
+### 6.5. Allowed G5 templates
+
+G5-аудит обязан проверить, что каждый anchor создан из разрешённого шаблона.
+
+Правило:
+
+```text
+anchor.g5_template_id must exist in allowed_g5_template_set
+template.g4_type_id must equal selected_g4_type_id
+template.status must not be conflict/rejected
+```
+
+Если LLM создала anchor без шаблона:
+
+```text
+G5_AUDIT_ANCHOR_WITHOUT_TEMPLATE
+```
+
+Если шаблон есть в базе, но не разрешён для выбранного G4-типа:
+
+```text
+G5_AUDIT_TEMPLATE_G4_TYPE_MISMATCH
+```
+
+### 6.6. Edges / проходы
+
+Каждое G5-ребро должно:
+
+* иметь `edge_id`;
+* ссылаться на существующий `from_anchor_id`;
+* ссылаться на существующий `to_anchor_id`;
+* иметь `edge_type`;
+* иметь базовое время;
+* иметь movement difficulty;
+* иметь access condition;
+* иметь risk fields.
+
+Проверка:
+
+```text
+edge.from_anchor_id ∈ g5_anchors[*].anchor_id
+edge.to_anchor_id ∈ g5_anchors[*].anchor_id
+edge.from_anchor_id != edge.to_anchor_id, если loop не разрешён
+edge.base_time_seconds >= 0
+edge.base_time_minutes >= 0
+```
+
+Ошибки:
+
+```text
+G5_AUDIT_EDGE_ANCHOR_NOT_FOUND
+G5_AUDIT_EDGE_LOOP_NOT_ALLOWED
+G5_AUDIT_EDGE_TIME_INVALID
+G5_AUDIT_EDGE_TYPE_NOT_ALLOWED
+G5_AUDIT_EDGE_ACCESS_CONDITION_MISSING
+```
+
+### 6.7. Reachability
+
+Стартовый anchor должен быть связан с минимальным количеством достижимых точек.
+
+Проверяются:
+
+```text
+player_start_position.anchor_id
+access_model.reachable_anchor_ids
+g5_edges
+anchor.access.can_reach_from_start
+```
+
+Если вокруг стартового anchor нет ни одного связанного прохода и это не отдельная закрытая сцена по policy:
+
+```text
+G5_AUDIT_START_ANCHOR_ISOLATED
+```
+
+Если якорь marked reachable, но нет edge или access condition:
+
+```text
+G5_AUDIT_REACHABILITY_WITHOUT_EDGE
+```
+
+### 6.8. Player start position
+
+Проверяются:
+
+```text
+player_start_position.region_id
+player_start_position.location_id
+player_start_position.minilocation_id
+player_start_position.anchor_id
+player_start_position.body_position
+player_start_position.hands_state
+immediate_reach_anchor_ids
+visible_anchor_ids
+audible_anchor_ids
+```
+
+Обязательные условия:
+
+```text
+location_id = selected G4
+minilocation_id exists
+anchor_id exists
+anchor.supports.can_hold_player = true
+body_position compatible with player_character.body
+hands_state compatible with player_character.inventory.occupied_hands
+```
+
+Ошибки:
+
+```text
+G5_AUDIT_PLAYER_START_ANCHOR_MISSING
+G5_AUDIT_PLAYER_START_MINILOCATION_MISSING
+G5_AUDIT_PLAYER_START_LOCATION_MISMATCH
+G5_AUDIT_PLAYER_START_ANCHOR_CANNOT_HOLD_PLAYER
+G5_AUDIT_PLAYER_HANDS_STATE_CONFLICT
+G5_AUDIT_PLAYER_BODY_POSITION_CONFLICT
+```
+
+### 6.9. Visibility model
+
+Видимость должна проверяться отдельно от доступа.
+
+Проверяются:
+
+```text
+anchor.visibility.visible_now
+anchor.visibility.audible_now
+anchor.visibility.requires_light
+anchor.visibility.requires_inspection
+anchor.visibility.hidden_from_player
+visibility_model.visible_anchor_ids
+visibility_model.requires_inspection_anchor_ids
+historical_frame.clock.light_profile
+```
+
+Правила:
+
+```text
+visible_now=true не означает can_reach=true
+requires_inspection=true не должен попадать в visible_now без осмотра
+hidden_from_player=true не должен попадать в visible_anchor_ids
+closed/locked container contents cannot be visible
+```
+
+Ошибки:
+
+```text
+G5_AUDIT_VISIBILITY_ACCESS_CONFUSION
+G5_AUDIT_HIDDEN_ANCHOR_VISIBLE
+G5_AUDIT_REQUIRES_INSPECTION_VISIBLE_TOO_EARLY
+G5_AUDIT_CLOSED_CONTENTS_VISIBLE
+```
+
+### 6.10. Clock and light consistency
+
+Время и свет являются жёстким источником истины.
+
+Проверяются:
+
+```text
+historical_frame.clock.time_of_day
+historical_frame.clock.light_profile
+minilocation.light_state
+visibility_model.light_profile
+anchor.visibility.requires_light
+visible_anchor_ids
+```
+
+Если `light_profile=dark`, нельзя:
+
+* показывать дальние детали;
+* показывать мелкие предметы без источника света;
+* описывать daylight;
+* делать все anchors ясно видимыми;
+* делать скрытые зоны видимыми без проверки;
+* раскрывать закрытые/запертые объекты.
+
+Если `time_of_day=night/deep_night`, нельзя превращать сцену в дневную рабочую активность.
+
+Ошибки:
+
+```text
+G5_AUDIT_CLOCK_LIGHT_CONFLICT
+G5_AUDIT_NIGHT_DAYLIGHT_CONFLICT
+G5_AUDIT_DARKNESS_IGNORED
+G5_AUDIT_TOO_MANY_VISIBLE_ANCHORS_IN_DARK
+```
+
+### 6.11. Access model
+
+Доступ должен описывать, что персонаж может сделать физически и социально.
+
+Проверяются:
+
+```text
+anchor.access.access_state
+anchor.access.can_reach_from_start
+anchor.access.requires_permission
+anchor.access.requires_key
+anchor.access.requires_tool
+anchor.access.requires_time_minutes
+anchor.access.risk_on_access
+access_model.reachable_anchor_ids
+access_model.blocked_anchor_ids
+access_model.permission_required_anchor_ids
+access_model.locked_anchor_ids
+```
+
+Правила:
+
+```text
+locked anchor не может быть freely reachable
+forbidden anchor не может быть open
+permission_required anchor не может быть free access
+requires_key=true должен давать access condition
+requires_tool=true должен давать access condition
+```
+
+Ошибки:
+
+```text
+G5_AUDIT_LOCKED_ANCHOR_FREELY_ACCESSIBLE
+G5_AUDIT_FORBIDDEN_ANCHOR_OPEN
+G5_AUDIT_PERMISSION_REQUIRED_BUT_FREE
+G5_AUDIT_ACCESS_CONDITION_MISSING
+G5_AUDIT_ACCESS_STATE_CONFLICT
+```
+
+### 6.12. Closed zones
+
+Закрытая зона — это anchor или minilocation, которая существует в сцене, но не доступна свободно.
+
+Типы закрытых зон:
+
+```text
+closed
+locked
+blocked
+forbidden
+hidden
+permission_required
+unknown
+offscreen
+```
+
+Проверки:
+
+```text
+closed zone has reason
+locked zone has access condition
+blocked zone has blocker
+forbidden zone has social/property risk
+hidden zone is not visible
+unknown zone is not narrated as known
+```
+
+Ошибки:
+
+```text
+G5_AUDIT_CLOSED_ZONE_WITHOUT_REASON
+G5_AUDIT_LOCKED_ZONE_WITHOUT_LOCK_CONDITION
+G5_AUDIT_FORBIDDEN_ZONE_WITHOUT_RISK
+G5_AUDIT_HIDDEN_ZONE_VISIBLE
+G5_AUDIT_UNKNOWN_ZONE_TREATED_AS_KNOWN
+```
+
+### 6.13. Visible objects
+
+На этапе 14 проверяются не конкретные предметы, а “видимые объектные anchors” и item slots.
+
+Если G5 содержит item slots:
+
+```text
+item_slot.allowed_item_profile_candidate_ids must exist
+item_slot.allowed_anchor_ids must exist
+item_slot.not_materialized_yet = true
+item_slot.causal_basis_required_later = true
+```
+
+Если G5 содержит конкретный item:
+
+```text
+G5_AUDIT_CREATED_ITEM_TOO_EARLY
+```
+
+Если visible object описан как полноценная вещь без item profile candidate:
+
+```text
+G5_AUDIT_VISIBLE_OBJECT_WITHOUT_PROFILE
+```
+
+Если контейнер содержит содержимое:
+
+```text
+G5_AUDIT_CREATED_CONTAINER_CONTENTS_TOO_EARLY
+```
+
+### 6.14. Risk model
+
+Риски должны быть заданы для проходов, доступа, свидетелей, шума, скрытности, кражи, боя и закрытых зон.
+
+Проверяются:
+
+```text
+edge.noise_risk
+edge.witness_risk
+anchor.access.risk_on_access
+supports.can_start_theft
+supports.can_start_combat
+supports.can_hide
+visibility_model
+access_model
+property_context_hint
+```
+
+Правила:
+
+```text
+если anchor supports theft, должен быть property/risk hint
+если anchor supports combat, должен быть physical space и witness/noise risk
+если anchor supports hide, должна быть visibility/cover basis
+если edge crosses exposed area, должен быть visibility/noise/witness model
+если access requires permission, должен быть social/property risk
+```
+
+Ошибки:
+
+```text
+G5_AUDIT_RISK_MODEL_MISSING
+G5_AUDIT_THEFT_SUPPORT_WITHOUT_PROPERTY_RISK
+G5_AUDIT_COMBAT_SUPPORT_WITHOUT_SPACE_OR_RISK
+G5_AUDIT_HIDE_SUPPORT_WITHOUT_COVER
+G5_AUDIT_EDGE_RISK_MISSING
+G5_AUDIT_PERMISSION_WITHOUT_SOCIAL_RISK
+```
+
+### 6.15. NPC leak check
+
+Если policy запрещает финальное размещение NPC, в G5 могут быть только slots.
+
+Разрешено:
+
+```json
+{
+  "npc_slot_id": "npc_slot_001",
+  "allowed_npc_candidate_ids": ["npc_cand_001"],
+  "not_materialized_yet": true
+}
+```
+
+Запрещено:
+
+```json
+{
+  "npc_id": "npc_001",
+  "name": "string",
+  "current_action": "string",
+  "dialogue": "string"
+}
+```
+
+Ошибки:
+
+```text
+G5_AUDIT_CREATED_NPC_TOO_EARLY
+G5_AUDIT_CREATED_NPC_NAME_TOO_EARLY
+G5_AUDIT_CREATED_NPC_ACTION_TOO_EARLY
+G5_AUDIT_CREATED_DIALOGUE_TOO_EARLY
+```
+
+### 6.16. Item leak check
+
+Если policy запрещает финальное размещение предметов, в G5 могут быть только slots.
+
+Разрешено:
+
+```json
+{
+  "item_slot_id": "item_slot_001",
+  "allowed_item_profile_candidate_ids": ["item_prof_cand_001"],
+  "not_materialized_yet": true
+}
+```
+
+Запрещено:
+
+```json
+{
+  "item_id": "item_001",
+  "title": "specific object",
+  "owner_npc_id": "npc_001",
+  "container_contents": []
+}
+```
+
+Ошибки:
+
+```text
+G5_AUDIT_CREATED_ITEM_TOO_EARLY
+G5_AUDIT_CREATED_OWNER_TOO_EARLY
+G5_AUDIT_CREATED_CONTAINER_CONTENTS_TOO_EARLY
+```
+
+### 6.17. Prose leak check
+
+G5-аудит должен отклонить:
+
+```text
+visible_scene
+intro_prose
+narrator_text
+player-facing prose
+dramatic opening
+dialogue
+sensory paragraph
+```
+
+На этом этапе разрешены только технические summaries и notes.
+
+Ошибки:
+
+```text
+G5_AUDIT_CREATED_VISIBLE_SCENE_TOO_EARLY
+G5_AUDIT_CREATED_INTRO_PROSE_TOO_EARLY
+G5_AUDIT_CREATED_NARRATOR_TEXT_TOO_EARLY
+```
+
+## 7. Code precheck
+
+Перед LLM-аудитом код обязан выполнить структурную проверку.
+
+```json
+{
+  "version": 1,
+  "schema": "g5_scene_code_precheck",
+  "pass": true,
+  "checks": {
+    "schema_valid": true,
+    "selected_g4_match": true,
+    "minilocations_parent_valid": true,
+    "anchors_parent_valid": true,
+    "anchors_use_allowed_templates": true,
+    "edges_reference_existing_anchors": true,
+    "player_start_position_valid": true,
+    "visibility_model_present": true,
+    "access_model_present": true,
+    "clock_light_basic_match": true,
+    "no_npc_leak": true,
+    "no_item_leak": true,
+    "no_prose_leak": true,
+    "source_trace_present": true
+  },
+  "concerns": [],
+  "evidence": []
+}
+```
+
+Если `code_precheck.pass=false`, semantic LLM audit можно не запускать. Результат сразу направляется в repair route.
+
+## 8. Работа LLM на этапе
+
+LLM на этом этапе используется как semantic auditor. Она нужна, потому что не все ошибки G5 можно поймать только схемой:
+
+* видимость может формально быть заполнена, но противоречить темноте;
+* доступ может формально быть заполнен, но смешиваться с видимостью;
+* закрытая зона может существовать, но без причины;
+* риск может быть указан, но не соответствовать действию;
+* anchor может быть допустим по ID, но неуместен для выбранного G4-типа;
+* сцена может скрыто создавать NPC или предметы через summary.
+
+При этом LLM не исправляет G5 и не создаёт новые anchors. Она только возвращает audit.
+
+LLM-режимы:
+
+1. `G5SceneSemanticAuditor` — основной смысловой аудит.
+2. `G5SceneAuditRouter` — выбор repair route при провале.
+3. `G5SceneAuditFormatRepairer` — исправление только JSON-формата аудита.
+
+## 9. LLM-параметры
+
+### 9.1. `G5SceneSemanticAuditor`
+
+Назначение: глубокий аудит G5-сцены.
+
+```json
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 8000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 90000,
+    "hard_input_limit_tokens": 220000,
+    "reserve_output_tokens": 8000
+  }
+}
+```
+
+Использовать `deepseek-v4-pro`, потому что аудит требует проверки пространственных, причинных и механических противоречий. DeepSeek API поддерживает модели `deepseek-v4-pro` и `deepseek-v4-flash`, параметр `reasoning_effort`, а также `thinking` для thinking mode.
+
+### 9.2. `G5SceneAuditRouter`
+
+Назначение: выбрать корректный этап отката.
+
+```json
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 4000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 50000,
+    "hard_input_limit_tokens": 140000,
+    "reserve_output_tokens": 4000
+  }
+}
+```
+
+Router не исправляет сцену. Он только выбирает, куда вернуть pipeline.
+
+### 9.3. `G5SceneAuditFormatRepairer`
+
+Назначение: исправить только JSON-формат аудита.
+
+```json
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-flash",
+  "thinking": {
+    "type": "disabled"
+  },
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "max_tokens": 3500,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 30000,
+    "hard_input_limit_tokens": 90000,
+    "reserve_output_tokens": 3500
+  }
+}
+```
+
+Для JSON-output в DeepSeek нужно задавать `response_format: {"type":"json_object"}`, включать слово `json` в prompt, давать пример JSON-формата и выставлять достаточный `max_tokens`, чтобы ответ не обрезался.
+
+## 10. Prompt: G5SceneSemanticAuditor
+
+```md
+# Роль
+
+Ты G5SceneSemanticAuditor для исторической текстовой RPG.
+
+# Задача
+
+Проверь g5_scene_graph_draft на корректность G5-сцены внутри выбранного G4.
+
+# Главное правило
+
+Ты не исправляешь G5.
+Ты не добавляешь anchors.
+Ты не удаляешь anchors.
+Ты не меняешь selected G4.
+Ты не создаёшь NPC.
+Ты не создаёшь items.
+Ты не пишешь prose.
+Ты только аудируешь.
+
+# Используй только входные данные
+
+- historical_frame
+- selected_start_node
+- start_place_audit
+- player_character
+- player_character_audit
+- allowed_g5_template_set
+- g5_scene_graph_draft
+- npc_candidate_set
+- item_profile_candidate_set
+- materialization_policy
+- code_precheck
+
+Если факта нет во входе, не добавляй его.
+
+# Проверить
+
+1. Все minilocations находятся внутри selected G4.
+2. Все anchors находятся внутри существующих minilocations.
+3. Все anchors используют g5_template_id из allowed_g5_template_set.
+4. Все anchor_type допустимы для selected_g4_type_id.
+5. Все edges ссылаются только на существующие anchors.
+6. player_start_position указывает на существующие minilocation_id и anchor_id.
+7. player_start_position совместим с player_character body/inventory/hands_state.
+8. Visibility соответствует historical_frame.clock.light_profile.
+9. Ночь/темнота не превращены в daylight.
+10. Access model отделён от visibility.
+11. Closed/locked/forbidden zones имеют причины и условия доступа.
+12. Hidden zones не отображаются как visible.
+13. Visible object anchors не создают конкретные items.
+14. NPC slots не создают concrete NPC.
+15. Item slots не создают concrete items.
+16. Container contents не созданы.
+17. Risk model достаточен для movement, access, theft, witness, stealth and combat.
+18. Нет visible_scene, intro_prose, narrator text or dialogue.
+19. source_trace достаточен.
+20. commit readiness корректна.
+
+# Критическое правило
+
+Если найдено хотя бы одно hard нарушение, pass=false.
+Не превращай hard violation в warning.
+
+# Формат
+
+Верни только json.
+
+Единственный допустимый формат:
+
+{
+  "version": 1,
+  "schema": "g5_scene_audit",
+  "request_id": "...",
+  "pass": true,
+  "checks": {},
+  "concerns": [],
+  "evidence": [],
+  "repair_route": null,
+  "commit_permission": {
+    "can_commit_g5_scene_graph": true,
+    "can_continue_to_npc_placement": true,
+    "can_continue_to_item_placement": true,
+    "can_continue_to_visible_context": false
+  }
+}
+
+Если pass=false:
+- concerns не должен быть пустым;
+- evidence не должен быть пустым;
+- repair_route должен быть заполнен;
+- все commit_permission должны быть false.
+
+Если pass=true:
+- evidence не должен быть пустым.
+```
+
+## 11. Prompt: G5SceneAuditRouter
+
+```md
+# Роль
+
+Ты G5SceneAuditRouter.
+
+# Задача
+
+По failed g5_scene_audit выбери правильный этап отката pipeline.
+
+# Главное правило
+
+Ты не исправляешь G5.
+Ты не создаёшь anchors.
+Ты не выбираешь новое место.
+Ты только выбираешь return_to_stage и repair_kind.
+
+# Возможные return_to_stage
+
+- g5_scene_format_repair
+- g5_scene_semantic_repair
+- g5_scene_materializer
+- allowed_g5_template_retriever
+- start_place_audit
+- start_node_selector
+- player_character_semantic_repair
+- historical_frame_selector
+- blocked
+
+# Правила маршрутизации
+
+Если проблема только в JSON-формате:
+return_to_stage = g5_scene_format_repair
+
+Если anchor использует неразрешённый template:
+return_to_stage = g5_scene_semantic_repair
+
+Если allowed_g5_template_set неполный или пуст:
+return_to_stage = allowed_g5_template_retriever
+
+Если G5 выходит за selected G4:
+return_to_stage = g5_scene_semantic_repair или start_place_audit
+
+Если selected_start_node не G4:
+return_to_stage = start_node_selector
+
+Если visibility конфликтует с clock:
+return_to_stage = g5_scene_semantic_repair
+
+Если конфликт вызван исторической рамкой:
+return_to_stage = historical_frame_selector
+
+Если player_start_position невозможна из-за тела/инвентаря персонажа:
+return_to_stage = player_character_semantic_repair
+
+Если исправление невозможно без нового места:
+return_to_stage = blocked
+
+# Формат
+
+Верни только json:
+
+{
+  "version": 1,
+  "schema": "g5_scene_audit_route",
+  "return_to_stage": "...",
+  "repair_kind": "...",
+  "reason": "...",
+  "evidence": []
+}
+```
+
+## 12. Prompt: G5SceneAuditFormatRepairer
+
+```md
+# Роль
+
+Ты G5SceneAuditFormatRepairer.
+
+# Задача
+
+Исправь только формат JSON g5_scene_audit.
+
+# Главное правило
+
+Не меняй смысл.
+Не меняй pass/fail без основания.
+Не исправляй G5.
+Не добавляй anchors.
+Не создавай source_id.
+Не создавай NPC, items, visible_scene или intro_prose.
+
+# Разрешено
+
+- убрать markdown;
+- привести schema к "g5_scene_audit";
+- привести version к 1;
+- добавить отсутствующие служебные поля как null/[];
+- перенести свободный текст в concerns/evidence;
+- удалить запрещённые поля.
+
+# Запрещено
+
+- менять g5_scene_graph_draft;
+- менять selected_start_node;
+- менять historical_frame;
+- менять player_character;
+- создавать repair_route без evidence.
+
+# Формат
+
+Верни только json.
+```
+
+## 13. Validation rules
+
+Код обязан проверить `g5_scene_audit`:
+
+1. `schema === "g5_scene_audit"`.
+2. `version === 1`.
+3. `pass` является boolean.
+4. `checks` присутствует.
+5. `evidence` не пустой.
+6. Если `pass=false`, `concerns` не пустой.
+7. Если `pass=false`, `repair_route` заполнен.
+8. Если `pass=true`, `commit_permission.can_commit_g5_scene_graph=true`.
+9. Если `pass=false`, все `commit_permission` false.
+10. Все concern codes входят в enum.
+11. Все severity входят в enum.
+12. Audit не содержит изменённый `g5_scene_graph_draft`.
+13. Audit не содержит новых anchors.
+14. Audit не содержит новых edges.
+15. Audit не содержит NPC.
+16. Audit не содержит items.
+17. Audit не содержит visible_scene.
+18. Audit не содержит intro_prose.
+19. Audit не содержит hidden_event.
+20. `repair_route.return_to_stage` входит в допустимый enum.
+
+Код также отдельно валидирует сам `g5_scene_graph_draft`:
+
+21. Все minilocations внутри selected G4.
+22. Все anchors внутри minilocations.
+23. Все anchors используют allowed G5 templates.
+24. Все edges ссылаются на существующие anchors.
+25. Player start anchor существует.
+26. Visibility/light consistency пройдена.
+27. Access model пройден.
+28. Closed zones пройдены.
+29. Risk model пройден.
+30. No downstream leakage.
+
+## 14. Error codes
+
+```text
+G5_AUDIT_INVALID_JSON
+G5_AUDIT_SCHEMA_MISMATCH
+G5_AUDIT_EMPTY_EVIDENCE
+G5_AUDIT_REQUIRED_BLOCK_MISSING
+G5_AUDIT_SELECTED_G4_MISMATCH
+G5_AUDIT_CREATED_PARENT_LOCATION
+G5_AUDIT_MINILOC_ID_MISSING
+G5_AUDIT_MINILOC_OUTSIDE_G4
+G5_AUDIT_MINILOC_TYPE_NOT_ALLOWED
+G5_AUDIT_ANCHOR_ID_MISSING
+G5_AUDIT_ANCHOR_OUTSIDE_MINILOCATION
+G5_AUDIT_ANCHOR_OUTSIDE_G4
+G5_AUDIT_TEMPLATE_NOT_ALLOWED
+G5_AUDIT_TEMPLATE_G4_TYPE_MISMATCH
+G5_AUDIT_ANCHOR_WITHOUT_TEMPLATE
+G5_AUDIT_ANCHOR_TYPE_NOT_ALLOWED
+G5_AUDIT_EDGE_ANCHOR_NOT_FOUND
+G5_AUDIT_EDGE_LOOP_NOT_ALLOWED
+G5_AUDIT_EDGE_TIME_INVALID
+G5_AUDIT_EDGE_TYPE_NOT_ALLOWED
+G5_AUDIT_EDGE_ACCESS_CONDITION_MISSING
+G5_AUDIT_START_ANCHOR_ISOLATED
+G5_AUDIT_REACHABILITY_WITHOUT_EDGE
+G5_AUDIT_PLAYER_START_ANCHOR_MISSING
+G5_AUDIT_PLAYER_START_MINILOCATION_MISSING
+G5_AUDIT_PLAYER_START_LOCATION_MISMATCH
+G5_AUDIT_PLAYER_START_ANCHOR_CANNOT_HOLD_PLAYER
+G5_AUDIT_PLAYER_HANDS_STATE_CONFLICT
+G5_AUDIT_PLAYER_BODY_POSITION_CONFLICT
+G5_AUDIT_VISIBILITY_ACCESS_CONFUSION
+G5_AUDIT_HIDDEN_ANCHOR_VISIBLE
+G5_AUDIT_REQUIRES_INSPECTION_VISIBLE_TOO_EARLY
+G5_AUDIT_CLOSED_CONTENTS_VISIBLE
+G5_AUDIT_CLOCK_LIGHT_CONFLICT
+G5_AUDIT_NIGHT_DAYLIGHT_CONFLICT
+G5_AUDIT_DARKNESS_IGNORED
+G5_AUDIT_TOO_MANY_VISIBLE_ANCHORS_IN_DARK
+G5_AUDIT_LOCKED_ANCHOR_FREELY_ACCESSIBLE
+G5_AUDIT_FORBIDDEN_ANCHOR_OPEN
+G5_AUDIT_PERMISSION_REQUIRED_BUT_FREE
+G5_AUDIT_ACCESS_CONDITION_MISSING
+G5_AUDIT_ACCESS_STATE_CONFLICT
+G5_AUDIT_CLOSED_ZONE_WITHOUT_REASON
+G5_AUDIT_LOCKED_ZONE_WITHOUT_LOCK_CONDITION
+G5_AUDIT_FORBIDDEN_ZONE_WITHOUT_RISK
+G5_AUDIT_HIDDEN_ZONE_VISIBLE
+G5_AUDIT_UNKNOWN_ZONE_TREATED_AS_KNOWN
+G5_AUDIT_VISIBLE_OBJECT_WITHOUT_PROFILE
+G5_AUDIT_RISK_MODEL_MISSING
+G5_AUDIT_THEFT_SUPPORT_WITHOUT_PROPERTY_RISK
+G5_AUDIT_COMBAT_SUPPORT_WITHOUT_SPACE_OR_RISK
+G5_AUDIT_HIDE_SUPPORT_WITHOUT_COVER
+G5_AUDIT_EDGE_RISK_MISSING
+G5_AUDIT_PERMISSION_WITHOUT_SOCIAL_RISK
+G5_AUDIT_CREATED_NPC_TOO_EARLY
+G5_AUDIT_CREATED_NPC_NAME_TOO_EARLY
+G5_AUDIT_CREATED_NPC_ACTION_TOO_EARLY
+G5_AUDIT_CREATED_DIALOGUE_TOO_EARLY
+G5_AUDIT_CREATED_ITEM_TOO_EARLY
+G5_AUDIT_CREATED_OWNER_TOO_EARLY
+G5_AUDIT_CREATED_CONTAINER_CONTENTS_TOO_EARLY
+G5_AUDIT_CREATED_VISIBLE_SCENE_TOO_EARLY
+G5_AUDIT_CREATED_INTRO_PROSE_TOO_EARLY
+G5_AUDIT_CREATED_NARRATOR_TEXT_TOO_EARLY
+G5_AUDIT_SOURCE_MISSING
+G5_AUDIT_REPAIR_ROUTE_MISSING
+```
+
+## 15. DB write на этом этапе
+
+До успешного аудита разрешено писать:
+
+```text
+pipeline_step_status
+g5_scene_code_precheck_snapshot
+g5_scene_audit_snapshot
+g5_scene_audit_validation_issues
+g5_scene_repair_route
+source_trace_snapshot
+```
+
+После успешного аудита и commit gate разрешено писать:
+
+```text
+party_scene_minilocations
+party_scene_anchors
+party_scene_edges
+party_current_position
+party_g5_visibility_state
+party_g5_access_state
+party_scene_risk_state
+```
+
+Запрещено писать на этом этапе:
+
+```text
+party_npcs
+party_items
+party_container_contents
+visible_scene
+intro_prose
+narrator_output
+hidden_event
+```
+
+## 16. Commit gate этапа
+
+Этап считается успешным, если:
+
+```text
+g5_scene_audit.pass = true
+и все anchors допустимы для selected G4 type
+и все edges валидны
+и все minilocations внутри selected G4
+и player_start_position валиден
+и visibility соответствует clock/light
+и access отделён от visibility
+и closed zones имеют причины
+и risk model достаточен
+и нет NPC/items/prose/hidden_event
+и source_trace достаточен
+```
+
+После этого можно фиксировать G5-граф в party-базе и переходить к размещению стартовых NPC.
+
+Если commit gate не пройден, pipeline не должен переходить к NPC, предметам, visible context или narrator.
+
+## 17. Передача в следующий этап
+
+```json
+{
+  "version": 1,
+  "schema": "npc_placement_input",
+  "request_id": "string",
+
+  "historical_frame": {},
+  "selected_start_node": {},
+  "player_character": {},
+
+  "g5_scene_graph": {
+    "version": 1,
+    "schema": "g5_scene_graph_draft",
+    "materialization_status": "materialized"
+  },
+
+  "g5_scene_audit": {
+    "version": 1,
+    "schema": "g5_scene_audit",
+    "pass": true
+  },
+
+  "npc_candidate_set": {},
+  "item_profile_candidate_set": {},
+
+  "constraints": {
+    "preserve_g5_anchor_ids": true,
+    "preserve_player_start_position": true,
+    "place_npcs_only_on_allowed_anchors": true,
+    "place_items_only_on_allowed_item_slots": true,
+    "do_not_change_visibility_without_repair": true,
+    "do_not_change_access_without_repair": true
+  }
+}
+```
+
+## 18. Минимальный успешный результат
+
+```json
+{
+  "version": 1,
+  "schema": "g5_scene_audit",
+  "request_id": "req_001",
+
+  "pass": true,
+
+  "checks": {
+    "schema_and_structure": {
+      "pass": true,
+      "evidence": [
+        "g5_scene_graph_draft has required schema, version and core blocks"
+      ]
+    },
+    "parent_g4_match": {
+      "pass": true,
+      "evidence": [
+        "all minilocations, anchors and player_start_position reference selected G4"
+      ]
+    },
+    "minilocations": {
+      "pass": true,
+      "evidence": [
+        "all minilocations are inside selected G4 and have valid types"
+      ]
+    },
+    "anchors": {
+      "pass": true,
+      "evidence": [
+        "all anchors are inside existing minilocations and use valid anchor blocks"
+      ]
+    },
+    "allowed_templates": {
+      "pass": true,
+      "evidence": [
+        "all anchors reference g5_template_id from allowed_g5_template_set"
+      ]
+    },
+    "edges": {
+      "pass": true,
+      "evidence": [
+        "all edges reference existing anchors and have access/risk fields"
+      ]
+    },
+    "player_start_position": {
+      "pass": true,
+      "evidence": [
+        "player_start_position points to existing minilocation and anchor"
+      ]
+    },
+    "visibility_model": {
+      "pass": true,
+      "evidence": [
+        "visibility model is present and does not reveal hidden or closed details"
+      ]
+    },
+    "access_model": {
+      "pass": true,
+      "evidence": [
+        "access model is present and separate from visibility"
+      ]
+    },
+    "closed_zones": {
+      "pass": true,
+      "evidence": [
+        "closed, locked or restricted anchors have access conditions and risks"
+      ]
+    },
+    "visible_objects": {
+      "pass": true,
+      "evidence": [
+        "visible anchors do not materialize concrete items or container contents"
+      ]
+    },
+    "risk_model": {
+      "pass": true,
+      "evidence": [
+        "movement, access, witness, noise, theft and combat risks are represented where relevant"
+      ]
+    },
+    "clock_light_consistency": {
+      "pass": true,
+      "evidence": [
+        "visibility and light state are compatible with historical_frame.clock.light_profile"
+      ]
+    },
+    "npc_item_leak_check": {
+      "pass": true,
+      "evidence": [
+        "scene contains only NPC/item slots and no concrete NPC or item instances"
+      ]
+    },
+    "source_trace": {
+      "pass": true,
+      "evidence": [
+        "source_trace exists for G5 templates and selected parent location"
+      ]
+    },
+    "commit_readiness": {
+      "pass": true,
+      "evidence": [
+        "G5 scene graph can be committed before NPC and item placement"
+      ]
+    }
+  },
+
+  "concerns": [],
+
+  "evidence": [
+    "All anchors are allowed for selected G4 type.",
+    "All passages connect existing anchors.",
+    "Visibility, access, closed zones and risks are mechanically consistent.",
+    "No concrete NPC, item, container contents, visible scene, intro prose or hidden event was created."
+  ],
+
+  "repair_route": null,
+
+  "commit_permission": {
+    "can_commit_g5_scene_graph": true,
+    "can_continue_to_npc_placement": true,
+    "can_continue_to_item_placement": true,
+    "can_continue_to_visible_context": false
+  }
+}
+```

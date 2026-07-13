@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rus13.local/contracts/ActiveRegionContext.schema.json",
+  "title": "ActiveRegionContext",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "region_id",
+    "allowed_landscapes",
+    "allowed_water_bodies",
+    "allowed_routes",
+    "allowed_land_use",
+    "allowed_place_templates",
+    "social_roles",
+    "occupations",
+    "seasonal_rules",
+    "known_historical_anchors",
+    "source_ids"
+  ],
+  "properties": {
+    "region_id": {
+      "description": "Required by ActiveRegionContext.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "allowed_landscapes": {
+      "description": "Required by ActiveRegionContext.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "allowed_water_bodies": {
+      "description": "Required by ActiveRegionContext.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "allowed_routes": {
+      "description": "Required by ActiveRegionContext.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "allowed_land_use": {
+      "description": "Required by ActiveRegionContext.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "allowed_place_templates": {
+      "description": "Required by ActiveRegionContext.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "social_roles": {
+      "description": "Required by ActiveRegionContext.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "occupations": {
+      "description": "Required by ActiveRegionContext.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "seasonal_rules": {
+      "description": "Required by ActiveRegionContext.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "known_historical_anchors": {
+      "description": "Required by ActiveRegionContext.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "source_ids": {
+      "description": "Required by ActiveRegionContext.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    }
+  },
+  "x_writes_to": [
+    "party_state"
+  ],
+  "x_blocking_validations": [
+    "No invented template IDs",
+    "all IDs exist in world_base or are marked missing"
+  ]
+}

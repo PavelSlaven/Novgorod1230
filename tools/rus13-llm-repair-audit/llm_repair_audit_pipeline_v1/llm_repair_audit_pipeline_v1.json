@@ -1,0 +1,686 @@
+{
+  "artifact": "llm_repair_audit_pipeline_v1",
+  "created_at": "2026-07-06T20:11:18Z",
+  "purpose": "Repair and audit pipeline for LLM outputs before party-state commit.",
+  "non_goals": [
+    "Does not create world content in code.",
+    "Does not silently fix semantic contradictions.",
+    "Does not upgrade source statuses."
+  ],
+  "pipeline_steps": [
+    {
+      "order": 1,
+      "step_id": "ra_01_capture_raw_result",
+      "stage": "Capture raw LLM result",
+      "actor": "code",
+      "input": "llm_response_raw; step_id; agent_id; prompt_hash; model_metadata; party_id; turn_id nullable",
+      "output_contract": "RawLlmResultRecord",
+      "writes_to": "party_llm_steps",
+      "hard_gate": "Raw result is stored exactly; code does not edit semantic content.",
+      "on_fail": "Abort step with infrastructure_error; no world state writes.",
+      "repair_allowed": "no",
+      "max_attempts": "1",
+      "player_visible": "no",
+      "notes": "Audit trail starts before parsing."
+    },
+    {
+      "order": 2,
+      "step_id": "ra_02_parse_and_schema_validate",
+      "stage": "Parse and JSON Schema validation",
+      "actor": "code validator",
+      "input": "llm_response_raw; expected_schema_id",
+      "output_contract": "SchemaValidationReport",
+      "writes_to": "party_llm_steps; party_validation_issues on error",
+      "hard_gate": "Must be valid JSON where JSON is required; required fields must exist; enum values must match.",
+      "on_fail": "Send raw result + schema errors to repair agent.",
+      "repair_allowed": "format_only",
+      "max_attempts": "2",
+      "player_visible": "no",
+      "notes": "This is structural validation, not semantic invention."
+    },
+    {
+      "order": 3,
+      "step_id": "ra_03_repair_format_only",
+      "stage": "Format repair loop",
+      "actor": "LLM repair_agent + code validator",
+      "input": "raw_result; schema_errors; expected_schema; source_agent_task; established_facts",
+      "output_contract": "RepairedStructuredResult",
+      "writes_to": "party_llm_steps; party_validation_issues",
+      "hard_gate": "Repair cannot add facts, change accepted meaning, or fill unknowns with confident invention.",
+      "on_fail": "Escalate to step retry or human/debug review; no commit.",
+      "repair_allowed": "yes_format_and_field_separation",
+      "max_attempts": "2",
+      "player_visible": "no",
+      "notes": "Repair agent is not a new content generator."
+    },
+    {
+      "order": 4,
+      "step_id": "ra_04_source_status_audit",
+      "stage": "Source and confidence audit",
+      "actor": "code validator + optional LLM source_auditor",
+      "input": "structured_result; source_records; used_context_records",
+      "output_contract": "SourceStatusAuditReport",
+      "writes_to": "party_validation_issues; draft_base_entries nullable",
+      "hard_gate": "No unresolved source is silently upgraded; source status is preserved; unverified external facts remain draft/needs_review.",
+      "on_fail": "Return to original/structuring agent with missing source/status list.",
+      "repair_allowed": "limited_metadata_only",
+      "max_attempts": "1",
+      "player_visible": "no",
+      "notes": "Prevents bibliography hallucination and status laundering."
+    },
+    {
+      "order": 5,
+      "step_id": "ra_05_semantic_consistency_audit",
+      "stage": "Semantic consistency audit",
+      "actor": "LLM consistency_auditor",
+      "input": "structured_result; established_party_facts; relevant world_base records; project rules; hidden_state allowed",
+      "output_contract": "SemanticAuditReport",
+      "writes_to": "party_validation_issues; party_llm_steps",
+      "hard_gate": "Must not contradict year, region, season, authority, routes, position, body, items, ownership, NPC knowledge, hidden layers or character knowledge.",
+      "on_fail": "Return result to responsible content agent with explicit violations; code does not patch meaning.",
+      "repair_allowed": "semantic_by_original_or_dedicated_llm_agent",
+      "max_attempts": "2",
+      "player_visible": "no",
+      "notes": "The auditor detects contradictions; repair is another LLM step, not procedural code."
+    },
+    {
+      "order": 6,
+      "step_id": "ra_06_visibility_leak_audit",
+      "stage": "Visible/hidden separation audit",
+      "actor": "LLM visibility_auditor + code field scan",
+      "input": "visible_package; hidden_state; prose_candidate; field_visibility_labels",
+      "output_contract": "VisibilityLeakAuditReport",
+      "writes_to": "party_validation_issues; party_llm_steps",
+      "hard_gate": "Player-facing prose/UI/journal cannot reveal hidden motives, hidden objects, future dates, objective truth of rumors, technical IDs or raw JSON.",
+      "on_fail": "Return to visible-context selector/prose writer; remove hidden content before prose, not after.",
+      "repair_allowed": "yes_visible_projection_only",
+      "max_attempts": "2",
+      "player_visible": "no until clean",
+      "notes": "Instruction-only concealment is not accepted."
+    },
+    {
+      "order": 7,
+      "step_id": "ra_07_db_write_plan_validate",
+      "stage": "DB write plan validation",
+      "actor": "code validator",
+      "input": "structured_result; target_table_map; party_database_schema; world_base FK snapshot",
+      "output_contract": "DbWritePlanValidationReport",
+      "writes_to": "party_validation_issues",
+      "hard_gate": "All writes have target tables, IDs, ownership/visibility/status fields, FK references and transaction order.",
+      "on_fail": "Return to structuring agent with exact missing table/field/FK issue.",
+      "repair_allowed": "format_metadata_only",
+      "max_attempts": "2",
+      "player_visible": "no",
+      "notes": "No partial write of world state before commit gate."
+    },
+    {
+      "order": 8,
+      "step_id": "ra_08_commit_gate",
+      "stage": "Atomic commit gate",
+      "actor": "code transaction manager",
+      "input": "validated_write_plan; audit_reports; current_party_revision",
+      "output_contract": "CommitGateReport",
+      "writes_to": "target party tables; party_llm_steps; party_validation_issues resolved",
+      "hard_gate": "Commit only if schema/source/semantic/visibility/write-plan audits pass or allowed warnings are explicitly recorded.",
+      "on_fail": "Rollback transaction; mark step failed; no player-facing state update.",
+      "repair_allowed": "no",
+      "max_attempts": "1 per validated plan",
+      "player_visible": "no",
+      "notes": "This is the only step that changes authoritative party state."
+    },
+    {
+      "order": 9,
+      "step_id": "ra_09_post_commit_audit_snapshot",
+      "stage": "Post-commit audit snapshot",
+      "actor": "code validator + optional LLM auditor for semantic summary",
+      "input": "committed_party_revision; affected tables; visible output",
+      "output_contract": "PostCommitAuditSnapshot",
+      "writes_to": "party_llm_steps; audit files/logs",
+      "hard_gate": "Committed state revision must match write plan; visible output references only committed visible state.",
+      "on_fail": "Flag critical_state_mismatch; block next turn until repaired by explicit state repair procedure.",
+      "repair_allowed": "state_reconciliation_only_with_human_or_llm_audit",
+      "max_attempts": "1",
+      "player_visible": "only final clean scene after pass",
+      "notes": "Protects against stale prose after failed write."
+    }
+  ],
+  "contracts": [
+    {
+      "contract_id": "RawLlmResultRecord",
+      "schema_file": "raw_llm_result_record.schema.json",
+      "purpose": "Records unmodified model output and metadata before any parse/repair.",
+      "producer": "code",
+      "consumer": "validator; audit log"
+    },
+    {
+      "contract_id": "SchemaValidationReport",
+      "schema_file": "schema_validation_report.schema.json",
+      "purpose": "Machine-readable structural validation errors.",
+      "producer": "code validator",
+      "consumer": "repair_agent"
+    },
+    {
+      "contract_id": "RepairRequest",
+      "schema_file": "repair_request.schema.json",
+      "purpose": "Payload sent to repair agent with raw result, schema errors, allowed operation and constraints.",
+      "producer": "pipeline",
+      "consumer": "repair_agent"
+    },
+    {
+      "contract_id": "RepairResult",
+      "schema_file": "repair_result.schema.json",
+      "purpose": "Repaired result plus declaration of changed fields and whether any issue remains unfixable.",
+      "producer": "repair_agent",
+      "consumer": "schema validator; semantic auditor"
+    },
+    {
+      "contract_id": "SemanticAuditReport",
+      "schema_file": "semantic_audit_report.schema.json",
+      "purpose": "LLM audit of contradictions against project rules and party facts.",
+      "producer": "consistency_auditor",
+      "consumer": "commit gate"
+    },
+    {
+      "contract_id": "VisibilityLeakAuditReport",
+      "schema_file": "visibility_leak_audit_report.schema.json",
+      "purpose": "Audit that visible/prose/UI outputs contain no hidden state leaks.",
+      "producer": "visibility_auditor",
+      "consumer": "commit gate"
+    },
+    {
+      "contract_id": "SourceStatusAuditReport",
+      "schema_file": "source_status_audit_report.schema.json",
+      "purpose": "Audit source usage, unresolved IDs, confidence/status laundering and draft/approved separation.",
+      "producer": "source_auditor",
+      "consumer": "commit gate"
+    },
+    {
+      "contract_id": "DbWritePlanValidationReport",
+      "schema_file": "db_write_plan_validation_report.schema.json",
+      "purpose": "Checks target tables, write order, FK references and transaction readiness.",
+      "producer": "code validator",
+      "consumer": "commit gate"
+    },
+    {
+      "contract_id": "CommitGateReport",
+      "schema_file": "commit_gate_report.schema.json",
+      "purpose": "Final pass/fail decision for atomic party-state write.",
+      "producer": "commit_gate",
+      "consumer": "orchestrator; party_llm_steps"
+    },
+    {
+      "contract_id": "PipelineRunSummary",
+      "schema_file": "pipeline_run_summary.schema.json",
+      "purpose": "Top-level outcome for a repaired/audited LLM step.",
+      "producer": "orchestrator",
+      "consumer": "debug UI; logs"
+    }
+  ],
+  "error_codes": [
+    {
+      "code": "E_JSON_PARSE",
+      "severity": "blocking",
+      "layer": "schema",
+      "meaning": "Output is not valid JSON where JSON is required.",
+      "repair_route": "repair_agent_format_only",
+      "commit_allowed": "no"
+    },
+    {
+      "code": "E_SCHEMA_REQUIRED_FIELD",
+      "severity": "blocking",
+      "layer": "schema",
+      "meaning": "Required contract field is missing.",
+      "repair_route": "repair_agent_format_only",
+      "commit_allowed": "no"
+    },
+    {
+      "code": "E_SCHEMA_ENUM",
+      "severity": "blocking",
+      "layer": "schema",
+      "meaning": "Value is outside allowed enum/check list.",
+      "repair_route": "repair_agent_format_only",
+      "commit_allowed": "no"
+    },
+    {
+      "code": "E_UNKNOWN_CONFIDENT_FILL",
+      "severity": "blocking",
+      "layer": "repair",
+      "meaning": "Repair filled an unknown with a confident invented fact.",
+      "repair_route": "retry_with_stricter_repair_prompt",
+      "commit_allowed": "no"
+    },
+    {
+      "code": "E_NEW_FACT_IN_REPAIR",
+      "severity": "blocking",
+      "layer": "repair",
+      "meaning": "Repair introduced a new NPC, item, route, event, motive or consequence.",
+      "repair_route": "discard_repair_retry_or_original_agent",
+      "commit_allowed": "no"
+    },
+    {
+      "code": "E_SOURCE_MISSING",
+      "severity": "blocking_or_warning",
+      "layer": "source",
+      "meaning": "Result references a source ID not in source_records.",
+      "repair_route": "metadata_repair_or_needs_review_placeholder",
+      "commit_allowed": "only_if_marked_needs_review_and_not_used_as_approved"
+    },
+    {
+      "code": "E_SOURCE_STATUS_LAUNDERING",
+      "severity": "blocking",
+      "layer": "source",
+      "meaning": "Draft/unresolved source used as approved or high confidence.",
+      "repair_route": "source_status_repair",
+      "commit_allowed": "no"
+    },
+    {
+      "code": "E_PARTY_FACT_CONFLICT",
+      "severity": "blocking",
+      "layer": "semantic",
+      "meaning": "Result contradicts already fixed party fact.",
+      "repair_route": "semantic_repair_by_responsible_llm_agent",
+      "commit_allowed": "no"
+    },
+    {
+      "code": "E_WORLD_BASE_CONFLICT",
+      "severity": "blocking",
+      "layer": "semantic",
+      "meaning": "Result contradicts approved world_base record without explicit conflict procedure.",
+      "repair_route": "semantic_repair_or_conflict_record",
+      "commit_allowed": "no"
+    },
+    {
+      "code": "E_POSITION_INCOMPLETE",
+      "severity": "blocking",
+      "layer": "semantic",
+      "meaning": "Current or generated position lacks region/place/location/minilocation/anchor.",
+      "repair_route": "semantic_repair_position_chain",
+      "commit_allowed": "no"
+    },
+    {
+      "code": "E_ITEM_OWNERSHIP_INCOMPLETE",
+      "severity": "blocking",
+      "layer": "semantic",
+      "meaning": "Significant item lacks owner/holder/location/access/risk.",
+      "repair_route": "semantic_repair_item_layer",
+      "commit_allowed": "no"
+    },
+    {
+      "code": "E_VISIBILITY_LEAK_HIDDEN_FACT",
+      "severity": "blocking",
+      "layer": "visibility",
+      "meaning": "Visible/prose output reveals hidden state or objective truth not known to character.",
+      "repair_route": "visible_context_repair_then_prose_rewrite",
+      "commit_allowed": "no"
+    },
+    {
+      "code": "E_VISIBLE_PROSE_HAS_TECHNICAL_DATA",
+      "severity": "blocking",
+      "layer": "visibility",
+      "meaning": "Player-facing prose contains IDs, raw JSON, DCs, hidden modifiers or internal calculations.",
+      "repair_route": "prose_rewrite_from_visible_package_only",
+      "commit_allowed": "no"
+    },
+    {
+      "code": "E_DB_FK_MISSING",
+      "severity": "blocking",
+      "layer": "db_write_plan",
+      "meaning": "Write plan references missing world_base or party record.",
+      "repair_route": "structuring_repair_or regenerate materialization",
+      "commit_allowed": "no"
+    },
+    {
+      "code": "E_PARTIAL_COMMIT_RISK",
+      "severity": "blocking",
+      "layer": "commit",
+      "meaning": "Some required writes would be missing or out of order.",
+      "repair_route": "write_plan_repair",
+      "commit_allowed": "no"
+    },
+    {
+      "code": "W_LOW_CONFIDENCE_ALLOWED",
+      "severity": "warning",
+      "layer": "source",
+      "meaning": "Low confidence/draft material used only as labeled background or draft party note.",
+      "repair_route": "none",
+      "commit_allowed": "yes_with_warning"
+    },
+    {
+      "code": "W_VISIBLE_UNCERTAINTY",
+      "severity": "warning",
+      "layer": "visibility",
+      "meaning": "Output includes uncertainty correctly marked as rumor/guess/limited knowledge.",
+      "repair_route": "none",
+      "commit_allowed": "yes"
+    }
+  ],
+  "validation_rules": [
+    {
+      "rule_id": "vr_001_no_code_semantic_repair",
+      "category": "architecture",
+      "rule": "Code may parse, validate, store and route errors, but may not create or semantically repair world facts.",
+      "blocking": "yes",
+      "source_id": "doc_world_generation_repair_rule"
+    },
+    {
+      "rule_id": "vr_002_no_silent_stub",
+      "category": "architecture",
+      "rule": "If LLM fails, returns invalid data or fails validation, the pipeline must not create hidden placeholders as accepted world facts.",
+      "blocking": "yes",
+      "source_id": "doc_world_generation_repair_rule"
+    },
+    {
+      "rule_id": "vr_003_structuring_no_new_facts",
+      "category": "agent_boundary",
+      "rule": "Structuring and repair agents cannot add new events, NPCs, items, routes, motives or consequences.",
+      "blocking": "yes",
+      "source_id": "doc_structuring_agent"
+    },
+    {
+      "rule_id": "vr_004_hidden_removed_before_prose",
+      "category": "visibility",
+      "rule": "Hidden data must be removed before prose generation; it is not enough to give prose agent an instruction not to reveal it.",
+      "blocking": "yes",
+      "source_id": "doc_agent_role_split"
+    },
+    {
+      "rule_id": "vr_005_character_knowledge_separation",
+      "category": "visibility",
+      "rule": "Visible layer must distinguish character knowledge, rumor, uncertainty and hidden facts.",
+      "blocking": "yes",
+      "source_id": "doc_info_visibility"
+    },
+    {
+      "rule_id": "vr_006_source_status_preserved",
+      "category": "sources",
+      "rule": "A record source status cannot be upgraded during repair or import; unresolved sources remain needs_review.",
+      "blocking": "yes",
+      "source_id": "doc_world_generation_repair_rule"
+    },
+    {
+      "rule_id": "vr_007_consistency_scope_full",
+      "category": "semantic",
+      "rule": "Audits must check year, region, season, authority, law, roles, events, items, routes, map, position, memory, knowledge, NPC knowledge, hidden layers, visible scene, property, access, body and tensions.",
+      "blocking": "yes",
+      "source_id": "doc_world_generation_consistency_check"
+    },
+    {
+      "rule_id": "vr_008_no_partial_commit",
+      "category": "commit",
+      "rule": "No authoritative party-state write occurs until schema, source, semantic, visibility and DB-write audits pass.",
+      "blocking": "yes",
+      "source_id": "artifact_party_database_v1"
+    },
+    {
+      "rule_id": "vr_009_retry_budget",
+      "category": "operations",
+      "rule": "Repair loops must have fixed attempt limits; repeated failure escalates instead of infinite auto-editing.",
+      "blocking": "yes",
+      "source_id": "doc_repair_agent"
+    },
+    {
+      "rule_id": "vr_010_audit_trail_complete",
+      "category": "operations",
+      "rule": "Each LLM step records raw result, repair attempts, validation issues, audit reports and final commit decision.",
+      "blocking": "yes",
+      "source_id": "artifact_party_database_v1"
+    }
+  ],
+  "state_transitions": [
+    {
+      "from_state": "created",
+      "event": "raw_result_captured",
+      "to_state": "raw_captured",
+      "allowed_by": "ra_01_capture_raw_result"
+    },
+    {
+      "from_state": "raw_captured",
+      "event": "schema_pass",
+      "to_state": "schema_valid",
+      "allowed_by": "ra_02_parse_and_schema_validate"
+    },
+    {
+      "from_state": "raw_captured",
+      "event": "schema_fail",
+      "to_state": "needs_format_repair",
+      "allowed_by": "ra_02_parse_and_schema_validate"
+    },
+    {
+      "from_state": "needs_format_repair",
+      "event": "repair_pass_schema",
+      "to_state": "schema_valid",
+      "allowed_by": "ra_03_repair_format_only"
+    },
+    {
+      "from_state": "needs_format_repair",
+      "event": "repair_budget_exhausted",
+      "to_state": "failed_blocked",
+      "allowed_by": "ra_03_repair_format_only"
+    },
+    {
+      "from_state": "schema_valid",
+      "event": "source_pass",
+      "to_state": "source_valid",
+      "allowed_by": "ra_04_source_status_audit"
+    },
+    {
+      "from_state": "source_valid",
+      "event": "semantic_pass",
+      "to_state": "semantic_valid",
+      "allowed_by": "ra_05_semantic_consistency_audit"
+    },
+    {
+      "from_state": "semantic_valid",
+      "event": "visibility_pass",
+      "to_state": "visibility_valid",
+      "allowed_by": "ra_06_visibility_leak_audit"
+    },
+    {
+      "from_state": "visibility_valid",
+      "event": "write_plan_pass",
+      "to_state": "ready_to_commit",
+      "allowed_by": "ra_07_db_write_plan_validate"
+    },
+    {
+      "from_state": "ready_to_commit",
+      "event": "commit_success",
+      "to_state": "committed",
+      "allowed_by": "ra_08_commit_gate"
+    },
+    {
+      "from_state": "ready_to_commit",
+      "event": "commit_fail",
+      "to_state": "rolled_back",
+      "allowed_by": "ra_08_commit_gate"
+    },
+    {
+      "from_state": "committed",
+      "event": "post_commit_pass",
+      "to_state": "complete",
+      "allowed_by": "ra_09_post_commit_audit_snapshot"
+    },
+    {
+      "from_state": "committed",
+      "event": "post_commit_mismatch",
+      "to_state": "critical_blocked",
+      "allowed_by": "ra_09_post_commit_audit_snapshot"
+    }
+  ],
+  "db_writes": [
+    {
+      "pipeline_step": "ra_01_capture_raw_result",
+      "table": "party_llm_steps",
+      "operation": "insert",
+      "required_fields": "party_id, step_id, agent_id, prompt_hash, raw_response, status=raw_captured",
+      "notes": "No semantic write."
+    },
+    {
+      "pipeline_step": "ra_02_parse_and_schema_validate",
+      "table": "party_llm_steps",
+      "operation": "update",
+      "required_fields": "parsed_payload nullable, schema_id, schema_validation_status",
+      "notes": "Parsed payload is not committed to world state yet."
+    },
+    {
+      "pipeline_step": "ra_02_parse_and_schema_validate",
+      "table": "party_validation_issues",
+      "operation": "insert on error",
+      "required_fields": "issue_code, severity, layer=schema, payload_path, message, repairable",
+      "notes": "Feeds repair agent."
+    },
+    {
+      "pipeline_step": "ra_03_repair_format_only",
+      "table": "party_llm_steps",
+      "operation": "insert linked repair attempt",
+      "required_fields": "parent_step_id, agent_id=repair_agent, raw_response, repaired_payload, repair_attempt_number",
+      "notes": "Preserve original and repair chain."
+    },
+    {
+      "pipeline_step": "ra_04_source_status_audit",
+      "table": "party_validation_issues",
+      "operation": "insert/update",
+      "required_fields": "issue_code, source_id, source_status, allowed_use",
+      "notes": "Unresolved source is not accepted as approved."
+    },
+    {
+      "pipeline_step": "ra_05_semantic_consistency_audit",
+      "table": "party_validation_issues",
+      "operation": "insert/update",
+      "required_fields": "issue_code, affected_entity_type, affected_entity_id, project_rule_source, recommended_repair_step",
+      "notes": "LLM auditor output remains diagnostic until repaired."
+    },
+    {
+      "pipeline_step": "ra_06_visibility_leak_audit",
+      "table": "party_validation_issues",
+      "operation": "insert/update",
+      "required_fields": "issue_code, hidden_field_reference, visible_output_reference, repair_target_agent",
+      "notes": "Blocks player-facing output until resolved."
+    },
+    {
+      "pipeline_step": "ra_07_db_write_plan_validate",
+      "table": "party_validation_issues",
+      "operation": "insert/update",
+      "required_fields": "issue_code, target_table, target_field, fk_reference, transaction_order",
+      "notes": "No commit if any blocking issue remains."
+    },
+    {
+      "pipeline_step": "ra_08_commit_gate",
+      "table": "party_* target tables",
+      "operation": "atomic transaction",
+      "required_fields": "all validated writes from result contract",
+      "notes": "Only point at which authoritative party state changes."
+    },
+    {
+      "pipeline_step": "ra_08_commit_gate",
+      "table": "party_llm_steps",
+      "operation": "update",
+      "required_fields": "status=committed|rolled_back, committed_revision, commit_report",
+      "notes": "Commit decision is auditable."
+    },
+    {
+      "pipeline_step": "ra_09_post_commit_audit_snapshot",
+      "table": "party_llm_steps",
+      "operation": "insert/update",
+      "required_fields": "post_commit_snapshot, affected_tables, final_visible_output_hash",
+      "notes": "Protects against stale prose and partial state."
+    }
+  ],
+  "prompts": [
+    {
+      "prompt_id": "repair_agent_format_only",
+      "file": "repair_agent_format_only.md",
+      "task": "Fix invalid JSON/format/field separation without adding facts."
+    },
+    {
+      "prompt_id": "semantic_consistency_auditor",
+      "file": "semantic_consistency_auditor.md",
+      "task": "Audit result against project rules, world_base and party facts."
+    },
+    {
+      "prompt_id": "source_status_auditor",
+      "file": "source_status_auditor.md",
+      "task": "Check source IDs, statuses, confidence and unresolved records."
+    },
+    {
+      "prompt_id": "visibility_leak_auditor",
+      "file": "visibility_leak_auditor.md",
+      "task": "Detect hidden-state leaks in visible context, prose, UI or journal."
+    },
+    {
+      "prompt_id": "db_write_plan_structurer",
+      "file": "db_write_plan_structurer.md",
+      "task": "Turn accepted content into a DB write plan without adding facts."
+    },
+    {
+      "prompt_id": "commit_gate_auditor",
+      "file": "commit_gate_auditor.md",
+      "task": "Make final pass/fail decision from all audit reports."
+    }
+  ],
+  "source_map": [
+    {
+      "source_id": "doc_world_generation_repair_rule",
+      "title": "world_generation_and_turns.txt — LLM creates meaning; repair on invalid result",
+      "source_file": "world_generation_and_turns.txt",
+      "line_range": "L1-L17",
+      "used_for": "Hard rule: code cannot invent, silently stub, or semantically repair the world; failed LLM result returns to LLM with errors.",
+      "status": "approved_project_doc"
+    },
+    {
+      "source_id": "doc_world_generation_consistency_check",
+      "title": "world_generation_and_turns.txt — consistency audit scope",
+      "source_file": "world_generation_and_turns.txt",
+      "line_range": "L735-L763",
+      "used_for": "Defines semantic consistency checklist and states that code does not do semantic checking instead of LLM.",
+      "status": "approved_project_doc"
+    },
+    {
+      "source_id": "doc_agent_role_split",
+      "title": "llm_agent_prompt_templates.md — role split and hidden information boundary",
+      "source_file": "llm_agent_prompt_templates.md",
+      "line_range": "L3-L23",
+      "used_for": "Agent separation: consequence, visible-context, prose, memory, source enrichment, structuring. Hidden state must be removed before prose.",
+      "status": "approved_project_doc"
+    },
+    {
+      "source_id": "doc_structuring_agent",
+      "title": "llm_agent_prompt_templates.md — structuring agent",
+      "source_file": "llm_agent_prompt_templates.md",
+      "line_range": "L803-L807",
+      "used_for": "Structuring agent turns accepted meaning into JSON and does not add new facts.",
+      "status": "approved_project_doc"
+    },
+    {
+      "source_id": "doc_repair_agent",
+      "title": "llm_agent_prompt_templates.md — repair agent",
+      "source_file": "llm_agent_prompt_templates.md",
+      "line_range": "L858-L862",
+      "used_for": "Repair is used when JSON/format/field separation fails; repair cannot add facts or hide unfixable errors.",
+      "status": "approved_project_doc"
+    },
+    {
+      "source_id": "doc_info_visibility",
+      "title": "information_sources_llm_prompts.md — character knowledge, rumor, hidden fact",
+      "source_file": "information_sources_llm_prompts.md",
+      "line_range": "L6.4-L6.6",
+      "used_for": "Defines knowledge, rumors and hidden facts; prevents hidden-state leaks in player-facing layers.",
+      "status": "approved_project_doc"
+    },
+    {
+      "source_id": "artifact_party_database_v1",
+      "title": "party_database_v1.zip",
+      "source_file": "party_database_v1.zip",
+      "line_range": "artifact",
+      "used_for": "Target storage for party_llm_steps and party_validation_issues.",
+      "status": "generated_project_artifact"
+    },
+    {
+      "source_id": "artifact_new_party_generator_v1",
+      "title": "new_party_generator_v1.zip",
+      "source_file": "new_party_generator_v1.zip",
+      "line_range": "artifact",
+      "used_for": "Upstream generator whose steps need repair/audit gates.",
+      "status": "generated_project_artifact"
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rus13.local/contracts/G5SceneEdgePackage.schema.json",
+  "title": "G5SceneEdgePackage",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "scene_edges",
+    "reversible_edges",
+    "blocked_or_conditioned_edges",
+    "movement_notes",
+    "base_time_minutes_checks"
+  ],
+  "properties": {
+    "scene_edges": {
+      "description": "Required by G5SceneEdgePackage.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "reversible_edges": {
+      "description": "Required by G5SceneEdgePackage.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "blocked_or_conditioned_edges": {
+      "description": "Required by G5SceneEdgePackage.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "movement_notes": {
+      "description": "Required by G5SceneEdgePackage.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "base_time_minutes_checks": {
+      "description": "Required by G5SceneEdgePackage.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    }
+  },
+  "x_step_id": "g5_07_edges_movement_graph",
+  "x_writes_to": "party_llm_steps",
+  "x_blocking_validations": "G5 edges same parent G4 and 0-5 minutes"
+}

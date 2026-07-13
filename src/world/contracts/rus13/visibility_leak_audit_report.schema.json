@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "VisibilityLeakAuditReport",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "is_safe_for_player",
+    "leaks",
+    "visible_uncertainties_ok",
+    "requires_rewrite"
+  ],
+  "properties": {
+    "is_safe_for_player": {
+      "type": "boolean"
+    },
+    "leaks": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "visible_uncertainties_ok": {
+      "type": "boolean"
+    },
+    "requires_rewrite": {
+      "type": "boolean"
+    },
+    "rewrite_target": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

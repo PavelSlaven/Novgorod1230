@@ -1,0 +1,1384 @@
+# Этап 22. Генерация стартовой прозы narrator
+
+## 0. Нормативная редакция 2: изолированный narrator block
+
+Этот раздел имеет приоритет над всеми более старыми формулировками ниже, если между ними есть противоречие.
+
+Stage 22 является отдельным изолированным блоком. Он получает только точный `narrator_start_input`, не читает global context, stage registry, mutable pipeline state, outputs других этапов, hidden state, raw character knowledge, repair logs или полный Stage 21 audit.
+
+```text id="stage22-isolated-contract"
+exact narrator_start_input
+→ narrator_start_code_precheck
+→ NarratorStartingProseWriter
+→ strict structural/reference validation
+→ NarratorProseFormatRepairer только при format error
+→ SeniorNarratorStartingProseWriter при повторной structural failure
+→ stage22_narrator_prose_result
+→ Stage 23 semantic audit
+```
+
+Stage 22 не создаёт мир и не проводит окончательный semantic audit. Код проверяет структуру, digest, permissions, reference integrity, action targets и output contract. Добавленные факты, hidden leaks, слухи и смысловые противоречия проверяет Stage 23.
+
+Подмена готового Stage 22 output запрещена во всех окружениях. Тесты подменяют только role executors. Произвольный `options.input` также запрещён.
+
+## 0.1. Exact input
+
+```json id="stage22-exact-input-v2"
+{
+  "version": 1,
+  "schema": "narrator_start_input",
+  "request_id": "string",
+  "visible_context_package": { "version": 1, "schema": "visible_context_package" },
+  "visible_context_package_digest": "sha256:<canonical-json-digest>",
+  "visible_context_approval": {
+    "version": 1,
+    "schema": "visible_context_audit_approval",
+    "request_id": "string",
+    "pass": true,
+    "visible_context_package_digest": "sha256:<canonical-json-digest>",
+    "commit_permission": {
+      "can_send_to_narrator": true,
+      "can_write_visible_context_snapshot": true,
+      "can_generate_player_facing_prose": true
+    }
+  },
+  "narrator_policy": {
+    "write_only_from_visible_context_package": true,
+    "do_not_add_new_world_facts": true,
+    "do_not_reveal_hidden_state": true,
+    "do_not_explain_private_motives": true,
+    "do_not_reveal_closed_container_contents": true,
+    "do_not_reveal_future_events": true,
+    "do_not_upgrade_rumors_to_facts": true,
+    "do_not_upgrade_uncertainty_to_fact": true,
+    "do_not_change_clock_weather_light": true,
+    "do_not_change_position": true,
+    "respect_must_include": true,
+    "respect_must_not_include": true,
+    "action_options_only_from_available_actions_context": true,
+    "do_not_promise_action_outcomes": true,
+    "avoid_raw_ids_in_prose": true,
+    "avoid_raw_json": true,
+    "avoid_system_language": true,
+    "avoid_debug_language": true,
+    "output_player_facing_text": true,
+    "allow_action_suggestions": true,
+    "max_opening_paragraphs": 4,
+    "max_action_options": 6
+  }
+}
+```
+
+`visible_context_approval` является безопасной проекцией Stage 21. Narrator не получает Stage 21 checks, concerns, evidence, repair route, audit history, diagnostics или code-precheck internals.
+
+## 0.2. Code precheck
+
+Перед writer код формирует отдельный artifact:
+
+```json id="stage22-precheck-v2"
+{
+  "version": 1,
+  "schema": "narrator_start_code_precheck",
+  "request_id": "string",
+  "visible_context_package_digest": "sha256:<canonical-json-digest>",
+  "pass": true,
+  "checks": {
+    "input_schema_valid": true,
+    "request_id_match": true,
+    "visible_context_package_present": true,
+    "visible_context_package_schema_valid": true,
+    "visible_context_package_digest_valid": true,
+    "visible_context_approval_valid": true,
+    "visible_context_audit_passed": true,
+    "can_send_to_narrator": true,
+    "can_generate_player_facing_prose": true,
+    "frame_present": true,
+    "clock_present": true,
+    "weather_present": true,
+    "position_present": true,
+    "narrator_scope_present": true,
+    "visible_scene_dossier_present": true,
+    "must_include_present": true,
+    "must_not_include_present": true,
+    "available_actions_context_valid": true,
+    "action_target_refs_valid": true,
+    "narrator_policy_valid": true,
+    "no_hidden_inputs_present": true
+  },
+  "concerns": [],
+  "evidence": []
+}
+```
+
+При `pass=false` writer, format repairer и Stage 23 не вызываются.
+
+## 0.3. Writer role boundary
+
+`NarratorStartingProseWriter` получает только:
+
+```text id="stage22-writer-boundary-v2"
+visible_context_package
+visible_context_package_digest
+narrator_policy
+output_contract
+```
+
+Writer не получает `visible_context_approval`, полный audit, precheck, hidden state, raw knowledge, world_base или pipeline context.
+
+Role config:
+
+```text id="stage22-role-config-v2"
+NarratorStartingProseWriter: deepseek-v4-pro, thinking enabled, reasoning high, JSON mode, max_tokens 5000
+NarratorProseFormatRepairer: deepseek-v4-flash, thinking disabled, reasoning low, JSON mode
+SeniorNarratorStartingProseWriter: deepseek-v4-pro, thinking enabled, reasoning high, JSON mode
+NarratorProseSemanticRepairer: deepseek-v4-pro, thinking enabled, reasoning high, JSON mode
+SeniorNarratorProseSemanticRepairer: deepseek-v4-pro, thinking enabled, reasoning high, JSON mode
+```
+
+## 0.4. Result bundle
+
+Под ключом Stage 22 хранится не голая prose, а bundle:
+
+```json id="stage22-result-v2"
+{
+  "version": 1,
+  "schema": "stage22_narrator_prose_result",
+  "request_id": "string",
+  "pass": true,
+  "visible_context_package_digest": "sha256:<canonical-json-digest>",
+  "narrator_start_code_precheck": { "schema": "narrator_start_code_precheck", "pass": true },
+  "narrator_starting_prose": { "schema": "narrator_starting_prose", "prose_status": "drafted" },
+  "generation_history": [],
+  "diagnostics": {
+    "writer_attempts": 1,
+    "format_repair_attempts": 0,
+    "senior_writer_attempts": 0,
+    "semantic_repair_attempts": 0,
+    "last_error_codes": []
+  },
+  "handoff_permission": { "can_send_to_prose_audit": true }
+}
+```
+
+Stage 23 получает только `narrator_starting_prose` из bundle, утверждённый visible package, тот же digest, safe approval и audit policy. Generation history и diagnostics Stage 23 не передаются.
+
+## 0.5. Structural validator
+
+Код обязан проверять version/schema/request_id, prose_status, drafted/blocked rules, action option enums, option_id uniqueness, limits, target refs, grounding в `available_actions_context`, used visible refs, self-check booleans, paragraph limit и отсутствие технических полей. Код не использует словарь смысловых слов для угадывания hidden leaks.
+
+## 0.6. Format и semantic repair
+
+Format repair исправляет только JSON-обёртку и не меняет prose по смыслу.
+
+После failed Stage 23 audit:
+
+```text id="stage22-repair-loop-v2"
+Stage 23 concerns + evidence
+→ NarratorProseSemanticRepairer
+→ новый stage22_narrator_prose_result
+→ повтор Stage 23
+```
+
+Semantic repair может менять только `prose`, `action_options`, `used_visible_context_refs`, `self_constraints_check`, `prose_status` и `block_reason`. Visible package, digest, approval и narrator policy неизменяемы.
+
+Если Stage 23 указывает, что ошибка находится upstream, pipeline возвращается к Stage 20, 19, 18 или 17, затем повторяет Stage 21, Stage 22 и Stage 23.
+
+## 1. Назначение этапа
+
+Генерация стартовой прозы narrator — это этап, на котором LLM пишет первый player-facing текст партии.
+
+Narrator получает только утверждённый `visible_context_package` и `visible_context_audit`.
+
+Narrator не получает:
+
+```text id="gy4vv2"
+full_hidden_scene_state;
+raw character_knowledge_map;
+world_base целиком;
+repair logs;
+audit internals;
+debug notes;
+raw prompts;
+source-only notes;
+закрытые контейнеры;
+скрытые мотивы NPC;
+будущие события;
+истинные владельцы, если персонаж их не знает;
+скрытые маршруты;
+точные причины событий, если они не видимы персонажу.
+```
+
+Короткая формула:
+
+```text id="skh4k6"
+visible_context_package
++ visible_context_audit.pass=true
++ narrator_constraints
+→ narrator_starting_prose
+```
+
+Главный вопрос этапа:
+
+```text id="7evkk7"
+Как написать вводную сцену живым языком, не добавив ни одного нового факта и не раскрыв ничего за пределами visible_context_package?
+```
+
+## 2. Главное правило этапа
+
+Narrator не создаёт мир.
+
+Narrator только формулирует player-facing prose из `visible_context_package`.
+
+Запрещено:
+
+* добавлять новые NPC;
+* добавлять новые предметы;
+* добавлять новые пути;
+* добавлять новые здания;
+* добавлять новые события;
+* объяснять скрытые причины;
+* раскрывать мотивы NPC;
+* раскрывать содержимое закрытых контейнеров;
+* раскрывать будущие timers;
+* менять время, свет, погоду, сезон;
+* менять текущую позицию;
+* улучшать сцену “для красоты” новыми деталями;
+* превращать слух в факт;
+* превращать неопределённость в истину;
+* давать игроку выборы, основанные на hidden state.
+
+Разрешено:
+
+* художественно сформулировать уже видимые факты;
+* сгруппировать видимое в читаемый вводный текст;
+* передать телесное ощущение, если оно есть в visible context;
+* передать видимые риски как намёки;
+* передать неопределённость как неопределённость;
+* завершить текст открытым вопросом или нейтральным приглашением к действию;
+* дать 3–6 доступных вариантов действий, если они есть в `available_actions_context`.
+
+## 3. Место этапа в pipeline
+
+```text id="jywq3w"
+1. Заявка игрока
+2. Нормализация заявки
+3. Выбор исторической рамки
+4. Загрузка регионального контекста
+5. Подбор стартовых G1–G4 кандидатов
+6. Подбор place templates
+7. Подбор NPC-кандидатов
+8. Подбор предметных профилей
+9. Выбор стартового узла
+10. Аудит стартового места
+11. Генерация персонажа
+12. Аудит персонажа
+13. Материализация G5-сцены
+14. Аудит G5-сцены
+15. Размещение стартовых NPC
+16. Размещение стартовых предметов
+17. Проверка времени и света
+18. Формирование карты знаний персонажа
+19. Формирование полного hidden state
+20. Формирование visible context package
+21. Аудит visible context
+22. Генерация стартовой прозы narrator
+23. Аудит narrator prose
+24. Вывод игроку
+```
+
+Этап 22 не является последним gate. После него нужен отдельный аудит narrator prose, потому что даже narrator может случайно добавить факт, раскрыть hidden state или нарушить время/свет.
+
+## 4. Вход этапа
+
+```json id="s1komc"
+{
+  "version": 1,
+  "schema": "narrator_start_input",
+  "request_id": "string",
+
+  "visible_context_package": {
+    "version": 1,
+    "schema": "visible_context_package",
+    "visible_context_status": "formed",
+
+    "frame": {
+      "region_id": "string",
+      "year": 0,
+      "season": "spring | summer | autumn | winter",
+      "clock": {
+        "day": 1,
+        "hour": 0,
+        "minute": 0,
+        "time_of_day": "dawn | morning | day | afternoon | evening | dusk | night | deep_night",
+        "light_profile": "dark | dim | daylight | twilight | indoor_lit | firelit | moonlit | obscured"
+      },
+      "weather_state": {},
+      "light_profile": "string"
+    },
+
+    "position": {
+      "region_id": "string",
+      "place_id": "string",
+      "location_id": "string",
+      "minilocation_id": "string",
+      "anchor_id": "string"
+    },
+
+    "narrator_scope": {
+      "allowed_surfaces": [],
+      "forbidden_surfaces": [],
+      "style_constraints": [],
+      "knowledge_boundary": {}
+    },
+
+    "visible_scene_facts": [],
+    "visible_anchors": [],
+    "visible_exits": [],
+    "visible_npcs": [],
+    "visible_items": [],
+    "visible_containers": [],
+    "visible_risks": [],
+    "audible_context": [],
+    "smell_context": [],
+    "touch_body_context": [],
+    "weather_light_context": [],
+    "known_context": [],
+    "rumor_context": [],
+    "uncertain_context": [],
+    "available_actions_context": [],
+    "visible_scene_dossier": {
+      "summary": "string",
+      "must_include": [],
+      "may_include": [],
+      "must_not_include": []
+    }
+  },
+
+  "visible_context_audit": {
+    "version": 1,
+    "schema": "visible_context_audit",
+    "pass": true,
+    "commit_permission": {
+      "can_send_to_narrator": true,
+      "can_generate_player_facing_prose": true
+    }
+  },
+
+  "narrator_policy": {
+    "write_only_from_visible_context_package": true,
+    "do_not_add_new_world_facts": true,
+    "do_not_reveal_hidden_state": true,
+    "do_not_explain_private_motives": true,
+    "do_not_reveal_closed_container_contents": true,
+    "do_not_reveal_future_events": true,
+    "do_not_upgrade_rumors_to_facts": true,
+    "do_not_upgrade_uncertainty_to_fact": true,
+    "do_not_change_clock_weather_light": true,
+    "do_not_change_position": true,
+    "respect_must_include": true,
+    "respect_must_not_include": true,
+    "avoid_raw_json": true,
+    "avoid_system_language": true,
+    "avoid_debug_language": true,
+    "output_player_facing_text": true,
+    "allow_action_suggestions": true,
+    "max_opening_paragraphs": 4,
+    "max_action_options": 6
+  }
+}
+```
+
+## 5. Выход этапа
+
+Рекомендуется возвращать не голую строку, а JSON-обёртку для последующего аудита. Player-facing текст лежит в поле `prose`.
+
+```json id="zjij1a"
+{
+  "version": 1,
+  "schema": "narrator_starting_prose",
+  "request_id": "string",
+
+  "prose_status": "drafted | blocked | requires_repair",
+
+  "prose": "string",
+
+  "action_options": [
+    {
+      "option_id": "option_001",
+      "label": "string",
+      "action_kind": "move | inspect | ask | listen | wait | take | open | rest | warm_up | hide | trade | other",
+      "target_ref": {
+        "anchor_id": "string | null",
+        "npc_instance_id": "string | null",
+        "item_instance_id": "string | null",
+        "container_instance_id": "string | null"
+      },
+      "basis": "visible | audible | known | inferred",
+      "risk_hint": "none | low | medium | high | unknown",
+      "must_not_reveal_hidden_truth": true
+    }
+  ],
+
+  "used_visible_context_refs": [],
+
+  "self_constraints_check": {
+    "used_only_visible_context": true,
+    "did_not_add_new_world_facts": true,
+    "did_not_reveal_hidden_state": true,
+    "preserved_time_weather_light": true,
+    "preserved_position": true,
+    "rumors_remain_rumors": true,
+    "uncertainty_remains_uncertain": true
+  }
+}
+```
+
+Если narration заблокирован:
+
+```json id="014bvv"
+{
+  "version": 1,
+  "schema": "narrator_starting_prose",
+  "request_id": "string",
+  "prose_status": "blocked",
+  "prose": "",
+  "action_options": [],
+  "used_visible_context_refs": [],
+  "self_constraints_check": {
+    "used_only_visible_context": false,
+    "did_not_add_new_world_facts": false,
+    "did_not_reveal_hidden_state": false,
+    "preserved_time_weather_light": false,
+    "preserved_position": false,
+    "rumors_remain_rumors": false,
+    "uncertainty_remains_uncertain": false
+  },
+  "block_reason": "visible_context_audit_not_passed | narrator_input_invalid | no_visible_context | policy_conflict"
+}
+```
+
+## 6. Что narrator обязан включить
+
+Narrator должен включить только то, что есть в `visible_scene_dossier.must_include`.
+
+Типовые обязательные блоки:
+
+```text id="8b6b08"
+1. текущая позиция персонажа;
+2. время суток и свет;
+3. погода или телесное давление, если оно есть;
+4. ближайшие видимые G5-якоря;
+5. видимые NPC как player-safe labels;
+6. видимые предметы/контейнеры без скрытого содержимого;
+7. видимые выходы или неопределённость выхода;
+8. известные персонажу риски или социальные правила;
+9. ближайшее давление/потребность, если оно есть в visible context.
+```
+
+Narrator не обязан включать всё из `may_include`.
+Narrator не имеет права включать ничего из `must_not_include`.
+
+## 7. Что narrator не имеет права включать
+
+Narrator не должен включать:
+
+```text id="giybfl"
+закрытое содержимое контейнера;
+истинного владельца, если персонаж его не знает;
+скрытый мотив NPC;
+скрытую эмоцию NPC, если она не видна;
+скрытое знание NPC;
+будущий таймер;
+скрытую опасность без признака;
+точное направление скрытого маршрута;
+точное имя NPC, если identity_known_to_player=false;
+точную функцию предмета, если exact_identity_known=false;
+истинность слуха;
+ошибочное знание как авторскую истину;
+системную причину риска;
+упоминание JSON, схем, аудитов, repair, pipeline.
+```
+
+## 8. Стиль стартовой прозы
+
+Стартовая проза должна быть:
+
+```text id="6gvjp9"
+ясной;
+короткой;
+игровой;
+второго лица или ограниченного третьего лица;
+без энциклопедического описания;
+без объяснения скрытых причин;
+без перегруза деталями;
+без длинной экспозиции;
+с видимыми точками действия.
+```
+
+Рекомендуемый объём:
+
+```text id="klpn89"
+2–4 абзаца;
+500–1200 знаков для первого вывода;
+до 1800 знаков, если сцена сложная;
+3–6 вариантов действий, если UI требует варианты.
+```
+
+## 9. Разрешённые формы фраз
+
+### 9.1. Видимый факт
+
+Можно:
+
+```text id="kc4h4p"
+Перед тобой закрытая дверь.
+У стены стоит закрытый ларь.
+У ворот виден человек.
+В темноте различим только ближайший проход.
+```
+
+Нельзя:
+
+```text id="01dehg"
+За дверью прячется человек.
+В ларе лежит серебро.
+Человек у ворот скрывает, что следит за тобой.
+Проход ведёт к тайному амбару.
+```
+
+### 9.2. Риск как видимый намёк
+
+Можно:
+
+```text id="17wfx8"
+Брать чужое здесь может быть заметно.
+Человек у ворот стоит достаточно близко, чтобы заметить резкое движение.
+Сундук закрыт, и возиться с ним на виду рискованно.
+```
+
+Нельзя:
+
+```text id="klxet0"
+Если ты возьмёшь нож, хозяин позовёт стражу.
+Этот человек обязательно тебя остановит.
+Через пять минут придёт сторож.
+```
+
+### 9.3. Неопределённость
+
+Можно:
+
+```text id="o0nfjt"
+Проход уходит в темноту; куда он ведёт, отсюда не понять.
+Слышен глухой звук, но источник не различить.
+Ларь выглядит закрытым; что внутри, не видно.
+```
+
+Нельзя:
+
+```text id="278ma6"
+Проход ведёт в сени.
+За дверью стоит хозяин.
+Внутри ларя лежит оружие.
+```
+
+### 9.4. Слух
+
+Можно:
+
+```text id="4xlupx"
+Ты слышал, что эту дорогу считают опасной.
+Говорят, здесь лучше не спорить с хозяевами.
+```
+
+Нельзя:
+
+```text id="e2i4bd"
+Эта дорога опасна.
+Хозяева точно нападут, если спорить.
+```
+
+## 10. Структура стартового текста
+
+Рекомендуемый порядок:
+
+```text id="01lrvy"
+1. Время, свет, тело.
+2. Текущая точка сцены.
+3. Ближайшие видимые объекты и NPC.
+4. Видимые выходы/варианты.
+5. Давление ситуации.
+6. Вопрос или переход к действию.
+```
+
+Пример структуры без конкретного сеттинга:
+
+```text id="rdpt69"
+[Время и свет.] [Где ты стоишь.] [Что видно рядом.] [Кто рядом заметен.] [Что можно сделать.] [Что нельзя понять без действия.] [Что требует решения.]
+```
+
+## 11. Action options
+
+Если `available_actions_context` передан, narrator может вернуть action options.
+
+Правила:
+
+```text id="b7tszi"
+option label должен быть player-facing;
+option label не должен раскрывать hidden truth;
+option target_ref должен существовать;
+option basis должен быть visible/audible/known/inferred;
+risk_hint может быть только общим;
+нельзя обещать результат действия;
+нельзя писать outcome вместо action.
+```
+
+Допустимо:
+
+```text id="1bmu88"
+Осмотреть закрытый ларь.
+Заговорить с человеком у двери.
+Прислушаться к звуку за проходом.
+Проверить тёмный выход.
+Подождать и посмотреть, что изменится.
+```
+
+Недопустимо:
+
+```text id="49171u"
+Открыть ларь с серебром.
+Убедить должника выдать тайну.
+Пойти тайным проходом в амбар.
+Подождать, пока войдёт сторож.
+```
+
+## 12. Работа LLM на этапе
+
+LLM на этом этапе обязательна, потому что это собственно prose generation.
+
+Но роль LLM здесь узкая:
+
+```text id="rbwid2"
+не world builder;
+не simulator;
+не hidden-state interpreter;
+не author of new facts;
+только verbalizer of visible context.
+```
+
+LLM делает:
+
+```text id="devbng"
+преобразует structured visible context в читаемую prose;
+сохраняет ограничения must_include/must_not_include;
+передаёт неопределённость;
+передаёт видимый риск без hidden truth;
+формирует action options из available_actions_context;
+не добавляет новых сущностей.
+```
+
+LLM не делает:
+
+```text id="8jx6hu"
+не выбирает новый результат;
+не двигает время;
+не двигает персонажа;
+не меняет сцену;
+не меняет NPC;
+не меняет предметы;
+не раскрывает скрытую правду;
+не создаёт последствия.
+```
+
+## 13. LLM-параметры
+
+### 13.1. `NarratorStartingProseWriter`
+
+Назначение: написать стартовую player-facing prose из `visible_context_package`.
+
+```json id="5stttm"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 5000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 50000,
+    "hard_input_limit_tokens": 140000,
+    "reserve_output_tokens": 5000
+  }
+}
+```
+
+Почему `deepseek-v4-pro`: стартовая проза находится на границе между художественным текстом и строгими constraints. Модель должна сохранить время, свет, видимое, неопределённость и hidden boundary. Thinking mode используется для аккуратного соблюдения ограничений, но в пользовательский вывод reasoning не попадает.
+
+### 13.2. `NarratorProseAuditor`
+
+Назначение: проверить, что prose не вышла за visible context.
+
+```json id="ecir7i"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 6000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 70000,
+    "hard_input_limit_tokens": 180000,
+    "reserve_output_tokens": 6000
+  }
+}
+```
+
+Хотя аудит prose формально следующий этап, параметры фиксируются здесь, потому что stage 22 должен сразу отдавать результат, пригодный к аудиту.
+
+### 13.3. `NarratorProseFormatRepairer`
+
+Назначение: исправить только JSON-обёртку результата narrator, не меняя prose по смыслу.
+
+```json id="ytd35d"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-flash",
+  "thinking": {
+    "type": "disabled"
+  },
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "max_tokens": 3500,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 30000,
+    "hard_input_limit_tokens": 90000,
+    "reserve_output_tokens": 3500
+  }
+}
+```
+
+### 13.4. `NarratorProseSemanticRepairer`
+
+Назначение: исправить prose по audit concerns, не добавляя новых фактов.
+
+```json id="gg4z10"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 5000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 70000,
+    "hard_input_limit_tokens": 180000,
+    "reserve_output_tokens": 5000
+  }
+}
+```
+
+## 14. Prompt: NarratorStartingProseWriter
+
+```md id="vg9ylt"
+# Роль
+
+Ты NarratorStartingProseWriter для исторической текстовой RPG.
+
+# Задача
+
+Напиши стартовую player-facing prose только из visible_context_package.
+
+# Главное правило
+
+Ты не создаёшь факты.
+Ты не расширяешь мир.
+Ты не меняешь сцену.
+Ты не раскрываешь hidden state.
+Ты не выходишь за visible_context_package.
+
+# Единственный источник
+
+Используй только:
+- visible_context_package
+- visible_context_audit
+- narrator_policy
+
+Не используй full_hidden_scene_state.
+Не используй world_base.
+Не используй свои предположения о месте.
+Не добавляй типичные детали, если их нет в visible_context_package.
+
+# Обязательные правила
+
+1. Сохрани frame.clock, time_of_day, light_profile, season and weather.
+2. Сохрани current position.
+3. Включи все элементы из visible_scene_dossier.must_include.
+4. Не включай ничего из visible_scene_dossier.must_not_include.
+5. Не раскрывай private NPC motives.
+6. Не раскрывай closed container contents.
+7. Не раскрывай future event timers.
+8. Не раскрывай hidden ownership, если оно не известно персонажу.
+9. Не называй NPC по имени, если identity_known_to_player=false.
+10. Не называй точное содержимое/назначение предмета, если exact_identity_known=false.
+11. Не указывай точный route destination, если destination_known_level != exact.
+12. Слухи формулируй как слухи.
+13. Неопределённость формулируй как неопределённость.
+14. Не добавляй новых предметов, людей, зданий, запахов, звуков, дорог, животных, оружия, денег или событий.
+15. Не используй raw JSON, audit, debug, schema, ids in prose.
+16. Верни строгий JSON.
+
+# Стиль
+
+Пиши ясно, атмосферно, но сдержанно.
+2–4 коротких абзаца.
+Не перегружай текст.
+Не объясняй механику.
+Не используй энциклопедический тон.
+Заканчивай сцену так, чтобы игрок мог выбрать действие.
+
+# Action options
+
+Если available_actions_context есть:
+- сформируй 3–6 options;
+- используй только action_context_id и target_ref из visible_context_package;
+- label не должен раскрывать hidden truth;
+- не обещай результат действия.
+
+# Формат
+
+Верни только json:
+
+{
+  "version": 1,
+  "schema": "narrator_starting_prose",
+  "request_id": "...",
+  "prose_status": "drafted",
+  "prose": "...",
+  "action_options": [],
+  "used_visible_context_refs": [],
+  "self_constraints_check": {
+    "used_only_visible_context": true,
+    "did_not_add_new_world_facts": true,
+    "did_not_reveal_hidden_state": true,
+    "preserved_time_weather_light": true,
+    "preserved_position": true,
+    "rumors_remain_rumors": true,
+    "uncertainty_remains_uncertain": true
+  }
+}
+```
+
+## 15. Prompt: NarratorProseAuditor
+
+```md id="gv0v46"
+# Роль
+
+Ты NarratorProseAuditor.
+
+# Задача
+
+Проверь narrator_starting_prose на соответствие visible_context_package.
+
+# Главное правило
+
+Ты не исправляешь prose.
+Ты только аудируешь.
+
+# Источники
+
+Используй только:
+- visible_context_package
+- visible_context_audit
+- narrator_starting_prose
+
+# Проверить
+
+1. prose использует только visible_context_package.
+2. prose не добавляет новых NPC.
+3. prose не добавляет новых предметов.
+4. prose не добавляет новых мест, проходов, дверей, зданий, дорог.
+5. prose не добавляет новых звуков/запахов/погоды/света.
+6. prose сохраняет clock/time_of_day/light_profile.
+7. prose сохраняет position.
+8. prose не раскрывает hidden state.
+9. prose не раскрывает private NPC motives.
+10. prose не раскрывает closed container contents.
+11. prose не раскрывает future event timers.
+12. prose не раскрывает hidden ownership if unknown.
+13. prose не называет NPC по имени if identity_known_to_player=false.
+14. prose не называет exact item identity if exact_identity_known=false.
+15. prose не указывает exact route destination if unknown.
+16. rumors remain rumors.
+17. uncertainty remains uncertainty.
+18. action_options do not reveal hidden truth.
+19. prose contains no raw JSON/schema/debug/audit language.
+20. all must_include items are represented.
+21. no must_not_include item is represented.
+
+# Формат
+
+Верни только json:
+
+{
+  "version": 1,
+  "schema": "narrator_prose_audit",
+  "pass": true,
+  "concerns": [],
+  "evidence": [],
+  "repair_route": null
+}
+
+Если pass=false:
+- concerns не должен быть пустым;
+- evidence не должен быть пустым;
+- repair_route должен быть заполнен.
+```
+
+## 16. Prompt: NarratorProseFormatRepairer
+
+```md id="4aakf4"
+# Роль
+
+Ты NarratorProseFormatRepairer.
+
+# Задача
+
+Исправь только JSON-обёртку narrator_starting_prose.
+
+# Главное правило
+
+Не меняй смысл prose.
+Не добавляй факты.
+Не удаляй факты.
+Не раскрывай hidden state.
+Не пиши новую сцену.
+
+# Разрешено
+
+- убрать markdown;
+- привести schema к "narrator_starting_prose";
+- привести version к 1;
+- добавить отсутствующие служебные поля как null/[];
+- перенести prose в поле prose;
+- удалить debug/audit text из wrapper, если он не часть prose.
+
+# Запрещено
+
+- менять scene facts;
+- менять time/weather/light;
+- менять NPC/items/routes;
+- создавать action options;
+- раскрывать hidden facts.
+
+# Формат
+
+Верни только json.
+```
+
+## 17. Prompt: NarratorProseSemanticRepairer
+
+```md id="hfe7bl"
+# Роль
+
+Ты NarratorProseSemanticRepairer.
+
+# Задача
+
+Исправь narrator_starting_prose по narrator_prose_audit.concerns.
+
+# Главное правило
+
+Исправляй только prose и action labels.
+Не меняй visible_context_package.
+Не меняй world state.
+Не добавляй новых фактов.
+
+# Источники
+
+Используй только:
+- original narrator_starting_prose
+- visible_context_package
+- narrator_prose_audit.concerns
+- narrator_prose_audit.evidence
+
+# Правила ремонта
+
+Если prose раскрывает hidden state:
+- удали раскрытие;
+- замени только на безопасный hint, если он есть в visible_context_package.
+
+Если prose добавила новый предмет/NPC/место/звук:
+- удали его.
+
+Если prose нарушила время/свет:
+- приведи формулировку к frame.clock and light_profile из visible_context_package.
+
+Если uncertainty стала фактом:
+- верни неопределённую формулировку.
+
+Если action label раскрывает hidden truth:
+- замени на нейтральное действие из available_actions_context.
+
+# Формат
+
+Верни только json narrator_starting_prose.
+```
+
+## 18. Code precheck
+
+Перед запуском narrator код обязан проверить:
+
+```json id="rtob2e"
+{
+  "version": 1,
+  "schema": "narrator_start_code_precheck",
+  "pass": true,
+  "checks": {
+    "visible_context_package_present": true,
+    "visible_context_package_schema_valid": true,
+    "visible_context_audit_passed": true,
+    "can_send_to_narrator": true,
+    "visible_scene_dossier_present": true,
+    "must_include_present": true,
+    "must_not_include_present": true,
+    "narrator_scope_present": true,
+    "clock_present": true,
+    "position_present": true,
+    "available_actions_context_valid": true
+  },
+  "concerns": [],
+  "evidence": []
+}
+```
+
+Если `visible_context_audit.pass=false`, narrator не запускается.
+
+## 19. Validation rules для результата narrator
+
+Код проверяет:
+
+1. `schema === "narrator_starting_prose"`.
+2. `version === 1`.
+3. `prose_status` входит в enum.
+4. `prose` является строкой.
+5. Если `prose_status=drafted`, `prose` не пустая.
+6. `prose` не содержит JSON/debug/audit/schema language.
+7. `prose` не содержит raw ids, если UI не должен их показывать.
+8. `prose` не содержит слов из `must_not_include`.
+9. `prose` не содержит private motives.
+10. `prose` не содержит closed container contents.
+11. `prose` не содержит future timers.
+12. `prose` не содержит hidden ownership.
+13. `prose` не содержит новых NPC.
+14. `prose` не содержит новых предметов.
+15. `prose` не содержит новых exits/routes.
+16. `prose` не меняет time_of_day.
+17. `prose` не меняет light_profile.
+18. `prose` не меняет weather_state.
+19. `prose` не меняет season.
+20. `prose` не меняет current position.
+21. Все `action_options.target_ref` существуют в `available_actions_context`.
+22. `action_options.label` не раскрывает hidden truth.
+23. `self_constraints_check.used_only_visible_context=true`.
+24. `self_constraints_check.did_not_add_new_world_facts=true`.
+25. `self_constraints_check.did_not_reveal_hidden_state=true`.
+26. `used_visible_context_refs` ссылаются только на видимые refs.
+
+## 20. Error codes
+
+```text id="vpzs0s"
+NARRATOR_START_INPUT_INVALID_JSON
+NARRATOR_VISIBLE_CONTEXT_MISSING
+NARRATOR_VISIBLE_CONTEXT_AUDIT_NOT_PASSED
+NARRATOR_VISIBLE_CONTEXT_NOT_ALLOWED_FOR_PROSE
+NARRATOR_VISIBLE_DOSSIER_MISSING
+NARRATOR_SCOPE_MISSING
+NARRATOR_MUST_INCLUDE_MISSING
+NARRATOR_MUST_NOT_INCLUDE_MISSING
+
+NARRATOR_PROSE_INVALID_JSON
+NARRATOR_PROSE_SCHEMA_MISMATCH
+NARRATOR_PROSE_EMPTY
+NARRATOR_PROSE_STATUS_INVALID
+NARRATOR_PROSE_RAW_JSON_LEAK
+NARRATOR_PROSE_DEBUG_TEXT_LEAK
+NARRATOR_PROSE_AUDIT_TEXT_LEAK
+NARRATOR_PROSE_RAW_ID_LEAK
+
+NARRATOR_PROSE_ADDED_NPC
+NARRATOR_PROSE_ADDED_ITEM
+NARRATOR_PROSE_ADDED_CONTAINER
+NARRATOR_PROSE_ADDED_ANCHOR
+NARRATOR_PROSE_ADDED_ROUTE
+NARRATOR_PROSE_ADDED_SOUND
+NARRATOR_PROSE_ADDED_WEATHER
+NARRATOR_PROSE_ADDED_WORLD_FACT
+
+NARRATOR_PROSE_TIME_CONFLICT
+NARRATOR_PROSE_LIGHT_CONFLICT
+NARRATOR_PROSE_WEATHER_CONFLICT
+NARRATOR_PROSE_SEASON_CONFLICT
+NARRATOR_PROSE_POSITION_CONFLICT
+
+NARRATOR_PROSE_HIDDEN_STATE_LEAK
+NARRATOR_PROSE_PRIVATE_MOTIVE_LEAK
+NARRATOR_PROSE_PRIVATE_KNOWLEDGE_LEAK
+NARRATOR_PROSE_CLOSED_CONTAINER_CONTENTS_LEAK
+NARRATOR_PROSE_FUTURE_EVENT_LEAK
+NARRATOR_PROSE_TRUE_OWNERSHIP_LEAK
+NARRATOR_PROSE_HIDDEN_ROUTE_TRUTH_LEAK
+NARRATOR_PROSE_HIDDEN_RISK_TRUTH_LEAK
+
+NARRATOR_PROSE_RUMOR_TREATED_AS_FACT
+NARRATOR_PROSE_UNCERTAIN_TREATED_AS_FACT
+NARRATOR_PROSE_MISTAKEN_BELIEF_TREATED_AS_TRUTH
+
+NARRATOR_ACTION_TARGET_REF_NOT_FOUND
+NARRATOR_ACTION_LABEL_USES_HIDDEN_TRUTH
+NARRATOR_ACTION_PROMISES_OUTCOME
+NARRATOR_SELF_CHECK_FAILED
+```
+
+## 21. DB write на этом этапе
+
+До аудита результата разрешено писать:
+
+```text id="fbp863"
+pipeline_step_status
+narrator_starting_prose_draft_snapshot
+narrator_start_code_precheck_snapshot
+narrator_generation_attempts
+narrator_generation_validation_issues
+```
+
+После успешного аудита narrator prose разрешено писать:
+
+```text id="nqk4xo"
+party_narrator_output
+party_player_visible_message
+party_opening_scene_presented_flag
+party_available_action_options
+```
+
+Запрещено писать на этапе 22 до аудита:
+
+```text id="e6ts5v"
+final_player_output
+permanent_journal_player_text
+new_world_entities
+hidden_state_changes
+character_knowledge_changes
+time_changes
+position_changes
+npc_state_changes
+item_state_changes
+```
+
+Этап 22 создаёт draft prose. Финальный вывод игроку — только после отдельного аудита prose.
+
+## 22. Commit gate этапа
+
+Этап считается успешным, если:
+
+```text id="z0s3g1"
+visible_context_audit.pass=true
+narrator_starting_prose валиден
+prose использует только visible_context_package
+prose не добавляет новые факты
+prose не раскрывает hidden state
+prose сохраняет clock/weather/light/position
+prose сохраняет uncertainty and rumors
+action_options безопасны
+self_constraints_check=true
+```
+
+После этого результат переходит в `narrator_prose_audit`.
+
+Если gate не пройден, результат не выводится игроку.
+
+## 23. Передача в следующий этап
+
+```json id="5s5evk"
+{
+  "version": 1,
+  "schema": "narrator_prose_audit_input",
+  "request_id": "string",
+
+  "visible_context_package": {
+    "version": 1,
+    "schema": "visible_context_package"
+  },
+
+  "visible_context_audit": {
+    "version": 1,
+    "schema": "visible_context_audit",
+    "pass": true
+  },
+
+  "narrator_starting_prose": {
+    "version": 1,
+    "schema": "narrator_starting_prose",
+    "prose_status": "drafted"
+  },
+
+  "audit_policy": {
+    "compare_only_against_visible_context_package": true,
+    "reject_added_facts": true,
+    "reject_hidden_leaks": true,
+    "reject_time_light_conflict": true,
+    "reject_action_labels_using_hidden_truth": true
+  }
+}
+```
+
+## 24. Минимальный успешный результат
+
+```json id="9gfr08"
+{
+  "version": 1,
+  "schema": "narrator_starting_prose",
+  "request_id": "req_001",
+
+  "prose_status": "drafted",
+
+  "prose": "Глубокая ночь держит всё вокруг в темноте. Видно только ближайшее: край прохода, закрытый ларь у стены, смутные очертания двора и человека неподалёку. Холод давит всё сильнее, и с каждым вдохом становится яснее: долго стоять без дела нельзя.\n\nЧеловек рядом занят своим делом, но он достаточно близко, чтобы заметить резкое движение. Ларь закрыт; что внутри, отсюда не понять. Тёмный проход ведёт куда-то дальше, но его конец теряется во мраке.\n\nТы можешь осмотреть ларь, заговорить с человеком, прислушаться к звукам вокруг, проверить проход или немного подождать.",
+
+  "action_options": [
+    {
+      "option_id": "option_001",
+      "label": "Осмотреть закрытый ларь.",
+      "action_kind": "inspect",
+      "target_ref": {
+        "anchor_id": null,
+        "npc_instance_id": null,
+        "item_instance_id": null,
+        "container_instance_id": "container_001"
+      },
+      "basis": "visible",
+      "risk_hint": "medium",
+      "must_not_reveal_hidden_truth": true
+    },
+    {
+      "option_id": "option_002",
+      "label": "Заговорить с человеком рядом.",
+      "action_kind": "ask",
+      "target_ref": {
+        "anchor_id": null,
+        "npc_instance_id": "npc_001",
+        "item_instance_id": null,
+        "container_instance_id": null
+      },
+      "basis": "visible",
+      "risk_hint": "low",
+      "must_not_reveal_hidden_truth": true
+    },
+    {
+      "option_id": "option_003",
+      "label": "Проверить тёмный проход.",
+      "action_kind": "move",
+      "target_ref": {
+        "anchor_id": "g5_anchor_002",
+        "npc_instance_id": null,
+        "item_instance_id": null,
+        "container_instance_id": null
+      },
+      "basis": "visible",
+      "risk_hint": "unknown",
+      "must_not_reveal_hidden_truth": true
+    },
+    {
+      "option_id": "option_004",
+      "label": "Прислушаться.",
+      "action_kind": "listen",
+      "target_ref": {
+        "anchor_id": null,
+        "npc_instance_id": null,
+        "item_instance_id": null,
+        "container_instance_id": null
+      },
+      "basis": "audible",
+      "risk_hint": "none",
+      "must_not_reveal_hidden_truth": true
+    }
+  ],
+
+  "used_visible_context_refs": [
+    "visible_scene_facts.vf_001",
+    "visible_scene_facts.vf_002",
+    "visible_npcs.visible_npc_001",
+    "visible_containers.visible_container_001",
+    "visible_exits.visible_exit_001",
+    "touch_body_context.body_visible_001",
+    "available_actions_context.action_001",
+    "available_actions_context.action_002"
+  ],
+
+  "self_constraints_check": {
+    "used_only_visible_context": true,
+    "did_not_add_new_world_facts": true,
+    "did_not_reveal_hidden_state": true,
+    "preserved_time_weather_light": true,
+    "preserved_position": true,
+    "rumors_remain_rumors": true,
+    "uncertainty_remains_uncertain": true
+  }
+}
+```
+
+## 25. Неправильный результат, который должен быть отклонён
+
+```text id="pqn1cv"
+Глубокой ночью ты стоишь во дворе. Человек у ворот делает вид, что занят, но на самом деле сторожит ларь, в котором спрятано серебро. Через пять минут сюда войдёт хозяин, поэтому лучше быстро открыть ларь или уйти тайным проходом в амбар.
+```
+
+Причины отклонения:
+
+```text id="7jeksi"
+раскрыт скрытый мотив NPC;
+раскрыто содержимое закрытого контейнера;
+раскрыт future timer;
+добавлена точная цель тайного прохода;
+action suggestion использует hidden truth;
+narrator вышел за visible_context_package.
+```
+
+## 26. Правильная версия того же смысла
+
+```text id="z6c7gp"
+Глубокая ночь сжимает двор до нескольких ближайших пятен и силуэтов. У стены виден закрытый ларь; что внутри, отсюда не понять. Неподалёку занят человек — не похоже, что он смотрит прямо на тебя, но он достаточно близко, чтобы заметить резкое движение.
+
+В темноту уходит проход. Куда он ведёт, отсюда не разобрать. Можно осмотреть ларь, заговорить с человеком, проверить проход или просто прислушаться.
+```
+
+Почему версия допустима:
+
+```text id="p4gjd4"
+сохраняет ночь;
+не раскрывает содержимое контейнера;
+не раскрывает мотив NPC;
+не раскрывает timer;
+не обещает исход;
+передаёт только видимое и неопределённое.
+```

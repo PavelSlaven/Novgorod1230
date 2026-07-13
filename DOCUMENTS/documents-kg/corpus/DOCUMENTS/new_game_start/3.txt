@@ -1,0 +1,1317 @@
+# Этап 3. Выбор исторической рамки новой игры
+
+## 1. Назначение этапа
+
+Выбор исторической рамки — это третий этап запуска новой партии. Он получает нормализованную заявку игрока и превращает её в утверждённую стартовую историко-календарную рамку.
+
+На этом этапе фиксируются:
+
+* эпоха или исторический период;
+* точный год или допустимый временной интервал;
+* сезон;
+* день партии;
+* точное время внутри дня;
+* часть суток;
+* световой профиль;
+* регион;
+* политическая обстановка;
+* социальная обстановка;
+* базовое сезонно-погодное давление;
+* ограничения, которые следующие этапы обязаны соблюдать.
+
+На этом этапе не создаются:
+
+* конкретная сцена;
+* G1–G5 стартовая позиция;
+* локация;
+* NPC;
+* персонаж игрока;
+* предметы;
+* конфликт;
+* стартовая проза;
+* скрытые события;
+* карта знаний персонажа.
+
+Историческая рамка отвечает только на вопрос:
+
+```text
+В каком историческом, календарном, региональном и социальном контексте будет начата партия?
+```
+
+Она не отвечает на вопрос:
+
+```text
+Где именно стоит персонаж и что он видит?
+```
+
+Параметры LLM для Этапа 3:
+Этап 3 — Выбор исторической рамки
+
+Здесь уже нужен более сильный режим, потому что агент выбирает совместимую рамку из candidate set: год, сезон, время суток, регион, политический и социальный фон. Ошибка на этом этапе ломает весь старт.
+
+Параметр	Значение
+model	deepseek-v4-pro
+thinking	enabled
+reasoning_effort	high
+temperature	не задавать в thinking mode
+top_p	не задавать в thinking mode
+max_tokens	5000–8000
+response_format	{ "type": "json_object" }, если совместимо в вашей обвязке
+stream	false для простоты валидации
+retries	1 semantic repair + 1 blocked fallback
+timeout	45–90s
+context_budget	30k–100k input tokens, при необходимости больше
+
+В thinking mode DeepSeek указывает управление через thinking: {"type":"enabled"} и reasoning_effort: "high"; также важно, что temperature, top_p, presence_penalty и frequency_penalty в thinking mode не действуют, поэтому их лучше не задавать, чтобы не вводить себя в заблуждение.
+
+Рекомендуемый API-конфиг:
+
+{
+  "model": "deepseek-v4-pro",
+  "max_tokens": 7000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "stream": false,
+  "reasoning_effort": "high",
+  "extra_body": {
+    "thinking": {
+      "type": "enabled"
+    }
+  }
+}
+Этап 3 — Candidate set size
+
+Не надо передавать всю базу. Надо передавать только отфильтрованный candidate set.
+
+Рекомендуемые лимиты:
+
+Блок	Лимит
+regions	3–10 кандидатов
+historical_periods	3–20
+year_ranges	3–20
+season_rules	4–12
+time_of_day_policies	5–10
+political_contexts	3–12
+social_contexts	3–12
+sources	только source IDs + краткие summaries
+
+Если кандидат один, LLM не “выбирает”, а только проверяет совместимость и формирует historical_frame.
+
+Этап 3 — Audit / validation
+
+После ответа LLM не надо сразу пускать pipeline дальше. Сначала локальные проверки:
+
+schema == historical_frame
+version == 1
+region_id ∈ candidate_set.regions
+year ∈ selected_period.year_start..year_end
+season allowed for region
+clock.hour/minute valid
+clock.time_of_day compatible with hour
+clock.light_profile compatible with time_of_day
+no visible_scene
+no NPC
+no items
+no G1/G2/G3/G4/G5 IDs
+audit.evidence not empty
+
+Если ошибка чисто форматная — local repair или flash JSON repair. Если ошибка смысловая — один retry на deepseek-v4-pro thinking/high. Если после retry нет совместимой рамки — вернуть selection_status: "blocked" или requires_clarification.
+
+## 2. Место этапа в pipeline
+
+Последовательность:
+
+```text
+1. Заявка игрока
+2. Нормализация заявки
+3. Выбор исторической рамки
+4. Загрузка регионального контекста
+5. Подбор допустимых стартовых G1–G4 кандидатов
+6. Выбор стартового места
+7. Генерация персонажа
+8. Материализация G5
+```
+
+Этап 3 получает `new_game_normalized_request` и возвращает `historical_frame`.
+
+`historical_frame` становится обязательным входом для всех последующих этапов. Если следующий этап противоречит этой рамке, он должен быть отклонён.
+
+## 3. Главное правило этапа
+
+LLM не придумывает историческую рамку свободно.
+
+LLM выбирает рамку только из допустимых кандидатов, полученных из `world_base`, либо помечает невозможность выбора.
+
+Код отвечает за:
+
+* загрузку доступных регионов;
+* загрузку допустимых временных диапазонов;
+* загрузку региональных исторических периодов;
+* загрузку сезонных правил;
+* загрузку источников и статусов записей;
+* передачу candidate set в LLM;
+* проверку, что выбранный вариант действительно был среди кандидатов.
+
+LLM отвечает за:
+
+* интерпретацию нормализованной заявки игрока;
+* выбор одного допустимого варианта из candidate set;
+* объяснение выбора;
+* фиксацию ограничений для следующих этапов;
+* выявление противоречий;
+* возврат структурированного JSON.
+
+Код не должен выбирать художественно “интересный” год, сезон или регион сам. Код только предоставляет кандидатов и проверяет результат.
+
+## 4. Вход этапа
+
+Этап получает:
+
+```json
+{
+  "version": 1,
+  "schema": "historical_frame_selector_input",
+  "request_id": "string",
+  "normalized_request": {
+    "version": 1,
+    "schema": "new_game_normalized_request"
+  },
+  "available_candidates": {
+    "regions": [],
+    "historical_periods": [],
+    "year_ranges": [],
+    "season_rules": [],
+    "time_of_day_policies": [],
+    "political_contexts": [],
+    "social_contexts": []
+  },
+  "selection_policy": {
+    "allow_random": true,
+    "prefer_approved_records": true,
+    "allow_usable_with_caution": true,
+    "reject_conflict_or_rejected": true,
+    "require_sources": true
+  }
+}
+```
+
+`normalized_request` — результат этапа 2.
+
+`available_candidates` — данные, полученные кодом из `world_base`.
+
+`selection_policy` — правила выбора. Они не создают мир, а ограничивают допустимые варианты.
+
+## 5. Candidate set
+
+Перед вызовом LLM код обязан собрать candidate set.
+
+Минимальный candidate set:
+
+```json
+{
+  "regions": [
+    {
+      "region_id": "string",
+      "slug": "string",
+      "title": "string",
+      "summary": "string",
+      "status": "approved | usable_with_caution | draft | needs_review",
+      "confidence": "low | medium | medium_high | high",
+      "sources": []
+    }
+  ],
+  "historical_periods": [
+    {
+      "period_id": "string",
+      "region_id": "string",
+      "title": "string",
+      "year_start": 0,
+      "year_end": 0,
+      "summary": "string",
+      "political_summary": "string",
+      "social_summary": "string",
+      "status": "approved | usable_with_caution | draft | needs_review",
+      "confidence": "low | medium | medium_high | high",
+      "sources": []
+    }
+  ],
+  "season_rules": [
+    {
+      "season_id": "spring | summer | autumn | winter",
+      "region_id": "string",
+      "summary": "string",
+      "travel_effects": [],
+      "light_effects": [],
+      "work_rhythm_effects": [],
+      "status": "approved | usable_with_caution | draft | needs_review",
+      "confidence": "low | medium | medium_high | high",
+      "sources": []
+    }
+  ],
+  "time_of_day_policies": [
+    {
+      "time_of_day": "morning | day | evening | night | deep_night",
+      "hour_min": 0,
+      "hour_max": 23,
+      "light_profile": "dark | dim | daylight | twilight",
+      "summary": "string",
+      "npc_availability_notes": "string",
+      "access_notes": "string"
+    }
+  ]
+}
+```
+
+LLM не имеет права выбирать `region_id`, `period_id`, `season_id` или `time_of_day`, которых нет в candidate set.
+
+Если candidate set пустой, этап не должен “придумать” рамку. Он должен вернуть `pass=false`.
+
+## 6. Выход этапа
+
+Основной контракт:
+
+```json
+{
+  "version": 1,
+  "schema": "historical_frame",
+  "request_id": "string",
+
+  "selection_status": "selected | blocked | requires_clarification",
+
+  "era": {
+    "label": "string",
+    "selection_reason": "string",
+    "source_request_field": "era_request"
+  },
+
+  "year": {
+    "value": 0,
+    "precision": "exact | approximate | range_selected",
+    "year_range": {
+      "start": 0,
+      "end": 0
+    },
+    "selection_reason": "string",
+    "source_request_field": "year_request"
+  },
+
+  "calendar": {
+    "party_day": 1,
+    "season": "spring | summer | autumn | winter",
+    "season_reason": "string",
+    "date_label": "string | null",
+    "calendar_confidence": "low | medium | high"
+  },
+
+  "clock": {
+    "day": 1,
+    "hour": 0,
+    "minute": 0,
+    "time_of_day": "morning | day | evening | night | deep_night",
+    "clock_moment": "string",
+    "light_profile": "dark | dim | daylight | twilight",
+    "selection_reason": "string"
+  },
+
+  "region": {
+    "region_id": "string",
+    "slug": "string",
+    "title": "string",
+    "selection_reason": "string",
+    "source_request_field": "region_request"
+  },
+
+  "political_context": {
+    "summary": "string",
+    "active_pressures": [],
+    "forbidden_assumptions": []
+  },
+
+  "social_context": {
+    "summary": "string",
+    "active_social_pressures": [],
+    "status_constraints_for_character_generation": [],
+    "forbidden_assumptions": []
+  },
+
+  "seasonal_context": {
+    "summary": "string",
+    "travel_constraints": [],
+    "work_rhythm_constraints": [],
+    "visibility_constraints": [],
+    "health_risk_constraints": []
+  },
+
+  "downstream_constraints": {
+    "must_preserve": [],
+    "must_not_create_yet": [],
+    "must_resolve_later": []
+  },
+
+  "candidate_ids_used": {
+    "region_id": "string",
+    "historical_period_id": "string",
+    "season_rule_id": "string | null",
+    "time_of_day_policy_id": "string | null"
+  },
+
+  "sources": [],
+
+  "audit": {
+    "pass": true,
+    "concerns": [],
+    "evidence": []
+  }
+}
+```
+
+## 7. Что фиксируется на этапе
+
+### 7.1. Эпоха
+
+Эпоха — широкая историческая рамка. Она может быть выбрана явно по заявке игрока или случайно из доступных кандидатов.
+
+Пример:
+
+```json
+{
+  "era": {
+    "label": "XIII century",
+    "selection_reason": "Player requested this broad period.",
+    "source_request_field": "era_request"
+  }
+}
+```
+
+Если игрок не указал эпоху, используется `selection_mode=random`, но выбор всё равно идёт только из доступных historical period candidates.
+
+### 7.2. Год
+
+Год должен быть совместим:
+
+* с выбранной эпохой;
+* с выбранным регионом;
+* с доступными historical period records;
+* с заявкой игрока;
+* с источниками и статусом записи.
+
+Если игрок указал точный год, LLM не должна менять его без причины.
+
+Если игрок указал широкий период, LLM выбирает конкретный год из допустимого диапазона.
+
+Если игрок ничего не указал, год выбирается из candidate set как случайный или policy-based выбор.
+
+### 7.3. Сезон
+
+Сезон фиксируется до выбора места и сцены, потому что он влияет на:
+
+* дороги;
+* видимость;
+* водные объекты;
+* работу людей;
+* доступность маршрутов;
+* риски тела;
+* предметные профили;
+* стартовое давление.
+
+Сезон не должен появляться впервые в прозе narrator. Он должен быть уже в `historical_frame`.
+
+### 7.4. День партии
+
+`party_day` — технический день партии. Для новой игры обычно используется `1`, если нет отдельной причины начать позже.
+
+`party_day` не равен исторической дате. Это счётчик партии.
+
+Историческая дата может быть неизвестна или приблизительна, но технический день партии должен быть задан.
+
+### 7.5. Точное время внутри дня
+
+Время должно храниться как:
+
+```json
+{
+  "day": 1,
+  "hour": 6,
+  "minute": 30,
+  "time_of_day": "morning",
+  "clock_moment": "early morning",
+  "light_profile": "dim"
+}
+```
+
+Запрещено хранить только:
+
+```json
+{
+  "time": "утро"
+}
+```
+
+Нужно одновременно иметь:
+
+* `day`;
+* `hour`;
+* `minute`;
+* `time_of_day`;
+* `clock_moment`;
+* `light_profile`.
+
+Это нужно, чтобы следующие этапы не создали конфликт между временем, светом, NPC и видимой сценой.
+
+### 7.6. Регион
+
+Регион выбирается только из `world_base.regions` или другого утверждённого списка региональных records.
+
+Если игрок указал регион свободным текстом, этап должен сопоставить его с candidate set.
+
+Если регион не найден, возможны варианты:
+
+* выбрать другой регион только если политика допускает случайность;
+* вернуть `requires_clarification`;
+* вернуть `blocked`, если игрок запретил замену.
+
+### 7.7. Политическая обстановка
+
+Политическая обстановка фиксируется только как фон.
+
+Разрешено:
+
+```json
+{
+  "political_context": {
+    "summary": "The region has active political pressure between local powers.",
+    "active_pressures": [
+      "taxation_pressure",
+      "jurisdiction_dispute"
+    ],
+    "forbidden_assumptions": [
+      "Do not create a battle or raid at start unless selected later by a valid event template."
+    ]
+  }
+}
+```
+
+Запрещено:
+
+* создавать князя в сцене;
+* создавать войско рядом;
+* создавать посольство;
+* назначать NPC на политическую роль;
+* создавать конкретный заговор;
+* начинать пожар, набег, суд или восстание.
+
+Политическая обстановка — это constraint, а не событие.
+
+### 7.8. Социальная обстановка
+
+Социальная обстановка фиксирует:
+
+* допустимые сословные/статусные рамки;
+* типовые зависимости;
+* уровень социальной напряжённости;
+* ограничения для будущей генерации персонажа;
+* ограничения для стартовой локации.
+
+Разрешено:
+
+```json
+{
+  "social_context": {
+    "summary": "The region has stratified social roles and household-based obligations.",
+    "active_social_pressures": [
+      "household_dependency",
+      "debt_or_service_obligation_possible"
+    ],
+    "status_constraints_for_character_generation": [
+      "Character status must be selected from regional social role candidates."
+    ],
+    "forbidden_assumptions": [
+      "Do not assign noble status unless candidate roles allow it."
+    ]
+  }
+}
+```
+
+Запрещено:
+
+* создавать конкретную семью;
+* создавать хозяина;
+* создавать должника;
+* назначать персонажу долг;
+* создавать NPC-свидетелей;
+* создавать стартовую обиду, конфликт или службу.
+
+Социальная обстановка — это фильтр для будущей генерации, а не уже произошедшая история.
+
+## 8. Что этап не имеет права делать
+
+Этап выбора исторической рамки не имеет права возвращать:
+
+```json
+{
+  "start_location_id": "...",
+  "g1_id": "...",
+  "g2_id": "...",
+  "g3_id": "...",
+  "g4_id": "...",
+  "g5_anchor_id": "...",
+  "npc_ids": [],
+  "items": [],
+  "visible_scene": "...",
+  "intro_prose": "..."
+}
+```
+
+Если такие поля появились, результат должен быть отклонён с ошибкой:
+
+```text
+HISTORICAL_FRAME_CREATED_DOWNSTREAM_ENTITY
+```
+
+## 9. Политика random
+
+Если нормализованная заявка содержит `selection_mode=random`, это не означает свободную генерацию.
+
+Это означает:
+
+```text
+выбрать один допустимый вариант из переданного candidate set
+```
+
+Пример:
+
+```json
+{
+  "region_request": {
+    "value": null,
+    "selection_mode": "random"
+  },
+  "year_request": {
+    "value": null,
+    "selection_mode": "random"
+  },
+  "season_request": {
+    "value": null,
+    "selection_mode": "random"
+  }
+}
+```
+
+Правильное поведение:
+
+1. код передаёт доступные регионы;
+2. код передаёт доступные historical periods;
+3. код передаёт допустимые сезоны;
+4. LLM выбирает совместимую рамку;
+5. audit проверяет, что все ID были в candidate set.
+
+Неправильное поведение:
+
+```text
+LLM сама выбирает любой год, регион и сезон без candidate set.
+```
+
+## 10. Совместимость полей
+
+Историческая рамка должна пройти внутреннюю проверку совместимости:
+
+```text
+region_id ∈ available_candidates.regions
+year ∈ selected_historical_period.year_start..year_end
+season ∈ available season rules for region
+time_of_day ∈ allowed time_of_day_policies
+political_context belongs to selected region/period
+social_context belongs to selected region/period
+sources are non-empty if require_sources=true
+status != rejected
+status != conflict
+```
+
+Если хоть одно условие нарушено, `audit.pass=false`.
+
+## 11. Время и световой профиль
+
+Этап обязан вернуть не только часть суток, но и световой профиль.
+
+Допустимые значения:
+
+```text
+dark
+dim
+daylight
+twilight
+```
+
+Пример соответствия:
+
+```json
+[
+  {
+    "time_of_day": "deep_night",
+    "hour_min": 0,
+    "hour_max": 4,
+    "light_profile": "dark"
+  },
+  {
+    "time_of_day": "morning",
+    "hour_min": 5,
+    "hour_max": 10,
+    "light_profile": "dim"
+  },
+  {
+    "time_of_day": "day",
+    "hour_min": 10,
+    "hour_max": 16,
+    "light_profile": "daylight"
+  },
+  {
+    "time_of_day": "evening",
+    "hour_min": 16,
+    "hour_max": 21,
+    "light_profile": "twilight"
+  },
+  {
+    "time_of_day": "night",
+    "hour_min": 21,
+    "hour_max": 23,
+    "light_profile": "dark"
+  }
+]
+```
+
+Эти границы могут уточняться региональными и сезонными правилами. Например, сезон может менять длительность дня и допустимость маршрутов.
+
+Критическое правило:
+
+```text
+Если clock.time_of_day = night/deep_night, downstream agents не имеют права описывать сцену как day/daylight/short daylight.
+```
+
+Если будущий этап создаёт видимую сцену, противоречащую `clock`, он должен быть отклонён до narrator.
+
+## 12. Сезонные ограничения
+
+`seasonal_context` не должен создавать погоду сцены. Он фиксирует только сезонное давление.
+
+Разрешено:
+
+```json
+{
+  "seasonal_context": {
+    "summary": "Winter conditions affect light, road difficulty and exposure risk.",
+    "travel_constraints": [
+      "Some routes may be slower or unavailable depending on local route rules."
+    ],
+    "work_rhythm_constraints": [
+      "Outdoor labor rhythm may differ by day part and weather."
+    ],
+    "visibility_constraints": [
+      "Snow, darkness or low sun may affect visibility depending on later scene."
+    ],
+    "health_risk_constraints": [
+      "Cold exposure may become relevant if character lacks shelter or clothing."
+    ]
+  }
+}
+```
+
+Запрещено:
+
+* задавать конкретную метель, если она не выбрана погодным этапом;
+* задавать конкретную температуру без погодной записи;
+* создавать замёрзшую реку без region/water/season rules;
+* создавать следы или скрытые опасности.
+
+Сезон — это рамка, а не конкретное состояние каждой локации.
+
+## 13. Источники и уверенность
+
+Каждая выбранная часть рамки должна иметь traceability:
+
+```json
+{
+  "sources": [
+    {
+      "source_id": "string",
+      "supports": [
+        "region",
+        "historical_period",
+        "social_context"
+      ]
+    }
+  ]
+}
+```
+
+Если у записи `status=approved`, она предпочтительнее.
+
+Если `status=usable_with_caution`, её можно использовать, но нужно добавить audit note.
+
+Если `status=draft` или `needs_review`, её можно использовать только при policy-разрешении.
+
+Если `status=conflict` или `rejected`, её использовать нельзя.
+
+## 14. Downstream constraints
+
+`historical_frame` обязан сформировать список ограничений для следующих этапов.
+
+Пример:
+
+```json
+{
+  "downstream_constraints": {
+    "must_preserve": [
+      "year",
+      "season",
+      "region_id",
+      "clock.day",
+      "clock.hour",
+      "clock.minute",
+      "clock.time_of_day",
+      "clock.light_profile"
+    ],
+    "must_not_create_yet": [
+      "specific_location",
+      "npc",
+      "items",
+      "visible_scene",
+      "intro_prose",
+      "hidden_event"
+    ],
+    "must_resolve_later": [
+      "start_g1_g4_node",
+      "player_character",
+      "allowed_npc_candidates",
+      "allowed_item_profiles",
+      "g5_scene_anchors"
+    ]
+  }
+}
+```
+
+Следующие агенты обязаны получать этот блок и сверяться с ним.
+
+## 15. Пример успешного результата
+
+```json
+{
+  "version": 1,
+  "schema": "historical_frame",
+  "request_id": "req_001",
+  "selection_status": "selected",
+
+  "era": {
+    "label": "requested historical period",
+    "selection_reason": "Selected from available candidate periods compatible with normalized request.",
+    "source_request_field": "era_request"
+  },
+
+  "year": {
+    "value": 1230,
+    "precision": "exact",
+    "year_range": {
+      "start": 1230,
+      "end": 1230
+    },
+    "selection_reason": "Exact year was selected from allowed historical period candidate.",
+    "source_request_field": "year_request"
+  },
+
+  "calendar": {
+    "party_day": 1,
+    "season": "winter",
+    "season_reason": "Season selected from available regional season rules.",
+    "date_label": null,
+    "calendar_confidence": "medium"
+  },
+
+  "clock": {
+    "day": 1,
+    "hour": 6,
+    "minute": 30,
+    "time_of_day": "morning",
+    "clock_moment": "early morning",
+    "light_profile": "dim",
+    "selection_reason": "Selected as a valid start time compatible with requested tone and start policy."
+  },
+
+  "region": {
+    "region_id": "region_candidate_id",
+    "slug": "region_slug",
+    "title": "Region title",
+    "selection_reason": "Selected from world_base region candidates.",
+    "source_request_field": "region_request"
+  },
+
+  "political_context": {
+    "summary": "Political background selected from the regional historical period.",
+    "active_pressures": [
+      "regional_authority_pressure"
+    ],
+    "forbidden_assumptions": [
+      "Do not create a specific ruler, envoy, battle, raid or court case unless later selected from valid candidate data."
+    ]
+  },
+
+  "social_context": {
+    "summary": "Social background selected from available regional records.",
+    "active_social_pressures": [
+      "household_obligation_possible",
+      "status_difference_relevant"
+    ],
+    "status_constraints_for_character_generation": [
+      "Character status must be selected from available regional social roles."
+    ],
+    "forbidden_assumptions": [
+      "Do not assign noble, slave, official or clerical status unless allowed by candidate roles."
+    ]
+  },
+
+  "seasonal_context": {
+    "summary": "Seasonal pressure selected from available season rules.",
+    "travel_constraints": [
+      "Route availability and travel speed must be checked later against route and edge modifiers."
+    ],
+    "work_rhythm_constraints": [
+      "Daily work rhythm must respect selected season and time of day."
+    ],
+    "visibility_constraints": [
+      "Visible scene must preserve clock.light_profile."
+    ],
+    "health_risk_constraints": [
+      "Exposure risk may be checked later if scene conditions require it."
+    ]
+  },
+
+  "downstream_constraints": {
+    "must_preserve": [
+      "year",
+      "calendar.season",
+      "region.region_id",
+      "clock.day",
+      "clock.hour",
+      "clock.minute",
+      "clock.time_of_day",
+      "clock.light_profile"
+    ],
+    "must_not_create_yet": [
+      "specific_location",
+      "npc",
+      "items",
+      "visible_scene",
+      "intro_prose",
+      "hidden_event"
+    ],
+    "must_resolve_later": [
+      "start_g1_g4_node",
+      "player_character",
+      "allowed_npc_candidates",
+      "allowed_item_profiles",
+      "g5_scene_anchors"
+    ]
+  },
+
+  "candidate_ids_used": {
+    "region_id": "region_candidate_id",
+    "historical_period_id": "period_candidate_id",
+    "season_rule_id": "season_rule_candidate_id",
+    "time_of_day_policy_id": "time_policy_candidate_id"
+  },
+
+  "sources": [
+    {
+      "source_id": "source_record_id",
+      "supports": [
+        "region",
+        "historical_period",
+        "social_context"
+      ]
+    }
+  ],
+
+  "audit": {
+    "pass": true,
+    "concerns": [],
+    "evidence": [
+      "Selected region_id exists in candidate set.",
+      "Selected year is inside selected historical period.",
+      "Selected season is available for selected region.",
+      "Selected time_of_day is compatible with clock hour and light_profile.",
+      "No scene, NPC, item or location was created."
+    ]
+  }
+}
+```
+
+## 16. Пример заблокированного результата
+
+Если игрок запросил конкретную эпоху/регион, которых нет в базе, и запретил замену:
+
+```json
+{
+  "version": 1,
+  "schema": "historical_frame",
+  "request_id": "req_001",
+  "selection_status": "blocked",
+
+  "era": null,
+  "year": null,
+  "calendar": null,
+  "clock": null,
+  "region": null,
+  "political_context": null,
+  "social_context": null,
+  "seasonal_context": null,
+
+  "downstream_constraints": {
+    "must_preserve": [],
+    "must_not_create_yet": [
+      "specific_location",
+      "npc",
+      "items",
+      "visible_scene",
+      "intro_prose",
+      "hidden_event"
+    ],
+    "must_resolve_later": []
+  },
+
+  "candidate_ids_used": {},
+
+  "sources": [],
+
+  "audit": {
+    "pass": false,
+    "concerns": [
+      {
+        "code": "NO_COMPATIBLE_HISTORICAL_FRAME",
+        "message": "No available region or historical period candidate satisfies player constraints."
+      }
+    ],
+    "evidence": [
+      "normalized_request forbids random replacement",
+      "available_candidates contains no matching region or period"
+    ]
+  }
+}
+```
+
+## 17. Prompt для HistoricalFrameSelector
+
+```md
+# Роль
+
+Ты HistoricalFrameSelector для начала новой партии исторической текстовой RPG.
+
+# Задача
+
+Выбери историческую рамку новой партии из переданного candidate set.
+
+# Главное правило
+
+Ты не создаёшь мир.
+Ты не создаёшь сцену.
+Ты не создаёшь NPC.
+Ты не создаёшь персонажа.
+Ты не создаёшь предметы.
+Ты не выбираешь конкретную стартовую локацию.
+
+Ты только выбираешь и фиксируешь:
+- эпоху;
+- год или временной диапазон;
+- сезон;
+- день партии;
+- точное время внутри дня;
+- часть суток;
+- световой профиль;
+- регион;
+- политический фон;
+- социальный фон;
+- сезонные ограничения для следующих этапов.
+
+# Источники
+
+Используй только:
+- normalized_request;
+- available_candidates;
+- selection_policy.
+
+Если значения нет в available_candidates, его нельзя выбрать.
+
+# Random policy
+
+Если normalized_request содержит selection_mode=random, выбери допустимый вариант из available_candidates.
+Не придумывай вариант вне candidate set.
+
+# Время
+
+Верни clock как точную структуру:
+{
+  "day": number,
+  "hour": number,
+  "minute": number,
+  "time_of_day": "morning | day | evening | night | deep_night",
+  "clock_moment": "string",
+  "light_profile": "dark | dim | daylight | twilight"
+}
+
+Запрещено возвращать только "утро", "день" или "ночь" без hour/minute/light_profile.
+
+# Сцена запрещена
+
+Не возвращай:
+- visible_scene;
+- intro_prose;
+- start_location_id;
+- g1_id;
+- g2_id;
+- g3_id;
+- g4_id;
+- g5_anchor_id;
+- npc_ids;
+- items;
+- hidden_events.
+
+# Политический и социальный фон
+
+Политический и социальный фон должен быть constraint, а не событие.
+
+Разрешено:
+- summary;
+- active_pressures;
+- forbidden_assumptions;
+- constraints for later generation.
+
+Запрещено:
+- создавать конкретного NPC;
+- назначать персонажу статус;
+- создавать конфликт;
+- создавать нападение, суд, пожар, долг, службу или личную цель.
+
+# Формат ответа
+
+Верни только JSON.
+Не используй markdown.
+Не добавляй пояснений.
+
+schema должно быть ровно:
+"historical_frame"
+
+version должно быть ровно:
+1
+
+# Audit
+
+audit.evidence не должен быть пустым.
+Если audit.pass=false, concerns не должен быть пустым.
+
+# Выход
+
+Верни валидный JSON historical_frame.
+```
+
+## 18. Format-only repair prompt
+
+```md
+# Роль
+
+Ты HistoricalFrameFormatRepairer.
+
+# Задача
+
+Исправь только формат JSON historical_frame.
+
+# Главное правило
+
+Не меняй смысл.
+Не выбирай новые значения.
+Не добавляй новые факты.
+Не создавай регион, год, сезон, NPC, предметы, сцену или локацию.
+
+# Разрешено
+
+- добавить отсутствующие обязательные поля как null, если они не были выбраны;
+- привести schema к "historical_frame";
+- привести version к 1;
+- переименовать поля в допустимые имена;
+- убрать запрещённые downstream-поля;
+- перенести ошибки в audit.concerns.
+
+# Запрещено
+
+- менять выбранный регион;
+- менять год;
+- менять сезон;
+- менять время;
+- добавлять sources, которых не было во входе;
+- превращать blocked в selected.
+
+# Формат ответа
+
+Верни только JSON.
+```
+
+## 19. Semantic repair prompt
+
+```md
+# Роль
+
+Ты HistoricalFrameSemanticRepairer.
+
+# Задача
+
+Исправь semantic errors historical_frame строго по validationErrors.
+
+# Источники
+
+Используй только:
+- исходный historical_frame;
+- validationErrors;
+- normalized_request;
+- available_candidates.
+
+# Главное правило
+
+Если выбранное значение отсутствует в candidate set, выбери другой допустимый вариант только из candidate set.
+Если допустимого варианта нет, верни selection_status="blocked".
+
+# Запрещено
+
+- придумывать регион вне available_candidates;
+- придумывать исторический период;
+- придумывать сезонное правило;
+- придумывать политическую обстановку;
+- создавать сцену, NPC, предметы или стартовую локацию.
+
+# Формат ответа
+
+Верни только JSON historical_frame.
+```
+
+## 20. Validation rules
+
+После ответа LLM код обязан проверить:
+
+1. `schema === "historical_frame"`.
+2. `version === 1`.
+3. `selection_status` входит в enum: `selected`, `blocked`, `requires_clarification`.
+4. Если `selection_status=selected`, все основные блоки не null.
+5. `region.region_id` есть в `available_candidates.regions`.
+6. `candidate_ids_used.region_id === region.region_id`.
+7. `candidate_ids_used.historical_period_id` есть в candidate set.
+8. `year.value` входит в диапазон выбранного historical period.
+9. `calendar.season` есть в допустимых season rules для региона.
+10. `clock.hour` находится в диапазоне 0–23.
+11. `clock.minute` находится в диапазоне 0–59.
+12. `clock.time_of_day` соответствует `clock.hour` или выбранной regional time policy.
+13. `clock.light_profile` соответствует `clock.time_of_day` и season/time policy.
+14. `political_context` не содержит конкретных NPC или событий.
+15. `social_context` не назначает персонажу готовый статус.
+16. `seasonal_context` не создаёт конкретную погоду без погодного этапа.
+17. Не присутствуют запрещённые поля: `visible_scene`, `intro_prose`, `npc_ids`, `items`, `g1_id`, `g2_id`, `g3_id`, `g4_id`, `g5_anchor_id`.
+18. `sources` не пустые, если `selection_policy.require_sources=true`.
+19. Все source IDs существуют в `source_records`.
+20. Не используются records со `status=conflict` или `status=rejected`.
+21. Если используется `status=draft` или `needs_review`, это разрешено selection policy и отражено в audit.
+22. `audit.evidence` не пустой.
+23. Если `audit.pass=false`, `audit.concerns` не пустой.
+
+## 21. Error codes
+
+```text
+HISTORICAL_FRAME_INVALID_JSON
+HISTORICAL_FRAME_SCHEMA_MISMATCH
+HISTORICAL_FRAME_MISSING_REQUIRED_FIELD
+HISTORICAL_FRAME_REGION_NOT_IN_CANDIDATES
+HISTORICAL_FRAME_PERIOD_NOT_IN_CANDIDATES
+HISTORICAL_FRAME_YEAR_OUT_OF_RANGE
+HISTORICAL_FRAME_SEASON_NOT_ALLOWED
+HISTORICAL_FRAME_CLOCK_INVALID
+HISTORICAL_FRAME_LIGHT_PROFILE_CONFLICT
+HISTORICAL_FRAME_SOURCE_MISSING
+HISTORICAL_FRAME_REJECTED_SOURCE_USED
+HISTORICAL_FRAME_CREATED_SCENE
+HISTORICAL_FRAME_CREATED_NPC
+HISTORICAL_FRAME_CREATED_ITEM
+HISTORICAL_FRAME_CREATED_LOCATION
+HISTORICAL_FRAME_CREATED_DOWNSTREAM_ENTITY
+HISTORICAL_FRAME_EMPTY_AUDIT_EVIDENCE
+NO_COMPATIBLE_HISTORICAL_FRAME
+```
+
+## 22. DB write на этом этапе
+
+На этом этапе разрешено писать только служебные данные pipeline.
+
+Разрешённые записи:
+
+* raw selector input;
+* candidate set snapshot;
+* selected historical frame;
+* audit result;
+* validation issues;
+* pipeline step status.
+
+Запрещено писать:
+
+* стартовую позицию персонажа;
+* G1–G5 конкретный узел старта;
+* NPC;
+* предметы;
+* события;
+* стартовую прозу;
+* видимую сцену;
+* hidden state.
+
+`historical_frame` может быть сохранён как часть временного startup pipeline state, но ещё не как полная party-сцена.
+
+## 23. Commit gate этапа
+
+Этап считается готовым, если:
+
+```text
+historical_frame валиден,
+все выбранные ID существуют в candidate set,
+год/сезон/время/свет согласованы,
+не создано downstream-сущностей,
+audit.pass=true.
+```
+
+Если `audit.pass=false`, pipeline не должен идти к выбору места.
+
+Если ошибка формата — format-only repair.
+
+Если ошибка выбора — semantic repair.
+
+Если нет допустимых кандидатов — `blocked` или `requires_clarification`.
+
+## 24. Передача в следующий этап
+
+Следующий этап получает:
+
+```json
+{
+  "version": 1,
+  "schema": "regional_context_loader_input",
+  "request_id": "string",
+  "normalized_request": {},
+  "historical_frame": {},
+  "required_region_id": "string",
+  "required_year": 0,
+  "required_season": "spring | summer | autumn | winter",
+  "required_clock": {
+    "day": 1,
+    "hour": 0,
+    "minute": 0,
+    "time_of_day": "string",
+    "light_profile": "string"
+  }
+}
+```
+
+Следующий этап не имеет права изменить `year`, `season`, `region_id`, `clock` или `light_profile`.
+
+Если следующий этап считает рамку невозможной, он должен вернуть ошибку в audit и откатить pipeline к `HistoricalFrameSelector`, а не молча заменить рамку.
+
+*****************************************************************    

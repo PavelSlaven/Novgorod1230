@@ -1,0 +1,1784 @@
+# Этап 7. Подбор допустимых NPC-кандидатов
+
+## 1. Назначение этапа
+
+Подбор допустимых NPC-кандидатов — это этап запуска новой партии, который формирует ограниченный список возможных NPC на основе уже выбранной исторической рамки, регионального контекста, стартовых G1–G4 кандидатов и допустимых place templates.
+
+Этот этап не создаёт конкретных NPC партии. Он не пишет NPC в party-базу. Он не даёт им окончательные имена, биографии, секреты, имущество, отношения с игроком или текущие действия в сцене.
+
+Его задача — собрать допустимое NPC-пространство:
+
+```text id="e9jbtv"
+региональные social roles
++ региональные occupations
++ NPC archetypes
++ name pools
++ key NPC seeds
++ selected candidate place templates
++ historical_frame
++ time/season/place constraints
+→ npc_candidate_set
+```
+
+Иначе говоря, этап отвечает на вопрос:
+
+```text id="dmt93u"
+Какие типы NPC вообще допустимы рядом с такими стартовыми местами в этой исторической рамке?
+```
+
+Он не отвечает на вопрос:
+
+```text id="bxoed9"
+Кто именно сейчас стоит перед игроком?
+```
+
+## 2. Главное правило этапа
+
+NPC-кандидаты формируются только из базы и уже утверждённых контекстов.
+
+Код не должен создавать NPC.
+LLM не должна создавать NPC.
+Код и LLM не должны подменять отсутствующие региональные роли “здравым смыслом”.
+
+Допустимый результат этапа:
+
+```json id="j269xi"
+{
+  "npc_candidate_id": "npc_cand_001",
+  "npc_archetype_id": "npc_arch_001",
+  "social_role_id": "social_role_001",
+  "occupation_id": "occupation_001",
+  "name_pool_id": "name_pool_001",
+  "allowed_place_template_ids": ["place_template_001"]
+}
+```
+
+Запрещённый результат этапа:
+
+```json id="bywcns"
+{
+  "npc_id": "npc_001",
+  "name": "Иван",
+  "secret": "он скрывает долг",
+  "current_action": "чинит упряжь",
+  "relationship_to_player": "подозревает игрока"
+}
+```
+
+Такие данные создаются позже, на этапе материализации стартовой G5-сцены и размещения NPC.
+
+## 3. Место этапа в pipeline
+
+```text id="3pjhxq"
+1. Заявка игрока
+2. Нормализация заявки
+3. Выбор исторической рамки
+4. Загрузка регионального контекста из world_base
+5. Подбор допустимых стартовых G1–G4 кандидатов
+6. Подбор допустимых place templates
+7. Подбор допустимых NPC-кандидатов
+8. Подбор допустимых предметных профилей
+9. Выбор стартового узла
+10. Генерация персонажа
+11. Материализация G5
+12. Размещение стартовых NPC
+```
+
+Этап 7 должен идти после place templates, потому что допустимость NPC зависит от типа места.
+
+Например, список возможных NPC для дороги, монастыря, торга, двора, пристани, лесного стана или городской улицы должен отличаться.
+
+## 4. Вход этапа
+
+```json id="f250w0"
+{
+  "version": 1,
+  "schema": "npc_candidate_retriever_input",
+  "request_id": "string",
+
+  "normalized_request": {
+    "version": 1,
+    "schema": "new_game_normalized_request"
+  },
+
+  "historical_frame": {
+    "version": 1,
+    "schema": "historical_frame",
+    "year": {
+      "value": 0
+    },
+    "calendar": {
+      "season": "spring | summer | autumn | winter"
+    },
+    "clock": {
+      "day": 1,
+      "hour": 0,
+      "minute": 0,
+      "time_of_day": "morning | day | evening | night | deep_night",
+      "light_profile": "dark | dim | daylight | twilight"
+    },
+    "region": {
+      "region_id": "string"
+    }
+  },
+
+  "regional_context_package": {
+    "version": 1,
+    "schema": "regional_context_package",
+    "social_context": {},
+    "occupation_context": {},
+    "npc_context": {},
+    "settlement_and_place_rules": {},
+    "knowledge_context": {},
+    "property_context": {}
+  },
+
+  "start_candidate_set": {
+    "version": 1,
+    "schema": "start_candidate_set",
+    "candidates": []
+  },
+
+  "candidate_place_template_set": {
+    "version": 1,
+    "schema": "candidate_place_template_set",
+    "candidate_template_links": []
+  },
+
+  "npc_candidate_policy": {
+    "target_candidates_min": 20,
+    "target_candidates_max": 120,
+    "include_background_profiles": true,
+    "include_scene_profiles": true,
+    "include_key_seeds": true,
+    "do_not_materialize_npcs": true,
+    "require_social_role": true,
+    "require_occupation_when_applicable": true,
+    "require_archetype": true,
+    "require_name_pool_for_named_npc": true,
+    "allow_unnamed_background_npc": true,
+    "require_place_template_match": true,
+    "require_time_of_day_match": true,
+    "require_season_match": true,
+    "require_sources": true,
+    "reject_rejected_or_conflict_records": true
+  }
+}
+```
+
+## 5. Выход этапа
+
+```json id="fs9x5f"
+{
+  "version": 1,
+  "schema": "npc_candidate_set",
+  "request_id": "string",
+
+  "selection_status": "ready | empty | blocked | requires_repair",
+
+  "frame": {
+    "region_id": "string",
+    "year": 0,
+    "season": "spring | summer | autumn | winter",
+    "clock": {}
+  },
+
+  "summary": {
+    "npc_candidate_count": 0,
+    "background_candidate_count": 0,
+    "scene_candidate_count": 0,
+    "key_seed_candidate_count": 0,
+    "rejected_candidate_count": 0
+  },
+
+  "npc_candidates": [],
+
+  "rejected_npc_candidates": [],
+
+  "npc_candidate_groups": [],
+
+  "name_pool_index": {},
+
+  "downstream_constraints": {
+    "must_choose_from_npc_candidate_ids": [],
+    "must_preserve": [],
+    "must_not_create_yet": [],
+    "must_resolve_later": []
+  },
+
+  "source_trace": [],
+
+  "audit": {
+    "pass": true,
+    "concerns": [],
+    "evidence": []
+  }
+}
+```
+
+## 6. Что считается NPC-кандидатом
+
+NPC-кандидат — это не человек сцены, а допустимая комбинация:
+
+```text id="9cy9tn"
+NPC archetype
++ social role
++ occupation
++ place template
++ profile level
++ name pool
++ доступность по времени/сезону
++ ограничения источников
+```
+
+Пример:
+
+```json id="1e4m2y"
+{
+  "npc_candidate_id": "npc_cand_001",
+  "profile_level": "background",
+  "npc_archetype_id": "npc_arch_worker",
+  "social_role_id": "social_role_common_free",
+  "occupation_id": "occupation_laborer",
+  "name_pool_id": null,
+  "allowed_candidate_place_template_link_ids": ["cptl_001"],
+  "can_be_named_now": false,
+  "can_be_materialized_later": true
+}
+```
+
+Это означает:
+
+```text id="90x44u"
+такой тип NPC допустим для будущей стартовой сцены
+```
+
+Это не означает:
+
+```text id="j6w48t"
+NPC уже существует в party_npcs
+```
+
+## 7. Уровни NPC-кандидатов
+
+### 7.1. Background candidate
+
+Фоновый NPC нужен для видимости сцены: кто находится рядом, кто создаёт бытовой фон, кто может увидеть действие, кто создаёт шум, порядок или напряжение.
+
+На этом этапе background candidate не получает:
+
+* имя;
+* скрытую биографию;
+* долговременную память;
+* полный набор характеристик;
+* личный квест;
+* секрет;
+* конкретные вещи.
+
+Он получает только допустимую связку:
+
+```text id="h0qovw"
+archetype + social_role + occupation + place_template + visibility role
+```
+
+### 7.2. Scene candidate
+
+Сценический NPC нужен для будущего адресного взаимодействия: разговор, просьба, отказ, свидетельство, доступ, торговля, угроза, помощь, препятствие.
+
+На этом этапе scene candidate ещё не становится конкретным NPC, но должен иметь достаточные основания:
+
+```text id="shpgum"
+может находиться в таком месте
+может выполнять такую функцию
+может быть доступен в это время суток
+может знать/контролировать что-то в пределах своей роли
+```
+
+### 7.3. Key seed candidate
+
+Ключевой NPC-кандидат возможен только если в базе есть `key_npc_seed` или отдельное правило, разрешающее будущую ключевую материализацию.
+
+На этом этапе key candidate не получает полной биографии. Он только помечается как возможный ключевой NPC для будущего выбора.
+
+Ключевой NPC допустим, если он потенциально связан с:
+
+```text id="ssv4rf"
+долговременной памятью
+доступом к важному ресурсу
+властью над местом
+историческим якорем
+значимой социальной связью
+повторной встречей
+долгом, обещанием, конфликтом, зависимостью или последствием
+```
+
+Но всё это ещё не создаётся как факт партии.
+
+## 8. Источники данных
+
+### 8.1. `region_social_roles`
+
+Социальные роли региона.
+
+Используются для определения:
+
+```text id="pw7ris"
+кто вообще может существовать в регионе;
+какой у NPC статус;
+кому он подчиняется;
+кто может его защищать;
+кто может его наказать;
+какие у него типичные цели, страхи и ограничения;
+какие правила генерации NPC связаны с ролью.
+```
+
+Минимальные поля:
+
+```text id="9krlps"
+id
+region_id
+slug
+title
+summary
+status_group
+legal_status
+wealth_band
+typical_fears
+typical_goals
+who_commands_them
+who_protects_them
+who_can_punish_them
+relation_to_power
+relation_to_religion
+npc_generation_rules
+game_use
+limits
+status
+confidence
+sources
+audit_notes
+```
+
+### 8.2. `region_occupations`
+
+Профессии и занятия региона.
+
+Используются для определения:
+
+```text id="15orqz"
+чем NPC может заниматься;
+в каких местах он обычно появляется;
+какие инструменты и ресурсы связаны с занятием;
+какие знания он может иметь;
+какая сезонность и доступность у занятия;
+какой социальный статус допустим.
+```
+
+Минимальные поля:
+
+```text id="sv9nf2"
+id
+region_id
+slug
+title
+summary
+occupation_group
+required_social_roles
+typical_places
+seasonal_pattern
+tools_or_items
+wealth_band
+mobility
+risk_profile
+game_use
+limits
+status
+confidence
+sources
+audit_notes
+```
+
+### 8.3. `npc_archetypes`
+
+Общие или региональные архетипы NPC.
+
+Используются для определения игровой функции NPC-кандидата.
+
+Минимальные поля:
+
+```text id="nvjdez"
+id
+region_id
+slug
+title
+summary
+profile_level_default
+archetype_group
+allowed_social_role_ids
+allowed_occupation_ids
+typical_place_template_ids
+typical_presence_reasons
+typical_visibility
+typical_interaction_modes
+typical_knowledge_scope
+typical_resource_scope
+typical_risk_profile
+memory_profile
+promotion_rules
+game_use
+limits
+status
+confidence
+sources
+audit_notes
+```
+
+Если `npc_archetypes` в реализации разделены на глобальные и региональные, код должен использовать региональные связки или explicit allowlist.
+
+### 8.4. `npc_name_pools`
+
+Именные пулы региона.
+
+Используются только как источник допустимых имён и прозвищ, если NPC позже будет материализован как именованный.
+
+Минимальные поля:
+
+```text id="6uvna7"
+id
+region_id
+slug
+title
+culture_group
+language_group
+gender_scope
+social_role_ids
+occupation_ids
+name_forms
+byname_forms
+patronymic_rules
+nickname_rules
+usage_limits
+game_use
+limits
+status
+confidence
+sources
+audit_notes
+```
+
+На этом этапе имя не выбирается. Только фиксируется, какие name pools допустимы для будущей материализации.
+
+### 8.5. `key_npc_seeds`
+
+Зерна ключевых NPC.
+
+Используются только для кандидатов потенциально ключевого уровня.
+
+Минимальные поля:
+
+```text id="ghymyn"
+id
+region_id
+slug
+title
+summary
+allowed_place_template_ids
+allowed_graph_node_ids
+social_role_id
+occupation_id
+npc_archetype_id
+historical_anchor_id
+availability_period
+activation_conditions
+game_use
+limits
+status
+confidence
+sources
+audit_notes
+```
+
+Key seed не создаёт NPC автоматически. Он только разрешает будущую материализацию ключевого NPC, если стартовое место и условия подходят.
+
+### 8.6. `candidate_place_template_set`
+
+Используется как ограничение по месту.
+
+NPC-кандидат должен быть совместим хотя бы с одной разрешённой связкой:
+
+```text id="lhx5wt"
+candidate_place_template_link_id
+place_template_id
+node_id
+candidate_id
+```
+
+Нельзя создавать NPC-кандидатов для типов мест, которых нет в `candidate_place_template_set`.
+
+### 8.7. `historical_frame.clock`
+
+Используется для проверки времени суток.
+
+Примеры:
+
+```text id="8me8gm"
+если time_of_day = deep_night,
+дневные торговцы, чиновники, школьники, обычный рынок, дневная толпа не должны попадать в allowed candidates без специального night rule.
+```
+
+Ночной старт не запрещает NPC. Но он меняет доступность и профиль NPC.
+
+### 8.8. `property_context` и `knowledge_context`
+
+Эти блоки не создают NPC, но уточняют:
+
+```text id="qdb3fh"
+какие NPC могут контролировать доступ;
+какие NPC могут владеть вещами;
+какие NPC могут знать путь;
+какие NPC могут быть свидетелями;
+какие NPC могут скрывать или искажать информацию.
+```
+
+## 9. Алгоритм этапа
+
+### 9.1. Проверить входы
+
+Код проверяет:
+
+```text id="2ihxvb"
+historical_frame.audit.pass = true
+regional_context_package.audit.pass = true
+start_candidate_set.audit.pass = true
+candidate_place_template_set.audit.pass = true
+region_id задан
+year задан
+season задан
+clock задан
+```
+
+Если `candidate_place_template_set.selection_status != ready`, этап не запускается.
+
+### 9.2. Загрузить social roles
+
+```sql id="ez7xhj"
+SELECT *
+FROM world_base.region_social_roles
+WHERE region_id = :region_id
+  AND status IN (:allowed_statuses);
+```
+
+Если `npc_candidate_policy.require_social_role=true`, отсутствие social roles блокирует этап.
+
+### 9.3. Загрузить occupations
+
+```sql id="b1f78p"
+SELECT *
+FROM world_base.region_occupations
+WHERE region_id = :region_id
+  AND status IN (:allowed_statuses);
+```
+
+Фильтр по сезону:
+
+```text id="cmx1li"
+occupation.seasonal_pattern совместим с historical_frame.calendar.season
+или seasonal_pattern пустой / all_seasons
+```
+
+### 9.4. Загрузить NPC archetypes
+
+```sql id="0w8ckf"
+SELECT *
+FROM world_base.npc_archetypes
+WHERE (region_id = :region_id OR region_id IS NULL)
+  AND status IN (:allowed_statuses);
+```
+
+Если в базе есть отдельная региональная связка:
+
+```sql id="vc3etb"
+SELECT *
+FROM world_base.region_npc_archetypes
+WHERE region_id = :region_id
+  AND is_allowed = true
+  AND status IN (:allowed_statuses);
+```
+
+Главное правило: если используется глобальный archetype, он должен быть явно разрешён для региона или совместим через региональные правила.
+
+### 9.5. Загрузить name pools
+
+```sql id="mvt95b"
+SELECT *
+FROM world_base.npc_name_pools
+WHERE region_id = :region_id
+  AND status IN (:allowed_statuses);
+```
+
+Name pools не создают имена. Они дают будущему этапу список допустимых именований.
+
+### 9.6. Загрузить key NPC seeds
+
+```sql id="a9wnx7"
+SELECT *
+FROM world_base.key_npc_seeds
+WHERE region_id = :region_id
+  AND status IN (:allowed_statuses)
+  AND (
+    availability_start_year IS NULL
+    OR availability_start_year <= :year
+  )
+  AND (
+    availability_end_year IS NULL
+    OR availability_end_year >= :year
+  );
+```
+
+Если key seeds отсутствуют, это не блокирует обычный старт. Просто `key_seed_candidate_count = 0`.
+
+### 9.7. Построить индексы
+
+Код строит:
+
+```json id="6dt9ph"
+{
+  "social_role_by_id": {},
+  "occupation_by_id": {},
+  "npc_archetype_by_id": {},
+  "name_pools_by_role_id": {},
+  "name_pools_by_occupation_id": {},
+  "key_npc_seed_by_id": {},
+  "place_template_links_by_template_id": {},
+  "place_template_links_by_candidate_id": {}
+}
+```
+
+### 9.8. Сопоставить social role ↔ occupation
+
+Код строит допустимые пары:
+
+```text id="w1sfcs"
+social_role_id + occupation_id
+```
+
+Пара допустима, если:
+
+```text id="bkwjxp"
+occupation.required_social_roles пустой
+или social_role_id ∈ occupation.required_social_roles
+```
+
+Дополнительно проверяются:
+
+```text id="a9k50k"
+wealth_band compatibility
+legal_status compatibility
+gender_age_limits, если есть
+mobility compatibility
+seasonal_pattern compatibility
+```
+
+Если occupation требует роль, которой нет в регионе, такая occupation не используется.
+
+### 9.9. Сопоставить archetype ↔ social role ↔ occupation
+
+NPC archetype допустим, если:
+
+```text id="7rxyr7"
+social_role_id ∈ archetype.allowed_social_role_ids
+или allowed_social_role_ids пустой и региональные правила не запрещают
+
+occupation_id ∈ archetype.allowed_occupation_ids
+или allowed_occupation_ids пустой и occupation_group совместим
+```
+
+Если archetype имеет жёсткий список ролей или занятий, выход за список запрещён.
+
+### 9.10. Сопоставить archetype ↔ place template
+
+NPC-кандидат должен быть совместим хотя бы с одним `candidate_place_template_link_id`.
+
+Проверка:
+
+```text id="5qhn9o"
+place_template_id ∈ archetype.typical_place_template_ids
+или place_template_id ∈ occupation.typical_places
+или place_template_id разрешён social_role.npc_generation_rules
+или place_template_id разрешён place_generation_rules.npc_generation_rules
+```
+
+Если ни одно основание не найдено, кандидат отклоняется.
+
+### 9.11. Проверить время суток
+
+Код сверяет:
+
+```text id="3t3pqa"
+historical_frame.clock.time_of_day
+archetype availability rules
+occupation work rhythm
+place access rules
+social role movement/access constraints
+```
+
+Пример:
+
+```text id="m4m3tb"
+day_market_worker + deep_night + no night_exception → reject
+gate_guard + night + place has night access → allowed
+household_member + deep_night + household place → allowed with warning
+traveler + road + night → allowed if route/risk rules permit
+```
+
+Нельзя пропускать дневного NPC в ночной старт только потому, что “он мог бы быть там”. Нужно основание.
+
+### 9.12. Проверить сезон
+
+Код сверяет:
+
+```text id="gekc9f"
+occupation.seasonal_pattern
+archetype seasonal limits
+place seasonal rules
+route/weather seasonal constraints
+```
+
+Если NPC-занятие невозможно в выбранный сезон, кандидат отклоняется.
+
+Если возможно, но с ограничениями, добавляется warning.
+
+### 9.13. Проверить player hard constraints
+
+Из `normalized_request.hard_constraints`:
+
+```text id="xkr0v9"
+no_combat_start
+no_authority_start
+no_religious_start
+no_trade_start
+no_noble_environment
+no_family_start
+historical_consistency_required
+```
+
+Код не должен художественно интерпретировать constraint, но должен сопоставить его с tags:
+
+```text id="rk7lq5"
+archetype_group
+social_role.status_group
+occupation_group
+place_template.place_kind
+risk_profile
+```
+
+Если hard constraint нарушен, NPC candidate отклоняется.
+
+### 9.14. Проверить name pool
+
+Если NPC-кандидат может стать именованным, нужно найти совместимый name pool:
+
+```text id="y8yrh4"
+name_pool.region_id = region_id
+name_pool.social_role_ids пустой или содержит social_role_id
+name_pool.occupation_ids пустой или содержит occupation_id
+name_pool.gender_scope compatible, если gender later constrained
+status allowed
+```
+
+Если это фоновый безымянный NPC и `allow_unnamed_background_npc=true`, отсутствие name pool не блокирует candidate.
+
+Если это scene/key candidate и имя может понадобиться сразу, отсутствие name pool даёт warning или reject по policy.
+
+### 9.15. Проверить key NPC seeds
+
+Key candidate допустим, если:
+
+```text id="s3czu5"
+key_npc_seed.region_id = selected region
+year внутри availability_period
+seed.social_role_id совместим
+seed.occupation_id совместим
+seed.npc_archetype_id совместим
+seed.allowed_place_template_ids содержит place_template_id
+или seed.allowed_graph_node_ids содержит candidate node_id
+```
+
+Key seed не создаёт NPC. Он только даёт future materialization permission.
+
+### 9.16. Сформировать NPC candidate
+
+Для каждой допустимой комбинации код создаёт запись:
+
+```text id="8mtnkj"
+npc_archetype
++ social_role
++ occupation
++ place_template_link
++ profile_level
++ name_pool compatibility
++ time/season compatibility
+```
+
+### 9.17. Сформировать группы
+
+Группировка нужна для будущего этапа выбора/материализации.
+
+Рекомендуемые группы:
+
+```text id="4dd5vm"
+by profile_level
+by place_template_id
+by social_role_group
+by occupation_group
+by archetype_group
+by time_availability
+by risk_profile
+by can_witness
+by can_control_access
+by can_trade
+by can_guide
+by can_provide_information
+by key_seed_available
+```
+
+## 10. Формат NPC-кандидата
+
+```json id="yc1y9z"
+{
+  "npc_candidate_id": "npc_cand_001",
+
+  "candidate_status": "allowed | weak | rejected",
+
+  "profile_level": "background | scene | key_seed",
+
+  "npc_archetype": {
+    "npc_archetype_id": "npc_arch_001",
+    "slug": "string",
+    "title": "string",
+    "archetype_group": "string",
+    "profile_level_default": "background | scene | key"
+  },
+
+  "social_role": {
+    "social_role_id": "social_role_001",
+    "slug": "string",
+    "title": "string",
+    "status_group": "string",
+    "legal_status": "string",
+    "wealth_band": "string"
+  },
+
+  "occupation": {
+    "occupation_id": "occupation_001 | null",
+    "slug": "string | null",
+    "title": "string | null",
+    "occupation_group": "string | null"
+  },
+
+  "place_compatibility": {
+    "allowed_candidate_place_template_link_ids": [],
+    "allowed_place_template_ids": [],
+    "allowed_start_candidate_ids": [],
+    "place_match_basis": []
+  },
+
+  "name_pool_compatibility": {
+    "can_be_named_later": true,
+    "requires_name_at_materialization": false,
+    "allowed_name_pool_ids": [],
+    "can_remain_unnamed_background": true
+  },
+
+  "time_and_season_compatibility": {
+    "season_match": true,
+    "time_of_day_match": true,
+    "clock_warnings": [],
+    "season_warnings": []
+  },
+
+  "game_function_candidates": {
+    "can_be_visible_background": true,
+    "can_be_addressed": false,
+    "can_witness": true,
+    "can_control_access": false,
+    "can_trade": false,
+    "can_guide": false,
+    "can_share_knowledge": false,
+    "can_create_risk": false,
+    "can_become_key_later": false
+  },
+
+  "key_seed": {
+    "key_npc_seed_id": "string | null",
+    "activation_conditions": [],
+    "allowed_as_key_candidate": false
+  },
+
+  "score": {
+    "value": 0,
+    "band": "excellent | good | usable | weak | reject",
+    "score_reasons": [],
+    "score_penalties": []
+  },
+
+  "why_allowed": [],
+  "warnings": [],
+
+  "source_trace": [
+    {
+      "record_id": "social_role_001",
+      "table": "world_base.region_social_roles",
+      "source_ids": [],
+      "supports": ["social_role"],
+      "status": "approved",
+      "confidence": "medium_high"
+    }
+  ]
+}
+```
+
+## 11. Rejected NPC candidate
+
+```json id="91e8d1"
+{
+  "npc_candidate_id": "rejected_npc_cand_001",
+  "npc_archetype_id": "npc_arch_001",
+  "social_role_id": "social_role_001",
+  "occupation_id": "occupation_001",
+  "candidate_place_template_link_id": "cptl_001",
+  "rejection_code": "NPC_CANDIDATE_TIME_OF_DAY_CONFLICT",
+  "rejection_reason": "Occupation and archetype require daytime public activity, but historical_frame.clock.time_of_day is deep_night.",
+  "evidence": [
+    "clock.time_of_day=deep_night",
+    "occupation.seasonal_or_daily_pattern=daytime",
+    "no night availability rule found"
+  ]
+}
+```
+
+Rejected candidates не передаются следующим этапам как допустимые.
+
+## 12. Scoring
+
+Scoring не создаёт NPC. Он только сортирует допустимые комбинации.
+
+Рекомендуемая формула:
+
+```text id="qdj5c3"
+score =
+  archetype_match_score
++ social_role_match_score
++ occupation_match_score
++ place_template_match_score
++ time_match_score
++ season_match_score
++ name_pool_score
++ source_confidence_score
++ player_request_match_score
+- warning_penalty
+- weak_basis_penalty
+- overpowered_or_implausible_penalty
+```
+
+Шкала:
+
+```text id="ofeitv"
+90–100 = excellent
+70–89 = good
+50–69 = usable
+30–49 = weak
+0–29 = reject
+```
+
+## 13. Hard gates
+
+NPC-кандидат отклоняется без LLM, если:
+
+```text id="755dx2"
+social_role_id отсутствует в region_social_roles
+occupation_id отсутствует в region_occupations, если occupation required
+npc_archetype_id отсутствует в npc_archetypes
+name_pool отсутствует для named scene/key candidate, если policy требует
+record status = rejected
+record status = conflict
+record.region_id не совпадает с historical_frame.region_id
+occupation.required_social_roles не содержит social_role_id
+archetype.allowed_social_role_ids не содержит social_role_id при жёстком списке
+archetype.allowed_occupation_ids не содержит occupation_id при жёстком списке
+archetype/place_template mismatch
+occupation/place_template mismatch
+time_of_day hard conflict
+season hard conflict
+player hard constraint conflict
+key_npc_seed outside year/region/place limits
+source missing при require_sources=true
+```
+
+Эти проверки выполняет код. Это не генерация мира, а защита ссылок и ограничений.
+
+## 14. SQL-псевдозапросы
+
+### 14.1. Social roles
+
+```sql id="7aq62v"
+SELECT *
+FROM world_base.region_social_roles
+WHERE region_id = :region_id
+  AND status IN (:allowed_statuses);
+```
+
+### 14.2. Occupations
+
+```sql id="vxfni7"
+SELECT *
+FROM world_base.region_occupations
+WHERE region_id = :region_id
+  AND status IN (:allowed_statuses);
+```
+
+### 14.3. NPC archetypes
+
+```sql id="s8dwor"
+SELECT *
+FROM world_base.npc_archetypes
+WHERE (region_id = :region_id OR region_id IS NULL)
+  AND status IN (:allowed_statuses);
+```
+
+Если есть региональная связка:
+
+```sql id="jufndv"
+SELECT rna.*, na.*
+FROM world_base.region_npc_archetypes rna
+JOIN world_base.npc_archetypes na
+  ON na.id = rna.npc_archetype_id
+WHERE rna.region_id = :region_id
+  AND rna.is_allowed = true
+  AND rna.status IN (:allowed_statuses)
+  AND na.status IN (:allowed_statuses);
+```
+
+### 14.4. Name pools
+
+```sql id="f3g9om"
+SELECT *
+FROM world_base.npc_name_pools
+WHERE region_id = :region_id
+  AND status IN (:allowed_statuses);
+```
+
+### 14.5. Key NPC seeds
+
+```sql id="f7o9iz"
+SELECT *
+FROM world_base.key_npc_seeds
+WHERE region_id = :region_id
+  AND status IN (:allowed_statuses)
+  AND (
+    availability_start_year IS NULL
+    OR availability_start_year <= :year
+  )
+  AND (
+    availability_end_year IS NULL
+    OR availability_end_year >= :year
+  );
+```
+
+### 14.6. Candidate place links
+
+```sql id="z19kjj"
+-- Обычно это уже snapshot предыдущего этапа,
+-- но при необходимости можно перепроверить place_template_ids.
+SELECT *
+FROM startup.candidate_place_template_links
+WHERE request_id = :request_id
+  AND candidate_status = 'allowed';
+```
+
+## 15. Работа LLM на этом этапе
+
+Базовый этап должен работать без LLM. Главный подбор NPC-кандидатов выполняет код через `world_base` и уже собранные пакеты.
+
+LLM допускается только в четырёх вспомогательных режимах:
+
+1. `NpcCandidateSetCompressor` — сжатие большого списка кандидатов.
+2. `NpcCandidateSetAuditor` — смысловой аудит уже собранного списка.
+3. `NpcCandidateExplanationWriter` — техническое пояснение для разработчика.
+4. `NpcCandidateFormatRepairer` — repair JSON-формата.
+
+LLM запрещено:
+
+* добавлять `npc_candidate_id`;
+* добавлять `npc_archetype_id`;
+* добавлять `social_role_id`;
+* добавлять `occupation_id`;
+* выбирать имя;
+* создавать конкретного NPC;
+* создавать current_action;
+* создавать hidden motive;
+* создавать relationship_to_player;
+* создавать inventory;
+* создавать witness facts;
+* создавать dialogue;
+* создавать scene prose.
+
+## 16. LLM-параметры
+
+### 16.1. `NpcCandidateSetCompressor`
+
+Назначение: сжать большой `npc_candidate_set`, сохранив ID, score, warnings и source trace.
+
+```json id="eq8zzx"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-flash",
+  "thinking": {
+    "type": "disabled"
+  },
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "max_tokens": 7000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 50000,
+    "hard_input_limit_tokens": 120000,
+    "reserve_output_tokens": 7000
+  }
+}
+```
+
+Применять только если список слишком большой для следующего этапа.
+
+### 16.2. `NpcCandidateSetAuditor`
+
+Назначение: проверить, что кандидатный список не содержит невозможных социальных ролей, занятий, архетипов, имён, временных конфликтов и скрытой материализации NPC.
+
+```json id="xhmej1"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 6000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 60000,
+    "hard_input_limit_tokens": 160000,
+    "reserve_output_tokens": 6000
+  }
+}
+```
+
+В thinking mode не передавать `temperature`, `top_p`, `presence_penalty`, `frequency_penalty`, если текущий API не поддерживает их совместное использование с reasoning.
+
+### 16.3. `NpcCandidateFormatRepairer`
+
+Назначение: исправить только JSON-формат.
+
+```json id="pw1x2q"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-flash",
+  "thinking": {
+    "type": "disabled"
+  },
+  "temperature": 0.0,
+  "max_tokens": 3500,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 25000,
+    "hard_input_limit_tokens": 70000,
+    "reserve_output_tokens": 3500
+  }
+}
+```
+
+## 17. Prompt: NpcCandidateSetCompressor
+
+```md id="xfd797"
+# Роль
+
+Ты NpcCandidateSetCompressor для исторической текстовой RPG.
+
+# Задача
+
+Сожми уже построенный кодом JSON npc_candidate_set.
+
+# Главное правило
+
+Ты не создаёшь NPC.
+Ты не добавляешь npc_candidate_id.
+Ты не добавляешь social_role_id.
+Ты не добавляешь occupation_id.
+Ты не добавляешь npc_archetype_id.
+Ты не выбираешь имя.
+Ты не создаёшь действие, мотив, секрет, имущество, реплику или сцену.
+
+# Источники
+
+Используй только:
+- npc_candidate_set_raw;
+- historical_frame;
+- regional_context_package;
+- candidate_place_template_set.
+
+# Разрешено
+
+- сгруппировать кандидатов;
+- сократить повторяющиеся пояснения;
+- сохранить все ID;
+- сохранить score;
+- сохранить warnings;
+- сохранить rejection codes;
+- сохранить source_trace.
+
+# Запрещено
+
+- добавлять кандидатов;
+- удалять кандидатов без переноса в rejected_npc_candidates;
+- менять compatibility flags;
+- менять score;
+- менять source_trace;
+- материализовать NPC.
+
+# Формат
+
+Верни только json.
+schema должен быть "npc_candidate_set".
+version должен быть 1.
+```
+
+## 18. Prompt: NpcCandidateSetAuditor
+
+```md id="h4d8um"
+# Роль
+
+Ты NpcCandidateSetAuditor для исторической текстовой RPG.
+
+# Задача
+
+Проверь npc_candidate_set на соответствие historical_frame, regional_context_package, candidate_place_template_set и source_trace.
+
+# Главное правило
+
+Ты не создаёшь NPC.
+Ты не добавляешь кандидатов.
+Ты только проверяешь список.
+
+# Проверить
+
+1. Каждый npc_candidate_id уникален.
+2. Каждый social_role_id существует в regional_context_package.social_context.
+3. Каждый occupation_id существует в regional_context_package.occupation_context или null допустим.
+4. Каждый npc_archetype_id существует в regional_context_package.npc_context.
+5. Каждый name_pool_id существует в regional_context_package.npc_context.name_pools, если указан.
+6. Каждый candidate_place_template_link_id существует в candidate_place_template_set.
+7. social_role совместим с occupation.
+8. archetype совместим с social_role.
+9. archetype совместим с occupation.
+10. archetype/occupation/social_role совместимы с place_template.
+11. Candidate совместим с historical_frame.calendar.season.
+12. Candidate совместим с historical_frame.clock.time_of_day и light_profile.
+13. Candidate не нарушает player hard_constraints.
+14. Key seed candidate имеет valid key_npc_seed_id.
+15. Candidate не создаёт конкретного NPC.
+16. Candidate не содержит имени, current_action, hidden_motive, inventory, relationship_to_player, dialogue или visible_scene.
+17. source_trace не пустой, если require_sources=true.
+
+# Формат
+
+Верни только json:
+
+{
+  "version": 1,
+  "schema": "npc_candidate_set_audit",
+  "pass": true,
+  "concerns": [],
+  "evidence": []
+}
+
+Если pass=false, concerns не должен быть пустым.
+evidence не должен быть пустым.
+```
+
+## 19. Prompt: NpcCandidateFormatRepairer
+
+```md id="8vo23l"
+# Роль
+
+Ты NpcCandidateFormatRepairer.
+
+# Задача
+
+Исправь только формат JSON для npc_candidate_set или npc_candidate_set_audit.
+
+# Главное правило
+
+Не меняй смысл.
+Не добавляй NPC.
+Не добавляй кандидатов.
+Не меняй ID.
+Не выбирай имя.
+Не создавай действие, мотив, секрет, имущество, отношение к игроку или сцену.
+
+# Разрешено
+
+- убрать markdown;
+- добавить отсутствующие служебные поля;
+- привести schema/version к нужному виду;
+- переименовать ошибочные поля;
+- перенести лишний текст в notes;
+- если исправление невозможно без изменения смысла, верни audit.pass=false.
+
+# Формат
+
+Верни только json.
+```
+
+## 20. Validation rules
+
+Код обязан проверить:
+
+1. `schema === "npc_candidate_set"`.
+2. `version === 1`.
+3. `selection_status` входит в enum: `ready`, `empty`, `blocked`, `requires_repair`.
+4. Каждый `npc_candidate_id` уникален.
+5. Каждый `social_role_id` существует в `region_social_roles`.
+6. Каждый `occupation_id` существует в `region_occupations` или null допустим.
+7. Каждый `npc_archetype_id` существует в `npc_archetypes`.
+8. Каждый `name_pool_id` существует в `npc_name_pools`, если указан.
+9. Каждый `key_npc_seed_id` существует в `key_npc_seeds`, если указан.
+10. Все records относятся к выбранному `region_id` или являются глобальными archetypes, разрешёнными региональной связкой.
+11. Нет records со `status=conflict`.
+12. Нет records со `status=rejected`.
+13. Если `occupation.required_social_roles` не пуст, `social_role_id` входит в список.
+14. Если `archetype.allowed_social_role_ids` не пуст, `social_role_id` входит в список.
+15. Если `archetype.allowed_occupation_ids` не пуст, `occupation_id` входит в список.
+16. `place_compatibility.allowed_candidate_place_template_link_ids` не пуст.
+17. Все candidate_place_template_link_ids существуют в `candidate_place_template_set`.
+18. `season_match=true` у allowed-кандидатов.
+19. `time_of_day_match=true` у allowed-кандидатов.
+20. Hard constraints игрока не нарушены.
+21. Background candidate без имени допустим только если `allow_unnamed_background_npc=true`.
+22. Scene/key candidate без name pool допустим только если policy разрешает.
+23. Key seed candidate имеет valid seed и совместим с годом/местом.
+24. Нет `npc_id`.
+25. Нет `name`.
+26. Нет `current_action`.
+27. Нет `hidden_motive`.
+28. Нет `relationship_to_player`.
+29. Нет `inventory`.
+30. Нет `dialogue`.
+31. Нет `visible_scene`.
+32. Нет `intro_prose`.
+33. `source_trace` не пустой, если `require_sources=true`.
+34. Все source IDs существуют в `source_records`.
+35. `audit.evidence` не пустой.
+36. Если `audit.pass=false`, `audit.concerns` не пустой.
+
+## 21. Error codes
+
+```text id="oqt0c8"
+NPC_CANDIDATE_INVALID_JSON
+NPC_CANDIDATE_SCHEMA_MISMATCH
+NPC_CANDIDATE_SOCIAL_ROLE_NOT_FOUND
+NPC_CANDIDATE_OCCUPATION_NOT_FOUND
+NPC_CANDIDATE_ARCHETYPE_NOT_FOUND
+NPC_CANDIDATE_NAME_POOL_NOT_FOUND
+NPC_CANDIDATE_KEY_SEED_NOT_FOUND
+NPC_CANDIDATE_REGION_MISMATCH
+NPC_CANDIDATE_REJECTED_RECORD_USED
+NPC_CANDIDATE_CONFLICT_RECORD_USED
+NPC_CANDIDATE_SOCIAL_ROLE_OCCUPATION_MISMATCH
+NPC_CANDIDATE_ARCHETYPE_SOCIAL_ROLE_MISMATCH
+NPC_CANDIDATE_ARCHETYPE_OCCUPATION_MISMATCH
+NPC_CANDIDATE_PLACE_TEMPLATE_MISMATCH
+NPC_CANDIDATE_TIME_OF_DAY_CONFLICT
+NPC_CANDIDATE_SEASON_CONFLICT
+NPC_CANDIDATE_PLAYER_HARD_CONSTRAINT_CONFLICT
+NPC_CANDIDATE_KEY_SEED_OUT_OF_RANGE
+NPC_CANDIDATE_SOURCE_MISSING
+NPC_CANDIDATE_CREATED_NPC
+NPC_CANDIDATE_CREATED_NAME
+NPC_CANDIDATE_CREATED_ACTION
+NPC_CANDIDATE_CREATED_SECRET
+NPC_CANDIDATE_CREATED_INVENTORY
+NPC_CANDIDATE_CREATED_RELATIONSHIP
+NPC_CANDIDATE_CREATED_DIALOGUE
+NPC_CANDIDATE_CREATED_SCENE
+NPC_CANDIDATE_EMPTY_AUDIT_EVIDENCE
+NO_ALLOWED_NPC_CANDIDATES
+```
+
+## 22. DB write на этом этапе
+
+Разрешено писать:
+
+```text id="ul7yo8"
+pipeline_step_status
+npc_candidate_set_snapshot
+npc_candidate_rejected_snapshot
+npc_candidate_audit_result
+npc_candidate_validation_issues
+retrieved_social_role_ids
+retrieved_occupation_ids
+retrieved_npc_archetype_ids
+retrieved_name_pool_ids
+retrieved_key_npc_seed_ids
+source_trace_snapshot
+```
+
+Запрещено писать:
+
+```text id="i2kqas"
+party_npcs
+party_npc_memory
+party_npc_relationships
+party_npc_inventory
+party_events
+party_scene_anchors
+npc_name
+npc_current_action
+npc_hidden_state
+npc_dialogue
+visible_scene
+intro_prose
+```
+
+Этот этап ещё не создаёт NPC в партии. Он создаёт только список допустимых NPC-кандидатов.
+
+## 23. Commit gate этапа
+
+Этап считается успешным, если:
+
+```text id="whkymt"
+npc_candidate_set валиден,
+есть хотя бы один allowed NPC candidate,
+каждый allowed candidate ссылается только на записи world_base,
+каждый social_role/occupation/archetype/name_pool/key_seed проходит region/year/season/time filters,
+каждый candidate совместим с candidate_place_template_set,
+нет материализованных NPC,
+нет имён, действий, секретов, инвентаря, отношений и сцены,
+audit.pass=true.
+```
+
+Если кандидатов нет, pipeline не должен просить LLM “придумать людей рядом”. Он должен:
+
+1. ослабить только soft preferences;
+2. вернуться к place template stage;
+3. выбрать другой стартовый candidate set;
+4. вернуть `blocked`;
+5. вернуть `requires_clarification`, если игрок запретил случайную замену;
+6. записать `NO_ALLOWED_NPC_CANDIDATES`.
+
+## 24. Передача в следующий этап
+
+Следующий этап получает:
+
+```json id="s32j26"
+{
+  "version": 1,
+  "schema": "item_profile_retriever_input",
+  "request_id": "string",
+
+  "normalized_request": {},
+  "historical_frame": {},
+  "regional_context_package": {},
+  "start_candidate_set": {},
+  "candidate_place_template_set": {},
+  "npc_candidate_set": {
+    "version": 1,
+    "schema": "npc_candidate_set",
+    "selection_status": "ready",
+    "npc_candidates": []
+  }
+}
+```
+
+На этапе размещения NPC в G5 будущий LLM обязан выбирать NPC только из:
+
+```text id="30m3yr"
+npc_candidate_set.npc_candidates[*].npc_candidate_id
+```
+
+Если LLM создаёт NPC вне candidate set, результат отклоняется без смыслового repair.
+
+## 25. Минимальный успешный результат
+
+```json id="e9t8ca"
+{
+  "version": 1,
+  "schema": "npc_candidate_set",
+  "request_id": "req_001",
+  "selection_status": "ready",
+
+  "frame": {
+    "region_id": "region_001",
+    "year": 1230,
+    "season": "winter",
+    "clock": {
+      "day": 1,
+      "hour": 6,
+      "minute": 30,
+      "time_of_day": "morning",
+      "light_profile": "dim"
+    }
+  },
+
+  "summary": {
+    "npc_candidate_count": 24,
+    "background_candidate_count": 14,
+    "scene_candidate_count": 8,
+    "key_seed_candidate_count": 2,
+    "rejected_candidate_count": 5
+  },
+
+  "npc_candidates": [
+    {
+      "npc_candidate_id": "npc_cand_001",
+      "candidate_status": "allowed",
+      "profile_level": "background",
+
+      "npc_archetype": {
+        "npc_archetype_id": "npc_arch_001",
+        "slug": "generic_background_worker",
+        "title": "Generic background worker",
+        "archetype_group": "labor",
+        "profile_level_default": "background"
+      },
+
+      "social_role": {
+        "social_role_id": "social_role_001",
+        "slug": "generic_common_status",
+        "title": "Generic common status",
+        "status_group": "common",
+        "legal_status": "free_or_dependent_by_region_rules",
+        "wealth_band": "low_or_modest"
+      },
+
+      "occupation": {
+        "occupation_id": "occupation_001",
+        "slug": "generic_labor_occupation",
+        "title": "Generic labor occupation",
+        "occupation_group": "labor"
+      },
+
+      "place_compatibility": {
+        "allowed_candidate_place_template_link_ids": [
+          "cptl_001"
+        ],
+        "allowed_place_template_ids": [
+          "place_template_001"
+        ],
+        "allowed_start_candidate_ids": [
+          "start_candidate_001"
+        ],
+        "place_match_basis": [
+          "occupation typical_places includes selected place template",
+          "archetype typical_place_template_ids includes selected place template"
+        ]
+      },
+
+      "name_pool_compatibility": {
+        "can_be_named_later": true,
+        "requires_name_at_materialization": false,
+        "allowed_name_pool_ids": [
+          "name_pool_001"
+        ],
+        "can_remain_unnamed_background": true
+      },
+
+      "time_and_season_compatibility": {
+        "season_match": true,
+        "time_of_day_match": true,
+        "clock_warnings": [],
+        "season_warnings": []
+      },
+
+      "game_function_candidates": {
+        "can_be_visible_background": true,
+        "can_be_addressed": false,
+        "can_witness": true,
+        "can_control_access": false,
+        "can_trade": false,
+        "can_guide": false,
+        "can_share_knowledge": false,
+        "can_create_risk": false,
+        "can_become_key_later": false
+      },
+
+      "key_seed": {
+        "key_npc_seed_id": null,
+        "activation_conditions": [],
+        "allowed_as_key_candidate": false
+      },
+
+      "score": {
+        "value": 82,
+        "band": "good",
+        "score_reasons": [
+          "Social role is allowed in selected region.",
+          "Occupation is compatible with social role.",
+          "Archetype is compatible with place template.",
+          "Candidate can remain unnamed background NPC."
+        ],
+        "score_penalties": []
+      },
+
+      "why_allowed": [
+        "All referenced records exist in world_base.",
+        "Candidate is compatible with selected place template and time frame.",
+        "Candidate does not materialize a concrete NPC."
+      ],
+
+      "warnings": [],
+
+      "source_trace": [
+        {
+          "record_id": "social_role_001",
+          "table": "world_base.region_social_roles",
+          "source_ids": [
+            "source_001"
+          ],
+          "supports": [
+            "social_role"
+          ],
+          "status": "approved",
+          "confidence": "medium_high"
+        },
+        {
+          "record_id": "occupation_001",
+          "table": "world_base.region_occupations",
+          "source_ids": [
+            "source_002"
+          ],
+          "supports": [
+            "occupation"
+          ],
+          "status": "approved",
+          "confidence": "medium_high"
+        },
+        {
+          "record_id": "npc_arch_001",
+          "table": "world_base.npc_archetypes",
+          "source_ids": [
+            "source_003"
+          ],
+          "supports": [
+            "npc_archetype"
+          ],
+          "status": "approved",
+          "confidence": "medium_high"
+        }
+      ]
+    }
+  ],
+
+  "rejected_npc_candidates": [],
+
+  "npc_candidate_groups": [
+    {
+      "group_id": "npc_group_background_labor",
+      "title": "Background labor NPC candidates",
+      "npc_candidate_ids": [
+        "npc_cand_001"
+      ],
+      "group_tags": [
+        "background",
+        "labor",
+        "can_witness"
+      ]
+    }
+  ],
+
+  "name_pool_index": {
+    "name_pool_ids": [
+      "name_pool_001"
+    ],
+    "name_pool_ids_by_social_role": {
+      "social_role_001": [
+        "name_pool_001"
+      ]
+    },
+    "name_pool_ids_by_occupation": {
+      "occupation_001": [
+        "name_pool_001"
+      ]
+    }
+  },
+
+  "downstream_constraints": {
+    "must_choose_from_npc_candidate_ids": [
+      "npc_cand_001"
+    ],
+    "must_preserve": [
+      "region_id",
+      "year",
+      "season",
+      "clock",
+      "npc_candidate_id",
+      "npc_archetype_id",
+      "social_role_id",
+      "occupation_id",
+      "candidate_place_template_link_ids"
+    ],
+    "must_not_create_yet": [
+      "npc_id",
+      "npc_name",
+      "current_action",
+      "hidden_motive",
+      "relationship_to_player",
+      "inventory",
+      "dialogue",
+      "visible_scene"
+    ],
+    "must_resolve_later": [
+      "which_npcs_are_materialized",
+      "npc_g5_anchor_position",
+      "npc_current_action",
+      "npc_visibility",
+      "npc_memory_profile"
+    ]
+  },
+
+  "source_trace": [
+    {
+      "record_id": "npc_cand_001",
+      "table": "startup.npc_candidate_set",
+      "source_ids": [
+        "source_001",
+        "source_002",
+        "source_003"
+      ],
+      "supports": [
+        "npc_candidate"
+      ],
+      "status": "derived_from_approved_records",
+      "confidence": "medium_high"
+    }
+  ],
+
+  "audit": {
+    "pass": true,
+    "concerns": [],
+    "evidence": [
+      "All NPC candidates reference existing social roles, occupations and archetypes.",
+      "All NPC candidates are compatible with candidate_place_template_set.",
+      "No concrete NPC was materialized.",
+      "No NPC name, current action, hidden motive, inventory, relationship or dialogue was created.",
+      "All source traces are present."
+    ]
+  }
+}
+```

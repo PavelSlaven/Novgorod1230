@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rus13.local/contracts/InitialNpcLayer.schema.json",
+  "title": "InitialNpcLayer",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "background_npcs",
+    "scene_npcs",
+    "key_npcs",
+    "visibility",
+    "witness_risk",
+    "known_to_character",
+    "hidden_profiles"
+  ],
+  "properties": {
+    "background_npcs": {
+      "description": "Required by InitialNpcLayer.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "scene_npcs": {
+      "description": "Required by InitialNpcLayer.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "key_npcs": {
+      "description": "Required by InitialNpcLayer.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "visibility": {
+      "description": "Required by InitialNpcLayer.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "witness_risk": {
+      "description": "Required by InitialNpcLayer.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "known_to_character": {
+      "description": "Required by InitialNpcLayer.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "hidden_profiles": {
+      "description": "Required by InitialNpcLayer.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    }
+  },
+  "x_writes_to": [
+    "party_npcs",
+    "party_journal_entries"
+  ],
+  "x_blocking_validations": [
+    "each NPC has profile level",
+    "visible fields separated from hidden fields",
+    "scene/key NPCs have memory requirements"
+  ]
+}

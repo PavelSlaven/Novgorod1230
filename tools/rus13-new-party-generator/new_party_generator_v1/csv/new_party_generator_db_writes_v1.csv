@@ -1,0 +1,16 @@
+step_id,table_name,operation,required_fields,source_contract
+ng_02_historical_frame,party_state,insert/update,"party_id, year, season, active_region_id, historical_frame_json, created_at",LLM-approved HistoricalFrameDraft
+ng_04_historical_pressure,party_events,insert,"event_id, party_id, event_type, phase, hidden_state, visible_signs, trigger_json",HistoricalPressurePackage
+ng_05_start_place_selection,party_graph_nodes,insert,"node_id, party_id, canonical_node_id, scale_level, node_type, title, state_json",StartPlaceDraft
+ng_05_start_place_selection,party_places,insert,"place_id, party_id, canonical_place_id, function, controller, access_state, place_state_json",StartPlaceDraft
+ng_06_location_chain,party_current_position,insert/update,"party_id, region_id, place_id, location_id, minilocation_id, anchor_id, last_route_id",StartPositionChain
+ng_07_player_character_generation,party_player_characters,insert,"character_id, party_id, profile_json, attributes_json, skills_json, body_state_json",PlayerCharacterStartProfile
+ng_07_player_character_generation,party_inventory_entries,insert,"entry_id, party_id, character_id, item_id, carried_location, access_level",PlayerCharacterStartProfile
+ng_09_people_nearby,party_npcs,insert,"npc_id, party_id, profile_level, visible_profile_json, hidden_profile_json, current_location_id",InitialNpcLayer
+ng_10_item_property_layer,party_items,insert,"item_id, party_id, item_class, owner_id, holder_id, placement, visible_state, hidden_state, risk_json",InitialItemPropertyLayer
+ng_11_initial_routes_map_knowledge,party_graph_edges,insert,"edge_id, party_id, canonical_edge_id, from_node_id, to_node_id, access_state, risk_state",InitialMapKnowledge
+ng_11_initial_routes_map_knowledge,party_map_knowledge,insert,"knowledge_id, party_id, subject_type, subject_id, knowledge_level, known_to_character, known_to_player",InitialMapKnowledge
+ng_12_initial_tensions_hidden_processes,party_events,insert,"event_id, party_id, trigger_json, hidden_state, visible_signs, affected_entities",InitialTensionEventLayer
+ng_13_consistency_audit,party_validation_issues,insert,"issue_id, party_id, severity, step_id, message, repair_target",StartConsistencyAuditReport
+ng_14_persist_party_start,party_turns,insert,"turn_id, party_id, turn_index, visible_context_json, resulting_state_hash",PartyStartTransactionPlan
+ng_15_visible_context_intro_prose,party_journal_entries,insert,"entry_id, party_id, journal_type, visible_text, knowledge_scope, related_entities",InitialVisibleSceneAndIntroProse

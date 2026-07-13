@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rus13.local/contracts/G5AuditReport.schema.json",
+  "title": "G5AuditReport",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "status",
+    "blocking_issues",
+    "warnings",
+    "repair_targets",
+    "commit_allowed",
+    "visibility_leak_check",
+    "fk_plan_check",
+    "template_compliance_check"
+  ],
+  "properties": {
+    "status": {
+      "description": "Required by G5AuditReport.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "blocking_issues": {
+      "description": "Required by G5AuditReport.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "warnings": {
+      "description": "Required by G5AuditReport.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "repair_targets": {
+      "description": "Required by G5AuditReport.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "commit_allowed": {
+      "description": "Required by G5AuditReport.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "visibility_leak_check": {
+      "description": "Required by G5AuditReport.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "fk_plan_check": {
+      "description": "Required by G5AuditReport.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "template_compliance_check": {
+      "description": "Required by G5AuditReport.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    }
+  },
+  "x_step_id": "g5_10_commit_gate_audit",
+  "x_writes_to": "party_validation_issues, party_llm_steps",
+  "x_blocking_validations": "commit_allowed must be true for DB write"
+}

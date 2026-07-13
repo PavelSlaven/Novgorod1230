@@ -1,0 +1,508 @@
+{
+  "metadata": {
+    "file_name": "novgorod_trade_rules_v1.json",
+    "version": "1.0.0",
+    "project": "RUS13",
+    "region_id": "novgorod_land",
+    "region_id_aliases": [
+      "region_novgorod_land"
+    ],
+    "region_title": "Новгородская земля",
+    "period": "1230-1250",
+    "purpose": "Правила торговли, обмена, долга, залога, поручительства и сезонного дефицита",
+    "created_at_utc": "2026-07-05T12:30:00Z",
+    "status": "draft",
+    "confidence": "medium",
+    "requires_human_audit": true,
+    "list_expansion_policy": "Списки задания являются минимальным ядром, а не пределом. Новые контейнеры, слухи, события, предметные и социальные профили допустимы только при историко-бытовом, хозяйственном или социальном основании, со статусом, уверенностью и возможностью ручного аудита.",
+    "source_registry": [
+      "project_archive:novgorod_full_graph_g1_g4_v6_game_ready.zip",
+      "project_data:novgorod_region_generation_limits_v1.json",
+      "project_data:novgorod_region_profile_v1.json",
+      "project_data:novgorod_historical_timeline_1230_1250_v1.json",
+      "project_data:novgorod_neighbor_regions_v1.json",
+      "project_data:novgorod_social_roles_v1.tsv",
+      "project_data:novgorod_occupations_v1.tsv",
+      "project_data:novgorod_status_rules_v1.json",
+      "project_doc:items_and_property.txt",
+      "project_doc:npc_generation_profiles.txt",
+      "project_doc:movement_locations_regions.txt",
+      "project_doc:time_system.txt",
+      "project_doc:historical_events_and_figures.txt",
+      "project_doc:information_sources_llm_prompts.md"
+    ]
+  },
+  "exchange_forms": [
+    {
+      "rule_id": "exchange_barter",
+      "title": "Натуральный обмен",
+      "summary": "Еда, рыба, соль, ткань, мех, воск, труд и перевоз могут обмениваться без точной монетной цены.",
+      "details": [
+        "качество и срочность важнее универсального курса",
+        "низкий статус требует свидетеля"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "exchange_silver_coin",
+      "title": "Деньги и серебро при наличии",
+      "summary": "Денежная форма возможна в городе, на торге, у купцов и власти, но не обязана быть универсальной для всех сцен.",
+      "details": [
+        "точные номиналы не фиксируются этим файлом",
+        "использовать с осторожностью"
+      ],
+      "status": "usable_with_caution",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "exchange_debt",
+      "title": "Долг",
+      "summary": "Долг хлебом, солью, товаром, работой или деньгами создаёт обязательство, свидетелей и риск просрочки.",
+      "details": [
+        "фиксировать кредитора, должника, срок, свидетеля, залог"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "exchange_pledge",
+      "title": "Залог",
+      "summary": "Вещь в залоге физически может быть у кредитора, но спор о праве остаётся.",
+      "details": [
+        "держатель не всегда владелец",
+        "продажа залога без основания создаёт конфликт"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "exchange_labor",
+      "title": "Работа за еду, кров или плату",
+      "summary": "Грузчик, проводник, работник на покосе, лодочник или ремонтник может брать пищу, товар, обещание или серебро.",
+      "details": [
+        "не делать это современным трудовым договором"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "exchange_guarantor",
+      "title": "Поручительство",
+      "summary": "Поручитель повышает доверие к чужому, должнику или низкому статусу.",
+      "details": [
+        "поручитель рискует репутацией и долгом"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "exchange_witness",
+      "title": "Свидетель сделки",
+      "summary": "Свидетель нужен при спорной вещи, долге, залоге, цене, обвинении, повреждении имущества.",
+      "details": [
+        "свидетель должен быть социально приемлемым"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "exchange_gift_donation",
+      "title": "Дар и даяние",
+      "summary": "Церковное, монастырское и родственное даяние не является простой покупкой.",
+      "details": [
+        "может создавать долг благодарности"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "exchange_dues",
+      "title": "Пошлина, сбор, обычный платёж",
+      "summary": "На торге, переправе, дороге или дворе власти плата может быть обязанностью, а не добровольной сделкой.",
+      "details": [
+        "спор с сборщиком опасен"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "exchange_emergency",
+      "title": "Кризисный обмен",
+      "summary": "Голод, пожар, болезнь, война, закрытая дорога и метель меняют цену, доступ и моральную оценку.",
+      "details": [
+        "может считаться наживой или спасением"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    }
+  ],
+  "trade_place_rules": [
+    {
+      "rule_id": "trade_place_torg",
+      "title": "Торг",
+      "summary": "Главное место открытого обмена, спора о мере, свидетелей, стражи и слухов.",
+      "details": [
+        "не магазин; цена торгуется",
+        "толпа создаёт свидетелей"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "trade_place_pier",
+      "title": "Пристань и берег",
+      "summary": "Товар связан с лодкой, грузчиками, погодой, очередью и правом разгрузки.",
+      "details": [
+        "мокрый груз теряет ценность",
+        "перевозчик контролирует доступ"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "trade_place_pogost",
+      "title": "Погост",
+      "summary": "Сборная точка сельской округи, церкви, слухов, дороги и периодического обмена.",
+      "details": [
+        "не превращать в городской рынок"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "trade_place_monastery",
+      "title": "Монастырь",
+      "summary": "Хозяйство, гостеприимство, запас, работа, даяние и церковные ограничения.",
+      "details": [
+        "не делать монастырь лавкой"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "trade_place_village",
+      "title": "Деревня и двор",
+      "summary": "Обмен идёт через хозяина, семью, долг, родню, соседей, обычай.",
+      "details": [
+        "чужой не имеет свободного доступа к клети"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "trade_place_road",
+      "title": "Дорога и постой",
+      "summary": "Цена зависит от нужды, опасности, времени суток и наличия свидетелей.",
+      "details": [
+        "ночная сделка подозрительна"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "trade_place_boyar_yard",
+      "title": "Боярский двор",
+      "summary": "Доступ к товару и людям идёт через власть двора и слуг.",
+      "details": [
+        "низкому статусу нужен посредник"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "trade_place_ferry",
+      "title": "Переправа",
+      "summary": "Плата зависит от воды, груза, очереди, статуса и разрешения.",
+      "details": [
+        "опасная вода может закрыть обмен"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "trade_place_workshop",
+      "title": "Мастерская",
+      "summary": "Ремонт и изготовление требуют материала, времени, очереди и права на вещь.",
+      "details": [
+        "чужая вещь с меткой рискованна"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    }
+  ],
+  "status_restrictions": [
+    {
+      "rule_id": "trade_status_dependent",
+      "title": "Зависимый человек",
+      "summary": "Не всегда может свободно продавать или покупать: нужна воля хозяина или старшего.",
+      "details": [
+        "вещь при нём может быть чужой"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "trade_status_stranger",
+      "title": "Пришлый",
+      "summary": "Часто нуждается в поручителе, свидетеле или плате вперёд.",
+      "details": [
+        "его легче обвинить"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "trade_status_low",
+      "title": "Низкий статус",
+      "summary": "Хуже торгуется, меньше веса как свидетель, выше риск отказа.",
+      "details": [
+        "может быть принят через церковь, хозяина или поручителя"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "trade_status_elite",
+      "title": "Боярин, купец, власть",
+      "summary": "Может задавать условия, но его вещи и слуги имеют повышенный риск конфликта.",
+      "details": [
+        "нельзя безнаказанно трогать служебную вещь"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "trade_status_clergy",
+      "title": "Церковные люди",
+      "summary": "Церковное имущество отделено от личного; обмен часто идёт как даяние или хозяйственная операция.",
+      "details": [
+        "не продавать святыню как обычную вещь"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "trade_status_armed",
+      "title": "Вооружённые и дружинники",
+      "summary": "Оружие и статус влияют на торг через страх, но создают свидетелей и риск власти.",
+      "details": [
+        "насилие не заменяет право"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    }
+  ],
+  "seasonal_trade_rules": [
+    {
+      "rule_id": "trade_season_winter",
+      "title": "Зима",
+      "summary": "Сани и лёд открывают одни пути и закрывают водную навигацию; дорожная еда, корм, тёплая одежда и ночлег важнее.",
+      "details": [
+        "цены на корм и кров растут при морозе"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "trade_season_late_winter",
+      "title": "Поздняя зима",
+      "summary": "Запасы истощаются, корм и хлеб дорожают, бедные дворы уязвимее.",
+      "details": [
+        "рост долгов и залогов"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "trade_season_rasputitsa",
+      "title": "Распутица",
+      "summary": "Телеги вязнут, дороги хуже, товар задерживается; локальные запасы дорожают.",
+      "details": [
+        "проводник и местное знание ценнее"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "trade_season_flood",
+      "title": "Паводок",
+      "summary": "Переправы опасны, береговые сделки зависят от воды.",
+      "details": [
+        "перевоз может стать дорогим или невозможным"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "trade_season_navigation",
+      "title": "Навигационный сезон",
+      "summary": "Лодки, пристани, грузчики, смола, верёвки и хранение товара активнее.",
+      "details": [
+        "водная погода меняет доступность"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "trade_season_hay_harvest",
+      "title": "Покос и жатва",
+      "summary": "Рабочие руки, еда, серпы, косы, животные и погода определяют сделки.",
+      "details": [
+        "люди заняты, не каждый доступен"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "trade_season_autumn",
+      "title": "Осень",
+      "summary": "Запасы пополняются, но грязь и подготовка к зиме меняют перевозку.",
+      "details": [
+        "ремонт, дрова, корм, хранение"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "trade_crisis_war_fire_famine",
+      "title": "Кризис",
+      "summary": "Голод, пожар, война, болезнь, приказ власти или закрытая дорога меняют цены, мораль и доступ.",
+      "details": [
+        "не делать цены стабильными"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    }
+  ],
+  "debt_pledge_and_witness_rules": [
+    {
+      "rule_id": "debt_requires_parties",
+      "title": "Стороны долга",
+      "summary": "Фиксировать кто должен, кому, чем, к какому сроку, при каких свидетелях.",
+      "details": [
+        "долг не должен возникать без причины"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "pledge_physical_holder",
+      "title": "Держатель залога",
+      "summary": "Залог может лежать у кредитора, хозяина или третьего лица; владелец спорен до расчёта.",
+      "details": [
+        "держатель не равен владелец"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "witness_weight_status",
+      "title": "Вес свидетеля",
+      "summary": "Свидетельство старшего, хозяина, купца, попа или стража весит иначе, чем слово пришлого или зависимого.",
+      "details": [
+        "не использовать как современное равенство сторон"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "debt_due_timer",
+      "title": "Срок долга",
+      "summary": "Просрочка создаёт отложенное событие: послать человека, забрать залог, позвать свидетелей.",
+      "details": [
+        "записывать в party memory при возникновении"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "pledge_recognition",
+      "title": "Метки залога",
+      "summary": "Залоговая вещь должна иметь признаки, состояние, владельца, держателя и риск узнавания.",
+      "details": [
+        "использовать правила предметных меток"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    }
+  ],
+  "market_conflict_rules": [
+    {
+      "rule_id": "market_conflict_underweight",
+      "title": "Недовес",
+      "summary": "Спор о мере вызывает свидетелей, стража, старших и риск репутации.",
+      "details": [
+        "не каждый спор становится дракой"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "market_conflict_stolen_goods",
+      "title": "Чужой товар",
+      "summary": "Вещь с меткой, подозрительно дешёвая или принесённая низким статусом создаёт проверку владельца.",
+      "details": [
+        "заявка продать не стирает происхождение вещи"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "market_conflict_insult",
+      "title": "Оскорбление",
+      "summary": "Неправильное обращение к старшему, купцу, слуге сильного двора или церковному человеку повышает риск.",
+      "details": [
+        "социальный конфликт прежде боевого"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "market_conflict_debt_claim",
+      "title": "Претензия по долгу",
+      "summary": "Кредитор может остановить сделку, потребовать залог или свидетеля.",
+      "details": [
+        "учитывать память партии"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "market_conflict_emergency_price",
+      "title": "Нажива в бедствии",
+      "summary": "В голод, пожар или военную тревогу высокая цена может стать моральным и социальным конфликтом.",
+      "details": [
+        "церковь или община могут вмешаться"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    }
+  ],
+  "llm_trade_limits": {
+    "do_not_use_modern_shop_logic": true,
+    "exact_prices_not_universal": true,
+    "player_request_does_not_create_item_or_buyer": true,
+    "check_ownership_before_trade": true,
+    "check_status_and_witnesses": true,
+    "check_season_and_crisis": true,
+    "do_not_make_church_property_ordinary_trade_good": true,
+    "record_debt_pledge_and_reputation_consequences": true
+  },
+  "validation": {
+    "file_is_valid_json": true,
+    "does_not_create_party_state": true,
+    "does_not_create_new_g1_g4_nodes": true,
+    "does_not_precreate_full_g5_map": true,
+    "uses_existing_map_as_context": true,
+    "respects_generation_limits": true,
+    "separates_visible_hidden_and_unmaterialized": true,
+    "distinguishes_fact_from_rumor": true,
+    "requires_human_historical_audit": true,
+    "blocking_issues": [],
+    "open_questions": [],
+    "exchange_form_count": 10,
+    "trade_place_rule_count": 9,
+    "price_tsv_companion": "novgorod_goods_prices_v1.tsv"
+  }
+}

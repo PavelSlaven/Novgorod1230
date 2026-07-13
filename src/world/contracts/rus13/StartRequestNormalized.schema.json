@@ -1,0 +1,207 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rus13.local/contracts/StartRequestNormalized.schema.json",
+  "title": "StartRequestNormalized",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "version",
+    "schema",
+    "request_id",
+    "language",
+    "start_mode",
+    "player_intent_summary",
+    "era_request",
+    "year_request",
+    "season_request",
+    "time_of_day_request",
+    "region_request",
+    "start_place_request",
+    "character_request",
+    "tone_request",
+    "difficulty_request",
+    "hard_constraints",
+    "soft_preferences",
+    "forbidden_content",
+    "unknowns_to_resolve",
+    "requires_clarification",
+    "clarification_questions",
+    "adaptation_flags",
+    "invalid_or_unsafe_literals",
+    "audit"
+  ],
+  "properties": {
+    "version": {
+      "type": "integer",
+      "const": 1
+    },
+    "schema": {
+      "type": "string",
+      "const": "new_game_normalized_request"
+    },
+    "request_id": {
+      "type": "string"
+    },
+    "language": {
+      "type": "string"
+    },
+    "start_mode": {
+      "type": "string",
+      "const": "new_party"
+    },
+    "player_intent_summary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "era_request": {
+      "$ref": "#/$defs/request_value_block"
+    },
+    "year_request": {
+      "$ref": "#/$defs/request_value_block"
+    },
+    "season_request": {
+      "$ref": "#/$defs/request_value_block"
+    },
+    "time_of_day_request": {
+      "$ref": "#/$defs/request_value_block"
+    },
+    "region_request": {
+      "$ref": "#/$defs/request_value_block"
+    },
+    "start_place_request": {
+      "$ref": "#/$defs/request_value_block"
+    },
+    "character_request": {
+      "$ref": "#/$defs/character_request"
+    },
+    "tone_request": {
+      "$ref": "#/$defs/request_value_block"
+    },
+    "difficulty_request": {
+      "$ref": "#/$defs/request_value_block"
+    },
+    "hard_constraints": {
+      "type": "array"
+    },
+    "soft_preferences": {
+      "type": "array"
+    },
+    "forbidden_content": {
+      "type": "array"
+    },
+    "unknowns_to_resolve": {
+      "type": "array"
+    },
+    "requires_clarification": {
+      "type": "boolean"
+    },
+    "clarification_questions": {
+      "type": "array"
+    },
+    "adaptation_flags": {
+      "type": "object",
+      "required": [
+        "requires_historical_adaptation",
+        "modern_terms_present",
+        "fantasy_or_impossible_terms_present",
+        "too_powerful_or_elite",
+        "requires_social_downgrade",
+        "requires_item_rights_check",
+        "requires_weapon_rights_check"
+      ],
+      "properties": {
+        "requires_historical_adaptation": { "type": "boolean" },
+        "modern_terms_present": { "type": "boolean" },
+        "fantasy_or_impossible_terms_present": { "type": "boolean" },
+        "too_powerful_or_elite": { "type": "boolean" },
+        "requires_social_downgrade": { "type": "boolean" },
+        "requires_item_rights_check": { "type": "boolean" },
+        "requires_weapon_rights_check": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
+    "invalid_or_unsafe_literals": {
+      "type": "array"
+    },
+    "audit": {
+      "type": "object",
+      "required": ["pass", "concerns", "evidence"],
+      "properties": {
+        "pass": { "type": "boolean" },
+        "concerns": { "type": "array" },
+        "evidence": { "type": "array" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "request_value_block": {
+      "type": "object",
+      "required": ["selection_mode", "source", "confidence"],
+      "properties": {
+        "value": {},
+        "selection_mode": {
+          "type": "string",
+          "enum": ["explicit", "random", "constrained_random", "inferred", "unresolved"]
+        },
+        "source": {
+          "type": "string",
+          "enum": ["ui_field", "player_text", "explicit_player_random", "missing", "inferred_from_text"]
+        },
+        "confidence": {
+          "type": "string",
+          "enum": ["low", "medium", "high"]
+        },
+        "notes": {
+          "type": ["string", "null"]
+        }
+      },
+      "additionalProperties": true
+    },
+    "character_request": {
+      "type": "object",
+      "required": ["selection_mode", "source", "confidence"],
+      "properties": {
+        "type_text": { "type": ["string", "null"] },
+        "type_category_hint": { "type": ["string", "null"] },
+        "status_text": { "type": ["string", "null"] },
+        "status_category_hint": { "type": ["string", "null"] },
+        "role_text": { "type": ["string", "null"] },
+        "role_category_hint": { "type": ["string", "null"] },
+        "occupation_text": { "type": ["string", "null"] },
+        "occupation_category_hint": { "type": ["string", "null"] },
+        "skills_text": { "type": "array" },
+        "property_text": { "type": "array" },
+        "gender_text": { "type": ["string", "null"] },
+        "age_band_text": { "type": ["string", "null"] },
+        "origin_text": { "type": ["string", "null"] },
+        "goal_text": { "type": ["string", "null"] },
+        "selection_mode": {
+          "type": "string",
+          "enum": ["explicit", "random", "constrained_random", "inferred", "unresolved"]
+        },
+        "source": {
+          "type": "string",
+          "enum": ["ui_field", "player_text", "explicit_player_random", "missing", "inferred_from_text"]
+        },
+        "confidence": {
+          "type": "string",
+          "enum": ["low", "medium", "high"]
+        },
+        "notes": {
+          "type": ["string", "null"]
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "x_writes_to": [
+    "party_llm_steps"
+  ],
+  "x_blocking_validations": [
+    "player_intent_summary present",
+    "no resolved world_base ids in stage 2 output",
+    "missing fields marked random when allow_random_if_missing=true",
+    "modern/impossible terms flagged in adaptation_flags or invalid_or_unsafe_literals"
+  ]
+}

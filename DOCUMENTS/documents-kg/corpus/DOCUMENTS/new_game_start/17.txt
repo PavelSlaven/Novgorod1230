@@ -1,0 +1,1401 @@
+# Этап 17. Проверка времени и света
+
+## 1. Назначение этапа
+
+Проверка времени и света — это отдельный hard gate после размещения NPC и предметов, но до формирования `visible_context_package` и до narrator prose.
+
+Этап проверяет, что все временные, сезонные, погодные, световые и видимые слои согласованы между собой.
+
+Проверяются:
+
+* `historical_frame.clock`;
+* `calendar.season`;
+* `weather_state`;
+* `light_profile`;
+* `g5_scene_graph.visibility_model`;
+* `npc_visibility_state`;
+* `item_visibility_state`;
+* `visible_scene`, если он уже был предварительно сформирован;
+* `visible_changes`;
+* `narrator_input`, если он уже подготовлен;
+* `player_character.body`;
+* `current_position`;
+* доступность мест, NPC и объектов;
+* последствия холода, темноты, ожидания и погоды.
+
+Главная цель этапа — не дать системе пропустить противоречие вида:
+
+```text id="xyjp7l"
+clock.time_of_day = deep_night
+clock.hour = 03
+light_profile = dark
+visible_scene = "короткий световой день"
+```
+
+Такой результат должен блокироваться до narrator prose.
+
+## 2. Главное правило этапа
+
+`clock` является источником истины для времени суток.
+
+`season` является источником истины для сезонного состояния.
+
+`weather_state` является источником истины для текущей погоды.
+
+`light_profile` является источником истины для видимости.
+
+`visible_scene` не может менять время, сезон, погоду или свет.
+
+Если prose, visible package, G5, NPC или предметы противоречат `clock/season/weather/light`, pipeline останавливается.
+
+Запрещено:
+
+* исправлять время молча;
+* менять `clock` под уже написанную сцену;
+* менять `season` под удобную погоду;
+* делать ночь “световым днём”;
+* делать тёмную сцену полностью видимой;
+* делать дневную активность в глубокой ночи без отдельного основания;
+* показывать невидимые объекты как видимые;
+* раскрывать скрытые предметы через prose;
+* объяснять конфликт художественной фразой вместо исправления источника данных.
+
+## 3. Место этапа в pipeline
+
+```text id="yutnd8"
+1. Заявка игрока
+2. Нормализация заявки
+3. Выбор исторической рамки
+4. Загрузка регионального контекста
+5. Подбор стартовых G1–G4 кандидатов
+6. Подбор place templates
+7. Подбор NPC-кандидатов
+8. Подбор предметных профилей
+9. Выбор стартового узла
+10. Аудит стартового места
+11. Генерация персонажа
+12. Аудит персонажа
+13. Материализация G5-сцены
+14. Аудит G5-сцены
+15. Размещение стартовых NPC
+16. Размещение стартовых предметов
+17. Проверка времени и света
+18. Формирование visible context
+19. Narrator prose
+```
+
+Этап 17 должен быть отдельным, а не частью narrator-аудита. Он должен сработать раньше, чем неверный `visible_scene` попадёт в прозу.
+
+## 4. Вход этапа
+
+```json id="esr3qz"
+{
+  "version": 1,
+  "schema": "time_light_consistency_input",
+  "request_id": "string",
+
+  "historical_frame": {
+    "version": 1,
+    "schema": "historical_frame",
+    "region": {
+      "region_id": "string"
+    },
+    "year": {
+      "value": 0
+    },
+    "calendar": {
+      "season": "spring | summer | autumn | winter",
+      "month": "string | null",
+      "day_label": "string | null"
+    },
+    "clock": {
+      "day": 1,
+      "hour": 0,
+      "minute": 0,
+      "time_of_day": "dawn | morning | day | afternoon | evening | dusk | night | deep_night",
+      "clock_moment": "string",
+      "light_profile": "dark | dim | daylight | twilight | indoor_lit | firelit | moonlit | obscured"
+    }
+  },
+
+  "weather_state": {
+    "version": 1,
+    "schema": "weather_state",
+    "weather_profile_id": "string | null",
+    "weather_kind": "clear | cloudy | rain | snow | fog | storm | wind | thaw | frost | unknown",
+    "temperature_band": "severe_cold | cold | cool | mild | warm | hot | unknown",
+    "precipitation": "none | rain | snow | sleet | hail | unknown",
+    "wind": "none | weak | moderate | strong | dangerous | unknown",
+    "visibility_weather_modifier": "none | reduced | heavily_reduced | blocked | unknown",
+    "ground_state": "dry | wet | mud | snow | ice | flooded | unknown",
+    "weather_source": "regional_rule | event_state | generated_and_audited | unknown"
+  },
+
+  "selected_start_node": {
+    "version": 1,
+    "schema": "selected_start_node"
+  },
+
+  "player_character": {
+    "version": 1,
+    "schema": "player_character_game_profile"
+  },
+
+  "g5_scene_graph": {
+    "version": 1,
+    "schema": "g5_scene_graph_draft"
+  },
+
+  "g5_scene_audit": {
+    "version": 1,
+    "schema": "g5_scene_audit",
+    "pass": true
+  },
+
+  "initial_npc_placement": {
+    "version": 1,
+    "schema": "initial_npc_placement_draft"
+  },
+
+  "npc_placement_audit": {
+    "version": 1,
+    "schema": "initial_npc_placement_audit",
+    "pass": true
+  },
+
+  "initial_item_placement": {
+    "version": 1,
+    "schema": "initial_item_placement_draft"
+  },
+
+  "item_placement_audit": {
+    "version": 1,
+    "schema": "initial_item_placement_audit",
+    "pass": true
+  },
+
+  "draft_visible_context_package": {
+    "version": 1,
+    "schema": "visible_context_package",
+    "visible_scene": "string | null",
+    "visible_changes": [],
+    "visible_npcs": [],
+    "visible_items": [],
+    "visible_exits": [],
+    "visible_risks": []
+  },
+
+  "time_light_policy": {
+    "require_clock_source_of_truth": true,
+    "require_season_source_of_truth": true,
+    "require_weather_source_of_truth": true,
+    "require_light_source_of_truth": true,
+    "reject_daylight_terms_at_night": true,
+    "reject_night_terms_at_day": true,
+    "reject_visible_scene_time_override": true,
+    "reject_weather_season_conflict": true,
+    "reject_visibility_light_conflict": true,
+    "reject_npc_activity_time_conflict": true,
+    "reject_item_visibility_light_conflict": true,
+    "require_body_effects_for_extreme_weather": true,
+    "require_evidence": true,
+    "do_not_repair_by_changing_clock": true
+  }
+}
+```
+
+## 5. Выход этапа
+
+```json id="vuc9eb"
+{
+  "version": 1,
+  "schema": "time_light_consistency_audit",
+  "request_id": "string",
+
+  "pass": true,
+
+  "authoritative_frame": {
+    "clock": {},
+    "season": "spring | summer | autumn | winter",
+    "weather_state": {},
+    "light_profile": "dark | dim | daylight | twilight | indoor_lit | firelit | moonlit | obscured"
+  },
+
+  "checks": {
+    "clock_schema": {},
+    "clock_moment_consistency": {},
+    "season_weather_consistency": {},
+    "weather_light_consistency": {},
+    "g5_visibility_consistency": {},
+    "npc_visibility_and_activity_consistency": {},
+    "item_visibility_consistency": {},
+    "body_state_consistency": {},
+    "visible_scene_consistency": {},
+    "visible_changes_consistency": {},
+    "forbidden_terms_check": {},
+    "source_trace": {}
+  },
+
+  "normalized_visibility_constraints": {},
+
+  "concerns": [],
+
+  "evidence": [],
+
+  "repair_route": null,
+
+  "commit_permission": {
+    "can_continue_to_visible_context": true,
+    "can_continue_to_narrator": false
+  }
+}
+```
+
+`can_continue_to_narrator` обычно остаётся `false`, пока visible context не будет сформирован и отдельно проверен.
+
+## 6. Авторитетность слоёв
+
+### 6.1. `clock`
+
+`clock` управляет:
+
+```text id="s5blez"
+частью суток;
+освещением;
+доступностью NPC;
+режимом работы мест;
+видимостью;
+усталостью;
+ожиданием;
+рисками перемещения;
+уличной активностью;
+тем, какие слова разрешены в visible_scene.
+```
+
+Если `clock.time_of_day=deep_night`, то фразы:
+
+```text id="20qu57"
+короткий световой день
+люди заняты дневными делами
+яркий дневной свет
+на дворе день
+дневная толпа
+открытый торг
+обычная дневная работа
+```
+
+запрещены без явного перехода времени и новой проверки.
+
+### 6.2. `season`
+
+`season` управляет:
+
+```text id="tcgv5b"
+типичной погодой;
+землёй и дорогами;
+одеждой;
+видимостью;
+наличием снега/грязи/льда;
+температурой;
+работами;
+пищей;
+сезонными предметами;
+состоянием тела;
+доступностью маршрутов.
+```
+
+Если `season=winter`, сцена не должна внезапно иметь летний зной, зелёную траву, тёплую ночь или летнюю грозу без регионального погодного правила.
+
+### 6.3. `weather_state`
+
+`weather_state` управляет:
+
+```text id="4wqct5"
+температурой;
+осадками;
+ветром;
+состоянием земли;
+дальностью видимости;
+следами;
+шумом;
+риском холода/сырости;
+пожарами/дымом/скольжением/грязью;
+видимостью предметов и NPC.
+```
+
+### 6.4. `light_profile`
+
+`light_profile` управляет:
+
+```text id="q1b42t"
+что видно без проверки;
+что видно только вблизи;
+что видно только при источнике света;
+что слышно, но не видно;
+что скрыто;
+что требует осмотра;
+что нельзя показывать в visible_scene.
+```
+
+Принцип:
+
+```text id="qlje0r"
+видимость = clock light + weather modifier + G5 visibility + distance + obstruction + player position
+```
+
+## 7. Допустимые связки времени и света
+
+```json id="dnus5w"
+{
+  "time_light_matrix": [
+    {
+      "time_of_day": "deep_night",
+      "allowed_light_profiles": ["dark", "moonlit", "firelit", "indoor_lit", "obscured"],
+      "forbidden_visible_scene_terms": ["день", "дневной свет", "световой день", "короткий световой день", "полдень", "яркое солнце"],
+      "visibility_rule": "near or lit objects only"
+    },
+    {
+      "time_of_day": "night",
+      "allowed_light_profiles": ["dark", "moonlit", "firelit", "indoor_lit", "obscured"],
+      "forbidden_visible_scene_terms": ["дневной свет", "полдень", "яркий день"],
+      "visibility_rule": "limited, unless lit"
+    },
+    {
+      "time_of_day": "dawn",
+      "allowed_light_profiles": ["dim", "twilight", "obscured"],
+      "forbidden_visible_scene_terms": ["глубокая ночь", "полдень"],
+      "visibility_rule": "growing but limited light"
+    },
+    {
+      "time_of_day": "day",
+      "allowed_light_profiles": ["daylight", "dim", "obscured"],
+      "forbidden_visible_scene_terms": ["глубокая ночь", "ночная темнота", "третий час пополуночи"],
+      "visibility_rule": "normal daylight unless weather reduces it"
+    },
+    {
+      "time_of_day": "dusk",
+      "allowed_light_profiles": ["twilight", "dim", "dark", "obscured"],
+      "forbidden_visible_scene_terms": ["полдень", "глубокая ночь"],
+      "visibility_rule": "declining light"
+    }
+  ]
+}
+```
+
+Эта таблица не заменяет региональные правила, но служит hard gate для очевидных противоречий.
+
+## 8. Проверки этапа
+
+### 8.1. Clock schema
+
+Проверяется:
+
+```text id="em0be7"
+day exists
+hour ∈ 0..23
+minute ∈ 0..59
+time_of_day exists
+clock_moment exists
+light_profile exists
+```
+
+Ошибка:
+
+```text id="2ktm9t"
+TIME_LIGHT_CLOCK_SCHEMA_INVALID
+```
+
+### 8.2. Clock moment consistency
+
+Проверяется соответствие `hour/minute/time_of_day/clock_moment`.
+
+Примеры hard conflict:
+
+```text id="fztu4k"
+hour=3, time_of_day=day
+hour=12, time_of_day=deep_night
+clock_moment="глубокая ночь", light_profile="daylight"
+clock_moment="полдень", light_profile="dark"
+```
+
+Ошибка:
+
+```text id="za2xvf"
+TIME_LIGHT_CLOCK_MOMENT_CONFLICT
+```
+
+### 8.3. Season/weather consistency
+
+Проверяется, что погода совместима с сезоном и региональным weather profile.
+
+Примеры:
+
+```text id="cmrdfr"
+winter + heat/hot без особого правила → conflict
+summer + severe_cold без особого правила → conflict
+winter + rain возможен только если региональные правила допускают оттепель
+snow + hot → conflict
+ice/ground snow + warm thaw может быть warning, если есть thaw rule
+```
+
+Ошибка:
+
+```text id="6fmd0x"
+TIME_LIGHT_SEASON_WEATHER_CONFLICT
+```
+
+### 8.4. Weather/light consistency
+
+Проверяется влияние погоды на свет и видимость.
+
+Примеры:
+
+```text id="i9tfws"
+heavy fog + full clear visibility → conflict
+storm/snowfall + distant visible objects → conflict
+dark + no light source + visible small items → conflict
+cloudy day + daylight может быть allowed as dim/daylight depending regional rule
+```
+
+Ошибка:
+
+```text id="rp2g2g"
+TIME_LIGHT_WEATHER_VISIBILITY_CONFLICT
+```
+
+### 8.5. G5 visibility consistency
+
+Проверяется:
+
+```text id="m1se04"
+g5_scene_graph.visibility_model.light_profile
+g5_anchors[*].visibility
+visible_anchor_ids
+requires_inspection_anchor_ids
+hidden_anchor_ids
+player_start_position.visible_anchor_ids
+```
+
+Hard conflict:
+
+```text id="fme2vm"
+light_profile=dark,
+но все anchors marked visible_now=true
+```
+
+Hard conflict:
+
+```text id="mgl5j7"
+hidden_anchor_id одновременно в visible_anchor_ids
+```
+
+Ошибки:
+
+```text id="rl1q66"
+TIME_LIGHT_G5_VISIBILITY_CONFLICT
+TIME_LIGHT_HIDDEN_ANCHOR_VISIBLE
+TIME_LIGHT_TOO_MANY_VISIBLE_ANCHORS_IN_DARK
+```
+
+### 8.6. NPC visibility and activity consistency
+
+Проверяется:
+
+```text id="xnr2i2"
+npc.visibility_state
+npc.current_activity
+npc.attention_state
+npc.schedule_state
+clock.time_of_day
+light_profile
+weather_state
+```
+
+Hard conflict:
+
+```text id="hsfq6k"
+deep_night + ordinary daytime crowd + no night exception
+deep_night + NPC identified by name/status at distance in darkness
+dark + visible_to_player=true + no light/near/hearing basis
+```
+
+Допустимо:
+
+```text id="podflj"
+NPC слышен, но не виден
+NPC виден как силуэт
+NPC рядом с огнём
+NPC спит
+NPC сторожит ночью
+NPC прячется/идёт/ждёт
+```
+
+Ошибки:
+
+```text id="q08a93"
+TIME_LIGHT_NPC_ACTIVITY_CONFLICT
+TIME_LIGHT_NPC_VISIBILITY_CONFLICT
+TIME_LIGHT_NPC_IDENTIFICATION_TOO_STRONG
+```
+
+### 8.7. Item visibility consistency
+
+Проверяется:
+
+```text id="nj8804"
+item.visibility_state
+container.content_state
+item_anchor_bindings
+clock.light_profile
+weather_state.visibility_weather_modifier
+player_start_position
+```
+
+Hard conflict:
+
+```text id="c2w7tt"
+dark + small item visible_to_player_now=true + no light source
+closed container + visible concrete contents
+hidden item + visible_to_player_now=true
+known_but_not_seen item described as seen
+```
+
+Ошибки:
+
+```text id="mbfkik"
+TIME_LIGHT_ITEM_VISIBILITY_CONFLICT
+TIME_LIGHT_CLOSED_CONTAINER_CONTENTS_VISIBLE
+TIME_LIGHT_HIDDEN_ITEM_VISIBLE
+```
+
+### 8.8. Body state consistency
+
+Время, погода и сезон должны влиять на тело персонажа, если условия экстремальные.
+
+Проверяется:
+
+```text id="yvfw8l"
+temperature_band
+precipitation
+wind
+player_character.body.clothing_summary
+player_character.body.active_conditions
+player_character.body.health
+player_character.body.satiety
+player_character.body.vigor
+```
+
+Если сильный холод, ветер, мокрая одежда или ночь создают риск, но `body` и `visible_changes` не отражают это вообще, нужен warning или block по policy.
+
+Ошибки:
+
+```text id="56e537"
+TIME_LIGHT_BODY_WEATHER_EFFECT_MISSING
+TIME_LIGHT_CLOTHING_WEATHER_CONFLICT
+```
+
+### 8.9. Visible scene consistency
+
+Если `draft_visible_context_package.visible_scene` уже есть, он проверяется как текстовый слой.
+
+Проверяется:
+
+```text id="ougjmy"
+visible_scene не меняет clock
+visible_scene не меняет season
+visible_scene не меняет weather
+visible_scene не меняет light
+visible_scene не показывает невидимое
+visible_scene не раскрывает скрытое
+visible_scene не описывает дневную активность ночью
+visible_scene не описывает ночную темноту днём
+```
+
+Hard conflict:
+
+```text id="p2yc7s"
+clock.time_of_day=deep_night
+visible_scene содержит "короткий световой день"
+```
+
+Ошибка:
+
+```text id="hnd20j"
+TIME_LIGHT_VISIBLE_SCENE_CLOCK_CONFLICT
+```
+
+### 8.10. Visible changes consistency
+
+`visible_changes` не должны противоречить `clock`.
+
+Hard conflict:
+
+```text id="k3npzu"
+clock=deep_night
+visible_changes="световой день короток"
+```
+
+Вместо этого допустимо:
+
+```text id="h8m0o8"
+ночь глубока
+холод усиливается
+огонь гаснет
+видимость падает
+усталость растёт
+стража становится строже
+доступ к месту ограничен
+```
+
+Ошибка:
+
+```text id="822or8"
+TIME_LIGHT_VISIBLE_CHANGES_CLOCK_CONFLICT
+```
+
+### 8.11. Forbidden terms check
+
+Код должен иметь словарь терминов, конфликтующих с time/light.
+
+Пример:
+
+```json id="egv8i9"
+{
+  "deep_night": {
+    "forbidden_terms": [
+      "короткий световой день",
+      "дневной свет",
+      "яркий день",
+      "полдень",
+      "солнце высоко",
+      "дневная толпа",
+      "открытый дневной торг"
+    ],
+    "allowed_terms": [
+      "глубокая ночь",
+      "темно",
+      "лунный свет",
+      "свет из окна",
+      "лучина",
+      "огонь",
+      "силуэт",
+      "слышно, но не видно"
+    ]
+  }
+}
+```
+
+Forbidden terms не должны быть единственной проверкой, но они нужны как быстрый hard gate.
+
+## 9. Нормализация видимости
+
+После проверки этап формирует `normalized_visibility_constraints`.
+
+```json id="2znoz3"
+{
+  "normalized_visibility_constraints": {
+    "light_profile": "dark",
+    "visibility_range": "near_only",
+    "visible_without_action": [
+      "player_start_anchor",
+      "large_nearby_lit_objects"
+    ],
+    "visible_only_on_inspection": [
+      "small_nearby_objects",
+      "partly_obscured_npcs"
+    ],
+    "audible_but_not_visible": [],
+    "hidden_until_action": [],
+    "forbidden_to_show_in_visible_scene": [
+      "closed_container_contents",
+      "hidden_items",
+      "npc_private_motives",
+      "distant small details",
+      "daylight terms"
+    ],
+    "required_visible_scene_terms": [
+      "night_or_darkness_marker",
+      "light_source_marker_if_any",
+      "weather_or_temperature_marker_if_relevant"
+    ]
+  }
+}
+```
+
+Этот блок передаётся в этап формирования visible context.
+
+## 10. Работа LLM на этапе
+
+Базовый hard gate должен работать кодом. Код обязан проверять:
+
+* enum;
+* диапазоны;
+* `clock ↔ light`;
+* `season ↔ weather`;
+* forbidden terms;
+* visibility flags;
+* source trace;
+* наличие конфликтующих строк в `visible_scene`.
+
+LLM используется только как semantic auditor, если нужно проверить смысловые противоречия, которые трудно поймать регулярными правилами.
+
+LLM не имеет права:
+
+* менять `clock`;
+* менять `season`;
+* менять `weather_state`;
+* менять G5;
+* менять NPC;
+* менять предметы;
+* писать visible scene;
+* писать narrator prose;
+* исправлять текст.
+
+LLM только возвращает audit.
+
+## 11. LLM-параметры
+
+### 11.1. `TimeLightSemanticAuditor`
+
+Назначение: смысловая проверка времени, света, погоды, видимости и чернового visible context.
+
+```json id="a377m2"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 7000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 80000,
+    "hard_input_limit_tokens": 200000,
+    "reserve_output_tokens": 7000
+  }
+}
+```
+
+Использовать `deepseek-v4-pro`, потому что этот gate проверяет причинные противоречия между несколькими слоями сцены. DeepSeek API поддерживает `deepseek-v4-pro`, `deepseek-v4-flash`, `thinking` и `reasoning_effort`; thinking mode включается через `thinking`, а reasoning effort задаётся отдельно.
+
+### 11.2. `TimeLightAuditRouter`
+
+Назначение: выбрать корректный этап отката при провале.
+
+```json id="d19nxw"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 3500,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 50000,
+    "hard_input_limit_tokens": 140000,
+    "reserve_output_tokens": 3500
+  }
+}
+```
+
+### 11.3. `TimeLightAuditFormatRepairer`
+
+Назначение: исправить только JSON-формат аудита.
+
+```json id="le8o7b"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-flash",
+  "thinking": {
+    "type": "disabled"
+  },
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "max_tokens": 3500,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 30000,
+    "hard_input_limit_tokens": 90000,
+    "reserve_output_tokens": 3500
+  }
+}
+```
+
+Для JSON output в DeepSeek нужно передавать `response_format: {"type":"json_object"}`, включать слово `json` в prompt, давать пример требуемого JSON и выделять достаточный `max_tokens`, чтобы ответ не был обрезан.
+
+## 12. Prompt: TimeLightSemanticAuditor
+
+```md id="qkx2mr"
+# Роль
+
+Ты TimeLightSemanticAuditor для исторической текстовой RPG.
+
+# Задача
+
+Проверь согласованность времени, сезона, погоды, света, G5-видимости, NPC, предметов и visible_scene.
+
+# Главное правило
+
+Ты не исправляешь данные.
+Ты не меняешь clock.
+Ты не меняешь season.
+Ты не меняешь weather.
+Ты не меняешь G5.
+Ты не меняешь NPC.
+Ты не меняешь items.
+Ты не пишешь visible_scene.
+Ты только аудируешь.
+
+# Используй только входные данные
+
+- historical_frame.clock
+- historical_frame.calendar.season
+- weather_state
+- selected_start_node
+- player_character
+- g5_scene_graph
+- initial_npc_placement
+- initial_item_placement
+- draft_visible_context_package
+- code_precheck
+
+Если факта нет во входе, не добавляй его.
+
+# Проверить
+
+1. hour/minute/time_of_day/clock_moment согласованы.
+2. time_of_day согласован с light_profile.
+3. season согласован с weather_state.
+4. weather_state согласован с visibility_weather_modifier.
+5. G5 visibility не противоречит light_profile.
+6. NPC visibility не противоречит light_profile.
+7. NPC activity не противоречит time_of_day.
+8. Item visibility не противоречит light_profile.
+9. Closed container contents не раскрыты.
+10. Hidden items не видны.
+11. player body state учитывает extreme weather, если policy требует.
+12. visible_scene не меняет clock.
+13. visible_scene не содержит daylight terms при night/deep_night.
+14. visible_changes не содержит daylight/daytime changes при night/deep_night.
+15. Ночь не проходит как "короткий световой день".
+16. source_trace/evidence достаточны.
+
+# Критическое правило
+
+Если clock.time_of_day = night или deep_night,
+то visible_scene и visible_changes не могут содержать:
+- короткий световой день;
+- дневной свет;
+- яркий день;
+- полдень;
+- дневная толпа;
+- обычная дневная работа;
+- открытый дневной торг.
+
+Если такое найдено, pass=false.
+
+# Формат
+
+Верни только json:
+
+{
+  "version": 1,
+  "schema": "time_light_consistency_audit",
+  "request_id": "...",
+  "pass": true,
+  "authoritative_frame": {},
+  "checks": {},
+  "normalized_visibility_constraints": {},
+  "concerns": [],
+  "evidence": [],
+  "repair_route": null,
+  "commit_permission": {
+    "can_continue_to_visible_context": true,
+    "can_continue_to_narrator": false
+  }
+}
+
+Если pass=false:
+- concerns не должен быть пустым;
+- evidence не должен быть пустым;
+- repair_route должен быть заполнен;
+- can_continue_to_visible_context=false;
+- can_continue_to_narrator=false.
+
+Если pass=true:
+- evidence не должен быть пустым.
+```
+
+## 13. Prompt: TimeLightAuditRouter
+
+```md id="fzupmx"
+# Роль
+
+Ты TimeLightAuditRouter.
+
+# Задача
+
+По failed time_light_consistency_audit выбери правильный этап отката pipeline.
+
+# Главное правило
+
+Ты не исправляешь данные.
+Ты только выбираешь return_to_stage и repair_kind.
+
+# Возможные return_to_stage
+
+- visible_context_format_repair
+- visible_context_semantic_repair
+- item_placement_semantic_repair
+- npc_placement_semantic_repair
+- g5_scene_semantic_repair
+- weather_state_retriever
+- historical_frame_selector
+- player_character_semantic_repair
+- blocked
+
+# Правила маршрутизации
+
+Если конфликт только в visible_scene или visible_changes:
+return_to_stage = visible_context_semantic_repair
+
+Если предметы видны вопреки темноте:
+return_to_stage = item_placement_semantic_repair
+
+Если NPC видим/активен вопреки времени:
+return_to_stage = npc_placement_semantic_repair
+
+Если G5 visibility неверна:
+return_to_stage = g5_scene_semantic_repair
+
+Если weather_state отсутствует или несовместим с сезоном:
+return_to_stage = weather_state_retriever
+
+Если clock/time_of_day/light_profile сами противоречат друг другу:
+return_to_stage = historical_frame_selector
+
+Если тело персонажа невозможно для погоды/света:
+return_to_stage = player_character_semantic_repair
+
+Если конфликт нельзя исправить без смены стартового места или рамки:
+return_to_stage = blocked
+
+# Формат
+
+Верни только json:
+
+{
+  "version": 1,
+  "schema": "time_light_audit_route",
+  "return_to_stage": "...",
+  "repair_kind": "...",
+  "reason": "...",
+  "evidence": []
+}
+```
+
+## 14. Prompt: TimeLightAuditFormatRepairer
+
+```md id="galw2w"
+# Роль
+
+Ты TimeLightAuditFormatRepairer.
+
+# Задача
+
+Исправь только формат JSON time_light_consistency_audit.
+
+# Главное правило
+
+Не меняй смысл.
+Не меняй pass/fail без evidence.
+Не меняй clock.
+Не меняй season.
+Не меняй weather.
+Не меняй visible_scene.
+Не добавляй новые факты.
+
+# Разрешено
+
+- убрать markdown;
+- привести schema к "time_light_consistency_audit";
+- привести version к 1;
+- добавить отсутствующие служебные поля как null/[];
+- перенести свободный текст в concerns/evidence;
+- удалить запрещённые поля.
+
+# Запрещено
+
+- исправлять текст visible_scene;
+- менять historical_frame;
+- менять weather_state;
+- менять G5;
+- менять NPC/items;
+- создавать source_id;
+- создавать repair_route без evidence.
+
+# Формат
+
+Верни только json.
+```
+
+## 15. Code precheck
+
+Перед LLM-аудитом код обязан выполнить структурную проверку.
+
+```json id="fqc36w"
+{
+  "version": 1,
+  "schema": "time_light_code_precheck",
+  "pass": true,
+  "checks": {
+    "clock_schema_valid": true,
+    "clock_moment_valid": true,
+    "season_weather_basic_match": true,
+    "light_profile_valid": true,
+    "g5_visibility_basic_match": true,
+    "npc_visibility_basic_match": true,
+    "item_visibility_basic_match": true,
+    "visible_scene_forbidden_terms_absent": true,
+    "visible_changes_forbidden_terms_absent": true,
+    "no_hidden_items_revealed": true,
+    "no_closed_container_contents_visible": true,
+    "evidence_present": true
+  },
+  "concerns": [],
+  "evidence": []
+}
+```
+
+Если `code_precheck.pass=false`, semantic LLM audit можно не запускать. Результат направляется в repair route.
+
+## 16. Validation rules
+
+Код обязан проверить:
+
+1. `schema === "time_light_consistency_audit"`.
+2. `version === 1`.
+3. `pass` является boolean.
+4. `authoritative_frame.clock` совпадает с `historical_frame.clock`.
+5. `authoritative_frame.season` совпадает с `historical_frame.calendar.season`.
+6. `authoritative_frame.weather_state` совпадает с входным `weather_state`.
+7. `light_profile` входит в enum.
+8. `hour` в диапазоне `0..23`.
+9. `minute` в диапазоне `0..59`.
+10. `time_of_day` входит в enum.
+11. `clock_moment` не противоречит `time_of_day`.
+12. `time_of_day` не противоречит `light_profile`.
+13. `season` не противоречит `weather_state`.
+14. `weather_state.visibility_weather_modifier` применён к visibility constraints.
+15. `g5_scene_graph.visibility_model.light_profile` не противоречит `historical_frame.clock.light_profile`.
+16. `visible_anchor_ids` не содержат hidden anchors.
+17. NPC visibility не нарушает light profile.
+18. NPC activity не нарушает time_of_day.
+19. Item visibility не нарушает light profile.
+20. Hidden item не visible.
+21. Closed container contents not visible.
+22. `draft_visible_context_package.visible_scene` не содержит forbidden terms.
+23. `draft_visible_context_package.visible_changes` не содержит forbidden terms.
+24. Если `pass=false`, `concerns` не пустой.
+25. Если `pass=false`, `repair_route` заполнен.
+26. `evidence` не пустой.
+27. Если `pass=true`, `can_continue_to_visible_context=true`.
+28. `can_continue_to_narrator` не должен быть true до отдельного visible context audit.
+
+## 17. Error codes
+
+```text id="igh7bf"
+TIME_LIGHT_INVALID_JSON
+TIME_LIGHT_SCHEMA_MISMATCH
+TIME_LIGHT_EMPTY_EVIDENCE
+TIME_LIGHT_CLOCK_SCHEMA_INVALID
+TIME_LIGHT_CLOCK_MOMENT_CONFLICT
+TIME_LIGHT_TIME_OF_DAY_LIGHT_CONFLICT
+TIME_LIGHT_SEASON_WEATHER_CONFLICT
+TIME_LIGHT_WEATHER_VISIBILITY_CONFLICT
+TIME_LIGHT_G5_VISIBILITY_CONFLICT
+TIME_LIGHT_HIDDEN_ANCHOR_VISIBLE
+TIME_LIGHT_TOO_MANY_VISIBLE_ANCHORS_IN_DARK
+TIME_LIGHT_NPC_ACTIVITY_CONFLICT
+TIME_LIGHT_NPC_VISIBILITY_CONFLICT
+TIME_LIGHT_NPC_IDENTIFICATION_TOO_STRONG
+TIME_LIGHT_ITEM_VISIBILITY_CONFLICT
+TIME_LIGHT_CLOSED_CONTAINER_CONTENTS_VISIBLE
+TIME_LIGHT_HIDDEN_ITEM_VISIBLE
+TIME_LIGHT_BODY_WEATHER_EFFECT_MISSING
+TIME_LIGHT_CLOTHING_WEATHER_CONFLICT
+TIME_LIGHT_VISIBLE_SCENE_CLOCK_CONFLICT
+TIME_LIGHT_VISIBLE_SCENE_SEASON_CONFLICT
+TIME_LIGHT_VISIBLE_SCENE_WEATHER_CONFLICT
+TIME_LIGHT_VISIBLE_CHANGES_CLOCK_CONFLICT
+TIME_LIGHT_FORBIDDEN_DAYLIGHT_TERM_AT_NIGHT
+TIME_LIGHT_FORBIDDEN_NIGHT_TERM_AT_DAY
+TIME_LIGHT_VISIBLE_SCENE_REWRITES_CLOCK
+TIME_LIGHT_REPAIR_ROUTE_MISSING
+```
+
+## 18. DB write на этом этапе
+
+Разрешено писать:
+
+```text id="jxqk8e"
+pipeline_step_status
+time_light_code_precheck_snapshot
+time_light_consistency_audit_snapshot
+time_light_validation_issues
+time_light_repair_route
+normalized_visibility_constraints_snapshot
+source_trace_snapshot
+```
+
+Запрещено писать:
+
+```text id="ynd94w"
+visible_scene_final
+intro_prose
+narrator_output
+changed_clock_without_repair
+changed_season_without_repair
+changed_weather_without_repair
+new_g5_anchors
+new_npcs
+new_items
+```
+
+Этот этап не создаёт видимую прозу. Он только разрешает или запрещает переход к visible context.
+
+## 19. Commit gate этапа
+
+Этап считается успешным, если:
+
+```text id="34moi5"
+time_light_consistency_audit.pass=true
+clock/hour/minute/time_of_day/light_profile согласованы
+season/weather согласованы
+weather visibility modifier применён
+G5 visibility согласована со светом
+NPC visibility/activity согласованы со временем и светом
+item visibility/access согласованы со светом
+closed container contents не раскрыты
+visible_scene/visible_changes не противоречат clock
+ночь не прошла как световой день
+evidence не пустой
+```
+
+Если commit gate не пройден, pipeline не должен переходить к visible context или narrator prose.
+
+## 20. Передача в следующий этап
+
+```json id="t8xeuq"
+{
+  "version": 1,
+  "schema": "visible_context_builder_input",
+  "request_id": "string",
+
+  "historical_frame": {},
+  "weather_state": {},
+  "selected_start_node": {},
+  "player_character": {},
+  "g5_scene_graph": {},
+  "initial_npc_placement": {},
+  "initial_item_placement": {},
+
+  "time_light_consistency_audit": {
+    "version": 1,
+    "schema": "time_light_consistency_audit",
+    "pass": true
+  },
+
+  "normalized_visibility_constraints": {
+    "light_profile": "dark | dim | daylight | twilight | indoor_lit | firelit | moonlit | obscured",
+    "visibility_range": "near_only | ordinary | reduced | blocked",
+    "visible_without_action": [],
+    "visible_only_on_inspection": [],
+    "audible_but_not_visible": [],
+    "hidden_until_action": [],
+    "forbidden_to_show_in_visible_scene": [],
+    "required_visible_scene_terms": []
+  },
+
+  "constraints": {
+    "preserve_clock": true,
+    "preserve_season": true,
+    "preserve_weather": true,
+    "preserve_light_profile": true,
+    "visible_context_must_follow_normalized_visibility_constraints": true,
+    "do_not_show_hidden_items": true,
+    "do_not_show_closed_container_contents": true,
+    "do_not_use_daylight_terms_at_night": true
+  }
+}
+```
+
+## 21. Минимальный успешный результат
+
+```json id="eud79s"
+{
+  "version": 1,
+  "schema": "time_light_consistency_audit",
+  "request_id": "req_001",
+
+  "pass": true,
+
+  "authoritative_frame": {
+    "clock": {
+      "day": 9,
+      "hour": 3,
+      "minute": 45,
+      "time_of_day": "deep_night",
+      "clock_moment": "глубокая ночь",
+      "light_profile": "dark"
+    },
+    "season": "winter",
+    "weather_state": {
+      "weather_kind": "cloudy",
+      "temperature_band": "cold",
+      "precipitation": "none",
+      "wind": "weak",
+      "visibility_weather_modifier": "reduced",
+      "ground_state": "snow"
+    },
+    "light_profile": "dark"
+  },
+
+  "checks": {
+    "clock_schema": {
+      "pass": true,
+      "evidence": [
+        "hour and minute are valid and time_of_day exists"
+      ]
+    },
+    "clock_moment_consistency": {
+      "pass": true,
+      "evidence": [
+        "03:45 is consistent with deep_night and dark light_profile"
+      ]
+    },
+    "season_weather_consistency": {
+      "pass": true,
+      "evidence": [
+        "winter is compatible with cold temperature band and snow ground state"
+      ]
+    },
+    "weather_light_consistency": {
+      "pass": true,
+      "evidence": [
+        "cloudy weather and deep night reduce visibility"
+      ]
+    },
+    "g5_visibility_consistency": {
+      "pass": true,
+      "evidence": [
+        "visible anchors are limited to near or lit anchors"
+      ]
+    },
+    "npc_visibility_and_activity_consistency": {
+      "pass": true,
+      "evidence": [
+        "NPC visibility does not reveal exact identity at distance in darkness"
+      ]
+    },
+    "item_visibility_consistency": {
+      "pass": true,
+      "evidence": [
+        "small or hidden items are not visible without inspection"
+      ]
+    },
+    "body_state_consistency": {
+      "pass": true,
+      "evidence": [
+        "cold and night constraints are available for body/vigor effects"
+      ]
+    },
+    "visible_scene_consistency": {
+      "pass": true,
+      "evidence": [
+        "draft visible scene does not contain daylight terms"
+      ]
+    },
+    "visible_changes_consistency": {
+      "pass": true,
+      "evidence": [
+        "visible changes do not describe a light day while clock is deep_night"
+      ]
+    },
+    "forbidden_terms_check": {
+      "pass": true,
+      "evidence": [
+        "no forbidden daylight terms were found for deep_night"
+      ]
+    },
+    "source_trace": {
+      "pass": true,
+      "evidence": [
+        "time, season, weather and visibility sources are present"
+      ]
+    }
+  },
+
+  "normalized_visibility_constraints": {
+    "light_profile": "dark",
+    "visibility_range": "near_only",
+    "visible_without_action": [
+      "player_start_anchor",
+      "nearby lit or large anchors"
+    ],
+    "visible_only_on_inspection": [
+      "small nearby items",
+      "partly obscured objects"
+    ],
+    "audible_but_not_visible": [
+      "distant movement",
+      "muffled voices if present"
+    ],
+    "hidden_until_action": [
+      "hidden items",
+      "closed container contents"
+    ],
+    "forbidden_to_show_in_visible_scene": [
+      "closed_container_contents",
+      "hidden_items",
+      "distant small details",
+      "daylight terms",
+      "short daylight phrase"
+    ],
+    "required_visible_scene_terms": [
+      "night marker",
+      "limited light marker",
+      "cold or weather marker if relevant"
+    ]
+  },
+
+  "concerns": [],
+
+  "evidence": [
+    "Clock, time_of_day and light_profile are mutually consistent.",
+    "Season and weather are mutually consistent.",
+    "G5, NPC and item visibility follow dark light constraints.",
+    "Visible scene and visible changes do not rewrite night as daylight."
+  ],
+
+  "repair_route": null,
+
+  "commit_permission": {
+    "can_continue_to_visible_context": true,
+    "can_continue_to_narrator": false
+  }
+}
+```

@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RepairRequest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "failed_step_id",
+    "allowed_operation",
+    "raw_result",
+    "schema_errors",
+    "expected_schema",
+    "strict_constraints"
+  ],
+  "properties": {
+    "failed_step_id": {
+      "type": "string"
+    },
+    "allowed_operation": {
+      "type": "string",
+      "enum": [
+        "format_only",
+        "field_separation",
+        "metadata_only"
+      ]
+    },
+    "raw_result": {
+      "type": "string"
+    },
+    "schema_errors": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "expected_schema": {
+      "type": "object"
+    },
+    "established_facts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "strict_constraints": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

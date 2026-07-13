@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rus13.local/contracts/G5ExistingStateSnapshot.schema.json",
+  "title": "G5ExistingStateSnapshot",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "existing_minilocations",
+    "existing_scene_anchors",
+    "existing_items",
+    "existing_npcs",
+    "existing_edges",
+    "locked_facts",
+    "duplicate_risks"
+  ],
+  "properties": {
+    "existing_minilocations": {
+      "description": "Required by G5ExistingStateSnapshot.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "existing_scene_anchors": {
+      "description": "Required by G5ExistingStateSnapshot.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "existing_items": {
+      "description": "Required by G5ExistingStateSnapshot.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "existing_npcs": {
+      "description": "Required by G5ExistingStateSnapshot.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "existing_edges": {
+      "description": "Required by G5ExistingStateSnapshot.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "locked_facts": {
+      "description": "Required by G5ExistingStateSnapshot.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "duplicate_risks": {
+      "description": "Required by G5ExistingStateSnapshot.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    }
+  },
+  "x_step_id": "g5_03_existing_state_check",
+  "x_writes_to": "party_llm_steps, party_validation_issues",
+  "x_blocking_validations": "no silent overwrite of existing party facts"
+}

@@ -1,0 +1,16 @@
+id	title	url_or_path	usage	status
+src_project_g1_g5_rules	Правила генерации G1-G5	/mnt/data/Правила-генерации-G1-G5.txt	depth rules for G2/G3/G4	approved
+src_project_graph_architecture	Read-only database and graph architecture	/mnt/data/read_only_database_and_graph_architecture.md	G0-G5 graph model, GU, graph node/edge logic	approved
+src_project_schema_reference	world_base schema reference	/mnt/data/world_base_schema_reference.md	graph_nodes/graph_edges field compatibility	approved
+src_novgorod_region_g1_70	70-cell G1 input mask integrated into current TSV	embedded_in_current_tsv_import	accepted 70-cell G1 input mask; workbook file not included	usable_with_caution
+src_novgorod_wider_context	Medieval Novgorod in Its Wider Context	https://eprints.bournemouth.ac.uk/23438/1/01%20Novgorod%20IV.pdf	rural context / Poozerie / hinterland	usable_with_caution
+src_unesco_novgorod	UNESCO Historic Monuments of Novgorod and Surroundings	https://whc.unesco.org/en/list/604/	Novgorod historical anchor	usable_with_caution
+src_novgorod_water_transport	Water and land transport of medieval Novgorod	https://cyberleninka.ru/article/n/2002-02-031-dubrovin-g-e-vodnyy-i-suhoputnyy-transport-srednevekovogo-novgoroda-x-xv-vv-po-arheologicheskim-dannym-ran-in-t-arheologii-m-2000	water transport / boat logic	usable_with_caution
+src_staraya_russa_salt	Staraya Russa saltmaking context	https://www.fondazioneslowfood.com/en/ark-of-taste-slow-food/starorusskaya-salt/	Rusa/Staraya Russa salt cluster	usable_with_caution
+src_he_medieval_settlements	Historic England: Medieval Settlements	https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/	settlement typology: farms, hamlets, villages, seasonal abodes	usable_with_caution
+src_iucn_get	IUCN Global Ecosystem Typology	https://iucn.org/resources/conservation-tool/iucn-global-ecosystem-typology	landscape/ecosystem typology	usable_with_caution
+src_fao_gez	FAO Global Ecological Zones	https://www.fao.org/4/ad652e/ad652e07.htm	forest/ecological zoning	usable_with_caution
+src_ramsar_wetlands	Ramsar wetland classification	https://www.ramsar.org/sites/default/files/2024-11/SC63%20Doc.19%20Annex%201%20Ramsar%20wetland%20classification%20system.pdf	wetlands/water typology	usable_with_caution
+src_master_audit_2026_07_04	Master graph audit and historical logic pass, 2026-07-04	audit_prior_semantic_context_integrated	semantic audit: Novgorod urban anchors, duplicate toponym cleanup, graph revalidation	usable_with_caution
+src_project_architecture_g0_g5	Архитектура графа G0-G5 и GU	/mnt/data/read_only_database_and_graph_architecture.md	scale model, G3/G4/G5 semantics, graph edge expectations	approved
+src_master_audit_2026_07_05_v6	LLM-аудит и пересборка карты Новгородского региона v6	generated_in_task	semantic reconstruction of G4, scale register, G3 direct route completion, technical audit	approved

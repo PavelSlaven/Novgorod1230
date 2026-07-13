@@ -1,0 +1,5087 @@
+{
+  "version": "party_database_v1",
+  "generated_at": "2026-07-06T19:11:12.023299+00:00",
+  "tables": [
+    {
+      "table_name": "party_state",
+      "group": "core",
+      "required_for_mvp": "yes",
+      "purpose": "One saved game/party state: current historical frame, current game time, global hidden state and summaries.",
+      "source_basis": "read_only_database_and_graph_architecture.md §2.2; time_system.txt",
+      "notes": ""
+    },
+    {
+      "table_name": "party_player_characters",
+      "group": "core",
+      "required_for_mvp": "yes",
+      "purpose": "Player character profile and mutable body/knowledge/inventory state.",
+      "source_basis": "player_character_generation.txt; character_parameters.txt",
+      "notes": ""
+    },
+    {
+      "table_name": "party_graph_nodes",
+      "group": "graph",
+      "required_for_mvp": "yes",
+      "purpose": "Materialized or changed graph nodes in a party. Canonical nodes are referenced by ID, but party state owns changes.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14.1",
+      "notes": ""
+    },
+    {
+      "table_name": "party_graph_edges",
+      "group": "graph",
+      "required_for_mvp": "yes",
+      "purpose": "Mutable routes and links in the current party: opened, blocked, changed, or discovered edges.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14.2; movement_locations_regions.txt",
+      "notes": ""
+    },
+    {
+      "table_name": "party_places",
+      "group": "places",
+      "required_for_mvp": "yes",
+      "purpose": "Materialized places in the party, canonical or LLM-created with approved cause.",
+      "source_basis": "world_generation_and_turns.txt; movement_locations_regions.txt",
+      "notes": ""
+    },
+    {
+      "table_name": "party_locations",
+      "group": "places",
+      "required_for_mvp": "yes",
+      "purpose": "Materialized locations inside a place.",
+      "source_basis": "movement_locations_regions.txt; world_generation_and_turns.txt",
+      "notes": ""
+    },
+    {
+      "table_name": "party_minilocations",
+      "group": "places",
+      "required_for_mvp": "yes",
+      "purpose": "Exact scenic zones inside a location.",
+      "source_basis": "movement_locations_regions.txt; world_generation_and_turns.txt",
+      "notes": ""
+    },
+    {
+      "table_name": "party_scene_anchors",
+      "group": "places",
+      "required_for_mvp": "yes",
+      "purpose": "Scene anchor points: door, chest, cart, well, fire, gate.",
+      "source_basis": "movement_locations_regions.txt; items_and_property.txt",
+      "notes": ""
+    },
+    {
+      "table_name": "party_current_position",
+      "group": "core",
+      "required_for_mvp": "yes",
+      "purpose": "Current technical position: region -> place -> location -> minilocation -> scene anchor, plus last route.",
+      "source_basis": "movement_locations_regions.txt §1; world_generation_and_turns.txt",
+      "notes": ""
+    },
+    {
+      "table_name": "party_map_knowledge",
+      "group": "graph",
+      "required_for_mvp": "yes",
+      "purpose": "Map knowledge of a character, separate from factual party graph.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14.3; movement_locations_regions.txt visible/factual map",
+      "notes": ""
+    },
+    {
+      "table_name": "party_route_journal",
+      "group": "graph",
+      "required_for_mvp": "yes",
+      "purpose": "Travel history and consequences for movement.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14.4; movement_locations_regions.txt",
+      "notes": ""
+    },
+    {
+      "table_name": "party_npcs",
+      "group": "actors",
+      "required_for_mvp": "yes",
+      "purpose": "Materialized NPCs and groups with profile depth: background, scene, key.",
+      "source_basis": "npc_generation_profiles.txt",
+      "notes": ""
+    },
+    {
+      "table_name": "party_items",
+      "group": "items",
+      "required_for_mvp": "yes",
+      "purpose": "Materialized significant items and containers. Player request never creates items without causal basis.",
+      "source_basis": "items_and_property.txt; character_inventory_equipment.txt; npc_inventory_item_marks.txt",
+      "notes": ""
+    },
+    {
+      "table_name": "party_inventory_entries",
+      "group": "items",
+      "required_for_mvp": "yes",
+      "purpose": "Inventory/access index for carried or controlled items; separates owner from physical holder.",
+      "source_basis": "character_inventory_equipment.txt; npc_inventory_item_marks.txt",
+      "notes": ""
+    },
+    {
+      "table_name": "party_events",
+      "group": "events",
+      "required_for_mvp": "yes",
+      "purpose": "Materialized historical/local/deferred events and consequences in the current party.",
+      "source_basis": "time_system.txt; historical_events_and_figures.txt",
+      "notes": ""
+    },
+    {
+      "table_name": "party_turns",
+      "group": "logs",
+      "required_for_mvp": "yes",
+      "purpose": "Processed player turns: input, intent, time cost, visible result and hidden updates.",
+      "source_basis": "llm_agent_prompt_templates.md main turn pipeline; time_system.txt",
+      "notes": ""
+    },
+    {
+      "table_name": "party_journal_entries",
+      "group": "logs",
+      "required_for_mvp": "yes",
+      "purpose": "Party memory: important facts, rumors, obligations, discoveries and visible history.",
+      "source_basis": "interface_ux.md journal; information_sources_llm_prompts.md information layers",
+      "notes": ""
+    },
+    {
+      "table_name": "party_llm_steps",
+      "group": "logs",
+      "required_for_mvp": "optional",
+      "purpose": "LLM step provenance: generated content, validation status, repair lineage. Does not expose hidden prompts to player UI.",
+      "source_basis": "world_generation_and_turns.txt no silent placeholders; llm_agent_prompt_templates.md",
+      "notes": ""
+    },
+    {
+      "table_name": "party_validation_issues",
+      "group": "logs",
+      "required_for_mvp": "optional",
+      "purpose": "Structured validation/audit issues found during generation, import, or turn processing.",
+      "source_basis": "world_generation_and_turns.txt repair/audit rule",
+      "notes": ""
+    }
+  ],
+  "columns": [
+    {
+      "table_name": "party_state",
+      "column_name": "id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "PK",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Party identifier.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_state",
+      "column_name": "save_slot",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "UNIQUE",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Autosave/manual save label.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_state",
+      "column_name": "status",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "party_status",
+      "purpose": "Lifecycle of party.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_state",
+      "column_name": "world_base_version",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Read-only base/import version used by this party.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_state",
+      "column_name": "start_year",
+      "data_type": "INTEGER",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "CHECK 1230-1250 recommended by project frame",
+      "purpose": "Historical start year.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_state",
+      "column_name": "current_year",
+      "data_type": "INTEGER",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Current in-game year.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_state",
+      "column_name": "current_season",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Season label from regional seasonal rules.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_state",
+      "column_name": "current_day_index",
+      "data_type": "INTEGER",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "CHECK >= 0",
+      "purpose": "Game day counter.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_state",
+      "column_name": "current_minute_of_day",
+      "data_type": "INTEGER",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "CHECK 0-1439",
+      "purpose": "Exact time inside day, per project time model.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_state",
+      "column_name": "current_region_id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to world_base.regions(id)",
+      "purpose": "Current region ID from read-only base.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_state",
+      "column_name": "player_character_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to party_player_characters(id)",
+      "purpose": "Main player character after generation.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_state",
+      "column_name": "visible_summary",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Short player-facing party summary.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_state",
+      "column_name": "memory_summary",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Compact party memory for LLM context.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_state",
+      "column_name": "hidden_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Global hidden state; never sent to prose agent directly.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_state",
+      "column_name": "audit_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Technical audit flags.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_state",
+      "column_name": "created_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real timestamp.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_state",
+      "column_name": "updated_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real timestamp.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_player_characters",
+      "column_name": "id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "PK",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Stable technical identifier; code may use deterministic IDs or generated IDs.",
+      "source_basis": "technical key"
+    },
+    {
+      "table_name": "party_player_characters",
+      "column_name": "party_id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "FK",
+      "references": "party_state(id)",
+      "check_or_enum": "",
+      "purpose": "Party scope; every mutable row belongs to one saved party.",
+      "source_basis": "party DB separation"
+    },
+    {
+      "table_name": "party_player_characters",
+      "column_name": "created_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real system timestamp for audit, not game time.",
+      "source_basis": "technical audit"
+    },
+    {
+      "table_name": "party_player_characters",
+      "column_name": "updated_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real system timestamp for audit, not game time.",
+      "source_basis": "technical audit"
+    },
+    {
+      "table_name": "party_player_characters",
+      "column_name": "display_name",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Visible or known name.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_player_characters",
+      "column_name": "social_role_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to world_base.region_social_roles(id)",
+      "purpose": "Role/status from region base if known.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_player_characters",
+      "column_name": "occupation_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to world_base.region_occupations(id)",
+      "purpose": "Occupation from region base if known.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_player_characters",
+      "column_name": "social_class_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to world_base.social_classes(id)",
+      "purpose": "Universal social class reference.",
+      "source_basis": "universal social layer v1"
+    },
+    {
+      "table_name": "party_player_characters",
+      "column_name": "social_position_archetype_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to world_base.social_position_archetypes(id)",
+      "purpose": "Canonical social position for generation and mechanics.",
+      "source_basis": "universal social layer v1"
+    },
+    {
+      "table_name": "party_player_characters",
+      "column_name": "status",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "party_entity_status",
+      "purpose": "Character lifecycle.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_player_characters",
+      "column_name": "attributes",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Six attributes and bonuses.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_player_characters",
+      "column_name": "skills",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Skill bonuses and evidence.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_player_characters",
+      "column_name": "body_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Health, satiety, vigor, active states.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_player_characters",
+      "column_name": "inventory_summary",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Summary of inventory by current carried items.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_player_characters",
+      "column_name": "knowledge_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Character knowledge, not objective truth.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_player_characters",
+      "column_name": "memory_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Personal memory and obligations.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_player_characters",
+      "column_name": "visible_description",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Player-facing description of self state.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_player_characters",
+      "column_name": "hidden_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Hidden personal facts only if character does not know/should not see.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_player_characters",
+      "column_name": "created_by_llm_step",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to party_llm_steps(id)",
+      "purpose": "LLM generation provenance.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_player_characters",
+      "column_name": "created_at_game_time",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Game-time stamp as text/ordinal.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_player_characters",
+      "column_name": "updated_at_game_time",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Game-time stamp as text/ordinal.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_graph_nodes",
+      "column_name": "id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "PK",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Stable technical identifier; code may use deterministic IDs or generated IDs.",
+      "source_basis": "technical key"
+    },
+    {
+      "table_name": "party_graph_nodes",
+      "column_name": "party_id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "FK",
+      "references": "party_state(id)",
+      "check_or_enum": "",
+      "purpose": "Party scope; every mutable row belongs to one saved party.",
+      "source_basis": "party DB separation"
+    },
+    {
+      "table_name": "party_graph_nodes",
+      "column_name": "created_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real system timestamp for audit, not game time.",
+      "source_basis": "technical audit"
+    },
+    {
+      "table_name": "party_graph_nodes",
+      "column_name": "updated_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real system timestamp for audit, not game time.",
+      "source_basis": "technical audit"
+    },
+    {
+      "table_name": "party_graph_nodes",
+      "column_name": "canonical_node_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to world_base.graph_nodes(id)",
+      "purpose": "Read-only canonical node ID, if this materializes a canonical node.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_graph_nodes",
+      "column_name": "slug",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Party-local slug.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_graph_nodes",
+      "column_name": "title",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Human title.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_graph_nodes",
+      "column_name": "node_type",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "node_type",
+      "purpose": "Graph node type.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_graph_nodes",
+      "column_name": "scale_level",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "scale_level",
+      "purpose": "G0-G5 scale.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_graph_nodes",
+      "column_name": "parent_node_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "FK",
+      "references": "party_graph_nodes(id)",
+      "check_or_enum": "",
+      "purpose": "Parent party node.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_graph_nodes",
+      "column_name": "region_id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to world_base.regions(id)",
+      "purpose": "Region ID.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_graph_nodes",
+      "column_name": "place_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to party_places(id)",
+      "purpose": "Associated party place if applicable.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_graph_nodes",
+      "column_name": "is_materialized",
+      "data_type": "BOOLEAN",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT false",
+      "purpose": "Whether node is concretely present in party state.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_graph_nodes",
+      "column_name": "is_known_to_character",
+      "data_type": "BOOLEAN",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT false",
+      "purpose": "Character knowledge layer.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_graph_nodes",
+      "column_name": "is_known_to_player",
+      "data_type": "BOOLEAN",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT false",
+      "purpose": "Player UI knowledge layer.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_graph_nodes",
+      "column_name": "visible_name",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Name as known/seen by character.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_graph_nodes",
+      "column_name": "hidden_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Hidden facts for simulation.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_graph_nodes",
+      "column_name": "current_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Mutable state of node.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_graph_nodes",
+      "column_name": "created_by_llm_step",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to party_llm_steps(id)",
+      "purpose": "LLM provenance.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_graph_nodes",
+      "column_name": "created_at_game_time",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Game-time stamp.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_graph_nodes",
+      "column_name": "updated_at_game_time",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Game-time stamp.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_graph_edges",
+      "column_name": "id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "PK",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Stable technical identifier; code may use deterministic IDs or generated IDs.",
+      "source_basis": "technical key"
+    },
+    {
+      "table_name": "party_graph_edges",
+      "column_name": "party_id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "FK",
+      "references": "party_state(id)",
+      "check_or_enum": "",
+      "purpose": "Party scope; every mutable row belongs to one saved party.",
+      "source_basis": "party DB separation"
+    },
+    {
+      "table_name": "party_graph_edges",
+      "column_name": "created_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real system timestamp for audit, not game time.",
+      "source_basis": "technical audit"
+    },
+    {
+      "table_name": "party_graph_edges",
+      "column_name": "updated_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real system timestamp for audit, not game time.",
+      "source_basis": "technical audit"
+    },
+    {
+      "table_name": "party_graph_edges",
+      "column_name": "canonical_edge_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to world_base.graph_edges(id)",
+      "purpose": "Canonical edge if copied from read-only graph.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_graph_edges",
+      "column_name": "from_party_node_id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "FK",
+      "references": "party_graph_nodes(id)",
+      "check_or_enum": "",
+      "purpose": "Start node.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_graph_edges",
+      "column_name": "to_party_node_id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "FK",
+      "references": "party_graph_nodes(id)",
+      "check_or_enum": "",
+      "purpose": "End node.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_graph_edges",
+      "column_name": "reverse_party_edge_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "FK",
+      "references": "party_graph_edges(id)",
+      "check_or_enum": "",
+      "purpose": "Reverse edge if bidirectional.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_graph_edges",
+      "column_name": "scale_level",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "scale_level",
+      "purpose": "G0-G5 scale.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_graph_edges",
+      "column_name": "edge_type",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "edge_type",
+      "purpose": "Physical route/link type.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_graph_edges",
+      "column_name": "base_gu",
+      "data_type": "NUMERIC",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Base GU from canonical edge/materialization.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_graph_edges",
+      "column_name": "current_time_minutes",
+      "data_type": "NUMERIC",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Current traversal time in minutes.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_graph_edges",
+      "column_name": "current_time_hours",
+      "data_type": "NUMERIC",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Current traversal time in hours.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_graph_edges",
+      "column_name": "current_access",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Current access state.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_graph_edges",
+      "column_name": "current_conditions",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Weather/season/load/road conditions.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_graph_edges",
+      "column_name": "current_risk",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Current risk label.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_graph_edges",
+      "column_name": "current_seasonal_state",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Seasonal availability.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_graph_edges",
+      "column_name": "is_known_to_character",
+      "data_type": "BOOLEAN",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT false",
+      "purpose": "Knowledge layer.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_graph_edges",
+      "column_name": "is_known_to_player",
+      "data_type": "BOOLEAN",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT false",
+      "purpose": "UI layer.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_graph_edges",
+      "column_name": "is_blocked",
+      "data_type": "BOOLEAN",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT false",
+      "purpose": "Route blocked in this party.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_graph_edges",
+      "column_name": "block_reason",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Reason route is blocked, if known/hidden in current_state.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_graph_edges",
+      "column_name": "last_used_at_game_time",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Last traversal game time.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_graph_edges",
+      "column_name": "created_by_llm_step",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to party_llm_steps(id)",
+      "purpose": "LLM provenance.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_graph_edges",
+      "column_name": "updated_at_game_time",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Game-time stamp.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_places",
+      "column_name": "id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "PK",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Stable technical identifier; code may use deterministic IDs or generated IDs.",
+      "source_basis": "technical key"
+    },
+    {
+      "table_name": "party_places",
+      "column_name": "party_id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "FK",
+      "references": "party_state(id)",
+      "check_or_enum": "",
+      "purpose": "Party scope; every mutable row belongs to one saved party.",
+      "source_basis": "party DB separation"
+    },
+    {
+      "table_name": "party_places",
+      "column_name": "created_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real system timestamp for audit, not game time.",
+      "source_basis": "technical audit"
+    },
+    {
+      "table_name": "party_places",
+      "column_name": "updated_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real system timestamp for audit, not game time.",
+      "source_basis": "technical audit"
+    },
+    {
+      "table_name": "party_places",
+      "column_name": "canonical_place_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to world_base.places(id)",
+      "purpose": "Canonical place if known.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_places",
+      "column_name": "canonical_node_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to world_base.graph_nodes(id)",
+      "purpose": "Canonical graph node if known.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_places",
+      "column_name": "region_id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to world_base.regions(id)",
+      "purpose": "Region.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_places",
+      "column_name": "template_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to world_base.place_templates(id)",
+      "purpose": "Place type template.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_places",
+      "column_name": "title",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Party title.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_places",
+      "column_name": "place_type",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Place type label.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_places",
+      "column_name": "historical_status",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Historical/fictive status.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_places",
+      "column_name": "materialized_from_node_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "FK",
+      "references": "party_graph_nodes(id)",
+      "check_or_enum": "",
+      "purpose": "Graph node source.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_places",
+      "column_name": "visible_description",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Description available to character/player.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_places",
+      "column_name": "hidden_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Hidden place state.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_places",
+      "column_name": "current_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Mutable visible and factual state.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_places",
+      "column_name": "access_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Doors, gates, rights, restrictions.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_places",
+      "column_name": "owner_controller_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Ownership/control facts.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_places",
+      "column_name": "created_by_llm_step",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to party_llm_steps(id)",
+      "purpose": "LLM provenance.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_places",
+      "column_name": "created_at_game_time",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Game-time stamp.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_places",
+      "column_name": "updated_at_game_time",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Game-time stamp.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_locations",
+      "column_name": "id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "PK",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Stable technical identifier; code may use deterministic IDs or generated IDs.",
+      "source_basis": "technical key"
+    },
+    {
+      "table_name": "party_locations",
+      "column_name": "party_id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "FK",
+      "references": "party_state(id)",
+      "check_or_enum": "",
+      "purpose": "Party scope; every mutable row belongs to one saved party.",
+      "source_basis": "party DB separation"
+    },
+    {
+      "table_name": "party_locations",
+      "column_name": "created_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real system timestamp for audit, not game time.",
+      "source_basis": "technical audit"
+    },
+    {
+      "table_name": "party_locations",
+      "column_name": "updated_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real system timestamp for audit, not game time.",
+      "source_basis": "technical audit"
+    },
+    {
+      "table_name": "party_minilocations",
+      "column_name": "id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "PK",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Stable technical identifier; code may use deterministic IDs or generated IDs.",
+      "source_basis": "technical key"
+    },
+    {
+      "table_name": "party_minilocations",
+      "column_name": "party_id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "FK",
+      "references": "party_state(id)",
+      "check_or_enum": "",
+      "purpose": "Party scope; every mutable row belongs to one saved party.",
+      "source_basis": "party DB separation"
+    },
+    {
+      "table_name": "party_minilocations",
+      "column_name": "created_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real system timestamp for audit, not game time.",
+      "source_basis": "technical audit"
+    },
+    {
+      "table_name": "party_minilocations",
+      "column_name": "updated_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real system timestamp for audit, not game time.",
+      "source_basis": "technical audit"
+    },
+    {
+      "table_name": "party_scene_anchors",
+      "column_name": "id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "PK",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Stable technical identifier; code may use deterministic IDs or generated IDs.",
+      "source_basis": "technical key"
+    },
+    {
+      "table_name": "party_scene_anchors",
+      "column_name": "party_id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "FK",
+      "references": "party_state(id)",
+      "check_or_enum": "",
+      "purpose": "Party scope; every mutable row belongs to one saved party.",
+      "source_basis": "party DB separation"
+    },
+    {
+      "table_name": "party_scene_anchors",
+      "column_name": "created_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real system timestamp for audit, not game time.",
+      "source_basis": "technical audit"
+    },
+    {
+      "table_name": "party_scene_anchors",
+      "column_name": "updated_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real system timestamp for audit, not game time.",
+      "source_basis": "technical audit"
+    },
+    {
+      "table_name": "party_locations",
+      "column_name": "place_id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "FK",
+      "references": "party_places(id)",
+      "check_or_enum": "",
+      "purpose": "Parent place.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_locations",
+      "column_name": "canonical_location_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to world_base.graph_nodes(id)",
+      "purpose": "Canonical location if any.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_locations",
+      "column_name": "title",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Title.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_locations",
+      "column_name": "location_type",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Location type.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_locations",
+      "column_name": "visible_description",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Visible description.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_locations",
+      "column_name": "access_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Access and public/private rules.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_locations",
+      "column_name": "visibility_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "What can be seen/heard.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_locations",
+      "column_name": "current_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Mutable state.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_locations",
+      "column_name": "hidden_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Hidden state.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_locations",
+      "column_name": "created_by_llm_step",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to party_llm_steps(id)",
+      "purpose": "LLM provenance.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_locations",
+      "column_name": "created_at_game_time",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Game-time stamp.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_locations",
+      "column_name": "updated_at_game_time",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Game-time stamp.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_minilocations",
+      "column_name": "place_id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "FK",
+      "references": "party_places(id)",
+      "check_or_enum": "",
+      "purpose": "Parent place.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_minilocations",
+      "column_name": "location_id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "FK",
+      "references": "party_locations(id)",
+      "check_or_enum": "",
+      "purpose": "Parent location.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_minilocations",
+      "column_name": "canonical_minilocation_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to world_base.graph_nodes(id)",
+      "purpose": "Canonical minilocation if any.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_minilocations",
+      "column_name": "title",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Title.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_minilocations",
+      "column_name": "minilocation_type",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Minilocation type.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_minilocations",
+      "column_name": "visible_description",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Visible description.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_minilocations",
+      "column_name": "position_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Relative position/cover/noise/light.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_minilocations",
+      "column_name": "current_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Mutable state.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_minilocations",
+      "column_name": "hidden_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Hidden state.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_minilocations",
+      "column_name": "created_by_llm_step",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to party_llm_steps(id)",
+      "purpose": "LLM provenance.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_minilocations",
+      "column_name": "created_at_game_time",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Game-time stamp.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_minilocations",
+      "column_name": "updated_at_game_time",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Game-time stamp.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_scene_anchors",
+      "column_name": "place_id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "FK",
+      "references": "party_places(id)",
+      "check_or_enum": "",
+      "purpose": "Parent place.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_scene_anchors",
+      "column_name": "location_id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "FK",
+      "references": "party_locations(id)",
+      "check_or_enum": "",
+      "purpose": "Parent location.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_scene_anchors",
+      "column_name": "minilocation_id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "FK",
+      "references": "party_minilocations(id)",
+      "check_or_enum": "",
+      "purpose": "Parent minilocation.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_scene_anchors",
+      "column_name": "canonical_anchor_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to world_base.graph_nodes(id)",
+      "purpose": "Canonical anchor if any.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_scene_anchors",
+      "column_name": "title",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Title.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_scene_anchors",
+      "column_name": "anchor_type",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Anchor type.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_scene_anchors",
+      "column_name": "visible_description",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Visible description.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_scene_anchors",
+      "column_name": "physical_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Condition, mobility, obstacle/container/passage flags.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_scene_anchors",
+      "column_name": "access_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Access/control.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_scene_anchors",
+      "column_name": "ownership_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Owner/controller if relevant.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_scene_anchors",
+      "column_name": "current_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Mutable state.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_scene_anchors",
+      "column_name": "hidden_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Hidden state.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_scene_anchors",
+      "column_name": "created_by_llm_step",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to party_llm_steps(id)",
+      "purpose": "LLM provenance.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_scene_anchors",
+      "column_name": "created_at_game_time",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Game-time stamp.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_scene_anchors",
+      "column_name": "updated_at_game_time",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Game-time stamp.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_current_position",
+      "column_name": "id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "PK",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Stable technical identifier; code may use deterministic IDs or generated IDs.",
+      "source_basis": "technical key"
+    },
+    {
+      "table_name": "party_current_position",
+      "column_name": "party_id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "FK",
+      "references": "party_state(id)",
+      "check_or_enum": "",
+      "purpose": "Party scope; every mutable row belongs to one saved party.",
+      "source_basis": "party DB separation"
+    },
+    {
+      "table_name": "party_current_position",
+      "column_name": "created_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real system timestamp for audit, not game time.",
+      "source_basis": "technical audit"
+    },
+    {
+      "table_name": "party_current_position",
+      "column_name": "updated_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real system timestamp for audit, not game time.",
+      "source_basis": "technical audit"
+    },
+    {
+      "table_name": "party_current_position",
+      "column_name": "character_id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "FK",
+      "references": "party_player_characters(id)",
+      "check_or_enum": "",
+      "purpose": "Whose current position; MVP usually player character.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_current_position",
+      "column_name": "region_id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to world_base.regions(id)",
+      "purpose": "Current region.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_current_position",
+      "column_name": "place_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "FK",
+      "references": "party_places(id)",
+      "check_or_enum": "",
+      "purpose": "Current place.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_current_position",
+      "column_name": "location_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "FK",
+      "references": "party_locations(id)",
+      "check_or_enum": "",
+      "purpose": "Current location.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_current_position",
+      "column_name": "minilocation_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "FK",
+      "references": "party_minilocations(id)",
+      "check_or_enum": "",
+      "purpose": "Current minilocation.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_current_position",
+      "column_name": "anchor_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "FK",
+      "references": "party_scene_anchors(id)",
+      "check_or_enum": "",
+      "purpose": "Current scene anchor.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_current_position",
+      "column_name": "current_node_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "FK",
+      "references": "party_graph_nodes(id)",
+      "check_or_enum": "",
+      "purpose": "Current graph node if mapped.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_current_position",
+      "column_name": "last_route_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "FK",
+      "references": "party_graph_edges(id)",
+      "check_or_enum": "",
+      "purpose": "Route used to arrive.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_current_position",
+      "column_name": "position_visible_text",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Player-facing location phrase.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_current_position",
+      "column_name": "updated_by_turn_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to party_turns(id)",
+      "purpose": "Turn that updated position.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_current_position",
+      "column_name": "game_day_index",
+      "data_type": "INTEGER",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "CHECK >=0",
+      "purpose": "Game day.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_current_position",
+      "column_name": "game_minute_of_day",
+      "data_type": "INTEGER",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "CHECK 0-1439",
+      "purpose": "Time inside day.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_map_knowledge",
+      "column_name": "id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "PK",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Stable technical identifier; code may use deterministic IDs or generated IDs.",
+      "source_basis": "technical key"
+    },
+    {
+      "table_name": "party_map_knowledge",
+      "column_name": "party_id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "FK",
+      "references": "party_state(id)",
+      "check_or_enum": "",
+      "purpose": "Party scope; every mutable row belongs to one saved party.",
+      "source_basis": "party DB separation"
+    },
+    {
+      "table_name": "party_map_knowledge",
+      "column_name": "created_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real system timestamp for audit, not game time.",
+      "source_basis": "technical audit"
+    },
+    {
+      "table_name": "party_map_knowledge",
+      "column_name": "updated_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real system timestamp for audit, not game time.",
+      "source_basis": "technical audit"
+    },
+    {
+      "table_name": "party_map_knowledge",
+      "column_name": "character_id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "FK",
+      "references": "party_player_characters(id)",
+      "check_or_enum": "",
+      "purpose": "Whose knowledge.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_map_knowledge",
+      "column_name": "node_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "FK",
+      "references": "party_graph_nodes(id)",
+      "check_or_enum": "",
+      "purpose": "Known node.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_map_knowledge",
+      "column_name": "edge_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "FK",
+      "references": "party_graph_edges(id)",
+      "check_or_enum": "",
+      "purpose": "Known edge.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_map_knowledge",
+      "column_name": "knowledge_type",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "knowledge_type",
+      "purpose": "Type of knowledge.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_map_knowledge",
+      "column_name": "knowledge_accuracy",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "knowledge_accuracy",
+      "purpose": "Accuracy of knowledge.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_map_knowledge",
+      "column_name": "source_of_knowledge",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "How character learned it.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_map_knowledge",
+      "column_name": "first_learned_at",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Game time.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_map_knowledge",
+      "column_name": "last_confirmed_at",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Game time.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_map_knowledge",
+      "column_name": "visible_description",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "What UI/prose may show.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_map_knowledge",
+      "column_name": "false_or_outdated_notes",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Why wrong/outdated; hidden unless character can know.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_route_journal",
+      "column_name": "id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "PK",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Stable technical identifier; code may use deterministic IDs or generated IDs.",
+      "source_basis": "technical key"
+    },
+    {
+      "table_name": "party_route_journal",
+      "column_name": "party_id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "FK",
+      "references": "party_state(id)",
+      "check_or_enum": "",
+      "purpose": "Party scope; every mutable row belongs to one saved party.",
+      "source_basis": "party DB separation"
+    },
+    {
+      "table_name": "party_route_journal",
+      "column_name": "created_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real system timestamp for audit, not game time.",
+      "source_basis": "technical audit"
+    },
+    {
+      "table_name": "party_route_journal",
+      "column_name": "updated_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real system timestamp for audit, not game time.",
+      "source_basis": "technical audit"
+    },
+    {
+      "table_name": "party_route_journal",
+      "column_name": "character_id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "FK",
+      "references": "party_player_characters(id)",
+      "check_or_enum": "",
+      "purpose": "Mover.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_route_journal",
+      "column_name": "from_node_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "FK",
+      "references": "party_graph_nodes(id)",
+      "check_or_enum": "",
+      "purpose": "Start node.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_route_journal",
+      "column_name": "to_node_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "FK",
+      "references": "party_graph_nodes(id)",
+      "check_or_enum": "",
+      "purpose": "End node.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_route_journal",
+      "column_name": "edge_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "FK",
+      "references": "party_graph_edges(id)",
+      "check_or_enum": "",
+      "purpose": "Edge used.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_route_journal",
+      "column_name": "started_at_game_time",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Game time.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_route_journal",
+      "column_name": "ended_at_game_time",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Game time.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_route_journal",
+      "column_name": "travel_time_minutes",
+      "data_type": "NUMERIC",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Elapsed minutes.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_route_journal",
+      "column_name": "conditions",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Conditions applied.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_route_journal",
+      "column_name": "risk_result",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Risk checks and outcomes.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_route_journal",
+      "column_name": "state_cost",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Body/item/time costs.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_route_journal",
+      "column_name": "visible_result",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Player-facing result.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_route_journal",
+      "column_name": "hidden_result",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Hidden consequences.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_route_journal",
+      "column_name": "notes",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Audit notes.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_npcs",
+      "column_name": "id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "PK",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Stable technical identifier; code may use deterministic IDs or generated IDs.",
+      "source_basis": "technical key"
+    },
+    {
+      "table_name": "party_npcs",
+      "column_name": "party_id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "FK",
+      "references": "party_state(id)",
+      "check_or_enum": "",
+      "purpose": "Party scope; every mutable row belongs to one saved party.",
+      "source_basis": "party DB separation"
+    },
+    {
+      "table_name": "party_npcs",
+      "column_name": "created_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real system timestamp for audit, not game time.",
+      "source_basis": "technical audit"
+    },
+    {
+      "table_name": "party_npcs",
+      "column_name": "updated_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real system timestamp for audit, not game time.",
+      "source_basis": "technical audit"
+    },
+    {
+      "table_name": "party_npcs",
+      "column_name": "canonical_npc_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to world_base/historical figures if applicable",
+      "purpose": "Canonical/historical seed if any.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_npcs",
+      "column_name": "profile_type",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "npc_profile_type",
+      "purpose": "Background/scene/key/group.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_npcs",
+      "column_name": "region_id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to world_base.regions(id)",
+      "purpose": "Region.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_npcs",
+      "column_name": "current_node_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "FK",
+      "references": "party_graph_nodes(id)",
+      "check_or_enum": "",
+      "purpose": "Current node.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_npcs",
+      "column_name": "current_place_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "FK",
+      "references": "party_places(id)",
+      "check_or_enum": "",
+      "purpose": "Current place.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_npcs",
+      "column_name": "current_location_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "FK",
+      "references": "party_locations(id)",
+      "check_or_enum": "",
+      "purpose": "Current location.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_npcs",
+      "column_name": "visible_label",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "What character sees/calls them.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_npcs",
+      "column_name": "known_name",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Name if known.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_npcs",
+      "column_name": "social_role_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to world_base.region_social_roles(id)",
+      "purpose": "Social role.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_npcs",
+      "column_name": "occupation_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to world_base.region_occupations(id)",
+      "purpose": "Occupation.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_npcs",
+      "column_name": "social_class_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to world_base.social_classes(id)",
+      "purpose": "Universal social class reference.",
+      "source_basis": "universal social layer v1"
+    },
+    {
+      "table_name": "party_npcs",
+      "column_name": "social_position_archetype_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to world_base.social_position_archetypes(id)",
+      "purpose": "Canonical social position.",
+      "source_basis": "universal social layer v1"
+    },
+    {
+      "table_name": "party_npcs",
+      "column_name": "skills",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Mechanical skill bonuses map for NPC.",
+      "source_basis": "universal social layer v1"
+    },
+    {
+      "table_name": "party_npcs",
+      "column_name": "status",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "party_entity_status",
+      "purpose": "NPC lifecycle.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_npcs",
+      "column_name": "body_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Health/conditions if relevant.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_npcs",
+      "column_name": "relationship_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Attitude/obligations toward player and others.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_npcs",
+      "column_name": "knowledge_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "What NPC knows; includes rumors/errors.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_npcs",
+      "column_name": "schedule_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Where they go after time passes.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_npcs",
+      "column_name": "current_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Mutable state.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_npcs",
+      "column_name": "hidden_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Hidden motives/facts.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_npcs",
+      "column_name": "is_known_to_character",
+      "data_type": "BOOLEAN",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT false",
+      "purpose": "Known layer.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_npcs",
+      "column_name": "is_visible_in_scene",
+      "data_type": "BOOLEAN",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT false",
+      "purpose": "Scene visibility.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_npcs",
+      "column_name": "created_by_llm_step",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to party_llm_steps(id)",
+      "purpose": "LLM provenance.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_npcs",
+      "column_name": "created_at_game_time",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Game-time stamp.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_npcs",
+      "column_name": "updated_at_game_time",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Game-time stamp.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_items",
+      "column_name": "id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "PK",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Stable technical identifier; code may use deterministic IDs or generated IDs.",
+      "source_basis": "technical key"
+    },
+    {
+      "table_name": "party_items",
+      "column_name": "party_id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "FK",
+      "references": "party_state(id)",
+      "check_or_enum": "",
+      "purpose": "Party scope; every mutable row belongs to one saved party.",
+      "source_basis": "party DB separation"
+    },
+    {
+      "table_name": "party_items",
+      "column_name": "created_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real system timestamp for audit, not game time.",
+      "source_basis": "technical audit"
+    },
+    {
+      "table_name": "party_items",
+      "column_name": "updated_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real system timestamp for audit, not game time.",
+      "source_basis": "technical audit"
+    },
+    {
+      "table_name": "party_items",
+      "column_name": "canonical_item_template_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to world_base.item_templates(id)",
+      "purpose": "Template if any.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_items",
+      "column_name": "item_type",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Item type/category.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_items",
+      "column_name": "title",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Visible or technical title.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_items",
+      "column_name": "is_container",
+      "data_type": "BOOLEAN",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT false",
+      "purpose": "Container flag.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_items",
+      "column_name": "container_item_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "FK",
+      "references": "party_items(id)",
+      "check_or_enum": "",
+      "purpose": "Parent container item if inside.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_items",
+      "column_name": "owner_type",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "player_character/npc/place/unknown/disputed.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_items",
+      "column_name": "owner_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Owner row ID depending on type.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_items",
+      "column_name": "holder_type",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Who/what physically holds it.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_items",
+      "column_name": "holder_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Holder row ID depending on type.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_items",
+      "column_name": "place_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "FK",
+      "references": "party_places(id)",
+      "check_or_enum": "",
+      "purpose": "Located at place if not carried.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_items",
+      "column_name": "location_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "FK",
+      "references": "party_locations(id)",
+      "check_or_enum": "",
+      "purpose": "Located at location.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_items",
+      "column_name": "minilocation_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "FK",
+      "references": "party_minilocations(id)",
+      "check_or_enum": "",
+      "purpose": "Located at minilocation.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_items",
+      "column_name": "anchor_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "FK",
+      "references": "party_scene_anchors(id)",
+      "check_or_enum": "",
+      "purpose": "Associated scene anchor.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_items",
+      "column_name": "materialization_reason",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Causal reason for existing in party state.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_items",
+      "column_name": "visibility_state",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "visibility_state",
+      "purpose": "Visible/hidden/known/suspected.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_items",
+      "column_name": "physical_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Condition, mass, size, material, marks.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_items",
+      "column_name": "ownership_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Owner/holder/right/dispute.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_items",
+      "column_name": "access_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Can be taken, opened, used.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_items",
+      "column_name": "risk_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Theft/legal/social/witness risk.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_items",
+      "column_name": "current_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Mutable item state.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_items",
+      "column_name": "hidden_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Hidden item facts; not sent to prose unless visible.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_items",
+      "column_name": "created_by_llm_step",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to party_llm_steps(id)",
+      "purpose": "LLM provenance.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_items",
+      "column_name": "created_at_game_time",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Game-time stamp.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_items",
+      "column_name": "updated_at_game_time",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Game-time stamp.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_inventory_entries",
+      "column_name": "id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "PK",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Stable technical identifier; code may use deterministic IDs or generated IDs.",
+      "source_basis": "technical key"
+    },
+    {
+      "table_name": "party_inventory_entries",
+      "column_name": "party_id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "FK",
+      "references": "party_state(id)",
+      "check_or_enum": "",
+      "purpose": "Party scope; every mutable row belongs to one saved party.",
+      "source_basis": "party DB separation"
+    },
+    {
+      "table_name": "party_inventory_entries",
+      "column_name": "created_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real system timestamp for audit, not game time.",
+      "source_basis": "technical audit"
+    },
+    {
+      "table_name": "party_inventory_entries",
+      "column_name": "updated_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real system timestamp for audit, not game time.",
+      "source_basis": "technical audit"
+    },
+    {
+      "table_name": "party_inventory_entries",
+      "column_name": "item_id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "FK",
+      "references": "party_items(id)",
+      "check_or_enum": "",
+      "purpose": "Item.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_inventory_entries",
+      "column_name": "holder_type",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "player_character/npc/container/place.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_inventory_entries",
+      "column_name": "holder_id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Holder ID.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_inventory_entries",
+      "column_name": "location_on_holder",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "In hand, belt, bag, deep bag, etc.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_inventory_entries",
+      "column_name": "quick_access",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Immediate/short action/needs search.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_inventory_entries",
+      "column_name": "is_equipped",
+      "data_type": "BOOLEAN",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT false",
+      "purpose": "Equipped/held.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_inventory_entries",
+      "column_name": "visible_to_character",
+      "data_type": "BOOLEAN",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT false",
+      "purpose": "Whether player character can perceive it.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_inventory_entries",
+      "column_name": "started_at_game_time",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "When item entered inventory.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_inventory_entries",
+      "column_name": "ended_at_game_time",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "When removed if historical record retained.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_events",
+      "column_name": "id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "PK",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Stable technical identifier; code may use deterministic IDs or generated IDs.",
+      "source_basis": "technical key"
+    },
+    {
+      "table_name": "party_events",
+      "column_name": "party_id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "FK",
+      "references": "party_state(id)",
+      "check_or_enum": "",
+      "purpose": "Party scope; every mutable row belongs to one saved party.",
+      "source_basis": "party DB separation"
+    },
+    {
+      "table_name": "party_events",
+      "column_name": "created_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real system timestamp for audit, not game time.",
+      "source_basis": "technical audit"
+    },
+    {
+      "table_name": "party_events",
+      "column_name": "updated_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real system timestamp for audit, not game time.",
+      "source_basis": "technical audit"
+    },
+    {
+      "table_name": "party_events",
+      "column_name": "canonical_event_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to world_base.historical_events(id)",
+      "purpose": "Canonical event if any.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_events",
+      "column_name": "event_type",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Historical/local/deferred/body/road/item/social/etc.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_events",
+      "column_name": "status",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "party_event_status",
+      "purpose": "Lifecycle of event.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_events",
+      "column_name": "visibility_state",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "visibility_state",
+      "purpose": "Whether character/player can perceive it.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_events",
+      "column_name": "title",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Technical or visible title.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_events",
+      "column_name": "cause",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Why event exists.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_events",
+      "column_name": "trigger_condition",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "When/how it activates.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_events",
+      "column_name": "scheduled_game_day",
+      "data_type": "INTEGER",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Game day for timer if applicable.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_events",
+      "column_name": "scheduled_minute_of_day",
+      "data_type": "INTEGER",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "CHECK 0-1439",
+      "purpose": "Minute of day if applicable.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_events",
+      "column_name": "current_phase",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Phase label for historical/local event.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_events",
+      "column_name": "visible_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "What can be shown.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_events",
+      "column_name": "hidden_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Hidden causes/processes.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_events",
+      "column_name": "affected_entities",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Nodes, NPCs, items, prices, roads affected.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_events",
+      "column_name": "consequences_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Applied or pending consequences.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_events",
+      "column_name": "created_by_llm_step",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to party_llm_steps(id)",
+      "purpose": "LLM provenance.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_events",
+      "column_name": "created_at_game_time",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Game-time stamp.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_events",
+      "column_name": "updated_at_game_time",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Game-time stamp.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_turns",
+      "column_name": "id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "PK",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Stable technical identifier; code may use deterministic IDs or generated IDs.",
+      "source_basis": "technical key"
+    },
+    {
+      "table_name": "party_turns",
+      "column_name": "party_id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "FK",
+      "references": "party_state(id)",
+      "check_or_enum": "",
+      "purpose": "Party scope; every mutable row belongs to one saved party.",
+      "source_basis": "party DB separation"
+    },
+    {
+      "table_name": "party_turns",
+      "column_name": "created_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real system timestamp for audit, not game time.",
+      "source_basis": "technical audit"
+    },
+    {
+      "table_name": "party_turns",
+      "column_name": "updated_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real system timestamp for audit, not game time.",
+      "source_basis": "technical audit"
+    },
+    {
+      "table_name": "party_turns",
+      "column_name": "turn_index",
+      "data_type": "INTEGER",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "CHECK >=0",
+      "purpose": "Sequential turn number.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_turns",
+      "column_name": "player_input",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Raw player action/request.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_turns",
+      "column_name": "intent_summary",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Structured intent summary.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_turns",
+      "column_name": "started_at_game_time",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Before action.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_turns",
+      "column_name": "ended_at_game_time",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "After action.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_turns",
+      "column_name": "elapsed_minutes",
+      "data_type": "NUMERIC",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Time advanced.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_turns",
+      "column_name": "resolution_state",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Checks, consequences, applied changes.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_turns",
+      "column_name": "visible_result",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Player-facing turn result.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_turns",
+      "column_name": "hidden_updates",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Hidden changes not shown directly.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_turns",
+      "column_name": "llm_step_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "logical FK to party_llm_steps(id)",
+      "purpose": "Main LLM step.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_turns",
+      "column_name": "audit_status",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Accepted/needs repair/etc.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_journal_entries",
+      "column_name": "id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "PK",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Stable technical identifier; code may use deterministic IDs or generated IDs.",
+      "source_basis": "technical key"
+    },
+    {
+      "table_name": "party_journal_entries",
+      "column_name": "party_id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "FK",
+      "references": "party_state(id)",
+      "check_or_enum": "",
+      "purpose": "Party scope; every mutable row belongs to one saved party.",
+      "source_basis": "party DB separation"
+    },
+    {
+      "table_name": "party_journal_entries",
+      "column_name": "created_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real system timestamp for audit, not game time.",
+      "source_basis": "technical audit"
+    },
+    {
+      "table_name": "party_journal_entries",
+      "column_name": "updated_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real system timestamp for audit, not game time.",
+      "source_basis": "technical audit"
+    },
+    {
+      "table_name": "party_journal_entries",
+      "column_name": "turn_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "FK",
+      "references": "party_turns(id)",
+      "check_or_enum": "",
+      "purpose": "Turn source.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_journal_entries",
+      "column_name": "character_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "FK",
+      "references": "party_player_characters(id)",
+      "check_or_enum": "",
+      "purpose": "Who knows/remembers it.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_journal_entries",
+      "column_name": "entry_type",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "event/memory/rumor/obligation/place/person/item/route.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_journal_entries",
+      "column_name": "visibility_state",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "visibility_state",
+      "purpose": "Journal visibility.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_journal_entries",
+      "column_name": "truth_status",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "fact/rumor/unknown/false_belief if known to system.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_journal_entries",
+      "column_name": "title",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Entry title.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_journal_entries",
+      "column_name": "body",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Text stored for journal.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_journal_entries",
+      "column_name": "linked_entities",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Related nodes/NPC/items/events.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_journal_entries",
+      "column_name": "created_at_game_time",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Game-time stamp.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_llm_steps",
+      "column_name": "id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "PK",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Stable ID.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_llm_steps",
+      "column_name": "party_id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "FK",
+      "references": "party_state(id)",
+      "check_or_enum": "",
+      "purpose": "Party scope.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_llm_steps",
+      "column_name": "step_type",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "frame/place/npc/item/turn/visibility/prose/memory/repair/etc.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_llm_steps",
+      "column_name": "status",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "llm_step_status",
+      "purpose": "Processing status.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_llm_steps",
+      "column_name": "input_hash",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Hash/pointer to prompt input.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_llm_steps",
+      "column_name": "output_hash",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Hash/pointer to model output.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_llm_steps",
+      "column_name": "safe_visible_output",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Sanitized visible package if relevant.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_llm_steps",
+      "column_name": "structured_output",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT {}",
+      "purpose": "Accepted structured data.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_llm_steps",
+      "column_name": "validation_errors",
+      "data_type": "JSONB",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT []",
+      "purpose": "Validation/repair issues.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_llm_steps",
+      "column_name": "parent_step_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "FK",
+      "references": "party_llm_steps(id)",
+      "check_or_enum": "",
+      "purpose": "Repair parent.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_llm_steps",
+      "column_name": "created_at_game_time",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Game-time stamp.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_llm_steps",
+      "column_name": "created_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real timestamp.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_llm_steps",
+      "column_name": "updated_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real timestamp.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_validation_issues",
+      "column_name": "id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "PK",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Stable technical identifier; code may use deterministic IDs or generated IDs.",
+      "source_basis": "technical key"
+    },
+    {
+      "table_name": "party_validation_issues",
+      "column_name": "party_id",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "FK",
+      "references": "party_state(id)",
+      "check_or_enum": "",
+      "purpose": "Party scope; every mutable row belongs to one saved party.",
+      "source_basis": "party DB separation"
+    },
+    {
+      "table_name": "party_validation_issues",
+      "column_name": "created_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real system timestamp for audit, not game time.",
+      "source_basis": "technical audit"
+    },
+    {
+      "table_name": "party_validation_issues",
+      "column_name": "updated_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "DEFAULT now()",
+      "purpose": "Real system timestamp for audit, not game time.",
+      "source_basis": "technical audit"
+    },
+    {
+      "table_name": "party_validation_issues",
+      "column_name": "llm_step_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "FK",
+      "references": "party_llm_steps(id)",
+      "check_or_enum": "",
+      "purpose": "Related LLM step.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_validation_issues",
+      "column_name": "turn_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "FK",
+      "references": "party_turns(id)",
+      "check_or_enum": "",
+      "purpose": "Related turn.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_validation_issues",
+      "column_name": "severity",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "info/warning/error/blocker.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_validation_issues",
+      "column_name": "issue_type",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "schema/fk/visibility/history/item/npc/map/time.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_validation_issues",
+      "column_name": "message",
+      "data_type": "TEXT",
+      "nullable": "no",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Human-readable issue.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_validation_issues",
+      "column_name": "affected_table",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Table affected.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_validation_issues",
+      "column_name": "affected_row_id",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Row affected.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_validation_issues",
+      "column_name": "repair_instruction",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Instruction to LLM or developer.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_validation_issues",
+      "column_name": "resolved_at",
+      "data_type": "TIMESTAMPTZ",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Resolution timestamp.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    },
+    {
+      "table_name": "party_validation_issues",
+      "column_name": "resolution_note",
+      "data_type": "TEXT",
+      "nullable": "yes",
+      "key": "",
+      "references": "",
+      "check_or_enum": "",
+      "purpose": "Resolution note.",
+      "source_basis": "read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt"
+    }
+  ],
+  "enums": [
+    {
+      "enum_name": "party_status",
+      "value": "draft",
+      "sort_order": 1,
+      "source_basis": "technical lifecycle for saved party state"
+    },
+    {
+      "enum_name": "party_status",
+      "value": "active",
+      "sort_order": 2,
+      "source_basis": "technical lifecycle for saved party state"
+    },
+    {
+      "enum_name": "party_status",
+      "value": "paused",
+      "sort_order": 3,
+      "source_basis": "technical lifecycle for saved party state"
+    },
+    {
+      "enum_name": "party_status",
+      "value": "completed",
+      "sort_order": 4,
+      "source_basis": "technical lifecycle for saved party state"
+    },
+    {
+      "enum_name": "party_status",
+      "value": "abandoned",
+      "sort_order": 5,
+      "source_basis": "technical lifecycle for saved party state"
+    },
+    {
+      "enum_name": "party_status",
+      "value": "error",
+      "sort_order": 6,
+      "source_basis": "technical lifecycle for saved party state"
+    },
+    {
+      "enum_name": "party_status",
+      "value": "archived",
+      "sort_order": 7,
+      "source_basis": "technical lifecycle for saved party state"
+    },
+    {
+      "enum_name": "party_entity_status",
+      "value": "active",
+      "sort_order": 1,
+      "source_basis": "technical lifecycle for party entities"
+    },
+    {
+      "enum_name": "party_entity_status",
+      "value": "inactive",
+      "sort_order": 2,
+      "source_basis": "technical lifecycle for party entities"
+    },
+    {
+      "enum_name": "party_entity_status",
+      "value": "dead",
+      "sort_order": 3,
+      "source_basis": "technical lifecycle for party entities"
+    },
+    {
+      "enum_name": "party_entity_status",
+      "value": "destroyed",
+      "sort_order": 4,
+      "source_basis": "technical lifecycle for party entities"
+    },
+    {
+      "enum_name": "party_entity_status",
+      "value": "missing",
+      "sort_order": 5,
+      "source_basis": "technical lifecycle for party entities"
+    },
+    {
+      "enum_name": "party_entity_status",
+      "value": "resolved",
+      "sort_order": 6,
+      "source_basis": "technical lifecycle for party entities"
+    },
+    {
+      "enum_name": "party_entity_status",
+      "value": "needs_review",
+      "sort_order": 7,
+      "source_basis": "technical lifecycle for party entities"
+    },
+    {
+      "enum_name": "scale_level",
+      "value": "G0",
+      "sort_order": 1,
+      "source_basis": "project graph scale G0-G5"
+    },
+    {
+      "enum_name": "scale_level",
+      "value": "G1",
+      "sort_order": 2,
+      "source_basis": "project graph scale G0-G5"
+    },
+    {
+      "enum_name": "scale_level",
+      "value": "G2",
+      "sort_order": 3,
+      "source_basis": "project graph scale G0-G5"
+    },
+    {
+      "enum_name": "scale_level",
+      "value": "G3",
+      "sort_order": 4,
+      "source_basis": "project graph scale G0-G5"
+    },
+    {
+      "enum_name": "scale_level",
+      "value": "G4",
+      "sort_order": 5,
+      "source_basis": "project graph scale G0-G5"
+    },
+    {
+      "enum_name": "scale_level",
+      "value": "G5",
+      "sort_order": 6,
+      "source_basis": "project graph scale G0-G5"
+    },
+    {
+      "enum_name": "node_type",
+      "value": "world_region",
+      "sort_order": 1,
+      "source_basis": "world_base graph_nodes.node_type"
+    },
+    {
+      "enum_name": "node_type",
+      "value": "region_cell",
+      "sort_order": 2,
+      "source_basis": "world_base graph_nodes.node_type"
+    },
+    {
+      "enum_name": "node_type",
+      "value": "cell_subgraph",
+      "sort_order": 3,
+      "source_basis": "world_base graph_nodes.node_type"
+    },
+    {
+      "enum_name": "node_type",
+      "value": "map_corridor",
+      "sort_order": 4,
+      "source_basis": "world_base graph_nodes.node_type"
+    },
+    {
+      "enum_name": "node_type",
+      "value": "geographic_landmark",
+      "sort_order": 5,
+      "source_basis": "world_base graph_nodes.node_type"
+    },
+    {
+      "enum_name": "node_type",
+      "value": "historical_landmark",
+      "sort_order": 6,
+      "source_basis": "world_base graph_nodes.node_type"
+    },
+    {
+      "enum_name": "node_type",
+      "value": "subregion",
+      "sort_order": 7,
+      "source_basis": "world_base graph_nodes.node_type"
+    },
+    {
+      "enum_name": "node_type",
+      "value": "place",
+      "sort_order": 8,
+      "source_basis": "world_base graph_nodes.node_type"
+    },
+    {
+      "enum_name": "node_type",
+      "value": "location",
+      "sort_order": 9,
+      "source_basis": "world_base graph_nodes.node_type"
+    },
+    {
+      "enum_name": "node_type",
+      "value": "minilocation",
+      "sort_order": 10,
+      "source_basis": "world_base graph_nodes.node_type"
+    },
+    {
+      "enum_name": "node_type",
+      "value": "scene_anchor",
+      "sort_order": 11,
+      "source_basis": "world_base graph_nodes.node_type"
+    },
+    {
+      "enum_name": "node_type",
+      "value": "route_junction",
+      "sort_order": 12,
+      "source_basis": "world_base graph_nodes.node_type"
+    },
+    {
+      "enum_name": "node_type",
+      "value": "river_junction",
+      "sort_order": 13,
+      "source_basis": "world_base graph_nodes.node_type"
+    },
+    {
+      "enum_name": "node_type",
+      "value": "ford",
+      "sort_order": 14,
+      "source_basis": "world_base graph_nodes.node_type"
+    },
+    {
+      "enum_name": "node_type",
+      "value": "ferry",
+      "sort_order": 15,
+      "source_basis": "world_base graph_nodes.node_type"
+    },
+    {
+      "enum_name": "node_type",
+      "value": "gate",
+      "sort_order": 16,
+      "source_basis": "world_base graph_nodes.node_type"
+    },
+    {
+      "enum_name": "node_type",
+      "value": "road_segment",
+      "sort_order": 17,
+      "source_basis": "world_base graph_nodes.node_type"
+    },
+    {
+      "enum_name": "node_type",
+      "value": "water_segment",
+      "sort_order": 18,
+      "source_basis": "world_base graph_nodes.node_type"
+    },
+    {
+      "enum_name": "node_type",
+      "value": "border_crossing",
+      "sort_order": 19,
+      "source_basis": "world_base graph_nodes.node_type"
+    },
+    {
+      "enum_name": "node_type",
+      "value": "sea_crossing",
+      "sort_order": 20,
+      "source_basis": "world_base graph_nodes.node_type"
+    },
+    {
+      "enum_name": "node_type",
+      "value": "mountain_pass",
+      "sort_order": 21,
+      "source_basis": "world_base graph_nodes.node_type"
+    },
+    {
+      "enum_name": "node_type",
+      "value": "desert_oasis",
+      "sort_order": 22,
+      "source_basis": "world_base graph_nodes.node_type"
+    },
+    {
+      "enum_name": "node_type",
+      "value": "steppe_camp",
+      "sort_order": 23,
+      "source_basis": "world_base graph_nodes.node_type"
+    },
+    {
+      "enum_name": "edge_type",
+      "value": "road",
+      "sort_order": 1,
+      "source_basis": "world_base graph_edges.edge_type"
+    },
+    {
+      "enum_name": "edge_type",
+      "value": "path",
+      "sort_order": 2,
+      "source_basis": "world_base graph_edges.edge_type"
+    },
+    {
+      "enum_name": "edge_type",
+      "value": "river",
+      "sort_order": 3,
+      "source_basis": "world_base graph_edges.edge_type"
+    },
+    {
+      "enum_name": "edge_type",
+      "value": "lake_route",
+      "sort_order": 4,
+      "source_basis": "world_base graph_edges.edge_type"
+    },
+    {
+      "enum_name": "edge_type",
+      "value": "sea_route",
+      "sort_order": 5,
+      "source_basis": "world_base graph_edges.edge_type"
+    },
+    {
+      "enum_name": "edge_type",
+      "value": "winter_road",
+      "sort_order": 6,
+      "source_basis": "world_base graph_edges.edge_type"
+    },
+    {
+      "enum_name": "edge_type",
+      "value": "ford",
+      "sort_order": 7,
+      "source_basis": "world_base graph_edges.edge_type"
+    },
+    {
+      "enum_name": "edge_type",
+      "value": "ferry",
+      "sort_order": 8,
+      "source_basis": "world_base graph_edges.edge_type"
+    },
+    {
+      "enum_name": "edge_type",
+      "value": "bridge",
+      "sort_order": 9,
+      "source_basis": "world_base graph_edges.edge_type"
+    },
+    {
+      "enum_name": "edge_type",
+      "value": "gate",
+      "sort_order": 10,
+      "source_basis": "world_base graph_edges.edge_type"
+    },
+    {
+      "enum_name": "edge_type",
+      "value": "street",
+      "sort_order": 11,
+      "source_basis": "world_base graph_edges.edge_type"
+    },
+    {
+      "enum_name": "edge_type",
+      "value": "door",
+      "sort_order": 12,
+      "source_basis": "world_base graph_edges.edge_type"
+    },
+    {
+      "enum_name": "edge_type",
+      "value": "yard_passage",
+      "sort_order": 13,
+      "source_basis": "world_base graph_edges.edge_type"
+    },
+    {
+      "enum_name": "edge_type",
+      "value": "forest_track",
+      "sort_order": 14,
+      "source_basis": "world_base graph_edges.edge_type"
+    },
+    {
+      "enum_name": "edge_type",
+      "value": "offroad_crossing",
+      "sort_order": 15,
+      "source_basis": "world_base graph_edges.edge_type"
+    },
+    {
+      "enum_name": "edge_type",
+      "value": "mountain_pass",
+      "sort_order": 16,
+      "source_basis": "world_base graph_edges.edge_type"
+    },
+    {
+      "enum_name": "edge_type",
+      "value": "desert_route",
+      "sort_order": 17,
+      "source_basis": "world_base graph_edges.edge_type"
+    },
+    {
+      "enum_name": "edge_type",
+      "value": "steppe_route",
+      "sort_order": 18,
+      "source_basis": "world_base graph_edges.edge_type"
+    },
+    {
+      "enum_name": "edge_type",
+      "value": "border_transition",
+      "sort_order": 19,
+      "source_basis": "world_base graph_edges.edge_type"
+    },
+    {
+      "enum_name": "edge_type",
+      "value": "corridor_segment",
+      "sort_order": 20,
+      "source_basis": "world_base graph_edges.edge_type"
+    },
+    {
+      "enum_name": "edge_type",
+      "value": "portage",
+      "sort_order": 21,
+      "source_basis": "world_base graph_edges.edge_type"
+    },
+    {
+      "enum_name": "knowledge_type",
+      "value": "known_exact",
+      "sort_order": 1,
+      "source_basis": "read_only_database_and_graph_architecture.md §14.3"
+    },
+    {
+      "enum_name": "knowledge_type",
+      "value": "known_rough",
+      "sort_order": 2,
+      "source_basis": "read_only_database_and_graph_architecture.md §14.3"
+    },
+    {
+      "enum_name": "knowledge_type",
+      "value": "heard_rumor",
+      "sort_order": 3,
+      "source_basis": "read_only_database_and_graph_architecture.md §14.3"
+    },
+    {
+      "enum_name": "knowledge_type",
+      "value": "seen_from_distance",
+      "sort_order": 4,
+      "source_basis": "read_only_database_and_graph_architecture.md §14.3"
+    },
+    {
+      "enum_name": "knowledge_type",
+      "value": "inferred",
+      "sort_order": 5,
+      "source_basis": "read_only_database_and_graph_architecture.md §14.3"
+    },
+    {
+      "enum_name": "knowledge_type",
+      "value": "unknown",
+      "sort_order": 6,
+      "source_basis": "read_only_database_and_graph_architecture.md §14.3"
+    },
+    {
+      "enum_name": "knowledge_type",
+      "value": "false_belief",
+      "sort_order": 7,
+      "source_basis": "read_only_database_and_graph_architecture.md §14.3"
+    },
+    {
+      "enum_name": "knowledge_accuracy",
+      "value": "accurate",
+      "sort_order": 1,
+      "source_basis": "party map knowledge accuracy state"
+    },
+    {
+      "enum_name": "knowledge_accuracy",
+      "value": "approximate",
+      "sort_order": 2,
+      "source_basis": "party map knowledge accuracy state"
+    },
+    {
+      "enum_name": "knowledge_accuracy",
+      "value": "outdated",
+      "sort_order": 3,
+      "source_basis": "party map knowledge accuracy state"
+    },
+    {
+      "enum_name": "knowledge_accuracy",
+      "value": "distorted",
+      "sort_order": 4,
+      "source_basis": "party map knowledge accuracy state"
+    },
+    {
+      "enum_name": "knowledge_accuracy",
+      "value": "false",
+      "sort_order": 5,
+      "source_basis": "party map knowledge accuracy state"
+    },
+    {
+      "enum_name": "knowledge_accuracy",
+      "value": "unknown",
+      "sort_order": 6,
+      "source_basis": "party map knowledge accuracy state"
+    },
+    {
+      "enum_name": "npc_profile_type",
+      "value": "background",
+      "sort_order": 1,
+      "source_basis": "npc_generation_profiles.txt"
+    },
+    {
+      "enum_name": "npc_profile_type",
+      "value": "scene",
+      "sort_order": 2,
+      "source_basis": "npc_generation_profiles.txt"
+    },
+    {
+      "enum_name": "npc_profile_type",
+      "value": "key",
+      "sort_order": 3,
+      "source_basis": "npc_generation_profiles.txt"
+    },
+    {
+      "enum_name": "npc_profile_type",
+      "value": "group",
+      "sort_order": 4,
+      "source_basis": "npc_generation_profiles.txt"
+    },
+    {
+      "enum_name": "visibility_state",
+      "value": "visible",
+      "sort_order": 1,
+      "source_basis": "visible/hidden information model"
+    },
+    {
+      "enum_name": "visibility_state",
+      "value": "partly_visible",
+      "sort_order": 2,
+      "source_basis": "visible/hidden information model"
+    },
+    {
+      "enum_name": "visibility_state",
+      "value": "hidden",
+      "sort_order": 3,
+      "source_basis": "visible/hidden information model"
+    },
+    {
+      "enum_name": "visibility_state",
+      "value": "known",
+      "sort_order": 4,
+      "source_basis": "visible/hidden information model"
+    },
+    {
+      "enum_name": "visibility_state",
+      "value": "suspected",
+      "sort_order": 5,
+      "source_basis": "visible/hidden information model"
+    },
+    {
+      "enum_name": "visibility_state",
+      "value": "unknown",
+      "sort_order": 6,
+      "source_basis": "visible/hidden information model"
+    },
+    {
+      "enum_name": "party_event_status",
+      "value": "scheduled",
+      "sort_order": 1,
+      "source_basis": "time_system.txt deferred events and historical_events phases"
+    },
+    {
+      "enum_name": "party_event_status",
+      "value": "active",
+      "sort_order": 2,
+      "source_basis": "time_system.txt deferred events and historical_events phases"
+    },
+    {
+      "enum_name": "party_event_status",
+      "value": "resolved",
+      "sort_order": 3,
+      "source_basis": "time_system.txt deferred events and historical_events phases"
+    },
+    {
+      "enum_name": "party_event_status",
+      "value": "cancelled",
+      "sort_order": 4,
+      "source_basis": "time_system.txt deferred events and historical_events phases"
+    },
+    {
+      "enum_name": "party_event_status",
+      "value": "hidden",
+      "sort_order": 5,
+      "source_basis": "time_system.txt deferred events and historical_events phases"
+    },
+    {
+      "enum_name": "party_event_status",
+      "value": "needs_review",
+      "sort_order": 6,
+      "source_basis": "time_system.txt deferred events and historical_events phases"
+    },
+    {
+      "enum_name": "llm_step_status",
+      "value": "draft",
+      "sort_order": 1,
+      "source_basis": "world_generation_and_turns.txt repair/audit rule"
+    },
+    {
+      "enum_name": "llm_step_status",
+      "value": "accepted",
+      "sort_order": 2,
+      "source_basis": "world_generation_and_turns.txt repair/audit rule"
+    },
+    {
+      "enum_name": "llm_step_status",
+      "value": "rejected",
+      "sort_order": 3,
+      "source_basis": "world_generation_and_turns.txt repair/audit rule"
+    },
+    {
+      "enum_name": "llm_step_status",
+      "value": "needs_repair",
+      "sort_order": 4,
+      "source_basis": "world_generation_and_turns.txt repair/audit rule"
+    },
+    {
+      "enum_name": "llm_step_status",
+      "value": "repaired",
+      "sort_order": 5,
+      "source_basis": "world_generation_and_turns.txt repair/audit rule"
+    },
+    {
+      "enum_name": "llm_step_status",
+      "value": "failed",
+      "sort_order": 6,
+      "source_basis": "world_generation_and_turns.txt repair/audit rule"
+    }
+  ],
+  "relationships": [
+    {
+      "from_table": "party_player_characters",
+      "from_column": "party_id",
+      "to_table": "party_state",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_graph_nodes",
+      "from_column": "party_id",
+      "to_table": "party_state",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_graph_nodes",
+      "from_column": "parent_node_id",
+      "to_table": "party_graph_nodes",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_graph_edges",
+      "from_column": "party_id",
+      "to_table": "party_state",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_graph_edges",
+      "from_column": "from_party_node_id",
+      "to_table": "party_graph_nodes",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_graph_edges",
+      "from_column": "to_party_node_id",
+      "to_table": "party_graph_nodes",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_graph_edges",
+      "from_column": "reverse_party_edge_id",
+      "to_table": "party_graph_edges",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_places",
+      "from_column": "party_id",
+      "to_table": "party_state",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_places",
+      "from_column": "materialized_from_node_id",
+      "to_table": "party_graph_nodes",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_locations",
+      "from_column": "party_id",
+      "to_table": "party_state",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_minilocations",
+      "from_column": "party_id",
+      "to_table": "party_state",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_scene_anchors",
+      "from_column": "party_id",
+      "to_table": "party_state",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_locations",
+      "from_column": "place_id",
+      "to_table": "party_places",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_minilocations",
+      "from_column": "place_id",
+      "to_table": "party_places",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_minilocations",
+      "from_column": "location_id",
+      "to_table": "party_locations",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_scene_anchors",
+      "from_column": "place_id",
+      "to_table": "party_places",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_scene_anchors",
+      "from_column": "location_id",
+      "to_table": "party_locations",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_scene_anchors",
+      "from_column": "minilocation_id",
+      "to_table": "party_minilocations",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_current_position",
+      "from_column": "party_id",
+      "to_table": "party_state",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_current_position",
+      "from_column": "character_id",
+      "to_table": "party_player_characters",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_current_position",
+      "from_column": "place_id",
+      "to_table": "party_places",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_current_position",
+      "from_column": "location_id",
+      "to_table": "party_locations",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_current_position",
+      "from_column": "minilocation_id",
+      "to_table": "party_minilocations",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_current_position",
+      "from_column": "anchor_id",
+      "to_table": "party_scene_anchors",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_current_position",
+      "from_column": "current_node_id",
+      "to_table": "party_graph_nodes",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_current_position",
+      "from_column": "last_route_id",
+      "to_table": "party_graph_edges",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_map_knowledge",
+      "from_column": "party_id",
+      "to_table": "party_state",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_map_knowledge",
+      "from_column": "character_id",
+      "to_table": "party_player_characters",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_map_knowledge",
+      "from_column": "node_id",
+      "to_table": "party_graph_nodes",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_map_knowledge",
+      "from_column": "edge_id",
+      "to_table": "party_graph_edges",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_route_journal",
+      "from_column": "party_id",
+      "to_table": "party_state",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_route_journal",
+      "from_column": "character_id",
+      "to_table": "party_player_characters",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_route_journal",
+      "from_column": "from_node_id",
+      "to_table": "party_graph_nodes",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_route_journal",
+      "from_column": "to_node_id",
+      "to_table": "party_graph_nodes",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_route_journal",
+      "from_column": "edge_id",
+      "to_table": "party_graph_edges",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_npcs",
+      "from_column": "party_id",
+      "to_table": "party_state",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_npcs",
+      "from_column": "current_node_id",
+      "to_table": "party_graph_nodes",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_npcs",
+      "from_column": "current_place_id",
+      "to_table": "party_places",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_npcs",
+      "from_column": "current_location_id",
+      "to_table": "party_locations",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_items",
+      "from_column": "party_id",
+      "to_table": "party_state",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_items",
+      "from_column": "container_item_id",
+      "to_table": "party_items",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_items",
+      "from_column": "place_id",
+      "to_table": "party_places",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_items",
+      "from_column": "location_id",
+      "to_table": "party_locations",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_items",
+      "from_column": "minilocation_id",
+      "to_table": "party_minilocations",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_items",
+      "from_column": "anchor_id",
+      "to_table": "party_scene_anchors",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_inventory_entries",
+      "from_column": "party_id",
+      "to_table": "party_state",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_inventory_entries",
+      "from_column": "item_id",
+      "to_table": "party_items",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_events",
+      "from_column": "party_id",
+      "to_table": "party_state",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_turns",
+      "from_column": "party_id",
+      "to_table": "party_state",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_journal_entries",
+      "from_column": "party_id",
+      "to_table": "party_state",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_journal_entries",
+      "from_column": "turn_id",
+      "to_table": "party_turns",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_journal_entries",
+      "from_column": "character_id",
+      "to_table": "party_player_characters",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_llm_steps",
+      "from_column": "party_id",
+      "to_table": "party_state",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_llm_steps",
+      "from_column": "parent_step_id",
+      "to_table": "party_llm_steps",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_validation_issues",
+      "from_column": "party_id",
+      "to_table": "party_state",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_validation_issues",
+      "from_column": "llm_step_id",
+      "to_table": "party_llm_steps",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    },
+    {
+      "from_table": "party_validation_issues",
+      "from_column": "turn_id",
+      "to_table": "party_turns",
+      "to_column": "id",
+      "relationship_type": "fk/logical_fk",
+      "notes": ""
+    }
+  ],
+  "validation_rules": [
+    {
+      "rule_id": "val_party_separation",
+      "scope": "schema",
+      "rule": "party tables store mutable state only; canonical world facts remain referenced by text IDs, not copied as truth unless materialized",
+      "source_basis": "read_only_database_and_graph_architecture.md §2"
+    },
+    {
+      "rule_id": "val_no_world_generation_by_code",
+      "scope": "code",
+      "rule": "code may create IDs, validate structure and write accepted LLM output; it must not invent NPCs/items/events/causes",
+      "source_basis": "Главное-правило-проекта.txt; world_generation_and_turns.txt"
+    },
+    {
+      "rule_id": "val_position_complete",
+      "scope": "turn",
+      "rule": "current position must keep region_id/place_id/location_id/minilocation_id/anchor_id/last_route_id when available",
+      "source_basis": "movement_locations_regions.txt §1"
+    },
+    {
+      "rule_id": "val_visible_hidden_split",
+      "scope": "ui",
+      "rule": "hidden_state must never be passed directly to player-facing prose",
+      "source_basis": "llm_agent_prompt_templates.md visible context agent"
+    },
+    {
+      "rule_id": "val_item_causal_materialization",
+      "scope": "items",
+      "rule": "party_items.materialization_reason is mandatory for significant items",
+      "source_basis": "items_and_property.txt"
+    },
+    {
+      "rule_id": "val_map_knowledge_split",
+      "scope": "map",
+      "rule": "party_map_knowledge stores character knowledge, not factual graph truth",
+      "source_basis": "read_only_database_and_graph_architecture.md §14.3"
+    },
+    {
+      "rule_id": "val_time_update_chain",
+      "scope": "turn",
+      "rule": "after elapsed time, update body/NPC/place/events before visible scene",
+      "source_basis": "time_system.txt"
+    },
+    {
+      "rule_id": "val_event_has_cause",
+      "scope": "events",
+      "rule": "party_events.cause is mandatory; event cannot appear without cause",
+      "source_basis": "time_system.txt; historical_events_and_figures.txt"
+    },
+    {
+      "rule_id": "val_repair_no_placeholder",
+      "scope": "llm",
+      "rule": "invalid LLM output must create validation issue/repair step, not silent placeholder content",
+      "source_basis": "world_generation_and_turns.txt"
+    }
+  ]
+}

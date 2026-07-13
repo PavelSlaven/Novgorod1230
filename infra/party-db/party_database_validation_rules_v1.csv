@@ -1,0 +1,10 @@
+rule_id,scope,rule,source_basis
+val_party_separation,schema,"party tables store mutable state only; canonical world facts remain referenced by text IDs, not copied as truth unless materialized",read_only_database_and_graph_architecture.md §2
+val_no_world_generation_by_code,code,"code may create IDs, validate structure and write accepted LLM output; it must not invent NPCs/items/events/causes",Главное-правило-проекта.txt; world_generation_and_turns.txt
+val_position_complete,turn,current position must keep region_id/place_id/location_id/minilocation_id/anchor_id/last_route_id when available,movement_locations_regions.txt §1
+val_visible_hidden_split,ui,hidden_state must never be passed directly to player-facing prose,llm_agent_prompt_templates.md visible context agent
+val_item_causal_materialization,items,party_items.materialization_reason is mandatory for significant items,items_and_property.txt
+val_map_knowledge_split,map,"party_map_knowledge stores character knowledge, not factual graph truth",read_only_database_and_graph_architecture.md §14.3
+val_time_update_chain,turn,"after elapsed time, update body/NPC/place/events before visible scene",time_system.txt
+val_event_has_cause,events,party_events.cause is mandatory; event cannot appear without cause,time_system.txt; historical_events_and_figures.txt
+val_repair_no_placeholder,llm,"invalid LLM output must create validation issue/repair step, not silent placeholder content",world_generation_and_turns.txt

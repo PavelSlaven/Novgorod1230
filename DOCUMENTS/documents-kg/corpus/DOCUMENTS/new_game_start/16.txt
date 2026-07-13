@@ -1,0 +1,1996 @@
+# Этап 16. Размещение стартовых предметов
+
+## 1. Назначение этапа
+
+Размещение стартовых предметов — это этап запуска новой партии, на котором LLM материализует только причинно обоснованные предметы, контейнеры и объектные состояния внутри уже утверждённой G5-сцены.
+
+Этот этап создаёт конкретные предметы партии только в пределах:
+
+* выбранной исторической рамки;
+* выбранного региона;
+* выбранной G4-локации;
+* утверждённых G5-якорей;
+* утверждённых NPC;
+* допустимых `item_profile_candidates`;
+* допустимых `container_profile_candidates`;
+* допустимых `property_rule_candidates`;
+* правил видимости;
+* правил доступа;
+* правил владения;
+* правил риска.
+
+Короткая формула:
+
+```text id="n91s4h"
+g5_scene_graph
++ g5_scene_audit
++ initial_npc_placement
++ item_profile_candidate_set
++ player_character
++ historical_frame
+→ initial_item_placement_draft
+```
+
+LLM не придумывает предметы “потому что они полезны игроку”. Она материализует только то, что допустимо для места, якоря, владельца, контейнера, сцены и текущей ситуации.
+
+## 2. Главное правило этапа
+
+Предмет появляется только при причинном основании.
+
+Причинное основание может быть:
+
+```text id="s5sdyw"
+предмет типичен для выбранного места;
+предмет нужен для текущей функции G5-якоря;
+предмет связан с уже размещённым NPC;
+предмет уже есть у персонажа игрока;
+предмет является частью утверждённого контейнера;
+предмет является видимым элементом обстановки;
+предмет нужен для доступа, риска, свидетелей или препятствия;
+предмет связан с property rule;
+предмет связан с trade/property/work/social function;
+предмет является следом состояния сцены;
+```
+
+Не является причинным основанием:
+
+```text id="v7d75c"
+игрок хочет предмет;
+предмет был бы удобен для решения;
+предмет выглядит атмосферно;
+предмет нужен для красивого описания;
+LLM считает, что он там "должен быть";
+предмет нужен для будущего сюжета, которого ещё нет;
+```
+
+## 3. Место этапа в pipeline
+
+```text id="icg8lc"
+1. Заявка игрока
+2. Нормализация заявки
+3. Выбор исторической рамки
+4. Загрузка регионального контекста
+5. Подбор стартовых G1–G4 кандидатов
+6. Подбор place templates
+7. Подбор NPC-кандидатов
+8. Подбор предметных профилей
+9. Выбор стартового узла
+10. Аудит стартового места
+11. Генерация персонажа
+12. Аудит персонажа
+13. Материализация G5-сцены
+14. Аудит G5-сцены
+15. Размещение стартовых NPC
+16. Размещение стартовых предметов
+17. Проверка времени и света
+18. Формирование visible context
+```
+
+Этап 16 идёт после размещения NPC, потому что часть предметов связана с держателями, владельцами, свидетелями, сторожами, работниками, хозяевами, торговцами или контролёрами доступа.
+
+## 4. Вход этапа
+
+```json id="msw0if"
+{
+  "version": 1,
+  "schema": "item_placement_input",
+  "request_id": "string",
+
+  "historical_frame": {
+    "version": 1,
+    "schema": "historical_frame",
+    "region": {
+      "region_id": "string"
+    },
+    "year": {
+      "value": 0
+    },
+    "calendar": {
+      "season": "spring | summer | autumn | winter"
+    },
+    "clock": {
+      "day": 1,
+      "hour": 0,
+      "minute": 0,
+      "time_of_day": "morning | day | evening | night | deep_night",
+      "light_profile": "dark | dim | daylight | twilight"
+    }
+  },
+
+  "selected_start_node": {
+    "version": 1,
+    "schema": "selected_start_node"
+  },
+
+  "start_place_audit": {
+    "version": 1,
+    "schema": "start_place_audit",
+    "pass": true
+  },
+
+  "player_character": {
+    "version": 1,
+    "schema": "player_character_game_profile"
+  },
+
+  "player_character_audit": {
+    "version": 1,
+    "schema": "player_character_audit",
+    "pass": true
+  },
+
+  "g5_scene_graph": {
+    "version": 1,
+    "schema": "g5_scene_graph_draft",
+    "materialization_status": "materialized"
+  },
+
+  "g5_scene_audit": {
+    "version": 1,
+    "schema": "g5_scene_audit",
+    "pass": true
+  },
+
+  "initial_npc_placement": {
+    "version": 1,
+    "schema": "initial_npc_placement_draft",
+    "placement_status": "placed | empty_allowed"
+  },
+
+  "npc_placement_audit": {
+    "version": 1,
+    "schema": "initial_npc_placement_audit",
+    "pass": true
+  },
+
+  "item_profile_candidate_set": {
+    "version": 1,
+    "schema": "item_profile_candidate_set",
+    "selection_status": "ready",
+    "item_profile_candidates": [],
+    "container_profile_candidates": [],
+    "property_rule_candidates": []
+  },
+
+  "item_placement_policy": {
+    "target_visible_items_min": 0,
+    "target_visible_items_max": 12,
+    "target_interactable_items_min": 0,
+    "target_interactable_items_max": 6,
+    "target_containers_max": 6,
+    "allow_empty_item_scene_if_place_supports_it": true,
+    "require_item_profile_candidate": true,
+    "require_anchor_supports_item_or_container": true,
+    "require_property_rule_for_interactable_item": true,
+    "require_owner_or_holder_model": true,
+    "require_visibility_model": true,
+    "require_access_model": true,
+    "require_weight_size_condition": true,
+    "require_causal_basis": true,
+    "require_source_trace": true,
+    "do_not_create_items_from_player_desire": true,
+    "do_not_reveal_hidden_items": true,
+    "do_not_fill_closed_containers_without_causal_basis": true,
+    "do_not_change_g5_scene": true,
+    "do_not_write_intro_prose": true,
+    "do_not_write_visible_scene": true
+  }
+}
+```
+
+## 5. Выход этапа
+
+```json id="xffk0f"
+{
+  "version": 1,
+  "schema": "initial_item_placement_draft",
+  "request_id": "string",
+
+  "placement_status": "placed | empty_allowed | blocked | requires_repair",
+
+  "frame": {
+    "region_id": "string",
+    "year": 0,
+    "season": "spring | summer | autumn | winter",
+    "clock": {}
+  },
+
+  "parent_scene": {
+    "g4_node_id": "string",
+    "selected_place_template_id": "string",
+    "g5_scene_id": "string | null"
+  },
+
+  "item_instances": [],
+
+  "container_instances": [],
+
+  "item_anchor_bindings": [],
+
+  "container_anchor_bindings": [],
+
+  "property_bindings": [],
+
+  "visibility_state": [],
+
+  "access_state": [],
+
+  "risk_state": [],
+
+  "rejected_item_placements": [],
+
+  "downstream_constraints": {
+    "must_preserve": [],
+    "must_not_create_yet": [],
+    "must_resolve_later": []
+  },
+
+  "source_trace": [],
+
+  "audit_self_check": {
+    "pass": true,
+    "concerns": [],
+    "evidence": []
+  }
+}
+```
+
+## 6. Что считается размещением предмета
+
+Размещение предмета — это создание конкретного `item_instance` партии и привязка его к G5-якорю, контейнеру, NPC или персонажу игрока.
+
+Минимальная формула:
+
+```text id="b8hz5u"
+item_profile_candidate_id
++ g5_anchor_id или holder_id/container_id
++ property_rule_candidate_id
++ visibility
++ access
++ ownership/holder model
++ causal_basis
+→ item_instance
+```
+
+Если нет `causal_basis`, предмет не размещается.
+
+## 7. Что считается размещением контейнера
+
+Размещение контейнера — это создание конкретного `container_instance`, который может быть:
+
+```text id="kfw82a"
+видимым;
+закрытым;
+запертым;
+скрытым;
+чужим;
+пустым;
+с неизвестным содержимым;
+с частично видимым содержимым;
+доступным только через действие;
+```
+
+Контейнер не означает автоматическое создание содержимого.
+
+Контейнер может существовать без раскрытого содержимого:
+
+```json id="qdcra9"
+{
+  "container_instance_id": "container_001",
+  "content_state": {
+    "content_known": false,
+    "content_materialized": false,
+    "content_must_not_be_generated_until_opened_or_inspected": true
+  }
+}
+```
+
+## 8. Что нельзя создавать
+
+На этом этапе запрещено:
+
+```text id="rl5e82"
+создавать предмет из желания игрока;
+создавать предмет вне item_profile_candidate_set;
+создавать контейнер вне container_profile_candidate_set;
+создавать property rule вне property_rule_candidate_set;
+заполнять закрытый контейнер без причинного основания;
+раскрывать скрытый предмет как видимый;
+делать чужой предмет свободно доступным;
+делать дорогой/редкий/оружейный/служебный предмет без владельца и риска;
+создавать NPC inventory без item profile и holder/property model;
+создавать новый G5 anchor для предмета;
+менять G5-сцену;
+писать visible scene;
+писать intro prose;
+создавать hidden event;
+```
+
+## 9. Источники данных
+
+### 9.1. `item_profile_candidate_set`
+
+Главный allowlist.
+
+Используются:
+
+```text id="q29xai"
+item_profile_candidate_id
+item_profile_id
+item_group
+item_kind
+rarity
+value_band
+weight_band
+size_band
+place_compatibility
+social_and_occupation_basis
+container_compatibility
+property_compatibility
+visibility_constraints
+materialization_constraints
+trade_and_value
+season_and_time_compatibility
+player_request_match
+source_trace
+```
+
+Если `item_profile_candidate_id` отсутствует в `item_profile_candidate_set`, предмет не может быть создан.
+
+### 9.2. `container_profile_candidates`
+
+Используются для контейнеров.
+
+Проверяются:
+
+```text id="11tv6b"
+container_profile_candidate_id
+container_profile_id
+container_group
+container_kind
+capacity_band
+mobility
+lockability
+place_compatibility
+access_model
+content_policy
+visibility_constraints
+risk_profile
+source_trace
+```
+
+Если контейнера нет в candidate set, контейнер не создаётся.
+
+### 9.3. `property_rule_candidates`
+
+Используются для собственности, доступа и риска.
+
+Проверяются:
+
+```text id="vhb307"
+property_rule_candidate_id
+property_rule_id
+ownership_model
+holder_model
+controller_model
+access_model
+risk_model
+transfer_conditions
+source_trace
+```
+
+Интерактивный предмет без property rule не должен попадать в сцену.
+
+### 9.4. `g5_scene_graph`
+
+Используются:
+
+```text id="9cxi00"
+g5_anchors
+g5_edges
+player_start_position
+visibility_model
+access_model
+item_materialization_slots
+```
+
+Предмет может быть привязан только к существующему anchor, который поддерживает item/container.
+
+Anchor должен иметь:
+
+```text id="hvcex4"
+anchor.supports.can_hold_item = true
+или anchor.supports.can_hold_container = true
+```
+
+Если G5 содержит `item_materialization_slots`, предпочтительно использовать их.
+
+### 9.5. `initial_npc_placement`
+
+Используется для владельцев, держателей, свидетелей и контролёров.
+
+Предмет может быть связан с NPC только если:
+
+```text id="yx5nqf"
+npc_instance_id существует
+npc создан на этапе NPC placement
+npc_resource_hints разрешают связанный item profile
+или property rule позволяет этот owner/controller model
+```
+
+Нельзя создавать нового NPC как владельца предмета.
+
+### 9.6. `player_character`
+
+Используется для:
+
+```text id="e2di39"
+видимости предмета персонажу;
+доступности из стартовой позиции;
+известности предмета;
+права взять предмет;
+возможности поднять/нести;
+знания о владельце;
+социального риска;
+проверки, не дублируется ли предмет из инвентаря;
+```
+
+Если предмет уже есть в инвентаре персонажа, он не должен повторно появляться в сцене как отдельная новая вещь без причины.
+
+## 10. Алгоритм этапа
+
+### 10.1. Проверить вход
+
+Код проверяет:
+
+```text id="w6z5l6"
+g5_scene_audit.pass = true
+npc_placement_audit.pass = true или placement_status=empty_allowed
+item_profile_candidate_set.selection_status = ready
+g5_scene_graph.g5_anchors не пуст
+```
+
+Если `item_profile_candidate_set` пуст, но место допускает пустую предметную сцену, этап возвращает `empty_allowed`.
+
+### 10.2. Построить индекс item candidates
+
+Код строит:
+
+```json id="2t9340"
+{
+  "item_profile_candidate_by_id": {},
+  "item_candidates_by_place_template_link_id": {},
+  "item_candidates_by_anchor_id": {},
+  "item_candidates_by_container_profile": {},
+  "item_candidates_by_property_rule": {},
+  "item_candidates_by_visibility": {},
+  "item_candidates_by_rarity": {}
+}
+```
+
+### 10.3. Построить индекс контейнеров
+
+```json id="3670e4"
+{
+  "container_profile_candidate_by_id": {},
+  "container_candidates_by_anchor_id": {},
+  "container_candidates_by_access_model": {},
+  "container_candidates_by_can_hold_item_profile": {}
+}
+```
+
+### 10.4. Построить индекс property rules
+
+```json id="vafuvo"
+{
+  "property_rule_candidate_by_id": {},
+  "property_rules_by_item_profile_candidate_id": {},
+  "property_rules_by_container_profile_candidate_id": {},
+  "property_rules_by_anchor_id": {},
+  "property_rules_by_npc_controller": {}
+}
+```
+
+### 10.5. Построить индекс G5 item anchors
+
+```json id="p8g0t8"
+{
+  "anchors_supporting_item": [],
+  "anchors_supporting_container": [],
+  "visible_anchor_ids": [],
+  "requires_inspection_anchor_ids": [],
+  "hidden_anchor_ids": [],
+  "locked_anchor_ids": [],
+  "permission_required_anchor_ids": [],
+  "item_slots_by_anchor_id": {}
+}
+```
+
+### 10.6. Выбрать предметы по причинному основанию
+
+Для каждого возможного предмета LLM должна указать `causal_basis_type`.
+
+Допустимые типы:
+
+```text id="4in2i7"
+place_function
+anchor_function
+npc_holder
+npc_controller
+player_inventory_already_existing
+container_expected_empty_or_unknown
+work_activity
+trade_activity
+access_obstacle
+property_risk
+visible_background
+searchable_detail
+seasonal_need
+body_state_need
+route_or_travel_need
+```
+
+Если предмет имеет `causal_basis_type="player_desire"`, результат невалиден.
+
+### 10.7. Привязать предмет к G5-якорю
+
+Предмет можно разместить только если:
+
+```text id="w1otx1"
+anchor_id существует
+anchor.supports.can_hold_item=true
+anchor belongs to selected G4
+visibility/access property compatible
+```
+
+Если предмет находится в контейнере, он привязывается к контейнеру, а контейнер — к anchor.
+
+### 10.8. Привязать контейнер к G5-якорю
+
+Контейнер можно разместить только если:
+
+```text id="du7f4f"
+container_profile_candidate_id существует
+anchor.supports.can_hold_container=true
+anchor access state compatible
+container access_model compatible
+```
+
+Контейнеру обязательно задаются:
+
+```text id="1xyvxw"
+физическое размещение;
+физическое состояние;
+доступ;
+видимое содержимое;
+известность содержимого;
+риск вскрытия;
+контролёр доступа;
+```
+
+### 10.9. Назначить ownership/holder/controller
+
+Каждый предмет должен иметь три разных слоя:
+
+```text id="4vfgpj"
+owner — кому принадлежит;
+holder — у кого физически находится;
+controller — кто контролирует доступ;
+```
+
+Они могут совпадать, но не обязаны.
+
+Пример:
+
+```json id="zbev59"
+{
+  "owner_model": "household",
+  "holder_model": "container",
+  "controller_model": "npc_controller"
+}
+```
+
+Если предмет найденный, чужой, служебный, спорный, заложенный, дорогой или опасный, это должно создавать риск.
+
+### 10.10. Назначить видимость
+
+Видимость предмета должна соответствовать:
+
+```text id="hm3bcr"
+G5 visibility;
+clock.light_profile;
+anchor visibility;
+container visibility;
+player start position;
+item size;
+item condition;
+hidden/searchable flags;
+```
+
+Возможные состояния:
+
+```text id="mqlmje"
+visible
+visible_on_inspection
+audible_or_smell_only
+searchable
+hidden
+known_but_not_seen
+in_container_unknown
+in_container_partly_visible
+inaccessible
+```
+
+Если `light_profile=dark`, предмет не может быть ясно видимым без света, близости, крупного размера или особого основания.
+
+### 10.11. Назначить доступ
+
+Доступ предмета должен быть отделён от видимости.
+
+Возможные состояния:
+
+```text id="pp7hve"
+free
+reachable
+permission_required
+purchase_required
+guarded
+locked
+hidden
+requires_search
+requires_tool
+requires_force
+forbidden
+inaccessible
+```
+
+Видимый предмет не обязательно доступен.
+
+### 10.12. Назначить риск
+
+Каждый interactable item должен иметь риск:
+
+```text id="bl2quw"
+theft_risk
+witness_risk
+legal_risk
+reputation_risk
+violence_risk
+damage_risk
+noise_risk
+owner_reaction_risk
+```
+
+Если риска нет, это должно быть объяснено.
+
+### 10.13. Назначить состояние
+
+Предмет получает состояние:
+
+```text id="5wa2kl"
+new
+ordinary
+worn
+damaged
+wet
+dirty
+broken
+spoiled
+rusted
+cold
+hot
+empty
+full
+sealed
+locked
+unknown
+```
+
+Состояние должно быть совместимо с сезоном, временем, местом, хранением и контейнером.
+
+### 10.14. Не раскрывать закрытые контейнеры
+
+Если контейнер закрыт, заперт, скрыт или недоступен:
+
+```text id="u268vx"
+content_materialized=false
+content_known=false
+```
+
+Содержимое может быть:
+
+```text id="oc7rlc"
+unknown
+partly_visible
+audible
+smell_detectable
+known_by_label
+known_to_owner_only
+```
+
+Но конкретный список содержимого не создаётся без причинного основания.
+
+### 10.15. Проверить player request
+
+Если игрок просил предмет, LLM не материализует его автоматически.
+
+Допустимые варианты:
+
+```text id="nw3vap"
+requested_item_already_allowed_and_causal → можно материализовать
+requested_item_profile_exists_but_no_causal_basis → rejected placement
+requested_item_profile_not_allowed → rejected placement
+requested_item_not_in_profiles → unavailable
+```
+
+Результат должен быть зафиксирован:
+
+```json id="gvcvw4"
+{
+  "player_request_item_handling": {
+    "raw_request": "string | null",
+    "result": "not_requested | placed_with_causal_basis | rejected_no_basis | rejected_not_allowed | unavailable_profile",
+    "evidence": []
+  }
+}
+```
+
+## 11. Формат item instance
+
+```json id="c9xgcx"
+{
+  "item_instance_id": "item_001",
+
+  "item_profile_candidate_id": "item_prof_cand_001",
+  "item_profile_id": "item_profile_001",
+
+  "identity": {
+    "title": "string",
+    "item_kind": "string",
+    "item_group": "string",
+    "material_or_make": "string | null",
+    "count": 1,
+    "is_stack": false
+  },
+
+  "placement": {
+    "placement_type": "on_anchor | in_container | held_by_npc | carried_by_player | fixed_to_anchor | inaccessible_background",
+    "g5_anchor_id": "string | null",
+    "container_instance_id": "string | null",
+    "holder_npc_instance_id": "string | null",
+    "holder_player_character_id": "string | null",
+    "parent_g4_node_id": "string",
+    "placement_basis": "string",
+    "causal_basis_type": "place_function | anchor_function | npc_holder | npc_controller | player_inventory_already_existing | work_activity | trade_activity | access_obstacle | property_risk | visible_background | searchable_detail | seasonal_need | body_state_need | route_or_travel_need"
+  },
+
+  "physical_state": {
+    "size_band": "tiny | small | hand | carried | bulky | immovable",
+    "weight": 0,
+    "condition": "new | ordinary | worn | damaged | wet | dirty | broken | spoiled | unknown",
+    "can_be_moved": true,
+    "requires_hands": 0,
+    "movement_hindrance": "none | low | medium | high"
+  },
+
+  "visibility_state": {
+    "visibility": "visible | visible_on_inspection | searchable | hidden | known_but_not_seen | inaccessible",
+    "visible_to_player_now": false,
+    "known_to_player_now": false,
+    "requires_inspection": true,
+    "requires_light": false,
+    "visibility_basis": "string"
+  },
+
+  "access_state": {
+    "access": "free | reachable | permission_required | purchase_required | guarded | locked | hidden | requires_search | requires_tool | requires_force | forbidden | inaccessible",
+    "can_touch_now": false,
+    "can_take_now": false,
+    "can_use_now": false,
+    "access_basis": "string"
+  },
+
+  "property_state": {
+    "property_rule_candidate_id": "property_rule_cand_001",
+    "owner_model": "none | player | npc | household | workplace | authority | sacred | communal | disputed | unknown",
+    "owner_npc_instance_id": "string | null",
+    "holder_model": "player | npc | container | anchor | fixed | unknown",
+    "holder_id": "string | null",
+    "controller_model": "none | npc | household | authority | lock | custom | unknown",
+    "controller_id": "string | null",
+    "ownership_known_to_player": false,
+    "legal_or_social_status": "free | owned | borrowed | entrusted | stolen | service | trade_stock | sacred | disputed | found | unknown"
+  },
+
+  "risk_state": {
+    "theft_risk": "none | low | medium | high | severe",
+    "witness_risk": "none | low | medium | high",
+    "legal_risk": "none | low | medium | high | severe",
+    "reputation_risk": "none | low | medium | high",
+    "damage_risk": "none | low | medium | high",
+    "noise_risk": "none | low | medium | high",
+    "risk_basis": []
+  },
+
+  "game_function": {
+    "can_be_used_for": [],
+    "can_be_searched": true,
+    "can_be_taken": false,
+    "can_be_bought": false,
+    "can_be_broken": true,
+    "can_be_moved": true,
+    "can_be_hidden": true,
+    "can_be_evidence": false,
+    "function_limits": []
+  },
+
+  "source_trace": []
+}
+```
+
+## 12. Формат container instance
+
+```json id="m2sevt"
+{
+  "container_instance_id": "container_001",
+
+  "container_profile_candidate_id": "container_prof_cand_001",
+  "container_profile_id": "container_profile_001",
+
+  "identity": {
+    "title": "string",
+    "container_kind": "string",
+    "container_group": "string"
+  },
+
+  "placement": {
+    "g5_anchor_id": "string",
+    "parent_g4_node_id": "string",
+    "placement_basis": "string",
+    "causal_basis_type": "place_function | anchor_function | storage_function | npc_controller | property_risk | visible_background | searchable_detail"
+  },
+
+  "physical_state": {
+    "capacity_band": "tiny | small | medium | large | very_large",
+    "mobility": "portable | movable | heavy | fixed",
+    "condition": "open | closed | locked | sealed | damaged | wet | heavy | empty | full | unknown",
+    "weight_empty": 0,
+    "weight_current_known": false,
+    "can_be_moved": false
+  },
+
+  "content_state": {
+    "content_known": false,
+    "content_materialized": false,
+    "content_visibility": "not_visible | partly_visible | visible | audible | smell | label_only | unknown",
+    "visible_content_summary": "string | null",
+    "content_must_not_be_regenerated_after_first_definition": true,
+    "content_must_not_be_generated_until_opened_or_inspected": true
+  },
+
+  "visibility_state": {
+    "visible_to_player_now": true,
+    "known_to_player_now": true,
+    "requires_inspection": false,
+    "requires_light": false,
+    "visibility_basis": "string"
+  },
+
+  "access_state": {
+    "access": "open | closed | tied | locked | guarded | permission_required | inaccessible | hidden",
+    "can_open_now": false,
+    "requires_key": false,
+    "requires_tool": false,
+    "requires_force": false,
+    "requires_permission": true,
+    "requires_time_minutes": 0,
+    "access_basis": "string"
+  },
+
+  "property_state": {
+    "property_rule_candidate_id": "property_rule_cand_001",
+    "owner_model": "npc | household | workplace | authority | communal | unknown",
+    "controller_model": "npc | lock | household | authority | none | unknown",
+    "controller_npc_instance_id": "string | null",
+    "ownership_known_to_player": false
+  },
+
+  "risk_state": {
+    "opening_risk": "none | low | medium | high | severe",
+    "theft_risk": "none | low | medium | high | severe",
+    "witness_risk": "none | low | medium | high",
+    "damage_risk": "none | low | medium | high",
+    "risk_basis": []
+  },
+
+  "source_trace": []
+}
+```
+
+## 13. Формат property binding
+
+```json id="ahzx7c"
+{
+  "property_binding_id": "property_binding_001",
+
+  "property_rule_candidate_id": "property_rule_cand_001",
+
+  "applies_to": {
+    "item_instance_id": "item_001 | null",
+    "container_instance_id": "container_001 | null",
+    "g5_anchor_id": "g5_anchor_001 | null",
+    "npc_instance_id": "npc_001 | null"
+  },
+
+  "ownership_model": "personal | household | communal | service | trade_stock | sacred | authority_controlled | found | disputed | unknown",
+  "holder_model": "owner | temporary_holder | worker | keeper | trader | guard | borrower | thief | container | fixed | unknown",
+  "controller_model": "owner | senior | official | household_head | guard | priest | trader | lock | none | unknown",
+
+  "access_model": {
+    "can_see": true,
+    "can_touch": false,
+    "can_take": false,
+    "can_buy": false,
+    "can_borrow": false,
+    "can_open": false,
+    "requires_permission": true,
+    "requires_payment": false,
+    "requires_key_or_tool": false
+  },
+
+  "risk_model": {
+    "witness_risk": "none | low | medium | high",
+    "legal_risk": "none | low | medium | high",
+    "reputation_risk": "none | low | medium | high",
+    "violence_or_punishment_risk": "none | low | medium | high"
+  },
+
+  "transfer_conditions": {
+    "can_transfer_to_player_later": true,
+    "allowed_transfer_reasons": [],
+    "requires_causal_basis": true
+  }
+}
+```
+
+## 14. Формат anchor binding
+
+```json id="ujs38r"
+{
+  "item_anchor_binding_id": "item_anchor_binding_001",
+  "item_instance_id": "item_001",
+  "g5_anchor_id": "g5_anchor_001",
+  "binding_type": "lying_on | fixed_to | hanging_from | hidden_near | stored_at | used_at | blocking | visible_background | searchable_detail",
+  "distance_to_player_band": "same_anchor | near | short | medium | far | offscreen",
+  "line_of_sight_to_player": "clear | partial | blocked | hidden | unknown",
+  "line_of_reach_to_player": "reachable | step_required | blocked | forbidden | unknown",
+  "can_be_seen_without_action": true,
+  "can_be_reached_without_action": false
+}
+```
+
+## 15. Формат rejected item placement
+
+```json id="3d4x8d"
+{
+  "rejected_item_placement_id": "rejected_item_place_001",
+  "item_profile_candidate_id": "item_prof_cand_001",
+  "g5_anchor_id": "g5_anchor_001",
+  "rejection_code": "ITEM_PLACEMENT_NO_CAUSAL_BASIS",
+  "rejection_reason": "Item profile is allowed in general, but there is no causal basis for materializing a concrete item in this G5 scene.",
+  "evidence": [
+    "item_profile_candidate exists",
+    "anchor exists",
+    "no place_function, npc_holder, container, visible background, access obstacle or property risk basis found"
+  ]
+}
+```
+
+## 16. Работа LLM на этапе
+
+На этом этапе LLM обязательна, потому что размещение конкретных предметов — это смысловая материализация объектов в сцене.
+
+LLM выбирает:
+
+* какие item profiles материализовать;
+* какие container profiles материализовать;
+* какие property rules применить;
+* на какие anchors поставить предметы;
+* какие предметы видимы;
+* какие предметы требуют осмотра;
+* какие предметы скрыты;
+* какие контейнеры закрыты;
+* что не надо материализовать;
+* какие риски возникают при взаимодействии;
+* почему каждый предмет находится именно здесь.
+
+LLM не выбирает:
+
+* новые item profiles;
+* новые container profiles;
+* новые property rules;
+* новые G5 anchors;
+* новые NPC;
+* новые владельческие институты;
+* новые события;
+* visible prose;
+* intro prose.
+
+## 17. LLM-параметры
+
+### 17.1. `InitialItemPlacer`
+
+Назначение: материализовать стартовые предметы, контейнеры и property bindings из разрешённых профилей.
+
+```json id="kz6vcm"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 10000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 100000,
+    "hard_input_limit_tokens": 240000,
+    "reserve_output_tokens": 10000
+  }
+}
+```
+
+Используется `deepseek-v4-pro`, потому что этап требует причинного согласования предметов, контейнеров, владельцев, доступа, видимости, риска, G5-якорей и NPC. DeepSeek API поддерживает модели `deepseek-v4-pro` и `deepseek-v4-flash`, `thinking` и `reasoning_effort`; JSON output включается через `response_format: {"type":"json_object"}`.
+
+### 17.2. `InitialItemPlacementAuditor`
+
+Назначение: проверить, что все предметы выбраны из profiles, имеют причинное основание, owner/holder/access/risk и корректную G5-привязку.
+
+```json id="xj4gx1"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 8000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 100000,
+    "hard_input_limit_tokens": 240000,
+    "reserve_output_tokens": 8000
+  }
+}
+```
+
+### 17.3. `InitialItemPlacementFormatRepairer`
+
+Назначение: исправить только JSON-формат.
+
+```json id="kxz8vc"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-flash",
+  "thinking": {
+    "type": "disabled"
+  },
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "max_tokens": 5000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 40000,
+    "hard_input_limit_tokens": 100000,
+    "reserve_output_tokens": 5000
+  }
+}
+```
+
+### 17.4. `InitialItemPlacementSemanticRepairer`
+
+Назначение: исправить смысловые ошибки размещения предметов, не выходя за `item_profile_candidate_set` и G5 anchors.
+
+```json id="hmzsk4"
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 10000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 100000,
+    "hard_input_limit_tokens": 240000,
+    "reserve_output_tokens": 10000
+  }
+}
+```
+
+## 18. Prompt: InitialItemPlacer
+
+```md id="hu7n49"
+# Роль
+
+Ты InitialItemPlacer для исторической текстовой RPG.
+
+# Задача
+
+Материализуй стартовые предметы, контейнеры и property bindings в утверждённой G5-сцене.
+
+# Главное правило
+
+Ты создаёшь предметы только из item_profile_candidate_set.
+Ты создаёшь контейнеры только из container_profile_candidates.
+Ты используешь property rules только из property_rule_candidates.
+Ты ставишь предметы только на существующие G5 anchors, в существующие контейнеры, к существующим NPC или к player_character inventory.
+Ты не создаёшь предметы из желания игрока.
+
+# Источники
+
+Используй только:
+- historical_frame
+- selected_start_node
+- start_place_audit
+- player_character
+- player_character_audit
+- g5_scene_graph
+- g5_scene_audit
+- initial_npc_placement
+- npc_placement_audit
+- item_profile_candidate_set
+- item_placement_policy
+
+Если item_profile_candidate_id нет в item_profile_candidate_set, его нельзя использовать.
+Если container_profile_candidate_id нет в container_profile_candidates, его нельзя использовать.
+Если property_rule_candidate_id нет в property_rule_candidates, его нельзя использовать.
+Если anchor_id нет в g5_scene_graph.g5_anchors, его нельзя использовать.
+
+# Обязательные правила
+
+1. Каждый item_instance должен иметь item_profile_candidate_id.
+2. Каждый container_instance должен иметь container_profile_candidate_id.
+3. Каждый interactable item должен иметь property_rule_candidate_id.
+4. Каждый item должен иметь causal_basis_type.
+5. causal_basis_type не может быть "player_desire".
+6. Каждый item должен иметь g5 anchor, container, NPC holder или player holder.
+7. Каждый item должен иметь visibility_state.
+8. Каждый item должен иметь access_state.
+9. Каждый item должен иметь property_state.
+10. Каждый item должен иметь risk_state.
+11. Каждый item должен иметь physical_state: size, weight, condition.
+12. Закрытые контейнеры не получают materialized contents без причины.
+13. Скрытые предметы не должны быть visible_to_player_now.
+14. Чужие, дорогие, редкие, служебные или спорные предметы должны иметь риск.
+15. Не создавай visible_scene.
+16. Не создавай intro_prose.
+17. Не создавай новых NPC.
+18. Не меняй G5 scene.
+
+# Размер сцены
+
+Не заполняй сцену предметами без необходимости.
+Ограничься тем, что нужно для стартовой сцены:
+- видимая обстановка;
+- интерактивные объекты;
+- очевидные контейнеры;
+- предметы у персонажа;
+- предметы, контролируемые NPC;
+- рисковые/закрытые/доступные объекты.
+
+# Формат
+
+Верни только json.
+
+schema:
+"initial_item_placement_draft"
+
+version:
+1
+```
+
+## 19. Prompt: InitialItemPlacementAuditor
+
+```md id="nd61n7"
+# Роль
+
+Ты InitialItemPlacementAuditor.
+
+# Задача
+
+Проверь initial_item_placement_draft.
+
+# Главное правило
+
+Ты не исправляешь предметы.
+Ты не создаёшь предметы.
+Ты только аудируешь.
+
+# Проверить
+
+1. Все item_instance_id уникальны.
+2. Все item_profile_candidate_id существуют.
+3. Все container_profile_candidate_id существуют.
+4. Все property_rule_candidate_id существуют.
+5. Все g5_anchor_id существуют.
+6. Anchor supports item/container.
+7. Каждый item имеет causal_basis_type.
+8. causal_basis_type не является player_desire.
+9. Каждый item имеет physical_state.
+10. Каждый item имеет visibility_state.
+11. Каждый item имеет access_state.
+12. Каждый interactable item имеет property_state.
+13. Каждый interactable item имеет risk_state.
+14. Hidden item не visible_to_player_now.
+15. Closed/locked container contents not materialized without causal basis.
+16. Rare/restricted/valuable item has owner and risk.
+17. NPC holder exists if used.
+18. Player holder exists if used.
+19. Inventory duplicates are not created.
+20. No new NPC created.
+21. No new G5 anchor created.
+22. No visible_scene.
+23. No intro_prose.
+24. source_trace sufficient.
+
+# Формат
+
+Верни только json:
+
+{
+  "version": 1,
+  "schema": "initial_item_placement_audit",
+  "pass": true,
+  "concerns": [],
+  "evidence": []
+}
+
+Если pass=false, concerns не должен быть пустым.
+evidence не должен быть пустым.
+```
+
+## 20. Prompt: InitialItemPlacementFormatRepairer
+
+```md id="22m8ox"
+# Роль
+
+Ты InitialItemPlacementFormatRepairer.
+
+# Задача
+
+Исправь только формат JSON initial_item_placement_draft или initial_item_placement_audit.
+
+# Главное правило
+
+Не меняй смысл.
+Не добавляй предметы.
+Не удаляй предметы.
+Не меняй item_profile_candidate_id.
+Не меняй property_rule_candidate_id.
+Не меняй g5_anchor_id.
+Не создавай visible_scene.
+Не создавай intro_prose.
+
+# Разрешено
+
+- убрать markdown;
+- привести schema/version;
+- переименовать ошибочные поля;
+- добавить отсутствующие служебные поля как null/[];
+- удалить запрещённые prose-поля;
+- перенести свободный текст в notes.
+
+# Запрещено
+
+- создавать item_profile_candidate_id;
+- создавать source_id;
+- создавать anchor_id;
+- создавать npc_id;
+- создавать container contents;
+- создавать dialogue;
+- создавать scene prose.
+
+# Формат
+
+Верни только json.
+```
+
+## 21. Prompt: InitialItemPlacementSemanticRepairer
+
+```md id="zt4vbf"
+# Роль
+
+Ты InitialItemPlacementSemanticRepairer.
+
+# Задача
+
+Исправь initial_item_placement_draft по validationErrors и audit concerns.
+
+# Главное правило
+
+Исправляй только внутри:
+- item_profile_candidate_set;
+- container_profile_candidates;
+- property_rule_candidates;
+- g5_scene_graph.g5_anchors;
+- existing npc_instances;
+- player_character inventory.
+
+# Запрещено
+
+- создавать предмет вне item_profile_candidate_set;
+- создавать контейнер вне container_profile_candidates;
+- создавать property rule вне property_rule_candidates;
+- создавать новый G5 anchor;
+- создавать нового NPC;
+- менять player_character;
+- менять historical_frame;
+- писать visible_scene;
+- писать intro_prose.
+
+# Если исправление невозможно
+
+Верни placement_status="blocked" или "empty_allowed" с evidence.
+
+# Формат
+
+Верни только json initial_item_placement_draft.
+```
+
+## 22. Code precheck
+
+Перед LLM-аудитом код должен проверить:
+
+```json id="kj7cm8"
+{
+  "version": 1,
+  "schema": "initial_item_placement_code_precheck",
+  "pass": true,
+  "checks": {
+    "schema_valid": true,
+    "all_item_profile_candidates_exist": true,
+    "all_container_profile_candidates_exist": true,
+    "all_property_rule_candidates_exist": true,
+    "all_anchors_exist": true,
+    "all_anchors_support_item_or_container": true,
+    "all_npc_holders_exist": true,
+    "causal_basis_present": true,
+    "no_player_desire_materialization": true,
+    "visibility_valid": true,
+    "access_valid": true,
+    "property_valid": true,
+    "risk_valid": true,
+    "no_hidden_items_revealed": true,
+    "no_closed_container_contents_leaked": true,
+    "no_new_npcs_created": true,
+    "no_new_g5_anchors_created": true,
+    "no_prose_created": true,
+    "source_trace_present": true
+  },
+  "concerns": [],
+  "evidence": []
+}
+```
+
+Если `code_precheck.pass=false`, semantic audit можно не запускать. Результат отправляется в repair.
+
+## 23. Validation rules
+
+Код обязан проверить:
+
+1. `schema === "initial_item_placement_draft"`.
+2. `version === 1`.
+3. `placement_status` входит в enum.
+4. Каждый `item_instance_id` уникален.
+5. Каждый `container_instance_id` уникален.
+6. Каждый `item_profile_candidate_id` существует.
+7. Каждый `item_profile_id` совпадает с candidate.
+8. Каждый `container_profile_candidate_id` существует.
+9. Каждый `container_profile_id` совпадает с candidate.
+10. Каждый `property_rule_candidate_id` существует.
+11. Каждый `g5_anchor_id` существует.
+12. Anchor belongs to selected G4.
+13. Anchor supports item/container.
+14. NPC holder exists if used.
+15. Player holder exists if used.
+16. Каждый item имеет causal_basis_type.
+17. `causal_basis_type != player_desire`.
+18. Каждый item имеет weight.
+19. Каждый item имеет size_band.
+20. Каждый item имеет condition.
+21. Каждый item имеет visibility_state.
+22. Каждый item имеет access_state.
+23. Каждый interactable item имеет property_state.
+24. Каждый interactable item имеет risk_state.
+25. Hidden item не visible_to_player_now.
+26. Closed/locked/inaccessible container не имеет materialized contents без basis.
+27. Container content state корректно отделён от item instances.
+28. Rare/restricted/valuable item имеет owner/controller/risk.
+29. Чужой item имеет risk.
+30. Disputed item имеет risk.
+31. Service/authority/sacred item имеет risk and access restriction.
+32. Player inventory item не дублируется как scene item без basis.
+33. Нет item outside item_profile_candidate_set.
+34. Нет container outside container_profile_candidates.
+35. Нет property rule outside property_rule_candidates.
+36. Нет new NPC.
+37. Нет new G5 anchor.
+38. Нет visible_scene.
+39. Нет intro_prose.
+40. Нет hidden_event.
+41. `source_trace` не пустой, если require_source_trace=true.
+42. `audit_self_check.evidence` не пустой.
+43. Если `audit_self_check.pass=false`, concerns не пустой.
+
+## 24. Error codes
+
+```text id="k7pv4r"
+ITEM_PLACEMENT_INVALID_JSON
+ITEM_PLACEMENT_SCHEMA_MISMATCH
+ITEM_PLACEMENT_ITEM_PROFILE_CANDIDATE_NOT_FOUND
+ITEM_PLACEMENT_ITEM_PROFILE_MISMATCH
+ITEM_PLACEMENT_CONTAINER_PROFILE_CANDIDATE_NOT_FOUND
+ITEM_PLACEMENT_CONTAINER_PROFILE_MISMATCH
+ITEM_PLACEMENT_PROPERTY_RULE_CANDIDATE_NOT_FOUND
+ITEM_PLACEMENT_ANCHOR_NOT_FOUND
+ITEM_PLACEMENT_ANCHOR_OUTSIDE_G4
+ITEM_PLACEMENT_ANCHOR_CANNOT_HOLD_ITEM
+ITEM_PLACEMENT_ANCHOR_CANNOT_HOLD_CONTAINER
+ITEM_PLACEMENT_NPC_HOLDER_NOT_FOUND
+ITEM_PLACEMENT_PLAYER_HOLDER_NOT_FOUND
+ITEM_PLACEMENT_NO_CAUSAL_BASIS
+ITEM_PLACEMENT_PLAYER_DESIRE_MATERIALIZED
+ITEM_PLACEMENT_WEIGHT_MISSING
+ITEM_PLACEMENT_SIZE_MISSING
+ITEM_PLACEMENT_CONDITION_MISSING
+ITEM_PLACEMENT_VISIBILITY_MISSING
+ITEM_PLACEMENT_ACCESS_MISSING
+ITEM_PLACEMENT_PROPERTY_MISSING
+ITEM_PLACEMENT_RISK_MISSING
+ITEM_PLACEMENT_HIDDEN_ITEM_VISIBLE
+ITEM_PLACEMENT_CLOSED_CONTAINER_CONTENTS_LEAK
+ITEM_PLACEMENT_RARE_ITEM_WITHOUT_OWNER
+ITEM_PLACEMENT_RARE_ITEM_WITHOUT_RISK
+ITEM_PLACEMENT_FOREIGN_ITEM_WITHOUT_RISK
+ITEM_PLACEMENT_DISPUTED_ITEM_WITHOUT_RISK
+ITEM_PLACEMENT_SERVICE_ITEM_WITHOUT_RESTRICTION
+ITEM_PLACEMENT_PLAYER_INVENTORY_DUPLICATE
+ITEM_PLACEMENT_CREATED_ITEM_OUTSIDE_CANDIDATES
+ITEM_PLACEMENT_CREATED_CONTAINER_OUTSIDE_CANDIDATES
+ITEM_PLACEMENT_CREATED_PROPERTY_RULE
+ITEM_PLACEMENT_CREATED_NPC
+ITEM_PLACEMENT_CREATED_G5_ANCHOR
+ITEM_PLACEMENT_CREATED_VISIBLE_SCENE
+ITEM_PLACEMENT_CREATED_INTRO_PROSE
+ITEM_PLACEMENT_CREATED_HIDDEN_EVENT
+ITEM_PLACEMENT_SOURCE_MISSING
+ITEM_PLACEMENT_EMPTY_AUDIT_EVIDENCE
+NO_ALLOWED_ITEM_PLACEMENT
+```
+
+## 25. DB write на этом этапе
+
+До аудита разрешено писать:
+
+```text id="ti8ths"
+pipeline_step_status
+initial_item_placement_draft_snapshot
+initial_item_placement_code_precheck_snapshot
+initial_item_placement_validation_issues
+initial_item_placement_repair_attempts
+source_trace_snapshot
+```
+
+После успешного аудита и commit gate разрешено писать:
+
+```text id="vks9t0"
+party_items
+party_containers
+party_item_anchor_bindings
+party_container_anchor_bindings
+party_property_bindings
+party_item_visibility_state
+party_item_access_state
+party_item_risk_state
+```
+
+Запрещено писать на этом этапе:
+
+```text id="jz6pnv"
+visible_scene
+intro_prose
+narrator_output
+hidden_event
+new_g5_anchors
+new_npcs
+unapproved_container_contents
+```
+
+## 26. Commit gate этапа
+
+Этап считается успешным, если:
+
+```text id="pbsmx9"
+initial_item_placement_draft валиден,
+все предметы выбраны из item_profile_candidate_set,
+все контейнеры выбраны из container_profile_candidates,
+все property rules выбраны из property_rule_candidates,
+все предметы и контейнеры привязаны к существующим G5 anchors/NPC/player/container,
+каждый предмет имеет причинное основание,
+не создан ни один предмет из желания игрока,
+видимость и доступ корректны,
+владение и риск заданы,
+закрытые контейнеры не раскрыты без основания,
+не созданы NPC, G5 anchors, visible_scene или intro_prose,
+audit pass=true.
+```
+
+Если commit gate не пройден, pipeline не должен переходить к visible context или narrator.
+
+## 27. Передача в следующий этап
+
+```json id="0rhwbm"
+{
+  "version": 1,
+  "schema": "time_light_consistency_input",
+  "request_id": "string",
+
+  "historical_frame": {},
+  "selected_start_node": {},
+  "player_character": {},
+  "g5_scene_graph": {},
+  "initial_npc_placement": {},
+
+  "initial_item_placement": {
+    "version": 1,
+    "schema": "initial_item_placement_draft",
+    "placement_status": "placed"
+  },
+
+  "item_placement_audit": {
+    "version": 1,
+    "schema": "initial_item_placement_audit",
+    "pass": true
+  },
+
+  "constraints": {
+    "preserve_item_instance_ids": true,
+    "preserve_container_instance_ids": true,
+    "preserve_property_bindings": true,
+    "preserve_item_visibility_state": true,
+    "preserve_item_access_state": true,
+    "do_not_reveal_hidden_items_without_check": true,
+    "do_not_generate_container_contents_without_causal_basis": true
+  }
+}
+```
+
+## 28. Минимальный успешный результат
+
+```json id="uryh8s"
+{
+  "version": 1,
+  "schema": "initial_item_placement_draft",
+  "request_id": "req_001",
+
+  "placement_status": "placed",
+
+  "frame": {
+    "region_id": "region_001",
+    "year": 1230,
+    "season": "winter",
+    "clock": {
+      "day": 1,
+      "hour": 6,
+      "minute": 30,
+      "time_of_day": "morning",
+      "light_profile": "dim"
+    }
+  },
+
+  "parent_scene": {
+    "g4_node_id": "g4_001",
+    "selected_place_template_id": "place_template_001",
+    "g5_scene_id": null
+  },
+
+  "item_instances": [
+    {
+      "item_instance_id": "item_001",
+      "item_profile_candidate_id": "item_prof_cand_001",
+      "item_profile_id": "item_profile_001",
+
+      "identity": {
+        "title": "ordinary scene item",
+        "item_kind": "ordinary_tool_or_household_object",
+        "item_group": "household_or_work",
+        "material_or_make": null,
+        "count": 1,
+        "is_stack": false
+      },
+
+      "placement": {
+        "placement_type": "on_anchor",
+        "g5_anchor_id": "g5_anchor_001",
+        "container_instance_id": null,
+        "holder_npc_instance_id": null,
+        "holder_player_character_id": null,
+        "parent_g4_node_id": "g4_001",
+        "placement_basis": "item profile is compatible with selected place and anchor function",
+        "causal_basis_type": "anchor_function"
+      },
+
+      "physical_state": {
+        "size_band": "hand",
+        "weight": 1,
+        "condition": "ordinary",
+        "can_be_moved": true,
+        "requires_hands": 1,
+        "movement_hindrance": "none"
+      },
+
+      "visibility_state": {
+        "visibility": "visible_on_inspection",
+        "visible_to_player_now": false,
+        "known_to_player_now": false,
+        "requires_inspection": true,
+        "requires_light": false,
+        "visibility_basis": "item is near a valid anchor but not automatically emphasized before inspection"
+      },
+
+      "access_state": {
+        "access": "permission_required",
+        "can_touch_now": false,
+        "can_take_now": false,
+        "can_use_now": false,
+        "access_basis": "item is physically near but belongs to the place/order of the scene"
+      },
+
+      "property_state": {
+        "property_rule_candidate_id": "property_rule_cand_001",
+        "owner_model": "household",
+        "owner_npc_instance_id": null,
+        "holder_model": "anchor",
+        "holder_id": "g5_anchor_001",
+        "controller_model": "npc",
+        "controller_id": "npc_001",
+        "ownership_known_to_player": false,
+        "legal_or_social_status": "owned"
+      },
+
+      "risk_state": {
+        "theft_risk": "medium",
+        "witness_risk": "medium",
+        "legal_risk": "medium",
+        "reputation_risk": "medium",
+        "damage_risk": "low",
+        "noise_risk": "low",
+        "risk_basis": [
+          "item is not owned by player",
+          "NPC witness may notice interaction",
+          "property rule requires permission"
+        ]
+      },
+
+      "game_function": {
+        "can_be_used_for": [
+          "ordinary interaction if access is resolved"
+        ],
+        "can_be_searched": true,
+        "can_be_taken": false,
+        "can_be_bought": false,
+        "can_be_broken": true,
+        "can_be_moved": true,
+        "can_be_hidden": true,
+        "can_be_evidence": false,
+        "function_limits": [
+          "requires permission or risk to take"
+        ]
+      },
+
+      "source_trace": [
+        {
+          "record_id": "item_prof_cand_001",
+          "table": "startup.item_profile_candidate_set",
+          "source_ids": [
+            "source_001"
+          ],
+          "supports": [
+            "item_instance"
+          ]
+        },
+        {
+          "record_id": "property_rule_cand_001",
+          "table": "startup.item_profile_candidate_set.property_rule_candidates",
+          "source_ids": [
+            "source_002"
+          ],
+          "supports": [
+            "property_state"
+          ]
+        }
+      ]
+    }
+  ],
+
+  "container_instances": [
+    {
+      "container_instance_id": "container_001",
+      "container_profile_candidate_id": "container_prof_cand_001",
+      "container_profile_id": "container_profile_001",
+
+      "identity": {
+        "title": "ordinary storage container",
+        "container_kind": "ordinary_storage",
+        "container_group": "household_or_work_storage"
+      },
+
+      "placement": {
+        "g5_anchor_id": "g5_anchor_002",
+        "parent_g4_node_id": "g4_001",
+        "placement_basis": "container profile is compatible with selected place and anchor storage function",
+        "causal_basis_type": "storage_function"
+      },
+
+      "physical_state": {
+        "capacity_band": "medium",
+        "mobility": "movable",
+        "condition": "closed",
+        "weight_empty": 2,
+        "weight_current_known": false,
+        "can_be_moved": true
+      },
+
+      "content_state": {
+        "content_known": false,
+        "content_materialized": false,
+        "content_visibility": "not_visible",
+        "visible_content_summary": null,
+        "content_must_not_be_regenerated_after_first_definition": true,
+        "content_must_not_be_generated_until_opened_or_inspected": true
+      },
+
+      "visibility_state": {
+        "visible_to_player_now": true,
+        "known_to_player_now": true,
+        "requires_inspection": false,
+        "requires_light": false,
+        "visibility_basis": "container itself is visible at anchor"
+      },
+
+      "access_state": {
+        "access": "permission_required",
+        "can_open_now": false,
+        "requires_key": false,
+        "requires_tool": false,
+        "requires_force": false,
+        "requires_permission": true,
+        "requires_time_minutes": 0,
+        "access_basis": "container is part of controlled place property"
+      },
+
+      "property_state": {
+        "property_rule_candidate_id": "property_rule_cand_001",
+        "owner_model": "household",
+        "controller_model": "npc",
+        "controller_npc_instance_id": "npc_001",
+        "ownership_known_to_player": false
+      },
+
+      "risk_state": {
+        "opening_risk": "medium",
+        "theft_risk": "medium",
+        "witness_risk": "medium",
+        "damage_risk": "low",
+        "risk_basis": [
+          "opening requires permission",
+          "NPC witness can notice interaction"
+        ]
+      },
+
+      "source_trace": [
+        {
+          "record_id": "container_prof_cand_001",
+          "table": "startup.item_profile_candidate_set.container_profile_candidates",
+          "source_ids": [
+            "source_003"
+          ],
+          "supports": [
+            "container_instance"
+          ]
+        }
+      ]
+    }
+  ],
+
+  "item_anchor_bindings": [
+    {
+      "item_anchor_binding_id": "item_anchor_binding_001",
+      "item_instance_id": "item_001",
+      "g5_anchor_id": "g5_anchor_001",
+      "binding_type": "lying_on",
+      "distance_to_player_band": "near",
+      "line_of_sight_to_player": "partial",
+      "line_of_reach_to_player": "step_required",
+      "can_be_seen_without_action": false,
+      "can_be_reached_without_action": false
+    }
+  ],
+
+  "container_anchor_bindings": [
+    {
+      "container_anchor_binding_id": "container_anchor_binding_001",
+      "container_instance_id": "container_001",
+      "g5_anchor_id": "g5_anchor_002",
+      "binding_type": "stored_at",
+      "distance_to_player_band": "short",
+      "line_of_sight_to_player": "clear",
+      "line_of_reach_to_player": "step_required",
+      "can_be_seen_without_action": true,
+      "can_be_reached_without_action": false
+    }
+  ],
+
+  "property_bindings": [
+    {
+      "property_binding_id": "property_binding_001",
+      "property_rule_candidate_id": "property_rule_cand_001",
+      "applies_to": {
+        "item_instance_id": "item_001",
+        "container_instance_id": null,
+        "g5_anchor_id": "g5_anchor_001",
+        "npc_instance_id": "npc_001"
+      },
+      "ownership_model": "household",
+      "holder_model": "anchor",
+      "controller_model": "npc",
+      "access_model": {
+        "can_see": true,
+        "can_touch": false,
+        "can_take": false,
+        "can_buy": false,
+        "can_borrow": false,
+        "can_open": false,
+        "requires_permission": true,
+        "requires_payment": false,
+        "requires_key_or_tool": false
+      },
+      "risk_model": {
+        "witness_risk": "medium",
+        "legal_risk": "medium",
+        "reputation_risk": "medium",
+        "violence_or_punishment_risk": "low"
+      },
+      "transfer_conditions": {
+        "can_transfer_to_player_later": true,
+        "allowed_transfer_reasons": [
+          "permission",
+          "purchase",
+          "exchange",
+          "theft_with_risk"
+        ],
+        "requires_causal_basis": true
+      }
+    }
+  ],
+
+  "visibility_state": [
+    {
+      "item_instance_id": "item_001",
+      "visible_to_player_now": false,
+      "visible_if_inspected": true,
+      "hidden_from_player": false,
+      "visibility_basis": "requires attention to notice"
+    }
+  ],
+
+  "access_state": [
+    {
+      "item_instance_id": "item_001",
+      "access": "permission_required",
+      "can_take_now": false,
+      "access_basis": "controlled property"
+    }
+  ],
+
+  "risk_state": [
+    {
+      "item_instance_id": "item_001",
+      "overall_risk": "medium",
+      "risk_basis": [
+        "not player property",
+        "NPC witness present",
+        "permission required"
+      ]
+    }
+  ],
+
+  "rejected_item_placements": [],
+
+  "downstream_constraints": {
+    "must_preserve": [
+      "item_instance_id",
+      "container_instance_id",
+      "property_binding_id",
+      "g5_anchor_id",
+      "visibility_state",
+      "access_state",
+      "risk_state"
+    ],
+    "must_not_create_yet": [
+      "visible_scene",
+      "intro_prose",
+      "hidden_event",
+      "unopened_container_contents"
+    ],
+    "must_resolve_later": [
+      "container_contents_if_opened",
+      "item_transfer_if_taken",
+      "risk_resolution_if_interacted"
+    ]
+  },
+
+  "source_trace": [
+    {
+      "record_id": "item_prof_cand_001",
+      "table": "startup.item_profile_candidate_set",
+      "source_ids": [
+        "source_001"
+      ],
+      "supports": [
+        "item_placement"
+      ]
+    }
+  ],
+
+  "audit_self_check": {
+    "pass": true,
+    "concerns": [],
+    "evidence": [
+      "All items use item_profile_candidate_set.",
+      "All containers use container_profile_candidates.",
+      "All property bindings use property_rule_candidates.",
+      "Every item has causal_basis_type.",
+      "No item was created from player desire.",
+      "Closed container contents were not materialized.",
+      "No visible scene or intro prose was created."
+    ]
+  }
+}
+```

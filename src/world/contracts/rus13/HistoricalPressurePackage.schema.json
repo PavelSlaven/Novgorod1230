@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rus13.local/contracts/HistoricalPressurePackage.schema.json",
+  "title": "HistoricalPressurePackage",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "events",
+    "figures",
+    "regional_effects",
+    "visible_signs",
+    "character_knowledge",
+    "hidden_facts",
+    "source_ids"
+  ],
+  "properties": {
+    "events": {
+      "description": "Required by HistoricalPressurePackage.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "figures": {
+      "description": "Required by HistoricalPressurePackage.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "regional_effects": {
+      "description": "Required by HistoricalPressurePackage.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "visible_signs": {
+      "description": "Required by HistoricalPressurePackage.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "character_knowledge": {
+      "description": "Required by HistoricalPressurePackage.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "hidden_facts": {
+      "description": "Required by HistoricalPressurePackage.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "source_ids": {
+      "description": "Required by HistoricalPressurePackage.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    }
+  },
+  "x_writes_to": [
+    "party_events",
+    "party_journal_entries"
+  ],
+  "x_blocking_validations": [
+    "no exact future knowledge in character_knowledge",
+    "event phases have date/trigger/visible signs"
+  ]
+}

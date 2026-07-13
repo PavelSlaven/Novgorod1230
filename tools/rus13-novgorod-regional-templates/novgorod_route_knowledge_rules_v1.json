@@ -1,0 +1,664 @@
+{
+  "metadata": {
+    "file_name": "novgorod_route_knowledge_rules_v1.json",
+    "version": "1.0.0",
+    "project": "RUS13",
+    "region_id": "novgorod_land",
+    "region_id_aliases": [
+      "region_novgorod_land"
+    ],
+    "region_title": "Новгородская земля",
+    "period": "1230-1250",
+    "purpose": "Правила знания маршрутов, проводников, ложных путей и карты знаний персонажа",
+    "created_at_utc": "2026-07-05T12:30:00Z",
+    "status": "draft",
+    "confidence": "medium",
+    "requires_human_audit": true,
+    "list_expansion_policy": "Списки задания являются минимальным ядром, а не пределом. Новые контейнеры, слухи, события, предметные и социальные профили допустимы только при историко-бытовом, хозяйственном или социальном основании, со статусом, уверенностью и возможностью ручного аудита.",
+    "source_registry": [
+      "project_archive:novgorod_full_graph_g1_g4_v6_game_ready.zip",
+      "project_data:novgorod_region_generation_limits_v1.json",
+      "project_data:novgorod_region_profile_v1.json",
+      "project_data:novgorod_historical_timeline_1230_1250_v1.json",
+      "project_data:novgorod_neighbor_regions_v1.json",
+      "project_data:novgorod_social_roles_v1.tsv",
+      "project_data:novgorod_occupations_v1.tsv",
+      "project_data:novgorod_status_rules_v1.json",
+      "project_doc:items_and_property.txt",
+      "project_doc:npc_generation_profiles.txt",
+      "project_doc:movement_locations_regions.txt",
+      "project_doc:time_system.txt",
+      "project_doc:historical_events_and_figures.txt",
+      "project_doc:information_sources_llm_prompts.md"
+    ]
+  },
+  "route_knowledge_levels": [
+    {
+      "level_id": "knows_exact",
+      "title": "Знает точно",
+      "meaning": "Знает последовательность мест, опасные повороты, сезонные условия и кому можно сказать.",
+      "player_map_effect": "можно обновить карту знаний точным известным маршрутом, но только в пределах знания персонажа",
+      "limits": [
+        "может устареть из-за погоды, войны, паводка, льда"
+      ]
+    },
+    {
+      "level_id": "knows_roughly",
+      "title": "Знает примерно",
+      "meaning": "Знает направление, крупные ориентиры и примерную связность, но не все переходы.",
+      "player_map_effect": "показать грубое направление и условия неопределённости",
+      "limits": [
+        "требует проверки, проводника или расспроса"
+      ]
+    },
+    {
+      "level_id": "heard_rumor",
+      "title": "Слышал слух",
+      "meaning": "Знает чужой рассказ без подтверждения.",
+      "player_map_effect": "добавить слуховой маркер без истинности",
+      "limits": [
+        "не раскрывать фактический маршрут"
+      ]
+    },
+    {
+      "level_id": "does_not_know",
+      "title": "Не знает",
+      "meaning": "Нет основания знать путь.",
+      "player_map_effect": "не добавлять маршрут",
+      "limits": [
+        "нельзя дать точные варианты через интерфейс"
+      ]
+    },
+    {
+      "level_id": "false_belief",
+      "title": "Ошибочное знание",
+      "meaning": "Считает, что путь есть или безопасен, но это может быть неверно.",
+      "player_map_effect": "может появиться ложная пометка знаний персонажа",
+      "limits": [
+        "не подтверждать объективной прозой"
+      ]
+    },
+    {
+      "level_id": "outdated_knowledge",
+      "title": "Устаревшее знание",
+      "meaning": "Путь был известен ранее, но состояние могло измениться.",
+      "player_map_effect": "показывать как старое знание с предупреждением",
+      "limits": [
+        "особенно для брода, льда, переправы, дороги после пожара/войны"
+      ]
+    }
+  ],
+  "social_group_route_knowledge": [
+    {
+      "social_group_id": "group_local_villagers",
+      "title": "Местные деревенские",
+      "usually_knows_exact": [
+        "соседние деревни",
+        "погост",
+        "ближайший брод",
+        "свои поля и покосы"
+      ],
+      "usually_knows_roughly": [
+        "дорога к городу",
+        "ближайший торг"
+      ],
+      "usually_hears_rumors_about": [
+        "дальняя война",
+        "закрытые переправы"
+      ],
+      "can_act_as_guide_for": [
+        "локальные тропы",
+        "броды своей округи"
+      ],
+      "may_lie_or_hide_when": [
+        "угроза наказания",
+        "выгода",
+        "чужой статус опасен",
+        "путь является промысловой тайной"
+      ],
+      "required_context_before_use": [
+        "место происхождения NPC",
+        "профессия",
+        "сезон",
+        "свежесть знания",
+        "отношение к персонажу"
+      ],
+      "llm_limits": [
+        "не давать точную карту, если группа знает только слух",
+        "не делать каждого NPC проводником",
+        "учитывать страх и оплату"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "social_group_id": "group_townspeople",
+      "title": "Горожане",
+      "usually_knows_exact": [
+        "улицы, торг, городские ворота",
+        "частые пристани"
+      ],
+      "usually_knows_roughly": [
+        "дороги к пригородам и погостам"
+      ],
+      "usually_hears_rumors_about": [
+        "дальние пути, война, дефицит"
+      ],
+      "can_act_as_guide_for": [
+        "городские и пригородные переходы"
+      ],
+      "may_lie_or_hide_when": [
+        "не хочет связываться с чужим",
+        "боится дворовой власти"
+      ],
+      "required_context_before_use": [
+        "место происхождения NPC",
+        "профессия",
+        "сезон",
+        "свежесть знания",
+        "отношение к персонажу"
+      ],
+      "llm_limits": [
+        "не давать точную карту, если группа знает только слух",
+        "не делать каждого NPC проводником",
+        "учитывать страх и оплату"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "social_group_id": "group_merchants",
+      "title": "Купцы и приказчики",
+      "usually_knows_exact": [
+        "основные торговые дороги",
+        "крупные пристани",
+        "постоялые дворы"
+      ],
+      "usually_knows_roughly": [
+        "соседние земли",
+        "опасные участки"
+      ],
+      "usually_hears_rumors_about": [
+        "война, цена, пошлины"
+      ],
+      "can_act_as_guide_for": [
+        "торговые маршруты при оплате и доверии"
+      ],
+      "may_lie_or_hide_when": [
+        "скрывает выгодную дорогу",
+        "не хочет вести низкого статуса"
+      ],
+      "required_context_before_use": [
+        "место происхождения NPC",
+        "профессия",
+        "сезон",
+        "свежесть знания",
+        "отношение к персонажу"
+      ],
+      "llm_limits": [
+        "не давать точную карту, если группа знает только слух",
+        "не делать каждого NPC проводником",
+        "учитывать страх и оплату"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "social_group_id": "group_hunters_forest_workers",
+      "title": "Охотники и лесные промысловики",
+      "usually_knows_exact": [
+        "лесные тропы",
+        "промысловые станы",
+        "звериные переходы"
+      ],
+      "usually_knows_roughly": [
+        "погосты и зимники"
+      ],
+      "usually_hears_rumors_about": [
+        "чужие дороги"
+      ],
+      "can_act_as_guide_for": [
+        "лес, болото, скрытые тропы"
+      ],
+      "may_lie_or_hide_when": [
+        "промысловая тайна",
+        "не доверяет чужому"
+      ],
+      "required_context_before_use": [
+        "место происхождения NPC",
+        "профессия",
+        "сезон",
+        "свежесть знания",
+        "отношение к персонажу"
+      ],
+      "llm_limits": [
+        "не давать точную карту, если группа знает только слух",
+        "не делать каждого NPC проводником",
+        "учитывать страх и оплату"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "social_group_id": "group_fishermen_boatmen",
+      "title": "Рыбаки и лодочники",
+      "usually_knows_exact": [
+        "берега, мели, пристани, перевозы",
+        "лёд и вода своей реки"
+      ],
+      "usually_knows_roughly": [
+        "речные маршруты до торга"
+      ],
+      "usually_hears_rumors_about": [
+        "дальние водные пути"
+      ],
+      "can_act_as_guide_for": [
+        "река, озеро, перевоз"
+      ],
+      "may_lie_or_hide_when": [
+        "боится воды, погоды или чужого груза"
+      ],
+      "required_context_before_use": [
+        "место происхождения NPC",
+        "профессия",
+        "сезон",
+        "свежесть знания",
+        "отношение к персонажу"
+      ],
+      "llm_limits": [
+        "не давать точную карту, если группа знает только слух",
+        "не делать каждого NPC проводником",
+        "учитывать страх и оплату"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "social_group_id": "group_clergy_monks",
+      "title": "Духовенство и монахи",
+      "usually_knows_exact": [
+        "церкви, погосты, монастыри, гостевые пути"
+      ],
+      "usually_knows_roughly": [
+        "дороги паломников и посольских людей"
+      ],
+      "usually_hears_rumors_about": [
+        "война, бедствие, закрытые дороги"
+      ],
+      "can_act_as_guide_for": [
+        "церковные маршруты при причине"
+      ],
+      "may_lie_or_hide_when": [
+        "не раскрывает монастырское хозяйство",
+        "нет благословения старшего"
+      ],
+      "required_context_before_use": [
+        "место происхождения NPC",
+        "профессия",
+        "сезон",
+        "свежесть знания",
+        "отношение к персонажу"
+      ],
+      "llm_limits": [
+        "не давать точную карту, если группа знает только слух",
+        "не делать каждого NPC проводником",
+        "учитывать страх и оплату"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "social_group_id": "group_princely_boyar_people",
+      "title": "Княжьи и боярские люди",
+      "usually_knows_exact": [
+        "служебные дворы, ворота, охранные пути"
+      ],
+      "usually_knows_roughly": [
+        "военные и налоговые дороги"
+      ],
+      "usually_hears_rumors_about": [
+        "дальняя политика"
+      ],
+      "can_act_as_guide_for": [
+        "служебные маршруты только при приказе"
+      ],
+      "may_lie_or_hide_when": [
+        "приказ запрещает",
+        "чужой может быть угрозой"
+      ],
+      "required_context_before_use": [
+        "место происхождения NPC",
+        "профессия",
+        "сезон",
+        "свежесть знания",
+        "отношение к персонажу"
+      ],
+      "llm_limits": [
+        "не давать точную карту, если группа знает только слух",
+        "не делать каждого NPC проводником",
+        "учитывать страх и оплату"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "social_group_id": "group_guards",
+      "title": "Стража ворот, торга и переправы",
+      "usually_knows_exact": [
+        "свой пост и ближайшие обходы",
+        "закрытые проходы"
+      ],
+      "usually_knows_roughly": [
+        "основные дороги к посту"
+      ],
+      "usually_hears_rumors_about": [
+        "приказы, чужие люди"
+      ],
+      "can_act_as_guide_for": [
+        "редко; только по приказу"
+      ],
+      "may_lie_or_hide_when": [
+        "не имеет права уходить",
+        "не доверяет пришлому"
+      ],
+      "required_context_before_use": [
+        "место происхождения NPC",
+        "профессия",
+        "сезон",
+        "свежесть знания",
+        "отношение к персонажу"
+      ],
+      "llm_limits": [
+        "не давать точную карту, если группа знает только слух",
+        "не делать каждого NPC проводником",
+        "учитывать страх и оплату"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "social_group_id": "group_guides",
+      "title": "Проводники",
+      "usually_knows_exact": [
+        "маршруты своего промысла и найма",
+        "опасные места",
+        "ночлег"
+      ],
+      "usually_knows_roughly": [
+        "соседние направления"
+      ],
+      "usually_hears_rumors_about": [
+        "дальние слухи"
+      ],
+      "can_act_as_guide_for": [
+        "основной профиль; требует платы, доверия или приказа"
+      ],
+      "may_lie_or_hide_when": [
+        "желает повысить цену",
+        "боится ответственности",
+        "сезон опасен"
+      ],
+      "required_context_before_use": [
+        "место происхождения NPC",
+        "профессия",
+        "сезон",
+        "свежесть знания",
+        "отношение к персонажу"
+      ],
+      "llm_limits": [
+        "не давать точную карту, если группа знает только слух",
+        "не делать каждого NPC проводником",
+        "учитывать страх и оплату"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "social_group_id": "group_strangers",
+      "title": "Пришлые",
+      "usually_knows_exact": [],
+      "usually_knows_roughly": [
+        "крупные дороги по рассказам",
+        "направление к торгу или городу"
+      ],
+      "usually_hears_rumors_about": [
+        "почти всё, что не видел лично"
+      ],
+      "can_act_as_guide_for": [
+        "обычно нет"
+      ],
+      "may_lie_or_hide_when": [
+        "сам не знает и делает вид, что знает"
+      ],
+      "required_context_before_use": [
+        "место происхождения NPC",
+        "профессия",
+        "сезон",
+        "свежесть знания",
+        "отношение к персонажу"
+      ],
+      "llm_limits": [
+        "не давать точную карту, если группа знает только слух",
+        "не делать каждого NPC проводником",
+        "учитывать страх и оплату"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "social_group_id": "group_pilgrims_beggars",
+      "title": "Паломники, нищие, уязвимые путники",
+      "usually_knows_exact": [
+        "места недавнего ночлега"
+      ],
+      "usually_knows_roughly": [
+        "церковные и милостынные точки"
+      ],
+      "usually_hears_rumors_about": [
+        "дальние слухи"
+      ],
+      "can_act_as_guide_for": [
+        "только по уже пройденному пути"
+      ],
+      "may_lie_or_hide_when": [
+        "страх",
+        "желание получить еду или кров"
+      ],
+      "required_context_before_use": [
+        "место происхождения NPC",
+        "профессия",
+        "сезон",
+        "свежесть знания",
+        "отношение к персонажу"
+      ],
+      "llm_limits": [
+        "не давать точную карту, если группа знает только слух",
+        "не делать каждого NPC проводником",
+        "учитывать страх и оплату"
+      ],
+      "status": "draft",
+      "confidence": "medium"
+    }
+  ],
+  "seasonal_route_knowledge": [
+    {
+      "season_rule_id": "season_route_knowledge_winter",
+      "season": "зима",
+      "knowledge_effect": "местные и возчики знают зимники, лёд и санные ходы лучше пришлых",
+      "risk_if_wrong": "опасный лёд; метель; потеря следа",
+      "player_visible_rule": "показывать свежесть следа и осторожные слова"
+    },
+    {
+      "season_rule_id": "season_route_knowledge_rasputitsa",
+      "season": "распутица",
+      "knowledge_effect": "даже точное знание дороги не гарантирует проходимость",
+      "risk_if_wrong": "застрять, потерять время, испортить груз",
+      "player_visible_rule": "карта знаний получает пометку 'может быть закрыто'"
+    },
+    {
+      "season_rule_id": "season_route_knowledge_flood",
+      "season": "паводок",
+      "knowledge_effect": "рыбаки и перевозчики важнее сухопутных проводников",
+      "risk_if_wrong": "снесённый брод, опасная вода",
+      "player_visible_rule": "водная информация быстро устаревает"
+    },
+    {
+      "season_rule_id": "season_route_knowledge_summer_navigation",
+      "season": "летняя навигация",
+      "knowledge_effect": "лодочники знают пристани, мели и места разгрузки",
+      "risk_if_wrong": "мель, шторм, задержка",
+      "player_visible_rule": "нужен лодочник или личная проверка"
+    },
+    {
+      "season_rule_id": "season_route_knowledge_autumn_mud",
+      "season": "осень",
+      "knowledge_effect": "возчики знают, какие дороги ещё держат телегу",
+      "risk_if_wrong": "грязь, поломка колеса, ночёвка не там",
+      "player_visible_rule": "пути становятся медленнее"
+    },
+    {
+      "season_rule_id": "season_route_knowledge_ice_forming",
+      "season": "ледостав",
+      "knowledge_effect": "старые речные и летние пути временно опасны",
+      "risk_if_wrong": "невозможность переправы, тонкий лёд",
+      "player_visible_rule": "не показывать путь как открытый без свежего источника"
+    }
+  ],
+  "guide_rules": [
+    {
+      "guide_rule_id": "guide_requires_causal_basis",
+      "title": "Проводник появляется только с основанием",
+      "rule": "Нужен NPC с местным знанием, мотивом, временем и правом уйти с места; заявка игрока сама не создаёт проводника."
+    },
+    {
+      "guide_rule_id": "guide_payment_and_status",
+      "title": "Оплата, статус и поручитель",
+      "rule": "Проводник может требовать еду, плату, долю, поручителя или разрешение старшего; низкому статусу чаще отказывают."
+    },
+    {
+      "guide_rule_id": "guide_may_refuse",
+      "title": "Отказ проводника",
+      "rule": "Опасная вода, метель, война, зверьё, приказ, болезнь или страх ответственности могут закрыть путь."
+    },
+    {
+      "guide_rule_id": "guide_memory",
+      "title": "Память после прохождения",
+      "rule": "После личного прохождения персонаж улучшает знание маршрута, но сезонные условия всё равно могут измениться."
+    },
+    {
+      "guide_rule_id": "guide_deception",
+      "title": "Обман проводника",
+      "rule": "Ложь возможна при конфликте, выгоде, страхе или принадлежности к враждебному двору; это скрытое состояние не выдаётся заранее."
+    }
+  ],
+  "wrong_route_and_getting_lost_rules": [
+    {
+      "rule_id": "lost_rule_no_local_basis",
+      "title": "Нет местного основания",
+      "trigger": "персонаж идёт по heard_rumor или false_belief",
+      "consequences": [
+        "потеря времени",
+        "возврат к известному месту",
+        "выход не туда",
+        "телесный расход",
+        "новый слух или встреча"
+      ]
+    },
+    {
+      "rule_id": "lost_rule_bad_weather",
+      "title": "Плохая погода",
+      "trigger": "метель, туман, ночь, сильный дождь, распутица",
+      "consequences": [
+        "следы скрыты",
+        "ориентиры пропадают",
+        "нужна проверка Внимания/Выносливости"
+      ]
+    },
+    {
+      "rule_id": "lost_rule_forest_swamp",
+      "title": "Лес и болото",
+      "trigger": "лесная тропа без проводника",
+      "consequences": [
+        "кружной путь",
+        "травма",
+        "потеря груза",
+        "выход к чужому двору"
+      ]
+    },
+    {
+      "rule_id": "lost_rule_water_change",
+      "title": "Изменение воды",
+      "trigger": "паводок, ледостав, оттепель",
+      "consequences": [
+        "брод исчез",
+        "перевоз закрыт",
+        "лодка нужна в другом месте"
+      ]
+    },
+    {
+      "rule_id": "lost_rule_social_misinformation",
+      "title": "Неполный или ложный совет",
+      "trigger": "NPC скрывает часть пути",
+      "consequences": [
+        "конфликт",
+        "вымогательство",
+        "опасный обход",
+        "запись в память как недоверие"
+      ]
+    }
+  ],
+  "map_knowledge_update_rules": [
+    {
+      "rule_id": "map_update_heard",
+      "from_level": "does_not_know",
+      "to_level": "heard_rumor",
+      "condition": "персонаж услышал маршрут от NPC",
+      "storage": "сохранить источник, место, дату и степень доверия"
+    },
+    {
+      "rule_id": "map_update_followed_with_guide",
+      "from_level": "heard_rumor",
+      "to_level": "knows_roughly",
+      "condition": "персонаж прошёл путь с проводником, но не вёл сам",
+      "storage": "добавить ориентиры и сезон"
+    },
+    {
+      "rule_id": "map_update_personal_navigation",
+      "from_level": "knows_roughly",
+      "to_level": "knows_exact",
+      "condition": "персонаж сам ориентировался и дошёл",
+      "storage": "добавить последовательность известных узлов и опасные места"
+    },
+    {
+      "rule_id": "map_update_failed",
+      "from_level": "knows_roughly",
+      "to_level": "false_belief",
+      "condition": "маршрут оказался неверен",
+      "storage": "пометить ошибочную версию, не удалять без причины"
+    },
+    {
+      "rule_id": "map_update_outdated",
+      "from_level": "knows_exact",
+      "to_level": "outdated_knowledge",
+      "condition": "прошёл сезон, паводок, пожар, война или долгий срок",
+      "storage": "сохранить как старое знание"
+    }
+  ],
+  "validation": {
+    "file_is_valid_json": true,
+    "does_not_create_party_state": true,
+    "does_not_create_new_g1_g4_nodes": true,
+    "does_not_precreate_full_g5_map": true,
+    "uses_existing_map_as_context": true,
+    "respects_generation_limits": true,
+    "separates_visible_hidden_and_unmaterialized": true,
+    "distinguishes_fact_from_rumor": true,
+    "requires_human_historical_audit": true,
+    "blocking_issues": [],
+    "open_questions": [],
+    "route_knowledge_level_count": 6,
+    "social_group_route_knowledge_count": 11,
+    "guide_rules_count": 5,
+    "player_map_is_knowledge_map_not_objective_map": true
+  }
+}

@@ -1,0 +1,343 @@
+table_name,column_name,data_type,nullable,key,references,check_or_enum,purpose,source_basis
+party_state,id,TEXT,no,PK,,,Party identifier.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_state,save_slot,TEXT,no,UNIQUE,,,Autosave/manual save label.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_state,status,TEXT,no,,,party_status,Lifecycle of party.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_state,world_base_version,TEXT,yes,,,,Read-only base/import version used by this party.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_state,start_year,INTEGER,no,,,CHECK 1230-1250 recommended by project frame,Historical start year.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_state,current_year,INTEGER,no,,,,Current in-game year.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_state,current_season,TEXT,yes,,,,Season label from regional seasonal rules.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_state,current_day_index,INTEGER,no,,,CHECK >= 0,Game day counter.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_state,current_minute_of_day,INTEGER,no,,,CHECK 0-1439,"Exact time inside day, per project time model.",read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_state,current_region_id,TEXT,no,,,logical FK to world_base.regions(id),Current region ID from read-only base.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_state,player_character_id,TEXT,yes,,,logical FK to party_player_characters(id),Main player character after generation.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_state,visible_summary,TEXT,yes,,,,Short player-facing party summary.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_state,memory_summary,TEXT,yes,,,,Compact party memory for LLM context.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_state,hidden_state,JSONB,no,,,DEFAULT {},Global hidden state; never sent to prose agent directly.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_state,audit_state,JSONB,no,,,DEFAULT {},Technical audit flags.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_state,created_at,TIMESTAMPTZ,no,,,DEFAULT now(),Real timestamp.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_state,updated_at,TIMESTAMPTZ,no,,,DEFAULT now(),Real timestamp.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_player_characters,id,TEXT,no,PK,,,Stable technical identifier; code may use deterministic IDs or generated IDs.,technical key
+party_player_characters,party_id,TEXT,no,FK,party_state(id),,Party scope; every mutable row belongs to one saved party.,party DB separation
+party_player_characters,created_at,TIMESTAMPTZ,no,,,DEFAULT now(),"Real system timestamp for audit, not game time.",technical audit
+party_player_characters,updated_at,TIMESTAMPTZ,no,,,DEFAULT now(),"Real system timestamp for audit, not game time.",technical audit
+party_player_characters,display_name,TEXT,yes,,,,Visible or known name.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_player_characters,social_role_id,TEXT,yes,,,logical FK to world_base.region_social_roles(id),Role/status from region base if known.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_player_characters,occupation_id,TEXT,yes,,,logical FK to world_base.region_occupations(id),Occupation from region base if known.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_player_characters,status,TEXT,no,,,party_entity_status,Character lifecycle.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_player_characters,attributes,JSONB,no,,,DEFAULT {},Six attributes and bonuses.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_player_characters,skills,JSONB,no,,,DEFAULT {},Skill bonuses and evidence.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_player_characters,body_state,JSONB,no,,,DEFAULT {},"Health, satiety, vigor, active states.",read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_player_characters,inventory_summary,JSONB,no,,,DEFAULT {},Summary of inventory by current carried items.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_player_characters,knowledge_state,JSONB,no,,,DEFAULT {},"Character knowledge, not objective truth.",read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_player_characters,memory_state,JSONB,no,,,DEFAULT {},Personal memory and obligations.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_player_characters,visible_description,TEXT,yes,,,,Player-facing description of self state.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_player_characters,hidden_state,JSONB,no,,,DEFAULT {},Hidden personal facts only if character does not know/should not see.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_player_characters,created_by_llm_step,TEXT,yes,,,logical FK to party_llm_steps(id),LLM generation provenance.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_player_characters,created_at_game_time,TEXT,yes,,,,Game-time stamp as text/ordinal.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_player_characters,updated_at_game_time,TEXT,yes,,,,Game-time stamp as text/ordinal.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_graph_nodes,id,TEXT,no,PK,,,Stable technical identifier; code may use deterministic IDs or generated IDs.,technical key
+party_graph_nodes,party_id,TEXT,no,FK,party_state(id),,Party scope; every mutable row belongs to one saved party.,party DB separation
+party_graph_nodes,created_at,TIMESTAMPTZ,no,,,DEFAULT now(),"Real system timestamp for audit, not game time.",technical audit
+party_graph_nodes,updated_at,TIMESTAMPTZ,no,,,DEFAULT now(),"Real system timestamp for audit, not game time.",technical audit
+party_graph_nodes,canonical_node_id,TEXT,yes,,,logical FK to world_base.graph_nodes(id),"Read-only canonical node ID, if this materializes a canonical node.",read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_graph_nodes,slug,TEXT,yes,,,,Party-local slug.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_graph_nodes,title,TEXT,yes,,,,Human title.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_graph_nodes,node_type,TEXT,no,,,node_type,Graph node type.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_graph_nodes,scale_level,TEXT,no,,,scale_level,G0-G5 scale.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_graph_nodes,parent_node_id,TEXT,yes,FK,party_graph_nodes(id),,Parent party node.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_graph_nodes,region_id,TEXT,no,,,logical FK to world_base.regions(id),Region ID.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_graph_nodes,place_id,TEXT,yes,,,logical FK to party_places(id),Associated party place if applicable.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_graph_nodes,is_materialized,BOOLEAN,no,,,DEFAULT false,Whether node is concretely present in party state.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_graph_nodes,is_known_to_character,BOOLEAN,no,,,DEFAULT false,Character knowledge layer.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_graph_nodes,is_known_to_player,BOOLEAN,no,,,DEFAULT false,Player UI knowledge layer.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_graph_nodes,visible_name,TEXT,yes,,,,Name as known/seen by character.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_graph_nodes,hidden_state,JSONB,no,,,DEFAULT {},Hidden facts for simulation.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_graph_nodes,current_state,JSONB,no,,,DEFAULT {},Mutable state of node.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_graph_nodes,created_by_llm_step,TEXT,yes,,,logical FK to party_llm_steps(id),LLM provenance.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_graph_nodes,created_at_game_time,TEXT,yes,,,,Game-time stamp.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_graph_nodes,updated_at_game_time,TEXT,yes,,,,Game-time stamp.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_graph_edges,id,TEXT,no,PK,,,Stable technical identifier; code may use deterministic IDs or generated IDs.,technical key
+party_graph_edges,party_id,TEXT,no,FK,party_state(id),,Party scope; every mutable row belongs to one saved party.,party DB separation
+party_graph_edges,created_at,TIMESTAMPTZ,no,,,DEFAULT now(),"Real system timestamp for audit, not game time.",technical audit
+party_graph_edges,updated_at,TIMESTAMPTZ,no,,,DEFAULT now(),"Real system timestamp for audit, not game time.",technical audit
+party_graph_edges,canonical_edge_id,TEXT,yes,,,logical FK to world_base.graph_edges(id),Canonical edge if copied from read-only graph.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_graph_edges,from_party_node_id,TEXT,no,FK,party_graph_nodes(id),,Start node.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_graph_edges,to_party_node_id,TEXT,no,FK,party_graph_nodes(id),,End node.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_graph_edges,reverse_party_edge_id,TEXT,yes,FK,party_graph_edges(id),,Reverse edge if bidirectional.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_graph_edges,scale_level,TEXT,no,,,scale_level,G0-G5 scale.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_graph_edges,edge_type,TEXT,no,,,edge_type,Physical route/link type.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_graph_edges,base_gu,NUMERIC,yes,,,,Base GU from canonical edge/materialization.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_graph_edges,current_time_minutes,NUMERIC,yes,,,,Current traversal time in minutes.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_graph_edges,current_time_hours,NUMERIC,yes,,,,Current traversal time in hours.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_graph_edges,current_access,TEXT,yes,,,,Current access state.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_graph_edges,current_conditions,JSONB,no,,,DEFAULT {},Weather/season/load/road conditions.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_graph_edges,current_risk,TEXT,yes,,,,Current risk label.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_graph_edges,current_seasonal_state,TEXT,yes,,,,Seasonal availability.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_graph_edges,is_known_to_character,BOOLEAN,no,,,DEFAULT false,Knowledge layer.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_graph_edges,is_known_to_player,BOOLEAN,no,,,DEFAULT false,UI layer.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_graph_edges,is_blocked,BOOLEAN,no,,,DEFAULT false,Route blocked in this party.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_graph_edges,block_reason,TEXT,yes,,,,"Reason route is blocked, if known/hidden in current_state.",read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_graph_edges,last_used_at_game_time,TEXT,yes,,,,Last traversal game time.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_graph_edges,created_by_llm_step,TEXT,yes,,,logical FK to party_llm_steps(id),LLM provenance.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_graph_edges,updated_at_game_time,TEXT,yes,,,,Game-time stamp.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_places,id,TEXT,no,PK,,,Stable technical identifier; code may use deterministic IDs or generated IDs.,technical key
+party_places,party_id,TEXT,no,FK,party_state(id),,Party scope; every mutable row belongs to one saved party.,party DB separation
+party_places,created_at,TIMESTAMPTZ,no,,,DEFAULT now(),"Real system timestamp for audit, not game time.",technical audit
+party_places,updated_at,TIMESTAMPTZ,no,,,DEFAULT now(),"Real system timestamp for audit, not game time.",technical audit
+party_places,canonical_place_id,TEXT,yes,,,logical FK to world_base.places(id),Canonical place if known.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_places,canonical_node_id,TEXT,yes,,,logical FK to world_base.graph_nodes(id),Canonical graph node if known.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_places,region_id,TEXT,no,,,logical FK to world_base.regions(id),Region.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_places,template_id,TEXT,yes,,,logical FK to world_base.place_templates(id),Place type template.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_places,title,TEXT,yes,,,,Party title.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_places,place_type,TEXT,yes,,,,Place type label.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_places,historical_status,TEXT,yes,,,,Historical/fictive status.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_places,materialized_from_node_id,TEXT,yes,FK,party_graph_nodes(id),,Graph node source.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_places,visible_description,TEXT,yes,,,,Description available to character/player.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_places,hidden_state,JSONB,no,,,DEFAULT {},Hidden place state.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_places,current_state,JSONB,no,,,DEFAULT {},Mutable visible and factual state.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_places,access_state,JSONB,no,,,DEFAULT {},"Doors, gates, rights, restrictions.",read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_places,owner_controller_state,JSONB,no,,,DEFAULT {},Ownership/control facts.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_places,created_by_llm_step,TEXT,yes,,,logical FK to party_llm_steps(id),LLM provenance.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_places,created_at_game_time,TEXT,yes,,,,Game-time stamp.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_places,updated_at_game_time,TEXT,yes,,,,Game-time stamp.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_locations,id,TEXT,no,PK,,,Stable technical identifier; code may use deterministic IDs or generated IDs.,technical key
+party_locations,party_id,TEXT,no,FK,party_state(id),,Party scope; every mutable row belongs to one saved party.,party DB separation
+party_locations,created_at,TIMESTAMPTZ,no,,,DEFAULT now(),"Real system timestamp for audit, not game time.",technical audit
+party_locations,updated_at,TIMESTAMPTZ,no,,,DEFAULT now(),"Real system timestamp for audit, not game time.",technical audit
+party_minilocations,id,TEXT,no,PK,,,Stable technical identifier; code may use deterministic IDs or generated IDs.,technical key
+party_minilocations,party_id,TEXT,no,FK,party_state(id),,Party scope; every mutable row belongs to one saved party.,party DB separation
+party_minilocations,created_at,TIMESTAMPTZ,no,,,DEFAULT now(),"Real system timestamp for audit, not game time.",technical audit
+party_minilocations,updated_at,TIMESTAMPTZ,no,,,DEFAULT now(),"Real system timestamp for audit, not game time.",technical audit
+party_scene_anchors,id,TEXT,no,PK,,,Stable technical identifier; code may use deterministic IDs or generated IDs.,technical key
+party_scene_anchors,party_id,TEXT,no,FK,party_state(id),,Party scope; every mutable row belongs to one saved party.,party DB separation
+party_scene_anchors,created_at,TIMESTAMPTZ,no,,,DEFAULT now(),"Real system timestamp for audit, not game time.",technical audit
+party_scene_anchors,updated_at,TIMESTAMPTZ,no,,,DEFAULT now(),"Real system timestamp for audit, not game time.",technical audit
+party_locations,place_id,TEXT,no,FK,party_places(id),,Parent place.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_locations,canonical_location_id,TEXT,yes,,,logical FK to world_base.graph_nodes(id),Canonical location if any.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_locations,title,TEXT,yes,,,,Title.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_locations,location_type,TEXT,yes,,,,Location type.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_locations,visible_description,TEXT,yes,,,,Visible description.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_locations,access_state,JSONB,no,,,DEFAULT {},Access and public/private rules.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_locations,visibility_state,JSONB,no,,,DEFAULT {},What can be seen/heard.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_locations,current_state,JSONB,no,,,DEFAULT {},Mutable state.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_locations,hidden_state,JSONB,no,,,DEFAULT {},Hidden state.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_locations,created_by_llm_step,TEXT,yes,,,logical FK to party_llm_steps(id),LLM provenance.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_locations,created_at_game_time,TEXT,yes,,,,Game-time stamp.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_locations,updated_at_game_time,TEXT,yes,,,,Game-time stamp.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_minilocations,place_id,TEXT,no,FK,party_places(id),,Parent place.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_minilocations,location_id,TEXT,no,FK,party_locations(id),,Parent location.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_minilocations,canonical_minilocation_id,TEXT,yes,,,logical FK to world_base.graph_nodes(id),Canonical minilocation if any.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_minilocations,title,TEXT,yes,,,,Title.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_minilocations,minilocation_type,TEXT,yes,,,,Minilocation type.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_minilocations,visible_description,TEXT,yes,,,,Visible description.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_minilocations,position_state,JSONB,no,,,DEFAULT {},Relative position/cover/noise/light.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_minilocations,current_state,JSONB,no,,,DEFAULT {},Mutable state.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_minilocations,hidden_state,JSONB,no,,,DEFAULT {},Hidden state.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_minilocations,created_by_llm_step,TEXT,yes,,,logical FK to party_llm_steps(id),LLM provenance.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_minilocations,created_at_game_time,TEXT,yes,,,,Game-time stamp.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_minilocations,updated_at_game_time,TEXT,yes,,,,Game-time stamp.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_scene_anchors,place_id,TEXT,no,FK,party_places(id),,Parent place.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_scene_anchors,location_id,TEXT,no,FK,party_locations(id),,Parent location.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_scene_anchors,minilocation_id,TEXT,no,FK,party_minilocations(id),,Parent minilocation.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_scene_anchors,canonical_anchor_id,TEXT,yes,,,logical FK to world_base.graph_nodes(id),Canonical anchor if any.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_scene_anchors,title,TEXT,yes,,,,Title.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_scene_anchors,anchor_type,TEXT,yes,,,,Anchor type.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_scene_anchors,visible_description,TEXT,yes,,,,Visible description.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_scene_anchors,physical_state,JSONB,no,,,DEFAULT {},"Condition, mobility, obstacle/container/passage flags.",read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_scene_anchors,access_state,JSONB,no,,,DEFAULT {},Access/control.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_scene_anchors,ownership_state,JSONB,no,,,DEFAULT {},Owner/controller if relevant.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_scene_anchors,current_state,JSONB,no,,,DEFAULT {},Mutable state.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_scene_anchors,hidden_state,JSONB,no,,,DEFAULT {},Hidden state.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_scene_anchors,created_by_llm_step,TEXT,yes,,,logical FK to party_llm_steps(id),LLM provenance.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_scene_anchors,created_at_game_time,TEXT,yes,,,,Game-time stamp.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_scene_anchors,updated_at_game_time,TEXT,yes,,,,Game-time stamp.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_current_position,id,TEXT,no,PK,,,Stable technical identifier; code may use deterministic IDs or generated IDs.,technical key
+party_current_position,party_id,TEXT,no,FK,party_state(id),,Party scope; every mutable row belongs to one saved party.,party DB separation
+party_current_position,created_at,TIMESTAMPTZ,no,,,DEFAULT now(),"Real system timestamp for audit, not game time.",technical audit
+party_current_position,updated_at,TIMESTAMPTZ,no,,,DEFAULT now(),"Real system timestamp for audit, not game time.",technical audit
+party_current_position,character_id,TEXT,no,FK,party_player_characters(id),,Whose current position; MVP usually player character.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_current_position,region_id,TEXT,no,,,logical FK to world_base.regions(id),Current region.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_current_position,place_id,TEXT,yes,FK,party_places(id),,Current place.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_current_position,location_id,TEXT,yes,FK,party_locations(id),,Current location.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_current_position,minilocation_id,TEXT,yes,FK,party_minilocations(id),,Current minilocation.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_current_position,anchor_id,TEXT,yes,FK,party_scene_anchors(id),,Current scene anchor.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_current_position,current_node_id,TEXT,yes,FK,party_graph_nodes(id),,Current graph node if mapped.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_current_position,last_route_id,TEXT,yes,FK,party_graph_edges(id),,Route used to arrive.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_current_position,position_visible_text,TEXT,yes,,,,Player-facing location phrase.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_current_position,updated_by_turn_id,TEXT,yes,,,logical FK to party_turns(id),Turn that updated position.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_current_position,game_day_index,INTEGER,no,,,CHECK >=0,Game day.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_current_position,game_minute_of_day,INTEGER,no,,,CHECK 0-1439,Time inside day.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_map_knowledge,id,TEXT,no,PK,,,Stable technical identifier; code may use deterministic IDs or generated IDs.,technical key
+party_map_knowledge,party_id,TEXT,no,FK,party_state(id),,Party scope; every mutable row belongs to one saved party.,party DB separation
+party_map_knowledge,created_at,TIMESTAMPTZ,no,,,DEFAULT now(),"Real system timestamp for audit, not game time.",technical audit
+party_map_knowledge,updated_at,TIMESTAMPTZ,no,,,DEFAULT now(),"Real system timestamp for audit, not game time.",technical audit
+party_map_knowledge,character_id,TEXT,no,FK,party_player_characters(id),,Whose knowledge.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_map_knowledge,node_id,TEXT,yes,FK,party_graph_nodes(id),,Known node.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_map_knowledge,edge_id,TEXT,yes,FK,party_graph_edges(id),,Known edge.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_map_knowledge,knowledge_type,TEXT,no,,,knowledge_type,Type of knowledge.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_map_knowledge,knowledge_accuracy,TEXT,no,,,knowledge_accuracy,Accuracy of knowledge.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_map_knowledge,source_of_knowledge,TEXT,yes,,,,How character learned it.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_map_knowledge,first_learned_at,TEXT,yes,,,,Game time.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_map_knowledge,last_confirmed_at,TEXT,yes,,,,Game time.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_map_knowledge,visible_description,TEXT,yes,,,,What UI/prose may show.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_map_knowledge,false_or_outdated_notes,TEXT,yes,,,,Why wrong/outdated; hidden unless character can know.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_route_journal,id,TEXT,no,PK,,,Stable technical identifier; code may use deterministic IDs or generated IDs.,technical key
+party_route_journal,party_id,TEXT,no,FK,party_state(id),,Party scope; every mutable row belongs to one saved party.,party DB separation
+party_route_journal,created_at,TIMESTAMPTZ,no,,,DEFAULT now(),"Real system timestamp for audit, not game time.",technical audit
+party_route_journal,updated_at,TIMESTAMPTZ,no,,,DEFAULT now(),"Real system timestamp for audit, not game time.",technical audit
+party_route_journal,character_id,TEXT,no,FK,party_player_characters(id),,Mover.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_route_journal,from_node_id,TEXT,yes,FK,party_graph_nodes(id),,Start node.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_route_journal,to_node_id,TEXT,yes,FK,party_graph_nodes(id),,End node.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_route_journal,edge_id,TEXT,yes,FK,party_graph_edges(id),,Edge used.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_route_journal,started_at_game_time,TEXT,no,,,,Game time.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_route_journal,ended_at_game_time,TEXT,yes,,,,Game time.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_route_journal,travel_time_minutes,NUMERIC,yes,,,,Elapsed minutes.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_route_journal,conditions,JSONB,no,,,DEFAULT {},Conditions applied.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_route_journal,risk_result,JSONB,no,,,DEFAULT {},Risk checks and outcomes.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_route_journal,state_cost,JSONB,no,,,DEFAULT {},Body/item/time costs.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_route_journal,visible_result,TEXT,yes,,,,Player-facing result.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_route_journal,hidden_result,JSONB,no,,,DEFAULT {},Hidden consequences.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_route_journal,notes,TEXT,yes,,,,Audit notes.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_npcs,id,TEXT,no,PK,,,Stable technical identifier; code may use deterministic IDs or generated IDs.,technical key
+party_npcs,party_id,TEXT,no,FK,party_state(id),,Party scope; every mutable row belongs to one saved party.,party DB separation
+party_npcs,created_at,TIMESTAMPTZ,no,,,DEFAULT now(),"Real system timestamp for audit, not game time.",technical audit
+party_npcs,updated_at,TIMESTAMPTZ,no,,,DEFAULT now(),"Real system timestamp for audit, not game time.",technical audit
+party_npcs,canonical_npc_id,TEXT,yes,,,logical FK to world_base/historical figures if applicable,Canonical/historical seed if any.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_npcs,profile_type,TEXT,no,,,npc_profile_type,Background/scene/key/group.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_npcs,region_id,TEXT,no,,,logical FK to world_base.regions(id),Region.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_npcs,current_node_id,TEXT,yes,FK,party_graph_nodes(id),,Current node.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_npcs,current_place_id,TEXT,yes,FK,party_places(id),,Current place.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_npcs,current_location_id,TEXT,yes,FK,party_locations(id),,Current location.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_npcs,visible_label,TEXT,yes,,,,What character sees/calls them.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_npcs,known_name,TEXT,yes,,,,Name if known.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_npcs,social_role_id,TEXT,yes,,,logical FK to world_base.region_social_roles(id),Social role.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_npcs,occupation_id,TEXT,yes,,,logical FK to world_base.region_occupations(id),Occupation.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_npcs,status,TEXT,no,,,party_entity_status,NPC lifecycle.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_npcs,body_state,JSONB,no,,,DEFAULT {},Health/conditions if relevant.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_npcs,relationship_state,JSONB,no,,,DEFAULT {},Attitude/obligations toward player and others.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_npcs,knowledge_state,JSONB,no,,,DEFAULT {},What NPC knows; includes rumors/errors.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_npcs,schedule_state,JSONB,no,,,DEFAULT {},Where they go after time passes.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_npcs,current_state,JSONB,no,,,DEFAULT {},Mutable state.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_npcs,hidden_state,JSONB,no,,,DEFAULT {},Hidden motives/facts.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_npcs,is_known_to_character,BOOLEAN,no,,,DEFAULT false,Known layer.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_npcs,is_visible_in_scene,BOOLEAN,no,,,DEFAULT false,Scene visibility.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_npcs,created_by_llm_step,TEXT,yes,,,logical FK to party_llm_steps(id),LLM provenance.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_npcs,created_at_game_time,TEXT,yes,,,,Game-time stamp.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_npcs,updated_at_game_time,TEXT,yes,,,,Game-time stamp.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_items,id,TEXT,no,PK,,,Stable technical identifier; code may use deterministic IDs or generated IDs.,technical key
+party_items,party_id,TEXT,no,FK,party_state(id),,Party scope; every mutable row belongs to one saved party.,party DB separation
+party_items,created_at,TIMESTAMPTZ,no,,,DEFAULT now(),"Real system timestamp for audit, not game time.",technical audit
+party_items,updated_at,TIMESTAMPTZ,no,,,DEFAULT now(),"Real system timestamp for audit, not game time.",technical audit
+party_items,canonical_item_template_id,TEXT,yes,,,logical FK to world_base.item_templates(id),Template if any.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_items,item_type,TEXT,yes,,,,Item type/category.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_items,title,TEXT,yes,,,,Visible or technical title.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_items,is_container,BOOLEAN,no,,,DEFAULT false,Container flag.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_items,container_item_id,TEXT,yes,FK,party_items(id),,Parent container item if inside.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_items,owner_type,TEXT,yes,,,,player_character/npc/place/unknown/disputed.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_items,owner_id,TEXT,yes,,,,Owner row ID depending on type.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_items,holder_type,TEXT,yes,,,,Who/what physically holds it.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_items,holder_id,TEXT,yes,,,,Holder row ID depending on type.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_items,place_id,TEXT,yes,FK,party_places(id),,Located at place if not carried.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_items,location_id,TEXT,yes,FK,party_locations(id),,Located at location.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_items,minilocation_id,TEXT,yes,FK,party_minilocations(id),,Located at minilocation.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_items,anchor_id,TEXT,yes,FK,party_scene_anchors(id),,Associated scene anchor.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_items,materialization_reason,TEXT,no,,,,Causal reason for existing in party state.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_items,visibility_state,TEXT,no,,,visibility_state,Visible/hidden/known/suspected.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_items,physical_state,JSONB,no,,,DEFAULT {},"Condition, mass, size, material, marks.",read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_items,ownership_state,JSONB,no,,,DEFAULT {},Owner/holder/right/dispute.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_items,access_state,JSONB,no,,,DEFAULT {},"Can be taken, opened, used.",read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_items,risk_state,JSONB,no,,,DEFAULT {},Theft/legal/social/witness risk.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_items,current_state,JSONB,no,,,DEFAULT {},Mutable item state.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_items,hidden_state,JSONB,no,,,DEFAULT {},Hidden item facts; not sent to prose unless visible.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_items,created_by_llm_step,TEXT,yes,,,logical FK to party_llm_steps(id),LLM provenance.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_items,created_at_game_time,TEXT,yes,,,,Game-time stamp.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_items,updated_at_game_time,TEXT,yes,,,,Game-time stamp.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_inventory_entries,id,TEXT,no,PK,,,Stable technical identifier; code may use deterministic IDs or generated IDs.,technical key
+party_inventory_entries,party_id,TEXT,no,FK,party_state(id),,Party scope; every mutable row belongs to one saved party.,party DB separation
+party_inventory_entries,created_at,TIMESTAMPTZ,no,,,DEFAULT now(),"Real system timestamp for audit, not game time.",technical audit
+party_inventory_entries,updated_at,TIMESTAMPTZ,no,,,DEFAULT now(),"Real system timestamp for audit, not game time.",technical audit
+party_inventory_entries,item_id,TEXT,no,FK,party_items(id),,Item.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_inventory_entries,holder_type,TEXT,no,,,,player_character/npc/container/place.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_inventory_entries,holder_id,TEXT,no,,,,Holder ID.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_inventory_entries,location_on_holder,TEXT,yes,,,,"In hand, belt, bag, deep bag, etc.",read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_inventory_entries,quick_access,TEXT,yes,,,,Immediate/short action/needs search.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_inventory_entries,is_equipped,BOOLEAN,no,,,DEFAULT false,Equipped/held.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_inventory_entries,visible_to_character,BOOLEAN,no,,,DEFAULT false,Whether player character can perceive it.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_inventory_entries,started_at_game_time,TEXT,yes,,,,When item entered inventory.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_inventory_entries,ended_at_game_time,TEXT,yes,,,,When removed if historical record retained.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_events,id,TEXT,no,PK,,,Stable technical identifier; code may use deterministic IDs or generated IDs.,technical key
+party_events,party_id,TEXT,no,FK,party_state(id),,Party scope; every mutable row belongs to one saved party.,party DB separation
+party_events,created_at,TIMESTAMPTZ,no,,,DEFAULT now(),"Real system timestamp for audit, not game time.",technical audit
+party_events,updated_at,TIMESTAMPTZ,no,,,DEFAULT now(),"Real system timestamp for audit, not game time.",technical audit
+party_events,canonical_event_id,TEXT,yes,,,logical FK to world_base.historical_events(id),Canonical event if any.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_events,event_type,TEXT,yes,,,,Historical/local/deferred/body/road/item/social/etc.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_events,status,TEXT,no,,,party_event_status,Lifecycle of event.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_events,visibility_state,TEXT,no,,,visibility_state,Whether character/player can perceive it.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_events,title,TEXT,yes,,,,Technical or visible title.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_events,cause,TEXT,no,,,,Why event exists.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_events,trigger_condition,TEXT,yes,,,,When/how it activates.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_events,scheduled_game_day,INTEGER,yes,,,,Game day for timer if applicable.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_events,scheduled_minute_of_day,INTEGER,yes,,,CHECK 0-1439,Minute of day if applicable.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_events,current_phase,TEXT,yes,,,,Phase label for historical/local event.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_events,visible_state,JSONB,no,,,DEFAULT {},What can be shown.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_events,hidden_state,JSONB,no,,,DEFAULT {},Hidden causes/processes.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_events,affected_entities,JSONB,no,,,DEFAULT {},"Nodes, NPCs, items, prices, roads affected.",read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_events,consequences_state,JSONB,no,,,DEFAULT {},Applied or pending consequences.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_events,created_by_llm_step,TEXT,yes,,,logical FK to party_llm_steps(id),LLM provenance.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_events,created_at_game_time,TEXT,yes,,,,Game-time stamp.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_events,updated_at_game_time,TEXT,yes,,,,Game-time stamp.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_turns,id,TEXT,no,PK,,,Stable technical identifier; code may use deterministic IDs or generated IDs.,technical key
+party_turns,party_id,TEXT,no,FK,party_state(id),,Party scope; every mutable row belongs to one saved party.,party DB separation
+party_turns,created_at,TIMESTAMPTZ,no,,,DEFAULT now(),"Real system timestamp for audit, not game time.",technical audit
+party_turns,updated_at,TIMESTAMPTZ,no,,,DEFAULT now(),"Real system timestamp for audit, not game time.",technical audit
+party_turns,turn_index,INTEGER,no,,,CHECK >=0,Sequential turn number.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_turns,player_input,TEXT,no,,,,Raw player action/request.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_turns,intent_summary,TEXT,yes,,,,Structured intent summary.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_turns,started_at_game_time,TEXT,no,,,,Before action.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_turns,ended_at_game_time,TEXT,yes,,,,After action.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_turns,elapsed_minutes,NUMERIC,yes,,,,Time advanced.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_turns,resolution_state,JSONB,no,,,DEFAULT {},"Checks, consequences, applied changes.",read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_turns,visible_result,TEXT,yes,,,,Player-facing turn result.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_turns,hidden_updates,JSONB,no,,,DEFAULT {},Hidden changes not shown directly.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_turns,llm_step_id,TEXT,yes,,,logical FK to party_llm_steps(id),Main LLM step.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_turns,audit_status,TEXT,yes,,,,Accepted/needs repair/etc.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_journal_entries,id,TEXT,no,PK,,,Stable technical identifier; code may use deterministic IDs or generated IDs.,technical key
+party_journal_entries,party_id,TEXT,no,FK,party_state(id),,Party scope; every mutable row belongs to one saved party.,party DB separation
+party_journal_entries,created_at,TIMESTAMPTZ,no,,,DEFAULT now(),"Real system timestamp for audit, not game time.",technical audit
+party_journal_entries,updated_at,TIMESTAMPTZ,no,,,DEFAULT now(),"Real system timestamp for audit, not game time.",technical audit
+party_journal_entries,turn_id,TEXT,yes,FK,party_turns(id),,Turn source.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_journal_entries,character_id,TEXT,yes,FK,party_player_characters(id),,Who knows/remembers it.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_journal_entries,entry_type,TEXT,no,,,,event/memory/rumor/obligation/place/person/item/route.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_journal_entries,visibility_state,TEXT,no,,,visibility_state,Journal visibility.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_journal_entries,truth_status,TEXT,yes,,,,fact/rumor/unknown/false_belief if known to system.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_journal_entries,title,TEXT,yes,,,,Entry title.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_journal_entries,body,TEXT,no,,,,Text stored for journal.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_journal_entries,linked_entities,JSONB,no,,,DEFAULT {},Related nodes/NPC/items/events.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_journal_entries,created_at_game_time,TEXT,no,,,,Game-time stamp.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_llm_steps,id,TEXT,no,PK,,,Stable ID.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_llm_steps,party_id,TEXT,no,FK,party_state(id),,Party scope.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_llm_steps,step_type,TEXT,no,,,,frame/place/npc/item/turn/visibility/prose/memory/repair/etc.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_llm_steps,status,TEXT,no,,,llm_step_status,Processing status.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_llm_steps,input_hash,TEXT,yes,,,,Hash/pointer to prompt input.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_llm_steps,output_hash,TEXT,yes,,,,Hash/pointer to model output.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_llm_steps,safe_visible_output,JSONB,no,,,DEFAULT {},Sanitized visible package if relevant.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_llm_steps,structured_output,JSONB,no,,,DEFAULT {},Accepted structured data.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_llm_steps,validation_errors,JSONB,no,,,DEFAULT [],Validation/repair issues.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_llm_steps,parent_step_id,TEXT,yes,FK,party_llm_steps(id),,Repair parent.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_llm_steps,created_at_game_time,TEXT,yes,,,,Game-time stamp.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_llm_steps,created_at,TIMESTAMPTZ,no,,,DEFAULT now(),Real timestamp.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_llm_steps,updated_at,TIMESTAMPTZ,no,,,DEFAULT now(),Real timestamp.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_validation_issues,id,TEXT,no,PK,,,Stable technical identifier; code may use deterministic IDs or generated IDs.,technical key
+party_validation_issues,party_id,TEXT,no,FK,party_state(id),,Party scope; every mutable row belongs to one saved party.,party DB separation
+party_validation_issues,created_at,TIMESTAMPTZ,no,,,DEFAULT now(),"Real system timestamp for audit, not game time.",technical audit
+party_validation_issues,updated_at,TIMESTAMPTZ,no,,,DEFAULT now(),"Real system timestamp for audit, not game time.",technical audit
+party_validation_issues,llm_step_id,TEXT,yes,FK,party_llm_steps(id),,Related LLM step.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_validation_issues,turn_id,TEXT,yes,FK,party_turns(id),,Related turn.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_validation_issues,severity,TEXT,no,,,,info/warning/error/blocker.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_validation_issues,issue_type,TEXT,no,,,,schema/fk/visibility/history/item/npc/map/time.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_validation_issues,message,TEXT,no,,,,Human-readable issue.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_validation_issues,affected_table,TEXT,yes,,,,Table affected.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_validation_issues,affected_row_id,TEXT,yes,,,,Row affected.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_validation_issues,repair_instruction,TEXT,yes,,,,Instruction to LLM or developer.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_validation_issues,resolved_at,TIMESTAMPTZ,yes,,,,Resolution timestamp.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt
+party_validation_issues,resolution_note,TEXT,yes,,,,Resolution note.,read_only_database_and_graph_architecture.md §14; world_generation_and_turns.txt; movement_locations_regions.txt

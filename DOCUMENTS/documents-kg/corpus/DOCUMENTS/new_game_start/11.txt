@@ -1,0 +1,1685 @@
+# Этап 11. Генерация персонажа игрока
+
+## 1. Назначение этапа
+
+Генерация персонажа игрока — это LLM-этап, который создаёт первого полноценного субъекта партии: персонажа, через которого игрок будет воспринимать мир и действовать в нём.
+
+На этом этапе LLM создаёт не абстрактный “класс персонажа” и не набор удобных характеристик, а человека внутри уже выбранной исторической, региональной, социальной и пространственной рамки.
+
+Персонаж должен быть связан с:
+
+* выбранным годом;
+* сезоном;
+* временем суток;
+* регионом;
+* выбранным стартовым узлом;
+* разрешённым типом места;
+* социальными ролями региона;
+* занятиями региона;
+* предметными профилями;
+* property rules;
+* доступными знаниями;
+* телесным состоянием;
+* ближайшей причиной действовать.
+
+Короткая формула:
+
+```text
+historical_frame
++ selected_start_node
++ start_place_audit
++ regional social roles
++ occupations
++ item/container/property candidates
++ player request
+→ player_character_dossier
+→ player_character_audit
+→ player_character_game_profile
+```
+
+## 2. Главное правило этапа
+
+LLM создаёт смысл персонажа. Код не сочиняет биографию, статус, имущество, цели, связи или причины.
+
+Код:
+
+* передаёт утверждённый контекст;
+* передаёт candidate sets;
+* валидирует JSON;
+* проверяет ID, enum, диапазоны и ссылки;
+* сохраняет утверждённый результат;
+* возвращает результат на repair, если есть ошибка.
+
+LLM:
+
+* создаёт происхождение;
+* адаптирует заявку игрока к эпохе;
+* выбирает допустимый социальный статус из candidate set;
+* выбирает допустимое занятие из candidate set;
+* задаёт тело, здоровье, сытость, бодрость;
+* задаёт характеристики и навыки;
+* задаёт знания персонажа;
+* задаёт память, цели, страхи и ограничения;
+* выбирает стартовое имущество только из допустимых профилей;
+* объясняет, почему персонаж находится в выбранном месте;
+* упаковывает результат в игровой профиль.
+
+LLM не имеет права:
+
+* менять выбранный стартовый узел;
+* менять год, регион, сезон или время;
+* создавать стартовую G5-сцену;
+* создавать NPC сверх допустимых NPC-кандидатов;
+* создавать предметы вне item_profile_candidate_set;
+* давать персонажу знания игрока;
+* делать персонажа богатым, вооружённым, свободным или влиятельным без цены и риска;
+* создавать современное мышление, права, речь или цели без исторической адаптации.
+
+## 3. Место этапа в pipeline
+
+```text
+1. Заявка игрока
+2. Нормализация заявки
+3. Выбор исторической рамки
+4. Загрузка регионального контекста
+5. Подбор стартовых G1–G4 кандидатов
+6. Подбор place templates
+7. Подбор NPC-кандидатов
+8. Подбор предметных профилей
+9. Выбор стартового узла
+10. Аудит выбора стартового места
+11. Генерация персонажа игрока
+12. Аудит персонажа
+13. Материализация стартовой G5-сцены
+```
+
+Этап 11 запускается только после успешного `start_place_audit.pass=true`.
+
+## 4. Вход этапа
+
+```json
+{
+  "version": 1,
+  "schema": "player_character_generator_input",
+  "request_id": "string",
+
+  "normalized_request": {
+    "version": 1,
+    "schema": "new_game_normalized_request"
+  },
+
+  "historical_frame": {
+    "version": 1,
+    "schema": "historical_frame",
+    "region": {
+      "region_id": "string"
+    },
+    "year": {
+      "value": 0
+    },
+    "calendar": {
+      "season": "spring | summer | autumn | winter"
+    },
+    "clock": {
+      "day": 1,
+      "hour": 0,
+      "minute": 0,
+      "time_of_day": "morning | day | evening | night | deep_night",
+      "light_profile": "dark | dim | daylight | twilight"
+    }
+  },
+
+  "regional_context_package": {
+    "version": 1,
+    "schema": "regional_context_package",
+    "social_context": {},
+    "occupation_context": {},
+    "knowledge_context": {},
+    "property_context": {},
+    "item_context": {}
+  },
+
+  "selected_start_node": {
+    "version": 1,
+    "schema": "selected_start_node"
+  },
+
+  "start_place_audit": {
+    "version": 1,
+    "schema": "start_place_audit",
+    "pass": true
+  },
+
+  "npc_candidate_set": {
+    "version": 1,
+    "schema": "npc_candidate_set",
+    "npc_candidates": []
+  },
+
+  "item_profile_candidate_set": {
+    "version": 1,
+    "schema": "item_profile_candidate_set",
+    "item_profile_candidates": [],
+    "container_profile_candidates": [],
+    "property_rule_candidates": []
+  },
+
+  "character_generation_policy": {
+    "allow_random_if_unspecified": true,
+    "preserve_player_intent_core": true,
+    "adapt_impossible_request_to_historical_frame": true,
+    "require_social_role_from_candidate_set": true,
+    "require_occupation_from_candidate_set": true,
+    "require_inventory_from_item_profile_candidates": true,
+    "require_property_rules_for_inventory": true,
+    "require_reason_for_start_place": true,
+    "require_body_state": true,
+    "require_character_knowledge_limits": true,
+    "require_sources": true,
+    "do_not_create_intro_prose": true,
+    "do_not_materialize_g5": true,
+    "do_not_commit_to_party_db_yet": true
+  }
+}
+```
+
+## 5. Выход этапа
+
+```json
+{
+  "version": 1,
+  "schema": "player_character_dossier",
+  "request_id": "string",
+
+  "generation_status": "generated | blocked | requires_repair",
+
+  "identity": {},
+  "social_status": {},
+  "origin": {},
+  "body": {},
+  "attributes": {},
+  "skills": {},
+  "knowledge": {},
+  "memory": {},
+  "goals": {},
+  "inventory": {},
+  "property_and_access": {},
+  "relations": {},
+  "start_place_connection": {},
+  "constraints_and_risks": {},
+
+  "selected_candidate_refs": {
+    "social_role_id": "string",
+    "occupation_id": "string | null",
+    "npc_candidate_ids_used_for_relations": [],
+    "item_profile_candidate_ids_used": [],
+    "container_profile_candidate_ids_used": [],
+    "property_rule_candidate_ids_used": []
+  },
+
+  "source_trace": [],
+
+  "audit_self_check": {
+    "pass": true,
+    "concerns": [],
+    "evidence": []
+  }
+}
+```
+
+## 6. Что LLM создаёт на этом этапе
+
+LLM создаёт следующие смысловые блоки:
+
+1. личность;
+2. происхождение;
+3. социальный статус;
+4. занятие или роль;
+5. тело;
+6. состояния;
+7. характеристики;
+8. навыки;
+9. знания персонажа;
+10. память;
+11. цели;
+12. страхи;
+13. обязанности;
+14. стартовую причину;
+15. стартовый инвентарь;
+16. имущество не при персонаже;
+17. доступные, но не принадлежащие ресурсы;
+18. ближайшие связи;
+19. ограничения;
+20. риски.
+
+LLM не создаёт:
+
+* стартовую G5-сцену;
+* visible context;
+* narrator prose;
+* новых регионов;
+* новых мест;
+* новых place templates;
+* новых item profiles;
+* новых property rules;
+* новых социальных ролей;
+* NPC вне candidate set;
+* предметы вне item candidate set.
+
+## 7. Адаптация заявки игрока
+
+Заявка игрока является намерением, а не истиной.
+
+Если игрок написал:
+
+```text
+хочу быть богатым купцом
+```
+
+LLM должна проверить:
+
+* есть ли допустимая социальная роль;
+* есть ли допустимое занятие;
+* совместимо ли это со стартовым местом;
+* допустимо ли стартовое имущество;
+* есть ли социальная цена;
+* есть ли риски;
+* не ломает ли это историческую рамку.
+
+Возможная адаптация:
+
+```text
+не самостоятельный богатый купец, а приказчик, младший родственник торгового дома, должник, сопровождающий товар, зависимый работник, человек с чужим поручением или временным доступом к товару
+```
+
+Если игрок написал:
+
+```text
+случайный персонаж
+```
+
+LLM выбирает допустимый статус и занятие из candidate set, а не из общих знаний.
+
+Если игрок написал:
+
+```text
+хочу быть воином
+```
+
+LLM не обязана давать ему дорогую броню, коня и высокий боевой статус. Она может адаптировать запрос в:
+
+```text
+сторож, сопровождающий, бывший ратник, младший дружинный человек, охотник с оружием, зависимый служилый, человек с чужим оружием и риском
+```
+
+## 8. Identity
+
+Блок `identity` определяет, как персонажа можно называть и воспринимать.
+
+```json
+{
+  "identity": {
+    "character_id": "player_character_001",
+    "display_name": "string",
+    "name_status": "known | partial | nickname_only | unknown",
+    "gender": "male | female | unknown | not_fixed",
+    "age_band": "child | adolescent | young_adult | adult | mature | old",
+    "approximate_age": "string",
+    "short_description": "string",
+    "public_identity": "string",
+    "private_identity": "string | null"
+  }
+}
+```
+
+Правила:
+
+* имя должно соответствовать региональным name pools, если они доступны;
+* если имя не выбирается, это должно быть оформлено как `unknown` или `nickname_only`;
+* возраст должен быть совместим с навыками, телом и статусом;
+* публичная идентичность может отличаться от частной, но это должно иметь причину.
+
+## 9. Social status
+
+Социальный статус выбирается из региональных социальных ролей.
+
+```json
+{
+  "social_status": {
+    "social_role_id": "string",
+    "status_label": "string",
+    "freedom_status": "free | dependent | enslaved | bound | outsider | disputed | unknown",
+    "wealth_band": "destitute | poor | modest | comfortable | wealthy | controlled_wealth",
+    "local_belonging": "local | near_local | outsider | foreigner | unknown",
+    "rights": [],
+    "obligations": [],
+    "protector_or_guarantor": "string | null",
+    "authority_over_character": [],
+    "who_can_punish_character": [],
+    "social_risks": [],
+    "why_status_is_allowed": []
+  }
+}
+```
+
+Статус должен отвечать на вопросы:
+
+* свободен ли персонаж;
+* имеет ли он право быть в стартовом месте;
+* имеет ли право носить своё имущество;
+* кто может его наказать;
+* кто может за него поручиться;
+* как на него смотрят местные;
+* что для него опасно социально.
+
+Статус не является декорацией. Он влияет на доступ, доверие, торговлю, ночлег, право собственности, риск обвинений и реакцию NPC.
+
+## 10. Origin
+
+Происхождение объясняет, почему персонаж стал именно таким.
+
+```json
+{
+  "origin": {
+    "birth_or_home_region": "string | null",
+    "home_status": "has_home | no_home | away_from_home | unknown",
+    "family_status": "family_nearby | family_elsewhere | orphan | separated | unknown",
+    "cultural_environment": "string",
+    "language_or_speech_notes": "string | null",
+    "usual_life": "string",
+    "how_left_home_or_usual_place": "string",
+    "why_origin_supports_current_status": "string",
+    "unresolved_origin_unknowns": []
+  }
+}
+```
+
+Если происхождение неизвестно, это фиксируется как неизвестность, а не как пустота.
+
+Допустимые причины разрыва с домом:
+
+* сиротство;
+* служба;
+* долг;
+* бедствие;
+* плен;
+* бегство;
+* наказание;
+* дорога;
+* родственная обязанность;
+* торговое поручение;
+* сезонная работа;
+* болезнь;
+* потеря памяти;
+* утрата имущества.
+
+## 11. Occupation
+
+Занятие выбирается из регионального `occupation_context`.
+
+```json
+{
+  "occupation": {
+    "occupation_id": "string | null",
+    "occupation_label": "string",
+    "occupation_group": "string",
+    "skill_basis": [],
+    "typical_tools_or_items": [],
+    "seasonal_notes": [],
+    "why_occupation_fits_start_place": "string",
+    "why_occupation_fits_social_status": "string"
+  }
+}
+```
+
+Если персонаж без устойчивой профессии, это тоже должно быть оформлено:
+
+```json
+{
+  "occupation_id": null,
+  "occupation_label": "no_stable_occupation",
+  "occupation_group": "marginal | dependent | travel | survival",
+  "why_no_stable_occupation": "string"
+}
+```
+
+## 12. Body and state
+
+Тело и состояние разделяются на механический и прозаический слой.
+
+```json
+{
+  "body": {
+    "age_band": "adult",
+    "build": "string",
+    "visible_marks": [],
+    "clothing_summary": "string",
+    "health": 100,
+    "satiety": 100,
+    "vigor": 100,
+    "active_conditions": [],
+    "condition_causes": [],
+    "mechanical_state_modifiers": [],
+    "body_prose": "string"
+  }
+}
+```
+
+Правила:
+
+* `health`, `satiety`, `vigor` всегда в диапазоне `0–100`;
+* состояние ниже `50` должно иметь причину;
+* состояние `0` является критическим;
+* активные состояния не должны быть абстрактными: нужна причина и влияние;
+* холод, голод, болезнь, рана, усталость, страх, промокание, опьянение и связанность должны фиксироваться отдельно;
+* проза тела не должна повторять цифры, а должна описывать ощущение.
+
+## 13. Attributes
+
+Используются шесть характеристик:
+
+```json
+{
+  "attributes": {
+    "strength": 10,
+    "agility": 10,
+    "endurance": 10,
+    "reason": 10,
+    "attention": 10,
+    "influence": 10,
+    "attribute_array_used": [14, 13, 12, 10, 9, 8],
+    "attribute_rationale": {}
+  }
+}
+```
+
+Правила баланса:
+
+```text
+обычный диапазон: 3–18
+большинство людей: 8–13
+крепкие и опытные: 14–15
+редкие выдающиеся: 16–18
+обычный стартовый массив: 14, 13, 12, 10, 9, 8
+```
+
+Ограничения:
+
+1. не больше двух характеристик 14+;
+2. 16+ только при особом основании;
+3. при 15+ нужна слабая сторона 8 или ниже;
+4. 17–18 не выдаются при обычной генерации;
+5. нельзя делать персонажа универсально сильным;
+6. каждая высокая характеристика должна вытекать из биографии, тела или занятий.
+
+## 14. Skills
+
+Навыки должны быть следом биографии.
+
+```json
+{
+  "skills": {
+    "athletics": {
+      "bonus": 0,
+      "basis": "string"
+    },
+    "stealth": {
+      "bonus": 0,
+      "basis": "string"
+    },
+    "melee": {
+      "bonus": 0,
+      "basis": "string"
+    },
+    "ranged": {
+      "bonus": 0,
+      "basis": "string"
+    },
+    "craft": {
+      "bonus": 0,
+      "basis": "string"
+    },
+    "household": {
+      "bonus": 0,
+      "basis": "string"
+    },
+    "survival": {
+      "bonus": 0,
+      "basis": "string"
+    },
+    "riding": {
+      "bonus": 0,
+      "basis": "string"
+    },
+    "healing": {
+      "bonus": 0,
+      "basis": "string"
+    },
+    "observation": {
+      "bonus": 0,
+      "basis": "string"
+    },
+    "communication": {
+      "bonus": 0,
+      "basis": "string"
+    },
+    "custom_and_law": {
+      "bonus": 0,
+      "basis": "string"
+    }
+  }
+}
+```
+
+Уровни:
+
+```text
++0 — нет опыта
++1 — знаком
++2 — умелый
++3 — опытный
++4 — мастер
+```
+
+Ограничения:
+
+1. не больше одного навыка +4;
+2. +4 требует биографического основания;
+3. не больше двух боевых навыков выше +1 без военной или охотничьей биографии;
+4. высокий навык должен вытекать из происхождения, занятия и среды;
+5. если навык не связан с жизнью персонажа, максимум +1.
+
+## 15. Knowledge
+
+Знания персонажа отделяются от знаний игрока.
+
+```json
+{
+  "knowledge": {
+    "known_facts": [],
+    "known_places": [],
+    "known_routes": [],
+    "known_people": [],
+    "known_authorities": [],
+    "rumors": [],
+    "mistaken_beliefs": [],
+    "unknown_but_player_may_know": [],
+    "forbidden_knowledge": [],
+    "knowledge_basis": []
+  }
+}
+```
+
+Источники знания персонажа:
+
+* личный опыт;
+* место жизни;
+* социальный статус;
+* занятие;
+* слухи;
+* приказы;
+* рассказы очевидцев;
+* торговые разговоры;
+* религиозные/военные/административные известия;
+* видимые последствия событий.
+
+Запрещено:
+
+* давать точное знание будущего;
+* давать полную карту;
+* давать скрытые причины событий;
+* давать точные маршруты без основания;
+* давать знание игрока как знание персонажа.
+
+## 16. Memory
+
+Память нужна для причин, навыков, страхов, долгов и связей.
+
+```json
+{
+  "memory": {
+    "key_memories": [],
+    "debts": [],
+    "obligations": [],
+    "fears": [],
+    "shames": [],
+    "loyalties": [],
+    "unresolved_unknowns": [],
+    "memory_limits": []
+  }
+}
+```
+
+Память должна объяснять:
+
+* почему персонаж здесь;
+* почему умеет свои навыки;
+* почему боится или хочет чего-то;
+* откуда вещи;
+* кому должен;
+* почему не может просто уйти;
+* какие факты могут иметь последствия.
+
+Память не должна превращаться в заранее написанную сюжетную рельсу.
+
+## 17. Goals
+
+У персонажа должна быть причина действовать.
+
+```json
+{
+  "goals": {
+    "immediate_need": "string",
+    "long_term_desire": "string",
+    "fear": "string",
+    "obligation": "string | null",
+    "reason_to_act_now": "string",
+    "consequence_of_inaction": "string",
+    "goal_visibility_to_player": "known | partly_known | implicit"
+  }
+}
+```
+
+Ближайшая нужда должна быть сценически применимой:
+
+* еда;
+* ночлег;
+* безопасность;
+* лекарь;
+* встреча;
+* долг;
+* пропавшая вещь;
+* приказ;
+* дорога;
+* поручение;
+* бегство;
+* объяснение;
+* защита;
+* возвращение чужого имущества;
+* риск бездействия.
+
+## 18. Inventory
+
+Стартовый инвентарь создаётся только из `item_profile_candidate_set`.
+
+```json
+{
+  "inventory": {
+    "carried_items": [
+      {
+        "character_item_id": "pc_item_001",
+        "item_profile_candidate_id": "item_prof_cand_001",
+        "item_profile_id": "item_profile_001",
+        "title": "string",
+        "item_kind": "string",
+        "count": 1,
+        "weight": 0,
+        "size_band": "string",
+        "condition": "string",
+        "carried_where": "hands | belt | body | pouch | bag | container | strapped | other",
+        "quick_access": "immediate | quick | short_action | slow | inaccessible",
+        "owner_model": "owned | borrowed | entrusted | stolen | disputed | service | unknown",
+        "holder": "player_character",
+        "use": "string",
+        "movement_hindrance": "none | low | medium | high",
+        "hands_occupied": 0,
+        "social_or_legal_risk": "none | low | medium | high | severe",
+        "property_rule_candidate_id": "string",
+        "why_character_has_it": "string"
+      }
+    ],
+    "total_weight": 0,
+    "load_category": "light | medium | heavy | extreme",
+    "occupied_hands": 0,
+    "load_effects": [],
+    "inventory_limits": []
+  }
+}
+```
+
+Правила:
+
+* предмет при персонаже должен быть физически при нём;
+* вещь в другом месте — имущество, а не инвентарь;
+* предмет должен иметь владельца или модель владения;
+* чужая вещь может быть при персонаже, но даёт риск;
+* дорогой, редкий, опасный или служебный предмет требует причины;
+* вес считается вместе с контейнерами;
+* быстрый доступ зависит от положения предмета;
+* инвентарь не должен быть универсальным набором решений.
+
+## 19. Property and access
+
+```json
+{
+  "property_and_access": {
+    "property_not_carried": [],
+    "borrowed_or_entrusted_items": [],
+    "disputed_items": [],
+    "accessible_resources": [],
+    "resources_not_currently_accessible": [],
+    "obligations_to_return": [],
+    "property_risks": []
+  }
+}
+```
+
+Разделение:
+
+```text
+инвентарь = при персонаже
+имущество = принадлежит или связано, но не при персонаже
+доступ = можно временно использовать без владения
+```
+
+Физически нести предмет не значит владеть им.
+
+## 20. Relations
+
+Связи персонажа не обязаны создавать полных NPC, но должны иметь уровень детализации.
+
+```json
+{
+  "relations": {
+    "known_npcs": [
+      {
+        "relation_id": "rel_001",
+        "npc_candidate_id": "npc_cand_001 | null",
+        "relation_type": "kin | patron | creditor | debtor | enemy | helper | witness | employer | authority | companion | unknown",
+        "detail_level": "background | scene | key_seed",
+        "what_they_expect": "string",
+        "what_character_expects": "string",
+        "risk_or_consequence": "string",
+        "must_materialize_later": false
+      }
+    ],
+    "relation_limits": []
+  }
+}
+```
+
+Если связь должна помнить персонажа и влиять на будущие сцены, она должна быть связана с `key_seed` или будущей материализацией ключевого NPC.
+
+Если связь нужна только для общего прошлого, достаточно background relation.
+
+## 21. Start place connection
+
+Главный вопрос:
+
+```text
+почему персонаж здесь именно сейчас?
+```
+
+```json
+{
+  "start_place_connection": {
+    "selected_candidate_id": "string",
+    "selected_node_id": "string",
+    "selected_place_template_id": "string",
+    "reason_here": "string",
+    "right_to_be_here": "yes | no | disputed | temporary | hidden | unknown",
+    "arrival_context": "local | working_here | passing_through | brought_here | seeking_help | fleeing | ordered_here | lost | unknown",
+    "last_route_id": "string | null",
+    "what_character_knows_about_place": [],
+    "what_character_does_not_know_about_place": [],
+    "why_cannot_ignore_situation": "string"
+  }
+}
+```
+
+Стартовая причина должна быть совместима с:
+
+* выбранным местом;
+* временем суток;
+* сезоном;
+* социальным статусом;
+* вещами при персонаже;
+* ближайшими целями;
+* знаниями персонажа.
+
+## 22. Constraints and risks
+
+```json
+{
+  "constraints_and_risks": {
+    "social_constraints": [],
+    "legal_constraints": [],
+    "property_constraints": [],
+    "health_constraints": [],
+    "knowledge_constraints": [],
+    "movement_constraints": [],
+    "inventory_constraints": [],
+    "reputation_constraints": [],
+    "immediate_risks": [],
+    "long_term_risks": []
+  }
+}
+```
+
+Этот блок нужен, чтобы игра давила на персонажа не “сюжетом”, а последствиями статуса, тела, вещей, долгов, знаний и места.
+
+## 23. LLM-работа на этапе
+
+На этом этапе LLM обязательна.
+
+Причина: персонаж является новой смысловой сущностью мира. Код не имеет права создать его процедурно.
+
+LLM-режимы этапа:
+
+1. `PlayerCharacterDossierGenerator` — создаёт смысловой профиль персонажа.
+2. `PlayerCharacterDossierAuditor` — проверяет историчность, совместимость, ограничения и отсутствие лишних сущностей.
+3. `PlayerCharacterGameProfileShaper` — упаковывает утверждённый dossier в строгий игровой JSON.
+4. `PlayerCharacterFormatRepairer` — исправляет только JSON-формат.
+5. `PlayerCharacterSemanticRepairer` — чинит смысловые ошибки, сохраняя ядро заявки и выбранную рамку.
+
+## 24. LLM-параметры
+
+### 24.1. `PlayerCharacterDossierGenerator`
+
+Назначение: создать смысловой профиль персонажа.
+
+```json
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 9000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 70000,
+    "hard_input_limit_tokens": 180000,
+    "reserve_output_tokens": 9000
+  }
+}
+```
+
+Используется `deepseek-v4-pro` с thinking, потому что этап требует смысловой сборки происхождения, статуса, тела, навыков, вещей, знаний, целей и связи со стартовым местом. Thinking mode в DeepSeek включается через `thinking: {"type":"enabled"}`, а усилие — через `reasoning_effort`; в thinking mode параметры `temperature`, `top_p`, `presence_penalty` и `frequency_penalty` не поддерживаются как управляющие.
+
+### 24.2. `PlayerCharacterDossierAuditor`
+
+Назначение: смысловой аудит персонажа.
+
+```json
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 7000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 80000,
+    "hard_input_limit_tokens": 200000,
+    "reserve_output_tokens": 7000
+  }
+}
+```
+
+### 24.3. `PlayerCharacterGameProfileShaper`
+
+Назначение: превратить утверждённый dossier в строгий игровой JSON без изменения смысла.
+
+```json
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-flash",
+  "thinking": {
+    "type": "disabled"
+  },
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "max_tokens": 8000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 60000,
+    "hard_input_limit_tokens": 160000,
+    "reserve_output_tokens": 8000
+  }
+}
+```
+
+### 24.4. `PlayerCharacterFormatRepairer`
+
+Назначение: исправить только JSON-формат.
+
+```json
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-flash",
+  "thinking": {
+    "type": "disabled"
+  },
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "max_tokens": 4000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 30000,
+    "hard_input_limit_tokens": 90000,
+    "reserve_output_tokens": 4000
+  }
+}
+```
+
+Для JSON-режима DeepSeek нужно задать `response_format: {"type":"json_object"}`, включить слово `json` в prompt, дать пример формата и выставить достаточный `max_tokens`, чтобы ответ не был обрезан.
+
+### 24.5. `PlayerCharacterSemanticRepairer`
+
+Назначение: исправить смысловые ошибки после аудита.
+
+```json
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": 8000,
+  "response_format": {
+    "type": "json_object"
+  },
+  "context_budget": {
+    "target_input_tokens": 80000,
+    "hard_input_limit_tokens": 200000,
+    "reserve_output_tokens": 8000
+  }
+}
+```
+
+Актуальные модели DeepSeek API: `deepseek-v4-flash` и `deepseek-v4-pro`; старые имена `deepseek-chat` и `deepseek-reasoner` объявлены как совместимые алиасы flash non-thinking/thinking и подлежат deprecation 2026-07-24.
+
+## 25. Prompt: PlayerCharacterDossierGenerator
+
+```md
+# Роль
+
+Ты PlayerCharacterDossierGenerator для исторической текстовой RPG.
+
+# Задача
+
+Создай персонажа игрока внутри уже выбранной исторической рамки и стартового места.
+
+# Главное правило
+
+Ты создаёшь только персонажа игрока.
+Ты не создаёшь стартовую G5-сцену.
+Ты не создаёшь visible_scene.
+Ты не пишешь intro_prose.
+Ты не меняешь selected_start_node.
+Ты не меняешь historical_frame.
+Ты не создаёшь NPC вне npc_candidate_set.
+Ты не создаёшь предметы вне item_profile_candidate_set.
+Ты не создаёшь новые социальные роли, профессии, item profiles или property rules.
+
+# Заявка игрока
+
+normalized_request — это желание игрока, а не готовая истина.
+Сохрани ядро заявки, но адаптируй невозможное, современное, слишком сильное, слишком богатое или плохо связанное со стартовым местом.
+
+# Обязательные ограничения
+
+1. Социальная роль должна быть выбрана из allowed social roles.
+2. Занятие должно быть выбрано из allowed occupations или явно null с причиной.
+3. Стартовые вещи должны ссылаться на item_profile_candidate_set.
+4. Каждый предмет при персонаже должен иметь вес, состояние, где несётся, доступность, владельца, держателя, пользу и риск.
+5. Знания персонажа не равны знаниям игрока.
+6. Персонаж должен иметь причину быть в selected_start_node именно сейчас.
+7. Health/satiety/vigor должны быть 0–100.
+8. Характеристики должны соблюдать баланс.
+9. Навыки должны иметь биографическое основание.
+10. Дорогой, редкий, служебный или опасный предмет требует причины и риска.
+
+# Запрещено
+
+Не возвращай:
+- visible_scene
+- intro_prose
+- g5_anchor_id
+- minilocation_id
+- generated NPC outside npc_candidate_set
+- item outside item_profile_candidate_set
+- future historical knowledge
+- exact hidden world facts unavailable to character
+
+# Формат
+
+Верни только json.
+
+schema должно быть:
+"player_character_dossier"
+
+version должно быть:
+1
+```
+
+## 26. Prompt: PlayerCharacterDossierAuditor
+
+```md
+# Роль
+
+Ты PlayerCharacterDossierAuditor.
+
+# Задача
+
+Проверь player_character_dossier на историчность, совместимость с выбранным стартовым местом и правилами генерации.
+
+# Проверить
+
+1. Персонаж совместим с historical_frame.
+2. Персонаж совместим с selected_start_node.
+3. Статус выбран из regional social roles.
+4. Занятие выбрано из regional occupations или null обоснован.
+5. Происхождение объясняет статус, навыки и стартовую причину.
+6. Характеристики соблюдают баланс.
+7. Навыки имеют биографическое основание.
+8. Health/satiety/vigor в диапазоне 0–100.
+9. Состояния имеют причины.
+10. Инвентарь не смешан с имуществом вне доступа.
+11. Каждый предмет при персонаже имеет item_profile_candidate_id.
+12. Каждый предмет имеет owner/holder/access/risk.
+13. Дорогие/опасные вещи имеют причину.
+14. Знания персонажа не равны знаниям игрока.
+15. У персонажа есть причина действовать.
+16. Нет created NPC вне candidate set.
+17. Нет visible_scene.
+18. Нет intro_prose.
+19. Нет G5.
+20. source_trace не пустой.
+
+# Формат
+
+Верни только json:
+
+{
+  "version": 1,
+  "schema": "player_character_dossier_audit",
+  "pass": true,
+  "concerns": [],
+  "evidence": []
+}
+
+Если pass=false, concerns не должен быть пустым.
+evidence не должен быть пустым.
+```
+
+## 27. Prompt: PlayerCharacterGameProfileShaper
+
+```md
+# Роль
+
+Ты PlayerCharacterGameProfileShaper.
+
+# Задача
+
+Преобразуй утверждённый player_character_dossier в строгий игровой JSON player_character_game_profile.
+
+# Главное правило
+
+Не меняй смысл.
+Не добавляй новых фактов.
+Не добавляй новых предметов.
+Не добавляй новых NPC.
+Не меняй статус, происхождение, навыки, имущество, цель или стартовую причину.
+
+# Разрешено
+
+- нормализовать поля;
+- привести enum;
+- отделить inventory от property_and_access;
+- разложить состояние тела на mechanics/prose;
+- посчитать derived fields, если формула явно задана;
+- перенести unclear facts в unresolved_unknowns.
+
+# Запрещено
+
+- менять selected_start_node;
+- менять historical_frame;
+- создавать intro_prose;
+- создавать visible_scene;
+- создавать G5;
+- создавать item/NPC вне dossier.
+
+# Формат
+
+Верни только json.
+
+schema:
+"player_character_game_profile"
+
+version:
+1
+```
+
+## 28. Prompt: PlayerCharacterFormatRepairer
+
+```md
+# Роль
+
+Ты PlayerCharacterFormatRepairer.
+
+# Задача
+
+Исправь только формат JSON для player_character_dossier, audit или game_profile.
+
+# Главное правило
+
+Не меняй смысл.
+Не добавляй биографию.
+Не добавляй имущество.
+Не меняй характеристики.
+Не меняй навыки.
+Не меняй статус.
+Не создавай NPC, item, G5, visible_scene или intro_prose.
+
+# Разрешено
+
+- убрать markdown;
+- привести schema/version;
+- добавить отсутствующие служебные поля как null/[];
+- переименовать поля;
+- перенести свободный текст в notes;
+- удалить запрещённые downstream-поля.
+
+# Формат
+
+Верни только json.
+```
+
+## 29. Prompt: PlayerCharacterSemanticRepairer
+
+```md
+# Роль
+
+Ты PlayerCharacterSemanticRepairer.
+
+# Задача
+
+Исправь player_character_dossier по validationErrors и audit.concerns.
+
+# Главное правило
+
+Сохрани ядро заявки игрока, но исправь всё, что ломает историчность, стартовое место, социальный порядок, item profiles, property rules, характеристики, навыки, знания или состояние.
+
+# Источники
+
+Используй только:
+- validationErrors
+- audit.concerns
+- normalized_request
+- historical_frame
+- regional_context_package
+- selected_start_node
+- start_place_audit
+- npc_candidate_set
+- item_profile_candidate_set
+- исходный player_character_dossier
+
+# Запрещено
+
+- менять selected_start_node;
+- менять historical_frame;
+- создавать предмет вне item_profile_candidate_set;
+- создавать NPC вне npc_candidate_set;
+- писать intro_prose;
+- создавать G5;
+- давать знания игрока персонажу;
+- делать персонажа сильнее вместо исправления ограничения.
+
+# Формат
+
+Верни только json player_character_dossier.
+```
+
+## 30. Validation rules
+
+Код обязан проверить:
+
+1. `schema === "player_character_dossier"` или `player_character_game_profile`.
+2. `version === 1`.
+3. `generation_status` входит в enum.
+4. `social_role_id` существует в regional social roles.
+5. `occupation_id` существует в regional occupations или null обоснован.
+6. Персонаж совместим с selected_start_node.
+7. Персонаж совместим с historical_frame region/year/season/clock.
+8. Есть причина быть в стартовом месте.
+9. Есть immediate_need.
+10. Есть consequence_of_inaction.
+11. Health/satiety/vigor в диапазоне 0–100.
+12. Активные состояния имеют причины.
+13. Attributes в диапазоне 3–18.
+14. Attributes соблюдают баланс.
+15. Skill bonuses в диапазоне 0–4.
+16. Skill +4 не больше одного.
+17. Высокие навыки имеют basis.
+18. Боевые навыки выше +1 не превышают лимит без основания.
+19. Inventory items имеют item_profile_candidate_id.
+20. Inventory items имеют вес, состояние, расположение, доступность, владельца, держателя, пользу, риск.
+21. Inventory не содержит имущество вне доступа.
+22. Property_not_carried не используется как доступный inventory.
+23. Каждый property_rule_candidate_id существует.
+24. Каждый container_profile_candidate_id существует, если указан.
+25. Total weight рассчитан.
+26. Load category рассчитана.
+27. Занятые руки рассчитаны.
+28. Персонаж не знает будущих событий.
+29. Персонаж не знает скрытых фактов без основания.
+30. Relations ссылаются на npc_candidate_set или явно являются abstract background relation.
+31. Нет NPC вне candidate set.
+32. Нет item вне item_profile_candidate_set.
+33. Нет visible_scene.
+34. Нет intro_prose.
+35. Нет G5/minilocation/anchor.
+36. source_trace не пустой, если require_sources=true.
+37. `audit_self_check.evidence` не пустой.
+38. Если `audit_self_check.pass=false`, concerns не пустой.
+
+## 31. Error codes
+
+```text
+PLAYER_CHARACTER_INVALID_JSON
+PLAYER_CHARACTER_SCHEMA_MISMATCH
+PLAYER_CHARACTER_SOCIAL_ROLE_NOT_ALLOWED
+PLAYER_CHARACTER_OCCUPATION_NOT_ALLOWED
+PLAYER_CHARACTER_START_PLACE_CONFLICT
+PLAYER_CHARACTER_HISTORICAL_FRAME_CONFLICT
+PLAYER_CHARACTER_NO_REASON_HERE
+PLAYER_CHARACTER_NO_IMMEDIATE_NEED
+PLAYER_CHARACTER_STATE_OUT_OF_RANGE
+PLAYER_CHARACTER_STATE_WITHOUT_CAUSE
+PLAYER_CHARACTER_ATTRIBUTE_OUT_OF_RANGE
+PLAYER_CHARACTER_ATTRIBUTE_BALANCE_VIOLATION
+PLAYER_CHARACTER_SKILL_OUT_OF_RANGE
+PLAYER_CHARACTER_SKILL_WITHOUT_BASIS
+PLAYER_CHARACTER_TOO_MANY_HIGH_SKILLS
+PLAYER_CHARACTER_INVENTORY_ITEM_NOT_ALLOWED
+PLAYER_CHARACTER_INVENTORY_PROPERTY_CONFUSION
+PLAYER_CHARACTER_ITEM_MISSING_OWNER
+PLAYER_CHARACTER_ITEM_MISSING_WEIGHT
+PLAYER_CHARACTER_ITEM_MISSING_RISK
+PLAYER_CHARACTER_LOAD_NOT_CALCULATED
+PLAYER_CHARACTER_PLAYER_KNOWLEDGE_LEAK
+PLAYER_CHARACTER_FUTURE_KNOWLEDGE_LEAK
+PLAYER_CHARACTER_CREATED_NPC_OUTSIDE_CANDIDATES
+PLAYER_CHARACTER_CREATED_ITEM_OUTSIDE_CANDIDATES
+PLAYER_CHARACTER_CREATED_VISIBLE_SCENE
+PLAYER_CHARACTER_CREATED_INTRO_PROSE
+PLAYER_CHARACTER_CREATED_G5
+PLAYER_CHARACTER_SOURCE_MISSING
+PLAYER_CHARACTER_EMPTY_AUDIT_EVIDENCE
+```
+
+## 32. DB write на этом этапе
+
+До успешного аудита разрешено писать только:
+
+```text
+pipeline_step_status
+player_character_dossier_snapshot
+player_character_audit_result
+player_character_validation_issues
+player_character_repair_attempts
+source_trace_snapshot
+```
+
+После успешного аудита и game profile shaping разрешено готовить commit plan для:
+
+```text
+party_player_characters
+party_character_attributes
+party_character_skills
+party_character_states
+party_character_inventory
+party_character_property_access
+party_character_knowledge
+party_character_memory
+party_character_goals
+party_character_relations
+```
+
+Запрещено писать на этом этапе:
+
+```text
+party_current_position_g5_anchor
+party_scene_anchors
+party_npcs_materialized_in_scene
+party_items_materialized_in_scene
+visible_scene
+intro_prose
+g5_scene
+hidden_scene_state
+```
+
+Позиция на уровне G5 ещё не фиксируется, потому что G5 будет материализована позже.
+
+## 33. Commit gate этапа
+
+Этап считается успешным, если:
+
+```text
+player_character_dossier создан,
+аудит персонажа пройден,
+game profile сформирован,
+персонаж совместим с selected_start_node,
+статус и занятие выбраны из базы,
+характеристики и навыки валидны,
+состояния валидны,
+инвентарь отделён от имущества,
+вещи имеют профиль, владельца, вес, доступность и риск,
+знания персонажа ограничены,
+есть причина быть в стартовом месте,
+нет visible_scene, intro_prose и G5.
+```
+
+Если генерация не проходит, pipeline не должен процедурно “доделывать” персонажа. Он возвращает результат в LLM repair с конкретными ошибками.
+
+## 34. Передача в следующий этап
+
+Следующий этап получает:
+
+```json
+{
+  "version": 1,
+  "schema": "g5_materialization_input",
+  "request_id": "string",
+
+  "normalized_request": {},
+  "historical_frame": {},
+  "regional_context_package": {},
+  "selected_start_node": {},
+  "start_place_audit": {},
+
+  "player_character": {
+    "version": 1,
+    "schema": "player_character_game_profile"
+  },
+
+  "npc_candidate_set": {},
+  "item_profile_candidate_set": {},
+
+  "constraints": {
+    "preserve_player_identity": true,
+    "preserve_social_status": true,
+    "preserve_inventory": true,
+    "preserve_character_knowledge_limits": true,
+    "do_not_change_player_character_without_repair": true
+  }
+}
+```
+
+G5-материализация обязана учитывать персонажа, но не имеет права менять его происхождение, статус, навыки, вещи или цели без отдельного repair.
+
+## 35. Минимальный успешный результат
+
+```json
+{
+  "version": 1,
+  "schema": "player_character_dossier",
+  "request_id": "req_001",
+  "generation_status": "generated",
+
+  "identity": {
+    "character_id": "player_character_001",
+    "display_name": "name_or_handle",
+    "name_status": "known",
+    "gender": "not_fixed",
+    "age_band": "adult",
+    "approximate_age": "adult age band",
+    "short_description": "historically plausible player character",
+    "public_identity": "how others would identify the character",
+    "private_identity": "what the character knows about self"
+  },
+
+  "social_status": {
+    "social_role_id": "social_role_001",
+    "status_label": "allowed regional social role",
+    "freedom_status": "free",
+    "wealth_band": "poor",
+    "local_belonging": "near_local",
+    "rights": [],
+    "obligations": [],
+    "protector_or_guarantor": null,
+    "authority_over_character": [],
+    "who_can_punish_character": [],
+    "social_risks": [],
+    "why_status_is_allowed": [
+      "selected from regional social roles",
+      "compatible with selected start place"
+    ]
+  },
+
+  "origin": {
+    "birth_or_home_region": "region_001",
+    "home_status": "away_from_home",
+    "family_status": "family_elsewhere",
+    "cultural_environment": "regional common culture",
+    "language_or_speech_notes": null,
+    "usual_life": "ordinary work or dependent routine",
+    "how_left_home_or_usual_place": "reason tied to current start place",
+    "why_origin_supports_current_status": "origin explains social status and skills",
+    "unresolved_origin_unknowns": []
+  },
+
+  "occupation": {
+    "occupation_id": "occupation_001",
+    "occupation_label": "allowed regional occupation",
+    "occupation_group": "labor_or_craft_or_travel",
+    "skill_basis": [],
+    "typical_tools_or_items": [],
+    "seasonal_notes": [],
+    "why_occupation_fits_start_place": "compatible with selected place",
+    "why_occupation_fits_social_status": "compatible with selected social role"
+  },
+
+  "body": {
+    "age_band": "adult",
+    "build": "ordinary",
+    "visible_marks": [],
+    "clothing_summary": "clothing compatible with status and season",
+    "health": 90,
+    "satiety": 65,
+    "vigor": 70,
+    "active_conditions": [],
+    "condition_causes": [],
+    "mechanical_state_modifiers": [],
+    "body_prose": "short non-numeric body description"
+  },
+
+  "attributes": {
+    "strength": 12,
+    "agility": 10,
+    "endurance": 14,
+    "reason": 9,
+    "attention": 13,
+    "influence": 8,
+    "attribute_array_used": [14, 13, 12, 10, 9, 8],
+    "attribute_rationale": {
+      "endurance": "supported by life experience",
+      "influence": "limited by status or temperament"
+    }
+  },
+
+  "skills": {
+    "athletics": { "bonus": 1, "basis": "ordinary physical work" },
+    "stealth": { "bonus": 0, "basis": "no special training" },
+    "melee": { "bonus": 0, "basis": "no military basis" },
+    "ranged": { "bonus": 0, "basis": "no hunting basis" },
+    "craft": { "bonus": 1, "basis": "basic work familiarity" },
+    "household": { "bonus": 2, "basis": "regular household or labor experience" },
+    "survival": { "bonus": 1, "basis": "ordinary regional travel experience" },
+    "riding": { "bonus": 0, "basis": "no regular horse handling" },
+    "healing": { "bonus": 0, "basis": "no healing experience" },
+    "observation": { "bonus": 1, "basis": "practical caution" },
+    "communication": { "bonus": 0, "basis": "low social leverage" },
+    "custom_and_law": { "bonus": 1, "basis": "knows local everyday norms" }
+  },
+
+  "knowledge": {
+    "known_facts": [],
+    "known_places": [],
+    "known_routes": [],
+    "known_people": [],
+    "known_authorities": [],
+    "rumors": [],
+    "mistaken_beliefs": [],
+    "unknown_but_player_may_know": [],
+    "forbidden_knowledge": [],
+    "knowledge_basis": []
+  },
+
+  "memory": {
+    "key_memories": [],
+    "debts": [],
+    "obligations": [],
+    "fears": [],
+    "shames": [],
+    "loyalties": [],
+    "unresolved_unknowns": [],
+    "memory_limits": []
+  },
+
+  "goals": {
+    "immediate_need": "immediate need tied to selected place",
+    "long_term_desire": "longer-term but not railroading desire",
+    "fear": "plausible fear",
+    "obligation": "optional obligation",
+    "reason_to_act_now": "why action is needed now",
+    "consequence_of_inaction": "what worsens if player does nothing",
+    "goal_visibility_to_player": "known"
+  },
+
+  "inventory": {
+    "carried_items": [
+      {
+        "character_item_id": "pc_item_001",
+        "item_profile_candidate_id": "item_prof_cand_001",
+        "item_profile_id": "item_profile_001",
+        "title": "ordinary carried item",
+        "item_kind": "ordinary",
+        "count": 1,
+        "weight": 1,
+        "size_band": "hand",
+        "condition": "ordinary",
+        "carried_where": "bag",
+        "quick_access": "short_action",
+        "owner_model": "owned",
+        "holder": "player_character",
+        "use": "practical use",
+        "movement_hindrance": "none",
+        "hands_occupied": 0,
+        "social_or_legal_risk": "none",
+        "property_rule_candidate_id": "prop_rule_cand_001",
+        "why_character_has_it": "compatible with status and occupation"
+      }
+    ],
+    "total_weight": 1,
+    "load_category": "light",
+    "occupied_hands": 0,
+    "load_effects": [],
+    "inventory_limits": []
+  },
+
+  "property_and_access": {
+    "property_not_carried": [],
+    "borrowed_or_entrusted_items": [],
+    "disputed_items": [],
+    "accessible_resources": [],
+    "resources_not_currently_accessible": [],
+    "obligations_to_return": [],
+    "property_risks": []
+  },
+
+  "relations": {
+    "known_npcs": [],
+    "relation_limits": []
+  },
+
+  "start_place_connection": {
+    "selected_candidate_id": "start_candidate_001",
+    "selected_node_id": "g4_001",
+    "selected_place_template_id": "place_template_001",
+    "reason_here": "reason tied to status, occupation, need and selected place",
+    "right_to_be_here": "temporary",
+    "arrival_context": "working_here",
+    "last_route_id": null,
+    "what_character_knows_about_place": [],
+    "what_character_does_not_know_about_place": [],
+    "why_cannot_ignore_situation": "immediate need or obligation"
+  },
+
+  "constraints_and_risks": {
+    "social_constraints": [],
+    "legal_constraints": [],
+    "property_constraints": [],
+    "health_constraints": [],
+    "knowledge_constraints": [],
+    "movement_constraints": [],
+    "inventory_constraints": [],
+    "reputation_constraints": [],
+    "immediate_risks": [],
+    "long_term_risks": []
+  },
+
+  "selected_candidate_refs": {
+    "social_role_id": "social_role_001",
+    "occupation_id": "occupation_001",
+    "npc_candidate_ids_used_for_relations": [],
+    "item_profile_candidate_ids_used": ["item_prof_cand_001"],
+    "container_profile_candidate_ids_used": [],
+    "property_rule_candidate_ids_used": ["prop_rule_cand_001"]
+  },
+
+  "source_trace": [
+    {
+      "record_id": "social_role_001",
+      "table": "world_base.region_social_roles",
+      "source_ids": ["source_001"],
+      "supports": ["social_status"]
+    },
+    {
+      "record_id": "occupation_001",
+      "table": "world_base.region_occupations",
+      "source_ids": ["source_002"],
+      "supports": ["occupation"]
+    },
+    {
+      "record_id": "item_prof_cand_001",
+      "table": "startup.item_profile_candidate_set",
+      "source_ids": ["source_003"],
+      "supports": ["inventory"]
+    }
+  ],
+
+  "audit_self_check": {
+    "pass": true,
+    "concerns": [],
+    "evidence": [
+      "Character uses allowed regional social role.",
+      "Character uses allowed regional occupation.",
+      "Character is connected to selected start place.",
+      "Attributes and skills follow balance rules.",
+      "Inventory references allowed item profile candidates.",
+      "No visible scene, intro prose or G5 was created."
+    ]
+  }
+}
+```

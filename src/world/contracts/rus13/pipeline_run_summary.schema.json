@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PipelineRunSummary",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "pipeline_run_id",
+    "party_id",
+    "source_step_id",
+    "final_state",
+    "attempts_used",
+    "blocking_issues"
+  ],
+  "properties": {
+    "pipeline_run_id": {
+      "type": "string"
+    },
+    "party_id": {
+      "type": "string"
+    },
+    "source_step_id": {
+      "type": "string"
+    },
+    "final_state": {
+      "type": "string"
+    },
+    "attempts_used": {
+      "type": "integer"
+    },
+    "blocking_issues": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "committed_revision": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    }
+  }
+}

@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rus13.local/contracts/G5CommitResult.schema.json",
+  "title": "G5CommitResult",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "committed",
+    "party_graph_node_ids",
+    "party_graph_edge_ids",
+    "minilocation_ids",
+    "scene_anchor_ids",
+    "item_ids",
+    "npc_ids",
+    "current_position_id",
+    "llm_step_ids",
+    "rollback_reason"
+  ],
+  "properties": {
+    "committed": {
+      "description": "Required by G5CommitResult.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "party_graph_node_ids": {
+      "description": "Required by G5CommitResult.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "party_graph_edge_ids": {
+      "description": "Required by G5CommitResult.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "minilocation_ids": {
+      "description": "Required by G5CommitResult.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "scene_anchor_ids": {
+      "description": "Required by G5CommitResult.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "item_ids": {
+      "description": "Required by G5CommitResult.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "npc_ids": {
+      "description": "Required by G5CommitResult.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "current_position_id": {
+      "description": "Required by G5CommitResult.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "llm_step_ids": {
+      "description": "Required by G5CommitResult.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "rollback_reason": {
+      "description": "Required by G5CommitResult.",
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    }
+  },
+  "x_step_id": "g5_11_db_write_plan_and_commit",
+  "x_writes_to": "party_* target tables",
+  "x_blocking_validations": "transaction success or rollback recorded"
+}

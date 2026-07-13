@@ -2,8 +2,8 @@ node_modules/
 .env
 .env.*
 !.env.example
-generated/*
-!generated/.gitkeep
+# generated/ contains deterministic, reviewable build products required by
+# docs:check and knowledge:check. They are intentionally committed.
 artifacts/*
 !artifacts/.gitkeep
 releases/*

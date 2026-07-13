@@ -10,17 +10,17 @@ test('GitHub Actions clean-clone workflow keeps all required gates in order', as
     'packages.applied-caas-gateway1.internal.api.openai.org/artifactory/api/npm/npm-public/',
     'https://registry.npmjs.org/',
     'name: Install dependencies',
-    'run: npm ci',
+    'npm ci',
     'name: Validate canonical world_base schema',
-    'run: npm run world-db:schema-check',
+    'npm run world-db:schema-check',
     'name: Validate canonical knowledge corpus',
-    'run: npm run knowledge:check-corpus',
+    'npm run knowledge:check-corpus',
     'name: Generate deterministic documentation and knowledge artifacts',
-    'run: npm run docs:generate',
+    'npm run docs:generate',
     'name: Verify generated files are reproducible',
     'git diff --exit-code -- MODULE_INDEX.md generated/',
     'name: Run full test suite',
-    'run: npm test'
+    'npm test'
   ];
 
   let previousIndex = -1;

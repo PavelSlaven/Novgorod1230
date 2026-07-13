@@ -17,13 +17,16 @@ export async function buildKnowledgeSourceOutputsV2({ root = '.' } = {}) {
   const semanticFiles = new Set((ragSnapshot.chunks ?? []).map((chunk) => basename(String(chunk.file ?? ''))));
   const lexicalOnlyFiles = Object.fromEntries(Object.entries(corpusFiles).filter(([file]) => !semanticFiles.has(file)));
   const lexicalChunks = buildCorpusChunks(lexicalOnlyFiles).map(({ embedding, ...chunk }) => chunk);
-  const coverage = manifest.documents.map((record) => ({
-    document_id: record.document_id,
-    file_name: record.file_name,
-    lexical_indexed: true,
-    semantic_indexed: semanticFiles.has(record.file_name),
-    semantic_reason: semanticFiles.has(record.file_name) ? 'approved_embedding_snapshot' : 'approved_embedding_absent'
-  }));
+  const coverage = manifest.documents.map((record) => {
+    const semanticIndexed = semanticFiles.has(record.file_name);
+    return {
+      document_id: record.document_id,
+      file_name: record.file_name,
+      lexical_indexed: !semanticIndexed,
+      semantic_indexed: semanticIndexed,
+      semantic_reason: semanticIndexed ? 'approved_embedding_snapshot' : 'approved_embedding_absent'
+    };
+  });
   const corpusHash = computeCorpusHashFromFiles(corpusFiles);
   const graphText = stableJson(graph);
   const semanticIndexText = stableJson(ragSnapshot);
@@ -64,7 +67,7 @@ export async function buildKnowledgeSourceOutputsV2({ root = '.' } = {}) {
     lexical_index_sha256: sha256(lexicalIndexText),
     source_document_count: manifest.documents.length,
     semantic_document_count: coverage.filter((item) => item.semantic_indexed).length,
-    lexical_only_document_count: coverage.filter((item) => !item.semantic_indexed).length,
+    lexical_only_document_count: coverage.filter((item) => item.lexical_indexed).length,
     semantic_chunk_count: Array.isArray(ragSnapshot.chunks) ? ragSnapshot.chunks.length : 0,
     lexical_chunk_count: lexicalChunks.length,
     model: String(ragSnapshot.model ?? ''),

@@ -12,9 +12,13 @@ export async function buildKnowledgeSourceOutputsV2({ root = '.' } = {}) {
   const { manifestBytes, manifest, corpusFiles } = await loadCorpus(projectRoot);
   const graphSnapshotBytes = await readFile(join(projectRoot, SOURCE_ROOT, 'imports/graph/graph.json'));
   const ragSnapshotBytes = await readFile(join(projectRoot, SOURCE_ROOT, 'imports/rag/index.json'));
-  const graph = addStructuralDocumentNodes(JSON.parse(graphSnapshotBytes.toString('utf8')), manifest, corpusFiles);
-  const ragSnapshot = JSON.parse(ragSnapshotBytes.toString('utf8'));
-  const semanticFiles = new Set((ragSnapshot.chunks ?? []).map((chunk) => basename(String(chunk.file ?? ''))));
+  const graphSnapshot = JSON.parse(graphSnapshotBytes.toString('utf8'));
+  const graphErrors = validateGraphSnapshotSources(graphSnapshot, corpusFiles);
+  if (graphErrors.length) throw new Error(`Knowledge graph snapshot is incompatible with corpus:\n${graphErrors.join('\n')}`);
+  const graph = addStructuralDocumentNodes(graphSnapshot, manifest, corpusFiles);
+  const approvedSemantic = validateApprovedSemanticSnapshot(JSON.parse(ragSnapshotBytes.toString('utf8')), corpusFiles);
+  const semanticIndex = approvedSemantic.index;
+  const semanticFiles = approvedSemantic.files;
   const lexicalOnlyFiles = Object.fromEntries(Object.entries(corpusFiles).filter(([file]) => !semanticFiles.has(file)));
   const lexicalChunks = buildCorpusChunks(lexicalOnlyFiles).map(({ embedding, ...chunk }) => chunk);
   const coverage = manifest.documents.map((record) => {
@@ -29,7 +33,7 @@ export async function buildKnowledgeSourceOutputsV2({ root = '.' } = {}) {
   });
   const corpusHash = computeCorpusHashFromFiles(corpusFiles);
   const graphText = stableJson(graph);
-  const semanticIndexText = stableJson(ragSnapshot);
+  const semanticIndexText = stableJson(semanticIndex);
   const lexicalIndexText = stableJson({
     schema_version: 'rus.lexical_index.v1',
     corpus_hash: corpusHash,
@@ -68,10 +72,10 @@ export async function buildKnowledgeSourceOutputsV2({ root = '.' } = {}) {
     source_document_count: manifest.documents.length,
     semantic_document_count: coverage.filter((item) => item.semantic_indexed).length,
     lexical_only_document_count: coverage.filter((item) => item.lexical_indexed).length,
-    semantic_chunk_count: Array.isArray(ragSnapshot.chunks) ? ragSnapshot.chunks.length : 0,
+    semantic_chunk_count: semanticIndex.chunks.length,
     lexical_chunk_count: lexicalChunks.length,
-    model: String(ragSnapshot.model ?? ''),
-    dimensions: Number(ragSnapshot.dimensions ?? 0),
+    model: String(semanticIndex.model ?? ''),
+    dimensions: Number(semanticIndex.dimensions ?? 0),
     coverage
   };
   const inventory = await readKnowledgeSourceInventory({ root: projectRoot });
@@ -93,6 +97,86 @@ export async function buildKnowledgeSourceOutputsV2({ root = '.' } = {}) {
   };
   outputs.set(`${GENERATED_ROOT}/manifests/knowledge-source-generated-manifest.json`, stableJson(generatedManifest));
   return outputs;
+}
+
+export function validateApprovedSemanticSnapshot(snapshot, corpusFiles) {
+  const errors = [];
+  const importedChunks = Array.isArray(snapshot?.chunks) ? snapshot.chunks : [];
+  const dimensions = Number(snapshot?.dimensions);
+  if (!Number.isInteger(dimensions) || dimensions < 1) errors.push('approved embedding dimensions are invalid');
+  if (Number(snapshot?.chunk_count) !== importedChunks.length) errors.push('approved embedding chunk_count differs from chunks');
+
+  const files = new Set();
+  for (const chunk of importedChunks) {
+    const rawFile = String(chunk?.file ?? '');
+    const file = basename(rawFile);
+    if (!file || rawFile !== file) errors.push(`approved embedding chunk has invalid source path ${rawFile || '?'}`);
+    else files.add(file);
+  }
+  const semanticCorpusFiles = {};
+  for (const file of [...files].sort((left, right) => left.localeCompare(right))) {
+    if (!Object.hasOwn(corpusFiles, file)) {
+      errors.push(`approved embedding chunk references missing file ${file}`);
+      continue;
+    }
+    semanticCorpusFiles[file] = corpusFiles[file];
+  }
+
+  const corpusHash = computeCorpusHashFromFiles(semanticCorpusFiles);
+  if (String(snapshot?.corpus_hash ?? '') !== corpusHash) {
+    errors.push('semantic corpus hash differs from approved embedding snapshot');
+  }
+  const expectedChunks = buildCorpusChunks(semanticCorpusFiles);
+  if (expectedChunks.length !== importedChunks.length) {
+    errors.push(`semantic chunk count differs: approved=${importedChunks.length}, current=${expectedChunks.length}`);
+  }
+  const chunks = expectedChunks.map((chunk, index) => {
+    const imported = importedChunks[index];
+    if (!imported) {
+      errors.push(`missing approved embedding at semantic chunk index ${index} (${chunk.id})`);
+      return null;
+    }
+    for (const field of ['id', 'file', 'section', 'line_start', 'line_end', 'text', 'char_count']) {
+      if (imported[field] !== chunk[field]) errors.push(`semantic chunk[${index}] ${chunk.id}: approved ${field} differs from current corpus`);
+    }
+    if (!Array.isArray(imported.embedding) || imported.embedding.length !== dimensions
+      || imported.embedding.some((value) => !Number.isFinite(Number(value)))) {
+      errors.push(`semantic chunk[${index}] ${chunk.id}: approved embedding is invalid`);
+    }
+    return { ...chunk, embedding: imported.embedding };
+  }).filter(Boolean);
+  if (errors.length) throw new Error(`RAG snapshot is incompatible with corpus:\n${errors.slice(0, 50).join('\n')}`);
+
+  return Object.freeze({
+    files: Object.freeze(files),
+    index: Object.freeze({ ...snapshot, corpus_hash: corpusHash, chunk_count: chunks.length, chunks })
+  });
+}
+
+export function validateGraphSnapshotSources(graph, corpusFiles) {
+  const errors = [];
+  for (const node of graph?.nodes ?? []) {
+    const location = node?.source_location ?? node?.sourceLocation;
+    if (!location) continue;
+    const rawFile = String(location.file ?? node.source_file ?? '');
+    if (!/^(?:DOCUMENTS\/)?[^/\\]+$/u.test(rawFile)) {
+      errors.push(`node ${node.id ?? '?'} has invalid source path ${rawFile || '?'}`);
+      continue;
+    }
+    const file = basename(rawFile);
+    if (!file || !Object.hasOwn(corpusFiles, file)) {
+      errors.push(`node ${node.id ?? '?'} references missing file ${file || '?'}`);
+      continue;
+    }
+    const lineCount = String(corpusFiles[file]).split(/\r?\n/u).length;
+    const start = Number(location.line_start ?? location.lineStart);
+    const end = Number(location.line_end ?? location.lineEnd);
+    if (!Number.isInteger(start) || start < 1) errors.push(`${node.id ?? '?'}: invalid line_start`);
+    if (!Number.isInteger(end) || end < 1) errors.push(`${node.id ?? '?'}: invalid line_end`);
+    if (Number.isInteger(end) && end > lineCount) errors.push(`${node.id ?? '?'}: line_end exceeds ${file}`);
+    if (Number.isInteger(start) && Number.isInteger(end) && end < start) errors.push(`${node.id ?? '?'}: inverted line range`);
+  }
+  return Object.freeze(errors);
 }
 
 export async function writeKnowledgeSourceOutputsV2({ root = '.' } = {}) {

@@ -39,7 +39,10 @@ export async function verifyCanonicalCorpus({ root = '.' } = {}) {
     if (!id) errors.push('document without document_id');
     if (ids.has(id)) errors.push(`duplicate document_id: ${id}`);
     ids.add(id);
-    if (!/^corpus\/DOCUMENTS\/[^/]+$/u.test(canonicalPath)) errors.push(`${id}: invalid canonical_path`);
+    if (!/^corpus\/DOCUMENTS\/[^/]+$/u.test(canonicalPath)) {
+      errors.push(`${id}: invalid canonical_path`);
+      continue;
+    }
     if (paths.has(canonicalPath)) errors.push(`duplicate canonical_path: ${canonicalPath}`);
     paths.add(canonicalPath);
 

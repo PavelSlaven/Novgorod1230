@@ -2,8 +2,8 @@
 
 Дата: 2026-07-13
 Ветка: `agent/restore-canonical-docs-generated-ci`
-Последний проверенный implementation commit: `c0d1716d62d18665150e4d9611accf53bbfdc5e8`
-GitHub Actions run: `#64` (`29273051182`), job `86895239724`
+Последний проверенный implementation commit: `c132601c4dce2eb3c8a5adbe8892339e6d29a7d1`
+GitHub Actions run: `#65` (`29273919381`), job `86898128637`
 
 ## Clean-clone pipeline
 
@@ -24,9 +24,9 @@ GitHub Actions run: `#64` (`29273051182`), job `86895239724`
 
 GitHub Actions completed the full job with conclusion `success`. The workflow summary does not expose reliable per-suite test counts, therefore this report does not repeat stale historic totals.
 
-Run `#64` выполнил schema-reference и PostgreSQL gates в чистом checkout. PostgreSQL service принял весь DDL; подтверждены 62 таблицы, одна не-привилегированная роль `world_reader`, `USAGE` без `CREATE`, 62 `SELECT` grants и 0 write grants.
+Run `#65` выполнил schema-reference и PostgreSQL gates в чистом checkout. PostgreSQL service принял весь DDL; подтверждены 62 таблицы, одна не-привилегированная роль `world_reader`, `USAGE` без `CREATE`, 62 `SELECT` grants и 0 write grants.
 
-В run `#64` прошёл regression test public `@rus/docs-tools.writeKnowledgeSourceOutputs`: public export использует v2 path и создаёт ожидаемый structural/lexical output. Второй critic audit подтвердил это исправление, но обнаружил устаревший числовой порог в delegation test. Порог заменён exact-сравнением с текущим `manifest.documents.length`.
+В run `#65` прошли regression tests public v2 writer и exact manifest-derived corpus count. Третий critic audit обнаружил, что semantic snapshot не был связан с текущим semantic text, graph locations не проверялись v2-путём, а re-import терял native registration. Negative tests воспроизвели все три дефекта; локальный remediation теперь проходит 19 targeted tests.
 
 ## Verified contracts
 
@@ -38,6 +38,9 @@ Run `#64` выполнил schema-reference и PostgreSQL gates в чистом 
 - approved semantic graph/RAG snapshot preservation;
 - deterministic structural graph coverage for native documents;
 - deterministic lexical-only RAG coverage where approved embeddings are absent;
+- semantic subset hash and exact ordered chunk parity before approved vectors are accepted;
+- semantic graph source-file and line-range validation;
+- native-preserving repeat legacy import;
 - separate provenance, semantic-index and lexical-index digests;
 - production startup rejection of missing or stale generated knowledge artifacts;
 - CI workflow contract preventing false-green truncated workflows.
@@ -55,9 +58,9 @@ Run `#64` выполнил schema-reference и PostgreSQL gates в чистом 
 
 ## Remaining release gates
 
-- новый clean-clone execution после удаления hardcoded threshold;
+- новый clean-clone execution после round3 remediation;
 - следующий independent code critic audit;
 - owner disposition of the byte-only critic-rule conflict;
 - repeat audit after any `CHANGES REQUIRED` or `REJECT` result.
 
-Decision: `run_64_green_round2_changes_required_threshold_fixed`.
+Decision: `run_65_green_round3_changes_required_remediated_locally`.

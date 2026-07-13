@@ -206,8 +206,32 @@ export async function importKnowledgeSourceFromLegacy({ root = '.', importedAt =
   const unknown = inventory.files.filter((item) => item.classification === 'unknown');
   if (unknown.length) throw new Error(`Unknown legacy DOCUMENTS files: ${unknown.map((item) => item.relative_path).join(', ')}`);
   const sourceRoot = join(projectRoot, SOURCE_ROOT);
-  const documents = [];
-  const aliases = {};
+  const manifestPath = join(sourceRoot, 'corpus-manifest.json');
+  const aliasesPath = join(sourceRoot, 'source-aliases.json');
+  const currentManifest = await readJsonIfPresent(manifestPath);
+  const currentAliases = await readJsonIfPresent(aliasesPath);
+  if (currentManifest && (currentManifest.schema_version !== 'rus.knowledge_corpus_manifest.v1' || !Array.isArray(currentManifest.documents))) {
+    throw new Error('Invalid existing corpus manifest.');
+  }
+  if (currentAliases && (currentAliases.schema_version !== 'rus.knowledge_source_aliases.v1' || !currentAliases.aliases || typeof currentAliases.aliases !== 'object')) {
+    throw new Error('Invalid existing source aliases.');
+  }
+  if (Boolean(currentManifest) !== Boolean(currentAliases)) throw new Error('Existing corpus manifest and source aliases must be present together.');
+
+  const nativeDocuments = (currentManifest?.documents ?? []).filter((record) => !record.source_legacy_path);
+  for (const record of nativeDocuments) {
+    if (!/^corpus\/DOCUMENTS\/[^/]+$/u.test(String(record.canonical_path ?? ''))) {
+      throw new Error(`${record.document_id}: invalid native canonical_path`);
+    }
+    const bytes = await readFile(join(sourceRoot, record.canonical_path));
+    if (sha256(bytes) !== record.sha256 || bytes.length !== record.bytes) {
+      throw new Error(`${record.document_id}: native corpus manifest hash mismatch`);
+    }
+  }
+  const nativeIds = new Set(nativeDocuments.map((record) => record.document_id));
+  const nativePaths = new Set(nativeDocuments.map((record) => record.canonical_path));
+  const legacyDocuments = [];
+  const aliases = { ...(currentAliases?.aliases ?? {}) };
   for (const item of inventory.files.filter((entry) => entry.classification === 'canonical_source')) {
     const fileName = basename(item.relative_path);
     const documentId = documentIdFor(fileName);
@@ -217,7 +241,10 @@ export async function importKnowledgeSourceFromLegacy({ root = '.', importedAt =
     await mkdir(dirname(targetPath), { recursive: true });
     const bytes = await readFile(sourcePath);
     await writeFile(targetPath, bytes);
-    documents.push({
+    if (nativeIds.has(documentId) || nativePaths.has(canonicalPath)) {
+      throw new Error(`Legacy import conflicts with native document: ${documentId}`);
+    }
+    legacyDocuments.push({
       document_id: documentId,
       canonical_path: canonicalPath,
       file_name: fileName,
@@ -228,19 +255,25 @@ export async function importKnowledgeSourceFromLegacy({ root = '.', importedAt =
     });
     aliases[fileName] = documentId;
   }
+  const documents = [...nativeDocuments, ...legacyDocuments];
   documents.sort((left, right) => left.document_id.localeCompare(right.document_id));
   const corpusManifest = {
+    ...(currentManifest ?? {}),
     schema_version: 'rus.knowledge_corpus_manifest.v1',
-    corpus_id: 'rus-xiii-canonical-documentation',
-    release: '0.23.0-migration.23',
-    source_release: '0.22.0-migration.22',
+    corpus_id: currentManifest?.corpus_id ?? 'rus-xiii-canonical-documentation',
+    release: currentManifest?.release ?? '0.23.0-migration.23',
+    source_release: currentManifest?.source_release ?? '0.22.0-migration.22',
     documents
   };
+  const documentIds = new Set(documents.map((record) => record.document_id));
+  for (const [alias, documentId] of Object.entries(aliases)) {
+    if (!documentIds.has(documentId)) throw new Error(`Alias ${alias} references unknown document ${documentId}`);
+  }
   await mkdir(join(sourceRoot, 'imports'), { recursive: true });
-  await writeFile(join(sourceRoot, 'corpus-manifest.json'), stableJson(corpusManifest));
-  await writeFile(join(sourceRoot, 'source-aliases.json'), stableJson({ schema_version: 'rus.knowledge_source_aliases.v1', aliases }));
+  await writeFile(manifestPath, stableJson(corpusManifest));
+  await writeFile(aliasesPath, stableJson({ schema_version: 'rus.knowledge_source_aliases.v1', aliases }));
   await writeFile(join(projectRoot, INVENTORY_PATH), stableJson(inventory));
-  await appendImportHistory({ sourceRoot, inventory, documents, importedAt });
+  await appendImportHistory({ sourceRoot, inventory, documents: legacyDocuments, importedAt });
 
   for (const item of inventory.files.filter((entry) => entry.classification !== 'canonical_source')) {
     const category = item.classification === 'generated_graph' ? 'graph'
@@ -255,8 +288,7 @@ export async function importKnowledgeSourceFromLegacy({ root = '.', importedAt =
     await mkdir(dirname(targetPath), { recursive: true });
     await writeFile(targetPath, await readFile(join(projectRoot, item.legacy_path)));
   }
-  await writeFile(join(sourceRoot, 'README.md'), renderSourceReadme(documents.length));
-  return Object.freeze({ document_count: documents.length, inventory_count: inventory.files.length });
+  return Object.freeze({ document_count: documents.length, legacy_document_count: legacyDocuments.length, inventory_count: inventory.files.length });
 }
 
 async function buildKnowledgeSourceOutputMap(projectRoot) {
@@ -368,10 +400,6 @@ function documentIdFor(fileName) {
   return fileName.replace(/\.(?:md|txt)$/u, '').replaceAll('_', '-').toLowerCase();
 }
 
-function renderSourceReadme(documentCount) {
-  return `# Canonical knowledge source\n\nThis directory contains ${documentCount} byte-faithful canonical documents migrated from the read-only legacy corpus.\n\n- \`corpus/DOCUMENTS\` is the source of truth.\n- \`imports/legacy-inventory.json\` records the complete classified legacy inventory and permits autonomous verification.\n- \`imports/graph\` preserves the approved semantic graph snapshot used for deterministic materialization.\n- \`imports/rag\` preserves approved embedding vectors; chunks are rebuilt from the canonical corpus and matched by exact ordered content.\n- \`generated/knowledge-source\` contains reproducible runtime artifacts.\n- Runtime code must access documents only through \`@rus/knowledge-source\`.\n`;
-}
-
 function freezeInventory(inventory) {
   return Object.freeze({
     ...structuredClone(inventory),
@@ -396,6 +424,15 @@ async function walk(dir) {
 
 async function readJson(path) {
   return JSON.parse(await readFile(path, 'utf8'));
+}
+
+async function readJsonIfPresent(path) {
+  try {
+    return await readJson(path);
+  } catch (error) {
+    if (error?.code === 'ENOENT') return null;
+    throw error;
+  }
 }
 
 function stableJson(value) {

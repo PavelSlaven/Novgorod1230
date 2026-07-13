@@ -50,6 +50,13 @@ async function fixture({ corrupt = false } = {}) {
   return root;
 }
 
+async function mutateJson(root, relativePath, mutate) {
+  const path = join(root, 'data/knowledge-source', relativePath);
+  const value = JSON.parse(await readFile(path, 'utf8'));
+  mutate(value);
+  await writeFile(path, `${JSON.stringify(value, null, 2)}\n`);
+}
+
 test('accepts canonical documents without legacy provenance', async () => {
   const result = await verifyCanonicalCorpus({ root: await fixture() });
   assert.equal(result.ok, true, result.errors.join('\n'));
@@ -61,6 +68,23 @@ test('rejects a registered document with a stale digest', async () => {
   const result = await verifyCanonicalCorpus({ root: await fixture({ corrupt: true }) });
   assert.equal(result.ok, false);
   assert.match(result.errors.join('\n'), /native: document hash or size mismatch/u);
+});
+
+test('rejects duplicate ids, duplicate paths, unknown aliases and traversal paths', async () => {
+  const cases = [
+    ['duplicate document id', 'corpus-manifest.json', (manifest) => { manifest.documents[1].document_id = manifest.documents[0].document_id; }, /duplicate document_id/u],
+    ['duplicate canonical path', 'corpus-manifest.json', (manifest) => { manifest.documents[1].canonical_path = manifest.documents[0].canonical_path; }, /duplicate canonical_path/u],
+    ['unknown alias target', 'source-aliases.json', (aliases) => { aliases.aliases.unknown = 'missing-document'; }, /references unknown document/u],
+    ['canonical path traversal', 'corpus-manifest.json', (manifest) => { manifest.documents[1].canonical_path = '../outside.md'; }, /invalid canonical_path/u]
+  ];
+
+  for (const [label, path, mutate, pattern] of cases) {
+    const root = await fixture();
+    await mutateJson(root, path, mutate);
+    const result = await verifyCanonicalCorpus({ root });
+    assert.equal(result.ok, false, label);
+    assert.match(result.errors.join('\n'), pattern, label);
+  }
 });
 
 test('repository registers the handed-off normatives byte-for-byte with canonical aliases', async () => {

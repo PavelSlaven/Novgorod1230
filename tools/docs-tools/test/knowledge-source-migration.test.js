@@ -1,8 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile, rename } from 'node:fs/promises';
-import { basename, resolve } from 'node:path';
+import { cp, mkdtemp, readFile, rename } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { basename, join, resolve } from 'node:path';
 import {
+  importKnowledgeSourceFromLegacy,
   readKnowledgeSourceInventory,
   verifyKnowledgeSourceMigration,
   buildKnowledgeGraphFromSnapshot,
@@ -77,6 +79,9 @@ test('graph and RAG materializers are deterministic and preserve approved semant
 });
 
 test('public knowledge writer uses the v2 structural and lexical materializer', { concurrency: false }, async () => {
+  const manifest = await readCorpusManifest();
+  const semanticGraphFiles = await readSemanticGraphFiles();
+  const expectedStructuralOnlyCount = manifest.documents.filter((record) => !semanticGraphFiles.has(record.file_name)).length;
   const result = await writePublicKnowledgeSourceOutputs({ root });
   assert.deepEqual(result.files, [
     'generated/knowledge-source/graph/GRAPH_REPORT.md',
@@ -93,9 +98,38 @@ test('public knowledge writer uses the v2 structural and lexical materializer', 
   const graph = JSON.parse(await readFile(resolve(root, 'generated/knowledge-source/graph/graph.json'), 'utf8'));
   const ragManifest = JSON.parse(await readFile(resolve(root, 'generated/knowledge-source/rag/manifest.json'), 'utf8'));
   const lexicalIndex = JSON.parse(await readFile(resolve(root, 'generated/knowledge-source/rag/lexical-index.json'), 'utf8'));
-  assert.equal(graph.nodes.filter((node) => node.structural_only === true).length, 7);
+  const expectedLexicalOnlyCount = manifest.documents.length - ragManifest.semantic_document_count;
+  assert.equal(graph.nodes.filter((node) => node.structural_only === true).length, expectedStructuralOnlyCount);
   assert.equal(ragManifest.semantic_document_count, 19);
-  assert.equal(ragManifest.lexical_only_document_count, 7);
-  assert.equal(lexicalIndex.chunk_count, 346);
+  assert.equal(ragManifest.lexical_only_document_count, expectedLexicalOnlyCount);
+  assert.equal(lexicalIndex.chunk_count, lexicalIndex.chunks.length);
+  assert.ok(lexicalIndex.chunk_count > 0);
   assert.equal(lexicalIndex.chunks.some((chunk) => Object.hasOwn(chunk, 'embedding')), false);
+});
+
+test('re-importing legacy sources preserves native records, aliases and files', { concurrency: false }, async () => {
+  const fixtureRoot = await mkdtemp(join(tmpdir(), 'rus-knowledge-import-'));
+  await cp(resolve(root, 'data/knowledge-source'), join(fixtureRoot, 'data/knowledge-source'), { recursive: true });
+  await cp(resolve(root, 'legacy/DOCUMENTS/documents-kg'), join(fixtureRoot, 'legacy/DOCUMENTS/documents-kg'), { recursive: true });
+  const sourceRoot = join(fixtureRoot, 'data/knowledge-source');
+  const beforeManifest = JSON.parse(await readFile(join(sourceRoot, 'corpus-manifest.json'), 'utf8'));
+  const beforeAliases = JSON.parse(await readFile(join(sourceRoot, 'source-aliases.json'), 'utf8')).aliases;
+  const nativeRecords = beforeManifest.documents.filter((record) => !record.source_legacy_path);
+  const nativeIds = new Set(nativeRecords.map((record) => record.document_id));
+  const nativeAliases = Object.fromEntries(Object.entries(beforeAliases).filter(([, documentId]) => nativeIds.has(documentId)));
+  const nativeBytes = new Map();
+  for (const record of nativeRecords) nativeBytes.set(record.document_id, await readFile(join(sourceRoot, record.canonical_path)));
+
+  const result = await importKnowledgeSourceFromLegacy({ root: fixtureRoot });
+  const afterManifest = JSON.parse(await readFile(join(sourceRoot, 'corpus-manifest.json'), 'utf8'));
+  const afterAliases = JSON.parse(await readFile(join(sourceRoot, 'source-aliases.json'), 'utf8')).aliases;
+  const afterById = new Map(afterManifest.documents.map((record) => [record.document_id, record]));
+
+  assert.equal(result.document_count, beforeManifest.documents.length);
+  assert.equal(afterManifest.documents.length, beforeManifest.documents.length);
+  for (const record of nativeRecords) {
+    assert.deepEqual(afterById.get(record.document_id), record);
+    assert.deepEqual(await readFile(join(sourceRoot, record.canonical_path)), nativeBytes.get(record.document_id));
+  }
+  for (const [alias, documentId] of Object.entries(nativeAliases)) assert.equal(afterAliases[alias], documentId);
 });

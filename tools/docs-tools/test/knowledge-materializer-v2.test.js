@@ -1,14 +1,22 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import test from 'node:test';
-import { readFile } from 'node:fs/promises';
-import { basename, resolve } from 'node:path';
+import { cp, mkdtemp, readFile, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { basename, join, resolve } from 'node:path';
 import { buildKnowledgeSourceOutputsV2 } from '../src/knowledge-materializer-v2.js';
 
 const root = resolve(import.meta.dirname, '../../..');
 
 function sha256(value) {
   return createHash('sha256').update(value).digest('hex');
+}
+
+async function materializerFixture() {
+  const fixtureRoot = await mkdtemp(join(tmpdir(), 'rus-materializer-v2-'));
+  await cp(resolve(root, 'data/knowledge-source'), join(fixtureRoot, 'data/knowledge-source'), { recursive: true });
+  await writeFile(join(fixtureRoot, 'package.json'), JSON.stringify({ version: 'test' }));
+  return fixtureRoot;
 }
 
 test('knowledge materializer preserves approved semantic vectors and indexes only native documents lexically', async () => {
@@ -65,4 +73,49 @@ test('knowledge materializer adds structural graph nodes without invented semant
   assert.equal(graphManifest.structural_only_document_count, structuralOnlyDocumentCount);
   assert.equal(structuralNodes.length, structuralOnlyDocumentCount);
   assert.ok(structuralNodes.every((node) => node.type === 'canonical_document'));
+});
+
+test('knowledge materializer rejects changed semantic text even when its manifest digest is updated', async () => {
+  const fixtureRoot = await materializerFixture();
+  const sourceRoot = join(fixtureRoot, 'data/knowledge-source');
+  const snapshot = JSON.parse(await readFile(join(sourceRoot, 'imports/rag/index.json'), 'utf8'));
+  const semanticFile = basename(String(snapshot.chunks[0].file));
+  const manifestPath = join(sourceRoot, 'corpus-manifest.json');
+  const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
+  const record = manifest.documents.find((item) => item.file_name === semanticFile);
+  const documentPath = join(sourceRoot, record.canonical_path);
+  const changed = Buffer.concat([await readFile(documentPath), Buffer.from('\nsemantic snapshot mismatch\n')]);
+  await writeFile(documentPath, changed);
+  record.sha256 = sha256(changed);
+  record.bytes = changed.length;
+  await writeFile(manifestPath, `${JSON.stringify(manifest)}\n`);
+
+  await assert.rejects(
+    () => buildKnowledgeSourceOutputsV2({ root: fixtureRoot }),
+    /semantic corpus hash differs from approved embedding snapshot/u
+  );
+});
+
+test('knowledge materializer rejects invalid semantic graph source locations', async () => {
+  const fixtureRoot = await materializerFixture();
+  const graphPath = join(fixtureRoot, 'data/knowledge-source/imports/graph/graph.json');
+  const original = JSON.parse(await readFile(graphPath, 'utf8'));
+  const cases = [
+    ['missing file', (location) => { location.file = 'DOCUMENTS/missing-source.md'; }, /references missing file/u],
+    ['source path traversal', (location) => { location.file = '../README.md'; }, /invalid source path/u],
+    ['line below one', (location) => { location.line_start = 0; }, /invalid line_start/u],
+    ['line beyond EOF', (location) => { location.line_end = Number.MAX_SAFE_INTEGER; }, /line_end exceeds/u],
+    ['inverted range', (location) => { location.line_start = 2; location.line_end = 1; }, /inverted line range/u]
+  ];
+
+  for (const [label, corrupt, pattern] of cases) {
+    const graph = structuredClone(original);
+    corrupt(graph.nodes[0].source_location);
+    await writeFile(graphPath, JSON.stringify(graph));
+    await assert.rejects(
+      () => buildKnowledgeSourceOutputsV2({ root: fixtureRoot }),
+      pattern,
+      label
+    );
+  }
 });

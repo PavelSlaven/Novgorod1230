@@ -23,7 +23,7 @@ npm run knowledge:generate
 npm run test:knowledge-source
 ```
 
-`knowledge:import` является миграционной командой и повторно копирует утверждённый legacy corpus; в обычной разработке она не требуется.
+`knowledge:import` является миграционной командой: она обновляет только legacy-owned записи и сохраняет проверенные native records, aliases и файлы; в обычной разработке она не требуется.
 
 ## Каноническая документация
 

@@ -35,6 +35,6 @@ Generated output не редактируется вручную. Каждый п
 ## Knowledge-source commands
 
 - `npm run knowledge:inventory` — classify every legacy DOCUMENTS file;
-- `npm run knowledge:import` — byte-faithful migration command;
+- `npm run knowledge:import` — byte-faithful legacy refresh that preserves verified native records and aliases;
 - `npm run knowledge:generate` — materialize graph/RAG from the canonical corpus and approved snapshots;
 - `npm run knowledge:check` — verify corpus parity, provenance and stale state.

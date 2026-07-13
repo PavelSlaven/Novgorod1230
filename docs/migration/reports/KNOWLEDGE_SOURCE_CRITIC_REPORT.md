@@ -69,3 +69,27 @@ GitHub Actions run `#64` (`29273051182`), job `86895239724`: PASS по всем 
 - `MIGRATION_STATUS.md` и `TEST_REPORT.md` требовали синхронизации с run `#64`.
 
 Порог заменён чтением `corpus-manifest.json` и сравнением с `manifest.documents.length`; отчёты синхронизированы. Для допуска обязательны новый clean-clone run и очередной независимый аудит.
+
+## Третий аудит head `c132601c...`
+
+GitHub Actions run `#65` (`29273919381`), job `86898128637`: PASS по всем workflow steps.
+
+Итог: `CHANGES REQUIRED`.
+
+Подтверждены public v2 writer и manifest-derived delegation count. Найдены дополнительные MAJOR:
+
+- approved semantic index копировался без semantic subset hash и exact ordered chunk parity;
+- v2 graph path не проверял source file и line ranges;
+- повторный `knowledge:import` удалял native records и aliases;
+- public-writer regression содержал hardcoded native/lexical counts;
+- отсутствовали обязательные negative tests manifest/alias/traversal и runtime semantic/lexical artifacts.
+
+Remediation после аудита:
+
+- semantic vectors принимаются только после совпадения approved `corpus_hash`, всех chunk metadata/text fields и embedding dimensions;
+- graph snapshot fail-closed проверяет каждый source file, положительные line numbers, EOF и порядок диапазона;
+- legacy re-import сливается с проверенными native records/aliases и не переписывает source README;
+- native/lexical expectations вычисляются из manifest и artifacts;
+- добавлены отрицательные тесты semantic drift, graph corruption, repeat import, registry corruption и runtime digest/missing artifacts.
+
+Для допуска обязательны новый clean-clone run и следующий независимый аудит.

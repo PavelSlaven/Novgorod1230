@@ -30,6 +30,8 @@
 - Восстановлен DDL-driven генератор `infra/world-base/SCHEMA_REFERENCE.md`; отсутствующие описания остаются явно отсутствующими.
 - Workflow contract требует реального исполнения DDL в PostgreSQL 16 и проверки роли/read-only grants.
 - Публичный `@rus/docs-tools.writeKnowledgeSourceOutputs` направлен на тот же v2 materializer, что `knowledge:generate` и `docs:generate`; добавлен регрессионный тест публичного API.
+- Approved semantic embeddings принимаются только после совпадения semantic corpus hash и exact ordered chunk parity; повреждённые graph source locations отклоняются fail-closed.
+- Повторный `knowledge:import` сохраняет native records, aliases и файлы, импортируя только legacy-owned записи.
 
 ## Фактические показатели
 
@@ -45,7 +47,7 @@
 
 ## Последняя автоматическая проверка
 
-Последний подтверждённый clean-clone implementation run: `#64` (`29273051182`), job `86895239724`, на commit `c0d1716d62d18665150e4d9611accf53bbfdc5e8`:
+Последний подтверждённый clean-clone implementation run: `#65` (`29273919381`), job `86898128637`, на commit `c132601c4dce2eb3c8a5adbe8892339e6d29a7d1`:
 
 - clean checkout: PASS;
 - dependency install: PASS;
@@ -59,7 +61,7 @@
 
 ## В работе
 
-Run `#64` подтвердил исправление public writer. Второй независимый аудит на `c0d1716d...` подтвердил закрытие этого MAJOR и выявил оставшийся устаревший числовой порог в delegation test; порог заменён exact-сравнением с `manifest.documents.length`. Следующий admission verdict определяется новым clean-clone run и независимым аудитом этого изменения.
+Run `#65` подтвердил исправление public writer и exact manifest-derived delegation count. Третий независимый аудит на `c132601c...` выявил отсутствие semantic snapshot parity, graph source-location validation, безопасного re-import и части negative TDD. Эти gaps закрыты локально: добавлены hash/chunk parity, graph validation, native-preserving import и негативные тесты. Следующий admission verdict определяется новым clean-clone run и независимым аудитом этого remediation.
 
 Остаётся решение владельца по byte-конфликту critic rule: handoff-файл имеет 9109 bytes/CRLF и SHA-256 `b3049ee06f6462081641bffdc0d12dc2596905ba401560e740f1c98c3192ec96`, существующий canonical файл — 8960 bytes/LF и SHA-256 `7a0d690a18f39e264cd39eca3b83eae5c943de97e4219b3f8034b98da9289165`; нормализованный текст совпадает, автоматическая замена запрещена.
 
@@ -74,5 +76,5 @@ PR нельзя переводить из draft и объединять, пок�
 - агент критики вернул `PASS` или допустимый `PASS WITH NOTES`;
 - после `CHANGES REQUIRED` или `REJECT` выполнены исправления, повторные тесты и повторный аудит.
 
-Текущий итоговый статус: `run_64_green_round2_changes_required_threshold_fixed`.
+Текущий итоговый статус: `run_65_green_round3_changes_required_remediated_locally`.
 Legacy deletion allowed: false.

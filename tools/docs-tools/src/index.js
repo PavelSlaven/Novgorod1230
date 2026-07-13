@@ -62,7 +62,7 @@ export {
   checkDocumentationOutputs,
   validateDocumentationTree,
   writeDocumentationOutputs
-} from './documentation.js';
+} from './documentation-policy-v2.js';
 
 export {
   buildKnowledgeGraphFromSnapshot,

@@ -1,6 +1,6 @@
 {
   "schema_version": "rus.knowledge_generated_manifest.v1",
-  "release": "0.23.0-migration.23",
+  "release": "0.23.0-migration.24",
   "generator": "npm run knowledge:generate",
   "files": [
     {

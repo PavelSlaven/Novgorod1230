@@ -1,7 +1,7 @@
 <!-- GENERATED FILE. Run `npm run docs:generate`; do not edit manually. -->
 # Schema reference
 
-Release: `0.23.0-migration.23`
+Release: `0.23.0-migration.24`
 
 ## Contract schema names
 

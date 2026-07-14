@@ -12,7 +12,7 @@ const GENERATED_OUTPUT_PATHS = new Set([
   'generated/generated-manifest.json'
 ]);
 const ROOT_MARKDOWN_ALLOWLIST = new Set([
-  'README.md', 'CHANGELOG.md', 'MIGRATION_PHASES_SHORT.md', 'MIGRATION_STATUS.md', 'MODULE_INDEX.md'
+  'AGENTS.md', 'README.md', 'CHANGELOG.md', 'MIGRATION_PHASES_SHORT.md', 'MIGRATION_STATUS.md', 'MODULE_INDEX.md'
 ]);
 
 export async function buildDocumentationOutputs(rootDir = '.') {

@@ -397,7 +397,7 @@
       "version": "0.9.0"
     }
   ],
-  "release": "0.23.0-migration.23",
+  "release": "0.23.0-migration.24",
   "schema_version": "rus.module_index.v1",
   "tools": [
     {

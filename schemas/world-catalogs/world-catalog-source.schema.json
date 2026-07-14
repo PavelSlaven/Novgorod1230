@@ -12,7 +12,9 @@
     "map_revision_id": { "type": "string", "minLength": 1 },
     "historical_horizon": { "const": 1230 },
     "source_manifest_digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
-    "approval_status": { "enum": ["staging_only", "approved", "rejected", "deprecated"] },
+    "approval_status": { "enum": ["staging_only", "draft", "approved", "rejected", "deprecated"] },
+    "production_import_status": { "enum": ["not_performed", "validated", "imported", "failed"] },
+    "runtime_visibility_status": { "enum": ["not_verified", "verified", "blocked"] },
     "included_datasets": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
     "approved_at": { "type": ["string", "null"] },
     "approved_by": { "type": ["string", "null"] }

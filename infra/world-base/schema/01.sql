@@ -1,4 +1,4 @@
--- World Base Schema v2: 62 reference tables for NocoDB manual fill (layered map ontology + universal social layer)
+-- World Base Schema v2 foundation (the complete ordered DDL currently creates 108 tables).
 -- status: workflow; confidence: epistemic certainty
 DROP SCHEMA IF EXISTS world_base CASCADE;
 CREATE SCHEMA world_base;

@@ -1,38 +1,44 @@
-# Импорт пакета БАЗА
+# Импорт `world_base`
 
-Канонический путь загрузки `world_base` — Python importer из пакета `БАЗА`.
-Код не создаёт факты мира: staging только копирует и распаковывает утверждённые файлы, importer валидирует и загружает их в `world_base`.
+Канонический импорт воспроизводится из чистого checkout. Утверждённые входные файлы находятся в tracked-архиве `data/world-base-sources/rus13-base-v1.tar.gz`; его состав, размеры и SHA-256 зафиксированы в `rus13-base-v1.manifest.json`.
 
-## 0. Staging
+Python importer валидирует и преобразует данные, но не придумывает отсутствующие факты. Неизвестный путь, отсутствующий файл, несовпадение digest, ошибка cross-reference либо FK являются hard block.
 
-По умолчанию source root берётся из `Desktop/Русь 13 ВЕК/БАЗА`, staging пишется в ignored `data/rus13-base-staging/`.
+## 0. Подготовка
+
+Установите Python-зависимости и соберите ignored staging:
 
 ```bash
+python -m pip install -r tools/rus13-world-base-importer/requirements.txt
 npm run world-db:prepare-staging
 ```
 
-Переопределения:
+По умолчанию staging создаётся из tracked bundle и не зависит от пользовательского `Desktop`.
 
-```bash
-RUS13_BASE_SOURCE_ROOT="C:\Users\Slaven\Desktop\Русь 13 ВЕК\БАЗА"
-RUS13_NOVGOROD_SOURCE_ROOT="C:\Users\Slaven\Desktop\Русь 13 ВЕК\БАЗА\по регионам\НОВГОРОДСКИЙ РЕГИОН"
-RUS13_BASE_INPUT_ROOT=data/rus13-base-staging
+Для редакторской пересборки из внешнего каталога требуется явный override:
+
+```text
+RUS13_BASE_SOURCE_ROOT=C:\path\to\БАЗА
+RUS13_NOVGOROD_SOURCE_ROOT=C:\path\to\БАЗА\по регионам\НОВГОРОДСКИЙ РЕГИОН
+RUS13_BASE_INPUT_ROOT=C:\temporary\rus13-base-staging
 ```
 
-Скрипт копирует root CSV/XLSX, кладёт региональные файлы в `nov_region_audit/`, распаковывает nested zip в пути из manifest и печатает missing list + `sha256`/size summary.
+Один `RUS13_BASE_SOURCE_ROOT` переключает staging в режим `external_authoring_override`. Неявного fallback на `Desktop/Русь 13 ВЕК/БАЗА` нет.
 
-## 1. Dry Run
+## 1. Dry run и FK-аудит
 
 ```bash
 npm run world-db:import:dry-run
 npm run world-db:fk-audit:staged
 ```
 
-Ожидание: importer report содержит `0 errors`; FK audit staged возвращает `0`.
+Importer report обязан содержать `0 errors`, staged FK audit — `0` блокирующих нарушений. SQL для ручной проверки формируется отдельно:
 
-## 2. Apply
+```bash
+npm run world-db:import:emit-sql
+```
 
-Перед apply нужна пустая/актуальная schema v2:
+## 2. Применение
 
 ```bash
 npm run world-db:up
@@ -42,11 +48,9 @@ npm run world-db:fk-audit:db
 node scripts/seed-world-base.js --check
 ```
 
-`world-db:seed` делает `DROP SCHEMA world_base CASCADE`. После успешного Python import не запускайте `world-db:seed` повторно без повторного import.
+`world-db:seed` выполняет `DROP SCHEMA world_base CASCADE`. После успешного импорта его нельзя запускать повторно без нового полного импорта.
 
-## 3. Regional Templates
-
-Оставшиеся Новгородские шаблоны грузятся отдельным импортёром:
+## 3. Региональные шаблоны
 
 ```bash
 npm run world-db:import:novgorod-regional:dry-run
@@ -54,18 +58,27 @@ npm run world-db:import:novgorod-regional:emit-sql
 npm run world-db:import:novgorod-regional:apply
 ```
 
-Этот importer покрывает `region_place_generation_rules`, `place_generation_limits`, `rumor_templates`, `conflict_templates`, `price_bands`, `seasonal_rules`, `weather_profiles`, `historical_events`, `historical_event_phases`, `item_templates` и G5 context pack в `llm_context_packs`.
+Этот контур загружает региональные rules/templates и не активирует map revision автоматически. Активация разрешена только после import report, post-import validation, runtime visibility и digest gate.
 
-Expanded `region_place_generation_rules` требует schema patch из пакета. `apply` применяет его автоматически; для ручного контроля используйте `emit-sql`.
+## 4. Runtime preflight
 
-## 4. Runtime Preflight
-
-Перед запуском нового 26-step pipeline:
+Новые партии используют только нормализованную схему `party_runtime_v2`:
 
 ```bash
-npm run world-db:import:novgorod-regional:apply
 npm run party-db:seed
 npm run new-game:preflight
 ```
 
-`new-game:preflight` проверяет `WORLD_DATA_SOURCE=postgres`, `DATABASE_URL`, `DEEPSEEK_API_KEY`, наличие исходных Novgorod G1-G4 TSV, импортированные строки `world_base` для Новгорода и таблицы `party` из seed. Если `PARTY_DATABASE_URL` пустой, seed и preflight используют один fallback: `WORLD_DB_ADMIN_URL`, затем `DATABASE_URL`, затем `POSTGRES_*`.
+`party-db:seed` применяет `schemas/party-db/001_party_runtime.sql`. Preflight проверяет `WORLD_DATA_SOURCE=postgres`, runtime `DATABASE_URL`, LLM credentials, staged Novgorod G1–G4 sources, импортированные строки `world_base` и обязательные таблицы схемы `party_runtime`.
+
+Если `PARTY_DATABASE_URL` отсутствует, используется документированный порядок: `WORLD_DB_ADMIN_URL`, затем `DATABASE_URL`, затем `POSTGRES_*`.
+
+## 5. Текущий статус Новгородской revision 002
+
+```text
+approval_status = draft
+production_import_status = not_performed
+runtime_visibility_status = not_verified
+```
+
+Статическая подготовка и production candidate не являются production import. До прохождения apply/readback/runtime E2E запрещено присваивать G1 статус `approved_local` или активировать revision 002.

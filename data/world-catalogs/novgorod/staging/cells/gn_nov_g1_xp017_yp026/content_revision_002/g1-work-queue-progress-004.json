@@ -1,0 +1,27 @@
+{
+  "schema_version": "rus.g1_work_queue_progress.v1",
+  "map_revision_id": "novgorod_1230_research_revision_002",
+  "base_queue_file": "g1-work-queue-revision-002.json",
+  "updates": [
+    {
+      "sequence_number": 1,
+      "g1_id": "gn_nov_g1_xp017_yp026",
+      "content_revision_id": "gn_nov_g1_xp017_yp026_content_revision_002",
+      "work_status": "draft",
+      "research_status": "static_preparation_completed",
+      "local_approval_status": "revoked_pending_production_import",
+      "integration_status": "not_verified",
+      "import_status": "not_started",
+      "blocking_reasons": [
+        "production import not performed",
+        "post-import validation not performed",
+        "runtime visibility not verified",
+        "new-game and first-turn E2E not performed"
+      ],
+      "package_id": "gn_nov_g1_xp017_yp026_rebuild_002",
+      "package_digest": "2962ba14c682bb67753b3213399ca8d63dc4285ae39cfe067034c8dee7aa90bd",
+      "supersedes_progress_file": "g1-work-queue-progress-003.json",
+      "status_evidence": "../G1_PRODUCTION_EXECUTION_REPORT.md"
+    }
+  ]
+}

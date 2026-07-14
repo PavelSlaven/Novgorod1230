@@ -7,6 +7,7 @@ const { Client } = pg;
 
 export const NOVGOROD_REGION_ID = 'region_novgorod_land';
 export const REQUIRED_GRAPH_SCALES = ['G1', 'G2', 'G3', 'G4'];
+export const PARTY_RUNTIME_SCHEMA = 'party_runtime';
 
 export const REQUIRED_NOVGOROD_G1_G4_TSV = [
   'novgorod_g1_70_active_cells_v6_historical_anchors_g1.tsv',
@@ -53,25 +54,68 @@ export const REQUIRED_WORLD_BASE_TABLES = [
 ];
 
 export const REQUIRED_PARTY_TABLES = [
-  'party_state',
-  'party_graph_nodes',
-  'party_graph_edges',
-  'party_places',
-  'party_locations',
-  'party_minilocations',
-  'party_scene_anchors',
-  'party_current_position',
+  'delivery_attempts',
+  'delivery_acknowledgements',
+  'commit_idempotency',
+  'parties',
+  'party_server_sessions',
+  'party_state_snapshots',
+  'party_positions',
   'party_player_characters',
+  'party_character_knowledge',
+  'party_materialization_runs',
+  'party_materialization_choices',
+  'party_g5_nodes',
+  'party_g5_anchors',
+  'party_g5_edges',
   'party_npcs',
+  'party_npc_traits',
+  'party_npc_relations',
+  'party_npc_knowledge',
+  'party_npc_schedules',
+  'party_containers',
   'party_items',
-  'party_inventory_entries',
-  'party_map_knowledge',
-  'party_events',
-  'party_turns',
-  'party_journal_entries',
-  'party_llm_steps',
-  'party_validation_issues'
+  'party_item_placements',
+  'party_ownership',
+  'party_decision_requests',
+  'party_decision_options',
+  'party_decision_results',
+  'party_change_sets',
+  'party_autonomous_updates',
+  'party_visible_read_models'
 ];
+
+export const REQUIRED_PARTY_PRIMARY_KEYS = {
+  delivery_attempts: ['delivery_attempt_id'],
+  delivery_acknowledgements: ['message_id'],
+  commit_idempotency: ['idempotency_key'],
+  parties: ['party_id'],
+  party_server_sessions: ['party_id'],
+  party_state_snapshots: ['party_id', 'state_version'],
+  party_positions: ['party_id'],
+  party_player_characters: ['party_id', 'character_id'],
+  party_character_knowledge: ['party_id', 'character_id', 'fact_id'],
+  party_materialization_runs: ['party_id', 'run_id'],
+  party_materialization_choices: ['party_id', 'run_id', 'choice_ordinal'],
+  party_g5_nodes: ['party_id', 'g5_node_id'],
+  party_g5_anchors: ['party_id', 'anchor_id'],
+  party_g5_edges: ['party_id', 'g5_edge_id'],
+  party_npcs: ['party_id', 'npc_id'],
+  party_npc_traits: ['party_id', 'npc_id', 'trait_domain', 'category_id'],
+  party_npc_relations: ['party_id', 'from_npc_id', 'to_npc_id', 'relation_category_id'],
+  party_npc_knowledge: ['party_id', 'npc_id', 'fact_id'],
+  party_npc_schedules: ['party_id', 'npc_id', 'time_band'],
+  party_containers: ['party_id', 'container_id'],
+  party_items: ['party_id', 'item_id'],
+  party_item_placements: ['party_id', 'item_id'],
+  party_ownership: ['party_id', 'ownership_id'],
+  party_decision_requests: ['party_id', 'request_id'],
+  party_decision_options: ['party_id', 'request_id', 'option_id'],
+  party_decision_results: ['party_id', 'request_id'],
+  party_change_sets: ['party_id', 'change_set_id'],
+  party_autonomous_updates: ['party_id', 'update_id'],
+  party_visible_read_models: ['party_id', 'state_version', 'viewer_character_id']
+};
 
 export function validateNewGameEnvironment(env = process.env) {
   const checks = [
@@ -186,7 +230,7 @@ export async function checkWorldBaseImportedData(databaseUrl, { clientFactory = 
   }
 }
 
-export async function checkPartyDbSeed(databaseUrl, schemaName = 'party', { clientFactory = (url) => new Client({ connectionString: url }) } = {}) {
+export async function checkPartyDbSeed(databaseUrl, { clientFactory = (url) => new Client({ connectionString: url }) } = {}) {
   const client = clientFactory(databaseUrl);
   await client.connect();
   try {
@@ -197,18 +241,91 @@ export async function checkPartyDbSeed(databaseUrl, schemaName = 'party', { clie
         WHERE table_schema = $1
           AND table_name = ANY($2::text[])
       `,
-      [schemaName, REQUIRED_PARTY_TABLES]
+      [PARTY_RUNTIME_SCHEMA, REQUIRED_PARTY_TABLES]
     );
     const existing = new Set(rows.map((row) => row.table_name));
     const missing = REQUIRED_PARTY_TABLES.filter((table) => !existing.has(table));
+    const primaryKeyMismatches = missing.length ? [] : await findPartyPrimaryKeyMismatches(client);
+    const versionConstraintOk = missing.length ? false : await hasPartyRuntimeV2Constraint(client);
     return summarizeChecks([{
       id: 'party-db-seed-tables',
       ok: missing.length === 0,
-      message: `Missing party seed tables in schema ${schemaName}: ${missing.join(', ')}`
-    }], { schemaName, requiredTables: REQUIRED_PARTY_TABLES.length, missing });
+      message: `Missing party_runtime_v2 seed tables in schema ${PARTY_RUNTIME_SCHEMA}: ${missing.join(', ')}`
+    }, {
+      id: 'party-db-primary-key-shape',
+      ok: missing.length === 0 && primaryKeyMismatches.length === 0,
+      message: `Invalid party_runtime_v2 primary keys: ${primaryKeyMismatches.join(', ')}`
+    }, {
+      id: 'party-db-schema-version-constraint',
+      ok: missing.length === 0 && versionConstraintOk,
+      message: 'party_runtime.parties must enforce schema_version = 2.'
+    }], {
+      schemaName: PARTY_RUNTIME_SCHEMA,
+      schemaVersion: 'party_runtime_v2',
+      requiredTables: REQUIRED_PARTY_TABLES.length,
+      missing,
+      primaryKeyMismatches,
+      versionConstraintOk
+    });
   } finally {
     await client.end().catch(() => {});
   }
+}
+
+async function findPartyPrimaryKeyMismatches(client) {
+  const { rows } = await client.query(
+    `
+      SELECT tc.table_name, kcu.column_name, kcu.ordinal_position
+      FROM information_schema.table_constraints tc
+      JOIN information_schema.key_column_usage kcu
+        ON kcu.constraint_schema = tc.constraint_schema
+       AND kcu.constraint_name = tc.constraint_name
+       AND kcu.table_schema = tc.table_schema
+       AND kcu.table_name = tc.table_name
+      WHERE tc.table_schema = $1
+        AND tc.constraint_type = 'PRIMARY KEY'
+        AND tc.table_name = ANY($2::text[])
+      ORDER BY tc.table_name, kcu.ordinal_position
+    `,
+    [PARTY_RUNTIME_SCHEMA, REQUIRED_PARTY_TABLES]
+  );
+  const actual = new Map();
+  for (const row of rows) {
+    const columns = actual.get(row.table_name) ?? [];
+    columns.push(row.column_name);
+    actual.set(row.table_name, columns);
+  }
+  return Object.entries(REQUIRED_PARTY_PRIMARY_KEYS)
+    .filter(([table, expected]) => !sameArray(actual.get(table) ?? [], expected))
+    .map(([table]) => table);
+}
+
+async function hasPartyRuntimeV2Constraint(client) {
+  const { rows } = await client.query(
+    `
+      SELECT pg_get_constraintdef(c.oid) AS definition
+      FROM pg_constraint c
+      JOIN pg_class t ON t.oid = c.conrelid
+      JOIN pg_namespace n ON n.oid = t.relnamespace
+      WHERE n.nspname = $1
+        AND t.relname = 'parties'
+        AND c.contype = 'c'
+    `,
+    [PARTY_RUNTIME_SCHEMA]
+  );
+  return rows.some(({ definition }) => normalizeCheckDefinition(definition) === 'check schema_version = 2');
+}
+
+function normalizeCheckDefinition(value) {
+  return String(value ?? '')
+    .replace(/[()]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+}
+
+function sameArray(actual, expected) {
+  return actual.length === expected.length && actual.every((value, index) => value === expected[index]);
 }
 
 async function existingWorldBaseTables(client) {

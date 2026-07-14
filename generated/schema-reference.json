@@ -669,6 +669,12 @@
       "type": "sql"
     },
     {
+      "bytes": 1447,
+      "path": "schemas/world-base/world-base-source-bundle.schema.json",
+      "sha256": "358430badf2821197ffc74d4600b2cc2b153d1a1a141020e998650cb1c325dc2",
+      "type": "json"
+    },
+    {
       "bytes": 1199,
       "path": "schemas/world-catalogs/g1-boundary-contract.schema.json",
       "sha256": "9a255c612dc382e4ead28c5566ae6583878840651904a134f364bb1b1291f3aa",
@@ -699,9 +705,9 @@
       "type": "json"
     },
     {
-      "bytes": 1051,
+      "bytes": 1244,
       "path": "schemas/world-catalogs/world-catalog-source.schema.json",
-      "sha256": "2a3bf14480e022e91ff65af0faad00348c960648907b90f0b16513851273605b",
+      "sha256": "ec614e9337ad15352c245f94b7ec5761f2ec56bf919ceb5f70d9c6df87f53670",
       "type": "json"
     }
   ],

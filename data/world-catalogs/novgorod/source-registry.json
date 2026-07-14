@@ -25,6 +25,31 @@
       ],
       "approved_at": null,
       "approved_by": null
+    },
+    {
+      "schema_version": "rus.world_catalog_source.v1",
+      "source_id": "novgorod_1230_research_revision_002_draft",
+      "region_id": "region_novgorod_land",
+      "map_revision_id": "novgorod_1230_research_revision_002",
+      "historical_horizon": 1230,
+      "source_manifest_digest": "ff4f0670b779bf3bc276f81ee34a47f9f9a269c9eb01bfb3d2be8e4892ef54d6",
+      "approval_status": "draft",
+      "production_import_status": "not_performed",
+      "runtime_visibility_status": "not_verified",
+      "included_datasets": [
+        "g1_mask",
+        "g1_work_queue",
+        "g1_cell_package",
+        "g2_zones",
+        "g3_places",
+        "g4_locations",
+        "graph_nodes",
+        "graph_edges",
+        "materialization_profiles",
+        "production_candidate"
+      ],
+      "approved_at": null,
+      "approved_by": null
     }
   ]
 }

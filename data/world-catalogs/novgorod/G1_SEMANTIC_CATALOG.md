@@ -18,7 +18,10 @@
 - Исторический горизонт: около 1230 года.
 - Класс: плотная речная/маршрутная, смешанная, с историко-археологическими локальными зонами.
 - Актуальная содержательная ревизия: `content_revision_002`.
-- Статус: `approved_local`.
+- Статус: `draft`.
+- Статическая подготовка: завершена; `content_revision_003_production_candidate` собрана и не активна.
+- Production import: `not_performed`; runtime visibility: `not_verified`.
+- Прежний локальный статус `approved_local` отменён append-only overlay `g1-work-queue-progress-004.json` до прохождения production import, post-import validation и runtime E2E.
 - Интеграция: южная граница согласована; северный выход к Белому морю ожидает отдельного внешнего перехода.
 - Объём: 15 G2, 32 G3, 195 G4, 243 графовых узла, 600 рёбер, из них 358 физических.
 

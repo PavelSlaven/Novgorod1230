@@ -68,6 +68,19 @@ jobs:
           npm_config_registry: https://registry.npmjs.org/
         run: npm ci
 
+      - name: Use Python 3.12 for world_base importer
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate tracked world_base source bundle
+        run: |
+          python -m pip install -r tools/rus13-world-base-importer/requirements.txt
+          export RUS13_BASE_INPUT_ROOT="$RUNNER_TEMP/rus13-base-staging"
+          npm run world-db:prepare-staging
+          npm run world-db:import:dry-run -- --report "$RUNNER_TEMP/world-base-import-dry-run.json"
+          npm run world-db:fk-audit:staged -- --out-dir "$RUNNER_TEMP/world-base-fk-audit-staged"
+
       - name: Validate canonical world_base schema
         run: |
           npm run world-db:schema-check
@@ -88,7 +101,7 @@ jobs:
           psql --dbname world_base_ci --set ON_ERROR_STOP=1 -f infra/world-base/schema.sql
 
           table_count=$(psql --dbname world_base_ci --tuples-only --no-align --command "SELECT count(*) FROM information_schema.tables WHERE table_schema = 'world_base' AND table_type = 'BASE TABLE'")
-          test "$table_count" -eq 62
+          test "$table_count" -eq 108
 
           role_count=$(psql --dbname world_base_ci --tuples-only --no-align --command "SELECT count(*) FROM pg_roles WHERE rolname = 'world_reader' AND NOT rolsuper AND NOT rolcreatedb AND NOT rolcreaterole")
           test "$role_count" -eq 1
@@ -100,7 +113,7 @@ jobs:
 
           select_grants=$(psql --dbname world_base_ci --tuples-only --no-align --command "SELECT count(*) FROM information_schema.role_table_grants WHERE grantee = 'world_reader' AND table_schema = 'world_base' AND privilege_type = 'SELECT'")
           write_grants=$(psql --dbname world_base_ci --tuples-only --no-align --command "SELECT count(*) FROM information_schema.role_table_grants WHERE grantee = 'world_reader' AND table_schema = 'world_base' AND privilege_type <> 'SELECT'")
-          test "$select_grants" -eq 62
+          test "$select_grants" -eq "$table_count"
           test "$write_grants" -eq 0
 
       - name: Validate canonical knowledge corpus

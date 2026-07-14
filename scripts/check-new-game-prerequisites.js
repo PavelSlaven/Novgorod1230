@@ -25,7 +25,7 @@ if (envResult.checks.find((check) => check.id === 'database-url')?.ok) {
 
 const partyConfig = resolvePartyDatabaseConfig(process.env);
 if (partyConfig.url) {
-  results.partyDb = await captureCheck('party-db-connect', () => checkPartyDbSeed(partyConfig.url, process.env.PARTY_SCHEMA || 'party'));
+  results.partyDb = await captureCheck('party-db-connect', () => checkPartyDbSeed(partyConfig.url));
   results.partyDb.connection = {
     source: partyConfig.source,
     usesFallback: partyConfig.usesFallback

@@ -142,9 +142,10 @@ Release: `0.23.0-migration.24`
 | `schemas/materialization/world-materialization-request-v2.schema.json` | json | 10347 | `3b6739984a1ec31a01d99867f13d8a5c9f4f87f4ab7a2d4ba5b911282629ae7f` |
 | `schemas/materialization/world-materialization-result-v2.schema.json` | json | 5190 | `92ee591037949a9e55ded6fe2813516718b5ade28b7cd7c8b592185c356db163` |
 | `schemas/party-db/001_party_runtime.sql` | sql | 18350 | `864a9f48dcff388a08eacef5fecec118ab213d18167d0a06d7f09c970d25fa2d` |
+| `schemas/world-base/world-base-source-bundle.schema.json` | json | 1447 | `358430badf2821197ffc74d4600b2cc2b153d1a1a141020e998650cb1c325dc2` |
 | `schemas/world-catalogs/g1-boundary-contract.schema.json` | json | 1199 | `9a255c612dc382e4ead28c5566ae6583878840651904a134f364bb1b1291f3aa` |
 | `schemas/world-catalogs/g1-cell-package.schema.json` | json | 1794 | `d917ec67f99c965c0257f7dbc1b2498e123aff756f4b71c68e7da0f1b6fe8381` |
 | `schemas/world-catalogs/g1-mask-record.schema.json` | json | 1686 | `b7e681769d7aa72c8717fc98dac2b1dbaf7d1e9a33ed163dfb7ede788f2b0a53` |
 | `schemas/world-catalogs/g1-work-queue.schema.json` | json | 1358 | `5ee65e8ee26f8b511d9ecc44e4d704bb979fe9d758310f7523ddd612ddba2f3f` |
 | `schemas/world-catalogs/region-map-revision.schema.json` | json | 1737 | `6da5c76805856aaba0e6013dfc2afe1e7cc1786520e0e865058ae5a14987656c` |
-| `schemas/world-catalogs/world-catalog-source.schema.json` | json | 1051 | `2a3bf14480e022e91ff65af0faad00348c960648907b90f0b16513851273605b` |
+| `schemas/world-catalogs/world-catalog-source.schema.json` | json | 1244 | `ec614e9337ad15352c245f94b7ec5761f2ec56bf919ceb5f70d9c6df87f53670` |

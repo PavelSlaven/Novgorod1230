@@ -1,15 +1,15 @@
 # Обязательные правила работы
 
-Все обязательные инструкции хранятся в каталоге `.github` этого репозитория:
+Все обязательные инструкции зарегистрированы в каноническом knowledge corpus:
 
-- `.github/Правила разработки.txt`;
-- `.github/Правило вызова агента-критика.txt`;
-- `.github/Работа с картой G0-G4.txt`.
+- [Правила разработки](../data/knowledge-source/corpus/DOCUMENTS/development_rules.txt);
+- [Правило вызова агента-критика](../data/knowledge-source/corpus/DOCUMENTS/code_critic_invocation_rule.txt);
+- [Работа с картой G0-G4](../data/knowledge-source/corpus/DOCUMENTS/map_g0_g4_workflow.txt).
 
-Навигационный документ по профильным нормативам: `DOCUMENTS/documents-kg/corpus/DOCUMENTS/llm_documentation_navigation.md`.
+Навигационный документ по профильным нормативам: [llm_documentation_navigation.md](../data/knowledge-source/corpus/DOCUMENTS/llm_documentation_navigation.md).
 
 Высший норматив по материализации и разделению ответственности кода/LLM:
-`data/knowledge-source/corpus/DOCUMENTS/code_driven_world_materialization_architecture.md`.
+[CODE_DRIVEN_WORLD_MATERIALIZATION_ARCHITECTURE.md](../data/knowledge-source/corpus/DOCUMENTS/code_driven_world_materialization_architecture.md).
 
 Если обязательный документ отсутствует или недоступен для чтения, действие выполнять нельзя: необходимо сообщить пользователю, какой именно документ недоступен.
 
@@ -17,22 +17,22 @@
 
 1. Перед выполнением любой задачи прочитай:
 
-   - `Правила разработки.txt`;
-   - `Правило вызова агента-критика.txt`.
+   - `data/knowledge-source/corpus/DOCUMENTS/development_rules.txt`;
+   - `data/knowledge-source/corpus/DOCUMENTS/code_critic_invocation_rule.txt`.
 
-2. Определи, какие подсистемы затрагивает задача, и открой профильные нормативные документы по ним. Для выбора документов используй `DOCUMENTS/documents-kg/corpus/DOCUMENTS/llm_documentation_navigation.md`.
+2. Определи, какие подсистемы затрагивает задача, и открой профильные нормативные документы по ним. Для выбора документов используй `data/knowledge-source/corpus/DOCUMENTS/llm_documentation_navigation.md`.
 
 3. Если задача связана с картой G0–G4, дополнительно обязательно прочитай:
 
-   - `Работа с картой G0-G4.txt`;
-   - актуальный `G1_SEMANTIC_CATALOG.md` соответствующего региона;
-   - архитектуру графа и актуальную схему базы, если меняются узлы, рёбра или поля карты.
+   - `data/knowledge-source/corpus/DOCUMENTS/map_g0_g4_workflow.txt`;
+   - актуальный `G1_SEMANTIC_CATALOG.md` соответствующего региона, для Новгорода — `data/world-catalogs/novgorod/G1_SEMANTIC_CATALOG.md`;
+   - `data/knowledge-source/corpus/DOCUMENTS/read_only_database_and_graph_architecture.md` и `infra/world-base/SCHEMA_REFERENCE.md`, если меняются узлы, рёбра или поля карты.
 
 4. При конфликте источников используй приоритет:
 
    - высший норматив кодовой материализации мира;
    - профильный нормативный документ;
-   - `Правила разработки.txt`;
+   - `data/knowledge-source/corpus/DOCUMENTS/development_rules.txt`;
    - актуальная схема и формальные контракты;
    - навигационные документы;
    - существующая реализация;
@@ -82,7 +82,7 @@
 
 ## Агент-критик
 
-Вызывай агента-критика только по правилам из `Правило вызова агента-критика.txt`.
+Вызывай агента-критика только по правилам из `data/knowledge-source/corpus/DOCUMENTS/code_critic_invocation_rule.txt`.
 
 Если аудит вернул `CHANGES REQUIRED` или `REJECT`:
 

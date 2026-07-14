@@ -1,30 +1,30 @@
 # Обязательные правила работы
 
-Этот корневой файл является актуальной точкой входа для любого агента. Полная зеркальная инструкция хранится в `.github/AGENTS.md`; при расхождении необходимо остановить работу и синхронизировать файлы.
+Этот корневой файл является актуальной точкой входа для любого агента. Расширенная инструкция хранится в `.github/AGENTS.md`; при смысловом расхождении необходимо остановить работу и синхронизировать файлы.
 
 ## Обязательные источники
 
 Перед любой задачей полностью прочитай:
 
-- `.github/Правила разработки.txt`;
-- `.github/Правило вызова агента-критика.txt`;
-- `.github/AGENTS.md`.
+- [Правила разработки](data/knowledge-source/corpus/DOCUMENTS/development_rules.txt);
+- [Правило вызова агента-критика](data/knowledge-source/corpus/DOCUMENTS/code_critic_invocation_rule.txt);
+- [.github/AGENTS.md](.github/AGENTS.md).
 
 Навигация по профильным нормативам:
-`DOCUMENTS/documents-kg/corpus/DOCUMENTS/llm_documentation_navigation.md`.
+[llm_documentation_navigation.md](data/knowledge-source/corpus/DOCUMENTS/llm_documentation_navigation.md).
 
 Высший норматив по материализации и разделению ответственности кода/LLM:
-`data/knowledge-source/corpus/DOCUMENTS/code_driven_world_materialization_architecture.md`.
+[CODE_DRIVEN_WORLD_MATERIALIZATION_ARCHITECTURE.md](data/knowledge-source/corpus/DOCUMENTS/code_driven_world_materialization_architecture.md).
 
 Технический норматив по назначению и наполнению базы:
-`data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md`.
+[WORLD_BASE_MATERIALIZATION_TABLE_REQUIREMENTS.md](data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md).
 
 Если обязательный документ отсутствует или недоступен, действие выполнять нельзя.
 
 ## Порядок работы
 
 1. Определи затронутые подсистемы и прочитай их профильные нормативы.
-2. Для карты G0–G4 дополнительно прочитай `.github/Работа с картой G0-G4.txt`, актуальный региональный `G1_SEMANTIC_CATALOG.md`, архитектуру графа и схему базы.
+2. Для карты G0–G4 дополнительно прочитай [правила работы с картой](data/knowledge-source/corpus/DOCUMENTS/map_g0_g4_workflow.txt), актуальный региональный каталог (для Новгорода — [G1_SEMANTIC_CATALOG.md](data/world-catalogs/novgorod/G1_SEMANTIC_CATALOG.md)), [архитектуру графа](data/knowledge-source/corpus/DOCUMENTS/read_only_database_and_graph_architecture.md) и [актуальный справочник схемы базы](infra/world-base/SCHEMA_REFERENCE.md).
 3. Изучи текущую реализацию, контракты, валидаторы, тесты и точки вызова.
 4. Сформулируй границы изменения и критерии готовности.
 5. Вноси минимальные целевые изменения без несвязанного рефакторинга.
@@ -35,7 +35,7 @@
 
 1. `CODE_DRIVEN_WORLD_MATERIALIZATION_ARCHITECTURE.md` для вопросов материализации и границы кода/LLM.
 2. Профильный норматив конкретной подсистемы.
-3. `.github/Правила разработки.txt`.
+3. `data/knowledge-source/corpus/DOCUMENTS/development_rules.txt`.
 4. Актуальная схема и формальные контракты.
 5. Навигационные документы.
 6. Существующая реализация.

@@ -17,6 +17,20 @@ test('documentation outputs are deterministic', async () => {
   assert.deepEqual([...first.entries()], [...second.entries()]);
 });
 
+test('agent instruction links resolve to repository files', async () => {
+  for (const relativePath of ['AGENTS.md', '.github/AGENTS.md', '.github/README.md']) {
+    const absolutePath = join(root, relativePath);
+    const text = await readFile(absolutePath, 'utf8');
+    const targets = [...text.matchAll(/\[[^\]]+\]\(([^)]+)\)/gu)].map((match) => match[1]);
+    assert.ok(targets.length > 0, `${relativePath} must contain repository links`);
+    for (const target of targets) {
+      if (/^[a-z][a-z0-9+.-]*:/iu.test(target)) continue;
+      const resolvedTarget = resolve(dirname(absolutePath), target.split('#')[0]);
+      assert.equal((await stat(resolvedTarget)).isFile(), true, `${relativePath}: missing ${target}`);
+    }
+  }
+});
+
 test('committed documentation and generated data are reproducible', async () => {
   const result = await checkDocumentationOutputs(root);
   assert.equal(result.ok, true, result.errors.join('\n'));

@@ -8,6 +8,7 @@
 
 - [Правила разработки](data/knowledge-source/corpus/DOCUMENTS/development_rules.txt);
 - [Правило вызова агента-критика](data/knowledge-source/corpus/DOCUMENTS/code_critic_invocation_rule.txt);
+- [CODE_DRIVEN_WORLD_MATERIALIZATION_ARCHITECTURE.md](data/knowledge-source/corpus/DOCUMENTS/code_driven_world_materialization_architecture.md);
 - [.github/AGENTS.md](.github/AGENTS.md).
 
 Навигация по профильным нормативам:
@@ -21,15 +22,18 @@
 
 Если обязательный документ отсутствует или недоступен, действие выполнять нельзя.
 
+Если задача затрагивает базу данных, DDL, импорт, категории, шаблоны, профили, materialization rules, G5, NPC, предметы, контейнеры, имущество, транспорт или bounded decisions, обязательно полностью прочитай [WORLD_BASE_MATERIALIZATION_TABLE_REQUIREMENTS.md](data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md).
+
 ## Порядок работы
 
 1. Определи затронутые подсистемы и прочитай их профильные нормативы.
-2. Для карты G0–G4 дополнительно прочитай [правила работы с картой](data/knowledge-source/corpus/DOCUMENTS/map_g0_g4_workflow.txt), актуальный региональный каталог (для Новгорода — [G1_SEMANTIC_CATALOG.md](data/world-catalogs/novgorod/G1_SEMANTIC_CATALOG.md)), [архитектуру графа](data/knowledge-source/corpus/DOCUMENTS/read_only_database_and_graph_architecture.md) и [актуальный справочник схемы базы](infra/world-base/SCHEMA_REFERENCE.md).
-3. Изучи текущую реализацию, контракты, валидаторы, тесты и точки вызова.
-4. Сформулируй границы изменения и критерии готовности.
-5. Вноси минимальные целевые изменения без несвязанного рефакторинга.
-6. Запусти относящиеся тесты, затем предусмотренные полные проверки.
-7. При обязательном аудите повторяй цикл исправлений до `PASS` или допустимого `PASS WITH NOTES`.
+2. Для любой задачи G0–G4 обязательно прочитай [правила работы с картой](data/knowledge-source/corpus/DOCUMENTS/map_g0_g4_workflow.txt) и актуальный региональный каталог (для Новгорода — [G1_SEMANTIC_CATALOG.md](data/world-catalogs/novgorod/G1_SEMANTIC_CATALOG.md)).
+3. При изменении структуры графа, узлов, рёбер, координат, полей, импорта или DDL дополнительно прочитай [архитектуру графа](data/knowledge-source/corpus/DOCUMENTS/read_only_database_and_graph_architecture.md), [актуальный справочник схемы базы](infra/world-base/SCHEMA_REFERENCE.md) и [WORLD_BASE_MATERIALIZATION_TABLE_REQUIREMENTS.md](data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md).
+4. Изучи текущую реализацию, контракты, валидаторы, тесты и точки вызова.
+5. Сформулируй границы изменения и критерии готовности.
+6. Вноси минимальные целевые изменения без несвязанного рефакторинга.
+7. Запусти относящиеся тесты, затем предусмотренные полные проверки.
+8. При обязательном аудите повторяй цикл исправлений до `PASS` или допустимого `PASS WITH NOTES`.
 
 ## Приоритет источников
 
@@ -52,7 +56,7 @@
 LLM принимает ограниченные смысловые решения через формальный протокол команд.
 ```
 
-Запрещены смысловые fallback, заглушки, «разумные» значения по умолчанию и автоматическое достраивание отсутствующих фактов. При нехватке обязательных данных этап возвращает типизированную ошибку, останавливает ветку либо использует предусмотренный формальный repair-маршрут.
+Если отсутствуют approved category/template/profile/rule или допустимый candidate set пуст, этап обязан создать типизированный data gap и выполнить hard block. LLM repair в этом случае запрещён. Repair допускается только для исправления формата, контракта или отклонённого LLM-ответа в пределах неизменённого входа и существующего candidate set. Запрещены ослабление фильтра, смысловые fallback, заглушки, «разумные» значения по умолчанию и автоматическое достраивание отсутствующих фактов.
 
 ## Архитектурные требования
 
@@ -60,7 +64,7 @@ LLM принимает ограниченные смысловые решени�
 - Этап не читает скрытое глобальное состояние и не запускает соседние этапы.
 - Оркестратор управляет последовательностью, но не изобретает игровые факты.
 - Кодовая материализация использует только approved, version-pinned и применимые к региону/периоду/сезону данные.
-- LLM выбирает только из предоставленного option set и не исправляет скрытую семантику или write plan произвольно.
+- В bounded decision workflow LLM выбирает только один `option_id` и `command_token` из предоставленного конечного option set. Это ограничение не заменяет отдельные нормативные процедуры генерации персонажа игрока, аудита, разрешённой конкретизации key entity и создания прозы.
 - `world_base` остаётся read-only для runtime; состояние партии записывается атомарно через утверждённый план.
 - Скрытое состояние не попадает в visible context, player-facing прозу, UI или диагностику игрока.
 

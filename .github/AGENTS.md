@@ -11,6 +11,9 @@
 Высший норматив по материализации и разделению ответственности кода/LLM:
 [CODE_DRIVEN_WORLD_MATERIALIZATION_ARCHITECTURE.md](../data/knowledge-source/corpus/DOCUMENTS/code_driven_world_materialization_architecture.md).
 
+Технический норматив по назначению и наполнению базы:
+[WORLD_BASE_MATERIALIZATION_TABLE_REQUIREMENTS.md](../data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md).
+
 Если обязательный документ отсутствует или недоступен для чтения, действие выполнять нельзя: необходимо сообщить пользователю, какой именно документ недоступен.
 
 ## Обязательный порядок работы
@@ -18,17 +21,25 @@
 1. Перед выполнением любой задачи прочитай:
 
    - `data/knowledge-source/corpus/DOCUMENTS/development_rules.txt`;
-   - `data/knowledge-source/corpus/DOCUMENTS/code_critic_invocation_rule.txt`.
+   - `data/knowledge-source/corpus/DOCUMENTS/code_critic_invocation_rule.txt`;
+   - `data/knowledge-source/corpus/DOCUMENTS/code_driven_world_materialization_architecture.md`.
 
-2. Определи, какие подсистемы затрагивает задача, и открой профильные нормативные документы по ним. Для выбора документов используй `data/knowledge-source/corpus/DOCUMENTS/llm_documentation_navigation.md`.
+2. Если задача затрагивает базу данных, DDL, импорт, категории, шаблоны, профили, materialization rules, G5, NPC, предметы, контейнеры, имущество, транспорт или bounded decisions, обязательно полностью прочитай `data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md`.
 
-3. Если задача связана с картой G0–G4, дополнительно обязательно прочитай:
+3. Определи, какие подсистемы затрагивает задача, и открой профильные нормативные документы по ним. Для выбора документов используй `data/knowledge-source/corpus/DOCUMENTS/llm_documentation_navigation.md`.
+
+4. Для любой задачи G0–G4 обязательно прочитай:
 
    - `data/knowledge-source/corpus/DOCUMENTS/map_g0_g4_workflow.txt`;
-   - актуальный `G1_SEMANTIC_CATALOG.md` соответствующего региона, для Новгорода — `data/world-catalogs/novgorod/G1_SEMANTIC_CATALOG.md`;
-   - `data/knowledge-source/corpus/DOCUMENTS/read_only_database_and_graph_architecture.md` и `infra/world-base/SCHEMA_REFERENCE.md`, если меняются узлы, рёбра или поля карты.
+   - актуальный `G1_SEMANTIC_CATALOG.md` соответствующего региона, для Новгорода — `data/world-catalogs/novgorod/G1_SEMANTIC_CATALOG.md`.
 
-4. При конфликте источников используй приоритет:
+5. При изменении структуры графа, узлов, рёбер, координат, полей, импорта или DDL дополнительно прочитай:
+
+   - `data/knowledge-source/corpus/DOCUMENTS/read_only_database_and_graph_architecture.md`;
+   - `infra/world-base/SCHEMA_REFERENCE.md`;
+   - `data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md`.
+
+6. При конфликте источников используй приоритет:
 
    - высший норматив кодовой материализации мира;
    - профильный нормативный документ;
@@ -57,17 +68,14 @@
 ## Архитектурные запреты
 
 1. Код не придумывает категории, исторические факты и отсутствующие варианты, но материализует конкретные экземпляры из утверждённых категорий, региональных шаблонов, профилей и правил.
-2. LLM принимает только ограниченные смысловые решения через формальный протокол команд; код проверяет option set, pins, применимость и трассировку решения.
+2. В bounded decision workflow LLM выбирает только один `option_id` и `command_token` из предоставленного конечного option set. Это ограничение не заменяет отдельные нормативные процедуры генерации персонажа игрока, аудита, разрешённой конкретизации key entity и создания прозы.
 3. Запрещено добавлять смысловые fallback, заглушки, «разумные» значения по умолчанию и автоматическое достраивание отсутствующих фактов.
-4. При отсутствии обязательных данных этап должен:
+4. Если отсутствуют approved category/template/profile/rule или допустимый candidate set пуст, этап обязан создать типизированный data gap и выполнить hard block. LLM repair в этом случае запрещён.
+5. Repair допускается только для исправления формата, контракта или отклонённого LLM-ответа в пределах неизменённого входа и существующего candidate set.
 
-   - вернуть типизированную ошибку;
-   - остановить соответствующую ветку конвейера;
-   - либо передать результат на предусмотренный LLM repair.
-
-5. Каждый этап должен оставаться изолированным блоком с формальным входом, выходом, ошибками и явно объявленными зависимостями.
-6. Оркестрация, переход между этапами и решение о продолжении конвейера не должны находиться внутри этапа.
-7. Скрытое состояние мира не должно попадать в видимый контекст, player-facing прозу, игровой UI или диагностические сообщения для игрока.
+6. Каждый этап должен оставаться изолированным блоком с формальным входом, выходом, ошибками и явно объявленными зависимостями.
+7. Оркестрация, переход между этапами и решение о продолжении конвейера не должны находиться внутри этапа.
+8. Скрытое состояние мира не должно попадать в видимый контекст, player-facing прозу, игровой UI или диагностические сообщения для игрока.
 
 ## Проверка результата
 

@@ -42,14 +42,21 @@ export function makeStage25Fixture() {
   const partyDatabaseSchema = {
     version: 1,
     schema: 'party_database_schema_snapshot',
-    schema_version: 'test-1',
+    schema_version: 'party_runtime_v2',
     readonly_checksum: 'schema-checksum',
     tables: [{
-      name: 'party_state',
+      name: 'parties',
       columns: [
-        { name: 'id', data_type: 'TEXT', nullable: false },
+        { name: 'party_id', data_type: 'TEXT', nullable: false },
+        { name: 'schema_version', data_type: 'INTEGER', nullable: false },
+        { name: 'world_revision_id', data_type: 'TEXT', nullable: false },
+        { name: 'world_catalog_digest', data_type: 'TEXT', nullable: false },
+        { name: 'materializer_version', data_type: 'TEXT', nullable: false },
+        { name: 'rng_version', data_type: 'TEXT', nullable: false },
+        { name: 'command_catalog_digest', data_type: 'TEXT', nullable: false },
+        { name: 'profile_bundle_digest', data_type: 'TEXT', nullable: false },
+        { name: 'state_version', data_type: 'BIGINT', nullable: false },
         { name: 'status', data_type: 'TEXT', nullable: false },
-        { name: 'audit_state', data_type: 'JSONB', nullable: true }
       ],
       allowed_operations: ['upsert_with_idempotency']
     }],
@@ -108,7 +115,7 @@ export function makeStage25Fixture() {
       target_table: 'party_state',
       operation_mode: 'upsert_with_idempotency',
       depends_on_batches: [],
-      records: [{ party_id: partyId, status: 'ready' }],
+      records: [{ party_id: partyId, status: 'ready', world_revision_id: 'revision-1', world_catalog_digest: 'catalog-digest', materializer_version: 'code_materializer_v2', rng_version: 'mulberry32_v1', command_catalog_digest: 'command-digest', profile_bundle_digest: 'profile-digest' }],
       source_trace: [{ source_id: 'fixture-source' }]
     }],
     postconditions: [{ check: 'party_ready' }],
@@ -158,7 +165,8 @@ export function makeStage25Fixture() {
     request_id: requestId,
     party_id: partyId,
     player_character_id: playerId,
-    schema_version: 'test-1',
+    schema_version: 'party_runtime_v2',
+    version_pins: { world_revision_id: 'revision-1', world_catalog_digest: 'catalog-digest', materializer_version: 'code_materializer_v2', rng_version: 'mulberry32_v1', command_catalog_digest: 'command-digest', profile_bundle_digest: 'profile-digest' },
     idempotency_key: idempotencyKey
   };
 
@@ -183,10 +191,10 @@ export function makeStage25Fixture() {
     },
     write_batches: [{
       batch_id: 'batch-party-state',
-      target_table: 'party_state',
+      target_table: 'parties',
       operation_mode: 'upsert_with_idempotency',
       depends_on_batches: [],
-      records: [{ id: partyId, status: 'active', audit_state: {} }],
+      records: [{ party_id: partyId, schema_version: 2, world_revision_id: 'revision-1', world_catalog_digest: 'catalog-digest', materializer_version: 'code_materializer_v2', rng_version: 'mulberry32_v1', command_catalog_digest: 'command-digest', profile_bundle_digest: 'profile-digest', state_version: 0, status: 'active' }],
       source_trace: [{ source_id: 'fixture-source' }]
     }],
     postconditions: logicalPlan.postconditions,
@@ -209,7 +217,7 @@ export function makeStage25Fixture() {
       mappings: [{
         batch_id: 'batch-party-state',
         spec_target_table: 'party_state',
-        physical_target_table: 'party_state',
+        physical_target_table: 'parties',
         adapter_version: 1
       }],
       concerns: []

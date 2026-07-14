@@ -33,6 +33,7 @@ export async function buildStage3HistoricalFrameInput(context, options = {}, ser
     version: 1,
     schema: 'historical_frame_selector_input',
     request_id: context.requestId,
+    party_id: options.party_id ?? options.partyCreationContext?.party_id ?? context.partyId ?? null,
     normalized_request: normalizedRequest,
     available_candidates: availableCandidates,
     selection_policy: selectionPolicy,

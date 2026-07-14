@@ -1,12 +1,12 @@
 # Canonical knowledge source
 
-This directory contains 26 canonical documents: 19 byte-faithful sources migrated from the read-only legacy corpus and 7 native project normatives.
+This directory uses corpus manifest v2. Documents may be `proposed`, `active` or `deprecated`; production reads only `active` by default. Canonicalized legacy documents retain separate legacy digest/byte provenance and are never overwritten by re-import.
 
 - `corpus/DOCUMENTS` is the source of truth.
 - `imports/legacy-inventory.json` records the complete classified legacy inventory and permits autonomous verification.
 - `imports/graph` preserves the approved semantic graph snapshot used for deterministic materialization.
 - `imports/rag` preserves approved embedding vectors; chunks are rebuilt from the canonical corpus and matched by exact ordered content.
-- Approved semantic vectors are accepted only when the semantic corpus hash and every ordered chunk field still match; otherwise generation fails closed.
+- Approved semantic vectors are accepted per byte-compatible document. A changed document becomes lexical-only until a new semantic snapshot is approved; invalid vectors or semantic provenance still fail closed.
 - `generated/knowledge-source` contains reproducible runtime artifacts.
 - Runtime code must access documents only through `@rus/knowledge-source`.
 

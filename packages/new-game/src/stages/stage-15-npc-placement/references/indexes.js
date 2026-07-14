@@ -1,4 +1,4 @@
-import { anchorAccess, anchorId, anchorSupportsNpc, anchorVisibility, asArray, candidateId, candidatePlaceTemplateIds, indexMany, matchesAllowedValue, minilocationId, normalizeCapacity, selectedG4NodeId, selectedPlaceTemplateId } from '../shared/utils.js';
+import { anchorAccess, anchorId, anchorSupportsNpc, anchorVisibility, asArray, candidateId, candidatePlaceTemplateIds, indexMany, matchesAllowedValue, matchesPinnedScope, minilocationId, normalizeCapacity, selectedG4NodeId, selectedPlaceTemplateId } from '../shared/utils.js';
 
 export function buildStage15CandidateIndex(input) {
   const candidates = input?.npc_candidate_set?.npc_candidates ?? [];
@@ -86,7 +86,9 @@ export function filterStage15EligibleCandidates(input, indexes = buildStage15Can
   const season = input.historical_frame?.calendar?.season ?? null;
   const timeOfDay = input.historical_frame?.clock?.time_of_day ?? null;
   return indexes.candidates.filter((candidate) => {
-    if (candidate.status === 'rejected' || candidate.status === 'conflict' || candidate.enabled === false) return false;
+    const approved = candidate.status === 'approved';
+    if (!approved || candidate.enabled === false) return false;
+    if (!matchesPinnedScope(candidate, input)) return false;
     const placeIds = candidatePlaceTemplateIds(candidate);
     if (selectedTemplateId && placeIds.length > 0 && !placeIds.includes(selectedTemplateId)) return false;
     if (!matchesAllowedValue(candidate.allowed_seasons ?? candidate.seasons, season)) return false;

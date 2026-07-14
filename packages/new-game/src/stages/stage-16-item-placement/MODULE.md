@@ -1,3 +1,3 @@
 # Stage 16 — item-placement
 
-Isolated modular implementation of new-game Stage 16. Code validates structure, references and approvals; it does not invent world meaning. Allowed dependencies are `@rus/contracts`, neutral new-game boundaries and own modules. Legacy, sibling implementations, provider SDK, DB, server and UI imports are forbidden.
+Code-only Stage 16 materializes item/container/property instances from approved profiles and rules. The `materialize` port is a code service; LLM is limited to audit and cannot repair or create item state.

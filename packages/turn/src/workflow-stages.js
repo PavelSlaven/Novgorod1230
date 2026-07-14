@@ -19,7 +19,7 @@ export function createTurnStageDefinitions({ context, services, rawInput, now })
     stage(2, 'resolve_mode', async (state) => next(state, 'modeResolution', await resolveTurnModeStage({
       playerInput: state.playerInput,
       routingContext: rawInput.routing_context ?? rawInput.routingContext ?? {},
-      modeResolver: services.modeResolver
+      commandRegistry: services.commandRegistry, services, now
     }), context)),
     stage(3, 'load_context', async (state) => next(state, 'retrievedState', await loadTurnContextStage({
       playerInput: state.playerInput,
@@ -30,7 +30,7 @@ export function createTurnStageDefinitions({ context, services, rawInput, now })
       playerInput: state.playerInput,
       modeResolution: state.modeResolution,
       retrievedState: state.retrievedState,
-      availabilityResolver: services.availabilityResolver
+      commandRegistry: services.commandRegistry
     }), context)),
     stage(5, 'checks', async (state) => next(state, 'checks', executeApprovedChecksStage({ availability: state.availability, services }), context)),
     stage(6, 'consequence', async (state) => {
@@ -40,7 +40,7 @@ export function createTurnStageDefinitions({ context, services, rawInput, now })
         retrievedState: state.retrievedState,
         availability: state.availability,
         checks: state.checks,
-        consequenceResolver: services.consequenceResolver
+        commandRegistry: services.commandRegistry
       });
       if (consequence.status === 'repair_required') {
         return { status: 'repair_required', artifact: consequence };
@@ -54,7 +54,7 @@ export function createTurnStageDefinitions({ context, services, rawInput, now })
       retrievedState: state.retrievedState,
       consequence: state.consequence,
       timeUpdate: state.timeUpdate,
-      hiddenUpdater: services.hiddenUpdater
+      commandRegistry: services.commandRegistry
     }), context)),
     stage(9, 'visible_projection', async (state) => next(state, 'visibleContext', await buildVisibleProjectionStage({
       playerInput: state.playerInput,
@@ -72,6 +72,7 @@ export function createTurnStageDefinitions({ context, services, rawInput, now })
     }), context)),
     stage(11, 'persistence_plan', async (state) => next(state, 'writePlan', await buildPersistencePlanStage({
       playerInput: state.playerInput,
+      retrievedState: state.retrievedState,
       modeResolution: state.modeResolution,
       availability: state.availability,
       consequence: state.consequence,
@@ -79,9 +80,9 @@ export function createTurnStageDefinitions({ context, services, rawInput, now })
       hiddenUpdate: state.hiddenUpdate,
       visibleContext: state.visibleContext,
       narration: state.narration,
-      writePlanner: services.writePlanner
+      commandRegistry: services.commandRegistry
     }), context)),
-    stage(12, 'commit', async (state) => next(state, 'commit', await commitTurnStage({ writePlan: state.writePlan, partyStore: services.partyStore }), context)),
+    stage(12, 'commit', async (state) => next(state, 'commit', await commitTurnStage({ writePlan: state.writePlan, partyStore: services.partyStore, materializer: services.materializer }), context)),
     stage(13, 'screen_projection', async (state) => next(state, 'screen', buildScreenProjectionStage({
       playerInput: state.playerInput,
       modeResolution: state.modeResolution,
@@ -111,7 +112,10 @@ function approved(artifact) {
 
 function next(state, key, value, context) {
   context.setStage(stageNameForKey(key), value);
-  return deepFreeze({ ...structuredClone(state), [key]: structuredClone(value) });
+  // The write plan carries an in-process capability seal. Cloning it would
+  // deliberately strip that capability before the repository commit gate.
+  // Other artifacts remain ordinary serializable checkpoint values.
+  return deepFreeze({ ...structuredClone(state), [key]: key === 'writePlan' ? value : structuredClone(value) });
 }
 
 function stageNameForKey(key) {

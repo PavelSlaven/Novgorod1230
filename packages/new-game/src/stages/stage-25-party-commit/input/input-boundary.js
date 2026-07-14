@@ -110,6 +110,10 @@ function validatePartyCreationContext(context, requestId) {
   for (const key of ['party_id', 'player_character_id', 'schema_version', 'idempotency_key', 'payload_hash']) {
     if (!text(context[key])) concerns.push(issue('STAGE25_PARTY_CONTEXT_INVALID', `party_creation_context.${key} is required.`, `party_creation_context.${key}`));
   }
+  if (context.schema_version !== 'party_runtime_v2') concerns.push(issue('STAGE25_PARTY_CONTEXT_INVALID', 'New parties require party_runtime_v2; legacy v1 is unsupported.', 'party_creation_context.schema_version'));
+  for (const key of ['world_revision_id', 'world_catalog_digest', 'materializer_version', 'rng_version', 'command_catalog_digest', 'profile_bundle_digest']) {
+    if (!text(context.version_pins?.[key])) concerns.push(issue('STAGE25_PARTY_CONTEXT_INVALID', `party_creation_context.version_pins.${key} is required.`, `party_creation_context.version_pins.${key}`));
+  }
   if (text(context.payload_hash) && !SHA256_PATTERN.test(context.payload_hash)) concerns.push(issue('STAGE25_IDEMPOTENCY_CONTEXT_INVALID', 'party_creation_context.payload_hash must be sha256.', 'party_creation_context.payload_hash'));
   if (context.request_id != null && context.request_id !== requestId) concerns.push(issue('STAGE25_REQUEST_ID_MISMATCH', 'party_creation_context.request_id mismatch.', 'party_creation_context.request_id'));
   return concerns;
@@ -151,4 +155,3 @@ function validateManifestStructure(manifest, requestId) {
   for (const key of REQUIRED_AUDIT_ARTIFACT_KEYS) if (!byKey.has(key)) concerns.push(issue('STAGE25_AUDIT_CHAIN_INCOMPLETE', `Audit-chain artifact missing: ${key}.`, 'approved_pipeline_manifest.artifacts'));
   return concerns;
 }
-

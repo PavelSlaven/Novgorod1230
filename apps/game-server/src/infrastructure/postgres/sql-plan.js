@@ -13,20 +13,25 @@ export async function executePhysicalWritePlan(client, plan) {
 }
 
 async function executeBatch(client, batch) {
-  const table = quoteIdentifier(batch.target_table);
+  const table = batch.target_schema == null
+    ? quoteIdentifier(batch.target_table)
+    : `${quoteIdentifier(batch.target_schema)}.${quoteIdentifier(batch.target_table)}`;
   if (!ALLOWED_OPERATIONS.has(batch.operation_mode)) throw sqlPlanError('OPERATION_UNSUPPORTED', `Unsupported operation ${batch.operation_mode}.`);
   let affected = 0;
   for (const record of batch.records ?? []) {
     const entries = Object.entries(record);
     if (entries.length === 0) throw sqlPlanError('EMPTY_RECORD', `Batch ${batch.batch_id} contains an empty record.`);
     const columns = entries.map(([name]) => quoteIdentifier(name));
-    const values = entries.map(([, value]) => value);
+    // node-postgres encodes JavaScript arrays as PostgreSQL arrays. Every array
+    // accepted by the party-runtime physical plan is JSONB, so preserve its JSON
+    // shape explicitly instead of relying on the driver's array inference.
+    const values = entries.map(([, value]) => serializePlanValue(value));
     if (batch.operation_mode === 'update_only') {
       if (!Object.hasOwn(record, 'id')) throw sqlPlanError('UPDATE_ID_REQUIRED', `Batch ${batch.batch_id} update_only requires id.`);
       const mutable = entries.filter(([name]) => name !== 'id');
       if (mutable.length === 0) continue;
       const assignments = mutable.map(([name], index) => `${quoteIdentifier(name)} = $${index + 1}`);
-      const params = [...mutable.map(([, value]) => value), record.id];
+      const params = [...mutable.map(([, value]) => serializePlanValue(value)), record.id];
       const result = await client.query(`UPDATE ${table} SET ${assignments.join(', ')} WHERE ${quoteIdentifier('id')} = $${params.length}`, params);
       affected += result.rowCount;
       continue;
@@ -51,4 +56,5 @@ function quoteIdentifier(value) {
   if (!IDENTIFIER.test(name)) throw sqlPlanError('IDENTIFIER_INVALID', `Unsafe SQL identifier: ${name || '<empty>'}.`);
   return `"${name}"`;
 }
+function serializePlanValue(value) { return Array.isArray(value) ? JSON.stringify(value) : value; }
 function sqlPlanError(code, message) { const error = new Error(message); error.code = code; return error; }

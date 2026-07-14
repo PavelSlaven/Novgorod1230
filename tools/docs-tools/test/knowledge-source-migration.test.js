@@ -57,21 +57,24 @@ test('migrated corpus and generated provenance verify without requiring legacy',
 
 test('graph and RAG materializers are deterministic and preserve approved semantic coverage', async () => {
   const manifest = await readCorpusManifest();
-  const semanticGraphFiles = await readSemanticGraphFiles();
-  const expectedStructuralOnlyCount = manifest.documents.filter((record) => !semanticGraphFiles.has(record.file_name)).length;
+  const activeDocuments = manifest.documents.filter((record) => record.status === 'active');
+  const ragA = await buildRagIndexFromSnapshot({ root });
+  const expectedStructuralOnlyCount = activeDocuments.length - ragA.manifest.semantic_document_count;
   const graphA = await buildKnowledgeGraphFromSnapshot({ root });
   const graphB = await buildKnowledgeGraphFromSnapshot({ root });
   assert.equal(JSON.stringify(graphA), JSON.stringify(graphB));
-  assert.equal(graphA.manifest.source_document_count, manifest.documents.length);
+  assert.equal(graphA.manifest.registered_document_count, manifest.documents.length);
+  assert.equal(graphA.manifest.source_document_count, activeDocuments.length);
   assert.equal(graphA.manifest.structural_only_document_count, expectedStructuralOnlyCount);
 
-  const ragA = await buildRagIndexFromSnapshot({ root });
   const ragB = await buildRagIndexFromSnapshot({ root });
   assert.equal(JSON.stringify(ragA), JSON.stringify(ragB));
-  assert.equal(ragA.manifest.source_document_count, manifest.documents.length);
-  assert.equal(ragA.manifest.semantic_document_count, 19);
-  assert.equal(ragA.manifest.lexical_only_document_count, manifest.documents.length - 19);
-  assert.equal(ragA.index.chunk_count, 813);
+  assert.equal(ragA.manifest.registered_document_count, manifest.documents.length);
+  assert.equal(ragA.manifest.source_document_count, activeDocuments.length);
+  assert.ok(ragA.manifest.semantic_document_count > 0);
+  assert.ok(ragA.manifest.semantic_document_count < 19);
+  assert.equal(ragA.manifest.lexical_only_document_count, activeDocuments.length - ragA.manifest.semantic_document_count);
+  assert.equal(ragA.index.chunk_count, ragA.index.chunks.length);
   assert.ok(ragA.lexical_index.chunk_count > 0);
   assert.equal(ragA.lexical_index.chunks.some((chunk) => Object.hasOwn(chunk, 'embedding')), false);
 
@@ -82,8 +85,7 @@ test('graph and RAG materializers are deterministic and preserve approved semant
 
 test('public knowledge writer uses the v2 structural and lexical materializer', { concurrency: false }, async () => {
   const manifest = await readCorpusManifest();
-  const semanticGraphFiles = await readSemanticGraphFiles();
-  const expectedStructuralOnlyCount = manifest.documents.filter((record) => !semanticGraphFiles.has(record.file_name)).length;
+  const activeDocuments = manifest.documents.filter((record) => record.status === 'active');
   const result = await writePublicKnowledgeSourceOutputs({ root });
   assert.deepEqual(result.files, [
     'generated/knowledge-source/graph/GRAPH_REPORT.md',
@@ -100,9 +102,11 @@ test('public knowledge writer uses the v2 structural and lexical materializer', 
   const graph = JSON.parse(await readFile(resolve(root, 'generated/knowledge-source/graph/graph.json'), 'utf8'));
   const ragManifest = JSON.parse(await readFile(resolve(root, 'generated/knowledge-source/rag/manifest.json'), 'utf8'));
   const lexicalIndex = JSON.parse(await readFile(resolve(root, 'generated/knowledge-source/rag/lexical-index.json'), 'utf8'));
-  const expectedLexicalOnlyCount = manifest.documents.length - ragManifest.semantic_document_count;
+  const expectedLexicalOnlyCount = activeDocuments.length - ragManifest.semantic_document_count;
+  const expectedStructuralOnlyCount = expectedLexicalOnlyCount;
   assert.equal(graph.nodes.filter((node) => node.structural_only === true).length, expectedStructuralOnlyCount);
-  assert.equal(ragManifest.semantic_document_count, 19);
+  assert.ok(ragManifest.semantic_document_count > 0);
+  assert.ok(ragManifest.semantic_document_count < 19);
   assert.equal(ragManifest.lexical_only_document_count, expectedLexicalOnlyCount);
   assert.equal(lexicalIndex.chunk_count, lexicalIndex.chunks.length);
   assert.ok(lexicalIndex.chunk_count > 0);
@@ -116,7 +120,7 @@ test('re-importing legacy sources preserves native records, aliases and files', 
   const sourceRoot = join(fixtureRoot, 'data/knowledge-source');
   const beforeManifest = JSON.parse(await readFile(join(sourceRoot, 'corpus-manifest.json'), 'utf8'));
   const beforeAliases = JSON.parse(await readFile(join(sourceRoot, 'source-aliases.json'), 'utf8')).aliases;
-  const nativeRecords = beforeManifest.documents.filter((record) => !record.source_legacy_path);
+  const nativeRecords = beforeManifest.documents.filter((record) => !record.source_legacy_path || record.provenance_mode === 'canonicalized_from_legacy');
   const nativeIds = new Set(nativeRecords.map((record) => record.document_id));
   const nativeAliases = Object.fromEntries(Object.entries(beforeAliases).filter(([, documentId]) => nativeIds.has(documentId)));
   const nativeBytes = new Map();
@@ -180,7 +184,7 @@ test('legacy import rejects history conflicts before changing canonical state', 
 
   await assert.rejects(
     () => importKnowledgeSourceFromLegacy({ root: fixtureRoot }),
-    /Import history conflict .* inventory_sha256/u
+    /Canonicalized legacy provenance changed|Import history conflict .* inventory_sha256/u
   );
   assert.deepEqual(await readFile(manifestPath), manifestBefore);
   assert.deepEqual(await readFile(aliasesPath), aliasesBefore);

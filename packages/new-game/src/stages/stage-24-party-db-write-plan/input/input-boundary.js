@@ -92,6 +92,10 @@ export function validateStage24Input(input = {}) {
   const party = input.party_creation_context;
   if (!isObject(party)) concerns.push(issue('WRITE_PLAN_INPUT_BINDING_INVALID', 'party_creation_context is required.', 'party_creation_context'));
   else for (const key of ['party_id', 'player_character_id', 'idempotency_key', 'schema_version']) if (!text(party[key])) concerns.push(issue('WRITE_PLAN_INPUT_BINDING_INVALID', `party_creation_context.${key} is required.`, `party_creation_context.${key}`));
+  if (party?.schema_version !== 'party_runtime_v2') concerns.push(issue('WRITE_PLAN_DATABASE_SCHEMA_INVALID', 'New parties require party_runtime_v2; legacy party v1 is unsupported.', 'party_creation_context.schema_version'));
+  for (const key of ['world_revision_id', 'world_catalog_digest', 'materializer_version', 'rng_version', 'command_catalog_digest', 'profile_bundle_digest']) {
+    if (!text(party?.version_pins?.[key])) concerns.push(issue('WRITE_PLAN_INPUT_BINDING_INVALID', `party_creation_context.version_pins.${key} is required.`, `party_creation_context.version_pins.${key}`));
+  }
   if (!isObject(input.approved_pipeline_outputs)) concerns.push(issue('WRITE_PLAN_INPUT_BINDING_INVALID', 'approved_pipeline_outputs is required.', 'approved_pipeline_outputs'));
   else for (const key of REQUIRED_ARTIFACT_KEYS) if (input.approved_pipeline_outputs[key] == null) concerns.push(issue('WRITE_PLAN_INPUT_BINDING_INVALID', `approved_pipeline_outputs.${key} is required.`, `approved_pipeline_outputs.${key}`));
   concerns.push(...validateApprovedPipelineManifest(input.approved_pipeline_manifest, input.approved_pipeline_outputs, input.request_id));
@@ -101,16 +105,40 @@ export function validateStage24Input(input = {}) {
   concerns.push(...validateWorldBaseReferenceSnapshot(input.world_base_reference_snapshot));
   if (input.world_base_reference_digest !== computeStage24Digest(input.world_base_reference_snapshot)) concerns.push(issue('WRITE_PLAN_INPUT_BINDING_INVALID', 'world_base_reference_digest mismatch.', 'world_base_reference_digest'));
   for (const [key, expected] of Object.entries(REQUIRED_WRITE_POLICY)) if (input.write_policy?.[key] !== expected) concerns.push(issue('WRITE_PLAN_INPUT_BINDING_INVALID', `write_policy.${key} cannot be weakened.`, `write_policy.${key}`));
+  concerns.push(...validateMaterializationVersionPins(input.approved_pipeline_outputs?.g5_scene_graph?.materialization_run, party?.version_pins));
+  concerns.push(...validateMaterializationIdentity(input.approved_pipeline_outputs?.g5_scene_graph, party));
   const expectedInputDigest = computeStage24Digest({ ...input, party_db_write_plan_input_digest: undefined });
   if (input.party_db_write_plan_input_digest !== expectedInputDigest) concerns.push(issue('WRITE_PLAN_INPUT_BINDING_INVALID', 'party_db_write_plan_input_digest mismatch.', 'party_db_write_plan_input_digest'));
   concerns.push(...validateAuditApprovals(input.approved_pipeline_outputs, input.request_id));
   return concerns;
 }
 
+function validateMaterializationIdentity(g5, party) {
+  const trace = g5?.materialization_run;
+  const seed = trace?.seed_context;
+  const g4Id = g5?.parent_location?.g4_node_id;
+  const concerns = [];
+  if (!text(seed?.party_id) || seed.party_id !== party?.party_id) concerns.push(issue('WRITE_PLAN_MATERIALIZATION_IDENTITY_MISMATCH', 'materialization_run.seed_context.party_id must match party_creation_context.party_id.', 'approved_pipeline_outputs.g5_scene_graph.materialization_run.seed_context.party_id'));
+  if (!text(seed?.g4_id) || seed.g4_id !== g4Id) concerns.push(issue('WRITE_PLAN_MATERIALIZATION_IDENTITY_MISMATCH', 'materialization_run.seed_context.g4_id must match the materialized parent G4.', 'approved_pipeline_outputs.g5_scene_graph.materialization_run.seed_context.g4_id'));
+  return concerns;
+}
+
+export function validateMaterializationVersionPins(trace, pins) {
+  if (!isObject(trace) || !isObject(pins)) return [issue('WRITE_PLAN_VERSION_PIN_MISMATCH', 'Materialization trace and party version pins are required.', 'approved_pipeline_outputs.g5_scene_graph.materialization_run')];
+  const pairs = [
+    ['world_revision_id', 'world_revision_id'],
+    ['catalog_digest', 'world_catalog_digest'],
+    ['materializer_version', 'materializer_version'],
+    ['rng_version', 'rng_version']
+  ];
+  return pairs.flatMap(([traceKey, pinKey]) => trace[traceKey] === pins[pinKey] ? [] : [issue('WRITE_PLAN_VERSION_PIN_MISMATCH', `materialization_run.${traceKey} must match version_pins.${pinKey}.`, `approved_pipeline_outputs.g5_scene_graph.materialization_run.${traceKey}`)]);
+}
+
 export function validatePartyDatabaseSchemaSnapshot(snapshot = {}) {
   const concerns = [];
   if (!isObject(snapshot) || snapshot.version !== 1 || snapshot.schema !== PARTY_DB_SCHEMA_SNAPSHOT_SCHEMA) return [issue('WRITE_PLAN_DATABASE_SCHEMA_INVALID', `Expected ${PARTY_DB_SCHEMA_SNAPSHOT_SCHEMA} version 1.`, 'party_database_schema')];
   if (!text(snapshot.schema_version)) concerns.push(issue('WRITE_PLAN_DATABASE_SCHEMA_INVALID', 'party database schema_version is required.', 'party_database_schema.schema_version'));
+  if (snapshot.schema_version !== 'party_runtime_v2') concerns.push(issue('WRITE_PLAN_DATABASE_SCHEMA_INVALID', 'Party database snapshot must be party_runtime_v2.', 'party_database_schema.schema_version'));
   if (!text(snapshot.readonly_checksum)) concerns.push(issue('WRITE_PLAN_DATABASE_SCHEMA_INVALID', 'party database readonly_checksum is required.', 'party_database_schema.readonly_checksum'));
   for (const key of ['tables', 'foreign_keys', 'unique_constraints', 'check_constraints', 'enum_definitions', 'indexes', 'allowed_operations']) if (!Array.isArray(snapshot[key])) concerns.push(issue('WRITE_PLAN_DATABASE_SCHEMA_INVALID', `party_database_schema.${key} must be an array.`, `party_database_schema.${key}`));
   if (!Array.isArray(snapshot.tables) || snapshot.tables.length === 0) concerns.push(issue('WRITE_PLAN_DATABASE_SCHEMA_INVALID', 'party_database_schema.tables must be non-empty.', 'party_database_schema.tables'));

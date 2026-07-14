@@ -43,6 +43,8 @@ export function candidatePlaceTemplateIds(candidate) {
   return asArray(candidate.selected_candidate_place_template_link_id
     ?? candidate.candidate_place_template_link_ids
     ?? candidate.place_template_ids
+    ?? candidate.place_compatibility?.allowed_place_template_ids
+    ?? candidate.place_compatibility?.allowed_candidate_place_template_link_ids
     ?? candidate.selected_place_template_id).filter(Boolean);
 }
 
@@ -99,10 +101,25 @@ export function normalizeCapacity(anchor) {
   const raw = anchor?.supports?.npc_capacity
     ?? anchor?.supports?.capacity
     ?? anchor?.npc_capacity
-    ?? anchor?.capacity
-    ?? (anchor?.supports?.can_hold_group === true ? 6 : 1);
+    ?? anchor?.capacity;
   const value = Number(raw);
-  return Number.isFinite(value) && value >= 0 ? Math.floor(value) : 1;
+  return raw != null && Number.isInteger(value) && value >= 0 ? value : null;
+}
+
+export function matchesPinnedScope(candidate, input) {
+  const seed = input?.g5_scene_graph?.materialization_run?.seed_context ?? {};
+  const year = input?.historical_frame?.calendar?.year;
+  const season = input?.historical_frame?.calendar?.season;
+  return candidate?.world_revision_id === seed.world_revision_id
+    && candidate?.region_id === seed.region_id
+    && Number.isInteger(year)
+    && Number.isInteger(candidate.valid_from_year)
+    && Number.isInteger(candidate.valid_to_year)
+    && year >= candidate.valid_from_year
+    && year <= candidate.valid_to_year
+    && Array.isArray(candidate.allowed_seasons ?? candidate.seasons)
+    && (candidate.allowed_seasons ?? candidate.seasons).length > 0
+    && ((candidate.allowed_seasons ?? candidate.seasons).includes('all') || (candidate.allowed_seasons ?? candidate.seasons).includes(season));
 }
 
 export function normalizeProfileLevel(value) {

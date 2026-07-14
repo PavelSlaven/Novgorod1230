@@ -30,7 +30,23 @@ export function anchorVisibility(anchor) { return anchor?.visibility?.visibility
 
 export function anchorAccess(anchor) { return anchor?.access?.access_state ?? anchor?.access_state ?? 'unknown'; }
 
-export function normalizeCapacity(anchor, kind) { const raw = anchor?.supports?.[`${kind}_capacity`] ?? anchor?.[`${kind}_capacity`] ?? anchor?.supports?.capacity ?? anchor?.capacity ?? 1; const value = Number(raw); return Number.isFinite(value) && value >= 0 ? Math.floor(value) : 1; }
+export function normalizeCapacity(anchor, kind) { const raw = anchor?.supports?.[`${kind}_capacity`] ?? anchor?.[`${kind}_capacity`] ?? anchor?.supports?.capacity ?? anchor?.capacity; const value = Number(raw); return raw != null && Number.isInteger(value) && value >= 0 ? value : null; }
+
+export function matchesPinnedScope(candidate, input) {
+  const seed = input?.g5_scene_graph?.materialization_run?.seed_context ?? {};
+  const year = input?.historical_frame?.calendar?.year;
+  const season = input?.historical_frame?.calendar?.season;
+  return candidate?.world_revision_id === seed.world_revision_id
+    && candidate?.region_id === seed.region_id
+    && Number.isInteger(year)
+    && Number.isInteger(candidate.valid_from_year)
+    && Number.isInteger(candidate.valid_to_year)
+    && year >= candidate.valid_from_year
+    && year <= candidate.valid_to_year
+    && Array.isArray(candidate.allowed_seasons ?? candidate.seasons)
+    && (candidate.allowed_seasons ?? candidate.seasons).length > 0
+    && ((candidate.allowed_seasons ?? candidate.seasons).includes('all') || (candidate.allowed_seasons ?? candidate.seasons).includes(season));
+}
 
 export function collectPlayerIds(player) {
   const values = [player?.character_id, player?.player_character_id, player?.id, player?.identity?.character_id].filter(Boolean);

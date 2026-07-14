@@ -22,7 +22,7 @@ export async function verifyCanonicalCorpus({ root = '.' } = {}) {
   const aliases = aliasesBytes ? parseJson(aliasesBytes, 'source aliases', errors) : null;
   if (!manifest || !aliases) return freezeResult({ errors, documentCount: 0, legacyCount: 0 });
 
-  if (manifest.schema_version !== 'rus.knowledge_corpus_manifest.v1' || !Array.isArray(manifest.documents)) {
+  if (manifest.schema_version !== 'rus.knowledge_corpus_manifest.v2' || !Array.isArray(manifest.documents)) {
     errors.push('invalid corpus manifest schema');
     return freezeResult({ errors, documentCount: 0, legacyCount: 0 });
   }
@@ -33,12 +33,18 @@ export async function verifyCanonicalCorpus({ root = '.' } = {}) {
   const ids = new Set();
   const paths = new Set();
   let legacyCount = 0;
+  let activeCount = 0;
+  let proposedCount = 0;
   for (const record of manifest.documents) {
     const id = String(record.document_id ?? '');
     const canonicalPath = String(record.canonical_path ?? '');
+    const status = String(record.status ?? '');
     if (!id) errors.push('document without document_id');
     if (ids.has(id)) errors.push(`duplicate document_id: ${id}`);
     ids.add(id);
+    if (!['active', 'proposed', 'deprecated'].includes(status)) errors.push(`${id}: invalid document status ${status || '<empty>'}`);
+    if (status === 'active') activeCount += 1;
+    if (status === 'proposed') proposedCount += 1;
     if (!/^corpus\/DOCUMENTS\/[^/]+$/u.test(canonicalPath)) {
       errors.push(`${id}: invalid canonical_path`);
       continue;
@@ -61,7 +67,7 @@ export async function verifyCanonicalCorpus({ root = '.' } = {}) {
     if (!ids.has(id)) errors.push(`alias ${alias} references unknown document ${id}`);
   }
 
-  return freezeResult({ errors, documentCount: manifest.documents.length, legacyCount, manifestSha256: sha256(manifestBytes) });
+  return freezeResult({ errors, documentCount: manifest.documents.length, activeCount, proposedCount, legacyCount, manifestSha256: sha256(manifestBytes) });
 }
 
 function parseJson(bytes, label, errors) {
@@ -77,11 +83,13 @@ function sha256(value) {
   return createHash('sha256').update(value).digest('hex');
 }
 
-function freezeResult({ errors, documentCount, legacyCount, manifestSha256 = '' }) {
+function freezeResult({ errors, documentCount, activeCount = 0, proposedCount = 0, legacyCount, manifestSha256 = '' }) {
   return Object.freeze({
     ok: errors.length === 0,
     errors: Object.freeze([...errors]),
     document_count: documentCount,
+    active_document_count: activeCount,
+    proposed_document_count: proposedCount,
     legacy_document_count: legacyCount,
     corpus_manifest_sha256: manifestSha256
   });

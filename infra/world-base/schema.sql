@@ -7,5 +7,8 @@
 \ir schema/06.sql
 \ir schema/07.sql
 \ir schema/08.sql
+\ir schema/09.sql
+\ir schema/10.sql
+\ir schema/11.sql
 
 REVOKE CREATE ON SCHEMA world_base FROM PUBLIC;

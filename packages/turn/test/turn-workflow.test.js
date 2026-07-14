@@ -6,6 +6,7 @@ import { createNarrationService } from '@rus/narration';
 import {
   TURN_WORKFLOW_STAGE_IDS,
   TURN_WORKFLOW_STAGE_PLAN,
+  createTurnCommandRegistry,
   runTurnWorkflow,
   validateTurnWorkflowStagePlan
 } from '../src/index.js';
@@ -32,14 +33,13 @@ function validVisibleContext(overrides = {}) {
 }
 
 function createServices(log = [], overrides = {}) {
+  const { command: commandOverrides = {}, ...serviceOverrides } = overrides;
   const commits = [];
   const partyStore = createPartyStore({ transact: async (plan) => {
     commits.push(structuredClone(plan));
     return { committed: true, write_count: plan.write_targets.length };
   } });
-  return {
-    commits,
-    services: {
+  const services = {
       stateReader: {
         async read(request) {
           log.push('load_context');
@@ -54,65 +54,7 @@ function createServices(log = [], overrides = {}) {
           };
         }
       },
-      modeResolver: {
-        async resolve(request) {
-          log.push('resolve_mode');
-          return {
-            version: 1,
-            schema: 'turn_mode_resolution',
-            turn_id: `turn:${request.player_input.party_id}:${request.player_input.turn_number}`,
-            selected_primary_mode: 'attention',
-            secondary_modes: [],
-            intent: {
-              raw_text: request.player_input.raw_text,
-              normalized_intent: 'осмотреть телегу',
-              player_words_are_world_facts: false
-            },
-            resolution_plan: {
-              subsystems: ['visible_context_projection'],
-              checks_to_run: ['visibility'],
-              expected_writes: ['party_state', 'party_visible_context_package', 'party_narrator_output'],
-              state_blocks_to_load: ['party_state', 'current_position', 'clock_weather_light', 'visible_context', 'relevant_hidden_state']
-            }
-          };
-        }
-      },
-      availabilityResolver: {
-        async resolve() {
-          log.push('availability');
-          return {
-            version: 1,
-            schema: 'turn_availability_decision',
-            status: 'check_required',
-            can_attempt: true,
-            reasons: [],
-            check_requests: [{ check_id: 'attention-1', difficulty: 10, attribute_value: 12, skill_bonus: 1 }]
-          };
-        }
-      },
       randomSource: { next: () => 0.45 },
-      consequenceResolver: {
-        async resolve(request) {
-          log.push('consequence');
-          assert.equal(request.check_results.results[0].roll, 10);
-          return {
-            version: 1,
-            schema: 'turn_consequence_package',
-            status: 'resolved',
-            duration_minutes: 5,
-            visible_seed: { observation: 'На оглобле свежая грязь.' },
-            hidden_update: { recent_changes: ['attention-1'] },
-            state_changes: [{ target: 'character_knowledge_map', operation: 'append_observation' }],
-            suggested_actions: [{ label: 'Осмотреть колёса', command: 'осматриваю колёса' }]
-          };
-        }
-      },
-      hiddenUpdater: {
-        async update(request) {
-          log.push('hidden_update');
-          return { approved_update: request.approved_hidden_update };
-        }
-      },
       visibleProjector: {
         async project(request) {
           log.push('visible_projection');
@@ -131,26 +73,20 @@ function createServices(log = [], overrides = {}) {
           return approvedNarration(request.request_id, 'На оглобле темнеет свежая полоса грязи.');
         }
       },
-      writePlanner: {
-        async plan(request) {
-          log.push('persistence_plan');
-          return {
-            version: 1,
-            schema: 'party_turn_write_plan',
-            party_id: request.party_id,
-            turn_id: request.turn_id,
-            write_targets: [
-              { target: 'party_state', value: { turn_number: 1 } },
-              { target: 'party_visible_context_package', value: request.visible_context },
-              { target: 'party_narrator_output', value: request.narration }
-            ]
-          };
-        }
-      },
       partyStore,
-      ...overrides
-    }
+      ...serviceOverrides
   };
+  const defaultMode = { selected_primary_mode: 'attention', secondary_modes: [], resolution_plan: { subsystems: ['visible_context_projection'], checks_to_run: ['visibility'], expected_writes: ['party_state', 'party_visible_context_package', 'party_narrator_output'], state_blocks_to_load: ['party_state', 'current_position', 'clock_weather_light', 'visible_context', 'relevant_hidden_state'] } };
+  services.commandRegistry = createTurnCommandRegistry([{
+    command_id: commandOverrides.command_id ?? 'inspect_cart', target_id: 'place-gate', expected_cost: { kind: 'time', value: 5 }, known_risks: [], reason_visible_to_actor: 'Осмотреть доступный объект.',
+    matches(context) { log.push('resolve_mode'); return (commandOverrides.matches ?? (() => true))(context); },
+    mode: commandOverrides.mode ?? defaultMode,
+    async availability(context) { log.push('availability'); return (commandOverrides.availability ?? (() => ({ version: 1, schema: 'turn_availability_decision', status: 'check_required', can_attempt: true, reasons: [], check_requests: [{ check_id: 'attention-1', difficulty: 10, attribute_value: 12, skill_bonus: 1 }] })))(context); },
+    async consequence(context) { log.push('consequence'); if (!commandOverrides.consequence) assert.equal(context.checks.results[0].roll, 10); return (commandOverrides.consequence ?? (() => ({ version: 1, schema: 'turn_consequence_package', status: 'resolved', duration_minutes: 5, visible_seed: { observation: 'На оглобле свежая грязь.' }, hidden_update: { recent_changes: ['attention-1'] }, state_changes: [{ target: 'character_knowledge_map', operation: 'append_observation' }], suggested_actions: [{ label: 'Осмотреть колёса', command: 'осматриваю колёса' }] })))(context); },
+    async hiddenUpdate(context) { log.push('hidden_update'); return (commandOverrides.hiddenUpdate ?? ((value) => ({ approved_update: value.approved_update })))(context); },
+    async writeTargets(context) { log.push('persistence_plan'); return (commandOverrides.writeTargets ?? ((value) => [{ target: 'party_state', value: { turn_number: 1 } }, { target: 'party_visible_context_package', value: value.visibleContext }, { target: 'party_narrator_output', value: value.narration }]))(context); }
+  }]);
+  return { commits, services };
 }
 
 function approvedNarration(requestId, prose) {
@@ -194,7 +130,7 @@ test('turn stage plan is exact and declarative', () => {
   assert.deepEqual(TURN_WORKFLOW_STAGE_PLAN.map((stage) => stage.id), TURN_WORKFLOW_STAGE_IDS);
 });
 
-test('full modular turn runs semantic ports, approved check, commit and screen projection', async () => {
+test('full modular turn runs a code command, approved check, commit and screen projection', async () => {
   const log = [];
   const { services, commits } = createServices(log);
   const result = await runTurnWorkflow(input(), services, { now: '2026-07-12T10:00:00.000Z' });
@@ -237,30 +173,18 @@ test('turn integrates the canonical narration flow and versioned TurnScreen', as
   assert.equal(result.screen.narration_approval.audit_evidence.length, 1);
 });
 
-test('player words remain intent and are never promoted to world facts by normalization', async () => {
+test('player words remain intent and are never promoted to world facts by the command registry', async () => {
   const { services } = createServices();
-  let observed;
-  services.modeResolver.resolve = async (request) => {
-    observed = request.player_input;
-    return {
-      version: 1,
-      schema: 'turn_mode_resolution',
-      turn_id: 'turn:party-1:1',
-      selected_primary_mode: 'item_property',
-      secondary_modes: [],
-      intent: { raw_text: request.player_input.raw_text, normalized_intent: 'попытка взять нож', player_words_are_world_facts: false },
-      resolution_plan: { subsystems: ['item_access'], checks_to_run: ['physical_access'], expected_writes: ['party_state'], state_blocks_to_load: ['party_state', 'current_position'] }
-    };
-  };
-  await runTurnWorkflow({ ...input(), raw_text: 'Я беру нож со стола.' }, services);
-  assert.equal(observed.contract, 'intent_not_fact');
-  assert.equal(observed.interpretation_status, 'pending');
-  assert.equal('knife_exists' in observed, false);
+  const result = await runTurnWorkflow({ ...input(), raw_text: 'Я беру нож со стола.' }, services);
+  const normalized = result.checkpoint.stages.normalize_intent;
+  assert.equal(normalized.contract, 'intent_not_fact');
+  assert.equal(normalized.interpretation_status, 'pending');
+  assert.equal('knife_exists' in normalized, false);
 });
 
-test('semantic resolver is mandatory and no deterministic fallback is used', async () => {
+test('code command registry is mandatory and no free-form semantic resolver is accepted', async () => {
   const { services } = createServices();
-  delete services.modeResolver;
+  delete services.commandRegistry;
   await assert.rejects(() => runTurnWorkflow(input(), services), (error) => error.code === 'TURN_SERVICES_MISSING');
 });
 
@@ -269,16 +193,9 @@ test('RandomSource is required only when an approved check request exists', asyn
   delete services.randomSource;
   await assert.rejects(() => runTurnWorkflow(input(), services), (error) => error.code === 'TURN_RANDOM_SOURCE_REQUIRED');
 
-  const noCheck = createServices([], {
-    availabilityResolver: {
-      async resolve() {
-        return { version: 1, schema: 'turn_availability_decision', status: 'available', can_attempt: true, reasons: [], check_requests: [] };
-      }
-    },
-    consequenceResolver: {
-      async resolve(request) {
-        assert.equal(request.check_results.results.length, 0);
-        return {
+  const noCheck = createServices([], { command: {
+      availability() { return { version: 1, schema: 'turn_availability_decision', status: 'available', can_attempt: true, reasons: [], check_requests: [] }; },
+      consequence(request) { assert.equal(request.checks.results.length, 0); return {
           version: 1,
           schema: 'turn_consequence_package',
           status: 'resolved',
@@ -287,10 +204,8 @@ test('RandomSource is required only when an approved check request exists', asyn
           hidden_update: {},
           state_changes: [],
           suggested_actions: []
-        };
-      }
-    }
-  });
+        }; }
+  } });
   delete noCheck.services.randomSource;
   const result = await runTurnWorkflow(input(), noCheck.services);
   assert.equal(result.summary.check_count, 0);
@@ -351,11 +266,8 @@ test('legacy compatibility adapter preserves runtime names without importing leg
 
 test('repair_required stops before time, narration and persistence', async () => {
   const log = [];
-  const { services, commits } = createServices(log, {
-    consequenceResolver: {
-      async resolve() {
-        log.push('consequence');
-        return {
+  const { services, commits } = createServices(log, { command: {
+      consequence() { return {
           version: 1,
           schema: 'turn_consequence_package',
           status: 'repair_required',
@@ -364,10 +276,8 @@ test('repair_required stops before time, narration and persistence', async () =>
           hidden_update: {},
           state_changes: [],
           suggested_actions: []
-        };
-      }
-    }
-  });
+        }; }
+  } });
   await assert.rejects(() => runTurnWorkflow(input(), services), (error) => error.code === 'TURN_REPAIR_REQUIRED');
   assert.equal(commits.length, 0);
   assert.equal(log.includes('narration'), false);

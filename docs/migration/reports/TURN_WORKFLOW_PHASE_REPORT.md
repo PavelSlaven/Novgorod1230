@@ -10,25 +10,28 @@
 - Workflow разбит на 13 изолированных блоков.
 - Выполнение блоков идёт через общий `@rus/pipeline-engine`.
 - Добавлены frozen workflow context, checkpoint и run summary.
-- Mode, availability, consequences, visible projection, narration и write plan поступают через injected services.
-- Код не использует regex-routing или deterministic consequence fallback.
+- Mode, availability, consequences и logical write targets принадлежат зарегистрированному code command handler.
+- При неоднозначности LLM получает только подписанный bounded option set; свободные mode/consequence/write-plan ответы не принимаются.
 - Approved check requests исполняются через `@rus/checks-rng` и injected `RandomSource`.
 - Approved duration применяется через `@rus/time-events-history`.
 - Hidden/visible boundary выполняется через `@rus/visibility-knowledge-memory`.
 - Public screen строится через `@rus/presentation`.
-- Commit использует idempotency key и injected party store.
+- Commit использует idempotency key; PostgreSQL party store принимает только in-process sealed plan и сохраняет bounded-decision trace.
+- Добавлен отдельный code-owned workflow autonomous updates с version-bound `party_change_set_v2`.
 - Добавлен `@rus/turn/compat` со старыми runtime-именами без legacy imports.
 - Architecture checker проверяет imports, cycles, file budgets, stage completeness и отсутствие deterministic semantic fallback.
 
 ## Поведение gates
 
-- отсутствующий semantic resolver: configuration failure;
+- отсутствующий/поддельный command registry: configuration failure;
+- unknown/stale/expired bounded command: failure;
 - отсутствующий RandomSource при утверждённой проверке: failure;
 - hidden field в visible package: failure до narrator;
 - failed narration audit: failure до write plan;
 - invalid write target: failure до commit;
 - `repair_required`: pipeline stop до time/narration/persistence;
-- approved write plan: idempotent commit.
+- неподписанный или содержащий физические target tables write plan: failure;
+- approved sealed write plan: atomic idempotent commit.
 
 ## Проверки
 

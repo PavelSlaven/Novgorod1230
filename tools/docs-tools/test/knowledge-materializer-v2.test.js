@@ -25,17 +25,20 @@ test('knowledge materializer preserves approved semantic vectors and indexes onl
   const ragManifest = JSON.parse(outputs.get('generated/knowledge-source/rag/manifest.json'));
   const semanticIndex = JSON.parse(outputs.get('generated/knowledge-source/rag/index.json'));
   const lexicalIndex = JSON.parse(outputs.get('generated/knowledge-source/rag/lexical-index.json'));
+  const activeDocuments = corpusManifest.documents.filter((record) => record.status === 'active');
   const semanticFiles = new Set(semanticIndex.chunks.map((chunk) => basename(String(chunk.file ?? ''))));
-  const semanticDocumentCount = corpusManifest.documents.filter((record) => semanticFiles.has(record.file_name)).length;
-  const lexicalOnlyDocumentCount = corpusManifest.documents.length - semanticDocumentCount;
+  const semanticDocumentCount = activeDocuments.filter((record) => semanticFiles.has(record.file_name)).length;
+  const lexicalOnlyDocumentCount = activeDocuments.length - semanticDocumentCount;
 
-  assert.equal(ragManifest.source_document_count, corpusManifest.documents.length);
+  assert.equal(ragManifest.registered_document_count, corpusManifest.documents.length);
+  assert.equal(ragManifest.source_document_count, activeDocuments.length);
   assert.equal(ragManifest.semantic_document_count, semanticDocumentCount);
   assert.equal(ragManifest.lexical_only_document_count, lexicalOnlyDocumentCount);
   assert.equal(ragManifest.coverage.filter((item) => item.semantic_indexed).length, semanticDocumentCount);
   assert.equal(ragManifest.coverage.filter((item) => item.lexical_indexed).length, lexicalOnlyDocumentCount);
   assert.ok(ragManifest.coverage.every((item) => item.semantic_indexed !== item.lexical_indexed));
-  assert.equal(semanticIndex.chunk_count, 813);
+  assert.equal(semanticIndex.chunk_count, semanticIndex.chunks.length);
+  assert.ok(semanticIndex.chunk_count > 0);
   assert.ok(semanticIndex.chunks.every((chunk) => Array.isArray(chunk.embedding) && chunk.embedding.length === semanticIndex.dimensions));
   assert.ok(lexicalIndex.chunk_count > 0);
   assert.ok(lexicalIndex.chunks.every((chunk) => !Object.hasOwn(chunk, 'embedding')));
@@ -62,20 +65,24 @@ test('RAG manifest separates source provenance from generated artifact digests',
 test('knowledge materializer adds structural graph nodes without invented semantic links', async () => {
   const outputs = await buildKnowledgeSourceOutputsV2({ root });
   const corpusManifest = JSON.parse(await readFile(resolve(root, 'data/knowledge-source/corpus-manifest.json'), 'utf8'));
-  const graphSnapshot = JSON.parse(await readFile(resolve(root, 'data/knowledge-source/imports/graph/graph.json'), 'utf8'));
+  const semanticIndex = JSON.parse(outputs.get('generated/knowledge-source/rag/index.json'));
   const graphManifest = JSON.parse(outputs.get('generated/knowledge-source/graph/manifest.json'));
   const graph = JSON.parse(outputs.get('generated/knowledge-source/graph/graph.json'));
+  const activeDocuments = corpusManifest.documents.filter((record) => record.status === 'active');
   const structuralNodes = graph.nodes.filter((node) => node.structural_only === true);
-  const semanticFiles = new Set((graphSnapshot.nodes ?? []).map((node) => basename(String(node?.source_location?.file ?? node?.sourceLocation?.file ?? node?.source_file ?? ''))).filter(Boolean));
-  const structuralOnlyDocumentCount = corpusManifest.documents.filter((record) => !semanticFiles.has(record.file_name)).length;
+  const semanticFiles = new Set(semanticIndex.chunks.map((chunk) => basename(String(chunk.file ?? ''))));
+  const structuralOnlyDocumentCount = activeDocuments.filter((record) => !semanticFiles.has(record.file_name)).length;
 
-  assert.equal(graphManifest.source_document_count, corpusManifest.documents.length);
+  assert.equal(graphManifest.registered_document_count, corpusManifest.documents.length);
+  assert.equal(graphManifest.source_document_count, activeDocuments.length);
   assert.equal(graphManifest.structural_only_document_count, structuralOnlyDocumentCount);
   assert.equal(structuralNodes.length, structuralOnlyDocumentCount);
   assert.ok(structuralNodes.every((node) => node.type === 'canonical_document'));
+  assert.equal(structuralNodes.some((node) => node.id === 'canonical-document:code-driven-world-materialization-architecture'), true);
+  assert.equal(structuralNodes.some((node) => node.id === 'canonical-document:world-base-materialization-table-requirements'), true);
 });
 
-test('knowledge materializer rejects changed semantic text even when its manifest digest is updated', async () => {
+test('knowledge materializer downgrades changed semantic text to lexical-only coverage', async () => {
   const fixtureRoot = await materializerFixture();
   const sourceRoot = join(fixtureRoot, 'data/knowledge-source');
   const snapshot = JSON.parse(await readFile(join(sourceRoot, 'imports/rag/index.json'), 'utf8'));
@@ -90,10 +97,11 @@ test('knowledge materializer rejects changed semantic text even when its manifes
   record.bytes = changed.length;
   await writeFile(manifestPath, `${JSON.stringify(manifest)}\n`);
 
-  await assert.rejects(
-    () => buildKnowledgeSourceOutputsV2({ root: fixtureRoot }),
-    /semantic corpus hash differs from approved embedding snapshot/u
-  );
+  const outputs = await buildKnowledgeSourceOutputsV2({ root: fixtureRoot });
+  const ragManifest = JSON.parse(outputs.get('generated/knowledge-source/rag/manifest.json'));
+  const coverage = ragManifest.coverage.find((item) => item.file_name === semanticFile);
+  assert.equal(coverage.semantic_indexed, false);
+  assert.equal(coverage.lexical_indexed, true);
 });
 
 test('knowledge materializer rejects invalid semantic graph source locations', async () => {

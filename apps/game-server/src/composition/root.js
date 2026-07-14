@@ -48,8 +48,8 @@ export function createGameCompositionRoot({
       );
       await deliveryStore?.recordAttempt(deliveryAttempt);
       await sessionStore.save(screen.party_id, {
-        version: 1,
-        schema: 'game_server_session',
+        version: 2,
+        schema: 'game_server_session_v2',
         party_id: screen.party_id,
         request_id: normalized.request_id,
         stage26_result: stage26Result,

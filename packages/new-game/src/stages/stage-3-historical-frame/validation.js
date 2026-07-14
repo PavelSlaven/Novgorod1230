@@ -174,6 +174,9 @@ function validateRecordStatuses(output, candidates, policy) {
 
   for (const record of usedRecords.filter(Boolean)) {
     const status = record.status ?? 'unknown';
+    if (status !== 'approved') {
+      concerns.push(makeConcern('HISTORICAL_FRAME_RECORD_NOT_APPROVED', 'Runtime historical frame may use approved candidate records only.', { value: status }));
+    }
     if (STAGE_3_REJECTED_RECORD_STATUSES.includes(status) && policy.reject_conflict_or_rejected !== false) {
       concerns.push(makeConcern('HISTORICAL_FRAME_REJECTED_SOURCE_USED', 'Selected frame uses conflict/rejected candidate record.', { value: status }));
     }

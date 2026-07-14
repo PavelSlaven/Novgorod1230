@@ -273,9 +273,5 @@ async function many(db, sql, params) {
 }
 
 function getAllowedStatuses(policy = {}) {
-  const statuses = ['approved'];
-  if (policy.allow_usable_with_caution !== false) statuses.push('usable_with_caution');
-  if (policy.allow_draft === true) statuses.push('draft');
-  if (policy.allow_needs_review === true) statuses.push('needs_review');
-  return [...new Set(statuses)];
+  return ['approved'];
 }

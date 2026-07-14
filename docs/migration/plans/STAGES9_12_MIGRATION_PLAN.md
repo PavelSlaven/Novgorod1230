@@ -10,7 +10,7 @@
 ## Работы
 
 1. Зафиксировать доступные legacy-реализации Stages 9–12 из recovery-архива как golden fixtures.
-2. Вынести Stage 9 в candidate-bound модуль: policy, input gate, selection validation, source verification, managed repair result и compatibility API.
+2. Вынести Stage 9 в candidate-bound модуль: код формирует закрытый набор подписанных команд, LLM при неоднозначности возвращает только `bounded_decision_result_v2`, а полный `selected_start_node` строит и проверяет код.
 3. Вынести Stage 10 в независимый audit-модуль: read-only DB checks, candidate/template membership, parent chain, access, season/clock, sources и repair route.
 4. Вынести Stage 11 в LLM generation-модуль: input contract, dossier validation, game-profile projection и explicit executor port.
 5. Вынести Stage 12 в отдельный semantic audit-модуль: code precheck, audit input/output validation, immutable dossier boundary и failed-audit builder.
@@ -21,7 +21,7 @@
 ## Критерии готовности
 
 - все baseline named exports сохранены;
-- Stage 9 не создаёт world entities и не выбирает вне candidate set;
+- Stage 9 не создаёт world entities, не выбирает вне candidate set и не принимает свободный semantic JSON от LLM;
 - Stage 10 только читает и проверяет, не заменяет выбранный узел;
 - Stage 11 не получает прямой доступ к DB, provider SDK, UI или sibling implementations;
 - Stage 12 не изменяет dossier и блокирует commit при failed precheck/audit;

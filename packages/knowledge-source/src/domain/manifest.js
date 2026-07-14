@@ -1,6 +1,7 @@
 import { knowledgeSourceError } from '../errors.js';
 
-const SCHEMA = 'rus.knowledge_corpus_manifest.v1';
+const SCHEMA = 'rus.knowledge_corpus_manifest.v2';
+const DOCUMENT_STATUSES = new Set(['proposed', 'active', 'deprecated']);
 
 export function validateCorpusManifest(value) {
   if (!value || typeof value !== 'object' || value.schema_version !== SCHEMA || !Array.isArray(value.documents)) {
@@ -32,14 +33,36 @@ function normalizeDocument(item, index, ids, paths) {
   if (!/^[a-f0-9]{64}$/u.test(digest)) throw knowledgeSourceError('MANIFEST_INVALID', `Invalid SHA-256 for ${documentId}.`);
   const bytes = Number(item.bytes);
   if (!Number.isInteger(bytes) || bytes < 0) throw knowledgeSourceError('MANIFEST_INVALID', `Invalid bytes for ${documentId}.`);
+  const status = optionalText(item.status) || 'active';
+  if (!DOCUMENT_STATUSES.has(status)) {
+    throw knowledgeSourceError('MANIFEST_INVALID', `Invalid status for ${documentId}: ${status}.`);
+  }
+  const sourceLegacyPath = optionalText(item.source_legacy_path);
+  const provenanceMode = optionalText(item.provenance_mode) || (sourceLegacyPath ? 'legacy_mirror' : 'native');
+  if (!['native', 'legacy_mirror', 'canonicalized_from_legacy'].includes(provenanceMode)) {
+    throw knowledgeSourceError('MANIFEST_INVALID', `Invalid provenance_mode for ${documentId}: ${provenanceMode}.`);
+  }
+  if (provenanceMode !== 'native' && !sourceLegacyPath) {
+    throw knowledgeSourceError('MANIFEST_INVALID', `${documentId}: ${provenanceMode} requires source_legacy_path.`);
+  }
+  const sourceLegacySha256 = optionalText(item.source_legacy_sha256);
+  const sourceLegacyBytes = item.source_legacy_bytes == null ? null : Number(item.source_legacy_bytes);
+  if (provenanceMode === 'canonicalized_from_legacy') {
+    if (!/^[a-f0-9]{64}$/u.test(sourceLegacySha256) || !Number.isInteger(sourceLegacyBytes) || sourceLegacyBytes < 0) {
+      throw knowledgeSourceError('MANIFEST_INVALID', `${documentId}: canonicalized provenance requires source legacy digest and bytes.`);
+    }
+  }
   return {
     document_id: documentId,
     canonical_path: canonicalPath,
     file_name: requiredText(item.file_name, `documents[${index}].file_name`),
     sha256: digest,
     bytes,
-    status: optionalText(item.status) || 'active',
-    source_legacy_path: optionalText(item.source_legacy_path)
+    status,
+    provenance_mode: provenanceMode,
+    source_legacy_path: sourceLegacyPath,
+    source_legacy_sha256: sourceLegacySha256,
+    source_legacy_bytes: sourceLegacyBytes
   };
 }
 

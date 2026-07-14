@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "world_materialization_result_v2",
+  "type": "object",
+  "required": ["version", "schema", "status", "party_id", "run_id", "g4_id", "instances", "g5_graph", "npcs", "items", "containers", "relations", "ownership", "schedules", "player_start_position", "validation_report", "proposed_write_set", "trace"],
+  "properties": {
+    "version": { "const": 2 },
+    "schema": { "const": "world_materialization_result_v2" },
+    "status": { "enum": ["materialized", "repaired"] },
+    "party_id": { "type": "string", "minLength": 1 },
+    "run_id": { "type": "string", "minLength": 1 },
+    "g4_id": { "type": "string", "minLength": 1 },
+    "instances": { "type": "array", "items": { "type": "object", "required": ["instance_id", "domain", "slot_key", "candidate_id", "rule_id"], "additionalProperties": true } },
+    "g5_graph": { "type": "object", "required": ["nodes", "edges", "anchors"], "properties": { "nodes": { "type": "array", "items": { "$ref": "#/$defs/instance" } }, "edges": { "type": "array", "items": { "$ref": "#/$defs/instance" } }, "anchors": { "type": "array", "items": { "$ref": "#/$defs/instance" } } }, "additionalProperties": false },
+    "npcs": { "type": "array", "items": { "$ref": "#/$defs/instance" } },
+    "items": { "type": "array", "items": { "$ref": "#/$defs/instance" } },
+    "containers": { "type": "array", "items": { "$ref": "#/$defs/instance" } },
+    "relations": { "type": "array" },
+    "ownership": { "type": "array" },
+    "schedules": { "type": "array" },
+    "player_start_position": { "type": "object", "required": ["g4_id", "g5_node_id", "g5_anchor_id"], "additionalProperties": false },
+    "validation_report": { "type": "object", "required": ["pass", "concerns"] },
+    "proposed_write_set": {
+      "type": "object",
+      "required": ["version", "schema", "transaction", "write_batches"],
+      "properties": {
+        "version": { "const": 2 },
+        "schema": { "const": "party_runtime_write_set_v2" },
+        "transaction": { "type": "object", "required": ["isolation", "atomic", "write_order"] },
+        "write_batches": { "type": "array", "items": { "type": "object", "required": ["batch_id", "target_schema", "target_table", "operation_mode", "records"], "properties": { "batch_id": { "type": "string", "minLength": 1 }, "target_schema": { "const": "party_runtime" }, "target_table": { "enum": ["party_materialization_runs", "party_materialization_choices", "party_g5_nodes", "party_g5_anchors", "party_g5_edges", "party_npcs", "party_npc_traits", "party_npc_relations", "party_npc_knowledge", "party_npc_schedules", "party_containers", "party_items", "party_item_placements", "party_ownership"] }, "operation_mode": { "const": "insert_only" }, "records": { "type": "array", "items": { "type": "object" } } }, "additionalProperties": false } }
+      },
+      "additionalProperties": false
+    },
+    "trace": { "type": "object", "required": ["run_id", "idempotency_key", "materializer_version", "rng_version", "world_revision_id", "seed_context", "seed_digest", "input_digest", "catalog_digest", "result_digest", "choices", "rng_draw_count", "created_refs"], "properties": { "run_id": { "type": "string", "minLength": 1 }, "idempotency_key": { "type": "string", "minLength": 1 }, "result_digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "choices": { "type": "array", "items": { "$ref": "#/$defs/choice" } }, "created_refs": { "type": "array", "items": { "type": "object", "required": ["domain", "instance_id", "candidate_id", "rule_id"] } } }, "additionalProperties": true }
+  },
+  "$defs": {
+    "instance": { "type": "object", "required": ["instance_id", "domain", "slot_key", "candidate_id", "rule_id", "attributes"], "properties": { "instance_id": { "type": "string", "minLength": 1 }, "domain": { "type": "string", "minLength": 1 }, "slot_key": { "type": "string", "minLength": 1 }, "candidate_id": { "type": "string", "minLength": 1 }, "rule_id": { "type": "string", "minLength": 1 }, "attributes": { "type": "object", "minProperties": 1 } }, "additionalProperties": true },
+    "choice": {
+      "type": "object",
+      "required": ["choice_ordinal", "choice_key", "slot_key", "candidate_digest", "candidate_set_digest", "candidate_ids", "selected_id", "selected_weight", "rng_draw", "rng_counter", "rejection_summary"],
+      "properties": {
+        "choice_ordinal": { "type": "integer", "minimum": 0 },
+        "choice_key": { "type": "string", "minLength": 1 },
+        "slot_key": { "type": "string", "minLength": 1 },
+        "candidate_digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "candidate_set_digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "candidate_ids": { "type": "array", "items": { "type": "string" } },
+        "selected_id": { "type": "string", "minLength": 1 },
+        "selected_weight": { "type": "integer", "minimum": 1 },
+        "rng_draw": { "type": "integer", "minimum": 0 },
+        "rng_counter": { "type": "integer", "minimum": 0 },
+        "rejection_summary": { "type": "object" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}

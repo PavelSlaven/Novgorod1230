@@ -32,7 +32,7 @@
 
 Schema `party_runtime`:
 
-- `game_sessions`;
+- `parties` + `party_server_sessions` (только `schema_version=2`);
 - `delivery_attempts`;
 - `delivery_acknowledgements`;
 - `commit_idempotency`.

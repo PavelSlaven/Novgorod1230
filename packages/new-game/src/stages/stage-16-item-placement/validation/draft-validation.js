@@ -90,17 +90,18 @@ export function validateStage16ItemPlacementDraft(draft, input) {
 
     const placement = item?.placement ?? {};
     validateCausalBasis(concerns, placement, `${path}.placement`, policy);
+    const placementTargets = ['g5_anchor_id', 'container_instance_id', 'holder_npc_instance_id', 'holder_player_character_id'].filter((key) => hasText(placement[key]));
+    if (placementTargets.length !== 1) concerns.push(concern('ITEM_PLACEMENT_HOLDER_INVALID', 'Item requires exactly one anchor, container, NPC holder or player holder.', { field: `${path}.placement` }));
     const anchor = placement.g5_anchor_id ? anchorIndex.byId.get(placement.g5_anchor_id) : null;
     if (placement.g5_anchor_id && !anchor) concerns.push(concern('ITEM_PLACEMENT_ANCHOR_NOT_FOUND', 'g5_anchor_id must exist.', { field: `${path}.placement.g5_anchor_id` }));
     if (anchor && !anchorSupportsItem(anchor)) concerns.push(concern('ITEM_PLACEMENT_ANCHOR_CANNOT_HOLD_ITEM', 'Anchor must support item placement.', { field: `${path}.placement.g5_anchor_id` }));
     if (anchor && anchor.parent_g4_node_id && anchor.parent_g4_node_id !== selectedG4) concerns.push(concern('ITEM_PLACEMENT_ANCHOR_OUTSIDE_G4', 'Item anchor must belong to selected G4.', { field: `${path}.placement.g5_anchor_id` }));
-    if (placement.parent_g4_node_id !== selectedG4) concerns.push(concern('ITEM_PLACEMENT_ANCHOR_OUTSIDE_G4', 'Item placement parent_g4_node_id must match selected G4.', { field: `${path}.placement.parent_g4_node_id` }));
+    if (placement.g5_anchor_id && placement.parent_g4_node_id !== selectedG4) concerns.push(concern('ITEM_PLACEMENT_ANCHOR_OUTSIDE_G4', 'Anchored item parent_g4_node_id must match selected G4.', { field: `${path}.placement.parent_g4_node_id` }));
     if (anchor) incrementCapacityConcern(concerns, itemAnchorUsage, placement.g5_anchor_id, anchorIndex.itemCapacityById, 'ITEM_PLACEMENT_ANCHOR_CAPACITY_EXCEEDED', `${path}.placement.g5_anchor_id`);
 
     if (placement.holder_npc_instance_id && !npcIds.has(placement.holder_npc_instance_id)) concerns.push(concern('ITEM_PLACEMENT_NPC_HOLDER_NOT_FOUND', 'NPC holder must exist in Stage 15.', { field: `${path}.placement.holder_npc_instance_id` }));
     if (placement.holder_player_character_id && !playerIds.has(placement.holder_player_character_id)) concerns.push(concern('ITEM_PLACEMENT_PLAYER_HOLDER_NOT_FOUND', 'Player holder must match player_character.', { field: `${path}.placement.holder_player_character_id` }));
     if (placement.container_instance_id && !containers.some((entry) => entry?.container_instance_id === placement.container_instance_id)) concerns.push(concern('ITEM_PLACEMENT_CONTAINER_HOLDER_NOT_FOUND', 'Container holder must exist.', { field: `${path}.placement.container_instance_id` }));
-    if (!placement.g5_anchor_id && !placement.container_instance_id && !placement.holder_npc_instance_id && !placement.holder_player_character_id) concerns.push(concern('ITEM_PLACEMENT_HOLDER_MISSING', 'Item requires anchor, container, NPC holder or player holder.', { field: `${path}.placement` }));
 
     validatePhysicalState(concerns, item?.physical_state, `${path}.physical_state`, policy);
     validateItemVisibility(concerns, item, anchor, input, path, policy);
@@ -121,14 +122,19 @@ export function validateStage16ItemPlacementDraft(draft, input) {
     else if (hasText(candidate.container_profile_id) && container.container_profile_id !== candidate.container_profile_id) concerns.push(concern('ITEM_PLACEMENT_CONTAINER_PROFILE_MISMATCH', 'container_profile_id must match candidate.', { field: `${path}.container_profile_id` }));
     const placement = container?.placement ?? {};
     validateCausalBasis(concerns, placement, `${path}.placement`, policy);
-    const anchor = anchorIndex.byId.get(placement.g5_anchor_id);
-    if (!anchor) concerns.push(concern('ITEM_PLACEMENT_ANCHOR_NOT_FOUND', 'Container g5_anchor_id must exist.', { field: `${path}.placement.g5_anchor_id` }));
-    else {
+    const placementTargets = ['g5_anchor_id', 'container_instance_id', 'holder_npc_instance_id', 'holder_player_character_id'].filter((key) => hasText(placement[key]));
+    if (placementTargets.length !== 1) concerns.push(concern('ITEM_PLACEMENT_CONTAINER_HOLDER_INVALID', 'Container requires exactly one anchor, parent container, NPC holder or player holder.', { field: `${path}.placement` }));
+    const anchor = placement.g5_anchor_id ? anchorIndex.byId.get(placement.g5_anchor_id) : null;
+    if (placement.g5_anchor_id && !anchor) concerns.push(concern('ITEM_PLACEMENT_ANCHOR_NOT_FOUND', 'Container g5_anchor_id must exist.', { field: `${path}.placement.g5_anchor_id` }));
+    else if (anchor) {
       if (!anchorSupportsContainer(anchor)) concerns.push(concern('ITEM_PLACEMENT_ANCHOR_CANNOT_HOLD_CONTAINER', 'Anchor must support container placement.', { field: `${path}.placement.g5_anchor_id` }));
       if (anchor.parent_g4_node_id && anchor.parent_g4_node_id !== selectedG4) concerns.push(concern('ITEM_PLACEMENT_ANCHOR_OUTSIDE_G4', 'Container anchor must belong to selected G4.', { field: `${path}.placement.g5_anchor_id` }));
       incrementCapacityConcern(concerns, containerAnchorUsage, placement.g5_anchor_id, anchorIndex.containerCapacityById, 'ITEM_PLACEMENT_ANCHOR_CAPACITY_EXCEEDED', `${path}.placement.g5_anchor_id`);
     }
-    if (placement.parent_g4_node_id !== selectedG4) concerns.push(concern('ITEM_PLACEMENT_ANCHOR_OUTSIDE_G4', 'Container parent_g4_node_id must match selected G4.', { field: `${path}.placement.parent_g4_node_id` }));
+    if (placement.container_instance_id && (!allContainerIds.has(placement.container_instance_id) || placement.container_instance_id === id)) concerns.push(concern('ITEM_PLACEMENT_CONTAINER_HOLDER_NOT_FOUND', 'Parent container must exist and cannot be self.', { field: `${path}.placement.container_instance_id` }));
+    if (placement.holder_npc_instance_id && !npcIds.has(placement.holder_npc_instance_id)) concerns.push(concern('ITEM_PLACEMENT_NPC_HOLDER_NOT_FOUND', 'Container NPC holder must exist in Stage 15.', { field: `${path}.placement.holder_npc_instance_id` }));
+    if (placement.holder_player_character_id && !playerIds.has(placement.holder_player_character_id)) concerns.push(concern('ITEM_PLACEMENT_PLAYER_HOLDER_NOT_FOUND', 'Container player holder must match player_character.', { field: `${path}.placement.holder_player_character_id` }));
+    if (placement.g5_anchor_id && placement.parent_g4_node_id !== selectedG4) concerns.push(concern('ITEM_PLACEMENT_ANCHOR_OUTSIDE_G4', 'Anchored container parent_g4_node_id must match selected G4.', { field: `${path}.placement.parent_g4_node_id` }));
     validateContainerState(concerns, container, candidate ?? {}, npcIds, propertyIndex, path, policy);
     if (policy.require_source_trace === true && !nonEmptyArray(container?.source_trace)) concerns.push(concern('ITEM_PLACEMENT_SOURCE_MISSING', 'Each container requires source_trace.', { field: `${path}.source_trace` }));
   });

@@ -6,6 +6,7 @@
 ## Выполнено
 
 - Stage 9 перенесён в `packages/new-game/src/stages/stage-9-start-node-selection/`.
+- Stage 9 приведён к `bounded_decision_request_v2/result_v2`: singleton выбирает код, неоднозначный выбор требует подписанный command token; semantic retry со свободным JSON удалён.
 - Stage 10 перенесён в `packages/new-game/src/stages/stage-10-start-place-audit/`.
 - Stage 11 перенесён в `packages/new-game/src/stages/stage-11-player-character/`.
 - Stage 12 перенесён в `packages/new-game/src/stages/stage-12-player-character-audit/`.
@@ -22,7 +23,7 @@
 | 11 | генерация персонажа | 9 | 329 строк |
 | 12 | аудит персонажа | 10 | 203 строки |
 
-Stage core не импортирует legacy, SQL-клиент, provider SDK, UI/server или sibling stage implementations. DB-доступ Stage 10 и LLM executors Stages 9/11/12 передаются только через explicit services.
+Stage core не импортирует legacy, SQL-клиент, provider SDK, UI/server или sibling stage implementations. DB-доступ Stage 10 и bounded-decision/LLM executors Stages 9/11/12 передаются только через explicit services.
 
 ## Проверки
 

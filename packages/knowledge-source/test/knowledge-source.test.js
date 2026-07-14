@@ -22,9 +22,11 @@ async function fixture() {
   await mkdir(join(generated, 'graph'), { recursive: true });
   await mkdir(join(generated, 'rag'), { recursive: true });
   const text = '# Alpha\n\nCanonical text.\nSecond line.\n';
+  const proposedText = '# Beta\n\nProposed text.\n';
   await writeFile(join(corpus, 'alpha.md'), text);
+  await writeFile(join(corpus, 'beta.md'), proposedText);
   await writeFile(join(root, 'corpus-manifest.json'), JSON.stringify({
-    schema_version: 'rus.knowledge_corpus_manifest.v1',
+    schema_version: 'rus.knowledge_corpus_manifest.v2',
     corpus_id: 'fixture',
     documents: [{
       document_id: 'alpha',
@@ -33,11 +35,18 @@ async function fixture() {
       sha256: sha256(text),
       bytes: Buffer.byteLength(text),
       status: 'active'
+    }, {
+      document_id: 'beta',
+      canonical_path: 'corpus/DOCUMENTS/beta.md',
+      file_name: 'beta.md',
+      sha256: sha256(proposedText),
+      bytes: Buffer.byteLength(proposedText),
+      status: 'proposed'
     }]
   }));
   await writeFile(join(root, 'source-aliases.json'), JSON.stringify({
     schema_version: 'rus.knowledge_source_aliases.v1',
-    aliases: { 'alpha.md': 'alpha' }
+    aliases: { 'alpha.md': 'alpha', 'beta.md': 'beta' }
   }));
   const graphText = JSON.stringify({ nodes: [] });
   const ragText = JSON.stringify({ schema_version: 'rus.rag_index.v1', chunks: [] });
@@ -75,6 +84,11 @@ test('reader exposes immutable explicit document contracts without inventing con
   assert.equal(Object.isFrozen(document), true);
   const alias = await reader.getDocument({ document_id: 'alpha.md' });
   assert.equal(alias.document_id, 'alpha');
+  await assert.rejects(() => reader.getDocument({ document_id: 'beta' }), (error) => error.code === 'DOCUMENT_STATUS_NOT_ALLOWED');
+
+  const authoringReader = createKnowledgeSourceReader({ storage, allowedStatuses: ['active', 'proposed'] });
+  assert.deepEqual((await authoringReader.listDocuments()).documents.map((item) => item.document_id), ['alpha', 'beta']);
+  assert.equal((await authoringReader.getDocument({ document_id: 'beta' })).text, '# Beta\n\nProposed text.\n');
 });
 
 test('reader is fail-closed for unknown ids, path traversal, hash mismatch and invalid ranges', async () => {

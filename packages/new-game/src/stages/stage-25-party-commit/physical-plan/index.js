@@ -13,6 +13,7 @@ import {
   text
 } from '../shared/utils.js';
 export function materializeStage25PhysicalPlan({ logical_plan, party_database_schema, world_base_reference_snapshot } = {}) {
+  if (party_database_schema?.schema_version !== 'party_runtime_v2') throw stage25Error('preflight', [issue('STAGE25_LEGACY_PARTY_SCHEMA_FORBIDDEN', 'New parties require party_runtime_v2.', 'party_database_schema.schema_version')], 'Legacy party schema is forbidden.');
   const logical = safeClone(logical_plan);
   const logicalDigest = computePartyDbWritePlanDigest(logical);
   const physical = adaptPartyWritePlanTargets(logical);
@@ -75,7 +76,12 @@ export function validatePhysicalWritePlan(plan = {}, schema = {}, worldSnapshot 
   const graph = validateBatchGraph(plan);
   concerns.push(...graph);
   const safety = validatePartyAdapterTargetSafety(plan);
-  for (const item of array(safety.concerns)) concerns.push(issue(item.code === 'PARTY_ADAPTER_WORLD_BASE_WRITE_FORBIDDEN' ? 'STAGE25_WORLD_BASE_MUTATION' : 'STAGE25_HIDDEN_PUBLIC_LEAK', item.message, item.path ?? 'physical_write_plan'));
+  for (const item of array(safety.concerns)) {
+    const code = item.code === 'PARTY_ADAPTER_WORLD_BASE_MUTATION' ? 'STAGE25_WORLD_BASE_MUTATION'
+      : item.code === 'PARTY_ADAPTER_LEGACY_TARGET' ? 'STAGE25_LEGACY_PARTY_TARGET'
+        : 'STAGE25_HIDDEN_PUBLIC_LEAK';
+    concerns.push(issue(code, item.message, item.path ?? 'physical_write_plan'));
+  }
 
   for (const batch of array(plan.write_batches)) {
     const table = schemaIndex.tables.get(batch.target_table);
@@ -288,4 +294,3 @@ function validateBatchGraph(plan) {
   if (hasDependencyCycle(byId)) concerns.push(issue('STAGE25_DEPENDENCY_INVALID', 'Batch dependency graph contains a cycle.', 'write_batches'));
   return concerns;
 }
-

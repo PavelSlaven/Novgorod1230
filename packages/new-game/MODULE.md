@@ -14,7 +14,7 @@
 ## Не делает
 
 - не содержит конкретный provider transport или PostgreSQL adapter;
-- не сочиняет мир deterministic-кодом;
+- не создаёт категории, историю или отсутствующие варианты;
 - не хранит UI state;
 - не выполняет соседний stage через внутренний импорт.
 
@@ -24,11 +24,11 @@
 
 ## Контракты
 
-Каждый stage принимает точный input contract, выполняет одну смысловую операцию через LLM/ports, валидирует результат и возвращает result либо typed failure.
+Каждый stage принимает точный input contract. Stages 13, 15, 16 и 24 выполняются кодом; LLM используется только в явно разрешённых ролях.
 
 ## Допустимые зависимости
 
-`@rus/contracts`, `@rus/kernel`, `@rus/pipeline-engine`, `@rus/party-store` через публичные APIs.
+`@rus/contracts`, `@rus/kernel`, `@rus/materialization`, `@rus/pipeline-engine`, `@rus/party-store` через публичные APIs.
 
 ## Запрещённые зависимости
 
@@ -36,7 +36,7 @@ Apps, UI, provider SDK, DB driver и внутренние файлы сосед�
 
 ## Инварианты
 
-Код не создаёт смысловые сущности мира; repair выполняется только через утверждённый LLM route; commit идемпотентен.
+Код материализует instances только из approved profiles/rules; LLM repair не создаёт runtime state; commit идемпотентен.
 
 ## Ошибки
 

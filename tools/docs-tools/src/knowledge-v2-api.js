@@ -44,6 +44,7 @@ export async function verifyKnowledgeSourceMigrationV2({ root = '.' } = {}) {
     return Buffer.from('{}');
   });
   const manifest = safeJson(manifestBytes, errors, 'corpus manifest');
+  if (manifest.schema_version !== 'rus.knowledge_corpus_manifest.v2') errors.push('corpus manifest: unsupported schema_version');
   const inventoryByLegacyPath = new Map((inventory.files ?? []).map((item) => [item.legacy_path, item]));
   const unknownInventory = (inventory.files ?? []).filter((item) => item.classification === 'unknown');
   if (unknownInventory.length) errors.push(`stored inventory contains unknown files: ${unknownInventory.map((item) => item.relative_path).join(', ')}`);
@@ -69,7 +70,9 @@ export async function verifyKnowledgeSourceMigrationV2({ root = '.' } = {}) {
     }
     legacyDocumentCount += 1;
     const inventoryRecord = inventoryByLegacyPath.get(record.source_legacy_path);
-    if (!inventoryRecord || inventoryRecord.sha256 !== record.sha256 || inventoryRecord.bytes !== record.bytes) {
+    const expectedLegacySha = record.source_legacy_sha256 ?? record.sha256;
+    const expectedLegacyBytes = record.source_legacy_bytes ?? record.bytes;
+    if (!inventoryRecord || inventoryRecord.sha256 !== expectedLegacySha || inventoryRecord.bytes !== expectedLegacyBytes) {
       hashParity = false;
       errors.push(`${record.document_id}: legacy inventory parity failed`);
       continue;
@@ -77,7 +80,7 @@ export async function verifyKnowledgeSourceMigrationV2({ root = '.' } = {}) {
     const legacy = await readFile(join(projectRoot, record.source_legacy_path)).catch(() => null);
     if (legacy) {
       legacyCompared += 1;
-      if (!current.equals(legacy)) {
+      if (record.provenance_mode !== 'canonicalized_from_legacy' && !current.equals(legacy)) {
         hashParity = false;
         errors.push(`${record.document_id}: available legacy source differs`);
       }

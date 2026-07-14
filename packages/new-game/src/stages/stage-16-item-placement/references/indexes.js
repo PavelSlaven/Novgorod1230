@@ -1,4 +1,4 @@
-import { anchorAccess, anchorId, anchorSupportsContainer, anchorSupportsItem, anchorVisibility, asArray, containerCandidateId, indexMany, itemCandidateId, matchesAllowedValue, matchesPlace, minilocationId, normalizeCapacity, placeTemplateIds, propertyCandidateId, selectedG4NodeId, selectedPlaceTemplateId } from '../shared/utils.js';
+import { anchorAccess, anchorId, anchorSupportsContainer, anchorSupportsItem, anchorVisibility, asArray, containerCandidateId, indexMany, itemCandidateId, matchesAllowedValue, matchesPinnedScope, matchesPlace, minilocationId, normalizeCapacity, placeTemplateIds, propertyCandidateId, selectedG4NodeId, selectedPlaceTemplateId } from '../shared/utils.js';
 
 export function buildStage16ItemCandidateIndexes(input) {
   const candidates = input?.item_profile_candidate_set?.item_profile_candidates ?? [];
@@ -133,7 +133,7 @@ export function filterStage16EligibleItems(input, indexes = buildStage16ItemCand
   const selectedTemplate = selectedPlaceTemplateId(input?.selected_start_node);
   const season = input?.historical_frame?.calendar?.season;
   const timeOfDay = input?.historical_frame?.clock?.time_of_day;
-  return indexes.candidates.filter((candidate) => matchesPlace(candidate, selectedTemplate)
+  return indexes.candidates.filter((candidate) => candidate.status === 'approved' && matchesPinnedScope(candidate, input) && matchesPlace(candidate, selectedTemplate)
     && matchesAllowedValue(candidate.allowed_seasons ?? candidate.seasons, season)
     && matchesAllowedValue(candidate.allowed_time_of_day ?? candidate.time_of_day, timeOfDay)
     && candidate.materialization_allowed !== false);
@@ -143,14 +143,14 @@ export function filterStage16EligibleContainers(input, indexes = buildStage16Con
   const selectedTemplate = selectedPlaceTemplateId(input?.selected_start_node);
   const season = input?.historical_frame?.calendar?.season;
   const timeOfDay = input?.historical_frame?.clock?.time_of_day;
-  return indexes.candidates.filter((candidate) => matchesPlace(candidate, selectedTemplate)
+  return indexes.candidates.filter((candidate) => candidate.status === 'approved' && matchesPinnedScope(candidate, input) && matchesPlace(candidate, selectedTemplate)
     && matchesAllowedValue(candidate.allowed_seasons ?? candidate.seasons, season)
     && matchesAllowedValue(candidate.allowed_time_of_day ?? candidate.time_of_day, timeOfDay)
     && candidate.materialization_allowed !== false);
 }
 
 export function filterStage16EligiblePropertyRules(input, indexes = buildStage16PropertyRuleIndexes(input)) {
-  return indexes.candidates.filter((candidate) => candidate.materialization_allowed !== false && candidate.enabled !== false);
+  return indexes.candidates.filter((candidate) => candidate.status === 'approved' && matchesPinnedScope(candidate, input) && candidate.materialization_allowed !== false && candidate.enabled !== false);
 }
 
 export function filterStage16EligibleAnchors(input, indexes = buildStage16AnchorIndexes(input)) {

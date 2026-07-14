@@ -3,6 +3,7 @@ export { STAGE_STATUS, assertStageDefinition } from './stage.js';
 export { createApproval, verifyApproval } from './approval.js';
 export {
   computeCanonicalDigest,
+  computeMaterializationResultDigest,
   computeNarratorStartingProseDigest,
   computeStage25ArtifactDigest,
   computeStage26ScreenDigest,

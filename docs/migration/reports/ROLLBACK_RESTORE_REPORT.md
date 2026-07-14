@@ -16,7 +16,7 @@
 
 Из изолированной PostgreSQL-compatible test database сохранены и восстановлены:
 
-- `party_runtime.game_sessions`;
+- `party_runtime.parties` и `party_runtime.party_server_sessions`;
 - `party_runtime.delivery_attempts`;
 - `party_runtime.delivery_acknowledgements`;
 - `party_runtime.commit_idempotency`.

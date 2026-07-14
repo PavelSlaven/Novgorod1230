@@ -2,12 +2,10 @@ import { createHash } from 'node:crypto';
 import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import { basename, dirname, join, relative, resolve } from 'node:path';
 import { buildCorpusChunks, computeCorpusHashFromFiles } from './knowledge-chunks.js';
-
 const LEGACY_ROOT = 'legacy/DOCUMENTS/documents-kg';
 const SOURCE_ROOT = 'data/knowledge-source';
 const GENERATED_ROOT = 'generated/knowledge-source';
 const INVENTORY_PATH = `${SOURCE_ROOT}/imports/legacy-inventory.json`;
-
 export async function inventoryLegacyKnowledgeSource({ root = '.' } = {}) {
   const projectRoot = resolve(root);
   const base = join(projectRoot, LEGACY_ROOT);
@@ -225,7 +223,7 @@ export async function importKnowledgeSourceFromLegacy({ root = '.', importedAt =
   const aliasesPath = join(sourceRoot, 'source-aliases.json');
   const currentManifest = await readJsonIfPresent(manifestPath);
   const currentAliases = await readJsonIfPresent(aliasesPath);
-  if (currentManifest && (currentManifest.schema_version !== 'rus.knowledge_corpus_manifest.v1' || !Array.isArray(currentManifest.documents))) {
+  if (currentManifest && (currentManifest.schema_version !== 'rus.knowledge_corpus_manifest.v2' || !Array.isArray(currentManifest.documents))) {
     throw new Error('Invalid existing corpus manifest.');
   }
   if (currentAliases && (currentAliases.schema_version !== 'rus.knowledge_source_aliases.v1' || !currentAliases.aliases || typeof currentAliases.aliases !== 'object')) {
@@ -233,7 +231,7 @@ export async function importKnowledgeSourceFromLegacy({ root = '.', importedAt =
   }
   if (Boolean(currentManifest) !== Boolean(currentAliases)) throw new Error('Existing corpus manifest and source aliases must be present together.');
 
-  const nativeDocuments = (currentManifest?.documents ?? []).filter((record) => !record.source_legacy_path);
+  const nativeDocuments = (currentManifest?.documents ?? []).filter((record) => !record.source_legacy_path || record.provenance_mode === 'canonicalized_from_legacy');
   for (const record of nativeDocuments) {
     if (!/^corpus\/DOCUMENTS\/[^/]+$/u.test(String(record.canonical_path ?? ''))) {
       throw new Error(`${record.document_id}: invalid native canonical_path`);
@@ -257,6 +255,16 @@ export async function importKnowledgeSourceFromLegacy({ root = '.', importedAt =
     const sourcePath = join(projectRoot, item.legacy_path);
     const targetPath = join(sourceRoot, canonicalPath);
     const bytes = await readFile(sourcePath);
+    const preservedCanonicalized = nativeDocuments.find((record) => record.document_id === documentId && record.canonical_path === canonicalPath && record.source_legacy_path === item.legacy_path);
+    if (preservedCanonicalized) {
+      const expectedDigest = preservedCanonicalized.source_legacy_sha256;
+      const expectedBytes = preservedCanonicalized.source_legacy_bytes;
+      if (expectedDigest !== sha256(bytes) || expectedBytes !== bytes.length) {
+        throw new Error(`Canonicalized legacy provenance changed: ${item.legacy_path}`);
+      }
+      aliases[fileName] = documentId;
+      continue;
+    }
     if (nativeIds.has(documentId) || nativePaths.has(canonicalPath)) {
       throw new Error(`Legacy import conflicts with native document: ${documentId}`);
     }
@@ -275,6 +283,7 @@ export async function importKnowledgeSourceFromLegacy({ root = '.', importedAt =
       sha256: sha256(bytes),
       bytes: bytes.length,
       status: 'active',
+      provenance_mode: 'legacy_mirror',
       source_legacy_path: item.legacy_path
     });
     aliases[fileName] = documentId;
@@ -284,7 +293,7 @@ export async function importKnowledgeSourceFromLegacy({ root = '.', importedAt =
   documents.sort((left, right) => left.document_id.localeCompare(right.document_id));
   const corpusManifest = {
     ...(currentManifest ?? {}),
-    schema_version: 'rus.knowledge_corpus_manifest.v1',
+    schema_version: 'rus.knowledge_corpus_manifest.v2',
     corpus_id: currentManifest?.corpus_id ?? 'rus-xiii-canonical-documentation',
     release: currentManifest?.release ?? '0.23.0-migration.23',
     source_release: currentManifest?.source_release ?? '0.22.0-migration.22',
@@ -309,7 +318,7 @@ export async function importKnowledgeSourceFromLegacy({ root = '.', importedAt =
       bytes: await readFile(join(projectRoot, item.legacy_path))
     });
   }
-  const historyWrite = await prepareImportHistory({ sourceRoot, inventory, documents: legacyDocuments, importedAt });
+  const historyWrite = await prepareImportHistory({ sourceRoot, inventory, documents: documents.filter((record) => record.source_legacy_path), importedAt });
   for (const { targetPath, bytes } of legacyWrites) {
     await mkdir(dirname(targetPath), { recursive: true });
     await writeFile(targetPath, bytes);
@@ -324,7 +333,7 @@ export async function importKnowledgeSourceFromLegacy({ root = '.', importedAt =
     await mkdir(dirname(targetPath), { recursive: true });
     await writeFile(targetPath, bytes);
   }
-  return Object.freeze({ document_count: documents.length, legacy_document_count: legacyDocuments.length, inventory_count: inventory.files.length });
+  return Object.freeze({ document_count: documents.length, legacy_document_count: documents.filter((record) => record.source_legacy_path).length, inventory_count: inventory.files.length });
 }
 
 async function buildKnowledgeSourceOutputMap(projectRoot) {
@@ -388,7 +397,7 @@ async function loadCorpus(projectRoot) {
   const sourceRoot = join(projectRoot, SOURCE_ROOT);
   const manifestBytes = await readFile(join(sourceRoot, 'corpus-manifest.json'));
   const manifest = JSON.parse(manifestBytes.toString('utf8'));
-  if (manifest.schema_version !== 'rus.knowledge_corpus_manifest.v1' || !Array.isArray(manifest.documents)) throw new Error('Invalid corpus manifest.');
+  if (manifest.schema_version !== 'rus.knowledge_corpus_manifest.v2' || !Array.isArray(manifest.documents)) throw new Error('Invalid corpus manifest.');
   const corpusFiles = {};
   for (const record of manifest.documents) {
     const bytes = await readFile(join(sourceRoot, record.canonical_path));

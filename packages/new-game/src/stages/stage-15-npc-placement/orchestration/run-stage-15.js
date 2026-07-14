@@ -1,4 +1,5 @@
 import { STAGE15_AUDIT_SCHEMA, STAGE15_DRAFT_SCHEMA, STAGE15_INPUT_SCHEMA } from '@rus/contracts';
+import { materializeNpcPlacement } from '@rus/materialization';
 import { commitStage15Artifacts } from '../commit/commit-stage-15.js';
 import { buildStage15NpcPlacementInput, validateStage15NpcPlacementInput } from '../input/input-boundary.js';
 import { FORMAT_CODES } from '../policy/constants.js';
@@ -8,7 +9,8 @@ import { buildStage15NpcPlacementAuditInput, buildStage15NpcPlacementCodePrechec
 
 export async function runStage15NpcPlacementBlock({
   input,
-  place,
+  materialize = null,
+  place = null,
   audit,
   formatRepair = null,
   semanticRepair = null
@@ -36,17 +38,9 @@ export async function runStage15NpcPlacementBlock({
     eligible_g5_anchors: eligibleAnchors
   };
 
-  let draft = await callJsonRole(place, placerInput, 'InitialNpcPlacer');
+  const materializer = materialize ?? place ?? materializeNpcPlacement;
+  let draft = await callCodeMaterializer(materializer, placerInput, 'NpcCodeMaterializer');
   let precheck = buildStage15NpcPlacementCodePrecheck(draft, input);
-
-  if (!precheck.pass && typeof formatRepair === 'function' && precheck.concerns.some((item) => FORMAT_CODES.has(item.code))) {
-    draft = await callJsonRole(formatRepair, { input, draft, validation_errors: precheck.concerns }, 'InitialNpcPlacementFormatRepairer');
-    precheck = buildStage15NpcPlacementCodePrecheck(draft, input);
-  }
-  if (!precheck.pass && typeof semanticRepair === 'function') {
-    draft = await callJsonRole(semanticRepair, { input, draft, validation_errors: precheck.concerns }, 'InitialNpcPlacementSemanticRepairer');
-    precheck = buildStage15NpcPlacementCodePrecheck(draft, input);
-  }
   if (!precheck.pass) {
     throw stage15Error('Initial NPC placement draft failed code precheck.', precheck.concerns, routeForDraftConcerns(precheck.concerns), { draft, code_precheck: precheck });
   }
@@ -54,7 +48,7 @@ export async function runStage15NpcPlacementBlock({
   let auditOutput = await callJsonRole(audit, buildStage15NpcPlacementAuditInput(input, draft, precheck), 'InitialNpcPlacementAuditor');
   let auditConcerns = validateStage15NpcPlacementAudit(auditOutput, draft, input);
   if (auditConcerns.length > 0 && typeof formatRepair === 'function') {
-    auditOutput = await callJsonRole(formatRepair, { input, draft, audit: auditOutput, validation_errors: auditConcerns }, 'InitialNpcPlacementFormatRepairer');
+    auditOutput = await callJsonRole(formatRepair, { input, draft, audit: auditOutput, validation_errors: auditConcerns }, 'InitialNpcPlacementAuditFormatRepairer');
     auditConcerns = validateStage15NpcPlacementAudit(auditOutput, draft, input);
   }
   if (auditConcerns.length > 0) {
@@ -66,14 +60,6 @@ export async function runStage15NpcPlacementBlock({
     }, { draft, code_precheck: precheck, audit: auditOutput });
   }
   if (auditOutput.pass !== true) {
-    if (typeof semanticRepair === 'function') {
-      draft = await callJsonRole(semanticRepair, { input, draft, audit_concerns: auditOutput.concerns }, 'InitialNpcPlacementSemanticRepairer');
-      precheck = buildStage15NpcPlacementCodePrecheck(draft, input);
-      if (precheck.pass) {
-        auditOutput = await callJsonRole(audit, buildStage15NpcPlacementAuditInput(input, draft, precheck), 'InitialNpcPlacementAuditor');
-        auditConcerns = validateStage15NpcPlacementAudit(auditOutput, draft, input);
-      }
-    }
     if (auditOutput.pass !== true || auditConcerns.length > 0) {
       throw stage15Error('Initial NPC placement semantic audit failed.', auditOutput.concerns ?? auditConcerns, normalizeAuditRepairRoute(auditOutput.repair_route), { draft, code_precheck: precheck, audit: auditOutput });
     }
@@ -115,7 +101,8 @@ export async function runStage15NpcPlacement(context, options = {}) {
     result = { pass: true, draft, code_precheck: precheck, audit: providedAudit };
   } else {
     const executor = options.executor;
-    if (typeof executor !== 'function') throw new Error('Stage 15 requires an executor.');
+    const materialize = options.materialize ?? options.services?.materialize ?? options.place ?? materializeNpcPlacement;
+    if (typeof executor !== 'function' && typeof options.audit !== 'function') throw new Error('Stage 15 requires an audit callback.');
     const roleCall = (role) => async (roleInput) => executor({
       context,
       input: roleInput,
@@ -123,16 +110,15 @@ export async function runStage15NpcPlacement(context, options = {}) {
         id: 15,
         slug: 'npc_placement',
         role,
-        output_schema: role === 'InitialNpcPlacementAuditor' ? STAGE15_AUDIT_SCHEMA : STAGE15_DRAFT_SCHEMA,
+        output_schema: role.includes('Audit') ? STAGE15_AUDIT_SCHEMA : STAGE15_DRAFT_SCHEMA,
         spec_file: '15.txt'
       }
     });
     result = await runStage15NpcPlacementBlock({
       input,
-      place: options.place ?? roleCall('InitialNpcPlacer'),
+      materialize,
       audit: options.audit ?? roleCall('InitialNpcPlacementAuditor'),
-      formatRepair: options.formatRepair ?? roleCall('InitialNpcPlacementFormatRepairer'),
-      semanticRepair: options.semanticRepair ?? roleCall('InitialNpcPlacementSemanticRepairer')
+      formatRepair: options.auditFormatRepair ?? options.formatRepair ?? roleCall('InitialNpcPlacementAuditFormatRepairer')
     });
   }
 
@@ -151,7 +137,7 @@ export function stage15Error(message, concerns, route, snapshots = {}) {
   error.lifecycle = {
     stage_id: 15,
     stage_slug: 'npc_placement',
-    stage_type: 'semantic_generation',
+    stage_type: 'code_materialization',
     failed_gate: route?.repair_kind === 'format' ? 'structural_validation' : 'semantic_validation',
     concerns: concerns ?? [],
     terminal_status: 'stage_failed',
@@ -187,6 +173,11 @@ export function normalizeAuditRepairRoute(route) {
     reason_code: route.reason_code ?? 'NPC_PLACEMENT_AUDIT_FAILED'
   };
   return { repair_kind: 'semantic', return_to_stage: 15, rerun_from_stage: 15, reason_code: 'NPC_PLACEMENT_AUDIT_FAILED' };
+}
+
+export async function callCodeMaterializer(callback, input, role) {
+  if (typeof callback !== 'function') throw new Error(`${role} callback is required.`);
+  return callback(input);
 }
 
 export async function callJsonRole(callback, input, role) {

@@ -2,7 +2,7 @@
 
 ## Источник истины
 
-Единственный канонический runtime-корпус находится в `data/knowledge-source/corpus/DOCUMENTS`. Каждый документ зарегистрирован в `corpus-manifest.json` по стабильному `document_id`, canonical path, размеру и SHA-256. Файлы legacy остаются read-only rollback evidence и не используются production runtime.
+Единственный канонический runtime-корпус находится в `data/knowledge-source/corpus/DOCUMENTS`. Manifest v2 различает `proposed`, `active` и `deprecated`; production reader по умолчанию видит только `active`. Legacy-файлы остаются rollback evidence, а актуализированный канонический документ хранит отдельный digest legacy provenance.
 
 ## Разделение source и generated
 
@@ -10,11 +10,11 @@
 
 ## Граница кода и LLM
 
-Код читает, хеширует, валидирует, ищет буквальные совпадения, проверяет source locations и передаёт выбранные фрагменты. Код не создаёт новые правила, связи, причины, исторические факты или смысловые выводы. Семантическое обогащение допускается только отдельной LLM-процедурой с аудитом и утверждением.
+Код knowledge-source не создаёт нормативные правила или историю. Runtime-код, руководствуясь активными нормативами, может материализовать party instances только из утверждённых categories/templates/profiles/rules. LLM не расширяет каталог и не пишет state patches.
 
 ## Fail-closed
 
-Отсутствующий документ, неверный SHA-256, повреждённый manifest, недопустимый диапазон строк, stale graph/RAG или неизвестный `document_id` останавливают операцию typed failure. Legacy fallback и подстановка похожего документа запрещены.
+Отсутствующий документ, неверный SHA-256, повреждённый manifest, недопустимый диапазон строк или неизвестный `document_id` останавливают операцию typed failure. Approved embedding применяется только при byte-compatible chunks; изменённый документ автоматически становится lexical-only до нового semantic approval. Legacy fallback и подстановка похожего документа запрещены.
 
 ## Доступ
 

@@ -2,12 +2,8 @@ import { turnFailure } from './errors.js';
 
 const REQUIRED = Object.freeze({
   stateReader: 'read',
-  modeResolver: 'resolve',
-  availabilityResolver: 'resolve',
-  consequenceResolver: 'resolve',
   visibleProjector: 'project',
   narrator: 'run',
-  writePlanner: 'plan',
   partyStore: 'commit'
 });
 
@@ -16,6 +12,7 @@ export function validateTurnServices(services = {}) {
   for (const [name, method] of Object.entries(REQUIRED)) {
     if (!services?.[name] || typeof services[name][method] !== 'function') missing.push(`${name}.${method}`);
   }
+  if (!services.commandRegistry) missing.push('commandRegistry');
   if (missing.length) {
     throw turnFailure('TURN_SERVICES_MISSING', `Missing turn services: ${missing.join(', ')}`, { missing });
   }

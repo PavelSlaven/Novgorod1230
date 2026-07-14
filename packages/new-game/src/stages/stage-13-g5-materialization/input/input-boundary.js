@@ -1,7 +1,8 @@
 import { STAGE13_INPUT_SCHEMA } from '@rus/contracts';
-import { isPlainObject, readSelectedChain, readSelectedPlaceTemplateId, readSelectedScaleLevel } from '../../../g5-scene/shared.js';
+import { concern, isPlainObject, readSelectedChain, readSelectedPlaceTemplateId, readSelectedScaleLevel } from '../../../g5-scene/shared.js';
 import { filterAllowedG5Templates, normalizeAllowedG5TemplateSet } from '../../../g5-scene/templates.js';
 import { normalizeStage13MaterializationPolicy } from '../policy/constants.js';
+import { MATERIALIZER_VERSION, RNG_VERSION } from '@rus/materialization';
 
 export function buildStage13G5MaterializationInput(context, options = {}) {
   const allowedG5TemplateSet = normalizeAllowedG5TemplateSet(options.allowed_g5_template_set ?? options.allowedG5TemplateSet ?? context.getStageOutput?.(1300) ?? {});
@@ -20,6 +21,18 @@ export function buildStage13G5MaterializationInput(context, options = {}) {
     npc_candidate_set: options.npc_candidate_set ?? options.npcCandidateSet ?? context.requireStageOutput?.(7, 'NPC candidate set'),
     item_profile_candidate_set: options.item_profile_candidate_set ?? options.itemProfileCandidateSet ?? context.requireStageOutput?.(8, 'item profile candidate set'),
     allowed_g5_template_set: allowedG5TemplateSet,
+    materialization_context: {
+      party_id: options.party_id ?? options.party_creation_context?.party_id ?? context.partyId,
+      g1_id: options.g1_id ?? readSelectedChain(options.selected_start_node ?? options.selectedStartNode ?? context.getStageOutput?.(9))?.g1_node_id,
+      world_revision_id: options.world_revision_id ?? allowedG5TemplateSet.world_revision_id,
+      region_id: options.region_id ?? (options.regional_context_package ?? options.regionalContextPackage ?? context.getStageOutput?.(4))?.region_id,
+      year: options.year ?? (options.historical_frame ?? options.historicalFrame ?? context.getStageOutput?.(3))?.calendar?.year,
+      season: options.season ?? (options.historical_frame ?? options.historicalFrame ?? context.getStageOutput?.(3))?.calendar?.season,
+      trigger: options.trigger ?? 'new_game',
+      occurrence: options.occurrence ?? 0,
+      materializer_version: MATERIALIZER_VERSION,
+      rng_version: RNG_VERSION
+    },
     materialization_policy: normalizeStage13MaterializationPolicy(options.materialization_policy ?? options.policy ?? {})
   };
   return {
@@ -54,12 +67,22 @@ export function validateStage13G5MaterializationInput(input = {}) {
     'npc_candidate_set',
     'item_profile_candidate_set',
     'allowed_g5_template_set',
+    'materialization_context',
     'materialization_policy'
   ]) {
     if (!isPlainObject(input[field])) {
       concerns.push(concern('G5_MATERIALIZATION_INPUT_MISSING_BLOCK', `Stage 13 input.${field} must be an object.`, { field, severity: 'hard_block' }));
     }
   }
+  const materializationContext = input.materialization_context;
+  for (const field of ['party_id', 'g1_id', 'world_revision_id', 'region_id', 'season', 'trigger', 'materializer_version', 'rng_version']) {
+    if (typeof materializationContext?.[field] !== 'string' || !materializationContext[field].trim()) concerns.push(concern('G5_MATERIALIZATION_CONTEXT_INVALID', `materialization_context.${field} is required.`, { field: `materialization_context.${field}`, severity: 'hard_block' }));
+  }
+  if (!Number.isInteger(materializationContext?.year)) concerns.push(concern('G5_MATERIALIZATION_CONTEXT_INVALID', 'materialization_context.year is required.', { field: 'materialization_context.year', severity: 'hard_block' }));
+  if (materializationContext?.world_revision_id !== input.allowed_g5_template_set?.world_revision_id) concerns.push(concern('G5_MATERIALIZATION_CONTEXT_INVALID', 'materialization_context.world_revision_id must match the catalog snapshot.', { field: 'materialization_context.world_revision_id', severity: 'hard_block' }));
+  if (!Number.isInteger(materializationContext?.occurrence) || materializationContext.occurrence < 0) concerns.push(concern('G5_MATERIALIZATION_CONTEXT_INVALID', 'materialization_context.occurrence must be a non-negative integer.', { field: 'materialization_context.occurrence', severity: 'hard_block' }));
+  if (materializationContext?.materializer_version !== MATERIALIZER_VERSION || materializationContext?.rng_version !== RNG_VERSION) concerns.push(concern('G5_MATERIALIZATION_VERSION_PIN_MISMATCH', 'Stage 13 materializer/RNG pins are unsupported.', { field: 'materialization_context', severity: 'hard_block' }));
+  if (materializationContext?.g1_id && materializationContext.g1_id !== readSelectedChain(input.selected_start_node).g1_node_id) concerns.push(concern('G5_MATERIALIZATION_CONTEXT_INVALID', 'materialization_context.g1_id must match selected node chain.', { field: 'materialization_context.g1_id', severity: 'hard_block' }));
   if (input.weather_state?.version !== 1 || input.weather_state?.schema !== 'weather_state') {
     concerns.push(concern('G5_MATERIALIZATION_WEATHER_STATE_INVALID', 'Stage 13 requires approved weather_state version 1.', { field: 'weather_state', severity: 'hard_block' }));
   }

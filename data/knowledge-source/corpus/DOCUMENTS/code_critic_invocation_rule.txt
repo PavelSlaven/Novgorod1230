@@ -24,6 +24,11 @@
 18. изменения затрагивают несколько модулей или этапов;
 19. тесты проходят, но соответствие архитектуре ещё не проверено;
 20. результат предыдущего аудита был `CHANGES REQUIRED` или `REJECT`.
+21. изменены materialization profiles/rules, versioned RNG, trace или no-rematerialization guarantees;
+22. изменён bounded decision protocol, command token, option filtering или code handler registry;
+23. документ `proposed` должен быть повышен в `active`.
+
+Для materialization v2 критик отдельно проверяет: отсутствие `Math.random`; невозможность создать unknown category/template/profile/rule; fail-closed при пустом required candidate set; atomic first-entry; сохранение baseline; state-version и token binding bounded decisions; нормализованный `party_runtime_v2`; read-only `world_base`; соответствие generated schema reference фактическому DDL.
 
 Короткая формула:
 

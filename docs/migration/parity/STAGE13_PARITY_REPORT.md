@@ -16,4 +16,4 @@ Stage 13 G5 materialization сравнивался с baseline `stage13-g5-mater
 - rejection of invalid references and duplicate IDs;
 - `empty_allowed` behavior.
 
-Новых смысловых правил не добавлено. Код только формирует input, вызывает LLM-порт и валидирует результат.
+Этот отчёт фиксирует историческую parity миграции `0.9.0`. После materialization v2 compatibility surface сохранён, но production Stage 13 вызывает code materializer: он создаёт G5 только из approved profile/layout/template/slot bundle и блокирует неполный набор без LLM materialization.

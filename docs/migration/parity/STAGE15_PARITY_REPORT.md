@@ -16,4 +16,4 @@ Stage 15 NPC placement сравнивался с baseline `stage15-npc-placement
 - semantic repair для смысловых нарушений;
 - result, permission и handoff shape.
 
-Код не создаёт NPC, роли, мотивы или размещение; эти данные принимаются только из LLM output.
+Этот отчёт фиксирует историческую parity миграции `0.9.0`. После materialization v2 production Stage 15 создаёт NPC кодом из approved regional profile sets и placement rules; отсутствующие роли, мотивы или размещение не дополняются ни кодом, ни LLM.

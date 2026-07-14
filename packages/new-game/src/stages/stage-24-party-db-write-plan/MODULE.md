@@ -9,7 +9,8 @@
 - связывает утверждённые артефакты Stages 3–23 с manifest и digest;
 - проверяет неизменяемую write policy;
 - формирует code precheck;
-- вызывает builder/auditor/repair roles через явные порты;
+- кодом строит неизменяемый план только для нормализованных таблиц `party_runtime_v2`;
+- вызывает LLM только для аудита плана и ремонта формата audit envelope;
 - проверяет таблицы, поля, операции, ссылки, порядок batch, rollback, source trace и hidden/public boundary;
 - возвращает утверждённый `stage24_party_db_write_plan_result` для Stage 25.
 
@@ -18,7 +19,7 @@
 - не исполняет SQL;
 - не подключается к party DB или world_base;
 - не создаёт мировые сущности и ID;
-- не исправляет смысл плана кодом;
+- не передаёт LLM создание или смысловой ремонт write plan;
 - не разрешает commit или показ игроку без Stage 25.
 
 ## Публичный API
@@ -48,4 +49,5 @@
 - transaction должна быть atomic и dry-run-first;
 - rollback покрывает все batch;
 - hidden-only данные не попадают в player-facing таблицы;
-- код не добавляет и не удаляет смысловые записи.
+- builder требует полный набор version pins и сохраняет materialization run/choices/trace;
+- Stage 25 отклоняет v1 и любые physical targets вне `party_runtime_v2`.

@@ -1,46 +1,46 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import * as stage19 from '@rus/new-game/stages/stage-19/compat';
+import * as stage19 from '@rus/new-game/stages/stage-19';
 import { makeHiddenState, makeStage19Audit, makeStage19Input } from '../fixtures/stage17-19-fixtures.mjs';
 
-test('Stage 19 repairs malformed hidden-state JSON as format only', async () => {
-  const input = makeStage19Input();
-  const output = makeHiddenState(input);
-  const result = await stage19.runStage19HiddenStateBlock({
-    input,
-    build: async () => '{not-json',
-    audit: async () => makeStage19Audit(),
-    formatRepair: async (repairInput) => {
-      assert.equal(repairInput.target, stage19.STAGE19_OUTPUT_SCHEMA);
-      assert.equal(repairInput.constraints.change_format_only, true);
-      return output;
-    },
-    semanticRepair: async () => output,
-    seniorRepair: async () => output
-  });
-  assert.equal(result.pass, true);
-  assert.equal(result.repair_history[0].kind, 'format');
-  assert.deepEqual(result.full_hidden_scene_state, output);
+test('Stage 19 hard-blocks malformed code state without LLM state repair', async () => {
+  let repairCalls = 0;
+  await assert.rejects(stage19.runStage19HiddenState({ input: makeStage19Input(), build: async () => ({ broken: true }), audit: async () => makeStage19Audit(), formatRepair: async () => { repairCalls += 1; return makeHiddenState(); } }), /failed validation/u);
+  assert.equal(repairCalls, 0);
 });
 
-test('Stage 19 semantic repair removes player-facing narrator text', async () => {
+test('Stage 19 hard-blocks forbidden narrator text without semantic repair', async () => {
+  let repairCalls = 0;
   const input = makeStage19Input();
-  const invalid = makeHiddenState(input, { narrator_text: 'Запрещённая проза.' });
-  const valid = makeHiddenState(input);
-  let semanticCalls = 0;
-  const result = await stage19.runStage19HiddenStateBlock({
-    input,
-    build: async () => invalid,
-    audit: async () => makeStage19Audit(),
-    formatRepair: async () => valid,
-    semanticRepair: async (repairInput) => {
-      semanticCalls += 1;
-      assert.ok(repairInput.validationErrors.some((item) => item.code === 'HIDDEN_STATE_CREATED_NARRATOR_TEXT'));
-      return valid;
-    },
-    seniorRepair: async () => valid
+  await assert.rejects(stage19.runStage19HiddenState({ input, build: async () => makeHiddenState(input, { narrator_text: 'Запрещённая проза.' }), audit: async () => makeStage19Audit(), semanticRepair: async () => { repairCalls += 1; return makeHiddenState(input); } }), /failed validation/u);
+  assert.equal(repairCalls, 0);
+});
+
+test('Stage 19 code projection copies approved hidden projections from materialized instances', () => {
+  const input = makeStage19Input((values) => {
+    values.initial_npc_placement.npc_instances = [{
+      npc_instance_id: 'npc-background-1', profile_level: 'background', source_trace: [{ source_id: 'npc-rule-1' }],
+      hidden_state_projection: { forbidden_output_rules: [{ forbidden_rule_id: 'rule-1', forbidden_surface: 'player_facing', reason: 'approved_private_state' }] }
+    }];
   });
-  assert.equal(semanticCalls, 1);
-  assert.equal(result.repair_history[0].kind, 'semantic');
-  assert.deepEqual(result.full_hidden_scene_state, valid);
+  const output = stage19.buildHiddenStateFromApprovedInputs(input);
+  assert.equal(output.hidden_state_status, 'formed');
+  assert.equal(output.forbidden_output_rules[0].forbidden_rule_id, 'rule-1');
+});
+
+test('Stage 19 blocks scene NPC without approved hidden projection', () => {
+  const input = makeStage19Input((values) => {
+    values.initial_npc_placement.npc_instances = [{ npc_instance_id: 'npc-scene-1', profile_level: 'scene' }];
+  });
+  assert.throws(() => stage19.buildHiddenStateFromApprovedInputs(input), (error) => error.code === 'HIDDEN_STATE_PROJECTION_MISSING');
+});
+
+test('Stage 19 cannot mask an entity missing hidden projection with another entity projection', () => {
+  const input = makeStage19Input((values) => {
+    values.initial_npc_placement.npc_instances = [
+      { npc_instance_id: 'npc-scene-covered', profile_level: 'scene', hidden_state_projection: { hidden_npc_state: [{ hidden_npc_state_id: 'hidden-npc-covered', npc_instance_id: 'npc-scene-covered', state: 'watching' }] } },
+      { npc_instance_id: 'npc-scene-missing', profile_level: 'scene' }
+    ];
+  });
+  assert.throws(() => stage19.buildHiddenStateFromApprovedInputs(input), (error) => error.code === 'HIDDEN_STATE_PROJECTION_MISSING' && /npc-scene-missing/u.test(error.message));
 });

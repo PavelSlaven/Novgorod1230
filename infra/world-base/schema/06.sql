@@ -161,7 +161,7 @@ CREATE TABLE world_base.graph_nodes (
     'water_segment','border_crossing','sea_crossing','mountain_pass','desert_oasis','steppe_camp',
     'region_cell','cell_subgraph','map_corridor','geographic_landmark','historical_landmark'
   )),
-  scale_level TEXT CHECK (scale_level IS NULL OR scale_level IN ('G0', 'G1', 'G2', 'G3', 'G4', 'G5')),
+  scale_level TEXT CHECK (scale_level IS NULL OR scale_level IN ('G0', 'G1', 'G2', 'G3', 'G4')),
   parent_node_id TEXT REFERENCES world_base.graph_nodes(id) ON DELETE SET NULL,
   region_id TEXT NOT NULL REFERENCES world_base.regions(id) ON DELETE CASCADE,
   place_id TEXT REFERENCES world_base.places(id) ON DELETE SET NULL,
@@ -218,7 +218,7 @@ CREATE TABLE world_base.graph_edges (
   from_node_id TEXT NOT NULL REFERENCES world_base.graph_nodes(id) ON DELETE CASCADE,
   to_node_id TEXT NOT NULL REFERENCES world_base.graph_nodes(id) ON DELETE CASCADE,
   reverse_edge_id TEXT REFERENCES world_base.graph_edges(id) ON DELETE SET NULL,
-  scale_level TEXT CHECK (scale_level IS NULL OR scale_level IN ('G0', 'G1', 'G2', 'G3', 'G4', 'G5')),
+  scale_level TEXT CHECK (scale_level IS NULL OR scale_level IN ('G0', 'G1', 'G2', 'G3', 'G4')),
   edge_type TEXT CHECK (edge_type IS NULL OR edge_type IN (
     'road','path','river','lake_route','sea_route','winter_road','ford','ferry','bridge',
     'gate','street','door','yard_passage','forest_track','offroad_crossing','mountain_pass','desert_route',

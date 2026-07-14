@@ -1,15 +1,17 @@
 import { computeStage26ScreenDigest } from '@rus/contracts';
 
-export async function createRuntimeBindings() {
+export async function createRuntimeBindings({ ports } = {}) {
   return {
     newGameOptionsFactory: async () => ({}),
     turnServicesFactory: async () => ({}),
     stage25PostcommitProjector: async () => ({ version: 1, schema: 'unused_test_postcommit' }),
-    newGameRunner: async (options) => ({
-      status: 'approved',
-      artifact: stage26Fixture(options.requestId),
-      checkpoint: { outputs: {} }
-    }),
+    newGameRunner: async (options) => {
+      await ports.partyPool.query(`INSERT INTO party_runtime.parties
+        (party_id,schema_version,world_revision_id,world_catalog_digest,materializer_version,rng_version,command_catalog_digest,profile_bundle_digest,status)
+        VALUES ('party-browser-1',2,'revision-fixture','catalog-fixture','code_materializer_v2','mulberry32_v1','commands-fixture','profiles-fixture','active')
+        ON CONFLICT (party_id) DO NOTHING`);
+      return { status: 'approved', artifact: stage26Fixture(options.requestId), checkpoint: { outputs: {} } };
+    },
     turnRunner: async (input) => turnFixture(input)
   };
 }

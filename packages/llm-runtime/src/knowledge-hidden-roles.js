@@ -9,11 +9,8 @@ export const NewGameKnowledgeHiddenRoles = Object.freeze({
   KNOWLEDGE_FORMAT_REPAIRER: 'CharacterKnowledgeMapFormatRepairer',
   KNOWLEDGE_SEMANTIC_REPAIRER: 'CharacterKnowledgeMapSemanticRepairer',
   KNOWLEDGE_SENIOR_REPAIRER: 'CharacterKnowledgeMapSeniorRepairer',
-  HIDDEN_STATE_BUILDER: 'FullHiddenStateBuilder',
   HIDDEN_STATE_AUDITOR: 'FullHiddenStateAuditor',
-  HIDDEN_STATE_FORMAT_REPAIRER: 'FullHiddenStateFormatRepairer',
-  HIDDEN_STATE_SEMANTIC_REPAIRER: 'FullHiddenStateSemanticRepairer',
-  HIDDEN_STATE_SENIOR_REPAIRER: 'FullHiddenStateSeniorRepairer'
+  HIDDEN_STATE_AUDIT_FORMAT_REPAIRER: 'FullHiddenStateAuditFormatRepairer'
 });
 
 export const NEW_GAME_KNOWLEDGE_HIDDEN_ROLE_TIERS = Object.freeze({
@@ -25,11 +22,8 @@ export const NEW_GAME_KNOWLEDGE_HIDDEN_ROLE_TIERS = Object.freeze({
   [NewGameKnowledgeHiddenRoles.KNOWLEDGE_FORMAT_REPAIRER]: 'tier_1_fast',
   [NewGameKnowledgeHiddenRoles.KNOWLEDGE_SEMANTIC_REPAIRER]: 'tier_2_standard',
   [NewGameKnowledgeHiddenRoles.KNOWLEDGE_SENIOR_REPAIRER]: 'tier_3_senior',
-  [NewGameKnowledgeHiddenRoles.HIDDEN_STATE_BUILDER]: 'tier_2_standard',
   [NewGameKnowledgeHiddenRoles.HIDDEN_STATE_AUDITOR]: 'tier_2_standard',
-  [NewGameKnowledgeHiddenRoles.HIDDEN_STATE_FORMAT_REPAIRER]: 'tier_1_fast',
-  [NewGameKnowledgeHiddenRoles.HIDDEN_STATE_SEMANTIC_REPAIRER]: 'tier_2_standard',
-  [NewGameKnowledgeHiddenRoles.HIDDEN_STATE_SENIOR_REPAIRER]: 'tier_3_senior'
+  [NewGameKnowledgeHiddenRoles.HIDDEN_STATE_AUDIT_FORMAT_REPAIRER]: 'tier_1_fast'
 });
 
 export function getNewGameKnowledgeHiddenRoleDescriptor(role, env = process.env) {

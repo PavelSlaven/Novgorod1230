@@ -13,7 +13,7 @@ export async function validateCanonicalCorpusDelegation({ root = '.' } = {}) {
   if (registry?.schema_version !== 'rus.canonical_document_paths.v1' || !Array.isArray(registry.documents)) {
     errors.push('docs/migration/CANONICAL_PATHS.json: invalid registry');
   }
-  if (corpus?.schema_version !== 'rus.knowledge_corpus_manifest.v1' || !Array.isArray(corpus.documents)) {
+  if (corpus?.schema_version !== 'rus.knowledge_corpus_manifest.v2' || !Array.isArray(corpus.documents)) {
     errors.push(`${CORPUS_MANIFEST_PATH}: invalid corpus manifest`);
   }
 

@@ -1,6 +1,6 @@
 # XIII Century World Sim — Documentation
 
-This folder contains the design documentation for a text-first historical RPG simulation set in the 13th century. The project is built around a persistent world model, free-text player input, and LLM-assisted narration. The code stores and validates state; the LLM generates meaning, checks plausibility, and writes player-facing prose only from allowed context.
+This folder contains the normative documentation for a text-first historical RPG simulation set in the 13th century. `code_driven_world_materialization_architecture.md` is the highest materialization rule: code creates concrete party instances from approved categories/templates/profiles/rules, while LLM is limited to bounded decisions, player-character creation, audit and visible-context prose.
 
 ## Current purpose
 
@@ -12,6 +12,8 @@ The project documents define how the LLM should generate, interpret, and update 
 
 | File | Purpose |
 |---|---|
+| `code_driven_world_materialization_architecture.md` | Highest normative boundary between authoring data, code, LLM and party state. |
+| `world_base_materialization_table_requirements.md` | Purpose, population and normalization requirements for world-base materialization data. |
 | `llm_documentation_navigation.md` | LLM navigation, source priority, reading order, cross-document bundles. |
 | `world_generation_and_turns.txt` | World materialization, start pipeline, turn processing, visible/hidden facts. |
 | `player_character_generation.txt` | Player character creation pipeline and output contract. |

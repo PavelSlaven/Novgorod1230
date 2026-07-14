@@ -84,13 +84,23 @@ export function validateNarrationResult(value) {
 export function validateTurnWritePlan(value) {
   const errors = [];
   if (!plain(value)) return fail('turn write plan must be an object');
-  if (value.schema !== 'party_turn_write_plan') errors.push('schema must be party_turn_write_plan');
+  if (value.schema !== 'party_turn_write_plan' || value.version !== 2 || value.sealed_by !== 'turn_code_planner_v2') errors.push('write plan must be sealed party_turn_write_plan v2');
+  const allowedKeys = new Set(['version','schema','sealed_by','party_id','turn_id','base_state_version','write_targets','command_trace','first_entry_materialization','destination_position']);
+  for (const key of Object.keys(value)) if (!allowedKeys.has(key)) errors.push(`write plan field is forbidden: ${key}`);
   requiredText(errors, value.party_id, 'party_id');
   requiredText(errors, value.turn_id, 'turn_id');
   if (!Array.isArray(value.write_targets) || value.write_targets.length === 0) errors.push('write_targets must be non-empty array');
   for (const target of Array.isArray(value.write_targets) ? value.write_targets : []) {
     if (!plain(target)) errors.push('write target must be an object');
-    else if (!TURN_ALLOWED_WRITE_TARGETS.includes(text(target.target))) errors.push(`invalid write target: ${text(target.target) || '<empty>'}`);
+    else {
+      if (Object.keys(target).some((key) => !['target','value'].includes(key))) errors.push('write target contains forbidden fields');
+      if (!TURN_ALLOWED_WRITE_TARGETS.includes(text(target.target))) errors.push(`invalid write target: ${text(target.target) || '<empty>'}`);
+    }
+  }
+  if (value.first_entry_materialization != null) {
+    if (!plain(value.first_entry_materialization)) errors.push('first_entry_materialization must be an object');
+    else requiredText(errors, value.first_entry_materialization.g4_id, 'first_entry_materialization.g4_id');
+    if (!plain(value.destination_position)) errors.push('destination_position must be an object for first-entry materialization');
   }
   return result(errors);
 }

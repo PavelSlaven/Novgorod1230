@@ -126,12 +126,22 @@ Release: `0.23.0-migration.24`
 
 | Path | Type | Bytes | SHA-256 |
 |---|---:|---:|---|
-| `schemas/knowledge-source/corpus-manifest.schema.json` | json | 1228 | `cab81c96ab6921d40629528b3981e1ba892c83361972342c361165355cacbf5d` |
+| `schemas/knowledge-source/corpus-manifest.schema.json` | json | 1487 | `1584e4b2fd950d30c5a5f37691fa70dfeaf1c661dbcf73aae45cedb0fea1dd1e` |
 | `schemas/knowledge-source/graph-manifest.schema.json` | json | 1076 | `b1a7a96fffec9843630415c5e6b456f58f50ab5be97be1c1bd86232874fda4ca` |
 | `schemas/knowledge-source/import-history.schema.json` | json | 1047 | `b608e70c982acee2df00aac19c9a72ed557966e8e9ba83756c6d202053aeaef7` |
 | `schemas/knowledge-source/rag-manifest.schema.json` | json | 1154 | `a02253c557403a0b9e021611692fda448c74011f8e2a255341ebdefa27fb190d` |
 | `schemas/knowledge-source/source-aliases.schema.json` | json | 413 | `ae253bb3e5a0030d67835dc8b965dc2450b3486abaecb87921e7186ff09ad90f` |
-| `schemas/party-db/001_party_runtime.sql` | sql | 912 | `87aa96d2d4761c1908367b43ae9ec976766a79889efbe7a987e8f55de0c3105e` |
+| `schemas/materialization/approved-g5-template-bundle-v2.schema.json` | json | 4898 | `00e44ab46395bdb8923ffa717c208c7fa301171342515febd9256b97c9b4866f` |
+| `schemas/materialization/bounded-decision-request-v2.schema.json` | json | 1960 | `440a5b0d3b48859f53a35b652ff3d33f75c7512332a0ece2c04ef01b213f2568` |
+| `schemas/materialization/bounded-decision-result-v2.schema.json` | json | 605 | `875c4115302982c7b6ff67c70659553436ee0c7557ca5b1e79884652f9d7b287` |
+| `schemas/materialization/catalog-import-manifest-v2.schema.json` | json | 1021 | `469ad1d3728ff5b32fac0d6eb879519bac7bfdd4b120cbb8ec4dd886c3cc01c6` |
+| `schemas/materialization/normalized-instance-candidate-v2.schema.json` | json | 3150 | `ccbd9e9d518a8ab4b28e937e6e4eb19b88a26f3ea6eeff89aaf24432dd9a0b1d` |
+| `schemas/materialization/party-autonomous-update-v2.schema.json` | json | 2515 | `974cf66248b18851ac64b2e80522b0207a28f049088318d578ffbc11b8712397` |
+| `schemas/materialization/party-change-set-v2.schema.json` | json | 2816 | `cabbce3e6d6091391cba5b1fa0b6ea09c69f2db6bbed3ac241563171e95b62c1` |
+| `schemas/materialization/world-materialization-repair-request-v2.schema.json` | json | 945 | `ba34924dd6587d7a5044498766cc8c0ff81167eae9fbee3e98e63ad0fb75fd59` |
+| `schemas/materialization/world-materialization-request-v2.schema.json` | json | 10347 | `3b6739984a1ec31a01d99867f13d8a5c9f4f87f4ab7a2d4ba5b911282629ae7f` |
+| `schemas/materialization/world-materialization-result-v2.schema.json` | json | 5190 | `92ee591037949a9e55ded6fe2813516718b5ade28b7cd7c8b592185c356db163` |
+| `schemas/party-db/001_party_runtime.sql` | sql | 18350 | `864a9f48dcff388a08eacef5fecec118ab213d18167d0a06d7f09c970d25fa2d` |
 | `schemas/world-catalogs/g1-boundary-contract.schema.json` | json | 1199 | `9a255c612dc382e4ead28c5566ae6583878840651904a134f364bb1b1291f3aa` |
 | `schemas/world-catalogs/g1-cell-package.schema.json` | json | 1794 | `d917ec67f99c965c0257f7dbc1b2498e123aff756f4b71c68e7da0f1b6fe8381` |
 | `schemas/world-catalogs/g1-mask-record.schema.json` | json | 1686 | `b7e681769d7aa72c8717fc98dac2b1dbaf7d1e9a33ed163dfb7ede788f2b0a53` |

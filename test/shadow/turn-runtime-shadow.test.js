@@ -8,7 +8,7 @@ import {
   createPartyTurnRuntimeState as createLegacyRuntime,
   runPartyTurnPipeline as runLegacyTurn
 } from '../../legacy/src/world/turn-runtime/index.js';
-import { runTurnWorkflow } from '@rus/turn';
+import { createTurnCommandRegistry, runTurnWorkflow } from '@rus/turn';
 import { compareStructuralObservations } from '@rus/shadow-run';
 
 const NOW = '2026-07-12T10:00:00.000Z';
@@ -122,7 +122,29 @@ function approvedNarration(requestId) {
 }
 
 function modularServices() {
+  const commandRegistry = createTurnCommandRegistry([{
+    command_id: 'inspect_cart',
+    matches: ({ player_input: input }) => input.raw_text === RAW_TEXT,
+    mode: {
+      selected_primary_mode: 'attention',
+      secondary_modes: [],
+      resolution_plan: {
+        subsystems: ['visible_context_projection'], checks_to_run: [],
+        state_blocks_to_load: ['party_state', 'current_position', 'clock_weather_light', 'visible_context'],
+        expected_writes: ['party_state', 'party_visible_context_package', 'party_narrator_output', 'party_player_visible_message']
+      }
+    },
+    availability: () => ({ version: 1, schema: 'turn_availability_decision', status: 'available', can_attempt: true, reasons: [], check_requests: [] }),
+    consequence: () => ({ version: 1, schema: 'turn_consequence_package', status: 'resolved', duration_minutes: 0, visible_seed: { observation: 'Свежая грязь на оглобле.' }, hidden_update: {}, state_changes: [], suggested_actions: [] }),
+    writeTargets: (request) => [
+      { target: 'party_state', value: { turn_number: 1 } },
+      { target: 'party_visible_context_package', value: request.visibleContext },
+      { target: 'party_narrator_output', value: request.narration },
+      { target: 'party_player_visible_message', value: { ready: true } }
+    ]
+  }]);
   return {
+    commandRegistry,
     stateReader: {
       async read() {
         return {

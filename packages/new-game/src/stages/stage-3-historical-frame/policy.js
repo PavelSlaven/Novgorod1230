@@ -36,9 +36,9 @@ export function buildStage3SelectionPolicy(policy = {}) {
   return {
     allow_random: policy.allow_random !== false,
     prefer_approved_records: policy.prefer_approved_records !== false,
-    allow_usable_with_caution: policy.allow_usable_with_caution !== false,
-    allow_draft: policy.allow_draft === true,
-    allow_needs_review: policy.allow_needs_review === true,
+    allow_usable_with_caution: false,
+    allow_draft: false,
+    allow_needs_review: false,
     reject_conflict_or_rejected: policy.reject_conflict_or_rejected !== false,
     require_sources: policy.require_sources !== false,
     max_regions: Number.isFinite(Number(policy.max_regions)) ? Number(policy.max_regions) : 10,

@@ -16,4 +16,4 @@ Stage 16 item/container/property placement сравнивался с baseline `s
 - format repair и semantic repair;
 - result, permission и Stage 16 → 17 handoff shape.
 
-Код не материализует предметы, содержимое контейнеров или право собственности самостоятельно.
+Этот отчёт фиксирует историческую parity миграции `0.9.0`. После materialization v2 production Stage 16 кодом материализует предметы, контейнеры и ownership из approved item/container/property profiles и causal rules; LLM materialization запрещена.

@@ -1,4 +1,5 @@
 import { STAGE16_AUDIT_SCHEMA, STAGE16_DRAFT_SCHEMA, STAGE16_INPUT_SCHEMA } from '@rus/contracts';
+import { materializeItemPlacement } from '@rus/materialization';
 import { commitStage16Artifacts } from '../commit/commit-stage-16.js';
 import { buildStage16ItemPlacementInput, validateStage16ItemPlacementInput } from '../input/input-boundary.js';
 import { FORMAT_CODES } from '../policy/constants.js';
@@ -6,7 +7,7 @@ import { buildStage16AnchorIndexes, buildStage16ContainerCandidateIndexes, build
 import { concern, isObject } from '../shared/utils.js';
 import { buildStage16ItemPlacementAuditInput, buildStage16ItemPlacementCodePrecheck, validateStage16ItemPlacementAudit } from '../validation/audit-validation.js';
 
-export async function runStage16ItemPlacementBlock({ input, place, audit, formatRepair = null, semanticRepair = null } = {}) {
+export async function runStage16ItemPlacementBlock({ input, materialize = null, place = null, audit, formatRepair = null, semanticRepair = null } = {}) {
   const inputConcerns = validateStage16ItemPlacementInput(input);
   if (inputConcerns.length > 0) throw stage16Error('Stage 16 input gate failed.', inputConcerns, routeForInputConcerns(inputConcerns));
 
@@ -34,22 +35,15 @@ export async function runStage16ItemPlacementBlock({ input, place, audit, format
     eligible_g5_item_anchors: eligibleAnchors.item_anchors,
     eligible_g5_container_anchors: eligibleAnchors.container_anchors
   };
-  let draft = await callJsonRole(place, placerInput, 'InitialItemPlacer');
+  const materializer = materialize ?? place ?? materializeItemPlacement;
+  let draft = await callCodeMaterializer(materializer, placerInput, 'ItemCodeMaterializer');
   let precheck = buildStage16ItemPlacementCodePrecheck(draft, input);
-  if (!precheck.pass && typeof formatRepair === 'function' && precheck.concerns.some((item) => FORMAT_CODES.has(item.code))) {
-    draft = await callJsonRole(formatRepair, { input, draft, validation_errors: precheck.concerns }, 'InitialItemPlacementFormatRepairer');
-    precheck = buildStage16ItemPlacementCodePrecheck(draft, input);
-  }
-  if (!precheck.pass && typeof semanticRepair === 'function') {
-    draft = await callJsonRole(semanticRepair, { input, draft, validation_errors: precheck.concerns }, 'InitialItemPlacementSemanticRepairer');
-    precheck = buildStage16ItemPlacementCodePrecheck(draft, input);
-  }
   if (!precheck.pass) throw stage16Error('Initial item placement draft failed code precheck.', precheck.concerns, routeForDraftConcerns(precheck.concerns), { draft, code_precheck: precheck });
 
   let auditOutput = await callJsonRole(audit, buildStage16ItemPlacementAuditInput(input, draft, precheck), 'InitialItemPlacementAuditor');
   let auditConcerns = validateStage16ItemPlacementAudit(auditOutput, draft, input);
   if (auditConcerns.length > 0 && typeof formatRepair === 'function') {
-    auditOutput = await callJsonRole(formatRepair, { input, draft, audit: auditOutput, validation_errors: auditConcerns }, 'InitialItemPlacementFormatRepairer');
+    auditOutput = await callJsonRole(formatRepair, { input, draft, audit: auditOutput, validation_errors: auditConcerns }, 'InitialItemPlacementAuditFormatRepairer');
     auditConcerns = validateStage16ItemPlacementAudit(auditOutput, draft, input);
   }
   if (auditConcerns.length > 0) throw stage16Error('Initial item placement audit output is invalid.', auditConcerns, {
@@ -57,14 +51,6 @@ export async function runStage16ItemPlacementBlock({ input, place, audit, format
   }, { draft, code_precheck: precheck, audit: auditOutput });
 
   if (auditOutput.pass !== true) {
-    if (typeof semanticRepair === 'function') {
-      draft = await callJsonRole(semanticRepair, { input, draft, audit_concerns: auditOutput.concerns }, 'InitialItemPlacementSemanticRepairer');
-      precheck = buildStage16ItemPlacementCodePrecheck(draft, input);
-      if (precheck.pass) {
-        auditOutput = await callJsonRole(audit, buildStage16ItemPlacementAuditInput(input, draft, precheck), 'InitialItemPlacementAuditor');
-        auditConcerns = validateStage16ItemPlacementAudit(auditOutput, draft, input);
-      }
-    }
     if (auditOutput.pass !== true || auditConcerns.length > 0) throw stage16Error('Initial item placement semantic audit failed.', auditOutput.concerns ?? auditConcerns, normalizeAuditRepairRoute(auditOutput.repair_route), { draft, code_precheck: precheck, audit: auditOutput });
   }
 
@@ -107,7 +93,8 @@ export async function runStage16ItemPlacement(context, options = {}) {
     result = { pass: true, draft, code_precheck: precheck, audit: providedAudit };
   } else {
     const executor = options.executor;
-    if (typeof executor !== 'function') throw new Error('Stage 16 requires an executor.');
+    const materialize = options.materialize ?? options.services?.materialize ?? options.place ?? materializeItemPlacement;
+    if (typeof executor !== 'function' && typeof options.audit !== 'function') throw new Error('Stage 16 requires an audit callback.');
     const roleCall = (role) => async (roleInput) => executor({
       context,
       input: roleInput,
@@ -115,8 +102,7 @@ export async function runStage16ItemPlacement(context, options = {}) {
         id: 16,
         slug: 'item_placement',
         role,
-        output_schema: role === 'InitialItemPlacementAuditor'
-          || (role === 'InitialItemPlacementFormatRepairer' && roleInput?.audit)
+        output_schema: role.includes('Audit')
           ? STAGE16_AUDIT_SCHEMA
           : STAGE16_DRAFT_SCHEMA,
         spec_file: '16.txt'
@@ -124,10 +110,9 @@ export async function runStage16ItemPlacement(context, options = {}) {
     });
     result = await runStage16ItemPlacementBlock({
       input,
-      place: options.place ?? roleCall('InitialItemPlacer'),
+      materialize,
       audit: options.audit ?? roleCall('InitialItemPlacementAuditor'),
-      formatRepair: options.formatRepair ?? roleCall('InitialItemPlacementFormatRepairer'),
-      semanticRepair: options.semanticRepair ?? roleCall('InitialItemPlacementSemanticRepairer')
+      formatRepair: options.auditFormatRepair ?? options.formatRepair ?? roleCall('InitialItemPlacementAuditFormatRepairer')
     });
   }
   commitStage16Artifacts(context, result, input);
@@ -140,7 +125,7 @@ export function rejectProductionProvidedStage16(context, options) {
 
 export function stage16Error(message, concerns, route, snapshots = {}) {
   const error = new Error(message);
-  error.lifecycle = { stage_id: 16, stage_slug: 'item_placement', stage_type: 'semantic_generation', failed_gate: route?.repair_kind === 'format' ? 'structural_validation' : 'semantic_validation', concerns: concerns ?? [], terminal_status: 'stage_failed', ...snapshots };
+  error.lifecycle = { stage_id: 16, stage_slug: 'item_placement', stage_type: 'code_materialization', failed_gate: route?.repair_kind === 'format' ? 'structural_validation' : 'semantic_validation', concerns: concerns ?? [], terminal_status: 'stage_failed', ...snapshots };
   error.semanticRecoveryRoute = route;
   return error;
 }
@@ -170,6 +155,11 @@ export function normalizeAuditRepairRoute(value) {
 
 export function route(stage, reasonCode) {
   return { repair_kind: 'semantic', return_to_stage: stage, rerun_from_stage: stage, reason_code: reasonCode };
+}
+
+export async function callCodeMaterializer(callback, input, role) {
+  if (typeof callback !== 'function') throw new Error(`${role} callback is required.`);
+  return callback(input);
 }
 
 export async function callJsonRole(callback, input, role) {

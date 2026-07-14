@@ -9,22 +9,25 @@ const GENERATED_ROOT = 'generated/knowledge-source';
 
 export async function buildKnowledgeSourceOutputsV2({ root = '.' } = {}) {
   const projectRoot = resolve(root);
-  const { manifestBytes, manifest, corpusFiles } = await loadCorpus(projectRoot);
+  const { manifestBytes, manifest, activeDocuments, corpusFiles } = await loadCorpus(projectRoot);
   const graphSnapshotBytes = await readFile(join(projectRoot, SOURCE_ROOT, 'imports/graph/graph.json'));
   const ragSnapshotBytes = await readFile(join(projectRoot, SOURCE_ROOT, 'imports/rag/index.json'));
   const graphSnapshot = JSON.parse(graphSnapshotBytes.toString('utf8'));
   const approvedSemantic = validateApprovedSemanticSnapshot(JSON.parse(ragSnapshotBytes.toString('utf8')), corpusFiles);
   const semanticIndex = approvedSemantic.index;
   const semanticFiles = approvedSemantic.files;
+  const snapshotSemanticFiles = approvedSemantic.snapshotFiles;
+  const compatibleGraphSnapshot = filterGraphSnapshotBySemanticFiles(graphSnapshot, semanticFiles);
+  const activeManifest = { ...manifest, documents: activeDocuments };
   const graphErrors = [
-    ...validateGraphSnapshotSources(graphSnapshot, corpusFiles, semanticFiles),
-    ...validateStructuralGraphBoundary(graphSnapshot, manifest, semanticFiles)
+    ...validateGraphSnapshotSources(graphSnapshot, corpusFiles, snapshotSemanticFiles),
+    ...validateStructuralGraphBoundary(graphSnapshot, activeManifest, snapshotSemanticFiles)
   ];
   if (graphErrors.length) throw new Error(`Knowledge graph snapshot is incompatible with corpus:\n${graphErrors.join('\n')}`);
-  const graph = addStructuralDocumentNodes(graphSnapshot, manifest, corpusFiles, semanticFiles);
+  const graph = addStructuralDocumentNodes(compatibleGraphSnapshot, activeManifest, corpusFiles, semanticFiles);
   const lexicalOnlyFiles = Object.fromEntries(Object.entries(corpusFiles).filter(([file]) => !semanticFiles.has(file)));
   const lexicalChunks = buildCorpusChunks(lexicalOnlyFiles).map(({ embedding, ...chunk }) => chunk);
-  const coverage = manifest.documents.map((record) => {
+  const coverage = activeDocuments.map((record) => {
     const semanticIndexed = semanticFiles.has(record.file_name);
     return {
       document_id: record.document_id,
@@ -51,9 +54,10 @@ export async function buildKnowledgeSourceOutputsV2({ root = '.' } = {}) {
     corpus_manifest_sha256: sha256(manifestBytes),
     source_snapshot: `${SOURCE_ROOT}/imports/graph/graph.json`,
     source_snapshot_sha256: sha256(graphSnapshotBytes),
-    source_document_count: manifest.documents.length,
+    registered_document_count: manifest.documents.length,
+    source_document_count: activeDocuments.length,
     semantic_document_count: semanticFiles.size,
-    structural_only_document_count: manifest.documents.length - semanticFiles.size,
+    structural_only_document_count: activeDocuments.length - semanticFiles.size,
     node_count: Array.isArray(graph.nodes) ? graph.nodes.length : 0,
     link_count: Array.isArray(graph.links) ? graph.links.length : 0,
     hyperedge_count: Array.isArray(graph.hyperedges) ? graph.hyperedges.length : 0,
@@ -72,7 +76,8 @@ export async function buildKnowledgeSourceOutputsV2({ root = '.' } = {}) {
     semantic_index_sha256: sha256(semanticIndexText),
     lexical_index: `${GENERATED_ROOT}/rag/lexical-index.json`,
     lexical_index_sha256: sha256(lexicalIndexText),
-    source_document_count: manifest.documents.length,
+    registered_document_count: manifest.documents.length,
+    source_document_count: activeDocuments.length,
     semantic_document_count: coverage.filter((item) => item.semantic_indexed).length,
     lexical_only_document_count: coverage.filter((item) => item.lexical_indexed).length,
     semantic_chunk_count: semanticIndex.chunks.length,
@@ -109,51 +114,56 @@ export function validateApprovedSemanticSnapshot(snapshot, corpusFiles) {
   if (!Number.isInteger(dimensions) || dimensions < 1) errors.push('approved embedding dimensions are invalid');
   if (Number(snapshot?.chunk_count) !== importedChunks.length) errors.push('approved embedding chunk_count differs from chunks');
 
-  const files = new Set();
+  const importedByFile = new Map();
   for (const chunk of importedChunks) {
     const rawFile = String(chunk?.file ?? '');
     const file = basename(rawFile);
-    if (!file || rawFile !== file) errors.push(`approved embedding chunk has invalid source path ${rawFile || '?'}`);
-    else files.add(file);
-  }
-  const semanticCorpusFiles = {};
-  for (const file of [...files].sort((left, right) => left.localeCompare(right))) {
-    if (!Object.hasOwn(corpusFiles, file)) {
-      errors.push(`approved embedding chunk references missing file ${file}`);
+    if (!file || rawFile !== file) {
+      errors.push(`approved embedding chunk has invalid source path ${rawFile || '?'}`);
       continue;
     }
-    semanticCorpusFiles[file] = corpusFiles[file];
+    if (!Array.isArray(chunk.embedding) || chunk.embedding.length !== dimensions || chunk.embedding.some((value) => !Number.isFinite(Number(value)))) {
+      errors.push(`approved embedding is invalid for ${chunk.id ?? file}`);
+      continue;
+    }
+    if (!importedByFile.has(file)) importedByFile.set(file, []);
+    importedByFile.get(file).push(chunk);
   }
 
+  const files = new Set();
+  const snapshotFiles = new Set(importedByFile.keys());
+  const chunks = [];
+  const semanticCorpusFiles = {};
+  for (const [file, importedFileChunks] of [...importedByFile].sort(([left], [right]) => left.localeCompare(right))) {
+    if (!Object.hasOwn(corpusFiles, file)) continue;
+    const expected = buildCorpusChunks({ [file]: corpusFiles[file] });
+    if (!chunksMatchApprovedSnapshot(expected, importedFileChunks)) continue;
+    files.add(file);
+    semanticCorpusFiles[file] = corpusFiles[file];
+    chunks.push(...expected.map((chunk, index) => ({ ...chunk, embedding: importedFileChunks[index].embedding })));
+  }
   const corpusHash = computeCorpusHashFromFiles(semanticCorpusFiles);
-  if (String(snapshot?.corpus_hash ?? '') !== corpusHash) {
-    errors.push('semantic corpus hash differs from approved embedding snapshot');
-  }
-  const expectedChunks = buildCorpusChunks(semanticCorpusFiles);
-  if (expectedChunks.length !== importedChunks.length) {
-    errors.push(`semantic chunk count differs: approved=${importedChunks.length}, current=${expectedChunks.length}`);
-  }
-  const chunks = expectedChunks.map((chunk, index) => {
-    const imported = importedChunks[index];
-    if (!imported) {
-      errors.push(`missing approved embedding at semantic chunk index ${index} (${chunk.id})`);
-      return null;
-    }
-    for (const field of ['id', 'file', 'section', 'line_start', 'line_end', 'text', 'char_count']) {
-      if (imported[field] !== chunk[field]) errors.push(`semantic chunk[${index}] ${chunk.id}: approved ${field} differs from current corpus`);
-    }
-    if (!Array.isArray(imported.embedding) || imported.embedding.length !== dimensions
-      || imported.embedding.some((value) => !Number.isFinite(Number(value)))) {
-      errors.push(`semantic chunk[${index}] ${chunk.id}: approved embedding is invalid`);
-    }
-    return { ...chunk, embedding: imported.embedding };
-  }).filter(Boolean);
   if (errors.length) throw new Error(`RAG snapshot is incompatible with corpus:\n${errors.slice(0, 50).join('\n')}`);
 
   return Object.freeze({
     files: Object.freeze(files),
+    snapshotFiles: Object.freeze(snapshotFiles),
     index: Object.freeze({ ...snapshot, corpus_hash: corpusHash, chunk_count: chunks.length, chunks })
   });
+}
+
+function chunksMatchApprovedSnapshot(expected, imported) {
+  if (expected.length !== imported.length) return false;
+  return expected.every((chunk, index) => ['id', 'file', 'section', 'line_start', 'line_end', 'text', 'char_count'].every((field) => imported[index]?.[field] === chunk[field]));
+}
+
+export function filterGraphSnapshotBySemanticFiles(graph, semanticFiles) {
+  const sourceFile = (entity) => basename(String(entity?.source_location?.file ?? entity?.source_file ?? ''));
+  const nodes = (graph?.nodes ?? []).filter((node) => semanticFiles.has(sourceFile(node)));
+  const nodeIds = new Set(nodes.map((node) => node.id));
+  const links = (graph?.links ?? []).filter((link) => semanticFiles.has(sourceFile(link)) && nodeIds.has(link.source) && nodeIds.has(link.target));
+  const hyperedges = (graph?.hyperedges ?? []).filter((edge) => semanticFiles.has(sourceFile(edge)) && (edge.nodes ?? []).every((id) => nodeIds.has(id)));
+  return { ...graph, nodes, links, hyperedges };
 }
 
 export function validateGraphSnapshotSources(graph, corpusFiles, approvedSemanticFiles = null) {
@@ -262,9 +272,21 @@ export async function writeKnowledgeSourceOutputsV2({ root = '.' } = {}) {
   for (const [rel, content] of outputs) {
     const target = join(projectRoot, rel);
     await mkdir(dirname(target), { recursive: true });
-    await writeFile(target, content, 'utf8');
+    await writeFileWithRetry(target, content);
   }
   return Object.freeze({ files: Object.freeze([...outputs.keys()].sort()) });
+}
+
+async function writeFileWithRetry(target, content) {
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    try {
+      await writeFile(target, content, 'utf8');
+      return;
+    } catch (error) {
+      if (!['UNKNOWN', 'EBUSY', 'EPERM'].includes(error?.code) || attempt === 4) throw error;
+      await new Promise((resolveDelay) => setTimeout(resolveDelay, 10 * (attempt + 1)));
+    }
+  }
 }
 
 async function loadCorpus(projectRoot) {
@@ -275,9 +297,10 @@ async function loadCorpus(projectRoot) {
   for (const record of manifest.documents ?? []) {
     const bytes = await readFile(join(sourceRoot, record.canonical_path));
     if (sha256(bytes) !== record.sha256 || bytes.length !== record.bytes) throw new Error(`${record.document_id}: corpus manifest hash mismatch`);
-    corpusFiles[record.file_name] = bytes.toString('utf8');
+    if (record.status === 'active') corpusFiles[record.file_name] = bytes.toString('utf8');
   }
-  return { manifestBytes, manifest, corpusFiles };
+  const activeDocuments = (manifest.documents ?? []).filter((record) => record.status === 'active');
+  return { manifestBytes, manifest, activeDocuments, corpusFiles };
 }
 
 function addStructuralDocumentNodes(snapshot, manifest, corpusFiles, semanticFiles) {

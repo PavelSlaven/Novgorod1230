@@ -16,7 +16,7 @@ function createPool() {
 }
 
 async function snapshotRuntime(pool) {
-  const tables = ['game_sessions', 'delivery_attempts', 'delivery_acknowledgements', 'commit_idempotency'];
+  const tables = ['parties', 'party_server_sessions', 'delivery_attempts', 'delivery_acknowledgements', 'commit_idempotency'];
   const snapshot = {};
   for (const table of tables) {
     const { rows } = await pool.query(`SELECT * FROM party_runtime.${table}`);
@@ -26,10 +26,20 @@ async function snapshotRuntime(pool) {
 }
 
 async function restoreRuntime(pool, snapshot) {
-  for (const row of snapshot.game_sessions) {
+  for (const row of snapshot.parties) {
     await pool.query(
-      'INSERT INTO party_runtime.game_sessions (party_id, session, updated_at) VALUES ($1, $2::jsonb, $3)',
-      [row.party_id, JSON.stringify(row.session), row.updated_at]
+      `INSERT INTO party_runtime.parties
+       (party_id,schema_version,world_revision_id,world_catalog_digest,materializer_version,rng_version,command_catalog_digest,profile_bundle_digest,state_version,status,created_at,updated_at)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`,
+      [row.party_id,row.schema_version,row.world_revision_id,row.world_catalog_digest,row.materializer_version,row.rng_version,row.command_catalog_digest,row.profile_bundle_digest,row.state_version,row.status,row.created_at,row.updated_at]
+    );
+  }
+  for (const row of snapshot.party_server_sessions) {
+    await pool.query(
+      `INSERT INTO party_runtime.party_server_sessions
+       (party_id,request_id,stage26_result,delivery_attempt,delivery_ack_result,screen,turn_number,last_turn_id,updated_at)
+       VALUES ($1,$2,$3::jsonb,$4::jsonb,$5::jsonb,$6::jsonb,$7,$8,$9)`,
+      [row.party_id,row.request_id,JSON.stringify(row.stage26_result),JSON.stringify(row.delivery_attempt),JSON.stringify(row.delivery_ack_result),JSON.stringify(row.screen),row.turn_number,row.last_turn_id,row.updated_at]
     );
   }
   for (const row of snapshot.delivery_attempts) {
@@ -61,9 +71,14 @@ test('party runtime snapshot restores sessions, delivery state, and idempotency 
   const sessions = createPostgresSessionStore({ pool: source });
   const deliveries = createPostgresDeliveryStore({ pool: source });
 
+  await source.query(`INSERT INTO party_runtime.parties
+    (party_id,schema_version,world_revision_id,world_catalog_digest,materializer_version,rng_version,command_catalog_digest,profile_bundle_digest,status)
+    VALUES ('party-restore-1',2,'revision-1','catalog-1','code_materializer_v2','mulberry32_v1','commands-1','profiles-1','active')`);
   await sessions.save('party-restore-1', {
-    version: 1,
+    version: 2,
+    schema: 'game_server_session_v2',
     party_id: 'party-restore-1',
+    request_id: 'request-restore-1',
     turn_number: 3,
     screen: { schema: 'turn_screen', version: 1 }
   });

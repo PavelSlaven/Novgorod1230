@@ -17,10 +17,10 @@
 | 10 | start-place-audit | аудит места старта |
 | 11 | player-character | персонаж игрока |
 | 12 | player-character-audit | аудит персонажа |
-| 13 | g5-materialization | G5 scene graph draft |
+| 13 | g5-materialization | code-only G5 instances и trace |
 | 14 | g5-audit | аудит G5 |
-| 15 | npc-placement | начальное размещение NPC |
-| 16 | item-placement | начальное размещение предметов |
+| 15 | npc-placement | code-only NPC instances из profile sets |
+| 16 | item-placement | code-only item/container/property instances |
 | 17 | time-light-gate | согласование времени и света |
 | 18 | character-knowledge-map | карта знаний персонажа |
 | 19 | hidden-state | полный hidden scene state |
@@ -45,6 +45,8 @@ World-base, party persistence и LLM transport передаются через c
 - Stage 19 остаётся hidden.
 - Stage 20 создаёт visible projection.
 - Stages 22–23 получают только visible inputs.
-- Stage 24 строит write plan через LLM-процедуру.
+- Stage 13, 15 и 16 не вызывают LLM для создания или repair экземпляров.
+- Stage 14 и placement audits могут использовать LLM только без права изменения draft.
+- Stage 24 кодом строит фиксированный write plan для `party_runtime_v2`.
 - Stage 25 исполняет только утверждённый plan.
 - Stage 26 строит публичный экран без hidden fields.

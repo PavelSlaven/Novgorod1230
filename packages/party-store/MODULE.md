@@ -2,7 +2,7 @@
 
 ## Назначение
 
-Публичный порт persistence для чтения и идемпотентной фиксации утверждённого состояния партии.
+Публичный порт persistence v2 для нормализованной и идемпотентной фиксации состояния партии.
 
 ## Владеет
 
@@ -13,7 +13,7 @@
 
 ## Не делает
 
-- не строит SQL и write plan;
+- не строит SQL и логический write plan;
 - не создаёт игровые сущности;
 - не читает world_base;
 - не импортирует PostgreSQL driver.
@@ -24,7 +24,7 @@
 
 ## Контракты
 
-Получает только утверждённый write plan и injected transaction function. Повторный вызов с тем же idempotency key возвращает сохранённый результат.
+Получает только утверждённый `party_runtime_v2` write plan и injected transaction function. Party v1 не поддерживается для новых партий.
 
 ## Допустимые зависимости
 
@@ -36,7 +36,9 @@ Apps, world-base, provider SDK, UI, legacy и конкретный DB driver.
 
 ## Инварианты
 
-Код не преобразует намерение игрока в запись БД и не дополняет write plan.
+Schema adapter переводит только известные legacy spec aliases в фиксированные таблицы v2 и отклоняет неизвестные/v1 targets; он не добавляет смысловые сущности.
+
+Production adapter в `@rus/game-server` квалифицирует эти targets как `party_runtime.*`; логический package не импортирует PostgreSQL.
 
 ## Ошибки
 

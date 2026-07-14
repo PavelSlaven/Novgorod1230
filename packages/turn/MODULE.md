@@ -9,16 +9,17 @@
 - контрактом `PlayerTurnInput`;
 - декларативным порядком блоков хода;
 - orchestration context и run summary;
-- вызовом semantic-resolvers через явные ports;
+- вызовом code resolvers и bounded decision protocol через явные ports;
 - исполнением только явно запрошенных проверок через `RandomSource`;
 - применением утверждённой длительности к clock formula;
 - hidden/visible security boundary;
 - commit gate и передачей утверждённого write plan в party store;
+- формальным `position_transition`; cross-G4 transition всегда включает first-entry materialization в тот же commit;
 - публичным `TurnResult` и compatibility adapter.
 
 ## Не владеет
 
-- созданием фактов мира, NPC, предметов, маршрутов, причин и последствий;
+- созданием категорий, истории и отсутствующих вариантов;
 - выбором режима по регулярным выражениям или иным procedural guesses;
 - прямым доступом к PostgreSQL, party DB, world_base или provider SDK;
 - prompt transport;
@@ -35,17 +36,18 @@
 
 ## Ports
 
-Обязательные: `stateReader`, `modeResolver`, `availabilityResolver`, `consequenceResolver`, `visibleProjector`, `narrator.run`, `writePlanner`, `partyStore`. `RandomSource` обязателен только если semantic-resolver запросил бросок.
+Обязательные: code-owned `commandRegistry`, `stateReader`, `visibleProjector`, `narrator.run`, `partyStore`. `decisionExecutor` с подписанным bounded-протоколом обязателен только при нескольких допустимых командах. `RandomSource` обязателен только если выбранный code handler сформировал утверждённый `check_request`.
 
 ## Инварианты
 
 1. `raw_text` всегда имеет `contract = intent_not_fact`.
-2. Код не выбирает режим и не создаёт последствия.
+2. Код выбирает применимый handler, материализует допустимые instances и рассчитывает последствия; неоднозначный смысловой выбор оформляется bounded request.
 3. Проверка выполняется только для явно утверждённого `check_request`.
 4. Narrator вызывается через `@rus/narration` и получает только validated `visible_context_package`.
 5. Commit невозможен до успешных structural/security gates.
 6. Каждый block получает отдельный frozen input и не читает mutable global context.
 7. Повторный commit должен использовать idempotency key.
+8. `party_current_position` нельзя записать без `from_g4_id/to_g4_id`; первый вход сериализуется repository lock и не материализуется повторно.
 
 ## Ошибки
 

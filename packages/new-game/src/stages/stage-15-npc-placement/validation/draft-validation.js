@@ -70,9 +70,9 @@ export function validateStage15NpcPlacementDraft(draft, input) {
       concerns.push(concern('NPC_PLACEMENT_PROFILE_LEVEL_NOT_ALLOWED', 'profile_level exceeds candidate permission.', { field: `${path}.profile_level` }));
     }
 
-    compareCandidateRef(concerns, npc?.base_refs?.social_role_id, candidateRecord.social_role_id ?? candidateRecord.social_role_ids, 'NPC_PLACEMENT_SOCIAL_ROLE_MISMATCH', `${path}.base_refs.social_role_id`);
-    compareCandidateRef(concerns, npc?.base_refs?.occupation_id, candidateRecord.occupation_id ?? candidateRecord.occupation_ids, 'NPC_PLACEMENT_OCCUPATION_MISMATCH', `${path}.base_refs.occupation_id`, true);
-    compareCandidateRef(concerns, npc?.base_refs?.npc_archetype_id, candidateRecord.npc_archetype_id ?? candidateRecord.npc_archetype_ids, 'NPC_PLACEMENT_ARCHETYPE_MISMATCH', `${path}.base_refs.npc_archetype_id`);
+    compareCandidateRef(concerns, npc?.base_refs?.social_role_id, candidateRecord.social_role_id ?? candidateRecord.social_role_ids ?? candidateRecord.social_role?.social_role_id, 'NPC_PLACEMENT_SOCIAL_ROLE_MISMATCH', `${path}.base_refs.social_role_id`);
+    compareCandidateRef(concerns, npc?.base_refs?.occupation_id, candidateRecord.occupation_id ?? candidateRecord.occupation_ids ?? candidateRecord.occupation?.occupation_id, 'NPC_PLACEMENT_OCCUPATION_MISMATCH', `${path}.base_refs.occupation_id`, true);
+    compareCandidateRef(concerns, npc?.base_refs?.npc_archetype_id, candidateRecord.npc_archetype_id ?? candidateRecord.npc_archetype_ids ?? candidateRecord.npc_archetype?.npc_archetype_id, 'NPC_PLACEMENT_ARCHETYPE_MISMATCH', `${path}.base_refs.npc_archetype_id`);
 
     if (profileLevel === 'key' && !hasKeySeed(npc, candidateRecord)) {
       concerns.push(concern('NPC_PLACEMENT_KEY_SEED_MISSING', 'Key NPC requires an allowed key_npc_seed_id/persistence basis.', { field: `${path}.base_refs.key_npc_seed_id` }));

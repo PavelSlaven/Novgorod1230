@@ -19,9 +19,9 @@
         "versioned HTTP routes `/api/v1/*`",
         "static delivery `@rus/game-web`",
         "builtin production composition",
-        "PostgreSQL pool/session/delivery/Stage 25 adapters",
+        "PostgreSQL pool/normalized v2 session/delivery/Stage 25/first-entry repository adapters",
         "provider role-runner adapter",
-        "startup probes и technical party-runtime migrations",
+        "startup probes и применение полного `schemas/party-db/001_party_runtime.sql`",
         "feature-flag bootstrap"
       ],
       "path": "apps/game-server",
@@ -189,6 +189,23 @@
     },
     {
       "dependencies": [
+        "@rus/contracts",
+        "@rus/kernel"
+      ],
+      "name": "@rus/materialization",
+      "owns": [
+        "versioned `mulberry32_v1` RandomSource и seed derivation",
+        "выбором из approved candidates и materialization trace",
+        "проекцией G5 из approved profile/layout/slot rules и NPC/items из нормализованных eligible candidates",
+        "signed command tokens и проверкой bounded decisions"
+      ],
+      "path": "packages/materialization",
+      "public_entry": "./src/index.js",
+      "purpose": "Детерминированный code-only materializer v2 и bounded decision protocol.",
+      "version": "2.0.0"
+    },
+    {
+      "dependencies": [
         "@rus/kernel"
       ],
       "name": "@rus/movement-routes",
@@ -225,6 +242,7 @@
       "dependencies": [
         "@rus/contracts",
         "@rus/kernel",
+        "@rus/materialization",
         "@rus/party-store",
         "@rus/pipeline-engine"
       ],
@@ -253,7 +271,7 @@
       ],
       "path": "packages/party-store",
       "public_entry": "./src/index.js",
-      "purpose": "Публичный порт persistence для чтения и идемпотентной фиксации утверждённого состояния партии.",
+      "purpose": "Публичный порт persistence v2 для нормализованной и идемпотентной фиксации состояния партии.",
       "version": "0.9.0"
     },
     {
@@ -344,6 +362,7 @@
       "dependencies": [
         "@rus/checks-rng",
         "@rus/kernel",
+        "@rus/materialization",
         "@rus/narration",
         "@rus/pipeline-engine",
         "@rus/presentation",
@@ -355,11 +374,12 @@
         "контрактом `PlayerTurnInput`",
         "декларативным порядком блоков хода",
         "orchestration context и run summary",
-        "вызовом semantic-resolvers через явные ports",
+        "вызовом code resolvers и bounded decision protocol через явные ports",
         "исполнением только явно запрошенных проверок через `RandomSource`",
         "применением утверждённой длительности к clock formula",
         "hidden/visible security boundary",
         "commit gate и передачей утверждённого write plan в party store",
+        "формальным `position_transition`; cross-G4 transition всегда включает first-entry materialization в тот же commit",
         "публичным `TurnResult` и compatibility adapter"
       ],
       "path": "packages/turn",

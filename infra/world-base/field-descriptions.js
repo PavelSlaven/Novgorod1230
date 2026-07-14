@@ -108,6 +108,26 @@ export const TABLE_GROUPS = [
       'llm_context_packs',
       'llm_validation_rules'
     ]
+  },
+  {
+    title: 'Materialization v2: категории и ревизии',
+    tables: ['world_revisions', 'universal_categories', 'universal_category_relations', 'universal_parameter_definitions', 'region_category_options']
+  },
+  {
+    title: 'Materialization v2: NPC-профили',
+    tables: ['region_npc_archetypes', 'region_demographic_profiles', 'region_name_pools', 'region_name_pool_entries', 'region_appearance_profiles', 'region_clothing_profiles', 'region_equipment_profiles', 'region_equipment_profile_entries', 'region_knowledge_profiles', 'region_behavior_profiles', 'region_relationship_profiles', 'region_activity_profiles', 'region_schedule_profiles', 'region_npc_profile_sets']
+  },
+  {
+    title: 'Materialization v2: G4 и G5',
+    tables: ['room_templates', 'building_layout_templates', 'building_layout_nodes', 'building_layout_edges', 'g5_minilocation_templates', 'g5_anchor_templates', 'g5_edge_templates', 'g4_materialization_profiles', 'g4_materialization_bindings', 'materialization_slot_rules', 'g4_npc_materialization_rules', 'g4_item_materialization_rules', 'g4_container_materialization_rules']
+  },
+  {
+    title: 'Materialization v2: предметы и имущество',
+    tables: ['container_templates', 'item_profile_sets', 'item_profile_entries', 'container_content_profiles', 'container_content_profile_entries', 'property_profiles', 'property_profile_rules', 'transport_templates']
+  },
+  {
+    title: 'Materialization v2: решения и импорт',
+    tables: ['decision_command_catalog', 'decision_policy_profiles', 'decision_policy_options', 'catalog_imports', 'catalog_import_tables']
   }
 ];
 
@@ -169,7 +189,52 @@ export const TABLE_PURPOSE_FALLBACK = {
   historical_figures: 'Исторические личности и их влияние.',
   source_records: 'Библиография и проектные источники; основа для record_sources.',
   record_sources: 'Связь источника с любой записью справочника (полиморфная).',
-  audit_log: 'Журнал ручных правок и утверждений (полиморфная цель).'
+  audit_log: 'Журнал ручных правок и утверждений (полиморфная цель).',
+  world_revisions: 'Неизменяемые утверждённые ревизии каталогов мира и их общий digest.',
+  universal_categories: 'Универсальные категории, которые код вправе использовать, но не создавать.',
+  universal_category_relations: 'Нормализованные отношения между универсальными категориями.',
+  universal_parameter_definitions: 'Типизированные определения параметров категорий.',
+  region_category_options: 'Разрешение категории для региона, периода и ревизии с весом выбора.',
+  decision_command_catalog: 'Закрытый каталог команд bounded decision и зарегистрированных code handlers.',
+  decision_policy_profiles: 'Политики, определяющие контексты формального запроса решения.',
+  decision_policy_options: 'Допустимые команды, preconditions, costs и risk metadata политики.',
+  region_npc_archetypes: 'Региональные NPC templates без конкретной identity и биографии.',
+  region_demographic_profiles: 'Региональные демографические варианты и ограничения.',
+  region_name_pools: 'Региональные пулы имён для периода и ревизии.',
+  region_name_pool_entries: 'Конкретные утверждённые формы имён и веса.',
+  region_appearance_profiles: 'Региональные варианты внешности из разрешённых категорий.',
+  region_clothing_profiles: 'Региональные garment slots и ограничения одежды.',
+  region_equipment_profiles: 'Профили снаряжения для ролей и занятий.',
+  region_equipment_profile_entries: 'Нормализованные required/optional варианты снаряжения.',
+  region_knowledge_profiles: 'Разрешённые категории и ссылки знаний NPC.',
+  region_behavior_profiles: 'Поведенческие варианты и привязанная decision policy.',
+  region_relationship_profiles: 'Типы и ограничения отношений NPC.',
+  region_activity_profiles: 'Причины присутствия, действия и опорные узлы NPC.',
+  region_schedule_profiles: 'Расписания NPC с явными place/route/fallback ссылками.',
+  region_npc_profile_sets: 'Совместимые композиции компонентных NPC-профилей.',
+  room_templates: 'Шаблоны функций помещений или зон.',
+  building_layout_templates: 'Региональные профили планировки здания для периода.',
+  building_layout_nodes: 'Нормализованные slots помещений в планировке.',
+  building_layout_edges: 'Нормализованные проходы между slots планировки.',
+  g5_minilocation_templates: 'Шаблоны party G5-минилокаций и их policies.',
+  g5_anchor_templates: 'Шаблоны anchors с capacities и interaction capabilities.',
+  g5_edge_templates: 'Шаблоны G5-проходов с access/visibility policies.',
+  g4_materialization_profiles: 'Главные профили материализации G4 в party G5.',
+  g4_materialization_bindings: 'Приоритетные правила выбора G4 materialization profile.',
+  materialization_slot_rules: 'Required/optional slots и количественные границы materializer.',
+  container_templates: 'Шаблоны контейнеров с capacity и access policy.',
+  item_profile_sets: 'Профили комплектов предметов для контекста.',
+  item_profile_entries: 'Нормализованные варианты предметов и quantity limits.',
+  container_content_profiles: 'Профили содержимого контейнеров.',
+  container_content_profile_entries: 'Нормализованные варианты содержимого и количества.',
+  property_profiles: 'Региональные модели имущества и доступа.',
+  property_profile_rules: 'Условия owner/holder/controller/access/claim.',
+  transport_templates: 'Шаблоны транспорта с маршрутными и equipment requirements.',
+  g4_npc_materialization_rules: 'G4-specific правила количества и причин присутствия NPC.',
+  g4_item_materialization_rules: 'G4-specific правила предметов, имущества и economic basis.',
+  g4_container_materialization_rules: 'G4-specific правила контейнеров, содержимого и доступа.',
+  catalog_imports: 'Проверяемые импорты versioned authoring manifest.',
+  catalog_import_tables: 'Digests, counts и dependency order таблиц одного импорта.'
 };
 
 export const common = {

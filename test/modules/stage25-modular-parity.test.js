@@ -28,28 +28,35 @@ test('Stage 25 input and policy preserve baseline output', () => {
   assert.deepEqual(modular.validateStage25CommitInput(f.input), baseline.validateStage25CommitInput(f.input));
 });
 
-test('Stage 25 physical plan materialization and digest preserve baseline output', () => {
+test('Stage 25 physical plan uses the intentional party_runtime_v2 adapter cutover', () => {
   const f = makeStage25Fixture();
   const args = {
     logical_plan: f.logicalPlan,
     party_database_schema: f.partyDatabaseSchema,
     world_base_reference_snapshot: f.worldBaseReferenceSnapshot
   };
-  const oldResult = baseline.materializeStage25PhysicalPlan(args);
   const newResult = modular.materializeStage25PhysicalPlan(args);
-  assert.deepEqual(newResult, oldResult);
-  assert.equal(modular.computeStage25Digest(newResult.physical_write_plan), baseline.computeStage25Digest(oldResult.physical_write_plan));
+  assert.equal(newResult.physical_write_plan.adapter_version, 2);
+  assert.equal(newResult.physical_write_plan.write_batches[0].target_table, 'parties');
+  assert.equal(newResult.physical_write_plan.write_batches[0].target_schema, 'party_runtime');
+  assert.equal(newResult.physical_write_plan.logical_plan_digest, f.stage24Result.party_db_write_plan_digest);
+  assert.equal(newResult.physical_write_plan_digest, modular.computeStage25Digest(newResult.physical_write_plan));
 });
 
-test('Stage 25 full successful orchestration preserves baseline output', async () => {
+test('Stage 25 refuses party_runtime_v1 for new parties', () => {
   const f = makeStage25Fixture();
-  const oldResult = await baseline.runStage25PartyCommitBlock({ input: structuredClone(f.input), ...f.executors });
+  const schema = structuredClone(f.partyDatabaseSchema);
+  schema.schema_version = 'party_runtime_v1';
+  assert.throws(() => modular.materializeStage25PhysicalPlan({ logical_plan: f.logicalPlan, party_database_schema: schema, world_base_reference_snapshot: f.worldBaseReferenceSnapshot }), /Legacy party schema is forbidden/u);
+});
+
+test('Stage 25 full successful orchestration commits party_runtime_v2 plan', async () => {
+  const f = makeStage25Fixture();
   const newResult = await modular.runStage25PartyCommitBlock({ input: structuredClone(f.input), ...f.executors });
-  assert.equal(oldResult.pass, true);
-  assert.deepEqual(newResult, oldResult);
+  assert.equal(newResult.pass, true);
   assert.deepEqual(modular.validateStage25Result(newResult), []);
   assert.deepEqual(modular.validateStage25ToStage26Handoff(newResult), []);
-  assert.deepEqual(modular.buildStage25Approval(newResult), baseline.buildStage25Approval(oldResult));
+  assert.equal(modular.buildStage25Approval(newResult).commit_status, 'committed');
 });
 
 test('Stage 25 invalid Stage 24 binding preserves concerns and order', () => {

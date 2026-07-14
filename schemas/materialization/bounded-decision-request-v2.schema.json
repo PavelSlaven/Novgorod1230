@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "bounded_decision_request_v2",
+  "type": "object",
+  "required": ["version", "schema", "request_id", "party_id", "actor_id", "policy_id", "policy_version", "state_version", "issued_at", "expires_at", "options_digest", "options"],
+  "properties": {
+    "version": { "const": 2 },
+    "schema": { "const": "bounded_decision_request_v2" },
+    "request_id": { "type": "string", "minLength": 1 },
+    "party_id": { "type": "string", "minLength": 1 },
+    "actor_id": { "type": "string", "minLength": 1 },
+    "policy_id": { "type": "string", "minLength": 1 },
+    "policy_version": { "type": "string", "minLength": 1 },
+    "state_version": { "type": "integer", "minimum": 0 },
+    "issued_at": { "type": "string", "format": "date-time" },
+    "expires_at": { "type": "string", "format": "date-time" },
+    "options_digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "options": { "type": "array", "minItems": 2, "items": { "type": "object", "required": ["option_id", "command_id", "actor_id", "target_id", "command_token", "ordinal", "preconditions", "expected_cost", "known_risks", "reason_visible_to_actor", "state_version", "metadata"], "properties": { "option_id": { "type": "string", "minLength": 1 }, "command_id": { "type": "string", "minLength": 1 }, "actor_id": { "type": "string", "minLength": 1 }, "target_id": { "type": "string", "minLength": 1 }, "command_token": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "ordinal": { "type": "integer", "minimum": 0 }, "preconditions": { "type": "array", "items": { "type": "object" } }, "expected_cost": { "type": "object" }, "known_risks": { "type": "array", "items": { "type": "object" } }, "reason_visible_to_actor": { "type": "string", "minLength": 1 }, "state_version": { "type": "integer", "minimum": 0 }, "metadata": { "type": "object" } }, "additionalProperties": false } }
+  },
+  "additionalProperties": false
+}

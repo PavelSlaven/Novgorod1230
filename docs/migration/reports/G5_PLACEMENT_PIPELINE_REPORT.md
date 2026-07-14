@@ -21,7 +21,7 @@ Stage 13 G5 materialization
 - Schema names, enums, statuses, limits и handoffs принадлежат `@rus/contracts`.
 - Role/tier descriptors принадлежат `@rus/llm-runtime`.
 - Legacy-файлы являются однострочными compatibility-фасадами.
-- Код не придумывает G5, NPC, предметы, владельцев или скрытое содержимое.
+- Код не придумывает отсутствующие категории или варианты; Stages 13, 15 и 16 материализуют G5, NPC, предметы, контейнеры и ownership только из approved profile/layout/slot/rule bundles.
 
 ## Проверка
 

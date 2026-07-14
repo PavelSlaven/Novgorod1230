@@ -45,11 +45,19 @@ export function makeStage24Fixture() {
   const approvedPipelineOutputs = {
     historical_frame: { version: 1, schema: 'historical_frame', request_id: requestId },
     weather_state: { version: 1, schema: 'weather_state', request_id: requestId },
-    selected_start_node: { version: 1, schema: 'selected_start_node', request_id: requestId },
+    selected_start_node: { version: 1, schema: 'selected_start_node', request_id: requestId, selected_node_chain: { g4_node_id: position.location_id } },
     start_place_audit: { version: 1, schema: 'start_place_audit', request_id: requestId, pass: true },
     player_character: { version: 1, schema: 'player_character', request_id: requestId, player_character_id: playerId },
     player_character_audit: { version: 1, schema: 'player_character_audit', request_id: requestId, pass: true },
-    g5_scene_graph: { version: 1, schema: 'g5_scene_graph', request_id: requestId, player_start_position: position, anchors: [{ anchor_id: anchorId }] },
+    g5_scene_graph: {
+      version: 1, schema: 'g5_scene_graph', request_id: requestId,
+      parent_location: { g4_node_id: position.location_id },
+      player_start_position: position,
+      g5_minilocations: [{ g5_minilocation_id: position.minilocation_id, parent_g4_node_id: position.location_id, template_id: 'g5-node-template-1', slot_key: 'main', state: {}, access: { access_state: 'open' }, visibility: { visibility_default: 'visible' } }],
+      g5_anchors: [{ anchor_id: anchorId, minilocation_id: position.minilocation_id, anchor_template_id: 'g5-anchor-template-1', slot_key: 'entry', supports: { npc_capacity: 1, item_capacity: 2, container_capacity: 1 }, visibility: { visibility_default: 'visible' }, access: { access_state: 'open' } }],
+      g5_edges: [], validation_report: { pass: true },
+      materialization_run: { run_id: 'baseline-stage24-001', run_kind: 'baseline', occurrence: 0, world_revision_id: 'revision-1', seed_digest: 'seed-stage24-001', input_digest: 'input-stage24-001', catalog_digest: 'catalog-digest', result_digest: 'result-stage24-001', materializer_version: 'code_materializer_v2', rng_version: 'mulberry32_v1', idempotency_key: 'materialization:party-stage24-001:baseline-stage24-001', seed_context: { party_id: partyId, g4_id: position.location_id }, choices: [], created_refs: [] }
+    },
     g5_scene_audit: { version: 1, schema: 'g5_scene_audit', request_id: requestId, pass: true },
     initial_npc_placement: { version: 1, schema: 'initial_npc_placement', request_id: requestId, npcs: [] },
     npc_placement_audit: { version: 1, schema: 'npc_placement_audit', request_id: requestId, pass: true },
@@ -77,7 +85,7 @@ export function makeStage24Fixture() {
   const partyDatabaseSchema = {
     version: 1,
     schema: 'party_database_schema_snapshot',
-    schema_version: 'test-stage24-1',
+    schema_version: 'party_runtime_v2',
     readonly_checksum: 'schema-stage24-checksum',
     tables: [{
       name: 'party_state',
@@ -114,7 +122,8 @@ export function makeStage24Fixture() {
     party_id: partyId,
     player_character_id: playerId,
     idempotency_key: 'idem-stage24-001',
-    schema_version: 'test-stage24-1'
+    schema_version: 'party_runtime_v2',
+    version_pins: { world_revision_id: 'revision-1', world_catalog_digest: 'catalog-digest', materializer_version: 'code_materializer_v2', rng_version: 'mulberry32_v1', command_catalog_digest: 'command-digest', profile_bundle_digest: 'profile-digest' }
   };
   const approvedPipelineManifest = buildApprovedPipelineManifest({ request_id: requestId, artifacts: approvedPipelineOutputs });
   const inputArgs = {

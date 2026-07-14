@@ -1,8 +1,17 @@
-export const PARTY_SCHEMA_ADAPTER_VERSION = 1;
+import { sha256 } from '@rus/kernel';
+
+export const PARTY_SCHEMA_ADAPTER_VERSION = 2;
 
 const SPEC_READY_STATUS = 'ready';
 const DDL_READY_STATUS = 'active';
 const READY_PHASE = 'awaiting_player_input';
+const PARTY_RUNTIME_V2_TARGETS = new Set([
+  'parties', 'party_state_snapshots', 'party_positions', 'party_player_characters', 'party_character_knowledge', 'party_materialization_runs',
+  'party_materialization_choices', 'party_g5_nodes', 'party_g5_edges', 'party_g5_anchors', 'party_npcs', 'party_npc_traits',
+  'party_npc_relations', 'party_npc_knowledge', 'party_npc_schedules', 'party_containers', 'party_items', 'party_item_placements',
+  'party_ownership', 'party_decision_requests', 'party_decision_options', 'party_decision_results', 'party_change_sets',
+  'party_autonomous_updates', 'party_visible_read_models'
+]);
 
 const SPEC_STATUS_TO_DDL_STATUS = Object.freeze({
   initializing: 'draft',
@@ -18,19 +27,19 @@ const SPEC_STATUS_TO_DDL_STATUS = Object.freeze({
 
 export const PARTY_SPEC_TARGET_MAPPINGS = Object.freeze({
   party_state: {
-    actualTargetTable: 'party_state',
-    storage: 'columns_and_audit_state_jsonb'
+    actualTargetTable: 'parties',
+    storage: 'normalized_version_pins_and_lifecycle'
   },
   party_clock: {
-    actualTargetTable: 'party_state',
-    storage: 'current_year/current_season/current_day_index/current_minute_of_day'
+    actualTargetTable: 'party_state_snapshots',
+    storage: 'versioned_state_payload.clock'
   },
   party_environment_state: {
-    actualTargetTable: 'party_state',
-    storage: 'audit_state.environment'
+    actualTargetTable: 'party_state_snapshots',
+    storage: 'versioned_state_payload.environment'
   },
   party_current_position: {
-    actualTargetTable: 'party_current_position',
+    actualTargetTable: 'party_positions',
     storage: 'columns'
   },
   party_player_character: {
@@ -58,28 +67,28 @@ export const PARTY_SPEC_TARGET_MAPPINGS = Object.freeze({
     storage: 'memory_state'
   },
   party_character_inventory: {
-    actualTargetTable: 'party_inventory_entries',
-    storage: 'party_items_plus_party_inventory_entries'
+    actualTargetTable: 'party_item_placements',
+    storage: 'normalized_holder_reference'
   },
   party_inventory: {
-    actualTargetTable: 'party_inventory_entries',
-    storage: 'party_items_plus_party_inventory_entries'
+    actualTargetTable: 'party_item_placements',
+    storage: 'normalized_holder_reference'
   },
   party_property_and_access: {
-    actualTargetTable: 'party_items',
-    storage: 'ownership_state/access_state/current_state'
+    actualTargetTable: 'party_ownership',
+    storage: 'normalized_ownership_and_control'
   },
   party_scene_minilocations: {
-    actualTargetTable: 'party_minilocations',
+    actualTargetTable: 'party_g5_nodes',
     storage: 'columns_and_jsonb'
   },
   party_scene_anchors: {
-    actualTargetTable: 'party_scene_anchors',
+    actualTargetTable: 'party_g5_anchors',
     storage: 'columns_and_jsonb'
   },
   party_scene_edges: {
-    actualTargetTable: 'party_graph_edges',
-    storage: 'scale_level=G5'
+    actualTargetTable: 'party_g5_edges',
+    storage: 'normalized_g5_edge'
   },
   party_npcs: {
     actualTargetTable: 'party_npcs',
@@ -87,27 +96,27 @@ export const PARTY_SPEC_TARGET_MAPPINGS = Object.freeze({
   },
   party_npc_anchor_bindings: {
     actualTargetTable: 'party_npcs',
-    storage: 'current_node/current_place/current_location/current_state.anchor_binding'
+    storage: 'anchor_id'
   },
   party_items: {
     actualTargetTable: 'party_items',
     storage: 'columns_and_jsonb'
   },
   party_containers: {
-    actualTargetTable: 'party_items',
-    storage: 'is_container=true; contents in current_state.contents_state'
+    actualTargetTable: 'party_containers',
+    storage: 'normalized_container_state'
   },
   party_item_anchor_bindings: {
-    actualTargetTable: 'party_items',
-    storage: 'place/location/minilocation/anchor columns and current_state.anchor_binding'
+    actualTargetTable: 'party_item_placements',
+    storage: 'exactly_one_holder_reference'
   },
   party_property_bindings: {
-    actualTargetTable: 'party_items',
-    storage: 'ownership_state/access_state/current_state.property_binding'
+    actualTargetTable: 'party_ownership',
+    storage: 'normalized_owner_controller_claim'
   },
   party_hidden_state: {
-    actualTargetTable: 'party_state',
-    storage: 'hidden_state'
+    actualTargetTable: 'party_state_snapshots',
+    storage: 'versioned_state_payload.hidden_state'
   },
   party_hidden_npc_state: {
     actualTargetTable: 'party_npcs',
@@ -122,45 +131,52 @@ export const PARTY_SPEC_TARGET_MAPPINGS = Object.freeze({
     storage: 'hidden_state; is_container=true'
   },
   party_character_knowledge_map: {
-    actualTargetTable: 'party_map_knowledge',
+    actualTargetTable: 'party_character_knowledge',
     storage: 'columns'
   },
   party_character_known_routes: {
-    actualTargetTable: 'party_map_knowledge',
-    storage: 'knowledge_type=known_*'
+    actualTargetTable: 'party_character_knowledge',
+    storage: 'normalized_fact_knowledge_state'
   },
   party_visible_context: {
-    actualTargetTable: 'party_state',
-    storage: 'visible_summary plus party_llm_steps snapshot',
+    actualTargetTable: 'party_visible_read_models',
+    storage: 'versioned_viewer_payload',
     playerVisible: true
   },
   party_visible_context_package: {
-    actualTargetTable: 'party_state',
-    storage: 'visible_summary plus party_llm_steps snapshot',
+    actualTargetTable: 'party_visible_read_models',
+    storage: 'versioned_viewer_payload',
     playerVisible: true
   },
   party_narrator_output: {
-    actualTargetTable: 'party_journal_entries',
-    storage: 'entry_type=opening_narrator_output',
+    actualTargetTable: 'party_visible_read_models',
+    storage: 'versioned_viewer_payload.narrator_output',
     playerVisible: true
   },
   party_player_visible_message: {
-    actualTargetTable: 'party_journal_entries',
-    storage: 'entry_type=player_visible_message',
+    actualTargetTable: 'party_visible_read_models',
+    storage: 'versioned_viewer_payload.player_message',
     playerVisible: true
   },
   party_events: {
-    actualTargetTable: 'party_events',
-    storage: 'columns_and_jsonb'
+    actualTargetTable: 'party_state_snapshots',
+    storage: 'versioned_state_payload.events'
   },
   party_audit_snapshots: {
-    actualTargetTable: 'party_llm_steps',
-    storage: 'structured_output plus party_validation_issues'
+    actualTargetTable: 'party_state_snapshots',
+    storage: 'versioned_state_payload.audit_snapshots'
   },
   party_source_trace: {
-    actualTargetTable: 'party_llm_steps',
-    storage: 'structured_output.source_trace'
-  }
+    actualTargetTable: 'party_state_snapshots',
+    storage: 'versioned_state_payload.source_trace'
+  },
+  ...Object.fromEntries([
+    'parties', 'party_state_snapshots', 'party_positions', 'party_player_characters', 'party_character_knowledge',
+    'party_materialization_runs', 'party_materialization_choices', 'party_g5_nodes', 'party_g5_edges', 'party_g5_anchors',
+    'party_npcs', 'party_npc_traits', 'party_npc_relations', 'party_npc_knowledge', 'party_npc_schedules', 'party_containers',
+    'party_items', 'party_item_placements', 'party_ownership', 'party_decision_requests', 'party_decision_options',
+    'party_decision_results', 'party_change_sets', 'party_autonomous_updates', 'party_visible_read_models'
+  ].map((table) => [table, { actualTargetTable: table, storage: 'party_runtime_v2' }]))
 });
 
 const SPEC_ONLY_PARTY_STATE_FIELDS = [
@@ -208,54 +224,23 @@ export function mapSpecStatusToCurrentPartyDdl(status) {
 }
 
 export function mapSpecPartyStateRecordToCurrentDdl(record = {}) {
-  const next = { ...record };
-  const auditState = cloneJsonObject(record.audit_state);
-
-  if (record.party_id && !record.id) next.id = record.party_id;
-  if (record.world_base_region_id && !record.current_region_id) {
-    next.current_region_id = record.world_base_region_id;
-  }
-  if (record.status) next.status = mapSpecStatusToCurrentPartyDdl(record.status);
-
-  for (const field of SPEC_ONLY_PARTY_STATE_FIELDS) {
-    if (Object.prototype.hasOwnProperty.call(record, field)) {
-      auditState[field] = record[field];
-      delete next[field];
-    }
-  }
-
-  next.audit_state = auditState;
-  delete next.party_id;
-  delete next.world_base_region_id;
-  return next;
+  return {
+    party_id: record.party_id ?? record.id,
+    schema_version: 2,
+    world_revision_id: record.world_revision_id,
+    world_catalog_digest: record.world_catalog_digest,
+    materializer_version: record.materializer_version,
+    rng_version: record.rng_version,
+    command_catalog_digest: record.command_catalog_digest,
+    profile_bundle_digest: record.profile_bundle_digest,
+    state_version: record.state_version ?? 0,
+    status: ['ready', 'formed', 'active'].includes(record.status) ? 'active' : record.status ?? 'creating'
+  };
 }
 
 export function mapSpecClockRecordToPartyStatePatch(record = {}) {
-  const next = {};
-  const hour = Number(record.hour);
-  const minute = Number(record.minute);
-
-  if (record.party_id && !record.id) next.id = record.party_id;
-  if (hasOwn(record, 'current_year') || hasOwn(record, 'year')) next.current_year = record.current_year ?? record.year;
-  if (hasOwn(record, 'current_season') || hasOwn(record, 'season')) next.current_season = record.current_season ?? record.season;
-  if (hasOwn(record, 'current_day_index') || hasOwn(record, 'day_index')) {
-    next.current_day_index = record.current_day_index ?? record.day_index;
-  }
-  if (!Object.prototype.hasOwnProperty.call(next, 'current_day_index') && Number.isFinite(Number(record.day))) {
-    next.current_day_index = Math.max(0, Number(record.day) - 1);
-  }
-  if (hasOwn(record, 'current_minute_of_day') || hasOwn(record, 'minute_of_day')) {
-    next.current_minute_of_day = record.current_minute_of_day ?? record.minute_of_day;
-  } else if (Number.isFinite(hour) && Number.isFinite(minute)) {
-    next.current_minute_of_day = hour * 60 + minute;
-  }
-
-  return {
-    ...next,
-    audit_state: {
-      clock: cloneJsonObject(record)
-    }
-  };
+  const statePayload = { clock: cloneJsonObject(record) };
+  return { party_id: record.party_id, state_version: record.state_version ?? 0, state_payload: statePayload, state_digest: digestJson(statePayload) };
 }
 
 export function mapSpecRecordToCurrentPartyDdl(specTargetTable, record = {}) {
@@ -265,29 +250,33 @@ export function mapSpecRecordToCurrentPartyDdl(specTargetTable, record = {}) {
     case 'party_clock':
       return mapSpecClockRecordToPartyStatePatch(record);
     case 'party_environment_state':
-      return {
-        ...(record.party_id && !record.id ? { id: record.party_id } : {}),
-        audit_state: { environment: cloneJsonObject(record) }
-      };
+      return snapshotRecord(record, 'environment');
+    case 'party_hidden_state':
+    case 'party_events':
+    case 'party_audit_snapshots':
+    case 'party_source_trace':
+      return snapshotRecord(record, specTargetTable);
+    case 'party_current_position':
+      return { party_id: record.party_id, g4_id: record.g4_id ?? record.location_id, g5_node_id: record.g5_node_id ?? record.minilocation_id ?? null, g5_anchor_id: record.g5_anchor_id ?? record.anchor_id ?? null };
+    case 'party_scene_minilocations':
+      return { party_id: record.party_id, g5_node_id: record.g5_node_id ?? record.g5_minilocation_id ?? record.minilocation_id, run_id: record.run_id, parent_g4_id: record.parent_g4_id ?? record.parent_g4_node_id, template_id: record.template_id, slot_key: record.slot_key ?? 'default', state: record.state ?? {} };
+    case 'party_scene_anchors':
+      return { party_id: record.party_id, anchor_id: record.anchor_id, g5_node_id: record.g5_node_id ?? record.minilocation_id, template_id: record.template_id, slot_key: record.slot_key ?? record.anchor_type ?? 'default', npc_capacity: record.npc_capacity ?? record.supports?.npc_capacity ?? 0, item_capacity: record.item_capacity ?? record.supports?.item_capacity ?? 0, container_capacity: record.container_capacity ?? record.supports?.container_capacity ?? 0, state: record.state ?? {} };
+    case 'party_scene_edges':
+      return { party_id: record.party_id, g5_edge_id: record.g5_edge_id ?? record.edge_id, from_anchor_id: record.from_anchor_id, to_anchor_id: record.to_anchor_id, template_id: record.template_id, state: record.state ?? {} };
     default:
       return { ...record };
   }
 }
 
 export function adaptPartyWriteBatchTarget(batch = {}) {
-  if (batch.adapter_target?.version === PARTY_SCHEMA_ADAPTER_VERSION && batch.spec_target_table) {
-    return {
-      ...batch,
-      records: Array.isArray(batch.records) ? batch.records.map((record) => ({ ...record })) : []
-    };
-  }
-
   const target = resolvePartySpecTarget(batch.spec_target_table ?? batch.target_table);
   const records = Array.isArray(batch.records) ? batch.records : [];
   return {
     ...batch,
     spec_target_table: target.specTargetTable,
     target_table: target.actualTargetTable,
+    target_schema: 'party_runtime',
     adapter_target: {
       version: PARTY_SCHEMA_ADAPTER_VERSION,
       spec_target_table: target.specTargetTable,
@@ -394,6 +383,7 @@ export function validatePartyAdapterTargetSafety(writePlan = {}) {
         message: `${targetTable} maps to player-visible storage and contains hidden-state fields`
       });
     }
+    if (!PARTY_RUNTIME_V2_TARGETS.has(mapping.actualTargetTable)) concerns.push({ code: 'PARTY_ADAPTER_LEGACY_TARGET', message: `${targetTable} maps outside party_runtime_v2` });
   }
 
   return {
@@ -419,4 +409,13 @@ function containsHiddenPublicKey(value) {
     if (containsHiddenPublicKey(child)) return true;
   }
   return false;
+}
+
+function snapshotRecord(record, key) {
+  const statePayload = { [key]: cloneJsonObject(record) };
+  return { party_id: record.party_id, state_version: record.state_version ?? 0, state_payload: statePayload, state_digest: digestJson(statePayload) };
+}
+
+function digestJson(value) {
+  return sha256(value);
 }

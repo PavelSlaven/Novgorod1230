@@ -1,9 +1,9 @@
 <!-- GENERATED FILE. Sources: infra/world-base/schema.sql, infra/world-base/schema/*.sql and infra/world-base/field-descriptions.js. Run `npm run world-db:schema-doc`; do not edit manually. -->
 # Справочник схемы `world_base`
 
-- Исполняемый источник: `infra/world-base/schema.sql` и 8 упорядоченных SQL-частей.
-- SHA-256 развёрнутого DDL: `1ecc61808fcb2ddb9ecbc8b7417f917a4d0209414fb2858d5681e95fd8abaf29`.
-- Таблиц: 62.
+- Исполняемый источник: `infra/world-base/schema.sql` и 11 упорядоченных SQL-частей.
+- SHA-256 развёрнутого DDL: `d0e46cf8fc1db76354d7013dbc1cff1c9852449d3aa6c9e8e0654e388138720f`.
+- Таблиц: 108.
 - Описания берутся только из утверждённого `infra/world-base/field-descriptions.js`; отсутствие описания не заполняется эвристикой.
 
 ## Граф (каноническая карта)
@@ -76,7 +76,7 @@
 | `slug` | `TEXT` | да | — | — | — | Короткий машиночитаемый ключ для ссылок и LLM. |
 | `title` | `TEXT` | да | — | — | — | Человекочитаемое название записи. |
 | `node_type` | `TEXT` | да | — | — | `CHECK (node_type IS NULL OR node_type IN ( 'world_region','subregion','place','location','minilocation','scene_anchor', 'route_junction','river_junction','ford','ferry','gate','road_segment', 'water_segment','border_crossing','sea_crossing','mountain_pass','desert_oasis','steppe_camp', 'region_cell','cell_subgraph','map_corridor','geographic_landmark','historical_landmark' ))` | Тип узла: world_region, region_cell, place, location, scene_anchor, ford, … |
-| `scale_level` | `TEXT` | да | — | — | `CHECK (scale_level IS NULL OR scale_level IN ('G0', 'G1', 'G2', 'G3', 'G4', 'G5'))` | Уровень графа: G0 (регион) … G5 (точка сцены). |
+| `scale_level` | `TEXT` | да | — | — | `CHECK (scale_level IS NULL OR scale_level IN ('G0', 'G1', 'G2', 'G3', 'G4'))` | Уровень графа: G0 (регион) … G5 (точка сцены). |
 | `parent_node_id` | `TEXT` | да | — | `world_base.graph_nodes(id) ON DELETE SET NULL` | — | FK → graph_nodes(id): родительский узел графа. |
 | `region_id` | `TEXT` | нет | — | `world_base.regions(id) ON DELETE CASCADE` | `NOT NULL` | FK → regions(id): регион, к которому относится запись. |
 | `place_id` | `TEXT` | да | — | `world_base.places(id) ON DELETE SET NULL` | — | FK → places(id): конкретное место, если применимо. |
@@ -132,7 +132,7 @@
 | `from_node_id` | `TEXT` | нет | — | `world_base.graph_nodes(id) ON DELETE CASCADE` | `NOT NULL` | FK → graph_nodes(id): узел начала ребра. |
 | `to_node_id` | `TEXT` | нет | — | `world_base.graph_nodes(id) ON DELETE CASCADE` | `NOT NULL` | FK → graph_nodes(id): узел конца ребра. |
 | `reverse_edge_id` | `TEXT` | да | — | `world_base.graph_edges(id) ON DELETE SET NULL` | — | FK → graph_edges(id): обратное ребро, если путь двусторонний. |
-| `scale_level` | `TEXT` | да | — | — | `CHECK (scale_level IS NULL OR scale_level IN ('G0', 'G1', 'G2', 'G3', 'G4', 'G5'))` | Описание отсутствует. |
+| `scale_level` | `TEXT` | да | — | — | `CHECK (scale_level IS NULL OR scale_level IN ('G0', 'G1', 'G2', 'G3', 'G4'))` | Описание отсутствует. |
 | `edge_type` | `TEXT` | да | — | — | `CHECK (edge_type IS NULL OR edge_type IN ( 'road','path','river','lake_route','sea_route','winter_road','ford','ferry','bridge', 'gate','street','door','yard_passage','forest_track','offroad_crossing','mountain_pass','desert_route', 'steppe_route','border_transition','corridor_segment','portage' ))` | Тип связи: road, path, offroad_crossing (G1 без дороги), corridor_segment (крупный коридор), portage (волок), ford, ferry, border_transition, … |
 | `base_gu` | `NUMERIC` | да | — | — | — | Базовая длина ребра в graph units (1 GU ≈ 4 км пешком). |
 | `base_distance_km` | `NUMERIC` | да | — | — | — | Ориентировочная дистанция в км. |
@@ -2156,6 +2156,7 @@
 | `audit_notes` | `TEXT` | да | — | — | — | Заметки редактора: споры, TODO, ссылки на проверку. |
 | `created_at` | `TIMESTAMPTZ` | нет | `now()` | — | `NOT NULL` | Время создания записи (UTC). |
 | `updated_at` | `TIMESTAMPTZ` | нет | `now()` | — | `NOT NULL` | Время последнего изменения (обновляется триггером). |
+| `category_id` | `TEXT` | да | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
 
 **Ограничения таблицы:**
 
@@ -2392,3 +2393,881 @@
 **Ограничения таблицы:**
 
 - Явные табличные constraints отсутствуют.
+
+## Materialization v2: категории и ревизии
+
+### `world_base.world_revisions`
+
+Неизменяемые утверждённые ревизии каталогов мира и их общий digest.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `parent_revision_id` | `TEXT` | да | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
+| `title` | `TEXT` | нет | — | — | `NOT NULL` | Человекочитаемое название записи. |
+| `effective_from` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `effective_to` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `catalog_digest` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (catalog_digest ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
+| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `approved_at` | `TIMESTAMPTZ` | да | — | — | — | Описание отсутствует. |
+| `created_at` | `TIMESTAMPTZ` | нет | `now()` | — | `NOT NULL` | Время создания записи (UTC). |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.universal_categories`
+
+Универсальные категории, которые код вправе использовать, но не создавать.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `domain` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `parent_category_id` | `TEXT` | да | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
+| `title` | `TEXT` | нет | — | — | `NOT NULL` | Человекочитаемое название записи. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- `UNIQUE (domain, title)`
+
+### `world_base.universal_category_relations`
+
+Нормализованные отношения между универсальными категориями.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `from_category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
+| `to_category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
+| `relation_type` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `UNIQUE (from_category_id, to_category_id, relation_type)`
+
+### `world_base.universal_parameter_definitions`
+
+Типизированные определения параметров категорий.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
+| `parameter_key` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `value_type` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (value_type IN ('boolean','integer','number','text','enum'))` | Описание отсутствует. |
+| `constraints` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `UNIQUE (category_id, parameter_key)`
+
+### `world_base.region_category_options`
+
+Разрешение категории для региона, периода и ревизии с весом выбора.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `region_id` | `TEXT` | нет | — | `world_base.regions(id) ON DELETE CASCADE` | `NOT NULL` | FK → regions(id): регион, к которому относится запись. |
+| `category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `valid_from` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `valid_to` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `weight` | `INTEGER` | нет | `1` | — | `NOT NULL`<br>`CHECK (weight > 0)` | Описание отсутствует. |
+| `applicability` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- `UNIQUE (world_revision_id, region_id, category_id, valid_from, valid_to)`
+
+## Materialization v2: NPC-профили
+
+### `world_base.region_npc_archetypes`
+
+Региональные NPC templates без конкретной identity и биографии.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `region_id` | `TEXT` | нет | — | `world_base.regions(id) ON DELETE CASCADE` | `NOT NULL` | FK → regions(id): регион, к которому относится запись. |
+| `social_role_id` | `TEXT` | нет | — | `world_base.region_social_roles(id) ON DELETE RESTRICT` | `NOT NULL` | FK → region_social_roles(id): социальная роль. |
+| `occupation_id` | `TEXT` | да | — | `world_base.region_occupations(id) ON DELETE RESTRICT` | — | FK → region_occupations(id): профессия/занятие. |
+| `legal_status_id` | `TEXT` | да | — | `world_base.legal_status_archetypes(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
+| `mobility_id` | `TEXT` | да | — | `world_base.mobility_archetypes(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.region_demographic_profiles`
+
+Региональные демографические варианты и ограничения.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `region_id` | `TEXT` | нет | — | `world_base.regions(id) ON DELETE CASCADE` | `NOT NULL` | FK → regions(id): регион, к которому относится запись. |
+| `demographic_option_id` | `TEXT` | нет | — | `world_base.region_category_options(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `minimum_age` | `INTEGER` | да | — | — | `CHECK (minimum_age >= 0)` | Описание отсутствует. |
+| `maximum_age` | `INTEGER` | да | — | — | `CHECK (maximum_age IS NULL OR maximum_age >= minimum_age)` | Описание отсутствует. |
+| `weight` | `INTEGER` | нет | `1` | — | `NOT NULL`<br>`CHECK (weight > 0)` | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.region_name_pools`
+
+Региональные пулы имён для периода и ревизии.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `region_id` | `TEXT` | нет | — | `world_base.regions(id) ON DELETE CASCADE` | `NOT NULL` | FK → regions(id): регион, к которому относится запись. |
+| `valid_from` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `valid_to` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.region_name_pool_entries`
+
+Конкретные утверждённые формы имён и веса.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `name_pool_id` | `TEXT` | нет | — | `world_base.region_name_pools(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
+| `name_form` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `name_category_id` | `TEXT` | да | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
+| `weight` | `INTEGER` | нет | `1` | — | `NOT NULL`<br>`CHECK (weight > 0)` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `UNIQUE (name_pool_id, name_form)`
+
+### `world_base.region_appearance_profiles`
+
+Региональные варианты внешности из разрешённых категорий.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `region_id` | `TEXT` | нет | — | `world_base.regions(id) ON DELETE CASCADE` | `NOT NULL` | FK → regions(id): регион, к которому относится запись. |
+| `appearance_option_id` | `TEXT` | нет | — | `world_base.region_category_options(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `weight` | `INTEGER` | нет | `1` | — | `NOT NULL`<br>`CHECK (weight > 0)` | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.region_clothing_profiles`
+
+Региональные garment slots и ограничения одежды.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `region_id` | `TEXT` | нет | — | `world_base.regions(id) ON DELETE CASCADE` | `NOT NULL` | FK → regions(id): регион, к которому относится запись. |
+| `garment_category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `slot_key` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `constraints` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.region_equipment_profiles`
+
+Профили снаряжения для ролей и занятий.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `region_id` | `TEXT` | нет | — | `world_base.regions(id) ON DELETE CASCADE` | `NOT NULL` | FK → regions(id): регион, к которому относится запись. |
+| `social_role_id` | `TEXT` | да | — | `world_base.region_social_roles(id) ON DELETE RESTRICT` | — | FK → region_social_roles(id): социальная роль. |
+| `occupation_id` | `TEXT` | да | — | `world_base.region_occupations(id) ON DELETE RESTRICT` | — | FK → region_occupations(id): профессия/занятие. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.region_equipment_profile_entries`
+
+Нормализованные required/optional варианты снаряжения.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `equipment_profile_id` | `TEXT` | нет | — | `world_base.region_equipment_profiles(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
+| `item_template_id` | `TEXT` | да | — | `world_base.item_templates(id) ON DELETE RESTRICT` | — | FK → item_templates(id): шаблон предмета. |
+| `item_category_id` | `TEXT` | да | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
+| `slot_key` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `required` | `BOOLEAN` | нет | `false` | — | `NOT NULL` | Описание отсутствует. |
+| `weight` | `INTEGER` | нет | `1` | — | `NOT NULL`<br>`CHECK (weight > 0)` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `CHECK ((item_template_id IS NULL) <> (item_category_id IS NULL))`
+
+### `world_base.region_knowledge_profiles`
+
+Разрешённые категории и ссылки знаний NPC.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `region_id` | `TEXT` | нет | — | `world_base.regions(id) ON DELETE CASCADE` | `NOT NULL` | FK → regions(id): регион, к которому относится запись. |
+| `knowledge_category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `fact_table` | `TEXT` | да | — | — | — | Описание отсутствует. |
+| `fact_record_id` | `TEXT` | да | — | — | — | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.region_behavior_profiles`
+
+Поведенческие варианты и привязанная decision policy.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `region_id` | `TEXT` | нет | — | `world_base.regions(id) ON DELETE CASCADE` | `NOT NULL` | FK → regions(id): регион, к которому относится запись. |
+| `behavior_option_id` | `TEXT` | нет | — | `world_base.region_category_options(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `decision_policy_id` | `TEXT` | да | — | `world_base.decision_policy_profiles(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.region_relationship_profiles`
+
+Типы и ограничения отношений NPC.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `region_id` | `TEXT` | нет | — | `world_base.regions(id) ON DELETE CASCADE` | `NOT NULL` | FK → regions(id): регион, к которому относится запись. |
+| `relationship_option_id` | `TEXT` | нет | — | `world_base.region_category_options(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `constraints` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.region_activity_profiles`
+
+Причины присутствия, действия и опорные узлы NPC.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `region_id` | `TEXT` | нет | — | `world_base.regions(id) ON DELETE CASCADE` | `NOT NULL` | FK → regions(id): регион, к которому относится запись. |
+| `activity_option_id` | `TEXT` | нет | — | `world_base.region_category_options(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `presence_reason` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `graph_node_id` | `TEXT` | да | — | `world_base.graph_nodes(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.region_schedule_profiles`
+
+Расписания NPC с явными place/route/fallback ссылками.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `region_id` | `TEXT` | нет | — | `world_base.regions(id) ON DELETE CASCADE` | `NOT NULL` | FK → regions(id): регион, к которому относится запись. |
+| `activity_profile_id` | `TEXT` | нет | — | `world_base.region_activity_profiles(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `time_band` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `place_id` | `TEXT` | да | — | `world_base.places(id) ON DELETE RESTRICT` | — | FK → places(id): конкретное место, если применимо. |
+| `route_template_id` | `TEXT` | да | — | `world_base.route_templates(id) ON DELETE RESTRICT` | — | FK → route_templates(id): тип движения/инфраструктуры ребра. |
+| `fallback_activity_profile_id` | `TEXT` | да | — | `world_base.region_activity_profiles(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.region_npc_profile_sets`
+
+Совместимые композиции компонентных NPC-профилей.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `archetype_id` | `TEXT` | нет | — | `world_base.region_npc_archetypes(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `demographic_profile_id` | `TEXT` | нет | — | `world_base.region_demographic_profiles(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `name_pool_id` | `TEXT` | да | — | `world_base.region_name_pools(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
+| `appearance_profile_id` | `TEXT` | нет | — | `world_base.region_appearance_profiles(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `clothing_profile_id` | `TEXT` | да | — | `world_base.region_clothing_profiles(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
+| `equipment_profile_id` | `TEXT` | да | — | `world_base.region_equipment_profiles(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
+| `knowledge_profile_id` | `TEXT` | да | — | `world_base.region_knowledge_profiles(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
+| `behavior_profile_id` | `TEXT` | нет | — | `world_base.region_behavior_profiles(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `relationship_profile_id` | `TEXT` | да | — | `world_base.region_relationship_profiles(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
+| `activity_profile_id` | `TEXT` | нет | — | `world_base.region_activity_profiles(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `schedule_profile_id` | `TEXT` | да | — | `world_base.region_schedule_profiles(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
+| `profile_level` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (profile_level IN ('background','scene','key'))` | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- `UNIQUE INDEX region_npc_profile_set_revision (world_revision_id, id) WHERE status = 'approved'`
+
+## Materialization v2: G4 и G5
+
+### `world_base.room_templates`
+
+Шаблоны функций помещений или зон.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `region_id` | `TEXT` | да | — | `world_base.regions(id) ON DELETE CASCADE` | — | FK → regions(id): регион, к которому относится запись. |
+| `room_category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `capacity` | `INTEGER` | нет | `1` | — | `NOT NULL`<br>`CHECK (capacity > 0)` | Описание отсутствует. |
+| `access_policy` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `visibility_policy` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.building_layout_templates`
+
+Региональные профили планировки здания для периода.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `region_id` | `TEXT` | нет | — | `world_base.regions(id) ON DELETE CASCADE` | `NOT NULL` | FK → regions(id): регион, к которому относится запись. |
+| `building_template_id` | `TEXT` | нет | — | `world_base.building_templates(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `valid_from` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `valid_to` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.building_layout_nodes`
+
+Нормализованные slots помещений в планировке.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `layout_template_id` | `TEXT` | нет | — | `world_base.building_layout_templates(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
+| `slot_key` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `room_template_id` | `TEXT` | нет | — | `world_base.room_templates(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `required` | `BOOLEAN` | нет | `true` | — | `NOT NULL` | Описание отсутствует. |
+| `ordinal` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `UNIQUE (layout_template_id, slot_key)`
+
+### `world_base.building_layout_edges`
+
+Нормализованные проходы между slots планировки.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `layout_template_id` | `TEXT` | нет | — | `world_base.building_layout_templates(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
+| `from_node_id` | `TEXT` | нет | — | `world_base.building_layout_nodes(id) ON DELETE CASCADE` | `NOT NULL` | FK → graph_nodes(id): узел начала ребра. |
+| `to_node_id` | `TEXT` | нет | — | `world_base.building_layout_nodes(id) ON DELETE CASCADE` | `NOT NULL` | FK → graph_nodes(id): узел конца ребра. |
+| `passage_category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `access_policy` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `UNIQUE (layout_template_id, from_node_id, to_node_id)`
+
+### `world_base.g5_minilocation_templates`
+
+Шаблоны party G5-минилокаций и их policies.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `capacity` | `INTEGER` | нет | `1` | — | `NOT NULL`<br>`CHECK (capacity > 0)` | Описание отсутствует. |
+| `access_policy` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `visibility_policy` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `initial_state` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `valid_from` | `DATE, ADD COLUMN valid_to DATE, ADD COLUMN confidence TEXT` | нет | `'unknown'` | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown','low','medium_low','medium','medium_high','high'))` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.g5_anchor_templates`
+
+Шаблоны anchors с capacities и interaction capabilities.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `can_hold_npc` | `BOOLEAN` | нет | `false` | — | `NOT NULL` | Описание отсутствует. |
+| `can_hold_item` | `BOOLEAN` | нет | `false` | — | `NOT NULL` | Описание отсутствует. |
+| `can_hold_container` | `BOOLEAN` | нет | `false` | — | `NOT NULL` | Описание отсутствует. |
+| `npc_capacity` | `INTEGER` | нет | `0` | — | `NOT NULL`<br>`CHECK (npc_capacity >= 0)` | Описание отсутствует. |
+| `item_capacity` | `INTEGER` | нет | `0` | — | `NOT NULL`<br>`CHECK (item_capacity >= 0)` | Описание отсутствует. |
+| `container_capacity` | `INTEGER` | нет | `0` | — | `NOT NULL`<br>`CHECK (container_capacity >= 0)` | Описание отсутствует. |
+| `access_policy` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `visibility_policy` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `initial_state` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `valid_from` | `DATE, ADD COLUMN valid_to DATE, ADD COLUMN confidence TEXT` | нет | `'unknown'` | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown','low','medium_low','medium','medium_high','high'))` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.g5_edge_templates`
+
+Шаблоны G5-проходов с access/visibility policies.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `passage_category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `access_policy` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `visibility_policy` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `initial_state` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `valid_from` | `DATE, ADD COLUMN valid_to DATE, ADD COLUMN confidence TEXT` | нет | `'unknown'` | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown','low','medium_low','medium','medium_high','high'))` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.g4_materialization_profiles`
+
+Главные профили материализации G4 в party G5.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `region_id` | `TEXT` | нет | — | `world_base.regions(id) ON DELETE CASCADE` | `NOT NULL` | FK → regions(id): регион, к которому относится запись. |
+| `layout_template_id` | `TEXT` | нет | — | `world_base.building_layout_templates(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `maximum_g5_nodes` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (maximum_g5_nodes > 0)` | Описание отсутствует. |
+| `player_start_anchor_slot_key` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `visibility_model` | `JSONB` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `access_model` | `JSONB` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `valid_from` | `DATE, ADD COLUMN valid_to DATE, ADD COLUMN confidence TEXT` | нет | `'unknown'` | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown','low','medium_low','medium','medium_high','high'))` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.g4_materialization_bindings`
+
+Приоритетные правила выбора G4 materialization profile.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `profile_id` | `TEXT` | нет | — | `world_base.g4_materialization_profiles(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
+| `graph_node_id` | `TEXT` | да | — | `world_base.graph_nodes(id) ON DELETE CASCADE` | — | Описание отсутствует. |
+| `node_type` | `TEXT` | да | — | — | — | Описание отсутствует. |
+| `place_template_id` | `TEXT` | да | — | `world_base.place_templates(id) ON DELETE RESTRICT` | — | FK: на region_place_generation_rules(id) в place_generation_limits/location_object_rules; на place_templates(id) в graph_nodes. |
+| `building_template_id` | `TEXT` | да | — | `world_base.building_templates(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
+| `priority` | `INTEGER` | нет | `0` | — | `NOT NULL` | Описание отсутствует. |
+| `applicability` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `valid_from` | `DATE, ADD COLUMN valid_to DATE, ADD COLUMN confidence TEXT` | нет | `'unknown'` | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown','low','medium_low','medium','medium_high','high'))` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `CHECK (num_nonnulls(graph_node_id, node_type, place_template_id, building_template_id) = 1)`
+- `UNIQUE INDEX g4_materialization_binding_active_priority ( COALESCE(graph_node_id, ''), COALESCE(node_type, ''), COALESCE(place_template_id, ''), COALESCE(building_template_id, ''), priority ) WHERE status = 'approved'`
+
+### `world_base.materialization_slot_rules`
+
+Required/optional slots и количественные границы materializer.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `profile_id` | `TEXT` | нет | — | `world_base.g4_materialization_profiles(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
+| `slot_key` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `slot_domain` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (slot_domain IN ('g5_node','anchor','npc','item','container'))` | Описание отсутствует. |
+| `min_count` | `INTEGER` | нет | `0` | — | `NOT NULL`<br>`CHECK (min_count >= 0)` | Описание отсутствует. |
+| `max_count` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (max_count >= min_count)` | Описание отсутствует. |
+| `g5_minilocation_template_id` | `TEXT` | да | — | `world_base.g5_minilocation_templates(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
+| `g5_anchor_template_id` | `TEXT` | да | — | `world_base.g5_anchor_templates(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
+| `g5_edge_template_id` | `TEXT` | да | — | `world_base.g5_edge_templates(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
+| `parent_node_slot_key` | `TEXT` | да | — | — | — | Описание отсутствует. |
+| `entry_role` | `TEXT` | нет | `'none'` | — | `NOT NULL`<br>`CHECK (entry_role IN ('none','start','exit','start_and_exit'))` | Описание отсутствует. |
+| `required` | `BOOLEAN` | нет | `false` | — | `NOT NULL` | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `valid_from` | `DATE, ADD COLUMN valid_to DATE, ADD COLUMN applicability JSONB` | нет | `'{}'::jsonb, ADD COLUMN confidence TEXT` | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown','low','medium_low','medium','medium_high','high'))` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `UNIQUE (profile_id, slot_key)`
+
+### `world_base.g4_npc_materialization_rules`
+
+G4-specific правила количества и причин присутствия NPC.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `graph_node_id` | `TEXT` | нет | — | `world_base.graph_nodes(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
+| `slot_rule_id` | `TEXT` | нет | — | `world_base.materialization_slot_rules(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `npc_profile_set_id` | `TEXT` | нет | — | `world_base.region_npc_profile_sets(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `min_count` | `INTEGER` | нет | `0` | — | `NOT NULL`<br>`CHECK (min_count >= 0)` | Описание отсутствует. |
+| `max_count` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (max_count >= min_count)` | Описание отсутствует. |
+| `presence_reason` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `causal_basis_type` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `causal_basis_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `applicability` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `valid_from` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `valid_to` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `confidence` | `TEXT` | нет | `'unknown'` | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown','low','medium_low','medium','medium_high','high'))` | Уверенность в достоверности. Допустимо: unknown, low, medium_low, medium, medium_high, high. |
+| `weight` | `INTEGER` | нет | `1` | — | `NOT NULL`<br>`CHECK (weight > 0)` | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.g4_item_materialization_rules`
+
+G4-specific правила предметов, имущества и economic basis.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `graph_node_id` | `TEXT` | нет | — | `world_base.graph_nodes(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
+| `slot_rule_id` | `TEXT` | нет | — | `world_base.materialization_slot_rules(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `item_profile_id` | `TEXT` | нет | — | `world_base.item_profile_sets(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `property_profile_id` | `TEXT` | да | — | `world_base.property_profiles(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
+| `min_count` | `INTEGER` | нет | `0` | — | `NOT NULL`<br>`CHECK (min_count >= 0)` | Описание отсутствует. |
+| `max_count` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (max_count >= min_count)` | Описание отсутствует. |
+| `economic_basis` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `causal_basis_type` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `causal_basis_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `applicability` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `valid_from` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `valid_to` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `confidence` | `TEXT` | нет | `'unknown'` | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown','low','medium_low','medium','medium_high','high'))` | Уверенность в достоверности. Допустимо: unknown, low, medium_low, medium, medium_high, high. |
+| `weight` | `INTEGER` | нет | `1` | — | `NOT NULL`<br>`CHECK (weight > 0)` | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.g4_container_materialization_rules`
+
+G4-specific правила контейнеров, содержимого и доступа.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `graph_node_id` | `TEXT` | нет | — | `world_base.graph_nodes(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
+| `slot_rule_id` | `TEXT` | нет | — | `world_base.materialization_slot_rules(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `container_template_id` | `TEXT` | нет | — | `world_base.container_templates(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `content_profile_id` | `TEXT` | да | — | `world_base.container_content_profiles(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
+| `property_profile_id` | `TEXT` | да | — | `world_base.property_profiles(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
+| `min_count` | `INTEGER` | нет | `0` | — | `NOT NULL`<br>`CHECK (min_count >= 0)` | Описание отсутствует. |
+| `max_count` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (max_count >= min_count)` | Описание отсутствует. |
+| `causal_basis_type` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `causal_basis_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `applicability` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `valid_from` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `valid_to` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `confidence` | `TEXT` | нет | `'unknown'` | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown','low','medium_low','medium','medium_high','high'))` | Уверенность в достоверности. Допустимо: unknown, low, medium_low, medium, medium_high, high. |
+| `weight` | `INTEGER` | нет | `1` | — | `NOT NULL`<br>`CHECK (weight > 0)` | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+## Materialization v2: предметы и имущество
+
+### `world_base.container_templates`
+
+Шаблоны контейнеров с capacity и access policy.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `region_id` | `TEXT` | да | — | `world_base.regions(id) ON DELETE CASCADE` | — | FK → regions(id): регион, к которому относится запись. |
+| `category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `capacity` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (capacity > 0)` | Описание отсутствует. |
+| `access_policy` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.item_profile_sets`
+
+Профили комплектов предметов для контекста.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `region_id` | `TEXT` | да | — | `world_base.regions(id) ON DELETE CASCADE` | — | FK → regions(id): регион, к которому относится запись. |
+| `context_domain` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `applicability` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.item_profile_entries`
+
+Нормализованные варианты предметов и quantity limits.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `profile_id` | `TEXT` | нет | — | `world_base.item_profile_sets(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
+| `item_template_id` | `TEXT` | да | — | `world_base.item_templates(id) ON DELETE RESTRICT` | — | FK → item_templates(id): шаблон предмета. |
+| `item_category_id` | `TEXT` | да | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
+| `slot_key` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `min_quantity` | `INTEGER` | нет | `1` | — | `NOT NULL`<br>`CHECK (min_quantity >= 0)` | Описание отсутствует. |
+| `max_quantity` | `INTEGER` | нет | `1` | — | `NOT NULL`<br>`CHECK (max_quantity >= min_quantity)` | Описание отсутствует. |
+| `required` | `BOOLEAN` | нет | `false` | — | `NOT NULL` | Описание отсутствует. |
+| `weight` | `INTEGER` | нет | `1` | — | `NOT NULL`<br>`CHECK (weight > 0)` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `CHECK ((item_template_id IS NULL) <> (item_category_id IS NULL))`
+
+### `world_base.container_content_profiles`
+
+Профили содержимого контейнеров.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `container_template_id` | `TEXT` | нет | — | `world_base.container_templates(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
+| `empty_allowed` | `BOOLEAN` | нет | `false` | — | `NOT NULL` | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.container_content_profile_entries`
+
+Нормализованные варианты содержимого и количества.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `profile_id` | `TEXT` | нет | — | `world_base.container_content_profiles(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
+| `item_template_id` | `TEXT` | да | — | `world_base.item_templates(id) ON DELETE RESTRICT` | — | FK → item_templates(id): шаблон предмета. |
+| `item_category_id` | `TEXT` | да | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
+| `min_quantity` | `INTEGER` | нет | `1` | — | `NOT NULL`<br>`CHECK (min_quantity >= 0)` | Описание отсутствует. |
+| `max_quantity` | `INTEGER` | нет | `1` | — | `NOT NULL`<br>`CHECK (max_quantity >= min_quantity)` | Описание отсутствует. |
+| `required` | `BOOLEAN` | нет | `false` | — | `NOT NULL` | Описание отсутствует. |
+| `weight` | `INTEGER` | нет | `1` | — | `NOT NULL`<br>`CHECK (weight > 0)` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `CHECK ((item_template_id IS NULL) <> (item_category_id IS NULL))`
+
+### `world_base.property_profiles`
+
+Региональные модели имущества и доступа.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `region_id` | `TEXT` | да | — | `world_base.regions(id) ON DELETE CASCADE` | — | FK → regions(id): регион, к которому относится запись. |
+| `property_category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.property_profile_rules`
+
+Условия owner/holder/controller/access/claim.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `property_profile_id` | `TEXT` | нет | — | `world_base.property_profiles(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
+| `owner_kind` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `holder_kind` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `controller_kind` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `access_policy` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `claim_conditions` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.transport_templates`
+
+Шаблоны транспорта с маршрутными и equipment requirements.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `region_id` | `TEXT` | да | — | `world_base.regions(id) ON DELETE CASCADE` | — | FK → regions(id): регион, к которому относится запись. |
+| `category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `route_category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `equipment_profile_id` | `TEXT` | да | — | `world_base.region_equipment_profiles(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+## Materialization v2: решения и импорт
+
+### `world_base.decision_command_catalog`
+
+Закрытый каталог команд bounded decision и зарегистрированных code handlers.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `domain` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `handler_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `input_schema_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- `UNIQUE (domain, handler_id)`
+
+### `world_base.decision_policy_profiles`
+
+Политики, определяющие контексты формального запроса решения.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `region_id` | `TEXT` | да | — | `world_base.regions(id) ON DELETE CASCADE` | — | FK → regions(id): регион, к которому относится запись. |
+| `context_domain` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `state_schema_version` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (state_schema_version >= 2)` | Описание отсутствует. |
+| `applicability` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.decision_policy_options`
+
+Допустимые команды, preconditions, costs и risk metadata политики.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `policy_profile_id` | `TEXT` | нет | — | `world_base.decision_policy_profiles(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
+| `command_id` | `TEXT` | нет | — | `world_base.decision_command_catalog(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `option_order` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `preconditions` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `costs` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `risk_metadata` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `UNIQUE (policy_profile_id, option_order)`
+- `UNIQUE (policy_profile_id, command_id)`
+
+### `world_base.catalog_imports`
+
+Проверяемые импорты versioned authoring manifest.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `manifest_schema_version` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `manifest_digest` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (manifest_digest ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
+| `approval_status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (approval_status IN ('proposed','approved','rejected'))` | Описание отсутствует. |
+| `deletion_mode` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (deletion_mode IN ('none','explicit_only'))` | Описание отсутствует. |
+| `provenance` | `JSONB` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `validation_report` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `imported_at` | `TIMESTAMPTZ` | да | — | — | — | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.catalog_import_tables`
+
+Digests, counts и dependency order таблиц одного импорта.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `import_id` | `TEXT` | нет | — | `world_base.catalog_imports(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
+| `table_name` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `payload_digest` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (payload_digest ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
+| `record_count` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (record_count >= 0)` | Описание отсутствует. |
+| `dependency_order` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (dependency_order >= 0)` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY (import_id, table_name)`
+
+## Без утверждённой группы
+
+### `world_base.g4_materialization_layout_edges`
+
+Описание назначения отсутствует.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `profile_id` | `TEXT` | нет | — | `world_base.g4_materialization_profiles(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
+| `from_anchor_slot_key` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `to_anchor_slot_key` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `g5_edge_template_id` | `TEXT` | нет | — | `world_base.g5_edge_templates(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `ordinal` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (ordinal >= 0)` | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- `CHECK (from_anchor_slot_key <> to_anchor_slot_key)`
+- `UNIQUE (profile_id, from_anchor_slot_key, to_anchor_slot_key)`

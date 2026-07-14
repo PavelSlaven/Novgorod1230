@@ -1,1 +1,6 @@
-export function assertStage16Ports(services={}){for(const key of ['place','audit'])if(typeof services?.[key]!=='function')throw new TypeError(`Stage 16 requires ${key} service.`);return services;}
+import { materializeItemPlacement } from '@rus/materialization';
+export function assertStage16Ports(services = {}) {
+  const materialize = services.materialize ?? services.place ?? materializeItemPlacement;
+  if (typeof services.audit !== 'function') throw new TypeError('Stage 16 requires audit service.');
+  return { ...services, materialize };
+}

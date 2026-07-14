@@ -1,0 +1,6 @@
+{
+  "name": "@rus/knowledge-source",
+  "version": "0.23.0",
+  "type": "module",
+  "exports": "./src/index.js"
+}

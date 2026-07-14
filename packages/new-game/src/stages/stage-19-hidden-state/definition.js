@@ -1,0 +1,2 @@
+import { assertStage19Ports } from './ports.js'; import { runStage19HiddenStateBlock } from './orchestration/run-stage-19.js';
+export const stage19Definition=Object.freeze({id:19,name:'hidden-state',version:1,async execute({input,services={}}={}){const ports=assertStage19Ports(services.stage19??services);const result=await runStage19HiddenStateBlock({input,...ports});return{status:result?.pass===true?'approved':'blocked',artifact:result};}});

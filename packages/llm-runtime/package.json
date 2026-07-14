@@ -1,0 +1,9 @@
+{
+  "name": "@rus/llm-runtime",
+  "version": "0.9.0",
+  "type": "module",
+  "exports": "./src/index.js",
+  "dependencies": {
+    "@rus/contracts": "0.9.0"
+  }
+}

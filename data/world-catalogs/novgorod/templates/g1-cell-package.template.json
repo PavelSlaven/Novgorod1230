@@ -1,0 +1,23 @@
+{
+  "schema_version": "rus.g1_cell_package.v1",
+  "package_id": "",
+  "map_revision_id": "",
+  "g1_id": "",
+  "package_status": "draft",
+  "source_ledger": [],
+  "g1_dossier": {},
+  "g2_zones": [],
+  "g3_places": [],
+  "g4_locations": [],
+  "graph_nodes": [],
+  "graph_edges": [],
+  "boundary_contracts": [],
+  "population_profiles": [],
+  "item_profiles": [],
+  "container_profiles": [],
+  "property_profiles": [],
+  "fauna_profiles": [],
+  "toponymy_register": [],
+  "id_migration_map": [],
+  "change_log": []
+}

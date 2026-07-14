@@ -1,0 +1,30 @@
+{
+  "schema_version": "rus.world_catalog_source_registry.v1",
+  "region_id": "region_novgorod_land",
+  "sources": [
+    {
+      "schema_version": "rus.world_catalog_source.v1",
+      "source_id": "novgorod_v6_legacy_baseline",
+      "region_id": "region_novgorod_land",
+      "map_revision_id": "novgorod_1230_research_revision_001",
+      "historical_horizon": 1230,
+      "source_manifest_digest": "bbae92c4c7616bed73f3c9557be6f31b54556f0953ccf6c29c8c7e94e3d87a93",
+      "approval_status": "staging_only",
+      "included_datasets": [
+        "g1_cells",
+        "g2_zones",
+        "g3_places",
+        "g4_locations",
+        "graph_nodes",
+        "graph_edges",
+        "naming_register",
+        "g3_scale_register",
+        "g1_sources",
+        "g1_macro_zones",
+        "g1_historical_anchors"
+      ],
+      "approved_at": null,
+      "approved_by": null
+    }
+  ]
+}

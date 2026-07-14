@@ -1,0 +1,10 @@
+{
+  "name": "@rus/world-catalog-workflow",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "rus-world-catalog": "src/cli.js"
+  },
+  "exports": "./src/index.js"
+}

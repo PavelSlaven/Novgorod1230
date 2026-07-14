@@ -1,0 +1,1684 @@
+{
+  "schema_version": "rus.g1_cell_package.v1",
+  "package_id": "pkg_gn_nov_g1_xp017_yp025_r002_001",
+  "map_revision_id": "novgorod_1230_research_revision_002",
+  "g1_id": "gn_nov_g1_xp017_yp025",
+  "package_status": "approved_local",
+  "source_ledger": [
+    {
+      "source_id": "SRC_G1_002_BRISBANE_MAKAROV_NOSOV",
+      "full_citation": "Brisbane, M. A.; Makarov, N. A.; Nosov, E. N. Medieval Novgorod in Its Wider Context.",
+      "source_class": "academic_historical_archaeology",
+      "source_access": "complete_pdf",
+      "access_location": "https://eprints.bournemouth.ac.uk/23438/1/01%20Novgorod%20IV.pdf",
+      "relevant_locator": "sections on northern tribute districts and Novgorod wider context",
+      "use_status": "binding",
+      "limitations": [
+        "Evidence supports basin-scale tribute and movement networks, not an exact local settlement, border or administration in this cell."
+      ]
+    },
+    {
+      "source_id": "SRC_G1_002_MAKAROV_2003",
+      "full_citation": "Макаров Н. А. «Заволоцкие топонимы» новгородских берестяных грамот и деревянных цилиндров на археологической карте // Берестяные грамоты: 50 лет открытия и изучения. М.: Индрик, 2003. С. 149–164.",
+      "source_class": "archaeology_toponymy",
+      "source_access": "bibliographic_verified_secondary_summary",
+      "access_location": null,
+      "use_status": "corroborative_only",
+      "limitations": [
+        "Full text was not available in the current research environment; no unique binding claim is based solely on this entry."
+      ]
+    },
+    {
+      "source_id": "SRC_G1_002_REV002_MASK",
+      "full_citation": "RUS13 project. Novgorod 1230 G1 mask revision 002.",
+      "source_class": "approved_project_derivative",
+      "source_access": "complete_local",
+      "access_location": "novgorod_1230_candidate_g1_mask.json",
+      "use_status": "binding_technical",
+      "limitations": [
+        "Carries approved research decisions but is not an independent historical source."
+      ]
+    },
+    {
+      "source_id": "SRC_G1_002_CORRIDOR_REGISTER",
+      "full_citation": "RUS13 project. Novgorod 1230 corridor register revision 002, COR_DVINA_WHITE_SEA.",
+      "source_class": "approved_project_derivative",
+      "source_access": "complete_local",
+      "access_location": "novgorod_1230_corridor_register.geojson",
+      "use_status": "binding_technical",
+      "limitations": [
+        "The line represents a broad reconstructed corridor, not an exact medieval channel."
+      ]
+    },
+    {
+      "source_id": "SRC_G1_002_GRID",
+      "full_citation": "RUS13 project. WGS84 / local AEQD 32 km grid definition.",
+      "source_class": "technical_method",
+      "source_access": "complete_local",
+      "access_location": "grid_definition.json",
+      "use_status": "binding_technical",
+      "limitations": [
+        "The grid is technical and has no historical boundary semantics."
+      ]
+    },
+    {
+      "source_id": "SRC_G1_002_GSHHS",
+      "full_citation": "GSHHS/GSHHG shoreline geometry used in revision 002.",
+      "source_class": "modern_technical_geography",
+      "source_access": "project_derivative",
+      "access_location": "revision 002 land/water calculation",
+      "use_status": "technical_proxy_only",
+      "limitations": [
+        "Modern coastline proxy only; at this resolution it omits internal river water and cannot reconstruct the 1230 channel or floodplain."
+      ]
+    },
+    {
+      "source_id": "SRC_G1_002_PREVIOUS_CELL",
+      "full_citation": "RUS13 project. Approved-local package gn_nov_g1_xp017_yp026, revision 002.",
+      "source_class": "approved_project_derivative",
+      "source_access": "complete_local",
+      "access_location": "gn_nov_g1_xp017_yp026.package.json",
+      "use_status": "binding_integration",
+      "limitations": [
+        "Used only to match the shared boundary and preserve neighbour-approved facts."
+      ]
+    }
+  ],
+  "g1_dossier": {
+    "id": "gn_nov_g1_xp017_yp025",
+    "title": "Нижнедвинская коридорная ячейка",
+    "historical_horizon": 1230,
+    "coordinates": {
+      "global_grid_x": 17,
+      "global_grid_y": 25,
+      "cell_size_km": 32,
+      "technical_bounds": {
+        "spatial_precision": "technical_grid_cell",
+        "center_wgs84": {
+          "longitude": 40.5366,
+          "latitude": 64.2967
+        },
+        "corners_wgs84": [
+          {
+            "name": "southwest",
+            "longitude": 40.1644,
+            "latitude": 64.1744
+          },
+          {
+            "name": "southeast",
+            "longitude": 40.8144,
+            "latitude": 64.1343
+          },
+          {
+            "name": "northeast",
+            "longitude": 40.9121,
+            "latitude": 64.418
+          },
+          {
+            "name": "northwest",
+            "longitude": 40.2557,
+            "latitude": 64.4585
+          }
+        ],
+        "limitations": [
+          "Coordinates define the technical 32 km cell only; they are not a medieval boundary."
+        ]
+      }
+    },
+    "activation_basis": {
+      "schema_version": "rus.g1_activation_review.v1",
+      "review_id": "activation_review_gn_nov_g1_xp017_yp025_001",
+      "g1_id": "gn_nov_g1_xp017_yp025",
+      "decision": "retain_active",
+      "activation_reasons": [
+        "approved lower-Northern-Dvina corridor continuity",
+        "source-backed northern tribute network at basin scale",
+        "required connection between approved east and north corridor cells"
+      ],
+      "binding_source_ids": [
+        "SRC_G1_002_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1_002_REV002_MASK",
+        "SRC_G1_002_CORRIDOR_REGISTER"
+      ],
+      "reconstruction_method": "Retain as a broad lower-Dvina transit cell. Do not infer an exact river line, settlement, landing, ethnic composition, direct administration or medieval boundary.",
+      "spatial_precision": "corridor",
+      "control_status": "tributary",
+      "control_confidence": "medium",
+      "evidence_status": "comparative_reconstruction",
+      "limitations": [
+        "No approved historical or archaeological anchor lies in the cell.",
+        "GSHHS land/water proxy omits internal river water at this resolution.",
+        "Eastern neighbour remains unprocessed."
+      ],
+      "audit_result": "PASS_WITH_NOTES"
+    },
+    "geographic_profile": {
+      "summary": "Broad lower-Northern-Dvina transit cell immediately upstream of the approved river-mouth cell. Exact 1230 channel, banks and floodplain geometry are unknown.",
+      "mask_land_fraction_modern_proxy": 1.0,
+      "mask_water_fraction_modern_proxy": 0.0,
+      "proxy_limitation": "GSHHS shoreline proxy omits internal river water at this resolution; no medieval water fraction is inferred.",
+      "precision": "cell/corridor"
+    },
+    "hydrology_profile": {
+      "known": "approved lower Northern Dvina corridor at macro scale",
+      "unknown": [
+        "exact 1230 main channel",
+        "side channels and islands",
+        "bank line",
+        "landing places",
+        "water fraction"
+      ],
+      "evidence_status": "comparative_reconstruction_plus_technical_constraint"
+    },
+    "settlement_model": {
+      "permanent_settlement": "not asserted",
+      "approved_local_anchor": "none",
+      "urban_node": "forbidden",
+      "built_site": "forbidden without new evidence"
+    },
+    "economic_profile": {
+      "supported": [
+        "tribute/resource movement at broad regional scale",
+        "river transit"
+      ],
+      "reconstructed": [
+        "seasonal fishing/hunting/foraging use as regional typology"
+      ],
+      "not_asserted": [
+        "market",
+        "port",
+        "town",
+        "monastery",
+        "village",
+        "tribute station",
+        "exact tribute volume"
+      ]
+    },
+    "political_control_profile": {
+      "control_status": "tributary",
+      "confidence": "medium",
+      "direct_administration": false,
+      "exclusive_control": false,
+      "local_authority": "unknown",
+      "basis_claim_ids": [
+        "CLM_G1_002_NORTHERN_TRIBUTE_NETWORK",
+        "CLM_G1_002_CONTROL_LIMIT"
+      ]
+    },
+    "ethnocultural_profile": {
+      "status": "unknown/mixed possibilities",
+      "rule": "No ethnic percentages or automatic identity assignment. Character identity requires separate grounded materialization."
+    },
+    "transport_profile": {
+      "primary": "lower Dvina river corridor from east neighbour to north neighbour",
+      "seasonality": [
+        "open water",
+        "freeze-up",
+        "conditional winter ice route",
+        "spring break-up"
+      ],
+      "exact_route": false
+    },
+    "risk_profile": [
+      "changing channels",
+      "shoals",
+      "flooding",
+      "ice",
+      "bank erosion",
+      "orientation difficulty"
+    ],
+    "uncertainties": [
+      "1230 occupation pattern",
+      "exact river morphology",
+      "local political authority",
+      "exact seasonal route choices",
+      "east boundary entry until neighbour is processed"
+    ],
+    "source_bindings": [
+      {
+        "field": "activation/political relation",
+        "claim_ids": [
+          "CLM_G1_002_NORTHERN_TRIBUTE_NETWORK",
+          "CLM_G1_002_CONTROL_LIMIT"
+        ]
+      },
+      {
+        "field": "route",
+        "claim_ids": [
+          "CLM_G1_002_DVINA_CORRIDOR_CONTINUITY"
+        ]
+      },
+      {
+        "field": "settlement prohibition",
+        "claim_ids": [
+          "CLM_G1_002_NO_LOCAL_ANCHOR",
+          "CLM_G1_002_NO_MODERN_SETTLEMENT_PROJECTION"
+        ]
+      },
+      {
+        "field": "hydrography limits",
+        "claim_ids": [
+          "CLM_G1_002_HYDROGRAPHY_LIMIT"
+        ]
+      },
+      {
+        "field": "boundary integration",
+        "claim_ids": [
+          "CLM_G1_002_BOUNDARY_MATCH"
+        ]
+      }
+    ],
+    "evidence_status": "comparative_reconstruction",
+    "playability_status": "approved_with_constraints"
+  },
+  "g2_zones": [
+    {
+      "id": "gn_nov_g2_xp017_yp025_dvina_corridor",
+      "parent_node_id": "gn_nov_g1_xp017_yp025",
+      "name": "Нижнедвинский проход",
+      "name_status": "functional_descriptive",
+      "zone_type": "river_corridor",
+      "function": "primary east-to-north movement spine through the cell",
+      "spatial_precision": "corridor",
+      "access": {
+        "open_water": "seasonal",
+        "ice_route": "conditional"
+      },
+      "seasonality": [
+        "open-water navigation",
+        "freeze-up disruption",
+        "winter ice travel where locally safe",
+        "spring break-up hazard"
+      ],
+      "hazards": [
+        "current",
+        "shoals",
+        "ice movement",
+        "floodwater"
+      ],
+      "human_use": [
+        "river transit",
+        "tribute/resource movement",
+        "seasonal fishing or hunting travel"
+      ],
+      "evidence_status": "comparative_reconstruction",
+      "playability_status": "approved",
+      "source_ids": [
+        "SRC_G1_002_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1_002_REV002_MASK",
+        "SRC_G1_002_CORRIDOR_REGISTER"
+      ],
+      "reconstruction_method": "functional corridor crossing the approved G1; no exact channel line"
+    },
+    {
+      "id": "gn_nov_g2_xp017_yp025_channel_mosaic",
+      "parent_node_id": "gn_nov_g1_xp017_yp025",
+      "name": "Руслово-пойменная мозаика",
+      "name_status": "functional_descriptive",
+      "zone_type": "channel_floodplain_mosaic",
+      "function": "broad zone of river channels, floodplain surfaces and possible islands without fixed geometry",
+      "spatial_precision": "cell",
+      "access": {
+        "summer": "variable",
+        "winter": "variable"
+      },
+      "seasonality": [
+        "flooding",
+        "freeze-up",
+        "break-up",
+        "low-water exposure variability"
+      ],
+      "hazards": [
+        "inundation",
+        "unstable banks",
+        "side-channel uncertainty"
+      ],
+      "human_use": [
+        "seasonal resource access possible",
+        "fixed occupation not asserted"
+      ],
+      "evidence_status": "regional_typology_plus_technical_constraint",
+      "playability_status": "approved_with_constraints",
+      "source_ids": [
+        "SRC_G1_002_GSHHS",
+        "SRC_G1_002_CORRIDOR_REGISTER"
+      ],
+      "reconstruction_method": "represent the functional river/floodplain complex while keeping exact 1230 geometry unknown"
+    },
+    {
+      "id": "gn_nov_g2_xp017_yp025_bank_transition",
+      "parent_node_id": "gn_nov_g1_xp017_yp025",
+      "name": "Береговая переходная полоса",
+      "name_status": "functional_descriptive",
+      "zone_type": "riverbank_transition",
+      "function": "non-exact interface between navigable water and accessible dry ground",
+      "spatial_precision": "local_area",
+      "access": {
+        "river": "conditional",
+        "land": "conditional"
+      },
+      "seasonality": [
+        "bank access changes with water and ice state"
+      ],
+      "hazards": [
+        "erosion",
+        "soft ground",
+        "flooding"
+      ],
+      "human_use": [
+        "temporary landing or haul-out possible only when scene conditions support it"
+      ],
+      "evidence_status": "regional_typology",
+      "playability_status": "approved_with_constraints",
+      "source_ids": [
+        "SRC_G1_002_CORRIDOR_REGISTER",
+        "SRC_G1_002_GSHHS"
+      ],
+      "reconstruction_method": "functional access zone; no fixed landing place"
+    },
+    {
+      "id": "gn_nov_g2_xp017_yp025_hinterland",
+      "parent_node_id": "gn_nov_g1_xp017_yp025",
+      "name": "Пойменно-таёжное междуречье",
+      "name_status": "functional_descriptive",
+      "zone_type": "wet_taiga_hinterland",
+      "function": "non-corridor terrestrial hinterland within the technical cell",
+      "spatial_precision": "cell",
+      "access": {
+        "summer": "difficult",
+        "winter": "conditional"
+      },
+      "seasonality": [
+        "wet-season difficulty",
+        "winter frozen-ground movement possible"
+      ],
+      "hazards": [
+        "wet ground",
+        "poor orientation",
+        "seasonal isolation"
+      ],
+      "human_use": [
+        "low-intensity seasonal resource use possible"
+      ],
+      "evidence_status": "regional_typology",
+      "playability_status": "approved_with_constraints",
+      "source_ids": [
+        "SRC_G1_002_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1_002_GSHHS"
+      ],
+      "reconstruction_method": "regional landscape typology constrained by lower-river setting"
+    }
+  ],
+  "g3_places": [
+    {
+      "id": "gn_nov_g3_xp017_yp025_lower_dvina_reach",
+      "parent_node_id": "gn_nov_g2_xp017_yp025_dvina_corridor",
+      "name": "Нижнедвинский протяжённый плёс",
+      "name_status": "functional_descriptive",
+      "place_type": "stable_river_reach",
+      "spatial_precision": "corridor",
+      "permanence": "stable_functional_place_variable_channel",
+      "seasonal_use": [
+        "open-water passage",
+        "winter ice passage conditional"
+      ],
+      "population_presence": "transient_or_seasonal",
+      "control": "tributary_relation_only",
+      "economic_function": [
+        "transport",
+        "fishing opportunity",
+        "movement of tribute/resources"
+      ],
+      "g4_requirements": [
+        "navigation corridor",
+        "channel hazard zone",
+        "seasonal ice route"
+      ],
+      "evidence_status": "comparative_reconstruction",
+      "playability_status": "approved",
+      "source_ids": [
+        "SRC_G1_002_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1_002_CORRIDOR_REGISTER"
+      ],
+      "reconstruction_method": "stable functional river reach, not exact channel geometry"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp025_channel_complex",
+      "parent_node_id": "gn_nov_g2_xp017_yp025_channel_mosaic",
+      "name": "Двинский руслово-пойменный комплекс",
+      "name_status": "functional_descriptive",
+      "place_type": "channel_floodplain_complex",
+      "spatial_precision": "cell",
+      "permanence": "stable_landscape_function_variable_geometry",
+      "seasonal_use": [
+        "seasonal resource access",
+        "flood and ice constraints"
+      ],
+      "population_presence": "not_predefined",
+      "control": "unknown_local_use_under_broad_tributary_context",
+      "economic_function": [
+        "seasonal fishing/hunting/foraging potential only"
+      ],
+      "g4_requirements": [
+        "seasonal inundation zone",
+        "dry-ground refuge candidate"
+      ],
+      "evidence_status": "regional_typology_plus_technical_constraint",
+      "playability_status": "approved_with_constraints",
+      "source_ids": [
+        "SRC_G1_002_GSHHS",
+        "SRC_G1_002_CORRIDOR_REGISTER"
+      ],
+      "reconstruction_method": "broad landscape complex; no exact islands, channels or occupation sites"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp025_bank_access",
+      "parent_node_id": "gn_nov_g2_xp017_yp025_bank_transition",
+      "name": "Береговой подход: зона-кандидат",
+      "name_status": "functional_descriptive",
+      "place_type": "bank_access_candidate_zone",
+      "spatial_precision": "local_area",
+      "permanence": "function_possible_location_variable",
+      "seasonal_use": [
+        "landing or haul-out only when local state permits"
+      ],
+      "population_presence": "transient_only_if_causally_materialized",
+      "control": "unknown_local_use",
+      "economic_function": [
+        "temporary landing, inspection or haul-out opportunity"
+      ],
+      "g4_requirements": [
+        "landing/haul-out candidate"
+      ],
+      "evidence_status": "regional_typology",
+      "playability_status": "approved_with_constraints",
+      "source_ids": [
+        "SRC_G1_002_CORRIDOR_REGISTER"
+      ],
+      "reconstruction_method": "represent access possibility without fixing a historical landing"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp025_taiga_hinterland",
+      "parent_node_id": "gn_nov_g2_xp017_yp025_hinterland",
+      "name": "Пойменно-таёжная внутренняя зона",
+      "name_status": "functional_descriptive",
+      "place_type": "wet_taiga_hinterland",
+      "spatial_precision": "cell",
+      "permanence": "stable_environment_variable_microtopography",
+      "seasonal_use": [
+        "seasonal resource access",
+        "winter movement conditional"
+      ],
+      "population_presence": "not_predefined",
+      "control": "unknown_local_use_under_broad_tributary_context",
+      "economic_function": [
+        "low-intensity seasonal resource potential"
+      ],
+      "g4_requirements": [
+        "wet-forest resource zone",
+        "orientation hazard zone"
+      ],
+      "evidence_status": "regional_typology",
+      "playability_status": "approved_with_constraints",
+      "source_ids": [
+        "SRC_G1_002_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1_002_GSHHS"
+      ],
+      "reconstruction_method": "regional typology only; no camp or settlement created"
+    }
+  ],
+  "g4_locations": [
+    {
+      "id": "gn_nov_g4_xp017_yp025_navigation_corridor",
+      "parent_node_id": "gn_nov_g3_xp017_yp025_lower_dvina_reach",
+      "name": "Проход основного русла",
+      "name_status": "functional_descriptive",
+      "location_type": "navigation_zone",
+      "function": "primary navigable passage through the broad river reach",
+      "permanence": "function_stable_geometry_variable",
+      "access_rules": [
+        "open-water access requires local observation",
+        "winter use only when ice conditions permit"
+      ],
+      "seasonal_use": [
+        "open-water",
+        "freeze-up closure possible",
+        "winter conditional",
+        "break-up closure"
+      ],
+      "hazards": [
+        "shoals",
+        "current",
+        "ice"
+      ],
+      "interior_spaces": [],
+      "entry_points": [
+        "east_upstream_approach",
+        "north_downstream_approach"
+      ],
+      "container_slots": [],
+      "g5_anchor_rules": [
+        "materialize exact channel only from current environmental state",
+        "do not use modern channel geometry as 1230 fact"
+      ],
+      "evidence_status": "comparative_reconstruction",
+      "playability_status": "approved",
+      "source_ids": [
+        "SRC_G1_002_CORRIDOR_REGISTER"
+      ],
+      "reconstruction_method": "functional route zone"
+    },
+    {
+      "id": "gn_nov_g4_xp017_yp025_channel_hazard",
+      "parent_node_id": "gn_nov_g3_xp017_yp025_lower_dvina_reach",
+      "name": "Полоса мелей и боковых течений",
+      "name_status": "functional_descriptive",
+      "location_type": "river_hazard_zone",
+      "function": "represents uncertain shoals and secondary-current hazards without fixed geometry",
+      "permanence": "hazard_type_stable_positions_variable",
+      "access_rules": [
+        "requires local observation or grounded guide knowledge"
+      ],
+      "seasonal_use": [
+        "open-water hazard",
+        "ice-transition hazard"
+      ],
+      "hazards": [
+        "shoals",
+        "cross-currents",
+        "bank erosion"
+      ],
+      "interior_spaces": [],
+      "entry_points": [
+        "from_navigation_corridor"
+      ],
+      "container_slots": [],
+      "g5_anchor_rules": [
+        "select exact hazard type only from current state or grounded local knowledge"
+      ],
+      "evidence_status": "regional_typology",
+      "playability_status": "approved_with_constraints",
+      "source_ids": [
+        "SRC_G1_002_CORRIDOR_REGISTER"
+      ],
+      "reconstruction_method": "generic lower-river navigation hazard zone"
+    },
+    {
+      "id": "gn_nov_g4_xp017_yp025_ice_route",
+      "parent_node_id": "gn_nov_g3_xp017_yp025_lower_dvina_reach",
+      "name": "Сезонный ледовый ход",
+      "name_status": "functional_descriptive",
+      "location_type": "seasonal_ice_route_zone",
+      "function": "conditional winter movement surface over or beside the river corridor",
+      "permanence": "seasonal_only",
+      "access_rules": [
+        "exists only when ice state is safe",
+        "must not be assumed from calendar alone"
+      ],
+      "seasonal_use": [
+        "winter conditional"
+      ],
+      "hazards": [
+        "thin ice",
+        "pressure ridges",
+        "open leads"
+      ],
+      "interior_spaces": [],
+      "entry_points": [
+        "east_upstream_approach",
+        "north_downstream_approach"
+      ],
+      "container_slots": [],
+      "g5_anchor_rules": [
+        "materialize only after weather and ice-state procedure approves"
+      ],
+      "evidence_status": "regional_typology",
+      "playability_status": "approved_with_constraints",
+      "source_ids": [
+        "SRC_G1_002_BRISBANE_MAKAROV_NOSOV"
+      ],
+      "reconstruction_method": "seasonal route category, not fixed path"
+    },
+    {
+      "id": "gn_nov_g4_xp017_yp025_inundation_zone",
+      "parent_node_id": "gn_nov_g3_xp017_yp025_channel_complex",
+      "name": "Сезонно затапливаемая пойма",
+      "name_status": "functional_descriptive",
+      "location_type": "floodplain_inundation_zone",
+      "function": "broad inundation-prone surface",
+      "permanence": "landscape_function_stable_extent_variable",
+      "access_rules": [
+        "access depends on water and freeze state"
+      ],
+      "seasonal_use": [
+        "spring flood",
+        "summer variable",
+        "winter frozen-ground conditional"
+      ],
+      "hazards": [
+        "floodwater",
+        "soft ground",
+        "hidden channels"
+      ],
+      "interior_spaces": [],
+      "entry_points": [
+        "from_channel_complex"
+      ],
+      "container_slots": [],
+      "g5_anchor_rules": [
+        "do not materialize exact flood edge as permanent"
+      ],
+      "evidence_status": "regional_typology",
+      "playability_status": "approved_with_constraints",
+      "source_ids": [
+        "SRC_G1_002_GSHHS",
+        "SRC_G1_002_CORRIDOR_REGISTER"
+      ],
+      "reconstruction_method": "functional floodplain zone"
+    },
+    {
+      "id": "gn_nov_g4_xp017_yp025_dry_ground_candidate",
+      "parent_node_id": "gn_nov_g3_xp017_yp025_channel_complex",
+      "name": "Пойменная сухая грива: зона-кандидат",
+      "name_status": "functional_descriptive",
+      "location_type": "dry_ground_refuge_candidate",
+      "function": "possible locally raised dry ground within the floodplain complex",
+      "permanence": "candidate_not_fixed",
+      "access_rules": [
+        "existence and usability require scene-level grounding"
+      ],
+      "seasonal_use": [
+        "possible temporary refuge"
+      ],
+      "hazards": [
+        "isolation by floodwater"
+      ],
+      "interior_spaces": [],
+      "entry_points": [
+        "from_inundation_zone",
+        "from_bank_access"
+      ],
+      "container_slots": [],
+      "g5_anchor_rules": [
+        "may materialize only if environmental procedure establishes suitable ground",
+        "must not automatically become a camp or settlement"
+      ],
+      "evidence_status": "regional_typology",
+      "playability_status": "approved_with_constraints",
+      "source_ids": [
+        "SRC_G1_002_CORRIDOR_REGISTER"
+      ],
+      "reconstruction_method": "microtopographic possibility, not mapped feature"
+    },
+    {
+      "id": "gn_nov_g4_xp017_yp025_landing_candidate",
+      "parent_node_id": "gn_nov_g3_xp017_yp025_bank_access",
+      "name": "Береговой выход: зона-кандидат",
+      "name_status": "functional_descriptive",
+      "location_type": "landing_haulout_candidate",
+      "function": "possible temporary transition between boat travel and dry ground",
+      "permanence": "candidate_not_fixed",
+      "access_rules": [
+        "requires suitable bank, water level and current state"
+      ],
+      "seasonal_use": [
+        "open-water landing",
+        "winter bank access conditional"
+      ],
+      "hazards": [
+        "soft bank",
+        "current",
+        "erosion"
+      ],
+      "interior_spaces": [],
+      "entry_points": [
+        "from_navigation_corridor",
+        "toward_hinterland"
+      ],
+      "container_slots": [],
+      "g5_anchor_rules": [
+        "do not create a permanent landing, pier or settlement without evidence"
+      ],
+      "evidence_status": "regional_typology",
+      "playability_status": "approved_with_constraints",
+      "source_ids": [
+        "SRC_G1_002_CORRIDOR_REGISTER"
+      ],
+      "reconstruction_method": "functional access candidate only"
+    },
+    {
+      "id": "gn_nov_g4_xp017_yp025_wet_forest_resource",
+      "parent_node_id": "gn_nov_g3_xp017_yp025_taiga_hinterland",
+      "name": "Влажный лесной промысловый участок",
+      "name_status": "functional_descriptive",
+      "location_type": "wet_forest_resource_zone",
+      "function": "possible low-intensity seasonal hunting, gathering or wood-resource area",
+      "permanence": "environment_stable_use_not_predefined",
+      "access_rules": [
+        "difficult in wet seasons",
+        "winter access conditional"
+      ],
+      "seasonal_use": [
+        "resource use only when actor and season support it"
+      ],
+      "hazards": [
+        "boggy ground",
+        "poor visibility",
+        "orientation difficulty"
+      ],
+      "interior_spaces": [],
+      "entry_points": [
+        "from_bank_access"
+      ],
+      "container_slots": [],
+      "g5_anchor_rules": [
+        "materialize activity only with causal actor/event basis",
+        "do not create a permanent camp by default"
+      ],
+      "evidence_status": "regional_typology",
+      "playability_status": "approved_with_constraints",
+      "source_ids": [
+        "SRC_G1_002_BRISBANE_MAKAROV_NOSOV"
+      ],
+      "reconstruction_method": "regional resource-use typology"
+    },
+    {
+      "id": "gn_nov_g4_xp017_yp025_orientation_hazard",
+      "parent_node_id": "gn_nov_g3_xp017_yp025_taiga_hinterland",
+      "name": "Зона трудной ориентировки",
+      "name_status": "functional_descriptive",
+      "location_type": "orientation_hazard_zone",
+      "function": "represents difficult movement away from the river corridor",
+      "permanence": "hazard_function_stable",
+      "access_rules": [
+        "requires route knowledge, landmarks or navigation procedure"
+      ],
+      "seasonal_use": [
+        "year-round with seasonal variation"
+      ],
+      "hazards": [
+        "loss of direction",
+        "wet ground",
+        "isolation"
+      ],
+      "interior_spaces": [],
+      "entry_points": [
+        "from_wet_forest_resource_zone"
+      ],
+      "container_slots": [],
+      "g5_anchor_rules": [
+        "exact obstacles and landmarks are scene-level outputs"
+      ],
+      "evidence_status": "regional_typology",
+      "playability_status": "approved_with_constraints",
+      "source_ids": [
+        "SRC_G1_002_BRISBANE_MAKAROV_NOSOV"
+      ],
+      "reconstruction_method": "functional hinterland movement hazard"
+    }
+  ],
+  "graph_nodes": [
+    {
+      "id": "gn_nov_g1_xp017_yp025",
+      "node_type": "region_cell",
+      "scale_level": "G1",
+      "parent_node_id": null,
+      "title": "Нижнедвинская коридорная ячейка"
+    },
+    {
+      "id": "gn_nov_g2_xp017_yp025_dvina_corridor",
+      "node_type": "zone",
+      "scale_level": "G2",
+      "parent_node_id": "gn_nov_g1_xp017_yp025",
+      "title": "Нижнедвинский проход"
+    },
+    {
+      "id": "gn_nov_g2_xp017_yp025_channel_mosaic",
+      "node_type": "zone",
+      "scale_level": "G2",
+      "parent_node_id": "gn_nov_g1_xp017_yp025",
+      "title": "Руслово-пойменная мозаика"
+    },
+    {
+      "id": "gn_nov_g2_xp017_yp025_bank_transition",
+      "node_type": "zone",
+      "scale_level": "G2",
+      "parent_node_id": "gn_nov_g1_xp017_yp025",
+      "title": "Береговая переходная полоса"
+    },
+    {
+      "id": "gn_nov_g2_xp017_yp025_hinterland",
+      "node_type": "zone",
+      "scale_level": "G2",
+      "parent_node_id": "gn_nov_g1_xp017_yp025",
+      "title": "Пойменно-таёжное междуречье"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp025_lower_dvina_reach",
+      "node_type": "place",
+      "scale_level": "G3",
+      "parent_node_id": "gn_nov_g2_xp017_yp025_dvina_corridor",
+      "title": "Нижнедвинский протяжённый плёс"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp025_channel_complex",
+      "node_type": "place",
+      "scale_level": "G3",
+      "parent_node_id": "gn_nov_g2_xp017_yp025_channel_mosaic",
+      "title": "Двинский руслово-пойменный комплекс"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp025_bank_access",
+      "node_type": "place",
+      "scale_level": "G3",
+      "parent_node_id": "gn_nov_g2_xp017_yp025_bank_transition",
+      "title": "Береговой подход: зона-кандидат"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp025_taiga_hinterland",
+      "node_type": "place",
+      "scale_level": "G3",
+      "parent_node_id": "gn_nov_g2_xp017_yp025_hinterland",
+      "title": "Пойменно-таёжная внутренняя зона"
+    },
+    {
+      "id": "gn_nov_g4_xp017_yp025_navigation_corridor",
+      "node_type": "location",
+      "scale_level": "G4",
+      "parent_node_id": "gn_nov_g3_xp017_yp025_lower_dvina_reach",
+      "title": "Проход основного русла"
+    },
+    {
+      "id": "gn_nov_g4_xp017_yp025_channel_hazard",
+      "node_type": "location",
+      "scale_level": "G4",
+      "parent_node_id": "gn_nov_g3_xp017_yp025_lower_dvina_reach",
+      "title": "Полоса мелей и боковых течений"
+    },
+    {
+      "id": "gn_nov_g4_xp017_yp025_ice_route",
+      "node_type": "location",
+      "scale_level": "G4",
+      "parent_node_id": "gn_nov_g3_xp017_yp025_lower_dvina_reach",
+      "title": "Сезонный ледовый ход"
+    },
+    {
+      "id": "gn_nov_g4_xp017_yp025_inundation_zone",
+      "node_type": "location",
+      "scale_level": "G4",
+      "parent_node_id": "gn_nov_g3_xp017_yp025_channel_complex",
+      "title": "Сезонно затапливаемая пойма"
+    },
+    {
+      "id": "gn_nov_g4_xp017_yp025_dry_ground_candidate",
+      "node_type": "location",
+      "scale_level": "G4",
+      "parent_node_id": "gn_nov_g3_xp017_yp025_channel_complex",
+      "title": "Пойменная сухая грива: зона-кандидат"
+    },
+    {
+      "id": "gn_nov_g4_xp017_yp025_landing_candidate",
+      "node_type": "location",
+      "scale_level": "G4",
+      "parent_node_id": "gn_nov_g3_xp017_yp025_bank_access",
+      "title": "Береговой выход: зона-кандидат"
+    },
+    {
+      "id": "gn_nov_g4_xp017_yp025_wet_forest_resource",
+      "node_type": "location",
+      "scale_level": "G4",
+      "parent_node_id": "gn_nov_g3_xp017_yp025_taiga_hinterland",
+      "title": "Влажный лесной промысловый участок"
+    },
+    {
+      "id": "gn_nov_g4_xp017_yp025_orientation_hazard",
+      "node_type": "location",
+      "scale_level": "G4",
+      "parent_node_id": "gn_nov_g3_xp017_yp025_taiga_hinterland",
+      "title": "Зона трудной ориентировки"
+    }
+  ],
+  "graph_edges": [
+    {
+      "id": "contains_gn_nov_g2_xp017_yp025_dvina_corridor",
+      "from_node_id": "gn_nov_g1_xp017_yp025",
+      "to_node_id": "gn_nov_g2_xp017_yp025_dvina_corridor",
+      "edge_type": "contains",
+      "physical": false,
+      "bidirectional": false
+    },
+    {
+      "id": "contains_gn_nov_g2_xp017_yp025_channel_mosaic",
+      "from_node_id": "gn_nov_g1_xp017_yp025",
+      "to_node_id": "gn_nov_g2_xp017_yp025_channel_mosaic",
+      "edge_type": "contains",
+      "physical": false,
+      "bidirectional": false
+    },
+    {
+      "id": "contains_gn_nov_g2_xp017_yp025_bank_transition",
+      "from_node_id": "gn_nov_g1_xp017_yp025",
+      "to_node_id": "gn_nov_g2_xp017_yp025_bank_transition",
+      "edge_type": "contains",
+      "physical": false,
+      "bidirectional": false
+    },
+    {
+      "id": "contains_gn_nov_g2_xp017_yp025_hinterland",
+      "from_node_id": "gn_nov_g1_xp017_yp025",
+      "to_node_id": "gn_nov_g2_xp017_yp025_hinterland",
+      "edge_type": "contains",
+      "physical": false,
+      "bidirectional": false
+    },
+    {
+      "id": "contains_gn_nov_g3_xp017_yp025_lower_dvina_reach",
+      "from_node_id": "gn_nov_g2_xp017_yp025_dvina_corridor",
+      "to_node_id": "gn_nov_g3_xp017_yp025_lower_dvina_reach",
+      "edge_type": "contains",
+      "physical": false,
+      "bidirectional": false
+    },
+    {
+      "id": "contains_gn_nov_g3_xp017_yp025_channel_complex",
+      "from_node_id": "gn_nov_g2_xp017_yp025_channel_mosaic",
+      "to_node_id": "gn_nov_g3_xp017_yp025_channel_complex",
+      "edge_type": "contains",
+      "physical": false,
+      "bidirectional": false
+    },
+    {
+      "id": "contains_gn_nov_g3_xp017_yp025_bank_access",
+      "from_node_id": "gn_nov_g2_xp017_yp025_bank_transition",
+      "to_node_id": "gn_nov_g3_xp017_yp025_bank_access",
+      "edge_type": "contains",
+      "physical": false,
+      "bidirectional": false
+    },
+    {
+      "id": "contains_gn_nov_g3_xp017_yp025_taiga_hinterland",
+      "from_node_id": "gn_nov_g2_xp017_yp025_hinterland",
+      "to_node_id": "gn_nov_g3_xp017_yp025_taiga_hinterland",
+      "edge_type": "contains",
+      "physical": false,
+      "bidirectional": false
+    },
+    {
+      "id": "contains_gn_nov_g4_xp017_yp025_navigation_corridor",
+      "from_node_id": "gn_nov_g3_xp017_yp025_lower_dvina_reach",
+      "to_node_id": "gn_nov_g4_xp017_yp025_navigation_corridor",
+      "edge_type": "contains",
+      "physical": false,
+      "bidirectional": false
+    },
+    {
+      "id": "contains_gn_nov_g4_xp017_yp025_channel_hazard",
+      "from_node_id": "gn_nov_g3_xp017_yp025_lower_dvina_reach",
+      "to_node_id": "gn_nov_g4_xp017_yp025_channel_hazard",
+      "edge_type": "contains",
+      "physical": false,
+      "bidirectional": false
+    },
+    {
+      "id": "contains_gn_nov_g4_xp017_yp025_ice_route",
+      "from_node_id": "gn_nov_g3_xp017_yp025_lower_dvina_reach",
+      "to_node_id": "gn_nov_g4_xp017_yp025_ice_route",
+      "edge_type": "contains",
+      "physical": false,
+      "bidirectional": false
+    },
+    {
+      "id": "contains_gn_nov_g4_xp017_yp025_inundation_zone",
+      "from_node_id": "gn_nov_g3_xp017_yp025_channel_complex",
+      "to_node_id": "gn_nov_g4_xp017_yp025_inundation_zone",
+      "edge_type": "contains",
+      "physical": false,
+      "bidirectional": false
+    },
+    {
+      "id": "contains_gn_nov_g4_xp017_yp025_dry_ground_candidate",
+      "from_node_id": "gn_nov_g3_xp017_yp025_channel_complex",
+      "to_node_id": "gn_nov_g4_xp017_yp025_dry_ground_candidate",
+      "edge_type": "contains",
+      "physical": false,
+      "bidirectional": false
+    },
+    {
+      "id": "contains_gn_nov_g4_xp017_yp025_landing_candidate",
+      "from_node_id": "gn_nov_g3_xp017_yp025_bank_access",
+      "to_node_id": "gn_nov_g4_xp017_yp025_landing_candidate",
+      "edge_type": "contains",
+      "physical": false,
+      "bidirectional": false
+    },
+    {
+      "id": "contains_gn_nov_g4_xp017_yp025_wet_forest_resource",
+      "from_node_id": "gn_nov_g3_xp017_yp025_taiga_hinterland",
+      "to_node_id": "gn_nov_g4_xp017_yp025_wet_forest_resource",
+      "edge_type": "contains",
+      "physical": false,
+      "bidirectional": false
+    },
+    {
+      "id": "contains_gn_nov_g4_xp017_yp025_orientation_hazard",
+      "from_node_id": "gn_nov_g3_xp017_yp025_taiga_hinterland",
+      "to_node_id": "gn_nov_g4_xp017_yp025_orientation_hazard",
+      "edge_type": "contains",
+      "physical": false,
+      "bidirectional": false
+    },
+    {
+      "id": "route_g2_corridor_channel",
+      "from_node_id": "gn_nov_g2_xp017_yp025_dvina_corridor",
+      "to_node_id": "gn_nov_g2_xp017_yp025_channel_mosaic",
+      "edge_type": "route",
+      "physical": true,
+      "bidirectional": true
+    },
+    {
+      "id": "route_g2_corridor_bank",
+      "from_node_id": "gn_nov_g2_xp017_yp025_dvina_corridor",
+      "to_node_id": "gn_nov_g2_xp017_yp025_bank_transition",
+      "edge_type": "route",
+      "physical": true,
+      "bidirectional": true
+    },
+    {
+      "id": "route_g2_bank_hinterland",
+      "from_node_id": "gn_nov_g2_xp017_yp025_bank_transition",
+      "to_node_id": "gn_nov_g2_xp017_yp025_hinterland",
+      "edge_type": "route",
+      "physical": true,
+      "bidirectional": true
+    },
+    {
+      "id": "route_nav_hazard",
+      "from_node_id": "gn_nov_g4_xp017_yp025_navigation_corridor",
+      "to_node_id": "gn_nov_g4_xp017_yp025_channel_hazard",
+      "edge_type": "route",
+      "physical": true,
+      "bidirectional": true
+    },
+    {
+      "id": "route_nav_ice",
+      "from_node_id": "gn_nov_g4_xp017_yp025_navigation_corridor",
+      "to_node_id": "gn_nov_g4_xp017_yp025_ice_route",
+      "edge_type": "route",
+      "physical": true,
+      "bidirectional": true
+    },
+    {
+      "id": "route_nav_landing",
+      "from_node_id": "gn_nov_g4_xp017_yp025_navigation_corridor",
+      "to_node_id": "gn_nov_g4_xp017_yp025_landing_candidate",
+      "edge_type": "route",
+      "physical": true,
+      "bidirectional": true
+    },
+    {
+      "id": "route_inundation_dry",
+      "from_node_id": "gn_nov_g4_xp017_yp025_inundation_zone",
+      "to_node_id": "gn_nov_g4_xp017_yp025_dry_ground_candidate",
+      "edge_type": "route",
+      "physical": true,
+      "bidirectional": true
+    },
+    {
+      "id": "route_landing_dry",
+      "from_node_id": "gn_nov_g4_xp017_yp025_landing_candidate",
+      "to_node_id": "gn_nov_g4_xp017_yp025_dry_ground_candidate",
+      "edge_type": "route",
+      "physical": true,
+      "bidirectional": true
+    },
+    {
+      "id": "route_landing_forest",
+      "from_node_id": "gn_nov_g4_xp017_yp025_landing_candidate",
+      "to_node_id": "gn_nov_g4_xp017_yp025_wet_forest_resource",
+      "edge_type": "route",
+      "physical": true,
+      "bidirectional": true
+    },
+    {
+      "id": "route_forest_orientation",
+      "from_node_id": "gn_nov_g4_xp017_yp025_wet_forest_resource",
+      "to_node_id": "gn_nov_g4_xp017_yp025_orientation_hazard",
+      "edge_type": "route",
+      "physical": true,
+      "bidirectional": true
+    }
+  ],
+  "boundary_contracts": [
+    {
+      "schema_version": "rus.g1_boundary_contract.v1",
+      "boundary_id": "BND_G1_002_NORTH_DVINA",
+      "from_g1_id": "gn_nov_g1_xp017_yp025",
+      "to_g1_id": "gn_nov_g1_xp017_yp026",
+      "from_exit_node_id": "gn_nov_g4_xp017_yp025_navigation_corridor",
+      "expected_to_entry": "gn_nov_g4_xp017_yp026_navigation_corridor",
+      "boundary_side": "north",
+      "route_type": "river_corridor",
+      "corridor_id": "COR_DVINA_WHITE_SEA",
+      "seasonality": {
+        "open_water": "conditional",
+        "winter_ice": "conditional"
+      },
+      "access": {
+        "requires_local_state": true
+      },
+      "risk": {
+        "types": [
+          "current",
+          "ice",
+          "shoals"
+        ]
+      },
+      "evidence_status": "comparative_reconstruction",
+      "status": "matched"
+    },
+    {
+      "schema_version": "rus.g1_boundary_contract.v1",
+      "boundary_id": "BND_G1_002_EAST_DVINA",
+      "from_g1_id": "gn_nov_g1_xp017_yp025",
+      "to_g1_id": "gn_nov_g1_xp018_yp025",
+      "from_exit_node_id": "gn_nov_g4_xp017_yp025_navigation_corridor",
+      "expected_to_entry": null,
+      "boundary_side": "east",
+      "route_type": "river_corridor",
+      "corridor_id": "COR_DVINA_WHITE_SEA",
+      "seasonality": {
+        "open_water": "conditional",
+        "winter_ice": "conditional"
+      },
+      "access": {
+        "requires_local_state": true
+      },
+      "risk": {
+        "types": [
+          "current",
+          "ice",
+          "shoals"
+        ]
+      },
+      "evidence_status": "comparative_reconstruction",
+      "status": "pending_neighbor_confirmation"
+    }
+  ],
+  "population_profiles": [
+    {
+      "profile_id": "POP_G1_002_TRANSIT",
+      "applies_to_ids": [
+        "gn_nov_g3_xp017_yp025_lower_dvina_reach",
+        "gn_nov_g3_xp017_yp025_bank_access"
+      ],
+      "allowed_presence_categories": [
+        "small river boat crews",
+        "tribute-related travelers when causally supported",
+        "seasonal fishers or hunters",
+        "local guides when causally supported"
+      ],
+      "permanent_population": "not_predefined",
+      "group_size_range": "small groups only; exact range deferred to G5 evidence",
+      "seasonality": [
+        "open-water transit",
+        "winter transit conditional"
+      ],
+      "languages": "not predetermined; derived from materialized character background",
+      "ethnicity_percentages": "forbidden",
+      "exclusions": [
+        "urban population",
+        "automatic permanent garrison",
+        "automatic monastery community",
+        "automatic village inhabitants"
+      ],
+      "evidence_status": "comparative_reconstruction"
+    },
+    {
+      "profile_id": "POP_G1_002_HINTERLAND",
+      "applies_to_ids": [
+        "gn_nov_g3_xp017_yp025_channel_complex",
+        "gn_nov_g3_xp017_yp025_taiga_hinterland"
+      ],
+      "allowed_presence_categories": [
+        "seasonal resource users only with causal basis",
+        "lost or diverted travelers only through turn logic"
+      ],
+      "permanent_population": "not_predefined",
+      "group_size_range": "not predefined",
+      "seasonality": [
+        "context dependent"
+      ],
+      "languages": "not predetermined",
+      "ethnicity_percentages": "forbidden",
+      "exclusions": [
+        "default settlement population",
+        "default tribute station staff"
+      ],
+      "evidence_status": "regional_typology"
+    }
+  ],
+  "item_profiles": [
+    {
+      "profile_id": "ITEM_G1_002_RIVER_TRAVEL",
+      "applies_to_ids": [
+        "gn_nov_g3_xp017_yp025_lower_dvina_reach",
+        "gn_nov_g3_xp017_yp025_bank_access"
+      ],
+      "allowed_item_categories": [
+        "watercraft-related equipment",
+        "navigation and mooring equipment",
+        "weather protection",
+        "fishing or hunting equipment when actor role supports it",
+        "tribute/resource transport packaging when event context supports it"
+      ],
+      "forbidden_item_categories": [
+        "urban trade inventory by default",
+        "late-period maritime technology",
+        "unowned valuables without causal basis"
+      ],
+      "wealth_constraints": "context dependent; no default cache",
+      "evidence_status": "regional_typology"
+    },
+    {
+      "profile_id": "ITEM_G1_002_HINTERLAND",
+      "applies_to_ids": [
+        "gn_nov_g3_xp017_yp025_channel_complex",
+        "gn_nov_g3_xp017_yp025_taiga_hinterland"
+      ],
+      "allowed_item_categories": [
+        "basic portable subsistence and travel equipment only when an actor is materialized"
+      ],
+      "forbidden_item_categories": [
+        "specific hoard objects",
+        "church inventory",
+        "permanent workshop inventory",
+        "unowned containers by default"
+      ],
+      "wealth_constraints": "unknown",
+      "evidence_status": "regional_typology"
+    }
+  ],
+  "container_profiles": [
+    {
+      "profile_id": "CONT_G1_002_PORTABLE",
+      "applies_to_ids": [
+        "gn_nov_g3_xp017_yp025_lower_dvina_reach",
+        "gn_nov_g3_xp017_yp025_bank_access"
+      ],
+      "container_types": [
+        "portable bundles",
+        "sacks",
+        "baskets",
+        "small chests only when attached to a materialized traveler or cargo"
+      ],
+      "fixed_containers": "forbidden_without_site_evidence",
+      "contents_rule": "contents require causal owner/activity and item profile",
+      "evidence_status": "regional_typology"
+    }
+  ],
+  "property_profiles": [
+    {
+      "profile_id": "PROP_G1_002_ACCESS",
+      "applies_to_ids": [
+        "gn_nov_g3_xp017_yp025_lower_dvina_reach",
+        "gn_nov_g3_xp017_yp025_channel_complex",
+        "gn_nov_g3_xp017_yp025_bank_access",
+        "gn_nov_g3_xp017_yp025_taiga_hinterland"
+      ],
+      "ownership_model": "not_predefined",
+      "use_rights": "local/customary use may exist but is not preassigned",
+      "forbidden_defaults": [
+        "estate ownership",
+        "monastic ownership",
+        "state port",
+        "market toll station",
+        "private landing"
+      ],
+      "evidence_status": "unknown_with_constraints"
+    }
+  ],
+  "fauna_profiles": [
+    {
+      "profile_id": "FAUNA_G1_002_RIVER_TAIGA",
+      "applies_to_ids": [
+        "gn_nov_g3_xp017_yp025_lower_dvina_reach",
+        "gn_nov_g3_xp017_yp025_channel_complex",
+        "gn_nov_g3_xp017_yp025_bank_access",
+        "gn_nov_g3_xp017_yp025_taiga_hinterland"
+      ],
+      "allowed_ecological_categories": [
+        "freshwater fish categories",
+        "waterfowl and migratory bird categories",
+        "forest and wetland mammals",
+        "fur-bearing mammal categories"
+      ],
+      "species_instances": "not_predefined",
+      "density": "not_predefined",
+      "seasonality": "must be derived from species/category and calendar at G5",
+      "exclusions": [
+        "fantastic species",
+        "species outside scientifically supported historical range"
+      ],
+      "evidence_status": "regional_typology"
+    }
+  ],
+  "toponymy_register": [
+    {
+      "entity_id": "gn_nov_g1_xp017_yp025",
+      "display_name": "Нижнедвинская коридорная ячейка",
+      "local_name_form": null,
+      "normalized_name": "Нижнедвинская коридорная ячейка",
+      "name_language": "Old Russian or local language unknown unless explicitly attested",
+      "name_status": "functional_descriptive",
+      "name_basis": "technical-historical functional label; not a medieval proper name",
+      "source_ids": [
+        "SRC_G1_002_REV002_MASK"
+      ]
+    },
+    {
+      "entity_id": "gn_nov_g2_xp017_yp025_dvina_corridor",
+      "display_name": "Нижнедвинский проход",
+      "local_name_form": null,
+      "normalized_name": "Нижнедвинский проход",
+      "name_language": "Old Russian or local language unknown unless explicitly attested",
+      "name_status": "functional_descriptive",
+      "name_basis": "functional local-style description; not claimed as an attested proper name",
+      "source_ids": [
+        "SRC_G1_002_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1_002_REV002_MASK",
+        "SRC_G1_002_CORRIDOR_REGISTER"
+      ]
+    },
+    {
+      "entity_id": "gn_nov_g2_xp017_yp025_channel_mosaic",
+      "display_name": "Руслово-пойменная мозаика",
+      "local_name_form": null,
+      "normalized_name": "Руслово-пойменная мозаика",
+      "name_language": "Old Russian or local language unknown unless explicitly attested",
+      "name_status": "functional_descriptive",
+      "name_basis": "functional local-style description; not claimed as an attested proper name",
+      "source_ids": [
+        "SRC_G1_002_GSHHS",
+        "SRC_G1_002_CORRIDOR_REGISTER"
+      ]
+    },
+    {
+      "entity_id": "gn_nov_g2_xp017_yp025_bank_transition",
+      "display_name": "Береговая переходная полоса",
+      "local_name_form": null,
+      "normalized_name": "Береговая переходная полоса",
+      "name_language": "Old Russian or local language unknown unless explicitly attested",
+      "name_status": "functional_descriptive",
+      "name_basis": "functional local-style description; not claimed as an attested proper name",
+      "source_ids": [
+        "SRC_G1_002_CORRIDOR_REGISTER",
+        "SRC_G1_002_GSHHS"
+      ]
+    },
+    {
+      "entity_id": "gn_nov_g2_xp017_yp025_hinterland",
+      "display_name": "Пойменно-таёжное междуречье",
+      "local_name_form": null,
+      "normalized_name": "Пойменно-таёжное междуречье",
+      "name_language": "Old Russian or local language unknown unless explicitly attested",
+      "name_status": "functional_descriptive",
+      "name_basis": "functional local-style description; not claimed as an attested proper name",
+      "source_ids": [
+        "SRC_G1_002_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1_002_GSHHS"
+      ]
+    },
+    {
+      "entity_id": "gn_nov_g3_xp017_yp025_lower_dvina_reach",
+      "display_name": "Нижнедвинский протяжённый плёс",
+      "local_name_form": null,
+      "normalized_name": "Нижнедвинский протяжённый плёс",
+      "name_language": "Old Russian or local language unknown unless explicitly attested",
+      "name_status": "functional_descriptive",
+      "name_basis": "functional local-style description; not claimed as an attested proper name",
+      "source_ids": [
+        "SRC_G1_002_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1_002_CORRIDOR_REGISTER"
+      ]
+    },
+    {
+      "entity_id": "gn_nov_g3_xp017_yp025_channel_complex",
+      "display_name": "Двинский руслово-пойменный комплекс",
+      "local_name_form": null,
+      "normalized_name": "Двинский руслово-пойменный комплекс",
+      "name_language": "Old Russian or local language unknown unless explicitly attested",
+      "name_status": "functional_descriptive",
+      "name_basis": "functional local-style description; not claimed as an attested proper name",
+      "source_ids": [
+        "SRC_G1_002_GSHHS",
+        "SRC_G1_002_CORRIDOR_REGISTER"
+      ]
+    },
+    {
+      "entity_id": "gn_nov_g3_xp017_yp025_bank_access",
+      "display_name": "Береговой подход: зона-кандидат",
+      "local_name_form": null,
+      "normalized_name": "Береговой подход: зона-кандидат",
+      "name_language": "Old Russian or local language unknown unless explicitly attested",
+      "name_status": "functional_descriptive",
+      "name_basis": "functional local-style description; not claimed as an attested proper name",
+      "source_ids": [
+        "SRC_G1_002_CORRIDOR_REGISTER"
+      ]
+    },
+    {
+      "entity_id": "gn_nov_g3_xp017_yp025_taiga_hinterland",
+      "display_name": "Пойменно-таёжная внутренняя зона",
+      "local_name_form": null,
+      "normalized_name": "Пойменно-таёжная внутренняя зона",
+      "name_language": "Old Russian or local language unknown unless explicitly attested",
+      "name_status": "functional_descriptive",
+      "name_basis": "functional local-style description; not claimed as an attested proper name",
+      "source_ids": [
+        "SRC_G1_002_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1_002_GSHHS"
+      ]
+    },
+    {
+      "entity_id": "gn_nov_g4_xp017_yp025_navigation_corridor",
+      "display_name": "Проход основного русла",
+      "local_name_form": null,
+      "normalized_name": "Проход основного русла",
+      "name_language": "Old Russian or local language unknown unless explicitly attested",
+      "name_status": "functional_descriptive",
+      "name_basis": "functional local-style description; not claimed as an attested proper name",
+      "source_ids": [
+        "SRC_G1_002_CORRIDOR_REGISTER"
+      ]
+    },
+    {
+      "entity_id": "gn_nov_g4_xp017_yp025_channel_hazard",
+      "display_name": "Полоса мелей и боковых течений",
+      "local_name_form": null,
+      "normalized_name": "Полоса мелей и боковых течений",
+      "name_language": "Old Russian or local language unknown unless explicitly attested",
+      "name_status": "functional_descriptive",
+      "name_basis": "functional local-style description; not claimed as an attested proper name",
+      "source_ids": [
+        "SRC_G1_002_CORRIDOR_REGISTER"
+      ]
+    },
+    {
+      "entity_id": "gn_nov_g4_xp017_yp025_ice_route",
+      "display_name": "Сезонный ледовый ход",
+      "local_name_form": null,
+      "normalized_name": "Сезонный ледовый ход",
+      "name_language": "Old Russian or local language unknown unless explicitly attested",
+      "name_status": "functional_descriptive",
+      "name_basis": "functional local-style description; not claimed as an attested proper name",
+      "source_ids": [
+        "SRC_G1_002_BRISBANE_MAKAROV_NOSOV"
+      ]
+    },
+    {
+      "entity_id": "gn_nov_g4_xp017_yp025_inundation_zone",
+      "display_name": "Сезонно затапливаемая пойма",
+      "local_name_form": null,
+      "normalized_name": "Сезонно затапливаемая пойма",
+      "name_language": "Old Russian or local language unknown unless explicitly attested",
+      "name_status": "functional_descriptive",
+      "name_basis": "functional local-style description; not claimed as an attested proper name",
+      "source_ids": [
+        "SRC_G1_002_GSHHS",
+        "SRC_G1_002_CORRIDOR_REGISTER"
+      ]
+    },
+    {
+      "entity_id": "gn_nov_g4_xp017_yp025_dry_ground_candidate",
+      "display_name": "Пойменная сухая грива: зона-кандидат",
+      "local_name_form": null,
+      "normalized_name": "Пойменная сухая грива: зона-кандидат",
+      "name_language": "Old Russian or local language unknown unless explicitly attested",
+      "name_status": "functional_descriptive",
+      "name_basis": "functional local-style description; not claimed as an attested proper name",
+      "source_ids": [
+        "SRC_G1_002_CORRIDOR_REGISTER"
+      ]
+    },
+    {
+      "entity_id": "gn_nov_g4_xp017_yp025_landing_candidate",
+      "display_name": "Береговой выход: зона-кандидат",
+      "local_name_form": null,
+      "normalized_name": "Береговой выход: зона-кандидат",
+      "name_language": "Old Russian or local language unknown unless explicitly attested",
+      "name_status": "functional_descriptive",
+      "name_basis": "functional local-style description; not claimed as an attested proper name",
+      "source_ids": [
+        "SRC_G1_002_CORRIDOR_REGISTER"
+      ]
+    },
+    {
+      "entity_id": "gn_nov_g4_xp017_yp025_wet_forest_resource",
+      "display_name": "Влажный лесной промысловый участок",
+      "local_name_form": null,
+      "normalized_name": "Влажный лесной промысловый участок",
+      "name_language": "Old Russian or local language unknown unless explicitly attested",
+      "name_status": "functional_descriptive",
+      "name_basis": "functional local-style description; not claimed as an attested proper name",
+      "source_ids": [
+        "SRC_G1_002_BRISBANE_MAKAROV_NOSOV"
+      ]
+    },
+    {
+      "entity_id": "gn_nov_g4_xp017_yp025_orientation_hazard",
+      "display_name": "Зона трудной ориентировки",
+      "local_name_form": null,
+      "normalized_name": "Зона трудной ориентировки",
+      "name_language": "Old Russian or local language unknown unless explicitly attested",
+      "name_status": "functional_descriptive",
+      "name_basis": "functional local-style description; not claimed as an attested proper name",
+      "source_ids": [
+        "SRC_G1_002_BRISBANE_MAKAROV_NOSOV"
+      ]
+    }
+  ],
+  "id_migration_map": [
+    {
+      "entity_id": "gn_nov_g1_xp017_yp025",
+      "migration_status": "new_stable_grid_cell",
+      "legacy_id": null
+    },
+    {
+      "entity_id": "gn_nov_g2_xp017_yp025_dvina_corridor",
+      "migration_status": "new_cell_local_id",
+      "legacy_id": null
+    },
+    {
+      "entity_id": "gn_nov_g2_xp017_yp025_channel_mosaic",
+      "migration_status": "new_cell_local_id",
+      "legacy_id": null
+    },
+    {
+      "entity_id": "gn_nov_g2_xp017_yp025_bank_transition",
+      "migration_status": "new_cell_local_id",
+      "legacy_id": null
+    },
+    {
+      "entity_id": "gn_nov_g2_xp017_yp025_hinterland",
+      "migration_status": "new_cell_local_id",
+      "legacy_id": null
+    },
+    {
+      "entity_id": "gn_nov_g3_xp017_yp025_lower_dvina_reach",
+      "migration_status": "new_cell_local_id",
+      "legacy_id": null
+    },
+    {
+      "entity_id": "gn_nov_g3_xp017_yp025_channel_complex",
+      "migration_status": "new_cell_local_id",
+      "legacy_id": null
+    },
+    {
+      "entity_id": "gn_nov_g3_xp017_yp025_bank_access",
+      "migration_status": "new_cell_local_id",
+      "legacy_id": null
+    },
+    {
+      "entity_id": "gn_nov_g3_xp017_yp025_taiga_hinterland",
+      "migration_status": "new_cell_local_id",
+      "legacy_id": null
+    },
+    {
+      "entity_id": "gn_nov_g4_xp017_yp025_navigation_corridor",
+      "migration_status": "new_cell_local_id",
+      "legacy_id": null
+    },
+    {
+      "entity_id": "gn_nov_g4_xp017_yp025_channel_hazard",
+      "migration_status": "new_cell_local_id",
+      "legacy_id": null
+    },
+    {
+      "entity_id": "gn_nov_g4_xp017_yp025_ice_route",
+      "migration_status": "new_cell_local_id",
+      "legacy_id": null
+    },
+    {
+      "entity_id": "gn_nov_g4_xp017_yp025_inundation_zone",
+      "migration_status": "new_cell_local_id",
+      "legacy_id": null
+    },
+    {
+      "entity_id": "gn_nov_g4_xp017_yp025_dry_ground_candidate",
+      "migration_status": "new_cell_local_id",
+      "legacy_id": null
+    },
+    {
+      "entity_id": "gn_nov_g4_xp017_yp025_landing_candidate",
+      "migration_status": "new_cell_local_id",
+      "legacy_id": null
+    },
+    {
+      "entity_id": "gn_nov_g4_xp017_yp025_wet_forest_resource",
+      "migration_status": "new_cell_local_id",
+      "legacy_id": null
+    },
+    {
+      "entity_id": "gn_nov_g4_xp017_yp025_orientation_hazard",
+      "migration_status": "new_cell_local_id",
+      "legacy_id": null
+    }
+  ],
+  "change_log": [
+    {
+      "change_id": "CHG_G1_002_001",
+      "change_type": "activation_review",
+      "summary": "Retained active cell as broad lower-Dvina corridor; no exact settlement, route line or boundary."
+    },
+    {
+      "change_id": "CHG_G1_002_002",
+      "change_type": "data_generation",
+      "summary": "Created minimal functional G2–G4 package without buildings or permanent population."
+    },
+    {
+      "change_id": "CHG_G1_002_003",
+      "change_type": "boundary_integration",
+      "summary": "Matched north boundary to approved yp026 corridor node; east boundary remains pending."
+    }
+  ]
+}

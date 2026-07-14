@@ -1,0 +1,20 @@
+{
+  "schema_version": "rus.g1_local_approval.v1",
+  "approval_id": "approval_gn_nov_g1_xp017_yp025_001",
+  "g1_id": "gn_nov_g1_xp017_yp025",
+  "map_revision_id": "novgorod_1230_research_revision_002",
+  "approval_scope": "local",
+  "decision": "approved_local",
+  "historical_audit": "PASS_WITH_NOTES",
+  "semantic_audit": "PASS_WITH_NOTES",
+  "structural_validation": "PASS",
+  "integration_status": "partial_matched",
+  "production_import_status": "not_authorized",
+  "notes": [
+    "North boundary matched to yp026.",
+    "East boundary pending xp018_yp025.",
+    "Production MapMaker and full repository regression remain integration/release gates."
+  ],
+  "package_digest": "ba93f20b248e32ef754b62643e88008ab04a5cc43342e2694d87878a5bdd49e7",
+  "critic_result": "PASS_WITH_NOTES"
+}

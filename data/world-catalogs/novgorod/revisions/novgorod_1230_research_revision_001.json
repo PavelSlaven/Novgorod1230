@@ -1,0 +1,23 @@
+{
+  "schema_version": "rus.region_map_revision.v1",
+  "map_revision_id": "novgorod_1230_research_revision_001",
+  "region_id": "region_novgorod_land",
+  "historical_horizon": {
+    "year": 1230,
+    "mode": "permanent_baseline"
+  },
+  "grid_coordinate_system": "regional_square_32km",
+  "g1_cell_size_km": 32,
+  "active_cell_count": 70,
+  "grid_extent": {
+    "min_x": 0,
+    "max_x": 9,
+    "min_y": 0,
+    "max_y": 6
+  },
+  "parent_revision_id": "novgorod_v6_legacy_baseline",
+  "legacy_id_policy": "preserve_same_entity",
+  "source_manifest_digest": "bbae92c4c7616bed73f3c9557be6f31b54556f0953ccf6c29c8c7e94e3d87a93",
+  "graph_digest": "2387882b49095addcb0a8e45746d7ce960f79d197c57b18b8b3ae91a78dda3f2",
+  "status": "staging"
+}

@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "approved_g5_template_bundle_v2",
+  "type": "object",
+  "required": ["template_id", "status", "materialization_profile", "layout_template", "slot_rules", "layout_edges", "g5_minilocation_templates", "g5_anchor_templates", "g5_edge_templates", "player_start_anchor_slot_key", "visibility_model", "access_model"],
+  "properties": {
+    "template_id": { "type": "string", "minLength": 1 },
+    "status": { "const": "approved" },
+    "materialization_profile": {
+      "type": "object",
+      "required": ["profile_id", "layout_template_id", "maximum_g5_nodes", "world_revision_id", "region_id"],
+      "properties": {
+        "profile_id": { "type": "string", "minLength": 1 },
+        "layout_template_id": { "type": "string", "minLength": 1 },
+        "maximum_g5_nodes": { "type": "integer", "minimum": 1 },
+        "world_revision_id": { "type": "string", "minLength": 1 },
+        "region_id": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "layout_template": {
+      "type": "object",
+      "required": ["layout_template_id", "world_revision_id", "region_id"],
+      "properties": {
+        "layout_template_id": { "type": "string", "minLength": 1 },
+        "world_revision_id": { "type": "string", "minLength": 1 },
+        "region_id": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "slot_rules": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/slotRule" } },
+    "layout_edges": { "type": "array", "items": { "$ref": "#/$defs/layoutEdge" } },
+    "g5_minilocation_templates": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/nodeTemplate" } },
+    "g5_anchor_templates": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/anchorTemplate" } },
+    "g5_edge_templates": { "type": "array", "items": { "$ref": "#/$defs/edgeTemplate" } },
+    "player_start_anchor_slot_key": { "type": "string", "minLength": 1 },
+    "visibility_model": { "type": "object" },
+    "access_model": { "type": "object" }
+  },
+  "$defs": {
+    "slotRule": {
+      "type": "object",
+      "required": ["rule_id", "profile_id", "slot_key", "slot_domain", "min_count", "max_count", "required"],
+      "properties": {
+        "rule_id": { "type": "string", "minLength": 1 }, "profile_id": { "type": "string", "minLength": 1 }, "slot_key": { "type": "string", "minLength": 1 },
+        "slot_domain": { "enum": ["g5_node", "anchor"] }, "min_count": { "type": "integer", "minimum": 0 }, "max_count": { "type": "integer", "minimum": 0 }, "required": { "type": "boolean" },
+        "g5_minilocation_template_id": { "type": "string" }, "g5_anchor_template_id": { "type": "string" }, "parent_node_slot_key": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "layoutEdge": {
+      "type": "object", "required": ["edge_id", "from_anchor_slot_key", "to_anchor_slot_key", "g5_edge_template_id"],
+      "properties": { "edge_id": { "type": "string" }, "from_anchor_slot_key": { "type": "string" }, "to_anchor_slot_key": { "type": "string" }, "g5_edge_template_id": { "type": "string" } }, "additionalProperties": false
+    },
+    "nodeTemplate": {
+      "type": "object", "required": ["template_id", "status", "capacity", "access_policy", "visibility_policy", "initial_state"],
+      "properties": { "template_id": { "type": "string" }, "status": { "const": "approved" }, "capacity": { "type": "integer", "minimum": 1 }, "access_policy": { "type": "object" }, "visibility_policy": { "type": "object" }, "initial_state": { "type": "object" } }, "additionalProperties": false
+    },
+    "anchorTemplate": {
+      "type": "object", "required": ["template_id", "status", "anchor_type", "can_hold_npc", "can_hold_item", "can_hold_container", "npc_capacity", "item_capacity", "container_capacity", "access_policy", "visibility_policy"],
+      "properties": { "template_id": { "type": "string" }, "status": { "const": "approved" }, "anchor_type": { "type": "string" }, "can_hold_npc": { "type": "boolean" }, "can_hold_item": { "type": "boolean" }, "can_hold_container": { "type": "boolean" }, "npc_capacity": { "type": "integer", "minimum": 0 }, "item_capacity": { "type": "integer", "minimum": 0 }, "container_capacity": { "type": "integer", "minimum": 0 }, "access_policy": { "type": "object" }, "visibility_policy": { "type": "object" } }, "additionalProperties": false
+    },
+    "edgeTemplate": {
+      "type": "object", "required": ["template_id", "status", "access_policy", "visibility_policy", "initial_state"],
+      "properties": { "template_id": { "type": "string" }, "status": { "const": "approved" }, "access_policy": { "type": "object" }, "visibility_policy": { "type": "object" }, "initial_state": { "type": "object" } }, "additionalProperties": false
+    }
+  },
+  "additionalProperties": true
+}

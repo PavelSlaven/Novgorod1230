@@ -1,0 +1,100 @@
+{
+  "schema_version": "rus.world_catalog_source_manifest.v1",
+  "source_id": "novgorod_v6_legacy_baseline",
+  "region_id": "region_novgorod_land",
+  "historical_horizon": 1230,
+  "status": "read_only_legacy",
+  "historical_approval": false,
+  "id_preservation_source": true,
+  "files": [
+    {
+      "role": "g1_cells",
+      "file_name": "novgorod_g2_g4_70_cells_v6_g1_cells.tsv",
+      "drive_file_id": "1Nm4GfsXBGe0vGx4EEbCTnQD114mhqtF0",
+      "drive_url": "https://drive.google.com/file/d/1Nm4GfsXBGe0vGx4EEbCTnQD114mhqtF0/view",
+      "bytes": 79529,
+      "sha256": "f44eadc7ad0e2c5de8d3e13d9bd2d753bdf599174a18788702c3af15a9574036"
+    },
+    {
+      "role": "g2_zones",
+      "file_name": "novgorod_g2_g4_70_cells_v6_g2_zones.tsv",
+      "drive_file_id": "1Wqqk23l6yRXiB-48mo8d_ZFfA6dH-9z_",
+      "drive_url": "https://drive.google.com/file/d/1Wqqk23l6yRXiB-48mo8d_ZFfA6dH-9z_/view",
+      "bytes": 1193589,
+      "sha256": "984f3ab6b90a987acb0b3a6b843ca46c499427ced79dee7985feb3a1f76a133c"
+    },
+    {
+      "role": "g3_places",
+      "file_name": "novgorod_g2_g4_70_cells_v6_g3_places.tsv",
+      "drive_file_id": "1yAynBbFPxiY7zoIgr9DR3ySRmKyp1yhr",
+      "drive_url": "https://drive.google.com/file/d/1yAynBbFPxiY7zoIgr9DR3ySRmKyp1yhr/view",
+      "bytes": 2297862,
+      "sha256": "31f129e75f01c623d205b7e97e7d1c48035044163841c436ff4a9994a510742e"
+    },
+    {
+      "role": "g4_locations",
+      "file_name": "novgorod_g2_g4_70_cells_v6_g4_locations.tsv",
+      "drive_file_id": "1GEUwnoZV2Z0aTOMELiTXhMYKRCjOqTgL",
+      "drive_url": "https://drive.google.com/file/d/1GEUwnoZV2Z0aTOMELiTXhMYKRCjOqTgL/view",
+      "bytes": 19362339,
+      "sha256": "d06ade60b43e9316767bafd54ead30a59319ad6699d20268126b3636f8ae7ee3"
+    },
+    {
+      "role": "graph_nodes",
+      "file_name": "novgorod_graph_nodes_g1_g4_full_v6.tsv",
+      "drive_file_id": "1d3ijxmd5yP-p1Y1Scui3g7KgB5Pmn6n_",
+      "drive_url": "https://drive.google.com/file/d/1d3ijxmd5yP-p1Y1Scui3g7KgB5Pmn6n_/view",
+      "bytes": 3356192,
+      "sha256": "9c22f322225cb4994e5bc981fc017a81f9a499d3a7c8093710955098cdbba73a"
+    },
+    {
+      "role": "graph_edges",
+      "file_name": "novgorod_graph_edges_g1_g4_full_v6.tsv",
+      "drive_file_id": "1onQiiOBf9nu0JVOyN3R4BIFMqV_sWbDH",
+      "drive_url": "https://drive.google.com/file/d/1onQiiOBf9nu0JVOyN3R4BIFMqV_sWbDH/view",
+      "bytes": 22904826,
+      "sha256": "04631ac503d2febe251e48957fae4d82f412243d75aaa69bd55602c56f75b945"
+    },
+    {
+      "role": "naming_register",
+      "file_name": "novgorod_g2_g4_70_cells_v6_naming_register.tsv",
+      "drive_file_id": "1qSlDd2L_i3iePMoDIeLvM0XrbBBjOrlY",
+      "drive_url": "https://drive.google.com/file/d/1qSlDd2L_i3iePMoDIeLvM0XrbBBjOrlY/view",
+      "bytes": 501458,
+      "sha256": "b2fd2c9f4857a1af946a43f7856a2b6dce8338c191f896e83596f98627a13bde"
+    },
+    {
+      "role": "g3_scale_register",
+      "file_name": "novgorod_g3_scale_register_v6.tsv",
+      "drive_file_id": "1849zigXEDB_Gxl9oTECoZotV_PdrhP0m",
+      "drive_url": "https://drive.google.com/file/d/1849zigXEDB_Gxl9oTECoZotV_PdrhP0m/view",
+      "bytes": 644325,
+      "sha256": "fa7d23ae4604633b8c913fcc55faaa5650d7761c1f7fecc254a7157f63a83b06"
+    },
+    {
+      "role": "g1_sources",
+      "file_name": "novgorod_g1_70_active_cells_v6_sources.tsv",
+      "drive_file_id": "1Xr3AQKH4Rdqbiv5RAkoqCYFUqqJaUny6",
+      "drive_url": "https://drive.google.com/file/d/1Xr3AQKH4Rdqbiv5RAkoqCYFUqqJaUny6/view",
+      "bytes": 4797,
+      "sha256": "68451516f6957b5b80506a3733da0117ef46262d8bf6019c80b499b6d7cc5536"
+    },
+    {
+      "role": "g1_macro_zones",
+      "file_name": "novgorod_g1_70_active_cells_v6_macro_zones.tsv",
+      "drive_file_id": "1xkgE63RdqgEqzf0K1mJ6bGg3rZ_wCEEx",
+      "drive_url": "https://drive.google.com/file/d/1xkgE63RdqgEqzf0K1mJ6bGg3rZ_wCEEx/view",
+      "bytes": 6703,
+      "sha256": "6196bfda612b1bc707cd5d474a7f2e8168cdae42434068236ad399b7d1543873"
+    },
+    {
+      "role": "g1_historical_anchors",
+      "file_name": "novgorod_g1_70_active_cells_v6_historical_anchors_g1.tsv",
+      "drive_file_id": "1WuZHdiny9bX3F8izgBvh_LmGREAYolYG",
+      "drive_url": "https://drive.google.com/file/d/1WuZHdiny9bX3F8izgBvh_LmGREAYolYG/view",
+      "bytes": 10965,
+      "sha256": "3cb224865ef23132fe3a88535e936cd773cdfacf6dce20a83921827f28f7ac93"
+    }
+  ],
+  "manifest_digest": "bbae92c4c7616bed73f3c9557be6f31b54556f0953ccf6c29c8c7e94e3d87a93"
+}

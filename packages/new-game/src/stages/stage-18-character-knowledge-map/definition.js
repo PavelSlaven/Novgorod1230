@@ -1,0 +1,2 @@
+import { assertStage18Ports } from './ports.js'; import { runStage18CharacterKnowledgeMapBlock } from './orchestration/run-stage-18.js';
+export const stage18Definition=Object.freeze({id:18,name:'character-knowledge-map',version:1,async execute({input,services={}}={}){const ports=assertStage18Ports(services.stage18??services);const result=await runStage18CharacterKnowledgeMapBlock({input,...ports});return{status:result?.pass===true?'approved':'blocked',artifact:result};}});

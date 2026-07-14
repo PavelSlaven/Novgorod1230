@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rus.world_catalog_source.v1",
+  "title": "World catalog source registry record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "source_id", "region_id", "map_revision_id", "historical_horizon", "source_manifest_digest", "approval_status", "included_datasets"],
+  "properties": {
+    "schema_version": { "const": "rus.world_catalog_source.v1" },
+    "source_id": { "type": "string", "minLength": 1 },
+    "region_id": { "type": "string", "minLength": 1 },
+    "map_revision_id": { "type": "string", "minLength": 1 },
+    "historical_horizon": { "const": 1230 },
+    "source_manifest_digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "approval_status": { "enum": ["staging_only", "approved", "rejected", "deprecated"] },
+    "included_datasets": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "approved_at": { "type": ["string", "null"] },
+    "approved_by": { "type": ["string", "null"] }
+  }
+}

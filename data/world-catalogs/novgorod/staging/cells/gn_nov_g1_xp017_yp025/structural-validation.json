@@ -1,0 +1,61 @@
+{
+  "schema_version": "rus.g1_structural_validation.v1",
+  "g1_id": "gn_nov_g1_xp017_yp025",
+  "result": "PASS",
+  "validator": "@rus/world-catalog-workflow validateG1CellPackage",
+  "checks": [
+    {
+      "name": "package_contract",
+      "result": "PASS"
+    },
+    {
+      "name": "g1_g2_g3_g4_hierarchy",
+      "result": "PASS"
+    },
+    {
+      "name": "graph_node_references",
+      "result": "PASS"
+    },
+    {
+      "name": "graph_edge_references",
+      "result": "PASS"
+    },
+    {
+      "name": "north_boundary_match",
+      "result": "PASS"
+    },
+    {
+      "name": "east_boundary_pending_contract",
+      "result": "PASS"
+    },
+    {
+      "name": "no_g5",
+      "result": "PASS"
+    },
+    {
+      "name": "no_concrete_npc_item_container_instances",
+      "result": "PASS"
+    },
+    {
+      "name": "contains_edges_non_physical",
+      "result": "PASS"
+    },
+    {
+      "name": "source_id_resolution",
+      "result": "PASS"
+    },
+    {
+      "name": "stable_ids",
+      "result": "PASS"
+    },
+    {
+      "name": "no_modern_settlement_projection",
+      "result": "PASS"
+    }
+  ],
+  "errors": [],
+  "notes": [
+    "Full repository regression and production MapMaker execution remain release gates, not local package-structure gates.",
+    "The previous yp026 package remains immutable; boundary closure is recorded by an append-only match overlay."
+  ]
+}

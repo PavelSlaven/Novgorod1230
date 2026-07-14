@@ -1,0 +1,39 @@
+{
+  "schema_version": "rus.g1_work_queue_progress.v1",
+  "map_revision_id": "novgorod_1230_research_revision_002",
+  "base_queue_file": "g1-work-queue-revision-002.json",
+  "updates": [
+    {
+      "sequence_number": 1,
+      "g1_id": "gn_nov_g1_xp017_yp026",
+      "work_status": "approved_local",
+      "research_status": "completed",
+      "local_approval_status": "approved_local",
+      "integration_status": "partial_matched",
+      "import_status": "not_started",
+      "blocking_reasons": [
+        "northward maritime transition pending revision 003"
+      ],
+      "package_digest": null,
+      "matched_boundaries": [
+        "BND_G1_001_SOUTH_DVINA"
+      ]
+    },
+    {
+      "sequence_number": 2,
+      "g1_id": "gn_nov_g1_xp017_yp025",
+      "work_status": "approved_local",
+      "research_status": "completed",
+      "local_approval_status": "approved_local",
+      "integration_status": "partial_matched",
+      "import_status": "not_started",
+      "blocking_reasons": [
+        "east boundary pending neighbour confirmation"
+      ],
+      "package_digest": "ba93f20b248e32ef754b62643e88008ab04a5cc43342e2694d87878a5bdd49e7",
+      "matched_boundaries": [
+        "BND_G1_002_NORTH_DVINA"
+      ]
+    }
+  ]
+}

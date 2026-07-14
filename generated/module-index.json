@@ -1,0 +1,534 @@
+{
+  "applications": [
+    {
+      "dependencies": [
+        "@rus/checks-rng",
+        "@rus/knowledge-source",
+        "@rus/llm-runtime",
+        "@rus/narration",
+        "@rus/new-game",
+        "@rus/party-store",
+        "@rus/presentation",
+        "@rus/turn",
+        "@rus/visibility-knowledge-memory",
+        "@rus/world-base",
+        "pg"
+      ],
+      "name": "@rus/game-server",
+      "owns": [
+        "versioned HTTP routes `/api/v1/*`",
+        "static delivery `@rus/game-web`",
+        "builtin production composition",
+        "PostgreSQL pool/normalized v2 session/delivery/Stage 25/first-entry repository adapters",
+        "provider role-runner adapter",
+        "startup probes и применение полного `schemas/party-db/001_party_runtime.sql`",
+        "feature-flag bootstrap"
+      ],
+      "path": "apps/game-server",
+      "public_entry": "./src/index.js",
+      "purpose": "Composition root, production infrastructure adapters и HTTP boundary модульной игры. Пакет связывает публичные APIs, но не содержит игровых правил.",
+      "version": "0.23.0"
+    },
+    {
+      "dependencies": [],
+      "name": "@rus/game-web",
+      "owns": [
+        "HTTP API client `/api/v1`",
+        "валидацией публичных API envelopes и screen contracts",
+        "UI-only store",
+        "маршрутизацией FirstGameScreen/TurnScreen",
+        "feature renderers для прозы, персонажа, инвентаря, людей, маршрутов, карты, журнала, действий и diagnostics",
+        "browser bootstrap и обработкой пользовательских намерений"
+      ],
+      "path": "apps/game-web",
+      "public_entry": "./src/index.js",
+      "purpose": "Browser-клиент, который получает только versioned public read models от `@rus/game-server` и отображает их без вычисления игровых последствий.",
+      "version": "0.21.0"
+    }
+  ],
+  "modules": [
+    {
+      "dependencies": [
+        "@rus/kernel"
+      ],
+      "name": "@rus/actors",
+      "owns": [
+        "actor identity and kind",
+        "biography fields",
+        "social and skill references",
+        "actor state shape and invariants"
+      ],
+      "path": "packages/actors",
+      "public_entry": "./src/index.js",
+      "purpose": "Player and NPC entity contracts, identity, biography, social and skill bindings. Код модуля работает только с переданными данными и не создаёт смысловые сущности мира.",
+      "version": "0.13.0"
+    },
+    {
+      "dependencies": [
+        "@rus/kernel"
+      ],
+      "name": "@rus/body-state",
+      "owns": [
+        "health, satiety and energy",
+        "active conditions",
+        "body-part state",
+        "state modifiers and bounded changes"
+      ],
+      "path": "packages/body-state",
+      "public_entry": "./src/index.js",
+      "purpose": "Body metrics, active conditions, body-part state and approved state-change formulas. Код модуля работает только с переданными данными и не создаёт смысловые сущности мира.",
+      "version": "0.13.0"
+    },
+    {
+      "dependencies": [
+        "@rus/kernel"
+      ],
+      "name": "@rus/checks-rng",
+      "owns": [
+        "difficulty bounds",
+        "attribute bonus formula",
+        "dice execution through injected RandomSource",
+        "check result bands and audit records"
+      ],
+      "path": "packages/checks-rng",
+      "public_entry": "./src/index.js",
+      "purpose": "RandomSource port, dice requests, check formula, modifiers and check result. Код модуля работает только с переданными данными и не создаёт смысловые сущности мира.",
+      "version": "0.13.0"
+    },
+    {
+      "dependencies": [
+        "@rus/kernel"
+      ],
+      "name": "@rus/combat-health",
+      "owns": [
+        "combat request/result contracts",
+        "margin-to-quality and damage formulas",
+        "harm and injury packages",
+        "combat-state validation"
+      ],
+      "path": "packages/combat-health",
+      "public_entry": "./src/index.js",
+      "purpose": "Combat state, attack/defense requests, harm packages, wounds and combat consequence contracts. Код модуля работает только с переданными данными и не создаёт смысловые сущности мира.",
+      "version": "0.13.0"
+    },
+    {
+      "dependencies": [
+        "@rus/kernel"
+      ],
+      "name": "@rus/contracts",
+      "owns": [
+        "Schema names for approvals, handoffs, delivery, and public read models",
+        "Stable digest functions",
+        "Approval builders and binding validators",
+        "Stage handoff validators that do not execute game logic"
+      ],
+      "path": "packages/contracts",
+      "public_entry": "./src/index.js",
+      "purpose": "Canonical machine-readable contracts shared across stages and applications.",
+      "version": "0.9.0"
+    },
+    {
+      "dependencies": [
+        "@rus/kernel"
+      ],
+      "name": "@rus/items-property",
+      "owns": [
+        "item and container contracts",
+        "ownership and holder relations",
+        "physical access",
+        "inventory load and recognition requests"
+      ],
+      "path": "packages/items-property",
+      "public_entry": "./src/index.js",
+      "purpose": "Item identity, containers, ownership, access, inventory load, recognition and property relations. Код модуля работает только с переданными данными и не создаёт смысловые сущности мира.",
+      "version": "0.13.0"
+    },
+    {
+      "dependencies": [],
+      "name": "@rus/kernel",
+      "owns": [
+        "`Result`-подобным контрактом `ok`/`err` и `KernelError`",
+        "детерминированной сериализацией данных",
+        "вычислением технических digest",
+        "глубоким замораживанием утверждённых структур"
+      ],
+      "path": "packages/kernel",
+      "public_entry": "./src/index.js",
+      "purpose": "Минимальные технические примитивы, на которых строятся остальные модули: типизированный результат, стабильная сериализация, SHA-256 и иммутабельность.",
+      "version": "0.9.0"
+    },
+    {
+      "dependencies": [],
+      "name": "@rus/knowledge-source",
+      "owns": [
+        "контрактом чтения документов по стабильному `document_id`",
+        "проверкой corpus manifest, SHA-256 и source locations",
+        "техническим полнотекстовым поиском без смыслового дополнения",
+        "определением current/stale/missing для generated graph и RAG"
+      ],
+      "path": "packages/knowledge-source",
+      "public_entry": "./src/index.js",
+      "purpose": "Read-only доступ к утверждённому нормативному корпусу проекта, его source locations и проверенным generated graph/RAG.",
+      "version": "0.23.0"
+    },
+    {
+      "dependencies": [
+        "@rus/contracts"
+      ],
+      "name": "@rus/llm-runtime",
+      "owns": [
+        "role descriptors и tier-конфигурацией",
+        "разрешением model/thinking/token/JSON-mode параметров",
+        "единым вызовом chat-completion transport",
+        "scoped client adapter для composition root"
+      ],
+      "path": "packages/llm-runtime",
+      "public_entry": "./src/index.js",
+      "purpose": "Единый transport/configuration слой LLM-вызовов по именованным ролям и tier-настройкам.",
+      "version": "0.9.0"
+    },
+    {
+      "dependencies": [
+        "@rus/contracts",
+        "@rus/kernel"
+      ],
+      "name": "@rus/materialization",
+      "owns": [
+        "versioned `mulberry32_v1` RandomSource и seed derivation",
+        "выбором из approved candidates и materialization trace",
+        "проекцией G5 из approved profile/layout/slot rules и NPC/items из нормализованных eligible candidates",
+        "signed command tokens и проверкой bounded decisions"
+      ],
+      "path": "packages/materialization",
+      "public_entry": "./src/index.js",
+      "purpose": "Детерминированный code-only materializer v2 и bounded decision protocol.",
+      "version": "2.0.0"
+    },
+    {
+      "dependencies": [
+        "@rus/kernel"
+      ],
+      "name": "@rus/movement-routes",
+      "owns": [
+        "route availability and requirements",
+        "travel cost formulas",
+        "traversal request/result shapes",
+        "orientation and failure consequence requests"
+      ],
+      "path": "packages/movement-routes",
+      "public_entry": "./src/index.js",
+      "purpose": "Route availability, knowledge, traversal contracts, GU/time cost and orientation requests. Код модуля работает только с переданными данными и не создаёт смысловые сущности мира.",
+      "version": "0.13.0"
+    },
+    {
+      "dependencies": [
+        "@rus/kernel",
+        "@rus/visibility-knowledge-memory"
+      ],
+      "name": "@rus/narration",
+      "owns": [
+        "versioned `narration_request`, `narration_output`, `narration_audit` и `narration_flow_result`",
+        "проверкой visible-only входа",
+        "bounded generation → audit → repair → senior audit",
+        "историей генераций, аудитов и ремонтов",
+        "typed upstream repair request при невозможности утвердить прозу"
+      ],
+      "path": "packages/narration",
+      "public_entry": "./src/index.js",
+      "purpose": "Единый безопасный workflow генерации, аудита и ремонта прозы для первого экрана и обычного хода.",
+      "version": "0.15.0"
+    },
+    {
+      "dependencies": [
+        "@rus/contracts",
+        "@rus/kernel",
+        "@rus/materialization",
+        "@rus/party-store",
+        "@rus/pipeline-engine"
+      ],
+      "name": "@rus/new-game",
+      "owns": [
+        "каталогом и публичными entrypoints Stages 2–26",
+        "stage-local precheck/validation/repair contracts",
+        "общим new-game orchestration order",
+        "handoff к Stage 25 persistence и Stage 26 first-screen result"
+      ],
+      "path": "packages/new-game",
+      "public_entry": "./src/index.js",
+      "purpose": "Модульный workflow создания новой игры: изолированные Stages 2–26, compatibility facades и общий orchestrator.",
+      "version": "0.12.0"
+    },
+    {
+      "dependencies": [
+        "@rus/kernel"
+      ],
+      "name": "@rus/party-store",
+      "owns": [
+        "party persistence contract",
+        "idempotency key и committed-result semantics",
+        "Stage 25 persistence port",
+        "границей между утверждённым write plan и infrastructure executor"
+      ],
+      "path": "packages/party-store",
+      "public_entry": "./src/index.js",
+      "purpose": "Публичный порт persistence v2 для нормализованной и идемпотентной фиксации состояния партии.",
+      "version": "0.9.0"
+    },
+    {
+      "dependencies": [
+        "@rus/contracts",
+        "@rus/kernel"
+      ],
+      "name": "@rus/pipeline-engine",
+      "owns": [
+        "декларативным порядком stage execution",
+        "gate-result contract",
+        "artifact registry",
+        "остановкой pipeline при typed failure"
+      ],
+      "path": "packages/pipeline-engine",
+      "public_entry": "./src/index.js",
+      "purpose": "Универсальный исполнитель изолированных stage-графов и технический реестр артефактов pipeline.",
+      "version": "0.9.0"
+    },
+    {
+      "dependencies": [
+        "@rus/contracts",
+        "@rus/kernel",
+        "@rus/visibility-knowledge-memory"
+      ],
+      "name": "@rus/presentation",
+      "owns": [
+        "`FirstGameScreen` и `TurnScreen` version 1",
+        "Character, Inventory, People, Route, Map, Journal и Diagnostic panels",
+        "visible-only validation и leak rejection",
+        "compatibility `createPublicViewModel`",
+        "first-screen delivery attempt, acknowledgement и Stage 27 intent handoff"
+      ],
+      "path": "packages/presentation",
+      "public_entry": "./src/index.js",
+      "purpose": "Единый владелец versioned player-facing read models и технического состояния доставки экранов.",
+      "version": "0.15.0"
+    },
+    {
+      "dependencies": [
+        "@rus/kernel"
+      ],
+      "name": "@rus/social-law",
+      "owns": [
+        "social bindings and references",
+        "rights/restriction evaluation",
+        "authority and social-risk contracts",
+        "legal consequence packages"
+      ],
+      "path": "packages/social-law",
+      "public_entry": "./src/index.js",
+      "purpose": "Social role and occupation references, rights, restrictions, authority and legal consequence packages. Код модуля работает только с переданными данными и не создаёт смысловые сущности мира.",
+      "version": "0.13.0"
+    },
+    {
+      "dependencies": [
+        "@rus/kernel"
+      ],
+      "name": "@rus/space-map",
+      "owns": [
+        "graph scale and node/edge contracts",
+        "position chain",
+        "current position and scene anchors",
+        "graph structural validation"
+      ],
+      "path": "packages/space-map",
+      "public_entry": "./src/index.js",
+      "purpose": "G0-G5 graph contracts, position chains, scene anchors, layout metadata and structural validation. Код модуля работает только с переданными данными и не создаёт смысловые сущности мира.",
+      "version": "0.13.0"
+    },
+    {
+      "dependencies": [
+        "@rus/kernel"
+      ],
+      "name": "@rus/time-events-history",
+      "owns": [
+        "clock arithmetic",
+        "timer due checks",
+        "delayed event contracts",
+        "historical phase activation"
+      ],
+      "path": "packages/time-events-history",
+      "public_entry": "./src/index.js",
+      "purpose": "Clock, durations, timers, delayed events, historical phases and time-driven update requests. Код модуля работает только с переданными данными и не создаёт смысловые сущности мира.",
+      "version": "0.13.0"
+    },
+    {
+      "dependencies": [
+        "@rus/checks-rng",
+        "@rus/kernel",
+        "@rus/materialization",
+        "@rus/narration",
+        "@rus/pipeline-engine",
+        "@rus/presentation",
+        "@rus/time-events-history",
+        "@rus/visibility-knowledge-memory"
+      ],
+      "name": "@rus/turn",
+      "owns": [
+        "контрактом `PlayerTurnInput`",
+        "декларативным порядком блоков хода",
+        "orchestration context и run summary",
+        "вызовом code resolvers и bounded decision protocol через явные ports",
+        "исполнением только явно запрошенных проверок через `RandomSource`",
+        "применением утверждённой длительности к clock formula",
+        "hidden/visible security boundary",
+        "commit gate и передачей утверждённого write plan в party store",
+        "формальным `position_transition`; cross-G4 transition всегда включает first-entry materialization в тот же commit",
+        "публичным `TurnResult` и compatibility adapter"
+      ],
+      "path": "packages/turn",
+      "public_entry": "./src/index.js",
+      "purpose": "Единый модульный workflow одного игрового хода. Модуль принимает слова игрока как намерение, запускает изолированные блоки обработки, фиксирует утверждённые последствия и возвращает публичный экран.",
+      "version": "0.15.0"
+    },
+    {
+      "dependencies": [
+        "@rus/kernel"
+      ],
+      "name": "@rus/visibility-knowledge-memory",
+      "owns": [
+        "visible-context validation",
+        "hidden leak detection and stripping",
+        "knowledge and memory fact contracts",
+        "safe narrator package"
+      ],
+      "path": "packages/visibility-knowledge-memory",
+      "public_entry": "./src/index.js",
+      "purpose": "Security boundary for visible context, hidden state, character knowledge, memory facts and safe narrator packages. Код модуля работает только с переданными данными и не создаёт смысловые сущности мира.",
+      "version": "0.13.0"
+    },
+    {
+      "dependencies": [],
+      "name": "@rus/world-base",
+      "owns": [
+        "контрактом `WorldBaseReader`",
+        "запретом mutating SQL",
+        "передачей query и params в injected read-only adapter"
+      ],
+      "path": "packages/world-base",
+      "public_entry": "./src/index.js",
+      "purpose": "Read-only порт доступа к канонической базе мира.",
+      "version": "0.9.0"
+    }
+  ],
+  "release": "0.23.0-migration.24",
+  "schema_version": "rus.module_index.v1",
+  "tools": [
+    {
+      "dependencies": [],
+      "name": "@rus/audit-tools",
+      "owns": [
+        "`createAuditManifest`",
+        "`verifyAuditEntries`"
+      ],
+      "path": "tools/audit-tools",
+      "public_entry": "./src/index.js",
+      "purpose": "Безопасная инвентаризация release/audit trees и проверка запрещённых путей. Пакет создаёт manifests, но не помещает ZIP или `dist` внутрь source tree.",
+      "version": "0.17.0"
+    },
+    {
+      "dependencies": [
+        "@rus/shadow-run"
+      ],
+      "name": "@rus/cutover",
+      "owns": [],
+      "path": "tools/cutover",
+      "public_entry": "./src/index.js",
+      "purpose": "Автономный migration-tool для управляемого 13-шагового переключения с legacy route на modular runtime. Инструмент применяет только versioned feature-flag profiles, запускает обязательные gates и выпускает доказуемый cutover report.",
+      "version": "0.21.0"
+    },
+    {
+      "dependencies": [],
+      "name": "@rus/db-tools",
+      "owns": [
+        "versioned operation manifest",
+        "dry-run/approval gates для write-like операций",
+        "разделением `world_base` и `party_db` targets",
+        "формированием технического operation plan для внешнего executor"
+      ],
+      "path": "tools/db-tools",
+      "public_entry": "./src/index.js",
+      "purpose": "Автономные контракты и проверки для export/import/seed/audit операций БД. Инструмент не является runtime adapter и не выполняет SQL сам.",
+      "version": "0.17.0"
+    },
+    {
+      "dependencies": [],
+      "name": "@rus/docs-tools",
+      "owns": [
+        "проверкой source ranges document graph",
+        "построением RAG index через injected embedding port",
+        "генерацией `MODULE_INDEX.md` и schema reference",
+        "generated manifest и проверкой reproducibility",
+        "canonical-path, seed-source и dated-artifact policy checks"
+      ],
+      "path": "tools/docs-tools",
+      "public_entry": "./src/index.js",
+      "purpose": "Автономные инструменты проверки document graph/RAG и воспроизводимой генерации канонической документации.",
+      "version": "0.23.0"
+    },
+    {
+      "dependencies": [],
+      "name": "@rus/finalization",
+      "owns": [],
+      "path": "tools/finalization",
+      "public_entry": "./src/index.js",
+      "purpose": "Автономный migration-tool для доказуемой финализации модульной миграции после staged cutover. Он проверяет release evidence, фиксирует автоматические gates и отделяет их от действий, которые может подтвердить только оператор или владелец проекта.",
+      "version": "0.22.0"
+    },
+    {
+      "dependencies": [
+        "@rus/kernel",
+        "@rus/space-map"
+      ],
+      "name": "@rus/map-maker",
+      "owns": [
+        "адаптацией поддерживаемых JSON-форматов в `rus.game_graph.v1`",
+        "отделением визуальных координат в `rus.map_layout.v1`",
+        "детерминированной квадратной раскладкой без наложения узлов",
+        "render projection и SVG preview",
+        "безопасным file export в явно указанный каталог"
+      ],
+      "path": "tools/map-maker",
+      "public_entry": "./src/index.js",
+      "purpose": "Автономный редакторский инструмент для импорта, проверки, раскладки и экспорта игровых графов G0-G5. Инструмент не участвует в new-game/turn runtime и не изменяет каноническую БД.",
+      "version": "0.17.0"
+    },
+    {
+      "dependencies": [],
+      "name": "@rus/shadow-run",
+      "owns": [
+        "`loadShadowManifest`",
+        "`validateShadowManifest`",
+        "`parseTapSummary`",
+        "`runShadowCorpus`",
+        "`buildShadowReport`",
+        "`renderShadowReportMarkdown`",
+        "`compareStructuralObservations`"
+      ],
+      "path": "tools/shadow-run",
+      "public_entry": "./src/index.js",
+      "purpose": "Автономный migration-tool для двойного запуска утверждённого corpus старого и модульного маршрутов. Инструмент исполняет только явно зарегистрированные parity/isolation tests, агрегирует структурные категории сравнения и выпускает machine-readable и Markdown отчёты.",
+      "version": "0.20.0"
+    },
+    {
+      "dependencies": [],
+      "name": "@rus/world-catalog-workflow",
+      "owns": [
+        "контрактами `rus.region_map_revision.v1`, `rus.g1_work_queue.v1`, `rus.g1_cell_package.v1` и `rus.g1_boundary_contract.v1`",
+        "чистой структурной валидацией ревизии и G1-пакетов",
+        "детерминированной очередью `global_grid_y DESC, global_grid_x ASC`",
+        "техническим сравнением существующих и входящих записей без молчаливого удаления"
+      ],
+      "path": "tools/world-catalog-workflow",
+      "public_entry": "./src/index.js",
+      "purpose": "Автономный редакторский инструмент для регистрации ревизий региональной карты, структурной проверки G1-маски, построения очереди по координатам, проверки пакета одной G1 и формирования dry-run импорта.",
+      "version": "0.1.0"
+    }
+  ]
+}

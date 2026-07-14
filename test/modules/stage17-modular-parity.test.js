@@ -1,0 +1,8 @@
+import test from 'node:test'; import assert from 'node:assert/strict';
+import * as baseline from '../fixtures/stage17-19-baseline/stage17-time-light-gate-0.7.0.js';
+import * as modular from '@rus/new-game/stages/stage-17/compat';
+import { makeBaseValues } from '../fixtures/stage17-19-fixtures.mjs';
+
+test('Stage 17 compatibility API preserves baseline exports',()=>assert.deepEqual(Object.keys(modular).sort(),Object.keys(baseline).sort()));
+test('Stage 17 input, precheck and validators preserve baseline output',()=>{const values=makeBaseValues();const a=baseline.buildStage17TimeLightInput(values);const b=modular.buildStage17TimeLightInput(values);assert.deepEqual(b,a);assert.deepEqual(modular.validateStage17TimeLightInput(b),baseline.validateStage17TimeLightInput(a));assert.deepEqual(modular.buildNormalizedVisibilityConstraints(b),baseline.buildNormalizedVisibilityConstraints(a));assert.deepEqual(modular.buildStage17TimeLightCodePrecheck(b),baseline.buildStage17TimeLightCodePrecheck(a));});
+test('Stage 17 successful orchestration preserves baseline output',async()=>{const input=baseline.buildStage17TimeLightInput(makeBaseValues());const audit=async(roleInput)=>({version:1,schema:'time_light_consistency_audit',request_id:input.request_id,pass:true,authoritative_frame:roleInput.authoritative_frame,checks:{},normalized_visibility_constraints:roleInput.normalized_visibility_constraints,concerns:[],evidence:[{kind:'audit'}],repair_route:null,commit_permission:{can_continue_to_visible_context:true,can_continue_to_narrator:false}});const options={input,audit,formatRepair:async()=>null,router:async()=>null};assert.deepEqual(await modular.runStage17TimeLightGateBlock(options),await baseline.runStage17TimeLightGateBlock(options));});

@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rus.knowledge_source_aliases.v1",
+  "type": "object",
+  "required": ["schema_version", "aliases"],
+  "properties": {
+    "schema_version": { "const": "rus.knowledge_source_aliases.v1" },
+    "aliases": {
+      "type": "object",
+      "additionalProperties": { "type": "string", "minLength": 1 }
+    }
+  },
+  "additionalProperties": false
+}

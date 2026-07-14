@@ -1,0 +1,16 @@
+{
+  "schema_version": "rus.g1_boundary_contract.v1",
+  "boundary_id": "",
+  "from_g1_id": "",
+  "to_g1_id": "",
+  "from_exit_node_id": "",
+  "expected_to_entry": null,
+  "boundary_side": "north",
+  "route_type": "",
+  "corridor_id": null,
+  "seasonality": null,
+  "access": null,
+  "risk": null,
+  "evidence_status": "unknown",
+  "status": "pending_neighbor_confirmation"
+}

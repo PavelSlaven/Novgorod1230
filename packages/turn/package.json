@@ -1,0 +1,19 @@
+{
+  "name": "@rus/turn",
+  "version": "0.15.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js",
+    "./compat": "./src/compat/index.js"
+  },
+  "dependencies": {
+    "@rus/checks-rng": "0.13.0",
+    "@rus/kernel": "0.9.0",
+    "@rus/materialization": "2.0.0",
+    "@rus/pipeline-engine": "0.9.0",
+    "@rus/presentation": "0.15.0",
+    "@rus/time-events-history": "0.13.0",
+    "@rus/visibility-knowledge-memory": "0.13.0",
+    "@rus/narration": "0.15.0"
+  }
+}

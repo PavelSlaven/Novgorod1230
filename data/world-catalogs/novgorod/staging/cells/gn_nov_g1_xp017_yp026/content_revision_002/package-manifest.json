@@ -1,0 +1,210 @@
+{
+  "schema_version": "rus.g1_package_manifest.v1",
+  "package_id": "gn_nov_g1_xp017_yp026_rebuild_002",
+  "g1_id": "gn_nov_g1_xp017_yp026",
+  "map_revision_id": "novgorod_1230_research_revision_002",
+  "content_revision_id": "gn_nov_g1_xp017_yp026_content_revision_002",
+  "created_at": "2026-07-12T00:00:00Z",
+  "file_count": 35,
+  "files": [
+    {
+      "path": "00-input/old-package-snapshot.json",
+      "sha256": "8e8f57e8d4e6ce8db0af3515374045a04000e39a91a2b7c7c74cf1477c2ea6ec",
+      "size_bytes": 258
+    },
+    {
+      "path": "00-input/supersession-overlay.json",
+      "sha256": "5eba3660dc54bce055da1e3f5668b31dfd2e22e815ae5b67d6c55ecc9585cc50",
+      "size_bytes": 499
+    },
+    {
+      "path": "01-research/claim-ledger.json",
+      "sha256": "212ac8604db83301982ecf0a8c2a820b56ef65f5ac8ac4aec37d671d75c5ac7b",
+      "size_bytes": 16668
+    },
+    {
+      "path": "01-research/research-brief.json",
+      "sha256": "0e56c02230b4a342f20fd99616be21a69901827214cf4fc85a90beb4e7be203f",
+      "size_bytes": 1349
+    },
+    {
+      "path": "01-research/source-ledger.json",
+      "sha256": "6df2d74d0f5dd3897f4629162def7fc4b0128d31d090af535bccda97e4d2d77c",
+      "size_bytes": 7400
+    },
+    {
+      "path": "02-g1/g1-dossier.json",
+      "sha256": "73db8d162a65a8ae3251c85d02986e43a77d54ad551c5650842ab1e61d9df9cb",
+      "size_bytes": 8782
+    },
+    {
+      "path": "03-g2/g2-zones.json",
+      "sha256": "77cd51f9da99c198f1583642acebb878dd529d10f03862dace7b9a1e9f6780a9",
+      "size_bytes": 21876
+    },
+    {
+      "path": "04-g3/g3-places.json",
+      "sha256": "bfd84b3b5fd38cbdda70dbe2c3acf3083ac515c2b8940cfd7808b3b6c0f2b16b",
+      "size_bytes": 56389
+    },
+    {
+      "path": "05-g4/g4-locations.json",
+      "sha256": "e60b8896416b145d6e5c35c046f7b14fd815be159730506092b888fa973cf7e6",
+      "size_bytes": 341259
+    },
+    {
+      "path": "06-materialization/container-profiles.json",
+      "sha256": "e7b8c3fabe83ed92e852c3a85c5f0025bb0a6163917c89dd9e47fcb0d8e6d962",
+      "size_bytes": 2722
+    },
+    {
+      "path": "06-materialization/fauna-profiles.json",
+      "sha256": "e739156fb63c60ca3cfae5d48c11444e9d6db0dc2034dcdf35e3f2486a629d55",
+      "size_bytes": 2492
+    },
+    {
+      "path": "06-materialization/item-profiles.json",
+      "sha256": "cac7fd139ad94f1db2d3311ba6e13727b4887c17c5ad373a3a9322181fff7c80",
+      "size_bytes": 3639
+    },
+    {
+      "path": "06-materialization/population-profiles.json",
+      "sha256": "283e257e77e3592560d4888d165e67c2cf5af6cb8cfa84f478691a1d6ad416cd",
+      "size_bytes": 4364
+    },
+    {
+      "path": "06-materialization/property-profiles.json",
+      "sha256": "86e2e364f309828b4fec6db532d62ce741c8679b4095696d0df5b7d898dd0a13",
+      "size_bytes": 2920
+    },
+    {
+      "path": "07-graph/boundary-contracts.json",
+      "sha256": "fa3704996a27d2e7ce47c71e79020704b09cfec8ef62b4c11cbd201d436195ec",
+      "size_bytes": 1855
+    },
+    {
+      "path": "07-graph/boundary-match-overlay-r2.json",
+      "sha256": "6f91d4decc7093bd63e9487cf17d489f65f276c29ccc68180e22547b0d13a306",
+      "size_bytes": 713
+    },
+    {
+      "path": "07-graph/graph-edges.json",
+      "sha256": "0c2a994cae0d690bcf923514aa276933f12075244fb69f45f3ed81316e92a9a1",
+      "size_bytes": 213226
+    },
+    {
+      "path": "07-graph/graph-nodes.json",
+      "sha256": "ea4c0492f1908c6efb08537cf5fd9becc612f4ba31988e9fe2a3e84547fde6c3",
+      "size_bytes": 65677
+    },
+    {
+      "path": "08-toponymy/naming-register.json",
+      "sha256": "8b3ed0388e412f196a289e87e56e3b44a4e49802186587041fc358c69154bb68",
+      "size_bytes": 175391
+    },
+    {
+      "path": "09-validation/CRITIC_REPORT.md",
+      "sha256": "0d32e17b6e4bb238670387cc1ffa2084cf5a7ebde40209fa49b0de649a0400b6",
+      "size_bytes": 930
+    },
+    {
+      "path": "09-validation/GAMEPLAY_COMPLETENESS_AUDIT.md",
+      "sha256": "75b8865028a1e5e72f001035f733e2bcfbdb6a10d827ca4fe8f80b29d6e6868e",
+      "size_bytes": 661
+    },
+    {
+      "path": "09-validation/HISTORICAL_AUDIT.md",
+      "sha256": "307d35bfc2371bf9041677044aeeba9723af481f7318f58a0eccbab176e59862",
+      "size_bytes": 917
+    },
+    {
+      "path": "09-validation/data-critic-report.json",
+      "sha256": "cef53eb961e267103b5817a4a25f8f9962bd52256ab0bca268b9b5ee4470f81c",
+      "size_bytes": 1149
+    },
+    {
+      "path": "09-validation/gameplay-completeness-audit.json",
+      "sha256": "0729978a7036ee31dc3def64fb7eef362eb34485766974f325f693f04b7bfece",
+      "size_bytes": 1265
+    },
+    {
+      "path": "09-validation/historical-audit.json",
+      "sha256": "2f1934962647f87775a1c5ae0ee60c0b96769f058a5f02d351c5c81df2a0a2bc",
+      "size_bytes": 1410
+    },
+    {
+      "path": "09-validation/independent-data-audit.json",
+      "sha256": "1dffe5114b5f26c781ddff7e7257fecd7ad08428706fe28c75f5898520c5163f",
+      "size_bytes": 1253
+    },
+    {
+      "path": "09-validation/structural-validation.json",
+      "sha256": "1ae5fa7d6b5059189380bbe88ee42ed944297478c599c6333e418fa05275d122",
+      "size_bytes": 567
+    },
+    {
+      "path": "10-layout/layout-quality-report.json",
+      "sha256": "d42817cf6d380ed2e6d904017e7f73309347a4be3f4a38f8e3017ed6017ba1d7",
+      "size_bytes": 227
+    },
+    {
+      "path": "10-layout/preview.svg",
+      "sha256": "20d16814d2543b85198e2ea888fcc9e97eae7942d4b4835d136df219cab54b25",
+      "size_bytes": 6408
+    },
+    {
+      "path": "11-approval/g1-work-queue-progress-003.json",
+      "sha256": "26801717a7e61b64690570e17a4440d4c2118289f093bacfeaafbc07151c3a29",
+      "size_bytes": 881
+    },
+    {
+      "path": "11-approval/id-migration-map.json",
+      "sha256": "7ea89fa7fbf4532dd192038b987265c1cf051f43517bf43b2313493fb99e529c",
+      "size_bytes": 8162
+    },
+    {
+      "path": "11-approval/local-approval.json",
+      "sha256": "377db2f5708261f79e3d12daf51b771ba52629a16786e31741d6fd115181b4eb",
+      "size_bytes": 805
+    },
+    {
+      "path": "PLAN.md",
+      "sha256": "eece22c0d268b655cf27c3a7b3a795e97e00d40b298141fa7caf593592ced758",
+      "size_bytes": 1074
+    },
+    {
+      "path": "gn_nov_g1_xp017_yp026.rebuild-002.package.json",
+      "sha256": "2962ba14c682bb67753b3213399ca8d63dc4285ae39cfe067034c8dee7aa90bd",
+      "size_bytes": 962940
+    },
+    {
+      "path": "validate_rebuild.py",
+      "sha256": "8860ff4c7c7bac401600c0cdd32e209789da2507c260b774fba50327cdb58210",
+      "size_bytes": 671
+    }
+  ],
+  "validation": {
+    "schema_version": "rus.g1_structural_validation.v1",
+    "g1_id": "gn_nov_g1_xp017_yp026",
+    "content_revision_id": "gn_nov_g1_xp017_yp026_content_revision_002",
+    "result": "PASS",
+    "errors": [],
+    "warnings": [],
+    "metrics": {
+      "g2_count": 15,
+      "g3_count": 32,
+      "g4_count": 195,
+      "graph_node_count": 243,
+      "graph_edge_count": 600,
+      "physical_edge_count": 358,
+      "boundary_count": 2,
+      "source_count": 11,
+      "claim_count": 21,
+      "toponymy_count": 243,
+      "min_g4_per_g3": 5,
+      "max_g4_per_g3": 8,
+      "g2_with_multiple_g3": 15
+    }
+  },
+  "approval_status": "approved_local"
+}

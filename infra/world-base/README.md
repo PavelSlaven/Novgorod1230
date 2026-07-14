@@ -1,113 +1,60 @@
-# World Base (PostgreSQL + NocoDB) — Schema v2 (layered map)
+# World Base (PostgreSQL + NocoDB) — Schema v2
 
-Read-only база **утверждённых** справочных данных мира: **50 таблиц** для Python import из пакета `БАЗА` и ручного аудита в NocoDB.
+Read-only база утверждённых справочных данных мира: **107 таблиц** для ручного аудита, materialization profiles/rules и утверждённого импорта.
 
-Код **не пишет** в PostgreSQL во время игры. Редактирование — через NocoDB UI и утверждённые import/audit процедуры. `npm run world-db:seed` применяет DDL (пустые таблицы). Каноническая загрузка данных — [IMPORT.md](./IMPORT.md).
+Код игрового runtime не создаёт категории или историю и не изменяет `world_base`; он материализует party instances из активных записей. Канонический DDL хранится только в этом инфраструктурном контуре:
 
-Архитектура графа, **слоистая модель карты** (§12.5) и разделение read-only / party-баз: [read_only_database_and_graph_architecture.md](../../DOCUMENTS/documents-kg/corpus/DOCUMENTS/read_only_database_and_graph_architecture.md).
+- [`schema.sql`](./schema.sql) — исполняемый entrypoint;
+- [`schema/`](./schema/) — одиннадцать упорядоченных SQL-частей;
+- [`IMPORT.md`](./IMPORT.md) — правила импорта и аудита.
 
-**Справочник полей:** [SCHEMA_REFERENCE.md](./SCHEMA_REFERENCE.md) (все 50 таблиц; `npm run world-db:schema-doc`).
+Архитектурное описание разделения read-only project DB и party DB хранится в canonical knowledge corpus как `read_only_database_and_graph_architecture.md`. README не подменяет этот нормативный документ.
 
-> **Важно:** `world-db:seed` делает `DROP SCHEMA world_base CASCADE` и стирает импортированные строки. После Python import не запускайте seed без повторного import.
+## Проверка схемы
 
-## Слои карты (кратко)
+```bash
+npm run world-db:schema-check
+npm run world-db:schema-doc
+npm run world-db:schema-doc-check
+```
 
-| Слой | Таблицы |
-|------|---------|
+Проверка подтверждает:
+
+- наличие entrypoint;
+- одиннадцать SQL-частей в установленном порядке;
+- 107 уникальных таблиц `world_base`;
+- отсутствие небезопасных include-путей;
+- запрет `PUBLIC CREATE`;
+- наличие read-only роли и разрешений чтения.
+
+`world-db:schema-doc` детерминированно строит [`SCHEMA_REFERENCE.md`](./SCHEMA_REFERENCE.md) из текущего DDL. Таблицы, колонки, типы, FK и constraints извлекаются из SQL; смысловые описания берутся только из [`field-descriptions.js`](./field-descriptions.js). Неописанные поля остаются явно неописанными.
+
+GitHub Actions дополнительно исполняет весь entrypoint в PostgreSQL 16 с `ON_ERROR_STOP=1`, подтверждает 107 таблиц, роль `world_reader`, `USAGE`/`SELECT` и отсутствие `CREATE`/write grants.
+
+## Слои данных
+
+| Слой | Основные таблицы |
+|---|---|
+| Граф и карта | `graph_scale_rules`, `graph_edge_modifiers`, `graph_nodes`, `graph_edges`, `graph_edge_knowledge_rules` |
 | Базовая среда | `landscape_templates`, `region_landscape_templates` |
 | Вода | `water_body_templates`, `region_water_body_templates` |
-| Инфраструктура | `route_templates` (+ `graph_edges.route_template_id`) |
-| Места | `place_templates`, `region_place_templates` |
+| Инфраструктура | `route_templates`, ссылки из `graph_edges` |
+| Места | `place_templates`, `region_place_templates`, `places`, `place_locations` |
 | Хозяйство | `land_use_templates`, `region_land_use_templates` |
-| Правила генерации мест | `region_place_generation_rules` (бывш. fat `region_place_templates`) |
+| Регион | `regions`, `region_neighbors`, `region_laws`, `region_economy` |
+| Социальный слой | `social_classes`, `social_role_archetypes`, `occupation_archetypes`, `skill_catalog`, `occupation_skill_defaults` |
+| История и источники | `historical_*`, `source_records`, `record_sources`, `audit_log` |
 
-## Быстрый старт
+## Источник истины
 
-```bash
-npm run world-db:up
-npm run world-db:seed
-npm run world-db:prepare-staging
-npm run world-db:import:dry-run
-npm run world-db:fk-audit:staged
-npm run world-db:import:apply
-npm run world-db:import:novgorod-regional:apply
-npm run world-db:fk-audit:db
-npm run party-db:seed
-npm run new-game:preflight
-node scripts/seed-world-base.js --check
-npm run world-db:nocodb
-```
+`infra/world-base/schema.sql` и одиннадцать файлов `infra/world-base/schema/*.sql` являются единственным исполняемым источником истины для структуры базы.
 
-Dev-only seed для отдельных XLSX-слоёв:
+Справочник полей является generated representation и не должен редактироваться вручную или существовать как независимая нормативная копия. Единственный исполняемый источник структуры — текущий DDL; `field-descriptions.js` владеет только утверждёнными пояснениями.
 
-```bash
-npm run world-db:export-landscapes
-npm run world-db:seed-landscapes
-npm run world-db:export-water-bodies
-npm run world-db:seed-water-bodies
-npm run world-db:export-routes
-npm run world-db:seed-routes
-npm run world-db:export-land-uses
-npm run world-db:seed-land-uses
-npm run world-db:export-places
-npm run world-db:seed-places
-npm run world-db:seed-llm-validation-landscape
-```
+## Ограничения
 
-Эти Node seed/export скрипты нужны для разработки отдельных XLSX. Они не заменяют Python importer пакета `БАЗА` и не должны запускаться поверх импортированной базы без осознанного re-import плана.
-
-`--check` падает, если число таблиц ≠ 50.
-
-## Каталог таблиц (50)
-
-Полный порядок NocoDB — в [architecture doc § NocoDB](../../DOCUMENTS/documents-kg/corpus/DOCUMENTS/read_only_database_and_graph_architecture.md).
-
-### Граф
-
-`graph_scale_rules`, `graph_edge_modifiers`, `graph_nodes`, `graph_edges`, `graph_edge_knowledge_rules`
-
-### Слои карты
-
-`landscape_templates`, `region_landscape_templates`, `water_body_templates`, `region_water_body_templates`, `route_templates`, `land_use_templates`, `region_land_use_templates`, `place_templates`, `region_place_templates`
-
-### Регион и места
-
-`regions`, `region_neighbors`, `region_laws`, `region_economy`, …, `region_place_generation_rules`, `place_generation_limits`, `places`, `place_locations`, …
-
-### История, шаблоны, мета
-
-`historical_*`, `item_templates`, `building_templates`, `source_records`, `record_sources`, `audit_log`, `llm_*`, `region_gaps`
-
-## npm-скрипты
-
-| Скрипт | Действие |
-|--------|----------|
-| `npm run world-db:seed` | DROP + CREATE schema v2 |
-| `npm run world-db:prepare-staging` | Desktop `БАЗА` → ignored staging + nested zip extraction |
-| `npm run world-db:import:dry-run` | Python importer validation without DB writes |
-| `npm run world-db:import:apply` | Python importer apply into `world_base` |
-| `npm run world-db:fk-audit:staged` | FK audit по staging до записи |
-| `npm run world-db:fk-audit:db` | FK audit по применённой DB |
-| `npm run world-db:import:novgorod-regional:*` | Импорт оставшихся Новгородских runtime templates |
-| `npm run party-db:seed` | Применить `infra/party-db` DDL и проверить MVP-таблицы |
-| `npm run new-game:preflight` | Проверить `WORLD_DATA_SOURCE=postgres`, env, party seed, Novgorod G1-G4/world_base rows |
-| `npm run world-db:schema-doc` | SCHEMA_REFERENCE.md + corpus copy |
-| `node scripts/seed-world-base.js --check` | 50 таблиц, счётчики строк |
-| `npm run world-db:export-landscapes` | xlsx → `landscape_templates.seed.json` (70 rows) |
-| `npm run world-db:seed-landscapes` | 70 landscape_templates (upsert + delete stale ids) |
-| `npm run world-db:export-water-bodies` | xlsx → `water_body_templates.seed.json` (41 rows) |
-| `npm run world-db:seed-water-bodies` | 41 water_body_templates (upsert + delete stale ids) |
-| `npm run world-db:export-routes` | xlsx → `route_templates.seed.json` (21 rows) |
-| `npm run world-db:seed-routes` | 21 route_templates (upsert + delete stale ids) |
-| `npm run world-db:export-land-uses` | xlsx → `land_use_templates.seed.json` (45 rows) |
-| `npm run world-db:seed-land-uses` | 45 land_use_templates (upsert + delete stale ids) |
-| `npm run world-db:export-places` | xlsx → `place_templates.seed.json` (64 rows) |
-| `npm run world-db:seed-places` | 64 place_templates (upsert + delete stale ids) |
-| `npm run world-db:seed-llm-validation-landscape` | 6 llm_validation_rules (берег/вода/G1) |
-
-## Файлы
-
-- `infra/world-base/schema.sql` — DDL (50 таблиц, `validate_template_region_link`)
-- `infra/world-base/IMPORT.md` — порядок staging/import/audit пакета `БАЗА`
-- `infra/world-base/field-descriptions.js` — глоссарий для генератора
-- `scripts/generate-schema-reference.js` — генератор справочника
+- DDL создаёт структуру, но не сочиняет и не заполняет мир.
+- Любой импорт данных должен использовать утверждённый пакет и отдельную процедуру проверки.
+- Runtime получает только чтение.
+- Состояние конкретной партии хранится отдельно от `world_base`.
+- Нельзя добавлять смысловые default-значения, которые процедурно создают факты мира.

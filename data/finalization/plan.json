@@ -1,0 +1,74 @@
+{
+  "schema_version": "rus.finalization_plan.v1",
+  "plan_id": "rus-finalization-2026-07-12",
+  "release": "0.22.0-migration.22",
+  "source_release": "0.21.0-migration.21",
+  "automated_evidence": [
+    {
+      "id": "cutover_report",
+      "path": "artifacts/2026-07-12/cutover-0.21.0/cutover-report.json"
+    },
+    {
+      "id": "shadow_report",
+      "path": "artifacts/2026-07-12/shadow-run-0.20.0/shadow-run-report.json"
+    },
+    {
+      "id": "current_test_summary",
+      "path": "artifacts/2026-07-12/test-summary-0.22.0.json"
+    },
+    {
+      "id": "source_migration_status",
+      "path": "artifacts/2026-07-12/migration-status-0.21.0.json"
+    },
+    {
+      "id": "rollback_restore_report",
+      "path": "docs/migration/reports/ROLLBACK_RESTORE_REPORT.md"
+    },
+    {
+      "id": "manual_delete_checklist",
+      "path": "docs/migration/finalization/MANUAL_DELETE_CHECKLIST.md"
+    },
+    {
+      "id": "operator_review_template",
+      "path": "docs/migration/finalization/OPERATOR_REVIEW.md"
+    },
+    {
+      "id": "final_release_restore_report",
+      "path": "artifacts/2026-07-12/final-release-restore-0.22.0.md"
+    }
+  ],
+  "inputs": {
+    "cutover_report": "artifacts/2026-07-12/cutover-0.21.0/cutover-report.json",
+    "shadow_report": "artifacts/2026-07-12/shadow-run-0.20.0/shadow-run-report.json",
+    "test_summary": "artifacts/2026-07-12/test-summary-0.22.0.json",
+    "migration_status": "artifacts/2026-07-12/migration-status-0.21.0.json",
+    "manual_checklist": "docs/migration/finalization/MANUAL_DELETE_CHECKLIST.md"
+  },
+  "manual_gates": [
+    {
+      "id": "live_production_configuration_review",
+      "required_actor": "deployment operator",
+      "checklist_marker": "Live production deployment configuration"
+    },
+    {
+      "id": "external_legacy_archive_created",
+      "required_actor": "deployment operator",
+      "checklist_marker": "Финальный read-only архив внешней старой папки"
+    },
+    {
+      "id": "legacy_unique_file_review",
+      "required_actor": "project owner or delegated auditor",
+      "checklist_marker": "старая папка не содержит единственного экземпляра"
+    },
+    {
+      "id": "manual_delete_owner_approval",
+      "required_actor": "project owner",
+      "checklist_marker": "Ручное удаление одобрено владельцем проекта"
+    }
+  ],
+  "safety": {
+    "automatic_legacy_deletion": false,
+    "modify_live_environment": false,
+    "accept_secrets": false
+  }
+}

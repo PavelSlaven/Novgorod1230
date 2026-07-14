@@ -2,23 +2,143 @@ name: test
 
 on:
   push:
+    branches: [main]
   pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: test-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  test:
+  clean-clone-generation-test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [22, 24]
+    timeout-minutes: 45
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    env:
+      PGHOST: localhost
+      PGPASSWORD: postgres
+      PGPORT: 5432
+      PGUSER: postgres
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout clean clone
+        uses: actions/checkout@v4
         with:
-          node-version: ${{ matrix.node-version }}
-      - run: npm test
-      - run: npm run release:guard
-      - run: npm run release:build
-      - run: npm run release:zip
-      - run: npm run release:verify
-      - run: npm run docs:graph:verify
-      - run: git diff --exit-code -- src test DOCUMENTS .github .gitignore package.json scripts
+          fetch-depth: 0
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Normalize lockfile registry
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFile, writeFile } from 'node:fs/promises';
+          const path = 'package-lock.json';
+          const privatePrefix = 'https://packages.applied-caas-gateway1.internal.api.openai.org/artifactory/api/npm/npm-public/';
+          const publicPrefix = 'https://registry.npmjs.org/';
+          const source = await readFile(path, 'utf8');
+          const normalized = source.replaceAll(privatePrefix, publicPrefix);
+          if (normalized.includes(privatePrefix)) {
+            throw new Error('Private registry prefix remains in package-lock.json after normalization');
+          }
+          if (normalized !== source) await writeFile(path, normalized);
+          NODE
+
+      - name: Install dependencies
+        env:
+          npm_config_registry: https://registry.npmjs.org/
+        run: npm ci
+
+      - name: Validate canonical world_base schema
+        run: |
+          npm run world-db:schema-check
+          npm run world-db:schema-doc-check
+
+      - name: Execute world_base DDL in PostgreSQL
+        run: |
+          ready=false
+          for attempt in {1..30}; do
+            if pg_isready --dbname postgres; then
+              ready=true
+              break
+            fi
+            sleep 1
+          done
+          test "$ready" = true
+          createdb world_base_ci
+          psql --dbname world_base_ci --set ON_ERROR_STOP=1 -f infra/world-base/schema.sql
+
+          table_count=$(psql --dbname world_base_ci --tuples-only --no-align --command "SELECT count(*) FROM information_schema.tables WHERE table_schema = 'world_base' AND table_type = 'BASE TABLE'")
+          test "$table_count" -eq 62
+
+          role_count=$(psql --dbname world_base_ci --tuples-only --no-align --command "SELECT count(*) FROM pg_roles WHERE rolname = 'world_reader' AND NOT rolsuper AND NOT rolcreatedb AND NOT rolcreaterole")
+          test "$role_count" -eq 1
+
+          usage_grant=$(psql --dbname world_base_ci --tuples-only --no-align --command "SELECT has_schema_privilege('world_reader', 'world_base', 'USAGE')::int")
+          create_grant=$(psql --dbname world_base_ci --tuples-only --no-align --command "SELECT has_schema_privilege('world_reader', 'world_base', 'CREATE')::int")
+          test "$usage_grant" -eq 1
+          test "$create_grant" -eq 0
+
+          select_grants=$(psql --dbname world_base_ci --tuples-only --no-align --command "SELECT count(*) FROM information_schema.role_table_grants WHERE grantee = 'world_reader' AND table_schema = 'world_base' AND privilege_type = 'SELECT'")
+          write_grants=$(psql --dbname world_base_ci --tuples-only --no-align --command "SELECT count(*) FROM information_schema.role_table_grants WHERE grantee = 'world_reader' AND table_schema = 'world_base' AND privilege_type <> 'SELECT'")
+          test "$select_grants" -eq 62
+          test "$write_grants" -eq 0
+
+      - name: Validate canonical knowledge corpus
+        run: npm run knowledge:check-corpus
+
+      - name: Generate deterministic documentation and knowledge artifacts
+        run: |
+          set +e
+          npm run docs:generate > "$RUNNER_TEMP/docs-generate.log" 2>&1
+          status=$?
+          cat "$RUNNER_TEMP/docs-generate.log"
+          exit "$status"
+
+      - name: Verify generated files are reproducible
+        run: |
+          git diff --exit-code -- MODULE_INDEX.md generated/ infra/world-base/SCHEMA_REFERENCE.md
+          uncommitted=$(git status --porcelain --untracked-files=all -- MODULE_INDEX.md generated/ infra/world-base/SCHEMA_REFERENCE.md)
+          if [ -n "$uncommitted" ]; then
+            printf '%s\n' "$uncommitted"
+            exit 1
+          fi
+
+      - name: Run full test suite
+        run: |
+          set +e
+          npm test > "$RUNNER_TEMP/npm-test.log" 2>&1
+          status=$?
+          cat "$RUNNER_TEMP/npm-test.log"
+          exit "$status"
+
+      - name: Upload generated evidence on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-and-test-evidence
+          if-no-files-found: ignore
+          path: |
+            generated/
+            MODULE_INDEX.md
+            ${{ runner.temp }}/docs-generate.log
+            ${{ runner.temp }}/npm-test.log

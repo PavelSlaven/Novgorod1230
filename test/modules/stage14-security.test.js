@@ -1,0 +1,3 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {validateStage14G5SceneAuditOutput} from '@rus/new-game/stages/stage-14/compat';import {makeStage14Audit,makeStage14Input} from '../fixtures/stage13-16-fixtures.mjs';
+test('Stage 14 audit cannot mutate draft',()=>{const a=makeStage14Audit();a.modified_draft={};assert.ok(validateStage14G5SceneAuditOutput(a,makeStage14Input()).some(x=>x.code==='G5_AUDIT_FORBIDDEN_OUTPUT_FIELD'));});
+test('Stage 14 audit cannot create NPCs/items/prose',()=>{for(const key of ['npc_instances','item_instances','intro_prose']){const a=makeStage14Audit();a[key]=key==='intro_prose'?'x':[];assert.ok(validateStage14G5SceneAuditOutput(a,makeStage14Input()).some(x=>x.code==='G5_AUDIT_FORBIDDEN_OUTPUT_FIELD'));}});

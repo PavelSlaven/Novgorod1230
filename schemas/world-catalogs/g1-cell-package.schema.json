@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rus.g1_cell_package.v1",
+  "title": "Approved or staging package for one G1 cell",
+  "type": "object",
+  "required": ["schema_version", "package_id", "map_revision_id", "g1_id", "package_status", "source_ledger", "g1_dossier", "g2_zones", "g3_places", "g4_locations", "graph_nodes", "graph_edges", "boundary_contracts", "population_profiles", "item_profiles", "container_profiles", "property_profiles", "fauna_profiles", "toponymy_register", "id_migration_map", "change_log"],
+  "properties": {
+    "schema_version": { "const": "rus.g1_cell_package.v1" },
+    "package_id": { "type": "string", "minLength": 1 },
+    "map_revision_id": { "type": "string", "minLength": 1 },
+    "g1_id": { "type": "string", "minLength": 1 },
+    "package_status": { "enum": ["draft", "semantic_review", "approved_local", "approved_integrated", "rejected"] },
+    "source_ledger": { "type": "array" },
+    "g1_dossier": { "type": "object" },
+    "g2_zones": { "type": "array" },
+    "g3_places": { "type": "array" },
+    "g4_locations": { "type": "array" },
+    "graph_nodes": { "type": "array", "items": { "type": "object", "properties": { "scale_level": { "not": { "const": "G5" } } } } },
+    "graph_edges": { "type": "array" },
+    "boundary_contracts": { "type": "array" },
+    "population_profiles": { "type": "array" },
+    "item_profiles": { "type": "array" },
+    "container_profiles": { "type": "array" },
+    "property_profiles": { "type": "array" },
+    "fauna_profiles": { "type": "array" },
+    "toponymy_register": { "type": "array" },
+    "id_migration_map": { "type": "array" },
+    "change_log": { "type": "array" },
+    "npcs": { "maxItems": 0 },
+    "items": { "maxItems": 0 },
+    "containers": { "maxItems": 0 }
+  }
+}

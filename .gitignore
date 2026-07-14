@@ -1,25 +1,13 @@
-data/*.json
-data/temp-*.json
-data/world-sessions/
-data/regional-summary-cache/
-data/world-catalogs/
-data/new-game-process/*.html
-data/new-game-process/*.json
-data/new-game-process/*.log
-data/rus13-base-staging/
-data/world-base-import*.json
-data/world-base-import*.sql
-data/world-base-fk-audit-*/
-data/novgorod-regional-templates.sql
-tmp/
-tmp/*.log
-tmp/*.png
-dist/
-dist/release.zip
 node_modules/
 .env
 .env.*
 !.env.example
-.env.local
-key API DEEPSEEK.txt
-jina api key.txt
+# generated/ contains deterministic, reviewable build products required by
+# docs:check and knowledge:check. They are intentionally committed.
+artifacts/*
+!artifacts/.gitkeep
+releases/*
+!releases/.gitkeep
+legacy/data/new-game-process/
+legacy/data/regional-summary-cache/
+*.log

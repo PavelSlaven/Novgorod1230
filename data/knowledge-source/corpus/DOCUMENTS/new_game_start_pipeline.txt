@@ -1,0 +1,92 @@
+Порядок запуска новой игры materialization v2
+
+По вопросам границы кода/LLM документ подчиняется активной версии `code_driven_world_materialization_architecture.md`. Пока основной норматив имеет статус proposed, этот pipeline является release candidate и не должен выпускаться отдельно от полного cutover.
+
+1. Заявка игрока
+   Игрок свободно описывает желаемого персонажа и рамку. Его текст является intent, а не фактом мира.
+
+2. Нормализация заявки
+   Формируется структурированный запрос без создания places, NPC, предметов и исторических утверждений.
+
+3. Историческая рамка
+   Выбирается только из утверждённых вариантов периода, региона и сезона. Отсутствующий вариант блокирует запуск.
+
+4. Региональный контекст
+   Код читает active world revision, канонические G0–G4, sources, categories, templates, profiles, rules и readiness gaps.
+
+5. Стартовые кандидаты G1–G4
+   Код формирует конечный candidate set из активных узлов и региональных ограничений.
+
+6. Place templates
+   Для кандидатов загружаются только разрешённые place/building/G4 bindings.
+
+7. NPC profile candidates
+   Загружаются региональные archetypes, name pools и совместимые component profile sets. Конкретные NPC здесь не создаются.
+
+8. Item/container/property candidates
+   Загружаются допустимые templates, profiles и G4 rules. Желание игрока не расширяет список.
+
+9. Bounded start-node decision
+   Код передаёт LLM конечные `option_id` и request-bound `command_token`. Ответ выбирает ровно один вариант и не содержит результата мира.
+
+10. Кодовый аудит стартового места
+    Проверяются world revision, G1–G4 chain, region/period/season, profile completeness, source refs и отсутствие hard gaps.
+
+11. Персонаж игрока
+    LLM создаёт dossier как явное исключение, но роли, статусы, навыки, предметы и знания обязаны ссылаться на допустимые candidates.
+
+12. Аудит персонажа
+    Проверяются историчность, ссылки, социальная совместимость и отсутствие неизвестных предметов/статусов.
+
+13. Кодовая материализация стартового G5
+    Код разворачивает выбранный G4 по layout/profile, используя versioned deterministic RandomSource. Создаются только разрешённые minilocations, anchors, passages и slots.
+
+14. Кодовый аудит G5
+    Проверяются связность, принадлежность G4, capacity, access, visibility, сезон, свет, обязательные входы/выходы и отсутствие неизвестных templates.
+
+15. Кодовая материализация NPC
+    Код создаёт NPC из G4 rules и regional profile sets: identity, параметры, одежду, equipment, knowledge, behavior, relations, schedule и reason for presence.
+
+16. Кодовая материализация предметов
+    Код создаёт causal items, containers, contents, owner/holder/controller/access из item/container/property/equipment profiles.
+
+17. Время и свет
+    Code gate сверяет clock, season, weather, light и созданный G5.
+
+18. Карта знаний персонажа
+    Формируется только из утверждённых facts, background и созданных instances; новые world entities запрещены.
+
+19. Полный hidden state
+    Код собирает hidden state из уже материализованных instances, утверждённых events и policies. Свободная генерация hidden world запрещена.
+
+20. Visible context
+    Из hidden state выбирается только видимое, слышимое и известное персонажу.
+
+21. Аудит visible context
+    Проверяются утечки, source refs, G5 anchors, NPC/items и временная согласованность.
+
+22. Стартовая проза
+    Narrator пишет только из approved visible context и не добавляет факты.
+
+23. Аудит прозы
+    Проверяется отсутствие новых NPC, предметов, дверей, угроз, времени и знаний.
+
+24. Кодовый party write plan
+    Фиксированный mapper строит versioned batches только для allowlisted party tables. LLM не формирует SQL, table names или records.
+
+25. Commit gate
+    Код проверяет schemas, FK, refs, digests, idempotency и атомарно записывает party state вместе с materialization trace.
+
+26. Первый экран
+    Игрок получает public read model. Состояние читается обратно из normalized party database.
+
+Обязательные инварианты:
+
+```text
+zero candidates = hard block;
+same seed + input + catalog digest = same materialization;
+G5 существует только в party state;
+repeat entry не рематериализует G5;
+LLM не создаёт runtime NPC/items и не пишет state;
+частичный commit запрещён.
+```

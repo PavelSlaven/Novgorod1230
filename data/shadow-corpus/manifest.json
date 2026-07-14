@@ -1,0 +1,207 @@
+{
+  "schema_version": "rus.shadow_corpus.v1",
+  "version": 1,
+  "corpus_id": "rus-migration-approved-golden-corpus-2026-07-12",
+  "source_provenance": {
+    "release": "0.19.0-migration.19",
+    "source_archive": "Rus_modules-migration-0.19.0.zip",
+    "fixture_policy": "versioned approved fixtures and compatibility routes already stored in the release",
+    "live_provider_calls": false,
+    "production_database_writes": false
+  },
+  "comparison_policy": {
+    "prose_comparison": "semantic_invariants_only",
+    "failed_case_severity": "blocking",
+    "required_categories": [
+      "schema_equivalence",
+      "canonical_ids",
+      "no_new_facts_from_code",
+      "audit_decisions",
+      "repair_tier",
+      "db_write_plan",
+      "commit_result",
+      "visible_hidden_separation",
+      "ui_read_model",
+      "error_classification",
+      "idempotency",
+      "telemetry_completeness"
+    ]
+  },
+  "cases": [
+    {
+      "id": "new-game-stages-2-8",
+      "kind": "parity",
+      "severity": "blocking",
+      "test_file": "test/modules/stage2-8-migration.test.js",
+      "categories": ["schema_equivalence", "canonical_ids", "no_new_facts_from_code", "error_classification"]
+    },
+    {
+      "id": "new-game-stages-9-12",
+      "kind": "parity",
+      "severity": "blocking",
+      "test_file": "test/modules/stage9-12-migration.test.js",
+      "categories": ["schema_equivalence", "canonical_ids", "audit_decisions", "repair_tier", "error_classification"]
+    },
+    {
+      "id": "new-game-stage-13",
+      "kind": "parity",
+      "severity": "blocking",
+      "test_file": "test/modules/stage13-modular-parity.test.js",
+      "categories": ["schema_equivalence", "canonical_ids", "no_new_facts_from_code"]
+    },
+    {
+      "id": "new-game-stage-14",
+      "kind": "parity",
+      "severity": "blocking",
+      "test_file": "test/modules/stage14-modular-parity.test.js",
+      "categories": ["schema_equivalence", "audit_decisions", "repair_tier"]
+    },
+    {
+      "id": "new-game-stage-15",
+      "kind": "parity",
+      "severity": "blocking",
+      "test_file": "test/modules/stage15-modular-parity.test.js",
+      "categories": ["schema_equivalence", "canonical_ids", "audit_decisions", "repair_tier"]
+    },
+    {
+      "id": "new-game-stage-16",
+      "kind": "parity",
+      "severity": "blocking",
+      "test_file": "test/modules/stage16-modular-parity.test.js",
+      "categories": ["schema_equivalence", "canonical_ids", "audit_decisions", "repair_tier"]
+    },
+    {
+      "id": "new-game-stage-17",
+      "kind": "parity",
+      "severity": "blocking",
+      "test_file": "test/modules/stage17-modular-parity.test.js",
+      "categories": ["schema_equivalence", "audit_decisions", "visible_hidden_separation", "error_classification"]
+    },
+    {
+      "id": "new-game-stage-18",
+      "kind": "parity",
+      "severity": "blocking",
+      "test_file": "test/modules/stage18-modular-parity.test.js",
+      "categories": ["schema_equivalence", "canonical_ids", "audit_decisions", "visible_hidden_separation"]
+    },
+    {
+      "id": "new-game-stage-19",
+      "kind": "parity",
+      "severity": "blocking",
+      "test_file": "test/modules/stage19-modular-parity.test.js",
+      "categories": ["schema_equivalence", "audit_decisions", "visible_hidden_separation", "no_new_facts_from_code"]
+    },
+    {
+      "id": "new-game-stage-20",
+      "kind": "parity",
+      "severity": "blocking",
+      "test_file": "test/modules/stage20-modular-parity.test.js",
+      "categories": ["schema_equivalence", "canonical_ids", "visible_hidden_separation", "no_new_facts_from_code"]
+    },
+    {
+      "id": "new-game-stage-21",
+      "kind": "parity",
+      "severity": "blocking",
+      "test_file": "test/modules/stage21-modular-parity.test.js",
+      "categories": ["schema_equivalence", "audit_decisions", "repair_tier", "visible_hidden_separation"]
+    },
+    {
+      "id": "new-game-stage-22",
+      "kind": "parity",
+      "severity": "blocking",
+      "test_file": "test/modules/stage22-modular-parity.test.js",
+      "categories": ["schema_equivalence", "canonical_ids", "no_new_facts_from_code", "visible_hidden_separation"]
+    },
+    {
+      "id": "new-game-stage-23",
+      "kind": "parity",
+      "severity": "blocking",
+      "test_file": "test/modules/stage23-modular-parity.test.js",
+      "categories": ["schema_equivalence", "audit_decisions", "repair_tier", "visible_hidden_separation"]
+    },
+    {
+      "id": "new-game-stage-24",
+      "kind": "parity",
+      "severity": "blocking",
+      "test_file": "test/modules/stage24-modular-parity.test.js",
+      "categories": ["schema_equivalence", "canonical_ids", "db_write_plan", "error_classification"]
+    },
+    {
+      "id": "new-game-stage-25",
+      "kind": "parity",
+      "severity": "blocking",
+      "test_file": "test/modules/stage25-modular-parity.test.js",
+      "categories": ["schema_equivalence", "canonical_ids", "db_write_plan", "commit_result", "idempotency"]
+    },
+    {
+      "id": "new-game-stage-25-transaction",
+      "kind": "isolation",
+      "severity": "blocking",
+      "test_file": "test/modules/stage25-transaction.test.js",
+      "categories": ["db_write_plan", "commit_result", "idempotency", "error_classification"]
+    },
+    {
+      "id": "new-game-stage-26",
+      "kind": "parity",
+      "severity": "blocking",
+      "test_file": "test/modules/stage26-modular-parity.test.js",
+      "categories": ["schema_equivalence", "canonical_ids", "audit_decisions", "ui_read_model", "visible_hidden_separation"]
+    },
+    {
+      "id": "domain-modules",
+      "kind": "parity",
+      "severity": "blocking",
+      "test_file": "test/modules/domain-modules-parity.test.js",
+      "categories": ["schema_equivalence", "no_new_facts_from_code", "visible_hidden_separation"]
+    },
+    {
+      "id": "new-game-orchestrator",
+      "kind": "isolation",
+      "severity": "blocking",
+      "test_file": "test/modules/new-game-orchestrator.test.js",
+      "categories": ["repair_tier", "error_classification", "telemetry_completeness", "idempotency"]
+    },
+    {
+      "id": "turn-runtime-shadow",
+      "kind": "parity",
+      "severity": "blocking",
+      "test_file": "test/shadow/turn-runtime-shadow.test.js",
+      "categories": ["schema_equivalence", "canonical_ids", "no_new_facts_from_code", "audit_decisions", "db_write_plan", "commit_result", "visible_hidden_separation", "ui_read_model", "telemetry_completeness"]
+    },
+    {
+      "id": "narration-presentation",
+      "kind": "isolation",
+      "severity": "blocking",
+      "test_file": "test/modules/narration-presentation.test.js",
+      "categories": ["no_new_facts_from_code", "audit_decisions", "visible_hidden_separation", "ui_read_model", "error_classification"]
+    },
+    {
+      "id": "opening-delivery",
+      "kind": "isolation",
+      "severity": "blocking",
+      "test_file": "test/modules/opening-delivery.test.js",
+      "categories": ["ui_read_model", "idempotency", "error_classification"]
+    },
+    {
+      "id": "production-infrastructure",
+      "kind": "isolation",
+      "severity": "blocking",
+      "test_file": "test/integration/production-infrastructure.test.js",
+      "categories": ["db_write_plan", "commit_result", "idempotency", "telemetry_completeness"]
+    },
+    {
+      "id": "browser-public-boundary",
+      "kind": "isolation",
+      "severity": "blocking",
+      "test_file": "test/e2e/browser-game-flow.test.js",
+      "categories": ["visible_hidden_separation", "ui_read_model", "error_classification"]
+    },
+    {
+      "id": "rollback-feature-flags",
+      "kind": "rollback",
+      "severity": "blocking",
+      "test_file": "test/shadow/rollback-feature-flags.test.js",
+      "categories": ["error_classification", "telemetry_completeness"]
+    }
+  ]
+}

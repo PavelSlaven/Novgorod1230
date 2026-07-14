@@ -1,0 +1,1 @@
+export function assertStage17Ports(services={}){for(const key of ['audit','formatRepair','router'])if(typeof services?.[key]!=='function')throw new TypeError(`Stage 17 requires ${key} service.`);return{audit:services.audit,formatRepair:services.formatRepair,router:services.router};}

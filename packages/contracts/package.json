@@ -1,0 +1,25 @@
+{
+  "name": "@rus/contracts",
+  "version": "0.9.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js",
+    "./json": "./src/json.js",
+    "./stage": "./src/stage.js",
+    "./approval": "./src/approval.js",
+    "./digests": "./src/digests.js",
+    "./schema-names": "./src/schema-names.js",
+    "./approvals/visible-context": "./src/approvals/visible-context.js",
+    "./approvals/narrator-prose": "./src/approvals/narrator-prose.js",
+    "./approvals/party-commit": "./src/approvals/party-commit.js",
+    "./approvals/first-screen": "./src/approvals/first-screen.js",
+    "./handoffs/stage26": "./src/handoffs/stage26.js",
+    "./stage24-boundary": "./src/stage24-boundary.js",
+    "./visible-context-boundary": "./src/visible-context-boundary.js",
+    "./time-knowledge-hidden-boundary": "./src/time-knowledge-hidden-boundary.js",
+    "./weather-state": "./src/weather-state.js"
+  },
+  "dependencies": {
+    "@rus/kernel": "0.9.0"
+  }
+}

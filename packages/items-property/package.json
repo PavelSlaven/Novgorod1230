@@ -1,0 +1,9 @@
+{
+  "name": "@rus/items-property",
+  "version": "0.13.0",
+  "type": "module",
+  "exports": "./src/index.js",
+  "dependencies": {
+    "@rus/kernel": "0.9.0"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schema_version": "rus.knowledge_import_history.v1",
+  "entries": [
+    {
+      "migration_id": "knowledge-source-0.23.0",
+      "imported_at": "2026-07-12T00:00:00.000Z",
+      "source_release": "0.22.0-migration.22",
+      "source_root": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS",
+      "target_root": "data/knowledge-source/corpus/DOCUMENTS",
+      "document_count": 19,
+      "inventory_sha256": "e17b8429803bb35efce9887f58252957fd5c33ddf8cf3c09f3500f2fe88530c2",
+      "status": "verified"
+    }
+  ]
+}

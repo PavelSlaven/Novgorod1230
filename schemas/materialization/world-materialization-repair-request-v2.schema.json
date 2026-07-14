@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "world_materialization_repair_request_v2",
+  "type": "object",
+  "required": ["version", "schema", "repair_reason", "previous_result", "previous_result_digest", "replacement_request_digest", "repair_history", "replacement_request"],
+  "properties": {
+    "version": { "const": 2 },
+    "schema": { "const": "world_materialization_repair_request_v2" },
+    "repair_reason": { "type": "string", "minLength": 1 },
+    "previous_result": { "$ref": "world-materialization-result-v2.schema.json" },
+    "previous_result_digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "replacement_request_digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "repair_history": { "type": "array", "minItems": 1, "items": { "type": "object" } },
+    "replacement_request": { "$ref": "world-materialization-request-v2.schema.json" }
+  },
+  "additionalProperties": false
+}

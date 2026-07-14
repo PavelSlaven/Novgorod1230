@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rus.g1_work_queue.v1",
+  "title": "G1 work queue",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "map_revision_id", "order", "entries", "queue_digest"],
+  "properties": {
+    "schema_version": { "const": "rus.g1_work_queue.v1" },
+    "map_revision_id": { "type": "string", "minLength": 1 },
+    "order": { "const": "global_grid_y DESC, global_grid_x ASC" },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["sequence_number", "g1_id", "global_grid_x", "global_grid_y", "work_status", "blocking_reasons"],
+        "properties": {
+          "sequence_number": { "type": "integer", "minimum": 1 },
+          "g1_id": { "type": "string", "minLength": 1 },
+          "global_grid_x": { "type": "integer" },
+          "global_grid_y": { "type": "integer" },
+          "work_status": { "enum": ["blocked", "unprocessed", "prepared", "researching", "drafting", "semantic_review", "repair_required", "approved_local", "boundary_pending", "approved_integrated", "ready_for_import", "imported"] },
+          "blocking_reasons": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+        }
+      }
+    },
+    "queue_digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  }
+}

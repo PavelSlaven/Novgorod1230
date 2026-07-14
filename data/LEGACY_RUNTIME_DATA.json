@@ -1,0 +1,11 @@
+{
+  "schema_version": "rus.legacy_runtime_data_manifest.v1",
+  "status": "read_only_compatibility_data_until_cutover",
+  "canonical_seed": false,
+  "paths": [
+    "data/regional-summary-cache/1241-5c3cc00b-0.json",
+    "data/regional-summary-cache/1241-central-europe-9406410b-0.json",
+    "data/regional-summary-cache/default-pack-6525994e-0.json",
+    "data/regional-summary-cache/default-pack-94737238-0.json"
+  ]
+}

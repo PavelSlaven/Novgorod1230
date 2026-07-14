@@ -1,0 +1,307 @@
+{
+  "schema_version": "rus.knowledge_corpus_manifest.v2",
+  "corpus_id": "rus-xiii-canonical-documentation",
+  "release": "0.23.0-migration.23",
+  "source_release": "0.22.0-migration.22",
+  "documents": [
+    {
+      "document_id": "base-turn-orchestration",
+      "canonical_path": "corpus/DOCUMENTS/base_turn_orchestration.txt",
+      "file_name": "base_turn_orchestration.txt",
+      "sha256": "9582bae93a72a85bfacb3614dda150a5f5b9d3136206418520fbbe659ea10f07",
+      "bytes": 48387,
+      "status": "active",
+      "provenance_mode": "native"
+    },
+    {
+      "document_id": "character-inventory-equipment",
+      "canonical_path": "corpus/DOCUMENTS/character_inventory_equipment.txt",
+      "file_name": "character_inventory_equipment.txt",
+      "sha256": "e21552f012c1f5a939ea6c20164a0019072cc30be26c581206a40399812bcc59",
+      "bytes": 18911,
+      "status": "active",
+      "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/character_inventory_equipment.txt",
+      "provenance_mode": "canonicalized_from_legacy",
+      "source_legacy_sha256": "b1618bcfa43bfc2cbd92bf1f0f464c28459e652b94ef763d36fdb996cbe80e87",
+      "source_legacy_bytes": 18244
+    },
+    {
+      "document_id": "character-parameters",
+      "canonical_path": "corpus/DOCUMENTS/character_parameters.txt",
+      "file_name": "character_parameters.txt",
+      "sha256": "7a84abd27da7898c20abf8e493342fb0a6c5dca1852098063e8ffaffa9a29b30",
+      "bytes": 21167,
+      "status": "active",
+      "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/character_parameters.txt",
+      "provenance_mode": "legacy_mirror"
+    },
+    {
+      "document_id": "code-critic-invocation-rule",
+      "canonical_path": "corpus/DOCUMENTS/code_critic_invocation_rule.txt",
+      "file_name": "code_critic_invocation_rule.txt",
+      "sha256": "fdc56271e6517e9c4ca9e80c347ee60d05478c4631d06e477f9dfe8ba44107a7",
+      "bytes": 9773,
+      "status": "active",
+      "provenance_mode": "native"
+    },
+    {
+      "document_id": "code-driven-world-materialization-architecture",
+      "canonical_path": "corpus/DOCUMENTS/code_driven_world_materialization_architecture.md",
+      "file_name": "code_driven_world_materialization_architecture.md",
+      "sha256": "2a2787c3f7f9c081ac4844dd8adaf0b291167b2125ea1ce8e5342d10a1685838",
+      "bytes": 21337,
+      "status": "active",
+      "provenance_mode": "native"
+    },
+    {
+      "document_id": "combat-system",
+      "canonical_path": "corpus/DOCUMENTS/combat_system.md",
+      "file_name": "combat_system.md",
+      "sha256": "e3318b89e4780a4202ee33263b3b6567cf2a0f3fd5733fe74409a815a6931f4e",
+      "bytes": 59077,
+      "status": "active",
+      "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/combat_system.md",
+      "provenance_mode": "canonicalized_from_legacy",
+      "source_legacy_sha256": "a5b566d638e7e0666dc80e32805a89aedc7dcaaad305db978bc46c77eefad8a3",
+      "source_legacy_bytes": 58749
+    },
+    {
+      "document_id": "development-rules",
+      "canonical_path": "corpus/DOCUMENTS/development_rules.txt",
+      "file_name": "development_rules.txt",
+      "sha256": "71dfbc7faa2ed03822535962dd37f6401118a19ebbcc9f22c01832daf7ad24b4",
+      "bytes": 45766,
+      "status": "active",
+      "provenance_mode": "native"
+    },
+    {
+      "document_id": "documentation-corpus-readme",
+      "canonical_path": "corpus/DOCUMENTS/README.md",
+      "file_name": "README.md",
+      "sha256": "2743aa8ba1b2089ac0ed944cedb1b713abe19da4e6a239be94859b005bab91de",
+      "bytes": 4590,
+      "status": "active",
+      "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/README.md",
+      "provenance_mode": "canonicalized_from_legacy",
+      "source_legacy_sha256": "c96e46b1a29da96e0272c089786fbddafe324e2f34937e5a7c41450d072fbdb9",
+      "source_legacy_bytes": 4274
+    },
+    {
+      "document_id": "formulas",
+      "canonical_path": "corpus/DOCUMENTS/formulas.md",
+      "file_name": "formulas.md",
+      "sha256": "622511c9b6b5e76b74dcbf7ca24499ebb89c0dc6c3ba6e216003f91ac51fa188",
+      "bytes": 108354,
+      "status": "active",
+      "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/formulas.md",
+      "provenance_mode": "canonicalized_from_legacy",
+      "source_legacy_sha256": "6a077a511b198351c8dd39eedb223cdeb4f69659b0457c3bda9d14677b6dcbaa",
+      "source_legacy_bytes": 108044
+    },
+    {
+      "document_id": "g1-g5-generation-rules",
+      "canonical_path": "corpus/DOCUMENTS/g1_g5_generation_rules.txt",
+      "file_name": "g1_g5_generation_rules.txt",
+      "sha256": "702556cde309f0d8a2bf26b9b1daff8f81d34e73b6b61f291ac5babda88168be",
+      "bytes": 2962,
+      "status": "active",
+      "provenance_mode": "native"
+    },
+    {
+      "document_id": "historical-events-and-figures",
+      "canonical_path": "corpus/DOCUMENTS/historical_events_and_figures.txt",
+      "file_name": "historical_events_and_figures.txt",
+      "sha256": "e0ea2a5f3b4f227191095ba32f3cd7a4900b6766070b7fecd581c3ecc3cea911",
+      "bytes": 10186,
+      "status": "active",
+      "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/historical_events_and_figures.txt",
+      "provenance_mode": "canonicalized_from_legacy",
+      "source_legacy_sha256": "68e6e4cebddb4590d5c22d2dadf739d54e8ab1da077807f03bcdf6ffca44d88a",
+      "source_legacy_bytes": 9432
+    },
+    {
+      "document_id": "information-sources-llm-prompts",
+      "canonical_path": "corpus/DOCUMENTS/information_sources_llm_prompts.md",
+      "file_name": "information_sources_llm_prompts.md",
+      "sha256": "8558b95b7a98ecde19ed4d6f1ea6855d8b52cd93de708d7ad534d6aef1641ecf",
+      "bytes": 58240,
+      "status": "active",
+      "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/information_sources_llm_prompts.md",
+      "provenance_mode": "canonicalized_from_legacy",
+      "source_legacy_sha256": "6dd11ad27a5d5cf0cf2a10672b92bba3056a78b2f7a08782666641e1f5cdfd4d",
+      "source_legacy_bytes": 55409
+    },
+    {
+      "document_id": "interface-ux",
+      "canonical_path": "corpus/DOCUMENTS/interface_ux.md",
+      "file_name": "interface_ux.md",
+      "sha256": "7933ef4a806dc821c4d90db05d9d7959212830a5d25281238f2ac7aa17a651f5",
+      "bytes": 58862,
+      "status": "active",
+      "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/interface_ux.md",
+      "provenance_mode": "legacy_mirror"
+    },
+    {
+      "document_id": "items-and-property",
+      "canonical_path": "corpus/DOCUMENTS/items_and_property.txt",
+      "file_name": "items_and_property.txt",
+      "sha256": "e462cb56c3a5db0b8a3c04b5f517ff0a4098598624d6a165421f4e261e7d3f3a",
+      "bytes": 34231,
+      "status": "active",
+      "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/items_and_property.txt",
+      "provenance_mode": "canonicalized_from_legacy",
+      "source_legacy_sha256": "adedfc10485108516f6c48a76ffde0a179e334bd3618fb1f7e55a2f19ab6537d",
+      "source_legacy_bytes": 33159
+    },
+    {
+      "document_id": "llm-agent-prompt-templates",
+      "canonical_path": "corpus/DOCUMENTS/llm_agent_prompt_templates.md",
+      "file_name": "llm_agent_prompt_templates.md",
+      "sha256": "d28cf6e018bc6a01738731be85dacdb9e14e460e5c693cad219673fe526bc16a",
+      "bytes": 47991,
+      "status": "active",
+      "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/llm_agent_prompt_templates.md",
+      "provenance_mode": "canonicalized_from_legacy",
+      "source_legacy_sha256": "d370aeab9771b514573b0a986969ed84c4ecc6c84196eaf4f9802f0f9be12b1d",
+      "source_legacy_bytes": 50220
+    },
+    {
+      "document_id": "llm-documentation-navigation",
+      "canonical_path": "corpus/DOCUMENTS/llm_documentation_navigation.md",
+      "file_name": "llm_documentation_navigation.md",
+      "sha256": "9c8385065733e3b84497a544acf5cea0451d1e45b1480fde1fb7009d4ed77b12",
+      "bytes": 29045,
+      "status": "active",
+      "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/llm_documentation_navigation.md",
+      "provenance_mode": "canonicalized_from_legacy",
+      "source_legacy_sha256": "fbbefcb2a5ccf4441a8426e397a8fc91d029c3a24ad87bc1a5515a088770abba",
+      "source_legacy_bytes": 28635
+    },
+    {
+      "document_id": "map-g0-g4-workflow",
+      "canonical_path": "corpus/DOCUMENTS/map_g0_g4_workflow.txt",
+      "file_name": "map_g0_g4_workflow.txt",
+      "sha256": "00e32749b9625d1654b6fe55878f49bcf8d57bcd6579a0d35f8feee7ee9fc69d",
+      "bytes": 84126,
+      "status": "active",
+      "provenance_mode": "native"
+    },
+    {
+      "document_id": "movement-locations-regions",
+      "canonical_path": "corpus/DOCUMENTS/movement_locations_regions.txt",
+      "file_name": "movement_locations_regions.txt",
+      "sha256": "9dc4753d595ff0df1427e6d69c06771793bf10373dd5ff4b9588f13fe51b96c4",
+      "bytes": 53148,
+      "status": "active",
+      "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/movement_locations_regions.txt",
+      "provenance_mode": "canonicalized_from_legacy",
+      "source_legacy_sha256": "30f0cc88277c827d7480ebb2b9bd421db73d83254f5c10056d520b7e12fe789a",
+      "source_legacy_bytes": 52411
+    },
+    {
+      "document_id": "new-game-start-pipeline",
+      "canonical_path": "corpus/DOCUMENTS/new_game_start_pipeline.txt",
+      "file_name": "new_game_start_pipeline.txt",
+      "sha256": "3b945a048eb1104fbc830479464c82324e8e58aa0a323c9bd57e3d6ad31db535",
+      "bytes": 6169,
+      "status": "active",
+      "provenance_mode": "native"
+    },
+    {
+      "document_id": "npc-generation-profiles",
+      "canonical_path": "corpus/DOCUMENTS/npc_generation_profiles.txt",
+      "file_name": "npc_generation_profiles.txt",
+      "sha256": "ae0414d70a1ba4b5093e9582d70efdb5ff42fb47ea41580e53e1145bf3c3b9e3",
+      "bytes": 22381,
+      "status": "active",
+      "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/npc_generation_profiles.txt",
+      "provenance_mode": "canonicalized_from_legacy",
+      "source_legacy_sha256": "ca906167838b4faa6b3c27dc43f7a22c7ad5c04df07c5518403fcf9f572dbde2",
+      "source_legacy_bytes": 21177
+    },
+    {
+      "document_id": "npc-inventory-item-marks",
+      "canonical_path": "corpus/DOCUMENTS/npc_inventory_item_marks.txt",
+      "file_name": "npc_inventory_item_marks.txt",
+      "sha256": "3ad6e4891999af37d6a6c08fa2fba0fcebef1ace7e8aa0858d1663503dd04e22",
+      "bytes": 8745,
+      "status": "active",
+      "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/npc_inventory_item_marks.txt",
+      "provenance_mode": "canonicalized_from_legacy",
+      "source_legacy_sha256": "0422429fff076f229beb9eed79adc0d1d1b8c85d43bf331b1ab2aa79175a3a06",
+      "source_legacy_bytes": 8051
+    },
+    {
+      "document_id": "player-character-generation",
+      "canonical_path": "corpus/DOCUMENTS/player_character_generation.txt",
+      "file_name": "player_character_generation.txt",
+      "sha256": "34c3451b55df1f58e9f5cf3d656d49e3e12ddd2ba37a186863d0058c34290df8",
+      "bytes": 45282,
+      "status": "active",
+      "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/player_character_generation.txt",
+      "provenance_mode": "canonicalized_from_legacy",
+      "source_legacy_sha256": "4d0f6e4cdc2ecbb2b1ccd1bd5f84d903fd0aa62999a27bfc57848782aa79d68f",
+      "source_legacy_bytes": 44986
+    },
+    {
+      "document_id": "read-only-database-and-graph-architecture",
+      "canonical_path": "corpus/DOCUMENTS/read_only_database_and_graph_architecture.md",
+      "file_name": "read_only_database_and_graph_architecture.md",
+      "sha256": "791b8eed78844c8a3d5f19de99218a7524f7b0353669c719b40d3b6bb4fe38ef",
+      "bytes": 10355,
+      "status": "active",
+      "provenance_mode": "native"
+    },
+    {
+      "document_id": "time-system",
+      "canonical_path": "corpus/DOCUMENTS/time_system.txt",
+      "file_name": "time_system.txt",
+      "sha256": "a9c9c82e18288c5c3cc0b1c99fc81bef28c7750202ddcbcba88ef066198ccde3",
+      "bytes": 10539,
+      "status": "active",
+      "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/time_system.txt",
+      "provenance_mode": "legacy_mirror"
+    },
+    {
+      "document_id": "weapons-and-armor",
+      "canonical_path": "corpus/DOCUMENTS/weapons_and_armor.txt",
+      "file_name": "weapons_and_armor.txt",
+      "sha256": "644a41b98cd8a1bb37aee27185aa99e746af68c14df87ff7b5d4d908fecfaecf",
+      "bytes": 48437,
+      "status": "active",
+      "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/weapons_and_armor.txt",
+      "provenance_mode": "legacy_mirror"
+    },
+    {
+      "document_id": "world-base-materialization-table-requirements",
+      "canonical_path": "corpus/DOCUMENTS/world_base_materialization_table_requirements.md",
+      "file_name": "world_base_materialization_table_requirements.md",
+      "sha256": "d08c7d35d39c9f901e038dd6fb83300e36aa0744674cf055298eef2164cc1943",
+      "bytes": 18715,
+      "status": "active",
+      "provenance_mode": "native"
+    },
+    {
+      "document_id": "world-generation-and-turns",
+      "canonical_path": "corpus/DOCUMENTS/world_generation_and_turns.txt",
+      "file_name": "world_generation_and_turns.txt",
+      "sha256": "de23362154be2142a2b808b76176452b82d5989cd2471ce62184cbf6074e5dd0",
+      "bytes": 75414,
+      "status": "active",
+      "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/world_generation_and_turns.txt",
+      "provenance_mode": "canonicalized_from_legacy",
+      "source_legacy_sha256": "b1fbf6343d479a2f5c9296b7c5dc2f35f0b93e2eb15fab867d23b9201bd01b3e",
+      "source_legacy_bytes": 71231
+    },
+    {
+      "document_id": "world-regions",
+      "canonical_path": "corpus/DOCUMENTS/world_regions.txt",
+      "file_name": "world_regions.txt",
+      "sha256": "9d82d0dcd39047fdfd11516458a57e5e0f1de312da975b5840e5149718855b55",
+      "bytes": 13189,
+      "status": "active",
+      "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/world_regions.txt",
+      "provenance_mode": "legacy_mirror"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "world_catalog_import_manifest_v2",
+  "type": "object",
+  "required": ["version", "schema", "world_revision_id", "approval", "deletion_mode", "provenance", "tables"],
+  "properties": {
+    "version": { "const": 2 },
+    "schema": { "const": "world_catalog_import_manifest_v2" },
+    "world_revision_id": { "type": "string", "minLength": 1 },
+    "approval": { "const": "approved" },
+    "deletion_mode": { "enum": ["none", "explicit_only"] },
+    "provenance": { "type": "object" },
+    "tables": { "type": "array", "items": { "type": "object", "required": ["table_name", "payload_digest", "record_count", "dependency_order"], "properties": { "table_name": { "type": "string", "minLength": 1 }, "payload_digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "record_count": { "type": "integer", "minimum": 0 }, "dependency_order": { "type": "integer", "minimum": 0 } }, "additionalProperties": false } }
+  },
+  "additionalProperties": false
+}

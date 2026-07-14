@@ -1,0 +1,37 @@
+{
+  "schema_version": "rus.knowledge_source_update_candidate.v1",
+  "candidate_id": "novgorod-region-scope-2026-07-12",
+  "status": "prepared_not_applied",
+  "reason_not_applied": [
+    "approved_graph_snapshot_requires_semantic_update",
+    "rag_snapshot_requires_new_embeddings",
+    "full_regression_and_critic_audit_required"
+  ],
+  "documents": [
+    {
+      "file_name": "NOVGOROD_V6_LEGACY_STATUS.md",
+      "source_drive_file_id": "1_KG52J7N8PgiKgU2asajkQ4vTAbUCGYJ",
+      "bytes": 1438,
+      "sha256": "8f06b096154c6a4ef0b621eb570beef38fde47a66ac9ca67db3315702fa76932"
+    },
+    {
+      "file_name": "llm_documentation_navigation.md",
+      "source_drive_file_id": "generated_from_current_corpus_navigation",
+      "bytes": 29445,
+      "sha256": "a8dc091733cee422dc9494208cc084b0606ceda9e0854061dc2ab8cd6622095a"
+    },
+    {
+      "file_name": "novgorod_region_scope_and_cell_workflow_1230.md",
+      "source_drive_file_id": "1oPbXZmOoSqUVfm4j6RiTwi-W0yCl1QYy",
+      "bytes": 22884,
+      "sha256": "ac47f6cdfbea16e068e9eada09a31d75022c451c1f61c5cb461034da02766922"
+    },
+    {
+      "file_name": "world_regions.txt",
+      "source_drive_file_id": "1JLI5ljdlBmnTPy7BKxpOUfvMmCSNIpm0",
+      "bytes": 16099,
+      "sha256": "26a62b29f82ed0835c5cc875d2d64aeb74c7bed880a9c4932799e351a71d674b"
+    }
+  ],
+  "candidate_digest": "a9a8172c3422e2c1cd6756d8d289c178a6495b564c0fe714ecf206fc057f93be"
+}

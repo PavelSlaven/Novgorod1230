@@ -1,0 +1,10 @@
+{
+  "name": "@rus/docs-tools",
+  "version": "0.23.0",
+  "private": true,
+  "type": "module",
+  "exports": "./src/index.js",
+  "bin": {
+    "rus-docs": "./src/cli.js"
+  }
+}

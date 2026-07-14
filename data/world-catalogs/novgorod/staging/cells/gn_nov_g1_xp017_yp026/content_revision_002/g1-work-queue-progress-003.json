@@ -1,0 +1,23 @@
+{
+  "schema_version": "rus.g1_work_queue_progress.v1",
+  "map_revision_id": "novgorod_1230_research_revision_002",
+  "base_queue_file": "g1-work-queue-revision-002.json",
+  "updates": [
+    {
+      "sequence_number": 1,
+      "g1_id": "gn_nov_g1_xp017_yp026",
+      "content_revision_id": "gn_nov_g1_xp017_yp026_content_revision_002",
+      "work_status": "approved_local",
+      "research_status": "rebuilt_completed",
+      "local_approval_status": "approved_local",
+      "integration_status": "partial_matched",
+      "import_status": "not_started",
+      "blocking_reasons": [
+        "northward maritime transition pending revision 003"
+      ],
+      "supersedes_package_id": "pkg_gn_nov_g1_xp017_yp026_r002_001",
+      "package_id": "gn_nov_g1_xp017_yp026_rebuild_002",
+      "package_digest": "2962ba14c682bb67753b3213399ca8d63dc4285ae39cfe067034c8dee7aa90bd"
+    }
+  ]
+}

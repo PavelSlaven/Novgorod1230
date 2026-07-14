@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Русь XIII век</title>
+    <meta name="color-scheme" content="dark light" />
+    <script>
+      (() => {
+        try {
+          document.documentElement.classList.add('startup-mode');
+          const theme = localStorage.getItem('xiii-ui-theme');
+          if (theme === 'day' || theme === 'night') {
+            document.documentElement.dataset.theme = theme;
+          }
+        } catch {
+          // Ignore storage errors.
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="/styles.css" />
+    <script>
+      window.__INITIAL_STATE__ = __UI_BOOTSTRAP__;
+    </script>
+  </head>
+  <body>
+    <div id="loadingOverlay" class="new-game-screen loading-overlay" hidden>
+      <div class="generation-layout">
+        <section class="generation-card loading-card" aria-live="polite">
+          <div class="panel-header">
+            <div class="eyebrow">Создание мира</div>
+            <button type="button" class="ghost-button small-button theme-toggle" data-theme-toggle>☾</button>
+          </div>
+          <h1>Мир собирается</h1>
+          <p id="loadingMessage" class="loading-message">Подготавливаю карту, персонажа и стартовую ситуацию.</p>
+
+          <div class="loading-progress" aria-label="Общий прогресс создания мира">
+            <div id="loadingProgressBar" class="loading-progress-bar"></div>
+          </div>
+          <div class="loading-head">
+            <div id="loadingState" class="loading-state">Ожидание</div>
+            <div id="loadingPercent" class="loading-percent">0%</div>
+          </div>
+
+          <div id="loadingError" class="generation-error" hidden></div>
+
+          <div class="generation-section-title">Этапы генерации</div>
+          <div id="loadingList" class="process-list loading-list generation-steps"></div>
+
+          <div class="loading-actions">
+            <button id="cancelLoadingButton" type="button" class="ghost-button">Отменить и вернуться</button>
+          </div>
+        </section>
+
+        <aside id="generationDiagnostics" class="generation-diagnostics" aria-label="Диагностика создания мира" hidden>
+          <div class="panel-header">
+            <div>
+              <div class="eyebrow">Диагностика</div>
+              <h2>Процесс генерации</h2>
+            </div>
+            <div class="panel-actions">
+              <button type="button" class="ghost-button small-button theme-toggle" data-theme-toggle>☾</button>
+              <button id="loadingCopyButton" type="button" class="ghost-button small-button">Скопировать</button>
+            </div>
+          </div>
+          <div id="loadingDiagnosticSummary" class="diagnostic-summary"></div>
+          <div class="process-journal-head">Последние события пайплайна</div>
+          <div id="loadingJournal" class="journal-list loading-journal"></div>
+        </aside>
+      </div>
+    </div>
+
+    <div id="journalOverlay" class="journal-overlay" hidden>
+      <div class="journal-card">
+        <div class="panel-header">
+          <div>
+            <div class="eyebrow">Журнал / память</div>
+            <h2>Обязательства, просьбы и следы</h2>
+          </div>
+          <div class="panel-actions">
+            <button type="button" class="ghost-button small-button theme-toggle" data-theme-toggle>☾</button>
+            <button id="journalCloseButton" type="button" class="ghost-button">Закрыть</button>
+          </div>
+        </div>
+        <div id="journalTabs" class="journal-tabs" role="tablist" aria-label="Разделы журнала"></div>
+        <div id="journalSections" class="journal-panels" aria-label="Разделы журнала"></div>
+        <div class="journal-footer">
+          <div class="journal-footnote">Сюда попадают игровые события, память, обязательства, люди, места и слухи. Имущество открывается отдельной кнопкой. Технический журнал хранится отдельно.</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="inventoryOverlay" class="journal-overlay inventory-overlay" hidden>
+      <div class="journal-card inventory-card">
+        <div class="panel-header">
+          <div>
+            <div class="eyebrow">Инвентарь</div>
+            <h2>В руках, на теле и в контейнерах при себе</h2>
+          </div>
+          <div class="panel-actions">
+            <button type="button" class="ghost-button small-button theme-toggle" data-theme-toggle>☾</button>
+            <button id="inventoryCloseButton" type="button" class="ghost-button">Закрыть</button>
+          </div>
+        </div>
+        <div id="inventorySummary" class="journal-footnote"></div>
+        <div id="inventorySections" class="journal-sections" aria-label="Разделы инвентаря"></div>
+        <div class="journal-footer">
+          <div class="journal-footnote">Здесь видны детали вещей, контейнеры, владельцы, держатели, доступ, вес и риск. На основном экране остаётся только краткая строка.</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="peopleOverlay" class="journal-overlay people-overlay" hidden>
+      <div class="journal-card people-card">
+        <div class="panel-header">
+          <div>
+            <div class="eyebrow">Люди рядом</div>
+            <h2>Кто виден в сцене</h2>
+          </div>
+          <div class="panel-actions">
+            <button type="button" class="ghost-button small-button theme-toggle" data-theme-toggle>☾</button>
+            <button id="peopleCloseButton" type="button" class="ghost-button">Закрыть</button>
+          </div>
+        </div>
+        <div id="peopleSummaryOverlay" class="journal-footnote"></div>
+        <div id="peopleSections" class="stack" aria-label="Люди рядом"></div>
+        <div class="journal-footer">
+          <div class="journal-footnote">Показаны только видимые люди, их роль, заметная ситуация и то, что уже можно наблюдать в сцене.</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="propertyOverlay" class="journal-overlay property-overlay" hidden>
+      <div class="journal-card property-card">
+        <div class="panel-header">
+          <div>
+            <div class="eyebrow">Имущество</div>
+            <h2>Право, держатель и риск</h2>
+          </div>
+          <div class="panel-actions">
+            <button type="button" class="ghost-button small-button theme-toggle" data-theme-toggle>☾</button>
+            <button id="propertyCloseButton" type="button" class="ghost-button">Закрыть</button>
+          </div>
+        </div>
+        <div id="propertySummary" class="journal-footnote"></div>
+        <div id="propertySections" class="stack" aria-label="Имущество"></div>
+        <div class="journal-footer">
+          <div class="journal-footnote">Здесь показаны вещи вне инвентаря: где они лежат, кто ими владеет, кто их держит и какой риск они создают.</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="startOverlay" class="start-overlay">
+      <div class="start-card">
+        <div class="panel-header">
+          <div class="eyebrow">Новая игра</div>
+          <button type="button" class="ghost-button small-button theme-toggle" data-theme-toggle>☾</button>
+        </div>
+        <h1>Историческая текстовая RPG XIII века</h1>
+        <p class="start-copy">
+          Действие происходит в исторической среде 1230–1250 годов. Игрок описывает человека или ситуацию
+          свободным текстом, а игра приводит заявку к эпохе, месту и обстоятельствам.
+        </p>
+        <div class="start-actions">
+          <button id="newGameButton" type="button" class="primary-button">Новая игра</button>
+          <button id="continueGameButton" type="button" class="ghost-button">Загрузить</button>
+        </div>
+        <div id="startStatus" class="start-status"></div>
+      </div>
+    </div>
+
+    <div id="newGameOverlay" class="new-game-overlay" hidden>
+      <div class="new-game-card">
+        <div class="panel-header">
+          <div>
+            <div class="eyebrow">Новая партия</div>
+            <h1>Опиши персонажа или ситуацию</h1>
+          </div>
+          <div class="panel-actions">
+            <button type="button" class="ghost-button small-button theme-toggle" data-theme-toggle>☾</button>
+            <button id="newGameCancelButton" type="button" class="ghost-button">Назад</button>
+          </div>
+        </div>
+        <p class="start-copy">
+          Можно написать одну фразу или ничего. Игра сохранит ядро идеи, но приведёт его к эпохе, месту и
+          социальному порядку.
+        </p>
+        <label class="new-game-field">
+          <span>Свободное описание</span>
+          <textarea
+            id="newGameText"
+            rows="8"
+            spellcheck="false"
+            placeholder="Опиши героя, стартовую ситуацию, место, цель, долг или страх"
+          ></textarea>
+        </label>
+        <div class="start-actions">
+          <button id="newGameStartButton" type="button" class="primary-button">Создать игру</button>
+        </div>
+        <div id="newGameStatus" class="start-status"></div>
+      </div>
+    </div>
+
+    <div id="loadOverlay" class="load-overlay" hidden>
+      <div class="load-card">
+        <div class="panel-header">
+          <div>
+            <div class="eyebrow">Загрузка игры</div>
+            <h1>Выбери сохранение</h1>
+          </div>
+          <div class="panel-actions">
+            <button type="button" class="ghost-button small-button theme-toggle" data-theme-toggle>☾</button>
+            <button id="loadCloseButton" type="button" class="ghost-button">Назад</button>
+          </div>
+        </div>
+        <p id="loadStatus" class="load-status">Ищу сохранённые игры.</p>
+        <div id="loadList" class="save-list"></div>
+      </div>
+    </div>
+
+    <div class="app-shell game-screen">
+      <header class="game-header top-bar">
+        <div>
+          <div class="eyebrow">Историческая текстовая RPG</div>
+          <h1>Русь XIII век</h1>
+        </div>
+        <div class="top-bar-meta">
+          <div id="clockText" class="clock-text"></div>
+          <div id="providerBadge" class="provider-badge"></div>
+          <button id="themeToggle" type="button" class="ghost-button small-button theme-toggle" data-theme-toggle>☾</button>
+        </div>
+      </header>
+
+      <section class="status-strip">
+        <div class="status-card">
+          <span class="status-label">Герой</span>
+          <strong id="playerNameStrip"></strong>
+          <span id="playerStatusStrip"></span>
+        </div>
+        <div class="status-card">
+          <span class="status-label">Место</span>
+          <strong id="locationStrip"></strong>
+          <span id="microLocationStrip"></span>
+        </div>
+        <div class="status-card">
+          <span class="status-label">Состояние</span>
+          <strong id="needsStrip"></strong>
+          <span id="threatStrip"></span>
+        </div>
+        <div class="status-card">
+          <span class="status-label">Право и риск</span>
+          <strong id="lawStrip"></strong>
+          <span id="routeStrip"></span>
+        </div>
+      </section>
+
+      <div id="gameErrorAlert" class="game-error-alert" hidden></div>
+
+      <main class="game-main-layout layout">
+        <div class="game-primary">
+        <section class="panel narrative-panel">
+          <div class="panel-header">
+            <h2>Сцена</h2>
+            <div id="locationLabel" class="chip"></div>
+          </div>
+          <div class="scene-context">
+            <div id="sceneContext" class="scene-context-line"></div>
+            <div id="sceneMotivation" class="scene-context-line scene-context-muted"></div>
+          </div>
+          <div id="openingText" class="opening-text"></div>
+          <div class="scene-anchors">
+            <div class="scene-anchors-head">
+              <div class="scene-anchors-title">Подсказки действий</div>
+              <button id="hintsRefreshButton" type="button" class="ghost-button small-button" hidden>Обновить</button>
+            </div>
+            <div id="sceneDetails" class="scene-anchors-list"></div>
+          </div>
+          <div id="recentEventsHead" class="recent-events-head">Последствия последних действий</div>
+          <div id="log" class="log"></div>
+        </section>
+
+          <section class="action-input-panel command-bar">
+            <div class="command-label">Свободный ввод</div>
+            <textarea
+              id="commandInput"
+              rows="3"
+              spellcheck="false"
+              autocomplete="off"
+              autocapitalize="off"
+              placeholder="Опиши действие. Enter — отправить, Shift+Enter — новая строка."
+            ></textarea>
+            <div class="command-footer-row">
+              <div id="statusLine" class="status-line"></div>
+              <button id="saveButton" type="button" class="ghost-button">Сохранить</button>
+              <button id="inventoryButton" type="button" class="ghost-button">Инвентарь</button>
+              <button id="peopleButton" type="button" class="ghost-button">Люди рядом</button>
+              <button id="propertyButton" type="button" class="ghost-button">Имущество</button>
+              <button id="mapButton" type="button" class="ghost-button">Карта</button>
+              <button id="journalButton" type="button" class="ghost-button">Журнал / память</button>
+            </div>
+          </section>
+        </div>
+
+        <aside class="side-panel sidebar">
+          <details class="panel compact-panel character-panel" open>
+            <summary class="panel-header">
+              <h2 id="playerPanelTitle">Герой</h2>
+              <div class="side-panel-chips">
+                <div id="playerRole" class="chip"></div>
+                <div id="stateBadge" class="chip"></div>
+              </div>
+            </summary>
+            <div id="playerVitals" class="vitals"></div>
+            <div class="status-line-block">
+              <div id="playerStatusCompact" class="status-line-value"></div>
+              <div id="needsCompact" class="status-line-value"></div>
+            </div>
+            <details class="inline-details side-nested-details">
+              <summary>Подробнее о герое</summary>
+              <div class="identity-grid">
+                <div class="identity-field"><span>Статус</span><strong id="playerStatus"></strong></div>
+                <div class="identity-field"><span>Сословие</span><strong id="playerClass"></strong></div>
+                <div class="identity-field"><span>Откуда</span><strong id="playerOrigin"></strong></div>
+                <div class="identity-field"><span>Зачем здесь</span><strong id="playerReason"></strong></div>
+              </div>
+              <div id="playerInventorySummary" class="journal-footnote"></div>
+            </details>
+          </details>
+
+          <details class="panel compact-panel people-panel">
+            <summary class="panel-header">
+              <h2>Люди рядом</h2>
+              <div id="npcCount" class="chip"></div>
+            </summary>
+            <div id="peopleSummary" class="journal-footnote"></div>
+            <div id="peopleHint" class="journal-footnote"></div>
+          </details>
+
+          <details class="panel compact-panel map-panel">
+            <summary class="panel-header">
+              <h2>Карта знаний</h2>
+              <div id="graphBadge" class="chip"></div>
+            </summary>
+            <div id="graphWrap" class="graph-wrap"></div>
+            <div class="orientation-list">
+              <div id="sceneBadge" class="chip"></div>
+            </div>
+          </details>
+
+          <details class="panel compact-panel risk-panel">
+            <summary class="panel-header">
+              <h2>Право и риск</h2>
+              <div id="lawBadge" class="chip"></div>
+            </summary>
+            <div id="lawList" class="stack"></div>
+            <div class="panel-header panel-subheader">
+              <h3>Маршруты и уход</h3>
+              <div id="routeBadge" class="chip"></div>
+            </div>
+            <div id="routeList" class="stack"></div>
+          </details>
+        </aside>
+      </main>
+
+      <details id="diagnosticsDrawer" class="diagnostics-drawer" hidden>
+        <summary>
+          <span>Debug journal / процесс</span>
+          <span id="processErrorBadge" class="process-error-badge" hidden>Ошибка</span>
+          <span id="processState" class="process-state">Ожидание</span>
+        </summary>
+        <section class="process-panel">
+          <div class="process-head">
+            <div>
+              <div class="process-title">Последний процесс</div>
+              <div id="processMessage" class="process-message"></div>
+            </div>
+            <button id="processCopyButton" type="button" class="ghost-button small-button">Скопировать диагностику</button>
+          </div>
+          <div class="process-progress">
+            <div id="processProgressBar" class="process-progress-bar"></div>
+          </div>
+          <div id="processSummary" class="diagnostic-summary"></div>
+          <div id="processList" class="process-list"></div>
+          <div class="process-journal-head">События отладки</div>
+          <div id="processJournal" class="journal-list"></div>
+        </section>
+      </details>
+    </div>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

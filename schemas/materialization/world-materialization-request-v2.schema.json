@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "world_materialization_request_v2",
+  "type": "object",
+  "required": ["version", "schema", "party_id", "run_id", "world_revision_id", "region_id", "historical_frame", "g1_id", "g4_id", "trigger", "occurrence", "materializer_version", "rng_algorithm_id", "seed_context", "existing_party_state", "catalog_digest", "catalog_bundle"],
+  "properties": {
+    "version": { "const": 2 },
+    "schema": { "const": "world_materialization_request_v2" },
+    "party_id": { "type": "string", "minLength": 1 },
+    "run_id": { "type": "string", "minLength": 1 },
+    "world_revision_id": { "type": "string", "minLength": 1 },
+    "region_id": { "type": "string", "minLength": 1 },
+    "historical_frame": { "type": "object", "required": ["calendar"], "properties": { "calendar": { "type": "object", "required": ["season"], "properties": { "year": { "type": "integer" }, "season": { "type": "string", "minLength": 1 } } }, "year": { "oneOf": [{ "type": "integer" }, { "type": "object", "required": ["value"], "properties": { "value": { "type": "integer" } } }] } } },
+    "g1_id": { "type": "string", "minLength": 1 },
+    "g4_id": { "type": "string", "minLength": 1 },
+    "trigger": { "enum": ["new_game", "first_entry", "expansion"] },
+    "occurrence": { "type": "integer", "minimum": 0 },
+    "materializer_version": { "const": "code_materializer_v2" },
+    "rng_algorithm_id": { "const": "mulberry32_v1" },
+    "seed_context": {
+      "type": "object",
+      "required": ["party_id", "world_revision_id", "g1_id", "g4_id", "trigger", "occurrence", "materializer_version", "rng_algorithm_id"],
+      "properties": {
+        "party_id": { "type": "string", "minLength": 1 },
+        "world_revision_id": { "type": "string", "minLength": 1 },
+        "g1_id": { "type": "string", "minLength": 1 },
+        "g4_id": { "type": "string", "minLength": 1 },
+        "trigger": { "enum": ["new_game", "first_entry", "expansion"] },
+        "occurrence": { "type": "integer", "minimum": 0 },
+        "materializer_version": { "const": "code_materializer_v2" },
+        "rng_algorithm_id": { "const": "mulberry32_v1" }
+      },
+      "additionalProperties": false
+    },
+    "existing_party_state": { "type": "object", "required": ["baseline_exists"], "properties": { "baseline_exists": { "type": "boolean" } } },
+    "catalog_digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "catalog_bundle": {
+      "type": "object",
+      "required": ["rules", "candidates", "player_start_anchor_slot_key"],
+      "properties": {
+        "rules": { "type": "array", "items": { "$ref": "#/$defs/rule" } },
+        "candidates": { "type": "array", "items": { "$ref": "#/$defs/candidate" } },
+        "player_start_anchor_slot_key": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "rule": {
+      "type": "object",
+      "required": ["rule_id", "slot_key", "domain", "status", "world_revision_id", "region_id", "valid_from_year", "valid_to_year", "allowed_seasons", "min_count", "max_count", "candidate_ids"],
+      "properties": {
+        "rule_id": { "type": "string", "minLength": 1 },
+        "slot_key": { "type": "string", "minLength": 1 },
+        "domain": { "enum": ["g5_node", "g5_anchor", "g5_edge", "npc", "item", "container", "relation", "ownership", "schedule"] },
+        "status": { "const": "approved" }, "world_revision_id": { "type": "string", "minLength": 1 }, "region_id": { "type": "string", "minLength": 1 }, "valid_from_year": { "type": "integer" }, "valid_to_year": { "type": "integer" }, "allowed_seasons": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "min_count": { "type": "integer", "minimum": 0 },
+        "max_count": { "type": "integer", "minimum": 0 },
+        "candidate_ids": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true }
+      },
+      "additionalProperties": false
+    },
+    "candidate": {
+      "type": "object",
+      "required": ["candidate_id", "domain", "status", "world_revision_id", "region_id", "valid_from_year", "valid_to_year", "allowed_seasons", "weight", "attributes"],
+      "properties": {
+        "candidate_id": { "type": "string", "minLength": 1 },
+        "domain": { "enum": ["g5_node", "g5_anchor", "g5_edge", "npc", "item", "container", "relation", "ownership", "schedule"] },
+        "template_id": { "type": "string" },
+        "profile_id": { "type": "string" },
+        "status": { "const": "approved" },
+        "world_revision_id": { "type": "string", "minLength": 1 }, "region_id": { "type": "string", "minLength": 1 }, "valid_from_year": { "type": "integer" }, "valid_to_year": { "type": "integer" }, "allowed_seasons": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "weight": { "type": "integer", "minimum": 1 },
+        "attributes": { "type": "object" }
+      },
+      "allOf": [
+        { "if": { "properties": { "domain": { "const": "g5_node" } } }, "then": { "required": ["template_id"], "properties": { "attributes": { "required": ["access_state", "visibility_state", "state"], "properties": { "access_state": { "type": "object", "minProperties": 1 }, "visibility_state": { "type": "object", "minProperties": 1 }, "state": { "type": "object", "minProperties": 1 } } } } } },
+        { "if": { "properties": { "domain": { "const": "g5_anchor" } } }, "then": { "required": ["template_id"], "properties": { "attributes": { "required": ["g5_node_slot_key", "npc_capacity", "item_capacity", "container_capacity", "access_state", "visibility_state", "state"], "properties": { "g5_node_slot_key": { "type": "string", "minLength": 1 }, "npc_capacity": { "type": "integer", "minimum": 0 }, "item_capacity": { "type": "integer", "minimum": 0 }, "container_capacity": { "type": "integer", "minimum": 0 }, "access_state": { "type": "object" }, "visibility_state": { "type": "object" }, "state": { "type": "object" } } } } } },
+        { "if": { "properties": { "domain": { "const": "g5_edge" } } }, "then": { "required": ["template_id"], "properties": { "attributes": { "required": ["from_anchor_slot_key", "to_anchor_slot_key", "access_state", "visibility_state", "state"], "properties": { "from_anchor_slot_key": { "type": "string", "minLength": 1 }, "to_anchor_slot_key": { "type": "string", "minLength": 1 }, "access_state": { "type": "object" }, "visibility_state": { "type": "object" }, "state": { "type": "object" } } } } } },
+        { "if": { "properties": { "domain": { "const": "npc" } } }, "then": { "required": ["profile_id"], "properties": { "attributes": { "required": ["profile_level", "anchor_slot_key", "identity_state", "machine_state", "presence_reason", "access_state", "visibility_state", "causal_basis"], "properties": { "profile_level": { "enum": ["background", "scene", "key"] }, "anchor_slot_key": { "type": "string", "minLength": 1 }, "identity_state": { "type": "object", "minProperties": 1 }, "machine_state": { "type": "object", "minProperties": 1 }, "presence_reason": { "type": "string", "minLength": 1 }, "access_state": { "type": "object", "minProperties": 1 }, "visibility_state": { "type": "object", "minProperties": 1 }, "causal_basis": { "type": "object", "required": ["causal_basis_type", "causal_basis_id"], "properties": { "causal_basis_type": { "type": "string", "minLength": 1 }, "causal_basis_id": { "type": "string", "minLength": 1 } } } } } } } },
+        { "if": { "properties": { "domain": { "const": "item" } } }, "then": { "required": ["template_id", "profile_id"], "properties": { "attributes": { "required": ["item_category_id", "quantity", "condition_state", "legal_status", "causal_basis", "property_state", "access_state", "visibility_state", "risk_state", "state", "placement"], "properties": { "item_category_id": { "type": "string", "minLength": 1 }, "quantity": { "type": "integer", "minimum": 1 }, "condition_state": { "type": "string", "minLength": 1 }, "legal_status": { "type": "string", "minLength": 1 }, "causal_basis": { "type": "object", "required": ["causal_basis_type", "causal_basis_id"], "properties": { "causal_basis_type": { "type": "string", "minLength": 1 }, "causal_basis_id": { "type": "string", "minLength": 1 } } }, "property_state": { "type": "object", "required": ["owner_model"] }, "access_state": { "type": "object", "minProperties": 1 }, "visibility_state": { "type": "object", "minProperties": 1 }, "risk_state": { "type": "object", "minProperties": 1 }, "state": { "type": "object", "minProperties": 1 }, "placement": { "type": "object", "oneOf": [{ "required": ["anchor_slot_key"] }, { "required": ["container_slot_key"] }, { "required": ["holder_npc_slot_key"] }, { "required": ["holder_character_id"] }] } } } } } },
+        { "if": { "properties": { "domain": { "const": "container" } } }, "then": { "required": ["template_id"], "properties": { "attributes": { "required": ["causal_basis", "property_state", "access_state", "visibility_state", "risk_state", "state"], "properties": { "causal_basis": { "type": "object", "required": ["causal_basis_type", "causal_basis_id"] }, "property_state": { "type": "object", "required": ["owner_model"] }, "access_state": { "type": "object", "minProperties": 1 }, "visibility_state": { "type": "object", "minProperties": 1 }, "risk_state": { "type": "object", "minProperties": 1 }, "state": { "type": "object", "minProperties": 1 } } } } } },
+        { "if": { "properties": { "domain": { "const": "relation" } } }, "then": { "properties": { "attributes": { "required": ["from_npc_slot_key", "to_npc_slot_key", "relation_category_id", "state"] } } } },
+        { "if": { "properties": { "domain": { "const": "ownership" } } }, "then": { "properties": { "attributes": { "required": ["claim_state"], "oneOf": [{ "required": ["item_slot_key"] }, { "required": ["container_slot_key"] }], "allOf": [{ "oneOf": [{ "required": ["owner_npc_slot_key"] }, { "required": ["owner_character_id"] }, { "required": ["owner_party"] }] }] } } } },
+        { "if": { "properties": { "domain": { "const": "schedule" } } }, "then": { "properties": { "attributes": { "required": ["npc_slot_key", "time_band", "schedule_profile_id"] } } } }
+      ],
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

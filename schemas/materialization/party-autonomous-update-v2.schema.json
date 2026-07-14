@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "party_autonomous_update_v2",
+  "type": "object",
+  "required": ["version", "schema", "update_id", "party_id", "rule_id", "idempotency_key", "scheduled_for", "base_state_version", "result_state_version", "version_pins", "input_digest", "catalog_digest", "created_or_changed_refs", "change_set", "validation_report", "trace"],
+  "properties": {
+    "version": { "const": 2 },
+    "schema": { "const": "party_autonomous_update_v2" },
+    "update_id": { "type": "string", "minLength": 1 },
+    "party_id": { "type": "string", "minLength": 1 },
+    "rule_id": { "type": "string", "minLength": 1 },
+    "idempotency_key": { "type": "string", "minLength": 1 },
+    "scheduled_for": { "type": "string", "format": "date-time" },
+    "base_state_version": { "type": "integer", "minimum": 0 },
+    "result_state_version": { "type": "integer", "minimum": 1 },
+    "version_pins": { "type": "object", "required": ["rule_version", "policy_id", "policy_version", "world_revision_id", "command_catalog_digest", "profile_bundle_digest"], "properties": { "rule_version": { "type": "string", "minLength": 1 }, "policy_id": { "type": "string", "minLength": 1 }, "policy_version": { "type": "string", "minLength": 1 }, "world_revision_id": { "type": "string", "minLength": 1 }, "command_catalog_digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "profile_bundle_digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" } }, "additionalProperties": false },
+    "input_digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "catalog_digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "created_or_changed_refs": { "type": "array", "items": { "type": "object" } },
+    "change_set": { "$ref": "party-change-set-v2.schema.json" },
+    "validation_report": { "type": "object", "required": ["pass"], "properties": { "pass": { "const": true } } },
+    "trace": { "type": "object", "required": ["input_basis", "version_pins", "input_digest", "catalog_digest", "trigger", "rule_id", "created_or_changed_refs"], "properties": { "input_basis": { "type": "object" }, "version_pins": { "type": "object" }, "input_digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "catalog_digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "trigger": { "type": "object" }, "rule_id": { "type": "string", "minLength": 1 }, "created_or_changed_refs": { "type": "array" } }, "additionalProperties": false }
+  },
+  "additionalProperties": false
+}

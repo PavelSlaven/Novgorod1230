@@ -1,0 +1,5 @@
+import test from 'node:test'; import assert from 'node:assert/strict';
+import { buildStage17TimeLightCodePrecheck } from '@rus/new-game/stages/stage-17/compat';
+import { makeStage17Input } from '../fixtures/stage17-19-fixtures.mjs';
+test('Stage 17 rejects snow in hot weather',()=>{const input=makeStage17Input(v=>{v.weather_state.temperature_band='hot';v.weather_state.precipitation='snow';});const p=buildStage17TimeLightCodePrecheck(input);assert.equal(p.pass,false);assert.ok(p.concerns.some(x=>x.code==='TIME_LIGHT_SEASON_WEATHER_CONFLICT'));});
+test('Stage 17 rejects visible NPC in darkness without basis',()=>{const input=makeStage17Input(v=>{v.historical_frame.clock={day:1,hour:1,minute:0,time_of_day:'night',light_profile:'dark',clock_moment:'ночь'};v.g5_scene_graph.visibility_model.light_profile='dark';v.initial_npc_placement={...v.initial_npc_placement,placement_status:'placed',npc_instances:[{npc_instance_id:'npc-1',visible_to_player_now:true}]};});const p=buildStage17TimeLightCodePrecheck(input);assert.ok(p.concerns.some(x=>x.code==='TIME_LIGHT_NPC_VISIBILITY_CONFLICT'));});

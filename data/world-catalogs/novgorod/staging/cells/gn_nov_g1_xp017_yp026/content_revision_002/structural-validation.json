@@ -1,0 +1,23 @@
+{
+  "schema_version": "rus.g1_structural_validation.v1",
+  "g1_id": "gn_nov_g1_xp017_yp026",
+  "content_revision_id": "gn_nov_g1_xp017_yp026_content_revision_002",
+  "result": "PASS",
+  "errors": [],
+  "warnings": [],
+  "metrics": {
+    "g2_count": 15,
+    "g3_count": 32,
+    "g4_count": 195,
+    "graph_node_count": 243,
+    "graph_edge_count": 600,
+    "physical_edge_count": 358,
+    "boundary_count": 2,
+    "source_count": 11,
+    "claim_count": 21,
+    "toponymy_count": 243,
+    "min_g4_per_g3": 5,
+    "max_g4_per_g3": 8,
+    "g2_with_multiple_g3": 15
+  }
+}

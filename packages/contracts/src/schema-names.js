@@ -1,0 +1,11 @@
+export const VISIBLE_CONTEXT_AUDIT_APPROVAL_SCHEMA = 'visible_context_audit_approval';
+export const NARRATOR_PROSE_AUDIT_APPROVAL_SCHEMA = 'narrator_prose_audit_approval';
+export const STAGE25_PARTY_COMMIT_APPROVAL_SCHEMA = 'stage25_party_commit_approval';
+export const PARTY_PUBLIC_STATE_SCHEMA = 'party_public_state';
+export const STAGE26_SCREEN_APPROVAL_SCHEMA = 'stage26_screen_approval';
+export const STAGE26_FIRST_GAME_SCREEN_RESULT_SCHEMA = 'stage26_first_game_screen_result';
+export const FIRST_SCREEN_DELIVERY_ATTEMPT_SCHEMA = 'party_first_screen_delivery_attempt';
+export const FIRST_SCREEN_DELIVERY_ACK_SCHEMA = 'first_screen_delivery_ack';
+export const FIRST_SCREEN_DELIVERY_ACK_RESULT_SCHEMA = 'first_screen_delivery_ack_result';
+export const STAGE27_FIRST_TURN_INPUT_SCHEMA = 'first_turn_pipeline_input';
+export const PLAYER_FIRST_TURN_INPUT_SCHEMA = 'player_first_turn_input';

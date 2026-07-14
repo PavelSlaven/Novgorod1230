@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "normalized_instance_candidate_v2",
+  "oneOf": [
+    {
+      "type": "object",
+      "required": ["npc_candidate_id", "status", "required", "slot_rule_id", "npc_profile_set_id", "profile_level", "social_role_id", "npc_archetype_id", "placement", "identity_state", "visibility_state", "machine_state", "knowledge_scope", "source_trace"],
+      "properties": { "status": { "const": "approved" }, "required": { "const": true }, "npc_candidate_id": { "type": "string" }, "slot_rule_id": { "type": "string" }, "npc_profile_set_id": { "type": "string" }, "profile_level": { "enum": ["background", "scene", "key"] }, "social_role_id": { "type": "string" }, "npc_archetype_id": { "type": "string" }, "placement": { "type": "object" }, "identity_state": { "type": "object" }, "visibility_state": { "type": "object" }, "machine_state": { "type": "object" }, "knowledge_scope": { "type": "object" }, "source_trace": { "type": "array", "minItems": 1 } }
+    },
+    {
+      "type": "object",
+      "required": ["item_profile_candidate_id", "item_profile_id", "status", "required", "slot_rule_id", "quantity", "condition_state", "legal_status", "causal_basis", "placement", "physical_state", "property_state", "visibility_state", "access_state", "risk_state", "source_trace"],
+      "properties": { "status": { "const": "approved" }, "required": { "const": true }, "item_profile_candidate_id": { "type": "string" }, "item_profile_id": { "type": "string" }, "slot_rule_id": { "type": "string" }, "quantity": { "type": "integer", "minimum": 1 }, "condition_state": { "type": "string" }, "legal_status": { "type": "string" }, "causal_basis": { "type": "object", "required": ["causal_basis_type"] }, "placement": { "type": "object" }, "physical_state": { "type": "object", "required": ["condition"] }, "property_state": { "type": "object" }, "visibility_state": { "type": "object" }, "access_state": { "type": "object" }, "risk_state": { "type": "object" }, "source_trace": { "type": "array", "minItems": 1 } }
+    },
+    {
+      "type": "object",
+      "required": ["container_profile_candidate_id", "container_template_id", "status", "required", "slot_rule_id", "quantity", "condition_state", "legal_status", "causal_basis", "placement", "physical_state", "property_state", "visibility_state", "access_state", "risk_state", "source_trace"],
+      "properties": { "status": { "const": "approved" }, "required": { "const": true }, "container_profile_candidate_id": { "type": "string" }, "container_template_id": { "type": "string" }, "slot_rule_id": { "type": "string" }, "quantity": { "type": "integer", "minimum": 1 }, "condition_state": { "type": "string" }, "legal_status": { "type": "string" }, "causal_basis": { "type": "object", "required": ["causal_basis_type"] }, "placement": { "type": "object" }, "physical_state": { "type": "object", "required": ["condition"] }, "property_state": { "type": "object" }, "visibility_state": { "type": "object" }, "access_state": { "type": "object" }, "risk_state": { "type": "object" }, "source_trace": { "type": "array", "minItems": 1 } }
+    }
+  ]
+}

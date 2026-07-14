@@ -1,35 +1,7 @@
-# Краткий список фаз миграции «Русь»
+# Архивный указатель
 
-Текущий статус: modular runtime и автономный knowledge-source готовы. Legacy не используется production-кодом как источник документации, но сохраняется для rollback и ручной финализации.
+Все фазы архитектурной миграции завершены.
 
-1. **Baseline и инвентаризация** — выполнено.
-2. **Каркас `Rus_modules`** — выполнено.
-3. **Kernel** — выполнено.
-4. **Contracts** — выполнено.
-5. **Pipeline engine** — выполнено.
-6. **LLM runtime** — выполнено.
-7. **Data modules** — выполнено.
-8. **New-game pipeline** — Stages 2–26 и modular orchestrator выполнены.
-9. **Domain modules** — выполнены.
-10. **Turn workflow** — выполнен.
-11. **Narration и presentation** — выполнено.
-12. **Game server и game web** — выполнено; modular route является default.
-13. **MapMaker и инструменты** — выполнено.
-14. **Тестовая архитектура** — выполнено.
-15. **Документация и generated data** — выполнено.
-16. **Shadow run и сравнение** — выполнено.
-17. **Cutover** — выполнено; rollback route сохранён.
-18. **Финализация 0.22.0** — автоматическая часть выполнена, ручное удаление запрещено.
-19. **Knowledge Source и corpus 0.23.0** — 29 legacy-файлов классифицированы, утверждённые legacy canonical sources перенесены byte-for-byte, native-расширение зарегистрировано в manifest, graph/RAG привязаны к единому corpus, runtime port интегрирован.
+Краткая историческая сводка перенесена в [`docs/migration/archive/MIGRATION_PHASES_SHORT.md`](docs/migration/archive/MIGRATION_PHASES_SHORT.md).
 
-## Текущая точка
-
-- Релиз: `0.23.0-migration.23`.
-- Canonical corpus и разбиение legacy/native: `data/knowledge-source/corpus-manifest.json`.
-- Unique-file review: выполнен, unknown = 0.
-- Graph coverage и counts: `generated/knowledge-source/graph/manifest.json`.
-- RAG coverage и counts: `generated/knowledge-source/rag/manifest.json`; approved semantic snapshot остаётся неизменным.
-- Test evidence: `docs/migration/reports/TEST_REPORT.md`.
-- Critic evidence: `docs/migration/reports/KNOWLEDGE_SOURCE_CRITIC_REPORT.md`.
-- Production legacy DOCUMENTS fallback: отсутствует.
-- Legacy deletion allowed: false.
+Актуальное описание проекта находится в [`README.md`](README.md).

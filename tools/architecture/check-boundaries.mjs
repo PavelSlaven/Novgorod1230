@@ -902,7 +902,7 @@ for (const document of canonicalRegistry.documents ?? []) {
     }
   }
 }
-const allowedRootMarkdown = new Set(['README.md', 'CHANGELOG.md', 'MIGRATION_PHASES_SHORT.md', 'MIGRATION_STATUS.md', 'MODULE_INDEX.md']);
+const allowedRootMarkdown = new Set(['AGENTS.md', 'README.md', 'CHANGELOG.md', 'MIGRATION_PHASES_SHORT.md', 'MIGRATION_STATUS.md', 'MODULE_INDEX.md']);
 for (const name of await readdir(root)) if (name.endsWith('.md') && !allowedRootMarkdown.has(name)) violations.push(`${name}: non-canonical markdown remains in root`);
 const generatedManifest = JSON.parse(await readFile(join(root, 'generated/generated-manifest.json'), 'utf8'));
 if (generatedManifest.schema_version !== 'rus.generated_manifest.v1' || generatedManifest.command !== 'npm run docs:generate') violations.push('generated manifest is invalid');

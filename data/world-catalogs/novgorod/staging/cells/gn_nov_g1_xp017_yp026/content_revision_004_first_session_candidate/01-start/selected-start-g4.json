@@ -1,0 +1,65 @@
+{
+  "schema_version": "rus.first_session_start_selection.v1",
+  "g1_id": "gn_nov_g1_xp017_yp026",
+  "selected_g4_id": "gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_high_platform",
+  "selection_basis": {
+    "source_candidate_revision": "content_revision_003_production_candidate",
+    "source_start_profile_priority": 100,
+    "reason": "Highest-priority low-complexity protected dry landing with two safe exits and no required boat, guide, horse, sled or pre-existing local route knowledge."
+  },
+  "time_scope": {
+    "historical_year": 1230,
+    "season": "late_summer",
+    "valid_from": "1230-08-15",
+    "valid_to": "1230-09-15",
+    "allowed_time_bands": [
+      "morning",
+      "daylight_afternoon"
+    ]
+  },
+  "start_constraints": {
+    "required_character_statuses": [
+      "free_or_dependent_with_lawful_travel_reason"
+    ],
+    "forbidden_character_statuses": [
+      "physically_unfit_for_exposed_travel_without_support",
+      "unexplained_high_elite"
+    ],
+    "allowed_origin_modes": [
+      "local_northern",
+      "river_traveler",
+      "novgorod_connected_traveler",
+      "outsider_with_causal_route"
+    ],
+    "minimum_equipment_requirements": [
+      "weather_appropriate_clothing",
+      "means_to_carry_water"
+    ],
+    "required_transport": [],
+    "requires_boat": false,
+    "requires_horse": false,
+    "requires_sled": false,
+    "requires_guide": false,
+    "requires_local_route_knowledge": false
+  },
+  "start_hazards": [
+    "terrain_and_water_hazards",
+    "orientation_uncertainty"
+  ],
+  "safe_exit_g4_ids": [
+    "gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_landing_edge",
+    "gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_water_source"
+  ],
+  "source_bindings": {
+    "g5_materialization_profile_id": "g5_shelter_rest_v1",
+    "npc_rule_set_id": "npc_rules_river_users_v1",
+    "item_rule_set_id": "item_binding_landing_portable_v1",
+    "seasonal_profile_id": "seasonal_late_summer_open_water_v1"
+  },
+  "historical_constraints": [
+    "No Arkhangelsk, late port administration, monastery, garrison or urban node.",
+    "Exact 1230 shoreline, channel geometry, settlement count, local authority and ethnocultural percentages are not asserted.",
+    "The cell is a tributary corridor context, not evidence of direct Novgorod administration."
+  ],
+  "status": "selected_for_first_session_candidate"
+}

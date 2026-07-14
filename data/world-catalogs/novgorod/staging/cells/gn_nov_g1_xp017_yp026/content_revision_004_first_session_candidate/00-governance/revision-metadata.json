@@ -1,0 +1,23 @@
+{
+  "schema_version": "rus.first_session_candidate_metadata.v1",
+  "g1_id": "gn_nov_g1_xp017_yp026",
+  "base_revision": "content_revision_003_production_candidate",
+  "candidate_revision": "content_revision_004_first_session_candidate",
+  "canonical_base_branch": "main",
+  "canonical_base_commit": "62f0d113850eb06fdda75372abc8403aff9d63f6",
+  "scope": [
+    "start_g4_selection",
+    "npc_chain_readiness"
+  ],
+  "excluded_scope": [
+    "player_character_profile",
+    "item_container_property_resource_completion",
+    "environment_completion",
+    "production_import",
+    "runtime_activation"
+  ],
+  "status": "prepared_not_importable",
+  "activation_allowed": false,
+  "reason": "Required NPC candidate sets are empty and their canonical source catalogs are not available in the repository.",
+  "created_at": "2026-07-14T00:00:00Z"
+}

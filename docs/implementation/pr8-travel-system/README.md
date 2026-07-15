@@ -5,10 +5,10 @@
 - Draft PR: https://github.com/PavelSlaven/Novgorod1230/pull/8
 - Branch: `codex/pr8-travel-system`
 - Base: `chatgpt/universal-category-classification` (stacked on draft PR7)
-- Rebased base SHA: `fc71f5dfcfcb087a2cdf67eda050a542c3ddfebe` (PR7 head checked 2026-07-15)
-- Last verified rebased PR8 head: `98b84e0294aceab971181b266461f1b288ac6226`
+- Rebased base SHA: `5463af867eab5e82d634151183f05bd7264e70b4` (PR7 head checked 2026-07-15)
+- Last verified rebased PR8 head: `14e3e806454b8cec7ffee54d289a3f2d09e921b4`
 - Draft status: yes
-- PR7 dependency: open draft; PR8 is rebased onto its current head in an isolated clean worktree.
+- PR7 dependency: open draft; PR8 was rebased onto its current head in an isolated clean worktree.
 - Last completed phase: contract and persistence baseline (partial; not accepted as PR8 completion).
 - Current phase: Phase 13 production composition — explicit travel-port binding (`in_progress`).
 - Current blocker: no approved pilot-G1 catalog/rules bundles and no configured PostgreSQL integration database.
@@ -79,7 +79,7 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 - No approved pilot-G1 `EnvironmentCatalogBundle` or `TravelRulesBundle` exists yet.
 - `gn_nov_g1_xp017_yp026` не может быть pilot: `production_import=not_performed`, `runtime_visibility=not_verified` в актуальном `G1_SEMANTIC_CATALOG.md`; создания фиктивной active G1 или повышения draft records не будет.
 - The prior environment implementation must be reconciled with the approved PR8 table names and contracts before production integration.
-- Production integration is absent: Stage 25 has no atomic journey writer, and turn/visibility/presentation/game-server ports have not been wired.
+- The Stage 25 PostgreSQL writer accepts only one normalized journey/legs/position change set in a transaction. Real world readers, repositories and live PostgreSQL/E2E integration remain absent.
 
 ## Required integration order
 
@@ -96,12 +96,12 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 
 - Status: `in_progress` (baseline contract is implemented; full lifecycle and integrations are pending)
 - Goal: define the travel state machine, position union and public contracts before runtime implementation.
-- Input: PR7 `fc71f5dfcfcb087a2cdf67eda050a542c3ddfebe`; rebased PR8 head `98b84e0294aceab971181b266461f1b288ac6226`.
+- Input: PR7 `5463af867eab5e82d634151183f05bd7264e70b4`; rebased PR8 head `14e3e806454b8cec7ffee54d289a3f2d09e921b4`.
 - Files studied: mandatory architecture, materialization, movement, time, turn, interface, graph and map norms; current movement and environment packages.
 - RED tests: `packages/travel/test/domain.test.js` — observed failure: `ERR_MODULE_NOT_FOUND` before implementation.
 - GREEN/refactor: initial position/lifecycle implementation passed 8/8 tests, including active-journey conflict and an explicit actual/perceived divergence; no refactor yet.
 - Audit: previous baseline audit remains `CHANGES REQUIRED`; no finding is closed by this entry.
-- Next dependency: safely rebase this branch onto the current PR7 head before integration work.
+- Next dependency: an approved pilot G1 and imported, runtime-visible catalog/rules bundles before production integration work.
 
 ## Contract registry
 
@@ -123,6 +123,8 @@ Typed domain errors are versioned with the travel contracts; persistence, presen
 | `npm run docs:generate` / `docs:check` / `knowledge:check-corpus` | 2026-07-15 | working tree after `6eb1a23` | PASS | PR8 normative travel boundary and canonical corpus/derived knowledge artifacts are synchronized; no production data is claimed. |
 | `npm run test:apps` / `node --test test/integration/knowledge-source-production.test.js` | 2026-07-15 | working tree after `cd61113` | PASS: 14/14; 1/1 | Production composition rejects missing travel ports and passes only explicit binding ports to services. The knowledge-source smoke test intentionally does not run PostgreSQL migrations under `pg-mem`, which cannot parse deferred FKs. |
 | `npm run test:domain` / `npm run test:modules` / `npm run test:apps` / `docs:check` | 2026-07-15 | `743abd5` | PASS: 102/102; 261/261; 14/14 | Full local regression after the production travel-port contract. Real PostgreSQL and E2E remain separate blocked gates. |
+| `npm run docs:check` / `world-db:schema-check` / `world-db:schema-doc-check` | 2026-07-15 | `14e3e80` after rebase onto `5463af8` | PASS: 138 tables | The stack was rebased onto the current PR7 head. The schema guard RED exposed stale expected count `134`; it was corrected to the generated 138-table DDL. |
+| `npm run test:domain` / `npm run test:modules` / `npm run test:apps` / `node --test test/integration/knowledge-source-production.test.js` | 2026-07-15 | worktree after rebase | PASS: 103/103; 262/262; 14/14; 1/1 | Full local PR8 regression after rebase. PostgreSQL and E2E remain separate blocked gates. |
 | `node --test tools/docs-tools/test/knowledge-source-migration.test.js tools/docs-tools/test/knowledge-corpus-verifier.test.js tools/docs-tools/test/knowledge-materializer-v2.test.js` | 2026-07-15 | working tree after `6eb1a23` | PASS: 22/22 | Corpus manifest, legacy provenance and generated graph/RAG materialization remain reproducible after the PR8 normative update. |
 | `npm run test:domain` / `npm run test:modules` | 2026-07-15 | working tree after `6eb1a23` | PASS: 102/102; 261/261 | Documentation-only change did not regress travel, environment, turn or materialization contracts. |
 | `node --test packages/travel/test/domain.test.js` | 2026-07-15 | `69b0ee8` | RED: 1 failed | `ERR_MODULE_NOT_FOUND` before implementation. |

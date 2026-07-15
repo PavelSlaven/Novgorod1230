@@ -129,6 +129,23 @@
     },
     {
       "dependencies": [
+        "@rus/kernel",
+        "@rus/materialization"
+      ],
+      "name": "@rus/environment-landmarks",
+      "owns": [
+        "`initializeEnvironmentFeatures`",
+        "`updateEnvironmentFeatures`",
+        "`buildEnvironmentObservationCandidates`",
+        "`validateEnvironmentFeatureState`"
+      ],
+      "path": "packages/environment-landmarks",
+      "public_entry": "./src/index.js",
+      "purpose": "Детерминированно материализует постоянные природные ориентиры, временные сигналы и следы среды из утверждённого каталога. Модуль не создаёт G0–G4, не пишет в БД и не принимает решения за LLM.",
+      "version": "0.1.0"
+    },
+    {
+      "dependencies": [
         "@rus/kernel"
       ],
       "name": "@rus/items-property",

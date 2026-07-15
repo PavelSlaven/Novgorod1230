@@ -128,6 +128,10 @@ export const TABLE_GROUPS = [
   {
     title: 'Materialization v2: решения и импорт',
     tables: ['decision_command_catalog', 'decision_policy_profiles', 'decision_policy_options', 'catalog_imports', 'catalog_import_tables']
+  },
+  {
+    title: 'PR8: ориентиры, сигналы и следы среды',
+    tables: ['environment_landmark_templates', 'environment_landmark_profiles', 'environment_landmark_profile_entries', 'environment_landmark_rules', 'environment_landmark_rule_g1_classes', 'environment_landmark_rule_node_types', 'environment_landmark_rule_landscapes', 'environment_landmark_rule_hydrology', 'environment_landmark_rule_land_use', 'environment_landmark_rule_routes', 'environment_cue_templates', 'environment_emission_rules', 'environment_trace_templates', 'environment_decay_profiles', 'environment_trace_creation_rules', 'environment_trace_rule_landscapes', 'environment_trace_rule_hydrology']
   }
 ];
 
@@ -243,7 +247,24 @@ export const TABLE_PURPOSE_FALLBACK = {
   g4_item_materialization_rules: 'G4-specific правила предметов, имущества и economic basis.',
   g4_container_materialization_rules: 'G4-specific правила контейнеров, содержимого и доступа.',
   catalog_imports: 'Проверяемые импорты versioned authoring manifest.',
-  catalog_import_tables: 'Digests, counts и dependency order таблиц одного импорта.'
+  catalog_import_tables: 'Digests, counts и dependency order таблиц одного импорта.',
+  environment_landmark_templates: 'Approved templates постоянных природных ориентиров; не party instances и не G0–G4 nodes.',
+  environment_landmark_profiles: 'Региональные совместимые наборы landmark templates и закрытая policy.',
+  environment_landmark_profile_entries: 'Нормализованные template choices landmark profile с weight и exclusivity.',
+  environment_landmark_rules: 'Правила применения landmark profile в G1 scope и количественные пределы.',
+  environment_landmark_rule_g1_classes: 'Допустимые классы G1 landmark rule.',
+  environment_landmark_rule_node_types: 'Допустимые типы graph placement nodes landmark rule.',
+  environment_landmark_rule_landscapes: 'Нормализованная совместимость landmark rule с landscape template.',
+  environment_landmark_rule_hydrology: 'Нормализованная совместимость landmark rule с water template.',
+  environment_landmark_rule_land_use: 'Нормализованная совместимость landmark rule с land-use template.',
+  environment_landmark_rule_routes: 'Нормализованная совместимость landmark rule с route template.',
+  environment_cue_templates: 'Templates временных зрительных, звуковых и запаховых signals с propagation/visibility policy.',
+  environment_emission_rules: 'Approved causal rule emitter → cue template; отсутствие emitter блокирует cue.',
+  environment_trace_templates: 'Templates наблюдаемых следов деятельности.',
+  environment_decay_profiles: 'Versioned policy постепенного ослабления trace strength.',
+  environment_trace_creation_rules: 'Approved causal rule emission → trace template и decay profile.',
+  environment_trace_rule_landscapes: 'Нормализованная совместимость trace rule с landscape template.',
+  environment_trace_rule_hydrology: 'Нормализованная совместимость trace rule с water template.'
 };
 
 export const common = {
@@ -698,5 +719,42 @@ export const fields = {
     generation_allowed: 'Разрешена ли LLM-генерация по этому правилу.',
     layout_rules: 'JSON: правила планировки места.',
     npc_generation_rules: 'JSON: правила NPC для места.'
+  },
+  environment_landmark_templates: {
+    category_id: 'FK → universal_categories(id): approved landmark category.',
+    public_label_key: 'Ключ функционального player-facing label; не собственное имя.',
+    icon_key: 'Approved semantic icon key без generic fallback.',
+    morphology_policy: 'Закрытая versioned morphology policy без внешних ID.'
+  },
+  environment_landmark_rules: {
+    profile_id: 'FK → environment_landmark_profiles(id): применяемый regional profile.',
+    min_count: 'Минимум materialized landmarks; > 0 делает пустой candidate set hard block.',
+    max_count: 'Максимум deterministic materialized landmarks.',
+    exclusivity_group: 'Группа взаимного исключения placement instances.'
+  },
+  environment_cue_templates: {
+    sense: 'Канал восприятия: sight, sound или smell.',
+    fading_duration_minutes: 'Длительность controlled fading после прекращения emitter.',
+    expiry_duration_minutes: 'Возраст, после которого cue сохраняется только в истории.',
+    propagation_policy: 'Закрытая versioned policy физического распространения cue.',
+    visibility_policy: 'Закрытая versioned policy физической различимости cue.'
+  },
+  environment_emission_rules: {
+    cue_template_id: 'FK → environment_cue_templates(id): тип порождаемого сигнала.',
+    emitter_category_id: 'FK → universal_categories(id): approved emitter category.',
+    emission_policy: 'Закрытая versioned policy интенсивности и применимости emitter.'
+  },
+  environment_trace_templates: {
+    category_id: 'FK → universal_categories(id): approved trace category.',
+    recognition_difficulty: 'Сложность распознавания физически различимого следа.'
+  },
+  environment_decay_profiles: {
+    decay_policy: 'Закрытая versioned policy decay coefficients; не external references.'
+  },
+  environment_trace_creation_rules: {
+    trace_template_id: 'FK → environment_trace_templates(id): создаваемый тип следа.',
+    decay_profile_id: 'FK → environment_decay_profiles(id): policy его исчезновения.',
+    source_category_id: 'FK → universal_categories(id): approved source category.',
+    creation_policy: 'Закрытая versioned policy причинного создания trace.'
   }
 };

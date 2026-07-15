@@ -9,7 +9,12 @@ const AUTHORING_TABLES = new Set([
   'g4_materialization_layout_edges',
   'item_profile_sets', 'item_profile_entries', 'container_content_profiles', 'container_content_profile_entries', 'item_template_category_bindings', 'item_template_inventory_profiles', 'item_template_source_bindings', 'container_template_inventory_profiles', 'container_template_source_bindings', 'container_template_facet_bindings', 'container_content_category_relations', 'item_classification_migration_inventory', 'property_profiles',
   'property_profile_rules', 'transport_templates', 'g4_npc_materialization_rules', 'g4_item_materialization_rules', 'g4_container_materialization_rules',
-  'decision_command_catalog', 'decision_policy_profiles', 'decision_policy_options'
+  'decision_command_catalog', 'decision_policy_profiles', 'decision_policy_options', 'environment_landmark_templates',
+  'environment_landmark_profiles', 'environment_landmark_profile_entries', 'environment_landmark_rules',
+  'environment_landmark_rule_g1_classes', 'environment_landmark_rule_node_types', 'environment_landmark_rule_landscapes',
+  'environment_landmark_rule_hydrology', 'environment_landmark_rule_land_use', 'environment_landmark_rule_routes',
+  'environment_cue_templates', 'environment_emission_rules', 'environment_trace_templates', 'environment_decay_profiles',
+  'environment_trace_creation_rules', 'environment_trace_rule_landscapes', 'environment_trace_rule_hydrology'
 ]);
 
 const INSTANCE_PREFIXES = ['party_', 'runtime_', 'instance_'];

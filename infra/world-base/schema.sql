@@ -10,5 +10,6 @@
 \ir schema/09.sql
 \ir schema/10.sql
 \ir schema/11.sql
+\ir schema/12.sql
 
 REVOKE CREATE ON SCHEMA world_base FROM PUBLIC;

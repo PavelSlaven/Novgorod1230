@@ -1,7 +1,8 @@
 import { readFileSync } from 'node:fs';
 
 const PARTY_RUNTIME_V2_DDL = readFileSync(new URL('../../../../../schemas/party-db/001_party_runtime.sql', import.meta.url), 'utf8');
-const RUNTIME_MIGRATIONS = Object.freeze([PARTY_RUNTIME_V2_DDL]);
+const PARTY_ENVIRONMENT_LANDMARKS_DDL = readFileSync(new URL('../../../../../schemas/party-db/002_environment_landmarks.sql', import.meta.url), 'utf8');
+const RUNTIME_MIGRATIONS = Object.freeze([PARTY_RUNTIME_V2_DDL, PARTY_ENVIRONMENT_LANDMARKS_DDL]);
 
 export async function runPartyRuntimeMigrations(pool) {
   const client = await pool.connect();

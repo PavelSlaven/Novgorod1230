@@ -10,7 +10,7 @@ import { validateDomainMaterialization } from './domain-validation.js';
 import { assertConnectedG5Graph, assertG5TemplateBundle, chooseApprovedCount, indexApproved } from './stage-helpers.js';
 import { approvedWeight, assertApplicableRecord, assertMaterializationInput, chooseCount, compareRule, partitionInstances, weightedCandidate } from './world-validation.js';
 
-export { canonicalDigest, createRandomSource, deriveSeed, MATERIALIZER_VERSION, MaterializationError, RNG_VERSION } from './core.js';
+export { canonicalDigest, createRandomSource, deriveSeed, deterministicInstanceId, MATERIALIZER_VERSION, MaterializationError, RNG_VERSION } from './core.js';
 export { executeBoundedDecision, issueBoundedDecisionRequest, validateBoundedDecisionResult } from './bounded-decision.js';
 export { computeMaterializationResultDigest as materializationResultDigest } from '@rus/contracts';
 

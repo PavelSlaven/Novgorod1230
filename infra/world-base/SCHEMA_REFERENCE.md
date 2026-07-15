@@ -1,9 +1,9 @@
 <!-- GENERATED FILE. Sources: infra/world-base/schema.sql, infra/world-base/schema/*.sql and infra/world-base/field-descriptions.js. Run `npm run world-db:schema-doc`; do not edit manually. -->
 # Справочник схемы `world_base`
 
-- Исполняемый источник: `infra/world-base/schema.sql` и 11 упорядоченных SQL-частей.
-- SHA-256 развёрнутого DDL: `34738343be649869f26f32917db40d6bdefe62fc9f6d813b3037f39ada7738ed`.
-- Таблиц: 121.
+- Исполняемый источник: `infra/world-base/schema.sql` и 12 упорядоченных SQL-частей.
+- SHA-256 развёрнутого DDL: `b32bded12b0912470fb81cdeedfc96d7e8bcb0dde9e8b0084703432a40e08a52`.
+- Таблиц: 138.
 - Описания берутся только из утверждённого `infra/world-base/field-descriptions.js`; отсутствие описания не заполняется эвристикой.
 
 ## Граф (каноническая карта)
@@ -3447,6 +3447,301 @@ Digests, counts и dependency order таблиц одного импорта.
 **Ограничения таблицы:**
 
 - `PRIMARY KEY (import_id, table_name)`
+
+## PR8: ориентиры, сигналы и следы среды
+
+### `world_base.environment_landmark_templates`
+
+Approved templates постоянных природных ориентиров; не party instances и не G0–G4 nodes.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | `NOT NULL` | FK → universal_categories(id): approved landmark category. |
+| `region_id` | `TEXT` | да | — | `world_base.regions(id) ON DELETE RESTRICT` | — | FK → regions(id): регион, к которому относится запись. |
+| `public_label_key` | `TEXT` | нет | — | — | `NOT NULL` | Ключ функционального player-facing label; не собственное имя. |
+| `icon_key` | `TEXT` | нет | — | — | `NOT NULL` | Approved semantic icon key без generic fallback. |
+| `navigation_value` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `distinctiveness` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `recognition_difficulty` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `morphology_policy` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Закрытая versioned morphology policy без внешних ID. |
+| `valid_from` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `valid_to` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `confidence` | `TEXT` | нет | `'unknown'` | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown','low','medium_low','medium','medium_high','high'))` | Уверенность в достоверности. Допустимо: unknown, low, medium_low, medium, medium_high, high. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.environment_landmark_profiles`
+
+Региональные совместимые наборы landmark templates и закрытая policy.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `region_id` | `TEXT` | нет | — | `world_base.regions(id) ON DELETE RESTRICT` | `NOT NULL` | FK → regions(id): регион, к которому относится запись. |
+| `profile_policy` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `valid_from` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `valid_to` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.environment_landmark_profile_entries`
+
+Нормализованные template choices landmark profile с weight и exclusivity.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `profile_id` | `TEXT` | нет | — | `world_base.environment_landmark_profiles(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
+| `template_id` | `TEXT` | нет | — | `world_base.environment_landmark_templates(id) ON DELETE RESTRICT` | `NOT NULL` | FK → region_place_generation_rules(id): правило генерации типа места. |
+| `weight` | `INTEGER` | нет | `1` | — | `NOT NULL`<br>`CHECK (weight > 0)` | Описание отсутствует. |
+| `required` | `BOOLEAN` | нет | `false` | — | `NOT NULL` | Описание отсутствует. |
+| `exclusivity_group` | `TEXT` | да | — | — | — | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY (profile_id, template_id)`
+
+### `world_base.environment_landmark_rules`
+
+Правила применения landmark profile в G1 scope и количественные пределы.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `profile_id` | `TEXT` | нет | — | `world_base.environment_landmark_profiles(id) ON DELETE RESTRICT` | `NOT NULL` | FK → environment_landmark_profiles(id): применяемый regional profile. |
+| `region_id` | `TEXT` | нет | — | `world_base.regions(id) ON DELETE RESTRICT` | `NOT NULL` | FK → regions(id): регион, к которому относится запись. |
+| `min_count` | `INTEGER` | нет | `0` | — | `NOT NULL`<br>`CHECK (min_count >= 0)` | Минимум materialized landmarks; > 0 делает пустой candidate set hard block. |
+| `max_count` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (max_count >= min_count)` | Максимум deterministic materialized landmarks. |
+| `required` | `BOOLEAN` | нет | `false` | — | `NOT NULL` | Описание отсутствует. |
+| `weight` | `INTEGER` | нет | `1` | — | `NOT NULL`<br>`CHECK (weight > 0)` | Описание отсутствует. |
+| `exclusivity_group` | `TEXT` | да | — | — | — | Группа взаимного исключения placement instances. |
+| `valid_from` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `valid_to` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- `UNIQUE INDEX environment_landmark_rule_approved_scope (world_revision_id, region_id, profile_id, COALESCE(exclusivity_group, '')) WHERE status = 'approved'`
+
+### `world_base.environment_landmark_rule_g1_classes`
+
+Допустимые классы G1 landmark rule.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `rule_id` | `TEXT` | нет | — | `world_base.environment_landmark_rules(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
+| `g1_class` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY (rule_id, g1_class)`
+
+### `world_base.environment_landmark_rule_node_types`
+
+Допустимые типы graph placement nodes landmark rule.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `rule_id` | `TEXT` | нет | — | `world_base.environment_landmark_rules(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
+| `node_type` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY (rule_id, node_type)`
+
+### `world_base.environment_landmark_rule_landscapes`
+
+Нормализованная совместимость landmark rule с landscape template.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `rule_id` | `TEXT` | нет | — | `world_base.environment_landmark_rules(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
+| `landscape_template_id` | `TEXT` | нет | — | `world_base.landscape_templates(id) ON DELETE RESTRICT` | `NOT NULL` | FK → landscape_templates(id): канонический ландшафт ребра (обязателен для offroad_crossing). |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY (rule_id, landscape_template_id)`
+
+### `world_base.environment_landmark_rule_hydrology`
+
+Нормализованная совместимость landmark rule с water template.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `rule_id` | `TEXT` | нет | — | `world_base.environment_landmark_rules(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
+| `water_body_template_id` | `TEXT` | нет | — | `world_base.water_body_templates(id) ON DELETE RESTRICT` | `NOT NULL` | FK → water_body_templates(id): водная среда ребра (река, брод, переправа, …). |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY (rule_id, water_body_template_id)`
+
+### `world_base.environment_landmark_rule_land_use`
+
+Нормализованная совместимость landmark rule с land-use template.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `rule_id` | `TEXT` | нет | — | `world_base.environment_landmark_rules(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
+| `land_use_template_id` | `TEXT` | нет | — | `world_base.land_use_templates(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY (rule_id, land_use_template_id)`
+
+### `world_base.environment_landmark_rule_routes`
+
+Нормализованная совместимость landmark rule с route template.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `rule_id` | `TEXT` | нет | — | `world_base.environment_landmark_rules(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
+| `route_template_id` | `TEXT` | нет | — | `world_base.route_templates(id) ON DELETE RESTRICT` | `NOT NULL` | FK → route_templates(id): тип движения/инфраструктуры ребра. |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY (rule_id, route_template_id)`
+
+### `world_base.environment_cue_templates`
+
+Templates временных зрительных, звуковых и запаховых signals с propagation/visibility policy.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `public_label_key` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `icon_key` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `sense` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (sense IN ('sight','sound','smell'))` | Канал восприятия: sight, sound или smell. |
+| `fading_duration_minutes` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (fading_duration_minutes >= 0)` | Длительность controlled fading после прекращения emitter. |
+| `expiry_duration_minutes` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (expiry_duration_minutes >= fading_duration_minutes)` | Возраст, после которого cue сохраняется только в истории. |
+| `propagation_policy` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Закрытая versioned policy физического распространения cue. |
+| `visibility_policy` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Закрытая versioned policy физической различимости cue. |
+| `valid_from` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `valid_to` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.environment_emission_rules`
+
+Approved causal rule emitter → cue template; отсутствие emitter блокирует cue.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `cue_template_id` | `TEXT` | нет | — | `world_base.environment_cue_templates(id) ON DELETE RESTRICT` | `NOT NULL` | FK → environment_cue_templates(id): тип порождаемого сигнала. |
+| `emitter_category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | `NOT NULL` | FK → universal_categories(id): approved emitter category. |
+| `source_type` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `region_id` | `TEXT` | да | — | `world_base.regions(id) ON DELETE RESTRICT` | — | FK → regions(id): регион, к которому относится запись. |
+| `season` | `TEXT` | да | — | — | — | Описание отсутствует. |
+| `weather_applicability` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `emission_policy` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Закрытая versioned policy интенсивности и применимости emitter. |
+| `valid_from` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `valid_to` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.environment_trace_templates`
+
+Templates наблюдаемых следов деятельности.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | `NOT NULL` | FK → universal_categories(id): approved trace category. |
+| `public_label_key` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `icon_key` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `recognition_difficulty` | `TEXT` | нет | — | — | `NOT NULL` | Сложность распознавания физически различимого следа. |
+| `valid_from` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `valid_to` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.environment_decay_profiles`
+
+Versioned policy постепенного ослабления trace strength.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `decay_policy` | `JSONB` | нет | — | — | `NOT NULL` | Закрытая versioned policy decay coefficients; не external references. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.environment_trace_creation_rules`
+
+Approved causal rule emission → trace template и decay profile.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `trace_template_id` | `TEXT` | нет | — | `world_base.environment_trace_templates(id) ON DELETE RESTRICT` | `NOT NULL` | FK → environment_trace_templates(id): создаваемый тип следа. |
+| `decay_profile_id` | `TEXT` | нет | — | `world_base.environment_decay_profiles(id) ON DELETE RESTRICT` | `NOT NULL` | FK → environment_decay_profiles(id): policy его исчезновения. |
+| `source_category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | `NOT NULL` | FK → universal_categories(id): approved source category. |
+| `source_kind` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `movement_mode` | `TEXT` | да | — | — | — | Описание отсутствует. |
+| `region_id` | `TEXT` | да | — | `world_base.regions(id) ON DELETE RESTRICT` | — | FK → regions(id): регион, к которому относится запись. |
+| `season` | `TEXT` | да | — | — | — | Описание отсутствует. |
+| `required` | `BOOLEAN` | нет | `false` | — | `NOT NULL` | Описание отсутствует. |
+| `creation_policy` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Закрытая versioned policy причинного создания trace. |
+| `valid_from` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `valid_to` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.environment_trace_rule_landscapes`
+
+Нормализованная совместимость trace rule с landscape template.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `rule_id` | `TEXT` | нет | — | `world_base.environment_trace_creation_rules(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
+| `landscape_template_id` | `TEXT` | нет | — | `world_base.landscape_templates(id) ON DELETE RESTRICT` | `NOT NULL` | FK → landscape_templates(id): канонический ландшафт ребра (обязателен для offroad_crossing). |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY (rule_id, landscape_template_id)`
+
+### `world_base.environment_trace_rule_hydrology`
+
+Нормализованная совместимость trace rule с water template.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `rule_id` | `TEXT` | нет | — | `world_base.environment_trace_creation_rules(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
+| `water_body_template_id` | `TEXT` | нет | — | `world_base.water_body_templates(id) ON DELETE RESTRICT` | `NOT NULL` | FK → water_body_templates(id): водная среда ребра (река, брод, переправа, …). |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY (rule_id, water_body_template_id)`
 
 ## Без утверждённой группы
 

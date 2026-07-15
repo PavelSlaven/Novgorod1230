@@ -14,12 +14,15 @@ if (!databaseUrl) {
   process.exit(1);
 }
 
-const schemaPath = resolve(import.meta.dirname, '../schemas/party-db/001_party_runtime.sql');
+const schemaPaths = [
+  resolve(import.meta.dirname, '../schemas/party-db/001_party_runtime.sql'),
+  resolve(import.meta.dirname, '../schemas/party-db/002_environment_landmarks.sql')
+];
 const client = new Client({ connectionString: databaseUrl });
 
 try {
   await client.connect();
-  await client.query(readFileSync(schemaPath, 'utf8'));
+  for (const schemaPath of schemaPaths) await client.query(readFileSync(schemaPath, 'utf8'));
   const result = await checkPartyDbSeed(databaseUrl);
   if (!result.ok) throw new Error(result.errors.join('\n'));
   console.log(`party schema applied: ${PARTY_RUNTIME_SCHEMA} (party_runtime_v2), required tables: ${result.requiredTables}`);

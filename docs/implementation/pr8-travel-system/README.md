@@ -194,3 +194,71 @@ Typed domain errors are versioned with the travel contracts; persistence, presen
 | 003 | `schemas/party-db/003_travel_runtime.sql` | in progress | `party_journeys`, `party_journey_legs`, node/edge-progress `party_positions` union и deferred current-leg FK для atomic travel change set. |
 
 The ordered migration loader, seed script, party preflight and Stage 25 logical target registry include migration 003. Normal turn persistence now writes normalized journey/legs/position atomically after an exact state-version lock. Its real PostgreSQL validation remains blocked only by the absent local party database; no SQL result is claimed from unit or static contract tests.
+
+## Normative basis
+
+| Path | Blob SHA | Applied requirement |
+| --- | --- | --- |
+| `AGENTS.md` | `8d41f0b179285ea3720c0b475dce752a1d4e59e0` | Mandatory sources, fail-closed materialization and audit order. |
+| `.github/AGENTS.md` | `f6f059e63d514654bc0dec701e815101b6296c30` | Repository workflow and compatibility boundaries. |
+| `data/knowledge-source/corpus/DOCUMENTS/development_rules.txt` | `2d45c61755787a122cd2994c559e84dc5b3592b0` | Minimal reversible changes and evidence-based checks. |
+| `data/knowledge-source/corpus/DOCUMENTS/code_critic_invocation_rule.txt` | `24ad8a3401a9d5b662a32c90fe59a9422b183109` | Mandatory repeat critic audit after implementation. |
+| `data/knowledge-source/corpus/DOCUMENTS/code_driven_world_materialization_architecture.md` | `d263f842ee0f8bd5879cefa6d964904a8078b2af` | Code/LLM boundary and typed data gaps. |
+| `data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md` | `a3cb941927163b623c4c0f66c6d5c0ab8f22a886` | Approved/version-pinned data and party-runtime persistence. |
+| `data/knowledge-source/corpus/DOCUMENTS/movement_locations_regions.txt` | `e1c81579d5e0e11f5507516f77524d28d7e3b440` | Physical-edge and route boundaries. |
+| `data/knowledge-source/corpus/DOCUMENTS/time_system.txt` | `67835284eb8a4767a13c8dd55fc8e929bbf126e4` | Travel only consumes formal duration/timestamp from time owner. |
+| `data/knowledge-source/corpus/DOCUMENTS/world_generation_and_turns.txt` | `a3f8492271f7b9aacc41f3619f839caf22213d8f` | One canonical turn workflow and atomic commit gate. |
+| `data/knowledge-source/corpus/DOCUMENTS/interface_ux.md` | `c75ea3157ee40278d81fc3700ec64a9f6260168c` | Visible projection contains perception, never hidden actual route. |
+| `data/knowledge-source/corpus/DOCUMENTS/read_only_database_and_graph_architecture.md` | `8eb211ab274f0de8346b770374a7cdf007c93ed3` | `world_base` read-only and fact graph only. |
+| `data/knowledge-source/corpus/DOCUMENTS/map_g0_g4_workflow.txt` | `2b5560a7d01887a755e64eef5d5963d2c2ab0917` | G0–G4/G5 distinction and first-entry boundary. |
+| `data/world-catalogs/novgorod/G1_SEMANTIC_CATALOG.md` | `40304a36a3f830a776b6f71fa1947ee217908160` | Pilot remains blocked while import/runtime visibility are unverified. |
+| `infra/world-base/SCHEMA_REFERENCE.md` | `a3aff81d4512863768754bf863c15dc414511b72` | Authoring schema/reference evidence. |
+
+## Decision log
+
+| ID / date / status | Problem and variants | Decision, basis and consequences |
+| --- | --- | --- |
+| TRAVEL-D001 / 2026-07-15 / accepted | Put lifecycle in turn, persistence or a separate domain package. | `@rus/travel` owns only pure journey transitions; turn orchestrates and repository persists. Basis: code-driven architecture. |
+| TRAVEL-D002 / 2026-07-15 / accepted | Represent in-transit state as a node, JSON blob or union. | `node | edge_progress` discriminated union is normalized in `party_positions`; no duplicate canonical location. |
+| TRAVEL-D003 / 2026-07-15 / accepted | Keep position in snapshot or normalized table. | `party_positions` is truth; snapshot deliberately omits normalized travel targets. |
+| TRAVEL-D004 / 2026-07-15 / accepted | Store only a route label or a journey with legs. | Journey and canonical legs are separate normalized records with version binding. |
+| TRAVEL-D005 / 2026-07-15 / accepted | Expose actual coordinates or projection. | Actual/perceived positions stay separate; only validated perceived/observed data reaches visibility. |
+| TRAVEL-D006 / 2026-07-15 / accepted | Turn camp into a G3/G4, party G5, or keep edge state. | Current scope uses edge-bound `camped` only; no travel-scene instance until an approved separate contract exists. |
+| TRAVEL-D007 / 2026-07-15 / accepted | Use boolean transport or concrete instance references. | `@rus/movement-routes` accepts concrete compatible transport references only. |
+| TRAVEL-D008 / 2026-07-15 / accepted | Let baseline initialization advance lifecycle. | Environment baseline only creates persistent features; cue/trace lifecycle is explicit. |
+| TRAVEL-D009 / 2026-07-15 / accepted | Add a second travel orchestrator or extend the canonical turn graph. | Existing 13-step turn workflow carries travel state blocks and normalized write targets. |
+| TRAVEL-D010 / 2026-07-15 / accepted | Commit arrival first and materialize G4 later, or one transaction. | First entry remains an atomic repository boundary; it is not claimed production-ready before approved pilot data. |
+
+## Phase tracker
+
+| Phase | Status | Evidence / next dependency |
+| --- | --- | --- |
+| 0 — baseline | completed | Rebased onto PR7 head `fc71f5d`; current branch head before this journal edit: `141615a`. |
+| 1 — normative architecture | partial | Core decisions are accepted; all named normative files are pinned above. Full cross-document amendment remains pending. |
+| 2 — contracts and RED tests | in progress | Travel, movement and environment RED/GREEN evidence is recorded; complete route/course/reroute contracts remain pending. |
+| 3 — environment baseline | completed for package boundary | Split lifecycle, bundle validation and leak tests are green; production bundle is absent. |
+| 4 — world-base bundles | partial | Runtime fields are normalized in DDL; sources/provenance, importer/readiness and approved bundle are still absent. |
+| 5 — approved pilot | blocked | No runtime-visible approved G1; no fictional promotion is allowed. |
+| 6 — party persistence | in progress | Migration 003, deferred FK and atomic normal turn writer exist; real PostgreSQL proof is blocked by missing URL. |
+| 7 — movement routes | completed for fail-closed domain contract | Explicit profile, transport and partial traversal tests are green. |
+| 8 — travel lifecycle | partial | Start, continue, stop, camp, resume, pace and abandon have pure transitions; route graph selection, course resolution and reroute remain blocked by missing approved contracts. |
+| 9 — new-game / Stage 13 | blocked | Requires approved environment bundle and runtime-visible pilot. |
+| 10 — turn integration | in progress | One canonical workflow has start/continue/lifecycle handlers and normalized persistence; production state readers and graph/bundle ports remain absent. |
+| 11 — time/body/load/transport | partial | Duration/timestamp ownership is enforced; cross-module production integration and concrete scenarios remain pending. |
+| 12 — visibility/presentation | partial | Safe projection and panel contract are green; browser E2E is unavailable. |
+| 13 — production composition | partial | PostgreSQL writer exists; approved loader/reader ports and production binding are incomplete. |
+| 14 — integration/E2E | blocked | Needs approved pilot and `PARTY_DATABASE_URL`; PostgreSQL suite is skipped 6/6. |
+| critic audit | pending | Prior result remains `CHANGES REQUIRED`; final repeat audit requires post-pilot full evidence. |
+
+## Expanded contract and migration registry
+
+| Contract | Version | Owner | Producer → consumer | Validator / errors | Persistence | Visible |
+| --- | --- | --- | --- | --- | --- |
+| `JourneyPlan` / `Journey` / `JourneyLeg` | `travel.v1` | `@rus/travel` | state reader → turn → repository | `TRAVEL_INPUT_INVALID`, version/data-gap errors | `party_journeys`, `party_journey_legs` | no |
+| `TravelPosition` | `travel.v1` | `@rus/travel` | journey → repository | `TRAVEL_POSITION_INVALID` | `party_positions` | perceived projection only |
+| `TravelChangeSetProposal` | `travel-change-set.v1` | `@rus/travel` | transition → turn writer | state-version and set-congruence checks | atomic normalized writes | no |
+| `TravelRulesBundle` | `travel-rules.v1` | `@rus/travel` | approved loader → domain | `TRAVEL_RULE_BUNDLE_MISSING`, `TRAVEL_DATA_GAP` | digest pin | no |
+| `EnvironmentCatalogBundle` | `environment-catalog.v1` | `@rus/environment-landmarks` | approved loader → environment | digest/scope/idempotency checks | environment runtime tables | observations only |
+| travel visible projection | `visible-context` nested `travel` | visibility package | turn → presentation/narrator | hidden-field rejection | visible read model | yes |
+
+Migration order is immutable: `001_party_runtime.sql` → `002_environment_landmarks.sql` → `003_travel_runtime.sql`. Migration 003 is forward-only; its foreign key is deferred only to resolve the normalized journey/current-leg cycle inside a single transaction, and any SQL error still rolls back the complete transaction.

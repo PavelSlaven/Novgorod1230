@@ -16,7 +16,7 @@
 
 - baseline уникален по `party_id`, `world_revision_id`, `g1_id`, `materializer_version`;
 - baseline materialization создаёт только persistent landmarks; cue/trace lifecycle запускается только явным `updateEnvironmentFeatures`;
-- catalog bundle имеет обязательные digest, world revision, region, period и regional permission; несоответствие является hard block;
+- catalog bundle имеет обязательные digest, world revision, region, period, regional permission, normalized source refs и passed readiness report; non-approved или revision-mismatched runtime record является hard block;
 - state version и idempotency key обязательны для lifecycle update; stale update блокируется, а повтор ключа возвращает неизменённый replay;
 - cue lifecycle не назначает intensity, recognition, navigation или durations по умолчанию: approved template обязан задавать их явно;
 - trace lifecycle не назначает recognition/navigation или пороги и коэффициенты decay по умолчанию: approved template и decay profile обязаны задавать их явно;

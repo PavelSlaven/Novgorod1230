@@ -12,7 +12,7 @@ const records = Object.freeze({
 });
 
 function approvedCatalog(overrides = {}) {
-  const bundle = { schema_version: 'environment-catalog.v2', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', regional_permissions: ['region-1'], ...records, ...overrides };
+  const bundle = { schema_version: 'environment-catalog.v2', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', regional_permissions: ['region-1'], source_refs: ['source:environment-1'], readiness_report: { pass: true }, ...records, ...overrides };
   const { catalog_digest: ignored, ...digestPayload } = bundle;
   return Object.freeze({ ...bundle, catalog_digest: overrides.catalog_digest ?? canonicalDigest(digestPayload) });
 }

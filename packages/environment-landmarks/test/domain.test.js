@@ -50,6 +50,8 @@ function approvedCatalog(overrides = {}) {
     region_id: 'region-1',
     historical_period_id: 'period-1',
     regional_permissions: ['region-1'],
+    source_refs: ['source:environment-1'],
+    readiness_report: { pass: true },
     ...catalogRecords,
     ...overrides
   };
@@ -107,6 +109,14 @@ test('environment baseline rejects an unbound catalog digest, world revision, re
   assert.throws(() => initializeEnvironmentFeatures(initializationInput({ historical_period_id: 'period:wrong' })), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_CATALOG_PERIOD_MISMATCH');
   const withoutPermission = approvedCatalog({ regional_permissions: [] });
   assert.throws(() => initializeEnvironmentFeatures(initializationInput({ catalog_bundle: withoutPermission, catalog_digest: withoutPermission.catalog_digest })), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_REGIONAL_PERMISSION_MISSING');
+  const withoutSource = approvedCatalog({ source_refs: [] });
+  assert.throws(() => initializeEnvironmentFeatures(initializationInput({ catalog_bundle: withoutSource, catalog_digest: withoutSource.catalog_digest })), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_CATALOG_PROVENANCE_MISSING');
+  const unready = approvedCatalog({ readiness_report: { pass: false } });
+  assert.throws(() => initializeEnvironmentFeatures(initializationInput({ catalog_bundle: unready, catalog_digest: unready.catalog_digest })), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_CATALOG_UNREADY');
+  const draftRecord = approvedCatalog({ landmark_rules: [{ ...catalogRecords.landmark_rules[0], status: 'draft' }] });
+  assert.throws(() => initializeEnvironmentFeatures(initializationInput({ catalog_bundle: draftRecord, catalog_digest: draftRecord.catalog_digest })), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_CATALOG_RECORD_UNAPPROVED');
+  const foreignRevision = approvedCatalog({ landmark_rules: [{ ...catalogRecords.landmark_rules[0], world_revision_id: 'revision:wrong' }] });
+  assert.throws(() => initializeEnvironmentFeatures(initializationInput({ catalog_bundle: foreignRevision, catalog_digest: foreignRevision.catalog_digest })), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_CATALOG_RECORD_REVISION_MISMATCH');
   assert.equal(validateEnvironmentCatalogBundle(initializationInput()).pass, true);
   assert.equal(validateEnvironmentCatalogBundle(initializationInput({ catalog_digest: '0'.repeat(64) })).errors[0].code, 'ENVIRONMENT_CATALOG_DIGEST_MISMATCH');
 });

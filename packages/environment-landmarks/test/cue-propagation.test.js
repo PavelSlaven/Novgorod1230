@@ -13,7 +13,7 @@ const records = Object.freeze({
   emission_rules: [{ id: 'hearth-smoke-rule', world_revision_id: 'revision-1', emitter_category_id: 'environment_emitter.hearth', status: 'approved', source_type: 'hearth', cue_template_id: 'smoke-cue', weather_applicability: {} }],
   trace_templates: [], trace_creation_rules: [], decay_profiles: [], trace_rule_landscapes: [], trace_rule_hydrology: []
 });
-const digestPayload = { schema_version: 'environment-catalog.v2', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', regional_permissions: ['region-1'], ...records };
+const digestPayload = { schema_version: 'environment-catalog.v2', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', regional_permissions: ['region-1'], source_refs: ['source:environment-1'], readiness_report: { pass: true }, ...records };
 const catalog = Object.freeze({ ...digestPayload, catalog_digest: canonicalDigest(digestPayload) });
 const emitter = Object.freeze({ emitter_id: 'camp-hearth-1', emitter_category_id: 'environment_emitter.hearth', source_type: 'hearth', source_kind: 'camp', source_id: 'hidden-camp-1', location_binding: 'g4-ridge', bearing_band: 'north', distance_band: 'near', strength_band: 'moderate' });
 

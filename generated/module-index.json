@@ -323,7 +323,7 @@
       "name": "@rus/presentation",
       "owns": [
         "`FirstGameScreen` и `TurnScreen` version 1",
-        "Character, Inventory, People, Route, Map, Journal и Diagnostic panels",
+        "Character, Inventory, Travel, People, Route, Map, Journal и Diagnostic panels",
         "visible-only validation и leak rejection",
         "compatibility `createPublicViewModel`",
         "first-screen delivery attempt, acknowledgement и Stage 27 intent handoff"
@@ -388,7 +388,7 @@
       "name": "@rus/travel",
       "owns": [
         "`validateTravelIntent`, `validateTravelPosition`, `validateJourney`, `validateTravelRulesBundle`",
-        "`buildJourneyPlan`, `createJourney`, `advanceJourney`, `calculateNextTravelBoundary`, `buildTravelChangeSetProposal`",
+        "`buildJourneyPlan`, `createJourney`, `advanceJourney`, `applyTravelLifecycleMetadata`, `calculateNextTravelBoundary`, `buildTravelChangeSetProposal`",
         "`interruptJourney`, `campJourney`, `resumeJourney`, `changeJourneyPace`, `abandonJourney`, `completeJourney`",
         "`TravelError`"
       ],
@@ -406,6 +406,7 @@
         "@rus/pipeline-engine",
         "@rus/presentation",
         "@rus/time-events-history",
+        "@rus/travel",
         "@rus/visibility-knowledge-memory"
       ],
       "name": "@rus/turn",
@@ -435,7 +436,8 @@
         "visible-context validation",
         "hidden leak detection and stripping",
         "knowledge and memory fact contracts",
-        "safe narrator package"
+        "safe narrator package",
+        "travel visible projection"
       ],
       "path": "packages/visibility-knowledge-memory",
       "public_entry": "./src/index.js",

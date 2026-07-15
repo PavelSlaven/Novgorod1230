@@ -4,6 +4,7 @@ import { mkdtemp, mkdir, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { computeStage26ScreenDigest } from '@rus/contracts';
+import { buildTravelPersistencePlan, persistTravelChangeSet } from '../src/infrastructure/postgres/party-store-turn.js';
 import {
   createGameCompositionRoot,
   createGameHttpServer,
@@ -142,4 +143,32 @@ test('infrastructure adapters require explicit provider and database ports', asy
   await assert.rejects(() => world.read('DELETE FROM world_base', []), /read-only/u);
   const llm = createLlmRoleRunnerAdapter({ execute: async () => ({ status: 'ok', parsed_json: { approved: true }, provider: 'fixture', model: 'fixture', scope: 'turn_runtime', role_id: 'test', tier_id: 'test', durationMs: 1, config_hash: 'hash' }) });
   assert.deepEqual((await llm.run({ scope: 'turn_runtime', role_id: 'test' })).output, { approved: true });
+});
+
+test('travel persistence accepts one normalized journey, leg and position change set only', () => {
+  const position = { position_kind: 'edge_progress', journey_id: 'journey:1', journey_leg_id: 'leg:1', edge_id: 'edge:1', from_g4_id: 'g4:a', to_g4_id: 'g4:b', progress_permille: 250, last_confirmed_g4_id: 'g4:a', g4_id: null, g5_node_id: null, g5_anchor_id: null, last_route_id: null };
+  const legs = [{ leg_id: 'leg:1', sequence: 1, edge_id: 'edge:1', from_g4_id: 'g4:a', to_g4_id: 'g4:b', status: 'active', base_gu: 1, base_time_minutes: 60, route_profile_id: 'route:1', progress_permille: 250, elapsed_minutes: 15, started_at: '1230-01-01T09:00:00Z', completed_at: null, interruption_id: null }];
+  const journey = { journey_id: 'journey:1', party_id: 'party:1', actor_id: 'actor:1', status: 'active', mode: 'route', origin_g4_id: 'g4:a', target_ref: { kind: 'g4', id: 'g4:b' }, intended_direction: null, pace_profile_id: 'pace:normal', movement_method: 'on_foot', current_leg_id: 'leg:1', elapsed_minutes: 15, actual_position: position, perceived_position: position, orientation_confidence: 'high', deviation_level: 'none', started_at: '1230-01-01T09:00:00Z', updated_at: '1230-01-01T09:15:00Z', world_revision_id: 'world:1', region_id: 'region:1', historical_period_id: 'period:1', travel_rules_digest: 't'.repeat(64), environment_catalog_digest: 'e'.repeat(64), algorithm_version: 'travel.v1', rng_version: 'rng:1', state_version: 4, idempotency_key: 'journey:start:1', legs };
+  const plan = buildTravelPersistencePlan([
+    { target: 'party_journeys', value: journey },
+    { target: 'party_journey_legs', value: legs },
+    { target: 'party_current_position', value: position }
+  ], { party_id: 'party:1', base_state_version: 4 });
+  assert.equal(plan.next_state_version, 5);
+  assert.equal(plan.position.edge_id, 'edge:1');
+  assert.throws(() => buildTravelPersistencePlan([{ target: 'party_journeys', value: journey }], { party_id: 'party:1', base_state_version: 4 }), { code: 'TRAVEL_WRITE_SET_INCOMPLETE' });
+});
+
+test('travel SQL writer persists journey, legs and position in one transaction scope', async () => {
+  const position = { position_kind: 'edge_progress', journey_id: 'journey:1', journey_leg_id: 'leg:1', edge_id: 'edge:1', from_g4_id: 'g4:a', to_g4_id: 'g4:b', progress_permille: 250, last_confirmed_g4_id: 'g4:a', g4_id: null, g5_node_id: null, g5_anchor_id: null, last_route_id: null };
+  const legs = [{ leg_id: 'leg:1', sequence: 1, edge_id: 'edge:1', from_g4_id: 'g4:a', to_g4_id: 'g4:b', status: 'active', base_gu: 1, base_time_minutes: 60, route_profile_id: 'route:1', progress_permille: 250, elapsed_minutes: 15, started_at: '1230-01-01T09:00:00Z', completed_at: null, interruption_id: null }];
+  const journey = { journey_id: 'journey:1', party_id: 'party:1', actor_id: 'actor:1', status: 'active', mode: 'route', origin_g4_id: 'g4:a', target_ref: { kind: 'g4', id: 'g4:b' }, intended_direction: null, pace_profile_id: 'pace:normal', movement_method: 'on_foot', current_leg_id: 'leg:1', elapsed_minutes: 15, actual_position: position, perceived_position: position, orientation_confidence: 'high', deviation_level: 'none', started_at: '1230-01-01T09:00:00Z', updated_at: '1230-01-01T09:15:00Z', world_revision_id: 'world:1', region_id: 'region:1', historical_period_id: 'period:1', travel_rules_digest: 't'.repeat(64), environment_catalog_digest: 'e'.repeat(64), algorithm_version: 'travel.v1', rng_version: 'rng:1', state_version: 4, idempotency_key: 'journey:start:1', legs };
+  const plan = buildTravelPersistencePlan([{ target: 'party_journeys', value: journey }, { target: 'party_journey_legs', value: legs }, { target: 'party_current_position', value: position }], { party_id: 'party:1', base_state_version: 4 });
+  const queries = [];
+  await persistTravelChangeSet({ query: async (sql, params) => { queries.push({ sql, params }); return { rowCount: 1 }; } }, plan);
+  assert.equal(queries.length, 3);
+  assert.match(queries[0].sql, /INSERT INTO party_runtime\.party_journeys/u);
+  assert.match(queries[1].sql, /INSERT INTO party_runtime\.party_journey_legs/u);
+  assert.match(queries[2].sql, /INSERT INTO party_runtime\.party_positions/u);
+  assert.equal(queries[0].params[23], 5);
 });

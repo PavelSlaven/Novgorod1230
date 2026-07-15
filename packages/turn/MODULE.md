@@ -44,7 +44,7 @@ The only travel command IDs are `travel.start_route`, `travel.start_course`, `tr
 
 `createTravelTurnCommandDefinitions` supplies the code-owned definitions to the normal command registry. It selects only `routing_context.travel_command_id` and returns a typed block if the state reader did not provide formal travel context and persistence proposal; it does not infer either from player text.
 
-`travel.continue`, `travel.stop`, `travel.camp`, `travel.resume`, `travel.change_pace` and `travel.abandon` execute only their corresponding `@rus/travel` pure transition with a validated active journey, pinned travel context and formal request, then build the normalized journey/leg/position write proposal. Start route/course and reroute remain blocked until their distinct approved plan/candidate contracts are wired.
+`travel.start_route` и `travel.start_course` создают journey только из заранее выбранного version-pinned `JourneyPlan`; они не выбирают edge или destination сами. `travel.continue`, `travel.stop`, `travel.camp`, `travel.resume`, `travel.change_pace` и `travel.abandon` выполняют только соответствующий pure transition при validated active journey, pinned travel context и formal request, затем строят normalized journey/leg/position proposal. Все lifecycle requests требуют explicit duration и updated_at от владельца времени. `travel.reroute` остаётся blocked до отдельного approved plan-replacement contract.
 
 ## Инварианты
 

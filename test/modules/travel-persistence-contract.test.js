@@ -12,6 +12,7 @@ test('travel persistence is the third ordered party-runtime migration', () => {
   assert.match(RUNTIME_MIGRATIONS[2], /party_runtime\.party_journeys/);
   assert.match(RUNTIME_MIGRATIONS[2], /party_runtime\.party_journey_legs/);
   assert.match(RUNTIME_MIGRATIONS[2], /position_kind/);
+  assert.match(RUNTIME_MIGRATIONS[2], /DEFERRABLE INITIALLY DEFERRED/);
 });
 
 test('Stage 25 maps normalized journeys, legs and edge-progress positions only to party_runtime', () => {

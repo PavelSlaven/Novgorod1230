@@ -516,6 +516,11 @@
       "source": "packages/contracts/src/time-knowledge-hidden-boundary.js"
     },
     {
+      "constant": "TRAVEL_PANEL_SCHEMA",
+      "schema": "travel_panel",
+      "source": "packages/presentation/src/read-models/contracts.js"
+    },
+    {
       "constant": "TURN_SCREEN_SCHEMA",
       "schema": "turn_screen",
       "source": "packages/presentation/src/read-models/contracts.js"
@@ -860,9 +865,9 @@
       "type": "sql"
     },
     {
-      "bytes": 5096,
+      "bytes": 5128,
       "path": "schemas/party-db/003_travel_runtime.sql",
-      "sha256": "30d5f22d465091f15eb9ac6a4676f6318684dcc6c5ab867c87eec9e53d8869c0",
+      "sha256": "d8253307afae902476d45135452bbda6b598bcf43a3a2c400ddd1138669f1f85",
       "type": "sql"
     },
     {

@@ -65,7 +65,8 @@ ALTER TABLE party_runtime.party_journeys
   ADD CONSTRAINT party_journeys_current_leg_fk
   FOREIGN KEY (party_id, journey_id, current_leg_id)
   REFERENCES party_runtime.party_journey_legs(party_id, journey_id, leg_id)
-  ON DELETE RESTRICT;
+  ON DELETE RESTRICT
+  DEFERRABLE INITIALLY DEFERRED;
 
 ALTER TABLE party_runtime.party_positions
   ADD COLUMN IF NOT EXISTS position_kind TEXT NOT NULL DEFAULT 'node',

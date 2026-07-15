@@ -51,8 +51,11 @@ export function validateTravelPosition(position) {
 export function buildJourneyPlan(input) {
   const value = record(input, 'TRAVEL_INPUT_INVALID', 'Journey plan must be an object.');
   validateTravelIntent({ party_id: value.party_id, actor_id: value.actor_id, mode: value.mode, route_id: value.route_id, route_chain: value.route_chain, intended_direction: value.intended_direction });
-  validateTravelPosition(value.origin_position);
-  for (const key of ['world_revision_id', 'region_id', 'historical_period_id', 'travel_rules_digest', 'environment_catalog_digest', 'algorithm_version', 'rng_version', 'idempotency_key']) required(value[key], key);
+  const origin = validateTravelPosition(value.origin_position);
+  if (origin.position_kind !== 'node') fail('TRAVEL_POSITION_INVALID', 'A new journey must start at a stationary node position.', {});
+  record(value.target_ref, 'TRAVEL_INPUT_INVALID', 'Journey target_ref must be an object.');
+  for (const key of ['movement_method', 'started_at', 'updated_at', 'world_revision_id', 'region_id', 'historical_period_id', 'travel_rules_digest', 'environment_catalog_digest', 'algorithm_version', 'rng_version', 'idempotency_key']) required(value[key], key);
+  if (!Number.isInteger(value.state_version) || value.state_version < 0) fail('TRAVEL_STATE_VERSION_MISMATCH', 'Journey plan requires a non-negative persistence state version.', { state_version: value.state_version });
   if (!Array.isArray(value.legs) || value.legs.length === 0) fail('TRAVEL_ROUTE_NOT_FOUND', 'Journey plan requires at least one canonical edge.', {});
   const legs = value.legs.map((leg, index) => normalizePlanLeg(leg, index));
   return deepFreeze({ ...structuredClone(value), legs });
@@ -61,7 +64,7 @@ export function buildJourneyPlan(input) {
 export function createJourney(plan, context) {
   const normalizedPlan = buildJourneyPlan(plan);
   assertContext(context, normalizedPlan, { checkActiveJourneyConflict: true });
-  const legs = normalizedPlan.legs.map((leg, index) => deepFreeze({ ...leg, status: index === 0 ? 'active' : 'pending', progress_permille: 0, elapsed_minutes: 0, interruption_id: null }));
+  const legs = normalizedPlan.legs.map((leg, index) => deepFreeze({ ...leg, status: index === 0 ? 'active' : 'pending', progress_permille: 0, elapsed_minutes: 0, started_at: index === 0 ? normalizedPlan.started_at : null, completed_at: null, interruption_id: null }));
   const first = legs[0];
   const actualPosition = edgePosition(normalizedPlan, first, 0);
   const perceivedPosition = edgePosition(normalizedPlan, first, 0);
@@ -71,14 +74,20 @@ export function createJourney(plan, context) {
     actor_id: normalizedPlan.actor_id,
     status: 'active',
     mode: normalizedPlan.mode,
+    origin_g4_id: normalizedPlan.origin_position.g4_id,
     target_ref: clone(normalizedPlan.target_ref),
+    intended_direction: normalizedPlan.intended_direction ?? null,
     pace_profile_id: normalizedPlan.pace_profile_id,
+    movement_method: normalizedPlan.movement_method,
     current_leg_id: first.leg_id,
+    elapsed_minutes: 0,
     legs,
     actual_position: actualPosition,
     perceived_position: perceivedPosition,
     orientation_confidence: normalizedPlan.orientation_confidence ?? 'unknown',
     deviation_level: normalizedPlan.deviation_level ?? 'none',
+    started_at: normalizedPlan.started_at,
+    updated_at: normalizedPlan.updated_at,
     world_revision_id: normalizedPlan.world_revision_id,
     region_id: normalizedPlan.region_id,
     historical_period_id: normalizedPlan.historical_period_id,
@@ -97,6 +106,12 @@ export function validateJourney(journey) {
   required(value.journey_id, 'journey_id');
   required(value.party_id, 'party_id');
   required(value.actor_id, 'actor_id');
+  for (const key of ['origin_g4_id', 'pace_profile_id', 'movement_method', 'started_at', 'updated_at', 'world_revision_id', 'region_id', 'historical_period_id', 'travel_rules_digest', 'environment_catalog_digest', 'algorithm_version', 'rng_version', 'idempotency_key']) required(value[key], key);
+  record(value.target_ref, 'TRAVEL_INPUT_INVALID', 'Journey target_ref must be an object.');
+  if (value.mode === 'course' && !value.intended_direction) fail('TRAVEL_INPUT_INVALID', 'Course journey requires intended_direction.', {});
+  if (value.mode === 'route' && value.intended_direction != null) fail('TRAVEL_INPUT_INVALID', 'Route journey cannot contain intended_direction.', {});
+  if (!Number.isInteger(value.elapsed_minutes) || value.elapsed_minutes < 0) fail('TRAVEL_INPUT_INVALID', 'Journey elapsed_minutes must be a non-negative integer.', {});
+  if (!Number.isInteger(value.state_version) || value.state_version < 0) fail('TRAVEL_STATE_VERSION_MISMATCH', 'Journey requires a non-negative persistence state version.', { state_version: value.state_version });
   if (!Array.isArray(value.legs) || value.legs.length === 0) fail('TRAVEL_INPUT_INVALID', 'Journey must contain legs.', {});
   const legs = value.legs.map((leg) => validateLeg(leg));
   const activeLegs = legs.filter((leg) => leg.status === 'active');
@@ -183,6 +198,24 @@ export function abandonJourney({ journey, context }) {
 
 export function completeJourney({ journey, context }) {
   return advanceJourney({ journey, context, progress_permille: 1000 });
+}
+
+export function applyTravelLifecycleMetadata({ before, after, elapsed_minutes, updated_at } = {}) {
+  const previous = validateJourney(before);
+  const next = validateJourney(after);
+  required(updated_at, 'updated_at');
+  if (!Number.isInteger(elapsed_minutes) || elapsed_minutes < 0) fail('TRAVEL_INPUT_INVALID', 'Travel lifecycle elapsed_minutes must be a non-negative integer.', { elapsed_minutes });
+  if (previous.journey_id !== next.journey_id || previous.party_id !== next.party_id || previous.actor_id !== next.actor_id || previous.current_leg_id == null) {
+    fail('TRAVEL_INPUT_INVALID', 'Travel lifecycle metadata must bind the same active journey and leg.', {});
+  }
+  const legs = next.legs.map((leg) => {
+    if (leg.leg_id === previous.current_leg_id) {
+      return deepFreeze({ ...leg, elapsed_minutes: leg.elapsed_minutes + elapsed_minutes, completed_at: leg.status === 'completed' ? updated_at : leg.completed_at });
+    }
+    if (leg.leg_id === next.current_leg_id && leg.status === 'active' && leg.started_at == null) return deepFreeze({ ...leg, started_at: updated_at });
+    return leg;
+  });
+  return validateJourney({ ...next, elapsed_minutes: previous.elapsed_minutes + elapsed_minutes, updated_at, legs });
 }
 
 export function buildTravelChangeSetProposal({ before, after, idempotency_key, expected_state_version } = {}) {
@@ -288,11 +321,16 @@ function normalizePlanLeg(leg, index) {
   const value = record(leg, 'TRAVEL_INPUT_INVALID', 'Journey leg must be an object.');
   for (const key of ['leg_id', 'edge_id', 'from_g4_id', 'to_g4_id', 'route_profile_id']) required(value[key], key);
   if (!Number.isInteger(value.sequence) || value.sequence !== index + 1) fail('TRAVEL_INPUT_INVALID', 'Journey legs must have contiguous sequences.', { sequence: value.sequence, index });
+  if (!Number.isInteger(value.base_time_minutes) || value.base_time_minutes <= 0) fail('TRAVEL_INPUT_INVALID', 'Journey leg requires a positive explicit base_time_minutes.', { leg_id: value.leg_id, base_time_minutes: value.base_time_minutes });
   return deepFreeze(structuredClone(value));
 }
 
 function validateLeg(leg) {
   const value = record(leg, 'TRAVEL_INPUT_INVALID', 'Journey leg must be an object.');
+  for (const key of ['leg_id', 'edge_id', 'from_g4_id', 'to_g4_id', 'route_profile_id']) required(value[key], key);
+  if (!Number.isInteger(value.sequence) || value.sequence <= 0) fail('TRAVEL_INPUT_INVALID', 'Journey leg sequence must be a positive integer.', {});
+  if (!Number.isInteger(value.base_time_minutes) || value.base_time_minutes <= 0) fail('TRAVEL_INPUT_INVALID', 'Journey leg requires a positive explicit base_time_minutes.', {});
+  if (!Number.isInteger(value.elapsed_minutes) || value.elapsed_minutes < 0) fail('TRAVEL_INPUT_INVALID', 'Journey leg elapsed_minutes must be a non-negative integer.', {});
   if (!LEG_STATUSES.has(value.status)) fail('TRAVEL_INPUT_INVALID', 'Unknown journey leg status.', { status: value.status });
   if (!Number.isInteger(value.progress_permille) || value.progress_permille < 0 || value.progress_permille > 1000) fail('TRAVEL_INPUT_INVALID', 'Leg progress must be an integer between 0 and 1000.', {});
   if (value.status === 'completed' && value.progress_permille !== 1000) fail('TRAVEL_INPUT_INVALID', 'Completed journey leg must have 1000 progress.', {});

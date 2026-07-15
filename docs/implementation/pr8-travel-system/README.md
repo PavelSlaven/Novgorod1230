@@ -61,6 +61,8 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 - 2026-07-15: `travel.continue` подключён к `@rus/travel.advanceJourney` и `buildTravelChangeSetProposal`; handler требует explicit progress/duration/visible seed/idempotency key и планирует normalized journey/leg/position targets. Остальные lifecycle handlers остаются fail-closed до своих formal requests.
 - 2026-07-15: к executable lifecycle добавлены `travel.stop`, `travel.camp`, `travel.resume`, `travel.change_pace` и `travel.abandon`; они вызывают только соответствующие pure transitions и используют тот же version-bound proposal. `start_route`, `start_course`, `reroute` остаются hard-block до approved plan/candidate contracts.
 - 2026-07-15: `travel.start_route` и `travel.start_course` принимают только заранее сформированный, version-pinned `JourneyPlan` и создают `operation: start` proposal для того же commit gate. Они не выбирают route/edge, не строят course и не обходят проверку rules bundle; `travel.reroute` остаётся hard-block до отдельного утверждённого plan-replacement contract.
+- 2026-07-15: travel plan теперь включает явные persistence metadata (`movement_method`, `started_at`, `updated_at`, `base_time_minutes`). Lifecycle metadata принимает duration/timestamp только формальным input владельца времени. PostgreSQL turn writer hard-blocks неполный или несогласованный journey/legs/position change set, записывает нормализованные rows в одной transaction и не дублирует их в state snapshot. Циклическая FK current-leg сделана `DEFERRABLE INITIALLY DEFERRED`, поэтому active journey и current leg могут быть сохранены атомарно.
+- 2026-07-15: из production party store удалён незавершённый, неиспользуемый perception persistence path: он импортировал отсутствующий module и ссылался на отсутствующие party tables. Это не является fallback: вызовы отсутствовали, а восстановление loadable fail-closed repository необходимо для PostgreSQL integration boundary.
 
 ## Checks recorded on transferred baseline
 
@@ -177,6 +179,10 @@ Typed domain errors are versioned with the travel contracts; persistence, presen
 | `node --test packages/turn/test/turn-workflow.test.js` | 2026-07-15 | рабочее дерево после `1b0f227` | PASS: 14/14 | Continue handler обновляет journey progress и выдаёт normalized write targets. |
 | `node --test packages/turn/test/turn-workflow.test.js` | 2026-07-15 | рабочее дерево после `7809b21` | PASS: 15/15 | `travel.start_route` принимает только preselected pinned plan и формирует `operation: start` proposal. |
 | `node --test packages/travel/test/domain.test.js` | 2026-07-15 | рабочее дерево после `7809b21` | PASS: 13/13 | Regression для start proposal и pure journey contracts. |
+| `npm run test:domain` | 2026-07-15 | рабочее дерево после `d7effa5` | PASS: 100/100 | Travel persistence metadata и lifecycle timestamp regression. |
+| `npm run test:apps` | 2026-07-15 | рабочее дерево после `d7effa5` | PASS: 13/13 | Writer проверяет normalized change set и выполняет journey → legs → position в одном transaction scope. |
+| `npm run test:modules` | 2026-07-15 | рабочее дерево после `d7effa5` | PASS: 261/261 | Migration 003 требует deferred current-leg FK; Stage 25 mapping regression. |
+| `node --test test/integration/party-runtime-v2-postgres.test.js` | 2026-07-15 | рабочее дерево после `d7effa5` | SKIPPED: 6 | `PARTY_DATABASE_URL` отсутствует; suite загрузился и готов проверить migration 003 на реальном PostgreSQL. |
 | `npm run test:domain` | 2026-07-15 | рабочее дерево после `1b0f227` | PASS: 97/97 | Полный domain regression. |
 
 ## Data and migration registry
@@ -185,6 +191,6 @@ Typed domain errors are versioned with the travel contracts; persistence, presen
 | --- | --- | --- | --- |
 | 001 | `schemas/party-db/001_party_runtime.sql` | existing | Base party runtime. |
 | 002 | `schemas/party-db/002_environment_landmarks.sql` | existing PR8 baseline | Environment runtime state. |
-| 003 | `schemas/party-db/003_travel_runtime.sql` | in progress | `party_journeys`, `party_journey_legs`, and a node/edge-progress `party_positions` union. |
+| 003 | `schemas/party-db/003_travel_runtime.sql` | in progress | `party_journeys`, `party_journey_legs`, node/edge-progress `party_positions` union и deferred current-leg FK для atomic travel change set. |
 
-The ordered migration loader, seed script, party preflight and Stage 25 logical target registry include migration 003. Its real PostgreSQL validation remains blocked only by the absent local party database; no SQL result is claimed from the static contract test.
+The ordered migration loader, seed script, party preflight and Stage 25 logical target registry include migration 003. Normal turn persistence now writes normalized journey/legs/position atomically after an exact state-version lock. Its real PostgreSQL validation remains blocked only by the absent local party database; no SQL result is claimed from unit or static contract tests.

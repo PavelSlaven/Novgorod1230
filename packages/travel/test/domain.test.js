@@ -4,6 +4,7 @@ import { sha256 } from '@rus/kernel';
 import {
   TravelError,
   advanceJourney,
+  applyTravelLifecycleMetadata,
   buildTravelChangeSetProposal,
   calculateNextTravelBoundary,
   campJourney,
@@ -50,6 +51,9 @@ const plan = Object.freeze({
   origin_position: position,
   target_ref: { kind: 'g4', id: 'g4:target' },
   pace_profile_id: 'pace:normal',
+  movement_method: 'on_foot',
+  started_at: '1230-01-01T09:00:00Z',
+  updated_at: '1230-01-01T09:00:00Z',
   legs: [{
     leg_id: 'leg:1', sequence: 1, edge_id: 'edge:1', from_g4_id: 'g4:start', to_g4_id: 'g4:target',
     route_profile_id: 'route-profile:1', base_gu: 1, base_time_minutes: 60
@@ -99,6 +103,11 @@ test('advance requires explicit progress and never completes a leg through a def
 
 test('empty required candidate sets hard-block journey creation', () => {
   assert.throws(() => createJourney(plan, context({ required_candidate_sets: { travel_rules: [] } })), (error) => error instanceof TravelError && error.code === 'TRAVEL_REQUIRED_CANDIDATE_SET_EMPTY');
+});
+
+test('journey plan requires persistence-normalized travel metadata and leg timing', () => {
+  assert.throws(() => createJourney({ ...plan, movement_method: null }, context()), (error) => error instanceof TravelError && error.code === 'TRAVEL_INPUT_INVALID');
+  assert.throws(() => createJourney({ ...plan, legs: [{ ...plan.legs[0], base_time_minutes: null }] }, context()), (error) => error instanceof TravelError && error.code === 'TRAVEL_INPUT_INVALID');
 });
 
 test('travel rules bundle hard-blocks missing, stale or unready approved data', () => {
@@ -168,6 +177,16 @@ test('travel change-set proposal is version-bound and contains only normalized t
     () => buildTravelChangeSetProposal({ before, after, idempotency_key: 'travel:advance:wrong', expected_state_version: 3 }),
     (error) => error instanceof TravelError && error.code === 'TRAVEL_STATE_VERSION_MISMATCH'
   );
+});
+
+test('lifecycle metadata advances elapsed time and timestamps completed and next legs from explicit clock input', () => {
+  const twoLegPlan = { ...plan, legs: [plan.legs[0], { ...plan.legs[0], leg_id: 'leg:2', sequence: 2, edge_id: 'edge:2', from_g4_id: 'g4:target', to_g4_id: 'g4:end' }] };
+  const before = createJourney(twoLegPlan, context({ known_edge_ids: ['edge:1', 'edge:2'] }));
+  const after = advanceJourney({ journey: before, context: context({ known_edge_ids: ['edge:1', 'edge:2'] }), progress_permille: 1000 });
+  const persisted = applyTravelLifecycleMetadata({ before, after, elapsed_minutes: 60, updated_at: '1230-01-01T10:00:00Z' });
+  assert.equal(persisted.elapsed_minutes, 60);
+  assert.equal(persisted.legs[0].completed_at, '1230-01-01T10:00:00Z');
+  assert.equal(persisted.legs[1].started_at, '1230-01-01T10:00:00Z');
 });
 
 test('next travel boundary selects only the earliest explicit candidate deterministically', () => {

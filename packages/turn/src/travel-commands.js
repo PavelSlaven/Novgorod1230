@@ -1,5 +1,5 @@
 import { TURN_TRAVEL_COMMAND_IDS } from './contracts.js';
-import { abandonJourney, advanceJourney, buildTravelChangeSetProposal, campJourney, changeJourneyPace, createJourney, interruptJourney, resumeJourney } from '@rus/travel';
+import { abandonJourney, advanceJourney, applyTravelLifecycleMetadata, buildTravelChangeSetProposal, campJourney, changeJourneyPace, createJourney, interruptJourney, resumeJourney } from '@rus/travel';
 
 const TRAVEL_STATE_BLOCKS = Object.freeze(['party_state', 'current_position', 'clock_weather_light', 'active_journey', 'journey_legs', 'travel_position', 'environment_landmarks', 'environment_cues', 'movement_traces', 'transport_state', 'relevant_routes', 'character_knowledge_map', 'relevant_hidden_state']);
 const TRAVEL_WRITES = Object.freeze(['party_journeys', 'party_journey_legs', 'party_current_position', 'party_environment_runs', 'party_environment_choices', 'party_environment_landmarks', 'party_environment_cues', 'party_environment_traces', 'party_visible_context_package', 'party_narrator_output']);
@@ -46,10 +46,9 @@ function transitionJourney(commandId, { retrievedState } = {}) {
   const journey = retrievedState?.active_journey;
   const travelContext = retrievedState?.travel_context;
   const request = retrievedState?.travel_advance_request;
-  if (!journey || !travelContext || !request || typeof request !== 'object') return missingContext();
-  if (!Number.isFinite(Number(request.duration_minutes)) || Number(request.duration_minutes) < 0 || !plain(request.visible_seed) || !Array.isArray(request.suggested_actions) || !text(request.idempotency_key)) return missingContext();
+  if (!journey || !travelContext || !validRequest(request)) return missingContext();
   if (commandId === 'travel.continue' && (!Number.isInteger(request.progress_permille) || request.progress_permille < 0 || request.progress_permille > 1000)) return missingContext();
-  const after = applyTransition(commandId, journey, travelContext, request);
+  const after = applyTravelLifecycleMetadata({ before: journey, after: applyTransition(commandId, journey, travelContext, request), elapsed_minutes: request.duration_minutes, updated_at: request.updated_at });
   const proposal = buildTravelChangeSetProposal({ before: journey, after, idempotency_key: request.idempotency_key, expected_state_version: retrievedState.party_state?.state_version });
   return {
     version: 1, schema: 'turn_consequence_package', status: 'resolved', duration_minutes: Number(request.duration_minutes), visible_seed: structuredClone(request.visible_seed),
@@ -95,4 +94,4 @@ function missingContext() { throw travelHandlerError('TRAVEL_HANDLER_CONTEXT_MIS
 function executableCommand(commandId) { return ['travel.start_route', 'travel.start_course', 'travel.continue', 'travel.stop', 'travel.camp', 'travel.resume', 'travel.change_pace', 'travel.abandon'].includes(commandId); }
 function plain(value) { return Boolean(value) && typeof value === 'object' && !Array.isArray(value); }
 function text(value) { return String(value ?? '').trim(); }
-function validRequest(request) { return request && typeof request === 'object' && Number.isFinite(Number(request.duration_minutes)) && Number(request.duration_minutes) >= 0 && plain(request.visible_seed) && Array.isArray(request.suggested_actions) && text(request.idempotency_key); }
+function validRequest(request) { return request && typeof request === 'object' && Number.isInteger(request.duration_minutes) && request.duration_minutes >= 0 && text(request.updated_at) && plain(request.visible_seed) && Array.isArray(request.suggested_actions) && text(request.idempotency_key); }

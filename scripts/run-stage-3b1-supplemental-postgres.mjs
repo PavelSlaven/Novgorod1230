@@ -3,7 +3,7 @@ import { resolve } from 'node:path';
 import pg from 'pg';
 
 import { applySupplementalCatalogBundle, supplementalDigest } from '../tools/world-catalog-workflow/src/index.js';
-import { loadVerifiedParentSourceRecords } from './stage3b1-parent-source-bundle.mjs';
+import { collectSupplementalParentSourceIds, loadVerifiedParentSourceRecords } from './stage3b1-parent-source-bundle.mjs';
 
 const root = resolve(import.meta.dirname, '..');
 const bundleRoot = resolve(root, 'data/knowledge-source/imports/universal-category-classification-2026-07-15/stage-3b1/bundle');
@@ -12,7 +12,7 @@ if (!databaseUrl) throw new Error('SUPPLEMENTAL_DATABASE_URL_REQUIRED');
 
 const manifest = readJson('manifest.json');
 const recordsByTable = Object.fromEntries(manifest.datasets.map((dataset) => [dataset.table, readJson(dataset.path)]));
-const parentSourceRecords = loadVerifiedParentSourceRecords((recordsByTable.record_sources ?? []).map((record) => record.source_id));
+const parentSourceRecords = loadVerifiedParentSourceRecords(collectSupplementalParentSourceIds(recordsByTable));
 const parentSourceIds = new Set(parentSourceRecords.map((record) => record.id));
 const pool = new pg.Pool({ connectionString: databaseUrl });
 const client = await pool.connect();
@@ -35,9 +35,10 @@ try {
   const rollbackResult = await verifyRollback(client, adapter);
   const quantityDimensionGuard = await verifyQuantityDimensionGuard(client);
   const quantityUnitMutationGuard = await verifyQuantityUnitMutationGuard(client);
+  const templateSourceBindingRevisionGuards = await verifyTemplateSourceBindingRevisionGuards(client);
   const statuses = await client.query(`SELECT count(*)::int AS count FROM world_base.world_revisions WHERE id = $1 AND status <> 'draft'`, [manifest.world_revision_id]);
   if (statuses.rows[0].count !== 0) throw new Error('SUPPLEMENTAL_ACTIVATION_FORBIDDEN');
-  process.stdout.write(`${JSON.stringify({ pass: true, mode: 'apply', bundle_id: manifest.bundle_id, tables: result.tables, repeat_apply: 'pass', rollback: rollbackResult, quantity_dimension_guard: quantityDimensionGuard, quantity_unit_mutation_guard: quantityUnitMutationGuard, records: Object.fromEntries(manifest.datasets.map((dataset) => [dataset.table, dataset.record_count])) }, null, 2)}\n`);
+  process.stdout.write(`${JSON.stringify({ pass: true, mode: 'apply', bundle_id: manifest.bundle_id, tables: result.tables, repeat_apply: 'pass', rollback: rollbackResult, quantity_dimension_guard: quantityDimensionGuard, quantity_unit_mutation_guard: quantityUnitMutationGuard, template_source_binding_revision_guards: templateSourceBindingRevisionGuards, records: Object.fromEntries(manifest.datasets.map((dataset) => [dataset.table, dataset.record_count])) }, null, 2)}\n`);
 } finally {
   client.release();
   await pool.end();
@@ -135,6 +136,38 @@ async function verifyQuantityUnitMutationGuard(client) {
     throw error;
   }
   throw new Error('SUPPLEMENTAL_QUANTITY_UNIT_MUTATION_GUARD_DID_NOT_BLOCK');
+}
+
+async function verifyTemplateSourceBindingRevisionGuards(client) {
+  const itemBinding = recordsByTable.item_template_source_bindings[0];
+  try {
+    await client.query(`INSERT INTO world_base.item_template_source_bindings
+      (id, item_template_id, source_id, world_revision_id, evidence_class, claim_scope, confidence, review_status, status)
+      VALUES ('stage3b1_item_source_revision_probe', $1, $2, 'novgorod_1230_research_revision_001', 'direct_novgorod', 'historical_presence', 'medium', 'needs_review', 'draft')`, [itemBinding.item_template_id, itemBinding.source_id]);
+  } catch (error) {
+    if (error?.code !== '23514' || !String(error.message).includes('item template source binding revision must match template revision')) throw error;
+  }
+  const itemResidual = await client.query(`SELECT count(*)::int AS count FROM world_base.item_template_source_bindings WHERE id = 'stage3b1_item_source_revision_probe'`);
+  if (itemResidual.rows[0].count !== 0) throw new Error('SUPPLEMENTAL_ITEM_SOURCE_REVISION_GUARD_RESIDUAL_WRITE');
+
+  const container = recordsByTable.container_templates[0];
+  await client.query('BEGIN');
+  try {
+    await client.query(`INSERT INTO world_base.container_template_source_bindings
+      (id, container_template_id, source_id, world_revision_id, evidence_class, claim_scope, confidence, review_status, status)
+      VALUES ('stage3b1_container_source_revision_probe', $1, 'src_project_stage_3b1_physical_parameter_policy', $2, 'direct_novgorod', 'historical_presence', 'medium', 'needs_review', 'draft')`, [container.id, container.world_revision_id]);
+    try {
+      await client.query(`UPDATE world_base.container_templates SET world_revision_id = 'novgorod_1230_research_revision_001' WHERE id = $1`, [container.id]);
+    } catch (error) {
+      if (error?.code !== '23514' || !String(error.message).includes('revision of a container template with source bindings is immutable')) throw error;
+      await client.query('ROLLBACK');
+      return 'pass';
+    }
+    throw new Error('SUPPLEMENTAL_CONTAINER_SOURCE_REVISION_GUARD_DID_NOT_BLOCK');
+  } catch (error) {
+    try { await client.query('ROLLBACK'); } catch { /* transaction already rolled back */ }
+    throw error;
+  }
 }
 
 async function assertRejectsReadback(run) {

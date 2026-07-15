@@ -7,6 +7,17 @@ const repositoryRoot = resolve(import.meta.dirname, '..');
 const parentManifestPath = resolve(repositoryRoot, 'data/world-base-sources/rus13-base-v1.manifest.json');
 const sourceRecordsPath = 'source_records_unified_v1.csv';
 
+// Typed evidence bindings are authoritative for promotion review. The legacy
+// record_sources ledger remains an audit input, never the sole source-ID list.
+export function collectSupplementalParentSourceIds(recordsByTable = {}) {
+  const localSourceIds = new Set((recordsByTable.source_records ?? []).map((record) => record?.id));
+  const sourceIds = ['record_sources', 'item_template_source_bindings', 'container_template_source_bindings']
+    .flatMap((table) => recordsByTable[table] ?? [])
+    .map((record) => record?.source_id)
+    .filter((id) => typeof id === 'string' && id && !localSourceIds.has(id));
+  return Object.freeze([...new Set(sourceIds)]);
+}
+
 // Parent rows remain owned by the registered base archive. A supplemental bundle
 // may reference them only after the archive and its source dataset are verified.
 export function loadVerifiedParentSourceRecords(requiredIds) {

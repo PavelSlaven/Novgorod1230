@@ -324,6 +324,17 @@ export const fields = {
     external_hand_cost: 'Closed внешний hand cost 0, 1 или 2; не является use_hand_cost.',
     status: 'draft, approved или deprecated; для template допустим только один approved profile.'
   },
+  item_template_source_bindings: {
+    item_template_id: 'FK → item_templates(id): template, к которому относится одно ограниченное evidence claim.',
+    source_id: 'FK → source_records(id): конкретный источник доказательства; project policy не заменяет historical source.',
+    world_revision_id: 'FK → world_revisions(id): revision, в котором рассматривается evidence binding.',
+    evidence_class: 'Закрытый класс evidence: direct_novgorod, direct_novgorod_or_rus_period, rus_period_with_novgorod_context или comparative_period.',
+    claim_scope: 'Точно ограниченное утверждение: historical_presence, material, construction, physical_parameter, social_access или commonness.',
+    confidence: 'Оценка уверенности в конкретном claim, не историческая частотность.',
+    review_status: 'needs_review, reviewed или rejected; только reviewed historical_presence может участвовать в promotion readiness.',
+    notes: 'Необязательная граница доказательного утверждения; не является queryable категорией.',
+    status: 'draft, approved или deprecated; approved binding не создаёт regional permission.'
+  },
   quantity_unit_definitions: {
     dimension: 'Измеряемое измерение: count, mass, volume или length.',
     canonical_unit: 'Каноническая единица внутри данного dimension; не свободный игровой текст.',
@@ -353,6 +364,17 @@ export const fields = {
     external_hand_cost: 'Closed внешний hand cost 0, 1 или 2; не является use_hand_cost.',
     inventory_role: 'none, quick_container или primary_container; это authoring role, а не сохранённый derived zone.',
     status: 'draft, approved или deprecated; для template допустим только один approved profile.'
+  },
+  container_template_source_bindings: {
+    container_template_id: 'FK → container_templates(id): container template, к которому относится одно ограниченное evidence claim.',
+    source_id: 'FK → source_records(id): конкретный источник доказательства.',
+    world_revision_id: 'FK → world_revisions(id): revision, в котором рассматривается evidence binding.',
+    evidence_class: 'Закрытый класс evidence без неявного вывода исторической допустимости.',
+    claim_scope: 'historical_presence, material, construction, physical_parameter, social_access или commonness.',
+    confidence: 'Оценка уверенности в конкретном claim.',
+    review_status: 'needs_review, reviewed или rejected; reviewed historical_presence является отдельным promotion gate.',
+    notes: 'Необязательная граница доказательного утверждения.',
+    status: 'draft, approved или deprecated; binding не создаёт региональное permission.'
   },
   container_template_facet_bindings: {
     container_template_id: 'FK → container_templates(id): классифицируемый шаблон контейнера.',

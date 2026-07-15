@@ -2,13 +2,13 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 import { validateSupplementalCatalogBundle } from '../tools/world-catalog-workflow/src/index.js';
-import { loadVerifiedParentSourceRecords } from './stage3b1-parent-source-bundle.mjs';
+import { collectSupplementalParentSourceIds, loadVerifiedParentSourceRecords } from './stage3b1-parent-source-bundle.mjs';
 
 const root = resolve(import.meta.dirname, '..');
 const bundleRoot = resolve(root, 'data/knowledge-source/imports/universal-category-classification-2026-07-15/stage-3b1/bundle');
 const manifest = readJson('manifest.json');
 const recordsByTable = Object.fromEntries(manifest.datasets.map((dataset) => [dataset.table, readJson(dataset.path)]));
-const parentSourceIds = new Set(loadVerifiedParentSourceRecords((recordsByTable.record_sources ?? []).map((record) => record.source_id)).map((record) => record.id));
+const parentSourceIds = new Set(loadVerifiedParentSourceRecords(collectSupplementalParentSourceIds(recordsByTable)).map((record) => record.id));
 const result = validateSupplementalCatalogBundle(manifest, recordsByTable, {
   externalIds: {
     regions: new Set(['region_novgorod_land']),

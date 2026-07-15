@@ -11,11 +11,13 @@ import regionCategoryOptionsSchema from '../../../schemas/materialization/region
 import itemTemplatesSchema from '../../../schemas/materialization/item-templates-v1.schema.json' with { type: 'json' };
 import itemTemplateCategoryBindingsSchema from '../../../schemas/materialization/item-template-category-bindings-v1.schema.json' with { type: 'json' };
 import itemTemplateInventoryProfilesSchema from '../../../schemas/materialization/item-template-inventory-profiles-v1.schema.json' with { type: 'json' };
+import itemTemplateSourceBindingsSchema from '../../../schemas/materialization/item-template-source-bindings-v1.schema.json' with { type: 'json' };
 import quantityUnitDefinitionsSchema from '../../../schemas/materialization/quantity-unit-definitions-v1.schema.json' with { type: 'json' };
 import itemTemplateQuantityProfilesSchema from '../../../schemas/materialization/item-template-quantity-profiles-v1.schema.json' with { type: 'json' };
 import containerTemplatesSchema from '../../../schemas/materialization/container-templates-v1.schema.json' with { type: 'json' };
 import containerTemplateFacetBindingsSchema from '../../../schemas/materialization/container-template-facet-bindings-v1.schema.json' with { type: 'json' };
 import containerTemplateInventoryProfilesSchema from '../../../schemas/materialization/container-template-inventory-profiles-v1.schema.json' with { type: 'json' };
+import containerTemplateSourceBindingsSchema from '../../../schemas/materialization/container-template-source-bindings-v1.schema.json' with { type: 'json' };
 import containerContentProfilesSchema from '../../../schemas/materialization/container-content-profiles-v1.schema.json' with { type: 'json' };
 import containerContentProfileEntriesSchema from '../../../schemas/materialization/container-content-profile-entries-v1.schema.json' with { type: 'json' };
 import itemProfileSetsSchema from '../../../schemas/materialization/item-profile-sets-v1.schema.json' with { type: 'json' };
@@ -31,9 +33,9 @@ import itemClassificationMigrationInventorySchema from '../../../schemas/materia
 export const SUPPLEMENTAL_AUTHORING_TABLES = Object.freeze(new Set([
   'source_records', 'record_sources', 'world_revisions', 'universal_categories', 'category_labels',
   'region_category_options', 'item_templates', 'item_template_category_bindings',
-  'item_template_inventory_profiles', 'quantity_unit_definitions', 'item_template_quantity_profiles',
+  'item_template_inventory_profiles', 'item_template_source_bindings', 'quantity_unit_definitions', 'item_template_quantity_profiles',
   'container_templates', 'container_template_facet_bindings',
-  'container_template_inventory_profiles', 'container_content_profiles',
+  'container_template_inventory_profiles', 'container_template_source_bindings', 'container_content_profiles',
   'container_content_profile_entries', 'item_profile_sets', 'item_profile_entries',
   'property_profiles', 'property_profile_rules', 'region_equipment_profiles',
   'region_equipment_profile_entries', 'item_classification_migration_inventory'
@@ -47,10 +49,12 @@ const STRICT_FIELDS = Object.freeze({
   region_category_options: new Set(['id', 'world_revision_id', 'region_id', 'category_id', 'valid_from', 'valid_to', 'weight', 'applicability', 'status']),
   item_template_category_bindings: new Set(['id', 'item_template_id', 'category_id', 'binding_kind', 'packing_slot_cost', 'packing_bundle_size', 'exclusivity_group', 'requires_regional_permission', 'status']),
   item_template_inventory_profiles: new Set(['id', 'item_template_id', 'world_revision_id', 'source_id', 'mass_grams', 'carry_form', 'external_hand_cost', 'status']),
+  item_template_source_bindings: new Set(['id', 'item_template_id', 'source_id', 'world_revision_id', 'evidence_class', 'claim_scope', 'valid_from', 'valid_to', 'confidence', 'review_status', 'notes', 'status']),
   quantity_unit_definitions: new Set(['id', 'dimension', 'canonical_unit', 'conversion_policy', 'status']),
   item_template_quantity_profiles: new Set(['id', 'item_template_id', 'world_revision_id', 'quantity_unit_id', 'quantity_dimension', 'minimum_quantity', 'maximum_quantity', 'default_quantity_policy', 'mass_grams_per_unit', 'stackable', 'partial_consumption_allowed', 'source_id', 'status']),
   container_template_facet_bindings: new Set(['id', 'container_template_id', 'category_id', 'facet', 'requires_regional_permission', 'status']),
   container_template_inventory_profiles: new Set(['id', 'container_template_id', 'world_revision_id', 'source_id', 'mass_grams', 'carry_form', 'external_hand_cost', 'inventory_role', 'status']),
+  container_template_source_bindings: new Set(['id', 'container_template_id', 'source_id', 'world_revision_id', 'evidence_class', 'claim_scope', 'valid_from', 'valid_to', 'confidence', 'review_status', 'notes', 'status']),
   source_records: new Set(['id', 'title', 'source_type', 'summary', 'status', 'confidence']),
   record_sources: new Set(['id', 'source_id', 'target_table', 'target_record_id', 'support_type', 'summary', 'page_or_section', 'confidence', 'contradiction_notes']),
   world_revisions: new Set(['id', 'parent_revision_id', 'title', 'effective_from', 'effective_to', 'catalog_digest', 'status']),
@@ -69,8 +73,10 @@ const STRICT_FIELDS = Object.freeze({
 const SCHEMA_IDS = Object.freeze({
   source_records: 'rus.source_records.v1', record_sources: 'rus.record_sources.v1', world_revisions: 'rus.world_revisions.v1', universal_categories: 'rus.universal_categories.v1', category_labels: 'rus.category_labels.v1', region_category_options: 'rus.region_category_options.v1',
   item_templates: 'rus.item_templates.v1', item_template_category_bindings: 'rus.item_template_category_bindings.v1', item_template_inventory_profiles: 'rus.item_template_inventory_profiles.v1',
+  item_template_source_bindings: 'rus.item_template_source_bindings.v1',
   quantity_unit_definitions: 'rus.quantity_unit_definitions.v1', item_template_quantity_profiles: 'rus.item_template_quantity_profiles.v1',
   container_templates: 'rus.container_templates.v1', container_template_facet_bindings: 'rus.container_template_facet_bindings.v1', container_template_inventory_profiles: 'rus.container_template_inventory_profiles.v1',
+  container_template_source_bindings: 'rus.container_template_source_bindings.v1',
   container_content_profiles: 'rus.container_content_profiles.v1', container_content_profile_entries: 'rus.container_content_profile_entries.v1',
   item_profile_sets: 'rus.item_profile_sets.v1', item_profile_entries: 'rus.item_profile_entries.v1',
   property_profiles: 'rus.property_profiles.v1', property_profile_rules: 'rus.property_profile_rules.v1',
@@ -82,9 +88,11 @@ const SUPPLEMENTAL_FK_DEPENDENCIES = Object.freeze({
   category_labels: ['universal_categories', 'source_records'], region_category_options: ['world_revisions', 'universal_categories'],
   item_templates: ['world_revisions', 'universal_categories', 'source_records'],
   item_template_category_bindings: ['item_templates', 'universal_categories'], item_template_inventory_profiles: ['item_templates', 'world_revisions', 'source_records'],
+  item_template_source_bindings: ['item_templates', 'world_revisions', 'source_records'],
   quantity_unit_definitions: [], item_template_quantity_profiles: ['item_templates', 'world_revisions', 'quantity_unit_definitions', 'source_records'],
   container_templates: ['world_revisions', 'universal_categories', 'source_records'], container_template_facet_bindings: ['container_templates', 'universal_categories'],
   container_template_inventory_profiles: ['container_templates', 'world_revisions', 'source_records'], container_content_profiles: ['container_templates'],
+  container_template_source_bindings: ['container_templates', 'world_revisions', 'source_records'],
   container_content_profile_entries: ['container_content_profiles', 'item_templates', 'universal_categories'], item_profile_sets: ['world_revisions'],
   item_profile_entries: ['item_profile_sets', 'item_templates', 'universal_categories'], property_profiles: ['world_revisions', 'universal_categories'],
   property_profile_rules: ['property_profiles'], region_equipment_profile_entries: ['region_equipment_profiles', 'item_templates', 'universal_categories'],
@@ -93,8 +101,10 @@ const SUPPLEMENTAL_FK_DEPENDENCIES = Object.freeze({
 const SCHEMAS = Object.freeze({
   source_records: sourceRecordsSchema, record_sources: recordSourcesSchema, world_revisions: worldRevisionsSchema, universal_categories: universalCategoriesSchema, category_labels: categoryLabelsSchema, region_category_options: regionCategoryOptionsSchema,
   item_templates: itemTemplatesSchema, item_template_category_bindings: itemTemplateCategoryBindingsSchema, item_template_inventory_profiles: itemTemplateInventoryProfilesSchema,
+  item_template_source_bindings: itemTemplateSourceBindingsSchema,
   quantity_unit_definitions: quantityUnitDefinitionsSchema, item_template_quantity_profiles: itemTemplateQuantityProfilesSchema,
   container_templates: containerTemplatesSchema, container_template_facet_bindings: containerTemplateFacetBindingsSchema, container_template_inventory_profiles: containerTemplateInventoryProfilesSchema,
+  container_template_source_bindings: containerTemplateSourceBindingsSchema,
   container_content_profiles: containerContentProfilesSchema, container_content_profile_entries: containerContentProfileEntriesSchema,
   item_profile_sets: itemProfileSetsSchema, item_profile_entries: itemProfileEntriesSchema,
   property_profiles: propertyProfilesSchema, property_profile_rules: propertyProfileRulesSchema,
@@ -227,6 +237,18 @@ export function validateSupplementalCatalogBundle(manifest, recordsByTable = {},
     if (!sources.has(record.source_id)) errors.push(`ITEM_INVENTORY_SOURCE_UNKNOWN:${record.id}`);
     if (!Number.isInteger(record.mass_grams) || record.mass_grams <= 0) errors.push(`ITEM_MASS_INVALID:${record.id}`);
   }
+  const itemSourceBindingKeys = new Set();
+  for (const record of recordsByTable.item_template_source_bindings ?? []) {
+    if (!templates.has(record.item_template_id)) errors.push(`ITEM_SOURCE_BINDING_TEMPLATE_UNKNOWN:${record.id}`);
+    if (!revisions.has(record.world_revision_id)) errors.push(`ITEM_SOURCE_BINDING_REVISION_UNKNOWN:${record.id}`);
+    if (!sources.has(record.source_id)) errors.push(`ITEM_SOURCE_BINDING_SOURCE_UNKNOWN:${record.id}`);
+    const template = (recordsByTable.item_templates ?? []).find((value) => value.id === record.item_template_id);
+    if (template && template.world_revision_id !== record.world_revision_id) errors.push(`ITEM_SOURCE_BINDING_TEMPLATE_REVISION_MISMATCH:${record.id}`);
+    if (record.valid_from && record.valid_to && record.valid_from > record.valid_to) errors.push(`ITEM_SOURCE_BINDING_PERIOD_INVALID:${record.id}`);
+    const key = `${record.item_template_id}:${record.source_id}:${record.claim_scope}`;
+    if (itemSourceBindingKeys.has(key)) errors.push(`ITEM_SOURCE_BINDING_DUPLICATE:${record.id}`);
+    itemSourceBindingKeys.add(key);
+  }
   const quantityProfilesByTemplateRevision = new Set();
   for (const record of recordsByTable.item_template_quantity_profiles ?? []) {
     if (!templates.has(record.item_template_id)) errors.push(`QUANTITY_PROFILE_TEMPLATE_UNKNOWN:${record.id}`);
@@ -246,6 +268,18 @@ export function validateSupplementalCatalogBundle(manifest, recordsByTable = {},
     if (!containers.has(record.container_template_id)) errors.push(`CONTAINER_INVENTORY_TEMPLATE_UNKNOWN:${record.id}`);
     if (!revisions.has(record.world_revision_id)) errors.push(`CONTAINER_INVENTORY_REVISION_UNKNOWN:${record.id}`);
     if (!sources.has(record.source_id)) errors.push(`CONTAINER_INVENTORY_SOURCE_UNKNOWN:${record.id}`);
+  }
+  const containerSourceBindingKeys = new Set();
+  for (const record of recordsByTable.container_template_source_bindings ?? []) {
+    if (!containers.has(record.container_template_id)) errors.push(`CONTAINER_SOURCE_BINDING_TEMPLATE_UNKNOWN:${record.id}`);
+    if (!revisions.has(record.world_revision_id)) errors.push(`CONTAINER_SOURCE_BINDING_REVISION_UNKNOWN:${record.id}`);
+    if (!sources.has(record.source_id)) errors.push(`CONTAINER_SOURCE_BINDING_SOURCE_UNKNOWN:${record.id}`);
+    const template = (recordsByTable.container_templates ?? []).find((value) => value.id === record.container_template_id);
+    if (template && template.world_revision_id !== record.world_revision_id) errors.push(`CONTAINER_SOURCE_BINDING_TEMPLATE_REVISION_MISMATCH:${record.id}`);
+    if (record.valid_from && record.valid_to && record.valid_from > record.valid_to) errors.push(`CONTAINER_SOURCE_BINDING_PERIOD_INVALID:${record.id}`);
+    const key = `${record.container_template_id}:${record.source_id}:${record.claim_scope}`;
+    if (containerSourceBindingKeys.has(key)) errors.push(`CONTAINER_SOURCE_BINDING_DUPLICATE:${record.id}`);
+    containerSourceBindingKeys.add(key);
   }
   for (const record of recordsByTable.container_template_facet_bindings ?? []) {
     if (!containers.has(record.container_template_id)) errors.push(`CONTAINER_FACET_TEMPLATE_UNKNOWN:${record.id}`);

@@ -144,6 +144,7 @@ Release: `0.23.0-migration.24`
 | `schemas/materialization/container-content-profiles-v1.schema.json` | json | 433 | `5393e7fb8e27c280582938d9bdedd75cf1be818319947f3b1a4fedc2a847dd43` |
 | `schemas/materialization/container-template-facet-bindings-v1.schema.json` | json | 650 | `e5c2d7248a1bc33b5c7c9f73f97843a640a17601d03f69b2c6cca596db7d1fc9` |
 | `schemas/materialization/container-template-inventory-profiles-v1.schema.json` | json | 799 | `6e4fac710cc9fbf56c7571bd7fc62902b866269d3d5b9dd707a4def3e5ee4c2a` |
+| `schemas/materialization/container-template-source-bindings-v1.schema.json` | json | 1334 | `078553f29a93043a11491ba4eedc96958bd36ea402e65169b95289e968233fa3` |
 | `schemas/materialization/container-templates-v1.schema.json` | json | 895 | `ea116627196d44ac915835c010f9e6eef4f23a729bfc7b2df0d76832bb1b72bf` |
 | `schemas/materialization/item-classification-migration-inventory-v1.schema.json` | json | 738 | `cbcfee73a572cb55bc1861f7444e44666ac2453abd5b341b7b36d5a9d1fc5289` |
 | `schemas/materialization/item-profile-entries-v1.schema.json` | json | 819 | `9ed6084519ada39b8f4bcb497d5df91f243d3d7a6c13b5d28697fc33983b1c61` |
@@ -151,6 +152,7 @@ Release: `0.23.0-migration.24`
 | `schemas/materialization/item-template-category-bindings-v1.schema.json` | json | 871 | `0a355b2f66a9eec372b44ef31605bbbd3c808fed9411fa5dafca3baf83e15908` |
 | `schemas/materialization/item-template-inventory-profiles-v1.schema.json` | json | 694 | `61b5a6c6c13c65dc116edf74ba0b9fec6e9fd61daef1ca1688b91aaf1e4a56b4` |
 | `schemas/materialization/item-template-quantity-profiles-v1.schema.json` | json | 1456 | `e96f91a8160b756018d9941bd8005505ee19f10c43135599cd7f2ad5e9011eb0` |
+| `schemas/materialization/item-template-source-bindings-v1.schema.json` | json | 1319 | `ba7289cbaa289d09e6aba32c29f15154ffbf37b9afa05298035488ac4c67a14f` |
 | `schemas/materialization/item-templates-v1.schema.json` | json | 582 | `5c508b395d78888f1c7d02f4dfccf3e6e98b19db51b5cb9cca5040e4679ff5f8` |
 | `schemas/materialization/normalized-instance-candidate-v2.schema.json` | json | 3150 | `ccbd9e9d518a8ab4b28e937e6e4eb19b88a26f3ea6eeff89aaf24432dd9a0b1d` |
 | `schemas/materialization/party-autonomous-update-v2.schema.json` | json | 2515 | `974cf66248b18851ac64b2e80522b0207a28f049088318d578ffbc11b8712397` |

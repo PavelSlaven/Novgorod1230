@@ -106,14 +106,14 @@ Plural references должны стать relation rows, а не массива�
 |---|---|
 | 120 stable ID proposals | `prepared` |
 | historical source families | `prepared_needs_review` |
-| individual historical source-record bindings | `blocked_by_historical_review` |
+| individual historical source-record bindings | `15_draft_needs_review;_105_missing` |
 | regional draft permissions | `implemented_draft` |
 | item/container profiles | `implemented_draft` |
 | compatibility profiles | `blocked_by_review` |
 | external legacy migration inventory | `deferred` |
 | versioned JSON datasets | `implemented_draft` |
 | supplemental dry-run | `pass` |
-| PostgreSQL supplemental apply/readback/rollback | `not_run` |
+| PostgreSQL supplemental apply/readback/rollback | `pass_25_datasets_on_current_121_table_schema` |
 | runtime activation | `not_started` |
 
 Сохраняются gaps:

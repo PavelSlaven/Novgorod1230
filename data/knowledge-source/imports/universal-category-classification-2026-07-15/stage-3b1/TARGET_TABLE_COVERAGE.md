@@ -15,11 +15,13 @@
 | item_templates | yes | yes | supplemental | yes | yes | promotion | yes | yes, 102 draft | 87 individual source links missing |
 | item_template_category_bindings | yes | yes | supplemental | yes | yes | promotion | yes | yes, 306 | materials intentionally unresolved |
 | item_template_inventory_profiles | yes | yes | supplemental | yes | yes | promotion | yes | yes, 102 draft | physical review |
+| item_template_source_bindings | yes | yes | supplemental | yes | yes | promotion hard-block | yes | yes, 15 draft/needs_review | 87 item templates still need individual historical source records; the 15 bindings do not permit promotion |
 | quantity_unit_definitions | yes | yes | supplemental | yes | yes | promotion | yes | yes, 1 draft mass unit | editorial unit review |
 | item_template_quantity_profiles | yes | yes | supplemental | yes | yes | promotion | yes | yes, 12 draft bulk profiles | quantity profile review |
 | container_templates | yes | yes | supplemental | yes | yes | promotion | yes | yes, 18 draft | individual source links missing |
 | container_template_facet_bindings | yes | yes | supplemental | yes | yes | promotion | yes | yes, 18 | material/closure evidence unresolved |
 | container_template_inventory_profiles | yes | yes | supplemental | yes | yes | promotion | yes | yes, 18 draft | physical review |
+| container_template_source_bindings | yes | yes | supplemental | yes | yes | promotion hard-block | yes | yes, 0 | all 18 containers need individual historical source records |
 | container_content_profiles | yes | yes | supplemental | yes | yes | promotion | yes | yes, 18 | general compatibility deliberately coarse |
 | container_content_profile_entries | yes | yes | supplemental | yes | yes | promotion | yes | yes, 4 specialized | no broad inferred permissions |
 | container_content_category_relations | yes | existing | not needed by this bundle | n/a | existing | promotion | existing | no | no category-wide compatibility asserted |
@@ -31,4 +33,4 @@
 | region_equipment_profile_entries | yes | yes | supplemental | yes | yes | promotion | yes | yes, 1 draft | equipment profile review |
 | item_classification_migration_inventory | yes | yes | supplemental | yes | yes | promotion | yes | empty by design | canonical legacy export unavailable |
 
-The public supplemental validator rejects unknown tables, unknown manifest provenance source IDs, unknown `record_sources` source/target references, party tables, digest mismatches and invalid dependency ordering. This is an authoring boundary, not a runtime loader.
+The public supplemental validator rejects unknown tables, unknown manifest provenance source IDs, dangling typed template-source bindings, party tables, digest mismatches and invalid dependency ordering. `record_sources` remains an audit ledger; `*_template_source_bindings` are FK-normalized, claim-scoped promotion gates. This is an authoring boundary, not a runtime loader.

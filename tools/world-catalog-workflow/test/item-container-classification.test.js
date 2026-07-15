@@ -56,6 +56,25 @@ test('item facets and container facets accept normalized bindings', () => {
   assert.deepEqual(validateItemContainerClassificationCatalog(records()), []);
 });
 
+test('canonical item/container validation rejects source evidence from another template revision', () => {
+  const value = records();
+  value.item_templates[0].world_revision_id = 'revision-1';
+  value.world_revisions = [{ id: 'revision-1', ...approved }, { id: 'revision-2', ...approved }];
+  value.source_records = [{ id: 'source-1', ...approved }];
+  value.item_template_source_bindings = [{
+    id: 'item-source-mismatch', item_template_id: 'knife-template', source_id: 'source-1', world_revision_id: 'revision-2',
+    evidence_class: 'direct_novgorod', claim_scope: 'historical_presence', confidence: 'medium', review_status: 'reviewed', ...approved
+  }];
+  value.container_template_source_bindings = [{
+    id: 'container-source-mismatch', container_template_id: 'chest-template', source_id: 'source-1', world_revision_id: 'revision-2',
+    evidence_class: 'direct_novgorod', claim_scope: 'historical_presence', confidence: 'medium', review_status: 'reviewed', ...approved
+  }];
+
+  const errors = validateItemContainerClassificationCatalog(value);
+  assert.ok(errors.includes('ITEM_SOURCE_BINDING_TEMPLATE_REVISION_MISMATCH:item-source-mismatch'));
+  assert.ok(errors.includes('CONTAINER_SOURCE_BINDING_TEMPLATE_REVISION_MISMATCH:container-source-mismatch'));
+});
+
 test('container material is an independent facet and capacity policy is exact packing_slots v1', () => {
   const value = records();
   value.universal_categories.push({ id: 'container-wood', domain: 'container', facet: 'material', ...approved });

@@ -7,7 +7,7 @@ const AUTHORING_TABLES = new Set([
   'building_layout_templates', 'building_layout_nodes', 'building_layout_edges', 'g4_materialization_profiles', 'g4_materialization_bindings',
   'g5_minilocation_templates', 'g5_anchor_templates', 'g5_edge_templates', 'materialization_slot_rules', 'container_templates',
   'g4_materialization_layout_edges',
-  'item_profile_sets', 'item_profile_entries', 'container_content_profiles', 'container_content_profile_entries', 'item_template_category_bindings', 'item_template_inventory_profiles', 'container_template_inventory_profiles', 'container_template_facet_bindings', 'container_content_category_relations', 'item_classification_migration_inventory', 'property_profiles',
+  'item_profile_sets', 'item_profile_entries', 'container_content_profiles', 'container_content_profile_entries', 'item_template_category_bindings', 'item_template_inventory_profiles', 'item_template_source_bindings', 'container_template_inventory_profiles', 'container_template_source_bindings', 'container_template_facet_bindings', 'container_content_category_relations', 'item_classification_migration_inventory', 'property_profiles',
   'property_profile_rules', 'transport_templates', 'g4_npc_materialization_rules', 'g4_item_materialization_rules', 'g4_container_materialization_rules',
   'decision_command_catalog', 'decision_policy_profiles', 'decision_policy_options'
 ]);
@@ -47,9 +47,11 @@ export const MATERIALIZATION_FOREIGN_KEYS = Object.freeze([
   ['region_npc_profile_sets','world_revision_id','world_revisions'], ['region_npc_profile_sets','archetype_id','region_npc_archetypes'], ['region_npc_profile_sets','demographic_profile_id','region_demographic_profiles'], ['region_npc_profile_sets','name_pool_id','region_name_pools'], ['region_npc_profile_sets','appearance_profile_id','region_appearance_profiles'], ['region_npc_profile_sets','clothing_profile_id','region_clothing_profiles'], ['region_npc_profile_sets','equipment_profile_id','region_equipment_profiles'], ['region_npc_profile_sets','knowledge_profile_id','region_knowledge_profiles'], ['region_npc_profile_sets','behavior_profile_id','region_behavior_profiles'], ['region_npc_profile_sets','relationship_profile_id','region_relationship_profiles'], ['region_npc_profile_sets','activity_profile_id','region_activity_profiles'], ['region_npc_profile_sets','schedule_profile_id','region_schedule_profiles'],
   ['container_templates','world_revision_id','world_revisions'], ['container_templates','category_id','universal_categories'], ['item_profile_sets','world_revision_id','world_revisions'],
   ['item_templates','category_id','universal_categories'],
+  ['item_template_source_bindings','item_template_id','item_templates'], ['item_template_source_bindings','source_id','source_records'], ['item_template_source_bindings','world_revision_id','world_revisions'],
   ['item_template_category_bindings','item_template_id','item_templates'], ['item_template_category_bindings','category_id','universal_categories'],
   ['item_template_inventory_profiles','item_template_id','item_templates'], ['item_template_inventory_profiles','world_revision_id','world_revisions'], ['item_template_inventory_profiles','source_id','source_records'],
   ['container_template_inventory_profiles','container_template_id','container_templates'], ['container_template_inventory_profiles','world_revision_id','world_revisions'], ['container_template_inventory_profiles','source_id','source_records'],
+  ['container_template_source_bindings','container_template_id','container_templates'], ['container_template_source_bindings','source_id','source_records'], ['container_template_source_bindings','world_revision_id','world_revisions'],
   ['container_template_facet_bindings','container_template_id','container_templates'], ['container_template_facet_bindings','category_id','universal_categories'],
   ['container_content_category_relations','container_category_id','universal_categories'], ['container_content_category_relations','content_category_id','universal_categories'],
   ['item_classification_migration_inventory','resolved_category_id','universal_categories'],
@@ -521,15 +523,36 @@ function validateInventoryProfiles(errors, profiles, templateIds, templateKey, p
   }
 }
 
+function validateTemplateSourceBindings(errors, bindings, templateRows, sourceIds, revisionIds, templateKey, prefix) {
+  const templateIds = new Set(templateRows.map((template) => template.id));
+  const templates = new Map(templateRows.map((template) => [template.id, template]));
+  const unique = new Set();
+  for (const binding of bindings) {
+    const id = binding?.id ?? '?';
+    if (!templateIds.has(binding?.[templateKey])) errors.push(`${prefix}_TEMPLATE_UNKNOWN:${id}`);
+    if (!sourceIds.has(binding?.source_id)) errors.push(`${prefix}_SOURCE_UNKNOWN:${id}`);
+    if (!revisionIds.has(binding?.world_revision_id)) errors.push(`${prefix}_REVISION_UNKNOWN:${id}`);
+    if (templates.get(binding?.[templateKey])?.world_revision_id !== binding?.world_revision_id) errors.push(`${prefix}_TEMPLATE_REVISION_MISMATCH:${id}`);
+    if (binding?.valid_from && binding?.valid_to && binding.valid_to < binding.valid_from) errors.push(`${prefix}_PERIOD_INVALID:${id}`);
+    const key = `${binding?.[templateKey]}:${binding?.source_id}:${binding?.claim_scope}`;
+    if (unique.has(key)) errors.push(`${prefix}_DUPLICATE:${id}`);
+    unique.add(key);
+  }
+}
+
 export function validateItemContainerClassificationCatalog(recordsByTable = {}, { worldRevisionId = null, effectiveAt = null } = {}) {
   const errors = [];
   const categories = new Map((recordsByTable.universal_categories ?? []).map((value) => [value.id, value]));
   const itemTemplateRows = recordsByTable.item_templates ?? [];
   const itemTemplates = new Set(itemTemplateRows.map((value) => value.id));
+  const sourceIds = new Set((recordsByTable.source_records ?? []).map((value) => value.id));
+  const revisionIds = new Set((recordsByTable.world_revisions ?? []).map((value) => value.id));
   const containers = new Map((recordsByTable.container_templates ?? []).map((value) => [value.id, value]));
   const itemBindings = recordsByTable.item_template_category_bindings ?? [];
   const itemInventoryProfiles = recordsByTable.item_template_inventory_profiles ?? [];
+  const itemSourceBindings = recordsByTable.item_template_source_bindings ?? [];
   const containerInventoryProfiles = recordsByTable.container_template_inventory_profiles ?? [];
+  const containerSourceBindings = recordsByTable.container_template_source_bindings ?? [];
   const containerBindings = recordsByTable.container_template_facet_bindings ?? [];
   const relations = recordsByTable.container_content_category_relations ?? [];
   const inventory = recordsByTable.item_classification_migration_inventory ?? [];
@@ -543,7 +566,9 @@ export function validateItemContainerClassificationCatalog(recordsByTable = {}, 
   }
   errors.push(...validateClassificationJsonSchema('item_template_category_bindings', itemBindings, itemTemplateCategoryBindingsSchema));
   errors.push(...validateClassificationJsonSchema('item_template_inventory_profiles', itemInventoryProfiles, itemTemplateInventoryProfilesSchema));
+  errors.push(...validateClassificationJsonSchema('item_template_source_bindings', itemSourceBindings, itemTemplateSourceBindingsSchema));
   errors.push(...validateClassificationJsonSchema('container_template_inventory_profiles', containerInventoryProfiles, containerTemplateInventoryProfilesSchema));
+  errors.push(...validateClassificationJsonSchema('container_template_source_bindings', containerSourceBindings, containerTemplateSourceBindingsSchema));
   errors.push(...validateClassificationJsonSchema('container_template_facet_bindings', containerBindings, containerTemplateFacetBindingsSchema));
   errors.push(...validateClassificationJsonSchema('container_content_category_relations', relations, containerContentCategoryRelationsSchema));
   errors.push(...validateClassificationJsonSchema('item_classification_migration_inventory', inventory, itemClassificationMigrationInventorySchema));
@@ -589,6 +614,8 @@ export function validateItemContainerClassificationCatalog(recordsByTable = {}, 
   }
   validateInventoryProfiles(errors, itemInventoryProfiles, itemTemplates, 'item_template_id', 'ITEM_INVENTORY_PROFILE');
   validateInventoryProfiles(errors, containerInventoryProfiles, new Set(containers.keys()), 'container_template_id', 'CONTAINER_INVENTORY_PROFILE', true);
+  validateTemplateSourceBindings(errors, itemSourceBindings, itemTemplateRows, sourceIds, revisionIds, 'item_template_id', 'ITEM_SOURCE_BINDING');
+  validateTemplateSourceBindings(errors, containerSourceBindings, [...containers.values()], sourceIds, revisionIds, 'container_template_id', 'CONTAINER_SOURCE_BINDING');
   for (const binding of containerBindings) {
     const id = binding?.id ?? '?';
     const category = categories.get(binding?.category_id);
@@ -690,10 +717,19 @@ export function assessItemContainerClassificationMigration({ legacyRecords = [],
 export function assessItemContainerClassificationReadiness(recordsByTable = {}, { requireRegionalPermission = false } = {}) {
   const concerns = [];
   const itemTemplates = (recordsByTable.item_templates ?? []).filter((record) => record.status === 'approved');
+  const containerTemplates = (recordsByTable.container_templates ?? []).filter((record) => record.status === 'approved');
   const bindings = (recordsByTable.item_template_category_bindings ?? []).filter((record) => record.status === 'approved');
   for (const template of itemTemplates) if (!bindings.some((binding) => binding.item_template_id === template.id && binding.binding_kind === 'object_type')) concerns.push(`MISSING_CATEGORY:${template.id}`);
   const knownTemplates = new Set((recordsByTable.item_templates ?? []).map((record) => record.id));
   for (const binding of bindings) if (!knownTemplates.has(binding.item_template_id)) concerns.push(`MISSING_TEMPLATE:${binding.id}`);
+  const resolvedHistoricalItemEvidence = new Set((recordsByTable.item_template_source_bindings ?? [])
+    .filter((binding) => binding.status === 'approved' && binding.review_status === 'reviewed' && binding.claim_scope === 'historical_presence')
+    .map((binding) => binding.item_template_id));
+  const resolvedHistoricalContainerEvidence = new Set((recordsByTable.container_template_source_bindings ?? [])
+    .filter((binding) => binding.status === 'approved' && binding.review_status === 'reviewed' && binding.claim_scope === 'historical_presence')
+    .map((binding) => binding.container_template_id));
+  for (const template of itemTemplates) if (!resolvedHistoricalItemEvidence.has(template.id)) concerns.push(`HISTORICAL_PRESENCE_EVIDENCE_REQUIRED:${template.id}`);
+  for (const template of containerTemplates) if (!resolvedHistoricalContainerEvidence.has(template.id)) concerns.push(`HISTORICAL_PRESENCE_EVIDENCE_REQUIRED:${template.id}`);
   if (requireRegionalPermission) {
     const templates = new Map(itemTemplates.map((record) => [record.id, record]));
     const permissions = recordsByTable.region_category_options ?? [];
@@ -722,7 +758,9 @@ import universalCategoryRelationsSchema from '../../../schemas/materialization/u
 import categorySchemeMappingsSchema from '../../../schemas/materialization/category-scheme-mappings-v1.schema.json' with { type: 'json' };
 import itemTemplateCategoryBindingsSchema from '../../../schemas/materialization/item-template-category-bindings-v1.schema.json' with { type: 'json' };
 import itemTemplateInventoryProfilesSchema from '../../../schemas/materialization/item-template-inventory-profiles-v1.schema.json' with { type: 'json' };
+import itemTemplateSourceBindingsSchema from '../../../schemas/materialization/item-template-source-bindings-v1.schema.json' with { type: 'json' };
 import containerTemplateInventoryProfilesSchema from '../../../schemas/materialization/container-template-inventory-profiles-v1.schema.json' with { type: 'json' };
+import containerTemplateSourceBindingsSchema from '../../../schemas/materialization/container-template-source-bindings-v1.schema.json' with { type: 'json' };
 import containerTemplateFacetBindingsSchema from '../../../schemas/materialization/container-template-facet-bindings-v1.schema.json' with { type: 'json' };
 import containerContentCategoryRelationsSchema from '../../../schemas/materialization/container-content-category-relations-v1.schema.json' with { type: 'json' };
 import itemClassificationMigrationInventorySchema from '../../../schemas/materialization/item-classification-migration-inventory-v1.schema.json' with { type: 'json' };

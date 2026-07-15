@@ -2,8 +2,8 @@
 # Справочник схемы `world_base`
 
 - Исполняемый источник: `infra/world-base/schema.sql` и 11 упорядоченных SQL-частей.
-- SHA-256 развёрнутого DDL: `571613c117ca8b420c88382ea97896ab55716508683ea8c47bf5b25c999c0fb8`.
-- Таблиц: 119.
+- SHA-256 развёрнутого DDL: `34738343be649869f26f32917db40d6bdefe62fc9f6d813b3037f39ada7738ed`.
+- Таблиц: 121.
 - Описания берутся только из утверждённого `infra/world-base/field-descriptions.js`; отсутствие описания не заполняется эвристикой.
 
 ## Граф (каноническая карта)
@@ -3468,6 +3468,54 @@ Digests, counts и dependency order таблиц одного импорта.
 
 - `CHECK (from_anchor_slot_key <> to_anchor_slot_key)`
 - `UNIQUE (profile_id, from_anchor_slot_key, to_anchor_slot_key)`
+
+### `world_base.item_template_source_bindings`
+
+Описание назначения отсутствует.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `item_template_id` | `TEXT` | нет | — | `world_base.item_templates(id) ON DELETE CASCADE` | `NOT NULL` | FK → item_templates(id): template, к которому относится одно ограниченное evidence claim. |
+| `source_id` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | FK → source_records(id): конкретный источник доказательства; project policy не заменяет historical source. |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | FK → world_revisions(id): revision, в котором рассматривается evidence binding. |
+| `evidence_class` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (evidence_class IN ('direct_novgorod','direct_novgorod_or_rus_period','rus_period_with_novgorod_context','comparative_period'))` | Закрытый класс evidence: direct_novgorod, direct_novgorod_or_rus_period, rus_period_with_novgorod_context или comparative_period. |
+| `claim_scope` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (claim_scope IN ('historical_presence','material','construction','physical_parameter','social_access','commonness'))` | Точно ограниченное утверждение: historical_presence, material, construction, physical_parameter, social_access или commonness. |
+| `valid_from` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `valid_to` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `confidence` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown','low','medium_low','medium','medium_high','high'))` | Оценка уверенности в конкретном claim, не историческая частотность. |
+| `review_status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (review_status IN ('needs_review','reviewed','rejected'))` | needs_review, reviewed или rejected; только reviewed historical_presence может участвовать в promotion readiness. |
+| `notes` | `TEXT` | да | — | — | — | Необязательная граница доказательного утверждения; не является queryable категорией. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | draft, approved или deprecated; approved binding не создаёт regional permission. |
+
+**Ограничения таблицы:**
+
+- `CHECK (valid_to IS NULL OR valid_from IS NULL OR valid_to >= valid_from)`
+- `UNIQUE (item_template_id, source_id, claim_scope)`
+
+### `world_base.container_template_source_bindings`
+
+Описание назначения отсутствует.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `container_template_id` | `TEXT` | нет | — | `world_base.container_templates(id) ON DELETE CASCADE` | `NOT NULL` | FK → container_templates(id): container template, к которому относится одно ограниченное evidence claim. |
+| `source_id` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | FK → source_records(id): конкретный источник доказательства. |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | FK → world_revisions(id): revision, в котором рассматривается evidence binding. |
+| `evidence_class` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (evidence_class IN ('direct_novgorod','direct_novgorod_or_rus_period','rus_period_with_novgorod_context','comparative_period'))` | Закрытый класс evidence без неявного вывода исторической допустимости. |
+| `claim_scope` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (claim_scope IN ('historical_presence','material','construction','physical_parameter','social_access','commonness'))` | historical_presence, material, construction, physical_parameter, social_access или commonness. |
+| `valid_from` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `valid_to` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `confidence` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown','low','medium_low','medium','medium_high','high'))` | Оценка уверенности в конкретном claim. |
+| `review_status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (review_status IN ('needs_review','reviewed','rejected'))` | needs_review, reviewed или rejected; reviewed historical_presence является отдельным promotion gate. |
+| `notes` | `TEXT` | да | — | — | — | Необязательная граница доказательного утверждения. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | draft, approved или deprecated; binding не создаёт региональное permission. |
+
+**Ограничения таблицы:**
+
+- `CHECK (valid_to IS NULL OR valid_from IS NULL OR valid_to >= valid_from)`
+- `UNIQUE (container_template_id, source_id, claim_scope)`
 
 ### `world_base.quantity_unit_definitions`
 

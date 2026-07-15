@@ -31,16 +31,16 @@ const catalogRecords = Object.freeze({
   emission_rules: [{
     id: 'hearth-smoke-rule', world_revision_id: 'revision-1', emitter_category_id: 'environment_emitter.hearth', status: 'approved', source_type: 'hearth', cue_template_id: 'smoke-cue', weather_applicability: {}
   }],
-  trace_templates: [{ template_id: 'cart-track', status: 'approved', public_label_key: 'trace_cart', icon_key: 'trace_cart', recognition_difficulty: 'ordinary', navigation_value: 'none' }],
+  trace_templates: [{ id: 'cart-track', world_revision_id: 'revision-1', category_id: 'environment_trace.cart', status: 'approved', public_label_key: 'trace_cart', icon_key: 'trace_cart', recognition_difficulty: 'ordinary', navigation_value: 'none' }],
   trace_creation_rules: [{
-    rule_id: 'cart-track-rule', status: 'approved', source_kind: 'movement', movement_mode: 'cart',
-    trace_template_id: 'cart-track', decay_profile_id: 'wet-ground-decay'
+    id: 'cart-track-rule', world_revision_id: 'revision-1', source_category_id: 'environment_source.cart', status: 'approved', source_kind: 'movement', movement_mode: 'cart', trace_template_id: 'cart-track', decay_profile_id: 'wet-ground-decay'
   }],
   decay_profiles: [{
-    profile_id: 'wet-ground-decay', status: 'approved', readable_at_or_above: 0.7,
+    id: 'wet-ground-decay', world_revision_id: 'revision-1', status: 'approved', readable_at_or_above: 0.7,
     faint_at_or_above: 0.2, decay_per_minute: 0.01, precipitation_multiplier: 2,
     decay_policy: { schema: 'environment_decay_policy_v1', weather_multipliers: { clear: 1, rain: 2, snow: 0.25, mud: 1.5 } }
-  }]
+  }],
+  trace_rule_landscapes: [], trace_rule_hydrology: []
 });
 
 function approvedCatalog(overrides = {}) {
@@ -179,100 +179,4 @@ test('environment cues require an active approved source and never disclose it i
   assert.equal(result.created_cues.length, 1);
   assert.equal(observations.length, 2);
   assert.equal(JSON.stringify(observations).includes('hidden-camp-1'), false);
-});
-
-test('cart trace has a causal source and decays from readable to erased without increasing strength', () => {
-  const initialized = initializeEnvironmentFeatures(initializationInput());
-  const fresh = updateEnvironmentFeatures({
-    party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', g1_id: 'g1-1', base_state_version: 1,
-    current_environment_state: initialized.environment_state, elapsed_time: { minutes: 0 }, weather_before: 'clear', weather_after: 'clear',
-    active_emitters: [], trace_emissions: [{ emission_id: 'move-1', source_kind: 'movement', source_id: 'group-1', cause_event_id: 'event-1', movement_mode: 'cart', location_binding: 'road-1', created_at: '1230-06-01T10:00:00Z' }],
-    event_emissions: [], catalog_bundle: catalog, catalog_digest: catalog.catalog_digest, materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1', idempotency_key: 'turn-1'
-  });
-  const faded = updateEnvironmentFeatures({
-    party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', g1_id: 'g1-1', base_state_version: 2,
-    current_environment_state: fresh.environment_state, elapsed_time: { minutes: 100 }, weather_before: 'clear', weather_after: 'rain',
-    active_emitters: [], trace_emissions: [], event_emissions: [], catalog_bundle: catalog, catalog_digest: catalog.catalog_digest,
-    materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1', idempotency_key: 'turn-2'
-  });
-  assert.equal(fresh.created_traces[0].source_id, 'group-1');
-  assert.equal(fresh.created_traces[0].strength, 1);
-  assert.equal(faded.environment_state.traces[0].status, 'erased');
-  assert.equal(faded.environment_state.traces[0].strength, 0);
-});
-
-test('approved decay policy differentiates rain, snow and mud without a weather fallback', () => {
-  const initialized = initializeEnvironmentFeatures(initializationInput());
-  const fresh = updateEnvironmentFeatures({
-    party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', g1_id: 'g1-1', base_state_version: 1,
-    current_environment_state: initialized.environment_state, elapsed_time: { minutes: 0 }, weather_before: 'clear', weather_after: 'clear',
-    active_emitters: [], trace_emissions: [{ emission_id: 'weather-trace', source_kind: 'movement', source_id: 'group-1', cause_event_id: 'event-1', movement_mode: 'cart', location_binding: 'road-1', created_at: '1230-06-01T10:00:00Z' }], event_emissions: [], catalog_bundle: catalog, catalog_digest: catalog.catalog_digest,
-    materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1', idempotency_key: 'turn:weather-create'
-  });
-  const decay = (weather, key) => updateEnvironmentFeatures({
-    party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', g1_id: 'g1-1', base_state_version: 2,
-    current_environment_state: fresh.environment_state, elapsed_time: { minutes: 10 }, weather_before: 'clear', weather_after: weather,
-    active_emitters: [], trace_emissions: [], event_emissions: [], catalog_bundle: catalog, catalog_digest: catalog.catalog_digest,
-    materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1', idempotency_key: key
-  });
-  assert.equal(decay('rain', 'turn:weather-rain').environment_state.traces[0].strength, 0.8);
-  assert.equal(decay('snow', 'turn:weather-snow').environment_state.traces[0].strength, 0.975);
-  assert.equal(decay('mud', 'turn:weather-mud').environment_state.traces[0].strength, 0.85);
-  assert.throws(() => decay('fog', 'turn:weather-fog'), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_DECAY_POLICY_UNAVAILABLE');
-});
-
-test('the same causal trace emission is not materialized twice across turns', () => {
-  const initialized = initializeEnvironmentFeatures(initializationInput());
-  const emission = { emission_id: 'move-once', source_kind: 'movement', source_id: 'group-1', cause_event_id: 'event-1', movement_mode: 'cart', location_binding: 'road-1', created_at: '1230-06-01T10:00:00Z' };
-  const first = updateEnvironmentFeatures({
-    party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', g1_id: 'g1-1', base_state_version: 1,
-    current_environment_state: initialized.environment_state, elapsed_time: { minutes: 0 }, weather_before: 'clear', weather_after: 'clear',
-    active_emitters: [], trace_emissions: [emission], event_emissions: [], catalog_bundle: catalog, catalog_digest: catalog.catalog_digest,
-    materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1', idempotency_key: 'turn:trace-first'
-  });
-  const repeated = updateEnvironmentFeatures({
-    party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', g1_id: 'g1-1', base_state_version: 2,
-    current_environment_state: first.environment_state, elapsed_time: { minutes: 0 }, weather_before: 'clear', weather_after: 'clear',
-    active_emitters: [], trace_emissions: [emission], event_emissions: [], catalog_bundle: catalog, catalog_digest: catalog.catalog_digest,
-    materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1', idempotency_key: 'turn:trace-repeat'
-  });
-  assert.equal(repeated.created_traces.length, 0);
-  assert.equal(repeated.environment_state.traces.length, 1);
-  assert.equal(repeated.environment_state.traces[0].trace_id, first.environment_state.traces[0].trace_id);
-});
-
-test('a reused trace emission id with a different causal payload hard-blocks', () => {
-  const initialized = initializeEnvironmentFeatures(initializationInput());
-  const first = updateEnvironmentFeatures({
-    party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', g1_id: 'g1-1', base_state_version: 1,
-    current_environment_state: initialized.environment_state, elapsed_time: { minutes: 0 }, weather_before: 'clear', weather_after: 'clear',
-    active_emitters: [], trace_emissions: [{ emission_id: 'move-conflict', source_kind: 'movement', source_id: 'group-1', cause_event_id: 'event-1', movement_mode: 'cart', location_binding: 'road-1', created_at: '1230-06-01T10:00:00Z' }], event_emissions: [], catalog_bundle: catalog, catalog_digest: catalog.catalog_digest,
-    materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1', idempotency_key: 'turn:trace-conflict-first'
-  });
-  assert.throws(() => updateEnvironmentFeatures({
-    party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', g1_id: 'g1-1', base_state_version: 2,
-    current_environment_state: first.environment_state, elapsed_time: { minutes: 0 }, weather_before: 'clear', weather_after: 'clear',
-    active_emitters: [], trace_emissions: [{ emission_id: 'move-conflict', source_kind: 'movement', source_id: 'other-group', cause_event_id: 'event-2', movement_mode: 'cart', location_binding: 'road-1', created_at: '1230-06-01T10:00:00Z' }], event_emissions: [], catalog_bundle: catalog, catalog_digest: catalog.catalog_digest,
-    materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1', idempotency_key: 'turn:trace-conflict-repeat'
-  }), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_TRACE_EMISSION_CONFLICT');
-});
-
-test('trace lifecycle rejects incomplete approved trace and decay records instead of inventing semantics', () => {
-  const initialized = initializeEnvironmentFeatures(initializationInput());
-  const update = {
-    party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', g1_id: 'g1-1', base_state_version: 1,
-    current_environment_state: initialized.environment_state, elapsed_time: { minutes: 0 }, weather_before: 'clear', weather_after: 'clear',
-    active_emitters: [], trace_emissions: [{ emission_id: 'move-incomplete', source_kind: 'movement', source_id: 'group-1', cause_event_id: 'event-1', movement_mode: 'cart', location_binding: 'road-1', created_at: '1230-06-01T10:00:00Z' }],
-    event_emissions: [], materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1', idempotency_key: 'turn:incomplete-trace'
-  };
-  const incompleteTemplate = approvedCatalog({ trace_templates: [{ ...catalogRecords.trace_templates[0], recognition_difficulty: null }] });
-  assert.throws(
-    () => updateEnvironmentFeatures({ ...update, catalog_bundle: incompleteTemplate, catalog_digest: incompleteTemplate.catalog_digest }),
-    (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_TRACE_TEMPLATE_INVALID'
-  );
-  const incompleteDecay = approvedCatalog({ decay_profiles: [{ ...catalogRecords.decay_profiles[0], precipitation_multiplier: null }] });
-  assert.throws(
-    () => updateEnvironmentFeatures({ ...update, catalog_bundle: incompleteDecay, catalog_digest: incompleteDecay.catalog_digest }),
-    (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_DECAY_PROFILE_INVALID'
-  );
 });

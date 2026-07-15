@@ -6,7 +6,7 @@ export function readCatalog(bundle, input) {
   requiredObject(bundle, 'catalog_bundle');
   for (const key of ['schema_version', 'world_revision_id', 'region_id', 'historical_period_id', 'catalog_digest', 'regional_permissions']) requiredValue(bundle[key], `catalog_bundle.${key}`);
   if (bundle.schema_version !== 'environment-catalog.v2') throw new EnvironmentFeatureError('ENVIRONMENT_CATALOG_INVALID', 'Unsupported environment catalog schema version.', { schema_version: bundle.schema_version });
-  for (const key of ['landmark_rules', 'landmark_profiles', 'landmark_profile_entries', 'landmark_templates', 'landmark_rule_g1_classes', 'landmark_rule_node_types', 'landmark_rule_landscapes', 'landmark_rule_hydrology', 'landmark_rule_land_use', 'landmark_rule_routes', 'cue_templates', 'emission_rules', 'trace_templates', 'trace_creation_rules', 'decay_profiles', 'regional_permissions']) {
+  for (const key of ['landmark_rules', 'landmark_profiles', 'landmark_profile_entries', 'landmark_templates', 'landmark_rule_g1_classes', 'landmark_rule_node_types', 'landmark_rule_landscapes', 'landmark_rule_hydrology', 'landmark_rule_land_use', 'landmark_rule_routes', 'cue_templates', 'emission_rules', 'trace_templates', 'trace_creation_rules', 'decay_profiles', 'trace_rule_landscapes', 'trace_rule_hydrology', 'regional_permissions']) {
     if (!Array.isArray(bundle[key])) throw new EnvironmentFeatureError('ENVIRONMENT_CATALOG_INVALID', `catalog_bundle.${key} must be an array.`);
   }
   const { catalog_digest, ...digestPayload } = bundle;

@@ -11,7 +11,7 @@ const records = Object.freeze({
   landmark_rule_g1_classes: [{ rule_id: 'ridge-rule', g1_class: 'rural' }], landmark_rule_node_types: [{ rule_id: 'ridge-rule', node_type: 'ridge' }], landmark_rule_landscapes: [{ rule_id: 'ridge-rule', landscape_template_id: 'landscape-ridge' }], landmark_rule_hydrology: [], landmark_rule_land_use: [], landmark_rule_routes: [],
   cue_templates: [{ id: 'smoke-cue', world_revision_id: 'revision-1', category_id: 'environment_cue.smoke', status: 'approved', sense: 'sight', public_label_key: 'smoke', icon_key: 'smoke', base_intensity: 1, recognition_difficulty: 'ordinary', navigation_value: 'none', fading_duration_minutes: 30, expiry_duration_minutes: 60, propagation_policy: { schema: 'environment_cue_propagation_v1', wind_effects: { west: { intensity_multiplier: 1.2, drift_band: 'eastward' }, east: { intensity_multiplier: 0.8, drift_band: 'westward' } } } }],
   emission_rules: [{ id: 'hearth-smoke-rule', world_revision_id: 'revision-1', emitter_category_id: 'environment_emitter.hearth', status: 'approved', source_type: 'hearth', cue_template_id: 'smoke-cue', weather_applicability: {} }],
-  trace_templates: [], trace_creation_rules: [], decay_profiles: []
+  trace_templates: [], trace_creation_rules: [], decay_profiles: [], trace_rule_landscapes: [], trace_rule_hydrology: []
 });
 const digestPayload = { schema_version: 'environment-catalog.v2', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', regional_permissions: ['region-1'], ...records };
 const catalog = Object.freeze({ ...digestPayload, catalog_digest: canonicalDigest(digestPayload) });

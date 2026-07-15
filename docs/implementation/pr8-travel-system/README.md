@@ -85,6 +85,7 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 - 2026-07-15: `assessEnvironmentFeatureReadiness` проверяет полный environment authoring set до runtime: approved/pinned records, DDL-derived internal references, policy schemas и provenance. Она не создаёт pilot data; пустые profiles, unproven policies и отсутствующие schemas остаются typed readiness gaps.
 - 2026-07-15: все environment authoring tables из PR8 DDL зарегистрированы в supplemental catalog registry со строгими JSON Schema; неподходящая policy блокируется ещё в draft authoring bundle. Регистрация не повышает статус записей и не заменяет approved pilot/import/readback gate.
 - 2026-07-15: `EnvironmentCatalogBundle` требует нормализованные `source_refs`, passed `readiness_report` и только approved records pinned к revision bundle. Эти pure-contract checks не утверждают records и не заменяют production bundle loader.
+- 2026-07-15: `EnvironmentCatalogBundle` отклоняет dangling internal profile/template/rule/cue/trace/decay references на входе, а не оставляет невалидную связь до materialization/lifecycle. Внешние graph-template FK остаются в authoring readiness, поскольку не входят в bundle.
 - 2026-07-15: trace emission с несколькими одновременно применимыми creation rules теперь hard-blocks. Runtime не выбирает первую запись из порядка bundle.
 
 ## Checks recorded on transferred baseline

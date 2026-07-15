@@ -117,6 +117,8 @@ test('environment baseline rejects an unbound catalog digest, world revision, re
   assert.throws(() => initializeEnvironmentFeatures(initializationInput({ catalog_bundle: draftRecord, catalog_digest: draftRecord.catalog_digest })), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_CATALOG_RECORD_UNAPPROVED');
   const foreignRevision = approvedCatalog({ landmark_rules: [{ ...catalogRecords.landmark_rules[0], world_revision_id: 'revision:wrong' }] });
   assert.throws(() => initializeEnvironmentFeatures(initializationInput({ catalog_bundle: foreignRevision, catalog_digest: foreignRevision.catalog_digest })), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_CATALOG_RECORD_REVISION_MISMATCH');
+  const danglingProfileEntry = approvedCatalog({ landmark_profile_entries: [{ ...catalogRecords.landmark_profile_entries[0], profile_id: 'missing-profile' }] });
+  assert.throws(() => initializeEnvironmentFeatures(initializationInput({ catalog_bundle: danglingProfileEntry, catalog_digest: danglingProfileEntry.catalog_digest })), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_CATALOG_REFERENCE_MISSING');
   assert.equal(validateEnvironmentCatalogBundle(initializationInput()).pass, true);
   assert.equal(validateEnvironmentCatalogBundle(initializationInput({ catalog_digest: '0'.repeat(64) })).errors[0].code, 'ENVIRONMENT_CATALOG_DIGEST_MISMATCH');
 });
@@ -131,7 +133,7 @@ test('environment baseline requires explicit approved selection weights and coun
 
 test('landmark baseline uses only the approved profile chain and declared scope bindings', () => {
   const profileMissing = approvedCatalog({ landmark_profiles: [] });
-  assert.throws(() => initializeEnvironmentFeatures(initializationInput({ catalog_bundle: profileMissing, catalog_digest: profileMissing.catalog_digest, seed_context: { ...initializationInput().seed_context, catalog_digest: profileMissing.catalog_digest } })), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_LANDMARK_PROFILE_MISSING');
+  assert.throws(() => initializeEnvironmentFeatures(initializationInput({ catalog_bundle: profileMissing, catalog_digest: profileMissing.catalog_digest, seed_context: { ...initializationInput().seed_context, catalog_digest: profileMissing.catalog_digest } })), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_CATALOG_REFERENCE_MISSING');
   assert.throws(() => initializeEnvironmentFeatures(initializationInput({ g1_graph_snapshot: { placement_candidates: [{ binding_id: 'g4-ridge', binding_type: 'g4_node', node_type: 'ridge', landscape_template_id: 'landscape-ridge', weight: 1 }] } })), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_SCOPE_INPUT_INCOMPLETE');
   const outsideScope = initializeEnvironmentFeatures(initializationInput({ g1_graph_snapshot: { g1_class: 'urban', placement_candidates: [{ binding_id: 'g4-ridge', binding_type: 'g4_node', node_type: 'ridge', landscape_template_id: 'landscape-ridge', weight: 1 }] } }));
   assert.deepEqual(outsideScope.created_landmarks, []);

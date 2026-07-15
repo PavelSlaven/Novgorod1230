@@ -680,6 +680,12 @@
       "type": "json"
     },
     {
+      "bytes": 1334,
+      "path": "schemas/materialization/container-template-source-bindings-v1.schema.json",
+      "sha256": "078553f29a93043a11491ba4eedc96958bd36ea402e65169b95289e968233fa3",
+      "type": "json"
+    },
+    {
       "bytes": 895,
       "path": "schemas/materialization/container-templates-v1.schema.json",
       "sha256": "ea116627196d44ac915835c010f9e6eef4f23a729bfc7b2df0d76832bb1b72bf",
@@ -719,6 +725,12 @@
       "bytes": 1456,
       "path": "schemas/materialization/item-template-quantity-profiles-v1.schema.json",
       "sha256": "e96f91a8160b756018d9941bd8005505ee19f10c43135599cd7f2ad5e9011eb0",
+      "type": "json"
+    },
+    {
+      "bytes": 1319,
+      "path": "schemas/materialization/item-template-source-bindings-v1.schema.json",
+      "sha256": "ba7289cbaa289d09e6aba32c29f15154ffbf37b9afa05298035488ac4c67a14f",
       "type": "json"
     },
     {

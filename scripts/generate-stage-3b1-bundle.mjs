@@ -68,6 +68,21 @@ const historicalRecordSources = [...historicalSourceByTemplateId].map(([target_r
   summary: 'Поддерживает только проверку широкого типа; не доказывает узкую типологию, параметры или commonness.',
   confidence: 'medium'
 }));
+// These bindings encode the exact claim made by the draft: the registered
+// source is relevant to broad historical presence. It remains needs_review,
+// so it cannot promote a template or create a regional permission.
+const itemTemplateSourceBindings = [...historicalSourceByTemplateId].map(([item_template_id, source_id]) => ({
+  id: `item_source_binding_${item_template_id}`,
+  item_template_id,
+  source_id,
+  world_revision_id: revisionId,
+  evidence_class: 'direct_novgorod',
+  claim_scope: 'historical_presence',
+  confidence: 'medium',
+  review_status: 'needs_review',
+  notes: 'Поддерживает только broad-type presence; narrow typology, material, physical parameters and commonness require separate review.',
+  status: 'draft'
+}));
 const itemTemplates = itemRows.map((row) => ({ id: row.id, world_revision_id: revisionId, region_id: 'region_novgorod_land', category_id: objectCategoryId(row), source_id: sourceId, title: row.title, status: 'draft' }));
 const containerTemplates = containerRows.map((row) => ({ ...(() => { const p = containerProfile(row); return { id: row.id, world_revision_id: revisionId, region_id: 'region_novgorod_land', category_id: objectCategoryId(row), source_id: sourceId, capacity: p.capacity, packing_slot_cost: p.packing_slot_cost, capacity_policy: { version: 1, mode: 'packing_slots', unit: 'packing_slot' }, access_policy: { version: 1, mode: 'manual' }, status: 'draft' }; })() }));
 const itemBindings = itemRows.flatMap((row) => [
@@ -121,9 +136,9 @@ const datasets = {
   source_records: [{ id: sourceId, title: 'Stage 3B-1 physical parameter authoring policy', source_type: 'project_note', summary: 'Норматив для игровых инженерных оценок физического профиля; не является историческим доказательством.', status: 'draft', confidence: 'medium' }],
   world_revisions: [{ id: revisionId, parent_revision_id: 'novgorod_1230_research_revision_001', title: 'Novgorod 1230 item catalogue revision 001', catalog_digest: canonicalCatalogDigest, status: 'draft' }],
   universal_categories: categories, category_labels: labels, region_category_options: regionOptions,
-  item_templates: itemTemplates, item_template_category_bindings: itemBindings, item_template_inventory_profiles: itemProfiles,
+  item_templates: itemTemplates, item_template_category_bindings: itemBindings, item_template_inventory_profiles: itemProfiles, item_template_source_bindings: itemTemplateSourceBindings,
   quantity_unit_definitions: quantityUnits, item_template_quantity_profiles: itemQuantityProfiles,
-  container_templates: containerTemplates, container_template_facet_bindings: containerFacets, container_template_inventory_profiles: containerInventoryProfiles,
+  container_templates: containerTemplates, container_template_facet_bindings: containerFacets, container_template_inventory_profiles: containerInventoryProfiles, container_template_source_bindings: [],
   container_content_profiles: contentProfiles, container_content_profile_entries: contentEntries,
   item_profile_sets: itemProfileSets, item_profile_entries: itemProfileEntries,
   property_profiles: propertyProfiles, property_profile_rules: propertyRules,
@@ -134,8 +149,10 @@ const datasets = {
 const schemaIds = {
   source_records: 'rus.source_records.v1', world_revisions: 'rus.world_revisions.v1', universal_categories: 'rus.universal_categories.v1', category_labels: 'rus.category_labels.v1', region_category_options: 'rus.region_category_options.v1',
   item_templates: 'rus.item_templates.v1', item_template_category_bindings: 'rus.item_template_category_bindings.v1', item_template_inventory_profiles: 'rus.item_template_inventory_profiles.v1',
+  item_template_source_bindings: 'rus.item_template_source_bindings.v1',
   quantity_unit_definitions: 'rus.quantity_unit_definitions.v1', item_template_quantity_profiles: 'rus.item_template_quantity_profiles.v1',
   container_templates: 'rus.container_templates.v1', container_template_facet_bindings: 'rus.container_template_facet_bindings.v1', container_template_inventory_profiles: 'rus.container_template_inventory_profiles.v1',
+  container_template_source_bindings: 'rus.container_template_source_bindings.v1',
   container_content_profiles: 'rus.container_content_profiles.v1', container_content_profile_entries: 'rus.container_content_profile_entries.v1',
   item_profile_sets: 'rus.item_profile_sets.v1', item_profile_entries: 'rus.item_profile_entries.v1', property_profiles: 'rus.property_profiles.v1', property_profile_rules: 'rus.property_profile_rules.v1',
   region_equipment_profiles: 'rus.region_equipment_profiles.v1', region_equipment_profile_entries: 'rus.region_equipment_profile_entries.v1', record_sources: 'rus.record_sources.v1', item_classification_migration_inventory: 'rus.item_classification_migration_inventory.v1'
@@ -155,7 +172,7 @@ writeFileSync(resolve(root, 'data/knowledge-source/imports/universal-category-cl
   '# Stage 3B-1 — normalization coverage matrix', '',
   '| template_id | kind | source_record_resolved | object_type_resolved | primary_function_resolved | materials_resolved | use_context_resolved | template_record_created | regional_permission_created | inventory_profile_created | quantity_profile_created | container_facets_created | content_profile_created | item_profile_membership | property_profile_membership | equipment_profile_membership | physical_parameters_status | normalization_status | blocking_gaps |',
   '|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|',
-  ...rows.map((row) => { const historicalSource = historicalSourceByTemplateId.get(row.id); return `| ${row.id} | ${row.kind} | ${historicalSource ? historicalSource : 'authoring_policy_only'} | yes | ${row.kind === 'item' ? 'yes' : 'n/a'} | no | ${row.kind === 'item' ? 'yes' : 'n/a'} | yes | yes (draft) | yes (draft) | ${row.group === 'food_raw_trade' ? 'yes (draft)' : 'n/a'} | ${row.kind === 'container' ? 'yes' : 'n/a'} | ${row.kind === 'container' ? 'yes' : 'n/a'} | partial | partial | ${row.id === 'item_tpl_nov_utility_knife_v1' ? 'yes' : 'no'} | gameplay_estimate_review | partial_draft | ${historicalSource ? 'NARROW_TYPOLOGY_EVIDENCE_REQUIRED' : 'HISTORICAL_PRESENCE_EVIDENCE_REQUIRED'}; PHYSICAL_PARAMETER_EVIDENCE_REQUIRED; ${row.group === 'food_raw_trade' ? 'QUANTITY_PROFILE_REVIEW_REQUIRED' : 'MATERIAL_EVIDENCE_REQUIRED'} |`; })
+  ...rows.map((row) => { const historicalSource = historicalSourceByTemplateId.get(row.id); return `| ${row.id} | ${row.kind} | ${historicalSource ? `${historicalSource} (draft/needs_review)` : 'authoring_policy_only'} | yes | ${row.kind === 'item' ? 'yes' : 'n/a'} | no | ${row.kind === 'item' ? 'yes' : 'n/a'} | yes | yes (draft) | yes (draft) | ${row.group === 'food_raw_trade' ? 'yes (draft)' : 'n/a'} | ${row.kind === 'container' ? 'yes' : 'n/a'} | ${row.kind === 'container' ? 'yes' : 'n/a'} | partial | partial | ${row.id === 'item_tpl_nov_utility_knife_v1' ? 'yes' : 'no'} | gameplay_estimate_review | partial_draft | ${historicalSource ? 'HISTORICAL_PRESENCE_EVIDENCE_REVIEW_REQUIRED; NARROW_TYPOLOGY_EVIDENCE_REQUIRED' : 'HISTORICAL_PRESENCE_EVIDENCE_REQUIRED'}; PHYSICAL_PARAMETER_EVIDENCE_REQUIRED; ${row.group === 'food_raw_trade' ? 'QUANTITY_PROFILE_REVIEW_REQUIRED' : 'MATERIAL_EVIDENCE_REQUIRED'} |`; })
 ].join('\n') + '\n', 'utf8');
 
 function digest(value) { return createHash('sha256').update(stable(value), 'utf8').digest('hex'); }

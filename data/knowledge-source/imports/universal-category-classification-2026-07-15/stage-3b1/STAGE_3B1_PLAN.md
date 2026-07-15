@@ -60,7 +60,7 @@ promotion: blocked
 runtime activation: not started
 ```
 
-Выполненная реализация охватывает 21 dataset, включая draft categories, regional options, templates, normalized bindings, profiles и 15 `record_sources` links. Предыдущий список шагов в разделе 4 сохраняет историю проектирования; невыполненными остаются promotion gates.
+Выполненная реализация охватывает 25 datasets, включая draft categories, regional options, templates, FK-normalized template-source bindings, profiles и 15 audit `record_sources` links. Предыдущий список шагов в разделе 4 сохраняет историю проектирования; невыполненными остаются promotion gates.
 
 ## 6. Promotion gates и отложенные работы
 

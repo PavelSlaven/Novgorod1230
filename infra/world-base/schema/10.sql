@@ -219,6 +219,121 @@ CREATE UNIQUE INDEX item_template_one_active_inventory_profile
   ON world_base.item_template_inventory_profiles (item_template_id)
   WHERE status = 'approved';
 
+-- Claim-scoped historical evidence is deliberately separate from the generic
+-- polymorphic record_sources ledger. These FK bindings are the promotion gate
+-- for item/container templates; a source cannot grant a regional permission.
+CREATE TABLE world_base.item_template_source_bindings (
+  id TEXT PRIMARY KEY,
+  item_template_id TEXT NOT NULL REFERENCES world_base.item_templates(id) ON DELETE CASCADE,
+  source_id TEXT NOT NULL REFERENCES world_base.source_records(id) ON DELETE RESTRICT,
+  world_revision_id TEXT NOT NULL REFERENCES world_base.world_revisions(id) ON DELETE RESTRICT,
+  evidence_class TEXT NOT NULL CHECK (evidence_class IN ('direct_novgorod','direct_novgorod_or_rus_period','rus_period_with_novgorod_context','comparative_period')),
+  claim_scope TEXT NOT NULL CHECK (claim_scope IN ('historical_presence','material','construction','physical_parameter','social_access','commonness')),
+  valid_from DATE,
+  valid_to DATE,
+  confidence TEXT NOT NULL CHECK (confidence IN ('unknown','low','medium_low','medium','medium_high','high')),
+  review_status TEXT NOT NULL CHECK (review_status IN ('needs_review','reviewed','rejected')),
+  notes TEXT,
+  status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','approved','deprecated')),
+  CHECK (valid_to IS NULL OR valid_from IS NULL OR valid_to >= valid_from),
+  UNIQUE (item_template_id, source_id, claim_scope)
+);
+
+CREATE TABLE world_base.container_template_source_bindings (
+  id TEXT PRIMARY KEY,
+  container_template_id TEXT NOT NULL REFERENCES world_base.container_templates(id) ON DELETE CASCADE,
+  source_id TEXT NOT NULL REFERENCES world_base.source_records(id) ON DELETE RESTRICT,
+  world_revision_id TEXT NOT NULL REFERENCES world_base.world_revisions(id) ON DELETE RESTRICT,
+  evidence_class TEXT NOT NULL CHECK (evidence_class IN ('direct_novgorod','direct_novgorod_or_rus_period','rus_period_with_novgorod_context','comparative_period')),
+  claim_scope TEXT NOT NULL CHECK (claim_scope IN ('historical_presence','material','construction','physical_parameter','social_access','commonness')),
+  valid_from DATE,
+  valid_to DATE,
+  confidence TEXT NOT NULL CHECK (confidence IN ('unknown','low','medium_low','medium','medium_high','high')),
+  review_status TEXT NOT NULL CHECK (review_status IN ('needs_review','reviewed','rejected')),
+  notes TEXT,
+  status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','approved','deprecated')),
+  CHECK (valid_to IS NULL OR valid_from IS NULL OR valid_to >= valid_from),
+  UNIQUE (container_template_id, source_id, claim_scope)
+);
+
+CREATE OR REPLACE FUNCTION world_base.enforce_item_template_source_binding_revision()
+RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+DECLARE
+  template_revision_id TEXT;
+BEGIN
+  SELECT world_revision_id INTO template_revision_id
+  FROM world_base.item_templates
+  WHERE id = NEW.item_template_id;
+  IF template_revision_id IS DISTINCT FROM NEW.world_revision_id THEN
+    RAISE EXCEPTION 'item template source binding revision must match template revision'
+      USING ERRCODE = '23514';
+  END IF;
+  RETURN NEW;
+END;
+$$;
+CREATE TRIGGER tr_item_template_source_binding_revision
+  BEFORE INSERT OR UPDATE OF item_template_id, world_revision_id
+  ON world_base.item_template_source_bindings
+  FOR EACH ROW EXECUTE PROCEDURE world_base.enforce_item_template_source_binding_revision();
+
+CREATE OR REPLACE FUNCTION world_base.enforce_container_template_source_binding_revision()
+RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+DECLARE
+  template_revision_id TEXT;
+BEGIN
+  SELECT world_revision_id INTO template_revision_id
+  FROM world_base.container_templates
+  WHERE id = NEW.container_template_id;
+  IF template_revision_id IS DISTINCT FROM NEW.world_revision_id THEN
+    RAISE EXCEPTION 'container template source binding revision must match template revision'
+      USING ERRCODE = '23514';
+  END IF;
+  RETURN NEW;
+END;
+$$;
+CREATE TRIGGER tr_container_template_source_binding_revision
+  BEFORE INSERT OR UPDATE OF container_template_id, world_revision_id
+  ON world_base.container_template_source_bindings
+  FOR EACH ROW EXECUTE PROCEDURE world_base.enforce_container_template_source_binding_revision();
+
+CREATE OR REPLACE FUNCTION world_base.prevent_item_template_source_binding_revision_change()
+RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  IF NEW.world_revision_id IS DISTINCT FROM OLD.world_revision_id
+    AND EXISTS (SELECT 1 FROM world_base.item_template_source_bindings WHERE item_template_id = OLD.id) THEN
+    RAISE EXCEPTION 'revision of an item template with source bindings is immutable'
+      USING ERRCODE = '23514';
+  END IF;
+  RETURN NEW;
+END;
+$$;
+CREATE TRIGGER tr_item_template_source_binding_revision_immutable
+  BEFORE UPDATE OF world_revision_id ON world_base.item_templates
+  FOR EACH ROW EXECUTE PROCEDURE world_base.prevent_item_template_source_binding_revision_change();
+
+CREATE OR REPLACE FUNCTION world_base.prevent_container_template_source_binding_revision_change()
+RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  IF NEW.world_revision_id IS DISTINCT FROM OLD.world_revision_id
+    AND EXISTS (SELECT 1 FROM world_base.container_template_source_bindings WHERE container_template_id = OLD.id) THEN
+    RAISE EXCEPTION 'revision of a container template with source bindings is immutable'
+      USING ERRCODE = '23514';
+  END IF;
+  RETURN NEW;
+END;
+$$;
+CREATE TRIGGER tr_container_template_source_binding_revision_immutable
+  BEFORE UPDATE OF world_revision_id ON world_base.container_templates
+  FOR EACH ROW EXECUTE PROCEDURE world_base.prevent_container_template_source_binding_revision_change();
+
 -- Bulk goods use an explicit, versioned quantity contract.  A template mass is
 -- never silently treated as the mass of an arbitrary commodity lot.
 CREATE TABLE world_base.quantity_unit_definitions (

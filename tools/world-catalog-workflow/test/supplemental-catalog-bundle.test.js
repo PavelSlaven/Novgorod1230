@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 import test from 'node:test';
 
 import { supplementalDigest, validateSupplementalCatalogBundle } from '../src/index.js';
-import { loadVerifiedParentSourceRecords } from '../../../scripts/stage3b1-parent-source-bundle.mjs';
+import { collectSupplementalParentSourceIds, loadVerifiedParentSourceRecords } from '../../../scripts/stage3b1-parent-source-bundle.mjs';
 
 const bundleRoot = resolve('data/knowledge-source/imports/universal-category-classification-2026-07-15/stage-3b1/bundle');
 const historicalParentSourceIds = new Set(loadVerifiedParentSourceRecords([
@@ -39,6 +39,81 @@ test('stage 3B-1 bundle is a deterministic draft-only supplemental catalog', () 
 
 test('supplemental bundle derives historical source IDs from the verified parent archive', () => {
   assert.deepEqual([...historicalParentSourceIds].sort(), ['src_novgorod_agriculture', 'src_novgorod_promysly']);
+});
+
+test('parent source collection includes typed template evidence without requiring a polymorphic audit link', () => {
+  assert.deepEqual(collectSupplementalParentSourceIds({
+    record_sources: [],
+    item_template_source_bindings: [{ source_id: 'src_novgorod_agriculture' }],
+    container_template_source_bindings: [{ source_id: 'src_novgorod_promysly' }]
+  }), ['src_novgorod_agriculture', 'src_novgorod_promysly']);
+});
+
+test('supplemental bundle stores historical template evidence through normalized typed bindings', () => {
+  const manifest = readJson('manifest.json');
+  const recordsByTable = Object.fromEntries(manifest.datasets.map((dataset) => [dataset.table, readJson(dataset.path)]));
+  const bindings = recordsByTable.item_template_source_bindings;
+
+  assert.equal(bindings.length, 15);
+  assert.equal(bindings.every((binding) => binding.claim_scope === 'historical_presence' && binding.review_status === 'needs_review' && binding.status === 'draft'), true);
+  assert.equal(bindings.every((binding) => ['direct_novgorod', 'direct_novgorod_or_rus_period', 'rus_period_with_novgorod_context', 'comparative_period'].includes(binding.evidence_class)), true);
+});
+
+test('supplemental bundle rejects a historical template-source binding with a dangling source or template reference', () => {
+  const manifest = readJson('manifest.json');
+  const recordsByTable = Object.fromEntries(manifest.datasets.map((dataset) => [dataset.table, readJson(dataset.path)]));
+  const binding = recordsByTable.item_template_source_bindings[0];
+  binding.source_id = 'source_not_in_parent';
+  binding.item_template_id = 'template_not_in_bundle';
+  manifest.datasets.find((dataset) => dataset.table === 'item_template_source_bindings').sha256 = supplementalDigest(recordsByTable.item_template_source_bindings);
+
+  const result = validateSupplementalCatalogBundle(manifest, recordsByTable, {
+    externalIds: {
+      regions: new Set(['region_novgorod_land']),
+      world_revisions: new Set(['novgorod_1230_research_revision_001']),
+      source_records: new Set(['src_project_stage_3b1_physical_parameter_policy', ...historicalParentSourceIds]),
+      region_social_roles: new Set(['nov_role_guard'])
+    }
+  });
+
+  assert.equal(result.errors.includes(`ITEM_SOURCE_BINDING_SOURCE_UNKNOWN:${binding.id}`), true);
+  assert.equal(result.errors.includes(`ITEM_SOURCE_BINDING_TEMPLATE_UNKNOWN:${binding.id}`), true);
+});
+
+test('supplemental bundle rejects source evidence whose revision differs from its item or container template', () => {
+  const manifest = readJson('manifest.json');
+  const recordsByTable = Object.fromEntries(manifest.datasets.map((dataset) => [dataset.table, readJson(dataset.path)]));
+  const itemBinding = recordsByTable.item_template_source_bindings[0];
+  const containerBinding = {
+    id: 'container_source_binding_revision_probe',
+    container_template_id: recordsByTable.container_templates[0].id,
+    source_id: 'src_project_stage_3b1_physical_parameter_policy',
+    world_revision_id: 'novgorod_1230_research_revision_001',
+    evidence_class: 'direct_novgorod',
+    claim_scope: 'historical_presence',
+    confidence: 'medium',
+    review_status: 'needs_review',
+    status: 'draft'
+  };
+  itemBinding.world_revision_id = 'novgorod_1230_research_revision_001';
+  recordsByTable.container_template_source_bindings.push(containerBinding);
+  for (const table of ['item_template_source_bindings', 'container_template_source_bindings']) {
+    const dataset = manifest.datasets.find((value) => value.table === table);
+    dataset.record_count = recordsByTable[table].length;
+    dataset.sha256 = supplementalDigest(recordsByTable[table]);
+  }
+
+  const result = validateSupplementalCatalogBundle(manifest, recordsByTable, {
+    externalIds: {
+      regions: new Set(['region_novgorod_land']),
+      world_revisions: new Set(['novgorod_1230_research_revision_001']),
+      source_records: new Set(['src_project_stage_3b1_physical_parameter_policy', ...historicalParentSourceIds]),
+      region_social_roles: new Set(['nov_role_guard'])
+    }
+  });
+
+  assert.equal(result.errors.includes(`ITEM_SOURCE_BINDING_TEMPLATE_REVISION_MISMATCH:${itemBinding.id}`), true);
+  assert.equal(result.errors.includes(`CONTAINER_SOURCE_BINDING_TEMPLATE_REVISION_MISMATCH:${containerBinding.id}`), true);
 });
 
 test('supplemental bundle contains explicit draft-only mass quantity profiles for every bulk template', () => {

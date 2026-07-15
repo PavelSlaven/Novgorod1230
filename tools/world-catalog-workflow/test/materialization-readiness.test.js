@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { assessMaterializationReadiness, validateCatalogImportManifest } from '../src/materialization-readiness.js';
+import { assessItemContainerClassificationReadiness, assessMaterializationReadiness, validateCatalogImportManifest } from '../src/materialization-readiness.js';
 import { digestValue } from '../src/digest.js';
 
 test('catalog import rejects unknown and party instance tables', () => {
@@ -28,6 +28,19 @@ test('catalog import derives layout dependency order from the complete FK regist
   const errors = validateCatalogImportManifest({ version: 2, schema: 'world_catalog_import_manifest_v2', world_revision_id: 'rev-1', approval: 'approved', deletion_mode: 'none', provenance: {}, tables }, { recordsByTable });
   assert.ok(errors.includes('DEPENDENCY_ORDER_INVALID:building_layout_nodes:building_layout_templates'));
   assert.ok(errors.includes('DEPENDENCY_ORDER_INVALID:building_layout_nodes:room_templates'));
+});
+
+test('item/container promotion readiness hard-blocks an approved template without reviewed historical-presence evidence', () => {
+  const result = assessItemContainerClassificationReadiness({
+    item_templates: [{ id: 'item-1', status: 'approved' }],
+    container_templates: [{ id: 'container-1', status: 'approved' }],
+    item_template_category_bindings: [{ id: 'binding-1', item_template_id: 'item-1', binding_kind: 'object_type', status: 'approved' }],
+    item_template_source_bindings: [{ id: 'draft-evidence', item_template_id: 'item-1', claim_scope: 'historical_presence', review_status: 'needs_review', status: 'draft' }]
+  });
+
+  assert.equal(result.pass, false);
+  assert.ok(result.concerns.includes('HISTORICAL_PRESENCE_EVIDENCE_REQUIRED:item-1'));
+  assert.ok(result.concerns.includes('HISTORICAL_PRESENCE_EVIDENCE_REQUIRED:container-1'));
 });
 
 test('G4 readiness follows DDL foreign keys and blocks an unapproved referenced profile', () => {

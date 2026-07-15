@@ -752,9 +752,9 @@
       "type": "sql"
     },
     {
-      "bytes": 4218,
+      "bytes": 4329,
       "path": "schemas/party-db/002_environment_landmarks.sql",
-      "sha256": "84800a8e38455ea2297ff933a8b4dc874d911ea0be255741d12de7072452c707",
+      "sha256": "d0a6e73aabb3eebbaf1a9cdb5c800493cd4346e35d73bea548b80fd701d3205b",
       "type": "sql"
     },
     {

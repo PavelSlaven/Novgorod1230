@@ -1,19 +1,32 @@
 # Universal category classification — единый отчёт PR №7
 
-**Ветка:** `chatgpt/universal-category-classification`
-**Статус PR:** `draft`
-**Статус policy:** `proposed`
-**Охваченные этапы:** 1, 2, 3A и редакторская часть 3B-1
+**Ветка:** `chatgpt/universal-category-classification`  
+**PR:** `#7`, draft, base `main`  
+**Статус policy:** `proposed`  
+**Охваченные этапы:** 1, 2, 3A, inventory foundation 3B-1 и редакторский каталог 120 предметов
 
 ## 1. Цель работы
 
-Ввести единый контролируемый классификационный слой для проекта, реализовать базовые DDL/import/readiness-контракты, подготовить нормализованную предметную модель и сформировать минимальный исторически обоснованный authoring candidate для предметов Новгородской земли XIII века.
+Ввести контролируемую цепочку:
 
-Документ не объявляет policy `active`, не выполняет production import или legacy cutover. Stage 16 изменён только для fail-closed packing-slots precheck; Stage 8 и existing party instances не изменяются.
+```text
+category → template → profile → rule → instance
+```
 
-## 2. Изученные нормативы и подсистемы
+и подготовить техническую и редакторскую основу, при которой:
 
-Изучены актуальные версии:
+- код не придумывает категории, историю и отсутствующие варианты;
+- runtime использует только approved, version-pinned и region/period-applicable records;
+- предметы, контейнеры и ownership materialize детерминированно из утверждённых profiles/rules;
+- пустой required candidate set создаёт data gap и hard block;
+- существующие party instances не рематериализуются автоматически;
+- draft authoring не влияет на runtime до import/readiness/approval.
+
+Текущий PR не выполняет production import, legacy cutover, runtime command activation или повышение policy в `active`.
+
+## 2. Изученные нормативы
+
+Перед текущим редакторским проходом повторно прочитаны актуальные версии `main`:
 
 - `AGENTS.md`;
 - `.github/AGENTS.md`;
@@ -22,166 +35,171 @@
 - `code_driven_world_materialization_architecture.md`;
 - `world_base_materialization_table_requirements.md`;
 - `llm_documentation_navigation.md`;
-- `read_only_database_and_graph_architecture.md`;
 - `items_and_property.txt`;
 - `character_inventory_equipment.txt`;
 - `npc_inventory_item_marks.txt`;
-- `npc_generation_profiles.txt`;
 - `weapons_and_armor.txt`;
-- `information_sources_llm_prompts.md`;
-- world-base DDL, generated schema reference, importer/readiness, JSON Schema, Stage 8/16 contracts и tests.
+- `information_sources_llm_prompts.md`.
 
-## 3. Основные архитектурные решения
+Также изучены текущие Stage 3B-1 документы и единый README ветки.
 
-Сохраняется модель:
+## 3. Этапы 1–3A — classification foundation
 
-```text
-category → template → profile → rule → instance
-```
+В рамках PR ранее реализованы:
 
-Зафиксированы правила:
+- proposed universal classification policy и references;
+- `classification_schemes`, labels и scheme mappings;
+- расширенный `universal_categories` layer;
+- нормализованные item/container facet bindings;
+- item classification migration inventory contract;
+- JSON Schema, importer и materialization-readiness gates;
+- SQL guards и generated schema documentation;
+- сохранение legacy fields до отдельного cutover.
 
-- universal category не подтверждает историческую применимость;
-- runtime использует только approved, version-pinned и region/period-applicable records;
-- external mapping не создаёт regional permission;
-- неизвестное или неоднозначное legacy значение становится `data_gap` или `migration_conflict`;
-- пустой required candidate set является hard block;
-- код и LLM не создают неизвестные категории;
-- существующие party instances не рематериализуются;
-- legacy fields не удаляются до отдельного cutover.
+Universal category сама по себе не доказывает историческую применимость. Для runtime требуется отдельное regional/period permission.
 
-## 4. Этапы 1–2 — proposed policy и базовый classification layer
+## 4. Inventory foundation
 
-Выполнено:
+Технический inventory foundation завершён в этом же PR до начала текущего редакторского прохода.
 
-- proposed policy и reference appendix зарегистрированы в canonical corpus и навигации;
-- добавлены `classification_schemes`, `category_labels`, `category_scheme_mappings`;
-- расширены `universal_categories`;
-- ограничены relation/mapping types;
-- добавлены SQL cycle guards;
-- добавлены пять базовых authoring JSON Schema;
-- реализованы manifest/cross-reference validation, dry-run, transactional adapter и readiness checks;
-- `SCHEMA_REFERENCE.md` перегенерирован штатно.
+Реализованы:
 
-Фактические проверки этапов 1–2:
+- normalized inventory profiles;
+- обязательные item/container placements;
+- topology validation;
+- inventory zones;
+- масса, нагрузка, hands state и access;
+- packing slots;
+- immutable transfer planner;
+- Stage 16 inventory trace;
+- Stage 24/25 persistence boundaries;
+- visible-only inventory panel;
+- fail-closed quantity, mass, placement, physical-position, equipment-slot, path, cycle и packing gaps.
 
-- `test:world-catalog` — 39/39 PASS;
-- `test:integration` — 21 PASS, 5 SKIP из-за отсутствия externally configured PostgreSQL;
-- schema documentation/check — PASS;
-- architecture check — PASS;
-- corpus check — PASS;
-- PostgreSQL 16 entrypoint — PASS, 111 tables;
-- code critic — PASS после correction cycle.
+Последний зафиксированный аудит этого технического этапа: `PASS WITH NOTES`.
 
-## 5. Этап 3A — item/container classification framework
+### 4.1. Фактически зафиксированные проверки inventory foundation
 
-### 5.1. Gap analysis
+- `npm test` — PASS;
+- world-catalog — 52/52;
+- Stage 2–8 — 6/6;
+- Stage 16 — 17/17;
+- Stage 24 — число в прежних отчётах расходилось между 20/20 и 21/21 и должно сверяться по конкретному test output;
+- Stage 25 — 19/19;
+- integration — 21 PASS / 5 SKIP;
+- docs/schema/corpus/architecture/generated checks — PASS;
+- GitHub Actions на SHA `8f0f4a1e7b93da16b6fdb0bfa8829bcd2a3eee1f` — success, включая PostgreSQL 16 service и исполнение world-base DDL.
 
-Машинно значимые legacy `TEXT` в `item_templates`:
+Отдельная party-runtime PostgreSQL integration локально не была подтверждена. Browser E2E пропущен из-за отсутствия Chromium.
 
-```text
-item_type
-function
-typical_material
-weight_band
-size_band
-durability
-quality_band
-value_band
-rarity
-legal_status
-visibility_default
-access_default
-marking_default
-risk_default
-```
+## 5. Этап 3B-1 — редакторский каталог 120 предметов
 
-Legacy plural JSONB:
+### 5.1. Решение по исторической проверке
+
+Для широкого template принят упрощённый gate:
 
 ```text
-typical_owner_roles
-typical_holder_roles
-typical_locations
-typical_containers
-skill_use
-attribute_use
-possible_modifiers
-failure_risks
-damage_or_wear_rules
+предмет этого общего типа мог встречаться
+в Новгородской земле около 1230 года
+и не является явным анахронизмом
 ```
 
-### 5.2. Реализовано
+Постраничная типологическая проверка не требуется для самого факта существования широкого типа. Она остаётся обязательной, если утверждаются:
 
-- `item_template_category_bindings`;
-- `container_template_facet_bindings`;
-- `container_content_category_relations`;
-- `item_classification_migration_inventory`;
-- пять предметных authoring JSON Schema, включая equipment entries;
-- fail-closed importer/readiness для active/replaced categories, compatibility, equipment XOR/FK/domain, regional/revision/period permission и primary-function exclusivity;
-- legacy fields сохранены;
-- Stage 8, Stage 16, pipeline order и party instances не изменены;
-- схема расширена до 115 tables.
+- точная конструкция или археологическая разновидность;
+- конкретный материал экземпляра;
+- точные масса или размеры;
+- узкая датировка;
+- техника производства;
+- историческая частотность;
+- социальная распространённость.
 
-Фактические проверки этапа 3A:
+Все новые строки остаются `draft`. Упрощение проверки не означает автоматического `approved`.
 
-- targeted item/container — 6/6 PASS;
-- `test:world-catalog` — 45/45 PASS;
-- `test:stage2-8` — 6/6 PASS;
-- `test:stage16` — 13/13 PASS;
-- `test:integration` — 21 PASS, 5 SKIP;
-- schema documentation/check — PASS, 115 tables;
-- PostgreSQL 16 schema entrypoint — PASS;
-- architecture, corpus, generated artifact и diff checks — PASS;
-- code critic — PASS WITH NOTES.
+### 5.2. Новые документы
 
-`npm test` и documentation validation не прошли из-за существующих untracked данных в `data/regional-summary-cache/` и `data/world-sessions/`. Эти данные не изменялись и не входят в PR.
+В `stage-3b1/` поддерживаются:
 
-## 6. Этап 3B-1 — редакторский authoring candidate
+- `STAGE_3B1_PLAN.md` — границы, этапы, таблицы и критерии готовности;
+- `HISTORICAL_SOURCE_REGISTER.md` — evidence classes, source families и gaps;
+- `ITEM_CATALOG_120.md` — полный перечень 120 stable template ID proposals;
+- `EDITORIAL_AUTHORING_CANDIDATE.md` — сводный статус, решения и порядок технической интеграции.
 
-### 6.1. Добавленные документы
+### 5.3. Состав каталога
 
-- `stage-3b1/STAGE_3B1_PLAN.md` — подробный план, hard gaps, порядок интеграции и критерии допуска;
-- `stage-3b1/EDITORIAL_AUTHORING_CANDIDATE.md` — источники, controlled vocabulary proposal, 12 item templates, draft regional permission plan, blocked container proposals и migration boundary.
+| Группа | Количество |
+|---|---:|
+| контейнеры и хранение | 18 |
+| домашний быт и кухня | 15 |
+| ремесло и текстиль | 20 |
+| земледелие и рыболовство | 15 |
+| огонь, свет и дорога | 8 |
+| одежда, личные и религиозные вещи | 16 |
+| пища, сырьё и товары | 12 |
+| письменность, торговля и запирание | 7 |
+| оружие и защита | 9 |
+| **Итого** | **120** |
 
-### 6.2. Минимальный предметный scope
+Из них:
 
-Подготовлены draft candidates:
+```text
+container templates = 18
+item templates = 102
+unique stable IDs = 120
+```
 
-1. хозяйственный нож;
-2. рабочий топор;
-3. точильный камень;
-4. деревянная ложка;
-5. деревянная миска;
-6. глиняный горшок для приготовления пищи;
-7. железная швейная игла;
-8. каменное пряслице;
-9. железное кресало;
-10. железный рыболовный крючок;
-11. лук;
-12. стрела.
+Каталог включает мешок, затягивающийся кошель, поясную сумку с клапаном и небольшую мягкую сумку.
 
-Для каждого зафиксированы stable ID proposal, object type, primary function, materials, technique, use context, confidence, источники и ограничения.
+### 5.4. Принятые решения
 
-### 6.3. Источники
+- форма контейнера и материал являются разными facet bindings;
+- ножны, колчан и игольник являются специализированными контейнерами;
+- рабочий и боевой топоры разделены по функции и профилю;
+- кресало, кремень и трут остаются отдельными предметами;
+- пища, вода и сырьё требуют quantity/container/spoilage profiles;
+- стационарные лари, кадки и бочки не становятся личным inventory автоматически;
+- оружие и броня требуют role/status/property/legal rules;
+- historical presence не задаёт packing cost, mass, price или commonness.
 
-Использованы как candidate references:
+## 6. Evidence model
 
-- Б. А. Колчин, `Железообрабатывающее производство Новгорода Великого`, 1959;
-- Б. А. Колчин, `Новгородские древности. Деревянные изделия`, 1968;
-- А. Ф. Медведев, `Оружие Новгорода Великого`, 1959;
-- `Medieval Novgorod in Its Wider Context` — широкий контекст;
-- действующие игровые нормативы проекта.
+Используются классы:
 
-Page-level evidence в этом чате не получено. Поэтому все исторические records и permissions остаются `draft`/`needs_review`; `approved` не присваивается.
+- `direct_novgorod`;
+- `direct_novgorod_or_rus_period`;
+- `rus_period_with_novgorod_context`;
+- `comparative_period`.
 
-### 6.4. Каноническая граница миграции
+Source families отделяют:
 
-Проверены:
+- железо, дерево и текстиль;
+- бытовую утварь и керамику;
+- контейнеры и кожаные изделия;
+- земледелие и рыболовство;
+- огонь, освещение и дорожный быт;
+- пищу и торговые товары;
+- бересту, писала, весы, гири, замки и пломбы;
+- вооружение;
+- проектные игровые нормативы.
 
-- `data/world-base-sources/rus13-base-v1.manifest.json`;
-- `tools/rus13-world-base-importer/world_base_importer_v1/config/world_base_import_manifest_v1.json`.
+Проектные нормативы не используются как историческое доказательство.
 
-Tracked bundle не содержит item/container datasets. Текущий migration coverage:
+## 7. Сохраняющиеся gaps
+
+- `HISTORICAL_PRESENCE_EVIDENCE_REQUIRED` — нет достаточного общего основания присутствия;
+- `NARROW_TYPOLOGY_EVIDENCE_REQUIRED` — требуется узкая типология или датировка;
+- `COMMONNESS_NOT_ESTABLISHED` — нельзя назначать историческую частотность;
+- `PHYSICAL_PARAMETER_EVIDENCE_REQUIRED` — неизвестны размеры/масса и нет утверждённой процедуры вывода;
+- `CONTAINER_COMPATIBILITY_TOO_COARSE` — совместимость зависит от материала, конструкции, закрытия и состояния;
+- `CANONICAL_LEGACY_ROWS_UNAVAILABLE` — tracked bundle не содержит external/local legacy rows.
+
+Технические gaps container material facet и packing-capacity semantics закрыты ранее inventory foundation.
+
+## 8. Каноническая граница миграции
+
+Tracked GitHub bundle не содержит legacy item/container datasets, пригодных для reviewed mapping.
+
+Текущий migration inventory:
 
 ```text
 canonical legacy rows available: 0
@@ -191,308 +209,76 @@ migration conflicts from canonical rows: 0
 deferred external/local rows: unknown until export
 ```
 
-Это не означает, что локальная PostgreSQL/NocoDB пуста. Для неё требуется отдельный tracked export и reviewed mapping.
+Это не доказывает отсутствие строк в локальной PostgreSQL или NocoDB. Они должны быть экспортированы как отдельный versioned input.
 
-### 6.5. Выявленные hard gaps
+## 9. Что изменено текущим редакторским проходом
 
-#### `CONTAINER_MATERIAL_FACET_MISSING` — закрыт технически
+Изменены или добавлены только Markdown-документы:
 
-`container_template_facet_bindings` теперь допускает независимый `material` facet. Исторические container proposals всё ещё не approved: для них нет page-level evidence.
+- `stage-3b1/STAGE_3B1_PLAN.md`;
+- `stage-3b1/HISTORICAL_SOURCE_REGISTER.md`;
+- `stage-3b1/ITEM_CATALOG_120.md`;
+- `stage-3b1/EDITORIAL_AUTHORING_CANDIDATE.md`;
+- этот единый `README.md`.
 
-#### `CONTAINER_CAPACITY_UNIT_UNDEFINED` — закрыт технически
+DDL, JSON Schema, importer, runtime code, Stage 8/16, party state и generated artifacts текущим проходом не изменялись.
 
-`container_templates.capacity` теперь означает положительную внутреннюю вместимость в packing slots. Closed policy строго равна `{version:1,mode:"packing_slots",unit:"packing_slot"}`; это не масса, литры или inventory slots персонажа.
+## 10. Выполненные проверки текущего прохода
 
-#### `CONTAINER_COMPATIBILITY_TOO_COARSE`
+Фактически выполнены редакторские проверки:
 
-Совместимость жидкости или сыпучего содержимого зависит от материала, конструкции, закрытия и состояния, а не только от формы контейнера.
+- ровно 120 строк каталога;
+- 120 уникальных stable IDs;
+- 18 containers и 102 items;
+- сумма девяти групп равна 120;
+- обязательные мешки и кошели присутствуют;
+- каждая строка имеет kind, group, evidence class, source family и `draft` status;
+- source families имеют уникальные IDs;
+- исторические источники отделены от игровых нормативов;
+- не назначены выдуманные цена, масса, packing cost, capacity или commonness;
+- old 12-item authoring document синхронизирован с каталогом 120;
+- production activation не выполнялась.
 
-#### `PAGE_LEVEL_SOURCE_VERIFICATION_REQUIRED`
+Не запускались для текущих docs-only изменений:
 
-Без страниц и каталожных номеров нельзя утверждать точные разновидности, размеры, материалы, технологию, частотность или социальную распространённость.
-
-### 6.6. Решение по контейнерам
-
-Подготовлены, но заблокированы proposals:
-
-- ведро;
-- бочка/кадь;
-- мешок;
-- кошель/небольшая сумка;
-- сундук/ларь.
-
-Они не преобразованы в import rows и не получили исторически выдуманную capacity.
-
-### 6.7. Проверки этапа 3B-1
-
-В этом чате выполнены только редакторские проверки authoring candidate:
-
-- уникальность proposal IDs;
-- одна primary function на item template;
-- отсутствие составных material+form категорий;
-- полнота ссылок внутри предложения;
-- явные sources/confidence/limits;
-- отсутствие guessed legacy mappings;
-- отсутствие container fallback.
-
-Не выполнялись:
-
-- финальная JSON Schema validation репозиторных datasets;
+- JSON Schema validation datasets;
 - importer dry-run/apply;
 - PostgreSQL integration;
 - Stage 8/16 tests;
-- generated artifacts;
-- full test suite;
-- code critic для 3B-1.
+- full `npm test`;
+- generated-artifact checks;
+- code critic.
 
-Эти проверки должен выполнить Codex после устранения hard gaps и преобразования редакторского candidate в versioned JSON datasets.
+Причина: текущий проход изменяет только редакторскую документацию и не меняет исполняемое поведение. Предыдущие технические результаты inventory foundation не переобъявляются как новые проверки.
 
-## 7. Порядок дальнейшей интеграции
+## 11. Порядок дальнейшей интеграции
 
-1. Codex сверяет branch head и обязательные нормативы.
-2. Подтверждает page-level historical evidence для container templates.
-3. Экспортирует фактические local item/container records, если они существуют.
-4. Получает page-level source evidence.
-5. Экспортирует фактические local item/container records, если они существуют.
-6. Формирует reviewed migration inventory.
-7. Создаёт JSON datasets и manifest с реальными digests.
-8. Запускает schema/cross-reference/import/readiness/PostgreSQL/Stage 8/16/full tests.
-9. Перегенерирует generated artifacts штатными командами.
-10. Вызывает code critic с предыдущим `PASS WITH NOTES` и полным diff.
+Следующий технический этап выполняется в том же PR и должен:
 
-## 7A. Этап 3B-1 — фактическая инвентаризация Codex
+1. перечитать обязательные нормативы и проверить актуальный branch head;
+2. материализовать controlled vocabularies object type/function/material/use context;
+3. создать source records и bindings;
+4. создать draft regional/period permissions;
+5. сформировать item/container inventory profiles;
+6. сформировать equipment, property и container-content profiles;
+7. проверить compatibility и causal/economic basis;
+8. экспортировать внешние legacy rows и построить reviewed migration inventory;
+9. создать versioned JSON datasets и manifest с реальными digests;
+10. выполнить JSON Schema, cross-reference и readiness;
+11. выполнить importer dry-run, rollback/readback и PostgreSQL integration;
+12. проверить Stage 8/16 и full suite;
+13. перегенерировать generated artifacts;
+14. вызвать code critic при изменении DDL, schemas, code, profiles/rules или runtime contracts;
+15. не повышать policy и records в `active/approved` без прохождения всех gates.
 
-- PR head до начала реализации: `8b139ca3b883a54308bd70d30b99612ec0a14d11`; локальный
-  `af8cbc2` был позади и fast-forward выполнен до актуального draft PR head.
-- Проверены `container_templates.capacity`, DDL, readiness, Stage 8/16, party schemas,
-  tracked world-base bundle, importer manifest и source datasets. Точного runtime consumer
-  integer `capacity` не найден: он встречается в DDL и test fixtures; Stage 16 и party
-  persistence не используют его как измеряемую величину.
-- `container_templates.capacity` формализован как внутренняя вместимость в packing slots;
-  `packing_slot_cost` задаёт внешний размер контейнера. Closed policy v1 строго равна
-  `{version: 1, mode: "packing_slots", unit: "packing_slot"}`. Это не масса, литры или
-  inventory slots персонажа. Предмет использует единственный approved `size_band` binding:
-  `ceil(quantity / packing_bundle_size) × packing_slot_cost`; fallback `1`, сокращение quantity
-  и скрытое создание контейнера запрещены.
-- `container_template_facet_bindings` расширен независимым `material` facet. Form и
-  material остаются раздельными; container proposals всё ещё не импортируются, потому что
-  page-level historical evidence и formal construction/compatibility data отсутствуют.
-- Tracked canonical item/container authoring rows: 0; local PostgreSQL/NocoDB canonical
-  export не настроен. Зафиксирован gap `EXTERNAL_LEGACY_ROWS_UNAVAILABLE`; migration
-  inventory для tracked scope остаётся пустым, без заявления о coverage внешних строк.
-- Граница изменения: DDL/schema/importer validation/Stage 16/test fixtures/documentation для
-  material facet и packing slots v1. Не создаются draft historical datasets до
-  page-level source support; не выполняются production import, apply, runtime activation,
-  cutover или rematerialization.
+## 12. Известные ограничения
 
-## 8. Оставшиеся задачи
-
-- получить page-level evidence и подготовить import-ready historical datasets для 3B;
-- 3B-2: отдельный legacy cutover только после полного coverage report;
-- этап 4: строения, помещения и G5;
-- этап 5: ландшафт, вода и землепользование;
-- этап 6: NPC;
-- этап 7: социальные категории, профессии, навыки и знания;
-- этап 8: упрощённые животные;
-- этап 9: полный migration/activation gate и возможное повышение policy в `active` после PASS.
-
-## 7B. Этап 3B-1 — packing slots v1
-
-### Реализовано
-
-- `container_templates.capacity` и `packing_slot_cost` — положительные integer; policy закрыта
-  точным JSON `{version:1,mode:"packing_slots",unit:"packing_slot"}`.
-- Packing metadata предмета существует только на `size_band` binding: положительные
-  `packing_slot_cost` и `packing_bundle_size`. Approved template без одного size binding —
-  hard block; два binding — active ambiguity.
-- `calculatePackingSlots` является чистой публичной функцией:
-  `required_slots = ceil(quantity / packing_bundle_size) × packing_slot_cost`.
-- Import/readiness проверяет exact policy, положительные integer, отсутствие packing metadata
-  вне `size_band`, missing/ambiguous size binding и minimum profile content, превышающее capacity.
-- Category-only required content разрешается только в ровно один approved template (через
-  `item_templates.category_id` либо approved `object_type` binding); отсутствие или
-  неоднозначность дают hard block `CONTAINER_CONTENT_CATEGORY_TEMPLATE_UNRESOLVED`, а не
-  неявное допущение о packing size.
-- Stage 16 до audit/commit проверяет выбранные items и nested containers; `CONTAINER_CAPACITY_EXCEEDED`
-  содержит template, capacity, used slots и line breakdown. Trace хранится в evidence code precheck.
-
-### Фактически выполненные проверки и аудит packing slots v1
-
-- `npm run test:world-catalog` — PASS, 52/52;
-- `npm run test:stage16` — PASS, 15/15;
-- `npm run test:stage2-8` — PASS, 6/6;
-- `npm run test:integration` — PASS, 21 passed / 5 skipped (PostgreSQL-dependent cases);
-- `npm run world-db:schema-check`, `npm run world-db:schema-doc-check`, `npm run architecture:check`
-  и `npm run knowledge:check-corpus` — PASS; schema reference: 115 tables, digest
-  `6e2bbf17e0794ab1173cb26dd99126c691f7c8fbb6712eda97417cb3d2c2adda`;
-- в чистом detached worktree `npm run docs:generate`, `npm run docs:check` и полный `npm test`
-  — PASS; browser e2e пропущен из-за отсутствующего Chromium;
-- `git diff --check main` — PASS. Реальный PostgreSQL 16 entrypoint/integration не запущен:
-  Docker Compose заблокирован отсутствующим `POSTGRES_PASSWORD`, `psql` не установлен.
-- Code critic: первый проход — `CHANGES REQUIRED` (category-only content не имел детерминированного
-  template для расчёта capacity); исправление и тест добавлены, повторный аудит — `PASS`.
-
-### Не выполнено и остаётся открытым
-
-- историческое approval, production import, cutover и runtime activation не выполнялись;
-- `CONTAINER_COMPATIBILITY_TOO_COARSE`, `PAGE_LEVEL_SOURCE_VERIFICATION_REQUIRED` и
-  `EXTERNAL_LEGACY_ROWS_UNAVAILABLE` остаются открытыми;
-- full historical catalog, migration existing local rows и rematerialization party instances — только этап 3B;
-- Cairn SRD v1 допускается лишь как вдохновение абстрактной игровой механики, не исторический источник.
-
-## 9. Текущий итог
-
-Этапы 1–3A реализованы технически и проверены в объёме, указанном выше. В этом чате выполнена содержательная редакторская часть 3B-1. Она подготовила предметный каталог-кандидат и выявила блокирующие дефекты контейнерной модели, но не объявлена import-ready и не активирована.
-
-## 10. Stage 3B-1 — inventory foundation v1: исходное состояние и gap analysis
-
-### Цель и границы
-
-Реализуется только технический каркас личного инвентаря: нормализованная topology
-instances, независимые packing slots / масса / руки / access, чистое планирование
-переносов и visible-only presentation projection. Outward используется только как
-игровое вдохновение: экипировка, quick container и основной переносимый контейнер
-разделены; историческим источником он не является. Historical authoring rows,
-production import, legacy cutover, rematerialization и runtime command activation не
-входят в этот этап.
-
-### Фактическая схема и существующие контракты
-
-- `party_runtime.party_items` хранит template/profile/category, quantity, condition и
-  legal status; `party_item_placements` уже имеет PK `(party_id,item_id)` и SQL
-  exactly-one target (`anchor`, `container`, NPC holder или character holder).
-- `party_runtime.party_containers` уже хранит exactly-one anchor/parent/holder target
-  и SQL self-containment block, но не имеет нормализованных carrying/equipment facts.
-- `party_ownership` уже разделяет owner/controller от holder; `party_visible_read_models`
-  — единственная versioned public projection.
-- `item_template_category_bindings` содержит единственный approved `size_band` и packing
-  metadata; `container_templates` содержит exact packing-slots v1 policy. Их расчёт
-  повторно не реализуется.
-
-### Gaps до inventory foundation
-
-- `@rus/items-property` работает с legacy nested `contents`, суммирует только один
-  уровень, подставляет mass `0` и не знает normalized placement graph, cycles, hands,
-  containment depth или structured inventory errors.
-- В authoring нет строго типизированного approved profile, который одновременно
-  разрешает mass, `carry_form`, `external_hand_cost` и роль quick/primary container;
-  существующие свободные JSONB `state` предназначены только для snapshot/state, не для
-  queryable inventory topology.
-- Stage 16 материализует scene anchor placements и проверяет packing slots, но не
-  выводит initial inventory placement, mass/hands/access trace или exact inventory data
-  gap. Stage 24/25 переносят утверждённые rows, однако не имеют inventory-specific
-  topology gate/read model contract.
-- Presentation показывает generic JSON inventory panel, а не versioned visible-only
-  inventory contract; UI не должен стать calculator.
-- Межстрочные constraints (cycles, depth, unique primary container, hands, equipment
-  exclusivity, same-party parent) требуют application gate; SQL остаётся только для
-  row-local FK/CHECK/exactly-one invariants.
-
-### Решение
-
-Расширяется существующий `@rus/items-property`, а не создаётся второй calculator.
-Нужные queryable template parameters получают минимальные нормализованные authoring
-profiles; `party_item_placements` и `party_containers` остаются source of truth
-physical placement. Derived zone, total mass, load, hands, packing usage и access
-хранятся только в immutable trace/validated public projection. Неизвестная mass,
-placement, template parameter, compatibility или command catalogue оформляется
-типизированным hard gap без fallback.
-
-### Реализованный inventory foundation v1
-
-- New normalized authoring tables: `item_template_inventory_profiles` and
-  `container_template_inventory_profiles`. Они требуют source/revision, `mass_grams`,
-  `carry_form`, `external_hand_cost`, status; контейнер добавляет closed `inventory_role`.
-  Никаких исторических rows в них не создано.
-- `party_runtime` сохраняет only physical facts: existing exactly-one target, optional
-  physical position/equipment slot, container condition/closure и separated character
-  controller. Derived inventory zone/totals в DDL не сохраняются.
-- `@rus/items-property` экспортирует pure `validateInventoryTopology`,
-  `calculateInventoryMass`, `resolveInventoryLoad`, `calculateHandsState`,
-  `resolveInventoryAccess`, `deriveInventoryZone`, `calculateContainerUsage`,
-  `buildInventoryStackSignature`, `planInventoryTransfer`. `calculateContainerUsage`
-  использует existing public `calculatePackingSlots` через explicit injected
-  `packing_calculator`, не дублируя формулу и не нарушая architecture boundary.
-- Stage 16 получает optional explicit `inventory_foundation`. Если `required=true` и
-  candidate/physical profiles отсутствуют, выдаётся `INITIAL_INVENTORY_PLACEMENT_DATA_GAP`;
-  иначе precheck сохраняет immutable trace mass/hands/access/capacity. Existing scene-item
-  route не меняется и не активирует inventory implicit fallback.
-- Stage 24 только переносит approved physical position/slot/closure fields в fixed plan;
-  Stage 25 сохраняет generic schema-qualified batches атомарно. Stage 19 не менялся.
-- `@rus/presentation` добавляет versioned visible-only `inventory_panel`; он не принимает
-  IDs, hidden/unknown contents или diagnostics и не выполняет gameplay calculation.
-
-### Текущие ошибки и неактивированные части
-
-Основные structured errors: `INITIAL_INVENTORY_PLACEMENT_DATA_GAP`,
-`ITEM_MASS_DATA_GAP`, `ITEM_CARRY_PROFILE_DATA_GAP`, `INVENTORY_PLACEMENT_AMBIGUOUS`,
-`INVENTORY_CYCLE_DETECTED`, `INVENTORY_NESTING_LIMIT_EXCEEDED`,
-`INVENTORY_HANDS_EXCEEDED`, `INVENTORY_CARRY_FORM_INCOMPATIBLE`,
-`INVENTORY_PRIMARY_CONTAINER_AMBIGUOUS`, `INVENTORY_DROP_ANCHOR_MISSING`,
-`CONTAINER_CAPACITY_EXCEEDED`, `STATE_VERSION_MISMATCH`.
-
-`planInventoryTransfer` строит immutable change set для `pick_up`, `put_down`,
-`move_to_container`, `take_from_container`, `equip`, `unequip`,
-`move_to_quick_container`, `move_to_primary_container`, а также
-`drop_primary_container`/`recover_primary_container`. Он проверяет topology, access,
-capacity, hands, mass, load и optimistic `state_version`, но не является runtime handler
-и ничего не записывает. Неизвестный command остаётся fail-closed
-`TURN_INVENTORY_COMMAND_CATALOG_GAP`. Не выполнены historical approval/import, Stage 8
-candidate enrichment, production activation, legacy cutover/rematerialization. Открытые
-gaps сохраняются:
-`PAGE_LEVEL_SOURCE_VERIFICATION_REQUIRED`, `EXTERNAL_LEGACY_ROWS_UNAVAILABLE`,
-`CONTAINER_COMPATIBILITY_TOO_COARSE`.
-
-Новые/уточнённые ошибки: `INVENTORY_QUANTITY_INVALID`,
-`INVENTORY_TARGET_NOT_FOUND`, `INVENTORY_EQUIPMENT_SLOT_REQUIRED`,
-`INVENTORY_LOAD_EXCEEDED`, `PRESENTATION_INVENTORY_INVALID`. Quantity, strength и
-derived summary больше не получают скрытое значение по умолчанию.
-
-Физическое размещение теперь строго requires exactly one placement row для каждого
-item/container. Для `holder_character_id` обязателен один из closed
-`physical_position`; `equipped` требует equipment slot, а slot вне `equipped` запрещён.
-Те же инварианты проверяются DDL, pure topology, derived zone/access и Stage 24 write-plan
-до любого materialization write.
-
-### Red → Green и выполненные проверки
-
-- Red: `packages/items-property/test/inventory-foundation.test.js` сначала завершился
-  ошибкой отсутствующих public exports; `test/modules/stage16-inventory-foundation.test.js`
-  — отсутствующим Stage 16 evaluator; `packages/presentation/test/inventory-panel.test.js`
-  — отсутствующим panel contract. После добавления fail-closed quantity и общего planner
-  inventory-test имел 2 ожидаемых failing assertions: неявный `quantity → 1` и отсутствие
-  `move_to_container`; panel-test — отсутствие rejection неполной derived summary.
-- Green (дополнительный прогон): inventory/presentation/Stage 16 targeted tests —
-  15/15 PASS. `docs:generate`, `docs:check` и `knowledge:check-corpus` в clean worktree
-  — PASS; обновлены source и generated legacy inventory manifests для `interface_ux.md`.
-- Full-suite correction: `architecture:check` первоначально нашёл запрещённый direct import
-  domain → world-catalog и превышение лимита `inventory.js`; `test:knowledge-source`
-  нашёл stale `import-history` digest. Исправлено split container-usage boundary,
-  explicit calculator injection и synchronized import-history; повторные
-  `architecture:check` и `test:knowledge-source` — PASS (20/20).
-- Audit correction: критик последовательно выявил missing placement row и player holder
-  без physical position. Добавлены typed topology errors, reverse DDL checks,
-  Stage 24 reject (`WRITE_PLAN_PHYSICAL_POSITION_REQUIRED`) и negative tests для item,
-  container/equipped slot/Stage 24; final повторный аудит — `PASS WITH NOTES`.
-- Последующий audit correction: zone projection для item inside container теперь обходит
-  полный item → container → parent path, различает root quick/primary container и
-  hard-blocks missing/cyclic path. Добавлены quick/primary/nested/missing/cycle tests.
-- Итоговый чистый full suite: `npm test` — PASS. В том числе module tests 259/259,
-  domain 67/67, apps 11/11, tools 106/106, shadow 6/6, cutover 4/4, integration
-  21 PASS / 5 PostgreSQL SKIP; browser E2E 1 SKIP (Chromium executable отсутствует).
-  `docs:generate`, `docs:check`, `knowledge:check-corpus`, schema/doc checks и
-  generated-artifact reproducibility — PASS в clean worktree. Отдельных `lint` и
-  `typecheck` scripts в `package.json` нет.
-- Реальный PostgreSQL 16 entrypoint/party schema integration не выполнен: `psql` не
-  установлен, а `docker compose` fail-closed требует `POSTGRES_PASSWORD`. Static schema
-  entrypoint/check и integration contract tests прошли; это единственная audit note.
-- Green: targeted domain/presentation/Stage 16 tests — 18/18 PASS;
-  `npm run test:world-catalog` — 52/52 PASS;
-  `npm run test:stage16` — 17/17 PASS; `npm run test:stage24` — 20/20 PASS;
-  `npm run test:stage25` — 19/19 PASS; `npm run test:stage2-8` — 6/6 PASS;
-  `npm run test:integration` — 21 passed / 5 skipped.
-- `npm run world-db:schema-check` and `world-db:schema-doc-check` — PASS, 117 tables,
-  digest `81c867c1706be45b8ff3f9064d4b3ab09b70c7a2038d57823bea157c32ef5744`.
-- `knowledge:generate` and `knowledge:check-corpus` — PASS. Main-worktree `docs:generate`
-  is blocked only by preserved user runtime files under `data/regional-summary-cache/` and
-  `data/world-sessions/`; final docs/full suite completed in a clean worktree.
+- 120 строк являются широкими types, а не полной археологической типологией;
+- source families ещё не материализованы как final `source_records` datasets;
+- individual evidence bindings требуют библиографической сверки;
+- commonness/weights не исследованы;
+- физические параметры и игровые profiles не назначены;
+- container content compatibility не сформирована;
+- external/local migration inventory отсутствует;
+- production import, cutover и runtime activation не начаты;
+- PR остаётся draft.

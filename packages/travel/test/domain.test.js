@@ -5,6 +5,7 @@ import {
   TravelError,
   advanceJourney,
   applyTravelLifecycleMetadata,
+  buildTravelAdvanceResult,
   buildTravelArrivalRequest,
   buildTravelChangeSetProposal,
   calculateNextTravelBoundary,
@@ -14,6 +15,7 @@ import {
   rerouteJourney,
   resumeJourney,
   validateTravelRulesBundle,
+  validateTravelAdvanceRequest,
   validateJourney,
   validateTravelPosition
 } from '../src/index.js';
@@ -204,6 +206,35 @@ test('final canonical leg produces a formal arrival request and partial travel c
   const partial = advanceJourney({ journey: before, context: context(), progress_permille: 500 });
   assert.throws(
     () => buildTravelArrivalRequest({ before, after: partial }),
+    (error) => error instanceof TravelError && error.code === 'TRAVEL_INPUT_INVALID'
+  );
+});
+
+test('advance request and result bind the selected boundary to one journey leg and state version', () => {
+  const before = createJourney(plan, context());
+  const request = {
+    schema_version: 'travel-advance-request.v1',
+    journey_id: 'journey:1',
+    journey_leg_id: 'leg:1',
+    expected_state_version: 4,
+    progress_permille: 500,
+    duration_minutes: 30,
+    updated_at: '1230-01-01T09:30:00Z',
+    idempotency_key: 'advance:1',
+    boundary: { boundary_id: 'boundary:leg', boundary_type: 'leg_completion', at_elapsed_minutes: 30, priority: 0 }
+  };
+  assert.equal(validateTravelAdvanceRequest(request).journey_leg_id, 'leg:1');
+  const after = advanceJourney({ journey: before, context: context(), progress_permille: 500 });
+  const result = buildTravelAdvanceResult({ before, after, request });
+  assert.equal(result.schema_version, 'travel-advance-result.v1');
+  assert.equal(result.clock_advance_request.duration_minutes, 30);
+  assert.equal(result.arrival_request, null);
+  assert.throws(
+    () => buildTravelAdvanceResult({ before, after, request: { ...request, expected_state_version: 3 } }),
+    (error) => error instanceof TravelError && error.code === 'TRAVEL_STATE_VERSION_MISMATCH'
+  );
+  assert.throws(
+    () => validateTravelAdvanceRequest({ ...request, boundary: { ...request.boundary, at_elapsed_minutes: 29 } }),
     (error) => error instanceof TravelError && error.code === 'TRAVEL_INPUT_INVALID'
   );
 });

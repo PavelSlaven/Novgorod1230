@@ -10,8 +10,8 @@
 
 ## Public API
 
-- `validateTravelIntent`, `validateTravelPosition`, `validateJourney`, `validateTravelRulesBundle`
-- `buildJourneyPlan`, `createJourney`, `advanceJourney`, `applyTravelLifecycleMetadata`, `calculateNextTravelBoundary`, `buildTravelChangeSetProposal`, `buildTravelArrivalRequest`
+- `validateTravelIntent`, `validateTravelPosition`, `validateJourney`, `validateTravelRulesBundle`, `validateTravelAdvanceRequest`
+- `buildJourneyPlan`, `createJourney`, `advanceJourney`, `applyTravelLifecycleMetadata`, `calculateNextTravelBoundary`, `buildTravelChangeSetProposal`, `buildTravelAdvanceResult`, `buildTravelArrivalRequest`
 - `interruptJourney`, `campJourney`, `resumeJourney`, `changeJourneyPace`, `rerouteJourney`, `abandonJourney`, `completeJourney`
 - `TravelError`
 
@@ -32,6 +32,8 @@
 `buildTravelChangeSetProposal` — чистый version-bound output для Stage 24/25: он описывает journey, legs и фактическую позицию, но не выполняет запись и не включает состояние среды, времени, тела или видимую проекцию.
 
 `buildTravelArrivalRequest` создаёт `travel-arrival-request.v1` только при завершении последнего canonical leg. Он связывает party, journey, origin/destination и version pins, но не читает baseline G4, не решает, нужна ли materialization, и не выполняет commit. Turn workflow передаёт его как formal `position_transition` в единственный atomic first-entry gate.
+
+`TravelAdvanceRequest` связывает journey, current leg, expected state version, selected boundary, duration и idempotency key. `buildTravelAdvanceResult` возвращает immutable journey/leg/position proposal, request владельцу clock и, только при arrival, `TravelArrivalRequest`; он не обновляет clock, body, transport или environment.
 
 Новый `JourneyPlan` содержит явные `movement_method`, `started_at`, `updated_at` и положительный `base_time_minutes` каждого leg. `applyTravelLifecycleMetadata` принимает duration и timestamp только от владельца времени и переносит их в journey/legs; он не читает часы и не создаёт время сам.
 

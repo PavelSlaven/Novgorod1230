@@ -2,6 +2,7 @@ import { deepFreeze, sha256 } from '@rus/kernel';
 
 const JOURNEY_STATUSES = new Set(['planned', 'active', 'interrupted', 'camped', 'blocked', 'arrived', 'abandoned']);
 const LEG_STATUSES = new Set(['pending', 'active', 'completed', 'interrupted', 'blocked', 'superseded']);
+const TRAVEL_BOUNDARY_TYPES = new Set(['leg_completion', 'sunset', 'darkness', 'weather_transition', 'due_timer', 'body_threshold', 'resource_threshold', 'transport_problem', 'navigation_decision', 'significant_observation', 'causal_interruption', 'player_stop', 'arrival']);
 
 export class TravelError extends Error {
   constructor(code, message, details = {}) {
@@ -29,6 +30,18 @@ export function validateTravelRulesBundle({ bundle, world_revision_id, region_id
   } catch (error) {
     return deepFreeze({ pass: false, catalog_digest: null, errors: [deepFreeze({ code: error.code ?? 'TRAVEL_DATA_GAP', message: error.message })] });
   }
+}
+
+export function validateTravelAdvanceRequest(request) {
+  const value = record(request, 'TRAVEL_INPUT_INVALID', 'Travel advance request must be an object.');
+  if (value.schema_version !== 'travel-advance-request.v1') fail('TRAVEL_INPUT_INVALID', 'Travel advance request has an unsupported schema version.', { schema_version: value.schema_version });
+  for (const key of ['journey_id', 'journey_leg_id', 'updated_at', 'idempotency_key']) required(value[key], key);
+  if (!Number.isInteger(value.expected_state_version) || value.expected_state_version < 0) fail('TRAVEL_STATE_VERSION_MISMATCH', 'Travel advance request requires a non-negative expected state version.', { expected_state_version: value.expected_state_version });
+  if (!Number.isInteger(value.progress_permille) || value.progress_permille < 0 || value.progress_permille > 1000) fail('TRAVEL_INPUT_INVALID', 'Travel advance request requires progress between 0 and 1000.', { progress_permille: value.progress_permille });
+  if (!Number.isInteger(value.duration_minutes) || value.duration_minutes < 0) fail('TRAVEL_INPUT_INVALID', 'Travel advance request requires a non-negative duration.', { duration_minutes: value.duration_minutes });
+  const boundary = calculateNextTravelBoundary({ journey_id: value.journey_id, current_leg_id: value.journey_leg_id, candidates: [value.boundary] });
+  if (boundary.at_elapsed_minutes !== value.duration_minutes) fail('TRAVEL_INPUT_INVALID', 'Travel advance duration must end at the selected boundary.', { duration_minutes: value.duration_minutes, boundary_elapsed_minutes: boundary.at_elapsed_minutes });
+  return deepFreeze({ ...structuredClone(value), boundary });
 }
 
 export function validateTravelPosition(position) {
@@ -347,6 +360,35 @@ export function buildTravelArrivalRequest({ before, after } = {}) {
   });
 }
 
+export function buildTravelAdvanceResult({ before, after, request } = {}) {
+  const previous = validateJourney(before);
+  const next = validateJourney(after);
+  const advanceRequest = validateTravelAdvanceRequest(request);
+  if (advanceRequest.journey_id !== previous.journey_id || advanceRequest.journey_leg_id !== previous.current_leg_id) {
+    fail('TRAVEL_INPUT_INVALID', 'Travel advance request must bind the current journey leg.', {});
+  }
+  if (advanceRequest.expected_state_version !== previous.state_version || next.state_version !== previous.state_version) {
+    fail('TRAVEL_STATE_VERSION_MISMATCH', 'Travel advance result must preserve the expected persistence version.', { expected_state_version: advanceRequest.expected_state_version, journey_state_version: previous.state_version });
+  }
+  const journeyLeg = next.legs.find((leg) => leg.leg_id === advanceRequest.journey_leg_id);
+  if (!journeyLeg) fail('TRAVEL_INPUT_INVALID', 'Travel advance result lost the requested journey leg.', { journey_leg_id: advanceRequest.journey_leg_id });
+  return deepFreeze({
+    schema_version: 'travel-advance-result.v1',
+    journey: next,
+    journey_leg: journeyLeg,
+    position_proposal: next.actual_position,
+    clock_advance_request: deepFreeze({
+      schema_version: 'travel-clock-advance-request.v1',
+      journey_id: next.journey_id,
+      journey_leg_id: advanceRequest.journey_leg_id,
+      duration_minutes: advanceRequest.duration_minutes,
+      updated_at: advanceRequest.updated_at,
+      boundary: advanceRequest.boundary
+    }),
+    arrival_request: next.status === 'arrived' ? buildTravelArrivalRequest({ before: previous, after: next }) : null
+  });
+}
+
 export function calculateNextTravelBoundary(input) {
   const value = record(input, 'TRAVEL_INPUT_INVALID', 'Travel boundary input must be an object.');
   required(value.journey_id, 'journey_id');
@@ -354,11 +396,10 @@ export function calculateNextTravelBoundary(input) {
   if (!Array.isArray(value.candidates) || value.candidates.length === 0) {
     fail('TRAVEL_REQUIRED_CANDIDATE_SET_EMPTY', 'Travel advance requires at least one explicit boundary candidate.', { candidate_set: 'travel_boundaries' });
   }
-  const validTypes = new Set(['leg_completion', 'sunset', 'darkness', 'weather_transition', 'due_timer', 'body_threshold', 'resource_threshold', 'transport_problem', 'navigation_decision', 'significant_observation', 'causal_interruption', 'player_stop', 'arrival']);
   const candidates = value.candidates.map((candidate) => {
     const item = record(candidate, 'TRAVEL_INPUT_INVALID', 'Travel boundary candidate must be an object.');
     required(item.boundary_id, 'boundary_id');
-    if (!validTypes.has(item.boundary_type)) fail('TRAVEL_INPUT_INVALID', 'Unknown travel boundary type.', { boundary_type: item.boundary_type });
+    if (!TRAVEL_BOUNDARY_TYPES.has(item.boundary_type)) fail('TRAVEL_INPUT_INVALID', 'Unknown travel boundary type.', { boundary_type: item.boundary_type });
     if (!Number.isInteger(item.at_elapsed_minutes) || item.at_elapsed_minutes < 0) fail('TRAVEL_INPUT_INVALID', 'Boundary elapsed time must be a non-negative integer.', { boundary_id: item.boundary_id });
     if (!Number.isInteger(item.priority) || item.priority < 0) fail('TRAVEL_INPUT_INVALID', 'Boundary priority must be a non-negative integer.', { boundary_id: item.boundary_id });
     return structuredClone(item);

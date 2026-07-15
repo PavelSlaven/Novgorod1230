@@ -324,13 +324,15 @@ test('travel.continue advances a formal journey and plans normalized writes', ()
   const travelContext = { state_version: 4, known_edge_ids: ['edge:1'], travel_rules_bundle: rules, required_candidate_sets: { rules: [{}] } };
   const journey = createJourney(plan, travelContext);
   const handler = createTravelTurnCommandDefinitions().find((definition) => definition.command_id === 'travel.continue');
-  const consequence = handler.consequence({ retrievedState: { party_state: { state_version: 4 }, active_journey: journey, travel_context: travelContext, travel_advance_request: { progress_permille: 250, duration_minutes: 15, updated_at: '1230-01-01T09:15:00Z', visible_seed: {}, suggested_actions: [], idempotency_key: 'continue:1' } } });
+  const advanceRequest = { schema_version: 'travel-advance-request.v1', journey_id: 'journey:1', journey_leg_id: 'leg:1', expected_state_version: 4, progress_permille: 250, duration_minutes: 15, updated_at: '1230-01-01T09:15:00Z', visible_seed: {}, suggested_actions: [], idempotency_key: 'continue:1', boundary: { boundary_id: 'boundary:partial', boundary_type: 'significant_observation', at_elapsed_minutes: 15, priority: 0 } };
+  const consequence = handler.consequence({ retrievedState: { party_state: { state_version: 4 }, active_journey: journey, travel_context: travelContext, travel_advance_request: advanceRequest } });
   assert.equal(consequence.hidden_update.travel_change_set_proposal.position.progress_permille, 250);
   assert.equal(consequence.hidden_update.travel_change_set_proposal.journey.elapsed_minutes, 15);
   const writes = handler.writeTargets({ consequence });
   assert.deepEqual(writes.map((entry) => entry.target), ['party_journeys', 'party_journey_legs', 'party_current_position']);
 
-  const arrival = handler.consequence({ retrievedState: { party_state: { state_version: 4 }, active_journey: journey, travel_context: travelContext, travel_advance_request: { progress_permille: 1000, duration_minutes: 60, updated_at: '1230-01-01T10:00:00Z', visible_seed: {}, suggested_actions: [], idempotency_key: 'arrive:1' } } });
+  assert.throws(() => handler.consequence({ retrievedState: { party_state: { state_version: 4 }, active_journey: journey, travel_context: travelContext, travel_advance_request: { ...advanceRequest, journey_id: 'journey:wrong' } } }), (error) => error.code === 'TRAVEL_INPUT_INVALID');
+  const arrival = handler.consequence({ retrievedState: { party_state: { state_version: 4 }, active_journey: journey, travel_context: travelContext, travel_advance_request: { ...advanceRequest, progress_permille: 1000, duration_minutes: 60, updated_at: '1230-01-01T10:00:00Z', idempotency_key: 'arrive:1', boundary: { boundary_id: 'boundary:arrival', boundary_type: 'leg_completion', at_elapsed_minutes: 60, priority: 0 } } } });
   assert.deepEqual(arrival.position_transition, {
     from_g4_id: 'g4:a',
     to_g4_id: 'g4:b',

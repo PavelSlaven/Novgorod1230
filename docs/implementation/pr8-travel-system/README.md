@@ -72,7 +72,7 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 - Input: PR7 `aefd739f7249f8e0d1e6063422a84fc2acca0a93`; PR8 `69b0ee88a03a3d4ae0d8809869e4a6de03101bc4`.
 - Files studied: mandatory architecture, materialization, movement, time, turn, interface, graph and map norms; current movement and environment packages.
 - RED tests: `packages/travel/test/domain.test.js` — observed failure: `ERR_MODULE_NOT_FOUND` before implementation.
-- GREEN/refactor: initial position/lifecycle implementation passed 6/6 tests; no refactor yet.
+- GREEN/refactor: initial position/lifecycle implementation passed 7/7 tests, including active-journey conflict; no refactor yet.
 - Audit: previous baseline audit remains `CHANGES REQUIRED`; no finding is closed by this entry.
 - Next dependency: safely rebase this branch onto the current PR7 head before integration work.
 
@@ -92,7 +92,7 @@ Typed domain errors are versioned with the travel contracts; persistence, presen
 | Command | Date | Head before command | Result | Notes |
 | --- | --- | --- | --- | --- |
 | `node --test packages/travel/test/domain.test.js` | 2026-07-15 | `69b0ee8` | RED: 1 failed | `ERR_MODULE_NOT_FOUND` before implementation. |
-| `node --test packages/travel/test/domain.test.js` | 2026-07-15 | `69b0ee8` | PASS: 6/6 | Initial travel contract lifecycle. |
+| `node --test packages/travel/test/domain.test.js` | 2026-07-15 | `69b0ee8` | PASS: 7/7 | Initial travel contract lifecycle and active-journey conflict. |
 | `node --test packages/movement-routes/test/domain.test.js` | 2026-07-15 | `369ebe3` | RED: 1 failed | Missing `calculatePartialTraversal` export. |
 | `node --test packages/movement-routes/test/domain.test.js` | 2026-07-15 | `369ebe3` | PASS: 4/4 | Fail-closed route traversal contract. |
 | `npm run test:domain` | 2026-07-15 | `369ebe3` | PASS: 85/85 | Full package domain suite; PostgreSQL/integration/E2E not run. |

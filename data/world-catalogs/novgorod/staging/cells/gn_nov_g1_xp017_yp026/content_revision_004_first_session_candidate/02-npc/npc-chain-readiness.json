@@ -1,0 +1,37 @@
+{
+  "schema_version": "rus.first_session_npc_chain_readiness.v1",
+  "g4_id": "gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_high_platform",
+  "source_rule_id": "npc_rules_river_users_v1",
+  "status": "hard_blocked_data_gap",
+  "known_rule_data": {
+    "role_candidates_present": true,
+    "occupation_candidates_present": true,
+    "presence_context": "river users at a sheltered landing",
+    "source_revision": "content_revision_003_production_candidate"
+  },
+  "missing_required_candidate_sets": [
+    "region_npc_archetypes",
+    "region_demographic_profiles",
+    "region_name_pools and region_name_pool_entries",
+    "region_appearance_profiles",
+    "region_clothing_profiles",
+    "region_equipment_profiles and entries",
+    "region_knowledge_profiles",
+    "region_behavior_profiles",
+    "region_activity_profiles",
+    "region_schedule_profiles",
+    "region_relationship_profiles",
+    "region_npc_profile_sets"
+  ],
+  "required_final_binding": "g4_npc_materialization_rules",
+  "forbidden_repairs": [
+    "invent local archetype IDs",
+    "invent names or name pools",
+    "infer ethnic composition",
+    "use generic equipment fallback",
+    "derive knowledge or behavior from prose",
+    "materialize an NPC while any required candidate set is empty"
+  ],
+  "required_resolution": "Import or editorially approve the canonical regional rows, verify IDs and digests against the source package, then assemble approved region_npc_profile_sets and a G4-specific rule.",
+  "runtime_result_until_resolved": "NPC materialization must stop with a typed data gap."
+}

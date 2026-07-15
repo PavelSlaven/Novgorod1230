@@ -444,7 +444,13 @@ function checkLayoutGraph(concerns, layoutId, nodes, edges) {
 }
 import { digestValue } from './digest.js';
 const ITEM_BINDING_FACETS = new Set(['object_type','primary_function','secondary_function','material','manufacturing_technique','component_type','physical_form','condition','quality_band','size_band','mass_band','use_context']);
-const CONTAINER_FACETS = new Set(['container_form','capacity_band','closure_type','access_model','portability','content_compatibility','condition']);
+const CONTAINER_FACETS = new Set(['container_form','capacity_band','closure_type','access_model','portability','content_compatibility','condition','material']);
+
+function isValidContainerCapacityPolicy(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  const keys = Object.keys(value).sort();
+  return keys.length === 3 && keys[0] === 'mode' && keys[1] === 'reason' && keys[2] === 'version' && value.version === 1 && value.mode === 'unknown' && value.reason === 'not_measured';
+}
 
 export function validateItemContainerClassificationCatalog(recordsByTable = {}, { worldRevisionId = null, effectiveAt = null } = {}) {
   const errors = [];
@@ -457,6 +463,11 @@ export function validateItemContainerClassificationCatalog(recordsByTable = {}, 
   const inventory = recordsByTable.item_classification_migration_inventory ?? [];
   const equipmentEntries = recordsByTable.region_equipment_profile_entries ?? [];
   const activeCategory = (category) => category?.status === 'approved' && !category.replaced_by_category_id;
+  errors.push(...validateClassificationJsonSchema('container_templates', [...containers.values()], containerTemplatesSchema));
+  for (const container of containers.values()) {
+    if (!Number.isInteger(container.capacity) || container.capacity < 1) errors.push(`CONTAINER_CAPACITY_LEGACY_INVALID:${container.id}`);
+    if (!isValidContainerCapacityPolicy(container.capacity_policy)) errors.push(`CONTAINER_CAPACITY_POLICY_INVALID:${container.id}`);
+  }
   errors.push(...validateClassificationJsonSchema('item_template_category_bindings', itemBindings, itemTemplateCategoryBindingsSchema));
   errors.push(...validateClassificationJsonSchema('container_template_facet_bindings', containerBindings, containerTemplateFacetBindingsSchema));
   errors.push(...validateClassificationJsonSchema('container_content_category_relations', relations, containerContentCategoryRelationsSchema));
@@ -594,3 +605,4 @@ import containerTemplateFacetBindingsSchema from '../../../schemas/materializati
 import containerContentCategoryRelationsSchema from '../../../schemas/materialization/container-content-category-relations-v1.schema.json' with { type: 'json' };
 import itemClassificationMigrationInventorySchema from '../../../schemas/materialization/item-classification-migration-inventory-v1.schema.json' with { type: 'json' };
 import regionEquipmentProfileEntriesSchema from '../../../schemas/materialization/region-equipment-profile-entries-v1.schema.json' with { type: 'json' };
+import containerTemplatesSchema from '../../../schemas/materialization/container-templates-v1.schema.json' with { type: 'json' };

@@ -260,6 +260,29 @@ deferred external/local rows: unknown until export
 9. Перегенерирует generated artifacts штатными командами.
 10. Вызывает code critic с предыдущим `PASS WITH NOTES` и полным diff.
 
+## 7A. Этап 3B-1 — фактическая инвентаризация Codex
+
+- PR head до начала реализации: `8b139ca3b883a54308bd70d30b99612ec0a14d11`; локальный
+  `af8cbc2` был позади и fast-forward выполнен до актуального draft PR head.
+- Проверены `container_templates.capacity`, DDL, readiness, Stage 8/16, party schemas,
+  tracked world-base bundle, importer manifest и source datasets. Точного runtime consumer
+  integer `capacity` не найден: он встречается в DDL и test fixtures; Stage 16 и party
+  persistence не используют его как измеряемую величину.
+- Выбран versioned closed `capacity_policy`: в 3B-1 допустимо только явное
+  `{version: 1, mode: "unknown", reason: "not_measured"}`. Это не задаёт единицу,
+  объём, массу, slots или количество предметов; legacy `capacity` сохранён и не получает
+  новой трактовки.
+- `container_template_facet_bindings` расширен независимым `material` facet. Form и
+  material остаются раздельными; container proposals всё ещё не импортируются, потому что
+  page-level historical evidence и formal construction/compatibility data отсутствуют.
+- Tracked canonical item/container authoring rows: 0; local PostgreSQL/NocoDB canonical
+  export не настроен. Зафиксирован gap `EXTERNAL_LEGACY_ROWS_UNAVAILABLE`; migration
+  inventory для tracked scope остаётся пустым, без заявления о coverage внешних строк.
+- Граница изменения: DDL/schema/importer validation/test fixtures/documentation только для
+  material facet и explicit unknown capacity. Не создаются draft historical datasets до
+  page-level source support; не выполняются production import, apply, runtime activation,
+  cutover или rematerialization.
+
 ## 8. Оставшиеся задачи
 
 - завершить техническую часть 3B-1 после устранения hard gaps;

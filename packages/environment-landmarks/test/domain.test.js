@@ -127,10 +127,21 @@ test('environment cue lifecycle rejects an incomplete approved template instead 
   assert.throws(() => updateEnvironmentFeatures({
     party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', g1_id: 'g1-1', base_state_version: 1,
     current_environment_state: initialized.environment_state, elapsed_time: { minutes: 0 }, weather_before: 'clear', weather_after: 'clear',
-    active_emitters: [{ emitter_id: 'camp-hearth-1', source_type: 'hearth', source_kind: 'camp', source_id: 'hidden-camp-1', location_binding: 'g4-ridge' }],
+    active_emitters: [{ emitter_id: 'camp-hearth-1', source_type: 'hearth', source_kind: 'camp', source_id: 'hidden-camp-1', location_binding: 'g4-ridge', bearing_band: 'north', distance_band: 'near', strength_band: 'moderate' }],
     trace_emissions: [], event_emissions: [], catalog_bundle: incompleteCatalog, catalog_digest: incompleteCatalog.catalog_digest,
     materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1', idempotency_key: 'turn:incomplete-cue'
   }), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_CUE_TEMPLATE_INVALID');
+});
+
+test('environment cue lifecycle blocks an emitter without formal observation bands', () => {
+  const initialized = initializeEnvironmentFeatures(initializationInput());
+  assert.throws(() => updateEnvironmentFeatures({
+    party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', g1_id: 'g1-1', base_state_version: 1,
+    current_environment_state: initialized.environment_state, elapsed_time: { minutes: 0 }, weather_before: 'clear', weather_after: 'clear',
+    active_emitters: [{ emitter_id: 'camp-hearth-1', source_type: 'hearth', source_kind: 'camp', source_id: 'hidden-camp-1', location_binding: 'g4-ridge' }],
+    trace_emissions: [], event_emissions: [], catalog_bundle: catalog, catalog_digest: catalog.catalog_digest,
+    materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1', idempotency_key: 'turn:missing-observation'
+  }), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_EMITTER_OBSERVATION_INVALID');
 });
 
 test('environment cues require an active approved source and never disclose it in observation candidates', () => {
@@ -138,7 +149,7 @@ test('environment cues require an active approved source and never disclose it i
   const result = updateEnvironmentFeatures({
     party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', g1_id: 'g1-1', base_state_version: 1,
     current_environment_state: initialized.environment_state, elapsed_time: { minutes: 0 }, weather_before: 'clear', weather_after: 'clear',
-    active_emitters: [{ emitter_id: 'camp-hearth-1', source_type: 'hearth', source_kind: 'camp', source_id: 'hidden-camp-1', location_binding: 'g4-ridge' }],
+    active_emitters: [{ emitter_id: 'camp-hearth-1', source_type: 'hearth', source_kind: 'camp', source_id: 'hidden-camp-1', location_binding: 'g4-ridge', bearing_band: 'north', distance_band: 'near', strength_band: 'moderate' }],
     trace_emissions: [], event_emissions: [], catalog_bundle: catalog, catalog_digest: catalog.catalog_digest,
     materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1', idempotency_key: 'turn-1'
   });

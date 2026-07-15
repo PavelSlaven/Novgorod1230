@@ -289,7 +289,7 @@ Bundle является только authoring-входом: `approval = draft`,
 
 Physical values помечены как `gameplay_estimate` в `PHYSICAL_PARAMETER_REVIEW_TABLE.md`; они не являются историческими измерениями. Historical source-family references всё ещё требуют individual source-record resolution, поэтому каждая coverage row остаётся `partial_draft` с `HISTORICAL_PRESENCE_EVIDENCE_REQUIRED`. Bulk goods также остаются заблокированы `BULK_GOOD_QUANTITY_UNIT_MODEL_REQUIRED`. Ни record, ни revision, ни policy не активированы; Stage 8/16 runtime candidates не изменены.
 
-Технические artifacts: `TARGET_TABLE_COVERAGE.md`, `PHYSICAL_PARAMETER_AUTHORING_POLICY.md`, `PHYSICAL_PARAMETER_REVIEW_TABLE.md`, `NORMALIZATION_COVERAGE_REPORT.md`, `DATA_GAPS.md` и `CODEX_INTEGRATION_REPORT.md`.
+Технические artifacts: `TARGET_TABLE_COVERAGE.md`, `PHYSICAL_PARAMETER_AUTHORING_POLICY.md`, `PHYSICAL_PARAMETER_REVIEW_TABLE.md`, `NORMALIZATION_COVERAGE_REPORT.md`, `DATA_GAPS.md`, `CODEX_INTEGRATION_REPORT.md` и `POSTGRESQL_INTEGRATION_REPORT.md`.
 
 Фактически выполнено после реализации: direct supplemental tests — 10/10; `test:world-catalog` — 62/62; `test:stage16` — 17/17; Stage 2–8 migration tests — 6/6; `npm test` — success (модульный набор 259, domain 67, apps 11, tools 116, shadow 6, cutover 4; integration 21 pass/5 skipped; browser 1 skipped без Chromium); schema check — 117 tables и read-only grants; schema/docs/corpus/architecture checks — success; supplemental importer dry-run — success. Проверка PostgreSQL apply/readback/rollback не запущена: `docker compose config --quiet` блокируется отсутствующим обязательным `POSTGRES_PASSWORD`. Lint/typecheck scripts в `package.json` отсутствуют.
 

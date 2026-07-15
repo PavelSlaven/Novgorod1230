@@ -8,4 +8,4 @@ export { validateG1CellPackage } from './cell-package.js';
 export { buildImportDryRun } from './dry-run.js';
 export { calculatePackingSlots } from './packing-slots.js';
 export { assessMaterializationReadiness, validateCatalogImportManifest, validateClassificationCatalog, validateItemContainerClassificationCatalog, assessItemContainerClassificationMigration, assessItemContainerClassificationReadiness, importClassificationCatalog, MATERIALIZATION_AUTHORING_TABLES } from './materialization-readiness.js';
-export { SUPPLEMENTAL_AUTHORING_TABLES, supplementalDigest, validateSupplementalCatalogBundle } from './supplemental-catalog-bundle.js';
+export { SUPPLEMENTAL_AUTHORING_TABLES, supplementalDigest, validateSupplementalCatalogBundle, applySupplementalCatalogBundle } from './supplemental-catalog-bundle.js';

@@ -74,6 +74,7 @@
     "world-db:prepare-staging": "node scripts/prepare-rus13-staging.js",
     "world-db:import:dry-run": "node scripts/run-world-base-importer.js --mode dry-run",
     "world-db:import:stage3b1:dry-run": "node scripts/run-stage-3b1-supplemental-importer.mjs",
+    "world-db:import:stage3b1:integration": "node scripts/run-stage-3b1-supplemental-postgres.mjs",
     "world-db:import:emit-sql": "node scripts/run-world-base-importer.js --mode emit-sql",
     "world-db:import:apply": "node scripts/run-world-base-importer.js --mode apply",
     "world-db:fk-audit:staged": "node scripts/run-world-base-fk-audit.js --mode staged",

@@ -1,0 +1,28 @@
+# @rus/environment-landmarks
+
+## Назначение
+
+Детерминированно материализует постоянные природные ориентиры, временные сигналы и следы среды из утверждённого каталога. Модуль не создаёт G0–G4, не пишет в БД и не принимает решения за LLM.
+
+## Public API
+
+- `initializeEnvironmentFeatures`
+- `updateEnvironmentFeatures`
+- `buildEnvironmentObservationCandidates`
+- `validateEnvironmentFeatureState`
+
+## Инварианты
+
+- baseline уникален по `party_id`, `world_revision_id`, `g1_id`, `materializer_version`;
+- required candidate set блокирует материализацию;
+- cue содержит причинный источник, trace — источник и event;
+- публичные observation candidates не содержат source ID или location binding;
+- входы не изменяются; результат и его состояние immutable.
+
+## Зависимости
+
+Только `@rus/kernel` и публичные deterministic механизмы `@rus/materialization`. Запрещены БД, LLM, UI, глобальное время и собственный RNG.
+
+## Тесты
+
+`test/domain.test.js` покрывает repeat-entry, скрытый источник дыма и жизненный цикл колеи.

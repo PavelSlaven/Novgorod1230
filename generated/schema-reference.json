@@ -752,6 +752,12 @@
       "type": "sql"
     },
     {
+      "bytes": 4218,
+      "path": "schemas/party-db/002_environment_landmarks.sql",
+      "sha256": "84800a8e38455ea2297ff933a8b4dc874d911ea0be255741d12de7072452c707",
+      "type": "sql"
+    },
+    {
       "bytes": 1447,
       "path": "schemas/world-base/world-base-source-bundle.schema.json",
       "sha256": "358430badf2821197ffc74d4600b2cc2b153d1a1a141020e998650cb1c325dc2",

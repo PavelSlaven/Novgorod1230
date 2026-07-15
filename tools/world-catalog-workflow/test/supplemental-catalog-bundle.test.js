@@ -127,3 +127,12 @@ test('supplemental bundle rejects a calendar date that PostgreSQL DATE would rej
   const result = validateSupplementalCatalogBundle(manifest, recordsByTable, { externalIds: { regions: new Set(['region_novgorod_land']), region_social_roles: new Set(['nov_role_guard']) } });
   assert.equal(result.errors.includes('JSON_SCHEMA_FORMAT:world_revisions:0:effective_from'), true);
 });
+
+test('supplemental bundle rejects a FK-dependent table scheduled before its prerequisites', () => {
+  const manifest = readJson('manifest.json');
+  const recordsByTable = Object.fromEntries(manifest.datasets.map((dataset) => [dataset.table, readJson(dataset.path)]));
+  const itemTemplates = manifest.datasets.find((dataset) => dataset.table === 'item_templates');
+  manifest.datasets = [itemTemplates, ...manifest.datasets.filter((dataset) => dataset !== itemTemplates)].map((dataset, dependency_order) => ({ ...dataset, dependency_order }));
+  const result = validateSupplementalCatalogBundle(manifest, recordsByTable, { externalIds: { regions: new Set(['region_novgorod_land']), region_social_roles: new Set(['nov_role_guard']) } });
+  assert.equal(result.errors.includes('FK_DEPENDENCY_ORDER_INVALID:item_templates:world_revisions'), true);
+});

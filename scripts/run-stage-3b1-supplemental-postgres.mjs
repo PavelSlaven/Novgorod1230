@@ -21,10 +21,16 @@ try {
     world_revisions: new Set(['novgorod_1230_research_revision_001']),
     region_social_roles: new Set(['nov_role_guard'])
   } });
+  const repeated = await applySupplementalCatalogBundle({ manifest, recordsByTable, adapter, externalIds: {
+    regions: new Set(['region_novgorod_land']),
+    world_revisions: new Set(['novgorod_1230_research_revision_001']),
+    region_social_roles: new Set(['nov_role_guard'])
+  } });
+  if (repeated.tables.length !== manifest.datasets.length) throw new Error('SUPPLEMENTAL_REPEAT_APPLY_INCOMPLETE');
   const rollbackResult = await verifyRollback(client, adapter);
   const statuses = await client.query(`SELECT count(*)::int AS count FROM world_base.world_revisions WHERE id = $1 AND status <> 'draft'`, [manifest.world_revision_id]);
   if (statuses.rows[0].count !== 0) throw new Error('SUPPLEMENTAL_ACTIVATION_FORBIDDEN');
-  process.stdout.write(`${JSON.stringify({ pass: true, mode: 'apply', bundle_id: manifest.bundle_id, tables: result.tables, rollback: rollbackResult, records: Object.fromEntries(manifest.datasets.map((dataset) => [dataset.table, dataset.record_count])) }, null, 2)}\n`);
+  process.stdout.write(`${JSON.stringify({ pass: true, mode: 'apply', bundle_id: manifest.bundle_id, tables: result.tables, repeat_apply: 'pass', rollback: rollbackResult, records: Object.fromEntries(manifest.datasets.map((dataset) => [dataset.table, dataset.record_count])) }, null, 2)}\n`);
 } finally {
   client.release();
   await pool.end();

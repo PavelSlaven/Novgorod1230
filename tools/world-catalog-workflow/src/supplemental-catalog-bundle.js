@@ -68,6 +68,18 @@ const SCHEMA_IDS = Object.freeze({
   property_profiles: 'rus.property_profiles.v1', property_profile_rules: 'rus.property_profile_rules.v1',
   region_equipment_profiles: 'rus.region_equipment_profiles.v1', region_equipment_profile_entries: 'rus.region_equipment_profile_entries.v1', item_classification_migration_inventory: 'rus.item_classification_migration_inventory.v1'
 });
+const SUPPLEMENTAL_FK_DEPENDENCIES = Object.freeze({
+  world_revisions: ['world_revisions'], universal_categories: ['universal_categories'],
+  category_labels: ['universal_categories', 'source_records'], region_category_options: ['world_revisions', 'universal_categories'],
+  item_templates: ['world_revisions', 'universal_categories', 'source_records'],
+  item_template_category_bindings: ['item_templates', 'universal_categories'], item_template_inventory_profiles: ['item_templates', 'world_revisions', 'source_records'],
+  container_templates: ['world_revisions', 'universal_categories', 'source_records'], container_template_facet_bindings: ['container_templates', 'universal_categories'],
+  container_template_inventory_profiles: ['container_templates', 'world_revisions', 'source_records'], container_content_profiles: ['container_templates'],
+  container_content_profile_entries: ['container_content_profiles', 'item_templates', 'universal_categories'], item_profile_sets: ['world_revisions'],
+  item_profile_entries: ['item_profile_sets', 'item_templates', 'universal_categories'], property_profiles: ['world_revisions', 'universal_categories'],
+  property_profile_rules: ['property_profiles'], region_equipment_profile_entries: ['region_equipment_profiles', 'item_templates', 'universal_categories'],
+  item_classification_migration_inventory: ['universal_categories']
+});
 const SCHEMAS = Object.freeze({
   source_records: sourceRecordsSchema, world_revisions: worldRevisionsSchema, universal_categories: universalCategoriesSchema, category_labels: categoryLabelsSchema, region_category_options: regionCategoryOptionsSchema,
   item_templates: itemTemplatesSchema, item_template_category_bindings: itemTemplateCategoryBindingsSchema, item_template_inventory_profiles: itemTemplateInventoryProfilesSchema,
@@ -114,6 +126,10 @@ export function validateSupplementalCatalogBundle(manifest, recordsByTable = {},
     if (SCHEMAS[table]) errors.push(...validateJsonSchemaRecords(table, records, SCHEMAS[table]));
   }
   for (const table of Object.keys(recordsByTable)) if (!declared.has(table)) errors.push(`TABLE_PAYLOAD_NOT_DECLARED:${table}`);
+  const orderByTable = new Map(datasets.map((dataset) => [dataset.table, dataset.dependency_order]));
+  for (const [table, dependencies] of Object.entries(SUPPLEMENTAL_FK_DEPENDENCIES)) for (const dependency of dependencies) {
+    if (dependency !== table && declared.has(table) && declared.has(dependency) && orderByTable.get(dependency) >= orderByTable.get(table)) errors.push(`FK_DEPENDENCY_ORDER_INVALID:${table}:${dependency}`);
+  }
 
   const local = (table) => new Set((recordsByTable[table] ?? []).map((record) => record?.id).filter(Boolean));
   const known = (table) => new Set([...local(table), ...(externalIds[table] ?? [])]);

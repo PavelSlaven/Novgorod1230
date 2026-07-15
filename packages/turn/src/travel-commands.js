@@ -1,5 +1,5 @@
 import { TURN_TRAVEL_COMMAND_IDS } from './contracts.js';
-import { abandonJourney, advanceJourney, applyTravelLifecycleMetadata, buildTravelAdvanceResult, buildTravelArrivalRequest, buildTravelChangeSetProposal, campJourney, changeJourneyPace, createJourney, interruptJourney, rerouteJourney, resumeJourney } from '@rus/travel';
+import { abandonJourney, advanceJourney, applyTravelLifecycleMetadata, buildTravelAdvanceResult, buildTravelArrivalRequest, buildTravelChangeSetProposal, campJourney, changeJourneyPace, createJourney, interruptJourney, rerouteJourney, resolveCourseEdgeCandidate, resumeJourney } from '@rus/travel';
 
 const TRAVEL_STATE_BLOCKS = Object.freeze(['party_state', 'current_position', 'clock_weather_light', 'active_journey', 'journey_legs', 'travel_position', 'environment_landmarks', 'environment_cues', 'movement_traces', 'transport_state', 'relevant_routes', 'character_knowledge_map', 'relevant_hidden_state']);
 const TRAVEL_WRITES = Object.freeze(['party_journeys', 'party_journey_legs', 'party_current_position', 'party_environment_runs', 'party_environment_choices', 'party_environment_landmarks', 'party_environment_cues', 'party_environment_traces', 'party_visible_context_package', 'party_narrator_output']);
@@ -78,6 +78,14 @@ function startJourney(commandId, { retrievedState } = {}) {
   if (!travelContext || !validRequest(request) || !plain(request.journey_plan)) return missingContext();
   const expectedMode = commandId === 'travel.start_route' ? 'route' : 'course';
   if (request.journey_plan.mode !== expectedMode) return missingContext();
+  if (expectedMode === 'course') {
+    if (!plain(request.course_edge_resolution)) return missingContext();
+    const selected = resolveCourseEdgeCandidate(request.course_edge_resolution);
+    const firstLeg = request.journey_plan.legs?.[0];
+    if (!firstLeg || request.journey_plan.origin_position?.g4_id !== selected.from_g4_id || request.journey_plan.intended_direction !== request.course_edge_resolution.intended_direction || ['edge_id', 'from_g4_id', 'to_g4_id', 'route_profile_id', 'base_time_minutes'].some((key) => firstLeg[key] !== selected[key])) {
+      throw travelHandlerError('TRAVEL_EDGE_NOT_TRAVERSABLE', 'Course plan must start with the selected fact-graph edge candidate.');
+    }
+  }
   const journey = createJourney(request.journey_plan, travelContext);
   const proposal = buildTravelChangeSetProposal({ before: null, after: journey, idempotency_key: request.idempotency_key, expected_state_version: retrievedState.party_state?.state_version });
   return {

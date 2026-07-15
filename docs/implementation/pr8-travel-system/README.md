@@ -69,6 +69,7 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 - 2026-07-15: `travel.continue` принимает только `travel-advance-request.v1`, связывающий journey, leg, state version, duration и selected boundary. Он формирует `travel-advance-result.v1`; stale или чужой journey request блокируется до proposal/commit.
 - 2026-07-15: `TravelInterruption` требует `travel-interruption.v1` и causal source из закрытого набора. Произвольный id или новый дорожный event не могут прервать journey.
 - 2026-07-15: `resolveCourseEdgeCandidate` принимает только explicit applicable candidate из fact graph. Пустой set, неизвестный selected id или candidate из другой direction/origin приводят к typed hard block, а не к выбору «ближайшей» дороги.
+- 2026-07-15: `travel.start_course` требует этот candidate и сверяет с ним первый leg `JourneyPlan`; plan без candidate или с другим edge блокируется до createJourney/commit.
 
 ## Checks recorded on transferred baseline
 
@@ -136,6 +137,7 @@ Typed domain errors are versioned with the travel contracts; persistence, presen
 | `npm run test:domain` / `npm run test:modules` / `npm run test:apps` / `docs:check` | 2026-07-15 | worktree after advance-contract implementation | PASS: 105/105; 262/262; 14/14 | Full local regression after binding `travel.continue` to explicit journey/leg/version/boundary input. PostgreSQL/E2E remain separate blocked gates. |
 | `node --test packages/travel/test/domain.test.js` | 2026-07-15 | worktree after `41670e9` | RED then PASS: 1 failure → 18/18 | Unstructured interruption was rejected; only formal causal-source interruption can change journey state. |
 | `node --test packages/travel/test/domain.test.js` / `docs:check` | 2026-07-15 | worktree after `51b49ea` | RED then PASS: 1 failure → 19/19 | Course continuation accepts only an explicit applicable fact-graph candidate; generated documentation is current. |
+| `node --test packages/travel/test/domain.test.js packages/turn/test/turn-workflow.test.js` / full local suites | 2026-07-15 | worktree after `b560d95` | PASS: 36/36; 107/107; 262/262; 14/14 | `travel.start_course` blocks missing/mismatched candidate selection and accepts only a first leg bound to the chosen fact-graph candidate. |
 | `node --test tools/docs-tools/test/knowledge-source-migration.test.js tools/docs-tools/test/knowledge-corpus-verifier.test.js tools/docs-tools/test/knowledge-materializer-v2.test.js` | 2026-07-15 | working tree after `6eb1a23` | PASS: 22/22 | Corpus manifest, legacy provenance and generated graph/RAG materialization remain reproducible after the PR8 normative update. |
 | `npm run test:domain` / `npm run test:modules` | 2026-07-15 | working tree after `6eb1a23` | PASS: 102/102; 261/261 | Documentation-only change did not regress travel, environment, turn or materialization contracts. |
 | `node --test packages/travel/test/domain.test.js` | 2026-07-15 | `69b0ee8` | RED: 1 failed | `ERR_MODULE_NOT_FOUND` before implementation. |
@@ -262,7 +264,7 @@ The ordered migration loader, seed script, party preflight and Stage 25 logical 
 | 5 — approved pilot | blocked | No runtime-visible approved G1; no fictional promotion is allowed. |
 | 6 — party persistence | in progress | Migration 003, deferred FK and atomic normal turn writer exist; real PostgreSQL proof is blocked by missing URL. |
 | 7 — movement routes | completed for fail-closed domain contract | Explicit profile, transport and partial traversal tests are green. |
-| 8 — travel lifecycle | partial | Start, continue, stop, camp, resume, pace, reroute and abandon have pure transitions; final canonical leg produces an arrival request. Route graph selection and course resolution remain blocked by missing approved contracts. |
+| 8 — travel lifecycle | partial | Start, continue, stop, camp, resume, pace, reroute and abandon have pure transitions; course start binds its first leg to an explicit fact-graph candidate and final canonical leg produces an arrival request. Production graph loader remains pending. |
 | 9 — new-game / Stage 13 | blocked | Requires approved environment bundle and runtime-visible pilot. |
 | 10 — turn integration | in progress | One canonical workflow has start/continue/lifecycle handlers, normalized persistence and final-arrival handoff to its atomic first-entry gate; production state readers and graph/bundle ports remain absent. |
 | 11 — time/body/load/transport | partial | Duration/timestamp ownership is enforced; cross-module production integration and concrete scenarios remain pending. |

@@ -100,7 +100,7 @@ export function validateJourney(journey) {
   return deepFreeze({ ...structuredClone(value), legs });
 }
 
-export function advanceJourney({ journey, context, progress_permille = 1000 }) {
+export function advanceJourney({ journey, context, progress_permille = 1000, perceived_position = null }) {
   const current = validateJourney(journey);
   assertContext(context, current);
   if (current.status === 'arrived' || current.status === 'abandoned') fail('TRAVEL_NO_ACTIVE_JOURNEY', 'Completed journey cannot advance.', { status: current.status });
@@ -109,7 +109,10 @@ export function advanceJourney({ journey, context, progress_permille = 1000 }) {
   const legs = current.legs.map((leg) => leg.leg_id !== current.current_leg_id ? leg : deepFreeze({ ...leg, progress_permille, status: progress_permille === 1000 ? 'completed' : 'active' }));
   const changed = legs.find((leg) => leg.leg_id === current.current_leg_id);
   const next = legs.find((leg) => leg.sequence === changed.sequence + 1);
-  if (progress_permille < 1000) return deepFreeze({ ...current, legs, actual_position: edgePosition(current, changed, progress_permille), perceived_position: edgePosition(current, changed, progress_permille) });
+  if (progress_permille < 1000) {
+    const actualPosition = edgePosition(current, changed, progress_permille);
+    return deepFreeze({ ...current, legs, actual_position: actualPosition, perceived_position: resolvePerceivedPosition(perceived_position, actualPosition) });
+  }
   if (next) {
     const nextLeg = deepFreeze({ ...next, status: 'active', progress_permille: 0 });
     const updatedLegs = legs.map((leg) => leg.leg_id === nextLeg.leg_id ? nextLeg : leg);
@@ -186,6 +189,15 @@ function validateLeg(leg) {
 
 function edgePosition(journey, leg, progress_permille) {
   return deepFreeze({ position_kind: 'edge_progress', journey_id: journey.journey_id, journey_leg_id: leg.leg_id, edge_id: leg.edge_id, from_g4_id: leg.from_g4_id, to_g4_id: leg.to_g4_id, progress_permille, last_confirmed_g4_id: leg.from_g4_id, g5_node_id: null, g5_anchor_id: null });
+}
+
+function resolvePerceivedPosition(value, actualPosition) {
+  if (value == null) return clone(actualPosition);
+  const perceived = validateTravelPosition(value);
+  if (perceived.position_kind !== 'edge_progress' || ['journey_id', 'journey_leg_id', 'edge_id', 'from_g4_id', 'to_g4_id'].some((key) => perceived[key] !== actualPosition[key])) {
+    fail('TRAVEL_POSITION_INVALID', 'Perceived edge position must reference the current canonical leg.', { actual_edge_id: actualPosition.edge_id });
+  }
+  return perceived;
 }
 
 function record(value, code, message) { if (!value || typeof value !== 'object' || Array.isArray(value)) fail(code, message, {}); return value; }

@@ -48,6 +48,7 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 - 2026-07-15: `advanceJourney` больше не завершает leg по скрытому default `progress_permille=1000`; RED-тест зафиксировал старое поведение, GREEN требует явного progress или `completeJourney`.
 - 2026-07-15: `buildTravelChangeSetProposal` добавлен через RED/GREEN как единственный persistence-neutral output travel-domain: proposal version-bound и содержит только normalized journey/legs/position, без environment, body, clock или visible state.
 - 2026-07-15: lifecycle следов больше не подставляет recognition/navigation, decay thresholds или weather multiplier; неполные approved template/profile приводят к typed hard block.
+- 2026-07-15: начато обязательное внутреннее разбиение `@rus/environment-landmarks`: errors, utilities, normalized state, pinned catalog validation и safe observation boundary вынесены из public facade без изменения API или lifecycle semantics; baseline/cue/trace extraction остаётся следующим шагом.
 
 ## Checks recorded on transferred baseline
 
@@ -129,6 +130,8 @@ Typed domain errors are versioned with the travel contracts; persistence, presen
 | `node --test packages/environment-landmarks/test/domain.test.js` | 2026-07-15 | рабочее дерево после `bc986f3` | RED: 1 failed | Неполный trace template проходил за счёт семантических defaults. |
 | `node --test packages/environment-landmarks/test/domain.test.js` | 2026-07-15 | рабочее дерево после `bc986f3` | PASS: 8/8 | Trace template и decay profile валидируются fail-closed. |
 | `npm run test:domain` | 2026-07-15 | рабочее дерево после `bc986f3` | PASS: 90/90 | Полный domain regression. |
+| `node --test packages/environment-landmarks/test/domain.test.js` | 2026-07-15 | рабочее дерево после `9088f4e` | PASS: 8/8 | Internal-module extraction сохранил public behavior. |
+| `npm run test:domain` | 2026-07-15 | рабочее дерево после `9088f4e` | PASS: 90/90 | Полный domain regression после extraction. |
 
 ## Data and migration registry
 

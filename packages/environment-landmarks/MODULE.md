@@ -29,6 +29,10 @@
 
 Только `@rus/kernel` и публичные deterministic механизмы `@rus/materialization`. Запрещены БД, LLM, UI, глобальное время и собственный RNG.
 
+## Внутренняя структура
+
+`src/index.js` остаётся единственным публичным фасадом и lifecycle coordinator. Внутренние `errors`, `utils`, `state`, `catalog` и `observations` изолируют typed errors, immutable state, pinned bundle validation и safe observation boundary. Они не являются публичным API.
+
 ## Тесты
 
 `test/domain.test.js` покрывает repeat-entry, запрет неявного lifecycle при baseline, скрытый источник дыма и жизненный цикл колеи.

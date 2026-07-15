@@ -105,8 +105,20 @@ test('inventory foundation: zones and ordered access derive only from physical p
   });
   assert.equal(deriveInventoryZone({ ...input, instance_id: 'hand' }).zone, 'hands');
   assert.equal(deriveInventoryZone({ ...input, instance_id: 'belt' }).zone, 'worn_quick');
+  assert.equal(deriveInventoryZone({ ...input, instance_id: 'inside' }).zone, 'primary_container');
   assert.deepEqual(resolveInventoryAccess({ ...input, item_id: 'inside' }).access, { tier: 'closed', steps: ['open_primary_container', 'open_inner_container', 'retrieve_item'] });
   assert.equal(resolveInventoryAccess({ ...input, item_id: 'outside' }).access.tier, 'unavailable');
+});
+
+test('inventory foundation: zone traversal distinguishes quick/primary paths and rejects missing or cyclic containers', () => {
+  const quick = state({
+    items: [{ item_id: 'knife-1', template_id: 'knife', quantity: 1 }], containers: [{ container_id: 'pouch-1', template_id: 'pouch' }],
+    item_placements: [{ item_id: 'knife-1', container_id: 'pouch-1' }], container_placements: [{ container_id: 'pouch-1', holder_character_id: actorId, physical_position: 'worn_quick' }]
+  });
+  assert.equal(deriveInventoryZone({ ...quick, instance_id: 'knife-1' }).zone, 'quick_container');
+  assert.equal(deriveInventoryZone({ ...state({ items: [{ item_id: 'knife-1', template_id: 'knife', quantity: 1 }], item_placements: [{ item_id: 'knife-1', container_id: 'missing' }] }), instance_id: 'knife-1' }).errors[0].code, 'INVENTORY_CONTAINER_NOT_FOUND');
+  const cycle = state({ items: [{ item_id: 'knife-1', template_id: 'knife', quantity: 1 }], containers: [{ container_id: 'a', template_id: 'box' }, { container_id: 'b', template_id: 'box' }], item_placements: [{ item_id: 'knife-1', container_id: 'a' }], container_placements: [{ container_id: 'a', parent_container_id: 'b' }, { container_id: 'b', parent_container_id: 'a' }] });
+  assert.equal(deriveInventoryZone({ ...cycle, instance_id: 'knife-1' }).errors[0].code, 'INVENTORY_CYCLE_DETECTED');
 });
 
 test('inventory foundation: container usage reuses packing slots and rejects incompatible long or bulky content', () => {

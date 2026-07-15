@@ -63,6 +63,8 @@ test('inventory foundation: external locations do not count and missing mass nev
   assert.equal(calculateInventoryMass(left).total_mass_grams, 0);
   const missing = state({ items: [{ item_id: 'unknown-1', template_id: 'unknown', quantity: 1 }], item_placements: [{ item_id: 'unknown-1', holder_character_id: actorId, physical_position: 'hands' }] });
   assert.equal(calculateInventoryMass(missing).errors[0].code, 'ITEM_MASS_DATA_GAP');
+  const invalidQuantity = state({ items: [{ item_id: 'knife-1', template_id: 'knife', quantity: 0 }], item_placements: [{ item_id: 'knife-1', holder_character_id: actorId, physical_position: 'hands' }] });
+  assert.equal(calculateInventoryMass(invalidQuantity).errors[0].code, 'INVENTORY_QUANTITY_INVALID');
 });
 
 test('inventory foundation: topology blocks duplicate placement, cycles, depth, party mismatch and duplicate primary container', () => {
@@ -119,6 +121,7 @@ test('inventory foundation: stack signature is deterministic and preserves owner
 test('inventory foundation: transfer planning is atomic and drop/recover primary container preserves ownership and contents', () => {
   const input = state({
     current_g5_anchor_id: 'g5-1',
+    strength: 100,
     containers: [{ container_id: 'bag-1', template_id: 'bag' }],
     items: [{ item_id: 'knife-1', template_id: 'knife', quantity: 1 }],
     container_placements: [{ container_id: 'bag-1', holder_character_id: actorId, physical_position: 'worn' }],
@@ -131,4 +134,19 @@ test('inventory foundation: transfer planning is atomic and drop/recover primary
   assert.equal(dropped.change_set.placement_changes[0].anchor_id, 'g5-1');
   assert.equal(planInventoryTransfer({ ...input, operation: 'drop_primary_container', item_or_container_id: 'bag-1', expected_state_version: 3 }).errors[0].code, 'STATE_VERSION_MISMATCH');
   assert.equal(planInventoryTransfer({ ...input, current_g5_anchor_id: null, operation: 'drop_primary_container', item_or_container_id: 'bag-1', expected_state_version: 4 }).errors[0].code, 'INVENTORY_DROP_ANCHOR_MISSING');
+});
+
+test('inventory foundation: generic item moves are planned as a validated change set', () => {
+  const input = state({
+    strength: 100,
+    containers: [{ container_id: 'pouch-1', template_id: 'pouch' }],
+    items: [{ item_id: 'knife-1', template_id: 'knife', quantity: 1 }],
+    container_placements: [{ container_id: 'pouch-1', holder_character_id: actorId, physical_position: 'worn_quick' }],
+    item_placements: [{ item_id: 'knife-1', holder_character_id: actorId, physical_position: 'hands' }],
+    container_compatibility: [{ container_template_id: 'pouch', carry_form: 'compact', compatibility: 'allowed' }]
+  });
+  const moved = planInventoryTransfer({ ...input, operation: 'move_to_container', item_or_container_id: 'knife-1', target_container_id: 'pouch-1', expected_state_version: 4 });
+  assert.equal(moved.pass, true);
+  assert.deepEqual(moved.change_set.placement_changes[0], { instance_kind: 'item', party_id: partyId, item_id: 'knife-1', container_id: 'pouch-1' });
+  assert.equal(planInventoryTransfer({ ...input, operation: 'equip', item_or_container_id: 'knife-1', expected_state_version: 4 }).errors[0].code, 'INVENTORY_EQUIPMENT_SLOT_REQUIRED');
 });

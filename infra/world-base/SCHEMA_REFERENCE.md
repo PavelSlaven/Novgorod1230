@@ -2,7 +2,7 @@
 # Справочник схемы `world_base`
 
 - Исполняемый источник: `infra/world-base/schema.sql` и 11 упорядоченных SQL-частей.
-- SHA-256 развёрнутого DDL: `e02e8ca0a70c234e0e22f591d7f0a55316cce417f5aa120040bb19bf3f04188a`.
+- SHA-256 развёрнутого DDL: `6e2bbf17e0794ab1173cb26dd99126c691f7c8fbb6712eda97417cb3d2c2adda`.
 - Таблиц: 115.
 - Описания берутся только из утверждённого `infra/world-base/field-descriptions.js`; отсутствие описания не заполняется эвристикой.
 
@@ -3106,8 +3106,9 @@ G4-specific правила контейнеров, содержимого и д�
 | `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
 | `region_id` | `TEXT` | да | — | `world_base.regions(id) ON DELETE CASCADE` | — | FK → regions(id): регион, к которому относится запись. |
 | `category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
-| `capacity` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (capacity > 0)` | Legacy integer без утверждённой единицы; не является runtime-измерением и не интерпретируется автоматически. |
-| `capacity_policy` | `JSONB` | нет | — | — | `NOT NULL`<br>`CHECK ( jsonb_typeof(capacity_policy) = 'object' AND capacity_policy = '{"version":1,"mode":"unknown","reason":"not_measured"}'::jsonb )` | Versioned closed policy вместимости; в 3B-1 допустимо только явное unknown: not_measured. |
+| `capacity` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (capacity > 0)` | Положительная внутренняя вместимость контейнера в packing slots; не является массой, литрами или inventory slots персонажа. |
+| `packing_slot_cost` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (packing_slot_cost > 0)` | Положительный внешний размер контейнера в packing slots при переноске или вложении. |
+| `capacity_policy` | `JSONB` | нет | — | — | `NOT NULL`<br>`CHECK ( jsonb_typeof(capacity_policy) = 'object' AND capacity_policy = '{"version":1,"mode":"packing_slots","unit":"packing_slot"}'::jsonb )` | Closed policy строго {version:1,mode:packing_slots,unit:packing_slot}; runtime не интерпретирует иные единицы. |
 | `access_policy` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
 | `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
 
@@ -3196,6 +3197,8 @@ G4-specific правила контейнеров, содержимого и д�
 | `item_template_id` | `TEXT` | нет | — | `world_base.item_templates(id) ON DELETE CASCADE` | `NOT NULL` | FK → item_templates(id): классифицируемый шаблон предмета. |
 | `category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | `NOT NULL` | FK → universal_categories(id): утверждённая категория фасета. |
 | `binding_kind` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (binding_kind IN ( 'object_type','primary_function','secondary_function','material', 'manufacturing_technique','component_type','physical_form','condition', 'quality_band','size_band','mass_band','use_context' ))` | Независимый фасет: object_type, function, material, technique, condition и др. |
+| `packing_slot_cost` | `INTEGER` | да | — | — | — | Только size_band: положительное число packing slots за один bundle; не является массой или объёмом. |
+| `packing_bundle_size` | `INTEGER` | да | — | — | — | Только size_band: положительное количество одинаковых template/state items в одном packing bundle. |
 | `exclusivity_group` | `TEXT` | да | — | — | — | Только primary_function либо NULL; запрещает неформальные группы совместимости. |
 | `requires_regional_permission` | `BOOLEAN` | нет | `false` | — | `NOT NULL` | Требует approved regional/period permission в той же world revision до импорта. |
 | `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
@@ -3203,8 +3206,10 @@ G4-specific правила контейнеров, содержимого и д�
 **Ограничения таблицы:**
 
 - `CHECK (exclusivity_group IS NULL OR (binding_kind = 'primary_function' AND exclusivity_group = 'primary_function'))`
+- `CHECK ( (binding_kind = 'size_band' AND packing_slot_cost IS NOT NULL AND packing_slot_cost > 0 AND packing_bundle_size IS NOT NULL AND packing_bundle_size > 0) OR (binding_kind <> 'size_band' AND packing_slot_cost IS NULL AND packing_bundle_size IS NULL) )`
 - `UNIQUE (item_template_id, category_id, binding_kind)`
 - `UNIQUE INDEX item_template_one_active_primary_function (item_template_id) WHERE binding_kind = 'primary_function' AND status = 'approved'`
+- `UNIQUE INDEX item_template_one_active_size_band (item_template_id) WHERE binding_kind = 'size_band' AND status = 'approved'`
 
 ### `world_base.container_template_facet_bindings`
 

@@ -139,12 +139,14 @@ Release: `0.23.0-migration.24`
 | `schemas/materialization/category-scheme-mappings-v1.schema.json` | json | 732 | `a0f0c10e737b3e06eff1163ebd32b04db26a2a6e17beb0766450fd786ab2b6f0` |
 | `schemas/materialization/classification-schemes-v1.schema.json` | json | 754 | `4744d626cd53cc4dae7794ea08162432245eaf2de8fe097e54359be7f83e9034` |
 | `schemas/materialization/container-content-category-relations-v1.schema.json` | json | 533 | `3f6c11cea3e82408f1c337bf619dbc0b6a79b128f6b1ee1111f17331bb7eec82` |
-| `schemas/materialization/container-template-facet-bindings-v1.schema.json` | json | 589 | `515985fa8f013372429e4ef4eaf5ce3786523126292fc11e570f364062496ba3` |
+| `schemas/materialization/container-template-facet-bindings-v1.schema.json` | json | 650 | `e5c2d7248a1bc33b5c7c9f73f97843a640a17601d03f69b2c6cca596db7d1fc9` |
+| `schemas/materialization/container-templates-v1.schema.json` | json | 851 | `7b94635e3ea7e6726d669f2c9595d0e6d14c52958e6a0b520cc92d547ff803aa` |
 | `schemas/materialization/item-classification-migration-inventory-v1.schema.json` | json | 738 | `cbcfee73a572cb55bc1861f7444e44666ac2453abd5b341b7b36d5a9d1fc5289` |
-| `schemas/materialization/item-template-category-bindings-v1.schema.json` | json | 719 | `e8f5422c7b3725b42c3084dd378845c9cc897a8510318bd3ef0064e64fe66528` |
+| `schemas/materialization/item-template-category-bindings-v1.schema.json` | json | 871 | `0a355b2f66a9eec372b44ef31605bbbd3c808fed9411fa5dafca3baf83e15908` |
 | `schemas/materialization/normalized-instance-candidate-v2.schema.json` | json | 3150 | `ccbd9e9d518a8ab4b28e937e6e4eb19b88a26f3ea6eeff89aaf24432dd9a0b1d` |
 | `schemas/materialization/party-autonomous-update-v2.schema.json` | json | 2515 | `974cf66248b18851ac64b2e80522b0207a28f049088318d578ffbc11b8712397` |
 | `schemas/materialization/party-change-set-v2.schema.json` | json | 2816 | `cabbce3e6d6091391cba5b1fa0b6ea09c69f2db6bbed3ac241563171e95b62c1` |
+| `schemas/materialization/region-equipment-profile-entries-v1.schema.json` | json | 649 | `92ff1c9a1cb43b62770c178af635a3cb9ed18a043a9fb0d2a1deb8b2d8fafeee` |
 | `schemas/materialization/universal-categories-v1.schema.json` | json | 905 | `b2110a8b777c2d26049337f07826c254eb1f9854535ae7990f4c2f40bc4df972` |
 | `schemas/materialization/universal-category-relations-v1.schema.json` | json | 512 | `31fd11130f43de9a61d58b8fde877527649eaad8915af99225f982033b179f38` |
 | `schemas/materialization/world-materialization-repair-request-v2.schema.json` | json | 945 | `ba34924dd6587d7a5044498766cc8c0ff81167eae9fbee3e98e63ad0fb75fd59` |

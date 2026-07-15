@@ -213,19 +213,36 @@ function validateClassificationJsonSchema(tableName, records, schema) {
   const itemSchema = schema.items ?? {};
   const errors = [];
   records.forEach((record, index) => {
-    if (!record || typeof record !== 'object' || Array.isArray(record)) { errors.push(`JSON_SCHEMA_INVALID:${tableName}:${index}`); return; }
-    for (const required of itemSchema.required ?? []) if (!(required in record)) errors.push(`JSON_SCHEMA_REQUIRED:${tableName}:${index}:${required}`);
-    for (const [key, value] of Object.entries(record)) {
-      const definition = itemSchema.properties?.[key];
-      if (!definition) { errors.push(`JSON_SCHEMA_ADDITIONAL_PROPERTY:${tableName}:${index}:${key}`); continue; }
-      if (definition.type === 'string' && typeof value !== 'string') errors.push(`JSON_SCHEMA_TYPE:${tableName}:${index}:${key}`);
-      else if (definition.type === 'string' && definition.minLength && value.trim().length < definition.minLength) errors.push(`JSON_SCHEMA_MIN_LENGTH:${tableName}:${index}:${key}`);
-      if (definition.enum && !definition.enum.includes(value)) errors.push(`JSON_SCHEMA_ENUM:${tableName}:${index}:${key}`);
-      if (definition.pattern && !new RegExp(definition.pattern, 'u').test(String(value))) errors.push(`JSON_SCHEMA_PATTERN:${tableName}:${index}:${key}`);
-      if (definition.format === 'date' && (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/u.test(value) || !Number.isFinite(Date.parse(`${value}T00:00:00Z`)))) errors.push(`JSON_SCHEMA_FORMAT:${tableName}:${index}:${key}`);
-    }
+    validateJsonSchemaValue(tableName, index, record, itemSchema, '', errors);
   });
   return errors;
+}
+
+function validateJsonSchemaValue(tableName, index, value, definition, path, errors) {
+  const field = (key = null) => [tableName, index, key == null || key === '' ? path : (path ? `${path}.${key}` : key)].filter((value) => value != null && value !== '').join(':');
+  if (!definition || typeof definition !== 'object') return;
+  if (definition.type === 'object') {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) { errors.push(`JSON_SCHEMA_TYPE:${field()}`); return; }
+    for (const required of definition.required ?? []) if (!(required in value)) errors.push(`JSON_SCHEMA_REQUIRED:${field(required)}`);
+    for (const [key, child] of Object.entries(value)) {
+      const childDefinition = definition.properties?.[key];
+      if (!childDefinition) {
+        if (definition.additionalProperties === false) errors.push(`JSON_SCHEMA_ADDITIONAL_PROPERTY:${field(key)}`);
+        continue;
+      }
+      validateJsonSchemaValue(tableName, index, child, childDefinition, path ? `${path}.${key}` : key, errors);
+    }
+    return;
+  }
+  if (definition.type === 'string' && typeof value !== 'string') errors.push(`JSON_SCHEMA_TYPE:${field()}`);
+  else if (definition.type === 'integer' && !Number.isInteger(value)) errors.push(`JSON_SCHEMA_TYPE:${field()}`);
+  else if (definition.type === 'boolean' && typeof value !== 'boolean') errors.push(`JSON_SCHEMA_TYPE:${field()}`);
+  if (definition.type === 'string' && typeof value === 'string' && definition.minLength && value.trim().length < definition.minLength) errors.push(`JSON_SCHEMA_MIN_LENGTH:${field()}`);
+  if (definition.type === 'integer' && Number.isInteger(value) && definition.minimum != null && value < definition.minimum) errors.push(`JSON_SCHEMA_MINIMUM:${field()}`);
+  if (Object.hasOwn(definition, 'const') && value !== definition.const) errors.push(`JSON_SCHEMA_CONST:${field()}`);
+  if (definition.enum && !definition.enum.includes(value)) errors.push(`JSON_SCHEMA_ENUM:${field()}`);
+  if (definition.pattern && !new RegExp(definition.pattern, 'u').test(String(value))) errors.push(`JSON_SCHEMA_PATTERN:${field()}`);
+  if (definition.format === 'date' && (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/u.test(value) || !Number.isFinite(Date.parse(`${value}T00:00:00Z`)))) errors.push(`JSON_SCHEMA_FORMAT:${field()}`);
 }
 
 export async function importClassificationCatalog({ manifest, recordsByTable = {}, mode = 'dry-run', adapter = null } = {}) {
@@ -443,19 +460,21 @@ function checkLayoutGraph(concerns, layoutId, nodes, edges) {
   if (visited.size !== layoutNodes.length) concerns.push(`G5_LAYOUT_DISCONNECTED:${layoutId}`);
 }
 import { digestValue } from './digest.js';
+import { calculatePackingSlots } from './packing-slots.js';
 const ITEM_BINDING_FACETS = new Set(['object_type','primary_function','secondary_function','material','manufacturing_technique','component_type','physical_form','condition','quality_band','size_band','mass_band','use_context']);
 const CONTAINER_FACETS = new Set(['container_form','capacity_band','closure_type','access_model','portability','content_compatibility','condition','material']);
 
 function isValidContainerCapacityPolicy(value) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
   const keys = Object.keys(value).sort();
-  return keys.length === 3 && keys[0] === 'mode' && keys[1] === 'reason' && keys[2] === 'version' && value.version === 1 && value.mode === 'unknown' && value.reason === 'not_measured';
+  return keys.length === 3 && keys[0] === 'mode' && keys[1] === 'unit' && keys[2] === 'version' && value.version === 1 && value.mode === 'packing_slots' && value.unit === 'packing_slot';
 }
 
 export function validateItemContainerClassificationCatalog(recordsByTable = {}, { worldRevisionId = null, effectiveAt = null } = {}) {
   const errors = [];
   const categories = new Map((recordsByTable.universal_categories ?? []).map((value) => [value.id, value]));
-  const itemTemplates = new Set((recordsByTable.item_templates ?? []).map((value) => value.id));
+  const itemTemplateRows = recordsByTable.item_templates ?? [];
+  const itemTemplates = new Set(itemTemplateRows.map((value) => value.id));
   const containers = new Map((recordsByTable.container_templates ?? []).map((value) => [value.id, value]));
   const itemBindings = recordsByTable.item_template_category_bindings ?? [];
   const containerBindings = recordsByTable.container_template_facet_bindings ?? [];
@@ -466,6 +485,7 @@ export function validateItemContainerClassificationCatalog(recordsByTable = {}, 
   errors.push(...validateClassificationJsonSchema('container_templates', [...containers.values()], containerTemplatesSchema));
   for (const container of containers.values()) {
     if (!Number.isInteger(container.capacity) || container.capacity < 1) errors.push(`CONTAINER_CAPACITY_LEGACY_INVALID:${container.id}`);
+    if (!Number.isInteger(container.packing_slot_cost) || container.packing_slot_cost < 1) errors.push(`CONTAINER_PACKING_SLOT_COST_INVALID:${container.id}`);
     if (!isValidContainerCapacityPolicy(container.capacity_policy)) errors.push(`CONTAINER_CAPACITY_POLICY_INVALID:${container.id}`);
   }
   errors.push(...validateClassificationJsonSchema('item_template_category_bindings', itemBindings, itemTemplateCategoryBindingsSchema));
@@ -474,6 +494,7 @@ export function validateItemContainerClassificationCatalog(recordsByTable = {}, 
   errors.push(...validateClassificationJsonSchema('item_classification_migration_inventory', inventory, itemClassificationMigrationInventorySchema));
   errors.push(...validateClassificationJsonSchema('region_equipment_profile_entries', equipmentEntries, regionEquipmentProfileEntriesSchema));
   const activePrimary = new Map();
+  const activeSizeBands = new Map();
   const activeBindingKeys = new Set();
   for (const binding of itemBindings) {
     const id = binding?.id ?? '?';
@@ -483,6 +504,10 @@ export function validateItemContainerClassificationCatalog(recordsByTable = {}, 
     if (!activeCategory(category)) errors.push(`ITEM_BINDING_CATEGORY_INACTIVE:${id}`);
     if (category.domain !== 'item' || category.facet !== binding.binding_kind || !ITEM_BINDING_FACETS.has(binding.binding_kind)) errors.push(`ITEM_BINDING_CATEGORY_FACET_INVALID:${id}:${binding.binding_kind}`);
     if (binding.exclusivity_group != null && (binding.binding_kind !== 'primary_function' || binding.exclusivity_group !== 'primary_function')) errors.push(`ITEM_EXCLUSIVITY_GROUP_INVALID:${id}`);
+    const hasPackingMetadata = binding.packing_slot_cost != null || binding.packing_bundle_size != null;
+    const packingValid = Number.isInteger(binding.packing_slot_cost) && binding.packing_slot_cost > 0 && Number.isInteger(binding.packing_bundle_size) && binding.packing_bundle_size > 0;
+    if (binding.binding_kind === 'size_band' && !packingValid) errors.push(`ITEM_SIZE_BAND_PACKING_INVALID:${id}`);
+    if (binding.binding_kind !== 'size_band' && hasPackingMetadata) errors.push(`ITEM_PACKING_METADATA_NON_SIZE_BAND:${id}`);
     if (binding.requires_regional_permission != null && typeof binding.requires_regional_permission !== 'boolean') errors.push(`ITEM_REGIONAL_PERMISSION_FLAG_INVALID:${id}`);
     const key = `${binding.item_template_id}:${binding.binding_kind}:${binding.category_id}`;
     if (binding.status === 'approved' && activeBindingKeys.has(key)) errors.push(`ITEM_BINDING_DUPLICATE_ACTIVE:${key}`);
@@ -492,11 +517,20 @@ export function validateItemContainerClassificationCatalog(recordsByTable = {}, 
       if (activePrimary.has(primaryKey)) errors.push(`ITEM_PRIMARY_FUNCTION_AMBIGUOUS:${binding.item_template_id}:${binding.exclusivity_group ?? ''}`);
       activePrimary.set(primaryKey, id);
     }
+    if (binding.status === 'approved' && binding.binding_kind === 'size_band') {
+      const existing = activeSizeBands.get(binding.item_template_id) ?? [];
+      existing.push(binding); activeSizeBands.set(binding.item_template_id, existing);
+    }
     if (binding.requires_regional_permission === true) {
       const regionId = (recordsByTable.item_templates ?? []).find((template) => template.id === binding.item_template_id)?.region_id;
       const permitted = (recordsByTable.region_category_options ?? []).some((option) => option.region_id === regionId && option.category_id === binding.category_id && option.world_revision_id === worldRevisionId && option.status === 'approved' && (effectiveAt == null || (option.valid_from == null || option.valid_from <= effectiveAt.slice(0, 10)) && (option.valid_to == null || option.valid_to >= effectiveAt.slice(0, 10))));
       if (!permitted) errors.push(`ITEM_BINDING_REGIONAL_PERMISSION_MISSING:${id}`);
     }
+  }
+  for (const template of itemTemplateRows.filter((value) => value?.status === 'approved')) {
+    const sizeBands = activeSizeBands.get(template.id) ?? [];
+    if (sizeBands.length === 0) errors.push(`ITEM_SIZE_BAND_MISSING:${template.id}`);
+    if (sizeBands.length > 1) errors.push(`ITEM_SIZE_BAND_AMBIGUOUS:${template.id}`);
   }
   for (const binding of containerBindings) {
     const id = binding?.id ?? '?';
@@ -534,6 +568,23 @@ export function validateItemContainerClassificationCatalog(recordsByTable = {}, 
     const relation = compatibility.get(`${container?.category_id}:${entry.item_category_id}`);
     if (!profile) errors.push(`CONTAINER_PROFILE_UNKNOWN:${entry.id}`);
     else if (entry.item_category_id && relation !== 'allowed') errors.push(`CONTAINER_CONTENT_INCOMPATIBLE:${entry.id}:${entry.item_category_id}`);
+    if (entry.item_template_id && !itemTemplates.has(entry.item_template_id)) errors.push(`CONTAINER_CONTENT_TEMPLATE_UNKNOWN:${entry.id}`);
+  }
+  for (const profile of profiles.values()) {
+    const container = containers.get(profile.container_template_id);
+    const lines = [];
+    for (const entry of (recordsByTable.container_content_profile_entries ?? []).filter((value) => value.profile_id === profile.id && value.item_template_id)) {
+      const sizeBands = activeSizeBands.get(entry.item_template_id) ?? [];
+      if (sizeBands.length !== 1) {
+        errors.push(`CONTAINER_CONTENT_SIZE_BAND_UNRESOLVED:${entry.id}`);
+        continue;
+      }
+      const calculation = calculatePackingSlots({ quantity: entry.min_quantity, packing_slot_cost: sizeBands[0].packing_slot_cost, packing_bundle_size: sizeBands[0].packing_bundle_size });
+      if (!calculation.pass) errors.push(`CONTAINER_CONTENT_PACKING_INVALID:${entry.id}`);
+      else lines.push(calculation.required_slots);
+    }
+    const requiredSlots = lines.reduce((sum, value) => sum + value, 0);
+    if (container && requiredSlots > container.capacity) errors.push(`CONTAINER_REQUIRED_CONTENT_CAPACITY_EXCEEDED:${profile.id}`);
   }
   for (const profile of profiles.values()) if (profile.empty_allowed !== true && !(recordsByTable.container_content_profile_entries ?? []).some((entry) => entry.profile_id === profile.id)) errors.push(`CONTAINER_EMPTY_NOT_ALLOWED:${profile.id}`);
   for (const row of inventory) if (row.resolution_status === 'mapped' && !categories.has(row.resolved_category_id)) errors.push(`MIGRATION_RESOLVED_CATEGORY_UNKNOWN:${row.id}`);

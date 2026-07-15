@@ -995,7 +995,7 @@
       "source_location": {
         "file": "character_inventory_equipment.txt",
         "line_start": 1,
-        "line_end": 327
+        "line_end": 331
       }
     },
     {
@@ -1115,7 +1115,7 @@
       "source_location": {
         "file": "items_and_property.txt",
         "line_start": 1,
-        "line_end": 352
+        "line_end": 362
       }
     },
     {

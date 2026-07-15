@@ -2,9 +2,11 @@ import { STAGE16_AUDIT_SCHEMA, STAGE16_PRECHECK_SCHEMA } from '@rus/contracts';
 import { REQUIRED_AUDIT_CHECKS } from '../policy/constants.js';
 import { concern, dedupeConcerns, isObject, nonEmptyArray } from '../shared/utils.js';
 import { validateStage16ItemPlacementDraft } from './draft-validation.js';
+import { evaluateStage16ContainerPacking } from './packing-validation.js';
 
 export function buildStage16ItemPlacementCodePrecheck(draft, input) {
   const concerns = validateStage16ItemPlacementDraft(draft, input);
+  const packing = evaluateStage16ContainerPacking(draft, input);
   const codes = new Set(concerns.map((item) => item.code));
   const none = (...values) => values.every((value) => !codes.has(value));
   const nonePrefix = (...prefixes) => [...codes].every((code) => !prefixes.some((prefix) => code.startsWith(prefix)));
@@ -45,7 +47,10 @@ export function buildStage16ItemPlacementCodePrecheck(draft, input) {
     pass,
     checks,
     concerns,
-    evidence: [{ kind: 'stage16_code_precheck', checked_item_count: draft?.item_instances?.length ?? 0, checked_container_count: draft?.container_instances?.length ?? 0 }]
+    evidence: [
+      { kind: 'stage16_code_precheck', checked_item_count: draft?.item_instances?.length ?? 0, checked_container_count: draft?.container_instances?.length ?? 0 },
+      ...(packing.traces.length > 0 ? [{ kind: 'packing_slots_v1', containers: packing.traces }] : [])
+    ]
   };
 }
 

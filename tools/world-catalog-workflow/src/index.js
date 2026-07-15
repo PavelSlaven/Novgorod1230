@@ -6,4 +6,5 @@ export { buildG1WorkQueue } from './g1-queue.js';
 export { validateBoundaryContract } from './boundary-contract.js';
 export { validateG1CellPackage } from './cell-package.js';
 export { buildImportDryRun } from './dry-run.js';
+export { calculatePackingSlots } from './packing-slots.js';
 export { assessMaterializationReadiness, validateCatalogImportManifest, validateClassificationCatalog, validateItemContainerClassificationCatalog, assessItemContainerClassificationMigration, assessItemContainerClassificationReadiness, importClassificationCatalog, MATERIALIZATION_AUTHORING_TABLES } from './materialization-readiness.js';

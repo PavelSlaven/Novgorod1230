@@ -651,9 +651,15 @@
       "type": "json"
     },
     {
-      "bytes": 589,
+      "bytes": 650,
       "path": "schemas/materialization/container-template-facet-bindings-v1.schema.json",
-      "sha256": "515985fa8f013372429e4ef4eaf5ce3786523126292fc11e570f364062496ba3",
+      "sha256": "e5c2d7248a1bc33b5c7c9f73f97843a640a17601d03f69b2c6cca596db7d1fc9",
+      "type": "json"
+    },
+    {
+      "bytes": 851,
+      "path": "schemas/materialization/container-templates-v1.schema.json",
+      "sha256": "7b94635e3ea7e6726d669f2c9595d0e6d14c52958e6a0b520cc92d547ff803aa",
       "type": "json"
     },
     {
@@ -663,9 +669,9 @@
       "type": "json"
     },
     {
-      "bytes": 719,
+      "bytes": 871,
       "path": "schemas/materialization/item-template-category-bindings-v1.schema.json",
-      "sha256": "e8f5422c7b3725b42c3084dd378845c9cc897a8510318bd3ef0064e64fe66528",
+      "sha256": "0a355b2f66a9eec372b44ef31605bbbd3c808fed9411fa5dafca3baf83e15908",
       "type": "json"
     },
     {
@@ -684,6 +690,12 @@
       "bytes": 2816,
       "path": "schemas/materialization/party-change-set-v2.schema.json",
       "sha256": "cabbce3e6d6091391cba5b1fa0b6ea09c69f2db6bbed3ac241563171e95b62c1",
+      "type": "json"
+    },
+    {
+      "bytes": 649,
+      "path": "schemas/materialization/region-equipment-profile-entries-v1.schema.json",
+      "sha256": "92ff1c9a1cb43b62770c178af635a3cb9ed18a043a9fb0d2a1deb8b2d8fafeee",
       "type": "json"
     },
     {

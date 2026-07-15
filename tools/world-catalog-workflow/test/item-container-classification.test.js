@@ -14,7 +14,7 @@ const approved = { status: 'approved' };
 function records() {
   return {
     item_templates: [{ id: 'knife-template', region_id: 'novgorod', ...approved }],
-    container_templates: [{ id: 'chest-template', world_revision_id: 'revision-1', category_id: 'chest', capacity: 1, capacity_policy: { version: 1, mode: 'unknown', reason: 'not_measured' }, ...approved }],
+    container_templates: [{ id: 'chest-template', world_revision_id: 'revision-1', category_id: 'chest', capacity: 1, packing_slot_cost: 1, capacity_policy: { version: 1, mode: 'packing_slots', unit: 'packing_slot' }, ...approved }],
     item_profile_sets: [{ id: 'item-profile', ...approved }],
     item_profile_entries: [{ id: 'item-entry', profile_id: 'item-profile', item_template_id: 'knife-template', slot_key: 'tool', required: true, ...approved }],
     g4_item_materialization_rules: [{ id: 'item-rule', item_profile_id: 'item-profile', min_count: 1, ...approved }],
@@ -25,6 +25,7 @@ function records() {
       { id: 'iron', domain: 'item', facet: 'material', ...approved },
       { id: 'forged', domain: 'item', facet: 'manufacturing_technique', ...approved },
       { id: 'sound', domain: 'item', facet: 'condition', ...approved },
+      { id: 'hand', domain: 'item', facet: 'size_band', ...approved },
       { id: 'chest', domain: 'container', facet: 'container_form', ...approved },
       { id: 'lid', domain: 'container', facet: 'closure_type', ...approved },
       { id: 'medium', domain: 'container', facet: 'capacity_band', ...approved },
@@ -36,7 +37,8 @@ function records() {
       { id: 'knife-secondary', item_template_id: 'knife-template', category_id: 'utility', binding_kind: 'secondary_function', ...approved },
       { id: 'knife-iron', item_template_id: 'knife-template', category_id: 'iron', binding_kind: 'material', ...approved },
       { id: 'knife-forged', item_template_id: 'knife-template', category_id: 'forged', binding_kind: 'manufacturing_technique', ...approved },
-      { id: 'knife-condition', item_template_id: 'knife-template', category_id: 'sound', binding_kind: 'condition', ...approved }
+      { id: 'knife-condition', item_template_id: 'knife-template', category_id: 'sound', binding_kind: 'condition', ...approved },
+      { id: 'knife-size', item_template_id: 'knife-template', category_id: 'hand', binding_kind: 'size_band', packing_slot_cost: 1, packing_bundle_size: 1, ...approved }
     ],
     container_template_facet_bindings: [
       { id: 'chest-form', container_template_id: 'chest-template', category_id: 'chest', facet: 'container_form', ...approved },
@@ -54,18 +56,18 @@ test('item facets and container facets accept normalized bindings', () => {
   assert.deepEqual(validateItemContainerClassificationCatalog(records()), []);
 });
 
-test('container material is an independent facet and capacity policy never infers a unit', () => {
+test('container material is an independent facet and capacity policy is exact packing_slots v1', () => {
   const value = records();
   value.universal_categories.push({ id: 'container-wood', domain: 'container', facet: 'material', ...approved });
   value.container_template_facet_bindings.push({ id: 'chest-wood', container_template_id: 'chest-template', category_id: 'container-wood', facet: 'material', ...approved });
-  value.container_templates[0].capacity_policy = { version: 1, mode: 'unknown', reason: 'not_measured' };
+  value.container_templates[0].capacity_policy = { version: 1, mode: 'packing_slots', unit: 'packing_slot' };
   assert.deepEqual(validateItemContainerClassificationCatalog(value), []);
   const invalid = structuredClone(value);
-  invalid.container_templates[0].capacity_policy = { version: 1, mode: 'bounded_quantity', value: 1 };
+  invalid.container_templates[0].capacity_policy = { version: 1, mode: 'bounded_quantity', unit: 'packing_slot' };
   assert.ok(validateItemContainerClassificationCatalog(invalid).includes('CONTAINER_CAPACITY_POLICY_INVALID:chest-template'));
   invalid.container_templates[0].capacity = 'one';
   assert.ok(validateItemContainerClassificationCatalog(invalid).includes('CONTAINER_CAPACITY_LEGACY_INVALID:chest-template'));
-  assert.deepEqual(value.container_templates[0].capacity_policy, { version: 1, mode: 'unknown', reason: 'not_measured' });
+  assert.deepEqual(value.container_templates[0].capacity_policy, { version: 1, mode: 'packing_slots', unit: 'packing_slot' });
 });
 
 test('item classification blocks missing/wrong facets, duplicate primary binding and dangling templates', () => {

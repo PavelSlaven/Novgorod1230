@@ -126,9 +126,10 @@ CREATE TABLE world_base.container_templates (
   region_id TEXT REFERENCES world_base.regions(id) ON DELETE CASCADE,
   category_id TEXT NOT NULL REFERENCES world_base.universal_categories(id) ON DELETE RESTRICT,
   capacity INTEGER NOT NULL CHECK (capacity > 0),
+  packing_slot_cost INTEGER NOT NULL CHECK (packing_slot_cost > 0),
   capacity_policy JSONB NOT NULL CHECK (
     jsonb_typeof(capacity_policy) = 'object'
-    AND capacity_policy = '{"version":1,"mode":"unknown","reason":"not_measured"}'::jsonb
+    AND capacity_policy = '{"version":1,"mode":"packing_slots","unit":"packing_slot"}'::jsonb
   ),
   access_policy JSONB NOT NULL DEFAULT '{}'::jsonb,
   status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','approved','deprecated'))
@@ -179,15 +180,25 @@ CREATE TABLE world_base.item_template_category_bindings (
     'manufacturing_technique','component_type','physical_form','condition',
     'quality_band','size_band','mass_band','use_context'
   )),
+  packing_slot_cost INTEGER,
+  packing_bundle_size INTEGER,
   exclusivity_group TEXT,
   requires_regional_permission BOOLEAN NOT NULL DEFAULT false,
   status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','approved','deprecated')),
   CHECK (exclusivity_group IS NULL OR (binding_kind = 'primary_function' AND exclusivity_group = 'primary_function')),
+  CHECK (
+    (binding_kind = 'size_band' AND packing_slot_cost IS NOT NULL AND packing_slot_cost > 0 AND packing_bundle_size IS NOT NULL AND packing_bundle_size > 0)
+    OR
+    (binding_kind <> 'size_band' AND packing_slot_cost IS NULL AND packing_bundle_size IS NULL)
+  ),
   UNIQUE (item_template_id, category_id, binding_kind)
 );
 CREATE UNIQUE INDEX item_template_one_active_primary_function
   ON world_base.item_template_category_bindings (item_template_id)
   WHERE binding_kind = 'primary_function' AND status = 'approved';
+CREATE UNIQUE INDEX item_template_one_active_size_band
+  ON world_base.item_template_category_bindings (item_template_id)
+  WHERE binding_kind = 'size_band' AND status = 'approved';
 
 CREATE TABLE world_base.container_template_facet_bindings (
   id TEXT PRIMARY KEY,

@@ -5,6 +5,7 @@ import { anchorSupportsContainer, anchorSupportsItem, collectPlayerIds, collectP
 import { collectForbiddenFields, incrementCapacityConcern, validateContainerAnchorBindings, validateItemAnchorBindings, validatePropertyBindings, validateStateArrays } from './binding-validation.js';
 import { validateContainerState } from './container-validation.js';
 import { validateCausalBasis, validateItemAccessPropertyRisk, validateItemVisibility, validatePhysicalState } from './item-validation.js';
+import { evaluateStage16ContainerPacking } from './packing-validation.js';
 
 export function validateStage16ItemPlacementDraft(draft, input) {
   const concerns = [];
@@ -144,6 +145,7 @@ export function validateStage16ItemPlacementDraft(draft, input) {
   validatePropertyBindings(concerns, draft.property_bindings, propertyIndex, itemIds, containerIds, npcIds, anchorIndex);
   validateStateArrays(concerns, draft, itemIds, containerIds);
   collectForbiddenFields(draft, concerns);
+  concerns.push(...evaluateStage16ContainerPacking(draft, input).concerns);
 
   if (policy.require_source_trace === true && !nonEmptyArray(draft.source_trace)) concerns.push(concern('ITEM_PLACEMENT_SOURCE_MISSING', 'Draft source_trace must not be empty.', { field: 'source_trace' }));
   if (!nonEmptyArray(draft.audit_self_check?.evidence)) concerns.push(concern('ITEM_PLACEMENT_EMPTY_AUDIT_EVIDENCE', 'audit_self_check.evidence must not be empty.', { field: 'audit_self_check.evidence' }));

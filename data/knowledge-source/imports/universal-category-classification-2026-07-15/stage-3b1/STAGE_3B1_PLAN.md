@@ -49,6 +49,19 @@ universal category → template → profile → rule → instance
 
 `bundle/manifest.json` создан как supplemental manifest `novgorod_1230_item_catalogue_draft_001`. Его validator rejects party/unknown tables, mismatched digests/counts, invalid local/external references, XOR violations and missing/ambiguous required item facets. Он authoring-only и не участвует в runtime candidate loading.
 
+### Фактический статус
+
+```text
+Stage 3B-1 technical draft bundle: implemented
+supplemental dry-run: PASS
+code critic: PASS WITH NOTES
+PostgreSQL supplemental integration: not run
+promotion: blocked
+runtime activation: not started
+```
+
+Выполненная реализация охватывает 20 datasets, включая draft categories, regional options, templates, normalized bindings и profiles. Предыдущий список шагов в разделе 4 сохраняет историю проектирования; невыполненными из него остаются PostgreSQL lifecycle и promotion gates.
+
 ## 6. Promotion gates и отложенные работы
 
 Promotion blocked до individual source-record review, material/physical review, bulk quantity unit contract, container compatibility review, actual PostgreSQL import/readback/rollback и отдельного editorial approval. External/local legacy rows требуют export перед Stage 3B migration. Stage 8/16 остаётся на existing approved input and does not load this draft bundle.

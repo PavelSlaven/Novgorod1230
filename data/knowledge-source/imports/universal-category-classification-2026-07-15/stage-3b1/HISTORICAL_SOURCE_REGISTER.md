@@ -76,4 +76,4 @@
 - ни один source family не создаёт runtime permission;
 - все нерешённые вопросы выражены как gaps или limits.
 
-Этот реестр сам по себе не служит исполняемым dataset. Технические проверки созданного supplemental bundle (JSON Schema, importer dry-run, Stage 8/16 и полный suite) фиксируются в едином `README.md`; PostgreSQL и итоговый code critic остаются незавершёнными там же.
+Этот реестр сам по себе не служит исполняемым dataset. Технические проверки supplemental bundle (JSON Schema, importer dry-run, Stage 8/16 и полный suite) фиксируются в едином `README.md`; code critic завершился `PASS WITH NOTES`. PostgreSQL supplemental apply/readback/rollback остаётся не выполненным.

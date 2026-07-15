@@ -174,18 +174,9 @@ source records
 - Береста и писало включены на основании прямого новгородского письменного контекста; содержание записи не является свойством template.
 - Меч, кольчуга, шлем и щит включены как существующие типы, но не как обычное имущество: их materialization требует role/status/property/legal rules.
 
-## 5. Что требуется перед созданием JSON datasets
+## 5. Состояние до создания JSON datasets
 
-1. Дать каждой строке один object-type category и одну primary-function category.
-2. Создать normalized material bindings без составных категорий вида `кожаный кошель`.
-3. Назначить точный evidence class и source record после библиографической сверки.
-4. Создать draft `region_category_options` для Новгородской земли и периода.
-5. Разделить переносимые контейнеры, специализированные worn containers и стационарное имущество.
-6. Определить container content compatibility через material/construction/closure profiles.
-7. Подготовить item/container inventory profiles без fallback массы, packing cost или quantity.
-8. Создать equipment, property и G4 materialization profiles только после проверки социальных и экономических оснований.
-9. Экспортировать внешние legacy rows и составить reviewed migration inventory.
-10. Только затем создавать versioned JSON datasets, manifest, digests и запускать importer/readiness.
+Пункты 1, 4, 5, 7 и технические draft profiles из пунктов 6 и 8 реализованы в supplemental bundle. Они не доказывают material, historical presence, quantity, compatibility или social/economic applicability. Пункты 2, 3, 6, 8 и 9 остаются promotion gates; external legacy rows по-прежнему требуют отдельного export.
 
 ## 6. Редакторские проверки
 
@@ -201,4 +192,4 @@ source records
 - все строки остаются `draft`;
 - catalog не создаёт party state и не активирует runtime candidates.
 
-Этот файл остаётся редакторским источником. Технические проверки derived supplemental bundle фиксируются в едином `README.md`; PostgreSQL apply/readback/rollback и итоговый code critic остаются незавершёнными.
+Этот файл остаётся редакторским источником. Технические проверки derived supplemental bundle фиксируются в едином `README.md`; code critic завершился `PASS WITH NOTES`, а PostgreSQL apply/readback/rollback остаётся не выполненным.

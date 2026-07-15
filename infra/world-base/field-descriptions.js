@@ -303,6 +303,8 @@ export const fields = {
     item_template_id: 'FK → item_templates(id): классифицируемый шаблон предмета.',
     category_id: 'FK → universal_categories(id): утверждённая категория фасета.',
     binding_kind: 'Независимый фасет: object_type, function, material, technique, condition и др.',
+    packing_slot_cost: 'Только size_band: положительное число packing slots за один bundle; не является массой или объёмом.',
+    packing_bundle_size: 'Только size_band: положительное количество одинаковых template/state items в одном packing bundle.',
     exclusivity_group: 'Только primary_function либо NULL; запрещает неформальные группы совместимости.',
     requires_regional_permission: 'Требует approved regional/period permission в той же world revision до импорта.'
   },
@@ -313,8 +315,9 @@ export const fields = {
     requires_regional_permission: 'Требует approved regional/period permission в той же world revision до импорта.'
   },
   container_templates: {
-    capacity: 'Legacy integer без утверждённой единицы; не является runtime-измерением и не интерпретируется автоматически.',
-    capacity_policy: 'Versioned closed policy вместимости; в 3B-1 допустимо только явное unknown: not_measured.'
+    capacity: 'Положительная внутренняя вместимость контейнера в packing slots; не является массой, литрами или inventory slots персонажа.',
+    packing_slot_cost: 'Положительный внешний размер контейнера в packing slots при переноске или вложении.',
+    capacity_policy: 'Closed policy строго {version:1,mode:packing_slots,unit:packing_slot}; runtime не интерпретирует иные единицы.'
   },
   container_content_category_relations: {
     container_category_id: 'FK → universal_categories(id): категория контейнера.',

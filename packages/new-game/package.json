@@ -62,6 +62,7 @@
     "@rus/kernel": "0.9.0",
     "@rus/materialization": "2.0.0",
     "@rus/pipeline-engine": "0.9.0",
-    "@rus/party-store": "0.9.0"
+    "@rus/party-store": "0.9.0",
+    "@rus/world-catalog-workflow": "0.1.0"
   }
 }

@@ -244,7 +244,8 @@
         "@rus/kernel",
         "@rus/materialization",
         "@rus/party-store",
-        "@rus/pipeline-engine"
+        "@rus/pipeline-engine",
+        "@rus/world-catalog-workflow"
       ],
       "name": "@rus/new-game",
       "owns": [
@@ -525,7 +526,8 @@
         "детерминированной очередью `global_grid_y DESC, global_grid_x ASC`",
         "техническим сравнением существующих и входящих записей без молчаливого удаления",
         "публичными `validateCatalogImportManifest`, `validateClassificationCatalog` и `importClassificationCatalog`: проверкой manifest, FK-derived порядка, pinned schemes, controlled label/relation/mapping types, category hierarchy cycles, dry-run и transaction adapter с readback digest/count gate",
-        "публичными `validateItemContainerClassificationCatalog`, `assessItemContainerClassificationMigration` и `assessItemContainerClassificationReadiness`: fail-closed проверкой нормализованных item/container facets, content compatibility, typed legacy gaps/conflicts и обязательных profile/G4 rule"
+        "публичными `validateItemContainerClassificationCatalog`, `assessItemContainerClassificationMigration` и `assessItemContainerClassificationReadiness`: fail-closed проверкой нормализованных item/container facets, content compatibility, typed legacy gaps/conflicts и обязательных profile/G4 rule",
+        "публичной чистой `calculatePackingSlots({ quantity, packing_slot_cost, packing_bundle_size })`: расчётом `ceil(quantity / packing_bundle_size) × packing_slot_cost` без доступа к БД, файлам, глобальному состоянию, массы или fallback"
       ],
       "path": "tools/world-catalog-workflow",
       "public_entry": "./src/index.js",

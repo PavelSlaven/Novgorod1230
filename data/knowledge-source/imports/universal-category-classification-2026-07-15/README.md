@@ -1,15 +1,15 @@
 # Universal category classification — единый отчёт PR №7
 
-**Ветка:** `chatgpt/universal-category-classification`  
-**Статус PR:** `draft`  
-**Статус policy:** `proposed`  
+**Ветка:** `chatgpt/universal-category-classification`
+**Статус PR:** `draft`
+**Статус policy:** `proposed`
 **Охваченные этапы:** 1, 2, 3A и редакторская часть 3B-1
 
 ## 1. Цель работы
 
 Ввести единый контролируемый классификационный слой для проекта, реализовать базовые DDL/import/readiness-контракты, подготовить нормализованную предметную модель и сформировать минимальный исторически обоснованный authoring candidate для предметов Новгородской земли XIII века.
 
-Документ не объявляет policy `active`, не выполняет production import, не меняет Stage 8/16 и не выполняет legacy cutover.
+Документ не объявляет policy `active`, не выполняет production import или legacy cutover. Stage 16 изменён только для fail-closed packing-slots precheck; Stage 8 и existing party instances не изменяются.
 
 ## 2. Изученные нормативы и подсистемы
 
@@ -195,13 +195,13 @@ deferred external/local rows: unknown until export
 
 ### 6.5. Выявленные hard gaps
 
-#### `CONTAINER_MATERIAL_FACET_MISSING`
+#### `CONTAINER_MATERIAL_FACET_MISSING` — закрыт технически
 
-`container_template_facet_bindings` не допускает material. Форма и материал контейнера не могут быть нормализованы раздельно.
+`container_template_facet_bindings` теперь допускает независимый `material` facet. Исторические container proposals всё ещё не approved: для них нет page-level evidence.
 
-#### `CONTAINER_CAPACITY_UNIT_UNDEFINED`
+#### `CONTAINER_CAPACITY_UNIT_UNDEFINED` — закрыт технически
 
-`container_templates.capacity` является обязательным integer, но единица и семантика не определены. Произвольное число было бы fallback.
+`container_templates.capacity` теперь означает положительную внутреннюю вместимость в packing slots. Closed policy строго равна `{version:1,mode:"packing_slots",unit:"packing_slot"}`; это не масса, литры или inventory slots персонажа.
 
 #### `CONTAINER_COMPATIBILITY_TOO_COARSE`
 
@@ -221,7 +221,7 @@ deferred external/local rows: unknown until export
 - кошель/небольшая сумка;
 - сундук/ларь.
 
-Они не преобразованы в import rows и не получили выдуманную capacity.
+Они не преобразованы в import rows и не получили исторически выдуманную capacity.
 
 ### 6.7. Проверки этапа 3B-1
 
@@ -250,8 +250,8 @@ deferred external/local rows: unknown until export
 ## 7. Порядок дальнейшей интеграции
 
 1. Codex сверяет branch head и обязательные нормативы.
-2. Через TDD добавляет container material facet либо нормативно обоснованную эквивалентную модель.
-3. Формализует единицу/семантику capacity.
+2. Подтверждает page-level historical evidence для container templates.
+3. Экспортирует фактические local item/container records, если они существуют.
 4. Получает page-level source evidence.
 5. Экспортирует фактические local item/container records, если они существуют.
 6. Формирует reviewed migration inventory.
@@ -268,24 +268,26 @@ deferred external/local rows: unknown until export
   tracked world-base bundle, importer manifest и source datasets. Точного runtime consumer
   integer `capacity` не найден: он встречается в DDL и test fixtures; Stage 16 и party
   persistence не используют его как измеряемую величину.
-- Выбран versioned closed `capacity_policy`: в 3B-1 допустимо только явное
-  `{version: 1, mode: "unknown", reason: "not_measured"}`. Это не задаёт единицу,
-  объём, массу, slots или количество предметов; legacy `capacity` сохранён и не получает
-  новой трактовки.
+- `container_templates.capacity` формализован как внутренняя вместимость в packing slots;
+  `packing_slot_cost` задаёт внешний размер контейнера. Closed policy v1 строго равна
+  `{version: 1, mode: "packing_slots", unit: "packing_slot"}`. Это не масса, литры или
+  inventory slots персонажа. Предмет использует единственный approved `size_band` binding:
+  `ceil(quantity / packing_bundle_size) × packing_slot_cost`; fallback `1`, сокращение quantity
+  и скрытое создание контейнера запрещены.
 - `container_template_facet_bindings` расширен независимым `material` facet. Form и
   material остаются раздельными; container proposals всё ещё не импортируются, потому что
   page-level historical evidence и formal construction/compatibility data отсутствуют.
 - Tracked canonical item/container authoring rows: 0; local PostgreSQL/NocoDB canonical
   export не настроен. Зафиксирован gap `EXTERNAL_LEGACY_ROWS_UNAVAILABLE`; migration
   inventory для tracked scope остаётся пустым, без заявления о coverage внешних строк.
-- Граница изменения: DDL/schema/importer validation/test fixtures/documentation только для
-  material facet и explicit unknown capacity. Не создаются draft historical datasets до
+- Граница изменения: DDL/schema/importer validation/Stage 16/test fixtures/documentation для
+  material facet и packing slots v1. Не создаются draft historical datasets до
   page-level source support; не выполняются production import, apply, runtime activation,
   cutover или rematerialization.
 
 ## 8. Оставшиеся задачи
 
-- завершить техническую часть 3B-1 после устранения hard gaps;
+- получить page-level evidence и подготовить import-ready historical datasets для 3B;
 - 3B-2: отдельный legacy cutover только после полного coverage report;
 - этап 4: строения, помещения и G5;
 - этап 5: ландшафт, вода и землепользование;
@@ -293,6 +295,30 @@ deferred external/local rows: unknown until export
 - этап 7: социальные категории, профессии, навыки и знания;
 - этап 8: упрощённые животные;
 - этап 9: полный migration/activation gate и возможное повышение policy в `active` после PASS.
+
+## 7B. Этап 3B-1 — packing slots v1
+
+### Реализовано
+
+- `container_templates.capacity` и `packing_slot_cost` — положительные integer; policy закрыта
+  точным JSON `{version:1,mode:"packing_slots",unit:"packing_slot"}`.
+- Packing metadata предмета существует только на `size_band` binding: положительные
+  `packing_slot_cost` и `packing_bundle_size`. Approved template без одного size binding —
+  hard block; два binding — active ambiguity.
+- `calculatePackingSlots` является чистой публичной функцией:
+  `required_slots = ceil(quantity / packing_bundle_size) × packing_slot_cost`.
+- Import/readiness проверяет exact policy, положительные integer, отсутствие packing metadata
+  вне `size_band`, missing/ambiguous size binding и minimum profile content, превышающее capacity.
+- Stage 16 до audit/commit проверяет выбранные items и nested containers; `CONTAINER_CAPACITY_EXCEEDED`
+  содержит template, capacity, used slots и line breakdown. Trace хранится в evidence code precheck.
+
+### Не выполнено и остаётся открытым
+
+- историческое approval, production import, cutover и runtime activation не выполнялись;
+- `CONTAINER_COMPATIBILITY_TOO_COARSE`, `PAGE_LEVEL_SOURCE_VERIFICATION_REQUIRED` и
+  `EXTERNAL_LEGACY_ROWS_UNAVAILABLE` остаются открытыми;
+- full historical catalog, migration existing local rows и rematerialization party instances — только этап 3B;
+- Cairn SRD v1 допускается лишь как вдохновение абстрактной игровой механики, не исторический источник.
 
 ## 9. Текущий итог
 

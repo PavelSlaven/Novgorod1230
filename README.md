@@ -27,6 +27,8 @@
 - `packages/new-game` — конвейер создания новой игры, Stages 2–26;
 - `packages/materialization` — code-only materializer v2 и bounded decision protocol;
 - `packages/turn` — обработка игрового хода;
+- `packages/travel` — детерминированный жизненный цикл путешествия и нормализованные позиции в пути;
+- `packages/environment-landmarks` — ориентиры, сигналы и следы из закреплённых каталожных данных;
 - `packages/narration` — генерация player-facing прозы из разрешённого видимого контекста;
 - `packages/presentation` — модели первого экрана и игрового хода;
 - `apps/game-server` — сервер и production composition;
@@ -67,6 +69,7 @@ npm run start:cli
 - [Политика knowledge-source](docs/architecture/KNOWLEDGE_SOURCE_POLICY.md)
 - [Конвейер новой игры](docs/pipelines/new-game.md)
 - [Конвейер игрового хода](docs/pipelines/turn.md)
+- [Контракты и границы travel/environment](docs/implementation/pr8-travel-system/README.md)
 - [Схема world_base](infra/world-base/SCHEMA_REFERENCE.md)
 - [Высший норматив materialization v2](data/knowledge-source/corpus/DOCUMENTS/code_driven_world_materialization_architecture.md)
 

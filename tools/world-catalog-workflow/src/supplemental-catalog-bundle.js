@@ -231,3 +231,23 @@ export function validateSupplementalCatalogBundle(manifest, recordsByTable = {},
   }
   return Object.freeze({ errors: Object.freeze(errors) });
 }
+
+export async function applySupplementalCatalogBundle({ manifest, recordsByTable = {}, adapter, externalIds = {} } = {}) {
+  if (!adapter || typeof adapter.begin !== 'function' || typeof adapter.insert !== 'function' || typeof adapter.readback !== 'function' || typeof adapter.commit !== 'function' || typeof adapter.rollback !== 'function') throw new Error('SUPPLEMENTAL_APPLY_ADAPTER_INVALID');
+  const validation = validateSupplementalCatalogBundle(manifest, recordsByTable, { externalIds });
+  if (validation.errors.length > 0) return Object.freeze({ applied: false, errors: validation.errors, tables: Object.freeze([]) });
+  const datasets = [...manifest.datasets].sort((left, right) => left.dependency_order - right.dependency_order || left.table.localeCompare(right.table));
+  await adapter.begin();
+  try {
+    for (const dataset of datasets) {
+      await adapter.insert(dataset.table, recordsByTable[dataset.table]);
+      const readback = await adapter.readback(dataset.table, recordsByTable[dataset.table]);
+      if (readback?.record_count !== dataset.record_count || readback?.payload_digest !== dataset.sha256) throw new Error(`SUPPLEMENTAL_READBACK_MISMATCH:${dataset.table}:expected=${dataset.record_count}/${dataset.sha256}:actual=${readback?.record_count}/${readback?.payload_digest}`);
+    }
+    await adapter.commit();
+    return Object.freeze({ applied: true, errors: Object.freeze([]), tables: Object.freeze(datasets.map((dataset) => dataset.table)) });
+  } catch (error) {
+    await adapter.rollback();
+    throw error;
+  }
+}

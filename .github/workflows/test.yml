@@ -116,6 +116,11 @@ jobs:
           test "$select_grants" -eq "$table_count"
           test "$write_grants" -eq 0
 
+      - name: Execute Stage 3B-1 supplemental PostgreSQL integration
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/world_base_ci
+        run: npm run world-db:import:stage3b1:integration
+
       - name: Validate canonical knowledge corpus
         run: npm run knowledge:check-corpus
 

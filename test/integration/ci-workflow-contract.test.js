@@ -25,6 +25,8 @@ test('GitHub Actions clean-clone workflow keeps all required gates in order', as
     'pg_roles',
     'has_schema_privilege',
     'information_schema.role_table_grants',
+    'name: Execute Stage 3B-1 supplemental PostgreSQL integration',
+    'npm run world-db:import:stage3b1:integration',
     'name: Validate canonical knowledge corpus',
     'npm run knowledge:check-corpus',
     'name: Generate deterministic documentation and knowledge artifacts',

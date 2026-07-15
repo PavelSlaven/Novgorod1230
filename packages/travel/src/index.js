@@ -1,4 +1,4 @@
-import { deepFreeze } from '@rus/kernel';
+import { deepFreeze, sha256 } from '@rus/kernel';
 
 const JOURNEY_STATUSES = new Set(['planned', 'active', 'interrupted', 'camped', 'blocked', 'arrived', 'abandoned']);
 const LEG_STATUSES = new Set(['pending', 'active', 'completed', 'interrupted', 'blocked', 'superseded']);
@@ -22,6 +22,15 @@ export function validateTravelIntent(intent) {
   return deepFreeze(structuredClone(value));
 }
 
+export function validateTravelRulesBundle({ bundle, world_revision_id, region_id, historical_period_id, catalog_digest } = {}) {
+  try {
+    const value = readTravelRulesBundle(bundle, { world_revision_id, region_id, historical_period_id, catalog_digest });
+    return deepFreeze({ pass: true, catalog_digest: value.catalog_digest, errors: [] });
+  } catch (error) {
+    return deepFreeze({ pass: false, catalog_digest: null, errors: [deepFreeze({ code: error.code ?? 'TRAVEL_DATA_GAP', message: error.message })] });
+  }
+}
+
 export function validateTravelPosition(position) {
   const value = record(position, 'TRAVEL_POSITION_INVALID', 'Travel position must be an object.');
   if (value.position_kind === 'node') {
@@ -43,6 +52,7 @@ export function buildJourneyPlan(input) {
   const value = record(input, 'TRAVEL_INPUT_INVALID', 'Journey plan must be an object.');
   validateTravelIntent({ party_id: value.party_id, actor_id: value.actor_id, mode: value.mode, route_id: value.route_id, route_chain: value.route_chain, intended_direction: value.intended_direction });
   validateTravelPosition(value.origin_position);
+  for (const key of ['world_revision_id', 'region_id', 'historical_period_id', 'travel_rules_digest', 'environment_catalog_digest', 'algorithm_version', 'rng_version', 'idempotency_key']) required(value[key], key);
   if (!Array.isArray(value.legs) || value.legs.length === 0) fail('TRAVEL_ROUTE_NOT_FOUND', 'Journey plan requires at least one canonical edge.', {});
   const legs = value.legs.map((leg, index) => normalizePlanLeg(leg, index));
   return deepFreeze({ ...structuredClone(value), legs });
@@ -70,6 +80,8 @@ export function createJourney(plan, context) {
     orientation_confidence: normalizedPlan.orientation_confidence ?? 'unknown',
     deviation_level: normalizedPlan.deviation_level ?? 'none',
     world_revision_id: normalizedPlan.world_revision_id,
+    region_id: normalizedPlan.region_id,
+    historical_period_id: normalizedPlan.historical_period_id,
     travel_rules_digest: normalizedPlan.travel_rules_digest,
     environment_catalog_digest: normalizedPlan.environment_catalog_digest,
     algorithm_version: normalizedPlan.algorithm_version,
@@ -164,12 +176,27 @@ function assertContext(context, journey, { checkActiveJourneyConflict = false } 
   for (const [name, candidates] of Object.entries(requiredSets)) {
     if (!Array.isArray(candidates) || candidates.length === 0) fail('TRAVEL_REQUIRED_CANDIDATE_SET_EMPTY', 'A required travel candidate set is empty.', { candidate_set: name });
   }
+  readTravelRulesBundle(value.travel_rules_bundle, journey);
   if (checkActiveJourneyConflict && Array.isArray(value.active_journeys) && value.active_journeys.some((item) => item && item.actor_id === journey.actor_id && ['active', 'interrupted', 'camped'].includes(item.status))) {
     fail('TRAVEL_ACTIVE_JOURNEY_CONFLICT', 'Actor already has an active journey.', { actor_id: journey.actor_id });
   }
   if (Array.isArray(value.known_edge_ids)) {
     for (const leg of journey.legs ?? []) if (!value.known_edge_ids.includes(leg.edge_id)) fail('TRAVEL_EDGE_NOT_TRAVERSABLE', 'Journey references an unavailable canonical edge.', { edge_id: leg.edge_id });
   }
+}
+
+function readTravelRulesBundle(bundle, expected) {
+  if (!bundle || typeof bundle !== 'object' || Array.isArray(bundle)) fail('TRAVEL_RULE_BUNDLE_MISSING', 'Travel rules bundle is required.', {});
+  for (const key of ['schema_version', 'world_revision_id', 'region_id', 'historical_period_id', 'source_refs', 'records', 'bindings', 'readiness_report', 'catalog_digest']) {
+    if (bundle[key] == null || (typeof bundle[key] === 'string' && !bundle[key].trim())) fail('TRAVEL_DATA_GAP', 'Travel rules bundle is incomplete.', { field: key });
+  }
+  if (bundle.schema_version !== 'travel-rules.v1' || !Array.isArray(bundle.source_refs) || bundle.source_refs.length === 0 || !bundle.records || typeof bundle.records !== 'object' || !bundle.bindings || typeof bundle.bindings !== 'object' || bundle.readiness_report.pass !== true) {
+    fail('TRAVEL_DATA_GAP', 'Travel rules bundle is not ready for runtime.', {});
+  }
+  const { catalog_digest, ...digestPayload } = bundle;
+  if (sha256(digestPayload) !== catalog_digest || expected.travel_rules_digest != null && expected.travel_rules_digest !== catalog_digest || expected.catalog_digest != null && expected.catalog_digest !== catalog_digest) fail('TRAVEL_DATA_GAP', 'Travel rules catalog digest is not pinned to the journey.', {});
+  for (const key of ['world_revision_id', 'region_id', 'historical_period_id']) if (bundle[key] !== expected[key]) fail('TRAVEL_DATA_GAP', 'Travel rules bundle scope does not match the journey.', { key, expected: expected[key], actual: bundle[key] });
+  return deepFreeze(structuredClone(bundle));
 }
 
 function normalizePlanLeg(leg, index) {

@@ -7,7 +7,7 @@
 ## Владеет
 
 - `FirstGameScreen` и `TurnScreen` version 1;
-- Character, Inventory, People, Route, Map, Journal и Diagnostic panels;
+- Character, Inventory, Travel, People, Route, Map, Journal и Diagnostic panels;
 - visible-only validation и leak rejection;
 - compatibility `createPublicViewModel`;
 - first-screen delivery attempt, acknowledgement и Stage 27 intent handoff.
@@ -31,3 +31,4 @@
 - FirstGameScreen принимает только успешный Stage 26 result;
 - UI input contract всегда `intent_not_fact`;
 - diagnostic panel разрешён только при явном developer mode и также не содержит hidden state.
+- Travel panel принимает только safe travel projection; он не вычисляет маршрут, фактическую позицию, время, ориентиры или последствия.

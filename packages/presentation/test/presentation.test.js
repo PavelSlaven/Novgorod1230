@@ -5,6 +5,7 @@ import {
   createCharacterPanel,
   createDiagnosticPanel,
   createFirstGameScreenReadModel,
+  createTravelPanelContract,
   createTurnScreenReadModel,
   validateTurnScreen
 } from '../src/index.js';
@@ -102,4 +103,19 @@ test('adapts approved Stage 26 result into versioned FirstGameScreen', () => {
   });
   assert.equal(screen.schema, 'first_game_screen');
   assert.equal(screen.source_approval.request_id, 'req-1');
+});
+
+test('travel panel projects only a validated safe travel projection', () => {
+  const panel = createTravelPanelContract({
+    travel_status: 'active',
+    visible_destination: { kind: 'known_place', label: 'Торговый двор' },
+    perceived_position: { kind: 'between_known_places', label: 'На пути' },
+    orientation_confidence_band: 'uncertain',
+    recognized_landmarks: [], unrecognized_observations: [], visible_cues: [], visible_traces: [],
+    estimated_elapsed_time: { band: 'less_than_hour' }, remaining_daylight_band: 'daylight',
+    known_route_options: [], obvious_stop_reason: null, interruption_options: []
+  });
+  assert.equal(panel.schema, 'travel_panel');
+  assert.equal(panel.status, 'active');
+  assert.throws(() => createTravelPanelContract({ travel_status: 'active', actual_position: { edge_id: 'hidden' } }), /TRAVEL_VISIBLE_INPUT_INVALID/u);
 });

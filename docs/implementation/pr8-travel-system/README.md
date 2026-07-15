@@ -53,6 +53,7 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 - 2026-07-15: authoring schema согласован с runtime environment contracts: cue template хранит explicit intensity/recognition/navigation, trace template — navigation, decay profile — queryable thresholds и coefficients. Это не создаёт approved data, source/provenance или pilot bundle.
 - 2026-07-15: завершено внутреннее разбиение lifecycle `@rus/environment-landmarks`: baseline, cue и trace вынесены из public facade. Фасад только валидирует formal input, связывает операции и формирует immutable result; отдельные lifecycle не читают БД, не вызывают LLM и не создают G0–G4.
 - 2026-07-15: добавлен `buildTravelVisibleProjection` в `@rus/visibility-knowledge-memory`: projection принимает только player-safe perceived/observed fields и hard-blocks actual route/progress, cue source/location binding, catalog pins и audit fields.
+- 2026-07-15: presentation получил `createTravelPanelContract`: UI read model использует только validated travel visible projection и не реализует механику travel/navigation.
 
 ## Checks recorded on transferred baseline
 
@@ -148,6 +149,9 @@ Typed domain errors are versioned with the travel contracts; persistence, presen
 | `node --test packages/visibility-knowledge-memory/test/domain.test.js` | 2026-07-15 | рабочее дерево после `29aa2ae` | RED: 1 failed | Отсутствовал безопасный travel visible projection. |
 | `node --test packages/visibility-knowledge-memory/test/domain.test.js` | 2026-07-15 | рабочее дерево после `29aa2ae` | PASS: 2/2 | Hidden travel edge/progress и cue source блокируются. |
 | `npm run test:domain` | 2026-07-15 | рабочее дерево после `29aa2ae` | PASS: 92/92 | Полный domain regression. |
+| `node --test packages/presentation/test/presentation.test.js` | 2026-07-15 | рабочее дерево после `37cc6a6` | RED: 1 failed | Отсутствовал player-facing travel panel contract. |
+| `node --test packages/presentation/test/presentation.test.js` | 2026-07-15 | рабочее дерево после `37cc6a6` | PASS: 5/5 | Travel panel принимает только safe projection. |
+| `npm run test:domain` | 2026-07-15 | рабочее дерево после `37cc6a6` | PASS: 93/93 | Полный domain regression. |
 
 ## Data and migration registry
 

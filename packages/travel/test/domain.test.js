@@ -10,6 +10,7 @@ import {
   campJourney,
   createJourney,
   interruptJourney,
+  rerouteJourney,
   resumeJourney,
   validateTravelRulesBundle,
   validateJourney,
@@ -187,6 +188,16 @@ test('lifecycle metadata advances elapsed time and timestamps completed and next
   assert.equal(persisted.elapsed_minutes, 60);
   assert.equal(persisted.legs[0].completed_at, '1230-01-01T10:00:00Z');
   assert.equal(persisted.legs[1].started_at, '1230-01-01T10:00:00Z');
+});
+
+test('reroute supersedes only unstarted legs from an explicit pinned replacement plan', () => {
+  const journey = createJourney(plan, context());
+  const replacement = { ...plan, legs: [{ ...plan.legs[0], leg_id: 'leg:replacement', edge_id: 'edge:replacement', to_g4_id: 'g4:alternate' }], target_ref: { kind: 'g4', id: 'g4:alternate' }, idempotency_key: 'reroute:1', updated_at: '1230-01-01T09:05:00Z' };
+  const rerouted = rerouteJourney({ journey, plan: replacement, context: context({ known_edge_ids: ['edge:1', 'edge:replacement'] }) });
+  assert.equal(rerouted.current_leg_id, 'leg:replacement');
+  assert.equal(rerouted.legs.find((leg) => leg.leg_id === 'leg:1').status, 'superseded');
+  assert.equal(rerouted.actual_position.edge_id, 'edge:replacement');
+  assert.throws(() => rerouteJourney({ journey: advanceJourney({ journey, context: context(), progress_permille: 1 }), plan: replacement, context: context({ known_edge_ids: ['edge:1', 'edge:replacement'] }) }), (error) => error instanceof TravelError && error.code === 'TRAVEL_INPUT_INVALID');
 });
 
 test('next travel boundary selects only the earliest explicit candidate deterministically', () => {

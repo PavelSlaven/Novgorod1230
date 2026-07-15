@@ -1,5 +1,5 @@
 import { TURN_TRAVEL_COMMAND_IDS } from './contracts.js';
-import { abandonJourney, advanceJourney, applyTravelLifecycleMetadata, buildTravelChangeSetProposal, campJourney, changeJourneyPace, createJourney, interruptJourney, resumeJourney } from '@rus/travel';
+import { abandonJourney, advanceJourney, applyTravelLifecycleMetadata, buildTravelChangeSetProposal, campJourney, changeJourneyPace, createJourney, interruptJourney, rerouteJourney, resumeJourney } from '@rus/travel';
 
 const TRAVEL_STATE_BLOCKS = Object.freeze(['party_state', 'current_position', 'clock_weather_light', 'active_journey', 'journey_legs', 'travel_position', 'environment_landmarks', 'environment_cues', 'movement_traces', 'transport_state', 'relevant_routes', 'character_knowledge_map', 'relevant_hidden_state']);
 const TRAVEL_WRITES = Object.freeze(['party_journeys', 'party_journey_legs', 'party_current_position', 'party_environment_runs', 'party_environment_choices', 'party_environment_landmarks', 'party_environment_cues', 'party_environment_traces', 'party_visible_context_package', 'party_narrator_output']);
@@ -45,8 +45,9 @@ function travelHandlerError(code, message) { return Object.assign(new Error(mess
 function transitionJourney(commandId, { retrievedState } = {}) {
   const journey = retrievedState?.active_journey;
   const travelContext = retrievedState?.travel_context;
-  const request = retrievedState?.travel_advance_request;
+  const request = commandId === 'travel.reroute' ? retrievedState?.travel_reroute_request : retrievedState?.travel_advance_request;
   if (!journey || !travelContext || !validRequest(request)) return missingContext();
+  if (commandId === 'travel.reroute' && !plain(request.journey_plan)) return missingContext();
   if (commandId === 'travel.continue' && (!Number.isInteger(request.progress_permille) || request.progress_permille < 0 || request.progress_permille > 1000)) return missingContext();
   const after = applyTravelLifecycleMetadata({ before: journey, after: applyTransition(commandId, journey, travelContext, request), elapsed_minutes: request.duration_minutes, updated_at: request.updated_at });
   const proposal = buildTravelChangeSetProposal({ before: journey, after, idempotency_key: request.idempotency_key, expected_state_version: retrievedState.party_state?.state_version });
@@ -77,6 +78,7 @@ function applyTransition(commandId, journey, context, request) {
   if (commandId === 'travel.resume') return resumeJourney({ journey, context });
   if (commandId === 'travel.change_pace') return changeJourneyPace({ journey, context, pace_profile_id: request.pace_profile_id });
   if (commandId === 'travel.abandon') return abandonJourney({ journey, context });
+  if (commandId === 'travel.reroute') return rerouteJourney({ journey, plan: request.journey_plan, context });
   return missingContext();
 }
 
@@ -91,7 +93,7 @@ function continueWriteTargets({ consequence } = {}) {
 }
 
 function missingContext() { throw travelHandlerError('TRAVEL_HANDLER_CONTEXT_MISSING', 'Travel command requires a complete formal travel context and persistence proposal.'); }
-function executableCommand(commandId) { return ['travel.start_route', 'travel.start_course', 'travel.continue', 'travel.stop', 'travel.camp', 'travel.resume', 'travel.change_pace', 'travel.abandon'].includes(commandId); }
+function executableCommand(commandId) { return ['travel.start_route', 'travel.start_course', 'travel.continue', 'travel.stop', 'travel.camp', 'travel.resume', 'travel.change_pace', 'travel.reroute', 'travel.abandon'].includes(commandId); }
 function plain(value) { return Boolean(value) && typeof value === 'object' && !Array.isArray(value); }
 function text(value) { return String(value ?? '').trim(); }
 function validRequest(request) { return request && typeof request === 'object' && Number.isInteger(request.duration_minutes) && request.duration_minutes >= 0 && text(request.updated_at) && plain(request.visible_seed) && Array.isArray(request.suggested_actions) && text(request.idempotency_key); }

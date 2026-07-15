@@ -189,6 +189,55 @@ export function changeJourneyPace({ journey, pace_profile_id, context }) {
   return deepFreeze({ ...current, pace_profile_id });
 }
 
+export function rerouteJourney({ journey, plan, context }) {
+  const current = validateJourney(journey);
+  if (current.status !== 'active' || current.actual_position.position_kind !== 'edge_progress' || current.actual_position.progress_permille !== 0) {
+    fail('TRAVEL_INPUT_INVALID', 'Reroute is allowed only at the explicit start boundary of an active leg.', {});
+  }
+  const replacement = buildJourneyPlan(plan);
+  assertContext(context, replacement);
+  if (replacement.journey_id !== current.journey_id || replacement.party_id !== current.party_id || replacement.actor_id !== current.actor_id || replacement.state_version !== current.state_version) {
+    fail('TRAVEL_STATE_VERSION_MISMATCH', 'Replacement plan must bind the current journey identity and state version.', {});
+  }
+  for (const key of ['world_revision_id', 'region_id', 'historical_period_id', 'travel_rules_digest', 'environment_catalog_digest', 'algorithm_version', 'rng_version']) {
+    if (replacement[key] !== current[key]) fail('TRAVEL_DATA_GAP', 'Replacement plan must preserve the journey version pins.', { key });
+  }
+  const currentLeg = current.legs.find((leg) => leg.leg_id === current.current_leg_id);
+  if (replacement.origin_position.g4_id !== currentLeg.from_g4_id || replacement.legs[0].from_g4_id !== currentLeg.from_g4_id) {
+    fail('TRAVEL_POSITION_INVALID', 'Replacement plan must start at the current confirmed node.', {});
+  }
+  const existingIds = new Set(current.legs.map((leg) => leg.leg_id));
+  if (replacement.legs.some((leg) => existingIds.has(leg.leg_id))) fail('TRAVEL_INPUT_INVALID', 'Replacement leg IDs must not overwrite journey history.', {});
+  const maxSequence = Math.max(...current.legs.map((leg) => leg.sequence));
+  const superseded = current.legs.map((leg) => ['active', 'pending', 'interrupted', 'blocked'].includes(leg.status) ? deepFreeze({ ...leg, status: 'superseded', interruption_id: null }) : leg);
+  const legs = replacement.legs.map((leg, index) => deepFreeze({
+    ...leg,
+    sequence: maxSequence + index + 1,
+    status: index === 0 ? 'active' : 'pending',
+    progress_permille: 0,
+    elapsed_minutes: 0,
+    started_at: index === 0 ? replacement.updated_at : null,
+    completed_at: null,
+    interruption_id: null
+  }));
+  const first = legs[0];
+  return validateJourney({
+    ...current,
+    mode: replacement.mode,
+    target_ref: clone(replacement.target_ref),
+    intended_direction: replacement.intended_direction ?? null,
+    pace_profile_id: replacement.pace_profile_id,
+    movement_method: replacement.movement_method,
+    current_leg_id: first.leg_id,
+    legs: [...superseded, ...legs],
+    actual_position: edgePosition(current, first, 0),
+    perceived_position: edgePosition(current, first, 0),
+    orientation_confidence: replacement.orientation_confidence ?? current.orientation_confidence,
+    deviation_level: replacement.deviation_level ?? current.deviation_level,
+    updated_at: replacement.updated_at
+  });
+}
+
 export function abandonJourney({ journey, context }) {
   const current = validateJourney(journey);
   assertContext(context, current);

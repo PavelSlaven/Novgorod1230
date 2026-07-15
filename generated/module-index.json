@@ -389,7 +389,7 @@
       "owns": [
         "`validateTravelIntent`, `validateTravelPosition`, `validateJourney`, `validateTravelRulesBundle`",
         "`buildJourneyPlan`, `createJourney`, `advanceJourney`, `applyTravelLifecycleMetadata`, `calculateNextTravelBoundary`, `buildTravelChangeSetProposal`",
-        "`interruptJourney`, `campJourney`, `resumeJourney`, `changeJourneyPace`, `abandonJourney`, `completeJourney`",
+        "`interruptJourney`, `campJourney`, `resumeJourney`, `changeJourneyPace`, `rerouteJourney`, `abandonJourney`, `completeJourney`",
         "`TravelError`"
       ],
       "path": "packages/travel",

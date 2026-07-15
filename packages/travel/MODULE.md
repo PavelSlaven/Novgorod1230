@@ -12,7 +12,7 @@
 
 - `validateTravelIntent`, `validateTravelPosition`, `validateJourney`, `validateTravelRulesBundle`
 - `buildJourneyPlan`, `createJourney`, `advanceJourney`, `applyTravelLifecycleMetadata`, `calculateNextTravelBoundary`, `buildTravelChangeSetProposal`
-- `interruptJourney`, `campJourney`, `resumeJourney`, `changeJourneyPace`, `abandonJourney`, `completeJourney`
+- `interruptJourney`, `campJourney`, `resumeJourney`, `changeJourneyPace`, `rerouteJourney`, `abandonJourney`, `completeJourney`
 - `TravelError`
 
 ## Контракт и ошибки
@@ -26,6 +26,8 @@
 `TravelPosition` — discriminated union: `node` хранит `g4_id`, а `edge_progress` хранит journey/leg/edge и progress 0–1000. Скрытая actual position не предназначена для player-facing потребителей.
 
 `campJourney` переводит только существующее active edge-progress journey в `camped`; он не создаёт G2–G4, не материализует лагерь и не меняет фактическую позицию. Материализация допустимой travel scene и её атомарное сохранение остаются задачей оркестратора и persistence boundary.
+
+`rerouteJourney` принимает только replacement `JourneyPlan`, который сохраняет journey identity и все version pins. Он работает лишь при `progress_permille=0`, supersedes незапущенные legs и не выбирает route/edge сам.
 
 `buildTravelChangeSetProposal` — чистый version-bound output для Stage 24/25: он описывает journey, legs и фактическую позицию, но не выполняет запись и не включает состояние среды, времени, тела или видимую проекцию.
 

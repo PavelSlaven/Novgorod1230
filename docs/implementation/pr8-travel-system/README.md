@@ -59,8 +59,9 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 - 2026-07-15: `TURN_TRAVEL_COMMAND_IDS` фиксирует закрытый code-owned set travel handlers; LLM и free text не могут создать или выбрать несуществующий command id.
 - 2026-07-15: `createTravelTurnCommandDefinitions` добавляет definitions для всех travel commands в существующий registry. Definitions требуют formal state-reader context и persistence proposal; неполный контекст блокируется типизированно, без semantic fallback.
 - 2026-07-15: `travel.continue` подключён к `@rus/travel.advanceJourney` и `buildTravelChangeSetProposal`; handler требует explicit progress/duration/visible seed/idempotency key и планирует normalized journey/leg/position targets. Остальные lifecycle handlers остаются fail-closed до своих formal requests.
-- 2026-07-15: к executable lifecycle добавлены `travel.stop`, `travel.camp`, `travel.resume`, `travel.change_pace` и `travel.abandon`; они вызывают только соответствующие pure transitions и используют тот же version-bound proposal. `start_route`, `start_course`, `reroute` остаются hard-block до approved plan/candidate contracts.
-- 2026-07-15: `travel.start_route` и `travel.start_course` принимают только заранее сформированный, version-pinned `JourneyPlan` и создают `operation: start` proposal для того же commit gate. Они не выбирают route/edge, не строят course и не обходят проверку rules bundle; `travel.reroute` остаётся hard-block до отдельного утверждённого plan-replacement contract.
+- 2026-07-15: к executable lifecycle добавлены `travel.stop`, `travel.camp`, `travel.resume`, `travel.change_pace` и `travel.abandon`; они вызывают только соответствующие pure transitions и используют тот же version-bound proposal.
+- 2026-07-15: `travel.start_route` и `travel.start_course` принимают только заранее сформированный, version-pinned `JourneyPlan` и создают `operation: start` proposal для того же commit gate. Они не выбирают route/edge, не строят course и не обходят проверку rules bundle.
+- 2026-07-15: `travel.reroute` принимает только replacement `JourneyPlan` при нулевом progress текущего canonical edge. Он сохраняет identity/version pins, помечает старые незапущенные legs `superseded` и не выбирает новую ветвь без formal plan.
 - 2026-07-15: travel plan теперь включает явные persistence metadata (`movement_method`, `started_at`, `updated_at`, `base_time_minutes`). Lifecycle metadata принимает duration/timestamp только формальным input владельца времени. PostgreSQL turn writer hard-blocks неполный или несогласованный journey/legs/position change set, записывает нормализованные rows в одной transaction и не дублирует их в state snapshot. Циклическая FK current-leg сделана `DEFERRABLE INITIALLY DEFERRED`, поэтому active journey и current leg могут быть сохранены атомарно.
 - 2026-07-15: из production party store удалён незавершённый, неиспользуемый perception persistence path: он импортировал отсутствующий module и ссылался на отсутствующие party tables. Это не является fallback: вызовы отсутствовали, а восстановление loadable fail-closed repository необходимо для PostgreSQL integration boundary.
 
@@ -183,6 +184,7 @@ Typed domain errors are versioned with the travel contracts; persistence, presen
 | `npm run test:apps` | 2026-07-15 | рабочее дерево после `d7effa5` | PASS: 13/13 | Writer проверяет normalized change set и выполняет journey → legs → position в одном transaction scope. |
 | `npm run test:modules` | 2026-07-15 | рабочее дерево после `d7effa5` | PASS: 261/261 | Migration 003 требует deferred current-leg FK; Stage 25 mapping regression. |
 | `node --test test/integration/party-runtime-v2-postgres.test.js` | 2026-07-15 | рабочее дерево после `d7effa5` | SKIPPED: 6 | `PARTY_DATABASE_URL` отсутствует; suite загрузился и готов проверить migration 003 на реальном PostgreSQL. |
+| `node --test packages/travel/test/domain.test.js` / `packages/turn/test/turn-workflow.test.js` | 2026-07-15 | рабочее дерево после `3c0d1cc` | PASS: 16/16 each | Reroute разрешён только по explicit pinned replacement plan на boundary. |
 | `npm run test:domain` | 2026-07-15 | рабочее дерево после `1b0f227` | PASS: 97/97 | Полный domain regression. |
 
 ## Data and migration registry
@@ -235,13 +237,13 @@ The ordered migration loader, seed script, party preflight and Stage 25 logical 
 | --- | --- | --- |
 | 0 — baseline | completed | Rebased onto PR7 head `fc71f5d`; current branch head before this journal edit: `141615a`. |
 | 1 — normative architecture | partial | Core decisions are accepted; all named normative files are pinned above. Full cross-document amendment remains pending. |
-| 2 — contracts and RED tests | in progress | Travel, movement and environment RED/GREEN evidence is recorded; complete route/course/reroute contracts remain pending. |
+| 2 — contracts and RED tests | in progress | Travel, movement and environment RED/GREEN evidence is recorded; route graph and course selection contracts remain pending. |
 | 3 — environment baseline | completed for package boundary | Split lifecycle, bundle validation and leak tests are green; production bundle is absent. |
 | 4 — world-base bundles | partial | Runtime fields are normalized in DDL; sources/provenance, importer/readiness and approved bundle are still absent. |
 | 5 — approved pilot | blocked | No runtime-visible approved G1; no fictional promotion is allowed. |
 | 6 — party persistence | in progress | Migration 003, deferred FK and atomic normal turn writer exist; real PostgreSQL proof is blocked by missing URL. |
 | 7 — movement routes | completed for fail-closed domain contract | Explicit profile, transport and partial traversal tests are green. |
-| 8 — travel lifecycle | partial | Start, continue, stop, camp, resume, pace and abandon have pure transitions; route graph selection, course resolution and reroute remain blocked by missing approved contracts. |
+| 8 — travel lifecycle | partial | Start, continue, stop, camp, resume, pace, reroute and abandon have pure transitions; route graph selection and course resolution remain blocked by missing approved contracts. |
 | 9 — new-game / Stage 13 | blocked | Requires approved environment bundle and runtime-visible pilot. |
 | 10 — turn integration | in progress | One canonical workflow has start/continue/lifecycle handlers and normalized persistence; production state readers and graph/bundle ports remain absent. |
 | 11 — time/body/load/transport | partial | Duration/timestamp ownership is enforced; cross-module production integration and concrete scenarios remain pending. |

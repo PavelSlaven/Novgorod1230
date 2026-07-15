@@ -14,7 +14,9 @@ const AUTHORING_TABLES = new Set([
   'environment_landmark_rule_g1_classes', 'environment_landmark_rule_node_types', 'environment_landmark_rule_landscapes',
   'environment_landmark_rule_hydrology', 'environment_landmark_rule_land_use', 'environment_landmark_rule_routes',
   'environment_cue_templates', 'environment_emission_rules', 'environment_trace_templates', 'environment_decay_profiles',
-  'environment_trace_creation_rules', 'environment_trace_rule_landscapes', 'environment_trace_rule_hydrology'
+  'environment_trace_creation_rules', 'environment_trace_rule_landscapes', 'environment_trace_rule_hydrology',
+  'travel_pace_profiles', 'travel_navigation_profiles', 'travel_rest_profiles', 'travel_interruption_profiles',
+  'route_travel_profile_bindings'
 ]);
 
 const INSTANCE_PREFIXES = ['party_', 'runtime_', 'instance_'];
@@ -67,6 +69,11 @@ export const MATERIALIZATION_FOREIGN_KEYS = Object.freeze([
   ['g4_npc_materialization_rules','world_revision_id','world_revisions'], ['g4_npc_materialization_rules','graph_node_id','graph_nodes'], ['g4_npc_materialization_rules','slot_rule_id','materialization_slot_rules'], ['g4_npc_materialization_rules','npc_profile_set_id','region_npc_profile_sets'],
   ['g4_item_materialization_rules','world_revision_id','world_revisions'], ['g4_item_materialization_rules','graph_node_id','graph_nodes'], ['g4_item_materialization_rules','slot_rule_id','materialization_slot_rules'], ['g4_item_materialization_rules','item_profile_id','item_profile_sets'], ['g4_item_materialization_rules','property_profile_id','property_profiles'],
   ['g4_container_materialization_rules','world_revision_id','world_revisions'], ['g4_container_materialization_rules','graph_node_id','graph_nodes'], ['g4_container_materialization_rules','slot_rule_id','materialization_slot_rules'], ['g4_container_materialization_rules','container_template_id','container_templates'], ['g4_container_materialization_rules','content_profile_id','container_content_profiles'], ['g4_container_materialization_rules','property_profile_id','property_profiles'],
+  ['travel_pace_profiles','world_revision_id','world_revisions'], ['travel_pace_profiles','region_id','regions'], ['travel_pace_profiles','source_id','source_records'],
+  ['travel_navigation_profiles','world_revision_id','world_revisions'], ['travel_navigation_profiles','region_id','regions'], ['travel_navigation_profiles','source_id','source_records'],
+  ['travel_rest_profiles','world_revision_id','world_revisions'], ['travel_rest_profiles','region_id','regions'], ['travel_rest_profiles','source_id','source_records'],
+  ['travel_interruption_profiles','world_revision_id','world_revisions'], ['travel_interruption_profiles','region_id','regions'], ['travel_interruption_profiles','source_id','source_records'],
+  ['route_travel_profile_bindings','world_revision_id','world_revisions'], ['route_travel_profile_bindings','region_id','regions'], ['route_travel_profile_bindings','route_template_id','route_templates'], ['route_travel_profile_bindings','pace_profile_id','travel_pace_profiles'], ['route_travel_profile_bindings','navigation_profile_id','travel_navigation_profiles'], ['route_travel_profile_bindings','rest_profile_id','travel_rest_profiles'], ['route_travel_profile_bindings','interruption_profile_id','travel_interruption_profiles'], ['route_travel_profile_bindings','source_id','source_records'],
   ['catalog_imports','world_revision_id','world_revisions'], ['catalog_import_tables','import_id','catalog_imports']
 ]);
 
@@ -370,6 +377,33 @@ export function assessMaterializationReadiness({ manifest, recordsByTable = {}, 
   return Object.freeze({ pass: concerns.length === 0, region_id: regionId, g4_id: g4Id, concerns: Object.freeze(concerns) });
 }
 
+export function assessTravelProfileReadiness({ manifest, recordsByTable = {}, regionId, routeTemplateId, historicalYear, season, jsonSchemaValidators = {} } = {}) {
+  const concerns = [...validateCatalogImportManifest(manifest, { recordsByTable })];
+  const revisionId = manifest?.world_revision_id;
+  if (typeof routeTemplateId !== 'string' || !routeTemplateId) concerns.push('ROUTE_TEMPLATE_ID_MISSING');
+  if (!Number.isInteger(historicalYear)) concerns.push('HISTORICAL_YEAR_MISSING');
+  if (typeof season !== 'string' || !season.trim()) concerns.push('SEASON_MISSING');
+  const scoped = (table) => (recordsByTable[table] ?? []).filter((record) => record?.status === 'approved'
+    && record.world_revision_id === revisionId && record.region_id === regionId && periodApplies(record, historicalYear, season));
+  const bindings = scoped('route_travel_profile_bindings').filter((binding) => binding.route_template_id === routeTemplateId);
+  if (bindings.length === 0) concerns.push('ROUTE_TRAVEL_PROFILE_BINDING_NOT_READY');
+  const profileIds = {
+    pace_profile_id: new Set(scoped('travel_pace_profiles').map((record) => record.id)),
+    navigation_profile_id: new Set(scoped('travel_navigation_profiles').map((record) => record.id)),
+    rest_profile_id: new Set(scoped('travel_rest_profiles').map((record) => record.id)),
+    interruption_profile_id: new Set(scoped('travel_interruption_profiles').map((record) => record.id))
+  };
+  const seenBindings = new Set();
+  for (const binding of bindings) {
+    for (const [key, ids] of Object.entries(profileIds)) if (!ids.has(binding[key])) concerns.push(`TRAVEL_PROFILE_UNRESOLVED:${binding.id}:${key}`);
+    const signature = ['pace_profile_id', 'navigation_profile_id', 'rest_profile_id', 'interruption_profile_id'].map((key) => binding[key]).join(':');
+    if (seenBindings.has(signature)) concerns.push(`ROUTE_TRAVEL_PROFILE_BINDING_AMBIGUOUS:${signature}`);
+    seenBindings.add(signature);
+  }
+  validateTravelProfileProvenanceAndPolicies(concerns, recordsByTable, scoped, jsonSchemaValidators, manifest?.provenance, historicalYear, season);
+  return Object.freeze({ pass: concerns.length === 0, region_id: regionId, route_template_id: routeTemplateId, concerns: Object.freeze(concerns) });
+}
+
 function validateProvenanceAndPolicies(concerns, recordsByTable, scoped, validators, provenance, historicalYear, season) {
   const sources = recordsByTable.record_sources ?? [];
   const confidenceRank = { medium: 1, medium_high: 2, high: 3 };
@@ -381,6 +415,23 @@ function validateProvenanceAndPolicies(concerns, recordsByTable, scoped, validat
     if (links.length === 0 || !links.some((link) => allowedSourceIds.has(link.source_id) && confidenceRank[link.confidence] >= minimumRank)) concerns.push(`PROVENANCE_NOT_READY:${table}:${record.id}`);
     if (!periodApplies(record, historicalYear, season)) concerns.push(`PERIOD_NOT_APPLICABLE:${table}:${record.id}`);
     for (const [key, value] of Object.entries(record)) if (key.endsWith('_policy') || key.endsWith('_model') || key === 'applicability' || key === 'initial_state') {
+      if (!isNonEmptyObject(value)) concerns.push(`JSONB_POLICY_EMPTY:${table}:${record.id}:${key}`);
+      const validator = validators[`${table}.${key}`];
+      if (typeof validator !== 'function' || validator(value) !== true) concerns.push(`JSONB_SCHEMA_INVALID:${table}:${record.id}:${key}`);
+    }
+  }
+}
+
+function validateTravelProfileProvenanceAndPolicies(concerns, recordsByTable, scoped, validators, provenance, historicalYear, season) {
+  const links = recordsByTable.record_sources ?? [];
+  const confidenceRank = { medium: 1, medium_high: 2, high: 3 };
+  const minimumRank = confidenceRank[provenance?.minimum_confidence] ?? Number.POSITIVE_INFINITY;
+  const allowedSourceIds = new Set(provenance?.source_ids ?? []);
+  for (const table of ['travel_pace_profiles', 'travel_navigation_profiles', 'travel_rest_profiles', 'travel_interruption_profiles', 'route_travel_profile_bindings']) for (const record of scoped(table)) {
+    const sources = links.filter((link) => link.target_table === table && link.target_record_id === record.id && link.support_type !== 'contradicts');
+    if (!sources.some((link) => allowedSourceIds.has(link.source_id) && confidenceRank[link.confidence] >= minimumRank)) concerns.push(`PROVENANCE_NOT_READY:${table}:${record.id}`);
+    if (!periodApplies(record, historicalYear, season)) concerns.push(`PERIOD_NOT_APPLICABLE:${table}:${record.id}`);
+    for (const [key, value] of Object.entries(record)) if (key.endsWith('_policy')) {
       if (!isNonEmptyObject(value)) concerns.push(`JSONB_POLICY_EMPTY:${table}:${record.id}:${key}`);
       const validator = validators[`${table}.${key}`];
       if (typeof validator !== 'function' || validator(value) !== true) concerns.push(`JSONB_SCHEMA_INVALID:${table}:${record.id}:${key}`);

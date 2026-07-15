@@ -165,7 +165,12 @@ Release: `0.23.0-migration.24`
 | `schemas/materialization/region-category-options-v1.schema.json` | json | 825 | `0acabbad107562f88424ff0215d9619d26f63aaaa829ba75e274708fce11da0e` |
 | `schemas/materialization/region-equipment-profile-entries-v1.schema.json` | json | 649 | `92ff1c9a1cb43b62770c178af635a3cb9ed18a043a9fb0d2a1deb8b2d8fafeee` |
 | `schemas/materialization/region-equipment-profiles-v1.schema.json` | json | 454 | `33b1f3a2febb0ca72dd388804dd06501703a71ea913fa7cf48fdd9dff92976b9` |
+| `schemas/materialization/route-travel-profile-bindings-v1.schema.json` | json | 977 | `19b437f002a559cbc6b43aa7bf26a4cbe1090f8d8637f8a33b31e1a9b71a4448` |
 | `schemas/materialization/source-records-v1.schema.json` | json | 697 | `037a2be66fdce964f9bde13c3d4031c0a1b4c9c2ebb7b26e3cf72aa3e61a9b1c` |
+| `schemas/materialization/travel-interruption-profiles-v1.schema.json` | json | 1076 | `5ef53fa0dae34fc8d2ab9e693b40fe4a58389db94b194e5beebeeb8f4e27f4ba` |
+| `schemas/materialization/travel-navigation-profiles-v1.schema.json` | json | 895 | `19bcda8a737a915bed3d5babd86a11f8935deb5b229e59a6cbf9cc2919775cb1` |
+| `schemas/materialization/travel-pace-profiles-v1.schema.json` | json | 805 | `eff7755079d5b70bbf22139d61fe080817bf296233c099146a9f44857c09cbad` |
+| `schemas/materialization/travel-rest-profiles-v1.schema.json` | json | 924 | `35269ff33e73666666115eed57d354d6c89ccbed2821d5910b9b3f77e854ecdd` |
 | `schemas/materialization/universal-categories-v1.schema.json` | json | 905 | `b2110a8b777c2d26049337f07826c254eb1f9854535ae7990f4c2f40bc4df972` |
 | `schemas/materialization/universal-category-relations-v1.schema.json` | json | 512 | `31fd11130f43de9a61d58b8fde877527649eaad8915af99225f982033b179f38` |
 | `schemas/materialization/universal-parameter-definitions-v1.schema.json` | json | 1050 | `0c646047b8e48a43b7c5250d264cf27b84604810f754f41d4504fa1360347748` |

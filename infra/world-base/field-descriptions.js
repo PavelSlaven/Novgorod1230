@@ -132,6 +132,10 @@ export const TABLE_GROUPS = [
   {
     title: 'PR8: ориентиры, сигналы и следы среды',
     tables: ['environment_landmark_templates', 'environment_landmark_profiles', 'environment_landmark_profile_entries', 'environment_landmark_rules', 'environment_landmark_rule_g1_classes', 'environment_landmark_rule_node_types', 'environment_landmark_rule_landscapes', 'environment_landmark_rule_hydrology', 'environment_landmark_rule_land_use', 'environment_landmark_rule_routes', 'environment_cue_templates', 'environment_emission_rules', 'environment_trace_templates', 'environment_decay_profiles', 'environment_trace_creation_rules', 'environment_trace_rule_landscapes', 'environment_trace_rule_hydrology']
+  },
+  {
+    title: 'PR8: профили путешествий',
+    tables: ['travel_pace_profiles', 'travel_navigation_profiles', 'travel_rest_profiles', 'travel_interruption_profiles', 'route_travel_profile_bindings']
   }
 ];
 
@@ -146,6 +150,16 @@ export const TABLE_PURPOSE_FALLBACK = {
     'Типы водных объектов и водной среды: солёность, течение, глубина, судоходность, бродимость, лёд.',
   route_templates:
     'Шаблоны типов движения и инфраструктуры (дорога, тропа, зимник, волок); не заменяет graph_edges.',
+  travel_pace_profiles:
+    'Approved profile темпа путешествия для revision/region; коэффициенты времени и усталости, не party state.',
+  travel_navigation_profiles:
+    'Approved profile ориентирования с closed policy для revision/region; не выбирает фактическое ребро.',
+  travel_rest_profiles:
+    'Approved rest profile с минимальной длительностью и closed policy для revision/region.',
+  travel_interruption_profiles:
+    'Approved causal interruption profile для revision/region; не является runtime событием.',
+  route_travel_profile_bindings:
+    'Нормализованная binding route template к применимым travel profiles в revision/region.',
   land_use_templates:
     'Хозяйственное использование среды: пашня, покос, выгон, вырубка и т.п.; не базовый ландшафт.',
   place_templates:
@@ -322,6 +336,47 @@ export const common = {
 
 /** Поля по таблицам — только там, где нужно уточнение сверх common. */
 export const fields = {
+  travel_pace_profiles: {
+    world_revision_id: 'FK → world_revisions(id): pinned revision профиля темпа.',
+    pace_key: 'Closed pace: cautious, normal или forced; не свободный текст команды.',
+    time_multiplier: 'Положительный утверждённый коэффициент времени; runtime не подставляет значение.',
+    fatigue_multiplier: 'Неотрицательный утверждённый коэффициент расхода состояния тела.',
+    valid_from: 'Начало исторической применимости включительно.',
+    valid_to: 'Конец исторической применимости включительно; не ранее valid_from.'
+  },
+  travel_navigation_profiles: {
+    world_revision_id: 'FK → world_revisions(id): pinned revision профиля ориентирования.',
+    navigation_key: 'Стабильный ключ approved navigation profile; не ID фактического ребра.',
+    orientation_policy: 'Versioned closed JSON policy ориентирования; не создаёт географию и не выбирает edge.',
+    valid_from: 'Начало исторической применимости включительно.',
+    valid_to: 'Конец исторической применимости включительно; не ранее valid_from.'
+  },
+  travel_rest_profiles: {
+    world_revision_id: 'FK → world_revisions(id): pinned revision профиля отдыха.',
+    rest_key: 'Стабильный ключ approved rest profile.',
+    minimum_minutes: 'Минимальная положительная длительность отдыха в минутах; не runtime elapsed time.',
+    rest_policy: 'Versioned closed JSON policy отдыха; не создаёт camp instance.',
+    valid_from: 'Начало исторической применимости включительно.',
+    valid_to: 'Конец исторической применимости включительно; не ранее valid_from.'
+  },
+  travel_interruption_profiles: {
+    world_revision_id: 'FK → world_revisions(id): pinned revision профиля причинного прерывания.',
+    interruption_source_type: 'Closed causal source type; не идентификатор и не создание runtime event.',
+    interruption_policy: 'Versioned closed JSON policy отбора уже причинно существующих interruption candidates.',
+    required: 'Требуется ли непустой candidate set для применимого профиля; пустой required set образует data gap.',
+    valid_from: 'Начало исторической применимости включительно.',
+    valid_to: 'Конец исторической применимости включительно; не ранее valid_from.'
+  },
+  route_travel_profile_bindings: {
+    world_revision_id: 'FK → world_revisions(id): pinned revision route/profile binding.',
+    route_template_id: 'FK → route_templates(id): тип маршрута, к которому применяется только эта связка профилей.',
+    pace_profile_id: 'FK → travel_pace_profiles(id): approved темп для binding.',
+    navigation_profile_id: 'FK → travel_navigation_profiles(id): approved ориентирование для binding.',
+    rest_profile_id: 'FK → travel_rest_profiles(id): approved отдых для binding.',
+    interruption_profile_id: 'FK → travel_interruption_profiles(id): approved причинные прерывания для binding.',
+    valid_from: 'Начало исторической применимости включительно.',
+    valid_to: 'Конец исторической применимости включительно; не ранее valid_from.'
+  },
   item_templates: {
     category_id: 'FK → universal_categories(id): object-type category template; legacy item_type не является вторым классификатором.',
     world_revision_id: 'FK → world_revisions(id): pinned revision для нового нормализованного authoring template.',

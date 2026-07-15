@@ -805,9 +805,39 @@
       "type": "json"
     },
     {
+      "bytes": 977,
+      "path": "schemas/materialization/route-travel-profile-bindings-v1.schema.json",
+      "sha256": "19b437f002a559cbc6b43aa7bf26a4cbe1090f8d8637f8a33b31e1a9b71a4448",
+      "type": "json"
+    },
+    {
       "bytes": 697,
       "path": "schemas/materialization/source-records-v1.schema.json",
       "sha256": "037a2be66fdce964f9bde13c3d4031c0a1b4c9c2ebb7b26e3cf72aa3e61a9b1c",
+      "type": "json"
+    },
+    {
+      "bytes": 1076,
+      "path": "schemas/materialization/travel-interruption-profiles-v1.schema.json",
+      "sha256": "5ef53fa0dae34fc8d2ab9e693b40fe4a58389db94b194e5beebeeb8f4e27f4ba",
+      "type": "json"
+    },
+    {
+      "bytes": 895,
+      "path": "schemas/materialization/travel-navigation-profiles-v1.schema.json",
+      "sha256": "19bcda8a737a915bed3d5babd86a11f8935deb5b229e59a6cbf9cc2919775cb1",
+      "type": "json"
+    },
+    {
+      "bytes": 805,
+      "path": "schemas/materialization/travel-pace-profiles-v1.schema.json",
+      "sha256": "eff7755079d5b70bbf22139d61fe080817bf296233c099146a9f44857c09cbad",
+      "type": "json"
+    },
+    {
+      "bytes": 924,
+      "path": "schemas/materialization/travel-rest-profiles-v1.schema.json",
+      "sha256": "35269ff33e73666666115eed57d354d6c89ccbed2821d5910b9b3f77e854ecdd",
       "type": "json"
     },
     {

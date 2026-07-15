@@ -10,7 +10,7 @@
 - Draft status: yes
 - PR7 dependency: open draft; PR8 was rebased onto its current head in an isolated clean worktree.
 - Last completed phase: contract and persistence baseline (partial; not accepted as PR8 completion).
-- Current phase: Phase 10 turn integration — atomic arrival handoff (`in_progress`).
+- Current phase: Phase 4 world-base travel-profile authoring and readiness (`in_progress`).
 - Current blocker: no approved pilot-G1 catalog/rules bundles and no configured PostgreSQL integration database.
 
 The branch must be rebased onto `main` after PR7 is integrated and before final audit. The primary worktree remains untouched because it contains unrelated local changes.
@@ -70,6 +70,7 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 - 2026-07-15: `TravelInterruption` требует `travel-interruption.v1` и causal source из закрытого набора. Произвольный id или новый дорожный event не могут прервать journey.
 - 2026-07-15: `resolveCourseEdgeCandidate` принимает только explicit applicable candidate из fact graph. Пустой set, неизвестный selected id или candidate из другой direction/origin приводят к typed hard block, а не к выбору «ближайшей» дороги.
 - 2026-07-15: `travel.start_course` требует этот candidate и сверяет с ним первый leg `JourneyPlan`; plan без candidate или с другим edge блокируется до createJourney/commit.
+- 2026-07-15: добавлены нормализованные authoring tables для темпа, ориентирования, отдыха, причинных прерываний и их route binding. Все записи version/region/source/period-bound; importer и readiness принимают их только со строгими JSON Schema и provenance. Approved pilot data не создавались.
 
 ## Checks recorded on transferred baseline
 
@@ -138,6 +139,7 @@ Typed domain errors are versioned with the travel contracts; persistence, presen
 | `node --test packages/travel/test/domain.test.js` | 2026-07-15 | worktree after `41670e9` | RED then PASS: 1 failure → 18/18 | Unstructured interruption was rejected; only formal causal-source interruption can change journey state. |
 | `node --test packages/travel/test/domain.test.js` / `docs:check` | 2026-07-15 | worktree after `51b49ea` | RED then PASS: 1 failure → 19/19 | Course continuation accepts only an explicit applicable fact-graph candidate; generated documentation is current. |
 | `node --test packages/travel/test/domain.test.js packages/turn/test/turn-workflow.test.js` / full local suites | 2026-07-15 | worktree after `b560d95` | PASS: 36/36; 107/107; 262/262; 14/14 | `travel.start_course` blocks missing/mismatched candidate selection and accepts only a first leg bound to the chosen fact-graph candidate. |
+| `node --test tools/world-catalog-workflow/test/materialization-readiness-positive.test.js tools/world-catalog-workflow/test/supplemental-catalog-bundle.test.js` / `world-db:schema-check` / `world-db:schema-doc-check` | 2026-07-15 | worktree before authoring-layer commit | PASS: 30/30; 143 tables | Travel-profile import/readiness blocks missing route binding; generated DDL reference is current. No PostgreSQL execution or approved pilot data is claimed. |
 | `node --test tools/docs-tools/test/knowledge-source-migration.test.js tools/docs-tools/test/knowledge-corpus-verifier.test.js tools/docs-tools/test/knowledge-materializer-v2.test.js` | 2026-07-15 | working tree after `6eb1a23` | PASS: 22/22 | Corpus manifest, legacy provenance and generated graph/RAG materialization remain reproducible after the PR8 normative update. |
 | `npm run test:domain` / `npm run test:modules` | 2026-07-15 | working tree after `6eb1a23` | PASS: 102/102; 261/261 | Documentation-only change did not regress travel, environment, turn or materialization contracts. |
 | `node --test packages/travel/test/domain.test.js` | 2026-07-15 | `69b0ee8` | RED: 1 failed | `ERR_MODULE_NOT_FOUND` before implementation. |
@@ -260,7 +262,7 @@ The ordered migration loader, seed script, party preflight and Stage 25 logical 
 | 1 — normative architecture | in progress | PR8 travel boundaries are now synchronized across movement, time, turn, UI, graph/data ownership and navigation docs; full production proof still depends on approved data and integration. |
 | 2 — contracts and RED tests | in progress | Travel, movement and environment RED/GREEN evidence is recorded; course candidate-resolution is explicit and fail-closed. Route graph loader and production course resolution remain pending. |
 | 3 — environment baseline | completed for package boundary | Split lifecycle, bundle validation and leak tests are green; production bundle is absent. |
-| 4 — world-base bundles | partial | Runtime fields are normalized in DDL; sources/provenance, importer/readiness and approved bundle are still absent. |
+| 4 — world-base bundles | partial | Travel profiles and route bindings now have normalized DDL, strict schemas, importer registration and fail-closed readiness. Approved sources/provenance records and bundle remain absent. |
 | 5 — approved pilot | blocked | No runtime-visible approved G1; no fictional promotion is allowed. |
 | 6 — party persistence | in progress | Migration 003, deferred FK and atomic normal turn writer exist; real PostgreSQL proof is blocked by missing URL. |
 | 7 — movement routes | completed for fail-closed domain contract | Explicit profile, transport and partial traversal tests are green. |

@@ -1,9 +1,9 @@
 <!-- GENERATED FILE. Sources: infra/world-base/schema.sql, infra/world-base/schema/*.sql and infra/world-base/field-descriptions.js. Run `npm run world-db:schema-doc`; do not edit manually. -->
 # Справочник схемы `world_base`
 
-- Исполняемый источник: `infra/world-base/schema.sql` и 12 упорядоченных SQL-частей.
-- SHA-256 развёрнутого DDL: `4c147c52c06f0b25cd87048bf2e3a2f36bac1a8859b7be7af106c3a4d0f7621d`.
-- Таблиц: 138.
+- Исполняемый источник: `infra/world-base/schema.sql` и 13 упорядоченных SQL-частей.
+- SHA-256 развёрнутого DDL: `d4daf891e8febc5765ca8980ecebacb88f1bfc2d4eb702beb29ea6c1f06077dc`.
+- Таблиц: 143.
 - Описания берутся только из утверждённого `infra/world-base/field-descriptions.js`; отсутствие описания не заполняется эвристикой.
 
 ## Граф (каноническая карта)
@@ -3750,6 +3750,116 @@ Approved causal rule emission → trace template и decay profile.
 **Ограничения таблицы:**
 
 - `PRIMARY KEY (rule_id, water_body_template_id)`
+
+## PR8: профили путешествий
+
+### `world_base.travel_pace_profiles`
+
+Approved profile темпа путешествия для revision/region; коэффициенты времени и усталости, не party state.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | FK → world_revisions(id): pinned revision профиля темпа. |
+| `region_id` | `TEXT` | нет | — | `world_base.regions(id) ON DELETE RESTRICT` | `NOT NULL` | FK → regions(id): регион, к которому относится запись. |
+| `source_id` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | FK → source_records(id): подтверждающий источник. |
+| `pace_key` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (pace_key IN ('cautious','normal','forced'))` | Closed pace: cautious, normal или forced; не свободный текст команды. |
+| `time_multiplier` | `NUMERIC` | нет | — | — | `NOT NULL`<br>`CHECK (time_multiplier > 0)` | Положительный утверждённый коэффициент времени; runtime не подставляет значение. |
+| `fatigue_multiplier` | `NUMERIC` | нет | — | — | `NOT NULL`<br>`CHECK (fatigue_multiplier >= 0)` | Неотрицательный утверждённый коэффициент расхода состояния тела. |
+| `valid_from` | `DATE` | нет | — | — | `NOT NULL` | Начало исторической применимости включительно. |
+| `valid_to` | `DATE` | нет | — | — | `NOT NULL` | Конец исторической применимости включительно; не ранее valid_from. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- `UNIQUE (world_revision_id, region_id, pace_key, valid_from, valid_to, status)`
+- `CHECK (valid_to >= valid_from)`
+
+### `world_base.travel_navigation_profiles`
+
+Approved profile ориентирования с closed policy для revision/region; не выбирает фактическое ребро.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | FK → world_revisions(id): pinned revision профиля ориентирования. |
+| `region_id` | `TEXT` | нет | — | `world_base.regions(id) ON DELETE RESTRICT` | `NOT NULL` | FK → regions(id): регион, к которому относится запись. |
+| `source_id` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | FK → source_records(id): подтверждающий источник. |
+| `navigation_key` | `TEXT` | нет | — | — | `NOT NULL` | Стабильный ключ approved navigation profile; не ID фактического ребра. |
+| `orientation_policy` | `JSONB` | нет | — | — | `NOT NULL` | Versioned closed JSON policy ориентирования; не создаёт географию и не выбирает edge. |
+| `valid_from` | `DATE` | нет | — | — | `NOT NULL` | Начало исторической применимости включительно. |
+| `valid_to` | `DATE` | нет | — | — | `NOT NULL` | Конец исторической применимости включительно; не ранее valid_from. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- `CHECK (valid_to >= valid_from)`
+
+### `world_base.travel_rest_profiles`
+
+Approved rest profile с минимальной длительностью и closed policy для revision/region.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | FK → world_revisions(id): pinned revision профиля отдыха. |
+| `region_id` | `TEXT` | нет | — | `world_base.regions(id) ON DELETE RESTRICT` | `NOT NULL` | FK → regions(id): регион, к которому относится запись. |
+| `source_id` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | FK → source_records(id): подтверждающий источник. |
+| `rest_key` | `TEXT` | нет | — | — | `NOT NULL` | Стабильный ключ approved rest profile. |
+| `minimum_minutes` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (minimum_minutes > 0)` | Минимальная положительная длительность отдыха в минутах; не runtime elapsed time. |
+| `rest_policy` | `JSONB` | нет | — | — | `NOT NULL` | Versioned closed JSON policy отдыха; не создаёт camp instance. |
+| `valid_from` | `DATE` | нет | — | — | `NOT NULL` | Начало исторической применимости включительно. |
+| `valid_to` | `DATE` | нет | — | — | `NOT NULL` | Конец исторической применимости включительно; не ранее valid_from. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- `CHECK (valid_to >= valid_from)`
+
+### `world_base.travel_interruption_profiles`
+
+Approved causal interruption profile для revision/region; не является runtime событием.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | FK → world_revisions(id): pinned revision профиля причинного прерывания. |
+| `region_id` | `TEXT` | нет | — | `world_base.regions(id) ON DELETE RESTRICT` | `NOT NULL` | FK → regions(id): регион, к которому относится запись. |
+| `source_id` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | FK → source_records(id): подтверждающий источник. |
+| `interruption_source_type` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (interruption_source_type IN ('weather','light','body','transport','route','due_timer','npc_process','social_checkpoint','signal','trace','player_command','arrival'))` | Closed causal source type; не идентификатор и не создание runtime event. |
+| `interruption_policy` | `JSONB` | нет | — | — | `NOT NULL` | Versioned closed JSON policy отбора уже причинно существующих interruption candidates. |
+| `required` | `BOOLEAN` | нет | `false` | — | `NOT NULL` | Требуется ли непустой candidate set для применимого профиля; пустой required set образует data gap. |
+| `valid_from` | `DATE` | нет | — | — | `NOT NULL` | Начало исторической применимости включительно. |
+| `valid_to` | `DATE` | нет | — | — | `NOT NULL` | Конец исторической применимости включительно; не ранее valid_from. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- `CHECK (valid_to >= valid_from)`
+
+### `world_base.route_travel_profile_bindings`
+
+Нормализованная binding route template к применимым travel profiles в revision/region.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | FK → world_revisions(id): pinned revision route/profile binding. |
+| `region_id` | `TEXT` | нет | — | `world_base.regions(id) ON DELETE RESTRICT` | `NOT NULL` | FK → regions(id): регион, к которому относится запись. |
+| `route_template_id` | `TEXT` | нет | — | `world_base.route_templates(id) ON DELETE RESTRICT` | `NOT NULL` | FK → route_templates(id): тип маршрута, к которому применяется только эта связка профилей. |
+| `pace_profile_id` | `TEXT` | нет | — | `world_base.travel_pace_profiles(id) ON DELETE RESTRICT` | `NOT NULL` | FK → travel_pace_profiles(id): approved темп для binding. |
+| `navigation_profile_id` | `TEXT` | нет | — | `world_base.travel_navigation_profiles(id) ON DELETE RESTRICT` | `NOT NULL` | FK → travel_navigation_profiles(id): approved ориентирование для binding. |
+| `rest_profile_id` | `TEXT` | нет | — | `world_base.travel_rest_profiles(id) ON DELETE RESTRICT` | `NOT NULL` | FK → travel_rest_profiles(id): approved отдых для binding. |
+| `interruption_profile_id` | `TEXT` | нет | — | `world_base.travel_interruption_profiles(id) ON DELETE RESTRICT` | `NOT NULL` | FK → travel_interruption_profiles(id): approved причинные прерывания для binding. |
+| `source_id` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | FK → source_records(id): подтверждающий источник. |
+| `valid_from` | `DATE` | нет | — | — | `NOT NULL` | Начало исторической применимости включительно. |
+| `valid_to` | `DATE` | нет | — | — | `NOT NULL` | Конец исторической применимости включительно; не ранее valid_from. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- `UNIQUE (world_revision_id, region_id, route_template_id, pace_profile_id, navigation_profile_id, rest_profile_id, interruption_profile_id, valid_from, valid_to, status)`
+- `CHECK (valid_to >= valid_from)`
 
 ## Без утверждённой группы
 

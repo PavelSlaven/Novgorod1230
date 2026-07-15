@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { assessMaterializationReadiness, MATERIALIZATION_AUTHORING_TABLES, MATERIALIZATION_FOREIGN_KEYS } from '../src/materialization-readiness.js';
+import { assessMaterializationReadiness, assessTravelProfileReadiness, MATERIALIZATION_AUTHORING_TABLES, MATERIALIZATION_FOREIGN_KEYS } from '../src/materialization-readiness.js';
 import { digestValue } from '../src/digest.js';
 
 const approved = { status: 'approved' };
@@ -97,4 +97,36 @@ test('readiness blocks missing provenance, invalid JSONB schema, wrong period an
   assert.ok(result.concerns.some((value) => value.startsWith('JSONB_SCHEMA_INVALID:')));
   assert.ok(result.concerns.some((value) => value.startsWith('G4_BINDING_AMBIGUOUS:')));
   assert.ok(result.concerns.includes('G4_MATERIALIZATION_BINDING_NOT_READY') || result.concerns.some((value) => value.startsWith('REQUIRED_APPROVED_TABLE_EMPTY:')));
+});
+
+test('travel profile readiness requires an approved, period-bound route binding and its closed profiles', () => {
+  const recordsByTable = {
+    regions: [{ id: 'region-1' }],
+    source_records: [{ id: 'source-1' }],
+    world_revisions: [{ id: 'rev-1', ...approved }],
+    travel_pace_profiles: [{ id: 'pace-1', ...scope, source_id: 'source-1', pace_key: 'normal', time_multiplier: 1, fatigue_multiplier: 1, ...approved }],
+    travel_navigation_profiles: [{ id: 'navigation-1', ...scope, source_id: 'source-1', navigation_key: 'land', orientation_policy: { schema: 'travel_navigation_policy_v1', rules: { visibility: 'approved' } }, ...approved }],
+    travel_rest_profiles: [{ id: 'rest-1', ...scope, source_id: 'source-1', rest_key: 'overnight', minimum_minutes: 480, rest_policy: { schema: 'travel_rest_policy_v1', rules: { shelter: 'approved' } }, ...approved }],
+    travel_interruption_profiles: [{ id: 'interruption-1', ...scope, source_id: 'source-1', interruption_source_type: 'weather', interruption_policy: { schema: 'travel_interruption_policy_v1', rules: { cause: 'weather' } }, required: false, ...approved }],
+    route_travel_profile_bindings: [{ id: 'route-binding-1', ...scope, route_template_id: 'route-1', pace_profile_id: 'pace-1', navigation_profile_id: 'navigation-1', rest_profile_id: 'rest-1', interruption_profile_id: 'interruption-1', source_id: 'source-1', ...approved }]
+  };
+  const targets = Object.entries(recordsByTable).filter(([table]) => MATERIALIZATION_AUTHORING_TABLES.includes(table) && table !== 'source_records').flatMap(([table, records]) => records.map((record) => ({ table, id: record.id })));
+  recordsByTable.record_sources = targets.map(({ table, id }, index) => ({ id: `link-${index}`, source_id: 'source-1', target_table: table, target_record_id: id, support_type: 'supports', confidence: 'high' }));
+  const orders = dependencyOrders(Object.keys(recordsByTable).filter((table) => MATERIALIZATION_AUTHORING_TABLES.includes(table)));
+  const tables = [...orders.keys()].sort((left, right) => orders.get(left) - orders.get(right) || left.localeCompare(right)).map((table_name) => ({ table_name, payload_digest: digestValue(recordsByTable[table_name]), record_count: recordsByTable[table_name].length, dependency_order: orders.get(table_name) }));
+  const manifest = { version: 2, schema: 'world_catalog_import_manifest_v2', world_revision_id: 'rev-1', approval: 'approved', deletion_mode: 'none', provenance: { source_ids: ['source-1'], minimum_confidence: 'high', effective_at: '1230-05-01T00:00:00.000Z', json_schema_version: 'materialization-v2', negative_fixture_evidence: true }, tables };
+  const validators = {
+    'travel_navigation_profiles.orientation_policy': () => true,
+    'travel_rest_profiles.rest_policy': () => true,
+    'travel_interruption_profiles.interruption_policy': () => true
+  };
+  const ready = assessTravelProfileReadiness({ manifest, recordsByTable, regionId: 'region-1', routeTemplateId: 'route-1', historicalYear: 1230, season: 'spring', jsonSchemaValidators: validators });
+  assert.equal(ready.pass, true);
+  recordsByTable.route_travel_profile_bindings = [];
+  const bindingTable = manifest.tables.find((table) => table.table_name === 'route_travel_profile_bindings');
+  bindingTable.record_count = 0;
+  bindingTable.payload_digest = digestValue([]);
+  const blocked = assessTravelProfileReadiness({ manifest, recordsByTable, regionId: 'region-1', routeTemplateId: 'route-1', historicalYear: 1230, season: 'spring', jsonSchemaValidators: validators });
+  assert.equal(blocked.pass, false);
+  assert.equal(blocked.concerns.includes('ROUTE_TRAVEL_PROFILE_BINDING_NOT_READY'), true);
 });

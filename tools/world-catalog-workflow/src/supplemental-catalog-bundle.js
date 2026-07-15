@@ -27,6 +27,11 @@ import propertyProfileRulesSchema from '../../../schemas/materialization/propert
 import regionEquipmentProfilesSchema from '../../../schemas/materialization/region-equipment-profiles-v1.schema.json' with { type: 'json' };
 import regionEquipmentProfileEntriesSchema from '../../../schemas/materialization/region-equipment-profile-entries-v1.schema.json' with { type: 'json' };
 import itemClassificationMigrationInventorySchema from '../../../schemas/materialization/item-classification-migration-inventory-v1.schema.json' with { type: 'json' };
+import travelPaceProfilesSchema from '../../../schemas/materialization/travel-pace-profiles-v1.schema.json' with { type: 'json' };
+import travelNavigationProfilesSchema from '../../../schemas/materialization/travel-navigation-profiles-v1.schema.json' with { type: 'json' };
+import travelRestProfilesSchema from '../../../schemas/materialization/travel-rest-profiles-v1.schema.json' with { type: 'json' };
+import travelInterruptionProfilesSchema from '../../../schemas/materialization/travel-interruption-profiles-v1.schema.json' with { type: 'json' };
+import routeTravelProfileBindingsSchema from '../../../schemas/materialization/route-travel-profile-bindings-v1.schema.json' with { type: 'json' };
 
 // A supplemental catalog is intentionally separate from the approved base archive.
 // It is authoring input only; this validator never makes draft rows runtime candidates.
@@ -38,7 +43,9 @@ export const SUPPLEMENTAL_AUTHORING_TABLES = Object.freeze(new Set([
   'container_template_inventory_profiles', 'container_template_source_bindings', 'container_content_profiles',
   'container_content_profile_entries', 'item_profile_sets', 'item_profile_entries',
   'property_profiles', 'property_profile_rules', 'region_equipment_profiles',
-  'region_equipment_profile_entries', 'item_classification_migration_inventory'
+  'region_equipment_profile_entries', 'item_classification_migration_inventory',
+  'travel_pace_profiles', 'travel_navigation_profiles', 'travel_rest_profiles', 'travel_interruption_profiles',
+  'route_travel_profile_bindings'
 ]));
 
 const PARTY_PREFIXES = Object.freeze(['party_', 'runtime_', 'instance_']);
@@ -68,7 +75,12 @@ const STRICT_FIELDS = Object.freeze({
   property_profile_rules: new Set(['id', 'property_profile_id', 'owner_kind', 'holder_kind', 'controller_kind', 'access_policy', 'claim_conditions', 'status']),
   region_equipment_profiles: new Set(['id', 'region_id', 'social_role_id', 'occupation_id', 'status']),
   region_equipment_profile_entries: new Set(['id', 'equipment_profile_id', 'item_template_id', 'item_category_id', 'slot_key', 'required', 'weight']),
-  item_classification_migration_inventory: new Set(['id', 'legacy_table_name', 'legacy_record_id', 'legacy_field_name', 'legacy_value', 'resolution_status', 'resolved_category_id', 'report_note'])
+  item_classification_migration_inventory: new Set(['id', 'legacy_table_name', 'legacy_record_id', 'legacy_field_name', 'legacy_value', 'resolution_status', 'resolved_category_id', 'report_note']),
+  travel_pace_profiles: new Set(['id', 'world_revision_id', 'region_id', 'source_id', 'pace_key', 'time_multiplier', 'fatigue_multiplier', 'valid_from', 'valid_to', 'status']),
+  travel_navigation_profiles: new Set(['id', 'world_revision_id', 'region_id', 'source_id', 'navigation_key', 'orientation_policy', 'valid_from', 'valid_to', 'status']),
+  travel_rest_profiles: new Set(['id', 'world_revision_id', 'region_id', 'source_id', 'rest_key', 'minimum_minutes', 'rest_policy', 'valid_from', 'valid_to', 'status']),
+  travel_interruption_profiles: new Set(['id', 'world_revision_id', 'region_id', 'source_id', 'interruption_source_type', 'interruption_policy', 'required', 'valid_from', 'valid_to', 'status']),
+  route_travel_profile_bindings: new Set(['id', 'world_revision_id', 'region_id', 'route_template_id', 'pace_profile_id', 'navigation_profile_id', 'rest_profile_id', 'interruption_profile_id', 'source_id', 'valid_from', 'valid_to', 'status'])
 });
 const SCHEMA_IDS = Object.freeze({
   source_records: 'rus.source_records.v1', record_sources: 'rus.record_sources.v1', world_revisions: 'rus.world_revisions.v1', universal_categories: 'rus.universal_categories.v1', category_labels: 'rus.category_labels.v1', region_category_options: 'rus.region_category_options.v1',
@@ -80,7 +92,8 @@ const SCHEMA_IDS = Object.freeze({
   container_content_profiles: 'rus.container_content_profiles.v1', container_content_profile_entries: 'rus.container_content_profile_entries.v1',
   item_profile_sets: 'rus.item_profile_sets.v1', item_profile_entries: 'rus.item_profile_entries.v1',
   property_profiles: 'rus.property_profiles.v1', property_profile_rules: 'rus.property_profile_rules.v1',
-  region_equipment_profiles: 'rus.region_equipment_profiles.v1', region_equipment_profile_entries: 'rus.region_equipment_profile_entries.v1', item_classification_migration_inventory: 'rus.item_classification_migration_inventory.v1'
+  region_equipment_profiles: 'rus.region_equipment_profiles.v1', region_equipment_profile_entries: 'rus.region_equipment_profile_entries.v1', item_classification_migration_inventory: 'rus.item_classification_migration_inventory.v1',
+  travel_pace_profiles: 'rus.travel_pace_profiles.v1', travel_navigation_profiles: 'rus.travel_navigation_profiles.v1', travel_rest_profiles: 'rus.travel_rest_profiles.v1', travel_interruption_profiles: 'rus.travel_interruption_profiles.v1', route_travel_profile_bindings: 'rus.route_travel_profile_bindings.v1'
 });
 const SUPPLEMENTAL_FK_DEPENDENCIES = Object.freeze({
   world_revisions: ['world_revisions'], universal_categories: ['universal_categories'],
@@ -96,7 +109,10 @@ const SUPPLEMENTAL_FK_DEPENDENCIES = Object.freeze({
   container_content_profile_entries: ['container_content_profiles', 'item_templates', 'universal_categories'], item_profile_sets: ['world_revisions'],
   item_profile_entries: ['item_profile_sets', 'item_templates', 'universal_categories'], property_profiles: ['world_revisions', 'universal_categories'],
   property_profile_rules: ['property_profiles'], region_equipment_profile_entries: ['region_equipment_profiles', 'item_templates', 'universal_categories'],
-  item_classification_migration_inventory: ['universal_categories']
+  item_classification_migration_inventory: ['universal_categories'],
+  travel_pace_profiles: ['world_revisions', 'source_records'], travel_navigation_profiles: ['world_revisions', 'source_records'],
+  travel_rest_profiles: ['world_revisions', 'source_records'], travel_interruption_profiles: ['world_revisions', 'source_records'],
+  route_travel_profile_bindings: ['world_revisions', 'source_records', 'travel_pace_profiles', 'travel_navigation_profiles', 'travel_rest_profiles', 'travel_interruption_profiles']
 });
 const SCHEMAS = Object.freeze({
   source_records: sourceRecordsSchema, record_sources: recordSourcesSchema, world_revisions: worldRevisionsSchema, universal_categories: universalCategoriesSchema, category_labels: categoryLabelsSchema, region_category_options: regionCategoryOptionsSchema,
@@ -108,7 +124,8 @@ const SCHEMAS = Object.freeze({
   container_content_profiles: containerContentProfilesSchema, container_content_profile_entries: containerContentProfileEntriesSchema,
   item_profile_sets: itemProfileSetsSchema, item_profile_entries: itemProfileEntriesSchema,
   property_profiles: propertyProfilesSchema, property_profile_rules: propertyProfileRulesSchema,
-  region_equipment_profiles: regionEquipmentProfilesSchema, region_equipment_profile_entries: regionEquipmentProfileEntriesSchema, item_classification_migration_inventory: itemClassificationMigrationInventorySchema
+  region_equipment_profiles: regionEquipmentProfilesSchema, region_equipment_profile_entries: regionEquipmentProfileEntriesSchema, item_classification_migration_inventory: itemClassificationMigrationInventorySchema,
+  travel_pace_profiles: travelPaceProfilesSchema, travel_navigation_profiles: travelNavigationProfilesSchema, travel_rest_profiles: travelRestProfilesSchema, travel_interruption_profiles: travelInterruptionProfilesSchema, route_travel_profile_bindings: routeTravelProfileBindingsSchema
 });
 
 export function supplementalDigest(records) {
@@ -164,6 +181,11 @@ export function validateSupplementalCatalogBundle(manifest, recordsByTable = {},
   const revisions = known('world_revisions');
   const quantityUnits = known('quantity_unit_definitions');
   const regions = known('regions');
+  const routeTemplates = known('route_templates');
+  const paceProfiles = known('travel_pace_profiles');
+  const navigationProfiles = known('travel_navigation_profiles');
+  const restProfiles = known('travel_rest_profiles');
+  const interruptionProfiles = known('travel_interruption_profiles');
 
   for (const sourceId of manifest.provenance.source_ids ?? []) {
     if (!sources.has(sourceId)) errors.push(`PROVENANCE_SOURCE_UNKNOWN:${sourceId}`);
@@ -320,6 +342,28 @@ export function validateSupplementalCatalogBundle(manifest, recordsByTable = {},
     if (!regions.has(record.region_id)) errors.push(`EQUIPMENT_REGION_UNKNOWN:${record.id}`);
     if (record.social_role_id && !known('region_social_roles').has(record.social_role_id)) errors.push(`EQUIPMENT_ROLE_UNKNOWN:${record.id}`);
     if (record.occupation_id && !known('region_occupations').has(record.occupation_id)) errors.push(`EQUIPMENT_OCCUPATION_UNKNOWN:${record.id}`);
+  }
+  for (const [table, records] of Object.entries({
+    travel_pace_profiles: recordsByTable.travel_pace_profiles ?? [],
+    travel_navigation_profiles: recordsByTable.travel_navigation_profiles ?? [],
+    travel_rest_profiles: recordsByTable.travel_rest_profiles ?? [],
+    travel_interruption_profiles: recordsByTable.travel_interruption_profiles ?? []
+  })) for (const record of records) {
+    if (!revisions.has(record.world_revision_id)) errors.push(`TRAVEL_PROFILE_REVISION_UNKNOWN:${table}:${record.id}`);
+    if (!regions.has(record.region_id)) errors.push(`TRAVEL_PROFILE_REGION_UNKNOWN:${table}:${record.id}`);
+    if (!sources.has(record.source_id)) errors.push(`TRAVEL_PROFILE_SOURCE_UNKNOWN:${table}:${record.id}`);
+    if (record.valid_from > record.valid_to) errors.push(`TRAVEL_PROFILE_PERIOD_INVALID:${table}:${record.id}`);
+  }
+  for (const record of recordsByTable.route_travel_profile_bindings ?? []) {
+    if (!revisions.has(record.world_revision_id)) errors.push(`TRAVEL_BINDING_REVISION_UNKNOWN:${record.id}`);
+    if (!regions.has(record.region_id)) errors.push(`TRAVEL_BINDING_REGION_UNKNOWN:${record.id}`);
+    if (!routeTemplates.has(record.route_template_id)) errors.push(`TRAVEL_BINDING_ROUTE_UNKNOWN:${record.id}`);
+    if (!paceProfiles.has(record.pace_profile_id)) errors.push(`TRAVEL_BINDING_PACE_UNKNOWN:${record.id}`);
+    if (!navigationProfiles.has(record.navigation_profile_id)) errors.push(`TRAVEL_BINDING_NAVIGATION_UNKNOWN:${record.id}`);
+    if (!restProfiles.has(record.rest_profile_id)) errors.push(`TRAVEL_BINDING_REST_UNKNOWN:${record.id}`);
+    if (!interruptionProfiles.has(record.interruption_profile_id)) errors.push(`TRAVEL_BINDING_INTERRUPTION_UNKNOWN:${record.id}`);
+    if (!sources.has(record.source_id)) errors.push(`TRAVEL_BINDING_SOURCE_UNKNOWN:${record.id}`);
+    if (record.valid_from > record.valid_to) errors.push(`TRAVEL_BINDING_PERIOD_INVALID:${record.id}`);
   }
   return Object.freeze({ errors: Object.freeze(errors) });
 }

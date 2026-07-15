@@ -411,7 +411,8 @@ placement, template parameter, compatibility или command catalogue оформ
   `calculateInventoryMass`, `resolveInventoryLoad`, `calculateHandsState`,
   `resolveInventoryAccess`, `deriveInventoryZone`, `calculateContainerUsage`,
   `buildInventoryStackSignature`, `planInventoryTransfer`. `calculateContainerUsage`
-  использует existing public `calculatePackingSlots`, не дублируя формулу.
+  использует existing public `calculatePackingSlots` через explicit injected
+  `packing_calculator`, не дублируя формулу и не нарушая architecture boundary.
 - Stage 16 получает optional explicit `inventory_foundation`. Если `required=true` и
   candidate/physical profiles отсутствуют, выдаётся `INITIAL_INVENTORY_PLACEMENT_DATA_GAP`;
   иначе precheck сохраняет immutable trace mass/hands/access/capacity. Existing scene-item
@@ -458,6 +459,11 @@ derived summary больше не получают скрытое значени
 - Green (дополнительный прогон): inventory/presentation/Stage 16 targeted tests —
   15/15 PASS. `docs:generate`, `docs:check` и `knowledge:check-corpus` в clean worktree
   — PASS; обновлены source и generated legacy inventory manifests для `interface_ux.md`.
+- Full-suite correction: `architecture:check` первоначально нашёл запрещённый direct import
+  domain → world-catalog и превышение лимита `inventory.js`; `test:knowledge-source`
+  нашёл stale `import-history` digest. Исправлено split container-usage boundary,
+  explicit calculator injection и synchronized import-history; повторные
+  `architecture:check` и `test:knowledge-source` — PASS (20/20).
 - Green: targeted domain/presentation/Stage 16 tests — 18/18 PASS;
   `npm run test:world-catalog` — 52/52 PASS;
   `npm run test:stage16` — 17/17 PASS; `npm run test:stage24` — 20/20 PASS;

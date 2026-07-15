@@ -8,7 +8,7 @@
       "source_root": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS",
       "target_root": "data/knowledge-source/corpus/DOCUMENTS",
       "document_count": 19,
-      "inventory_sha256": "e17b8429803bb35efce9887f58252957fd5c33ddf8cf3c09f3500f2fe88530c2",
+      "inventory_sha256": "2023840f5566ccb45c8aaab66d79befd2639181588a2691ffc4d52f005601e74",
       "status": "verified"
     }
   ]

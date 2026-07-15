@@ -860,6 +860,12 @@
       "type": "sql"
     },
     {
+      "bytes": 5096,
+      "path": "schemas/party-db/003_travel_runtime.sql",
+      "sha256": "30d5f22d465091f15eb9ac6a4676f6318684dcc6c5ab867c87eec9e53d8869c0",
+      "type": "sql"
+    },
+    {
       "bytes": 1447,
       "path": "schemas/world-base/world-base-source-bundle.schema.json",
       "sha256": "358430badf2821197ffc74d4600b2cc2b153d1a1a141020e998650cb1c325dc2",

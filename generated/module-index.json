@@ -137,6 +137,7 @@
         "`initializeEnvironmentFeatures`",
         "`updateEnvironmentFeatures`",
         "`buildEnvironmentObservationCandidates`",
+        "`validateEnvironmentCatalogBundle`",
         "`validateEnvironmentFeatureState`"
       ],
       "path": "packages/environment-landmarks",
@@ -227,14 +228,17 @@
       ],
       "name": "@rus/movement-routes",
       "owns": [
-        "route availability and requirements",
-        "travel cost formulas",
-        "traversal request/result shapes",
-        "orientation and failure consequence requests"
+        "`validateRouteTraversalInput`",
+        "`assessRouteAvailability`",
+        "`calculateTravelTime`",
+        "`calculatePartialTraversal`",
+        "`buildTraversalRequest`",
+        "`validateTraversalResult`",
+        "`MovementRouteError`"
       ],
       "path": "packages/movement-routes",
       "public_entry": "./src/index.js",
-      "purpose": "Route availability, knowledge, traversal contracts, GU/time cost and orientation requests. Код модуля работает только с переданными данными и не создаёт смысловые сущности мира.",
+      "purpose": "Чистый evaluator физического прохождения единственного канонического route edge. Он проверяет входной snapshot, доступность и profile-derived длительность, но не выбирает цель, не меняет позицию и не выполняет проверку персонажа.",
       "version": "0.13.0"
     },
     {
@@ -376,6 +380,22 @@
       "public_entry": "./src/index.js",
       "purpose": "Clock, durations, timers, delayed events, historical phases and time-driven update requests. Код модуля работает только с переданными данными и не создаёт смысловые сущности мира.",
       "version": "0.13.0"
+    },
+    {
+      "dependencies": [
+        "@rus/kernel"
+      ],
+      "name": "@rus/travel",
+      "owns": [
+        "`validateTravelIntent`, `validateTravelPosition`, `validateJourney`, `validateTravelRulesBundle`",
+        "`buildJourneyPlan`, `createJourney`, `advanceJourney`",
+        "`interruptJourney`, `resumeJourney`, `changeJourneyPace`, `abandonJourney`, `completeJourney`",
+        "`TravelError`"
+      ],
+      "path": "packages/travel",
+      "public_entry": "./src/index.js",
+      "purpose": "Чистый доменный модуль сохранённого путешествия партии. Он валидирует formal travel contracts и формирует детерминированные переходы `Journey`, `JourneyLeg` и `TravelPosition`.",
+      "version": "0.1.0"
     },
     {
       "dependencies": [

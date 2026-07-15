@@ -5,15 +5,15 @@
 - Draft PR: https://github.com/PavelSlaven/Novgorod1230/pull/8
 - Branch: `codex/pr8-travel-system`
 - Base: `chatgpt/universal-category-classification` (stacked on draft PR7)
-- Intended base SHA: `aefd739f7249f8e0d1e6063422a84fc2acca0a93` (PR7 head checked 2026-07-15)
-- Current PR8 head: `69b0ee88a03a3d4ae0d8809869e4a6de03101bc4`
+- Rebased base SHA: `fc71f5dfcfcb087a2cdf67eda050a542c3ddfebe` (PR7 head checked 2026-07-15)
+- Last verified rebased PR8 head: `98b84e0294aceab971181b266461f1b288ac6226`
 - Draft status: yes
-- PR7 dependency: open draft; current PR8 history is not yet rebased onto its current head.
-- Last completed phase: baseline transfer only (historical; not accepted).
-- Current phase: Phase 1 — normative architecture and contract RED tests (`in_progress`).
-- Current blocker: the working tree contains unrelated uncommitted changes, so rebasing PR8 onto the current PR7 head is unsafe until their owner resolves or isolates them.
+- PR7 dependency: open draft; PR8 is rebased onto its current head in an isolated clean worktree.
+- Last completed phase: contract and persistence baseline (partial; not accepted as PR8 completion).
+- Current phase: Phases 2–4 — authoring bundles, persistence and domain contracts (`in_progress`).
+- Current blocker: no approved pilot-G1 catalog/rules bundles and no configured PostgreSQL integration database.
 
-The branch must be rebased onto the current PR7 head before the first integration commit, and onto `main` after PR7 is integrated and before final audit.
+The branch must be rebased onto `main` after PR7 is integrated and before final audit. The primary worktree remains untouched because it contains unrelated local changes.
 
 ## Scope
 
@@ -54,10 +54,10 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 
 ## Current blockers and data gaps
 
-- PR7 is draft; PR8 cannot become mergeable until it is integrated and this branch is rebased. The current PR7 head is not an ancestor of PR8.
+- PR7 is draft; PR8 cannot become mergeable until it is integrated and this branch is rebased onto `main`.
 - No approved pilot-G1 `EnvironmentCatalogBundle` or `TravelRulesBundle` exists yet.
 - The prior environment implementation must be reconciled with the approved PR8 table names and contracts before production integration.
-- `docs:generate` is currently blocked by unrelated untracked legacy runtime artefacts; these artefacts are not part of PR8 and are preserved.
+- Production integration is absent: Stage 25 has no atomic journey writer, and turn/visibility/presentation/game-server ports have not been wired.
 
 ## Required integration order
 
@@ -72,9 +72,9 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 
 ### Phase 1 — normative architecture and contracts
 
-- Status: `in_progress`
+- Status: `in_progress` (baseline contract is implemented; full lifecycle and integrations are pending)
 - Goal: define the travel state machine, position union and public contracts before runtime implementation.
-- Input: PR7 `aefd739f7249f8e0d1e6063422a84fc2acca0a93`; PR8 `69b0ee88a03a3d4ae0d8809869e4a6de03101bc4`.
+- Input: PR7 `fc71f5dfcfcb087a2cdf67eda050a542c3ddfebe`; rebased PR8 head `98b84e0294aceab971181b266461f1b288ac6226`.
 - Files studied: mandatory architecture, materialization, movement, time, turn, interface, graph and map norms; current movement and environment packages.
 - RED tests: `packages/travel/test/domain.test.js` — observed failure: `ERR_MODULE_NOT_FOUND` before implementation.
 - GREEN/refactor: initial position/lifecycle implementation passed 8/8 tests, including active-journey conflict and an explicit actual/perceived divergence; no refactor yet.
@@ -107,6 +107,11 @@ Typed domain errors are versioned with the travel contracts; persistence, presen
 | `node --test test/modules/travel-persistence-contract.test.js` | 2026-07-15 | `1327d79` | PASS: 2/2 | Ordered migration and Stage 25 travel-target contract. |
 | `npm run test:modules` | 2026-07-15 | `1327d79` | PASS: 261/261 | Includes strict traversal regression and travel-persistence contract. |
 | `node --test test/integration/party-runtime-v2-postgres.test.js` | 2026-07-15 | `1327d79` | SKIPPED: 6 | `PARTY_DATABASE_URL` is not configured; PostgreSQL migration/constraint test awaits an integration database. |
+| `npm run world-db:schema-check` | 2026-07-15 | `98b84e0` | PASS: 134 tables | Rebased schema chain is internally consistent. |
+| `npm run world-db:schema-doc` / `world-db:schema-doc-check` | 2026-07-15 | `98b84e0` | PASS | Generated schema reference is current. |
+| `npm run docs:generate` / `docs:check` | 2026-07-15 | `98b84e0` | PASS | Generated module and manifest artifacts are current. |
+| `npm run test:domain` | 2026-07-15 | `98b84e0` | PASS: 86/86 | Clean rebased tree; no PostgreSQL dependency in this suite. |
+| `npm run test:modules` | 2026-07-15 | `98b84e0` | PASS: 261/261 | Static/module contract suite. |
 
 ## Data and migration registry
 

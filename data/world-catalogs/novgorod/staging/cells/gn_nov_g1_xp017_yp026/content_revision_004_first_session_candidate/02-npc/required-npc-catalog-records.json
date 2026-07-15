@@ -1,0 +1,30 @@
+{
+  "schema_version": "rus.required_npc_catalog_records.v1",
+  "region_id": "region_novgorod_land",
+  "world_revision_id": "content_revision_004_first_session_candidate",
+  "target_g4_id": "gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_high_platform",
+  "records": [
+    {"table":"world_base.region_npc_archetypes","requirement":"Approved combinations of regional social role, occupation, legal status and mobility for river users compatible with the selected G4."},
+    {"table":"world_base.region_demographic_profiles","requirement":"Approved age/demographic options without asserted ethnic percentages."},
+    {"table":"world_base.region_name_pools","requirement":"Source-backed or explicitly approved regional name pool for the valid period."},
+    {"table":"world_base.region_name_pool_entries","requirement":"Weighted name forms linked to the approved pool; no runtime invention."},
+    {"table":"world_base.region_appearance_profiles","requirement":"Visible appearance options expressed through approved regional categories."},
+    {"table":"world_base.region_clothing_profiles","requirement":"Garment slots and constraints compatible with role, work, season and wet river environment."},
+    {"table":"world_base.region_equipment_profiles","requirement":"Role/occupation-specific equipment profile for landing and river work."},
+    {"table":"world_base.region_equipment_profile_entries","requirement":"Approved item templates or categories with required/optional flags and weights."},
+    {"table":"world_base.region_knowledge_profiles","requirement":"Knowledge of local water, shoals, wind, landing access, rights and route uncertainty with source references."},
+    {"table":"world_base.region_behavior_profiles","requirement":"Approved behavior option and bounded decision policy; no free behavioral payload."},
+    {"table":"world_base.region_activity_profiles","requirement":"Causally grounded landing/river activity tied to the selected G4 or its parent place."},
+    {"table":"world_base.region_schedule_profiles","requirement":"Time-band schedule and movement/fallback activity compatible with late-summer open water."},
+    {"table":"world_base.region_relationship_profiles","requirement":"Approved household, work-group, dependency, stranger and authority relations applicable to local river users."},
+    {"table":"world_base.region_npc_profile_sets","requirement":"Complete background and scene profile sets referencing the approved component records. Key level is created only when party consequences require it."},
+    {"table":"world_base.g4_npc_materialization_rules","requirement":"G4-specific slot, counts, presence reason, causal basis, applicability, period, confidence, weight and approved status."}
+  ],
+  "acceptance_criteria": [
+    "all foreign keys resolve in the same pinned world revision",
+    "every required candidate set is non-empty after period/region/season/applicability filtering",
+    "the selected G4 has an unambiguous approved profile-set binding",
+    "the rule records a causal presence reason and materialization trace inputs",
+    "no component is supplied by fallback or LLM repair"
+  ]
+}

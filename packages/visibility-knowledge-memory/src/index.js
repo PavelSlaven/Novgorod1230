@@ -57,6 +57,18 @@ export function buildSafeNarratorPackage(visible = {}) {
   return deepFreeze({ ok:true, errors:[], package:safe });
 }
 
+export function buildTravelVisibleProjection(input = {}) {
+  if (!input || typeof input !== 'object' || Array.isArray(input)) throw new TypeError('TRAVEL_VISIBLE_INPUT_INVALID: travel projection must be an object.');
+  const required = ['travel_status', 'visible_destination', 'perceived_position', 'orientation_confidence_band', 'recognized_landmarks', 'unrecognized_observations', 'visible_cues', 'visible_traces', 'estimated_elapsed_time', 'remaining_daylight_band', 'known_route_options', 'obvious_stop_reason', 'interruption_options'];
+  for (const key of required) if (!(key in input)) throw new TypeError(`TRAVEL_VISIBLE_INPUT_INVALID: ${key} is required.`);
+  for (const key of ['travel_status', 'orientation_confidence_band', 'remaining_daylight_band']) if (!text(input[key])) throw new TypeError(`TRAVEL_VISIBLE_INPUT_INVALID: ${key} must be a non-empty string.`);
+  for (const key of ['visible_destination', 'perceived_position', 'estimated_elapsed_time']) if (!isRecord(input[key])) throw new TypeError(`TRAVEL_VISIBLE_INPUT_INVALID: ${key} must be an object.`);
+  for (const key of ['recognized_landmarks', 'unrecognized_observations', 'visible_cues', 'visible_traces', 'known_route_options', 'interruption_options']) if (!Array.isArray(input[key])) throw new TypeError(`TRAVEL_VISIBLE_INPUT_INVALID: ${key} must be an array.`);
+  const leaks = [...detectHiddenLeaks(input), ...detectTravelLeaks(input)];
+  if (leaks.length > 0) throw new TypeError(`TRAVEL_VISIBLE_LEAK: ${[...new Set(leaks)].join(', ')}`);
+  return deepFreeze(structuredClone(input));
+}
+
 function visit(value, path, leaks) {
   if (!value || typeof value !== 'object') return;
   if (Array.isArray(value)) { value.forEach((entry, index) => visit(entry, [...path, index], leaks)); return; }
@@ -73,4 +85,15 @@ function removeForbidden(value) {
     else removeForbidden(value[key]);
   }
 }
+function detectTravelLeaks(value, path = [], leaks = []) {
+  if (!value || typeof value !== 'object') return leaks;
+  if (Array.isArray(value)) { value.forEach((entry, index) => detectTravelLeaks(entry, [...path, index], leaks)); return leaks; }
+  const forbidden = new Set(['actual_position', 'actual_edge', 'edge_id', 'journey_id', 'journey_leg_id', 'progress_permille', 'last_confirmed_g4_id', 'actual_direction', 'source_id', 'source_kind', 'location_binding', 'catalog_digest', 'seed', 'seed_digest', 'source_refs', 'audit_payload']);
+  for (const [key, child] of Object.entries(value)) {
+    if (forbidden.has(key)) leaks.push([...path, key].join('.'));
+    detectTravelLeaks(child, [...path, key], leaks);
+  }
+  return leaks;
+}
+function isRecord(value) { return Boolean(value) && typeof value === 'object' && !Array.isArray(value); }
 function text(value) { return String(value ?? '').trim(); }

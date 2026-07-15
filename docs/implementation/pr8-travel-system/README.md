@@ -52,6 +52,7 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 - 2026-07-15: `calculateNextTravelBoundary` добавлен RED/GREEN: travel domain детерминированно выбирает ближайшую формально переданную границу и блокирует пустой required candidate set; владельцы времени, тела, погоды и causal events не перенесены в travel.
 - 2026-07-15: authoring schema согласован с runtime environment contracts: cue template хранит explicit intensity/recognition/navigation, trace template — navigation, decay profile — queryable thresholds и coefficients. Это не создаёт approved data, source/provenance или pilot bundle.
 - 2026-07-15: завершено внутреннее разбиение lifecycle `@rus/environment-landmarks`: baseline, cue и trace вынесены из public facade. Фасад только валидирует formal input, связывает операции и формирует immutable result; отдельные lifecycle не читают БД, не вызывают LLM и не создают G0–G4.
+- 2026-07-15: добавлен `buildTravelVisibleProjection` в `@rus/visibility-knowledge-memory`: projection принимает только player-safe perceived/observed fields и hard-blocks actual route/progress, cue source/location binding, catalog pins и audit fields.
 
 ## Checks recorded on transferred baseline
 
@@ -64,6 +65,7 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 
 - PR7 is draft; PR8 cannot become mergeable until it is integrated and this branch is rebased onto `main`.
 - No approved pilot-G1 `EnvironmentCatalogBundle` or `TravelRulesBundle` exists yet.
+- `gn_nov_g1_xp017_yp026` не может быть pilot: `production_import=not_performed`, `runtime_visibility=not_verified` в актуальном `G1_SEMANTIC_CATALOG.md`; создания фиктивной active G1 или повышения draft records не будет.
 - The prior environment implementation must be reconciled with the approved PR8 table names and contracts before production integration.
 - Production integration is absent: Stage 25 has no atomic journey writer, and turn/visibility/presentation/game-server ports have not been wired.
 
@@ -143,6 +145,9 @@ Typed domain errors are versioned with the travel contracts; persistence, presen
 | `npm run docs:generate` / `docs:check` | 2026-07-15 | рабочее дерево после `f50307c` | PASS | Производные module/manifest artifacts актуальны. |
 | `node --test packages/environment-landmarks/test/domain.test.js` | 2026-07-15 | рабочее дерево после `3d5a7fa` | PASS: 8/8 | Full lifecycle extraction сохранил public API и behavior. |
 | `npm run test:domain` | 2026-07-15 | рабочее дерево после `3d5a7fa` | PASS: 91/91 | Полный domain regression после lifecycle extraction. |
+| `node --test packages/visibility-knowledge-memory/test/domain.test.js` | 2026-07-15 | рабочее дерево после `29aa2ae` | RED: 1 failed | Отсутствовал безопасный travel visible projection. |
+| `node --test packages/visibility-knowledge-memory/test/domain.test.js` | 2026-07-15 | рабочее дерево после `29aa2ae` | PASS: 2/2 | Hidden travel edge/progress и cue source блокируются. |
+| `npm run test:domain` | 2026-07-15 | рабочее дерево после `29aa2ae` | PASS: 92/92 | Полный domain regression. |
 
 ## Data and migration registry
 

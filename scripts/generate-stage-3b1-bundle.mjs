@@ -174,6 +174,50 @@ writeFileSync(resolve(root, 'data/knowledge-source/imports/universal-category-cl
   '|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|',
   ...rows.map((row) => { const historicalSource = historicalSourceByTemplateId.get(row.id); return `| ${row.id} | ${row.kind} | ${historicalSource ? `${historicalSource} (draft/needs_review)` : 'authoring_policy_only'} | yes | ${row.kind === 'item' ? 'yes' : 'n/a'} | no | ${row.kind === 'item' ? 'yes' : 'n/a'} | yes | yes (draft) | yes (draft) | ${row.group === 'food_raw_trade' ? 'yes (draft)' : 'n/a'} | ${row.kind === 'container' ? 'yes' : 'n/a'} | ${row.kind === 'container' ? 'yes' : 'n/a'} | partial | partial | ${row.id === 'item_tpl_nov_utility_knife_v1' ? 'yes' : 'no'} | gameplay_estimate_review | partial_draft | ${historicalSource ? 'HISTORICAL_PRESENCE_EVIDENCE_REVIEW_REQUIRED; NARROW_TYPOLOGY_EVIDENCE_REQUIRED' : 'HISTORICAL_PRESENCE_EVIDENCE_REQUIRED'}; PHYSICAL_PARAMETER_EVIDENCE_REQUIRED; ${row.group === 'food_raw_trade' ? 'QUANTITY_PROFILE_REVIEW_REQUIRED' : 'MATERIAL_EVIDENCE_REQUIRED'} |`; })
 ].join('\n') + '\n', 'utf8');
+writeFileSync(resolve(root, 'data/knowledge-source/imports/universal-category-classification-2026-07-15/stage-3b1/PROMOTION_READINESS_REPORT.md'), [
+  '# Stage 3B-1 — promotion readiness report', '',
+  'Этот отчёт является детерминированным производным draft supplemental bundle. Он не выполняет promotion, не меняет revision и не делает записи runtime candidates.', '',
+  '## Summary', '',
+  '| Gate | Result |', '|---|---:|',
+  `| Total templates | ${rows.length} |`,
+  '| ready_for_editorial_approval | 0 |',
+  `| blocked_by_source | ${rows.length} |`,
+  `| Bundle datasets | ${Object.keys(datasets).length} |`,
+  '| activation | forbidden by this report |', '',
+  'A historical presence binding is promotable only when it is both `approved` and `reviewed`. The 15 existing bindings are deliberately `draft/needs_review`; the remaining 105 rows have no individual binding.', '',
+  '## Template matrix', '',
+  '| template_id | kind | source binding | historical presence | material | physical profile | quantity | regional permission | compatibility/profile | result | blocking gates |',
+  '|---|---|---|---|---|---|---|---|---|---|---|',
+  ...rows.map((row) => {
+    const hasHistoricalBinding = historicalSourceByTemplateId.has(row.id);
+    const quantity = row.group === 'food_raw_trade' ? 'draft quantity profile; review required' : 'not applicable';
+    const compatibility = row.kind === 'container' ? 'draft content profile; compatibility review required' : 'draft profile dependencies';
+    const source = hasHistoricalBinding ? 'draft/needs_review' : 'missing';
+    const historical = hasHistoricalBinding ? 'review required' : 'missing';
+    return `| ${row.id} | ${row.kind} | ${source} | ${historical} | MATERIAL_EVIDENCE_REQUIRED | gameplay estimate; review required | ${quantity} | draft only | ${compatibility} | blocked_by_source | HISTORICAL_PRESENCE_EVIDENCE_REQUIRED; MATERIAL_EVIDENCE_REQUIRED; PHYSICAL_PARAMETER_REVIEW_REQUIRED |`;
+  })
+].join('\n') + '\n', 'utf8');
+writeFileSync(resolve(root, 'data/knowledge-source/imports/universal-category-classification-2026-07-15/stage-3b1/ACTIVATION_PROPOSAL.md'), [
+  '# Stage 3B-1 — activation proposal (no activation)', '',
+  '## Decision', '',
+  'This is a non-executable proposal. Activation is prohibited without a separate explicit user instruction and completed editorial approvals.', '',
+  '## Candidate revision', '',
+  `- Revision: \`${revisionId}\``,
+  `- Catalog digest: \`${canonicalCatalogDigest}\``,
+  '- Revision status: `draft`',
+  '- Approved records proposed: 0',
+  `- Draft templates retained: ${rows.length}`,
+  '- Runtime candidate sets changed: none',
+  '- Existing party instances changed: none', '',
+  '## Blocking gates', '',
+  '- 105 templates have no individual historical-presence source binding; 15 bindings remain `draft/needs_review`.',
+  '- Material and physical-parameter reviews are incomplete.',
+  '- Bulk quantity and general container-compatibility reviews remain incomplete.',
+  '- Legacy migration input has not been supplied.',
+  '- All dependent profiles, permissions and templates remain draft; an approved record must not depend on them.', '',
+  '## Required future approval and rollback plan', '',
+  'Before any activation, produce a reviewed approved subset, prove its approved dependency closure and rerun Stage 8/16 tests against that subset. Activation must be a separate transactional revision-status change with a pre-change catalog digest, readback audit and rollback to the previous approved revision. It must not rematerialize existing parties.'
+].join('\n') + '\n', 'utf8');
 
 function digest(value) { return createHash('sha256').update(stable(value), 'utf8').digest('hex'); }
 function stable(value) { if (Array.isArray(value)) return JSON.stringify(value.map(sort)); return JSON.stringify(sort(value)); }

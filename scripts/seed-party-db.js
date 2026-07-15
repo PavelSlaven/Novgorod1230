@@ -16,7 +16,8 @@ if (!databaseUrl) {
 
 const schemaPaths = [
   resolve(import.meta.dirname, '../schemas/party-db/001_party_runtime.sql'),
-  resolve(import.meta.dirname, '../schemas/party-db/002_environment_landmarks.sql')
+  resolve(import.meta.dirname, '../schemas/party-db/002_environment_landmarks.sql'),
+  resolve(import.meta.dirname, '../schemas/party-db/003_travel_runtime.sql')
 ];
 const client = new Client({ connectionString: databaseUrl });
 

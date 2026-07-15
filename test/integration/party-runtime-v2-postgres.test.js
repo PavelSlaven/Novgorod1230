@@ -50,6 +50,43 @@ test('party_runtime_v2 persists baseline trace and normalized G5 in real Postgre
   }
 });
 
+test('travel migration is repeatable and enforces normalized journey, leg and position constraints', { skip: !process.env.PARTY_DATABASE_URL }, async () => {
+  const pool = new pg.Pool({ connectionString: process.env.PARTY_DATABASE_URL, max: 1 });
+  const partyId = randomUUID();
+  try {
+    await runPartyRuntimeMigrations(pool);
+    await runPartyRuntimeMigrations(pool);
+    await pool.query(`INSERT INTO party_runtime.parties
+      (party_id,schema_version,world_revision_id,world_catalog_digest,materializer_version,rng_version,command_catalog_digest,profile_bundle_digest,status)
+      VALUES ($1,2,'world:1','catalog:1','code_materializer_v2','mulberry32_v1','commands:1','profiles:1','active')`, [partyId]);
+    const journey = [partyId, 'journey:1', 'actor:1', 'g4:start', { kind: 'g4', id: 'g4:target' }, 'pace:normal', 'on_foot', { position_kind: 'node', g4_id: 'g4:start' }, { position_kind: 'node', g4_id: 'g4:start' }, 'high', 'none', 'world:1', 'travel:1', 'environment:1', 'travel.v1', 'mulberry32_v1', 'journey-start'];
+    await pool.query(`INSERT INTO party_runtime.party_journeys
+      (party_id,journey_id,actor_id,status,mode,origin_g4_id,target_ref,pace_profile_id,movement_method,actual_position_state,perceived_position_state,orientation_confidence,deviation_level,started_at,updated_at,world_revision_id,travel_rules_digest,environment_catalog_digest,algorithm_version,rng_version,state_version,idempotency_key)
+      VALUES ($1,$2,$3,'planned','route',$4,$5,$6,$7,$8,$9,$10,$11,NOW(),NOW(),$12,$13,$14,$15,$16,0,$17)`, journey);
+    await pool.query(`INSERT INTO party_runtime.party_journey_legs
+      (party_id,journey_id,leg_id,sequence,edge_id,from_node_id,to_node_id,status,base_time_minutes,route_profile_id,progress_permille)
+      VALUES ($1,$2,'leg:1',1,'edge:1','g4:start','g4:target','pending',60,'route-profile:1',0)`, [partyId, 'journey:1']);
+    await pool.query(`UPDATE party_runtime.party_journeys SET status='active',current_leg_id='leg:1' WHERE party_id=$1 AND journey_id='journey:1'`, [partyId]);
+    await pool.query(`INSERT INTO party_runtime.party_positions
+      (party_id,position_kind,g4_id,g5_node_id,g5_anchor_id,journey_id,journey_leg_id,edge_id,from_g4_id,to_g4_id,progress_permille,last_confirmed_g4_id)
+      VALUES ($1,'edge_progress',NULL,NULL,NULL,'journey:1','leg:1','edge:1','g4:start','g4:target',250,'g4:start')`, [partyId]);
+    await pool.query(`INSERT INTO party_runtime.party_journeys
+      (party_id,journey_id,actor_id,status,mode,origin_g4_id,target_ref,pace_profile_id,movement_method,actual_position_state,perceived_position_state,orientation_confidence,deviation_level,started_at,updated_at,world_revision_id,travel_rules_digest,environment_catalog_digest,algorithm_version,rng_version,state_version,idempotency_key)
+      VALUES ($1,'journey:2','actor:1','planned','route','g4:start','{}','pace:normal','on_foot','{}','{}','high','none',NOW(),NOW(),'world:1','travel:1','environment:1','travel.v1','mulberry32_v1',0,'journey-second')`, [partyId]);
+    await pool.query(`INSERT INTO party_runtime.party_journey_legs
+      (party_id,journey_id,leg_id,sequence,edge_id,from_node_id,to_node_id,status,base_time_minutes,route_profile_id,progress_permille)
+      VALUES ($1,'journey:2','leg:2',1,'edge:2','g4:start','g4:target','pending',60,'route-profile:1',0)`, [partyId]);
+    await assert.rejects(() => pool.query(`UPDATE party_runtime.party_journeys SET status='active',current_leg_id='leg:2' WHERE party_id=$1 AND journey_id='journey:2'`, [partyId]), (error) => error.code === '23505');
+    await assert.rejects(() => pool.query(`INSERT INTO party_runtime.party_journey_legs
+      (party_id,journey_id,leg_id,sequence,edge_id,from_node_id,to_node_id,status,base_time_minutes,route_profile_id,progress_permille,completed_at)
+      VALUES ($1,'journey:1','leg:invalid',2,'edge:2','g4:target','g4:other','completed',60,'route-profile:1',999,NOW())`, [partyId]), (error) => error.code === '23514');
+    await assert.rejects(() => pool.query(`UPDATE party_runtime.party_positions SET position_kind='node' WHERE party_id=$1`, [partyId]), (error) => error.code === '23514');
+  } finally {
+    await pool.query('DELETE FROM party_runtime.parties WHERE party_id=$1', [partyId]).catch(() => {});
+    await pool.end();
+  }
+});
+
 test('concurrent first G4 entry creates one baseline under PostgreSQL advisory lock', { skip: !process.env.PARTY_DATABASE_URL }, async () => {
   const pool = new pg.Pool({ connectionString: process.env.PARTY_DATABASE_URL, max: 4 });
   await runPartyRuntimeMigrations(pool);

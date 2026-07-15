@@ -2,6 +2,7 @@ import { executePhysicalWritePlan } from './sql-plan.js';
 import { computeMaterializationResultDigest } from '@rus/contracts';
 import { applyLogicalOperations, digestRunIdentity, executeOptionalTurnPlan } from './party-store-turn.js';
 import { isCodeOwnedAutonomousUpdate } from '@rus/turn';
+import { buildPerceptionPersistencePlan } from './perception-persistence.js';
 
 const PARTY_RUNTIME_V2_TABLES = new Set([
   'party_materialization_runs', 'party_materialization_choices', 'party_g5_nodes', 'party_g5_anchors', 'party_g5_edges',
@@ -54,7 +55,7 @@ export function createPostgresPartyStore({ pool, catalogBundleLoader, materializ
       const occurrenceResult = await transaction.query('SELECT count(*)::int AS count FROM party_runtime.party_materialization_runs WHERE party_id=$1 AND g4_id=$2', [partyId, g4Id]);
       const occurrence = Number(occurrenceResult.rows[0].count);
       const runId = `baseline_${digestRunIdentity([partyId, g4Id, trigger, occurrence, party.rows[0].world_revision_id]).slice(0, 24)}`;
-      const positionResult = await transaction.query('SELECT g4_id,g5_node_id,g5_anchor_id,updated_at FROM party_runtime.party_positions WHERE party_id=$1', [partyId]);
+      const positionResult = await transaction.query('SELECT position_kind,g4_id,g5_node_id,g5_anchor_id,journey_id,journey_leg_id,edge_id,from_g4_id,to_g4_id,progress_permille,last_confirmed_g4_id,last_route_id,updated_at FROM party_runtime.party_positions WHERE party_id=$1', [partyId]);
       const snapshotResult = await transaction.query('SELECT state_version,state_digest FROM party_runtime.party_state_snapshots WHERE party_id=$1 ORDER BY state_version DESC LIMIT 1', [partyId]);
       const seedContext = {
         party_id: partyId,
@@ -128,6 +129,25 @@ export function createPostgresPartyStore({ pool, catalogBundleLoader, materializ
       });
     },
 
+    async commitPerceptionCycle({ cycle, pins }) {
+      const plan = buildPerceptionPersistencePlan({ cycle, pins });
+      const cycleRecord = plan.write_batches.find((batch) => batch.target_table === 'party_perception_cycles')?.records?.[0];
+      return transact(async (transaction) => {
+        const existing = await transaction.query(`SELECT trace FROM party_runtime.party_perception_cycles
+          WHERE party_id=$1 AND idempotency_key=$2 FOR UPDATE`, [cycle.party_id, cycleRecord.idempotency_key]);
+        if (existing.rows.length === 1) {
+          if (existing.rows[0].trace?.trace_digest !== cycle.trace_digest) throw repositoryError('PERCEPTION_IDEMPOTENCY_CONFLICT', 'Perception idempotency key is already bound to another cycle trace.');
+          return Object.freeze({ committed: true, replayed: true, cycle_id: cycle.cycle_id });
+        }
+        const party = await transaction.query('SELECT state_version FROM party_runtime.parties WHERE party_id=$1 FOR UPDATE', [cycle.party_id]);
+        if (party.rows.length !== 1) throw repositoryError('PERCEPTION_PARTY_NOT_FOUND', 'Perception cycle party does not exist.');
+        if (Number(party.rows[0].state_version) !== cycle.state_version) throw repositoryError('PERCEPTION_STATE_VERSION_STALE', 'Perception cycle state version is stale.');
+        await ensurePerceptionPins(transaction, cycle.party_id, pins);
+        await executePhysicalWritePlan(transaction, plan);
+        return Object.freeze({ committed: true, replayed: false, cycle_id: cycle.cycle_id });
+      });
+    },
+
     async commitAutonomousUpdate(update) {
       if (!isCodeOwnedAutonomousUpdate(update)) throw repositoryError('AUTONOMOUS_UPDATE_NOT_CODE_OWNED', 'Repository accepts only an in-process code-owned autonomous update.');
       return transact(async (transaction) => {
@@ -158,6 +178,21 @@ export function createPostgresPartyStore({ pool, catalogBundleLoader, materializ
       });
     }
   });
+}
+
+async function ensurePerceptionPins(transaction, partyId, pins) {
+  const existing = await transaction.query(`SELECT perception_algorithm_id,sensory_catalog_digest,reaction_policy_digest
+    FROM party_runtime.party_perception_pins WHERE party_id=$1 FOR UPDATE`, [partyId]);
+  if (existing.rows.length === 0) {
+    await transaction.query(`INSERT INTO party_runtime.party_perception_pins
+      (party_id,perception_algorithm_id,sensory_catalog_digest,reaction_policy_digest) VALUES ($1,$2,$3,$4)`,
+    [partyId, pins.perception_algorithm_id, pins.sensory_catalog_digest, pins.reaction_policy_digest]);
+    return;
+  }
+  const row = existing.rows[0];
+  if (row.perception_algorithm_id !== pins.perception_algorithm_id || row.sensory_catalog_digest !== pins.sensory_catalog_digest || row.reaction_policy_digest !== pins.reaction_policy_digest) {
+    throw repositoryError('PERCEPTION_VERSION_PINS_MISMATCH', 'Perception catalog pins may not change within a party.');
+  }
 }
 
 function validateMaterializationIdentity({ partyId, g4Id, materialization, plan, position }) {
@@ -220,13 +255,16 @@ function normalizeMaterializationPlan(materialization) {
 }
 
 async function upsertPosition(transaction, partyId, g4Id, position = {}) {
+  const positionKind = position?.position_kind ?? 'node';
   const nodeId = position?.g5_node_id ?? position?.minilocation_id ?? null;
   const anchorId = position?.g5_anchor_id ?? position?.anchor_id ?? null;
   if ((nodeId == null) !== (anchorId == null)) throw repositoryError('POSITION_G5_PAIR_INVALID', 'G5 node and anchor must be supplied together or both omitted.');
-  await transaction.query(`INSERT INTO party_runtime.party_positions (party_id,g4_id,g5_node_id,g5_anchor_id,updated_at)
-    VALUES ($1,$2,$3,$4,NOW()) ON CONFLICT (party_id) DO UPDATE SET g4_id=EXCLUDED.g4_id,
-      g5_node_id=EXCLUDED.g5_node_id,g5_anchor_id=EXCLUDED.g5_anchor_id,updated_at=NOW()`,
-  [partyId, g4Id, nodeId, anchorId]);
+  if (positionKind !== 'node') throw repositoryError('POSITION_KIND_UNSUPPORTED', 'Generic movement commit accepts only stationary node positions.');
+  await transaction.query(`INSERT INTO party_runtime.party_positions (party_id,position_kind,g4_id,g5_node_id,g5_anchor_id,journey_id,journey_leg_id,edge_id,from_g4_id,to_g4_id,progress_permille,last_confirmed_g4_id,last_route_id,updated_at)
+    VALUES ($1,'node',$2,$3,$4,NULL,NULL,NULL,NULL,NULL,NULL,NULL,$5,NOW()) ON CONFLICT (party_id) DO UPDATE SET position_kind=EXCLUDED.position_kind,
+      g4_id=EXCLUDED.g4_id,g5_node_id=EXCLUDED.g5_node_id,g5_anchor_id=EXCLUDED.g5_anchor_id,journey_id=NULL,journey_leg_id=NULL,edge_id=NULL,
+      from_g4_id=NULL,to_g4_id=NULL,progress_permille=NULL,last_confirmed_g4_id=NULL,last_route_id=EXCLUDED.last_route_id,updated_at=NOW()`,
+  [partyId, g4Id, nodeId, anchorId, position?.last_route_id ?? null]);
 }
 
 function requirePool(pool) { if (!pool || typeof pool.connect !== 'function') throw new TypeError('PostgreSQL pool is required.'); }

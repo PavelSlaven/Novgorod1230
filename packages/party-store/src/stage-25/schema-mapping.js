@@ -11,7 +11,8 @@ const PARTY_RUNTIME_V2_TARGETS = new Set([
   'party_npc_relations', 'party_npc_knowledge', 'party_npc_schedules', 'party_containers', 'party_items', 'party_item_placements',
   'party_ownership', 'party_decision_requests', 'party_decision_options', 'party_decision_results', 'party_change_sets',
   'party_autonomous_updates', 'party_visible_read_models', 'party_environment_runs', 'party_environment_choices',
-  'party_environment_landmarks', 'party_environment_cues', 'party_environment_traces', 'party_landmark_g5_bindings'
+  'party_environment_landmarks', 'party_environment_cues', 'party_environment_traces', 'party_landmark_g5_bindings',
+  'party_journeys', 'party_journey_legs'
 ]);
 
 const SPEC_STATUS_TO_DDL_STATUS = Object.freeze({
@@ -41,7 +42,15 @@ export const PARTY_SPEC_TARGET_MAPPINGS = Object.freeze({
   },
   party_current_position: {
     actualTargetTable: 'party_positions',
-    storage: 'columns'
+    storage: 'discriminated_node_or_edge_progress_columns'
+  },
+  party_journeys: {
+    actualTargetTable: 'party_journeys',
+    storage: 'normalized_journey_lifecycle'
+  },
+  party_journey_legs: {
+    actualTargetTable: 'party_journey_legs',
+    storage: 'normalized_canonical_edge_progress'
   },
   party_player_character: {
     actualTargetTable: 'party_player_characters',
@@ -178,7 +187,7 @@ export const PARTY_SPEC_TARGET_MAPPINGS = Object.freeze({
     'party_items', 'party_item_placements', 'party_ownership', 'party_decision_requests', 'party_decision_options',
     'party_decision_results', 'party_change_sets', 'party_autonomous_updates', 'party_visible_read_models',
     'party_environment_runs', 'party_environment_choices', 'party_environment_landmarks', 'party_environment_cues',
-    'party_environment_traces', 'party_landmark_g5_bindings'
+    'party_environment_traces', 'party_landmark_g5_bindings', 'party_journeys', 'party_journey_legs'
   ].map((table) => [table, { actualTargetTable: table, storage: 'party_runtime_v2' }]))
 });
 
@@ -260,7 +269,21 @@ export function mapSpecRecordToCurrentPartyDdl(specTargetTable, record = {}) {
     case 'party_source_trace':
       return snapshotRecord(record, specTargetTable);
     case 'party_current_position':
-      return { party_id: record.party_id, g4_id: record.g4_id ?? record.location_id, g5_node_id: record.g5_node_id ?? record.minilocation_id ?? null, g5_anchor_id: record.g5_anchor_id ?? record.anchor_id ?? null };
+      return {
+        party_id: record.party_id,
+        position_kind: record.position_kind ?? 'node',
+        g4_id: record.position_kind === 'edge_progress' ? null : record.g4_id ?? record.location_id,
+        g5_node_id: record.position_kind === 'edge_progress' ? null : record.g5_node_id ?? record.minilocation_id ?? null,
+        g5_anchor_id: record.position_kind === 'edge_progress' ? null : record.g5_anchor_id ?? record.anchor_id ?? null,
+        journey_id: record.journey_id ?? null,
+        journey_leg_id: record.journey_leg_id ?? null,
+        edge_id: record.edge_id ?? null,
+        from_g4_id: record.from_g4_id ?? null,
+        to_g4_id: record.to_g4_id ?? null,
+        progress_permille: record.progress_permille ?? null,
+        last_confirmed_g4_id: record.last_confirmed_g4_id ?? null,
+        last_route_id: record.last_route_id ?? null
+      };
     case 'party_scene_minilocations':
       return { party_id: record.party_id, g5_node_id: record.g5_node_id ?? record.g5_minilocation_id ?? record.minilocation_id, run_id: record.run_id, parent_g4_id: record.parent_g4_id ?? record.parent_g4_node_id, template_id: record.template_id, slot_key: record.slot_key ?? 'default', state: record.state ?? {} };
     case 'party_scene_anchors':

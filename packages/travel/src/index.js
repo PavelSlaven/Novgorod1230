@@ -185,6 +185,33 @@ export function completeJourney({ journey, context }) {
   return advanceJourney({ journey, context, progress_permille: 1000 });
 }
 
+export function buildTravelChangeSetProposal({ before, after, idempotency_key, expected_state_version } = {}) {
+  const previous = validateJourney(before);
+  const next = validateJourney(after);
+  required(idempotency_key, 'idempotency_key');
+  if (previous.journey_id !== next.journey_id || previous.party_id !== next.party_id || previous.actor_id !== next.actor_id) {
+    fail('TRAVEL_INPUT_INVALID', 'Travel change-set must bind one existing journey.', {});
+  }
+  if (previous.state_version !== next.state_version) {
+    fail('TRAVEL_STATE_VERSION_MISMATCH', 'Domain transition must preserve its persistence base state version.', { before: previous.state_version, after: next.state_version });
+  }
+  if (expected_state_version != null && expected_state_version !== previous.state_version) {
+    fail('TRAVEL_STATE_VERSION_MISMATCH', 'Expected persistence state version is stale.', { expected: previous.state_version, actual: expected_state_version });
+  }
+  return deepFreeze({
+    schema_version: 'travel-change-set.v1',
+    idempotency_key,
+    party_id: next.party_id,
+    actor_id: next.actor_id,
+    journey_id: next.journey_id,
+    base_state_version: previous.state_version,
+    next_state_version: previous.state_version + 1,
+    journey: next,
+    journey_leg_ids: next.legs.map((leg) => leg.leg_id),
+    position: next.actual_position
+  });
+}
+
 function assertContext(context, journey, { checkActiveJourneyConflict = false } = {}) {
   const value = record(context, 'TRAVEL_INPUT_INVALID', 'Travel context must be an object.');
   if (value.state_version !== journey.state_version) fail('TRAVEL_STATE_VERSION_MISMATCH', 'Travel state version is stale.', { expected: journey.state_version, actual: value.state_version });

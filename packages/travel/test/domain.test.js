@@ -4,6 +4,7 @@ import { sha256 } from '@rus/kernel';
 import {
   TravelError,
   advanceJourney,
+  buildTravelChangeSetProposal,
   campJourney,
   createJourney,
   interruptJourney,
@@ -151,4 +152,19 @@ test('partial advance accepts an explicit perceived position without exposing or
 
 test('journey creation is deterministic for an identical formal input', () => {
   assert.deepEqual(createJourney(plan, context()), createJourney(plan, context()));
+});
+
+test('travel change-set proposal is version-bound and contains only normalized travel state', () => {
+  const before = createJourney(plan, context());
+  const after = advanceJourney({ journey: before, context: context(), progress_permille: 250 });
+  const proposal = buildTravelChangeSetProposal({ before, after, idempotency_key: 'travel:advance:1' });
+  assert.equal(proposal.base_state_version, 4);
+  assert.equal(proposal.next_state_version, 5);
+  assert.equal(proposal.position.position_kind, 'edge_progress');
+  assert.deepEqual(proposal.journey_leg_ids, ['leg:1']);
+  assert.equal('environment_state' in proposal, false);
+  assert.throws(
+    () => buildTravelChangeSetProposal({ before, after, idempotency_key: 'travel:advance:wrong', expected_state_version: 3 }),
+    (error) => error instanceof TravelError && error.code === 'TRAVEL_STATE_VERSION_MISMATCH'
+  );
 });

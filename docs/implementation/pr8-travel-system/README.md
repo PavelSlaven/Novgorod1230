@@ -46,6 +46,7 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 - 2026-07-15: cue lifecycle no longer supplies semantic defaults for incomplete templates; a required template field produces a typed hard block.
 - 2026-07-15: `campJourney` сначала был зафиксирован RED-тестом с отсутствующим export; GREEN-переход переводит только active journey на существующем edge в `camped`, не создавая G0–G4 или travel-scene instance.
 - 2026-07-15: `advanceJourney` больше не завершает leg по скрытому default `progress_permille=1000`; RED-тест зафиксировал старое поведение, GREEN требует явного progress или `completeJourney`.
+- 2026-07-15: `buildTravelChangeSetProposal` добавлен через RED/GREEN как единственный persistence-neutral output travel-domain: proposal version-bound и содержит только normalized journey/legs/position, без environment, body, clock или visible state.
 
 ## Checks recorded on transferred baseline
 
@@ -121,6 +122,9 @@ Typed domain errors are versioned with the travel contracts; persistence, presen
 | `node --test packages/travel/test/domain.test.js` | 2026-07-15 | рабочее дерево после `ca62999` | PASS: 11/11 | Явный progress стал обязательным. |
 | `npm run test:domain` | 2026-07-15 | рабочее дерево после `ca62999` | PASS: 88/88 | Полный domain regression. |
 | `npm run test:modules` | 2026-07-15 | рабочее дерево после `ca62999` | PASS: 261/261 | Static/module contracts. |
+| `node --test packages/travel/test/domain.test.js` | 2026-07-15 | рабочее дерево после `347284e` | RED: 1 failed | Отсутствовал `buildTravelChangeSetProposal`. |
+| `node --test packages/travel/test/domain.test.js` | 2026-07-15 | рабочее дерево после `347284e` | PASS: 12/12 | Proposal version-bound и не содержит несвязанных state blocks. |
+| `npm run test:domain` | 2026-07-15 | рабочее дерево после `347284e` | PASS: 89/89 | Полный domain regression. |
 
 ## Data and migration registry
 

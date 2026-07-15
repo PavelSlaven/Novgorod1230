@@ -27,3 +27,7 @@ test('inventory panel v1 suppresses hidden and closed unknown contents', () => {
   });
   assert.equal(JSON.stringify(panel).includes('Серебро'), false);
 });
+
+test('inventory panel v1 rejects an incomplete derived summary instead of inventing visible defaults', () => {
+  assert.throws(() => createInventoryPanelContract({ summary: { load_category: 'light' }, zones: {} }), { code: 'PRESENTATION_INVENTORY_INVALID' });
+});

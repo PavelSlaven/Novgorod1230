@@ -430,20 +430,34 @@ placement, template parameter, compatibility или command catalogue оформ
 `INVENTORY_PRIMARY_CONTAINER_AMBIGUOUS`, `INVENTORY_DROP_ANCHOR_MISSING`,
 `CONTAINER_CAPACITY_EXCEEDED`, `STATE_VERSION_MISMATCH`.
 
-`planInventoryTransfer` пока активирует только pure `drop_primary_container` и
-`recover_primary_container`; иных approved command IDs в catalog не обнаружено, поэтому
-runtime handler не создаётся (`TURN_INVENTORY_COMMAND_CATALOG_GAP`). Не выполнены
-historical approval/import, Stage 8 candidate enrichment, production activation, legacy
-cutover/rematerialization. Открытые gaps сохраняются:
+`planInventoryTransfer` строит immutable change set для `pick_up`, `put_down`,
+`move_to_container`, `take_from_container`, `equip`, `unequip`,
+`move_to_quick_container`, `move_to_primary_container`, а также
+`drop_primary_container`/`recover_primary_container`. Он проверяет topology, access,
+capacity, hands, mass, load и optimistic `state_version`, но не является runtime handler
+и ничего не записывает. Неизвестный command остаётся fail-closed
+`TURN_INVENTORY_COMMAND_CATALOG_GAP`. Не выполнены historical approval/import, Stage 8
+candidate enrichment, production activation, legacy cutover/rematerialization. Открытые
+gaps сохраняются:
 `PAGE_LEVEL_SOURCE_VERIFICATION_REQUIRED`, `EXTERNAL_LEGACY_ROWS_UNAVAILABLE`,
 `CONTAINER_COMPATIBILITY_TOO_COARSE`.
+
+Новые/уточнённые ошибки: `INVENTORY_QUANTITY_INVALID`,
+`INVENTORY_TARGET_NOT_FOUND`, `INVENTORY_EQUIPMENT_SLOT_REQUIRED`,
+`INVENTORY_LOAD_EXCEEDED`, `PRESENTATION_INVENTORY_INVALID`. Quantity, strength и
+derived summary больше не получают скрытое значение по умолчанию.
 
 ### Red → Green и выполненные проверки
 
 - Red: `packages/items-property/test/inventory-foundation.test.js` сначала завершился
   ошибкой отсутствующих public exports; `test/modules/stage16-inventory-foundation.test.js`
   — отсутствующим Stage 16 evaluator; `packages/presentation/test/inventory-panel.test.js`
-  — отсутствующим panel contract.
+  — отсутствующим panel contract. После добавления fail-closed quantity и общего planner
+  inventory-test имел 2 ожидаемых failing assertions: неявный `quantity → 1` и отсутствие
+  `move_to_container`; panel-test — отсутствие rejection неполной derived summary.
+- Green (дополнительный прогон): inventory/presentation/Stage 16 targeted tests —
+  15/15 PASS. `docs:generate`, `docs:check` и `knowledge:check-corpus` в clean worktree
+  — PASS; обновлены source и generated legacy inventory manifests для `interface_ux.md`.
 - Green: targeted domain/presentation/Stage 16 tests — 18/18 PASS;
   `npm run test:world-catalog` — 52/52 PASS;
   `npm run test:stage16` — 17/17 PASS; `npm run test:stage24` — 20/20 PASS;

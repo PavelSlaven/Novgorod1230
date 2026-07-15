@@ -63,7 +63,7 @@ function initializationInput(overrides = {}) {
     party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', historical_frame: { season: 'summer' }, g1_id: 'g1-1',
     g1_graph_snapshot: { placement_candidates: [{ binding_id: 'g4-ridge', binding_type: 'g4_node', landscape_type: 'dry_ridge' }] },
     environment_snapshot: { weather: 'clear', wind: 'west' }, source_snapshot: { active_emitters: [] },
-    existing_environment_state: { landmarks: [], cues: [], traces: [], baselines: [] }, catalog_bundle: catalog,
+    existing_environment_state: { state_version: 0, applied_update_keys: [], landmarks: [], cues: [], traces: [], baselines: [] }, catalog_bundle: catalog,
     catalog_digest: catalog.catalog_digest, materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1',
     seed_context: seedContext, trigger: 'g1_first_activation', occurrence: 0, ...overrides
   };
@@ -103,6 +103,22 @@ test('environment baseline rejects an unbound catalog digest, world revision, re
   assert.throws(() => initializeEnvironmentFeatures(initializationInput({ catalog_bundle: withoutPermission, catalog_digest: withoutPermission.catalog_digest })), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_REGIONAL_PERMISSION_MISSING');
   assert.equal(validateEnvironmentCatalogBundle(initializationInput()).pass, true);
   assert.equal(validateEnvironmentCatalogBundle(initializationInput({ catalog_digest: '0'.repeat(64) })).errors[0].code, 'ENVIRONMENT_CATALOG_DIGEST_MISMATCH');
+});
+
+test('environment update rejects stale versions and replays an idempotency key without a second mutation', () => {
+  const initialized = initializeEnvironmentFeatures(initializationInput());
+  const update = {
+    party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', g1_id: 'g1-1', base_state_version: 1,
+    current_environment_state: initialized.environment_state, elapsed_time: { minutes: 0 }, weather_before: 'clear', weather_after: 'clear',
+    active_emitters: [], trace_emissions: [], event_emissions: [], catalog_bundle: catalog, catalog_digest: catalog.catalog_digest,
+    materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1', idempotency_key: 'turn:versioned'
+  };
+  const first = updateEnvironmentFeatures(update);
+  assert.equal(first.environment_state.state_version, 2);
+  const replay = updateEnvironmentFeatures({ ...update, current_environment_state: first.environment_state });
+  assert.equal(replay.status, 'replayed');
+  assert.equal(replay.environment_state.state_version, 2);
+  assert.throws(() => updateEnvironmentFeatures({ ...update, idempotency_key: 'turn:stale', current_environment_state: first.environment_state }), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_STATE_VERSION_MISMATCH');
 });
 
 test('environment cues require an active approved source and never disclose it in observation candidates', () => {

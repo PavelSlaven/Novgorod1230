@@ -168,6 +168,42 @@ test('cart trace has a causal source and decays from readable to erased without 
   assert.equal(faded.environment_state.traces[0].strength, 0);
 });
 
+test('the same causal trace emission is not materialized twice across turns', () => {
+  const initialized = initializeEnvironmentFeatures(initializationInput());
+  const emission = { emission_id: 'move-once', source_kind: 'movement', source_id: 'group-1', cause_event_id: 'event-1', movement_mode: 'cart', location_binding: 'road-1', created_at: '1230-06-01T10:00:00Z' };
+  const first = updateEnvironmentFeatures({
+    party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', g1_id: 'g1-1', base_state_version: 1,
+    current_environment_state: initialized.environment_state, elapsed_time: { minutes: 0 }, weather_before: 'clear', weather_after: 'clear',
+    active_emitters: [], trace_emissions: [emission], event_emissions: [], catalog_bundle: catalog, catalog_digest: catalog.catalog_digest,
+    materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1', idempotency_key: 'turn:trace-first'
+  });
+  const repeated = updateEnvironmentFeatures({
+    party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', g1_id: 'g1-1', base_state_version: 2,
+    current_environment_state: first.environment_state, elapsed_time: { minutes: 0 }, weather_before: 'clear', weather_after: 'clear',
+    active_emitters: [], trace_emissions: [emission], event_emissions: [], catalog_bundle: catalog, catalog_digest: catalog.catalog_digest,
+    materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1', idempotency_key: 'turn:trace-repeat'
+  });
+  assert.equal(repeated.created_traces.length, 0);
+  assert.equal(repeated.environment_state.traces.length, 1);
+  assert.equal(repeated.environment_state.traces[0].trace_id, first.environment_state.traces[0].trace_id);
+});
+
+test('a reused trace emission id with a different causal payload hard-blocks', () => {
+  const initialized = initializeEnvironmentFeatures(initializationInput());
+  const first = updateEnvironmentFeatures({
+    party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', g1_id: 'g1-1', base_state_version: 1,
+    current_environment_state: initialized.environment_state, elapsed_time: { minutes: 0 }, weather_before: 'clear', weather_after: 'clear',
+    active_emitters: [], trace_emissions: [{ emission_id: 'move-conflict', source_kind: 'movement', source_id: 'group-1', cause_event_id: 'event-1', movement_mode: 'cart', location_binding: 'road-1', created_at: '1230-06-01T10:00:00Z' }], event_emissions: [], catalog_bundle: catalog, catalog_digest: catalog.catalog_digest,
+    materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1', idempotency_key: 'turn:trace-conflict-first'
+  });
+  assert.throws(() => updateEnvironmentFeatures({
+    party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', g1_id: 'g1-1', base_state_version: 2,
+    current_environment_state: first.environment_state, elapsed_time: { minutes: 0 }, weather_before: 'clear', weather_after: 'clear',
+    active_emitters: [], trace_emissions: [{ emission_id: 'move-conflict', source_kind: 'movement', source_id: 'other-group', cause_event_id: 'event-2', movement_mode: 'cart', location_binding: 'road-1', created_at: '1230-06-01T10:00:00Z' }], event_emissions: [], catalog_bundle: catalog, catalog_digest: catalog.catalog_digest,
+    materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1', idempotency_key: 'turn:trace-conflict-repeat'
+  }), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_TRACE_EMISSION_CONFLICT');
+});
+
 test('trace lifecycle rejects incomplete approved trace and decay records instead of inventing semantics', () => {
   const initialized = initializeEnvironmentFeatures(initializationInput());
   const update = {

@@ -14,10 +14,16 @@ export function updateTraces({ input, state, catalog, traceEmissions, elapsedMin
     if (!template || !profile) throw new EnvironmentFeatureError('ENVIRONMENT_TRACE_CATALOG_REFERENCE_MISSING', 'Trace creation rule has a missing template or decay profile.', { rule_id: rule.rule_id });
     validateTraceTemplate(template);
     validateDecayProfile(profile);
+    const traceId = deterministicInstanceId(input.party_id, 'environment_trace_emission', emission.emission_id, 0);
+    const existing = traces.find((item) => item.trace_id === traceId || item.emission_id === emission.emission_id);
+    if (existing) {
+      if (!sameEmission(existing, emission, rule)) throw new EnvironmentFeatureError('ENVIRONMENT_TRACE_EMISSION_CONFLICT', 'A trace emission id cannot be reused with a different causal payload.', { emission_id: emission.emission_id, trace_id: existing.trace_id });
+      continue;
+    }
     const trace = {
-      trace_id: deterministicInstanceId(input.party_id, input.idempotency_key, 'environment_trace', emission.emission_id, 0),
+      trace_id: traceId, emission_id: emission.emission_id,
       template_id: template.template_id, creation_rule_id: rule.rule_id, decay_profile_id: profile.profile_id,
-      source_kind: emission.source_kind, source_id: emission.source_id, cause_event_id: emission.cause_event_id, created_at: emission.created_at,
+      source_kind: emission.source_kind, source_id: emission.source_id, cause_event_id: emission.cause_event_id, movement_mode: emission.movement_mode ?? null, created_at: emission.created_at,
       location_binding: emission.location_binding, status: 'fresh', strength: 1, age_minutes: 0,
       public_label_key: requiredText(template.public_label_key, 'ENVIRONMENT_TRACE_LABEL_REQUIRED'), icon_key: requiredText(template.icon_key, 'ENVIRONMENT_TRACE_ICON_REQUIRED'),
       recognition_difficulty: requiredText(template.recognition_difficulty, 'ENVIRONMENT_TRACE_TEMPLATE_INVALID'), navigation_value: requiredText(template.navigation_value, 'ENVIRONMENT_TRACE_TEMPLATE_INVALID'), decay_profile: profile
@@ -37,6 +43,16 @@ export function updateTraces({ input, state, catalog, traceEmissions, elapsedMin
     if (trace.status === 'erased') erased.push(trace.trace_id); else updated.push(trace);
   }
   return { traces, created, updated, erased };
+}
+
+function sameEmission(trace, emission, rule) {
+  return trace.source_kind === emission.source_kind
+    && trace.source_id === emission.source_id
+    && trace.cause_event_id === emission.cause_event_id
+    && trace.location_binding === emission.location_binding
+    && trace.created_at === emission.created_at
+    && trace.creation_rule_id === rule.rule_id
+    && (trace.movement_mode ?? null) === (emission.movement_mode ?? null);
 }
 
 function validateTraceTemplate(template) {

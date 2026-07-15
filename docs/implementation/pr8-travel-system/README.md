@@ -71,6 +71,7 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 - 2026-07-15: `resolveCourseEdgeCandidate` принимает только explicit applicable candidate из fact graph. Пустой set, неизвестный selected id или candidate из другой direction/origin приводят к typed hard block, а не к выбору «ближайшей» дороги.
 - 2026-07-15: `travel.start_course` требует этот candidate и сверяет с ним первый leg `JourneyPlan`; plan без candidate или с другим edge блокируется до createJourney/commit.
 - 2026-07-15: добавлены нормализованные authoring tables для темпа, ориентирования, отдыха, причинных прерываний и их route binding. Все записи version/region/source/period-bound; importer и readiness принимают их только со строгими JSON Schema и provenance. Approved pilot data не создавались.
+- 2026-07-15: lifecycle следов получил stable causal identity: повторная доставка того же `emission_id` не создаёт второй trace при новом turn id, а конфликтующий payload с тем же id hard-blocks. Это сохраняет связь «одно действие → один след» без изменения catalog candidates.
 
 ## Checks recorded on transferred baseline
 
@@ -140,6 +141,7 @@ Typed domain errors are versioned with the travel contracts; persistence, presen
 | `node --test packages/travel/test/domain.test.js` / `docs:check` | 2026-07-15 | worktree after `51b49ea` | RED then PASS: 1 failure → 19/19 | Course continuation accepts only an explicit applicable fact-graph candidate; generated documentation is current. |
 | `node --test packages/travel/test/domain.test.js packages/turn/test/turn-workflow.test.js` / full local suites | 2026-07-15 | worktree after `b560d95` | PASS: 36/36; 107/107; 262/262; 14/14 | `travel.start_course` blocks missing/mismatched candidate selection and accepts only a first leg bound to the chosen fact-graph candidate. |
 | `node --test tools/world-catalog-workflow/test/materialization-readiness-positive.test.js tools/world-catalog-workflow/test/supplemental-catalog-bundle.test.js` / `world-db:schema-check` / `world-db:schema-doc-check` | 2026-07-15 | worktree before authoring-layer commit | PASS: 30/30; 143 tables | Travel-profile import/readiness blocks missing route binding; generated DDL reference is current. No PostgreSQL execution or approved pilot data is claimed. |
+| `node --test packages/environment-landmarks/test/domain.test.js` | 2026-07-15 | worktree before causal-trace commit | RED: 2 failed, then PASS: 10/10 | Same causal emission is deduplicated across turns; reused emission ID with changed cause hard-blocks. |
 | `node --test tools/docs-tools/test/knowledge-source-migration.test.js tools/docs-tools/test/knowledge-corpus-verifier.test.js tools/docs-tools/test/knowledge-materializer-v2.test.js` | 2026-07-15 | working tree after `6eb1a23` | PASS: 22/22 | Corpus manifest, legacy provenance and generated graph/RAG materialization remain reproducible after the PR8 normative update. |
 | `npm run test:domain` / `npm run test:modules` | 2026-07-15 | working tree after `6eb1a23` | PASS: 102/102; 261/261 | Documentation-only change did not regress travel, environment, turn or materialization contracts. |
 | `node --test packages/travel/test/domain.test.js` | 2026-07-15 | `69b0ee8` | RED: 1 failed | `ERR_MODULE_NOT_FOUND` before implementation. |
@@ -253,6 +255,7 @@ The ordered migration loader, seed script, party preflight and Stage 25 logical 
 | TRAVEL-D008 / 2026-07-15 / accepted | Let baseline initialization advance lifecycle. | Environment baseline only creates persistent features; cue/trace lifecycle is explicit. |
 | TRAVEL-D009 / 2026-07-15 / accepted | Add a second travel orchestrator or extend the canonical turn graph. | Existing 13-step turn workflow carries travel state blocks and normalized write targets. |
 | TRAVEL-D010 / 2026-07-15 / accepted | Commit arrival first and materialize G4 later, or one transaction. | First entry remains an atomic repository boundary; it is not claimed production-ready before approved pilot data. |
+| TRAVEL-D011 / 2026-07-15 / accepted | Bind a trace to update id or its causal emission. | Trace identity is derived from party and causal `emission_id`; repeat delivery is idempotent, while a conflicting causal payload blocks. |
 
 ## Phase tracker
 
@@ -261,7 +264,7 @@ The ordered migration loader, seed script, party preflight and Stage 25 logical 
 | 0 — baseline | completed | Rebased onto current PR7 head `5463af8`; schema guard was reconciled with the combined 138-table DDL. |
 | 1 — normative architecture | in progress | PR8 travel boundaries are now synchronized across movement, time, turn, UI, graph/data ownership and navigation docs; full production proof still depends on approved data and integration. |
 | 2 — contracts and RED tests | in progress | Travel, movement and environment RED/GREEN evidence is recorded; course candidate-resolution is explicit and fail-closed. Route graph loader and production course resolution remain pending. |
-| 3 — environment baseline | completed for package boundary | Split lifecycle, bundle validation and leak tests are green; production bundle is absent. |
+| 3 — environment baseline | in progress | Split lifecycle, bundle validation, leak tests and causal trace idempotency are green; production bundle and full production integration are absent. |
 | 4 — world-base bundles | partial | Travel profiles and route bindings now have normalized DDL, strict schemas, importer registration and fail-closed readiness. Approved sources/provenance records and bundle remain absent. |
 | 5 — approved pilot | blocked | No runtime-visible approved G1; no fictional promotion is allowed. |
 | 6 — party persistence | in progress | Migration 003, deferred FK and atomic normal turn writer exist; real PostgreSQL proof is blocked by missing URL. |

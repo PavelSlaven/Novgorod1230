@@ -21,7 +21,7 @@ const catalogRecords = Object.freeze({
   }],
   cue_templates: [{
     template_id: 'smoke-cue', status: 'approved', sense: 'sight', public_label_key: 'cue_smoke',
-    icon_key: 'cue_smoke', fading_duration_minutes: 30, expiry_duration_minutes: 60
+    icon_key: 'cue_smoke', base_intensity: 1, recognition_difficulty: 'ordinary', navigation_value: 'none', fading_duration_minutes: 30, expiry_duration_minutes: 60
   }],
   emission_rules: [{
     rule_id: 'hearth-smoke-rule', status: 'approved', source_type: 'hearth', cue_template_id: 'smoke-cue'
@@ -119,6 +119,18 @@ test('environment update rejects stale versions and replays an idempotency key w
   assert.equal(replay.status, 'replayed');
   assert.equal(replay.environment_state.state_version, 2);
   assert.throws(() => updateEnvironmentFeatures({ ...update, idempotency_key: 'turn:stale', current_environment_state: first.environment_state }), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_STATE_VERSION_MISMATCH');
+});
+
+test('environment cue lifecycle rejects an incomplete approved template instead of using defaults', () => {
+  const initialized = initializeEnvironmentFeatures(initializationInput());
+  const incompleteCatalog = approvedCatalog({ cue_templates: [{ ...catalogRecords.cue_templates[0], base_intensity: null }] });
+  assert.throws(() => updateEnvironmentFeatures({
+    party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', g1_id: 'g1-1', base_state_version: 1,
+    current_environment_state: initialized.environment_state, elapsed_time: { minutes: 0 }, weather_before: 'clear', weather_after: 'clear',
+    active_emitters: [{ emitter_id: 'camp-hearth-1', source_type: 'hearth', source_kind: 'camp', source_id: 'hidden-camp-1', location_binding: 'g4-ridge' }],
+    trace_emissions: [], event_emissions: [], catalog_bundle: incompleteCatalog, catalog_digest: incompleteCatalog.catalog_digest,
+    materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1', idempotency_key: 'turn:incomplete-cue'
+  }), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_CUE_TEMPLATE_INVALID');
 });
 
 test('environment cues require an active approved source and never disclose it in observation candidates', () => {

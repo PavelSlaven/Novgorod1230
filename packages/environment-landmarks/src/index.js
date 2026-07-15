@@ -201,13 +201,15 @@ function updateTraces({ input, state, catalog, traceEmissions, elapsedMinutes, c
     const template = catalog.trace_templates.find((item) => approved(item) && item.template_id === rule.trace_template_id);
     const profile = catalog.decay_profiles.find((item) => approved(item) && item.profile_id === rule.decay_profile_id);
     if (!template || !profile) throw new EnvironmentFeatureError('ENVIRONMENT_TRACE_CATALOG_REFERENCE_MISSING', 'Trace creation rule has a missing template or decay profile.', { rule_id: rule.rule_id });
+    validateTraceTemplate(template);
+    validateDecayProfile(profile);
     const trace = {
       trace_id: deterministicInstanceId(input.party_id, input.idempotency_key, 'environment_trace', emission.emission_id, 0),
       template_id: template.template_id, creation_rule_id: rule.rule_id, decay_profile_id: profile.profile_id,
       source_kind: emission.source_kind, source_id: emission.source_id, cause_event_id: emission.cause_event_id, created_at: emission.created_at,
       location_binding: emission.location_binding, status: 'fresh', strength: 1, age_minutes: 0,
       public_label_key: requiredText(template.public_label_key, 'ENVIRONMENT_TRACE_LABEL_REQUIRED'), icon_key: requiredText(template.icon_key, 'ENVIRONMENT_TRACE_ICON_REQUIRED'),
-      recognition_difficulty: template.recognition_difficulty ?? 'ordinary', navigation_value: template.navigation_value ?? 'none', decay_profile: profile
+      recognition_difficulty: requiredText(template.recognition_difficulty, 'ENVIRONMENT_TRACE_TEMPLATE_INVALID'), navigation_value: requiredText(template.navigation_value, 'ENVIRONMENT_TRACE_TEMPLATE_INVALID'), decay_profile: profile
     };
     traces.push(trace); created.push(trace);
     choices.push({ choice_ordinal: choices.length, choice_key: `trace:${emission.emission_id}`, candidate_set_digest: canonicalDigest([rule.rule_id]), candidate_ids: [rule.rule_id], selected_id: rule.rule_id, selected_weight: 1, rng_draw: null, rng_counter: null, rejection_summary: emptyRejections() });
@@ -216,13 +218,30 @@ function updateTraces({ input, state, catalog, traceEmissions, elapsedMinutes, c
     if (trace.status === 'erased' || created.includes(trace)) continue;
     const profile = trace.decay_profile ?? catalog.decay_profiles.find((item) => item.profile_id === trace.decay_profile_id);
     if (!profile) throw new EnvironmentFeatureError('ENVIRONMENT_DECAY_PROFILE_MISSING', 'Existing trace has no approved decay profile.', { trace_id: trace.trace_id });
-    const weatherMultiplier = input.weather_after === 'rain' ? finiteOr(profile.precipitation_multiplier, 1) : 1;
+    validateDecayProfile(profile);
+    const weatherMultiplier = input.weather_after === 'rain' ? Number(profile.precipitation_multiplier) : 1;
     trace.age_minutes += elapsedMinutes;
-    trace.strength = Math.max(0, trace.strength - (finiteOr(profile.decay_per_minute, 0) * elapsedMinutes * weatherMultiplier));
-    trace.status = trace.strength <= 0 ? 'erased' : trace.strength >= finiteOr(profile.readable_at_or_above, 0.7) ? 'readable' : trace.strength >= finiteOr(profile.faint_at_or_above, 0.2) ? 'faint' : 'faint';
+    trace.strength = Math.max(0, trace.strength - (Number(profile.decay_per_minute) * elapsedMinutes * weatherMultiplier));
+    trace.status = trace.strength <= 0 ? 'erased' : trace.strength >= Number(profile.readable_at_or_above) ? 'readable' : 'faint';
     if (trace.status === 'erased') erased.push(trace.trace_id); else updated.push(trace);
   }
   return { traces, created, updated, erased };
+}
+
+function validateTraceTemplate(template) {
+  for (const key of ['template_id', 'public_label_key', 'icon_key', 'recognition_difficulty', 'navigation_value']) requiredText(template[key], 'ENVIRONMENT_TRACE_TEMPLATE_INVALID');
+}
+
+function validateDecayProfile(profile) {
+  requiredText(profile.profile_id, 'ENVIRONMENT_DECAY_PROFILE_INVALID');
+  for (const key of ['readable_at_or_above', 'faint_at_or_above', 'decay_per_minute', 'precipitation_multiplier']) {
+    if (profile[key] == null || !Number.isFinite(Number(profile[key])) || Number(profile[key]) < 0) {
+      throw new EnvironmentFeatureError('ENVIRONMENT_DECAY_PROFILE_INVALID', `Decay profile requires non-negative ${key}.`, { profile_id: profile.profile_id, key });
+    }
+  }
+  if (Number(profile.readable_at_or_above) < Number(profile.faint_at_or_above)) {
+    throw new EnvironmentFeatureError('ENVIRONMENT_DECAY_PROFILE_INVALID', 'Readable threshold must not be below faint threshold.', { profile_id: profile.profile_id });
+  }
 }
 
 function finalizeResult({ input, state, status, created_landmarks, updated_landmarks, created_cues, updated_cues, expired_cue_ids, created_traces, updated_traces, erased_trace_ids, choices, seed = null, runId = null }) {

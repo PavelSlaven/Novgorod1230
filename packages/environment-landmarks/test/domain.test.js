@@ -26,7 +26,7 @@ const catalogRecords = Object.freeze({
   emission_rules: [{
     rule_id: 'hearth-smoke-rule', status: 'approved', source_type: 'hearth', cue_template_id: 'smoke-cue'
   }],
-  trace_templates: [{ template_id: 'cart-track', status: 'approved', public_label_key: 'trace_cart', icon_key: 'trace_cart' }],
+  trace_templates: [{ template_id: 'cart-track', status: 'approved', public_label_key: 'trace_cart', icon_key: 'trace_cart', recognition_difficulty: 'ordinary', navigation_value: 'none' }],
   trace_creation_rules: [{
     rule_id: 'cart-track-rule', status: 'approved', source_kind: 'movement', movement_mode: 'cart',
     trace_template_id: 'cart-track', decay_profile_id: 'wet-ground-decay'
@@ -166,4 +166,24 @@ test('cart trace has a causal source and decays from readable to erased without 
   assert.equal(fresh.created_traces[0].strength, 1);
   assert.equal(faded.environment_state.traces[0].status, 'erased');
   assert.equal(faded.environment_state.traces[0].strength, 0);
+});
+
+test('trace lifecycle rejects incomplete approved trace and decay records instead of inventing semantics', () => {
+  const initialized = initializeEnvironmentFeatures(initializationInput());
+  const update = {
+    party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', g1_id: 'g1-1', base_state_version: 1,
+    current_environment_state: initialized.environment_state, elapsed_time: { minutes: 0 }, weather_before: 'clear', weather_after: 'clear',
+    active_emitters: [], trace_emissions: [{ emission_id: 'move-incomplete', source_kind: 'movement', source_id: 'group-1', cause_event_id: 'event-1', movement_mode: 'cart', location_binding: 'road-1', created_at: '1230-06-01T10:00:00Z' }],
+    event_emissions: [], materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1', idempotency_key: 'turn:incomplete-trace'
+  };
+  const incompleteTemplate = approvedCatalog({ trace_templates: [{ ...catalogRecords.trace_templates[0], recognition_difficulty: null }] });
+  assert.throws(
+    () => updateEnvironmentFeatures({ ...update, catalog_bundle: incompleteTemplate, catalog_digest: incompleteTemplate.catalog_digest }),
+    (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_TRACE_TEMPLATE_INVALID'
+  );
+  const incompleteDecay = approvedCatalog({ decay_profiles: [{ ...catalogRecords.decay_profiles[0], precipitation_multiplier: null }] });
+  assert.throws(
+    () => updateEnvironmentFeatures({ ...update, catalog_bundle: incompleteDecay, catalog_digest: incompleteDecay.catalog_digest }),
+    (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_DECAY_PROFILE_INVALID'
+  );
 });

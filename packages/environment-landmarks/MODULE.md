@@ -19,6 +19,7 @@
 - catalog bundle имеет обязательные digest, world revision, region, period и regional permission; несоответствие является hard block;
 - state version и idempotency key обязательны для lifecycle update; stale update блокируется, а повтор ключа возвращает неизменённый replay;
 - cue lifecycle не назначает intensity, recognition, navigation или durations по умолчанию: approved template обязан задавать их явно;
+- trace lifecycle не назначает recognition/navigation или пороги и коэффициенты decay по умолчанию: approved template и decay profile обязаны задавать их явно;
 - required candidate set блокирует материализацию;
 - cue содержит причинный источник, trace — источник и event;
 - публичные observation candidates не содержат source ID или location binding;

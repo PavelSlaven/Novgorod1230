@@ -73,6 +73,7 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 - 2026-07-15: добавлены нормализованные authoring tables для темпа, ориентирования, отдыха, причинных прерываний и их route binding. Все записи version/region/source/period-bound; importer и readiness принимают их только со строгими JSON Schema и provenance. Approved pilot data не создавались.
 - 2026-07-15: lifecycle следов получил stable causal identity: повторная доставка того же `emission_id` не создаёт второй trace при новом turn id, а конфликтующий payload с тем же id hard-blocks. Это сохраняет связь «одно действие → один след» без изменения catalog candidates.
 - 2026-07-15: active emitter обязан передавать formal bearing, distance и strength bands. Cue lifecycle больше не подставляет неизвестные или «умеренные» наблюдения; существующий cue обновляет только явно переданные observation fields.
+- 2026-07-15: landmark baseline больше не выбирает кандидата с неявным weight или count bound. Неполный profile/graph snapshot образует typed input gap, а не равновероятный candidate set.
 
 ## Checks recorded on transferred baseline
 
@@ -144,6 +145,7 @@ Typed domain errors are versioned with the travel contracts; persistence, presen
 | `node --test tools/world-catalog-workflow/test/materialization-readiness-positive.test.js tools/world-catalog-workflow/test/supplemental-catalog-bundle.test.js` / `world-db:schema-check` / `world-db:schema-doc-check` | 2026-07-15 | worktree before authoring-layer commit | PASS: 30/30; 143 tables | Travel-profile import/readiness blocks missing route binding; generated DDL reference is current. No PostgreSQL execution or approved pilot data is claimed. |
 | `node --test packages/environment-landmarks/test/domain.test.js` | 2026-07-15 | worktree before causal-trace commit | RED: 2 failed, then PASS: 10/10 | Same causal emission is deduplicated across turns; reused emission ID with changed cause hard-blocks. |
 | `node --test packages/environment-landmarks/test/domain.test.js` | 2026-07-15 | worktree before emitter-observation commit | RED: 1 failed, then PASS: 11/11 | Cue emitter without explicit observation bands is blocked; no player-facing signal defaults remain in the lifecycle. |
+| `node --test packages/environment-landmarks/test/domain.test.js` | 2026-07-15 | worktree before landmark-weight commit | RED: 1 failed, then PASS: 12/12 | Landmark selection blocks absent candidate weight or count bounds instead of deriving runtime defaults. |
 | `node --test tools/docs-tools/test/knowledge-source-migration.test.js tools/docs-tools/test/knowledge-corpus-verifier.test.js tools/docs-tools/test/knowledge-materializer-v2.test.js` | 2026-07-15 | working tree after `6eb1a23` | PASS: 22/22 | Corpus manifest, legacy provenance and generated graph/RAG materialization remain reproducible after the PR8 normative update. |
 | `npm run test:domain` / `npm run test:modules` | 2026-07-15 | working tree after `6eb1a23` | PASS: 102/102; 261/261 | Documentation-only change did not regress travel, environment, turn or materialization contracts. |
 | `node --test packages/travel/test/domain.test.js` | 2026-07-15 | `69b0ee8` | RED: 1 failed | `ERR_MODULE_NOT_FOUND` before implementation. |
@@ -259,6 +261,7 @@ The ordered migration loader, seed script, party preflight and Stage 25 logical 
 | TRAVEL-D010 / 2026-07-15 / accepted | Commit arrival first and materialize G4 later, or one transaction. | First entry remains an atomic repository boundary; it is not claimed production-ready before approved pilot data. |
 | TRAVEL-D011 / 2026-07-15 / accepted | Bind a trace to update id or its causal emission. | Trace identity is derived from party and causal `emission_id`; repeat delivery is idempotent, while a conflicting causal payload blocks. |
 | TRAVEL-D012 / 2026-07-15 / accepted | Default cue perception or require an upstream observation. | Emitter supplies all player-facing observation bands; missing perception is a typed input error. |
+| TRAVEL-D013 / 2026-07-15 / accepted | Treat absent materialization weights/counts as neutral defaults or a data gap. | Selection consumes only explicit positive weights and explicit bounds from the pinned input. |
 
 ## Phase tracker
 

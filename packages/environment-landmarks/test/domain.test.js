@@ -12,12 +12,12 @@ import { canonicalDigest } from '@rus/materialization';
 const catalogRecords = Object.freeze({
   landmark_rules: [{
     rule_id: 'ridge-landmark-rule', status: 'approved', min_count: 1, max_count: 1,
-    template_ids: ['split-pine'], placement_types: ['g4_node'], required: true
+    template_ids: ['split-pine'], placement_types: ['g4_node'], required: true, weight: 1
   }],
   landmark_templates: [{
     template_id: 'split-pine', status: 'approved', category_id: 'environment_landmark.tree',
     public_label_key: 'landmark_tree', icon_key: 'landmark_tree', navigation_value: 'high',
-    distinctiveness: 'high', recognition_difficulty: 'ordinary'
+    distinctiveness: 'high', recognition_difficulty: 'ordinary', weight: 1
   }],
   cue_templates: [{
     template_id: 'smoke-cue', status: 'approved', sense: 'sight', public_label_key: 'cue_smoke',
@@ -61,7 +61,7 @@ function initializationInput(overrides = {}) {
   };
   return {
     party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', historical_frame: { season: 'summer' }, g1_id: 'g1-1',
-    g1_graph_snapshot: { placement_candidates: [{ binding_id: 'g4-ridge', binding_type: 'g4_node', landscape_type: 'dry_ridge' }] },
+    g1_graph_snapshot: { placement_candidates: [{ binding_id: 'g4-ridge', binding_type: 'g4_node', landscape_type: 'dry_ridge', weight: 1 }] },
     environment_snapshot: { weather: 'clear', wind: 'west' }, source_snapshot: { active_emitters: [] },
     existing_environment_state: { state_version: 0, applied_update_keys: [], landmarks: [], cues: [], traces: [], baselines: [] }, catalog_bundle: catalog,
     catalog_digest: catalog.catalog_digest, materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1',
@@ -103,6 +103,14 @@ test('environment baseline rejects an unbound catalog digest, world revision, re
   assert.throws(() => initializeEnvironmentFeatures(initializationInput({ catalog_bundle: withoutPermission, catalog_digest: withoutPermission.catalog_digest })), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_REGIONAL_PERMISSION_MISSING');
   assert.equal(validateEnvironmentCatalogBundle(initializationInput()).pass, true);
   assert.equal(validateEnvironmentCatalogBundle(initializationInput({ catalog_digest: '0'.repeat(64) })).errors[0].code, 'ENVIRONMENT_CATALOG_DIGEST_MISMATCH');
+});
+
+test('environment baseline requires explicit approved selection weights and count bounds', () => {
+  const missingTemplateWeight = approvedCatalog({ landmark_templates: [{ ...catalogRecords.landmark_templates[0], weight: null }] });
+  assert.throws(() => initializeEnvironmentFeatures(initializationInput({ catalog_bundle: missingTemplateWeight, catalog_digest: missingTemplateWeight.catalog_digest, seed_context: { ...initializationInput().seed_context, catalog_digest: missingTemplateWeight.catalog_digest } })), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_CANDIDATE_WEIGHT_INVALID');
+  assert.throws(() => initializeEnvironmentFeatures(initializationInput({ g1_graph_snapshot: { placement_candidates: [{ binding_id: 'g4-ridge', binding_type: 'g4_node', weight: null }] } })), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_CANDIDATE_WEIGHT_INVALID');
+  const missingCountBound = approvedCatalog({ landmark_rules: [{ ...catalogRecords.landmark_rules[0], min_count: null }] });
+  assert.throws(() => initializeEnvironmentFeatures(initializationInput({ catalog_bundle: missingCountBound, catalog_digest: missingCountBound.catalog_digest, seed_context: { ...initializationInput().seed_context, catalog_digest: missingCountBound.catalog_digest } })), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_INPUT_INVALID');
 });
 
 test('environment update rejects stale versions and replays an idempotency key without a second mutation', () => {

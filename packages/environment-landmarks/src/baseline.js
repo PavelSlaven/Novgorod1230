@@ -1,6 +1,6 @@
 import { canonicalDigest, deterministicInstanceId } from '@rus/materialization';
 import { EnvironmentFeatureError } from './errors.js';
-import { approved, byId, emptyRejections, finiteOr, numberAtLeast, required, requiredText, text } from './utils.js';
+import { approved, byId, emptyRejections, numberAtLeast, required, requiredText, text } from './utils.js';
 
 export function baselineIdentity(input) {
   return { party_id: input.party_id, world_revision_id: input.world_revision_id, g1_id: input.g1_id, materializer_version: input.materializer_version };
@@ -26,7 +26,8 @@ export function seedContext(input) {
 }
 
 export function materializeLandmarks({ input, catalog, random, runId, choices }) {
-  const placements = [...(input.g1_graph_snapshot.placement_candidates ?? [])].sort((left, right) => text(left.binding_id).localeCompare(text(right.binding_id)));
+  if (!Array.isArray(input.g1_graph_snapshot.placement_candidates)) throw new EnvironmentFeatureError('ENVIRONMENT_INPUT_INVALID', 'g1_graph_snapshot.placement_candidates must be an array.');
+  const placements = [...input.g1_graph_snapshot.placement_candidates].sort((left, right) => text(left.binding_id).localeCompare(text(right.binding_id)));
   const output = [];
   for (const rule of [...catalog.landmark_rules].sort(byId('rule_id'))) {
     if (!approved(rule)) continue;
@@ -58,8 +59,8 @@ export function materializeLandmarks({ input, catalog, random, runId, choices })
 }
 
 function chooseCount(rule, available, random) {
-  const min = numberAtLeast(rule.min_count ?? 0, 0, 'rule.min_count');
-  const max = numberAtLeast(rule.max_count ?? min, min, 'rule.max_count');
+  const min = numberAtLeast(rule.min_count, 0, 'rule.min_count');
+  const max = numberAtLeast(rule.max_count, min, 'rule.max_count');
   if (min > available) {
     if (required(rule)) throw new EnvironmentFeatureError('ENVIRONMENT_REQUIRED_CANDIDATE_SET_EMPTY', 'Required landmark count exceeds candidates.', { rule_id: rule.rule_id, available, minimum: min });
     return 0;
@@ -68,15 +69,22 @@ function chooseCount(rule, available, random) {
 }
 
 function weighted(items, draw) {
-  const total = items.reduce((sum, item) => sum + finiteOr(item.weight, 1), 0);
+  if (items.length === 0) throw new EnvironmentFeatureError('ENVIRONMENT_REQUIRED_CANDIDATE_SET_EMPTY', 'Weighted selection requires at least one candidate.');
+  const total = items.reduce((sum, item) => sum + candidateWeight(item), 0);
   let cursor = draw % total;
   for (const item of items) {
-    cursor -= finiteOr(item.weight, 1);
+    cursor -= candidateWeight(item);
     if (cursor < 0) return item;
   }
-  return items.at(-1);
+  throw new EnvironmentFeatureError('ENVIRONMENT_WEIGHTED_SELECTION_INVALID', 'Weighted selection did not resolve a candidate.');
 }
 
 function choice(ordinal, choiceKey, digest, ids, selected, draw, counter, selectedKey = 'template_id') {
-  return { choice_ordinal: ordinal, choice_key: choiceKey, candidate_set_digest: digest, candidate_ids: ids, selected_id: selected[selectedKey], selected_weight: finiteOr(selected.weight, 1), rng_draw: draw, rng_counter: counter, rejection_summary: emptyRejections() };
+  return { choice_ordinal: ordinal, choice_key: choiceKey, candidate_set_digest: digest, candidate_ids: ids, selected_id: selected[selectedKey], selected_weight: candidateWeight(selected), rng_draw: draw, rng_counter: counter, rejection_summary: emptyRejections() };
+}
+
+function candidateWeight(candidate) {
+  const weight = Number(candidate?.weight);
+  if (!Number.isFinite(weight) || weight <= 0) throw new EnvironmentFeatureError('ENVIRONMENT_CANDIDATE_WEIGHT_INVALID', 'Every materialization candidate requires an explicit positive weight.', { candidate_id: candidate?.template_id ?? candidate?.binding_id ?? null });
+  return weight;
 }

@@ -17,6 +17,7 @@ export function requiredText(value, code) {
 }
 
 export function numberAtLeast(value, minimum, key) {
+  if (value === undefined || value === null || value === '') throw new EnvironmentFeatureError('ENVIRONMENT_INPUT_INVALID', `${key} is required.`);
   const number = Number(value);
   if (!Number.isFinite(number) || number < minimum) throw new EnvironmentFeatureError('ENVIRONMENT_INPUT_INVALID', `${key} must be a number >= ${minimum}.`);
   return number;

@@ -1,0 +1,344 @@
+[
+  {
+    "id": "container_tpl_nov_drawstring_pouch_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_container_form_drawstring_pouch_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "capacity": 4,
+    "packing_slot_cost": 2,
+    "capacity_policy": {
+      "version": 1,
+      "mode": "packing_slots",
+      "unit": "packing_slot"
+    },
+    "access_policy": {
+      "version": 1,
+      "mode": "manual"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "container_tpl_nov_flap_belt_pouch_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_container_form_flap_belt_pouch_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "capacity": 4,
+    "packing_slot_cost": 2,
+    "capacity_policy": {
+      "version": 1,
+      "mode": "packing_slots",
+      "unit": "packing_slot"
+    },
+    "access_policy": {
+      "version": 1,
+      "mode": "manual"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "container_tpl_nov_small_soft_bag_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_container_form_small_soft_bag_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "capacity": 4,
+    "packing_slot_cost": 2,
+    "capacity_policy": {
+      "version": 1,
+      "mode": "packing_slots",
+      "unit": "packing_slot"
+    },
+    "access_policy": {
+      "version": 1,
+      "mode": "manual"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "container_tpl_nov_sack_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_container_form_sack_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "capacity": 12,
+    "packing_slot_cost": 2,
+    "capacity_policy": {
+      "version": 1,
+      "mode": "packing_slots",
+      "unit": "packing_slot"
+    },
+    "access_policy": {
+      "version": 1,
+      "mode": "manual"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "container_tpl_nov_carrying_basket_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_container_form_carrying_basket_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "capacity": 12,
+    "packing_slot_cost": 2,
+    "capacity_policy": {
+      "version": 1,
+      "mode": "packing_slots",
+      "unit": "packing_slot"
+    },
+    "access_policy": {
+      "version": 1,
+      "mode": "manual"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "container_tpl_nov_birch_bark_box_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_container_form_birch_bark_box_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "capacity": 4,
+    "packing_slot_cost": 2,
+    "capacity_policy": {
+      "version": 1,
+      "mode": "packing_slots",
+      "unit": "packing_slot"
+    },
+    "access_policy": {
+      "version": 1,
+      "mode": "manual"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "container_tpl_nov_wooden_box_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_container_form_wooden_box_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "capacity": 4,
+    "packing_slot_cost": 2,
+    "capacity_policy": {
+      "version": 1,
+      "mode": "packing_slots",
+      "unit": "packing_slot"
+    },
+    "access_policy": {
+      "version": 1,
+      "mode": "manual"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "container_tpl_nov_small_casket_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_container_form_small_casket_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "capacity": 24,
+    "packing_slot_cost": 6,
+    "capacity_policy": {
+      "version": 1,
+      "mode": "packing_slots",
+      "unit": "packing_slot"
+    },
+    "access_policy": {
+      "version": 1,
+      "mode": "manual"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "container_tpl_nov_chest_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_container_form_chest_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "capacity": 24,
+    "packing_slot_cost": 6,
+    "capacity_policy": {
+      "version": 1,
+      "mode": "packing_slots",
+      "unit": "packing_slot"
+    },
+    "access_policy": {
+      "version": 1,
+      "mode": "manual"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "container_tpl_nov_bucket_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_container_form_bucket_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "capacity": 6,
+    "packing_slot_cost": 2,
+    "capacity_policy": {
+      "version": 1,
+      "mode": "packing_slots",
+      "unit": "packing_slot"
+    },
+    "access_policy": {
+      "version": 1,
+      "mode": "manual"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "container_tpl_nov_tub_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_container_form_tub_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "capacity": 24,
+    "packing_slot_cost": 6,
+    "capacity_policy": {
+      "version": 1,
+      "mode": "packing_slots",
+      "unit": "packing_slot"
+    },
+    "access_policy": {
+      "version": 1,
+      "mode": "manual"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "container_tpl_nov_cask_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_container_form_cask_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "capacity": 24,
+    "packing_slot_cost": 6,
+    "capacity_policy": {
+      "version": 1,
+      "mode": "packing_slots",
+      "unit": "packing_slot"
+    },
+    "access_policy": {
+      "version": 1,
+      "mode": "manual"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "container_tpl_nov_storage_pot_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_container_form_storage_pot_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "capacity": 24,
+    "packing_slot_cost": 6,
+    "capacity_policy": {
+      "version": 1,
+      "mode": "packing_slots",
+      "unit": "packing_slot"
+    },
+    "access_policy": {
+      "version": 1,
+      "mode": "manual"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "container_tpl_nov_jug_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_container_form_jug_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "capacity": 6,
+    "packing_slot_cost": 2,
+    "capacity_policy": {
+      "version": 1,
+      "mode": "packing_slots",
+      "unit": "packing_slot"
+    },
+    "access_policy": {
+      "version": 1,
+      "mode": "manual"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "container_tpl_nov_quiver_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_container_form_quiver_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "capacity": 2,
+    "packing_slot_cost": 1,
+    "capacity_policy": {
+      "version": 1,
+      "mode": "packing_slots",
+      "unit": "packing_slot"
+    },
+    "access_policy": {
+      "version": 1,
+      "mode": "manual"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "container_tpl_nov_knife_sheath_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_container_form_knife_sheath_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "capacity": 2,
+    "packing_slot_cost": 1,
+    "capacity_policy": {
+      "version": 1,
+      "mode": "packing_slots",
+      "unit": "packing_slot"
+    },
+    "access_policy": {
+      "version": 1,
+      "mode": "manual"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "container_tpl_nov_sword_scabbard_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_container_form_sword_scabbard_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "capacity": 2,
+    "packing_slot_cost": 1,
+    "capacity_policy": {
+      "version": 1,
+      "mode": "packing_slots",
+      "unit": "packing_slot"
+    },
+    "access_policy": {
+      "version": 1,
+      "mode": "manual"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "container_tpl_nov_needle_case_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_container_form_needle_case_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "capacity": 2,
+    "packing_slot_cost": 1,
+    "capacity_policy": {
+      "version": 1,
+      "mode": "packing_slots",
+      "unit": "packing_slot"
+    },
+    "access_policy": {
+      "version": 1,
+      "mode": "manual"
+    },
+    "status": "draft"
+  }
+]

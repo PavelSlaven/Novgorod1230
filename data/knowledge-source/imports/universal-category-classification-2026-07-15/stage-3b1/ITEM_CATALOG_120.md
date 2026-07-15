@@ -1,8 +1,8 @@
 # Этап 3B-1 — полный редакторский каталог 120 предметных типов
 
-**Статус:** `editorial_catalog_prepared_not_applied`  
-**Регион:** `region_novgorod_land`  
-**Целевая дата:** около 1230 года  
+**Статус:** `editorial_catalog_prepared_not_applied`
+**Регион:** `region_novgorod_land`
+**Целевая дата:** около 1230 года
 **Статус строк:** `draft`
 
 ## 1. Правовой и технический статус
@@ -199,6 +199,6 @@ source records
 - мешок, затягивающийся кошель и поясная сумка присутствуют;
 - все строки имеют kind, group, evidence class, source family и status;
 - все строки остаются `draft`;
-- runtime, DDL, schemas, importer и party state не изменялись.
+- catalog не создаёт party state и не активирует runtime candidates.
 
-Не выполнялись JSON Schema, importer, PostgreSQL, Stage 8/16, full suite или code critic, поскольку этот файл является редакторской документацией, а не исполняемым dataset.
+Этот файл остаётся редакторским источником. Технические проверки derived supplemental bundle фиксируются в едином `README.md`; PostgreSQL apply/readback/rollback и итоговый code critic остаются незавершёнными.

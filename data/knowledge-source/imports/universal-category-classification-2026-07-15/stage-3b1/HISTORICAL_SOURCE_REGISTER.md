@@ -1,8 +1,8 @@
 # Этап 3B-1 — реестр исторических оснований предметного каталога
 
-**Статус:** `editorial_source_register_not_applied`  
-**Дата:** `2026-07-15`  
-**Регион:** `region_novgorod_land`  
+**Статус:** `editorial_source_register_not_applied`
+**Дата:** `2026-07-15`
+**Регион:** `region_novgorod_land`
 **Целевая дата:** около 1230 года
 
 ## 1. Назначение
@@ -76,4 +76,4 @@
 - ни один source family не создаёт runtime permission;
 - все нерешённые вопросы выражены как gaps или limits.
 
-Не выполнялись JSON Schema validation, importer, PostgreSQL, runtime tests и code critic: файл является документацией редакторского этапа и не меняет выполнение программы.
+Этот реестр сам по себе не служит исполняемым dataset. Технические проверки созданного supplemental bundle (JSON Schema, importer dry-run, Stage 8/16 и полный suite) фиксируются в едином `README.md`; PostgreSQL и итоговый code critic остаются незавершёнными там же.

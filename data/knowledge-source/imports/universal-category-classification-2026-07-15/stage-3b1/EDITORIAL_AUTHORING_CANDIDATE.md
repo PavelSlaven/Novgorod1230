@@ -1,9 +1,9 @@
 # Этап 3B-1 — редакторский authoring candidate предметного каталога
 
-**Статус пакета:** `editorial_catalog_prepared_not_applied`  
-**Статус записей:** `draft` / `needs_review`  
-**Регион:** `region_novgorod_land`  
-**Целевая дата:** около 1230 года  
+**Статус пакета:** `editorial_catalog_prepared_not_applied`
+**Статус записей:** `draft` / `needs_review`
+**Регион:** `region_novgorod_land`
+**Целевая дата:** около 1230 года
 **Policy:** `proposed`
 
 ## 1. Назначение и граница
@@ -136,21 +136,13 @@ Plural references должны стать relation rows, а не массива�
 - все строки имеют evidence class, source family и `draft` status;
 - нет составных category IDs, смешивающих форму, материал, качество и социальный статус;
 - не назначены выдуманные частотность, цена, масса, packing cost или capacity;
-- runtime, DDL, schemas, importer и party state не изменены.
+- editorial source не активирует runtime candidates и не создаёт party state.
 
-Не выполнялись:
-
-- JSON Schema validation финальных datasets;
-- importer dry-run/apply;
-- PostgreSQL integration;
-- Stage 8/16 tests;
-- generated artifacts;
-- full test suite;
-- code critic.
-
-Эти проверки не заявляются пройденными, поскольку данный проход изменяет только редакторскую документацию.
+Derived supplemental datasets прошли JSON Schema/cross-reference validation, importer dry-run, Stage 8/16 tests, generated-artifact checks и полный test suite; точные команды и результаты приведены в едином `README.md`. PostgreSQL apply/readback/rollback недоступен без обязательного `POSTGRES_PASSWORD`; итоговый code critic ожидается. Эти две проверки не заявляются пройденными.
 
 ## 8. Следующий этап
+
+Технический draft bundle создан как supplemental manifest в `bundle/`; его validation/dry-run не активируют records и не заменяют required individual historical review. Physical estimates остаются explicit `gameplay_estimate` в review table, а source-family evidence не повышен до source-record proof.
 
 Следующий технический проход должен:
 

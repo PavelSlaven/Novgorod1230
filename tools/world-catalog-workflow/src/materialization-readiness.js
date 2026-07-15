@@ -210,9 +210,9 @@ export function validateClassificationCatalog(recordsByTable = {}) {
   return Object.freeze(errors);
 }
 
-function validateClassificationJsonSchema(tableName, records, schema) {
+export function validateJsonSchemaRecords(tableName, records, schema) {
   if (!Array.isArray(records)) return [`JSON_SCHEMA_INVALID:${tableName}:payload`];
-  const itemSchema = schema.items ?? {};
+  const itemSchema = schema?.items ?? {};
   const errors = [];
   records.forEach((record, index) => {
     validateJsonSchemaValue(tableName, index, record, itemSchema, '', errors);
@@ -220,10 +220,27 @@ function validateClassificationJsonSchema(tableName, records, schema) {
   return errors;
 }
 
+function validateClassificationJsonSchema(tableName, records, schema) {
+  return validateJsonSchemaRecords(tableName, records, schema);
+}
+
 function validateJsonSchemaValue(tableName, index, value, definition, path, errors) {
   const field = (key = null) => [tableName, index, key == null || key === '' ? path : (path ? `${path}.${key}` : key)].filter((value) => value != null && value !== '').join(':');
   if (!definition || typeof definition !== 'object') return;
-  if (definition.type === 'object') {
+  if (definition.not) {
+    const notErrors = [];
+    validateJsonSchemaValue(tableName, index, value, definition.not, path, notErrors);
+    if (notErrors.length === 0) errors.push(`JSON_SCHEMA_NOT:${field()}`);
+  }
+  if (definition.oneOf) {
+    const matches = definition.oneOf.filter((variant) => {
+      const variantErrors = [];
+      validateJsonSchemaValue(tableName, index, value, variant, path, variantErrors);
+      return variantErrors.length === 0;
+    }).length;
+    if (matches !== 1) errors.push(`JSON_SCHEMA_ONE_OF:${field()}`);
+  }
+  if (definition.type === 'object' || definition.properties || definition.required || definition.additionalProperties === false) {
     if (!value || typeof value !== 'object' || Array.isArray(value)) { errors.push(`JSON_SCHEMA_TYPE:${field()}`); return; }
     for (const required of definition.required ?? []) if (!(required in value)) errors.push(`JSON_SCHEMA_REQUIRED:${field(required)}`);
     for (const [key, child] of Object.entries(value)) {
@@ -238,13 +255,28 @@ function validateJsonSchemaValue(tableName, index, value, definition, path, erro
   }
   if (definition.type === 'string' && typeof value !== 'string') errors.push(`JSON_SCHEMA_TYPE:${field()}`);
   else if (definition.type === 'integer' && !Number.isInteger(value)) errors.push(`JSON_SCHEMA_TYPE:${field()}`);
+  else if (definition.type === 'number' && (typeof value !== 'number' || !Number.isFinite(value))) errors.push(`JSON_SCHEMA_TYPE:${field()}`);
   else if (definition.type === 'boolean' && typeof value !== 'boolean') errors.push(`JSON_SCHEMA_TYPE:${field()}`);
+  else if (definition.type === 'array' && !Array.isArray(value)) errors.push(`JSON_SCHEMA_TYPE:${field()}`);
   if (definition.type === 'string' && typeof value === 'string' && definition.minLength && value.trim().length < definition.minLength) errors.push(`JSON_SCHEMA_MIN_LENGTH:${field()}`);
   if (definition.type === 'integer' && Number.isInteger(value) && definition.minimum != null && value < definition.minimum) errors.push(`JSON_SCHEMA_MINIMUM:${field()}`);
   if (Object.hasOwn(definition, 'const') && value !== definition.const) errors.push(`JSON_SCHEMA_CONST:${field()}`);
   if (definition.enum && !definition.enum.includes(value)) errors.push(`JSON_SCHEMA_ENUM:${field()}`);
   if (definition.pattern && !new RegExp(definition.pattern, 'u').test(String(value))) errors.push(`JSON_SCHEMA_PATTERN:${field()}`);
-  if (definition.format === 'date' && (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/u.test(value) || !Number.isFinite(Date.parse(`${value}T00:00:00Z`)))) errors.push(`JSON_SCHEMA_FORMAT:${field()}`);
+  if (definition.format === 'date' && !isRfc3339FullDate(value)) errors.push(`JSON_SCHEMA_FORMAT:${field()}`);
+}
+
+function isRfc3339FullDate(value) {
+  const match = typeof value === 'string' && /^(\d{4})-(\d{2})-(\d{2})$/u.exec(value);
+  if (!match) return false;
+  const [, yearText, monthText, dayText] = match;
+  const year = Number(yearText);
+  const month = Number(monthText);
+  const day = Number(dayText);
+  if (month < 1 || month > 12 || day < 1) return false;
+  const leapYear = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+  const daysByMonth = [31, leapYear ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  return day <= daysByMonth[month - 1];
 }
 
 export async function importClassificationCatalog({ manifest, recordsByTable = {}, mode = 'dry-run', adapter = null } = {}) {

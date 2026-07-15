@@ -1,0 +1,178 @@
+[
+  {
+    "id": "profile_household_kitchen_basic_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "context_domain": "household_kitchen_basic",
+    "applicability": {
+      "version": 1,
+      "mode": "draft_authoring"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "profile_household_storage_basic_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "context_domain": "household_storage_basic",
+    "applicability": {
+      "version": 1,
+      "mode": "draft_authoring"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "profile_traveler_basic_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "context_domain": "traveler_basic",
+    "applicability": {
+      "version": 1,
+      "mode": "draft_authoring"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "profile_fisher_basic_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "context_domain": "fisher_basic",
+    "applicability": {
+      "version": 1,
+      "mode": "draft_authoring"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "profile_farmer_basic_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "context_domain": "farmer_basic",
+    "applicability": {
+      "version": 1,
+      "mode": "draft_authoring"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "profile_woodworker_basic_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "context_domain": "woodworker_basic",
+    "applicability": {
+      "version": 1,
+      "mode": "draft_authoring"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "profile_smith_basic_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "context_domain": "smith_basic",
+    "applicability": {
+      "version": 1,
+      "mode": "draft_authoring"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "profile_textile_worker_basic_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "context_domain": "textile_worker_basic",
+    "applicability": {
+      "version": 1,
+      "mode": "draft_authoring"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "profile_merchant_trade_tools_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "context_domain": "merchant_trade_tools",
+    "applicability": {
+      "version": 1,
+      "mode": "draft_authoring"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "profile_scribe_trade_writing_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "context_domain": "scribe_trade_writing",
+    "applicability": {
+      "version": 1,
+      "mode": "draft_authoring"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "profile_hunter_basic_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "context_domain": "hunter_basic",
+    "applicability": {
+      "version": 1,
+      "mode": "draft_authoring"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "profile_guard_service_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "context_domain": "guard_service",
+    "applicability": {
+      "version": 1,
+      "mode": "draft_authoring"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "profile_warrior_service_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "context_domain": "warrior_service",
+    "applicability": {
+      "version": 1,
+      "mode": "draft_authoring"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "profile_religious_personal_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "context_domain": "religious_personal",
+    "applicability": {
+      "version": 1,
+      "mode": "draft_authoring"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "profile_market_food_stock_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "context_domain": "market_food_stock",
+    "applicability": {
+      "version": 1,
+      "mode": "draft_authoring"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "profile_market_craft_stock_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "context_domain": "market_craft_stock",
+    "applicability": {
+      "version": 1,
+      "mode": "draft_authoring"
+    },
+    "status": "draft"
+  }
+]

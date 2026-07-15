@@ -301,6 +301,11 @@ export const common = {
 
 /** Поля по таблицам — только там, где нужно уточнение сверх common. */
 export const fields = {
+  item_templates: {
+    category_id: 'FK → universal_categories(id): object-type category template; legacy item_type не является вторым классификатором.',
+    world_revision_id: 'FK → world_revisions(id): pinned revision для нового нормализованного authoring template.',
+    source_id: 'FK → source_records(id): provenance template; для legacy строк может быть NULL до reviewed migration.'
+  },
   item_template_category_bindings: {
     item_template_id: 'FK → item_templates(id): классифицируемый шаблон предмета.',
     category_id: 'FK → universal_categories(id): утверждённая категория фасета.',
@@ -336,9 +341,17 @@ export const fields = {
     requires_regional_permission: 'Требует approved regional/period permission в той же world revision до импорта.'
   },
   container_templates: {
+    source_id: 'FK → source_records(id): provenance container template; draft catalog не выводит историческую точность из этой ссылки.',
     capacity: 'Положительная внутренняя вместимость контейнера в packing slots; не является массой, литрами или inventory slots персонажа.',
     packing_slot_cost: 'Положительный внешний размер контейнера в packing slots при переноске или вложении.',
     capacity_policy: 'Closed policy строго {version:1,mode:packing_slots,unit:packing_slot}; runtime не интерпретирует иные единицы.'
+  },
+  property_profile_rules: {
+    owner_kind: 'Closed vocabulary: person, household, workshop, community, institution, estate или unknown; не ID конкретного owner.',
+    holder_kind: 'Closed vocabulary holder relation; не заменяет party holder relation.',
+    controller_kind: 'Closed vocabulary controller relation; не заменяет party controller relation.',
+    access_policy: 'Versioned policy payload для authoring access; без внешних ID и художественного текста.',
+    claim_conditions: 'Versioned policy payload условий claim; без конкретных party relations.'
   },
   container_content_category_relations: {
     container_category_id: 'FK → universal_categories(id): категория контейнера.',

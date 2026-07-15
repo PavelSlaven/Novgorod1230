@@ -656,6 +656,18 @@
       "type": "json"
     },
     {
+      "bytes": 778,
+      "path": "schemas/materialization/container-content-profile-entries-v1.schema.json",
+      "sha256": "6ff7159e75de95256aee61f19a317d7d96a25c79ba43b7d6483392417b02f090",
+      "type": "json"
+    },
+    {
+      "bytes": 433,
+      "path": "schemas/materialization/container-content-profiles-v1.schema.json",
+      "sha256": "5393e7fb8e27c280582938d9bdedd75cf1be818319947f3b1a4fedc2a847dd43",
+      "type": "json"
+    },
+    {
       "bytes": 650,
       "path": "schemas/materialization/container-template-facet-bindings-v1.schema.json",
       "sha256": "e5c2d7248a1bc33b5c7c9f73f97843a640a17601d03f69b2c6cca596db7d1fc9",
@@ -668,15 +680,27 @@
       "type": "json"
     },
     {
-      "bytes": 851,
+      "bytes": 895,
       "path": "schemas/materialization/container-templates-v1.schema.json",
-      "sha256": "7b94635e3ea7e6726d669f2c9595d0e6d14c52958e6a0b520cc92d547ff803aa",
+      "sha256": "ea116627196d44ac915835c010f9e6eef4f23a729bfc7b2df0d76832bb1b72bf",
       "type": "json"
     },
     {
       "bytes": 738,
       "path": "schemas/materialization/item-classification-migration-inventory-v1.schema.json",
       "sha256": "cbcfee73a572cb55bc1861f7444e44666ac2453abd5b341b7b36d5a9d1fc5289",
+      "type": "json"
+    },
+    {
+      "bytes": 819,
+      "path": "schemas/materialization/item-profile-entries-v1.schema.json",
+      "sha256": "9ed6084519ada39b8f4bcb497d5df91f243d3d7a6c13b5d28697fc33983b1c61",
+      "type": "json"
+    },
+    {
+      "bytes": 668,
+      "path": "schemas/materialization/item-profile-sets-v1.schema.json",
+      "sha256": "da28c42211e937f4d186d3750b95b92762847ee15a0e9c07b8f75248a0f4cd90",
       "type": "json"
     },
     {
@@ -689,6 +713,12 @@
       "bytes": 694,
       "path": "schemas/materialization/item-template-inventory-profiles-v1.schema.json",
       "sha256": "61b5a6c6c13c65dc116edf74ba0b9fec6e9fd61daef1ca1688b91aaf1e4a56b4",
+      "type": "json"
+    },
+    {
+      "bytes": 582,
+      "path": "schemas/materialization/item-templates-v1.schema.json",
+      "sha256": "5c508b395d78888f1c7d02f4dfccf3e6e98b19db51b5cb9cca5040e4679ff5f8",
       "type": "json"
     },
     {
@@ -710,9 +740,39 @@
       "type": "json"
     },
     {
+      "bytes": 1078,
+      "path": "schemas/materialization/property-profile-rules-v1.schema.json",
+      "sha256": "fdb63b23c9ffdbbaa9e7562141cc2763ea1538300c5ed79f0b7d8c55604f9c30",
+      "type": "json"
+    },
+    {
+      "bytes": 499,
+      "path": "schemas/materialization/property-profiles-v1.schema.json",
+      "sha256": "6cd5d5bdb462d8f4e1a60af1457faaba4c1aa11f9ded629a2cade6ae37adf0cd",
+      "type": "json"
+    },
+    {
+      "bytes": 825,
+      "path": "schemas/materialization/region-category-options-v1.schema.json",
+      "sha256": "0acabbad107562f88424ff0215d9619d26f63aaaa829ba75e274708fce11da0e",
+      "type": "json"
+    },
+    {
       "bytes": 649,
       "path": "schemas/materialization/region-equipment-profile-entries-v1.schema.json",
       "sha256": "92ff1c9a1cb43b62770c178af635a3cb9ed18a043a9fb0d2a1deb8b2d8fafeee",
+      "type": "json"
+    },
+    {
+      "bytes": 454,
+      "path": "schemas/materialization/region-equipment-profiles-v1.schema.json",
+      "sha256": "33b1f3a2febb0ca72dd388804dd06501703a71ea913fa7cf48fdd9dff92976b9",
+      "type": "json"
+    },
+    {
+      "bytes": 697,
+      "path": "schemas/materialization/source-records-v1.schema.json",
+      "sha256": "037a2be66fdce964f9bde13c3d4031c0a1b4c9c2ebb7b26e3cf72aa3e61a9b1c",
       "type": "json"
     },
     {
@@ -743,6 +803,12 @@
       "bytes": 5190,
       "path": "schemas/materialization/world-materialization-result-v2.schema.json",
       "sha256": "92ee591037949a9e55ded6fe2813516718b5ade28b7cd7c8b592185c356db163",
+      "type": "json"
+    },
+    {
+      "bytes": 571,
+      "path": "schemas/materialization/world-revisions-v1.schema.json",
+      "sha256": "47693c523b2000430235dafd8e7a5669355cf67208c53f6f497f95a985df4214",
       "type": "json"
     },
     {

@@ -6,6 +6,8 @@ import {
   importClassificationCatalog,
   validateCatalogImportManifest
 } from '../src/index.js';
+import { validateJsonSchemaRecords } from '../src/materialization-readiness.js';
+import universalParameterDefinitionsSchema from '../../../schemas/materialization/universal-parameter-definitions-v1.schema.json' with { type: 'json' };
 
 const approved = { status: 'approved' };
 
@@ -133,4 +135,17 @@ test('classification importer dry-run never writes and apply rolls back on a rea
   assert.equal(calls[0], 'begin');
   assert.ok(calls.includes('rollback'));
   assert.ok(!calls.includes('commit'));
+});
+
+test('universal parameter definition schema rejects an unknown value type and uncontrolled payload field', () => {
+  const errors = validateJsonSchemaRecords('universal_parameter_definitions', [{
+    id: 'parameter-1',
+    category_id: 'knife',
+    parameter_key: 'length_mm',
+    value_type: 'invented',
+    constraints: { version: 1 },
+    unbounded_editor_note: true
+  }], universalParameterDefinitionsSchema);
+  assert.ok(errors.includes('JSON_SCHEMA_ENUM:universal_parameter_definitions:0:value_type'));
+  assert.ok(errors.includes('JSON_SCHEMA_ADDITIONAL_PROPERTY:universal_parameter_definitions:0:unbounded_editor_note'));
 });

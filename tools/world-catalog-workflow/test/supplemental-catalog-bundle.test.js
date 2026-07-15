@@ -4,8 +4,13 @@ import { resolve } from 'node:path';
 import test from 'node:test';
 
 import { supplementalDigest, validateSupplementalCatalogBundle } from '../src/index.js';
+import { loadVerifiedParentSourceRecords } from '../../../scripts/stage3b1-parent-source-bundle.mjs';
 
 const bundleRoot = resolve('data/knowledge-source/imports/universal-category-classification-2026-07-15/stage-3b1/bundle');
+const historicalParentSourceIds = new Set(loadVerifiedParentSourceRecords([
+  'src_novgorod_agriculture',
+  'src_novgorod_promysly'
+]).map((record) => record.id));
 
 function readJson(name) {
   return JSON.parse(readFileSync(resolve(bundleRoot, name), 'utf8'));
@@ -20,7 +25,7 @@ test('stage 3B-1 bundle is a deterministic draft-only supplemental catalog', () 
     externalIds: {
       regions: new Set(['region_novgorod_land']),
       world_revisions: new Set(['novgorod_1230_research_revision_001']),
-      source_records: new Set(['src_project_stage_3b1_physical_parameter_policy']),
+      source_records: new Set(['src_project_stage_3b1_physical_parameter_policy', ...historicalParentSourceIds]),
       region_social_roles: new Set(['nov_role_guard'])
     }
   });
@@ -30,6 +35,10 @@ test('stage 3B-1 bundle is a deterministic draft-only supplemental catalog', () 
   assert.equal(recordsByTable.container_templates.length, 18);
   assert.equal(new Set([...recordsByTable.item_templates, ...recordsByTable.container_templates].map((record) => record.id)).size, 120);
   assert.equal([...recordsByTable.item_templates, ...recordsByTable.container_templates].every((record) => record.status === 'draft'), true);
+});
+
+test('supplemental bundle derives historical source IDs from the verified parent archive', () => {
+  assert.deepEqual([...historicalParentSourceIds].sort(), ['src_novgorod_agriculture', 'src_novgorod_promysly']);
 });
 
 test('supplemental bundle rejects a party table and digest mismatch', () => {
@@ -135,4 +144,92 @@ test('supplemental bundle rejects a FK-dependent table scheduled before its prer
   manifest.datasets = [itemTemplates, ...manifest.datasets.filter((dataset) => dataset !== itemTemplates)].map((dataset, dependency_order) => ({ ...dataset, dependency_order }));
   const result = validateSupplementalCatalogBundle(manifest, recordsByTable, { externalIds: { regions: new Set(['region_novgorod_land']), region_social_roles: new Set(['nov_role_guard']) } });
   assert.equal(result.errors.includes('FK_DEPENDENCY_ORDER_INVALID:item_templates:world_revisions'), true);
+});
+
+test('supplemental bundle accepts a normalized historical source link only for a known source and template', () => {
+  const manifest = readJson('manifest.json');
+  const recordsByTable = Object.fromEntries(manifest.datasets.map((dataset) => [dataset.table, readJson(dataset.path)]));
+  recordsByTable.record_sources.push({
+    id: 'record_source_test_agriculture',
+    source_id: 'src_novgorod_agriculture',
+    target_table: 'item_templates',
+    target_record_id: recordsByTable.item_templates[0].id,
+    support_type: 'background',
+    summary: 'Тестовая нормализованная ссылка на исторический источник.'
+  });
+  const recordSourcesDataset = manifest.datasets.find((dataset) => dataset.table === 'record_sources');
+  recordSourcesDataset.record_count = recordsByTable.record_sources.length;
+  recordSourcesDataset.sha256 = supplementalDigest(recordsByTable.record_sources);
+
+  const result = validateSupplementalCatalogBundle(manifest, recordsByTable, {
+    externalIds: {
+      regions: new Set(['region_novgorod_land']),
+      world_revisions: new Set(['novgorod_1230_research_revision_001']),
+      source_records: new Set(['src_novgorod_agriculture', 'src_novgorod_promysly']),
+      region_social_roles: new Set(['nov_role_guard'])
+    }
+  });
+
+  assert.deepEqual(result.errors, []);
+});
+
+test('supplemental bundle rejects an unknown manifest provenance source', () => {
+  const manifest = readJson('manifest.json');
+  const recordsByTable = Object.fromEntries(manifest.datasets.map((dataset) => [dataset.table, readJson(dataset.path)]));
+  manifest.provenance.source_ids = ['source_not_in_bundle_or_parent'];
+
+  const result = validateSupplementalCatalogBundle(manifest, recordsByTable, {
+    externalIds: {
+      regions: new Set(['region_novgorod_land']),
+      world_revisions: new Set(['novgorod_1230_research_revision_001']),
+      source_records: new Set(['src_novgorod_agriculture', 'src_novgorod_promysly']),
+      region_social_roles: new Set(['nov_role_guard'])
+    }
+  });
+
+  assert.equal(result.errors.includes('PROVENANCE_SOURCE_UNKNOWN:source_not_in_bundle_or_parent'), true);
+});
+
+test('supplemental bundle rejects a record source whose historical source is absent from the verified parent', () => {
+  const manifest = readJson('manifest.json');
+  const recordsByTable = Object.fromEntries(manifest.datasets.map((dataset) => [dataset.table, readJson(dataset.path)]));
+  recordsByTable.record_sources[0].source_id = 'source_not_in_parent';
+  manifest.datasets.find((dataset) => dataset.table === 'record_sources').sha256 = supplementalDigest(recordsByTable.record_sources);
+  const result = validateSupplementalCatalogBundle(manifest, recordsByTable, {
+    externalIds: { regions: new Set(['region_novgorod_land']), source_records: historicalParentSourceIds, region_social_roles: new Set(['nov_role_guard']) }
+  });
+  assert.equal(result.errors.includes(`RECORD_SOURCE_SOURCE_UNKNOWN:${recordsByTable.record_sources[0].id}`), true);
+});
+
+test('supplemental bundle rejects a record source whose target record is absent', () => {
+  const manifest = readJson('manifest.json');
+  const recordsByTable = Object.fromEntries(manifest.datasets.map((dataset) => [dataset.table, readJson(dataset.path)]));
+  recordsByTable.record_sources[0].target_record_id = 'template_not_in_bundle';
+  manifest.datasets.find((dataset) => dataset.table === 'record_sources').sha256 = supplementalDigest(recordsByTable.record_sources);
+  const result = validateSupplementalCatalogBundle(manifest, recordsByTable, {
+    externalIds: { regions: new Set(['region_novgorod_land']), source_records: historicalParentSourceIds, region_social_roles: new Set(['nov_role_guard']) }
+  });
+  assert.equal(result.errors.includes(`RECORD_SOURCE_TARGET_UNKNOWN:${recordsByTable.record_sources[0].id}`), true);
+});
+
+test('supplemental bundle rejects a record source whose target table is not registered', () => {
+  const manifest = readJson('manifest.json');
+  const recordsByTable = Object.fromEntries(manifest.datasets.map((dataset) => [dataset.table, readJson(dataset.path)]));
+  recordsByTable.record_sources[0].target_table = 'party_items';
+  manifest.datasets.find((dataset) => dataset.table === 'record_sources').sha256 = supplementalDigest(recordsByTable.record_sources);
+  const result = validateSupplementalCatalogBundle(manifest, recordsByTable, {
+    externalIds: { regions: new Set(['region_novgorod_land']), source_records: historicalParentSourceIds, region_social_roles: new Set(['nov_role_guard']) }
+  });
+  assert.equal(result.errors.includes(`RECORD_SOURCE_TARGET_TABLE_INVALID:${recordsByTable.record_sources[0].id}`), true);
+});
+
+test('supplemental bundle schedules each record source after its local target table', () => {
+  const manifest = readJson('manifest.json');
+  const recordsByTable = Object.fromEntries(manifest.datasets.map((dataset) => [dataset.table, readJson(dataset.path)]));
+  const recordSources = manifest.datasets.find((dataset) => dataset.table === 'record_sources');
+  manifest.datasets = [recordSources, ...manifest.datasets.filter((dataset) => dataset !== recordSources)].map((dataset, dependency_order) => ({ ...dataset, dependency_order }));
+  const result = validateSupplementalCatalogBundle(manifest, recordsByTable, {
+    externalIds: { regions: new Set(['region_novgorod_land']), source_records: historicalParentSourceIds, region_social_roles: new Set(['nov_role_guard']) }
+  });
+  assert.equal(result.errors.includes(`RECORD_SOURCE_TARGET_ORDER_INVALID:${recordsByTable.record_sources[0].id}`), true);
 });

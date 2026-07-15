@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rus.universal_parameter_definitions.v1",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["id", "category_id", "parameter_key", "value_type", "constraints"],
+    "properties": {
+      "id": { "type": "string", "minLength": 1 },
+      "category_id": { "type": "string", "minLength": 1 },
+      "parameter_key": { "type": "string", "minLength": 1 },
+      "value_type": { "enum": ["boolean", "integer", "number", "text", "enum"] },
+      "constraints": {
+        "type": "object",
+        "required": ["version"],
+        "properties": {
+          "version": { "const": 1 },
+          "minimum": { "type": "number" },
+          "maximum": { "type": "number" },
+          "allowed_values": {
+            "type": "array",
+            "items": { "type": ["string", "number", "boolean"] }
+          },
+          "unit": { "type": "string", "minLength": 1 }
+        },
+        "additionalProperties": false
+      }
+    },
+    "additionalProperties": false
+  }
+}

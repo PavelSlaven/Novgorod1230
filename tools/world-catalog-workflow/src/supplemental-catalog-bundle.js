@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto';
 import { stableStringify } from './digest.js';
 import { validateJsonSchemaRecords } from './materialization-readiness.js';
 import sourceRecordsSchema from '../../../schemas/materialization/source-records-v1.schema.json' with { type: 'json' };
+import recordSourcesSchema from '../../../schemas/materialization/record-sources-v1.schema.json' with { type: 'json' };
 import worldRevisionsSchema from '../../../schemas/materialization/world-revisions-v1.schema.json' with { type: 'json' };
 import universalCategoriesSchema from '../../../schemas/materialization/universal-categories-v1.schema.json' with { type: 'json' };
 import categoryLabelsSchema from '../../../schemas/materialization/category-labels-v1.schema.json' with { type: 'json' };
@@ -26,7 +27,7 @@ import itemClassificationMigrationInventorySchema from '../../../schemas/materia
 // A supplemental catalog is intentionally separate from the approved base archive.
 // It is authoring input only; this validator never makes draft rows runtime candidates.
 export const SUPPLEMENTAL_AUTHORING_TABLES = Object.freeze(new Set([
-  'source_records', 'world_revisions', 'universal_categories', 'category_labels',
+  'source_records', 'record_sources', 'world_revisions', 'universal_categories', 'category_labels',
   'region_category_options', 'item_templates', 'item_template_category_bindings',
   'item_template_inventory_profiles', 'container_templates', 'container_template_facet_bindings',
   'container_template_inventory_profiles', 'container_content_profiles',
@@ -46,6 +47,7 @@ const STRICT_FIELDS = Object.freeze({
   container_template_facet_bindings: new Set(['id', 'container_template_id', 'category_id', 'facet', 'requires_regional_permission', 'status']),
   container_template_inventory_profiles: new Set(['id', 'container_template_id', 'world_revision_id', 'source_id', 'mass_grams', 'carry_form', 'external_hand_cost', 'inventory_role', 'status']),
   source_records: new Set(['id', 'title', 'source_type', 'summary', 'status', 'confidence']),
+  record_sources: new Set(['id', 'source_id', 'target_table', 'target_record_id', 'support_type', 'summary', 'page_or_section', 'confidence', 'contradiction_notes']),
   world_revisions: new Set(['id', 'parent_revision_id', 'title', 'effective_from', 'effective_to', 'catalog_digest', 'status']),
   item_templates: new Set(['id', 'world_revision_id', 'region_id', 'category_id', 'source_id', 'title', 'status']),
   container_templates: new Set(['id', 'world_revision_id', 'region_id', 'category_id', 'source_id', 'capacity', 'packing_slot_cost', 'capacity_policy', 'access_policy', 'status']),
@@ -60,7 +62,7 @@ const STRICT_FIELDS = Object.freeze({
   item_classification_migration_inventory: new Set(['id', 'legacy_table_name', 'legacy_record_id', 'legacy_field_name', 'legacy_value', 'resolution_status', 'resolved_category_id', 'report_note'])
 });
 const SCHEMA_IDS = Object.freeze({
-  source_records: 'rus.source_records.v1', world_revisions: 'rus.world_revisions.v1', universal_categories: 'rus.universal_categories.v1', category_labels: 'rus.category_labels.v1', region_category_options: 'rus.region_category_options.v1',
+  source_records: 'rus.source_records.v1', record_sources: 'rus.record_sources.v1', world_revisions: 'rus.world_revisions.v1', universal_categories: 'rus.universal_categories.v1', category_labels: 'rus.category_labels.v1', region_category_options: 'rus.region_category_options.v1',
   item_templates: 'rus.item_templates.v1', item_template_category_bindings: 'rus.item_template_category_bindings.v1', item_template_inventory_profiles: 'rus.item_template_inventory_profiles.v1',
   container_templates: 'rus.container_templates.v1', container_template_facet_bindings: 'rus.container_template_facet_bindings.v1', container_template_inventory_profiles: 'rus.container_template_inventory_profiles.v1',
   container_content_profiles: 'rus.container_content_profiles.v1', container_content_profile_entries: 'rus.container_content_profile_entries.v1',
@@ -70,6 +72,7 @@ const SCHEMA_IDS = Object.freeze({
 });
 const SUPPLEMENTAL_FK_DEPENDENCIES = Object.freeze({
   world_revisions: ['world_revisions'], universal_categories: ['universal_categories'],
+  record_sources: ['source_records'],
   category_labels: ['universal_categories', 'source_records'], region_category_options: ['world_revisions', 'universal_categories'],
   item_templates: ['world_revisions', 'universal_categories', 'source_records'],
   item_template_category_bindings: ['item_templates', 'universal_categories'], item_template_inventory_profiles: ['item_templates', 'world_revisions', 'source_records'],
@@ -81,7 +84,7 @@ const SUPPLEMENTAL_FK_DEPENDENCIES = Object.freeze({
   item_classification_migration_inventory: ['universal_categories']
 });
 const SCHEMAS = Object.freeze({
-  source_records: sourceRecordsSchema, world_revisions: worldRevisionsSchema, universal_categories: universalCategoriesSchema, category_labels: categoryLabelsSchema, region_category_options: regionCategoryOptionsSchema,
+  source_records: sourceRecordsSchema, record_sources: recordSourcesSchema, world_revisions: worldRevisionsSchema, universal_categories: universalCategoriesSchema, category_labels: categoryLabelsSchema, region_category_options: regionCategoryOptionsSchema,
   item_templates: itemTemplatesSchema, item_template_category_bindings: itemTemplateCategoryBindingsSchema, item_template_inventory_profiles: itemTemplateInventoryProfilesSchema,
   container_templates: containerTemplatesSchema, container_template_facet_bindings: containerTemplateFacetBindingsSchema, container_template_inventory_profiles: containerTemplateInventoryProfilesSchema,
   container_content_profiles: containerContentProfilesSchema, container_content_profile_entries: containerContentProfileEntriesSchema,
@@ -143,6 +146,10 @@ export function validateSupplementalCatalogBundle(manifest, recordsByTable = {},
   const revisions = known('world_revisions');
   const regions = known('regions');
 
+  for (const sourceId of manifest.provenance.source_ids ?? []) {
+    if (!sources.has(sourceId)) errors.push(`PROVENANCE_SOURCE_UNKNOWN:${sourceId}`);
+  }
+
   for (const [table, records] of Object.entries(recordsByTable)) for (const record of records ?? []) {
     const allowed = STRICT_FIELDS[table];
     if (allowed) for (const key of Object.keys(record ?? {})) if (!allowed.has(key)) errors.push(`RECORD_FIELD_FORBIDDEN:${table}:${record?.id ?? '?'}:${key}`);
@@ -160,6 +167,17 @@ export function validateSupplementalCatalogBundle(manifest, recordsByTable = {},
   for (const record of recordsByTable.category_labels ?? []) {
     if (!categories.has(record.category_id)) errors.push(`LABEL_CATEGORY_UNKNOWN:${record.id}`);
     if (record.source_id && !sources.has(record.source_id)) errors.push(`LABEL_SOURCE_UNKNOWN:${record.id}`);
+  }
+  for (const record of recordsByTable.record_sources ?? []) {
+    if (!sources.has(record.source_id)) errors.push(`RECORD_SOURCE_SOURCE_UNKNOWN:${record.id}`);
+    if (!SUPPLEMENTAL_AUTHORING_TABLES.has(record.target_table) || record.target_table === 'record_sources') {
+      errors.push(`RECORD_SOURCE_TARGET_TABLE_INVALID:${record.id}`);
+      continue;
+    }
+    if (!known(record.target_table).has(record.target_record_id)) errors.push(`RECORD_SOURCE_TARGET_UNKNOWN:${record.id}`);
+    if (orderByTable.has(record.target_table) && orderByTable.get(record.target_table) >= orderByTable.get('record_sources')) {
+      errors.push(`RECORD_SOURCE_TARGET_ORDER_INVALID:${record.id}`);
+    }
   }
   for (const record of recordsByTable.world_revisions ?? []) {
     if (record.parent_revision_id && !revisions.has(record.parent_revision_id)) errors.push(`WORLD_REVISION_PARENT_UNKNOWN:${record.id}`);

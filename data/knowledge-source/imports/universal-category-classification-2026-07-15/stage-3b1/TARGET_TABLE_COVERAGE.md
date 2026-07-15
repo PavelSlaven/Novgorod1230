@@ -1,14 +1,32 @@
 # Stage 3B-1 — покрытие целевых таблиц
 
-| table | DDL | JSON Schema | importer registry | FK order | cross-reference | readiness | positive/negative test | dataset | gap |
-|---|---|---|---|---|---|---|---|---|---|
-| source_records, world_revisions | yes | yes | supplemental | yes | yes | promotion | yes | yes | approved parent external |
-| universal_categories, category_labels, region_category_options | yes | partial | supplemental | yes | yes | promotion | yes | yes | draft only |
-| item_templates, item_template_category_bindings, item_template_inventory_profiles | yes | yes | supplemental | yes | yes | promotion | yes | yes | material and quantity review |
-| container_templates, facet/inventory/content tables | yes | partial | supplemental | yes | yes | promotion | yes | yes | compatibility review |
-| item_profile_sets, item_profile_entries | yes | yes | supplemental | yes | yes | promotion | yes | yes | profile basis review |
-| property_profiles, property_profile_rules | yes | yes | supplemental | yes | yes | promotion | yes | yes | category review |
-| region_equipment_profiles, entries | yes | yes | supplemental | yes | yes | promotion | yes | yes | only verified role refs |
-| item_classification_migration_inventory | yes | yes | supplemental | yes | yes | promotion | yes | empty | legacy export unavailable |
+`yes` в строке означает, что слой существует и проверяется; это не означает готовность к promotion. Bundle намеренно содержит только `draft` records.
 
-`partial` не означает import-ready: до promotion требуются PostgreSQL import path, reviewed provenance и readiness. Supplemental validator намеренно разрешает только draft authoring и не является runtime loader.
+| table | DDL | JSON Schema | importer registry | FK order | cross-reference | readiness | positive/negative test | dataset | blocking gap |
+|---|---|---|---|---|---|---|---|---|---|
+| source_records | yes | yes | supplemental | yes | yes | promotion | yes | yes, 1 project policy | historical records retained in parent bundle |
+| record_sources | yes | yes | supplemental | yes | yes | promotion | yes | yes, 15 background links | 105 templates need individual evidence |
+| world_revisions | yes | yes | supplemental | yes | yes | promotion | yes | yes, 1 draft | approved parent is external dependency |
+| universal_categories | yes | yes | supplemental | yes | yes | promotion | yes | yes, 146 draft | material/category review |
+| universal_category_relations | yes | existing | not needed by this bundle | n/a | existing | promotion | existing | no | no relation asserted without evidence |
+| universal_parameter_definitions | yes | existing | not needed by this bundle | n/a | existing | promotion | existing | no | parameter definitions not required by current draft fields |
+| category_labels | yes | yes | supplemental | yes | yes | promotion | yes | yes, 146 | historical alternatives not asserted |
+| region_category_options | yes | yes | supplemental | yes | yes | promotion | yes | yes, 146 draft | neutral technical weights only |
+| item_templates | yes | yes | supplemental | yes | yes | promotion | yes | yes, 102 draft | 87 individual source links missing |
+| item_template_category_bindings | yes | yes | supplemental | yes | yes | promotion | yes | yes, 306 | materials intentionally unresolved |
+| item_template_inventory_profiles | yes | yes | supplemental | yes | yes | promotion | yes | yes, 102 draft | physical review and bulk units |
+| container_templates | yes | yes | supplemental | yes | yes | promotion | yes | yes, 18 draft | individual source links missing |
+| container_template_facet_bindings | yes | yes | supplemental | yes | yes | promotion | yes | yes, 18 | material/closure evidence unresolved |
+| container_template_inventory_profiles | yes | yes | supplemental | yes | yes | promotion | yes | yes, 18 draft | physical review |
+| container_content_profiles | yes | yes | supplemental | yes | yes | promotion | yes | yes, 18 | general compatibility deliberately coarse |
+| container_content_profile_entries | yes | yes | supplemental | yes | yes | promotion | yes | yes, 4 specialized | no broad inferred permissions |
+| container_content_category_relations | yes | existing | not needed by this bundle | n/a | existing | promotion | existing | no | no category-wide compatibility asserted |
+| item_profile_sets | yes | yes | supplemental | yes | yes | promotion | yes | yes, 16 draft | context/profile basis review |
+| item_profile_entries | yes | yes | supplemental | yes | yes | promotion | yes | yes, 16 draft | required candidate sets intentionally absent |
+| property_profiles | yes | yes | supplemental | yes | yes | promotion | yes | yes, 10 draft | editorial/legal review |
+| property_profile_rules | yes | yes | supplemental | yes | yes | promotion | yes | yes, 10 draft | no instance owner/holder created |
+| region_equipment_profiles | yes | yes | supplemental | yes | yes | promotion | yes | yes, 1 draft | only verified role ID used |
+| region_equipment_profile_entries | yes | yes | supplemental | yes | yes | promotion | yes | yes, 1 draft | equipment profile review |
+| item_classification_migration_inventory | yes | yes | supplemental | yes | yes | promotion | yes | empty by design | canonical legacy export unavailable |
+
+The public supplemental validator rejects unknown tables, unknown manifest provenance source IDs, unknown `record_sources` source/target references, party tables, digest mismatches and invalid dependency ordering. This is an authoring boundary, not a runtime loader.

@@ -9,7 +9,9 @@
   "deletion_policy": "none",
   "provenance": {
     "source_ids": [
-      "src_project_stage_3b1_physical_parameter_policy"
+      "src_project_stage_3b1_physical_parameter_policy",
+      "src_novgorod_agriculture",
+      "src_novgorod_promysly"
     ],
     "effective_at": "1230-01-01",
     "historical_presence_gate": "broad_type_only"
@@ -168,12 +170,20 @@
       "dependency_order": 18
     },
     {
+      "table": "record_sources",
+      "path": "record_sources.json",
+      "schema_id": "rus.record_sources.v1",
+      "record_count": 15,
+      "sha256": "35d7f8972d12cbc79a70b504c764b16be688dca6cded2897657072073f7fdab0",
+      "dependency_order": 19
+    },
+    {
       "table": "item_classification_migration_inventory",
       "path": "item_classification_migration_inventory.json",
       "schema_id": "rus.item_classification_migration_inventory.v1",
       "record_count": 0,
       "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
-      "dependency_order": 19
+      "dependency_order": 20
     }
   ]
 }

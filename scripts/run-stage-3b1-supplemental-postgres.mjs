@@ -3,6 +3,7 @@ import { resolve } from 'node:path';
 import pg from 'pg';
 
 import { applySupplementalCatalogBundle, supplementalDigest } from '../tools/world-catalog-workflow/src/index.js';
+import { loadVerifiedParentSourceRecords } from './stage3b1-parent-source-bundle.mjs';
 
 const root = resolve(import.meta.dirname, '..');
 const bundleRoot = resolve(root, 'data/knowledge-source/imports/universal-category-classification-2026-07-15/stage-3b1/bundle');
@@ -11,19 +12,23 @@ if (!databaseUrl) throw new Error('SUPPLEMENTAL_DATABASE_URL_REQUIRED');
 
 const manifest = readJson('manifest.json');
 const recordsByTable = Object.fromEntries(manifest.datasets.map((dataset) => [dataset.table, readJson(dataset.path)]));
+const parentSourceRecords = loadVerifiedParentSourceRecords((recordsByTable.record_sources ?? []).map((record) => record.source_id));
+const parentSourceIds = new Set(parentSourceRecords.map((record) => record.id));
 const pool = new pg.Pool({ connectionString: databaseUrl });
 const client = await pool.connect();
 try {
-  await bootstrapExternalReferences(client);
+  await bootstrapExternalReferences(client, parentSourceRecords);
   const adapter = createPostgresAdapter(client);
   const result = await applySupplementalCatalogBundle({ manifest, recordsByTable, adapter, externalIds: {
     regions: new Set(['region_novgorod_land']),
     world_revisions: new Set(['novgorod_1230_research_revision_001']),
+    source_records: parentSourceIds,
     region_social_roles: new Set(['nov_role_guard'])
   } });
   const repeated = await applySupplementalCatalogBundle({ manifest, recordsByTable, adapter, externalIds: {
     regions: new Set(['region_novgorod_land']),
     world_revisions: new Set(['novgorod_1230_research_revision_001']),
+    source_records: parentSourceIds,
     region_social_roles: new Set(['nov_role_guard'])
   } });
   if (repeated.tables.length !== manifest.datasets.length) throw new Error('SUPPLEMENTAL_REPEAT_APPLY_INCOMPLETE');
@@ -64,10 +69,17 @@ function createPostgresAdapter(client) {
   };
 }
 
-async function bootstrapExternalReferences(client) {
+async function bootstrapExternalReferences(client, parentSourceRecords) {
   await client.query(`INSERT INTO world_base.regions (id, canonical_name) VALUES ('region_novgorod_land', 'Novgorod Land') ON CONFLICT (id) DO NOTHING`);
   await client.query(`INSERT INTO world_base.world_revisions (id, title, catalog_digest, status) VALUES ('novgorod_1230_research_revision_001', 'CI parent revision', $1, 'draft') ON CONFLICT (id) DO NOTHING`, ['0'.repeat(64)]);
   await client.query(`INSERT INTO world_base.region_social_roles (id, region_id, title) VALUES ('nov_role_guard', 'region_novgorod_land', 'CI guard') ON CONFLICT (id) DO NOTHING`);
+  for (const source of parentSourceRecords) {
+    await client.query(`INSERT INTO world_base.source_records (id, title, slug, source_type, url, usefulness, status, confidence, audit_notes)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) ON CONFLICT (id) DO NOTHING`, [
+      source.id, source.title || null, source.slug || null, source.source_type || null, source.url || null,
+      source.usefulness || null, source.status || 'draft', source.confidence || 'unknown', source.audit_notes || null
+    ]);
+  }
 }
 
 async function verifyRollback(client, adapter) {

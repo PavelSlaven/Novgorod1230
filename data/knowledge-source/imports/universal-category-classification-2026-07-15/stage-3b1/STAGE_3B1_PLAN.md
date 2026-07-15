@@ -55,15 +55,15 @@ universal category → template → profile → rule → instance
 Stage 3B-1 technical draft bundle: implemented
 supplemental dry-run: PASS
 code critic: PASS WITH NOTES
-PostgreSQL supplemental integration: not run
+PostgreSQL supplemental integration: PASS (disposable PostgreSQL 16)
 promotion: blocked
 runtime activation: not started
 ```
 
-Выполненная реализация охватывает 20 datasets, включая draft categories, regional options, templates, normalized bindings и profiles. Предыдущий список шагов в разделе 4 сохраняет историю проектирования; невыполненными из него остаются PostgreSQL lifecycle и promotion gates.
+Выполненная реализация охватывает 21 dataset, включая draft categories, regional options, templates, normalized bindings, profiles и 15 `record_sources` links. Предыдущий список шагов в разделе 4 сохраняет историю проектирования; невыполненными остаются promotion gates.
 
 ## 6. Promotion gates и отложенные работы
 
-Promotion blocked до individual source-record review, material/physical review, bulk quantity unit contract, container compatibility review, actual PostgreSQL import/readback/rollback и отдельного editorial approval. External/local legacy rows требуют export перед Stage 3B migration. Stage 8/16 остаётся на existing approved input and does not load this draft bundle.
+Promotion blocked до individual source-record review для 105 templates, material/physical review, bulk quantity unit contract, container compatibility review и отдельного editorial approval. External/local legacy rows требуют export перед Stage 3B migration. Stage 8/16 остаётся на existing approved input and does not load this draft bundle.
 
 Полный перечень текущих gaps и coverage: `DATA_GAPS.md`, `TARGET_TABLE_COVERAGE.md`, `NORMALIZATION_COVERAGE_REPORT.md`, `PHYSICAL_PARAMETER_REVIEW_TABLE.md`, `CODEX_INTEGRATION_REPORT.md`.

@@ -38,6 +38,7 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 - Existing environment baseline tests passed before transfer.
 - 2026-07-15: `@rus/travel` RED test first failed with `ERR_MODULE_NOT_FOUND` (no implementation); the initial pure contract implementation is now GREEN at 6/6 tests.
 - 2026-07-15: `@rus/movement-routes` RED test first failed because `calculatePartialTraversal` did not exist; strict profile/transport traversal is GREEN at 4/4 tests.
+- 2026-07-15: environment RED test proved that baseline initialization implicitly created a cue; baseline initialization is now limited to persistent landmarks and lifecycle requires explicit update.
 
 ## Checks recorded on transferred baseline
 

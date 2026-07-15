@@ -44,6 +44,8 @@ The only travel command IDs are `travel.start_route`, `travel.start_course`, `tr
 
 `createTravelTurnCommandDefinitions` supplies the code-owned definitions to the normal command registry. It selects only `routing_context.travel_command_id` and returns a typed block if the state reader did not provide formal travel context and persistence proposal; it does not infer either from player text.
 
+`travel.continue` is the first executable handler: it requires a validated active journey, pinned travel context and explicit advance request, calls `@rus/travel.advanceJourney`, then builds the normalized journey/leg/position write proposal. Other lifecycle commands remain blocked until their distinct formal requests are wired.
+
 ## Инварианты
 
 1. `raw_text` всегда имеет `contract = intent_not_fact`.

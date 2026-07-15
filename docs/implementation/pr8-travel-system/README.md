@@ -58,6 +58,7 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 - 2026-07-15: safe travel projection встроен в существующий `visible_context_package.travel`; тот же visible/narrator gate повторно валидирует projection и блокирует hidden travel fields.
 - 2026-07-15: `TURN_TRAVEL_COMMAND_IDS` фиксирует закрытый code-owned set travel handlers; LLM и free text не могут создать или выбрать несуществующий command id.
 - 2026-07-15: `createTravelTurnCommandDefinitions` добавляет definitions для всех travel commands в существующий registry. Definitions требуют formal state-reader context и persistence proposal; неполный контекст блокируется типизированно, без semantic fallback.
+- 2026-07-15: `travel.continue` подключён к `@rus/travel.advanceJourney` и `buildTravelChangeSetProposal`; handler требует explicit progress/duration/visible seed/idempotency key и планирует normalized journey/leg/position targets. Остальные lifecycle handlers остаются fail-closed до своих formal requests.
 
 ## Checks recorded on transferred baseline
 
@@ -168,6 +169,9 @@ Typed domain errors are versioned with the travel contracts; persistence, presen
 | `node --test packages/turn/test/turn-workflow.test.js` | 2026-07-15 | рабочее дерево после `1857f5e` | RED: 1 failed | Отсутствовала handler factory. |
 | `node --test packages/turn/test/turn-workflow.test.js` | 2026-07-15 | рабочее дерево после `1857f5e` | PASS: 13/13 | Definitions выбираются только по explicit routing ID. |
 | `npm run test:domain` | 2026-07-15 | рабочее дерево после `1857f5e` | PASS: 96/96 | Полный domain regression. |
+| `npm install --package-lock-only --ignore-scripts` | 2026-07-15 | рабочее дерево после `55bf36a` | PASS | Workspace lockfile синхронизирован с зависимостью `@rus/travel`. |
+| `node --test packages/turn/test/turn-workflow.test.js` | 2026-07-15 | рабочее дерево после `55bf36a` | PASS: 13/13 | Continue handler fail-closes при отсутствии formal context. |
+| `npm run test:domain` | 2026-07-15 | рабочее дерево после `55bf36a` | PASS: 96/96 | Полный domain regression. |
 
 ## Data and migration registry
 

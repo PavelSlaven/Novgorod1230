@@ -310,4 +310,7 @@ test('travel handler definitions match only an explicit code-owned routing comma
   const selected = definitions.filter((definition) => definition.matches({ routing_context: { travel_command_id: 'travel.continue' } }));
   assert.deepEqual(selected.map((definition) => definition.command_id), ['travel.continue']);
   assert.equal(definitions.some((definition) => definition.matches({ routing_context: { travel_command_id: 'travel.invented' } })), false);
+  const continueHandler = definitions.find((definition) => definition.command_id === 'travel.continue');
+  assert.throws(() => continueHandler.consequence({}), (error) => error.code === 'TRAVEL_HANDLER_CONTEXT_MISSING');
+  assert.throws(() => continueHandler.writeTargets({}), (error) => error.code === 'TRAVEL_HANDLER_CONTEXT_MISSING');
 });

@@ -8,6 +8,7 @@ import {
   TURN_WORKFLOW_STAGE_PLAN,
   TURN_ALLOWED_STATE_BLOCKS,
   TURN_ALLOWED_WRITE_TARGETS,
+  TURN_TRAVEL_COMMAND_IDS,
   createTurnCommandRegistry,
   runTurnWorkflow,
   validateTurnWorkflowStagePlan
@@ -293,4 +294,11 @@ test('turn contracts reserve travel state blocks and normalized persistence targ
   for (const target of ['party_journeys', 'party_journey_legs', 'party_environment_runs', 'party_environment_choices', 'party_environment_landmarks', 'party_environment_cues', 'party_environment_traces']) {
     assert.equal(TURN_ALLOWED_WRITE_TARGETS.includes(target), true, target);
   }
+});
+
+test('travel command identifiers are a code-owned finite set', () => {
+  assert.deepEqual(TURN_TRAVEL_COMMAND_IDS, [
+    'travel.start_route', 'travel.start_course', 'travel.continue', 'travel.stop',
+    'travel.change_pace', 'travel.reroute', 'travel.camp', 'travel.resume', 'travel.abandon'
+  ]);
 });

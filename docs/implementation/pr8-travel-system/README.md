@@ -56,6 +56,7 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 - 2026-07-15: presentation получил `createTravelPanelContract`: UI read model использует только validated travel visible projection и не реализует механику travel/navigation.
 - 2026-07-15: существующий `@rus/turn` workflow расширен contract-level state blocks и Stage 25 write targets для journeys/legs/environment. Второй orchestrator не создан; code-owned travel handlers и production ports ещё не подключены.
 - 2026-07-15: safe travel projection встроен в существующий `visible_context_package.travel`; тот же visible/narrator gate повторно валидирует projection и блокирует hidden travel fields.
+- 2026-07-15: `TURN_TRAVEL_COMMAND_IDS` фиксирует закрытый code-owned set travel handlers; LLM и free text не могут создать или выбрать несуществующий command id.
 
 ## Checks recorded on transferred baseline
 
@@ -160,6 +161,9 @@ Typed domain errors are versioned with the travel contracts; persistence, presen
 | `node --test packages/visibility-knowledge-memory/test/domain.test.js` | 2026-07-15 | рабочее дерево после `87f2023` | RED: 1 failed | Visible context schema не принимала travel projection. |
 | `node --test packages/visibility-knowledge-memory/test/domain.test.js` | 2026-07-15 | рабочее дерево после `87f2023` | PASS: 2/2 | Travel projection проходит только через normal security gate. |
 | `npm run test:domain` | 2026-07-15 | рабочее дерево после `87f2023` | PASS: 94/94 | Полный domain regression. |
+| `node --test packages/turn/test/turn-workflow.test.js` | 2026-07-15 | рабочее дерево после `11e7bc4` | RED: 1 failed | Отсутствовал code-owned travel command registry. |
+| `node --test packages/turn/test/turn-workflow.test.js` | 2026-07-15 | рабочее дерево после `11e7bc4` | PASS: 12/12 | Travel command set закрыт и стабилен. |
+| `npm run test:domain` | 2026-07-15 | рабочее дерево после `11e7bc4` | PASS: 95/95 | Полный domain regression. |
 
 ## Data and migration registry
 

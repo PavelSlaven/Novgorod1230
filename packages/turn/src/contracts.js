@@ -50,6 +50,18 @@ export const TURN_ALLOWED_CHECKS = deepFreeze([
   'body_state'
 ]);
 
+export const TURN_TRAVEL_COMMAND_IDS = deepFreeze([
+  'travel.start_route',
+  'travel.start_course',
+  'travel.continue',
+  'travel.stop',
+  'travel.change_pace',
+  'travel.reroute',
+  'travel.camp',
+  'travel.resume',
+  'travel.abandon'
+]);
+
 export const TURN_ALLOWED_SECONDARY_MODES = deepFreeze([...TURN_PRIMARY_MODES, ...TURN_ALLOWED_SUBSYSTEMS]);
 
 export const TURN_ALLOWED_STATE_BLOCKS = deepFreeze([

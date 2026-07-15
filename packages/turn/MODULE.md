@@ -40,6 +40,8 @@
 
 Travel integration uses the same workflow: state blocks `active_journey`, `journey_legs`, `travel_position`, environment feature blocks and `transport_state`; normalized persistence targets include journeys, legs and environment runs/features. The command handler remains code-owned and may not replace a missing approved bundle or route with a fallback.
 
+The only travel command IDs are `travel.start_route`, `travel.start_course`, `travel.continue`, `travel.stop`, `travel.change_pace`, `travel.reroute`, `travel.camp`, `travel.resume` and `travel.abandon`.
+
 ## Инварианты
 
 1. `raw_text` всегда имеет `contract = intent_not_fact`.

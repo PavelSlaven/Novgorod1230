@@ -123,7 +123,7 @@ export const TABLE_GROUPS = [
   },
   {
     title: 'Materialization v2: предметы и имущество',
-    tables: ['container_templates', 'item_profile_sets', 'item_profile_entries', 'container_content_profiles', 'container_content_profile_entries', 'property_profiles', 'property_profile_rules', 'transport_templates']
+    tables: ['container_templates', 'item_profile_sets', 'item_profile_entries', 'container_content_profiles', 'container_content_profile_entries', 'item_template_category_bindings', 'container_template_facet_bindings', 'container_content_category_relations', 'item_classification_migration_inventory', 'property_profiles', 'property_profile_rules', 'transport_templates']
   },
   {
     title: 'Materialization v2: решения и импорт',
@@ -230,6 +230,10 @@ export const TABLE_PURPOSE_FALLBACK = {
   item_profile_entries: 'Нормализованные варианты предметов и quantity limits.',
   container_content_profiles: 'Профили содержимого контейнеров.',
   container_content_profile_entries: 'Нормализованные варианты содержимого и количества.',
+  item_template_category_bindings: 'Нормализованные фасетные связи шаблона предмета с утверждёнными категориями.',
+  container_template_facet_bindings: 'Нормализованные фасеты шаблона контейнера.',
+  container_content_category_relations: 'Разрешённые и запрещённые пары категорий контейнера и содержимого.',
+  item_classification_migration_inventory: 'Явный отчёт перехода legacy-полей предметов и контейнеров без guessed mapping.',
   property_profiles: 'Региональные модели имущества и доступа.',
   property_profile_rules: 'Условия owner/holder/controller/access/claim.',
   transport_templates: 'Шаблоны транспорта с маршрутными и equipment requirements.',
@@ -295,6 +299,32 @@ export const common = {
 
 /** Поля по таблицам — только там, где нужно уточнение сверх common. */
 export const fields = {
+  item_template_category_bindings: {
+    item_template_id: 'FK → item_templates(id): классифицируемый шаблон предмета.',
+    category_id: 'FK → universal_categories(id): утверждённая категория фасета.',
+    binding_kind: 'Независимый фасет: object_type, function, material, technique, condition и др.',
+    exclusivity_group: 'Только primary_function либо NULL; запрещает неформальные группы совместимости.',
+    requires_regional_permission: 'Требует approved regional/period permission в той же world revision до импорта.'
+  },
+  container_template_facet_bindings: {
+    container_template_id: 'FK → container_templates(id): классифицируемый шаблон контейнера.',
+    category_id: 'FK → universal_categories(id): утверждённая категория фасета.',
+    facet: 'container_form, capacity_band, closure_type, access_model, portability или content_compatibility.',
+    requires_regional_permission: 'Требует approved regional/period permission в той же world revision до импорта.'
+  },
+  container_content_category_relations: {
+    container_category_id: 'FK → universal_categories(id): категория контейнера.',
+    content_category_id: 'FK → universal_categories(id): категория допустимого либо запрещённого содержимого.',
+    compatibility: 'closed vocabulary: allowed или forbidden; не создаёт regional permission.'
+  },
+  item_classification_migration_inventory: {
+    legacy_table_name: 'Исходная legacy-таблица без автоматической записи в неё.',
+    legacy_record_id: 'ID исходной legacy-записи.',
+    legacy_field_name: 'Поле, для которого требуется reviewed classification mapping.',
+    legacy_value: 'Дословное legacy-значение; не интерпретируется как категория.',
+    resolution_status: 'mapped, data_gap, migration_conflict или deferred.',
+    resolved_category_id: 'FK → universal_categories(id); обязателен только при mapped.'
+  },
   classification_schemes: {
     authority: 'Организация, отвечающая за внешнюю классификационную схему.',
     scheme_version: 'Зафиксированная версия внешней схемы.',

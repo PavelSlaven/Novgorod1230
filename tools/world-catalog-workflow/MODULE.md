@@ -11,6 +11,7 @@
 - детерминированной очередью `global_grid_y DESC, global_grid_x ASC`;
 - техническим сравнением существующих и входящих записей без молчаливого удаления.
 - публичными `validateCatalogImportManifest`, `validateClassificationCatalog` и `importClassificationCatalog`: проверкой manifest, FK-derived порядка, pinned schemes, controlled label/relation/mapping types, category hierarchy cycles, dry-run и transaction adapter с readback digest/count gate.
+- публичными `validateItemContainerClassificationCatalog`, `assessItemContainerClassificationMigration` и `assessItemContainerClassificationReadiness`: fail-closed проверкой нормализованных item/container facets, content compatibility, typed legacy gaps/conflicts и обязательных profile/G4 rule.
 
 ## Не делает
 
@@ -20,6 +21,7 @@
 - не изменяет runtime;
 - не создаёт конкретных NPC, предметы, контейнеры или G5.
 - не превращает external mapping в региональное разрешение, materialization rule или runtime live-запрос.
+- не выполняет массовый historical mapping legacy fields и не меняет Stage 8/16 либо party instances.
 
 ## Побочные эффекты
 

@@ -138,10 +138,14 @@ Release: `0.23.0-migration.24`
 | `schemas/materialization/category-labels-v1.schema.json` | json | 617 | `1573db65e359e5fef818c2e1a17ac66cf9e0e5a922bf9e9a7824d8304bc6ba78` |
 | `schemas/materialization/category-scheme-mappings-v1.schema.json` | json | 732 | `a0f0c10e737b3e06eff1163ebd32b04db26a2a6e17beb0766450fd786ab2b6f0` |
 | `schemas/materialization/classification-schemes-v1.schema.json` | json | 754 | `4744d626cd53cc4dae7794ea08162432245eaf2de8fe097e54359be7f83e9034` |
+| `schemas/materialization/container-content-category-relations-v1.schema.json` | json | 533 | `3f6c11cea3e82408f1c337bf619dbc0b6a79b128f6b1ee1111f17331bb7eec82` |
+| `schemas/materialization/container-template-facet-bindings-v1.schema.json` | json | 589 | `515985fa8f013372429e4ef4eaf5ce3786523126292fc11e570f364062496ba3` |
+| `schemas/materialization/item-classification-migration-inventory-v1.schema.json` | json | 738 | `cbcfee73a572cb55bc1861f7444e44666ac2453abd5b341b7b36d5a9d1fc5289` |
+| `schemas/materialization/item-template-category-bindings-v1.schema.json` | json | 719 | `e8f5422c7b3725b42c3084dd378845c9cc897a8510318bd3ef0064e64fe66528` |
 | `schemas/materialization/normalized-instance-candidate-v2.schema.json` | json | 3150 | `ccbd9e9d518a8ab4b28e937e6e4eb19b88a26f3ea6eeff89aaf24432dd9a0b1d` |
 | `schemas/materialization/party-autonomous-update-v2.schema.json` | json | 2515 | `974cf66248b18851ac64b2e80522b0207a28f049088318d578ffbc11b8712397` |
 | `schemas/materialization/party-change-set-v2.schema.json` | json | 2816 | `cabbce3e6d6091391cba5b1fa0b6ea09c69f2db6bbed3ac241563171e95b62c1` |
-| `schemas/materialization/universal-categories-v1.schema.json` | json | 897 | `e5d1956821a642f5a03ad3888c3bd2c5f2b9cea6a48a0f7146c4bb6ca656dfa2` |
+| `schemas/materialization/universal-categories-v1.schema.json` | json | 905 | `b2110a8b777c2d26049337f07826c254eb1f9854535ae7990f4c2f40bc4df972` |
 | `schemas/materialization/universal-category-relations-v1.schema.json` | json | 512 | `31fd11130f43de9a61d58b8fde877527649eaad8915af99225f982033b179f38` |
 | `schemas/materialization/world-materialization-repair-request-v2.schema.json` | json | 945 | `ba34924dd6587d7a5044498766cc8c0ff81167eae9fbee3e98e63ad0fb75fd59` |
 | `schemas/materialization/world-materialization-request-v2.schema.json` | json | 10347 | `3b6739984a1ec31a01d99867f13d8a5c9f4f87f4ab7a2d4ba5b911282629ae7f` |

@@ -2,11 +2,11 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { inspectWorldBaseSchema } from '../../scripts/check-world-base-schema.mjs';
 
-test('world_base schema expands to exactly 111 unique tables', async () => {
+test('world_base schema expands to exactly 115 unique tables', async () => {
   const result = await inspectWorldBaseSchema({ root: process.cwd() });
   assert.equal(result.schema, 'world_base');
-  assert.equal(result.table_count, 111);
-  assert.equal(result.table_names.length, 111);
+  assert.equal(result.table_count, 115);
+  assert.equal(result.table_names.length, 115);
   assert.deepEqual(result.duplicate_table_names, []);
   assert.equal(result.part_files.length, 11);
 });

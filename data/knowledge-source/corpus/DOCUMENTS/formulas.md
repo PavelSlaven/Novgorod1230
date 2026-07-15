@@ -1196,6 +1196,19 @@ d20 + бонус Разума/Внимания + бонус Лечения + м�
 
 ### 6.1. Инвентарь персонажа
 
+Inventory foundation v1 использует независимые вычисления:
+
+```text
+total_carried_mass = сумма approved mass всех instances на physical holder path
+hands_free = 2 − сумма external_hand_cost внешне переносимых instances
+light <= strength×2 < moderate <= strength×4 < heavy <= strength×6 < overloaded
+at_limit = total_carried_mass == strength×6
+```
+
+Container packing не выводит массу и не заменяет руки. Недостающая mass/carry profile
+образует hard data gap; calculator не подставляет fallback. Access path и время доступа
+разделены: inventory возвращает steps, а time/orchestrator применяет время.
+
 ```text
 инвентарь = предметы при персонаже
 ```

@@ -89,6 +89,10 @@ export function buildPartyRuntimeV2WritePlan(input) {
     parent_container_id: container.placement?.container_instance_id ?? null,
     holder_npc_id: container.placement?.holder_npc_instance_id ?? null,
     holder_character_id: container.placement?.holder_player_character_id ?? null,
+    physical_position: container.placement?.physical_position ?? null,
+    equipment_slot_category_id: container.placement?.equipment_slot_category_id ?? null,
+    condition_state: container.condition_state ?? null,
+    closure_state: container.container_state?.closure_state ?? container.physical_state?.closure_state ?? null,
     state: resourceSemanticState(container, `container[${index}]`)
   })), ['party_materialization_runs', 'party_g5_anchors', 'party_npcs', 'party_player_characters'], sourceTrace);
   addBatch(batches, 'party_items', (itemPlacement.item_instances ?? itemPlacement.items ?? []).map((item, index) => ({
@@ -175,7 +179,11 @@ function buildItemPlacementRecord(partyId, item) {
   if (targets.length !== 1) throw stage24BuildError('WRITE_PLAN_ITEM_PLACEMENT_INVALID', `Item ${record.item_id} must have exactly one approved placement target.`);
   if (placement.container_instance_id) record.container_id = placement.container_instance_id;
   else if (placement.holder_npc_instance_id) record.holder_npc_id = placement.holder_npc_instance_id;
-  else if (placement.holder_player_character_id) record.holder_character_id = placement.holder_player_character_id;
+  else if (placement.holder_player_character_id) {
+    record.holder_character_id = placement.holder_player_character_id;
+    record.physical_position = placement.physical_position ?? null;
+    record.equipment_slot_category_id = placement.equipment_slot_category_id ?? null;
+  }
   else record.anchor_id = placement.g5_anchor_id;
   return record;
 }
@@ -213,6 +221,7 @@ function buildOwnershipRecord(partyId, kind, subjectId, property = {}) {
     owner_npc_id: ownerModel === 'npc' ? property.owner_npc_instance_id ?? property.owner_id : null,
     owner_character_id: ownerModel === 'player' ? property.owner_character_id ?? property.owner_id : null,
     owner_party: ownerModel === 'party', controller_npc_id: property.controller_model === 'npc' ? property.controller_id : null,
+    controller_character_id: property.controller_model === 'player' ? property.controller_id : null,
     claim_state: requiredText(property.legal_or_social_status, `${kind}.${subjectId}.property_state.legal_or_social_status`)
   };
 }

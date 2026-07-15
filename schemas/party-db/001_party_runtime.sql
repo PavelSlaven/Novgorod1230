@@ -230,6 +230,10 @@ CREATE TABLE IF NOT EXISTS party_runtime.party_containers (
   parent_container_id TEXT,
   holder_npc_id TEXT,
   holder_character_id TEXT,
+  physical_position TEXT CHECK (physical_position IN ('hands','worn','worn_quick','equipped','external','external_load')),
+  equipment_slot_category_id TEXT,
+  condition_state TEXT,
+  closure_state TEXT CHECK (closure_state IN ('open','closed','locked','unavailable')),
   state JSONB NOT NULL DEFAULT '{}'::jsonb,
   PRIMARY KEY (party_id, container_id),
   FOREIGN KEY (party_id, run_id) REFERENCES party_runtime.party_materialization_runs(party_id, run_id) ON DELETE RESTRICT,
@@ -241,6 +245,8 @@ CREATE TABLE IF NOT EXISTS party_runtime.party_containers (
        + (CASE WHEN parent_container_id IS NULL THEN 0 ELSE 1 END)
        + (CASE WHEN holder_npc_id IS NULL THEN 0 ELSE 1 END)
        + (CASE WHEN holder_character_id IS NULL THEN 0 ELSE 1 END) = 1),
+  CHECK (physical_position IS NULL OR holder_character_id IS NOT NULL),
+  CHECK (equipment_slot_category_id IS NULL OR holder_character_id IS NOT NULL),
   CHECK (parent_container_id IS NULL OR parent_container_id <> container_id)
 );
 CREATE TABLE IF NOT EXISTS party_runtime.party_items (
@@ -264,6 +270,8 @@ CREATE TABLE IF NOT EXISTS party_runtime.party_item_placements (
   container_id TEXT,
   holder_npc_id TEXT,
   holder_character_id TEXT,
+  physical_position TEXT CHECK (physical_position IN ('hands','worn','worn_quick','equipped','external','external_load')),
+  equipment_slot_category_id TEXT,
   PRIMARY KEY (party_id, item_id),
   FOREIGN KEY (party_id, item_id) REFERENCES party_runtime.party_items(party_id, item_id) ON DELETE CASCADE,
   FOREIGN KEY (party_id, anchor_id) REFERENCES party_runtime.party_g5_anchors(party_id, anchor_id) ON DELETE RESTRICT,
@@ -274,6 +282,8 @@ CREATE TABLE IF NOT EXISTS party_runtime.party_item_placements (
        + (CASE WHEN container_id IS NULL THEN 0 ELSE 1 END)
        + (CASE WHEN holder_npc_id IS NULL THEN 0 ELSE 1 END)
        + (CASE WHEN holder_character_id IS NULL THEN 0 ELSE 1 END) = 1)
+  ,CHECK (physical_position IS NULL OR holder_character_id IS NOT NULL)
+  ,CHECK (equipment_slot_category_id IS NULL OR holder_character_id IS NOT NULL)
 );
 CREATE TABLE IF NOT EXISTS party_runtime.party_ownership (
   party_id TEXT NOT NULL REFERENCES party_runtime.parties(party_id) ON DELETE CASCADE,
@@ -284,6 +294,7 @@ CREATE TABLE IF NOT EXISTS party_runtime.party_ownership (
   owner_character_id TEXT,
   owner_party BOOLEAN NOT NULL DEFAULT false,
   controller_npc_id TEXT,
+  controller_character_id TEXT,
   claim_state TEXT NOT NULL,
   PRIMARY KEY (party_id, ownership_id),
   FOREIGN KEY (party_id, item_id) REFERENCES party_runtime.party_items(party_id, item_id) ON DELETE CASCADE,
@@ -291,10 +302,12 @@ CREATE TABLE IF NOT EXISTS party_runtime.party_ownership (
   FOREIGN KEY (party_id, owner_npc_id) REFERENCES party_runtime.party_npcs(party_id, npc_id) ON DELETE RESTRICT,
   FOREIGN KEY (party_id, owner_character_id) REFERENCES party_runtime.party_player_characters(party_id, character_id) ON DELETE RESTRICT,
   FOREIGN KEY (party_id, controller_npc_id) REFERENCES party_runtime.party_npcs(party_id, npc_id) ON DELETE RESTRICT,
+  FOREIGN KEY (party_id, controller_character_id) REFERENCES party_runtime.party_player_characters(party_id, character_id) ON DELETE RESTRICT,
   CHECK ((CASE WHEN item_id IS NULL THEN 0 ELSE 1 END) + (CASE WHEN container_id IS NULL THEN 0 ELSE 1 END) = 1),
   CHECK ((CASE WHEN owner_npc_id IS NULL THEN 0 ELSE 1 END)
        + (CASE WHEN owner_character_id IS NULL THEN 0 ELSE 1 END)
        + (CASE WHEN owner_party THEN 1 ELSE 0 END) = 1)
+  ,CHECK (NOT (controller_npc_id IS NOT NULL AND controller_character_id IS NOT NULL))
 );
 CREATE UNIQUE INDEX IF NOT EXISTS party_ownership_item_unique ON party_runtime.party_ownership (party_id, item_id) WHERE item_id IS NOT NULL;
 CREATE UNIQUE INDEX IF NOT EXISTS party_ownership_container_unique ON party_runtime.party_ownership (party_id, container_id) WHERE container_id IS NOT NULL;

@@ -7,7 +7,7 @@ const AUTHORING_TABLES = new Set([
   'building_layout_templates', 'building_layout_nodes', 'building_layout_edges', 'g4_materialization_profiles', 'g4_materialization_bindings',
   'g5_minilocation_templates', 'g5_anchor_templates', 'g5_edge_templates', 'materialization_slot_rules', 'container_templates',
   'g4_materialization_layout_edges',
-  'item_profile_sets', 'item_profile_entries', 'container_content_profiles', 'container_content_profile_entries', 'item_template_category_bindings', 'container_template_facet_bindings', 'container_content_category_relations', 'item_classification_migration_inventory', 'property_profiles',
+  'item_profile_sets', 'item_profile_entries', 'container_content_profiles', 'container_content_profile_entries', 'item_template_category_bindings', 'item_template_inventory_profiles', 'container_template_inventory_profiles', 'container_template_facet_bindings', 'container_content_category_relations', 'item_classification_migration_inventory', 'property_profiles',
   'property_profile_rules', 'transport_templates', 'g4_npc_materialization_rules', 'g4_item_materialization_rules', 'g4_container_materialization_rules',
   'decision_command_catalog', 'decision_policy_profiles', 'decision_policy_options'
 ]);
@@ -48,6 +48,8 @@ export const MATERIALIZATION_FOREIGN_KEYS = Object.freeze([
   ['container_templates','world_revision_id','world_revisions'], ['container_templates','category_id','universal_categories'], ['item_profile_sets','world_revision_id','world_revisions'],
   ['item_templates','category_id','universal_categories'],
   ['item_template_category_bindings','item_template_id','item_templates'], ['item_template_category_bindings','category_id','universal_categories'],
+  ['item_template_inventory_profiles','item_template_id','item_templates'], ['item_template_inventory_profiles','world_revision_id','world_revisions'], ['item_template_inventory_profiles','source_id','source_records'],
+  ['container_template_inventory_profiles','container_template_id','container_templates'], ['container_template_inventory_profiles','world_revision_id','world_revisions'], ['container_template_inventory_profiles','source_id','source_records'],
   ['container_template_facet_bindings','container_template_id','container_templates'], ['container_template_facet_bindings','category_id','universal_categories'],
   ['container_content_category_relations','container_category_id','universal_categories'], ['container_content_category_relations','content_category_id','universal_categories'],
   ['item_classification_migration_inventory','resolved_category_id','universal_categories'],
@@ -470,6 +472,23 @@ function isValidContainerCapacityPolicy(value) {
   return keys.length === 3 && keys[0] === 'mode' && keys[1] === 'unit' && keys[2] === 'version' && value.version === 1 && value.mode === 'packing_slots' && value.unit === 'packing_slot';
 }
 
+function validateInventoryProfiles(errors, profiles, templateIds, templateKey, prefix, container = false) {
+  const active = new Set();
+  for (const profile of profiles) {
+    const id = profile?.id ?? '?';
+    const templateId = profile?.[templateKey];
+    if (!templateIds.has(templateId)) errors.push(`${prefix}_TEMPLATE_UNKNOWN:${id}`);
+    if (!Number.isInteger(profile?.mass_grams) || profile.mass_grams < 0) errors.push(`${prefix}_MASS_INVALID:${id}`);
+    if (!['compact', 'regular', 'long', 'bulky'].includes(profile?.carry_form)) errors.push(`${prefix}_CARRY_FORM_INVALID:${id}`);
+    if (![0, 1, 2].includes(profile?.external_hand_cost)) errors.push(`${prefix}_HAND_COST_INVALID:${id}`);
+    if (container && !['none', 'quick_container', 'primary_container'].includes(profile?.inventory_role)) errors.push(`${prefix}_ROLE_INVALID:${id}`);
+    if (profile?.status === 'approved') {
+      if (active.has(templateId)) errors.push(`${prefix}_AMBIGUOUS:${templateId}`);
+      active.add(templateId);
+    }
+  }
+}
+
 export function validateItemContainerClassificationCatalog(recordsByTable = {}, { worldRevisionId = null, effectiveAt = null } = {}) {
   const errors = [];
   const categories = new Map((recordsByTable.universal_categories ?? []).map((value) => [value.id, value]));
@@ -477,6 +496,8 @@ export function validateItemContainerClassificationCatalog(recordsByTable = {}, 
   const itemTemplates = new Set(itemTemplateRows.map((value) => value.id));
   const containers = new Map((recordsByTable.container_templates ?? []).map((value) => [value.id, value]));
   const itemBindings = recordsByTable.item_template_category_bindings ?? [];
+  const itemInventoryProfiles = recordsByTable.item_template_inventory_profiles ?? [];
+  const containerInventoryProfiles = recordsByTable.container_template_inventory_profiles ?? [];
   const containerBindings = recordsByTable.container_template_facet_bindings ?? [];
   const relations = recordsByTable.container_content_category_relations ?? [];
   const inventory = recordsByTable.item_classification_migration_inventory ?? [];
@@ -489,6 +510,8 @@ export function validateItemContainerClassificationCatalog(recordsByTable = {}, 
     if (!isValidContainerCapacityPolicy(container.capacity_policy)) errors.push(`CONTAINER_CAPACITY_POLICY_INVALID:${container.id}`);
   }
   errors.push(...validateClassificationJsonSchema('item_template_category_bindings', itemBindings, itemTemplateCategoryBindingsSchema));
+  errors.push(...validateClassificationJsonSchema('item_template_inventory_profiles', itemInventoryProfiles, itemTemplateInventoryProfilesSchema));
+  errors.push(...validateClassificationJsonSchema('container_template_inventory_profiles', containerInventoryProfiles, containerTemplateInventoryProfilesSchema));
   errors.push(...validateClassificationJsonSchema('container_template_facet_bindings', containerBindings, containerTemplateFacetBindingsSchema));
   errors.push(...validateClassificationJsonSchema('container_content_category_relations', relations, containerContentCategoryRelationsSchema));
   errors.push(...validateClassificationJsonSchema('item_classification_migration_inventory', inventory, itemClassificationMigrationInventorySchema));
@@ -532,6 +555,8 @@ export function validateItemContainerClassificationCatalog(recordsByTable = {}, 
     if (sizeBands.length === 0) errors.push(`ITEM_SIZE_BAND_MISSING:${template.id}`);
     if (sizeBands.length > 1) errors.push(`ITEM_SIZE_BAND_AMBIGUOUS:${template.id}`);
   }
+  validateInventoryProfiles(errors, itemInventoryProfiles, itemTemplates, 'item_template_id', 'ITEM_INVENTORY_PROFILE');
+  validateInventoryProfiles(errors, containerInventoryProfiles, new Set(containers.keys()), 'container_template_id', 'CONTAINER_INVENTORY_PROFILE', true);
   for (const binding of containerBindings) {
     const id = binding?.id ?? '?';
     const category = categories.get(binding?.category_id);
@@ -664,6 +689,8 @@ import categoryLabelsSchema from '../../../schemas/materialization/category-labe
 import universalCategoryRelationsSchema from '../../../schemas/materialization/universal-category-relations-v1.schema.json' with { type: 'json' };
 import categorySchemeMappingsSchema from '../../../schemas/materialization/category-scheme-mappings-v1.schema.json' with { type: 'json' };
 import itemTemplateCategoryBindingsSchema from '../../../schemas/materialization/item-template-category-bindings-v1.schema.json' with { type: 'json' };
+import itemTemplateInventoryProfilesSchema from '../../../schemas/materialization/item-template-inventory-profiles-v1.schema.json' with { type: 'json' };
+import containerTemplateInventoryProfilesSchema from '../../../schemas/materialization/container-template-inventory-profiles-v1.schema.json' with { type: 'json' };
 import containerTemplateFacetBindingsSchema from '../../../schemas/materialization/container-template-facet-bindings-v1.schema.json' with { type: 'json' };
 import containerContentCategoryRelationsSchema from '../../../schemas/materialization/container-content-category-relations-v1.schema.json' with { type: 'json' };
 import itemClassificationMigrationInventorySchema from '../../../schemas/materialization/item-classification-migration-inventory-v1.schema.json' with { type: 'json' };

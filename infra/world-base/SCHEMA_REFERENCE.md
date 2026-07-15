@@ -2,8 +2,8 @@
 # Справочник схемы `world_base`
 
 - Исполняемый источник: `infra/world-base/schema.sql` и 11 упорядоченных SQL-частей.
-- SHA-256 развёрнутого DDL: `6e2bbf17e0794ab1173cb26dd99126c691f7c8fbb6712eda97417cb3d2c2adda`.
-- Таблиц: 115.
+- SHA-256 развёрнутого DDL: `81c867c1706be45b8ff3f9064d4b3ab09b70c7a2038d57823bea157c32ef5744`.
+- Таблиц: 117.
 - Описания берутся только из утверждённого `infra/world-base/field-descriptions.js`; отсутствие описания не заполняется эвристикой.
 
 ## Граф (каноническая карта)
@@ -3210,6 +3210,45 @@ G4-specific правила контейнеров, содержимого и д�
 - `UNIQUE (item_template_id, category_id, binding_kind)`
 - `UNIQUE INDEX item_template_one_active_primary_function (item_template_id) WHERE binding_kind = 'primary_function' AND status = 'approved'`
 - `UNIQUE INDEX item_template_one_active_size_band (item_template_id) WHERE binding_kind = 'size_band' AND status = 'approved'`
+
+### `world_base.item_template_inventory_profiles`
+
+Строго типизированные mass и carrying параметры шаблона предмета; не историческое подтверждение без source record.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `item_template_id` | `TEXT` | нет | — | `world_base.item_templates(id) ON DELETE CASCADE` | `NOT NULL` | FK → item_templates(id): шаблон предмета, для которого утверждены физические inventory parameters. |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | FK → world_revisions(id): pinned ревизия authoring-каталога. |
+| `source_id` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | FK → source_records(id): provenance параметров; отсутствие не допускает historical approval. |
+| `mass_grams` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (mass_grams >= 0)` | Неотрицательная масса одного экземпляра в граммах; не выводится из packing slots и не имеет fallback. |
+| `carry_form` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (carry_form IN ('compact','regular','long','bulky'))` | Closed carrying form: compact, regular, long или bulky. |
+| `external_hand_cost` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (external_hand_cost IN (0,1,2))` | Closed внешний hand cost 0, 1 или 2; не является use_hand_cost. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | draft, approved или deprecated; для template допустим только один approved profile. |
+
+**Ограничения таблицы:**
+
+- `UNIQUE INDEX item_template_one_active_inventory_profile (item_template_id) WHERE status = 'approved'`
+
+### `world_base.container_template_inventory_profiles`
+
+Строго типизированные mass, carrying и quick/primary role параметры шаблона контейнера.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `container_template_id` | `TEXT` | нет | — | `world_base.container_templates(id) ON DELETE CASCADE` | `NOT NULL` | FK → container_templates(id): контейнер, для которого утверждены физические inventory parameters. |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | FK → world_revisions(id): pinned ревизия authoring-каталога. |
+| `source_id` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | FK → source_records(id): provenance параметров; отсутствие не допускает historical approval. |
+| `mass_grams` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (mass_grams >= 0)` | Неотрицательная масса пустого контейнера в граммах; contents считаются отдельно. |
+| `carry_form` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (carry_form IN ('compact','regular','long','bulky'))` | Closed carrying form: compact, regular, long или bulky. |
+| `external_hand_cost` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (external_hand_cost IN (0,1,2))` | Closed внешний hand cost 0, 1 или 2; не является use_hand_cost. |
+| `inventory_role` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (inventory_role IN ('none','quick_container','primary_container'))` | none, quick_container или primary_container; это authoring role, а не сохранённый derived zone. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | draft, approved или deprecated; для template допустим только один approved profile. |
+
+**Ограничения таблицы:**
+
+- `UNIQUE INDEX container_template_one_active_inventory_profile (container_template_id) WHERE status = 'approved'`
 
 ### `world_base.container_template_facet_bindings`
 

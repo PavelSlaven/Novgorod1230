@@ -43,6 +43,7 @@ Release: `0.23.0-migration.24`
 | `initial_npc_placement_audit` | `STAGE15_AUDIT_SCHEMA` | `packages/contracts/src/g5-placement-boundary.js` |
 | `initial_npc_placement_code_precheck` | `STAGE15_PRECHECK_SCHEMA` | `packages/contracts/src/g5-placement-boundary.js` |
 | `initial_npc_placement_draft` | `STAGE15_DRAFT_SCHEMA` | `packages/contracts/src/g5-placement-boundary.js` |
+| `inventory_panel` | `INVENTORY_PANEL_SCHEMA` | `packages/presentation/src/read-models/contracts.js` |
 | `item_placement_input` | `STAGE16_INPUT_SCHEMA` | `packages/contracts/src/g5-placement-boundary.js` |
 | `item_profile_candidate_set` | `STAGE8_OUTPUT_SCHEMA` | `packages/new-game/src/stages/stage-8-item-profile-candidates/policy.js` |
 | `item_profile_retriever_input` | `STAGE8_INPUT_SCHEMA` | `packages/new-game/src/stages/stage-8-item-profile-candidates/policy.js` |
@@ -140,9 +141,11 @@ Release: `0.23.0-migration.24`
 | `schemas/materialization/classification-schemes-v1.schema.json` | json | 754 | `4744d626cd53cc4dae7794ea08162432245eaf2de8fe097e54359be7f83e9034` |
 | `schemas/materialization/container-content-category-relations-v1.schema.json` | json | 533 | `3f6c11cea3e82408f1c337bf619dbc0b6a79b128f6b1ee1111f17331bb7eec82` |
 | `schemas/materialization/container-template-facet-bindings-v1.schema.json` | json | 650 | `e5c2d7248a1bc33b5c7c9f73f97843a640a17601d03f69b2c6cca596db7d1fc9` |
+| `schemas/materialization/container-template-inventory-profiles-v1.schema.json` | json | 799 | `6e4fac710cc9fbf56c7571bd7fc62902b866269d3d5b9dd707a4def3e5ee4c2a` |
 | `schemas/materialization/container-templates-v1.schema.json` | json | 851 | `7b94635e3ea7e6726d669f2c9595d0e6d14c52958e6a0b520cc92d547ff803aa` |
 | `schemas/materialization/item-classification-migration-inventory-v1.schema.json` | json | 738 | `cbcfee73a572cb55bc1861f7444e44666ac2453abd5b341b7b36d5a9d1fc5289` |
 | `schemas/materialization/item-template-category-bindings-v1.schema.json` | json | 871 | `0a355b2f66a9eec372b44ef31605bbbd3c808fed9411fa5dafca3baf83e15908` |
+| `schemas/materialization/item-template-inventory-profiles-v1.schema.json` | json | 694 | `61b5a6c6c13c65dc116edf74ba0b9fec6e9fd61daef1ca1688b91aaf1e4a56b4` |
 | `schemas/materialization/normalized-instance-candidate-v2.schema.json` | json | 3150 | `ccbd9e9d518a8ab4b28e937e6e4eb19b88a26f3ea6eeff89aaf24432dd9a0b1d` |
 | `schemas/materialization/party-autonomous-update-v2.schema.json` | json | 2515 | `974cf66248b18851ac64b2e80522b0207a28f049088318d578ffbc11b8712397` |
 | `schemas/materialization/party-change-set-v2.schema.json` | json | 2816 | `cabbce3e6d6091391cba5b1fa0b6ea09c69f2db6bbed3ac241563171e95b62c1` |
@@ -152,7 +155,7 @@ Release: `0.23.0-migration.24`
 | `schemas/materialization/world-materialization-repair-request-v2.schema.json` | json | 945 | `ba34924dd6587d7a5044498766cc8c0ff81167eae9fbee3e98e63ad0fb75fd59` |
 | `schemas/materialization/world-materialization-request-v2.schema.json` | json | 10347 | `3b6739984a1ec31a01d99867f13d8a5c9f4f87f4ab7a2d4ba5b911282629ae7f` |
 | `schemas/materialization/world-materialization-result-v2.schema.json` | json | 5190 | `92ee591037949a9e55ded6fe2813516718b5ade28b7cd7c8b592185c356db163` |
-| `schemas/party-db/001_party_runtime.sql` | sql | 18350 | `864a9f48dcff388a08eacef5fecec118ab213d18167d0a06d7f09c970d25fa2d` |
+| `schemas/party-db/001_party_runtime.sql` | sql | 19346 | `54bd27520ce5589b040319596e596cb75a5f59a1748d9ebb19c5d4368469cb05` |
 | `schemas/world-base/world-base-source-bundle.schema.json` | json | 1447 | `358430badf2821197ffc74d4600b2cc2b153d1a1a141020e998650cb1c325dc2` |
 | `schemas/world-catalogs/g1-boundary-contract.schema.json` | json | 1199 | `9a255c612dc382e4ead28c5566ae6583878840651904a134f364bb1b1291f3aa` |
 | `schemas/world-catalogs/g1-cell-package.schema.json` | json | 1794 | `d917ec67f99c965c0257f7dbc1b2498e123aff756f4b71c68e7da0f1b6fe8381` |

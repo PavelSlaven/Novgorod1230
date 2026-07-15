@@ -129,14 +129,15 @@
     },
     {
       "dependencies": [
-        "@rus/kernel"
+        "@rus/kernel",
+        "@rus/world-catalog-workflow"
       ],
       "name": "@rus/items-property",
       "owns": [
         "item and container contracts",
         "ownership and holder relations",
         "physical access",
-        "inventory load and recognition requests"
+        "normalized inventory topology, mass/load, hands, access, packing usage, stack signatures and pure transfer plans"
       ],
       "path": "packages/items-property",
       "public_entry": "./src/index.js",
@@ -241,6 +242,7 @@
     {
       "dependencies": [
         "@rus/contracts",
+        "@rus/items-property",
         "@rus/kernel",
         "@rus/materialization",
         "@rus/party-store",

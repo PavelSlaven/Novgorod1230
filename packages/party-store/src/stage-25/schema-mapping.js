@@ -68,11 +68,11 @@ export const PARTY_SPEC_TARGET_MAPPINGS = Object.freeze({
   },
   party_character_inventory: {
     actualTargetTable: 'party_item_placements',
-    storage: 'normalized_holder_reference'
+    storage: 'normalized_exactly_one_holder_reference_and_physical_position'
   },
   party_inventory: {
     actualTargetTable: 'party_item_placements',
-    storage: 'normalized_holder_reference'
+    storage: 'normalized_exactly_one_holder_reference_and_physical_position'
   },
   party_property_and_access: {
     actualTargetTable: 'party_ownership',

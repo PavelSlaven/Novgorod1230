@@ -343,3 +343,114 @@ deferred external/local rows: unknown until export
 ## 9. Текущий итог
 
 Этапы 1–3A реализованы технически и проверены в объёме, указанном выше. В этом чате выполнена содержательная редакторская часть 3B-1. Она подготовила предметный каталог-кандидат и выявила блокирующие дефекты контейнерной модели, но не объявлена import-ready и не активирована.
+
+## 10. Stage 3B-1 — inventory foundation v1: исходное состояние и gap analysis
+
+### Цель и границы
+
+Реализуется только технический каркас личного инвентаря: нормализованная topology
+instances, независимые packing slots / масса / руки / access, чистое планирование
+переносов и visible-only presentation projection. Outward используется только как
+игровое вдохновение: экипировка, quick container и основной переносимый контейнер
+разделены; историческим источником он не является. Historical authoring rows,
+production import, legacy cutover, rematerialization и runtime command activation не
+входят в этот этап.
+
+### Фактическая схема и существующие контракты
+
+- `party_runtime.party_items` хранит template/profile/category, quantity, condition и
+  legal status; `party_item_placements` уже имеет PK `(party_id,item_id)` и SQL
+  exactly-one target (`anchor`, `container`, NPC holder или character holder).
+- `party_runtime.party_containers` уже хранит exactly-one anchor/parent/holder target
+  и SQL self-containment block, но не имеет нормализованных carrying/equipment facts.
+- `party_ownership` уже разделяет owner/controller от holder; `party_visible_read_models`
+  — единственная versioned public projection.
+- `item_template_category_bindings` содержит единственный approved `size_band` и packing
+  metadata; `container_templates` содержит exact packing-slots v1 policy. Их расчёт
+  повторно не реализуется.
+
+### Gaps до inventory foundation
+
+- `@rus/items-property` работает с legacy nested `contents`, суммирует только один
+  уровень, подставляет mass `0` и не знает normalized placement graph, cycles, hands,
+  containment depth или structured inventory errors.
+- В authoring нет строго типизированного approved profile, который одновременно
+  разрешает mass, `carry_form`, `external_hand_cost` и роль quick/primary container;
+  существующие свободные JSONB `state` предназначены только для snapshot/state, не для
+  queryable inventory topology.
+- Stage 16 материализует scene anchor placements и проверяет packing slots, но не
+  выводит initial inventory placement, mass/hands/access trace или exact inventory data
+  gap. Stage 24/25 переносят утверждённые rows, однако не имеют inventory-specific
+  topology gate/read model contract.
+- Presentation показывает generic JSON inventory panel, а не versioned visible-only
+  inventory contract; UI не должен стать calculator.
+- Межстрочные constraints (cycles, depth, unique primary container, hands, equipment
+  exclusivity, same-party parent) требуют application gate; SQL остаётся только для
+  row-local FK/CHECK/exactly-one invariants.
+
+### Решение
+
+Расширяется существующий `@rus/items-property`, а не создаётся второй calculator.
+Нужные queryable template parameters получают минимальные нормализованные authoring
+profiles; `party_item_placements` и `party_containers` остаются source of truth
+physical placement. Derived zone, total mass, load, hands, packing usage и access
+хранятся только в immutable trace/validated public projection. Неизвестная mass,
+placement, template parameter, compatibility или command catalogue оформляется
+типизированным hard gap без fallback.
+
+### Реализованный inventory foundation v1
+
+- New normalized authoring tables: `item_template_inventory_profiles` and
+  `container_template_inventory_profiles`. Они требуют source/revision, `mass_grams`,
+  `carry_form`, `external_hand_cost`, status; контейнер добавляет closed `inventory_role`.
+  Никаких исторических rows в них не создано.
+- `party_runtime` сохраняет only physical facts: existing exactly-one target, optional
+  physical position/equipment slot, container condition/closure и separated character
+  controller. Derived inventory zone/totals в DDL не сохраняются.
+- `@rus/items-property` экспортирует pure `validateInventoryTopology`,
+  `calculateInventoryMass`, `resolveInventoryLoad`, `calculateHandsState`,
+  `resolveInventoryAccess`, `deriveInventoryZone`, `calculateContainerUsage`,
+  `buildInventoryStackSignature`, `planInventoryTransfer`. `calculateContainerUsage`
+  использует existing public `calculatePackingSlots`, не дублируя формулу.
+- Stage 16 получает optional explicit `inventory_foundation`. Если `required=true` и
+  candidate/physical profiles отсутствуют, выдаётся `INITIAL_INVENTORY_PLACEMENT_DATA_GAP`;
+  иначе precheck сохраняет immutable trace mass/hands/access/capacity. Existing scene-item
+  route не меняется и не активирует inventory implicit fallback.
+- Stage 24 только переносит approved physical position/slot/closure fields в fixed plan;
+  Stage 25 сохраняет generic schema-qualified batches атомарно. Stage 19 не менялся.
+- `@rus/presentation` добавляет versioned visible-only `inventory_panel`; он не принимает
+  IDs, hidden/unknown contents или diagnostics и не выполняет gameplay calculation.
+
+### Текущие ошибки и неактивированные части
+
+Основные structured errors: `INITIAL_INVENTORY_PLACEMENT_DATA_GAP`,
+`ITEM_MASS_DATA_GAP`, `ITEM_CARRY_PROFILE_DATA_GAP`, `INVENTORY_PLACEMENT_AMBIGUOUS`,
+`INVENTORY_CYCLE_DETECTED`, `INVENTORY_NESTING_LIMIT_EXCEEDED`,
+`INVENTORY_HANDS_EXCEEDED`, `INVENTORY_CARRY_FORM_INCOMPATIBLE`,
+`INVENTORY_PRIMARY_CONTAINER_AMBIGUOUS`, `INVENTORY_DROP_ANCHOR_MISSING`,
+`CONTAINER_CAPACITY_EXCEEDED`, `STATE_VERSION_MISMATCH`.
+
+`planInventoryTransfer` пока активирует только pure `drop_primary_container` и
+`recover_primary_container`; иных approved command IDs в catalog не обнаружено, поэтому
+runtime handler не создаётся (`TURN_INVENTORY_COMMAND_CATALOG_GAP`). Не выполнены
+historical approval/import, Stage 8 candidate enrichment, production activation, legacy
+cutover/rematerialization. Открытые gaps сохраняются:
+`PAGE_LEVEL_SOURCE_VERIFICATION_REQUIRED`, `EXTERNAL_LEGACY_ROWS_UNAVAILABLE`,
+`CONTAINER_COMPATIBILITY_TOO_COARSE`.
+
+### Red → Green и выполненные проверки
+
+- Red: `packages/items-property/test/inventory-foundation.test.js` сначала завершился
+  ошибкой отсутствующих public exports; `test/modules/stage16-inventory-foundation.test.js`
+  — отсутствующим Stage 16 evaluator; `packages/presentation/test/inventory-panel.test.js`
+  — отсутствующим panel contract.
+- Green: targeted domain/presentation/Stage 16 tests — 18/18 PASS;
+  `npm run test:world-catalog` — 52/52 PASS;
+  `npm run test:stage16` — 17/17 PASS; `npm run test:stage24` — 20/20 PASS;
+  `npm run test:stage25` — 19/19 PASS; `npm run test:stage2-8` — 6/6 PASS;
+  `npm run test:integration` — 21 passed / 5 skipped.
+- `npm run world-db:schema-check` and `world-db:schema-doc-check` — PASS, 117 tables,
+  digest `81c867c1706be45b8ff3f9064d4b3ab09b70c7a2038d57823bea157c32ef5744`.
+- `knowledge:generate` and `knowledge:check-corpus` — PASS. Main-worktree `docs:generate`
+  is blocked only by preserved user runtime files under `data/regional-summary-cache/` and
+  `data/world-sessions/`; final docs/full suite run is required in a clean worktree.

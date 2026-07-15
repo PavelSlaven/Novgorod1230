@@ -24,12 +24,12 @@ const catalogRecords = Object.freeze({
   landmark_rule_landscapes: [{ rule_id: 'ridge-landmark-rule', landscape_template_id: 'landscape-ridge' }],
   landmark_rule_hydrology: [], landmark_rule_land_use: [], landmark_rule_routes: [],
   cue_templates: [{
-    template_id: 'smoke-cue', status: 'approved', sense: 'sight', public_label_key: 'cue_smoke',
+    id: 'smoke-cue', world_revision_id: 'revision-1', category_id: 'environment_cue.smoke', status: 'approved', sense: 'sight', public_label_key: 'cue_smoke',
     icon_key: 'cue_smoke', base_intensity: 1, recognition_difficulty: 'ordinary', navigation_value: 'none', fading_duration_minutes: 30, expiry_duration_minutes: 60,
     propagation_policy: { schema: 'environment_cue_propagation_v1', wind_effects: { west: { intensity_multiplier: 1.2, drift_band: 'eastward' }, east: { intensity_multiplier: 0.8, drift_band: 'westward' } } }
   }],
   emission_rules: [{
-    rule_id: 'hearth-smoke-rule', status: 'approved', source_type: 'hearth', cue_template_id: 'smoke-cue'
+    id: 'hearth-smoke-rule', world_revision_id: 'revision-1', emitter_category_id: 'environment_emitter.hearth', status: 'approved', source_type: 'hearth', cue_template_id: 'smoke-cue', weather_applicability: {}
   }],
   trace_templates: [{ template_id: 'cart-track', status: 'approved', public_label_key: 'trace_cart', icon_key: 'trace_cart', recognition_difficulty: 'ordinary', navigation_value: 'none' }],
   trace_creation_rules: [{
@@ -149,7 +149,7 @@ test('environment cue lifecycle rejects an incomplete approved template instead 
   assert.throws(() => updateEnvironmentFeatures({
     party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', g1_id: 'g1-1', base_state_version: 1,
     current_environment_state: initialized.environment_state, elapsed_time: { minutes: 0 }, weather_before: 'clear', weather_after: 'clear',
-    active_emitters: [{ emitter_id: 'camp-hearth-1', source_type: 'hearth', source_kind: 'camp', source_id: 'hidden-camp-1', location_binding: 'g4-ridge', bearing_band: 'north', distance_band: 'near', strength_band: 'moderate', propagation_wind: 'west' }],
+    active_emitters: [{ emitter_id: 'camp-hearth-1', emitter_category_id: 'environment_emitter.hearth', source_type: 'hearth', source_kind: 'camp', source_id: 'hidden-camp-1', location_binding: 'g4-ridge', bearing_band: 'north', distance_band: 'near', strength_band: 'moderate', propagation_wind: 'west' }],
     trace_emissions: [], event_emissions: [], catalog_bundle: incompleteCatalog, catalog_digest: incompleteCatalog.catalog_digest,
     materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1', idempotency_key: 'turn:incomplete-cue'
   }), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_CUE_TEMPLATE_INVALID');
@@ -160,7 +160,7 @@ test('environment cue lifecycle blocks an emitter without formal observation ban
   assert.throws(() => updateEnvironmentFeatures({
     party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', g1_id: 'g1-1', base_state_version: 1,
     current_environment_state: initialized.environment_state, elapsed_time: { minutes: 0 }, weather_before: 'clear', weather_after: 'clear',
-    active_emitters: [{ emitter_id: 'camp-hearth-1', source_type: 'hearth', source_kind: 'camp', source_id: 'hidden-camp-1', location_binding: 'g4-ridge' }],
+    active_emitters: [{ emitter_id: 'camp-hearth-1', emitter_category_id: 'environment_emitter.hearth', source_type: 'hearth', source_kind: 'camp', source_id: 'hidden-camp-1', location_binding: 'g4-ridge' }],
     trace_emissions: [], event_emissions: [], catalog_bundle: catalog, catalog_digest: catalog.catalog_digest,
     materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1', idempotency_key: 'turn:missing-observation'
   }), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_EMITTER_OBSERVATION_INVALID');
@@ -171,7 +171,7 @@ test('environment cues require an active approved source and never disclose it i
   const result = updateEnvironmentFeatures({
     party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', g1_id: 'g1-1', base_state_version: 1,
     current_environment_state: initialized.environment_state, elapsed_time: { minutes: 0 }, weather_before: 'clear', weather_after: 'clear',
-    active_emitters: [{ emitter_id: 'camp-hearth-1', source_type: 'hearth', source_kind: 'camp', source_id: 'hidden-camp-1', location_binding: 'g4-ridge', bearing_band: 'north', distance_band: 'near', strength_band: 'moderate', propagation_wind: 'west' }],
+    active_emitters: [{ emitter_id: 'camp-hearth-1', emitter_category_id: 'environment_emitter.hearth', source_type: 'hearth', source_kind: 'camp', source_id: 'hidden-camp-1', location_binding: 'g4-ridge', bearing_band: 'north', distance_band: 'near', strength_band: 'moderate', propagation_wind: 'west' }],
     trace_emissions: [], event_emissions: [], catalog_bundle: catalog, catalog_digest: catalog.catalog_digest,
     materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1', idempotency_key: 'turn-1'
   });

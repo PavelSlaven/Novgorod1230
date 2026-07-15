@@ -80,6 +80,7 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 - 2026-07-15: schema/CI assertions синхронизированы с уже добавленными travel authoring tables: canonical world_base содержит 13 частей и 143 таблицы; read-only PostgreSQL gate проверяет это же число.
 - 2026-07-15: public API `@rus/travel` сохранён, но implementation разделена на contracts/support, journey lifecycle и persistence proposals. Это удерживает жёсткую архитектурную границу без изменения contracts или импортного пути.
 - 2026-07-15: environment baseline принимает только `environment-catalog.v2`: approved landmark rule связан с scoped profile, profile entry и template. G1/node/landscape/hydrology/land-use/route bindings применяются как фильтры; отсутствующий обязательный scope input или profile образует typed hard block.
+- 2026-07-15: cue emission использует нормализованный template/rule identity и exact emitter category, revision, region, season и approved weather policy. Неполный emitter или policy не получают semantic fallback.
 
 ## Checks recorded on transferred baseline
 
@@ -159,6 +160,7 @@ Typed domain errors are versioned with the travel contracts; persistence, presen
 | `node --test packages/travel/test/domain.test.js packages/turn/test/*.test.js packages/environment-landmarks/test/*.test.js` / `architecture:check` | 2026-07-15 | worktree before boundary-split commit | PASS: 57/57; PASS | Travel public API and all moved tests retain behavior while each module stays within the enforced boundary. |
 | `npm test` | 2026-07-15 | worktree before runtime-integrity commit | PASS | Modules, domain, apps, tools, shadow, cutover, docs, integration and architecture gates pass. Real PostgreSQL tests remain skipped without `PARTY_DATABASE_URL`; browser E2E is skipped because Chromium is unavailable. |
 | `node --test packages/environment-landmarks/test/*.test.js` / `npm run test:domain` / `docs:check` | 2026-07-15 | worktree before landmark-profile commit | PASS: 16/16; 115/115 | Environment catalog v2 enforces rule → profile → entry → template and G1/placement scope without a legacy rule fallback. |
+| `node --test packages/environment-landmarks/test/*.test.js` | 2026-07-15 | worktree before cue-scope commit | PASS: 17/17 | Cue rule consumes an explicit emitter category and cannot match a different category. |
 | `node --test tools/docs-tools/test/knowledge-source-migration.test.js tools/docs-tools/test/knowledge-corpus-verifier.test.js tools/docs-tools/test/knowledge-materializer-v2.test.js` | 2026-07-15 | working tree after `6eb1a23` | PASS: 22/22 | Corpus manifest, legacy provenance and generated graph/RAG materialization remain reproducible after the PR8 normative update. |
 | `npm run test:domain` / `npm run test:modules` | 2026-07-15 | working tree after `6eb1a23` | PASS: 102/102; 261/261 | Documentation-only change did not regress travel, environment, turn or materialization contracts. |
 | `node --test packages/travel/test/domain.test.js` | 2026-07-15 | `69b0ee8` | RED: 1 failed | `ERR_MODULE_NOT_FOUND` before implementation. |
@@ -281,6 +283,7 @@ The ordered migration loader, seed script, party preflight and Stage 25 logical 
 | TRAVEL-D017 / 2026-07-15 / accepted | Keep stale schema-count assertions or bind local and CI gates to the canonical DDL count. | Schema checks and CI gate assert the current 143-table, 13-part entrypoint. |
 | TRAVEL-D018 / 2026-07-15 / accepted | Broaden architecture limits or divide the travel implementation while preserving its public API. | Contracts, journey lifecycle and proposals are separate modules behind the existing package export. |
 | TRAVEL-D019 / 2026-07-15 / accepted | Preserve legacy landmark rule template lists or require the normalized authoring chain. | Runtime consumes only approved rule → profile → profile entry → template records and explicit scope bindings. |
+| TRAVEL-D020 / 2026-07-15 / accepted | Match a cue by source type only or require its approved emitter category and scope. | Cue lifecycle uses the normalized emission rule and does not infer a category or weather applicability. |
 
 ## Phase tracker
 

@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rus.perception.sensory_scene_snapshot_v1",
+  "type": "object",
+  "required": ["version","schema","party_id","g4_id","state_version","clock","weather","light_state","g5_nodes","g5_edges","g5_anchors","actor_positions","actor_attention_states","actor_perception_profile_refs","active_light_sources","ambient_sound_profiles","prospective_edge_states","snapshot_digest"],
+  "properties": {"version":{"const":1},"schema":{"const":"sensory_scene_snapshot_v1"},"party_id":{"type":"string","minLength":1},"g4_id":{"type":"string","minLength":1},"state_version":{"type":"integer","minimum":0},"clock":{"type":"object"},"weather":{"type":"object"},"light_state":{"type":"object"},"g5_nodes":{"type":"array"},"g5_edges":{"type":"array"},"g5_anchors":{"type":"array"},"actor_positions":{"type":"array"},"actor_attention_states":{"type":"array"},"actor_perception_profile_refs":{"type":"array"},"active_light_sources":{"type":"array"},"ambient_sound_profiles":{"type":"array"},"prospective_edge_states":{"type":"array"},"snapshot_digest":{"type":"string","pattern":"^[a-f0-9]{64}$"}},
+  "additionalProperties": false
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rus.perception.sensory_event_v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version","schema","event_id","party_id","turn_id","wave_index","modality","source_kind","source_id","source_anchor_id","signal_profile_id","causal_action_id","emitted_at","duration_ms","base_strength_units","directionality_profile_id","semantic_class_id","routine_context_tags","state_version","profile_digest"],
+  "properties": {
+    "version": {"const": 1}, "schema": {"const": "sensory_event_v1"},
+    "event_id": {"type": "string", "minLength": 1}, "party_id": {"type": "string", "minLength": 1}, "turn_id": {"type": "string", "minLength": 1},
+    "wave_index": {"type": "integer", "minimum": 0}, "modality": {"enum": ["sound", "visual"]},
+    "source_kind": {"type": "string", "minLength": 1}, "source_id": {"type": "string", "minLength": 1}, "source_anchor_id": {"type": "string", "minLength": 1},
+    "signal_profile_id": {"type": "string", "minLength": 1}, "causal_action_id": {"type": "string", "minLength": 1}, "emitted_at": {"type": "string", "format": "date-time"},
+    "duration_ms": {"type": "integer", "minimum": 0}, "base_strength_units": {"type": "integer", "minimum": 0}, "directionality_profile_id": {"type": "string", "minLength": 1},
+    "semantic_class_id": {"type": "string", "minLength": 1}, "routine_context_tags": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "state_version": {"type": "integer", "minimum": 0}, "profile_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "parent_event_id": {"type": ["string", "null"]}, "causal_reaction_id": {"type": ["string", "null"]}
+  }
+}

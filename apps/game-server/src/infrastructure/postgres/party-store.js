@@ -2,7 +2,7 @@ import { executePhysicalWritePlan } from './sql-plan.js';
 import { computeMaterializationResultDigest } from '@rus/contracts';
 import { applyLogicalOperations, digestRunIdentity, executeOptionalTurnPlan } from './party-store-turn.js';
 import { isCodeOwnedAutonomousUpdate } from '@rus/turn';
-import { buildPerceptionPersistencePlan } from './perception-persistence.js';
+import { writePerceptionCycle as writePerceptionCyclePersistence } from './perception-persistence.js';
 
 const PARTY_RUNTIME_V2_TABLES = new Set([
   'party_materialization_runs', 'party_materialization_choices', 'party_g5_nodes', 'party_g5_anchors', 'party_g5_edges',
@@ -11,7 +11,7 @@ const PARTY_RUNTIME_V2_TABLES = new Set([
   'party_decision_requests', 'party_decision_options', 'party_decision_results', 'party_change_sets', 'party_autonomous_updates'
 ]);
 
-export function createPostgresPartyStore({ pool, catalogBundleLoader, materializerVersion = 'code_materializer_v2', rngVersion = 'mulberry32_v1' } = {}) {
+export function createPostgresPartyStore({ pool, catalogBundleLoader, materializerVersion = 'code_materializer_v2', rngVersion = 'mulberry32_v1', decisionSecret = null, decisionPreconditionEvaluator = null } = {}) {
   requirePool(pool);
   if (typeof catalogBundleLoader !== 'function') throw new TypeError('catalogBundleLoader is required.');
   const transact = async (callback) => {
@@ -124,27 +124,16 @@ export function createPostgresPartyStore({ pool, catalogBundleLoader, materializ
         const partyId = requiredText(writePlan?.party_id, 'writePlan.party_id');
         const replay = await claimTurnCommit(transaction, { partyId, idempotencyKey, writePlan, g4Id: writePlan?.destination_position?.g4_id ?? 'none' });
         if (replay) return replay;
+        if (writePlan.perception_cycle) await writePerceptionCycle(transaction, { cycle: writePlan.perception_cycle, pins: writePlan.perception_pins, reactionDecisions: writePlan.perception_reaction_decisions, decisionSecret, decisionPreconditionEvaluator });
         await executeOptionalTurnPlan(transaction, writePlan);
         return finishTurnCommit(transaction, idempotencyKey, { committed: true, idempotency_key: idempotencyKey });
       });
     },
 
-    async commitPerceptionCycle({ cycle, pins }) {
-      const plan = buildPerceptionPersistencePlan({ cycle, pins });
-      const cycleRecord = plan.write_batches.find((batch) => batch.target_table === 'party_perception_cycles')?.records?.[0];
+    async commitPerceptionCycle({ cycle, pins, reactionDecisions = [] }) {
       return transact(async (transaction) => {
-        const existing = await transaction.query(`SELECT trace FROM party_runtime.party_perception_cycles
-          WHERE party_id=$1 AND idempotency_key=$2 FOR UPDATE`, [cycle.party_id, cycleRecord.idempotency_key]);
-        if (existing.rows.length === 1) {
-          if (existing.rows[0].trace?.trace_digest !== cycle.trace_digest) throw repositoryError('PERCEPTION_IDEMPOTENCY_CONFLICT', 'Perception idempotency key is already bound to another cycle trace.');
-          return Object.freeze({ committed: true, replayed: true, cycle_id: cycle.cycle_id });
-        }
-        const party = await transaction.query('SELECT state_version FROM party_runtime.parties WHERE party_id=$1 FOR UPDATE', [cycle.party_id]);
-        if (party.rows.length !== 1) throw repositoryError('PERCEPTION_PARTY_NOT_FOUND', 'Perception cycle party does not exist.');
-        if (Number(party.rows[0].state_version) !== cycle.state_version) throw repositoryError('PERCEPTION_STATE_VERSION_STALE', 'Perception cycle state version is stale.');
-        await ensurePerceptionPins(transaction, cycle.party_id, pins);
-        await executePhysicalWritePlan(transaction, plan);
-        return Object.freeze({ committed: true, replayed: false, cycle_id: cycle.cycle_id });
+        const result = await writePerceptionCycle(transaction, { cycle, pins, reactionDecisions, decisionSecret, decisionPreconditionEvaluator });
+        return Object.freeze({ committed: true, ...result });
       });
     },
 
@@ -180,19 +169,8 @@ export function createPostgresPartyStore({ pool, catalogBundleLoader, materializ
   });
 }
 
-async function ensurePerceptionPins(transaction, partyId, pins) {
-  const existing = await transaction.query(`SELECT perception_algorithm_id,sensory_catalog_digest,reaction_policy_digest
-    FROM party_runtime.party_perception_pins WHERE party_id=$1 FOR UPDATE`, [partyId]);
-  if (existing.rows.length === 0) {
-    await transaction.query(`INSERT INTO party_runtime.party_perception_pins
-      (party_id,perception_algorithm_id,sensory_catalog_digest,reaction_policy_digest) VALUES ($1,$2,$3,$4)`,
-    [partyId, pins.perception_algorithm_id, pins.sensory_catalog_digest, pins.reaction_policy_digest]);
-    return;
-  }
-  const row = existing.rows[0];
-  if (row.perception_algorithm_id !== pins.perception_algorithm_id || row.sensory_catalog_digest !== pins.sensory_catalog_digest || row.reaction_policy_digest !== pins.reaction_policy_digest) {
-    throw repositoryError('PERCEPTION_VERSION_PINS_MISMATCH', 'Perception catalog pins may not change within a party.');
-  }
+async function writePerceptionCycle(transaction, { cycle, pins, reactionDecisions = [], decisionSecret = null, decisionPreconditionEvaluator = null }) {
+  return writePerceptionCyclePersistence(transaction, { cycle, pins, reactionDecisions, decisionSecret, decisionPreconditionEvaluator, errorFactory: repositoryError });
 }
 
 function validateMaterializationIdentity({ partyId, g4Id, materialization, plan, position }) {

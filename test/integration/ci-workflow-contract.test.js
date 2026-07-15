@@ -45,11 +45,11 @@ test('GitHub Actions clean-clone workflow keeps all required gates in order', as
   }
 });
 
-test('world_base PostgreSQL gate tracks the 117-table schema and grants every table read-only', async () => {
+test('world_base PostgreSQL gate tracks the 147-table schema and grants every table read-only', async () => {
   const workflow = await readFile(resolve(process.cwd(), '.github/workflows/test.yml'), 'utf8');
 
   assert.doesNotMatch(workflow, /test "\$table_count" -eq 62/u);
-  assert.match(workflow, /test "\$table_count" -eq 117/u);
+  assert.match(workflow, /test "\$table_count" -eq 147/u);
   assert.doesNotMatch(workflow, /test "\$select_grants" -eq 62/u);
   assert.match(workflow, /test "\$select_grants" -eq "\$table_count"/u);
   assert.match(workflow, /test "\$write_grants" -eq 0/u);

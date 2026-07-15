@@ -11,12 +11,13 @@
 5. `checks` — выполняет только явно запрошенные проверки через `RandomSource`.
 6. `consequence` — зарегистрированный code handler вычисляет последствия либо возвращает repair request.
 7. `time_update` — применяет утверждённую длительность к формуле времени.
-8. `hidden_update` — код проецирует утверждённое consequence в hidden update.
-9. `visible_projection` — строит visible context без hidden утечек.
-10. `narration` — запускает approved narration flow.
-11. `persistence_plan` — код строит и in-process запечатывает логический write plan из allowlist targets.
-12. `commit` — party store принимает только запечатанный code-owned plan, сам отображает его в физические таблицы и сохраняет bounded-decision trace.
-13. `screen_projection` — строит versioned `TurnScreen`.
+8. `perception` — при code-emitted sensory event запускает утверждённый perception engine; отсутствие engine/profile — typed hard block.
+9. `hidden_update` — код проецирует утверждённое consequence в hidden update.
+10. `visible_projection` — строит visible context без hidden утечек и добавляет только доказанные player sensory details.
+11. `narration` — запускает approved narration flow.
+12. `persistence_plan` — код строит и in-process запечатывает логический write plan из allowlist targets.
+13. `commit` — party store принимает только запечатанный code-owned plan, атомарно сохраняет perception cycle и bounded-decision trace.
+14. `screen_projection` — строит versioned `TurnScreen`.
 
 ## Результат
 
@@ -24,7 +25,7 @@
 
 ## Ports
 
-State reader, code-owned command registry, visible projector, narrator, party store, materializer, random source и screen projector передаются явно. Bounded decision executor, secret и expiry нужны только при неоднозначном закрытом наборе команд.
+State reader, code-owned command registry, visible projector, narrator, party store, materializer, optional perception engine, random source и screen projector передаются явно. Bounded decision executor, secret и expiry нужны только при неоднозначном закрытом наборе команд.
 
 ## Границы
 

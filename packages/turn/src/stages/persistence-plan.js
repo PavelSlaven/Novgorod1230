@@ -12,6 +12,7 @@ export async function buildPersistencePlanStage(input) {
     version: 2, schema: 'party_turn_write_plan', sealed_by: 'turn_code_planner_v2', party_id: input.playerInput.party_id, turn_id: input.modeResolution.turn_id,
     base_state_version: Number(input.retrievedState.party_state?.state_version ?? 0), write_targets: structuredClone(writeTargets),
     command_trace: structuredClone(input.modeResolution.decision_trace),
+    ...(input.perception?.status === 'evaluated' ? { perception_cycle: input.perception.cycle, perception_pins: structuredClone(input.perception.pins), perception_reaction_decisions: structuredClone(input.perception.reaction_decisions) } : {}),
     ...(transition?.from_g4_id !== transition?.to_g4_id ? { first_entry_materialization: { g4_id: transition.to_g4_id }, destination_position: structuredClone(transition.destination_position) } : {})
   };
   assertValid('party_turn_write_plan', validateTurnWritePlan(plan));

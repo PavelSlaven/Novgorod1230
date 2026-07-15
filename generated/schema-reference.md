@@ -61,6 +61,7 @@ Release: `0.23.0-migration.24`
 | `narrator_start_input` | `STAGE22_INPUT_SCHEMA` | `packages/contracts/src/narrator-boundary.js` |
 | `narrator_starting_prose` | `STAGE22_OUTPUT_SCHEMA` | `packages/contracts/src/narrator-boundary.js` |
 | `npc_placement_input` | `STAGE15_INPUT_SCHEMA` | `packages/contracts/src/g5-placement-boundary.js` |
+| `npc_reaction_routing_v1` | `NPC_REACTION_ROUTING_SCHEMA` | `packages/contracts/src/schema-names.js` |
 | `party_commit_idempotency_result` | `STAGE25_IDEMPOTENCY_SCHEMA` | `packages/new-game/src/stages/stage-25-party-commit/policy/constants.js` |
 | `party_database_schema_snapshot` | `PARTY_DB_SCHEMA_SNAPSHOT_SCHEMA` | `packages/contracts/src/stage24-boundary.js` |
 | `party_db_write_plan` | `STAGE24_PLAN_SCHEMA` | `packages/contracts/src/stage24-boundary.js` |
@@ -78,6 +79,7 @@ Release: `0.23.0-migration.24`
 | `party_transaction_result` | `STAGE25_TRANSACTION_SCHEMA` | `packages/new-game/src/stages/stage-25-party-commit/policy/constants.js` |
 | `party_write_plan_dry_run_input` | `STAGE25_DRY_RUN_INPUT_SCHEMA` | `packages/new-game/src/stages/stage-25-party-commit/policy/constants.js` |
 | `party_write_plan_dry_run_result` | `STAGE25_DRY_RUN_SCHEMA` | `packages/new-game/src/stages/stage-25-party-commit/policy/constants.js` |
+| `perception_result_v1` | `PERCEPTION_RESULT_SCHEMA` | `packages/contracts/src/schema-names.js` |
 | `player_character_audit` | `STAGE12_OUTPUT_SCHEMA` | `packages/new-game/src/stages/stage-12-player-character-audit/constants.js` |
 | `player_character_audit_input` | `STAGE12_INPUT_SCHEMA` | `packages/new-game/src/stages/stage-12-player-character-audit/constants.js` |
 | `player_character_code_precheck` | `STAGE12_CODE_PRECHECK_SCHEMA` | `packages/new-game/src/stages/stage-12-player-character-audit/constants.js` |
@@ -88,6 +90,8 @@ Release: `0.23.0-migration.24`
 | `player_first_turn_input` | `PLAYER_FIRST_TURN_INPUT_SCHEMA` | `packages/contracts/src/schema-names.js` |
 | `presentation_panel` | `PANEL_SCHEMA` | `packages/presentation/src/read-models/contracts.js` |
 | `selected_start_node` | `STAGE9_OUTPUT_SCHEMA` | `packages/new-game/src/stages/stage-9-start-node-selection/constants.js` |
+| `sensory_event_v1` | `SENSORY_EVENT_SCHEMA` | `packages/contracts/src/schema-names.js` |
+| `sensory_scene_snapshot_v1` | `SENSORY_SCENE_SNAPSHOT_SCHEMA` | `packages/contracts/src/schema-names.js` |
 | `stage18_character_knowledge_result` | `STAGE18_RESULT_SCHEMA` | `packages/contracts/src/time-knowledge-hidden-boundary.js` |
 | `stage19_hidden_state_result` | `STAGE19_RESULT_SCHEMA` | `packages/contracts/src/time-knowledge-hidden-boundary.js` |
 | `stage20_visible_context_result` | `STAGE20_RESULT_SCHEMA` | `packages/contracts/src/visible-context-boundary.js` |
@@ -155,8 +159,13 @@ Release: `0.23.0-migration.24`
 | `schemas/materialization/world-materialization-repair-request-v2.schema.json` | json | 945 | `ba34924dd6587d7a5044498766cc8c0ff81167eae9fbee3e98e63ad0fb75fd59` |
 | `schemas/materialization/world-materialization-request-v2.schema.json` | json | 10347 | `3b6739984a1ec31a01d99867f13d8a5c9f4f87f4ab7a2d4ba5b911282629ae7f` |
 | `schemas/materialization/world-materialization-result-v2.schema.json` | json | 5190 | `92ee591037949a9e55ded6fe2813516718b5ade28b7cd7c8b592185c356db163` |
-| `schemas/party-db/001_party_runtime.sql` | sql | 19734 | `5cab24b65540da3f9857c2e70cd9e93c9761bac439839dbde1940cde24b5f6a1` |
+| `schemas/party-db/001_party_runtime.sql` | sql | 27385 | `3d11e0d25600e27204750a7cb292919f48c6e9af23f9b3ed394487d997e6bd48` |
 | `schemas/party-db/002_environment_landmarks.sql` | sql | 4329 | `d0a6e73aabb3eebbaf1a9cdb5c800493cd4346e35d73bea548b80fd701d3205b` |
+| `schemas/party-db/003_travel_runtime.sql` | sql | 5096 | `30d5f22d465091f15eb9ac6a4676f6318684dcc6c5ab867c87eec9e53d8869c0` |
+| `schemas/perception/npc-reaction-routing-v1.schema.json` | json | 873 | `f1614aebef449c11e9e86038c12412651e27b7148ccb302c96e119ace25e00df` |
+| `schemas/perception/perception-result-v1.schema.json` | json | 1829 | `f98eeb97d955d36de0a49f7a013a53b7b30d86a67f3f17d916a63dabf037c0c6` |
+| `schemas/perception/sensory-event-v1.schema.json` | json | 1713 | `3e6ca7cef50df8c0df2e28d3959699fcd1f18a3f618e3dcf05db2fe6eecdf4f8` |
+| `schemas/perception/sensory-scene-snapshot-v1.schema.json` | json | 1179 | `2bb512c2fcfa34a96f91deccb2b8c8e856bc7c575be0f2358abbe2452a76e92e` |
 | `schemas/world-base/world-base-source-bundle.schema.json` | json | 1447 | `358430badf2821197ffc74d4600b2cc2b153d1a1a141020e998650cb1c325dc2` |
 | `schemas/world-catalogs/g1-boundary-contract.schema.json` | json | 1199 | `9a255c612dc382e4ead28c5566ae6583878840651904a134f364bb1b1291f3aa` |
 | `schemas/world-catalogs/g1-cell-package.schema.json` | json | 1794 | `d917ec67f99c965c0257f7dbc1b2498e123aff756f4b71c68e7da0f1b6fe8381` |

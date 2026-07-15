@@ -132,11 +132,28 @@ export const TABLE_GROUPS = [
   {
     title: 'PR8: ориентиры, сигналы и следы среды',
     tables: ['environment_landmark_templates', 'environment_landmark_profiles', 'environment_landmark_profile_entries', 'environment_landmark_rules', 'environment_landmark_rule_g1_classes', 'environment_landmark_rule_node_types', 'environment_landmark_rule_landscapes', 'environment_landmark_rule_hydrology', 'environment_landmark_rule_land_use', 'environment_landmark_rule_routes', 'environment_cue_templates', 'environment_emission_rules', 'environment_trace_templates', 'environment_decay_profiles', 'environment_trace_creation_rules', 'environment_trace_rule_landscapes', 'environment_trace_rule_hydrology']
+  },
+  {
+    title: 'Perception v1: восприятие и реакции NPC',
+    tables: ['sensory_signal_profiles', 'sensory_signal_action_bindings', 'sensory_signal_item_template_bindings', 'sensory_signal_surface_category_bindings', 'sensory_transition_profiles', 'ambient_sound_profiles', 'light_visibility_profiles', 'actor_perception_profiles', 'routine_sound_profiles', 'npc_reaction_policies', 'npc_reaction_policy_options', 'g5_edge_sensory_transition_bindings', 'region_npc_perception_profile_bindings']
   }
 ];
 
 /** Назначение таблицы, если architecture md не распарсился. */
 export const TABLE_PURPOSE_FALLBACK = {
+  sensory_signal_profiles: 'Утверждённые профили слышимых и видимых сигналов; runtime не выводит их из текста или категории.',
+  sensory_signal_action_bindings: 'Нормализованная привязка профиля сигнала к разрешённой команде действия.',
+  sensory_signal_item_template_bindings: 'Нормализованная привязка профиля сигнала к разрешённому шаблону предмета.',
+  sensory_signal_surface_category_bindings: 'Нормализованная привязка профиля сигнала к разрешённой категории поверхности.',
+  sensory_transition_profiles: 'Утверждённые потери и блокировки восприятия для переходов между G5-якорями.',
+  ambient_sound_profiles: 'Утверждённый фон и правила маскирования звуков для региона и периода.',
+  light_visibility_profiles: 'Утверждённые потери видимости для состояния освещения.',
+  actor_perception_profiles: 'Числовые пороги, внимание и модификаторы восприятия актёра.',
+  routine_sound_profiles: 'Формальные правила распознавания рутинных звуков для профиля восприятия.',
+  npc_reaction_policies: 'Утверждённые переходы осведомлённости и значимости реакции NPC.',
+  npc_reaction_policy_options: 'Конечный набор допустимых реакций NPC, привязанный к каталогу команд.',
+  g5_edge_sensory_transition_bindings: 'Привязка шаблона ребра G5 к утверждённому профилю сенсорного перехода.',
+  region_npc_perception_profile_bindings: 'Привязка регионального набора NPC к утверждённым профилям восприятия и реакции.',
   graph_scale_rules:
     'Правила масштаба графа G0–G5: единицы пути, типичные длины рёбер. Метрики G1-ячейки (32 км, 8 GU) — на graph_nodes, не здесь.',
   graph_edge_modifiers: 'Множители времени/риска пути по местности, сезону, погоде и др.',
@@ -322,6 +339,58 @@ export const common = {
 
 /** Поля по таблицам — только там, где нужно уточнение сверх common. */
 export const fields = {
+  sensory_signal_profiles: {
+    modality: 'Закрытый вид сигнала: sound или visual.',
+    semantic_category_id: 'FK → universal_categories(id): утверждённый смысловой класс сигнала.',
+    base_strength_units: 'Исходная числовая сила сигнала до потерь перехода и порога наблюдателя.',
+    repetition_policy: 'Версионированное правило повторяемости; не свободный текст.',
+    speech_capability: 'Может ли профиль нести речь; содержание не создаётся этой таблицей.',
+    status: 'draft, approved или deprecated; runtime использует только approved.'
+  },
+  sensory_signal_action_bindings: { command_id: 'FK → decision_command_catalog(id): команда, для которой профиль сигнала утверждён.' },
+  sensory_signal_item_template_bindings: { item_template_id: 'FK → item_templates(id): шаблон предмета, способный породить сигнал.' },
+  sensory_signal_surface_category_bindings: { surface_category_id: 'FK → universal_categories(id): категория поверхности, для которой профиль сигнала применим.' },
+  sensory_transition_profiles: {
+    sound_loss_units: 'Неотрицательная потеря силы звука на одном переходе.',
+    sound_blocked: 'Полное физическое перекрытие звука на переходе.',
+    vision_transmission: 'Закрытый режим передачи зрения: blocked, slit, partial или open.',
+    vision_loss_units: 'Неотрицательная потеря видимости на переходе.',
+    speech_loss_units: 'Дополнительная потеря разборчивости речи на переходе.'
+  },
+  ambient_sound_profiles: {
+    ambient_noise_floor_units: 'Минимальный шумовой фон, участвующий в маскировании.',
+    masking_policy: 'Формальное правило маскирования; не prose fallback.',
+    routine_policy: 'Формальное правило определения рутинности звука.'
+  },
+  actor_perception_profiles: {
+    hearing_threshold_units: 'Базовый порог обнаружения звука.',
+    localization_margin_units: 'Дополнительный margin после обнаружения для локализации.',
+    classification_margin_units: 'Дополнительный margin для классификации сигнала.',
+    identification_margin_units: 'Дополнительный margin для идентификации источника.',
+    speech_margin_units: 'Дополнительный margin для понимания речи.',
+    visual_threshold_units: 'Базовый порог обнаружения видимого источника.',
+    attention_profile: 'Утверждённый профиль внимания, включая режимы и их модификаторы.'
+  },
+  npc_reaction_policies: {
+    awareness_transitions: 'Формальная таблица переходов awareness state.',
+    significance_policy: 'Формальное правило отнесения стимула к значимости.',
+    cooldown_policy: 'Формальные ограничения повторной реакции.'
+  },
+  npc_reaction_policy_options: {
+    command_id: 'FK → decision_command_catalog(id): единственная допустимая команда реакции.',
+    option_order: 'Детерминированный порядок варианта в bounded candidate set.',
+    preconditions: 'Структурированные предусловия варианта реакции.',
+    reason_visible_to_actor: 'Утверждённое объяснение варианта для bounded-decision контекста; не создаётся runtime.'
+  },
+  g5_edge_sensory_transition_bindings: {
+    g5_edge_template_id: 'FK → g5_edge_templates(id): переход, которому назначен профиль потерь.',
+    sensory_transition_profile_id: 'FK → sensory_transition_profiles(id): approved профиль потерь и блокировок.'
+  },
+  region_npc_perception_profile_bindings: {
+    npc_profile_set_id: 'FK → region_npc_profile_sets(id): набор NPC, которому назначены восприятие и реакции.',
+    perception_profile_id: 'FK → actor_perception_profiles(id): approved числовой профиль восприятия.',
+    reaction_policy_id: 'FK → npc_reaction_policies(id): approved политика реакции NPC.'
+  },
   item_template_category_bindings: {
     item_template_id: 'FK → item_templates(id): классифицируемый шаблон предмета.',
     category_id: 'FK → universal_categories(id): утверждённая категория фасета.',

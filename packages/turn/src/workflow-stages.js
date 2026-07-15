@@ -6,6 +6,7 @@ import { resolveAvailabilityStage } from './stages/availability.js';
 import { executeApprovedChecksStage } from './stages/checks.js';
 import { resolveConsequenceStage } from './stages/consequence.js';
 import { buildTimeUpdateStage } from './stages/time-update.js';
+import { evaluatePerceptionStage } from './stages/perception.js';
 import { buildHiddenUpdateStage } from './stages/hidden-update.js';
 import { buildVisibleProjectionStage } from './stages/visible-projection.js';
 import { buildNarrationStage } from './stages/narration.js';
@@ -48,7 +49,20 @@ export function createTurnStageDefinitions({ context, services, rawInput, now })
       return approved(next(state, 'consequence', consequence, context));
     }, true),
     stage(7, 'time_update', async (state) => next(state, 'timeUpdate', buildTimeUpdateStage({ retrievedState: state.retrievedState, consequence: state.consequence }), context)),
-    stage(8, 'hidden_update', async (state) => next(state, 'hiddenUpdate', await buildHiddenUpdateStage({
+    stage(8, 'perception', async (state) => next(state, 'perception', await evaluatePerceptionStage({
+      playerInput: state.playerInput,
+      modeResolution: state.modeResolution,
+      retrievedState: state.retrievedState,
+      consequence: state.consequence,
+      timeUpdate: state.timeUpdate,
+      perceptionEngine: services.perceptionEngine,
+      npcReactionHandlers: services.npcReactionHandlers,
+      decisionExecutor: services.decisionExecutor,
+      decisionSecret: services.decisionSecret,
+      decisionExpiresAt: services.decisionExpiresAt,
+      now
+    }), context)),
+    stage(9, 'hidden_update', async (state) => next(state, 'hiddenUpdate', await buildHiddenUpdateStage({
       playerInput: state.playerInput,
       modeResolution: state.modeResolution,
       retrievedState: state.retrievedState,
@@ -56,34 +70,36 @@ export function createTurnStageDefinitions({ context, services, rawInput, now })
       timeUpdate: state.timeUpdate,
       commandRegistry: services.commandRegistry
     }), context)),
-    stage(9, 'visible_projection', async (state) => next(state, 'visibleContext', await buildVisibleProjectionStage({
+    stage(10, 'visible_projection', async (state) => next(state, 'visibleContext', await buildVisibleProjectionStage({
       playerInput: state.playerInput,
       modeResolution: state.modeResolution,
       retrievedState: state.retrievedState,
       consequence: state.consequence,
       timeUpdate: state.timeUpdate,
+      perception: state.perception,
       visibleProjector: services.visibleProjector
     }), context)),
-    stage(10, 'narration', async (state) => next(state, 'narration', await buildNarrationStage({
+    stage(11, 'narration', async (state) => next(state, 'narration', await buildNarrationStage({
       playerInput: state.playerInput,
       modeResolution: state.modeResolution,
       visibleContext: state.visibleContext,
       narrator: services.narrator
     }), context)),
-    stage(11, 'persistence_plan', async (state) => next(state, 'writePlan', await buildPersistencePlanStage({
+    stage(12, 'persistence_plan', async (state) => next(state, 'writePlan', await buildPersistencePlanStage({
       playerInput: state.playerInput,
       retrievedState: state.retrievedState,
       modeResolution: state.modeResolution,
       availability: state.availability,
       consequence: state.consequence,
       timeUpdate: state.timeUpdate,
+      perception: state.perception,
       hiddenUpdate: state.hiddenUpdate,
       visibleContext: state.visibleContext,
       narration: state.narration,
       commandRegistry: services.commandRegistry
     }), context)),
-    stage(12, 'commit', async (state) => next(state, 'commit', await commitTurnStage({ writePlan: state.writePlan, partyStore: services.partyStore, materializer: services.materializer }), context)),
-    stage(13, 'screen_projection', async (state) => next(state, 'screen', buildScreenProjectionStage({
+    stage(13, 'commit', async (state) => next(state, 'commit', await commitTurnStage({ writePlan: state.writePlan, partyStore: services.partyStore, materializer: services.materializer }), context)),
+    stage(14, 'screen_projection', async (state) => next(state, 'screen', buildScreenProjectionStage({
       playerInput: state.playerInput,
       modeResolution: state.modeResolution,
       visibleContext: state.visibleContext,
@@ -115,7 +131,9 @@ function next(state, key, value, context) {
   // The write plan carries an in-process capability seal. Cloning it would
   // deliberately strip that capability before the repository commit gate.
   // Other artifacts remain ordinary serializable checkpoint values.
-  return deepFreeze({ ...structuredClone(state), [key]: key === 'writePlan' ? value : structuredClone(value) });
+  const clone = structuredClone(state);
+  if (state.perception) clone.perception = state.perception;
+  return deepFreeze({ ...clone, [key]: key === 'writePlan' || key === 'perception' ? value : structuredClone(value) });
 }
 
 function stageNameForKey(key) {
@@ -127,6 +145,7 @@ function stageNameForKey(key) {
     checks: 'checks',
     consequence: 'consequence',
     timeUpdate: 'time_update',
+    perception: 'perception',
     hiddenUpdate: 'hidden_update',
     visibleContext: 'visible_projection',
     narration: 'narration',

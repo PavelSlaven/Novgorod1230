@@ -40,7 +40,9 @@ export async function resolveRegisteredTurnCommand({ registry, playerInput, rout
 }
 
 export function sealTurnWritePlan(plan) {
-  const sealed = deepFreeze(structuredClone(plan));
+  const cloned = structuredClone(plan);
+  if (plan.perception_cycle) cloned.perception_cycle = plan.perception_cycle;
+  const sealed = deepFreeze(cloned);
   sealedPlans.add(sealed);
   return sealed;
 }

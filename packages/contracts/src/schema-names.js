@@ -9,3 +9,7 @@ export const FIRST_SCREEN_DELIVERY_ACK_SCHEMA = 'first_screen_delivery_ack';
 export const FIRST_SCREEN_DELIVERY_ACK_RESULT_SCHEMA = 'first_screen_delivery_ack_result';
 export const STAGE27_FIRST_TURN_INPUT_SCHEMA = 'first_turn_pipeline_input';
 export const PLAYER_FIRST_TURN_INPUT_SCHEMA = 'player_first_turn_input';
+export const SENSORY_EVENT_SCHEMA = 'sensory_event_v1';
+export const SENSORY_SCENE_SNAPSHOT_SCHEMA = 'sensory_scene_snapshot_v1';
+export const PERCEPTION_RESULT_SCHEMA = 'perception_result_v1';
+export const NPC_REACTION_ROUTING_SCHEMA = 'npc_reaction_routing_v1';

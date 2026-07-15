@@ -50,3 +50,4 @@ World-base, party persistence и LLM transport передаются через c
 - Stage 24 кодом строит фиксированный write plan для `party_runtime_v2`.
 - Stage 25 исполняет только утверждённый plan.
 - Stage 26 строит публичный экран без hidden fields.
+- Восприятие стартовой сцены включается только при наличии approved sensory bundle; пустой candidate set является data gap, а не поводом раскрыть все materialized entities.

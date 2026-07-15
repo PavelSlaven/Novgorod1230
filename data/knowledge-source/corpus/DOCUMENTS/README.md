@@ -14,6 +14,7 @@ The project documents define how the LLM should generate, interpret, and update 
 |---|---|
 | `code_driven_world_materialization_architecture.md` | Highest normative boundary between authoring data, code, LLM and party state. |
 | `world_base_materialization_table_requirements.md` | Purpose, population and normalization requirements for world-base materialization data. |
+| `perception_visibility_hearing_and_npc_reactions.md` | Proposed code-owned system for hearing, vision, witnesses, awareness and bounded NPC reactions. It does not change runtime before activation. |
 | `llm_documentation_navigation.md` | LLM navigation, source priority, reading order, cross-document bundles. |
 | `world_generation_and_turns.txt` | World materialization, start pipeline, turn processing, visible/hidden facts. |
 | `player_character_generation.txt` | Player character creation pipeline and output contract. |

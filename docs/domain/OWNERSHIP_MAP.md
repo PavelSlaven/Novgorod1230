@@ -13,6 +13,7 @@
 | `@rus/combat-health` | combat state contracts, attack/defense requests, quality bands, harm packages, wound application | решение NPC атаковать, выбор цели/оружия, narration |
 | `@rus/social-law` | role/occupation references, supplied rights/restrictions, authority, legal/social risk packages | создание права региона, вынесение смыслового приговора |
 | `@rus/visibility-knowledge-memory` | visible projection, hidden boundary, knowledge map, memory facts, leak detection, safe narrator package | prose generation, hidden-state mutation, DB reads |
+| `@rus/perception` | pure sound propagation, line of sight, perception levels, awareness transitions and reaction routing from approved inputs | authoring facts, persistence, LLM invocation, visible projection and prose |
 
 ## Канонические владельцы формул
 

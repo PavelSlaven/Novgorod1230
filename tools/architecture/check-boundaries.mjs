@@ -582,12 +582,14 @@ const turnFileSet = new Set(turnFiles.map((file) => resolve(file)));
 const turnGraph = new Map();
 const approvedTurnImports = new Set([
   '@rus/kernel',
+  '@rus/contracts',
   '@rus/checks-rng',
   '@rus/time-events-history',
   '@rus/visibility-knowledge-memory',
   '@rus/presentation',
     '@rus/narration',
     '@rus/materialization',
+    '@rus/perception',
     '@rus/pipeline-engine'
 ]);
 for (const file of turnFiles) {
@@ -636,7 +638,7 @@ for (const appSpec of [
     name: 'game-server',
     required: ['MODULE.md', 'package.json', 'src/index.js', 'src/composition/root.js', 'src/http/handler.js', 'test/game-server.test.js'],
     approved: new Set([
-      '@rus/checks-rng', '@rus/contracts', '@rus/knowledge-source', '@rus/llm-runtime', '@rus/new-game', '@rus/narration',
+      '@rus/checks-rng', '@rus/contracts', '@rus/kernel', '@rus/knowledge-source', '@rus/llm-runtime', '@rus/materialization', '@rus/new-game', '@rus/narration', '@rus/perception',
       '@rus/party-store', '@rus/presentation', '@rus/presentation/opening-delivery', '@rus/turn',
       '@rus/visibility-knowledge-memory', '@rus/world-base', 'pg'
     ])

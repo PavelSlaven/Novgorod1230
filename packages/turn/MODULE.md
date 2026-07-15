@@ -13,6 +13,7 @@
 - исполнением только явно запрошенных проверок через `RandomSource`;
 - применением утверждённой длительности к clock formula;
 - hidden/visible security boundary;
+- запуск perception cycle только для зарегистрированных sensory events и передачей в visible слой лишь player-earned sensory details;
 - commit gate и передачей утверждённого write plan в party store;
 - формальным `position_transition`; cross-G4 transition всегда включает first-entry materialization в тот же commit;
 - публичным `TurnResult` и compatibility adapter.
@@ -48,6 +49,7 @@
 6. Каждый block получает отдельный frozen input и не читает mutable global context.
 7. Повторный commit должен использовать idempotency key.
 8. `party_current_position` нельзя записать без `from_g4_id/to_g4_id`; первый вход сериализуется repository lock и не материализуется повторно.
+9. Sensory event не допускает fallback: без approved perception engine и version pins ход блокируется до commit.
 
 ## Ошибки
 

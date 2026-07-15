@@ -271,6 +271,11 @@
       "source": "packages/contracts/src/g5-placement-boundary.js"
     },
     {
+      "constant": "NPC_REACTION_ROUTING_SCHEMA",
+      "schema": "npc_reaction_routing_v1",
+      "source": "packages/contracts/src/schema-names.js"
+    },
+    {
       "constant": "STAGE25_IDEMPOTENCY_SCHEMA",
       "schema": "party_commit_idempotency_result",
       "source": "packages/new-game/src/stages/stage-25-party-commit/policy/constants.js"
@@ -356,6 +361,11 @@
       "source": "packages/new-game/src/stages/stage-25-party-commit/policy/constants.js"
     },
     {
+      "constant": "PERCEPTION_RESULT_SCHEMA",
+      "schema": "perception_result_v1",
+      "source": "packages/contracts/src/schema-names.js"
+    },
+    {
       "constant": "STAGE12_OUTPUT_SCHEMA",
       "schema": "player_character_audit",
       "source": "packages/new-game/src/stages/stage-12-player-character-audit/constants.js"
@@ -404,6 +414,16 @@
       "constant": "STAGE9_OUTPUT_SCHEMA",
       "schema": "selected_start_node",
       "source": "packages/new-game/src/stages/stage-9-start-node-selection/constants.js"
+    },
+    {
+      "constant": "SENSORY_EVENT_SCHEMA",
+      "schema": "sensory_event_v1",
+      "source": "packages/contracts/src/schema-names.js"
+    },
+    {
+      "constant": "SENSORY_SCENE_SNAPSHOT_SCHEMA",
+      "schema": "sensory_scene_snapshot_v1",
+      "source": "packages/contracts/src/schema-names.js"
     },
     {
       "constant": "STAGE18_RESULT_SCHEMA",
@@ -746,9 +766,9 @@
       "type": "json"
     },
     {
-      "bytes": 19734,
+      "bytes": 27385,
       "path": "schemas/party-db/001_party_runtime.sql",
-      "sha256": "5cab24b65540da3f9857c2e70cd9e93c9761bac439839dbde1940cde24b5f6a1",
+      "sha256": "3d11e0d25600e27204750a7cb292919f48c6e9af23f9b3ed394487d997e6bd48",
       "type": "sql"
     },
     {
@@ -756,6 +776,36 @@
       "path": "schemas/party-db/002_environment_landmarks.sql",
       "sha256": "d0a6e73aabb3eebbaf1a9cdb5c800493cd4346e35d73bea548b80fd701d3205b",
       "type": "sql"
+    },
+    {
+      "bytes": 5096,
+      "path": "schemas/party-db/003_travel_runtime.sql",
+      "sha256": "30d5f22d465091f15eb9ac6a4676f6318684dcc6c5ab867c87eec9e53d8869c0",
+      "type": "sql"
+    },
+    {
+      "bytes": 873,
+      "path": "schemas/perception/npc-reaction-routing-v1.schema.json",
+      "sha256": "f1614aebef449c11e9e86038c12412651e27b7148ccb302c96e119ace25e00df",
+      "type": "json"
+    },
+    {
+      "bytes": 1829,
+      "path": "schemas/perception/perception-result-v1.schema.json",
+      "sha256": "f98eeb97d955d36de0a49f7a013a53b7b30d86a67f3f17d916a63dabf037c0c6",
+      "type": "json"
+    },
+    {
+      "bytes": 1713,
+      "path": "schemas/perception/sensory-event-v1.schema.json",
+      "sha256": "3e6ca7cef50df8c0df2e28d3959699fcd1f18a3f618e3dcf05db2fe6eecdf4f8",
+      "type": "json"
+    },
+    {
+      "bytes": 1179,
+      "path": "schemas/perception/sensory-scene-snapshot-v1.schema.json",
+      "sha256": "2bb512c2fcfa34a96f91deccb2b8c8e856bc7c575be0f2358abbe2452a76e92e",
+      "type": "json"
     },
     {
       "bytes": 1447,

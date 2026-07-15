@@ -1,9 +1,9 @@
 <!-- GENERATED FILE. Sources: infra/world-base/schema.sql, infra/world-base/schema/*.sql and infra/world-base/field-descriptions.js. Run `npm run world-db:schema-doc`; do not edit manually. -->
 # Справочник схемы `world_base`
 
-- Исполняемый источник: `infra/world-base/schema.sql` и 12 упорядоченных SQL-частей.
-- SHA-256 развёрнутого DDL: `e52c9966e6e444378b8f48c89c3cec40eabaacce7bf9bfec0ba68949f54b4cf5`.
-- Таблиц: 134.
+- Исполняемый источник: `infra/world-base/schema.sql` и 13 упорядоченных SQL-частей.
+- SHA-256 развёрнутого DDL: `72e9ece8f26d426215a68014c626f11758635a442e20aa8af59d9b59c1fcbe2a`.
+- Таблиц: 147.
 - Описания берутся только из утверждённого `infra/world-base/field-descriptions.js`; отсутствие описания не заполняется эвристикой.
 
 ## Граф (каноническая карта)
@@ -3740,6 +3740,266 @@ Approved causal rule emission → trace template и decay profile.
 **Ограничения таблицы:**
 
 - `PRIMARY KEY (rule_id, water_body_template_id)`
+
+## Perception v1: восприятие и реакции NPC
+
+### `world_base.sensory_signal_profiles`
+
+Утверждённые профили слышимых и видимых сигналов; runtime не выводит их из текста или категории.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `region_id` | `TEXT` | да | — | `world_base.regions(id) ON DELETE CASCADE` | — | FK → regions(id): регион, к которому относится запись. |
+| `modality` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (modality IN ('sound','visual'))` | Закрытый вид сигнала: sound или visual. |
+| `semantic_category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | `NOT NULL` | FK → universal_categories(id): утверждённый смысловой класс сигнала. |
+| `base_strength_units` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (base_strength_units >= 0)` | Исходная числовая сила сигнала до потерь перехода и порога наблюдателя. |
+| `duration_class` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `directionality` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `repetition_policy` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Версионированное правило повторяемости; не свободный текст. |
+| `speech_capability` | `BOOLEAN` | нет | `false` | — | `NOT NULL` | Может ли профиль нести речь; содержание не создаётся этой таблицей. |
+| `source_size_band` | `TEXT` | да | — | — | — | Описание отсутствует. |
+| `motion_exposure_units` | `INTEGER` | нет | `0` | — | `NOT NULL`<br>`CHECK (motion_exposure_units >= 0)` | Описание отсутствует. |
+| `light_emission_units` | `INTEGER` | нет | `0` | — | `NOT NULL`<br>`CHECK (light_emission_units >= 0)` | Описание отсутствует. |
+| `period` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `source_id` | `TEXT` | да | — | `world_base.source_records(id) ON DELETE RESTRICT` | — | FK → source_records(id): подтверждающий источник. |
+| `valid_from` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `valid_to` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `confidence` | `TEXT` | нет | `'unknown'` | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown','low','medium_low','medium','medium_high','high'))` | Уверенность в достоверности. Допустимо: unknown, low, medium_low, medium, medium_high, high. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | draft, approved или deprecated; runtime использует только approved. |
+
+**Ограничения таблицы:**
+
+- `CHECK (valid_to IS NULL OR valid_from IS NULL OR valid_from <= valid_to)`
+
+### `world_base.sensory_signal_action_bindings`
+
+Нормализованная привязка профиля сигнала к разрешённой команде действия.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `sensory_signal_profile_id` | `TEXT` | нет | — | `world_base.sensory_signal_profiles(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
+| `command_id` | `TEXT` | нет | — | `world_base.decision_command_catalog(id) ON DELETE RESTRICT` | `NOT NULL` | FK → decision_command_catalog(id): команда, для которой профиль сигнала утверждён. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY (sensory_signal_profile_id, command_id)`
+
+### `world_base.sensory_signal_item_template_bindings`
+
+Нормализованная привязка профиля сигнала к разрешённому шаблону предмета.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `sensory_signal_profile_id` | `TEXT` | нет | — | `world_base.sensory_signal_profiles(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
+| `item_template_id` | `TEXT` | нет | — | `world_base.item_templates(id) ON DELETE RESTRICT` | `NOT NULL` | FK → item_templates(id): шаблон предмета, способный породить сигнал. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY (sensory_signal_profile_id, item_template_id)`
+
+### `world_base.sensory_signal_surface_category_bindings`
+
+Нормализованная привязка профиля сигнала к разрешённой категории поверхности.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `sensory_signal_profile_id` | `TEXT` | нет | — | `world_base.sensory_signal_profiles(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
+| `surface_category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | `NOT NULL` | FK → universal_categories(id): категория поверхности, для которой профиль сигнала применим. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY (sensory_signal_profile_id, surface_category_id)`
+
+### `world_base.sensory_transition_profiles`
+
+Утверждённые потери и блокировки восприятия для переходов между G5-якорями.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `material_category_id` | `TEXT` | да | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
+| `sound_loss_units` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (sound_loss_units >= 0)` | Неотрицательная потеря силы звука на одном переходе. |
+| `sound_blocked` | `BOOLEAN` | нет | `false` | — | `NOT NULL` | Полное физическое перекрытие звука на переходе. |
+| `vision_transmission` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (vision_transmission IN ('blocked','slit','partial','open'))` | Закрытый режим передачи зрения: blocked, slit, partial или open. |
+| `vision_loss_units` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (vision_loss_units >= 0)` | Неотрицательная потеря видимости на переходе. |
+| `speech_loss_units` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (speech_loss_units >= 0)` | Дополнительная потеря разборчивости речи на переходе. |
+| `state_modifiers` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `weather_modifiers` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `source_id` | `TEXT` | да | — | `world_base.source_records(id) ON DELETE RESTRICT` | — | FK → source_records(id): подтверждающий источник. |
+| `valid_from` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `valid_to` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `confidence` | `TEXT` | нет | `'unknown'` | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown','low','medium_low','medium','medium_high','high'))` | Уверенность в достоверности. Допустимо: unknown, low, medium_low, medium, medium_high, high. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- `CHECK (valid_to IS NULL OR valid_from IS NULL OR valid_from <= valid_to)`
+
+### `world_base.ambient_sound_profiles`
+
+Утверждённый фон и правила маскирования звуков для региона и периода.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `region_id` | `TEXT` | да | — | `world_base.regions(id) ON DELETE CASCADE` | — | FK → regions(id): регион, к которому относится запись. |
+| `ambient_noise_floor_units` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (ambient_noise_floor_units >= 0)` | Минимальный шумовой фон, участвующий в маскировании. |
+| `masking_policy` | `JSONB` | нет | — | — | `NOT NULL` | Формальное правило маскирования; не prose fallback. |
+| `routine_policy` | `JSONB` | нет | — | — | `NOT NULL` | Формальное правило определения рутинности звука. |
+| `time_modifiers` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `weather_modifiers` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `activity_modifiers` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `source_id` | `TEXT` | да | — | `world_base.source_records(id) ON DELETE RESTRICT` | — | FK → source_records(id): подтверждающий источник. |
+| `valid_from` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `valid_to` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `confidence` | `TEXT` | нет | `'unknown'` | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown','low','medium_low','medium','medium_high','high'))` | Уверенность в достоверности. Допустимо: unknown, low, medium_low, medium, medium_high, high. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- `CHECK (valid_to IS NULL OR valid_from IS NULL OR valid_from <= valid_to)`
+
+### `world_base.light_visibility_profiles`
+
+Утверждённые потери видимости для состояния освещения.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `light_state_category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `visibility_loss_units` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (visibility_loss_units >= 0)` | Описание отсутствует. |
+| `weather_modifiers` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `source_id` | `TEXT` | да | — | `world_base.source_records(id) ON DELETE RESTRICT` | — | FK → source_records(id): подтверждающий источник. |
+| `valid_from` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `valid_to` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `confidence` | `TEXT` | нет | `'unknown'` | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown','low','medium_low','medium','medium_high','high'))` | Уверенность в достоверности. Допустимо: unknown, low, medium_low, medium, medium_high, high. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- `CHECK (valid_to IS NULL OR valid_from IS NULL OR valid_from <= valid_to)`
+
+### `world_base.actor_perception_profiles`
+
+Числовые пороги, внимание и модификаторы восприятия актёра.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `hearing_threshold_units` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (hearing_threshold_units >= 0)` | Базовый порог обнаружения звука. |
+| `localization_margin_units` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (localization_margin_units >= 0)` | Дополнительный margin после обнаружения для локализации. |
+| `classification_margin_units` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (classification_margin_units >= 0)` | Дополнительный margin для классификации сигнала. |
+| `identification_margin_units` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (identification_margin_units >= 0)` | Дополнительный margin для идентификации источника. |
+| `speech_margin_units` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (speech_margin_units >= 0)` | Дополнительный margin для понимания речи. |
+| `visual_threshold_units` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (visual_threshold_units >= 0)` | Базовый порог обнаружения видимого источника. |
+| `visual_classification_margin_units` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (visual_classification_margin_units >= 0)` | Описание отсутствует. |
+| `visual_identification_margin_units` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (visual_identification_margin_units >= 0)` | Описание отсутствует. |
+| `attention_profile` | `JSONB` | нет | — | — | `NOT NULL` | Утверждённый профиль внимания, включая режимы и их модификаторы. |
+| `impairment_bindings` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `state_modifier_rules` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `source_id` | `TEXT` | да | — | `world_base.source_records(id) ON DELETE RESTRICT` | — | FK → source_records(id): подтверждающий источник. |
+| `valid_from` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `valid_to` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `confidence` | `TEXT` | нет | `'unknown'` | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown','low','medium_low','medium','medium_high','high'))` | Уверенность в достоверности. Допустимо: unknown, low, medium_low, medium, medium_high, high. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- `CHECK (valid_to IS NULL OR valid_from IS NULL OR valid_from <= valid_to)`
+
+### `world_base.routine_sound_profiles`
+
+Формальные правила распознавания рутинных звуков для профиля восприятия.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `perception_profile_id` | `TEXT` | нет | — | `world_base.actor_perception_profiles(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `matching_policy` | `JSONB` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- `UNIQUE (world_revision_id, perception_profile_id)`
+
+### `world_base.npc_reaction_policies`
+
+Утверждённые переходы осведомлённости и значимости реакции NPC.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `region_id` | `TEXT` | да | — | `world_base.regions(id) ON DELETE CASCADE` | — | FK → regions(id): регион, к которому относится запись. |
+| `awareness_transitions` | `JSONB` | нет | — | — | `NOT NULL` | Формальная таблица переходов awareness state. |
+| `significance_policy` | `JSONB` | нет | — | — | `NOT NULL` | Формальное правило отнесения стимула к значимости. |
+| `cooldown_policy` | `JSONB` | нет | — | — | `NOT NULL` | Формальные ограничения повторной реакции. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.npc_reaction_policy_options`
+
+Конечный набор допустимых реакций NPC, привязанный к каталогу команд.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `reaction_policy_id` | `TEXT` | нет | — | `world_base.npc_reaction_policies(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
+| `command_id` | `TEXT` | нет | — | `world_base.decision_command_catalog(id) ON DELETE RESTRICT` | `NOT NULL` | FK → decision_command_catalog(id): единственная допустимая команда реакции. |
+| `option_order` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (option_order >= 0)` | Детерминированный порядок варианта в bounded candidate set. |
+| `preconditions` | `JSONB` | нет | — | — | `NOT NULL` | Структурированные предусловия варианта реакции. |
+| `expected_cost` | `JSONB` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `risk_metadata` | `JSONB` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `reason_visible_to_actor` | `TEXT` | нет | — | — | `NOT NULL` | Утверждённое объяснение варианта для bounded-decision контекста; не создаётся runtime. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- `UNIQUE (reaction_policy_id, command_id)`
+- `UNIQUE (reaction_policy_id, option_order)`
+
+### `world_base.g5_edge_sensory_transition_bindings`
+
+Привязка шаблона ребра G5 к утверждённому профилю сенсорного перехода.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `g5_edge_template_id` | `TEXT` | нет | — | `world_base.g5_edge_templates(id) ON DELETE CASCADE` | `NOT NULL`<br>`PRIMARY KEY` | FK → g5_edge_templates(id): переход, которому назначен профиль потерь. |
+| `sensory_transition_profile_id` | `TEXT` | нет | — | `world_base.sensory_transition_profiles(id) ON DELETE RESTRICT` | `NOT NULL` | FK → sensory_transition_profiles(id): approved профиль потерь и блокировок. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.region_npc_perception_profile_bindings`
+
+Привязка регионального набора NPC к утверждённым профилям восприятия и реакции.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `npc_profile_set_id` | `TEXT` | нет | — | `world_base.region_npc_profile_sets(id) ON DELETE CASCADE` | `NOT NULL`<br>`PRIMARY KEY` | FK → region_npc_profile_sets(id): набор NPC, которому назначены восприятие и реакции. |
+| `perception_profile_id` | `TEXT` | нет | — | `world_base.actor_perception_profiles(id) ON DELETE RESTRICT` | `NOT NULL` | FK → actor_perception_profiles(id): approved числовой профиль восприятия. |
+| `routine_sound_profile_id` | `TEXT` | нет | — | `world_base.routine_sound_profiles(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `reaction_policy_id` | `TEXT` | нет | — | `world_base.npc_reaction_policies(id) ON DELETE RESTRICT` | `NOT NULL` | FK → npc_reaction_policies(id): approved политика реакции NPC. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
 
 ## Без утверждённой группы
 

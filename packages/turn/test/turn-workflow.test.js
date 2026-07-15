@@ -58,7 +58,9 @@ function createServices(log = [], overrides = {}) {
       visibleProjector: {
         async project(request) {
           log.push('visible_projection');
-          assert.equal(request.retrieved_state.relevant_hidden_state.hidden_sentinel, 'must_not_leak');
+          assert.equal('retrieved_state' in request, false);
+          assert.equal('consequence' in request, false);
+          assert.equal(JSON.stringify(request).includes('hidden_sentinel'), false);
           return validVisibleContext({
             visible_scene: 'На оглобле телеги заметна свежая грязь.',
             visible_changes: ['Ты внимательнее осмотрел телегу.']

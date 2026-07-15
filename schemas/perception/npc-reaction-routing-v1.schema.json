@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rus.perception.npc_reaction_routing_v1",
+  "type": "object",
+  "required": ["version","schema","routing_id","party_id","event_id","observer_id","reaction_policy_id","state_version","status","options","trace_digest"],
+  "properties": {"version":{"const":1},"schema":{"const":"npc_reaction_routing_v1"},"routing_id":{"type":"string","minLength":1},"party_id":{"type":"string","minLength":1},"event_id":{"type":"string","minLength":1},"observer_id":{"type":"string","minLength":1},"reaction_policy_id":{"type":"string","minLength":1},"state_version":{"type":"integer","minimum":0},"status":{"enum":["no_reaction","code_reaction","bounded_decision_required","data_gap","blocked"]},"options":{"type":"array"},"trace_digest":{"type":"string","pattern":"^[a-f0-9]{64}$"}},
+  "additionalProperties": false
+}

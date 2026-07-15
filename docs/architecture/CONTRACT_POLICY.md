@@ -7,6 +7,7 @@
 - pipeline lifecycle — `@rus/pipeline-engine`;
 - role configuration — `@rus/llm-runtime`;
 - UI read models — `@rus/presentation`;
+- perception event/snapshot/result/routing schema names and boundary validators — `@rus/contracts`;
 - DB DDL — `schemas/`;
 - generated reference — `generated/`, создаётся командой и не редактируется вручную.
 

@@ -22,6 +22,7 @@
     "NEW_GAME_START_PIPELINE.txt": "new-game-start-pipeline",
     "npc_generation_profiles.txt": "npc-generation-profiles",
     "npc_inventory_item_marks.txt": "npc-inventory-item-marks",
+    "perception_visibility_hearing_and_npc_reactions.md": "perception-visibility-hearing-and-npc-reactions",
     "player_character_generation.txt": "player-character-generation",
     "read_only_database_and_graph_architecture.md": "read-only-database-and-graph-architecture",
     "README.md": "documentation-corpus-readme",

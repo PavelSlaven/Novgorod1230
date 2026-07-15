@@ -50,7 +50,20 @@ export const REQUIRED_WORLD_BASE_TABLES = [
   'item_templates',
   'llm_context_packs',
   'graph_nodes',
-  'graph_edges'
+  'graph_edges',
+  'sensory_signal_profiles',
+  'sensory_signal_action_bindings',
+  'sensory_signal_item_template_bindings',
+  'sensory_signal_surface_category_bindings',
+  'sensory_transition_profiles',
+  'ambient_sound_profiles',
+  'light_visibility_profiles',
+  'actor_perception_profiles',
+  'routine_sound_profiles',
+  'npc_reaction_policies',
+  'npc_reaction_policy_options',
+  'g5_edge_sensory_transition_bindings',
+  'region_npc_perception_profile_bindings'
 ];
 
 export const REQUIRED_PARTY_TABLES = [
@@ -84,7 +97,16 @@ export const REQUIRED_PARTY_TABLES = [
   'party_autonomous_updates',
   'party_visible_read_models',
   'party_journeys',
-  'party_journey_legs'
+  'party_journey_legs',
+  'party_perception_pins',
+  'party_perception_cycles',
+  'party_sensory_events',
+  'party_actor_attention_states',
+  'party_perception_results',
+  'party_npc_awareness_states',
+  'party_stimulus_memory',
+  'party_npc_reaction_decisions',
+  'party_sensory_event_reaction_causes'
 ];
 
 export const REQUIRED_PARTY_PRIMARY_KEYS = {
@@ -118,7 +140,16 @@ export const REQUIRED_PARTY_PRIMARY_KEYS = {
   party_autonomous_updates: ['party_id', 'update_id'],
   party_visible_read_models: ['party_id', 'state_version', 'viewer_character_id'],
   party_journeys: ['party_id', 'journey_id'],
-  party_journey_legs: ['party_id', 'journey_id', 'leg_id']
+  party_journey_legs: ['party_id', 'journey_id', 'leg_id'],
+  party_perception_pins: ['party_id'],
+  party_perception_cycles: ['party_id', 'cycle_id'],
+  party_sensory_events: ['party_id', 'event_id'],
+  party_actor_attention_states: ['party_id', 'actor_kind', 'actor_id'],
+  party_perception_results: ['party_id', 'result_id'],
+  party_npc_awareness_states: ['party_id', 'npc_id'],
+  party_stimulus_memory: ['party_id', 'npc_id', 'event_id'],
+  party_npc_reaction_decisions: ['party_id', 'reaction_decision_id'],
+  party_sensory_event_reaction_causes: ['party_id', 'event_id']
 };
 
 export function validateNewGameEnvironment(env = process.env) {
@@ -371,7 +402,20 @@ async function countWorldBasePrerequisites(client) {
     place_generation_limits: `SELECT COUNT(*)::int AS count FROM world_base.place_generation_limits WHERE region_id = $1 AND status IN ('approved', 'usable_with_caution')`,
     historical_events: `SELECT COUNT(*)::int AS count FROM world_base.historical_events WHERE region_id = $1 AND status IN ('approved', 'usable_with_caution')`,
     item_templates: `SELECT COUNT(*)::int AS count FROM world_base.item_templates WHERE status IN ('approved', 'usable_with_caution')`,
-    llm_context_packs: `SELECT COUNT(*)::int AS count FROM world_base.llm_context_packs WHERE (region_id = $1 OR region_id IS NULL) AND context_type IN ('region_start', 'scene_context', 'repair_context') AND status IN ('approved', 'usable_with_caution')`
+    llm_context_packs: `SELECT COUNT(*)::int AS count FROM world_base.llm_context_packs WHERE (region_id = $1 OR region_id IS NULL) AND context_type IN ('region_start', 'scene_context', 'repair_context') AND status IN ('approved', 'usable_with_caution')`,
+    sensory_signal_profiles: `SELECT COUNT(*)::int AS count FROM world_base.sensory_signal_profiles WHERE (region_id = $1 OR region_id IS NULL) AND status = 'approved'`,
+    sensory_signal_action_bindings: `SELECT COUNT(*)::int AS count FROM world_base.sensory_signal_action_bindings WHERE status = 'approved'`,
+    sensory_signal_item_template_bindings: `SELECT COUNT(*)::int AS count FROM world_base.sensory_signal_item_template_bindings WHERE status = 'approved'`,
+    sensory_signal_surface_category_bindings: `SELECT COUNT(*)::int AS count FROM world_base.sensory_signal_surface_category_bindings WHERE status = 'approved'`,
+    sensory_transition_profiles: `SELECT COUNT(*)::int AS count FROM world_base.sensory_transition_profiles WHERE status = 'approved'`,
+    ambient_sound_profiles: `SELECT COUNT(*)::int AS count FROM world_base.ambient_sound_profiles WHERE (region_id = $1 OR region_id IS NULL) AND status = 'approved'`,
+    light_visibility_profiles: `SELECT COUNT(*)::int AS count FROM world_base.light_visibility_profiles WHERE status = 'approved'`,
+    actor_perception_profiles: `SELECT COUNT(*)::int AS count FROM world_base.actor_perception_profiles WHERE status = 'approved'`,
+    routine_sound_profiles: `SELECT COUNT(*)::int AS count FROM world_base.routine_sound_profiles WHERE status = 'approved'`,
+    npc_reaction_policies: `SELECT COUNT(*)::int AS count FROM world_base.npc_reaction_policies WHERE (region_id = $1 OR region_id IS NULL) AND status = 'approved'`,
+    npc_reaction_policy_options: `SELECT COUNT(*)::int AS count FROM world_base.npc_reaction_policy_options WHERE status = 'approved'`,
+    g5_edge_sensory_transition_bindings: `SELECT COUNT(*)::int AS count FROM world_base.g5_edge_sensory_transition_bindings WHERE status = 'approved'`,
+    region_npc_perception_profile_bindings: `SELECT COUNT(*)::int AS count FROM world_base.region_npc_perception_profile_bindings WHERE status = 'approved'`
   };
   const counts = {};
   for (const [name, sql] of Object.entries(queries)) {

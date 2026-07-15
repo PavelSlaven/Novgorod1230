@@ -31,6 +31,7 @@ export const TURN_ALLOWED_SUBSYSTEMS = deepFreeze([
   'stealth',
   'knowledge_memory',
   'time_progression',
+  'perception',
   'event_reaction',
   'visible_context_projection'
 ]);
@@ -65,7 +66,8 @@ export const TURN_ALLOWED_STATE_BLOCKS = deepFreeze([
   'relevant_routes',
   'relevant_anchors',
   'recent_changes_log',
-  'relevant_events'
+  'relevant_events',
+  'relevant_perception'
 ]);
 
 export const TURN_ALLOWED_WRITE_TARGETS = deepFreeze([
@@ -79,7 +81,8 @@ export const TURN_ALLOWED_WRITE_TARGETS = deepFreeze([
   'party_items',
   'party_containers',
   'party_narrator_output',
-  'party_player_visible_message'
+  'party_player_visible_message',
+  'party_perception'
 ]);
 
 export const TURN_WORKFLOW_STAGE_IDS = deepFreeze([
@@ -90,6 +93,7 @@ export const TURN_WORKFLOW_STAGE_IDS = deepFreeze([
   'checks',
   'consequence',
   'time_update',
+  'perception',
   'hidden_update',
   'visible_projection',
   'narration',

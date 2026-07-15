@@ -85,7 +85,7 @@ export function validateTurnWritePlan(value) {
   const errors = [];
   if (!plain(value)) return fail('turn write plan must be an object');
   if (value.schema !== 'party_turn_write_plan' || value.version !== 2 || value.sealed_by !== 'turn_code_planner_v2') errors.push('write plan must be sealed party_turn_write_plan v2');
-  const allowedKeys = new Set(['version','schema','sealed_by','party_id','turn_id','base_state_version','write_targets','command_trace','first_entry_materialization','destination_position']);
+  const allowedKeys = new Set(['version','schema','sealed_by','party_id','turn_id','base_state_version','write_targets','command_trace','first_entry_materialization','destination_position','perception_cycle','perception_pins','perception_reaction_decisions']);
   for (const key of Object.keys(value)) if (!allowedKeys.has(key)) errors.push(`write plan field is forbidden: ${key}`);
   requiredText(errors, value.party_id, 'party_id');
   requiredText(errors, value.turn_id, 'turn_id');
@@ -102,6 +102,9 @@ export function validateTurnWritePlan(value) {
     else requiredText(errors, value.first_entry_materialization.g4_id, 'first_entry_materialization.g4_id');
     if (!plain(value.destination_position)) errors.push('destination_position must be an object for first-entry materialization');
   }
+  if ((value.perception_cycle == null) !== (value.perception_pins == null)) errors.push('perception_cycle and perception_pins must be supplied together');
+  if (value.perception_cycle != null && !Array.isArray(value.perception_reaction_decisions)) errors.push('perception_reaction_decisions must be an array with perception_cycle');
+  if (value.perception_cycle == null && value.perception_reaction_decisions != null) errors.push('perception_reaction_decisions requires perception_cycle');
   return result(errors);
 }
 

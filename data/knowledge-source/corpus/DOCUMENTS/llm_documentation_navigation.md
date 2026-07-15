@@ -26,9 +26,9 @@
 6. Реализация.
 7. Комментарии и примеры.
 
-### Proposed-классификация
+### Proposed-нормативы
 
-`universal_category_classification_policy.md` и `universal_category_classification_references.md` зарегистрированы в canonical corpus со статусом `proposed`. Они задают целевую модель классификации и внешние опоры, но не отменяют active-нормативы и не подтверждают готовность предметных каталогов, regional permissions или materializer. До отдельного повышения действует приоритет выше.
+`universal_category_classification_policy.md` и `universal_category_classification_references.md` задают целевую модель классификации и внешние опоры. `perception_visibility_hearing_and_npc_reactions.md` задаёт целевую code-owned модель слуха, зрения, свидетелей и реакций NPC. Все три документа зарегистрированы в canonical corpus со статусом `proposed`: они не отменяют active-нормативы, не подтверждают готовность каталогов, regional permissions, materializer или runtime и не разрешают менять старые партии. До отдельного повышения действует приоритет выше.
 
 Дополнительные правила навигации:
 
@@ -91,6 +91,7 @@
 | `historical_events_and_figures.txt` | Правила исторического слоя: события и личности как внешнее давление, фазы событий, слухи, предвестники, последствия, связь с местом, временем, властью, дорогами, ценами и настроением. | При генерации исторического фона, слухов, крупных событий, власти, войн, известных личностей, смене региона, большом пропуске времени или изменении исторического давления. |
 | `interface_ux.md` | Правила игрового интерфейса: видимый опыт персонажа, разделение игрового UI, журнала и диагностики, свободный ввод, состояние, инвентарь, карта знаний, подсказки и запрет смешивать player-facing слой с debug/admin. | При изменении UI, `ui-state`, журнала, инвентарных/людских/карточных панелей, диагностических оверлеев, подсказок действий и состава данных, отдаваемых браузеру. |
 | `formulas.md` | Справочник расчётных и структурных формул проекта с пояснениями. Объединяет формулы проверок, состояний, веса, нагрузки, боя, времени, перемещения и структуры сущностей. | Когда нужно быстро найти формулу, а затем проверить её смысл в профильном документе. |
+| `perception_visibility_hearing_and_npc_reactions.md` | Proposed-норматив системы слуха, зрения, скрытности, свидетелей, настороженности и bounded NPC reactions. | При проектировании или реализации этой подсистемы; до `active` не меняет production runtime. |
 | `universal_category_classification_policy.md` | Proposed-норматив базового слоя universal categories, external mappings и фасетной модели; не является active. | При работе с классификационными схемами, labels, mappings, category relations и планировании этапов 3–9. |
 | `universal_category_classification_references.md` | Proposed-реестр внешних классификационных опор; не подтверждает историческую применимость. | При редакторском mapping к внешней схеме, без live runtime-запросов и без regional permission. |
 | `information_sources_llm_prompts.md` | Правила работы с исторической, игровой и технической информацией: происхождение сведений, статус достоверности, пополнение базы, сжатие источников, черновики, утверждённые данные и аудит. | При проектировании RAG/поиска, пополнении базы, сохранении источников, работе с внешними сведениями, снижении токенов, отделении чернового знания от утверждённого. |
@@ -109,6 +110,7 @@
 | Проверить, что персонаж несёт, где предмет лежит, сколько весит и доступен ли он | `character_inventory_equipment.txt` | `items_and_property.txt`, `character_parameters.txt`, `weapons_and_armor.txt` |
 | Работать с вещами NPC, метками, узнаваемостью и реакцией владельца | `npc_inventory_item_marks.txt` | `items_and_property.txt`, `npc_generation_profiles.txt`, `interface_ux.md` |
 | Создать NPC, повысить профиль, сохранить отношения или память | `npc_generation_profiles.txt` | `character_parameters.txt`, `items_and_property.txt`, `interface_ux.md` |
+| Реализовать слух, зрение, скрытность, свидетелей или реакцию NPC | `perception_visibility_hearing_and_npc_reactions.md` | `character_parameters.txt`, `npc_generation_profiles.txt`, `world_generation_and_turns.txt`, `interface_ux.md` |
 | Обработать физический конфликт, угрозу, удар, борьбу, стрельбу, защиту, бегство | `combat_system.md` | `weapons_and_armor.txt`, `character_parameters.txt`, `character_inventory_equipment.txt` |
 | Проверить оружие, броню, щит, опасность, защиту, право ношения и социальный риск | `weapons_and_armor.txt` | `combat_system.md`, `character_inventory_equipment.txt`, `items_and_property.txt` |
 | Создать исторический фон, слух, войну, власть, князя, фазу события | `historical_events_and_figures.txt` | `world_regions.txt`, `time_system.txt`, `world_generation_and_turns.txt` |

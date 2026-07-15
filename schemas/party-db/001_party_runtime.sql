@@ -411,3 +411,154 @@ CREATE TABLE IF NOT EXISTS party_runtime.party_visible_read_models (
   payload_digest TEXT NOT NULL,
   PRIMARY KEY (party_id, state_version, viewer_character_id)
 );
+
+CREATE TABLE IF NOT EXISTS party_runtime.party_perception_pins (
+  party_id TEXT PRIMARY KEY REFERENCES party_runtime.parties(party_id) ON DELETE CASCADE,
+  perception_algorithm_id TEXT NOT NULL,
+  sensory_catalog_digest TEXT NOT NULL,
+  reaction_policy_digest TEXT NOT NULL,
+  activated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE TABLE IF NOT EXISTS party_runtime.party_perception_cycles (
+  party_id TEXT NOT NULL REFERENCES party_runtime.parties(party_id) ON DELETE CASCADE,
+  cycle_id TEXT NOT NULL,
+  turn_id TEXT NOT NULL,
+  wave_index INTEGER NOT NULL CHECK (wave_index >= 0),
+  wave_count INTEGER NOT NULL CHECK (wave_count >= 1),
+  state_version BIGINT NOT NULL CHECK (state_version >= 0),
+  snapshot_digest TEXT NOT NULL,
+  perception_algorithm_id TEXT NOT NULL,
+  sensory_catalog_digest TEXT NOT NULL,
+  reaction_policy_digest TEXT NOT NULL,
+  idempotency_key TEXT NOT NULL,
+  trace JSONB NOT NULL,
+  PRIMARY KEY (party_id, cycle_id),
+  UNIQUE (party_id, idempotency_key)
+);
+CREATE TABLE IF NOT EXISTS party_runtime.party_sensory_events (
+  party_id TEXT NOT NULL,
+  event_id TEXT NOT NULL,
+  cycle_id TEXT NOT NULL,
+  turn_id TEXT NOT NULL,
+  wave_index INTEGER NOT NULL CHECK (wave_index >= 0),
+  parent_event_id TEXT,
+  causal_reaction_id TEXT,
+  modality TEXT NOT NULL CHECK (modality IN ('sound','visual')),
+  source_kind TEXT NOT NULL,
+  source_id TEXT NOT NULL,
+  source_anchor_id TEXT NOT NULL,
+  signal_profile_id TEXT NOT NULL,
+  causal_action_id TEXT NOT NULL,
+  emitted_at TIMESTAMPTZ NOT NULL,
+  duration_ms INTEGER NOT NULL CHECK (duration_ms >= 0),
+  base_strength_units INTEGER NOT NULL CHECK (base_strength_units >= 0),
+  directionality_profile_id TEXT NOT NULL,
+  semantic_class_id TEXT NOT NULL,
+  routine_context_tags JSONB NOT NULL,
+  state_version BIGINT NOT NULL CHECK (state_version >= 0),
+  profile_digest TEXT NOT NULL,
+  PRIMARY KEY (party_id, event_id),
+  FOREIGN KEY (party_id, cycle_id) REFERENCES party_runtime.party_perception_cycles(party_id, cycle_id) ON DELETE CASCADE,
+  FOREIGN KEY (party_id, parent_event_id) REFERENCES party_runtime.party_sensory_events(party_id, event_id) ON DELETE RESTRICT,
+  FOREIGN KEY (party_id, source_anchor_id) REFERENCES party_runtime.party_g5_anchors(party_id, anchor_id) ON DELETE RESTRICT,
+  CHECK ((wave_index = 0) = (parent_event_id IS NULL AND causal_reaction_id IS NULL))
+);
+CREATE TABLE IF NOT EXISTS party_runtime.party_actor_attention_states (
+  party_id TEXT NOT NULL REFERENCES party_runtime.parties(party_id) ON DELETE CASCADE,
+  actor_kind TEXT NOT NULL CHECK (actor_kind IN ('player','npc')),
+  actor_id TEXT NOT NULL,
+  current_activity_id TEXT NOT NULL,
+  focus_mode TEXT NOT NULL CHECK (focus_mode IN ('relaxed','occupied','focused','watching','searching','sleeping','incapacitated')),
+  focus_anchor_id TEXT,
+  attention_load_units INTEGER NOT NULL CHECK (attention_load_units >= 0),
+  interruptibility TEXT NOT NULL,
+  vigilance_state TEXT NOT NULL,
+  body_modifier JSONB NOT NULL,
+  active_listening BOOLEAN NOT NULL DEFAULT false,
+  updated_at TIMESTAMPTZ NOT NULL,
+  PRIMARY KEY (party_id, actor_kind, actor_id),
+  FOREIGN KEY (party_id, focus_anchor_id) REFERENCES party_runtime.party_g5_anchors(party_id, anchor_id) ON DELETE RESTRICT
+);
+CREATE TABLE IF NOT EXISTS party_runtime.party_perception_results (
+  party_id TEXT NOT NULL,
+  result_id TEXT NOT NULL,
+  event_id TEXT NOT NULL,
+  observer_kind TEXT NOT NULL CHECK (observer_kind IN ('player','npc')),
+  observer_id TEXT NOT NULL,
+  observer_anchor_id TEXT NOT NULL,
+  modality TEXT NOT NULL CHECK (modality IN ('sound','visual')),
+  physical_reach BOOLEAN NOT NULL,
+  perceived BOOLEAN NOT NULL,
+  perception_level TEXT NOT NULL CHECK (perception_level IN ('blocked','below_threshold','detected','localized','classified','identified','speech_understood')),
+  direction_resolution TEXT NOT NULL CHECK (direction_resolution IN ('none','zone','direction','precise')),
+  identified_source_id TEXT,
+  identified_semantic_class_id TEXT,
+  speech_content_id TEXT,
+  confidence_band TEXT NOT NULL CHECK (confidence_band IN ('none','low','medium','high','certain')),
+  path_id TEXT NOT NULL,
+  arrival_strength_units INTEGER NOT NULL CHECK (arrival_strength_units >= 0),
+  threshold_units INTEGER NOT NULL CHECK (threshold_units >= 0),
+  margin_units INTEGER NOT NULL,
+  applied_profile_ids JSONB NOT NULL,
+  check_result_id TEXT,
+  trace_digest TEXT NOT NULL,
+  state_version BIGINT NOT NULL CHECK (state_version >= 0),
+  PRIMARY KEY (party_id, result_id),
+  FOREIGN KEY (party_id, event_id) REFERENCES party_runtime.party_sensory_events(party_id, event_id) ON DELETE CASCADE,
+  FOREIGN KEY (party_id, observer_anchor_id) REFERENCES party_runtime.party_g5_anchors(party_id, anchor_id) ON DELETE RESTRICT,
+  CHECK (margin_units = arrival_strength_units - threshold_units),
+  CHECK (physical_reach OR (perceived = false AND perception_level = 'blocked')),
+  CHECK (perceived OR perception_level IN ('blocked','below_threshold'))
+);
+CREATE TABLE IF NOT EXISTS party_runtime.party_npc_awareness_states (
+  id TEXT NOT NULL UNIQUE,
+  party_id TEXT NOT NULL,
+  npc_id TEXT NOT NULL,
+  awareness_state TEXT NOT NULL CHECK (awareness_state IN ('calm','attentive','suspicious','alarmed','engaged')),
+  updated_by_event_id TEXT,
+  state_version BIGINT NOT NULL CHECK (state_version >= 0),
+  trace JSONB NOT NULL,
+  PRIMARY KEY (party_id, npc_id),
+  FOREIGN KEY (party_id, npc_id) REFERENCES party_runtime.party_npcs(party_id, npc_id) ON DELETE CASCADE,
+  FOREIGN KEY (party_id, updated_by_event_id) REFERENCES party_runtime.party_sensory_events(party_id, event_id) ON DELETE RESTRICT
+);
+CREATE TABLE IF NOT EXISTS party_runtime.party_stimulus_memory (
+  party_id TEXT NOT NULL,
+  npc_id TEXT NOT NULL,
+  event_id TEXT NOT NULL,
+  reaction_policy_id TEXT NOT NULL,
+  significance_band TEXT NOT NULL,
+  expires_at TIMESTAMPTZ,
+  trace JSONB NOT NULL,
+  PRIMARY KEY (party_id, npc_id, event_id),
+  FOREIGN KEY (party_id, npc_id) REFERENCES party_runtime.party_npcs(party_id, npc_id) ON DELETE CASCADE,
+  FOREIGN KEY (party_id, event_id) REFERENCES party_runtime.party_sensory_events(party_id, event_id) ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS party_runtime.party_npc_reaction_decisions (
+  party_id TEXT NOT NULL,
+  reaction_decision_id TEXT NOT NULL,
+  routing_id TEXT NOT NULL,
+  event_id TEXT NOT NULL,
+  npc_id TEXT NOT NULL,
+  reaction_policy_id TEXT NOT NULL,
+  resolution_kind TEXT NOT NULL CHECK (resolution_kind IN ('code_singleton','bounded_decision')),
+  request_id TEXT,
+  selected_option_id TEXT NOT NULL,
+  command_id TEXT NOT NULL,
+  state_version BIGINT NOT NULL,
+  trace JSONB NOT NULL,
+  PRIMARY KEY (party_id, reaction_decision_id),
+  UNIQUE (party_id, routing_id),
+  FOREIGN KEY (party_id, event_id) REFERENCES party_runtime.party_sensory_events(party_id, event_id) ON DELETE CASCADE,
+  FOREIGN KEY (party_id, npc_id) REFERENCES party_runtime.party_npcs(party_id, npc_id) ON DELETE RESTRICT,
+  FOREIGN KEY (party_id, request_id) REFERENCES party_runtime.party_decision_requests(party_id, request_id) ON DELETE RESTRICT,
+  CHECK ((resolution_kind = 'bounded_decision') = (request_id IS NOT NULL))
+);
+CREATE TABLE IF NOT EXISTS party_runtime.party_sensory_event_reaction_causes (
+  party_id TEXT NOT NULL,
+  event_id TEXT NOT NULL,
+  reaction_decision_id TEXT NOT NULL,
+  PRIMARY KEY (party_id, event_id),
+  FOREIGN KEY (party_id, event_id) REFERENCES party_runtime.party_sensory_events(party_id, event_id) ON DELETE CASCADE,
+  FOREIGN KEY (party_id, reaction_decision_id) REFERENCES party_runtime.party_npc_reaction_decisions(party_id, reaction_decision_id) ON DELETE RESTRICT
+);

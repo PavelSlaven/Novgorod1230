@@ -13,6 +13,7 @@ test('party preflight targets the normalized party_runtime_v2 schema', () => {
   assert.ok(REQUIRED_PARTY_TABLES.includes('party_materialization_runs'));
   assert.ok(REQUIRED_PARTY_TABLES.includes('party_g5_nodes'));
   assert.ok(REQUIRED_PARTY_TABLES.includes('party_decision_results'));
+  assert.ok(REQUIRED_PARTY_TABLES.includes('party_perception_results'));
   assert.equal(REQUIRED_PARTY_TABLES.includes('party_state'), false);
 });
 

@@ -27,6 +27,7 @@
 - `packages/new-game` — конвейер создания новой игры, Stages 2–26;
 - `packages/materialization` — code-only materializer v2 и bounded decision protocol;
 - `packages/turn` — обработка игрового хода;
+- `packages/perception` — чистый code-owned расчёт слуха, зрения и маршрутизации реакций NPC;
 - `packages/narration` — генерация player-facing прозы из разрешённого видимого контекста;
 - `packages/presentation` — модели первого экрана и игрового хода;
 - `apps/game-server` — сервер и production composition;

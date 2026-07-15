@@ -5,10 +5,10 @@ import { readFile } from 'node:fs/promises';
 import { TURN_WORKFLOW_STAGE_PLAN, runTurnWorkflow } from '@rus/turn';
 import { createLegacyTurnCompatibilityAdapter } from '@rus/turn/compat';
 
-test('turn package publishes one modular workflow entry and 13 isolated blocks', () => {
+test('turn package publishes one modular workflow entry and 14 isolated blocks', () => {
   assert.equal(typeof runTurnWorkflow, 'function');
   assert.equal(typeof createLegacyTurnCompatibilityAdapter, 'function');
-  assert.equal(TURN_WORKFLOW_STAGE_PLAN.length, 13);
+  assert.equal(TURN_WORKFLOW_STAGE_PLAN.length, 14);
 });
 
 test('turn production sources contain no legacy, provider or database imports', async () => {

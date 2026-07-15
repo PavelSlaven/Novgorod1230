@@ -42,6 +42,8 @@ Travel integration uses the same workflow: state blocks `active_journey`, `journ
 
 The only travel command IDs are `travel.start_route`, `travel.start_course`, `travel.continue`, `travel.stop`, `travel.change_pace`, `travel.reroute`, `travel.camp`, `travel.resume` and `travel.abandon`.
 
+`createTravelTurnCommandDefinitions` supplies the code-owned definitions to the normal command registry. It selects only `routing_context.travel_command_id` and returns a typed block if the state reader did not provide formal travel context and persistence proposal; it does not infer either from player text.
+
 ## Инварианты
 
 1. `raw_text` всегда имеет `contract = intent_not_fact`.

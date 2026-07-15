@@ -26,4 +26,5 @@ export { TurnWorkflowError } from './errors.js';
 export { createTurnDecisionRequest, resolveTurnDecision } from './bounded-decision.js';
 export { enterG4WithMaterialization } from './first-entry-materialization.js';
 export { createTurnCommandRegistry, isCodeOwnedTurnWritePlan } from './command-registry.js';
+export { createTravelTurnCommandDefinitions } from './travel-commands.js';
 export { createAutonomousUpdateRegistry, isCodeOwnedAutonomousUpdate, runAutonomousUpdates } from './autonomous-update.js';

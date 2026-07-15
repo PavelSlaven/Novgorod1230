@@ -9,6 +9,7 @@ import {
   TURN_ALLOWED_STATE_BLOCKS,
   TURN_ALLOWED_WRITE_TARGETS,
   TURN_TRAVEL_COMMAND_IDS,
+  createTravelTurnCommandDefinitions,
   createTurnCommandRegistry,
   runTurnWorkflow,
   validateTurnWorkflowStagePlan
@@ -301,4 +302,12 @@ test('travel command identifiers are a code-owned finite set', () => {
     'travel.start_route', 'travel.start_course', 'travel.continue', 'travel.stop',
     'travel.change_pace', 'travel.reroute', 'travel.camp', 'travel.resume', 'travel.abandon'
   ]);
+});
+
+test('travel handler definitions match only an explicit code-owned routing command', () => {
+  const definitions = createTravelTurnCommandDefinitions();
+  assert.deepEqual(definitions.map((definition) => definition.command_id), TURN_TRAVEL_COMMAND_IDS);
+  const selected = definitions.filter((definition) => definition.matches({ routing_context: { travel_command_id: 'travel.continue' } }));
+  assert.deepEqual(selected.map((definition) => definition.command_id), ['travel.continue']);
+  assert.equal(definitions.some((definition) => definition.matches({ routing_context: { travel_command_id: 'travel.invented' } })), false);
 });

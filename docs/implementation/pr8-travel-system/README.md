@@ -57,6 +57,7 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 - 2026-07-15: существующий `@rus/turn` workflow расширен contract-level state blocks и Stage 25 write targets для journeys/legs/environment. Второй orchestrator не создан; code-owned travel handlers и production ports ещё не подключены.
 - 2026-07-15: safe travel projection встроен в существующий `visible_context_package.travel`; тот же visible/narrator gate повторно валидирует projection и блокирует hidden travel fields.
 - 2026-07-15: `TURN_TRAVEL_COMMAND_IDS` фиксирует закрытый code-owned set travel handlers; LLM и free text не могут создать или выбрать несуществующий command id.
+- 2026-07-15: `createTravelTurnCommandDefinitions` добавляет definitions для всех travel commands в существующий registry. Definitions требуют formal state-reader context и persistence proposal; неполный контекст блокируется типизированно, без semantic fallback.
 
 ## Checks recorded on transferred baseline
 
@@ -164,6 +165,9 @@ Typed domain errors are versioned with the travel contracts; persistence, presen
 | `node --test packages/turn/test/turn-workflow.test.js` | 2026-07-15 | рабочее дерево после `11e7bc4` | RED: 1 failed | Отсутствовал code-owned travel command registry. |
 | `node --test packages/turn/test/turn-workflow.test.js` | 2026-07-15 | рабочее дерево после `11e7bc4` | PASS: 12/12 | Travel command set закрыт и стабилен. |
 | `npm run test:domain` | 2026-07-15 | рабочее дерево после `11e7bc4` | PASS: 95/95 | Полный domain regression. |
+| `node --test packages/turn/test/turn-workflow.test.js` | 2026-07-15 | рабочее дерево после `1857f5e` | RED: 1 failed | Отсутствовала handler factory. |
+| `node --test packages/turn/test/turn-workflow.test.js` | 2026-07-15 | рабочее дерево после `1857f5e` | PASS: 13/13 | Definitions выбираются только по explicit routing ID. |
+| `npm run test:domain` | 2026-07-15 | рабочее дерево после `1857f5e` | PASS: 96/96 | Полный domain regression. |
 
 ## Data and migration registry
 

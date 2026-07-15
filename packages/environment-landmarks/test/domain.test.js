@@ -33,7 +33,8 @@ const catalogRecords = Object.freeze({
   }],
   decay_profiles: [{
     profile_id: 'wet-ground-decay', status: 'approved', readable_at_or_above: 0.7,
-    faint_at_or_above: 0.2, decay_per_minute: 0.01, precipitation_multiplier: 2
+    faint_at_or_above: 0.2, decay_per_minute: 0.01, precipitation_multiplier: 2,
+    decay_policy: { schema: 'environment_decay_policy_v1', weather_multipliers: { clear: 1, rain: 2, snow: 0.25, mud: 1.5 } }
   }]
 });
 
@@ -185,6 +186,26 @@ test('cart trace has a causal source and decays from readable to erased without 
   assert.equal(fresh.created_traces[0].strength, 1);
   assert.equal(faded.environment_state.traces[0].status, 'erased');
   assert.equal(faded.environment_state.traces[0].strength, 0);
+});
+
+test('approved decay policy differentiates rain, snow and mud without a weather fallback', () => {
+  const initialized = initializeEnvironmentFeatures(initializationInput());
+  const fresh = updateEnvironmentFeatures({
+    party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', g1_id: 'g1-1', base_state_version: 1,
+    current_environment_state: initialized.environment_state, elapsed_time: { minutes: 0 }, weather_before: 'clear', weather_after: 'clear',
+    active_emitters: [], trace_emissions: [{ emission_id: 'weather-trace', source_kind: 'movement', source_id: 'group-1', cause_event_id: 'event-1', movement_mode: 'cart', location_binding: 'road-1', created_at: '1230-06-01T10:00:00Z' }], event_emissions: [], catalog_bundle: catalog, catalog_digest: catalog.catalog_digest,
+    materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1', idempotency_key: 'turn:weather-create'
+  });
+  const decay = (weather, key) => updateEnvironmentFeatures({
+    party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', g1_id: 'g1-1', base_state_version: 2,
+    current_environment_state: fresh.environment_state, elapsed_time: { minutes: 10 }, weather_before: 'clear', weather_after: weather,
+    active_emitters: [], trace_emissions: [], event_emissions: [], catalog_bundle: catalog, catalog_digest: catalog.catalog_digest,
+    materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1', idempotency_key: key
+  });
+  assert.equal(decay('rain', 'turn:weather-rain').environment_state.traces[0].strength, 0.8);
+  assert.equal(decay('snow', 'turn:weather-snow').environment_state.traces[0].strength, 0.975);
+  assert.equal(decay('mud', 'turn:weather-mud').environment_state.traces[0].strength, 0.85);
+  assert.throws(() => decay('fog', 'turn:weather-fog'), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_DECAY_POLICY_UNAVAILABLE');
 });
 
 test('the same causal trace emission is not materialized twice across turns', () => {

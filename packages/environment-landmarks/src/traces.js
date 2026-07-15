@@ -36,7 +36,7 @@ export function updateTraces({ input, state, catalog, traceEmissions, elapsedMin
     const profile = trace.decay_profile ?? catalog.decay_profiles.find((item) => item.profile_id === trace.decay_profile_id);
     if (!profile) throw new EnvironmentFeatureError('ENVIRONMENT_DECAY_PROFILE_MISSING', 'Existing trace has no approved decay profile.', { trace_id: trace.trace_id });
     validateDecayProfile(profile);
-    const weatherMultiplier = input.weather_after === 'rain' ? Number(profile.precipitation_multiplier) : 1;
+    const weatherMultiplier = weatherDecayMultiplier(profile, input.weather_after);
     trace.age_minutes += elapsedMinutes;
     trace.strength = Math.max(0, trace.strength - (Number(profile.decay_per_minute) * elapsedMinutes * weatherMultiplier));
     trace.status = trace.strength <= 0 ? 'erased' : trace.strength >= Number(profile.readable_at_or_above) ? 'readable' : 'faint';
@@ -65,4 +65,15 @@ function validateDecayProfile(profile) {
     if (profile[key] == null || !Number.isFinite(Number(profile[key])) || Number(profile[key]) < 0) throw new EnvironmentFeatureError('ENVIRONMENT_DECAY_PROFILE_INVALID', `Decay profile requires non-negative ${key}.`, { profile_id: profile.profile_id, key });
   }
   if (Number(profile.readable_at_or_above) < Number(profile.faint_at_or_above)) throw new EnvironmentFeatureError('ENVIRONMENT_DECAY_PROFILE_INVALID', 'Readable threshold must not be below faint threshold.', { profile_id: profile.profile_id });
+  const policy = profile.decay_policy;
+  if (!policy || typeof policy !== 'object' || Array.isArray(policy) || policy.schema !== 'environment_decay_policy_v1' || !policy.weather_multipliers || typeof policy.weather_multipliers !== 'object' || Array.isArray(policy.weather_multipliers)) {
+    throw new EnvironmentFeatureError('ENVIRONMENT_DECAY_POLICY_INVALID', 'Decay profile requires a versioned weather multiplier policy.', { profile_id: profile.profile_id });
+  }
+}
+
+function weatherDecayMultiplier(profile, weather) {
+  const key = text(weather);
+  const multiplier = Number(profile.decay_policy.weather_multipliers[key]);
+  if (!key || !Number.isFinite(multiplier) || multiplier < 0) throw new EnvironmentFeatureError('ENVIRONMENT_DECAY_POLICY_UNAVAILABLE', 'Decay policy has no applicable weather multiplier.', { profile_id: profile.profile_id, weather });
+  return multiplier;
 }

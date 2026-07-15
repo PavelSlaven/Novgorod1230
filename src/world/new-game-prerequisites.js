@@ -82,7 +82,9 @@ export const REQUIRED_PARTY_TABLES = [
   'party_decision_results',
   'party_change_sets',
   'party_autonomous_updates',
-  'party_visible_read_models'
+  'party_visible_read_models',
+  'party_journeys',
+  'party_journey_legs'
 ];
 
 export const REQUIRED_PARTY_PRIMARY_KEYS = {
@@ -114,7 +116,9 @@ export const REQUIRED_PARTY_PRIMARY_KEYS = {
   party_decision_results: ['party_id', 'request_id'],
   party_change_sets: ['party_id', 'change_set_id'],
   party_autonomous_updates: ['party_id', 'update_id'],
-  party_visible_read_models: ['party_id', 'state_version', 'viewer_character_id']
+  party_visible_read_models: ['party_id', 'state_version', 'viewer_character_id'],
+  party_journeys: ['party_id', 'journey_id'],
+  party_journey_legs: ['party_id', 'journey_id', 'leg_id']
 };
 
 export function validateNewGameEnvironment(env = process.env) {

@@ -474,6 +474,9 @@ item/container. Для `holder_character_id` обязателен один из 
   без physical position. Добавлены typed topology errors, reverse DDL checks,
   Stage 24 reject (`WRITE_PLAN_PHYSICAL_POSITION_REQUIRED`) и negative tests для item,
   container/equipped slot/Stage 24; final повторный аудит ожидается после этого цикла.
+- Последующий audit correction: zone projection для item inside container теперь обходит
+  полный item → container → parent path, различает root quick/primary container и
+  hard-blocks missing/cyclic path. Добавлены quick/primary/nested/missing/cycle tests.
 - Green: targeted domain/presentation/Stage 16 tests — 18/18 PASS;
   `npm run test:world-catalog` — 52/52 PASS;
   `npm run test:stage16` — 17/17 PASS; `npm run test:stage24` — 20/20 PASS;

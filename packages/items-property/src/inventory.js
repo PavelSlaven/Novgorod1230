@@ -19,6 +19,8 @@ export function validateInventoryTopology(input = {}) {
   const containerIds = uniqueIds(containers, 'container_id', errors, 'INVENTORY_CONTAINER_NOT_FOUND');
   const itemPlacementById = placementMap(itemPlacements, 'item_id', itemIds, errors);
   const containerPlacementById = placementMap(containerPlacements, 'container_id', containerIds, errors);
+  for (const itemId of itemIds) if (!itemPlacementById.has(itemId)) errors.push(error('INVENTORY_PLACEMENT_NOT_FOUND', 'topology', { item_id: itemId }));
+  for (const containerId of containerIds) if (!containerPlacementById.has(containerId)) errors.push(error('INVENTORY_PLACEMENT_NOT_FOUND', 'topology', { container_id: containerId }));
 
   for (const placement of itemPlacements) validateParty(placement, input.party_id, errors);
   for (const placement of containerPlacements) validateParty(placement, input.party_id, errors);

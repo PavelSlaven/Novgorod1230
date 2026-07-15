@@ -70,6 +70,8 @@ test('inventory foundation: external locations do not count and missing mass nev
 });
 
 test('inventory foundation: topology blocks duplicate placement, cycles, depth, party mismatch and duplicate primary container', () => {
+  const missing = state({ items: [{ item_id: 'knife-1', template_id: 'knife', quantity: 1 }] });
+  assert.equal(validateInventoryTopology(missing).errors[0].code, 'INVENTORY_PLACEMENT_NOT_FOUND');
   const duplicate = state({ items: [{ item_id: 'knife-1', template_id: 'knife', quantity: 1 }], item_placements: [{ item_id: 'knife-1', holder_character_id: actorId }, { item_id: 'knife-1', anchor_id: 'g5-1' }] });
   assert.equal(validateInventoryTopology(duplicate).errors[0].code, 'INVENTORY_PLACEMENT_AMBIGUOUS');
   const cycle = state({ containers: [{ container_id: 'a', template_id: 'bag' }, { container_id: 'b', template_id: 'box' }], container_placements: [{ container_id: 'a', parent_container_id: 'b' }, { container_id: 'b', parent_container_id: 'a' }] });

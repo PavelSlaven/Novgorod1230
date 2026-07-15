@@ -4,6 +4,7 @@ import { sha256 } from '@rus/kernel';
 import {
   TravelError,
   advanceJourney,
+  campJourney,
   createJourney,
   interruptJourney,
   resumeJourney,
@@ -111,6 +112,21 @@ test('interruption and resume preserve actual and perceived navigation state wit
   assert.equal(resumed.status, 'active');
   assert.deepEqual(journey, before);
   assert.notEqual(resumed.actual_position, resumed.perceived_position);
+});
+
+test('camp pauses the existing edge-progress journey without creating a canonical location', () => {
+  const journey = createJourney(plan, context());
+  const camped = campJourney({
+    journey,
+    camp: { camp_id: 'travel-scene:1', reason: 'nightfall' },
+    context: context()
+  });
+  assert.equal(camped.status, 'camped');
+  assert.equal(camped.current_leg_id, 'leg:1');
+  assert.equal(camped.actual_position.position_kind, 'edge_progress');
+  assert.equal(camped.actual_position.g4_id, undefined);
+  assert.equal(camped.legs[0].status, 'interrupted');
+  assert.equal(resumeJourney({ journey: camped, context: context() }).status, 'active');
 });
 
 test('partial advance accepts an explicit perceived position without exposing or inventing a route', () => {

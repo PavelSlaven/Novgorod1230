@@ -12,7 +12,7 @@
 
 - `validateTravelIntent`, `validateTravelPosition`, `validateJourney`, `validateTravelRulesBundle`
 - `buildJourneyPlan`, `createJourney`, `advanceJourney`
-- `interruptJourney`, `resumeJourney`, `changeJourneyPace`, `abandonJourney`, `completeJourney`
+- `interruptJourney`, `campJourney`, `resumeJourney`, `changeJourneyPace`, `abandonJourney`, `completeJourney`
 - `TravelError`
 
 ## Контракт и ошибки
@@ -20,6 +20,8 @@
 Все функции принимают только формальный вход, возвращают новый deep-frozen результат и не изменяют вход. Ошибки имеют code из family `TRAVEL_*`; required candidate set без вариантов возвращает `TRAVEL_REQUIRED_CANDIDATE_SET_EMPTY` и блокирует переход.
 
 `TravelPosition` — discriminated union: `node` хранит `g4_id`, а `edge_progress` хранит journey/leg/edge и progress 0–1000. Скрытая actual position не предназначена для player-facing потребителей.
+
+`campJourney` переводит только существующее active edge-progress journey в `camped`; он не создаёт G2–G4, не материализует лагерь и не меняет фактическую позицию. Материализация допустимой travel scene и её атомарное сохранение остаются задачей оркестратора и persistence boundary.
 
 `TravelRulesBundle` имеет schema version, catalog digest, world revision, region, period, source refs, normalized records/bindings и passed readiness report. Отсутствующий, stale или unready bundle возвращает `TRAVEL_RULE_BUNDLE_MISSING` либо `TRAVEL_DATA_GAP`.
 

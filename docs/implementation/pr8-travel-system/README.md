@@ -44,6 +44,7 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 - 2026-07-15: travel RED tests proved that journey creation accepted unbound rules; `TravelRulesBundle` now verifies digest, scope, source refs and readiness before any lifecycle transition.
 - 2026-07-15: environment update now binds state version and idempotency key: stale requests hard-block, duplicate key returns the persisted state without a second mutation.
 - 2026-07-15: cue lifecycle no longer supplies semantic defaults for incomplete templates; a required template field produces a typed hard block.
+- 2026-07-15: `campJourney` сначала был зафиксирован RED-тестом с отсутствующим export; GREEN-переход переводит только active journey на существующем edge в `camped`, не создавая G0–G4 или travel-scene instance.
 
 ## Checks recorded on transferred baseline
 
@@ -112,6 +113,9 @@ Typed domain errors are versioned with the travel contracts; persistence, presen
 | `npm run docs:generate` / `docs:check` | 2026-07-15 | `98b84e0` | PASS | Generated module and manifest artifacts are current. |
 | `npm run test:domain` | 2026-07-15 | `98b84e0` | PASS: 86/86 | Clean rebased tree; no PostgreSQL dependency in this suite. |
 | `npm run test:modules` | 2026-07-15 | `98b84e0` | PASS: 261/261 | Static/module contract suite. |
+| `node --test packages/travel/test/domain.test.js` | 2026-07-15 | рабочее дерево после `a201ca9` | RED: 1 failed | `campJourney` отсутствовал в публичном API. |
+| `node --test packages/travel/test/domain.test.js` | 2026-07-15 | рабочее дерево после `a201ca9` | PASS: 10/10 | Camp-переход сохраняет edge-progress и возобновляется только через `resumeJourney`. |
+| `npm run test:domain` | 2026-07-15 | рабочее дерево после `a201ca9` | PASS: 87/87 | Регрессия доменного набора после camp-перехода. |
 
 ## Data and migration registry
 

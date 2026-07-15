@@ -144,6 +144,22 @@ export function interruptJourney({ journey, interruption, context }) {
   return deepFreeze({ ...current, status: 'interrupted', legs: current.legs.map((leg) => leg.leg_id === current.current_leg_id ? deepFreeze({ ...leg, status: 'interrupted', interruption_id: item.interruption_id }) : leg) });
 }
 
+export function campJourney({ journey, camp, context }) {
+  const current = validateJourney(journey);
+  assertContext(context, current);
+  if (current.status !== 'active') fail('TRAVEL_NO_ACTIVE_JOURNEY', 'Only an active journey can establish a camp.', { status: current.status });
+  const request = record(camp, 'TRAVEL_INPUT_INVALID', 'Camp request must be an object.');
+  required(request.camp_id, 'camp_id');
+  required(request.reason, 'reason');
+  return deepFreeze({
+    ...current,
+    status: 'camped',
+    legs: current.legs.map((leg) => leg.leg_id === current.current_leg_id
+      ? deepFreeze({ ...leg, status: 'interrupted', interruption_id: request.camp_id })
+      : leg)
+  });
+}
+
 export function resumeJourney({ journey, context }) {
   const current = validateJourney(journey);
   assertContext(context, current);

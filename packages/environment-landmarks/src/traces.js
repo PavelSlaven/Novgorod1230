@@ -8,8 +8,10 @@ export function updateTraces({ input, state, catalog, traceEmissions, elapsedMin
   for (const emission of traceEmissions) {
     for (const key of ['source_kind', 'source_id', 'cause_event_id', 'location_binding', 'created_at']) if (!text(emission[key])) throw new EnvironmentFeatureError('ENVIRONMENT_TRACE_CAUSALITY_INVALID', `Trace emission requires ${key}.`, { emission_id: emission.emission_id });
     if (!text(emission.source_category_id)) throw new EnvironmentFeatureError('ENVIRONMENT_TRACE_CATEGORY_INVALID', 'Trace emission requires an approved source category.', { emission_id: emission.emission_id });
-    const rule = catalog.trace_creation_rules.find((item) => appliesTraceRule(item, emission, input, catalog));
-    if (!rule) throw new EnvironmentFeatureError('ENVIRONMENT_TRACE_RULE_MISSING', 'Trace emission has no approved creation rule.', { emission_id: emission.emission_id });
+    const rules = catalog.trace_creation_rules.filter((item) => appliesTraceRule(item, emission, input, catalog)).sort((left, right) => left.id.localeCompare(right.id));
+    if (rules.length === 0) throw new EnvironmentFeatureError('ENVIRONMENT_TRACE_RULE_MISSING', 'Trace emission has no approved creation rule.', { emission_id: emission.emission_id });
+    if (rules.length > 1) throw new EnvironmentFeatureError('ENVIRONMENT_TRACE_RULE_AMBIGUOUS', 'Trace emission matches more than one approved creation rule.', { emission_id: emission.emission_id, rule_ids: rules.map((item) => item.id) });
+    const [rule] = rules;
     const template = catalog.trace_templates.find((item) => approved(item) && item.id === rule.trace_template_id && scoped(item, input));
     const profile = catalog.decay_profiles.find((item) => approved(item) && item.id === rule.decay_profile_id && item.world_revision_id === input.world_revision_id);
     if (!template || !profile) throw new EnvironmentFeatureError('ENVIRONMENT_TRACE_CATALOG_REFERENCE_MISSING', 'Trace creation rule has a missing template or decay profile.', { rule_id: rule.id });

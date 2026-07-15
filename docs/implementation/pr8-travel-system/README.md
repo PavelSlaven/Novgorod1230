@@ -6,11 +6,11 @@
 - Branch: `codex/pr8-travel-system`
 - Base: `chatgpt/universal-category-classification` (stacked on draft PR7)
 - Rebased base SHA: `5463af867eab5e82d634151183f05bd7264e70b4` (PR7 head checked 2026-07-15)
-- Last verified rebased PR8 head: `c658cc6`
+- Last verified published PR8 head: `c43e67e`
 - Draft status: yes
 - PR7 dependency: open draft; PR8 was rebased onto its current head in an isolated clean worktree.
-- Last completed phase: contract and persistence baseline (partial; not accepted as PR8 completion).
-- Current phase: Phase 4 world-base travel-profile authoring and readiness (`in_progress`).
+- Last completed phase: contract, persistence and authoring-readiness baseline (partial; not accepted as PR8 completion).
+- Current phase: Phase 4 world-base travel/environment authoring and readiness (`in_progress`).
 - Current blocker: no approved pilot-G1 catalog/rules bundles and no configured PostgreSQL integration database.
 
 The branch must be rebased onto `main` after PR7 is integrated and before final audit. The primary worktree remains untouched because it contains unrelated local changes.
@@ -82,6 +82,8 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 - 2026-07-15: environment baseline принимает только `environment-catalog.v2`: approved landmark rule связан с scoped profile, profile entry и template. G1/node/landscape/hydrology/land-use/route bindings применяются как фильтры; отсутствующий обязательный scope input или profile образует typed hard block.
 - 2026-07-15: cue emission использует нормализованный template/rule identity и exact emitter category, revision, region, season и approved weather policy. Неполный emitter или policy не получают semantic fallback.
 - 2026-07-15: trace creation rule использует exact source category, revision/region/season и landscape/hydrology bindings; template и decay profile читаются только по pinned world revision.
+- 2026-07-15: `assessEnvironmentFeatureReadiness` проверяет полный environment authoring set до runtime: approved/pinned records, DDL-derived internal references, policy schemas и provenance. Она не создаёт pilot data; пустые profiles, unproven policies и отсутствующие schemas остаются typed readiness gaps.
+- 2026-07-15: trace emission с несколькими одновременно применимыми creation rules теперь hard-blocks. Runtime не выбирает первую запись из порядка bundle.
 
 ## Checks recorded on transferred baseline
 
@@ -163,6 +165,7 @@ Typed domain errors are versioned with the travel contracts; persistence, presen
 | `node --test packages/environment-landmarks/test/*.test.js` / `npm run test:domain` / `docs:check` | 2026-07-15 | worktree before landmark-profile commit | PASS: 16/16; 115/115 | Environment catalog v2 enforces rule → profile → entry → template and G1/placement scope without a legacy rule fallback. |
 | `node --test packages/environment-landmarks/test/*.test.js` | 2026-07-15 | worktree before cue-scope commit | PASS: 17/17 | Cue rule consumes an explicit emitter category and cannot match a different category. |
 | `node --test packages/environment-landmarks/test/*.test.js` | 2026-07-15 | worktree before trace-scope commit | PASS: 18/18 | Trace rule consumes exact source category, landscape scope and normalized template/profile identities. |
+| `npm test` | 2026-07-15 | worktree before environment-readiness commit | PASS: tools 142/142; domain 117/117; apps 14/14 | Environment authoring readiness, generated artifacts and deterministic trace-rule selection pass the full suite. Real PostgreSQL tests remain skipped without `PARTY_DATABASE_URL`; browser E2E is skipped because Chromium is unavailable. |
 | `node --test tools/docs-tools/test/knowledge-source-migration.test.js tools/docs-tools/test/knowledge-corpus-verifier.test.js tools/docs-tools/test/knowledge-materializer-v2.test.js` | 2026-07-15 | working tree after `6eb1a23` | PASS: 22/22 | Corpus manifest, legacy provenance and generated graph/RAG materialization remain reproducible after the PR8 normative update. |
 | `npm run test:domain` / `npm run test:modules` | 2026-07-15 | working tree after `6eb1a23` | PASS: 102/102; 261/261 | Documentation-only change did not regress travel, environment, turn or materialization contracts. |
 | `node --test packages/travel/test/domain.test.js` | 2026-07-15 | `69b0ee8` | RED: 1 failed | `ERR_MODULE_NOT_FOUND` before implementation. |
@@ -296,7 +299,7 @@ The ordered migration loader, seed script, party preflight and Stage 25 logical 
 | 1 — normative architecture | in progress | PR8 travel boundaries are now synchronized across movement, time, turn, UI, graph/data ownership and navigation docs; full production proof still depends on approved data and integration. |
 | 2 — contracts and RED tests | in progress | Travel, movement and environment RED/GREEN evidence is recorded; course candidate-resolution is explicit and fail-closed. Route graph loader and production course resolution remain pending. |
 | 3 — environment baseline | in progress | Landmark, cue and trace lifecycles consume normalized profile/category/scope bindings; production bundle and full production integration remain absent. |
-| 4 — world-base bundles | partial | Travel profiles and route bindings now have normalized DDL, strict schemas, importer registration and fail-closed readiness. Approved sources/provenance records and bundle remain absent. |
+| 4 — world-base bundles | partial | Travel profiles and environment authoring records have normalized DDL, strict manifest dependencies and fail-closed readiness. Approved sources/provenance records and runtime bundle remain absent. |
 | 5 — approved pilot | blocked | No runtime-visible approved G1; no fictional promotion is allowed. |
 | 6 — party persistence | in progress | Migration 003, deferred FK and atomic normal turn writer exist; real PostgreSQL proof is blocked by missing URL. |
 | 7 — movement routes | completed for fail-closed domain contract | Explicit profile, transport and partial traversal tests are green. |

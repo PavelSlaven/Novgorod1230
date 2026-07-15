@@ -50,6 +50,8 @@ test('trace creation requires an exact source category and declared landscape sc
   assert.throws(() => update(state, [{ ...emission, source_category_id: null }]), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_TRACE_CATEGORY_INVALID');
   const scopedCatalog = approvedCatalog({ trace_rule_landscapes: [{ rule_id: 'cart-track-rule', landscape_template_id: 'landscape-road' }] });
   assert.throws(() => update(state, [emission], { catalog_bundle: scopedCatalog }), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_TRACE_RULE_MISSING');
+  const ambiguousCatalog = approvedCatalog({ trace_creation_rules: [...records.trace_creation_rules, { ...records.trace_creation_rules[0], id: 'cart-track-rule-duplicate' }] });
+  assert.throws(() => update(state, [emission], { catalog_bundle: ambiguousCatalog }), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_TRACE_RULE_AMBIGUOUS');
 });
 
 test('approved decay policy differentiates rain, snow and mud without a weather fallback', () => {

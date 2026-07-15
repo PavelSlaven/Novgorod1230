@@ -33,4 +33,10 @@ test('travel projection accepts only explicit player-safe state and rejects actu
   assert.deepEqual(projection, input);
   assert.throws(() => buildTravelVisibleProjection({ ...input, perceived_position: { ...input.perceived_position, edge_id: 'hidden-edge' } }), /TRAVEL_VISIBLE_LEAK/u);
   assert.throws(() => buildTravelVisibleProjection({ ...input, visible_cues: [{ label: 'Дым', source_id: 'hidden-hearth' }] }), /TRAVEL_VISIBLE_LEAK/u);
+  const context = {
+    version: 1, schema: 'visible_context_package', visible_scene: 'Дорога тянется к двору.',
+    visible_changes: [], sensory_details: [], visible_npc: [], visible_objects: [], known_context: [], uncertainties: [], allowed_tensions: [], do_not_imply: [], travel: input
+  };
+  assert.equal(validateVisibleContext(context).ok, true);
+  assert.equal(buildSafeNarratorPackage(context).package.travel.travel_status, 'active');
 });

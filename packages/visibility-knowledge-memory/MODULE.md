@@ -35,6 +35,8 @@ Security boundary for visible context, hidden state, character knowledge, memory
 
 `buildTravelVisibleProjection` принимает уже подготовленные perceived destination/position, recognized observations, visible cues/traces и player-visible options. Он запрещает actual edge/progress/direction, source/location bindings, catalog pins и audit data, а также не рассчитывает путь или наблюдения.
 
+Validated travel projection may be carried only in the `travel` field of a `visible_context_package`; the normal visible-context and narrator gates validate it again.
+
 ## Зависимости
 
 Разрешён только `@rus/kernel`. Запрещены импорты из `apps`, `legacy`, UI, БД, конкретного LLM provider и соседних workflow stages.

@@ -1,6 +1,6 @@
 import { deepFreeze } from '@rus/kernel';
 
-export const VISIBLE_PACKAGE_KEYS = deepFreeze(['version','schema','visible_scene','visible_changes','sensory_details','visible_npc','visible_objects','known_context','uncertainties','allowed_tensions','do_not_imply']);
+export const VISIBLE_PACKAGE_KEYS = deepFreeze(['version','schema','visible_scene','visible_changes','sensory_details','visible_npc','visible_objects','known_context','uncertainties','allowed_tensions','do_not_imply','travel']);
 const FORBIDDEN_KEYS = ['hidden_state','hidden','secret','sourceDossier','audit','state_delta','dossier','witnesses','objectiveMap','requestRaw','responseRaw','world'];
 
 export function detectHiddenLeaks(value) {
@@ -25,6 +25,9 @@ export function validateVisibleContext(data = {}) {
   if (data.schema !== 'visible_context_package') errors.push('schema must be visible_context_package');
   if (!text(data.visible_scene)) errors.push('visible_scene is required');
   for (const key of Object.keys(data)) if (!VISIBLE_PACKAGE_KEYS.includes(key)) errors.push(`forbidden key: ${key}`);
+  if (data.travel != null) {
+    try { buildTravelVisibleProjection(data.travel); } catch (error) { errors.push(error.message); }
+  }
   for (const leak of detectHiddenLeaks(data)) errors.push(`hidden leak: ${leak}`);
   return { ok:errors.length === 0, errors };
 }

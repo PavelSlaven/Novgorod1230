@@ -5,24 +5,6 @@
   "source_release": "0.22.0-migration.22",
   "documents": [
     {
-      "document_id": "universal-category-classification-policy",
-      "canonical_path": "corpus/DOCUMENTS/universal_category_classification_policy.md",
-      "file_name": "universal_category_classification_policy.md",
-      "sha256": "a184a1b37fe95184f4c06f11026d3d72f82a041ee8d49f6d73962aa7a9224588",
-      "bytes": 40018,
-      "status": "proposed",
-      "provenance_mode": "native"
-    },
-    {
-      "document_id": "universal-category-classification-references",
-      "canonical_path": "corpus/DOCUMENTS/universal_category_classification_references.md",
-      "file_name": "universal_category_classification_references.md",
-      "sha256": "cb7b537cab5c7e16642f479eadf719bbcfc4f2a33790034eba5ed8db42c8da48",
-      "bytes": 7621,
-      "status": "proposed",
-      "provenance_mode": "native"
-    },
-    {
       "document_id": "base-turn-orchestration",
       "canonical_path": "corpus/DOCUMENTS/base_turn_orchestration.txt",
       "file_name": "base_turn_orchestration.txt",
@@ -50,8 +32,8 @@
       "sha256": "7a84abd27da7898c20abf8e493342fb0a6c5dca1852098063e8ffaffa9a29b30",
       "bytes": 21167,
       "status": "active",
-      "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/character_parameters.txt",
-      "provenance_mode": "legacy_mirror"
+      "provenance_mode": "legacy_mirror",
+      "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/character_parameters.txt"
     },
     {
       "document_id": "code-critic-invocation-rule",
@@ -153,11 +135,13 @@
       "document_id": "interface-ux",
       "canonical_path": "corpus/DOCUMENTS/interface_ux.md",
       "file_name": "interface_ux.md",
-      "sha256": "acb72dce766c4840e2d7ed0935a2bd118f9a620e2fe5e13974e3495994716a7d",
-      "bytes": 59416,
+      "sha256": "f56a05da7f81dfa2b6a7b11edb699f726f1f3893551c397b4e575650cbe2d497",
+      "bytes": 60540,
       "status": "active",
       "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/interface_ux.md",
-      "provenance_mode": "legacy_mirror"
+      "provenance_mode": "canonicalized_from_legacy",
+      "source_legacy_sha256": "acb72dce766c4840e2d7ed0935a2bd118f9a620e2fe5e13974e3495994716a7d",
+      "source_legacy_bytes": 59416
     },
     {
       "document_id": "items-and-property",
@@ -187,8 +171,8 @@
       "document_id": "llm-documentation-navigation",
       "canonical_path": "corpus/DOCUMENTS/llm_documentation_navigation.md",
       "file_name": "llm_documentation_navigation.md",
-      "sha256": "525e9d89805bbec6dfcecf0d26a9254e039e5f326c4a4fdae8c788a7899eda2a",
-      "bytes": 30818,
+      "sha256": "71fe4d4b23f7ae8f647a2faaa29255978841f53fa72a6e4959fcd1f63262a0fb",
+      "bytes": 30727,
       "status": "active",
       "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/llm_documentation_navigation.md",
       "provenance_mode": "canonicalized_from_legacy",
@@ -208,8 +192,8 @@
       "document_id": "movement-locations-regions",
       "canonical_path": "corpus/DOCUMENTS/movement_locations_regions.txt",
       "file_name": "movement_locations_regions.txt",
-      "sha256": "9dc4753d595ff0df1427e6d69c06771793bf10373dd5ff4b9588f13fe51b96c4",
-      "bytes": 53148,
+      "sha256": "4b03a951a8f42dba6e3c2721353ba6698ec8527c86c669e6a2a50ba1904cfba5",
+      "bytes": 54530,
       "status": "active",
       "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/movement_locations_regions.txt",
       "provenance_mode": "canonicalized_from_legacy",
@@ -265,8 +249,8 @@
       "document_id": "read-only-database-and-graph-architecture",
       "canonical_path": "corpus/DOCUMENTS/read_only_database_and_graph_architecture.md",
       "file_name": "read_only_database_and_graph_architecture.md",
-      "sha256": "791b8eed78844c8a3d5f19de99218a7524f7b0353669c719b40d3b6bb4fe38ef",
-      "bytes": 10355,
+      "sha256": "9f77eb5bbddb4fa0397fc7e6bbcf90034a751976ee37377a38d1c41579661834",
+      "bytes": 10837,
       "status": "active",
       "provenance_mode": "native"
     },
@@ -274,11 +258,31 @@
       "document_id": "time-system",
       "canonical_path": "corpus/DOCUMENTS/time_system.txt",
       "file_name": "time_system.txt",
-      "sha256": "a9c9c82e18288c5c3cc0b1c99fc81bef28c7750202ddcbcba88ef066198ccde3",
-      "bytes": 10539,
+      "sha256": "d97a47e4c6464b24446516901de2d68414c05f5bf5f4b14ec57ab476fa03ce98",
+      "bytes": 11617,
       "status": "active",
       "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/time_system.txt",
-      "provenance_mode": "legacy_mirror"
+      "provenance_mode": "canonicalized_from_legacy",
+      "source_legacy_sha256": "73e077e5edc3fd7f06fcb24c763c20e1f43acd06bcccece18509a04fcfc80b5f",
+      "source_legacy_bytes": 10538
+    },
+    {
+      "document_id": "universal-category-classification-policy",
+      "canonical_path": "corpus/DOCUMENTS/universal_category_classification_policy.md",
+      "file_name": "universal_category_classification_policy.md",
+      "sha256": "a184a1b37fe95184f4c06f11026d3d72f82a041ee8d49f6d73962aa7a9224588",
+      "bytes": 40018,
+      "status": "proposed",
+      "provenance_mode": "native"
+    },
+    {
+      "document_id": "universal-category-classification-references",
+      "canonical_path": "corpus/DOCUMENTS/universal_category_classification_references.md",
+      "file_name": "universal_category_classification_references.md",
+      "sha256": "cb7b537cab5c7e16642f479eadf719bbcfc4f2a33790034eba5ed8db42c8da48",
+      "bytes": 7621,
+      "status": "proposed",
+      "provenance_mode": "native"
     },
     {
       "document_id": "weapons-and-armor",
@@ -287,15 +291,15 @@
       "sha256": "644a41b98cd8a1bb37aee27185aa99e746af68c14df87ff7b5d4d908fecfaecf",
       "bytes": 48437,
       "status": "active",
-      "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/weapons_and_armor.txt",
-      "provenance_mode": "legacy_mirror"
+      "provenance_mode": "legacy_mirror",
+      "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/weapons_and_armor.txt"
     },
     {
       "document_id": "world-base-materialization-table-requirements",
       "canonical_path": "corpus/DOCUMENTS/world_base_materialization_table_requirements.md",
       "file_name": "world_base_materialization_table_requirements.md",
-      "sha256": "d08c7d35d39c9f901e038dd6fb83300e36aa0744674cf055298eef2164cc1943",
-      "bytes": 18715,
+      "sha256": "22d524ff4ce58192d6de1eb0c2f06d87eb09da81e1e1cc02ebd7228d1914001d",
+      "bytes": 19483,
       "status": "active",
       "provenance_mode": "native"
     },
@@ -303,8 +307,8 @@
       "document_id": "world-generation-and-turns",
       "canonical_path": "corpus/DOCUMENTS/world_generation_and_turns.txt",
       "file_name": "world_generation_and_turns.txt",
-      "sha256": "de23362154be2142a2b808b76176452b82d5989cd2471ce62184cbf6074e5dd0",
-      "bytes": 75414,
+      "sha256": "d5d0d1f230b61a4bbea3d0400f9dfa553435fbda75d277389182ec6cafc66317",
+      "bytes": 76572,
       "status": "active",
       "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/world_generation_and_turns.txt",
       "provenance_mode": "canonicalized_from_legacy",
@@ -318,8 +322,8 @@
       "sha256": "9d82d0dcd39047fdfd11516458a57e5e0f1de312da975b5840e5149718855b55",
       "bytes": 13189,
       "status": "active",
-      "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/world_regions.txt",
-      "provenance_mode": "legacy_mirror"
+      "provenance_mode": "legacy_mirror",
+      "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/world_regions.txt"
     }
   ]
 }

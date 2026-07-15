@@ -10,7 +10,7 @@
 - Draft status: yes
 - PR7 dependency: open draft; PR8 is rebased onto its current head in an isolated clean worktree.
 - Last completed phase: contract and persistence baseline (partial; not accepted as PR8 completion).
-- Current phase: Phases 2–4 — authoring bundles, persistence and domain contracts (`in_progress`).
+- Current phase: Phase 1 normative synchronization plus Phases 2–4 — authoring bundles, persistence and domain contracts (`in_progress`).
 - Current blocker: no approved pilot-G1 catalog/rules bundles and no configured PostgreSQL integration database.
 
 The branch must be rebased onto `main` after PR7 is integrated and before final audit. The primary worktree remains untouched because it contains unrelated local changes.
@@ -119,6 +119,9 @@ Typed domain errors are versioned with the travel contracts; persistence, presen
 
 | Command | Date | Head before command | Result | Notes |
 | --- | --- | --- | --- | --- |
+| `npm run docs:generate` / `docs:check` / `knowledge:check-corpus` | 2026-07-15 | working tree after `6eb1a23` | PASS | PR8 normative travel boundary and canonical corpus/derived knowledge artifacts are synchronized; no production data is claimed. |
+| `node --test tools/docs-tools/test/knowledge-source-migration.test.js tools/docs-tools/test/knowledge-corpus-verifier.test.js tools/docs-tools/test/knowledge-materializer-v2.test.js` | 2026-07-15 | working tree after `6eb1a23` | PASS: 22/22 | Corpus manifest, legacy provenance and generated graph/RAG materialization remain reproducible after the PR8 normative update. |
+| `npm run test:domain` / `npm run test:modules` | 2026-07-15 | working tree after `6eb1a23` | PASS: 102/102; 261/261 | Documentation-only change did not regress travel, environment, turn or materialization contracts. |
 | `node --test packages/travel/test/domain.test.js` | 2026-07-15 | `69b0ee8` | RED: 1 failed | `ERR_MODULE_NOT_FOUND` before implementation. |
 | `node --test packages/travel/test/domain.test.js` | 2026-07-15 | `69b0ee8` | PASS: 8/8 | Initial travel contract lifecycle, active-journey conflict and explicit perceived position. |
 | `node --test packages/movement-routes/test/domain.test.js` | 2026-07-15 | `369ebe3` | RED: 1 failed | Missing `calculatePartialTraversal` export. |
@@ -236,7 +239,7 @@ The ordered migration loader, seed script, party preflight and Stage 25 logical 
 | Phase | Status | Evidence / next dependency |
 | --- | --- | --- |
 | 0 — baseline | completed | Rebased onto PR7 head `fc71f5d`; current branch head before this journal edit: `141615a`. |
-| 1 — normative architecture | partial | Core decisions are accepted; all named normative files are pinned above. Full cross-document amendment remains pending. |
+| 1 — normative architecture | in progress | PR8 travel boundaries are now synchronized across movement, time, turn, UI, graph/data ownership and navigation docs; full production proof still depends on approved data and integration. |
 | 2 — contracts and RED tests | in progress | Travel, movement and environment RED/GREEN evidence is recorded; route graph and course selection contracts remain pending. |
 | 3 — environment baseline | completed for package boundary | Split lifecycle, bundle validation and leak tests are green; production bundle is absent. |
 | 4 — world-base bundles | partial | Runtime fields are normalized in DDL; sources/provenance, importer/readiness and approved bundle are still absent. |

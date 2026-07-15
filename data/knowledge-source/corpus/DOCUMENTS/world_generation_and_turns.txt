@@ -345,6 +345,12 @@ route:
 
 ## 6. Дальний курс
 
+### Сохранённый travel runtime
+
+Ход движения использует единственный канонический workflow: нормализация намерения → load context → availability/candidates → checks при наличии formal request → consequences → time update → hidden update → visible projection → narration → один commit gate. `journey`, legs, actual/perceived position и environment state — party-runtime facts; они не выводятся из текста и не принадлежат LLM.
+
+Для неизвестного направления код не создаёт новый маршрут или G0–G4. Он может продолжить только по существующему physical edge, переданному как допустимый candidate, либо вернуть typed data gap. Первый вход в существующий G4 атомарно объединяет завершение leg, позицию и обязательную G5 materialization; prose формируется только после успешного commit.
+
 Если игрок задаёт не конкретное место, а направление — «иду на север», «держусь востока», «иду вниз по реке», «иду прочь от деревни» — система создаёт дальний курс.
 
 Дальний курс не является обычным переходом между уже известными узлами.

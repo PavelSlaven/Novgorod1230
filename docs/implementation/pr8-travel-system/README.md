@@ -6,7 +6,7 @@
 - Branch: `codex/pr8-travel-system`
 - Base: `chatgpt/universal-category-classification` (stacked on draft PR7)
 - Rebased base SHA: `5463af867eab5e82d634151183f05bd7264e70b4` (PR7 head checked 2026-07-15)
-- Last verified rebased PR8 head: `14e3e806454b8cec7ffee54d289a3f2d09e921b4`
+- Last verified rebased PR8 head: `c658cc6`
 - Draft status: yes
 - PR7 dependency: open draft; PR8 was rebased onto its current head in an isolated clean worktree.
 - Last completed phase: contract and persistence baseline (partial; not accepted as PR8 completion).

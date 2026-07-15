@@ -88,6 +88,13 @@ test('a journey cannot advance after arrival and detects stale context', () => {
   assert.throws(() => advanceJourney({ journey: createJourney(plan, context()), context: context({ state_version: 3 }) }), TravelError);
 });
 
+test('advance requires explicit progress and never completes a leg through a default', () => {
+  assert.throws(
+    () => advanceJourney({ journey: createJourney(plan, context()), context: context() }),
+    (error) => error instanceof TravelError && error.code === 'TRAVEL_INPUT_INVALID'
+  );
+});
+
 test('empty required candidate sets hard-block journey creation', () => {
   assert.throws(() => createJourney(plan, context({ required_candidate_sets: { travel_rules: [] } })), (error) => error instanceof TravelError && error.code === 'TRAVEL_REQUIRED_CANDIDATE_SET_EMPTY');
 });

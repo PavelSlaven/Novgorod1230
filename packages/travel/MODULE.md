@@ -19,6 +19,8 @@
 
 Все функции принимают только формальный вход, возвращают новый deep-frozen результат и не изменяют вход. Ошибки имеют code из family `TRAVEL_*`; required candidate set без вариантов возвращает `TRAVEL_REQUIRED_CANDIDATE_SET_EMPTY` и блокирует переход.
 
+`advanceJourney` требует явный `progress_permille`; он не завершает leg по неявному значению. Полное завершение следует выражать через `completeJourney`.
+
 `TravelPosition` — discriminated union: `node` хранит `g4_id`, а `edge_progress` хранит journey/leg/edge и progress 0–1000. Скрытая actual position не предназначена для player-facing потребителей.
 
 `campJourney` переводит только существующее active edge-progress journey в `camped`; он не создаёт G2–G4, не материализует лагерь и не меняет фактическую позицию. Материализация допустимой travel scene и её атомарное сохранение остаются задачей оркестратора и persistence boundary.

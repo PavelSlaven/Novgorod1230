@@ -112,7 +112,7 @@ export function validateJourney(journey) {
   return deepFreeze({ ...structuredClone(value), legs });
 }
 
-export function advanceJourney({ journey, context, progress_permille = 1000, perceived_position = null }) {
+export function advanceJourney({ journey, context, progress_permille, perceived_position = null }) {
   const current = validateJourney(journey);
   assertContext(context, current);
   if (current.status === 'arrived' || current.status === 'abandoned') fail('TRAVEL_NO_ACTIVE_JOURNEY', 'Completed journey cannot advance.', { status: current.status });

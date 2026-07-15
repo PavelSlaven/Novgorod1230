@@ -156,6 +156,7 @@ function updateCues({ input, state, catalog, activeEmitters, elapsedMinutes, cho
     for (const rule of rules.sort(byId('rule_id'))) {
       const template = catalog.cue_templates.find((item) => approved(item) && item.template_id === rule.cue_template_id);
       if (!template) throw new EnvironmentFeatureError('ENVIRONMENT_EMISSION_RULE_TEMPLATE_MISSING', 'Approved emission rule references a missing cue template.', { rule_id: rule.rule_id });
+      validateCueTemplate(template);
       const identity = `${emitter.emitter_id}:${rule.rule_id}`;
       activeKeys.add(identity);
       let cue = cues.find((item) => item.identity_key === identity);
@@ -163,13 +164,13 @@ function updateCues({ input, state, catalog, activeEmitters, elapsedMinutes, cho
         cue = {
           cue_id: deterministicInstanceId(input.party_id, input.idempotency_key, 'environment_cue', identity, 0), identity_key: identity,
           template_id: template.template_id, emission_rule_id: rule.rule_id, source_kind: emitter.source_kind, source_id: emitter.source_id,
-          location_binding: emitter.location_binding, status: 'active', age_minutes: 0, intensity: finiteOr(template.base_intensity, 1),
+          location_binding: emitter.location_binding, status: 'active', age_minutes: 0, intensity: Number(template.base_intensity),
           sense: requiredText(template.sense, 'ENVIRONMENT_CUE_SENSE_REQUIRED'), public_label_key: requiredText(template.public_label_key, 'ENVIRONMENT_CUE_LABEL_REQUIRED'), icon_key: requiredText(template.icon_key, 'ENVIRONMENT_CUE_ICON_REQUIRED'),
           bearing_band: emitter.bearing_band ?? 'unknown', distance_band: emitter.distance_band ?? 'unknown', strength_band: emitter.strength_band ?? 'moderate',
-          recognition_difficulty: template.recognition_difficulty ?? 'ordinary', navigation_value: template.navigation_value ?? 'none', fading_duration_minutes: numberAtLeast(template.fading_duration_minutes ?? 0, 0, 'fading_duration_minutes'), expiry_duration_minutes: numberAtLeast(template.expiry_duration_minutes ?? 0, 0, 'expiry_duration_minutes')
+          recognition_difficulty: template.recognition_difficulty, navigation_value: template.navigation_value, fading_duration_minutes: Number(template.fading_duration_minutes), expiry_duration_minutes: Number(template.expiry_duration_minutes)
         };
         cues.push(cue); created.push(cue);
-      } else { cue.status = 'active'; cue.age_minutes = 0; cue.intensity = finiteOr(template.base_intensity, cue.intensity); updated.push(cue); }
+      } else { cue.status = 'active'; cue.age_minutes = 0; cue.intensity = Number(template.base_intensity); updated.push(cue); }
       choices.push({ choice_ordinal: choices.length, choice_key: `cue:${identity}`, candidate_set_digest: canonicalDigest([rule.rule_id]), candidate_ids: [rule.rule_id], selected_id: rule.rule_id, selected_weight: 1, rng_draw: null, rng_counter: null, rejection_summary: emptyRejections() });
     }
   }
@@ -180,6 +181,14 @@ function updateCues({ input, state, catalog, activeEmitters, elapsedMinutes, cho
     else { cue.status = 'fading'; updated.push(cue); }
   }
   return { cues, created, updated, expired };
+}
+
+function validateCueTemplate(template) {
+  for (const key of ['template_id', 'sense', 'public_label_key', 'icon_key', 'recognition_difficulty', 'navigation_value']) requiredText(template[key], 'ENVIRONMENT_CUE_TEMPLATE_INVALID');
+  for (const key of ['base_intensity', 'fading_duration_minutes', 'expiry_duration_minutes']) {
+    if (template[key] == null || !Number.isFinite(Number(template[key])) || Number(template[key]) < 0) throw new EnvironmentFeatureError('ENVIRONMENT_CUE_TEMPLATE_INVALID', `Cue template requires non-negative ${key}.`, { template_id: template.template_id, key });
+  }
+  if (Number(template.expiry_duration_minutes) < Number(template.fading_duration_minutes)) throw new EnvironmentFeatureError('ENVIRONMENT_CUE_TEMPLATE_INVALID', 'Cue expiry duration must not precede fading duration.', { template_id: template.template_id });
 }
 
 function updateTraces({ input, state, catalog, traceEmissions, elapsedMinutes, choices }) {

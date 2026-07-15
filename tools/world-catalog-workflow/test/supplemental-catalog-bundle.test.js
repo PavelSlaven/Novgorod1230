@@ -41,6 +41,19 @@ test('supplemental bundle derives historical source IDs from the verified parent
   assert.deepEqual([...historicalParentSourceIds].sort(), ['src_novgorod_agriculture', 'src_novgorod_promysly']);
 });
 
+test('generated promotion and activation reports keep the entire supplemental catalogue draft-only', () => {
+  const promotion = readFileSync(resolve(bundleRoot, '..', 'PROMOTION_READINESS_REPORT.md'), 'utf8');
+  const activation = readFileSync(resolve(bundleRoot, '..', 'ACTIVATION_PROPOSAL.md'), 'utf8');
+
+  assert.match(promotion, /\| Total templates \| 120 \|/u);
+  assert.match(promotion, /\| ready_for_editorial_approval \| 0 \|/u);
+  assert.match(promotion, /\| blocked_by_source \| 120 \|/u);
+  assert.match(promotion, /\| Bundle datasets \| 25 \|/u);
+  assert.doesNotMatch(promotion, /PostgreSQL lifecycle \| PASS/u);
+  assert.match(activation, /Approved records proposed: 0/u);
+  assert.match(activation, /Runtime candidate sets changed: none/u);
+});
+
 test('parent source collection includes typed template evidence without requiring a polymorphic audit link', () => {
   assert.deepEqual(collectSupplementalParentSourceIds({
     record_sources: [],

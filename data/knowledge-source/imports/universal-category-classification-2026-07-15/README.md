@@ -262,7 +262,7 @@ deferred external/local rows: unknown until export
 5. technical draft bulk-good quantity model реализована: 12 profiles используют явную нормализованную единицу `g` и `explicit_only`; historical/editorial review и complete container compatibility остаются;
 6. расширить draft item/property/equipment profiles только на verified role/occupation IDs;
 7. экспортировать внешние legacy rows и построить reviewed migration inventory;
-8. выпустить promotion-readiness report;
+8. выпущены `PROMOTION_READINESS_REPORT.md` и неисполняемый `ACTIVATION_PROPOSAL.md`: `0` из `120` templates готовы к editorial approval, activation запрещена;
 9. не повышать policy, revision или records в `active/approved` без всех отдельных gates и прямого указания пользователя.
 
 ## 12. Известные ограничения
@@ -289,7 +289,7 @@ Bundle является только authoring-входом: `approval = draft`,
 
 Physical values помечены как `gameplay_estimate` в `PHYSICAL_PARAMETER_REVIEW_TABLE.md`; они не являются историческими измерениями. Пятнадцать agriculture/fishing item templates получили `draft/needs_review` source bindings только с claim `historical_presence`; это не закрывает `HISTORICAL_PRESENCE_EVIDENCE_REQUIRED` или `NARROW_TYPOLOGY_EVIDENCE_REQUIRED`. Остальные 105 coverage rows сохраняют отсутствие individual evidence. Для 12 bulk templates добавлены draft normalized quantity profiles: canonical `g`, identity conversion, `explicit_only` без скрытого default и deterministic mass input `1 g/g`; историческая мера и editorial review остаются `QUANTITY_PROFILE_REVIEW_REQUIRED`. Ни record, ни revision, ни policy не активированы; Stage 8/16 runtime candidates не изменены, но его explicit inventory-foundation path теперь hard-blocks quantity profile без unit.
 
-Технические artifacts: `TARGET_TABLE_COVERAGE.md`, `PHYSICAL_PARAMETER_AUTHORING_POLICY.md`, `PHYSICAL_PARAMETER_REVIEW_TABLE.md`, `NORMALIZATION_COVERAGE_REPORT.md`, `DATA_GAPS.md`, `CODEX_INTEGRATION_REPORT.md` и `POSTGRESQL_INTEGRATION_REPORT.md`.
+Технические artifacts: `TARGET_TABLE_COVERAGE.md`, `PHYSICAL_PARAMETER_AUTHORING_POLICY.md`, `PHYSICAL_PARAMETER_REVIEW_TABLE.md`, `NORMALIZATION_COVERAGE_REPORT.md`, `DATA_GAPS.md`, `CODEX_INTEGRATION_REPORT.md`, `POSTGRESQL_INTEGRATION_REPORT.md`, `PROMOTION_READINESS_REPORT.md` и `ACTIVATION_PROPOSAL.md`. Последний является неисполняемым документом контроля: он предлагает `0` approved records и не изменяет runtime candidate sets.
 
 До текущего source-binding прохода были пройдены: `test:stage16` — 18/18; Stage 2–8 migration tests — 6/6; schema check и generated reference — 119 tables с read-only grants; targeted item quantity test — 12/12; supplemental bundle test — 22/22; supplemental importer dry-run — PASS (23 datasets); disposable PostgreSQL 16 lifecycle — PASS на прежней 119-table схеме: apply/readback/digest, rollback, repeat apply и оба DB guards: несоответствие profile/unit dimension и изменение referenced unit dimension. Для текущего 121-table source-binding DDL повторно выполнены targeted tests 34/34, schema reference generation/check, supplemental dry-run (25 datasets) и PostgreSQL 16 lifecycle (apply/readback/digest, rollback, repeat apply; 15 draft evidence bindings, 0 container bindings, revision guards). Full `npm test`, final docs/corpus/architecture checks и repeat code critic выполнены; Stage 24 — 21/21; Stage 25 — 19/19; domain — 68/68; integration — 21 PASS / 5 SKIP; Browser E2E — 1 SKIP без Chromium. Lint/typecheck scripts в `package.json` отсутствуют.
 

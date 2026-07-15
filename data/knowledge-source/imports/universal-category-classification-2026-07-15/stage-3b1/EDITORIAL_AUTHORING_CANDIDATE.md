@@ -114,6 +114,7 @@ Plural references должны стать relation rows, а не массива�
 | versioned JSON datasets | `implemented_draft` |
 | supplemental dry-run | `pass` |
 | PostgreSQL supplemental apply/readback/rollback | `pass_25_datasets_on_current_121_table_schema` |
+| promotion readiness | `published_0_ready_120_blocked_by_source` |
 | runtime activation | `not_started` |
 
 Сохраняются gaps:
@@ -153,4 +154,4 @@ Derived supplemental datasets прошли JSON Schema/cross-reference validatio
 1. связать оставшиеся 105 строк с individual historical source records;
 3. завершить material/physical/bulk/container review;
 4. классифицировать внешние legacy rows после экспорта;
-5. подготовить promotion readiness без activation.
+5. повторно выпустить promotion readiness после закрытия gaps; activation остаётся отдельной запрещённой операцией.

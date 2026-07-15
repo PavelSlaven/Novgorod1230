@@ -60,10 +60,10 @@ promotion: blocked
 runtime activation: not started
 ```
 
-Выполненная реализация охватывает 25 datasets, включая draft categories, regional options, templates, FK-normalized template-source bindings, profiles и 15 audit `record_sources` links. Предыдущий список шагов в разделе 4 сохраняет историю проектирования; невыполненными остаются promotion gates.
+Выполненная реализация охватывает 25 datasets, включая draft categories, regional options, templates, FK-normalized template-source bindings, profiles и 15 audit `record_sources` links. `PROMOTION_READINESS_REPORT.md` фиксирует `0/120` ready templates и `120/120` blocks by historical source; `ACTIVATION_PROPOSAL.md` является неисполняемым контролем с `0` proposed approved records. Предыдущий список шагов в разделе 4 сохраняет историю проектирования; невыполненными остаются promotion gates.
 
 ## 6. Promotion gates и отложенные работы
 
 Promotion blocked до individual source-record review для 105 templates, material/physical review, review draft bulk quantity profiles, container compatibility review и отдельного editorial approval. External/local legacy rows требуют export перед Stage 3B migration. Stage 8/16 остаётся на existing approved input and does not load this draft bundle.
 
-Полный перечень текущих gaps и coverage: `DATA_GAPS.md`, `TARGET_TABLE_COVERAGE.md`, `NORMALIZATION_COVERAGE_REPORT.md`, `PHYSICAL_PARAMETER_REVIEW_TABLE.md`, `CODEX_INTEGRATION_REPORT.md`.
+Полный перечень текущих gaps и coverage: `DATA_GAPS.md`, `TARGET_TABLE_COVERAGE.md`, `NORMALIZATION_COVERAGE_REPORT.md`, `PHYSICAL_PARAMETER_REVIEW_TABLE.md`, `PROMOTION_READINESS_REPORT.md`, `ACTIVATION_PROPOSAL.md`, `CODEX_INTEGRATION_REPORT.md`.

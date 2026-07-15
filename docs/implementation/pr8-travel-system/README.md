@@ -75,6 +75,7 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 - 2026-07-15: active emitter обязан передавать formal bearing, distance и strength bands. Cue lifecycle больше не подставляет неизвестные или «умеренные» наблюдения; существующий cue обновляет только явно переданные observation fields.
 - 2026-07-15: landmark baseline больше не выбирает кандидата с неявным weight или count bound. Неполный profile/graph snapshot образует typed input gap, а не равновероятный candidate set.
 - 2026-07-15: decay следов читает только versioned `environment_decay_policy_v1`: rain, snow и mud имеют отдельные approved multipliers; погода без ключа профиля hard-blocks вместо multiplier `1`.
+- 2026-07-15: active emitter передаёт `propagation_wind`, а cue template — versioned policy распространения. Ветер изменяет только approved intensity/drift signal; causal source identity не меняется. Отсутствующий policy/effect hard-blocks.
 
 ## Checks recorded on transferred baseline
 
@@ -148,6 +149,7 @@ Typed domain errors are versioned with the travel contracts; persistence, presen
 | `node --test packages/environment-landmarks/test/domain.test.js` | 2026-07-15 | worktree before emitter-observation commit | RED: 1 failed, then PASS: 11/11 | Cue emitter without explicit observation bands is blocked; no player-facing signal defaults remain in the lifecycle. |
 | `node --test packages/environment-landmarks/test/domain.test.js` | 2026-07-15 | worktree before landmark-weight commit | RED: 1 failed, then PASS: 12/12 | Landmark selection blocks absent candidate weight or count bounds instead of deriving runtime defaults. |
 | `node --test packages/environment-landmarks/test/domain.test.js` | 2026-07-15 | worktree before decay-policy commit | RED: 1 failed, then PASS: 13/13 | Rain, snow and mud use distinct approved multipliers; unknown weather is a typed data gap. |
+| `node --test packages/environment-landmarks/test/domain.test.js` | 2026-07-15 | worktree before cue-propagation commit | RED: 2 failed, then PASS: 15/15 | Cue propagation consumes an approved wind effect; wind does not replace the causal source identity. |
 | `node --test tools/docs-tools/test/knowledge-source-migration.test.js tools/docs-tools/test/knowledge-corpus-verifier.test.js tools/docs-tools/test/knowledge-materializer-v2.test.js` | 2026-07-15 | working tree after `6eb1a23` | PASS: 22/22 | Corpus manifest, legacy provenance and generated graph/RAG materialization remain reproducible after the PR8 normative update. |
 | `npm run test:domain` / `npm run test:modules` | 2026-07-15 | working tree after `6eb1a23` | PASS: 102/102; 261/261 | Documentation-only change did not regress travel, environment, turn or materialization contracts. |
 | `node --test packages/travel/test/domain.test.js` | 2026-07-15 | `69b0ee8` | RED: 1 failed | `ERR_MODULE_NOT_FOUND` before implementation. |
@@ -265,6 +267,7 @@ The ordered migration loader, seed script, party preflight and Stage 25 logical 
 | TRAVEL-D012 / 2026-07-15 / accepted | Default cue perception or require an upstream observation. | Emitter supplies all player-facing observation bands; missing perception is a typed input error. |
 | TRAVEL-D013 / 2026-07-15 / accepted | Treat absent materialization weights/counts as neutral defaults or a data gap. | Selection consumes only explicit positive weights and explicit bounds from the pinned input. |
 | TRAVEL-D014 / 2026-07-15 / accepted | Derive unlisted weather decay or require a policy entry. | Decay profile owns a versioned weather multiplier map; no weather multiplier is implicit. |
+| TRAVEL-D015 / 2026-07-15 / accepted | Default a wind effect or require a cue policy entry. | Cue propagation consumes exact `propagation_wind` and an approved policy effect; causal source identity remains immutable. |
 
 ## Phase tracker
 

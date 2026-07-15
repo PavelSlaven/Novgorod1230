@@ -12,7 +12,7 @@
 2. `carry_form` выбирается по габаритному классу: `compact` для мелкой принадлежности, `regular` для обычной вещи, `long` для длинной вещи, `bulky` для тяжёлой/объёмной вещи.
 3. `external_hand_cost` описывает переноску, а не число рук при использовании; он не выводится runtime.
 4. Capacity контейнера измеряется только в packing slots. Значение определяется его authoring-классом (specialized, personal, portable, stationary) и всегда требует review перед promotion.
-5. Количество bulk goods не выводится из `mass_grams` template. Для воды, зерна, муки, крупы, соли, мёда, воска, свежей/сушёной рыбы и мяса сохраняется `BULK_GOOD_QUANTITY_UNIT_MODEL_REQUIRED`; promotion их profiles заблокирована.
+5. Количество bulk goods не выводится из `mass_grams` template. Для воды, зерна, муки, крупы, соли, мёда, воска, свежей/сушёной рыбы и мяса создан draft `item_template_quantity_profile`: каноническая единица `g`, identity conversion и policy `explicit_only`. Это техническая quantity semantics, не историческая мера или порция; promotion остаётся заблокирован `QUANTITY_PROFILE_REVIEW_REQUIRED`.
 6. Неточность или отсутствие основания фиксируется typed gap; запрещены скрытый fallback и выдача оценки за историческое измерение.
 
 ## Promotion gate

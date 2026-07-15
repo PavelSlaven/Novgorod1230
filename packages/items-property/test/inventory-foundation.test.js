@@ -69,6 +69,17 @@ test('inventory foundation: external locations do not count and missing mass nev
   assert.equal(calculateInventoryMass(invalidQuantity).errors[0].code, 'INVENTORY_QUANTITY_INVALID');
 });
 
+test('inventory foundation: a bulk quantity profile requires an explicit matching unit and derives mass deterministically', () => {
+  const bulkProfiles = {
+    ...profiles,
+    grain: { quantity_dimension: 'mass', quantity_unit_id: 'quantity_unit_gram_v1', mass_grams_per_unit: 1, carry_form: 'regular', external_hand_cost: 0, packing_slot_cost: 1, packing_bundle_size: 1 }
+  };
+  const carried = { items: [{ item_id: 'grain-1', template_id: 'grain', quantity: 450, quantity_unit_id: 'quantity_unit_gram_v1' }], item_placements: [{ item_id: 'grain-1', holder_character_id: actorId, physical_position: 'hands' }], item_profiles: bulkProfiles };
+  assert.equal(calculateInventoryMass(state(carried)).total_mass_grams, 450);
+  assert.equal(calculateInventoryMass(state({ ...carried, items: [{ ...carried.items[0], quantity_unit_id: null }] })).errors[0].code, 'ITEM_QUANTITY_UNIT_REQUIRED');
+  assert.equal(calculateInventoryMass(state({ ...carried, items: [{ ...carried.items[0], quantity_unit_id: 'quantity_unit_litre_v1' }] })).errors[0].code, 'ITEM_QUANTITY_UNIT_MISMATCH');
+});
+
 test('inventory foundation: topology blocks duplicate placement, cycles, depth, party mismatch and duplicate primary container', () => {
   const missing = state({ items: [{ item_id: 'knife-1', template_id: 'knife', quantity: 1 }] });
   assert.equal(validateInventoryTopology(missing).errors[0].code, 'INVENTORY_PLACEMENT_NOT_FOUND');

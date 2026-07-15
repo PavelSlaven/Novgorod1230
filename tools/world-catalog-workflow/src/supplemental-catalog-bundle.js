@@ -11,6 +11,8 @@ import regionCategoryOptionsSchema from '../../../schemas/materialization/region
 import itemTemplatesSchema from '../../../schemas/materialization/item-templates-v1.schema.json' with { type: 'json' };
 import itemTemplateCategoryBindingsSchema from '../../../schemas/materialization/item-template-category-bindings-v1.schema.json' with { type: 'json' };
 import itemTemplateInventoryProfilesSchema from '../../../schemas/materialization/item-template-inventory-profiles-v1.schema.json' with { type: 'json' };
+import quantityUnitDefinitionsSchema from '../../../schemas/materialization/quantity-unit-definitions-v1.schema.json' with { type: 'json' };
+import itemTemplateQuantityProfilesSchema from '../../../schemas/materialization/item-template-quantity-profiles-v1.schema.json' with { type: 'json' };
 import containerTemplatesSchema from '../../../schemas/materialization/container-templates-v1.schema.json' with { type: 'json' };
 import containerTemplateFacetBindingsSchema from '../../../schemas/materialization/container-template-facet-bindings-v1.schema.json' with { type: 'json' };
 import containerTemplateInventoryProfilesSchema from '../../../schemas/materialization/container-template-inventory-profiles-v1.schema.json' with { type: 'json' };
@@ -29,7 +31,8 @@ import itemClassificationMigrationInventorySchema from '../../../schemas/materia
 export const SUPPLEMENTAL_AUTHORING_TABLES = Object.freeze(new Set([
   'source_records', 'record_sources', 'world_revisions', 'universal_categories', 'category_labels',
   'region_category_options', 'item_templates', 'item_template_category_bindings',
-  'item_template_inventory_profiles', 'container_templates', 'container_template_facet_bindings',
+  'item_template_inventory_profiles', 'quantity_unit_definitions', 'item_template_quantity_profiles',
+  'container_templates', 'container_template_facet_bindings',
   'container_template_inventory_profiles', 'container_content_profiles',
   'container_content_profile_entries', 'item_profile_sets', 'item_profile_entries',
   'property_profiles', 'property_profile_rules', 'region_equipment_profiles',
@@ -44,6 +47,8 @@ const STRICT_FIELDS = Object.freeze({
   region_category_options: new Set(['id', 'world_revision_id', 'region_id', 'category_id', 'valid_from', 'valid_to', 'weight', 'applicability', 'status']),
   item_template_category_bindings: new Set(['id', 'item_template_id', 'category_id', 'binding_kind', 'packing_slot_cost', 'packing_bundle_size', 'exclusivity_group', 'requires_regional_permission', 'status']),
   item_template_inventory_profiles: new Set(['id', 'item_template_id', 'world_revision_id', 'source_id', 'mass_grams', 'carry_form', 'external_hand_cost', 'status']),
+  quantity_unit_definitions: new Set(['id', 'dimension', 'canonical_unit', 'conversion_policy', 'status']),
+  item_template_quantity_profiles: new Set(['id', 'item_template_id', 'world_revision_id', 'quantity_unit_id', 'quantity_dimension', 'minimum_quantity', 'maximum_quantity', 'default_quantity_policy', 'mass_grams_per_unit', 'stackable', 'partial_consumption_allowed', 'source_id', 'status']),
   container_template_facet_bindings: new Set(['id', 'container_template_id', 'category_id', 'facet', 'requires_regional_permission', 'status']),
   container_template_inventory_profiles: new Set(['id', 'container_template_id', 'world_revision_id', 'source_id', 'mass_grams', 'carry_form', 'external_hand_cost', 'inventory_role', 'status']),
   source_records: new Set(['id', 'title', 'source_type', 'summary', 'status', 'confidence']),
@@ -64,6 +69,7 @@ const STRICT_FIELDS = Object.freeze({
 const SCHEMA_IDS = Object.freeze({
   source_records: 'rus.source_records.v1', record_sources: 'rus.record_sources.v1', world_revisions: 'rus.world_revisions.v1', universal_categories: 'rus.universal_categories.v1', category_labels: 'rus.category_labels.v1', region_category_options: 'rus.region_category_options.v1',
   item_templates: 'rus.item_templates.v1', item_template_category_bindings: 'rus.item_template_category_bindings.v1', item_template_inventory_profiles: 'rus.item_template_inventory_profiles.v1',
+  quantity_unit_definitions: 'rus.quantity_unit_definitions.v1', item_template_quantity_profiles: 'rus.item_template_quantity_profiles.v1',
   container_templates: 'rus.container_templates.v1', container_template_facet_bindings: 'rus.container_template_facet_bindings.v1', container_template_inventory_profiles: 'rus.container_template_inventory_profiles.v1',
   container_content_profiles: 'rus.container_content_profiles.v1', container_content_profile_entries: 'rus.container_content_profile_entries.v1',
   item_profile_sets: 'rus.item_profile_sets.v1', item_profile_entries: 'rus.item_profile_entries.v1',
@@ -76,6 +82,7 @@ const SUPPLEMENTAL_FK_DEPENDENCIES = Object.freeze({
   category_labels: ['universal_categories', 'source_records'], region_category_options: ['world_revisions', 'universal_categories'],
   item_templates: ['world_revisions', 'universal_categories', 'source_records'],
   item_template_category_bindings: ['item_templates', 'universal_categories'], item_template_inventory_profiles: ['item_templates', 'world_revisions', 'source_records'],
+  quantity_unit_definitions: [], item_template_quantity_profiles: ['item_templates', 'world_revisions', 'quantity_unit_definitions', 'source_records'],
   container_templates: ['world_revisions', 'universal_categories', 'source_records'], container_template_facet_bindings: ['container_templates', 'universal_categories'],
   container_template_inventory_profiles: ['container_templates', 'world_revisions', 'source_records'], container_content_profiles: ['container_templates'],
   container_content_profile_entries: ['container_content_profiles', 'item_templates', 'universal_categories'], item_profile_sets: ['world_revisions'],
@@ -86,6 +93,7 @@ const SUPPLEMENTAL_FK_DEPENDENCIES = Object.freeze({
 const SCHEMAS = Object.freeze({
   source_records: sourceRecordsSchema, record_sources: recordSourcesSchema, world_revisions: worldRevisionsSchema, universal_categories: universalCategoriesSchema, category_labels: categoryLabelsSchema, region_category_options: regionCategoryOptionsSchema,
   item_templates: itemTemplatesSchema, item_template_category_bindings: itemTemplateCategoryBindingsSchema, item_template_inventory_profiles: itemTemplateInventoryProfilesSchema,
+  quantity_unit_definitions: quantityUnitDefinitionsSchema, item_template_quantity_profiles: itemTemplateQuantityProfilesSchema,
   container_templates: containerTemplatesSchema, container_template_facet_bindings: containerTemplateFacetBindingsSchema, container_template_inventory_profiles: containerTemplateInventoryProfilesSchema,
   container_content_profiles: containerContentProfilesSchema, container_content_profile_entries: containerContentProfileEntriesSchema,
   item_profile_sets: itemProfileSetsSchema, item_profile_entries: itemProfileEntriesSchema,
@@ -144,6 +152,7 @@ export function validateSupplementalCatalogBundle(manifest, recordsByTable = {},
   const equipmentProfiles = known('region_equipment_profiles');
   const sources = known('source_records');
   const revisions = known('world_revisions');
+  const quantityUnits = known('quantity_unit_definitions');
   const regions = known('regions');
 
   for (const sourceId of manifest.provenance.source_ids ?? []) {
@@ -217,6 +226,21 @@ export function validateSupplementalCatalogBundle(manifest, recordsByTable = {},
     if (!revisions.has(record.world_revision_id)) errors.push(`ITEM_INVENTORY_REVISION_UNKNOWN:${record.id}`);
     if (!sources.has(record.source_id)) errors.push(`ITEM_INVENTORY_SOURCE_UNKNOWN:${record.id}`);
     if (!Number.isInteger(record.mass_grams) || record.mass_grams <= 0) errors.push(`ITEM_MASS_INVALID:${record.id}`);
+  }
+  const quantityProfilesByTemplateRevision = new Set();
+  for (const record of recordsByTable.item_template_quantity_profiles ?? []) {
+    if (!templates.has(record.item_template_id)) errors.push(`QUANTITY_PROFILE_TEMPLATE_UNKNOWN:${record.id}`);
+    if (!revisions.has(record.world_revision_id)) errors.push(`QUANTITY_PROFILE_REVISION_UNKNOWN:${record.id}`);
+    if (!quantityUnits.has(record.quantity_unit_id)) errors.push(`QUANTITY_PROFILE_UNIT_UNKNOWN:${record.id}`);
+    if (!sources.has(record.source_id)) errors.push(`QUANTITY_PROFILE_SOURCE_UNKNOWN:${record.id}`);
+    if (!Number.isInteger(record.minimum_quantity) || record.minimum_quantity < 1 || (record.maximum_quantity != null && (!Number.isInteger(record.maximum_quantity) || record.maximum_quantity < record.minimum_quantity))) {
+      errors.push(`QUANTITY_PROFILE_RANGE_INVALID:${record.id}`);
+    }
+    const unit = (recordsByTable.quantity_unit_definitions ?? []).find((value) => value.id === record.quantity_unit_id);
+    if (unit && unit.dimension !== record.quantity_dimension) errors.push(`QUANTITY_PROFILE_DIMENSION_MISMATCH:${record.id}`);
+    const key = `${record.item_template_id}:${record.world_revision_id}`;
+    if (quantityProfilesByTemplateRevision.has(key)) errors.push(`QUANTITY_PROFILE_DUPLICATE:${record.id}`);
+    quantityProfilesByTemplateRevision.add(key);
   }
   for (const record of recordsByTable.container_template_inventory_profiles ?? []) {
     if (!containers.has(record.container_template_id)) errors.push(`CONTAINER_INVENTORY_TEMPLATE_UNKNOWN:${record.id}`);

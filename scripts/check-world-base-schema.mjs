@@ -2,7 +2,8 @@ import { readFile } from 'node:fs/promises';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const EXPECTED_TABLE_COUNT = 117;
+// Updated only after the executable DDL and generated schema reference agree.
+const EXPECTED_TABLE_COUNT = 119;
 const ENTRYPOINT = 'infra/world-base/schema.sql';
 
 export async function inspectWorldBaseSchema({ root = '.' } = {}) {

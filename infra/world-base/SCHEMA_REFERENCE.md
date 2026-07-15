@@ -2,8 +2,8 @@
 # Справочник схемы `world_base`
 
 - Исполняемый источник: `infra/world-base/schema.sql` и 11 упорядоченных SQL-частей.
-- SHA-256 развёрнутого DDL: `b14bdddffbcfc9daf01668525e580f2133bb661d33f90aa3867a8a705077a836`.
-- Таблиц: 117.
+- SHA-256 развёрнутого DDL: `571613c117ca8b420c88382ea97896ab55716508683ea8c47bf5b25c999c0fb8`.
+- Таблиц: 119.
 - Описания берутся только из утверждённого `infra/world-base/field-descriptions.js`; отсутствие описания не заполняется эвристикой.
 
 ## Граф (каноническая карта)
@@ -3468,3 +3468,46 @@ Digests, counts и dependency order таблиц одного импорта.
 
 - `CHECK (from_anchor_slot_key <> to_anchor_slot_key)`
 - `UNIQUE (profile_id, from_anchor_slot_key, to_anchor_slot_key)`
+
+### `world_base.quantity_unit_definitions`
+
+Описание назначения отсутствует.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `dimension` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (dimension IN ('count','mass','volume','length'))` | Измеряемое измерение: count, mass, volume или length. |
+| `canonical_unit` | `TEXT` | нет | — | — | `NOT NULL` | Каноническая единица внутри данного dimension; не свободный игровой текст. |
+| `conversion_policy` | `JSONB` | нет | — | — | `NOT NULL` | Versioned closed policy преобразования единицы; runtime не запрашивает внешние справочники. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | draft, approved или deprecated; draft definition не создаёт runtime quantity candidate. |
+
+**Ограничения таблицы:**
+
+- `CHECK (jsonb_typeof(conversion_policy) = 'object')`
+- `UNIQUE (dimension, canonical_unit)`
+
+### `world_base.item_template_quantity_profiles`
+
+Описание назначения отсутствует.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `item_template_id` | `TEXT` | нет | — | `world_base.item_templates(id) ON DELETE CASCADE` | `NOT NULL` | FK → item_templates(id): bulk template с явной quantity semantics. |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | FK → world_revisions(id): pinned authoring revision quantity profile. |
+| `quantity_unit_id` | `TEXT` | нет | — | `world_base.quantity_unit_definitions(id) ON DELETE RESTRICT` | `NOT NULL` | FK → quantity_unit_definitions(id): нормализованная единица количества. |
+| `quantity_dimension` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (quantity_dimension IN ('count','mass','volume','length'))` | dimension quantity profile; должен совпадать с quantity unit definition. |
+| `minimum_quantity` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (minimum_quantity > 0)` | Минимальное положительное количество в выбранной единице. |
+| `maximum_quantity` | `INTEGER` | да | — | — | `CHECK (maximum_quantity IS NULL OR maximum_quantity >= minimum_quantity)` | Необязательная верхняя граница; NULL не означает fallback quantity. |
+| `default_quantity_policy` | `JSONB` | нет | — | — | `NOT NULL` | Closed versioned policy. explicit_only требует готовое quantity от materialization rule и запрещает default. |
+| `mass_grams_per_unit` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (mass_grams_per_unit > 0)` | Детерминированный массовый input одной quantity unit; не является packing slots или исторической частотностью. |
+| `stackable` | `BOOLEAN` | нет | — | — | `NOT NULL` | Разрешено ли хранить одинаковые quantity units в одной instance line. |
+| `partial_consumption_allowed` | `BOOLEAN` | нет | — | — | `NOT NULL` | Разрешено ли уменьшение quantity конкретной party instance. |
+| `source_id` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | FK → source_records(id): provenance quantity policy; draft policy не подтверждает историческую меру. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | draft, approved или deprecated; для template допустим только один approved quantity profile. |
+
+**Ограничения таблицы:**
+
+- `CHECK (jsonb_typeof(default_quantity_policy) = 'object')`
+- `UNIQUE (item_template_id, world_revision_id)`
+- `UNIQUE INDEX item_template_one_active_quantity_profile (item_template_id) WHERE status = 'approved'`

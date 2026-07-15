@@ -41,6 +41,77 @@ test('supplemental bundle derives historical source IDs from the verified parent
   assert.deepEqual([...historicalParentSourceIds].sort(), ['src_novgorod_agriculture', 'src_novgorod_promysly']);
 });
 
+test('supplemental bundle contains explicit draft-only mass quantity profiles for every bulk template', () => {
+  const manifest = readJson('manifest.json');
+  const recordsByTable = Object.fromEntries(manifest.datasets.map((dataset) => [dataset.table, readJson(dataset.path)]));
+  const units = recordsByTable.quantity_unit_definitions;
+  const profiles = recordsByTable.item_template_quantity_profiles;
+
+  assert.equal(units.some((record) => record.id === 'quantity_unit_gram_v1' && record.dimension === 'mass'), true);
+  assert.equal(profiles.length, 12);
+  assert.equal(profiles.every((record) => record.quantity_unit_id === 'quantity_unit_gram_v1' && record.quantity_dimension === 'mass' && record.default_quantity_policy.mode === 'explicit_only' && record.status === 'draft'), true);
+});
+
+test('supplemental bundle rejects unknown quantity units and a quantity profile from another revision', () => {
+  const manifest = readJson('manifest.json');
+  const recordsByTable = Object.fromEntries(manifest.datasets.map((dataset) => [dataset.table, readJson(dataset.path)]));
+  const profile = recordsByTable.item_template_quantity_profiles[0];
+  profile.quantity_unit_id = 'quantity_unit_unknown';
+  profile.world_revision_id = 'other_revision';
+  manifest.datasets.find((dataset) => dataset.table === 'item_template_quantity_profiles').sha256 = supplementalDigest(recordsByTable.item_template_quantity_profiles);
+
+  const result = validateSupplementalCatalogBundle(manifest, recordsByTable, {
+    externalIds: {
+      regions: new Set(['region_novgorod_land']),
+      world_revisions: new Set(['novgorod_1230_research_revision_001']),
+      source_records: new Set(['src_project_stage_3b1_physical_parameter_policy', ...historicalParentSourceIds]),
+      region_social_roles: new Set(['nov_role_guard'])
+    }
+  });
+
+  assert.equal(result.errors.includes(`QUANTITY_PROFILE_UNIT_UNKNOWN:${profile.id}`), true);
+  assert.equal(result.errors.includes(`QUANTITY_PROFILE_REVISION_UNKNOWN:${profile.id}`), true);
+});
+
+test('supplemental bundle rejects a quantity profile with an inverted explicit range before apply', () => {
+  const manifest = readJson('manifest.json');
+  const recordsByTable = Object.fromEntries(manifest.datasets.map((dataset) => [dataset.table, readJson(dataset.path)]));
+  const profile = recordsByTable.item_template_quantity_profiles[0];
+  profile.minimum_quantity = 2;
+  profile.maximum_quantity = 1;
+  manifest.datasets.find((dataset) => dataset.table === 'item_template_quantity_profiles').sha256 = supplementalDigest(recordsByTable.item_template_quantity_profiles);
+
+  const result = validateSupplementalCatalogBundle(manifest, recordsByTable, {
+    externalIds: {
+      regions: new Set(['region_novgorod_land']),
+      world_revisions: new Set(['novgorod_1230_research_revision_001']),
+      source_records: new Set(['src_project_stage_3b1_physical_parameter_policy', ...historicalParentSourceIds]),
+      region_social_roles: new Set(['nov_role_guard'])
+    }
+  });
+
+  assert.equal(result.errors.includes(`QUANTITY_PROFILE_RANGE_INVALID:${profile.id}`), true);
+});
+
+test('supplemental bundle rejects a quantity profile whose declared dimension differs from its unit', () => {
+  const manifest = readJson('manifest.json');
+  const recordsByTable = Object.fromEntries(manifest.datasets.map((dataset) => [dataset.table, readJson(dataset.path)]));
+  const profile = recordsByTable.item_template_quantity_profiles[0];
+  profile.quantity_dimension = 'volume';
+  manifest.datasets.find((dataset) => dataset.table === 'item_template_quantity_profiles').sha256 = supplementalDigest(recordsByTable.item_template_quantity_profiles);
+
+  const result = validateSupplementalCatalogBundle(manifest, recordsByTable, {
+    externalIds: {
+      regions: new Set(['region_novgorod_land']),
+      world_revisions: new Set(['novgorod_1230_research_revision_001']),
+      source_records: new Set(['src_project_stage_3b1_physical_parameter_policy', ...historicalParentSourceIds]),
+      region_social_roles: new Set(['nov_role_guard'])
+    }
+  });
+
+  assert.equal(result.errors.includes(`QUANTITY_PROFILE_DIMENSION_MISMATCH:${profile.id}`), true);
+});
+
 test('supplemental bundle rejects a party table and digest mismatch', () => {
   const manifest = {
     schema_version: 1,

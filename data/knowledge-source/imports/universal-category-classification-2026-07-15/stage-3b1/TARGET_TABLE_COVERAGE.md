@@ -14,7 +14,9 @@
 | region_category_options | yes | yes | supplemental | yes | yes | promotion | yes | yes, 146 draft | neutral technical weights only |
 | item_templates | yes | yes | supplemental | yes | yes | promotion | yes | yes, 102 draft | 87 individual source links missing |
 | item_template_category_bindings | yes | yes | supplemental | yes | yes | promotion | yes | yes, 306 | materials intentionally unresolved |
-| item_template_inventory_profiles | yes | yes | supplemental | yes | yes | promotion | yes | yes, 102 draft | physical review and bulk units |
+| item_template_inventory_profiles | yes | yes | supplemental | yes | yes | promotion | yes | yes, 102 draft | physical review |
+| quantity_unit_definitions | yes | yes | supplemental | yes | yes | promotion | yes | yes, 1 draft mass unit | editorial unit review |
+| item_template_quantity_profiles | yes | yes | supplemental | yes | yes | promotion | yes | yes, 12 draft bulk profiles | quantity profile review |
 | container_templates | yes | yes | supplemental | yes | yes | promotion | yes | yes, 18 draft | individual source links missing |
 | container_template_facet_bindings | yes | yes | supplemental | yes | yes | promotion | yes | yes, 18 | material/closure evidence unresolved |
 | container_template_inventory_profiles | yes | yes | supplemental | yes | yes | promotion | yes | yes, 18 draft | physical review |

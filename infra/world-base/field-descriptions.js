@@ -324,6 +324,26 @@ export const fields = {
     external_hand_cost: 'Closed внешний hand cost 0, 1 или 2; не является use_hand_cost.',
     status: 'draft, approved или deprecated; для template допустим только один approved profile.'
   },
+  quantity_unit_definitions: {
+    dimension: 'Измеряемое измерение: count, mass, volume или length.',
+    canonical_unit: 'Каноническая единица внутри данного dimension; не свободный игровой текст.',
+    conversion_policy: 'Versioned closed policy преобразования единицы; runtime не запрашивает внешние справочники.',
+    status: 'draft, approved или deprecated; draft definition не создаёт runtime quantity candidate.'
+  },
+  item_template_quantity_profiles: {
+    item_template_id: 'FK → item_templates(id): bulk template с явной quantity semantics.',
+    world_revision_id: 'FK → world_revisions(id): pinned authoring revision quantity profile.',
+    quantity_unit_id: 'FK → quantity_unit_definitions(id): нормализованная единица количества.',
+    quantity_dimension: 'dimension quantity profile; должен совпадать с quantity unit definition.',
+    minimum_quantity: 'Минимальное положительное количество в выбранной единице.',
+    maximum_quantity: 'Необязательная верхняя граница; NULL не означает fallback quantity.',
+    default_quantity_policy: 'Closed versioned policy. explicit_only требует готовое quantity от materialization rule и запрещает default.',
+    mass_grams_per_unit: 'Детерминированный массовый input одной quantity unit; не является packing slots или исторической частотностью.',
+    stackable: 'Разрешено ли хранить одинаковые quantity units в одной instance line.',
+    partial_consumption_allowed: 'Разрешено ли уменьшение quantity конкретной party instance.',
+    source_id: 'FK → source_records(id): provenance quantity policy; draft policy не подтверждает историческую меру.',
+    status: 'draft, approved или deprecated; для template допустим только один approved quantity profile.'
+  },
   container_template_inventory_profiles: {
     container_template_id: 'FK → container_templates(id): контейнер, для которого утверждены физические inventory parameters.',
     world_revision_id: 'FK → world_revisions(id): pinned ревизия authoring-каталога.',

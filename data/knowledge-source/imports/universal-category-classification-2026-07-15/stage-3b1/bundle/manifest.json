@@ -82,12 +82,28 @@
       "dependency_order": 7
     },
     {
+      "table": "quantity_unit_definitions",
+      "path": "quantity_unit_definitions.json",
+      "schema_id": "rus.quantity_unit_definitions.v1",
+      "record_count": 1,
+      "sha256": "71b99fbeb434f1c06c7a1c8574982ac494f932d1b4920ef8ad5e80d1e14ee42d",
+      "dependency_order": 8
+    },
+    {
+      "table": "item_template_quantity_profiles",
+      "path": "item_template_quantity_profiles.json",
+      "schema_id": "rus.item_template_quantity_profiles.v1",
+      "record_count": 12,
+      "sha256": "f8e9c0bab2f22f2683d209ceaced95a0f0fb5118cd455601bcb1c417d0c98d78",
+      "dependency_order": 9
+    },
+    {
       "table": "container_templates",
       "path": "container_templates.json",
       "schema_id": "rus.container_templates.v1",
       "record_count": 18,
       "sha256": "d880f3ea82a68c53deeacef1d2b5de6f0f23bbad7845407f28ba2247b5b70b51",
-      "dependency_order": 8
+      "dependency_order": 10
     },
     {
       "table": "container_template_facet_bindings",
@@ -95,7 +111,7 @@
       "schema_id": "rus.container_template_facet_bindings.v1",
       "record_count": 18,
       "sha256": "ee7eb5c75a6759a5313f8c86d1199cd24ed0d8567c5d705b88e10c5e4d02d5fe",
-      "dependency_order": 9
+      "dependency_order": 11
     },
     {
       "table": "container_template_inventory_profiles",
@@ -103,7 +119,7 @@
       "schema_id": "rus.container_template_inventory_profiles.v1",
       "record_count": 18,
       "sha256": "c42e379067ab9690cb48e26917faa07850c549b60727168b1bfa96ce26be10b3",
-      "dependency_order": 10
+      "dependency_order": 12
     },
     {
       "table": "container_content_profiles",
@@ -111,7 +127,7 @@
       "schema_id": "rus.container_content_profiles.v1",
       "record_count": 18,
       "sha256": "01018da5789d8e61f3a0ef67e4308d0056e4382c7124ab5026be233db6dc862d",
-      "dependency_order": 11
+      "dependency_order": 13
     },
     {
       "table": "container_content_profile_entries",
@@ -119,7 +135,7 @@
       "schema_id": "rus.container_content_profile_entries.v1",
       "record_count": 4,
       "sha256": "c16e455ebea793e00f07c73f51b7159a43c1fbe3b27f951972de5a587e102cad",
-      "dependency_order": 12
+      "dependency_order": 14
     },
     {
       "table": "item_profile_sets",
@@ -127,7 +143,7 @@
       "schema_id": "rus.item_profile_sets.v1",
       "record_count": 16,
       "sha256": "f58766fdd5f1c203215faafbced45976654dc0f968b6f4f107e05c8496e54695",
-      "dependency_order": 13
+      "dependency_order": 15
     },
     {
       "table": "item_profile_entries",
@@ -135,7 +151,7 @@
       "schema_id": "rus.item_profile_entries.v1",
       "record_count": 16,
       "sha256": "85438b6392ce946c3d7dfb0b4ed4bc8c457de57a4a10806bcf3ba5fda260f729",
-      "dependency_order": 14
+      "dependency_order": 16
     },
     {
       "table": "property_profiles",
@@ -143,7 +159,7 @@
       "schema_id": "rus.property_profiles.v1",
       "record_count": 10,
       "sha256": "fbb7020350977893e294372c30282968ed2980392390b8086b65e8a23824c117",
-      "dependency_order": 15
+      "dependency_order": 17
     },
     {
       "table": "property_profile_rules",
@@ -151,7 +167,7 @@
       "schema_id": "rus.property_profile_rules.v1",
       "record_count": 10,
       "sha256": "bb95f876e5ea6f8bbe72e4c6689a66e025375bbc17e4e3848db8d7e7f8468f9f",
-      "dependency_order": 16
+      "dependency_order": 18
     },
     {
       "table": "region_equipment_profiles",
@@ -159,7 +175,7 @@
       "schema_id": "rus.region_equipment_profiles.v1",
       "record_count": 1,
       "sha256": "da7cf8cb10f3ad5754756727dab36b628ab48729bdbb2495ce1039e634f38cb0",
-      "dependency_order": 17
+      "dependency_order": 19
     },
     {
       "table": "region_equipment_profile_entries",
@@ -167,7 +183,7 @@
       "schema_id": "rus.region_equipment_profile_entries.v1",
       "record_count": 1,
       "sha256": "dd8b179d060f9842dc08348e5f974ea5b64ddf01cb71676a053bba91df96e219",
-      "dependency_order": 18
+      "dependency_order": 20
     },
     {
       "table": "record_sources",
@@ -175,7 +191,7 @@
       "schema_id": "rus.record_sources.v1",
       "record_count": 15,
       "sha256": "35d7f8972d12cbc79a70b504c764b16be688dca6cded2897657072073f7fdab0",
-      "dependency_order": 19
+      "dependency_order": 21
     },
     {
       "table": "item_classification_migration_inventory",
@@ -183,7 +199,7 @@
       "schema_id": "rus.item_classification_migration_inventory.v1",
       "record_count": 0,
       "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
-      "dependency_order": 20
+      "dependency_order": 22
     }
   ]
 }

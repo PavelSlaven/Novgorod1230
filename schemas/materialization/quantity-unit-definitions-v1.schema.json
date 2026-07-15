@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rus.quantity_unit_definitions.v1",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["id", "dimension", "canonical_unit", "conversion_policy", "status"],
+    "properties": {
+      "id": { "type": "string", "minLength": 1 },
+      "dimension": { "enum": ["count", "mass", "volume", "length"] },
+      "canonical_unit": { "type": "string", "minLength": 1 },
+      "conversion_policy": {
+        "type": "object",
+        "required": ["version", "mode"],
+        "properties": { "version": { "const": 1 }, "mode": { "const": "identity" } },
+        "additionalProperties": false
+      },
+      "status": { "enum": ["draft", "approved", "deprecated"] }
+    },
+    "additionalProperties": false
+  }
+}

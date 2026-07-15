@@ -219,6 +219,80 @@ CREATE UNIQUE INDEX item_template_one_active_inventory_profile
   ON world_base.item_template_inventory_profiles (item_template_id)
   WHERE status = 'approved';
 
+-- Bulk goods use an explicit, versioned quantity contract.  A template mass is
+-- never silently treated as the mass of an arbitrary commodity lot.
+CREATE TABLE world_base.quantity_unit_definitions (
+  id TEXT PRIMARY KEY,
+  dimension TEXT NOT NULL CHECK (dimension IN ('count','mass','volume','length')),
+  canonical_unit TEXT NOT NULL,
+  conversion_policy JSONB NOT NULL,
+  status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','approved','deprecated')),
+  CHECK (jsonb_typeof(conversion_policy) = 'object'),
+  UNIQUE (dimension, canonical_unit)
+);
+
+CREATE TABLE world_base.item_template_quantity_profiles (
+  id TEXT PRIMARY KEY,
+  item_template_id TEXT NOT NULL REFERENCES world_base.item_templates(id) ON DELETE CASCADE,
+  world_revision_id TEXT NOT NULL REFERENCES world_base.world_revisions(id) ON DELETE RESTRICT,
+  quantity_unit_id TEXT NOT NULL REFERENCES world_base.quantity_unit_definitions(id) ON DELETE RESTRICT,
+  quantity_dimension TEXT NOT NULL CHECK (quantity_dimension IN ('count','mass','volume','length')),
+  minimum_quantity INTEGER NOT NULL CHECK (minimum_quantity > 0),
+  maximum_quantity INTEGER CHECK (maximum_quantity IS NULL OR maximum_quantity >= minimum_quantity),
+  default_quantity_policy JSONB NOT NULL,
+  mass_grams_per_unit INTEGER NOT NULL CHECK (mass_grams_per_unit > 0),
+  stackable BOOLEAN NOT NULL,
+  partial_consumption_allowed BOOLEAN NOT NULL,
+  source_id TEXT NOT NULL REFERENCES world_base.source_records(id) ON DELETE RESTRICT,
+  status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','approved','deprecated')),
+  CHECK (jsonb_typeof(default_quantity_policy) = 'object'),
+  UNIQUE (item_template_id, world_revision_id)
+);
+CREATE UNIQUE INDEX item_template_one_active_quantity_profile
+  ON world_base.item_template_quantity_profiles (item_template_id)
+  WHERE status = 'approved';
+
+CREATE OR REPLACE FUNCTION world_base.enforce_quantity_profile_unit_dimension()
+RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+DECLARE
+  unit_dimension TEXT;
+BEGIN
+  SELECT dimension INTO unit_dimension
+  FROM world_base.quantity_unit_definitions
+  WHERE id = NEW.quantity_unit_id;
+
+  IF unit_dimension IS NOT NULL AND unit_dimension <> NEW.quantity_dimension THEN
+    RAISE EXCEPTION 'quantity_dimension must match quantity unit dimension'
+      USING ERRCODE = '23514';
+  END IF;
+  RETURN NEW;
+END;
+$$;
+CREATE TRIGGER tr_item_template_quantity_profile_unit_dimension
+  BEFORE INSERT OR UPDATE OF quantity_unit_id, quantity_dimension
+  ON world_base.item_template_quantity_profiles
+  FOR EACH ROW EXECUTE PROCEDURE world_base.enforce_quantity_profile_unit_dimension();
+
+CREATE OR REPLACE FUNCTION world_base.prevent_referenced_quantity_unit_dimension_change()
+RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  IF NEW.dimension <> OLD.dimension
+    AND EXISTS (SELECT 1 FROM world_base.item_template_quantity_profiles WHERE quantity_unit_id = OLD.id) THEN
+    RAISE EXCEPTION 'dimension of a referenced quantity unit is immutable'
+      USING ERRCODE = '23514';
+  END IF;
+  RETURN NEW;
+END;
+$$;
+CREATE TRIGGER tr_quantity_unit_definition_dimension_immutable
+  BEFORE UPDATE OF dimension
+  ON world_base.quantity_unit_definitions
+  FOR EACH ROW EXECUTE PROCEDURE world_base.prevent_referenced_quantity_unit_dimension_change();
+
 CREATE TABLE world_base.container_template_inventory_profiles (
   id TEXT PRIMARY KEY,
   container_template_id TEXT NOT NULL REFERENCES world_base.container_templates(id) ON DELETE CASCADE,

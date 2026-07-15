@@ -83,6 +83,19 @@ test('interruption and resume preserve actual and perceived navigation state wit
   assert.notEqual(resumed.actual_position, resumed.perceived_position);
 });
 
+test('partial advance accepts an explicit perceived position without exposing or inventing a route', () => {
+  const journey = createJourney(plan, context());
+  const perceivedPosition = {
+    position_kind: 'edge_progress', journey_id: 'journey:1', journey_leg_id: 'leg:1', edge_id: 'edge:1',
+    from_g4_id: 'g4:start', to_g4_id: 'g4:target', progress_permille: 100, last_confirmed_g4_id: 'g4:start',
+    g5_node_id: null, g5_anchor_id: null
+  };
+  const advanced = advanceJourney({ journey, context: context(), progress_permille: 250, perceived_position: perceivedPosition });
+  assert.equal(advanced.actual_position.progress_permille, 250);
+  assert.equal(advanced.perceived_position.progress_permille, 100);
+  assert.throws(() => advanceJourney({ journey, context: context(), progress_permille: 250, perceived_position: { ...perceivedPosition, edge_id: 'edge:invented' } }), (error) => error instanceof TravelError && error.code === 'TRAVEL_POSITION_INVALID');
+});
+
 test('journey creation is deterministic for an identical formal input', () => {
   assert.deepEqual(createJourney(plan, context()), createJourney(plan, context()));
 });

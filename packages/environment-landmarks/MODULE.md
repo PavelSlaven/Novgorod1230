@@ -31,7 +31,7 @@
 
 ## Внутренняя структура
 
-`src/index.js` остаётся единственным публичным фасадом и lifecycle coordinator. Внутренние `errors`, `utils`, `state`, `catalog` и `observations` изолируют typed errors, immutable state, pinned bundle validation и safe observation boundary. Они не являются публичным API.
+`src/index.js` остаётся единственным публичным фасадом и lifecycle coordinator. Внутренние `errors`, `utils`, `state`, `catalog`, `observations`, `baseline`, `cues` и `traces` изолируют typed errors, immutable state, pinned bundle validation, safe observation boundary и каждый lifecycle. Они не являются публичным API.
 
 ## Тесты
 

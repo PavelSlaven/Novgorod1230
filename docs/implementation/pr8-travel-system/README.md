@@ -51,6 +51,7 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 - 2026-07-15: начато обязательное внутреннее разбиение `@rus/environment-landmarks`: errors, utilities, normalized state, pinned catalog validation и safe observation boundary вынесены из public facade без изменения API или lifecycle semantics; baseline/cue/trace extraction остаётся следующим шагом.
 - 2026-07-15: `calculateNextTravelBoundary` добавлен RED/GREEN: travel domain детерминированно выбирает ближайшую формально переданную границу и блокирует пустой required candidate set; владельцы времени, тела, погоды и causal events не перенесены в travel.
 - 2026-07-15: authoring schema согласован с runtime environment contracts: cue template хранит explicit intensity/recognition/navigation, trace template — navigation, decay profile — queryable thresholds и coefficients. Это не создаёт approved data, source/provenance или pilot bundle.
+- 2026-07-15: завершено внутреннее разбиение lifecycle `@rus/environment-landmarks`: baseline, cue и trace вынесены из public facade. Фасад только валидирует formal input, связывает операции и формирует immutable result; отдельные lifecycle не читают БД, не вызывают LLM и не создают G0–G4.
 
 ## Checks recorded on transferred baseline
 
@@ -140,6 +141,8 @@ Typed domain errors are versioned with the travel contracts; persistence, presen
 | `npm run world-db:schema-check` | 2026-07-15 | рабочее дерево после `f50307c` | PASS: 134 tables | DDL chain и grants корректны. |
 | `npm run world-db:schema-doc` / `world-db:schema-doc-check` | 2026-07-15 | рабочее дерево после `f50307c` | PASS | Schema reference regenerated, DDL SHA `617bf96f…`. |
 | `npm run docs:generate` / `docs:check` | 2026-07-15 | рабочее дерево после `f50307c` | PASS | Производные module/manifest artifacts актуальны. |
+| `node --test packages/environment-landmarks/test/domain.test.js` | 2026-07-15 | рабочее дерево после `3d5a7fa` | PASS: 8/8 | Full lifecycle extraction сохранил public API и behavior. |
+| `npm run test:domain` | 2026-07-15 | рабочее дерево после `3d5a7fa` | PASS: 91/91 | Полный domain regression после lifecycle extraction. |
 
 ## Data and migration registry
 

@@ -1,160 +1,276 @@
-# Universal category classification — этапы 1–2
+# Universal category classification — единый отчёт PR №7
 
-## Цель
+**Ветка:** `chatgpt/universal-category-classification`  
+**Статус PR:** `draft`  
+**Статус policy:** `proposed`  
+**Охваченные этапы:** 1, 2, 3A и редакторская часть 3B-1
 
-Зарегистрировать proposed-норматив в canonical corpus и реализовать только базовый слой controlled vocabulary: schemes, universal categories, labels, external mappings и relations. Документ остаётся `proposed`; предметные каталоги и runtime materializer не меняются.
+## 1. Цель работы
 
-## Изученные файлы
+Ввести единый контролируемый классификационный слой для проекта, реализовать базовые DDL/import/readiness-контракты, подготовить нормализованную предметную модель и сформировать минимальный исторически обоснованный authoring candidate для предметов Новгородской земли XIII века.
 
-- `AGENTS.md`, `.github/AGENTS.md` и обязательные active-нормативы materialization, world base, graph/read-only, documentation navigation и code critic;
-- данный policy и `CLASSIFICATION_REFERENCES.md`;
-- `infra/world-base/schema.sql`, `schema/*.sql`, `SCHEMA_REFERENCE.md`, field descriptions и schema generator;
-- `tools/world-catalog-workflow` readiness/import contracts и тесты;
-- manifest/schema/validation, module registry и public export `@rus/world-catalog-workflow`.
+Документ не объявляет policy `active`, не выполняет production import, не меняет Stage 8/16 и не выполняет legacy cutover.
 
-## Исходное состояние и gap analysis
+## 2. Изученные нормативы и подсистемы
 
-- Уже были: `universal_categories` (`id`, `domain`, `parent_category_id`, `title`, `status`), `universal_category_relations`, `region_category_options`, manifest/catalog import metadata и read-only grants.
-- Уже выполнялось: FK-derived readiness/import order, manifest digest checks, regional permission как отдельный слой и fail-closed readiness при пустых required datasets.
-- Отсутствовали: `classification_schemes`, `category_labels`, `category_scheme_mappings`; stable code, facet, definition, scoped labels, controlled mapping/relation types, hierarchy-cycle guards, validation external scheme/dangling category и classification importer adapter.
-- Свободный `TEXT` остаётся во множестве предметных доменов (`landscape_group`, material/occupation/profile fields и др.); предметная нормализация не выполнялась.
-- Plural IDs сейчас встречаются в JSONB (например `compatible_*_ids`, `allowed_*`, `required_*`, skill/material/land-use lists). Их relation-table миграция отложена до этапов 3–8.
+Изучены актуальные версии:
 
-## Принятые решения
+- `AGENTS.md`;
+- `.github/AGENTS.md`;
+- `development_rules.txt`;
+- `code_critic_invocation_rule.txt`;
+- `code_driven_world_materialization_architecture.md`;
+- `world_base_materialization_table_requirements.md`;
+- `llm_documentation_navigation.md`;
+- `read_only_database_and_graph_architecture.md`;
+- `items_and_property.txt`;
+- `character_inventory_equipment.txt`;
+- `npc_inventory_item_marks.txt`;
+- `npc_generation_profiles.txt`;
+- `weapons_and_armor.txt`;
+- `information_sources_llm_prompts.md`;
+- world-base DDL, generated schema reference, importer/readiness, JSON Schema, Stage 8/16 contracts и tests.
 
-- Канонические proposed-документы: `corpus/DOCUMENTS/universal_category_classification_policy.md` и приложение `universal_category_classification_references.md`; исходные импортные документы сохранены как provenance.
-- External mapping — только справочная FK-связь. Он не создаёт `region_category_options`, не является materialization rule и не создаёт live runtime dependency.
-- Runtime candidate остаётся зависимым от approved `region_category_options`; deprecated/replaced category readiness отклоняет.
-- Иерархии ограничены SQL trigger и importer validation; циклы parent и `broader`/`narrower` блокируются.
-- Расширен существующий публичный `@rus/world-catalog-workflow`, а не создан второй импортёр.
+## 3. Основные архитектурные решения
 
-## Структура результата
+Сохраняется модель:
 
-- DDL: `classification_schemes`, `category_labels`, `category_scheme_mappings`; расширенная `universal_categories`; controlled relations/mappings и DB guards.
-- Authoring JSON Schema: пять schema v1 для schemes, categories, labels, relations и mappings.
-- Import/readiness: typed validation, FK-derived load order, pure dry-run, transactional adapter apply с readback count/digest gate.
-- Generated schema reference: только штатной командой, без ручного редактирования.
+```text
+category → template → profile → rule → instance
+```
 
-## Изменённые файлы
+Зафиксированы правила:
 
-- Canonical corpus и навигация: `data/knowledge-source/corpus-manifest.json`, `corpus/DOCUMENTS/{README.md,llm_documentation_navigation.md,universal_category_classification_policy.md,universal_category_classification_references.md}` и их generated graph/RAG manifests.
-- База: `infra/world-base/schema/09.sql`, пояснения полей, generated `infra/world-base/SCHEMA_REFERENCE.md`, проверка и ожидаемое число таблиц (`111`) в schema/CI tests.
-- Контракт: пять JSON Schema в `schemas/materialization/`, `materialization-readiness.js`, public export и module registry/generated module index.
-- Проверки: `classification-catalog.test.js`, positive readiness fixture и integration contracts.
-- Этот README и точечная правка formatting в исходных provenance-документах.
+- universal category не подтверждает историческую применимость;
+- runtime использует только approved, version-pinned и region/period-applicable records;
+- external mapping не создаёт regional permission;
+- неизвестное или неоднозначное legacy значение становится `data_gap` или `migration_conflict`;
+- пустой required candidate set является hard block;
+- код и LLM не создают неизвестные категории;
+- существующие party instances не рематериализуются;
+- legacy fields не удаляются до отдельного cutover.
 
-## Порядок интеграции
+## 4. Этапы 1–2 — proposed policy и базовый classification layer
 
-1. Редактор создаёт pinned scheme/category datasets и manifest.
-2. Выполняется JSON Schema, cross-reference, cycle и manifest validation в dry-run.
-3. Approved dataset применяется одной транзакцией; readback count/digest обязателен.
-4. Отдельный regional/period permission может сделать approved category кандидатом.
-5. Только последующие этапы добавляют предметные profile/rule bindings.
+Выполнено:
 
-## Проверки
+- proposed policy и reference appendix зарегистрированы в canonical corpus и навигации;
+- добавлены `classification_schemes`, `category_labels`, `category_scheme_mappings`;
+- расширены `universal_categories`;
+- ограничены relation/mapping types;
+- добавлены SQL cycle guards;
+- добавлены пять базовых authoring JSON Schema;
+- реализованы manifest/cross-reference validation, dry-run, transactional adapter и readiness checks;
+- `SCHEMA_REFERENCE.md` перегенерирован штатно.
 
-Успешно выполнены после финального изменения DDL:
+Фактические проверки этапов 1–2:
 
-- `npm run world-db:schema-doc` и `npm run world-db:schema-doc-check` — generated reference совпадает с DDL: 111 tables, digest `85a3cad74116dabc1a9cebe605ebef0338d62f9f6482fa8fd78779dbe24f3ac3`.
-- `npm run test:world-catalog` — 39/39 PASS, включая positive и negative classification/importer tests.
-- `npm run test:integration` — 21 PASS, 5 SKIP: tests требуют externally configured integration PostgreSQL.
-- `npm run architecture:check` — PASS.
-- `npm run knowledge:check-corpus` — PASS: 30 canonical documents.
-- PostgreSQL 16 manual integration — полный `schema.sql` entrypoint создал 111 tables; mixed `parent_category_id` + `narrower` cycle был отклонён trigger.
-- `git diff --check main` — PASS после устранения provenance whitespace.
+- `test:world-catalog` — 39/39 PASS;
+- `test:integration` — 21 PASS, 5 SKIP из-за отсутствия externally configured PostgreSQL;
+- schema documentation/check — PASS;
+- architecture check — PASS;
+- corpus check — PASS;
+- PostgreSQL 16 entrypoint — PASS, 111 tables;
+- code critic — PASS после correction cycle.
 
-`npm test` и `npm run docs:check` запускались, но documentation validation блокируется существующими неотслеживаемыми пользовательскими данными вне изменения (`data/regional-summary-cache/` и `data/world-sessions/`); изменения этапа их не трогают. Отдельные доступные unit, integration, schema и corpus проверки выше прошли.
+## 5. Этап 3A — item/container classification framework
 
-Обязательный code-critic audit: PASS после цикла замечаний по manifest payload boundary, фактическому исполнению JSON Schema, non-blank DDL fields, active ambiguity, обязательному `title` и mixed hierarchy cycle.
+### 5.1. Gap analysis
 
-## Известные ограничения
+Машинно значимые legacy `TEXT` в `item_templates`:
 
-- Нет domain datasets, regional permissions или migration существующих JSONB/free-text fields.
-- Нет изменения Stage 13–16, party runtime и существующих партий.
-- Proposed policy не повышен в `active`.
+```text
+item_type
+function
+typical_material
+weight_band
+size_band
+durability
+quality_band
+value_band
+rarity
+legal_status
+visibility_default
+access_default
+marking_default
+risk_default
+```
 
-## Оставшиеся этапы
+Legacy plural JSONB:
 
-3. Предметы, материалы, контейнеры.
-4. Строения, помещения, G5.
-5. Ландшафт, вода, землепользование.
-6. NPC.
-7. Социальные категории, профессии, навыки, знания.
-8. Упрощённые животные.
-9. Полный import/migration/activation gate и допустимое повышение policy.
+```text
+typical_owner_roles
+typical_holder_roles
+typical_locations
+typical_containers
+skill_use
+attribute_use
+possible_modifiers
+failure_risks
+damage_or_wear_rules
+```
 
-## Этап 3A — предметы, материалы и контейнеры
+### 5.2. Реализовано
 
-### Изученные файлы и исходная схема
+- `item_template_category_bindings`;
+- `container_template_facet_bindings`;
+- `container_content_category_relations`;
+- `item_classification_migration_inventory`;
+- пять предметных authoring JSON Schema, включая equipment entries;
+- fail-closed importer/readiness для active/replaced categories, compatibility, equipment XOR/FK/domain, regional/revision/period permission и primary-function exclusivity;
+- legacy fields сохранены;
+- Stage 8, Stage 16, pipeline order и party instances не изменены;
+- схема расширена до 115 tables.
 
-Изучены profile-нормативы `items_and_property.txt`, `character_inventory_equipment.txt`,
-`npc_inventory_item_marks.txt`, `npc_generation_profiles.txt`, `weapons_and_armor.txt`,
-контракты Stage 8/16, party persistence, world-base DDL, materialization importer/readiness,
-JSON Schema, module/public/contract registries и связанные tests. Фактическая модель уже
-содержит `item_templates`, `container_templates`, item/container content/profile sets,
-property profiles/rules, equipment profile entries и G4 item/container rules.
+Фактические проверки этапа 3A:
 
-### Gap analysis
+- targeted item/container — 6/6 PASS;
+- `test:world-catalog` — 45/45 PASS;
+- `test:stage2-8` — 6/6 PASS;
+- `test:stage16` — 13/13 PASS;
+- `test:integration` — 21 PASS, 5 SKIP;
+- schema documentation/check — PASS, 115 tables;
+- PostgreSQL 16 schema entrypoint — PASS;
+- architecture, corpus, generated artifact и diff checks — PASS;
+- code critic — PASS WITH NOTES.
 
-- Машинно значимые legacy `TEXT` в `item_templates`: `item_type`, `function`,
-  `typical_material`, `weight_band`, `size_band`, `durability`, `quality_band`,
-  `value_band`, `rarity`, `legal_status`, `visibility_default`, `access_default`,
-  `marking_default`, `risk_default`. `title`, `summary`, `game_use`, `limits` остаются
-  описательными и не участвуют в classification filtering.
-- Legacy plural JSONB: `typical_owner_roles`, `typical_holder_roles`,
-  `typical_locations`, `typical_containers`, `skill_use`, `attribute_use`,
-  `possible_modifiers`, `failure_risks`, `damage_or_wear_rules`; container/property
-  `access_policy` и `claim_conditions` — versioned policy payload, а не ID relations.
-- Уже есть category/template/profile/rule/instance разделение: `universal_categories` —
-  category; item/container templates — template; profile entries и property profiles —
-  profile; G4 tables — rule; party runtime — instance. Эти специализированные таблицы
-  сохраняются и не дублируются.
-- Не удаляем и не заполняем legacy fields: нет подтверждённого historical mapping для
-  существующих значений. Stage 8/16 и порядок new-game pipeline остаются без изменений.
+`npm test` и documentation validation не прошли из-за существующих untracked данных в `data/regional-summary-cache/` и `data/world-sessions/`. Эти данные не изменялись и не входят в PR.
 
-### Решение и миграционная стратегия
+## 6. Этап 3B-1 — редакторский authoring candidate
 
-Добавляется только normalised binding layer для item/container facets и compatibility,
-плюс fail-closed importer/readiness и migration inventory. Переход формален:
+### 6.1. Добавленные документы
 
-`legacy field → explicit reviewed binding → validation-only/dual-read → migration report → future cutover`.
+- `stage-3b1/STAGE_3B1_PLAN.md` — подробный план, hard gaps, порядок интеграции и критерии допуска;
+- `stage-3b1/EDITORIAL_AUTHORING_CANDIDATE.md` — источники, controlled vocabulary proposal, 12 item templates, draft regional permission plan, blocked container proposals и migration boundary.
 
-Неизвестное legacy значение даёт typed data gap, неоднозначное — migration conflict;
-никаких guessed mappings, implicit deletes, rematerialization существующих party instances
-или external AAT lookups. Массовое создание categories/templates и исторически обоснованные
-regional/period permissions остаются этапу 3B.
+### 6.2. Минимальный предметный scope
 
-### Изменённые файлы
+Подготовлены draft candidates:
 
-- `infra/world-base/schema/10.sql`, field descriptions и generated `SCHEMA_REFERENCE.md`:
-  четыре таблицы binding/compatibility/migration inventory; schema теперь содержит 115 tables.
-- Пять authoring JSON Schema в `schemas/materialization/` для item bindings,
-  container facets/content compatibility, equipment entries и migration inventory.
-- `tools/world-catalog-workflow`: public contract, manifest/FK validation, typed readiness
-  and migration assessment, module contract и TDD tests.
-- CI/schema expected counts, generated module/schema manifests и этот README.
+1. хозяйственный нож;
+2. рабочий топор;
+3. точильный камень;
+4. деревянная ложка;
+5. деревянная миска;
+6. глиняный горшок для приготовления пищи;
+7. железная швейная игла;
+8. каменное пряслице;
+9. железное кресало;
+10. железный рыболовный крючок;
+11. лук;
+12. стрела.
 
-### Проверки и аудит
+Для каждого зафиксированы stable ID proposal, object type, primary function, materials, technique, use context, confidence, источники и ограничения.
 
-- Targeted item/container test — 6/6 PASS; `test:world-catalog` — 45/45 PASS.
-- `test:stage2-8` — 6/6 PASS; `test:stage16` — 13/13 PASS.
-- `test:integration` — 21 PASS, 5 SKIP (external integration PostgreSQL is not configured).
-- `world-db:schema-doc`/`--check` — PASS: 115 tables, digest
-  `7f4a4c2a951cc34af305af047935b4107a9b0cf41a0a83c39e7bb328e90eea02`.
-- PostgreSQL 16 manual schema entrypoint — PASS: 115 tables.
-- `architecture:check`, `knowledge:check-corpus`, generated artifact checks and
-  `git diff --check` — PASS.
-- `docs:generate`/full `npm test` remain blocked by pre-existing untracked data in
-  `data/regional-summary-cache/` and `data/world-sessions/`; no project file was changed
-  to mask this environment condition.
-- Mandatory code-critic audit — PASS WITH NOTES after a correction cycle. The audit verified
-  replaced/deprecated category gates, active-only compatibility, equipment XOR/FK/domain checks,
-  region/revision/period permission gates and primary-function exclusivity. Notes: full suite
-  and docs validation are blocked solely by the pre-existing untracked runtime data above.
+### 6.3. Источники
 
-### Задачи этапа 3B
+Использованы как candidate references:
 
-1. Подготовить исторически sourced item/material/container categories для Новгородской земли.
-2. Создать reviewed bindings и regional/period permissions из источников.
-3. Обработать migration inventory: resolve gaps/conflicts без guessed mapping.
-4. Выполнить отдельно утверждённый cutover legacy fields после report/audit.
+- Б. А. Колчин, `Железообрабатывающее производство Новгорода Великого`, 1959;
+- Б. А. Колчин, `Новгородские древности. Деревянные изделия`, 1968;
+- А. Ф. Медведев, `Оружие Новгорода Великого`, 1959;
+- `Medieval Novgorod in Its Wider Context` — широкий контекст;
+- действующие игровые нормативы проекта.
+
+Page-level evidence в этом чате не получено. Поэтому все исторические records и permissions остаются `draft`/`needs_review`; `approved` не присваивается.
+
+### 6.4. Каноническая граница миграции
+
+Проверены:
+
+- `data/world-base-sources/rus13-base-v1.manifest.json`;
+- `tools/rus13-world-base-importer/world_base_importer_v1/config/world_base_import_manifest_v1.json`.
+
+Tracked bundle не содержит item/container datasets. Текущий migration coverage:
+
+```text
+canonical legacy rows available: 0
+mapped: 0
+data gaps from canonical rows: 0
+migration conflicts from canonical rows: 0
+deferred external/local rows: unknown until export
+```
+
+Это не означает, что локальная PostgreSQL/NocoDB пуста. Для неё требуется отдельный tracked export и reviewed mapping.
+
+### 6.5. Выявленные hard gaps
+
+#### `CONTAINER_MATERIAL_FACET_MISSING`
+
+`container_template_facet_bindings` не допускает material. Форма и материал контейнера не могут быть нормализованы раздельно.
+
+#### `CONTAINER_CAPACITY_UNIT_UNDEFINED`
+
+`container_templates.capacity` является обязательным integer, но единица и семантика не определены. Произвольное число было бы fallback.
+
+#### `CONTAINER_COMPATIBILITY_TOO_COARSE`
+
+Совместимость жидкости или сыпучего содержимого зависит от материала, конструкции, закрытия и состояния, а не только от формы контейнера.
+
+#### `PAGE_LEVEL_SOURCE_VERIFICATION_REQUIRED`
+
+Без страниц и каталожных номеров нельзя утверждать точные разновидности, размеры, материалы, технологию, частотность или социальную распространённость.
+
+### 6.6. Решение по контейнерам
+
+Подготовлены, но заблокированы proposals:
+
+- ведро;
+- бочка/кадь;
+- мешок;
+- кошель/небольшая сумка;
+- сундук/ларь.
+
+Они не преобразованы в import rows и не получили выдуманную capacity.
+
+### 6.7. Проверки этапа 3B-1
+
+В этом чате выполнены только редакторские проверки authoring candidate:
+
+- уникальность proposal IDs;
+- одна primary function на item template;
+- отсутствие составных material+form категорий;
+- полнота ссылок внутри предложения;
+- явные sources/confidence/limits;
+- отсутствие guessed legacy mappings;
+- отсутствие container fallback.
+
+Не выполнялись:
+
+- финальная JSON Schema validation репозиторных datasets;
+- importer dry-run/apply;
+- PostgreSQL integration;
+- Stage 8/16 tests;
+- generated artifacts;
+- full test suite;
+- code critic для 3B-1.
+
+Эти проверки должен выполнить Codex после устранения hard gaps и преобразования редакторского candidate в versioned JSON datasets.
+
+## 7. Порядок дальнейшей интеграции
+
+1. Codex сверяет branch head и обязательные нормативы.
+2. Через TDD добавляет container material facet либо нормативно обоснованную эквивалентную модель.
+3. Формализует единицу/семантику capacity.
+4. Получает page-level source evidence.
+5. Экспортирует фактические local item/container records, если они существуют.
+6. Формирует reviewed migration inventory.
+7. Создаёт JSON datasets и manifest с реальными digests.
+8. Запускает schema/cross-reference/import/readiness/PostgreSQL/Stage 8/16/full tests.
+9. Перегенерирует generated artifacts штатными командами.
+10. Вызывает code critic с предыдущим `PASS WITH NOTES` и полным diff.
+
+## 8. Оставшиеся задачи
+
+- завершить техническую часть 3B-1 после устранения hard gaps;
+- 3B-2: отдельный legacy cutover только после полного coverage report;
+- этап 4: строения, помещения и G5;
+- этап 5: ландшафт, вода и землепользование;
+- этап 6: NPC;
+- этап 7: социальные категории, профессии, навыки и знания;
+- этап 8: упрощённые животные;
+- этап 9: полный migration/activation gate и возможное повышение policy в `active` после PASS.
+
+## 9. Текущий итог
+
+Этапы 1–3A реализованы технически и проверены в объёме, указанном выше. В этом чате выполнена содержательная редакторская часть 3B-1. Она подготовила предметный каталог-кандидат и выявила блокирующие дефекты контейнерной модели, но не объявлена import-ready и не активирована.

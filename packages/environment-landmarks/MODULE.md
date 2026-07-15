@@ -17,6 +17,7 @@
 - baseline уникален по `party_id`, `world_revision_id`, `g1_id`, `materializer_version`;
 - baseline materialization создаёт только persistent landmarks; cue/trace lifecycle запускается только явным `updateEnvironmentFeatures`;
 - catalog bundle имеет обязательные digest, world revision, region, period и regional permission; несоответствие является hard block;
+- state version и idempotency key обязательны для lifecycle update; stale update блокируется, а повтор ключа возвращает неизменённый replay;
 - required candidate set блокирует материализацию;
 - cue содержит причинный источник, trace — источник и event;
 - публичные observation candidates не содержат source ID или location binding;

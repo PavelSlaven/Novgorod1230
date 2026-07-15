@@ -42,6 +42,7 @@ export function initializeEnvironmentFeatures(input) {
   const created = materializeLandmarks({ input, catalog, random, runId, choices });
   const nextState = {
     ...state,
+    state_version: state.state_version + 1,
     baselines: [...state.baselines, { ...baselineKey, run_id: runId, seed_digest: seed.digest }],
     landmarks: [...state.landmarks, ...created]
   };
@@ -56,13 +57,21 @@ export function updateEnvironmentFeatures(input) {
   assertUpdateInput(input);
   const catalog = readCatalog(input.catalog_bundle, input);
   const state = normalizeState(input.current_environment_state);
+  if (state.applied_update_keys.includes(input.idempotency_key)) {
+    return finalizeResult({
+      input, state, status: 'replayed', created_landmarks: [], updated_landmarks: [],
+      created_cues: [], updated_cues: [], expired_cue_ids: [], created_traces: [], updated_traces: [], erased_trace_ids: [], choices: [],
+      runId: `environment_update_${canonicalDigest({ party_id: input.party_id, idempotency_key: input.idempotency_key }).slice(0, 24)}`
+    });
+  }
+  if (input.base_state_version !== state.state_version) throw new EnvironmentFeatureError('ENVIRONMENT_STATE_VERSION_MISMATCH', 'Environment update base_state_version is stale.', { expected: state.state_version, actual: input.base_state_version });
   const elapsedMinutes = numberAtLeast(input.elapsed_time?.minutes, 0, 'elapsed_time.minutes');
   const activeEmitters = uniqueBy(input.active_emitters ?? [], 'emitter_id', 'ENVIRONMENT_EMITTER_DUPLICATE');
   const traceEmissions = uniqueBy(input.trace_emissions ?? [], 'emission_id', 'ENVIRONMENT_TRACE_EMISSION_DUPLICATE');
   const choices = [];
   const cueResult = updateCues({ input, state, catalog, activeEmitters, elapsedMinutes, choices });
   const traceResult = updateTraces({ input, state: { ...state, cues: cueResult.cues }, catalog, traceEmissions, elapsedMinutes, choices });
-  const nextState = { ...state, cues: cueResult.cues, traces: traceResult.traces };
+  const nextState = { ...state, state_version: state.state_version + 1, applied_update_keys: [...state.applied_update_keys, input.idempotency_key], cues: cueResult.cues, traces: traceResult.traces };
   return finalizeResult({
     input, state: nextState, status: 'updated', created_landmarks: [], updated_landmarks: [],
     created_cues: cueResult.created, updated_cues: cueResult.updated, expired_cue_ids: cueResult.expired,
@@ -254,7 +263,17 @@ function readCatalog(bundle, input) {
   if (!bundle.regional_permissions.includes(input.region_id)) throw new EnvironmentFeatureError('ENVIRONMENT_REGIONAL_PERMISSION_MISSING', 'Catalog has no regional permission for this request.', { region_id: input.region_id });
   return bundle;
 }
-function normalizeState(value) { requiredObject(value, 'environment_state'); const state = {}; for (const key of ['baselines','landmarks','cues','traces']) { if (!Array.isArray(value[key])) throw new EnvironmentFeatureError('ENVIRONMENT_STATE_INVALID', `environment_state.${key} must be an array.`); state[key] = structuredClone(value[key]); } return state; }
+function normalizeState(value) {
+  requiredObject(value, 'environment_state');
+  if (!Number.isInteger(value.state_version) || value.state_version < 0) throw new EnvironmentFeatureError('ENVIRONMENT_STATE_INVALID', 'environment_state.state_version must be a non-negative integer.');
+  const state = { state_version: value.state_version };
+  for (const key of ['baselines','landmarks','cues','traces','applied_update_keys']) {
+    if (!Array.isArray(value[key])) throw new EnvironmentFeatureError('ENVIRONMENT_STATE_INVALID', `environment_state.${key} must be an array.`);
+    state[key] = structuredClone(value[key]);
+  }
+  if (new Set(state.applied_update_keys).size !== state.applied_update_keys.length || state.applied_update_keys.some((key) => !text(key))) throw new EnvironmentFeatureError('ENVIRONMENT_STATE_INVALID', 'environment_state.applied_update_keys must be unique non-empty strings.');
+  return state;
+}
 function baselineIdentity(input) { return { party_id: input.party_id, world_revision_id: input.world_revision_id, g1_id: input.g1_id, materializer_version: input.materializer_version }; }
 function sameBaseline(left, right) { return ['party_id','world_revision_id','g1_id','materializer_version'].every((key) => left[key] === right[key]); }
 function seedContext(input) { return { party_id: input.party_id, world_revision_id: input.world_revision_id, region_id: input.region_id, historical_period_id: input.historical_period_id, g1_id: input.g1_id, trigger: input.trigger, occurrence: input.occurrence, catalog_digest: input.catalog_digest, environment_materializer_version: input.materializer_version, rng_algorithm_id: input.rng_algorithm_id }; }

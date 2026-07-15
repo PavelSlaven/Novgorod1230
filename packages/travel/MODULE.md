@@ -11,7 +11,7 @@
 ## Public API
 
 - `validateTravelIntent`, `validateTravelPosition`, `validateJourney`, `validateTravelRulesBundle`
-- `buildJourneyPlan`, `createJourney`, `advanceJourney`, `buildTravelChangeSetProposal`
+- `buildJourneyPlan`, `createJourney`, `advanceJourney`, `calculateNextTravelBoundary`, `buildTravelChangeSetProposal`
 - `interruptJourney`, `campJourney`, `resumeJourney`, `changeJourneyPace`, `abandonJourney`, `completeJourney`
 - `TravelError`
 
@@ -20,6 +20,8 @@
 Все функции принимают только формальный вход, возвращают новый deep-frozen результат и не изменяют вход. Ошибки имеют code из family `TRAVEL_*`; required candidate set без вариантов возвращает `TRAVEL_REQUIRED_CANDIDATE_SET_EMPTY` и блокирует переход.
 
 `advanceJourney` требует явный `progress_permille`; он не завершает leg по неявному значению. Полное завершение следует выражать через `completeJourney`.
+
+`calculateNextTravelBoundary` выбирает только ближайший элемент из формально переданного непустого candidate set. Он не рассчитывает погоду, свет, тело, транспорт или события и не создаёт candidate сам.
 
 `TravelPosition` — discriminated union: `node` хранит `g4_id`, а `edge_progress` хранит journey/leg/edge и progress 0–1000. Скрытая actual position не предназначена для player-facing потребителей.
 

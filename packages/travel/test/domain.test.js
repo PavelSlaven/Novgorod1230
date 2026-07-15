@@ -5,6 +5,7 @@ import {
   TravelError,
   advanceJourney,
   buildTravelChangeSetProposal,
+  calculateNextTravelBoundary,
   campJourney,
   createJourney,
   interruptJourney,
@@ -166,5 +167,24 @@ test('travel change-set proposal is version-bound and contains only normalized t
   assert.throws(
     () => buildTravelChangeSetProposal({ before, after, idempotency_key: 'travel:advance:wrong', expected_state_version: 3 }),
     (error) => error instanceof TravelError && error.code === 'TRAVEL_STATE_VERSION_MISMATCH'
+  );
+});
+
+test('next travel boundary selects only the earliest explicit candidate deterministically', () => {
+  const input = {
+    journey_id: 'journey:1',
+    current_leg_id: 'leg:1',
+    candidates: [
+      { boundary_id: 'sunset:1', boundary_type: 'sunset', at_elapsed_minutes: 50, priority: 2 },
+      { boundary_id: 'weather:1', boundary_type: 'weather_transition', at_elapsed_minutes: 20, priority: 5 },
+      { boundary_id: 'timer:1', boundary_type: 'due_timer', at_elapsed_minutes: 20, priority: 1 }
+    ]
+  };
+  assert.deepEqual(calculateNextTravelBoundary(input), {
+    boundary_id: 'timer:1', boundary_type: 'due_timer', at_elapsed_minutes: 20, priority: 1
+  });
+  assert.throws(
+    () => calculateNextTravelBoundary({ ...input, candidates: [] }),
+    (error) => error instanceof TravelError && error.code === 'TRAVEL_REQUIRED_CANDIDATE_SET_EMPTY'
   );
 });

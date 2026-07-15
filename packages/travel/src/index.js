@@ -212,6 +212,26 @@ export function buildTravelChangeSetProposal({ before, after, idempotency_key, e
   });
 }
 
+export function calculateNextTravelBoundary(input) {
+  const value = record(input, 'TRAVEL_INPUT_INVALID', 'Travel boundary input must be an object.');
+  required(value.journey_id, 'journey_id');
+  required(value.current_leg_id, 'current_leg_id');
+  if (!Array.isArray(value.candidates) || value.candidates.length === 0) {
+    fail('TRAVEL_REQUIRED_CANDIDATE_SET_EMPTY', 'Travel advance requires at least one explicit boundary candidate.', { candidate_set: 'travel_boundaries' });
+  }
+  const validTypes = new Set(['leg_completion', 'sunset', 'darkness', 'weather_transition', 'due_timer', 'body_threshold', 'resource_threshold', 'transport_problem', 'navigation_decision', 'significant_observation', 'causal_interruption', 'player_stop', 'arrival']);
+  const candidates = value.candidates.map((candidate) => {
+    const item = record(candidate, 'TRAVEL_INPUT_INVALID', 'Travel boundary candidate must be an object.');
+    required(item.boundary_id, 'boundary_id');
+    if (!validTypes.has(item.boundary_type)) fail('TRAVEL_INPUT_INVALID', 'Unknown travel boundary type.', { boundary_type: item.boundary_type });
+    if (!Number.isInteger(item.at_elapsed_minutes) || item.at_elapsed_minutes < 0) fail('TRAVEL_INPUT_INVALID', 'Boundary elapsed time must be a non-negative integer.', { boundary_id: item.boundary_id });
+    if (!Number.isInteger(item.priority) || item.priority < 0) fail('TRAVEL_INPUT_INVALID', 'Boundary priority must be a non-negative integer.', { boundary_id: item.boundary_id });
+    return structuredClone(item);
+  });
+  candidates.sort((left, right) => left.at_elapsed_minutes - right.at_elapsed_minutes || left.priority - right.priority || left.boundary_id.localeCompare(right.boundary_id));
+  return deepFreeze(candidates[0]);
+}
+
 function assertContext(context, journey, { checkActiveJourneyConflict = false } = {}) {
   const value = record(context, 'TRAVEL_INPUT_INVALID', 'Travel context must be an object.');
   if (value.state_version !== journey.state_version) fail('TRAVEL_STATE_VERSION_MISMATCH', 'Travel state version is stale.', { expected: journey.state_version, actual: value.state_version });

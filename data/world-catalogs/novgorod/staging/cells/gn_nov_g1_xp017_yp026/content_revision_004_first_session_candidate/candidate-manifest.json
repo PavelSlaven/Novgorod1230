@@ -1,0 +1,45 @@
+{
+  "schema_version": "rus.first_session_candidate_manifest.v1",
+  "candidate_revision": "content_revision_004_first_session_candidate",
+  "base_revision": "content_revision_003_production_candidate",
+  "g1_id": "gn_nov_g1_xp017_yp026",
+  "selected_g4_id": "gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_high_platform",
+  "status": "prepared_not_importable",
+  "files": [
+    {
+      "path": "00-governance/revision-metadata.json",
+      "size_bytes": 695,
+      "sha256": "3e5f0968f42df3f0859f351da32d723b89e32f3af9d46b5a0929c4dbccd0d1a2"
+    },
+    {
+      "path": "01-start/selected-start-g4.json",
+      "size_bytes": 1345,
+      "sha256": "d31cb961eb6117f5fe0d427ffdef12dcc8f29e4c71c4285683564f0fe1e7405b"
+    },
+    {
+      "path": "02-npc/npc-chain-readiness.json",
+      "size_bytes": 1578,
+      "sha256": "feb28b99752ecaa3f8fe5cf808352771f9dc5dda6235d1027f35c6df58421910"
+    },
+    {
+      "path": "02-npc/required-npc-catalog-records.json",
+      "size_bytes": 3464,
+      "sha256": "fc941a384a1a65fb34f1cf4a04d19810465fc7060acb92b71632d787614efb28"
+    },
+    {
+      "path": "05-validation/first-session-data-gap-report.json",
+      "size_bytes": 1755,
+      "sha256": "97c2f621aedb4983a490d343587f5f7394aa0766acb1e523b132300cdd17bca9"
+    },
+    {
+      "path": "README.md",
+      "size_bytes": 2040,
+      "sha256": "944db988b8d9fcae1f3b2871196d23f0bf5617810d64a847274ca2de4bd1105e"
+    }
+  ],
+  "validation": {
+    "json_parse": "pass",
+    "npc_chain": "hard_blocked_data_gap",
+    "activation_allowed": false
+  }
+}

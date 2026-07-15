@@ -88,6 +88,27 @@ export async function writePerceptionCycle(transaction, { cycle, pins, reactionD
   return { replayed: false, cycle_id: cycle.cycle_id };
 }
 
+/**
+ * Явно включает perception для новой либо мигрируемой партии.
+ * Обычная запись сенсорного цикла никогда не выполняет эту активацию сама.
+ */
+export async function activatePerceptionForParty(transaction, { partyId, pins, errorFactory = perceptionError }) {
+  if (typeof partyId !== 'string' || !partyId.trim()) throw errorFactory('PERCEPTION_PARTY_ID_INVALID', 'partyId is required for perception activation.');
+  validatePins(pins);
+  const party = await transaction.query('SELECT party_id FROM party_runtime.parties WHERE party_id=$1 FOR UPDATE', [partyId]);
+  if (party.rows.length !== 1) throw errorFactory('PERCEPTION_PARTY_NOT_FOUND', 'Perception activation requires an existing party.');
+  const existing = await transaction.query(`SELECT perception_algorithm_id,sensory_catalog_digest,reaction_policy_digest
+    FROM party_runtime.party_perception_pins WHERE party_id=$1 FOR UPDATE`, [partyId]);
+  if (existing.rows.length === 0) {
+    await transaction.query(`INSERT INTO party_runtime.party_perception_pins
+      (party_id,perception_algorithm_id,sensory_catalog_digest,reaction_policy_digest) VALUES ($1,$2,$3,$4)`,
+    [partyId, pins.perception_algorithm_id, pins.sensory_catalog_digest, pins.reaction_policy_digest]);
+    return { activated: true };
+  }
+  assertMatchingPins(existing.rows[0], pins, errorFactory);
+  return { activated: false };
+}
+
 function batch(batch_id, target_table, records, operation_mode = 'insert_only') {
   return { batch_id, target_schema: 'party_runtime', target_table, operation_mode, records };
 }
@@ -128,13 +149,10 @@ function validateSecondaryEventCausality(events, reactionDecisions) {
 async function ensurePerceptionPins(transaction, partyId, pins, errorFactory) {
   const existing = await transaction.query(`SELECT perception_algorithm_id,sensory_catalog_digest,reaction_policy_digest
     FROM party_runtime.party_perception_pins WHERE party_id=$1 FOR UPDATE`, [partyId]);
-  if (existing.rows.length === 0) {
-    await transaction.query(`INSERT INTO party_runtime.party_perception_pins
-      (party_id,perception_algorithm_id,sensory_catalog_digest,reaction_policy_digest) VALUES ($1,$2,$3,$4)`,
-    [partyId, pins.perception_algorithm_id, pins.sensory_catalog_digest, pins.reaction_policy_digest]);
-    return;
-  }
-  const row = existing.rows[0];
+  if (existing.rows.length === 0) throw errorFactory('PERCEPTION_NOT_ACTIVATED', 'Perception is not activated for this party.');
+  assertMatchingPins(existing.rows[0], pins, errorFactory);
+}
+function assertMatchingPins(row, pins, errorFactory) {
   if (row.perception_algorithm_id !== pins.perception_algorithm_id || row.sensory_catalog_digest !== pins.sensory_catalog_digest || row.reaction_policy_digest !== pins.reaction_policy_digest) throw errorFactory('PERCEPTION_VERSION_PINS_MISMATCH', 'Perception catalog pins may not change within a party.');
 }
 function perceptionError(code, message) { return Object.assign(new Error(message), { code }); }

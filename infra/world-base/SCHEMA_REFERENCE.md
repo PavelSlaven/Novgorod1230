@@ -2,7 +2,7 @@
 # Справочник схемы `world_base`
 
 - Исполняемый источник: `infra/world-base/schema.sql` и 12 упорядоченных SQL-частей.
-- SHA-256 развёрнутого DDL: `b32bded12b0912470fb81cdeedfc96d7e8bcb0dde9e8b0084703432a40e08a52`.
+- SHA-256 развёрнутого DDL: `4c147c52c06f0b25cd87048bf2e3a2f36bac1a8859b7be7af106c3a4d0f7621d`.
 - Таблиц: 138.
 - Описания берутся только из утверждённого `infra/world-base/field-descriptions.js`; отсутствие описания не заполняется эвристикой.
 
@@ -3622,6 +3622,9 @@ Templates временных зрительных, звуковых и запа�
 | `public_label_key` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
 | `icon_key` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
 | `sense` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (sense IN ('sight','sound','smell'))` | Канал восприятия: sight, sound или smell. |
+| `base_intensity` | `NUMERIC` | нет | — | — | `NOT NULL`<br>`CHECK (base_intensity >= 0)` | Явная исходная интенсивность cue; runtime не подставляет значение. |
+| `recognition_difficulty` | `TEXT` | нет | — | — | `NOT NULL` | Явная сложность распознавания cue. |
+| `navigation_value` | `TEXT` | нет | — | — | `NOT NULL` | Явная навигационная ценность распознанного cue. |
 | `fading_duration_minutes` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (fading_duration_minutes >= 0)` | Длительность controlled fading после прекращения emitter. |
 | `expiry_duration_minutes` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (expiry_duration_minutes >= fading_duration_minutes)` | Возраст, после которого cue сохраняется только в истории. |
 | `propagation_policy` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Закрытая versioned policy физического распространения cue. |
@@ -3669,6 +3672,7 @@ Templates наблюдаемых следов деятельности.
 | `public_label_key` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
 | `icon_key` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
 | `recognition_difficulty` | `TEXT` | нет | — | — | `NOT NULL` | Сложность распознавания физически различимого следа. |
+| `navigation_value` | `TEXT` | нет | — | — | `NOT NULL` | Явная навигационная ценность распознанного следа. |
 | `valid_from` | `DATE` | да | — | — | — | Описание отсутствует. |
 | `valid_to` | `DATE` | да | — | — | — | Описание отсутствует. |
 | `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
@@ -3685,6 +3689,10 @@ Versioned policy постепенного ослабления trace strength.
 |---|---|---:|---|---|---|---|
 | `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
 | `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `readable_at_or_above` | `NUMERIC` | нет | — | — | `NOT NULL`<br>`CHECK (readable_at_or_above >= 0)` | Порог силы, при котором trace остаётся readable. |
+| `faint_at_or_above` | `NUMERIC` | нет | — | — | `NOT NULL`<br>`CHECK (faint_at_or_above >= 0 AND faint_at_or_above <= readable_at_or_above)` | Порог силы, ниже которого trace остаётся только faint. |
+| `decay_per_minute` | `NUMERIC` | нет | — | — | `NOT NULL`<br>`CHECK (decay_per_minute >= 0)` | Явный базовый темп угасания trace за минуту. |
+| `precipitation_multiplier` | `NUMERIC` | нет | — | — | `NOT NULL`<br>`CHECK (precipitation_multiplier >= 0)` | Явный коэффициент угасания при осадках. |
 | `decay_policy` | `JSONB` | нет | — | — | `NOT NULL` | Закрытая versioned policy decay coefficients; не external references. |
 | `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
 

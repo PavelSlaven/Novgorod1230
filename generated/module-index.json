@@ -388,8 +388,8 @@
       "name": "@rus/travel",
       "owns": [
         "`validateTravelIntent`, `validateTravelPosition`, `validateJourney`, `validateTravelRulesBundle`",
-        "`buildJourneyPlan`, `createJourney`, `advanceJourney`",
-        "`interruptJourney`, `resumeJourney`, `changeJourneyPace`, `abandonJourney`, `completeJourney`",
+        "`buildJourneyPlan`, `createJourney`, `advanceJourney`, `calculateNextTravelBoundary`, `buildTravelChangeSetProposal`",
+        "`interruptJourney`, `campJourney`, `resumeJourney`, `changeJourneyPace`, `abandonJourney`, `completeJourney`",
         "`TravelError`"
       ],
       "path": "packages/travel",

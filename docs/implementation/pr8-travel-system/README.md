@@ -50,6 +50,7 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 - 2026-07-15: lifecycle следов больше не подставляет recognition/navigation, decay thresholds или weather multiplier; неполные approved template/profile приводят к typed hard block.
 - 2026-07-15: начато обязательное внутреннее разбиение `@rus/environment-landmarks`: errors, utilities, normalized state, pinned catalog validation и safe observation boundary вынесены из public facade без изменения API или lifecycle semantics; baseline/cue/trace extraction остаётся следующим шагом.
 - 2026-07-15: `calculateNextTravelBoundary` добавлен RED/GREEN: travel domain детерминированно выбирает ближайшую формально переданную границу и блокирует пустой required candidate set; владельцы времени, тела, погоды и causal events не перенесены в travel.
+- 2026-07-15: authoring schema согласован с runtime environment contracts: cue template хранит explicit intensity/recognition/navigation, trace template — navigation, decay profile — queryable thresholds и coefficients. Это не создаёт approved data, source/provenance или pilot bundle.
 
 ## Checks recorded on transferred baseline
 
@@ -136,6 +137,9 @@ Typed domain errors are versioned with the travel contracts; persistence, presen
 | `node --test packages/travel/test/domain.test.js` | 2026-07-15 | рабочее дерево после `99afccd` | RED: 1 failed | Отсутствовал `calculateNextTravelBoundary`. |
 | `node --test packages/travel/test/domain.test.js` | 2026-07-15 | рабочее дерево после `99afccd` | PASS: 13/13 | Ближайшая explicit boundary выбирается детерминированно. |
 | `npm run test:domain` | 2026-07-15 | рабочее дерево после `99afccd` | PASS: 91/91 | Полный domain regression. |
+| `npm run world-db:schema-check` | 2026-07-15 | рабочее дерево после `f50307c` | PASS: 134 tables | DDL chain и grants корректны. |
+| `npm run world-db:schema-doc` / `world-db:schema-doc-check` | 2026-07-15 | рабочее дерево после `f50307c` | PASS | Schema reference regenerated, DDL SHA `617bf96f…`. |
+| `npm run docs:generate` / `docs:check` | 2026-07-15 | рабочее дерево после `f50307c` | PASS | Производные module/manifest artifacts актуальны. |
 
 ## Data and migration registry
 

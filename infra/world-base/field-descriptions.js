@@ -734,6 +734,9 @@ export const fields = {
   },
   environment_cue_templates: {
     sense: 'Канал восприятия: sight, sound или smell.',
+    base_intensity: 'Явная исходная интенсивность cue; runtime не подставляет значение.',
+    recognition_difficulty: 'Явная сложность распознавания cue.',
+    navigation_value: 'Явная навигационная ценность распознанного cue.',
     fading_duration_minutes: 'Длительность controlled fading после прекращения emitter.',
     expiry_duration_minutes: 'Возраст, после которого cue сохраняется только в истории.',
     propagation_policy: 'Закрытая versioned policy физического распространения cue.',
@@ -746,9 +749,14 @@ export const fields = {
   },
   environment_trace_templates: {
     category_id: 'FK → universal_categories(id): approved trace category.',
-    recognition_difficulty: 'Сложность распознавания физически различимого следа.'
+    recognition_difficulty: 'Сложность распознавания физически различимого следа.',
+    navigation_value: 'Явная навигационная ценность распознанного следа.'
   },
   environment_decay_profiles: {
+    readable_at_or_above: 'Порог силы, при котором trace остаётся readable.',
+    faint_at_or_above: 'Порог силы, ниже которого trace остаётся только faint.',
+    decay_per_minute: 'Явный базовый темп угасания trace за минуту.',
+    precipitation_multiplier: 'Явный коэффициент угасания при осадках.',
     decay_policy: 'Закрытая versioned policy decay coefficients; не external references.'
   },
   environment_trace_creation_rules: {

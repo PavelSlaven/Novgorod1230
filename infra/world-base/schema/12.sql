@@ -84,6 +84,9 @@ CREATE TABLE world_base.environment_cue_templates (
   public_label_key TEXT NOT NULL,
   icon_key TEXT NOT NULL,
   sense TEXT NOT NULL CHECK (sense IN ('sight','sound','smell')),
+  base_intensity NUMERIC NOT NULL CHECK (base_intensity >= 0),
+  recognition_difficulty TEXT NOT NULL,
+  navigation_value TEXT NOT NULL,
   fading_duration_minutes INTEGER NOT NULL CHECK (fading_duration_minutes >= 0),
   expiry_duration_minutes INTEGER NOT NULL CHECK (expiry_duration_minutes >= fading_duration_minutes),
   propagation_policy JSONB NOT NULL DEFAULT '{}'::jsonb,
@@ -114,6 +117,7 @@ CREATE TABLE world_base.environment_trace_templates (
   public_label_key TEXT NOT NULL,
   icon_key TEXT NOT NULL,
   recognition_difficulty TEXT NOT NULL,
+  navigation_value TEXT NOT NULL,
   valid_from DATE,
   valid_to DATE,
   status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','approved','deprecated'))
@@ -121,6 +125,10 @@ CREATE TABLE world_base.environment_trace_templates (
 CREATE TABLE world_base.environment_decay_profiles (
   id TEXT PRIMARY KEY,
   world_revision_id TEXT NOT NULL REFERENCES world_base.world_revisions(id) ON DELETE RESTRICT,
+  readable_at_or_above NUMERIC NOT NULL CHECK (readable_at_or_above >= 0),
+  faint_at_or_above NUMERIC NOT NULL CHECK (faint_at_or_above >= 0 AND faint_at_or_above <= readable_at_or_above),
+  decay_per_minute NUMERIC NOT NULL CHECK (decay_per_minute >= 0),
+  precipitation_multiplier NUMERIC NOT NULL CHECK (precipitation_multiplier >= 0),
   decay_policy JSONB NOT NULL,
   status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','approved','deprecated'))
 );

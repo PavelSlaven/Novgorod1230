@@ -1,18 +1,19 @@
 const AUTHORING_TABLES = new Set([
   'source_records', 'record_sources',
-  'world_revisions', 'universal_categories', 'universal_category_relations', 'universal_parameter_definitions', 'region_category_options',
+  'world_revisions', 'classification_schemes', 'universal_categories', 'category_labels', 'category_scheme_mappings', 'universal_category_relations', 'universal_parameter_definitions', 'region_category_options',
   'region_npc_archetypes', 'region_demographic_profiles', 'region_name_pools', 'region_name_pool_entries', 'region_appearance_profiles',
   'region_clothing_profiles', 'region_equipment_profiles', 'region_equipment_profile_entries', 'region_knowledge_profiles', 'region_behavior_profiles',
   'region_relationship_profiles', 'region_activity_profiles', 'region_schedule_profiles', 'region_npc_profile_sets', 'room_templates',
   'building_layout_templates', 'building_layout_nodes', 'building_layout_edges', 'g4_materialization_profiles', 'g4_materialization_bindings',
   'g5_minilocation_templates', 'g5_anchor_templates', 'g5_edge_templates', 'materialization_slot_rules', 'container_templates',
   'g4_materialization_layout_edges',
-  'item_profile_sets', 'item_profile_entries', 'container_content_profiles', 'container_content_profile_entries', 'property_profiles',
+  'item_profile_sets', 'item_profile_entries', 'container_content_profiles', 'container_content_profile_entries', 'item_template_category_bindings', 'item_template_inventory_profiles', 'item_template_source_bindings', 'container_template_inventory_profiles', 'container_template_source_bindings', 'container_template_facet_bindings', 'container_content_category_relations', 'item_classification_migration_inventory', 'property_profiles',
   'property_profile_rules', 'transport_templates', 'g4_npc_materialization_rules', 'g4_item_materialization_rules', 'g4_container_materialization_rules',
   'decision_command_catalog', 'decision_policy_profiles', 'decision_policy_options'
 ]);
 
 const INSTANCE_PREFIXES = ['party_', 'runtime_', 'instance_'];
+const LOOKUP_TABLES = new Set(['regions', 'graph_nodes', 'building_templates', 'item_templates', 'region_social_roles']);
 const REQUIRED_FOR_G4 = [
   'source_records', 'record_sources', 'world_revisions', 'universal_categories', 'region_category_options', 'g4_materialization_profiles', 'g4_materialization_bindings',
   'room_templates', 'building_layout_templates', 'building_layout_nodes', 'building_layout_edges', 'g5_minilocation_templates', 'g5_anchor_templates', 'g5_edge_templates', 'materialization_slot_rules', 'g4_materialization_layout_edges', 'region_npc_profile_sets', 'item_profile_sets',
@@ -22,6 +23,8 @@ const REQUIRED_FOR_G4 = [
 
 export const MATERIALIZATION_FOREIGN_KEYS = Object.freeze([
   ['world_revisions','parent_revision_id','world_revisions'], ['universal_categories','parent_category_id','universal_categories'],
+  ['category_labels','category_id','universal_categories'], ['category_labels','source_id','source_records'],
+  ['category_scheme_mappings','category_id','universal_categories'], ['category_scheme_mappings','classification_scheme_id','classification_schemes'], ['category_scheme_mappings','source_id','source_records'],
   ['region_category_options','region_id','regions'], ['region_npc_archetypes','region_id','regions'], ['region_demographic_profiles','region_id','regions'], ['region_name_pools','region_id','regions'],
   ['region_appearance_profiles','region_id','regions'], ['region_clothing_profiles','region_id','regions'], ['region_equipment_profiles','region_id','regions'], ['region_knowledge_profiles','region_id','regions'],
   ['region_behavior_profiles','region_id','regions'], ['region_relationship_profiles','region_id','regions'], ['region_activity_profiles','region_id','regions'], ['region_schedule_profiles','region_id','regions'],
@@ -44,6 +47,14 @@ export const MATERIALIZATION_FOREIGN_KEYS = Object.freeze([
   ['region_npc_profile_sets','world_revision_id','world_revisions'], ['region_npc_profile_sets','archetype_id','region_npc_archetypes'], ['region_npc_profile_sets','demographic_profile_id','region_demographic_profiles'], ['region_npc_profile_sets','name_pool_id','region_name_pools'], ['region_npc_profile_sets','appearance_profile_id','region_appearance_profiles'], ['region_npc_profile_sets','clothing_profile_id','region_clothing_profiles'], ['region_npc_profile_sets','equipment_profile_id','region_equipment_profiles'], ['region_npc_profile_sets','knowledge_profile_id','region_knowledge_profiles'], ['region_npc_profile_sets','behavior_profile_id','region_behavior_profiles'], ['region_npc_profile_sets','relationship_profile_id','region_relationship_profiles'], ['region_npc_profile_sets','activity_profile_id','region_activity_profiles'], ['region_npc_profile_sets','schedule_profile_id','region_schedule_profiles'],
   ['container_templates','world_revision_id','world_revisions'], ['container_templates','category_id','universal_categories'], ['item_profile_sets','world_revision_id','world_revisions'],
   ['item_templates','category_id','universal_categories'],
+  ['item_template_source_bindings','item_template_id','item_templates'], ['item_template_source_bindings','source_id','source_records'], ['item_template_source_bindings','world_revision_id','world_revisions'],
+  ['item_template_category_bindings','item_template_id','item_templates'], ['item_template_category_bindings','category_id','universal_categories'],
+  ['item_template_inventory_profiles','item_template_id','item_templates'], ['item_template_inventory_profiles','world_revision_id','world_revisions'], ['item_template_inventory_profiles','source_id','source_records'],
+  ['container_template_inventory_profiles','container_template_id','container_templates'], ['container_template_inventory_profiles','world_revision_id','world_revisions'], ['container_template_inventory_profiles','source_id','source_records'],
+  ['container_template_source_bindings','container_template_id','container_templates'], ['container_template_source_bindings','source_id','source_records'], ['container_template_source_bindings','world_revision_id','world_revisions'],
+  ['container_template_facet_bindings','container_template_id','container_templates'], ['container_template_facet_bindings','category_id','universal_categories'],
+  ['container_content_category_relations','container_category_id','universal_categories'], ['container_content_category_relations','content_category_id','universal_categories'],
+  ['item_classification_migration_inventory','resolved_category_id','universal_categories'],
   ['item_profile_entries','profile_id','item_profile_sets'], ['item_profile_entries','item_template_id','item_templates'], ['item_profile_entries','item_category_id','universal_categories'],
   ['container_content_profiles','container_template_id','container_templates'], ['container_content_profile_entries','profile_id','container_content_profiles'], ['container_content_profile_entries','item_template_id','item_templates'], ['container_content_profile_entries','item_category_id','universal_categories'],
   ['property_profiles','world_revision_id','world_revisions'], ['property_profiles','property_category_id','universal_categories'], ['property_profile_rules','property_profile_id','property_profiles'],
@@ -104,7 +115,194 @@ export function validateCatalogImportManifest(manifest, { recordsByTable = null 
     if (!names.has(targetTable)) errors.push(`DEPENDENCY_MISSING:${sourceTable}:${targetTable}`);
     else if (orderByName.get(targetTable) >= orderByName.get(sourceTable)) errors.push(`DEPENDENCY_ORDER_INVALID:${sourceTable}:${targetTable}`);
   }
+  if (recordsByTable) {
+    for (const tableName of Object.keys(recordsByTable)) {
+      if (!AUTHORING_TABLES.has(tableName) && !LOOKUP_TABLES.has(tableName)) errors.push(`TABLE_NOT_REGISTERED:${tableName}`);
+      if (AUTHORING_TABLES.has(tableName) && !names.has(tableName)) errors.push(`TABLE_PAYLOAD_NOT_DECLARED:${tableName}`);
+    }
+  }
+  if (recordsByTable) errors.push(...validateClassificationCatalog(recordsByTable), ...validateItemContainerClassificationCatalog(recordsByTable, { worldRevisionId: manifest?.world_revision_id, effectiveAt: manifest?.provenance?.effective_at }));
   return Object.freeze(errors);
+}
+
+const CATEGORY_STATUSES = new Set(['draft', 'approved', 'deprecated']);
+const LABEL_TYPES = new Set(['preferred', 'alternative', 'historical', 'deprecated']);
+const RELATION_TYPES = new Set(['broader', 'narrower', 'related', 'compatible', 'requires', 'excludes', 'equivalent_with_scope']);
+const MAPPING_TYPES = new Set(['exact', 'close', 'broad', 'narrow', 'related']);
+
+export function validateClassificationCatalog(recordsByTable = {}) {
+  const errors = [];
+  const schemes = recordsByTable.classification_schemes ?? [];
+  const categories = recordsByTable.universal_categories ?? [];
+  const labels = recordsByTable.category_labels ?? [];
+  const relations = recordsByTable.universal_category_relations ?? [];
+  const mappings = recordsByTable.category_scheme_mappings ?? [];
+  const categoryIds = new Set(categories.map((record) => record?.id).filter(Boolean));
+  const schemeIds = new Set(schemes.map((record) => record?.id).filter(Boolean));
+  const sourceIds = new Set((recordsByTable.source_records ?? []).map((record) => record?.id).filter(Boolean));
+  const stableCodes = new Set();
+
+  errors.push(...validateClassificationJsonSchema('classification_schemes', schemes, classificationSchemesSchema));
+  errors.push(...validateClassificationJsonSchema('universal_categories', categories, universalCategoriesSchema));
+  errors.push(...validateClassificationJsonSchema('category_labels', labels, categoryLabelsSchema));
+  errors.push(...validateClassificationJsonSchema('universal_category_relations', relations, universalCategoryRelationsSchema));
+  errors.push(...validateClassificationJsonSchema('category_scheme_mappings', mappings, categorySchemeMappingsSchema));
+
+  for (const scheme of schemes) {
+    const id = scheme?.id ?? '?';
+    if (!CATEGORY_STATUSES.has(scheme?.status)) errors.push(`CLASSIFICATION_SCHEME_STATUS_INVALID:${id}`);
+    if (!/^[a-f0-9]{64}$/u.test(String(scheme?.snapshot_digest ?? ''))) errors.push(`CLASSIFICATION_SCHEME_DIGEST_INVALID:${id}`);
+  }
+  for (const category of categories) {
+    const id = category?.id ?? '?';
+    if (!String(category?.stable_code ?? '').trim()) errors.push(`CATEGORY_STABLE_CODE_MISSING:${id}`);
+    else if (stableCodes.has(category.stable_code)) errors.push(`CATEGORY_STABLE_CODE_DUPLICATE:${category.stable_code}`);
+    else stableCodes.add(category.stable_code);
+    if (!String(category?.domain ?? '').trim()) errors.push(`CATEGORY_DOMAIN_MISSING:${id}`);
+    if (!String(category?.facet ?? '').trim()) errors.push(`CATEGORY_FACET_MISSING:${id}`);
+    if (!String(category?.definition ?? '').trim()) errors.push(`CATEGORY_DEFINITION_MISSING:${id}`);
+    if (!String(category?.scope_note ?? '').trim()) errors.push(`CATEGORY_SCOPE_NOTE_MISSING:${id}`);
+    if (!String(category?.inclusion_rules ?? '').trim()) errors.push(`CATEGORY_INCLUSION_RULES_MISSING:${id}`);
+    if (!String(category?.exclusion_rules ?? '').trim()) errors.push(`CATEGORY_EXCLUSION_RULES_MISSING:${id}`);
+    if (!CATEGORY_STATUSES.has(category?.status)) errors.push(`CATEGORY_STATUS_INVALID:${id}`);
+    if (category?.parent_category_id && !categoryIds.has(category.parent_category_id)) errors.push(`CATEGORY_PARENT_UNKNOWN:${id}`);
+    if (category?.replaced_by_category_id && !categoryIds.has(category.replaced_by_category_id)) errors.push(`CATEGORY_REPLACEMENT_UNKNOWN:${id}`);
+  }
+  for (const label of labels) {
+    const id = label?.id ?? '?';
+    if (!categoryIds.has(label?.category_id)) errors.push(`CATEGORY_LABEL_CATEGORY_UNKNOWN:${id}`);
+    if (!LABEL_TYPES.has(label?.label_type)) errors.push(`CATEGORY_LABEL_TYPE_INVALID:${id}`);
+    if (label?.source_id && !sourceIds.has(label.source_id)) errors.push(`CATEGORY_LABEL_SOURCE_UNKNOWN:${id}`);
+  }
+  for (const relation of relations) {
+    const id = relation?.id ?? '?';
+    if (!RELATION_TYPES.has(relation?.relation_type)) errors.push(`CATEGORY_RELATION_TYPE_INVALID:${id}`);
+    if (!categoryIds.has(relation?.from_category_id)) errors.push(`CATEGORY_RELATION_CATEGORY_UNKNOWN:${id}:from_category_id`);
+    if (!categoryIds.has(relation?.to_category_id)) errors.push(`CATEGORY_RELATION_CATEGORY_UNKNOWN:${id}:to_category_id`);
+    if (relation?.from_category_id === relation?.to_category_id && ['broader', 'narrower'].includes(relation?.relation_type)) errors.push(`CATEGORY_HIERARCHY_SELF_CYCLE:${id}`);
+  }
+  for (const mapping of mappings) {
+    const id = mapping?.id ?? '?';
+    if (!MAPPING_TYPES.has(mapping?.mapping_type)) errors.push(`CATEGORY_MAPPING_TYPE_INVALID:${id}`);
+    if (!categoryIds.has(mapping?.category_id)) errors.push(`CATEGORY_MAPPING_CATEGORY_UNKNOWN:${id}`);
+    if (!schemeIds.has(mapping?.classification_scheme_id)) errors.push(`CATEGORY_MAPPING_SCHEME_UNKNOWN:${id}`);
+    if (mapping?.source_id && !sourceIds.has(mapping.source_id)) errors.push(`CATEGORY_MAPPING_SOURCE_UNKNOWN:${id}`);
+  }
+  const parentByChild = new Map();
+  for (const category of categories) {
+    if (!category?.parent_category_id || !categoryIds.has(category.parent_category_id) || !categoryIds.has(category.id)) continue;
+    const parents = parentByChild.get(category.id) ?? new Set();
+    parents.add(category.parent_category_id); parentByChild.set(category.id, parents);
+  }
+  for (const relation of relations) {
+    if (!['broader', 'narrower'].includes(relation?.relation_type) || !categoryIds.has(relation?.from_category_id) || !categoryIds.has(relation?.to_category_id)) continue;
+    const child = relation.relation_type === 'broader' ? relation.to_category_id : relation.from_category_id;
+    const parent = relation.relation_type === 'broader' ? relation.from_category_id : relation.to_category_id;
+    const parents = parentByChild.get(child) ?? new Set();
+    parents.add(parent); parentByChild.set(child, parents);
+  }
+  for (const start of parentByChild.keys()) {
+    const visit = (node, stack = new Set()) => {
+      if (stack.has(node)) return true;
+      const next = new Set(stack); next.add(node);
+      return [...(parentByChild.get(node) ?? [])].some((parent) => visit(parent, next));
+    };
+    if (visit(start)) { errors.push(`CATEGORY_HIERARCHY_CYCLE:${start}`); break; }
+  }
+  return Object.freeze(errors);
+}
+
+export function validateJsonSchemaRecords(tableName, records, schema) {
+  if (!Array.isArray(records)) return [`JSON_SCHEMA_INVALID:${tableName}:payload`];
+  const itemSchema = schema?.items ?? {};
+  const errors = [];
+  records.forEach((record, index) => {
+    validateJsonSchemaValue(tableName, index, record, itemSchema, '', errors);
+  });
+  return errors;
+}
+
+function validateClassificationJsonSchema(tableName, records, schema) {
+  return validateJsonSchemaRecords(tableName, records, schema);
+}
+
+function validateJsonSchemaValue(tableName, index, value, definition, path, errors) {
+  const field = (key = null) => [tableName, index, key == null || key === '' ? path : (path ? `${path}.${key}` : key)].filter((value) => value != null && value !== '').join(':');
+  if (!definition || typeof definition !== 'object') return;
+  if (definition.not) {
+    const notErrors = [];
+    validateJsonSchemaValue(tableName, index, value, definition.not, path, notErrors);
+    if (notErrors.length === 0) errors.push(`JSON_SCHEMA_NOT:${field()}`);
+  }
+  if (definition.oneOf) {
+    const matches = definition.oneOf.filter((variant) => {
+      const variantErrors = [];
+      validateJsonSchemaValue(tableName, index, value, variant, path, variantErrors);
+      return variantErrors.length === 0;
+    }).length;
+    if (matches !== 1) errors.push(`JSON_SCHEMA_ONE_OF:${field()}`);
+  }
+  if (definition.type === 'object' || definition.properties || definition.required || definition.additionalProperties === false) {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) { errors.push(`JSON_SCHEMA_TYPE:${field()}`); return; }
+    for (const required of definition.required ?? []) if (!(required in value)) errors.push(`JSON_SCHEMA_REQUIRED:${field(required)}`);
+    for (const [key, child] of Object.entries(value)) {
+      const childDefinition = definition.properties?.[key];
+      if (!childDefinition) {
+        if (definition.additionalProperties === false) errors.push(`JSON_SCHEMA_ADDITIONAL_PROPERTY:${field(key)}`);
+        continue;
+      }
+      validateJsonSchemaValue(tableName, index, child, childDefinition, path ? `${path}.${key}` : key, errors);
+    }
+    return;
+  }
+  if (definition.type === 'string' && typeof value !== 'string') errors.push(`JSON_SCHEMA_TYPE:${field()}`);
+  else if (definition.type === 'integer' && !Number.isInteger(value)) errors.push(`JSON_SCHEMA_TYPE:${field()}`);
+  else if (definition.type === 'number' && (typeof value !== 'number' || !Number.isFinite(value))) errors.push(`JSON_SCHEMA_TYPE:${field()}`);
+  else if (definition.type === 'boolean' && typeof value !== 'boolean') errors.push(`JSON_SCHEMA_TYPE:${field()}`);
+  else if (definition.type === 'array' && !Array.isArray(value)) errors.push(`JSON_SCHEMA_TYPE:${field()}`);
+  if (definition.type === 'string' && typeof value === 'string' && definition.minLength && value.trim().length < definition.minLength) errors.push(`JSON_SCHEMA_MIN_LENGTH:${field()}`);
+  if (definition.type === 'integer' && Number.isInteger(value) && definition.minimum != null && value < definition.minimum) errors.push(`JSON_SCHEMA_MINIMUM:${field()}`);
+  if (Object.hasOwn(definition, 'const') && value !== definition.const) errors.push(`JSON_SCHEMA_CONST:${field()}`);
+  if (definition.enum && !definition.enum.includes(value)) errors.push(`JSON_SCHEMA_ENUM:${field()}`);
+  if (definition.pattern && !new RegExp(definition.pattern, 'u').test(String(value))) errors.push(`JSON_SCHEMA_PATTERN:${field()}`);
+  if (definition.format === 'date' && !isRfc3339FullDate(value)) errors.push(`JSON_SCHEMA_FORMAT:${field()}`);
+}
+
+function isRfc3339FullDate(value) {
+  const match = typeof value === 'string' && /^(\d{4})-(\d{2})-(\d{2})$/u.exec(value);
+  if (!match) return false;
+  const [, yearText, monthText, dayText] = match;
+  const year = Number(yearText);
+  const month = Number(monthText);
+  const day = Number(dayText);
+  if (month < 1 || month > 12 || day < 1) return false;
+  const leapYear = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+  const daysByMonth = [31, leapYear ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  return day <= daysByMonth[month - 1];
+}
+
+export async function importClassificationCatalog({ manifest, recordsByTable = {}, mode = 'dry-run', adapter = null } = {}) {
+  if (!['dry-run', 'apply'].includes(mode)) throw new Error(`CLASSIFICATION_IMPORT_MODE_INVALID:${mode}`);
+  const errors = validateCatalogImportManifest(manifest, { recordsByTable });
+  const tables = [...(manifest?.tables ?? [])].sort((left, right) => left.dependency_order - right.dependency_order || left.table_name.localeCompare(right.table_name));
+  if (errors.length) return Object.freeze({ mode, applied: false, errors, tables: Object.freeze([]) });
+  if (mode === 'dry-run') return Object.freeze({ mode, applied: false, errors: Object.freeze([]), tables: Object.freeze(tables.map((entry) => entry.table_name)) });
+  if (!adapter || typeof adapter.begin !== 'function' || typeof adapter.insert !== 'function' || typeof adapter.commit !== 'function' || typeof adapter.rollback !== 'function') throw new Error('CLASSIFICATION_IMPORT_ADAPTER_INVALID');
+  await adapter.begin();
+  try {
+    for (const entry of tables) {
+      await adapter.insert(entry.table_name, recordsByTable[entry.table_name]);
+      if (typeof adapter.readback === 'function') {
+        const readback = await adapter.readback(entry.table_name);
+        if (readback?.record_count !== entry.record_count || readback?.payload_digest !== entry.payload_digest) throw new Error(`CLASSIFICATION_IMPORT_READBACK_MISMATCH:${entry.table_name}`);
+      }
+    }
+    await adapter.commit();
+    return Object.freeze({ mode, applied: true, errors: Object.freeze([]), tables: Object.freeze(tables.map((entry) => entry.table_name)) });
+  } catch (error) {
+    await adapter.rollback();
+    throw error;
+  }
 }
 
 export function assessMaterializationReadiness({ manifest, recordsByTable = {}, regionId, g4Id, historicalYear, season, jsonSchemaValidators = {} } = {}) {
@@ -119,7 +317,19 @@ export function assessMaterializationReadiness({ manifest, recordsByTable = {}, 
     if (scoped(table).length === 0) concerns.push(`REQUIRED_APPROVED_TABLE_EMPTY:${table}`);
   }
   if (!scoped('world_revisions').some((record) => record.id === revisionId)) concerns.push('WORLD_REVISION_NOT_APPROVED');
-  if (!scoped('region_category_options').some((record) => record.region_id === regionId)) concerns.push('REGION_CATEGORY_OPTIONS_NOT_READY');
+  const activeOptions = scoped('region_category_options').filter((record) => record.region_id === regionId);
+  if (activeOptions.length === 0) concerns.push('REGION_CATEGORY_OPTIONS_NOT_READY');
+  const optionsByCategory = new Map();
+  for (const option of activeOptions) {
+    const values = optionsByCategory.get(option.category_id) ?? [];
+    values.push(option); optionsByCategory.set(option.category_id, values);
+  }
+  for (const options of optionsByCategory.values()) if (options.length > 1) concerns.push(`REGION_CATEGORY_OPTION_ACTIVE_AMBIGUITY:${options.map((option) => option.id).sort().join(':')}`);
+  const activeCategories = new Map(scoped('universal_categories').map((record) => [record.id, record]));
+  for (const option of activeOptions) {
+    const category = activeCategories.get(option.category_id);
+    if (!category || category.status !== 'approved' || category.replaced_by_category_id) concerns.push(`REGION_CATEGORY_OPTION_CATEGORY_INACTIVE:${option.id}`);
+  }
   const bindings = scoped('g4_materialization_bindings');
   const profiles = new Set(scoped('g4_materialization_profiles').map((record) => record.id));
   if (!bindings.some((record) => record.graph_node_id === g4Id && profiles.has(record.profile_id))) concerns.push('G4_MATERIALIZATION_BINDING_NOT_READY');
@@ -286,3 +496,273 @@ function checkLayoutGraph(concerns, layoutId, nodes, edges) {
   if (visited.size !== layoutNodes.length) concerns.push(`G5_LAYOUT_DISCONNECTED:${layoutId}`);
 }
 import { digestValue } from './digest.js';
+import { calculatePackingSlots } from './packing-slots.js';
+const ITEM_BINDING_FACETS = new Set(['object_type','primary_function','secondary_function','material','manufacturing_technique','component_type','physical_form','condition','quality_band','size_band','mass_band','use_context']);
+const CONTAINER_FACETS = new Set(['container_form','capacity_band','closure_type','access_model','portability','content_compatibility','condition','material']);
+
+function isValidContainerCapacityPolicy(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  const keys = Object.keys(value).sort();
+  return keys.length === 3 && keys[0] === 'mode' && keys[1] === 'unit' && keys[2] === 'version' && value.version === 1 && value.mode === 'packing_slots' && value.unit === 'packing_slot';
+}
+
+function validateInventoryProfiles(errors, profiles, templateIds, templateKey, prefix, container = false) {
+  const active = new Set();
+  for (const profile of profiles) {
+    const id = profile?.id ?? '?';
+    const templateId = profile?.[templateKey];
+    if (!templateIds.has(templateId)) errors.push(`${prefix}_TEMPLATE_UNKNOWN:${id}`);
+    if (!Number.isInteger(profile?.mass_grams) || profile.mass_grams < 0) errors.push(`${prefix}_MASS_INVALID:${id}`);
+    if (!['compact', 'regular', 'long', 'bulky'].includes(profile?.carry_form)) errors.push(`${prefix}_CARRY_FORM_INVALID:${id}`);
+    if (![0, 1, 2].includes(profile?.external_hand_cost)) errors.push(`${prefix}_HAND_COST_INVALID:${id}`);
+    if (container && !['none', 'quick_container', 'primary_container'].includes(profile?.inventory_role)) errors.push(`${prefix}_ROLE_INVALID:${id}`);
+    if (profile?.status === 'approved') {
+      if (active.has(templateId)) errors.push(`${prefix}_AMBIGUOUS:${templateId}`);
+      active.add(templateId);
+    }
+  }
+}
+
+function validateTemplateSourceBindings(errors, bindings, templateRows, sourceIds, revisionIds, templateKey, prefix) {
+  const templateIds = new Set(templateRows.map((template) => template.id));
+  const templates = new Map(templateRows.map((template) => [template.id, template]));
+  const unique = new Set();
+  for (const binding of bindings) {
+    const id = binding?.id ?? '?';
+    if (!templateIds.has(binding?.[templateKey])) errors.push(`${prefix}_TEMPLATE_UNKNOWN:${id}`);
+    if (!sourceIds.has(binding?.source_id)) errors.push(`${prefix}_SOURCE_UNKNOWN:${id}`);
+    if (!revisionIds.has(binding?.world_revision_id)) errors.push(`${prefix}_REVISION_UNKNOWN:${id}`);
+    if (templates.get(binding?.[templateKey])?.world_revision_id !== binding?.world_revision_id) errors.push(`${prefix}_TEMPLATE_REVISION_MISMATCH:${id}`);
+    if (binding?.valid_from && binding?.valid_to && binding.valid_to < binding.valid_from) errors.push(`${prefix}_PERIOD_INVALID:${id}`);
+    const key = `${binding?.[templateKey]}:${binding?.source_id}:${binding?.claim_scope}`;
+    if (unique.has(key)) errors.push(`${prefix}_DUPLICATE:${id}`);
+    unique.add(key);
+  }
+}
+
+export function validateItemContainerClassificationCatalog(recordsByTable = {}, { worldRevisionId = null, effectiveAt = null } = {}) {
+  const errors = [];
+  const categories = new Map((recordsByTable.universal_categories ?? []).map((value) => [value.id, value]));
+  const itemTemplateRows = recordsByTable.item_templates ?? [];
+  const itemTemplates = new Set(itemTemplateRows.map((value) => value.id));
+  const sourceIds = new Set((recordsByTable.source_records ?? []).map((value) => value.id));
+  const revisionIds = new Set((recordsByTable.world_revisions ?? []).map((value) => value.id));
+  const containers = new Map((recordsByTable.container_templates ?? []).map((value) => [value.id, value]));
+  const itemBindings = recordsByTable.item_template_category_bindings ?? [];
+  const itemInventoryProfiles = recordsByTable.item_template_inventory_profiles ?? [];
+  const itemSourceBindings = recordsByTable.item_template_source_bindings ?? [];
+  const containerInventoryProfiles = recordsByTable.container_template_inventory_profiles ?? [];
+  const containerSourceBindings = recordsByTable.container_template_source_bindings ?? [];
+  const containerBindings = recordsByTable.container_template_facet_bindings ?? [];
+  const relations = recordsByTable.container_content_category_relations ?? [];
+  const inventory = recordsByTable.item_classification_migration_inventory ?? [];
+  const equipmentEntries = recordsByTable.region_equipment_profile_entries ?? [];
+  const activeCategory = (category) => category?.status === 'approved' && !category.replaced_by_category_id;
+  errors.push(...validateClassificationJsonSchema('container_templates', [...containers.values()], containerTemplatesSchema));
+  for (const container of containers.values()) {
+    if (!Number.isInteger(container.capacity) || container.capacity < 1) errors.push(`CONTAINER_CAPACITY_LEGACY_INVALID:${container.id}`);
+    if (!Number.isInteger(container.packing_slot_cost) || container.packing_slot_cost < 1) errors.push(`CONTAINER_PACKING_SLOT_COST_INVALID:${container.id}`);
+    if (!isValidContainerCapacityPolicy(container.capacity_policy)) errors.push(`CONTAINER_CAPACITY_POLICY_INVALID:${container.id}`);
+  }
+  errors.push(...validateClassificationJsonSchema('item_template_category_bindings', itemBindings, itemTemplateCategoryBindingsSchema));
+  errors.push(...validateClassificationJsonSchema('item_template_inventory_profiles', itemInventoryProfiles, itemTemplateInventoryProfilesSchema));
+  errors.push(...validateClassificationJsonSchema('item_template_source_bindings', itemSourceBindings, itemTemplateSourceBindingsSchema));
+  errors.push(...validateClassificationJsonSchema('container_template_inventory_profiles', containerInventoryProfiles, containerTemplateInventoryProfilesSchema));
+  errors.push(...validateClassificationJsonSchema('container_template_source_bindings', containerSourceBindings, containerTemplateSourceBindingsSchema));
+  errors.push(...validateClassificationJsonSchema('container_template_facet_bindings', containerBindings, containerTemplateFacetBindingsSchema));
+  errors.push(...validateClassificationJsonSchema('container_content_category_relations', relations, containerContentCategoryRelationsSchema));
+  errors.push(...validateClassificationJsonSchema('item_classification_migration_inventory', inventory, itemClassificationMigrationInventorySchema));
+  errors.push(...validateClassificationJsonSchema('region_equipment_profile_entries', equipmentEntries, regionEquipmentProfileEntriesSchema));
+  const activePrimary = new Map();
+  const activeSizeBands = new Map();
+  const activeBindingKeys = new Set();
+  for (const binding of itemBindings) {
+    const id = binding?.id ?? '?';
+    const category = categories.get(binding?.category_id);
+    if (!itemTemplates.has(binding?.item_template_id)) errors.push(`ITEM_TEMPLATE_UNKNOWN:${id}`);
+    if (!category) { errors.push(`ITEM_BINDING_CATEGORY_UNKNOWN:${id}`); continue; }
+    if (!activeCategory(category)) errors.push(`ITEM_BINDING_CATEGORY_INACTIVE:${id}`);
+    if (category.domain !== 'item' || category.facet !== binding.binding_kind || !ITEM_BINDING_FACETS.has(binding.binding_kind)) errors.push(`ITEM_BINDING_CATEGORY_FACET_INVALID:${id}:${binding.binding_kind}`);
+    if (binding.exclusivity_group != null && (binding.binding_kind !== 'primary_function' || binding.exclusivity_group !== 'primary_function')) errors.push(`ITEM_EXCLUSIVITY_GROUP_INVALID:${id}`);
+    const hasPackingMetadata = binding.packing_slot_cost != null || binding.packing_bundle_size != null;
+    const packingValid = Number.isInteger(binding.packing_slot_cost) && binding.packing_slot_cost > 0 && Number.isInteger(binding.packing_bundle_size) && binding.packing_bundle_size > 0;
+    if (binding.binding_kind === 'size_band' && !packingValid) errors.push(`ITEM_SIZE_BAND_PACKING_INVALID:${id}`);
+    if (binding.binding_kind !== 'size_band' && hasPackingMetadata) errors.push(`ITEM_PACKING_METADATA_NON_SIZE_BAND:${id}`);
+    if (binding.requires_regional_permission != null && typeof binding.requires_regional_permission !== 'boolean') errors.push(`ITEM_REGIONAL_PERMISSION_FLAG_INVALID:${id}`);
+    const key = `${binding.item_template_id}:${binding.binding_kind}:${binding.category_id}`;
+    if (binding.status === 'approved' && activeBindingKeys.has(key)) errors.push(`ITEM_BINDING_DUPLICATE_ACTIVE:${key}`);
+    activeBindingKeys.add(key);
+    if (binding.status === 'approved' && binding.binding_kind === 'primary_function') {
+      const primaryKey = `${binding.item_template_id}:${binding.exclusivity_group ?? ''}`;
+      if (activePrimary.has(primaryKey)) errors.push(`ITEM_PRIMARY_FUNCTION_AMBIGUOUS:${binding.item_template_id}:${binding.exclusivity_group ?? ''}`);
+      activePrimary.set(primaryKey, id);
+    }
+    if (binding.status === 'approved' && binding.binding_kind === 'size_band') {
+      const existing = activeSizeBands.get(binding.item_template_id) ?? [];
+      existing.push(binding); activeSizeBands.set(binding.item_template_id, existing);
+    }
+    if (binding.requires_regional_permission === true) {
+      const regionId = (recordsByTable.item_templates ?? []).find((template) => template.id === binding.item_template_id)?.region_id;
+      const permitted = (recordsByTable.region_category_options ?? []).some((option) => option.region_id === regionId && option.category_id === binding.category_id && option.world_revision_id === worldRevisionId && option.status === 'approved' && (effectiveAt == null || (option.valid_from == null || option.valid_from <= effectiveAt.slice(0, 10)) && (option.valid_to == null || option.valid_to >= effectiveAt.slice(0, 10))));
+      if (!permitted) errors.push(`ITEM_BINDING_REGIONAL_PERMISSION_MISSING:${id}`);
+    }
+  }
+  for (const template of itemTemplateRows.filter((value) => value?.status === 'approved')) {
+    const sizeBands = activeSizeBands.get(template.id) ?? [];
+    if (sizeBands.length === 0) errors.push(`ITEM_SIZE_BAND_MISSING:${template.id}`);
+    if (sizeBands.length > 1) errors.push(`ITEM_SIZE_BAND_AMBIGUOUS:${template.id}`);
+  }
+  validateInventoryProfiles(errors, itemInventoryProfiles, itemTemplates, 'item_template_id', 'ITEM_INVENTORY_PROFILE');
+  validateInventoryProfiles(errors, containerInventoryProfiles, new Set(containers.keys()), 'container_template_id', 'CONTAINER_INVENTORY_PROFILE', true);
+  validateTemplateSourceBindings(errors, itemSourceBindings, itemTemplateRows, sourceIds, revisionIds, 'item_template_id', 'ITEM_SOURCE_BINDING');
+  validateTemplateSourceBindings(errors, containerSourceBindings, [...containers.values()], sourceIds, revisionIds, 'container_template_id', 'CONTAINER_SOURCE_BINDING');
+  for (const binding of containerBindings) {
+    const id = binding?.id ?? '?';
+    const category = categories.get(binding?.category_id);
+    if (!containers.has(binding?.container_template_id)) errors.push(`CONTAINER_TEMPLATE_UNKNOWN:${id}`);
+    if (!category) { errors.push(`CONTAINER_FACET_CATEGORY_UNKNOWN:${id}`); continue; }
+    if (!activeCategory(category)) errors.push(`CONTAINER_FACET_CATEGORY_INACTIVE:${id}`);
+    if (category.domain !== 'container' || category.facet !== binding.facet || !CONTAINER_FACETS.has(binding.facet)) errors.push(`CONTAINER_FACET_CATEGORY_INVALID:${id}:${binding.facet}`);
+    if (binding.requires_regional_permission != null && typeof binding.requires_regional_permission !== 'boolean') errors.push(`CONTAINER_REGIONAL_PERMISSION_FLAG_INVALID:${id}`);
+    if (binding.requires_regional_permission === true) {
+      const regionId = containers.get(binding.container_template_id)?.region_id;
+      const permitted = (recordsByTable.region_category_options ?? []).some((option) => option.region_id === regionId && option.category_id === binding.category_id && option.world_revision_id === worldRevisionId && option.status === 'approved' && (effectiveAt == null || (option.valid_from == null || option.valid_from <= effectiveAt.slice(0, 10)) && (option.valid_to == null || option.valid_to >= effectiveAt.slice(0, 10))));
+      if (!permitted) errors.push(`CONTAINER_FACET_REGIONAL_PERMISSION_MISSING:${id}`);
+    }
+  }
+  const compatibility = new Map();
+  for (const relation of relations) {
+    const id = relation?.id ?? '?';
+    const containerCategory = categories.get(relation?.container_category_id);
+    const contentCategory = categories.get(relation?.content_category_id);
+    if (!containerCategory || !contentCategory) errors.push(`CONTAINER_CONTENT_CATEGORY_UNKNOWN:${id}`);
+    else if (containerCategory.domain !== 'container' || contentCategory.domain !== 'item') errors.push(`CONTAINER_CONTENT_DOMAIN_INVALID:${id}`);
+    else if (!['allowed', 'forbidden'].includes(relation.compatibility)) errors.push(`CONTAINER_CONTENT_COMPATIBILITY_INVALID:${id}`);
+    else if (!activeCategory(containerCategory) || !activeCategory(contentCategory) || relation.status !== 'approved') errors.push(`CONTAINER_CONTENT_RELATION_INACTIVE:${id}`);
+    else {
+      const key = `${relation.container_category_id}:${relation.content_category_id}`;
+      if (compatibility.has(key)) errors.push(`CONTAINER_CONTENT_RELATION_DUPLICATE_ACTIVE:${key}`);
+      compatibility.set(key, relation.compatibility);
+    }
+  }
+  const profiles = new Map((recordsByTable.container_content_profiles ?? []).map((value) => [value.id, value]));
+  const approvedItemTemplateIds = new Set(itemTemplateRows.filter((value) => value?.status === 'approved').map((value) => value.id));
+  const approvedObjectTypeBindings = itemBindings.filter((binding) => binding?.status === 'approved' && binding.binding_kind === 'object_type');
+  const resolveCategoryContentTemplate = (categoryId) => [...new Set([
+    ...itemTemplateRows.filter((template) => template?.status === 'approved' && template.category_id === categoryId).map((template) => template.id),
+    ...approvedObjectTypeBindings.filter((binding) => binding.category_id === categoryId && approvedItemTemplateIds.has(binding.item_template_id)).map((binding) => binding.item_template_id)
+  ])];
+  for (const entry of recordsByTable.container_content_profile_entries ?? []) {
+    const profile = profiles.get(entry.profile_id);
+    const container = containers.get(profile?.container_template_id);
+    const relation = compatibility.get(`${container?.category_id}:${entry.item_category_id}`);
+    if (!profile) errors.push(`CONTAINER_PROFILE_UNKNOWN:${entry.id}`);
+    else if (entry.item_category_id && relation !== 'allowed') errors.push(`CONTAINER_CONTENT_INCOMPATIBLE:${entry.id}:${entry.item_category_id}`);
+    if (entry.item_template_id && !itemTemplates.has(entry.item_template_id)) errors.push(`CONTAINER_CONTENT_TEMPLATE_UNKNOWN:${entry.id}`);
+  }
+  for (const profile of profiles.values()) {
+    const container = containers.get(profile.container_template_id);
+    const lines = [];
+    for (const entry of (recordsByTable.container_content_profile_entries ?? []).filter((value) => value.profile_id === profile.id)) {
+      const templateIds = entry.item_template_id ? [entry.item_template_id] : resolveCategoryContentTemplate(entry.item_category_id);
+      if (templateIds.length !== 1) {
+        errors.push(`CONTAINER_CONTENT_CATEGORY_TEMPLATE_UNRESOLVED:${entry.id}`);
+        continue;
+      }
+      const templateId = templateIds[0];
+      const sizeBands = activeSizeBands.get(templateId) ?? [];
+      if (sizeBands.length !== 1) {
+        errors.push(`CONTAINER_CONTENT_SIZE_BAND_UNRESOLVED:${entry.id}`);
+        continue;
+      }
+      const calculation = calculatePackingSlots({ quantity: entry.min_quantity, packing_slot_cost: sizeBands[0].packing_slot_cost, packing_bundle_size: sizeBands[0].packing_bundle_size });
+      if (!calculation.pass) errors.push(`CONTAINER_CONTENT_PACKING_INVALID:${entry.id}`);
+      else lines.push(calculation.required_slots);
+    }
+    const requiredSlots = lines.reduce((sum, value) => sum + value, 0);
+    if (container && requiredSlots > container.capacity) errors.push(`CONTAINER_REQUIRED_CONTENT_CAPACITY_EXCEEDED:${profile.id}`);
+  }
+  for (const profile of profiles.values()) if (profile.empty_allowed !== true && !(recordsByTable.container_content_profile_entries ?? []).some((entry) => entry.profile_id === profile.id)) errors.push(`CONTAINER_EMPTY_NOT_ALLOWED:${profile.id}`);
+  for (const row of inventory) if (row.resolution_status === 'mapped' && !categories.has(row.resolved_category_id)) errors.push(`MIGRATION_RESOLVED_CATEGORY_UNKNOWN:${row.id}`);
+  const equipmentProfiles = new Set((recordsByTable.region_equipment_profiles ?? []).map((record) => record.id));
+  for (const entry of equipmentEntries) {
+    const id = entry?.id ?? '?';
+    if (!equipmentProfiles.has(entry.equipment_profile_id)) errors.push(`EQUIPMENT_PROFILE_UNKNOWN:${id}`);
+    const hasTemplate = typeof entry.item_template_id === 'string';
+    const hasCategory = typeof entry.item_category_id === 'string';
+    if (hasTemplate === hasCategory) errors.push(`EQUIPMENT_TARGET_XOR_INVALID:${id}`);
+    if (hasTemplate && !itemTemplates.has(entry.item_template_id)) errors.push(`EQUIPMENT_TEMPLATE_UNKNOWN:${id}`);
+    if (hasCategory) {
+      const category = categories.get(entry.item_category_id);
+      if (!category) errors.push(`EQUIPMENT_CATEGORY_UNKNOWN:${id}`);
+      else if (!activeCategory(category) || category.domain !== 'item') errors.push(`EQUIPMENT_CATEGORY_INVALID:${id}`);
+    }
+    if (typeof entry.required !== 'boolean' || !Number.isInteger(entry.weight) || entry.weight < 1) errors.push(`EQUIPMENT_ENTRY_SHAPE_INVALID:${id}`);
+  }
+  return Object.freeze(errors);
+}
+
+export function assessItemContainerClassificationMigration({ legacyRecords = [], reviewedMappings = [] } = {}) {
+  const gaps = [];
+  const conflicts = [];
+  for (const record of legacyRecords) {
+    const matches = reviewedMappings.filter((mapping) => mapping.legacy_field === record.field_name && mapping.legacy_value === record.legacy_value);
+    const code = `${record.table_name}:${record.record_id}:${record.field_name}`;
+    if (matches.length === 0) gaps.push(`DATA_GAP:${code}`);
+    else if (matches.length !== 1 || !Array.isArray(matches[0].category_ids) || matches[0].category_ids.length !== 1) conflicts.push(`MIGRATION_CONFLICT:${code}`);
+  }
+  return Object.freeze({ gaps: Object.freeze(gaps), conflicts: Object.freeze(conflicts) });
+}
+
+export function assessItemContainerClassificationReadiness(recordsByTable = {}, { requireRegionalPermission = false } = {}) {
+  const concerns = [];
+  const itemTemplates = (recordsByTable.item_templates ?? []).filter((record) => record.status === 'approved');
+  const containerTemplates = (recordsByTable.container_templates ?? []).filter((record) => record.status === 'approved');
+  const bindings = (recordsByTable.item_template_category_bindings ?? []).filter((record) => record.status === 'approved');
+  for (const template of itemTemplates) if (!bindings.some((binding) => binding.item_template_id === template.id && binding.binding_kind === 'object_type')) concerns.push(`MISSING_CATEGORY:${template.id}`);
+  const knownTemplates = new Set((recordsByTable.item_templates ?? []).map((record) => record.id));
+  for (const binding of bindings) if (!knownTemplates.has(binding.item_template_id)) concerns.push(`MISSING_TEMPLATE:${binding.id}`);
+  const resolvedHistoricalItemEvidence = new Set((recordsByTable.item_template_source_bindings ?? [])
+    .filter((binding) => binding.status === 'approved' && binding.review_status === 'reviewed' && binding.claim_scope === 'historical_presence')
+    .map((binding) => binding.item_template_id));
+  const resolvedHistoricalContainerEvidence = new Set((recordsByTable.container_template_source_bindings ?? [])
+    .filter((binding) => binding.status === 'approved' && binding.review_status === 'reviewed' && binding.claim_scope === 'historical_presence')
+    .map((binding) => binding.container_template_id));
+  for (const template of itemTemplates) if (!resolvedHistoricalItemEvidence.has(template.id)) concerns.push(`HISTORICAL_PRESENCE_EVIDENCE_REQUIRED:${template.id}`);
+  for (const template of containerTemplates) if (!resolvedHistoricalContainerEvidence.has(template.id)) concerns.push(`HISTORICAL_PRESENCE_EVIDENCE_REQUIRED:${template.id}`);
+  if (requireRegionalPermission) {
+    const templates = new Map(itemTemplates.map((record) => [record.id, record]));
+    const permissions = recordsByTable.region_category_options ?? [];
+    for (const binding of bindings) {
+      const template = templates.get(binding.item_template_id);
+      if (template && !permissions.some((option) => option.region_id === template.region_id && option.category_id === binding.category_id && option.status === 'approved')) concerns.push(`MISSING_REGIONAL_PERMISSION:${binding.category_id}:${template.region_id}`);
+    }
+  }
+  const profiles = new Map((recordsByTable.item_profile_sets ?? []).filter((record) => record.status === 'approved').map((record) => [record.id, record]));
+  const entries = recordsByTable.item_profile_entries ?? [];
+  const rules = (recordsByTable.g4_item_materialization_rules ?? []).filter((record) => record.status === 'approved');
+  for (const rule of rules) if (!profiles.has(rule.item_profile_id) || !entries.some((entry) => entry.profile_id === rule.item_profile_id)) concerns.push(`MISSING_REQUIRED_PROFILE:${rule.id}`);
+  for (const template of itemTemplates) if (!rules.some((rule) => entries.some((entry) => entry.profile_id === rule.item_profile_id && entry.item_template_id === template.id))) concerns.push(`MISSING_G4_RULE:${template.id}`);
+  for (const row of recordsByTable.item_classification_migration_inventory ?? []) if (row.resolution_status === 'migration_conflict') concerns.push(`AMBIGUOUS_LEGACY_MAPPING:${row.id}`);
+  for (const error of validateItemContainerClassificationCatalog(recordsByTable)) {
+    if (error.includes(':material')) concerns.push(`INCOMPATIBLE_MATERIAL:${error.split(':')[1]}`);
+    if (error.startsWith('CONTAINER_CONTENT_INCOMPATIBLE:')) concerns.push(`INVALID_CONTAINER_CONTENT:${error.split(':')[1]}`);
+  }
+  return Object.freeze({ pass: concerns.length === 0, concerns: Object.freeze(concerns) });
+}
+
+import classificationSchemesSchema from '../../../schemas/materialization/classification-schemes-v1.schema.json' with { type: 'json' };
+import universalCategoriesSchema from '../../../schemas/materialization/universal-categories-v1.schema.json' with { type: 'json' };
+import categoryLabelsSchema from '../../../schemas/materialization/category-labels-v1.schema.json' with { type: 'json' };
+import universalCategoryRelationsSchema from '../../../schemas/materialization/universal-category-relations-v1.schema.json' with { type: 'json' };
+import categorySchemeMappingsSchema from '../../../schemas/materialization/category-scheme-mappings-v1.schema.json' with { type: 'json' };
+import itemTemplateCategoryBindingsSchema from '../../../schemas/materialization/item-template-category-bindings-v1.schema.json' with { type: 'json' };
+import itemTemplateInventoryProfilesSchema from '../../../schemas/materialization/item-template-inventory-profiles-v1.schema.json' with { type: 'json' };
+import itemTemplateSourceBindingsSchema from '../../../schemas/materialization/item-template-source-bindings-v1.schema.json' with { type: 'json' };
+import containerTemplateInventoryProfilesSchema from '../../../schemas/materialization/container-template-inventory-profiles-v1.schema.json' with { type: 'json' };
+import containerTemplateSourceBindingsSchema from '../../../schemas/materialization/container-template-source-bindings-v1.schema.json' with { type: 'json' };
+import containerTemplateFacetBindingsSchema from '../../../schemas/materialization/container-template-facet-bindings-v1.schema.json' with { type: 'json' };
+import containerContentCategoryRelationsSchema from '../../../schemas/materialization/container-content-category-relations-v1.schema.json' with { type: 'json' };
+import itemClassificationMigrationInventorySchema from '../../../schemas/materialization/item-classification-migration-inventory-v1.schema.json' with { type: 'json' };
+import regionEquipmentProfileEntriesSchema from '../../../schemas/materialization/region-equipment-profile-entries-v1.schema.json' with { type: 'json' };
+import containerTemplatesSchema from '../../../schemas/materialization/container-templates-v1.schema.json' with { type: 'json' };

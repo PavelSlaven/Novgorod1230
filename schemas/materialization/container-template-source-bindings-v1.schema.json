@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rus.container_template_source_bindings.v1",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["id", "container_template_id", "source_id", "world_revision_id", "evidence_class", "claim_scope", "confidence", "review_status", "status"],
+    "properties": {
+      "id": { "type": "string", "minLength": 1 },
+      "container_template_id": { "type": "string", "minLength": 1 },
+      "source_id": { "type": "string", "minLength": 1 },
+      "world_revision_id": { "type": "string", "minLength": 1 },
+      "evidence_class": { "enum": ["direct_novgorod", "direct_novgorod_or_rus_period", "rus_period_with_novgorod_context", "comparative_period"] },
+      "claim_scope": { "enum": ["historical_presence", "material", "construction", "physical_parameter", "social_access", "commonness"] },
+      "valid_from": { "type": "string", "format": "date" },
+      "valid_to": { "type": "string", "format": "date" },
+      "confidence": { "enum": ["unknown", "low", "medium_low", "medium", "medium_high", "high"] },
+      "review_status": { "enum": ["needs_review", "reviewed", "rejected"] },
+      "notes": { "type": "string", "minLength": 1 },
+      "status": { "enum": ["draft", "approved", "deprecated"] }
+    },
+    "additionalProperties": false
+  }
+}

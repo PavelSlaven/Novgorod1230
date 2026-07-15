@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rus.record_sources.v1",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["id", "source_id", "target_table", "target_record_id"],
+    "properties": {
+      "id": { "type": "string", "minLength": 1 },
+      "source_id": { "type": "string", "minLength": 1 },
+      "target_table": { "type": "string", "minLength": 1 },
+      "target_record_id": { "type": "string", "minLength": 1 },
+      "support_type": { "enum": ["supports", "contradicts", "partial", "background", "uncertain"] },
+      "summary": { "type": "string", "minLength": 1 },
+      "page_or_section": { "type": "string", "minLength": 1 },
+      "confidence": { "enum": ["unknown", "low", "medium_low", "medium", "medium_high", "high"] },
+      "contradiction_notes": { "type": "string", "minLength": 1 }
+    },
+    "additionalProperties": false
+  }
+}

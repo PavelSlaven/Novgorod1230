@@ -43,6 +43,7 @@ Release: `0.23.0-migration.24`
 | `initial_npc_placement_audit` | `STAGE15_AUDIT_SCHEMA` | `packages/contracts/src/g5-placement-boundary.js` |
 | `initial_npc_placement_code_precheck` | `STAGE15_PRECHECK_SCHEMA` | `packages/contracts/src/g5-placement-boundary.js` |
 | `initial_npc_placement_draft` | `STAGE15_DRAFT_SCHEMA` | `packages/contracts/src/g5-placement-boundary.js` |
+| `inventory_panel` | `INVENTORY_PANEL_SCHEMA` | `packages/presentation/src/read-models/contracts.js` |
 | `item_placement_input` | `STAGE16_INPUT_SCHEMA` | `packages/contracts/src/g5-placement-boundary.js` |
 | `item_profile_candidate_set` | `STAGE8_OUTPUT_SCHEMA` | `packages/new-game/src/stages/stage-8-item-profile-candidates/policy.js` |
 | `item_profile_retriever_input` | `STAGE8_INPUT_SCHEMA` | `packages/new-game/src/stages/stage-8-item-profile-candidates/policy.js` |
@@ -135,13 +136,43 @@ Release: `0.23.0-migration.24`
 | `schemas/materialization/bounded-decision-request-v2.schema.json` | json | 1960 | `440a5b0d3b48859f53a35b652ff3d33f75c7512332a0ece2c04ef01b213f2568` |
 | `schemas/materialization/bounded-decision-result-v2.schema.json` | json | 605 | `875c4115302982c7b6ff67c70659553436ee0c7557ca5b1e79884652f9d7b287` |
 | `schemas/materialization/catalog-import-manifest-v2.schema.json` | json | 1021 | `469ad1d3728ff5b32fac0d6eb879519bac7bfdd4b120cbb8ec4dd886c3cc01c6` |
+| `schemas/materialization/category-labels-v1.schema.json` | json | 617 | `1573db65e359e5fef818c2e1a17ac66cf9e0e5a922bf9e9a7824d8304bc6ba78` |
+| `schemas/materialization/category-scheme-mappings-v1.schema.json` | json | 732 | `a0f0c10e737b3e06eff1163ebd32b04db26a2a6e17beb0766450fd786ab2b6f0` |
+| `schemas/materialization/classification-schemes-v1.schema.json` | json | 754 | `4744d626cd53cc4dae7794ea08162432245eaf2de8fe097e54359be7f83e9034` |
+| `schemas/materialization/container-content-category-relations-v1.schema.json` | json | 533 | `3f6c11cea3e82408f1c337bf619dbc0b6a79b128f6b1ee1111f17331bb7eec82` |
+| `schemas/materialization/container-content-profile-entries-v1.schema.json` | json | 778 | `6ff7159e75de95256aee61f19a317d7d96a25c79ba43b7d6483392417b02f090` |
+| `schemas/materialization/container-content-profiles-v1.schema.json` | json | 433 | `5393e7fb8e27c280582938d9bdedd75cf1be818319947f3b1a4fedc2a847dd43` |
+| `schemas/materialization/container-template-facet-bindings-v1.schema.json` | json | 650 | `e5c2d7248a1bc33b5c7c9f73f97843a640a17601d03f69b2c6cca596db7d1fc9` |
+| `schemas/materialization/container-template-inventory-profiles-v1.schema.json` | json | 799 | `6e4fac710cc9fbf56c7571bd7fc62902b866269d3d5b9dd707a4def3e5ee4c2a` |
+| `schemas/materialization/container-template-source-bindings-v1.schema.json` | json | 1334 | `078553f29a93043a11491ba4eedc96958bd36ea402e65169b95289e968233fa3` |
+| `schemas/materialization/container-templates-v1.schema.json` | json | 895 | `ea116627196d44ac915835c010f9e6eef4f23a729bfc7b2df0d76832bb1b72bf` |
+| `schemas/materialization/item-classification-migration-inventory-v1.schema.json` | json | 738 | `cbcfee73a572cb55bc1861f7444e44666ac2453abd5b341b7b36d5a9d1fc5289` |
+| `schemas/materialization/item-profile-entries-v1.schema.json` | json | 819 | `9ed6084519ada39b8f4bcb497d5df91f243d3d7a6c13b5d28697fc33983b1c61` |
+| `schemas/materialization/item-profile-sets-v1.schema.json` | json | 668 | `da28c42211e937f4d186d3750b95b92762847ee15a0e9c07b8f75248a0f4cd90` |
+| `schemas/materialization/item-template-category-bindings-v1.schema.json` | json | 871 | `0a355b2f66a9eec372b44ef31605bbbd3c808fed9411fa5dafca3baf83e15908` |
+| `schemas/materialization/item-template-inventory-profiles-v1.schema.json` | json | 694 | `61b5a6c6c13c65dc116edf74ba0b9fec6e9fd61daef1ca1688b91aaf1e4a56b4` |
+| `schemas/materialization/item-template-quantity-profiles-v1.schema.json` | json | 1456 | `e96f91a8160b756018d9941bd8005505ee19f10c43135599cd7f2ad5e9011eb0` |
+| `schemas/materialization/item-template-source-bindings-v1.schema.json` | json | 1319 | `ba7289cbaa289d09e6aba32c29f15154ffbf37b9afa05298035488ac4c67a14f` |
+| `schemas/materialization/item-templates-v1.schema.json` | json | 582 | `5c508b395d78888f1c7d02f4dfccf3e6e98b19db51b5cb9cca5040e4679ff5f8` |
 | `schemas/materialization/normalized-instance-candidate-v2.schema.json` | json | 3150 | `ccbd9e9d518a8ab4b28e937e6e4eb19b88a26f3ea6eeff89aaf24432dd9a0b1d` |
 | `schemas/materialization/party-autonomous-update-v2.schema.json` | json | 2515 | `974cf66248b18851ac64b2e80522b0207a28f049088318d578ffbc11b8712397` |
 | `schemas/materialization/party-change-set-v2.schema.json` | json | 2816 | `cabbce3e6d6091391cba5b1fa0b6ea09c69f2db6bbed3ac241563171e95b62c1` |
+| `schemas/materialization/property-profile-rules-v1.schema.json` | json | 1078 | `fdb63b23c9ffdbbaa9e7562141cc2763ea1538300c5ed79f0b7d8c55604f9c30` |
+| `schemas/materialization/property-profiles-v1.schema.json` | json | 499 | `6cd5d5bdb462d8f4e1a60af1457faaba4c1aa11f9ded629a2cade6ae37adf0cd` |
+| `schemas/materialization/quantity-unit-definitions-v1.schema.json` | json | 790 | `88aa7a168a8c973a32e358d126708eabab81b5bc690db417fc872b7a0f37c186` |
+| `schemas/materialization/record-sources-v1.schema.json` | json | 906 | `4a990dcc1d34445ece7f42f0407bd6b4ebf84cf1c1dcd71828c679c078cda354` |
+| `schemas/materialization/region-category-options-v1.schema.json` | json | 825 | `0acabbad107562f88424ff0215d9619d26f63aaaa829ba75e274708fce11da0e` |
+| `schemas/materialization/region-equipment-profile-entries-v1.schema.json` | json | 649 | `92ff1c9a1cb43b62770c178af635a3cb9ed18a043a9fb0d2a1deb8b2d8fafeee` |
+| `schemas/materialization/region-equipment-profiles-v1.schema.json` | json | 454 | `33b1f3a2febb0ca72dd388804dd06501703a71ea913fa7cf48fdd9dff92976b9` |
+| `schemas/materialization/source-records-v1.schema.json` | json | 697 | `037a2be66fdce964f9bde13c3d4031c0a1b4c9c2ebb7b26e3cf72aa3e61a9b1c` |
+| `schemas/materialization/universal-categories-v1.schema.json` | json | 905 | `b2110a8b777c2d26049337f07826c254eb1f9854535ae7990f4c2f40bc4df972` |
+| `schemas/materialization/universal-category-relations-v1.schema.json` | json | 512 | `31fd11130f43de9a61d58b8fde877527649eaad8915af99225f982033b179f38` |
+| `schemas/materialization/universal-parameter-definitions-v1.schema.json` | json | 1050 | `0c646047b8e48a43b7c5250d264cf27b84604810f754f41d4504fa1360347748` |
 | `schemas/materialization/world-materialization-repair-request-v2.schema.json` | json | 945 | `ba34924dd6587d7a5044498766cc8c0ff81167eae9fbee3e98e63ad0fb75fd59` |
 | `schemas/materialization/world-materialization-request-v2.schema.json` | json | 10347 | `3b6739984a1ec31a01d99867f13d8a5c9f4f87f4ab7a2d4ba5b911282629ae7f` |
 | `schemas/materialization/world-materialization-result-v2.schema.json` | json | 5190 | `92ee591037949a9e55ded6fe2813516718b5ade28b7cd7c8b592185c356db163` |
-| `schemas/party-db/001_party_runtime.sql` | sql | 18350 | `864a9f48dcff388a08eacef5fecec118ab213d18167d0a06d7f09c970d25fa2d` |
+| `schemas/materialization/world-revisions-v1.schema.json` | json | 571 | `47693c523b2000430235dafd8e7a5669355cf67208c53f6f497f95a985df4214` |
+| `schemas/party-db/001_party_runtime.sql` | sql | 19734 | `5cab24b65540da3f9857c2e70cd9e93c9761bac439839dbde1940cde24b5f6a1` |
 | `schemas/world-base/world-base-source-bundle.schema.json` | json | 1447 | `358430badf2821197ffc74d4600b2cc2b153d1a1a141020e998650cb1c325dc2` |
 | `schemas/world-catalogs/g1-boundary-contract.schema.json` | json | 1199 | `9a255c612dc382e4ead28c5566ae6583878840651904a134f364bb1b1291f3aa` |
 | `schemas/world-catalogs/g1-cell-package.schema.json` | json | 1794 | `d917ec67f99c965c0257f7dbc1b2498e123aff756f4b71c68e7da0f1b6fe8381` |

@@ -15,17 +15,140 @@ CREATE TABLE world_base.universal_categories (
   id TEXT PRIMARY KEY,
   domain TEXT NOT NULL,
   parent_category_id TEXT REFERENCES world_base.universal_categories(id) ON DELETE RESTRICT,
+  stable_code TEXT NOT NULL UNIQUE,
+  facet TEXT NOT NULL,
+  preferred_label TEXT NOT NULL,
+  definition TEXT NOT NULL,
+  scope_note TEXT NOT NULL,
+  inclusion_rules TEXT NOT NULL,
+  exclusion_rules TEXT NOT NULL,
+  replaced_by_category_id TEXT REFERENCES world_base.universal_categories(id) ON DELETE RESTRICT,
   title TEXT NOT NULL,
   status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','approved','deprecated')),
-  UNIQUE (domain, title)
+  UNIQUE (domain, facet, preferred_label),
+  CHECK (length(trim(stable_code)) > 0),
+  CHECK (length(trim(domain)) > 0),
+  CHECK (length(trim(facet)) > 0),
+  CHECK (length(trim(preferred_label)) > 0),
+  CHECK (length(trim(definition)) > 0),
+  CHECK (length(trim(scope_note)) > 0),
+  CHECK (length(trim(inclusion_rules)) > 0),
+  CHECK (length(trim(exclusion_rules)) > 0)
 );
 CREATE TABLE world_base.universal_category_relations (
   id TEXT PRIMARY KEY,
   from_category_id TEXT NOT NULL REFERENCES world_base.universal_categories(id) ON DELETE CASCADE,
   to_category_id TEXT NOT NULL REFERENCES world_base.universal_categories(id) ON DELETE CASCADE,
-  relation_type TEXT NOT NULL,
+  relation_type TEXT NOT NULL CHECK (relation_type IN ('broader','narrower','related','compatible','requires','excludes','equivalent_with_scope')),
+  CHECK (from_category_id <> to_category_id),
   UNIQUE (from_category_id, to_category_id, relation_type)
 );
+CREATE TABLE world_base.classification_schemes (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  authority TEXT NOT NULL,
+  scheme_version TEXT NOT NULL,
+  release_date DATE,
+  canonical_reference TEXT NOT NULL,
+  license_or_usage_note TEXT NOT NULL,
+  snapshot_digest TEXT NOT NULL CHECK (snapshot_digest ~ '^[a-f0-9]{64}$'),
+  status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','approved','deprecated'))
+);
+CREATE TABLE world_base.category_labels (
+  id TEXT PRIMARY KEY,
+  category_id TEXT NOT NULL REFERENCES world_base.universal_categories(id) ON DELETE CASCADE,
+  language TEXT NOT NULL,
+  label TEXT NOT NULL,
+  label_type TEXT NOT NULL CHECK (label_type IN ('preferred','alternative','historical','deprecated')),
+  valid_from DATE,
+  valid_to DATE,
+  source_id TEXT REFERENCES world_base.source_records(id) ON DELETE RESTRICT,
+  CHECK (valid_to IS NULL OR valid_from IS NULL OR valid_from <= valid_to),
+  UNIQUE (category_id, language, label)
+);
+CREATE UNIQUE INDEX category_labels_one_preferred_per_language
+  ON world_base.category_labels (category_id, language)
+  WHERE label_type = 'preferred';
+CREATE TABLE world_base.category_scheme_mappings (
+  id TEXT PRIMARY KEY,
+  category_id TEXT NOT NULL REFERENCES world_base.universal_categories(id) ON DELETE CASCADE,
+  classification_scheme_id TEXT NOT NULL REFERENCES world_base.classification_schemes(id) ON DELETE RESTRICT,
+  external_concept_id TEXT NOT NULL,
+  mapping_type TEXT NOT NULL CHECK (mapping_type IN ('exact','close','broad','narrow','related')),
+  mapping_evidence TEXT NOT NULL,
+  source_id TEXT REFERENCES world_base.source_records(id) ON DELETE RESTRICT,
+  review_status TEXT NOT NULL CHECK (review_status IN ('draft','approved','rejected')),
+  UNIQUE (category_id, classification_scheme_id, external_concept_id)
+);
+
+CREATE OR REPLACE FUNCTION world_base.prevent_category_parent_cycle()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF NEW.parent_category_id IS NOT NULL AND EXISTS (
+    WITH RECURSIVE hierarchy_edges(child_id, parent_id) AS (
+      SELECT category.id, category.parent_category_id
+      FROM world_base.universal_categories category
+      WHERE category.parent_category_id IS NOT NULL
+      UNION ALL
+      SELECT CASE WHEN relation.relation_type = 'broader' THEN relation.to_category_id ELSE relation.from_category_id END,
+        CASE WHEN relation.relation_type = 'broader' THEN relation.from_category_id ELSE relation.to_category_id END
+      FROM world_base.universal_category_relations relation
+      WHERE relation.relation_type IN ('broader', 'narrower')
+    ), ancestors(id) AS (
+      SELECT NEW.parent_category_id
+      UNION
+      SELECT edge.parent_id
+      FROM hierarchy_edges edge
+      JOIN ancestors ON edge.child_id = ancestors.id
+    )
+    SELECT 1 FROM ancestors WHERE id = NEW.id
+  ) THEN
+    RAISE EXCEPTION 'universal category parent hierarchy cycle for %', NEW.id;
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION world_base.prevent_category_relation_hierarchy_cycle()
+RETURNS TRIGGER AS $$
+DECLARE
+  child_id TEXT;
+  parent_id TEXT;
+BEGIN
+  IF NEW.relation_type NOT IN ('broader', 'narrower') THEN RETURN NEW; END IF;
+  child_id := CASE WHEN NEW.relation_type = 'broader' THEN NEW.to_category_id ELSE NEW.from_category_id END;
+  parent_id := CASE WHEN NEW.relation_type = 'broader' THEN NEW.from_category_id ELSE NEW.to_category_id END;
+  IF EXISTS (
+    WITH RECURSIVE hierarchy_edges(child_id, parent_id) AS (
+      SELECT category.id, category.parent_category_id
+      FROM world_base.universal_categories category
+      WHERE category.parent_category_id IS NOT NULL
+      UNION ALL
+      SELECT CASE WHEN relation.relation_type = 'broader' THEN relation.to_category_id ELSE relation.from_category_id END,
+        CASE WHEN relation.relation_type = 'broader' THEN relation.from_category_id ELSE relation.to_category_id END
+      FROM world_base.universal_category_relations relation
+      WHERE relation.relation_type IN ('broader', 'narrower') AND relation.id <> NEW.id
+    ), ancestors(id) AS (
+      SELECT parent_id
+      UNION
+      SELECT edge.parent_id
+      FROM hierarchy_edges edge
+      JOIN ancestors ON edge.child_id = ancestors.id
+    )
+    SELECT 1 FROM ancestors WHERE id = child_id
+  ) THEN
+    RAISE EXCEPTION 'universal category hierarchy cycle for relation %', NEW.id;
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER universal_categories_parent_cycle_guard
+  BEFORE INSERT OR UPDATE OF parent_category_id ON world_base.universal_categories
+  FOR EACH ROW EXECUTE FUNCTION world_base.prevent_category_parent_cycle();
+CREATE TRIGGER universal_category_relations_cycle_guard
+  BEFORE INSERT OR UPDATE OF from_category_id, to_category_id, relation_type ON world_base.universal_category_relations
+  FOR EACH ROW EXECUTE FUNCTION world_base.prevent_category_relation_hierarchy_cycle();
 CREATE TABLE world_base.universal_parameter_definitions (
   id TEXT PRIMARY KEY,
   category_id TEXT NOT NULL REFERENCES world_base.universal_categories(id) ON DELETE CASCADE,

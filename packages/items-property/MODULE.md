@@ -9,7 +9,7 @@ Item identity, containers, ownership, access, inventory load, recognition and pr
 - item and container contracts
 - ownership and holder relations
 - physical access
-- inventory load and recognition requests
+- normalized inventory topology, mass/load, hands, access, packing usage, stack signatures and pure transfer plans
 
 ## Не делает
 

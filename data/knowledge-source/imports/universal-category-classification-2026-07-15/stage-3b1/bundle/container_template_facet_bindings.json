@@ -1,0 +1,128 @@
+[
+  {
+    "id": "facet_container_tpl_nov_drawstring_pouch_v1_form",
+    "container_template_id": "container_tpl_nov_drawstring_pouch_v1",
+    "category_id": "cat_container_form_drawstring_pouch_v1",
+    "facet": "container_form",
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_flap_belt_pouch_v1_form",
+    "container_template_id": "container_tpl_nov_flap_belt_pouch_v1",
+    "category_id": "cat_container_form_flap_belt_pouch_v1",
+    "facet": "container_form",
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_small_soft_bag_v1_form",
+    "container_template_id": "container_tpl_nov_small_soft_bag_v1",
+    "category_id": "cat_container_form_small_soft_bag_v1",
+    "facet": "container_form",
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_sack_v1_form",
+    "container_template_id": "container_tpl_nov_sack_v1",
+    "category_id": "cat_container_form_sack_v1",
+    "facet": "container_form",
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_carrying_basket_v1_form",
+    "container_template_id": "container_tpl_nov_carrying_basket_v1",
+    "category_id": "cat_container_form_carrying_basket_v1",
+    "facet": "container_form",
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_birch_bark_box_v1_form",
+    "container_template_id": "container_tpl_nov_birch_bark_box_v1",
+    "category_id": "cat_container_form_birch_bark_box_v1",
+    "facet": "container_form",
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_wooden_box_v1_form",
+    "container_template_id": "container_tpl_nov_wooden_box_v1",
+    "category_id": "cat_container_form_wooden_box_v1",
+    "facet": "container_form",
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_small_casket_v1_form",
+    "container_template_id": "container_tpl_nov_small_casket_v1",
+    "category_id": "cat_container_form_small_casket_v1",
+    "facet": "container_form",
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_chest_v1_form",
+    "container_template_id": "container_tpl_nov_chest_v1",
+    "category_id": "cat_container_form_chest_v1",
+    "facet": "container_form",
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_bucket_v1_form",
+    "container_template_id": "container_tpl_nov_bucket_v1",
+    "category_id": "cat_container_form_bucket_v1",
+    "facet": "container_form",
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_tub_v1_form",
+    "container_template_id": "container_tpl_nov_tub_v1",
+    "category_id": "cat_container_form_tub_v1",
+    "facet": "container_form",
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_cask_v1_form",
+    "container_template_id": "container_tpl_nov_cask_v1",
+    "category_id": "cat_container_form_cask_v1",
+    "facet": "container_form",
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_storage_pot_v1_form",
+    "container_template_id": "container_tpl_nov_storage_pot_v1",
+    "category_id": "cat_container_form_storage_pot_v1",
+    "facet": "container_form",
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_jug_v1_form",
+    "container_template_id": "container_tpl_nov_jug_v1",
+    "category_id": "cat_container_form_jug_v1",
+    "facet": "container_form",
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_quiver_v1_form",
+    "container_template_id": "container_tpl_nov_quiver_v1",
+    "category_id": "cat_container_form_quiver_v1",
+    "facet": "container_form",
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_knife_sheath_v1_form",
+    "container_template_id": "container_tpl_nov_knife_sheath_v1",
+    "category_id": "cat_container_form_knife_sheath_v1",
+    "facet": "container_form",
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_sword_scabbard_v1_form",
+    "container_template_id": "container_tpl_nov_sword_scabbard_v1",
+    "category_id": "cat_container_form_sword_scabbard_v1",
+    "facet": "container_form",
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_needle_case_v1_form",
+    "container_template_id": "container_tpl_nov_needle_case_v1",
+    "category_id": "cat_container_form_needle_case_v1",
+    "facet": "container_form",
+    "status": "draft"
+  }
+]

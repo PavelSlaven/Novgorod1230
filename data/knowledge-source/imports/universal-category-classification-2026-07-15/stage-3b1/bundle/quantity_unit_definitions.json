@@ -1,0 +1,12 @@
+[
+  {
+    "id": "quantity_unit_gram_v1",
+    "dimension": "mass",
+    "canonical_unit": "g",
+    "conversion_policy": {
+      "version": 1,
+      "mode": "identity"
+    },
+    "status": "draft"
+  }
+]

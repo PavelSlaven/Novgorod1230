@@ -14,6 +14,24 @@
 
 `имущество ≠ инвентарь`
 
+### Упаковка и вес
+
+Packing slots контейнера описывают укладку, а не вес, литры либо общие inventory slots персонажа. Их формула — `ceil(quantity / packing_bundle_size) × packing_slot_cost` — применяется только к approved `size_band` binding одинакового template и состояния. Вес считается независимо: вложенный контейнер занимает внешний packing slot cost, но масса и его содержимого всё равно входят в общий вес. Переполнение не сокращает quantity и не создаёт fallback-контейнер.
+
+### Inventory foundation v1
+
+Closed runtime zones: `hands`, `worn_quick`, `equipped`, `quick_container`,
+`primary_container`, `external_load`, `not_carried`. Это derived projection placement path,
+не второй mutable source of truth. Руки: `hands_total = 2`,
+`hands_free = 2 − hands_used`; `external_hand_cost` описывает внешнюю переноску и не
+заменяет профильный `use_hand_cost`. Нагрузка: light `<= strength×2`, moderate `<=×4`,
+heavy `<=×6`, overloaded `>×6`; `at_limit` только при точном `strength×6`.
+
+Access возвращает structural steps (`open_primary_container`, `open_inner_container`,
+`retrieve_item`), а не выдуманное время. Overload не назначает универсальный штраф:
+конкретное действие решает релевантный профиль. Для long/bulky content кроме packing
+capacity требуется approved compatibility. Existing parties не рематериализуются.
+
 ### 1. Что входит в инвентарь
 
 В инвентарь входят:

@@ -1,0 +1,221 @@
+{
+  "schema_version": 1,
+  "bundle_id": "novgorod_1230_item_catalogue_draft_001",
+  "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+  "parent_bundles": [
+    "rus13_world_base_v1"
+  ],
+  "approval": "draft",
+  "deletion_policy": "none",
+  "provenance": {
+    "source_ids": [
+      "src_project_stage_3b1_physical_parameter_policy",
+      "src_novgorod_agriculture",
+      "src_novgorod_promysly"
+    ],
+    "effective_at": "1230-01-01",
+    "historical_presence_gate": "broad_type_only"
+  },
+  "datasets": [
+    {
+      "table": "source_records",
+      "path": "source_records.json",
+      "schema_id": "rus.source_records.v1",
+      "record_count": 1,
+      "sha256": "b06274760b93bdeee0b0344b0c34b6c12ecb53d4f92f6c1a840af990d50564cc",
+      "dependency_order": 0
+    },
+    {
+      "table": "world_revisions",
+      "path": "world_revisions.json",
+      "schema_id": "rus.world_revisions.v1",
+      "record_count": 1,
+      "sha256": "8cd99dd7a1fc5e7a60778d6f0eda67dfbf98edc8263e788e6fb43a51f87f8dfd",
+      "dependency_order": 1
+    },
+    {
+      "table": "universal_categories",
+      "path": "universal_categories.json",
+      "schema_id": "rus.universal_categories.v1",
+      "record_count": 146,
+      "sha256": "00926e776f55569909275ed5de9e28e0ccf111f3c85242dd1dc90d49280475eb",
+      "dependency_order": 2
+    },
+    {
+      "table": "category_labels",
+      "path": "category_labels.json",
+      "schema_id": "rus.category_labels.v1",
+      "record_count": 146,
+      "sha256": "21706da4c5315736feb239ae461be4d28adc6e6d5ee7d970b9f2e0521cd2dc18",
+      "dependency_order": 3
+    },
+    {
+      "table": "region_category_options",
+      "path": "region_category_options.json",
+      "schema_id": "rus.region_category_options.v1",
+      "record_count": 146,
+      "sha256": "8577605d6f7adf2af8af0ef9b8a49b4e5b2cb7e2499b6cb49881fde5ff59821e",
+      "dependency_order": 4
+    },
+    {
+      "table": "item_templates",
+      "path": "item_templates.json",
+      "schema_id": "rus.item_templates.v1",
+      "record_count": 102,
+      "sha256": "6610a16b1015c88a6bace8a82a8ba8494ef0f5bbb3a221fdbaf3a82b8d61d6ba",
+      "dependency_order": 5
+    },
+    {
+      "table": "item_template_category_bindings",
+      "path": "item_template_category_bindings.json",
+      "schema_id": "rus.item_template_category_bindings.v1",
+      "record_count": 306,
+      "sha256": "df125997d5379e73ed5372b6e67bfe4348a3a8e8bf825cbcc0c4ca72170e4f28",
+      "dependency_order": 6
+    },
+    {
+      "table": "item_template_inventory_profiles",
+      "path": "item_template_inventory_profiles.json",
+      "schema_id": "rus.item_template_inventory_profiles.v1",
+      "record_count": 102,
+      "sha256": "25a14c4003107943647b7bd5cdb3317e46b2da05d978560dc610745d56a58647",
+      "dependency_order": 7
+    },
+    {
+      "table": "item_template_source_bindings",
+      "path": "item_template_source_bindings.json",
+      "schema_id": "rus.item_template_source_bindings.v1",
+      "record_count": 15,
+      "sha256": "2ec67a17249f73796b66c38de2a1d9dc9cd5bff7f251a1becca06edf6883c755",
+      "dependency_order": 8
+    },
+    {
+      "table": "quantity_unit_definitions",
+      "path": "quantity_unit_definitions.json",
+      "schema_id": "rus.quantity_unit_definitions.v1",
+      "record_count": 1,
+      "sha256": "71b99fbeb434f1c06c7a1c8574982ac494f932d1b4920ef8ad5e80d1e14ee42d",
+      "dependency_order": 9
+    },
+    {
+      "table": "item_template_quantity_profiles",
+      "path": "item_template_quantity_profiles.json",
+      "schema_id": "rus.item_template_quantity_profiles.v1",
+      "record_count": 12,
+      "sha256": "f8e9c0bab2f22f2683d209ceaced95a0f0fb5118cd455601bcb1c417d0c98d78",
+      "dependency_order": 10
+    },
+    {
+      "table": "container_templates",
+      "path": "container_templates.json",
+      "schema_id": "rus.container_templates.v1",
+      "record_count": 18,
+      "sha256": "d880f3ea82a68c53deeacef1d2b5de6f0f23bbad7845407f28ba2247b5b70b51",
+      "dependency_order": 11
+    },
+    {
+      "table": "container_template_facet_bindings",
+      "path": "container_template_facet_bindings.json",
+      "schema_id": "rus.container_template_facet_bindings.v1",
+      "record_count": 18,
+      "sha256": "ee7eb5c75a6759a5313f8c86d1199cd24ed0d8567c5d705b88e10c5e4d02d5fe",
+      "dependency_order": 12
+    },
+    {
+      "table": "container_template_inventory_profiles",
+      "path": "container_template_inventory_profiles.json",
+      "schema_id": "rus.container_template_inventory_profiles.v1",
+      "record_count": 18,
+      "sha256": "c42e379067ab9690cb48e26917faa07850c549b60727168b1bfa96ce26be10b3",
+      "dependency_order": 13
+    },
+    {
+      "table": "container_template_source_bindings",
+      "path": "container_template_source_bindings.json",
+      "schema_id": "rus.container_template_source_bindings.v1",
+      "record_count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "dependency_order": 14
+    },
+    {
+      "table": "container_content_profiles",
+      "path": "container_content_profiles.json",
+      "schema_id": "rus.container_content_profiles.v1",
+      "record_count": 18,
+      "sha256": "01018da5789d8e61f3a0ef67e4308d0056e4382c7124ab5026be233db6dc862d",
+      "dependency_order": 15
+    },
+    {
+      "table": "container_content_profile_entries",
+      "path": "container_content_profile_entries.json",
+      "schema_id": "rus.container_content_profile_entries.v1",
+      "record_count": 4,
+      "sha256": "c16e455ebea793e00f07c73f51b7159a43c1fbe3b27f951972de5a587e102cad",
+      "dependency_order": 16
+    },
+    {
+      "table": "item_profile_sets",
+      "path": "item_profile_sets.json",
+      "schema_id": "rus.item_profile_sets.v1",
+      "record_count": 16,
+      "sha256": "f58766fdd5f1c203215faafbced45976654dc0f968b6f4f107e05c8496e54695",
+      "dependency_order": 17
+    },
+    {
+      "table": "item_profile_entries",
+      "path": "item_profile_entries.json",
+      "schema_id": "rus.item_profile_entries.v1",
+      "record_count": 16,
+      "sha256": "85438b6392ce946c3d7dfb0b4ed4bc8c457de57a4a10806bcf3ba5fda260f729",
+      "dependency_order": 18
+    },
+    {
+      "table": "property_profiles",
+      "path": "property_profiles.json",
+      "schema_id": "rus.property_profiles.v1",
+      "record_count": 10,
+      "sha256": "fbb7020350977893e294372c30282968ed2980392390b8086b65e8a23824c117",
+      "dependency_order": 19
+    },
+    {
+      "table": "property_profile_rules",
+      "path": "property_profile_rules.json",
+      "schema_id": "rus.property_profile_rules.v1",
+      "record_count": 10,
+      "sha256": "bb95f876e5ea6f8bbe72e4c6689a66e025375bbc17e4e3848db8d7e7f8468f9f",
+      "dependency_order": 20
+    },
+    {
+      "table": "region_equipment_profiles",
+      "path": "region_equipment_profiles.json",
+      "schema_id": "rus.region_equipment_profiles.v1",
+      "record_count": 1,
+      "sha256": "da7cf8cb10f3ad5754756727dab36b628ab48729bdbb2495ce1039e634f38cb0",
+      "dependency_order": 21
+    },
+    {
+      "table": "region_equipment_profile_entries",
+      "path": "region_equipment_profile_entries.json",
+      "schema_id": "rus.region_equipment_profile_entries.v1",
+      "record_count": 1,
+      "sha256": "dd8b179d060f9842dc08348e5f974ea5b64ddf01cb71676a053bba91df96e219",
+      "dependency_order": 22
+    },
+    {
+      "table": "record_sources",
+      "path": "record_sources.json",
+      "schema_id": "rus.record_sources.v1",
+      "record_count": 15,
+      "sha256": "35d7f8972d12cbc79a70b504c764b16be688dca6cded2897657072073f7fdab0",
+      "dependency_order": 23
+    },
+    {
+      "table": "item_classification_migration_inventory",
+      "path": "item_classification_migration_inventory.json",
+      "schema_id": "rus.item_classification_migration_inventory.v1",
+      "record_count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "dependency_order": 24
+    }
+  ]
+}

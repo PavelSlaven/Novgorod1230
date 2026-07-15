@@ -1,0 +1,920 @@
+[
+  {
+    "id": "item_tpl_nov_utility_knife_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_utility_knife_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "хозяйственный нож",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_wooden_spoon_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_wooden_spoon_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "деревянная ложка",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_ladle_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_ladle_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "половник или ковш",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_wooden_bowl_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_wooden_bowl_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "деревянная миска",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_wooden_cup_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_wooden_cup_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "деревянная чашка",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_wooden_dish_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_wooden_dish_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "деревянное блюдо или поднос",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_cooking_pot_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_cooking_pot_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "глиняный горшок для приготовления пищи",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_metal_cauldron_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_metal_cauldron_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "металлический котёл",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_chopping_board_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_chopping_board_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "разделочная доска",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_mortar_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_mortar_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "ступка",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_pestle_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_pestle_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "пест",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_sieve_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_sieve_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "сито",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_scoop_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_scoop_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "деревянный совок",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_trough_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_trough_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "корыто",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_hand_quern_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_hand_quern_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "ручной жернов",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_working_axe_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_working_axe_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "рабочий топор",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_adze_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_adze_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "тесло",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_chisel_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_chisel_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "долото",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_auger_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_auger_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "бурав или сверло",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_hammer_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_hammer_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "молоток",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_wooden_mallet_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_wooden_mallet_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "деревянная киянка",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_smithing_tongs_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_smithing_tongs_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "кузнечные клещи",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_file_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_file_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "напильник",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_awl_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_awl_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "шило",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_scraper_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_scraper_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "скребок",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_carving_knife_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_carving_knife_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "резец или ремесленный нож",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_saw_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_saw_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "пила",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_wedge_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_wedge_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "клин",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_sewing_needle_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_sewing_needle_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "швейная игла",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_shears_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_shears_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "ножницы",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_spindle_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_spindle_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "веретено",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_spindle_whorl_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_spindle_whorl_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "пряслице",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_distaff_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_distaff_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "прялка",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_weaving_shuttle_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_weaving_shuttle_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "ткацкий челнок",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_fiber_comb_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_fiber_comb_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "гребень для обработки волокна",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_sickle_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_sickle_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "серп",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_scythe_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_scythe_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "коса",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_hoe_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_hoe_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "мотыга",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_wooden_shovel_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_wooden_shovel_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "деревянная лопата",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_iron_edged_spade_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_iron_edged_spade_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "лопата с железной рабочей частью",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_rake_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_rake_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "грабли",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_pitchfork_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_pitchfork_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "вилы",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_billhook_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_billhook_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "крюк или нож для подрезки ветвей",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_fishhook_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_fishhook_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "рыболовный крючок",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_fishing_line_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_fishing_line_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "рыболовный шнур",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_fishing_net_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_fishing_net_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "рыболовная сеть",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_net_float_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_net_float_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "сетевой поплавок",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_net_sinker_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_net_sinker_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "сетевое грузило",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_fishing_spear_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_fishing_spear_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "рыболовная острога",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_fish_trap_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_fish_trap_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "плетёная рыбная ловушка",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_firesteel_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_firesteel_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "кресало",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_striking_flint_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_striking_flint_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "кремень для высекания искр",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_tinder_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_tinder_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "трут",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_kindling_bundle_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_kindling_bundle_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "связка растопки",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_wax_candle_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_wax_candle_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "восковая свеча",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_simple_lamp_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_simple_lamp_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "простой светильник",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_torch_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_torch_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "факел",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_rope_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_rope_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "верёвка",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_linen_shirt_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_linen_shirt_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "нижняя рубаха",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_trousers_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_trousers_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "штаны",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_wool_outer_garment_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_wool_outer_garment_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "верхняя шерстяная одежда",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_cloak_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_cloak_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "плащ или накидка",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_belt_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_belt_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "пояс",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_low_leather_shoes_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_low_leather_shoes_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "низкая кожаная обувь",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_boots_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_boots_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "сапоги",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_cap_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_cap_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "головной убор",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_hood_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_hood_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "капюшон",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_mittens_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_mittens_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "рукавицы",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_leg_wraps_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_leg_wraps_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "обмотки для ног",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_fur_outerwear_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_fur_outerwear_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "меховая верхняя одежда",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_comb_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_comb_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "расчёска",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_razor_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_razor_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "бритва",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_metal_mirror_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_metal_mirror_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "металлическое зеркало",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_pectoral_cross_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_pectoral_cross_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "нательный крест",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_bread_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_bread_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "хлеб",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_grain_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_grain_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "зерно",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_flour_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_flour_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "мука",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_groats_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_groats_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "крупа",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_salt_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_salt_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "соль",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_dried_fish_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_dried_fish_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "сушёная рыба",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_fresh_fish_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_fresh_fish_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "свежая рыба",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_preserved_meat_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_preserved_meat_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "сушёное или солёное мясо",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_cheese_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_cheese_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "сыр",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_honey_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_honey_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "мёд",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_water_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_water_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "вода как переносимый запас",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_beeswax_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_beeswax_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "воск",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_folding_balance_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_folding_balance_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "складные весы",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_weight_set_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_weight_set_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "набор гирек",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_key_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_key_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "ключ",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_lock_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_lock_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "замок",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_seal_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_seal_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "печать или пломба",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_birch_bark_sheet_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_birch_bark_sheet_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "лист бересты для записи",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_stylus_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_stylus_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "писало",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_bow_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_bow_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "лук",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_arrow_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_arrow_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "стрела",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_spear_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_spear_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "копьё",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_sword_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_sword_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "меч",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_combat_axe_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_combat_axe_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "боевой топор",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_mace_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_mace_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "булава или тяжёлая дубина",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_shield_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_shield_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "щит",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_helmet_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_helmet_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "шлем",
+    "status": "draft"
+  },
+  {
+    "id": "item_tpl_nov_mail_armour_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "cat_item_object_mail_armour_v1",
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "кольчужная защита",
+    "status": "draft"
+  }
+]

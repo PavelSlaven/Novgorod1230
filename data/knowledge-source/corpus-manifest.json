@@ -5,6 +5,24 @@
   "source_release": "0.22.0-migration.22",
   "documents": [
     {
+      "document_id": "universal-category-classification-policy",
+      "canonical_path": "corpus/DOCUMENTS/universal_category_classification_policy.md",
+      "file_name": "universal_category_classification_policy.md",
+      "sha256": "a184a1b37fe95184f4c06f11026d3d72f82a041ee8d49f6d73962aa7a9224588",
+      "bytes": 40018,
+      "status": "proposed",
+      "provenance_mode": "native"
+    },
+    {
+      "document_id": "universal-category-classification-references",
+      "canonical_path": "corpus/DOCUMENTS/universal_category_classification_references.md",
+      "file_name": "universal_category_classification_references.md",
+      "sha256": "cb7b537cab5c7e16642f479eadf719bbcfc4f2a33790034eba5ed8db42c8da48",
+      "bytes": 7621,
+      "status": "proposed",
+      "provenance_mode": "native"
+    },
+    {
       "document_id": "base-turn-orchestration",
       "canonical_path": "corpus/DOCUMENTS/base_turn_orchestration.txt",
       "file_name": "base_turn_orchestration.txt",
@@ -78,8 +96,8 @@
       "document_id": "documentation-corpus-readme",
       "canonical_path": "corpus/DOCUMENTS/README.md",
       "file_name": "README.md",
-      "sha256": "2743aa8ba1b2089ac0ed944cedb1b713abe19da4e6a239be94859b005bab91de",
-      "bytes": 4590,
+      "sha256": "68f7133d236bc64e09f7b94334a12c6e967ea4acf371f4b1938373c3774c6cf9",
+      "bytes": 4907,
       "status": "active",
       "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/README.md",
       "provenance_mode": "canonicalized_from_legacy",
@@ -169,8 +187,8 @@
       "document_id": "llm-documentation-navigation",
       "canonical_path": "corpus/DOCUMENTS/llm_documentation_navigation.md",
       "file_name": "llm_documentation_navigation.md",
-      "sha256": "1e7474cb8497b2e58d4c0a7ee8889047f281fe0ce67f11b96ebcf90528165ab6",
-      "bytes": 29472,
+      "sha256": "525e9d89805bbec6dfcecf0d26a9254e039e5f326c4a4fdae8c788a7899eda2a",
+      "bytes": 30818,
       "status": "active",
       "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/llm_documentation_navigation.md",
       "provenance_mode": "canonicalized_from_legacy",

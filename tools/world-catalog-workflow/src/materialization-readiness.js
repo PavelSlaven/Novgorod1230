@@ -1,6 +1,6 @@
 const AUTHORING_TABLES = new Set([
   'source_records', 'record_sources',
-  'world_revisions', 'universal_categories', 'universal_category_relations', 'universal_parameter_definitions', 'region_category_options',
+  'world_revisions', 'classification_schemes', 'universal_categories', 'category_labels', 'category_scheme_mappings', 'universal_category_relations', 'universal_parameter_definitions', 'region_category_options',
   'region_npc_archetypes', 'region_demographic_profiles', 'region_name_pools', 'region_name_pool_entries', 'region_appearance_profiles',
   'region_clothing_profiles', 'region_equipment_profiles', 'region_equipment_profile_entries', 'region_knowledge_profiles', 'region_behavior_profiles',
   'region_relationship_profiles', 'region_activity_profiles', 'region_schedule_profiles', 'region_npc_profile_sets', 'room_templates',
@@ -13,6 +13,7 @@ const AUTHORING_TABLES = new Set([
 ]);
 
 const INSTANCE_PREFIXES = ['party_', 'runtime_', 'instance_'];
+const LOOKUP_TABLES = new Set(['regions', 'graph_nodes', 'building_templates', 'item_templates', 'region_social_roles']);
 const REQUIRED_FOR_G4 = [
   'source_records', 'record_sources', 'world_revisions', 'universal_categories', 'region_category_options', 'g4_materialization_profiles', 'g4_materialization_bindings',
   'room_templates', 'building_layout_templates', 'building_layout_nodes', 'building_layout_edges', 'g5_minilocation_templates', 'g5_anchor_templates', 'g5_edge_templates', 'materialization_slot_rules', 'g4_materialization_layout_edges', 'region_npc_profile_sets', 'item_profile_sets',
@@ -22,6 +23,8 @@ const REQUIRED_FOR_G4 = [
 
 export const MATERIALIZATION_FOREIGN_KEYS = Object.freeze([
   ['world_revisions','parent_revision_id','world_revisions'], ['universal_categories','parent_category_id','universal_categories'],
+  ['category_labels','category_id','universal_categories'], ['category_labels','source_id','source_records'],
+  ['category_scheme_mappings','category_id','universal_categories'], ['category_scheme_mappings','classification_scheme_id','classification_schemes'], ['category_scheme_mappings','source_id','source_records'],
   ['region_category_options','region_id','regions'], ['region_npc_archetypes','region_id','regions'], ['region_demographic_profiles','region_id','regions'], ['region_name_pools','region_id','regions'],
   ['region_appearance_profiles','region_id','regions'], ['region_clothing_profiles','region_id','regions'], ['region_equipment_profiles','region_id','regions'], ['region_knowledge_profiles','region_id','regions'],
   ['region_behavior_profiles','region_id','regions'], ['region_relationship_profiles','region_id','regions'], ['region_activity_profiles','region_id','regions'], ['region_schedule_profiles','region_id','regions'],
@@ -104,7 +107,145 @@ export function validateCatalogImportManifest(manifest, { recordsByTable = null 
     if (!names.has(targetTable)) errors.push(`DEPENDENCY_MISSING:${sourceTable}:${targetTable}`);
     else if (orderByName.get(targetTable) >= orderByName.get(sourceTable)) errors.push(`DEPENDENCY_ORDER_INVALID:${sourceTable}:${targetTable}`);
   }
+  if (recordsByTable) {
+    for (const tableName of Object.keys(recordsByTable)) {
+      if (!AUTHORING_TABLES.has(tableName) && !LOOKUP_TABLES.has(tableName)) errors.push(`TABLE_NOT_REGISTERED:${tableName}`);
+      if (AUTHORING_TABLES.has(tableName) && !names.has(tableName)) errors.push(`TABLE_PAYLOAD_NOT_DECLARED:${tableName}`);
+    }
+  }
+  if (recordsByTable) errors.push(...validateClassificationCatalog(recordsByTable));
   return Object.freeze(errors);
+}
+
+const CATEGORY_STATUSES = new Set(['draft', 'approved', 'deprecated']);
+const LABEL_TYPES = new Set(['preferred', 'alternative', 'historical', 'deprecated']);
+const RELATION_TYPES = new Set(['broader', 'narrower', 'related', 'compatible', 'requires', 'excludes', 'equivalent_with_scope']);
+const MAPPING_TYPES = new Set(['exact', 'close', 'broad', 'narrow', 'related']);
+
+export function validateClassificationCatalog(recordsByTable = {}) {
+  const errors = [];
+  const schemes = recordsByTable.classification_schemes ?? [];
+  const categories = recordsByTable.universal_categories ?? [];
+  const labels = recordsByTable.category_labels ?? [];
+  const relations = recordsByTable.universal_category_relations ?? [];
+  const mappings = recordsByTable.category_scheme_mappings ?? [];
+  const categoryIds = new Set(categories.map((record) => record?.id).filter(Boolean));
+  const schemeIds = new Set(schemes.map((record) => record?.id).filter(Boolean));
+  const sourceIds = new Set((recordsByTable.source_records ?? []).map((record) => record?.id).filter(Boolean));
+  const stableCodes = new Set();
+
+  errors.push(...validateClassificationJsonSchema('classification_schemes', schemes, classificationSchemesSchema));
+  errors.push(...validateClassificationJsonSchema('universal_categories', categories, universalCategoriesSchema));
+  errors.push(...validateClassificationJsonSchema('category_labels', labels, categoryLabelsSchema));
+  errors.push(...validateClassificationJsonSchema('universal_category_relations', relations, universalCategoryRelationsSchema));
+  errors.push(...validateClassificationJsonSchema('category_scheme_mappings', mappings, categorySchemeMappingsSchema));
+
+  for (const scheme of schemes) {
+    const id = scheme?.id ?? '?';
+    if (!CATEGORY_STATUSES.has(scheme?.status)) errors.push(`CLASSIFICATION_SCHEME_STATUS_INVALID:${id}`);
+    if (!/^[a-f0-9]{64}$/u.test(String(scheme?.snapshot_digest ?? ''))) errors.push(`CLASSIFICATION_SCHEME_DIGEST_INVALID:${id}`);
+  }
+  for (const category of categories) {
+    const id = category?.id ?? '?';
+    if (!String(category?.stable_code ?? '').trim()) errors.push(`CATEGORY_STABLE_CODE_MISSING:${id}`);
+    else if (stableCodes.has(category.stable_code)) errors.push(`CATEGORY_STABLE_CODE_DUPLICATE:${category.stable_code}`);
+    else stableCodes.add(category.stable_code);
+    if (!String(category?.domain ?? '').trim()) errors.push(`CATEGORY_DOMAIN_MISSING:${id}`);
+    if (!String(category?.facet ?? '').trim()) errors.push(`CATEGORY_FACET_MISSING:${id}`);
+    if (!String(category?.definition ?? '').trim()) errors.push(`CATEGORY_DEFINITION_MISSING:${id}`);
+    if (!String(category?.scope_note ?? '').trim()) errors.push(`CATEGORY_SCOPE_NOTE_MISSING:${id}`);
+    if (!String(category?.inclusion_rules ?? '').trim()) errors.push(`CATEGORY_INCLUSION_RULES_MISSING:${id}`);
+    if (!String(category?.exclusion_rules ?? '').trim()) errors.push(`CATEGORY_EXCLUSION_RULES_MISSING:${id}`);
+    if (!CATEGORY_STATUSES.has(category?.status)) errors.push(`CATEGORY_STATUS_INVALID:${id}`);
+    if (category?.parent_category_id && !categoryIds.has(category.parent_category_id)) errors.push(`CATEGORY_PARENT_UNKNOWN:${id}`);
+    if (category?.replaced_by_category_id && !categoryIds.has(category.replaced_by_category_id)) errors.push(`CATEGORY_REPLACEMENT_UNKNOWN:${id}`);
+  }
+  for (const label of labels) {
+    const id = label?.id ?? '?';
+    if (!categoryIds.has(label?.category_id)) errors.push(`CATEGORY_LABEL_CATEGORY_UNKNOWN:${id}`);
+    if (!LABEL_TYPES.has(label?.label_type)) errors.push(`CATEGORY_LABEL_TYPE_INVALID:${id}`);
+    if (label?.source_id && !sourceIds.has(label.source_id)) errors.push(`CATEGORY_LABEL_SOURCE_UNKNOWN:${id}`);
+  }
+  for (const relation of relations) {
+    const id = relation?.id ?? '?';
+    if (!RELATION_TYPES.has(relation?.relation_type)) errors.push(`CATEGORY_RELATION_TYPE_INVALID:${id}`);
+    if (!categoryIds.has(relation?.from_category_id)) errors.push(`CATEGORY_RELATION_CATEGORY_UNKNOWN:${id}:from_category_id`);
+    if (!categoryIds.has(relation?.to_category_id)) errors.push(`CATEGORY_RELATION_CATEGORY_UNKNOWN:${id}:to_category_id`);
+    if (relation?.from_category_id === relation?.to_category_id && ['broader', 'narrower'].includes(relation?.relation_type)) errors.push(`CATEGORY_HIERARCHY_SELF_CYCLE:${id}`);
+  }
+  for (const mapping of mappings) {
+    const id = mapping?.id ?? '?';
+    if (!MAPPING_TYPES.has(mapping?.mapping_type)) errors.push(`CATEGORY_MAPPING_TYPE_INVALID:${id}`);
+    if (!categoryIds.has(mapping?.category_id)) errors.push(`CATEGORY_MAPPING_CATEGORY_UNKNOWN:${id}`);
+    if (!schemeIds.has(mapping?.classification_scheme_id)) errors.push(`CATEGORY_MAPPING_SCHEME_UNKNOWN:${id}`);
+    if (mapping?.source_id && !sourceIds.has(mapping.source_id)) errors.push(`CATEGORY_MAPPING_SOURCE_UNKNOWN:${id}`);
+  }
+  const parentByChild = new Map();
+  for (const category of categories) {
+    if (!category?.parent_category_id || !categoryIds.has(category.parent_category_id) || !categoryIds.has(category.id)) continue;
+    const parents = parentByChild.get(category.id) ?? new Set();
+    parents.add(category.parent_category_id); parentByChild.set(category.id, parents);
+  }
+  for (const relation of relations) {
+    if (!['broader', 'narrower'].includes(relation?.relation_type) || !categoryIds.has(relation?.from_category_id) || !categoryIds.has(relation?.to_category_id)) continue;
+    const child = relation.relation_type === 'broader' ? relation.to_category_id : relation.from_category_id;
+    const parent = relation.relation_type === 'broader' ? relation.from_category_id : relation.to_category_id;
+    const parents = parentByChild.get(child) ?? new Set();
+    parents.add(parent); parentByChild.set(child, parents);
+  }
+  for (const start of parentByChild.keys()) {
+    const visit = (node, stack = new Set()) => {
+      if (stack.has(node)) return true;
+      const next = new Set(stack); next.add(node);
+      return [...(parentByChild.get(node) ?? [])].some((parent) => visit(parent, next));
+    };
+    if (visit(start)) { errors.push(`CATEGORY_HIERARCHY_CYCLE:${start}`); break; }
+  }
+  return Object.freeze(errors);
+}
+
+function validateClassificationJsonSchema(tableName, records, schema) {
+  if (!Array.isArray(records)) return [`JSON_SCHEMA_INVALID:${tableName}:payload`];
+  const itemSchema = schema.items ?? {};
+  const errors = [];
+  records.forEach((record, index) => {
+    if (!record || typeof record !== 'object' || Array.isArray(record)) { errors.push(`JSON_SCHEMA_INVALID:${tableName}:${index}`); return; }
+    for (const required of itemSchema.required ?? []) if (!(required in record)) errors.push(`JSON_SCHEMA_REQUIRED:${tableName}:${index}:${required}`);
+    for (const [key, value] of Object.entries(record)) {
+      const definition = itemSchema.properties?.[key];
+      if (!definition) { errors.push(`JSON_SCHEMA_ADDITIONAL_PROPERTY:${tableName}:${index}:${key}`); continue; }
+      if (definition.type === 'string' && typeof value !== 'string') errors.push(`JSON_SCHEMA_TYPE:${tableName}:${index}:${key}`);
+      else if (definition.type === 'string' && definition.minLength && value.trim().length < definition.minLength) errors.push(`JSON_SCHEMA_MIN_LENGTH:${tableName}:${index}:${key}`);
+      if (definition.enum && !definition.enum.includes(value)) errors.push(`JSON_SCHEMA_ENUM:${tableName}:${index}:${key}`);
+      if (definition.pattern && !new RegExp(definition.pattern, 'u').test(String(value))) errors.push(`JSON_SCHEMA_PATTERN:${tableName}:${index}:${key}`);
+      if (definition.format === 'date' && (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/u.test(value) || !Number.isFinite(Date.parse(`${value}T00:00:00Z`)))) errors.push(`JSON_SCHEMA_FORMAT:${tableName}:${index}:${key}`);
+    }
+  });
+  return errors;
+}
+
+export async function importClassificationCatalog({ manifest, recordsByTable = {}, mode = 'dry-run', adapter = null } = {}) {
+  if (!['dry-run', 'apply'].includes(mode)) throw new Error(`CLASSIFICATION_IMPORT_MODE_INVALID:${mode}`);
+  const errors = validateCatalogImportManifest(manifest, { recordsByTable });
+  const tables = [...(manifest?.tables ?? [])].sort((left, right) => left.dependency_order - right.dependency_order || left.table_name.localeCompare(right.table_name));
+  if (errors.length) return Object.freeze({ mode, applied: false, errors, tables: Object.freeze([]) });
+  if (mode === 'dry-run') return Object.freeze({ mode, applied: false, errors: Object.freeze([]), tables: Object.freeze(tables.map((entry) => entry.table_name)) });
+  if (!adapter || typeof adapter.begin !== 'function' || typeof adapter.insert !== 'function' || typeof adapter.commit !== 'function' || typeof adapter.rollback !== 'function') throw new Error('CLASSIFICATION_IMPORT_ADAPTER_INVALID');
+  await adapter.begin();
+  try {
+    for (const entry of tables) {
+      await adapter.insert(entry.table_name, recordsByTable[entry.table_name]);
+      if (typeof adapter.readback === 'function') {
+        const readback = await adapter.readback(entry.table_name);
+        if (readback?.record_count !== entry.record_count || readback?.payload_digest !== entry.payload_digest) throw new Error(`CLASSIFICATION_IMPORT_READBACK_MISMATCH:${entry.table_name}`);
+      }
+    }
+    await adapter.commit();
+    return Object.freeze({ mode, applied: true, errors: Object.freeze([]), tables: Object.freeze(tables.map((entry) => entry.table_name)) });
+  } catch (error) {
+    await adapter.rollback();
+    throw error;
+  }
 }
 
 export function assessMaterializationReadiness({ manifest, recordsByTable = {}, regionId, g4Id, historicalYear, season, jsonSchemaValidators = {} } = {}) {
@@ -119,7 +260,19 @@ export function assessMaterializationReadiness({ manifest, recordsByTable = {}, 
     if (scoped(table).length === 0) concerns.push(`REQUIRED_APPROVED_TABLE_EMPTY:${table}`);
   }
   if (!scoped('world_revisions').some((record) => record.id === revisionId)) concerns.push('WORLD_REVISION_NOT_APPROVED');
-  if (!scoped('region_category_options').some((record) => record.region_id === regionId)) concerns.push('REGION_CATEGORY_OPTIONS_NOT_READY');
+  const activeOptions = scoped('region_category_options').filter((record) => record.region_id === regionId);
+  if (activeOptions.length === 0) concerns.push('REGION_CATEGORY_OPTIONS_NOT_READY');
+  const optionsByCategory = new Map();
+  for (const option of activeOptions) {
+    const values = optionsByCategory.get(option.category_id) ?? [];
+    values.push(option); optionsByCategory.set(option.category_id, values);
+  }
+  for (const options of optionsByCategory.values()) if (options.length > 1) concerns.push(`REGION_CATEGORY_OPTION_ACTIVE_AMBIGUITY:${options.map((option) => option.id).sort().join(':')}`);
+  const activeCategories = new Map(scoped('universal_categories').map((record) => [record.id, record]));
+  for (const option of activeOptions) {
+    const category = activeCategories.get(option.category_id);
+    if (!category || category.status !== 'approved' || category.replaced_by_category_id) concerns.push(`REGION_CATEGORY_OPTION_CATEGORY_INACTIVE:${option.id}`);
+  }
   const bindings = scoped('g4_materialization_bindings');
   const profiles = new Set(scoped('g4_materialization_profiles').map((record) => record.id));
   if (!bindings.some((record) => record.graph_node_id === g4Id && profiles.has(record.profile_id))) concerns.push('G4_MATERIALIZATION_BINDING_NOT_READY');
@@ -286,3 +439,8 @@ function checkLayoutGraph(concerns, layoutId, nodes, edges) {
   if (visited.size !== layoutNodes.length) concerns.push(`G5_LAYOUT_DISCONNECTED:${layoutId}`);
 }
 import { digestValue } from './digest.js';
+import classificationSchemesSchema from '../../../schemas/materialization/classification-schemes-v1.schema.json' with { type: 'json' };
+import universalCategoriesSchema from '../../../schemas/materialization/universal-categories-v1.schema.json' with { type: 'json' };
+import categoryLabelsSchema from '../../../schemas/materialization/category-labels-v1.schema.json' with { type: 'json' };
+import universalCategoryRelationsSchema from '../../../schemas/materialization/universal-category-relations-v1.schema.json' with { type: 'json' };
+import categorySchemeMappingsSchema from '../../../schemas/materialization/category-scheme-mappings-v1.schema.json' with { type: 'json' };

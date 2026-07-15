@@ -16,7 +16,7 @@ function readyFixture() {
     region_social_roles: [{ id: 'role-1', ...approved }],
     source_records: [{ id: 'source-1', title: 'Verified source' }],
     world_revisions: [{ id: 'rev-1', title: 'Revision 1', catalog_digest: 'a'.repeat(64), ...approved }],
-    universal_categories: [{ id: 'category-1', domain: 'materialization', title: 'Category', ...approved }],
+    universal_categories: [{ id: 'category-1', domain: 'materialization', stable_code: 'materialization.category', facet: 'kind', preferred_label: 'Category', definition: 'A test materialization category.', scope_note: 'Test-only fixture.', inclusion_rules: 'Used by the readiness fixture.', exclusion_rules: 'No other meaning.', title: 'Category', ...approved }],
     region_category_options: [{ id: 'option-1', world_revision_id: 'rev-1', region_id: 'region-1', category_id: 'category-1', applicability: { allowed_seasons: ['spring'] }, ...approved }],
     room_templates: [{ id: 'room-1', region_id: 'region-1', room_category_id: 'category-1', access_policy: policy, visibility_policy: policy, ...approved }],
     building_layout_templates: [{ id: 'layout-1', ...scope, building_template_id: 'building-1', ...approved }],

@@ -101,7 +101,7 @@ jobs:
           psql --dbname world_base_ci --set ON_ERROR_STOP=1 -f infra/world-base/schema.sql
 
           table_count=$(psql --dbname world_base_ci --tuples-only --no-align --command "SELECT count(*) FROM information_schema.tables WHERE table_schema = 'world_base' AND table_type = 'BASE TABLE'")
-          test "$table_count" -eq 108
+          test "$table_count" -eq 111
 
           role_count=$(psql --dbname world_base_ci --tuples-only --no-align --command "SELECT count(*) FROM pg_roles WHERE rolname = 'world_reader' AND NOT rolsuper AND NOT rolcreatedb AND NOT rolcreaterole")
           test "$role_count" -eq 1

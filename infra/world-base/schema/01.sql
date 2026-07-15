@@ -1,4 +1,4 @@
--- World Base Schema v2 foundation (the complete ordered DDL currently creates 108 tables).
+-- World Base Schema v2 foundation (the complete ordered DDL currently creates 111 tables).
 -- status: workflow; confidence: epistemic certainty
 DROP SCHEMA IF EXISTS world_base CASCADE;
 CREATE SCHEMA world_base;

@@ -76,4 +76,4 @@
 - ни один source family не создаёт runtime permission;
 - все нерешённые вопросы выражены как gaps или limits.
 
-Этот реестр сам по себе не служит исполняемым dataset. Технические проверки supplemental bundle (JSON Schema, importer dry-run, Stage 8/16 и полный suite) фиксируются в едином `README.md`; code critic завершился `PASS WITH NOTES`. PostgreSQL supplemental apply/readback/rollback остаётся не выполненным.
+Этот реестр сам по себе не служит исполняемым dataset. В supplemental bundle 15 agriculture/fishing templates теперь имеют нормализованные `record_sources` links на существующие `src_novgorod_agriculture` и `src_novgorod_promysly` с `support_type = background`; before use their presence is verified in the digest-pinned parent source archive. Это не снимает ограничения на узкую типологию. Остальные 105 templates сохраняют `SOURCE_RECORD_REQUIRED`. PostgreSQL supplemental apply/readback/rollback/repeat apply выполнен в disposable PostgreSQL 16; repeat code critic result: `PASS WITH NOTES`.

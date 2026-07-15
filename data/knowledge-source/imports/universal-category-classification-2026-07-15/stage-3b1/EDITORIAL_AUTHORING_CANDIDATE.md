@@ -142,7 +142,7 @@ Plural references должны стать relation rows, а не массива�
 - не назначены выдуманные частотность, цена, масса, packing cost или capacity;
 - editorial source не активирует runtime candidates и не создаёт party state.
 
-Derived supplemental datasets прошли JSON Schema/cross-reference validation, importer dry-run, Stage 8/16 tests, generated-artifact checks и полный test suite; точные команды и результаты приведены в едином `README.md`. PostgreSQL apply/readback/rollback не запускался без disposable `POSTGRES_PASSWORD`. Итоговый code critic: `PASS WITH NOTES`; его единственная note — отсутствующая локальная PostgreSQL integration.
+Derived supplemental datasets прошли JSON Schema/cross-reference validation и importer dry-run. Disposable PostgreSQL 16 apply/readback/digest/rollback/repeat apply прошёл с явно заданным временным `POSTGRES_PASSWORD`; exact results are in the unified README. Fifteen agriculture/fishing templates have only background `record_sources` links whose parent records are digest-verified; the remaining 105 require individual source review. Repeat code critic: `PASS WITH NOTES`.
 
 ## 8. Следующий этап
 
@@ -150,8 +150,7 @@ Derived supplemental datasets прошли JSON Schema/cross-reference validatio
 
 Следующий технический проход должен:
 
-1. выполнить supplemental PostgreSQL lifecycle;
-2. связать каждую строку с individual historical source records;
+1. связать оставшиеся 105 строк с individual historical source records;
 3. завершить material/physical/bulk/container review;
 4. классифицировать внешние legacy rows после экспорта;
 5. подготовить promotion readiness без activation.

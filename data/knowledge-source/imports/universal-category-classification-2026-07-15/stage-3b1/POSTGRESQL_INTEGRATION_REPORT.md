@@ -11,13 +11,13 @@ The supplemental authoring bundle was tested only in a disposable PostgreSQL 16 
 | PostgreSQL | 16 |
 | world_base DDL | PASS, 117 tables |
 | manifest | `novgorod_1230_item_catalogue_draft_001` |
-| apply | PASS, 20 datasets |
+| apply | PASS, 21 datasets |
 | readback count/digest audit | PASS |
 | rollback probe | PASS; zero residual source record |
 | repeated apply | PASS; `ON CONFLICT (id) DO NOTHING` plus digest audit |
 | activation | PASS: draft revision remained draft |
 
-The temporary compose project used port 65432 and an explicit disposable password. Its container and volume were removed after the run.
+The temporary compose project used port 65432 and an explicit disposable password. Before inserting FK prerequisites, the integration script verifies the registered parent archive and source CSV digests, then inserts the exact referenced parent source-record fields into the disposable database only. Its container and volume were removed after the run.
 
 ## Command
 

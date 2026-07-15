@@ -22,7 +22,7 @@ test('supplemental PostgreSQL executor commits a validated dependency plan and a
     async commit() { calls.push('commit'); },
     async rollback() { calls.push('rollback'); }
   };
-  const result = await applySupplementalCatalogBundle({ manifest, recordsByTable: {}, adapter });
+  const result = await applySupplementalCatalogBundle({ manifest, recordsByTable: {}, adapter, externalIds: { source_records: new Set(['source']) } });
   assert.equal(result.applied, true);
   assert.deepEqual(calls, ['begin', 'commit']);
 });
@@ -37,14 +37,14 @@ test('supplemental PostgreSQL executor rolls back a failed readback audit', asyn
     async rollback() { calls.push('rollback'); }
   };
   const oneDataset = { ...manifest, datasets: [{ table: 'source_records', path: 'source.json', schema_id: 'rus.source_records.v1', record_count: 0, sha256: supplementalDigest([]), dependency_order: 0 }] };
-  await assert.rejects(() => applySupplementalCatalogBundle({ manifest: oneDataset, recordsByTable: { source_records: [] }, adapter }), /SUPPLEMENTAL_READBACK_MISMATCH:source_records/u);
+  await assert.rejects(() => applySupplementalCatalogBundle({ manifest: oneDataset, recordsByTable: { source_records: [] }, adapter, externalIds: { source_records: new Set(['source']) } }), /SUPPLEMENTAL_READBACK_MISMATCH:source_records/u);
   assert.deepEqual(calls, ['begin', 'insert', 'rollback']);
 });
 
 test('supplemental PostgreSQL executor can repeat a complete validated apply without changing its plan', async () => {
   const calls = [];
   const source = { id: 'src', title: 'Source', source_type: 'project_note', summary: 'Draft source', status: 'draft', confidence: 'medium' };
-  const sourceManifest = { ...manifest, datasets: [{ table: 'source_records', path: 'source.json', schema_id: 'rus.source_records.v1', record_count: 1, sha256: supplementalDigest([source]), dependency_order: 0 }] };
+  const sourceManifest = { ...manifest, provenance: { source_ids: [source.id], effective_at: '1230-01-01' }, datasets: [{ table: 'source_records', path: 'source.json', schema_id: 'rus.source_records.v1', record_count: 1, sha256: supplementalDigest([source]), dependency_order: 0 }] };
   const adapter = {
     async begin() { calls.push('begin'); }, async insert() { calls.push('insert'); },
     async readback() { return { record_count: 1, payload_digest: supplementalDigest([source]) }; },

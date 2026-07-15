@@ -256,8 +256,8 @@ deferred external/local rows: unknown until export
 Следующий этап выполняется в том же PR и должен:
 
 1. перечитать обязательные нормативы и проверить актуальный branch head;
-2. выполнить supplemental PostgreSQL apply/readback/rollback в disposable PostgreSQL 16;
-3. разрешить individual historical source records и template-source bindings;
+2. выполнить supplemental PostgreSQL apply/readback/rollback в disposable PostgreSQL 16 — выполнено; lifecycle остаётся проверкой draft bundle;
+3. разрешить individual historical source records и template-source bindings — начато: 15 agriculture/fishing templates имеют нормализованные `record_sources` на существующие source IDs base bundle; остальные 105 требуют individual bibliography;
 4. провести material и physical-parameter review;
 5. добавить bulk-good quantity model и complete container compatibility;
 6. расширить draft item/property/equipment profiles только на verified role/occupation IDs;
@@ -268,29 +268,29 @@ deferred external/local rows: unknown until export
 ## 12. Известные ограничения
 
 - 120 строк являются широкими types, а не полной археологической типологией;
-- создан один draft project-authoring `source_record`; individual historical source records и bindings ещё не разрешены;
+- создан один draft project-authoring `source_record`; 15 существующих historical source IDs base bundle привязаны через `record_sources` только как background evidence широкого типа, 105 templates остаются без individual source link;
 - individual evidence bindings требуют библиографической сверки;
 - commonness/weights не исследованы;
 - physical parameters и игровые profiles созданы только как `draft`/`gameplay_estimate` и требуют review;
 - container content profiles созданы, но неспециализированная compatibility остаётся deliberately coarse;
 - external/local migration inventory отсутствует;
-- supplemental dry-run пройден, но PostgreSQL apply/readback/rollback, production import, cutover и runtime activation не начаты;
+- supplemental dry-run и disposable PostgreSQL 16 apply/readback/digest/rollback/repeat apply пройдены; production import, cutover и runtime activation не начаты;
 - PR остаётся draft.
 
 ## 13. Этап 3B-1 — технический draft bundle
 
 **Starting SHA:** `815b81eb0ef613fd97cf1c16e895d6b7ebbc05d5` (verified against PR #7 before edits).
 
-**Starting SHA следующего прохода:** `aefd739f7249f8e0d1e6063422a84fc2acca0a93`; затронуты supplemental PostgreSQL lifecycle, historical evidence, materials, physical/quantity/container review, profiles, migration inventory и promotion readiness. Граница неизменна: policy/revision не активируются, runtime candidates не расширяются, party instances не изменяются.
+**Starting SHA текущего прохода:** `5a7d93f71237566073c891df773ac1213a1a5ef7`; актуальный head PR №7 сверён с GitHub перед изменениями. Граница неизменна: policy/revision не активируются, runtime candidates не расширяются, party instances не изменяются.
 
-Новый `stage-3b1/bundle/` — отдельный воспроизводимый supplemental manifest. Он содержит 102 item templates, 18 container templates, 146 draft categories/labels/region options, нормализованные object/function/context bindings, draft inventory profiles, 18 container-content profiles, 16 item profile sets, 10 property profiles и один equipment profile с проверенным `nov_role_guard`. Все SHA-256 digests datasets вычисляются из canonical JSON arrays скриптом `scripts/generate-stage-3b1-bundle.mjs`.
+Новый `stage-3b1/bundle/` — отдельный воспроизводимый supplemental manifest. Он содержит 102 item templates, 18 container templates, 146 draft categories/labels/region options, нормализованные object/function/context bindings, draft inventory profiles, 18 container-content profiles, 16 item profile sets, 10 property profiles, один equipment profile с проверенным `nov_role_guard` и 15 нормализованных `record_sources` links на существующие source IDs parent bundle. Перед dry-run и PostgreSQL lifecycle `parent-source-bundle.js` проверяет SHA-256 parent archive `rus13-base-v1.tar.gz`, SHA-256 извлечённого `source_records_unified_v1.csv` и наличие обеих source records; external IDs не берутся из ручного allowlist. Все SHA-256 digests datasets вычисляются из canonical JSON arrays скриптом `scripts/generate-stage-3b1-bundle.mjs`.
 
 Bundle является только authoring-входом: `approval = draft`, `deletion_policy = none`, все строки со статусом остаются `draft`. `validateSupplementalCatalogBundle` применяет фактические JSON Schema каждого dataset (включая closed fields, enum, `oneOf` и `not`), сверяет `$id` схемы, digest/count, FK и локальные/external references, и отклоняет party/unknown tables, dangling links, invalid XOR rows, отсутствующий object type и ambiguous primary function. `npm run world-db:import:stage3b1:dry-run` не выполняет запись и возвращает фактические counts.
 
-Physical values помечены как `gameplay_estimate` в `PHYSICAL_PARAMETER_REVIEW_TABLE.md`; они не являются историческими измерениями. Historical source-family references всё ещё требуют individual source-record resolution, поэтому каждая coverage row остаётся `partial_draft` с `HISTORICAL_PRESENCE_EVIDENCE_REQUIRED`. Bulk goods также остаются заблокированы `BULK_GOOD_QUANTITY_UNIT_MODEL_REQUIRED`. Ни record, ни revision, ни policy не активированы; Stage 8/16 runtime candidates не изменены.
+Physical values помечены как `gameplay_estimate` в `PHYSICAL_PARAMETER_REVIEW_TABLE.md`; они не являются историческими измерениями. Пятнадцать agriculture/fishing templates получили background links на существующие historical source records, но это не закрывает `NARROW_TYPOLOGY_EVIDENCE_REQUIRED`; остальные 105 coverage rows сохраняют `HISTORICAL_PRESENCE_EVIDENCE_REQUIRED`. Bulk goods также остаются заблокированы `BULK_GOOD_QUANTITY_UNIT_MODEL_REQUIRED`. Ни record, ни revision, ни policy не активированы; Stage 8/16 runtime candidates не изменены.
 
 Технические artifacts: `TARGET_TABLE_COVERAGE.md`, `PHYSICAL_PARAMETER_AUTHORING_POLICY.md`, `PHYSICAL_PARAMETER_REVIEW_TABLE.md`, `NORMALIZATION_COVERAGE_REPORT.md`, `DATA_GAPS.md`, `CODEX_INTEGRATION_REPORT.md` и `POSTGRESQL_INTEGRATION_REPORT.md`.
 
-Фактически выполнено после реализации: direct supplemental tests — 10/10; `test:world-catalog` — 62/62; `test:stage16` — 17/17; Stage 2–8 migration tests — 6/6; `npm test` — success (модульный набор 259, domain 67, apps 11, tools 116, shadow 6, cutover 4; integration 21 pass/5 skipped; browser 1 skipped без Chromium); schema check — 117 tables и read-only grants; schema/docs/corpus/architecture checks — success; supplemental importer dry-run — success. Проверка PostgreSQL apply/readback/rollback не запущена: `docker compose config --quiet` блокируется отсутствующим обязательным `POSTGRES_PASSWORD`. Lint/typecheck scripts в `package.json` отсутствуют.
+Фактически выполнено до текущего source-link прохода: `test:stage16` — 17/17; Stage 2–8 migration tests — 6/6; schema check — 117 tables и read-only grants. В текущем проходе: `test:world-catalog` — 74/74; supplemental source-link/lifecycle tests — 21/21; Stage 24 — 21/21; Stage 25 — 19/19; domain — 67/67; integration — 21 PASS / 5 SKIP; `npm test` — PASS; schema/docs/corpus/architecture checks — PASS; supplemental importer dry-run — PASS; disposable PostgreSQL 16 lifecycle — PASS. Browser E2E — 1 SKIP без Chromium. Lint/typecheck scripts в `package.json` отсутствуют.
 
-Обязательный code critic завершился `PASS WITH NOTES`. Он подтвердил закрытие трёх последовательных `CHANGES REQUIRED`: допуск `deprecated` и ложной schema-ID проверки; неполной JSON Schema/FK strictness; нормализации невозможной календарной даты через `Date.parse`. Последнее закрыто strict RFC 3339 full-date проверкой с RED‑тестом. Note аудита: PostgreSQL apply/readback/rollback не запускались, поскольку compose требует недоступный `POSTGRES_PASSWORD`.
+Обязательный повторный code critic завершился `PASS WITH NOTES`: parent source IDs теперь выводятся только из digest-verified parent archive; unknown source/target/table и ordering links покрыты negative tests. Note: critic повторно проверял unit/contract suite и dry-run, а отдельно PostgreSQL lifecycle опирался на фактически выполненный интеграционный прогон исполнителя. PostgreSQL lifecycle больше не является ограничением: он выполнен в disposable PostgreSQL 16 с явно заданными временными credentials.

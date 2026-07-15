@@ -53,6 +53,21 @@ const containerProfile = (row) => {
 };
 const itemRows = rows.filter((row) => row.kind === 'item');
 const containerRows = rows.filter((row) => row.kind === 'container');
+const historicalSourceByTemplateId = new Map([
+  ...['item_tpl_nov_sickle_v1', 'item_tpl_nov_scythe_v1', 'item_tpl_nov_hoe_v1', 'item_tpl_nov_wooden_shovel_v1', 'item_tpl_nov_iron_edged_spade_v1', 'item_tpl_nov_rake_v1', 'item_tpl_nov_pitchfork_v1', 'item_tpl_nov_billhook_v1']
+    .map((id) => [id, 'src_novgorod_agriculture']),
+  ...['item_tpl_nov_fishhook_v1', 'item_tpl_nov_fishing_line_v1', 'item_tpl_nov_fishing_net_v1', 'item_tpl_nov_net_float_v1', 'item_tpl_nov_net_sinker_v1', 'item_tpl_nov_fishing_spear_v1', 'item_tpl_nov_fish_trap_v1']
+    .map((id) => [id, 'src_novgorod_promysly'])
+]);
+const historicalRecordSources = [...historicalSourceByTemplateId].map(([target_record_id, source_id]) => ({
+  id: `record_source_${target_record_id}`,
+  source_id,
+  target_table: 'item_templates',
+  target_record_id,
+  support_type: 'background',
+  summary: 'Поддерживает только проверку широкого типа; не доказывает узкую типологию, параметры или commonness.',
+  confidence: 'medium'
+}));
 const itemTemplates = itemRows.map((row) => ({ id: row.id, world_revision_id: revisionId, region_id: 'region_novgorod_land', category_id: objectCategoryId(row), source_id: sourceId, title: row.title, status: 'draft' }));
 const containerTemplates = containerRows.map((row) => ({ ...(() => { const p = containerProfile(row); return { id: row.id, world_revision_id: revisionId, region_id: 'region_novgorod_land', category_id: objectCategoryId(row), source_id: sourceId, capacity: p.capacity, packing_slot_cost: p.packing_slot_cost, capacity_policy: { version: 1, mode: 'packing_slots', unit: 'packing_slot' }, access_policy: { version: 1, mode: 'manual' }, status: 'draft' }; })() }));
 const itemBindings = itemRows.flatMap((row) => [
@@ -93,6 +108,7 @@ const datasets = {
   item_profile_sets: itemProfileSets, item_profile_entries: itemProfileEntries,
   property_profiles: propertyProfiles, property_profile_rules: propertyRules,
   region_equipment_profiles: equipmentProfiles, region_equipment_profile_entries: equipmentEntries,
+  record_sources: historicalRecordSources,
   item_classification_migration_inventory: migrationInventory
 };
 const schemaIds = {
@@ -101,11 +117,11 @@ const schemaIds = {
   container_templates: 'rus.container_templates.v1', container_template_facet_bindings: 'rus.container_template_facet_bindings.v1', container_template_inventory_profiles: 'rus.container_template_inventory_profiles.v1',
   container_content_profiles: 'rus.container_content_profiles.v1', container_content_profile_entries: 'rus.container_content_profile_entries.v1',
   item_profile_sets: 'rus.item_profile_sets.v1', item_profile_entries: 'rus.item_profile_entries.v1', property_profiles: 'rus.property_profiles.v1', property_profile_rules: 'rus.property_profile_rules.v1',
-  region_equipment_profiles: 'rus.region_equipment_profiles.v1', region_equipment_profile_entries: 'rus.region_equipment_profile_entries.v1', item_classification_migration_inventory: 'rus.item_classification_migration_inventory.v1'
+  region_equipment_profiles: 'rus.region_equipment_profiles.v1', region_equipment_profile_entries: 'rus.region_equipment_profile_entries.v1', record_sources: 'rus.record_sources.v1', item_classification_migration_inventory: 'rus.item_classification_migration_inventory.v1'
 };
 const order = Object.keys(datasets);
 for (const table of order) writeJson(resolve(outputRoot, `${table}.json`), datasets[table]);
-const manifest = { schema_version: 1, bundle_id: 'novgorod_1230_item_catalogue_draft_001', world_revision_id: revisionId, parent_bundles: ['rus13_world_base_v1'], approval: 'draft', deletion_policy: 'none', provenance: { source_ids: [sourceId], effective_at: '1230-01-01', historical_presence_gate: 'broad_type_only' }, datasets: order.map((table, dependency_order) => ({ table, path: `${table}.json`, schema_id: schemaIds[table], record_count: datasets[table].length, sha256: digest(datasets[table]), dependency_order })) };
+const manifest = { schema_version: 1, bundle_id: 'novgorod_1230_item_catalogue_draft_001', world_revision_id: revisionId, parent_bundles: ['rus13_world_base_v1'], approval: 'draft', deletion_policy: 'none', provenance: { source_ids: [sourceId, 'src_novgorod_agriculture', 'src_novgorod_promysly'], effective_at: '1230-01-01', historical_presence_gate: 'broad_type_only' }, datasets: order.map((table, dependency_order) => ({ table, path: `${table}.json`, schema_id: schemaIds[table], record_count: datasets[table].length, sha256: digest(datasets[table]), dependency_order })) };
 writeJson(resolve(outputRoot, 'manifest.json'), manifest);
 writeFileSync(resolve(root, 'data/knowledge-source/imports/universal-category-classification-2026-07-15/stage-3b1/PHYSICAL_PARAMETER_REVIEW_TABLE.md'), [
   '# Stage 3B-1 — review физических параметров', '',
@@ -118,7 +134,7 @@ writeFileSync(resolve(root, 'data/knowledge-source/imports/universal-category-cl
   '# Stage 3B-1 — normalization coverage matrix', '',
   '| template_id | kind | source_record_resolved | object_type_resolved | primary_function_resolved | materials_resolved | use_context_resolved | template_record_created | regional_permission_created | inventory_profile_created | container_facets_created | content_profile_created | item_profile_membership | property_profile_membership | equipment_profile_membership | physical_parameters_status | normalization_status | blocking_gaps |',
   '|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|',
-  ...rows.map((row) => `| ${row.id} | ${row.kind} | authoring_policy_only | yes | ${row.kind === 'item' ? 'yes' : 'n/a'} | no | ${row.kind === 'item' ? 'yes' : 'n/a'} | yes | yes (draft) | yes (draft) | ${row.kind === 'container' ? 'yes' : 'n/a'} | ${row.kind === 'container' ? 'yes' : 'n/a'} | partial | partial | ${row.id === 'item_tpl_nov_utility_knife_v1' ? 'yes' : 'no'} | gameplay_estimate_review | partial_draft | HISTORICAL_PRESENCE_EVIDENCE_REQUIRED; PHYSICAL_PARAMETER_EVIDENCE_REQUIRED; ${row.group === 'food_raw_trade' ? 'BULK_GOOD_QUANTITY_UNIT_MODEL_REQUIRED' : 'MATERIAL_EVIDENCE_REQUIRED'} |`)
+  ...rows.map((row) => { const historicalSource = historicalSourceByTemplateId.get(row.id); return `| ${row.id} | ${row.kind} | ${historicalSource ? historicalSource : 'authoring_policy_only'} | yes | ${row.kind === 'item' ? 'yes' : 'n/a'} | no | ${row.kind === 'item' ? 'yes' : 'n/a'} | yes | yes (draft) | yes (draft) | ${row.kind === 'container' ? 'yes' : 'n/a'} | ${row.kind === 'container' ? 'yes' : 'n/a'} | partial | partial | ${row.id === 'item_tpl_nov_utility_knife_v1' ? 'yes' : 'no'} | gameplay_estimate_review | partial_draft | ${historicalSource ? 'NARROW_TYPOLOGY_EVIDENCE_REQUIRED' : 'HISTORICAL_PRESENCE_EVIDENCE_REQUIRED'}; PHYSICAL_PARAMETER_EVIDENCE_REQUIRED; ${row.group === 'food_raw_trade' ? 'BULK_GOOD_QUANTITY_UNIT_MODEL_REQUIRED' : 'MATERIAL_EVIDENCE_REQUIRED'} |`; })
 ].join('\n') + '\n', 'utf8');
 
 function digest(value) { return createHash('sha256').update(stable(value), 'utf8').digest('hex'); }

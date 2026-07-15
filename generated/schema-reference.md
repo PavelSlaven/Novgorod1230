@@ -156,12 +156,14 @@ Release: `0.23.0-migration.24`
 | `schemas/materialization/party-change-set-v2.schema.json` | json | 2816 | `cabbce3e6d6091391cba5b1fa0b6ea09c69f2db6bbed3ac241563171e95b62c1` |
 | `schemas/materialization/property-profile-rules-v1.schema.json` | json | 1078 | `fdb63b23c9ffdbbaa9e7562141cc2763ea1538300c5ed79f0b7d8c55604f9c30` |
 | `schemas/materialization/property-profiles-v1.schema.json` | json | 499 | `6cd5d5bdb462d8f4e1a60af1457faaba4c1aa11f9ded629a2cade6ae37adf0cd` |
+| `schemas/materialization/record-sources-v1.schema.json` | json | 906 | `4a990dcc1d34445ece7f42f0407bd6b4ebf84cf1c1dcd71828c679c078cda354` |
 | `schemas/materialization/region-category-options-v1.schema.json` | json | 825 | `0acabbad107562f88424ff0215d9619d26f63aaaa829ba75e274708fce11da0e` |
 | `schemas/materialization/region-equipment-profile-entries-v1.schema.json` | json | 649 | `92ff1c9a1cb43b62770c178af635a3cb9ed18a043a9fb0d2a1deb8b2d8fafeee` |
 | `schemas/materialization/region-equipment-profiles-v1.schema.json` | json | 454 | `33b1f3a2febb0ca72dd388804dd06501703a71ea913fa7cf48fdd9dff92976b9` |
 | `schemas/materialization/source-records-v1.schema.json` | json | 697 | `037a2be66fdce964f9bde13c3d4031c0a1b4c9c2ebb7b26e3cf72aa3e61a9b1c` |
 | `schemas/materialization/universal-categories-v1.schema.json` | json | 905 | `b2110a8b777c2d26049337f07826c254eb1f9854535ae7990f4c2f40bc4df972` |
 | `schemas/materialization/universal-category-relations-v1.schema.json` | json | 512 | `31fd11130f43de9a61d58b8fde877527649eaad8915af99225f982033b179f38` |
+| `schemas/materialization/universal-parameter-definitions-v1.schema.json` | json | 1050 | `0c646047b8e48a43b7c5250d264cf27b84604810f754f41d4504fa1360347748` |
 | `schemas/materialization/world-materialization-repair-request-v2.schema.json` | json | 945 | `ba34924dd6587d7a5044498766cc8c0ff81167eae9fbee3e98e63ad0fb75fd59` |
 | `schemas/materialization/world-materialization-request-v2.schema.json` | json | 10347 | `3b6739984a1ec31a01d99867f13d8a5c9f4f87f4ab7a2d4ba5b911282629ae7f` |
 | `schemas/materialization/world-materialization-result-v2.schema.json` | json | 5190 | `92ee591037949a9e55ded6fe2813516718b5ade28b7cd7c8b592185c356db163` |

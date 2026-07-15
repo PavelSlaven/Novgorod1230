@@ -752,6 +752,12 @@
       "type": "json"
     },
     {
+      "bytes": 906,
+      "path": "schemas/materialization/record-sources-v1.schema.json",
+      "sha256": "4a990dcc1d34445ece7f42f0407bd6b4ebf84cf1c1dcd71828c679c078cda354",
+      "type": "json"
+    },
+    {
       "bytes": 825,
       "path": "schemas/materialization/region-category-options-v1.schema.json",
       "sha256": "0acabbad107562f88424ff0215d9619d26f63aaaa829ba75e274708fce11da0e",
@@ -785,6 +791,12 @@
       "bytes": 512,
       "path": "schemas/materialization/universal-category-relations-v1.schema.json",
       "sha256": "31fd11130f43de9a61d58b8fde877527649eaad8915af99225f982033b179f38",
+      "type": "json"
+    },
+    {
+      "bytes": 1050,
+      "path": "schemas/materialization/universal-parameter-definitions-v1.schema.json",
+      "sha256": "0c646047b8e48a43b7c5250d264cf27b84604810f754f41d4504fa1360347748",
       "type": "json"
     },
     {

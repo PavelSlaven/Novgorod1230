@@ -54,6 +54,7 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 - 2026-07-15: завершено внутреннее разбиение lifecycle `@rus/environment-landmarks`: baseline, cue и trace вынесены из public facade. Фасад только валидирует formal input, связывает операции и формирует immutable result; отдельные lifecycle не читают БД, не вызывают LLM и не создают G0–G4.
 - 2026-07-15: добавлен `buildTravelVisibleProjection` в `@rus/visibility-knowledge-memory`: projection принимает только player-safe perceived/observed fields и hard-blocks actual route/progress, cue source/location binding, catalog pins и audit fields.
 - 2026-07-15: presentation получил `createTravelPanelContract`: UI read model использует только validated travel visible projection и не реализует механику travel/navigation.
+- 2026-07-15: существующий `@rus/turn` workflow расширен contract-level state blocks и Stage 25 write targets для journeys/legs/environment. Второй orchestrator не создан; code-owned travel handlers и production ports ещё не подключены.
 
 ## Checks recorded on transferred baseline
 
@@ -152,6 +153,9 @@ Typed domain errors are versioned with the travel contracts; persistence, presen
 | `node --test packages/presentation/test/presentation.test.js` | 2026-07-15 | рабочее дерево после `37cc6a6` | RED: 1 failed | Отсутствовал player-facing travel panel contract. |
 | `node --test packages/presentation/test/presentation.test.js` | 2026-07-15 | рабочее дерево после `37cc6a6` | PASS: 5/5 | Travel panel принимает только safe projection. |
 | `npm run test:domain` | 2026-07-15 | рабочее дерево после `37cc6a6` | PASS: 93/93 | Полный domain regression. |
+| `node --test packages/turn/test/turn-workflow.test.js` | 2026-07-15 | рабочее дерево после `6f7c4c3` | RED: 1 failed | Turn contracts не разрешали travel state/targets. |
+| `node --test packages/turn/test/turn-workflow.test.js` | 2026-07-15 | рабочее дерево после `6f7c4c3` | PASS: 11/11 | Travel blocks/targets доступны в том же workflow. |
+| `npm run test:domain` | 2026-07-15 | рабочее дерево после `6f7c4c3` | PASS: 94/94 | Полный domain regression. |
 
 ## Data and migration registry
 

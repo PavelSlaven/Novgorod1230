@@ -6,6 +6,8 @@ import { createNarrationService } from '@rus/narration';
 import {
   TURN_WORKFLOW_STAGE_IDS,
   TURN_WORKFLOW_STAGE_PLAN,
+  TURN_ALLOWED_STATE_BLOCKS,
+  TURN_ALLOWED_WRITE_TARGETS,
   createTurnCommandRegistry,
   runTurnWorkflow,
   validateTurnWorkflowStagePlan
@@ -282,4 +284,13 @@ test('repair_required stops before time, narration and persistence', async () =>
   assert.equal(commits.length, 0);
   assert.equal(log.includes('narration'), false);
   assert.equal(log.includes('persistence_plan'), false);
+});
+
+test('turn contracts reserve travel state blocks and normalized persistence targets', () => {
+  for (const stateBlock of ['active_journey', 'journey_legs', 'travel_position', 'environment_landmarks', 'environment_cues', 'movement_traces', 'transport_state']) {
+    assert.equal(TURN_ALLOWED_STATE_BLOCKS.includes(stateBlock), true, stateBlock);
+  }
+  for (const target of ['party_journeys', 'party_journey_legs', 'party_environment_runs', 'party_environment_choices', 'party_environment_landmarks', 'party_environment_cues', 'party_environment_traces']) {
+    assert.equal(TURN_ALLOWED_WRITE_TARGETS.includes(target), true, target);
+  }
 });

@@ -63,6 +63,13 @@ export const TURN_ALLOWED_STATE_BLOCKS = deepFreeze([
   'relevant_items',
   'relevant_containers',
   'relevant_routes',
+  'active_journey',
+  'journey_legs',
+  'travel_position',
+  'environment_landmarks',
+  'environment_cues',
+  'movement_traces',
+  'transport_state',
   'relevant_anchors',
   'recent_changes_log',
   'relevant_events'
@@ -79,7 +86,14 @@ export const TURN_ALLOWED_WRITE_TARGETS = deepFreeze([
   'party_items',
   'party_containers',
   'party_narrator_output',
-  'party_player_visible_message'
+  'party_player_visible_message',
+  'party_journeys',
+  'party_journey_legs',
+  'party_environment_runs',
+  'party_environment_choices',
+  'party_environment_landmarks',
+  'party_environment_cues',
+  'party_environment_traces'
 ]);
 
 export const TURN_WORKFLOW_STAGE_IDS = deepFreeze([

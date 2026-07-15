@@ -38,6 +38,8 @@
 
 Обязательные: code-owned `commandRegistry`, `stateReader`, `visibleProjector`, `narrator.run`, `partyStore`. `decisionExecutor` с подписанным bounded-протоколом обязателен только при нескольких допустимых командах. `RandomSource` обязателен только если выбранный code handler сформировал утверждённый `check_request`.
 
+Travel integration uses the same workflow: state blocks `active_journey`, `journey_legs`, `travel_position`, environment feature blocks and `transport_state`; normalized persistence targets include journeys, legs and environment runs/features. The command handler remains code-owned and may not replace a missing approved bundle or route with a fallback.
+
 ## Инварианты
 
 1. `raw_text` всегда имеет `contract = intent_not_fact`.

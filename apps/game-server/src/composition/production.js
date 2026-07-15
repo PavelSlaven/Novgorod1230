@@ -13,7 +13,7 @@ import { loadRuntimeBindings } from '../runtime/load-bindings.js';
 export async function createProductionCompositionRoot({ env = process.env, config = {}, PoolClass, now } = {}) {
   const pools = createPostgresPools({ env, PoolClass });
   try {
-    if (config.runMigrations !== false) await runPartyRuntimeMigrations(pools.partyPool);
+    if (config.runMigrations !== false) await runPartyRuntimeMigrations(pools.partyPool, config.partyRuntimeMigrationOptions);
     const worldBase = createPostgresWorldBaseReader({ pool: pools.worldPool });
     const llmRoleRunner = createProductionLlmRoleRunner({ env, telemetry: config.telemetry ?? null });
     const knowledgeSource = createKnowledgeSourceReader({

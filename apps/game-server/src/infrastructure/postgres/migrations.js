@@ -5,11 +5,14 @@ const PARTY_ENVIRONMENT_LANDMARKS_DDL = readFileSync(new URL('../../../../../sch
 const PARTY_TRAVEL_RUNTIME_DDL = readFileSync(new URL('../../../../../schemas/party-db/003_travel_runtime.sql', import.meta.url), 'utf8');
 const RUNTIME_MIGRATIONS = Object.freeze([PARTY_RUNTIME_V2_DDL, PARTY_ENVIRONMENT_LANDMARKS_DDL, PARTY_TRAVEL_RUNTIME_DDL]);
 
-export async function runPartyRuntimeMigrations(pool) {
+export async function runPartyRuntimeMigrations(pool, { supportsDeferrableConstraints = true } = {}) {
+  const migrations = supportsDeferrableConstraints
+    ? RUNTIME_MIGRATIONS
+    : RUNTIME_MIGRATIONS.map((sql) => sql.replace(/\s+DEFERRABLE INITIALLY DEFERRED/g, ''));
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
-    for (const sql of RUNTIME_MIGRATIONS) await client.query(sql);
+    for (const sql of migrations) await client.query(sql);
     await client.query('COMMIT');
   } catch (error) {
     await client.query('ROLLBACK').catch(() => {});
@@ -17,7 +20,7 @@ export async function runPartyRuntimeMigrations(pool) {
   } finally {
     client.release();
   }
-  return Object.freeze({ applied: RUNTIME_MIGRATIONS.length, schema: 'party_runtime', schema_version: 'party_runtime_v2' });
+  return Object.freeze({ applied: migrations.length, schema: 'party_runtime', schema_version: 'party_runtime_v2' });
 }
 
 export { RUNTIME_MIGRATIONS };

@@ -15,6 +15,8 @@ function createPool() {
   return new Pool();
 }
 
+const PG_MEM_MIGRATION_OPTIONS = Object.freeze({ supportsDeferrableConstraints: false });
+
 async function snapshotRuntime(pool) {
   const tables = ['parties', 'party_server_sessions', 'delivery_attempts', 'delivery_acknowledgements', 'commit_idempotency'];
   const snapshot = {};
@@ -67,7 +69,7 @@ async function restoreRuntime(pool, snapshot) {
 
 test('party runtime snapshot restores sessions, delivery state, and idempotency records', async () => {
   const source = createPool();
-  await runPartyRuntimeMigrations(source);
+  await runPartyRuntimeMigrations(source, PG_MEM_MIGRATION_OPTIONS);
   const sessions = createPostgresSessionStore({ pool: source });
   const deliveries = createPostgresDeliveryStore({ pool: source });
 
@@ -101,7 +103,7 @@ test('party runtime snapshot restores sessions, delivery state, and idempotency 
 
   const snapshot = await snapshotRuntime(source);
   const restored = createPool();
-  await runPartyRuntimeMigrations(restored);
+  await runPartyRuntimeMigrations(restored, PG_MEM_MIGRATION_OPTIONS);
   await restoreRuntime(restored, snapshot);
 
   const restoredSessions = createPostgresSessionStore({ pool: restored });

@@ -169,43 +169,6 @@ test('environment cues require an active approved source and never disclose it i
   assert.equal(JSON.stringify(observations).includes('hidden-camp-1'), false);
 });
 
-test('wind changes approved cue propagation without changing its causal source identity', () => {
-  const initialized = initializeEnvironmentFeatures(initializationInput());
-  const west = updateEnvironmentFeatures({
-    party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', g1_id: 'g1-1', base_state_version: 1,
-    current_environment_state: initialized.environment_state, elapsed_time: { minutes: 0 }, weather_before: 'clear', weather_after: 'clear',
-    active_emitters: [{ emitter_id: 'camp-hearth-1', source_type: 'hearth', source_kind: 'camp', source_id: 'hidden-camp-1', location_binding: 'g4-ridge', bearing_band: 'north', distance_band: 'near', strength_band: 'moderate', propagation_wind: 'west' }],
-    trace_emissions: [], event_emissions: [], catalog_bundle: catalog, catalog_digest: catalog.catalog_digest,
-    materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1', idempotency_key: 'turn:wind-west'
-  });
-  const east = updateEnvironmentFeatures({
-    party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', g1_id: 'g1-1', base_state_version: 2,
-    current_environment_state: west.environment_state, elapsed_time: { minutes: 0 }, weather_before: 'clear', weather_after: 'clear',
-    active_emitters: [{ emitter_id: 'camp-hearth-1', source_type: 'hearth', source_kind: 'camp', source_id: 'hidden-camp-1', location_binding: 'g4-ridge', bearing_band: 'north', distance_band: 'near', strength_band: 'moderate', propagation_wind: 'east' }],
-    trace_emissions: [], event_emissions: [], catalog_bundle: catalog, catalog_digest: catalog.catalog_digest,
-    materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1', idempotency_key: 'turn:wind-east'
-  });
-  assert.equal(west.environment_state.cues[0].source_id, 'hidden-camp-1');
-  assert.equal(east.environment_state.cues[0].source_id, 'hidden-camp-1');
-  assert.equal(west.environment_state.cues[0].intensity, 1.2);
-  assert.equal(east.environment_state.cues[0].intensity, 0.8);
-  assert.equal(west.environment_state.cues[0].propagation_drift_band, 'eastward');
-  assert.equal(east.environment_state.cues[0].propagation_drift_band, 'westward');
-});
-
-test('cue propagation blocks absent or inapplicable approved wind policy', () => {
-  const initialized = initializeEnvironmentFeatures(initializationInput());
-  const update = {
-    party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', g1_id: 'g1-1', base_state_version: 1,
-    current_environment_state: initialized.environment_state, elapsed_time: { minutes: 0 }, weather_before: 'clear', weather_after: 'clear',
-    active_emitters: [{ emitter_id: 'camp-hearth-1', source_type: 'hearth', source_kind: 'camp', source_id: 'hidden-camp-1', location_binding: 'g4-ridge', bearing_band: 'north', distance_band: 'near', strength_band: 'moderate' }],
-    trace_emissions: [], event_emissions: [], catalog_bundle: catalog, catalog_digest: catalog.catalog_digest,
-    materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1', idempotency_key: 'turn:wind-invalid'
-  };
-  assert.throws(() => updateEnvironmentFeatures(update), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_EMITTER_PROPAGATION_INVALID');
-  assert.throws(() => updateEnvironmentFeatures({ ...update, active_emitters: [{ ...update.active_emitters[0], propagation_wind: 'north' }], idempotency_key: 'turn:wind-missing-policy' }), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_CUE_PROPAGATION_UNAVAILABLE');
-});
-
 test('cart trace has a causal source and decays from readable to erased without increasing strength', () => {
   const initialized = initializeEnvironmentFeatures(initializationInput());
   const fresh = updateEnvironmentFeatures({

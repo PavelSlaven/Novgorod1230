@@ -26,7 +26,7 @@ test('world_base schema reference contains all and only current DDL tables', asy
   const actualNames = result.schema.tables.map((table) => table.name).sort();
   const renderedNames = [...result.markdown.matchAll(/^### `world_base\.([a-z_][a-z0-9_]*)`$/gmu)].map((match) => match[1]).sort();
 
-  assert.equal(result.schema.table_count, 121);
+  assert.equal(result.schema.table_count, 143);
   assert.deepEqual(actualNames, expectedNames);
   assert.deepEqual(renderedNames, expectedNames);
   assert.equal(result.schema.ddl_sha256, await expandedDdlDigest());

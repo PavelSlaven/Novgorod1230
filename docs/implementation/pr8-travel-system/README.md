@@ -76,6 +76,9 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 - 2026-07-15: landmark baseline больше не выбирает кандидата с неявным weight или count bound. Неполный profile/graph snapshot образует typed input gap, а не равновероятный candidate set.
 - 2026-07-15: decay следов читает только versioned `environment_decay_policy_v1`: rain, snow и mud имеют отдельные approved multipliers; погода без ключа профиля hard-blocks вместо multiplier `1`.
 - 2026-07-15: active emitter передаёт `propagation_wind`, а cue template — versioned policy распространения. Ветер изменяет только approved intensity/drift signal; causal source identity не меняется. Отсутствующий policy/effect hard-blocks.
+- 2026-07-15: runner миграций сохраняет PostgreSQL `DEFERRABLE INITIALLY DEFERRED` по умолчанию. `pg-mem` получает несовместимый режим только через явный capability-флаг в тесте; production DDL не переписывается.
+- 2026-07-15: schema/CI assertions синхронизированы с уже добавленными travel authoring tables: canonical world_base содержит 13 частей и 143 таблицы; read-only PostgreSQL gate проверяет это же число.
+- 2026-07-15: public API `@rus/travel` сохранён, но implementation разделена на contracts/support, journey lifecycle и persistence proposals. Это удерживает жёсткую архитектурную границу без изменения contracts или импортного пути.
 
 ## Checks recorded on transferred baseline
 
@@ -150,6 +153,10 @@ Typed domain errors are versioned with the travel contracts; persistence, presen
 | `node --test packages/environment-landmarks/test/domain.test.js` | 2026-07-15 | worktree before landmark-weight commit | RED: 1 failed, then PASS: 12/12 | Landmark selection blocks absent candidate weight or count bounds instead of deriving runtime defaults. |
 | `node --test packages/environment-landmarks/test/domain.test.js` | 2026-07-15 | worktree before decay-policy commit | RED: 1 failed, then PASS: 13/13 | Rain, snow and mud use distinct approved multipliers; unknown weather is a typed data gap. |
 | `node --test packages/environment-landmarks/test/domain.test.js` | 2026-07-15 | worktree before cue-propagation commit | RED: 2 failed, then PASS: 15/15 | Cue propagation consumes an approved wind effect; wind does not replace the causal source identity. |
+| `node --test test/cutover/party-db-restore.test.js test/integration/production-infrastructure.test.js` | 2026-07-15 | worktree before pg-mem capability commit | PASS: 11/11 | Test adapter explicitly declares lack of deferred-FK support; PostgreSQL migration remains authoritative. |
+| `node --test test/integration/world-base-schema-reference.test.js test/integration/world-base-schema.test.js test/integration/ci-workflow-contract.test.js` / `world-db:schema-check` / `world-db:schema-doc-check` | 2026-07-15 | worktree before schema-assertion commit | PASS: 7/7; 143 tables | Local and CI PostgreSQL gates match the canonical 13-part world_base schema. |
+| `node --test packages/travel/test/domain.test.js packages/turn/test/*.test.js packages/environment-landmarks/test/*.test.js` / `architecture:check` | 2026-07-15 | worktree before boundary-split commit | PASS: 57/57; PASS | Travel public API and all moved tests retain behavior while each module stays within the enforced boundary. |
+| `npm test` | 2026-07-15 | worktree before runtime-integrity commit | PASS | Modules, domain, apps, tools, shadow, cutover, docs, integration and architecture gates pass. Real PostgreSQL tests remain skipped without `PARTY_DATABASE_URL`; browser E2E is skipped because Chromium is unavailable. |
 | `node --test tools/docs-tools/test/knowledge-source-migration.test.js tools/docs-tools/test/knowledge-corpus-verifier.test.js tools/docs-tools/test/knowledge-materializer-v2.test.js` | 2026-07-15 | working tree after `6eb1a23` | PASS: 22/22 | Corpus manifest, legacy provenance and generated graph/RAG materialization remain reproducible after the PR8 normative update. |
 | `npm run test:domain` / `npm run test:modules` | 2026-07-15 | working tree after `6eb1a23` | PASS: 102/102; 261/261 | Documentation-only change did not regress travel, environment, turn or materialization contracts. |
 | `node --test packages/travel/test/domain.test.js` | 2026-07-15 | `69b0ee8` | RED: 1 failed | `ERR_MODULE_NOT_FOUND` before implementation. |
@@ -268,6 +275,9 @@ The ordered migration loader, seed script, party preflight and Stage 25 logical 
 | TRAVEL-D013 / 2026-07-15 / accepted | Treat absent materialization weights/counts as neutral defaults or a data gap. | Selection consumes only explicit positive weights and explicit bounds from the pinned input. |
 | TRAVEL-D014 / 2026-07-15 / accepted | Derive unlisted weather decay or require a policy entry. | Decay profile owns a versioned weather multiplier map; no weather multiplier is implicit. |
 | TRAVEL-D015 / 2026-07-15 / accepted | Default a wind effect or require a cue policy entry. | Cue propagation consumes exact `propagation_wind` and an approved policy effect; causal source identity remains immutable. |
+| TRAVEL-D016 / 2026-07-15 / accepted | Remove deferred FK from production DDL or model the test-adapter limit explicitly. | PostgreSQL retains deferred FK semantics; only an explicit test capability renders compatible DDL. |
+| TRAVEL-D017 / 2026-07-15 / accepted | Keep stale schema-count assertions or bind local and CI gates to the canonical DDL count. | Schema checks and CI gate assert the current 143-table, 13-part entrypoint. |
+| TRAVEL-D018 / 2026-07-15 / accepted | Broaden architecture limits or divide the travel implementation while preserving its public API. | Contracts, journey lifecycle and proposals are separate modules behind the existing package export. |
 
 ## Phase tracker
 

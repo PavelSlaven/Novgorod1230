@@ -37,6 +37,7 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 
 - Existing environment baseline tests passed before transfer.
 - 2026-07-15: `@rus/travel` RED test first failed with `ERR_MODULE_NOT_FOUND` (no implementation); the initial pure contract implementation is now GREEN at 6/6 tests.
+- 2026-07-15: `@rus/movement-routes` RED test first failed because `calculatePartialTraversal` did not exist; strict profile/transport traversal is GREEN at 4/4 tests.
 
 ## Checks recorded on transferred baseline
 
@@ -81,5 +82,16 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 | TravelIntent | `travel.v1` | `@rus/travel` | turn handler → travel domain | proposal only | no |
 | TravelPosition | `travel.v1` | `@rus/travel` | party state → travel domain | `party_positions` (planned) | perceived projection only |
 | Journey / JourneyLeg | `travel.v1` | `@rus/travel` | travel domain → Stage 25 | `party_journeys` / `party_journey_legs` (planned) | status only |
+| RouteTraversalRequest | `movement-route.v1` | `@rus/movement-routes` | travel domain → route evaluator | proposal only | no |
 
 Typed domain errors are versioned with the travel contracts; persistence, presentation and bundle consumers are not implemented yet.
+
+## Check evidence
+
+| Command | Date | Head before command | Result | Notes |
+| --- | --- | --- | --- | --- |
+| `node --test packages/travel/test/domain.test.js` | 2026-07-15 | `69b0ee8` | RED: 1 failed | `ERR_MODULE_NOT_FOUND` before implementation. |
+| `node --test packages/travel/test/domain.test.js` | 2026-07-15 | `69b0ee8` | PASS: 6/6 | Initial travel contract lifecycle. |
+| `node --test packages/movement-routes/test/domain.test.js` | 2026-07-15 | `369ebe3` | RED: 1 failed | Missing `calculatePartialTraversal` export. |
+| `node --test packages/movement-routes/test/domain.test.js` | 2026-07-15 | `369ebe3` | PASS: 4/4 | Fail-closed route traversal contract. |
+| `npm run test:domain` | 2026-07-15 | `369ebe3` | PASS: 85/85 | Full package domain suite; PostgreSQL/integration/E2E not run. |

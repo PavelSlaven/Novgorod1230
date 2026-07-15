@@ -3,8 +3,7 @@ import assert from 'node:assert/strict';
 
 import {
   clampDifficulty as legacyClampDifficulty,
-  evaluateCheckOutcome as legacyEvaluateCheckOutcome,
-  calculateTravelTime as legacyCalculateTravelTime
+  evaluateCheckOutcome as legacyEvaluateCheckOutcome
 } from '../../legacy/src/world/formulas.js';
 import {
   calculateCarriedWeightFromItems as legacyCalculateCarriedWeight,
@@ -47,16 +46,23 @@ test('check difficulty and outcome bands preserve legacy behavior', () => {
   }
 });
 
-test('travel time formula preserves legacy result for explicit base time', () => {
-  const route = { id: 'route_1', scale: 'regional', base_time: 120 };
-  const actor = { items: { load_category: 'heavy' } };
-  const conditions = { poor: true };
+test('travel time requires an explicit route profile and concrete traversal context', () => {
+  const route = { id: 'route_1', from_node_id: 'g4:from', to_node_id: 'g4:to', scale: 'regional', base_time: 120, route_profile_id: 'profile:1' };
+  const actor = { id: 'actor:1', load_category: 'heavy' };
+  const conditions = {
+    condition_key: 'poor', pace: 'normal',
+    route_profile: {
+      profile_id: 'profile:1',
+      condition_multipliers: { poor: 1.5 },
+      load_multipliers: { heavy: 1.5 },
+      pace_multipliers: { normal: 1 }
+    }
+  };
   const actual = calculateTravelTime(route, actor, conditions);
-  const expected = legacyCalculateTravelTime(route, actor, conditions);
-  assert.equal(actual.base_time_minutes, expected.base_time);
-  assert.equal(actual.condition_multiplier, expected.condition_multiplier);
-  assert.equal(actual.load_multiplier, expected.load_multiplier);
-  assert.equal(actual.final_time_minutes, expected.final_time);
+  assert.equal(actual.base_time_minutes, 120);
+  assert.equal(actual.condition_multiplier, 1.5);
+  assert.equal(actual.load_multiplier, 1.5);
+  assert.equal(actual.final_time_minutes, 270);
 });
 
 test('inventory load calculation preserves legacy thresholds', () => {

@@ -201,6 +201,9 @@ Party schema хранится в `party_runtime`, логически изоли�
 - `party_items`, `party_containers`, inventory и ownership;
 - `party_decision_requests` и `party_decision_results`;
 - `party_change_sets` и `party_autonomous_updates`;
+- `party_journeys` и `party_journey_legs` с version pins, idempotency и canonical physical-edge refs;
+- discriminated `party_positions`: `node` либо `edge_progress`; travel fields не прячутся только в JSONB;
+- party environment baseline, landmarks, cues и traces с scope/digest/idempotency evidence;
 - events, journal и versioned public-screen read model.
 - `party_server_sessions` как нормализованная техническая проекция HTTP/game-server состояния с FK на v2 party; она не является source of truth мира.
 
@@ -256,6 +259,8 @@ Implicit delete запрещён. Неизвестная таблица, ID вн
 8. Trace разделяется на run и choice rows; validation snapshot допустим в JSONB.
 9. Command envelope — request-bound `cmd.v1` digest и exact option match.
 10. Runtime v2 создаёт только новые партии; legacy JSONB sessions не мигрируют и не загружаются.
+11. Journey, legs и position сохраняются одним version-bound change set; нормализованные rows, а не snapshot, являются источником истины travel state.
+12. Первый вход в G4 фиксирует arrival и обязательные G5/NPC/items/environment instances одной транзакцией; любой required data gap откатывает весь переход.
 
 ## 14. Критерий повышения в active
 

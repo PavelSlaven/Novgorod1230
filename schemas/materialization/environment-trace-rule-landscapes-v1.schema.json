@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"rus.environment_trace_rule_landscapes.v1","type":"array","items":{"type":"object","required":["rule_id","landscape_template_id"],"properties":{"rule_id":{"type":"string","minLength":1},"landscape_template_id":{"type":"string","minLength":1}},"additionalProperties":false}}

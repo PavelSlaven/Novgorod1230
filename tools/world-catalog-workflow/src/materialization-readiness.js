@@ -9,17 +9,40 @@ const AUTHORING_TABLES = new Set([
   'g4_materialization_layout_edges',
   'item_profile_sets', 'item_profile_entries', 'container_content_profiles', 'container_content_profile_entries', 'item_template_category_bindings', 'item_template_inventory_profiles', 'item_template_source_bindings', 'container_template_inventory_profiles', 'container_template_source_bindings', 'container_template_facet_bindings', 'container_content_category_relations', 'item_classification_migration_inventory', 'property_profiles',
   'property_profile_rules', 'transport_templates', 'g4_npc_materialization_rules', 'g4_item_materialization_rules', 'g4_container_materialization_rules',
-  'decision_command_catalog', 'decision_policy_profiles', 'decision_policy_options'
+  'decision_command_catalog', 'decision_policy_profiles', 'decision_policy_options', 'environment_landmark_templates',
+  'environment_landmark_profiles', 'environment_landmark_profile_entries', 'environment_landmark_rules',
+  'environment_landmark_rule_g1_classes', 'environment_landmark_rule_node_types', 'environment_landmark_rule_landscapes',
+  'environment_landmark_rule_hydrology', 'environment_landmark_rule_land_use', 'environment_landmark_rule_routes',
+  'environment_cue_templates', 'environment_emission_rules', 'environment_trace_templates', 'environment_decay_profiles',
+  'environment_trace_creation_rules', 'environment_trace_rule_landscapes', 'environment_trace_rule_hydrology',
+  'travel_pace_profiles', 'travel_navigation_profiles', 'travel_rest_profiles', 'travel_interruption_profiles',
+  'route_travel_profile_bindings'
 ]);
 
 const INSTANCE_PREFIXES = ['party_', 'runtime_', 'instance_'];
 const LOOKUP_TABLES = new Set(['regions', 'graph_nodes', 'building_templates', 'item_templates', 'region_social_roles']);
+const IDLESS_AUTHORING_TABLES = new Set([
+  'region_category_options', 'environment_landmark_profile_entries', 'environment_landmark_rule_g1_classes',
+  'environment_landmark_rule_node_types', 'environment_landmark_rule_landscapes', 'environment_landmark_rule_hydrology',
+  'environment_landmark_rule_land_use', 'environment_landmark_rule_routes', 'environment_trace_rule_landscapes',
+  'environment_trace_rule_hydrology'
+]);
 const REQUIRED_FOR_G4 = [
   'source_records', 'record_sources', 'world_revisions', 'universal_categories', 'region_category_options', 'g4_materialization_profiles', 'g4_materialization_bindings',
   'room_templates', 'building_layout_templates', 'building_layout_nodes', 'building_layout_edges', 'g5_minilocation_templates', 'g5_anchor_templates', 'g5_edge_templates', 'materialization_slot_rules', 'g4_materialization_layout_edges', 'region_npc_profile_sets', 'item_profile_sets',
   'region_npc_archetypes', 'region_demographic_profiles', 'region_appearance_profiles', 'region_behavior_profiles', 'region_activity_profiles',
   'item_profile_entries', 'container_templates', 'g4_npc_materialization_rules', 'g4_item_materialization_rules', 'g4_container_materialization_rules'
 ];
+const ENVIRONMENT_RUNTIME_TABLES = [
+  'environment_landmark_templates', 'environment_landmark_profiles', 'environment_landmark_rules',
+  'environment_cue_templates', 'environment_emission_rules', 'environment_trace_templates',
+  'environment_decay_profiles', 'environment_trace_creation_rules'
+];
+const ENVIRONMENT_STATUSLESS_TABLES = new Set([
+  'environment_landmark_profile_entries', 'environment_landmark_rule_g1_classes', 'environment_landmark_rule_node_types',
+  'environment_landmark_rule_landscapes', 'environment_landmark_rule_hydrology', 'environment_landmark_rule_land_use',
+  'environment_landmark_rule_routes', 'environment_trace_rule_landscapes', 'environment_trace_rule_hydrology'
+]);
 
 export const MATERIALIZATION_FOREIGN_KEYS = Object.freeze([
   ['world_revisions','parent_revision_id','world_revisions'], ['universal_categories','parent_category_id','universal_categories'],
@@ -62,6 +85,26 @@ export const MATERIALIZATION_FOREIGN_KEYS = Object.freeze([
   ['g4_npc_materialization_rules','world_revision_id','world_revisions'], ['g4_npc_materialization_rules','graph_node_id','graph_nodes'], ['g4_npc_materialization_rules','slot_rule_id','materialization_slot_rules'], ['g4_npc_materialization_rules','npc_profile_set_id','region_npc_profile_sets'],
   ['g4_item_materialization_rules','world_revision_id','world_revisions'], ['g4_item_materialization_rules','graph_node_id','graph_nodes'], ['g4_item_materialization_rules','slot_rule_id','materialization_slot_rules'], ['g4_item_materialization_rules','item_profile_id','item_profile_sets'], ['g4_item_materialization_rules','property_profile_id','property_profiles'],
   ['g4_container_materialization_rules','world_revision_id','world_revisions'], ['g4_container_materialization_rules','graph_node_id','graph_nodes'], ['g4_container_materialization_rules','slot_rule_id','materialization_slot_rules'], ['g4_container_materialization_rules','container_template_id','container_templates'], ['g4_container_materialization_rules','content_profile_id','container_content_profiles'], ['g4_container_materialization_rules','property_profile_id','property_profiles'],
+  ['environment_landmark_templates','world_revision_id','world_revisions'], ['environment_landmark_templates','category_id','universal_categories'], ['environment_landmark_templates','region_id','regions'],
+  ['environment_landmark_profiles','world_revision_id','world_revisions'], ['environment_landmark_profiles','region_id','regions'],
+  ['environment_landmark_profile_entries','profile_id','environment_landmark_profiles'], ['environment_landmark_profile_entries','template_id','environment_landmark_templates'],
+  ['environment_landmark_rules','world_revision_id','world_revisions'], ['environment_landmark_rules','profile_id','environment_landmark_profiles'], ['environment_landmark_rules','region_id','regions'],
+  ['environment_landmark_rule_landscapes','rule_id','environment_landmark_rules'], ['environment_landmark_rule_landscapes','landscape_template_id','landscape_templates'],
+  ['environment_landmark_rule_hydrology','rule_id','environment_landmark_rules'], ['environment_landmark_rule_hydrology','water_body_template_id','water_body_templates'],
+  ['environment_landmark_rule_land_use','rule_id','environment_landmark_rules'], ['environment_landmark_rule_land_use','land_use_template_id','land_use_templates'],
+  ['environment_landmark_rule_routes','rule_id','environment_landmark_rules'], ['environment_landmark_rule_routes','route_template_id','route_templates'],
+  ['environment_cue_templates','world_revision_id','world_revisions'], ['environment_cue_templates','category_id','universal_categories'],
+  ['environment_emission_rules','world_revision_id','world_revisions'], ['environment_emission_rules','cue_template_id','environment_cue_templates'], ['environment_emission_rules','emitter_category_id','universal_categories'], ['environment_emission_rules','region_id','regions'],
+  ['environment_trace_templates','world_revision_id','world_revisions'], ['environment_trace_templates','category_id','universal_categories'],
+  ['environment_decay_profiles','world_revision_id','world_revisions'],
+  ['environment_trace_creation_rules','world_revision_id','world_revisions'], ['environment_trace_creation_rules','trace_template_id','environment_trace_templates'], ['environment_trace_creation_rules','decay_profile_id','environment_decay_profiles'], ['environment_trace_creation_rules','source_category_id','universal_categories'], ['environment_trace_creation_rules','region_id','regions'],
+  ['environment_trace_rule_landscapes','rule_id','environment_trace_creation_rules'], ['environment_trace_rule_landscapes','landscape_template_id','landscape_templates'],
+  ['environment_trace_rule_hydrology','rule_id','environment_trace_creation_rules'], ['environment_trace_rule_hydrology','water_body_template_id','water_body_templates'],
+  ['travel_pace_profiles','world_revision_id','world_revisions'], ['travel_pace_profiles','region_id','regions'], ['travel_pace_profiles','source_id','source_records'],
+  ['travel_navigation_profiles','world_revision_id','world_revisions'], ['travel_navigation_profiles','region_id','regions'], ['travel_navigation_profiles','source_id','source_records'],
+  ['travel_rest_profiles','world_revision_id','world_revisions'], ['travel_rest_profiles','region_id','regions'], ['travel_rest_profiles','source_id','source_records'],
+  ['travel_interruption_profiles','world_revision_id','world_revisions'], ['travel_interruption_profiles','region_id','regions'], ['travel_interruption_profiles','source_id','source_records'],
+  ['route_travel_profile_bindings','world_revision_id','world_revisions'], ['route_travel_profile_bindings','region_id','regions'], ['route_travel_profile_bindings','route_template_id','route_templates'], ['route_travel_profile_bindings','pace_profile_id','travel_pace_profiles'], ['route_travel_profile_bindings','navigation_profile_id','travel_navigation_profiles'], ['route_travel_profile_bindings','rest_profile_id','travel_rest_profiles'], ['route_travel_profile_bindings','interruption_profile_id','travel_interruption_profiles'], ['route_travel_profile_bindings','source_id','source_records'],
   ['catalog_imports','world_revision_id','world_revisions'], ['catalog_import_tables','import_id','catalog_imports']
 ]);
 
@@ -103,7 +146,7 @@ export function validateCatalogImportManifest(manifest, { recordsByTable = null 
         if (records.length !== entry.record_count) errors.push(`TABLE_COUNT_MISMATCH:${entry.table_name}`);
         if (digestValue(records) !== entry.payload_digest) errors.push(`TABLE_DIGEST_MISMATCH:${entry.table_name}`);
         records.forEach((record, index) => {
-          if (!record || typeof record !== 'object' || Array.isArray(record) || !record.id && entry.table_name !== 'region_category_options') errors.push(`RECORD_SHAPE_INVALID:${entry.table_name}:${index}`);
+          if (!record || typeof record !== 'object' || Array.isArray(record) || (!record.id && !IDLESS_AUTHORING_TABLES.has(entry.table_name))) errors.push(`RECORD_SHAPE_INVALID:${entry.table_name}:${index}`);
         });
       }
     }
@@ -365,6 +408,66 @@ export function assessMaterializationReadiness({ manifest, recordsByTable = {}, 
   return Object.freeze({ pass: concerns.length === 0, region_id: regionId, g4_id: g4Id, concerns: Object.freeze(concerns) });
 }
 
+export function assessTravelProfileReadiness({ manifest, recordsByTable = {}, regionId, routeTemplateId, historicalYear, season, jsonSchemaValidators = {} } = {}) {
+  const concerns = [...validateCatalogImportManifest(manifest, { recordsByTable })];
+  const revisionId = manifest?.world_revision_id;
+  if (typeof routeTemplateId !== 'string' || !routeTemplateId) concerns.push('ROUTE_TEMPLATE_ID_MISSING');
+  if (!Number.isInteger(historicalYear)) concerns.push('HISTORICAL_YEAR_MISSING');
+  if (typeof season !== 'string' || !season.trim()) concerns.push('SEASON_MISSING');
+  const scoped = (table) => (recordsByTable[table] ?? []).filter((record) => record?.status === 'approved'
+    && record.world_revision_id === revisionId && record.region_id === regionId && periodApplies(record, historicalYear, season));
+  const bindings = scoped('route_travel_profile_bindings').filter((binding) => binding.route_template_id === routeTemplateId);
+  if (bindings.length === 0) concerns.push('ROUTE_TRAVEL_PROFILE_BINDING_NOT_READY');
+  const profileIds = {
+    pace_profile_id: new Set(scoped('travel_pace_profiles').map((record) => record.id)),
+    navigation_profile_id: new Set(scoped('travel_navigation_profiles').map((record) => record.id)),
+    rest_profile_id: new Set(scoped('travel_rest_profiles').map((record) => record.id)),
+    interruption_profile_id: new Set(scoped('travel_interruption_profiles').map((record) => record.id))
+  };
+  const seenBindings = new Set();
+  for (const binding of bindings) {
+    for (const [key, ids] of Object.entries(profileIds)) if (!ids.has(binding[key])) concerns.push(`TRAVEL_PROFILE_UNRESOLVED:${binding.id}:${key}`);
+    const signature = ['pace_profile_id', 'navigation_profile_id', 'rest_profile_id', 'interruption_profile_id'].map((key) => binding[key]).join(':');
+    if (seenBindings.has(signature)) concerns.push(`ROUTE_TRAVEL_PROFILE_BINDING_AMBIGUOUS:${signature}`);
+    seenBindings.add(signature);
+  }
+  validateTravelProfileProvenanceAndPolicies(concerns, recordsByTable, scoped, jsonSchemaValidators, manifest?.provenance, historicalYear, season);
+  return Object.freeze({ pass: concerns.length === 0, region_id: regionId, route_template_id: routeTemplateId, concerns: Object.freeze(concerns) });
+}
+
+export function assessEnvironmentFeatureReadiness({ manifest, recordsByTable = {}, regionId, historicalYear, season, jsonSchemaValidators = {} } = {}) {
+  const concerns = [...validateCatalogImportManifest(manifest, { recordsByTable })];
+  const revisionId = manifest?.world_revision_id;
+  if (typeof regionId !== 'string' || !regionId) concerns.push('REGION_ID_MISSING');
+  if (!Number.isInteger(historicalYear)) concerns.push('HISTORICAL_YEAR_MISSING');
+  if (typeof season !== 'string' || !season.trim()) concerns.push('SEASON_MISSING');
+  const scoped = (table) => (recordsByTable[table] ?? []).filter((record) => (ENVIRONMENT_STATUSLESS_TABLES.has(table) || record?.status === 'approved')
+    && (record.world_revision_id == null || record.world_revision_id === revisionId)
+    && (record.region_id == null || record.region_id === regionId)
+    && periodApplies(record, historicalYear, season));
+  for (const table of ENVIRONMENT_RUNTIME_TABLES) if (scoped(table).length === 0) concerns.push(`ENVIRONMENT_APPROVED_TABLE_EMPTY:${table}`);
+  const profiles = new Set(scoped('environment_landmark_profiles').map((record) => record.id));
+  const templates = new Set(scoped('environment_landmark_templates').map((record) => record.id));
+  const cueTemplates = new Set(scoped('environment_cue_templates').map((record) => record.id));
+  const traceTemplates = new Set(scoped('environment_trace_templates').map((record) => record.id));
+  const decayProfiles = new Set(scoped('environment_decay_profiles').map((record) => record.id));
+  const entries = scoped('environment_landmark_profile_entries');
+  for (const rule of scoped('environment_landmark_rules')) {
+    if (!profiles.has(rule.profile_id)) concerns.push(`ENVIRONMENT_LANDMARK_PROFILE_UNRESOLVED:${rule.id}`);
+    const profileEntries = entries.filter((entry) => entry.profile_id === rule.profile_id);
+    if (profileEntries.length === 0) concerns.push(`ENVIRONMENT_LANDMARK_PROFILE_EMPTY:${rule.profile_id}`);
+    for (const entry of profileEntries) if (!templates.has(entry.template_id)) concerns.push(`ENVIRONMENT_LANDMARK_TEMPLATE_UNRESOLVED:${rule.id}:${entry.template_id}`);
+  }
+  for (const rule of scoped('environment_emission_rules')) if (!cueTemplates.has(rule.cue_template_id)) concerns.push(`ENVIRONMENT_CUE_TEMPLATE_UNRESOLVED:${rule.id}:${rule.cue_template_id}`);
+  for (const rule of scoped('environment_trace_creation_rules')) {
+    if (!traceTemplates.has(rule.trace_template_id)) concerns.push(`ENVIRONMENT_TRACE_TEMPLATE_UNRESOLVED:${rule.id}:${rule.trace_template_id}`);
+    if (!decayProfiles.has(rule.decay_profile_id)) concerns.push(`ENVIRONMENT_DECAY_PROFILE_UNRESOLVED:${rule.id}:${rule.decay_profile_id}`);
+  }
+  validateEnvironmentRuntimePolicies(concerns, scoped, jsonSchemaValidators);
+  validateEnvironmentProvenance(concerns, recordsByTable.record_sources ?? [], scoped, manifest?.provenance, historicalYear, season);
+  return Object.freeze({ pass: concerns.length === 0, region_id: regionId, concerns: Object.freeze(concerns) });
+}
+
 function validateProvenanceAndPolicies(concerns, recordsByTable, scoped, validators, provenance, historicalYear, season) {
   const sources = recordsByTable.record_sources ?? [];
   const confidenceRank = { medium: 1, medium_high: 2, high: 3 };
@@ -380,6 +483,58 @@ function validateProvenanceAndPolicies(concerns, recordsByTable, scoped, validat
       const validator = validators[`${table}.${key}`];
       if (typeof validator !== 'function' || validator(value) !== true) concerns.push(`JSONB_SCHEMA_INVALID:${table}:${record.id}:${key}`);
     }
+  }
+}
+
+function validateTravelProfileProvenanceAndPolicies(concerns, recordsByTable, scoped, validators, provenance, historicalYear, season) {
+  const links = recordsByTable.record_sources ?? [];
+  const confidenceRank = { medium: 1, medium_high: 2, high: 3 };
+  const minimumRank = confidenceRank[provenance?.minimum_confidence] ?? Number.POSITIVE_INFINITY;
+  const allowedSourceIds = new Set(provenance?.source_ids ?? []);
+  for (const table of ['travel_pace_profiles', 'travel_navigation_profiles', 'travel_rest_profiles', 'travel_interruption_profiles', 'route_travel_profile_bindings']) for (const record of scoped(table)) {
+    const sources = links.filter((link) => link.target_table === table && link.target_record_id === record.id && link.support_type !== 'contradicts');
+    if (!sources.some((link) => allowedSourceIds.has(link.source_id) && confidenceRank[link.confidence] >= minimumRank)) concerns.push(`PROVENANCE_NOT_READY:${table}:${record.id}`);
+    if (!periodApplies(record, historicalYear, season)) concerns.push(`PERIOD_NOT_APPLICABLE:${table}:${record.id}`);
+    for (const [key, value] of Object.entries(record)) if (key.endsWith('_policy')) {
+      if (!isNonEmptyObject(value)) concerns.push(`JSONB_POLICY_EMPTY:${table}:${record.id}:${key}`);
+      const validator = validators[`${table}.${key}`];
+      if (typeof validator !== 'function' || validator(value) !== true) concerns.push(`JSONB_SCHEMA_INVALID:${table}:${record.id}:${key}`);
+    }
+  }
+}
+
+function validateEnvironmentRuntimePolicies(concerns, scoped, validators) {
+  for (const template of scoped('environment_cue_templates')) {
+    const policy = template.propagation_policy;
+    if (!isNonEmptyObject(policy) || policy.schema !== 'environment_cue_propagation_v1' || !isNonEmptyObject(policy.wind_effects)) concerns.push(`ENVIRONMENT_CUE_PROPAGATION_POLICY_INVALID:${template.id}`);
+    validateEnvironmentPolicySchema(concerns, validators, 'environment_cue_templates.propagation_policy', template.id, policy);
+  }
+  for (const rule of scoped('environment_emission_rules')) {
+    const policy = rule.weather_applicability;
+    const valid = isNonEmptyObject(policy) ? policy.schema === 'environment_weather_applicability_v1' && Array.isArray(policy.allowed_weather) && policy.allowed_weather.length > 0 && policy.allowed_weather.every((item) => typeof item === 'string' && item.trim()) : policy && typeof policy === 'object' && !Array.isArray(policy) && Object.keys(policy).length === 0;
+    if (!valid) concerns.push(`ENVIRONMENT_EMISSION_POLICY_INVALID:${rule.id}`);
+    validateEnvironmentPolicySchema(concerns, validators, 'environment_emission_rules.weather_applicability', rule.id, policy);
+  }
+  for (const profile of scoped('environment_decay_profiles')) {
+    const policy = profile.decay_policy;
+    if (!isNonEmptyObject(policy) || policy.schema !== 'environment_decay_policy_v1' || !isNonEmptyObject(policy.weather_multipliers)) concerns.push(`ENVIRONMENT_DECAY_POLICY_INVALID:${profile.id}`);
+    validateEnvironmentPolicySchema(concerns, validators, 'environment_decay_profiles.decay_policy', profile.id, policy);
+  }
+}
+
+function validateEnvironmentPolicySchema(concerns, validators, key, id, value) {
+  const validator = validators[key];
+  if (typeof validator !== 'function' || validator(value) !== true) concerns.push(`JSONB_SCHEMA_INVALID:${key}:${id}`);
+}
+
+function validateEnvironmentProvenance(concerns, links, scoped, provenance, historicalYear, season) {
+  const confidenceRank = { medium: 1, medium_high: 2, high: 3 };
+  const minimumRank = confidenceRank[provenance?.minimum_confidence] ?? Number.POSITIVE_INFINITY;
+  const allowedSourceIds = new Set(provenance?.source_ids ?? []);
+  for (const table of ENVIRONMENT_RUNTIME_TABLES) for (const record of scoped(table)) {
+    const sources = links.filter((link) => link.target_table === table && link.target_record_id === record.id && link.support_type !== 'contradicts');
+    if (!sources.some((link) => allowedSourceIds.has(link.source_id) && confidenceRank[link.confidence] >= minimumRank)) concerns.push(`PROVENANCE_NOT_READY:${table}:${record.id}`);
+    if (!periodApplies(record, historicalYear, season)) concerns.push(`PERIOD_NOT_APPLICABLE:${table}:${record.id}`);
   }
 }
 

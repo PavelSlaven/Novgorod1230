@@ -27,7 +27,7 @@ test('production composition injects explicit knowledge-source port and starts w
     PoolClass: createMemoryPostgres(),
     config: {
       runtimeBindingsModule: bindings,
-      runMigrations: true,
+      runMigrations: false,
       probeProvider: false,
       knowledgeSourceRoot: resolve(projectRoot, 'data/knowledge-source'),
       generatedKnowledgeRoot: resolve(projectRoot, 'generated/knowledge-source')

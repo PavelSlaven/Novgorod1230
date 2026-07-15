@@ -1,0 +1,194 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {
+  EnvironmentFeatureError,
+  buildEnvironmentObservationCandidates,
+  initializeEnvironmentFeatures,
+  updateEnvironmentFeatures,
+  validateEnvironmentCatalogBundle
+} from '../src/index.js';
+import { canonicalDigest } from '@rus/materialization';
+
+const catalogRecords = Object.freeze({
+  landmark_rules: [{
+    id: 'ridge-landmark-rule', profile_id: 'ridge-profile', world_revision_id: 'revision-1', region_id: 'region-1', status: 'approved', min_count: 1, max_count: 1, required: true, weight: 1
+  }],
+  landmark_profiles: [{ id: 'ridge-profile', world_revision_id: 'revision-1', region_id: 'region-1', status: 'approved' }],
+  landmark_profile_entries: [{ profile_id: 'ridge-profile', template_id: 'split-pine', weight: 1, required: true }],
+  landmark_templates: [{
+    id: 'split-pine', world_revision_id: 'revision-1', region_id: 'region-1', status: 'approved', category_id: 'environment_landmark.tree',
+    public_label_key: 'landmark_tree', icon_key: 'landmark_tree', navigation_value: 'high', distinctiveness: 'high', recognition_difficulty: 'ordinary'
+  }],
+  landmark_rule_g1_classes: [{ rule_id: 'ridge-landmark-rule', g1_class: 'rural' }],
+  landmark_rule_node_types: [{ rule_id: 'ridge-landmark-rule', node_type: 'ridge' }],
+  landmark_rule_landscapes: [{ rule_id: 'ridge-landmark-rule', landscape_template_id: 'landscape-ridge' }],
+  landmark_rule_hydrology: [], landmark_rule_land_use: [], landmark_rule_routes: [],
+  cue_templates: [{
+    id: 'smoke-cue', world_revision_id: 'revision-1', category_id: 'environment_cue.smoke', status: 'approved', sense: 'sight', public_label_key: 'cue_smoke',
+    icon_key: 'cue_smoke', base_intensity: 1, recognition_difficulty: 'ordinary', navigation_value: 'none', fading_duration_minutes: 30, expiry_duration_minutes: 60,
+    propagation_policy: { schema: 'environment_cue_propagation_v1', wind_effects: { west: { intensity_multiplier: 1.2, drift_band: 'eastward' }, east: { intensity_multiplier: 0.8, drift_band: 'westward' } } }
+  }],
+  emission_rules: [{
+    id: 'hearth-smoke-rule', world_revision_id: 'revision-1', emitter_category_id: 'environment_emitter.hearth', status: 'approved', source_type: 'hearth', cue_template_id: 'smoke-cue', weather_applicability: {}
+  }],
+  trace_templates: [{ id: 'cart-track', world_revision_id: 'revision-1', category_id: 'environment_trace.cart', status: 'approved', public_label_key: 'trace_cart', icon_key: 'trace_cart', recognition_difficulty: 'ordinary', navigation_value: 'none' }],
+  trace_creation_rules: [{
+    id: 'cart-track-rule', world_revision_id: 'revision-1', source_category_id: 'environment_source.cart', status: 'approved', source_kind: 'movement', movement_mode: 'cart', trace_template_id: 'cart-track', decay_profile_id: 'wet-ground-decay'
+  }],
+  decay_profiles: [{
+    id: 'wet-ground-decay', world_revision_id: 'revision-1', status: 'approved', readable_at_or_above: 0.7,
+    faint_at_or_above: 0.2, decay_per_minute: 0.01, precipitation_multiplier: 2,
+    decay_policy: { schema: 'environment_decay_policy_v1', weather_multipliers: { clear: 1, rain: 2, snow: 0.25, mud: 1.5 } }
+  }],
+  trace_rule_landscapes: [], trace_rule_hydrology: []
+});
+
+function approvedCatalog(overrides = {}) {
+  const bundle = {
+    schema_version: 'environment-catalog.v2',
+    world_revision_id: 'revision-1',
+    region_id: 'region-1',
+    historical_period_id: 'period-1',
+    regional_permissions: ['region-1'],
+    source_refs: ['source:environment-1'],
+    readiness_report: { pass: true },
+    ...catalogRecords,
+    ...overrides
+  };
+  const { catalog_digest: ignored, ...digestPayload } = bundle;
+  return Object.freeze({ ...bundle, catalog_digest: overrides.catalog_digest ?? canonicalDigest(digestPayload) });
+}
+
+const catalog = approvedCatalog();
+
+function initializationInput(overrides = {}) {
+  const seedContext = {
+    party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', g1_id: 'g1-1', trigger: 'g1_first_activation',
+    occurrence: 0, catalog_digest: catalog.catalog_digest, environment_materializer_version: 'environment_landmarks_v1',
+    rng_algorithm_id: 'mulberry32_v1'
+  };
+  return {
+    party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', historical_frame: { season: 'summer' }, g1_id: 'g1-1',
+    g1_graph_snapshot: { g1_class: 'rural', placement_candidates: [{ binding_id: 'g4-ridge', binding_type: 'g4_node', node_type: 'ridge', landscape_template_id: 'landscape-ridge', weight: 1 }] },
+    environment_snapshot: { weather: 'clear', wind: 'west' }, source_snapshot: { active_emitters: [] },
+    existing_environment_state: { state_version: 0, applied_update_keys: [], landmarks: [], cues: [], traces: [], baselines: [] }, catalog_bundle: catalog,
+    catalog_digest: catalog.catalog_digest, materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1',
+    seed_context: seedContext, trigger: 'g1_first_activation', occurrence: 0, ...overrides
+  };
+}
+
+test('environment landmarks materializes a deterministic baseline once and never rematerializes it', () => {
+  const first = initializeEnvironmentFeatures(initializationInput());
+  const repeated = initializeEnvironmentFeatures(initializationInput({
+    existing_environment_state: first.environment_state
+  }));
+  assert.equal(first.created_landmarks.length, 1);
+  assert.equal(first.created_landmarks[0].template_id, 'split-pine');
+  assert.equal(repeated.created_landmarks.length, 0);
+  assert.deepEqual(repeated.environment_state.landmarks, first.environment_state.landmarks);
+});
+
+test('baseline initialization never starts cue or trace lifecycle implicitly', () => {
+  const initialized = initializeEnvironmentFeatures(initializationInput({
+    source_snapshot: {
+      active_emitters: [{ emitter_id: 'camp-hearth-1', source_type: 'hearth', source_kind: 'camp', source_id: 'hidden-camp-1', location_binding: 'g4-ridge' }],
+      initial_trace_emissions: [],
+      event_emissions: []
+    }
+  }));
+  assert.deepEqual(initialized.created_cues, []);
+  assert.deepEqual(initialized.created_traces, []);
+  assert.deepEqual(initialized.environment_state.cues, []);
+  assert.deepEqual(initialized.environment_state.traces, []);
+});
+
+test('environment baseline rejects an unbound catalog digest, world revision, region, period or permission', () => {
+  assert.throws(() => initializeEnvironmentFeatures(initializationInput({ catalog_digest: '0'.repeat(64) })), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_CATALOG_DIGEST_MISMATCH');
+  assert.throws(() => initializeEnvironmentFeatures(initializationInput({ world_revision_id: 'revision:wrong' })), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_CATALOG_WORLD_REVISION_MISMATCH');
+  assert.throws(() => initializeEnvironmentFeatures(initializationInput({ region_id: 'region:wrong' })), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_CATALOG_REGION_MISMATCH');
+  assert.throws(() => initializeEnvironmentFeatures(initializationInput({ historical_period_id: 'period:wrong' })), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_CATALOG_PERIOD_MISMATCH');
+  const withoutPermission = approvedCatalog({ regional_permissions: [] });
+  assert.throws(() => initializeEnvironmentFeatures(initializationInput({ catalog_bundle: withoutPermission, catalog_digest: withoutPermission.catalog_digest })), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_REGIONAL_PERMISSION_MISSING');
+  const withoutSource = approvedCatalog({ source_refs: [] });
+  assert.throws(() => initializeEnvironmentFeatures(initializationInput({ catalog_bundle: withoutSource, catalog_digest: withoutSource.catalog_digest })), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_CATALOG_PROVENANCE_MISSING');
+  const unready = approvedCatalog({ readiness_report: { pass: false } });
+  assert.throws(() => initializeEnvironmentFeatures(initializationInput({ catalog_bundle: unready, catalog_digest: unready.catalog_digest })), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_CATALOG_UNREADY');
+  const draftRecord = approvedCatalog({ landmark_rules: [{ ...catalogRecords.landmark_rules[0], status: 'draft' }] });
+  assert.throws(() => initializeEnvironmentFeatures(initializationInput({ catalog_bundle: draftRecord, catalog_digest: draftRecord.catalog_digest })), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_CATALOG_RECORD_UNAPPROVED');
+  const foreignRevision = approvedCatalog({ landmark_rules: [{ ...catalogRecords.landmark_rules[0], world_revision_id: 'revision:wrong' }] });
+  assert.throws(() => initializeEnvironmentFeatures(initializationInput({ catalog_bundle: foreignRevision, catalog_digest: foreignRevision.catalog_digest })), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_CATALOG_RECORD_REVISION_MISMATCH');
+  const danglingProfileEntry = approvedCatalog({ landmark_profile_entries: [{ ...catalogRecords.landmark_profile_entries[0], profile_id: 'missing-profile' }] });
+  assert.throws(() => initializeEnvironmentFeatures(initializationInput({ catalog_bundle: danglingProfileEntry, catalog_digest: danglingProfileEntry.catalog_digest })), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_CATALOG_REFERENCE_MISSING');
+  assert.equal(validateEnvironmentCatalogBundle(initializationInput()).pass, true);
+  assert.equal(validateEnvironmentCatalogBundle(initializationInput({ catalog_digest: '0'.repeat(64) })).errors[0].code, 'ENVIRONMENT_CATALOG_DIGEST_MISMATCH');
+});
+
+test('environment baseline requires explicit approved selection weights and count bounds', () => {
+  const missingTemplateWeight = approvedCatalog({ landmark_profile_entries: [{ ...catalogRecords.landmark_profile_entries[0], weight: null }] });
+  assert.throws(() => initializeEnvironmentFeatures(initializationInput({ catalog_bundle: missingTemplateWeight, catalog_digest: missingTemplateWeight.catalog_digest, seed_context: { ...initializationInput().seed_context, catalog_digest: missingTemplateWeight.catalog_digest } })), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_CANDIDATE_WEIGHT_INVALID');
+  assert.throws(() => initializeEnvironmentFeatures(initializationInput({ g1_graph_snapshot: { g1_class: 'rural', placement_candidates: [{ binding_id: 'g4-ridge', binding_type: 'g4_node', node_type: 'ridge', landscape_template_id: 'landscape-ridge', weight: null }] } })), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_CANDIDATE_WEIGHT_INVALID');
+  const missingCountBound = approvedCatalog({ landmark_rules: [{ ...catalogRecords.landmark_rules[0], min_count: null }] });
+  assert.throws(() => initializeEnvironmentFeatures(initializationInput({ catalog_bundle: missingCountBound, catalog_digest: missingCountBound.catalog_digest, seed_context: { ...initializationInput().seed_context, catalog_digest: missingCountBound.catalog_digest } })), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_INPUT_INVALID');
+});
+
+test('landmark baseline uses only the approved profile chain and declared scope bindings', () => {
+  const profileMissing = approvedCatalog({ landmark_profiles: [] });
+  assert.throws(() => initializeEnvironmentFeatures(initializationInput({ catalog_bundle: profileMissing, catalog_digest: profileMissing.catalog_digest, seed_context: { ...initializationInput().seed_context, catalog_digest: profileMissing.catalog_digest } })), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_CATALOG_REFERENCE_MISSING');
+  assert.throws(() => initializeEnvironmentFeatures(initializationInput({ g1_graph_snapshot: { placement_candidates: [{ binding_id: 'g4-ridge', binding_type: 'g4_node', node_type: 'ridge', landscape_template_id: 'landscape-ridge', weight: 1 }] } })), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_SCOPE_INPUT_INCOMPLETE');
+  const outsideScope = initializeEnvironmentFeatures(initializationInput({ g1_graph_snapshot: { g1_class: 'urban', placement_candidates: [{ binding_id: 'g4-ridge', binding_type: 'g4_node', node_type: 'ridge', landscape_template_id: 'landscape-ridge', weight: 1 }] } }));
+  assert.deepEqual(outsideScope.created_landmarks, []);
+});
+
+test('environment update rejects stale versions and replays an idempotency key without a second mutation', () => {
+  const initialized = initializeEnvironmentFeatures(initializationInput());
+  const update = {
+    party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', g1_id: 'g1-1', base_state_version: 1,
+    current_environment_state: initialized.environment_state, elapsed_time: { minutes: 0 }, weather_before: 'clear', weather_after: 'clear',
+    active_emitters: [], trace_emissions: [], event_emissions: [], catalog_bundle: catalog, catalog_digest: catalog.catalog_digest,
+    materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1', idempotency_key: 'turn:versioned'
+  };
+  const first = updateEnvironmentFeatures(update);
+  assert.equal(first.environment_state.state_version, 2);
+  const replay = updateEnvironmentFeatures({ ...update, current_environment_state: first.environment_state });
+  assert.equal(replay.status, 'replayed');
+  assert.equal(replay.environment_state.state_version, 2);
+  assert.throws(() => updateEnvironmentFeatures({ ...update, idempotency_key: 'turn:stale', current_environment_state: first.environment_state }), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_STATE_VERSION_MISMATCH');
+});
+
+test('environment cue lifecycle rejects an incomplete approved template instead of using defaults', () => {
+  const initialized = initializeEnvironmentFeatures(initializationInput());
+  const incompleteCatalog = approvedCatalog({ cue_templates: [{ ...catalogRecords.cue_templates[0], base_intensity: null }] });
+  assert.throws(() => updateEnvironmentFeatures({
+    party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', g1_id: 'g1-1', base_state_version: 1,
+    current_environment_state: initialized.environment_state, elapsed_time: { minutes: 0 }, weather_before: 'clear', weather_after: 'clear',
+    active_emitters: [{ emitter_id: 'camp-hearth-1', emitter_category_id: 'environment_emitter.hearth', source_type: 'hearth', source_kind: 'camp', source_id: 'hidden-camp-1', location_binding: 'g4-ridge', bearing_band: 'north', distance_band: 'near', strength_band: 'moderate', propagation_wind: 'west' }],
+    trace_emissions: [], event_emissions: [], catalog_bundle: incompleteCatalog, catalog_digest: incompleteCatalog.catalog_digest,
+    materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1', idempotency_key: 'turn:incomplete-cue'
+  }), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_CUE_TEMPLATE_INVALID');
+});
+
+test('environment cue lifecycle blocks an emitter without formal observation bands', () => {
+  const initialized = initializeEnvironmentFeatures(initializationInput());
+  assert.throws(() => updateEnvironmentFeatures({
+    party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', g1_id: 'g1-1', base_state_version: 1,
+    current_environment_state: initialized.environment_state, elapsed_time: { minutes: 0 }, weather_before: 'clear', weather_after: 'clear',
+    active_emitters: [{ emitter_id: 'camp-hearth-1', emitter_category_id: 'environment_emitter.hearth', source_type: 'hearth', source_kind: 'camp', source_id: 'hidden-camp-1', location_binding: 'g4-ridge' }],
+    trace_emissions: [], event_emissions: [], catalog_bundle: catalog, catalog_digest: catalog.catalog_digest,
+    materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1', idempotency_key: 'turn:missing-observation'
+  }), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_EMITTER_OBSERVATION_INVALID');
+});
+
+test('environment cues require an active approved source and never disclose it in observation candidates', () => {
+  const initialized = initializeEnvironmentFeatures(initializationInput());
+  const result = updateEnvironmentFeatures({
+    party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', g1_id: 'g1-1', base_state_version: 1,
+    current_environment_state: initialized.environment_state, elapsed_time: { minutes: 0 }, weather_before: 'clear', weather_after: 'clear',
+    active_emitters: [{ emitter_id: 'camp-hearth-1', emitter_category_id: 'environment_emitter.hearth', source_type: 'hearth', source_kind: 'camp', source_id: 'hidden-camp-1', location_binding: 'g4-ridge', bearing_band: 'north', distance_band: 'near', strength_band: 'moderate', propagation_wind: 'west' }],
+    trace_emissions: [], event_emissions: [], catalog_bundle: catalog, catalog_digest: catalog.catalog_digest,
+    materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1', idempotency_key: 'turn-1'
+  });
+  const observations = buildEnvironmentObservationCandidates({ environment_state: result.environment_state, environment_snapshot: { weather: 'clear', wind: 'west' } });
+  assert.equal(result.created_cues.length, 1);
+  assert.equal(observations.length, 2);
+  assert.equal(JSON.stringify(observations).includes('hidden-camp-1'), false);
+});

@@ -588,7 +588,8 @@ const approvedTurnImports = new Set([
   '@rus/presentation',
     '@rus/narration',
     '@rus/materialization',
-    '@rus/pipeline-engine'
+    '@rus/pipeline-engine',
+    '@rus/travel'
 ]);
 for (const file of turnFiles) {
   const rel = relative(root, file).replaceAll('\\', '/');

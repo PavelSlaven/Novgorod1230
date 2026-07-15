@@ -1,6 +1,6 @@
 import { deepFreeze } from '@rus/kernel';
-import { detectHiddenLeaks } from '@rus/visibility-knowledge-memory';
-import { INVENTORY_PANEL_SCHEMA, PANEL_KINDS, PANEL_SCHEMA, PRESENTATION_VERSION } from './contracts.js';
+import { buildTravelVisibleProjection, detectHiddenLeaks } from '@rus/visibility-knowledge-memory';
+import { INVENTORY_PANEL_SCHEMA, PANEL_KINDS, PANEL_SCHEMA, PRESENTATION_VERSION, TRAVEL_PANEL_SCHEMA } from './contracts.js';
 
 export function createPanel(kind, data = {}, options = {}) {
   if (!PANEL_KINDS.includes(kind)) throw new TypeError(`Unsupported panel kind: ${kind}`);
@@ -43,6 +43,27 @@ export function createInventoryPanelContract(input = {}) {
       quick_containers: projectEntries(zones.quick_containers), primary_container: primary, external_load: projectEntries(zones.external_load)
     },
     warnings: Array.isArray(input.warnings) ? input.warnings.map((warning) => ({ message: String(warning?.player_message ?? '').trim() })).filter((warning) => warning.message) : []
+  });
+}
+/** Projects a passed player-safe travel projection; route mechanics stay outside presentation. */
+export function createTravelPanelContract(projection = {}) {
+  const visible = buildTravelVisibleProjection(projection);
+  return deepFreeze({
+    version: PRESENTATION_VERSION,
+    schema: TRAVEL_PANEL_SCHEMA,
+    status: visible.travel_status,
+    destination: visible.visible_destination,
+    perceived_position: visible.perceived_position,
+    orientation_confidence_band: visible.orientation_confidence_band,
+    recognized_landmarks: visible.recognized_landmarks,
+    unrecognized_observations: visible.unrecognized_observations,
+    visible_cues: visible.visible_cues,
+    visible_traces: visible.visible_traces,
+    estimated_elapsed_time: visible.estimated_elapsed_time,
+    remaining_daylight_band: visible.remaining_daylight_band,
+    known_route_options: visible.known_route_options,
+    obvious_stop_reason: visible.obvious_stop_reason,
+    interruption_options: visible.interruption_options
   });
 }
 export function createPeoplePanel(data, options) { return createPanel('people', data, options); }

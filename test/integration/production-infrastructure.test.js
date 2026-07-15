@@ -29,6 +29,8 @@ function createMemoryPostgres() {
   return { db, Pool };
 }
 
+const PG_MEM_MIGRATION_OPTIONS = Object.freeze({ supportsDeferrableConstraints: false });
+
 async function createProviderServer(t) {
   const calls = [];
   const server = createServer(async (request, response) => {
@@ -49,7 +51,7 @@ test('production PostgreSQL adapters persist sessions, enforce world read-only, 
     env: { RUS_WORLD_DATABASE_URL: 'postgres://memory', RUS_PARTY_DATABASE_URL: 'postgres://memory' },
     PoolClass: Pool
   });
-  await runPartyRuntimeMigrations(pools.partyPool);
+  await runPartyRuntimeMigrations(pools.partyPool, PG_MEM_MIGRATION_OPTIONS);
   await pools.worldPool.query('CREATE SCHEMA world_base');
   await pools.worldPool.query('CREATE TABLE world_base.integration_probe (id text primary key, title text not null)');
   await pools.worldPool.query("INSERT INTO world_base.integration_probe (id, title) VALUES ('probe-1', 'Новгород')");
@@ -111,7 +113,7 @@ test('production provider adapter uses role runtime transport and exact HTTP pay
 test('production Stage 25 ports execute the actual Stage 24 party_runtime_v2 plan', async () => {
   const { Pool } = createMemoryPostgres();
   const pool = new Pool();
-  await runPartyRuntimeMigrations(pool);
+  await runPartyRuntimeMigrations(pool, PG_MEM_MIGRATION_OPTIONS);
   const fixture = makeStage24Fixture();
   const input = structuredClone(fixture.input);
   input.party_creation_context.party_id = 'party-stage25-production-path';
@@ -161,7 +163,7 @@ test('production first-entry repository fails closed on unsupported materializer
 test('production first-entry repository commits the generic materializer proposed write set', async () => {
   const { Pool } = createMemoryPostgres();
   const pool = new Pool();
-  await runPartyRuntimeMigrations(pool);
+  await runPartyRuntimeMigrations(pool, PG_MEM_MIGRATION_OPTIONS);
   const partyId = 'party-generic-materializer-path';
   await pool.query(`INSERT INTO party_runtime.parties
     (party_id,schema_version,world_revision_id,world_catalog_digest,materializer_version,rng_version,command_catalog_digest,profile_bundle_digest,status)
@@ -207,7 +209,7 @@ test('production first-entry repository commits the generic materializer propose
 test('production turn commit persists bounded trace, advances state atomically and enforces replay/conflict/rollback/FKs', async () => {
   const { Pool } = createMemoryPostgres();
   const pool = new Pool();
-  await runPartyRuntimeMigrations(pool);
+  await runPartyRuntimeMigrations(pool, PG_MEM_MIGRATION_OPTIONS);
   const insertParty = (partyId) => pool.query(`INSERT INTO party_runtime.parties
     (party_id,schema_version,world_revision_id,world_catalog_digest,materializer_version,rng_version,command_catalog_digest,profile_bundle_digest,status)
     VALUES ($1,2,'revision','catalog','code_materializer_v2','mulberry32_v1','commands','profiles','active')`, [partyId]);
@@ -252,7 +254,7 @@ test('production turn commit persists bounded trace, advances state atomically a
 test('runTurnWorkflow preserves the code-owned plan seal through the production repository', async () => {
   const { Pool } = createMemoryPostgres();
   const pool = new Pool();
-  await runPartyRuntimeMigrations(pool);
+  await runPartyRuntimeMigrations(pool, PG_MEM_MIGRATION_OPTIONS);
   await pool.query("INSERT INTO party_runtime.parties (party_id,schema_version,world_revision_id,world_catalog_digest,materializer_version,rng_version,command_catalog_digest,profile_bundle_digest,status) VALUES ('party-e2e',2,'revision','catalog','code_materializer_v2','mulberry32_v1','commands','profiles','active')");
   await pool.query("INSERT INTO party_runtime.party_state_snapshots (party_id,state_version,state_payload,state_digest) VALUES ('party-e2e',0,'{\"existing\":true}','initial')");
   const visible = { version: 1, schema: 'visible_context_package', visible_scene: 'Двор виден.', visible_changes: [], sensory_details: [], visible_npc: [], visible_objects: [], known_context: [], uncertainties: [], allowed_tensions: [], do_not_imply: [] };
@@ -275,7 +277,7 @@ test('runTurnWorkflow preserves the code-owned plan seal through the production 
 test('production autonomous commit verifies version pins, digests and deterministic retry', async () => {
   const { Pool } = createMemoryPostgres();
   const pool = new Pool();
-  await runPartyRuntimeMigrations(pool);
+  await runPartyRuntimeMigrations(pool, PG_MEM_MIGRATION_OPTIONS);
   const pins = { world_revision_id: 'revision-auto', catalog_digest: 'a'.repeat(64), command_catalog_digest: 'b'.repeat(64), profile_bundle_digest: 'c'.repeat(64) };
   await pool.query(`INSERT INTO party_runtime.parties (party_id,schema_version,world_revision_id,world_catalog_digest,materializer_version,rng_version,command_catalog_digest,profile_bundle_digest,status) VALUES ('party-auto',2,$1,$2,'code_materializer_v2','mulberry32_v1',$3,$4,'active')`, [pins.world_revision_id, pins.catalog_digest, pins.command_catalog_digest, pins.profile_bundle_digest]);
   await pool.query("INSERT INTO party_runtime.party_state_snapshots (party_id,state_version,state_payload,state_digest) VALUES ('party-auto',0,'{\"existing\":true}','initial')");
@@ -307,7 +309,7 @@ test('builtin production composition runs with PostgreSQL-backed session and del
   const root = await createProductionCompositionRoot({
     env,
     PoolClass: Pool,
-    config: { runtimeBindingsModule: bindings, runMigrations: true, probeProvider: true },
+    config: { runtimeBindingsModule: bindings, runMigrations: true, partyRuntimeMigrationOptions: PG_MEM_MIGRATION_OPTIONS, probeProvider: true },
     now: () => '2026-07-12T12:00:00.000Z'
   });
   t.after(() => root.close());

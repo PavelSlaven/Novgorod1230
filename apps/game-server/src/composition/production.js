@@ -13,7 +13,7 @@ import { loadRuntimeBindings } from '../runtime/load-bindings.js';
 export async function createProductionCompositionRoot({ env = process.env, config = {}, PoolClass, now } = {}) {
   const pools = createPostgresPools({ env, PoolClass });
   try {
-    if (config.runMigrations !== false) await runPartyRuntimeMigrations(pools.partyPool);
+    if (config.runMigrations !== false) await runPartyRuntimeMigrations(pools.partyPool, config.partyRuntimeMigrationOptions);
     const worldBase = createPostgresWorldBaseReader({ pool: pools.worldPool });
     const llmRoleRunner = createProductionLlmRoleRunner({ env, telemetry: config.telemetry ?? null });
     const knowledgeSource = createKnowledgeSourceReader({
@@ -31,7 +31,7 @@ export async function createProductionCompositionRoot({ env = process.env, confi
     const basePorts = Object.freeze({ knowledgeSource, worldBase, llmRoleRunner, worldPool: pools.worldPool, partyPool: pools.partyPool });
     const bindings = await loadRuntimeBindings(config.runtimeBindingsModule ?? env.RUS_RUNTIME_BINDINGS_MODULE, { env, config, ports: basePorts });
     const stage25 = createPostgresStage25Ports({ pool: pools.partyPool, postcommitProjector: bindings.stage25PostcommitProjector });
-    const ports = Object.freeze({ ...basePorts, stage25 });
+    const ports = Object.freeze({ ...basePorts, stage25, travel: bindings.travelPorts });
     const newGameWorkflow = createNewGameWorkflowAdapter({
       ...(bindings.newGameRunner ? { runner: bindings.newGameRunner } : {}),
       optionsFactory: (input) => bindings.newGameOptionsFactory(input, ports),

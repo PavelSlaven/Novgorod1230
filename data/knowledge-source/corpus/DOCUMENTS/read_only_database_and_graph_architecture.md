@@ -42,6 +42,8 @@ Read-only runtime слой содержит:
 - items, containers, inventory и ownership;
 - decisions, change sets, autonomous updates и events;
 - materialization runs/choices и validation traces;
+- journeys, journey legs и node/edge-progress positions;
+- party-scoped landmarks, cues и traces;
 - public-screen read models и delivery state.
 
 Party database может обслуживать несколько партий, но каждая доменная запись изолирована `party_id`; внутренние ссылки защищены FK. Ссылки в отдельную `world_base` проверяются по ID, revision и digest на commit gate.
@@ -160,6 +162,8 @@ Materializer сначала проверяет committed baseline для `(party
 - Character knowledge хранит exact/rough/rumor/inferred/false belief и source.
 - Visible projection содержит только доступное через position, visibility, light, access и knowledge.
 - Narrator получает только approved visible context и не добавляет факты.
+
+Для путешествия visible layer содержит только воспринимаемую позицию, известные варианты, наблюдения, confidence band и разрешённые действия. Actual edge/progress, расхождение восприятия, source/binding cue, catalog pins и audit data остаются fact state.
 
 ## 9. Запрещённые смешения
 

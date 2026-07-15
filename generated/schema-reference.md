@@ -110,6 +110,7 @@ Release: `0.23.0-migration.24`
 | `time_light_code_precheck` | `STAGE17_PRECHECK_SCHEMA` | `packages/contracts/src/time-knowledge-hidden-boundary.js` |
 | `time_light_consistency_audit` | `STAGE17_AUDIT_SCHEMA` | `packages/contracts/src/time-knowledge-hidden-boundary.js` |
 | `time_light_consistency_input` | `STAGE17_INPUT_SCHEMA` | `packages/contracts/src/time-knowledge-hidden-boundary.js` |
+| `travel_panel` | `TRAVEL_PANEL_SCHEMA` | `packages/presentation/src/read-models/contracts.js` |
 | `turn_screen` | `TURN_SCREEN_SCHEMA` | `packages/presentation/src/read-models/contracts.js` |
 | `visible_context_audit` | `STAGE21_OUTPUT_SCHEMA` | `packages/contracts/src/visible-context-boundary.js` |
 | `visible_context_audit_approval` | `VISIBLE_CONTEXT_AUDIT_APPROVAL_SCHEMA` | `packages/contracts/src/schema-names.js` |
@@ -146,6 +147,23 @@ Release: `0.23.0-migration.24`
 | `schemas/materialization/container-template-inventory-profiles-v1.schema.json` | json | 799 | `6e4fac710cc9fbf56c7571bd7fc62902b866269d3d5b9dd707a4def3e5ee4c2a` |
 | `schemas/materialization/container-template-source-bindings-v1.schema.json` | json | 1334 | `078553f29a93043a11491ba4eedc96958bd36ea402e65169b95289e968233fa3` |
 | `schemas/materialization/container-templates-v1.schema.json` | json | 895 | `ea116627196d44ac915835c010f9e6eef4f23a729bfc7b2df0d76832bb1b72bf` |
+| `schemas/materialization/environment-cue-templates-v1.schema.json` | json | 1441 | `1c256bf06d395323f5839f38300dd308ced1325025ab0c8dcf7ad222f165f12b` |
+| `schemas/materialization/environment-decay-profiles-v1.schema.json` | json | 897 | `dd1969de089e1c73041dcae9649f26c0d67402c1ed269473e4748a234454d199` |
+| `schemas/materialization/environment-emission-rules-v1.schema.json` | json | 1127 | `b1c759a332b9bab0541d9abd1d442f42441ebc5ba76e41fbba3aeaca9f49fce5` |
+| `schemas/materialization/environment-landmark-profile-entries-v1.schema.json` | json | 469 | `36c52112b068b8fbb24d33c9a6f14e128f98a6ea7b8bff1b46be93eab62ff2f1` |
+| `schemas/materialization/environment-landmark-profiles-v1.schema.json` | json | 577 | `955e369dcf4c9acee5cea80d79e019c2a3bde7d5d2e83b70b25e591eb0666ce4` |
+| `schemas/materialization/environment-landmark-rule-g1-classes-v1.schema.json` | json | 315 | `bc93a99fff33a6be2d185ac9033aa59437b4c1f13385fced0bb428953eb2ff25` |
+| `schemas/materialization/environment-landmark-rule-hydrology-v1.schema.json` | json | 342 | `5c1cc46bd903e4b71691be68dd574dfda99dcf686a1df74d8c55e6c1ea2698ac` |
+| `schemas/materialization/environment-landmark-rule-land-use-v1.schema.json` | json | 337 | `0a1d3696ecb652ca78105af99476c0a210d24dd42aad0d1b2dd636b9a8f37159` |
+| `schemas/materialization/environment-landmark-rule-landscapes-v1.schema.json` | json | 341 | `a8a511da75dccae946df0997f8e1f63891f74bc4a2e3924547af57451ac384a4` |
+| `schemas/materialization/environment-landmark-rule-node-types-v1.schema.json` | json | 317 | `4b533b2c81d3d2bf2a5b193baf64265b3410a85169a7af1434784a4457d477da` |
+| `schemas/materialization/environment-landmark-rule-routes-v1.schema.json` | json | 329 | `d29feca3991127a67afcac30caf1c828b093fc701cab4fb0d9403a8a6accb252` |
+| `schemas/materialization/environment-landmark-rules-v1.schema.json` | json | 832 | `15b9fb0eb2b87c8669b42f195d18e72154b8e770d7887f2afea66b3a7a59c928` |
+| `schemas/materialization/environment-landmark-templates-v1.schema.json` | json | 1059 | `2722f470e771090c9dc6fa9300da8030b0918a408aa789f8ce86e0cc74fec90b` |
+| `schemas/materialization/environment-trace-creation-rules-v1.schema.json` | json | 976 | `f57d20ce53aab48b8765f4867d7d5d3e6a9138957902c50591d4cf9ba6d2aa7e` |
+| `schemas/materialization/environment-trace-rule-hydrology-v1.schema.json` | json | 339 | `743767574ae63e9d8dd0963288b9a05faca8617e5341a5f6b324a85594f1bd34` |
+| `schemas/materialization/environment-trace-rule-landscapes-v1.schema.json` | json | 338 | `26367b33a745b54e716983325d91827cf3092befa6d29986a6fe816f4473bf4d` |
+| `schemas/materialization/environment-trace-templates-v1.schema.json` | json | 803 | `0b2cc6456b2a4a4d994b8be7d3e114b40e95e01b1dc4a848619e0be50fd7e055` |
 | `schemas/materialization/item-classification-migration-inventory-v1.schema.json` | json | 738 | `cbcfee73a572cb55bc1861f7444e44666ac2453abd5b341b7b36d5a9d1fc5289` |
 | `schemas/materialization/item-profile-entries-v1.schema.json` | json | 819 | `9ed6084519ada39b8f4bcb497d5df91f243d3d7a6c13b5d28697fc33983b1c61` |
 | `schemas/materialization/item-profile-sets-v1.schema.json` | json | 668 | `da28c42211e937f4d186d3750b95b92762847ee15a0e9c07b8f75248a0f4cd90` |
@@ -164,7 +182,12 @@ Release: `0.23.0-migration.24`
 | `schemas/materialization/region-category-options-v1.schema.json` | json | 825 | `0acabbad107562f88424ff0215d9619d26f63aaaa829ba75e274708fce11da0e` |
 | `schemas/materialization/region-equipment-profile-entries-v1.schema.json` | json | 649 | `92ff1c9a1cb43b62770c178af635a3cb9ed18a043a9fb0d2a1deb8b2d8fafeee` |
 | `schemas/materialization/region-equipment-profiles-v1.schema.json` | json | 454 | `33b1f3a2febb0ca72dd388804dd06501703a71ea913fa7cf48fdd9dff92976b9` |
+| `schemas/materialization/route-travel-profile-bindings-v1.schema.json` | json | 977 | `19b437f002a559cbc6b43aa7bf26a4cbe1090f8d8637f8a33b31e1a9b71a4448` |
 | `schemas/materialization/source-records-v1.schema.json` | json | 697 | `037a2be66fdce964f9bde13c3d4031c0a1b4c9c2ebb7b26e3cf72aa3e61a9b1c` |
+| `schemas/materialization/travel-interruption-profiles-v1.schema.json` | json | 1076 | `5ef53fa0dae34fc8d2ab9e693b40fe4a58389db94b194e5beebeeb8f4e27f4ba` |
+| `schemas/materialization/travel-navigation-profiles-v1.schema.json` | json | 895 | `19bcda8a737a915bed3d5babd86a11f8935deb5b229e59a6cbf9cc2919775cb1` |
+| `schemas/materialization/travel-pace-profiles-v1.schema.json` | json | 805 | `eff7755079d5b70bbf22139d61fe080817bf296233c099146a9f44857c09cbad` |
+| `schemas/materialization/travel-rest-profiles-v1.schema.json` | json | 924 | `35269ff33e73666666115eed57d354d6c89ccbed2821d5910b9b3f77e854ecdd` |
 | `schemas/materialization/universal-categories-v1.schema.json` | json | 905 | `b2110a8b777c2d26049337f07826c254eb1f9854535ae7990f4c2f40bc4df972` |
 | `schemas/materialization/universal-category-relations-v1.schema.json` | json | 512 | `31fd11130f43de9a61d58b8fde877527649eaad8915af99225f982033b179f38` |
 | `schemas/materialization/universal-parameter-definitions-v1.schema.json` | json | 1050 | `0c646047b8e48a43b7c5250d264cf27b84604810f754f41d4504fa1360347748` |
@@ -173,6 +196,8 @@ Release: `0.23.0-migration.24`
 | `schemas/materialization/world-materialization-result-v2.schema.json` | json | 5190 | `92ee591037949a9e55ded6fe2813516718b5ade28b7cd7c8b592185c356db163` |
 | `schemas/materialization/world-revisions-v1.schema.json` | json | 571 | `47693c523b2000430235dafd8e7a5669355cf67208c53f6f497f95a985df4214` |
 | `schemas/party-db/001_party_runtime.sql` | sql | 19734 | `5cab24b65540da3f9857c2e70cd9e93c9761bac439839dbde1940cde24b5f6a1` |
+| `schemas/party-db/002_environment_landmarks.sql` | sql | 4329 | `d0a6e73aabb3eebbaf1a9cdb5c800493cd4346e35d73bea548b80fd701d3205b` |
+| `schemas/party-db/003_travel_runtime.sql` | sql | 5128 | `d8253307afae902476d45135452bbda6b598bcf43a3a2c400ddd1138669f1f85` |
 | `schemas/world-base/world-base-source-bundle.schema.json` | json | 1447 | `358430badf2821197ffc74d4600b2cc2b153d1a1a141020e998650cb1c325dc2` |
 | `schemas/world-catalogs/g1-boundary-contract.schema.json` | json | 1199 | `9a255c612dc382e4ead28c5566ae6583878840651904a134f364bb1b1291f3aa` |
 | `schemas/world-catalogs/g1-cell-package.schema.json` | json | 1794 | `d917ec67f99c965c0257f7dbc1b2498e123aff756f4b71c68e7da0f1b6fe8381` |

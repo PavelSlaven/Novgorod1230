@@ -27,6 +27,28 @@ import propertyProfileRulesSchema from '../../../schemas/materialization/propert
 import regionEquipmentProfilesSchema from '../../../schemas/materialization/region-equipment-profiles-v1.schema.json' with { type: 'json' };
 import regionEquipmentProfileEntriesSchema from '../../../schemas/materialization/region-equipment-profile-entries-v1.schema.json' with { type: 'json' };
 import itemClassificationMigrationInventorySchema from '../../../schemas/materialization/item-classification-migration-inventory-v1.schema.json' with { type: 'json' };
+import travelPaceProfilesSchema from '../../../schemas/materialization/travel-pace-profiles-v1.schema.json' with { type: 'json' };
+import travelNavigationProfilesSchema from '../../../schemas/materialization/travel-navigation-profiles-v1.schema.json' with { type: 'json' };
+import travelRestProfilesSchema from '../../../schemas/materialization/travel-rest-profiles-v1.schema.json' with { type: 'json' };
+import travelInterruptionProfilesSchema from '../../../schemas/materialization/travel-interruption-profiles-v1.schema.json' with { type: 'json' };
+import routeTravelProfileBindingsSchema from '../../../schemas/materialization/route-travel-profile-bindings-v1.schema.json' with { type: 'json' };
+import environmentLandmarkTemplatesSchema from '../../../schemas/materialization/environment-landmark-templates-v1.schema.json' with { type: 'json' };
+import environmentLandmarkProfilesSchema from '../../../schemas/materialization/environment-landmark-profiles-v1.schema.json' with { type: 'json' };
+import environmentLandmarkProfileEntriesSchema from '../../../schemas/materialization/environment-landmark-profile-entries-v1.schema.json' with { type: 'json' };
+import environmentLandmarkRulesSchema from '../../../schemas/materialization/environment-landmark-rules-v1.schema.json' with { type: 'json' };
+import environmentLandmarkRuleG1ClassesSchema from '../../../schemas/materialization/environment-landmark-rule-g1-classes-v1.schema.json' with { type: 'json' };
+import environmentLandmarkRuleNodeTypesSchema from '../../../schemas/materialization/environment-landmark-rule-node-types-v1.schema.json' with { type: 'json' };
+import environmentLandmarkRuleLandscapesSchema from '../../../schemas/materialization/environment-landmark-rule-landscapes-v1.schema.json' with { type: 'json' };
+import environmentLandmarkRuleHydrologySchema from '../../../schemas/materialization/environment-landmark-rule-hydrology-v1.schema.json' with { type: 'json' };
+import environmentLandmarkRuleLandUseSchema from '../../../schemas/materialization/environment-landmark-rule-land-use-v1.schema.json' with { type: 'json' };
+import environmentLandmarkRuleRoutesSchema from '../../../schemas/materialization/environment-landmark-rule-routes-v1.schema.json' with { type: 'json' };
+import environmentCueTemplatesSchema from '../../../schemas/materialization/environment-cue-templates-v1.schema.json' with { type: 'json' };
+import environmentEmissionRulesSchema from '../../../schemas/materialization/environment-emission-rules-v1.schema.json' with { type: 'json' };
+import environmentTraceTemplatesSchema from '../../../schemas/materialization/environment-trace-templates-v1.schema.json' with { type: 'json' };
+import environmentDecayProfilesSchema from '../../../schemas/materialization/environment-decay-profiles-v1.schema.json' with { type: 'json' };
+import environmentTraceCreationRulesSchema from '../../../schemas/materialization/environment-trace-creation-rules-v1.schema.json' with { type: 'json' };
+import environmentTraceRuleLandscapesSchema from '../../../schemas/materialization/environment-trace-rule-landscapes-v1.schema.json' with { type: 'json' };
+import environmentTraceRuleHydrologySchema from '../../../schemas/materialization/environment-trace-rule-hydrology-v1.schema.json' with { type: 'json' };
 
 // A supplemental catalog is intentionally separate from the approved base archive.
 // It is authoring input only; this validator never makes draft rows runtime candidates.
@@ -38,11 +60,23 @@ export const SUPPLEMENTAL_AUTHORING_TABLES = Object.freeze(new Set([
   'container_template_inventory_profiles', 'container_template_source_bindings', 'container_content_profiles',
   'container_content_profile_entries', 'item_profile_sets', 'item_profile_entries',
   'property_profiles', 'property_profile_rules', 'region_equipment_profiles',
-  'region_equipment_profile_entries', 'item_classification_migration_inventory'
+  'region_equipment_profile_entries', 'item_classification_migration_inventory',
+  'travel_pace_profiles', 'travel_navigation_profiles', 'travel_rest_profiles', 'travel_interruption_profiles',
+  'route_travel_profile_bindings',
+  'environment_landmark_templates', 'environment_landmark_profiles', 'environment_landmark_profile_entries', 'environment_landmark_rules',
+  'environment_landmark_rule_g1_classes', 'environment_landmark_rule_node_types', 'environment_landmark_rule_landscapes', 'environment_landmark_rule_hydrology', 'environment_landmark_rule_land_use', 'environment_landmark_rule_routes',
+  'environment_cue_templates', 'environment_emission_rules', 'environment_trace_templates', 'environment_decay_profiles', 'environment_trace_creation_rules', 'environment_trace_rule_landscapes', 'environment_trace_rule_hydrology'
 ]));
 
 const PARTY_PREFIXES = Object.freeze(['party_', 'runtime_', 'instance_']);
 const STATUS = new Set(['draft', 'approved', 'deprecated']);
+const IDLESS_TABLES = new Set([
+  'region_category_options', 'environment_landmark_profile_entries',
+  'environment_landmark_rule_g1_classes', 'environment_landmark_rule_node_types',
+  'environment_landmark_rule_landscapes', 'environment_landmark_rule_hydrology',
+  'environment_landmark_rule_land_use', 'environment_landmark_rule_routes',
+  'environment_trace_rule_landscapes', 'environment_trace_rule_hydrology'
+]);
 const STRICT_FIELDS = Object.freeze({
   universal_categories: new Set(['id', 'domain', 'parent_category_id', 'stable_code', 'facet', 'preferred_label', 'definition', 'scope_note', 'inclusion_rules', 'exclusion_rules', 'replaced_by_category_id', 'title', 'status']),
   category_labels: new Set(['id', 'category_id', 'language', 'label', 'label_type', 'valid_from', 'valid_to', 'source_id']),
@@ -68,7 +102,23 @@ const STRICT_FIELDS = Object.freeze({
   property_profile_rules: new Set(['id', 'property_profile_id', 'owner_kind', 'holder_kind', 'controller_kind', 'access_policy', 'claim_conditions', 'status']),
   region_equipment_profiles: new Set(['id', 'region_id', 'social_role_id', 'occupation_id', 'status']),
   region_equipment_profile_entries: new Set(['id', 'equipment_profile_id', 'item_template_id', 'item_category_id', 'slot_key', 'required', 'weight']),
-  item_classification_migration_inventory: new Set(['id', 'legacy_table_name', 'legacy_record_id', 'legacy_field_name', 'legacy_value', 'resolution_status', 'resolved_category_id', 'report_note'])
+  item_classification_migration_inventory: new Set(['id', 'legacy_table_name', 'legacy_record_id', 'legacy_field_name', 'legacy_value', 'resolution_status', 'resolved_category_id', 'report_note']),
+  travel_pace_profiles: new Set(['id', 'world_revision_id', 'region_id', 'source_id', 'pace_key', 'time_multiplier', 'fatigue_multiplier', 'valid_from', 'valid_to', 'status']),
+  travel_navigation_profiles: new Set(['id', 'world_revision_id', 'region_id', 'source_id', 'navigation_key', 'orientation_policy', 'valid_from', 'valid_to', 'status']),
+  travel_rest_profiles: new Set(['id', 'world_revision_id', 'region_id', 'source_id', 'rest_key', 'minimum_minutes', 'rest_policy', 'valid_from', 'valid_to', 'status']),
+  travel_interruption_profiles: new Set(['id', 'world_revision_id', 'region_id', 'source_id', 'interruption_source_type', 'interruption_policy', 'required', 'valid_from', 'valid_to', 'status']),
+  route_travel_profile_bindings: new Set(['id', 'world_revision_id', 'region_id', 'route_template_id', 'pace_profile_id', 'navigation_profile_id', 'rest_profile_id', 'interruption_profile_id', 'source_id', 'valid_from', 'valid_to', 'status']),
+  environment_landmark_templates: new Set(['id', 'world_revision_id', 'category_id', 'region_id', 'public_label_key', 'icon_key', 'navigation_value', 'distinctiveness', 'recognition_difficulty', 'morphology_policy', 'valid_from', 'valid_to', 'confidence', 'status']),
+  environment_landmark_profiles: new Set(['id', 'world_revision_id', 'region_id', 'profile_policy', 'valid_from', 'valid_to', 'status']),
+  environment_landmark_profile_entries: new Set(['profile_id', 'template_id', 'weight', 'required', 'exclusivity_group']),
+  environment_landmark_rules: new Set(['id', 'world_revision_id', 'profile_id', 'region_id', 'min_count', 'max_count', 'required', 'weight', 'exclusivity_group', 'valid_from', 'valid_to', 'status']),
+  environment_landmark_rule_g1_classes: new Set(['rule_id', 'g1_class']), environment_landmark_rule_node_types: new Set(['rule_id', 'node_type']), environment_landmark_rule_landscapes: new Set(['rule_id', 'landscape_template_id']), environment_landmark_rule_hydrology: new Set(['rule_id', 'water_body_template_id']), environment_landmark_rule_land_use: new Set(['rule_id', 'land_use_template_id']), environment_landmark_rule_routes: new Set(['rule_id', 'route_template_id']),
+  environment_cue_templates: new Set(['id', 'world_revision_id', 'category_id', 'public_label_key', 'icon_key', 'sense', 'base_intensity', 'recognition_difficulty', 'navigation_value', 'fading_duration_minutes', 'expiry_duration_minutes', 'propagation_policy', 'visibility_policy', 'valid_from', 'valid_to', 'status']),
+  environment_emission_rules: new Set(['id', 'world_revision_id', 'cue_template_id', 'emitter_category_id', 'source_type', 'region_id', 'season', 'weather_applicability', 'emission_policy', 'valid_from', 'valid_to', 'status']),
+  environment_trace_templates: new Set(['id', 'world_revision_id', 'category_id', 'public_label_key', 'icon_key', 'recognition_difficulty', 'navigation_value', 'valid_from', 'valid_to', 'status']),
+  environment_decay_profiles: new Set(['id', 'world_revision_id', 'readable_at_or_above', 'faint_at_or_above', 'decay_per_minute', 'precipitation_multiplier', 'decay_policy', 'status']),
+  environment_trace_creation_rules: new Set(['id', 'world_revision_id', 'trace_template_id', 'decay_profile_id', 'source_category_id', 'source_kind', 'movement_mode', 'region_id', 'season', 'required', 'creation_policy', 'valid_from', 'valid_to', 'status']),
+  environment_trace_rule_landscapes: new Set(['rule_id', 'landscape_template_id']), environment_trace_rule_hydrology: new Set(['rule_id', 'water_body_template_id'])
 });
 const SCHEMA_IDS = Object.freeze({
   source_records: 'rus.source_records.v1', record_sources: 'rus.record_sources.v1', world_revisions: 'rus.world_revisions.v1', universal_categories: 'rus.universal_categories.v1', category_labels: 'rus.category_labels.v1', region_category_options: 'rus.region_category_options.v1',
@@ -80,7 +130,11 @@ const SCHEMA_IDS = Object.freeze({
   container_content_profiles: 'rus.container_content_profiles.v1', container_content_profile_entries: 'rus.container_content_profile_entries.v1',
   item_profile_sets: 'rus.item_profile_sets.v1', item_profile_entries: 'rus.item_profile_entries.v1',
   property_profiles: 'rus.property_profiles.v1', property_profile_rules: 'rus.property_profile_rules.v1',
-  region_equipment_profiles: 'rus.region_equipment_profiles.v1', region_equipment_profile_entries: 'rus.region_equipment_profile_entries.v1', item_classification_migration_inventory: 'rus.item_classification_migration_inventory.v1'
+  region_equipment_profiles: 'rus.region_equipment_profiles.v1', region_equipment_profile_entries: 'rus.region_equipment_profile_entries.v1', item_classification_migration_inventory: 'rus.item_classification_migration_inventory.v1',
+  travel_pace_profiles: 'rus.travel_pace_profiles.v1', travel_navigation_profiles: 'rus.travel_navigation_profiles.v1', travel_rest_profiles: 'rus.travel_rest_profiles.v1', travel_interruption_profiles: 'rus.travel_interruption_profiles.v1', route_travel_profile_bindings: 'rus.route_travel_profile_bindings.v1',
+  environment_landmark_templates: 'rus.environment_landmark_templates.v1', environment_landmark_profiles: 'rus.environment_landmark_profiles.v1', environment_landmark_profile_entries: 'rus.environment_landmark_profile_entries.v1', environment_landmark_rules: 'rus.environment_landmark_rules.v1',
+  environment_landmark_rule_g1_classes: 'rus.environment_landmark_rule_g1_classes.v1', environment_landmark_rule_node_types: 'rus.environment_landmark_rule_node_types.v1', environment_landmark_rule_landscapes: 'rus.environment_landmark_rule_landscapes.v1', environment_landmark_rule_hydrology: 'rus.environment_landmark_rule_hydrology.v1', environment_landmark_rule_land_use: 'rus.environment_landmark_rule_land_use.v1', environment_landmark_rule_routes: 'rus.environment_landmark_rule_routes.v1',
+  environment_cue_templates: 'rus.environment_cue_templates.v1', environment_emission_rules: 'rus.environment_emission_rules.v1', environment_trace_templates: 'rus.environment_trace_templates.v1', environment_decay_profiles: 'rus.environment_decay_profiles.v1', environment_trace_creation_rules: 'rus.environment_trace_creation_rules.v1', environment_trace_rule_landscapes: 'rus.environment_trace_rule_landscapes.v1', environment_trace_rule_hydrology: 'rus.environment_trace_rule_hydrology.v1'
 });
 const SUPPLEMENTAL_FK_DEPENDENCIES = Object.freeze({
   world_revisions: ['world_revisions'], universal_categories: ['universal_categories'],
@@ -96,7 +150,13 @@ const SUPPLEMENTAL_FK_DEPENDENCIES = Object.freeze({
   container_content_profile_entries: ['container_content_profiles', 'item_templates', 'universal_categories'], item_profile_sets: ['world_revisions'],
   item_profile_entries: ['item_profile_sets', 'item_templates', 'universal_categories'], property_profiles: ['world_revisions', 'universal_categories'],
   property_profile_rules: ['property_profiles'], region_equipment_profile_entries: ['region_equipment_profiles', 'item_templates', 'universal_categories'],
-  item_classification_migration_inventory: ['universal_categories']
+  item_classification_migration_inventory: ['universal_categories'],
+  travel_pace_profiles: ['world_revisions', 'source_records'], travel_navigation_profiles: ['world_revisions', 'source_records'],
+  travel_rest_profiles: ['world_revisions', 'source_records'], travel_interruption_profiles: ['world_revisions', 'source_records'],
+  route_travel_profile_bindings: ['world_revisions', 'source_records', 'travel_pace_profiles', 'travel_navigation_profiles', 'travel_rest_profiles', 'travel_interruption_profiles'],
+  environment_landmark_templates: ['world_revisions', 'universal_categories'], environment_landmark_profiles: ['world_revisions'], environment_landmark_profile_entries: ['environment_landmark_profiles', 'environment_landmark_templates'], environment_landmark_rules: ['world_revisions', 'environment_landmark_profiles'],
+  environment_landmark_rule_g1_classes: ['environment_landmark_rules'], environment_landmark_rule_node_types: ['environment_landmark_rules'], environment_landmark_rule_landscapes: ['environment_landmark_rules'], environment_landmark_rule_hydrology: ['environment_landmark_rules'], environment_landmark_rule_land_use: ['environment_landmark_rules'], environment_landmark_rule_routes: ['environment_landmark_rules'],
+  environment_cue_templates: ['world_revisions', 'universal_categories'], environment_emission_rules: ['world_revisions', 'environment_cue_templates', 'universal_categories'], environment_trace_templates: ['world_revisions', 'universal_categories'], environment_decay_profiles: ['world_revisions'], environment_trace_creation_rules: ['world_revisions', 'environment_trace_templates', 'environment_decay_profiles', 'universal_categories'], environment_trace_rule_landscapes: ['environment_trace_creation_rules'], environment_trace_rule_hydrology: ['environment_trace_creation_rules']
 });
 const SCHEMAS = Object.freeze({
   source_records: sourceRecordsSchema, record_sources: recordSourcesSchema, world_revisions: worldRevisionsSchema, universal_categories: universalCategoriesSchema, category_labels: categoryLabelsSchema, region_category_options: regionCategoryOptionsSchema,
@@ -108,7 +168,11 @@ const SCHEMAS = Object.freeze({
   container_content_profiles: containerContentProfilesSchema, container_content_profile_entries: containerContentProfileEntriesSchema,
   item_profile_sets: itemProfileSetsSchema, item_profile_entries: itemProfileEntriesSchema,
   property_profiles: propertyProfilesSchema, property_profile_rules: propertyProfileRulesSchema,
-  region_equipment_profiles: regionEquipmentProfilesSchema, region_equipment_profile_entries: regionEquipmentProfileEntriesSchema, item_classification_migration_inventory: itemClassificationMigrationInventorySchema
+  region_equipment_profiles: regionEquipmentProfilesSchema, region_equipment_profile_entries: regionEquipmentProfileEntriesSchema, item_classification_migration_inventory: itemClassificationMigrationInventorySchema,
+  travel_pace_profiles: travelPaceProfilesSchema, travel_navigation_profiles: travelNavigationProfilesSchema, travel_rest_profiles: travelRestProfilesSchema, travel_interruption_profiles: travelInterruptionProfilesSchema, route_travel_profile_bindings: routeTravelProfileBindingsSchema,
+  environment_landmark_templates: environmentLandmarkTemplatesSchema, environment_landmark_profiles: environmentLandmarkProfilesSchema, environment_landmark_profile_entries: environmentLandmarkProfileEntriesSchema, environment_landmark_rules: environmentLandmarkRulesSchema,
+  environment_landmark_rule_g1_classes: environmentLandmarkRuleG1ClassesSchema, environment_landmark_rule_node_types: environmentLandmarkRuleNodeTypesSchema, environment_landmark_rule_landscapes: environmentLandmarkRuleLandscapesSchema, environment_landmark_rule_hydrology: environmentLandmarkRuleHydrologySchema, environment_landmark_rule_land_use: environmentLandmarkRuleLandUseSchema, environment_landmark_rule_routes: environmentLandmarkRuleRoutesSchema,
+  environment_cue_templates: environmentCueTemplatesSchema, environment_emission_rules: environmentEmissionRulesSchema, environment_trace_templates: environmentTraceTemplatesSchema, environment_decay_profiles: environmentDecayProfilesSchema, environment_trace_creation_rules: environmentTraceCreationRulesSchema, environment_trace_rule_landscapes: environmentTraceRuleLandscapesSchema, environment_trace_rule_hydrology: environmentTraceRuleHydrologySchema
 });
 
 export function supplementalDigest(records) {
@@ -164,6 +228,11 @@ export function validateSupplementalCatalogBundle(manifest, recordsByTable = {},
   const revisions = known('world_revisions');
   const quantityUnits = known('quantity_unit_definitions');
   const regions = known('regions');
+  const routeTemplates = known('route_templates');
+  const paceProfiles = known('travel_pace_profiles');
+  const navigationProfiles = known('travel_navigation_profiles');
+  const restProfiles = known('travel_rest_profiles');
+  const interruptionProfiles = known('travel_interruption_profiles');
 
   for (const sourceId of manifest.provenance.source_ids ?? []) {
     if (!sources.has(sourceId)) errors.push(`PROVENANCE_SOURCE_UNKNOWN:${sourceId}`);
@@ -172,7 +241,7 @@ export function validateSupplementalCatalogBundle(manifest, recordsByTable = {},
   for (const [table, records] of Object.entries(recordsByTable)) for (const record of records ?? []) {
     const allowed = STRICT_FIELDS[table];
     if (allowed) for (const key of Object.keys(record ?? {})) if (!allowed.has(key)) errors.push(`RECORD_FIELD_FORBIDDEN:${table}:${record?.id ?? '?'}:${key}`);
-    if (!record?.id && table !== 'region_category_options') errors.push(`RECORD_ID_MISSING:${table}`);
+    if (!record?.id && !IDLESS_TABLES.has(table)) errors.push(`RECORD_ID_MISSING:${table}`);
     if (record?.status != null && !STATUS.has(record.status)) errors.push(`STATUS_INVALID:${table}:${record.id ?? '?'}`);
     if (record?.status != null && record.status !== 'draft') errors.push(`SUPPLEMENTAL_RECORD_NOT_DRAFT:${table}:${record.id ?? '?'}`);
   }
@@ -320,6 +389,28 @@ export function validateSupplementalCatalogBundle(manifest, recordsByTable = {},
     if (!regions.has(record.region_id)) errors.push(`EQUIPMENT_REGION_UNKNOWN:${record.id}`);
     if (record.social_role_id && !known('region_social_roles').has(record.social_role_id)) errors.push(`EQUIPMENT_ROLE_UNKNOWN:${record.id}`);
     if (record.occupation_id && !known('region_occupations').has(record.occupation_id)) errors.push(`EQUIPMENT_OCCUPATION_UNKNOWN:${record.id}`);
+  }
+  for (const [table, records] of Object.entries({
+    travel_pace_profiles: recordsByTable.travel_pace_profiles ?? [],
+    travel_navigation_profiles: recordsByTable.travel_navigation_profiles ?? [],
+    travel_rest_profiles: recordsByTable.travel_rest_profiles ?? [],
+    travel_interruption_profiles: recordsByTable.travel_interruption_profiles ?? []
+  })) for (const record of records) {
+    if (!revisions.has(record.world_revision_id)) errors.push(`TRAVEL_PROFILE_REVISION_UNKNOWN:${table}:${record.id}`);
+    if (!regions.has(record.region_id)) errors.push(`TRAVEL_PROFILE_REGION_UNKNOWN:${table}:${record.id}`);
+    if (!sources.has(record.source_id)) errors.push(`TRAVEL_PROFILE_SOURCE_UNKNOWN:${table}:${record.id}`);
+    if (record.valid_from > record.valid_to) errors.push(`TRAVEL_PROFILE_PERIOD_INVALID:${table}:${record.id}`);
+  }
+  for (const record of recordsByTable.route_travel_profile_bindings ?? []) {
+    if (!revisions.has(record.world_revision_id)) errors.push(`TRAVEL_BINDING_REVISION_UNKNOWN:${record.id}`);
+    if (!regions.has(record.region_id)) errors.push(`TRAVEL_BINDING_REGION_UNKNOWN:${record.id}`);
+    if (!routeTemplates.has(record.route_template_id)) errors.push(`TRAVEL_BINDING_ROUTE_UNKNOWN:${record.id}`);
+    if (!paceProfiles.has(record.pace_profile_id)) errors.push(`TRAVEL_BINDING_PACE_UNKNOWN:${record.id}`);
+    if (!navigationProfiles.has(record.navigation_profile_id)) errors.push(`TRAVEL_BINDING_NAVIGATION_UNKNOWN:${record.id}`);
+    if (!restProfiles.has(record.rest_profile_id)) errors.push(`TRAVEL_BINDING_REST_UNKNOWN:${record.id}`);
+    if (!interruptionProfiles.has(record.interruption_profile_id)) errors.push(`TRAVEL_BINDING_INTERRUPTION_UNKNOWN:${record.id}`);
+    if (!sources.has(record.source_id)) errors.push(`TRAVEL_BINDING_SOURCE_UNKNOWN:${record.id}`);
+    if (record.valid_from > record.valid_to) errors.push(`TRAVEL_BINDING_PERIOD_INVALID:${record.id}`);
   }
   return Object.freeze({ errors: Object.freeze(errors) });
 }

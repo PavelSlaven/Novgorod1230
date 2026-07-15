@@ -31,10 +31,12 @@ Composition root, production infrastructure adapters и HTTP boundary модул
 - SQL и `pg` находятся только в `src/infrastructure/postgres`;
 - world-base adapter read-only;
 - Stage 25 исполняет только approved physical plan;
+- обычный turn commit сохраняет normalised travel change set (`party_journeys` → `party_journey_legs` → `party_positions`) в одной PostgreSQL transaction и не копирует его в snapshot;
 - SQL physical targets явно квалифицируются схемой `party_runtime`;
 - first-entry repository берёт advisory transaction lock по `(party_id,g4_id)` до проверки baseline;
 - legacy `game_sessions` не создаётся и не читается production runtime;
 - runtime bindings обязательны и не имеют deterministic fallback;
+- runtime binding обязан экспортировать `createTravelPorts`; он передаёт в `ports.travel` только явные `travelContextReader`, bundle readers, repositories, graph reader, clock, RandomSource factory и party store. Отсутствующий port блокирует production startup;
 - HTTP route вызывает только composition root;
 - public response проходит hidden-leak gate;
 - party runtime с `schema_version != 2` отклоняется.

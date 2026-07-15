@@ -50,6 +50,18 @@ export const TURN_ALLOWED_CHECKS = deepFreeze([
   'body_state'
 ]);
 
+export const TURN_TRAVEL_COMMAND_IDS = deepFreeze([
+  'travel.start_route',
+  'travel.start_course',
+  'travel.continue',
+  'travel.stop',
+  'travel.change_pace',
+  'travel.reroute',
+  'travel.camp',
+  'travel.resume',
+  'travel.abandon'
+]);
+
 export const TURN_ALLOWED_SECONDARY_MODES = deepFreeze([...TURN_PRIMARY_MODES, ...TURN_ALLOWED_SUBSYSTEMS]);
 
 export const TURN_ALLOWED_STATE_BLOCKS = deepFreeze([
@@ -63,6 +75,13 @@ export const TURN_ALLOWED_STATE_BLOCKS = deepFreeze([
   'relevant_items',
   'relevant_containers',
   'relevant_routes',
+  'active_journey',
+  'journey_legs',
+  'travel_position',
+  'environment_landmarks',
+  'environment_cues',
+  'movement_traces',
+  'transport_state',
   'relevant_anchors',
   'recent_changes_log',
   'relevant_events'
@@ -79,7 +98,14 @@ export const TURN_ALLOWED_WRITE_TARGETS = deepFreeze([
   'party_items',
   'party_containers',
   'party_narrator_output',
-  'party_player_visible_message'
+  'party_player_visible_message',
+  'party_journeys',
+  'party_journey_legs',
+  'party_environment_runs',
+  'party_environment_choices',
+  'party_environment_landmarks',
+  'party_environment_cues',
+  'party_environment_traces'
 ]);
 
 export const TURN_WORKFLOW_STAGE_IDS = deepFreeze([

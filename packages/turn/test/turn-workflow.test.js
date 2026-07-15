@@ -1,11 +1,17 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { sha256 } from '@rus/kernel';
+import { createJourney } from '@rus/travel';
 
 import { createPartyStore } from '@rus/party-store';
 import { createNarrationService } from '@rus/narration';
 import {
   TURN_WORKFLOW_STAGE_IDS,
   TURN_WORKFLOW_STAGE_PLAN,
+  TURN_ALLOWED_STATE_BLOCKS,
+  TURN_ALLOWED_WRITE_TARGETS,
+  TURN_TRAVEL_COMMAND_IDS,
+  createTravelTurnCommandDefinitions,
   createTurnCommandRegistry,
   runTurnWorkflow,
   validateTurnWorkflowStagePlan
@@ -282,4 +288,78 @@ test('repair_required stops before time, narration and persistence', async () =>
   assert.equal(commits.length, 0);
   assert.equal(log.includes('narration'), false);
   assert.equal(log.includes('persistence_plan'), false);
+});
+
+test('turn contracts reserve travel state blocks and normalized persistence targets', () => {
+  for (const stateBlock of ['active_journey', 'journey_legs', 'travel_position', 'environment_landmarks', 'environment_cues', 'movement_traces', 'transport_state']) {
+    assert.equal(TURN_ALLOWED_STATE_BLOCKS.includes(stateBlock), true, stateBlock);
+  }
+  for (const target of ['party_journeys', 'party_journey_legs', 'party_environment_runs', 'party_environment_choices', 'party_environment_landmarks', 'party_environment_cues', 'party_environment_traces']) {
+    assert.equal(TURN_ALLOWED_WRITE_TARGETS.includes(target), true, target);
+  }
+});
+
+test('travel command identifiers are a code-owned finite set', () => {
+  assert.deepEqual(TURN_TRAVEL_COMMAND_IDS, [
+    'travel.start_route', 'travel.start_course', 'travel.continue', 'travel.stop',
+    'travel.change_pace', 'travel.reroute', 'travel.camp', 'travel.resume', 'travel.abandon'
+  ]);
+});
+
+test('travel handler definitions match only an explicit code-owned routing command', () => {
+  const definitions = createTravelTurnCommandDefinitions();
+  assert.deepEqual(definitions.map((definition) => definition.command_id), TURN_TRAVEL_COMMAND_IDS);
+  const selected = definitions.filter((definition) => definition.matches({ routing_context: { travel_command_id: 'travel.continue' } }));
+  assert.deepEqual(selected.map((definition) => definition.command_id), ['travel.continue']);
+  assert.equal(definitions.some((definition) => definition.matches({ routing_context: { travel_command_id: 'travel.invented' } })), false);
+  const continueHandler = definitions.find((definition) => definition.command_id === 'travel.continue');
+  assert.throws(() => continueHandler.consequence({}), (error) => error.code === 'TRAVEL_HANDLER_CONTEXT_MISSING');
+  assert.throws(() => continueHandler.writeTargets({}), (error) => error.code === 'TRAVEL_HANDLER_CONTEXT_MISSING');
+});
+
+test('travel.continue advances a formal journey and plans normalized writes', () => {
+  const bundlePayload = { schema_version: 'travel-rules.v1', world_revision_id: 'world:1', region_id: 'region:1', historical_period_id: 'period:1', source_refs: ['source:1'], records: { pace_profiles: [{}] }, bindings: { route_profile_bindings: [{}] }, readiness_report: { pass: true } };
+  const rules = { ...bundlePayload, catalog_digest: sha256(bundlePayload) };
+  const plan = { journey_id: 'journey:1', party_id: 'party:1', actor_id: 'actor:1', mode: 'route', route_id: 'route:1', origin_position: { position_kind: 'node', g4_id: 'g4:a', g5_node_id: null, g5_anchor_id: null, last_route_id: null }, target_ref: { kind: 'g4', id: 'g4:b' }, pace_profile_id: 'pace:1', movement_method: 'on_foot', started_at: '1230-01-01T09:00:00Z', updated_at: '1230-01-01T09:00:00Z', legs: [{ leg_id: 'leg:1', sequence: 1, edge_id: 'edge:1', from_g4_id: 'g4:a', to_g4_id: 'g4:b', route_profile_id: 'route:1', base_time_minutes: 60 }], world_revision_id: 'world:1', region_id: 'region:1', historical_period_id: 'period:1', travel_rules_digest: rules.catalog_digest, environment_catalog_digest: 'e'.repeat(64), algorithm_version: 'travel.v1', rng_version: 'rng:1', state_version: 4, idempotency_key: 'start:1' };
+  const travelContext = { state_version: 4, known_edge_ids: ['edge:1'], travel_rules_bundle: rules, required_candidate_sets: { rules: [{}] } };
+  const journey = createJourney(plan, travelContext);
+  const handler = createTravelTurnCommandDefinitions().find((definition) => definition.command_id === 'travel.continue');
+  const advanceRequest = { schema_version: 'travel-advance-request.v1', journey_id: 'journey:1', journey_leg_id: 'leg:1', expected_state_version: 4, progress_permille: 250, duration_minutes: 15, updated_at: '1230-01-01T09:15:00Z', visible_seed: {}, suggested_actions: [], idempotency_key: 'continue:1', boundary: { boundary_id: 'boundary:partial', boundary_type: 'significant_observation', at_elapsed_minutes: 15, priority: 0 } };
+  const consequence = handler.consequence({ retrievedState: { party_state: { state_version: 4 }, active_journey: journey, travel_context: travelContext, travel_advance_request: advanceRequest } });
+  assert.equal(consequence.hidden_update.travel_change_set_proposal.position.progress_permille, 250);
+  assert.equal(consequence.hidden_update.travel_change_set_proposal.journey.elapsed_minutes, 15);
+  const writes = handler.writeTargets({ consequence });
+  assert.deepEqual(writes.map((entry) => entry.target), ['party_journeys', 'party_journey_legs', 'party_current_position']);
+
+  assert.throws(() => handler.consequence({ retrievedState: { party_state: { state_version: 4 }, active_journey: journey, travel_context: travelContext, travel_advance_request: { ...advanceRequest, journey_id: 'journey:wrong' } } }), (error) => error.code === 'TRAVEL_INPUT_INVALID');
+  const arrival = handler.consequence({ retrievedState: { party_state: { state_version: 4 }, active_journey: journey, travel_context: travelContext, travel_advance_request: { ...advanceRequest, progress_permille: 1000, duration_minutes: 60, updated_at: '1230-01-01T10:00:00Z', idempotency_key: 'arrive:1', boundary: { boundary_id: 'boundary:arrival', boundary_type: 'leg_completion', at_elapsed_minutes: 60, priority: 0 } } } });
+  assert.deepEqual(arrival.position_transition, {
+    from_g4_id: 'g4:a',
+    to_g4_id: 'g4:b',
+    destination_position: { position_kind: 'node', g4_id: 'g4:b', g5_node_id: null, g5_anchor_id: null, last_route_id: 'route:1' }
+  });
+  assert.equal(arrival.hidden_update.travel_arrival_request.schema_version, 'travel-arrival-request.v1');
+});
+
+test('travel.start_route creates only a preselected, version-pinned journey plan', () => {
+  const bundlePayload = { schema_version: 'travel-rules.v1', world_revision_id: 'world:1', region_id: 'region:1', historical_period_id: 'period:1', source_refs: ['source:1'], records: { pace_profiles: [{}] }, bindings: { route_profile_bindings: [{}] }, readiness_report: { pass: true } };
+  const rules = { ...bundlePayload, catalog_digest: sha256(bundlePayload) };
+  const plan = { journey_id: 'journey:start', party_id: 'party:1', actor_id: 'actor:1', mode: 'route', route_id: 'route:1', origin_position: { position_kind: 'node', g4_id: 'g4:a', g5_node_id: null, g5_anchor_id: null, last_route_id: null }, target_ref: { kind: 'g4', id: 'g4:b' }, pace_profile_id: 'pace:1', movement_method: 'on_foot', started_at: '1230-01-01T09:00:00Z', updated_at: '1230-01-01T09:00:00Z', legs: [{ leg_id: 'leg:start', sequence: 1, edge_id: 'edge:1', from_g4_id: 'g4:a', to_g4_id: 'g4:b', route_profile_id: 'route:1', base_time_minutes: 60 }], world_revision_id: 'world:1', region_id: 'region:1', historical_period_id: 'period:1', travel_rules_digest: rules.catalog_digest, environment_catalog_digest: 'e'.repeat(64), algorithm_version: 'travel.v1', rng_version: 'rng:1', state_version: 4, idempotency_key: 'start:1' };
+  const travelContext = { state_version: 4, known_edge_ids: ['edge:1'], travel_rules_bundle: rules, required_candidate_sets: { rules: [{}] }, active_journeys: [] };
+  const handler = createTravelTurnCommandDefinitions().find((definition) => definition.command_id === 'travel.start_route');
+  const consequence = handler.consequence({ retrievedState: { party_state: { state_version: 4 }, travel_context: travelContext, travel_start_request: { journey_plan: plan, duration_minutes: 0, updated_at: '1230-01-01T09:00:00Z', visible_seed: {}, suggested_actions: [], idempotency_key: 'start:1' } } });
+  assert.equal(consequence.hidden_update.travel_change_set_proposal.operation, 'start');
+  assert.equal(consequence.hidden_update.travel_change_set_proposal.journey.current_leg_id, 'leg:start');
+  assert.deepEqual(handler.writeTargets({ consequence }).map((entry) => entry.target), ['party_journeys', 'party_journey_legs', 'party_current_position']);
+});
+
+test('travel.start_course binds its first leg to an explicit applicable fact-graph candidate', () => {
+  const bundlePayload = { schema_version: 'travel-rules.v1', world_revision_id: 'world:1', region_id: 'region:1', historical_period_id: 'period:1', source_refs: ['source:1'], records: { pace_profiles: [{}] }, bindings: { route_profile_bindings: [{}] }, readiness_report: { pass: true } };
+  const rules = { ...bundlePayload, catalog_digest: sha256(bundlePayload) };
+  const plan = { journey_id: 'journey:course', party_id: 'party:1', actor_id: 'actor:1', mode: 'course', intended_direction: 'north', origin_position: { position_kind: 'node', g4_id: 'g4:a', g5_node_id: null, g5_anchor_id: null, last_route_id: null }, target_ref: { kind: 'direction', id: 'north' }, pace_profile_id: 'pace:1', movement_method: 'on_foot', started_at: '1230-01-01T09:00:00Z', updated_at: '1230-01-01T09:00:00Z', legs: [{ leg_id: 'leg:course', sequence: 1, edge_id: 'edge:north', from_g4_id: 'g4:a', to_g4_id: 'g4:north', route_profile_id: 'route:1', base_time_minutes: 60 }], world_revision_id: 'world:1', region_id: 'region:1', historical_period_id: 'period:1', travel_rules_digest: rules.catalog_digest, environment_catalog_digest: 'e'.repeat(64), algorithm_version: 'travel.v1', rng_version: 'rng:1', state_version: 4, idempotency_key: 'course:1' };
+  const context = { party_state: { state_version: 4 }, travel_context: { state_version: 4, known_edge_ids: ['edge:north'], travel_rules_bundle: rules, required_candidate_sets: { rules: [{}] }, active_journeys: [] } };
+  const handler = createTravelTurnCommandDefinitions().find((definition) => definition.command_id === 'travel.start_course');
+  const request = { journey_plan: plan, duration_minutes: 0, updated_at: '1230-01-01T09:00:00Z', visible_seed: {}, suggested_actions: [], idempotency_key: 'course:1', course_edge_resolution: { origin_g4_id: 'g4:a', intended_direction: 'north', selected_candidate_id: 'candidate:north', candidates: [{ candidate_id: 'candidate:north', edge_id: 'edge:north', from_g4_id: 'g4:a', to_g4_id: 'g4:north', route_profile_id: 'route:1', base_time_minutes: 60, applicability: { intended_direction: 'north' } }] } };
+  assert.throws(() => handler.consequence({ retrievedState: { ...context, travel_start_request: { ...request, course_edge_resolution: null } } }), (error) => error.code === 'TRAVEL_HANDLER_CONTEXT_MISSING');
+  assert.equal(handler.consequence({ retrievedState: { ...context, travel_start_request: request } }).hidden_update.travel_change_set_proposal.journey.mode, 'course');
 });

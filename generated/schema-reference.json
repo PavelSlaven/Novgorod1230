@@ -516,6 +516,11 @@
       "source": "packages/contracts/src/time-knowledge-hidden-boundary.js"
     },
     {
+      "constant": "TRAVEL_PANEL_SCHEMA",
+      "schema": "travel_panel",
+      "source": "packages/presentation/src/read-models/contracts.js"
+    },
+    {
       "constant": "TURN_SCREEN_SCHEMA",
       "schema": "turn_screen",
       "source": "packages/presentation/src/read-models/contracts.js"
@@ -692,6 +697,108 @@
       "type": "json"
     },
     {
+      "bytes": 1441,
+      "path": "schemas/materialization/environment-cue-templates-v1.schema.json",
+      "sha256": "1c256bf06d395323f5839f38300dd308ced1325025ab0c8dcf7ad222f165f12b",
+      "type": "json"
+    },
+    {
+      "bytes": 897,
+      "path": "schemas/materialization/environment-decay-profiles-v1.schema.json",
+      "sha256": "dd1969de089e1c73041dcae9649f26c0d67402c1ed269473e4748a234454d199",
+      "type": "json"
+    },
+    {
+      "bytes": 1127,
+      "path": "schemas/materialization/environment-emission-rules-v1.schema.json",
+      "sha256": "b1c759a332b9bab0541d9abd1d442f42441ebc5ba76e41fbba3aeaca9f49fce5",
+      "type": "json"
+    },
+    {
+      "bytes": 469,
+      "path": "schemas/materialization/environment-landmark-profile-entries-v1.schema.json",
+      "sha256": "36c52112b068b8fbb24d33c9a6f14e128f98a6ea7b8bff1b46be93eab62ff2f1",
+      "type": "json"
+    },
+    {
+      "bytes": 577,
+      "path": "schemas/materialization/environment-landmark-profiles-v1.schema.json",
+      "sha256": "955e369dcf4c9acee5cea80d79e019c2a3bde7d5d2e83b70b25e591eb0666ce4",
+      "type": "json"
+    },
+    {
+      "bytes": 315,
+      "path": "schemas/materialization/environment-landmark-rule-g1-classes-v1.schema.json",
+      "sha256": "bc93a99fff33a6be2d185ac9033aa59437b4c1f13385fced0bb428953eb2ff25",
+      "type": "json"
+    },
+    {
+      "bytes": 342,
+      "path": "schemas/materialization/environment-landmark-rule-hydrology-v1.schema.json",
+      "sha256": "5c1cc46bd903e4b71691be68dd574dfda99dcf686a1df74d8c55e6c1ea2698ac",
+      "type": "json"
+    },
+    {
+      "bytes": 337,
+      "path": "schemas/materialization/environment-landmark-rule-land-use-v1.schema.json",
+      "sha256": "0a1d3696ecb652ca78105af99476c0a210d24dd42aad0d1b2dd636b9a8f37159",
+      "type": "json"
+    },
+    {
+      "bytes": 341,
+      "path": "schemas/materialization/environment-landmark-rule-landscapes-v1.schema.json",
+      "sha256": "a8a511da75dccae946df0997f8e1f63891f74bc4a2e3924547af57451ac384a4",
+      "type": "json"
+    },
+    {
+      "bytes": 317,
+      "path": "schemas/materialization/environment-landmark-rule-node-types-v1.schema.json",
+      "sha256": "4b533b2c81d3d2bf2a5b193baf64265b3410a85169a7af1434784a4457d477da",
+      "type": "json"
+    },
+    {
+      "bytes": 329,
+      "path": "schemas/materialization/environment-landmark-rule-routes-v1.schema.json",
+      "sha256": "d29feca3991127a67afcac30caf1c828b093fc701cab4fb0d9403a8a6accb252",
+      "type": "json"
+    },
+    {
+      "bytes": 832,
+      "path": "schemas/materialization/environment-landmark-rules-v1.schema.json",
+      "sha256": "15b9fb0eb2b87c8669b42f195d18e72154b8e770d7887f2afea66b3a7a59c928",
+      "type": "json"
+    },
+    {
+      "bytes": 1059,
+      "path": "schemas/materialization/environment-landmark-templates-v1.schema.json",
+      "sha256": "2722f470e771090c9dc6fa9300da8030b0918a408aa789f8ce86e0cc74fec90b",
+      "type": "json"
+    },
+    {
+      "bytes": 976,
+      "path": "schemas/materialization/environment-trace-creation-rules-v1.schema.json",
+      "sha256": "f57d20ce53aab48b8765f4867d7d5d3e6a9138957902c50591d4cf9ba6d2aa7e",
+      "type": "json"
+    },
+    {
+      "bytes": 339,
+      "path": "schemas/materialization/environment-trace-rule-hydrology-v1.schema.json",
+      "sha256": "743767574ae63e9d8dd0963288b9a05faca8617e5341a5f6b324a85594f1bd34",
+      "type": "json"
+    },
+    {
+      "bytes": 338,
+      "path": "schemas/materialization/environment-trace-rule-landscapes-v1.schema.json",
+      "sha256": "26367b33a745b54e716983325d91827cf3092befa6d29986a6fe816f4473bf4d",
+      "type": "json"
+    },
+    {
+      "bytes": 803,
+      "path": "schemas/materialization/environment-trace-templates-v1.schema.json",
+      "sha256": "0b2cc6456b2a4a4d994b8be7d3e114b40e95e01b1dc4a848619e0be50fd7e055",
+      "type": "json"
+    },
+    {
       "bytes": 738,
       "path": "schemas/materialization/item-classification-migration-inventory-v1.schema.json",
       "sha256": "cbcfee73a572cb55bc1861f7444e44666ac2453abd5b341b7b36d5a9d1fc5289",
@@ -800,9 +907,39 @@
       "type": "json"
     },
     {
+      "bytes": 977,
+      "path": "schemas/materialization/route-travel-profile-bindings-v1.schema.json",
+      "sha256": "19b437f002a559cbc6b43aa7bf26a4cbe1090f8d8637f8a33b31e1a9b71a4448",
+      "type": "json"
+    },
+    {
       "bytes": 697,
       "path": "schemas/materialization/source-records-v1.schema.json",
       "sha256": "037a2be66fdce964f9bde13c3d4031c0a1b4c9c2ebb7b26e3cf72aa3e61a9b1c",
+      "type": "json"
+    },
+    {
+      "bytes": 1076,
+      "path": "schemas/materialization/travel-interruption-profiles-v1.schema.json",
+      "sha256": "5ef53fa0dae34fc8d2ab9e693b40fe4a58389db94b194e5beebeeb8f4e27f4ba",
+      "type": "json"
+    },
+    {
+      "bytes": 895,
+      "path": "schemas/materialization/travel-navigation-profiles-v1.schema.json",
+      "sha256": "19bcda8a737a915bed3d5babd86a11f8935deb5b229e59a6cbf9cc2919775cb1",
+      "type": "json"
+    },
+    {
+      "bytes": 805,
+      "path": "schemas/materialization/travel-pace-profiles-v1.schema.json",
+      "sha256": "eff7755079d5b70bbf22139d61fe080817bf296233c099146a9f44857c09cbad",
+      "type": "json"
+    },
+    {
+      "bytes": 924,
+      "path": "schemas/materialization/travel-rest-profiles-v1.schema.json",
+      "sha256": "35269ff33e73666666115eed57d354d6c89ccbed2821d5910b9b3f77e854ecdd",
       "type": "json"
     },
     {
@@ -851,6 +988,18 @@
       "bytes": 19734,
       "path": "schemas/party-db/001_party_runtime.sql",
       "sha256": "5cab24b65540da3f9857c2e70cd9e93c9761bac439839dbde1940cde24b5f6a1",
+      "type": "sql"
+    },
+    {
+      "bytes": 4329,
+      "path": "schemas/party-db/002_environment_landmarks.sql",
+      "sha256": "d0a6e73aabb3eebbaf1a9cdb5c800493cd4346e35d73bea548b80fd701d3205b",
+      "type": "sql"
+    },
+    {
+      "bytes": 5128,
+      "path": "schemas/party-db/003_travel_runtime.sql",
+      "sha256": "d8253307afae902476d45135452bbda6b598bcf43a3a2c400ddd1138669f1f85",
       "type": "sql"
     },
     {

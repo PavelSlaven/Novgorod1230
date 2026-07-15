@@ -129,6 +129,24 @@
     },
     {
       "dependencies": [
+        "@rus/kernel",
+        "@rus/materialization"
+      ],
+      "name": "@rus/environment-landmarks",
+      "owns": [
+        "`initializeEnvironmentFeatures`",
+        "`updateEnvironmentFeatures`",
+        "`buildEnvironmentObservationCandidates`",
+        "`validateEnvironmentCatalogBundle`",
+        "`validateEnvironmentFeatureState`"
+      ],
+      "path": "packages/environment-landmarks",
+      "public_entry": "./src/index.js",
+      "purpose": "Детерминированно материализует постоянные природные ориентиры, временные сигналы и следы среды из утверждённого каталога. Модуль не создаёт G0–G4, не пишет в БД и не принимает решения за LLM.",
+      "version": "0.1.0"
+    },
+    {
+      "dependencies": [
         "@rus/kernel"
       ],
       "name": "@rus/items-property",
@@ -210,14 +228,17 @@
       ],
       "name": "@rus/movement-routes",
       "owns": [
-        "route availability and requirements",
-        "travel cost formulas",
-        "traversal request/result shapes",
-        "orientation and failure consequence requests"
+        "`validateRouteTraversalInput`",
+        "`assessRouteAvailability`",
+        "`calculateTravelTime`",
+        "`calculatePartialTraversal`",
+        "`buildTraversalRequest`",
+        "`validateTraversalResult`",
+        "`MovementRouteError`"
       ],
       "path": "packages/movement-routes",
       "public_entry": "./src/index.js",
-      "purpose": "Route availability, knowledge, traversal contracts, GU/time cost and orientation requests. Код модуля работает только с переданными данными и не создаёт смысловые сущности мира.",
+      "purpose": "Чистый evaluator физического прохождения единственного канонического route edge. Он проверяет входной snapshot, доступность и profile-derived длительность, но не выбирает цель, не меняет позицию и не выполняет проверку персонажа.",
       "version": "0.13.0"
     },
     {
@@ -302,7 +323,7 @@
       "name": "@rus/presentation",
       "owns": [
         "`FirstGameScreen` и `TurnScreen` version 1",
-        "Character, Inventory, People, Route, Map, Journal и Diagnostic panels",
+        "Character, Inventory, Travel, People, Route, Map, Journal и Diagnostic panels",
         "visible-only validation и leak rejection",
         "compatibility `createPublicViewModel`",
         "first-screen delivery attempt, acknowledgement и Stage 27 intent handoff"
@@ -362,6 +383,22 @@
     },
     {
       "dependencies": [
+        "@rus/kernel"
+      ],
+      "name": "@rus/travel",
+      "owns": [
+        "`validateTravelIntent`, `validateTravelPosition`, `validateJourney`, `validateTravelRulesBundle`, `validateTravelAdvanceRequest`, `validateTravelInterruption`, `resolveCourseEdgeCandidate`",
+        "`buildJourneyPlan`, `createJourney`, `advanceJourney`, `applyTravelLifecycleMetadata`, `calculateNextTravelBoundary`, `buildTravelChangeSetProposal`, `buildTravelAdvanceResult`, `buildTravelArrivalRequest`",
+        "`interruptJourney`, `campJourney`, `resumeJourney`, `changeJourneyPace`, `rerouteJourney`, `abandonJourney`, `completeJourney`",
+        "`TravelError`"
+      ],
+      "path": "packages/travel",
+      "public_entry": "./src/index.js",
+      "purpose": "Чистый доменный модуль сохранённого путешествия партии. Он валидирует formal travel contracts и формирует детерминированные переходы `Journey`, `JourneyLeg` и `TravelPosition`.",
+      "version": "0.1.0"
+    },
+    {
+      "dependencies": [
         "@rus/checks-rng",
         "@rus/kernel",
         "@rus/materialization",
@@ -369,6 +406,7 @@
         "@rus/pipeline-engine",
         "@rus/presentation",
         "@rus/time-events-history",
+        "@rus/travel",
         "@rus/visibility-knowledge-memory"
       ],
       "name": "@rus/turn",
@@ -398,7 +436,8 @@
         "visible-context validation",
         "hidden leak detection and stripping",
         "knowledge and memory fact contracts",
-        "safe narrator package"
+        "safe narrator package",
+        "travel visible projection"
       ],
       "path": "packages/visibility-knowledge-memory",
       "public_entry": "./src/index.js",
@@ -528,6 +567,7 @@
         "техническим сравнением существующих и входящих записей без молчаливого удаления",
         "публичными `validateCatalogImportManifest`, `validateClassificationCatalog` и `importClassificationCatalog`: проверкой manifest, FK-derived порядка, pinned schemes, controlled label/relation/mapping types, category hierarchy cycles, dry-run и transaction adapter с readback digest/count gate",
         "публичными `validateItemContainerClassificationCatalog`, `assessItemContainerClassificationMigration` и `assessItemContainerClassificationReadiness`: fail-closed проверкой нормализованных item/container facets, content compatibility, typed legacy gaps/conflicts и обязательных profile/G4 rule",
+        "публичными `assessTravelProfileReadiness` и `assessEnvironmentFeatureReadiness`: чистой fail-closed проверкой approved, version/region/period-pinned travel и environment authoring-наборов, их DDL-derived bindings, runtime policy schemas и provenance. Они возвращают concerns и не создают runtime bundle или игровые данные",
         "публичной чистой `calculatePackingSlots({ quantity, packing_slot_cost, packing_bundle_size })`: расчётом `ceil(quantity / packing_bundle_size) × packing_slot_cost` без доступа к БД, файлам, глобальному состоянию, массы или fallback",
         "публичной чистой `validateSupplementalCatalogBundle(manifest, recordsByTable, { externalIds })`: проверкой отдельного `draft` supplemental authoring bundle, canonical SHA-256, table registry, local/external FK и XOR. Она не импортирует данные, не делает records runtime-candidates и запрещает party tables"
       ],

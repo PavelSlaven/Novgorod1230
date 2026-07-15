@@ -5,6 +5,7 @@ export {
   TURN_PRIMARY_MODES,
   TURN_ALLOWED_SUBSYSTEMS,
   TURN_ALLOWED_CHECKS,
+  TURN_TRAVEL_COMMAND_IDS,
   TURN_ALLOWED_SECONDARY_MODES,
   TURN_ALLOWED_STATE_BLOCKS,
   TURN_ALLOWED_WRITE_TARGETS,
@@ -25,4 +26,5 @@ export { TurnWorkflowError } from './errors.js';
 export { createTurnDecisionRequest, resolveTurnDecision } from './bounded-decision.js';
 export { enterG4WithMaterialization } from './first-entry-materialization.js';
 export { createTurnCommandRegistry, isCodeOwnedTurnWritePlan } from './command-registry.js';
+export { createTravelTurnCommandDefinitions } from './travel-commands.js';
 export { createAutonomousUpdateRegistry, isCodeOwnedAutonomousUpdate, runAutonomousUpdates } from './autonomous-update.js';

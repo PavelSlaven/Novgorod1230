@@ -83,3 +83,13 @@ test('required concrete container content cannot exceed packing capacity', () =>
   };
   assert.ok(validateItemContainerClassificationCatalog(records).includes('CONTAINER_REQUIRED_CONTENT_CAPACITY_EXCEEDED:profile-1'));
 });
+
+test('required category-only container content hard-blocks when no unique approved template resolves its packing size', () => {
+  const records = {
+    container_templates: [{ id: 'container-1', world_revision_id: 'rev-1', category_id: 'container-category', capacity: 1, packing_slot_cost: 1, capacity_policy: { version: 1, mode: 'packing_slots', unit: 'packing_slot' }, status: 'approved' }],
+    universal_categories: [{ id: 'item-category', domain: 'item', facet: 'object_type', status: 'approved' }, { id: 'container-category', domain: 'container', facet: 'container_form', status: 'approved' }],
+    container_content_profiles: [{ id: 'profile-1', container_template_id: 'container-1', empty_allowed: false, status: 'approved' }],
+    container_content_profile_entries: [{ id: 'entry-1', profile_id: 'profile-1', item_category_id: 'item-category', min_quantity: 999, max_quantity: 999, required: true }]
+  };
+  assert.ok(validateItemContainerClassificationCatalog(records).includes('CONTAINER_CONTENT_CATEGORY_TEMPLATE_UNRESOLVED:entry-1'));
+});

@@ -48,7 +48,7 @@ function records() {
     ],
     container_content_category_relations: [{ id: 'chest-allows-knife', container_category_id: 'chest', content_category_id: 'knife', compatibility: 'allowed', ...approved }],
     container_content_profiles: [{ id: 'chest-profile', container_template_id: 'chest-template', empty_allowed: false, ...approved }],
-    container_content_profile_entries: [{ id: 'chest-entry', profile_id: 'chest-profile', item_category_id: 'knife', required: true, ...approved }]
+    container_content_profile_entries: [{ id: 'chest-entry', profile_id: 'chest-profile', item_category_id: 'knife', min_quantity: 1, max_quantity: 1, required: true, ...approved }]
   };
 }
 

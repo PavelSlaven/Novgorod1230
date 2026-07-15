@@ -309,8 +309,28 @@ deferred external/local rows: unknown until export
   `required_slots = ceil(quantity / packing_bundle_size) × packing_slot_cost`.
 - Import/readiness проверяет exact policy, положительные integer, отсутствие packing metadata
   вне `size_band`, missing/ambiguous size binding и minimum profile content, превышающее capacity.
+- Category-only required content разрешается только в ровно один approved template (через
+  `item_templates.category_id` либо approved `object_type` binding); отсутствие или
+  неоднозначность дают hard block `CONTAINER_CONTENT_CATEGORY_TEMPLATE_UNRESOLVED`, а не
+  неявное допущение о packing size.
 - Stage 16 до audit/commit проверяет выбранные items и nested containers; `CONTAINER_CAPACITY_EXCEEDED`
   содержит template, capacity, used slots и line breakdown. Trace хранится в evidence code precheck.
+
+### Фактически выполненные проверки и аудит packing slots v1
+
+- `npm run test:world-catalog` — PASS, 52/52;
+- `npm run test:stage16` — PASS, 15/15;
+- `npm run test:stage2-8` — PASS, 6/6;
+- `npm run test:integration` — PASS, 21 passed / 5 skipped (PostgreSQL-dependent cases);
+- `npm run world-db:schema-check`, `npm run world-db:schema-doc-check`, `npm run architecture:check`
+  и `npm run knowledge:check-corpus` — PASS; schema reference: 115 tables, digest
+  `6e2bbf17e0794ab1173cb26dd99126c691f7c8fbb6712eda97417cb3d2c2adda`;
+- в чистом detached worktree `npm run docs:generate`, `npm run docs:check` и полный `npm test`
+  — PASS; browser e2e пропущен из-за отсутствующего Chromium;
+- `git diff --check main` — PASS. Реальный PostgreSQL 16 entrypoint/integration не запущен:
+  Docker Compose заблокирован отсутствующим `POSTGRES_PASSWORD`, `psql` не установлен.
+- Code critic: первый проход — `CHANGES REQUIRED` (category-only content не имел детерминированного
+  template для расчёта capacity); исправление и тест добавлены, повторный аудит — `PASS`.
 
 ### Не выполнено и остаётся открытым
 

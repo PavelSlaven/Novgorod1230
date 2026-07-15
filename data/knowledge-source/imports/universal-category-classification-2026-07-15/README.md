@@ -473,10 +473,19 @@ item/container. Для `holder_character_id` обязателен один из 
 - Audit correction: критик последовательно выявил missing placement row и player holder
   без physical position. Добавлены typed topology errors, reverse DDL checks,
   Stage 24 reject (`WRITE_PLAN_PHYSICAL_POSITION_REQUIRED`) и negative tests для item,
-  container/equipped slot/Stage 24; final повторный аудит ожидается после этого цикла.
+  container/equipped slot/Stage 24; final повторный аудит — `PASS WITH NOTES`.
 - Последующий audit correction: zone projection для item inside container теперь обходит
   полный item → container → parent path, различает root quick/primary container и
   hard-blocks missing/cyclic path. Добавлены quick/primary/nested/missing/cycle tests.
+- Итоговый чистый full suite: `npm test` — PASS. В том числе module tests 259/259,
+  domain 67/67, apps 11/11, tools 106/106, shadow 6/6, cutover 4/4, integration
+  21 PASS / 5 PostgreSQL SKIP; browser E2E 1 SKIP (Chromium executable отсутствует).
+  `docs:generate`, `docs:check`, `knowledge:check-corpus`, schema/doc checks и
+  generated-artifact reproducibility — PASS в clean worktree. Отдельных `lint` и
+  `typecheck` scripts в `package.json` нет.
+- Реальный PostgreSQL 16 entrypoint/party schema integration не выполнен: `psql` не
+  установлен, а `docker compose` fail-closed требует `POSTGRES_PASSWORD`. Static schema
+  entrypoint/check и integration contract tests прошли; это единственная audit note.
 - Green: targeted domain/presentation/Stage 16 tests — 18/18 PASS;
   `npm run test:world-catalog` — 52/52 PASS;
   `npm run test:stage16` — 17/17 PASS; `npm run test:stage24` — 20/20 PASS;
@@ -486,4 +495,4 @@ item/container. Для `holder_character_id` обязателен один из 
   digest `81c867c1706be45b8ff3f9064d4b3ab09b70c7a2038d57823bea157c32ef5744`.
 - `knowledge:generate` and `knowledge:check-corpus` — PASS. Main-worktree `docs:generate`
   is blocked only by preserved user runtime files under `data/regional-summary-cache/` and
-  `data/world-sessions/`; final docs/full suite run is required in a clean worktree.
+  `data/world-sessions/`; final docs/full suite completed in a clean worktree.

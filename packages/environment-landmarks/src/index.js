@@ -22,7 +22,7 @@ export class EnvironmentFeatureError extends MaterializationError {
 
 export function initializeEnvironmentFeatures(input) {
   assertInitializationInput(input);
-  const catalog = readCatalog(input.catalog_bundle);
+  const catalog = readCatalog(input.catalog_bundle, input);
   const baselineKey = baselineIdentity(input);
   const state = normalizeState(input.existing_environment_state);
   if (state.baselines.some((baseline) => sameBaseline(baseline, baselineKey))) {
@@ -54,7 +54,7 @@ export function initializeEnvironmentFeatures(input) {
 
 export function updateEnvironmentFeatures(input) {
   assertUpdateInput(input);
-  const catalog = readCatalog(input.catalog_bundle);
+  const catalog = readCatalog(input.catalog_bundle, input);
   const state = normalizeState(input.current_environment_state);
   const elapsedMinutes = numberAtLeast(input.elapsed_time?.minutes, 0, 'elapsed_time.minutes');
   const activeEmitters = uniqueBy(input.active_emitters ?? [], 'emitter_id', 'ENVIRONMENT_EMITTER_DUPLICATE');
@@ -79,6 +79,15 @@ export function buildEnvironmentObservationCandidates(input = {}) {
     ...state.traces.filter((item) => item.status !== 'erased').map((item) => observation(item, 'trace'))
   ].sort((left, right) => left.feature_id.localeCompare(right.feature_id));
   return deepFreeze(candidates);
+}
+
+export function validateEnvironmentCatalogBundle(input = {}) {
+  try {
+    const catalog = readCatalog(input.catalog_bundle, input);
+    return deepFreeze({ pass: true, catalog_digest: catalog.catalog_digest, errors: [] });
+  } catch (error) {
+    return deepFreeze({ pass: false, catalog_digest: null, errors: [issue(error.code ?? 'ENVIRONMENT_CATALOG_INVALID', error.message)] });
+  }
 }
 
 export function validateEnvironmentFeatureState(input = {}) {
@@ -223,20 +232,32 @@ function observation(feature, kind) {
 }
 function assertInitializationInput(input) {
   requiredObject(input, 'environment initialization request');
-  for (const key of ['party_id','world_revision_id','historical_frame','g1_id','g1_graph_snapshot','environment_snapshot','source_snapshot','existing_environment_state','catalog_bundle','catalog_digest','materializer_version','rng_algorithm_id','seed_context','trigger','occurrence']) requiredValue(input[key], key);
+  for (const key of ['party_id','world_revision_id','region_id','historical_period_id','historical_frame','g1_id','g1_graph_snapshot','environment_snapshot','source_snapshot','existing_environment_state','catalog_bundle','catalog_digest','materializer_version','rng_algorithm_id','seed_context','trigger','occurrence']) requiredValue(input[key], key);
   if (input.trigger !== 'g1_first_activation') throw new EnvironmentFeatureError('ENVIRONMENT_TRIGGER_INVALID', 'Initialization requires g1_first_activation.');
   if (input.materializer_version !== ENVIRONMENT_MATERIALIZER_VERSION || input.rng_algorithm_id !== ENVIRONMENT_RNG_VERSION) throw new EnvironmentFeatureError('ENVIRONMENT_VERSION_UNSUPPORTED', 'Unsupported environment materializer or RNG version.');
 }
 function assertUpdateInput(input) {
   requiredObject(input, 'environment update request');
-  for (const key of ['party_id','world_revision_id','g1_id','base_state_version','current_environment_state','elapsed_time','weather_before','weather_after','active_emitters','trace_emissions','event_emissions','catalog_bundle','catalog_digest','materializer_version','rng_algorithm_id','idempotency_key']) requiredValue(input[key], key);
+  for (const key of ['party_id','world_revision_id','region_id','historical_period_id','g1_id','base_state_version','current_environment_state','elapsed_time','weather_before','weather_after','active_emitters','trace_emissions','event_emissions','catalog_bundle','catalog_digest','materializer_version','rng_algorithm_id','idempotency_key']) requiredValue(input[key], key);
   if (input.materializer_version !== ENVIRONMENT_MATERIALIZER_VERSION || input.rng_algorithm_id !== ENVIRONMENT_RNG_VERSION) throw new EnvironmentFeatureError('ENVIRONMENT_VERSION_UNSUPPORTED', 'Unsupported environment materializer or RNG version.');
 }
-function readCatalog(bundle) { requiredObject(bundle, 'catalog_bundle'); for (const key of ['landmark_rules','landmark_templates','cue_templates','emission_rules','trace_templates','trace_creation_rules','decay_profiles']) if (!Array.isArray(bundle[key])) throw new EnvironmentFeatureError('ENVIRONMENT_CATALOG_INVALID', `catalog_bundle.${key} must be an array.`); return bundle; }
+function readCatalog(bundle, input) {
+  requiredObject(bundle, 'catalog_bundle');
+  for (const key of ['schema_version','world_revision_id','region_id','historical_period_id','catalog_digest','regional_permissions']) requiredValue(bundle[key], `catalog_bundle.${key}`);
+  if (bundle.schema_version !== 'environment-catalog.v1') throw new EnvironmentFeatureError('ENVIRONMENT_CATALOG_INVALID', 'Unsupported environment catalog schema version.', { schema_version: bundle.schema_version });
+  for (const key of ['landmark_rules','landmark_templates','cue_templates','emission_rules','trace_templates','trace_creation_rules','decay_profiles','regional_permissions']) if (!Array.isArray(bundle[key])) throw new EnvironmentFeatureError('ENVIRONMENT_CATALOG_INVALID', `catalog_bundle.${key} must be an array.`);
+  const { catalog_digest, ...digestPayload } = bundle;
+  if (canonicalDigest(digestPayload) !== catalog_digest || input.catalog_digest !== catalog_digest) throw new EnvironmentFeatureError('ENVIRONMENT_CATALOG_DIGEST_MISMATCH', 'Catalog digest does not bind this environment request.', { expected: catalog_digest, actual: input.catalog_digest });
+  if (bundle.world_revision_id !== input.world_revision_id) throw new EnvironmentFeatureError('ENVIRONMENT_CATALOG_WORLD_REVISION_MISMATCH', 'Catalog world revision does not match the request.', { expected: bundle.world_revision_id, actual: input.world_revision_id });
+  if (bundle.region_id !== input.region_id) throw new EnvironmentFeatureError('ENVIRONMENT_CATALOG_REGION_MISMATCH', 'Catalog region does not match the request.', { expected: bundle.region_id, actual: input.region_id });
+  if (bundle.historical_period_id !== input.historical_period_id) throw new EnvironmentFeatureError('ENVIRONMENT_CATALOG_PERIOD_MISMATCH', 'Catalog period does not match the request.', { expected: bundle.historical_period_id, actual: input.historical_period_id });
+  if (!bundle.regional_permissions.includes(input.region_id)) throw new EnvironmentFeatureError('ENVIRONMENT_REGIONAL_PERMISSION_MISSING', 'Catalog has no regional permission for this request.', { region_id: input.region_id });
+  return bundle;
+}
 function normalizeState(value) { requiredObject(value, 'environment_state'); const state = {}; for (const key of ['baselines','landmarks','cues','traces']) { if (!Array.isArray(value[key])) throw new EnvironmentFeatureError('ENVIRONMENT_STATE_INVALID', `environment_state.${key} must be an array.`); state[key] = structuredClone(value[key]); } return state; }
 function baselineIdentity(input) { return { party_id: input.party_id, world_revision_id: input.world_revision_id, g1_id: input.g1_id, materializer_version: input.materializer_version }; }
 function sameBaseline(left, right) { return ['party_id','world_revision_id','g1_id','materializer_version'].every((key) => left[key] === right[key]); }
-function seedContext(input) { return { party_id: input.party_id, world_revision_id: input.world_revision_id, g1_id: input.g1_id, trigger: input.trigger, occurrence: input.occurrence, catalog_digest: input.catalog_digest, environment_materializer_version: input.materializer_version, rng_algorithm_id: input.rng_algorithm_id }; }
+function seedContext(input) { return { party_id: input.party_id, world_revision_id: input.world_revision_id, region_id: input.region_id, historical_period_id: input.historical_period_id, g1_id: input.g1_id, trigger: input.trigger, occurrence: input.occurrence, catalog_digest: input.catalog_digest, environment_materializer_version: input.materializer_version, rng_algorithm_id: input.rng_algorithm_id }; }
 function chooseCount(rule, available, random) { const min = numberAtLeast(rule.min_count ?? 0, 0, 'rule.min_count'); const max = numberAtLeast(rule.max_count ?? min, min, 'rule.max_count'); if (min > available) { if (required(rule)) throw new EnvironmentFeatureError('ENVIRONMENT_REQUIRED_CANDIDATE_SET_EMPTY', 'Required landmark count exceeds candidates.', { rule_id: rule.rule_id, available, minimum: min }); return 0; } return min + (max > min ? random.nextUint32() % (Math.min(max, available) - min + 1) : 0); }
 function weighted(items, draw) { const total = items.reduce((sum, item) => sum + finiteOr(item.weight, 1), 0); let cursor = draw % total; for (const item of items) { cursor -= finiteOr(item.weight, 1); if (cursor < 0) return item; } return items.at(-1); }
 function choice(ordinal, choiceKey, digest, ids, selected, draw, counter, selectedKey = 'template_id') { return { choice_ordinal: ordinal, choice_key: choiceKey, candidate_set_digest: digest, candidate_ids: ids, selected_id: selected[selectedKey], selected_weight: finiteOr(selected.weight, 1), rng_draw: draw, rng_counter: counter, rejection_summary: emptyRejections() }; }

@@ -126,6 +126,10 @@ CREATE TABLE world_base.container_templates (
   region_id TEXT REFERENCES world_base.regions(id) ON DELETE CASCADE,
   category_id TEXT NOT NULL REFERENCES world_base.universal_categories(id) ON DELETE RESTRICT,
   capacity INTEGER NOT NULL CHECK (capacity > 0),
+  capacity_policy JSONB NOT NULL CHECK (
+    jsonb_typeof(capacity_policy) = 'object'
+    AND capacity_policy = '{"version":1,"mode":"unknown","reason":"not_measured"}'::jsonb
+  ),
   access_policy JSONB NOT NULL DEFAULT '{}'::jsonb,
   status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','approved','deprecated'))
 );
@@ -191,7 +195,7 @@ CREATE TABLE world_base.container_template_facet_bindings (
   category_id TEXT NOT NULL REFERENCES world_base.universal_categories(id) ON DELETE RESTRICT,
   facet TEXT NOT NULL CHECK (facet IN (
     'container_form','capacity_band','closure_type','access_model',
-    'portability','content_compatibility','condition'
+    'portability','content_compatibility','condition','material'
   )),
   requires_regional_permission BOOLEAN NOT NULL DEFAULT false,
   status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','approved','deprecated')),

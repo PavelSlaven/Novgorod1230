@@ -309,8 +309,12 @@ export const fields = {
   container_template_facet_bindings: {
     container_template_id: 'FK → container_templates(id): классифицируемый шаблон контейнера.',
     category_id: 'FK → universal_categories(id): утверждённая категория фасета.',
-    facet: 'container_form, capacity_band, closure_type, access_model, portability или content_compatibility.',
+    facet: 'container_form, material, capacity_band, closure_type, access_model, portability, content_compatibility или condition.',
     requires_regional_permission: 'Требует approved regional/period permission в той же world revision до импорта.'
+  },
+  container_templates: {
+    capacity: 'Legacy integer без утверждённой единицы; не является runtime-измерением и не интерпретируется автоматически.',
+    capacity_policy: 'Versioned closed policy вместимости; в 3B-1 допустимо только явное unknown: not_measured.'
   },
   container_content_category_relations: {
     container_category_id: 'FK → universal_categories(id): категория контейнера.',

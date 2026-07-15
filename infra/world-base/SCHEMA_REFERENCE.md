@@ -2,7 +2,7 @@
 # Справочник схемы `world_base`
 
 - Исполняемый источник: `infra/world-base/schema.sql` и 11 упорядоченных SQL-частей.
-- SHA-256 развёрнутого DDL: `7f4a4c2a951cc34af305af047935b4107a9b0cf41a0a83c39e7bb328e90eea02`.
+- SHA-256 развёрнутого DDL: `e02e8ca0a70c234e0e22f591d7f0a55316cce417f5aa120040bb19bf3f04188a`.
 - Таблиц: 115.
 - Описания берутся только из утверждённого `infra/world-base/field-descriptions.js`; отсутствие описания не заполняется эвристикой.
 
@@ -3106,7 +3106,8 @@ G4-specific правила контейнеров, содержимого и д�
 | `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
 | `region_id` | `TEXT` | да | — | `world_base.regions(id) ON DELETE CASCADE` | — | FK → regions(id): регион, к которому относится запись. |
 | `category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
-| `capacity` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (capacity > 0)` | Описание отсутствует. |
+| `capacity` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (capacity > 0)` | Legacy integer без утверждённой единицы; не является runtime-измерением и не интерпретируется автоматически. |
+| `capacity_policy` | `JSONB` | нет | — | — | `NOT NULL`<br>`CHECK ( jsonb_typeof(capacity_policy) = 'object' AND capacity_policy = '{"version":1,"mode":"unknown","reason":"not_measured"}'::jsonb )` | Versioned closed policy вместимости; в 3B-1 допустимо только явное unknown: not_measured. |
 | `access_policy` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
 | `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
 
@@ -3214,7 +3215,7 @@ G4-specific правила контейнеров, содержимого и д�
 | `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
 | `container_template_id` | `TEXT` | нет | — | `world_base.container_templates(id) ON DELETE CASCADE` | `NOT NULL` | FK → container_templates(id): классифицируемый шаблон контейнера. |
 | `category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | `NOT NULL` | FK → universal_categories(id): утверждённая категория фасета. |
-| `facet` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (facet IN ( 'container_form','capacity_band','closure_type','access_model', 'portability','content_compatibility','condition' ))` | container_form, capacity_band, closure_type, access_model, portability или content_compatibility. |
+| `facet` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (facet IN ( 'container_form','capacity_band','closure_type','access_model', 'portability','content_compatibility','condition','material' ))` | container_form, material, capacity_band, closure_type, access_model, portability, content_compatibility или condition. |
 | `requires_regional_permission` | `BOOLEAN` | нет | `false` | — | `NOT NULL` | Требует approved regional/period permission в той же world revision до импорта. |
 | `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
 

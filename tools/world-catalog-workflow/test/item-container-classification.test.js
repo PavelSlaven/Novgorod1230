@@ -14,7 +14,7 @@ const approved = { status: 'approved' };
 function records() {
   return {
     item_templates: [{ id: 'knife-template', region_id: 'novgorod', ...approved }],
-    container_templates: [{ id: 'chest-template', category_id: 'chest', ...approved }],
+    container_templates: [{ id: 'chest-template', world_revision_id: 'revision-1', category_id: 'chest', capacity: 1, capacity_policy: { version: 1, mode: 'unknown', reason: 'not_measured' }, ...approved }],
     item_profile_sets: [{ id: 'item-profile', ...approved }],
     item_profile_entries: [{ id: 'item-entry', profile_id: 'item-profile', item_template_id: 'knife-template', slot_key: 'tool', required: true, ...approved }],
     g4_item_materialization_rules: [{ id: 'item-rule', item_profile_id: 'item-profile', min_count: 1, ...approved }],
@@ -52,6 +52,20 @@ function records() {
 
 test('item facets and container facets accept normalized bindings', () => {
   assert.deepEqual(validateItemContainerClassificationCatalog(records()), []);
+});
+
+test('container material is an independent facet and capacity policy never infers a unit', () => {
+  const value = records();
+  value.universal_categories.push({ id: 'container-wood', domain: 'container', facet: 'material', ...approved });
+  value.container_template_facet_bindings.push({ id: 'chest-wood', container_template_id: 'chest-template', category_id: 'container-wood', facet: 'material', ...approved });
+  value.container_templates[0].capacity_policy = { version: 1, mode: 'unknown', reason: 'not_measured' };
+  assert.deepEqual(validateItemContainerClassificationCatalog(value), []);
+  const invalid = structuredClone(value);
+  invalid.container_templates[0].capacity_policy = { version: 1, mode: 'bounded_quantity', value: 1 };
+  assert.ok(validateItemContainerClassificationCatalog(invalid).includes('CONTAINER_CAPACITY_POLICY_INVALID:chest-template'));
+  invalid.container_templates[0].capacity = 'one';
+  assert.ok(validateItemContainerClassificationCatalog(invalid).includes('CONTAINER_CAPACITY_LEGACY_INVALID:chest-template'));
+  assert.deepEqual(value.container_templates[0].capacity_policy, { version: 1, mode: 'unknown', reason: 'not_measured' });
 });
 
 test('item classification blocks missing/wrong facets, duplicate primary binding and dangling templates', () => {

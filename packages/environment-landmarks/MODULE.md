@@ -14,6 +14,7 @@
 ## Инварианты
 
 - baseline уникален по `party_id`, `world_revision_id`, `g1_id`, `materializer_version`;
+- baseline materialization создаёт только persistent landmarks; cue/trace lifecycle запускается только явным `updateEnvironmentFeatures`;
 - required candidate set блокирует материализацию;
 - cue содержит причинный источник, trace — источник и event;
 - публичные observation candidates не содержат source ID или location binding;
@@ -25,4 +26,4 @@
 
 ## Тесты
 
-`test/domain.test.js` покрывает repeat-entry, скрытый источник дыма и жизненный цикл колеи.
+`test/domain.test.js` покрывает repeat-entry, запрет неявного lifecycle при baseline, скрытый источник дыма и жизненный цикл колеи.

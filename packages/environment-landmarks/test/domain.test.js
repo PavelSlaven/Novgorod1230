@@ -61,6 +61,20 @@ test('environment landmarks materializes a deterministic baseline once and never
   assert.deepEqual(repeated.environment_state.landmarks, first.environment_state.landmarks);
 });
 
+test('baseline initialization never starts cue or trace lifecycle implicitly', () => {
+  const initialized = initializeEnvironmentFeatures(initializationInput({
+    source_snapshot: {
+      active_emitters: [{ emitter_id: 'camp-hearth-1', source_type: 'hearth', source_kind: 'camp', source_id: 'hidden-camp-1', location_binding: 'g4-ridge' }],
+      initial_trace_emissions: [],
+      event_emissions: []
+    }
+  }));
+  assert.deepEqual(initialized.created_cues, []);
+  assert.deepEqual(initialized.created_traces, []);
+  assert.deepEqual(initialized.environment_state.cues, []);
+  assert.deepEqual(initialized.environment_state.traces, []);
+});
+
 test('environment cues require an active approved source and never disclose it in observation candidates', () => {
   const initialized = initializeEnvironmentFeatures(initializationInput());
   const result = updateEnvironmentFeatures({

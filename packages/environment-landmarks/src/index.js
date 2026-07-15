@@ -45,24 +45,10 @@ export function initializeEnvironmentFeatures(input) {
     baselines: [...state.baselines, { ...baselineKey, run_id: runId, seed_digest: seed.digest }],
     landmarks: [...state.landmarks, ...created]
   };
-  const result = finalizeResult({
+  return finalizeResult({
     input, state: nextState, status: 'initialized', created_landmarks: created, updated_landmarks: [],
     created_cues: [], updated_cues: [], expired_cue_ids: [], created_traces: [], updated_traces: [], erased_trace_ids: [], choices,
     seed, runId
-  });
-  const initialUpdate = updateEnvironmentFeatures({
-    party_id: input.party_id, world_revision_id: input.world_revision_id, g1_id: input.g1_id, base_state_version: 0,
-    current_environment_state: result.environment_state, elapsed_time: { minutes: 0 }, weather_before: input.environment_snapshot?.weather,
-    weather_after: input.environment_snapshot?.weather, active_emitters: input.source_snapshot?.active_emitters ?? [],
-    trace_emissions: input.source_snapshot?.initial_trace_emissions ?? [], event_emissions: input.source_snapshot?.event_emissions ?? [],
-    catalog_bundle: input.catalog_bundle, catalog_digest: input.catalog_digest, materializer_version: input.materializer_version,
-    rng_algorithm_id: input.rng_algorithm_id, idempotency_key: `initialize:${runId}`
-  });
-  return finalizeResult({
-    input, state: initialUpdate.environment_state, status: 'initialized', created_landmarks: created, updated_landmarks: [],
-    created_cues: initialUpdate.created_cues, updated_cues: initialUpdate.updated_cues, expired_cue_ids: initialUpdate.expired_cue_ids,
-    created_traces: initialUpdate.created_traces, updated_traces: initialUpdate.updated_traces, erased_trace_ids: initialUpdate.erased_trace_ids,
-    choices, seed, runId
   });
 }
 

@@ -1,8 +1,8 @@
 # Universal category classification — единый отчёт PR №7
 
-**Ветка:** `chatgpt/universal-category-classification`  
-**PR:** `#7`, draft, base `main`  
-**Статус policy:** `proposed`  
+**Ветка:** `chatgpt/universal-category-classification`
+**PR:** `#7`, draft, base `main`
+**Статус policy:** `proposed`
 **Охваченные этапы:** 1, 2, 3A, inventory foundation 3B-1 и редакторский каталог 120 предметов
 
 ## 1. Цель работы
@@ -282,3 +282,19 @@ DDL, JSON Schema, importer, runtime code, Stage 8/16, party state и generated a
 - external/local migration inventory отсутствует;
 - production import, cutover и runtime activation не начаты;
 - PR остаётся draft.
+
+## 13. Этап 3B-1 — технический draft bundle
+
+**Starting SHA:** `815b81eb0ef613fd97cf1c16e895d6b7ebbc05d5` (verified against PR #7 before edits).
+
+Новый `stage-3b1/bundle/` — отдельный воспроизводимый supplemental manifest. Он содержит 102 item templates, 18 container templates, 146 draft categories/labels/region options, нормализованные object/function/context bindings, draft inventory profiles, 18 container-content profiles, 16 item profile sets, 10 property profiles и один equipment profile с проверенным `nov_role_guard`. Все SHA-256 digests datasets вычисляются из canonical JSON arrays скриптом `scripts/generate-stage-3b1-bundle.mjs`.
+
+Bundle является только authoring-входом: `approval = draft`, `deletion_policy = none`, все строки со статусом остаются `draft`. `validateSupplementalCatalogBundle` применяет фактические JSON Schema каждого dataset (включая closed fields, enum, `oneOf` и `not`), сверяет `$id` схемы, digest/count, FK и локальные/external references, и отклоняет party/unknown tables, dangling links, invalid XOR rows, отсутствующий object type и ambiguous primary function. `npm run world-db:import:stage3b1:dry-run` не выполняет запись и возвращает фактические counts.
+
+Physical values помечены как `gameplay_estimate` в `PHYSICAL_PARAMETER_REVIEW_TABLE.md`; они не являются историческими измерениями. Historical source-family references всё ещё требуют individual source-record resolution, поэтому каждая coverage row остаётся `partial_draft` с `HISTORICAL_PRESENCE_EVIDENCE_REQUIRED`. Bulk goods также остаются заблокированы `BULK_GOOD_QUANTITY_UNIT_MODEL_REQUIRED`. Ни record, ни revision, ни policy не активированы; Stage 8/16 runtime candidates не изменены.
+
+Технические artifacts: `TARGET_TABLE_COVERAGE.md`, `PHYSICAL_PARAMETER_AUTHORING_POLICY.md`, `PHYSICAL_PARAMETER_REVIEW_TABLE.md`, `NORMALIZATION_COVERAGE_REPORT.md`, `DATA_GAPS.md` и `CODEX_INTEGRATION_REPORT.md`.
+
+Фактически выполнено после реализации: direct supplemental tests — 10/10; `test:world-catalog` — 62/62; `test:stage16` — 17/17; Stage 2–8 migration tests — 6/6; `npm test` — success (модульный набор 259, domain 67, apps 11, tools 116, shadow 6, cutover 4; integration 21 pass/5 skipped; browser 1 skipped без Chromium); schema check — 117 tables и read-only grants; schema/docs/corpus/architecture checks — success; supplemental importer dry-run — success. Проверка PostgreSQL apply/readback/rollback не запущена: `docker compose config --quiet` блокируется отсутствующим обязательным `POSTGRES_PASSWORD`. Lint/typecheck scripts в `package.json` отсутствуют.
+
+Обязательный code critic завершился `PASS WITH NOTES`. Он подтвердил закрытие трёх последовательных `CHANGES REQUIRED`: допуск `deprecated` и ложной schema-ID проверки; неполной JSON Schema/FK strictness; нормализации невозможной календарной даты через `Date.parse`. Последнее закрыто strict RFC 3339 full-date проверкой с RED‑тестом. Note аудита: PostgreSQL apply/readback/rollback не запускались, поскольку compose требует недоступный `POSTGRES_PASSWORD`.

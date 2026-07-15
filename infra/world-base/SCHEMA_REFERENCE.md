@@ -2,7 +2,7 @@
 # Справочник схемы `world_base`
 
 - Исполняемый источник: `infra/world-base/schema.sql` и 11 упорядоченных SQL-частей.
-- SHA-256 развёрнутого DDL: `81c867c1706be45b8ff3f9064d4b3ab09b70c7a2038d57823bea157c32ef5744`.
+- SHA-256 развёрнутого DDL: `b14bdddffbcfc9daf01668525e580f2133bb661d33f90aa3867a8a705077a836`.
 - Таблиц: 117.
 - Описания берутся только из утверждённого `infra/world-base/field-descriptions.js`; отсутствие описания не заполняется эвристикой.
 
@@ -2156,7 +2156,7 @@
 | `audit_notes` | `TEXT` | да | — | — | — | Заметки редактора: споры, TODO, ссылки на проверку. |
 | `created_at` | `TIMESTAMPTZ` | нет | `now()` | — | `NOT NULL` | Время создания записи (UTC). |
 | `updated_at` | `TIMESTAMPTZ` | нет | `now()` | — | `NOT NULL` | Время последнего изменения (обновляется триггером). |
-| `category_id` | `TEXT` | да | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
+| `category_id` | `TEXT` | да | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | — | FK → universal_categories(id): object-type category template; legacy item_type не является вторым классификатором. |
 
 **Ограничения таблицы:**
 
@@ -3106,6 +3106,7 @@ G4-specific правила контейнеров, содержимого и д�
 | `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
 | `region_id` | `TEXT` | да | — | `world_base.regions(id) ON DELETE CASCADE` | — | FK → regions(id): регион, к которому относится запись. |
 | `category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `source_id` | `TEXT` | да | — | `world_base.source_records(id) ON DELETE RESTRICT` | — | FK → source_records(id): provenance container template; draft catalog не выводит историческую точность из этой ссылки. |
 | `capacity` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (capacity > 0)` | Положительная внутренняя вместимость контейнера в packing slots; не является массой, литрами или inventory slots персонажа. |
 | `packing_slot_cost` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (packing_slot_cost > 0)` | Положительный внешний размер контейнера в packing slots при переноске или вложении. |
 | `capacity_policy` | `JSONB` | нет | — | — | `NOT NULL`<br>`CHECK ( jsonb_typeof(capacity_policy) = 'object' AND capacity_policy = '{"version":1,"mode":"packing_slots","unit":"packing_slot"}'::jsonb )` | Closed policy строго {version:1,mode:packing_slots,unit:packing_slot}; runtime не интерпретирует иные единицы. |
@@ -3327,11 +3328,12 @@ G4-specific правила контейнеров, содержимого и д�
 |---|---|---:|---|---|---|---|
 | `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
 | `property_profile_id` | `TEXT` | нет | — | `world_base.property_profiles(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
-| `owner_kind` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
-| `holder_kind` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
-| `controller_kind` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
-| `access_policy` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
-| `claim_conditions` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `owner_kind` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (owner_kind IN ('person','household','workshop','community','institution','estate','unknown'))` | Closed vocabulary: person, household, workshop, community, institution, estate или unknown; не ID конкретного owner. |
+| `holder_kind` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (holder_kind IN ('person','household','workshop','community','institution','estate','unknown'))` | Closed vocabulary holder relation; не заменяет party holder relation. |
+| `controller_kind` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (controller_kind IN ('person','household','workshop','community','institution','estate','unknown'))` | Closed vocabulary controller relation; не заменяет party controller relation. |
+| `access_policy` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Versioned policy payload для authoring access; без внешних ID и художественного текста. |
+| `claim_conditions` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Versioned policy payload условий claim; без конкретных party relations. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
 
 **Ограничения таблицы:**
 

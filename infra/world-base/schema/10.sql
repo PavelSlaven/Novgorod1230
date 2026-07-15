@@ -118,13 +118,16 @@ CREATE TABLE world_base.g4_materialization_layout_edges (
 );
 
 ALTER TABLE world_base.item_templates
-  ADD COLUMN category_id TEXT REFERENCES world_base.universal_categories(id) ON DELETE RESTRICT;
+  ADD COLUMN category_id TEXT REFERENCES world_base.universal_categories(id) ON DELETE RESTRICT,
+  ADD COLUMN world_revision_id TEXT REFERENCES world_base.world_revisions(id) ON DELETE RESTRICT,
+  ADD COLUMN source_id TEXT REFERENCES world_base.source_records(id) ON DELETE RESTRICT;
 
 CREATE TABLE world_base.container_templates (
   id TEXT PRIMARY KEY,
   world_revision_id TEXT NOT NULL REFERENCES world_base.world_revisions(id) ON DELETE RESTRICT,
   region_id TEXT REFERENCES world_base.regions(id) ON DELETE CASCADE,
   category_id TEXT NOT NULL REFERENCES world_base.universal_categories(id) ON DELETE RESTRICT,
+  source_id TEXT REFERENCES world_base.source_records(id) ON DELETE RESTRICT,
   capacity INTEGER NOT NULL CHECK (capacity > 0),
   packing_slot_cost INTEGER NOT NULL CHECK (packing_slot_cost > 0),
   capacity_policy JSONB NOT NULL CHECK (
@@ -273,11 +276,12 @@ CREATE TABLE world_base.property_profiles (
 CREATE TABLE world_base.property_profile_rules (
   id TEXT PRIMARY KEY,
   property_profile_id TEXT NOT NULL REFERENCES world_base.property_profiles(id) ON DELETE CASCADE,
-  owner_kind TEXT NOT NULL,
-  holder_kind TEXT NOT NULL,
-  controller_kind TEXT NOT NULL,
+  owner_kind TEXT NOT NULL CHECK (owner_kind IN ('person','household','workshop','community','institution','estate','unknown')),
+  holder_kind TEXT NOT NULL CHECK (holder_kind IN ('person','household','workshop','community','institution','estate','unknown')),
+  controller_kind TEXT NOT NULL CHECK (controller_kind IN ('person','household','workshop','community','institution','estate','unknown')),
   access_policy JSONB NOT NULL DEFAULT '{}'::jsonb,
-  claim_conditions JSONB NOT NULL DEFAULT '{}'::jsonb
+  claim_conditions JSONB NOT NULL DEFAULT '{}'::jsonb,
+  status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','approved','deprecated'))
 );
 CREATE TABLE world_base.transport_templates (
   id TEXT PRIMARY KEY,

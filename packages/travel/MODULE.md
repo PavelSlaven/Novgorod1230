@@ -10,7 +10,7 @@
 
 ## Public API
 
-- `validateTravelIntent`, `validateTravelPosition`, `validateJourney`, `validateTravelRulesBundle`, `validateTravelAdvanceRequest`, `validateTravelInterruption`
+- `validateTravelIntent`, `validateTravelPosition`, `validateJourney`, `validateTravelRulesBundle`, `validateTravelAdvanceRequest`, `validateTravelInterruption`, `resolveCourseEdgeCandidate`
 - `buildJourneyPlan`, `createJourney`, `advanceJourney`, `applyTravelLifecycleMetadata`, `calculateNextTravelBoundary`, `buildTravelChangeSetProposal`, `buildTravelAdvanceResult`, `buildTravelArrivalRequest`
 - `interruptJourney`, `campJourney`, `resumeJourney`, `changeJourneyPace`, `rerouteJourney`, `abandonJourney`, `completeJourney`
 - `TravelError`
@@ -36,6 +36,8 @@
 `TravelAdvanceRequest` связывает journey, current leg, expected state version, selected boundary, duration и idempotency key. `buildTravelAdvanceResult` возвращает immutable journey/leg/position proposal, request владельцу clock и, только при arrival, `TravelArrivalRequest`; он не обновляет clock, body, transport или environment.
 
 `TravelInterruption` допускает только заранее переданный causal source из закрытого набора weather/light/body/transport/route/timer/NPC/checkpoint/signal/trace/player-command/arrival. Модуль не выбирает источник и не создаёт дорожное событие.
+
+`resolveCourseEdgeCandidate` принимает только закрытый candidate set существующих fact-graph edges с explicit origin/direction applicability и возвращает выбранный stable candidate ID. Пустой, неоднозначный или неприменимый set блокируется; функция не ищет граф и не выбирает направление сама.
 
 Новый `JourneyPlan` содержит явные `movement_method`, `started_at`, `updated_at` и положительный `base_time_minutes` каждого leg. `applyTravelLifecycleMetadata` принимает duration и timestamp только от владельца времени и переносит их в journey/legs; он не читает часы и не создаёт время сам.
 

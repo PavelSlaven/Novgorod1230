@@ -68,6 +68,7 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 - 2026-07-15: завершение последнего canonical journey leg теперь создаёт `travel-arrival-request.v1` с pinned origin/destination и передаёт единственный `position_transition` в существующий atomic first-entry commit gate. Travel domain не читает baseline и не решает materialization; отсутствие approved bundle по-прежнему блокирует commit.
 - 2026-07-15: `travel.continue` принимает только `travel-advance-request.v1`, связывающий journey, leg, state version, duration и selected boundary. Он формирует `travel-advance-result.v1`; stale или чужой journey request блокируется до proposal/commit.
 - 2026-07-15: `TravelInterruption` требует `travel-interruption.v1` и causal source из закрытого набора. Произвольный id или новый дорожный event не могут прервать journey.
+- 2026-07-15: `resolveCourseEdgeCandidate` принимает только explicit applicable candidate из fact graph. Пустой set, неизвестный selected id или candidate из другой direction/origin приводят к typed hard block, а не к выбору «ближайшей» дороги.
 
 ## Checks recorded on transferred baseline
 
@@ -134,6 +135,7 @@ Typed domain errors are versioned with the travel contracts; persistence, presen
 | `node --test packages/travel/test/domain.test.js` / `node --test packages/turn/test/turn-workflow.test.js` | 2026-07-15 | worktree after `14ddb00` | RED: 1 failed each | Formal advance request/result exports and enforcement were absent; an unbound journey id reached transition. |
 | `npm run test:domain` / `npm run test:modules` / `npm run test:apps` / `docs:check` | 2026-07-15 | worktree after advance-contract implementation | PASS: 105/105; 262/262; 14/14 | Full local regression after binding `travel.continue` to explicit journey/leg/version/boundary input. PostgreSQL/E2E remain separate blocked gates. |
 | `node --test packages/travel/test/domain.test.js` | 2026-07-15 | worktree after `41670e9` | RED then PASS: 1 failure → 18/18 | Unstructured interruption was rejected; only formal causal-source interruption can change journey state. |
+| `node --test packages/travel/test/domain.test.js` / `docs:check` | 2026-07-15 | worktree after `51b49ea` | RED then PASS: 1 failure → 19/19 | Course continuation accepts only an explicit applicable fact-graph candidate; generated documentation is current. |
 | `node --test tools/docs-tools/test/knowledge-source-migration.test.js tools/docs-tools/test/knowledge-corpus-verifier.test.js tools/docs-tools/test/knowledge-materializer-v2.test.js` | 2026-07-15 | working tree after `6eb1a23` | PASS: 22/22 | Corpus manifest, legacy provenance and generated graph/RAG materialization remain reproducible after the PR8 normative update. |
 | `npm run test:domain` / `npm run test:modules` | 2026-07-15 | working tree after `6eb1a23` | PASS: 102/102; 261/261 | Documentation-only change did not regress travel, environment, turn or materialization contracts. |
 | `node --test packages/travel/test/domain.test.js` | 2026-07-15 | `69b0ee8` | RED: 1 failed | `ERR_MODULE_NOT_FOUND` before implementation. |
@@ -254,7 +256,7 @@ The ordered migration loader, seed script, party preflight and Stage 25 logical 
 | --- | --- | --- |
 | 0 — baseline | completed | Rebased onto current PR7 head `5463af8`; schema guard was reconciled with the combined 138-table DDL. |
 | 1 — normative architecture | in progress | PR8 travel boundaries are now synchronized across movement, time, turn, UI, graph/data ownership and navigation docs; full production proof still depends on approved data and integration. |
-| 2 — contracts and RED tests | in progress | Travel, movement and environment RED/GREEN evidence is recorded; route graph and course selection contracts remain pending. |
+| 2 — contracts and RED tests | in progress | Travel, movement and environment RED/GREEN evidence is recorded; course candidate-resolution is explicit and fail-closed. Route graph loader and production course resolution remain pending. |
 | 3 — environment baseline | completed for package boundary | Split lifecycle, bundle validation and leak tests are green; production bundle is absent. |
 | 4 — world-base bundles | partial | Runtime fields are normalized in DDL; sources/provenance, importer/readiness and approved bundle are still absent. |
 | 5 — approved pilot | blocked | No runtime-visible approved G1; no fictional promotion is allowed. |
@@ -278,6 +280,7 @@ The ordered migration loader, seed script, party preflight and Stage 25 logical 
 | `TravelChangeSetProposal` | `travel-change-set.v1` | `@rus/travel` | transition → turn writer | state-version and set-congruence checks | atomic normalized writes | no |
 | `TravelAdvanceRequest` / `TravelAdvanceResult` | `travel-advance-request.v1` / `travel-advance-result.v1` | `@rus/travel` | state reader → continue handler | journey/leg/version/boundary validation | proposal only | no |
 | `TravelInterruption` | `travel-interruption.v1` | `@rus/travel` | causal candidate loader → lifecycle | source-type/source-id validation | journey leg interruption only | no |
+| `CourseEdgeCandidate` | `travel-course-candidate.v1` | fact-graph loader / `@rus/travel` | candidate loader → course start | origin/direction/selected-id validation | plan input only | no |
 | `TravelArrivalRequest` | `travel-arrival-request.v1` | `@rus/travel` | final leg → turn commit gate | canonical final-leg and position checks | same atomic first-entry transaction | no |
 | `TravelRulesBundle` | `travel-rules.v1` | `@rus/travel` | approved loader → domain | `TRAVEL_RULE_BUNDLE_MISSING`, `TRAVEL_DATA_GAP` | digest pin | no |
 | `EnvironmentCatalogBundle` | `environment-catalog.v1` | `@rus/environment-landmarks` | approved loader → environment | digest/scope/idempotency checks | environment runtime tables | observations only |

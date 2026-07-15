@@ -24,6 +24,31 @@ export function validateTravelIntent(intent) {
   return deepFreeze(structuredClone(value));
 }
 
+export function resolveCourseEdgeCandidate(input) {
+  const value = record(input, 'TRAVEL_INPUT_INVALID', 'Course edge resolution input must be an object.');
+  for (const key of ['origin_g4_id', 'intended_direction', 'selected_candidate_id']) required(value[key], key);
+  if (!Array.isArray(value.candidates) || value.candidates.length === 0) {
+    fail('TRAVEL_REQUIRED_CANDIDATE_SET_EMPTY', 'Course travel requires at least one explicit fact-graph edge candidate.', { candidate_set: 'course_edges' });
+  }
+  const ids = new Set();
+  const candidates = value.candidates.map((candidate) => {
+    const item = record(candidate, 'TRAVEL_INPUT_INVALID', 'Course edge candidate must be an object.');
+    for (const key of ['candidate_id', 'edge_id', 'from_g4_id', 'to_g4_id', 'route_profile_id']) required(item[key], key);
+    if (!Number.isInteger(item.base_time_minutes) || item.base_time_minutes <= 0) fail('TRAVEL_INPUT_INVALID', 'Course edge candidate requires positive base_time_minutes.', { candidate_id: item.candidate_id });
+    if (ids.has(item.candidate_id)) fail('TRAVEL_DATA_GAP', 'Course edge candidates must have unique stable IDs.', { candidate_id: item.candidate_id });
+    ids.add(item.candidate_id);
+    const applicability = record(item.applicability, 'TRAVEL_DATA_GAP', 'Course edge candidate requires explicit applicability.');
+    if (item.from_g4_id !== value.origin_g4_id || applicability.intended_direction !== value.intended_direction) {
+      fail('TRAVEL_DATA_GAP', 'Course edge candidate is outside the requested origin or direction.', { candidate_id: item.candidate_id });
+    }
+    return structuredClone(item);
+  });
+  candidates.sort((left, right) => left.candidate_id.localeCompare(right.candidate_id));
+  const selected = candidates.find((candidate) => candidate.candidate_id === value.selected_candidate_id);
+  if (!selected) fail('TRAVEL_EDGE_NOT_TRAVERSABLE', 'Selected course edge is not in the explicit candidate set.', { selected_candidate_id: value.selected_candidate_id });
+  return deepFreeze(selected);
+}
+
 export function validateTravelRulesBundle({ bundle, world_revision_id, region_id, historical_period_id, catalog_digest } = {}) {
   try {
     const value = readTravelRulesBundle(bundle, { world_revision_id, region_id, historical_period_id, catalog_digest });

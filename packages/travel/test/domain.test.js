@@ -13,6 +13,7 @@ import {
   createJourney,
   interruptJourney,
   rerouteJourney,
+  resolveCourseEdgeCandidate,
   resumeJourney,
   validateTravelRulesBundle,
   validateTravelAdvanceRequest,
@@ -283,4 +284,21 @@ test('next travel boundary selects only the earliest explicit candidate determin
     () => calculateNextTravelBoundary({ ...input, candidates: [] }),
     (error) => error instanceof TravelError && error.code === 'TRAVEL_REQUIRED_CANDIDATE_SET_EMPTY'
   );
+});
+
+test('course continuation accepts only an explicit applicable fact-graph edge candidate', () => {
+  const input = {
+    origin_g4_id: 'g4:start',
+    intended_direction: 'north',
+    selected_candidate_id: 'course-edge:1',
+    candidates: [{
+      candidate_id: 'course-edge:1', edge_id: 'edge:1', from_g4_id: 'g4:start', to_g4_id: 'g4:target',
+      route_profile_id: 'route-profile:1', base_time_minutes: 60,
+      applicability: { intended_direction: 'north' }
+    }]
+  };
+  assert.deepEqual(resolveCourseEdgeCandidate(input), input.candidates[0]);
+  assert.throws(() => resolveCourseEdgeCandidate({ ...input, candidates: [] }), (error) => error instanceof TravelError && error.code === 'TRAVEL_REQUIRED_CANDIDATE_SET_EMPTY');
+  assert.throws(() => resolveCourseEdgeCandidate({ ...input, selected_candidate_id: 'course-edge:invented' }), (error) => error instanceof TravelError && error.code === 'TRAVEL_EDGE_NOT_TRAVERSABLE');
+  assert.throws(() => resolveCourseEdgeCandidate({ ...input, candidates: [{ ...input.candidates[0], applicability: { intended_direction: 'east' } }] }), (error) => error instanceof TravelError && error.code === 'TRAVEL_DATA_GAP');
 });

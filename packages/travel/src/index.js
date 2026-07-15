@@ -50,7 +50,7 @@ export function buildJourneyPlan(input) {
 
 export function createJourney(plan, context) {
   const normalizedPlan = buildJourneyPlan(plan);
-  assertContext(context, normalizedPlan);
+  assertContext(context, normalizedPlan, { checkActiveJourneyConflict: true });
   const legs = normalizedPlan.legs.map((leg, index) => deepFreeze({ ...leg, status: index === 0 ? 'active' : 'pending', progress_permille: 0, elapsed_minutes: 0, interruption_id: null }));
   const first = legs[0];
   const actualPosition = edgePosition(normalizedPlan, first, 0);
@@ -154,12 +154,15 @@ export function completeJourney({ journey, context }) {
   return advanceJourney({ journey, context, progress_permille: 1000 });
 }
 
-function assertContext(context, journey) {
+function assertContext(context, journey, { checkActiveJourneyConflict = false } = {}) {
   const value = record(context, 'TRAVEL_INPUT_INVALID', 'Travel context must be an object.');
   if (value.state_version !== journey.state_version) fail('TRAVEL_STATE_VERSION_MISMATCH', 'Travel state version is stale.', { expected: journey.state_version, actual: value.state_version });
   const requiredSets = record(value.required_candidate_sets, 'TRAVEL_RULE_BUNDLE_MISSING', 'Travel context must provide required candidate sets.');
   for (const [name, candidates] of Object.entries(requiredSets)) {
     if (!Array.isArray(candidates) || candidates.length === 0) fail('TRAVEL_REQUIRED_CANDIDATE_SET_EMPTY', 'A required travel candidate set is empty.', { candidate_set: name });
+  }
+  if (checkActiveJourneyConflict && Array.isArray(value.active_journeys) && value.active_journeys.some((item) => item && item.actor_id === journey.actor_id && ['active', 'interrupted', 'camped'].includes(item.status))) {
+    fail('TRAVEL_ACTIVE_JOURNEY_CONFLICT', 'Actor already has an active journey.', { actor_id: journey.actor_id });
   }
   if (Array.isArray(value.known_edge_ids)) {
     for (const leg of journey.legs ?? []) if (!value.known_edge_ids.includes(leg.edge_id)) fail('TRAVEL_EDGE_NOT_TRAVERSABLE', 'Journey references an unavailable canonical edge.', { edge_id: leg.edge_id });

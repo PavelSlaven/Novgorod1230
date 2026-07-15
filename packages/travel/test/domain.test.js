@@ -68,6 +68,10 @@ test('empty required candidate sets hard-block journey creation', () => {
   assert.throws(() => createJourney(plan, context({ required_candidate_sets: { travel_rules: [] } })), (error) => error instanceof TravelError && error.code === 'TRAVEL_REQUIRED_CANDIDATE_SET_EMPTY');
 });
 
+test('a second active journey for the same actor hard-blocks creation', () => {
+  assert.throws(() => createJourney(plan, context({ active_journeys: [{ journey_id: 'journey:existing', actor_id: 'actor:1', status: 'active' }] })), (error) => error instanceof TravelError && error.code === 'TRAVEL_ACTIVE_JOURNEY_CONFLICT');
+});
+
 test('interruption and resume preserve actual and perceived navigation state without input mutation', () => {
   const journey = createJourney(plan, context());
   const before = structuredClone(journey);

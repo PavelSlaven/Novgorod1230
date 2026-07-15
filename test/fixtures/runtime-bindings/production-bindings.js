@@ -5,6 +5,7 @@ export async function createRuntimeBindings({ ports } = {}) {
     newGameOptionsFactory: async () => ({}),
     turnServicesFactory: async () => ({}),
     stage25PostcommitProjector: async () => ({ version: 1, schema: 'unused_test_postcommit' }),
+    createTravelPorts: async () => travelPorts(),
     newGameRunner: async (options) => {
       await ports.partyPool.query(`INSERT INTO party_runtime.parties
         (party_id,schema_version,world_revision_id,world_catalog_digest,materializer_version,rng_version,command_catalog_digest,profile_bundle_digest,status)
@@ -13,6 +14,20 @@ export async function createRuntimeBindings({ ports } = {}) {
       return { status: 'approved', artifact: stage26Fixture(options.requestId), checkpoint: { outputs: {} } };
     },
     turnRunner: async (input) => turnFixture(input)
+  };
+}
+
+function travelPorts() {
+  return {
+    travelContextReader: { read: async () => ({}) },
+    travelRulesBundleReader: { read: async () => ({}) },
+    environmentBundleReader: { read: async () => ({}) },
+    journeyRepository: { read: async () => ({}) },
+    environmentRepository: { read: async () => ({}) },
+    routeGraphReader: { read: async () => ({}) },
+    clock: { read: async () => ({}) },
+    randomSourceFactory: { create: () => ({ next: () => 0 }) },
+    partyStore: { commit: async () => ({}) }
   };
 }
 

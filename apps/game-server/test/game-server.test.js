@@ -5,6 +5,8 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { computeStage26ScreenDigest } from '@rus/contracts';
 import { buildTravelPersistencePlan, persistTravelChangeSet } from '../src/infrastructure/postgres/party-store-turn.js';
+import { loadRuntimeBindings } from '../src/runtime/load-bindings.js';
+import { validateTravelRuntimePorts } from '../src/runtime/travel-ports.js';
 import {
   createGameCompositionRoot,
   createGameHttpServer,
@@ -143,6 +145,29 @@ test('infrastructure adapters require explicit provider and database ports', asy
   await assert.rejects(() => world.read('DELETE FROM world_base', []), /read-only/u);
   const llm = createLlmRoleRunnerAdapter({ execute: async () => ({ status: 'ok', parsed_json: { approved: true }, provider: 'fixture', model: 'fixture', scope: 'turn_runtime', role_id: 'test', tier_id: 'test', durationMs: 1, config_hash: 'hash' }) });
   assert.deepEqual((await llm.run({ scope: 'turn_runtime', role_id: 'test' })).output, { approved: true });
+});
+
+test('production travel ports are explicit and fail closed', async () => {
+  const ports = {
+    travelContextReader: { read: async () => ({}) },
+    travelRulesBundleReader: { read: async () => ({}) },
+    environmentBundleReader: { read: async () => ({}) },
+    journeyRepository: { read: async () => ({}) },
+    environmentRepository: { read: async () => ({}) },
+    routeGraphReader: { read: async () => ({}) },
+    clock: { read: async () => ({}) },
+    randomSourceFactory: { create: () => ({ next: () => 0 }) },
+    partyStore: { commit: async () => ({}) }
+  };
+  assert.equal(validateTravelRuntimePorts(ports).routeGraphReader, ports.routeGraphReader);
+  const missing = { ...ports };
+  delete missing.routeGraphReader;
+  assert.throws(() => validateTravelRuntimePorts(missing), { code: 'TRAVEL_RUNTIME_PORTS_INVALID' });
+
+  const root = await mkdtemp(join(tmpdir(), 'rus-bindings-'));
+  const modulePath = join(root, 'missing-travel-ports.mjs');
+  await writeFile(modulePath, `export default async () => ({ newGameOptionsFactory: async () => ({}), turnServicesFactory: async () => ({}), stage25PostcommitProjector: async () => ({}) });`);
+  await assert.rejects(() => loadRuntimeBindings(modulePath), { code: 'RUNTIME_BINDINGS_INVALID' });
 });
 
 test('travel persistence accepts one normalized journey, leg and position change set only', () => {

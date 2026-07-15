@@ -1,6 +1,7 @@
 import { pathToFileURL } from 'node:url';
 import { isAbsolute, resolve } from 'node:path';
 import { serverError } from '../errors.js';
+import { validateTravelRuntimePorts } from './travel-ports.js';
 
 export async function loadRuntimeBindings(moduleReference, context = {}) {
   const reference = String(moduleReference ?? '').trim();
@@ -10,7 +11,7 @@ export async function loadRuntimeBindings(moduleReference, context = {}) {
   const factory = loaded.createRuntimeBindings ?? loaded.default;
   if (typeof factory !== 'function') throw serverError('RUNTIME_BINDINGS_FACTORY_INVALID', 'Runtime bindings module must export createRuntimeBindings or default factory.');
   const bindings = await factory(context);
-  for (const name of ['newGameOptionsFactory', 'turnServicesFactory', 'stage25PostcommitProjector']) {
+  for (const name of ['newGameOptionsFactory', 'turnServicesFactory', 'stage25PostcommitProjector', 'createTravelPorts']) {
     if (typeof bindings?.[name] !== 'function') throw serverError('RUNTIME_BINDINGS_INVALID', `${name} must be a function.`);
   }
   for (const name of ['newGameRunner', 'turnRunner']) {
@@ -19,5 +20,10 @@ export async function loadRuntimeBindings(moduleReference, context = {}) {
   if (bindings.turnOptionsFactory != null && typeof bindings.turnOptionsFactory !== 'function') {
     throw serverError('RUNTIME_BINDINGS_INVALID', 'turnOptionsFactory must be a function when provided.');
   }
-  return bindings;
+  const travelPorts = validateTravelRuntimePorts(await bindings.createTravelPorts({
+    env: context.env ?? {},
+    config: context.config ?? {},
+    ports: context.ports ?? {}
+  }));
+  return Object.freeze({ ...bindings, travelPorts });
 }

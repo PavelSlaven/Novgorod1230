@@ -10,7 +10,7 @@
 - Draft status: yes
 - PR7 dependency: open draft; PR8 is rebased onto its current head in an isolated clean worktree.
 - Last completed phase: contract and persistence baseline (partial; not accepted as PR8 completion).
-- Current phase: Phase 1 normative synchronization plus Phases 2–4 — authoring bundles, persistence and domain contracts (`in_progress`).
+- Current phase: Phase 13 production composition — explicit travel-port binding (`in_progress`).
 - Current blocker: no approved pilot-G1 catalog/rules bundles and no configured PostgreSQL integration database.
 
 The branch must be rebased onto `main` after PR7 is integrated and before final audit. The primary worktree remains untouched because it contains unrelated local changes.
@@ -64,6 +64,7 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 - 2026-07-15: `travel.reroute` принимает только replacement `JourneyPlan` при нулевом progress текущего canonical edge. Он сохраняет identity/version pins, помечает старые незапущенные legs `superseded` и не выбирает новую ветвь без formal plan.
 - 2026-07-15: travel plan теперь включает явные persistence metadata (`movement_method`, `started_at`, `updated_at`, `base_time_minutes`). Lifecycle metadata принимает duration/timestamp только формальным input владельца времени. PostgreSQL turn writer hard-blocks неполный или несогласованный journey/legs/position change set, записывает нормализованные rows в одной transaction и не дублирует их в state snapshot. Циклическая FK current-leg сделана `DEFERRABLE INITIALLY DEFERRED`, поэтому active journey и current leg могут быть сохранены атомарно.
 - 2026-07-15: из production party store удалён незавершённый, неиспользуемый perception persistence path: он импортировал отсутствующий module и ссылался на отсутствующие party tables. Это не является fallback: вызовы отсутствовали, а восстановление loadable fail-closed repository необходимо для PostgreSQL integration boundary.
+- 2026-07-15: builtin production composition теперь принимает `ports.travel` только через обязательный `createTravelPorts` binding factory. Девять портов (context/rules/environment readers, journey/environment repositories, graph reader, clock, RandomSource factory и party store) валидируются до старта; fixture не становится production fallback.
 
 ## Checks recorded on transferred baseline
 
@@ -120,6 +121,7 @@ Typed domain errors are versioned with the travel contracts; persistence, presen
 | Command | Date | Head before command | Result | Notes |
 | --- | --- | --- | --- | --- |
 | `npm run docs:generate` / `docs:check` / `knowledge:check-corpus` | 2026-07-15 | working tree after `6eb1a23` | PASS | PR8 normative travel boundary and canonical corpus/derived knowledge artifacts are synchronized; no production data is claimed. |
+| `npm run test:apps` / `node --test test/integration/knowledge-source-production.test.js` | 2026-07-15 | working tree after `cd61113` | PASS: 14/14; 1/1 | Production composition rejects missing travel ports and passes only explicit binding ports to services. The knowledge-source smoke test intentionally does not run PostgreSQL migrations under `pg-mem`, which cannot parse deferred FKs. |
 | `node --test tools/docs-tools/test/knowledge-source-migration.test.js tools/docs-tools/test/knowledge-corpus-verifier.test.js tools/docs-tools/test/knowledge-materializer-v2.test.js` | 2026-07-15 | working tree after `6eb1a23` | PASS: 22/22 | Corpus manifest, legacy provenance and generated graph/RAG materialization remain reproducible after the PR8 normative update. |
 | `npm run test:domain` / `npm run test:modules` | 2026-07-15 | working tree after `6eb1a23` | PASS: 102/102; 261/261 | Documentation-only change did not regress travel, environment, turn or materialization contracts. |
 | `node --test packages/travel/test/domain.test.js` | 2026-07-15 | `69b0ee8` | RED: 1 failed | `ERR_MODULE_NOT_FOUND` before implementation. |
@@ -251,7 +253,7 @@ The ordered migration loader, seed script, party preflight and Stage 25 logical 
 | 10 — turn integration | in progress | One canonical workflow has start/continue/lifecycle handlers and normalized persistence; production state readers and graph/bundle ports remain absent. |
 | 11 — time/body/load/transport | partial | Duration/timestamp ownership is enforced; cross-module production integration and concrete scenarios remain pending. |
 | 12 — visibility/presentation | partial | Safe projection and panel contract are green; browser E2E is unavailable. |
-| 13 — production composition | partial | PostgreSQL writer exists; approved loader/reader ports and production binding are incomplete. |
+| 13 — production composition | partial | Explicit `createTravelPorts` binding contract is fail-closed and reaches `ports.travel`; approved readers, repositories and live PostgreSQL evidence remain pending. |
 | 14 — integration/E2E | blocked | Needs approved pilot and `PARTY_DATABASE_URL`; PostgreSQL suite is skipped 6/6. |
 | critic audit | pending | Prior result remains `CHANGES REQUIRED`; final repeat audit requires post-pilot full evidence. |
 
@@ -264,6 +266,7 @@ The ordered migration loader, seed script, party preflight and Stage 25 logical 
 | `TravelChangeSetProposal` | `travel-change-set.v1` | `@rus/travel` | transition → turn writer | state-version and set-congruence checks | atomic normalized writes | no |
 | `TravelRulesBundle` | `travel-rules.v1` | `@rus/travel` | approved loader → domain | `TRAVEL_RULE_BUNDLE_MISSING`, `TRAVEL_DATA_GAP` | digest pin | no |
 | `EnvironmentCatalogBundle` | `environment-catalog.v1` | `@rus/environment-landmarks` | approved loader → environment | digest/scope/idempotency checks | environment runtime tables | observations only |
+| production travel ports | `travel-ports.v1` | game-server composition | runtime binding factory → turn/new-game services | startup rejects missing methods | external readers + party store | no |
 | travel visible projection | `visible-context` nested `travel` | visibility package | turn → presentation/narrator | hidden-field rejection | visible read model | yes |
 
 Migration order is immutable: `001_party_runtime.sql` → `002_environment_landmarks.sql` → `003_travel_runtime.sql`. Migration 003 is forward-only; its foreign key is deferred only to resolve the normalized journey/current-leg cycle inside a single transaction, and any SQL error still rolls back the complete transaction.

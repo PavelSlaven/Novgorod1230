@@ -1,11 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { sha256 } from '@rus/kernel';
 import {
   TravelError,
   advanceJourney,
   createJourney,
   interruptJourney,
   resumeJourney,
+  validateTravelRulesBundle,
   validateJourney,
   validateTravelPosition
 } from '../src/index.js';
@@ -17,6 +19,24 @@ const position = Object.freeze({
   g5_anchor_id: null,
   last_route_id: null
 });
+
+function travelRulesBundle(overrides = {}) {
+  const bundle = {
+    schema_version: 'travel-rules.v1',
+    world_revision_id: 'world:1',
+    region_id: 'region:1',
+    historical_period_id: 'period:1',
+    source_refs: ['source:1'],
+    records: { pace_profiles: [{ profile_id: 'pace:normal' }], route_profiles: [{ profile_id: 'route-profile:1' }] },
+    bindings: { route_profile_bindings: [{ binding_id: 'binding:1' }] },
+    readiness_report: { pass: true },
+    ...overrides
+  };
+  const { catalog_digest: ignored, ...digestPayload } = bundle;
+  return Object.freeze({ ...bundle, catalog_digest: overrides.catalog_digest ?? sha256(digestPayload) });
+}
+
+const rules = travelRulesBundle();
 
 const plan = Object.freeze({
   journey_id: 'journey:1',
@@ -32,7 +52,9 @@ const plan = Object.freeze({
     route_profile_id: 'route-profile:1', base_gu: 1, base_time_minutes: 60
   }],
   world_revision_id: 'world:1',
-  travel_rules_digest: 'a'.repeat(64),
+  region_id: 'region:1',
+  historical_period_id: 'period:1',
+  travel_rules_digest: rules.catalog_digest,
   environment_catalog_digest: 'b'.repeat(64),
   algorithm_version: 'travel.v1',
   rng_version: 'mulberry32_v1',
@@ -44,6 +66,7 @@ function context(overrides = {}) {
   return Object.freeze({
     state_version: 4,
     known_edge_ids: ['edge:1'],
+    travel_rules_bundle: rules,
     required_candidate_sets: { travel_rules: [{ option_id: 'rule:1' }] },
     ...overrides
   });
@@ -66,6 +89,13 @@ test('a journey cannot advance after arrival and detects stale context', () => {
 
 test('empty required candidate sets hard-block journey creation', () => {
   assert.throws(() => createJourney(plan, context({ required_candidate_sets: { travel_rules: [] } })), (error) => error instanceof TravelError && error.code === 'TRAVEL_REQUIRED_CANDIDATE_SET_EMPTY');
+});
+
+test('travel rules bundle hard-blocks missing, stale or unready approved data', () => {
+  assert.throws(() => createJourney(plan, context({ travel_rules_bundle: null })), (error) => error instanceof TravelError && error.code === 'TRAVEL_RULE_BUNDLE_MISSING');
+  assert.throws(() => createJourney(plan, context({ travel_rules_bundle: travelRulesBundle({ readiness_report: { pass: false } }) })), (error) => error instanceof TravelError && error.code === 'TRAVEL_DATA_GAP');
+  assert.equal(validateTravelRulesBundle({ bundle: rules, world_revision_id: 'world:1', region_id: 'region:1', historical_period_id: 'period:1', catalog_digest: rules.catalog_digest }).pass, true);
+  assert.equal(validateTravelRulesBundle({ bundle: rules, world_revision_id: 'world:1', region_id: 'region:wrong', historical_period_id: 'period:1', catalog_digest: rules.catalog_digest }).errors[0].code, 'TRAVEL_DATA_GAP');
 });
 
 test('a second active journey for the same actor hard-blocks creation', () => {

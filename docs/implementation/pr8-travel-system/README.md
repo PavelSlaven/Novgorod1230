@@ -41,6 +41,7 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 - 2026-07-15: environment RED test proved that baseline initialization implicitly created a cue; baseline initialization is now limited to persistent landmarks and lifecycle requires explicit update.
 - 2026-07-15: persistence RED contract proved that the party migration chain lacked travel tables and Stage 25 targets; `003_travel_runtime.sql` now adds normalized journeys, legs and edge-progress positions.
 - 2026-07-15: environment RED tests proved that an arbitrary catalog object could pass materialization; the bundle boundary now hard-blocks digest, revision, region, period and permission mismatches.
+- 2026-07-15: travel RED tests proved that journey creation accepted unbound rules; `TravelRulesBundle` now verifies digest, scope, source refs and readiness before any lifecycle transition.
 
 ## Checks recorded on transferred baseline
 
@@ -87,6 +88,7 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 | Journey / JourneyLeg | `travel.v1` | `@rus/travel` | travel domain → Stage 25 | `party_journeys` / `party_journey_legs` (planned) | status only |
 | RouteTraversalRequest | `movement-route.v1` | `@rus/movement-routes` | travel domain → route evaluator | proposal only | no |
 | EnvironmentCatalogBundle | `environment-catalog.v1` | `@rus/environment-landmarks` | approved loader → environment domain | catalog pin only | no |
+| TravelRulesBundle | `travel-rules.v1` | `@rus/travel` | approved loader → travel domain | catalog pin only | no |
 
 Typed domain errors are versioned with the travel contracts; persistence, presentation and bundle consumers are not implemented yet.
 

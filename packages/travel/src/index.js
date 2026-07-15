@@ -316,6 +316,37 @@ export function buildTravelChangeSetProposal({ before, after, idempotency_key, e
   });
 }
 
+export function buildTravelArrivalRequest({ before, after } = {}) {
+  const previous = validateJourney(before);
+  const next = validateJourney(after);
+  if (previous.status !== 'active' || !previous.current_leg_id) {
+    fail('TRAVEL_INPUT_INVALID', 'Arrival request must start from an active journey leg.', {});
+  }
+  const previousLeg = previous.legs.find((leg) => leg.leg_id === previous.current_leg_id);
+  const completedLeg = next.legs.find((leg) => leg.leg_id === previous.current_leg_id);
+  if (!previousLeg || !completedLeg || next.status !== 'arrived' || next.current_leg_id != null || completedLeg.status !== 'completed' || completedLeg.progress_permille !== 1000) {
+    fail('TRAVEL_INPUT_INVALID', 'Arrival request requires completion of the current final leg.', {});
+  }
+  const destination = validateTravelPosition(next.actual_position);
+  if (destination.position_kind !== 'node' || destination.g4_id !== previousLeg.to_g4_id || next.perceived_position.position_kind !== 'node' || next.perceived_position.g4_id !== destination.g4_id) {
+    fail('TRAVEL_POSITION_INVALID', 'Arrival request requires matching actual and perceived destination nodes.', {});
+  }
+  return deepFreeze({
+    schema_version: 'travel-arrival-request.v1',
+    party_id: next.party_id,
+    actor_id: next.actor_id,
+    journey_id: next.journey_id,
+    from_g4_id: previousLeg.from_g4_id,
+    to_g4_id: destination.g4_id,
+    destination_position: destination,
+    world_revision_id: next.world_revision_id,
+    travel_rules_digest: next.travel_rules_digest,
+    environment_catalog_digest: next.environment_catalog_digest,
+    algorithm_version: next.algorithm_version,
+    rng_version: next.rng_version
+  });
+}
+
 export function calculateNextTravelBoundary(input) {
   const value = record(input, 'TRAVEL_INPUT_INVALID', 'Travel boundary input must be an object.');
   required(value.journey_id, 'journey_id');

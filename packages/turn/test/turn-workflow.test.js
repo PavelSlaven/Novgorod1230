@@ -329,6 +329,14 @@ test('travel.continue advances a formal journey and plans normalized writes', ()
   assert.equal(consequence.hidden_update.travel_change_set_proposal.journey.elapsed_minutes, 15);
   const writes = handler.writeTargets({ consequence });
   assert.deepEqual(writes.map((entry) => entry.target), ['party_journeys', 'party_journey_legs', 'party_current_position']);
+
+  const arrival = handler.consequence({ retrievedState: { party_state: { state_version: 4 }, active_journey: journey, travel_context: travelContext, travel_advance_request: { progress_permille: 1000, duration_minutes: 60, updated_at: '1230-01-01T10:00:00Z', visible_seed: {}, suggested_actions: [], idempotency_key: 'arrive:1' } } });
+  assert.deepEqual(arrival.position_transition, {
+    from_g4_id: 'g4:a',
+    to_g4_id: 'g4:b',
+    destination_position: { position_kind: 'node', g4_id: 'g4:b', g5_node_id: null, g5_anchor_id: null, last_route_id: 'route:1' }
+  });
+  assert.equal(arrival.hidden_update.travel_arrival_request.schema_version, 'travel-arrival-request.v1');
 });
 
 test('travel.start_route creates only a preselected, version-pinned journey plan', () => {

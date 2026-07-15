@@ -11,7 +11,7 @@
 ## Public API
 
 - `validateTravelIntent`, `validateTravelPosition`, `validateJourney`, `validateTravelRulesBundle`
-- `buildJourneyPlan`, `createJourney`, `advanceJourney`, `applyTravelLifecycleMetadata`, `calculateNextTravelBoundary`, `buildTravelChangeSetProposal`
+- `buildJourneyPlan`, `createJourney`, `advanceJourney`, `applyTravelLifecycleMetadata`, `calculateNextTravelBoundary`, `buildTravelChangeSetProposal`, `buildTravelArrivalRequest`
 - `interruptJourney`, `campJourney`, `resumeJourney`, `changeJourneyPace`, `rerouteJourney`, `abandonJourney`, `completeJourney`
 - `TravelError`
 
@@ -30,6 +30,8 @@
 `rerouteJourney` принимает только replacement `JourneyPlan`, который сохраняет journey identity и все version pins. Он работает лишь при `progress_permille=0`, supersedes незапущенные legs и не выбирает route/edge сам.
 
 `buildTravelChangeSetProposal` — чистый version-bound output для Stage 24/25: он описывает journey, legs и фактическую позицию, но не выполняет запись и не включает состояние среды, времени, тела или видимую проекцию.
+
+`buildTravelArrivalRequest` создаёт `travel-arrival-request.v1` только при завершении последнего canonical leg. Он связывает party, journey, origin/destination и version pins, но не читает baseline G4, не решает, нужна ли materialization, и не выполняет commit. Turn workflow передаёт его как formal `position_transition` в единственный atomic first-entry gate.
 
 Новый `JourneyPlan` содержит явные `movement_method`, `started_at`, `updated_at` и положительный `base_time_minutes` каждого leg. `applyTravelLifecycleMetadata` принимает duration и timestamp только от владельца времени и переносит их в journey/legs; он не читает часы и не создаёт время сам.
 

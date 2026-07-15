@@ -10,7 +10,7 @@
 - Draft status: yes
 - PR7 dependency: open draft; PR8 was rebased onto its current head in an isolated clean worktree.
 - Last completed phase: contract and persistence baseline (partial; not accepted as PR8 completion).
-- Current phase: Phase 13 production composition — explicit travel-port binding (`in_progress`).
+- Current phase: Phase 10 turn integration — atomic arrival handoff (`in_progress`).
 - Current blocker: no approved pilot-G1 catalog/rules bundles and no configured PostgreSQL integration database.
 
 The branch must be rebased onto `main` after PR7 is integrated and before final audit. The primary worktree remains untouched because it contains unrelated local changes.
@@ -65,6 +65,7 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 - 2026-07-15: travel plan теперь включает явные persistence metadata (`movement_method`, `started_at`, `updated_at`, `base_time_minutes`). Lifecycle metadata принимает duration/timestamp только формальным input владельца времени. PostgreSQL turn writer hard-blocks неполный или несогласованный journey/legs/position change set, записывает нормализованные rows в одной transaction и не дублирует их в state snapshot. Циклическая FK current-leg сделана `DEFERRABLE INITIALLY DEFERRED`, поэтому active journey и current leg могут быть сохранены атомарно.
 - 2026-07-15: из production party store удалён незавершённый, неиспользуемый perception persistence path: он импортировал отсутствующий module и ссылался на отсутствующие party tables. Это не является fallback: вызовы отсутствовали, а восстановление loadable fail-closed repository необходимо для PostgreSQL integration boundary.
 - 2026-07-15: builtin production composition теперь принимает `ports.travel` только через обязательный `createTravelPorts` binding factory. Девять портов (context/rules/environment readers, journey/environment repositories, graph reader, clock, RandomSource factory и party store) валидируются до старта; fixture не становится production fallback.
+- 2026-07-15: завершение последнего canonical journey leg теперь создаёт `travel-arrival-request.v1` с pinned origin/destination и передаёт единственный `position_transition` в существующий atomic first-entry commit gate. Travel domain не читает baseline и не решает materialization; отсутствие approved bundle по-прежнему блокирует commit.
 
 ## Checks recorded on transferred baseline
 
@@ -125,6 +126,9 @@ Typed domain errors are versioned with the travel contracts; persistence, presen
 | `npm run test:domain` / `npm run test:modules` / `npm run test:apps` / `docs:check` | 2026-07-15 | `743abd5` | PASS: 102/102; 261/261; 14/14 | Full local regression after the production travel-port contract. Real PostgreSQL and E2E remain separate blocked gates. |
 | `npm run docs:check` / `world-db:schema-check` / `world-db:schema-doc-check` | 2026-07-15 | `14e3e80` after rebase onto `5463af8` | PASS: 138 tables | The stack was rebased onto the current PR7 head. The schema guard RED exposed stale expected count `134`; it was corrected to the generated 138-table DDL. |
 | `npm run test:domain` / `npm run test:modules` / `npm run test:apps` / `node --test test/integration/knowledge-source-production.test.js` | 2026-07-15 | worktree after rebase | PASS: 103/103; 262/262; 14/14; 1/1 | Full local PR8 regression after rebase. PostgreSQL and E2E remain separate blocked gates. |
+| `node --test packages/travel/test/domain.test.js` | 2026-07-15 | worktree after `003245d` | RED: 1 failed | `buildTravelArrivalRequest` was absent from the public travel API. |
+| `node --test packages/travel/test/domain.test.js packages/turn/test/turn-workflow.test.js packages/turn/test/first-entry-materialization.test.js` | 2026-07-15 | worktree after arrival implementation | PASS: 36/36 | Final leg emits an arrival request and the turn handler forwards only its canonical position transition. |
+| `npm run test:domain` / `npm run test:modules` / `npm run test:apps` / `docs:check` | 2026-07-15 | worktree after arrival implementation | PASS: 104/104; 262/262; 14/14 | Full local regression and generated documentation after atomic-arrival handoff. PostgreSQL/E2E remain separate blocked gates. |
 | `node --test tools/docs-tools/test/knowledge-source-migration.test.js tools/docs-tools/test/knowledge-corpus-verifier.test.js tools/docs-tools/test/knowledge-materializer-v2.test.js` | 2026-07-15 | working tree after `6eb1a23` | PASS: 22/22 | Corpus manifest, legacy provenance and generated graph/RAG materialization remain reproducible after the PR8 normative update. |
 | `npm run test:domain` / `npm run test:modules` | 2026-07-15 | working tree after `6eb1a23` | PASS: 102/102; 261/261 | Documentation-only change did not regress travel, environment, turn or materialization contracts. |
 | `node --test packages/travel/test/domain.test.js` | 2026-07-15 | `69b0ee8` | RED: 1 failed | `ERR_MODULE_NOT_FOUND` before implementation. |
@@ -243,7 +247,7 @@ The ordered migration loader, seed script, party preflight and Stage 25 logical 
 
 | Phase | Status | Evidence / next dependency |
 | --- | --- | --- |
-| 0 — baseline | completed | Rebased onto PR7 head `fc71f5d`; current branch head before this journal edit: `141615a`. |
+| 0 — baseline | completed | Rebased onto current PR7 head `5463af8`; schema guard was reconciled with the combined 138-table DDL. |
 | 1 — normative architecture | in progress | PR8 travel boundaries are now synchronized across movement, time, turn, UI, graph/data ownership and navigation docs; full production proof still depends on approved data and integration. |
 | 2 — contracts and RED tests | in progress | Travel, movement and environment RED/GREEN evidence is recorded; route graph and course selection contracts remain pending. |
 | 3 — environment baseline | completed for package boundary | Split lifecycle, bundle validation and leak tests are green; production bundle is absent. |
@@ -251,9 +255,9 @@ The ordered migration loader, seed script, party preflight and Stage 25 logical 
 | 5 — approved pilot | blocked | No runtime-visible approved G1; no fictional promotion is allowed. |
 | 6 — party persistence | in progress | Migration 003, deferred FK and atomic normal turn writer exist; real PostgreSQL proof is blocked by missing URL. |
 | 7 — movement routes | completed for fail-closed domain contract | Explicit profile, transport and partial traversal tests are green. |
-| 8 — travel lifecycle | partial | Start, continue, stop, camp, resume, pace, reroute and abandon have pure transitions; route graph selection and course resolution remain blocked by missing approved contracts. |
+| 8 — travel lifecycle | partial | Start, continue, stop, camp, resume, pace, reroute and abandon have pure transitions; final canonical leg produces an arrival request. Route graph selection and course resolution remain blocked by missing approved contracts. |
 | 9 — new-game / Stage 13 | blocked | Requires approved environment bundle and runtime-visible pilot. |
-| 10 — turn integration | in progress | One canonical workflow has start/continue/lifecycle handlers and normalized persistence; production state readers and graph/bundle ports remain absent. |
+| 10 — turn integration | in progress | One canonical workflow has start/continue/lifecycle handlers, normalized persistence and final-arrival handoff to its atomic first-entry gate; production state readers and graph/bundle ports remain absent. |
 | 11 — time/body/load/transport | partial | Duration/timestamp ownership is enforced; cross-module production integration and concrete scenarios remain pending. |
 | 12 — visibility/presentation | partial | Safe projection and panel contract are green; browser E2E is unavailable. |
 | 13 — production composition | partial | Explicit `createTravelPorts` binding contract is fail-closed and reaches `ports.travel`; approved readers, repositories and live PostgreSQL evidence remain pending. |
@@ -267,6 +271,7 @@ The ordered migration loader, seed script, party preflight and Stage 25 logical 
 | `JourneyPlan` / `Journey` / `JourneyLeg` | `travel.v1` | `@rus/travel` | state reader → turn → repository | `TRAVEL_INPUT_INVALID`, version/data-gap errors | `party_journeys`, `party_journey_legs` | no |
 | `TravelPosition` | `travel.v1` | `@rus/travel` | journey → repository | `TRAVEL_POSITION_INVALID` | `party_positions` | perceived projection only |
 | `TravelChangeSetProposal` | `travel-change-set.v1` | `@rus/travel` | transition → turn writer | state-version and set-congruence checks | atomic normalized writes | no |
+| `TravelArrivalRequest` | `travel-arrival-request.v1` | `@rus/travel` | final leg → turn commit gate | canonical final-leg and position checks | same atomic first-entry transaction | no |
 | `TravelRulesBundle` | `travel-rules.v1` | `@rus/travel` | approved loader → domain | `TRAVEL_RULE_BUNDLE_MISSING`, `TRAVEL_DATA_GAP` | digest pin | no |
 | `EnvironmentCatalogBundle` | `environment-catalog.v1` | `@rus/environment-landmarks` | approved loader → environment | digest/scope/idempotency checks | environment runtime tables | observations only |
 | production travel ports | `travel-ports.v1` | game-server composition | runtime binding factory → turn/new-game services | startup rejects missing methods | external readers + party store | no |

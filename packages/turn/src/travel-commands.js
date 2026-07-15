@@ -1,5 +1,5 @@
 import { TURN_TRAVEL_COMMAND_IDS } from './contracts.js';
-import { abandonJourney, advanceJourney, applyTravelLifecycleMetadata, buildTravelChangeSetProposal, campJourney, changeJourneyPace, createJourney, interruptJourney, rerouteJourney, resumeJourney } from '@rus/travel';
+import { abandonJourney, advanceJourney, applyTravelLifecycleMetadata, buildTravelArrivalRequest, buildTravelChangeSetProposal, campJourney, changeJourneyPace, createJourney, interruptJourney, rerouteJourney, resumeJourney } from '@rus/travel';
 
 const TRAVEL_STATE_BLOCKS = Object.freeze(['party_state', 'current_position', 'clock_weather_light', 'active_journey', 'journey_legs', 'travel_position', 'environment_landmarks', 'environment_cues', 'movement_traces', 'transport_state', 'relevant_routes', 'character_knowledge_map', 'relevant_hidden_state']);
 const TRAVEL_WRITES = Object.freeze(['party_journeys', 'party_journey_legs', 'party_current_position', 'party_environment_runs', 'party_environment_choices', 'party_environment_landmarks', 'party_environment_cues', 'party_environment_traces', 'party_visible_context_package', 'party_narrator_output']);
@@ -51,9 +51,21 @@ function transitionJourney(commandId, { retrievedState } = {}) {
   if (commandId === 'travel.continue' && (!Number.isInteger(request.progress_permille) || request.progress_permille < 0 || request.progress_permille > 1000)) return missingContext();
   const after = applyTravelLifecycleMetadata({ before: journey, after: applyTransition(commandId, journey, travelContext, request), elapsed_minutes: request.duration_minutes, updated_at: request.updated_at });
   const proposal = buildTravelChangeSetProposal({ before: journey, after, idempotency_key: request.idempotency_key, expected_state_version: retrievedState.party_state?.state_version });
+  const arrivalRequest = after.status === 'arrived' ? buildTravelArrivalRequest({ before: journey, after }) : null;
   return {
     version: 1, schema: 'turn_consequence_package', status: 'resolved', duration_minutes: Number(request.duration_minutes), visible_seed: structuredClone(request.visible_seed),
-    hidden_update: { travel_change_set_proposal: proposal }, state_changes: [{ target: 'travel_journey', operation: commandId }], suggested_actions: structuredClone(request.suggested_actions)
+    hidden_update: {
+      travel_change_set_proposal: proposal,
+      ...(arrivalRequest ? { travel_arrival_request: arrivalRequest } : {})
+    },
+    ...(arrivalRequest ? {
+      position_transition: {
+        from_g4_id: arrivalRequest.from_g4_id,
+        to_g4_id: arrivalRequest.to_g4_id,
+        destination_position: arrivalRequest.destination_position
+      }
+    } : {}),
+    state_changes: [{ target: 'travel_journey', operation: commandId }], suggested_actions: structuredClone(request.suggested_actions)
   };
 }
 

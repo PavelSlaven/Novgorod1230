@@ -5,6 +5,7 @@ import {
   TravelError,
   advanceJourney,
   applyTravelLifecycleMetadata,
+  buildTravelArrivalRequest,
   buildTravelChangeSetProposal,
   calculateNextTravelBoundary,
   campJourney,
@@ -177,6 +178,33 @@ test('travel change-set proposal is version-bound and contains only normalized t
   assert.throws(
     () => buildTravelChangeSetProposal({ before, after, idempotency_key: 'travel:advance:wrong', expected_state_version: 3 }),
     (error) => error instanceof TravelError && error.code === 'TRAVEL_STATE_VERSION_MISMATCH'
+  );
+});
+
+test('final canonical leg produces a formal arrival request and partial travel cannot', () => {
+  const before = createJourney(plan, context());
+  const arrived = advanceJourney({ journey: before, context: context(), progress_permille: 1000 });
+  const request = buildTravelArrivalRequest({ before, after: arrived });
+  assert.deepEqual(request, {
+    schema_version: 'travel-arrival-request.v1',
+    party_id: 'party:1',
+    actor_id: 'actor:1',
+    journey_id: 'journey:1',
+    from_g4_id: 'g4:start',
+    to_g4_id: 'g4:target',
+    destination_position: {
+      position_kind: 'node', g4_id: 'g4:target', g5_node_id: null, g5_anchor_id: null, last_route_id: 'route-profile:1'
+    },
+    world_revision_id: 'world:1',
+    travel_rules_digest: rules.catalog_digest,
+    environment_catalog_digest: 'b'.repeat(64),
+    algorithm_version: 'travel.v1',
+    rng_version: 'mulberry32_v1'
+  });
+  const partial = advanceJourney({ journey: before, context: context(), progress_permille: 500 });
+  assert.throws(
+    () => buildTravelArrivalRequest({ before, after: partial }),
+    (error) => error instanceof TravelError && error.code === 'TRAVEL_INPUT_INVALID'
   );
 });
 

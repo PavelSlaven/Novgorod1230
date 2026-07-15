@@ -329,3 +329,15 @@ test('travel.continue advances a formal journey and plans normalized writes', ()
   const writes = handler.writeTargets({ consequence });
   assert.deepEqual(writes.map((entry) => entry.target), ['party_journeys', 'party_journey_legs', 'party_current_position']);
 });
+
+test('travel.start_route creates only a preselected, version-pinned journey plan', () => {
+  const bundlePayload = { schema_version: 'travel-rules.v1', world_revision_id: 'world:1', region_id: 'region:1', historical_period_id: 'period:1', source_refs: ['source:1'], records: { pace_profiles: [{}] }, bindings: { route_profile_bindings: [{}] }, readiness_report: { pass: true } };
+  const rules = { ...bundlePayload, catalog_digest: sha256(bundlePayload) };
+  const plan = { journey_id: 'journey:start', party_id: 'party:1', actor_id: 'actor:1', mode: 'route', route_id: 'route:1', origin_position: { position_kind: 'node', g4_id: 'g4:a', g5_node_id: null, g5_anchor_id: null, last_route_id: null }, target_ref: { kind: 'g4', id: 'g4:b' }, pace_profile_id: 'pace:1', legs: [{ leg_id: 'leg:start', sequence: 1, edge_id: 'edge:1', from_g4_id: 'g4:a', to_g4_id: 'g4:b', route_profile_id: 'route:1' }], world_revision_id: 'world:1', region_id: 'region:1', historical_period_id: 'period:1', travel_rules_digest: rules.catalog_digest, environment_catalog_digest: 'e'.repeat(64), algorithm_version: 'travel.v1', rng_version: 'rng:1', state_version: 4, idempotency_key: 'start:1' };
+  const travelContext = { state_version: 4, known_edge_ids: ['edge:1'], travel_rules_bundle: rules, required_candidate_sets: { rules: [{}] }, active_journeys: [] };
+  const handler = createTravelTurnCommandDefinitions().find((definition) => definition.command_id === 'travel.start_route');
+  const consequence = handler.consequence({ retrievedState: { party_state: { state_version: 4 }, travel_context: travelContext, travel_start_request: { journey_plan: plan, duration_minutes: 0, visible_seed: {}, suggested_actions: [], idempotency_key: 'start:1' } } });
+  assert.equal(consequence.hidden_update.travel_change_set_proposal.operation, 'start');
+  assert.equal(consequence.hidden_update.travel_change_set_proposal.journey.current_leg_id, 'leg:start');
+  assert.deepEqual(handler.writeTargets({ consequence }).map((entry) => entry.target), ['party_journeys', 'party_journey_legs', 'party_current_position']);
+});

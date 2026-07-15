@@ -186,9 +186,30 @@ export function completeJourney({ journey, context }) {
 }
 
 export function buildTravelChangeSetProposal({ before, after, idempotency_key, expected_state_version } = {}) {
-  const previous = validateJourney(before);
   const next = validateJourney(after);
   required(idempotency_key, 'idempotency_key');
+  if (before == null) {
+    if (!Number.isInteger(expected_state_version) || expected_state_version < 0) {
+      fail('TRAVEL_STATE_VERSION_MISMATCH', 'A journey start must bind an explicit persistence state version.', { expected_state_version });
+    }
+    if (next.state_version !== expected_state_version) {
+      fail('TRAVEL_STATE_VERSION_MISMATCH', 'Journey start state version does not match persistence base state.', { expected_state_version, journey_state_version: next.state_version });
+    }
+    return deepFreeze({
+      schema_version: 'travel-change-set.v1',
+      operation: 'start',
+      idempotency_key,
+      party_id: next.party_id,
+      actor_id: next.actor_id,
+      journey_id: next.journey_id,
+      base_state_version: expected_state_version,
+      next_state_version: expected_state_version + 1,
+      journey: next,
+      journey_leg_ids: next.legs.map((leg) => leg.leg_id),
+      position: next.actual_position
+    });
+  }
+  const previous = validateJourney(before);
   if (previous.journey_id !== next.journey_id || previous.party_id !== next.party_id || previous.actor_id !== next.actor_id) {
     fail('TRAVEL_INPUT_INVALID', 'Travel change-set must bind one existing journey.', {});
   }
@@ -200,6 +221,7 @@ export function buildTravelChangeSetProposal({ before, after, idempotency_key, e
   }
   return deepFreeze({
     schema_version: 'travel-change-set.v1',
+    operation: 'update',
     idempotency_key,
     party_id: next.party_id,
     actor_id: next.actor_id,

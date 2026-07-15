@@ -60,6 +60,7 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 - 2026-07-15: `createTravelTurnCommandDefinitions` добавляет definitions для всех travel commands в существующий registry. Definitions требуют formal state-reader context и persistence proposal; неполный контекст блокируется типизированно, без semantic fallback.
 - 2026-07-15: `travel.continue` подключён к `@rus/travel.advanceJourney` и `buildTravelChangeSetProposal`; handler требует explicit progress/duration/visible seed/idempotency key и планирует normalized journey/leg/position targets. Остальные lifecycle handlers остаются fail-closed до своих formal requests.
 - 2026-07-15: к executable lifecycle добавлены `travel.stop`, `travel.camp`, `travel.resume`, `travel.change_pace` и `travel.abandon`; они вызывают только соответствующие pure transitions и используют тот же version-bound proposal. `start_route`, `start_course`, `reroute` остаются hard-block до approved plan/candidate contracts.
+- 2026-07-15: `travel.start_route` и `travel.start_course` принимают только заранее сформированный, version-pinned `JourneyPlan` и создают `operation: start` proposal для того же commit gate. Они не выбирают route/edge, не строят course и не обходят проверку rules bundle; `travel.reroute` остаётся hard-block до отдельного утверждённого plan-replacement contract.
 
 ## Checks recorded on transferred baseline
 
@@ -174,6 +175,8 @@ Typed domain errors are versioned with the travel contracts; persistence, presen
 | `node --test packages/turn/test/turn-workflow.test.js` | 2026-07-15 | рабочее дерево после `55bf36a` | PASS: 13/13 | Continue handler fail-closes при отсутствии formal context. |
 | `npm run test:domain` | 2026-07-15 | рабочее дерево после `55bf36a` | PASS: 96/96 | Полный domain regression. |
 | `node --test packages/turn/test/turn-workflow.test.js` | 2026-07-15 | рабочее дерево после `1b0f227` | PASS: 14/14 | Continue handler обновляет journey progress и выдаёт normalized write targets. |
+| `node --test packages/turn/test/turn-workflow.test.js` | 2026-07-15 | рабочее дерево после `7809b21` | PASS: 15/15 | `travel.start_route` принимает только preselected pinned plan и формирует `operation: start` proposal. |
+| `node --test packages/travel/test/domain.test.js` | 2026-07-15 | рабочее дерево после `7809b21` | PASS: 13/13 | Regression для start proposal и pure journey contracts. |
 | `npm run test:domain` | 2026-07-15 | рабочее дерево после `1b0f227` | PASS: 97/97 | Полный domain regression. |
 
 ## Data and migration registry

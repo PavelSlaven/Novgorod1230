@@ -1,4 +1,5 @@
 import { calculateContainerUsage, calculateHandsState, calculateInventoryMass, resolveInventoryAccess, resolveInventoryLoad, validateInventoryTopology } from '@rus/items-property';
+import { calculatePackingSlots } from '@rus/world-catalog-workflow';
 import { concern } from '../shared/utils.js';
 
 /**
@@ -17,6 +18,7 @@ export function evaluateStage16InventoryFoundation(draft = {}, input = {}) {
     strength: foundation.strength,
     item_profiles: foundation.item_profiles,
     container_profiles: foundation.container_profiles,
+    packing_calculator: calculatePackingSlots,
     container_compatibility: foundation.container_compatibility ?? [],
     items: draft.item_instances.map((item) => ({ party_id: foundation.party_id, item_id: item.item_instance_id, template_id: item.item_profile_candidate_id ?? item.item_template_id, quantity: item.quantity })),
     containers: draft.container_instances.map((container) => ({ party_id: foundation.party_id, container_id: container.container_instance_id, template_id: container.container_profile_candidate_id ?? container.container_template_id })),

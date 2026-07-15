@@ -11,6 +11,7 @@ import {
   resolveInventoryLoad,
   validateInventoryTopology
 } from '../src/index.js';
+import { calculatePackingSlots } from '@rus/world-catalog-workflow';
 
 const actorId = 'character-1';
 const partyId = 'party-1';
@@ -31,6 +32,7 @@ function state(overrides = {}) {
     state_version: 4,
     item_profiles: profiles,
     container_profiles: profiles,
+    packing_calculator: calculatePackingSlots,
     items: [],
     containers: [],
     item_placements: [],
@@ -110,6 +112,7 @@ test('inventory foundation: container usage reuses packing slots and rejects inc
   const usage = calculateContainerUsage({ ...input, container_id: 'pouch-1' });
   assert.equal(usage.used_slots, 2);
   assert.ok(usage.errors.some((error) => error.code === 'INVENTORY_CARRY_FORM_INCOMPATIBLE'));
+  assert.ok(calculateContainerUsage({ ...input, packing_calculator: undefined, container_id: 'pouch-1' }).errors.some((error) => error.code === 'INVENTORY_PACKING_CALCULATOR_MISSING'));
 });
 
 test('inventory foundation: stack signature is deterministic and preserves ownership, marks and quantity invariants', () => {

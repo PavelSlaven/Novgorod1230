@@ -1,12 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
+  EnvironmentFeatureError,
   buildEnvironmentObservationCandidates,
   initializeEnvironmentFeatures,
-  updateEnvironmentFeatures
+  updateEnvironmentFeatures,
+  validateEnvironmentCatalogBundle
 } from '../src/index.js';
+import { canonicalDigest } from '@rus/materialization';
 
-const catalog = Object.freeze({
+const catalogRecords = Object.freeze({
   landmark_rules: [{
     rule_id: 'ridge-landmark-rule', status: 'approved', min_count: 1, max_count: 1,
     template_ids: ['split-pine'], placement_types: ['g4_node'], required: true
@@ -34,18 +37,34 @@ const catalog = Object.freeze({
   }]
 });
 
+function approvedCatalog(overrides = {}) {
+  const bundle = {
+    schema_version: 'environment-catalog.v1',
+    world_revision_id: 'revision-1',
+    region_id: 'region-1',
+    historical_period_id: 'period-1',
+    regional_permissions: ['region-1'],
+    ...catalogRecords,
+    ...overrides
+  };
+  const { catalog_digest: ignored, ...digestPayload } = bundle;
+  return Object.freeze({ ...bundle, catalog_digest: overrides.catalog_digest ?? canonicalDigest(digestPayload) });
+}
+
+const catalog = approvedCatalog();
+
 function initializationInput(overrides = {}) {
   const seedContext = {
-    party_id: 'party-1', world_revision_id: 'revision-1', g1_id: 'g1-1', trigger: 'g1_first_activation',
-    occurrence: 0, catalog_digest: 'a'.repeat(64), environment_materializer_version: 'environment_landmarks_v1',
+    party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', g1_id: 'g1-1', trigger: 'g1_first_activation',
+    occurrence: 0, catalog_digest: catalog.catalog_digest, environment_materializer_version: 'environment_landmarks_v1',
     rng_algorithm_id: 'mulberry32_v1'
   };
   return {
-    party_id: 'party-1', world_revision_id: 'revision-1', historical_frame: { season: 'summer' }, g1_id: 'g1-1',
+    party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', historical_frame: { season: 'summer' }, g1_id: 'g1-1',
     g1_graph_snapshot: { placement_candidates: [{ binding_id: 'g4-ridge', binding_type: 'g4_node', landscape_type: 'dry_ridge' }] },
     environment_snapshot: { weather: 'clear', wind: 'west' }, source_snapshot: { active_emitters: [] },
     existing_environment_state: { landmarks: [], cues: [], traces: [], baselines: [] }, catalog_bundle: catalog,
-    catalog_digest: 'a'.repeat(64), materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1',
+    catalog_digest: catalog.catalog_digest, materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1',
     seed_context: seedContext, trigger: 'g1_first_activation', occurrence: 0, ...overrides
   };
 }
@@ -75,13 +94,24 @@ test('baseline initialization never starts cue or trace lifecycle implicitly', (
   assert.deepEqual(initialized.environment_state.traces, []);
 });
 
+test('environment baseline rejects an unbound catalog digest, world revision, region, period or permission', () => {
+  assert.throws(() => initializeEnvironmentFeatures(initializationInput({ catalog_digest: '0'.repeat(64) })), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_CATALOG_DIGEST_MISMATCH');
+  assert.throws(() => initializeEnvironmentFeatures(initializationInput({ world_revision_id: 'revision:wrong' })), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_CATALOG_WORLD_REVISION_MISMATCH');
+  assert.throws(() => initializeEnvironmentFeatures(initializationInput({ region_id: 'region:wrong' })), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_CATALOG_REGION_MISMATCH');
+  assert.throws(() => initializeEnvironmentFeatures(initializationInput({ historical_period_id: 'period:wrong' })), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_CATALOG_PERIOD_MISMATCH');
+  const withoutPermission = approvedCatalog({ regional_permissions: [] });
+  assert.throws(() => initializeEnvironmentFeatures(initializationInput({ catalog_bundle: withoutPermission, catalog_digest: withoutPermission.catalog_digest })), (error) => error instanceof EnvironmentFeatureError && error.code === 'ENVIRONMENT_REGIONAL_PERMISSION_MISSING');
+  assert.equal(validateEnvironmentCatalogBundle(initializationInput()).pass, true);
+  assert.equal(validateEnvironmentCatalogBundle(initializationInput({ catalog_digest: '0'.repeat(64) })).errors[0].code, 'ENVIRONMENT_CATALOG_DIGEST_MISMATCH');
+});
+
 test('environment cues require an active approved source and never disclose it in observation candidates', () => {
   const initialized = initializeEnvironmentFeatures(initializationInput());
   const result = updateEnvironmentFeatures({
-    party_id: 'party-1', world_revision_id: 'revision-1', g1_id: 'g1-1', base_state_version: 1,
+    party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', g1_id: 'g1-1', base_state_version: 1,
     current_environment_state: initialized.environment_state, elapsed_time: { minutes: 0 }, weather_before: 'clear', weather_after: 'clear',
     active_emitters: [{ emitter_id: 'camp-hearth-1', source_type: 'hearth', source_kind: 'camp', source_id: 'hidden-camp-1', location_binding: 'g4-ridge' }],
-    trace_emissions: [], event_emissions: [], catalog_bundle: catalog, catalog_digest: 'a'.repeat(64),
+    trace_emissions: [], event_emissions: [], catalog_bundle: catalog, catalog_digest: catalog.catalog_digest,
     materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1', idempotency_key: 'turn-1'
   });
   const observations = buildEnvironmentObservationCandidates({ environment_state: result.environment_state, environment_snapshot: { weather: 'clear', wind: 'west' } });
@@ -93,15 +123,15 @@ test('environment cues require an active approved source and never disclose it i
 test('cart trace has a causal source and decays from readable to erased without increasing strength', () => {
   const initialized = initializeEnvironmentFeatures(initializationInput());
   const fresh = updateEnvironmentFeatures({
-    party_id: 'party-1', world_revision_id: 'revision-1', g1_id: 'g1-1', base_state_version: 1,
+    party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', g1_id: 'g1-1', base_state_version: 1,
     current_environment_state: initialized.environment_state, elapsed_time: { minutes: 0 }, weather_before: 'clear', weather_after: 'clear',
     active_emitters: [], trace_emissions: [{ emission_id: 'move-1', source_kind: 'movement', source_id: 'group-1', cause_event_id: 'event-1', movement_mode: 'cart', location_binding: 'road-1', created_at: '1230-06-01T10:00:00Z' }],
-    event_emissions: [], catalog_bundle: catalog, catalog_digest: 'a'.repeat(64), materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1', idempotency_key: 'turn-1'
+    event_emissions: [], catalog_bundle: catalog, catalog_digest: catalog.catalog_digest, materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1', idempotency_key: 'turn-1'
   });
   const faded = updateEnvironmentFeatures({
-    party_id: 'party-1', world_revision_id: 'revision-1', g1_id: 'g1-1', base_state_version: 2,
+    party_id: 'party-1', world_revision_id: 'revision-1', region_id: 'region-1', historical_period_id: 'period-1', g1_id: 'g1-1', base_state_version: 2,
     current_environment_state: fresh.environment_state, elapsed_time: { minutes: 100 }, weather_before: 'clear', weather_after: 'rain',
-    active_emitters: [], trace_emissions: [], event_emissions: [], catalog_bundle: catalog, catalog_digest: 'a'.repeat(64),
+    active_emitters: [], trace_emissions: [], event_emissions: [], catalog_bundle: catalog, catalog_digest: catalog.catalog_digest,
     materializer_version: 'environment_landmarks_v1', rng_algorithm_id: 'mulberry32_v1', idempotency_key: 'turn-2'
   });
   assert.equal(fresh.created_traces[0].source_id, 'group-1');

@@ -448,6 +448,12 @@ gaps сохраняются:
 `INVENTORY_LOAD_EXCEEDED`, `PRESENTATION_INVENTORY_INVALID`. Quantity, strength и
 derived summary больше не получают скрытое значение по умолчанию.
 
+Физическое размещение теперь строго requires exactly one placement row для каждого
+item/container. Для `holder_character_id` обязателен один из closed
+`physical_position`; `equipped` требует equipment slot, а slot вне `equipped` запрещён.
+Те же инварианты проверяются DDL, pure topology, derived zone/access и Stage 24 write-plan
+до любого materialization write.
+
 ### Red → Green и выполненные проверки
 
 - Red: `packages/items-property/test/inventory-foundation.test.js` сначала завершился
@@ -464,6 +470,10 @@ derived summary больше не получают скрытое значени
   нашёл stale `import-history` digest. Исправлено split container-usage boundary,
   explicit calculator injection и synchronized import-history; повторные
   `architecture:check` и `test:knowledge-source` — PASS (20/20).
+- Audit correction: критик последовательно выявил missing placement row и player holder
+  без physical position. Добавлены typed topology errors, reverse DDL checks,
+  Stage 24 reject (`WRITE_PLAN_PHYSICAL_POSITION_REQUIRED`) и negative tests для item,
+  container/equipped slot/Stage 24; final повторный аудит ожидается после этого цикла.
 - Green: targeted domain/presentation/Stage 16 tests — 18/18 PASS;
   `npm run test:world-catalog` — 52/52 PASS;
   `npm run test:stage16` — 17/17 PASS; `npm run test:stage24` — 20/20 PASS;

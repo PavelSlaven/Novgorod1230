@@ -53,7 +53,7 @@ test('inventory foundation: normalized graph counts equipment, containers and ne
   const input = state({
     items: [{ item_id: 'coat-1', template_id: 'coat', quantity: 1 }, { item_id: 'knife-1', template_id: 'knife', quantity: 2 }],
     containers: [{ container_id: 'bag-1', template_id: 'bag' }],
-    item_placements: [{ item_id: 'coat-1', holder_character_id: actorId, physical_position: 'equipped' }, { item_id: 'knife-1', container_id: 'bag-1' }],
+    item_placements: [{ item_id: 'coat-1', holder_character_id: actorId, physical_position: 'equipped', equipment_slot_id: 'torso' }, { item_id: 'knife-1', container_id: 'bag-1' }],
     container_placements: [{ container_id: 'bag-1', holder_character_id: actorId, physical_position: 'worn' }]
   });
   assert.equal(calculateInventoryMass(input).total_mass_grams, 2200);
@@ -72,6 +72,12 @@ test('inventory foundation: external locations do not count and missing mass nev
 test('inventory foundation: topology blocks duplicate placement, cycles, depth, party mismatch and duplicate primary container', () => {
   const missing = state({ items: [{ item_id: 'knife-1', template_id: 'knife', quantity: 1 }] });
   assert.equal(validateInventoryTopology(missing).errors[0].code, 'INVENTORY_PLACEMENT_NOT_FOUND');
+  const missingPosition = state({ items: [{ item_id: 'knife-1', template_id: 'knife', quantity: 1 }], item_placements: [{ item_id: 'knife-1', holder_character_id: actorId }] });
+  assert.equal(validateInventoryTopology(missingPosition).errors[0].code, 'INVENTORY_PHYSICAL_POSITION_REQUIRED');
+  const containerMissingPosition = state({ containers: [{ container_id: 'bag-1', template_id: 'bag' }], container_placements: [{ container_id: 'bag-1', holder_character_id: actorId }] });
+  assert.equal(validateInventoryTopology(containerMissingPosition).errors[0].code, 'INVENTORY_PHYSICAL_POSITION_REQUIRED');
+  const equippedWithoutSlot = state({ items: [{ item_id: 'knife-1', template_id: 'knife', quantity: 1 }], item_placements: [{ item_id: 'knife-1', holder_character_id: actorId, physical_position: 'equipped' }] });
+  assert.equal(validateInventoryTopology(equippedWithoutSlot).errors[0].code, 'INVENTORY_EQUIPMENT_SLOT_REQUIRED');
   const duplicate = state({ items: [{ item_id: 'knife-1', template_id: 'knife', quantity: 1 }], item_placements: [{ item_id: 'knife-1', holder_character_id: actorId }, { item_id: 'knife-1', anchor_id: 'g5-1' }] });
   assert.equal(validateInventoryTopology(duplicate).errors[0].code, 'INVENTORY_PLACEMENT_AMBIGUOUS');
   const cycle = state({ containers: [{ container_id: 'a', template_id: 'bag' }, { container_id: 'b', template_id: 'box' }], container_placements: [{ container_id: 'a', parent_container_id: 'b' }, { container_id: 'b', parent_container_id: 'a' }] });

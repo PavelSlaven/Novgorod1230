@@ -246,7 +246,9 @@ CREATE TABLE IF NOT EXISTS party_runtime.party_containers (
        + (CASE WHEN holder_npc_id IS NULL THEN 0 ELSE 1 END)
        + (CASE WHEN holder_character_id IS NULL THEN 0 ELSE 1 END) = 1),
   CHECK (physical_position IS NULL OR holder_character_id IS NOT NULL),
-  CHECK (equipment_slot_category_id IS NULL OR holder_character_id IS NOT NULL),
+  CHECK (holder_character_id IS NULL OR physical_position IS NOT NULL),
+  CHECK (equipment_slot_category_id IS NULL OR (holder_character_id IS NOT NULL AND physical_position = 'equipped')),
+  CHECK (physical_position <> 'equipped' OR equipment_slot_category_id IS NOT NULL),
   CHECK (parent_container_id IS NULL OR parent_container_id <> container_id)
 );
 CREATE TABLE IF NOT EXISTS party_runtime.party_items (
@@ -283,7 +285,9 @@ CREATE TABLE IF NOT EXISTS party_runtime.party_item_placements (
        + (CASE WHEN holder_npc_id IS NULL THEN 0 ELSE 1 END)
        + (CASE WHEN holder_character_id IS NULL THEN 0 ELSE 1 END) = 1)
   ,CHECK (physical_position IS NULL OR holder_character_id IS NOT NULL)
-  ,CHECK (equipment_slot_category_id IS NULL OR holder_character_id IS NOT NULL)
+  ,CHECK (holder_character_id IS NULL OR physical_position IS NOT NULL)
+  ,CHECK (equipment_slot_category_id IS NULL OR (holder_character_id IS NOT NULL AND physical_position = 'equipped'))
+  ,CHECK (physical_position <> 'equipped' OR equipment_slot_category_id IS NOT NULL)
 );
 CREATE TABLE IF NOT EXISTS party_runtime.party_ownership (
   party_id TEXT NOT NULL REFERENCES party_runtime.parties(party_id) ON DELETE CASCADE,

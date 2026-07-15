@@ -562,6 +562,12 @@ export function validateItemContainerClassificationCatalog(recordsByTable = {}, 
     }
   }
   const profiles = new Map((recordsByTable.container_content_profiles ?? []).map((value) => [value.id, value]));
+  const approvedItemTemplateIds = new Set(itemTemplateRows.filter((value) => value?.status === 'approved').map((value) => value.id));
+  const approvedObjectTypeBindings = itemBindings.filter((binding) => binding?.status === 'approved' && binding.binding_kind === 'object_type');
+  const resolveCategoryContentTemplate = (categoryId) => [...new Set([
+    ...itemTemplateRows.filter((template) => template?.status === 'approved' && template.category_id === categoryId).map((template) => template.id),
+    ...approvedObjectTypeBindings.filter((binding) => binding.category_id === categoryId && approvedItemTemplateIds.has(binding.item_template_id)).map((binding) => binding.item_template_id)
+  ])];
   for (const entry of recordsByTable.container_content_profile_entries ?? []) {
     const profile = profiles.get(entry.profile_id);
     const container = containers.get(profile?.container_template_id);
@@ -573,8 +579,14 @@ export function validateItemContainerClassificationCatalog(recordsByTable = {}, 
   for (const profile of profiles.values()) {
     const container = containers.get(profile.container_template_id);
     const lines = [];
-    for (const entry of (recordsByTable.container_content_profile_entries ?? []).filter((value) => value.profile_id === profile.id && value.item_template_id)) {
-      const sizeBands = activeSizeBands.get(entry.item_template_id) ?? [];
+    for (const entry of (recordsByTable.container_content_profile_entries ?? []).filter((value) => value.profile_id === profile.id)) {
+      const templateIds = entry.item_template_id ? [entry.item_template_id] : resolveCategoryContentTemplate(entry.item_category_id);
+      if (templateIds.length !== 1) {
+        errors.push(`CONTAINER_CONTENT_CATEGORY_TEMPLATE_UNRESOLVED:${entry.id}`);
+        continue;
+      }
+      const templateId = templateIds[0];
+      const sizeBands = activeSizeBands.get(templateId) ?? [];
       if (sizeBands.length !== 1) {
         errors.push(`CONTAINER_CONTENT_SIZE_BAND_UNRESOLVED:${entry.id}`);
         continue;

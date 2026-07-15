@@ -129,8 +129,7 @@
     },
     {
       "dependencies": [
-        "@rus/kernel",
-        "@rus/world-catalog-workflow"
+        "@rus/kernel"
       ],
       "name": "@rus/items-property",
       "owns": [

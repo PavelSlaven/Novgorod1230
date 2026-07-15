@@ -12,7 +12,7 @@ Release: `0.23.0-migration.24`
 | `@rus/checks-rng` | `packages/checks-rng` | difficulty bounds; attribute bonus formula; dice execution through injected RandomSource | `./src/index.js` | `@rus/kernel` |
 | `@rus/combat-health` | `packages/combat-health` | combat request/result contracts; margin-to-quality and damage formulas; harm and injury packages | `./src/index.js` | `@rus/kernel` |
 | `@rus/contracts` | `packages/contracts` | Schema names for approvals, handoffs, delivery, and public read models; Stable digest functions; Approval builders and binding validators | `./src/index.js` | `@rus/kernel` |
-| `@rus/items-property` | `packages/items-property` | item and container contracts; ownership and holder relations; physical access | `./src/index.js` | `@rus/kernel`, `@rus/world-catalog-workflow` |
+| `@rus/items-property` | `packages/items-property` | item and container contracts; ownership and holder relations; physical access | `./src/index.js` | `@rus/kernel` |
 | `@rus/kernel` | `packages/kernel` | `Result`-подобным контрактом `ok`/`err` и `KernelError`; детерминированной сериализацией данных; вычислением технических digest | `./src/index.js` | — |
 | `@rus/knowledge-source` | `packages/knowledge-source` | контрактом чтения документов по стабильному `document_id`; проверкой corpus manifest, SHA-256 и source locations; техническим полнотекстовым поиском без смыслового дополнения | `./src/index.js` | — |
 | `@rus/llm-runtime` | `packages/llm-runtime` | role descriptors и tier-конфигурацией; разрешением model/thinking/token/JSON-mode параметров; единым вызовом chat-completion transport | `./src/index.js` | `@rus/contracts` |

@@ -79,6 +79,7 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 - 2026-07-15: runner миграций сохраняет PostgreSQL `DEFERRABLE INITIALLY DEFERRED` по умолчанию. `pg-mem` получает несовместимый режим только через явный capability-флаг в тесте; production DDL не переписывается.
 - 2026-07-15: schema/CI assertions синхронизированы с уже добавленными travel authoring tables: canonical world_base содержит 13 частей и 143 таблицы; read-only PostgreSQL gate проверяет это же число.
 - 2026-07-15: public API `@rus/travel` сохранён, но implementation разделена на contracts/support, journey lifecycle и persistence proposals. Это удерживает жёсткую архитектурную границу без изменения contracts или импортного пути.
+- 2026-07-15: environment baseline принимает только `environment-catalog.v2`: approved landmark rule связан с scoped profile, profile entry и template. G1/node/landscape/hydrology/land-use/route bindings применяются как фильтры; отсутствующий обязательный scope input или profile образует typed hard block.
 
 ## Checks recorded on transferred baseline
 
@@ -92,7 +93,7 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 - PR7 is draft; PR8 cannot become mergeable until it is integrated and this branch is rebased onto `main`.
 - No approved pilot-G1 `EnvironmentCatalogBundle` or `TravelRulesBundle` exists yet.
 - `gn_nov_g1_xp017_yp026` не может быть pilot: `production_import=not_performed`, `runtime_visibility=not_verified` в актуальном `G1_SEMANTIC_CATALOG.md`; создания фиктивной active G1 или повышения draft records не будет.
-- The prior environment implementation must be reconciled with the approved PR8 table names and contracts before production integration.
+- Cue/trace runtime contracts still require the same table-faithful reconciliation and approved production bundle before production integration.
 - The Stage 25 PostgreSQL writer accepts only one normalized journey/legs/position change set in a transaction. Real world readers, repositories and live PostgreSQL/E2E integration remain absent.
 
 ## Required integration order
@@ -157,6 +158,7 @@ Typed domain errors are versioned with the travel contracts; persistence, presen
 | `node --test test/integration/world-base-schema-reference.test.js test/integration/world-base-schema.test.js test/integration/ci-workflow-contract.test.js` / `world-db:schema-check` / `world-db:schema-doc-check` | 2026-07-15 | worktree before schema-assertion commit | PASS: 7/7; 143 tables | Local and CI PostgreSQL gates match the canonical 13-part world_base schema. |
 | `node --test packages/travel/test/domain.test.js packages/turn/test/*.test.js packages/environment-landmarks/test/*.test.js` / `architecture:check` | 2026-07-15 | worktree before boundary-split commit | PASS: 57/57; PASS | Travel public API and all moved tests retain behavior while each module stays within the enforced boundary. |
 | `npm test` | 2026-07-15 | worktree before runtime-integrity commit | PASS | Modules, domain, apps, tools, shadow, cutover, docs, integration and architecture gates pass. Real PostgreSQL tests remain skipped without `PARTY_DATABASE_URL`; browser E2E is skipped because Chromium is unavailable. |
+| `node --test packages/environment-landmarks/test/*.test.js` / `npm run test:domain` / `docs:check` | 2026-07-15 | worktree before landmark-profile commit | PASS: 16/16; 115/115 | Environment catalog v2 enforces rule → profile → entry → template and G1/placement scope without a legacy rule fallback. |
 | `node --test tools/docs-tools/test/knowledge-source-migration.test.js tools/docs-tools/test/knowledge-corpus-verifier.test.js tools/docs-tools/test/knowledge-materializer-v2.test.js` | 2026-07-15 | working tree after `6eb1a23` | PASS: 22/22 | Corpus manifest, legacy provenance and generated graph/RAG materialization remain reproducible after the PR8 normative update. |
 | `npm run test:domain` / `npm run test:modules` | 2026-07-15 | working tree after `6eb1a23` | PASS: 102/102; 261/261 | Documentation-only change did not regress travel, environment, turn or materialization contracts. |
 | `node --test packages/travel/test/domain.test.js` | 2026-07-15 | `69b0ee8` | RED: 1 failed | `ERR_MODULE_NOT_FOUND` before implementation. |
@@ -278,6 +280,7 @@ The ordered migration loader, seed script, party preflight and Stage 25 logical 
 | TRAVEL-D016 / 2026-07-15 / accepted | Remove deferred FK from production DDL or model the test-adapter limit explicitly. | PostgreSQL retains deferred FK semantics; only an explicit test capability renders compatible DDL. |
 | TRAVEL-D017 / 2026-07-15 / accepted | Keep stale schema-count assertions or bind local and CI gates to the canonical DDL count. | Schema checks and CI gate assert the current 143-table, 13-part entrypoint. |
 | TRAVEL-D018 / 2026-07-15 / accepted | Broaden architecture limits or divide the travel implementation while preserving its public API. | Contracts, journey lifecycle and proposals are separate modules behind the existing package export. |
+| TRAVEL-D019 / 2026-07-15 / accepted | Preserve legacy landmark rule template lists or require the normalized authoring chain. | Runtime consumes only approved rule → profile → profile entry → template records and explicit scope bindings. |
 
 ## Phase tracker
 
@@ -286,7 +289,7 @@ The ordered migration loader, seed script, party preflight and Stage 25 logical 
 | 0 — baseline | completed | Rebased onto current PR7 head `5463af8`; schema guard was reconciled with the combined 138-table DDL. |
 | 1 — normative architecture | in progress | PR8 travel boundaries are now synchronized across movement, time, turn, UI, graph/data ownership and navigation docs; full production proof still depends on approved data and integration. |
 | 2 — contracts and RED tests | in progress | Travel, movement and environment RED/GREEN evidence is recorded; course candidate-resolution is explicit and fail-closed. Route graph loader and production course resolution remain pending. |
-| 3 — environment baseline | in progress | Split lifecycle, bundle validation, leak tests and causal trace idempotency are green; production bundle and full production integration are absent. |
+| 3 — environment baseline | in progress | Landmark baseline now consumes the normalized profile chain and scope bindings; cue/trace contracts, production bundle and full production integration remain absent. |
 | 4 — world-base bundles | partial | Travel profiles and route bindings now have normalized DDL, strict schemas, importer registration and fail-closed readiness. Approved sources/provenance records and bundle remain absent. |
 | 5 — approved pilot | blocked | No runtime-visible approved G1; no fictional promotion is allowed. |
 | 6 — party persistence | in progress | Migration 003, deferred FK and atomic normal turn writer exist; real PostgreSQL proof is blocked by missing URL. |

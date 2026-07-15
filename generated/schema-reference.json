@@ -645,6 +645,30 @@
       "type": "json"
     },
     {
+      "bytes": 533,
+      "path": "schemas/materialization/container-content-category-relations-v1.schema.json",
+      "sha256": "3f6c11cea3e82408f1c337bf619dbc0b6a79b128f6b1ee1111f17331bb7eec82",
+      "type": "json"
+    },
+    {
+      "bytes": 589,
+      "path": "schemas/materialization/container-template-facet-bindings-v1.schema.json",
+      "sha256": "515985fa8f013372429e4ef4eaf5ce3786523126292fc11e570f364062496ba3",
+      "type": "json"
+    },
+    {
+      "bytes": 738,
+      "path": "schemas/materialization/item-classification-migration-inventory-v1.schema.json",
+      "sha256": "cbcfee73a572cb55bc1861f7444e44666ac2453abd5b341b7b36d5a9d1fc5289",
+      "type": "json"
+    },
+    {
+      "bytes": 719,
+      "path": "schemas/materialization/item-template-category-bindings-v1.schema.json",
+      "sha256": "e8f5422c7b3725b42c3084dd378845c9cc897a8510318bd3ef0064e64fe66528",
+      "type": "json"
+    },
+    {
       "bytes": 3150,
       "path": "schemas/materialization/normalized-instance-candidate-v2.schema.json",
       "sha256": "ccbd9e9d518a8ab4b28e937e6e4eb19b88a26f3ea6eeff89aaf24432dd9a0b1d",
@@ -663,9 +687,9 @@
       "type": "json"
     },
     {
-      "bytes": 897,
+      "bytes": 905,
       "path": "schemas/materialization/universal-categories-v1.schema.json",
-      "sha256": "e5d1956821a642f5a03ad3888c3bd2c5f2b9cea6a48a0f7146c4bb6ca656dfa2",
+      "sha256": "b2110a8b777c2d26049337f07826c254eb1f9854535ae7990f4c2f40bc4df972",
       "type": "json"
     },
     {

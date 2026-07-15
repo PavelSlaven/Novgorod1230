@@ -166,6 +166,57 @@ CREATE TABLE world_base.container_content_profile_entries (
   weight INTEGER NOT NULL DEFAULT 1 CHECK (weight > 0),
   CHECK ((item_template_id IS NULL) <> (item_category_id IS NULL))
 );
+CREATE TABLE world_base.item_template_category_bindings (
+  id TEXT PRIMARY KEY,
+  item_template_id TEXT NOT NULL REFERENCES world_base.item_templates(id) ON DELETE CASCADE,
+  category_id TEXT NOT NULL REFERENCES world_base.universal_categories(id) ON DELETE RESTRICT,
+  binding_kind TEXT NOT NULL CHECK (binding_kind IN (
+    'object_type','primary_function','secondary_function','material',
+    'manufacturing_technique','component_type','physical_form','condition',
+    'quality_band','size_band','mass_band','use_context'
+  )),
+  exclusivity_group TEXT,
+  requires_regional_permission BOOLEAN NOT NULL DEFAULT false,
+  status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','approved','deprecated')),
+  CHECK (exclusivity_group IS NULL OR (binding_kind = 'primary_function' AND exclusivity_group = 'primary_function')),
+  UNIQUE (item_template_id, category_id, binding_kind)
+);
+CREATE UNIQUE INDEX item_template_one_active_primary_function
+  ON world_base.item_template_category_bindings (item_template_id)
+  WHERE binding_kind = 'primary_function' AND status = 'approved';
+
+CREATE TABLE world_base.container_template_facet_bindings (
+  id TEXT PRIMARY KEY,
+  container_template_id TEXT NOT NULL REFERENCES world_base.container_templates(id) ON DELETE CASCADE,
+  category_id TEXT NOT NULL REFERENCES world_base.universal_categories(id) ON DELETE RESTRICT,
+  facet TEXT NOT NULL CHECK (facet IN (
+    'container_form','capacity_band','closure_type','access_model',
+    'portability','content_compatibility','condition'
+  )),
+  requires_regional_permission BOOLEAN NOT NULL DEFAULT false,
+  status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','approved','deprecated')),
+  UNIQUE (container_template_id, category_id, facet)
+);
+CREATE TABLE world_base.container_content_category_relations (
+  id TEXT PRIMARY KEY,
+  container_category_id TEXT NOT NULL REFERENCES world_base.universal_categories(id) ON DELETE RESTRICT,
+  content_category_id TEXT NOT NULL REFERENCES world_base.universal_categories(id) ON DELETE RESTRICT,
+  compatibility TEXT NOT NULL CHECK (compatibility IN ('allowed','forbidden')),
+  status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','approved','deprecated')),
+  UNIQUE (container_category_id, content_category_id)
+);
+CREATE TABLE world_base.item_classification_migration_inventory (
+  id TEXT PRIMARY KEY,
+  legacy_table_name TEXT NOT NULL CHECK (legacy_table_name IN ('item_templates','container_templates')),
+  legacy_record_id TEXT NOT NULL,
+  legacy_field_name TEXT NOT NULL,
+  legacy_value TEXT NOT NULL,
+  resolution_status TEXT NOT NULL CHECK (resolution_status IN ('mapped','data_gap','migration_conflict','deferred')),
+  resolved_category_id TEXT REFERENCES world_base.universal_categories(id) ON DELETE RESTRICT,
+  report_note TEXT,
+  CHECK ((resolution_status = 'mapped') = (resolved_category_id IS NOT NULL)),
+  UNIQUE (legacy_table_name, legacy_record_id, legacy_field_name)
+);
 CREATE TABLE world_base.property_profiles (
   id TEXT PRIMARY KEY,
   world_revision_id TEXT NOT NULL REFERENCES world_base.world_revisions(id) ON DELETE RESTRICT,

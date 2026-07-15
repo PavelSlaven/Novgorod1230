@@ -2,8 +2,8 @@
 # Справочник схемы `world_base`
 
 - Исполняемый источник: `infra/world-base/schema.sql` и 11 упорядоченных SQL-частей.
-- SHA-256 развёрнутого DDL: `85a3cad74116dabc1a9cebe605ebef0338d62f9f6482fa8fd78779dbe24f3ac3`.
-- Таблиц: 111.
+- SHA-256 развёрнутого DDL: `7f4a4c2a951cc34af305af047935b4107a9b0cf41a0a83c39e7bb328e90eea02`.
+- Таблиц: 115.
 - Описания берутся только из утверждённого `infra/world-base/field-descriptions.js`; отсутствие описания не заполняется эвристикой.
 
 ## Граф (каноническая карта)
@@ -3184,6 +3184,79 @@ G4-specific правила контейнеров, содержимого и д�
 **Ограничения таблицы:**
 
 - `CHECK ((item_template_id IS NULL) <> (item_category_id IS NULL))`
+
+### `world_base.item_template_category_bindings`
+
+Нормализованные фасетные связи шаблона предмета с утверждёнными категориями.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `item_template_id` | `TEXT` | нет | — | `world_base.item_templates(id) ON DELETE CASCADE` | `NOT NULL` | FK → item_templates(id): классифицируемый шаблон предмета. |
+| `category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | `NOT NULL` | FK → universal_categories(id): утверждённая категория фасета. |
+| `binding_kind` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (binding_kind IN ( 'object_type','primary_function','secondary_function','material', 'manufacturing_technique','component_type','physical_form','condition', 'quality_band','size_band','mass_band','use_context' ))` | Независимый фасет: object_type, function, material, technique, condition и др. |
+| `exclusivity_group` | `TEXT` | да | — | — | — | Только primary_function либо NULL; запрещает неформальные группы совместимости. |
+| `requires_regional_permission` | `BOOLEAN` | нет | `false` | — | `NOT NULL` | Требует approved regional/period permission в той же world revision до импорта. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- `CHECK (exclusivity_group IS NULL OR (binding_kind = 'primary_function' AND exclusivity_group = 'primary_function'))`
+- `UNIQUE (item_template_id, category_id, binding_kind)`
+- `UNIQUE INDEX item_template_one_active_primary_function (item_template_id) WHERE binding_kind = 'primary_function' AND status = 'approved'`
+
+### `world_base.container_template_facet_bindings`
+
+Нормализованные фасеты шаблона контейнера.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `container_template_id` | `TEXT` | нет | — | `world_base.container_templates(id) ON DELETE CASCADE` | `NOT NULL` | FK → container_templates(id): классифицируемый шаблон контейнера. |
+| `category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | `NOT NULL` | FK → universal_categories(id): утверждённая категория фасета. |
+| `facet` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (facet IN ( 'container_form','capacity_band','closure_type','access_model', 'portability','content_compatibility','condition' ))` | container_form, capacity_band, closure_type, access_model, portability или content_compatibility. |
+| `requires_regional_permission` | `BOOLEAN` | нет | `false` | — | `NOT NULL` | Требует approved regional/period permission в той же world revision до импорта. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- `UNIQUE (container_template_id, category_id, facet)`
+
+### `world_base.container_content_category_relations`
+
+Разрешённые и запрещённые пары категорий контейнера и содержимого.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `container_category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | `NOT NULL` | FK → universal_categories(id): категория контейнера. |
+| `content_category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | `NOT NULL` | FK → universal_categories(id): категория допустимого либо запрещённого содержимого. |
+| `compatibility` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (compatibility IN ('allowed','forbidden'))` | closed vocabulary: allowed или forbidden; не создаёт regional permission. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- `UNIQUE (container_category_id, content_category_id)`
+
+### `world_base.item_classification_migration_inventory`
+
+Явный отчёт перехода legacy-полей предметов и контейнеров без guessed mapping.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `legacy_table_name` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (legacy_table_name IN ('item_templates','container_templates'))` | Исходная legacy-таблица без автоматической записи в неё. |
+| `legacy_record_id` | `TEXT` | нет | — | — | `NOT NULL` | ID исходной legacy-записи. |
+| `legacy_field_name` | `TEXT` | нет | — | — | `NOT NULL` | Поле, для которого требуется reviewed classification mapping. |
+| `legacy_value` | `TEXT` | нет | — | — | `NOT NULL` | Дословное legacy-значение; не интерпретируется как категория. |
+| `resolution_status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (resolution_status IN ('mapped','data_gap','migration_conflict','deferred'))` | mapped, data_gap, migration_conflict или deferred. |
+| `resolved_category_id` | `TEXT` | да | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | — | FK → universal_categories(id); обязателен только при mapped. |
+| `report_note` | `TEXT` | да | — | — | — | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `CHECK ((resolution_status = 'mapped') = (resolved_category_id IS NOT NULL))`
+- `UNIQUE (legacy_table_name, legacy_record_id, legacy_field_name)`
 
 ### `world_base.property_profiles`
 

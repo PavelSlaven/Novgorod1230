@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const EXPECTED_TABLE_COUNT = 111;
+const EXPECTED_TABLE_COUNT = 115;
 const ENTRYPOINT = 'infra/world-base/schema.sql';
 
 export async function inspectWorldBaseSchema({ root = '.' } = {}) {

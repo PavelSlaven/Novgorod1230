@@ -1,0 +1,31 @@
+{
+  "schema_version": "rus.first_session_data_gap_report.v1",
+  "candidate_revision": "content_revision_004_first_session_candidate",
+  "g1_id": "gn_nov_g1_xp017_yp026",
+  "selected_g4_id": "gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_high_platform",
+  "result": "HARD_BLOCK",
+  "blocking_gaps": [
+    {
+      "gap_id": "GAP_NPC_ARCHETYPE_CHAIN_001",
+      "domain": "npc",
+      "description": "The applicable rule supplies role and occupation candidates but does not resolve approved archetype, demographic, name, appearance, clothing, equipment, knowledge, behavior, activity, schedule, relationship and profile-set rows.",
+      "blocked_operation": "materialize_start_scene_npcs",
+      "repair_route": "offline_editorial_or_canonical_import_only"
+    },
+    {
+      "gap_id": "GAP_CANONICAL_SOURCE_ROWS_001",
+      "domain": "catalog_import",
+      "description": "The repository does not contain the canonical source rows and digests needed to prove whether required regional records already exist in the external BAZA package.",
+      "blocked_operation": "approve_new_catalog_ids",
+      "repair_route": "retrieve_and_audit_canonical_source_package"
+    }
+  ],
+  "non_blocking_later_layer_findings": [
+    {"domain":"items","description":"The selected G5 shelter/rest profile is not proven to have an applicable item binding."},
+    {"domain":"property","description":"No applicable property binding is proven for the selected G5 shelter/rest profile."},
+    {"domain":"resources","description":"No applicable resource binding is proven for the selected G5 shelter/rest profile."}
+  ],
+  "activation_allowed": false,
+  "import_allowed": false,
+  "llm_repair_allowed": false
+}

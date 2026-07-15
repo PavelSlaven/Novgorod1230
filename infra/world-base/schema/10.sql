@@ -200,6 +200,37 @@ CREATE UNIQUE INDEX item_template_one_active_size_band
   ON world_base.item_template_category_bindings (item_template_id)
   WHERE binding_kind = 'size_band' AND status = 'approved';
 
+-- Queryable carrying facts are authoring data, not a JSONB item description.
+-- They deliberately contain no historical rows: source-backed catalog work remains 3B.
+CREATE TABLE world_base.item_template_inventory_profiles (
+  id TEXT PRIMARY KEY,
+  item_template_id TEXT NOT NULL REFERENCES world_base.item_templates(id) ON DELETE CASCADE,
+  world_revision_id TEXT NOT NULL REFERENCES world_base.world_revisions(id) ON DELETE RESTRICT,
+  source_id TEXT NOT NULL REFERENCES world_base.source_records(id) ON DELETE RESTRICT,
+  mass_grams INTEGER NOT NULL CHECK (mass_grams >= 0),
+  carry_form TEXT NOT NULL CHECK (carry_form IN ('compact','regular','long','bulky')),
+  external_hand_cost INTEGER NOT NULL CHECK (external_hand_cost IN (0,1,2)),
+  status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','approved','deprecated'))
+);
+CREATE UNIQUE INDEX item_template_one_active_inventory_profile
+  ON world_base.item_template_inventory_profiles (item_template_id)
+  WHERE status = 'approved';
+
+CREATE TABLE world_base.container_template_inventory_profiles (
+  id TEXT PRIMARY KEY,
+  container_template_id TEXT NOT NULL REFERENCES world_base.container_templates(id) ON DELETE CASCADE,
+  world_revision_id TEXT NOT NULL REFERENCES world_base.world_revisions(id) ON DELETE RESTRICT,
+  source_id TEXT NOT NULL REFERENCES world_base.source_records(id) ON DELETE RESTRICT,
+  mass_grams INTEGER NOT NULL CHECK (mass_grams >= 0),
+  carry_form TEXT NOT NULL CHECK (carry_form IN ('compact','regular','long','bulky')),
+  external_hand_cost INTEGER NOT NULL CHECK (external_hand_cost IN (0,1,2)),
+  inventory_role TEXT NOT NULL CHECK (inventory_role IN ('none','quick_container','primary_container')),
+  status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','approved','deprecated'))
+);
+CREATE UNIQUE INDEX container_template_one_active_inventory_profile
+  ON world_base.container_template_inventory_profiles (container_template_id)
+  WHERE status = 'approved';
+
 CREATE TABLE world_base.container_template_facet_bindings (
   id TEXT PRIMARY KEY,
   container_template_id TEXT NOT NULL REFERENCES world_base.container_templates(id) ON DELETE CASCADE,

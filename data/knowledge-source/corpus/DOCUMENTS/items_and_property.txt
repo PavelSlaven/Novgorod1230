@@ -16,6 +16,20 @@ Packing slots описывают только занимаемое место и
 
 Bundling допустим только для одинакового template и одинакового состояния. При переполнении нельзя уменьшать quantity, создавать дополнительный контейнер или применять fallback; материализация блокируется типизированной ошибкой. Вложенный контейнер занимает свой `packing_slot_cost`, а его содержимое продолжает отдельно участвовать в расчёте массы.
 
+### Inventory foundation v1
+
+Инвентарь — только физически переносимые instance; имущество вне holder/location path не
+является inventory. Канонически сохраняются holder, owner, controller, one physical
+placement target, parent container, quantity, condition, container closure и equipment
+slot. Zone, access tier, total mass, load, hands и packing usage выводятся code из этого
+графа и могут присутствовать только в immutable trace либо versioned visible read model.
+
+Packing slots, масса и руки независимы. Масса берётся только из approved inventory profile,
+без `0`/среднего fallback. Личный путь v1 допускает не более двух контейнеров; cycle или
+глубокая вложенность блокируется. Primary container можно оставить в G5 без изменения
+owner/controller или contents; это делает содержимое physically unavailable. Outward —
+только вдохновение отделения quick/primary load, не исторический источник.
+
 Предметы и имущество являются частью состояния мира и описывают материальную среду сцены: быт, уровень достатка, социальный статус, власть, ремесленную деятельность, опасности, обязательства, доступные действия и возможные последствия.
 
 ### 1. Уровни предметной среды

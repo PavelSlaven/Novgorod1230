@@ -123,7 +123,7 @@ export const TABLE_GROUPS = [
   },
   {
     title: 'Materialization v2: предметы и имущество',
-    tables: ['container_templates', 'item_profile_sets', 'item_profile_entries', 'container_content_profiles', 'container_content_profile_entries', 'item_template_category_bindings', 'container_template_facet_bindings', 'container_content_category_relations', 'item_classification_migration_inventory', 'property_profiles', 'property_profile_rules', 'transport_templates']
+    tables: ['container_templates', 'item_profile_sets', 'item_profile_entries', 'container_content_profiles', 'container_content_profile_entries', 'item_template_category_bindings', 'item_template_inventory_profiles', 'container_template_inventory_profiles', 'container_template_facet_bindings', 'container_content_category_relations', 'item_classification_migration_inventory', 'property_profiles', 'property_profile_rules', 'transport_templates']
   },
   {
     title: 'Materialization v2: решения и импорт',
@@ -231,6 +231,8 @@ export const TABLE_PURPOSE_FALLBACK = {
   container_content_profiles: 'Профили содержимого контейнеров.',
   container_content_profile_entries: 'Нормализованные варианты содержимого и количества.',
   item_template_category_bindings: 'Нормализованные фасетные связи шаблона предмета с утверждёнными категориями.',
+  item_template_inventory_profiles: 'Строго типизированные mass и carrying параметры шаблона предмета; не историческое подтверждение без source record.',
+  container_template_inventory_profiles: 'Строго типизированные mass, carrying и quick/primary role параметры шаблона контейнера.',
   container_template_facet_bindings: 'Нормализованные фасеты шаблона контейнера.',
   container_content_category_relations: 'Разрешённые и запрещённые пары категорий контейнера и содержимого.',
   item_classification_migration_inventory: 'Явный отчёт перехода legacy-полей предметов и контейнеров без guessed mapping.',
@@ -307,6 +309,25 @@ export const fields = {
     packing_bundle_size: 'Только size_band: положительное количество одинаковых template/state items в одном packing bundle.',
     exclusivity_group: 'Только primary_function либо NULL; запрещает неформальные группы совместимости.',
     requires_regional_permission: 'Требует approved regional/period permission в той же world revision до импорта.'
+  },
+  item_template_inventory_profiles: {
+    item_template_id: 'FK → item_templates(id): шаблон предмета, для которого утверждены физические inventory parameters.',
+    world_revision_id: 'FK → world_revisions(id): pinned ревизия authoring-каталога.',
+    source_id: 'FK → source_records(id): provenance параметров; отсутствие не допускает historical approval.',
+    mass_grams: 'Неотрицательная масса одного экземпляра в граммах; не выводится из packing slots и не имеет fallback.',
+    carry_form: 'Closed carrying form: compact, regular, long или bulky.',
+    external_hand_cost: 'Closed внешний hand cost 0, 1 или 2; не является use_hand_cost.',
+    status: 'draft, approved или deprecated; для template допустим только один approved profile.'
+  },
+  container_template_inventory_profiles: {
+    container_template_id: 'FK → container_templates(id): контейнер, для которого утверждены физические inventory parameters.',
+    world_revision_id: 'FK → world_revisions(id): pinned ревизия authoring-каталога.',
+    source_id: 'FK → source_records(id): provenance параметров; отсутствие не допускает historical approval.',
+    mass_grams: 'Неотрицательная масса пустого контейнера в граммах; contents считаются отдельно.',
+    carry_form: 'Closed carrying form: compact, regular, long или bulky.',
+    external_hand_cost: 'Closed внешний hand cost 0, 1 или 2; не является use_hand_cost.',
+    inventory_role: 'none, quick_container или primary_container; это authoring role, а не сохранённый derived zone.',
+    status: 'draft, approved или deprecated; для template допустим только один approved profile.'
   },
   container_template_facet_bindings: {
     container_template_id: 'FK → container_templates(id): классифицируемый шаблон контейнера.',

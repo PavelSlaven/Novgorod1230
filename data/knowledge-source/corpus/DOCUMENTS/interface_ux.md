@@ -681,6 +681,12 @@ UI читает и показывает доступный игроку слой
 
 Инвентарь — это предметы, которые персонаж физически несёт при себе и может использовать в текущей сцене.
 
+Inventory panel v1 получает готовую visible-only projection от code. Она показывает руки,
+на теле, equipment, quick/primary container, external load, total mass, load category и
+hands; не показывает internal IDs, raw trace, audit diagnostics, hidden owner или
+unknown contents закрытого контейнера. UI не пересчитывает packing, массу, hands или
+access. Имущество вне physical placement path не выводится как «при себе».
+
 Короткая формула:
 
 ```text

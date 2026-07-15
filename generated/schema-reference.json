@@ -181,6 +181,11 @@
       "source": "packages/contracts/src/g5-placement-boundary.js"
     },
     {
+      "constant": "INVENTORY_PANEL_SCHEMA",
+      "schema": "inventory_panel",
+      "source": "packages/presentation/src/read-models/contracts.js"
+    },
+    {
       "constant": "STAGE16_INPUT_SCHEMA",
       "schema": "item_placement_input",
       "source": "packages/contracts/src/g5-placement-boundary.js"
@@ -657,6 +662,12 @@
       "type": "json"
     },
     {
+      "bytes": 799,
+      "path": "schemas/materialization/container-template-inventory-profiles-v1.schema.json",
+      "sha256": "6e4fac710cc9fbf56c7571bd7fc62902b866269d3d5b9dd707a4def3e5ee4c2a",
+      "type": "json"
+    },
+    {
       "bytes": 851,
       "path": "schemas/materialization/container-templates-v1.schema.json",
       "sha256": "7b94635e3ea7e6726d669f2c9595d0e6d14c52958e6a0b520cc92d547ff803aa",
@@ -672,6 +683,12 @@
       "bytes": 871,
       "path": "schemas/materialization/item-template-category-bindings-v1.schema.json",
       "sha256": "0a355b2f66a9eec372b44ef31605bbbd3c808fed9411fa5dafca3baf83e15908",
+      "type": "json"
+    },
+    {
+      "bytes": 694,
+      "path": "schemas/materialization/item-template-inventory-profiles-v1.schema.json",
+      "sha256": "61b5a6c6c13c65dc116edf74ba0b9fec6e9fd61daef1ca1688b91aaf1e4a56b4",
       "type": "json"
     },
     {
@@ -729,9 +746,9 @@
       "type": "json"
     },
     {
-      "bytes": 18350,
+      "bytes": 19346,
       "path": "schemas/party-db/001_party_runtime.sql",
-      "sha256": "864a9f48dcff388a08eacef5fecec118ab213d18167d0a06d7f09c970d25fa2d",
+      "sha256": "54bd27520ce5589b040319596e596cb75a5f59a1748d9ebb19c5d4368469cb05",
       "type": "sql"
     },
     {

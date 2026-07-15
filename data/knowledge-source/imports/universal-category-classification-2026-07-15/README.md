@@ -211,9 +211,9 @@ deferred external/local rows: unknown until export
 
 Это не доказывает отсутствие строк в локальной PostgreSQL или NocoDB. Они должны быть экспортированы как отдельный versioned input.
 
-## 9. Что изменено текущим редакторским проходом
+## 9. Состояние до технической реализации Stage 3B-1
 
-Изменены или добавлены только Markdown-документы:
+Первый редакторский проход изменял или добавлял только Markdown-документы:
 
 - `stage-3b1/STAGE_3B1_PLAN.md`;
 - `stage-3b1/HISTORICAL_SOURCE_REGISTER.md`;
@@ -221,9 +221,9 @@ deferred external/local rows: unknown until export
 - `stage-3b1/EDITORIAL_AUTHORING_CANDIDATE.md`;
 - этот единый `README.md`.
 
-DDL, JSON Schema, importer, runtime code, Stage 8/16, party state и generated artifacts текущим проходом не изменялись.
+На тот момент DDL, JSON Schema, importer, runtime code, Stage 8/16, party state и generated artifacts не изменялись. Это историческая запись; последующий технический проход реализован и зафиксирован в разделе 13.
 
-## 10. Выполненные проверки текущего прохода
+## 10. Проверки редакторского прохода до технической реализации
 
 Фактически выполнены редакторские проверки:
 
@@ -239,7 +239,7 @@ DDL, JSON Schema, importer, runtime code, Stage 8/16, party state и generated a
 - old 12-item authoring document синхронизирован с каталогом 120;
 - production activation не выполнялась.
 
-Не запускались для текущих docs-only изменений:
+Для docs-only редакторского прохода не запускались:
 
 - JSON Schema validation datasets;
 - importer dry-run/apply;
@@ -249,43 +249,39 @@ DDL, JSON Schema, importer, runtime code, Stage 8/16, party state и generated a
 - generated-artifact checks;
 - code critic.
 
-Причина: текущий проход изменяет только редакторскую документацию и не меняет исполняемое поведение. Предыдущие технические результаты inventory foundation не переобъявляются как новые проверки.
+Причина: тот проход изменял только редакторскую документацию. Полные проверки технического draft bundle приведены в разделе 13.
 
-## 11. Порядок дальнейшей интеграции
+## 11. Порядок интеграции после технической реализации
 
-Следующий технический этап выполняется в том же PR и должен:
+Следующий этап выполняется в том же PR и должен:
 
 1. перечитать обязательные нормативы и проверить актуальный branch head;
-2. материализовать controlled vocabularies object type/function/material/use context;
-3. создать source records и bindings;
-4. создать draft regional/period permissions;
-5. сформировать item/container inventory profiles;
-6. сформировать equipment, property и container-content profiles;
-7. проверить compatibility и causal/economic basis;
-8. экспортировать внешние legacy rows и построить reviewed migration inventory;
-9. создать versioned JSON datasets и manifest с реальными digests;
-10. выполнить JSON Schema, cross-reference и readiness;
-11. выполнить importer dry-run, rollback/readback и PostgreSQL integration;
-12. проверить Stage 8/16 и full suite;
-13. перегенерировать generated artifacts;
-14. вызвать code critic при изменении DDL, schemas, code, profiles/rules или runtime contracts;
-15. не повышать policy и records в `active/approved` без прохождения всех gates.
+2. выполнить supplemental PostgreSQL apply/readback/rollback в disposable PostgreSQL 16;
+3. разрешить individual historical source records и template-source bindings;
+4. провести material и physical-parameter review;
+5. добавить bulk-good quantity model и complete container compatibility;
+6. расширить draft item/property/equipment profiles только на verified role/occupation IDs;
+7. экспортировать внешние legacy rows и построить reviewed migration inventory;
+8. выпустить promotion-readiness report;
+9. не повышать policy, revision или records в `active/approved` без всех отдельных gates и прямого указания пользователя.
 
 ## 12. Известные ограничения
 
 - 120 строк являются широкими types, а не полной археологической типологией;
-- source families ещё не материализованы как final `source_records` datasets;
+- создан один draft project-authoring `source_record`; individual historical source records и bindings ещё не разрешены;
 - individual evidence bindings требуют библиографической сверки;
 - commonness/weights не исследованы;
-- физические параметры и игровые profiles не назначены;
-- container content compatibility не сформирована;
+- physical parameters и игровые profiles созданы только как `draft`/`gameplay_estimate` и требуют review;
+- container content profiles созданы, но неспециализированная compatibility остаётся deliberately coarse;
 - external/local migration inventory отсутствует;
-- production import, cutover и runtime activation не начаты;
+- supplemental dry-run пройден, но PostgreSQL apply/readback/rollback, production import, cutover и runtime activation не начаты;
 - PR остаётся draft.
 
 ## 13. Этап 3B-1 — технический draft bundle
 
 **Starting SHA:** `815b81eb0ef613fd97cf1c16e895d6b7ebbc05d5` (verified against PR #7 before edits).
+
+**Starting SHA следующего прохода:** `aefd739f7249f8e0d1e6063422a84fc2acca0a93`; затронуты supplemental PostgreSQL lifecycle, historical evidence, materials, physical/quantity/container review, profiles, migration inventory и promotion readiness. Граница неизменна: policy/revision не активируются, runtime candidates не расширяются, party instances не изменяются.
 
 Новый `stage-3b1/bundle/` — отдельный воспроизводимый supplemental manifest. Он содержит 102 item templates, 18 container templates, 146 draft categories/labels/region options, нормализованные object/function/context bindings, draft inventory profiles, 18 container-content profiles, 16 item profile sets, 10 property profiles и один equipment profile с проверенным `nov_role_guard`. Все SHA-256 digests datasets вычисляются из canonical JSON arrays скриптом `scripts/generate-stage-3b1-bundle.mjs`.
 

@@ -14,7 +14,7 @@
 - `HISTORICAL_SOURCE_REGISTER.md` — evidence classes, source families и gaps;
 - `STAGE_3B1_PLAN.md` — порядок формирования, проверки и последующей интеграции.
 
-Пакет не является production seed, не включает versioned JSON datasets, не создаёт manifest/digests, не изменяет runtime и не разрешает materialization. Все записи остаются `draft` до технической интеграции, importer/readiness и явного approval.
+Этот редакторский источник не является production seed и не изменяет runtime. Его техническое воплощение — отдельный supplemental bundle с 20 versioned JSON datasets и manifest/digests. Все записи остаются `draft`; promotion, runtime activation и materialization не разрешены до отдельных gates и явного approval.
 
 ## 2. Упрощённый исторический gate
 
@@ -77,9 +77,9 @@ PAGE_LEVEL_SOURCE_VERIFICATION_REQUIRED
 9. Точные масса, packing cost, capacity, цена и materialization weight не выводятся из правдоподобия.
 10. Любой runtime instance по-прежнему требует цепочку `category → template → profile → rule → instance`.
 
-## 5. Таблицы, которые должны быть сформированы техническим этапом
+## 5. Таблицы технического draft bundle
 
-Редакторский каталог должен быть преобразован в нормализованные datasets для:
+Редакторский каталог преобразован в нормализованные draft datasets для:
 
 - `universal_categories`;
 - `category_labels` и scheme mappings при необходимости;
@@ -106,13 +106,14 @@ Plural references должны стать relation rows, а не массива�
 |---|---|
 | 120 stable ID proposals | `prepared` |
 | historical source families | `prepared_needs_review` |
-| individual source-record bindings | `not_materialized` |
-| regional permissions | `not_materialized` |
-| item/container profiles | `not_materialized` |
+| individual historical source-record bindings | `blocked_by_historical_review` |
+| regional draft permissions | `implemented_draft` |
+| item/container profiles | `implemented_draft` |
 | compatibility profiles | `blocked_by_review` |
 | external legacy migration inventory | `deferred` |
-| versioned JSON datasets | `not_created` |
-| production import | `not_started` |
+| versioned JSON datasets | `implemented_draft` |
+| supplemental dry-run | `pass` |
+| PostgreSQL supplemental apply/readback/rollback | `not_run` |
 | runtime activation | `not_started` |
 
 Сохраняются gaps:
@@ -120,7 +121,10 @@ Plural references должны стать relation rows, а не массива�
 - `HISTORICAL_PRESENCE_EVIDENCE_REQUIRED`;
 - `NARROW_TYPOLOGY_EVIDENCE_REQUIRED`;
 - `COMMONNESS_NOT_ESTABLISHED`;
-- `PHYSICAL_PARAMETER_EVIDENCE_REQUIRED`;
+- `MATERIAL_EVIDENCE_REQUIRED`;
+- `PHYSICAL_PARAMETER_REVIEW_REQUIRED`;
+- `BULK_GOOD_QUANTITY_UNIT_MODEL_REQUIRED`;
+- `SUPPLEMENTAL_POSTGRESQL_INTEGRATION_REQUIRED`;
 - `CONTAINER_COMPATIBILITY_TOO_COARSE`;
 - `CANONICAL_LEGACY_ROWS_UNAVAILABLE`.
 
@@ -138,7 +142,7 @@ Plural references должны стать relation rows, а не массива�
 - не назначены выдуманные частотность, цена, масса, packing cost или capacity;
 - editorial source не активирует runtime candidates и не создаёт party state.
 
-Derived supplemental datasets прошли JSON Schema/cross-reference validation, importer dry-run, Stage 8/16 tests, generated-artifact checks и полный test suite; точные команды и результаты приведены в едином `README.md`. PostgreSQL apply/readback/rollback недоступен без обязательного `POSTGRES_PASSWORD`; итоговый code critic ожидается. Эти две проверки не заявляются пройденными.
+Derived supplemental datasets прошли JSON Schema/cross-reference validation, importer dry-run, Stage 8/16 tests, generated-artifact checks и полный test suite; точные команды и результаты приведены в едином `README.md`. PostgreSQL apply/readback/rollback не запускался без disposable `POSTGRES_PASSWORD`. Итоговый code critic: `PASS WITH NOTES`; его единственная note — отсутствующая локальная PostgreSQL integration.
 
 ## 8. Следующий этап
 
@@ -146,13 +150,8 @@ Derived supplemental datasets прошли JSON Schema/cross-reference validatio
 
 Следующий технический проход должен:
 
-1. материализовать category/function/material/use-context vocabularies;
-2. связать каждую строку с source records;
-3. сформировать draft regional permissions;
-4. подготовить inventory/container/equipment/property/content profiles;
-5. классифицировать внешние legacy rows после экспорта;
-6. создать versioned JSON datasets и manifest;
-7. выполнить JSON Schema, cross-reference, importer dry-run, PostgreSQL и readiness;
-8. проверить Stage 8/16 и полный suite;
-9. обновить generated artifacts;
-10. вызвать code critic, если изменяются код, DDL, schemas, profiles/rules или runtime contracts.
+1. выполнить supplemental PostgreSQL lifecycle;
+2. связать каждую строку с individual historical source records;
+3. завершить material/physical/bulk/container review;
+4. классифицировать внешние legacy rows после экспорта;
+5. подготовить promotion readiness без activation.

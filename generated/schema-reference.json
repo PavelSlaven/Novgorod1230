@@ -746,9 +746,9 @@
       "type": "json"
     },
     {
-      "bytes": 19346,
+      "bytes": 19734,
       "path": "schemas/party-db/001_party_runtime.sql",
-      "sha256": "54bd27520ce5589b040319596e596cb75a5f59a1748d9ebb19c5d4368469cb05",
+      "sha256": "5cab24b65540da3f9857c2e70cd9e93c9761bac439839dbde1940cde24b5f6a1",
       "type": "sql"
     },
     {

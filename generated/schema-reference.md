@@ -155,7 +155,7 @@ Release: `0.23.0-migration.24`
 | `schemas/materialization/world-materialization-repair-request-v2.schema.json` | json | 945 | `ba34924dd6587d7a5044498766cc8c0ff81167eae9fbee3e98e63ad0fb75fd59` |
 | `schemas/materialization/world-materialization-request-v2.schema.json` | json | 10347 | `3b6739984a1ec31a01d99867f13d8a5c9f4f87f4ab7a2d4ba5b911282629ae7f` |
 | `schemas/materialization/world-materialization-result-v2.schema.json` | json | 5190 | `92ee591037949a9e55ded6fe2813516718b5ade28b7cd7c8b592185c356db163` |
-| `schemas/party-db/001_party_runtime.sql` | sql | 19346 | `54bd27520ce5589b040319596e596cb75a5f59a1748d9ebb19c5d4368469cb05` |
+| `schemas/party-db/001_party_runtime.sql` | sql | 19734 | `5cab24b65540da3f9857c2e70cd9e93c9761bac439839dbde1940cde24b5f6a1` |
 | `schemas/world-base/world-base-source-bundle.schema.json` | json | 1447 | `358430badf2821197ffc74d4600b2cc2b153d1a1a141020e998650cb1c325dc2` |
 | `schemas/world-catalogs/g1-boundary-contract.schema.json` | json | 1199 | `9a255c612dc382e4ead28c5566ae6583878840651904a134f364bb1b1291f3aa` |
 | `schemas/world-catalogs/g1-cell-package.schema.json` | json | 1794 | `d917ec67f99c965c0257f7dbc1b2498e123aff756f4b71c68e7da0f1b6fe8381` |

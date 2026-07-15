@@ -16,6 +16,28 @@ function readJson(name) {
   return JSON.parse(readFileSync(resolve(bundleRoot, name), 'utf8'));
 }
 
+test('supplemental registry validates environment cue policy schemas before approval', () => {
+  const recordsByTable = {
+    environment_cue_templates: [{
+      id: 'cue-1', world_revision_id: 'revision-1', category_id: 'category-cue',
+      public_label_key: 'cue.label', icon_key: 'cue-icon', sense: 'sound', base_intensity: 1,
+      recognition_difficulty: 'ordinary', navigation_value: 'low', fading_duration_minutes: 1,
+      expiry_duration_minutes: 2, propagation_policy: {}, visibility_policy: {}, status: 'draft'
+    }]
+  };
+  const manifest = {
+    schema_version: 1, bundle_id: 'environment-schema-test', world_revision_id: 'revision-1', approval: 'draft', deletion_policy: 'none', provenance: { source_ids: ['source-1'] },
+    datasets: [{ table: 'environment_cue_templates', schema_id: 'rus.environment_cue_templates.v1', dependency_order: 0, record_count: 1, path: 'environment-cue-templates.json', sha256: supplementalDigest(recordsByTable.environment_cue_templates) }]
+  };
+  const externalIds = { world_revisions: new Set(['revision-1']), universal_categories: new Set(['category-cue']), source_records: new Set(['source-1']) };
+  assert.deepEqual(validateSupplementalCatalogBundle(manifest, recordsByTable, { externalIds }).errors, []);
+
+  recordsByTable.environment_cue_templates[0].propagation_policy = { schema: 'unsupported_policy', wind_effects: {} };
+  manifest.datasets[0].sha256 = supplementalDigest(recordsByTable.environment_cue_templates);
+  const result = validateSupplementalCatalogBundle(manifest, recordsByTable, { externalIds });
+  assert.equal(result.errors.includes('JSON_SCHEMA_ONE_OF:environment_cue_templates:0:propagation_policy'), true);
+});
+
 test('stage 3B-1 bundle is a deterministic draft-only supplemental catalog', () => {
   assert.equal(existsSync(resolve(bundleRoot, 'manifest.json')), true);
   const manifest = readJson('manifest.json');

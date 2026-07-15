@@ -83,6 +83,7 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 - 2026-07-15: cue emission использует нормализованный template/rule identity и exact emitter category, revision, region, season и approved weather policy. Неполный emitter или policy не получают semantic fallback.
 - 2026-07-15: trace creation rule использует exact source category, revision/region/season и landscape/hydrology bindings; template и decay profile читаются только по pinned world revision.
 - 2026-07-15: `assessEnvironmentFeatureReadiness` проверяет полный environment authoring set до runtime: approved/pinned records, DDL-derived internal references, policy schemas и provenance. Она не создаёт pilot data; пустые profiles, unproven policies и отсутствующие schemas остаются typed readiness gaps.
+- 2026-07-15: все environment authoring tables из PR8 DDL зарегистрированы в supplemental catalog registry со строгими JSON Schema; неподходящая policy блокируется ещё в draft authoring bundle. Регистрация не повышает статус записей и не заменяет approved pilot/import/readback gate.
 - 2026-07-15: trace emission с несколькими одновременно применимыми creation rules теперь hard-blocks. Runtime не выбирает первую запись из порядка bundle.
 
 ## Checks recorded on transferred baseline

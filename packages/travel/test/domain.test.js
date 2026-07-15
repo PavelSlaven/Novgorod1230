@@ -128,7 +128,14 @@ test('a second active journey for the same actor hard-blocks creation', () => {
 test('interruption and resume preserve actual and perceived navigation state without input mutation', () => {
   const journey = createJourney(plan, context());
   const before = structuredClone(journey);
-  const interrupted = interruptJourney({ journey, interruption: { interruption_id: 'weather:1', kind: 'weather' }, context: context() });
+  assert.throws(
+    () => interruptJourney({ journey, interruption: { interruption_id: 'weather:1', kind: 'weather' }, context: context() }),
+    (error) => error instanceof TravelError && error.code === 'TRAVEL_INPUT_INVALID'
+  );
+  const interrupted = interruptJourney({ journey, interruption: {
+    schema_version: 'travel-interruption.v1', interruption_id: 'weather:1',
+    causal_source: { source_type: 'weather', source_id: 'weather:front-1' }
+  }, context: context() });
   const resumed = resumeJourney({ journey: interrupted, context: context() });
   assert.equal(interrupted.status, 'interrupted');
   assert.equal(resumed.status, 'active');

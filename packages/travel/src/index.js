@@ -3,6 +3,7 @@ import { deepFreeze, sha256 } from '@rus/kernel';
 const JOURNEY_STATUSES = new Set(['planned', 'active', 'interrupted', 'camped', 'blocked', 'arrived', 'abandoned']);
 const LEG_STATUSES = new Set(['pending', 'active', 'completed', 'interrupted', 'blocked', 'superseded']);
 const TRAVEL_BOUNDARY_TYPES = new Set(['leg_completion', 'sunset', 'darkness', 'weather_transition', 'due_timer', 'body_threshold', 'resource_threshold', 'transport_problem', 'navigation_decision', 'significant_observation', 'causal_interruption', 'player_stop', 'arrival']);
+const INTERRUPTION_SOURCE_TYPES = new Set(['weather', 'light', 'body', 'transport', 'route', 'due_timer', 'npc_process', 'social_checkpoint', 'signal', 'trace', 'player_command', 'arrival']);
 
 export class TravelError extends Error {
   constructor(code, message, details = {}) {
@@ -42,6 +43,16 @@ export function validateTravelAdvanceRequest(request) {
   const boundary = calculateNextTravelBoundary({ journey_id: value.journey_id, current_leg_id: value.journey_leg_id, candidates: [value.boundary] });
   if (boundary.at_elapsed_minutes !== value.duration_minutes) fail('TRAVEL_INPUT_INVALID', 'Travel advance duration must end at the selected boundary.', { duration_minutes: value.duration_minutes, boundary_elapsed_minutes: boundary.at_elapsed_minutes });
   return deepFreeze({ ...structuredClone(value), boundary });
+}
+
+export function validateTravelInterruption(interruption) {
+  const value = record(interruption, 'TRAVEL_INPUT_INVALID', 'Travel interruption must be an object.');
+  if (value.schema_version !== 'travel-interruption.v1') fail('TRAVEL_INPUT_INVALID', 'Travel interruption has an unsupported schema version.', { schema_version: value.schema_version });
+  required(value.interruption_id, 'interruption_id');
+  const source = record(value.causal_source, 'TRAVEL_INPUT_INVALID', 'Travel interruption requires a causal source.');
+  if (!INTERRUPTION_SOURCE_TYPES.has(source.source_type)) fail('TRAVEL_INPUT_INVALID', 'Travel interruption source type is invalid.', { source_type: source.source_type });
+  required(source.source_id, 'causal_source.source_id');
+  return deepFreeze({ ...structuredClone(value), causal_source: structuredClone(source) });
 }
 
 export function validateTravelPosition(position) {
@@ -167,8 +178,7 @@ export function interruptJourney({ journey, interruption, context }) {
   const current = validateJourney(journey);
   assertContext(context, current);
   if (current.status !== 'active') fail('TRAVEL_NO_ACTIVE_JOURNEY', 'Only active journey can be interrupted.', { status: current.status });
-  const item = record(interruption, 'TRAVEL_INPUT_INVALID', 'Interruption must be an object.');
-  required(item.interruption_id, 'interruption_id');
+  const item = validateTravelInterruption(interruption);
   return deepFreeze({ ...current, status: 'interrupted', legs: current.legs.map((leg) => leg.leg_id === current.current_leg_id ? deepFreeze({ ...leg, status: 'interrupted', interruption_id: item.interruption_id }) : leg) });
 }
 

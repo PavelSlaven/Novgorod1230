@@ -67,6 +67,7 @@ The transferred environment baseline created `@rus/environment-landmarks`, initi
 - 2026-07-15: builtin production composition теперь принимает `ports.travel` только через обязательный `createTravelPorts` binding factory. Девять портов (context/rules/environment readers, journey/environment repositories, graph reader, clock, RandomSource factory и party store) валидируются до старта; fixture не становится production fallback.
 - 2026-07-15: завершение последнего canonical journey leg теперь создаёт `travel-arrival-request.v1` с pinned origin/destination и передаёт единственный `position_transition` в существующий atomic first-entry commit gate. Travel domain не читает baseline и не решает materialization; отсутствие approved bundle по-прежнему блокирует commit.
 - 2026-07-15: `travel.continue` принимает только `travel-advance-request.v1`, связывающий journey, leg, state version, duration и selected boundary. Он формирует `travel-advance-result.v1`; stale или чужой journey request блокируется до proposal/commit.
+- 2026-07-15: `TravelInterruption` требует `travel-interruption.v1` и causal source из закрытого набора. Произвольный id или новый дорожный event не могут прервать journey.
 
 ## Checks recorded on transferred baseline
 
@@ -132,6 +133,7 @@ Typed domain errors are versioned with the travel contracts; persistence, presen
 | `npm run test:domain` / `npm run test:modules` / `npm run test:apps` / `docs:check` | 2026-07-15 | worktree after arrival implementation | PASS: 104/104; 262/262; 14/14 | Full local regression and generated documentation after atomic-arrival handoff. PostgreSQL/E2E remain separate blocked gates. |
 | `node --test packages/travel/test/domain.test.js` / `node --test packages/turn/test/turn-workflow.test.js` | 2026-07-15 | worktree after `14ddb00` | RED: 1 failed each | Formal advance request/result exports and enforcement were absent; an unbound journey id reached transition. |
 | `npm run test:domain` / `npm run test:modules` / `npm run test:apps` / `docs:check` | 2026-07-15 | worktree after advance-contract implementation | PASS: 105/105; 262/262; 14/14 | Full local regression after binding `travel.continue` to explicit journey/leg/version/boundary input. PostgreSQL/E2E remain separate blocked gates. |
+| `node --test packages/travel/test/domain.test.js` | 2026-07-15 | worktree after `41670e9` | RED then PASS: 1 failure → 18/18 | Unstructured interruption was rejected; only formal causal-source interruption can change journey state. |
 | `node --test tools/docs-tools/test/knowledge-source-migration.test.js tools/docs-tools/test/knowledge-corpus-verifier.test.js tools/docs-tools/test/knowledge-materializer-v2.test.js` | 2026-07-15 | working tree after `6eb1a23` | PASS: 22/22 | Corpus manifest, legacy provenance and generated graph/RAG materialization remain reproducible after the PR8 normative update. |
 | `npm run test:domain` / `npm run test:modules` | 2026-07-15 | working tree after `6eb1a23` | PASS: 102/102; 261/261 | Documentation-only change did not regress travel, environment, turn or materialization contracts. |
 | `node --test packages/travel/test/domain.test.js` | 2026-07-15 | `69b0ee8` | RED: 1 failed | `ERR_MODULE_NOT_FOUND` before implementation. |
@@ -275,6 +277,7 @@ The ordered migration loader, seed script, party preflight and Stage 25 logical 
 | `TravelPosition` | `travel.v1` | `@rus/travel` | journey → repository | `TRAVEL_POSITION_INVALID` | `party_positions` | perceived projection only |
 | `TravelChangeSetProposal` | `travel-change-set.v1` | `@rus/travel` | transition → turn writer | state-version and set-congruence checks | atomic normalized writes | no |
 | `TravelAdvanceRequest` / `TravelAdvanceResult` | `travel-advance-request.v1` / `travel-advance-result.v1` | `@rus/travel` | state reader → continue handler | journey/leg/version/boundary validation | proposal only | no |
+| `TravelInterruption` | `travel-interruption.v1` | `@rus/travel` | causal candidate loader → lifecycle | source-type/source-id validation | journey leg interruption only | no |
 | `TravelArrivalRequest` | `travel-arrival-request.v1` | `@rus/travel` | final leg → turn commit gate | canonical final-leg and position checks | same atomic first-entry transaction | no |
 | `TravelRulesBundle` | `travel-rules.v1` | `@rus/travel` | approved loader → domain | `TRAVEL_RULE_BUNDLE_MISSING`, `TRAVEL_DATA_GAP` | digest pin | no |
 | `EnvironmentCatalogBundle` | `environment-catalog.v1` | `@rus/environment-landmarks` | approved loader → environment | digest/scope/idempotency checks | environment runtime tables | observations only |

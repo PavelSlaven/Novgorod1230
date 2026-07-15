@@ -387,7 +387,7 @@
       ],
       "name": "@rus/travel",
       "owns": [
-        "`validateTravelIntent`, `validateTravelPosition`, `validateJourney`, `validateTravelRulesBundle`, `validateTravelAdvanceRequest`",
+        "`validateTravelIntent`, `validateTravelPosition`, `validateJourney`, `validateTravelRulesBundle`, `validateTravelAdvanceRequest`, `validateTravelInterruption`",
         "`buildJourneyPlan`, `createJourney`, `advanceJourney`, `applyTravelLifecycleMetadata`, `calculateNextTravelBoundary`, `buildTravelChangeSetProposal`, `buildTravelAdvanceResult`, `buildTravelArrivalRequest`",
         "`interruptJourney`, `campJourney`, `resumeJourney`, `changeJourneyPace`, `rerouteJourney`, `abandonJourney`, `completeJourney`",
         "`TravelError`"

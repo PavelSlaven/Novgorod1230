@@ -10,7 +10,7 @@
 
 ## Public API
 
-- `validateTravelIntent`, `validateTravelPosition`, `validateJourney`, `validateTravelRulesBundle`, `validateTravelAdvanceRequest`
+- `validateTravelIntent`, `validateTravelPosition`, `validateJourney`, `validateTravelRulesBundle`, `validateTravelAdvanceRequest`, `validateTravelInterruption`
 - `buildJourneyPlan`, `createJourney`, `advanceJourney`, `applyTravelLifecycleMetadata`, `calculateNextTravelBoundary`, `buildTravelChangeSetProposal`, `buildTravelAdvanceResult`, `buildTravelArrivalRequest`
 - `interruptJourney`, `campJourney`, `resumeJourney`, `changeJourneyPace`, `rerouteJourney`, `abandonJourney`, `completeJourney`
 - `TravelError`
@@ -34,6 +34,8 @@
 `buildTravelArrivalRequest` создаёт `travel-arrival-request.v1` только при завершении последнего canonical leg. Он связывает party, journey, origin/destination и version pins, но не читает baseline G4, не решает, нужна ли materialization, и не выполняет commit. Turn workflow передаёт его как formal `position_transition` в единственный atomic first-entry gate.
 
 `TravelAdvanceRequest` связывает journey, current leg, expected state version, selected boundary, duration и idempotency key. `buildTravelAdvanceResult` возвращает immutable journey/leg/position proposal, request владельцу clock и, только при arrival, `TravelArrivalRequest`; он не обновляет clock, body, transport или environment.
+
+`TravelInterruption` допускает только заранее переданный causal source из закрытого набора weather/light/body/transport/route/timer/NPC/checkpoint/signal/trace/player-command/arrival. Модуль не выбирает источник и не создаёт дорожное событие.
 
 Новый `JourneyPlan` содержит явные `movement_method`, `started_at`, `updated_at` и положительный `base_time_minutes` каждого leg. `applyTravelLifecycleMetadata` принимает duration и timestamp только от владельца времени и переносит их в journey/legs; он не читает часы и не создаёт время сам.
 

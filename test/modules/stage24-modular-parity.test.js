@@ -93,7 +93,7 @@ test('Stage 24 code builder preserves approved normalized NPC, item, placement a
     container('container-v2-2', {container_instance_id:'container-v2-1'}),
     container('container-v2-1', {g5_anchor_id:anchorId}),
     container('container-v2-3', {holder_npc_instance_id:'npc-v2-1'}),
-    container('container-v2-4', {holder_player_character_id:playerId})
+    container('container-v2-4', {holder_player_character_id:playerId,physical_position:'worn'})
   ];
   input.approved_pipeline_outputs.initial_item_placement.item_instances = [{item_instance_id:'item-v2-1',item_profile_candidate_id:'item-candidate-v2-1',item_template_id:'item-template-v2-1',item_profile_id:'item-profile-v2-1',item_category_id:'item-category-v2-1',quantity:2,condition_state:'intact',legal_status:'owned',placement:{container_instance_id:'container-v2-1'},physical_state:{condition:'intact'},causal_basis:{causal_basis_type:'approved_rule',causal_basis_id:'item-rule'},access_state:{access:'free'},visibility_state:{visibility:'visible'},risk_state:{risk_basis:[]},property_state:{owner_model:'party',controller_model:'none',legal_or_social_status:'owned'},source_trace:[{source_id:'item-source'}]}];
   const plan = modular.buildPartyRuntimeV2WritePlan(input);
@@ -113,6 +113,14 @@ test('Stage 24 blocks an approved item missing quantity instead of applying a fa
   const input = structuredClone(f.input);
   input.approved_pipeline_outputs.initial_item_placement.item_instances = [{item_instance_id:'item-incomplete',item_profile_id:'profile',condition_state:'intact',legal_status:'owned',placement:{g5_anchor_id:f.anchorId},physical_state:{condition:'intact'},property_state:{owner_model:'party',controller_model:'none',legal_or_social_status:'owned'}}];
   assert.throws(() => modular.buildPartyRuntimeV2WritePlan(input), (error) => error.code === 'WRITE_PLAN_APPROVED_VALUE_MISSING');
+});
+
+test('Stage 24 blocks player-held items and containers without physical position', () => {
+  const f = makeStage24Fixture();
+  const input = structuredClone(f.input);
+  const playerId = input.approved_pipeline_outputs.player_character.player_character_id ?? input.approved_pipeline_outputs.player_character.character_id;
+  input.approved_pipeline_outputs.initial_item_placement.item_instances = [{item_instance_id:'item-held',item_template_id:'item-template',item_profile_id:'item-profile',item_category_id:'item-category',quantity:1,condition_state:'intact',legal_status:'owned',placement:{holder_player_character_id:playerId},physical_state:{condition:'intact'},causal_basis:{causal_basis_type:'approved_rule',causal_basis_id:'item-rule'},access_state:{access:'free'},visibility_state:{visibility:'visible'},risk_state:{risk_basis:[]},property_state:{owner_model:'party',controller_model:'none',legal_or_social_status:'owned'},source_trace:[{source_id:'item-source'}]}];
+  assert.throws(() => modular.buildPartyRuntimeV2WritePlan(input), (error) => error.code === 'WRITE_PLAN_PHYSICAL_POSITION_REQUIRED');
 });
 
 test('Stage 24 full successful orchestration uses immutable code plan and preserves approval contract', async () => {

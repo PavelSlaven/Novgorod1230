@@ -1,5 +1,6 @@
 import { sha256 } from '@rus/kernel';
 import { STAGE24_PLAN_SCHEMA } from '../policy/constants.js';
+import { approvedPlayerPlacement } from './player-placement.js';
 
 export function buildPartyRuntimeV2WritePlan(input) {
   const context = input?.party_creation_context ?? {};
@@ -83,18 +84,20 @@ export function buildPartyRuntimeV2WritePlan(input) {
   addBatch(batches, 'party_npc_knowledge', (npcPlacement.npc_instances ?? []).flatMap((npc) => (npc.knowledge_records ?? []).map((fact, index) => ({ party_id: partyId, npc_id: npc.npc_instance_id, fact_id: requiredText(fact.fact_id, `npc_knowledge[${index}].fact_id`), knowledge_state: requiredText(fact.knowledge_state, `npc_knowledge[${index}].knowledge_state`) }))), ['party_npcs'], sourceTrace);
   addBatch(batches, 'party_npc_schedules', (npcPlacement.npc_schedule_state ?? []).map((schedule, index) => ({ party_id: partyId, npc_id: requiredText(schedule.npc_instance_id, `npc_schedule[${index}].npc_instance_id`), time_band: requiredText(schedule.time_band, `npc_schedule[${index}].time_band`), schedule_profile_id: requiredText(schedule.schedule_profile_id, `npc_schedule[${index}].schedule_profile_id`), g5_node_id: schedule.g5_node_id ?? schedule.g5_minilocation_id ?? null })), ['party_npcs', 'party_g5_nodes'], sourceTrace);
   const orderedContainers = orderContainersForPersistence(itemPlacement.container_instances ?? itemPlacement.containers ?? []);
-  addBatch(batches, 'party_containers', orderedContainers.map((container, index) => ({
+  addBatch(batches, 'party_containers', orderedContainers.map((container, index) => {
+    const playerPlacement = approvedPlayerPlacement(container.placement, `container[${index}]`);
+    return {
     party_id: partyId, container_id: container.container_instance_id ?? container.container_id, run_id: runId,
     template_id: requiredText(container.container_template_id, `container[${index}].container_template_id`), anchor_id: container.placement?.g5_anchor_id ?? null,
     parent_container_id: container.placement?.container_instance_id ?? null,
     holder_npc_id: container.placement?.holder_npc_instance_id ?? null,
     holder_character_id: container.placement?.holder_player_character_id ?? null,
-    physical_position: container.placement?.physical_position ?? null,
-    equipment_slot_category_id: container.placement?.equipment_slot_category_id ?? null,
+    physical_position: playerPlacement.physical_position,
+    equipment_slot_category_id: playerPlacement.equipment_slot_category_id,
     condition_state: container.condition_state ?? null,
     closure_state: container.container_state?.closure_state ?? container.physical_state?.closure_state ?? null,
     state: resourceSemanticState(container, `container[${index}]`)
-  })), ['party_materialization_runs', 'party_g5_anchors', 'party_npcs', 'party_player_characters'], sourceTrace);
+  }; }), ['party_materialization_runs', 'party_g5_anchors', 'party_npcs', 'party_player_characters'], sourceTrace);
   addBatch(batches, 'party_items', (itemPlacement.item_instances ?? itemPlacement.items ?? []).map((item, index) => ({
     party_id: partyId, item_id: item.item_instance_id ?? item.item_id, run_id: runId, template_id: requiredText(item.item_template_id, `item[${index}].item_template_id`), profile_id: requiredText(item.item_profile_id, `item[${index}].item_profile_id`), category_id: requiredText(item.item_category_id, `item[${index}].item_category_id`),
     quantity: requiredPositiveInteger(item.quantity, `item[${index}].quantity`), condition_state: requiredText(item.condition_state, `item[${index}].condition_state`),
@@ -181,8 +184,7 @@ function buildItemPlacementRecord(partyId, item) {
   else if (placement.holder_npc_instance_id) record.holder_npc_id = placement.holder_npc_instance_id;
   else if (placement.holder_player_character_id) {
     record.holder_character_id = placement.holder_player_character_id;
-    record.physical_position = placement.physical_position ?? null;
-    record.equipment_slot_category_id = placement.equipment_slot_category_id ?? null;
+    Object.assign(record, approvedPlayerPlacement(placement, `item ${record.item_id}`));
   }
   else record.anchor_id = placement.g5_anchor_id;
   return record;

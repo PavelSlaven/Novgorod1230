@@ -1,9 +1,11 @@
-import { deepFreeze, sha256 } from '@rus/kernel';
+import { deepFreeze } from '@rus/kernel';
 import { calculateContainerUsage } from './inventory-container-usage.js';
 
-const ZONES = new Set(['hands', 'worn_quick', 'equipped', 'quick_container', 'primary_container', 'external_load', 'not_carried']);
+const PHYSICAL_POSITIONS = new Set(['hands', 'worn', 'worn_quick', 'equipped', 'external', 'external_load']);
 
 export { calculateContainerUsage } from './inventory-container-usage.js';
+export { deriveInventoryZone } from './inventory-zone.js';
+export { buildInventoryStackSignature } from './inventory-signature.js';
 
 /**
  * Validates the normalized party-runtime placement graph. It is deliberately
@@ -24,6 +26,7 @@ export function validateInventoryTopology(input = {}) {
 
   for (const placement of itemPlacements) validateParty(placement, input.party_id, errors);
   for (const placement of containerPlacements) validateParty(placement, input.party_id, errors);
+  for (const placement of [...itemPlacements, ...containerPlacements]) validateCharacterPhysicalPlacement(placement, errors);
   for (const placement of containerPlacements) {
     if (placement.parent_container_id && !containerIds.has(placement.parent_container_id)) errors.push(error('INVENTORY_CONTAINER_NOT_FOUND', 'topology', { container_id: placement.parent_container_id }));
     if (placement.parent_container_id === placement.container_id) errors.push(error('INVENTORY_CYCLE_DETECTED', 'topology', { container_id: placement.container_id }));
@@ -58,9 +61,10 @@ export function validateInventoryTopology(input = {}) {
 
   const slots = new Map();
   for (const placement of itemPlacements) {
-    if (!placement.equipment_slot_id || placement.holder_character_id !== input.actor_id || placement.physical_position !== 'equipped') continue;
-    if (slots.has(placement.equipment_slot_id)) errors.push(error('INVENTORY_EQUIPMENT_SLOT_OCCUPIED', 'topology', { equipment_slot_id: placement.equipment_slot_id }));
-    slots.set(placement.equipment_slot_id, placement.item_id);
+    const slot = placement.equipment_slot_id ?? placement.equipment_slot_category_id;
+    if (!slot || placement.holder_character_id !== input.actor_id || placement.physical_position !== 'equipped') continue;
+    if (slots.has(slot)) errors.push(error('INVENTORY_EQUIPMENT_SLOT_OCCUPIED', 'topology', { equipment_slot_id: slot }));
+    slots.set(slot, placement.item_id);
   }
   return result(errors, { item_placements: itemPlacementById, container_placements: containerPlacementById });
 }
@@ -125,23 +129,9 @@ export function calculateHandsState(input = {}) {
   return deepFreeze({ pass: errors.length === 0, hands_total: 2, hands_used: used, hands_free: Math.max(0, 2 - used), errors });
 }
 
-export function deriveInventoryZone(input = {}) {
-  const id = input.instance_id;
-  const item = list(input.items).find((value) => value.item_id === id);
-  const container = list(input.containers).find((value) => value.container_id === id);
-  if (!item && !container) return deepFreeze({ pass: false, zone: null, errors: [error('INVENTORY_ITEM_NOT_FOUND', 'topology', { instance_id: id })] });
-  const placement = item ? findPlacement(input.item_placements, 'item_id', id) : findPlacement(input.container_placements, 'container_id', id);
-  let zone = 'not_carried';
-  if (placement?.holder_character_id === input.actor_id) {
-    if (container) {
-      const role = profileFor(input.container_profiles, container.template_id)?.inventory_role;
-      zone = role === 'primary_container' ? 'primary_container' : role === 'quick_container' ? 'quick_container' : positionZone(placement.physical_position);
-    } else zone = positionZone(placement.physical_position);
-  }
-  return deepFreeze({ pass: ZONES.has(zone), zone, errors: [] });
-}
-
 export function resolveInventoryAccess(input = {}) {
+  const topology = validateInventoryTopology(input);
+  if (!topology.pass) return deepFreeze({ pass: false, access: null, errors: topology.errors });
   const item = list(input.items).find((value) => value.item_id === input.item_id);
   if (!item || !isCarriedItem(input, item.item_id)) return accessResult('unavailable', []);
   const placement = findPlacement(input.item_placements, 'item_id', item.item_id);
@@ -155,16 +145,6 @@ export function resolveInventoryAccess(input = {}) {
   const closed = rootFirst.some((container) => ['closed', 'locked', 'unavailable'].includes(profileFor(input.container_profiles, container.template_id)?.closure_state));
   const rootRole = profileFor(input.container_profiles, rootFirst[0]?.template_id)?.inventory_role;
   return accessResult(closed ? 'closed' : rootRole === 'quick_container' && rootFirst.length === 1 ? 'quick' : rootFirst.length === 1 ? 'short_action' : 'delayed', steps);
-}
-
-export function buildInventoryStackSignature(value = {}) {
-  const normalized = {
-    item_template_id: text(value.item_template_id), condition: text(value.condition), owner_relation: text(value.owner_relation),
-    holder_relation: text(value.holder_relation), placement: text(value.placement), legal_status: text(value.legal_status),
-    access_state: text(value.access_state), visibility_state: text(value.visibility_state), marks: list(value.marks).map(text).sort(),
-    quality: text(value.quality), modifiers: list(value.modifiers).map((entry) => structuredClone(entry)).sort(compareJson)
-  };
-  return sha256(normalized);
 }
 
 export function planInventoryTransfer(input = {}) {
@@ -325,10 +305,17 @@ function uniqueIds(values, key, errors, code) {
   return ids;
 }
 function validateParty(value, partyId, errors) { if (value?.party_id && partyId && value.party_id !== partyId) errors.push(error('INVENTORY_PLACEMENT_NOT_FOUND', 'topology', { party_id: value.party_id })); }
+function validateCharacterPhysicalPlacement(placement, errors) {
+  const position = placement?.physical_position;
+  const slot = placement?.equipment_slot_id ?? placement?.equipment_slot_category_id;
+  if (placement?.holder_character_id) {
+    if (!PHYSICAL_POSITIONS.has(position)) errors.push(error('INVENTORY_PHYSICAL_POSITION_REQUIRED', 'topology', { physical_position: position ?? null }));
+    if (position === 'equipped' && !text(slot)) errors.push(error('INVENTORY_EQUIPMENT_SLOT_REQUIRED', 'topology', {}));
+    if (text(slot) && position !== 'equipped') errors.push(error('INVENTORY_EQUIPMENT_SLOT_INVALID', 'topology', { physical_position: position ?? null }));
+  } else if (position != null || text(slot)) errors.push(error('INVENTORY_PHYSICAL_POSITION_INVALID', 'topology', { physical_position: position ?? null }));
+}
 function profileFor(collection, templateId) { return Array.isArray(collection) ? collection.find((value) => value?.template_id === templateId) ?? null : collection?.[templateId] ?? null; }
 function findPlacement(values, key, id) { return list(values).find((value) => value?.[key] === id) ?? null; }
-function positionZone(position) { return position === 'hands' ? 'hands' : position === 'worn_quick' ? 'worn_quick' : position === 'equipped' ? 'equipped' : position === 'external' || position === 'external_load' ? 'external_load' : 'not_carried'; }
 function quantity(value) { return Number.isInteger(value) && value > 0 ? value : null; }
 function list(value) { return Array.isArray(value) ? value : []; }
 function text(value) { return String(value ?? '').trim(); }
-function compareJson(left, right) { return JSON.stringify(left).localeCompare(JSON.stringify(right)); }

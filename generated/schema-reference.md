@@ -135,9 +135,14 @@ Release: `0.23.0-migration.24`
 | `schemas/materialization/bounded-decision-request-v2.schema.json` | json | 1960 | `440a5b0d3b48859f53a35b652ff3d33f75c7512332a0ece2c04ef01b213f2568` |
 | `schemas/materialization/bounded-decision-result-v2.schema.json` | json | 605 | `875c4115302982c7b6ff67c70659553436ee0c7557ca5b1e79884652f9d7b287` |
 | `schemas/materialization/catalog-import-manifest-v2.schema.json` | json | 1021 | `469ad1d3728ff5b32fac0d6eb879519bac7bfdd4b120cbb8ec4dd886c3cc01c6` |
+| `schemas/materialization/category-labels-v1.schema.json` | json | 617 | `1573db65e359e5fef818c2e1a17ac66cf9e0e5a922bf9e9a7824d8304bc6ba78` |
+| `schemas/materialization/category-scheme-mappings-v1.schema.json` | json | 732 | `a0f0c10e737b3e06eff1163ebd32b04db26a2a6e17beb0766450fd786ab2b6f0` |
+| `schemas/materialization/classification-schemes-v1.schema.json` | json | 754 | `4744d626cd53cc4dae7794ea08162432245eaf2de8fe097e54359be7f83e9034` |
 | `schemas/materialization/normalized-instance-candidate-v2.schema.json` | json | 3150 | `ccbd9e9d518a8ab4b28e937e6e4eb19b88a26f3ea6eeff89aaf24432dd9a0b1d` |
 | `schemas/materialization/party-autonomous-update-v2.schema.json` | json | 2515 | `974cf66248b18851ac64b2e80522b0207a28f049088318d578ffbc11b8712397` |
 | `schemas/materialization/party-change-set-v2.schema.json` | json | 2816 | `cabbce3e6d6091391cba5b1fa0b6ea09c69f2db6bbed3ac241563171e95b62c1` |
+| `schemas/materialization/universal-categories-v1.schema.json` | json | 897 | `e5d1956821a642f5a03ad3888c3bd2c5f2b9cea6a48a0f7146c4bb6ca656dfa2` |
+| `schemas/materialization/universal-category-relations-v1.schema.json` | json | 512 | `31fd11130f43de9a61d58b8fde877527649eaad8915af99225f982033b179f38` |
 | `schemas/materialization/world-materialization-repair-request-v2.schema.json` | json | 945 | `ba34924dd6587d7a5044498766cc8c0ff81167eae9fbee3e98e63ad0fb75fd59` |
 | `schemas/materialization/world-materialization-request-v2.schema.json` | json | 10347 | `3b6739984a1ec31a01d99867f13d8a5c9f4f87f4ab7a2d4ba5b911282629ae7f` |
 | `schemas/materialization/world-materialization-result-v2.schema.json` | json | 5190 | `92ee591037949a9e55ded6fe2813516718b5ade28b7cd7c8b592185c356db163` |

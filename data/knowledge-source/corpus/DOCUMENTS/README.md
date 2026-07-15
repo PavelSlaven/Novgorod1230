@@ -32,6 +32,8 @@ The project documents define how the LLM should generate, interpret, and update 
 | `information_sources_llm_prompts.md` | Knowledge-base workflow, information sources, prompt boundaries, agent types. |
 | `llm_agent_prompt_templates.md` | Prompt templates for the LLM agent pipeline. |
 | `formulas.md` | Central formula reference; does not override the profile documents. |
+| `universal_category_classification_policy.md` | Proposed universal-category policy. It is not active and does not itself grant regional or runtime availability. |
+| `universal_category_classification_references.md` | Proposed reference appendix for external classification schemes; it is not historical evidence. |
 
 ## Knowledge graph
 

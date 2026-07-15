@@ -627,6 +627,24 @@
       "type": "json"
     },
     {
+      "bytes": 617,
+      "path": "schemas/materialization/category-labels-v1.schema.json",
+      "sha256": "1573db65e359e5fef818c2e1a17ac66cf9e0e5a922bf9e9a7824d8304bc6ba78",
+      "type": "json"
+    },
+    {
+      "bytes": 732,
+      "path": "schemas/materialization/category-scheme-mappings-v1.schema.json",
+      "sha256": "a0f0c10e737b3e06eff1163ebd32b04db26a2a6e17beb0766450fd786ab2b6f0",
+      "type": "json"
+    },
+    {
+      "bytes": 754,
+      "path": "schemas/materialization/classification-schemes-v1.schema.json",
+      "sha256": "4744d626cd53cc4dae7794ea08162432245eaf2de8fe097e54359be7f83e9034",
+      "type": "json"
+    },
+    {
       "bytes": 3150,
       "path": "schemas/materialization/normalized-instance-candidate-v2.schema.json",
       "sha256": "ccbd9e9d518a8ab4b28e937e6e4eb19b88a26f3ea6eeff89aaf24432dd9a0b1d",
@@ -642,6 +660,18 @@
       "bytes": 2816,
       "path": "schemas/materialization/party-change-set-v2.schema.json",
       "sha256": "cabbce3e6d6091391cba5b1fa0b6ea09c69f2db6bbed3ac241563171e95b62c1",
+      "type": "json"
+    },
+    {
+      "bytes": 897,
+      "path": "schemas/materialization/universal-categories-v1.schema.json",
+      "sha256": "e5d1956821a642f5a03ad3888c3bd2c5f2b9cea6a48a0f7146c4bb6ca656dfa2",
+      "type": "json"
+    },
+    {
+      "bytes": 512,
+      "path": "schemas/materialization/universal-category-relations-v1.schema.json",
+      "sha256": "31fd11130f43de9a61d58b8fde877527649eaad8915af99225f982033b179f38",
       "type": "json"
     },
     {

@@ -2,8 +2,8 @@
 # Справочник схемы `world_base`
 
 - Исполняемый источник: `infra/world-base/schema.sql` и 11 упорядоченных SQL-частей.
-- SHA-256 развёрнутого DDL: `5efbc14d18f55ec29c589f047caf08803d29dc7bd432561fafbbcc6390a17736`.
-- Таблиц: 108.
+- SHA-256 развёрнутого DDL: `85a3cad74116dabc1a9cebe605ebef0338d62f9f6482fa8fd78779dbe24f3ac3`.
+- Таблиц: 111.
 - Описания берутся только из утверждённого `infra/world-base/field-descriptions.js`; отсутствие описания не заполняется эвристикой.
 
 ## Граф (каноническая карта)
@@ -2416,6 +2416,26 @@
 
 - Явные табличные constraints отсутствуют.
 
+### `world_base.classification_schemes`
+
+Локально зафиксированные версии внешних классификационных схем без runtime live-запросов.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `title` | `TEXT` | нет | — | — | `NOT NULL` | Человекочитаемое название записи. |
+| `authority` | `TEXT` | нет | — | — | `NOT NULL` | Организация, отвечающая за внешнюю классификационную схему. |
+| `scheme_version` | `TEXT` | нет | — | — | `NOT NULL` | Зафиксированная версия внешней схемы. |
+| `release_date` | `DATE` | да | — | — | — | Дата выпуска зафиксированной версии схемы. |
+| `canonical_reference` | `TEXT` | нет | — | — | `NOT NULL` | Каноническая ссылка на схему или локальный snapshot. |
+| `license_or_usage_note` | `TEXT` | нет | — | — | `NOT NULL` | Условия лицензии либо допустимого справочного использования. |
+| `snapshot_digest` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (snapshot_digest ~ '^[a-f0-9]{64}$')` | SHA-256 локально проверенного snapshot; runtime не обращается к внешнему сервису. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
 ### `world_base.universal_categories`
 
 Универсальные категории, которые код вправе использовать, но не создавать.
@@ -2425,12 +2445,68 @@
 | `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
 | `domain` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
 | `parent_category_id` | `TEXT` | да | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
+| `stable_code` | `TEXT` | нет | — | — | `NOT NULL`<br>`UNIQUE` | Уникальный стабильный машинный код одного понятия. |
+| `facet` | `TEXT` | нет | — | — | `NOT NULL` | Классификационный фасет категории в пределах domain. |
+| `preferred_label` | `TEXT` | нет | — | — | `NOT NULL` | Предпочтительная метка категории; historical labels хранятся отдельно. |
+| `definition` | `TEXT` | нет | — | — | `NOT NULL` | Нормативное определение одного классификационного понятия. |
+| `scope_note` | `TEXT` | нет | — | — | `NOT NULL` | Граница смысла и применимости понятия без утверждения региональной истории. |
+| `inclusion_rules` | `TEXT` | нет | — | — | `NOT NULL` | Явные условия включения в категорию. |
+| `exclusion_rules` | `TEXT` | нет | — | — | `NOT NULL` | Явные условия исключения из категории. |
+| `replaced_by_category_id` | `TEXT` | да | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | — | FK на заменяющую категорию; deprecated/replaced категория не кандидат runtime. |
 | `title` | `TEXT` | нет | — | — | `NOT NULL` | Человекочитаемое название записи. |
 | `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
 
 **Ограничения таблицы:**
 
-- `UNIQUE (domain, title)`
+- `UNIQUE (domain, facet, preferred_label)`
+- `CHECK (length(trim(stable_code)) > 0)`
+- `CHECK (length(trim(domain)) > 0)`
+- `CHECK (length(trim(facet)) > 0)`
+- `CHECK (length(trim(preferred_label)) > 0)`
+- `CHECK (length(trim(definition)) > 0)`
+- `CHECK (length(trim(scope_note)) > 0)`
+- `CHECK (length(trim(inclusion_rules)) > 0)`
+- `CHECK (length(trim(exclusion_rules)) > 0)`
+
+### `world_base.category_labels`
+
+Нормализованные preferred, alternative, historical и deprecated labels категорий.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE CASCADE` | `NOT NULL` | FK на классифицируемую универсальную категорию. |
+| `language` | `TEXT` | нет | — | — | `NOT NULL` | Язык метки по принятому языковому коду проекта. |
+| `label` | `TEXT` | нет | — | — | `NOT NULL` | Текстовая метка; не самостоятельный category ID. |
+| `label_type` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (label_type IN ('preferred','alternative','historical','deprecated'))` | preferred, alternative, historical или deprecated. |
+| `valid_from` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `valid_to` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `source_id` | `TEXT` | да | — | `world_base.source_records(id) ON DELETE RESTRICT` | — | FK на подтверждающий source_records, если он известен. |
+
+**Ограничения таблицы:**
+
+- `CHECK (valid_to IS NULL OR valid_from IS NULL OR valid_from <= valid_to)`
+- `UNIQUE (category_id, language, label)`
+- `UNIQUE INDEX category_labels_one_preferred_per_language (category_id, language) WHERE label_type = 'preferred'`
+
+### `world_base.category_scheme_mappings`
+
+Справочные mappings проектных категорий к pinned внешним схемам; не являются regional permission или rule.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE CASCADE` | `NOT NULL` | FK на проектную категорию. |
+| `classification_scheme_id` | `TEXT` | нет | — | `world_base.classification_schemes(id) ON DELETE RESTRICT` | `NOT NULL` | FK на pinned classification scheme. |
+| `external_concept_id` | `TEXT` | нет | — | — | `NOT NULL` | Стабильный ID понятия во внешней схеме. |
+| `mapping_type` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (mapping_type IN ('exact','close','broad','narrow','related'))` | exact, close, broad, narrow или related; mapping не даёт regional permission. |
+| `mapping_evidence` | `TEXT` | нет | — | — | `NOT NULL` | Основание сопоставления без подмены исторической применимости. |
+| `source_id` | `TEXT` | да | — | `world_base.source_records(id) ON DELETE RESTRICT` | — | FK на источник evidence, если он известен. |
+| `review_status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (review_status IN ('draft','approved','rejected'))` | Статус редакторского review mapping: draft, approved или rejected. |
+
+**Ограничения таблицы:**
+
+- `UNIQUE (category_id, classification_scheme_id, external_concept_id)`
 
 ### `world_base.universal_category_relations`
 
@@ -2441,10 +2517,11 @@
 | `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
 | `from_category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
 | `to_category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
-| `relation_type` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `relation_type` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (relation_type IN ('broader','narrower','related','compatible','requires','excludes','equivalent_with_scope'))` | broader, narrower, related, compatible, requires, excludes или equivalent_with_scope; hierarchy cycles forbidden. |
 
 **Ограничения таблицы:**
 
+- `CHECK (from_category_id <> to_category_id)`
 - `UNIQUE (from_category_id, to_category_id, relation_type)`
 
 ### `world_base.universal_parameter_definitions`

@@ -111,7 +111,7 @@ export const TABLE_GROUPS = [
   },
   {
     title: 'Materialization v2: категории и ревизии',
-    tables: ['world_revisions', 'universal_categories', 'universal_category_relations', 'universal_parameter_definitions', 'region_category_options']
+    tables: ['world_revisions', 'classification_schemes', 'universal_categories', 'category_labels', 'category_scheme_mappings', 'universal_category_relations', 'universal_parameter_definitions', 'region_category_options']
   },
   {
     title: 'Materialization v2: NPC-профили',
@@ -191,7 +191,10 @@ export const TABLE_PURPOSE_FALLBACK = {
   record_sources: 'Связь источника с любой записью справочника (полиморфная).',
   audit_log: 'Журнал ручных правок и утверждений (полиморфная цель).',
   world_revisions: 'Неизменяемые утверждённые ревизии каталогов мира и их общий digest.',
+  classification_schemes: 'Локально зафиксированные версии внешних классификационных схем без runtime live-запросов.',
   universal_categories: 'Универсальные категории, которые код вправе использовать, но не создавать.',
+  category_labels: 'Нормализованные preferred, alternative, historical и deprecated labels категорий.',
+  category_scheme_mappings: 'Справочные mappings проектных категорий к pinned внешним схемам; не являются regional permission или rule.',
   universal_category_relations: 'Нормализованные отношения между универсальными категориями.',
   universal_parameter_definitions: 'Типизированные определения параметров категорий.',
   region_category_options: 'Разрешение категории для региона, периода и ревизии с весом выбора.',
@@ -292,6 +295,43 @@ export const common = {
 
 /** Поля по таблицам — только там, где нужно уточнение сверх common. */
 export const fields = {
+  classification_schemes: {
+    authority: 'Организация, отвечающая за внешнюю классификационную схему.',
+    scheme_version: 'Зафиксированная версия внешней схемы.',
+    release_date: 'Дата выпуска зафиксированной версии схемы.',
+    canonical_reference: 'Каноническая ссылка на схему или локальный snapshot.',
+    license_or_usage_note: 'Условия лицензии либо допустимого справочного использования.',
+    snapshot_digest: 'SHA-256 локально проверенного snapshot; runtime не обращается к внешнему сервису.'
+  },
+  universal_categories: {
+    stable_code: 'Уникальный стабильный машинный код одного понятия.',
+    facet: 'Классификационный фасет категории в пределах domain.',
+    preferred_label: 'Предпочтительная метка категории; historical labels хранятся отдельно.',
+    definition: 'Нормативное определение одного классификационного понятия.',
+    scope_note: 'Граница смысла и применимости понятия без утверждения региональной истории.',
+    inclusion_rules: 'Явные условия включения в категорию.',
+    exclusion_rules: 'Явные условия исключения из категории.',
+    replaced_by_category_id: 'FK на заменяющую категорию; deprecated/replaced категория не кандидат runtime.'
+  },
+  category_labels: {
+    category_id: 'FK на классифицируемую универсальную категорию.',
+    language: 'Язык метки по принятому языковому коду проекта.',
+    label: 'Текстовая метка; не самостоятельный category ID.',
+    label_type: 'preferred, alternative, historical или deprecated.',
+    source_id: 'FK на подтверждающий source_records, если он известен.'
+  },
+  category_scheme_mappings: {
+    category_id: 'FK на проектную категорию.',
+    classification_scheme_id: 'FK на pinned classification scheme.',
+    external_concept_id: 'Стабильный ID понятия во внешней схеме.',
+    mapping_type: 'exact, close, broad, narrow или related; mapping не даёт regional permission.',
+    mapping_evidence: 'Основание сопоставления без подмены исторической применимости.',
+    source_id: 'FK на источник evidence, если он известен.',
+    review_status: 'Статус редакторского review mapping: draft, approved или rejected.'
+  },
+  universal_category_relations: {
+    relation_type: 'broader, narrower, related, compatible, requires, excludes или equivalent_with_scope; hierarchy cycles forbidden.'
+  },
   graph_nodes: {
     node_type:
       'Тип узла: world_region, region_cell, place, location, scene_anchor, ford, …',

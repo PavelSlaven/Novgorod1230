@@ -33,9 +33,11 @@ try {
   } });
   if (repeated.tables.length !== manifest.datasets.length) throw new Error('SUPPLEMENTAL_REPEAT_APPLY_INCOMPLETE');
   const rollbackResult = await verifyRollback(client, adapter);
+  const quantityDimensionGuard = await verifyQuantityDimensionGuard(client);
+  const quantityUnitMutationGuard = await verifyQuantityUnitMutationGuard(client);
   const statuses = await client.query(`SELECT count(*)::int AS count FROM world_base.world_revisions WHERE id = $1 AND status <> 'draft'`, [manifest.world_revision_id]);
   if (statuses.rows[0].count !== 0) throw new Error('SUPPLEMENTAL_ACTIVATION_FORBIDDEN');
-  process.stdout.write(`${JSON.stringify({ pass: true, mode: 'apply', bundle_id: manifest.bundle_id, tables: result.tables, repeat_apply: 'pass', rollback: rollbackResult, records: Object.fromEntries(manifest.datasets.map((dataset) => [dataset.table, dataset.record_count])) }, null, 2)}\n`);
+  process.stdout.write(`${JSON.stringify({ pass: true, mode: 'apply', bundle_id: manifest.bundle_id, tables: result.tables, repeat_apply: 'pass', rollback: rollbackResult, quantity_dimension_guard: quantityDimensionGuard, quantity_unit_mutation_guard: quantityUnitMutationGuard, records: Object.fromEntries(manifest.datasets.map((dataset) => [dataset.table, dataset.record_count])) }, null, 2)}\n`);
 } finally {
   client.release();
   await pool.end();
@@ -98,6 +100,41 @@ async function verifyRollback(client, adapter) {
   const residual = await client.query(`SELECT count(*)::int AS count FROM world_base.source_records WHERE id = $1`, [record.id]);
   if (residual.rows[0].count !== 0) throw new Error('SUPPLEMENTAL_ROLLBACK_RESIDUAL_WRITE');
   return 'pass';
+}
+
+async function verifyQuantityDimensionGuard(client) {
+  const profile = recordsByTable.item_template_quantity_profiles[0];
+  try {
+    await client.query(`INSERT INTO world_base.item_template_quantity_profiles
+      (id, item_template_id, world_revision_id, quantity_unit_id, quantity_dimension, minimum_quantity, default_quantity_policy, mass_grams_per_unit, stackable, partial_consumption_allowed, source_id, status)
+      VALUES ($1, $2, $3, $4, 'volume', 1, $5::jsonb, 1, true, true, $6, 'draft')`, [
+      'stage3b1_quantity_dimension_probe', profile.item_template_id, profile.world_revision_id,
+      profile.quantity_unit_id, JSON.stringify(profile.default_quantity_policy), profile.source_id
+    ]);
+  } catch (error) {
+    if (error?.code === '23514' && String(error.message).includes('quantity_dimension must match quantity unit dimension')) {
+      const residual = await client.query(`SELECT count(*)::int AS count FROM world_base.item_template_quantity_profiles WHERE id = 'stage3b1_quantity_dimension_probe'`);
+      if (residual.rows[0].count !== 0) throw new Error('SUPPLEMENTAL_QUANTITY_DIMENSION_GUARD_RESIDUAL_WRITE');
+      return 'pass';
+    }
+    throw error;
+  }
+  throw new Error('SUPPLEMENTAL_QUANTITY_DIMENSION_GUARD_DID_NOT_BLOCK');
+}
+
+async function verifyQuantityUnitMutationGuard(client) {
+  const unit = recordsByTable.quantity_unit_definitions[0];
+  try {
+    await client.query(`UPDATE world_base.quantity_unit_definitions SET dimension = 'volume' WHERE id = $1`, [unit.id]);
+  } catch (error) {
+    if (error?.code === '23514' && String(error.message).includes('dimension of a referenced quantity unit is immutable')) {
+      const row = await client.query(`SELECT dimension FROM world_base.quantity_unit_definitions WHERE id = $1`, [unit.id]);
+      if (row.rows[0]?.dimension !== unit.dimension) throw new Error('SUPPLEMENTAL_QUANTITY_UNIT_MUTATION_GUARD_RESIDUAL_WRITE');
+      return 'pass';
+    }
+    throw error;
+  }
+  throw new Error('SUPPLEMENTAL_QUANTITY_UNIT_MUTATION_GUARD_DID_NOT_BLOCK');
 }
 
 async function assertRejectsReadback(run) {

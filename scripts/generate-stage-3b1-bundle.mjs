@@ -76,6 +76,25 @@ const itemBindings = itemRows.flatMap((row) => [
   { id: `bind_${row.id}_use_context`, item_template_id: row.id, category_id: contextCategoryId(row), binding_kind: 'use_context', status: 'draft' }
 ]);
 const itemProfiles = itemRows.map((row) => ({ id: `inventory_${row.id}`, item_template_id: row.id, world_revision_id: revisionId, source_id: sourceId, ...profileFor(row), status: 'draft' }));
+// A gram is deliberately an identity mass unit, not an inferred historical
+// portion. Rules must pass an explicit quantity; no materializer default exists.
+const quantityUnits = [{ id: 'quantity_unit_gram_v1', dimension: 'mass', canonical_unit: 'g', conversion_policy: { version: 1, mode: 'identity' }, status: 'draft' }];
+const itemQuantityProfiles = itemRows
+  .filter((row) => row.group === 'food_raw_trade')
+  .map((row) => ({
+    id: `quantity_${row.id}`,
+    item_template_id: row.id,
+    world_revision_id: revisionId,
+    quantity_unit_id: 'quantity_unit_gram_v1',
+    quantity_dimension: 'mass',
+    minimum_quantity: 1,
+    default_quantity_policy: { version: 1, mode: 'explicit_only' },
+    mass_grams_per_unit: 1,
+    stackable: true,
+    partial_consumption_allowed: true,
+    source_id: sourceId,
+    status: 'draft'
+  }));
 const containerInventoryProfiles = containerRows.map((row) => { const { capacity, packing_slot_cost, ...inventory } = containerProfile(row); return { id: `inventory_${row.id}`, container_template_id: row.id, world_revision_id: revisionId, source_id: sourceId, ...inventory, status: 'draft' }; });
 const containerFacets = containerRows.map((row) => ({ id: `facet_${row.id}_form`, container_template_id: row.id, category_id: objectCategoryId(row), facet: 'container_form', status: 'draft' }));
 const specialContents = new Map([
@@ -103,6 +122,7 @@ const datasets = {
   world_revisions: [{ id: revisionId, parent_revision_id: 'novgorod_1230_research_revision_001', title: 'Novgorod 1230 item catalogue revision 001', catalog_digest: canonicalCatalogDigest, status: 'draft' }],
   universal_categories: categories, category_labels: labels, region_category_options: regionOptions,
   item_templates: itemTemplates, item_template_category_bindings: itemBindings, item_template_inventory_profiles: itemProfiles,
+  quantity_unit_definitions: quantityUnits, item_template_quantity_profiles: itemQuantityProfiles,
   container_templates: containerTemplates, container_template_facet_bindings: containerFacets, container_template_inventory_profiles: containerInventoryProfiles,
   container_content_profiles: contentProfiles, container_content_profile_entries: contentEntries,
   item_profile_sets: itemProfileSets, item_profile_entries: itemProfileEntries,
@@ -114,6 +134,7 @@ const datasets = {
 const schemaIds = {
   source_records: 'rus.source_records.v1', world_revisions: 'rus.world_revisions.v1', universal_categories: 'rus.universal_categories.v1', category_labels: 'rus.category_labels.v1', region_category_options: 'rus.region_category_options.v1',
   item_templates: 'rus.item_templates.v1', item_template_category_bindings: 'rus.item_template_category_bindings.v1', item_template_inventory_profiles: 'rus.item_template_inventory_profiles.v1',
+  quantity_unit_definitions: 'rus.quantity_unit_definitions.v1', item_template_quantity_profiles: 'rus.item_template_quantity_profiles.v1',
   container_templates: 'rus.container_templates.v1', container_template_facet_bindings: 'rus.container_template_facet_bindings.v1', container_template_inventory_profiles: 'rus.container_template_inventory_profiles.v1',
   container_content_profiles: 'rus.container_content_profiles.v1', container_content_profile_entries: 'rus.container_content_profile_entries.v1',
   item_profile_sets: 'rus.item_profile_sets.v1', item_profile_entries: 'rus.item_profile_entries.v1', property_profiles: 'rus.property_profiles.v1', property_profile_rules: 'rus.property_profile_rules.v1',
@@ -132,9 +153,9 @@ writeFileSync(resolve(root, 'data/knowledge-source/imports/universal-category-cl
 ].join('\n') + '\n', 'utf8');
 writeFileSync(resolve(root, 'data/knowledge-source/imports/universal-category-classification-2026-07-15/stage-3b1/NORMALIZATION_COVERAGE_REPORT.md'), [
   '# Stage 3B-1 — normalization coverage matrix', '',
-  '| template_id | kind | source_record_resolved | object_type_resolved | primary_function_resolved | materials_resolved | use_context_resolved | template_record_created | regional_permission_created | inventory_profile_created | container_facets_created | content_profile_created | item_profile_membership | property_profile_membership | equipment_profile_membership | physical_parameters_status | normalization_status | blocking_gaps |',
-  '|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|',
-  ...rows.map((row) => { const historicalSource = historicalSourceByTemplateId.get(row.id); return `| ${row.id} | ${row.kind} | ${historicalSource ? historicalSource : 'authoring_policy_only'} | yes | ${row.kind === 'item' ? 'yes' : 'n/a'} | no | ${row.kind === 'item' ? 'yes' : 'n/a'} | yes | yes (draft) | yes (draft) | ${row.kind === 'container' ? 'yes' : 'n/a'} | ${row.kind === 'container' ? 'yes' : 'n/a'} | partial | partial | ${row.id === 'item_tpl_nov_utility_knife_v1' ? 'yes' : 'no'} | gameplay_estimate_review | partial_draft | ${historicalSource ? 'NARROW_TYPOLOGY_EVIDENCE_REQUIRED' : 'HISTORICAL_PRESENCE_EVIDENCE_REQUIRED'}; PHYSICAL_PARAMETER_EVIDENCE_REQUIRED; ${row.group === 'food_raw_trade' ? 'BULK_GOOD_QUANTITY_UNIT_MODEL_REQUIRED' : 'MATERIAL_EVIDENCE_REQUIRED'} |`; })
+  '| template_id | kind | source_record_resolved | object_type_resolved | primary_function_resolved | materials_resolved | use_context_resolved | template_record_created | regional_permission_created | inventory_profile_created | quantity_profile_created | container_facets_created | content_profile_created | item_profile_membership | property_profile_membership | equipment_profile_membership | physical_parameters_status | normalization_status | blocking_gaps |',
+  '|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|',
+  ...rows.map((row) => { const historicalSource = historicalSourceByTemplateId.get(row.id); return `| ${row.id} | ${row.kind} | ${historicalSource ? historicalSource : 'authoring_policy_only'} | yes | ${row.kind === 'item' ? 'yes' : 'n/a'} | no | ${row.kind === 'item' ? 'yes' : 'n/a'} | yes | yes (draft) | yes (draft) | ${row.group === 'food_raw_trade' ? 'yes (draft)' : 'n/a'} | ${row.kind === 'container' ? 'yes' : 'n/a'} | ${row.kind === 'container' ? 'yes' : 'n/a'} | partial | partial | ${row.id === 'item_tpl_nov_utility_knife_v1' ? 'yes' : 'no'} | gameplay_estimate_review | partial_draft | ${historicalSource ? 'NARROW_TYPOLOGY_EVIDENCE_REQUIRED' : 'HISTORICAL_PRESENCE_EVIDENCE_REQUIRED'}; PHYSICAL_PARAMETER_EVIDENCE_REQUIRED; ${row.group === 'food_raw_trade' ? 'QUANTITY_PROFILE_REVIEW_REQUIRED' : 'MATERIAL_EVIDENCE_REQUIRED'} |`; })
 ].join('\n') + '\n', 'utf8');
 
 function digest(value) { return createHash('sha256').update(stable(value), 'utf8').digest('hex'); }

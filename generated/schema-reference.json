@@ -716,6 +716,12 @@
       "type": "json"
     },
     {
+      "bytes": 1456,
+      "path": "schemas/materialization/item-template-quantity-profiles-v1.schema.json",
+      "sha256": "e96f91a8160b756018d9941bd8005505ee19f10c43135599cd7f2ad5e9011eb0",
+      "type": "json"
+    },
+    {
       "bytes": 582,
       "path": "schemas/materialization/item-templates-v1.schema.json",
       "sha256": "5c508b395d78888f1c7d02f4dfccf3e6e98b19db51b5cb9cca5040e4679ff5f8",
@@ -749,6 +755,12 @@
       "bytes": 499,
       "path": "schemas/materialization/property-profiles-v1.schema.json",
       "sha256": "6cd5d5bdb462d8f4e1a60af1457faaba4c1aa11f9ded629a2cade6ae37adf0cd",
+      "type": "json"
+    },
+    {
+      "bytes": 790,
+      "path": "schemas/materialization/quantity-unit-definitions-v1.schema.json",
+      "sha256": "88aa7a168a8c973a32e358d126708eabab81b5bc690db417fc872b7a0f37c186",
       "type": "json"
     },
     {

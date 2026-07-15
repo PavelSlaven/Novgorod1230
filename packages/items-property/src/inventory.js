@@ -79,11 +79,17 @@ export function calculateInventoryMass(input = {}) {
     if (!isCarriedItem(input, item.item_id) || counted.has(`item:${item.item_id}`)) continue;
     counted.add(`item:${item.item_id}`);
     const profile = profileFor(input.item_profiles, item.template_id);
-    const mass = profile?.mass_grams;
     const itemQuantity = quantity(item.quantity);
     if (!itemQuantity) errors.push(error('INVENTORY_QUANTITY_INVALID', 'data_gap', { item_id: item.item_id, quantity: item.quantity ?? null }));
-    else if (!Number.isInteger(mass) || mass < 0) errors.push(error('ITEM_MASS_DATA_GAP', 'data_gap', { item_id: item.item_id, template_id: item.template_id }));
-    else total += mass * itemQuantity;
+    else if (profile?.quantity_dimension) {
+      const expectedUnit = text(profile.quantity_unit_id);
+      const actualUnit = text(item.quantity_unit_id);
+      if (!expectedUnit || !actualUnit) errors.push(error('ITEM_QUANTITY_UNIT_REQUIRED', 'data_gap', { item_id: item.item_id, template_id: item.template_id }));
+      else if (expectedUnit !== actualUnit) errors.push(error('ITEM_QUANTITY_UNIT_MISMATCH', 'validation', { item_id: item.item_id, template_id: item.template_id, expected_quantity_unit_id: expectedUnit, actual_quantity_unit_id: actualUnit }));
+      else if (!Number.isInteger(profile.mass_grams_per_unit) || profile.mass_grams_per_unit <= 0) errors.push(error('ITEM_MASS_DATA_GAP', 'data_gap', { item_id: item.item_id, template_id: item.template_id }));
+      else total += profile.mass_grams_per_unit * itemQuantity;
+    } else if (!Number.isInteger(profile?.mass_grams) || profile.mass_grams < 0) errors.push(error('ITEM_MASS_DATA_GAP', 'data_gap', { item_id: item.item_id, template_id: item.template_id }));
+    else total += profile.mass_grams * itemQuantity;
   }
   for (const container of list(input.containers)) {
     if (!isCarriedContainer(input, container.container_id) || counted.has(`container:${container.container_id}`)) continue;

@@ -64,6 +64,6 @@ runtime activation: not started
 
 ## 6. Promotion gates и отложенные работы
 
-Promotion blocked до individual source-record review для 105 templates, material/physical review, bulk quantity unit contract, container compatibility review и отдельного editorial approval. External/local legacy rows требуют export перед Stage 3B migration. Stage 8/16 остаётся на existing approved input and does not load this draft bundle.
+Promotion blocked до individual source-record review для 105 templates, material/physical review, review draft bulk quantity profiles, container compatibility review и отдельного editorial approval. External/local legacy rows требуют export перед Stage 3B migration. Stage 8/16 остаётся на existing approved input and does not load this draft bundle.
 
 Полный перечень текущих gaps и coverage: `DATA_GAPS.md`, `TARGET_TABLE_COVERAGE.md`, `NORMALIZATION_COVERAGE_REPORT.md`, `PHYSICAL_PARAMETER_REVIEW_TABLE.md`, `CODEX_INTEGRATION_REPORT.md`.

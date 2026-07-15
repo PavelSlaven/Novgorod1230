@@ -20,7 +20,7 @@ export function evaluateStage16InventoryFoundation(draft = {}, input = {}) {
     container_profiles: foundation.container_profiles,
     packing_calculator: calculatePackingSlots,
     container_compatibility: foundation.container_compatibility ?? [],
-    items: draft.item_instances.map((item) => ({ party_id: foundation.party_id, item_id: item.item_instance_id, template_id: item.item_profile_candidate_id ?? item.item_template_id, quantity: item.quantity })),
+    items: draft.item_instances.map((item) => ({ party_id: foundation.party_id, item_id: item.item_instance_id, template_id: item.item_profile_candidate_id ?? item.item_template_id, quantity: item.quantity, quantity_unit_id: item.quantity_unit_id })),
     containers: draft.container_instances.map((container) => ({ party_id: foundation.party_id, container_id: container.container_instance_id, template_id: container.container_profile_candidate_id ?? container.container_template_id })),
     item_placements: draft.item_instances.map((item) => placement('item_id', item.item_instance_id, item.placement, foundation.party_id)),
     container_placements: draft.container_instances.map((container) => placement('container_id', container.container_instance_id, container.placement, foundation.party_id))

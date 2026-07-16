@@ -6,7 +6,7 @@ Read-only инструмент разработки, объединяющий п
 
 ## Владеет
 
-- операциями `build`, `status` и `query`;
+- операциями `build`, `ensure`, `status` и `query`;
 - раздельным hybrid envelope с typed errors;
 - локальным Graphify build manifest с версией и commit SHA.
 
@@ -22,7 +22,7 @@ Read-only инструмент разработки, объединяющий п
 
 ## Инварианты
 
-Полный Graphify artifact локальный и не редактируется вручную. `status` проверяет Graphify `0.9.17`, graph artifact и commit SHA; `query` не запускает Graphify при missing/stale graph. `degraded` у knowledge-source — видимое предупреждение, не нормативная готовность.
+Полный Graphify artifact локальный и не редактируется вручную. `ensure` пересобирает graph при missing/stale artifact; `status` проверяет Graphify `0.9.17`, graph artifact и commit SHA; `query` не запускает Graphify при missing/stale graph. `degraded` или unavailable knowledge-source не меняет readiness Repository Graph и возвращается отдельно как warning/error нормативного канала.
 
 ## Тесты
 

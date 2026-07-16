@@ -92,9 +92,12 @@ graphify --version
 После реализации единого интерфейса обязательный порядок:
 
 ```powershell
+npm run repo-intel:ensure
 npm run repo-intel:status
 npm run repo-intel:query -- --query "конкретная информационная потребность"
 ```
+
+`repo-intel:ensure` обязателен перед анализом репозитория: он пересобирает локальный Repository Graph, если artifact отсутствует или manifest привязан к другому Git HEAD. Нормативный RAG остаётся отдельным каналом; его `degraded` status не блокирует построение или использование Repository Graph.
 
 Пока единый CLI реализуется в PR №13, обязательный bootstrap-порядок:
 

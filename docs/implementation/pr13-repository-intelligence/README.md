@@ -1,68 +1,44 @@
-# PR №13 — Hybrid Repository Intelligence MVP
+# PR №13 — Repository Graph
 
-## Статус
+## Цель
 
-`готово к интеграции как MVP`; независимый аудит дал `PASS WITH NOTES`.
+Поддерживать подробный локальный Graphify-граф актуального checkout: после смены Git HEAD `repo-intel:ensure` пересобирает artifact и manifest. Нормативный `@rus/knowledge-source` остаётся независимым поиском документов и не является readiness gate Repository Graph.
 
-Рабочая ветка: `chatgpt/repository-intelligence-graphify`. Этот файл — журнал фактически выполненной работы PR №13.
+## Реализовано
 
-## Реализовано и проверено
+- `@rus/repository-intelligence` использует pinned `graphifyy==0.9.17`;
+- `repo-intel:build` строит локальный code graph и записывает manifest с `source_commit`, версией Graphify и путём artifact;
+- `repo-intel:ensure` не меняет актуальный graph и пересобирает missing/stale graph;
+- `repo-intel:status` проверяет Graphify, artifact, manifest и Git HEAD;
+- `repo-intel:query` не запускает Graphify при missing/stale graph и сохраняет knowledge-source result отдельно;
+- `knowledge-source: degraded` возвращается как warning нормативного канала, но не блокирует Repository Graph;
+- Graphify outputs локальные, ignored и изолированы от G0–G5, `world_base`, `party_runtime` и production runtime.
 
-- добавлен пакет `@rus/repository-intelligence` с локальными операциями `build`, `status` и `query`;
-- Graphify проверяется как exact `graphifyy==0.9.17`;
-- build выполняет code-only Graphify extraction, проверяет появление `graphify-out/graph.json` и только затем пишет manifest с текущим HEAD;
-- status проверяет executable, version, artifact, manifest и HEAD SHA, ничего не перестраивая;
-- `degraded` `@rus/knowledge-source` показан как `KNOWLEDGE_SOURCE_DEGRADED` warning; unavailable или malformed readiness блокирует соответствующий lane;
-- hybrid query сохраняет результаты обоих каналов раздельно, показывает partial failure и не запускает Graphify при missing/stale graph;
-- package изолирован от game runtime, G0–G5, SQL, `world_base`, `party_runtime`, LLM и сети;
-- public root scripts ограничены MVP: `repo-intel:build`, `repo-intel:status`, `repo-intel:query`, `test:repository-intelligence`;
-- обновлены `AGENTS.md`, `.github/AGENTS.md`, MODULE registry и локальная setup/architecture documentation.
+## Не входит в PR №13
 
-Фактически выполненные команды после текущих исправлений:
+- approved embeddings и semantic snapshots нормативного RAG;
+- исправление 24 semantic coverage gaps;
+- editorial approval нормативного corpus;
+- импорт Repository Graph в игровые базы или runtime.
+
+## Проверки перед аудитом
 
 ```powershell
-npm run test:repository-intelligence
-git diff --check
-node --test tools/docs-tools/test/documentation-generation.test.js
+npm run repo-intel:ensure
 npm run repo-intel:status
-npm run repo-intel:query -- --query "repository intelligence MVP"
-npm test
+npm run repo-intel:query -- --query "Repository Graph lifecycle"
+npm run test:repository-intelligence
+npm run docs:check
+npm run architecture:check
+git diff --check
 ```
 
-Результаты: targeted tests `14/14 PASS`; documentation-generation `8/8 PASS`; полный `npm test` — PASS, с 5 намеренно skipped PostgreSQL integration tests из-за отсутствия внешней database configuration и 1 skipped browser E2E из-за отсутствующего Chromium; `status` и `query` успешно работают локально с warning `KNOWLEDGE_SOURCE_DEGRADED`; `git diff --check` проходит.
+CI на `main` устанавливает exact Graphify, строит graph на текущем HEAD, проверяет status и запускает tests Repository Intelligence.
 
-## Реализовано, но ещё не проверено полным контуром
+Фактически выполнено локально: `repo-intel:ensure` — `0` (`rebuilt: false` для актуального artifact), `repo-intel:status` — `0` (`repository_graph: ready`, Graphify `0.9.17`, knowledge-source `degraded` как warning), `repo-intel:query` — `0`, `test:repository-intelligence` — `17/17 PASS`, `docs:check` — `0`, `architecture:check` — `0`, `knowledge:check` — `0`, `knowledge:controls` — `6/6 PASS`, `npm test` — PASS (5 PostgreSQL integration tests и 1 Chromium E2E skipped из-за внешних inputs), `git diff --check` — `0`.
 
-- текущие CLI/build tests и README требуют финального targeted run после последнего изменения;
-- перед аудитом будет повторён `repo-intel:build`, `status`, `query`, `docs:check`, `knowledge:check` и `architecture:check` на итоговом diff.
+## Аудит и интеграция
 
-## Не реализовано (вне сокращённого MVP)
+Независимый аудит актуального незакоммиченного diff от 2026-07-16: `PASS WITH NOTES`. Подтверждены разделение readiness Repository Graph и нормативного канала, `ensure`, manifest/HEAD, exact Graphify в CI, изоляция от игровых модулей и локальные проверки.
 
-- доказательство coverage всех tracked files;
-- отдельный document-index lane;
-- coverage policy и content digests;
-- `read`, `path`, `explain`, `controls`, `coverage` public CLI;
-- exhaustive fixtures и subprocess matrix;
-- исправление semantic coverage gaps;
-- database acceptance.
-
-## Внешние hard blocks
-
-- `knowledge:status` сообщает 24 semantic coverage gaps. Для MVP это warning навигации, но не утверждение полной semantic readiness и не основание для materialization.
-- database preflight не принимается без фактических `POSTGRES_PASSWORD`, `DATABASE_URL`, `DEEPSEEK_API_KEY` и обязательных Novgorod G1–G4 TSV. Фиктивные значения, seed и fallback-каталоги не создавались.
-
-## Граница архитектуры
-
-`graphify-out/graph.json` — локальный repository graph, не G0–G5. Он не импортируется в `world_base` или party database, не является игровым фактом, маршрутом, candidate set либо runtime dependency.
-
-## Следующий этап
-
-Выполнить финальный scope review, локальный commit и push в существующий draft PR №13. Полное coverage, document-index lane и исправление 24 semantic gaps остаются отдельной будущей работой.
-
-## Независимый аудит
-
-Повторный независимый аудит MVP: `PASS WITH NOTES`.
-
-Подтверждены exact Graphify version/HEAD/manifest checks, warning для `degraded`, blocking unavailable knowledge-source, разделённые hybrid lanes, partial failures, отсутствие Graphify query при stale graph, проверка artifact до manifest, изоляция от runtime/DB/G0–G5 и JSON CLI error/exit code.
-
-Notes: `graphify-out/` и `generated/repository-intelligence/` намеренно локальные и ignored; MVP использует version+HEAD, а не coverage/digest baseline. 24 semantic gaps остаются warning только для navigation MVP и не означают готовность materialization/runtime.
+Замечания аудита: ignored artifact привязан к committed HEAD, поэтому после локального commit перед push выполняется `repo-intel:ensure`; architecture test не перечисляет исчерпывающий denylist game/G0–G5, но фактические imports и зависимости чисты. Эти замечания не блокируют commit, push и перевод PR из draft.

@@ -43,7 +43,6 @@ export function createRepositoryIntelligenceService({
     ]);
     const errors = [];
 
-    if (!knowledgeSource.ok) errors.push(knowledgeSource.error);
     if (!graphify.ok) errors.push(graphify.error);
     if (!headResult.ok) errors.push(commandFailure(headResult.error, 'Unable to read the current Git commit.'));
     if (!manifestResult.ok) {
@@ -58,18 +57,26 @@ export function createRepositoryIntelligenceService({
         current_commit: headResult.value
       }));
     }
+    if (manifestResult.ok && manifestResult.value.graphify_version !== GRAPHIFY_VERSION) {
+      errors.push(failure('REPOSITORY_GRAPH_STALE', `Graph was built with another Graphify version. ${graphRecovery}`, {
+        graphify_version: manifestResult.value.graphify_version ?? null,
+        expected_graphify_version: GRAPHIFY_VERSION
+      }));
+    }
 
-    const graphErrors = errors.filter((item) => item.code !== 'KNOWLEDGE_SOURCE_UNAVAILABLE' && item.code !== 'INVALID_OUTPUT');
+    const graphErrors = errors;
     const graphInvalidOutput = !graphify.ok && graphify.error.code === 'INVALID_OUTPUT';
+    const repositoryGraph = {
+      status: graphify.ok && graphResult.ok && manifestResult.ok && !graphInvalidOutput && graphErrors.length === 0 ? 'ready' : 'unavailable',
+      ok: graphify.ok,
+      version: graphify.version,
+      source_commit: manifestResult.value?.source_commit
+    };
     return {
       ok: errors.length === 0,
       knowledge_source: knowledgeSource.public,
-      graphify: {
-        status: graphify.ok && graphResult.ok && manifestResult.ok && !graphInvalidOutput && graphErrors.length === 0 ? 'ready' : 'unavailable',
-        ok: graphify.ok,
-        version: graphify.version,
-        source_commit: manifestResult.value?.source_commit
-      },
+      repository_graph: repositoryGraph,
+      graphify: repositoryGraph,
       warnings: knowledgeSource.warning ? [knowledgeSource.warning] : [],
       errors
     };
@@ -81,7 +88,7 @@ export function createRepositoryIntelligenceService({
 
     const readiness = await status();
     const knowledgeReadinessError = readiness.knowledge_source.status === 'unavailable'
-      ? readiness.errors.find((item) => item.code === 'KNOWLEDGE_SOURCE_UNAVAILABLE' || item.code === 'INVALID_OUTPUT')
+      ? readiness.knowledge_source.error ?? failure('KNOWLEDGE_SOURCE_UNAVAILABLE', 'Knowledge source is unavailable.')
       : null;
     const graphReadinessError = readiness.graphify.status === 'ready'
       ? null
@@ -127,6 +134,15 @@ export function createRepositoryIntelligenceService({
     return { ok: true, source_commit: sourceCommit, graphify_version: GRAPHIFY_VERSION };
   }
 
+  async function ensure() {
+    const readiness = await status();
+    if (readiness.repository_graph.status === 'ready') {
+      return { ok: true, rebuilt: false, source_commit: readiness.repository_graph.source_commit, graphify_version: readiness.repository_graph.version };
+    }
+    const result = await build();
+    return { ...result, rebuilt: true };
+  }
+
   async function getKnowledgeReadiness() {
     try {
       const value = await knowledge.getReadinessStatus();
@@ -135,7 +151,7 @@ export function createRepositoryIntelligenceService({
       }
       if (value.status === 'ready') return { ok: true, public: { status: 'ready' } };
       if (value.status === 'degraded') {
-        const warning = failure('KNOWLEDGE_SOURCE_DEGRADED', 'Knowledge source contains semantic coverage gaps. Results may be incomplete.');
+        const warning = failure('KNOWLEDGE_SOURCE_DEGRADED', 'Knowledge source contains semantic coverage gaps. Semantic search may be incomplete.');
         return { ok: true, public: { status: 'degraded' }, warning };
       }
       return unavailableKnowledge(failure('KNOWLEDGE_SOURCE_UNAVAILABLE', `Knowledge source status is ${value.status}.`));
@@ -161,7 +177,7 @@ export function createRepositoryIntelligenceService({
     }
   }
 
-  return Object.freeze({ status, query, build });
+  return Object.freeze({ status, query, build, ensure });
 }
 
 function createDefaultKnowledgeLane(root) {

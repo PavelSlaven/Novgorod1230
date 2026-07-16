@@ -318,7 +318,7 @@
       ],
       "name": "@rus/repository-intelligence",
       "owns": [
-        "операциями `build`, `status` и `query`",
+        "операциями `build`, `ensure`, `status` и `query`",
         "раздельным hybrid envelope с typed errors",
         "локальным Graphify build manifest с версией и commit SHA"
       ],

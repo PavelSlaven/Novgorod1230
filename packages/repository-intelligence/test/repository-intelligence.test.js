@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { createRepositoryIntelligenceService, RepositoryIntelligenceError } from '../src/index.js';
 
-async function fixture({ knowledgeStatus = 'ready', head = 'a'.repeat(40), manifestCommit = head, graph = true, version = '0.9.17', search } = {}) {
+async function fixture({ knowledgeStatus = 'ready', head = 'a'.repeat(40), manifestCommit = head, graph = true, version = '0.9.17', search, onExtract } = {}) {
   const root = await mkdtemp(join(tmpdir(), 'rus-repository-intelligence-'));
   const graphPath = resolve(root, 'graphify-out/graph.json');
   const manifestPath = resolve(root, 'generated/repository-intelligence/manifest.json');
@@ -15,14 +15,17 @@ async function fixture({ knowledgeStatus = 'ready', head = 'a'.repeat(40), manif
     await mkdir(resolve(root, 'graphify-out'), { recursive: true });
     await writeFile(graphPath, '{"nodes":[],"edges":[]}');
   }
-  if (manifestCommit !== null) await writeFile(manifestPath, JSON.stringify({ source_commit: manifestCommit }));
+  if (manifestCommit !== null) await writeFile(manifestPath, JSON.stringify({ source_commit: manifestCommit, graphify_version: '0.9.17' }));
   const calls = [];
   const run = async (command, args) => {
     calls.push({ command, args: [...args] });
     if (command === 'git') return { stdout: `${head}\n`, stderr: '' };
     if (command === 'graphify' && args[0] === '--version') return { stdout: `graphify ${version}\n`, stderr: '' };
     if (command === 'graphify' && args[0] === 'query') return { stdout: 'repository graph result\n', stderr: '' };
-    if (command === 'graphify' && args[0] === 'extract') return { stdout: '', stderr: '' };
+    if (command === 'graphify' && args[0] === 'extract') {
+      if (onExtract) await onExtract({ root, graphPath });
+      return { stdout: '', stderr: '' };
+    }
     throw new Error(`Unexpected command ${command}.`);
   };
   const knowledgeLane = {
@@ -40,18 +43,23 @@ test('status is ready with matching Graphify, graph and commit', async () => {
   assert.deepEqual(result.warnings, []);
 });
 
-test('degraded knowledge source is visible warning and navigation remains available', async () => {
-  const { service } = await fixture({ knowledgeStatus: 'degraded' });
+test('degraded knowledge source is a warning and does not block the repository graph', async () => {
+  const { service, calls } = await fixture({ knowledgeStatus: 'degraded' });
   const result = await service.status();
   assert.equal(result.ok, true);
+  assert.equal(result.repository_graph.status, 'ready');
   assert.equal(result.warnings[0].code, 'KNOWLEDGE_SOURCE_DEGRADED');
+  const query = await service.query({ query: 'hybrid readiness' });
+  assert.equal(query.ok, true);
+  assert.equal(calls.some((call) => call.command === 'graphify' && call.args[0] === 'query'), true);
 });
 
-test('unavailable knowledge source blocks status', async () => {
+test('unavailable knowledge source does not block repository graph status', async () => {
   const { service } = await fixture({ knowledgeStatus: 'blocked' });
   const result = await service.status();
-  assert.equal(result.ok, false);
-  assert.equal(result.errors.some((item) => item.code === 'KNOWLEDGE_SOURCE_UNAVAILABLE'), true);
+  assert.equal(result.ok, true);
+  assert.equal(result.repository_graph.status, 'ready');
+  assert.equal(result.knowledge_source.status, 'unavailable');
 });
 
 test('missing Graphify executable has a typed failure', async () => {
@@ -80,6 +88,38 @@ test('manifest for another commit is stale', async () => {
   assert.equal(result.errors.some((item) => item.code === 'REPOSITORY_GRAPH_STALE'), true);
 });
 
+test('ensure is a no-op when the graph is current', async () => {
+  const { service, calls } = await fixture();
+  const result = await service.ensure();
+  assert.equal(result.ok, true);
+  assert.equal(result.rebuilt, false);
+  assert.equal(calls.some((call) => call.command === 'graphify' && call.args[0] === 'extract'), false);
+});
+
+test('ensure rebuilds a missing graph', async () => {
+  const { service, calls } = await fixture({
+    graph: false,
+    onExtract: async ({ graphPath }) => {
+      await mkdir(resolve(graphPath, '..'), { recursive: true });
+      await writeFile(graphPath, '{"nodes":[],"edges":[]}');
+    }
+  });
+  const result = await service.ensure();
+  assert.equal(result.ok, true);
+  assert.equal(result.rebuilt, true);
+  assert.equal(calls.some((call) => call.command === 'graphify' && call.args[0] === 'extract'), true);
+});
+
+test('ensure rebuilds a graph whose manifest belongs to another commit', async () => {
+  const head = 'a'.repeat(40);
+  const { service, manifestPath, calls } = await fixture({ head, manifestCommit: 'b'.repeat(40) });
+  const result = await service.ensure();
+  assert.equal(result.ok, true);
+  assert.equal(result.rebuilt, true);
+  assert.equal(JSON.parse(await readFile(manifestPath, 'utf8')).source_commit, head);
+  assert.equal(calls.some((call) => call.command === 'graphify' && call.args[0] === 'extract'), true);
+});
+
 test('hybrid query keeps lane results separate and does not mutate input', async () => {
   const { service, calls } = await fixture();
   const input = Object.freeze({ query: 'правила G0–G4' });
@@ -105,6 +145,7 @@ test('query never invokes Graphify when the graph is stale', async () => {
   const result = await service.query({ query: 'stale graph' });
   assert.equal(result.graphify.ok, false);
   assert.equal(result.graphify.error.code, 'REPOSITORY_GRAPH_STALE');
+  assert.equal(result.ok, true);
   assert.equal(calls.some((call) => call.command === 'graphify' && call.args[0] === 'query'), false);
 });
 

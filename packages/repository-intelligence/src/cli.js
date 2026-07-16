@@ -9,9 +9,10 @@ try {
   const handlers = {
     status: () => service.status(),
     query: () => service.query({ query: option('--query') }),
-    build: () => service.build()
+    build: () => service.build(),
+    ensure: () => service.ensure()
   };
-  if (!handlers[command]) throw new RepositoryIntelligenceError('INVALID_ARGUMENT', 'Use status, query or build.');
+  if (!handlers[command]) throw new RepositoryIntelligenceError('INVALID_ARGUMENT', 'Use status, query, build or ensure.');
   const result = await handlers[command]();
   process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
   if (result.ok === false) process.exitCode = 1;

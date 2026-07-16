@@ -85,9 +85,12 @@ GitHub web/API не используется как основная рабоч�
 Целевой порядок после реализации PR №13:
 
 ```powershell
+npm run repo-intel:ensure
 npm run repo-intel:status
 npm run repo-intel:query -- --query "конкретная информационная потребность"
 ```
+
+`repo-intel:ensure` обязателен перед анализом репозитория: он пересобирает локальный Repository Graph, если artifact отсутствует или manifest привязан к другому Git HEAD. Нормативный RAG остаётся отдельным каналом; его `degraded` status не блокирует построение или использование Repository Graph.
 
 Bootstrap-порядок, пока единый CLI реализуется:
 

@@ -14,6 +14,7 @@ Graphify              ── topology исходного кода
 ## Публичный MVP
 
 ```powershell
+npm run repo-intel:ensure
 npm run repo-intel:build
 npm run repo-intel:status
 npm run repo-intel:query -- --query "информационная потребность"
@@ -21,7 +22,7 @@ npm run repo-intel:query -- --query "информационная потребн
 
 `build` запускает локальный Graphify code-only extraction и записывает `generated/repository-intelligence/manifest.json`. Manifest содержит pinned Graphify version и `git rev-parse HEAD`.
 
-`status` не изменяет файлов. Он проверяет executable `graphify`, exact version `0.9.17`, `graphify-out/graph.json`, manifest и совпадение manifest commit с текущим HEAD. `degraded` knowledge-source остаётся warning; unavailable или malformed knowledge readiness возвращает typed failure.
+`ensure` проверяет executable `graphify`, exact version `0.9.17`, `graphify-out/graph.json`, manifest и совпадение manifest commit с текущим HEAD. При missing/stale graph он запускает `build`; при актуальном graph файлов не меняет. `status` не изменяет файлов и возвращает repository graph отдельно от knowledge-source. Состояние `degraded` или unavailable у knowledge-source не делает repository graph stale/unavailable.
 
 `query` сначала проверяет status, затем выполняет оба поиска независимо и возвращает раздельные `knowledge_source` и `graphify` результаты. При проблеме одного разрешённого канала результат другого сохраняется с `partial: true`. Graphify query не запускается при missing, stale или invalid graph и не выполняет скрытый build.
 

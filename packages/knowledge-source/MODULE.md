@@ -9,10 +9,9 @@ Read-only доступ к утверждённому нормативному к
 - контрактом чтения документов по стабильному `document_id`;
 - проверкой corpus manifest, SHA-256 и source locations;
 - техническим полнотекстовым поиском без смыслового дополнения;
-- ranked lexical retrieval по committed RAG chunks;
-- status-aware metadata, provenance, readiness и контрольными запросами;
-- определением current/stale/missing для generated graph и RAG;
-- read-only CLI-интерфейсом нормативного поиска для Codex, Cursor и других агентов разработки.
+- определением current/stale/missing для generated graph и RAG.
+
+Ranked retrieval, status-aware metadata, readiness, контрольные запросы и CLI для агентов являются публичными способами использования этой же read-only ответственности, а не отдельной доменной подсистемой.
 
 ## Не делает
 

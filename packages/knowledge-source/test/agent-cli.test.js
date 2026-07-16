@@ -48,8 +48,23 @@ test('query can explicitly include non-active statuses only when requested', () 
   assert.deepEqual(payload.requested_statuses, ['active', 'proposed']);
 });
 
+test('controls returns a machine-readable successful report', () => {
+  const result = parseJson(runCli(['controls', '--root', root]));
+  assert.equal(result.schema_version, 'rus.knowledge_retrieval_control_report.v1');
+  assert.equal(result.ok, true);
+  assert.ok(result.checks.length > 0);
+});
+
 test('missing required argument returns typed JSON error and non-zero exit', () => {
   const result = runCli(['query', '--root', root]);
+  assert.equal(result.status, 2);
+  const payload = JSON.parse(result.stderr);
+  assert.equal(payload.schema_version, 'rus.knowledge_cli_error.v1');
+  assert.equal(payload.code, 'CLI_ARGUMENT_INVALID');
+});
+
+test('unknown command returns a typed argument error', () => {
+  const result = runCli(['unknown-command', '--root', root]);
   assert.equal(result.status, 2);
   const payload = JSON.parse(result.stderr);
   assert.equal(payload.schema_version, 'rus.knowledge_cli_error.v1');

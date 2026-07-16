@@ -58,9 +58,21 @@ async function search(storage, input = {}, visibleStatuses) {
     related_contracts: metadata.related_contracts
   }));
   const conflictIds = new Set(results.flatMap((item) => metadataById.get(item.document_id)?.conflicts_with_document_ids ?? []));
-  const conflicts = [...conflictIds].map((id) => context.manifest.documents.find((item) => item.document_id === id))
-    .filter((item) => item && requestedStatuses.has(item.status))
-    .map((item) => ({ document_id: item.document_id, canonical_path: item.canonical_path, status: item.status, source_sha256: item.sha256 }));
+  const conflicts = [...conflictIds].map((id) => context.documentsById.get(id))
+    .filter(Boolean)
+    .map(({ record, line_count }) => {
+      const metadata = metadataById.get(record.document_id);
+      return {
+        document_id: record.document_id,
+        canonical_path: record.canonical_path,
+        status: record.status,
+        source_sha256: record.sha256,
+        start_line: 1,
+        end_line: line_count,
+        priority_tier: metadata.priority_tier,
+        semantic_coverage_disposition: metadata.semantic_coverage_disposition
+      };
+    });
   return deepFreeze({
     schema_version: 'rus.knowledge_ranked_search_result.v1',
     query,
@@ -111,7 +123,8 @@ async function loadPolicy(storage) {
   if (policy.baseline_manifest_sha256 !== manifestSha256) {
     throw knowledgeSourceError('RETRIEVAL_POLICY_STALE', 'Retrieval policy baseline does not match the current corpus manifest.');
   }
-  return { manifest, aliases, manifestBytes: manifestRaw.bytes, policy };
+  const documentsById = await verifyCanonicalDocuments(storage, manifest);
+  return { manifest, aliases, manifestBytes: manifestRaw.bytes, policy, documentsById };
 }
 
 async function loadContext(storage) {
@@ -140,14 +153,46 @@ async function loadContext(storage) {
       if (metadata.semantic_coverage_disposition === 'required_before_merge') blockers.push(metadata.document_id);
     }
   }
+  const semanticChunks = (semantic.chunks ?? []).map((item) => ({ ...item, semantic_indexed: true }));
+  const lexicalChunks = (lexical.chunks ?? []).map((item) => ({ ...item, semantic_indexed: false }));
+  validateChunkLocations([...semanticChunks, ...lexicalChunks], registry.documentsById);
   return {
     ...registry,
-    chunks: [
-      ...(semantic.chunks ?? []).map((item) => ({ ...item, semantic_indexed: true })),
-      ...(lexical.chunks ?? []).map((item) => ({ ...item, semantic_indexed: false }))
-    ],
+    chunks: [...semanticChunks, ...lexicalChunks],
     readiness: { status: blockers.length ? 'blocked' : gaps.length ? 'degraded' : 'ready', gaps, blockers }
   };
+}
+
+async function verifyCanonicalDocuments(storage, manifest) {
+  const documentsById = new Map();
+  for (const record of manifest.documents) {
+    const loaded = await storage.readDocument(record.canonical_path);
+    if (loaded.sha256 !== record.sha256 || loaded.bytes.length !== record.bytes) {
+      throw knowledgeSourceError('DOCUMENT_HASH_MISMATCH', `Document integrity check failed: ${record.document_id}`, {
+        expected_sha256: record.sha256,
+        actual_sha256: loaded.sha256,
+        expected_bytes: record.bytes,
+        actual_bytes: loaded.bytes.length
+      });
+    }
+    documentsById.set(record.document_id, {
+      record,
+      line_count: loaded.bytes.toString('utf8').split(/\r?\n/u).length
+    });
+  }
+  return documentsById;
+}
+
+function validateChunkLocations(chunks, documentsById) {
+  const documentsByFile = new Map([...documentsById.values()].map((item) => [item.record.file_name, item]));
+  for (const chunk of chunks) {
+    const document = documentsByFile.get(String(chunk?.file ?? ''));
+    const start = Number(chunk?.line_start);
+    const end = Number(chunk?.line_end);
+    if (!document || !Number.isInteger(start) || !Number.isInteger(end) || start < 1 || end < start || end > document.line_count) {
+      throw knowledgeSourceError('GENERATED_PROVENANCE_INVALID', `RAG chunk has an invalid source location: ${String(chunk?.id ?? '<unknown>')}`);
+    }
+  }
 }
 
 function requestedStatusSet(value, defaults, visibleStatuses) {
@@ -189,7 +234,7 @@ function parseJson(bytes, label) {
 
 function sha256(value) { return createHash('sha256').update(value).digest('hex'); }
 function assertStorage(storage) {
-  for (const method of ['readCorpusManifest', 'readAliases', 'readRetrievalPolicy', 'readGeneratedManifest', 'readGeneratedArtifact']) {
+  for (const method of ['readCorpusManifest', 'readAliases', 'readRetrievalPolicy', 'readDocument', 'readGeneratedManifest', 'readGeneratedArtifact']) {
     if (typeof storage?.[method] !== 'function') throw new TypeError(`storage.${method} is required.`);
   }
 }

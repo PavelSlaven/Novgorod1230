@@ -314,6 +314,21 @@
     },
     {
       "dependencies": [
+        "@rus/knowledge-source"
+      ],
+      "name": "@rus/repository-intelligence",
+      "owns": [
+        "операциями `build`, `status` и `query`",
+        "раздельным hybrid envelope с typed errors",
+        "локальным Graphify build manifest с версией и commit SHA"
+      ],
+      "path": "packages/repository-intelligence",
+      "public_entry": "./src/index.js",
+      "purpose": "Read-only инструмент разработки, объединяющий публичный нормативный API `@rus/knowledge-source` с локальным Graphify-графом репозитория.",
+      "version": "0.1.0"
+    },
+    {
+      "dependencies": [
         "@rus/kernel"
       ],
       "name": "@rus/social-law",

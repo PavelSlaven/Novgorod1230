@@ -23,6 +23,7 @@ Release: `0.23.0-migration.24`
 | `@rus/party-store` | `packages/party-store` | party persistence contract; idempotency key и committed-result semantics; Stage 25 persistence port | `./src/index.js` | `@rus/kernel` |
 | `@rus/pipeline-engine` | `packages/pipeline-engine` | декларативным порядком stage execution; gate-result contract; artifact registry | `./src/index.js` | `@rus/contracts`, `@rus/kernel` |
 | `@rus/presentation` | `packages/presentation` | `FirstGameScreen` и `TurnScreen` version 1; Character, Inventory, People, Route, Map, Journal и Diagnostic panels; visible-only validation и leak rejection | `./src/index.js` | `@rus/contracts`, `@rus/kernel`, `@rus/visibility-knowledge-memory` |
+| `@rus/repository-intelligence` | `packages/repository-intelligence` | операциями `build`, `status` и `query`; раздельным hybrid envelope с typed errors; локальным Graphify build manifest с версией и commit SHA | `./src/index.js` | `@rus/knowledge-source` |
 | `@rus/social-law` | `packages/social-law` | social bindings and references; rights/restriction evaluation; authority and social-risk contracts | `./src/index.js` | `@rus/kernel` |
 | `@rus/space-map` | `packages/space-map` | graph scale and node/edge contracts; position chain; current position and scene anchors | `./src/index.js` | `@rus/kernel` |
 | `@rus/time-events-history` | `packages/time-events-history` | clock arithmetic; timer due checks; delayed event contracts | `./src/index.js` | `@rus/kernel` |

@@ -2,6 +2,8 @@
 
 Корневой `AGENTS.md` является основной точкой входа и полностью обязателен. Этот файл уточняет тот же порядок для GitHub-, Codex- и Cursor-oriented workflows. При смысловом расхождении работа останавливается до синхронизации файлов.
 
+Канонические правила: [AGENTS.md](../AGENTS.md).
+
 ## Канонический источник
 
 Канонический репозиторий: `PavelSlaven/Novgorod1230`, актуальное состояние — ветка `main`.
@@ -24,6 +26,8 @@
 Для database/DDL/import/category/template/profile/materialization/G5/NPC/item/container/property/transport/bounded-decision задач дополнительно обязателен:
 
 - `data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md`.
+
+Если задача затрагивает базу данных, DDL, импорт, категории, шаблоны, профили, materialization rules, G5, NPC, предметы, контейнеры, имущество, транспорт или bounded decisions, обязательно полностью прочитай `world_base_materialization_table_requirements.md`.
 
 Для G0–G4 задач дополнительно обязательны:
 
@@ -81,12 +85,8 @@ GitHub web/API не используется как основная рабоч�
 Целевой порядок после реализации PR №13:
 
 ```powershell
-npm run repo-intel:install-check
 npm run repo-intel:status
-npm run repo-intel:query -- --query "конкретная информационная потребность" --mode hybrid
-npm run repo-intel:read -- --document-id <document_id>
-npm run repo-intel:path -- --from <node> --to <node>
-npm run repo-intel:explain -- --node <node>
+npm run repo-intel:query -- --query "конкретная информационная потребность"
 ```
 
 Bootstrap-порядок, пока единый CLI реализуется:
@@ -106,7 +106,9 @@ RAG определяет нормативную authority, statuses, SHA-256, co
 
 В рабочем README фиксируются query, результаты обоих каналов, прочитанные документы, найденные nodes/paths/modules/tests, readiness, gaps и conflicts.
 
-Typed failure, stale RAG, stale Graphify graph, missing project skill, incomplete coverage, semantic blocker или отсутствующий обязательный документ являются hard block. Их нельзя обходить похожим документом, legacy-copy, старым artifact, прямым GitHub search или предположением.
+For PR #13 MVP, a `degraded` knowledge-source is a visible warning: agents account for incomplete retrieval and fully read mandatory norms, but navigation remains available. Hard blocks are an unavailable or invalid knowledge response, a required document that cannot be read, a missing/stale Graphify graph, or a Graphify version mismatch. Full coverage, document indexing, and repairing existing semantic gaps are future work, not MVP gates.
+
+Если candidate set пуст, этап обязан создать типизированный data gap и выполнить hard block. LLM repair в этом случае запрещён. Repair допускается только для исправления формата, контракта или отклонённого LLM-ответа в пределах неизменённого входа и существующего candidate set. В bounded decision workflow LLM выбирает только один `option_id` и `command_token` из предоставленного конечного option set; это не заменяет отдельные нормативные процедуры генерации персонажа игрока, аудита, разрешённой конкретизации key entity и создания прозы. Для любой задачи G0–G4 обязательно прочитай `map_g0_g4_workflow.txt` и актуальный `G1_SEMANTIC_CATALOG.md`. При изменении структуры графа, узлов, рёбер, координат, полей, импорта или DDL дополнительно прочитай `read_only_database_and_graph_architecture.md`, `SCHEMA_REFERENCE.md` и `world_base_materialization_table_requirements.md`.
 
 ## Graphify skills
 

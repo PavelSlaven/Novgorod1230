@@ -2,6 +2,8 @@
 
 Этот файл является основной точкой входа для любого агента разработки. Расширенные правила в `.github/AGENTS.md` должны быть смыслово согласованы с ним. При расхождении агент обязан остановить работу и сначала синхронизировать оба файла.
 
+Связанные правила: [.github/AGENTS.md](.github/AGENTS.md).
+
 ## 1. Канонический источник
 
 Канонический репозиторий: `PavelSlaven/Novgorod1230`.
@@ -33,11 +35,15 @@
 - актуальный `G1_SEMANTIC_CATALOG.md` региона;
 - для Новгорода — `data/world-catalogs/novgorod/G1_SEMANTIC_CATALOG.md`.
 
+Для любой задачи G0–G4 обязательно прочитай `data/knowledge-source/corpus/DOCUMENTS/map_g0_g4_workflow.txt` и актуальный `G1_SEMANTIC_CATALOG.md` региона.
+
 При изменении структуры игрового графа, узлов, рёбер, координат, полей, импорта или DDL дополнительно прочитай:
 
 - `data/knowledge-source/corpus/DOCUMENTS/read_only_database_and_graph_architecture.md`;
 - `infra/world-base/SCHEMA_REFERENCE.md`;
 - `data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md`.
+
+При изменении структуры графа, узлов, рёбер, координат, полей, импорта или DDL дополнительно прочитай `read_only_database_and_graph_architecture.md`, `infra/world-base/SCHEMA_REFERENCE.md` и `world_base_materialization_table_requirements.md`.
 
 Недоступный обязательный документ является hard block.
 
@@ -86,12 +92,8 @@ graphify --version
 После реализации единого интерфейса обязательный порядок:
 
 ```powershell
-npm run repo-intel:install-check
 npm run repo-intel:status
-npm run repo-intel:query -- --query "конкретная информационная потребность" --mode hybrid
-npm run repo-intel:read -- --document-id <document_id>
-npm run repo-intel:path -- --from <node> --to <node>
-npm run repo-intel:explain -- --node <node>
+npm run repo-intel:query -- --query "конкретная информационная потребность"
 ```
 
 Пока единый CLI реализуется в PR №13, обязательный bootstrap-порядок:
@@ -116,7 +118,9 @@ graphify query "та же конкретная информационная по
 - найденные модули, contracts, call sites и tests;
 - readiness, gaps и conflicts.
 
-Typed failure, stale RAG, stale Graphify graph, отсутствующий project skill, неполное coverage, semantic blocker или недоступный обязательный документ являются hard block. Их нельзя обходить прямым поиском, legacy-копией, старым graph artifact или предположением.
+Для navigation MVP PR №13 hard block — недоступный или invalid knowledge-source, отсутствующий/stale Graphify graph, неправильная версия Graphify либо недоступный обязательный документ. Полное coverage, document indexing и уже существующие semantic gaps пока не являются MVP-gate; они не отменяют более строгие hard blocks materialization и игрового runtime.
+
+Для навигационного MVP PR №13 `degraded` knowledge-source отображается как warning в `repo-intel:status` и `repo-intel:query`; он не отменяет обязательное полное чтение нормативов и не делает Graphify нормативным источником. Это исключение относится только к локальной navigation-команде, а не к materialization, игровому runtime или утверждению нормативной готовности.
 
 ## 5. Обязательная установка Graphify skills
 
@@ -188,6 +192,12 @@ LLM принимает ограниченные смысловые решени�
 ```
 
 Пустой обязательный candidate set создаёт typed data gap и hard block. Запрещены ослабление filters, semantic fallback, заглушки, разумные значения по умолчанию и автоматическое достраивание отсутствующих фактов.
+
+Если candidate set пуст, этап обязан создать типизированный data gap и выполнить hard block. LLM repair в этом случае запрещён.
+
+Repair допускается только для исправления формата, контракта или отклонённого LLM-ответа в пределах неизменённого входа и существующего candidate set.
+
+В bounded decision workflow LLM выбирает только один `option_id` и `command_token` из предоставленного конечного option set. Это ограничение не заменяет отдельные нормативные процедуры генерации персонажа игрока, аудита, разрешённой конкретизации key entity и создания прозы.
 
 ## 9. Перед изменением кода
 

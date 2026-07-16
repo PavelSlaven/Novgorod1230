@@ -1,0 +1,26 @@
+{
+  "schema_version": "rus.stage3c.editorial_approval_result.v1",
+  "status": "blocked",
+  "required_template_count": 120,
+  "ready_template_count": 0,
+  "review_transitions": [],
+  "approval_transitions": [],
+  "errors": [
+    {
+      "code": "LEGACY_SOURCE_NOT_VERIFIED",
+      "severity": "hard_block"
+    },
+    {
+      "code": "EDITORIAL_APPROVAL_COHORT_INCOMPLETE",
+      "severity": "hard_block"
+    },
+    {
+      "code": "APPROVED_DEPENDENCY_CLOSURE_INCOMPLETE",
+      "severity": "hard_block"
+    }
+  ],
+  "partial_approval_forbidden": true,
+  "activation_requested": false,
+  "runtime_loader_changed": false,
+  "existing_parties_changed": false
+}

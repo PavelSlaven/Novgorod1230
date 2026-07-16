@@ -168,7 +168,7 @@ CLI является тонким adapter-слоем существующего 
 
 ### Выполненные проверки
 
-До расширения CLI фактически прошли синтаксические проверки RAG-модулей, изолированные retrieval tests и полный CI run `29497642885`, включая clean-clone generation, PostgreSQL checks, generated reproducibility и `npm test`. После добавления CLI все проверки должны быть повторены на новом head PR.
+GitHub CI run `29499174723` завершён успешно. Фактически выполнены clean-clone checkout и install, проверка tracked world-base source bundle, проверка схемы и выполнение DDL в PostgreSQL, проверка канонического knowledge corpus, детерминированная генерация документации и knowledge artifacts, проверка воспроизводимости generated-файлов и полный `npm test`, включающий subprocess CLI contract tests.
 
 ### Обязательный аудит
 

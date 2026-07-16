@@ -16,6 +16,8 @@ Stage 3B-2 установил `0/120` templates, готовых к approval. П�
 
 `applyRevisionPromotionPlan` выполняет insert/readback внутри одной transaction adapter, проверяет count/digest, неизменность parent revision и откатывает транзакцию при mismatch.
 
+Публичные входы, результаты, typed errors и adapter boundary зарегистрированы в [`tools/world-catalog-workflow/CONTRACTS.md`](../../../../../tools/world-catalog-workflow/CONTRACTS.md); полный data flow и границы с runtime/party state — в [`stage-3b1/INTERACTION_MAP.md`](../stage-3b1/INTERACTION_MAP.md).
+
 ## Интеграция
 
 1. Stage 3B должен дать непустой reviewed subset с полной dependency closure.

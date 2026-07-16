@@ -523,17 +523,16 @@
       "name": "@rus/world-catalog-workflow",
       "owns": [
         "контрактами `rus.region_map_revision.v1`, `rus.g1_work_queue.v1`, `rus.g1_cell_package.v1` и `rus.g1_boundary_contract.v1`",
-        "чистой структурной валидацией ревизии и G1-пакетов",
-        "детерминированной очередью `global_grid_y DESC, global_grid_x ASC`",
-        "техническим сравнением существующих и входящих записей без молчаливого удаления",
-        "публичными `validateCatalogImportManifest`, `validateClassificationCatalog` и `importClassificationCatalog`: проверкой manifest, FK-derived порядка, pinned schemes, controlled label/relation/mapping types, category hierarchy cycles, dry-run и transaction adapter с readback digest/count gate",
-        "публичными `validateItemContainerClassificationCatalog`, `assessItemContainerClassificationMigration` и `assessItemContainerClassificationReadiness`: fail-closed проверкой нормализованных item/container facets, content compatibility, typed legacy gaps/conflicts и обязательных profile/G4 rule",
-        "публичной чистой `calculatePackingSlots({ quantity, packing_slot_cost, packing_bundle_size })`: расчётом `ceil(quantity / packing_bundle_size) × packing_slot_cost` без доступа к БД, файлам, глобальному состоянию, массы или fallback",
-        "публичной чистой `validateSupplementalCatalogBundle(manifest, recordsByTable, { externalIds })`: проверкой отдельного `draft` supplemental authoring bundle, canonical SHA-256, table registry, local/external FK и XOR. Она не импортирует данные, не делает records runtime-candidates и запрещает party tables"
+        "чистой структурной валидацией ревизии и G1-пакетов, детерминированной очередью `global_grid_y DESC, global_grid_x ASC` и dry-run без implicit delete",
+        "`validateCatalogImportManifest`, `validateClassificationCatalog` и `importClassificationCatalog`: manifest, FK-derived order, pinned schemes, controlled label/relation/mapping types, category hierarchy cycles и readback gate",
+        "`validateItemContainerClassificationCatalog`, `assessItemContainerClassificationMigration` и `assessItemContainerClassificationReadiness`: normalised facets, compatibility, typed legacy gaps/conflicts и required profile/G4 rule",
+        "чистой `calculatePackingSlots({ quantity, packing_slot_cost, packing_bundle_size })` без доступа к БД, файлам, глобальному состоянию, массы или fallback",
+        "`validateSupplementalCatalogBundle` и `applySupplementalCatalogBundle`: draft-only manifest, canonical SHA-256, table registry, local/external FK, XOR и injected transaction adapter с readback digest/count и rollback",
+        "Stage 3C contracts: `buildCatalogEditorialReadinessReport`, evidence/approval plans, verified legacy inventory и all-120-only revision promotion/rollback without activation"
       ],
       "path": "tools/world-catalog-workflow",
       "public_entry": "./src/index.js",
-      "purpose": "Автономный редакторский инструмент для регистрации ревизий региональной карты, структурной проверки G1-маски, построения очереди по координатам, проверки пакета одной G1, формирования dry-run импорта и fail-closed проверки authoring-каталогов materialization.",
+      "purpose": "Автономный редакторский инструмент для регистрации ревизий региональной карты, структурной проверки G1-маски, построения координатной очереди, проверки G1-пакетов и fail-closed проверки authoring-каталогов materialization. Он не является game runtime, не создаёт исторические факты и не изменяет `world_base` без явно переданного transaction adapter.",
       "version": "0.1.0"
     }
   ]

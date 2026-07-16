@@ -1,6 +1,11 @@
 {
   "contract_schemas": [
     {
+      "constant": "STAGE8_APPROVED_SNAPSHOT_SCHEMA",
+      "schema": "approved_item_catalog_snapshot",
+      "source": "packages/new-game/src/stages/stage-8-item-profile-candidates/policy.js"
+    },
+    {
       "constant": "STAGE25_TRANSACTION_INPUT_SCHEMA",
       "schema": "approved_party_transaction_input",
       "source": "packages/new-game/src/stages/stage-25-party-commit/policy/constants.js"

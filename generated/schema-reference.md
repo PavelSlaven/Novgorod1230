@@ -7,6 +7,7 @@ Release: `0.23.0-migration.24`
 
 | Schema | Constant | Source |
 |---|---|---|
+| `approved_item_catalog_snapshot` | `STAGE8_APPROVED_SNAPSHOT_SCHEMA` | `packages/new-game/src/stages/stage-8-item-profile-candidates/policy.js` |
 | `approved_party_transaction_input` | `STAGE25_TRANSACTION_INPUT_SCHEMA` | `packages/new-game/src/stages/stage-25-party-commit/policy/constants.js` |
 | `approved_pipeline_manifest` | `STAGE24_MANIFEST_SCHEMA` | `packages/contracts/src/stage24-boundary.js` |
 | `character_knowledge_map` | `STAGE18_OUTPUT_SCHEMA` | `packages/contracts/src/time-knowledge-hidden-boundary.js` |

@@ -25,3 +25,15 @@ Production consumers получают `KnowledgeSourceReader` через composi
 Изменение документа требует обновления manifest, пересборки graph/RAG, parity-проверки, полного regression и аудита критика. Ручное редактирование generated output запрещено.
 
 Документ без утверждённого semantic/embedding snapshot получает только structural graph node и lexical-only chunks. Provenance каждого semantic node, link, hyperedge и его `member_source_files` обязан принадлежать exact approved embedding document set; semantic relations не могут ссылаться на structural-only nodes. Semantic relations, embedding vectors и признаки `semantic_indexed` не создаются эвристически.
+
+## RAG-готовность
+
+`data/knowledge-source/retrieval-policy.json` является формальным техническим контрактом retrieval-слоя. Для каждого зарегистрированного документа он фиксирует тип, нормативный приоритет, подсистемы, связанные документы, модули и контракты, поисковые термины, известные конфликты и состояние semantic coverage.
+
+Обычный RAG-поиск использует только документы со статусом `active`. `proposed` и `deprecated` доступны только читателю, которому эти статусы явно разрешены, и только при явном указании статуса в запросе. Каждый результат возвращает статус документа, SHA-256 источника, диапазон строк, метод retrieval, нормативный приоритет и связи.
+
+Semantic coverage не подменяется эвристикой. Состояния `baseline_gap` и `required_before_merge` отображаются явно. `required_before_merge` блокирует готовность RAG; `baseline_gap` допускается только как зарегистрированный долг существующего корпуса. Новый или изменённый active-документ без утверждённого embedding обязан получить `required_before_merge`, если semantic snapshot не обновляется в том же PR.
+
+Retrieval policy и generated RAG должны быть привязаны к одному SHA-256 corpus manifest. Расхождение, отсутствующая metadata-карточка, конфликт metadata с фактическим coverage или повреждённый generated artifact приводят к typed failure.
+
+Для устойчивых обязанностей системы поддерживаются контрольные запросы. Проверка считается успешной, только если хотя бы один ожидаемый авторитетный документ попал в заданный `top_k`. Контрольные запросы обновляются вместе с изменением терминологии, приоритетов и ответственности подсистем.

@@ -88,6 +88,21 @@ npm run docs:check
 
 Graph и RAG являются производными представлениями корпуса и хранятся в `generated/knowledge-source`.
 
+## RAG для Codex и Cursor
+
+Агенты разработки используют один read-only интерфейс `@rus/knowledge-source`:
+
+```bash
+npm run knowledge:status
+npm run knowledge:query -- --query "материализация NPC" --limit 8
+npm run knowledge:read -- --document-id code-driven-world-materialization-architecture
+npm run knowledge:controls
+```
+
+Команды возвращают JSON. Поиск выдаёт `document_id`, статус, SHA-256, раздел, диапазон строк, метод retrieval, нормативный приоритет и связи. `active` используется по умолчанию; дополнительные статусы требуют явного `--statuses active,proposed`.
+
+Правила автоматического применения находятся в `AGENTS.md`, `.github/AGENTS.md` и `.cursor/rules/knowledge-rag.mdc`. RAG используется для обнаружения нормативов, после чего обязательные и профильные документы читаются полностью.
+
 ## Карта Новгородской земли
 
 Технический контур подготовки региональной карты находится в:
@@ -115,43 +130,49 @@ npm run world-catalog:validate-novgorod-revision
 
 ### Цель
 
-Привести RAG нормативного корпуса к формальному правилу полноты metadata, status-aware retrieval, явной фиксации semantic gaps и проверяемых контрольных запросов.
+Привести RAG нормативного корпуса к формальному правилу полноты metadata, status-aware retrieval, явной фиксации semantic gaps и проверяемых контрольных запросов; предоставить обязательный интерфейс для Codex и Cursor.
 
 ### Выполненные изменения
 
 - добавлен `data/knowledge-source/retrieval-policy.json` с metadata для всех 28 зарегистрированных документов;
 - зарегистрированы нормативный приоритет, подсистемы, связи с документами, модулями и контрактами, поисковые термины и semantic coverage disposition;
-- добавлен отдельный `createKnowledgeRagReader`, не изменяющий совместимость существующего full-text reader;
+- добавлен и публично экспортирован `createKnowledgeRagReader`, не изменяющий совместимость существующего full-text reader;
 - ranked retrieval работает только по committed semantic/lexical RAG chunks и возвращает provenance каждого результата;
 - `active` используется по умолчанию; `proposed` и `deprecated` требуют явного разрешения и запроса;
 - stale corpus/policy/RAG pins, отсутствующая metadata и ложное semantic coverage завершаются typed failure;
 - добавлены контрольные top-k запросы и readiness report;
-- добавлены unit, negative и repository contract tests.
+- добавлен JSON CLI `query|read|status|controls` и корневые npm-команды;
+- добавлены обязательные инструкции Codex/Cursor в `AGENTS.md`, `.github/AGENTS.md` и `.cursor/rules/knowledge-rag.mdc`;
+- добавлены unit, negative, repository и subprocess CLI contract tests.
 
 ### Принятые решения
 
 Lexical ranking не объявляется семантическим поиском. Текущие 23 документа без утверждённых embeddings зафиксированы как `baseline_gap`; пять документов с approved snapshot отмечены как `covered`. Для новых изменений используется `required_before_merge`, если semantic snapshot не обновляется в том же PR.
+
+CLI является тонким adapter-слоем существующего модуля, а не отдельным пакетом. Он не дублирует ranking, не читает файлы в обход storage/readers и не обращается к сети, LLM или БД. Ошибки аргументов возвращают exit code `2`, knowledge-source failures и провал controls — exit code `1`.
 
 ### Структура результата
 
 - policy registry: `data/knowledge-source/retrieval-policy.json`;
 - validation/ranking: `packages/knowledge-source/src/domain/`;
 - read-only retrieval service: `packages/knowledge-source/src/services/rag-reader.js`;
+- agent CLI: `packages/knowledge-source/src/cli.js`;
 - filesystem port: `packages/knowledge-source/src/adapters/filesystem-storage.js`;
+- Codex/Cursor rules: `AGENTS.md`, `.github/AGENTS.md`, `.cursor/rules/knowledge-rag.mdc`;
 - нормативная техническая политика: `docs/architecture/KNOWLEDGE_SOURCE_POLICY.md`;
-- tests: `packages/knowledge-source/test/rag-*.test.js`.
+- tests: `packages/knowledge-source/test/rag-*.test.js`, `packages/knowledge-source/test/agent-cli.test.js`.
 
 ### Порядок интеграции
 
-Изменения объединяются одним PR. Сначала проходят knowledge-source tests и полный CI, затем обязательный аудит критика. Merge допустим только при `PASS` или допустимом `PASS WITH NOTES`.
+Изменения объединяются одним PR. Сначала проходят knowledge-source tests, CLI contract tests и полный CI, затем обязательный аудит критика. Merge допустим только при `PASS` или допустимом `PASS WITH NOTES`.
 
 ### Выполненные проверки
 
-Локально выполнены синтаксические проверки новых JavaScript-модулей и `node --test packages/knowledge-source/test/rag-retrieval.test.js` на изолированном fixture: 6 тестов прошли. Полные repository checks выполняются CI PR.
+До расширения CLI фактически прошли синтаксические проверки RAG-модулей, изолированные retrieval tests и полный CI run `29497642885`, включая clean-clone generation, PostgreSQL checks, generated reproducibility и `npm test`. После добавления CLI все проверки должны быть повторены на новом head PR.
 
 ### Обязательный аудит
 
-Результат критика фиксируется в PR после CI. До получения `PASS` или допустимого `PASS WITH NOTES` работа считается незавершённой.
+Результат критика фиксируется в PR после повторного CI. До получения `PASS` или допустимого `PASS WITH NOTES` работа считается незавершённой.
 
 ### Известные ограничения и оставшиеся задачи
 

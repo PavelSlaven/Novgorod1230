@@ -3,7 +3,10 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import { createFileSystemKnowledgeSourceStorage, createKnowledgeRagReader, validateCorpusManifest, validateRetrievalPolicy } from '../src/index.js';
+import { createFileSystemKnowledgeSourceStorage } from '../src/adapters/filesystem-storage.js';
+import { createKnowledgeRagReader } from '../src/services/rag-reader.js';
+import { validateCorpusManifest } from '../src/domain/manifest.js';
+import { validateRetrievalPolicy } from '../src/domain/retrieval-policy.js';
 
 const root = resolve(import.meta.dirname, '../../..');
 const sourceRoot = resolve(root, 'data/knowledge-source');

@@ -1,0 +1,43 @@
+# Dependencies and build outputs
+node_modules/
+dist/
+build/
+coverage/
+playwright-report/
+test-results/
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Runtime and database state
+artifacts/
+party-data/
+saves/
+*.sqlite
+*.sqlite3
+*.db
+*.dump
+*.sql.gz
+
+# Repository-intelligence outputs must not recursively index themselves
+graphify-out/
+generated/repository-intelligence/
+
+# Existing generated knowledge representations are evidence outputs, not source inputs
+generated/knowledge-source/
+
+# Legacy rollback material is excluded from the active repository graph
+legacy/
+
+# Binary/cache noise
+.cache/
+.tmp/
+tmp/
+*.log
+.DS_Store

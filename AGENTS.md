@@ -1,9 +1,290 @@
 # Обязательные правила работы
 
-Этот корневой файл является актуальной точкой входа для любого агента. Расширенная инструкция хранится в `.github/AGENTS.md`; при смысловом расхождении необходимо остановить работу и синхронизировать файлы.
+Этот файл является основной точкой входа для любого агента разработки. Расширенные правила в `.github/AGENTS.md` должны быть смыслово согласованы с ним. При расхождении агент обязан остановить работу и сначала синхронизировать оба файла.
 
-## Обязательные источники
+## 1. Канонический источник
+
+Канонический репозиторий: `PavelSlaven/Novgorod1230`.
+
+Канонической считается актуальная версия файлов ветки `main`. Локальные копии, Google Drive, ранее загруженные файлы и generated artifacts не имеют приоритета над GitHub `main`.
+
+Перед выводом об актуальном состоянии проекта зафиксируй repository path, branch и commit SHA. Нельзя восстанавливать обязательный документ по памяти или подменять его похожим файлом.
+
+## 2. Обязательные документы
 
 Перед любой задачей полностью прочитай:
 
-- [Правила разработки](data/knowledge-source/corpus/DOCUMENTS
+- `AGENTS.md`;
+- `.github/AGENTS.md`;
+- `data/knowledge-source/corpus/DOCUMENTS/development_rules.txt`;
+- `data/knowledge-source/corpus/DOCUMENTS/code_critic_invocation_rule.txt`;
+- `data/knowledge-source/corpus/DOCUMENTS/code_driven_world_materialization_architecture.md`;
+- `data/knowledge-source/corpus/DOCUMENTS/llm_documentation_navigation.md`.
+
+Для выбора профильных нормативов используй `llm_documentation_navigation.md`, после чего полностью прочитай каждый найденный обязательный или профильный документ.
+
+Если задача затрагивает базу данных, DDL, импорт, категории, шаблоны, профили, materialization rules, G5, NPC, предметы, контейнеры, имущество, транспорт или bounded decisions, полностью прочитай:
+
+- `data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md`.
+
+Для задач G0–G4 дополнительно обязательны:
+
+- `data/knowledge-source/corpus/DOCUMENTS/map_g0_g4_workflow.txt`;
+- актуальный `G1_SEMANTIC_CATALOG.md` региона;
+- для Новгорода — `data/world-catalogs/novgorod/G1_SEMANTIC_CATALOG.md`.
+
+При изменении структуры игрового графа, узлов, рёбер, координат, полей, импорта или DDL дополнительно прочитай:
+
+- `data/knowledge-source/corpus/DOCUMENTS/read_only_database_and_graph_architecture.md`;
+- `infra/world-base/SCHEMA_REFERENCE.md`;
+- `data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md`.
+
+Недоступный обязательный документ является hard block.
+
+## 3. Обязательная локальная рабочая среда
+
+Разработка выполняется в локальном checkout проекта. Для Windows основной shell — PowerShell 7.
+
+GitHub используется после локальной работы для push, обновления единственного PR, CI и review. Запрещено использовать GitHub web/API как основную рабочую файловую систему или считать CI заменой локальному запуску.
+
+До любой работы агент обязан убедиться, что локальный проект актуален и готов:
+
+```powershell
+git fetch --prune origin
+git status --short --branch
+git branch --show-current
+git rev-parse HEAD
+git rev-parse origin/main
+node --version
+npm --version
+python --version
+uv --version
+docker version
+docker compose version
+graphify --version
+```
+
+Агент обязан:
+
+1. подтвердить repository root, remote, текущую ветку и HEAD SHA;
+2. проверить отсутствие несвязанных локальных изменений;
+3. убедиться, что используются требуемые версии Node.js, Python, Graphify и Docker;
+4. выполнить `npm ci`, если зависимости отсутствуют или lockfile изменился;
+5. проверить необходимые локальные services и базы данных, если задача от них зависит;
+6. не направлять migrations, seed, import или tests в operator/production database;
+7. зафиксировать readiness и обнаруженные blockers в единственном рабочем `README.md` задачи.
+
+Если среда не готова, работа, зависящая от неё, не начинается.
+
+## 4. Обязательный Repository Intelligence workflow
+
+Перед прямым grep, file search, GitHub code search, широким чтением репозитория или изменением файлов Codex, Cursor и другие агенты обязаны использовать оба независимых канала:
+
+1. нормативный RAG `@rus/knowledge-source`;
+2. отдельный repository graph Graphify.
+
+После реализации единого интерфейса обязательный порядок:
+
+```powershell
+npm run repo-intel:install-check
+npm run repo-intel:status
+npm run repo-intel:query -- --query "конкретная информационная потребность" --mode hybrid
+npm run repo-intel:read -- --document-id <document_id>
+npm run repo-intel:path -- --from <node> --to <node>
+npm run repo-intel:explain -- --node <node>
+```
+
+Пока единый CLI реализуется в PR №13, обязательный bootstrap-порядок:
+
+```powershell
+npm run knowledge:status
+npm run knowledge:query -- --query "конкретная информационная потребность"
+npm run knowledge:read -- --document-id <document_id>
+graphify query "та же конкретная информационная потребность"
+```
+
+Если важны зависимости, дополнительно используй `graphify path` и `graphify explain`.
+
+Результат поиска используется для навигации. Обязательные и профильные нормативы после обнаружения читаются полностью. Прямой code search допускается только после двойного поиска и используется для точного изучения реализации, contracts, call sites и tests.
+
+В рабочем `README.md` фиксируй:
+
+- точную информационную потребность;
+- выполненные RAG и Graphify queries;
+- найденные документы, nodes и paths;
+- полностью прочитанные нормативы;
+- найденные модули, contracts, call sites и tests;
+- readiness, gaps и conflicts.
+
+Typed failure, stale RAG, stale Graphify graph, отсутствующий project skill, неполное coverage, semantic blocker или недоступный обязательный документ являются hard block. Их нельзя обходить прямым поиском, legacy-копией, старым graph artifact или предположением.
+
+## 5. Обязательная установка Graphify skills
+
+Проект использует pinned package `graphifyy==0.9.17`; executable называется `graphify`.
+
+На локальной машине должны быть установлены project-scoped integrations:
+
+```powershell
+uv tool install "graphifyy==0.9.17"
+graphify install --project --platform codex
+graphify cursor install --project
+graphify install --project --platform agents
+```
+
+Для параллельного extraction Codex пользователь вручную включает:
+
+```toml
+[features]
+multi_agent = true
+```
+
+в `%USERPROFILE%\.codex\config.toml`. Repository scripts не должны молча изменять пользовательский config.
+
+User-global skill без project-scoped files не считается достаточным.
+
+## 6. Изоляция repository graph от игрового графа
+
+Repository Intelligence и Graphify используются только для разработки и навигации по коду и документам.
+
+Запрещено:
+
+- смешивать `graphify-out/graph.json` с G0–G5;
+- импортировать repository graph в `world_base` или party database;
+- использовать repository nodes как игровые nodes, routes, facts или materialization candidates;
+- читать или изменять через Repository Intelligence `world_base.graph_nodes`, `world_base.graph_edges` или party G5;
+- подключать Python/Graphify к production game runtime.
+
+Разрешённые области хранения:
+
+```text
+generated/knowledge-source/
+graphify-out/
+generated/repository-intelligence/
+```
+
+Игровые базы и графы остаются отдельной подсистемой.
+
+## 7. Приоритет источников
+
+При конфликте применяй приоритет:
+
+1. `code_driven_world_materialization_architecture.md` для материализации и границы кода/LLM;
+2. профильный норматив подсистемы;
+3. `development_rules.txt`;
+4. актуальные DDL, schema и formal contracts;
+5. навигационные документы;
+6. существующая реализация;
+7. comments и examples.
+
+Существующий код, RAG result или Graphify edge не становится нормативом, если противоречит более приоритетному источнику. `INFERRED` relation Graphify нельзя превращать в нормативное утверждение.
+
+## 8. Главный принцип материализации
+
+```text
+код не придумывает категории, исторические факты и отсутствующие варианты,
+но материализует конкретные экземпляры из утверждённых категорий,
+региональных шаблонов, профилей и правил;
+LLM принимает ограниченные смысловые решения через формальный протокол команд.
+```
+
+Пустой обязательный candidate set создаёт typed data gap и hard block. Запрещены ослабление filters, semantic fallback, заглушки, разумные значения по умолчанию и автоматическое достраивание отсутствующих фактов.
+
+## 9. Перед изменением кода
+
+1. Изучи текущую реализацию, public API, contracts, schemas, validators, call sites и tests.
+2. Проверь карты модулей и реестры, чтобы не создавать вторую реализацию существующей ответственности.
+3. Зафиксируй границы изменения и критерии готовности.
+4. Не проводи несвязанный refactoring.
+5. Не меняй public contracts, orchestration, DDL или save format без нормативного основания.
+6. Работай через TDD: Red → Green → Refactor.
+
+Каждый этап обязан иметь формальный input, output, typed errors и явно объявленные dependencies. Этап не читает hidden global state, не изменяет input, не запускает соседний этап и не выполняет скрытые обращения к DB, filesystem, network или LLM.
+
+## 10. Оркестрация плановой работы
+
+Если задача состоит из нескольких самостоятельных шагов, одна главная LLM владеет общим планом, единственной веткой и единственным PR.
+
+Для каждого шага фиксируются:
+
+1. цель;
+2. входные данные;
+3. границы и разрешённые файлы;
+4. обязательные нормативы;
+5. ожидаемый результат;
+6. критерии готовности;
+7. tests/checks;
+8. необходимость независимого аудита;
+9. dependencies;
+10. известные ограничения.
+
+Зависимые шаги выполняются последовательно:
+
+```text
+план
+→ исполнитель
+→ tests/checks
+→ независимый критик
+→ исправления
+→ повторные tests
+→ повторный аудит
+→ финальная приёмка
+→ следующий шаг
+```
+
+Субагент не изменяет общий план, не создаёт другой PR, не выполняет следующий шаг и не аудитит собственную реализацию.
+
+## 11. Проверки и агент-критик
+
+После изменения запускай только реально доступные checks и честно перечисляй фактически выполненные команды.
+
+Минимально проверь:
+
+- targeted contract/unit/negative/integration tests;
+- static/type/lint checks, если предусмотрены;
+- architecture boundaries;
+- documentation consistency;
+- generated artifact reproducibility;
+- related database checks;
+- полный `npm test`, если изменение готово к интеграции.
+
+Агент-критик вызывается по `code_critic_invocation_rule.txt`. При `CHANGES REQUIRED` или `REJECT` обязателен цикл:
+
+```text
+исправление
+→ повторные tests/checks
+→ повторная индексация при изменении code/docs
+→ повторный аудит
+```
+
+Цикл продолжается до `PASS` или допустимого `PASS WITH NOTES`.
+
+## 12. GitHub и единственный PR
+
+Вся работа одной задачи выполняется в одной локальной ветке и одном PR. Дополнительные PR запрещены.
+
+До push агент обязан локально:
+
+1. завершить реализацию;
+2. пересобрать RAG и Graphify artifacts, если изменены индексируемые файлы;
+3. выполнить обязательные tests/checks;
+4. выполнить аудит;
+5. проверить `git status`, `git diff --check` и scope staged files;
+6. обновить единый рабочий `README.md`.
+
+Только после этого выполняются local commit и push. GitHub CI является дополнительным подтверждением, а не заменой локальным проверкам.
+
+## 13. Итоговый отчёт
+
+Укажи:
+
+1. какие файлы и нормативы изучены;
+2. какие queries выполнены в RAG и Graphify;
+3. какие файлы изменены;
+4. какие требования реализованы;
+5. какие local services и databases развернуты;
+6. какие tests/checks фактически запущены и их результаты;
+7. результат обязательного аудита;
+8. branch, commit SHA и PR;
+9. оставшиеся gaps, ограничения и противоречия.
+
+Не сообщай о завершении, если обязательная локальная готовность, двойной поиск, tests, индексация или требуемый аудит не выполнены.

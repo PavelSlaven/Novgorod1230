@@ -1,0 +1,38 @@
+{
+  "schema_version": "rus.stage3c.promotion_readiness_summary.v1",
+  "catalog": {
+    "total": 120,
+    "items": 102,
+    "containers": 18,
+    "source": "stage-3b2/AUDIT_SUMMARY.json"
+  },
+  "legacy_inventory": {
+    "source_verified": false,
+    "row_count": null,
+    "absence_claimed": false,
+    "blocker": "LEGACY_SOURCE_NOT_VERIFIED"
+  },
+  "counts": {
+    "fully_ready": 0,
+    "blocked_by_sources": 120,
+    "blocked_by_parameters": 120,
+    "blocked_by_profiles_rules": 120,
+    "blocked_by_legacy_migration": 120,
+    "ready_for_editorial_approval": 0
+  },
+  "cohorts": {
+    "blocked_by_sources": "all_120_templates",
+    "blocked_by_parameters": "all_120_templates",
+    "blocked_by_profiles_rules": "all_120_templates",
+    "blocked_by_legacy_migration": "all_120_templates",
+    "ready_for_editorial_approval": []
+  },
+  "promotion": {
+    "status": "blocked",
+    "required_cohort_size": 120,
+    "partial_promotion_forbidden": true,
+    "status_transitions": 0,
+    "activation_requested": false
+  },
+  "report_digest": "c46dccb58b583cc135e15791abe21402ca9beacaf68ba95658cafbbb4b5e7742"
+}

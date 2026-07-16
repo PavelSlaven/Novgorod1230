@@ -1,0 +1,97 @@
+{
+  "schema_version": "rus.stage3b2.source_register.v1",
+  "stage": "3B-2",
+  "new_source_records": [
+    {
+      "id": "src_stage3b2_kolchin_wooden_1968",
+      "title": "Б. А. Колчин. Новгородские древности. Деревянные изделия. САИ Е1-55. Москва, 1968",
+      "source_type": "archaeology",
+      "summary": "Каталог новгородских деревянных находок с хронологией и типологией; используется только для заявленного широкого присутствия деревянных предметов и конструкций, пока не зафиксированы страницы и конкретные находки.",
+      "status": "needs_review",
+      "confidence": "medium_high"
+    },
+    {
+      "id": "src_stage3b2_kolchin_iron_1959",
+      "title": "Б. А. Колчин. Железообрабатывающее производство Новгорода Великого. МИА СССР 65. Москва, 1959",
+      "source_type": "archaeology",
+      "summary": "Новгородские железные изделия и производственный контекст; broad historical presence для инструментов и железных деталей, не автоматическое подтверждение узкой типологии или массы.",
+      "status": "needs_review",
+      "confidence": "medium_high"
+    },
+    {
+      "id": "src_stage3b2_kolchin_yanin_yamshchikov_1985",
+      "title": "Б. А. Колчин, В. Л. Янин, С. В. Ямщиков. Древний Новгород: прикладное искусство и археология. Москва, 1985",
+      "source_type": "book",
+      "summary": "Обобщение археологических предметов Новгорода; только широкая предметная и материальная применимость без количественной commonness.",
+      "status": "needs_review",
+      "confidence": "medium"
+    },
+    {
+      "id": "src_stage3b2_rybina_trade_2001",
+      "title": "Е. А. Рыбина. Торговля средневекового Новгорода: историко-археологические очерки. Великий Новгород, 2001",
+      "source_type": "book",
+      "summary": "Торговые товары, весовое хозяйство и обмен Новгорода; поддерживает broad presence торговых инструментов и товаров, но не задаёт игровые количества или веса единицы без page-level extraction.",
+      "status": "needs_review",
+      "confidence": "medium_high"
+    },
+    {
+      "id": "src_stage3b2_novgorod_birchbark_series",
+      "title": "Новгородские грамоты на бересте из раскопок 1951–2014 годов. Том I–XII",
+      "source_type": "archaeology",
+      "summary": "Публикации археологических берестяных документов и связанных письменных принадлежностей; используется для broad presence бересты, писал, печатей и письменного контекста.",
+      "status": "needs_review",
+      "confidence": "high"
+    },
+    {
+      "id": "src_stage3b2_kirpichnikov_arms",
+      "title": "А. Н. Кирпичников. Древнерусское оружие. САИ Е1-36. Выпуски 1–3. Москва–Ленинград, 1966–1971",
+      "source_type": "archaeology",
+      "summary": "Типология древнерусского оружия и защитного снаряжения; comparative Rus-period evidence, требующее отдельной новгородской привязки и социальной доступности.",
+      "status": "needs_review",
+      "confidence": "medium_high"
+    },
+    {
+      "id": "src_stage3b2_sedova_jewelry_1981",
+      "title": "М. В. Седова. Ювелирные изделия древнего Новгорода X–XV вв. Москва: Наука, 1981",
+      "source_type": "archaeology",
+      "summary": "Новгородские личные и религиозные металлические изделия; broad presence для нательных крестов и некоторых личных металлических предметов.",
+      "status": "needs_review",
+      "confidence": "high"
+    },
+    {
+      "id": "src_stage3b2_drevnyaya_rus_byt_1997",
+      "title": "Древняя Русь. Быт и культура. Серия Археология. Москва: Наука, 1997",
+      "source_type": "book",
+      "summary": "Сводный сравнительный корпус предметов быта, одежды, пищи и ремесла Древней Руси; не заменяет прямой новгородский источник и не подтверждает частотность.",
+      "status": "needs_review",
+      "confidence": "medium"
+    },
+    {
+      "id": "src_stage3b2_medvedev_projectile_1966",
+      "title": "А. Ф. Медведев. Ручное метательное оружие VIII–XIV вв. САИ Е1-36. Москва, 1966",
+      "source_type": "archaeology",
+      "summary": "Типология луков, стрел и метательного оружия; comparative period evidence, не самостоятельное доказательство новгородской commonness.",
+      "status": "needs_review",
+      "confidence": "medium_high"
+    }
+  ],
+  "parent_source_reviews": [
+    {
+      "source_record_id": "src_novgorod_agriculture",
+      "record_origin": "rus13_world_base_v1",
+      "review_scope": "historical_presence",
+      "verdict": "retain_for_broad_presence_only",
+      "page_level_extraction": "required",
+      "template_bindings": 8
+    },
+    {
+      "source_record_id": "src_novgorod_promysly",
+      "record_origin": "rus13_world_base_v1",
+      "review_scope": "historical_presence",
+      "verdict": "retain_for_broad_presence_only",
+      "page_level_extraction": "required",
+      "template_bindings": 7
+    }
+  ],
+  "source_family_substitution": "forbidden"
+}

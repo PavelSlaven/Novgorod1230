@@ -218,3 +218,34 @@ Stage 3B-2 установил `0/120` templates ready for approval. Поэтом
 ### Аудит и ограничения
 
 Обязательный независимый code-critic должен завершиться `PASS` либо `PASS WITH NOTES`. До его фактического запуска результат не считается окончательно закрытым. PostgreSQL apply/readback не выполнялся, поскольку пустой approved subset запрещает начинать транзакцию.
+
+## PR №7 — legacy migration inventory и all-120 approval
+
+### Цель
+
+Проверять реальные legacy-строки operator PostgreSQL/NocoDB, классифицировать каждое legacy-поле как `mapped`, `data_gap`, `migration_conflict` или `deferred` и запрещать promotion, пока одновременно не готовы все 120 templates и полная dependency closure.
+
+### Выполненные изменения
+
+- добавлен DB-exporter `scripts/export-legacy-item-classification-inventory.mjs`, который читает фактические доступные колонки `world_base.item_templates` и `world_base.container_templates`;
+- отсутствие доступа к operator DB фиксируется как `LEGACY_SOURCE_NOT_VERIFIED`; количество legacy-строк остаётся `null`, а не `0`;
+- добавлены детерминированный readiness report, evidence-review plan и coherent approval plan;
+- source bindings могут перейти `needs_review → reviewed` только после готовности всей когорты;
+- переходы `draft → approved` формируются атомарно только для полной когорты 120/120;
+- добавлен strict `buildAllTemplateRevisionPromotionPlan`, запрещающий 119/120 и любой частичный promotion;
+- activation, runtime loader switch и изменения существующих партий не входят в этот workflow.
+
+### Фактический результат
+
+Operator PostgreSQL/NocoDB из текущей среды недоступен, поэтому реальный export не выполнен и отсутствие legacy-данных не утверждается. Повторный readiness: `0/120` полностью готовы; все 120 заблокированы источниками, параметрами, profiles/rules и непроверенным legacy inventory; `0/120` готовы к editorial approval. Review/approval transitions не создавались.
+
+### Структура и интеграция
+
+- код: `tools/world-catalog-workflow/src/legacy-classification-inventory.js`, `editorial-readiness.js`, `all-template-promotion.js`;
+- exporter: `scripts/export-legacy-item-classification-inventory.mjs`;
+- evidence: `data/knowledge-source/imports/universal-category-classification-2026-07-15/stage-3c/readiness/`;
+- порядок: выполнить exporter против фактической DB → вручную проверить каждую строку → устранить source/parameter/profile/rule gaps → пересобрать readiness → получить explicit all-120 attestation → выполнить transactional promotion → отдельно запрашивать activation.
+
+### Проверки и аудит
+
+Локально выполнены targeted Node tests для classifier/readiness/promotion gates и `node --check` для новых scripts. Полный GitHub Actions должен подтвердить интеграцию и generated reproducibility. Независимый code-critic в этой среде недоступен; результат не объявляется `PASS` без его фактического запуска.

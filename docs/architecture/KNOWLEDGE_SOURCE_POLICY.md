@@ -20,6 +20,10 @@
 
 Production consumers получают `KnowledgeSourceReader` через composition root. Прямое чтение `data/knowledge-source`, `generated/knowledge-source` или `legacy/DOCUMENTS` из смысловых модулей запрещено.
 
+Codex, Cursor и другие агенты разработки используют `packages/knowledge-source/src/cli.js` через команды `knowledge:status`, `knowledge:query`, `knowledge:read` и `knowledge:controls`. CLI является read-only adapter над публичными readers и не имеет собственного пути чтения, ranking logic или fallback.
+
+Успешный результат CLI является JSON в `stdout`; typed failure является JSON в `stderr` и ненулевым exit code. Это позволяет агенту или IDE вызывать интерфейс без разбора человекоориентированного текста.
+
 ## Изменение корпуса
 
 Изменение документа требует обновления manifest, пересборки graph/RAG, parity-проверки, полного regression и аудита критика. Ручное редактирование generated output запрещено.
@@ -37,3 +41,16 @@ Semantic coverage не подменяется эвристикой. Состоя
 Retrieval policy и generated RAG должны быть привязаны к одному SHA-256 corpus manifest. Расхождение, отсутствующая metadata-карточка, конфликт metadata с фактическим coverage или повреждённый generated artifact приводят к typed failure.
 
 Для устойчивых обязанностей системы поддерживаются контрольные запросы. Проверка считается успешной, только если хотя бы один ожидаемый авторитетный документ попал в заданный `top_k`. Контрольные запросы обновляются вместе с изменением терминологии, приоритетов и ответственности подсистем.
+
+## Рабочий процесс агента разработки
+
+```text
+knowledge:status
+→ knowledge:query по конкретной информационной потребности
+→ полное knowledge:read обязательных и профильных документов
+→ code search реализаций, контрактов и тестов
+→ изменение
+→ knowledge:controls и тесты
+```
+
+RAG отвечает за обнаружение и provenance, но не отменяет обязательное полное чтение документов, перечисленных в `AGENTS.md`. Stale RAG, typed failure, semantic blocker или недоступный обязательный документ являются hard block и не могут обходиться прямым файловым поиском.

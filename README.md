@@ -177,3 +177,44 @@ GitHub CI run `29499174723` завершён успешно. Фактическ�
 ### Известные ограничения и оставшиеся задачи
 
 Approved embeddings существуют только для 5 из 28 документов. Остальные 23 документа имеют полноценное lexical coverage, но остаются явным semantic coverage debt. Их embedding snapshot должен обновляться редакторским процессом без deterministic или эвристического fallback.
+## PR №7 — Stage 3C
+
+### Цель
+
+Подготовить version-pinned promotion полного набора из 120 item/container templates в новую world revision, approved-only Stage 8 и fail-closed Stage 16. Частичная promotion запрещена; activation остаётся отдельной операцией.
+
+### Выполненные изменения
+
+- добавлены promotion planner, catalog/manifest digest, dependency closure, transactional readback и rollback contract;
+- Stage 8 получает immutable approved snapshot и выдаёт только revision/region/period applicable item, container, equipment, quantity и property candidates;
+- пустой required domain выдаёт typed `REQUIRED_APPROVED_CANDIDATE_SET_EMPTY` и hard block без LLM repair;
+- Stage 16 требует explicit quantity requirement, unit, mass, hand cost, equipment reference и раздельные owner/holder/controller;
+- materialization trace сохраняет revision, catalog digest, quantity refs и created refs.
+
+### Принятые решения и фактический результат
+
+Stage 3B-2 установил `0/120` templates ready for approval. Поэтому Stage 3C остановлен `APPROVED_CATALOG_EMPTY` до начала транзакции: для promotion требуется одобрение всех 120 templates, а не подмножества. Target revision `world_revision_novgorod_1230_item_catalogue_002` не создана, старая approved revision не изменена, activation и runtime loader switch не выполнялись, существующие партии не изменялись.
+
+### Структура результата
+
+- `tools/world-catalog-workflow/src/revision-promotion.js`;
+- `packages/new-game/src/stages/stage-8-item-profile-candidates/`;
+- `packages/materialization/src/placement-materializers.js` и `stage-helpers.js`;
+- `data/knowledge-source/imports/universal-category-classification-2026-07-15/stage-3c/`.
+
+### Порядок интеграции
+
+1. получить reviewed approval для всех 120 templates;
+2. обновить exact approval ID list без частичной promotion;
+3. выполнить promotion dry-run и closure audit;
+4. выполнить transactional apply/readback;
+5. отдельно запросить activation;
+6. атомарно переключить loader, не меняя revision pins существующих партий.
+
+### Проверки
+
+На локально восстановленном targeted-наборе выполнены Stage 3C, Stage 8 и Stage 16 тесты; все изменяемые JS-файлы прошли `node --check`. Итоговый статус полного CI фиксируется GitHub Actions на head PR №7.
+
+### Аудит и ограничения
+
+Обязательный независимый code-critic должен завершиться `PASS` либо `PASS WITH NOTES`. До его фактического запуска результат не считается окончательно закрытым. PostgreSQL apply/readback не выполнялся, поскольку пустой approved subset запрещает начинать транзакцию.

@@ -1,0 +1,82 @@
+{
+  "schema_version": "rus.stage3b2.review_policies.v1",
+  "stage": "3B-2",
+  "policies": [
+    {
+      "id": "physical_item_complete_v1",
+      "required_fields": [
+        "mass_grams",
+        "length_mm",
+        "width_mm",
+        "height_or_thickness_mm",
+        "carry_form",
+        "external_hand_cost",
+        "packing_slot_cost",
+        "packing_bundle_size",
+        "condition_model"
+      ],
+      "gameplay_estimate_rule": "must_be_explicitly_reviewed_or_remain_blocking_gap",
+      "current_stage3b1_estimates": "unreviewed_and_rejected_for_promotion"
+    },
+    {
+      "id": "physical_container_complete_v1",
+      "required_fields": [
+        "empty_mass_grams",
+        "external_dimensions_mm",
+        "internal_dimensions_or_capacity",
+        "carry_form",
+        "external_hand_cost",
+        "packing_slot_cost",
+        "packing_bundle_size",
+        "closure_model",
+        "access_model",
+        "mobility",
+        "nesting_rules",
+        "condition_model"
+      ],
+      "gameplay_estimate_rule": "must_be_explicitly_reviewed_or_remain_blocking_gap",
+      "current_stage3b1_estimates": "unreviewed_and_rejected_for_promotion"
+    },
+    {
+      "id": "quantity_bulk_complete_v1",
+      "required_fields": [
+        "quantity_unit_id",
+        "dimension",
+        "minimum_quantity",
+        "maximum_quantity",
+        "mass_or_volume_per_unit",
+        "stackability",
+        "partial_consumption",
+        "historical_measure_bindings",
+        "measure_conversion_rules",
+        "packaging_constraints"
+      ],
+      "hidden_default_quantity": "forbidden",
+      "current_stage3b1_identity_gram_profiles": "draft_placeholder_only"
+    },
+    {
+      "id": "commonness_access_complete_v1",
+      "required_fields": [
+        "source_based_commonness",
+        "regional_weight",
+        "social_access",
+        "role_occupation_binding",
+        "weapon_or_status_restrictions",
+        "seasonality",
+        "household_or_trade_context"
+      ]
+    },
+    {
+      "id": "materialization_chain_complete_v1",
+      "required_chain": [
+        "category",
+        "approved_regional_permission",
+        "approved_template",
+        "approved_inventory_or_quantity_profile",
+        "approved_item_property_or_equipment_profile",
+        "approved_materialization_rule"
+      ],
+      "approval_rule": "no approved template may depend on draft or missing profile/rule"
+    }
+  ]
+}

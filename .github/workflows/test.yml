@@ -101,7 +101,7 @@ jobs:
           psql --dbname world_base_ci --set ON_ERROR_STOP=1 -f infra/world-base/schema.sql
 
           table_count=$(psql --dbname world_base_ci --tuples-only --no-align --command "SELECT count(*) FROM information_schema.tables WHERE table_schema = 'world_base' AND table_type = 'BASE TABLE'")
-          test "$table_count" -eq 108
+          test "$table_count" -eq 121
 
           role_count=$(psql --dbname world_base_ci --tuples-only --no-align --command "SELECT count(*) FROM pg_roles WHERE rolname = 'world_reader' AND NOT rolsuper AND NOT rolcreatedb AND NOT rolcreaterole")
           test "$role_count" -eq 1
@@ -115,6 +115,11 @@ jobs:
           write_grants=$(psql --dbname world_base_ci --tuples-only --no-align --command "SELECT count(*) FROM information_schema.role_table_grants WHERE grantee = 'world_reader' AND table_schema = 'world_base' AND privilege_type <> 'SELECT'")
           test "$select_grants" -eq "$table_count"
           test "$write_grants" -eq 0
+
+      - name: Execute Stage 3B-1 supplemental PostgreSQL integration
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/world_base_ci
+        run: npm run world-db:import:stage3b1:integration
 
       - name: Validate canonical knowledge corpus
         run: npm run knowledge:check-corpus

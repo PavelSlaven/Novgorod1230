@@ -1,0 +1,10 @@
+[
+  {
+    "id": "equipment_entry_guard_utility_knife_v1",
+    "equipment_profile_id": "equipment_guard_service_v1",
+    "item_template_id": "item_tpl_nov_utility_knife_v1",
+    "slot_key": "belt",
+    "required": false,
+    "weight": 1
+  }
+]

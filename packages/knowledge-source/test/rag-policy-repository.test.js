@@ -23,10 +23,27 @@ test('repository retrieval policy covers every registered document and pins curr
   assert.ok(policy.control_queries.length >= 5);
 });
 
+test('repository policy registers proposed classification documents without changing their corpus status', async () => {
+  const manifest = validateCorpusManifest(JSON.parse(await readFile(resolve(sourceRoot, 'corpus-manifest.json'), 'utf8')));
+  const policy = validateRetrievalPolicy(JSON.parse(await readFile(resolve(sourceRoot, 'retrieval-policy.json'), 'utf8')), manifest);
+  const proposedIds = [
+    'universal-category-classification-policy',
+    'universal-category-classification-references'
+  ];
+  assert.deepEqual(
+    manifest.documents.filter((document) => proposedIds.includes(document.document_id)).map((document) => document.status),
+    ['proposed', 'proposed']
+  );
+  assert.deepEqual(
+    policy.documents.filter((document) => proposedIds.includes(document.document_id)).map((document) => document.document_id),
+    proposedIds
+  );
+});
+
 test('repository RAG exposes explicit baseline semantic gaps and no unacknowledged blocker', async () => {
   const storage = createFileSystemKnowledgeSourceStorage({ sourceRoot, generatedRoot });
   const status = await createKnowledgeRagReader({ storage }).getReadinessStatus();
   assert.equal(status.status, 'degraded');
   assert.equal(status.semantic_coverage_blocker_document_ids.length, 0);
-  assert.equal(status.semantic_coverage_gap_document_ids.length, 23);
+  assert.equal(status.semantic_coverage_gap_document_ids.length, 24);
 });

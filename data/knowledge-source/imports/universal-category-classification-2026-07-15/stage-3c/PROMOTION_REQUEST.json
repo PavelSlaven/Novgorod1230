@@ -1,0 +1,8 @@
+{
+  "schema": "rus.stage3c.promotion_request.v1",
+  "parent_revision": {"id": "novgorod_1230_research_revision_001", "status": "approved"},
+  "target_revision": {"id": "world_revision_novgorod_1230_item_catalogue_002", "title": "Novgorod 1230 approved item catalogue revision 002", "effective_from": "1200-01-01", "effective_to": "1250-12-31"},
+  "approved_record_ids_by_table": {"item_templates": [], "container_templates": []},
+  "approval_attestation": {"decision": "approve_subset", "approved_by": "PavelSlaven", "approved_at": "2026-07-16T00:00:00+03:00", "scope": "exact IDs listed in approved_record_ids_by_table"},
+  "expected_status": "blocked"
+}

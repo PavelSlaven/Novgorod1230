@@ -1,0 +1,27 @@
+{
+  "schema_version": "rus.legacy_item_classification_inventory.v1",
+  "source": {
+    "kind": "operator_database",
+    "verified": false,
+    "identity": null,
+    "verification_reason": "operator_postgresql_nocodb_not_accessible_from_this_execution_environment"
+  },
+  "exported_at": null,
+  "complete": false,
+  "source_snapshot_digest": null,
+  "legacy_field_row_count": null,
+  "resolution_counts": {
+    "mapped": null,
+    "data_gap": null,
+    "migration_conflict": null,
+    "deferred": null
+  },
+  "rows": [],
+  "issues": [
+    {
+      "code": "LEGACY_SOURCE_NOT_VERIFIED",
+      "message": "The operator PostgreSQL/NocoDB source was not queried; no zero-row claim is made.",
+      "severity": "hard_block"
+    }
+  ]
+}

@@ -22,7 +22,7 @@ test('status returns machine-readable RAG readiness', () => {
   const result = parseJson(runCli(['status', '--root', root]));
   assert.equal(result.schema_version, 'rus.knowledge_rag_readiness.v1');
   assert.equal(result.status, 'degraded');
-  assert.equal(result.semantic_coverage_gap_document_ids.length, 23);
+  assert.equal(result.semantic_coverage_gap_document_ids.length, 24);
 });
 
 test('query returns ranked chunks with provenance', () => {
@@ -46,6 +46,19 @@ test('query can explicitly include non-active statuses only when requested', () 
   assert.equal(result.status, 0, result.stderr);
   const payload = JSON.parse(result.stdout);
   assert.deepEqual(payload.requested_statuses, ['active', 'proposed']);
+});
+
+test('active-only query excludes proposed classification policy while explicit status selection exposes it', () => {
+  const query = 'universal category classification policy stable code facet';
+  const activeOnly = parseJson(runCli(['query', '--root', root, '--query', query, '--statuses', 'active']));
+  assert.ok(activeOnly.results.every((item) => item.document_id !== 'universal-category-classification-policy'));
+
+  const explicit = parseJson(runCli(['query', '--root', root, '--query', query, '--statuses', 'active,proposed']));
+  assert.ok(explicit.results.some((item) => item.document_id === 'universal-category-classification-policy'));
+  assert.equal(
+    explicit.results.find((item) => item.document_id === 'universal-category-classification-policy').status,
+    'proposed'
+  );
 });
 
 test('controls returns a machine-readable successful report', () => {

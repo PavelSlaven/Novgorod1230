@@ -1,0 +1,206 @@
+[
+  {
+    "id": "quantity_item_tpl_nov_bread_v1",
+    "item_template_id": "item_tpl_nov_bread_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "quantity_unit_gram_v1",
+    "quantity_dimension": "mass",
+    "minimum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 1,
+    "stackable": true,
+    "partial_consumption_allowed": true,
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_grain_v1",
+    "item_template_id": "item_tpl_nov_grain_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "quantity_unit_gram_v1",
+    "quantity_dimension": "mass",
+    "minimum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 1,
+    "stackable": true,
+    "partial_consumption_allowed": true,
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_flour_v1",
+    "item_template_id": "item_tpl_nov_flour_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "quantity_unit_gram_v1",
+    "quantity_dimension": "mass",
+    "minimum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 1,
+    "stackable": true,
+    "partial_consumption_allowed": true,
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_groats_v1",
+    "item_template_id": "item_tpl_nov_groats_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "quantity_unit_gram_v1",
+    "quantity_dimension": "mass",
+    "minimum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 1,
+    "stackable": true,
+    "partial_consumption_allowed": true,
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_salt_v1",
+    "item_template_id": "item_tpl_nov_salt_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "quantity_unit_gram_v1",
+    "quantity_dimension": "mass",
+    "minimum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 1,
+    "stackable": true,
+    "partial_consumption_allowed": true,
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_dried_fish_v1",
+    "item_template_id": "item_tpl_nov_dried_fish_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "quantity_unit_gram_v1",
+    "quantity_dimension": "mass",
+    "minimum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 1,
+    "stackable": true,
+    "partial_consumption_allowed": true,
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_fresh_fish_v1",
+    "item_template_id": "item_tpl_nov_fresh_fish_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "quantity_unit_gram_v1",
+    "quantity_dimension": "mass",
+    "minimum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 1,
+    "stackable": true,
+    "partial_consumption_allowed": true,
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_preserved_meat_v1",
+    "item_template_id": "item_tpl_nov_preserved_meat_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "quantity_unit_gram_v1",
+    "quantity_dimension": "mass",
+    "minimum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 1,
+    "stackable": true,
+    "partial_consumption_allowed": true,
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_cheese_v1",
+    "item_template_id": "item_tpl_nov_cheese_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "quantity_unit_gram_v1",
+    "quantity_dimension": "mass",
+    "minimum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 1,
+    "stackable": true,
+    "partial_consumption_allowed": true,
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_honey_v1",
+    "item_template_id": "item_tpl_nov_honey_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "quantity_unit_gram_v1",
+    "quantity_dimension": "mass",
+    "minimum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 1,
+    "stackable": true,
+    "partial_consumption_allowed": true,
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_water_v1",
+    "item_template_id": "item_tpl_nov_water_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "quantity_unit_gram_v1",
+    "quantity_dimension": "mass",
+    "minimum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 1,
+    "stackable": true,
+    "partial_consumption_allowed": true,
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_beeswax_v1",
+    "item_template_id": "item_tpl_nov_beeswax_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "quantity_unit_gram_v1",
+    "quantity_dimension": "mass",
+    "minimum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 1,
+    "stackable": true,
+    "partial_consumption_allowed": true,
+    "source_id": "src_project_stage_3b1_physical_parameter_policy",
+    "status": "draft"
+  }
+]

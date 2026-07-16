@@ -1,6 +1,11 @@
 {
   "contract_schemas": [
     {
+      "constant": "STAGE8_APPROVED_SNAPSHOT_SCHEMA",
+      "schema": "approved_item_catalog_snapshot",
+      "source": "packages/new-game/src/stages/stage-8-item-profile-candidates/policy.js"
+    },
+    {
       "constant": "STAGE25_TRANSACTION_INPUT_SCHEMA",
       "schema": "approved_party_transaction_input",
       "source": "packages/new-game/src/stages/stage-25-party-commit/policy/constants.js"
@@ -179,6 +184,11 @@
       "constant": "STAGE15_DRAFT_SCHEMA",
       "schema": "initial_npc_placement_draft",
       "source": "packages/contracts/src/g5-placement-boundary.js"
+    },
+    {
+      "constant": "INVENTORY_PANEL_SCHEMA",
+      "schema": "inventory_panel",
+      "source": "packages/presentation/src/read-models/contracts.js"
     },
     {
       "constant": "STAGE16_INPUT_SCHEMA",
@@ -627,6 +637,114 @@
       "type": "json"
     },
     {
+      "bytes": 617,
+      "path": "schemas/materialization/category-labels-v1.schema.json",
+      "sha256": "1573db65e359e5fef818c2e1a17ac66cf9e0e5a922bf9e9a7824d8304bc6ba78",
+      "type": "json"
+    },
+    {
+      "bytes": 732,
+      "path": "schemas/materialization/category-scheme-mappings-v1.schema.json",
+      "sha256": "a0f0c10e737b3e06eff1163ebd32b04db26a2a6e17beb0766450fd786ab2b6f0",
+      "type": "json"
+    },
+    {
+      "bytes": 754,
+      "path": "schemas/materialization/classification-schemes-v1.schema.json",
+      "sha256": "4744d626cd53cc4dae7794ea08162432245eaf2de8fe097e54359be7f83e9034",
+      "type": "json"
+    },
+    {
+      "bytes": 533,
+      "path": "schemas/materialization/container-content-category-relations-v1.schema.json",
+      "sha256": "3f6c11cea3e82408f1c337bf619dbc0b6a79b128f6b1ee1111f17331bb7eec82",
+      "type": "json"
+    },
+    {
+      "bytes": 778,
+      "path": "schemas/materialization/container-content-profile-entries-v1.schema.json",
+      "sha256": "6ff7159e75de95256aee61f19a317d7d96a25c79ba43b7d6483392417b02f090",
+      "type": "json"
+    },
+    {
+      "bytes": 433,
+      "path": "schemas/materialization/container-content-profiles-v1.schema.json",
+      "sha256": "5393e7fb8e27c280582938d9bdedd75cf1be818319947f3b1a4fedc2a847dd43",
+      "type": "json"
+    },
+    {
+      "bytes": 650,
+      "path": "schemas/materialization/container-template-facet-bindings-v1.schema.json",
+      "sha256": "e5c2d7248a1bc33b5c7c9f73f97843a640a17601d03f69b2c6cca596db7d1fc9",
+      "type": "json"
+    },
+    {
+      "bytes": 799,
+      "path": "schemas/materialization/container-template-inventory-profiles-v1.schema.json",
+      "sha256": "6e4fac710cc9fbf56c7571bd7fc62902b866269d3d5b9dd707a4def3e5ee4c2a",
+      "type": "json"
+    },
+    {
+      "bytes": 1334,
+      "path": "schemas/materialization/container-template-source-bindings-v1.schema.json",
+      "sha256": "078553f29a93043a11491ba4eedc96958bd36ea402e65169b95289e968233fa3",
+      "type": "json"
+    },
+    {
+      "bytes": 895,
+      "path": "schemas/materialization/container-templates-v1.schema.json",
+      "sha256": "ea116627196d44ac915835c010f9e6eef4f23a729bfc7b2df0d76832bb1b72bf",
+      "type": "json"
+    },
+    {
+      "bytes": 738,
+      "path": "schemas/materialization/item-classification-migration-inventory-v1.schema.json",
+      "sha256": "cbcfee73a572cb55bc1861f7444e44666ac2453abd5b341b7b36d5a9d1fc5289",
+      "type": "json"
+    },
+    {
+      "bytes": 819,
+      "path": "schemas/materialization/item-profile-entries-v1.schema.json",
+      "sha256": "9ed6084519ada39b8f4bcb497d5df91f243d3d7a6c13b5d28697fc33983b1c61",
+      "type": "json"
+    },
+    {
+      "bytes": 668,
+      "path": "schemas/materialization/item-profile-sets-v1.schema.json",
+      "sha256": "da28c42211e937f4d186d3750b95b92762847ee15a0e9c07b8f75248a0f4cd90",
+      "type": "json"
+    },
+    {
+      "bytes": 871,
+      "path": "schemas/materialization/item-template-category-bindings-v1.schema.json",
+      "sha256": "0a355b2f66a9eec372b44ef31605bbbd3c808fed9411fa5dafca3baf83e15908",
+      "type": "json"
+    },
+    {
+      "bytes": 694,
+      "path": "schemas/materialization/item-template-inventory-profiles-v1.schema.json",
+      "sha256": "61b5a6c6c13c65dc116edf74ba0b9fec6e9fd61daef1ca1688b91aaf1e4a56b4",
+      "type": "json"
+    },
+    {
+      "bytes": 1456,
+      "path": "schemas/materialization/item-template-quantity-profiles-v1.schema.json",
+      "sha256": "e96f91a8160b756018d9941bd8005505ee19f10c43135599cd7f2ad5e9011eb0",
+      "type": "json"
+    },
+    {
+      "bytes": 1319,
+      "path": "schemas/materialization/item-template-source-bindings-v1.schema.json",
+      "sha256": "ba7289cbaa289d09e6aba32c29f15154ffbf37b9afa05298035488ac4c67a14f",
+      "type": "json"
+    },
+    {
+      "bytes": 582,
+      "path": "schemas/materialization/item-templates-v1.schema.json",
+      "sha256": "5c508b395d78888f1c7d02f4dfccf3e6e98b19db51b5cb9cca5040e4679ff5f8",
+      "type": "json"
+    },
+    {
       "bytes": 3150,
       "path": "schemas/materialization/normalized-instance-candidate-v2.schema.json",
       "sha256": "ccbd9e9d518a8ab4b28e937e6e4eb19b88a26f3ea6eeff89aaf24432dd9a0b1d",
@@ -642,6 +760,72 @@
       "bytes": 2816,
       "path": "schemas/materialization/party-change-set-v2.schema.json",
       "sha256": "cabbce3e6d6091391cba5b1fa0b6ea09c69f2db6bbed3ac241563171e95b62c1",
+      "type": "json"
+    },
+    {
+      "bytes": 1078,
+      "path": "schemas/materialization/property-profile-rules-v1.schema.json",
+      "sha256": "fdb63b23c9ffdbbaa9e7562141cc2763ea1538300c5ed79f0b7d8c55604f9c30",
+      "type": "json"
+    },
+    {
+      "bytes": 499,
+      "path": "schemas/materialization/property-profiles-v1.schema.json",
+      "sha256": "6cd5d5bdb462d8f4e1a60af1457faaba4c1aa11f9ded629a2cade6ae37adf0cd",
+      "type": "json"
+    },
+    {
+      "bytes": 790,
+      "path": "schemas/materialization/quantity-unit-definitions-v1.schema.json",
+      "sha256": "88aa7a168a8c973a32e358d126708eabab81b5bc690db417fc872b7a0f37c186",
+      "type": "json"
+    },
+    {
+      "bytes": 906,
+      "path": "schemas/materialization/record-sources-v1.schema.json",
+      "sha256": "4a990dcc1d34445ece7f42f0407bd6b4ebf84cf1c1dcd71828c679c078cda354",
+      "type": "json"
+    },
+    {
+      "bytes": 825,
+      "path": "schemas/materialization/region-category-options-v1.schema.json",
+      "sha256": "0acabbad107562f88424ff0215d9619d26f63aaaa829ba75e274708fce11da0e",
+      "type": "json"
+    },
+    {
+      "bytes": 649,
+      "path": "schemas/materialization/region-equipment-profile-entries-v1.schema.json",
+      "sha256": "92ff1c9a1cb43b62770c178af635a3cb9ed18a043a9fb0d2a1deb8b2d8fafeee",
+      "type": "json"
+    },
+    {
+      "bytes": 454,
+      "path": "schemas/materialization/region-equipment-profiles-v1.schema.json",
+      "sha256": "33b1f3a2febb0ca72dd388804dd06501703a71ea913fa7cf48fdd9dff92976b9",
+      "type": "json"
+    },
+    {
+      "bytes": 697,
+      "path": "schemas/materialization/source-records-v1.schema.json",
+      "sha256": "037a2be66fdce964f9bde13c3d4031c0a1b4c9c2ebb7b26e3cf72aa3e61a9b1c",
+      "type": "json"
+    },
+    {
+      "bytes": 905,
+      "path": "schemas/materialization/universal-categories-v1.schema.json",
+      "sha256": "b2110a8b777c2d26049337f07826c254eb1f9854535ae7990f4c2f40bc4df972",
+      "type": "json"
+    },
+    {
+      "bytes": 512,
+      "path": "schemas/materialization/universal-category-relations-v1.schema.json",
+      "sha256": "31fd11130f43de9a61d58b8fde877527649eaad8915af99225f982033b179f38",
+      "type": "json"
+    },
+    {
+      "bytes": 1050,
+      "path": "schemas/materialization/universal-parameter-definitions-v1.schema.json",
+      "sha256": "0c646047b8e48a43b7c5250d264cf27b84604810f754f41d4504fa1360347748",
       "type": "json"
     },
     {
@@ -663,9 +847,15 @@
       "type": "json"
     },
     {
-      "bytes": 18350,
+      "bytes": 571,
+      "path": "schemas/materialization/world-revisions-v1.schema.json",
+      "sha256": "47693c523b2000430235dafd8e7a5669355cf67208c53f6f497f95a985df4214",
+      "type": "json"
+    },
+    {
+      "bytes": 19734,
       "path": "schemas/party-db/001_party_runtime.sql",
-      "sha256": "864a9f48dcff388a08eacef5fecec118ab213d18167d0a06d7f09c970d25fa2d",
+      "sha256": "5cab24b65540da3f9857c2e70cd9e93c9761bac439839dbde1940cde24b5f6a1",
       "type": "sql"
     },
     {

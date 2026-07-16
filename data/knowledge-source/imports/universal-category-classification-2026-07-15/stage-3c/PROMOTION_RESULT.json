@@ -1,0 +1,8 @@
+{
+  "status": "blocked",
+  "revision_candidate": {"id": "world_revision_novgorod_1230_item_catalogue_002", "parent_revision_id": "novgorod_1230_research_revision_001", "import_status": "blocked_not_created"},
+  "typed_data_gaps": [{"code": "APPROVED_SUBSET_EMPTY", "message": "No item or container template passed all editorial approval gates.", "severity": "hard_block"}],
+  "import": {"transaction_started": false, "rows_inserted": 0, "readback_performed": false},
+  "parent_revision_changed": false,
+  "activation": {"requested": false, "performed": false, "runtime_loader_changed": false, "existing_parties_changed": false}
+}

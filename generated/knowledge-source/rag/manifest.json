@@ -3,23 +3,38 @@
   "generator": "tools/docs-tools/src/knowledge-materializer-v2.js",
   "generation_mode": "approved_semantic_snapshot_plus_deterministic_lexical_coverage",
   "corpus_root": "data/knowledge-source/corpus/DOCUMENTS",
-  "corpus_manifest_sha256": "45b98420998bb99c4303727bc7f9ffd10b6cd401b9e1f1d5705017a59ac94a39",
-  "corpus_hash": "c84b906cdebf7dfc54ef31071076d758fb24d961f4aa42e4e93488eb25925b22",
+  "corpus_manifest_sha256": "890326920db8cde174a6157f5ab3b409f7ea47143eb652c9e59dc4a5498f4521",
+  "corpus_hash": "8425390ac2788148902adbc672607f6ac8e3499acbe4027152dcb7a7ee134e47",
   "source_snapshot": "data/knowledge-source/imports/rag/index.json",
   "source_snapshot_sha256": "b89d573dd6c3fec6c9e42eca8ba629475098a3ba96b147d9a205ae4e37bc383e",
   "semantic_index": "generated/knowledge-source/rag/index.json",
-  "semantic_index_sha256": "cf988192ae47132f6cce00a2af23f07cd7101e24db71089801639050a7a410c0",
+  "semantic_index_sha256": "fe4bfdcd90cd624630c40df13a66d87627ee60ac4fa44fe6349599b7309ce1a9",
   "lexical_index": "generated/knowledge-source/rag/lexical-index.json",
-  "lexical_index_sha256": "e62cf1228a5bbeb9ea12c8c7dbac28addf02afb2bd42dd8f477f8ffb94e573cc",
-  "registered_document_count": 28,
-  "source_document_count": 28,
-  "semantic_document_count": 5,
-  "lexical_only_document_count": 23,
-  "semantic_chunk_count": 132,
-  "lexical_chunk_count": 1016,
+  "lexical_index_sha256": "1d9cc7a90355a7d1595e855715b2e81610b4d21f5234b9ca39c89f45845b4f07",
+  "registered_document_count": 30,
+  "source_document_count": 30,
+  "active_document_count": 28,
+  "semantic_document_count": 4,
+  "lexical_only_document_count": 26,
+  "semantic_chunk_count": 72,
+  "lexical_chunk_count": 1177,
   "model": "jina-embeddings-v3",
   "dimensions": 1024,
   "coverage": [
+    {
+      "document_id": "universal-category-classification-policy",
+      "file_name": "universal_category_classification_policy.md",
+      "lexical_indexed": true,
+      "semantic_indexed": false,
+      "semantic_reason": "approved_embedding_absent"
+    },
+    {
+      "document_id": "universal-category-classification-references",
+      "file_name": "universal_category_classification_references.md",
+      "lexical_indexed": true,
+      "semantic_indexed": false,
+      "semantic_reason": "approved_embedding_absent"
+    },
     {
       "document_id": "base-turn-orchestration",
       "file_name": "base_turn_orchestration.txt",
@@ -107,9 +122,9 @@
     {
       "document_id": "interface-ux",
       "file_name": "interface_ux.md",
-      "lexical_indexed": false,
-      "semantic_indexed": true,
-      "semantic_reason": "approved_embedding_snapshot"
+      "lexical_indexed": true,
+      "semantic_indexed": false,
+      "semantic_reason": "approved_embedding_absent"
     },
     {
       "document_id": "items-and-property",

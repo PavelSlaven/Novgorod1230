@@ -854,29 +854,6 @@
   },
   "nodes": [
     {
-      "id": "action_hints_agent_ui",
-      "label": "Action hints agent UI",
-      "node_type": "interface",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "## 10. Агент подсказок действий",
-        "line_start": 438,
-        "line_end": 462,
-        "line_range": "L438-L462"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 1,
-      "community_label": "LLM architecture",
-      "norm_label": "action hints agent ui",
-      "aliases": [],
-      "description": "Старые чипы быстрых действий нужно переосмыслить. Они не должны быть статическим списком вроде «поговорить», «осмотреть», «идти». Подсказки должен готовить отдельный LLM-агент. Его задача — читать текущий видимый контекст с точки зрения персонажа игрока и п..."
-    },
-    {
       "id": "armor_coverage",
       "label": "Armor coverage",
       "node_type": "schema",
@@ -995,7 +972,7 @@
       "source_location": {
         "file": "character_inventory_equipment.txt",
         "line_start": 1,
-        "line_end": 327
+        "line_end": 345
       }
     },
     {
@@ -1055,7 +1032,7 @@
       "source_location": {
         "file": "README.md",
         "line_start": 1,
-        "line_end": 62
+        "line_end": 64
       }
     },
     {
@@ -1067,7 +1044,7 @@
       "source_location": {
         "file": "formulas.md",
         "line_start": 1,
-        "line_end": 2665
+        "line_end": 2678
       }
     },
     {
@@ -1107,6 +1084,18 @@
       }
     },
     {
+      "id": "canonical-document:interface-ux",
+      "type": "canonical_document",
+      "label": "interface_ux.md",
+      "structural_only": true,
+      "source_file": "DOCUMENTS/interface_ux.md",
+      "source_location": {
+        "file": "interface_ux.md",
+        "line_start": 1,
+        "line_end": 1157
+      }
+    },
+    {
       "id": "canonical-document:items-and-property",
       "type": "canonical_document",
       "label": "items_and_property.txt",
@@ -1115,7 +1104,7 @@
       "source_location": {
         "file": "items_and_property.txt",
         "line_start": 1,
-        "line_end": 352
+        "line_end": 376
       }
     },
     {
@@ -1139,7 +1128,7 @@
       "source_location": {
         "file": "llm_documentation_navigation.md",
         "line_start": 1,
-        "line_end": 247
+        "line_end": 253
       }
     },
     {
@@ -1351,29 +1340,6 @@
       "formula_kind": "calculation_or_structural_formula"
     },
     {
-      "id": "character_state_ui",
-      "label": "Character state UI",
-      "node_type": "interface",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "## 15. Состояние персонажа и карточка подробностей",
-        "line_start": 818,
-        "line_end": 836,
-        "line_range": "L818-L836"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 15,
-      "community_label": "Character states",
-      "norm_label": "character state ui",
-      "aliases": [],
-      "description": "Основной экран показывает только краткое состояние. Подробная карточка состояния открывается отдельно и показывает: 1. Здоровье; 2. Сытость; 3. Бодрость; 4. активные состояния; 5. причины активных состояний, если персонаж их понимает; 6. видимые последствия..."
-    },
-    {
       "id": "combat_equipment_processing_order",
       "label": "Combat equipment processing order",
       "node_type": "workflow",
@@ -1447,29 +1413,6 @@
       "formula_kind": "schema_model"
     },
     {
-      "id": "development_diagnostics_ui",
-      "label": "Development diagnostics UI",
-      "node_type": "ui_layer",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "### 4. Диагностика разработки",
-        "line_start": 142,
-        "line_end": 155,
-        "line_range": "L142-L155"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 8,
-      "community_label": "UI and visibility",
-      "norm_label": "development diagnostics ui",
-      "aliases": [],
-      "description": "Это технический слой: 1. процесс создания новой игры; 2. этапы генерации; 3. LLM-вызовы; 4. raw request / raw response; 5. ошибки; 6. JSON-снимки; 7. HTML-артефакты из `data/new-game-process`. Этот слой не является частью мира и не должен попадать в игровой..."
-    },
-    {
       "id": "dexterity_attribute",
       "label": "Dexterity attribute",
       "node_type": "attribute",
@@ -1491,29 +1434,6 @@
       "norm_label": "dexterity attribute",
       "aliases": [],
       "description": "| **Ловкость** | 3–18 | Проворство и точность тела: уклониться, пролезть, удержать равновесие, двигаться тихо, стрелять, метнуть, работать пальцами, развязать узел, не поскользнуться, быстро сменить позицию. | | **Выносливость** | 3–18 | Запас тела: холод,..."
-    },
-    {
-      "id": "diagnostics_process_artifacts",
-      "label": "Diagnostics process artifacts",
-      "node_type": "diagnostic",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "## 19. Диагностика и `data/new-game-process`",
-        "line_start": 981,
-        "line_end": 1005,
-        "line_range": "L981-L1005"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 8,
-      "community_label": "UI and visibility",
-      "norm_label": "diagnostics process artifacts",
-      "aliases": [],
-      "description": "Отладку создания новой игры нужно сохранить и актуализировать под новые документы. Диагностика должна быть отделена от игрового интерфейса. Игрок в обычном режиме не видит промты, raw JSON, внутренние этапы, ошибки парсинга и технические снимки. Диагностика..."
     },
     {
       "id": "doc_char_params",
@@ -1583,29 +1503,6 @@
       "norm_label": "time system",
       "aliases": [],
       "description": "Document: time_system.txt"
-    },
-    {
-      "id": "doc_ui",
-      "label": "Interface and UX",
-      "node_type": "document",
-      "file_type": "document",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "Интерфейс и UX",
-        "line_start": 1,
-        "line_end": 20,
-        "line_range": "L1-L20"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 8,
-      "community_label": "UI and visibility",
-      "norm_label": "interface and ux",
-      "aliases": [],
-      "description": "Document: interface_ux.md"
     },
     {
       "id": "doc_weapons",
@@ -1944,29 +1841,6 @@
       "description": "Весь боевой комплект входит в общий вес. Формула: `общий вес = вес оружия + вес брони + вес щита + вес снарядов + вес одежды + вес прочих вещей` Коэффициент нагрузки: `коэффициент нагрузки = общий вес / Сила` Категории нагрузки: | Нагрузка | Условие | Эффек..."
     },
     {
-      "id": "free_text_input_ui",
-      "label": "Free text input",
-      "node_type": "interface",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "## 9. Свободный ввод игрока",
-        "line_start": 409,
-        "line_end": 433,
-        "line_range": "L409-L433"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 8,
-      "community_label": "UI and visibility",
-      "norm_label": "free text input",
-      "aliases": [],
-      "description": "Свободный ввод находится внизу основного экрана и остаётся доступным большую часть времени. Поле ввода должно поддерживать: 1. короткое действие; 2. длинное описание намерения; 3. разговорную реплику; 4. уточнение способа действия; 5. попытку осмотра; 6. пе..."
-    },
-    {
       "id": "health_profile",
       "label": "Health profile",
       "node_type": "state",
@@ -2040,121 +1914,6 @@
       "description": "| **Влияние** | 3–18 | Социальная сила: убедить, солгать, запугать, договориться, вызвать доверие, держаться достойно, произвести впечатление, просить милости, спорить, торговаться, отдавать приказ. | большинство людей в диапазоне 8–13, крепких и опытных —..."
     },
     {
-      "id": "inventory_ui",
-      "label": "Inventory UI",
-      "node_type": "interface",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "## 12. Инвентарь",
-        "line_start": 678,
-        "line_end": 702,
-        "line_range": "L678-L702"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 7,
-      "community_label": "Inventory and items",
-      "norm_label": "inventory ui",
-      "aliases": [],
-      "description": "Инвентарь открывается отдельным оверлеем. В основной боковой панели остаётся только краткая строка. Инвентарь — это предметы, которые персонаж физически несёт при себе и может использовать в текущей сцене. Короткая формула: инвентарь = предметы при персонаж..."
-    },
-    {
-      "id": "journal_ui",
-      "label": "Journal UI",
-      "node_type": "interface",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "## 11. Журнал",
-        "line_start": 503,
-        "line_end": 527,
-        "line_range": "L503-L527"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 8,
-      "community_label": "UI and visibility",
-      "norm_label": "journal ui",
-      "aliases": [],
-      "description": "Журнал — это игровая память партии. Он не является логом всех технических событий и не является дампом состояния. Журнал открывается отдельным окном или полноэкранным оверлеем. На desktop он может быть широким модальным окном. На мобильном — отдельным полно..."
-    },
-    {
-      "id": "main_game_screen_ui",
-      "label": "Main game screen",
-      "node_type": "interface",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "## 8. Основное окно игры",
-        "line_start": 286,
-        "line_end": 310,
-        "line_range": "L286-L310"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 8,
-      "community_label": "UI and visibility",
-      "norm_label": "main game screen",
-      "aliases": [],
-      "description": "Основное окно игры состоит из пяти зон: 1. верхняя строка контекста; 2. центральная проза; 3. компактная боковая или верхняя панель состояния; 4. блок свободного ввода; 5. кнопки оверлеев и сохранения. Короткая формула: основной экран = контекст + проза + к..."
-    },
-    {
-      "id": "map_orientation_ui",
-      "label": "Map and orientation UI",
-      "node_type": "interface",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "## 14. Карта и ориентация",
-        "line_start": 753,
-        "line_end": 777,
-        "line_range": "L753-L777"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 10,
-      "community_label": "Movement",
-      "norm_label": "map and orientation ui",
-      "aliases": [],
-      "description": "Карта игры показывается как граф знаний персонажа, а не как фактическая карта мира. Игроку можно показывать: 1. текущую локацию; 2. известные места; 3. посещённые маршруты; 4. известные дороги; 5. примерные направления; 6. слухи о путях; 7. сомнительные све..."
-    },
-    {
-      "id": "nearby_people_ui",
-      "label": "Nearby people UI",
-      "node_type": "interface",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "## 13. Люди рядом",
-        "line_start": 721,
-        "line_end": 745,
-        "line_range": "L721-L745"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 12,
-      "community_label": "NPC",
-      "norm_label": "nearby people ui",
-      "aliases": [],
-      "description": "Список людей рядом лучше скрыть под отдельную кнопку и открывать оверлеем. Он не должен занимать постоянное место на главном экране. Основной способ понять, с кем можно взаимодействовать, — проза сцены. Оверлей **Люди рядом** нужен как вспомогательная памят..."
-    },
-    {
       "id": "npc_equipment",
       "label": "NPC equipment",
       "node_type": "schema",
@@ -2178,29 +1937,6 @@
       "description": "Снаряжение NPC определяется не сложностью боя, а ролью и статусом. Фоновому NPC достаточно: `роль + видимое снаряжение + возможная опасность` Сценическому NPC нужно: `оружие + защита + доступность + метки + право ношения + реакция на угрозу` Ключевому NPC н...",
       "semantic_category": "schema",
       "formula_kind": "schema_model"
-    },
-    {
-      "id": "party_memory_ui",
-      "label": "Party memory UI",
-      "node_type": "ui_layer",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "### 2. Память партии",
-        "line_start": 117,
-        "line_end": 128,
-        "line_range": "L117-L128"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 8,
-      "community_label": "UI and visibility",
-      "norm_label": "party memory ui",
-      "aliases": [],
-      "description": "Это журнал. Он хранит важные сведения, которые игроку нужно помнить между ходами: 1. события; 2. память персонажа; 3. обязательства; 4. известных людей; 5. известные места и карту знаний; 6. имущество и права; 7. слухи и исторический фон."
     },
     {
       "id": "ranged_equipment",
@@ -2322,29 +2058,6 @@
       "formula_kind": "state_model"
     },
     {
-      "id": "scene_layer_ui",
-      "label": "Scene layer UI",
-      "node_type": "ui_layer",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "### 1. Сценический слой",
-        "line_start": 104,
-        "line_end": 116,
-        "line_range": "L104-L116"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 8,
-      "community_label": "UI and visibility",
-      "norm_label": "scene layer ui",
-      "aliases": [],
-      "description": "Это основной экран игры: 1. проза текущей сцены; 2. время, сезон, часть суток; 3. место и ближайшая позиция; 4. короткие телесные состояния; 5. метки тревоги; 6. строка инвентаря при персонаже; 7. свободный ввод; 8. кнопки сохранения, журнала, инвентаря, лю..."
-    },
-    {
       "id": "shield_profile",
       "label": "Shield profile",
       "node_type": "schema",
@@ -2368,29 +2081,6 @@
       "description": "Щит — это не броня на всё тело, а активный защитный предмет. Формула: `щит = активная защита + возможное снижение вреда + занятая рука + вес + состояние + видимость` Обычные режимы щита: | Режим | Эффект | | ----------------------------- | -----------------...",
       "semantic_category": "schema",
       "formula_kind": "schema_model"
-    },
-    {
-      "id": "situation_overlays_ui",
-      "label": "Situation overlays UI",
-      "node_type": "ui_layer",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "### 3. Ситуационные оверлеи",
-        "line_start": 129,
-        "line_end": 141,
-        "line_range": "L129-L141"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 8,
-      "community_label": "UI and visibility",
-      "norm_label": "situation overlays ui",
-      "aliases": [],
-      "description": "Это отдельные окна поверх основного экрана: 1. инвентарь; 2. люди рядом; 3. подробная карточка состояния; 4. карта знаний; 5. загрузка сохранения; 6. создание новой игры. Оверлеи не должны разрушать текущую сцену. Они открываются поверх неё и закрываются бе..."
     },
     {
       "id": "skill_balance_rules",
@@ -2487,29 +2177,6 @@
       "norm_label": "strength attribute",
       "aliases": [],
       "description": "| **Сила** | 3–18 | Мышечная мощь: поднять, тащить, толкнуть, удержать, выломать, бороться, рубить, нести тяжесть, выбить дверь, удержать лошадь, перетащить раненого. | | **Ловкость** | 3–18 | Проворство и точность тела: уклониться, пролезть, удержать равно..."
-    },
-    {
-      "id": "text_player_input",
-      "label": "Player acts through text",
-      "node_type": "interface",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "### Игрок действует текстом",
-        "line_start": 83,
-        "line_end": 88,
-        "line_range": "L83-L88"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 8,
-      "community_label": "UI and visibility",
-      "norm_label": "player acts through text",
-      "aliases": [],
-      "description": "Главное действие игрока — свободный ввод. Кнопки и подсказки помогают, но не заменяют самостоятельную формулировку. Чипы действий не должны быть меню всех разрешённых команд. Они должны быть мягкими подсказками, составленными с точки зрения персонажа и теку..."
     },
     {
       "id": "time_body_state_effect",
@@ -2698,171 +2365,6 @@
       "description": "`новое время = старое время + длительность действия` Длительность выбирается по смыслу действия. Точность до минуты нужна только в напряжённых сценах: бой, погоня, стража, скрытность, пожар, болезнь, ожидание события. В обычной сцене достаточно крупных шаго...",
       "semantic_category": "formula",
       "formula_kind": "calculation_or_structural_formula"
-    },
-    {
-      "id": "ui_forbidden_rules",
-      "label": "UI forbidden rules",
-      "node_type": "rule",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "## 20. Что нельзя делать в UI",
-        "line_start": 1068,
-        "line_end": 1087,
-        "line_range": "L1068-L1087"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 8,
-      "community_label": "UI and visibility",
-      "norm_label": "ui forbidden rules",
-      "aliases": [],
-      "description": "Нельзя: 1. делать стартовую анкету с множеством обязательных полей; 2. показывать старую модель параметров как целевую; 3. держать полный инвентарь в боковой панели; 4. смешивать инвентарь и имущество; 5. показывать полный профиль NPC рядом с прозой; 6. рас..."
-    },
-    {
-      "id": "ui_information_layers",
-      "label": "UI information layers",
-      "node_type": "schema",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "## 3. Информационные слои",
-        "line_start": 100,
-        "line_end": 124,
-        "line_range": "L100-L124"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 8,
-      "community_label": "UI and visibility",
-      "norm_label": "ui information layers",
-      "aliases": [],
-      "description": "В интерфейсе должно быть четыре разных слоя информации. Это основной экран игры: 1. проза текущей сцены; 2. время, сезон, часть суток; 3. место и ближайшая позиция; 4. короткие телесные состояния; 5. метки тревоги; 6. строка инвентаря при персонаже; 7. своб...",
-      "semantic_category": "schema",
-      "formula_kind": "schema_model"
-    },
-    {
-      "id": "ui_not_world_author",
-      "label": "UI must not author world facts",
-      "node_type": "rule",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "### UI не придумывает мир",
-        "line_start": 89,
-        "line_end": 99,
-        "line_range": "L89-L99"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 8,
-      "community_label": "UI and visibility",
-      "norm_label": "ui must not author world facts",
-      "aliases": [],
-      "description": "Интерфейс не создаёт факты, не достраивает правила и не исправляет смысловую логику мира. Он показывает утверждённое игровое состояние, важную память и диагностические сведения, если включён режим разработки. Короткая формула: мир создаётся и обновляется иг..."
-    },
-    {
-      "id": "ui_prose_over_panel",
-      "label": "Prose over panels rule",
-      "node_type": "rule",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "### Проза главнее панели",
-        "line_start": 70,
-        "line_end": 82,
-        "line_range": "L70-L82"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 8,
-      "community_label": "UI and visibility",
-      "norm_label": "prose over panels rule",
-      "aliases": [],
-      "description": "Основной экран должен быть читальным экраном. Проза сцены занимает визуальный приоритет. Параметры, карточки, кнопки, подсказки и графы не должны конкурировать с текстом. Целевое распределение внимания на desktop: 70–80% внимания — проза и ввод 20–30% внима..."
-    },
-    {
-      "id": "ui_purpose",
-      "label": "UI purpose",
-      "node_type": "rule",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "## 1. Назначение интерфейса",
-        "line_start": 17,
-        "line_end": 39,
-        "line_range": "L17-L39"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 8,
-      "community_label": "UI and visibility",
-      "norm_label": "ui purpose",
-      "aliases": [],
-      "description": "Интерфейс должен помогать игроку действовать как человек внутри исторической среды, а не как оператор базы данных. Основные задачи UI: 1. дать понять, что это за игра и в каком историческом диапазоне она происходит; 2. позволить начать новую партию через св..."
-    },
-    {
-      "id": "ui_short_formulas",
-      "label": "UI short formulas",
-      "node_type": "formula",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "## 21. Короткие формулы",
-        "line_start": 1088,
-        "line_end": 1112,
-        "line_range": "L1088-L1112"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 8,
-      "community_label": "UI and visibility",
-      "norm_label": "ui short formulas",
-      "aliases": [],
-      "description": "UI = проза + видимый контекст + краткое состояние + свободный ввод + память старт = объяснение игры + Новая игра + Загрузить новая игра = свободное описание игрока → создание мира → вводная проза основное окно = верхний контекст + проза + состояние + ввод +...",
-      "semantic_category": "formula",
-      "formula_kind": "calculation_or_structural_formula"
-    },
-    {
-      "id": "ui_visible_over_complete",
-      "label": "Visible over complete rule",
-      "node_type": "rule",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "### Видимое важнее полного",
-        "line_start": 42,
-        "line_end": 66,
-        "line_range": "L42-L66"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 8,
-      "community_label": "UI and visibility",
-      "norm_label": "visible over complete rule",
-      "aliases": [],
-      "description": "Игрок не должен видеть весь мир, скрытую карту, скрытые мотивы NPC, внутренние флаги, технические контракты, сырые промты или данные, которые персонаж не мог знать. Показывается: 1. то, что персонаж видит, слышит, чувствует или помнит; 2. то, что персонаж р..."
     },
     {
       "id": "weapon_armor_combat_formula",
@@ -11885,42 +11387,6 @@
       "description": "Character body states --includes--> Satiety profile; confidence=EXTRACTED."
     },
     {
-      "source": "character_state_ui",
-      "target": "character_body_states",
-      "relation": "displays",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "## 15. Состояние персонажа и карточка подробностей",
-        "line_start": 818,
-        "line_end": 836,
-        "line_range": "L818-L836"
-      },
-      "weight": 1,
-      "description": "Character state UI --displays--> Character body states; confidence=EXTRACTED."
-    },
-    {
-      "source": "diagnostics_process_artifacts",
-      "target": "development_diagnostics_ui",
-      "relation": "belongs_to",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "## 19. Диагностика и `data/new-game-process`",
-        "line_start": 981,
-        "line_end": 1000,
-        "line_range": "L981-L1000"
-      },
-      "weight": 1,
-      "description": "Diagnostics process artifacts --belongs_to--> Development diagnostics UI; confidence=EXTRACTED."
-    },
-    {
       "source": "doc_char_params",
       "target": "attention_attribute",
       "relation": "defines",
@@ -20346,384 +19812,6 @@
       },
       "weight": 1,
       "description": "Time system --defines--> Simple turn time formula; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_ui",
-      "target": "action_hints_agent_ui",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "## 10. Агент подсказок действий",
-        "line_start": 438,
-        "line_end": 462,
-        "line_range": "L438-L462"
-      },
-      "weight": 1,
-      "description": "Interface and UX --defines--> Action hints agent UI; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_ui",
-      "target": "character_state_ui",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "## 15. Состояние персонажа и карточка подробностей",
-        "line_start": 818,
-        "line_end": 836,
-        "line_range": "L818-L836"
-      },
-      "weight": 1,
-      "description": "Interface and UX --defines--> Character state UI; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_ui",
-      "target": "development_diagnostics_ui",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "### 4. Диагностика разработки",
-        "line_start": 142,
-        "line_end": 155,
-        "line_range": "L142-L155"
-      },
-      "weight": 1,
-      "description": "Interface and UX --defines--> Development diagnostics UI; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_ui",
-      "target": "diagnostics_process_artifacts",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "## 19. Диагностика и `data/new-game-process`",
-        "line_start": 981,
-        "line_end": 1005,
-        "line_range": "L981-L1005"
-      },
-      "weight": 1,
-      "description": "Interface and UX --defines--> Diagnostics process artifacts; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_ui",
-      "target": "free_text_input_ui",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "## 9. Свободный ввод игрока",
-        "line_start": 409,
-        "line_end": 433,
-        "line_range": "L409-L433"
-      },
-      "weight": 1,
-      "description": "Interface and UX --defines--> Free text input; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_ui",
-      "target": "inventory_ui",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "## 12. Инвентарь",
-        "line_start": 678,
-        "line_end": 702,
-        "line_range": "L678-L702"
-      },
-      "weight": 1,
-      "description": "Interface and UX --defines--> Inventory UI; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_ui",
-      "target": "journal_ui",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "## 11. Журнал",
-        "line_start": 503,
-        "line_end": 527,
-        "line_range": "L503-L527"
-      },
-      "weight": 1,
-      "description": "Interface and UX --defines--> Journal UI; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_ui",
-      "target": "main_game_screen_ui",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "## 8. Основное окно игры",
-        "line_start": 286,
-        "line_end": 310,
-        "line_range": "L286-L310"
-      },
-      "weight": 1,
-      "description": "Interface and UX --defines--> Main game screen; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_ui",
-      "target": "map_orientation_ui",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "## 14. Карта и ориентация",
-        "line_start": 753,
-        "line_end": 777,
-        "line_range": "L753-L777"
-      },
-      "weight": 1,
-      "description": "Interface and UX --defines--> Map and orientation UI; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_ui",
-      "target": "nearby_people_ui",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "## 13. Люди рядом",
-        "line_start": 721,
-        "line_end": 745,
-        "line_range": "L721-L745"
-      },
-      "weight": 1,
-      "description": "Interface and UX --defines--> Nearby people UI; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_ui",
-      "target": "party_memory_ui",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "### 2. Память партии",
-        "line_start": 117,
-        "line_end": 128,
-        "line_range": "L117-L128"
-      },
-      "weight": 1,
-      "description": "Interface and UX --defines--> Party memory UI; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_ui",
-      "target": "scene_layer_ui",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "### 1. Сценический слой",
-        "line_start": 104,
-        "line_end": 116,
-        "line_range": "L104-L116"
-      },
-      "weight": 1,
-      "description": "Interface and UX --defines--> Scene layer UI; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_ui",
-      "target": "situation_overlays_ui",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "### 3. Ситуационные оверлеи",
-        "line_start": 129,
-        "line_end": 141,
-        "line_range": "L129-L141"
-      },
-      "weight": 1,
-      "description": "Interface and UX --defines--> Situation overlays UI; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_ui",
-      "target": "text_player_input",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "### Игрок действует текстом",
-        "line_start": 83,
-        "line_end": 88,
-        "line_range": "L83-L88"
-      },
-      "weight": 1,
-      "description": "Interface and UX --defines--> Player acts through text; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_ui",
-      "target": "ui_forbidden_rules",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "## 20. Что нельзя делать в UI",
-        "line_start": 1068,
-        "line_end": 1087,
-        "line_range": "L1068-L1087"
-      },
-      "weight": 1,
-      "description": "Interface and UX --defines--> UI forbidden rules; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_ui",
-      "target": "ui_information_layers",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "## 3. Информационные слои",
-        "line_start": 100,
-        "line_end": 124,
-        "line_range": "L100-L124"
-      },
-      "weight": 1,
-      "description": "Interface and UX --defines--> UI information layers; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_ui",
-      "target": "ui_not_world_author",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "### UI не придумывает мир",
-        "line_start": 89,
-        "line_end": 99,
-        "line_range": "L89-L99"
-      },
-      "weight": 1,
-      "description": "Interface and UX --defines--> UI must not author world facts; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_ui",
-      "target": "ui_prose_over_panel",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "### Проза главнее панели",
-        "line_start": 70,
-        "line_end": 82,
-        "line_range": "L70-L82"
-      },
-      "weight": 1,
-      "description": "Interface and UX --defines--> Prose over panels rule; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_ui",
-      "target": "ui_purpose",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "## 1. Назначение интерфейса",
-        "line_start": 17,
-        "line_end": 39,
-        "line_range": "L17-L39"
-      },
-      "weight": 1,
-      "description": "Interface and UX --defines--> UI purpose; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_ui",
-      "target": "ui_short_formulas",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "## 21. Короткие формулы",
-        "line_start": 1088,
-        "line_end": 1112,
-        "line_range": "L1088-L1112"
-      },
-      "weight": 1,
-      "description": "Interface and UX --defines--> UI short formulas; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_ui",
-      "target": "ui_visible_over_complete",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "### Видимое важнее полного",
-        "line_start": 42,
-        "line_end": 66,
-        "line_range": "L42-L66"
-      },
-      "weight": 1,
-      "description": "Interface and UX --defines--> Visible over complete rule; confidence=EXTRACTED."
     },
     {
       "source": "doc_weapons",
@@ -29241,78 +28329,6 @@
       },
       "weight": 1,
       "description": "Skill balance rules --constrains--> Character skills schema; confidence=EXTRACTED."
-    },
-    {
-      "source": "ui_information_layers",
-      "target": "development_diagnostics_ui",
-      "relation": "includes",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "## 3. Информационные слои",
-        "line_start": 100,
-        "line_end": 119,
-        "line_range": "L100-L119"
-      },
-      "weight": 1,
-      "description": "UI information layers --includes--> Development diagnostics UI; confidence=EXTRACTED."
-    },
-    {
-      "source": "ui_information_layers",
-      "target": "party_memory_ui",
-      "relation": "includes",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "## 3. Информационные слои",
-        "line_start": 100,
-        "line_end": 119,
-        "line_range": "L100-L119"
-      },
-      "weight": 1,
-      "description": "UI information layers --includes--> Party memory UI; confidence=EXTRACTED."
-    },
-    {
-      "source": "ui_information_layers",
-      "target": "scene_layer_ui",
-      "relation": "includes",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "## 3. Информационные слои",
-        "line_start": 100,
-        "line_end": 119,
-        "line_range": "L100-L119"
-      },
-      "weight": 1,
-      "description": "UI information layers --includes--> Scene layer UI; confidence=EXTRACTED."
-    },
-    {
-      "source": "ui_information_layers",
-      "target": "situation_overlays_ui",
-      "relation": "includes",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "DOCUMENTS/interface_ux.md",
-        "section": "## 3. Информационные слои",
-        "line_start": 100,
-        "line_end": 119,
-        "line_range": "L100-L119"
-      },
-      "weight": 1,
-      "description": "UI information layers --includes--> Situation overlays UI; confidence=EXTRACTED."
     }
   ],
   "hyperedges": []

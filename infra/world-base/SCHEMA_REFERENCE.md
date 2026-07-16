@@ -2,8 +2,8 @@
 # Справочник схемы `world_base`
 
 - Исполняемый источник: `infra/world-base/schema.sql` и 11 упорядоченных SQL-частей.
-- SHA-256 развёрнутого DDL: `5efbc14d18f55ec29c589f047caf08803d29dc7bd432561fafbbcc6390a17736`.
-- Таблиц: 108.
+- SHA-256 развёрнутого DDL: `34738343be649869f26f32917db40d6bdefe62fc9f6d813b3037f39ada7738ed`.
+- Таблиц: 121.
 - Описания берутся только из утверждённого `infra/world-base/field-descriptions.js`; отсутствие описания не заполняется эвристикой.
 
 ## Граф (каноническая карта)
@@ -2156,7 +2156,7 @@
 | `audit_notes` | `TEXT` | да | — | — | — | Заметки редактора: споры, TODO, ссылки на проверку. |
 | `created_at` | `TIMESTAMPTZ` | нет | `now()` | — | `NOT NULL` | Время создания записи (UTC). |
 | `updated_at` | `TIMESTAMPTZ` | нет | `now()` | — | `NOT NULL` | Время последнего изменения (обновляется триггером). |
-| `category_id` | `TEXT` | да | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
+| `category_id` | `TEXT` | да | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | — | FK → universal_categories(id): object-type category template; legacy item_type не является вторым классификатором. |
 
 **Ограничения таблицы:**
 
@@ -2416,6 +2416,26 @@
 
 - Явные табличные constraints отсутствуют.
 
+### `world_base.classification_schemes`
+
+Локально зафиксированные версии внешних классификационных схем без runtime live-запросов.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `title` | `TEXT` | нет | — | — | `NOT NULL` | Человекочитаемое название записи. |
+| `authority` | `TEXT` | нет | — | — | `NOT NULL` | Организация, отвечающая за внешнюю классификационную схему. |
+| `scheme_version` | `TEXT` | нет | — | — | `NOT NULL` | Зафиксированная версия внешней схемы. |
+| `release_date` | `DATE` | да | — | — | — | Дата выпуска зафиксированной версии схемы. |
+| `canonical_reference` | `TEXT` | нет | — | — | `NOT NULL` | Каноническая ссылка на схему или локальный snapshot. |
+| `license_or_usage_note` | `TEXT` | нет | — | — | `NOT NULL` | Условия лицензии либо допустимого справочного использования. |
+| `snapshot_digest` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (snapshot_digest ~ '^[a-f0-9]{64}$')` | SHA-256 локально проверенного snapshot; runtime не обращается к внешнему сервису. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
 ### `world_base.universal_categories`
 
 Универсальные категории, которые код вправе использовать, но не создавать.
@@ -2425,12 +2445,68 @@
 | `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
 | `domain` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
 | `parent_category_id` | `TEXT` | да | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
+| `stable_code` | `TEXT` | нет | — | — | `NOT NULL`<br>`UNIQUE` | Уникальный стабильный машинный код одного понятия. |
+| `facet` | `TEXT` | нет | — | — | `NOT NULL` | Классификационный фасет категории в пределах domain. |
+| `preferred_label` | `TEXT` | нет | — | — | `NOT NULL` | Предпочтительная метка категории; historical labels хранятся отдельно. |
+| `definition` | `TEXT` | нет | — | — | `NOT NULL` | Нормативное определение одного классификационного понятия. |
+| `scope_note` | `TEXT` | нет | — | — | `NOT NULL` | Граница смысла и применимости понятия без утверждения региональной истории. |
+| `inclusion_rules` | `TEXT` | нет | — | — | `NOT NULL` | Явные условия включения в категорию. |
+| `exclusion_rules` | `TEXT` | нет | — | — | `NOT NULL` | Явные условия исключения из категории. |
+| `replaced_by_category_id` | `TEXT` | да | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | — | FK на заменяющую категорию; deprecated/replaced категория не кандидат runtime. |
 | `title` | `TEXT` | нет | — | — | `NOT NULL` | Человекочитаемое название записи. |
 | `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
 
 **Ограничения таблицы:**
 
-- `UNIQUE (domain, title)`
+- `UNIQUE (domain, facet, preferred_label)`
+- `CHECK (length(trim(stable_code)) > 0)`
+- `CHECK (length(trim(domain)) > 0)`
+- `CHECK (length(trim(facet)) > 0)`
+- `CHECK (length(trim(preferred_label)) > 0)`
+- `CHECK (length(trim(definition)) > 0)`
+- `CHECK (length(trim(scope_note)) > 0)`
+- `CHECK (length(trim(inclusion_rules)) > 0)`
+- `CHECK (length(trim(exclusion_rules)) > 0)`
+
+### `world_base.category_labels`
+
+Нормализованные preferred, alternative, historical и deprecated labels категорий.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE CASCADE` | `NOT NULL` | FK на классифицируемую универсальную категорию. |
+| `language` | `TEXT` | нет | — | — | `NOT NULL` | Язык метки по принятому языковому коду проекта. |
+| `label` | `TEXT` | нет | — | — | `NOT NULL` | Текстовая метка; не самостоятельный category ID. |
+| `label_type` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (label_type IN ('preferred','alternative','historical','deprecated'))` | preferred, alternative, historical или deprecated. |
+| `valid_from` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `valid_to` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `source_id` | `TEXT` | да | — | `world_base.source_records(id) ON DELETE RESTRICT` | — | FK на подтверждающий source_records, если он известен. |
+
+**Ограничения таблицы:**
+
+- `CHECK (valid_to IS NULL OR valid_from IS NULL OR valid_from <= valid_to)`
+- `UNIQUE (category_id, language, label)`
+- `UNIQUE INDEX category_labels_one_preferred_per_language (category_id, language) WHERE label_type = 'preferred'`
+
+### `world_base.category_scheme_mappings`
+
+Справочные mappings проектных категорий к pinned внешним схемам; не являются regional permission или rule.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE CASCADE` | `NOT NULL` | FK на проектную категорию. |
+| `classification_scheme_id` | `TEXT` | нет | — | `world_base.classification_schemes(id) ON DELETE RESTRICT` | `NOT NULL` | FK на pinned classification scheme. |
+| `external_concept_id` | `TEXT` | нет | — | — | `NOT NULL` | Стабильный ID понятия во внешней схеме. |
+| `mapping_type` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (mapping_type IN ('exact','close','broad','narrow','related'))` | exact, close, broad, narrow или related; mapping не даёт regional permission. |
+| `mapping_evidence` | `TEXT` | нет | — | — | `NOT NULL` | Основание сопоставления без подмены исторической применимости. |
+| `source_id` | `TEXT` | да | — | `world_base.source_records(id) ON DELETE RESTRICT` | — | FK на источник evidence, если он известен. |
+| `review_status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (review_status IN ('draft','approved','rejected'))` | Статус редакторского review mapping: draft, approved или rejected. |
+
+**Ограничения таблицы:**
+
+- `UNIQUE (category_id, classification_scheme_id, external_concept_id)`
 
 ### `world_base.universal_category_relations`
 
@@ -2441,10 +2517,11 @@
 | `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
 | `from_category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
 | `to_category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
-| `relation_type` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `relation_type` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (relation_type IN ('broader','narrower','related','compatible','requires','excludes','equivalent_with_scope'))` | broader, narrower, related, compatible, requires, excludes или equivalent_with_scope; hierarchy cycles forbidden. |
 
 **Ограничения таблицы:**
 
+- `CHECK (from_category_id <> to_category_id)`
 - `UNIQUE (from_category_id, to_category_id, relation_type)`
 
 ### `world_base.universal_parameter_definitions`
@@ -3029,7 +3106,10 @@ G4-specific правила контейнеров, содержимого и д�
 | `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
 | `region_id` | `TEXT` | да | — | `world_base.regions(id) ON DELETE CASCADE` | — | FK → regions(id): регион, к которому относится запись. |
 | `category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
-| `capacity` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (capacity > 0)` | Описание отсутствует. |
+| `source_id` | `TEXT` | да | — | `world_base.source_records(id) ON DELETE RESTRICT` | — | FK → source_records(id): provenance container template; draft catalog не выводит историческую точность из этой ссылки. |
+| `capacity` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (capacity > 0)` | Положительная внутренняя вместимость контейнера в packing slots; не является массой, литрами или inventory slots персонажа. |
+| `packing_slot_cost` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (packing_slot_cost > 0)` | Положительный внешний размер контейнера в packing slots при переноске или вложении. |
+| `capacity_policy` | `JSONB` | нет | — | — | `NOT NULL`<br>`CHECK ( jsonb_typeof(capacity_policy) = 'object' AND capacity_policy = '{"version":1,"mode":"packing_slots","unit":"packing_slot"}'::jsonb )` | Closed policy строго {version:1,mode:packing_slots,unit:packing_slot}; runtime не интерпретирует иные единицы. |
 | `access_policy` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
 | `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
 
@@ -3108,6 +3188,122 @@ G4-specific правила контейнеров, содержимого и д�
 
 - `CHECK ((item_template_id IS NULL) <> (item_category_id IS NULL))`
 
+### `world_base.item_template_category_bindings`
+
+Нормализованные фасетные связи шаблона предмета с утверждёнными категориями.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `item_template_id` | `TEXT` | нет | — | `world_base.item_templates(id) ON DELETE CASCADE` | `NOT NULL` | FK → item_templates(id): классифицируемый шаблон предмета. |
+| `category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | `NOT NULL` | FK → universal_categories(id): утверждённая категория фасета. |
+| `binding_kind` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (binding_kind IN ( 'object_type','primary_function','secondary_function','material', 'manufacturing_technique','component_type','physical_form','condition', 'quality_band','size_band','mass_band','use_context' ))` | Независимый фасет: object_type, function, material, technique, condition и др. |
+| `packing_slot_cost` | `INTEGER` | да | — | — | — | Только size_band: положительное число packing slots за один bundle; не является массой или объёмом. |
+| `packing_bundle_size` | `INTEGER` | да | — | — | — | Только size_band: положительное количество одинаковых template/state items в одном packing bundle. |
+| `exclusivity_group` | `TEXT` | да | — | — | — | Только primary_function либо NULL; запрещает неформальные группы совместимости. |
+| `requires_regional_permission` | `BOOLEAN` | нет | `false` | — | `NOT NULL` | Требует approved regional/period permission в той же world revision до импорта. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- `CHECK (exclusivity_group IS NULL OR (binding_kind = 'primary_function' AND exclusivity_group = 'primary_function'))`
+- `CHECK ( (binding_kind = 'size_band' AND packing_slot_cost IS NOT NULL AND packing_slot_cost > 0 AND packing_bundle_size IS NOT NULL AND packing_bundle_size > 0) OR (binding_kind <> 'size_band' AND packing_slot_cost IS NULL AND packing_bundle_size IS NULL) )`
+- `UNIQUE (item_template_id, category_id, binding_kind)`
+- `UNIQUE INDEX item_template_one_active_primary_function (item_template_id) WHERE binding_kind = 'primary_function' AND status = 'approved'`
+- `UNIQUE INDEX item_template_one_active_size_band (item_template_id) WHERE binding_kind = 'size_band' AND status = 'approved'`
+
+### `world_base.item_template_inventory_profiles`
+
+Строго типизированные mass и carrying параметры шаблона предмета; не историческое подтверждение без source record.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `item_template_id` | `TEXT` | нет | — | `world_base.item_templates(id) ON DELETE CASCADE` | `NOT NULL` | FK → item_templates(id): шаблон предмета, для которого утверждены физические inventory parameters. |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | FK → world_revisions(id): pinned ревизия authoring-каталога. |
+| `source_id` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | FK → source_records(id): provenance параметров; отсутствие не допускает historical approval. |
+| `mass_grams` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (mass_grams >= 0)` | Неотрицательная масса одного экземпляра в граммах; не выводится из packing slots и не имеет fallback. |
+| `carry_form` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (carry_form IN ('compact','regular','long','bulky'))` | Closed carrying form: compact, regular, long или bulky. |
+| `external_hand_cost` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (external_hand_cost IN (0,1,2))` | Closed внешний hand cost 0, 1 или 2; не является use_hand_cost. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | draft, approved или deprecated; для template допустим только один approved profile. |
+
+**Ограничения таблицы:**
+
+- `UNIQUE INDEX item_template_one_active_inventory_profile (item_template_id) WHERE status = 'approved'`
+
+### `world_base.container_template_inventory_profiles`
+
+Строго типизированные mass, carrying и quick/primary role параметры шаблона контейнера.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `container_template_id` | `TEXT` | нет | — | `world_base.container_templates(id) ON DELETE CASCADE` | `NOT NULL` | FK → container_templates(id): контейнер, для которого утверждены физические inventory parameters. |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | FK → world_revisions(id): pinned ревизия authoring-каталога. |
+| `source_id` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | FK → source_records(id): provenance параметров; отсутствие не допускает historical approval. |
+| `mass_grams` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (mass_grams >= 0)` | Неотрицательная масса пустого контейнера в граммах; contents считаются отдельно. |
+| `carry_form` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (carry_form IN ('compact','regular','long','bulky'))` | Closed carrying form: compact, regular, long или bulky. |
+| `external_hand_cost` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (external_hand_cost IN (0,1,2))` | Closed внешний hand cost 0, 1 или 2; не является use_hand_cost. |
+| `inventory_role` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (inventory_role IN ('none','quick_container','primary_container'))` | none, quick_container или primary_container; это authoring role, а не сохранённый derived zone. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | draft, approved или deprecated; для template допустим только один approved profile. |
+
+**Ограничения таблицы:**
+
+- `UNIQUE INDEX container_template_one_active_inventory_profile (container_template_id) WHERE status = 'approved'`
+
+### `world_base.container_template_facet_bindings`
+
+Нормализованные фасеты шаблона контейнера.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `container_template_id` | `TEXT` | нет | — | `world_base.container_templates(id) ON DELETE CASCADE` | `NOT NULL` | FK → container_templates(id): классифицируемый шаблон контейнера. |
+| `category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | `NOT NULL` | FK → universal_categories(id): утверждённая категория фасета. |
+| `facet` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (facet IN ( 'container_form','capacity_band','closure_type','access_model', 'portability','content_compatibility','condition','material' ))` | container_form, material, capacity_band, closure_type, access_model, portability, content_compatibility или condition. |
+| `requires_regional_permission` | `BOOLEAN` | нет | `false` | — | `NOT NULL` | Требует approved regional/period permission в той же world revision до импорта. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- `UNIQUE (container_template_id, category_id, facet)`
+
+### `world_base.container_content_category_relations`
+
+Разрешённые и запрещённые пары категорий контейнера и содержимого.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `container_category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | `NOT NULL` | FK → universal_categories(id): категория контейнера. |
+| `content_category_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | `NOT NULL` | FK → universal_categories(id): категория допустимого либо запрещённого содержимого. |
+| `compatibility` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (compatibility IN ('allowed','forbidden'))` | closed vocabulary: allowed или forbidden; не создаёт regional permission. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- `UNIQUE (container_category_id, content_category_id)`
+
+### `world_base.item_classification_migration_inventory`
+
+Явный отчёт перехода legacy-полей предметов и контейнеров без guessed mapping.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `legacy_table_name` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (legacy_table_name IN ('item_templates','container_templates'))` | Исходная legacy-таблица без автоматической записи в неё. |
+| `legacy_record_id` | `TEXT` | нет | — | — | `NOT NULL` | ID исходной legacy-записи. |
+| `legacy_field_name` | `TEXT` | нет | — | — | `NOT NULL` | Поле, для которого требуется reviewed classification mapping. |
+| `legacy_value` | `TEXT` | нет | — | — | `NOT NULL` | Дословное legacy-значение; не интерпретируется как категория. |
+| `resolution_status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (resolution_status IN ('mapped','data_gap','migration_conflict','deferred'))` | mapped, data_gap, migration_conflict или deferred. |
+| `resolved_category_id` | `TEXT` | да | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | — | FK → universal_categories(id); обязателен только при mapped. |
+| `report_note` | `TEXT` | да | — | — | — | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `CHECK ((resolution_status = 'mapped') = (resolved_category_id IS NOT NULL))`
+- `UNIQUE (legacy_table_name, legacy_record_id, legacy_field_name)`
+
 ### `world_base.property_profiles`
 
 Региональные модели имущества и доступа.
@@ -3132,11 +3328,12 @@ G4-specific правила контейнеров, содержимого и д�
 |---|---|---:|---|---|---|---|
 | `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
 | `property_profile_id` | `TEXT` | нет | — | `world_base.property_profiles(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
-| `owner_kind` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
-| `holder_kind` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
-| `controller_kind` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
-| `access_policy` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
-| `claim_conditions` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `owner_kind` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (owner_kind IN ('person','household','workshop','community','institution','estate','unknown'))` | Closed vocabulary: person, household, workshop, community, institution, estate или unknown; не ID конкретного owner. |
+| `holder_kind` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (holder_kind IN ('person','household','workshop','community','institution','estate','unknown'))` | Closed vocabulary holder relation; не заменяет party holder relation. |
+| `controller_kind` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (controller_kind IN ('person','household','workshop','community','institution','estate','unknown'))` | Closed vocabulary controller relation; не заменяет party controller relation. |
+| `access_policy` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Versioned policy payload для authoring access; без внешних ID и художественного текста. |
+| `claim_conditions` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Versioned policy payload условий claim; без конкретных party relations. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
 
 **Ограничения таблицы:**
 
@@ -3271,3 +3468,94 @@ Digests, counts и dependency order таблиц одного импорта.
 
 - `CHECK (from_anchor_slot_key <> to_anchor_slot_key)`
 - `UNIQUE (profile_id, from_anchor_slot_key, to_anchor_slot_key)`
+
+### `world_base.item_template_source_bindings`
+
+Описание назначения отсутствует.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `item_template_id` | `TEXT` | нет | — | `world_base.item_templates(id) ON DELETE CASCADE` | `NOT NULL` | FK → item_templates(id): template, к которому относится одно ограниченное evidence claim. |
+| `source_id` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | FK → source_records(id): конкретный источник доказательства; project policy не заменяет historical source. |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | FK → world_revisions(id): revision, в котором рассматривается evidence binding. |
+| `evidence_class` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (evidence_class IN ('direct_novgorod','direct_novgorod_or_rus_period','rus_period_with_novgorod_context','comparative_period'))` | Закрытый класс evidence: direct_novgorod, direct_novgorod_or_rus_period, rus_period_with_novgorod_context или comparative_period. |
+| `claim_scope` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (claim_scope IN ('historical_presence','material','construction','physical_parameter','social_access','commonness'))` | Точно ограниченное утверждение: historical_presence, material, construction, physical_parameter, social_access или commonness. |
+| `valid_from` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `valid_to` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `confidence` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown','low','medium_low','medium','medium_high','high'))` | Оценка уверенности в конкретном claim, не историческая частотность. |
+| `review_status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (review_status IN ('needs_review','reviewed','rejected'))` | needs_review, reviewed или rejected; только reviewed historical_presence может участвовать в promotion readiness. |
+| `notes` | `TEXT` | да | — | — | — | Необязательная граница доказательного утверждения; не является queryable категорией. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | draft, approved или deprecated; approved binding не создаёт regional permission. |
+
+**Ограничения таблицы:**
+
+- `CHECK (valid_to IS NULL OR valid_from IS NULL OR valid_to >= valid_from)`
+- `UNIQUE (item_template_id, source_id, claim_scope)`
+
+### `world_base.container_template_source_bindings`
+
+Описание назначения отсутствует.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `container_template_id` | `TEXT` | нет | — | `world_base.container_templates(id) ON DELETE CASCADE` | `NOT NULL` | FK → container_templates(id): container template, к которому относится одно ограниченное evidence claim. |
+| `source_id` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | FK → source_records(id): конкретный источник доказательства. |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | FK → world_revisions(id): revision, в котором рассматривается evidence binding. |
+| `evidence_class` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (evidence_class IN ('direct_novgorod','direct_novgorod_or_rus_period','rus_period_with_novgorod_context','comparative_period'))` | Закрытый класс evidence без неявного вывода исторической допустимости. |
+| `claim_scope` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (claim_scope IN ('historical_presence','material','construction','physical_parameter','social_access','commonness'))` | historical_presence, material, construction, physical_parameter, social_access или commonness. |
+| `valid_from` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `valid_to` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `confidence` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown','low','medium_low','medium','medium_high','high'))` | Оценка уверенности в конкретном claim. |
+| `review_status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (review_status IN ('needs_review','reviewed','rejected'))` | needs_review, reviewed или rejected; reviewed historical_presence является отдельным promotion gate. |
+| `notes` | `TEXT` | да | — | — | — | Необязательная граница доказательного утверждения. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | draft, approved или deprecated; binding не создаёт региональное permission. |
+
+**Ограничения таблицы:**
+
+- `CHECK (valid_to IS NULL OR valid_from IS NULL OR valid_to >= valid_from)`
+- `UNIQUE (container_template_id, source_id, claim_scope)`
+
+### `world_base.quantity_unit_definitions`
+
+Описание назначения отсутствует.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `dimension` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (dimension IN ('count','mass','volume','length'))` | Измеряемое измерение: count, mass, volume или length. |
+| `canonical_unit` | `TEXT` | нет | — | — | `NOT NULL` | Каноническая единица внутри данного dimension; не свободный игровой текст. |
+| `conversion_policy` | `JSONB` | нет | — | — | `NOT NULL` | Versioned closed policy преобразования единицы; runtime не запрашивает внешние справочники. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | draft, approved или deprecated; draft definition не создаёт runtime quantity candidate. |
+
+**Ограничения таблицы:**
+
+- `CHECK (jsonb_typeof(conversion_policy) = 'object')`
+- `UNIQUE (dimension, canonical_unit)`
+
+### `world_base.item_template_quantity_profiles`
+
+Описание назначения отсутствует.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `item_template_id` | `TEXT` | нет | — | `world_base.item_templates(id) ON DELETE CASCADE` | `NOT NULL` | FK → item_templates(id): bulk template с явной quantity semantics. |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | FK → world_revisions(id): pinned authoring revision quantity profile. |
+| `quantity_unit_id` | `TEXT` | нет | — | `world_base.quantity_unit_definitions(id) ON DELETE RESTRICT` | `NOT NULL` | FK → quantity_unit_definitions(id): нормализованная единица количества. |
+| `quantity_dimension` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (quantity_dimension IN ('count','mass','volume','length'))` | dimension quantity profile; должен совпадать с quantity unit definition. |
+| `minimum_quantity` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (minimum_quantity > 0)` | Минимальное положительное количество в выбранной единице. |
+| `maximum_quantity` | `INTEGER` | да | — | — | `CHECK (maximum_quantity IS NULL OR maximum_quantity >= minimum_quantity)` | Необязательная верхняя граница; NULL не означает fallback quantity. |
+| `default_quantity_policy` | `JSONB` | нет | — | — | `NOT NULL` | Closed versioned policy. explicit_only требует готовое quantity от materialization rule и запрещает default. |
+| `mass_grams_per_unit` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (mass_grams_per_unit > 0)` | Детерминированный массовый input одной quantity unit; не является packing slots или исторической частотностью. |
+| `stackable` | `BOOLEAN` | нет | — | — | `NOT NULL` | Разрешено ли хранить одинаковые quantity units в одной instance line. |
+| `partial_consumption_allowed` | `BOOLEAN` | нет | — | — | `NOT NULL` | Разрешено ли уменьшение quantity конкретной party instance. |
+| `source_id` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | FK → source_records(id): provenance quantity policy; draft policy не подтверждает историческую меру. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | draft, approved или deprecated; для template допустим только один approved quantity profile. |
+
+**Ограничения таблицы:**
+
+- `CHECK (jsonb_typeof(default_quantity_policy) = 'object')`
+- `UNIQUE (item_template_id, world_revision_id)`
+- `UNIQUE INDEX item_template_one_active_quantity_profile (item_template_id) WHERE status = 'approved'`

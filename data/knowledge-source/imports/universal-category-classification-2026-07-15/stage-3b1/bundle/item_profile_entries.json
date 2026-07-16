@@ -1,0 +1,162 @@
+[
+  {
+    "id": "profile_entry_household_kitchen_basic_v1",
+    "profile_id": "profile_household_kitchen_basic_v1",
+    "item_template_id": "item_tpl_nov_hand_quern_v1",
+    "slot_key": "draft_candidate",
+    "min_quantity": 1,
+    "max_quantity": 1,
+    "required": false,
+    "weight": 1
+  },
+  {
+    "id": "profile_entry_household_storage_basic_v1",
+    "profile_id": "profile_household_storage_basic_v1",
+    "item_template_id": "item_tpl_nov_wooden_spoon_v1",
+    "slot_key": "draft_candidate",
+    "min_quantity": 1,
+    "max_quantity": 1,
+    "required": false,
+    "weight": 1
+  },
+  {
+    "id": "profile_entry_traveler_basic_v1",
+    "profile_id": "profile_traveler_basic_v1",
+    "item_template_id": "item_tpl_nov_ladle_v1",
+    "slot_key": "draft_candidate",
+    "min_quantity": 1,
+    "max_quantity": 1,
+    "required": false,
+    "weight": 1
+  },
+  {
+    "id": "profile_entry_fisher_basic_v1",
+    "profile_id": "profile_fisher_basic_v1",
+    "item_template_id": "item_tpl_nov_wooden_bowl_v1",
+    "slot_key": "draft_candidate",
+    "min_quantity": 1,
+    "max_quantity": 1,
+    "required": false,
+    "weight": 1
+  },
+  {
+    "id": "profile_entry_farmer_basic_v1",
+    "profile_id": "profile_farmer_basic_v1",
+    "item_template_id": "item_tpl_nov_wooden_cup_v1",
+    "slot_key": "draft_candidate",
+    "min_quantity": 1,
+    "max_quantity": 1,
+    "required": false,
+    "weight": 1
+  },
+  {
+    "id": "profile_entry_woodworker_basic_v1",
+    "profile_id": "profile_woodworker_basic_v1",
+    "item_template_id": "item_tpl_nov_wooden_dish_v1",
+    "slot_key": "draft_candidate",
+    "min_quantity": 1,
+    "max_quantity": 1,
+    "required": false,
+    "weight": 1
+  },
+  {
+    "id": "profile_entry_smith_basic_v1",
+    "profile_id": "profile_smith_basic_v1",
+    "item_template_id": "item_tpl_nov_cooking_pot_v1",
+    "slot_key": "draft_candidate",
+    "min_quantity": 1,
+    "max_quantity": 1,
+    "required": false,
+    "weight": 1
+  },
+  {
+    "id": "profile_entry_textile_worker_basic_v1",
+    "profile_id": "profile_textile_worker_basic_v1",
+    "item_template_id": "item_tpl_nov_metal_cauldron_v1",
+    "slot_key": "draft_candidate",
+    "min_quantity": 1,
+    "max_quantity": 1,
+    "required": false,
+    "weight": 1
+  },
+  {
+    "id": "profile_entry_merchant_trade_tools_v1",
+    "profile_id": "profile_merchant_trade_tools_v1",
+    "item_template_id": "item_tpl_nov_chopping_board_v1",
+    "slot_key": "draft_candidate",
+    "min_quantity": 1,
+    "max_quantity": 1,
+    "required": false,
+    "weight": 1
+  },
+  {
+    "id": "profile_entry_scribe_trade_writing_v1",
+    "profile_id": "profile_scribe_trade_writing_v1",
+    "item_template_id": "item_tpl_nov_mortar_v1",
+    "slot_key": "draft_candidate",
+    "min_quantity": 1,
+    "max_quantity": 1,
+    "required": false,
+    "weight": 1
+  },
+  {
+    "id": "profile_entry_hunter_basic_v1",
+    "profile_id": "profile_hunter_basic_v1",
+    "item_template_id": "item_tpl_nov_pestle_v1",
+    "slot_key": "draft_candidate",
+    "min_quantity": 1,
+    "max_quantity": 1,
+    "required": false,
+    "weight": 1
+  },
+  {
+    "id": "profile_entry_guard_service_v1",
+    "profile_id": "profile_guard_service_v1",
+    "item_template_id": "item_tpl_nov_sieve_v1",
+    "slot_key": "draft_candidate",
+    "min_quantity": 1,
+    "max_quantity": 1,
+    "required": false,
+    "weight": 1
+  },
+  {
+    "id": "profile_entry_warrior_service_v1",
+    "profile_id": "profile_warrior_service_v1",
+    "item_template_id": "item_tpl_nov_scoop_v1",
+    "slot_key": "draft_candidate",
+    "min_quantity": 1,
+    "max_quantity": 1,
+    "required": false,
+    "weight": 1
+  },
+  {
+    "id": "profile_entry_religious_personal_v1",
+    "profile_id": "profile_religious_personal_v1",
+    "item_template_id": "item_tpl_nov_trough_v1",
+    "slot_key": "draft_candidate",
+    "min_quantity": 1,
+    "max_quantity": 1,
+    "required": false,
+    "weight": 1
+  },
+  {
+    "id": "profile_entry_market_food_stock_v1",
+    "profile_id": "profile_market_food_stock_v1",
+    "item_template_id": "item_tpl_nov_hand_quern_v1",
+    "slot_key": "draft_candidate",
+    "min_quantity": 1,
+    "max_quantity": 1,
+    "required": false,
+    "weight": 1
+  },
+  {
+    "id": "profile_entry_market_craft_stock_v1",
+    "profile_id": "profile_market_craft_stock_v1",
+    "item_template_id": "item_tpl_nov_working_axe_v1",
+    "slot_key": "draft_candidate",
+    "min_quantity": 1,
+    "max_quantity": 1,
+    "required": false,
+    "weight": 1
+  }
+]

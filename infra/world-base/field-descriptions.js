@@ -111,7 +111,7 @@ export const TABLE_GROUPS = [
   },
   {
     title: 'Materialization v2: категории и ревизии',
-    tables: ['world_revisions', 'universal_categories', 'universal_category_relations', 'universal_parameter_definitions', 'region_category_options']
+    tables: ['world_revisions', 'classification_schemes', 'universal_categories', 'category_labels', 'category_scheme_mappings', 'universal_category_relations', 'universal_parameter_definitions', 'region_category_options']
   },
   {
     title: 'Materialization v2: NPC-профили',
@@ -123,7 +123,7 @@ export const TABLE_GROUPS = [
   },
   {
     title: 'Materialization v2: предметы и имущество',
-    tables: ['container_templates', 'item_profile_sets', 'item_profile_entries', 'container_content_profiles', 'container_content_profile_entries', 'property_profiles', 'property_profile_rules', 'transport_templates']
+    tables: ['container_templates', 'item_profile_sets', 'item_profile_entries', 'container_content_profiles', 'container_content_profile_entries', 'item_template_category_bindings', 'item_template_inventory_profiles', 'container_template_inventory_profiles', 'container_template_facet_bindings', 'container_content_category_relations', 'item_classification_migration_inventory', 'property_profiles', 'property_profile_rules', 'transport_templates']
   },
   {
     title: 'Materialization v2: решения и импорт',
@@ -191,7 +191,10 @@ export const TABLE_PURPOSE_FALLBACK = {
   record_sources: 'Связь источника с любой записью справочника (полиморфная).',
   audit_log: 'Журнал ручных правок и утверждений (полиморфная цель).',
   world_revisions: 'Неизменяемые утверждённые ревизии каталогов мира и их общий digest.',
+  classification_schemes: 'Локально зафиксированные версии внешних классификационных схем без runtime live-запросов.',
   universal_categories: 'Универсальные категории, которые код вправе использовать, но не создавать.',
+  category_labels: 'Нормализованные preferred, alternative, historical и deprecated labels категорий.',
+  category_scheme_mappings: 'Справочные mappings проектных категорий к pinned внешним схемам; не являются regional permission или rule.',
   universal_category_relations: 'Нормализованные отношения между универсальными категориями.',
   universal_parameter_definitions: 'Типизированные определения параметров категорий.',
   region_category_options: 'Разрешение категории для региона, периода и ревизии с весом выбора.',
@@ -227,6 +230,12 @@ export const TABLE_PURPOSE_FALLBACK = {
   item_profile_entries: 'Нормализованные варианты предметов и quantity limits.',
   container_content_profiles: 'Профили содержимого контейнеров.',
   container_content_profile_entries: 'Нормализованные варианты содержимого и количества.',
+  item_template_category_bindings: 'Нормализованные фасетные связи шаблона предмета с утверждёнными категориями.',
+  item_template_inventory_profiles: 'Строго типизированные mass и carrying параметры шаблона предмета; не историческое подтверждение без source record.',
+  container_template_inventory_profiles: 'Строго типизированные mass, carrying и quick/primary role параметры шаблона контейнера.',
+  container_template_facet_bindings: 'Нормализованные фасеты шаблона контейнера.',
+  container_content_category_relations: 'Разрешённые и запрещённые пары категорий контейнера и содержимого.',
+  item_classification_migration_inventory: 'Явный отчёт перехода legacy-полей предметов и контейнеров без guessed mapping.',
   property_profiles: 'Региональные модели имущества и доступа.',
   property_profile_rules: 'Условия owner/holder/controller/access/claim.',
   transport_templates: 'Шаблоны транспорта с маршрутными и equipment requirements.',
@@ -292,6 +301,150 @@ export const common = {
 
 /** Поля по таблицам — только там, где нужно уточнение сверх common. */
 export const fields = {
+  item_templates: {
+    category_id: 'FK → universal_categories(id): object-type category template; legacy item_type не является вторым классификатором.',
+    world_revision_id: 'FK → world_revisions(id): pinned revision для нового нормализованного authoring template.',
+    source_id: 'FK → source_records(id): provenance template; для legacy строк может быть NULL до reviewed migration.'
+  },
+  item_template_category_bindings: {
+    item_template_id: 'FK → item_templates(id): классифицируемый шаблон предмета.',
+    category_id: 'FK → universal_categories(id): утверждённая категория фасета.',
+    binding_kind: 'Независимый фасет: object_type, function, material, technique, condition и др.',
+    packing_slot_cost: 'Только size_band: положительное число packing slots за один bundle; не является массой или объёмом.',
+    packing_bundle_size: 'Только size_band: положительное количество одинаковых template/state items в одном packing bundle.',
+    exclusivity_group: 'Только primary_function либо NULL; запрещает неформальные группы совместимости.',
+    requires_regional_permission: 'Требует approved regional/period permission в той же world revision до импорта.'
+  },
+  item_template_inventory_profiles: {
+    item_template_id: 'FK → item_templates(id): шаблон предмета, для которого утверждены физические inventory parameters.',
+    world_revision_id: 'FK → world_revisions(id): pinned ревизия authoring-каталога.',
+    source_id: 'FK → source_records(id): provenance параметров; отсутствие не допускает historical approval.',
+    mass_grams: 'Неотрицательная масса одного экземпляра в граммах; не выводится из packing slots и не имеет fallback.',
+    carry_form: 'Closed carrying form: compact, regular, long или bulky.',
+    external_hand_cost: 'Closed внешний hand cost 0, 1 или 2; не является use_hand_cost.',
+    status: 'draft, approved или deprecated; для template допустим только один approved profile.'
+  },
+  item_template_source_bindings: {
+    item_template_id: 'FK → item_templates(id): template, к которому относится одно ограниченное evidence claim.',
+    source_id: 'FK → source_records(id): конкретный источник доказательства; project policy не заменяет historical source.',
+    world_revision_id: 'FK → world_revisions(id): revision, в котором рассматривается evidence binding.',
+    evidence_class: 'Закрытый класс evidence: direct_novgorod, direct_novgorod_or_rus_period, rus_period_with_novgorod_context или comparative_period.',
+    claim_scope: 'Точно ограниченное утверждение: historical_presence, material, construction, physical_parameter, social_access или commonness.',
+    confidence: 'Оценка уверенности в конкретном claim, не историческая частотность.',
+    review_status: 'needs_review, reviewed или rejected; только reviewed historical_presence может участвовать в promotion readiness.',
+    notes: 'Необязательная граница доказательного утверждения; не является queryable категорией.',
+    status: 'draft, approved или deprecated; approved binding не создаёт regional permission.'
+  },
+  quantity_unit_definitions: {
+    dimension: 'Измеряемое измерение: count, mass, volume или length.',
+    canonical_unit: 'Каноническая единица внутри данного dimension; не свободный игровой текст.',
+    conversion_policy: 'Versioned closed policy преобразования единицы; runtime не запрашивает внешние справочники.',
+    status: 'draft, approved или deprecated; draft definition не создаёт runtime quantity candidate.'
+  },
+  item_template_quantity_profiles: {
+    item_template_id: 'FK → item_templates(id): bulk template с явной quantity semantics.',
+    world_revision_id: 'FK → world_revisions(id): pinned authoring revision quantity profile.',
+    quantity_unit_id: 'FK → quantity_unit_definitions(id): нормализованная единица количества.',
+    quantity_dimension: 'dimension quantity profile; должен совпадать с quantity unit definition.',
+    minimum_quantity: 'Минимальное положительное количество в выбранной единице.',
+    maximum_quantity: 'Необязательная верхняя граница; NULL не означает fallback quantity.',
+    default_quantity_policy: 'Closed versioned policy. explicit_only требует готовое quantity от materialization rule и запрещает default.',
+    mass_grams_per_unit: 'Детерминированный массовый input одной quantity unit; не является packing slots или исторической частотностью.',
+    stackable: 'Разрешено ли хранить одинаковые quantity units в одной instance line.',
+    partial_consumption_allowed: 'Разрешено ли уменьшение quantity конкретной party instance.',
+    source_id: 'FK → source_records(id): provenance quantity policy; draft policy не подтверждает историческую меру.',
+    status: 'draft, approved или deprecated; для template допустим только один approved quantity profile.'
+  },
+  container_template_inventory_profiles: {
+    container_template_id: 'FK → container_templates(id): контейнер, для которого утверждены физические inventory parameters.',
+    world_revision_id: 'FK → world_revisions(id): pinned ревизия authoring-каталога.',
+    source_id: 'FK → source_records(id): provenance параметров; отсутствие не допускает historical approval.',
+    mass_grams: 'Неотрицательная масса пустого контейнера в граммах; contents считаются отдельно.',
+    carry_form: 'Closed carrying form: compact, regular, long или bulky.',
+    external_hand_cost: 'Closed внешний hand cost 0, 1 или 2; не является use_hand_cost.',
+    inventory_role: 'none, quick_container или primary_container; это authoring role, а не сохранённый derived zone.',
+    status: 'draft, approved или deprecated; для template допустим только один approved profile.'
+  },
+  container_template_source_bindings: {
+    container_template_id: 'FK → container_templates(id): container template, к которому относится одно ограниченное evidence claim.',
+    source_id: 'FK → source_records(id): конкретный источник доказательства.',
+    world_revision_id: 'FK → world_revisions(id): revision, в котором рассматривается evidence binding.',
+    evidence_class: 'Закрытый класс evidence без неявного вывода исторической допустимости.',
+    claim_scope: 'historical_presence, material, construction, physical_parameter, social_access или commonness.',
+    confidence: 'Оценка уверенности в конкретном claim.',
+    review_status: 'needs_review, reviewed или rejected; reviewed historical_presence является отдельным promotion gate.',
+    notes: 'Необязательная граница доказательного утверждения.',
+    status: 'draft, approved или deprecated; binding не создаёт региональное permission.'
+  },
+  container_template_facet_bindings: {
+    container_template_id: 'FK → container_templates(id): классифицируемый шаблон контейнера.',
+    category_id: 'FK → universal_categories(id): утверждённая категория фасета.',
+    facet: 'container_form, material, capacity_band, closure_type, access_model, portability, content_compatibility или condition.',
+    requires_regional_permission: 'Требует approved regional/period permission в той же world revision до импорта.'
+  },
+  container_templates: {
+    source_id: 'FK → source_records(id): provenance container template; draft catalog не выводит историческую точность из этой ссылки.',
+    capacity: 'Положительная внутренняя вместимость контейнера в packing slots; не является массой, литрами или inventory slots персонажа.',
+    packing_slot_cost: 'Положительный внешний размер контейнера в packing slots при переноске или вложении.',
+    capacity_policy: 'Closed policy строго {version:1,mode:packing_slots,unit:packing_slot}; runtime не интерпретирует иные единицы.'
+  },
+  property_profile_rules: {
+    owner_kind: 'Closed vocabulary: person, household, workshop, community, institution, estate или unknown; не ID конкретного owner.',
+    holder_kind: 'Closed vocabulary holder relation; не заменяет party holder relation.',
+    controller_kind: 'Closed vocabulary controller relation; не заменяет party controller relation.',
+    access_policy: 'Versioned policy payload для authoring access; без внешних ID и художественного текста.',
+    claim_conditions: 'Versioned policy payload условий claim; без конкретных party relations.'
+  },
+  container_content_category_relations: {
+    container_category_id: 'FK → universal_categories(id): категория контейнера.',
+    content_category_id: 'FK → universal_categories(id): категория допустимого либо запрещённого содержимого.',
+    compatibility: 'closed vocabulary: allowed или forbidden; не создаёт regional permission.'
+  },
+  item_classification_migration_inventory: {
+    legacy_table_name: 'Исходная legacy-таблица без автоматической записи в неё.',
+    legacy_record_id: 'ID исходной legacy-записи.',
+    legacy_field_name: 'Поле, для которого требуется reviewed classification mapping.',
+    legacy_value: 'Дословное legacy-значение; не интерпретируется как категория.',
+    resolution_status: 'mapped, data_gap, migration_conflict или deferred.',
+    resolved_category_id: 'FK → universal_categories(id); обязателен только при mapped.'
+  },
+  classification_schemes: {
+    authority: 'Организация, отвечающая за внешнюю классификационную схему.',
+    scheme_version: 'Зафиксированная версия внешней схемы.',
+    release_date: 'Дата выпуска зафиксированной версии схемы.',
+    canonical_reference: 'Каноническая ссылка на схему или локальный snapshot.',
+    license_or_usage_note: 'Условия лицензии либо допустимого справочного использования.',
+    snapshot_digest: 'SHA-256 локально проверенного snapshot; runtime не обращается к внешнему сервису.'
+  },
+  universal_categories: {
+    stable_code: 'Уникальный стабильный машинный код одного понятия.',
+    facet: 'Классификационный фасет категории в пределах domain.',
+    preferred_label: 'Предпочтительная метка категории; historical labels хранятся отдельно.',
+    definition: 'Нормативное определение одного классификационного понятия.',
+    scope_note: 'Граница смысла и применимости понятия без утверждения региональной истории.',
+    inclusion_rules: 'Явные условия включения в категорию.',
+    exclusion_rules: 'Явные условия исключения из категории.',
+    replaced_by_category_id: 'FK на заменяющую категорию; deprecated/replaced категория не кандидат runtime.'
+  },
+  category_labels: {
+    category_id: 'FK на классифицируемую универсальную категорию.',
+    language: 'Язык метки по принятому языковому коду проекта.',
+    label: 'Текстовая метка; не самостоятельный category ID.',
+    label_type: 'preferred, alternative, historical или deprecated.',
+    source_id: 'FK на подтверждающий source_records, если он известен.'
+  },
+  category_scheme_mappings: {
+    category_id: 'FK на проектную категорию.',
+    classification_scheme_id: 'FK на pinned classification scheme.',
+    external_concept_id: 'Стабильный ID понятия во внешней схеме.',
+    mapping_type: 'exact, close, broad, narrow или related; mapping не даёт regional permission.',
+    mapping_evidence: 'Основание сопоставления без подмены исторической применимости.',
+    source_id: 'FK на источник evidence, если он известен.',
+    review_status: 'Статус редакторского review mapping: draft, approved или rejected.'
+  },
+  universal_category_relations: {
+    relation_type: 'broader, narrower, related, compatible, requires, excludes или equivalent_with_scope; hierarchy cycles forbidden.'
+  },
   graph_nodes: {
     node_type:
       'Тип узла: world_region, region_cell, place, location, scene_anchor, ford, …',

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rus.item_template_quantity_profiles.v1",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["id", "item_template_id", "world_revision_id", "quantity_unit_id", "quantity_dimension", "minimum_quantity", "default_quantity_policy", "mass_grams_per_unit", "stackable", "partial_consumption_allowed", "source_id", "status"],
+    "properties": {
+      "id": { "type": "string", "minLength": 1 },
+      "item_template_id": { "type": "string", "minLength": 1 },
+      "world_revision_id": { "type": "string", "minLength": 1 },
+      "quantity_unit_id": { "type": "string", "minLength": 1 },
+      "quantity_dimension": { "enum": ["count", "mass", "volume", "length"] },
+      "minimum_quantity": { "type": "integer", "minimum": 1 },
+      "maximum_quantity": { "type": "integer", "minimum": 1 },
+      "default_quantity_policy": {
+        "type": "object",
+        "required": ["version", "mode"],
+        "properties": { "version": { "const": 1 }, "mode": { "const": "explicit_only" } },
+        "additionalProperties": false
+      },
+      "mass_grams_per_unit": { "type": "integer", "minimum": 1 },
+      "stackable": { "type": "boolean" },
+      "partial_consumption_allowed": { "type": "boolean" },
+      "source_id": { "type": "string", "minLength": 1 },
+      "status": { "enum": ["draft", "approved", "deprecated"] }
+    },
+    "additionalProperties": false
+  }
+}

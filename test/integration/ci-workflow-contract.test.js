@@ -25,6 +25,8 @@ test('GitHub Actions clean-clone workflow keeps all required gates in order', as
     'pg_roles',
     'has_schema_privilege',
     'information_schema.role_table_grants',
+    'name: Execute Stage 3B-1 supplemental PostgreSQL integration',
+    'npm run world-db:import:stage3b1:integration',
     'name: Validate canonical knowledge corpus',
     'npm run knowledge:check-corpus',
     'name: Generate deterministic documentation and knowledge artifacts',
@@ -45,11 +47,11 @@ test('GitHub Actions clean-clone workflow keeps all required gates in order', as
   }
 });
 
-test('world_base PostgreSQL gate tracks the 108-table schema and grants every table read-only', async () => {
+test('world_base PostgreSQL gate tracks the 121-table schema and grants every table read-only', async () => {
   const workflow = await readFile(resolve(process.cwd(), '.github/workflows/test.yml'), 'utf8');
 
   assert.doesNotMatch(workflow, /test "\$table_count" -eq 62/u);
-  assert.match(workflow, /test "\$table_count" -eq 108/u);
+  assert.match(workflow, /test "\$table_count" -eq 121/u);
   assert.doesNotMatch(workflow, /test "\$select_grants" -eq 62/u);
   assert.match(workflow, /test "\$select_grants" -eq "\$table_count"/u);
   assert.match(workflow, /test "\$write_grants" -eq 0/u);

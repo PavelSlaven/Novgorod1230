@@ -64,7 +64,7 @@ export function validateStage16ItemPlacementInput(input) {
   if (candidateSet?.schema !== 'item_profile_candidate_set' || candidateSet?.selection_status !== 'ready') {
     concerns.push(concern('ITEM_PLACEMENT_CANDIDATE_SET_NOT_READY', 'item_profile_candidate_set must have selection_status=ready.', { field: 'item_profile_candidate_set' }));
   }
-  for (const field of ['item_profile_candidates', 'container_profile_candidates', 'property_rule_candidates']) {
+  for (const field of ['item_profile_candidates', 'container_profile_candidates', 'property_rule_candidates', 'quantity_requirements', 'equipment_candidates']) {
     if (!Array.isArray(candidateSet?.[field])) {
       concerns.push(concern('ITEM_PLACEMENT_REQUIRED_BLOCK_MISSING', `${field} must be an array.`, { field: `item_profile_candidate_set.${field}` }));
     }

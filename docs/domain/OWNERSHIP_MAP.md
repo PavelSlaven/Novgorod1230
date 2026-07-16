@@ -4,7 +4,7 @@
 |---|---|---|
 | `@rus/actors` | identity, biography fields, social/skill bindings, actor state shape и actor invariants | тело, предметы, маршруты, время, persistence |
 | `@rus/body-state` | здоровье, сытость, бодрость, активные состояния, части тела, применение утверждённых изменений | выбор причины изменения, бой, лечение как смысловое решение |
-| `@rus/items-property` | item identity/profile binding, containers, ownership, access, inventory/equipment, marks и recognition request | материализация предмета, цены мира, persistence |
+| `@rus/items-property` | item identity/profile binding, containers, ownership, normalized inventory topology, mass/load/hands/access, stack signature и pure transfer plan | материализация предмета, цены мира, persistence, исторические template facts |
 | `@rus/space-map` | G0–G5 types, position chain, graph node/edge shape, current position, scene anchors, structural graph validation | выбор маршрута, время пути, знания персонажа |
 | `@rus/movement-routes` | route availability, route knowledge envelope, GU/time cost, access requirements, traversal contracts | создание дорог, смысловой выбор курса, RNG implementation |
 | `@rus/time-events-history` | clock, duration, timers, delayed event records, historical phases, time-update requests | создание исторических событий и их смысловых последствий |

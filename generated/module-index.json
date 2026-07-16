@@ -136,7 +136,7 @@
         "item and container contracts",
         "ownership and holder relations",
         "physical access",
-        "inventory load and recognition requests"
+        "normalized inventory topology, mass/load, hands, access, packing usage, stack signatures and pure transfer plans"
       ],
       "path": "packages/items-property",
       "public_entry": "./src/index.js",
@@ -241,10 +241,12 @@
     {
       "dependencies": [
         "@rus/contracts",
+        "@rus/items-property",
         "@rus/kernel",
         "@rus/materialization",
         "@rus/party-store",
-        "@rus/pipeline-engine"
+        "@rus/pipeline-engine",
+        "@rus/world-catalog-workflow"
       ],
       "name": "@rus/new-game",
       "owns": [
@@ -521,13 +523,16 @@
       "name": "@rus/world-catalog-workflow",
       "owns": [
         "контрактами `rus.region_map_revision.v1`, `rus.g1_work_queue.v1`, `rus.g1_cell_package.v1` и `rus.g1_boundary_contract.v1`",
-        "чистой структурной валидацией ревизии и G1-пакетов",
-        "детерминированной очередью `global_grid_y DESC, global_grid_x ASC`",
-        "техническим сравнением существующих и входящих записей без молчаливого удаления"
+        "чистой структурной валидацией ревизии и G1-пакетов, детерминированной очередью `global_grid_y DESC, global_grid_x ASC` и dry-run без implicit delete",
+        "`validateCatalogImportManifest`, `validateClassificationCatalog` и `importClassificationCatalog`: manifest, FK-derived order, pinned schemes, controlled label/relation/mapping types, category hierarchy cycles и readback gate",
+        "`validateItemContainerClassificationCatalog`, `assessItemContainerClassificationMigration` и `assessItemContainerClassificationReadiness`: normalised facets, compatibility, typed legacy gaps/conflicts и required profile/G4 rule",
+        "чистой `calculatePackingSlots({ quantity, packing_slot_cost, packing_bundle_size })` без доступа к БД, файлам, глобальному состоянию, массы или fallback",
+        "`validateSupplementalCatalogBundle` и `applySupplementalCatalogBundle`: draft-only manifest, canonical SHA-256, table registry, local/external FK, XOR и injected transaction adapter с readback digest/count и rollback",
+        "Stage 3C contracts: `buildCatalogEditorialReadinessReport`, evidence/approval plans, verified legacy inventory и all-120-only revision promotion/rollback without activation"
       ],
       "path": "tools/world-catalog-workflow",
       "public_entry": "./src/index.js",
-      "purpose": "Автономный редакторский инструмент для регистрации ревизий региональной карты, структурной проверки G1-маски, построения очереди по координатам, проверки пакета одной G1 и формирования dry-run импорта.",
+      "purpose": "Автономный редакторский инструмент для регистрации ревизий региональной карты, структурной проверки G1-маски, построения координатной очереди, проверки G1-пакетов и fail-closed проверки authoring-каталогов materialization. Он не является game runtime, не создаёт исторические факты и не изменяет `world_base` без явно переданного transaction adapter.",
       "version": "0.1.0"
     }
   ]

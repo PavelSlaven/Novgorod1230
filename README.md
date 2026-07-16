@@ -147,7 +147,9 @@ npm run world-catalog:validate-novgorod-revision
 
 ### Принятые решения
 
-Lexical ranking не объявляется семантическим поиском. Текущие 23 документа без утверждённых embeddings зафиксированы как `baseline_gap`; пять документов с approved snapshot отмечены как `covered`. Для новых изменений используется `required_before_merge`, если semantic snapshot не обновляется в том же PR.
+По состоянию на 2026-07-16 canonical corpus содержит 30 зарегистрированных документов, из них 28 `active`: четыре имеют approved semantic snapshot, 26 имеют только lexical coverage. В default active-only status видны 24 `baseline_gap` и ноль blockers; два `proposed` lexical-only gaps исключены из этого default статуса. Для новых изменений используется `required_before_merge`, если semantic snapshot не обновляется в том же PR.
+
+Каждый документ canonical corpus обязан иметь retrieval-policy metadata и generated lexical provenance coverage независимо от статуса. `proposed` и `deprecated` индексируются lexical-only: это не меняет их статус, не означает semantic approval и не добавляет их в active semantic graph. Default query остаётся active-only; non-active документы доступны только через явный `--statuses`.
 
 CLI является тонким adapter-слоем существующего модуля, а не отдельным пакетом. Он не дублирует ranking, не читает файлы в обход storage/readers и не обращается к сети, LLM или БД. Ошибки аргументов возвращают exit code `2`, knowledge-source failures и провал controls — exit code `1`.
 
@@ -176,7 +178,15 @@ GitHub CI run `29499174723` завершён успешно. Фактическ�
 
 ### Известные ограничения и оставшиеся задачи
 
-Approved embeddings существуют только для 5 из 28 документов. Остальные 23 документа имеют полноценное lexical coverage, но остаются явным semantic coverage debt. Их embedding snapshot должен обновляться редакторским процессом без deterministic или эвристического fallback.
+По состоянию на 2026-07-16 approved semantic snapshots существуют для 4 из 30 зарегистрированных документов. Остальные 26 документов имеют полноценное lexical coverage, но остаются явным semantic coverage debt; 24 active gaps видимы в default status, а два proposed lexical-only gaps доступны только при явном запросе non-active статуса. Их embedding snapshot должен обновляться редакторским процессом без deterministic или эвристического fallback.
+
+### Repair: coverage зарегистрированных non-active документов
+
+Исходный fail-closed сбой `RETRIEVAL_POLICY_INCOMPLETE` показал отсутствие policy metadata у `universal-category-classification-policy` и `universal-category-classification-references`. Оба документа остаются `proposed`. Технический contract knowledge-source теперь требует retrieval-policy metadata и deterministic lexical provenance coverage для каждого registered corpus document; status управляет только query-time visibility.
+
+`proposed` и `deprecated` получают lexical-only coverage без approved semantic embedding и без участия в active semantic graph. Default reader и query остаются active-only; доступ к non-active документу требует явного `--statuses`. Изменённый `interface-ux` понижен с `covered` до `baseline_gap`, потому что его approved semantic snapshot не соответствует текущему canonical text; новая semantic approval не создавалась автоматически.
+
+Штатно выполнены `npm ci`, corpus check, knowledge/docs generation, `test:knowledge-source`, materializer tests, `knowledge:check`, `docs:check` и architecture check. Generated RAG artifacts обновлены только генераторами. Независимый критик выполнил цикл из четырёх аудитов: первые три `CHANGES REQUIRED` выявили и подтвердили устранение fail-closed gaps (non-active semantic injection, coverage-to-chunk provenance и устаревшие числа README); заключительный результат — `PASS`. Stage 16, activation и существующие партии данным этапом не изменяются.
 ## PR №7 — Stage 3C
 
 ### Цель

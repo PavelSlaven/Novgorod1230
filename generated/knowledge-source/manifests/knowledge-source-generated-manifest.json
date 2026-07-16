@@ -35,13 +35,13 @@
     },
     {
       "path": "generated/knowledge-source/rag/lexical-index.json",
-      "sha256": "85de6b1ed25d13009766490e6f54ca6f1b44f01de54beaf9b73488869748ea0c",
-      "bytes": 1321842
+      "sha256": "1d9cc7a90355a7d1595e855715b2e81610b4d21f5234b9ca39c89f45845b4f07",
+      "bytes": 1410398
     },
     {
       "path": "generated/knowledge-source/rag/manifest.json",
-      "sha256": "bead4add7a389fd1fa33be6879084c2dffbf0ed24f941988a25b87b0c1b847e7",
-      "bytes": 7626
+      "sha256": "7bda0be7e44c92f6192e087510455bd8903a53b37570eabb4807ed97ac3de5e6",
+      "bytes": 8187
     }
   ]
 }

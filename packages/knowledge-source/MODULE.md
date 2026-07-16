@@ -67,6 +67,8 @@ Legacy runtime, apps, provider SDK, party state, world-base, UI и скрыты�
 
 Текст документа возвращается byte-faithful после проверки SHA-256. Generated index считается current только при совпадении хеша corpus manifest и SHA-256 фактического graph/RAG-артефакта с его generated manifest. CLI использует те же readers и не имеет обходного пути к corpus или generated files.
 
+Каждый документ, зарегистрированный в canonical corpus manifest, независимо от статуса, обязан иметь retrieval-policy metadata и ровно одну запись generated RAG coverage. Для `proposed` и `deprecated` генератор создаёт только deterministic lexical chunks с byte-faithful provenance; это не меняет их статус, не создаёт approved semantic embedding и не включает их в active semantic graph. Default query и default reader остаются active-only. Для видимости non-active документа требуется явный `--statuses`, а изменение его текста делает generated RAG stale до штатной пересборки.
+
 ## Ошибки
 
 `CORPUS_NOT_FOUND`, `MANIFEST_NOT_FOUND`, `MANIFEST_INVALID`, `DOCUMENT_NOT_REGISTERED`, `DOCUMENT_FILE_MISSING`, `DOCUMENT_HASH_MISMATCH`, `DOCUMENT_STATUS_NOT_ALLOWED`, `SOURCE_LOCATION_INVALID`, `PATH_TRAVERSAL_REJECTED`, `GENERATED_INDEX_NOT_FOUND`, `GENERATED_INDEX_STALE`, `GENERATED_PROVENANCE_INVALID`, `RETRIEVAL_POLICY_STALE`, `SEMANTIC_COVERAGE_GAP`, `SEARCH_BACKEND_UNAVAILABLE`, `CLI_ARGUMENT_INVALID`.

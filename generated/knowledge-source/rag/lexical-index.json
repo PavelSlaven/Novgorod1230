@@ -1,7 +1,7 @@
 {
   "schema_version": "rus.lexical_index.v1",
-  "corpus_hash": "cec4b7f3a1b8d6b241e57aa9db89768cc9a74a95658e9c93179a1147f302177e",
-  "chunk_count": 1083,
+  "corpus_hash": "8425390ac2788148902adbc672607f6ac8e3499acbe4027152dcb7a7ee134e47",
+  "chunk_count": 1177,
   "chunks": [
     {
       "id": "base_turn_orchestration.txt:Режимы хода для агента-оркестратора:0",
@@ -8777,6 +8777,852 @@
       "line_end": 64,
       "text": "## README.md — Rules for future changes\n## Rules for future changes\n\n1. Do not add a mechanic in code unless it is described in the documentation or added to a profile document first.\n2. Do not let UI, diagnostics, or prose reveal hidden world state, hidden NPC motives, future events, raw prompts, or internal reasoning.\n3. Keep filename references in English snake_case.\n4. When a document changes, update the graph node/edge source locations and the graph report.\n5. Treat `EXTRACTED` graph edges as source-backed. Treat `INFERRED_SECONDARY` edges as navigation hints that still require document verification.",
       "char_count": 612
+    },
+    {
+      "id": "universal_category_classification_policy.md:Политика универсальной категоризации проекта «Русь XIII век»:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "Политика универсальной категоризации проекта «Русь XIII век»",
+      "line_start": 1,
+      "line_end": 6,
+      "text": "## universal_category_classification_policy.md — Политика универсальной категоризации проекта «Русь XIII век»\n# Политика универсальной категоризации проекта «Русь XIII век»\n\n**Статус:** `proposed`\n**Версия:** `0.1.0`\n**Дата:** `2026-07-15`\n**Область:** универсальные категории, региональные разрешения, шаблоны, профили и правила материализации для NPC, предметов, контейнеров, транспорта, строений, помещений, ландшафтов, водных объектов, землепользования, животных и социальных сущностей.",
+      "char_count": 490
+    },
+    {
+      "id": "universal_category_classification_policy.md:0. Статус и границы документа:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "0. Статус и границы документа",
+      "line_start": 7,
+      "line_end": 19,
+      "text": "## universal_category_classification_policy.md — 0. Статус и границы документа\n## 0. Статус и границы документа\n\nЭтот документ является проектом нового профильного норматива. Он не становится `active` автоматически и не означает, что текущие DDL, seed-данные, JSON Schema, импортеры, валидаторы и runtime уже приведены в соответствие.\n\nДо повышения документа в `active` действуют текущие нормативы проекта, прежде всего:\n\n1. `code_driven_world_materialization_architecture.md`;\n2. `world_base_materialization_table_requirements.md`;\n3. профильные документы затронутых подсистем;\n4. актуальный DDL `infra/world-base/schema.sql` и `infra/world-base/schema/*.sql`.\n\nПри конфликте применяется установленный проектом приоритет. Этот документ не разрешает коду, LLM или импортёру создавать отсутствующие категории, исторические факты либо fallback-значения.",
+      "char_count": 851
+    },
+    {
+      "id": "universal_category_classification_policy.md:1. Назначение:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "1. Назначение",
+      "line_start": 20,
+      "line_end": 32,
+      "text": "## universal_category_classification_policy.md — 1. Назначение\n## 1. Назначение\n\nПолитика вводит единый каркас категоризации, чтобы:\n\n- категории не создавались свободным текстом;\n- одинаковые понятия не дублировались под разными названиями;\n- разные классификационные оси не смешивались в одной колонке;\n- научная классификация не подменяла историческую применимость;\n- историческая применимость не зависела от догадки LLM;\n- региональные данные могли переиспользовать универсальные понятия;\n- materializer получал закрытые, проверенные и version-pinned candidate sets;\n- любое отсутствие обязательной категории фиксировалось как data gap и приводило к hard block.",
+      "char_count": 665
+    },
+    {
+      "id": "universal_category_classification_policy.md:2. Базовая архитектурная модель:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "2. Базовая архитектурная модель",
+      "line_start": 33,
+      "line_end": 40,
+      "text": "## universal_category_classification_policy.md — 2. Базовая архитектурная модель\n## 2. Базовая архитектурная модель\n\nВо всех доменах сохраняется обязательная цепочка:\n\n```text\ncategory → template → profile → rule → instance\n```",
+      "char_count": 227
+    },
+    {
+      "id": "universal_category_classification_policy.md:2.1. Category:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "2.1. Category",
+      "line_start": 41,
+      "line_end": 55,
+      "text": "## universal_category_classification_policy.md — 2.1. Category\n### 2.1. Category\n\nУниверсальный контролируемый тип или значение одного фасета. Категория отвечает на вопрос: **что это за понятие в общей системе проекта?**\n\nПримеры:\n\n- `item.function.cutting_tool`;\n- `material.wood.oak`;\n- `building.function.residential`;\n- `npc.affect.fear`;\n- `social.legal_status.free`;\n- `animal.common_type.horse`.\n\nКатегория сама по себе не утверждает, что объект существовал в Новгородской земле в 1230 году.",
+      "char_count": 498
+    },
+    {
+      "id": "universal_category_classification_policy.md:2.2. Template:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "2.2. Template",
+      "line_start": 56,
+      "line_end": 66,
+      "text": "## universal_category_classification_policy.md — 2.2. Template\n### 2.2. Template\n\nУниверсальная или региональная форма категории с параметрами, источниками, ограничениями и периодом применимости.\n\nПримеры:\n\n- исторически допустимый тип ножа;\n- новгородская деревянная жилая постройка;\n- региональный вариант дорожных саней;\n- допустимая форма крестьянской верхней одежды.",
+      "char_count": 371
+    },
+    {
+      "id": "universal_category_classification_policy.md:2.3. Profile:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "2.3. Profile",
+      "line_start": 67,
+      "line_end": 78,
+      "text": "## universal_category_classification_policy.md — 2.3. Profile\n### 2.3. Profile\n\nСовместимый набор категорий и шаблонов для определённой области материализации.\n\nПримеры:\n\n- профиль имущества бедного сельского двора;\n- профиль внешности взрослого ремесленника;\n- профиль помещений кузницы;\n- профиль животных при конюшне;\n- профиль поведения зависимого работника.",
+      "char_count": 362
+    },
+    {
+      "id": "universal_category_classification_policy.md:2.4. Rule:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "2.4. Rule",
+      "line_start": 79,
+      "line_end": 82,
+      "text": "## universal_category_classification_policy.md — 2.4. Rule\n### 2.4. Rule\n\nУсловие применения профиля с учётом региона, периода, G4, сезона, времени, владельца, экономической причины и ситуации.",
+      "char_count": 193
+    },
+    {
+      "id": "universal_category_classification_policy.md:2.5. Instance:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "2.5. Instance",
+      "line_start": 83,
+      "line_end": 86,
+      "text": "## universal_category_classification_policy.md — 2.5. Instance\n### 2.5. Instance\n\nКонкретный сохранённый объект партии. Он материализуется кодом только из утверждённых данных и не пересоздаётся при повторном осмотре или входе.",
+      "char_count": 226
+    },
+    {
+      "id": "universal_category_classification_policy.md:3. Главное правило научной и исторической обоснованности:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "3. Главное правило научной и исторической обоснованности",
+      "line_start": 87,
+      "line_end": 106,
+      "text": "## universal_category_classification_policy.md — 3. Главное правило научной и исторической обоснованности\n## 3. Главное правило научной и исторической обоснованности\n\nДля каждого домена применяются четыре самостоятельных уровня проверки:\n\n```text\nнаучный или профессиональный классификатор\n→ определяет тип понятия и его место среди других понятий;\n\nисторический источник\n→ подтверждает существование формы, практики или объекта в нужном периоде;\n\nрегиональное разрешение\n→ подтверждает допустимость и распространённость в конкретном регионе;\n\nmaterialization rule\n→ разрешает создание конкретного экземпляра здесь и сейчас.\n```\n\nНи один внешний классификатор сам по себе не доказывает историческое присутствие в Новгородской земле XIII века.",
+      "char_count": 742
+    },
+    {
+      "id": "universal_category_classification_policy.md:4. Контролируемый словарь:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "4. Контролируемый словарь",
+      "line_start": 107,
+      "line_end": 136,
+      "text": "## universal_category_classification_policy.md — 4. Контролируемый словарь\n## 4. Контролируемый словарь\n\nКаждая универсальная категория должна иметь:\n\n```text\nstable_code\nfacet\ndomain\npreferred_label\ndefinition\nscope_note\nbroader_category_id\nstatus\nclassification_version\nprovenance\n```\n\nПри необходимости добавляются:\n\n```text\nalternative_labels\ninclusion_rules\nexclusion_rules\nrelated_categories\nrequires_categories\nexcluded_categories\nexternal_mappings\nreplaced_by_category_id\n```",
+      "char_count": 483
+    },
+    {
+      "id": "universal_category_classification_policy.md:4.1. Требования к определению:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "4.1. Требования к определению",
+      "line_start": 137,
+      "line_end": 147,
+      "text": "## universal_category_classification_policy.md — 4.1. Требования к определению\n### 4.1. Требования к определению\n\nОпределение должно:\n\n- описывать один тип понятия;\n- быть пригодным для машинной проверки;\n- не содержать региональный факт без регионального binding;\n- не включать художественную оценку;\n- не объединять несколько независимых фасетов;\n- указывать границы между близкими понятиями.",
+      "char_count": 394
+    },
+    {
+      "id": "universal_category_classification_policy.md:4.2. Разрешённые отношения категорий:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "4.2. Разрешённые отношения категорий",
+      "line_start": 148,
+      "line_end": 163,
+      "text": "## universal_category_classification_policy.md — 4.2. Разрешённые отношения категорий\n### 4.2. Разрешённые отношения категорий\n\nДопустимый базовый набор:\n\n```text\nbroader\nnarrower\nrelated\ncompatible\nrequires\nexcludes\nequivalent_with_scope\n```\n\nСвободные названия отношений запрещены. Иерархические циклы запрещены.",
+      "char_count": 314
+    },
+    {
+      "id": "universal_category_classification_policy.md:4.3. Модель внешних mappings:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "4.3. Модель внешних mappings",
+      "line_start": 164,
+      "line_end": 177,
+      "text": "## universal_category_classification_policy.md — 4.3. Модель внешних mappings\n### 4.3. Модель внешних mappings\n\nДля связи с внешними схемами применяется SKOS-подобная модель:\n\n```text\nexact\nclose\nbroad\nnarrow\nrelated\n```\n\nВнешний mapping является справочной связью, а не заменой проектной категории.",
+      "char_count": 299
+    },
+    {
+      "id": "universal_category_classification_policy.md:5. Фасетная категоризация:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "5. Фасетная категоризация",
+      "line_start": 178,
+      "line_end": 202,
+      "text": "## universal_category_classification_policy.md — 5. Фасетная категоризация\n## 5. Фасетная категоризация\n\nПроект не должен создавать составные универсальные категории, объединяющие материал, функцию, состояние, эпоху, социальную принадлежность и качество.\n\nНеправильно:\n\n```text\nбедный повреждённый деревянный крестьянский дом\n```\n\nПравильно:\n\n```text\nbuilding_form       = log_building\nprimary_function    = residential\nprimary_material    = wood\ncondition           = damaged\nwealth_context      = poor\nsocial_context      = peasant_household\nregion_binding      = novgorod_land\nperiod_binding      = 13th_century\n```\n\nКаждый фасет хранится отдельно и связывается через template/profile/rule.",
+      "char_count": 693
+    },
+    {
+      "id": "universal_category_classification_policy.md:6. Общие правила внешних классификаторов:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "6. Общие правила внешних классификаторов",
+      "line_start": 203,
+      "line_end": 204,
+      "text": "## universal_category_classification_policy.md — 6. Общие правила внешних классификаторов\n## 6. Общие правила внешних классификаторов",
+      "char_count": 133
+    },
+    {
+      "id": "universal_category_classification_policy.md:6.1. Разрешённое применение:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "6.1. Разрешённое применение",
+      "line_start": 205,
+      "line_end": 215,
+      "text": "## universal_category_classification_policy.md — 6.1. Разрешённое применение\n### 6.1. Разрешённое применение\n\nВнешний стандарт используется для:\n\n- определения терминов;\n- построения иерархии;\n- устранения синонимов и дублей;\n- междоменного или межрегионального сопоставления;\n- указания стабильного внешнего concept ID;\n- документирования происхождения классификационной модели.",
+      "char_count": 379
+    },
+    {
+      "id": "universal_category_classification_policy.md:6.2. Запрещённое применение:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "6.2. Запрещённое применение",
+      "line_start": 216,
+      "line_end": 226,
+      "text": "## universal_category_classification_policy.md — 6.2. Запрещённое применение\n### 6.2. Запрещённое применение\n\nЗапрещено:\n\n- автоматически импортировать весь внешний справочник как approved-каталог;\n- считать современное понятие исторически применимым без источников;\n- выполнять обязательные live-запросы к внешним сервисам из runtime;\n- заменять локальный исторический термин современным эквивалентом без scope note;\n- скрывать спорное соответствие под `exact` mapping;\n- использовать classification mapping как materialization rule.",
+      "char_count": 534
+    },
+    {
+      "id": "universal_category_classification_policy.md:6.3. Version pinning:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "6.3. Version pinning",
+      "line_start": 227,
+      "line_end": 244,
+      "text": "## universal_category_classification_policy.md — 6.3. Version pinning\n### 6.3. Version pinning\n\nКаждая внешняя схема фиксируется через:\n\n```text\nscheme_id\ntitle\nauthority\nscheme_version\nrelease_date\ncanonical_reference\nsnapshot_digest\nlicense_or_usage_note\nstatus\n```\n\nRuntime использует только локально утверждённый snapshot.",
+      "char_count": 326
+    },
+    {
+      "id": "universal_category_classification_policy.md:7. NPC:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "7. NPC",
+      "line_start": 245,
+      "line_end": 260,
+      "text": "## universal_category_classification_policy.md — 7. NPC\n## 7. NPC\n\nNPC строится из независимых компонентных профилей. Ни один компонент не должен выводиться из другого без отдельного утверждённого правила.\n\nОбязательная цепочка остаётся:\n\n```text\nG4 rule\n→ regional NPC archetype/profile set\n→ social role / occupation / legal status\n→ demographic / name / appearance\n→ clothing / equipment\n→ knowledge / behavior\n→ activity / schedule / relationship\n```",
+      "char_count": 454
+    },
+    {
+      "id": "universal_category_classification_policy.md:7.1. Демография:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "7.1. Демография",
+      "line_start": 261,
+      "line_end": 276,
+      "text": "## universal_category_classification_policy.md — 7.1. Демография\n### 7.1. Демография\n\nОсновные фасеты:\n\n```text\nsex\nage_band\nhousehold_position\nmarital_or_family_position\nhealth_limitation\nmobility_limitation\nbody_build_band\n```\n\nВозраст хранится диапазоном либо конкретным значением экземпляра. Социальные роли не должны автоматически определять пол, возраст или здоровье без исторического регионального правила.",
+      "char_count": 413
+    },
+    {
+      "id": "universal_category_classification_policy.md:7.2. Внешность:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "7.2. Внешность",
+      "line_start": 277,
+      "line_end": 316,
+      "text": "## universal_category_classification_policy.md — 7.2. Внешность\n### 7.2. Внешность\n\nВнешность описывается только наблюдаемыми или физически обоснованными признаками:\n\n```text\nstature_band\nbody_build\nposture\ngait\nhair_colour\nhair_form\nhair_length\nfacial_hair\neye_colour\nvisible_skin_tone\nfacial_shape\nhand_condition\nteeth_condition\nscar_or_mark\ninjury_or_impairment\noccupational_mark\nhygiene_state\nvisible_clothing_state\n```\n\nДля антропометрических понятий допускается mapping к ISO 7250-1. Для цвета допускаются нормализованные project labels и при необходимости значения CIE L*a*b*.\n\nЗапрещено выводить из внешности:\n\n- характер;\n- интеллект;\n- моральные качества;\n- правовой статус;\n- профессию;\n- этничность;\n- склонность к преступлению;\n- достоверность речи.\n\nФизиогномические, расово-типологические и псевдонаучные классификации запрещены.",
+      "char_count": 844
+    },
+    {
+      "id": "universal_category_classification_policy.md:7.3. Устойчивые черты характера:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "7.3. Устойчивые черты характера",
+      "line_start": 317,
+      "line_end": 344,
+      "text": "## universal_category_classification_policy.md — 7.3. Устойчивые черты характера\n### 7.3. Устойчивые черты характера\n\nДля машинной основы допускается компактная пятифакторная модель:\n\n```text\nopenness\nconscientiousness\nextraversion\nagreeableness\nemotional_stability\n```\n\nОна используется только как профиль устойчивых тенденций. Значения задаются диапазонами или уровнями, а не клиническими диагнозами.\n\nЧерты характера не заменяют:\n\n- цели;\n- мотивы;\n- страхи;\n- знания;\n- социальные обязательства;\n- нормы среды;\n- текущее настроение;\n- отношение к игроку;\n- decision policy.\n\nСоциальная категория и профессия могут определять знания, права, обязанности и навыки, но не должны автоматически назначать моральные или личностные качества.",
+      "char_count": 737
+    },
+    {
+      "id": "universal_category_classification_policy.md:7.4. Настроение, тело, оценка ситуации и отношение:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "7.4. Настроение, тело, оценка ситуации и отношение",
+      "line_start": 345,
+      "line_end": 410,
+      "text": "## universal_category_classification_policy.md — 7.4. Настроение, тело, оценка ситуации и отношение\n### 7.4. Настроение, тело, оценка ситуации и отношение\n\nЭти состояния не объединяются в один список `mood`.\n\n#### Текущий affect\n\n```text\nvalence\narousal\ncontrol_optional\nemotion_category\ncause_ref\nstarted_at\nexpected_decay\n```\n\nБазовые emotion categories должны быть закрытым словарём, например:\n\n```text\ncalm\ninterest\njoy\nsadness\nfear\nanger\ndisgust\nshame\nguilt\nsurprise\n```\n\n#### Физиологическое состояние\n\n```text\nfatigue\npain\nhunger\ncold_stress\nillness\nintoxication\nsleepiness\n```\n\n#### Ситуационная оценка\n\n```text\nperceived_threat\nuncertainty\ntime_pressure\nsocial_exposure\nauthority_pressure\n```\n\n#### Отношение к actor\n\n```text\nfamiliarity\ntrust\nrespect\nhostility\nfear_of_actor\nobligation\n```\n\nПример: `устал`, `боится старосты`, `торопится` и `нейтрален к игроку` — четыре разных состояния, а не четыре значения одного настроения.",
+      "char_count": 938
+    },
+    {
+      "id": "universal_category_classification_policy.md:7.5. Поведение:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "7.5. Поведение",
+      "line_start": 411,
+      "line_end": 431,
+      "text": "## universal_category_classification_policy.md — 7.5. Поведение\n### 7.5. Поведение\n\nПоведение экземпляра определяется сочетанием:\n\n```text\nstable_traits\ncurrent_goal\nmotive\nfear_or_constraint\nsocial_norms\nlegal_status\nknowledge\nresources\ncurrent_affect\nbody_state\nrelationship_state\ndecision_policy\n```\n\nКод не сочиняет поведенческий результат. Он применяет утверждённую policy либо формирует bounded decision из закрытого option set.",
+      "char_count": 434
+    },
+    {
+      "id": "universal_category_classification_policy.md:8. Предметы, контейнеры и транспорт:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "8. Предметы, контейнеры и транспорт",
+      "line_start": 432,
+      "line_end": 435,
+      "text": "## universal_category_classification_policy.md — 8. Предметы, контейнеры и транспорт\n## 8. Предметы, контейнеры и транспорт\n\nОсновная reference-схема для mappings — Getty Art & Architecture Thesaurus. Проект сохраняет собственные категории и региональные исторические шаблоны.",
+      "char_count": 276
+    },
+    {
+      "id": "universal_category_classification_policy.md:8.1. Фасеты предмета:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "8.1. Фасеты предмета",
+      "line_start": 436,
+      "line_end": 453,
+      "text": "## universal_category_classification_policy.md — 8.1. Фасеты предмета\n### 8.1. Фасеты предмета\n\n```text\nobject_type\nobject_function\nmaterial\nmanufacturing_technique\ncomponent_type\nphysical_form\nsize_band\nmass_band\ncondition\nquality\nuse_context\nlegal_status\nsocial_status_signal\n```",
+      "char_count": 281
+    },
+    {
+      "id": "universal_category_classification_policy.md:8.2. Материалы:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "8.2. Материалы",
+      "line_start": 454,
+      "line_end": 467,
+      "text": "## universal_category_classification_policy.md — 8.2. Материалы\n### 8.2. Материалы\n\nМатериал должен быть отдельной нормализованной категорией. Для составного предмета допускаются связи:\n\n```text\nprimary_material\nsecondary_material\nsurface_material\nbinding_material\ncoating_material\n```\n\nМатериал не хранится только свободной строкой в `item_templates`.",
+      "char_count": 352
+    },
+    {
+      "id": "universal_category_classification_policy.md:8.3. Состояние:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "8.3. Состояние",
+      "line_start": 468,
+      "line_end": 483,
+      "text": "## universal_category_classification_policy.md — 8.3. Состояние\n### 8.3. Состояние\n\nМинимальная модель:\n\n```text\nintegrity\nwear\ncleanliness\nwetness\ncorrosion_or_rot\nsharpness_if_applicable\nfunctional_state\n```\n\nИспользуются только применимые фасеты. Нож не получает влажность как обязательный параметр, а ткань не получает остроту.",
+      "char_count": 331
+    },
+    {
+      "id": "universal_category_classification_policy.md:8.4. Контейнеры:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "8.4. Контейнеры",
+      "line_start": 484,
+      "line_end": 498,
+      "text": "## universal_category_classification_policy.md — 8.4. Контейнеры\n### 8.4. Контейнеры\n\nКонтейнер классифицируется отдельно от предмета по:\n\n```text\ncontainer_type\ncapacity_model\nclosure_type\nportability\naccess_policy\nvisibility_policy\n```\n\nСодержимое контейнера не является частью его category. Оно материализуется через content profile и slot rules.",
+      "char_count": 349
+    },
+    {
+      "id": "universal_category_classification_policy.md:8.5. Транспорт:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "8.5. Транспорт",
+      "line_start": 499,
+      "line_end": 512,
+      "text": "## universal_category_classification_policy.md — 8.5. Транспорт\n### 8.5. Транспорт\n\nФасеты:\n\n```text\ntransport_type\npropulsion_or_draft\nsupported_route_type\nseasonal_use\ncapacity_band\nrequired_equipment\nrequired_operator_skill\n```",
+      "char_count": 230
+    },
+    {
+      "id": "universal_category_classification_policy.md:9. Строения, помещения и G5:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "9. Строения, помещения и G5",
+      "line_start": 513,
+      "line_end": 516,
+      "text": "## universal_category_classification_policy.md — 9. Строения, помещения и G5\n## 9. Строения, помещения и G5\n\nТип строения нельзя задавать единственным списком, смешивающим форму, функцию и институт.",
+      "char_count": 198
+    },
+    {
+      "id": "universal_category_classification_policy.md:9.1. Фасеты строения:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "9.1. Фасеты строения",
+      "line_start": 517,
+      "line_end": 535,
+      "text": "## universal_category_classification_policy.md — 9.1. Фасеты строения\n### 9.1. Фасеты строения\n\n```text\nbuilding_form\nprimary_function\nsecondary_function\nconstruction_system\nprimary_material\nroof_form\nsize_band\nstorey_or_section_model\npublic_private_model\ninstitutional_affiliation\nwealth_context\ncondition\n```\n\nОсновная reference-схема для mappings — Getty AAT. Древнерусские археологические и исторические типологии хранятся как собственные project concepts.",
+      "char_count": 460
+    },
+    {
+      "id": "universal_category_classification_policy.md:9.2. Помещения и зоны:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "9.2. Помещения и зоны",
+      "line_start": 536,
+      "line_end": 557,
+      "text": "## universal_category_classification_policy.md — 9.2. Помещения и зоны\n### 9.2. Помещения и зоны\n\nПомещение классифицируется по функции:\n\n```text\nresidential\nsleeping\ncooking\nheating\nstorage\nwork\ntrade\nanimal_holding\nritual\nadministrative\ndefensive\ncirculation\nservice\n```\n\nМорфологическая форма и функция не объединяются. Например, `сени` могут иметь собственный исторический template и mapping к более широкой функции circulation/service.",
+      "char_count": 440
+    },
+    {
+      "id": "universal_category_classification_policy.md:9.3. Layout:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "9.3. Layout",
+      "line_start": 558,
+      "line_end": 572,
+      "text": "## universal_category_classification_policy.md — 9.3. Layout\n### 9.3. Layout\n\nLayout template определяет:\n\n- обязательные и optional room slots;\n- допустимые проходы;\n- входы и выходы;\n- доступ;\n- вместимость;\n- связь с функцией строения;\n- исторический период;\n- региональную применимость.\n\nCategory не определяет layout автоматически.",
+      "char_count": 336
+    },
+    {
+      "id": "universal_category_classification_policy.md:9.4. G5 anchors:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "9.4. G5 anchors",
+      "line_start": 573,
+      "line_end": 594,
+      "text": "## universal_category_classification_policy.md — 9.4. G5 anchors\n### 9.4. G5 anchors\n\nЯкорь классифицируется по возможностям взаимодействия:\n\n```text\npassage\nwork_surface\nstorage_point\nheat_source\nlight_source\nwater_source\nsleeping_place\nseating_place\nanimal_tether\ncover\nobstacle\nobservation_point\nritual_focus\n```\n\nКонкретный объект якоря создаётся из template/profile/rule и сохраняется в party state.",
+      "char_count": 404
+    },
+    {
+      "id": "universal_category_classification_policy.md:10. Ландшафты, вода и землепользование:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "10. Ландшафты, вода и землепользование",
+      "line_start": 595,
+      "line_end": 600,
+      "text": "## universal_category_classification_policy.md — 10. Ландшафты, вода и землепользование\n## 10. Ландшафты, вода и землепользование\n\nЛандшафт долж…1120 tokens truncated…ся как необязательная справочная строка. Оно не требуется materializer и не является обязательным FK.\n\nСовременные породы нельзя переносить в XIII век без отдельного исторического основания. По умолчанию используется общий тип `horse`, `cattle`, `sheep` и т. п., а не современная порода.",
+      "char_count": 454
+    },
+    {
+      "id": "universal_category_classification_policy.md:11.5. Материализация:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "11.5. Материализация",
+      "line_start": 601,
+      "line_end": 614,
+      "text": "## universal_category_classification_policy.md — 11.5. Материализация\n### 11.5. Материализация\n\nЖивотное создаётся только при наличии:\n\n```text\napproved animal category\n+ regional period permission\n+ place or G4 profile\n+ causal presence rule\n+ capacity and ownership policy when applicable\n```\n\nСлучайное животное не появляется только потому, что LLM сочло сцену живописнее.",
+      "char_count": 375
+    },
+    {
+      "id": "universal_category_classification_policy.md:12. Социальные категории и профессии:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "12. Социальные категории и профессии",
+      "line_start": 615,
+      "line_end": 618,
+      "text": "## universal_category_classification_policy.md — 12. Социальные категории и профессии\n## 12. Социальные категории и профессии\n\nТекущая многоосевая модель сохраняется. Социальное положение не сводится к одной вертикальной шкале.",
+      "char_count": 227
+    },
+    {
+      "id": "universal_category_classification_policy.md:12.1. Независимые оси:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "12.1. Независимые оси",
+      "line_start": 619,
+      "line_end": 637,
+      "text": "## universal_category_classification_policy.md — 12.1. Независимые оси\n### 12.1. Независимые оси\n\n```text\nsocial_group\nrole\nlegal_status\ndependency_status\nmobility_status\noccupation\noffice\nmilitary_obligation\nreligious_rank\nkinship_position\nproperty_rights\ncourt_voice\ntax_obligation\nservice_obligation\n```",
+      "char_count": 306
+    },
+    {
+      "id": "universal_category_classification_policy.md:12.2. Исторические термины:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "12.2. Исторические термины",
+      "line_start": 638,
+      "line_end": 653,
+      "text": "## universal_category_classification_policy.md — 12.2. Исторические термины\n### 12.2. Исторические термины\n\nТермины вроде `боярин`, `житьи люди`, `смерд`, `закуп`, `холоп`, `черные люди` являются регионально-временными historical concepts.\n\nОни должны иметь:\n\n- историческое определение;\n- период и территорию применимости;\n- источники;\n- scope note;\n- mapping на универсальные оси;\n- confidence;\n- указание спорных интерпретаций.\n\nЗапрещено считать такой термин точным синонимом современного класса или профессии.",
+      "char_count": 514
+    },
+    {
+      "id": "universal_category_classification_policy.md:12.3. Профессии:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "12.3. Профессии",
+      "line_start": 654,
+      "line_end": 666,
+      "text": "## universal_category_classification_policy.md — 12.3. Профессии\n### 12.3. Профессии\n\nПрофессия определяется через выполняемые задачи, производимые товары, услуги, инструменты, навыки, место работы и сезонность.\n\nHISCO допускается как внешний crosswalk, но не как источник исторической применимости.\n\n```text\nproject occupation concept\n→ local historical term\n→ task/function definition\n→ optional HISCO mapping\n```",
+      "char_count": 415
+    },
+    {
+      "id": "universal_category_classification_policy.md:12.4. Запрет социальных стереотипов:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "12.4. Запрет социальных стереотипов",
+      "line_start": 667,
+      "line_end": 690,
+      "text": "## universal_category_classification_policy.md — 12.4. Запрет социальных стереотипов\n### 12.4. Запрет социальных стереотипов\n\nСоциальная роль может ограничивать:\n\n- права;\n- обязанности;\n- доступ;\n- знания;\n- типичные навыки;\n- имущество;\n- одежду;\n- риски.\n\nОна не назначает автоматически:\n\n- честность;\n- трусость;\n- жадность;\n- жестокость;\n- интеллект;\n- лояльность;\n- религиозность;\n- отношение к игроку.",
+      "char_count": 408
+    },
+    {
+      "id": "universal_category_classification_policy.md:13. Навыки и знания:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "13. Навыки и знания",
+      "line_start": 691,
+      "line_end": 694,
+      "text": "## universal_category_classification_policy.md — 13. Навыки и знания\n## 13. Навыки и знания\n\nНавык и знание являются разными доменами.",
+      "char_count": 134
+    },
+    {
+      "id": "universal_category_classification_policy.md:13.1. Навык:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "13.1. Навык",
+      "line_start": 695,
+      "line_end": 707,
+      "text": "## universal_category_classification_policy.md — 13.1. Навык\n### 13.1. Навык\n\nНавык отвечает на вопрос: **что actor умеет делать?**\n\nОн связан с:\n\n- задачами;\n- инструментами;\n- профессией;\n- опытом;\n- уровнем владения;\n- ограничениями тела.",
+      "char_count": 241
+    },
+    {
+      "id": "universal_category_classification_policy.md:13.2. Знание:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "13.2. Знание",
+      "line_start": 708,
+      "line_end": 724,
+      "text": "## universal_category_classification_policy.md — 13.2. Знание\n### 13.2. Знание\n\nЗнание отвечает на вопрос: **какие факты actor знает, предполагает или считает истинными?**\n\nМинимальные состояния знания:\n\n```text\nknown_exact\nknown_roughly\nheard_report\nfalse_belief\nunknown\nwithheld\n```\n\nKnowledge category не заменяет конкретную ссылку на канонический факт, когда такой факт существует.",
+      "char_count": 385
+    },
+    {
+      "id": "universal_category_classification_policy.md:14. Региональные разрешения:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "14. Региональные разрешения",
+      "line_start": 725,
+      "line_end": 745,
+      "text": "## universal_category_classification_policy.md — 14. Региональные разрешения\n## 14. Региональные разрешения\n\nУниверсальная категория не входит в candidate set без активного регионального разрешения, если домен зависит от истории, культуры, природы или экономики региона.\n\nРегиональная запись должна содержать:\n\n```text\nworld_revision_id\nregion_id\ncategory_id\nvalid_from\nvalid_to\ncommonness_or_weight\napplicability\nstatus\nconfidence\nsource_refs\n```\n\nИсторически нейтральные технические категории могут быть global, но их применение к игровому объекту всё равно проходит через template/profile/rule.",
+      "char_count": 597
+    },
+    {
+      "id": "universal_category_classification_policy.md:15. Источники и confidence:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "15. Источники и confidence",
+      "line_start": 746,
+      "line_end": 747,
+      "text": "## universal_category_classification_policy.md — 15. Источники и confidence\n## 15. Источники и confidence",
+      "char_count": 105
+    },
+    {
+      "id": "universal_category_classification_policy.md:15.1. Типы источников:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "15.1. Типы источников",
+      "line_start": 748,
+      "line_end": 759,
+      "text": "## universal_category_classification_policy.md — 15.1. Типы источников\n### 15.1. Типы источников\n\nРекомендуемый порядок доказательности:\n\n1. археологические отчёты и каталоги находок;\n2. критические публикации письменных источников;\n3. академические монографии и статьи;\n4. научные справочники и классификаторы;\n5. музейные каталоги с атрибуцией;\n6. качественные обзорные материалы;\n7. редакторская реконструкция на основании нескольких источников.",
+      "char_count": 448
+    },
+    {
+      "id": "universal_category_classification_policy.md:15.2. Confidence:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "15.2. Confidence",
+      "line_start": 760,
+      "line_end": 774,
+      "text": "## universal_category_classification_policy.md — 15.2. Confidence\n### 15.2. Confidence\n\n`confidence` описывает эпистемическую уверенность, а не workflow-статус.\n\n```text\nunknown\nlow\nmedium_low\nmedium\nmedium_high\nhigh\n```\n\n`status` и `confidence` нельзя смешивать.",
+      "char_count": 263
+    },
+    {
+      "id": "universal_category_classification_policy.md:15.3. Спорные понятия:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "15.3. Спорные понятия",
+      "line_start": 775,
+      "line_end": 784,
+      "text": "## universal_category_classification_policy.md — 15.3. Спорные понятия\n### 15.3. Спорные понятия\n\nПри споре:\n\n- сохраняются competing interpretations;\n- фиксируется scope каждой интерпретации;\n- `exact` mapping не используется;\n- материализация разрешается только при однозначном active binding;\n- нерешённая обязательная неоднозначность является hard gap.",
+      "char_count": 356
+    },
+    {
+      "id": "universal_category_classification_policy.md:16. Правила хранения:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "16. Правила хранения",
+      "line_start": 785,
+      "line_end": 786,
+      "text": "## universal_category_classification_policy.md — 16. Правила хранения\n## 16. Правила хранения",
+      "char_count": 93
+    },
+    {
+      "id": "universal_category_classification_policy.md:16.1. Нормализация:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "16.1. Нормализация",
+      "line_start": 787,
+      "line_end": 800,
+      "text": "## universal_category_classification_policy.md — 16.1. Нормализация\n### 16.1. Нормализация\n\nВ отдельные таблицы и FK/relations выносятся:\n\n- category/template/profile/rule IDs;\n- region и period bindings;\n- внешние mappings;\n- allowed/required/forbidden relations;\n- materials;\n- roles и occupations;\n- ownership/holder/controller;\n- plural candidate entries;\n- queryable facets.",
+      "char_count": 379
+    },
+    {
+      "id": "universal_category_classification_policy.md:16.2. JSONB:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "16.2. JSONB",
+      "line_start": 801,
+      "line_end": 814,
+      "text": "## universal_category_classification_policy.md — 16.2. JSONB\n### 16.2. JSONB\n\nJSONB допустим только для:\n\n- versioned closed policy payload;\n- condition expression без скрытых внешних ID;\n- immutable snapshot;\n- validation report;\n- trace metadata;\n- локализованного описания;\n- editor notes.\n\nJSONB не должен быть единственным хранилищем классификационных ссылок.",
+      "char_count": 364
+    },
+    {
+      "id": "universal_category_classification_policy.md:16.3. Свободный текст:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "16.3. Свободный текст",
+      "line_start": 815,
+      "line_end": 818,
+      "text": "## universal_category_classification_policy.md — 16.3. Свободный текст\n### 16.3. Свободный текст\n\nСвободный текст допустим для описания, объяснения и примечаний. Он не может заменять category ID, material ID, relation type, role ID, animal type или другой машинно значимый фасет.",
+      "char_count": 279
+    },
+    {
+      "id": "universal_category_classification_policy.md:17. Обязательные проверки:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "17. Обязательные проверки",
+      "line_start": 819,
+      "line_end": 836,
+      "text": "## universal_category_classification_policy.md — 17. Обязательные проверки\n## 17. Обязательные проверки\n\nДо активации категории или схемы выполняются:\n\n1. проверка stable code;\n2. проверка уникальности preferred label в пределах domain/facet;\n3. проверка отсутствия иерархических циклов;\n4. проверка relation type;\n5. проверка external mapping и pinned scheme version;\n6. проверка источников;\n7. проверка region/period binding;\n8. проверка compatibility/requires/excludes;\n9. проверка отсутствия составной категории из нескольких фасетов;\n10. проверка, что значение не вводит новый скрытый category ID;\n11. проверка пустых required candidate sets;\n12. negative fixtures для запрещённых и пограничных случаев;\n13. readiness audit без hard gaps.",
+      "char_count": 743
+    },
+    {
+      "id": "universal_category_classification_policy.md:18. Поведение runtime:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "18. Поведение runtime",
+      "line_start": 837,
+      "line_end": 860,
+      "text": "## universal_category_classification_policy.md — 18. Поведение runtime\n## 18. Поведение runtime\n\nRuntime обязан:\n\n1. загрузить active world revision;\n2. загрузить approved category/template/profile/rule bundle;\n3. проверить region, period, season и context applicability;\n4. сформировать конечный candidate set;\n5. отсортировать candidates по stable ID;\n6. выполнить deterministic selection через versioned RNG;\n7. сохранить selected IDs, digest и rejection summary;\n8. создать instance;\n9. атомарно записать instance и trace.\n\nЕсли required candidate set пуст:\n\n```text\ndata gap\n→ hard block\n→ без fallback\n→ без ослабления фильтра\n→ без LLM repair содержания каталога\n```",
+      "char_count": 673
+    },
+    {
+      "id": "universal_category_classification_policy.md:19. Запрещённые практики:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "19. Запрещённые практики",
+      "line_start": 861,
+      "line_end": 877,
+      "text": "## universal_category_classification_policy.md — 19. Запрещённые практики\n## 19. Запрещённые практики\n\nЗапрещено:\n\n- создавать category ID в runtime;\n- принимать свободный текст LLM как категорию;\n- смешивать category, template, profile, rule и instance;\n- использовать современный классификатор как доказательство исторического присутствия;\n- объединять независимые фасеты в один тип;\n- хранить plural category IDs только в JSONB;\n- использовать внешнюю live-базу как обязательную runtime-зависимость;\n- назначать характер по внешности, профессии или классу;\n- назначать историческому животному современную породу без источника;\n- создавать предмет, NPC, животное или строение только по заявке игрока;\n- создавать смысловой default при отсутствии данных;\n- повышать proposed-документ в active без синхронизации DDL, контрактов, importer/readiness checks и аудита.",
+      "char_count": 864
+    },
+    {
+      "id": "universal_category_classification_policy.md:20. Предлагаемые изменения структуры данных:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "20. Предлагаемые изменения структуры данных",
+      "line_start": 878,
+      "line_end": 881,
+      "text": "## universal_category_classification_policy.md — 20. Предлагаемые изменения структуры данных\n## 20. Предлагаемые изменения структуры данных\n\nТочный DDL проектируется отдельной задачей. Целевая логическая модель должна включать:",
+      "char_count": 227
+    },
+    {
+      "id": "universal_category_classification_policy.md:20.1. `classification_schemes`:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "20.1. `classification_schemes`",
+      "line_start": 882,
+      "line_end": 895,
+      "text": "## universal_category_classification_policy.md — 20.1. `classification_schemes`\n### 20.1. `classification_schemes`\n\n```text\nid\ntitle\nauthority\nscheme_version\nrelease_date\ncanonical_reference\nlicense_or_usage_note\nsnapshot_digest\nstatus\n```",
+      "char_count": 239
+    },
+    {
+      "id": "universal_category_classification_policy.md:20.2. Расширение `universal_categories`:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "20.2. Расширение `universal_categories`",
+      "line_start": 896,
+      "line_end": 908,
+      "text": "## universal_category_classification_policy.md — 20.2. Расширение `universal_categories`\n### 20.2. Расширение `universal_categories`\n\n```text\nstable_code\nfacet\npreferred_label\ndefinition\nscope_note\ninclusion_rules\nexclusion_rules\nreplaced_by_category_id\n```",
+      "char_count": 257
+    },
+    {
+      "id": "universal_category_classification_policy.md:20.3. `category_labels`:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "20.3. `category_labels`",
+      "line_start": 909,
+      "line_end": 929,
+      "text": "## universal_category_classification_policy.md — 20.3. `category_labels`\n### 20.3. `category_labels`\n\n```text\ncategory_id\nlanguage\nlabel\nlabel_type\nvalid_from\nvalid_to\nsource_id\n```\n\n`label_type`:\n\n```text\npreferred\nalternative\nhistorical\ndeprecated\n```",
+      "char_count": 253
+    },
+    {
+      "id": "universal_category_classification_policy.md:20.4. `category_scheme_mappings`:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "20.4. `category_scheme_mappings`",
+      "line_start": 930,
+      "line_end": 941,
+      "text": "## universal_category_classification_policy.md — 20.4. `category_scheme_mappings`\n### 20.4. `category_scheme_mappings`\n\n```text\ncategory_id\nclassification_scheme_id\nexternal_concept_id\nmapping_type\nmapping_evidence\nsource_id\nreview_status\n```",
+      "char_count": 242
+    },
+    {
+      "id": "universal_category_classification_policy.md:20.5. Нормализация фасетов:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "20.5. Нормализация фасетов",
+      "line_start": 942,
+      "line_end": 945,
+      "text": "## universal_category_classification_policy.md — 20.5. Нормализация фасетов\n### 20.5. Нормализация фасетов\n\nСледует постепенно заменить свободные поля и plural JSONB в предметах, материалах, строениях, ландшафтах, социальных профилях и NPC на специализированные relation/entry tables.",
+      "char_count": 284
+    },
+    {
+      "id": "universal_category_classification_policy.md:21. Итоговый план внедрения:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "21. Итоговый план внедрения",
+      "line_start": 946,
+      "line_end": 947,
+      "text": "## universal_category_classification_policy.md — 21. Итоговый план внедрения\n## 21. Итоговый план внедрения",
+      "char_count": 107
+    },
+    {
+      "id": "universal_category_classification_policy.md:Этап 1. Утверждение норматива:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "Этап 1. Утверждение норматива",
+      "line_start": 948,
+      "line_end": 956,
+      "text": "## universal_category_classification_policy.md — Этап 1. Утверждение норматива\n### Этап 1. Утверждение норматива\n\n1. Провести профильный аудит документа.\n2. Устранить конфликты с active-нормативами.\n3. Добавить документ в canonical corpus и навигацию.\n4. Оставить статус `proposed` до технической реализации.\n\n**Критерий готовности:** документ принят как целевая архитектура без утверждения несуществующей реализации.",
+      "char_count": 417
+    },
+    {
+      "id": "universal_category_classification_policy.md:Этап 2. Базовый классификационный слой:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "Этап 2. Базовый классификационный слой",
+      "line_start": 957,
+      "line_end": 966,
+      "text": "## universal_category_classification_policy.md — Этап 2. Базовый классификационный слой\n### Этап 2. Базовый классификационный слой\n\n1. Спроектировать DDL `classification_schemes`, labels и mappings.\n2. Расширить `universal_categories` обязательными полями.\n3. Ограничить relation types.\n4. Добавить JSON Schema и importer validation.\n5. Добавить cycle, uniqueness, source и version checks.\n\n**Критерий готовности:** универсальные категории нельзя активировать без определения, фасета, источника и валидной структуры.",
+      "char_count": 516
+    },
+    {
+      "id": "universal_category_classification_policy.md:Этап 3. Предметы, материалы и контейнеры:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "Этап 3. Предметы, материалы и контейнеры",
+      "line_start": 967,
+      "line_end": 976,
+      "text": "## universal_category_classification_policy.md — Этап 3. Предметы, материалы и контейнеры\n### Этап 3. Предметы, материалы и контейнеры\n\n1. Создать универсальные словари object type/function/material/condition.\n2. Добавить AAT mappings там, где они однозначны или близки.\n3. Нормализовать item material bindings.\n4. Нормализовать container facets.\n5. Перенести queryable значения из свободного текста и plural JSONB.\n\n**Критерий готовности:** item materializer не использует свободный текст как машинную категорию.",
+      "char_count": 513
+    },
+    {
+      "id": "universal_category_classification_policy.md:Этап 4. Строения, помещения и G5:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "Этап 4. Строения, помещения и G5",
+      "line_start": 977,
+      "line_end": 986,
+      "text": "## universal_category_classification_policy.md — Этап 4. Строения, помещения и G5\n### Этап 4. Строения, помещения и G5\n\n1. Разделить form, function, construction, material и institution.\n2. Создать room function vocabulary.\n3. Связать layouts с нормализованными room/anchor categories.\n4. Проверить region/period bindings.\n5. Обновить slot rules и readiness audit.\n\n**Критерий готовности:** building type больше не смешивает функцию, форму и институциональную принадлежность.",
+      "char_count": 475
+    },
+    {
+      "id": "universal_category_classification_policy.md:Этап 5. Ландшафт, вода и землепользование:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "Этап 5. Ландшафт, вода и землепользование",
+      "line_start": 987,
+      "line_end": 996,
+      "text": "## universal_category_classification_policy.md — Этап 5. Ландшафт, вода и землепользование\n### Этап 5. Ландшафт, вода и землепользование\n\n1. Разделить land cover, habitat, landform, soil, hydrology и land use.\n2. Зафиксировать LCCS/EUNIS/WRB mappings только для применимых понятий.\n3. Сохранить игровые эффекты в templates/rules.\n4. Мигрировать существующий `landscape_group` в фасетную модель.\n5. Проверить региональные разрешения Новгородской земли.\n\n**Критерий готовности:** `forest`, `hill`, `bog` и `riverbank` не конкурируют в одном enum.",
+      "char_count": 544
+    },
+    {
+      "id": "universal_category_classification_policy.md:Этап 6. NPC:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "Этап 6. NPC",
+      "line_start": 997,
+      "line_end": 1007,
+      "text": "## universal_category_classification_policy.md — Этап 6. NPC\n### Этап 6. NPC\n\n1. Нормализовать appearance facets.\n2. Ввести compact stable traits.\n3. Разделить affect, body state, appraisal и relationship.\n4. Связать behavior profiles с decision policies.\n5. Запретить стереотипные выводы из класса, внешности и профессии.\n6. Обновить materializer, party schema и visible read model.\n\n**Критерий готовности:** NPC profile set объясняет выбор каждого параметра отдельной approved category/profile reference.",
+      "char_count": 506
+    },
+    {
+      "id": "universal_category_classification_policy.md:Этап 7. Социальные категории, профессии, навыки и знания:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "Этап 7. Социальные категории, профессии, навыки и знания",
+      "line_start": 1008,
+      "line_end": 1017,
+      "text": "## universal_category_classification_policy.md — Этап 7. Социальные категории, профессии, навыки и знания\n### Этап 7. Социальные категории, профессии, навыки и знания\n\n1. Сохранить многоосевую социальную модель.\n2. Добавить исторические scope notes и источники.\n3. Добавить optional HISCO mappings профессий.\n4. Разделить skill и knowledge domains.\n5. Нормализовать occupation-task-skill relations.\n\n**Критерий готовности:** региональный исторический термин не используется как неразложимый современный класс.",
+      "char_count": 509
+    },
+    {
+      "id": "universal_category_classification_policy.md:Этап 8. Упрощённые животные:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "Этап 8. Упрощённые животные",
+      "line_start": 1018,
+      "line_end": 1027,
+      "text": "## universal_category_classification_policy.md — Этап 8. Упрощённые животные\n### Этап 8. Упрощённые животные\n\n1. Создать компактный common-type vocabulary.\n2. Создать game-role vocabulary.\n3. Добавить region/period permissions, commonness и place context.\n4. Связать животных с G4/place/building profiles.\n5. Добавить ownership и transport facets только для домашних животных.\n\n**Критерий готовности:** игра получает правдоподобных животных без глубокой зоологической подсистемы.",
+      "char_count": 479
+    },
+    {
+      "id": "universal_category_classification_policy.md:Этап 9. Импорт, миграция и activation gate:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "Этап 9. Импорт, миграция и activation gate",
+      "line_start": 1028,
+      "line_end": 1039,
+      "text": "## universal_category_classification_policy.md — Этап 9. Импорт, миграция и activation gate\n### Этап 9. Импорт, миграция и activation gate\n\n1. Подготовить versioned datasets и manifest.\n2. Выполнить dry-run.\n3. Проверить cross-references и digests.\n4. Добавить negative fixtures.\n5. Обновить generated `SCHEMA_REFERENCE.md`.\n6. Выполнить PostgreSQL integration.\n7. Выполнить full test suite.\n8. Провести обязательный аудит агента-критика.\n9. Повысить документ и revision в `active` только после `PASS` или допустимого `PASS WITH NOTES`.",
+      "char_count": 536
+    },
+    {
+      "id": "universal_category_classification_policy.md:22. Минимальный первый релиз:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "22. Минимальный первый релиз",
+      "line_start": 1040,
+      "line_end": 1055,
+      "text": "## universal_category_classification_policy.md — 22. Минимальный первый релиз\n## 22. Минимальный первый релиз\n\nЧтобы не превращать задачу в бесконечное построение онтологии, первый release должен включать только категории, реально используемые Новгородской землёй и текущими pipeline:\n\n```text\nNPC appearance / traits / affect\nsocial positions / occupations / skills\nitem types / materials / conditions\ncontainers / transport\nbuilding forms / functions / rooms / anchors\nland cover / landform / water / land use\nsimplified animals\n```\n\nНеиспользуемые внешние понятия не импортируются.",
+      "char_count": 584
+    },
+    {
+      "id": "universal_category_classification_policy.md:23. Критерии повышения документа в `active`:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "23. Критерии повышения документа в `active`",
+      "line_start": 1056,
+      "line_end": 1072,
+      "text": "## universal_category_classification_policy.md — 23. Критерии повышения документа в `active`\n## 23. Критерии повышения документа в `active`\n\nДокумент может стать `active`, только если:\n\n```text\nDDL синхронизирован;\nSCHEMA_REFERENCE.md перегенерирован;\nJSON Schema и importer обновлены;\nseed/catalog datasets versioned и approved;\nregion bindings Новгородской земли заполнены;\nmaterializer использует только нормализованные IDs;\nпустые required candidate sets блокируют операции;\nnegative fixtures существуют;\nполный test suite и PostgreSQL integration выполнены;\nагент-критик вернул PASS или допустимый PASS WITH NOTES.\n```",
+      "char_count": 623
+    },
+    {
+      "id": "universal_category_classification_policy.md:24. Короткая формула:0",
+      "file": "universal_category_classification_policy.md",
+      "section": "24. Короткая формула",
+      "line_start": 1073,
+      "line_end": 1098,
+      "text": "## universal_category_classification_policy.md — 24. Короткая формула\n## 24. Короткая формула\n\n```text\nуниверсальная категория\n= одно определённое понятие одного фасета\n+ стабильный ID\n+ источник\n+ версия\n+ контролируемые связи;\n\nисторическая допустимость\n= регион\n+ период\n+ источник\n+ confidence\n+ active permission;\n\nконкретный объект игры\n= approved category/template/profile/rule\n+ причинное основание\n+ deterministic selection\n+ сохранённый instance\n+ trace.\n```\n\nНаучная классификация создаёт прочный словарь. Исторические источники ограничивают его эпохой и регионом. Код материализует только прошедшие оба уровня варианты. LLM не расширяет каталог и не заменяет отсутствующее знание.",
+      "char_count": 692
+    },
+    {
+      "id": "universal_category_classification_references.md:Реестр внешних классификационных опор:0",
+      "file": "universal_category_classification_references.md",
+      "section": "Реестр внешних классификационных опор",
+      "line_start": 1,
+      "line_end": 6,
+      "text": "## universal_category_classification_references.md — Реестр внешних классификационных опор\n# Реестр внешних классификационных опор\n\n**Статус:** справочное приложение к `UNIVERSAL_CATEGORY_CLASSIFICATION_POLICY.md`\n**Дата проверки:** `2026-07-15`\nЭтот файл не подтверждает историческую применимость понятий к Новгородской земле XIII века. Он фиксирует внешние схемы, которые допускается использовать для определения терминов, иерархий и mappings. Историческое присутствие подтверждается отдельными региональными источниками и bindings.",
+      "char_count": 534
+    },
+    {
+      "id": "universal_category_classification_references.md:1. Общая модель контролируемого словаря:0",
+      "file": "universal_category_classification_references.md",
+      "section": "1. Общая модель контролируемого словаря",
+      "line_start": 7,
+      "line_end": 8,
+      "text": "## universal_category_classification_references.md — 1. Общая модель контролируемого словаря\n## 1. Общая модель контролируемого словаря",
+      "char_count": 135
+    },
+    {
+      "id": "universal_category_classification_references.md:W3C SKOS Reference:0",
+      "file": "universal_category_classification_references.md",
+      "section": "W3C SKOS Reference",
+      "line_start": 9,
+      "line_end": 20,
+      "text": "## universal_category_classification_references.md — W3C SKOS Reference\n### W3C SKOS Reference\n\nИспользование в проекте:\n\n- preferred и alternative labels;\n- definitions и scope notes;\n- broader/narrower/related relations;\n- exact/close/broad/narrow/related mappings;\n- проектирование контролируемых словарей без обязательного внедрения RDF в runtime.\n\nОфициальный источник: W3C Recommendation `SKOS Simple Knowledge Organization System Reference`.",
+      "char_count": 448
+    },
+    {
+      "id": "universal_category_classification_references.md:2. Предметы, материалы, строения и помещения:0",
+      "file": "universal_category_classification_references.md",
+      "section": "2. Предметы, материалы, строения и помещения",
+      "line_start": 21,
+      "line_end": 22,
+      "text": "## universal_category_classification_references.md — 2. Предметы, материалы, строения и помещения\n## 2. Предметы, материалы, строения и помещения",
+      "char_count": 145
+    },
+    {
+      "id": "universal_category_classification_references.md:Getty Art & Architecture Thesaurus — AAT:0",
+      "file": "universal_category_classification_references.md",
+      "section": "Getty Art & Architecture Thesaurus — AAT",
+      "line_start": 23,
+      "line_end": 39,
+      "text": "## universal_category_classification_references.md — Getty Art & Architecture Thesaurus — AAT\n### Getty Art & Architecture Thesaurus — AAT\n\nИспользование в проекте:\n\n- object types;\n- functions;\n- materials;\n- techniques;\n- components;\n- built environment;\n- room and building concepts;\n- mappings проектных древнерусских категорий.\n\nAAT используется как reference vocabulary. Специфические исторические типы проекта сохраняют собственные stable IDs, определения и источники.\n\nОфициальный источник: Getty Vocabulary Program, Art & Architecture Thesaurus Online.",
+      "char_count": 561
+    },
+    {
+      "id": "universal_category_classification_references.md:3. Ландшафт:0",
+      "file": "universal_category_classification_references.md",
+      "section": "3. Ландшафт",
+      "line_start": 40,
+      "line_end": 41,
+      "text": "## universal_category_classification_references.md — 3. Ландшафт\n## 3. Ландшафт",
+      "char_count": 79
+    },
+    {
+      "id": "universal_category_classification_references.md:FAO Land Cover Classification System — LCCS:0",
+      "file": "universal_category_classification_references.md",
+      "section": "FAO Land Cover Classification System — LCCS",
+      "line_start": 42,
+      "line_end": 52,
+      "text": "## universal_category_classification_references.md — FAO Land Cover Classification System — LCCS\n### FAO Land Cover Classification System — LCCS\n\nИспользование в проекте:\n\n- land cover;\n- структура растительного покрова;\n- отделение land cover от land use;\n- построение совместимого словаря базовой среды.\n\nОфициальный источник: Food and Agriculture Organization of the United Nations, LCCS documentation.",
+      "char_count": 405
+    },
+    {
+      "id": "universal_category_classification_references.md:EUNIS Habitat Classification:0",
+      "file": "universal_category_classification_references.md",
+      "section": "EUNIS Habitat Classification",
+      "line_start": 53,
+      "line_end": 62,
+      "text": "## universal_category_classification_references.md — EUNIS Habitat Classification\n### EUNIS Habitat Classification\n\nИспользование в проекте:\n\n- habitat mappings;\n- европейские наземные и пресноводные местообитания;\n- сопоставление проектных природных комплексов с более широкими habitat concepts.\n\nОфициальный источник: European Environment Agency, EUNIS Habitat Classification.",
+      "char_count": 378
+    },
+    {
+      "id": "universal_category_classification_references.md:World Reference Base for Soil Resources — WRB:0",
+      "file": "universal_category_classification_references.md",
+      "section": "World Reference Base for Soil Resources — WRB",
+      "line_start": 63,
+      "line_end": 74,
+      "text": "## universal_category_classification_references.md — World Reference Base for Soil Resources — WRB\n### World Reference Base for Soil Resources — WRB\n\nИспользование в проекте:\n\n- optional soil mappings;\n- терминология почв;\n- классификация только там, где почва подтверждена источниками и влияет на игру.\n\nWRB не обязателен для каждой локации и не должен заставлять редактора придумывать неизвестный тип почвы.\n\nОфициальный источник: IUSS Working Group WRB, `World Reference Base for Soil Resources`.",
+      "char_count": 499
+    },
+    {
+      "id": "universal_category_classification_references.md:4. NPC:0",
+      "file": "universal_category_classification_references.md",
+      "section": "4. NPC",
+      "line_start": 75,
+      "line_end": 76,
+      "text": "## universal_category_classification_references.md — 4. NPC\n## 4. NPC",
+      "char_count": 69
+    },
+    {
+      "id": "universal_category_classification_references.md:ISO 7250-1:0",
+      "file": "universal_category_classification_references.md",
+      "section": "ISO 7250-1",
+      "line_start": 77,
+      "line_end": 88,
+      "text": "## universal_category_classification_references.md — ISO 7250-1\n### ISO 7250-1\n\nИспользование в проекте:\n\n- нейтральная антропометрическая терминология;\n- определения базовых измерений тела;\n- проектирование stature/body-size facets.\n\nСтандарт не используется для этнической, моральной или психологической классификации.\n\nОфициальный источник: International Organization for Standardization, ISO 7250-1.",
+      "char_count": 403
+    },
+    {
+      "id": "universal_category_classification_references.md:ISO/CIE 11664-4:0",
+      "file": "universal_category_classification_references.md",
+      "section": "ISO/CIE 11664-4",
+      "line_start": 89,
+      "line_end": 99,
+      "text": "## universal_category_classification_references.md — ISO/CIE 11664-4\n### ISO/CIE 11664-4\n\nИспользование в проекте:\n\n- optional machine-readable colour values CIE L*a*b*;\n- только при необходимости точного сопоставления цвета.\n\nИгровой runtime может использовать человекочитаемые project labels без обязательного хранения лабораторных измерений.\n\nОфициальный источник: ISO и International Commission on Illumination, ISO/CIE 11664-4.",
+      "char_count": 432
+    },
+    {
+      "id": "universal_category_classification_references.md:Five-Factor Model / International Personality Item Pool:0",
+      "file": "universal_category_classification_references.md",
+      "section": "Five-Factor Model / International Personality Item Pool",
+      "line_start": 100,
+      "line_end": 111,
+      "text": "## universal_category_classification_references.md — Five-Factor Model / International Personality Item Pool\n### Five-Factor Model / International Personality Item Pool\n\nИспользование в проекте:\n\n- компактный профиль устойчивых личностных тенденций;\n- пять независимых осей;\n- проектирование категорий черт, но не клинических диагнозов.\n\nМодель не заменяет цели, мотивы, знания, социальные обязанности, текущее состояние и decision policy.\n\nОфициальный источник: International Personality Item Pool и академическая модель Big Five/Five-Factor Model.",
+      "char_count": 549
+    },
+    {
+      "id": "universal_category_classification_references.md:5. Исторические профессии:0",
+      "file": "universal_category_classification_references.md",
+      "section": "5. Исторические профессии",
+      "line_start": 112,
+      "line_end": 113,
+      "text": "## universal_category_classification_references.md — 5. Исторические профессии\n## 5. Исторические профессии",
+      "char_count": 107
+    },
+    {
+      "id": "universal_category_classification_references.md:HISCO — Historical International Standard Classification of Occupations:0",
+      "file": "universal_category_classification_references.md",
+      "section": "HISCO — Historical International Standard Classification of Occupations",
+      "line_start": 114,
+      "line_end": 125,
+      "text": "## universal_category_classification_references.md — HISCO — Historical International Standard Classification of Occupations\n### HISCO — Historical International Standard Classification of Occupations\n\nИспользование в проекте:\n\n- optional crosswalk исторических занятий;\n- task/function definition;\n- межрегиональное сопоставление профессий.\n\nHISCO не подтверждает наличие конкретной профессии в Новгородской земле 1230 года. Для этого требуется отдельный исторический источник и региональный binding.\n\nОфициальный источник: History of Work Information System / International Institute of Social History.",
+      "char_count": 604
+    },
+    {
+      "id": "universal_category_classification_references.md:6. Животные:0",
+      "file": "universal_category_classification_references.md",
+      "section": "6. Животные",
+      "line_start": 126,
+      "line_end": 146,
+      "text": "## universal_category_classification_references.md — 6. Животные\n## 6. Животные\n\nГлубокая внешняя таксономическая система в первом релизе не требуется.\n\nДопускается:\n\n- необязательное научное название в справочных данных;\n- ссылка на современный признанный taxon только для устранения неоднозначности;\n- исторические и археозоологические источники для регионального присутствия.\n\nНе требуется:\n\n- полный таксономический граф;\n- Darwin Core;\n- обязательные внешние taxon IDs;\n- подвиды;\n- генетические линии;\n- современные породы без исторического основания.\n\nОсновной игровой слой использует common types и game roles из проектного словаря.",
+      "char_count": 640
+    },
+    {
+      "id": "universal_category_classification_references.md:7. Правило обновления:0",
+      "file": "universal_category_classification_references.md",
+      "section": "7. Правило обновления",
+      "line_start": 147,
+      "line_end": 162,
+      "text": "## universal_category_classification_references.md — 7. Правило обновления\n## 7. Правило обновления\n\nПри добавлении или обновлении внешней схемы фиксируются:\n\n```text\nscheme_id\nscheme title\nauthority\nversion or release date\ncanonical reference\nsnapshot digest\nlicense or usage note\nreview date\n```\n\nИзменение внешней версии не изменяет автоматически active project categories и старые party instances. Требуется отдельная редакторская ревизия, migration assessment и audit.",
+      "char_count": 473
     },
     {
       "id": "world_base_materialization_table_requirements.md:Требования к таблицам каталогов и материализации:0",

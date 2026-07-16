@@ -97,11 +97,12 @@ test('code materializes concrete NPC and item instances only from approved norma
   stage16Input.g5_scene_graph = stage13.output;
   stage16Input.initial_npc_placement = stage15.draft;
   stage16Input.item_profile_candidate_set.item_profile_candidates = [{
-    item_profile_candidate_id:'item-candidate-1',item_profile_id:'item-profile-1',item_template_id:'item-template-1',item_category_id:'tool',status:'approved',world_revision_id:'revision-1',region_id:'region-1',valid_from_year:1200,valid_to_year:1300,allowed_seasons:['spring'],required:true,slot_rule_id:'item-slot-1',quantity:1,condition_state:'intact',legal_status:'unowned',property_rule_candidate_ids:['property-rule-1'],
-    causal_basis:{causal_basis_type:'place_function',causal_basis_id:'item-rule-1'},placement:{g5_anchor_id:anchor.anchor_id,parent_g4_node_id:'g4'},physical_state:{weight:1,size_band:'small',condition:'intact'},
+    item_profile_candidate_id:'item-candidate-1',item_profile_id:'item-profile-1',item_template_id:'item-template-1',item_category_id:'tool',status:'approved',world_revision_id:'revision-1',region_id:'region-1',valid_from_year:1200,valid_to_year:1300,allowed_seasons:['spring'],required:true,slot_rule_id:'item-slot-1',quantity:1,quantity_requirement_id:'quantity-requirement-item-1',quantity_unit_id:'piece',condition_state:'intact',legal_status:'unowned',property_rule_candidate_ids:['property-rule-1'],
+    causal_basis:{causal_basis_type:'place_function',causal_basis_id:'item-rule-1'},placement:{g5_anchor_id:anchor.anchor_id,parent_g4_node_id:'g4'},physical_state:{weight:0.1,mass_grams_per_unit:100,external_hand_cost:0,size_band:'small',condition:'intact'},
     visibility_state:{visibility:'visible',visible_to_player_now:true},access_state:{access:'free'},property_state:{property_rule_candidate_id:'property-rule-1',owner_model:'none',holder_model:'place',controller_model:'none',legal_or_social_status:'unowned'},risk_state:{},source_trace:[{source_id:'item-candidate-1'}]
   }];
   stage16Input.item_profile_candidate_set.property_rule_candidates = [{property_rule_candidate_id:'property-rule-1',status:'approved',world_revision_id:'revision-1',region_id:'region-1',valid_from_year:1200,valid_to_year:1300,allowed_seasons:['spring'],materialization_allowed:true}];
+  stage16Input.item_profile_candidate_set.quantity_requirements = [{quantity_requirement_id:'quantity-requirement-item-1',status:'approved',world_revision_id:'revision-1',item_template_id:'item-template-1',minimum_quantity:1,maximum_quantity:1,quantity_unit_id:'piece',quantity_dimension:'count',mass_grams_per_unit:100,default_quantity_policy:{mode:'explicit_only'}}];
   const stage16 = await runStage16ItemPlacementBlock({ input: stage16Input, audit: async () => makeStage16Audit() });
   assert.equal(stage16.draft.item_instances.length, 1);
   assert.equal(stage16.draft.property_bindings[0].property_rule_candidate_id, 'property-rule-1');
@@ -147,9 +148,9 @@ test('incomplete legacy Stage 7/8 candidates hard-block instead of receiving inv
   const stage16Input = makeStage16Input();
   stage16Input.g5_scene_graph = stage13.output;
   stage16Input.initial_npc_placement = makeStage15Input().initial_npc_placement ?? stage16Input.initial_npc_placement;
-  stage16Input.item_profile_candidate_set = { version: 1, schema: 'item_profile_candidate_set', request_id: stage16Input.request_id, selection_status: 'ready', catalog_digest: 'stage8-catalog', empty_allowed: false,
+  stage16Input.item_profile_candidate_set = { version: 1, schema: 'item_profile_candidate_set', request_id: stage16Input.request_id, selection_status: 'ready', world_revision_id: 'revision-1', catalog_digest: canonicalDigest({ catalog: 'legacy-stage8', world_revision_id: 'revision-1' }), empty_allowed: false,
     item_profile_candidates: [{ item_profile_candidate_id: 'item-legacy', item_profile_id: 'item-profile-legacy', item_template_id: 'item-template-legacy', item_category_id: 'tool-category', default_condition: 'intact', legal_status: 'unassigned', item_type: 'tool', weight: 1, size_band: 'small', source_trace: [{ source_id: 'stage8-item-row' }] }],
     container_profile_candidates: [{ container_profile_candidate_id: 'container-legacy', container_profile_id: 'container-profile-legacy', container_template_id: 'container-template-legacy', container_category_id: 'storage-category', default_condition: 'intact', container_type: 'box', weight_empty: 2, capacity_band: 'small', content_state: { content_materialized: false, content_causal_basis: null }, source_trace: [{ source_id: 'stage8-container-row' }] }],
-    property_rule_candidates: [] };
+    property_rule_candidates: [], quantity_requirements: [], equipment_candidates: [] };
   await assert.rejects(() => runStage16ItemPlacementBlock({ input: stage16Input, audit: async () => makeStage16Audit() }), (error) => error.code === 'PLACEMENT_RULE_CANDIDATES_EMPTY');
 });

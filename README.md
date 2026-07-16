@@ -187,6 +187,14 @@ GitHub CI run `29499174723` завершён успешно. Фактическ�
 `proposed` и `deprecated` получают lexical-only coverage без approved semantic embedding и без участия в active semantic graph. Default reader и query остаются active-only; доступ к non-active документу требует явного `--statuses`. Изменённый `interface-ux` понижен с `covered` до `baseline_gap`, потому что его approved semantic snapshot не соответствует текущему canonical text; новая semantic approval не создавалась автоматически.
 
 Штатно выполнены `npm ci`, corpus check, knowledge/docs generation, `test:knowledge-source`, materializer tests, `knowledge:check`, `docs:check` и architecture check. Generated RAG artifacts обновлены только генераторами. Независимый критик выполнил цикл из четырёх аудитов: первые три `CHANGES REQUIRED` выявили и подтвердили устранение fail-closed gaps (non-active semantic injection, coverage-to-chunk provenance и устаревшие числа README); заключительный результат — `PASS`. Stage 16, activation и существующие партии данным этапом не изменяются.
+
+### Repair: Stage 16 approved-catalog contract
+
+Исходно `node --test test/modules/code-materialization-run.test.js` завершался `4/8` с первым gate `ITEM_APPROVED_CATALOG_BLOCK_MISSING`: legacy fixture не передавал обязательные Stage 8 `quantity_requirements` и `equipment_candidates`. После добавления version pin и реального SHA-256 digest fixture дошёл до следующего корректного gate — отсутствующего `quantity_requirement_id` в положительном item candidate.
+
+Обновлены только fixtures и contract tests: quantity requirement теперь связан с тем же template/revision, item передаёт explicit unit, mass и external hand cost. Negative tests проверяют unapproved/foreign requirement, template mismatch, range, unit, physical profile, owner/holder/controller и equipment approval. Production repair минимален: materializer теперь fail-closed сравнивает declared item unit с approved quantity requirement и требует approved same-revision equipment candidate. Старые party instances, activation и каталог не менялись; readiness остаётся `0/120` approved templates и все 120 блокируются историческими evidence, regional profiles/rules и legacy gaps.
+
+Дополнительно устранена Node 24-несовместимость Stage 3C promotion sorter (`map(structuredClone)` передавал index как options): исходные три `test:world-catalog` failure устранены одноаргументным clone callback. Выполнены Stage 16, G5, Stage 24/25, world-catalog, schema, knowledge, documentation и architecture checks. Полный `npm test`, generated reproducibility и обязательные аудиты выполняются перед push; activation и rematerialization существующих партий отсутствуют.
 ## PR №7 — Stage 3C
 
 ### Цель

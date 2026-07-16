@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { materializeApprovedItems } from '../../packages/materialization/src/stage-helpers.js';
+import { runStage16ItemPlacementBlock } from '@rus/new-game/stages/stage-16/compat';
+import { makeStage16Audit, makeStage16Draft, makeStage16Input } from '../fixtures/stage13-16-fixtures.mjs';
 
 function requirement(overrides = {}) {
   return { quantity_requirement_id: 'quantity-1', status: 'approved', world_revision_id: 'revision-1', item_template_id: 'item-template-1', minimum_quantity: 1, maximum_quantity: 2, quantity_unit_id: 'piece', quantity_dimension: 'count', mass_grams_per_unit: 100, default_quantity_policy: { mode: 'explicit_only' }, ...overrides };
@@ -41,12 +43,24 @@ test('Stage 16 approved catalog rejects quantity outside bounds, unit mismatch, 
   for (const [candidateOverrides, code] of cases) assert.throws(() => materialize({ candidateOverrides }), (error) => error.code === code);
 });
 
-test('Stage 16 approved catalog rejects an unapproved equipment candidate', () => {
-  assert.throws(() => materialize({ candidateOverrides: { equipment_candidate_id: 'equipment-1' }, equipment: [{ equipment_candidate_id: 'equipment-1', status: 'draft', world_revision_id: 'revision-1' }] }), (error) => error.code === 'EQUIPMENT_CANDIDATE_NOT_APPROVED');
+test('Stage 16 approved catalog rejects an unapproved or foreign-revision equipment candidate', () => {
+  for (const equipment of [[{ equipment_candidate_id: 'equipment-1', status: 'draft', world_revision_id: 'revision-1' }], [{ equipment_candidate_id: 'equipment-1', status: 'approved', world_revision_id: 'other-revision' }]]) {
+    assert.throws(() => materialize({ candidateOverrides: { equipment_candidate_id: 'equipment-1' }, equipment }), (error) => error.code === 'EQUIPMENT_CANDIDATE_NOT_APPROVED');
+  }
 });
 
 test('Stage 16 approved catalog accepts mutually pinned quantity, equipment and item records', () => {
   const output = materialize({ candidateOverrides: { equipment_candidate_id: 'equipment-1' }, equipment: [{ equipment_candidate_id: 'equipment-1', status: 'approved', world_revision_id: 'revision-1' }] });
   assert.equal(output[0].quantity_unit_id, 'piece');
   assert.equal(output[0].total_mass_grams, 100);
+});
+
+test('Stage 16 input gate rejects missing approved catalog blocks before a custom materializer can bypass them', async () => {
+  const input = makeStage16Input();
+  delete input.item_profile_candidate_set.quantity_requirements;
+  delete input.item_profile_candidate_set.equipment_candidates;
+  await assert.rejects(
+    () => runStage16ItemPlacementBlock({ input, materialize: async () => makeStage16Draft(), audit: async () => makeStage16Audit() }),
+    (error) => error.lifecycle?.concerns?.some((concern) => concern.code === 'ITEM_PLACEMENT_REQUIRED_BLOCK_MISSING')
+  );
 });

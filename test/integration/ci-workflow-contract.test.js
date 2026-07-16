@@ -13,6 +13,8 @@ test('GitHub Actions clean-clone workflow keeps all required gates in order', as
     'https://registry.npmjs.org/',
     'name: Install dependencies',
     'npm ci',
+    'name: Install pinned Graphify',
+    'graphifyy==0.9.17',
     'name: Validate canonical world_base schema',
     'npm run world-db:schema-check',
     'npm run world-db:schema-doc-check',
@@ -34,6 +36,10 @@ test('GitHub Actions clean-clone workflow keeps all required gates in order', as
     'name: Verify generated files are reproducible',
     'git diff --exit-code -- MODULE_INDEX.md generated/ infra/world-base/SCHEMA_REFERENCE.md',
     'git status --porcelain --untracked-files=all -- MODULE_INDEX.md generated/ infra/world-base/SCHEMA_REFERENCE.md',
+    'name: Build and verify Repository Graph for current HEAD',
+    'npm run repo-intel:build',
+    'npm run repo-intel:status',
+    'npm run test:repository-intelligence',
     'name: Run full test suite',
     'npm test'
   ];

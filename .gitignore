@@ -11,3 +11,5 @@ releases/*
 legacy/data/new-game-process/
 legacy/data/regional-summary-cache/
 *.log
+graphify-out/
+generated/repository-intelligence/

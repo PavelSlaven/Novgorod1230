@@ -24,6 +24,24 @@
 
 Если задача затрагивает базу данных, DDL, импорт, категории, шаблоны, профили, materialization rules, G5, NPC, предметы, контейнеры, имущество, транспорт или bounded decisions, обязательно полностью прочитай [WORLD_BASE_MATERIALIZATION_TABLE_REQUIREMENTS.md](data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md).
 
+## Обязательный интерфейс RAG для агентов
+
+Для поиска профильных нормативов Codex, Cursor и другие агенты разработки обязаны сначала использовать read-only CLI `@rus/knowledge-source`:
+
+```bash
+npm run knowledge:status
+npm run knowledge:query -- --query "формулировка информационной потребности"
+npm run knowledge:read -- --document-id <document_id>
+```
+
+CLI возвращает JSON с `document_id`, статусом, SHA-256 и диапазонами строк. Результат поиска используется только для навигации: обязательные и профильные документы после обнаружения читаются полностью. Прямой поиск по файлам допустим только после RAG-запроса для проверки связанных реализаций либо когда CLI завершился typed failure. Typed failure, stale RAG, semantic blocker или отсутствующий обязательный документ нельзя обходить похожим файлом, legacy-копией или предположением.
+
+Статусы `proposed` и `deprecated` доступны только по явному запросу:
+
+```bash
+npm run knowledge:query -- --query "..." --statuses active,proposed
+```
+
 ## Порядок работы
 
 1. Определи затронутые подсистемы и прочитай их профильные нормативы.

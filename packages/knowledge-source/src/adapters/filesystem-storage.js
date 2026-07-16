@@ -11,6 +11,7 @@ export function createFileSystemKnowledgeSourceStorage({ sourceRoot, generatedRo
   return Object.freeze({
     readCorpusManifest: () => readJsonAndBytes(read, resolveWithin(source, 'corpus-manifest.json')),
     readAliases: () => readJsonAndBytes(read, resolveWithin(source, 'source-aliases.json')),
+    readRetrievalPolicy: () => readJsonAndBytes(read, resolveWithin(source, 'retrieval-policy.json')),
     readDocument: (canonicalPath) => readBytes(read, getStat, resolveWithin(source, canonicalPath), 'DOCUMENT_FILE_MISSING'),
     readGeneratedManifest: (kind) => readOptionalJsonAndBytes(read, resolveWithin(generated, `${safeKind(kind)}/manifest.json`)),
     readGeneratedArtifact: (kind, name) => readBytes(read, getStat, resolveWithin(generated, `${safeKind(kind)}/${safeName(name)}`), 'GENERATED_INDEX_NOT_FOUND')

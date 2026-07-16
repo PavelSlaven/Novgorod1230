@@ -110,3 +110,49 @@ npm run world-catalog:validate-novgorod-revision
 ## Архив разработки
 
 Завершённые планы, отчёты, parity-материалы и evidence предыдущей архитектурной перестройки сохранены в [архиве](docs/migration/README.md). Они не описывают текущий статус игры и не являются основной точкой входа в документацию.
+
+## RAG readiness — текущая работа
+
+### Цель
+
+Привести RAG нормативного корпуса к формальному правилу полноты metadata, status-aware retrieval, явной фиксации semantic gaps и проверяемых контрольных запросов.
+
+### Выполненные изменения
+
+- добавлен `data/knowledge-source/retrieval-policy.json` с metadata для всех 28 зарегистрированных документов;
+- зарегистрированы нормативный приоритет, подсистемы, связи с документами, модулями и контрактами, поисковые термины и semantic coverage disposition;
+- добавлен отдельный `createKnowledgeRagReader`, не изменяющий совместимость существующего full-text reader;
+- ranked retrieval работает только по committed semantic/lexical RAG chunks и возвращает provenance каждого результата;
+- `active` используется по умолчанию; `proposed` и `deprecated` требуют явного разрешения и запроса;
+- stale corpus/policy/RAG pins, отсутствующая metadata и ложное semantic coverage завершаются typed failure;
+- добавлены контрольные top-k запросы и readiness report;
+- добавлены unit, negative и repository contract tests.
+
+### Принятые решения
+
+Lexical ranking не объявляется семантическим поиском. Текущие 23 документа без утверждённых embeddings зафиксированы как `baseline_gap`; пять документов с approved snapshot отмечены как `covered`. Для новых изменений используется `required_before_merge`, если semantic snapshot не обновляется в том же PR.
+
+### Структура результата
+
+- policy registry: `data/knowledge-source/retrieval-policy.json`;
+- validation/ranking: `packages/knowledge-source/src/domain/`;
+- read-only retrieval service: `packages/knowledge-source/src/services/rag-reader.js`;
+- filesystem port: `packages/knowledge-source/src/adapters/filesystem-storage.js`;
+- нормативная техническая политика: `docs/architecture/KNOWLEDGE_SOURCE_POLICY.md`;
+- tests: `packages/knowledge-source/test/rag-*.test.js`.
+
+### Порядок интеграции
+
+Изменения объединяются одним PR. Сначала проходят knowledge-source tests и полный CI, затем обязательный аудит критика. Merge допустим только при `PASS` или допустимом `PASS WITH NOTES`.
+
+### Выполненные проверки
+
+Локально выполнены синтаксические проверки новых JavaScript-модулей и `node --test packages/knowledge-source/test/rag-retrieval.test.js` на изолированном fixture: 6 тестов прошли. Полные repository checks выполняются CI PR.
+
+### Обязательный аудит
+
+Результат критика фиксируется в PR после CI. До получения `PASS` или допустимого `PASS WITH NOTES` работа считается незавершённой.
+
+### Известные ограничения и оставшиеся задачи
+
+Approved embeddings существуют только для 5 из 28 документов. Остальные 23 документа имеют полноценное lexical coverage, но остаются явным semantic coverage debt. Их embedding snapshot должен обновляться редакторским процессом без deterministic или эвристического fallback.

@@ -1,0 +1,61 @@
+{
+  "schema_version": "rus.stage3b2.quantity_container_gaps.v1",
+  "quantity_review": {
+    "shared_status": "blocking_gap",
+    "hidden_default_quantity": "forbidden_and_absent",
+    "shared_gaps": [
+      "maximum_quantity_missing",
+      "historical_measure_binding_missing",
+      "measure_conversion_rule_missing",
+      "packaging_constraints_missing",
+      "stackability_requires_form_review",
+      "partial_consumption_requires_form_review"
+    ],
+    "templates": {
+      "item_tpl_nov_bread_v1": ["count_or_loaf_form_not_defined"],
+      "item_tpl_nov_grain_v1": ["trade_or_household_measure_not_defined"],
+      "item_tpl_nov_flour_v1": ["trade_or_household_measure_not_defined"],
+      "item_tpl_nov_groats_v1": ["trade_or_household_measure_not_defined"],
+      "item_tpl_nov_salt_v1": ["trade_or_household_measure_not_defined"],
+      "item_tpl_nov_dried_fish_v1": ["piece_or_batch_form_not_defined"],
+      "item_tpl_nov_fresh_fish_v1": ["piece_or_batch_form_not_defined"],
+      "item_tpl_nov_preserved_meat_v1": ["piece_or_batch_form_not_defined"],
+      "item_tpl_nov_cheese_v1": ["piece_or_batch_form_not_defined"],
+      "item_tpl_nov_honey_v1": ["mass_or_volume_and_container_basis_not_defined"],
+      "item_tpl_nov_water_v1": ["quantity_dimension_must_be_volume_not_identity_mass"],
+      "item_tpl_nov_beeswax_v1": ["piece_or_mass_trade_form_not_defined"]
+    }
+  },
+  "container_review": {
+    "shared_status": "blocking_gap",
+    "shared_gaps": [
+      "material_and_lining_not_bound",
+      "dimensions_and_physical_capacity_not_reviewed",
+      "closure_and_access_not_normalized",
+      "mobility_not_reviewed",
+      "nesting_rules_not_normalized",
+      "content_category_relations_not_normalized",
+      "hot_sharp_liquid_and_bulk_compatibility_not_source_reviewed"
+    ],
+    "templates": {
+      "container_tpl_nov_drawstring_pouch_v1": "small_dry_goods_only_pending_review",
+      "container_tpl_nov_flap_belt_pouch_v1": "small_dry_goods_and_tools_pending_review",
+      "container_tpl_nov_small_soft_bag_v1": "dry_goods_and_textiles_pending_review",
+      "container_tpl_nov_sack_v1": "dry_bulk_goods_pending_review",
+      "container_tpl_nov_carrying_basket_v1": "dry_or_wet_solid_goods_pending_review",
+      "container_tpl_nov_birch_bark_box_v1": "light_dry_goods_pending_review",
+      "container_tpl_nov_wooden_box_v1": "dry_goods_tools_or_valuables_pending_review",
+      "container_tpl_nov_small_casket_v1": "valuables_documents_or_personal_items_pending_review",
+      "container_tpl_nov_chest_v1": "dry_goods_and_nested_containers_pending_review",
+      "container_tpl_nov_bucket_v1": "liquids_or_wet_goods_pending_construction_review",
+      "container_tpl_nov_tub_v1": "liquid_wet_goods_or_processing_pending_review",
+      "container_tpl_nov_cask_v1": "liquid_or_bulk_storage_pending_sealing_review",
+      "container_tpl_nov_storage_pot_v1": "dry_bulk_or_liquid_pending_fabric_review",
+      "container_tpl_nov_jug_v1": "liquid_only_pending_capacity_and_stoppering_review",
+      "container_tpl_nov_quiver_v1": "arrows_only_pending_dimension_review",
+      "container_tpl_nov_knife_sheath_v1": "matching_knife_only_pending_dimension_review",
+      "container_tpl_nov_sword_scabbard_v1": "matching_sword_only_pending_dimension_review",
+      "container_tpl_nov_needle_case_v1": "needles_only_pending_closure_review"
+    }
+  }
+}

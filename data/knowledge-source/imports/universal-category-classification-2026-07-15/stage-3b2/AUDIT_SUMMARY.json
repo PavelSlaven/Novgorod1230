@@ -1,0 +1,24 @@
+{
+  "stage": "3B-2",
+  "templates_total": 120,
+  "item_templates": 102,
+  "container_templates": 18,
+  "existing_bindings_reviewed": 15,
+  "remaining_templates_with_explicit_source_candidate": 105,
+  "templates_with_source_candidate": 120,
+  "templates_ready_for_approval": 0,
+  "templates_blocked": 120,
+  "blocking_gate_counts": {
+    "narrow_typology": 120,
+    "dating_and_region": 120,
+    "materials_and_construction": 120,
+    "physical_parameters": 120,
+    "commonness_and_access": 120,
+    "quantity_models": 12,
+    "container_compatibility": 18,
+    "materialization_chain": 120
+  },
+  "activation": "forbidden",
+  "runtime_candidate_changes": 0,
+  "party_state_changes": 0
+}

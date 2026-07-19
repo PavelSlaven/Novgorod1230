@@ -2,6 +2,7 @@
   "schema": "rus.spatial-v3.release-evidence.v1",
   "version": 1,
   "release_id": "spatial-v3-g0-g6-v4-2",
+  "activation_candidate_commit": null,
   "appendix_d_items": [
     { "id": "D1.github_main_fixed", "status": "blocked", "evidence": [] }, { "id": "D1.root_agents_read", "status": "blocked", "evidence": [] }, { "id": "D1.github_agents_read", "status": "blocked", "evidence": [] }, { "id": "D1.conditional_documents_read", "status": "blocked", "evidence": [] }, { "id": "D1.navigation_and_catalog_read", "status": "blocked", "evidence": [] }, { "id": "D1.rag_and_graphify_recorded", "status": "blocked", "evidence": [] }, { "id": "D1.norm_conflicts_empty", "status": "blocked", "evidence": [] },
     { "id": "D2.public_contracts_single_declaration", "status": "blocked", "evidence": [] }, { "id": "D2.contract_types_resolve", "status": "blocked", "evidence": [] }, { "id": "D2.no_placeholder_or_unresolved_branch", "status": "blocked", "evidence": [] }, { "id": "D2.versioned_authoring_refs", "status": "blocked", "evidence": [] }, { "id": "D2.contract_schema_dto_ddl_match", "status": "blocked", "evidence": [] }, { "id": "D2.plural_relations_normalized", "status": "blocked", "evidence": [] }, { "id": "D2.schema_reference_ddl_digest", "status": "blocked", "evidence": [] }, { "id": "D2.route_endpoint_context_validators", "status": "blocked", "evidence": [] }, { "id": "D2.capacity_proof", "status": "blocked", "evidence": [] }, { "id": "D2.regional_g5_and_exits_complete", "status": "blocked", "evidence": [] }, { "id": "D2.empty_candidate_sets_hard_block", "status": "blocked", "evidence": [] },
@@ -19,5 +20,6 @@
   "p27_independent_critic": { "status": "missing", "verdict": null, "path": null, "sha256": null, "signer": null, "signature": null },
   "p28_fresh_checkout": { "status": "not_run", "evidence": [] },
   "manifest_sha256": "PENDING_EXTERNAL_RELEASE_SIGNING",
+  "manifest_signer": null,
   "manifest_signature": null
 }

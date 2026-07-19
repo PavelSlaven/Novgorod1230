@@ -10,6 +10,12 @@
 
 Проект находится в активной разработке и пока не является законченной игрой.
 
+## Статус spatial v3 P12/P28
+
+Работа ведётся в ветке `codex/spatial-architecture-g0-g6-v4-2` и draft PR №14. Active-нормативы production v2 восстановлены; target v3 хранится отдельно со статусом `proposed`. P12 target materialization разрешена только для изолированной PostgreSQL после проверяемого immutable bundle и branch binding. Production и P28 не активируются автоматически.
+
+Текущий P12 hard block: в утверждённом V1.1 bundle отсутствуют утверждённые dependency rows для обязательных G0/G1/G3 родителей, source records, универсальных категорий, scene templates и selector/applicability rules. Их нельзя синтезировать кодом. P28 требует отдельные role-bound signed evidence, exact activation-candidate commit, fresh-checkout и независимый аудит.
+
 ## Основные принципы
 
 - свободный текстовый ввод вместо жёсткого списка команд;

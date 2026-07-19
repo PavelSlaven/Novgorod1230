@@ -47,7 +47,7 @@ export async function validateP12TargetMaterializationApprovalV11({ root = ROOT,
   let index;
   try { index = JSON.parse(await readFile(resolve(projectRoot, indexPath), 'utf8')); }
   catch { return Object.freeze({ ok: false, materialization_authorized: false, errors: Object.freeze([issue('P12_V11_INDEX_MISSING', indexPath)]) }); }
-  if (index.package_id !== packageId || index.intake_status !== 'subject_commit_binding_pending') errors.push(issue('P12_V11_IDENTITY_MISMATCH', indexPath));
+  if (index.package_id !== packageId || index.intake_status !== 'bound_for_repository_apply' || index.materialization_authorized !== true || index.production_activation !== 'not_authorized') errors.push(issue('P12_V11_IDENTITY_MISMATCH', indexPath));
   const zip = resolve(projectRoot, index.package_path ?? '');
   if (!inside(projectRoot, zip)) errors.push(issue('P12_V11_PATH_ESCAPE', index.package_path ?? 'unknown'));
   let manifest;

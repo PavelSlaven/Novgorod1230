@@ -1,11 +1,14 @@
-import { createHash, verify } from 'node:crypto';
-import { readFile } from 'node:fs/promises';
-import { relative, resolve, sep } from 'node:path';
+import { createHash, createPublicKey, verify } from 'node:crypto';
+import { readFile, realpath as realpathFs } from 'node:fs/promises';
+import { execFile as execFileCallback } from 'node:child_process';
+import { promisify } from 'node:util';
+import { posix, relative, resolve, win32 } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 const FREEZE = (value) => Object.freeze(value);
 const MANIFEST_PATH = 'docs/migration/spatial-v3/release-evidence.v1.json';
-const TRUSTED_KEY_PATH = 'docs/migration/spatial-v3/p28-release-evidence-public-key.pem';
+const TRUST_STORE_PATH = 'docs/migration/spatial-v3/activation-trust-store.v1.json';
+const execFile = promisify(execFileCallback);
 const BLOCKING_GAP_CODES = FREEZE([
   'CANONICAL_G5_INVENTORY_DATA_GAP',
   'DIRECTIONAL_EXIT_READINESS_DATA_GAP',
@@ -36,11 +39,41 @@ function isDigest(value) {
   return typeof value === 'string' && /^[a-f0-9]{64}$/u.test(value);
 }
 
-function safePath(root, evidencePath) {
-  if (typeof evidencePath !== 'string' || !evidencePath) return null;
-  const absolute = resolve(root, evidencePath);
-  const outside = relative(root, absolute).startsWith(`..${sep}`) || relative(root, absolute) === '..';
-  return outside ? null : absolute;
+/**
+ * Trust identity is the encoded SubjectPublicKeyInfo, never the source PEM.
+ * A PEM is just a transport encoding: two differently wrapped PEM strings can
+ * represent the same key.  Canonical DER therefore prevents one Ed25519 key
+ * from being registered under more than one release role.
+ */
+function canonicalEd25519PublicKey(publicKeyPem) {
+  const key = createPublicKey(publicKeyPem);
+  if (key.type !== 'public' || key.asymmetricKeyType !== 'ed25519') {
+    throw new Error('trusted key must be an Ed25519 public key');
+  }
+  return FREEZE({
+    publicKey: key,
+    spkiSha256: sha256(key.export({ type: 'spki', format: 'der' }))
+  });
+}
+
+async function safePath(root, evidencePath, realpath = realpathFs) {
+  // Evidence paths are canonical repository-relative POSIX paths.  Rejecting
+  // alternate spellings is intentional: it prevents drive/UNC ambiguity and
+  // makes a manifest byte-for-byte portable between Windows and POSIX.
+  if (typeof evidencePath !== 'string' || evidencePath.length === 0 || evidencePath.includes('\0')
+    || win32.isAbsolute(evidencePath) || posix.isAbsolute(evidencePath)
+    || /^[a-z]:/iu.test(evidencePath) || /^[\\/]{2}/u.test(evidencePath)
+    || evidencePath.includes('\\')) return null;
+  const segments = evidencePath.split('/');
+  if (segments.some((segment) => !segment || segment === '.' || segment === '..')
+    || posix.normalize(evidencePath) !== evidencePath) return null;
+  try {
+    const [rootReal, targetReal] = await Promise.all([realpath(root), realpath(resolve(root, evidencePath))]);
+    const rel = relative(rootReal, targetReal);
+    return rel && !rel.startsWith('..') && !win32.isAbsolute(rel) && !posix.isAbsolute(rel) ? targetReal : null;
+  } catch {
+    return null;
+  }
 }
 
 function immutablePayload(manifest) {
@@ -52,11 +85,11 @@ function immutablePayload(manifest) {
  * P28 is deliberately a release gate, not an activation switch. Permission is
  * derived only from a versioned, hash-bound and signed evidence manifest.
  */
-export async function assessSpatialV3Activation({ root = process.cwd(), read = readFile } = {}) {
+export async function assessSpatialV3Activation({ root = process.cwd(), read = readFile, realpath = realpathFs } = {}) {
   const blockers = [];
   const add = (code, evidence = MANIFEST_PATH, details = {}) => blockers.push(FREEZE({ code, evidence, ...details }));
   let manifest;
-  let publicKey;
+  let trust;
   try {
     manifest = JSON.parse(await read(resolve(root, MANIFEST_PATH), 'utf8'));
   } catch {
@@ -64,17 +97,23 @@ export async function assessSpatialV3Activation({ root = process.cwd(), read = r
     return result(blockers);
   }
   try {
-    publicKey = await read(resolve(root, TRUSTED_KEY_PATH), 'utf8');
+    trust = await loadTrustStore({ root, read, realpath, add });
   } catch {
-    add('release_evidence_trust_anchor_missing', TRUSTED_KEY_PATH);
+    // loadTrustStore records a typed blocker. This catch only preserves the
+    // fail-closed property if an injected reader itself throws unexpectedly.
+    add('release_evidence_trust_store_invalid', TRUST_STORE_PATH);
   }
 
   if (manifest.schema !== 'rus.spatial-v3.release-evidence.v1' || manifest.version !== 1) add('release_evidence_manifest_schema_invalid');
   const calculatedManifestDigest = sha256(stableJson(immutablePayload(manifest)));
   if (manifest.manifest_sha256 !== calculatedManifestDigest) add('release_evidence_manifest_digest_mismatch');
-  if (!publicKey || !manifest.manifest_signature?.value || manifest.manifest_signature.algorithm !== 'ed25519'
-    || !verify(null, Buffer.from(calculatedManifestDigest, 'utf8'), publicKey, Buffer.from(manifest.manifest_signature.value, 'base64'))) {
-    add('release_evidence_manifest_signature_invalid');
+  await validateRoleSignature({ trust, role: 'p28_release_authority', signer: manifest.manifest_signer,
+    signature: manifest.manifest_signature, payload: `p28:${manifest.release_id}:${manifest.activation_candidate_commit}:${calculatedManifestDigest}`,
+    add, code: 'release_evidence_manifest_signature_invalid' });
+
+  const currentHeadCommit = await currentHead(root);
+  if (!isCommit(manifest.activation_candidate_commit) || !currentHeadCommit || manifest.activation_candidate_commit !== currentHeadCommit) {
+    add('activation_candidate_commit_current_head_mismatch');
   }
 
   const items = manifest.appendix_d_items;
@@ -82,20 +121,27 @@ export async function assessSpatialV3Activation({ root = process.cwd(), read = r
     || APPENDIX_D_ITEMS.some((id) => !items.some((item) => item?.id === id))) {
     add('appendix_d_evidence_coverage_invalid');
   } else {
-    for (const item of items) await validateChecklistItem({ root, read, item, add });
+    for (const item of items) await validateChecklistItem({ root, read, realpath, item, add });
   }
 
   await validateP12Gaps({ root, read, gaps: manifest.p12_authoring_gaps, add });
-  await validateP27Critic({ root, read, releaseId: manifest.release_id, report: manifest.p27_independent_critic, publicKey, add });
-  if (manifest.p28_fresh_checkout?.status !== 'passed' || !Array.isArray(manifest.p28_fresh_checkout?.evidence) || manifest.p28_fresh_checkout.evidence.length === 0) {
+  await validateP27Critic({ root, read, realpath, releaseId: manifest.release_id, candidateCommit: manifest.activation_candidate_commit,
+    report: manifest.p27_independent_critic, trust, add });
+  if (manifest.p28_fresh_checkout?.status !== 'passed' || manifest.p28_fresh_checkout.activation_candidate_commit !== manifest.activation_candidate_commit
+    || !Array.isArray(manifest.p28_fresh_checkout?.evidence) || manifest.p28_fresh_checkout.evidence.length === 0) {
     add('p28_fresh_checkout_evidence_missing');
   } else {
-    for (const evidence of manifest.p28_fresh_checkout.evidence) await validateHashedEvidence({ root, read, evidence, add, code: 'p28_fresh_checkout_evidence_invalid' });
+    for (const evidence of manifest.p28_fresh_checkout.evidence) {
+      const digest = await validateHashedEvidence({ root, read, realpath, evidence, add, code: 'p28_fresh_checkout_evidence_invalid' });
+      if (digest) await validateRoleSignature({ trust, role: 'fresh_checkout_attestor', signer: evidence.signer, signature: evidence.signature,
+        payload: `p28:fresh-checkout:${manifest.release_id}:${manifest.activation_candidate_commit}:${digest}`, add,
+        code: 'p28_fresh_checkout_signature_invalid' });
+    }
   }
   return result(blockers);
 }
 
-async function validateChecklistItem({ root, read, item, add }) {
+async function validateChecklistItem({ root, read, realpath, item, add }) {
   if (item.status !== 'passed') {
     add('appendix_d_item_unchecked', MANIFEST_PATH, { item_id: item.id, status: item.status ?? 'missing' });
     return;
@@ -104,7 +150,7 @@ async function validateChecklistItem({ root, read, item, add }) {
     add('appendix_d_item_evidence_missing', MANIFEST_PATH, { item_id: item.id });
     return;
   }
-  for (const evidence of item.evidence) await validateHashedEvidence({ root, read, evidence, add, code: 'appendix_d_evidence_hash_mismatch', details: { item_id: item.id } });
+  for (const evidence of item.evidence) await validateHashedEvidence({ root, read, realpath, evidence, add, code: 'appendix_d_evidence_hash_mismatch', details: { item_id: item.id } });
 }
 
 async function validateP12Gaps({ root, read, gaps, add }) {
@@ -132,26 +178,25 @@ async function validateP12Gaps({ root, read, gaps, add }) {
   }
 }
 
-async function validateP27Critic({ root, read, releaseId, report, publicKey, add }) {
-  if (!report || report.status !== 'passed' || !['PASS', 'PASS WITH NOTES'].includes(report.verdict) || !report.signer || !report.signature?.value) {
+async function validateP27Critic({ root, read, realpath, releaseId, candidateCommit, report, trust, add }) {
+  if (!report || report.status !== 'passed' || !['PASS', 'PASS WITH NOTES'].includes(report.verdict)
+    || report.activation_candidate_commit !== candidateCommit || !report.signer || !report.signature?.value) {
     add('p27_independent_critic_evidence_missing');
     return;
   }
-  const reportDigest = await validateHashedEvidence({ root, read, evidence: report, add, code: 'p27_independent_critic_hash_mismatch' });
-  if (!reportDigest || !publicKey || report.signature.algorithm !== 'ed25519'
-    || !verify(null, Buffer.from(`p27:${releaseId}:${reportDigest}`, 'utf8'), publicKey, Buffer.from(report.signature.value, 'base64'))) {
-    add('p27_independent_critic_signature_invalid');
-  }
+  const reportDigest = await validateHashedEvidence({ root, read, realpath, evidence: report, add, code: 'p27_independent_critic_hash_mismatch' });
+  if (reportDigest) await validateRoleSignature({ trust, role: 'p27_critic', signer: report.signer, signature: report.signature,
+    payload: `p27:${releaseId}:${candidateCommit}:${reportDigest}`, add, code: 'p27_independent_critic_signature_invalid' });
 }
 
-async function validateHashedEvidence({ root, read, evidence, add, code, details = {} }) {
-  const absolute = safePath(root, evidence?.path);
+async function validateHashedEvidence({ root, read, realpath, evidence, add, code, details = {} }) {
+  const absolute = await safePath(root, evidence?.path, realpath);
   if (!absolute || !isDigest(evidence?.sha256)) {
     add(code, MANIFEST_PATH, details);
     return null;
   }
   try {
-    const actual = sha256(await read(absolute, 'utf8'));
+    const actual = sha256(await read(absolute));
     if (actual !== evidence.sha256) {
       add(code, evidence.path, details);
       return null;
@@ -159,6 +204,78 @@ async function validateHashedEvidence({ root, read, evidence, add, code, details
     return actual;
   } catch {
     add(code, evidence.path, details);
+    return null;
+  }
+}
+
+async function loadTrustStore({ root, read, realpath, add }) {
+  let store;
+  try {
+    store = JSON.parse(await read(resolve(root, TRUST_STORE_PATH), 'utf8'));
+  } catch {
+    add('release_evidence_trust_store_invalid', TRUST_STORE_PATH);
+    return null;
+  }
+  if (store.schema !== 'rus.spatial-v3.activation-trust-store.v1' || store.version !== 1 || !Array.isArray(store.keys)) {
+    add('release_evidence_trust_store_invalid', TRUST_STORE_PATH);
+    return null;
+  }
+  const required = ['p27_critic', 'fresh_checkout_attestor', 'p28_release_authority'];
+  const requiredRoles = new Set(required);
+  if (store.keys.length !== required.length
+    || new Set(store.keys.map((key) => key?.role)).size !== required.length
+    || store.keys.some((key) => !requiredRoles.has(key?.role))) {
+    add('release_evidence_trust_store_invalid', TRUST_STORE_PATH);
+    return null;
+  }
+  const keys = new Map();
+  for (const role of required) {
+    const matches = store.keys.filter((key) => key?.role === role);
+    const entry = matches[0];
+    if (matches.length !== 1 || typeof entry.key_id !== 'string' || !entry.key_id || typeof entry.public_key_path !== 'string') {
+      add('release_evidence_trust_store_invalid', TRUST_STORE_PATH, { role });
+      continue;
+    }
+    const absolute = await safePath(root, entry.public_key_path, realpath);
+    try {
+      const sourcePem = absolute ? await read(absolute, 'utf8') : null;
+      if (!sourcePem) throw new Error('trusted public key is unavailable');
+      const canonical = canonicalEd25519PublicKey(sourcePem);
+      keys.set(role, { ...entry, ...canonical });
+    } catch {
+      add('release_evidence_trust_store_invalid', TRUST_STORE_PATH, { role });
+    }
+  }
+  if (keys.size !== required.length
+    || new Set([...keys.values()].map((key) => key.key_id)).size !== required.length
+    || new Set([...keys.values()].map((key) => key.spkiSha256)).size !== required.length) {
+    add('release_evidence_trust_store_invalid', TRUST_STORE_PATH);
+    return null;
+  }
+  return keys;
+}
+
+async function validateRoleSignature({ trust, role, signer, signature, payload, add, code }) {
+  const key = trust?.get(role);
+  try {
+    if (!key || key.revoked === true || signer?.role !== role || signer?.key_id !== key.key_id
+      || signature?.algorithm !== 'ed25519' || typeof signature?.value !== 'string' || !key.publicKey
+      || !verify(null, Buffer.from(payload, 'utf8'), key.publicKey, Buffer.from(signature.value, 'base64'))) add(code);
+  } catch {
+    add(code);
+  }
+}
+
+function isCommit(value) {
+  return typeof value === 'string' && /^[a-f0-9]{40}$/u.test(value);
+}
+
+async function currentHead(root) {
+  try {
+    const { stdout } = await execFile('git', ['rev-parse', 'HEAD'], { cwd: root, windowsHide: true });
+    const head = stdout.trim().toLowerCase();
+    return isCommit(head) ? head : null;
+  } catch {
     return null;
   }
 }

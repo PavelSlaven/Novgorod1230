@@ -48,8 +48,8 @@
       "document_id": "code-driven-world-materialization-architecture",
       "canonical_path": "corpus/DOCUMENTS/code_driven_world_materialization_architecture.md",
       "file_name": "code_driven_world_materialization_architecture.md",
-      "sha256": "2a7209efc7ff38e8ea4bcac2e1f990a36fd639864e025850d04554ac881f14b1",
-      "bytes": 6256,
+      "sha256": "2a2787c3f7f9c081ac4844dd8adaf0b291167b2125ea1ce8e5342d10a1685838",
+      "bytes": 21337,
       "status": "active",
       "provenance_mode": "native"
     },
@@ -181,8 +181,8 @@
       "document_id": "map-g0-g4-workflow",
       "canonical_path": "corpus/DOCUMENTS/map_g0_g4_workflow.txt",
       "file_name": "map_g0_g4_workflow.txt",
-      "sha256": "5a33f0d24b64e5b07eaa150f525ebe6c6597f55760c20f7fab2dd8c7f76d92c1",
-      "bytes": 3398,
+      "sha256": "00e32749b9625d1654b6fe55878f49bcf8d57bcd6579a0d35f8feee7ee9fc69d",
+      "bytes": 84126,
       "status": "active",
       "provenance_mode": "native"
     },
@@ -247,8 +247,8 @@
       "document_id": "read-only-database-and-graph-architecture",
       "canonical_path": "corpus/DOCUMENTS/read_only_database_and_graph_architecture.md",
       "file_name": "read_only_database_and_graph_architecture.md",
-      "sha256": "daaee8b8cfcbd535750567938ec8205175ead6b0f3c8020fe20e8840052181c5",
-      "bytes": 3444,
+      "sha256": "791b8eed78844c8a3d5f19de99218a7524f7b0353669c719b40d3b6bb4fe38ef",
+      "bytes": 10355,
       "status": "active",
       "provenance_mode": "native"
     },
@@ -296,8 +296,8 @@
       "document_id": "world-base-materialization-table-requirements",
       "canonical_path": "corpus/DOCUMENTS/world_base_materialization_table_requirements.md",
       "file_name": "world_base_materialization_table_requirements.md",
-      "sha256": "9f7a4c4e2ee7c6cdb3f03354e361247b9815e41deb333d55d89567128fa984cc",
-      "bytes": 4373,
+      "sha256": "d08c7d35d39c9f901e038dd6fb83300e36aa0744674cf055298eef2164cc1943",
+      "bytes": 18715,
       "status": "active",
       "provenance_mode": "native"
     },
@@ -322,6 +322,42 @@
       "status": "active",
       "provenance_mode": "legacy_mirror",
       "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/world_regions.txt"
+    },
+    {
+      "document_id": "spatial-v3-target-code-driven-world-materialization-architecture",
+      "canonical_path": "corpus/DOCUMENTS/spatial_v3_target_code_driven_world_materialization_architecture.md",
+      "file_name": "spatial_v3_target_code_driven_world_materialization_architecture.md",
+      "sha256": "2a7209efc7ff38e8ea4bcac2e1f990a36fd639864e025850d04554ac881f14b1",
+      "bytes": 6256,
+      "status": "proposed",
+      "provenance_mode": "native"
+    },
+    {
+      "document_id": "spatial-v3-target-world-base-materialization-table-requirements",
+      "canonical_path": "corpus/DOCUMENTS/spatial_v3_target_world_base_materialization_table_requirements.md",
+      "file_name": "spatial_v3_target_world_base_materialization_table_requirements.md",
+      "sha256": "9f7a4c4e2ee7c6cdb3f03354e361247b9815e41deb333d55d89567128fa984cc",
+      "bytes": 4373,
+      "status": "proposed",
+      "provenance_mode": "native"
+    },
+    {
+      "document_id": "spatial-v3-target-read-only-database-and-graph-architecture",
+      "canonical_path": "corpus/DOCUMENTS/spatial_v3_target_read_only_database_and_graph_architecture.md",
+      "file_name": "spatial_v3_target_read_only_database_and_graph_architecture.md",
+      "sha256": "daaee8b8cfcbd535750567938ec8205175ead6b0f3c8020fe20e8840052181c5",
+      "bytes": 3444,
+      "status": "proposed",
+      "provenance_mode": "native"
+    },
+    {
+      "document_id": "spatial-v3-target-map-g0-g4-workflow",
+      "canonical_path": "corpus/DOCUMENTS/spatial_v3_target_map_g0_g4_workflow.txt",
+      "file_name": "spatial_v3_target_map_g0_g4_workflow.txt",
+      "sha256": "5a33f0d24b64e5b07eaa150f525ebe6c6597f55760c20f7fab2dd8c7f76d92c1",
+      "bytes": 3398,
+      "status": "proposed",
+      "provenance_mode": "native"
     }
   ]
 }

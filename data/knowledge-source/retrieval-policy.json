@@ -1,7 +1,7 @@
 {
   "schema_version": "rus.knowledge_retrieval_policy.v1",
   "policy_version": "1.0.0",
-  "baseline_manifest_sha256": "9fdbd4511d15178b753073fc4aa23c78629695b044cb7d5fe97a44aad9dd83ed",
+  "baseline_manifest_sha256": "60262d56e9ca7ef8f133b170e8369728e8e33b203168a36c52408e44fb65b863",
   "default_statuses": [
     "active"
   ],
@@ -804,6 +804,146 @@
       ],
       "conflicts_with_document_ids": [],
       "semantic_coverage_disposition": "covered"
+    },
+    {
+      "document_id": "spatial-v3-target-code-driven-world-materialization-architecture",
+      "document_type": "target_normative",
+      "priority_tier": "highest_materialization_normative",
+      "subsystems": [
+        "materialization",
+        "architecture"
+      ],
+      "related_document_ids": [
+        "code-driven-world-materialization-architecture",
+        "world-base-materialization-table-requirements",
+        "read-only-database-and-graph-architecture",
+        "map-g0-g4-workflow"
+      ],
+      "related_module_paths": [
+        "docs/migration/spatial-v3"
+      ],
+      "related_contracts": [
+        "spatial v3 target-only migration"
+      ],
+      "search_terms": [
+        "spatial v3",
+        "target",
+        "P28",
+        "G0",
+        "G6"
+      ],
+      "conflicts_with_document_ids": [
+        "code-driven-world-materialization-architecture",
+        "world-base-materialization-table-requirements",
+        "read-only-database-and-graph-architecture",
+        "map-g0-g4-workflow"
+      ],
+      "semantic_coverage_disposition": "baseline_gap"
+    },
+    {
+      "document_id": "spatial-v3-target-world-base-materialization-table-requirements",
+      "document_type": "target_normative",
+      "priority_tier": "technical_contract",
+      "subsystems": [
+        "database",
+        "materialization"
+      ],
+      "related_document_ids": [
+        "code-driven-world-materialization-architecture",
+        "world-base-materialization-table-requirements",
+        "read-only-database-and-graph-architecture",
+        "map-g0-g4-workflow"
+      ],
+      "related_module_paths": [
+        "docs/migration/spatial-v3"
+      ],
+      "related_contracts": [
+        "spatial v3 target-only migration"
+      ],
+      "search_terms": [
+        "spatial v3",
+        "target",
+        "P28",
+        "G0",
+        "G6"
+      ],
+      "conflicts_with_document_ids": [
+        "code-driven-world-materialization-architecture",
+        "world-base-materialization-table-requirements",
+        "read-only-database-and-graph-architecture",
+        "map-g0-g4-workflow"
+      ],
+      "semantic_coverage_disposition": "baseline_gap"
+    },
+    {
+      "document_id": "spatial-v3-target-read-only-database-and-graph-architecture",
+      "document_type": "target_normative",
+      "priority_tier": "technical_contract",
+      "subsystems": [
+        "database",
+        "graph"
+      ],
+      "related_document_ids": [
+        "code-driven-world-materialization-architecture",
+        "world-base-materialization-table-requirements",
+        "read-only-database-and-graph-architecture",
+        "map-g0-g4-workflow"
+      ],
+      "related_module_paths": [
+        "docs/migration/spatial-v3"
+      ],
+      "related_contracts": [
+        "spatial v3 target-only migration"
+      ],
+      "search_terms": [
+        "spatial v3",
+        "target",
+        "P28",
+        "G0",
+        "G6"
+      ],
+      "conflicts_with_document_ids": [
+        "code-driven-world-materialization-architecture",
+        "world-base-materialization-table-requirements",
+        "read-only-database-and-graph-architecture",
+        "map-g0-g4-workflow"
+      ],
+      "semantic_coverage_disposition": "baseline_gap"
+    },
+    {
+      "document_id": "spatial-v3-target-map-g0-g4-workflow",
+      "document_type": "target_normative",
+      "priority_tier": "profile_normative",
+      "subsystems": [
+        "map",
+        "authoring"
+      ],
+      "related_document_ids": [
+        "code-driven-world-materialization-architecture",
+        "world-base-materialization-table-requirements",
+        "read-only-database-and-graph-architecture",
+        "map-g0-g4-workflow"
+      ],
+      "related_module_paths": [
+        "docs/migration/spatial-v3"
+      ],
+      "related_contracts": [
+        "spatial v3 target-only migration"
+      ],
+      "search_terms": [
+        "spatial v3",
+        "target",
+        "P28",
+        "G0",
+        "G6"
+      ],
+      "conflicts_with_document_ids": [
+        "code-driven-world-materialization-architecture",
+        "world-base-materialization-table-requirements",
+        "read-only-database-and-graph-architecture",
+        "map-g0-g4-workflow"
+      ],
+      "semantic_coverage_disposition": "baseline_gap"
     }
   ],
   "control_queries": [

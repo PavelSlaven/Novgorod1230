@@ -47,6 +47,31 @@ test('repository policy registers proposed classification documents without chan
   );
 });
 
+test('repository registers spatial v3 supplements as proposed and keeps default retrieval active-only', async () => {
+  const manifest = validateCorpusManifest(JSON.parse(await readFile(resolve(sourceRoot, 'corpus-manifest.json'), 'utf8')));
+  const policy = validateRetrievalPolicy(JSON.parse(await readFile(resolve(sourceRoot, 'retrieval-policy.json'), 'utf8')), manifest);
+  const targetIds = [
+    'spatial-v3-target-code-driven-world-materialization-architecture',
+    'spatial-v3-target-world-base-materialization-table-requirements',
+    'spatial-v3-target-read-only-database-and-graph-architecture',
+    'spatial-v3-target-map-g0-g4-workflow'
+  ];
+  assert.deepEqual(
+    manifest.documents.filter((document) => targetIds.includes(document.document_id)).map((document) => document.status),
+    ['proposed', 'proposed', 'proposed', 'proposed']
+  );
+  assert.deepEqual(policy.default_statuses, ['active']);
+  assert.equal(policy.documents.filter((document) => targetIds.includes(document.document_id)).length, targetIds.length);
+  const reader = createKnowledgeRagReader({
+    storage: createFileSystemKnowledgeSourceStorage({ sourceRoot, generatedRoot }),
+    allowedStatuses: ['active', 'proposed']
+  });
+  const defaultResult = await reader.searchKnowledge({ query: 'finite party-generated G5' });
+  assert.ok(defaultResult.results.every((result) => !targetIds.includes(result.document_id)));
+  const proposedResult = await reader.searchKnowledge({ query: 'finite party-generated G5', statuses: ['proposed'] });
+  assert.ok(proposedResult.results.some((result) => targetIds.includes(result.document_id)));
+});
+
 test('repository RAG exposes explicit baseline semantic gaps and no unacknowledged blocker', async () => {
   const storage = createFileSystemKnowledgeSourceStorage({ sourceRoot, generatedRoot });
   const status = await createKnowledgeRagReader({ storage }).getReadinessStatus();

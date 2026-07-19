@@ -58,17 +58,20 @@ const sha = (value) => typeof value === 'string' && /^[0-9a-f]{40}$/.test(value)
 export async function verifyP12SubjectCommitBinding({ projectRoot, bindingPath, binding, head, gitText = git, gitRaw = gitBytes }) {
   const errors = [];
   const expectedPaths = binding?.required_subject_tree_paths;
-  const bindingCommit = binding?.binding_commit;
+  // The evidence commit is derived from Git HEAD rather than serialized into
+  // the file it creates.  Serializing that SHA would be a circular hash
+  // dependency and is therefore not trustworthy evidence.
+  const bindingCommit = head;
   const subjectCommit = binding?.subject_commit;
   const closure = binding?.approved_dependency_closure;
   if (!sha(bindingCommit) || !sha(subjectCommit) || bindingCommit === subjectCommit) {
     return Object.freeze({ ok: false, dependencyClosureApproved: false, errors: Object.freeze([issue('P12_V11_SUBJECT_COMMIT_BINDING_INVALID', bindingPath)]) });
   }
-  if (head !== bindingCommit) errors.push(issue('P12_V11_BINDING_HEAD_REPLAY_OR_FUTURE', bindingPath));
   try {
     const parents = (await gitText(projectRoot, ['show', '-s', '--format=%P', bindingCommit])).split(/\s+/).filter(Boolean);
     if (parents.length !== 1 || parents[0] !== subjectCommit) errors.push(issue('P12_V11_BINDING_PARENT_NOT_SUBJECT', bindingPath));
-    const introductions = (await gitText(projectRoot, ['log', '--format=%H', '--diff-filter=A', '--reverse', '--', bindingPath])).split(/\r?\n/).filter(Boolean);
+    const bindingBlob = await gitText(projectRoot, ['rev-parse', `${bindingCommit}:${bindingPath}`]);
+    const introductions = (await gitText(projectRoot, ['log', '--all', '--format=%H', '--reverse', `--find-object=${bindingBlob}`])).split(/\r?\n/).filter(Boolean);
     if (introductions.length !== 1 || introductions[0] !== bindingCommit) errors.push(issue('P12_V11_BINDING_NOT_INTRODUCED_BY_EVIDENCE_COMMIT', bindingPath));
     const allowed = new Set([bindingPath, ...(Array.isArray(binding.allowed_evidence_paths) ? binding.allowed_evidence_paths : [])]);
     const changed = (await gitText(projectRoot, ['diff', '--name-only', `${subjectCommit}..${bindingCommit}`])).split(/\r?\n/).filter(Boolean);

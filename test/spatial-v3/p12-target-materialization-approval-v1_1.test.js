@@ -4,9 +4,9 @@ import { validateP12TargetMaterializationApprovalV11, verifyP12SubjectCommitBind
 
 const SHA = 'a'.repeat(40);
 const SUBJECT = 'b'.repeat(40);
+const BLOB = 'd'.repeat(40);
 const bindingPath = 'evidence/binding.json';
 const validBinding = () => ({
-  binding_commit: SHA,
   subject_commit: SUBJECT,
   allowed_evidence_paths: [],
   required_subject_tree_paths: [{ path: 'approved.json', sha256: 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad' }],
@@ -14,6 +14,7 @@ const validBinding = () => ({
 });
 const gitText = async (_root, args) => {
   if (args[0] === 'show') return SUBJECT;
+  if (args[0] === 'rev-parse') return BLOB;
   if (args[0] === 'log') return SHA;
   if (args[0] === 'diff') return bindingPath;
   throw new Error(`unexpected git args ${args.join(' ')}`);
@@ -36,9 +37,9 @@ test('P12 V1.1 accepts only an exact two-commit, current, digest-pinned evidence
   assert.deepEqual(result.errors, []);
 });
 
-test('P12 V1.1 rejects replay, broad evidence diffs, missing or altered subject files and unapproved dependency closure', async () => {
-  const replay = await verifyP12SubjectCommitBinding({ projectRoot: '.', bindingPath, binding: validBinding(), head: 'c'.repeat(40), gitText, gitRaw });
-  assert.ok(replay.errors.some((entry) => entry.code === 'P12_V11_BINDING_HEAD_REPLAY_OR_FUTURE'));
+test('P12 V1.1 rejects non-parent or replayed evidence, broad evidence diffs, missing or altered subject files and unapproved dependency closure', async () => {
+  const future = await verifyP12SubjectCommitBinding({ projectRoot: '.', bindingPath, binding: validBinding(), head: 'c'.repeat(40), gitText, gitRaw });
+  assert.ok(future.errors.some((entry) => entry.code === 'P12_V11_BINDING_NOT_INTRODUCED_BY_EVIDENCE_COMMIT'));
   const broad = await verifyP12SubjectCommitBinding({ projectRoot: '.', bindingPath, binding: validBinding(), head: SHA, gitText: async (_root, args) => args[0] === 'diff' ? `${bindingPath}\nunexpected.txt` : gitText(_root, args), gitRaw });
   assert.ok(broad.errors.some((entry) => entry.code === 'P12_V11_BINDING_COMMIT_SCOPE_INVALID'));
   const missing = await verifyP12SubjectCommitBinding({ projectRoot: '.', bindingPath, binding: validBinding(), head: SHA, gitText, gitRaw: async () => { throw new Error('missing'); } });

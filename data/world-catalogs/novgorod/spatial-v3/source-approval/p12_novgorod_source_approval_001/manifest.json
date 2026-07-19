@@ -1,0 +1,319 @@
+{
+  "schema_version": "rus.p12_source_approval_manifest.v1",
+  "package_id": "p12_novgorod_source_approval_001",
+  "target_g1_id": "gn_nov_g1_xp017_yp026",
+  "canonical_repository": "PavelSlaven/Novgorod1230",
+  "canonical_main_sha_observed": "9f2a8c1477793e3baac376d558a64b1b2272cc4a",
+  "integration_commit_sha": null,
+  "status": "approved_for_p12_integration_not_activation",
+  "production_activation_allowed": false,
+  "files": [
+    {
+      "path": "APPROVAL_RECORD.json",
+      "size": 737,
+      "sha256": "8ed181c780a7e5740f455a67431860a3ca6fd19612047d5c0ead91e9f0783901"
+    },
+    {
+      "path": "PLAN.md",
+      "size": 1154,
+      "sha256": "16fd8d04afaa3b2542213f7fb20e49cbcc5b07aae1044752d220c0ef7613d56f"
+    },
+    {
+      "path": "README.md",
+      "size": 2535,
+      "sha256": "dbbc11981203603807e2e58161edc0d049b1296af492be55568362f60348e9e2"
+    },
+    {
+      "path": "data/approved-scene-profile-families.json",
+      "size": 64329,
+      "sha256": "685d3a998979f9b9c00f0ab331ddb17929a0e8e9432a1d85a11ce05d46dae493"
+    },
+    {
+      "path": "data/approved-scene-template-families.json",
+      "size": 32625,
+      "sha256": "f0e39942b351649a564c5295b26a84ac60f5f39f58db32082a9a57735988ce59"
+    },
+    {
+      "path": "data/canonical-g5-inventory.csv",
+      "size": 57035,
+      "sha256": "84180b72a9ab8f9b30595922756aefb649df9d6999fb9101e7e848890b794214"
+    },
+    {
+      "path": "data/canonical-g5-inventory.json",
+      "size": 415088,
+      "sha256": "cbf880145ef2af3dd88f39387cbe7b9a2940dfd5c8312351da91a11448a4c671"
+    },
+    {
+      "path": "data/catalog.json",
+      "size": 1277,
+      "sha256": "a653e91639e35756b16d8dd1842c511436e2058f5ebc51ae9efa61192c65622d"
+    },
+    {
+      "path": "data/edge-mapping-review.csv",
+      "size": 104692,
+      "sha256": "edfbce2f653ec2f4dbe175d06259666458a39f54901378b7d861cc7c27a62330"
+    },
+    {
+      "path": "data/g4-host-sectors.json",
+      "size": 31941,
+      "sha256": "0eb39d628171fab4df58c313612b1e556ac0bda00aa78c6af1a3c8c4c2ad2f5b"
+    },
+    {
+      "path": "data/gap-status.json",
+      "size": 1001,
+      "sha256": "86f2d8bea307d97ce29d7dcf2876a72bd45ea5a4cabf0d241ae4007f683b5b70"
+    },
+    {
+      "path": "data/legacy-edge-mapping-bindings.json",
+      "size": 564410,
+      "sha256": "a0efb0423621e1d8140dd87e7b5a8c53353d463951133b7e33933c97c9fddf3a"
+    },
+    {
+      "path": "data/physical-exit-source-pairs.json",
+      "size": 610576,
+      "sha256": "da3c197c1b84eb3139028c15655f08d58cabe31ad51079c872fb26ed9b57aa27"
+    },
+    {
+      "path": "data/provenance.json",
+      "size": 26551,
+      "sha256": "4f014e091e75018a890a902aefd9652f2ebf2b6d50ae2fa7a6aef84d084188f1"
+    },
+    {
+      "path": "data/scene-materialization-candidates.json",
+      "size": 48473,
+      "sha256": "e944b72e278ea8e6583837ac0b6b4a7d168b763193adc95f52a6ac976c2a567f"
+    },
+    {
+      "path": "data/scene-materialization-profiles.json",
+      "size": 75199,
+      "sha256": "eef30db799957f8c19f4f6cecef0dbf9d3b6c723842b81af7f7f356b08baead1"
+    },
+    {
+      "path": "data/scene-profile-assignments.json",
+      "size": 124179,
+      "sha256": "31f453e3eb11b0750f78b22254972a938387fcd202ad7cadccc948368a8777b1"
+    },
+    {
+      "path": "data/source-local-approval.json",
+      "size": 805,
+      "sha256": "377db2f5708261f79e3d12daf51b771ba52629a16786e31741d6fd115181b4eb"
+    },
+    {
+      "path": "data/source-structural-validation.json",
+      "size": 567,
+      "sha256": "1ae5fa7d6b5059189380bbe88ee42ed944297478c599c6333e418fa05275d122"
+    },
+    {
+      "path": "docs/AUDIT_CYCLES.md",
+      "size": 2489,
+      "sha256": "40f297ecfe6d742013d89f3cd4823e9cc1ae0aa6cd129294ecffb997e8789866"
+    },
+    {
+      "path": "docs/BRANCH_AND_EVIDENCE_LIMITATIONS.md",
+      "size": 923,
+      "sha256": "014e87715b0d4e09e8b292f95a5dac4f1d8ebec441e08c5c8629c006cc7edae5"
+    },
+    {
+      "path": "docs/DATA_DICTIONARY.md",
+      "size": 1513,
+      "sha256": "867a452d835c52f42a4a4e6f8e239fc8888d61a0e41319c051846c6aabaa66cd"
+    },
+    {
+      "path": "docs/EVIDENCE_POLICY.md",
+      "size": 993,
+      "sha256": "6fd5b5a429bfb8d316c0b3047d44109c1d5aa47aa1c978eb92cfa2ac212fdc77"
+    },
+    {
+      "path": "docs/HISTORICAL_AND_CLASSIFICATION_BASIS.md",
+      "size": 1254,
+      "sha256": "b8e4b41a06d32569861e7fd439136b2bfce990b5a04ed130d970990b1f75d89b"
+    },
+    {
+      "path": "docs/INTEGRATION_GUIDE.md",
+      "size": 1755,
+      "sha256": "c7473052e2a4845f8966d1f1c37771e74f2b9a79398cb9036933e59df5bbbe51"
+    },
+    {
+      "path": "docs/MIGRATION_AND_COUNT_SEMANTICS.md",
+      "size": 1778,
+      "sha256": "7a1da60aee2a2a26b77fd2adce86f86c30fb686d2239ab1285a74896fc80b436"
+    },
+    {
+      "path": "docs/REQUESTED_INPUT_INDEX.md",
+      "size": 1623,
+      "sha256": "4881dae12282b08201bb8316c63468384bcc5ff74480a14542357352cc7417ba"
+    },
+    {
+      "path": "docs/SOURCE_APPROVAL_DECISION.md",
+      "size": 714,
+      "sha256": "887479d8249f4358104a7d017d8196b0aa710a4adb87854cb1396d9b2801b1aa"
+    },
+    {
+      "path": "docs/TARGET_CONTRACT_COMPILATION_PIPELINE.md",
+      "size": 3245,
+      "sha256": "ff6f05e16482d7c6e4efb8dbbcdb79d505cc7c58a57d0f8943d8a9211903efda"
+    },
+    {
+      "path": "evidence/FRESH_CHECKOUT_EVIDENCE.template.json",
+      "size": 652,
+      "sha256": "19c5d2f7d85c62e70dbe03015d14236d342d0ae2f4b3797a3da6a9c6019fdf2e"
+    },
+    {
+      "path": "evidence/P27_SIGNED_AUDIT_EVIDENCE.template.json",
+      "size": 664,
+      "sha256": "8c3e96e01af4698adf70fd3d3b841a4c7e73bc7093654c0b250920b1696831f5"
+    },
+    {
+      "path": "references/G1_SEMANTIC_CATALOG.md",
+      "size": 19125,
+      "sha256": "a17487285a14e58635456a79f9ccdc67d874e2f6816b1a375cc408163a474bee"
+    },
+    {
+      "path": "references/SPATIAL_ARCHITECTURE_STANDARD_G0_G6_V4_2_CONTROLLED_VOCABULARY_AMENDED.md",
+      "size": 328144,
+      "sha256": "4789ad4e343275c1980fd67c19c362909479a8b34cf88054d423b0573a646268"
+    },
+    {
+      "path": "reports/EXECUTED_CHECKS.md",
+      "size": 1015,
+      "sha256": "d4a36b67c8ed5cc7fed974569386afcf4553d9d4156883d9ac461bdc145e8fd2"
+    },
+    {
+      "path": "reports/FINAL_AUDIT_REPORT.md",
+      "size": 621,
+      "sha256": "41841325f98b6c124828516bd8e1b2b8b5dcb27cc64a08183284b6b53357e58c"
+    },
+    {
+      "path": "reports/all-json-parse-report.json",
+      "size": 59,
+      "sha256": "198791a2a5e4eba013b0750a7931bc6507d324972ded2255121ab73b20d8305e"
+    },
+    {
+      "path": "reports/audit-cycles.json",
+      "size": 706,
+      "sha256": "39b6561dd11e760bf6d0e1b14a5c382f294c34ccc7c8b6355c93a371bb48be1d"
+    },
+    {
+      "path": "reports/csv-review-report.json",
+      "size": 211,
+      "sha256": "21677b0c0362c5e06327d8ff6e6f0e7140747da150a6e1fc52c48f6a2786743e"
+    },
+    {
+      "path": "reports/evidence-template-negative-test.json",
+      "size": 501,
+      "sha256": "aa547d56d55fd369ac14143e159cfc00b3a0a091f388857577c180f3faf4ccdf"
+    },
+    {
+      "path": "reports/final-audit-report.json",
+      "size": 806,
+      "sha256": "23c8cddb1def1856214cf69942dfa494818622d3419c9d6711ff3894697a0e5e"
+    },
+    {
+      "path": "reports/json-schema-validation-report.json",
+      "size": 63,
+      "sha256": "26f80c93bd49832e86b000c91f5c4f899bb928cc64fc1fab54eb026769d7dad6"
+    },
+    {
+      "path": "reports/markdown-structure-report.json",
+      "size": 62,
+      "sha256": "52d5e3fd945f6ddf8504e90981010d2b4e3f4a7af011e61f8c0701c39a8d4c9e"
+    },
+    {
+      "path": "reports/source-reproduction-report.json",
+      "size": 245,
+      "sha256": "167948a49021c461065837a9a7da5a86d7dbf1359d8144d331bd8a9e935d9d5e"
+    },
+    {
+      "path": "reports/validation-report.json",
+      "size": 500,
+      "sha256": "dafb8f3db15b6debc84714906d64de00ffe75388b9b2e886a5a4b6edeadf7756"
+    },
+    {
+      "path": "schemas/approved-scene-profile-families.schema.json",
+      "size": 364,
+      "sha256": "2ad6724cb1eebcf58c512e95aa4b51555edd86a8709acbf14efc4fe654a0d345"
+    },
+    {
+      "path": "schemas/approved-scene-template-families.schema.json",
+      "size": 365,
+      "sha256": "a89b17f4252fbedc19228994f298c92772de6b2130cc485aa9d4e701c5dc6fb8"
+    },
+    {
+      "path": "schemas/canonical-g5-inventory.schema.json",
+      "size": 4659,
+      "sha256": "c58128c9330ddacd5d799083a90c5ada83ee6d1669a0b700cb6a133ed5cd29cf"
+    },
+    {
+      "path": "schemas/fresh-checkout-evidence.schema.json",
+      "size": 1200,
+      "sha256": "635da459e1fb93ab17b48cc09e2c23e86e3f55c7c911a9d0afb547a7fa0f05cd"
+    },
+    {
+      "path": "schemas/legacy-edge-mapping-bindings.schema.json",
+      "size": 3559,
+      "sha256": "c65df896de9841116e619d073c70bb636f32fe66ce09398a0900c89233e19945"
+    },
+    {
+      "path": "schemas/p27-signed-audit-evidence.schema.json",
+      "size": 1482,
+      "sha256": "0e671f9e845605ec532b841f486019d45418f56677749aa986dad555c43fc002"
+    },
+    {
+      "path": "schemas/physical-exit-source-pairs.schema.json",
+      "size": 3661,
+      "sha256": "ce343070afb298ff084ce9852c3ed7f36156f11a6f8a27efeb7286b5bc40e54e"
+    },
+    {
+      "path": "schemas/scene-materialization-candidates.schema.json",
+      "size": 2055,
+      "sha256": "2f32cf4530ff703258d616e24f90ce7ab6a4568d59df91d44a9a8b0a36aaee86"
+    },
+    {
+      "path": "schemas/scene-materialization-profiles.schema.json",
+      "size": 2151,
+      "sha256": "209e738f88cd4d7576580f0e3dc20cc897cd9f7b19b4e76fa5aada48e34a8c9d"
+    },
+    {
+      "path": "schemas/scene-profile-assignments.schema.json",
+      "size": 2819,
+      "sha256": "c73f1e88ed9a310680a0b96899ccb88ea0418fd88a5d0b843a08c9153afbc59e"
+    },
+    {
+      "path": "scripts/run_all_checks.py",
+      "size": 435,
+      "sha256": "710c104b61f3ca75830d3540a039cda0506aa95f10ecd8f772e4ff6292f9f058"
+    },
+    {
+      "path": "scripts/validate_bundle.py",
+      "size": 6699,
+      "sha256": "51468e1ef56b11a5fe8d0e7b61552e55d1610022c2cbdf037217b13307a944a4"
+    },
+    {
+      "path": "scripts/validate_source_reproduction.py",
+      "size": 3525,
+      "sha256": "9ee6449a26f4f2b1970d478951edc9847cb9c9c87fd0020749d7ad5ef332129d"
+    },
+    {
+      "path": "scripts/verify_evidence.py",
+      "size": 1652,
+      "sha256": "f3a2eebc31d9949ea3bbd231d06ec8d1f87c018fe2aecd70c5f824f57891bb60"
+    },
+    {
+      "path": "scripts/verify_manifest.py",
+      "size": 1117,
+      "sha256": "57040afd5505b14a3bbb797c7d18c87baa68e3dcb206c8c625360b68f633858c"
+    },
+    {
+      "path": "source-snapshots/gn_nov_g1_xp017_yp026_content_revision_003_production_candidate.zip",
+      "size": 215541,
+      "sha256": "eafa5ee1e583c74ba3e06161340d85963c43da5ed563da1b4f47280a880ca7bc"
+    },
+    {
+      "path": "source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip",
+      "size": 126349,
+      "sha256": "6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b"
+    }
+  ],
+  "file_count": 61,
+  "package_content_digest": "2e7d2f09abd46cffc82b18673ab93b1317b5942796a3c3d22516a91d3ddd9279"
+}

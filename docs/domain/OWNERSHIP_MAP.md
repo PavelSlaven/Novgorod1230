@@ -13,6 +13,24 @@
 | `@rus/social-law` | role/occupation references, supplied rights/restrictions, authority, legal/social risk packages | создание права региона, вынесение смыслового приговора |
 | `@rus/visibility-knowledge-memory` | visible projection, hidden boundary, knowledge map, memory facts, leak detection, safe narrator package | prose generation, hidden-state mutation, DB reads |
 
+## Spatial v3 target ownership (P08)
+
+These records are target-only until P28. They do not reroute production v2, permit dual write, mixed reads or compatibility fallback.
+
+| Owner | Sole target responsibility | Explicit boundary |
+|---|---|---|
+| `@rus/space-map` | typed spatial refs, containment, route topology, contexts and endpoint contracts | no route selection, persistence or player knowledge |
+| `@rus/movement-routes` | path queries, immutable plans, method/time resolution, progress and navigation outcomes | no topology authoring or commit |
+| `@rus/materialization` | deterministic stable-topology materialization and traces | no database access or commit |
+| `@rus/time-events-history` | exact clock, timers and historical update requests | no topology or route ownership |
+| `@rus/party-store` | party-scoped repository and combined write-plan commit boundary | no logical plan construction |
+| `@rus/turn` | command order, locks, idempotency and combined write-plan construction | no repository implementation |
+| `@rus/contracts` | shared discriminated DTOs, controlled vocabularies and typed errors | no domain execution or adapters |
+| presentation/knowledge | player-safe projection only | never factual topology creation |
+| `@rus/game-server` | production composition after the P28 gate | no duplicate spatial/movement/materialization logic |
+
+The target public ports are deliberately typed-failure stubs until their individual implementation phases. A caller must surface the error or stop; it must not try v2, choose a substitute record or write a partial result.
+
 ## Канонические владельцы формул
 
 - `attributeBonus` и итог проверки — `@rus/checks-rng`;

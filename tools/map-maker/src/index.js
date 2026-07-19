@@ -1,5 +1,8 @@
 import { deepFreeze, sha256, stableStringify } from '@rus/kernel';
-import { GRAPH_LEVELS, validateGraphEdge, validateGraphNode } from '@rus/space-map';
+
+// The map-maker's legacy graph-document grammar is intentionally local to the
+// authoring tool. It must not pull the v2 position API through the v3 default.
+const GRAPH_LEVELS = Object.freeze(['G0', 'G1', 'G2', 'G3', 'G4', 'G5']);
 
 const LAYOUT_KEYS = new Set(['x', 'y', 'fx', 'fy', 'position', 'layout', 'screen_x', 'screen_y']);
 const SAFE_SCALE = new Set(GRAPH_LEVELS);
@@ -177,6 +180,29 @@ export function renderGraphSvg(renderable = {}, options = {}) {
 
 function digestGraph(graph) {
   return sha256(stableStringify({ schema_version: graph.schema_version, source_id: graph.source_id ?? null, nodes: graph.nodes ?? [], edges: graph.edges ?? [] }));
+}
+function validateGraphNode(node = {}) {
+  const errors = [];
+  if (!text(node.id)) errors.push('node.id is required');
+  if (!GRAPH_LEVELS.includes(text(node.scale_level))) errors.push('node.scale_level is invalid');
+  if (!text(node.node_type)) errors.push('node.node_type is required');
+  if (text(node.scale_level) !== 'G0' && !text(node.parent_node_id)) errors.push('non-G0 node requires parent_node_id');
+  if (text(node.scale_level) === 'G1' && text(node.node_type) === 'region_cell') {
+    for (const key of ['grid_x', 'grid_y', 'grid_z', 'cell_size_km', 'crossing_base_gu', 'crossing_base_time_hours']) if (!Number.isFinite(Number(node[key]))) errors.push(`G1 region_cell requires numeric ${key}`);
+  }
+  return { ok: errors.length === 0, errors };
+}
+function validateGraphEdge(edge = {}, nodeIds = null) {
+  const errors = [];
+  if (!text(edge.id)) errors.push('edge.id is required');
+  if (!text(edge.from_node_id)) errors.push('edge.from_node_id is required');
+  if (!text(edge.to_node_id)) errors.push('edge.to_node_id is required');
+  if (text(edge.from_node_id) === text(edge.to_node_id)) errors.push('edge cannot connect a node to itself');
+  if (!GRAPH_LEVELS.includes(text(edge.scale_level))) errors.push('edge.scale_level is invalid');
+  if (!text(edge.edge_type)) errors.push('edge.edge_type is required');
+  if (nodeIds instanceof Set && !nodeIds.has(text(edge.from_node_id))) errors.push('edge.from_node_id does not exist');
+  if (nodeIds instanceof Set && !nodeIds.has(text(edge.to_node_id))) errors.push('edge.to_node_id does not exist');
+  return { ok: errors.length === 0, errors };
 }
 function extractNodes(raw) {
   if (Array.isArray(raw.nodes)) return raw.nodes;

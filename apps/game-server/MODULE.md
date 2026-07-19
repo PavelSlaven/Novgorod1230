@@ -14,6 +14,10 @@ Composition root, production infrastructure adapters и HTTP boundary модул
 - startup probes и применение полного `schemas/party-db/001_party_runtime.sql`;
 - feature-flag bootstrap.
 
+## Spatial v3 target boundary
+
+P08 records `@rus/game-server` only as the future composition owner. It must not duplicate route, endpoint or materialization logic, import target stubs into production composition, or activate them before P28.
+
 ## Не владеет
 
 - выбором мира, персонажей, предметов, причин или последствий;

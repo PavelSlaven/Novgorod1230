@@ -120,7 +120,8 @@
         "Schema names for approvals, handoffs, delivery, and public read models",
         "Stable digest functions",
         "Approval builders and binding validators",
-        "Stage handoff validators that do not execute game logic"
+        "Stage handoff validators that do not execute game logic",
+        "P08 target-only spatial-v3 typed-error and fail-closed public-port primitives"
       ],
       "path": "packages/contracts",
       "public_entry": "./src/index.js",
@@ -206,6 +207,7 @@
     },
     {
       "dependencies": [
+        "@rus/contracts",
         "@rus/kernel"
       ],
       "name": "@rus/movement-routes",
@@ -262,6 +264,7 @@
     },
     {
       "dependencies": [
+        "@rus/contracts",
         "@rus/kernel"
       ],
       "name": "@rus/party-store",
@@ -345,18 +348,19 @@
     },
     {
       "dependencies": [
+        "@rus/contracts",
         "@rus/kernel"
       ],
       "name": "@rus/space-map",
       "owns": [
-        "graph scale and node/edge contracts",
-        "position chain",
-        "current position and scene anchors",
-        "graph structural validation"
+        "closed spatial refs, direct containment, G1 grid and class/facet validation",
+        "separated directed physical, visibility and acoustic topology indexes",
+        "integer-millidegree orientation transforms and factual context snapshots",
+        "explicit v2 migration/shadow adapter boundary"
       ],
       "path": "packages/space-map",
       "public_entry": "./src/index.js",
-      "purpose": "G0-G5 graph contracts, position chains, scene anchors, layout metadata and structural validation. Код модуля работает только с переданными данными и не создаёт смысловые сущности мира.",
+      "purpose": "Target-only pure spatial contracts for canonical G0–G5, party G5/G6 and scene positions; typed topology, orientation and factual context. Код модуля работает only with supplied data and does not create world entities. До P28 это не меняет active v2 production composition.",
       "version": "0.13.0"
     },
     {
@@ -378,6 +382,7 @@
     {
       "dependencies": [
         "@rus/checks-rng",
+        "@rus/contracts",
         "@rus/kernel",
         "@rus/materialization",
         "@rus/narration",

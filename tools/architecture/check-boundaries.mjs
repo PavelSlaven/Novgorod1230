@@ -487,7 +487,7 @@ for (const moduleName of domainModuleNames) {
     const deps = [];
     for (const specifier of importsOf(source)) {
       if (!specifier.startsWith('.')) {
-        if (specifier !== '@rus/kernel' && !specifier.startsWith('node:')) violations.push(`${rel}: domain import is not approved (${specifier})`);
+        if (!['@rus/kernel', '@rus/contracts/spatial-v3/ports', '@rus/contracts/spatial-v3/registry'].includes(specifier) && !specifier.startsWith('node:')) violations.push(`${rel}: domain import is not approved (${specifier})`);
         continue;
       }
       const candidateBase = resolve(dirname(file), specifier);
@@ -581,6 +581,8 @@ const turnFiles = (await walk(join(turnRoot, 'src'))).filter((file) => ['.js', '
 const turnFileSet = new Set(turnFiles.map((file) => resolve(file)));
 const turnGraph = new Map();
 const approvedTurnImports = new Set([
+  '@rus/contracts/spatial-v3/ports',
+  '@rus/contracts/spatial-v3/registry',
   '@rus/kernel',
   '@rus/checks-rng',
   '@rus/time-events-history',
@@ -636,7 +638,7 @@ for (const appSpec of [
     name: 'game-server',
     required: ['MODULE.md', 'package.json', 'src/index.js', 'src/composition/root.js', 'src/http/handler.js', 'test/game-server.test.js'],
     approved: new Set([
-      '@rus/checks-rng', '@rus/contracts', '@rus/knowledge-source', '@rus/llm-runtime', '@rus/new-game', '@rus/narration',
+      '@rus/checks-rng', '@rus/contracts', '@rus/contracts/spatial-v3/registry', '@rus/knowledge-source', '@rus/llm-runtime', '@rus/new-game', '@rus/narration',
       '@rus/party-store', '@rus/presentation', '@rus/presentation/opening-delivery', '@rus/turn',
       '@rus/visibility-knowledge-memory', '@rus/world-base', 'pg'
     ])

@@ -3,6 +3,22 @@
 Статус: рабочий региональный каталог утверждённых G1  
 Назначение: обязательный вход при проектировании каждой следующей G1; предотвращает необоснованное смысловое дублирование ячеек, их вложенных G2–G4, маршрутов, рисков и игровых функций.
 
+## Target v3 migration impact (не production readiness)
+
+Этот раздел — authoring inventory для будущей migration v3, не утверждение о готовом import/runtime и не источник новых исторических фактов. До P28 active production остаётся v2. Инвентаризация основана только на текущем каталоге: `15 G2`, `32 G3`, `195 G4`, `243` graph nodes и `600` edges, из которых `358` physical.
+
+| Группа текущего каталога | Target action | Evidence status |
+|---|---|---|
+| 195 описанных G4 типов/экземпляров | Каждый должен пройти явную классификацию как target G4 с canonical G5 inventory и directional exits либо получить typed authoring gap. Name-based migration запрещён. | `inventory_known; mapping_not_performed` |
+| G4 в речных ходах, протоках, островах, пойме, лесном тыле и переходной зоне | Нужны target traversal/expansion profile, approved G5 candidates и явные endpoint bindings; фактический набор не выводится из текста каталога. | `requires_authoring_evidence` |
+| 358 physical edges | Требуют проверки directional route authoring, physical segment/connection kind, endpoint roles, cost/context и reciprocal/reverse policy. Текущий счётчик не доказывает полноту bindings. | `topology_inventory_known; bindings_unverified` |
+| 242 непроверенных по классификации edges | Не допускаются к automatic migration по имени/близости/координате; для каждого нужен явный authoring decision или typed gap. | `classification_gap` |
+| NPC, items, containers и локальные объекты | Требуют canonical G5 slot inventory и approved profiles/templates; каталог прямо не подтверждает конкретные instances. | `no_instance_authoring_evidence` |
+
+`G4→target G4` — это migration decision по утверждённому inventory, а не автоматическое сохранение прежнего имени или графового узла. Если для конкретного G4 отсутствуют canonical G5 inventory, directional exits, route authoring или evidence, migration останавливается с typed gap. Конкретные исторические объекты, NPC, предметы, владельцы, маршруты и точные локализации не добавляются этим разделом.
+
+Production readiness остаётся `not_verified`: section не меняет `draft`, `production import: not_performed`, status соседней границы или runtime visibility.
+
 ## Правило использования
 
 Перед созданием новой G1 агент обязан прочитать весь актуальный каталог и сравнить проектируемую ячейку со всеми ранее утверждёнными G1. После статуса `approved_local` или изменения действующей ревизии запись соответствующей G1 обновляется. Допустимо повторение естественных элементов общего ландшафта и продолжающихся коридоров, но не необоснованное копирование полной смысловой композиции, структуры G2–G4 и игрового назначения.

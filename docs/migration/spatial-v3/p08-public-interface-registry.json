@@ -1,0 +1,16 @@
+{
+  "schema_version": "rus.spatial_v3_public_interface_registry.v1",
+  "status": "target",
+  "activation": "P28 only",
+  "failure_mode": "typed_fail_closed_without_fallback",
+  "interfaces": [
+    { "owner": "@rus/space-map", "entry": "@rus/space-map/spatial-v3", "factory": "createSpatialContextLoader", "method": "load" },
+    { "owner": "@rus/space-map", "entry": "@rus/space-map/spatial-v3", "factory": "createSpatialTopologyRepository", "method": "read" },
+    { "owner": "@rus/movement-routes", "entry": "@rus/movement-routes/spatial-v3", "factory": "createTraversalResolver", "method": "resolve" },
+    { "owner": "@rus/movement-routes", "entry": "@rus/movement-routes/spatial-v3", "factory": "createTraversalCommitValidator", "method": "validate" },
+    { "owner": "@rus/materialization", "entry": "@rus/materialization/spatial-v3", "factory": "createTopologyProposalValidator", "method": "validate" },
+    { "owner": "@rus/turn", "entry": "@rus/turn/spatial-v3", "factory": "createCombinedWritePlanBuilder", "method": "build" },
+    { "owner": "@rus/party-store", "entry": "@rus/party-store/spatial-v3", "factory": "createSpatialV3Repository", "method": "read" },
+    { "owner": "@rus/party-store", "entry": "@rus/party-store/spatial-v3", "factory": "createCombinedWritePlanCommitter", "method": "commit" }
+  ]
+}

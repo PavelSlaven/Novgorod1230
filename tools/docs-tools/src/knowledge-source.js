@@ -1,7 +1,7 @@
-import { createHash } from 'node:crypto';
 import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import { basename, dirname, join, relative, resolve } from 'node:path';
 import { buildCorpusChunks, computeCorpusHashFromFiles } from './knowledge-chunks.js';
+import { byPath, readJson, readJsonIfPresent, sha256, stableJson } from './knowledge-source-json.js';
 const LEGACY_ROOT = 'legacy/DOCUMENTS/documents-kg';
 const SOURCE_ROOT = 'data/knowledge-source';
 const GENERATED_ROOT = 'generated/knowledge-source';
@@ -373,14 +373,20 @@ async function prepareImportHistory({ sourceRoot, inventory, documents, imported
   if (existing?.schema_version !== 'rus.knowledge_import_history.v1' || !Array.isArray(existing.entries)) {
     throw new Error('Invalid knowledge-source import history.');
   }
+  const inventorySha256 = sha256(stableJson(inventory));
+  const baseMigrationId = 'knowledge-source-0.23.0';
+  const existingBase = existing.entries.find((item) => item.migration_id === baseMigrationId);
+  const migrationId = existingBase && existingBase.inventory_sha256 !== inventorySha256
+    ? `${baseMigrationId}-${inventorySha256.slice(0, 12)}`
+    : baseMigrationId;
   const entry = {
-    migration_id: 'knowledge-source-0.23.0',
+    migration_id: migrationId,
     imported_at: importedAt,
     source_release: '0.22.0-migration.22',
     source_root: `${LEGACY_ROOT}/corpus/DOCUMENTS`,
     target_root: `${SOURCE_ROOT}/corpus/DOCUMENTS`,
     document_count: documents.length,
-    inventory_sha256: sha256(stableJson(inventory)),
+    inventory_sha256: inventorySha256,
     status: 'verified'
   };
   const previous = existing.entries.find((item) => item.migration_id === entry.migration_id);
@@ -471,29 +477,4 @@ async function walk(dir) {
     else result.push(path);
   }
   return result;
-}
-
-async function readJson(path) {
-  return JSON.parse(await readFile(path, 'utf8'));
-}
-
-async function readJsonIfPresent(path) {
-  try {
-    return await readJson(path);
-  } catch (error) {
-    if (error?.code === 'ENOENT') return null;
-    throw error;
-  }
-}
-
-function stableJson(value) {
-  return `${JSON.stringify(value, null, 2)}\n`;
-}
-
-function sha256(value) {
-  return createHash('sha256').update(value).digest('hex');
-}
-
-function byPath(left, right) {
-  return left.path.localeCompare(right.path);
 }

@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0.0",
+  "status": "target",
+  "activation_boundary": "P28 atomic activation only; no dual write, authoritative mixed read, fallback or partial activation.",
+  "source_standard": {
+    "path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
+    "version": "4.2.0",
+    "sha256": "f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1"
+  },
+  "contract_registry": {
+    "path": "docs/migration/spatial-v3/contract-implementation-matrix.json",
+    "sha256": "e6da82ddbaf6f5d0493219516ebb7a997742b92d076491b15b56e2e6af95e8be",
+    "count": 160,
+    "names_sha256": "d2715a8e448006cae4d14f9e0ef9564e4aa1400537f397b1e3645f326c237e93"
+  },
+  "typed_error_registry": {
+    "source": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md#appendix-c",
+    "count": 58,
+    "names_sha256": "3206422f287e66acb60019303a10ed548030fe7f89105ff5333e3125b960aef3"
+  },
+  "vocabulary_registry_plan": {
+    "path": "docs/migration/spatial-v3/target-registries.md#controlled-vocabulary-registry-plan",
+    "sha256": "e88c14e8aa4f2b31dae80b881e98788064c578377fc0b6f58e08078799ebdc4c",
+    "required_mapping": "one finite versioned registry per controlled_* type before activation"
+  },
+  "source_digests": {
+    "data/knowledge-source/corpus/DOCUMENTS/README.md": "5df3b183d801e4a31bc30938ea45f57fad7b2aeb406f04f5340aba106625c426",
+    "data/knowledge-source/corpus/DOCUMENTS/base_turn_orchestration.txt": "d109532bac2b71e2c52de66b087e642621f893c2f329351efdb36a20ea3f7d84",
+    "data/knowledge-source/corpus/DOCUMENTS/code_driven_world_materialization_architecture.md": "2a7209efc7ff38e8ea4bcac2e1f990a36fd639864e025850d04554ac881f14b1",
+    "data/knowledge-source/corpus/DOCUMENTS/formulas.md": "43da60baaa78e4fa4aecfd62e4881fe157ffc64a59a160cdbf3d20b28ff15940",
+    "data/knowledge-source/corpus/DOCUMENTS/interface_ux.md": "5d1c25a77db458f83a1f678d80fd7c6ac4f48470910be12317a3b3ce4ded6728",
+    "data/knowledge-source/corpus/DOCUMENTS/llm_documentation_navigation.md": "2f88d1c913c22a5ac6b1833390e07bdffc71866bf577789dac0964c459489e3f",
+    "data/knowledge-source/corpus/DOCUMENTS/map_g0_g4_workflow.txt": "5a33f0d24b64e5b07eaa150f525ebe6c6597f55760c20f7fab2dd8c7f76d92c1",
+    "data/knowledge-source/corpus/DOCUMENTS/movement_locations_regions.txt": "3636cce5b3944e507273753d18a3f59b2caac39804723a97535a8ae46fa322c9",
+    "data/knowledge-source/corpus/DOCUMENTS/read_only_database_and_graph_architecture.md": "daaee8b8cfcbd535750567938ec8205175ead6b0f3c8020fe20e8840052181c5",
+    "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md": "f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1",
+    "data/knowledge-source/corpus/DOCUMENTS/time_system.txt": "83dd81eb25130eceddfc0ee3d7a32c85819e743d91ea021e823e831ed9e4737f",
+    "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md": "9f7a4c4e2ee7c6cdb3f03354e361247b9815e41deb333d55d89567128fa984cc",
+    "data/knowledge-source/corpus/DOCUMENTS/world_generation_and_turns.txt": "513feda57dca2db7a4e40814443aa5b8955c02bdd244a59f12e400e22af6c5a8",
+    "data/world-catalogs/novgorod/G1_SEMANTIC_CATALOG.md": "fdbe3f020be5fb80ea7c2debbbf9a57ba9478e518efda3e8c1af955a81ed5a00",
+    "docs/adr/ADR-001-materialization-v3-spatial-g0-g6.md": "f71a8a8cd7392777c7b9c2058623b46ba5f8b81ec0a0a5afe663a09f5640c490",
+    "docs/migration/spatial-v3/contract-implementation-matrix.json": "e6da82ddbaf6f5d0493219516ebb7a997742b92d076491b15b56e2e6af95e8be",
+    "docs/migration/spatial-v3/normative-conflicts.md": "39e8617c999ffee69f5764e3cfe7e54969b45ebb8801e18f5c65a75479837fec",
+    "docs/migration/spatial-v3/target-registries.md": "e88c14e8aa4f2b31dae80b881e98788064c578377fc0b6f58e08078799ebdc4c"
+  },
+  "zero_findings_evidence": {
+    "checker": "npm run spatial-v3:check-p05",
+    "scope": [
+      "levels",
+      "containment",
+      "movement",
+      "time",
+      "readiness",
+      "state transitions",
+      "stores",
+      "owners",
+      "migration",
+      "activation language"
+    ],
+    "open_findings": 0
+  }
+}

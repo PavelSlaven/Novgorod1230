@@ -4,10 +4,14 @@
   "type": "module",
   "exports": {
     ".": "./src/index.js",
+    "./spatial-v3": "./src/spatial-v3-ports.js",
+    "./spatial-v3-orchestration": "./src/spatial-v3-orchestration.js",
+    "./spatial-v3-execution": "./src/spatial-v3-execution.js",
     "./compat": "./src/compat/index.js"
   },
   "dependencies": {
     "@rus/checks-rng": "0.13.0",
+    "@rus/contracts": "0.9.0",
     "@rus/kernel": "0.9.0",
     "@rus/materialization": "2.0.0",
     "@rus/pipeline-engine": "0.9.0",

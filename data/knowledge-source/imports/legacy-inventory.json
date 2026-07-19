@@ -54,8 +54,8 @@
     {
       "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/interface_ux.md",
       "relative_path": "corpus/DOCUMENTS/interface_ux.md",
-      "bytes": 59416,
-      "sha256": "acb72dce766c4840e2d7ed0935a2bd118f9a620e2fe5e13974e3495994716a7d",
+      "bytes": 64507,
+      "sha256": "5d1c25a77db458f83a1f678d80fd7c6ac4f48470910be12317a3b3ce4ded6728",
       "classification": "canonical_source"
     },
     {
@@ -117,8 +117,8 @@
     {
       "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/time_system.txt",
       "relative_path": "corpus/DOCUMENTS/time_system.txt",
-      "bytes": 10539,
-      "sha256": "a9c9c82e18288c5c3cc0b1c99fc81bef28c7750202ddcbcba88ef066198ccde3",
+      "bytes": 16226,
+      "sha256": "cf94af950566ba0f79f6b90c3761a624ac14d5d3a339b631b5c30c4770b65323",
       "classification": "canonical_source"
     },
     {

@@ -1,0 +1,561 @@
+{
+  "schema_version": "rus.p12_source_provenance.v1",
+  "id": "prov_p12_g1_r2_r3_v1",
+  "target_g1_id": "gn_nov_g1_xp017_yp026",
+  "world_revision_id": "novgorod_spatial_v3_p12_source_approval_001",
+  "sources": [
+    {
+      "path": "source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip",
+      "sha256": "6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b",
+      "role": "approved_local semantic and topology source",
+      "approval_status": "approved_local"
+    },
+    {
+      "path": "source-snapshots/gn_nov_g1_xp017_yp026_content_revision_003_production_candidate.zip",
+      "sha256": "eafa5ee1e583c74ba3e06161340d85963c43da5ed563da1b4f47280a880ca7bc",
+      "role": "production-candidate profile source",
+      "approval_status": "candidate_not_active"
+    },
+    {
+      "path": "references/SPATIAL_ARCHITECTURE_STANDARD_G0_G6_V4_2_CONTROLLED_VOCABULARY_AMENDED.md",
+      "sha256": "4789ad4e343275c1980fd67c19c362909479a8b34cf88054d423b0573a646268",
+      "role": "target spatial architecture and formal contracts"
+    },
+    {
+      "path": "references/G1_SEMANTIC_CATALOG.md",
+      "sha256": "a17487285a14e58635456a79f9ccdc67d874e2f6816b1a375cc408163a474bee",
+      "role": "regional semantic catalogue and authoritative count statement"
+    }
+  ],
+  "source_ledger": {
+    "schema_version": "rus.g1_source_ledger.v1",
+    "g1_id": "gn_nov_g1_xp017_yp026",
+    "sources": [
+      {
+        "source_id": "SRC_G1R2_SCHAPOV_1976_CHARTER",
+        "full_citation": "Щапов Я. Н. (подг.). Древнерусские княжеские уставы XI–XV вв. М.: Наука, 1976. Уставная грамота новгородского князя Святослава Ольговича 1136/37 г., с. 146–148.",
+        "source_class": "critical_edition_primary_text",
+        "source_access": "complete_online_text",
+        "access_location": "https://archive.org/stream/ustavi1976/ustavi1976_djvu.txt",
+        "use_status": "binding",
+        "limitations": [
+          "Текст дошёл в более поздних списках.",
+          "Форма «оу Вихтоуга» подтверждает название и фискальную связь, но не точную геометрию поселения."
+        ]
+      },
+      {
+        "source_id": "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "full_citation": "Brisbane, M. A.; Makarov, N. A.; Nosov, E. N. Medieval Novgorod in Its Wider Context.",
+        "source_class": "academic_historical_archaeology",
+        "source_access": "complete_pdf",
+        "access_location": "https://eprints.bournemouth.ac.uk/23438/1/01%20Novgorod%20IV.pdf",
+        "use_status": "binding_context",
+        "limitations": [
+          "Письменные данные о северной администрации XI–XIII вв. разрежены.",
+          "Не задаёт точную местную границу или структуру поселения."
+        ]
+      },
+      {
+        "source_id": "SRC_G1R2_ARKHANGELSK_HOARD_1992",
+        "full_citation": "Nosov E. N.; Ovsyannikov O. V.; Potin V. M. The Arkhangelsk Hoard // Fennoscandia Archaeologica IX. Helsinki, 1992. P. 3–21.",
+        "source_class": "archaeological_publication",
+        "source_access": "bibliographic_verified_corroborated",
+        "access_location": null,
+        "use_status": "corroborative_with_access_limit",
+        "limitations": [
+          "Полный текст публикации в текущем окружении не получен.",
+          "Клад подтверждает присутствие и обмен, но не доказывает город, порт или точную структуру поселения."
+        ]
+      },
+      {
+        "source_id": "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+        "full_citation": "Едовин А. Е. Заостровье — средневековый поселенческий центр дельты Северной Двины // Беломорские чтения. Вып. II. Архангельск, 2019. С. 62–73.",
+        "source_class": "regional_archaeology",
+        "source_access": "bibliographic_verified_secondary_summary",
+        "access_location": null,
+        "use_status": "corroborative_with_access_limit",
+        "limitations": [
+          "Полный текст не получен.",
+          "Используется только для локально ограниченной модели археологического поселенческого и погребального участка, без точного плана."
+        ]
+      },
+      {
+        "source_id": "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+        "full_citation": "Едовин А. Заволочье в средневековой русской истории, X–XIII вв. Архангельск, 2001.",
+        "source_class": "regional_historical_archaeology",
+        "source_access": "bibliographic_verified",
+        "access_location": null,
+        "use_status": "contextual",
+        "limitations": [
+          "Не используется для точной геометрии объектов."
+        ]
+      },
+      {
+        "source_id": "SRC_G1R2_MAKAROV_2003",
+        "full_citation": "Макаров Н. А. «Заволоцкие топонимы» новгородских берестяных грамот и деревянных цилиндров на археологической карте // Берестяные грамоты: 50 лет открытия и изучения. М.: Индрик, 2003. С. 149–164.",
+        "source_class": "archaeology_toponymy",
+        "source_access": "bibliographic_verified",
+        "access_location": null,
+        "use_status": "contextual",
+        "limitations": [
+          "Полный текст не получен; не является единственным основанием конкретного узла."
+        ]
+      },
+      {
+        "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+        "full_citation": "Русловые процессы и водные пути на реках бассейна Северной Двины / под ред. Р. С. Чалова. М., 2012. 492 с.",
+        "source_class": "scientific_hydromorphology",
+        "source_access": "bibliographic_verified",
+        "access_location": null,
+        "use_status": "technical_typology",
+        "limitations": [
+          "Современная гидроморфология используется только как типологическое основание разветвлённого русла, поймы, островов и меняющихся мелей.",
+          "Не реконструирует конкретную геометрию 1230 г."
+        ]
+      },
+      {
+        "source_id": "SRC_G1R2_GSHHS",
+        "full_citation": "GSHHS/GSHHG shoreline geometry used in map revision 002.",
+        "source_class": "modern_technical_geography",
+        "source_access": "complete_project_derivative",
+        "access_location": "novgorod_1230_candidate_g1_mask.json",
+        "use_status": "technical_proxy_only",
+        "limitations": [
+          "Современная береговая линия и доли суши/воды не являются картой 1230 г."
+        ]
+      },
+      {
+        "source_id": "SRC_G1R2_MASK_REV002",
+        "full_citation": "RUS13 project. Novgorod 1230 G1 mask revision 002.",
+        "source_class": "approved_project_derivative",
+        "source_access": "complete_local",
+        "access_location": "novgorod_1230_candidate_g1_mask.json",
+        "use_status": "binding_technical",
+        "limitations": [
+          "Определяет активность и координатную ячейку, но не заменяет исторические источники."
+        ]
+      },
+      {
+        "source_id": "SRC_G1R2_GRID",
+        "full_citation": "RUS13 project. WGS84 / local AEQD 32 km grid definition.",
+        "source_class": "technical_method",
+        "source_access": "complete_local",
+        "access_location": "grid_definition.json",
+        "use_status": "binding_technical",
+        "limitations": [
+          "Сетка не имеет исторического пограничного смысла."
+        ]
+      },
+      {
+        "source_id": "SRC_G1R2_MAP_RULES",
+        "full_citation": "RUS13. Инструкция-памятка по работе с картой G0–G4.",
+        "source_class": "project_normative",
+        "source_access": "complete_local",
+        "access_location": "Работа с картой G0-G4.txt",
+        "use_status": "binding_methodological",
+        "limitations": [
+          "Норматив проекта, не исторический источник."
+        ]
+      }
+    ]
+  },
+  "claim_ledger": {
+    "schema_version": "rus.g1_claim_ledger.v1",
+    "g1_id": "gn_nov_g1_xp017_yp026",
+    "claims": [
+      {
+        "claim_id": "CLM_G1R2_GRID",
+        "statement": "G1 является техническим квадратом 32×32 км и не описывает средневековую границу.",
+        "subject_type": "method",
+        "temporal_range": {
+          "from": 1230,
+          "to": 1230
+        },
+        "spatial_precision": "technical_grid_cell",
+        "source_ids": [
+          "SRC_G1R2_GRID",
+          "SRC_G1R2_MASK_REV002"
+        ],
+        "evidence_status": "technical_method",
+        "confidence": "high",
+        "limitations": [],
+        "review_status": "approved"
+      },
+      {
+        "claim_id": "CLM_G1R2_DVINA_CORRIDOR",
+        "statement": "Ячейка пересекает нижнедвинский речной и речно-морской коридор, связанный с северными новгородскими интересами.",
+        "subject_type": "route",
+        "temporal_range": {
+          "from": 1150,
+          "to": 1250
+        },
+        "spatial_precision": "corridor",
+        "source_ids": [
+          "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+          "SRC_G1R2_MASK_REV002"
+        ],
+        "evidence_status": "comparative_reconstruction",
+        "confidence": "medium",
+        "limitations": [],
+        "review_status": "approved",
+        "reconstruction_method": "Сохранение непрерывности утверждённого бассейнового коридора без точной линии фарватера."
+      },
+      {
+        "claim_id": "CLM_G1R2_MULTICHANNEL",
+        "statement": "Для нижнедвинской дельтовой среды типологически характерны разветвлённые русла, острова, протоки, пойменные понижения и меняющиеся мели.",
+        "subject_type": "hydrology",
+        "temporal_range": {
+          "from": 1150,
+          "to": 1250
+        },
+        "spatial_precision": "cell",
+        "source_ids": [
+          "SRC_G1R2_CHALOV_DVINA_2012",
+          "SRC_G1R2_GSHHS"
+        ],
+        "evidence_status": "regional_typology",
+        "confidence": "medium",
+        "limitations": [],
+        "review_status": "approved",
+        "reconstruction_method": "Современная гидроморфологическая типология применяется без переноса современной геометрии в 1230 г."
+      },
+      {
+        "claim_id": "CLM_G1R2_SHORELINE_LIMIT",
+        "statement": "Точная конфигурация русел, островов и береговой линии около 1230 г. неизвестна.",
+        "subject_type": "geography",
+        "temporal_range": {
+          "from": 1230,
+          "to": 1230
+        },
+        "spatial_precision": "cell",
+        "source_ids": [
+          "SRC_G1R2_GSHHS",
+          "SRC_G1R2_MASK_REV002"
+        ],
+        "evidence_status": "technical_proxy",
+        "confidence": "high",
+        "limitations": [
+          "Все внутренние зоны являются топологической реконструкцией допустимой точности."
+        ],
+        "review_status": "approved"
+      },
+      {
+        "claim_id": "CLM_G1R2_VIKHTUY",
+        "statement": "Грамота 1136/37 г. содержит форму «оу Вихтоуга», связанную с северными доходами.",
+        "subject_type": "toponymy_tribute",
+        "temporal_range": {
+          "from": 1136,
+          "to": 1137
+        },
+        "spatial_precision": "macrozone",
+        "source_ids": [
+          "SRC_G1R2_SCHAPOV_1976_CHARTER"
+        ],
+        "evidence_status": "source_backed",
+        "confidence": "high",
+        "limitations": [
+          "Не доказывает точное положение, план и размер поселения."
+        ],
+        "review_status": "approved"
+      },
+      {
+        "claim_id": "CLM_G1R2_VIKHTUY_LOCALIZATION",
+        "statement": "Связь Вихтуя с районом Виткурьи/Тойнокурья допустима как локализационная гипотеза, но не как exact_site.",
+        "subject_type": "toponymy",
+        "temporal_range": {
+          "from": 1150,
+          "to": 1250
+        },
+        "spatial_precision": "local_area",
+        "source_ids": [
+          "SRC_G1R2_SCHAPOV_1976_CHARTER",
+          "SRC_G1R2_ARKHANGELSK_HOARD_1992",
+          "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019"
+        ],
+        "evidence_status": "comparative_reconstruction",
+        "confidence": "medium_low",
+        "limitations": [],
+        "review_status": "approved",
+        "reconstruction_method": "Совмещение источникового топонима и археологического контекста при сохранении неопределённости."
+      },
+      {
+        "claim_id": "CLM_G1R2_HOARD",
+        "statement": "Клад, датируемый 1130-ми годами, указывает на включённость локального района в дальние обменные связи.",
+        "subject_type": "archaeology_exchange",
+        "temporal_range": {
+          "from": 1125,
+          "to": 1140
+        },
+        "spatial_precision": "local_area",
+        "source_ids": [
+          "SRC_G1R2_ARKHANGELSK_HOARD_1992"
+        ],
+        "evidence_status": "archaeologically_supported_with_access_limit",
+        "confidence": "medium",
+        "limitations": [
+          "Не используется как заранее известный игроку клад.",
+          "Не доказывает город или порт."
+        ],
+        "review_status": "approved"
+      },
+      {
+        "claim_id": "CLM_G1R2_ZAOSTROVYE",
+        "statement": "Археологическая литература описывает в Заостровье поселенческий и погребальный контекст XI–XII вв.",
+        "subject_type": "archaeology_settlement",
+        "temporal_range": {
+          "from": 1000,
+          "to": 1200
+        },
+        "spatial_precision": "local_area",
+        "source_ids": [
+          "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019"
+        ],
+        "evidence_status": "archaeologically_supported_with_access_limit",
+        "confidence": "medium",
+        "limitations": [
+          "Точный план и непрерывность в 1230 г. не установлены в доступном корпусе."
+        ],
+        "review_status": "approved"
+      },
+      {
+        "claim_id": "CLM_G1R2_1230_CONTINUITY",
+        "statement": "Для 1230 г. допустима осторожная модель локального обитания и использования территории, но не точная реконструкция числа дворов.",
+        "subject_type": "settlement",
+        "temporal_range": {
+          "from": 1150,
+          "to": 1250
+        },
+        "spatial_precision": "local_area",
+        "source_ids": [
+          "SRC_G1R2_SCHAPOV_1976_CHARTER",
+          "SRC_G1R2_ARKHANGELSK_HOARD_1992",
+          "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019"
+        ],
+        "evidence_status": "comparative_reconstruction",
+        "confidence": "medium_low",
+        "limitations": [],
+        "review_status": "approved",
+        "reconstruction_method": "Минимальная преемственность между источниковым топонимом, кладом и археологическим поселенческим контекстом; все жилые зоны помечаются как кандидаты."
+      },
+      {
+        "claim_id": "CLM_G1R2_TRIBUTARY",
+        "statement": "Фискальные свидетельства допускают статус tributary, но не прямое административное управление.",
+        "subject_type": "control",
+        "temporal_range": {
+          "from": 1150,
+          "to": 1250
+        },
+        "spatial_precision": "macrozone",
+        "source_ids": [
+          "SRC_G1R2_SCHAPOV_1976_CHARTER",
+          "SRC_G1R2_BRISBANE_MAKAROV_NOSOV"
+        ],
+        "evidence_status": "comparative_reconstruction",
+        "confidence": "medium",
+        "limitations": [],
+        "review_status": "approved",
+        "reconstruction_method": "Выбор наименее сильной политической категории, согласуемой с источниками."
+      },
+      {
+        "claim_id": "CLM_G1R2_NO_DIRECT_RULE",
+        "statement": "Прямое управление, исключительное владение и точные административные границы не доказаны.",
+        "subject_type": "negative_constraint",
+        "temporal_range": {
+          "from": 1150,
+          "to": 1250
+        },
+        "spatial_precision": "macrozone",
+        "source_ids": [
+          "SRC_G1R2_BRISBANE_MAKAROV_NOSOV"
+        ],
+        "evidence_status": "source_backed_limit",
+        "confidence": "high",
+        "limitations": [],
+        "review_status": "approved"
+      },
+      {
+        "claim_id": "CLM_G1R2_NO_ARKHANGELSK",
+        "statement": "Город Архангельск и его поздняя портовая инфраструктура не существуют в baseline 1230.",
+        "subject_type": "negative_constraint",
+        "temporal_range": {
+          "from": 1230,
+          "to": 1230
+        },
+        "spatial_precision": "cell",
+        "source_ids": [
+          "SRC_G1R2_GRID",
+          "SRC_G1R2_MASK_REV002"
+        ],
+        "evidence_status": "methodological_constraint",
+        "confidence": "high",
+        "limitations": [],
+        "review_status": "approved"
+      },
+      {
+        "claim_id": "CLM_G1R2_NAVIGATION_KNOWLEDGE",
+        "statement": "В разветвлённой устьевой системе безопасное движение требует наблюдения за течением, мелями, ветром и льдом; точные локальные пути могут быть известны не всем.",
+        "subject_type": "movement",
+        "temporal_range": {
+          "from": 1150,
+          "to": 1250
+        },
+        "spatial_precision": "cell",
+        "source_ids": [
+          "SRC_G1R2_CHALOV_DVINA_2012"
+        ],
+        "evidence_status": "regional_typology",
+        "confidence": "medium",
+        "limitations": [],
+        "review_status": "approved",
+        "reconstruction_method": "Гидроморфологическая типология переводится в игровые ограничения ориентирования и доступа."
+      },
+      {
+        "claim_id": "CLM_G1R2_SEASONAL_WATER",
+        "statement": "Открытая вода, ледостав, зимний лёд и весенний ледоход создают разные маршрутные сети.",
+        "subject_type": "seasonality",
+        "temporal_range": {
+          "from": 1150,
+          "to": 1250
+        },
+        "spatial_precision": "cell",
+        "source_ids": [
+          "SRC_G1R2_CHALOV_DVINA_2012"
+        ],
+        "evidence_status": "regional_typology",
+        "confidence": "medium",
+        "limitations": [],
+        "review_status": "approved",
+        "reconstruction_method": "Сезонные маршруты задаются как условные и требуют проверки текущего состояния."
+      },
+      {
+        "claim_id": "CLM_G1R2_FLOODPLAIN_RIDGES",
+        "statement": "Повышенные пойменные гряды и террасы типологически являются предпочтительными участками стоянки и обитания среди затапливаемых пространств.",
+        "subject_type": "land_use",
+        "temporal_range": {
+          "from": 1150,
+          "to": 1250
+        },
+        "spatial_precision": "local_area",
+        "source_ids": [
+          "SRC_G1R2_CHALOV_DVINA_2012"
+        ],
+        "evidence_status": "regional_typology",
+        "confidence": "medium",
+        "limitations": [],
+        "review_status": "approved",
+        "reconstruction_method": "Создаются зоны-кандидаты без точной геометрии и без автоматического поселения."
+      },
+      {
+        "claim_id": "CLM_G1R2_RESOURCE_USE",
+        "statement": "Рыболовство, охота, сбор и движение пушного/ресурсного продукта допустимы как региональная хозяйственная типология.",
+        "subject_type": "economy",
+        "temporal_range": {
+          "from": 1150,
+          "to": 1250
+        },
+        "spatial_precision": "cell",
+        "source_ids": [
+          "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+          "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001"
+        ],
+        "evidence_status": "regional_typology",
+        "confidence": "medium",
+        "limitations": [
+          "Конкретные промысловики и добыча материализуются только причинно."
+        ],
+        "review_status": "approved"
+      },
+      {
+        "claim_id": "CLM_G1R2_FOREST_HINTERLAND",
+        "statement": "За пределами русловых и поселенческих участков сохранялись лесные, влажные и малодоступные зоны с локальными ресурсными тропами.",
+        "subject_type": "landscape",
+        "temporal_range": {
+          "from": 1150,
+          "to": 1250
+        },
+        "spatial_precision": "cell",
+        "source_ids": [
+          "SRC_G1R2_GSHHS",
+          "SRC_G1R2_CHALOV_DVINA_2012"
+        ],
+        "evidence_status": "comparative_reconstruction",
+        "confidence": "medium",
+        "limitations": [],
+        "review_status": "approved",
+        "reconstruction_method": "Заполняется природно-хозяйственная структура, а не вымышленная сеть дорог."
+      },
+      {
+        "claim_id": "CLM_G1R2_NO_ETHNIC_PERCENT",
+        "statement": "Доступные данные не позволяют задавать точные этнические доли населения ячейки.",
+        "subject_type": "ethnoculture",
+        "temporal_range": {
+          "from": 1150,
+          "to": 1250
+        },
+        "spatial_precision": "cell",
+        "source_ids": [
+          "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+          "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019"
+        ],
+        "evidence_status": "negative_constraint",
+        "confidence": "high",
+        "limitations": [],
+        "review_status": "approved"
+      },
+      {
+        "claim_id": "CLM_G1R2_SETTLEMENT_LIMIT",
+        "statement": "Археологические и письменные якоря не позволяют автоматически создавать город, монастырь, гарнизон или плотную сеть деревень.",
+        "subject_type": "negative_constraint",
+        "temporal_range": {
+          "from": 1150,
+          "to": 1250
+        },
+        "spatial_precision": "cell",
+        "source_ids": [
+          "SRC_G1R2_SCHAPOV_1976_CHARTER",
+          "SRC_G1R2_ARKHANGELSK_HOARD_1992",
+          "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019"
+        ],
+        "evidence_status": "source_backed_limit",
+        "confidence": "high",
+        "limitations": [],
+        "review_status": "approved"
+      },
+      {
+        "claim_id": "CLM_G1R2_MAP_COMPLETENESS",
+        "statement": "Исторические якоря должны быть встроены в богатую природную, хозяйственную и маршрутную модель G1; они не заменяют всю территорию.",
+        "subject_type": "project_method",
+        "temporal_range": {
+          "from": 1230,
+          "to": 1230
+        },
+        "spatial_precision": "cell",
+        "source_ids": [
+          "SRC_G1R2_MAP_RULES"
+        ],
+        "evidence_status": "project_normative",
+        "confidence": "high",
+        "limitations": [],
+        "review_status": "approved"
+      },
+      {
+        "claim_id": "CLM_G1R2_NORTH_EXIT",
+        "statement": "Северное продолжение речного коридора требует отдельного внешнего перехода к Белому морю в следующей ревизии маски.",
+        "subject_type": "boundary",
+        "temporal_range": {
+          "from": 1230,
+          "to": 1230
+        },
+        "spatial_precision": "corridor",
+        "source_ids": [
+          "SRC_G1R2_MASK_REV002"
+        ],
+        "evidence_status": "project_constraint",
+        "confidence": "high",
+        "limitations": [],
+        "review_status": "approved"
+      }
+    ]
+  },
+  "approval_scope": "P12 integration source data only; not production activation evidence"
+}

@@ -1,0 +1,2026 @@
+{
+  "schema_version": "rus.approved_scene_profile_families.v1",
+  "records": [
+    {
+      "profile_id": "g5_boundary_access_v1",
+      "contract_version": "rus.g5_materialization_profile.v1",
+      "applicable_g4_types": [
+        "boundary_route_zone",
+        "boundary_zone",
+        "natural_boundary"
+      ],
+      "applicable_g4_ids": [
+        "gn_nov_g4_xp017_yp026_r2_mixing_reach_outer_route",
+        "gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_sea_exit",
+        "gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_outer_edge",
+        "gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_wet_boundary"
+      ],
+      "allowed_minilocation_types": [
+        "internal_approach",
+        "boundary_threshold",
+        "blocked_external direction",
+        "turnback_point"
+      ],
+      "required_minilocation_types": [
+        "internal_approach",
+        "turnback_point"
+      ],
+      "allowed_anchor_types": [
+        "boundary_sign",
+        "last_internal_landmark",
+        "blocked_exit"
+      ],
+      "required_anchor_types": [
+        "blocked_exit_anchor"
+      ],
+      "entry_points": [
+        "derive_from_graph_edges_and_current_entry"
+      ],
+      "exit_points": [
+        "only_existing_graph_edges"
+      ],
+      "visible_passages": [
+        "existing_route_visible_under_current_conditions"
+      ],
+      "conditionally_visible_passages": [
+        "existing_route_requiring_search_or_local_knowledge"
+      ],
+      "closed_zones": [
+        "profile_forbidden_or_current_state_closed"
+      ],
+      "restricted_zones": [
+        "ownership_ritual_or_safety restriction where applicable"
+      ],
+      "work_zones": [],
+      "rest_zones": [],
+      "storage_zones": [],
+      "resource_zones": [],
+      "hazard_zones": [
+        "unknown_external_state"
+      ],
+      "observation_zones": [
+        "external_direction_only"
+      ],
+      "allowed_npc_slots": [
+        "traveler_or_guide if causally present"
+      ],
+      "allowed_item_slots": [
+        "portable_only"
+      ],
+      "allowed_container_slots": [
+        "portable_only"
+      ],
+      "forbidden_elements": [
+        "crossing_pending_boundary",
+        "materializing neighboring G1",
+        "pretending external route approved"
+      ],
+      "materialization_limits": [
+        "1-4 minilocations",
+        "external transition blocked in current revision"
+      ],
+      "lighting_profiles": [
+        "daylight",
+        "twilight",
+        "night_with_actual_light_source"
+      ],
+      "weather_variants": [
+        "fair",
+        "overcast",
+        "rain",
+        "wind"
+      ],
+      "seasonal_variants": [
+        "late_summer_open_water"
+      ],
+      "water_level_variants": [
+        "normal_late_summer",
+        "locally_low",
+        "locally_high_after_rain"
+      ],
+      "ice_variants": [
+        "open_water_only_for_supported_start_mode"
+      ],
+      "flood_variants": [
+        "no_active_major_flood_for_supported_start_mode"
+      ],
+      "evidence_rule": "Preserve source evidence_status and reconstruction limits from the G4 record.",
+      "source_status": "candidate",
+      "status": "approved",
+      "approval_basis": "content_revision_003 candidate profile, reconciled with target canonical-G5 scene profile rules and P12 audit cycles"
+    },
+    {
+      "profile_id": "g5_burial_ritual_buffer_v1",
+      "contract_version": "rus.g5_materialization_profile.v1",
+      "applicable_g4_types": [
+        "buffer_zone",
+        "burial_zone",
+        "ritual_use_candidate"
+      ],
+      "applicable_g4_ids": [
+        "gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_burial_core",
+        "gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_ritual_edge",
+        "gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_woodland_buffer"
+      ],
+      "allowed_minilocation_types": [
+        "approach_margin",
+        "buffer_strip",
+        "ritual_or_burial area abstracted",
+        "retreat_route"
+      ],
+      "required_minilocation_types": [
+        "approach_margin"
+      ],
+      "allowed_anchor_types": [
+        "boundary sign",
+        "path margin",
+        "respect_distance marker"
+      ],
+      "required_anchor_types": [
+        "boundary_anchor"
+      ],
+      "entry_points": [
+        "derive_from_graph_edges_and_current_entry"
+      ],
+      "exit_points": [
+        "only_existing_graph_edges"
+      ],
+      "visible_passages": [
+        "existing_route_visible_under_current_conditions"
+      ],
+      "conditionally_visible_passages": [
+        "existing_route_requiring_search_or_local_knowledge"
+      ],
+      "closed_zones": [
+        "profile_forbidden_or_current_state_closed"
+      ],
+      "restricted_zones": [
+        "ownership_ritual_or_safety restriction where applicable"
+      ],
+      "work_zones": [
+        "ritual duty only with cause"
+      ],
+      "rest_zones": [],
+      "storage_zones": [],
+      "resource_zones": [],
+      "hazard_zones": [
+        "social_legal_and_ground disturbance risk"
+      ],
+      "observation_zones": [
+        "external observation only"
+      ],
+      "allowed_npc_slots": [
+        "local duty holder_or_visitor if causally present"
+      ],
+      "allowed_item_slots": [
+        "ritual or maintenance categories only with cause"
+      ],
+      "allowed_container_slots": [
+        "none by default"
+      ],
+      "forbidden_elements": [
+        "specific grave layout",
+        "grave goods",
+        "treasure",
+        "automatic supernatural event"
+      ],
+      "materialization_limits": [
+        "1-5 minilocations",
+        "closed/restricted zones remain inaccessible without cause"
+      ],
+      "lighting_profiles": [
+        "daylight",
+        "twilight",
+        "night_with_actual_light_source"
+      ],
+      "weather_variants": [
+        "fair",
+        "overcast",
+        "rain",
+        "wind"
+      ],
+      "seasonal_variants": [
+        "late_summer_open_water"
+      ],
+      "water_level_variants": [
+        "normal_late_summer",
+        "locally_low",
+        "locally_high_after_rain"
+      ],
+      "ice_variants": [
+        "open_water_only_for_supported_start_mode"
+      ],
+      "flood_variants": [
+        "no_active_major_flood_for_supported_start_mode"
+      ],
+      "evidence_rule": "Preserve source evidence_status and reconstruction limits from the G4 record.",
+      "source_status": "candidate",
+      "status": "approved",
+      "approval_basis": "content_revision_003 candidate profile, reconciled with target canonical-G5 scene profile rules and P12 audit cycles"
+    },
+    {
+      "profile_id": "g5_dry_route_v1",
+      "contract_version": "rus.g5_materialization_profile.v1",
+      "applicable_g4_types": [
+        "crossing_candidate",
+        "dry_route_zone",
+        "route_zone"
+      ],
+      "applicable_g4_ids": [
+        "gn_nov_g4_xp017_yp026_r2_channel_split_islet_east_channel",
+        "gn_nov_g4_xp017_yp026_r2_channel_split_islet_west_channel",
+        "gn_nov_g4_xp017_yp026_r2_driftwood_bar_downstream_cut",
+        "gn_nov_g4_xp017_yp026_r2_dry_island_ridge_ridge_crest",
+        "gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_ridge_top",
+        "gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_ridge_path",
+        "gn_nov_g4_xp017_yp026_r2_forest_stream_route_bank_path",
+        "gn_nov_g4_xp017_yp026_r2_large_island_head_east_channel",
+        "gn_nov_g4_xp017_yp026_r2_large_island_head_west_channel",
+        "gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_inland_path",
+        "gn_nov_g4_xp017_yp026_r2_tributary_mouth_crossing",
+        "gn_nov_g4_xp017_yp026_r2_tributary_mouth_inland_path",
+        "gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_forest_path",
+        "gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_inland_path",
+        "gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_path_to_settlement",
+        "gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_hinterland_path"
+      ],
+      "allowed_minilocation_types": [
+        "route_surface",
+        "route_margin",
+        "junction_or_turn",
+        "rest_pullout"
+      ],
+      "required_minilocation_types": [
+        "route_surface"
+      ],
+      "allowed_anchor_types": [
+        "track_sign",
+        "ridge_or_ground_marker",
+        "junction",
+        "exit_direction"
+      ],
+      "required_anchor_types": [
+        "entry_anchor",
+        "exit_anchor"
+      ],
+      "entry_points": [
+        "derive_from_graph_edges_and_current_entry"
+      ],
+      "exit_points": [
+        "only_existing_graph_edges"
+      ],
+      "visible_passages": [
+        "existing_route_visible_under_current_conditions"
+      ],
+      "conditionally_visible_passages": [
+        "existing_route_requiring_search_or_local_knowledge"
+      ],
+      "closed_zones": [
+        "profile_forbidden_or_current_state_closed"
+      ],
+      "restricted_zones": [
+        "ownership_ritual_or_safety restriction where applicable"
+      ],
+      "work_zones": [],
+      "rest_zones": [
+        "brief_rest_if dry"
+      ],
+      "storage_zones": [],
+      "resource_zones": [
+        "incidental_fuel_or_water_if separately allowed"
+      ],
+      "hazard_zones": [
+        "wet_gap_or_fall_risk"
+      ],
+      "observation_zones": [
+        "route_orientation_point"
+      ],
+      "allowed_npc_slots": [
+        "traveler",
+        "guide",
+        "resource_user"
+      ],
+      "allowed_item_slots": [
+        "portable_route_equipment"
+      ],
+      "allowed_container_slots": [
+        "portable_only"
+      ],
+      "forbidden_elements": [
+        "roadside building",
+        "automatic toll post"
+      ],
+      "materialization_limits": [
+        "2-6 minilocations",
+        "route existence does not imply character knowledge"
+      ],
+      "lighting_profiles": [
+        "daylight",
+        "twilight",
+        "night_with_actual_light_source"
+      ],
+      "weather_variants": [
+        "fair",
+        "overcast",
+        "rain",
+        "wind"
+      ],
+      "seasonal_variants": [
+        "late_summer_open_water"
+      ],
+      "water_level_variants": [
+        "normal_late_summer",
+        "locally_low",
+        "locally_high_after_rain"
+      ],
+      "ice_variants": [
+        "open_water_only_for_supported_start_mode"
+      ],
+      "flood_variants": [
+        "no_active_major_flood_for_supported_start_mode"
+      ],
+      "evidence_rule": "Preserve source evidence_status and reconstruction limits from the G4 record.",
+      "source_status": "candidate",
+      "status": "approved",
+      "approval_basis": "content_revision_003 candidate profile, reconciled with target canonical-G5 scene profile rules and P12 audit cycles"
+    },
+    {
+      "profile_id": "g5_exploration_concealment_v1",
+      "contract_version": "rus.g5_materialization_profile.v1",
+      "applicable_g4_types": [
+        "concealment_zone",
+        "exploration_route"
+      ],
+      "applicable_g4_ids": [
+        "gn_nov_g4_xp017_yp026_r2_old_channel_pool_hidden_link",
+        "gn_nov_g4_xp017_yp026_r2_reed_backwater_reed_channel",
+        "gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_game_trail",
+        "gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_hidden_outlet",
+        "gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_reed_edge",
+        "gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_game_trail"
+      ],
+      "allowed_minilocation_types": [
+        "uncertain_track",
+        "concealed_margin",
+        "search_sector",
+        "known_retreat"
+      ],
+      "required_minilocation_types": [
+        "search_sector"
+      ],
+      "allowed_anchor_types": [
+        "partial_track_sign",
+        "vegetation_break",
+        "sound_or_water cue",
+        "retreat_marker"
+      ],
+      "required_anchor_types": [
+        "retreat_anchor"
+      ],
+      "entry_points": [
+        "derive_from_graph_edges_and_current_entry"
+      ],
+      "exit_points": [
+        "only_existing_graph_edges"
+      ],
+      "visible_passages": [
+        "existing_route_visible_under_current_conditions"
+      ],
+      "conditionally_visible_passages": [
+        "existing_route_requiring_search_or_local_knowledge"
+      ],
+      "closed_zones": [
+        "profile_forbidden_or_current_state_closed"
+      ],
+      "restricted_zones": [
+        "ownership_ritual_or_safety restriction where applicable"
+      ],
+      "work_zones": [],
+      "rest_zones": [],
+      "storage_zones": [],
+      "resource_zones": [
+        "only if discovered from profile"
+      ],
+      "hazard_zones": [
+        "orientation_loss"
+      ],
+      "observation_zones": [
+        "limited_view"
+      ],
+      "allowed_npc_slots": [
+        "resource_user_if separately caused"
+      ],
+      "allowed_item_slots": [
+        "portable_only"
+      ],
+      "allowed_container_slots": [
+        "portable_only"
+      ],
+      "forbidden_elements": [
+        "guaranteed discovery",
+        "secret cache",
+        "instant full map reveal"
+      ],
+      "materialization_limits": [
+        "2-5 minilocations",
+        "failed search may reveal no new route"
+      ],
+      "lighting_profiles": [
+        "daylight",
+        "twilight",
+        "night_with_actual_light_source"
+      ],
+      "weather_variants": [
+        "fair",
+        "overcast",
+        "rain",
+        "wind"
+      ],
+      "seasonal_variants": [
+        "late_summer_open_water"
+      ],
+      "water_level_variants": [
+        "normal_late_summer",
+        "locally_low",
+        "locally_high_after_rain"
+      ],
+      "ice_variants": [
+        "open_water_only_for_supported_start_mode"
+      ],
+      "flood_variants": [
+        "no_active_major_flood_for_supported_start_mode"
+      ],
+      "evidence_rule": "Preserve source evidence_status and reconstruction limits from the G4 record.",
+      "source_status": "candidate",
+      "status": "approved",
+      "approval_basis": "content_revision_003 candidate profile, reconciled with target canonical-G5 scene profile rules and P12 audit cycles"
+    },
+    {
+      "profile_id": "g5_general_hazard_v1",
+      "contract_version": "rus.g5_materialization_profile.v1",
+      "applicable_g4_types": [
+        "exposure_zone",
+        "hazard_zone",
+        "orientation_hazard_zone"
+      ],
+      "applicable_g4_ids": [
+        "gn_nov_g4_xp017_yp026_r2_driftwood_bar_upstream_edge",
+        "gn_nov_g4_xp017_yp026_r2_dry_island_ridge_wet_hollow",
+        "gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_bog_edge",
+        "gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_wet_gap",
+        "gn_nov_g4_xp017_yp026_r2_forest_stream_route_bog_crossing",
+        "gn_nov_g4_xp017_yp026_r2_forest_stream_route_fallen_timber",
+        "gn_nov_g4_xp017_yp026_r2_mixing_reach_current_shear",
+        "gn_nov_g4_xp017_yp026_r2_mixing_reach_open_water",
+        "gn_nov_g4_xp017_yp026_r2_old_channel_pool_silted_reach",
+        "gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_shoal_margin",
+        "gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_wind_fetch",
+        "gn_nov_g4_xp017_yp026_r2_reed_backwater_mud_bank",
+        "gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_cross_current",
+        "gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_shallow_bars",
+        "gn_nov_g4_xp017_yp026_r2_tributary_mouth_marsh_bank",
+        "gn_nov_g4_xp017_yp026_r2_tributary_mouth_mouth_bar",
+        "gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_deep_forest",
+        "gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_wet_forest",
+        "gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_muddy_shore",
+        "gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_deep_forest",
+        "gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_wet_forest"
+      ],
+      "allowed_minilocation_types": [
+        "hazard_core",
+        "warning_margin",
+        "retreat_ground"
+      ],
+      "required_minilocation_types": [
+        "warning_margin"
+      ],
+      "allowed_anchor_types": [
+        "warning_sign",
+        "stable_footing",
+        "orientation_marker"
+      ],
+      "required_anchor_types": [
+        "warning_anchor",
+        "retreat_anchor"
+      ],
+      "entry_points": [
+        "derive_from_graph_edges_and_current_entry"
+      ],
+      "exit_points": [
+        "only_existing_graph_edges"
+      ],
+      "visible_passages": [
+        "existing_route_visible_under_current_conditions"
+      ],
+      "conditionally_visible_passages": [
+        "existing_route_requiring_search_or_local_knowledge"
+      ],
+      "closed_zones": [
+        "profile_forbidden_or_current_state_closed"
+      ],
+      "restricted_zones": [
+        "ownership_ritual_or_safety restriction where applicable"
+      ],
+      "work_zones": [],
+      "rest_zones": [],
+      "storage_zones": [],
+      "resource_zones": [],
+      "hazard_zones": [
+        "terrain_or_exposure_hazard"
+      ],
+      "observation_zones": [
+        "assessment_point"
+      ],
+      "allowed_npc_slots": [
+        "transient_user_if_causally_present"
+      ],
+      "allowed_item_slots": [
+        "portable_only"
+      ],
+      "allowed_container_slots": [
+        "portable_only"
+      ],
+      "forbidden_elements": [
+        "unavoidable instant harm at scene load",
+        "automatic hostile encounter"
+      ],
+      "materialization_limits": [
+        "1-5 minilocations",
+        "do not invent cause beyond source function"
+      ],
+      "lighting_profiles": [
+        "daylight",
+        "twilight",
+        "night_with_actual_light_source"
+      ],
+      "weather_variants": [
+        "fair",
+        "overcast",
+        "rain",
+        "wind"
+      ],
+      "seasonal_variants": [
+        "late_summer_open_water"
+      ],
+      "water_level_variants": [
+        "normal_late_summer",
+        "locally_low",
+        "locally_high_after_rain"
+      ],
+      "ice_variants": [
+        "open_water_only_for_supported_start_mode"
+      ],
+      "flood_variants": [
+        "no_active_major_flood_for_supported_start_mode"
+      ],
+      "evidence_rule": "Preserve source evidence_status and reconstruction limits from the G4 record.",
+      "source_status": "candidate",
+      "status": "approved",
+      "approval_basis": "content_revision_003 candidate profile, reconciled with target canonical-G5 scene profile rules and P12 audit cycles"
+    },
+    {
+      "profile_id": "g5_habitation_v1",
+      "contract_version": "rus.g5_materialization_profile.v1",
+      "applicable_g4_types": [
+        "estate_cluster_candidate",
+        "occupation_candidate",
+        "settlement_cluster_candidate"
+      ],
+      "applicable_g4_ids": [
+        "gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_household_cluster",
+        "gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_occupation_terrace",
+        "gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_habitation_terrace",
+        "gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_household_zone"
+      ],
+      "allowed_minilocation_types": [
+        "habitation_margin",
+        "household_activity_zone",
+        "shared_access",
+        "route_to_water_or_forest"
+      ],
+      "required_minilocation_types": [
+        "habitation_margin"
+      ],
+      "allowed_anchor_types": [
+        "household_boundary_sign",
+        "shared_work point",
+        "access_path"
+      ],
+      "required_anchor_types": [
+        "access_anchor"
+      ],
+      "entry_points": [
+        "derive_from_graph_edges_and_current_entry"
+      ],
+      "exit_points": [
+        "only_existing_graph_edges"
+      ],
+      "visible_passages": [
+        "existing_route_visible_under_current_conditions"
+      ],
+      "conditionally_visible_passages": [
+        "existing_route_requiring_search_or_local_knowledge"
+      ],
+      "closed_zones": [
+        "profile_forbidden_or_current_state_closed"
+      ],
+      "restricted_zones": [
+        "ownership_ritual_or_safety restriction where applicable"
+      ],
+      "work_zones": [
+        "household_work"
+      ],
+      "rest_zones": [
+        "with permission"
+      ],
+      "storage_zones": [
+        "household_controlled"
+      ],
+      "resource_zones": [
+        "household water/fuel access"
+      ],
+      "hazard_zones": [
+        "fire_animals_social boundary"
+      ],
+      "observation_zones": [
+        "publicly_visible activity"
+      ],
+      "allowed_npc_slots": [
+        "local_household_members",
+        "visitors_with_cause"
+      ],
+      "allowed_item_slots": [
+        "household_categories"
+      ],
+      "allowed_container_slots": [
+        "household_or_portable with owner"
+      ],
+      "forbidden_elements": [
+        "fixed number of houses",
+        "automatic named owner",
+        "urban infrastructure"
+      ],
+      "materialization_limits": [
+        "3-10 minilocations",
+        "exact layout and population created only for party scene"
+      ],
+      "lighting_profiles": [
+        "daylight",
+        "twilight",
+        "night_with_actual_light_source"
+      ],
+      "weather_variants": [
+        "fair",
+        "overcast",
+        "rain",
+        "wind"
+      ],
+      "seasonal_variants": [
+        "late_summer_open_water"
+      ],
+      "water_level_variants": [
+        "normal_late_summer",
+        "locally_low",
+        "locally_high_after_rain"
+      ],
+      "ice_variants": [
+        "open_water_only_for_supported_start_mode"
+      ],
+      "flood_variants": [
+        "no_active_major_flood_for_supported_start_mode"
+      ],
+      "evidence_rule": "Preserve source evidence_status and reconstruction limits from the G4 record.",
+      "source_status": "candidate",
+      "status": "approved",
+      "approval_basis": "content_revision_003 candidate profile, reconciled with target canonical-G5 scene profile rules and P12 audit cycles"
+    },
+    {
+      "profile_id": "g5_landing_transition_v1",
+      "contract_version": "rus.g5_materialization_profile.v1",
+      "applicable_g4_types": [
+        "access_zone",
+        "landing_candidate",
+        "landing_zone"
+      ],
+      "applicable_g4_ids": [
+        "gn_nov_g4_xp017_yp026_r2_dry_island_ridge_landing",
+        "gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_water_access",
+        "gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_landing_edge",
+        "gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_emergency_bank",
+        "gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_landing_candidate",
+        "gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_landing_edge",
+        "gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_landing_edge",
+        "gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_landing"
+      ],
+      "allowed_minilocation_types": [
+        "water_edge",
+        "landing_surface",
+        "haul_or_step_zone",
+        "inland_exit"
+      ],
+      "required_minilocation_types": [
+        "water_edge",
+        "inland_exit"
+      ],
+      "allowed_anchor_types": [
+        "landing_edge",
+        "stable_footing",
+        "haul_point",
+        "inland_route"
+      ],
+      "required_anchor_types": [
+        "water_entry_anchor",
+        "land_exit_anchor"
+      ],
+      "entry_points": [
+        "derive_from_graph_edges_and_current_entry"
+      ],
+      "exit_points": [
+        "only_existing_graph_edges"
+      ],
+      "visible_passages": [
+        "existing_route_visible_under_current_conditions"
+      ],
+      "conditionally_visible_passages": [
+        "existing_route_requiring_search_or_local_knowledge"
+      ],
+      "closed_zones": [
+        "profile_forbidden_or_current_state_closed"
+      ],
+      "restricted_zones": [
+        "ownership_ritual_or_safety restriction where applicable"
+      ],
+      "work_zones": [
+        "boat_handling_if_boat_present"
+      ],
+      "rest_zones": [
+        "temporary_high_ground_if_available"
+      ],
+      "storage_zones": [
+        "temporary_unattended_storage_forbidden"
+      ],
+      "resource_zones": [
+        "water_access"
+      ],
+      "hazard_zones": [
+        "soft_ground_or_current"
+      ],
+      "observation_zones": [
+        "landing_assessment"
+      ],
+      "allowed_npc_slots": [
+        "boat_crew",
+        "landing_worker_if task exists",
+        "local household contact in habitation areas"
+      ],
+      "allowed_item_slots": [
+        "mooring_and_haul_equipment_if actor/task supports"
+      ],
+      "allowed_container_slots": [
+        "portable_or_watercraft_bound"
+      ],
+      "forbidden_elements": [
+        "automatic_boat",
+        "permanent_pier",
+        "cargo_stockpile"
+      ],
+      "materialization_limits": [
+        "3-7 minilocations",
+        "ownership required for all equipment"
+      ],
+      "lighting_profiles": [
+        "daylight",
+        "twilight",
+        "night_with_actual_light_source"
+      ],
+      "weather_variants": [
+        "fair",
+        "overcast",
+        "rain",
+        "wind"
+      ],
+      "seasonal_variants": [
+        "late_summer_open_water"
+      ],
+      "water_level_variants": [
+        "normal_late_summer",
+        "locally_low",
+        "locally_high_after_rain"
+      ],
+      "ice_variants": [
+        "open_water_only_for_supported_start_mode"
+      ],
+      "flood_variants": [
+        "no_active_major_flood_for_supported_start_mode"
+      ],
+      "evidence_rule": "Preserve source evidence_status and reconstruction limits from the G4 record.",
+      "source_status": "candidate",
+      "status": "approved",
+      "approval_basis": "content_revision_003 candidate profile, reconciled with target canonical-G5 scene profile rules and P12 audit cycles"
+    },
+    {
+      "profile_id": "g5_observation_orientation_v1",
+      "contract_version": "rus.g5_materialization_profile.v1",
+      "applicable_g4_types": [
+        "observation_zone",
+        "orientation_zone"
+      ],
+      "applicable_g4_ids": [
+        "gn_nov_g4_xp017_yp026_r2_central_navigation_reach_observation_bank",
+        "gn_nov_g4_xp017_yp026_r2_channel_split_islet_high_bank",
+        "gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_view_gap",
+        "gn_nov_g4_xp017_yp026_r2_forest_stream_route_headwater_fork",
+        "gn_nov_g4_xp017_yp026_r2_large_island_head_high_bank",
+        "gn_nov_g4_xp017_yp026_r2_north_exposed_turn_observation_bank",
+        "gn_nov_g4_xp017_yp026_r2_north_outflow_reach_observation_bank",
+        "gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_observation_bank",
+        "gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_warning_reach",
+        "gn_nov_g4_xp017_yp026_r2_south_entry_reach_observation_bank"
+      ],
+      "allowed_minilocation_types": [
+        "viewpoint",
+        "approach_to_viewpoint",
+        "concealed_or_blocked_sector"
+      ],
+      "required_minilocation_types": [
+        "viewpoint"
+      ],
+      "allowed_anchor_types": [
+        "visible_landmark",
+        "current_or_route_sign",
+        "horizon_sector"
+      ],
+      "required_anchor_types": [
+        "observation_anchor"
+      ],
+      "entry_points": [
+        "derive_from_graph_edges_and_current_entry"
+      ],
+      "exit_points": [
+        "only_existing_graph_edges"
+      ],
+      "visible_passages": [
+        "existing_route_visible_under_current_conditions"
+      ],
+      "conditionally_visible_passages": [
+        "existing_route_requiring_search_or_local_knowledge"
+      ],
+      "closed_zones": [
+        "profile_forbidden_or_current_state_closed"
+      ],
+      "restricted_zones": [
+        "ownership_ritual_or_safety restriction where applicable"
+      ],
+      "work_zones": [],
+      "rest_zones": [
+        "brief_pause"
+      ],
+      "storage_zones": [],
+      "resource_zones": [],
+      "hazard_zones": [
+        "exposure_or_bad_footing"
+      ],
+      "observation_zones": [
+        "primary_viewpoint"
+      ],
+      "allowed_npc_slots": [
+        "observer_or_guide_if_causally_present"
+      ],
+      "allowed_item_slots": [
+        "portable_optical_none",
+        "route aids available in era"
+      ],
+      "allowed_container_slots": [
+        "portable_only"
+      ],
+      "forbidden_elements": [
+        "omniscient map reveal",
+        "hidden route disclosure without sign"
+      ],
+      "materialization_limits": [
+        "1-4 minilocations",
+        "show only character-perceivable directions"
+      ],
+      "lighting_profiles": [
+        "daylight",
+        "twilight",
+        "night_with_actual_light_source"
+      ],
+      "weather_variants": [
+        "fair",
+        "overcast",
+        "rain",
+        "wind"
+      ],
+      "seasonal_variants": [
+        "late_summer_open_water"
+      ],
+      "water_level_variants": [
+        "normal_late_summer",
+        "locally_low",
+        "locally_high_after_rain"
+      ],
+      "ice_variants": [
+        "open_water_only_for_supported_start_mode"
+      ],
+      "flood_variants": [
+        "no_active_major_flood_for_supported_start_mode"
+      ],
+      "evidence_rule": "Preserve source evidence_status and reconstruction limits from the G4 record.",
+      "source_status": "candidate",
+      "status": "approved",
+      "approval_basis": "content_revision_003 candidate profile, reconciled with target canonical-G5 scene profile rules and P12 audit cycles"
+    },
+    {
+      "profile_id": "g5_resource_hazard_v1",
+      "contract_version": "rus.g5_materialization_profile.v1",
+      "applicable_g4_types": [
+        "resource_hazard_zone"
+      ],
+      "applicable_g4_ids": [
+        "gn_nov_g4_xp017_yp026_r2_driftwood_bar_driftwood_mass",
+        "gn_nov_g4_xp017_yp026_r2_old_channel_pool_deep_pool"
+      ],
+      "allowed_minilocation_types": [
+        "resource_margin",
+        "hazard_core",
+        "safe_work_point"
+      ],
+      "required_minilocation_types": [
+        "resource_margin",
+        "safe_work_point"
+      ],
+      "allowed_anchor_types": [
+        "resource_sign",
+        "hazard_sign",
+        "safe_position"
+      ],
+      "required_anchor_types": [
+        "resource_anchor",
+        "hazard_anchor"
+      ],
+      "entry_points": [
+        "derive_from_graph_edges_and_current_entry"
+      ],
+      "exit_points": [
+        "only_existing_graph_edges"
+      ],
+      "visible_passages": [
+        "existing_route_visible_under_current_conditions"
+      ],
+      "conditionally_visible_passages": [
+        "existing_route_requiring_search_or_local_knowledge"
+      ],
+      "closed_zones": [
+        "profile_forbidden_or_current_state_closed"
+      ],
+      "restricted_zones": [
+        "ownership_ritual_or_safety restriction where applicable"
+      ],
+      "work_zones": [
+        "conditional_resource_work"
+      ],
+      "rest_zones": [],
+      "storage_zones": [],
+      "resource_zones": [
+        "primary_resource"
+      ],
+      "hazard_zones": [
+        "high_resource_specific_risk"
+      ],
+      "observation_zones": [
+        "risk_assessment"
+      ],
+      "allowed_npc_slots": [
+        "experienced_resource_user_if causally present"
+      ],
+      "allowed_item_slots": [
+        "specialized_task_tools_if actor present"
+      ],
+      "allowed_container_slots": [
+        "portable_only"
+      ],
+      "forbidden_elements": [
+        "safe novice access by default",
+        "automatic accident"
+      ],
+      "materialization_limits": [
+        "2-5 minilocations",
+        "risk must remain actionable"
+      ],
+      "lighting_profiles": [
+        "daylight",
+        "twilight",
+        "night_with_actual_light_source"
+      ],
+      "weather_variants": [
+        "fair",
+        "overcast",
+        "rain",
+        "wind"
+      ],
+      "seasonal_variants": [
+        "late_summer_open_water"
+      ],
+      "water_level_variants": [
+        "normal_late_summer",
+        "locally_low",
+        "locally_high_after_rain"
+      ],
+      "ice_variants": [
+        "open_water_only_for_supported_start_mode"
+      ],
+      "flood_variants": [
+        "no_active_major_flood_for_supported_start_mode"
+      ],
+      "evidence_rule": "Preserve source evidence_status and reconstruction limits from the G4 record.",
+      "source_status": "candidate",
+      "status": "approved",
+      "approval_basis": "content_revision_003 candidate profile, reconciled with target canonical-G5 scene profile rules and P12 audit cycles"
+    },
+    {
+      "profile_id": "g5_resource_v1",
+      "contract_version": "rus.g5_materialization_profile.v1",
+      "applicable_g4_types": [
+        "fauna_zone",
+        "resource_zone"
+      ],
+      "applicable_g4_ids": [
+        "gn_nov_g4_xp017_yp026_r2_driftwood_bar_shallow_pool",
+        "gn_nov_g4_xp017_yp026_r2_dry_island_ridge_forest_edge",
+        "gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_pine_stand",
+        "gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_reed_margin",
+        "gn_nov_g4_xp017_yp026_r2_forest_stream_route_pool",
+        "gn_nov_g4_xp017_yp026_r2_old_channel_pool_willow_bank",
+        "gn_nov_g4_xp017_yp026_r2_reed_backwater_bird_shallows",
+        "gn_nov_g4_xp017_yp026_r2_reed_backwater_open_pool",
+        "gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_water_source",
+        "gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_water_access",
+        "gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_resource_patch",
+        "gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_water_source",
+        "gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_still_water",
+        "gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_resource_patch",
+        "gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_water_source"
+      ],
+      "allowed_minilocation_types": [
+        "resource_patch",
+        "access_margin",
+        "workable_point",
+        "retreat_point"
+      ],
+      "required_minilocation_types": [
+        "resource_patch"
+      ],
+      "allowed_anchor_types": [
+        "resource_sign",
+        "access_point",
+        "work_surface"
+      ],
+      "required_anchor_types": [
+        "resource_anchor"
+      ],
+      "entry_points": [
+        "derive_from_graph_edges_and_current_entry"
+      ],
+      "exit_points": [
+        "only_existing_graph_edges"
+      ],
+      "visible_passages": [
+        "existing_route_visible_under_current_conditions"
+      ],
+      "conditionally_visible_passages": [
+        "existing_route_requiring_search_or_local_knowledge"
+      ],
+      "closed_zones": [
+        "profile_forbidden_or_current_state_closed"
+      ],
+      "restricted_zones": [
+        "ownership_ritual_or_safety restriction where applicable"
+      ],
+      "work_zones": [
+        "resource_collection_if season/task allows"
+      ],
+      "rest_zones": [
+        "brief_pause"
+      ],
+      "storage_zones": [
+        "temporary_actor-controlled only"
+      ],
+      "resource_zones": [
+        "primary_resource"
+      ],
+      "hazard_zones": [
+        "resource_specific"
+      ],
+      "observation_zones": [
+        "resource_assessment"
+      ],
+      "allowed_npc_slots": [
+        "fisher_hunter_gatherer",
+        "local household user"
+      ],
+      "allowed_item_slots": [
+        "task_tools_if actor present"
+      ],
+      "allowed_container_slots": [
+        "portable_gathering_containers"
+      ],
+      "forbidden_elements": [
+        "guaranteed yield",
+        "rare valuable resource without source",
+        "pre-filled container"
+      ],
+      "materialization_limits": [
+        "2-6 minilocations",
+        "yield determined by separate action and state"
+      ],
+      "lighting_profiles": [
+        "daylight",
+        "twilight",
+        "night_with_actual_light_source"
+      ],
+      "weather_variants": [
+        "fair",
+        "overcast",
+        "rain",
+        "wind"
+      ],
+      "seasonal_variants": [
+        "late_summer_open_water"
+      ],
+      "water_level_variants": [
+        "normal_late_summer",
+        "locally_low",
+        "locally_high_after_rain"
+      ],
+      "ice_variants": [
+        "open_water_only_for_supported_start_mode"
+      ],
+      "flood_variants": [
+        "no_active_major_flood_for_supported_start_mode"
+      ],
+      "evidence_rule": "Preserve source evidence_status and reconstruction limits from the G4 record.",
+      "source_status": "candidate",
+      "status": "approved",
+      "approval_basis": "content_revision_003 candidate profile, reconciled with target canonical-G5 scene profile rules and P12 audit cycles"
+    },
+    {
+      "profile_id": "g5_route_approach_v1",
+      "contract_version": "rus.g5_materialization_profile.v1",
+      "applicable_g4_types": [
+        "route_approach"
+      ],
+      "applicable_g4_ids": [
+        "gn_nov_g4_xp017_yp026_r2_central_current_split_upstream_nose",
+        "gn_nov_g4_xp017_yp026_r2_central_navigation_reach_downstream_approach",
+        "gn_nov_g4_xp017_yp026_r2_central_navigation_reach_upstream_approach",
+        "gn_nov_g4_xp017_yp026_r2_dry_island_ridge_downstream_exit",
+        "gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_north_descent",
+        "gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_south_approach",
+        "gn_nov_g4_xp017_yp026_r2_east_flood_bypass_entrance",
+        "gn_nov_g4_xp017_yp026_r2_east_flood_bypass_exit",
+        "gn_nov_g4_xp017_yp026_r2_east_side_channel_entrance",
+        "gn_nov_g4_xp017_yp026_r2_east_side_channel_exit",
+        "gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_north_exit",
+        "gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_south_approach",
+        "gn_nov_g4_xp017_yp026_r2_mixing_reach_inner_approach",
+        "gn_nov_g4_xp017_yp026_r2_north_exposed_turn_downstream_approach",
+        "gn_nov_g4_xp017_yp026_r2_north_exposed_turn_upstream_approach",
+        "gn_nov_g4_xp017_yp026_r2_north_outflow_reach_downstream_approach",
+        "gn_nov_g4_xp017_yp026_r2_north_outflow_reach_upstream_approach",
+        "gn_nov_g4_xp017_yp026_r2_old_channel_pool_old_mouth",
+        "gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_river_side",
+        "gn_nov_g4_xp017_yp026_r2_reed_backwater_entrance",
+        "gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_downstream_approach",
+        "gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_upstream_approach",
+        "gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_water_approach",
+        "gn_nov_g4_xp017_yp026_r2_south_entry_reach_downstream_approach",
+        "gn_nov_g4_xp017_yp026_r2_south_entry_reach_upstream_approach",
+        "gn_nov_g4_xp017_yp026_r2_tributary_mouth_main_river_approach",
+        "gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_river_approach",
+        "gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_river_edge",
+        "gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_water_approach",
+        "gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_entrance",
+        "gn_nov_g4_xp017_yp026_r2_west_side_channel_entrance",
+        "gn_nov_g4_xp017_yp026_r2_west_side_channel_exit",
+        "gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_river_edge",
+        "gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_approach",
+        "gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_river_approach",
+        "gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_river_approach"
+      ],
+      "allowed_minilocation_types": [
+        "approach_segment",
+        "bank_or_ground_margin",
+        "route_threshold"
+      ],
+      "required_minilocation_types": [
+        "approach_segment"
+      ],
+      "allowed_anchor_types": [
+        "route_marker",
+        "bank_edge",
+        "vegetation_edge",
+        "visible_turn"
+      ],
+      "required_anchor_types": [
+        "entry_anchor",
+        "exit_anchor"
+      ],
+      "entry_points": [
+        "derive_from_graph_edges_and_current_entry"
+      ],
+      "exit_points": [
+        "only_existing_graph_edges"
+      ],
+      "visible_passages": [
+        "existing_route_visible_under_current_conditions"
+      ],
+      "conditionally_visible_passages": [
+        "existing_route_requiring_search_or_local_knowledge"
+      ],
+      "closed_zones": [
+        "profile_forbidden_or_current_state_closed"
+      ],
+      "restricted_zones": [
+        "ownership_ritual_or_safety restriction where applicable"
+      ],
+      "work_zones": [],
+      "rest_zones": [],
+      "storage_zones": [],
+      "resource_zones": [],
+      "hazard_zones": [
+        "uncertain_footing_or_current"
+      ],
+      "observation_zones": [
+        "route_reading_point"
+      ],
+      "allowed_npc_slots": [
+        "traveler_on_route",
+        "local_guide_if_causally_present"
+      ],
+      "allowed_item_slots": [
+        "portable_route_equipment"
+      ],
+      "allowed_container_slots": [
+        "portable_only"
+      ],
+      "forbidden_elements": [
+        "building_without_profile",
+        "secret_passage",
+        "automatic_guard_post"
+      ],
+      "materialization_limits": [
+        "2-5 minilocations",
+        "no exact medieval geometry claim"
+      ],
+      "lighting_profiles": [
+        "daylight",
+        "twilight",
+        "night_with_actual_light_source"
+      ],
+      "weather_variants": [
+        "fair",
+        "overcast",
+        "rain",
+        "wind"
+      ],
+      "seasonal_variants": [
+        "late_summer_open_water"
+      ],
+      "water_level_variants": [
+        "normal_late_summer",
+        "locally_low",
+        "locally_high_after_rain"
+      ],
+      "ice_variants": [
+        "open_water_only_for_supported_start_mode"
+      ],
+      "flood_variants": [
+        "no_active_major_flood_for_supported_start_mode"
+      ],
+      "evidence_rule": "Preserve source evidence_status and reconstruction limits from the G4 record.",
+      "source_status": "candidate",
+      "status": "approved",
+      "approval_basis": "content_revision_003 candidate profile, reconciled with target canonical-G5 scene profile rules and P12 audit cycles"
+    },
+    {
+      "profile_id": "g5_seasonal_route_hazard_v1",
+      "contract_version": "rus.g5_materialization_profile.v1",
+      "applicable_g4_types": [
+        "seasonal_hazard_zone",
+        "seasonal_route"
+      ],
+      "applicable_g4_ids": [
+        "gn_nov_g4_xp017_yp026_r2_east_flood_bypass_seasonal_barrier",
+        "gn_nov_g4_xp017_yp026_r2_east_side_channel_seasonal_barrier",
+        "gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_inlet",
+        "gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_overflow",
+        "gn_nov_g4_xp017_yp026_r2_mixing_reach_ice_edge",
+        "gn_nov_g4_xp017_yp026_r2_old_channel_pool_dry_crossing",
+        "gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_ice_break_zone",
+        "gn_nov_g4_xp017_yp026_r2_reed_backwater_winter_thin_ice",
+        "gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_flood_edge",
+        "gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_winter_crack",
+        "gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_flood_edge",
+        "gn_nov_g4_xp017_yp026_r2_west_side_channel_seasonal_barrier",
+        "gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_flood_limit"
+      ],
+      "allowed_minilocation_types": [
+        "seasonal_surface",
+        "entry_margin",
+        "failure_zone",
+        "alternative_exit"
+      ],
+      "required_minilocation_types": [
+        "entry_margin"
+      ],
+      "allowed_anchor_types": [
+        "seasonal_condition_sign",
+        "safe_turnback",
+        "alternative_route sign"
+      ],
+      "required_anchor_types": [
+        "condition_anchor",
+        "turnback_anchor"
+      ],
+      "entry_points": [
+        "derive_from_graph_edges_and_current_entry"
+      ],
+      "exit_points": [
+        "only_existing_graph_edges"
+      ],
+      "visible_passages": [
+        "existing_route_visible_under_current_conditions"
+      ],
+      "conditionally_visible_passages": [
+        "existing_route_requiring_search_or_local_knowledge"
+      ],
+      "closed_zones": [
+        "profile_forbidden_or_current_state_closed"
+      ],
+      "restricted_zones": [
+        "ownership_ritual_or_safety restriction where applicable"
+      ],
+      "work_zones": [],
+      "rest_zones": [],
+      "storage_zones": [],
+      "resource_zones": [],
+      "hazard_zones": [
+        "ice_flood_or_low_water hazard"
+      ],
+      "observation_zones": [
+        "condition_assessment"
+      ],
+      "allowed_npc_slots": [
+        "experienced_local_or_route worker if causally present"
+      ],
+      "allowed_item_slots": [
+        "season_specific equipment if actor has it"
+      ],
+      "allowed_container_slots": [
+        "portable_only"
+      ],
+      "forbidden_elements": [
+        "season-independent availability",
+        "unverified safe ice"
+      ],
+      "materialization_limits": [
+        "1-5 minilocations",
+        "closed state must remain closed"
+      ],
+      "lighting_profiles": [
+        "daylight",
+        "twilight",
+        "night_with_actual_light_source"
+      ],
+      "weather_variants": [
+        "fair",
+        "overcast",
+        "rain",
+        "wind"
+      ],
+      "seasonal_variants": [
+        "late_summer_open_water"
+      ],
+      "water_level_variants": [
+        "normal_late_summer",
+        "locally_low",
+        "locally_high_after_rain"
+      ],
+      "ice_variants": [
+        "open_water_only_for_supported_start_mode"
+      ],
+      "flood_variants": [
+        "no_active_major_flood_for_supported_start_mode"
+      ],
+      "evidence_rule": "Preserve source evidence_status and reconstruction limits from the G4 record.",
+      "source_status": "candidate",
+      "status": "approved",
+      "approval_basis": "content_revision_003 candidate profile, reconciled with target canonical-G5 scene profile rules and P12 audit cycles"
+    },
+    {
+      "profile_id": "g5_shelter_rest_v1",
+      "contract_version": "rus.g5_materialization_profile.v1",
+      "applicable_g4_types": [
+        "rest_candidate",
+        "rest_or_use_zone",
+        "rest_or_work_zone",
+        "shelter_candidate",
+        "shelter_zone"
+      ],
+      "applicable_g4_ids": [
+        "gn_nov_g4_xp017_yp026_r2_central_navigation_reach_lee_bank",
+        "gn_nov_g4_xp017_yp026_r2_driftwood_bar_dry_cap",
+        "gn_nov_g4_xp017_yp026_r2_dry_island_ridge_camp_candidate",
+        "gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_sandy_hollow",
+        "gn_nov_g4_xp017_yp026_r2_east_flood_bypass_quiet_reach",
+        "gn_nov_g4_xp017_yp026_r2_east_side_channel_quiet_reach",
+        "gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_dry_mound",
+        "gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_forest_shelter",
+        "gn_nov_g4_xp017_yp026_r2_mixing_reach_lee_margin",
+        "gn_nov_g4_xp017_yp026_r2_north_exposed_turn_lee_bank",
+        "gn_nov_g4_xp017_yp026_r2_north_outflow_reach_lee_bank",
+        "gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_sheltered_inlet",
+        "gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_lee_bank",
+        "gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_high_platform",
+        "gn_nov_g4_xp017_yp026_r2_south_entry_reach_lee_bank",
+        "gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_dry_patch",
+        "gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_high_platform",
+        "gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_dry_patch",
+        "gn_nov_g4_xp017_yp026_r2_west_side_channel_quiet_reach",
+        "gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_dry_patch",
+        "gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_dry_platform"
+      ],
+      "allowed_minilocation_types": [
+        "sheltered_patch",
+        "dry_sitting_ground",
+        "weather_margin",
+        "departure_point"
+      ],
+      "required_minilocation_types": [
+        "sheltered_patch"
+      ],
+      "allowed_anchor_types": [
+        "windbreak",
+        "dry_ground",
+        "fire_safe_patch",
+        "route_exit"
+      ],
+      "required_anchor_types": [
+        "rest_anchor",
+        "exit_anchor"
+      ],
+      "entry_points": [
+        "derive_from_graph_edges_and_current_entry"
+      ],
+      "exit_points": [
+        "only_existing_graph_edges"
+      ],
+      "visible_passages": [
+        "existing_route_visible_under_current_conditions"
+      ],
+      "conditionally_visible_passages": [
+        "existing_route_requiring_search_or_local_knowledge"
+      ],
+      "closed_zones": [
+        "profile_forbidden_or_current_state_closed"
+      ],
+      "restricted_zones": [
+        "ownership_ritual_or_safety restriction where applicable"
+      ],
+      "work_zones": [
+        "minor_maintenance_if_actor_has_task"
+      ],
+      "rest_zones": [
+        "temporary_rest"
+      ],
+      "storage_zones": [],
+      "resource_zones": [
+        "fuel_or_water_only_if_location_profile_allows"
+      ],
+      "hazard_zones": [
+        "weather_or_flood_margin"
+      ],
+      "observation_zones": [
+        "nearby_route_view"
+      ],
+      "allowed_npc_slots": [
+        "traveler_resting_if_causally_present",
+        "local_resource_user_if_causally_present"
+      ],
+      "allowed_item_slots": [
+        "portable_rest_equipment",
+        "fire_material_if gathered"
+      ],
+      "allowed_container_slots": [
+        "portable_only"
+      ],
+      "forbidden_elements": [
+        "permanent hut_without_profile",
+        "prepared camp_without cause",
+        "abandoned valuables"
+      ],
+      "materialization_limits": [
+        "2-6 minilocations",
+        "rest does not imply safety from all risks"
+      ],
+      "lighting_profiles": [
+        "daylight",
+        "twilight",
+        "night_with_actual_light_source"
+      ],
+      "weather_variants": [
+        "fair",
+        "overcast",
+        "rain",
+        "wind"
+      ],
+      "seasonal_variants": [
+        "late_summer_open_water"
+      ],
+      "water_level_variants": [
+        "normal_late_summer",
+        "locally_low",
+        "locally_high_after_rain"
+      ],
+      "ice_variants": [
+        "open_water_only_for_supported_start_mode"
+      ],
+      "flood_variants": [
+        "no_active_major_flood_for_supported_start_mode"
+      ],
+      "evidence_rule": "Preserve source evidence_status and reconstruction limits from the G4 record.",
+      "source_status": "candidate",
+      "status": "approved",
+      "approval_basis": "content_revision_003 candidate profile, reconciled with target canonical-G5 scene profile rules and P12 audit cycles"
+    },
+    {
+      "profile_id": "g5_water_hazard_v1",
+      "contract_version": "rus.g5_materialization_profile.v1",
+      "applicable_g4_types": [
+        "landing_hazard_zone",
+        "landing_or_hazard_zone",
+        "river_hazard_zone"
+      ],
+      "applicable_g4_ids": [
+        "gn_nov_g4_xp017_yp026_r2_central_current_split_islet_margin",
+        "gn_nov_g4_xp017_yp026_r2_central_navigation_reach_shoal_margin",
+        "gn_nov_g4_xp017_yp026_r2_east_flood_bypass_mud_bank",
+        "gn_nov_g4_xp017_yp026_r2_east_side_channel_mud_bank",
+        "gn_nov_g4_xp017_yp026_r2_north_exposed_turn_shoal_margin",
+        "gn_nov_g4_xp017_yp026_r2_north_outflow_reach_shoal_margin",
+        "gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_shoal_margin",
+        "gn_nov_g4_xp017_yp026_r2_south_entry_reach_shoal_margin",
+        "gn_nov_g4_xp017_yp026_r2_west_side_channel_mud_bank"
+      ],
+      "allowed_minilocation_types": [
+        "hazard_margin",
+        "unstable_bank",
+        "shallow_or_soft_ground"
+      ],
+      "required_minilocation_types": [
+        "hazard_margin"
+      ],
+      "allowed_anchor_types": [
+        "visible_hazard_sign",
+        "safe_retreat_point",
+        "bank_edge"
+      ],
+      "required_anchor_types": [
+        "hazard_anchor",
+        "retreat_anchor"
+      ],
+      "entry_points": [
+        "derive_from_graph_edges_and_current_entry"
+      ],
+      "exit_points": [
+        "only_existing_graph_edges"
+      ],
+      "visible_passages": [
+        "existing_route_visible_under_current_conditions"
+      ],
+      "conditionally_visible_passages": [
+        "existing_route_requiring_search_or_local_knowledge"
+      ],
+      "closed_zones": [
+        "profile_forbidden_or_current_state_closed"
+      ],
+      "restricted_zones": [
+        "ownership_ritual_or_safety restriction where applicable"
+      ],
+      "work_zones": [],
+      "rest_zones": [],
+      "storage_zones": [],
+      "resource_zones": [],
+      "hazard_zones": [
+        "ground_or_water_hazard"
+      ],
+      "observation_zones": [
+        "hazard_assessment_point"
+      ],
+      "allowed_npc_slots": [
+        "person_in_transit_if_causally_present"
+      ],
+      "allowed_item_slots": [
+        "portable_safety_equipment"
+      ],
+      "allowed_container_slots": [
+        "portable_only"
+      ],
+      "forbidden_elements": [
+        "safe_start_without_separate approval",
+        "hidden treasure",
+        "automatic rescue party"
+      ],
+      "materialization_limits": [
+        "1-4 minilocations",
+        "hazard must be perceptible before irreversible action when plausible"
+      ],
+      "lighting_profiles": [
+        "daylight",
+        "twilight",
+        "night_with_actual_light_source"
+      ],
+      "weather_variants": [
+        "fair",
+        "overcast",
+        "rain",
+        "wind"
+      ],
+      "seasonal_variants": [
+        "late_summer_open_water"
+      ],
+      "water_level_variants": [
+        "normal_late_summer",
+        "locally_low",
+        "locally_high_after_rain"
+      ],
+      "ice_variants": [
+        "open_water_only_for_supported_start_mode"
+      ],
+      "flood_variants": [
+        "no_active_major_flood_for_supported_start_mode"
+      ],
+      "evidence_rule": "Preserve source evidence_status and reconstruction limits from the G4 record.",
+      "source_status": "candidate",
+      "status": "approved",
+      "approval_basis": "content_revision_003 candidate profile, reconciled with target canonical-G5 scene profile rules and P12 audit cycles"
+    },
+    {
+      "profile_id": "g5_water_navigation_v1",
+      "contract_version": "rus.g5_materialization_profile.v1",
+      "applicable_g4_types": [
+        "navigation_decision_zone",
+        "navigation_zone",
+        "route_merge_zone",
+        "small_water_route"
+      ],
+      "applicable_g4_ids": [
+        "gn_nov_g4_xp017_yp026_r2_central_current_split_fast_branch",
+        "gn_nov_g4_xp017_yp026_r2_central_current_split_rejoin_reach",
+        "gn_nov_g4_xp017_yp026_r2_central_current_split_slow_branch",
+        "gn_nov_g4_xp017_yp026_r2_central_current_split_split_point",
+        "gn_nov_g4_xp017_yp026_r2_central_navigation_reach_deep_thread",
+        "gn_nov_g4_xp017_yp026_r2_channel_split_islet_downstream_tail",
+        "gn_nov_g4_xp017_yp026_r2_channel_split_islet_upstream_tip",
+        "gn_nov_g4_xp017_yp026_r2_east_flood_bypass_narrow_reach",
+        "gn_nov_g4_xp017_yp026_r2_east_side_channel_narrow_reach",
+        "gn_nov_g4_xp017_yp026_r2_forest_stream_route_lower_reach",
+        "gn_nov_g4_xp017_yp026_r2_large_island_head_downstream_tail",
+        "gn_nov_g4_xp017_yp026_r2_large_island_head_upstream_tip",
+        "gn_nov_g4_xp017_yp026_r2_north_exposed_turn_deep_thread",
+        "gn_nov_g4_xp017_yp026_r2_north_outflow_reach_deep_thread",
+        "gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_deep_thread",
+        "gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_deep_thread",
+        "gn_nov_g4_xp017_yp026_r2_south_entry_reach_deep_thread",
+        "gn_nov_g4_xp017_yp026_r2_tributary_mouth_lower_stream",
+        "gn_nov_g4_xp017_yp026_r2_west_side_channel_narrow_reach"
+      ],
+      "allowed_minilocation_types": [
+        "navigable_thread",
+        "current_margin",
+        "turning_water",
+        "decision_point"
+      ],
+      "required_minilocation_types": [
+        "navigable_thread"
+      ],
+      "allowed_anchor_types": [
+        "current_line",
+        "shoal_sign",
+        "bank_landmark",
+        "channel_split"
+      ],
+      "required_anchor_types": [
+        "entry_anchor",
+        "exit_anchor"
+      ],
+      "entry_points": [
+        "derive_from_graph_edges_and_current_entry"
+      ],
+      "exit_points": [
+        "only_existing_graph_edges"
+      ],
+      "visible_passages": [
+        "existing_route_visible_under_current_conditions"
+      ],
+      "conditionally_visible_passages": [
+        "existing_route_requiring_search_or_local_knowledge"
+      ],
+      "closed_zones": [
+        "profile_forbidden_or_current_state_closed"
+      ],
+      "restricted_zones": [
+        "ownership_ritual_or_safety restriction where applicable"
+      ],
+      "work_zones": [],
+      "rest_zones": [],
+      "storage_zones": [],
+      "resource_zones": [
+        "water_access"
+      ],
+      "hazard_zones": [
+        "current",
+        "shoal_or_submerged_obstacle"
+      ],
+      "observation_zones": [
+        "navigation_reading_point"
+      ],
+      "allowed_npc_slots": [
+        "boat_crew_if_transport_exists",
+        "fisher_if_task_exists"
+      ],
+      "allowed_item_slots": [
+        "watercraft_equipment_if_owner_present"
+      ],
+      "allowed_container_slots": [
+        "on_actor_or_watercraft_only"
+      ],
+      "forbidden_elements": [
+        "free_floating_boat_without_owner",
+        "fixed_quay_without_evidence",
+        "automatic cargo"
+      ],
+      "materialization_limits": [
+        "2-6 minilocations",
+        "open-water geometry remains functional"
+      ],
+      "lighting_profiles": [
+        "daylight",
+        "twilight",
+        "night_with_actual_light_source"
+      ],
+      "weather_variants": [
+        "fair",
+        "overcast",
+        "rain",
+        "wind"
+      ],
+      "seasonal_variants": [
+        "late_summer_open_water"
+      ],
+      "water_level_variants": [
+        "normal_late_summer",
+        "locally_low",
+        "locally_high_after_rain"
+      ],
+      "ice_variants": [
+        "open_water_only_for_supported_start_mode"
+      ],
+      "flood_variants": [
+        "no_active_major_flood_for_supported_start_mode"
+      ],
+      "evidence_rule": "Preserve source evidence_status and reconstruction limits from the G4 record.",
+      "source_status": "candidate",
+      "status": "approved",
+      "approval_basis": "content_revision_003 candidate profile, reconciled with target canonical-G5 scene profile rules and P12 audit cycles"
+    },
+    {
+      "profile_id": "g5_wetland_flood_v1",
+      "contract_version": "rus.g5_materialization_profile.v1",
+      "applicable_g4_types": [
+        "wetland_zone"
+      ],
+      "applicable_g4_ids": [
+        "gn_nov_g4_xp017_yp026_r2_channel_split_islet_wet_hollow",
+        "gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_shallow_basin",
+        "gn_nov_g4_xp017_yp026_r2_large_island_head_wet_hollow"
+      ],
+      "allowed_minilocation_types": [
+        "wet_margin",
+        "shallow_water_or_mud",
+        "temporary_dry_patch",
+        "exit_line"
+      ],
+      "required_minilocation_types": [
+        "wet_margin"
+      ],
+      "allowed_anchor_types": [
+        "waterline",
+        "firm_ground_sign",
+        "vegetation marker",
+        "exit_direction"
+      ],
+      "required_anchor_types": [
+        "firm_ground_anchor"
+      ],
+      "entry_points": [
+        "derive_from_graph_edges_and_current_entry"
+      ],
+      "exit_points": [
+        "only_existing_graph_edges"
+      ],
+      "visible_passages": [
+        "existing_route_visible_under_current_conditions"
+      ],
+      "conditionally_visible_passages": [
+        "existing_route_requiring_search_or_local_knowledge"
+      ],
+      "closed_zones": [
+        "profile_forbidden_or_current_state_closed"
+      ],
+      "restricted_zones": [
+        "ownership_ritual_or_safety restriction where applicable"
+      ],
+      "work_zones": [],
+      "rest_zones": [
+        "only on verified dry patch"
+      ],
+      "storage_zones": [],
+      "resource_zones": [
+        "wetland resources if seasonal"
+      ],
+      "hazard_zones": [
+        "flood_or_bog"
+      ],
+      "observation_zones": [
+        "ground_assessment"
+      ],
+      "allowed_npc_slots": [
+        "resource_user_if season/task supports"
+      ],
+      "allowed_item_slots": [
+        "portable_only"
+      ],
+      "allowed_container_slots": [
+        "portable_only"
+      ],
+      "forbidden_elements": [
+        "stable dry path without route profile",
+        "permanent structure"
+      ],
+      "materialization_limits": [
+        "2-6 minilocations",
+        "water state controls access"
+      ],
+      "lighting_profiles": [
+        "daylight",
+        "twilight",
+        "night_with_actual_light_source"
+      ],
+      "weather_variants": [
+        "fair",
+        "overcast",
+        "rain",
+        "wind"
+      ],
+      "seasonal_variants": [
+        "late_summer_open_water"
+      ],
+      "water_level_variants": [
+        "normal_late_summer",
+        "locally_low",
+        "locally_high_after_rain"
+      ],
+      "ice_variants": [
+        "open_water_only_for_supported_start_mode"
+      ],
+      "flood_variants": [
+        "no_active_major_flood_for_supported_start_mode"
+      ],
+      "evidence_rule": "Preserve source evidence_status and reconstruction limits from the G4 record.",
+      "source_status": "candidate",
+      "status": "approved",
+      "approval_basis": "content_revision_003 candidate profile, reconciled with target canonical-G5 scene profile rules and P12 audit cycles"
+    },
+    {
+      "profile_id": "g5_work_storage_social_v1",
+      "contract_version": "rus.g5_materialization_profile.v1",
+      "applicable_g4_types": [
+        "social_use_candidate",
+        "storage_zone_candidate",
+        "work_zone_candidate"
+      ],
+      "applicable_g4_ids": [
+        "gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_meeting_area",
+        "gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_work_storage",
+        "gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_boat_drawing",
+        "gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_storage_zone",
+        "gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_work_zone"
+      ],
+      "allowed_minilocation_types": [
+        "work_surface",
+        "controlled_storage_margin",
+        "public_contact_point",
+        "access_route"
+      ],
+      "required_minilocation_types": [
+        "work_surface_or_contact_point"
+      ],
+      "allowed_anchor_types": [
+        "tool_use point",
+        "storage boundary",
+        "meeting point",
+        "route exit"
+      ],
+      "required_anchor_types": [
+        "activity_anchor"
+      ],
+      "entry_points": [
+        "derive_from_graph_edges_and_current_entry"
+      ],
+      "exit_points": [
+        "only_existing_graph_edges"
+      ],
+      "visible_passages": [
+        "existing_route_visible_under_current_conditions"
+      ],
+      "conditionally_visible_passages": [
+        "existing_route_requiring_search_or_local_knowledge"
+      ],
+      "closed_zones": [
+        "profile_forbidden_or_current_state_closed"
+      ],
+      "restricted_zones": [
+        "ownership_ritual_or_safety restriction where applicable"
+      ],
+      "work_zones": [
+        "task_specific"
+      ],
+      "rest_zones": [
+        "brief_waiting"
+      ],
+      "storage_zones": [
+        "controlled_and_owner_required"
+      ],
+      "resource_zones": [
+        "task inputs"
+      ],
+      "hazard_zones": [
+        "tool_water_social risk"
+      ],
+      "observation_zones": [
+        "publicly visible activity"
+      ],
+      "allowed_npc_slots": [
+        "worker",
+        "household_user",
+        "visitor_or_dues contact"
+      ],
+      "allowed_item_slots": [
+        "task_bound categories"
+      ],
+      "allowed_container_slots": [
+        "portable_or_fixed only when profile and owner permit"
+      ],
+      "forbidden_elements": [
+        "automatic goods",
+        "administrative building",
+        "unowned stock"
+      ],
+      "materialization_limits": [
+        "2-8 minilocations",
+        "activity requires present or recently evidenced users"
+      ],
+      "lighting_profiles": [
+        "daylight",
+        "twilight",
+        "night_with_actual_light_source"
+      ],
+      "weather_variants": [
+        "fair",
+        "overcast",
+        "rain",
+        "wind"
+      ],
+      "seasonal_variants": [
+        "late_summer_open_water"
+      ],
+      "water_level_variants": [
+        "normal_late_summer",
+        "locally_low",
+        "locally_high_after_rain"
+      ],
+      "ice_variants": [
+        "open_water_only_for_supported_start_mode"
+      ],
+      "flood_variants": [
+        "no_active_major_flood_for_supported_start_mode"
+      ],
+      "evidence_rule": "Preserve source evidence_status and reconstruction limits from the G4 record.",
+      "source_status": "candidate",
+      "status": "approved",
+      "approval_basis": "content_revision_003 candidate profile, reconciled with target canonical-G5 scene profile rules and P12 audit cycles"
+    }
+  ]
+}

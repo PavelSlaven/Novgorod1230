@@ -1,0 +1,15 @@
+{
+  "schema_version": "rus.spatial-v3.world-base-authoring-bundle.v1",
+  "bundle_id": "novgorod-spatial-v3-authoring-000",
+  "world_revision_id": "novgorod_1230_research_revision_002",
+  "status": "draft",
+  "provenance_ref": "data/world-catalogs/novgorod/G1_SEMANTIC_CATALOG.md",
+  "delete_policy": "forbid",
+  "datasets": [],
+  "data_gaps": [
+    { "code": "CANONICAL_G5_INVENTORY_DATA_GAP", "subject_ref": "novgorod:g4-inventory:195", "dependency_pins": ["data/world-catalogs/novgorod/G1_SEMANTIC_CATALOG.md#target-v3-inventory"], "blocking": true },
+    { "code": "DIRECTIONAL_EXIT_READINESS_DATA_GAP", "subject_ref": "novgorod:physical-edge-inventory:358", "dependency_pins": ["data/world-catalogs/novgorod/G1_SEMANTIC_CATALOG.md#target-v3-inventory"], "blocking": true },
+    { "code": "ROUTE_BINDING_DATA_GAP", "subject_ref": "novgorod:graph-edge-inventory:600", "dependency_pins": ["data/world-catalogs/novgorod/G1_SEMANTIC_CATALOG.md#target-v3-inventory"], "blocking": true },
+    { "code": "APPROVED_PROFILE_DATA_GAP", "subject_ref": "novgorod:g4-scene-profiles", "dependency_pins": ["data/world-catalogs/novgorod/G1_SEMANTIC_CATALOG.md#target-v3-inventory"], "blocking": true }
+  ]
+}

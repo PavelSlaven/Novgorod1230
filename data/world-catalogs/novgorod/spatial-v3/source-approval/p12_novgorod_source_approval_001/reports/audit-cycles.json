@@ -1,0 +1,31 @@
+{
+  "schema_version": "rus.p12_iterative_audit.v1",
+  "cycles": [
+    {
+      "cycle": 1,
+      "finding_count": 6,
+      "result": "CHANGES_REQUIRED",
+      "fixed": true
+    },
+    {
+      "cycle": 2,
+      "finding_count": 4,
+      "result": "CHANGES_REQUIRED",
+      "fixed": true
+    },
+    {
+      "cycle": 3,
+      "finding_count": 3,
+      "result": "CHANGES_REQUIRED",
+      "fixed": true
+    },
+    {
+      "cycle": 4,
+      "finding_count": 0,
+      "result": "PASS",
+      "fixed": true
+    }
+  ],
+  "final_unresolved_findings": 0,
+  "scope": "package internal consistency, source traceability, count semantics and fail-closed evidence handling; not branch integration or production runtime"
+}

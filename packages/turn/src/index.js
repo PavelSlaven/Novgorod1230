@@ -26,3 +26,10 @@ export { createTurnDecisionRequest, resolveTurnDecision } from './bounded-decisi
 export { enterG4WithMaterialization } from './first-entry-materialization.js';
 export { createTurnCommandRegistry, isCodeOwnedTurnWritePlan } from './command-registry.js';
 export { createAutonomousUpdateRegistry, isCodeOwnedAutonomousUpdate, runAutonomousUpdates } from './autonomous-update.js';
+export {
+  SPATIAL_V3_COMMAND_KINDS,
+  createSpatialV3CommandRegistry,
+  createSpatialV3TurnOrchestrator,
+  createSpatialV3NewGameStarter,
+  createSpatialV3ModeHandoffOrchestrator
+} from './spatial-v3-orchestration.js';

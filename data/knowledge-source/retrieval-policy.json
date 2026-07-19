@@ -1,7 +1,7 @@
 {
   "schema_version": "rus.knowledge_retrieval_policy.v1",
   "policy_version": "1.0.0",
-  "baseline_manifest_sha256": "890326920db8cde174a6157f5ab3b409f7ea47143eb652c9e59dc4a5498f4521",
+  "baseline_manifest_sha256": "9fdbd4511d15178b753073fc4aa23c78629695b044cb7d5fe97a44aad9dd83ed",
   "default_statuses": [
     "active"
   ],
@@ -695,7 +695,7 @@
         "сон"
       ],
       "conflicts_with_document_ids": [],
-      "semantic_coverage_disposition": "covered"
+      "semantic_coverage_disposition": "baseline_gap"
     },
     {
       "document_id": "weapons-and-armor",
@@ -809,7 +809,7 @@
   "control_queries": [
     {
       "query_id": "materialization-boundary",
-      "query": "кто создаёт G5 NPC и предметы код или LLM",
+      "query": "кто материализует экземпляры код LLM approved candidate set",
       "expected_document_ids": [
         "code-driven-world-materialization-architecture"
       ],

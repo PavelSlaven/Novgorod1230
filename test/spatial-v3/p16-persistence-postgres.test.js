@@ -1,0 +1,25 @@
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import { spawnSync } from 'node:child_process';
+import test from 'node:test';
+
+const docker = (args, input) => spawnSync('docker', args, { input, encoding: 'utf8', timeout: 45_000 });
+const name = `p16-persistence-${process.pid}`;
+test('P16 isolated PostgreSQL physical persistence invariants', async (t) => {
+  if (docker(['version']).status !== 0) t.skip('Docker required');
+  t.after(() => docker(['rm', '-f', name]));
+  assert.equal(docker(['run', '-d', '--name', name, '-e', 'POSTGRES_PASSWORD=p16', '-e', 'POSTGRES_USER=p16', '-e', 'POSTGRES_DB=p16', 'postgres:16-alpine']).status, 0);
+  let ready = false; for (let i = 0; i < 40; i += 1) { await new Promise((done) => setTimeout(done, 300)); if (docker(['exec', name, 'pg_isready', '-U', 'p16', '-d', 'p16']).status === 0) { ready = true; break; } } assert.equal(ready, true); await new Promise((done) => setTimeout(done, 700));
+  const psql = (sql) => docker(['exec', '-i', name, 'psql', '-q', '-v', 'ON_ERROR_STOP=1', '-U', 'p16', '-d', 'p16'], sql);
+  for (const file of ['001_party_runtime.sql', '002_party_runtime_v3.sql', '003_party_runtime_v3_planning.sql', '004_party_runtime_v3_journeys.sql']) assert.equal(psql(await readFile(`schemas/party-db/${file}`, 'utf8')).status, 0, file);
+  assert.equal(psql("INSERT INTO party_runtime.parties(party_id,schema_version,world_revision_id,world_catalog_digest,materializer_version,rng_version,command_catalog_digest,profile_bundle_digest) VALUES ('p',3,'w','d','m','r','c','b'); INSERT INTO party_runtime.party_v3_change_sets(id,party_id,operation_kind,expected_state_version_set_digest,expected_state_version_set,committed_state_version_set_digest,write_plan_digest,created_at_turn,committed_at_turn) VALUES ('cs', 'p','move','e','[]','c','w',0,0); INSERT INTO party_runtime.party_command_idempotency(id,party_id,operation_kind,idempotency_key,canonical_input_digest,expected_state_version_set_digest,status,lease_token,lease_expires_at,created_at_turn) VALUES ('i','p','move','key','input','versions','leased','lease',now()+interval '1 minute',0);").status, 0);
+  assert.equal(psql("UPDATE party_runtime.party_command_idempotency SET state_version=state_version+1, lease_token='lease2' WHERE id='i' AND state_version=1;").status, 0, 'lease CAS has physical state_version');
+  assert.notEqual(psql("UPDATE party_runtime.party_command_idempotency SET canonical_input_digest='different' WHERE id='i';").status, 0, 'idempotency input digest immutable');
+  assert.equal(psql("UPDATE party_runtime.party_command_idempotency SET status='committed',result_change_set_id='cs',lease_token=NULL,lease_expires_at=NULL,finalized_at_turn=1,state_version=state_version+1 WHERE id='i' AND state_version=2;").status, 0, 'terminal commit settles exact change set');
+  assert.notEqual(psql("UPDATE party_runtime.party_command_idempotency SET state_version=state_version+1 WHERE id='i';").status, 0, 'terminal replay record is immutable');
+  assert.equal(psql("INSERT INTO party_runtime.party_clocks(party_id,whole_minutes,subminute_numerator,subminute_denominator,clock_owner_kind,clock_owner_id,state_version,updated_change_set_id) VALUES ('p',0,0,1,'party',NULL,0,'cs');").status, 0);
+  assert.equal(psql("UPDATE party_runtime.party_clocks SET whole_minutes=1,state_version=1 WHERE party_id='p' AND state_version=99;").status, 0); assert.equal(docker(['exec', name, 'psql', '-qAt', '-U', 'p16', '-d', 'p16', '-c', "SELECT whole_minutes FROM party_runtime.party_clocks WHERE party_id='p'"]).stdout.trim(), '0', 'clock CAS miss leaves physical clock unchanged');
+  assert.notEqual(psql("INSERT INTO party_runtime.party_route_plan_execution_events(execution_id,event_ordinal,event_kind,to_status,step_ordinal,location_snapshot,change_set_id,idempotency_record_id,occurred_at_turn) VALUES ('ghost',0,'planned','planned',0,'{}','cs','i',0);").status, 0, 'history append enforces execution FK before write');
+  assert.notEqual(psql("BEGIN; INSERT INTO party_runtime.party_v3_change_sets(id,party_id,operation_kind,expected_state_version_set_digest,expected_state_version_set,committed_state_version_set_digest,write_plan_digest,created_at_turn,committed_at_turn) VALUES ('rollback','p','move','e','[]','c','w',0,0); INSERT INTO party_runtime.party_command_idempotency(id,party_id,operation_kind,idempotency_key,canonical_input_digest,expected_state_version_set_digest,status,lease_token,lease_expires_at,created_at_turn) VALUES ('rollback-i','p','move','rk','input','versions','leased','lease',now(),0); INSERT INTO party_runtime.party_route_plan_execution_events(execution_id,event_ordinal,event_kind,to_status,step_ordinal,location_snapshot,change_set_id,idempotency_record_id,occurred_at_turn) VALUES ('missing',0,'planned','planned',0,'{}','rollback','rollback-i',0); COMMIT;").status, 0, 'bad append rolls back whole transaction');
+  assert.equal(docker(['exec', name, 'psql', '-qAt', '-U', 'p16', '-d', 'p16', '-c', "SELECT count(*) FROM party_runtime.party_command_idempotency WHERE id='rollback-i'"]).stdout.trim(), '0', 'failed FK append leaves no idempotency lease');
+});

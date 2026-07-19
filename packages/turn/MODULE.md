@@ -33,6 +33,8 @@
 - `TURN_WORKFLOW_STAGE_PLAN`;
 - validators и константы контрактов;
 - `createLegacyTurnCompatibilityAdapter(services)` через `@rus/turn/compat`.
+- `@rus/turn/spatial-v3`: `createCombinedWritePlanBuilder` (P08 target stub; no v2 fallback).
+- `@rus/turn/spatial-v3-execution`: pure P19 immediate-action, timed-activity, traversal and synchronized-slice proposal engine; it has no database writer and remains target-only until P28.
 
 ## Ports
 

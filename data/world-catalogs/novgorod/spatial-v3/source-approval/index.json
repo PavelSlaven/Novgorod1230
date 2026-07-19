@@ -1,0 +1,36 @@
+{
+  "schema_version": "rus.spatial-v3.p12-source-approval-index.v1",
+  "package_id": "p12_novgorod_source_approval_001",
+  "package_root": "data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001",
+  "approval_record": "APPROVED_FOR_P12_INTEGRATION",
+  "package_content_digest": "2e7d2f09abd46cffc82b18673ab93b1317b5942796a3c3d22516a91d3ddd9279",
+  "target_g1_id": "gn_nov_g1_xp017_yp026",
+  "source_resolution": {
+    "canonical_g5_inventory": 195,
+    "physical_exit_source_pairs": 358,
+    "derived_directional_traversals": 716,
+    "legacy_edge_mapping_bindings": 600,
+    "scene_profile_families": 17,
+    "scene_materialization_profiles": 195,
+    "scene_materialization_candidates": 195
+  },
+  "activation": "not_authorized",
+  "branch_contract_compilation": "required",
+  "target_contract_specification": {
+    "package_id": "p12_target_contract_compilation_spec_v1",
+    "package_path": "data/world-catalogs/novgorod/spatial-v3/target-contract-spec/P12_TARGET_CONTRACT_COMPILATION_SPEC_V1.zip",
+    "sha256": "1833b383e5ee2568330ab88ae40c7d5b9d057dbde81aa4f43641c48ecd3eb6f3",
+    "bound_source_zip_sha256": "e3342beac492ff6433a03ecbf7c32dbffdc9dafce8e7ebd623af826b33d7bbbe",
+    "status": "specification_pass_activation_blocked",
+    "activation": "not_authorized",
+    "authoring_contract_status": "proposed_not_active",
+    "unresolved_hard_blocks": [
+      "p12_target_world_revision_missing",
+      "p12_parent_version_pin_missing",
+      "p12_connection_profile_missing",
+      "p12_route_chain_missing",
+      "p27_signed_evidence_missing",
+      "fresh_checkout_evidence_missing"
+    ]
+  }
+}

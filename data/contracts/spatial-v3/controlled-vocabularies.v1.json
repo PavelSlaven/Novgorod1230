@@ -1,0 +1,3408 @@
+{
+  "registry_id": "spatial.controlled_vocabularies",
+  "version": "1.0.0",
+  "status": "approved",
+  "approval_basis": "Explicit user-authorized P07 vocabulary authoring task dated 2026-07-18; technical contract vocabularies only, no historical or regional facts.",
+  "source_document": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
+  "source_document_supplied_filename": "SPATIAL_ARCHITECTURE_STANDARD_G0_G6_V4_2_AUDITED.md",
+  "source_document_sha256": "117a57fa3c937ff47d4cbed3ba4ea763dc5b7bf0f2d6d3e721dcde48a86a13d8",
+  "plan_document_sha256": "538f688c2c4d1adc8b21fdb559e48c5e41e2f072262dee988e72ccbfefc8e8c6",
+  "vocabulary_count": 13,
+  "value_count": 426,
+  "extension_policy": "Any added, removed, renamed or semantically changed value requires a new registry version and new digest. Existing pinned versions remain readable.",
+  "unknown_value_policy": "reject_with_controlled_vocabulary_gap",
+  "vocabularies": [
+    {
+      "pseudo_type": "controlled_dependency_role",
+      "registry_id": "spatial.contract.dependency_role",
+      "path": "data/contracts/spatial-v3/controlled-vocabularies.v1.json#/vocabularies/0",
+      "version": "1.0.0",
+      "status": "approved",
+      "open_ended": false,
+      "canonical_order": "value.id ascending (Unicode code-point order)",
+      "consumers": [
+        {
+          "contract": "dependency_pin",
+          "field": "dependency_role",
+          "rule": "Owning contract MUST narrow to roles mechanically used by that aggregate."
+        },
+        {
+          "contract": "authoring_dependency_edge",
+          "field": "dependency_role",
+          "rule": "Role ID is the exact normalized contract field stem; ad-hoc role strings are forbidden."
+        }
+      ],
+      "source_ranges": [
+        "2741-2744",
+        "2783-2825",
+        "Appendix B versioned_ref/dependency_pin fields"
+      ],
+      "values": [
+        {
+          "id": "access_condition_set",
+          "label": "access condition set",
+          "description": "Dependency role derived from exact Appendix B field stem `access_condition_set`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "action_contract",
+          "label": "action contract",
+          "description": "Dependency role derived from exact Appendix B field stem `action_contract`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "activation_condition",
+          "label": "activation condition",
+          "description": "Dependency role derived from exact Appendix B field stem `activation_condition`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "active_condition",
+          "label": "active condition",
+          "description": "Dependency role derived from exact Appendix B field stem `active_condition`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "activity_contract",
+          "label": "activity contract",
+          "description": "Dependency role derived from exact Appendix B field stem `activity_contract`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "adjacency_rule_set",
+          "label": "adjacency rule set",
+          "description": "Dependency role derived from exact Appendix B field stem `adjacency_rule_set`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "administrative_authorization",
+          "label": "administrative authorization",
+          "description": "Dependency role derived from exact Appendix B field stem `administrative_authorization`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "administrative_contract",
+          "label": "administrative contract",
+          "description": "Dependency role derived from exact Appendix B field stem `administrative_contract`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "allowed_departure_dependency",
+          "label": "allowed departure dependency",
+          "description": "Dependency role derived from exact Appendix B field stem `allowed_departure_dependency`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "allowed_output_kind_set",
+          "label": "allowed output kind set",
+          "description": "Dependency role derived from exact Appendix B field stem `allowed_output_kind_set`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "applicability_rule",
+          "label": "applicability rule",
+          "description": "Dependency role derived from exact Appendix B field stem `applicability_rule`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "approved_catalog_bundle",
+          "label": "approved catalog bundle",
+          "description": "Dependency role derived from exact Appendix B field stem `approved_catalog_bundle`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "attachment_dependency",
+          "label": "attachment dependency",
+          "description": "Dependency role derived from exact Appendix B field stem `attachment_dependency`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "availability_condition_set",
+          "label": "availability condition set",
+          "description": "Dependency role derived from exact Appendix B field stem `availability_condition_set`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "boundary_crossing_contract",
+          "label": "boundary crossing contract",
+          "description": "Dependency role derived from exact Appendix B field stem `boundary_crossing_contract`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "boundary_feature_template",
+          "label": "boundary feature template",
+          "description": "Dependency role derived from exact Appendix B field stem `boundary_feature_template`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "canonical_g5",
+          "label": "canonical g5",
+          "description": "Dependency role derived from exact Appendix B field stem `canonical_g5`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "cohort_membership_snapshot",
+          "label": "cohort membership snapshot",
+          "description": "Dependency role derived from exact Appendix B field stem `cohort_membership_snapshot`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "compatibility_rule",
+          "label": "compatibility rule",
+          "description": "Dependency role derived from exact Appendix B field stem `compatibility_rule`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "completion_effect_contract",
+          "label": "completion effect contract",
+          "description": "Dependency role derived from exact Appendix B field stem `completion_effect_contract`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "condition",
+          "label": "condition",
+          "description": "Dependency role derived from exact Appendix B field stem `condition`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "condition_profile",
+          "label": "condition profile",
+          "description": "Dependency role derived from exact Appendix B field stem `condition_profile`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "condition_rule",
+          "label": "condition rule",
+          "description": "Dependency role derived from exact Appendix B field stem `condition_rule`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "connectivity_rule_set",
+          "label": "connectivity rule set",
+          "description": "Dependency role derived from exact Appendix B field stem `connectivity_rule_set`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "consequence_rule",
+          "label": "consequence rule",
+          "description": "Dependency role derived from exact Appendix B field stem `consequence_rule`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "consequence_set",
+          "label": "consequence set",
+          "description": "Dependency role derived from exact Appendix B field stem `consequence_set`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "continuation_length_rule",
+          "label": "continuation length rule",
+          "description": "Dependency role derived from exact Appendix B field stem `continuation_length_rule`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "cost_profile",
+          "label": "cost profile",
+          "description": "Dependency role derived from exact Appendix B field stem `cost_profile`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "directional_exit",
+          "label": "directional exit",
+          "description": "Dependency role derived from exact Appendix B field stem `directional_exit`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "dynamic_dependency",
+          "label": "dynamic dependency",
+          "description": "Dependency role derived from exact Appendix B field stem `dynamic_dependency`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "dynamic_environment_rule_set",
+          "label": "dynamic environment rule set",
+          "description": "Dependency role derived from exact Appendix B field stem `dynamic_environment_rule_set`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "dynamic_recheck_policy",
+          "label": "dynamic recheck policy",
+          "description": "Dependency role derived from exact Appendix B field stem `dynamic_recheck_policy`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "environment_profile",
+          "label": "environment profile",
+          "description": "Dependency role derived from exact Appendix B field stem `environment_profile`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "event_pool_profile",
+          "label": "event pool profile",
+          "description": "Dependency role derived from exact Appendix B field stem `event_pool_profile`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "existing_target_rule",
+          "label": "existing target rule",
+          "description": "Dependency role derived from exact Appendix B field stem `existing_target_rule`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "exit_orientation_rule",
+          "label": "exit orientation rule",
+          "description": "Dependency role derived from exact Appendix B field stem `exit_orientation_rule`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "expansion_slot",
+          "label": "expansion slot",
+          "description": "Dependency role derived from exact Appendix B field stem `expansion_slot`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "fact_dependency",
+          "label": "fact dependency",
+          "description": "Dependency role derived from exact Appendix B field stem `fact_dependency`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "from_route_point",
+          "label": "from route point",
+          "description": "Dependency role derived from exact Appendix B field stem `from_route_point`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "generated_template",
+          "label": "generated template",
+          "description": "Dependency role derived from exact Appendix B field stem `generated_template`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "grid_convention",
+          "label": "grid convention",
+          "description": "Dependency role derived from exact Appendix B field stem `grid_convention`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "hazard_profile",
+          "label": "hazard profile",
+          "description": "Dependency role derived from exact Appendix B field stem `hazard_profile`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "hazard_rule",
+          "label": "hazard rule",
+          "description": "Dependency role derived from exact Appendix B field stem `hazard_rule`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "inbound_segment",
+          "label": "inbound segment",
+          "description": "Dependency role derived from exact Appendix B field stem `inbound_segment`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "interaction_profile",
+          "label": "interaction profile",
+          "description": "Dependency role derived from exact Appendix B field stem `interaction_profile`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "interruption_anchor_policy",
+          "label": "interruption anchor policy",
+          "description": "Dependency role derived from exact Appendix B field stem `interruption_anchor_policy`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "interruption_policy",
+          "label": "interruption policy",
+          "description": "Dependency role derived from exact Appendix B field stem `interruption_policy`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "jurisdiction_profile",
+          "label": "jurisdiction profile",
+          "description": "Dependency role derived from exact Appendix B field stem `jurisdiction_profile`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "legal_customs_profile",
+          "label": "legal customs profile",
+          "description": "Dependency role derived from exact Appendix B field stem `legal_customs_profile`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "length_rule",
+          "label": "length rule",
+          "description": "Dependency role derived from exact Appendix B field stem `length_rule`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "light_profile",
+          "label": "light profile",
+          "description": "Dependency role derived from exact Appendix B field stem `light_profile`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "load_state",
+          "label": "load state",
+          "description": "Dependency role derived from exact Appendix B field stem `load_state`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "location_dependency",
+          "label": "location dependency",
+          "description": "Dependency role derived from exact Appendix B field stem `location_dependency`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "mapping_rule",
+          "label": "mapping rule",
+          "description": "Dependency role derived from exact Appendix B field stem `mapping_rule`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "material_profile",
+          "label": "material profile",
+          "description": "Dependency role derived from exact Appendix B field stem `material_profile`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "mode_transition_contract",
+          "label": "mode transition contract",
+          "description": "Dependency role derived from exact Appendix B field stem `mode_transition_contract`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "movement_method_cost_profile",
+          "label": "movement method cost profile",
+          "description": "Dependency role derived from exact Appendix B field stem `movement_method_cost_profile`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "movement_orientation_profile",
+          "label": "movement orientation profile",
+          "description": "Dependency role derived from exact Appendix B field stem `movement_orientation_profile`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "orientation_profile",
+          "label": "orientation profile",
+          "description": "Dependency role derived from exact Appendix B field stem `orientation_profile`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "outbound_segment",
+          "label": "outbound segment",
+          "description": "Dependency role derived from exact Appendix B field stem `outbound_segment`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "parent",
+          "label": "parent",
+          "description": "Dependency role derived from exact Appendix B field stem `parent`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "parent_frame",
+          "label": "parent frame",
+          "description": "Dependency role derived from exact Appendix B field stem `parent_frame`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "planning_context_dependency",
+          "label": "planning context dependency",
+          "description": "Dependency role derived from exact Appendix B field stem `planning_context_dependency`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "portal_template",
+          "label": "portal template",
+          "description": "Dependency role derived from exact Appendix B field stem `portal_template`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "profile",
+          "label": "profile",
+          "description": "Dependency role derived from exact Appendix B field stem `profile`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "profile_rule_dependency",
+          "label": "profile rule dependency",
+          "description": "Dependency role derived from exact Appendix B field stem `profile_rule_dependency`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "recheck_policy",
+          "label": "recheck policy",
+          "description": "Dependency role derived from exact Appendix B field stem `recheck_policy`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "reference_frame",
+          "label": "reference frame",
+          "description": "Dependency role derived from exact Appendix B field stem `reference_frame`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "regional_template",
+          "label": "regional template",
+          "description": "Dependency role derived from exact Appendix B field stem `regional_template`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "relation_dependency",
+          "label": "relation dependency",
+          "description": "Dependency role derived from exact Appendix B field stem `relation_dependency`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "required_cost_contract",
+          "label": "required cost contract",
+          "description": "Dependency role derived from exact Appendix B field stem `required_cost_contract`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "resolved_terminal_target",
+          "label": "resolved terminal target",
+          "description": "Dependency role derived from exact Appendix B field stem `resolved_terminal_target`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "reverse_profile",
+          "label": "reverse profile",
+          "description": "Dependency role derived from exact Appendix B field stem `reverse_profile`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "reverse_route",
+          "label": "reverse route",
+          "description": "Dependency role derived from exact Appendix B field stem `reverse_route`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "risk_profile",
+          "label": "risk profile",
+          "description": "Dependency role derived from exact Appendix B field stem `risk_profile`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "root_carrier_attachment",
+          "label": "root carrier attachment",
+          "description": "Dependency role derived from exact Appendix B field stem `root_carrier_attachment`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "route",
+          "label": "route",
+          "description": "Dependency role derived from exact Appendix B field stem `route`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "route_point",
+          "label": "route point",
+          "description": "Dependency role derived from exact Appendix B field stem `route_point`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "scene_materialization_profile",
+          "label": "scene materialization profile",
+          "description": "Dependency role derived from exact Appendix B field stem `scene_materialization_profile`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "scene_template",
+          "label": "scene template",
+          "description": "Dependency role derived from exact Appendix B field stem `scene_template`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "scope",
+          "label": "scope",
+          "description": "Dependency role derived from exact Appendix B field stem `scope`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "seed_policy",
+          "label": "seed policy",
+          "description": "Dependency role derived from exact Appendix B field stem `seed_policy`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "segment_dependency",
+          "label": "segment dependency",
+          "description": "Dependency role derived from exact Appendix B field stem `segment_dependency`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "selected",
+          "label": "selected",
+          "description": "Dependency role derived from exact Appendix B field stem `selected`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "selected_template",
+          "label": "selected template",
+          "description": "Dependency role derived from exact Appendix B field stem `selected_template`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "selection_rule",
+          "label": "selection rule",
+          "description": "Dependency role derived from exact Appendix B field stem `selection_rule`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "slot",
+          "label": "slot",
+          "description": "Dependency role derived from exact Appendix B field stem `slot`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "source",
+          "label": "source",
+          "description": "Dependency role derived from exact Appendix B field stem `source`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "source_authoring",
+          "label": "source authoring",
+          "description": "Dependency role derived from exact Appendix B field stem `source_authoring`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "source_dependency",
+          "label": "source dependency",
+          "description": "Dependency role derived from exact Appendix B field stem `source_dependency`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "source_endpoint_binding",
+          "label": "source endpoint binding",
+          "description": "Dependency role derived from exact Appendix B field stem `source_endpoint_binding`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "source_position_dependency",
+          "label": "source position dependency",
+          "description": "Dependency role derived from exact Appendix B field stem `source_position_dependency`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "source_route",
+          "label": "source route",
+          "description": "Dependency role derived from exact Appendix B field stem `source_route`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "source_route_point",
+          "label": "source route point",
+          "description": "Dependency role derived from exact Appendix B field stem `source_route_point`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "source_scene_template",
+          "label": "source scene template",
+          "description": "Dependency role derived from exact Appendix B field stem `source_scene_template`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "start_profile",
+          "label": "start profile",
+          "description": "Dependency role derived from exact Appendix B field stem `start_profile`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "state_condition_set",
+          "label": "state condition set",
+          "description": "Dependency role derived from exact Appendix B field stem `state_condition_set`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "state_profile",
+          "label": "state profile",
+          "description": "Dependency role derived from exact Appendix B field stem `state_profile`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "strength_profile",
+          "label": "strength profile",
+          "description": "Dependency role derived from exact Appendix B field stem `strength_profile`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "target",
+          "label": "target",
+          "description": "Dependency role derived from exact Appendix B field stem `target`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "target_expansion_slot",
+          "label": "target expansion slot",
+          "description": "Dependency role derived from exact Appendix B field stem `target_expansion_slot`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "target_resolution_dependency",
+          "label": "target resolution dependency",
+          "description": "Dependency role derived from exact Appendix B field stem `target_resolution_dependency`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "template",
+          "label": "template",
+          "description": "Dependency role derived from exact Appendix B field stem `template`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "terminal_policy",
+          "label": "terminal policy",
+          "description": "Dependency role derived from exact Appendix B field stem `terminal_policy`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "to_route_point",
+          "label": "to route point",
+          "description": "Dependency role derived from exact Appendix B field stem `to_route_point`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "transition_contract",
+          "label": "transition contract",
+          "description": "Dependency role derived from exact Appendix B field stem `transition_contract`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "transition_environment_profile",
+          "label": "transition environment profile",
+          "description": "Dependency role derived from exact Appendix B field stem `transition_environment_profile`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "valid_while_condition",
+          "label": "valid while condition",
+          "description": "Dependency role derived from exact Appendix B field stem `valid_while_condition`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "weather_dependency",
+          "label": "weather dependency",
+          "description": "Dependency role derived from exact Appendix B field stem `weather_dependency`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        },
+        {
+          "id": "world_route",
+          "label": "world route",
+          "description": "Dependency role derived from exact Appendix B field stem `world_route`.",
+          "metadata": {
+            "derivation": "contract_field_stem"
+          }
+        }
+      ],
+      "digest": "cde00b4d7858894d68982f14ff29441064645b99944403321aeac38c1597468e"
+    },
+    {
+      "pseudo_type": "controlled_direction_context",
+      "registry_id": "spatial.traversal.direction_context",
+      "path": "data/contracts/spatial-v3/controlled-vocabularies.v1.json#/vocabularies/1",
+      "version": "1.0.0",
+      "status": "approved",
+      "open_ended": false,
+      "canonical_order": "value.id ascending (Unicode code-point order)",
+      "consumers": [
+        {
+          "contract": "g4_traversal_profile",
+          "field": "traversable_direction_contexts",
+          "rule": "Each context is interpreted only through the pinned orientation reference frame; raw screen coordinates are forbidden."
+        }
+      ],
+      "source_ranges": [
+        "5997-6013",
+        "orientation reference frame contracts"
+      ],
+      "values": [
+        {
+          "id": "direction.backward",
+          "label": "direction / backward",
+          "description": "direction / backward"
+        },
+        {
+          "id": "direction.downhill",
+          "label": "direction / downhill",
+          "description": "direction / downhill"
+        },
+        {
+          "id": "direction.downstream",
+          "label": "direction / downstream",
+          "description": "direction / downstream"
+        },
+        {
+          "id": "direction.east",
+          "label": "direction / east",
+          "description": "direction / east"
+        },
+        {
+          "id": "direction.forward",
+          "label": "direction / forward",
+          "description": "direction / forward"
+        },
+        {
+          "id": "direction.inward",
+          "label": "direction / inward",
+          "description": "direction / inward"
+        },
+        {
+          "id": "direction.landward",
+          "label": "direction / landward",
+          "description": "direction / landward"
+        },
+        {
+          "id": "direction.left",
+          "label": "direction / left",
+          "description": "direction / left"
+        },
+        {
+          "id": "direction.north",
+          "label": "direction / north",
+          "description": "direction / north"
+        },
+        {
+          "id": "direction.northeast",
+          "label": "direction / northeast",
+          "description": "direction / northeast"
+        },
+        {
+          "id": "direction.northwest",
+          "label": "direction / northwest",
+          "description": "direction / northwest"
+        },
+        {
+          "id": "direction.outward",
+          "label": "direction / outward",
+          "description": "direction / outward"
+        },
+        {
+          "id": "direction.right",
+          "label": "direction / right",
+          "description": "direction / right"
+        },
+        {
+          "id": "direction.south",
+          "label": "direction / south",
+          "description": "direction / south"
+        },
+        {
+          "id": "direction.southeast",
+          "label": "direction / southeast",
+          "description": "direction / southeast"
+        },
+        {
+          "id": "direction.southwest",
+          "label": "direction / southwest",
+          "description": "direction / southwest"
+        },
+        {
+          "id": "direction.uphill",
+          "label": "direction / uphill",
+          "description": "direction / uphill"
+        },
+        {
+          "id": "direction.upstream",
+          "label": "direction / upstream",
+          "description": "direction / upstream"
+        },
+        {
+          "id": "direction.waterward",
+          "label": "direction / waterward",
+          "description": "direction / waterward"
+        },
+        {
+          "id": "direction.west",
+          "label": "direction / west",
+          "description": "direction / west"
+        }
+      ],
+      "digest": "468c7055d08e3ad5dded4da9c341cf7cdf6c58f2595408c91b79f5a10f4e23c1"
+    },
+    {
+      "pseudo_type": "controlled_endpoint_kind",
+      "registry_id": "spatial.movement.endpoint_kind",
+      "path": "data/contracts/spatial-v3/controlled-vocabularies.v1.json#/vocabularies/2",
+      "version": "1.0.0",
+      "status": "approved",
+      "open_ended": false,
+      "canonical_order": "value.id ascending (Unicode code-point order)",
+      "consumers": [
+        {
+          "contract": "action_contract",
+          "field": "allowed_departure_endpoint_kinds/allowed_arrival_endpoint_kinds",
+          "rule": "Action contract selects exact allowed endpoint kinds."
+        },
+        {
+          "contract": "activity_contract",
+          "field": "allowed_endpoint_kinds",
+          "rule": "Activity contract selects exact allowed endpoint kinds."
+        }
+      ],
+      "source_ranges": [
+        "2859-2867",
+        "4899-4928"
+      ],
+      "values": [
+        {
+          "id": "route_anchor_scene",
+          "label": "route anchor scene",
+          "description": "route anchor scene"
+        },
+        {
+          "id": "scene_position",
+          "label": "scene position",
+          "description": "scene position"
+        },
+        {
+          "id": "site_connection_endpoint",
+          "label": "site connection endpoint",
+          "description": "site connection endpoint"
+        },
+        {
+          "id": "stranded_state",
+          "label": "stranded state",
+          "description": "stranded state"
+        },
+        {
+          "id": "transit_anchor",
+          "label": "transit anchor",
+          "description": "transit anchor"
+        },
+        {
+          "id": "world_route_endpoint",
+          "label": "world route endpoint",
+          "description": "world route endpoint"
+        }
+      ],
+      "digest": "9fc491b7a09ac581d8c21dcd6c5ead19007490eda6908b2935c18414e6b6b958"
+    },
+    {
+      "pseudo_type": "controlled_entity_kind",
+      "registry_id": "spatial.contract.entity_kind",
+      "path": "data/contracts/spatial-v3/controlled-vocabularies.v1.json#/vocabularies/3",
+      "version": "1.0.0",
+      "status": "approved",
+      "open_ended": false,
+      "canonical_order": "value.id ascending (Unicode code-point order)",
+      "consumers": [
+        {
+          "contract": "entity_ref",
+          "field": "entity_kind",
+          "rule": "Consumer MUST provide a narrowed allow-list; the shared registry is the maximum universe."
+        },
+        {
+          "contract": "interaction_capability",
+          "field": "target_kind",
+          "rule": "Only targetable entity kinds allowed by the action domain may be used."
+        }
+      ],
+      "source_ranges": [
+        "2744",
+        "2751-2758",
+        "4067-4087",
+        "Appendix B persistent storage contracts"
+      ],
+      "values": [
+        {
+          "id": "access_class",
+          "label": "access class",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `access_class`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "acoustic_edge",
+          "label": "acoustic edge",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `acoustic_edge`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "acoustic_edge_template",
+          "label": "acoustic edge template",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `acoustic_edge_template`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "action_contract",
+          "label": "action contract",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `action_contract`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "activity_contract",
+          "label": "activity contract",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `activity_contract`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "actor",
+          "label": "actor",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `actor`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "authoring_dependency_edge",
+          "label": "authoring dependency edge",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `authoring_dependency_edge`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "boundary_crossing_contract",
+          "label": "boundary crossing contract",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `boundary_crossing_contract`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "canonical_spatial_node",
+          "label": "canonical spatial node",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `canonical_spatial_node`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "catalog_bundle",
+          "label": "catalog bundle",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `catalog_bundle`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "checkpoint_departure_template",
+          "label": "checkpoint departure template",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `checkpoint_departure_template`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "completion_effect_contract",
+          "label": "completion effect contract",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `completion_effect_contract`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "condition_set",
+          "label": "condition set",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `condition_set`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "container",
+          "label": "container",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `container`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "continuation_length_candidate",
+          "label": "continuation length candidate",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `continuation_length_candidate`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "continuation_length_rule",
+          "label": "continuation length rule",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `continuation_length_rule`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "dynamic_recheck_policy",
+          "label": "dynamic recheck policy",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `dynamic_recheck_policy`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "entity_placement",
+          "label": "entity placement",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `entity_placement`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "expansion_capacity_reservation",
+          "label": "expansion capacity reservation",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `expansion_capacity_reservation`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "expansion_frontier",
+          "label": "expansion frontier",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `expansion_frontier`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "expansion_profile_template_limit",
+          "label": "expansion profile template limit",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `expansion_profile_template_limit`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "expansion_slot",
+          "label": "expansion slot",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `expansion_slot`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "expansion_slot_template",
+          "label": "expansion slot template",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `expansion_slot_template`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "expansion_terminal_policy",
+          "label": "expansion terminal policy",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `expansion_terminal_policy`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "g4_directional_exit",
+          "label": "g4 directional exit",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `g4_directional_exit`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "g4_expansion_profile",
+          "label": "g4 expansion profile",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `g4_expansion_profile`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "g4_traversal_profile",
+          "label": "g4 traversal profile",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `g4_traversal_profile`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "g5_generation_template",
+          "label": "g5 generation template",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `g5_generation_template`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "g5_site_connection",
+          "label": "g5 site connection",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `g5_site_connection`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "g5_successor_frontier_rule",
+          "label": "g5 successor frontier rule",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `g5_successor_frontier_rule`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "g6_acoustic_profile",
+          "label": "g6 acoustic profile",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `g6_acoustic_profile`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "g6_template_slot",
+          "label": "g6 template slot",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `g6_template_slot`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "hazard_profile",
+          "label": "hazard profile",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `hazard_profile`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "idempotency_record",
+          "label": "idempotency record",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `idempotency_record`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "interaction_capability",
+          "label": "interaction capability",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `interaction_capability`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "interruption_anchor_policy",
+          "label": "interruption anchor policy",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `interruption_anchor_policy`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "item",
+          "label": "item",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `item`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "knowledge_fact",
+          "label": "knowledge fact",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `knowledge_fact`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "light_profile",
+          "label": "light profile",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `light_profile`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "materialization_choice",
+          "label": "materialization choice",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `materialization_choice`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "materialization_trace",
+          "label": "materialization trace",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `materialization_trace`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "mounted_relation",
+          "label": "mounted relation",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `mounted_relation`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "movement_edge_blocker",
+          "label": "movement edge blocker",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `movement_edge_blocker`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "movement_method",
+          "label": "movement method",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `movement_method`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "movement_method_cost_option",
+          "label": "movement method cost option",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `movement_method_cost_option`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "movement_method_cost_profile",
+          "label": "movement method cost profile",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `movement_method_cost_profile`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "movement_mode_transition_contract",
+          "label": "movement mode transition contract",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `movement_mode_transition_contract`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "movement_orientation_profile",
+          "label": "movement orientation profile",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `movement_orientation_profile`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "movement_orientation_profile_point",
+          "label": "movement orientation profile point",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `movement_orientation_profile_point`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "navigation_belief",
+          "label": "navigation belief",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `navigation_belief`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "npc",
+          "label": "npc",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `npc`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "orientation_reference_frame",
+          "label": "orientation reference frame",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `orientation_reference_frame`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "pace_mode",
+          "label": "pace mode",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `pace_mode`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "party_action_step_run",
+          "label": "party action step run",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `party_action_step_run`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "party_actor_carrier_position",
+          "label": "party actor carrier position",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `party_actor_carrier_position`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "party_actor_posture",
+          "label": "party actor posture",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `party_actor_posture`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "party_carrier_attachment",
+          "label": "party carrier attachment",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `party_carrier_attachment`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "party_change_set",
+          "label": "party change set",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `party_change_set`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "party_checkpoint_route_departure",
+          "label": "party checkpoint route departure",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `party_checkpoint_route_departure`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "party_cohort_membership",
+          "label": "party cohort membership",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `party_cohort_membership`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "party_continuation_chain",
+          "label": "party continuation chain",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `party_continuation_chain`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "party_g4_expansion_ledger",
+          "label": "party g4 expansion ledger",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `party_g4_expansion_ledger`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "party_g5_site",
+          "label": "party g5 site",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `party_g5_site`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "party_g5_state_overlay",
+          "label": "party g5 state overlay",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `party_g5_state_overlay`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "party_g6_instance",
+          "label": "party g6 instance",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `party_g6_instance`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "party_journey_location",
+          "label": "party journey location",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `party_journey_location`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "party_recovery_transition_binding",
+          "label": "party recovery transition binding",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `party_recovery_transition_binding`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "party_route_anchor_identity",
+          "label": "party route anchor identity",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `party_route_anchor_identity`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "party_route_anchor_location_binding",
+          "label": "party route anchor location binding",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `party_route_anchor_location_binding`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "party_route_plan",
+          "label": "party route plan",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `party_route_plan`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "party_route_plan_execution",
+          "label": "party route plan execution",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `party_route_plan_execution`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "party_route_plan_execution_event",
+          "label": "party route plan execution event",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `party_route_plan_execution_event`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "party_route_plan_step",
+          "label": "party route plan step",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `party_route_plan_step`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "party_scene_baseline",
+          "label": "party scene baseline",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `party_scene_baseline`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "party_site_connection_endpoint_binding",
+          "label": "party site connection endpoint binding",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `party_site_connection_endpoint_binding`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "party_stable_structure",
+          "label": "party stable structure",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `party_stable_structure`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "party_timed_activity_attempt",
+          "label": "party timed activity attempt",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `party_timed_activity_attempt`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "party_timed_activity_execution",
+          "label": "party timed activity execution",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `party_timed_activity_execution`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "party_transit_anchor",
+          "label": "party transit anchor",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `party_transit_anchor`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "party_travel_cohort",
+          "label": "party travel cohort",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `party_travel_cohort`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "party_traversal_interval_result",
+          "label": "party traversal interval result",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `party_traversal_interval_result`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "party_world_route_endpoint_position_binding",
+          "label": "party world route endpoint position binding",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `party_world_route_endpoint_position_binding`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "player_character",
+          "label": "player character",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `player_character`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "portal_entity",
+          "label": "portal entity",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `portal_entity`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "portal_template",
+          "label": "portal template",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `portal_template`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "preparation_claim",
+          "label": "preparation claim",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `preparation_claim`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "preparation_snapshot",
+          "label": "preparation snapshot",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `preparation_snapshot`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "preparation_snapshot_member",
+          "label": "preparation snapshot member",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `preparation_snapshot_member`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "provenance_record",
+          "label": "provenance record",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `provenance_record`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "recovery_transition_template",
+          "label": "recovery transition template",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `recovery_transition_template`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "relative_position",
+          "label": "relative position",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `relative_position`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "scene_endpoint_slot",
+          "label": "scene endpoint slot",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `scene_endpoint_slot`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "scene_frontier_binding",
+          "label": "scene frontier binding",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `scene_frontier_binding`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "scene_materialization_candidate",
+          "label": "scene materialization candidate",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `scene_materialization_candidate`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "scene_materialization_profile",
+          "label": "scene materialization profile",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `scene_materialization_profile`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "scene_movement_edge",
+          "label": "scene movement edge",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `scene_movement_edge`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "scene_movement_edge_template",
+          "label": "scene movement edge template",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `scene_movement_edge_template`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "scene_position_node",
+          "label": "scene position node",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `scene_position_node`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "scene_position_template",
+          "label": "scene position template",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `scene_position_template`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "scene_template",
+          "label": "scene template",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `scene_template`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "sound_event",
+          "label": "sound event",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `sound_event`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "source_record",
+          "label": "source record",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `source_record`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "spatial_admin_mapping_contract",
+          "label": "spatial admin mapping contract",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `spatial_admin_mapping_contract`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "spatial_facet_binding",
+          "label": "spatial facet binding",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `spatial_facet_binding`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "spatial_function",
+          "label": "spatial function",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `spatial_function`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "spatial_relative_orientation",
+          "label": "spatial relative orientation",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `spatial_relative_orientation`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "spatial_transition_contract",
+          "label": "spatial transition contract",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `spatial_transition_contract`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "stable_structure_template",
+          "label": "stable structure template",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `stable_structure_template`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "start_position_binding",
+          "label": "start position binding",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `start_position_binding`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "synchronized_time_slice_result",
+          "label": "synchronized time slice result",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `synchronized_time_slice_result`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "transition_environment_profile",
+          "label": "transition environment profile",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `transition_environment_profile`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "transport",
+          "label": "transport",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `transport`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "traveller_travel_state",
+          "label": "traveller travel state",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `traveller_travel_state`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "visibility_link",
+          "label": "visibility link",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `visibility_link`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "visibility_link_template",
+          "label": "visibility link template",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `visibility_link_template`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "visibility_modifier",
+          "label": "visibility modifier",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `visibility_modifier`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "world_perception_signal",
+          "label": "world perception signal",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `world_perception_signal`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "world_revision",
+          "label": "world revision",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `world_revision`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "world_route",
+          "label": "world route",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `world_route`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "world_route_endpoint_binding",
+          "label": "world route endpoint binding",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `world_route_endpoint_binding`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "world_route_point",
+          "label": "world route point",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `world_route_point`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "world_route_segment",
+          "label": "world route segment",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `world_route_segment`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        },
+        {
+          "id": "world_route_segment_spatial_context",
+          "label": "world route segment spatial context",
+          "description": "Entity kind defined by the persisted contract or explicit external domain kind `world_route_segment_spatial_context`.",
+          "metadata": {
+            "derivation": "persisted_contract_or_explicit_cross_domain_kind"
+          }
+        }
+      ],
+      "digest": "88e7932c36271c54245dbd89eb2a09cad9d0052918f069f74645fd95b041f289"
+    },
+    {
+      "pseudo_type": "controlled_movement_method",
+      "registry_id": "spatial.movement.method",
+      "path": "data/contracts/spatial-v3/controlled-vocabularies.v1.json#/vocabularies/4",
+      "version": "1.0.0",
+      "status": "approved",
+      "open_ended": false,
+      "canonical_order": "value.id ascending (Unicode code-point order)",
+      "consumers": [
+        {
+          "contract": "movement_capability_context",
+          "field": "allowed_movement_methods",
+          "rule": "Selected method MUST be present and all required carrier/equipment pins MUST also be present."
+        }
+      ],
+      "source_ranges": [
+        "4248-4264",
+        "4560-4883"
+      ],
+      "values": [
+        {
+          "id": "movement_method.boat_rowed",
+          "label": "гребная лодка",
+          "description": "Перемещение на лодке греблей."
+        },
+        {
+          "id": "movement_method.boat_sailed",
+          "label": "парусное судно",
+          "description": "Перемещение на судне под парусом."
+        },
+        {
+          "id": "movement_method.carried",
+          "label": "переносимый",
+          "description": "Субъект перемещается как переносимое вложение другого носителя."
+        },
+        {
+          "id": "movement_method.cart",
+          "label": "повозка",
+          "description": "Перемещение в колёсном транспорте."
+        },
+        {
+          "id": "movement_method.climb",
+          "label": "лазание",
+          "description": "Перемещение по вертикальной или крутой поверхности."
+        },
+        {
+          "id": "movement_method.crawl",
+          "label": "ползком",
+          "description": "Низкое перемещение с опорой на тело."
+        },
+        {
+          "id": "movement_method.horseback",
+          "label": "верхом",
+          "description": "Перемещение верхом на лошади."
+        },
+        {
+          "id": "movement_method.run",
+          "label": "бег",
+          "description": "Ускоренное перемещение на ногах."
+        },
+        {
+          "id": "movement_method.sled",
+          "label": "сани",
+          "description": "Перемещение на полозном транспорте."
+        },
+        {
+          "id": "movement_method.swim",
+          "label": "вплавь",
+          "description": "Перемещение в воде без опоры на дно."
+        },
+        {
+          "id": "movement_method.wade",
+          "label": "вброд",
+          "description": "Перемещение по мелкой воде с опорой на дно."
+        },
+        {
+          "id": "movement_method.walk",
+          "label": "пешком",
+          "description": "Обычное перемещение на ногах."
+        }
+      ],
+      "digest": "2049fc6f848959fb52fcb6c875f3e5f07c42c2e97fbb290088456bcf37c357e0"
+    },
+    {
+      "pseudo_type": "controlled_pace_mode",
+      "registry_id": "spatial.movement.pace",
+      "path": "data/contracts/spatial-v3/controlled-vocabularies.v1.json#/vocabularies/5",
+      "version": "1.0.0",
+      "status": "approved",
+      "open_ended": false,
+      "canonical_order": "value.id ascending (Unicode code-point order)",
+      "consumers": [
+        {
+          "contract": "movement_capability_context",
+          "field": "allowed_pace_modes",
+          "rule": "Pace MUST be explicitly allowed and costed by the selected movement method contract."
+        }
+      ],
+      "source_ranges": [
+        "4248-4264",
+        "4800-4883"
+      ],
+      "values": [
+        {
+          "id": "pace.cautious",
+          "label": "осторожный",
+          "description": "Сниженная скорость ради контроля риска."
+        },
+        {
+          "id": "pace.forced",
+          "label": "форсированный",
+          "description": "Предельный темп, разрешённый только явным контрактом."
+        },
+        {
+          "id": "pace.hurried",
+          "label": "спешный",
+          "description": "Повышенная скорость с увеличенным расходом или риском."
+        },
+        {
+          "id": "pace.normal",
+          "label": "обычный",
+          "description": "Базовый темп метода перемещения."
+        },
+        {
+          "id": "pace.stealth",
+          "label": "скрытный",
+          "description": "Темп с приоритетом незаметности."
+        }
+      ],
+      "digest": "d86502f307c0d04c01e525171da750f8c7774969f1611839215b81d400550c3d"
+    },
+    {
+      "pseudo_type": "controlled_position_type",
+      "registry_id": "spatial.scene.position_type",
+      "path": "data/contracts/spatial-v3/controlled-vocabularies.v1.json#/vocabularies/6",
+      "version": "1.0.0",
+      "status": "approved",
+      "open_ended": false,
+      "canonical_order": "value.id ascending (Unicode code-point order)",
+      "consumers": [
+        {
+          "contract": "interaction_capability",
+          "field": "allowed_position_types",
+          "rule": "Empty set means relation-only; non-empty set is exact membership."
+        }
+      ],
+      "source_ranges": [
+        "3751",
+        "4075-4087",
+        "6429"
+      ],
+      "values": [
+        {
+          "id": "scene_position.boundary_edge",
+          "label": "scene position / boundary edge",
+          "description": "scene position / boundary edge"
+        },
+        {
+          "id": "scene_position.central",
+          "label": "scene position / central",
+          "description": "scene position / central"
+        },
+        {
+          "id": "scene_position.elevated_overlook",
+          "label": "scene position / elevated overlook",
+          "description": "scene position / elevated overlook"
+        },
+        {
+          "id": "scene_position.fixed_working_reach",
+          "label": "scene position / fixed working reach",
+          "description": "scene position / fixed working reach"
+        },
+        {
+          "id": "scene_position.hazard_boundary",
+          "label": "scene position / hazard boundary",
+          "description": "scene position / hazard boundary"
+        },
+        {
+          "id": "scene_position.passage",
+          "label": "scene position / passage",
+          "description": "scene position / passage"
+        },
+        {
+          "id": "scene_position.permanent_cover",
+          "label": "scene position / permanent cover",
+          "description": "scene position / permanent cover"
+        },
+        {
+          "id": "scene_position.structural_feature_side",
+          "label": "scene position / structural feature side",
+          "description": "scene position / structural feature side"
+        },
+        {
+          "id": "scene_position.threshold",
+          "label": "scene position / threshold",
+          "description": "scene position / threshold"
+        },
+        {
+          "id": "scene_position.water_reach",
+          "label": "scene position / water reach",
+          "description": "scene position / water reach"
+        }
+      ],
+      "digest": "463322ae12de11d7baf5f7ff39c1282d713d2a1f26588155aa2b2a8d6c3c8624"
+    },
+    {
+      "pseudo_type": "controlled_posture_option",
+      "registry_id": "spatial.scene.posture",
+      "path": "data/contracts/spatial-v3/controlled-vocabularies.v1.json#/vocabularies/7",
+      "version": "1.0.0",
+      "status": "approved",
+      "open_ended": false,
+      "canonical_order": "value.id ascending (Unicode code-point order)",
+      "consumers": [
+        {
+          "contract": "scene_position_node",
+          "field": "posture_options",
+          "rule": "Only postures physically supported by the exact position may be listed."
+        },
+        {
+          "contract": "scene_position_template",
+          "field": "posture_options",
+          "rule": "Materialized node copies the exact approved template set."
+        }
+      ],
+      "source_ranges": [
+        "3742-3771",
+        "6417-6441"
+      ],
+      "values": [
+        {
+          "id": "posture.crouching",
+          "label": "пригнувшись",
+          "description": "Низкая стойка на ногах."
+        },
+        {
+          "id": "posture.hanging",
+          "label": "в висе",
+          "description": "Положение с основной опорой на руки или крепление."
+        },
+        {
+          "id": "posture.kneeling",
+          "label": "на коленях",
+          "description": "Опора на одно или два колена."
+        },
+        {
+          "id": "posture.mounted",
+          "label": "верхом",
+          "description": "Положение на верховом носителе."
+        },
+        {
+          "id": "posture.prone",
+          "label": "лёжа лицом вниз",
+          "description": "Горизонтальное положение лицом вниз."
+        },
+        {
+          "id": "posture.side_lying",
+          "label": "лёжа на боку",
+          "description": "Горизонтальное положение на боку."
+        },
+        {
+          "id": "posture.sitting",
+          "label": "сидя",
+          "description": "Сидячее положение с устойчивой опорой."
+        },
+        {
+          "id": "posture.standing",
+          "label": "стоя",
+          "description": "Вертикальная опора на ноги."
+        },
+        {
+          "id": "posture.supine",
+          "label": "лёжа на спине",
+          "description": "Горизонтальное положение на спине."
+        },
+        {
+          "id": "posture.swimming",
+          "label": "в плавании",
+          "description": "Положение тела при удержании на воде."
+        }
+      ],
+      "digest": "5c0e947008a070c24ef0066f2a0378f14e405a6824e4b2a1c54ff6d2167a7e00"
+    },
+    {
+      "pseudo_type": "controlled_progress_point",
+      "registry_id": "spatial.movement.progress_point",
+      "path": "data/contracts/spatial-v3/controlled-vocabularies.v1.json#/vocabularies/8",
+      "version": "1.0.0",
+      "status": "approved",
+      "open_ended": false,
+      "canonical_order": "value.id ascending (Unicode code-point order)",
+      "consumers": [
+        {
+          "contract": "progress_slicing_policy",
+          "field": "explicit_progress_points",
+          "rule": "Values are selected by exact ID, ordered by metadata.progress_ppm, unique, and strictly inside 1..999999."
+        }
+      ],
+      "source_ranges": [
+        "4869-4882"
+      ],
+      "values": [
+        {
+          "id": "progress.ppm_100000",
+          "label": "10%",
+          "description": "Explicit route progress point at 100000 ppm.",
+          "metadata": {
+            "progress_ppm": 100000
+          }
+        },
+        {
+          "id": "progress.ppm_200000",
+          "label": "20%",
+          "description": "Explicit route progress point at 200000 ppm.",
+          "metadata": {
+            "progress_ppm": 200000
+          }
+        },
+        {
+          "id": "progress.ppm_300000",
+          "label": "30%",
+          "description": "Explicit route progress point at 300000 ppm.",
+          "metadata": {
+            "progress_ppm": 300000
+          }
+        },
+        {
+          "id": "progress.ppm_400000",
+          "label": "40%",
+          "description": "Explicit route progress point at 400000 ppm.",
+          "metadata": {
+            "progress_ppm": 400000
+          }
+        },
+        {
+          "id": "progress.ppm_500000",
+          "label": "50%",
+          "description": "Explicit route progress point at 500000 ppm.",
+          "metadata": {
+            "progress_ppm": 500000
+          }
+        },
+        {
+          "id": "progress.ppm_600000",
+          "label": "60%",
+          "description": "Explicit route progress point at 600000 ppm.",
+          "metadata": {
+            "progress_ppm": 600000
+          }
+        },
+        {
+          "id": "progress.ppm_700000",
+          "label": "70%",
+          "description": "Explicit route progress point at 700000 ppm.",
+          "metadata": {
+            "progress_ppm": 700000
+          }
+        },
+        {
+          "id": "progress.ppm_800000",
+          "label": "80%",
+          "description": "Explicit route progress point at 800000 ppm.",
+          "metadata": {
+            "progress_ppm": 800000
+          }
+        },
+        {
+          "id": "progress.ppm_900000",
+          "label": "90%",
+          "description": "Explicit route progress point at 900000 ppm.",
+          "metadata": {
+            "progress_ppm": 900000
+          }
+        }
+      ],
+      "digest": "902ca536cd8875cdb214d1ca16463802b5f8552f099938087450fd6c5ffe01a9"
+    },
+    {
+      "pseudo_type": "controlled_risk_tag",
+      "registry_id": "spatial.movement.visible_risk_tag",
+      "path": "data/contracts/spatial-v3/controlled-vocabularies.v1.json#/vocabularies/9",
+      "version": "1.0.0",
+      "status": "approved",
+      "open_ended": false,
+      "canonical_order": "value.id ascending (Unicode code-point order)",
+      "consumers": [
+        {
+          "contract": "movement_risk_summary",
+          "field": "visible_risk_tags",
+          "rule": "Tags are visibility-filtered; hidden knowledge requires an empty set and rumor exposes only rumor-authorized tags."
+        }
+      ],
+      "source_ranges": [
+        "4375-4388",
+        "movement and route risk prose"
+      ],
+      "values": [
+        {
+          "id": "risk.animal_attack",
+          "label": "нападение животного",
+          "description": "Риск нападения животного.",
+          "metadata": {
+            "rumor_authorized": true
+          }
+        },
+        {
+          "id": "risk.bog_entrapment",
+          "label": "увязание",
+          "description": "Риск увязания в болоте или рыхлом грунте.",
+          "metadata": {
+            "rumor_authorized": true
+          }
+        },
+        {
+          "id": "risk.detection",
+          "label": "обнаружение",
+          "description": "Риск быть замеченным.",
+          "metadata": {
+            "rumor_authorized": false
+          }
+        },
+        {
+          "id": "risk.drowning",
+          "label": "утопление",
+          "description": "Риск потери плавучести или захлёбывания.",
+          "metadata": {
+            "rumor_authorized": true
+          }
+        },
+        {
+          "id": "risk.entrapment",
+          "label": "блокирование выхода",
+          "description": "Риск оказаться без безопасного выхода.",
+          "metadata": {
+            "rumor_authorized": false
+          }
+        },
+        {
+          "id": "risk.fall",
+          "label": "падение",
+          "description": "Риск падения с высоты или на сложном рельефе.",
+          "metadata": {
+            "rumor_authorized": true
+          }
+        },
+        {
+          "id": "risk.fatigue",
+          "label": "утомление",
+          "description": "Значимый расход бодрости или выносливости.",
+          "metadata": {
+            "rumor_authorized": true
+          }
+        },
+        {
+          "id": "risk.fire_smoke",
+          "label": "огонь и дым",
+          "description": "Риск ожога, дыма или пожара.",
+          "metadata": {
+            "rumor_authorized": true
+          }
+        },
+        {
+          "id": "risk.ice_failure",
+          "label": "разрушение льда",
+          "description": "Риск пролома или движения льда.",
+          "metadata": {
+            "rumor_authorized": true
+          }
+        },
+        {
+          "id": "risk.injury_aggravation",
+          "label": "ухудшение травмы",
+          "description": "Риск ухудшения существующей травмы.",
+          "metadata": {
+            "rumor_authorized": false
+          }
+        },
+        {
+          "id": "risk.legal_access",
+          "label": "правовой запрет",
+          "description": "Риск нарушения доступа, обычая или права.",
+          "metadata": {
+            "rumor_authorized": true
+          }
+        },
+        {
+          "id": "risk.low_visibility",
+          "label": "плохая видимость",
+          "description": "Недостаточная видимость маршрута или препятствий.",
+          "metadata": {
+            "rumor_authorized": true
+          }
+        },
+        {
+          "id": "risk.navigation_error",
+          "label": "ошибка ориентирования",
+          "description": "Риск отклонения или потери пути.",
+          "metadata": {
+            "rumor_authorized": true
+          }
+        },
+        {
+          "id": "risk.unstable_structure",
+          "label": "неустойчивая конструкция",
+          "description": "Риск обрушения или отказа конструкции.",
+          "metadata": {
+            "rumor_authorized": true
+          }
+        },
+        {
+          "id": "risk.violence",
+          "label": "насилие",
+          "description": "Риск нападения или принуждения.",
+          "metadata": {
+            "rumor_authorized": true
+          }
+        },
+        {
+          "id": "risk.weather_exposure",
+          "label": "погодное воздействие",
+          "description": "Холод, ветер, осадки или жара.",
+          "metadata": {
+            "rumor_authorized": true
+          }
+        }
+      ],
+      "digest": "ae8f66775a7380d8800ff1284a4b8eb9f99d43d932fbb18ffe2877a452e4c1d5"
+    },
+    {
+      "pseudo_type": "controlled_scene_role",
+      "registry_id": "spatial.scene.role",
+      "path": "data/contracts/spatial-v3/controlled-vocabularies.v1.json#/vocabularies/10",
+      "version": "1.0.0",
+      "status": "approved",
+      "open_ended": false,
+      "canonical_order": "value.id ascending (Unicode code-point order)",
+      "consumers": [
+        {
+          "contract": "party_g6_instance",
+          "field": "secondary_scene_roles",
+          "rule": "Roles supplement one primary role and MUST describe mechanically relevant scene use."
+        }
+      ],
+      "source_ranges": [
+        "3705-3739",
+        "scene template and G6 sections"
+      ],
+      "values": [
+        {
+          "id": "scene_role.approach",
+          "label": "подход",
+          "description": "Зона приближения к сцене."
+        },
+        {
+          "id": "scene_role.arrival",
+          "label": "прибытие",
+          "description": "Зона допустимого прибытия."
+        },
+        {
+          "id": "scene_role.central",
+          "label": "центр",
+          "description": "Центральная зона действий."
+        },
+        {
+          "id": "scene_role.cover",
+          "label": "прикрытие",
+          "description": "Зона постоянного прикрытия."
+        },
+        {
+          "id": "scene_role.departure",
+          "label": "отправление",
+          "description": "Зона допустимого отправления."
+        },
+        {
+          "id": "scene_role.hazard",
+          "label": "опасность",
+          "description": "Зона механически значимой опасности."
+        },
+        {
+          "id": "scene_role.observation",
+          "label": "наблюдение",
+          "description": "Зона обзора или наблюдения."
+        },
+        {
+          "id": "scene_role.passage",
+          "label": "проход",
+          "description": "Зона физического прохода."
+        },
+        {
+          "id": "scene_role.resource_access",
+          "label": "доступ к ресурсу",
+          "description": "Зона доступа к ресурсу."
+        },
+        {
+          "id": "scene_role.rest",
+          "label": "отдых",
+          "description": "Зона отдыха или сна."
+        },
+        {
+          "id": "scene_role.restricted",
+          "label": "ограниченная зона",
+          "description": "Зона с ограниченным доступом."
+        },
+        {
+          "id": "scene_role.service",
+          "label": "обслуживание",
+          "description": "Зона обслуживания маршрута, транспорта или структуры."
+        },
+        {
+          "id": "scene_role.shelter",
+          "label": "укрытие",
+          "description": "Зона защиты от среды."
+        },
+        {
+          "id": "scene_role.social",
+          "label": "социальная зона",
+          "description": "Зона обычного социального взаимодействия."
+        },
+        {
+          "id": "scene_role.storage",
+          "label": "хранение",
+          "description": "Зона хранения."
+        },
+        {
+          "id": "scene_role.threshold",
+          "label": "порог",
+          "description": "Граница входа или выхода."
+        },
+        {
+          "id": "scene_role.water_access",
+          "label": "доступ к воде",
+          "description": "Зона физического доступа к воде."
+        },
+        {
+          "id": "scene_role.work",
+          "label": "работа",
+          "description": "Рабочая зона."
+        }
+      ],
+      "digest": "d8e6f72a4dc3872a153e21eb0e04946271af2cc9ee36cc66fbd69473a8380503"
+    },
+    {
+      "pseudo_type": "controlled_spatial_function",
+      "registry_id": "spatial.canonical.function",
+      "path": "data/contracts/spatial-v3/controlled-vocabularies.v1.json#/vocabularies/11",
+      "version": "1.0.0",
+      "status": "approved",
+      "open_ended": false,
+      "canonical_order": "value.id ascending (Unicode code-point order)",
+      "consumers": [
+        {
+          "contract": "canonical_spatial_node",
+          "field": "secondary_functions",
+          "rule": "Functions describe mechanics and use; they do not assert a historical fact without provenance."
+        }
+      ],
+      "source_ranges": [
+        "5940-5973",
+        "map workflow functional requirements"
+      ],
+      "values": [
+        {
+          "id": "spatial_function.administration",
+          "label": "spatial function / administration",
+          "description": "spatial function / administration"
+        },
+        {
+          "id": "spatial_function.agriculture",
+          "label": "spatial function / agriculture",
+          "description": "spatial function / agriculture"
+        },
+        {
+          "id": "spatial_function.boundary",
+          "label": "spatial function / boundary",
+          "description": "spatial function / boundary"
+        },
+        {
+          "id": "spatial_function.burial",
+          "label": "spatial function / burial",
+          "description": "spatial function / burial"
+        },
+        {
+          "id": "spatial_function.craft",
+          "label": "spatial function / craft",
+          "description": "spatial function / craft"
+        },
+        {
+          "id": "spatial_function.crossing",
+          "label": "spatial function / crossing",
+          "description": "spatial function / crossing"
+        },
+        {
+          "id": "spatial_function.defense",
+          "label": "spatial function / defense",
+          "description": "spatial function / defense"
+        },
+        {
+          "id": "spatial_function.fishing",
+          "label": "spatial function / fishing",
+          "description": "spatial function / fishing"
+        },
+        {
+          "id": "spatial_function.forestry",
+          "label": "spatial function / forestry",
+          "description": "spatial function / forestry"
+        },
+        {
+          "id": "spatial_function.gathering",
+          "label": "spatial function / gathering",
+          "description": "spatial function / gathering"
+        },
+        {
+          "id": "spatial_function.habitation",
+          "label": "spatial function / habitation",
+          "description": "spatial function / habitation"
+        },
+        {
+          "id": "spatial_function.hazard",
+          "label": "spatial function / hazard",
+          "description": "spatial function / hazard"
+        },
+        {
+          "id": "spatial_function.hunting",
+          "label": "spatial function / hunting",
+          "description": "spatial function / hunting"
+        },
+        {
+          "id": "spatial_function.landing",
+          "label": "spatial function / landing",
+          "description": "spatial function / landing"
+        },
+        {
+          "id": "spatial_function.navigation",
+          "label": "spatial function / navigation",
+          "description": "spatial function / navigation"
+        },
+        {
+          "id": "spatial_function.observation",
+          "label": "spatial function / observation",
+          "description": "spatial function / observation"
+        },
+        {
+          "id": "spatial_function.passage",
+          "label": "spatial function / passage",
+          "description": "spatial function / passage"
+        },
+        {
+          "id": "spatial_function.pasture",
+          "label": "spatial function / pasture",
+          "description": "spatial function / pasture"
+        },
+        {
+          "id": "spatial_function.production",
+          "label": "spatial function / production",
+          "description": "spatial function / production"
+        },
+        {
+          "id": "spatial_function.resource_access",
+          "label": "spatial function / resource access",
+          "description": "spatial function / resource access"
+        },
+        {
+          "id": "spatial_function.rest",
+          "label": "spatial function / rest",
+          "description": "spatial function / rest"
+        },
+        {
+          "id": "spatial_function.restricted_access",
+          "label": "spatial function / restricted access",
+          "description": "spatial function / restricted access"
+        },
+        {
+          "id": "spatial_function.settlement",
+          "label": "spatial function / settlement",
+          "description": "spatial function / settlement"
+        },
+        {
+          "id": "spatial_function.shelter",
+          "label": "spatial function / shelter",
+          "description": "spatial function / shelter"
+        },
+        {
+          "id": "spatial_function.social_assembly",
+          "label": "spatial function / social assembly",
+          "description": "spatial function / social assembly"
+        },
+        {
+          "id": "spatial_function.storage",
+          "label": "spatial function / storage",
+          "description": "spatial function / storage"
+        },
+        {
+          "id": "spatial_function.trade",
+          "label": "spatial function / trade",
+          "description": "spatial function / trade"
+        },
+        {
+          "id": "spatial_function.transit",
+          "label": "spatial function / transit",
+          "description": "spatial function / transit"
+        },
+        {
+          "id": "spatial_function.transport_service",
+          "label": "spatial function / transport service",
+          "description": "spatial function / transport service"
+        },
+        {
+          "id": "spatial_function.water_access",
+          "label": "spatial function / water access",
+          "description": "spatial function / water access"
+        },
+        {
+          "id": "spatial_function.work",
+          "label": "spatial function / work",
+          "description": "spatial function / work"
+        },
+        {
+          "id": "spatial_function.worship",
+          "label": "spatial function / worship",
+          "description": "spatial function / worship"
+        }
+      ],
+      "digest": "19f327f72b910f5fb892d779715209d565127fb8612f7b115b732b2fdaeb8381"
+    },
+    {
+      "pseudo_type": "controlled_write_target",
+      "registry_id": "spatial.runtime.write_target",
+      "path": "data/contracts/spatial-v3/controlled-vocabularies.v1.json#/vocabularies/12",
+      "version": "1.0.0",
+      "status": "approved",
+      "open_ended": false,
+      "canonical_order": "value.id ascending (Unicode code-point order)",
+      "consumers": [
+        {
+          "contract": "completion_effect_contract",
+          "field": "allowed_write_targets",
+          "rule": "Write targets are logical party-runtime contracts, not SQL table names; the commit layer maps them to exact schema-qualified physical targets."
+        }
+      ],
+      "source_ranges": [
+        "4960-4975",
+        "Appendix B party_runtime storage contracts"
+      ],
+      "values": [
+        {
+          "id": "acoustic_edge",
+          "label": "acoustic edge",
+          "description": "Logical write target owned by party-runtime contract `acoustic_edge`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "entity_placement",
+          "label": "entity placement",
+          "description": "Logical write target owned by party-runtime contract `entity_placement`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "expansion_capacity_reservation",
+          "label": "expansion capacity reservation",
+          "description": "Logical write target owned by party-runtime contract `expansion_capacity_reservation`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "expansion_frontier",
+          "label": "expansion frontier",
+          "description": "Logical write target owned by party-runtime contract `expansion_frontier`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "g5_site_connection",
+          "label": "g5 site connection",
+          "description": "Logical write target owned by party-runtime contract `g5_site_connection`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "g6_acoustic_profile",
+          "label": "g6 acoustic profile",
+          "description": "Logical write target owned by party-runtime contract `g6_acoustic_profile`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "idempotency_record",
+          "label": "idempotency record",
+          "description": "Logical write target owned by party-runtime contract `idempotency_record`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "materialization_choice",
+          "label": "materialization choice",
+          "description": "Logical write target owned by party-runtime contract `materialization_choice`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "materialization_trace",
+          "label": "materialization trace",
+          "description": "Logical write target owned by party-runtime contract `materialization_trace`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "mounted_relation",
+          "label": "mounted relation",
+          "description": "Logical write target owned by party-runtime contract `mounted_relation`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "movement_edge_blocker",
+          "label": "movement edge blocker",
+          "description": "Logical write target owned by party-runtime contract `movement_edge_blocker`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "navigation_belief",
+          "label": "navigation belief",
+          "description": "Logical write target owned by party-runtime contract `navigation_belief`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "party_action_step_run",
+          "label": "party action step run",
+          "description": "Logical write target owned by party-runtime contract `party_action_step_run`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "party_actor_carrier_position",
+          "label": "party actor carrier position",
+          "description": "Logical write target owned by party-runtime contract `party_actor_carrier_position`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "party_actor_posture",
+          "label": "party actor posture",
+          "description": "Logical write target owned by party-runtime contract `party_actor_posture`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "party_carrier_attachment",
+          "label": "party carrier attachment",
+          "description": "Logical write target owned by party-runtime contract `party_carrier_attachment`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "party_change_set",
+          "label": "party change set",
+          "description": "Logical write target owned by party-runtime contract `party_change_set`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "party_checkpoint_route_departure",
+          "label": "party checkpoint route departure",
+          "description": "Logical write target owned by party-runtime contract `party_checkpoint_route_departure`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "party_cohort_membership",
+          "label": "party cohort membership",
+          "description": "Logical write target owned by party-runtime contract `party_cohort_membership`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "party_continuation_chain",
+          "label": "party continuation chain",
+          "description": "Logical write target owned by party-runtime contract `party_continuation_chain`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "party_g4_expansion_ledger",
+          "label": "party g4 expansion ledger",
+          "description": "Logical write target owned by party-runtime contract `party_g4_expansion_ledger`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "party_g5_site",
+          "label": "party g5 site",
+          "description": "Logical write target owned by party-runtime contract `party_g5_site`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "party_g5_state_overlay",
+          "label": "party g5 state overlay",
+          "description": "Logical write target owned by party-runtime contract `party_g5_state_overlay`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "party_g6_instance",
+          "label": "party g6 instance",
+          "description": "Logical write target owned by party-runtime contract `party_g6_instance`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "party_journey_location",
+          "label": "party journey location",
+          "description": "Logical write target owned by party-runtime contract `party_journey_location`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "party_recovery_transition_binding",
+          "label": "party recovery transition binding",
+          "description": "Logical write target owned by party-runtime contract `party_recovery_transition_binding`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "party_route_anchor_identity",
+          "label": "party route anchor identity",
+          "description": "Logical write target owned by party-runtime contract `party_route_anchor_identity`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "party_route_anchor_location_binding",
+          "label": "party route anchor location binding",
+          "description": "Logical write target owned by party-runtime contract `party_route_anchor_location_binding`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "party_route_plan",
+          "label": "party route plan",
+          "description": "Logical write target owned by party-runtime contract `party_route_plan`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "party_route_plan_execution",
+          "label": "party route plan execution",
+          "description": "Logical write target owned by party-runtime contract `party_route_plan_execution`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "party_route_plan_execution_event",
+          "label": "party route plan execution event",
+          "description": "Logical write target owned by party-runtime contract `party_route_plan_execution_event`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "party_route_plan_step",
+          "label": "party route plan step",
+          "description": "Logical write target owned by party-runtime contract `party_route_plan_step`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "party_scene_baseline",
+          "label": "party scene baseline",
+          "description": "Logical write target owned by party-runtime contract `party_scene_baseline`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "party_site_connection_endpoint_binding",
+          "label": "party site connection endpoint binding",
+          "description": "Logical write target owned by party-runtime contract `party_site_connection_endpoint_binding`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "party_stable_structure",
+          "label": "party stable structure",
+          "description": "Logical write target owned by party-runtime contract `party_stable_structure`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "party_timed_activity_attempt",
+          "label": "party timed activity attempt",
+          "description": "Logical write target owned by party-runtime contract `party_timed_activity_attempt`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "party_timed_activity_execution",
+          "label": "party timed activity execution",
+          "description": "Logical write target owned by party-runtime contract `party_timed_activity_execution`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "party_transit_anchor",
+          "label": "party transit anchor",
+          "description": "Logical write target owned by party-runtime contract `party_transit_anchor`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "party_travel_cohort",
+          "label": "party travel cohort",
+          "description": "Logical write target owned by party-runtime contract `party_travel_cohort`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "party_traversal_interval_result",
+          "label": "party traversal interval result",
+          "description": "Logical write target owned by party-runtime contract `party_traversal_interval_result`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "party_world_route_endpoint_position_binding",
+          "label": "party world route endpoint position binding",
+          "description": "Logical write target owned by party-runtime contract `party_world_route_endpoint_position_binding`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "portal_entity",
+          "label": "portal entity",
+          "description": "Logical write target owned by party-runtime contract `portal_entity`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "preparation_claim",
+          "label": "preparation claim",
+          "description": "Logical write target owned by party-runtime contract `preparation_claim`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "preparation_snapshot",
+          "label": "preparation snapshot",
+          "description": "Logical write target owned by party-runtime contract `preparation_snapshot`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "preparation_snapshot_member",
+          "label": "preparation snapshot member",
+          "description": "Logical write target owned by party-runtime contract `preparation_snapshot_member`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "relative_position",
+          "label": "relative position",
+          "description": "Logical write target owned by party-runtime contract `relative_position`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "scene_frontier_binding",
+          "label": "scene frontier binding",
+          "description": "Logical write target owned by party-runtime contract `scene_frontier_binding`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "scene_movement_edge",
+          "label": "scene movement edge",
+          "description": "Logical write target owned by party-runtime contract `scene_movement_edge`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "scene_position_node",
+          "label": "scene position node",
+          "description": "Logical write target owned by party-runtime contract `scene_position_node`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "sound_event",
+          "label": "sound event",
+          "description": "Logical write target owned by party-runtime contract `sound_event`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "synchronized_time_slice_result",
+          "label": "synchronized time slice result",
+          "description": "Logical write target owned by party-runtime contract `synchronized_time_slice_result`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "traveller_travel_state",
+          "label": "traveller travel state",
+          "description": "Logical write target owned by party-runtime contract `traveller_travel_state`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "visibility_link",
+          "label": "visibility link",
+          "description": "Logical write target owned by party-runtime contract `visibility_link`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "visibility_modifier",
+          "label": "visibility modifier",
+          "description": "Logical write target owned by party-runtime contract `visibility_modifier`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        },
+        {
+          "id": "world_perception_signal",
+          "label": "world perception signal",
+          "description": "Logical write target owned by party-runtime contract `world_perception_signal`.",
+          "metadata": {
+            "derivation": "party_runtime_storage_contract"
+          }
+        }
+      ],
+      "digest": "056482a5590e2715737435fa353c394c4bdebc9eb4c1932a13c143f594c07f44"
+    }
+  ],
+  "aggregate_digest": "05c51f8def16803c589c3e061653c42104359ed6583ff5c6d47ba86c23d4574a"
+}

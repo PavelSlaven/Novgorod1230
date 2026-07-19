@@ -1,0 +1,86 @@
+# Spatial v3 migration work log
+
+## P12 target-materialization approval intake (2026-07-19)
+
+`P12_TARGET_MATERIALIZATION_APPROVAL_V1.zip` is byte-pinned under
+`data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/`.
+The approval authorizes only future isolated target work, but this intake is
+fail-closed: verification safely extracts the byte-pinned archive into a fresh
+temporary directory and executes its archived `run_all_checks.py`,
+`verify_manifest.py`, and default branch-binding verifier. It also reproduces
+the archive's `pathlib` ordering under both semantics: POSIX ordering matches
+the manifest and Windows case-insensitive ordering has the recorded first
+mismatch. Therefore Linux CI correctly passes the archive verifier, while the
+Windows self-check records `P12_APPROVAL_UPSTREAM_MANIFEST_ORDER_MISMATCH`.
+The unbound default branch/40-hex HEAD remains a blocker on every platform.
+These are evidence-derived outcomes, not a local literal assertion.
+No target DDL, P12 operational-gap closure, P28 evidence, production
+composition, or production database operation is allowed. Run
+`npm run spatial-v3:test-p12-target-materialization-approval` to verify the
+byte pin and both blockers.
+
+## P12 rescue — approved Novgorod source package
+
+- Immutable editorial input is committed under `data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/`. Its package manifest is digest-verified and its approval record is `APPROVED_FOR_P12_INTEGRATION`, explicitly not production activation evidence.
+- Source verification is implemented by `tools/spatial-v3/p12-source-approval.mjs` and is now a fail-closed dependency of the P12 authoring importer. It verifies all package-member digests and the approved finite counts: 195 canonical G5 records, 358 physical source pairs / 716 directions, 600 classified mappings, and 17/195/195 scene-family/profile/candidate records.
+- This closes the absence of an approved **source** catalogue. It does not claim branch-contract compilation or an authoring import: the package itself requires exact target endpoint/profile compilation and isolated PostgreSQL readback. Until that produces a contract-valid non-empty P12 bundle, the four target manifest data gaps and P28 remain correctly blocking; no production composition or write path changes.
+- Checks: `spatial-v3:test-p12-source`, `spatial-v3:check-p12-source`, `spatial-v3:test-p12`, `spatial-v3:check-p12`, `spatial-v3:test-p28`, and `spatial-v3:check-p28` passed. The P28 negative gate remains intentionally non-mutating.
+
+## P12 target-contract compilation specification — immutable input, not a compiler result
+
+- The supplied `P12_TARGET_CONTRACT_COMPILATION_SPEC_V1.zip` is retained byte-pinned at `data/world-catalogs/novgorod/spatial-v3/target-contract-spec/`. Its SHA-256 is `1833b383e5ee2568330ab88ae40c7d5b9d057dbde81aa4f43641c48ecd3eb6f3`; it binds the previously approved source ZIP `e3342beac492ff6433a03ecbf7c32dbffdc9dafce8e7ebd623af826b33d7bbbe`.
+- `tools/spatial-v3/p12-target-contract-specification.mjs` verifies the identity, byte pin and explicit non-activation status. It rejects a modified or absent ZIP and cannot be used as a P28 authorization object.
+- The supplied package itself marks the proposed connection contracts as `proposed_not_active` and retains hard blocks for the exact target world revision/G2-G3 pins, approved connection profiles, ordered route chains, and real P27/fresh-checkout signed evidence. Those values are not inferable from the approved source inventory; consequently the four P12 authoring data gaps remain unresolved and no target DDL/import rows, production writes, or composition changes are made by this integration.
+
+## P24 — data and save migration v2→v3
+
+- Scope: target-only, explicit migration inventory and isolated PostgreSQL apply rehearsal; no production v2 composition, dual write, mixed authoritative read or fallback.
+- Navigation: `repo-intel:ensure`, `repo-intel:status`, and query `P24 spatial architecture integration, infrastructure, external contracts and target shadow boundary`; Graphify query `P24 Data and save migration v2 v3 inventory world party journey rollback`.
+- Normatives read: target standard §15, code-driven materialization architecture, table requirements, read-only graph boundary, movement and time target sections, critic invocation rule.
+- Readiness: branch `codex/spatial-architecture-g0-g6-v4-2`, HEAD `9f2a8c1477793e3baac376d558a64b1b2272cc4a`; repository graph ready (Graphify 0.9.17); knowledge source degraded warning only.
+- P24 accepts a read-only, coverage-declared v2 extract only: every source row carries its source table/key digest, evidence and dependency pins. Missing coverage, a pin/evidence mismatch, or a non-reviewed mapping is a typed hard gap before a target transaction.
+- The target surface is explicit rather than a `spatial_*` prefix: canonical world chains cover revision, G0–G5 containment, G1 grid, G4 exits, profiles, routes and templates; party chains cover G5/scene/position, NPC/items/containers/ownership/control, and P14 PGC or an approved anchor. A partial declared chain is rejected.
+- The isolated PostgreSQL rehearsals prove target-only dry-run rollback, readback, and database-error rollback for both world and party writes. The world witness applies the reviewed canonical revision, G0–G5 containment and normalized class rows, G1 grid, G4 exit, orientation/cost profiles, route/segment/context and both endpoint bindings, then expansion and scene-template candidate chain through the same P24 migration tool. No test opens or mutates v2/operator data.
+- Rescue: inverse coverage now requires exactly one inventory disposition for every row returned by the finite v2 reader. An explicit `hard_gap` is still a disposition but fails acceptance; an extra real `party_positions` legacy row produces `migration_source_inventory_coverage_gap` before a target transaction and leaves target tables empty. The isolated party rehearsal also executes `safe_explicit_anchor` through `party_route_anchor_identities` and its location binding with reviewed approval/evidence/pins, verifies readback, and proves missing approval returns `journey_migration_gap` with no anchor write.
+
+## P25 — compatibility, shadow, cutover and rollback tooling
+
+- Scope: target/shadow-only. `production_v2` remains the only production profile; `shadow_v3` is structurally read-only and cannot write target state. P28 is the only phase allowed to activate v3.
+- Navigation: `repo-intel:ensure`, `repo-intel:status`, query `P25 spatial architecture plan implementation contracts target shadow current P24 handoff`; Graphify query with the same need.
+- Normatives read: target standard §0.4, §15.7–15.8 and release checklist; code-driven materialization active/target and activation boundaries; P24 migration log and P06 no-mixing contract.
+- P25 module: `tools/spatial-v3/p25-activation-tooling.mjs` requires an immutable explicit `request_profiles` input and binds every adapter call to exactly one `(party_id, request_id, profile)` owner, so conflicting v2/v3 ownership is rejected without hidden process state. It defines a deterministic no-write comparison over endpoints/time/visibility/errors/migration classifications, rehearsal-only cutover gates, and an explicit rollback boundary. Intentional differences require an exact registered path and values; each registry entry must be consumed exactly once, while duplicate, stale, or unregistered divergences fail closed.
+- Rehearsal order: shadow parity → P24 target-only migration+rollback evidence → startup probes → isolated target schema switch → smoke tests → optional isolated target write. Any failed gate invokes abort before the next handler and reports zero production writes. `mode: production` is rejected.
+- Rollback: before first v3-only mutation return to v2; after it use only a validated reverse migration or snapshot restore. The isolated PostgreSQL drill proves a missing restore is blocked and a snapshot restores the actual target rows.
+- Checks: `spatial-v3:test-p25` 4/4 (including isolated PostgreSQL), `spatial-v3:check-p25`, `spatial-v3:test-p24`, `spatial-v3:check-p24`, `docs:generate`, `docs:check`, `architecture:check`, `graphify update .` and `repo-intel:ensure` passed. Full `npm test` reached `test:domain` but has three existing RAG/corpus expectation failures: two fixed document-count assertions expect 24 while the current corpus has 25; the materialization-boundary control query no longer ranks the expected document in top-5. This P25 phase does not alter RAG ranking or corpus policy; repair is deferred to the generated-artifacts/RAG phase.
+
+## P26 — generated artifacts and repository intelligence
+
+- Readiness: repository `C:\\Users\\Slaven\\Documents\\Новгород`, branch `codex/spatial-architecture-g0-g6-v4-2`, HEAD and `origin/main` `9f2a8c1477793e3baac376d558a64b1b2272cc4a`; Graphify `0.9.17`. `repo-intel:ensure` and `repo-intel:status` are ready; the known baseline semantic-coverage condition remains an explicitly reported `degraded` warning, not a repository-graph blocker.
+- Navigation: `repo-intel:query -- --query "P26 activation production cutover spatial architecture G0 G6 conditions"`; Graphify queries for P26 artifact owners and P25 cutover dependencies. Follow-up graph inspection confirms `spatial-v3-repository.js` is the explicit P16 party repository and `detectDependencyCycles` remains confined to the stage-24 v2 write-plan validator; no unexpected v3 production writer or ownership cycle was found.
+- Sources: P26 plan; target standard §16.2–§16.4; navigation active/target boundary; code-driven materialization ownership/commit boundary; P24 and accepted P25 handoff. P26 does not activate v3, change the production v2 profile, or perform a production write.
+- Regeneration: ran `docs:generate`/`docs:check`; `world-db:schema-check` and `world-db:schema-doc-check` (174 world-base tables, digest `731ffacb19e7e0b401ccf7154dcbc0db6ee61fbf9b6ba6845e05dc2211888b5e`); `knowledge:inventory`, `knowledge:generate`, `knowledge:check` (30 documents); and `repo-intel:build`/`repo-intel:status`.
+- Fresh DDL evidence: isolated PostgreSQL `spatial-v3:test-p11-postgres` applies all schema parts 01–14 from an empty database, safely reapplies part 14 and rejects malformed finite-scene authoring.
+- RAG repair: P25's deferred failures were genuine stale assertions, not waived checks. Tests now derive the active baseline-gap count from the policy plus corpus status (so proposed/deprecated gaps are not miscounted), and the materialization-boundary control query uses the stable code/LLM/candidate-set terminology. After regeneration, targeted knowledge tests pass 11/11 and `test:domain` passes 123/123; `knowledge:check` and `controls` pass.
+- Regression checks: `spatial-v3:check-p24` and `spatial-v3:check-p25` pass. P26 is ready for an independent audit; P27+ are not started.
+
+## P27 — full verification and release hygiene rescue
+
+- Navigation: `repo-intel:ensure`, `repo-intel:status`, and query `P27 release hygiene checker release:check scope secret scan historical archives tests`; repository graph is ready at Graphify `0.9.17`; knowledge-source remains the documented `degraded` warning only.
+- Targeted serial suite: `node --test --test-concurrency=1 test/spatial-v3/*.test.js` passed 108/108. This is the serial evidence for the target spatial contracts, migration, no-mixing, property and negative cases.
+- Targeted phase handoff evidence: `npm run spatial-v3:verify-red`, `npm run spatial-v3:check-p06`, `npm run spatial-v3:test-p12`, `npm run spatial-v3:test-p12-postgres`, `npm run spatial-v3:test-p15-postgres`, `npm run spatial-v3:test-p24`, `npm run spatial-v3:check-p24`, `npm run spatial-v3:test-p25`, and `npm run spatial-v3:check-p25` passed. These cover the P06 compatibility boundary, P12 importer, P15 journey, P24 migration and P25 cutover/rollback handoffs specifically, rather than relying only on the aggregate suite.
+- Repeated concurrency evidence: `npm run spatial-v3:test-p11-capacity`, `npm run spatial-v3:test-p16`, and `npm run spatial-v3:test-p23-postgres` were each repeated twice without a flaky result; the independent critic additionally ran the P23 PostgreSQL concurrency witness three sequential times, all passing.
+- PostgreSQL E2E evidence: isolated `npm run spatial-v3:test-p24-postgres`, `npm run spatial-v3:test-p24-world-postgres`, and `npm run spatial-v3:test-p25-postgres` passed, covering party/world v2→v3 migration readback/rollback and the P25 rollback drill. P12/P15 PostgreSQL import and journey witnesses also passed in the P27 suite. These checks use only isolated local test databases, never an operator/production database.
+- Full project evidence: `npm test` passed. Actual Chrome E2E was run with `RUS_CHROMIUM_PATH='C:\Program Files\Google\Chrome\Application\chrome.exe'`; `npm run test:browser-e2e` passed 1/1.
+- Generated/schema/architecture evidence: `npm run docs:generate`, `npm run docs:check`, `npm run world-db:schema-check`, `npm run world-db:schema-doc-check`, `npm run architecture:check`, `graphify update .`, `npm run repo-intel:ensure`, and `npm run repo-intel:status` passed. Graphify retains the known non-blocking warnings for zero-node files and unavailable SQL parser; Repository Intelligence is ready.
+- Release-scope repair: `release:check` now obtains Git's release set (`tracked` plus non-ignored new files), never walks `.git`, `node_modules`, or local working directories. It scans only package/release source roots and root package/config files for live assignments, preserves tracked historical archives and documented examples, and retains checks for tracked `.env` files, release-scope private keys, oversized SQL dumps, and seed intermediates. `npm run spatial-v3:test-p27-release` passes 2/2 (positive historical archive/example and negative live source-secret/local-file scope cases); `npm run release:check` passes.
+- Status: P27-S01 through P27-S04 now have recorded local evidence. P27-S05 remains an independent-critic decision; this log does not self-accept the phase or authorize P28.
+
+## P28 — atomic activation gate
+
+- P28-S01 is intentionally **not applied**. The gate is a fail-closed assessment in `tools/spatial-v3/p28-activation-gate.mjs`; it has no migration, composition or production-write side effect. It can authorize an activation patch only after every Appendix D item has independent evidence.
+- Gate hardening: `release-evidence.v1.json` is the single versioned Appendix D manifest (all 58 mandatory items); it is hash-bound and requires an Ed25519 release-evidence signature rooted in `p28-release-evidence-public-key.pem`. Each passed checklist item must name hash-verified evidence. The four P12 authoring gaps are individually pinned to their exact inventory quantities and require hash-verified resolution evidence. A P27 `PASS`/`PASS WITH NOTES` report must itself be hash-bound and signed by the independent critic. Caller-provided `activation_permitted` objects are ignored and can never authorize activation.
+- Current quantitative blockers: Novgorod authoring manifest has **4/4 blocking typed gaps** — `CANONICAL_G5_INVENTORY_DATA_GAP` (`195` G4 inventory), `DIRECTIONAL_EXIT_READINESS_DATA_GAP` (`358` physical edges), `ROUTE_BINDING_DATA_GAP` (`600` graph edges), and `APPROVED_PROFILE_DATA_GAP` (G4 scene profiles). The G1 catalog additionally states `Production import: not_performed` and `Production readiness: not_verified`.
+- This work log has no persisted independent P27-S05 acceptance. That independently fails target standard §0.4 and Appendix D. The planned conflict register and proposed ADR are inputs to the one eventual activation patch; they are not falsely marked resolved before the evidence exists. No documentation status is flipped, v2 stays the sole production composition, and no v3 request may use it as fallback.
+- Required owner recovery: P12 must close the four authoring gaps with approved, version-pinned data and PostgreSQL import/readback evidence; P27 must persist an independent acceptable critic verdict; then P28 must rerun the full fresh-checkout/reproducibility checklist before any atomic activation patch. This is a release blocker, not a permissible NOTE.
+- P28 fresh checkout evidence: **not_run**. The shared worktree deliberately contains the uncommitted implementation under review, so treating it as clean evidence would be false. The gate requires a separately recorded passed marker produced only from an isolated clean checkout after the owner phases and audit are accepted.
+- Checks run: `npm run spatial-v3:test-p28` **3/3 passed**; `npm run spatial-v3:check-p28` passed; direct gate exited **1** with the listed blockers (expected); `npm run docs:generate`, `npm run docs:check`, `npm run architecture:check`, `graphify update .`, `npm run repo-intel:ensure`, and `npm run repo-intel:status` passed. Repository Intelligence remains ready; knowledge-source remains its documented `degraded` warning. The negative test asserts zero production writes and zero composition changes when the real repository evidence is incomplete.

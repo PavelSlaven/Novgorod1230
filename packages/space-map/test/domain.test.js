@@ -1,8 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildGraphIndex, normalizePosition, resolveAdjacentEdges, validateGraphEdge, validatePositionChain } from '../src/index.js';
+import { createV2SpatialFixtureAdapter } from '../src/spatial-v2-compat.js';
 
 test('space-map validates hierarchy and indexes graph without route semantics', () => {
+  const { buildGraphIndex, normalizePosition, resolveAdjacentEdges, validateGraphEdge, validatePositionChain } = createV2SpatialFixtureAdapter({ mode: 'shadow_fixture' });
   const position = normalizePosition({ region_id:'r', place_id:'p', location_id:'l' });
   assert.equal(validatePositionChain(position).ok, true);
   assert.equal(validatePositionChain({ region_id:'r', location_id:'l' }).ok, false);

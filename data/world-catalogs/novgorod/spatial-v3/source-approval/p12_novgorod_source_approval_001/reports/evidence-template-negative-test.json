@@ -1,0 +1,18 @@
+{
+  "result": "PASS",
+  "expected_verifier_exit": 1,
+  "actual_verifier_exit": 1,
+  "verifier_output": {
+    "result": "FAIL",
+    "errors": [
+      "P27 evidence is not signed_evidence",
+      "P27 commit SHA invalid",
+      "P27 verdict invalid",
+      "P27 signature missing/invalid",
+      "fresh-checkout evidence is not completed_evidence",
+      "fresh checkout commit SHA invalid",
+      "fresh checkout cleanliness proof incomplete",
+      "fresh checkout command evidence empty"
+    ]
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "schema_version": "rus.p12_final_document_audit.v1",
+  "result": "PASS",
+  "unresolved_findings": 0,
+  "audited_dimensions": [
+    "count semantics",
+    "source traceability",
+    "level classification",
+    "reference integrity",
+    "scene-profile coverage",
+    "boundary separation",
+    "fail-closed evidence handling",
+    "branch limitation disclosure",
+    "manifest coverage"
+  ],
+  "external_gates_are_not_package_findings": [
+    "real signed P27 evidence",
+    "real fresh-checkout evidence",
+    "exact implementation-branch adapter validation",
+    "isolated database/runtime checks"
+  ],
+  "statement": "No contradiction, ambiguity or unresolved implementation instruction remains inside the package. External facts that cannot be generated here are explicitly typed as hard blocks."
+}

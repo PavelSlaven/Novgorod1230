@@ -4,7 +4,14 @@ const FORBIDDEN_KEYS = new Set([
   'hidden', 'hidden_state', 'private_motives', 'private_knowledge',
   'closed_container_contents', 'future_event_timers', 'truth_status_for_system',
   'actual_truth_hidden_from_character', 'write_plan', 'commit_plan', 'raw_audit',
-  'raw_prompt', 'provider_request', 'provider_response'
+  'raw_prompt', 'provider_request', 'provider_response', 'diagnostics', 'trace',
+  'candidate_set', 'candidate_sets', 'resolved_factual_target_ref', 'factual_topology',
+  'factual_route', 'internal_route_binding', 'endpoint_binding', 'recovery_topology',
+  'pins', 'dependency_pins', 'dependency_pin_set', 'candidate', 'candidates',
+  'raw_diagnostic', 'raw_diagnostics', 'diagnostic_trace', 'route_plan', 'route_steps',
+  'route_binding', 'route_bindings', 'resolved_route', 'routes', 'factual_routes', 'internal_routes'
+  , 'coordinate', 'coordinates', 'layout_x', 'layout_y', 'bearing', 'distance',
+  'trace', 'traces', 'raw_trace', 'raw_traces', 'binding', 'bindings', 'endpoint_binding', 'endpoint_bindings'
 ]);
 
 export function validateApiEnvelope(value) {
@@ -39,10 +46,19 @@ function walk(value, path, leaks) {
   if (Array.isArray(value)) return value.forEach((entry, index) => walk(entry, `${path}[${index}]`, leaks));
   if (!plain(value)) return;
   for (const [key, child] of Object.entries(value)) {
-    const normalized = key.toLowerCase();
-    if (FORBIDDEN_KEYS.has(normalized) || normalized.startsWith('hidden_') || normalized.startsWith('private_')) leaks.push(`${path}.${key}`);
+    const normalized = normalizeKey(key);
+    const panelRoute = path === '$.panels' && normalized === 'route';
+    if (!panelRoute && forbidden(normalized)) leaks.push(`${path}.${key}`);
     walk(child, `${path}.${key}`, leaks);
   }
+}
+function normalizeKey(key) { return String(key).replace(/([a-z0-9])([A-Z])/g, '$1_$2').replace(/[\s.-]+/g, '_').toLowerCase(); }
+function forbidden(key) {
+  return FORBIDDEN_KEYS.has(key) || key.startsWith('hidden_') || key.startsWith('private_') ||
+    key.includes('candidate') || key.includes('diagnostic') || key.includes('dependency_pin') ||
+    key === 'pin' || key.endsWith('_pins') || key.includes('trace') || key.includes('binding') ||
+    key.startsWith('route_') || key.endsWith('_route') || key === 'route' || key === 'routes' || key.includes('factual_topology') ||
+    key === 'x' || key === 'y' || key === 'z';
 }
 function plain(value) { return Boolean(value) && typeof value === 'object' && !Array.isArray(value); }
 function text(value) { return String(value ?? '').trim(); }

@@ -2,8 +2,13 @@
   "name": "@rus/space-map",
   "version": "0.13.0",
   "type": "module",
-  "exports": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./spatial-v3": "./src/spatial-v3-ports.js",
+    "./spatial-v2-compat": "./src/spatial-v2-compat.js"
+  },
   "dependencies": {
+    "@rus/contracts": "0.9.0",
     "@rus/kernel": "0.9.0"
   }
 }

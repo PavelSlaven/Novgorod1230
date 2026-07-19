@@ -859,6 +859,30 @@
       "type": "sql"
     },
     {
+      "bytes": 47191,
+      "path": "schemas/party-db/002_party_runtime_v3.sql",
+      "sha256": "b5e97046fc0a2e7f14ca727402acd0c1b13f44d69aacfb381afb82f03e59c67b",
+      "type": "sql"
+    },
+    {
+      "bytes": 42197,
+      "path": "schemas/party-db/003_party_runtime_v3_planning.sql",
+      "sha256": "574fed6b6207e3b79c9f16e40c42519bb45584d4d97524fd65fc1dca88d27cec",
+      "type": "sql"
+    },
+    {
+      "bytes": 32016,
+      "path": "schemas/party-db/004_party_runtime_v3_journeys.sql",
+      "sha256": "ad0015952902da0c8c4f5ee9fac21eaa5da17df83174ab11c14a2f0272252568",
+      "type": "sql"
+    },
+    {
+      "bytes": 2184,
+      "path": "schemas/party-db/005_party_runtime_v3_domain.sql",
+      "sha256": "2b06c19a706f9122d6318a038ee49600ba215cc0686361bd6af1dc32a8b504f0",
+      "type": "sql"
+    },
+    {
       "bytes": 1447,
       "path": "schemas/world-base/world-base-source-bundle.schema.json",
       "sha256": "358430badf2821197ffc74d4600b2cc2b153d1a1a141020e998650cb1c325dc2",

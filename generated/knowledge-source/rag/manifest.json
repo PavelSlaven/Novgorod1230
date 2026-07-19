@@ -3,38 +3,24 @@
   "generator": "tools/docs-tools/src/knowledge-materializer-v2.js",
   "generation_mode": "approved_semantic_snapshot_plus_deterministic_lexical_coverage",
   "corpus_root": "data/knowledge-source/corpus/DOCUMENTS",
-  "corpus_manifest_sha256": "890326920db8cde174a6157f5ab3b409f7ea47143eb652c9e59dc4a5498f4521",
-  "corpus_hash": "8425390ac2788148902adbc672607f6ac8e3499acbe4027152dcb7a7ee134e47",
+  "corpus_manifest_sha256": "9fdbd4511d15178b753073fc4aa23c78629695b044cb7d5fe97a44aad9dd83ed",
+  "corpus_hash": "89da4ae45da646940ae0e6f6e71a6ec15cbb0017fb0bfd662599fc9a946e0e56",
   "source_snapshot": "data/knowledge-source/imports/rag/index.json",
   "source_snapshot_sha256": "b89d573dd6c3fec6c9e42eca8ba629475098a3ba96b147d9a205ae4e37bc383e",
   "semantic_index": "generated/knowledge-source/rag/index.json",
-  "semantic_index_sha256": "fe4bfdcd90cd624630c40df13a66d87627ee60ac4fa44fe6349599b7309ce1a9",
+  "semantic_index_sha256": "f410bed12c27762dce3ace8b6f55f36962d971864bc8425e6e3197cd07cf2cdc",
   "lexical_index": "generated/knowledge-source/rag/lexical-index.json",
-  "lexical_index_sha256": "1d9cc7a90355a7d1595e855715b2e81610b4d21f5234b9ca39c89f45845b4f07",
+  "lexical_index_sha256": "5e2462e15b571b23a94e365cdeb34707004db3f07b9b9a96c2f9c35fc486a13b",
   "registered_document_count": 30,
   "source_document_count": 30,
   "active_document_count": 28,
-  "semantic_document_count": 4,
-  "lexical_only_document_count": 26,
-  "semantic_chunk_count": 72,
-  "lexical_chunk_count": 1177,
+  "semantic_document_count": 3,
+  "lexical_only_document_count": 27,
+  "semantic_chunk_count": 60,
+  "lexical_chunk_count": 900,
   "model": "jina-embeddings-v3",
   "dimensions": 1024,
   "coverage": [
-    {
-      "document_id": "universal-category-classification-policy",
-      "file_name": "universal_category_classification_policy.md",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
-    },
-    {
-      "document_id": "universal-category-classification-references",
-      "file_name": "universal_category_classification_references.md",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
-    },
     {
       "document_id": "base-turn-orchestration",
       "file_name": "base_turn_orchestration.txt",
@@ -199,9 +185,23 @@
     {
       "document_id": "time-system",
       "file_name": "time_system.txt",
-      "lexical_indexed": false,
-      "semantic_indexed": true,
-      "semantic_reason": "approved_embedding_snapshot"
+      "lexical_indexed": true,
+      "semantic_indexed": false,
+      "semantic_reason": "approved_embedding_absent"
+    },
+    {
+      "document_id": "universal-category-classification-policy",
+      "file_name": "universal_category_classification_policy.md",
+      "lexical_indexed": true,
+      "semantic_indexed": false,
+      "semantic_reason": "approved_embedding_absent"
+    },
+    {
+      "document_id": "universal-category-classification-references",
+      "file_name": "universal_category_classification_references.md",
+      "lexical_indexed": true,
+      "semantic_indexed": false,
+      "semantic_reason": "approved_embedding_absent"
     },
     {
       "document_id": "weapons-and-armor",

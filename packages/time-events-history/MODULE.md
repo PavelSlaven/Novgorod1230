@@ -17,6 +17,10 @@ Clock, durations, timers, delayed events, historical phases and time-driven upda
 - NPC decisions
 - persistence or narration
 
+## Spatial v3 target boundary
+
+P08 records this module as the sole owner of target exact-clock, timers and historical update contracts. It exposes no spatial repository, traversal, materialization or commit port and does not activate v3 before P28.
+
 ## Public API
 
 - `normalizeClock`
@@ -25,6 +29,7 @@ Clock, durations, timers, delayed events, historical phases and time-driven upda
 - `dueTimers`
 - `activeHistoricalPhases`
 - `buildTimeDrivenUpdateRequest`
+- `normalizeRational`, `addRational`, `subtractRational`, `compareRational`, `advanceExactClock` (P19 target-only exact time)
 
 ## Контракты и инварианты
 

@@ -43,7 +43,15 @@ async function git(projectRoot, args) {
 }
 
 async function gitBytes(projectRoot, args) {
-  const { stdout } = await execFile('git', args, { cwd: projectRoot, encoding: 'buffer', windowsHide: true });
+  // Subject evidence intentionally includes immutable ZIP payloads larger than
+  // execFile's 1 MiB default.  Keep this bounded rather than treating a valid
+  // large blob as a missing Git path.
+  const { stdout } = await execFile('git', args, {
+    cwd: projectRoot,
+    encoding: 'buffer',
+    maxBuffer: 16 * 1024 * 1024,
+    windowsHide: true
+  });
   return Buffer.from(stdout);
 }
 

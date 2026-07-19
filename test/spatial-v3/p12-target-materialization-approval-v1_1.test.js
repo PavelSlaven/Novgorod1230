@@ -27,7 +27,10 @@ test('P12 V1.1 immutable payload remains fail-closed until approved dependency c
   assert.equal(result.materialization_authorized, false);
   assert.equal(result.p12_operational_gaps_closed, false);
   assert.equal(result.p28_activation, 'not_authorized');
-  assert.ok(result.errors.some((entry) => entry.code === 'P12_V11_SUBJECT_COMMIT_BINDING_INVALID' || entry.code === 'P12_V11_BINDING_HEAD_REPLAY_OR_FUTURE'));
+  assert.deepEqual(result.errors, [{
+    code: 'P12_V11_DEPENDENCY_CLOSURE_EVIDENCE_MISSING',
+    subject_ref: 'data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/v1_1-subject-commit-binding.json'
+  }]);
 });
 
 test('P12 V1.1 accepts only an exact two-commit, current, digest-pinned evidence chain', async () => {

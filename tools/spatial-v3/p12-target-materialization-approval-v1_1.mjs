@@ -42,12 +42,61 @@ async function git(projectRoot, args) {
   return stdout.trim();
 }
 
+async function gitBytes(projectRoot, args) {
+  const { stdout } = await execFile('git', args, { cwd: projectRoot, encoding: 'buffer', windowsHide: true });
+  return Buffer.from(stdout);
+}
+
+const sha256 = (value) => createHash('sha256').update(value).digest('hex');
+const sha = (value) => typeof value === 'string' && /^[0-9a-f]{40}$/.test(value);
+
+/**
+ * Verifies a two-commit P12 evidence chain without treating a reachable
+ * ancestor as current approval.  The binding commit is deliberately required
+ * to be HEAD: a later checkout needs a new, explicit evidence commit.
+ */
+export async function verifyP12SubjectCommitBinding({ projectRoot, bindingPath, binding, head, gitText = git, gitRaw = gitBytes }) {
+  const errors = [];
+  const expectedPaths = binding?.required_subject_tree_paths;
+  const bindingCommit = binding?.binding_commit;
+  const subjectCommit = binding?.subject_commit;
+  const closure = binding?.approved_dependency_closure;
+  if (!sha(bindingCommit) || !sha(subjectCommit) || bindingCommit === subjectCommit) {
+    return Object.freeze({ ok: false, dependencyClosureApproved: false, errors: Object.freeze([issue('P12_V11_SUBJECT_COMMIT_BINDING_INVALID', bindingPath)]) });
+  }
+  if (head !== bindingCommit) errors.push(issue('P12_V11_BINDING_HEAD_REPLAY_OR_FUTURE', bindingPath));
+  try {
+    const parents = (await gitText(projectRoot, ['show', '-s', '--format=%P', bindingCommit])).split(/\s+/).filter(Boolean);
+    if (parents.length !== 1 || parents[0] !== subjectCommit) errors.push(issue('P12_V11_BINDING_PARENT_NOT_SUBJECT', bindingPath));
+    const introductions = (await gitText(projectRoot, ['log', '--format=%H', '--diff-filter=A', '--reverse', '--', bindingPath])).split(/\r?\n/).filter(Boolean);
+    if (introductions.length !== 1 || introductions[0] !== bindingCommit) errors.push(issue('P12_V11_BINDING_NOT_INTRODUCED_BY_EVIDENCE_COMMIT', bindingPath));
+    const allowed = new Set([bindingPath, ...(Array.isArray(binding.allowed_evidence_paths) ? binding.allowed_evidence_paths : [])]);
+    const changed = (await gitText(projectRoot, ['diff', '--name-only', `${subjectCommit}..${bindingCommit}`])).split(/\r?\n/).filter(Boolean);
+    if (!changed.includes(bindingPath) || changed.some((path) => !allowed.has(path))) errors.push(issue('P12_V11_BINDING_COMMIT_SCOPE_INVALID', bindingPath));
+  } catch { errors.push(issue('P12_V11_BINDING_COMMIT_UNVERIFIABLE', bindingPath)); }
+  if (!Array.isArray(expectedPaths) || expectedPaths.length === 0 || expectedPaths.some((entry) => !entry || typeof entry.path !== 'string' || !/^[0-9a-f]{64}$/.test(entry.sha256 ?? ''))) {
+    errors.push(issue('P12_V11_SUBJECT_TREE_EVIDENCE_INVALID', bindingPath));
+  } else {
+    for (const entry of expectedPaths) {
+      try {
+        const content = await gitRaw(projectRoot, ['show', `${subjectCommit}:${entry.path}`]);
+        if (sha256(content) !== entry.sha256) errors.push(issue('P12_V11_SUBJECT_TREE_DIGEST_MISMATCH', entry.path));
+      } catch { errors.push(issue('P12_V11_SUBJECT_TREE_PATH_MISSING', entry.path)); }
+    }
+  }
+  const dependencyClosureApproved = closure?.status === 'APPROVED'
+    && closure?.evidence_commit === bindingCommit
+    && typeof closure?.evidence_id === 'string' && closure.evidence_id.length > 0;
+  if (!dependencyClosureApproved) errors.push(issue('P12_V11_DEPENDENCY_CLOSURE_EVIDENCE_MISSING', bindingPath));
+  return Object.freeze({ ok: errors.length === 0, dependencyClosureApproved, errors: Object.freeze(errors) });
+}
+
 export async function validateP12TargetMaterializationApprovalV11({ root = ROOT, indexPath = INDEX_PATH } = {}) {
   const projectRoot = resolve(root); const errors = [];
   let index;
   try { index = JSON.parse(await readFile(resolve(projectRoot, indexPath), 'utf8')); }
   catch { return Object.freeze({ ok: false, materialization_authorized: false, errors: Object.freeze([issue('P12_V11_INDEX_MISSING', indexPath)]) }); }
-  if (index.package_id !== packageId || index.intake_status !== 'bound_for_repository_apply' || index.materialization_authorized !== true || index.production_activation !== 'not_authorized') errors.push(issue('P12_V11_IDENTITY_MISMATCH', indexPath));
+  if (index.package_id !== packageId || index.intake_status !== 'bound_for_repository_apply_pending_dependency_closure' || index.materialization_authorized !== false || index.production_activation !== 'not_authorized') errors.push(issue('P12_V11_IDENTITY_MISMATCH', indexPath));
   const zip = resolve(projectRoot, index.package_path ?? '');
   if (!inside(projectRoot, zip)) errors.push(issue('P12_V11_PATH_ESCAPE', index.package_path ?? 'unknown'));
   let manifest;
@@ -70,14 +119,15 @@ export async function validateP12TargetMaterializationApprovalV11({ root = ROOT,
   if (binding) {
     try {
       const [branch, head] = await Promise.all([git(projectRoot, ['branch', '--show-current']), git(projectRoot, ['rev-parse', 'HEAD'])]);
-      const bindingValid = binding.status === 'BOUND_FOR_REPOSITORY_APPLY' && binding.repository === 'PavelSlaven/Novgorod1230' && binding.branch_name === branch && /^[0-9a-f]{40}$/.test(binding.subject_commit ?? '') && binding.approval_manifest_sha256 === index.manifest_sha256;
+      const bindingValid = binding.status === 'BOUND_FOR_REPOSITORY_APPLY' && binding.repository === 'PavelSlaven/Novgorod1230' && binding.branch_name === branch && sha(binding.subject_commit) && binding.approval_manifest_sha256 === index.manifest_sha256;
       if (!bindingValid) errors.push(issue('P12_V11_SUBJECT_COMMIT_BINDING_INVALID', index.binding_path));
       else {
-        await execFile('git', ['merge-base', '--is-ancestor', binding.subject_commit, head], { cwd: projectRoot, windowsHide: true });
+        const evidence = await verifyP12SubjectCommitBinding({ projectRoot, bindingPath: index.binding_path, binding, head });
+        errors.push(...evidence.errors);
       }
     } catch { errors.push(issue('P12_V11_SUBJECT_COMMIT_NOT_REACHABLE', index.binding_path)); }
   }
-  return Object.freeze({ ok: errors.length === 0, package_id: packageId, materialization_authorized: errors.length === 0, p12_operational_gaps_closed: false, p28_activation: 'not_authorized', errors: Object.freeze(errors) });
+  return Object.freeze({ ok: errors.length === 0, package_id: packageId, materialization_authorized: false, p12_operational_gaps_closed: false, p28_activation: 'not_authorized', errors: Object.freeze(errors) });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

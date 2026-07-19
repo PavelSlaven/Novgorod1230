@@ -4,7 +4,7 @@
   "repository": "PavelSlaven/Novgorod1230",
   "pr_number": 14,
   "branch_name": "codex/spatial-architecture-g0-g6-v4-2",
-  "subject_commit": "b88da368ce7807c595664496be7a6ef893caa24d",
+  "subject_commit": "e6be7c06cbd6c37c375658af6f2fe529d4f64353",
   "base_main_sha": "9f2a8c1477793e3baac376d558a64b1b2272cc4a",
   "approval_package_id": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1",
   "approval_package_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
@@ -19,7 +19,8 @@
     { "path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip", "sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698" },
     { "path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/index.v1_1.json", "sha256": "42a5ebf76843e8efea0209e5c738cbb3428514c583718a530362c868d9c105cb" },
     { "path": "tools/spatial-v3/p12-canonical-manifest.mjs", "sha256": "9dbbce248cf18a09c68425ea2dbc546e4a4f1d51a8342816481f8e569309dbee" },
-    { "path": "tools/spatial-v3/p12-target-materialization-approval-v1_1.mjs", "sha256": "91d2b5de7cfb95da7ca9502167ef76049fd22add43421c82b490e2df44d0a15a" }
+    { "path": "tools/spatial-v3/p12-target-materialization-approval-v1_1.mjs", "sha256": "3456481e58c1f883f79fdb84012796bd0986fa7158ed11dfa0702c0a7f2d97f4" },
+    { "path": "test/spatial-v3/p12-target-materialization-approval-v1_1.test.js", "sha256": "b08b94a2b2eb50db2c8879500624f8ed129dc50c0e29f373cf91302a4b410c96" }
   ],
   "approved_dependency_closure": {
     "status": "PENDING",

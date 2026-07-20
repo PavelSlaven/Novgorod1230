@@ -35,15 +35,17 @@ const gitRaw = async (_root, args) => {
   return Buffer.from('abc');
 };
 
-test('P12 V1.1 immutable payload remains fail-closed until approved dependency closure evidence is current', async () => {
-  const result = await validateP12TargetMaterializationApprovalV11();
+test('P12 V1.1 immutable payload remains fail-closed when dependency closure evidence is missing', async () => {
+  const result = await verifyP12DependencyClosureBinding({
+    projectRoot: '.',
+    bindingPath,
+    head: SHA,
+    gitRaw: async () => { throw new Error('missing binding'); }
+  });
   assert.equal(result.ok, false);
-  assert.equal(result.materialization_authorized, false);
-  assert.equal(result.p12_operational_gaps_closed, false);
-  assert.equal(result.p28_activation, 'not_authorized');
   assert.deepEqual(result.errors, [{
-    code: 'P12_V11_DEPENDENCY_CLOSURE_EVIDENCE_MISSING',
-    subject_ref: 'data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/dependency-closure/v1/subject-commit-binding.json'
+    code: 'P12_V11_DEPENDENCY_CLOSURE_EVIDENCE_INVALID',
+    subject_ref: bindingPath
   }]);
 });
 

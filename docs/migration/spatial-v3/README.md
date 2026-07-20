@@ -389,6 +389,95 @@ downloads closed the metadata recovery gate. The forensic sequencing note
 remains: this reconstructed evidence does not prove that the original P00
 checks preceded commit `9344c90` and does not rewrite repository history.
 
+## P02 — target materialization/DB/map normatives with an explicit pre-P28 boundary
+
+### Scope and document architecture
+
+P02 is implemented as four paired normative owners. The pre-P28 production
+owner remains the byte-pinned active materialization-v2 document; its
+`spatial_v3_target_*` supplement contains the target v3 replacement. This
+separation satisfies the plan without relabelling target text as production
+active:
+
+| Active production v2 until P28 | Separate target v3 supplement |
+|---|---|
+| `code_driven_world_materialization_architecture.md` | `spatial_v3_target_code_driven_world_materialization_architecture.md` |
+| `world_base_materialization_table_requirements.md` | `spatial_v3_target_world_base_materialization_table_requirements.md` |
+| `read_only_database_and_graph_architecture.md` | `spatial_v3_target_read_only_database_and_graph_architecture.md` |
+| `map_g0_g4_workflow.txt` | `spatial_v3_target_map_g0_g4_workflow.txt` |
+
+The target supplements cover canonical G0–G5, finite party-generated G5,
+party G6/positions, finite expansion, typed data gaps, proposal/commit
+ownership, normalized authoring/import readiness, exact cross-database pins,
+save/load from pinned records, explicit topology and the G0–G5 authoring
+workflow. The compatibility workflow filename does not authorize G7/G8.
+Physical coexistence remains non-authoritative: dual write, mixed reads,
+fallback and partial activation are forbidden.
+
+The formal authority for that boundary is the versioned, strict
+`evidence/p02-boundary-declaration.json`, validated against
+`data/contracts/spatial-v3/p02-boundary-declaration.schema.json`. It declares
+the sole v2 production read/write owner, inactive-until-P28 target status,
+negative activation flags, G5 ownership, maximum level and the exact four
+active/target path and whole-document digest pairs. Prose marker checks and
+contradiction detection are defense-in-depth; they are not the authoritative
+proof of production ownership.
+The checker also embeds independent origin/main SHA-256 trust anchors for all
+four active-v2 documents. An active file must match its hardcoded anchor and
+the declaration pin must equal the same anchor, so jointly editing active text
+and its mutable declaration cannot authorize drift. Target supplements may be
+repinned only as an explicit reviewed P02 change. The JSON Schema itself is
+anchored by an independent checker SHA-256 and is executed by the checker's
+JSON Schema validator before the additional P02 invariants.
+
+### Readiness, navigation and verification
+
+- Intake: repository `C:\Users\Slaven\Documents\Новгород`, branch
+  `codex/spatial-architecture-g0-g6-v4-2`, HEAD
+  `93c0b5f27d488c1ce6c7084c573580ed6485fb3d`; `origin/main`
+  `9f2a8c1477793e3baac376d558a64b1b2272cc4a`.
+- Toolchain: Node `v24.16.0`, npm `11.13.0`, Python `3.13.3`, uv `0.8.12`,
+  Docker `29.5.3`, Compose `5.1.4`, Graphify `0.9.17`.
+- Repository Intelligence query:
+  `P02 normative target-document architecture active v2 production owner proposed spatial-v3 supplement P28 activation boundary checker tests documentation`.
+  Repository graph was rebuilt for the intake HEAD and reported ready; the
+  knowledge-source `degraded` semantic-coverage warning was recorded and did
+  not replace complete normative reading.
+- Independent Graphify query:
+  `P02 active target document architecture v2 production owner proposed supplement P28 activation boundary checker`.
+  It identified `check-p02.mjs`, `check-p05.mjs`, documentation tooling and the
+  P28 gate as the relevant implementation boundary.
+- Red: the former `spatial-v3:check-p02` required target/P28/G6 wording inside
+  the active v2 documents and therefore failed against the intended document
+  architecture.
+- Green: `check-p02.mjs` now validates each active/target pair, pins the active
+  v2 bytes, rejects premature v3 activation and checks the P02 target
+  requirements only in the target supplements. It performs no DDL, import,
+  runtime composition or P28 mutation.
+- Critic repair: `node --test test/spatial-v3/p02-normative-boundary.test.js`
+  passes 50/50 isolated cases. Temporary copies prove fail-closed behavior for
+  English and Russian variants of pre-P28 dual write, mixed read/execution
+  authority, v3→v2 fallback, partial activation, canonical-G5 prohibition or
+  party-only ownership, G7/G8 introduction, and mutation of a pinned active
+  document. Regression cases include `Dual write is enabled before P28`,
+  production writing each change to both stores, `the v3 path falls back to
+  v2`, canonical G5 nonexistence/party-only ownership and a split-line
+  permission assertion. Controls prove that explicit prohibition wording and
+  `G7 is not introduced and is not required` remain valid.
+  Every top-level declaration field is mutated independently; additional and
+  missing properties, duplicate/unknown pair identity, active/target path and
+  digest changes, section identity/digest changes and pin-level extra
+  properties all fail closed. Safe prose controls pass only after their exact
+  target digest is explicitly repinned in the temporary declaration.
+  A separate regression proves that modifying an active document and repinning
+  the declaration to the same modified digest still fails the independent
+  origin/main trust anchor. Schema mutations of `dual_write.const`,
+  `required`, `pair_id`, `documentPin.additionalProperties` and exact
+  four-pair cardinality also fail the independently pinned schema check.
+  `npm run spatial-v3:check-p02`, `npm run spatial-v3:check-p05`,
+  `npm run docs:check`, `npm run architecture:check` and
+  `npm run knowledge:check` all pass after the repair.
+
 ## P12 target-materialization approval intake (2026-07-19)
 
 `P12_TARGET_MATERIALIZATION_APPROVAL_V1.zip` is byte-pinned under

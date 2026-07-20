@@ -1,0 +1,77 @@
+{
+  "schema_version": "p02-boundary-declaration.v1",
+  "phase": "P02",
+  "active_owner": "v2",
+  "target_status": "inactive_until_P28",
+  "production_read": "v2_only",
+  "production_write": "v2_only",
+  "dual_write": false,
+  "mixed_authority": false,
+  "fallback": false,
+  "partial_activation": false,
+  "canonical_g5": "world_base",
+  "generated_g5": "party_runtime",
+  "max_level": "G6",
+  "documents": [
+    {
+      "pair_id": "architecture",
+      "active": {
+        "path": "code_driven_world_materialization_architecture.md",
+        "sha256": "2a2787c3f7f9c081ac4844dd8adaf0b291167b2125ea1ce8e5342d10a1685838",
+        "section_id": "whole_document",
+        "section_sha256": "2a2787c3f7f9c081ac4844dd8adaf0b291167b2125ea1ce8e5342d10a1685838"
+      },
+      "target": {
+        "path": "spatial_v3_target_code_driven_world_materialization_architecture.md",
+        "sha256": "2a7209efc7ff38e8ea4bcac2e1f990a36fd639864e025850d04554ac881f14b1",
+        "section_id": "whole_document",
+        "section_sha256": "2a7209efc7ff38e8ea4bcac2e1f990a36fd639864e025850d04554ac881f14b1"
+      }
+    },
+    {
+      "pair_id": "requirements",
+      "active": {
+        "path": "world_base_materialization_table_requirements.md",
+        "sha256": "d08c7d35d39c9f901e038dd6fb83300e36aa0744674cf055298eef2164cc1943",
+        "section_id": "whole_document",
+        "section_sha256": "d08c7d35d39c9f901e038dd6fb83300e36aa0744674cf055298eef2164cc1943"
+      },
+      "target": {
+        "path": "spatial_v3_target_world_base_materialization_table_requirements.md",
+        "sha256": "9f7a4c4e2ee7c6cdb3f03354e361247b9815e41deb333d55d89567128fa984cc",
+        "section_id": "whole_document",
+        "section_sha256": "9f7a4c4e2ee7c6cdb3f03354e361247b9815e41deb333d55d89567128fa984cc"
+      }
+    },
+    {
+      "pair_id": "graph",
+      "active": {
+        "path": "read_only_database_and_graph_architecture.md",
+        "sha256": "791b8eed78844c8a3d5f19de99218a7524f7b0353669c719b40d3b6bb4fe38ef",
+        "section_id": "whole_document",
+        "section_sha256": "791b8eed78844c8a3d5f19de99218a7524f7b0353669c719b40d3b6bb4fe38ef"
+      },
+      "target": {
+        "path": "spatial_v3_target_read_only_database_and_graph_architecture.md",
+        "sha256": "daaee8b8cfcbd535750567938ec8205175ead6b0f3c8020fe20e8840052181c5",
+        "section_id": "whole_document",
+        "section_sha256": "daaee8b8cfcbd535750567938ec8205175ead6b0f3c8020fe20e8840052181c5"
+      }
+    },
+    {
+      "pair_id": "workflow",
+      "active": {
+        "path": "map_g0_g4_workflow.txt",
+        "sha256": "00e32749b9625d1654b6fe55878f49bcf8d57bcd6579a0d35f8feee7ee9fc69d",
+        "section_id": "whole_document",
+        "section_sha256": "00e32749b9625d1654b6fe55878f49bcf8d57bcd6579a0d35f8feee7ee9fc69d"
+      },
+      "target": {
+        "path": "spatial_v3_target_map_g0_g4_workflow.txt",
+        "sha256": "5a33f0d24b64e5b07eaa150f525ebe6c6597f55760c20f7fab2dd8c7f76d92c1",
+        "section_id": "whole_document",
+        "section_sha256": "5a33f0d24b64e5b07eaa150f525ebe6c6597f55760c20f7fab2dd8c7f76d92c1"
+      }
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "records": [
+    {
+      "id": "scene_selection_single_candidate_v1",
+      "version": 1,
+      "rule_kind": "single_exact_candidate",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    }
+  ]
+}

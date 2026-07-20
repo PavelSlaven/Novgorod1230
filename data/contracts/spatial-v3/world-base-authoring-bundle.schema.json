@@ -7,6 +7,7 @@
   "properties": {
     "schema_version": { "const": "rus.spatial-v3.world-base-authoring-bundle.v1" },
     "bundle_id": { "type": "string", "minLength": 1 },
+    "bundle_kind": { "enum": ["dependency_closure"] },
     "world_revision_id": { "type": "string", "minLength": 1 },
     "status": { "enum": ["draft", "approved"] },
     "provenance_ref": { "type": "string", "minLength": 1 },
@@ -15,7 +16,7 @@
     "data_gaps": { "type": "array", "items": { "$ref": "#/$defs/data_gap" } }
   },
   "$defs": {
-    "dataset": { "type": "object", "additionalProperties": false, "required": ["table", "file", "sha256", "status", "provenance_ref", "delete_policy", "depends_on"], "properties": { "table": { "type": "string", "pattern": "^spatial_v3_[a-z0-9_]+$" }, "file": { "type": "string", "pattern": "^[a-zA-Z0-9._/-]+\\.json$" }, "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "status": { "enum": ["draft", "approved"] }, "provenance_ref": { "type": "string", "minLength": 1 }, "delete_policy": { "enum": ["forbid", "explicit_tombstone"] }, "depends_on": { "type": "array", "items": { "type": "string", "pattern": "^spatial_v3_[a-z0-9_]+$" } } } },
+    "dataset": { "type": "object", "additionalProperties": false, "required": ["table", "file", "sha256", "status", "provenance_ref", "delete_policy", "depends_on"], "properties": { "table": { "type": "string", "pattern": "^(?:spatial_v3_[a-z0-9_]+|source_records|record_sources|universal_categories)$" }, "file": { "type": "string", "pattern": "^[a-zA-Z0-9._/-]+\\.json$" }, "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "status": { "enum": ["draft", "approved"] }, "provenance_ref": { "type": "string", "minLength": 1 }, "delete_policy": { "enum": ["forbid", "explicit_tombstone"] }, "depends_on": { "type": "array", "items": { "type": "string", "pattern": "^(?:spatial_v3_[a-z0-9_]+|source_records|record_sources|universal_categories)$" } } } },
     "data_gap": { "type": "object", "additionalProperties": false, "required": ["code", "subject_ref", "dependency_pins", "blocking"], "properties": { "code": { "type": "string", "pattern": "^[A-Z0-9_]+$" }, "subject_ref": { "type": "string", "minLength": 1 }, "dependency_pins": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } }, "blocking": { "const": true } } }
   }
 }

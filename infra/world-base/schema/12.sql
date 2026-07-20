@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS world_base.spatial_v3_nodes (
   spatial_level TEXT NOT NULL CHECK (spatial_level IN ('G0', 'G1', 'G2', 'G3', 'G4', 'G5')),
   stable_label_id TEXT,
   primary_class_id TEXT NOT NULL REFERENCES world_base.universal_categories(id) ON DELETE RESTRICT,
-  evidence_status TEXT NOT NULL CHECK (evidence_status IN ('draft', 'reviewed', 'rejected')),
+  evidence_status TEXT NOT NULL CHECK (evidence_status IN ('draft', 'reviewed', 'rejected', 'comparative_reconstruction', 'source_backed_with_localization_uncertainty', 'archaeologically_supported_with_access_limit', 'regional_typology')),
   traversal_model TEXT CHECK (traversal_model IN ('enclosed', 'bounded', 'through_area')),
   status TEXT NOT NULL CHECK (status IN ('approved', 'deprecated', 'retired')),
   provenance_ref TEXT NOT NULL REFERENCES world_base.source_records(id) ON DELETE RESTRICT,

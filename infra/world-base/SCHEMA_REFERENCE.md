@@ -1,9 +1,9 @@
 <!-- GENERATED FILE. Sources: infra/world-base/schema.sql, infra/world-base/schema/*.sql and infra/world-base/field-descriptions.js. Run `npm run world-db:schema-doc`; do not edit manually. -->
 # Справочник схемы `world_base`
 
-- Исполняемый источник: `infra/world-base/schema.sql` и 14 упорядоченных SQL-частей.
-- SHA-256 развёрнутого DDL: `731ffacb19e7e0b401ccf7154dcbc0db6ee61fbf9b6ba6845e05dc2211888b5e`.
-- Таблиц: 174.
+- Исполняемый источник: `infra/world-base/schema.sql` и 16 упорядоченных SQL-частей.
+- SHA-256 развёрнутого DDL: `c06b4498a3706dcd78dff8c576b4540b05e02cbdf295f4bb6d39b36d5bb1a918`.
+- Таблиц: 185.
 - Описания берутся только из утверждённого `infra/world-base/field-descriptions.js`; отсутствие описания не заполняется эвристикой.
 
 ## Граф (каноническая карта)
@@ -2615,7 +2615,7 @@ Target v3 version graph canonical world authoring; остаётся read-only и
 | `spatial_level` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (spatial_level IN ('G0', 'G1', 'G2', 'G3', 'G4', 'G5'))` | Ровно один canonical уровень G0–G5. |
 | `stable_label_id` | `TEXT` | да | — | — | — | Описание отсутствует. |
 | `primary_class_id` | `TEXT` | нет | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
-| `evidence_status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (evidence_status IN ('draft', 'reviewed', 'rejected'))` | Описание отсутствует. |
+| `evidence_status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (evidence_status IN ('draft', 'reviewed', 'rejected', 'comparative_reconstruction', 'source_backed_with_localization_uncertainty', 'archaeologically_supported_with_access_limit', 'regional_typology'))` | Описание отсутствует. |
 | `traversal_model` | `TEXT` | да | — | — | `CHECK (traversal_model IN ('enclosed', 'bounded', 'through_area'))` | Обязателен только для G4: enclosed, bounded или through_area. |
 | `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (status IN ('approved', 'deprecated', 'retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
 | `provenance_ref` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | FK → source_records(id): provenance версии. |
@@ -2904,8 +2904,10 @@ Fixed/curved profiles движения и только явная reciprocal rev
 | `g4_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
 | `g4_version` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
 | `direction_context_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
-| `exit_orientation_profile_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
-| `exit_orientation_profile_version` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `exit_orientation_profile_id` | `TEXT` | да | — | — | — | Описание отсутствует. |
+| `exit_orientation_profile_version` | `INTEGER` | да | — | — | — | Описание отсутствует. |
+| `exit_orientation_rule_id` | `TEXT` | да | — | — | — | Описание отсутствует. |
+| `exit_orientation_rule_version` | `INTEGER` | да | — | — | — | Описание отсутствует. |
 | `exit_kind` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(exit_kind IN ('world_route_exit','physical_boundary'))` | Описание отсутствует. |
 | `exit_canonical_g5_id` | `TEXT` | да | — | — | — | Описание отсутствует. |
 | `exit_canonical_g5_version` | `INTEGER` | да | — | — | — | Описание отсутствует. |
@@ -2951,7 +2953,7 @@ Fixed/curved profiles движения и только явная reciprocal rev
 - `PRIMARY KEY(id,version)`
 - `UNIQUE(id,version,world_revision_id)`
 - `FOREIGN KEY(entity_kind,id,version,world_revision_id) REFERENCES world_base.spatial_v3_authoring_versions(entity_kind,entity_id,version,world_revision_id) DEFERRABLE INITIALLY DEFERRED`
-- `FOREIGN KEY(reverse_route_id,reverse_route_version) REFERENCES world_base.spatial_v3_world_routes(id,version) ON DELETE RESTRICT`
+- `FOREIGN KEY(reverse_route_id,reverse_route_version) REFERENCES world_base.spatial_v3_world_routes(id,version) ON DELETE RESTRICT DEFERRABLE INITIALLY DEFERRED`
 - `CHECK((reverse_route_id IS NULL) = (reverse_route_version IS NULL))`
 - `CHECK(reverse_route_id IS NULL OR reverse_route_id <> id)`
 
@@ -3005,8 +3007,10 @@ Fixed/curved profiles движения и только явная reciprocal rev
 | `to_point_version` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
 | `transition_environment_profile_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
 | `transition_environment_profile_version` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
-| `movement_orientation_profile_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
-| `movement_orientation_profile_version` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `movement_orientation_profile_id` | `TEXT` | да | — | — | — | Описание отсутствует. |
+| `movement_orientation_profile_version` | `INTEGER` | да | — | — | — | Описание отсутствует. |
+| `topological_orientation_profile_id` | `TEXT` | да | — | — | — | Описание отсутствует. |
+| `topological_orientation_profile_version` | `INTEGER` | да | — | — | — | Описание отсутствует. |
 | `baseline_movement_method_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
 | `movement_method_cost_profile_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
 | `movement_method_cost_profile_version` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
@@ -3211,10 +3215,11 @@ Zero-own-time boundary switch между exact adjacent segment contexts.
 | `id` | `TEXT` | нет | — | — | `NOT NULL` | Уникальный идентификатор записи (TEXT, первичный ключ). |
 | `version` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK(version>0)` | Описание отсутствует. |
 | `world_revision_id` | `TEXT` | нет | — | `world_base.spatial_v3_world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
-| `environment_class_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
-| `permanent_cost_basis_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
-| `dynamic_environment_rule_set_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
-| `dynamic_environment_rule_set_version` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `environment_class_id` | `TEXT` | да | — | — | — | Описание отсутствует. |
+| `permanent_cost_basis_id` | `TEXT` | да | — | — | — | Описание отсутствует. |
+| `dynamic_environment_rule_set_id` | `TEXT` | да | — | — | — | Описание отсутствует. |
+| `dynamic_environment_rule_set_version` | `INTEGER` | да | — | — | — | Описание отсутствует. |
+| `definition` | `TEXT` | да | — | — | — | Описание отсутствует. |
 | `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(status IN ('approved','deprecated','retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
 | `provenance_ref` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
 | `canonical_digest` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(canonical_digest ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
@@ -3236,6 +3241,12 @@ Zero-own-time boundary switch между exact adjacent segment contexts.
 | `version` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK(version>0)` | Описание отсутствует. |
 | `world_revision_id` | `TEXT` | нет | — | `world_base.spatial_v3_world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
 | `baseline_movement_method_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `base_minutes` | `INTEGER` | да | — | — | `CHECK(base_minutes > 0)` | Описание отсутствует. |
+| `dynamic_modifiers_required` | `BOOLEAN` | да | — | — | — | Описание отсутствует. |
+| `calibration_kind` | `TEXT` | да | — | — | — | Описание отсутствует. |
+| `distance_derived` | `BOOLEAN` | да | — | — | — | Описание отсутствует. |
+| `measured_historical_duration` | `BOOLEAN` | да | — | — | — | Описание отсутствует. |
+| `definition` | `TEXT` | да | — | — | — | Описание отсутствует. |
 | `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(status IN ('approved','deprecated','retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
 | `provenance_ref` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
 | `canonical_digest` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(canonical_digest ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
@@ -3275,8 +3286,11 @@ Zero-own-time boundary switch между exact adjacent segment contexts.
 | `id` | `TEXT` | нет | — | — | `NOT NULL` | Уникальный идентификатор записи (TEXT, первичный ключ). |
 | `version` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK(version>0)` | Описание отсутствует. |
 | `world_revision_id` | `TEXT` | нет | — | `world_base.spatial_v3_world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
-| `policy_kind` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(policy_kind IN ('segment_once','fixed_progress_slices','explicit_progress_points'))` | Описание отсутствует. |
+| `policy_kind` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(policy_kind IN ('segment_once','fixed_progress_slices','explicit_progress_points','fixed_time_interval'))` | Описание отсутствует. |
 | `progress_slice_ppm` | `INTEGER` | да | — | — | `CHECK(progress_slice_ppm BETWEEN 1 AND 1000000)` | Описание отсутствует. |
+| `interval_minutes` | `INTEGER` | да | — | — | `CHECK(interval_minutes > 0)` | Описание отсутствует. |
+| `event_triggers` | `JSONB` | да | — | — | — | Описание отсутствует. |
+| `definition` | `TEXT` | да | — | — | — | Описание отсутствует. |
 | `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(status IN ('approved','deprecated','retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
 | `provenance_ref` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
 | `canonical_digest` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(canonical_digest ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
@@ -3287,6 +3301,7 @@ Zero-own-time boundary switch между exact adjacent segment contexts.
 - `UNIQUE(id,version,world_revision_id)`
 - `FOREIGN KEY(entity_kind,id,version,world_revision_id) REFERENCES world_base.spatial_v3_authoring_versions(entity_kind,entity_id,version,world_revision_id) DEFERRABLE INITIALLY DEFERRED`
 - `CHECK((policy_kind='fixed_progress_slices') = (progress_slice_ppm IS NOT NULL))`
+- `CHECK((policy_kind='fixed_time_interval') = (interval_minutes IS NOT NULL))`
 
 ### `world_base.spatial_v3_dynamic_recheck_policy_points`
 
@@ -3406,6 +3421,72 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 - `FOREIGN KEY(entity_kind,id,version,world_revision_id) REFERENCES world_base.spatial_v3_authoring_versions(entity_kind,entity_id,version,world_revision_id) DEFERRABLE INITIALLY DEFERRED`
 - `CHECK((target_selector_kind='source_endpoint') = (target_selector_value IS NULL))`
 - `CHECK((required_cost_contract_id IS NULL)=(required_cost_contract_version IS NULL))`
+
+## Spatial architecture v3: scene dependency closure (target only)
+
+### `world_base.spatial_v3_regional_scene_template_bases`
+
+Утверждённые региональные основы scene templates с topological-only geometry claim.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `entity_kind` | `TEXT` | нет | `'regional_scene_template_basis'` | — | `NOT NULL`<br>`CHECK (entity_kind = 'regional_scene_template_basis')` | Описание отсутствует. |
+| `id` | `TEXT` | нет | — | — | `NOT NULL` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `version` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (version > 0)` | Описание отсутствует. |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.spatial_v3_world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `source_profile_family_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `geometry_claim` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (geometry_claim = 'topological_only')` | Описание отсутствует. |
+| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (status IN ('approved', 'deprecated', 'retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `provenance_ref` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `canonical_digest` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (canonical_digest ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY (id, version)`
+- `UNIQUE (id, version, world_revision_id)`
+- `FOREIGN KEY (entity_kind, id, version, world_revision_id) REFERENCES world_base.spatial_v3_authoring_versions( entity_kind, entity_id, version, world_revision_id ) DEFERRABLE INITIALLY DEFERRED`
+
+### `world_base.spatial_v3_scene_selection_rules`
+
+Закрытые versioned правила выбора scene template; P12 поддерживает только single_candidate.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `entity_kind` | `TEXT` | нет | `'scene_selection_rule'` | — | `NOT NULL`<br>`CHECK (entity_kind = 'scene_selection_rule')` | Описание отсутствует. |
+| `id` | `TEXT` | нет | — | — | `NOT NULL` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `version` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (version > 0)` | Описание отсутствует. |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.spatial_v3_world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `rule_kind` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (rule_kind = 'single_candidate')` | Описание отсутствует. |
+| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (status IN ('approved', 'deprecated', 'retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `provenance_ref` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `canonical_digest` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (canonical_digest ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY (id, version)`
+- `UNIQUE (id, version, world_revision_id)`
+- `FOREIGN KEY (entity_kind, id, version, world_revision_id) REFERENCES world_base.spatial_v3_authoring_versions( entity_kind, entity_id, version, world_revision_id ) DEFERRABLE INITIALLY DEFERRED`
+
+### `world_base.spatial_v3_scene_applicability_rules`
+
+Закрытые versioned правила применимости scene candidate к точному source reference.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `entity_kind` | `TEXT` | нет | `'scene_applicability_rule'` | — | `NOT NULL`<br>`CHECK (entity_kind = 'scene_applicability_rule')` | Описание отсутствует. |
+| `id` | `TEXT` | нет | — | — | `NOT NULL` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `version` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (version > 0)` | Описание отсутствует. |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.spatial_v3_world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `rule_kind` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (rule_kind = 'exact_source_ref')` | Описание отсутствует. |
+| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (status IN ('approved', 'deprecated', 'retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `provenance_ref` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `canonical_digest` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (canonical_digest ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY (id, version)`
+- `UNIQUE (id, version, world_revision_id)`
+- `FOREIGN KEY (entity_kind, id, version, world_revision_id) REFERENCES world_base.spatial_v3_authoring_versions( entity_kind, entity_id, version, world_revision_id ) DEFERRABLE INITIALLY DEFERRED`
 
 ## Materialization v2: NPC-профили
 
@@ -4907,3 +4988,201 @@ Digests, counts и dependency order таблиц одного импорта.
 
 - `PRIMARY KEY(portal_template_id,portal_template_version,relation_kind,state)`
 - `FOREIGN KEY(portal_template_id,portal_template_version) REFERENCES world_base.spatial_v3_portal_templates(id,version) ON DELETE CASCADE`
+
+### `world_base.spatial_v3_approved_physical_source_pairs`
+
+Описание назначения отсутствует.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `version` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK(version > 0)` | Описание отсутствует. |
+| `provenance_ref` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `source_payload_sha256` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(source_payload_sha256 ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
+| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(status IN ('approved','deprecated','retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY(id,version)`
+
+### `world_base.spatial_v3_topological_movement_orientation_profiles`
+
+Описание назначения отсутствует.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `version` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK(version > 0)` | Описание отсутствует. |
+| `orientation_kind` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(orientation_kind IN ('ordered_endpoints','ordered_channel','ordered_shore'))` | Описание отсутствует. |
+| `vertical_direction` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(vertical_direction IN ('level','up','down','mixed'))` | Описание отсутствует. |
+| `forbids_compass_inference` | `BOOLEAN` | нет | — | — | `NOT NULL`<br>`CHECK(forbids_compass_inference)` | Описание отсутствует. |
+| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(status IN ('approved','deprecated','retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `provenance_ref` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `canonical_digest` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(canonical_digest ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY(id,version)`
+
+### `world_base.spatial_v3_topological_exit_orientation_rules`
+
+Описание назначения отсутствует.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `version` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK(version > 0)` | Описание отсутствует. |
+| `rule_kind` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(rule_kind='ordered_source_to_target')` | Описание отсутствует. |
+| `forbids_compass_inference` | `BOOLEAN` | нет | — | — | `NOT NULL`<br>`CHECK(forbids_compass_inference)` | Описание отсутствует. |
+| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(status IN ('approved','deprecated','retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `provenance_ref` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `canonical_digest` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(canonical_digest ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY(id,version)`
+
+### `world_base.spatial_v3_canonical_g5_connection_profiles`
+
+Описание назначения отсутствует.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `version` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK(version > 0)` | Описание отсутствует. |
+| `profile_scope` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(profile_scope IN ('site_connection','world_route_segment'))` | Описание отсутствует. |
+| `passage_type_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `transition_environment_profile_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `transition_environment_profile_version` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `movement_orientation_profile_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `movement_orientation_profile_version` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `cost_kind` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(cost_kind IN ('action','time'))` | Описание отсутствует. |
+| `action_units` | `INTEGER` | да | — | — | — | Описание отсутствует. |
+| `baseline_movement_method_id` | `TEXT` | да | — | — | — | Описание отсутствует. |
+| `movement_method_cost_profile_id` | `TEXT` | да | — | — | — | Описание отсутствует. |
+| `movement_method_cost_profile_version` | `INTEGER` | да | — | — | — | Описание отсутствует. |
+| `base_minutes` | `INTEGER` | да | — | — | — | Описание отсутствует. |
+| `dynamic_recheck_policy_id` | `TEXT` | да | — | — | — | Описание отсутствует. |
+| `dynamic_recheck_policy_version` | `INTEGER` | да | — | — | — | Описание отсутствует. |
+| `capacity` | `INTEGER` | да | — | — | `CHECK(capacity IS NULL OR capacity > 0)` | Описание отсутствует. |
+| `capacity_semantics_ref` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `risk_profile_ref` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `availability_condition_set_ref` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(status IN ('approved','deprecated','retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `provenance_ref` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `canonical_digest` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(canonical_digest ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY(id,version)`
+- `FOREIGN KEY(movement_orientation_profile_id,movement_orientation_profile_version) REFERENCES world_base.spatial_v3_topological_movement_orientation_profiles(id,version) ON DELETE RESTRICT`
+- `CHECK((cost_kind='action' AND action_units IS NOT NULL AND baseline_movement_method_id IS NULL AND movement_method_cost_profile_id IS NULL AND movement_method_cost_profile_version IS NULL AND base_minutes IS NULL AND dynamic_recheck_policy_id IS NULL AND dynamic_recheck_policy_version IS NULL) OR (cost_kind='time' AND action_units IS NULL AND baseline_movement_method_id IS NOT NULL AND movement_method_cost_profile_id IS NOT NULL AND movement_method_cost_profile_version IS NOT NULL AND base_minutes IS NOT NULL AND base_minutes > 0 AND dynamic_recheck_policy_id IS NOT NULL AND dynamic_recheck_policy_version IS NOT NULL))`
+- `CHECK((movement_method_cost_profile_id IS NULL)=(movement_method_cost_profile_version IS NULL))`
+- `CHECK((dynamic_recheck_policy_id IS NULL)=(dynamic_recheck_policy_version IS NULL))`
+
+### `world_base.spatial_v3_canonical_g5_connection_bindings`
+
+Описание назначения отсутствует.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `version` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK(version > 0)` | Описание отсутствует. |
+| `parent_g4_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `parent_g4_version` | `INTEGER` | нет | `1` | — | `NOT NULL` | Описание отсутствует. |
+| `from_canonical_g5_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `from_canonical_g5_version` | `INTEGER` | нет | `1` | — | `NOT NULL` | Описание отсутствует. |
+| `to_canonical_g5_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `to_canonical_g5_version` | `INTEGER` | нет | `1` | — | `NOT NULL` | Описание отсутствует. |
+| `connection_profile_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `connection_profile_version` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `from_scene_endpoint_slot_key` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `to_scene_endpoint_slot_key` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `reverse_binding_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `reverse_binding_version` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `source_pair_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `source_pair_version` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(status IN ('approved','deprecated','retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `provenance_ref` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY(id,version)`
+- `FOREIGN KEY(parent_g4_id,parent_g4_version) REFERENCES world_base.spatial_v3_nodes(id,version) ON DELETE RESTRICT`
+- `FOREIGN KEY(from_canonical_g5_id,from_canonical_g5_version) REFERENCES world_base.spatial_v3_nodes(id,version) ON DELETE RESTRICT`
+- `FOREIGN KEY(to_canonical_g5_id,to_canonical_g5_version) REFERENCES world_base.spatial_v3_nodes(id,version) ON DELETE RESTRICT`
+- `FOREIGN KEY(connection_profile_id,connection_profile_version) REFERENCES world_base.spatial_v3_canonical_g5_connection_profiles(id,version) ON DELETE RESTRICT`
+- `FOREIGN KEY(reverse_binding_id,reverse_binding_version) REFERENCES world_base.spatial_v3_canonical_g5_connection_bindings(id,version) DEFERRABLE INITIALLY DEFERRED`
+- `FOREIGN KEY(source_pair_id,source_pair_version) REFERENCES world_base.spatial_v3_approved_physical_source_pairs(id,version) ON DELETE RESTRICT`
+
+### `world_base.spatial_v3_g4_entry_endpoint_bindings`
+
+Описание назначения отсутствует.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `version` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK(version > 0)` | Описание отсутствует. |
+| `g4_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `g4_version` | `INTEGER` | нет | `1` | — | `NOT NULL` | Описание отсутствует. |
+| `canonical_g5_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `canonical_g5_version` | `INTEGER` | нет | `1` | — | `NOT NULL` | Описание отсутствует. |
+| `arrival_scene_endpoint_slot_key` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `departure_scene_endpoint_slot_key` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `source_pair_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `source_pair_version` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(status IN ('approved','deprecated','retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `provenance_ref` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY(id,version)`
+- `FOREIGN KEY(g4_id,g4_version) REFERENCES world_base.spatial_v3_nodes(id,version) ON DELETE RESTRICT`
+- `FOREIGN KEY(canonical_g5_id,canonical_g5_version) REFERENCES world_base.spatial_v3_nodes(id,version) ON DELETE RESTRICT`
+- `FOREIGN KEY(source_pair_id,source_pair_version) REFERENCES world_base.spatial_v3_approved_physical_source_pairs(id,version) ON DELETE RESTRICT`
+
+### `world_base.spatial_v3_topological_direction_contexts`
+
+Описание назначения отсутствует.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `version` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK(version > 0)` | Описание отсутствует. |
+| `from_g4_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `from_g4_version` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `to_g4_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `to_g4_version` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `from_canonical_g5_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `from_canonical_g5_version` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `to_canonical_g5_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `to_canonical_g5_version` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `orientation_profile_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `orientation_profile_version` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(status IN ('approved','deprecated','retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `provenance_ref` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY(id,version)`
+- `FOREIGN KEY(from_g4_id,from_g4_version) REFERENCES world_base.spatial_v3_nodes(id,version) ON DELETE RESTRICT`
+- `FOREIGN KEY(to_g4_id,to_g4_version) REFERENCES world_base.spatial_v3_nodes(id,version) ON DELETE RESTRICT`
+- `FOREIGN KEY(from_canonical_g5_id,from_canonical_g5_version) REFERENCES world_base.spatial_v3_nodes(id,version) ON DELETE RESTRICT`
+- `FOREIGN KEY(to_canonical_g5_id,to_canonical_g5_version) REFERENCES world_base.spatial_v3_nodes(id,version) ON DELETE RESTRICT`
+- `FOREIGN KEY(orientation_profile_id,orientation_profile_version) REFERENCES world_base.spatial_v3_topological_movement_orientation_profiles(id,version) ON DELETE RESTRICT`
+
+### `world_base.spatial_v3_g4_traversal_profiles`
+
+Описание назначения отсутствует.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `g4_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `g4_version` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `traversal_model` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(traversal_model='through_area')` | Описание отсутствует. |
+| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(status IN ('approved','deprecated','retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY(g4_id,g4_version)`
+- `FOREIGN KEY(g4_id,g4_version) REFERENCES world_base.spatial_v3_nodes(id,version) ON DELETE CASCADE`

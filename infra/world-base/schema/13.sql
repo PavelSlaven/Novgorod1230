@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS world_base.spatial_v3_relative_orientations (
 
 CREATE TABLE IF NOT EXISTS world_base.spatial_v3_g4_directional_exits (
   entity_kind TEXT NOT NULL DEFAULT 'g4_directional_exit' CHECK(entity_kind='g4_directional_exit'), id TEXT NOT NULL, version INTEGER NOT NULL CHECK(version>0), world_revision_id TEXT NOT NULL REFERENCES world_base.spatial_v3_world_revisions(id) ON DELETE RESTRICT,
-  g4_id TEXT NOT NULL, g4_version INTEGER NOT NULL, direction_context_id TEXT NOT NULL, exit_orientation_profile_id TEXT NOT NULL, exit_orientation_profile_version INTEGER NOT NULL,
+  g4_id TEXT NOT NULL, g4_version INTEGER NOT NULL, direction_context_id TEXT NOT NULL, exit_orientation_profile_id TEXT, exit_orientation_profile_version INTEGER, exit_orientation_rule_id TEXT, exit_orientation_rule_version INTEGER,
   exit_kind TEXT NOT NULL CHECK(exit_kind IN ('world_route_exit','physical_boundary')), exit_canonical_g5_id TEXT, exit_canonical_g5_version INTEGER, boundary_feature_entity_kind TEXT, boundary_feature_entity_id TEXT, boundary_feature_version INTEGER,
   status TEXT NOT NULL CHECK(status IN ('approved','deprecated','retired')), provenance_ref TEXT NOT NULL REFERENCES world_base.source_records(id) ON DELETE RESTRICT, canonical_digest TEXT NOT NULL CHECK(canonical_digest ~ '^[a-f0-9]{64}$'),
   PRIMARY KEY(id,version), UNIQUE(id,version,world_revision_id), FOREIGN KEY(entity_kind,id,version,world_revision_id) REFERENCES world_base.spatial_v3_authoring_versions(entity_kind,entity_id,version,world_revision_id) DEFERRABLE INITIALLY DEFERRED,
@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS world_base.spatial_v3_world_routes (
   route_kind_id TEXT NOT NULL, reverse_route_id TEXT, reverse_route_version INTEGER, availability_condition_set_id TEXT, availability_condition_set_version INTEGER, risk_profile_id TEXT, risk_profile_version INTEGER,
   status TEXT NOT NULL CHECK(status IN ('approved','deprecated','retired')), provenance_ref TEXT NOT NULL REFERENCES world_base.source_records(id) ON DELETE RESTRICT, canonical_digest TEXT NOT NULL CHECK(canonical_digest ~ '^[a-f0-9]{64}$'),
   PRIMARY KEY(id,version), UNIQUE(id,version,world_revision_id), FOREIGN KEY(entity_kind,id,version,world_revision_id) REFERENCES world_base.spatial_v3_authoring_versions(entity_kind,entity_id,version,world_revision_id) DEFERRABLE INITIALLY DEFERRED,
-  FOREIGN KEY(reverse_route_id,reverse_route_version) REFERENCES world_base.spatial_v3_world_routes(id,version) ON DELETE RESTRICT, CHECK((reverse_route_id IS NULL) = (reverse_route_version IS NULL)), CHECK(reverse_route_id IS NULL OR reverse_route_id <> id)
+  FOREIGN KEY(reverse_route_id,reverse_route_version) REFERENCES world_base.spatial_v3_world_routes(id,version) ON DELETE RESTRICT DEFERRABLE INITIALLY DEFERRED, CHECK((reverse_route_id IS NULL) = (reverse_route_version IS NULL)), CHECK(reverse_route_id IS NULL OR reverse_route_id <> id)
 );
 CREATE OR REPLACE FUNCTION world_base.validate_spatial_v3_directional_exit() RETURNS TRIGGER AS $$
 BEGIN
@@ -89,12 +89,14 @@ CREATE TABLE IF NOT EXISTS world_base.spatial_v3_world_route_points (
 
 CREATE TABLE IF NOT EXISTS world_base.spatial_v3_transition_environment_profiles (
   entity_kind TEXT NOT NULL DEFAULT 'transition_environment_profile' CHECK(entity_kind='transition_environment_profile'), id TEXT NOT NULL, version INTEGER NOT NULL CHECK(version>0), world_revision_id TEXT NOT NULL REFERENCES world_base.spatial_v3_world_revisions(id) ON DELETE RESTRICT,
-  environment_class_id TEXT NOT NULL, permanent_cost_basis_id TEXT NOT NULL, dynamic_environment_rule_set_id TEXT NOT NULL, dynamic_environment_rule_set_version INTEGER NOT NULL,
+  environment_class_id TEXT, permanent_cost_basis_id TEXT, dynamic_environment_rule_set_id TEXT, dynamic_environment_rule_set_version INTEGER,
+  definition TEXT,
   status TEXT NOT NULL CHECK(status IN ('approved','deprecated','retired')), provenance_ref TEXT NOT NULL REFERENCES world_base.source_records(id) ON DELETE RESTRICT, canonical_digest TEXT NOT NULL CHECK(canonical_digest ~ '^[a-f0-9]{64}$'),
   PRIMARY KEY(id,version), UNIQUE(id,version,world_revision_id), FOREIGN KEY(entity_kind,id,version,world_revision_id) REFERENCES world_base.spatial_v3_authoring_versions(entity_kind,entity_id,version,world_revision_id) DEFERRABLE INITIALLY DEFERRED
 );
 CREATE TABLE IF NOT EXISTS world_base.spatial_v3_movement_method_cost_profiles (
   entity_kind TEXT NOT NULL DEFAULT 'movement_method_cost_profile' CHECK(entity_kind='movement_method_cost_profile'), id TEXT NOT NULL, version INTEGER NOT NULL CHECK(version>0), world_revision_id TEXT NOT NULL REFERENCES world_base.spatial_v3_world_revisions(id) ON DELETE RESTRICT, baseline_movement_method_id TEXT NOT NULL,
+  base_minutes INTEGER CHECK(base_minutes > 0), dynamic_modifiers_required BOOLEAN, calibration_kind TEXT, distance_derived BOOLEAN, measured_historical_duration BOOLEAN, definition TEXT,
   status TEXT NOT NULL CHECK(status IN ('approved','deprecated','retired')), provenance_ref TEXT NOT NULL REFERENCES world_base.source_records(id) ON DELETE RESTRICT, canonical_digest TEXT NOT NULL CHECK(canonical_digest ~ '^[a-f0-9]{64}$'), PRIMARY KEY(id,version), UNIQUE(id,version,world_revision_id), FOREIGN KEY(entity_kind,id,version,world_revision_id) REFERENCES world_base.spatial_v3_authoring_versions(entity_kind,entity_id,version,world_revision_id) DEFERRABLE INITIALLY DEFERRED
 );
 CREATE TABLE IF NOT EXISTS world_base.spatial_v3_movement_method_cost_options (
@@ -103,9 +105,10 @@ CREATE TABLE IF NOT EXISTS world_base.spatial_v3_movement_method_cost_options (
   CHECK((cost_mode='baseline' AND factor_numerator IS NULL AND factor_denominator IS NULL) OR (cost_mode='rational_factor' AND factor_numerator>0 AND factor_denominator>0))
 );
 CREATE TABLE IF NOT EXISTS world_base.spatial_v3_dynamic_recheck_policies (
-  entity_kind TEXT NOT NULL DEFAULT 'dynamic_recheck_policy' CHECK(entity_kind='dynamic_recheck_policy'), id TEXT NOT NULL, version INTEGER NOT NULL CHECK(version>0), world_revision_id TEXT NOT NULL REFERENCES world_base.spatial_v3_world_revisions(id) ON DELETE RESTRICT, policy_kind TEXT NOT NULL CHECK(policy_kind IN ('segment_once','fixed_progress_slices','explicit_progress_points')), progress_slice_ppm INTEGER CHECK(progress_slice_ppm BETWEEN 1 AND 1000000),
+  entity_kind TEXT NOT NULL DEFAULT 'dynamic_recheck_policy' CHECK(entity_kind='dynamic_recheck_policy'), id TEXT NOT NULL, version INTEGER NOT NULL CHECK(version>0), world_revision_id TEXT NOT NULL REFERENCES world_base.spatial_v3_world_revisions(id) ON DELETE RESTRICT, policy_kind TEXT NOT NULL CHECK(policy_kind IN ('segment_once','fixed_progress_slices','explicit_progress_points','fixed_time_interval')), progress_slice_ppm INTEGER CHECK(progress_slice_ppm BETWEEN 1 AND 1000000), interval_minutes INTEGER CHECK(interval_minutes > 0), event_triggers JSONB, definition TEXT,
   status TEXT NOT NULL CHECK(status IN ('approved','deprecated','retired')), provenance_ref TEXT NOT NULL REFERENCES world_base.source_records(id) ON DELETE RESTRICT, canonical_digest TEXT NOT NULL CHECK(canonical_digest ~ '^[a-f0-9]{64}$'), PRIMARY KEY(id,version), UNIQUE(id,version,world_revision_id), FOREIGN KEY(entity_kind,id,version,world_revision_id) REFERENCES world_base.spatial_v3_authoring_versions(entity_kind,entity_id,version,world_revision_id) DEFERRABLE INITIALLY DEFERRED,
-  CHECK((policy_kind='fixed_progress_slices') = (progress_slice_ppm IS NOT NULL))
+  CHECK((policy_kind='fixed_progress_slices') = (progress_slice_ppm IS NOT NULL)),
+  CHECK((policy_kind='fixed_time_interval') = (interval_minutes IS NOT NULL))
 );
 CREATE TABLE IF NOT EXISTS world_base.spatial_v3_dynamic_recheck_policy_points (
   policy_id TEXT NOT NULL, policy_version INTEGER NOT NULL, ordinal INTEGER NOT NULL CHECK(ordinal>=0), progress_ppm INTEGER NOT NULL CHECK(progress_ppm BETWEEN 1 AND 999999), PRIMARY KEY(policy_id,policy_version,ordinal), UNIQUE(policy_id,policy_version,progress_ppm), FOREIGN KEY(policy_id,policy_version) REFERENCES world_base.spatial_v3_dynamic_recheck_policies(id,version) ON DELETE CASCADE
@@ -114,7 +117,7 @@ CREATE TABLE IF NOT EXISTS world_base.spatial_v3_dynamic_recheck_policy_points (
 CREATE TABLE IF NOT EXISTS world_base.spatial_v3_world_route_segments (
   entity_kind TEXT NOT NULL DEFAULT 'world_route_segment' CHECK(entity_kind='world_route_segment'), id TEXT NOT NULL, version INTEGER NOT NULL CHECK(version>0), world_revision_id TEXT NOT NULL REFERENCES world_base.spatial_v3_world_revisions(id) ON DELETE RESTRICT,
   world_route_id TEXT NOT NULL, world_route_version INTEGER NOT NULL, ordinal INTEGER NOT NULL CHECK(ordinal>=0), from_point_id TEXT NOT NULL, from_point_version INTEGER NOT NULL, to_point_id TEXT NOT NULL, to_point_version INTEGER NOT NULL,
-  transition_environment_profile_id TEXT NOT NULL, transition_environment_profile_version INTEGER NOT NULL, movement_orientation_profile_id TEXT NOT NULL, movement_orientation_profile_version INTEGER NOT NULL, baseline_movement_method_id TEXT NOT NULL, movement_method_cost_profile_id TEXT NOT NULL, movement_method_cost_profile_version INTEGER NOT NULL, base_minutes INTEGER NOT NULL CHECK (base_minutes > 0), dynamic_recheck_policy_id TEXT NOT NULL, dynamic_recheck_policy_version INTEGER NOT NULL, capacity INTEGER CHECK(capacity>0), risk_profile_id TEXT, risk_profile_version INTEGER, availability_condition_set_id TEXT, availability_condition_set_version INTEGER,
+  transition_environment_profile_id TEXT NOT NULL, transition_environment_profile_version INTEGER NOT NULL, movement_orientation_profile_id TEXT, movement_orientation_profile_version INTEGER, topological_orientation_profile_id TEXT, topological_orientation_profile_version INTEGER, baseline_movement_method_id TEXT NOT NULL, movement_method_cost_profile_id TEXT NOT NULL, movement_method_cost_profile_version INTEGER NOT NULL, base_minutes INTEGER NOT NULL CHECK (base_minutes > 0), dynamic_recheck_policy_id TEXT NOT NULL, dynamic_recheck_policy_version INTEGER NOT NULL, capacity INTEGER CHECK(capacity>0), risk_profile_id TEXT, risk_profile_version INTEGER, availability_condition_set_id TEXT, availability_condition_set_version INTEGER,
   status TEXT NOT NULL CHECK(status IN ('approved','deprecated','retired')), provenance_ref TEXT NOT NULL REFERENCES world_base.source_records(id) ON DELETE RESTRICT, canonical_digest TEXT NOT NULL CHECK(canonical_digest ~ '^[a-f0-9]{64}$'),
   PRIMARY KEY(id,version), UNIQUE(id,version,world_revision_id), UNIQUE(world_route_id,world_route_version,ordinal), FOREIGN KEY(entity_kind,id,version,world_revision_id) REFERENCES world_base.spatial_v3_authoring_versions(entity_kind,entity_id,version,world_revision_id) DEFERRABLE INITIALLY DEFERRED,
   FOREIGN KEY(world_route_id,world_route_version,world_revision_id) REFERENCES world_base.spatial_v3_world_routes(id,version,world_revision_id) ON DELETE RESTRICT,

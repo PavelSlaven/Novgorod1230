@@ -1,0 +1,292 @@
+{
+  "records": [
+    {
+      "child_id": "gn_nov_g1_xp017_yp026",
+      "child_version": 1,
+      "parent_id": "region_novgorod_land",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g2_xp017_yp026_r2_south_main_channel",
+      "child_version": 1,
+      "parent_id": "gn_nov_g1_xp017_yp026",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g2_xp017_yp026_r2_central_main_channel",
+      "child_version": 1,
+      "parent_id": "gn_nov_g1_xp017_yp026",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g2_xp017_yp026_r2_north_main_channel",
+      "child_version": 1,
+      "parent_id": "gn_nov_g1_xp017_yp026",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g2_xp017_yp026_r2_west_distributary_belt",
+      "child_version": 1,
+      "parent_id": "gn_nov_g1_xp017_yp026",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g2_xp017_yp026_r2_east_distributary_belt",
+      "child_version": 1,
+      "parent_id": "gn_nov_g1_xp017_yp026",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g2_xp017_yp026_r2_island_head_mosaic",
+      "child_version": 1,
+      "parent_id": "gn_nov_g1_xp017_yp026",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g2_xp017_yp026_r2_inner_floodplain",
+      "child_version": 1,
+      "parent_id": "gn_nov_g1_xp017_yp026",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g2_xp017_yp026_r2_shoal_bar_field",
+      "child_version": 1,
+      "parent_id": "gn_nov_g1_xp017_yp026",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g2_xp017_yp026_r2_backwater_wetlands",
+      "child_version": 1,
+      "parent_id": "gn_nov_g1_xp017_yp026",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g2_xp017_yp026_r2_dry_ridge_belt",
+      "child_version": 1,
+      "parent_id": "gn_nov_g1_xp017_yp026",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area",
+      "child_version": 1,
+      "parent_id": "gn_nov_g1_xp017_yp026",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area",
+      "child_version": 1,
+      "parent_id": "gn_nov_g1_xp017_yp026",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g2_xp017_yp026_r2_forest_hinterland",
+      "child_version": 1,
+      "parent_id": "gn_nov_g1_xp017_yp026",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g2_xp017_yp026_r2_small_stream_network",
+      "child_version": 1,
+      "parent_id": "gn_nov_g1_xp017_yp026",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g2_xp017_yp026_r2_river_sea_transition",
+      "child_version": 1,
+      "parent_id": "gn_nov_g1_xp017_yp026",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+      "child_version": 1,
+      "parent_id": "gn_nov_g2_xp017_yp026_r2_south_main_channel",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+      "child_version": 1,
+      "parent_id": "gn_nov_g2_xp017_yp026_r2_south_main_channel",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+      "child_version": 1,
+      "parent_id": "gn_nov_g2_xp017_yp026_r2_central_main_channel",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g3_xp017_yp026_r2_central_current_split",
+      "child_version": 1,
+      "parent_id": "gn_nov_g2_xp017_yp026_r2_central_main_channel",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+      "child_version": 1,
+      "parent_id": "gn_nov_g2_xp017_yp026_r2_north_main_channel",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+      "child_version": 1,
+      "parent_id": "gn_nov_g2_xp017_yp026_r2_north_main_channel",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g3_xp017_yp026_r2_west_side_channel",
+      "child_version": 1,
+      "parent_id": "gn_nov_g2_xp017_yp026_r2_west_distributary_belt",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+      "child_version": 1,
+      "parent_id": "gn_nov_g2_xp017_yp026_r2_west_distributary_belt",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g3_xp017_yp026_r2_east_side_channel",
+      "child_version": 1,
+      "parent_id": "gn_nov_g2_xp017_yp026_r2_east_distributary_belt",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+      "child_version": 1,
+      "parent_id": "gn_nov_g2_xp017_yp026_r2_east_distributary_belt",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g3_xp017_yp026_r2_large_island_head",
+      "child_version": 1,
+      "parent_id": "gn_nov_g2_xp017_yp026_r2_island_head_mosaic",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+      "child_version": 1,
+      "parent_id": "gn_nov_g2_xp017_yp026_r2_island_head_mosaic",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+      "child_version": 1,
+      "parent_id": "gn_nov_g2_xp017_yp026_r2_inner_floodplain",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+      "child_version": 1,
+      "parent_id": "gn_nov_g2_xp017_yp026_r2_inner_floodplain",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+      "child_version": 1,
+      "parent_id": "gn_nov_g2_xp017_yp026_r2_shoal_bar_field",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+      "child_version": 1,
+      "parent_id": "gn_nov_g2_xp017_yp026_r2_shoal_bar_field",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g3_xp017_yp026_r2_reed_backwater",
+      "child_version": 1,
+      "parent_id": "gn_nov_g2_xp017_yp026_r2_backwater_wetlands",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+      "child_version": 1,
+      "parent_id": "gn_nov_g2_xp017_yp026_r2_backwater_wetlands",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+      "child_version": 1,
+      "parent_id": "gn_nov_g2_xp017_yp026_r2_dry_ridge_belt",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+      "child_version": 1,
+      "parent_id": "gn_nov_g2_xp017_yp026_r2_dry_ridge_belt",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+      "child_version": 1,
+      "parent_id": "gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+      "child_version": 1,
+      "parent_id": "gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+      "child_version": 1,
+      "parent_id": "gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+      "child_version": 1,
+      "parent_id": "gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+      "child_version": 1,
+      "parent_id": "gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+      "child_version": 1,
+      "parent_id": "gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+      "child_version": 1,
+      "parent_id": "gn_nov_g2_xp017_yp026_r2_forest_hinterland",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+      "child_version": 1,
+      "parent_id": "gn_nov_g2_xp017_yp026_r2_forest_hinterland",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+      "child_version": 1,
+      "parent_id": "gn_nov_g2_xp017_yp026_r2_small_stream_network",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+      "child_version": 1,
+      "parent_id": "gn_nov_g2_xp017_yp026_r2_small_stream_network",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g3_xp017_yp026_r2_mixing_reach",
+      "child_version": 1,
+      "parent_id": "gn_nov_g2_xp017_yp026_r2_river_sea_transition",
+      "parent_version": 1
+    },
+    {
+      "child_id": "gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+      "child_version": 1,
+      "parent_id": "gn_nov_g2_xp017_yp026_r2_river_sea_transition",
+      "parent_version": 1
+    }
+  ]
+}

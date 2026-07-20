@@ -53,7 +53,7 @@ export async function validateAuthoringBundle({ root = ROOT, manifestPath = DEFA
   }
   validateReferences(manifest.datasets ?? [], datasets, errors);
   validateRegistryOrder(manifest.datasets ?? [], registry, errors);
-  validateReadiness(datasets, gaps, errors);
+  validateReadiness(datasets, gaps, errors, manifest.bundle_kind);
   validateRouteTopology(datasets, errors);
   validateControlledVocabularyBindings(datasets, errors);
   validateCapacityProof(datasets, errors);
@@ -61,17 +61,52 @@ export async function validateAuthoringBundle({ root = ROOT, manifestPath = DEFA
 }
 
 export async function buildStagedDryRunSql({ root = ROOT, manifestPath = DEFAULT_MANIFEST } = {}) {
+  return buildTransactionalImportSql({ root, manifestPath, rollback: true, allowTypedGaps: true });
+}
+
+export async function buildTransactionalImportSql({ root = ROOT, manifestPath = DEFAULT_MANIFEST, rollback = false, allowTypedGaps = false } = {}) {
   const projectRoot = resolve(root); const manifestFile = resolve(projectRoot, manifestPath);
   const result = await validateAuthoringBundle({ root: projectRoot, manifestPath });
-  if (result.errors.length) throw new Error(`P12 dry-run refuses invalid bundle: ${result.errors.map((error) => error.code).join(', ')}`);
+  if (result.errors.length || (!allowTypedGaps && result.data_gaps.length)) throw new Error(`P12 import refuses incomplete bundle: ${[...result.errors, ...result.data_gaps].map((error) => error.code).join(', ')}`);
   const manifest = await json(manifestFile); const ddl = await buildWorldBaseSchemaReference({ root: projectRoot });
   const tables = new Map(ddl.schema.tables.map((table) => [table.name, table])); const sql = ['BEGIN;'];
   for (const dataset of manifest.datasets) {
     const rows = await json(resolve(dirname(manifestFile), dataset.file)); const schema = tables.get(dataset.table);
-    for (const row of rows) { const columns = schema.columns.filter((column) => Object.hasOwn(row, column.name)).map((column) => column.name); sql.push(`INSERT INTO world_base.${dataset.table} (${columns.join(', ')}) VALUES (${columns.map((column) => literal(row[column])).join(', ')});`); }
+    let primaryKey = schema.columns.filter((column) => column.primary_key);
+    if (!primaryKey.length) {
+      const declaration = schema.constraints.find((constraint) => /^PRIMARY KEY\s*\(/iu.test(constraint));
+      const names = declaration?.match(/^PRIMARY KEY\s*\(([^)]+)\)/iu)?.[1].split(',').map((name) => name.trim()) ?? [];
+      primaryKey = names.map((name) => schema.columns.find((column) => column.name === name)).filter(Boolean);
+    }
+    if (!primaryKey.length) throw new Error(`P12 import requires a primary key: ${dataset.table}`);
+    const candidateTable = `p12_candidate_${dataset.table}`;
+    const serverManaged = schema.columns.filter((column) => ['created_at', 'updated_at'].includes(column.name)).map((column) => column.name);
+    const canonicalJson = (alias) => serverManaged.length
+      ? `(to_jsonb(${alias}) - ARRAY[${serverManaged.map((column) => `'${column}'`).join(', ')}]::text[])`
+      : `to_jsonb(${alias})`;
+    sql.push(`CREATE TEMP TABLE ${candidateTable} (LIKE world_base.${dataset.table} INCLUDING DEFAULTS) ON COMMIT DROP;`);
+    for (const row of rows) {
+      const columns = schema.columns.filter((column) => Object.hasOwn(row, column.name));
+      const values = new Map(columns.map((column) => [column.name, literal(row[column.name], column.type)]));
+      const keyPredicate = primaryKey.map((column) => `${column.name} IS NOT DISTINCT FROM ${values.get(column.name)}`).join(' AND ');
+      const actualKeyPredicate = primaryKey.map((column) => `actual.${column.name} IS NOT DISTINCT FROM ${values.get(column.name)}`).join(' AND ');
+      sql.push(
+        `TRUNCATE ${candidateTable};`,
+        `INSERT INTO ${candidateTable} (${columns.map((column) => column.name).join(', ')}) VALUES (${columns.map((column) => values.get(column.name)).join(', ')});`,
+        `DO $p12_import$ BEGIN`,
+        `  IF EXISTS (SELECT 1 FROM world_base.${dataset.table} WHERE ${keyPredicate}) THEN`,
+        `    IF NOT EXISTS (SELECT 1 FROM world_base.${dataset.table} AS actual CROSS JOIN ${candidateTable} AS expected WHERE ${actualKeyPredicate} AND ${canonicalJson('actual')} = ${canonicalJson('expected')}) THEN`,
+        `      RAISE EXCEPTION 'P12_EXISTING_ROW_MISMATCH:${dataset.table}';`,
+        `    END IF;`,
+        `  ELSE`,
+        `    INSERT INTO world_base.${dataset.table} (${columns.map((column) => column.name).join(', ')}) VALUES (${columns.map((column) => values.get(column.name)).join(', ')});`,
+        `  END IF;`,
+        `END $p12_import$;`
+      );
+    }
     sql.push(`SELECT '${dataset.table}' AS table_name, count(*) AS imported_rows FROM world_base.${dataset.table};`);
   }
-  sql.push('ROLLBACK;'); return `${sql.join('\n')}\n`;
+  sql.push(rollback ? 'ROLLBACK;' : 'COMMIT;'); return `${sql.join('\n')}\n`;
 }
 
 function validateReferences(manifest, datasets, errors) {
@@ -88,21 +123,26 @@ function validateStrictRow(row, schema, table, errors) {
   const columns = new Map(schema.columns.map((column) => [column.name, column]));
   for (const key of Object.keys(row)) if (!columns.has(key)) errors.push(issue('UNKNOWN_ROW_FIELD', `${table}.${key}`));
   for (const column of schema.columns) if (!column.nullable && column.default === null && !Object.hasOwn(row, column.name)) errors.push(issue('MISSING_REQUIRED_FIELD', `${table}.${column.name}`));
-  for (const column of schema.columns) if (column.name.endsWith('_id') && columns.has(`${column.name.slice(0, -3)}_version`) && Object.hasOwn(row, column.name) && !Number.isInteger(row[`${column.name.slice(0, -3)}_version`])) errors.push(issue('UNPINNED_VERSIONED_REFERENCE', `${table}.${column.name}`));
+  for (const column of schema.columns) if (column.name.endsWith('_id') && columns.has(`${column.name.slice(0, -3)}_version`) && Object.hasOwn(row, column.name)) {
+    const versionValue = row[`${column.name.slice(0, -3)}_version`];
+    if ((row[column.name] === null) !== (versionValue === null) || (row[column.name] !== null && !Number.isInteger(versionValue))) errors.push(issue('UNPINNED_VERSIONED_REFERENCE', `${table}.${column.name}`));
+  }
   if (Object.hasOwn(row, 'provenance_ref') && !text(row.provenance_ref)) errors.push(issue('INVALID_PROVENANCE', table));
   if (Object.hasOwn(row, 'references') || Object.hasOwn(row, 'children') || Object.hasOwn(row, 'candidates')) errors.push(issue('NON_NORMALIZED_REFERENCE', table));
 }
 
-function validateReadiness(datasets, gaps, errors) {
+function validateReadiness(datasets, gaps, errors, bundleKind) {
   const count = (table) => datasets.get(table)?.length ?? 0;
   const hasGap = (code) => gaps.some((gap) => gap.code === code);
   for (const [table, rows] of datasets) {
     if (table === 'spatial_v3_scene_endpoint_slots') unique(rows, (row) => `${row.scene_template_id}:${row.scene_template_version}:${row.slot_key}`, 'SCENE_SLOT_DUPLICATE', errors);
-    if (table === 'spatial_v3_world_route_points') contiguous(rows, 'route_id', 'ordinal', 'ROUTE_CONTINUITY_GAP', errors);
+    if (table === 'spatial_v3_world_route_points') contiguous(rows, 'world_route_id', 'ordinal', 'ROUTE_CONTINUITY_GAP', errors);
     if (table === 'spatial_v3_expansion_profile_template_limits') for (const row of rows) if (!Number.isInteger(row.max_instances) || row.max_instances < 1) errors.push(issue('CAPACITY_PROOF_FAILED', `${table}:${row.id}`));
     if (table === 'spatial_v3_controlled_vocabulary_bindings') for (const row of rows) if (!/^[a-f0-9]{64}$/u.test(row.registry_digest ?? '')) errors.push(issue('CONTROLLED_VOCABULARY_GAP', `${table}:${row.id}`));
   }
-  const required = [['spatial_v3_nodes', 'CANONICAL_G5_INVENTORY_DATA_GAP'], ['spatial_v3_g4_directional_exits', 'DIRECTIONAL_EXIT_READINESS_DATA_GAP'], ['spatial_v3_world_routes', 'ROUTE_BINDING_DATA_GAP'], ['spatial_v3_scene_materialization_profiles', 'APPROVED_PROFILE_DATA_GAP']];
+  const required = bundleKind === 'dependency_closure'
+    ? [['spatial_v3_nodes', 'CANONICAL_G5_INVENTORY_DATA_GAP']]
+    : [['spatial_v3_nodes', 'CANONICAL_G5_INVENTORY_DATA_GAP'], ['spatial_v3_g4_directional_exits', 'DIRECTIONAL_EXIT_READINESS_DATA_GAP'], ['spatial_v3_world_routes', 'ROUTE_BINDING_DATA_GAP'], ['spatial_v3_scene_materialization_profiles', 'APPROVED_PROFILE_DATA_GAP']];
   for (const [table, gap] of required) if (count(table) === 0 && !hasGap(gap)) errors.push(issue('MISSING_TYPED_DATA_GAP', table));
 }
 
@@ -140,7 +180,14 @@ function issue(code, subject_ref) { return Object.freeze({ code, subject_ref, de
 function text(value) { return typeof value === 'string' && value.trim().length > 0; }
 function descendant(file, parent) { const path = relative(parent, file); return !!path && !path.startsWith('..') && !isAbsolute(path); }
 function digest(value) { return createHash('sha256').update(value).digest('hex'); }
-function literal(value) { if (value === null) return 'NULL'; if (typeof value === 'number') return String(value); if (typeof value === 'boolean') return value ? 'TRUE' : 'FALSE'; return `'${String(value).replaceAll("'", "''")}'`; }
+function literal(value, type = '') {
+  if (value === null) return 'NULL';
+  if (typeof value === 'number') return String(value);
+  if (typeof value === 'boolean') return value ? 'TRUE' : 'FALSE';
+  const serialized = typeof value === 'object' ? JSON.stringify(value) : String(value);
+  const quoted = `'${serialized.replaceAll("'", "''")}'`;
+  return /\bJSONB?\b/iu.test(type) ? `${quoted}::jsonb` : quoted;
+}
 async function json(file) { return JSON.parse(await readFile(file, 'utf8')); }
 
 function validateJsonSchema(schema, value, path = '$', root = schema) {

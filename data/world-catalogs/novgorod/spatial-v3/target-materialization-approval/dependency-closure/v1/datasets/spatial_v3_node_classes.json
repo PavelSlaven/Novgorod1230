@@ -1,0 +1,296 @@
+[
+  {
+    "node_id": "region_novgorod_land",
+    "node_version": 1,
+    "category_id": "spatial.g0.historical_geographic_region",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g1_xp017_yp026",
+    "node_version": 1,
+    "category_id": "spatial.g1.territorial_grid_cell",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g2_xp017_yp026_r2_south_main_channel",
+    "node_version": 1,
+    "category_id": "spatial.g2.territorial_zone",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g2_xp017_yp026_r2_central_main_channel",
+    "node_version": 1,
+    "category_id": "spatial.g2.territorial_zone",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g2_xp017_yp026_r2_north_main_channel",
+    "node_version": 1,
+    "category_id": "spatial.g2.territorial_zone",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g2_xp017_yp026_r2_west_distributary_belt",
+    "node_version": 1,
+    "category_id": "spatial.g2.territorial_zone",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g2_xp017_yp026_r2_east_distributary_belt",
+    "node_version": 1,
+    "category_id": "spatial.g2.territorial_zone",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g2_xp017_yp026_r2_island_head_mosaic",
+    "node_version": 1,
+    "category_id": "spatial.g2.territorial_zone",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g2_xp017_yp026_r2_inner_floodplain",
+    "node_version": 1,
+    "category_id": "spatial.g2.territorial_zone",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g2_xp017_yp026_r2_shoal_bar_field",
+    "node_version": 1,
+    "category_id": "spatial.g2.territorial_zone",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g2_xp017_yp026_r2_backwater_wetlands",
+    "node_version": 1,
+    "category_id": "spatial.g2.territorial_zone",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g2_xp017_yp026_r2_dry_ridge_belt",
+    "node_version": 1,
+    "category_id": "spatial.g2.territorial_zone",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area",
+    "node_version": 1,
+    "category_id": "spatial.g2.territorial_zone",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area",
+    "node_version": 1,
+    "category_id": "spatial.g2.territorial_zone",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g2_xp017_yp026_r2_forest_hinterland",
+    "node_version": 1,
+    "category_id": "spatial.g2.territorial_zone",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g2_xp017_yp026_r2_small_stream_network",
+    "node_version": 1,
+    "category_id": "spatial.g2.territorial_zone",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g2_xp017_yp026_r2_river_sea_transition",
+    "node_version": 1,
+    "category_id": "spatial.g2.territorial_zone",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+    "node_version": 1,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+    "node_version": 1,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+    "node_version": 1,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_central_current_split",
+    "node_version": 1,
+    "category_id": "spatial.g3.route_site",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+    "node_version": 1,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+    "node_version": 1,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_west_side_channel",
+    "node_version": 1,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+    "node_version": 1,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_east_side_channel",
+    "node_version": 1,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+    "node_version": 1,
+    "category_id": "spatial.g3.route_site",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_large_island_head",
+    "node_version": 1,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+    "node_version": 1,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+    "node_version": 1,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+    "node_version": 1,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+    "node_version": 1,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+    "node_version": 1,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_reed_backwater",
+    "node_version": 1,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+    "node_version": 1,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+    "node_version": 1,
+    "category_id": "spatial.g3.route_site",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+    "node_version": 1,
+    "category_id": "spatial.g3.route_site",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+    "node_version": 1,
+    "category_id": "spatial.g3.recurrent_site",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+    "node_version": 1,
+    "category_id": "spatial.g3.route_site",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+    "node_version": 1,
+    "category_id": "spatial.g3.resource_site",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+    "node_version": 1,
+    "category_id": "spatial.g3.settlement",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+    "node_version": 1,
+    "category_id": "spatial.g3.built_site",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+    "node_version": 1,
+    "category_id": "spatial.g3.route_site",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+    "node_version": 1,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+    "node_version": 1,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+    "node_version": 1,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+    "node_version": 1,
+    "category_id": "spatial.g3.route_site",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_mixing_reach",
+    "node_version": 1,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+    "node_version": 1,
+    "category_id": "spatial.g3.route_site",
+    "class_ordinal": 0
+  }
+]

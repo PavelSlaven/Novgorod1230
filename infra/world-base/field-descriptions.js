@@ -122,6 +122,10 @@ export const TABLE_GROUPS = [
     tables: ['spatial_v3_orientation_reference_frames', 'spatial_v3_movement_orientation_profiles', 'spatial_v3_movement_orientation_profile_points', 'spatial_v3_relative_orientations', 'spatial_v3_g4_directional_exits', 'spatial_v3_world_routes', 'spatial_v3_world_route_points', 'spatial_v3_world_route_segments', 'spatial_v3_world_route_segment_spatial_contexts', 'spatial_v3_world_route_endpoint_bindings', 'spatial_v3_boundary_crossing_contracts', 'spatial_v3_spatial_transition_contracts', 'spatial_v3_spatial_transition_allowed_route_kinds', 'spatial_v3_transition_environment_profiles', 'spatial_v3_movement_method_cost_profiles', 'spatial_v3_movement_method_cost_options', 'spatial_v3_dynamic_recheck_policies', 'spatial_v3_dynamic_recheck_policy_points', 'spatial_v3_activity_contracts', 'spatial_v3_action_contracts', 'spatial_v3_movement_mode_transition_contracts', 'spatial_v3_recovery_transition_templates']
   },
   {
+    title: 'Spatial architecture v3: scene dependency closure (target only)',
+    tables: ['spatial_v3_regional_scene_template_bases', 'spatial_v3_scene_selection_rules', 'spatial_v3_scene_applicability_rules']
+  },
+  {
     title: 'Materialization v2: NPC-профили',
     tables: ['region_npc_archetypes', 'region_demographic_profiles', 'region_name_pools', 'region_name_pool_entries', 'region_appearance_profiles', 'region_clothing_profiles', 'region_equipment_profiles', 'region_equipment_profile_entries', 'region_knowledge_profiles', 'region_behavior_profiles', 'region_relationship_profiles', 'region_activity_profiles', 'region_schedule_profiles', 'region_npc_profile_sets']
   },
@@ -208,6 +212,9 @@ export const TABLE_PURPOSE_FALLBACK = {
   spatial_v3_g1_grid_cells: 'Явная G1 grid convention и координаты, без выводов из title/label.',
   spatial_v3_controlled_vocabulary_bindings: 'Versioned digest-pinned bindings controlled vocabulary registry for one spatial authoring revision.',
   spatial_v3_authoring_dependency_edges: 'Нормализованные version-pinned mechanically relevant authoring dependencies.',
+  spatial_v3_regional_scene_template_bases: 'Утверждённые региональные основы scene templates с topological-only geometry claim.',
+  spatial_v3_scene_selection_rules: 'Закрытые versioned правила выбора scene template; P12 поддерживает только single_candidate.',
+  spatial_v3_scene_applicability_rules: 'Закрытые versioned правила применимости scene candidate к точному source reference.',
   spatial_v3_graph_node_migration_inventory: 'Review-only deterministic mapping legacy graph_nodes to v3 canonical entities; ambiguity/unreviewed row остаётся gap.',
   spatial_v3_orientation_reference_frames: 'Версионированные orientation frames с детерминированным millidegree offset и запрещёнными циклами.',
   spatial_v3_movement_orientation_profiles: 'Fixed/curved profiles движения и только явная reciprocal reverse relation.',

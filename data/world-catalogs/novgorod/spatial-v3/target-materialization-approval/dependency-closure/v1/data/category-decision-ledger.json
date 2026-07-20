@@ -1,0 +1,1295 @@
+{
+  "schema_version": "rus.p12_category_decision_ledger.v1",
+  "records": [
+    {
+      "category_id": "spatial.g0.historical_geographic_region",
+      "decision_basis": "target_spatial_standard_or_explicit_editorial_classification",
+      "basis_anchors": [
+        {
+          "anchor_kind": "repository_line_range",
+          "canonical_path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
+          "raw_sha256": "f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1",
+          "start_line": 239,
+          "end_line": 247,
+          "required_text": "spatial.g0.historical_geographic_region"
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude technical cells and claims of exact political control.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "spatial.g1.territorial_grid_cell",
+      "decision_basis": "target_spatial_standard_or_explicit_editorial_classification",
+      "basis_anchors": [
+        {
+          "anchor_kind": "repository_line_range",
+          "canonical_path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
+          "raw_sha256": "f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1",
+          "start_line": 249,
+          "end_line": 269,
+          "required_text": "spatial.g1.territorial_grid_cell"
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude historical-border or ownership interpretation.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "spatial.g2.territorial_zone",
+      "decision_basis": "target_spatial_standard_or_explicit_editorial_classification",
+      "basis_anchors": [
+        {
+          "anchor_kind": "repository_line_range",
+          "canonical_path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
+          "raw_sha256": "f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1",
+          "start_line": 271,
+          "end_line": 286,
+          "required_text": "spatial.g2.territorial_zone"
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude parcel, scene, and exact cadastral readings.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "spatial.g3.settlement",
+      "decision_basis": "target_spatial_standard_or_explicit_editorial_classification",
+      "basis_anchors": [
+        {
+          "anchor_kind": "repository_line_range",
+          "canonical_path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
+          "raw_sha256": "f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1",
+          "start_line": 288,
+          "end_line": 303,
+          "required_text": "spatial.g3.settlement"
+        },
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip",
+          "raw_sha256": "6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b",
+          "internal_path": "gn_nov_g1_xp017_yp026_rebuild_002/04-g3/g3-places.json",
+          "internal_raw_sha256": "bfd84b3b5fd38cbdda70dbe2c3acf3083ac515c2b8940cfd7808b3b6c0f2b16b",
+          "json_pointer": "",
+          "record_predicate": {
+            "field": "id",
+            "equals": "gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude inferred town rank, household count, or plan.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "spatial.g3.built_site",
+      "decision_basis": "target_spatial_standard_or_explicit_editorial_classification",
+      "basis_anchors": [
+        {
+          "anchor_kind": "repository_line_range",
+          "canonical_path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
+          "raw_sha256": "f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1",
+          "start_line": 288,
+          "end_line": 303,
+          "required_text": "spatial.g3.built_site"
+        },
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip",
+          "raw_sha256": "6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b",
+          "internal_path": "gn_nov_g1_xp017_yp026_rebuild_002/04-g3/g3-places.json",
+          "internal_raw_sha256": "bfd84b3b5fd38cbdda70dbe2c3acf3083ac515c2b8940cfd7808b3b6c0f2b16b",
+          "json_pointer": "",
+          "record_predicate": {
+            "field": "id",
+            "equals": "gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude exact burial plan, buildings, and continuous use.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "spatial.g3.natural_feature",
+      "decision_basis": "target_spatial_standard_or_explicit_editorial_classification",
+      "basis_anchors": [
+        {
+          "anchor_kind": "repository_line_range",
+          "canonical_path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
+          "raw_sha256": "f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1",
+          "start_line": 288,
+          "end_line": 303,
+          "required_text": "spatial.g3.natural_feature"
+        },
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip",
+          "raw_sha256": "6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b",
+          "internal_path": "gn_nov_g1_xp017_yp026_rebuild_002/04-g3/g3-places.json",
+          "internal_raw_sha256": "bfd84b3b5fd38cbdda70dbe2c3acf3083ac515c2b8940cfd7808b3b6c0f2b16b",
+          "json_pointer": "",
+          "record_predicate": {
+            "field": "id",
+            "equals": "gn_nov_g3_xp017_yp026_r2_south_entry_reach"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude settlement, built-site, and exact 1230 geometry claims.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "spatial.g3.route_site",
+      "decision_basis": "target_spatial_standard_or_explicit_editorial_classification",
+      "basis_anchors": [
+        {
+          "anchor_kind": "repository_line_range",
+          "canonical_path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
+          "raw_sha256": "f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1",
+          "start_line": 288,
+          "end_line": 303,
+          "required_text": "spatial.g3.route_site"
+        },
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip",
+          "raw_sha256": "6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b",
+          "internal_path": "gn_nov_g1_xp017_yp026_rebuild_002/04-g3/g3-places.json",
+          "internal_raw_sha256": "bfd84b3b5fd38cbdda70dbe2c3acf3083ac515c2b8940cfd7808b3b6c0f2b16b",
+          "json_pointer": "",
+          "record_predicate": {
+            "field": "id",
+            "equals": "gn_nov_g3_xp017_yp026_r2_central_current_split"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude roads, harbours, and all-season access unless separately evidenced.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "spatial.g3.resource_site",
+      "decision_basis": "target_spatial_standard_or_explicit_editorial_classification",
+      "basis_anchors": [
+        {
+          "anchor_kind": "repository_line_range",
+          "canonical_path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
+          "raw_sha256": "f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1",
+          "start_line": 288,
+          "end_line": 303,
+          "required_text": "spatial.g3.resource_site"
+        },
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip",
+          "raw_sha256": "6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b",
+          "internal_path": "gn_nov_g1_xp017_yp026_rebuild_002/04-g3/g3-places.json",
+          "internal_raw_sha256": "bfd84b3b5fd38cbdda70dbe2c3acf3083ac515c2b8940cfd7808b3b6c0f2b16b",
+          "json_pointer": "",
+          "record_predicate": {
+            "field": "id",
+            "equals": "gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude exclusive rights and fixed production facilities.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "spatial.g3.recurrent_site",
+      "decision_basis": "target_spatial_standard_or_explicit_editorial_classification",
+      "basis_anchors": [
+        {
+          "anchor_kind": "repository_line_range",
+          "canonical_path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
+          "raw_sha256": "f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1",
+          "start_line": 288,
+          "end_line": 303,
+          "required_text": "spatial.g3.recurrent_site"
+        },
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip",
+          "raw_sha256": "6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b",
+          "internal_path": "gn_nov_g1_xp017_yp026_rebuild_002/04-g3/g3-places.json",
+          "internal_raw_sha256": "bfd84b3b5fd38cbdda70dbe2c3acf3083ac515c2b8940cfd7808b3b6c0f2b16b",
+          "json_pointer": "",
+          "record_predicate": {
+            "field": "id",
+            "equals": "gn_nov_g3_xp017_yp026_r2_vikhtuy_locality"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude exact settlement, permanent occupation, and exact coordinates.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "spatial.g4.sector",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "spatial.g4.sector@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude runtime-created parcels and arbitrary subdivisions.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "spatial.g5.parcel",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "spatial.g5.parcel@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude canonical G0-G4 authoring and pre-created runtime instances.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "access_zone",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "access_zone@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude ownership, fortification, or guaranteed passage.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "areal",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "areal@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude surveyed boundary precision and historical polygon claims.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "boundary_route_zone",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "boundary_route_zone@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude legal-border status and automatic crossing permission.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "boundary_zone",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "boundary_zone@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude political delimitation and inferred neighbouring authority.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "buffer_zone",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "buffer_zone@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude undocumented distance, fence, or exclusion enforcement.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "burial_zone",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "burial_zone@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude individual burials, monuments, and continuous 1230 use.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "concealment_zone",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "concealment_zone@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude guaranteed invisibility and invented vegetation details.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "crossing_candidate",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "crossing_candidate@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude an existing bridge, ford, or guaranteed safe crossing.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "dry_route_zone",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "dry_route_zone@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude engineered roads and permanent dryness.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "estate_cluster_candidate",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "estate_cluster_candidate@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude a pre-existing estate, owner, buildings, or population.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "exploration_route",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "exploration_route@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude mapped certainty, engineered path, and discovered state.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "exposure_zone",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "exposure_zone@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude a concrete weather event or automatic harm.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "fauna_zone",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "fauna_zone@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude concrete animals, counts, nests, and guaranteed encounters.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "hazard_zone",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "hazard_zone@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude invented cause, severity, and guaranteed incident.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "landing_candidate",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "landing_candidate@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude a quay, boat, crew, or guaranteed usable bank.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "landing_hazard_zone",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "landing_hazard_zone@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude fixed infrastructure and automatic failure.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "landing_or_hazard_zone",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "landing_or_hazard_zone@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude simultaneous assertion of both concrete outcomes.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "landing_zone",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "landing_zone@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude harbour works, vessels, and permanent availability.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "linear",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "linear@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude exact historical track geometry.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "natural_boundary",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "natural_boundary@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude legal sovereignty and exact border lines.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "navigation_decision_zone",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "navigation_decision_zone@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude hidden routes, optimal-choice claims, and automatic success.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "navigation_zone",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "navigation_zone@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude exact channel geometry and guaranteed passability.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "observation_zone",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "observation_zone@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude guaranteed visibility, discovered facts, and structures.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "occupation_candidate",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "occupation_candidate@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude residents, tenure, buildings, and continuous use.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "orientation_hazard_zone",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "orientation_hazard_zone@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude guaranteed disorientation and invented landmarks.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "orientation_zone",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "orientation_zone@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude exact bearings, maps, and guaranteed knowledge.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "resource_hazard_zone",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "resource_hazard_zone@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude concrete resources, ownership, and automatic injury.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "resource_zone",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "resource_zone@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude inventory, yield, ownership, and permanent works.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "rest_candidate",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "rest_candidate@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude shelter, safety, occupants, and established camp.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "rest_or_use_zone",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "rest_or_use_zone@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude simultaneous concrete activities and permanent facilities.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "rest_or_work_zone",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "rest_or_work_zone@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude workshops, workers, stored items, and simultaneous outcomes.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "ritual_use_candidate",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "ritual_use_candidate@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude specific rites, actors, objects, and exact layout.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "river_hazard_zone",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "river_hazard_zone@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude exact depth, current speed, and guaranteed incident.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "route_approach",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "route_approach@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude road construction and guaranteed endpoint access.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "route_merge_zone",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "route_merge_zone@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude traffic control, road works, and unlisted branches.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "route_zone",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "route_zone@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude exact track geometry, vehicles, and all-season use.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "seasonal_hazard_zone",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "seasonal_hazard_zone@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude permanent hazard state and predicted weather.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "seasonal_route",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "seasonal_route@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude guaranteed availability and permanent route status.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "settlement_cluster_candidate",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "settlement_cluster_candidate@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude town rank, households, buildings, and exact continuity.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "shelter_candidate",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "shelter_candidate@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude buildings, ownership, occupants, and guaranteed protection.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "shelter_zone",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "shelter_zone@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude constructed shelter and guaranteed safety.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "small_water_route",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "small_water_route@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude exact channel, vessel, and year-round navigability.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "social_use_candidate",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "social_use_candidate@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude NPCs, gatherings, ownership, and ongoing occupation.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "storage_zone_candidate",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "storage_zone_candidate@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude stored goods, containers, buildings, and owners.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "wetland_zone",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "wetland_zone@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude exact hydrology, permanent inundation, and specific fauna.",
+        "runtime_availability_without_approved_profile"
+      ]
+    },
+    {
+      "category_id": "work_zone_candidate",
+      "decision_basis": "exact_p12_external_dependency_pin",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "work_zone_candidate@1"
+          }
+        }
+      ],
+      "forbidden_inferences": [
+        "Exclude workers, tools, output, ownership, and permanent workshop.",
+        "runtime_availability_without_approved_profile"
+      ]
+    }
+  ]
+}

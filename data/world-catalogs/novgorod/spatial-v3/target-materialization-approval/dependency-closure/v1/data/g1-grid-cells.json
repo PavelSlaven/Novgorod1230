@@ -1,0 +1,16 @@
+{
+  "records": [
+    {
+      "node_id": "gn_nov_g1_xp017_yp026",
+      "node_version": 1,
+      "global_grid_x": 17,
+      "global_grid_y": 26,
+      "cell_size_km": 32,
+      "center_wgs84": {
+        "longitude": 40.6322,
+        "latitude": 64.5805
+      },
+      "geometry_claim": "technical_grid_cell_not_medieval_boundary"
+    }
+  ]
+}

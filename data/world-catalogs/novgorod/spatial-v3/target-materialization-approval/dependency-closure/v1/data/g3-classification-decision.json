@@ -1,0 +1,575 @@
+{
+  "schema_version": "rus.p12_g3_classification_decision.v1",
+  "status": "PROPOSED_FOR_P12_DEPENDENCY_CLOSURE",
+  "records": [
+    {
+      "g3_id": "gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+      "source_place_type": "river_reach",
+      "approved_target_class": "spatial.g3.natural_feature",
+      "evidence_status": "comparative_reconstruction",
+      "source_refs": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "reasoning": "The approved source describes a hydrographic, island, forest, floodplain or relief feature; the weakest adequate stable class is retained.",
+      "forbidden_stronger_classifications": [
+        "settlement",
+        "built_site",
+        "exact_1230_geometry"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "g3_id": "gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+      "source_place_type": "river_reach",
+      "approved_target_class": "spatial.g3.natural_feature",
+      "evidence_status": "comparative_reconstruction",
+      "source_refs": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "reasoning": "The approved source describes a hydrographic, island, forest, floodplain or relief feature; the weakest adequate stable class is retained.",
+      "forbidden_stronger_classifications": [
+        "settlement",
+        "built_site",
+        "exact_1230_geometry"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "g3_id": "gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+      "source_place_type": "river_reach",
+      "approved_target_class": "spatial.g3.natural_feature",
+      "evidence_status": "comparative_reconstruction",
+      "source_refs": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "reasoning": "The approved source describes a hydrographic, island, forest, floodplain or relief feature; the weakest adequate stable class is retained.",
+      "forbidden_stronger_classifications": [
+        "settlement",
+        "built_site",
+        "exact_1230_geometry"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "g3_id": "gn_nov_g3_xp017_yp026_r2_central_current_split",
+      "source_place_type": "channel_split",
+      "approved_target_class": "spatial.g3.route_site",
+      "evidence_status": "comparative_reconstruction",
+      "source_refs": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "reasoning": "The approved source explicitly assigns passage, landing, approach, bypass or navigation-decision function; no engineered infrastructure is inferred.",
+      "forbidden_stronger_classifications": [
+        "engineered_road",
+        "fixed_harbour",
+        "all_season_access"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "g3_id": "gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+      "source_place_type": "river_reach",
+      "approved_target_class": "spatial.g3.natural_feature",
+      "evidence_status": "comparative_reconstruction",
+      "source_refs": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "reasoning": "The approved source describes a hydrographic, island, forest, floodplain or relief feature; the weakest adequate stable class is retained.",
+      "forbidden_stronger_classifications": [
+        "settlement",
+        "built_site",
+        "exact_1230_geometry"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "g3_id": "gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+      "source_place_type": "river_reach",
+      "approved_target_class": "spatial.g3.natural_feature",
+      "evidence_status": "comparative_reconstruction",
+      "source_refs": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "reasoning": "The approved source describes a hydrographic, island, forest, floodplain or relief feature; the weakest adequate stable class is retained.",
+      "forbidden_stronger_classifications": [
+        "settlement",
+        "built_site",
+        "exact_1230_geometry"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "g3_id": "gn_nov_g3_xp017_yp026_r2_west_side_channel",
+      "source_place_type": "side_channel",
+      "approved_target_class": "spatial.g3.natural_feature",
+      "evidence_status": "comparative_reconstruction",
+      "source_refs": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "reasoning": "The approved source describes a hydrographic, island, forest, floodplain or relief feature; the weakest adequate stable class is retained.",
+      "forbidden_stronger_classifications": [
+        "settlement",
+        "built_site",
+        "exact_1230_geometry"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "g3_id": "gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+      "source_place_type": "backwater",
+      "approved_target_class": "spatial.g3.natural_feature",
+      "evidence_status": "comparative_reconstruction",
+      "source_refs": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "reasoning": "The approved source describes a hydrographic, island, forest, floodplain or relief feature; the weakest adequate stable class is retained.",
+      "forbidden_stronger_classifications": [
+        "settlement",
+        "built_site",
+        "exact_1230_geometry"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "g3_id": "gn_nov_g3_xp017_yp026_r2_east_side_channel",
+      "source_place_type": "side_channel",
+      "approved_target_class": "spatial.g3.natural_feature",
+      "evidence_status": "comparative_reconstruction",
+      "source_refs": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "reasoning": "The approved source describes a hydrographic, island, forest, floodplain or relief feature; the weakest adequate stable class is retained.",
+      "forbidden_stronger_classifications": [
+        "settlement",
+        "built_site",
+        "exact_1230_geometry"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "g3_id": "gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+      "source_place_type": "side_channel",
+      "approved_target_class": "spatial.g3.route_site",
+      "evidence_status": "comparative_reconstruction",
+      "source_refs": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "reasoning": "The approved source explicitly assigns passage, landing, approach, bypass or navigation-decision function; no engineered infrastructure is inferred.",
+      "forbidden_stronger_classifications": [
+        "engineered_road",
+        "fixed_harbour",
+        "all_season_access"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "g3_id": "gn_nov_g3_xp017_yp026_r2_large_island_head",
+      "source_place_type": "island_head",
+      "approved_target_class": "spatial.g3.natural_feature",
+      "evidence_status": "comparative_reconstruction",
+      "source_refs": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS"
+      ],
+      "reasoning": "The approved source describes a hydrographic, island, forest, floodplain or relief feature; the weakest adequate stable class is retained.",
+      "forbidden_stronger_classifications": [
+        "settlement",
+        "built_site",
+        "exact_1230_geometry"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "g3_id": "gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+      "source_place_type": "island_head",
+      "approved_target_class": "spatial.g3.natural_feature",
+      "evidence_status": "comparative_reconstruction",
+      "source_refs": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS"
+      ],
+      "reasoning": "The approved source describes a hydrographic, island, forest, floodplain or relief feature; the weakest adequate stable class is retained.",
+      "forbidden_stronger_classifications": [
+        "settlement",
+        "built_site",
+        "exact_1230_geometry"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "g3_id": "gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+      "source_place_type": "island_ridge",
+      "approved_target_class": "spatial.g3.natural_feature",
+      "evidence_status": "comparative_reconstruction",
+      "source_refs": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS"
+      ],
+      "reasoning": "The approved source describes a hydrographic, island, forest, floodplain or relief feature; the weakest adequate stable class is retained.",
+      "forbidden_stronger_classifications": [
+        "settlement",
+        "built_site",
+        "exact_1230_geometry"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "g3_id": "gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+      "source_place_type": "floodplain_basin",
+      "approved_target_class": "spatial.g3.natural_feature",
+      "evidence_status": "comparative_reconstruction",
+      "source_refs": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS"
+      ],
+      "reasoning": "The approved source describes a hydrographic, island, forest, floodplain or relief feature; the weakest adequate stable class is retained.",
+      "forbidden_stronger_classifications": [
+        "settlement",
+        "built_site",
+        "exact_1230_geometry"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "g3_id": "gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+      "source_place_type": "shoal_field",
+      "approved_target_class": "spatial.g3.natural_feature",
+      "evidence_status": "comparative_reconstruction",
+      "source_refs": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS"
+      ],
+      "reasoning": "The approved source describes a hydrographic, island, forest, floodplain or relief feature; the weakest adequate stable class is retained.",
+      "forbidden_stronger_classifications": [
+        "settlement",
+        "built_site",
+        "exact_1230_geometry"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "g3_id": "gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+      "source_place_type": "driftwood_bar",
+      "approved_target_class": "spatial.g3.natural_feature",
+      "evidence_status": "comparative_reconstruction",
+      "source_refs": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS"
+      ],
+      "reasoning": "The approved source describes a hydrographic, island, forest, floodplain or relief feature; the weakest adequate stable class is retained.",
+      "forbidden_stronger_classifications": [
+        "settlement",
+        "built_site",
+        "exact_1230_geometry"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "g3_id": "gn_nov_g3_xp017_yp026_r2_reed_backwater",
+      "source_place_type": "reed_backwater",
+      "approved_target_class": "spatial.g3.natural_feature",
+      "evidence_status": "comparative_reconstruction",
+      "source_refs": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+        "SRC_G1R2_GSHHS"
+      ],
+      "reasoning": "The approved source describes a hydrographic, island, forest, floodplain or relief feature; the weakest adequate stable class is retained.",
+      "forbidden_stronger_classifications": [
+        "settlement",
+        "built_site",
+        "exact_1230_geometry"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "g3_id": "gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+      "source_place_type": "old_channel",
+      "approved_target_class": "spatial.g3.natural_feature",
+      "evidence_status": "comparative_reconstruction",
+      "source_refs": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+        "SRC_G1R2_GSHHS"
+      ],
+      "reasoning": "The approved source describes a hydrographic, island, forest, floodplain or relief feature; the weakest adequate stable class is retained.",
+      "forbidden_stronger_classifications": [
+        "settlement",
+        "built_site",
+        "exact_1230_geometry"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "g3_id": "gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+      "source_place_type": "dry_ridge_route",
+      "approved_target_class": "spatial.g3.route_site",
+      "evidence_status": "comparative_reconstruction",
+      "source_refs": [
+        "SRC_G1R2_CHALOV_DVINA_2012"
+      ],
+      "reasoning": "The approved source explicitly assigns passage, landing, approach, bypass or navigation-decision function; no engineered infrastructure is inferred.",
+      "forbidden_stronger_classifications": [
+        "engineered_road",
+        "fixed_harbour",
+        "all_season_access"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "g3_id": "gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+      "source_place_type": "landing_terrace",
+      "approved_target_class": "spatial.g3.route_site",
+      "evidence_status": "comparative_reconstruction",
+      "source_refs": [
+        "SRC_G1R2_CHALOV_DVINA_2012"
+      ],
+      "reasoning": "The approved source explicitly assigns passage, landing, approach, bypass or navigation-decision function; no engineered infrastructure is inferred.",
+      "forbidden_stronger_classifications": [
+        "engineered_road",
+        "fixed_harbour",
+        "all_season_access"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "g3_id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+      "source_place_type": "vikhtuy_locality",
+      "approved_target_class": "spatial.g3.recurrent_site",
+      "evidence_status": "source_backed_with_localization_uncertainty",
+      "source_refs": [
+        "SRC_G1R2_ARKHANGELSK_HOARD_1992",
+        "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+        "SRC_G1R2_SCHAPOV_1976_CHARTER"
+      ],
+      "reasoning": "The attested Vikh Tuy locality is preserved as a recurrent localization area, not upgraded to a settlement or exact site.",
+      "forbidden_stronger_classifications": [
+        "exact_settlement",
+        "exact_localization",
+        "permanent_occupation"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "g3_id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+      "source_place_type": "landing_terrace",
+      "approved_target_class": "spatial.g3.route_site",
+      "evidence_status": "comparative_reconstruction",
+      "source_refs": [
+        "SRC_G1R2_ARKHANGELSK_HOARD_1992",
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+        "SRC_G1R2_MASK_REV002",
+        "SRC_G1R2_SCHAPOV_1976_CHARTER"
+      ],
+      "reasoning": "The approved source explicitly assigns passage, landing, approach, bypass or navigation-decision function; no engineered infrastructure is inferred.",
+      "forbidden_stronger_classifications": [
+        "engineered_road",
+        "fixed_harbour",
+        "all_season_access"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "g3_id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+      "source_place_type": "forest_tract",
+      "approved_target_class": "spatial.g3.resource_site",
+      "evidence_status": "comparative_reconstruction",
+      "source_refs": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+        "SRC_G1R2_GSHHS"
+      ],
+      "reasoning": "The approved source identifies a resource-use edge; no ownership, installations or permanent exploitation are inferred.",
+      "forbidden_stronger_classifications": [
+        "exclusive_ownership",
+        "fixed_installations",
+        "continuous_exploitation"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "g3_id": "gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+      "source_place_type": "archaeological_settlement",
+      "approved_target_class": "spatial.g3.settlement",
+      "evidence_status": "archaeologically_supported_with_access_limit",
+      "source_refs": [
+        "SRC_G1R2_ARKHANGELSK_HOARD_1992",
+        "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+        "SRC_G1R2_SCHAPOV_1976_CHARTER"
+      ],
+      "reasoning": "The approved archaeological source explicitly permits a settlement-area classification while withholding exact plan and 1230 continuity.",
+      "forbidden_stronger_classifications": [
+        "exact_household_count",
+        "exact_1230_layout",
+        "urban_status"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "g3_id": "gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+      "source_place_type": "burial_area",
+      "approved_target_class": "spatial.g3.built_site",
+      "evidence_status": "archaeologically_supported_with_access_limit",
+      "source_refs": [
+        "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019"
+      ],
+      "reasoning": "The approved archaeological source permits a burial-use built-site facet without asserting structures or an exact plan.",
+      "forbidden_stronger_classifications": [
+        "exact_burial_layout",
+        "continuous_1230_use",
+        "specific_structures"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "g3_id": "gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+      "source_place_type": "local_landing",
+      "approved_target_class": "spatial.g3.route_site",
+      "evidence_status": "comparative_reconstruction",
+      "source_refs": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "reasoning": "The approved source explicitly assigns passage, landing, approach, bypass or navigation-decision function; no engineered infrastructure is inferred.",
+      "forbidden_stronger_classifications": [
+        "engineered_road",
+        "fixed_harbour",
+        "all_season_access"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "g3_id": "gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+      "source_place_type": "forest_tract",
+      "approved_target_class": "spatial.g3.natural_feature",
+      "evidence_status": "comparative_reconstruction",
+      "source_refs": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+        "SRC_G1R2_GSHHS"
+      ],
+      "reasoning": "The approved source describes a hydrographic, island, forest, floodplain or relief feature; the weakest adequate stable class is retained.",
+      "forbidden_stronger_classifications": [
+        "settlement",
+        "built_site",
+        "exact_1230_geometry"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "g3_id": "gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+      "source_place_type": "pine_ridge",
+      "approved_target_class": "spatial.g3.natural_feature",
+      "evidence_status": "comparative_reconstruction",
+      "source_refs": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+        "SRC_G1R2_GSHHS"
+      ],
+      "reasoning": "The approved source describes a hydrographic, island, forest, floodplain or relief feature; the weakest adequate stable class is retained.",
+      "forbidden_stronger_classifications": [
+        "settlement",
+        "built_site",
+        "exact_1230_geometry"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "g3_id": "gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+      "source_place_type": "tributary_mouth",
+      "approved_target_class": "spatial.g3.natural_feature",
+      "evidence_status": "comparative_reconstruction",
+      "source_refs": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS"
+      ],
+      "reasoning": "The approved source describes a hydrographic, island, forest, floodplain or relief feature; the weakest adequate stable class is retained.",
+      "forbidden_stronger_classifications": [
+        "settlement",
+        "built_site",
+        "exact_1230_geometry"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "g3_id": "gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+      "source_place_type": "forest_stream",
+      "approved_target_class": "spatial.g3.route_site",
+      "evidence_status": "comparative_reconstruction",
+      "source_refs": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS"
+      ],
+      "reasoning": "The approved source explicitly assigns passage, landing, approach, bypass or navigation-decision function; no engineered infrastructure is inferred.",
+      "forbidden_stronger_classifications": [
+        "engineered_road",
+        "fixed_harbour",
+        "all_season_access"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "g3_id": "gn_nov_g3_xp017_yp026_r2_mixing_reach",
+      "source_place_type": "estuary_mixing",
+      "approved_target_class": "spatial.g3.natural_feature",
+      "evidence_status": "comparative_reconstruction",
+      "source_refs": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "reasoning": "The approved source describes a hydrographic, island, forest, floodplain or relief feature; the weakest adequate stable class is retained.",
+      "forbidden_stronger_classifications": [
+        "settlement",
+        "built_site",
+        "exact_1230_geometry"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "g3_id": "gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+      "source_place_type": "outer_exposed",
+      "approved_target_class": "spatial.g3.route_site",
+      "evidence_status": "comparative_reconstruction",
+      "source_refs": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "reasoning": "The approved source explicitly assigns passage, landing, approach, bypass or navigation-decision function; no engineered infrastructure is inferred.",
+      "forbidden_stronger_classifications": [
+        "engineered_road",
+        "fixed_harbour",
+        "all_season_access"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    }
+  ]
+}

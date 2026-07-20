@@ -478,6 +478,80 @@ JSON Schema validator before the additional P02 invariants.
   `npm run docs:check`, `npm run architecture:check` and
   `npm run knowledge:check` all pass after the repair.
 
+## P05 normative re-freeze after the formal P02 boundary gate
+
+P05 was deliberately reopened at HEAD
+`6fb08b856b709daa9c6ffa9383ce5b9bba368c02`. The reproducibility gate exposed
+that `normative-freeze.json` still described the pre-P02 document layout:
+active-v2 paths carried old target-v3 digests, while the four target
+supplements and the formal P02 declaration/schema were not frozen at all.
+Consequently the old `check-p05.mjs` could report `PASS` while
+`spatial-v3:freeze-check` failed. The previous critic verdict was retired and
+P05 was audited again from the full current artifacts.
+
+Freeze schema v1.2 now binds all 24 sources, including the exact four
+active-v2/target-v3 pairs and the closed P02 declaration/schema. It records
+`active_owner=v2`, `target_status=inactive_until_P28` and v2-only production
+read/write; it grants no runtime, DDL or P28 activation. It also freezes the
+complete ownership surface (160 contract rows and 58 typed-error rows) and the
+exact ten-item conflict register (`NC-01..NC-10`) with zero open findings.
+`check-p05.mjs` independently recomputes those sets and digests and checks every
+P02 pair against the actual document bytes.
+
+The first independent re-review found that the v1.1 digests were still
+circular: a coordinated source/declaration/freeze repin or owner/freeze repin
+could bless itself. The repair adds the manually reviewed, non-generated
+`data/contracts/spatial-v3/p05-reviewed-baseline.json`. Its whole-file SHA-256
+is hardcoded in shared P05 tool source. Both generator and checker require the
+current 24 source bytes, contract/error names, complete owner matrices and
+exact conflict set to match that reviewed baseline before accepting or writing
+a freeze. Any intended semantic or ownership change therefore requires an
+explicit trust-anchor code review; regeneration alone cannot approve it.
+The shared P02 validator also requires exactly four unique pair IDs with exact
+active/target paths and pins, so duplicate, omitted and unknown pairs fail in
+both tools.
+
+The independent re-review returned `PASS`. It confirmed that all three
+coordinated-repin findings are closed, the reviewed baseline is not generated,
+its whole-file SHA is anchored in tool source, and checker/generator both
+reject duplicate/omitted/unknown P02 pairs, contract/error count drift,
+coordinated NC changes and trust-store tampering. P05-S01..S04 are therefore
+closed with zero open normative findings. This documentation verdict does not
+activate v3 or P28.
+
+- Information need:
+  `P05 cross-document audit normative freeze current P02 formal boundary manifest schema active v2 target v3 no P28 activation contract error owner conflict matrix`.
+- Repository Intelligence: `repo-intel:ensure` rebuilt the graph for
+  `6fb08b856b709daa9c6ffa9383ce5b9bba368c02`; `repo-intel:status` reported
+  Graphify `0.9.17` ready and only the documented knowledge-source semantic
+  coverage warning. The combined query located the P02 checker/schema,
+  P05 checker/generator, P28 gate, contract matrix and active/target normative
+  boundary.
+- Independent RAG/Graphify queries used the same need. RAG confirmed that v2
+  remains the sole production owner until P28 and that target v3 permits only
+  documentation/contracts/fixtures/migration/shadow composition. Graphify
+  linked `p02-normative-boundary.test.js`, `check-p05.mjs`,
+  `p28-activation-gate.mjs`, contract ownership and typed-error surfaces.
+- Red: `spatial-v3:freeze-check` failed as stale; the initial v1.1 negative
+  suite then reproduced the critic's coordinated-repin bypasses. Green: freeze
+  v1.2 is reproducible and the 11 isolated cases require both checker and
+  generator to reject coordinated target/declaration/freeze,
+  schema/declaration/freeze, owner/all-dependent-freeze, count and NC repins;
+  duplicate/omitted/unknown P02 pairs; and trust-store tampering.
+- Validation: P01/P02/P03/P04/P05 checks pass; the P02 isolated negative suite
+  passes 50/50; `docs:generate`, `docs:check`, `knowledge:check`,
+  `architecture:check` and the complete `npm test` pass. The full suite reports
+  only its existing environment-dependent skips: five optional real-PostgreSQL
+  integration cases and one browser E2E because no Chromium executable was
+  available to that command. The production PostgreSQL adapter integration
+  cases that are part of the default suite pass.
+- Fully read normative scope: project agent rules; development and critic
+  rules; code-driven materialization, documentation navigation,
+  materialization table, G0–G4 workflow, Novgorod G1 catalog, read-only
+  database/graph and schema references; target spatial standard and P05 plan.
+- No production database or service was used. No runtime, DDL, importer,
+  composition profile or activation evidence was changed.
+
 ## P12 target-materialization approval intake (2026-07-19)
 
 `P12_TARGET_MATERIALIZATION_APPROVAL_V1.zip` is byte-pinned under

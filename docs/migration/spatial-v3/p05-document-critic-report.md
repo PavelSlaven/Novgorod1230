@@ -2,41 +2,66 @@
 
 ## Verdict
 
-`PASS WITH NOTES`.
+`PASS`.
 
-Критик не изменял файлы и не выполнял P06. Единственная исходная note требовала
-зафиксировать этот отчёт и фактически выполненные проверки в единственном
-рабочем журнале; она закрыта обновлением `README.md` вместе с данным artifact.
-Note не описывала нормативный, функциональный, архитектурный или
-information-leak риск.
+Предыдущий `PASS WITH NOTES` относился к freeze до формального P02 boundary
+declaration и был отозван. Первый повторный critic затем обнаружил
+circular-trust дефект: coordinated target source/declaration/freeze repin и
+owner matrix/freeze repin могли пройти самопроверку. Verdict был
+`CHANGES REQUIRED`.
 
-## Scope and evidence
+Исправление вводит отдельный reviewed baseline, whole-file SHA которого
+закреплён в tool source. Baseline не является generated output и не может быть
+переписан freeze generator. После исправления независимый критик повторил
+проверку и принял P05 без оставшихся notes или открытых findings.
 
-- Полностью проверены P01–P04 target-нормативы, ADR, conflict register,
-  contract matrix, target registries, P05 freeze и checker.
-- Проверены уровни, containment, movement, time, readiness, state transitions,
-  stores, owners, migration и activation language.
-- Независимо пересчитано: Appendix B standard содержит 160 unique contracts,
-  матрица содержит тот же exact set; Appendix C содержит 58 unique typed errors,
-  матрица содержит тот же exact set. Все записи матрицы содержат required
-  ownership fields.
-- Подтверждены: atomic P28 activation only; no dual write, authoritative mixed
-  reads, in-turn fallback or partial activation; `world_base` read-only;
-  `party_runtime` mutable; controlled vocabularies требуют ровно одного finite
-  versioned mapping до activation.
+## Scope independently accepted
 
-## Checks observed
+- Freeze v1.2 пинит canonical standard, четыре active-v2 документа, четыре
+  target-v3 supplements, P02 declaration/schema, ADR, conflict register,
+  contract/error ownership matrix, vocabulary plan и dependent documents.
+- Все 24 source SHA, exact contract/error/owner digests и conflict set сначала
+  сверяются с независимо reviewed
+  `data/contracts/spatial-v3/p05-reviewed-baseline.json`; whole-file SHA этого
+  trust store жёстко закреплён в `p05-reviewed-baseline.mjs`.
+- Active owner остаётся `v2`; target status —
+  `inactive_until_P28`; production read/write — только `v2`.
+- Contract/error/owner/conflict coverage: 160 contracts, 58 typed errors,
+  160 contract-owner rows, 58 error-owner rows и exact `NC-01..NC-10`;
+  открытых findings — ноль.
+
+## Independent recheck evidence
+
+- Старые обходы отдельно проверены как закрытые: coordinated target source +
+  declaration + freeze repin; schema + declaration + freeze repin; owner
+  matrix + все dependent freeze repins.
+- Проверено, что reviewed trust store не является output generator и изменение
+  trust store без отдельной правки hardcoded trust anchor отвергается checker
+  и generator.
+- Exact четыре уникальные P02 пары проверены негативно: duplicate, omitted и
+  unknown pair отвергаются обоими инструментами.
+- Contract/error count drift, изменение `NC-*` с coordinated freeze repin и
+  tampered trust store завершаются fail-closed.
+- Canonical freeze v1.2 воспроизводим; canonical checker проходит; active
+  production owner остаётся v2, target v3 остаётся inactive до P28.
+
+## Checks
 
 ```text
+npm run spatial-v3:test-p05
+npm run spatial-v3:freeze-check
+npm run spatial-v3:check-p05
 npm run spatial-v3:check-p01
 npm run spatial-v3:check-p02
 npm run spatial-v3:check-p03
 npm run spatial-v3:check-p04
-npm run spatial-v3:check-p05
-npm run spatial-v3:freeze-check
+npm run docs:check
+npm run knowledge:check
+npm run architecture:check
 git diff --check
 ```
 
-Все перечисленные проверки завершились успешно. Repository Intelligence и
-Graphify готовы на pinned Graphify `0.9.17`; `knowledge-source: degraded`
-остаётся документированным navigation warning о semantic coverage gaps.
+Исполнитель дополнительно выполнил полный `npm test`; он прошёл с уже
+документированными environment-dependent skips. Итог независимого критика:
+`PASS`. P05-S01..S04 закрыты. Этот verdict не активирует v3/P28 и не изменяет
+runtime либо DDL.

@@ -59,6 +59,7 @@
     "spatial-v3:freeze": "node tools/spatial-v3/generate-normative-freeze.mjs",
     "spatial-v3:freeze-check": "node tools/spatial-v3/generate-normative-freeze.mjs --check",
     "spatial-v3:check-p05": "node tools/spatial-v3/check-p05.mjs",
+    "spatial-v3:test-p05": "node --test test/spatial-v3/p05-normative-freeze.test.js",
     "spatial-v3:red": "node --test test/spatial-v3/*.test.js",
     "spatial-v3:verify-red": "node tools/spatial-v3/check-p06.mjs",
     "spatial-v3:check-p06": "node tools/spatial-v3/check-p06.mjs",

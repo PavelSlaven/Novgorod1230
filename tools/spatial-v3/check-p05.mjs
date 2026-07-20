@@ -1,8 +1,27 @@
-import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
+import path from 'node:path';
+import {
+  REVIEWED_BASELINE_PATH,
+  REVIEWED_BASELINE_SHA256,
+  invariant,
+  loadReviewedBaseline,
+  sha256,
+  validateP02Declaration,
+  validateReviewedRegistries,
+  validateReviewedSourceDigests
+} from './p05-reviewed-baseline.mjs';
 
-const read = (path) => readFile(path, 'utf8');
-const sha256 = (value) => createHash('sha256').update(value).digest('hex');
+const argument = (name, fallback) => {
+  const index = process.argv.indexOf(name);
+  if (index === -1) return fallback;
+  invariant(process.argv[index + 1], `${name} requires a value`);
+  return process.argv[index + 1];
+};
+const root = path.resolve(argument('--root', '.'));
+const freezePath = argument('--freeze', 'docs/migration/spatial-v3/normative-freeze.json');
+const declarationPath = argument('--declaration', 'docs/migration/spatial-v3/evidence/p02-boundary-declaration.json');
+const declarationSchemaPath = argument('--declaration-schema', 'data/contracts/spatial-v3/p02-boundary-declaration.schema.json');
+const read = (relativePath) => readFile(path.resolve(root, relativePath), 'utf8');
 const documents = {
   standard: 'data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md',
   targetArchitecture: 'data/knowledge-source/corpus/DOCUMENTS/spatial_v3_target_code_driven_world_materialization_architecture.md',
@@ -26,60 +45,99 @@ const documents = {
   catalog: 'data/world-catalogs/novgorod/G1_SEMANTIC_CATALOG.md',
   navigation: 'data/knowledge-source/corpus/DOCUMENTS/llm_documentation_navigation.md'
 };
-const activeV2Digests = {
-  architecture: '2a2787c3f7f9c081ac4844dd8adaf0b291167b2125ea1ce8e5342d10a1685838',
-  tables: 'd08c7d35d39c9f901e038dd6fb83300e36aa0744674cf055298eef2164cc1943',
-  graph: '791b8eed78844c8a3d5f19de99218a7524f7b0353669c719b40d3b6bb4fe38ef',
-  workflow: '00e32749b9625d1654b6fe55878f49bcf8d57bcd6579a0d35f8feee7ee9fc69d'
-};
-const content = Object.fromEntries(await Promise.all(Object.entries(documents).map(async ([name, path]) => [name, await read(path)])));
+
+const { baseline } = await loadReviewedBaseline(root);
+const currentSourceDigests = Object.fromEntries(await Promise.all(
+  Object.keys(baseline.source_digests).map(async (source) => [source, sha256(await read(source))])
+));
+const content = Object.fromEntries(await Promise.all(Object.entries(documents).map(async ([name, source]) => [name, await read(source)])));
 const matrix = JSON.parse(content.matrix);
+const declarationText = await read(declarationPath);
+const declarationSchemaText = await read(declarationSchemaPath);
+const declaration = JSON.parse(declarationText);
+const declarationSchema = JSON.parse(declarationSchemaText);
+validateP02Declaration(declaration, currentSourceDigests);
+validateReviewedSourceDigests(currentSourceDigests, baseline);
+
 const contracts = [...content.standard.matchAll(/```yaml\r?\ncontract_name:\s*([^\r\n]+)[\s\S]*?```/g)].map((match) => match[1].trim()).sort();
 const appendixC = content.standard.slice(content.standard.indexOf('# Приложение C.'), content.standard.indexOf('# Приложение D.'));
 const errors = [...appendixC.matchAll(/^\|\s*`([^`]+)`\s*\|/gm)].map((match) => match[1].trim()).filter((name) => name !== 'code').sort();
-const assert = (condition, message) => { if (!condition) throw new Error(message); };
-const sameSet = (left, right) => left.length === right.length && left.every((value, index) => value === right[index]);
-
-assert(contracts.length === 160 && new Set(contracts).size === 160, 'standard must contain 160 unique implementation contracts');
-assert(errors.length === 58 && new Set(errors).size === 58, 'standard must contain 58 unique typed errors');
-assert(sameSet(contracts, matrix.contracts.map((item) => item.contract_name).sort()), 'matrix contract names must exactly equal Appendix B');
-assert(sameSet(errors, matrix.errors.map((item) => item.error_code).sort()), 'matrix error names must exactly equal Appendix C');
-assert(matrix.contracts.every((item) => ['owner_package', 'json_schema_or_dto', 'ddl_table_or_value', 'validator', 'repository', 'tests', 'migration_step'].every((field) => item[field])), 'every contract needs complete ownership evidence');
-assert(matrix.errors.every((item) => ['owner_package', 'json_schema_or_dto', 'validator', 'tests', 'migration_step'].every((field) => item[field])), 'every error needs complete ownership evidence');
+const conflictIds = content.conflicts.split(/\r?\n/).flatMap((line) => {
+  const match = line.match(/^\|\s*(NC-\d+)\s*\|/);
+  return match ? [match[1]] : [];
+}).sort();
+const contractOwnership = matrix.contracts.map((entry) => ({
+  contract_name: entry.contract_name,
+  owner_package: entry.owner_package,
+  json_schema_or_dto: entry.json_schema_or_dto,
+  ddl_table_or_value: entry.ddl_table_or_value,
+  validator: entry.validator,
+  repository: entry.repository,
+  tests: entry.tests,
+  migration_step: entry.migration_step
+})).sort((left, right) => left.contract_name.localeCompare(right.contract_name));
+const errorOwnership = matrix.errors.map((entry) => ({
+  error_code: entry.error_code,
+  owner_package: entry.owner_package,
+  json_schema_or_dto: entry.json_schema_or_dto,
+  validator: entry.validator,
+  tests: entry.tests,
+  migration_step: entry.migration_step
+})).sort((left, right) => left.error_code.localeCompare(right.error_code));
+invariant(contractOwnership.every((row) => Object.values(row).every(Boolean)), 'every contract needs complete ownership evidence');
+invariant(errorOwnership.every((row) => Object.values(row).every(Boolean)), 'every error needs complete ownership evidence');
+validateReviewedRegistries({
+  baseline,
+  contracts,
+  errors,
+  contractOwnership,
+  errorOwnership,
+  conflictIds,
+  conflictsText: content.conflicts
+});
 
 const targetNormative = ['targetArchitecture', 'targetTables', 'targetGraph', 'targetWorkflow', 'movement', 'time', 'formulas', 'orchestration', 'world', 'ux', 'catalog', 'navigation', 'registries'];
-for (const key of targetNormative) {
-  assert(content[key].includes('target') && content[key].includes('P28'), `${key}: target/P28 activation boundary is missing`);
-}
+for (const key of targetNormative) invariant(content[key].includes('target') && content[key].includes('P28'), `${key}: target/P28 activation boundary is missing`);
 for (const key of ['targetArchitecture', 'targetTables', 'targetGraph', 'targetWorkflow', 'movement', 'world']) {
-  assert(content[key].includes('G5') && content[key].includes('G6'), `${key}: G5/G6 scale boundary is missing`);
+  invariant(content[key].includes('G5') && content[key].includes('G6'), `${key}: G5/G6 scale boundary is missing`);
 }
-assert(content.targetArchitecture.includes('canonical G0–G5') && content.targetArchitecture.includes('finite party-generated G5'), 'target architecture: canonical/generated G5 ownership mismatch');
-assert(content.targetGraph.includes('runtime-read-only') && content.targetGraph.includes('bare IDs'), 'target graph: store/pin boundary missing');
-assert(content.targetWorkflow.includes('Containment и coordinates не заменяют edge') && content.targetWorkflow.includes('G7/G8'), 'target workflow: containment/topology or level boundary missing');
-for (const key of ['architecture', 'tables', 'graph', 'workflow']) {
-  assert(!content[key].includes('target normative') && !content[key].includes('P28'), `${key}: active v2 normative was replaced by target text`);
-  assert(sha256(content[key]) === activeV2Digests[key], `${key}: active v2 normative must match the pinned origin/main bytes`);
+invariant(content.targetArchitecture.includes('canonical G0–G5') && content.targetArchitecture.includes('finite party-generated G5'), 'target architecture ownership mismatch');
+invariant(content.targetGraph.includes('runtime-read-only') && content.targetGraph.includes('bare IDs'), 'target graph store/pin boundary missing');
+invariant(content.targetWorkflow.includes('Containment и coordinates не заменяют edge') && content.targetWorkflow.includes('G7/G8'), 'target workflow boundary missing');
+invariant(content.movement.includes('mechanical_readiness') && content.movement.includes('party_route_plan') && content.movement.includes('timed_traversal'), 'movement boundary missing');
+invariant(content.time.includes('exact rational') && content.time.includes('shared_root_transport_clock'), 'time boundary missing');
+invariant(content.formulas.includes('method_factor') && content.formulas.includes('explicit_additive_delays'), 'formula ownership missing');
+invariant(content.orchestration.includes('single writer') && content.orchestration.includes('topology/frontier resolution'), 'orchestration boundary missing');
+invariant(content.world.includes('scene_position') && content.world.includes('candidate set') && content.world.includes('NPC') && content.world.includes('items'), 'world materialization boundary missing');
+invariant(content.ux.includes('hidden topology') && content.ux.includes('stranded') && content.ux.includes('diagnostics'), 'UX boundary missing');
+invariant(content.catalog.includes('Name-based migration запрещён') && content.catalog.includes('not_verified'), 'catalog migration boundary missing');
+invariant(content.registries.includes('Controlled-vocabulary registry plan') && content.registries.includes('controlled_vocabulary_gap'), 'vocabulary plan missing');
+invariant(content.adr.includes('Dual write') && content.adr.includes('atomic') && content.adr.includes('P28'), 'ADR activation boundary missing');
+invariant(!Object.values(content).some((text) => /\bactive\s+v3\b/i.test(text)), 'target documentation claims active v3');
+
+const expected = JSON.parse(await read(freezePath));
+invariant(expected.schema_version === '1.2.0', 'freeze schema must bind the independently reviewed baseline');
+invariant(expected.reviewed_baseline?.path === REVIEWED_BASELINE_PATH, 'freeze reviewed baseline path mismatch');
+invariant(expected.reviewed_baseline?.sha256 === REVIEWED_BASELINE_SHA256, 'freeze reviewed baseline anchor mismatch');
+invariant(JSON.stringify(expected.source_digests) === JSON.stringify(currentSourceDigests), 'freeze source digest map is stale');
+invariant(expected.source_standard.sha256 === sha256(content.standard), 'freeze standard digest is stale');
+invariant(expected.contract_registry.names_sha256 === baseline.contract_registry.names_sha256, 'freeze contract digest is stale');
+invariant(expected.typed_error_registry.names_sha256 === baseline.typed_error_registry.names_sha256, 'freeze error digest is stale');
+invariant(expected.ownership_registry.contract_rows_sha256 === baseline.ownership_registry.contract_rows_sha256, 'freeze contract ownership digest is stale');
+invariant(expected.ownership_registry.error_rows_sha256 === baseline.ownership_registry.error_rows_sha256, 'freeze error ownership digest is stale');
+invariant(expected.conflict_registry.ids_sha256 === baseline.conflict_registry.ids_sha256 && expected.conflict_registry.open_findings === 0, 'freeze conflict evidence is stale');
+invariant(expected.active_target_boundary.declaration_sha256 === sha256(declarationText), 'freeze P02 declaration digest is stale');
+invariant(expected.active_target_boundary.schema_sha256 === sha256(declarationSchemaText), 'freeze P02 schema digest is stale');
+for (const [field, value] of Object.entries({
+  active_owner: 'v2',
+  target_status: 'inactive_until_P28',
+  production_read: 'v2_only',
+  production_write: 'v2_only'
+})) {
+  invariant(declarationSchema.properties?.[field]?.const === value, `P02 schema ${field} is not closed`);
+  invariant(expected.active_target_boundary[field] === value, `freeze P02 ${field} is stale`);
 }
-assert(content.movement.includes('mechanical_readiness') && content.movement.includes('party_route_plan') && content.movement.includes('timed_traversal'), 'movement: readiness/plan/transition boundary missing');
-assert(content.time.includes('exact rational') && content.time.includes('shared_root_transport_clock'), 'time: exact/synchronized clock boundary missing');
-assert(content.formulas.includes('method_factor') && content.formulas.includes('explicit_additive_delays'), 'formulas: factor/delay ownership missing');
-assert(content.orchestration.includes('single writer') && content.orchestration.includes('topology/frontier resolution'), 'orchestration: separate proposal/commit boundary missing');
-assert(content.world.includes('scene_position') && content.world.includes('candidate set') && content.world.includes('NPC') && content.world.includes('items'), 'world: position or bounded materialization boundary missing');
-assert(content.ux.includes('hidden topology') && content.ux.includes('stranded') && content.ux.includes('diagnostics'), 'ux: hidden-information/interruption boundary missing');
-assert(content.catalog.includes('Name-based migration запрещён') && content.catalog.includes('not_verified'), 'catalog: migration gap boundary missing');
-assert(content.registries.includes('Controlled-vocabulary registry plan') && content.registries.includes('controlled_vocabulary_gap'), 'registries: vocabulary freeze plan missing');
+invariant(expected.active_target_boundary.document_pair_count === 4, 'freeze P02 pair count is stale');
+invariant(expected.zero_findings_evidence.open_findings === 0, 'freeze contains open findings');
 
-const conflictRows = content.conflicts.split(/\r?\n/).filter((line) => /^\| NC-\d+ /.test(line));
-assert(conflictRows.length === 10 && conflictRows.every((line) => line.split('|').length === 8), 'conflict register must have 10 complete rows');
-assert(!/решить позднее|\bopen\b/i.test(content.conflicts), 'conflict register contains an unresolved finding');
-assert(content.adr.includes('Dual write') && content.adr.includes('atomic') && content.adr.includes('P28'), 'ADR: atomic no-dual-write activation boundary missing');
-assert(!Object.values(content).some((text) => /\bactive\s+v3\b/i.test(text)), 'target documentation must not claim active v3');
-
-const expected = JSON.parse(await read('docs/migration/spatial-v3/normative-freeze.json'));
-assert(expected.contract_registry.count === 160 && expected.typed_error_registry.count === 58, 'freeze totals are invalid');
-assert(expected.source_standard.sha256 === sha256(content.standard), 'freeze standard digest is stale');
-assert(expected.contract_registry.names_sha256 === sha256(JSON.stringify(contracts)), 'freeze contract digest is stale');
-assert(expected.typed_error_registry.names_sha256 === sha256(JSON.stringify(errors)), 'freeze typed-error digest is stale');
-assert(expected.zero_findings_evidence.open_findings === 0, 'freeze contains open normative findings');
-console.log('P05 checks passed: complete cross-document contract/error/owner audit and zero unresolved normative findings.');
+console.log('P05 checks passed: independently anchored 24-source baseline, exact P02 pairs, contract/error/owner/conflict audit and zero findings.');

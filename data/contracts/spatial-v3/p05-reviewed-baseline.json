@@ -1,55 +1,7 @@
 {
-  "schema_version": "1.2.0",
-  "status": "target",
-  "activation_boundary": "P28 atomic activation only; no dual write, authoritative mixed read, fallback or partial activation.",
-  "reviewed_baseline": {
-    "path": "data/contracts/spatial-v3/p05-reviewed-baseline.json",
-    "sha256": "969a308653850aa2fd9785b1f6ddbaef12bc7544b50b7e3e4114f192c2f150a8"
-  },
-  "active_target_boundary": {
-    "declaration_path": "docs/migration/spatial-v3/evidence/p02-boundary-declaration.json",
-    "declaration_sha256": "1cabacf205d58488bf8f90f0cf9464b002398f96a18240f2c71d9acdf58cc90a",
-    "schema_path": "data/contracts/spatial-v3/p02-boundary-declaration.schema.json",
-    "schema_sha256": "38c334b8d0997f22245aa711343dfe9a689f29878b2813ffbaef86bae00ad8cc",
-    "active_owner": "v2",
-    "target_status": "inactive_until_P28",
-    "production_read": "v2_only",
-    "production_write": "v2_only",
-    "document_pair_count": 4
-  },
-  "source_standard": {
-    "path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
-    "version": "4.2.0",
-    "sha256": "f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1"
-  },
-  "contract_registry": {
-    "path": "docs/migration/spatial-v3/contract-implementation-matrix.json",
-    "sha256": "e6da82ddbaf6f5d0493219516ebb7a997742b92d076491b15b56e2e6af95e8be",
-    "count": 160,
-    "names_sha256": "d2715a8e448006cae4d14f9e0ef9564e4aa1400537f397b1e3645f326c237e93"
-  },
-  "typed_error_registry": {
-    "source": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md#appendix-c",
-    "count": 58,
-    "names_sha256": "3206422f287e66acb60019303a10ed548030fe7f89105ff5333e3125b960aef3"
-  },
-  "ownership_registry": {
-    "contract_rows": 160,
-    "contract_rows_sha256": "892947ba71b32bb418507040ef7ee42c3a5936ecd93ef9cc280adcee2a87bb41",
-    "error_rows": 58,
-    "error_rows_sha256": "5fefb688a497d397911a50ca0a2157e4e1b6e09f6d19940b4d87afdbab25f9b8"
-  },
-  "conflict_registry": {
-    "path": "docs/migration/spatial-v3/normative-conflicts.md",
-    "count": 10,
-    "ids_sha256": "ffdf0e386c283e212f4e87563ede5f40a8442103d35156cc60729feba5eb334a",
-    "open_findings": 0
-  },
-  "vocabulary_registry_plan": {
-    "path": "docs/migration/spatial-v3/target-registries.md#controlled-vocabulary-registry-plan",
-    "sha256": "5bcb8f337fc2b77b6ba42f10a75bcb53413d20cf559c876fbac9b25753298cd4",
-    "required_mapping": "one finite versioned registry per controlled_* type before activation"
-  },
+  "schema_version": "p05-reviewed-baseline.v1",
+  "review_status": "reviewed",
+  "activation_status": "target_inactive_until_P28",
   "source_digests": {
     "data/contracts/spatial-v3/p02-boundary-declaration.schema.json": "38c334b8d0997f22245aa711343dfe9a689f29878b2813ffbaef86bae00ad8cc",
     "data/knowledge-source/corpus/DOCUMENTS/README.md": "5df3b183d801e4a31bc30938ea45f57fad7b2aeb406f04f5340aba106625c426",
@@ -76,22 +28,23 @@
     "docs/migration/spatial-v3/normative-conflicts.md": "39e8617c999ffee69f5764e3cfe7e54969b45ebb8801e18f5c65a75479837fec",
     "docs/migration/spatial-v3/target-registries.md": "5bcb8f337fc2b77b6ba42f10a75bcb53413d20cf559c876fbac9b25753298cd4"
   },
-  "zero_findings_evidence": {
-    "checker": "npm run spatial-v3:check-p05",
-    "scope": [
-      "levels",
-      "containment",
-      "movement",
-      "time",
-      "readiness",
-      "state transitions",
-      "stores",
-      "owners",
-      "migration",
-      "activation language"
-    ],
-    "conflict_register": "docs/migration/spatial-v3/normative-conflicts.md",
-    "boundary_declaration": "docs/migration/spatial-v3/evidence/p02-boundary-declaration.json",
+  "contract_registry": {
+    "count": 160,
+    "names_sha256": "d2715a8e448006cae4d14f9e0ef9564e4aa1400537f397b1e3645f326c237e93"
+  },
+  "typed_error_registry": {
+    "count": 58,
+    "names_sha256": "3206422f287e66acb60019303a10ed548030fe7f89105ff5333e3125b960aef3"
+  },
+  "ownership_registry": {
+    "contract_rows": 160,
+    "contract_rows_sha256": "892947ba71b32bb418507040ef7ee42c3a5936ecd93ef9cc280adcee2a87bb41",
+    "error_rows": 58,
+    "error_rows_sha256": "5fefb688a497d397911a50ca0a2157e4e1b6e09f6d19940b4d87afdbab25f9b8"
+  },
+  "conflict_registry": {
+    "ids": ["NC-01", "NC-02", "NC-03", "NC-04", "NC-05", "NC-06", "NC-07", "NC-08", "NC-09", "NC-10"],
+    "ids_sha256": "ffdf0e386c283e212f4e87563ede5f40a8442103d35156cc60729feba5eb334a",
     "open_findings": 0
   }
 }

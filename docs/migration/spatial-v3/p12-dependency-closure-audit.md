@@ -2,7 +2,8 @@
 
 ## Current reapproval status (P09 canonical-grid repair)
 
-Status: **PENDING INDEPENDENT REAPPROVAL**.
+Status: **INDEPENDENT REAPPROVAL PASS** for exact subject commit
+`8962b543052917193708137f5b4051b85758c701`.
 
 P09 replaced the non-normative `novgorod_g1_cardinal_grid_v1` convention with
 the target-standard `grid_east_north_v1` contract. The deterministic P12
@@ -12,10 +13,14 @@ canonical value. This changes the approved subject tree, so the historical
 
 The generated `REAPPROVAL_REQUEST.json` pins the exact changed dataset digest
 and records the prior evidence as superseded for this changed subject tree.
-`subject-commit-binding.json` is intentionally absent until an independent
-critic accepts the exact new subject commit and a separate evidence-only commit
-can bind that immutable tree. Until then the V1.1 repository verifier must
-remain fail-closed. Production, P28 and spatial runtime v3 remain blocked.
+`subject-commit-binding.json` raw-byte pins the complete exact subject tree:
+the bundle manifest and its digest, every manifest payload file, and the
+declared verifier test. Its only permitted post-subject evidence changes are
+this independent approval decision and this audit record. A separate
+evidence-only commit must be the direct child of the subject commit. The V1.1
+repository verifier must still report `materialization_authorized: false`,
+`p12_operational_gaps_closed: false`, and `p28_activation: not_authorized`;
+production, P28 and spatial runtime v3 remain blocked.
 
 ## Scope
 

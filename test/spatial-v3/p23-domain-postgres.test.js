@@ -6,6 +6,7 @@ import pg from 'pg';
 import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
 import { createSpatialV3DomainMutationService } from '@rus/party-store/spatial-v3-domain-integration';
 import { createSpatialV3P23DomainRepository } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-p23-domain-repository.js';
+import { createSpatialV3PostgresCombinedAtomicCommitter } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
 
 const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 45_000 });
 const name = `p23-domain-${process.pid}`; const port = 55400 + (process.pid % 200);
@@ -68,7 +69,7 @@ test('P23 Node→PostgreSQL service port validates persisted P13/P15/005 domain 
   const pool = new pg.Pool({ host: '127.0.0.1', port, user: 'p23', password: 'p23', database: 'p23' }); t.after(() => pool.end());
   for (let i = 0; i < 45; i += 1) { try { await pool.query('SELECT 1'); break; } catch { await new Promise((done) => setTimeout(done, 250)); if (i === 44) throw new Error('PostgreSQL unavailable'); } }
   await migrate(pool); await seed(pool);
-  const service = createSpatialV3DomainMutationService({ repository: createSpatialV3P23DomainRepository({ pool }) });
+  const service = createSpatialV3DomainMutationService({ repository: createSpatialV3P23DomainRepository({ pool }), committer: createSpatialV3PostgresCombinedAtomicCommitter({ pool }), verifyApproval: async () => ({ ok: true }) });
   const first = request(); assert.equal((await service.commit(first)).ok, true);
   assert.equal((await service.commit(structuredClone(first))).replay, true);
   assert.equal((await service.commit(request({ domain_mutation: { ...first.domain_mutation, capacity_units: 2 } }))).error.code, 'idempotency_conflict');

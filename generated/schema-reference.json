@@ -883,6 +883,12 @@
       "type": "sql"
     },
     {
+      "bytes": 1640,
+      "path": "schemas/party-db/006_party_runtime_v3_migration.sql",
+      "sha256": "485971bd9301a41edd107a83d1b4ef875fdbc118fb0641988c5f3bc27637629f",
+      "type": "sql"
+    },
+    {
       "bytes": 1447,
       "path": "schemas/world-base/world-base-source-bundle.schema.json",
       "sha256": "358430badf2821197ffc74d4600b2cc2b153d1a1a141020e998650cb1c325dc2",

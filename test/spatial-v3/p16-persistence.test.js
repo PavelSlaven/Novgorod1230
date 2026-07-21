@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import { createSpatialV3WorldBaseReader } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-world-base-reader.js';
 import { createSpatialV3PartyRepository } from '../../packages/party-store/src/spatial-v3-repository.js';
 import { buildCombinedWritePlan } from '../../packages/turn/src/spatial-v3-write-plan.js';
@@ -34,4 +35,12 @@ test('P16 committer locks ordered phases, rejects stale update before writes and
 test('P16 idempotency replay compares input and expected-version digests', async () => {
   const built = await buildCombinedWritePlan(input(), { verifyApproval: approval }); const committer = createSpatialV3CombinedAtomicCommitter({ recheck: async () => ({ ok: true }), withTransaction: async (work) => work({ query: async (sql) => sql.startsWith('SELECT') && sql.includes('idempotency') ? { rows: [{ canonical_input_digest: 'b'.repeat(64), expected_state_version_set_digest: digest, status: 'committed', result_change_set_id: 'old' }] } : { rows: [], rowCount: 1 } }) });
   assert.equal((await committer.commit({ plan: built.plan })).error.code, 'idempotency_conflict');
+});
+
+test('P16 sole-writer architecture forbids direct target-v3 party mutations outside CombinedAtomicCommitter', async () => {
+  const source = await readFile(new URL('../../apps/game-server/src/infrastructure/postgres/spatial-v3-p23-domain-repository.js', import.meta.url), 'utf8');
+  assert.doesNotMatch(source, /\b(?:INSERT|UPDATE|DELETE)\s+INTO?\s+party_runtime\.|\bUPDATE\s+party_runtime\./iu);
+  assert.doesNotMatch(source, /\b(?:BEGIN|COMMIT|ROLLBACK)\b|pool\.connect\(/u);
+  const committer = await readFile(new URL('../../apps/game-server/src/infrastructure/postgres/spatial-v3-combined-atomic-committer.js', import.meta.url), 'utf8');
+  assert.match(committer, /createSpatialV3PostgresCombinedAtomicCommitter/u);
 });

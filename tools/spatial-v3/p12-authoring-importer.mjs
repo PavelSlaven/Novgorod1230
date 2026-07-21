@@ -64,12 +64,12 @@ export async function buildStagedDryRunSql({ root = ROOT, manifestPath = DEFAULT
   return buildTransactionalImportSql({ root, manifestPath, rollback: true, allowTypedGaps: true });
 }
 
-export async function buildTransactionalImportSql({ root = ROOT, manifestPath = DEFAULT_MANIFEST, rollback = false, allowTypedGaps = false } = {}) {
+export async function buildTransactionalImportSql({ root = ROOT, manifestPath = DEFAULT_MANIFEST, rollback = false, allowTypedGaps = false, wrapTransaction = true } = {}) {
   const projectRoot = resolve(root); const manifestFile = resolve(projectRoot, manifestPath);
   const result = await validateAuthoringBundle({ root: projectRoot, manifestPath });
   if (result.errors.length || (!allowTypedGaps && result.data_gaps.length)) throw new Error(`P12 import refuses incomplete bundle: ${[...result.errors, ...result.data_gaps].map((error) => error.code).join(', ')}`);
   const manifest = await json(manifestFile); const ddl = await buildWorldBaseSchemaReference({ root: projectRoot });
-  const tables = new Map(ddl.schema.tables.map((table) => [table.name, table])); const sql = ['BEGIN;'];
+  const tables = new Map(ddl.schema.tables.map((table) => [table.name, table])); const sql = wrapTransaction ? ['BEGIN;'] : [];
   for (const dataset of manifest.datasets) {
     const rows = await json(resolve(dirname(manifestFile), dataset.file)); const schema = tables.get(dataset.table);
     let primaryKey = schema.columns.filter((column) => column.primary_key);
@@ -106,7 +106,9 @@ export async function buildTransactionalImportSql({ root = ROOT, manifestPath = 
     }
     sql.push(`SELECT '${dataset.table}' AS table_name, count(*) AS imported_rows FROM world_base.${dataset.table};`);
   }
-  sql.push(rollback ? 'ROLLBACK;' : 'COMMIT;'); return `${sql.join('\n')}\n`;
+  if (wrapTransaction) sql.push(rollback ? 'ROLLBACK;' : 'COMMIT;');
+  else if (rollback) throw new Error('P12 rollback requires a transaction wrapper');
+  return `${sql.join('\n')}\n`;
 }
 
 function validateReferences(manifest, datasets, errors) {
@@ -163,14 +165,45 @@ function validateCapacityProof(datasets, errors) {
 
 function validateRouteTopology(datasets, errors) {
   const routes = datasets.get('spatial_v3_world_routes') ?? []; const points = datasets.get('spatial_v3_world_route_points') ?? []; const segments = datasets.get('spatial_v3_world_route_segments') ?? []; const contexts = datasets.get('spatial_v3_world_route_segment_spatial_contexts') ?? []; const endpoints = datasets.get('spatial_v3_world_route_endpoint_bindings') ?? []; const exits = datasets.get('spatial_v3_g4_directional_exits') ?? []; const nodes = datasets.get('spatial_v3_nodes') ?? [];
+  const connections = datasets.get('spatial_v3_canonical_g5_connection_bindings') ?? []; const entries = datasets.get('spatial_v3_g4_entry_endpoint_bindings') ?? [];
+  const ref = (id, version) => `${id}:${version}`;
+  const routeIds = new Set(routes.map((row) => ref(row.id, row.version)));
+  const pointIds = new Set(points.map((row) => ref(row.id, row.version)));
+  const segmentIds = new Set(segments.map((row) => ref(row.id, row.version)));
+  for (const point of points) if (!routeIds.has(ref(point.world_route_id, point.world_route_version))) errors.push(issue('ROUTE_POINT_ORPHAN', ref(point.id, point.version)));
+  for (const segment of segments) if (!routeIds.has(ref(segment.world_route_id, segment.world_route_version))) errors.push(issue('ROUTE_SEGMENT_ORPHAN', ref(segment.id, segment.version)));
+  for (const endpoint of endpoints) if (!routeIds.has(ref(endpoint.world_route_id, endpoint.world_route_version))) errors.push(issue('ROUTE_ENDPOINT_ORPHAN', ref(endpoint.id, endpoint.version)));
+  for (const context of contexts) if (!segmentIds.has(ref(context.segment_id, context.segment_version))) errors.push(issue('ROUTE_SEGMENT_CONTEXT_ORPHAN', ref(context.segment_id, context.segment_version)));
   for (const route of routes) {
-    const routePoints = points.filter((point) => point.world_route_id === route.id && point.world_route_version === route.version); const routeSegments = segments.filter((segment) => segment.world_route_id === route.id && segment.world_route_version === route.version); const routeEndpoints = endpoints.filter((endpoint) => endpoint.world_route_id === route.id && endpoint.world_route_version === route.version);
-    if (!routePoints.length || routePoints.length !== routeSegments.length + 1 || routeEndpoints.filter((item) => item.endpoint_role === 'from').length !== 1 || routeEndpoints.filter((item) => item.endpoint_role === 'to').length !== 1) errors.push(issue('ROUTE_CONTINUITY_GAP', `${route.id}:${route.version}`));
-    for (const segment of routeSegments) if (contexts.filter((context) => context.segment_id === segment.id && context.segment_version === segment.version).length !== 1) errors.push(issue('ROUTE_SEGMENT_CONTEXT_GAP', `${segment.id}:${segment.version}`));
+    const routeRef = ref(route.id, route.version);
+    const routePoints = points.filter((point) => ref(point.world_route_id, point.world_route_version) === routeRef).toSorted((left, right) => left.ordinal - right.ordinal);
+    const routeSegments = segments.filter((segment) => ref(segment.world_route_id, segment.world_route_version) === routeRef).toSorted((left, right) => left.ordinal - right.ordinal);
+    const routeEndpoints = endpoints.filter((endpoint) => ref(endpoint.world_route_id, endpoint.world_route_version) === routeRef);
+    const from = routeEndpoints.filter((item) => item.endpoint_role === 'from'); const to = routeEndpoints.filter((item) => item.endpoint_role === 'to');
+    if (routePoints.length < 2 || routePoints.length !== routeSegments.length + 1 || from.length !== 1 || to.length !== 1) errors.push(issue('ROUTE_CONTINUITY_GAP', routeRef));
+    if (!routePoints.every((point, ordinal) => Number.isInteger(point.ordinal) && point.ordinal === ordinal)) errors.push(issue('ROUTE_POINT_ORDINAL_GAP', routeRef));
+    if (!routeSegments.every((segment, ordinal) => Number.isInteger(segment.ordinal) && segment.ordinal === ordinal)) errors.push(issue('ROUTE_SEGMENT_ORDINAL_GAP', routeRef));
+    for (const segment of routeSegments) {
+      const expectedFrom = routePoints[segment.ordinal]; const expectedTo = routePoints[segment.ordinal + 1];
+      if (!expectedFrom || !expectedTo || ref(segment.from_point_id, segment.from_point_version) !== ref(expectedFrom.id, expectedFrom.version) || ref(segment.to_point_id, segment.to_point_version) !== ref(expectedTo.id, expectedTo.version)) errors.push(issue('ROUTE_SEGMENT_POINT_TOPOLOGY_GAP', ref(segment.id, segment.version)));
+      if (contexts.filter((context) => ref(context.segment_id, context.segment_version) === ref(segment.id, segment.version)).length !== 1) errors.push(issue('ROUTE_SEGMENT_CONTEXT_GAP', ref(segment.id, segment.version)));
+    }
+    if (from.length === 1 && routePoints[0] && ref(from[0].route_point_id, from[0].route_point_version) !== ref(routePoints[0].id, routePoints[0].version)) errors.push(issue('ROUTE_ENDPOINT_POINT_TOPOLOGY_GAP', ref(from[0].id, from[0].version)));
+    if (to.length === 1 && routePoints.at(-1) && ref(to[0].route_point_id, to[0].route_point_version) !== ref(routePoints.at(-1).id, routePoints.at(-1).version)) errors.push(issue('ROUTE_ENDPOINT_POINT_TOPOLOGY_GAP', ref(to[0].id, to[0].version)));
   }
   for (const endpoint of endpoints) {
-    if (!nodes.some((node) => node.id === endpoint.canonical_g5_id && node.version === endpoint.canonical_g5_version && node.spatial_level === 'G5')) errors.push(issue('CANONICAL_G5_INVENTORY_INCOMPLETE', `${endpoint.id}:${endpoint.version}`));
-    if (endpoint.endpoint_role === 'from' && !exits.some((exit) => exit.id === endpoint.directional_exit_id && exit.version === endpoint.directional_exit_version && exit.exit_canonical_g5_id === endpoint.canonical_g5_id && exit.exit_canonical_g5_version === endpoint.canonical_g5_version)) errors.push(issue('DIRECTIONAL_EXIT_READINESS_GAP', `${endpoint.id}:${endpoint.version}`));
+    const endpointRef = ref(endpoint.id, endpoint.version);
+    if (!pointIds.has(ref(endpoint.route_point_id, endpoint.route_point_version))) errors.push(issue('ROUTE_ENDPOINT_POINT_MISSING', endpointRef));
+    if (!nodes.some((node) => node.id === endpoint.canonical_g5_id && node.version === endpoint.canonical_g5_version && node.spatial_level === 'G5')) errors.push(issue('CANONICAL_G5_INVENTORY_INCOMPLETE', endpointRef));
+    const expectedSlot = endpoint.endpoint_role === 'from' ? 'departure' : endpoint.endpoint_role === 'to' ? 'arrival' : null;
+    if (endpoint.scene_endpoint_slot_key !== expectedSlot) errors.push(issue('ROUTE_ENDPOINT_SLOT_TOPOLOGY_GAP', endpointRef));
+    if (endpoint.endpoint_role === 'from' && !exits.some((exit) => exit.id === endpoint.directional_exit_id && exit.version === endpoint.directional_exit_version && exit.exit_canonical_g5_id === endpoint.canonical_g5_id && exit.exit_canonical_g5_version === endpoint.canonical_g5_version)) errors.push(issue('DIRECTIONAL_EXIT_READINESS_GAP', endpointRef));
+    if (endpoint.endpoint_role === 'to' && (endpoint.directional_exit_id !== null || endpoint.directional_exit_version !== null)) errors.push(issue('ROUTE_ENDPOINT_EXIT_TOPOLOGY_GAP', endpointRef));
+    const slotBound = connections.some((binding) => endpoint.endpoint_role === 'from'
+      ? binding.from_canonical_g5_id === endpoint.canonical_g5_id && binding.from_canonical_g5_version === endpoint.canonical_g5_version && binding.from_scene_endpoint_slot_key === endpoint.scene_endpoint_slot_key
+      : binding.to_canonical_g5_id === endpoint.canonical_g5_id && binding.to_canonical_g5_version === endpoint.canonical_g5_version && binding.to_scene_endpoint_slot_key === endpoint.scene_endpoint_slot_key)
+      || entries.some((binding) => binding.canonical_g5_id === endpoint.canonical_g5_id && binding.canonical_g5_version === endpoint.canonical_g5_version && (endpoint.endpoint_role === 'from' ? binding.departure_scene_endpoint_slot_key : binding.arrival_scene_endpoint_slot_key) === endpoint.scene_endpoint_slot_key);
+    if (!slotBound) errors.push(issue('ROUTE_ENDPOINT_SLOT_UNBOUND', endpointRef));
   }
 }
 

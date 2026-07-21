@@ -2,7 +2,7 @@ import { computeSpatialV3CanonicalDigest, createSpatialV3TypedError } from '@rus
 
 const TABLES = Object.freeze({
   party_v3_change_sets: { mode: 'append', key: ['id'] }, party_route_plan_execution_events: { mode: 'append', key: ['execution_id', 'event_ordinal'] }, party_traversal_interval_results: { mode: 'append', key: ['id'] }, party_timed_activity_attempts: { mode: 'append', key: ['activity_execution_id', 'attempt_ordinal'] },
-  party_route_plan_executions: { mode: 'update', key: ['id'], version: true }, party_timed_activity_executions: { mode: 'update', key: ['id'], version: true }, traveller_travel_states: { mode: 'update', key: ['id'], version: true }, party_journey_locations: { mode: 'update', key: ['id'], version: true }, party_clocks: { mode: 'update', key: ['party_id'], version: true }, party_carrier_attachments: { mode: 'update', key: ['id'], version: true }, expansion_frontiers: { mode: 'update', key: ['id'], version: true }, expansion_capacity_reservations: { mode: 'update', key: ['id'], version: true },
+  party_route_plan_executions: { mode: 'update', key: ['id'], version: true }, party_timed_activity_executions: { mode: 'update', key: ['id'], version: true }, traveller_travel_states: { mode: 'update', key: ['id'], version: true }, party_journey_locations: { mode: 'update', key: ['id'], version: true }, party_clocks: { mode: 'update', key: ['party_id'], version: true }, party_carrier_attachments: { mode: 'update', key: ['id'], version: true }, entity_placements: { mode: 'update', key: ['party_id', 'entity_kind', 'entity_id'], version: true }, expansion_frontiers: { mode: 'update', key: ['id'], version: true }, expansion_capacity_reservations: { mode: 'update', key: ['id'], version: true },
   party_route_plans: { mode: 'insert', key: ['id'] }, party_route_plan_steps: { mode: 'insert', key: ['route_plan_id', 'ordinal'] }, preparation_claims: { mode: 'insert', key: ['id'] }, party_cohorts: { mode: 'insert', key: ['id'] }, party_cohort_memberships: { mode: 'insert', key: ['id'] }
 });
 const IDENT = /^[a-z_][a-z0-9_]*$/u;
@@ -12,6 +12,11 @@ const pin = (party_id) => ({ dependency_role: 'planning_context_dependency', ent
 const error = (code, party_id, diagnostics = {}) => createSpatialV3TypedError(code, { subject_ref: { entity_kind: 'party_change_set', entity_id: party_id || 'unknown' }, dependency_pins: { pins: [pin(party_id)], canonical_digest: computeSpatialV3CanonicalDigest([pin(party_id)]).replace('sha256:', '') }, diagnostics });
 const digestInput = (plan) => { const { digest, ...value } = plan; return value; };
 const keyOf = (write) => `${write.target_schema ?? 'party_runtime'}.${write.target_table}:${write.id}`;
+const validIdentity = (write) => write?.target_table === 'entity_placements'
+  ? write.id === `${write.record?.entity_kind}:${write.record?.entity_id}`
+  : write?.target_table === 'party_clocks' ? write.record?.party_id === write.id
+    : write?.target_table === 'party_route_plan_execution_events' ? write.id === `${write.record?.execution_id}:${write.record?.event_ordinal}`
+      : write?.record?.id === write?.id;
 const lockOrder = (plan) => [
   `01:clock:${plan.party_id}`,
   ...[...new Set(plan.owner_keys ?? [])].sort().map((key) => `02:owner:${key}`),
@@ -25,23 +30,23 @@ export function validateSpatialV3CombinedWritePlan(plan) {
   if (computeSpatialV3CanonicalDigest({ inserts: plan.inserts, updates: plan.updates, appends: plan.appends }) !== plan.write_set_digest || computeSpatialV3CanonicalDigest(plan.expected_state_versions) !== plan.expected_state_versions_digest) return false;
   if (!['physical', 'state', 'pin', 'endpoint', 'route', 'capacity', 'time', 'change_set'].every((kind) => plan.commit_rechecks?.some((check) => check?.kind === kind && stable(check.digest))) || ['owner_keys', 'execution_keys', 'g4_keys', 'physical_keys'].some((key) => !Array.isArray(plan[key]) || plan[key].some((value) => !stable(value)))) return false;
   const all = [['insert', plan.inserts], ['update', plan.updates], ['append', plan.appends]]; const keys = [];
-  for (const [mode, writes] of all) { if (!Array.isArray(writes)) return false; for (const write of writes) { const spec = TABLES[write?.target_table]; if (!spec || write.target_schema && write.target_schema !== 'party_runtime' || spec.mode !== mode || !write.record || (write.target_table === 'party_route_plan_execution_events' ? write.record.party_id && write.record.party_id !== plan.party_id : write.record.party_id !== plan.party_id) || !stable(write.id) || (write.target_table === 'party_clocks' ? write.record.party_id !== write.id : write.target_table === 'party_route_plan_execution_events' ? write.id !== `${write.record.execution_id}:${write.record.event_ordinal}` : write.record.id !== write.id)) return false; keys.push(keyOf(write)); } }
+  for (const [mode, writes] of all) { if (!Array.isArray(writes)) return false; for (const write of writes) { const spec = TABLES[write?.target_table]; if (!spec || write.target_schema && write.target_schema !== 'party_runtime' || spec.mode !== mode || !write.record || (write.target_table === 'party_route_plan_execution_events' ? write.record.party_id && write.record.party_id !== plan.party_id : write.record.party_id !== plan.party_id) || !stable(write.id) || !validIdentity(write)) return false; keys.push(keyOf(write)); } }
   if (new Set(keys).size !== keys.length || plan.updates.length !== plan.expected_state_versions.length) return false;
   if (!keys.every((key) => plan.physical_keys.includes(key))) return false;
   const changes = plan.appends.filter((write) => write.target_table === 'party_v3_change_sets' && write.id === plan.change_set_id && write.record.operation_kind === plan.operation_kind && write.record.idempotency_record_id === plan.idempotency_record_id);
   if (changes.length !== 1) return false;
-  return plan.updates.every((write) => plan.expected_state_versions.some((item) => item.target_table === write.target_table && item.id === write.id && Number.isInteger(item.state_version) && item.state_version > 0));
+  return plan.updates.every((write) => plan.expected_state_versions.some((item) => item.target_table === write.target_table && item.id === write.id && Number.isInteger(item.state_version) && item.state_version >= 0));
 }
 async function apply(tx, write, mode, expectedStateVersion = null, sealedPlan = null) {
   const spec = TABLES[write.target_table]; const record = write.target_table === 'party_v3_change_sets' ? { ...Object.fromEntries(Object.entries(write.record).filter(([key]) => key !== 'idempotency_record_id')), expected_state_version_set_digest: sealedPlan.expected_state_versions_digest.replace('sha256:', ''), expected_state_version_set: sealedPlan.expected_state_versions, committed_state_version_set_digest: sealedPlan.expected_state_versions_digest.replace('sha256:', ''), write_plan_digest: sealedPlan.write_set_digest.replace('sha256:', '') } : write.record; const columns = Object.keys(record); const table = `party_runtime.${quote(write.target_table)}`;
-  if (mode === 'update') { const expected = expectedStateVersion; if (!Number.isInteger(expected) || expected < 1) throw Object.assign(new Error('update lacks expected version'), { spatialCode: 'state_version_conflict' }); const set = columns.filter((column) => !spec.key.includes(column) && column !== 'state_version'); const where = spec.key.map((column, index) => `${quote(column)}=$${set.length + index + 1}`).concat(`state_version=$${set.length + spec.key.length + 1}`); const params = [...set.map((column) => record[column]), ...spec.key.map((column) => record[column]), expected]; const result = await tx.query(`UPDATE ${table} SET ${set.map((column, index) => `${quote(column)}=$${index + 1}`).join(', ')}, state_version=state_version+1 WHERE ${where.join(' AND ')}`, params); if (result.rowCount !== 1) throw Object.assign(new Error('stale state version'), { spatialCode: 'state_version_conflict' }); return; }
+  if (mode === 'update') { const expected = expectedStateVersion; if (!Number.isInteger(expected) || expected < 0) throw Object.assign(new Error('update lacks expected version'), { spatialCode: 'state_version_conflict' }); const set = columns.filter((column) => !spec.key.includes(column) && column !== 'state_version'); const where = spec.key.map((column, index) => `${quote(column)}=$${set.length + index + 1}`).concat(`state_version=$${set.length + spec.key.length + 1}`); const params = [...set.map((column) => record[column]), ...spec.key.map((column) => record[column]), expected]; const result = await tx.query(`UPDATE ${table} SET ${set.map((column, index) => `${quote(column)}=$${index + 1}`).join(', ')}, state_version=state_version+1 WHERE ${where.join(' AND ')}`, params); if (result.rowCount !== 1) throw Object.assign(new Error('stale state version'), { spatialCode: 'state_version_conflict' }); return; }
   const values = columns.map((column) => Array.isArray(record[column]) ? JSON.stringify(record[column]) : record[column]); await tx.query(`INSERT INTO ${table} (${columns.map(quote).join(', ')}) VALUES (${values.map((_, index) => `$${index + 1}`).join(', ')})`, values);
 }
 
 export function createSpatialV3CombinedAtomicCommitter({ withTransaction, recheck, now = () => new Date() } = {}) {
-  return Object.freeze({ async commit({ plan, created_at_turn = 0 } = {}) {
+  return Object.freeze({ async commit({ plan, created_at_turn = 0, recheck: commitRecheck = recheck } = {}) {
     if (!validateSpatialV3CombinedWritePlan(plan)) return Object.freeze({ ok: false, error: error('generated_schema_mismatch', plan?.party_id, { reason: 'untrusted or non-whitelisted combined write plan' }) });
-    if (typeof withTransaction !== 'function' || typeof recheck !== 'function') return Object.freeze({ ok: false, error: error('generated_schema_mismatch', plan.party_id, { reason: 'transaction owner and full recheck port required' }) });
+    if (typeof withTransaction !== 'function' || typeof commitRecheck !== 'function') return Object.freeze({ ok: false, error: error('generated_schema_mismatch', plan.party_id, { reason: 'transaction owner and full recheck port required' }) });
     try { return await withTransaction(async (tx) => {
       const locks = lockOrder(plan); for (const lock of locks) await tx.query('SELECT pg_advisory_xact_lock(hashtextextended($1, 0))', [lock]);
       const existingChangeSet = await tx.query('SELECT party_id,operation_kind,expected_state_version_set_digest,write_plan_digest FROM party_runtime.party_v3_change_sets WHERE id=$1 FOR UPDATE', [plan.change_set_id]);
@@ -51,11 +56,26 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
       const expectedDigest = plan.expected_state_versions_digest.replace('sha256:', '');
       if (idem.rows.length) { const row = idem.rows[0]; if (row.canonical_input_digest !== plan.canonical_input_digest.replace('sha256:', '') || row.expected_state_version_set_digest !== expectedDigest) throw Object.assign(new Error('idempotency input mismatch'), { spatialCode: 'idempotency_conflict' }); if (row.status === 'committed') return Object.freeze({ ok: true, replay: true, change_set_id: row.result_change_set_id }); if (row.status === 'failed_terminal') return Object.freeze({ ok: false, terminal: true, error: error(row.terminal_failure_code, plan.party_id, { replay: true }) }); if (row.status !== 'leased' || new Date(row.lease_expires_at) > now()) return Object.freeze({ ok: false, in_progress: true, error: error('idempotency_conflict', plan.party_id, { reason: 'unexpired lease' }) }); const reclaim = await tx.query(`UPDATE party_runtime.party_command_idempotency SET lease_token=$1,lease_expires_at=$2,state_version=state_version+1 WHERE id=$3 AND state_version=$4 AND status='leased'`, [`lease:${plan.plan_id}`, new Date(now().getTime() + 30000), row.id, row.state_version]); if (reclaim.rowCount !== 1) throw Object.assign(new Error('lease CAS failed'), { spatialCode: 'idempotency_conflict' }); }
       else await tx.query(`INSERT INTO party_runtime.party_command_idempotency (id,party_id,operation_kind,idempotency_key,canonical_input_digest,expected_state_version_set_digest,status,lease_token,lease_expires_at,created_at_turn) VALUES ($1,$2,$3,$4,$5,$6,'leased',$7,$8,$9)`, [plan.idempotency_record_id, plan.party_id, plan.operation_kind, plan.idempotency_key, plan.canonical_input_digest.replace('sha256:', ''), expectedDigest, `lease:${plan.plan_id}`, new Date(now().getTime() + 30000), created_at_turn]);
-      for (const check of plan.commit_rechecks) { const result = await recheck({ transaction: tx, party_id: plan.party_id, check: structuredClone(check), plan_digest: plan.digest }); if (!result?.ok) throw Object.assign(new Error(`commit recheck failed: ${check.kind}`), { spatialCode: result?.code ?? 'state_version_conflict' }); }
+      for (const check of plan.commit_rechecks) { const result = await commitRecheck({ transaction: tx, party_id: plan.party_id, check: structuredClone(check), plan_digest: plan.digest, plan }); if (!result?.ok) throw Object.assign(new Error(`commit recheck failed: ${check.kind}`), { spatialCode: result?.code ?? 'state_version_conflict' }); }
       for (const write of plan.updates) await apply(tx, write, 'update', plan.expected_state_versions.find((item) => item.target_table === write.target_table && item.id === write.id).state_version);
       for (const write of plan.inserts) await apply(tx, write, 'insert', null, plan); for (const write of plan.appends) if (!(write.target_table === 'party_v3_change_sets' && existingChangeSet.rows.length)) await apply(tx, write, 'append', null, plan);
       const settled = await tx.query(`UPDATE party_runtime.party_command_idempotency SET status='committed',result_change_set_id=$1,lease_token=NULL,lease_expires_at=NULL,finalized_at_turn=$2,state_version=state_version+1 WHERE party_id=$3 AND operation_kind=$4 AND idempotency_key=$5 AND status='leased'`, [plan.change_set_id, created_at_turn, plan.party_id, plan.operation_kind, plan.idempotency_key]); if (settled.rowCount !== 1) throw Object.assign(new Error('idempotency settle failed'), { spatialCode: 'idempotency_conflict' });
       return Object.freeze({ ok: true, replay: false, change_set_id: plan.change_set_id, lock_keys: Object.freeze(locks) });
     }); } catch (cause) { return Object.freeze({ ok: false, error: error(cause.spatialCode ?? 'generated_schema_mismatch', plan.party_id, { reason: cause.message }) }); }
   } });
+}
+
+/** P16 owns the PostgreSQL transaction boundary for every target-v3 writer. */
+export function createSpatialV3PostgresCombinedAtomicCommitter({ pool, recheck, now } = {}) {
+  if (!pool?.connect) throw new TypeError('P16 PostgreSQL committer requires a pg pool');
+  return createSpatialV3CombinedAtomicCommitter({
+    now,
+    recheck,
+    withTransaction: async (work) => {
+      const client = await pool.connect();
+      try { await client.query('BEGIN'); const result = await work(client); if (!result?.ok) { await client.query('ROLLBACK'); return result; } await client.query('COMMIT'); return result; }
+      catch (cause) { await client.query('ROLLBACK').catch(() => {}); throw cause; }
+      finally { client.release(); }
+    }
+  });
 }

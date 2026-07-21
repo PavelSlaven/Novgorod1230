@@ -18,7 +18,7 @@ The corpus manifest and generated RAG indexes derive stable IDs from these sourc
 
 ## Contract and public-interface registry boundary
 
-`docs/migration/spatial-v3/contract-implementation-matrix.json` is the generated target contract registry. Its source is Appendix B/C of the canonical standard and it is regenerated only by `npm run spatial-v3:matrix`. P08 adds the separate [`p08-public-interface-registry.json`](p08-public-interface-registry.json) and [`p08-interaction-map.md`](p08-interaction-map.md): the eight public factories are package subpath exports and fail closed with a P07 typed error. They do not create an active public API, invoke v2, read a compatibility path or authorize a write before P28.
+`docs/migration/spatial-v3/contract-implementation-matrix.json` is the generated target contract registry. Its source is Appendix B/C of the canonical standard and it is regenerated only by `npm run spatial-v3:matrix`. P08 adds the separate [`p08-public-interface-registry.json`](p08-public-interface-registry.json) and [`p08-interaction-map.md`](p08-interaction-map.md): the eight public factories are package subpath exports. Implemented target ports (including P18 traversal resolution and activation validation) are reachable only through those entries with all explicit collaborators supplied; unwired ports return a P07 typed fail-closed result. They do not invoke v2, read a compatibility path or authorize a write before P28.
 
 ## Controlled-vocabulary registry plan
 

@@ -6,7 +6,9 @@
     ".": "./src/index.js",
     "./spatial-v3": "./src/spatial-v3-ports.js",
     "./spatial-v3-orchestration": "./src/spatial-v3-orchestration.js",
+    "./spatial-v3-target-composition": "./src/spatial-v3-target-composition.js",
     "./spatial-v3-execution": "./src/spatial-v3-execution.js",
+    "./spatial-v3-write-plan": "./src/spatial-v3-write-plan.js",
     "./compat": "./src/compat/index.js"
   },
   "dependencies": {

@@ -110,8 +110,12 @@ export function createSpatialV3NewGameStarter({ loadStartSnapshot, prepareStart,
 }
 
 /** P21-S04: ownership changes end a plan; the successor receives only its exact handoff. */
-export function createSpatialV3ModeHandoffOrchestrator({ endPlan, createSuccessorPlan, verifyTransitionArtifact } = {}) {
-  requirePort(endPlan, 'endPlan'); requirePort(createSuccessorPlan, 'createSuccessorPlan'); requirePort(verifyTransitionArtifact, 'verifyTransitionArtifact');
+export function createSpatialV3ModeHandoffOrchestrator({ endPlan, createSuccessorPlan, rollbackEndedPlan, handoffAtomically, verifyTransitionArtifact } = {}) {
+  if (handoffAtomically != null) requirePort(handoffAtomically, 'handoffAtomically');
+  if (handoffAtomically == null) {
+    requirePort(endPlan, 'endPlan'); requirePort(createSuccessorPlan, 'createSuccessorPlan'); requirePort(rollbackEndedPlan, 'rollbackEndedPlan');
+  }
+  requirePort(verifyTransitionArtifact, 'verifyTransitionArtifact');
   return freeze({
     async handoff(input = {}) {
       const transition = input.mode_transition;
@@ -119,10 +123,19 @@ export function createSpatialV3ModeHandoffOrchestrator({ endPlan, createSuccesso
       if (!record(input) || !text(input.party_id) || !text(input.execution_id) || !text(input.next_owner_ref?.entity_kind) || !text(input.next_owner_ref?.entity_id) || !sealed(input.handoff_endpoint_snapshot) || !sealed(input.expected_persisted_state) || !sealed(transition) || transition.kind !== 'mode_transition' || !kinds.has(transition.transition_kind) || !modes.has(transition.from_mode) || !modes.has(transition.to_mode) || transition.from_mode === transition.to_mode || transition.final_step !== true || !sealed(transition.post_transition_state_binding) || !sealed(input.trusted_transition_artifact) || transition.p19_artifact_digest !== input.trusted_transition_artifact.canonical_digest || !same(transition.next_owner_ref, input.next_owner_ref) || !same(input.expected_persisted_state, transition.post_transition_state_binding) || input.expected_persisted_state.mode !== transition.to_mode || !same(input.expected_persisted_state.next_owner_ref, input.next_owner_ref) || !same(input.expected_persisted_state.handoff_endpoint_snapshot, input.handoff_endpoint_snapshot) || input.expected_persisted_state.location !== input.handoff_endpoint_snapshot.endpoint_ref?.endpoint_id || (transition.to_mode === 'root_authoritative' && (input.next_owner_ref.entity_kind !== 'carrier' || input.expected_persisted_state.carrier_attachment !== 'attached')) || (transition.to_mode === 'attached' && input.next_owner_ref.entity_kind !== 'actor')) return fail('journey_handoff_snapshot_invalid', input?.party_id, { stage: 'handoff_input' });
       const trusted = await verifyTransitionArtifact(freeze({ party_id: input.party_id, execution_id: input.execution_id, mode_transition: clone(transition), artifact: clone(input.trusted_transition_artifact) }));
       if (!trusted?.ok || !sealed(trusted.artifact) || !same(trusted.artifact, input.trusted_transition_artifact) || trusted.artifact.contract_kind !== 'p19_mode_transition_result' || trusted.artifact.capability !== 'trusted_p19_transition') return fail('mode_transition_contract_missing', input.party_id, { stage: 'verify_transition_artifact' });
+      if (handoffAtomically) {
+        const atomic = await handoffAtomically(freeze(clone(input)));
+        if (!atomic?.ok || atomic.execution_status !== 'superseded' || !sealed(atomic.handoff_endpoint_snapshot) || atomic.handoff_endpoint_snapshot.canonical_digest !== input.handoff_endpoint_snapshot.canonical_digest || !sealed(atomic.persisted_state) || !same(atomic.persisted_state, input.expected_persisted_state) || !sealed(atomic.successor_plan) || atomic.successor_plan.predecessor_execution_id !== input.execution_id || atomic.successor_plan.source_endpoint_snapshot?.canonical_digest !== input.handoff_endpoint_snapshot.canonical_digest || !same(atomic.successor_plan.journey_owner_ref, input.next_owner_ref)) return fail('journey_handoff_snapshot_invalid', input.party_id, { stage: 'atomic_handoff' });
+        return freeze({ ok: true, ended_execution_id: input.execution_id, handoff_endpoint_snapshot: clone(atomic.handoff_endpoint_snapshot), successor_plan: clone(atomic.successor_plan) });
+      }
       const ended = await endPlan(freeze(clone(input)));
       if (!ended?.ok || !sealed(ended.handoff_endpoint_snapshot) || ended.handoff_endpoint_snapshot.canonical_digest !== input.handoff_endpoint_snapshot.canonical_digest || ended.execution_status !== 'superseded' || !sealed(ended.persisted_state) || !same(ended.persisted_state, input.expected_persisted_state)) return fail('journey_handoff_snapshot_invalid', input.party_id, { stage: 'end_plan' });
       const successor = await createSuccessorPlan(freeze({ party_id: input.party_id, predecessor_execution_id: input.execution_id, source_endpoint_snapshot: clone(ended.handoff_endpoint_snapshot), next_owner_ref: clone(input.next_owner_ref) }));
-      if (!successor?.ok || !sealed(successor.plan) || successor.plan.predecessor_execution_id !== input.execution_id || successor.plan.source_endpoint_snapshot?.canonical_digest !== ended.handoff_endpoint_snapshot.canonical_digest || !same(successor.plan.journey_owner_ref, input.next_owner_ref)) return fail('journey_handoff_snapshot_invalid', input.party_id, { stage: 'create_successor' });
+      if (!successor?.ok || !sealed(successor.plan) || successor.plan.predecessor_execution_id !== input.execution_id || successor.plan.source_endpoint_snapshot?.canonical_digest !== ended.handoff_endpoint_snapshot.canonical_digest || !same(successor.plan.journey_owner_ref, input.next_owner_ref)) {
+        const rollback = await rollbackEndedPlan(freeze({ party_id: input.party_id, execution_id: input.execution_id, handoff_endpoint_snapshot: clone(ended.handoff_endpoint_snapshot), expected_persisted_state: clone(input.expected_persisted_state) }));
+        if (!rollback?.ok || rollback.execution_status === 'superseded') return fail('journey_handoff_snapshot_invalid', input.party_id, { stage: 'handoff_rollback' });
+        return fail('journey_handoff_snapshot_invalid', input.party_id, { stage: 'create_successor', rollback: 'applied' });
+      }
       return freeze({ ok: true, ended_execution_id: input.execution_id, handoff_endpoint_snapshot: clone(ended.handoff_endpoint_snapshot), successor_plan: clone(successor.plan) });
     }
   });

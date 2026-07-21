@@ -1,6 +1,7 @@
 import { deepFreeze } from '@rus/kernel';
 import { computeSpatialV3CanonicalDigest, createSpatialV3TypedError } from '@rus/contracts/spatial-v3/registry';
-import { validPins, validReason, validStaticSnapshot } from './spatial-v3-validation.js';
+import { expectedStateVersionsCoverCapability, validCapabilityContext, validExpectedStateVersions, validMovementCostSummary, validMovementRiskSummary, validPins, validReason, validStaticSnapshot } from './spatial-v3-validation.js';
+import { matchesTarget, validCommandProposal } from './spatial-v3-proposals.js';
 import { createRoutePlanActivationValidatorImpl } from './spatial-v3-activation.js';
 
 const READINESS = new Set(['ready', 'requires_frontier_resolution', 'requires_preparation', 'temporarily_blocked', 'data_gap']);
@@ -51,14 +52,17 @@ function validateQuery(query) {
   if (!['factual', 'character_known', 'admin'].includes(query.knowledge_scope)) return 'knowledge_scope is invalid';
   if (query.knowledge_scope === 'character_known' && (!query.knowledge_subject_ref || query.knowledge_subject_ref.entity_kind !== 'actor' || !text(query.knowledge_subject_ref.entity_id))) return 'character_known requires actor knowledge_subject_ref';
   if (query.knowledge_scope !== 'character_known' && query.knowledge_subject_ref != null) return 'factual/admin forbid knowledge_subject_ref';
-  if (!query.expected_state_versions || !Array.isArray(query.expected_state_versions.entries) || !text(query.expected_state_versions.canonical_digest)) return 'expected_state_versions are required';
+  if (query.target_request && query.knowledge_scope === 'character_known' && query.target_request.target_kind !== 'knowledge_spatial') return 'character_known target must be a knowledge token';
+  if (query.target_request && query.knowledge_scope !== 'character_known' && query.target_request.target_kind !== 'factual_spatial') return 'factual/admin target must be factual';
+  if (!validExpectedStateVersions(query.expected_state_versions)) return 'expected_state_versions are incomplete, unordered or unsealed';
   if (!Number.isInteger(query.planning_state_version) || query.planning_state_version < 1) return 'planning_state_version is required';
-  if (!query.capability_context || typeof query.capability_context !== 'object') return 'capability_context is required';
+  if (!validCapabilityContext(query.capability_context) || !expectedStateVersionsCoverCapability(query.capability_context, query.expected_state_versions)) return 'capability_context must be sealed and covered by expected_state_versions';
   if (query.journey_scope === 'carrier_local' && (query.journey_owner_ref.entity_kind !== 'actor' || query.start_endpoint_ref.endpoint_kind !== 'scene_position')) return 'carrier_local requires actor and scene_position source';
   if (query.request_kind === 'ordinary' && (query.recovery_binding_ref || query.administrative_authorization_pins)) return 'ordinary forbids recovery/admin authorization';
   if (query.request_kind === 'rescue' && (query.start_endpoint_ref.endpoint_kind !== 'stranded_state' || query.knowledge_scope !== 'factual' || !query.recovery_binding_ref || query.intended_direction_id != null)) return 'rescue requires exact stranded factual recovery';
   if (['repair', 'migration'].includes(query.request_kind) && (query.knowledge_scope !== 'admin' || !query.administrative_authorization_pins)) return 'repair/migration require administrative authorization';
-  return null;
+  const sealed = { ...query }; delete sealed.canonical_digest;
+  return query.canonical_digest === digest(sealed) ? null : 'path_query canonical_digest does not cover the complete request';
 }
 
 function endpointSnapshot(endpoint, supplied) {
@@ -92,6 +96,7 @@ function normaliseEdge(edge) {
     if (!allowed.has(edge.from_endpoint_ref.endpoint_kind) || !allowed.has(edge.to_endpoint_ref.endpoint_kind)) return null;
   } else if (edge.from_endpoint_ref.endpoint_kind !== expectedKinds[edge.edge_kind][0] || edge.to_endpoint_ref.endpoint_kind !== expectedKinds[edge.edge_kind][1]) return null;
   if (!validStaticSnapshot(edge.step_kind, edge.static_contract_snapshot)) return null;
+  if (!validMovementCostSummary(edge.cost_summary) || !validMovementRiskSummary(edge.risk_summary)) return null;
   const readiness = edge.readiness ?? 'ready';
   if (!READINESS.has(readiness)) return null;
   if (readiness === 'requires_frontier_resolution' && (!edge.command_proposal || typeof edge.command_proposal !== 'object')) return null;
@@ -124,11 +129,30 @@ function findPaths(edges, start, target, direction) {
   return complete;
 }
 
-function summary(kind, edges, property, fallback) {
-  const values = edges.map((edge) => edge[property]).filter(Boolean);
-  if (values.length === 1) return freeze(values[0]);
-  if (property === 'cost_summary') return freeze(fallback ?? { cost_kind: kind, action_units_min: null, action_units_max: null, minutes_min: null, minutes_max: null, precision: 'unknown', canonical_digest: digest({ kind, unknown: true }) });
-  return freeze(fallback ?? { risk_class: 'unknown', knowledge_precision: 'hidden', canonical_digest: digest({ unknown: true }) });
+function unknownCost(kind) { const value = { cost_kind: kind, action_units_min: null, action_units_max: null, minutes_min: null, minutes_max: null, precision: 'unknown' }; return freeze({ ...value, canonical_digest: digest(value) }); }
+function unknownRisk() { const value = { risk_class: 'unknown', knowledge_precision: 'hidden', visible_risk_tags: [] }; return freeze({ ...value, canonical_digest: digest(value) }); }
+function addRational(left, right) { const numerator = left.numerator * right.denominator + right.numerator * left.denominator; const denominator = left.denominator * right.denominator; const divisor = gcd(numerator, denominator); return { numerator: numerator / divisor, denominator: denominator / divisor }; }
+function gcd(left, right) { return right ? gcd(right, left % right) : left; }
+function sumCost(kind, edges, forceUnknown = false) {
+  if (forceUnknown || edges.some((edge) => edge.cost_summary.precision === 'unknown')) return unknownCost(kind);
+  const summaries = edges.map((edge) => edge.cost_summary);
+  const actions = summaries.filter((value) => value.action_units_min != null);
+  const minutes = summaries.filter((value) => value.minutes_min != null);
+  const action_units_min = actions.length ? actions.reduce((sum, value) => sum + value.action_units_min, 0) : null;
+  const action_units_max = actions.length ? actions.reduce((sum, value) => sum + value.action_units_max, 0) : null;
+  const minutes_min = minutes.length ? minutes.map((value) => value.minutes_min).reduce(addRational) : null;
+  const minutes_max = minutes.length ? minutes.map((value) => value.minutes_max).reduce(addRational) : null;
+  if ((kind === 'action' && !actions.length) || (kind === 'time' && !minutes.length) || (kind === 'segmented' && !actions.length && !minutes.length)) return unknownCost(kind);
+  const precision = summaries.every((value) => value.precision === 'exact') ? 'exact' : 'bounded';
+  const value = { cost_kind: kind, action_units_min, action_units_max, minutes_min, minutes_max, precision };
+  return freeze({ ...value, canonical_digest: digest(value) });
+}
+function mergeRisk(edges, forceUnknown = false) {
+  if (forceUnknown || edges.some((edge) => edge.risk_summary.knowledge_precision === 'hidden')) return unknownRisk();
+  const levels = ['none', 'low', 'moderate', 'high', 'extreme']; const precisions = ['exact', 'rough', 'rumor'];
+  const value = { risk_class: edges.reduce((highest, edge) => levels.indexOf(edge.risk_summary.risk_class) > levels.indexOf(highest) ? edge.risk_summary.risk_class : highest, 'none'), knowledge_precision: edges.reduce((least, edge) => precisions.indexOf(edge.risk_summary.knowledge_precision) > precisions.indexOf(least) ? edge.risk_summary.knowledge_precision : least, 'exact'), visible_risk_tags: [...new Set(edges.flatMap((edge) => edge.risk_summary.visible_risk_tags ?? []))].sort() };
+  if (value.knowledge_precision === 'rumor' && value.risk_class === 'none') value.risk_class = 'unknown';
+  return freeze({ ...value, canonical_digest: digest(value) });
 }
 
 function optionFromPath(query, path, snapshots, factualTarget, targetPins, optionOrdinal) {
@@ -144,9 +168,10 @@ function optionFromPath(query, path, snapshots, factualTarget, targetPins, optio
     target_request: query.target_request ?? null, intended_direction_id: query.intended_direction_id ?? null,
     resolved_factual_target_ref: factualTarget ?? null, target_resolution_dependency_pins: targetPins ?? null,
     mechanical_readiness: readiness, knowledge_visibility: visibility,
-    cost_summary: summary(query.cost_mode, path, 'cost_summary'), risk_summary: summary(query.cost_mode, path, 'risk_summary'),
+    cost_summary: sumCost(query.cost_mode, path, query.knowledge_scope === 'character_known' && visibility === 'hidden'), risk_summary: mergeRisk(path, query.knowledge_scope === 'character_known' && visibility === 'hidden'),
     knowledge_basis: path.at(-1)?.knowledge_basis ?? (query.knowledge_scope === 'factual' ? 'objective' : 'exact'),
     expected_state_versions: query.expected_state_versions
+    , capability_context: query.capability_context
   };
   if (readiness === 'ready') {
     const steps = path.map((edge, ordinal) => freeze({ ordinal, step_kind: edge.step_kind, departure_endpoint_snapshot: snapshots[ordinal], arrival_endpoint_snapshot: snapshots[ordinal + 1], static_contract_snapshot: edge.static_contract_snapshot }));
@@ -165,7 +190,7 @@ function optionFromPath(query, path, snapshots, factualTarget, targetPins, optio
  * this package never reads a database, v2 state, filesystem or a hidden cache.
  */
 export function createMovementPlanner({ resolveKnowledgeTarget, loadTopology, snapshotEndpoint, validateCapability } = {}) {
-  if (typeof loadTopology !== 'function' || typeof snapshotEndpoint !== 'function') throw new TypeError('P18 planner requires explicit loadTopology and snapshotEndpoint ports');
+  if (typeof loadTopology !== 'function' || typeof snapshotEndpoint !== 'function' || typeof validateCapability !== 'function') throw new TypeError('P18 planner requires explicit loadTopology, snapshotEndpoint and validateCapability ports');
   async function resolve(query) {
     const invalid = validateQuery(query);
     if (invalid) return failure('generated_schema_mismatch', query?.party_id, { stage: 'path_query', reason: invalid });
@@ -177,23 +202,23 @@ export function createMovementPlanner({ resolveKnowledgeTarget, loadTopology, sn
       if (!resolved?.ok || !resolved.factual_target_ref || !resolved.dependency_pins) return failure('knowledge_target_resolution_gap', request.party_id, { request_id: request.request_id });
       factualTarget = resolved.factual_target_ref; targetPins = resolved.dependency_pins;
     }
-    const topology = await loadTopology(freeze({ party_id: request.party_id, journey_owner_ref: request.journey_owner_ref, journey_scope: request.journey_scope, expected_state_versions: request.expected_state_versions }));
+    const topology = await loadTopology(freeze({ party_id: request.party_id, journey_owner_ref: request.journey_owner_ref, journey_scope: request.journey_scope, knowledge_scope: request.knowledge_scope, knowledge_subject_ref: request.knowledge_subject_ref, expected_state_versions: request.expected_state_versions }));
     if (!topology?.ok || !Array.isArray(topology.edges)) return failure('route_contract_missing', request.party_id, { request_id: request.request_id, reason: 'explicit topology is unavailable' });
-    if (typeof validateCapability === 'function') {
-      const capability = await validateCapability(freeze({ query: request, topology }));
-      if (!capability?.ok) return failure(capability?.code ?? 'movement_capability_missing', request.party_id, { request_id: request.request_id });
-    }
+    const capability = await validateCapability(freeze({ query: request, topology, capability_context: request.capability_context }));
+    if (!capability?.ok) return failure(capability?.code ?? 'movement_capability_missing', request.party_id, { request_id: request.request_id });
     if (factualTarget && !validPins(targetPins ?? topology.target_resolution_dependency_pins)) return failure('route_plan_version_pin_missing', request.party_id, { request_id: request.request_id, reason: 'factual target resolution pins are required' });
     targetPins ??= topology.target_resolution_dependency_pins;
     const edges = topology.edges.map(normaliseEdge);
     if (edges.some((edge) => !edge)) return failure('route_endpoint_invalid', request.party_id, { request_id: request.request_id, reason: 'topology contains an untyped relation' });
     if (edges.some((edge) => !validCommandProposal(edge, request))) return failure('route_plan_version_pin_missing', request.party_id, { request_id: request.request_id, reason: 'readiness command proposal is not a sealed Appendix B contract' });
     if (request.journey_scope === 'carrier_local' && edges.some((edge) => edge.edge_kind !== 'scene_edge')) return failure('movement_endpoint_kind_invalid', request.party_id, { request_id: request.request_id, reason: 'carrier_local may traverse scene edges only' });
-    const candidates = findPaths(edges, request.start_endpoint_ref, factualTarget, request.intended_direction_id);
+    const candidates = findPaths(edges, request.start_endpoint_ref, factualTarget, request.intended_direction_id)
+      .filter((path) => request.knowledge_scope !== 'character_known' || path.every((edge) => ['visible', 'misidentified'].includes(edge.knowledge_visibility)));
     if (!candidates.length) return failure(factualTarget ? 'route_contract_missing' : 'knowledge_target_resolution_gap', request.party_id, { request_id: request.request_id, target: factualTarget ?? request.intended_direction_id });
     const options = [];
     for (let index = 0; index < candidates.length; index += 1) {
       const path = candidates[index]; const snapshots = [];
+      if (path.some((edge) => edge.step_kind === 'timed_traversal' && !request.capability_context.allowed_movement_methods.includes(edge.static_contract_snapshot.traversal_snapshot.selected_movement_method_id))) return failure('movement_capability_missing', request.party_id, { request_id: request.request_id, reason: 'selected traversal method is absent from capability context' });
       for (const endpoint of [request.start_endpoint_ref, ...path.map((edge) => edge.to_endpoint_ref)]) {
         const value = await snapshotEndpoint(freeze({ endpoint_ref: endpoint, party_id: request.party_id, expected_state_versions: request.expected_state_versions }));
         const snapshot = endpointSnapshot(endpoint, value?.snapshot ?? value);
@@ -207,46 +232,6 @@ export function createMovementPlanner({ resolveKnowledgeTarget, loadTopology, sn
     return freeze({ ok: true, path_query: request, options, canonical_digest: digest(options.map(({ canonical_digest }) => canonical_digest)) });
   }
   return Object.freeze({ resolve });
-}
-
-function validCommandProposal(edge, query) {
-  if (edge.readiness === 'ready' || edge.readiness === 'temporarily_blocked' || edge.readiness === 'data_gap') return true;
-  const proposal = edge.command_proposal;
-  const hex = (value) => typeof value === 'string' && /^(?:sha256:)?[a-f0-9]{64}$/i.test(value);
-  const exactVersions = (value) => value && Array.isArray(value.entries) && value.entries.length > 0 && hex(value.canonical_digest) && value.canonical_digest === digest(value.entries).replace('sha256:', '') && value.entries.every((entry) => entry?.entity_ref && text(entry.entity_ref.entity_kind) && text(entry.entity_ref.entity_id) && Number.isInteger(entry.state_version) && entry.state_version > 0);
-  const sealed = (value, keys) => value && typeof value === 'object' && Object.keys(value).every((key) => keys.includes(key)) && hex(value.canonical_digest) && (() => { const copy = { ...value }; delete copy.canonical_digest; return value.canonical_digest === digest(copy); })();
-  if (edge.readiness === 'requires_frontier_resolution') {
-    const keys = ['command_id', 'frontier_id', 'command_kind', 'reservation_request', 'terminal_policy_ref', 'resolved_terminal_target_ref', 'resolved_terminal_target_pins', 'expected_state_versions', 'idempotency_key', 'canonical_digest'];
-    if (!sealed(proposal, keys) || !text(proposal.command_id) || !text(proposal.frontier_id) || !['materialize_next_g5', 'resolve_terminal_connection', 'resolve_world_route_exit_connection', 'create_physical_boundary'].includes(proposal.command_kind) || !text(proposal.idempotency_key) || !exactVersions(proposal.expected_state_versions)) return false;
-    if (proposal.command_kind === 'materialize_next_g5') return validReservationRequest(proposal.reservation_request, query) && proposal.frontier_id === proposal.reservation_request.frontier_id && proposal.terminal_policy_ref == null && proposal.resolved_terminal_target_ref == null && proposal.resolved_terminal_target_pins == null;
-    return proposal.reservation_request == null && proposal.terminal_policy_ref?.entity_ref && text(proposal.terminal_policy_ref.authoring_version) && proposal.resolved_terminal_target_ref && text(proposal.resolved_terminal_target_ref.entity_kind) && text(proposal.resolved_terminal_target_ref.entity_id) && validPins(proposal.resolved_terminal_target_pins);
-  }
-  const keys = ['command_id', 'planning_request_id', 'planning_request_digest', 'party_id', 'proposed_member_set_digest', 'expected_state_versions', 'idempotency_key', 'canonical_digest', 'required_member_proposals'];
-  const members = proposal.required_member_proposals;
-  return sealed(proposal, keys) && text(proposal.command_id) && proposal.planning_request_id === query.request_id && proposal.planning_request_digest === query.canonical_digest && proposal.party_id === query.party_id && hex(proposal.proposed_member_set_digest) && proposal.proposed_member_set_digest === digest(members).replace('sha256:', '') && text(proposal.idempotency_key) && exactVersions(proposal.expected_state_versions) && validPreparationMembers(members);
-}
-
-function validReservationRequest(value, query) {
-  if (!value || typeof value !== 'object' || Object.keys(value).some((key) => !['party_id', 'g4_id', 'profile_ref', 'slot_ref', 'frontier_id', 'selected_template_ref', 'requested_units'].includes(key))) return false;
-  const versioned = (ref) => ref?.entity_ref && text(ref.entity_ref.entity_kind) && text(ref.entity_ref.entity_id) && text(ref.authoring_version);
-  return value.party_id === query.party_id && text(value.g4_id) && text(value.frontier_id) && value.requested_units === 1 && versioned(value.profile_ref) && versioned(value.slot_ref) && versioned(value.selected_template_ref);
-}
-
-function validPreparationMembers(members) {
-  if (!Array.isArray(members) || !members.length) return false;
-  const seen = new Set();
-  return members.every((member, ordinal) => {
-    if (!member || typeof member !== 'object' || member.ordinal !== ordinal || !['endpoint', 'transfer_scene'].includes(member.member_kind) || !['execution_exclusive', 'reusable'].includes(member.share_mode) || !validPins(member.dependency_pins) || !member.source_authoring_ref?.entity_ref || !text(member.source_authoring_ref.entity_ref.entity_kind) || !text(member.source_authoring_ref.entity_ref.entity_id) || !text(member.source_authoring_ref.authoring_version)) return false;
-    const digestKey = `${member.member_kind}:${member.dependency_pins.canonical_digest}`; if (seen.has(digestKey)) return false; seen.add(digestKey);
-    const sealed = { ...member }; delete sealed.member_digest; return /^([a-f0-9]{64}|sha256:[a-f0-9]{64})$/i.test(member.member_digest ?? '') && member.member_digest === digest(sealed);
-  });
-}
-
-function matchesTarget(endpoint, target) {
-  // The topology provider must explicitly project target membership; no
-  // containment traversal or name/nearest-location inference is performed.
-  return endpoint?.target_ref && endpoint.target_ref.spatial_kind === target.spatial_kind && endpoint.target_ref.spatial_id === target.spatial_id
-    || endpoint?.spatial_ref && endpoint.spatial_ref.spatial_kind === target.spatial_kind && endpoint.spatial_ref.spatial_id === target.spatial_id;
 }
 
 export function createRoutePlanActivationValidator(options = {}) {

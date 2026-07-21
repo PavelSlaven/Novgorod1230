@@ -25,7 +25,7 @@ Route availability, knowledge, traversal contracts, GU/time cost and orientation
 - `assessRouteAvailability`
 - `buildTraversalRequest`
 - `validateTraversalResult`
-- `@rus/movement-routes/spatial-v3`: `createTraversalResolver`, `createTraversalCommitValidator` (P08 target stubs)
+- `@rus/movement-routes/spatial-v3`: `createTraversalResolver`, `createTraversalCommitValidator` — P18 target ports. При передаче всех явных factual/capability ports они вызывают реальный planner/activation validator; без wiring возвращают типизированный fail-closed результат и не используют v2/fallback.
 
 ## Контракты и инварианты
 

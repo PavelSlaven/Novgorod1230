@@ -22,9 +22,21 @@ const WORLD_TABLES = new Set([
   'spatial_v3_scene_position_templates', 'spatial_v3_scene_endpoint_slots'
 ]);
 const PARTY_TABLES = new Set(['party_g5_sites', 'party_scene_baselines', 'party_g6_instances', 'scene_position_nodes', 'entity_placements', 'party_entity_controls', 'party_npc_spatial_schedules', 'party_containers', 'party_items', 'party_item_placements', 'party_ownership', 'party_route_plans', 'party_route_plan_steps', 'party_route_plan_executions', 'party_route_plan_execution_events', 'traveller_travel_states', 'party_route_anchor_identities', 'party_route_anchor_location_bindings']);
-const digest = (value) => createHash('sha256').update(JSON.stringify(value)).digest('hex');
+const canonicalize = (value) => {
+  if (Array.isArray(value)) return value.map(canonicalize);
+  if (value && typeof value === 'object') return Object.fromEntries(Object.keys(value).sort().map((key) => [key, canonicalize(value[key])]));
+  return value;
+};
+const digest = (value) => createHash('sha256').update(JSON.stringify(canonicalize(value))).digest('hex');
 const issue = (code, subject_ref) => Object.freeze({ code, subject_ref });
 const text = (value) => typeof value === 'string' && value.trim() !== '';
+const freeze = (value) => {
+  if (value && typeof value === 'object' && !Object.isFrozen(value)) {
+    Object.values(value).forEach(freeze);
+    Object.freeze(value);
+  }
+  return value;
+};
 
 const WORLD_CHAIN = Object.freeze([
   ['world_revision', ['spatial_v3_world_revisions']],
@@ -46,48 +58,69 @@ const PARTY_CHAIN = Object.freeze([
 // `source_table` escape hatch.  P24 can only read this finite, reviewed v2
 // surface.  The readers serialize every row before any target mapping is
 // accepted, so the source digest is evidence over actual database records.
-const V2_WORLD_SOURCE_TABLES = Object.freeze([
-  'world_revisions', 'world_nodes', 'world_node_classes', 'world_node_parents',
-  'g1_grid_cells', 'g4_directional_exits', 'world_routes', 'world_route_points',
-  'world_route_segments', 'world_route_endpoint_bindings', 'g4_expansion_profiles',
-  'g5_generation_templates', 'scene_templates', 'scene_materialization_profiles'
+export const V2_WORLD_SOURCE_TABLES = Object.freeze([
+  'graph_scale_rules','graph_edge_modifiers','landscape_templates','water_body_templates','route_templates','land_use_templates','place_templates','source_records',
+  'regions','region_landscape_templates','region_water_body_templates','region_land_use_templates','region_place_templates','region_neighbors','region_laws','region_economy',
+  'social_classes','social_role_archetypes','legal_status_archetypes','dependency_archetypes','mobility_archetypes','social_position_archetypes','class_role_rules','occupation_archetypes',
+  'skill_catalog','occupation_skill_defaults','role_occupation_rules','universal_archetype_proposals','region_social_roles','region_occupations','region_place_generation_rules','region_material_culture',
+  'region_risks','conflict_templates','rumor_templates','price_bands','seasonal_rules','religious_context','region_npc_knowledge','region_npc_generation_rules',
+  'place_generation_limits','llm_context_packs','llm_validation_rules','region_gaps','places','graph_nodes','graph_edges','historical_anchors','historical_events','historical_figures','place_locations','place_minilocations','scene_anchors','place_buildings','historical_event_phases','item_templates',
+  'building_templates','location_object_rules','weather_profiles','graph_edge_knowledge_rules','record_sources','audit_log','world_revisions','universal_categories','universal_category_relations','classification_schemes','category_labels','category_scheme_mappings','universal_parameter_definitions','region_category_options','decision_command_catalog','decision_policy_profiles','decision_policy_options','region_npc_archetypes','region_demographic_profiles','region_name_pools','region_name_pool_entries','region_appearance_profiles','region_clothing_profiles','region_equipment_profiles','region_equipment_profile_entries','region_knowledge_profiles','region_behavior_profiles','region_activity_profiles','region_schedule_profiles','region_npc_profile_sets',
+  'room_templates','building_layout_templates','building_layout_nodes','building_layout_edges','g5_minilocation_templates','g5_anchor_templates','g5_edge_templates','g4_materialization_profiles','g4_materialization_bindings','materialization_slot_rules','g4_materialization_layout_edges','container_templates','item_profile_sets','item_profile_entries','container_content_profiles','container_content_profile_entries','item_template_category_bindings','item_template_inventory_profiles','item_template_source_bindings','container_template_source_bindings','quantity_unit_definitions','item_template_quantity_profiles','container_template_inventory_profiles','container_template_facet_bindings','container_content_category_relations','item_classification_migration_inventory','property_profiles','property_profile_rules','transport_templates','g4_npc_materialization_rules','g4_item_materialization_rules','g4_container_materialization_rules','catalog_imports','catalog_import_tables'
 ]);
-const V2_PARTY_SOURCE_TABLES = Object.freeze([
-  'party_g5_nodes', 'party_g5_anchors', 'party_g5_edges', 'party_npcs',
-  'party_npc_schedules', 'party_containers', 'party_items', 'party_item_placements',
-  'party_ownership', 'party_positions'
+export const V2_PARTY_SOURCE_TABLES = Object.freeze([
+  'delivery_attempts','delivery_acknowledgements','commit_idempotency','parties','party_server_sessions','party_state_snapshots','party_positions','party_player_characters','party_character_knowledge','party_materialization_runs','party_materialization_choices','party_g5_nodes','party_g5_anchors','party_g5_edges','party_npcs','party_npc_traits','party_npc_relations','party_npc_knowledge','party_npc_schedules','party_containers','party_items','party_item_placements','party_ownership','party_decision_requests','party_decision_options','party_decision_results','party_change_sets','party_autonomous_updates','party_visible_read_models'
 ]);
 
 async function relationExists(client, schema, relation) {
   const { rows } = await client.query('SELECT to_regclass($1) AS name', [`${schema}.${relation}`]);
   return rows[0]?.name !== null;
 }
-async function readEnumeratedV2Rows(pool, schema, tables, sourceScope) {
+async function readEnumeratedV2Rows(pool, schema, tables, sourceScope, { party_id = null, world_revision_id = null } = {}) {
   const client = await pool.connect();
   try {
     await client.query('BEGIN READ ONLY');
     const records = [];
     for (const table of tables) {
       if (!(await relationExists(client, schema, table))) continue;
-      const { rows } = await client.query(`SELECT to_jsonb(t) AS payload FROM ${schema}.${table} t ORDER BY 1`);
+      const relation = `${schema}.${table}`;
+      let sql = `SELECT to_jsonb(t) AS payload FROM ${relation} t`;
+      const values = [];
+      if (party_id) {
+        if (table === 'commit_idempotency') {
+          sql += ' WHERE EXISTS (SELECT 1 FROM party_runtime.party_server_sessions s WHERE s.party_id=$1 AND s.request_id=t.request_id)'; values.push(party_id);
+        } else {
+          sql += " WHERE to_jsonb(t) ? 'party_id' AND t.party_id=$1"; values.push(party_id);
+        }
+      }
+      if (world_revision_id) {
+        sql += `${values.length ? ' AND' : ' WHERE'} to_jsonb(t) ? 'world_revision_id' AND t.world_revision_id=$${values.length + 1}`;
+        values.push(world_revision_id);
+      }
+      sql += ' ORDER BY 1';
+      const { rows } = await client.query(sql, values);
       rows.forEach(({ payload }, index) => {
-        const identity = `${schema}.${table}:${payload.id ?? payload.party_id ?? index}`;
-        records.push(Object.freeze({ source_identity: identity, source_table: `${schema}.${table}`, source_digest: digest(payload), pin_mapping: `legacy:${schema}.${table}:${digest(payload)}`, evidence: `read_only:${schema}.${table}:${digest(payload)}`, payload: Object.freeze(payload) }));
+        const payloadDigest = digest(payload);
+        const identity = `${relation}:${payload.id ?? payload.party_id ?? index}:${payloadDigest}`;
+        records.push(Object.freeze({ source_identity: identity, source_table: relation, source_digest: payloadDigest, pin_mapping: `legacy:${relation}:${payloadDigest}`, evidence: `read_only:${relation}:${payloadDigest}`, payload: freeze(payload) }));
       });
     }
     await client.query('ROLLBACK');
-    return buildSpatialV3SourceExtract({ source_scope: sourceScope, adapter_kind: 'enumerated_v2_reader', records, expected_source_ids: records.map((r) => r.source_identity) });
+    return buildSpatialV3SourceExtract({ source_scope: sourceScope, adapter_kind: 'enumerated_v2_reader', records, expected_source_ids: records.map((r) => r.source_identity), party_id, world_revision_id, source_tables: tables });
   } catch (error) { await client.query('ROLLBACK').catch(() => {}); throw error; } finally { client.release(); }
 }
-export const readV2WorldSource = (pool) => readEnumeratedV2Rows(pool, 'world_base', V2_WORLD_SOURCE_TABLES, 'enumerated read-only v2 world source');
-export const readV2PartySource = (pool) => readEnumeratedV2Rows(pool, 'party_runtime', V2_PARTY_SOURCE_TABLES, 'enumerated read-only v2 party source');
+export const readV2WorldSource = (pool, { world_revision_id = null } = {}) => readEnumeratedV2Rows(pool, 'world_base', V2_WORLD_SOURCE_TABLES, 'enumerated read-only v2 world source', { world_revision_id });
+export const readV2PartySource = (pool, { party_id } = {}) => {
+  if (!text(party_id)) throw new TypeError('P24 party source requires one explicit party_id; all-party snapshots need a separate atomic interface');
+  return readEnumeratedV2Rows(pool, 'party_runtime', V2_PARTY_SOURCE_TABLES, `enumerated read-only v2 party source:${party_id}`, { party_id });
+};
 
 /**
  * A v2 export is read-only input: every source record has its source table/key,
  * content digest and dependency pins.  The caller must state coverage explicitly
  * so an omitted source row becomes a typed hard gap before any target transaction.
  */
-export function buildSpatialV3SourceExtract({ source_scope, records = [], expected_source_ids = [], adapter_kind = 'manual_fixture' } = {}) {
+export function buildSpatialV3SourceExtract({ source_scope, records = [], expected_source_ids = [], adapter_kind = 'manual_fixture', party_id = null, world_revision_id = null, source_tables = [] } = {}) {
   const errors = []; const seen = new Set();
   if (!text(source_scope)) errors.push(issue('migration_source_scope_missing', 'source_extract'));
   for (const row of records) {
@@ -98,7 +131,7 @@ export function buildSpatialV3SourceExtract({ source_scope, records = [], expect
   }
   for (const sourceId of expected_source_ids) if (!seen.has(sourceId)) errors.push(issue('migration_source_coverage_gap', sourceId));
   const canonical = records.map(({ source_identity, source_table, source_digest, pin_mapping, evidence }) => ({ source_identity, source_table, source_digest, pin_mapping, evidence }));
-  return Object.freeze({ ok: errors.length === 0, source_scope, adapter_kind, records: Object.freeze(records), source_digest: digest(canonical), errors: Object.freeze(errors) });
+  return Object.freeze({ ok: errors.length === 0, source_scope, adapter_kind, party_id, world_revision_id, source_tables: Object.freeze([...source_tables]), records: Object.freeze(records), source_digest: digest(canonical), errors: Object.freeze(errors) });
 }
 
 function requireSourceRows(rows, extract, errors) {
@@ -121,6 +154,10 @@ function requireInventorySourceBindings(inventory, targets, extract, errors) {
     const extractRow = source.get(row.old_identity);
     const targetRowsForIdentity = mapped.get(row.old_identity) ?? [];
     if (!extractRow || extractRow.pin_mapping !== row.pin_mapping || extractRow.evidence !== row.evidence) errors.push(issue('migration_inventory_source_identity_gap', row.old_identity));
+    // `keep`/`deprecate` have an explicit immutable source snapshot in the
+    // coverage artifact. They do not fabricate a v3 target row merely to make
+    // a count look complete.
+    if (row.action === 'keep' || row.action === 'deprecate') continue;
     if (!targetRowsForIdentity.length) errors.push(issue('migration_inventory_target_mapping_gap', row.old_identity));
     for (const target of targetRowsForIdentity) if (target.pin_mapping !== row.pin_mapping || target.evidence !== row.evidence) errors.push(issue('migration_inventory_target_identity_gap', row.old_identity));
   }
@@ -177,6 +214,54 @@ export function buildSpatialV3MigrationInventory({ world_records = [], party_rec
   }
   const duplicate = new Set(); for (const row of records) { if (duplicate.has(row.old_identity)) errors.push(issue('migration_duplicate_source', row.old_identity)); duplicate.add(row.old_identity); }
   return Object.freeze({ ok: errors.length === 0, records: Object.freeze(records), errors: Object.freeze(errors), source_digest: digest(records), target_digest: digest(records.map(({ old_identity, target_contract, action, pin_mapping }) => ({ old_identity, target_contract, action, pin_mapping }))) });
+}
+
+/**
+ * Turns a finite, actual v2 read into a reviewable one-row-per-source inventory.
+ * A missing review is deliberately a blocked hard gap, so expanding a legacy
+ * table cannot become an invisible migration omission.
+ */
+export function buildSpatialV3MigrationInventoryFromSource({ source_extract, reviewed_records = [] } = {}) {
+  const reviewed = new Map((reviewed_records ?? []).map((row) => [row?.old_identity, row]));
+  const world_records = []; const party_records = [];
+  for (const source of source_extract?.records ?? []) {
+    const supplied = reviewed.get(source.source_identity);
+    const record = supplied ?? {
+      old_identity: source.source_identity,
+      old_type: source.source_table,
+      old_level: 'legacy_unclassified',
+      target_contract: 'unreviewed_v2_source',
+      action: 'hard_gap',
+      reason: 'No reviewed P24 mapping exists for this actual v2 source row.',
+      evidence: source.evidence,
+      pin_mapping: source.pin_mapping,
+      review_status: 'blocked'
+    };
+    const normalized = { ...record, old_identity: source.source_identity, evidence: source.evidence, pin_mapping: source.pin_mapping };
+    if (String(source.source_table).startsWith('world_base.')) world_records.push(normalized); else party_records.push(normalized);
+  }
+  return buildSpatialV3MigrationInventory({ world_records, party_records });
+}
+
+export function buildSpatialV3MigrationCoverageArtifact({ source_extract, inventory, target_digest, party_id = null, world_revision_id = null } = {}) {
+  const acceptance = validateSpatialV3MigrationAcceptance(inventory ?? { records: [], errors: [], source_digest: '', target_digest: '' });
+  const scopeParty = party_id ?? source_extract?.party_id ?? null;
+  const scopeRevision = world_revision_id ?? source_extract?.world_revision_id ?? null;
+  const payload = {
+    artifact_kind: 'spatial_v3_migration_coverage_v1',
+    party_id: scopeParty,
+    world_revision_id: scopeRevision,
+    source_scope: source_extract?.source_scope ?? null,
+    source_digest: source_extract?.source_digest ?? null,
+    source_record_count: source_extract?.records?.length ?? 0,
+    inventory_digest: inventory?.source_digest ?? null,
+    inventory_target_digest: inventory?.target_digest ?? null,
+    target_digest: target_digest ?? null,
+    acceptance_ok: acceptance.ok,
+    error_codes: acceptance.errors.map((error) => error.code),
+    source_snapshot: (source_extract?.records ?? []).map(({ source_identity, source_table, source_digest, pin_mapping, evidence, payload: rowPayload }) => ({ source_identity, source_table, source_digest, pin_mapping, evidence, payload: rowPayload }))
+  };
+  return freeze({ ...payload, artifact_id: `p24:${digest(payload)}`, canonical_digest: digest(payload) });
 }
 
 export function validateSpatialV3MigrationAcceptance(inventory) {
@@ -241,16 +326,26 @@ async function insertRows(client, schema, rows) {
   }
 }
 
+async function persistCoverageArtifact(client, schema, artifact) {
+  await client.query(
+    `INSERT INTO ${schema}.spatial_v3_migration_coverage_artifacts
+      (artifact_id,party_id,world_revision_id,source_scope,source_digest,source_record_count,inventory_digest,inventory_target_digest,target_digest,acceptance_ok,error_codes,source_snapshot,canonical_digest)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`,
+    [artifact.artifact_id, artifact.party_id, artifact.world_revision_id, artifact.source_scope, artifact.source_digest, artifact.source_record_count, artifact.inventory_digest, artifact.inventory_target_digest, artifact.target_digest, artifact.acceptance_ok, artifact.error_codes, artifact.source_snapshot, artifact.canonical_digest]
+  );
+}
+
 export async function applySpatialV3WorldMigration(pool, { inventory, source_extract, target_rows = [], dry_run = false } = {}) {
   const acceptance = validateSpatialV3MigrationAcceptance(inventory); const targets = targetRows(target_rows, WORLD_TABLES);
   const errors = [...acceptance.errors, ...(source_extract?.errors ?? [])];
   if (source_extract?.adapter_kind !== 'enumerated_v2_reader') errors.push(issue('migration_source_adapter_required', 'world'));
   requireSourceRows(targets.rows, source_extract, errors); requireInverseInventoryCoverage(inventory, source_extract, errors); requireInventorySourceBindings(inventory, targets.rows, source_extract, errors); validateChain(targets.rows, WORLD_CHAIN, errors, 'world');
   if (errors.length) return Object.freeze({ ok: false, errors: Object.freeze(errors) });
+  const artifact = buildSpatialV3MigrationCoverageArtifact({ source_extract, inventory, target_digest: targets.digest });
   const client = await pool.connect();
-  try { await client.query('BEGIN'); await client.query('SELECT pg_advisory_xact_lock(hashtext($1))', [`spatial-v3-world-migration:${inventory.source_digest}`]); await insertRows(client, 'world_base', targets.rows); if (dry_run) await client.query('ROLLBACK'); else await client.query('COMMIT'); }
+  try { await client.query('BEGIN'); await client.query('SELECT pg_advisory_xact_lock(hashtext($1))', [`spatial-v3-world-migration:${inventory.source_digest}`]); await insertRows(client, 'world_base', targets.rows); await persistCoverageArtifact(client, 'world_base', artifact); if (dry_run) await client.query('ROLLBACK'); else await client.query('COMMIT'); }
   catch (error) { await client.query('ROLLBACK').catch(() => {}); throw error; } finally { client.release(); }
-  return Object.freeze({ ok: true, applied: targets.rows.length, dry_run, source_digest: inventory.source_digest, target_digest: targets.digest });
+  return Object.freeze({ ok: true, applied: targets.rows.length, dry_run, source_digest: inventory.source_digest, target_digest: targets.digest, coverage_artifact: artifact });
 }
 
 /** Applies only a reviewed immutable migration plan to a caller-selected target DB. */
@@ -259,6 +354,7 @@ export async function applySpatialV3PartyMigration(pool, { inventory, source_ext
   const g5 = g5_records.map(classifyV2PartyG5); const journey = journeys.map(constructP14JourneyRows);
   const targets = targetRows([...target_rows, ...journey.filter((x) => x.ok).flatMap((x) => x.target_rows)], PARTY_TABLES); const errors = [...acceptance.errors, ...(source_extract?.errors ?? []), ...g5.filter((x) => !x.ok).map((x) => x.error), ...journey.filter((x) => !x.ok).flatMap((x) => x.errors), ...targets.errors];
   if (source_extract?.adapter_kind !== 'enumerated_v2_reader') errors.push(issue('migration_source_adapter_required', 'party'));
+  if (source_extract?.party_id && source_extract.party_id !== party_id) errors.push(issue('migration_party_scope_gap', source_extract.party_id));
   requireSourceRows(targets.rows, source_extract, errors);
   requireInverseInventoryCoverage(inventory, source_extract, errors);
   const g5TargetBindings = g5_records.map((row) => ({ source_identity: row?.source_identity, pin_mapping: row?.pin_mapping, evidence: row?.evidence }));
@@ -283,8 +379,10 @@ export async function applySpatialV3PartyMigration(pool, { inventory, source_ext
         VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,'active',0,$10,$10)`, [target.id, party_id, classified.origin, target.parent_g4_id, classified.origin === 'canonical' ? row.canonical_g5_ref : null, classified.origin === 'generated' ? target.generated_template_ref : null, classified.origin === 'generated' ? target.expansion_slot_ref : null, classified.origin === 'generated' ? target.source_frontier_id : null, classified.origin === 'generated' ? target.generation_ordinal : null, change_set_id]);
     }
     await insertRows(client, 'party_runtime', targets.rows);
+    const artifact = buildSpatialV3MigrationCoverageArtifact({ source_extract, inventory, target_digest: targets.digest, party_id });
+    await persistCoverageArtifact(client, 'party_runtime', artifact);
     if (dry_run) await client.query('ROLLBACK'); else await client.query('COMMIT');
   }
   catch (error) { await client.query('ROLLBACK').catch(() => {}); throw error; } finally { client.release(); }
-  return Object.freeze({ ok: true, applied: g5_records.length + targets.rows.length, dry_run, source_digest: inventory.source_digest, target_digest: targets.digest, g5_classifications: Object.freeze(g5.map((x) => x.classification)), journey_modes: Object.freeze(journey.map((x) => x.mode)) });
+  return Object.freeze({ ok: true, applied: g5_records.length + targets.rows.length, dry_run, source_digest: inventory.source_digest, target_digest: targets.digest, coverage_artifact: buildSpatialV3MigrationCoverageArtifact({ source_extract, inventory, target_digest: targets.digest, party_id }), g5_classifications: Object.freeze(g5.map((x) => x.classification)), journey_modes: Object.freeze(journey.map((x) => x.mode)) });
 }

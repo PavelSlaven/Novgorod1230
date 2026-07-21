@@ -1,5 +1,6 @@
 import { deepFreeze } from '@rus/kernel';
 import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
+import { buildCombinedWritePlan } from '@rus/turn/spatial-v3-write-plan';
 
 const ROOT_KINDS = new Set(['scene_position', 'moored_at_position', 'parked_at_position']);
 const HOST_KINDS = new Set(['inside_entity', 'on_entity', 'attached_to_entity']);
@@ -152,34 +153,62 @@ function validatePersistedDomainSnapshot(snapshot, request) {
   return null;
 }
 
-/**
- * P23 mutation protocol. The repository owns SQL and locks; this domain layer
- * owns only exact snapshot validation and never substitutes a synthetic row.
- */
-export function createSpatialV3DomainMutationService({ repository } = {}) {
-  if (!repository || typeof repository.withTransaction !== 'function' || typeof repository.loadForUpdate !== 'function' || typeof repository.acquireIdempotency !== 'function' || typeof repository.applyAtomically !== 'function' || typeof repository.completeIdempotency !== 'function') throw new TypeError('P23 requires an injected transaction-bound domain repository');
+function p23PlanInput(request, snapshot) {
+  const mutation = request.domain_mutation;
+  const placementId = `${mutation.entity_kind}:${mutation.entity_id}`;
+  const targetExpected = request.expected_state_versions.filter((entry) => entry.resource === 'entity_placements' && entry.id === placementId);
+  if (targetExpected.length !== 1) return null;
+  const expected = targetExpected.map((entry) => ({ target_table: entry.resource, id: entry.id, state_version: entry.state_version }));
+  const changeSetId = `p23:${request.party_id}:${request.canonical_digest}`;
+  const physical_keys = [
+    ...snapshot.placements.map((row) => `party_runtime.entity_placements:${row.entity_ref.entity_kind}:${row.entity_ref.entity_id}`),
+    ...snapshot.active_route_endpoint_ids.map((id) => `party_runtime.scene_position_nodes:${id}`),
+    `party_runtime.party_v3_change_sets:${changeSetId}`
+  ].sort();
+  const owner_keys = snapshot.placements.filter((row) => ['actor', 'cohort', 'transport'].includes(row.entity_ref.entity_kind)).map((row) => `${row.entity_ref.entity_kind}:${row.entity_ref.entity_id}`).sort();
+  const execution_keys = request.carrier_local ? [request.carrier_local.root_execution_id, request.carrier_local.root_travel_state_id].sort() : [];
+  const recheckDigest = computeSpatialV3CanonicalDigest({ request: { party_id: request.party_id, expected_state_versions: request.expected_state_versions, domain_mutation: request.domain_mutation, carrier_local: request.carrier_local ?? null }, snapshot_digest: computeSpatialV3CanonicalDigest(snapshot) });
+  return {
+    plan_id: `p23-plan:${request.party_id}:${request.canonical_digest}`,
+    party_id: request.party_id,
+    write_plan_kind: 'semantic_commit',
+    operation_kind: 'p23_placement',
+    canonical_input_digest: request.canonical_digest,
+    expected_state_versions: expected,
+    validation_report: { status: 'pass', digest: recheckDigest },
+    idempotency: { id: `p23-idem:${request.party_id}:${request.idempotency_key}`, key: request.idempotency_key },
+    change_set: { id: changeSetId },
+    lock_context: { owner_keys, execution_keys, g4_keys: [], physical_keys },
+    commit_rechecks: ['physical', 'state', 'pin', 'endpoint', 'route', 'capacity', 'time', 'change_set'].map((kind) => ({ kind, digest: recheckDigest })),
+    approved_write_sets: [{
+      inserts: [],
+      updates: [{ target_table: 'entity_placements', id: placementId, record: { party_id: request.party_id, entity_kind: mutation.entity_kind, entity_id: mutation.entity_id, placement_kind: mutation.placement_kind, position_node_id: mutation.position_node_id, host_entity_ref: null, occupies_capacity_units: mutation.capacity_units, updated_change_set_id: changeSetId } }],
+      appends: [{ target_table: 'party_v3_change_sets', id: changeSetId, record: { id: changeSetId, party_id: request.party_id, operation_kind: 'p23_placement', idempotency_record_id: `p23-idem:${request.party_id}:${request.idempotency_key}`, created_at_turn: 0, committed_at_turn: 0 } }]
+    }]
+  };
+}
+
+/** P23 prepares a sealed plan; only CombinedAtomicCommitter may write it. */
+export function createSpatialV3DomainMutationService({ repository, committer, verifyApproval } = {}) {
+  if (!repository || typeof repository.loadSnapshot !== 'function' || typeof repository.recheck !== 'function' || !committer || typeof committer.commit !== 'function' || typeof verifyApproval !== 'function') throw new TypeError('P23 requires injected read/recheck repository, approval verifier and CombinedAtomicCommitter');
   return Object.freeze({ async commit(request) {
     const body = request && { ...request }; if (body) delete body.canonical_digest;
     if (!request || !stableText(request.party_id) || !stableText(request.idempotency_key) || !exactVersionSet(request.expected_state_versions) || request.canonical_digest !== computeSpatialV3CanonicalDigest(body)) return error('generated_schema_mismatch', { reason: 'sealed P23 mutation request is required' });
-    return repository.withTransaction(async (tx) => {
-      // §13.1: acquire physical party/root/execution/endpoint locks before the
-      // phase-6 idempotency lease.  A replay is still returned before CAS so a
-      // committed command remains retryable after its state version advanced.
-      const snapshot = await repository.loadForUpdate(tx, { party_id: request.party_id, expected_state_versions: request.expected_state_versions, carrier_local: request.carrier_local });
-      if (!snapshot) return error('state_version_conflict', { reason: 'required physical lock context is missing' });
-      const acquired = await repository.acquireIdempotency(tx, { party_id: request.party_id, key: request.idempotency_key, digest: request.canonical_digest });
-      if (acquired?.replay) return cloneFreeze({ ok: true, replay: true, change_set_id: acquired.change_set_id });
-      if (!acquired?.ok) return error(acquired?.code ?? 'idempotency_conflict', { reason: 'idempotency lease unavailable' });
-      // Non-PostgreSQL contract fakes predate this repository field. Production
-      // snapshots always carry a boolean; only an explicit false is a CAS miss.
-      if (snapshot.expected_state_versions_valid === false) return error('state_version_conflict', { reason: 'locked state differs from exact expected version set' });
-      const invalid = validatePersistedDomainSnapshot(snapshot, request);
-      if (invalid) return error(invalid.includes('capacity') ? 'relation_capacity_undefined' : (invalid.includes('carrier') || invalid.includes('G6 template')) ? 'journey_location_ownership_mismatch' : 'route_plan_version_pin_missing', { reason: invalid });
-      const applied = await repository.applyAtomically(tx, { request: cloneFreeze(request), snapshot });
-      if (!applied?.ok) return error(applied?.code ?? 'state_version_conflict', { reason: 'atomic state-version update failed' });
-      const completed = await repository.completeIdempotency(tx, { party_id: request.party_id, key: request.idempotency_key, digest: request.canonical_digest, change_set_id: applied.change_set_id });
-      if (!completed?.ok) return error(completed?.code ?? 'idempotency_conflict', { reason: 'idempotency completion failed' });
-      return cloneFreeze({ ok: true, replay: false, change_set_id: applied.change_set_id });
-    });
+    const snapshot = await repository.loadSnapshot({ party_id: request.party_id, expected_state_versions: request.expected_state_versions, carrier_local: request.carrier_local });
+    if (!snapshot) return error('state_version_conflict', { reason: 'exact expected version set is unavailable' });
+    const invalid = validatePersistedDomainSnapshot(snapshot, request);
+    if (invalid) return error(invalid.includes('capacity') ? 'relation_capacity_undefined' : (invalid.includes('carrier') || invalid.includes('G6 template')) ? 'journey_location_ownership_mismatch' : 'route_plan_version_pin_missing', { reason: invalid });
+    const input = p23PlanInput(request, snapshot);
+    if (!input) return error('state_version_conflict', { reason: 'target placement CAS expectation is required exactly once' });
+    const built = await buildCombinedWritePlan(input, { verifyApproval });
+    if (!built.ok) return built;
+    const sealedRequest = cloneFreeze(request);
+    const result = await committer.commit({ plan: built.plan, recheck: async ({ transaction }) => {
+      const checked = await repository.recheck({ transaction, request: sealedRequest });
+      if (!checked?.ok || checked.snapshot?.expected_state_versions_valid === false) return { ok: false, code: 'state_version_conflict' };
+      const recheckInvalid = validatePersistedDomainSnapshot(checked.snapshot, sealedRequest);
+      return recheckInvalid ? { ok: false, code: recheckInvalid.includes('capacity') ? 'relation_capacity_undefined' : (recheckInvalid.includes('carrier') || recheckInvalid.includes('G6 template')) ? 'journey_location_ownership_mismatch' : 'route_plan_version_pin_missing' } : { ok: true };
+    } });
+    return cloneFreeze(result);
   } });
 }

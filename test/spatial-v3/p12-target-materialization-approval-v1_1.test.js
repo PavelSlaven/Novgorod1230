@@ -26,6 +26,7 @@ const gitText = async (_root, args) => {
   if (args[0] === 'rev-parse') return BLOB;
   if (args[0] === 'log') return SHA;
   if (args[0] === 'diff') return bindingPath;
+  if (args[0] === 'merge-base') return '';
   throw new Error(`unexpected git args ${args.join(' ')}`);
 };
 const gitRaw = async (_root, args) => {
@@ -49,16 +50,16 @@ test('P12 V1.1 immutable payload remains fail-closed when dependency closure evi
   }]);
 });
 
-test('P12 dependency closure accepts only an exact two-commit, current, digest-pinned evidence chain', async () => {
+test('P12 dependency closure accepts an exact digest-pinned evidence commit as a HEAD ancestor', async () => {
   const result = await verifyP12DependencyClosureBinding({ projectRoot: '.', bindingPath, binding: validBinding(), head: SHA, gitText, gitRaw });
   assert.equal(result.ok, true);
   assert.equal(result.dependencyClosureApproved, true);
   assert.deepEqual(result.errors, []);
 });
 
-test('P12 closure rejects replay, broad evidence diffs, missing or altered subject files and unapproved evidence', async () => {
-  const future = await verifyP12DependencyClosureBinding({ projectRoot: '.', bindingPath, binding: validBinding(), head: 'c'.repeat(40), gitText, gitRaw });
-  assert.ok(future.errors.some((entry) => entry.code === 'P12_V11_CLOSURE_BINDING_NOT_INTRODUCED_BY_EVIDENCE_COMMIT'));
+test('P12 closure rejects unverified ancestry, broad evidence diffs, missing or altered subject files and unapproved evidence', async () => {
+  const future = await verifyP12DependencyClosureBinding({ projectRoot: '.', bindingPath, binding: validBinding(), head: 'c'.repeat(40), gitText: async (_root, args) => args[0] === 'merge-base' ? Promise.reject(new Error('not an ancestor')) : gitText(_root, args), gitRaw });
+  assert.ok(future.errors.some((entry) => entry.code === 'P12_V11_CLOSURE_BINDING_COMMIT_UNVERIFIABLE'));
   const broad = await verifyP12DependencyClosureBinding({ projectRoot: '.', bindingPath, binding: validBinding(), head: SHA, gitText: async (_root, args) => args[0] === 'diff' ? `${bindingPath}\nunexpected.txt` : gitText(_root, args), gitRaw });
   assert.ok(broad.errors.some((entry) => entry.code === 'P12_V11_CLOSURE_BINDING_COMMIT_SCOPE_INVALID'));
   const missing = await verifyP12DependencyClosureBinding({ projectRoot: '.', bindingPath, binding: validBinding(), head: SHA, gitText, gitRaw: async (_root, args) => args[1].endsWith('bundle/approved.json') ? Promise.reject(new Error('missing')) : gitRaw(_root, args) });

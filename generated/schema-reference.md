@@ -178,6 +178,7 @@ Release: `0.23.0-migration.24`
 | `schemas/party-db/003_party_runtime_v3_planning.sql` | sql | 48130 | `da050d482cac75631029eab25cb458f4fca0ee33c9d8955feaa12929ddc10d1f` |
 | `schemas/party-db/004_party_runtime_v3_journeys.sql` | sql | 32016 | `ad0015952902da0c8c4f5ee9fac21eaa5da17df83174ab11c14a2f0272252568` |
 | `schemas/party-db/005_party_runtime_v3_domain.sql` | sql | 2184 | `2b06c19a706f9122d6318a038ee49600ba215cc0686361bd6af1dc32a8b504f0` |
+| `schemas/party-db/006_party_runtime_v3_migration.sql` | sql | 1640 | `485971bd9301a41edd107a83d1b4ef875fdbc118fb0641988c5f3bc27637629f` |
 | `schemas/world-base/world-base-source-bundle.schema.json` | json | 1447 | `358430badf2821197ffc74d4600b2cc2b153d1a1a141020e998650cb1c325dc2` |
 | `schemas/world-catalogs/g1-boundary-contract.schema.json` | json | 1199 | `9a255c612dc382e4ead28c5566ae6583878840651904a134f364bb1b1291f3aa` |
 | `schemas/world-catalogs/g1-cell-package.schema.json` | json | 1794 | `d917ec67f99c965c0257f7dbc1b2498e123aff756f4b71c68e7da0f1b6fe8381` |

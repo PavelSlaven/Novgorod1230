@@ -59,20 +59,30 @@ function canonicalWorldRows(source) {
 }
 
 test('P24 world migration applies canonical G0–G5, semantic grid, route and template chain in isolated PostgreSQL', async (t) => {
-  if (docker(['version']).status !== 0) t.skip('Docker required');
+  if (docker(['version']).status !== 0) return t.skip('Docker required');
   t.after(() => docker(['rm', '-f', name])); assert.equal(docker(['run', '-d', '--name', name, '-p', `${port}:5432`, '-e', 'POSTGRES_PASSWORD=p24', '-e', 'POSTGRES_USER=p24', '-e', 'POSTGRES_DB=p24', 'postgres:16-alpine']).status, 0);
   const pool = new pg.Pool({ host: '127.0.0.1', port, user: 'p24', password: 'p24', database: 'p24' }); t.after(() => pool.end());
   for (let i = 0; i < 50; i += 1) { try { await pool.query('SELECT 1'); break; } catch { await new Promise((resolve) => setTimeout(resolve, 200)); if (i === 49) throw new Error('postgres unavailable'); } }
-  for (let i = 1; i <= 14; i += 1) await pool.query(await readFile(`infra/world-base/schema/${String(i).padStart(2, '0')}.sql`, 'utf8'));
+  for (let i = 1; i <= 17; i += 1) await pool.query(await readFile(`infra/world-base/schema/${String(i).padStart(2, '0')}.sql`, 'utf8'));
   await pool.query("INSERT INTO world_base.source_records(id,status) VALUES('p24-source','approved')");
   await pool.query("INSERT INTO world_base.universal_categories(id,domain,stable_code,facet,preferred_label,definition,scope_note,inclusion_rules,exclusion_rules,title,status) VALUES('p24-spatial-class','spatial','p24-spatial-class','class','P24 spatial class','P24 fixture class','P24','P24','P24','P24','approved')");
   await pool.query("INSERT INTO world_base.world_revisions(id,title,catalog_digest,status) VALUES('legacy-p24','legacy world snapshot',$1,'approved')", [sha('a')]);
-  const sourceExtract = await readV2WorldSource(pool); const source = sourceExtract.records.find((item) => item.source_identity === 'world_base.world_revisions:legacy-p24'); assert.ok(source, 'read-only source reader must pin actual legacy world revision');
-  const inventory = buildSpatialV3MigrationInventory({ world_records: [{ old_identity: source.source_identity, old_type: 'world_revision_snapshot', old_level: 'G0-G5', target_contract: 'spatial_v3 canonical world chain', action: 'migrate', reason: 'reviewed canonical source snapshot', evidence: source.evidence, pin_mapping: source.pin_mapping, review_status: 'reviewed' }] });
+  // Real v2 source fixture: P24 must inventory legacy region/graph records,
+  // not prove coverage only against a hand-authored v3 target row.
+  await pool.query("INSERT INTO world_base.regions(id,canonical_name,status) VALUES('legacy-region','Legacy region','approved')");
+  await pool.query("INSERT INTO world_base.graph_nodes(id,title,node_type,scale_level,region_id,status) VALUES('legacy-g0','Legacy G0','world_region','G0','legacy-region','approved'),('legacy-g1','Legacy G1','subregion','G1','legacy-region','approved')");
+  await pool.query("INSERT INTO world_base.graph_edges(id,from_node_id,to_node_id,scale_level,status) VALUES('legacy-edge','legacy-g0','legacy-g1','G1','approved')");
+  const sourceExtract = await readV2WorldSource(pool); const source = sourceExtract.records.find((item) => item.source_identity.startsWith('world_base.world_revisions:legacy-p24:')); assert.ok(source, 'read-only source reader must pin actual legacy world revision');
+  const inventory = buildSpatialV3MigrationInventory({ world_records: sourceExtract.records.map((row) => row.source_identity === source.source_identity
+    ? { old_identity: row.source_identity, old_type: 'world_revision_snapshot', old_level: 'G0-G5', target_contract: 'spatial_v3 canonical world chain', action: 'migrate', reason: 'reviewed canonical source snapshot', evidence: row.evidence, pin_mapping: row.pin_mapping, review_status: 'reviewed' }
+    : { old_identity: row.source_identity, old_type: row.source_table, old_level: 'legacy_nonspatial_authoring', target_contract: 'immutable_v2_snapshot', action: 'keep', reason: 'retained only in immutable P24 source snapshot before P28', evidence: row.evidence, pin_mapping: row.pin_mapping, review_status: 'reviewed' }) });
+  assert.ok(sourceExtract.records.some((row) => row.source_table === 'world_base.graph_nodes'), 'v2 graph nodes are in the real source snapshot');
+  assert.ok(sourceExtract.records.some((row) => row.source_table === 'world_base.graph_edges'), 'v2 graph edges are in the real source snapshot');
   const targetRows = canonicalWorldRows(source);
   assert.equal((await applySpatialV3WorldMigration(pool, { inventory, source_extract: sourceExtract, target_rows: targetRows, dry_run: true })).ok, true);
   assert.equal((await pool.query("SELECT count(*)::int AS n FROM world_base.spatial_v3_world_revisions WHERE id='p24-revision'")).rows[0].n, 0, 'dry run must write no target rows');
   const applied = await applySpatialV3WorldMigration(pool, { inventory, source_extract: sourceExtract, target_rows: targetRows }); assert.equal(applied.applied, targetRows.length);
+  assert.equal((await pool.query("SELECT count(*)::int AS n FROM world_base.spatial_v3_migration_coverage_artifacts")).rows[0].n, 1, 'full source inventory/digests must persist with world apply');
   const readback = await pool.query("SELECT (SELECT count(*) FROM world_base.spatial_v3_nodes WHERE world_revision_id='p24-revision')::int AS nodes, (SELECT count(*) FROM world_base.spatial_v3_node_parents WHERE world_revision_id='p24-revision')::int AS containment, (SELECT count(*) FROM world_base.spatial_v3_g1_grid_cells WHERE world_revision_id='p24-revision')::int AS grids, (SELECT count(*) FROM world_base.spatial_v3_world_route_endpoint_bindings WHERE world_revision_id='p24-revision')::int AS endpoints, (SELECT count(*) FROM world_base.spatial_v3_scene_materialization_candidates)::int AS candidates");
   assert.deepEqual(readback.rows[0], { nodes: 6, containment: 5, grids: 1, endpoints: 2, candidates: 2 });
   assert.equal((await pool.query("SELECT count(*)::int AS n FROM world_base.spatial_v3_world_route_endpoint_bindings WHERE world_route_id='p24-route' AND endpoint_role IN ('from','to')")).rows[0].n, 2, 'route must have complete endpoint bindings');

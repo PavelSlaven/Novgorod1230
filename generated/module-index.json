@@ -265,7 +265,8 @@
     {
       "dependencies": [
         "@rus/contracts",
-        "@rus/kernel"
+        "@rus/kernel",
+        "@rus/turn"
       ],
       "name": "@rus/party-store",
       "owns": [

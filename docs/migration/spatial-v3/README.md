@@ -739,3 +739,37 @@ byte pin and both blockers.
   version-only rejection plus rollback/reapply, CRIT-02 completed-action mapping
   rejection, and CRIT-03 event-only final-transition rejection. **P14-S06 is
   accepted (`PASS`)**. No P28 state or production-owner boundary changed.
+
+## P16/P23 sole-writer remediation (2026-07-21)
+
+- The original P16 critic finding is **fixed and independently re-reviewed
+  (`PASS`)**;
+  evidence is in [`p16-persistence-critic-report.md`](./p16-persistence-critic-report.md).
+- P23 no longer owns a connection/transaction, locks, idempotency lease/settlement,
+  change-set insert or `entity_placements` update. It produces one sealed
+  `combined_write_plan`; only P16 `CombinedAtomicCommitter` applies it.
+- `entity_placements` is now a P16 allowlisted composite-key update, and P23
+  validation reruns as an explicit committer recheck after the P16 lock order.
+  The test suite proves replay, rollback and carrier-local/inverse-order
+  concurrency through that path.
+- Completed local checks: `spatial-v3:test-p16` (6/6),
+  `spatial-v3:test-p23` (8/8), `spatial-v3:test-p23-postgres` (1/1),
+  `spatial-v3:test-p16-committer-postgres` (1/1), P14/P15 PostgreSQL (1/1
+  each), P14/P15/P16/P23 gates and `architecture:check`.
+- P16-S05 is accepted for this remediation scope. No P28 state or v2
+  production-owner boundary changed.
+
+## P23 sealed-plan evidence (2026-07-21)
+
+- `createSpatialV3P23DomainRepository()` is an explicit read/recheck port.
+  It performs no target-v3 DML or transaction control; it cannot lease
+  idempotency, create a change set or update a placement.
+- `createSpatialV3DomainMutationService()` validates its persisted snapshot,
+  seals the single approved `entity_placements` update plus change-set append,
+  and passes that plan to the injected P16 committer. An injected approval
+  verifier is mandatory and rejection stops before commit. The same validation is
+  rerun in the committer transaction after ordered locks; a replay is returned
+  before stale-version revalidation.
+- The PostgreSQL evidence uses disposable Docker PostgreSQL and covers normal
+  commit/replay, invalid schedule/access/template/capacity rollback,
+  carrier-local root slice pins, and inverse actor/transport lock ordering.

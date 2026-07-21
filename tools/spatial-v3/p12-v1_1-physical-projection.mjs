@@ -115,7 +115,7 @@ export async function compileP12V11PhysicalRows({ root = ROOT } = {}) {
   return Object.freeze({ rows, counts: Object.freeze(Object.fromEntries([...rows].map(([table, values]) => [table, values.length]))) });
 }
 
-export async function buildP12V11PhysicalProjectionSql({ root = ROOT, rollback = false } = {}) {
+export async function buildP12V11PhysicalProjectionSql({ root = ROOT, rollback = false, wrapTransaction = true } = {}) {
   const projectRoot = resolve(root);
   const compiled = await compileP12V11PhysicalRows({ root: projectRoot });
   const closureAuthoring = JSON.parse(await readFile(resolve(projectRoot, 'data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/dependency-closure/v1/datasets/spatial_v3_authoring_versions.json'), 'utf8'));
@@ -146,7 +146,7 @@ export async function buildP12V11PhysicalProjectionSql({ root = ROOT, rollback =
     }
     const manifest = { schema_version: 'rus.spatial-v3.world-base-authoring-bundle.v1', bundle_id: 'p12_v1_1_physical_projection', world_revision_id: WORLD_REVISION, status: 'approved', provenance_ref: PROVENANCE, delete_policy: 'forbid', datasets, data_gaps: [] };
     await writeFile(join(temporary, 'manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
-    return await buildTransactionalImportSql({ root: projectRoot, manifestPath: join(temporary, 'manifest.json'), rollback });
+    return await buildTransactionalImportSql({ root: projectRoot, manifestPath: join(temporary, 'manifest.json'), rollback, wrapTransaction });
   } finally { await rm(temporary, { recursive: true, force: true }); }
 }
 

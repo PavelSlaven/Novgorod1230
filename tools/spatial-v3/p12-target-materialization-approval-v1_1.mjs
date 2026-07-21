@@ -1,11 +1,10 @@
 import { createHash } from 'node:crypto';
 import { execFile as execFileCallback } from 'node:child_process';
-import { mkdtemp, readFile, rm } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
-import { join, relative, resolve, sep } from 'node:path';
+import { readFile } from 'node:fs/promises';
+import { relative, resolve, sep } from 'node:path';
 import { promisify } from 'node:util';
 import { fileURLToPath } from 'node:url';
-import { manifestDigest, verifyCanonicalManifest } from './p12-canonical-manifest.mjs';
+import { canonicalJsonBytes, manifestDigest, validateCanonicalEntries } from './p12-canonical-manifest.mjs';
 
 const ROOT = resolve(import.meta.dirname, '../..');
 const INDEX_PATH = 'data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/index.v1_1.json';
@@ -21,25 +20,6 @@ const inside = (root, candidate) => {
   const path = relative(root, candidate);
   return Boolean(path) && path !== '..' && !path.startsWith(`..${sep}`) && !path.includes(':');
 };
-
-const extract = String.raw`
-import sys, zipfile
-from pathlib import Path, PurePosixPath
-archive, root, package = map(Path, sys.argv[1:])
-with zipfile.ZipFile(archive) as z:
-  seen = set()
-  for info in z.infolist():
-    p = PurePosixPath(info.filename)
-    if p.is_absolute() or not p.parts or p.parts[0] != package.name or any(x in ('', '.', '..') for x in p.parts) or info.filename in seen or ((info.external_attr >> 16) & 0o170000) == 0o120000:
-      raise SystemExit('unsafe archive member')
-    seen.add(info.filename)
-    output = root.joinpath(*p.parts).resolve()
-    if not output.is_relative_to(root.resolve()): raise SystemExit('archive escape')
-    if info.is_dir(): output.mkdir(parents=True, exist_ok=True)
-    else:
-      output.parent.mkdir(parents=True, exist_ok=True)
-      output.write_bytes(z.read(info))
-`;
 
 async function git(projectRoot, args) {
   const { stdout } = await execFile('git', args, { cwd: projectRoot, encoding: 'utf8', windowsHide: true });
@@ -62,6 +42,36 @@ async function gitBytes(projectRoot, args) {
 const sha256 = (value) => createHash('sha256').update(value).digest('hex');
 const sha = (value) => typeof value === 'string' && /^[0-9a-f]{40}$/.test(value);
 const safeRepositoryPath = (value) => typeof value === 'string' && value.length > 0 && !value.startsWith('/') && !value.includes('\\') && !value.split('/').some((part) => !part || part === '.' || part === '..' || part.includes(':'));
+
+async function zipText(zip, member) {
+  const { stdout } = await execFile('tar', ['-xOf', zip, member], { encoding: 'buffer', maxBuffer: 64 * 1024 * 1024, windowsHide: true });
+  return Buffer.from(stdout);
+}
+
+async function verifyCanonicalZipPackage(zip, packageName, expectedManifestDigest) {
+  const prefix = `${packageName}/`;
+  const { stdout } = await execFile('tar', ['-tf', zip], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, windowsHide: true });
+  const members = stdout.split(/\r?\n/u).filter(Boolean);
+  const seen = new Set();
+  for (const member of members) {
+    if (!member.startsWith(prefix) || seen.has(member)) throw new Error('unsafe archive member');
+    seen.add(member);
+    const path = member.slice(prefix.length);
+    if (!path || path.includes('\\') || path.split('/').some((part) => !part || part === '.' || part === '..')) throw new Error('unsafe archive member');
+  }
+  const manifest = JSON.parse((await zipText(zip, `${prefix}manifest.json`)).toString('utf8'));
+  validateCanonicalEntries(manifest.files);
+  if (manifest.package_id !== packageName || manifestDigest(manifest) !== expectedManifestDigest) throw new Error('invalid package manifest');
+  const expected = new Map(manifest.files.map((entry) => [entry.path, entry]));
+  const actual = new Set(members.map((member) => member.slice(prefix.length)));
+  for (const control of ['manifest.json', 'manifest.sha256']) actual.delete(control);
+  if (actual.size !== expected.size || [...actual].some((path) => !expected.has(path))) throw new Error('manifest file set mismatch');
+  for (const [path, entry] of expected) {
+    const bytes = await zipText(zip, `${prefix}${path}`);
+    if (bytes.length !== entry.bytes || sha256(bytes) !== entry.sha256) throw new Error(`manifest entry mismatch: ${path}`);
+  }
+  return manifest;
+}
 
 export async function verifyP12HistoricalIntakeBinding({ projectRoot, bindingPath, binding, head, gitText = git, gitRaw = gitBytes }) {
   const errors = [];
@@ -104,13 +114,16 @@ export async function verifyP12DependencyClosureBinding({ projectRoot, bindingPa
     return Object.freeze({ ok: false, dependencyClosureApproved: false, errors: Object.freeze([issue('P12_V11_DEPENDENCY_CLOSURE_EVIDENCE_INVALID', bindingPath)]) });
   }
   try {
-    const parents = (await gitText(projectRoot, ['show', '-s', '--format=%P', head])).split(/\s+/).filter(Boolean);
-    if (parents.length !== 1 || parents[0] !== subjectCommit) errors.push(issue('P12_V11_CLOSURE_BINDING_PARENT_NOT_SUBJECT', bindingPath));
     const bindingBlob = await gitText(projectRoot, ['rev-parse', `${head}:${bindingPath}`]);
     const introductions = (await gitText(projectRoot, ['log', '--all', '--format=%H', '--reverse', `--find-object=${bindingBlob}`])).split(/\r?\n/).filter(Boolean);
-    if (introductions.length !== 1 || introductions[0] !== head) errors.push(issue('P12_V11_CLOSURE_BINDING_NOT_INTRODUCED_BY_EVIDENCE_COMMIT', bindingPath));
+    if (introductions.length !== 1) errors.push(issue('P12_V11_CLOSURE_BINDING_NOT_INTRODUCED_BY_EVIDENCE_COMMIT', bindingPath));
+    const evidenceCommit = introductions[0];
+    if (!evidenceCommit) throw new Error('missing evidence commit');
+    await gitText(projectRoot, ['merge-base', '--is-ancestor', evidenceCommit, head]);
+    const parents = (await gitText(projectRoot, ['show', '-s', '--format=%P', evidenceCommit])).split(/\s+/).filter(Boolean);
+    if (parents.length !== 1 || parents[0] !== subjectCommit) errors.push(issue('P12_V11_CLOSURE_BINDING_PARENT_NOT_SUBJECT', bindingPath));
     const allowed = new Set([bindingPath, ...(Array.isArray(binding.allowed_evidence_paths) ? binding.allowed_evidence_paths : [])]);
-    const changed = (await gitText(projectRoot, ['diff', '--name-only', `${subjectCommit}..${head}`])).split(/\r?\n/).filter(Boolean);
+    const changed = (await gitText(projectRoot, ['diff', '--name-only', `${subjectCommit}..${evidenceCommit}`])).split(/\r?\n/).filter(Boolean);
     if (!changed.includes(bindingPath) || changed.some((path) => !allowed.has(path))) errors.push(issue('P12_V11_CLOSURE_BINDING_COMMIT_SCOPE_INVALID', bindingPath));
   } catch { errors.push(issue('P12_V11_CLOSURE_BINDING_COMMIT_UNVERIFIABLE', bindingPath)); }
   if (!Array.isArray(expectedPaths) || expectedPaths.length === 0 || expectedPaths.some((entry) => !entry || typeof entry.path !== 'string' || !/^[0-9a-f]{64}$/.test(entry.sha256 ?? ''))) {
@@ -152,14 +165,7 @@ export async function validateP12TargetMaterializationApprovalV11({ root = ROOT,
   if (!errors.length) {
     try {
       if (digest(await readFile(zip)) !== index.sha256) errors.push(issue('P12_V11_ZIP_DIGEST_MISMATCH', index.package_path));
-      const extraction = await mkdtemp(join(tmpdir(), 'p12-v1_1-'));
-      try {
-        await execFile('python', ['-c', extract, zip, extraction, packageId], { windowsHide: true });
-        const packageRoot = join(extraction, packageId);
-        manifest = JSON.parse(await readFile(join(packageRoot, 'manifest.json'), 'utf8'));
-        const verified = await verifyCanonicalManifest(packageRoot, manifest);
-        if (!verified.ok || manifest.package_id !== packageId || manifestDigest(manifest) !== index.manifest_sha256) errors.push(issue('P12_V11_CANONICAL_MANIFEST_INVALID', index.package_path));
-      } finally { await rm(extraction, { recursive: true, force: true }); }
+      manifest = await verifyCanonicalZipPackage(zip, packageId, index.manifest_sha256);
     } catch { errors.push(issue('P12_V11_PACKAGE_MISSING_OR_UNSAFE', index.package_path ?? 'unknown')); }
   }
   try {

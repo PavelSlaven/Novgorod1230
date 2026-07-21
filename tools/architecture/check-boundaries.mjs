@@ -639,7 +639,7 @@ for (const appSpec of [
     required: ['MODULE.md', 'package.json', 'src/index.js', 'src/composition/root.js', 'src/http/handler.js', 'test/game-server.test.js'],
     approved: new Set([
       '@rus/checks-rng', '@rus/contracts', '@rus/contracts/spatial-v3/registry', '@rus/knowledge-source', '@rus/llm-runtime', '@rus/new-game', '@rus/narration',
-      '@rus/party-store', '@rus/presentation', '@rus/presentation/opening-delivery', '@rus/turn',
+      '@rus/party-store', '@rus/presentation', '@rus/presentation/opening-delivery', '@rus/turn', '@rus/turn/spatial-v3-target-composition',
       '@rus/visibility-knowledge-memory', '@rus/world-base', 'pg'
     ])
   },

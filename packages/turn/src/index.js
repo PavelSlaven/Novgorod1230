@@ -33,3 +33,4 @@ export {
   createSpatialV3NewGameStarter,
   createSpatialV3ModeHandoffOrchestrator
 } from './spatial-v3-orchestration.js';
+export { createSpatialV3TargetShadowComposition } from './spatial-v3-target-composition.js';

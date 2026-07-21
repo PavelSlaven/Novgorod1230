@@ -100,6 +100,7 @@
     "spatial-v3:test-p20": "node --test test/spatial-v3/p20-materialization.test.js",
     "spatial-v3:check-p20": "node tools/spatial-v3/check-p20.mjs",
     "spatial-v3:check-p21": "node tools/spatial-v3/check-p21.mjs",
+    "spatial-v3:test-p21": "node --test test/spatial-v3/p21-orchestration.test.js",
     "spatial-v3:test-p22": "node --test test/spatial-v3/p22-projection.test.js",
     "spatial-v3:check-p22": "node tools/spatial-v3/check-p22.mjs",
     "spatial-v3:test-p23": "node --test test/spatial-v3/p23-domain-integration.test.js",

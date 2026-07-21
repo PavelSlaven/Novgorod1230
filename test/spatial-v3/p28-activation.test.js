@@ -35,9 +35,7 @@ test('P28 refuses an atomic activation while regional authoring and release evid
   assert.equal(assessment.composition_changed, false);
   assert.equal(assessment.required_action, 'reopen_owner_phase_and_keep_v2_production');
   assert(assessment.blockers.some((entry) => entry.code === 'p28_fresh_checkout_evidence_missing'));
-  assert.deepEqual(assessment.blockers.filter((entry) => entry.code === 'spatial_candidate_gap').map((entry) => entry.gap_code).sort(), [
-    'APPROVED_PROFILE_DATA_GAP', 'CANONICAL_G5_INVENTORY_DATA_GAP', 'DIRECTIONAL_EXIT_READINESS_DATA_GAP', 'ROUTE_BINDING_DATA_GAP'
-  ]);
+  assert.deepEqual(assessment.blockers.filter((entry) => entry.code === 'spatial_candidate_gap'), []);
   await assert.rejects(() => requireSpatialV3Activation(), { code: 'spatial_v3_activation_blocked' });
 });
 
@@ -67,14 +65,23 @@ test('P28 rejects hash-mismatched and missing Appendix D evidence', async () => 
 });
 
 test('P28 manifest pins all four P12 gaps with their exact quantities and requires resolution evidence', async () => {
-  const assessment = await assessSpatialV3Activation();
-  const gaps = assessment.blockers.filter((entry) => entry.code === 'spatial_candidate_gap');
-  assert.deepEqual(gaps.map((entry) => [entry.gap_code, entry.subject_ref]).sort(), [
-    ['APPROVED_PROFILE_DATA_GAP', 'novgorod:g4-scene-profiles'],
-    ['CANONICAL_G5_INVENTORY_DATA_GAP', 'novgorod:g4-inventory:195'],
-    ['DIRECTIONAL_EXIT_READINESS_DATA_GAP', 'novgorod:physical-edge-inventory:358'],
-    ['ROUTE_BINDING_DATA_GAP', 'novgorod:graph-edge-inventory:600']
-  ]);
+  const originalManifest = JSON.parse(await readFile('docs/migration/spatial-v3/release-evidence.v1.json', 'utf8'));
+  const unresolvedManifest = structuredClone(originalManifest);
+  unresolvedManifest.p12_authoring_gaps = unresolvedManifest.p12_authoring_gaps.map((gap) => ({ ...gap, status: 'unresolved', resolution_evidence: [] }));
+  const missingEvidenceManifest = structuredClone(originalManifest);
+  missingEvidenceManifest.p12_authoring_gaps = missingEvidenceManifest.p12_authoring_gaps.map((gap) => ({ ...gap, status: 'resolved', resolution_evidence: [] }));
+  for (const manifest of [unresolvedManifest, missingEvidenceManifest]) {
+    const assessment = await assessSpatialV3Activation({
+      read: async (path, encoding) => path.endsWith('release-evidence.v1.json') ? JSON.stringify(manifest) : readFile(path, encoding)
+    });
+    const gaps = assessment.blockers.filter((entry) => entry.code === 'spatial_candidate_gap');
+    assert.deepEqual(gaps.map((entry) => [entry.gap_code, entry.subject_ref]).sort(), [
+      ['APPROVED_PROFILE_DATA_GAP', 'novgorod:g4-scene-profiles'],
+      ['CANONICAL_G5_INVENTORY_DATA_GAP', 'novgorod:g4-inventory:195'],
+      ['DIRECTIONAL_EXIT_READINESS_DATA_GAP', 'novgorod:physical-edge-inventory:358'],
+      ['ROUTE_BINDING_DATA_GAP', 'novgorod:graph-edge-inventory:600']
+    ]);
+  }
 });
 
 test('P28 rejects Windows absolute, UNC, traversal and ambiguous evidence paths before reading them', async () => {

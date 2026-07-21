@@ -1,13 +1,24 @@
 import assert from 'node:assert/strict';
 import { execFile as execFileCallback } from 'node:child_process';
 import { createHash, generateKeyPairSync, sign } from 'node:crypto';
-import { readFile } from 'node:fs/promises';
-import { resolve } from 'node:path';
+import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join, resolve } from 'node:path';
 import { test } from 'node:test';
 import { promisify } from 'node:util';
-import { assessSpatialV3Activation, requireSpatialV3Activation } from '../../tools/spatial-v3/p28-activation-gate.mjs';
+import { assessSpatialV3Activation, requireSpatialV3Activation, verifyP28EvidenceCommitBinding } from '../../tools/spatial-v3/p28-activation-gate.mjs';
 
 const execFile = promisify(execFileCallback);
+
+async function git(cwd, ...args) {
+  const isolatedHooksPath = join(cwd, '.p28-disabled-hooks');
+  const { stdout } = await execFile('git', [
+    '-c', 'commit.gpgSign=false',
+    '-c', `core.hooksPath=${isolatedHooksPath}`,
+    ...args
+  ], { cwd, windowsHide: true, encoding: 'utf8', timeout: 15_000, killSignal: 'SIGKILL' });
+  return stdout.trim();
+}
 
 function stableJson(value) {
   if (Array.isArray(value)) return `[${value.map(stableJson).join(',')}]`;
@@ -27,6 +38,161 @@ function rewrapPem(pem, width = 48) {
   const base64 = pem.replace(/-----BEGIN PUBLIC KEY-----|-----END PUBLIC KEY-----|\s/gu, '');
   return `-----BEGIN PUBLIC KEY-----\n${base64.match(new RegExp(`.{1,${width}}`, 'g')).join('\n')}\n-----END PUBLIC KEY-----\n`;
 }
+
+test('P28 binds a candidate subject to one direct evidence-only HEAD commit without a SHA fixed point', async () => {
+  const candidate = 'a'.repeat(40);
+  const evidenceCommit = 'b'.repeat(40);
+  const head = evidenceCommit;
+  const manifestPath = 'docs/migration/spatial-v3/release-evidence.v1.json';
+  const evidencePath = 'docs/migration/spatial-v3/p28-evidence.json';
+  const manifest = {
+    activation_candidate_commit: candidate,
+    appendix_d_items: [{ id: 'D1.github_main_fixed', status: 'passed', evidence: [{ path: evidencePath, sha256: 'c'.repeat(64) }] }],
+    p12_authoring_gaps: [],
+    p27_independent_critic: { path: evidencePath },
+    p28_fresh_checkout: { evidence: [{ path: evidencePath }] }
+  };
+  const manifestBytes = Buffer.from(JSON.stringify(manifest));
+  const gitText = async (_root, args) => {
+    if (args[0] === 'rev-parse') return head;
+    if (args[0] === 'log') return evidenceCommit;
+    if (args[0] === 'rev-list') return `${evidenceCommit} ${candidate}`;
+    if (args[0] === 'diff-tree') return `${manifestPath}\n${evidencePath}`;
+    throw new Error(`unexpected git command: ${args.join(' ')}`);
+  };
+  const gitRaw = async (_root, args) => {
+    if (args[0] === 'show' && args[1] === `${evidenceCommit}:${manifestPath}`) return manifestBytes;
+    throw new Error(`unexpected git command: ${args.join(' ')}`);
+  };
+
+  assert.deepEqual(await verifyP28EvidenceCommitBinding({ root: '.', manifestPath, manifest, manifestBytes, gitText, gitRaw }), []);
+
+  for (const [name, mutate, expected] of [
+    ['descendant HEAD', ({ setHead }) => setHead('d'.repeat(40)), 'activation_evidence_commit_not_current_head'],
+    ['non-direct parent', ({ setParent }) => setParent('e'.repeat(40)), 'activation_evidence_commit_parent_mismatch'],
+    ['uncommitted manifest', ({ setBlob }) => setBlob(Buffer.from('changed')), 'release_evidence_manifest_not_committed_exactly'],
+    ['broad evidence commit', ({ setDiff }) => setDiff(`${manifestPath}\n${evidencePath}\napps/game-server/src/composition/production.js`), 'activation_evidence_commit_scope_invalid']
+  ]) {
+    let currentHead = head;
+    let parent = candidate;
+    let blob = manifestBytes;
+    let diff = `${manifestPath}\n${evidencePath}`;
+    const controls = { setHead: (value) => { currentHead = value; }, setParent: (value) => { parent = value; }, setBlob: (value) => { blob = value; }, setDiff: (value) => { diff = value; } };
+    mutate(controls);
+    const errors = await verifyP28EvidenceCommitBinding({
+      root: '.', manifestPath, manifest, manifestBytes,
+      gitText: async (_root, args) => {
+        if (args[0] === 'rev-parse') return currentHead;
+        if (args[0] === 'log') return evidenceCommit;
+        if (args[0] === 'rev-list') return `${evidenceCommit} ${parent}`;
+        if (args[0] === 'diff-tree') return diff;
+        throw new Error(`unexpected git command: ${args.join(' ')}`);
+      },
+      gitRaw: async () => blob
+    });
+    assert(errors.some((entry) => entry.code === expected), `${name} must fail with ${expected}`);
+  }
+
+  const runtimePath = 'apps/game-server/src/composition/production.js';
+  const runtimeAsEvidence = structuredClone(manifest);
+  runtimeAsEvidence.appendix_d_items[0].evidence[0].path = runtimePath;
+  const unsafeBytes = Buffer.from(JSON.stringify(runtimeAsEvidence));
+  const unsafeScope = await verifyP28EvidenceCommitBinding({
+    root: '.', manifestPath, manifest: runtimeAsEvidence, manifestBytes: unsafeBytes,
+    gitText: async (_root, args) => {
+      if (args[0] === 'rev-parse' || args[0] === 'log') return evidenceCommit;
+      if (args[0] === 'rev-list') return `${evidenceCommit} ${candidate}`;
+      if (args[0] === 'diff-tree') return `${manifestPath}\n${runtimePath}`;
+      throw new Error(`unexpected git command: ${args.join(' ')}`);
+    },
+    gitRaw: async () => unsafeBytes
+  });
+  assert(unsafeScope.some((entry) => entry.code === 'activation_evidence_commit_scope_invalid'), 'runtime files cannot be smuggled in as evidence paths');
+
+  const trustPath = 'docs/migration/spatial-v3/activation-trust-store.v1.json';
+  const trustAsEvidence = structuredClone(manifest);
+  trustAsEvidence.appendix_d_items[0].evidence[0].path = trustPath;
+  const trustBytes = Buffer.from(JSON.stringify(trustAsEvidence));
+  const protectedScope = await verifyP28EvidenceCommitBinding({
+    root: '.', manifestPath, manifest: trustAsEvidence, manifestBytes: trustBytes, protectedPaths: [trustPath],
+    gitText: async (_root, args) => {
+      if (args[0] === 'rev-parse' || args[0] === 'log') return evidenceCommit;
+      if (args[0] === 'rev-list') return `${evidenceCommit} ${candidate}`;
+      if (args[0] === 'diff-tree') return `${manifestPath}\n${trustPath}`;
+      throw new Error(`unexpected git command: ${args.join(' ')}`);
+    },
+    gitRaw: async () => trustBytes
+  });
+  assert(protectedScope.some((entry) => entry.code === 'activation_evidence_commit_protected_path_changed'), 'candidate trust roots must not change in the evidence commit');
+});
+
+test('P28 strict evidence binding works in a real temporary Git repository', async (context) => {
+  const roots = [];
+  context.after(async () => Promise.all(roots.map((root) => rm(root, { recursive: true, force: true }))));
+  const manifestPath = 'docs/migration/spatial-v3/release-evidence.v1.json';
+  const evidencePath = 'docs/migration/spatial-v3/p28-evidence.json';
+  const createRepository = async ({ descendant = false, merge = false, broad = false, dirty = false } = {}) => {
+    const root = await mkdtemp(join(tmpdir(), 'p28-git-'));
+    roots.push(root);
+    await git(root, 'init');
+    await git(root, 'config', 'user.email', 'p28-test@example.invalid');
+    await git(root, 'config', 'user.name', 'P28 Test');
+    await writeFile(join(root, 'candidate.txt'), 'candidate\n');
+    await git(root, 'add', 'candidate.txt');
+    await git(root, 'commit', '-m', 'candidate');
+    const candidate = await git(root, 'rev-parse', 'HEAD');
+    let sideBranch;
+    if (merge) {
+      sideBranch = 'side-evidence-test';
+      await git(root, 'checkout', '-b', sideBranch);
+      await writeFile(join(root, 'side.txt'), 'side\n');
+      await git(root, 'add', 'side.txt');
+      await git(root, 'commit', '-m', 'side');
+      await git(root, 'checkout', '-');
+    }
+    await mkdir(join(root, 'docs/migration/spatial-v3'), { recursive: true });
+    const manifest = {
+      activation_candidate_commit: candidate,
+      appendix_d_items: [{ id: 'D1.github_main_fixed', status: 'passed', evidence: [{ path: evidencePath, sha256: 'c'.repeat(64) }] }],
+      p12_authoring_gaps: [], p27_independent_critic: null, p28_fresh_checkout: { evidence: [] }
+    };
+    await writeFile(join(root, manifestPath), JSON.stringify(manifest));
+    await writeFile(join(root, evidencePath), '{}');
+    await git(root, 'add', manifestPath, evidencePath);
+    if (broad) {
+      await mkdir(join(root, 'apps/game-server/src/composition'), { recursive: true });
+      await writeFile(join(root, 'apps/game-server/src/composition/production.js'), 'export default true;\n');
+      await git(root, 'add', 'apps/game-server/src/composition/production.js');
+    }
+    await git(root, 'commit', '-m', 'evidence');
+    if (merge) {
+      await git(root, 'merge', '--no-ff', sideBranch, '-m', 'merge evidence');
+      await writeFile(join(root, manifestPath), `${JSON.stringify(manifest)}\n`);
+      await git(root, 'add', manifestPath);
+      await git(root, 'commit', '--amend', '--no-edit');
+    }
+    if (descendant) {
+      await writeFile(join(root, 'descendant.txt'), 'descendant\n');
+      await git(root, 'add', 'descendant.txt');
+      await git(root, 'commit', '-m', 'descendant');
+    }
+    if (dirty) await writeFile(join(root, manifestPath), `${JSON.stringify(manifest)}  \n`);
+    const manifestBytes = await readFile(join(root, manifestPath));
+    return { root, manifestPath, manifest, manifestBytes };
+  };
+
+  assert.deepEqual(await verifyP28EvidenceCommitBinding(await createRepository()), []);
+  const cases = [
+    [{ descendant: true }, 'activation_evidence_commit_not_current_head'],
+    [{ merge: true }, 'activation_evidence_commit_parent_mismatch'],
+    [{ broad: true }, 'activation_evidence_commit_scope_invalid'],
+    [{ dirty: true }, 'release_evidence_manifest_not_committed_exactly']
+  ];
+  for (const [scenario, expected] of cases) {
+    const errors = await verifyP28EvidenceCommitBinding(await createRepository(scenario));
+    assert(errors.some((entry) => entry.code === expected), `${expected} must fail in a real Git repository`);
+  }
+});
 
 test('P28 refuses an atomic activation while regional authoring and release evidence are incomplete', async () => {
   const assessment = await assessSpatialV3Activation();
@@ -178,8 +344,8 @@ test('P28 canonicalizes SPKI identity and rejects alternate PEM encodings, malfo
 
 test('P28 accepts only a complete, independently role-signed evidence set', async () => {
   const root = process.cwd();
-  const { stdout } = await execFile('git', ['rev-parse', 'HEAD'], { cwd: root });
-  const candidateCommit = stdout.trim();
+  const candidateCommit = 'a'.repeat(40);
+  const evidenceCommit = 'b'.repeat(40);
   const evidencePath = 'docs/migration/spatial-v3/README.md';
   const evidenceBytes = await readFile(evidencePath);
   const evidenceDigest = digest(evidenceBytes);
@@ -220,19 +386,80 @@ test('P28 accepts only a complete, independently role-signed evidence set', asyn
     const role = roles.find((candidate) => path.endsWith(`${candidate}-test.pem`));
     return role ? keys[role].publicKey.export({ type: 'spki', format: 'pem' }) : readFile(path, encoding);
   };
-  const options = { root, realpath: async (path) => path };
-  const assessment = await assessSpatialV3Activation({ ...options, read: testRead() });
+  const options = (providedManifest = manifest, providedTrust = trust) => ({
+    root,
+    realpath: async (path) => path,
+    gitText: async (_root, args) => {
+      if (args[0] === 'rev-parse' || args[0] === 'log') return evidenceCommit;
+      if (args[0] === 'rev-list') return `${evidenceCommit} ${candidateCommit}`;
+      if (args[0] === 'diff-tree') return `docs/migration/spatial-v3/release-evidence.v1.json\n${evidencePath}`;
+      throw new Error(`unexpected git command: ${args.join(' ')}`);
+    },
+    gitRaw: async (_root, args) => {
+      const repositoryPath = args[1].slice(args[1].indexOf(':') + 1);
+      if (repositoryPath === 'docs/migration/spatial-v3/release-evidence.v1.json') return Buffer.from(JSON.stringify(providedManifest));
+      if (repositoryPath === 'docs/migration/spatial-v3/activation-trust-store.v1.json') return Buffer.from(JSON.stringify(providedTrust));
+      if (repositoryPath === evidencePath) return evidenceBytes;
+      const role = roles.find((candidate) => repositoryPath.endsWith(`${candidate}-test.pem`));
+      if (role) return Buffer.from(keys[role].publicKey.export({ type: 'spki', format: 'pem' }));
+      throw new Error(`unexpected git blob: ${args[1]}`);
+    }
+  });
+  const assessment = await assessSpatialV3Activation({ ...options(), read: testRead() });
   assert.deepEqual(assessment.blockers, []);
   assert.equal(assessment.activation_permitted, true);
   assert.equal(assessment.production_writes, 0);
   assert.equal(assessment.composition_changed, false);
+  await assert.rejects(
+    () => requireSpatialV3Activation({ ...options(), read: testRead() }),
+    { code: 'spatial_v3_activation_blocked' },
+    'production authorization must ignore caller-supplied root/read/realpath/git dependencies'
+  );
+
+  const dirtyEvidenceBytes = Buffer.from('working-tree-only evidence');
+  const dirtyEvidenceDigest = digest(dirtyEvidenceBytes);
+  const dirtyEvidenceManifest = structuredClone(manifest);
+  for (const item of dirtyEvidenceManifest.appendix_d_items) for (const evidence of item.evidence) evidence.sha256 = dirtyEvidenceDigest;
+  for (const gap of dirtyEvidenceManifest.p12_authoring_gaps) for (const evidence of gap.resolution_evidence) evidence.sha256 = dirtyEvidenceDigest;
+  dirtyEvidenceManifest.p27_independent_critic.sha256 = dirtyEvidenceDigest;
+  dirtyEvidenceManifest.p27_independent_critic.signature = encodedSignature(keys.p27_critic.privateKey,
+    `p27:${dirtyEvidenceManifest.release_id}:${candidateCommit}:${dirtyEvidenceDigest}`);
+  dirtyEvidenceManifest.p28_fresh_checkout.evidence[0].sha256 = dirtyEvidenceDigest;
+  dirtyEvidenceManifest.p28_fresh_checkout.evidence[0].signature = encodedSignature(keys.fresh_checkout_attestor.privateKey,
+    `p28:fresh-checkout:${dirtyEvidenceManifest.release_id}:${candidateCommit}:${dirtyEvidenceDigest}`);
+  delete dirtyEvidenceManifest.manifest_sha256;
+  delete dirtyEvidenceManifest.manifest_signature;
+  dirtyEvidenceManifest.manifest_sha256 = digest(stableJson(dirtyEvidenceManifest));
+  dirtyEvidenceManifest.manifest_signature = encodedSignature(keys.p28_release_authority.privateKey,
+    `p28:${dirtyEvidenceManifest.release_id}:${candidateCommit}:${dirtyEvidenceManifest.manifest_sha256}`);
+  const dirtyEvidenceAssessment = await assessSpatialV3Activation({
+    ...options(dirtyEvidenceManifest),
+    read: async (path, encoding) => path.endsWith('README.md') ? dirtyEvidenceBytes : testRead(dirtyEvidenceManifest)(path, encoding)
+  });
+  assert(dirtyEvidenceAssessment.blockers.some((entry) => entry.code === 'release_evidence_path_not_committed_exactly'));
+
+  const dirtyTrustBytes = `${JSON.stringify(trust)}\n `;
+  const dirtyTrustAssessment = await assessSpatialV3Activation({
+    ...options(),
+    read: async (path, encoding) => path.endsWith('activation-trust-store.v1.json') ? dirtyTrustBytes : testRead()(path, encoding)
+  });
+  assert(dirtyTrustAssessment.blockers.some((entry) => entry.code === 'release_evidence_trust_store_not_committed_exactly'));
+
+  const p27PublicKeyPath = trust.keys.find((entry) => entry.role === 'p27_critic').public_key_path;
+  const p27PublicKeyName = p27PublicKeyPath.split('/').at(-1);
+  const reencodedP27Key = rewrapPem(keys.p27_critic.publicKey.export({ type: 'spki', format: 'pem' }));
+  const dirtyKeyAssessment = await assessSpatialV3Activation({
+    ...options(),
+    read: async (path, encoding) => path.endsWith(p27PublicKeyName) ? reencodedP27Key : testRead()(path, encoding)
+  });
+  assert(dirtyKeyAssessment.blockers.some((entry) => entry.code === 'release_evidence_public_key_not_committed_exactly'));
 
   const roleMisused = structuredClone(manifest);
   roleMisused.p28_fresh_checkout.evidence[0].signer = { role: 'p27_critic', key_id: 'p27_critic-test-key' };
   roleMisused.manifest_sha256 = digest(stableJson(roleMisused));
   roleMisused.manifest_signature = encodedSignature(keys.p28_release_authority.privateKey,
     `p28:${roleMisused.release_id}:${candidateCommit}:${roleMisused.manifest_sha256}`);
-  const roleMisuseAssessment = await assessSpatialV3Activation({ ...options, read: testRead(roleMisused) });
+  const roleMisuseAssessment = await assessSpatialV3Activation({ ...options(roleMisused), read: testRead(roleMisused) });
   assert(roleMisuseAssessment.blockers.some((entry) => entry.code === 'p28_fresh_checkout_signature_invalid'));
 
   const wrongKey = structuredClone(manifest);
@@ -240,12 +467,12 @@ test('P28 accepts only a complete, independently role-signed evidence set', asyn
   wrongKey.manifest_sha256 = digest(stableJson(wrongKey));
   wrongKey.manifest_signature = encodedSignature(keys.p28_release_authority.privateKey,
     `p28:${wrongKey.release_id}:${candidateCommit}:${wrongKey.manifest_sha256}`);
-  const wrongKeyAssessment = await assessSpatialV3Activation({ ...options, read: testRead(wrongKey) });
+  const wrongKeyAssessment = await assessSpatialV3Activation({ ...options(wrongKey), read: testRead(wrongKey) });
   assert(wrongKeyAssessment.blockers.some((entry) => entry.code === 'p28_fresh_checkout_signature_invalid'));
 
   const revokedTrust = structuredClone(trust);
   revokedTrust.keys.find((entry) => entry.role === 'p28_release_authority').revoked = true;
-  const revokedAssessment = await assessSpatialV3Activation({ ...options, read: testRead(manifest, revokedTrust) });
+  const revokedAssessment = await assessSpatialV3Activation({ ...options(manifest, revokedTrust), read: testRead(manifest, revokedTrust) });
   assert(revokedAssessment.blockers.some((entry) => entry.code === 'release_evidence_manifest_signature_invalid'));
 });
 

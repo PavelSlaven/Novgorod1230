@@ -39,6 +39,82 @@ function isDigest(value) {
   return typeof value === 'string' && /^[a-f0-9]{64}$/u.test(value);
 }
 
+async function gitText(root, args) {
+  const { stdout } = await execFile('git', args, { cwd: root, windowsHide: true, encoding: 'utf8' });
+  return stdout.trim();
+}
+
+async function gitRaw(root, args) {
+  const { stdout } = await execFile('git', args, { cwd: root, windowsHide: true, encoding: 'buffer' });
+  return stdout;
+}
+
+function isSafeRepositoryPath(value) {
+  if (typeof value !== 'string' || value.length === 0 || value.includes('\0') || value.includes('\\')
+    || win32.isAbsolute(value) || posix.isAbsolute(value) || /^[a-z]:/iu.test(value) || /^[\\/]{2}/u.test(value)) return false;
+  const segments = value.split('/');
+  return !segments.some((segment) => !segment || segment === '.' || segment === '..') && posix.normalize(value) === value;
+}
+
+function referencedEvidencePaths(manifest) {
+  const paths = [];
+  for (const item of manifest.appendix_d_items ?? []) for (const evidence of item?.evidence ?? []) paths.push(evidence?.path);
+  for (const gap of manifest.p12_authoring_gaps ?? []) for (const evidence of gap?.resolution_evidence ?? []) paths.push(evidence?.path);
+  paths.push(manifest.p27_independent_critic?.path);
+  for (const evidence of manifest.p28_fresh_checkout?.evidence ?? []) paths.push(evidence?.path);
+  return paths.filter((value) => typeof value === 'string');
+}
+
+/**
+ * A signed manifest cannot contain the SHA of the commit that contains itself.
+ * P28 therefore uses a strict two-commit chain: the candidate subject is the
+ * sole parent of one evidence-only HEAD commit. The committed manifest bytes
+ * must equal the bytes being assessed, and no later descendant is accepted.
+ */
+export async function verifyP28EvidenceCommitBinding({
+  root = process.cwd(), manifestPath = MANIFEST_PATH, manifest, manifestBytes,
+  protectedPaths = [], gitText: readGitText = gitText, gitRaw: readGitRaw = gitRaw
+} = {}) {
+  const errors = [];
+  const issue = (code, details = {}) => errors.push(FREEZE({ code, evidence: manifestPath, ...details }));
+  if (!isCommit(manifest?.activation_candidate_commit)) {
+    issue('activation_candidate_commit_invalid');
+    return FREEZE(errors);
+  }
+  const allowed = new Set([manifestPath, ...referencedEvidencePaths(manifest)]);
+  const protectedSet = new Set(protectedPaths);
+  if ([...allowed, ...protectedSet].some((path) => !isSafeRepositoryPath(path))) issue('activation_evidence_commit_scope_invalid');
+  try {
+    const head = (await readGitText(root, ['rev-parse', 'HEAD'])).toLowerCase();
+    const evidenceCommit = (await readGitText(root, ['log', '-1', '--format=%H', '--', manifestPath])).toLowerCase();
+    if (!isCommit(head) || !isCommit(evidenceCommit) || head !== evidenceCommit) issue('activation_evidence_commit_not_current_head');
+    const lineage = (await readGitText(root, ['rev-list', '--parents', '-n', '1', evidenceCommit])).toLowerCase().split(/\s+/u).filter(Boolean);
+    if (lineage.length !== 2 || lineage[0] !== evidenceCommit || lineage[1] !== manifest.activation_candidate_commit) {
+      issue('activation_evidence_commit_parent_mismatch');
+    }
+    const changed = (await readGitText(root, ['diff-tree', '--no-commit-id', '--name-only', '-r', evidenceCommit])).split(/\r?\n/u).filter(Boolean);
+    if (changed.some((path) => protectedSet.has(path))) issue('activation_evidence_commit_protected_path_changed');
+    if (!changed.includes(manifestPath) || changed.some((path) => !allowed.has(path)
+      || (path !== manifestPath && !path.startsWith('docs/migration/spatial-v3/')))) issue('activation_evidence_commit_scope_invalid');
+    if (!await verifyCommittedRepositoryBytes({ root, path: manifestPath, bytes: manifestBytes, commit: evidenceCommit, gitRaw: readGitRaw })) {
+      issue('release_evidence_manifest_not_committed_exactly');
+    }
+  } catch {
+    issue('activation_evidence_commit_unverifiable');
+  }
+  return FREEZE(errors);
+}
+
+export async function verifyCommittedRepositoryBytes({ root = process.cwd(), path, bytes, commit = 'HEAD', gitRaw: readGitRaw = gitRaw } = {}) {
+  if (!isSafeRepositoryPath(path) || bytes === undefined || bytes === null) return false;
+  try {
+    const committed = await readGitRaw(root, ['show', `${commit}:${path}`]);
+    return Buffer.from(committed).equals(Buffer.from(bytes));
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Trust identity is the encoded SubjectPublicKeyInfo, never the source PEM.
  * A PEM is just a transport encoding: two differently wrapped PEM strings can
@@ -85,19 +161,32 @@ function immutablePayload(manifest) {
  * P28 is deliberately a release gate, not an activation switch. Permission is
  * derived only from a versioned, hash-bound and signed evidence manifest.
  */
-export async function assessSpatialV3Activation({ root = process.cwd(), read = readFile, realpath = realpathFs } = {}) {
+export async function assessSpatialV3Activation({
+  root = process.cwd(), read = readFile, realpath = realpathFs,
+  gitText: readGitText = gitText, gitRaw: readGitRaw = gitRaw
+} = {}) {
+  const committedBlobCache = new Map();
+  const decisionGitRaw = async (gitRoot, args) => {
+    if (args[0] !== 'show') return readGitRaw(gitRoot, args);
+    const key = `${gitRoot}\0${args.join('\0')}`;
+    if (!committedBlobCache.has(key)) committedBlobCache.set(key, await readGitRaw(gitRoot, args));
+    return committedBlobCache.get(key);
+  };
   const blockers = [];
   const add = (code, evidence = MANIFEST_PATH, details = {}) => blockers.push(FREEZE({ code, evidence, ...details }));
   let manifest;
+  let manifestBytes;
   let trust;
   try {
-    manifest = JSON.parse(await read(resolve(root, MANIFEST_PATH), 'utf8'));
+    const rawManifest = await read(resolve(root, MANIFEST_PATH));
+    manifestBytes = Buffer.from(rawManifest);
+    manifest = JSON.parse(manifestBytes.toString('utf8'));
   } catch {
     add('release_evidence_manifest_missing');
     return result(blockers);
   }
   try {
-    trust = await loadTrustStore({ root, read, realpath, add });
+    trust = await loadTrustStore({ root, read, realpath, gitRaw: decisionGitRaw, add });
   } catch {
     // loadTrustStore records a typed blocker. This catch only preserves the
     // fail-closed property if an injected reader itself throws unexpectedly.
@@ -111,28 +200,28 @@ export async function assessSpatialV3Activation({ root = process.cwd(), read = r
     signature: manifest.manifest_signature, payload: `p28:${manifest.release_id}:${manifest.activation_candidate_commit}:${calculatedManifestDigest}`,
     add, code: 'release_evidence_manifest_signature_invalid' });
 
-  const currentHeadCommit = await currentHead(root);
-  if (!isCommit(manifest.activation_candidate_commit) || !currentHeadCommit || manifest.activation_candidate_commit !== currentHeadCommit) {
-    add('activation_candidate_commit_current_head_mismatch');
-  }
+  for (const blocker of await verifyP28EvidenceCommitBinding({
+    root, manifestPath: MANIFEST_PATH, manifest, manifestBytes, protectedPaths: trust?.protectedPaths ?? [TRUST_STORE_PATH],
+    gitText: readGitText, gitRaw: decisionGitRaw
+  })) add(blocker.code, blocker.evidence, Object.fromEntries(Object.entries(blocker).filter(([key]) => !['code', 'evidence'].includes(key))));
 
   const items = manifest.appendix_d_items;
   if (!Array.isArray(items) || items.length !== APPENDIX_D_ITEMS.length || new Set(items.map((item) => item?.id)).size !== APPENDIX_D_ITEMS.length
     || APPENDIX_D_ITEMS.some((id) => !items.some((item) => item?.id === id))) {
     add('appendix_d_evidence_coverage_invalid');
   } else {
-    for (const item of items) await validateChecklistItem({ root, read, realpath, item, add });
+    for (const item of items) await validateChecklistItem({ root, read, realpath, gitRaw: decisionGitRaw, item, add });
   }
 
-  await validateP12Gaps({ root, read, gaps: manifest.p12_authoring_gaps, add });
-  await validateP27Critic({ root, read, realpath, releaseId: manifest.release_id, candidateCommit: manifest.activation_candidate_commit,
+  await validateP12Gaps({ root, read, gitRaw: decisionGitRaw, gaps: manifest.p12_authoring_gaps, add });
+  await validateP27Critic({ root, read, realpath, gitRaw: decisionGitRaw, releaseId: manifest.release_id, candidateCommit: manifest.activation_candidate_commit,
     report: manifest.p27_independent_critic, trust, add });
   if (manifest.p28_fresh_checkout?.status !== 'passed' || manifest.p28_fresh_checkout.activation_candidate_commit !== manifest.activation_candidate_commit
     || !Array.isArray(manifest.p28_fresh_checkout?.evidence) || manifest.p28_fresh_checkout.evidence.length === 0) {
     add('p28_fresh_checkout_evidence_missing');
   } else {
     for (const evidence of manifest.p28_fresh_checkout.evidence) {
-      const digest = await validateHashedEvidence({ root, read, realpath, evidence, add, code: 'p28_fresh_checkout_evidence_invalid' });
+      const digest = await validateHashedEvidence({ root, read, realpath, gitRaw: decisionGitRaw, evidence, add, code: 'p28_fresh_checkout_evidence_invalid' });
       if (digest) await validateRoleSignature({ trust, role: 'fresh_checkout_attestor', signer: evidence.signer, signature: evidence.signature,
         payload: `p28:fresh-checkout:${manifest.release_id}:${manifest.activation_candidate_commit}:${digest}`, add,
         code: 'p28_fresh_checkout_signature_invalid' });
@@ -141,7 +230,7 @@ export async function assessSpatialV3Activation({ root = process.cwd(), read = r
   return result(blockers);
 }
 
-async function validateChecklistItem({ root, read, realpath, item, add }) {
+async function validateChecklistItem({ root, read, realpath, gitRaw, item, add }) {
   if (item.status !== 'passed') {
     add('appendix_d_item_unchecked', MANIFEST_PATH, { item_id: item.id, status: item.status ?? 'missing' });
     return;
@@ -150,10 +239,10 @@ async function validateChecklistItem({ root, read, realpath, item, add }) {
     add('appendix_d_item_evidence_missing', MANIFEST_PATH, { item_id: item.id });
     return;
   }
-  for (const evidence of item.evidence) await validateHashedEvidence({ root, read, realpath, evidence, add, code: 'appendix_d_evidence_hash_mismatch', details: { item_id: item.id } });
+  for (const evidence of item.evidence) await validateHashedEvidence({ root, read, realpath, gitRaw, evidence, add, code: 'appendix_d_evidence_hash_mismatch', details: { item_id: item.id } });
 }
 
-async function validateP12Gaps({ root, read, gaps, add }) {
+async function validateP12Gaps({ root, read, gitRaw, gaps, add }) {
   const expected = new Map([
     ['CANONICAL_G5_INVENTORY_DATA_GAP', 'novgorod:g4-inventory:195'],
     ['DIRECTIONAL_EXIT_READINESS_DATA_GAP', 'novgorod:physical-edge-inventory:358'],
@@ -174,31 +263,36 @@ async function validateP12Gaps({ root, read, gaps, add }) {
       add('spatial_candidate_gap', MANIFEST_PATH, { gap_code: code, subject_ref, resolution_status: gap.status ?? 'missing' });
       continue;
     }
-    for (const evidence of gap.resolution_evidence) await validateHashedEvidence({ root, read, evidence, add, code: 'p12_gap_resolution_evidence_invalid', details: { gap_code: code, subject_ref } });
+    for (const evidence of gap.resolution_evidence) await validateHashedEvidence({ root, read, gitRaw, evidence, add, code: 'p12_gap_resolution_evidence_invalid', details: { gap_code: code, subject_ref } });
   }
 }
 
-async function validateP27Critic({ root, read, realpath, releaseId, candidateCommit, report, trust, add }) {
+async function validateP27Critic({ root, read, realpath, gitRaw, releaseId, candidateCommit, report, trust, add }) {
   if (!report || report.status !== 'passed' || !['PASS', 'PASS WITH NOTES'].includes(report.verdict)
     || report.activation_candidate_commit !== candidateCommit || !report.signer || !report.signature?.value) {
     add('p27_independent_critic_evidence_missing');
     return;
   }
-  const reportDigest = await validateHashedEvidence({ root, read, realpath, evidence: report, add, code: 'p27_independent_critic_hash_mismatch' });
+  const reportDigest = await validateHashedEvidence({ root, read, realpath, gitRaw, evidence: report, add, code: 'p27_independent_critic_hash_mismatch' });
   if (reportDigest) await validateRoleSignature({ trust, role: 'p27_critic', signer: report.signer, signature: report.signature,
     payload: `p27:${releaseId}:${candidateCommit}:${reportDigest}`, add, code: 'p27_independent_critic_signature_invalid' });
 }
 
-async function validateHashedEvidence({ root, read, realpath, evidence, add, code, details = {} }) {
+async function validateHashedEvidence({ root, read, realpath, gitRaw, evidence, add, code, details = {} }) {
   const absolute = await safePath(root, evidence?.path, realpath);
   if (!absolute || !isDigest(evidence?.sha256)) {
     add(code, MANIFEST_PATH, details);
     return null;
   }
   try {
-    const actual = sha256(await read(absolute));
+    const bytes = await read(absolute);
+    const actual = sha256(bytes);
     if (actual !== evidence.sha256) {
       add(code, evidence.path, details);
+      return null;
+    }
+    if (!await verifyCommittedRepositoryBytes({ root, path: evidence.path, bytes, gitRaw })) {
+      add('release_evidence_path_not_committed_exactly', evidence.path, details);
       return null;
     }
     return actual;
@@ -208,13 +302,18 @@ async function validateHashedEvidence({ root, read, realpath, evidence, add, cod
   }
 }
 
-async function loadTrustStore({ root, read, realpath, add }) {
+async function loadTrustStore({ root, read, realpath, gitRaw, add }) {
   let store;
+  let storeBytes;
   try {
-    store = JSON.parse(await read(resolve(root, TRUST_STORE_PATH), 'utf8'));
+    storeBytes = await read(resolve(root, TRUST_STORE_PATH));
+    store = JSON.parse(Buffer.from(storeBytes).toString('utf8'));
   } catch {
     add('release_evidence_trust_store_invalid', TRUST_STORE_PATH);
     return null;
+  }
+  if (!await verifyCommittedRepositoryBytes({ root, path: TRUST_STORE_PATH, bytes: storeBytes, gitRaw })) {
+    add('release_evidence_trust_store_not_committed_exactly', TRUST_STORE_PATH);
   }
   if (store.schema !== 'rus.spatial-v3.activation-trust-store.v1' || store.version !== 1 || !Array.isArray(store.keys)) {
     add('release_evidence_trust_store_invalid', TRUST_STORE_PATH);
@@ -229,6 +328,7 @@ async function loadTrustStore({ root, read, realpath, add }) {
     return null;
   }
   const keys = new Map();
+  const protectedPaths = [TRUST_STORE_PATH];
   for (const role of required) {
     const matches = store.keys.filter((key) => key?.role === role);
     const entry = matches[0];
@@ -236,10 +336,14 @@ async function loadTrustStore({ root, read, realpath, add }) {
       add('release_evidence_trust_store_invalid', TRUST_STORE_PATH, { role });
       continue;
     }
+    protectedPaths.push(entry.public_key_path);
     const absolute = await safePath(root, entry.public_key_path, realpath);
     try {
       const sourcePem = absolute ? await read(absolute, 'utf8') : null;
       if (!sourcePem) throw new Error('trusted public key is unavailable');
+      if (!await verifyCommittedRepositoryBytes({ root, path: entry.public_key_path, bytes: sourcePem, gitRaw })) {
+        add('release_evidence_public_key_not_committed_exactly', entry.public_key_path, { role });
+      }
       const canonical = canonicalEd25519PublicKey(sourcePem);
       keys.set(role, { ...entry, ...canonical });
     } catch {
@@ -252,11 +356,11 @@ async function loadTrustStore({ root, read, realpath, add }) {
     add('release_evidence_trust_store_invalid', TRUST_STORE_PATH);
     return null;
   }
-  return keys;
+  return FREEZE({ keys, protectedPaths: FREEZE(protectedPaths) });
 }
 
 async function validateRoleSignature({ trust, role, signer, signature, payload, add, code }) {
-  const key = trust?.get(role);
+  const key = trust?.keys?.get(role);
   try {
     if (!key || key.revoked === true || signer?.role !== role || signer?.key_id !== key.key_id
       || signature?.algorithm !== 'ed25519' || typeof signature?.value !== 'string' || !key.publicKey
@@ -268,16 +372,6 @@ async function validateRoleSignature({ trust, role, signer, signature, payload, 
 
 function isCommit(value) {
   return typeof value === 'string' && /^[a-f0-9]{40}$/u.test(value);
-}
-
-async function currentHead(root) {
-  try {
-    const { stdout } = await execFile('git', ['rev-parse', 'HEAD'], { cwd: root, windowsHide: true });
-    const head = stdout.trim().toLowerCase();
-    return isCommit(head) ? head : null;
-  } catch {
-    return null;
-  }
 }
 
 function result(blockers) {
@@ -294,7 +388,8 @@ function result(blockers) {
 
 /** Caller-supplied approval objects are never trusted: this always revalidates disk evidence. */
 export async function requireSpatialV3Activation(options = {}) {
-  const assessment = await assessSpatialV3Activation(options && typeof options === 'object' && !('activation_permitted' in options) ? options : {});
+  void options;
+  const assessment = await assessSpatialV3Activation();
   if (assessment.activation_permitted) return assessment;
   const error = Object.assign(new Error('P28 activation is blocked by mandatory release evidence.'), { code: 'spatial_v3_activation_blocked', assessment });
   throw error;

@@ -1,9 +1,9 @@
 # P11 expansion and scene authoring DDL — independent critic report
 
-**Verdict:** `PASS WITH NOTES`  
-**Reviewed commit:** `2983d7ef941acc161b7d327b063b15259c62ea49`  
-**Review date:** 2026-07-21  
-**Branch:** `codex/spatial-architecture-g0-g6-v4-2`  
+**Verdict:** `PASS WITH NOTES`
+**Reviewed commit:** `2983d7ef941acc161b7d327b063b15259c62ea49`
+**Review date:** 2026-07-21
+**Branch:** `codex/spatial-architecture-g0-g6-v4-2`
 **Scope:** P11-S01–P11-S05 only. This review neither changes runtime/DDL nor
 approves P12 data or P28 activation.
 

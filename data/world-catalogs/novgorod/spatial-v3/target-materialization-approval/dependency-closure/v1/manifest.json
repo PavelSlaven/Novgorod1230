@@ -7,7 +7,7 @@
     "target_contract_spec_zip": "1833b383e5ee2568330ab88ae40c7d5b9d057dbde81aa4f43641c48ecd3eb6f3",
     "p12_target_materialization_approval_v1_1_zip": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
     "immutable_v1_1_subject_commit": "e6be7c06cbd6c37c375658af6f2fe529d4f64353",
-    "current_ddl_sha256": "c06b4498a3706dcd78dff8c576b4540b05e02cbdf295f4bb6d39b36d5bb1a918"
+    "current_ddl_sha256": "36633dc334cd22ea9ed85583427c40d31c1fa36b4df278ccc0d248b58b0a188b"
   },
   "counts": {
     "source_ledger": 11,
@@ -34,7 +34,7 @@
   "files": [
     {
       "path": "APPROVAL_DECISION.json",
-      "sha256": "fbdf4d6b6e0aa7ef8d5120a636cbbd110cf01d1d25f069a62b2909b0d8daef96"
+      "sha256": "c87b8b59aff13659417dc3aa345fe12d3eeec00b37e19b466dd9dd86e48e3146"
     },
     {
       "path": "data/authoring-versions.json",
@@ -130,7 +130,7 @@
     },
     {
       "path": "datasets/spatial_v3_g1_grid_cells.json",
-      "sha256": "a54295e4f1739abf6e9a64d72db36db5f30387059284c488a01ce48b65dd34b4"
+      "sha256": "91861fd0fd5a4ed074a3b5f0f6242fa7067d7ebc2ed1d2884517f79ebad3c70e"
     },
     {
       "path": "datasets/spatial_v3_g6_template_slots.json",
@@ -186,7 +186,11 @@
     },
     {
       "path": "README.md",
-      "sha256": "e03cef2df82b7b0cc658bc9fe8ab86919555a17a1862dfa2157fd4fe5a61f860"
+      "sha256": "c540b8560924877cfde1308dd5ed999608a96e7dfaf83f368f369460848f7419"
+    },
+    {
+      "path": "REAPPROVAL_REQUEST.json",
+      "sha256": "53e41b4c854bdcf28692f7dffae0bc550a83754b72be5cf6f5f2cae979b73b46"
     },
     {
       "path": "reports/count-ledger.json",

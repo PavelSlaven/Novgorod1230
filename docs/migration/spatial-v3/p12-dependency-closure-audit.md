@@ -1,5 +1,22 @@
 # P12 dependency-closure audit
 
+## Current reapproval status (P09 canonical-grid repair)
+
+Status: **PENDING INDEPENDENT REAPPROVAL**.
+
+P09 replaced the non-normative `novgorod_g1_cardinal_grid_v1` convention with
+the target-standard `grid_east_north_v1` contract. The deterministic P12
+dependency-closure generator and its physical import row now use that exact
+canonical value. This changes the approved subject tree, so the historical
+`69b465f… → 690f850…` closure approval is not reused.
+
+The generated `REAPPROVAL_REQUEST.json` pins the exact changed dataset digest
+and records the prior evidence as superseded for this changed subject tree.
+`subject-commit-binding.json` is intentionally absent until an independent
+critic accepts the exact new subject commit and a separate evidence-only commit
+can bind that immutable tree. Until then the V1.1 repository verifier must
+remain fail-closed. Production, P28 and spatial runtime v3 remain blocked.
+
 ## Scope
 
 Independent review covered the proposed dependency-closure data, target-only

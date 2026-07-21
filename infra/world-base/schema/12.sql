@@ -179,6 +179,7 @@ CREATE TABLE IF NOT EXISTS world_base.spatial_v3_node_classes (
   category_id TEXT NOT NULL REFERENCES world_base.universal_categories(id) ON DELETE RESTRICT,
   class_ordinal INTEGER NOT NULL CHECK (class_ordinal >= 0),
   PRIMARY KEY (node_id, node_version, category_id),
+  UNIQUE (node_id, node_version),
   UNIQUE (node_id, node_version, class_ordinal),
   FOREIGN KEY (node_id, node_version) REFERENCES world_base.spatial_v3_nodes(id, version) ON DELETE CASCADE
 );
@@ -199,7 +200,7 @@ CREATE TABLE IF NOT EXISTS world_base.spatial_v3_g1_grid_cells (
   world_revision_id TEXT NOT NULL REFERENCES world_base.spatial_v3_world_revisions(id) ON DELETE RESTRICT,
   root_g0_id TEXT NOT NULL,
   root_g0_version INTEGER NOT NULL,
-  grid_convention TEXT NOT NULL CHECK (grid_convention = 'novgorod_g1_cardinal_grid_v1'),
+  grid_convention TEXT NOT NULL CHECK (grid_convention = 'grid_east_north_v1'),
   grid_x INTEGER NOT NULL,
   grid_y INTEGER NOT NULL,
   cell_code TEXT NOT NULL,
@@ -259,6 +260,46 @@ CREATE TABLE IF NOT EXISTS world_base.spatial_v3_graph_node_migration_inventory 
   CHECK ((mapping_status = 'not_applicable') = (target_spatial_node_id IS NULL AND target_spatial_node_version IS NULL AND target_world_revision_id IS NULL AND reviewed_source_ref IS NOT NULL AND review_reason IS NOT NULL)),
   CHECK (target_spatial_level <> 'G5' OR mapping_status = 'reviewed')
 );
+
+-- Upgrade a previously applied P09 part in place.  Only the exact superseded
+-- literal has an approved replacement; every other legacy value is a data gap.
+DO $$
+DECLARE
+  constraint_row RECORD;
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM world_base.spatial_v3_g1_grid_cells
+    WHERE grid_convention NOT IN ('novgorod_g1_cardinal_grid_v1', 'grid_east_north_v1')
+  ) THEN
+    RAISE EXCEPTION 'P09 grid convention migration blocked: unknown legacy value';
+  END IF;
+  IF EXISTS (
+    SELECT 1 FROM world_base.spatial_v3_node_classes
+    GROUP BY node_id, node_version HAVING count(*) > 1
+  ) THEN
+    RAISE EXCEPTION 'P09 primary spatial class migration blocked: node/version has multiple legacy classes';
+  END IF;
+  FOR constraint_row IN
+    SELECT conname FROM pg_constraint
+    WHERE conrelid = 'world_base.spatial_v3_g1_grid_cells'::regclass
+      AND contype = 'c' AND pg_get_constraintdef(oid) LIKE '%grid_convention%'
+  LOOP
+    EXECUTE format('ALTER TABLE world_base.spatial_v3_g1_grid_cells DROP CONSTRAINT %I', constraint_row.conname);
+  END LOOP;
+  UPDATE world_base.spatial_v3_g1_grid_cells
+    SET grid_convention = 'grid_east_north_v1'
+    WHERE grid_convention = 'novgorod_g1_cardinal_grid_v1';
+  SET CONSTRAINTS ALL IMMEDIATE;
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conrelid = 'world_base.spatial_v3_g1_grid_cells'::regclass AND conname = 'spatial_v3_g1_grid_cells_convention_canonical') THEN
+    ALTER TABLE world_base.spatial_v3_g1_grid_cells
+      ADD CONSTRAINT spatial_v3_g1_grid_cells_convention_canonical CHECK (grid_convention = 'grid_east_north_v1');
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conrelid = 'world_base.spatial_v3_node_classes'::regclass AND conname = 'spatial_v3_node_classes_one_primary') THEN
+    ALTER TABLE world_base.spatial_v3_node_classes
+      ADD CONSTRAINT spatial_v3_node_classes_one_primary UNIQUE (node_id, node_version);
+  END IF;
+END;
+$$;
 
 DO $$
 BEGIN

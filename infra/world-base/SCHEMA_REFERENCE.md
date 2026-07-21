@@ -2,7 +2,7 @@
 # Справочник схемы `world_base`
 
 - Исполняемый источник: `infra/world-base/schema.sql` и 16 упорядоченных SQL-частей.
-- SHA-256 развёрнутого DDL: `c06b4498a3706dcd78dff8c576b4540b05e02cbdf295f4bb6d39b36d5bb1a918`.
+- SHA-256 развёрнутого DDL: `36633dc334cd22ea9ed85583427c40d31c1fa36b4df278ccc0d248b58b0a188b`.
 - Таблиц: 185.
 - Описания берутся только из утверждённого `infra/world-base/field-descriptions.js`; отсутствие описания не заполняется эвристикой.
 
@@ -2661,6 +2661,7 @@ Target v3 version graph canonical world authoring; остаётся read-only и
 **Ограничения таблицы:**
 
 - `PRIMARY KEY (node_id, node_version, category_id)`
+- `UNIQUE (node_id, node_version)`
 - `UNIQUE (node_id, node_version, class_ordinal)`
 - `FOREIGN KEY (node_id, node_version) REFERENCES world_base.spatial_v3_nodes(id, version) ON DELETE CASCADE`
 
@@ -2692,7 +2693,7 @@ Target v3 version graph canonical world authoring; остаётся read-only и
 | `world_revision_id` | `TEXT` | нет | — | `world_base.spatial_v3_world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
 | `root_g0_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
 | `root_g0_version` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
-| `grid_convention` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (grid_convention = 'novgorod_g1_cardinal_grid_v1')` | Описание отсутствует. |
+| `grid_convention` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (grid_convention = 'grid_east_north_v1')` | Описание отсутствует. |
 | `grid_x` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
 | `grid_y` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
 | `cell_code` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |

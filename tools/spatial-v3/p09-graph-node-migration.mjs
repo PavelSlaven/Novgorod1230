@@ -1,6 +1,10 @@
 import { createHash } from 'node:crypto';
 
-const canonical = (value) => JSON.stringify(value, Object.keys(value).sort());
+const canonical = (value) => {
+  if (Array.isArray(value)) return `[${value.map(canonical).join(',')}]`;
+  if (value && typeof value === 'object') return `{${Object.keys(value).sort().map((key) => `${JSON.stringify(key)}:${canonical(value[key])}`).join(',')}}`;
+  return JSON.stringify(value);
+};
 const digest = (value) => createHash('sha256').update(canonical(value)).digest('hex');
 const levels = new Set(['G0', 'G1', 'G2', 'G3', 'G4']);
 

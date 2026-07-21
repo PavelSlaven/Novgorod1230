@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import test from "node:test";
 
@@ -11,15 +11,31 @@ const json = (path) => JSON.parse(readFileSync(join(bundle, path), "utf8"));
 const sha = (value) => createHash("sha256").update(value).digest("hex");
 
 test("P12 dependency closure generator is reproducible and validates exact counts", () => {
-  execFileSync(process.execPath, [join(root, "scripts/generate-p12-dependency-closure.mjs")], { cwd: root });
-  const firstManifest = readFileSync(join(bundle, "manifest.json"), "utf8");
-  execFileSync(process.execPath, [join(root, "scripts/generate-p12-dependency-closure.mjs")], { cwd: root });
-  assert.equal(readFileSync(join(bundle, "manifest.json"), "utf8"), firstManifest);
-  execFileSync(process.execPath, [join(bundle, "scripts/validate-bundle.mjs")], { cwd: root });
-  assert.deepEqual(json("reports/count-ledger.json").actual, json("reports/count-ledger.json").expected);
-  assert.equal(json("reports/dependency-coverage.json").hard_gap, 0);
-  assert.equal(json("import-manifest.json").bundle_kind, "dependency_closure");
-  assert.equal(json("import-manifest.json").data_gaps.length, 0);
+  const bindingPath = join(bundle, "subject-commit-binding.json");
+  const evidenceBinding = existsSync(bindingPath) ? readFileSync(bindingPath) : null;
+  try {
+    execFileSync(process.execPath, [join(root, "scripts/generate-p12-dependency-closure.mjs")], { cwd: root });
+    const firstManifest = readFileSync(join(bundle, "manifest.json"), "utf8");
+    execFileSync(process.execPath, [join(root, "scripts/generate-p12-dependency-closure.mjs")], { cwd: root });
+    assert.equal(readFileSync(join(bundle, "manifest.json"), "utf8"), firstManifest);
+    execFileSync(process.execPath, [join(bundle, "scripts/validate-bundle.mjs")], { cwd: root });
+    assert.deepEqual(json("reports/count-ledger.json").actual, json("reports/count-ledger.json").expected);
+    assert.equal(json("reports/dependency-coverage.json").hard_gap, 0);
+    assert.equal(json("import-manifest.json").bundle_kind, "dependency_closure");
+    assert.equal(json("import-manifest.json").data_gaps.length, 0);
+    const gridCells = json("datasets/spatial_v3_g1_grid_cells.json");
+    assert.equal(gridCells.length, 1);
+    assert.equal(gridCells[0].grid_convention, "grid_east_north_v1");
+    const reapproval = json("REAPPROVAL_REQUEST.json");
+    assert.equal(reapproval.status, "PENDING_INDEPENDENT_REAPPROVAL");
+    assert.equal(reapproval.exact_changed_contract.new_value, "grid_east_north_v1");
+    assert.equal(reapproval.exact_changed_contract.sha256, sha(readFileSync(join(bundle, reapproval.exact_changed_contract.path))));
+    assert.equal(json("APPROVAL_DECISION.json").independent_audit, "pending_reapproval");
+  } finally {
+    // Evidence-only commits add this file outside the deterministic subject
+    // bundle. Generator tests must not leave an approved checkout dirty.
+    if (evidenceBinding) writeFileSync(bindingPath, evidenceBinding);
+  }
 });
 
 test("generator inputs are tracked clean-clone artifacts and never local extraction paths", () => {

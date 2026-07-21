@@ -2,7 +2,7 @@
   "schema_version": "rus.p12_dependency_closure_approval.v1",
   "status": "PROPOSED_FOR_P12_DEPENDENCY_CLOSURE",
   "blocker_addressed": "P12_V11_DEPENDENCY_CLOSURE_EVIDENCE_MISSING",
-  "independent_audit": "pending",
+  "independent_audit": "pending_reapproval",
   "production_activation": "blocked",
   "p28_status": "blocked"
 }

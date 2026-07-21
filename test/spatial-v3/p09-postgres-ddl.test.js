@@ -34,9 +34,44 @@ test('P09 applies fresh, reapplies part 12, and rejects invalid deferred spatial
     INSERT INTO world_base.spatial_v3_nodes (id,version,world_revision_id,spatial_level,primary_class_id,evidence_status,status,provenance_ref,canonical_digest) VALUES ('g0',1,'rev','G0','cat','reviewed','approved','src',repeat('e',64)), ('g0b',1,'rev','G0','cat','reviewed','approved','src',repeat('f',64)), ('g1',1,'rev','G1','cat','reviewed','approved','src',repeat('0',64));
     INSERT INTO world_base.spatial_v3_node_classes VALUES ('g0',1,'cat',0), ('g0b',1,'cat',0), ('g1',1,'cat',0);
     INSERT INTO world_base.spatial_v3_node_parents VALUES ('g1',1,'g0',1,'rev');
-    INSERT INTO world_base.spatial_v3_g1_grid_cells VALUES ('g1',1,'rev','g0',1,'novgorod_g1_cardinal_grid_v1',0,0,'A1');
+    INSERT INTO world_base.spatial_v3_g1_grid_cells VALUES ('g1',1,'rev','g0',1,'grid_east_north_v1',0,0,'A1');
     COMMIT;`;
   assert.equal(psql(setup).status, 0, 'valid G0/G1 aggregate commits');
+  const legacyShape = psql(`
+    ALTER TABLE world_base.spatial_v3_g1_grid_cells DROP CONSTRAINT spatial_v3_g1_grid_cells_convention_canonical;
+    UPDATE world_base.spatial_v3_g1_grid_cells SET grid_convention = 'novgorod_g1_cardinal_grid_v1' WHERE node_id = 'g1';
+    ALTER TABLE world_base.spatial_v3_g1_grid_cells ADD CONSTRAINT captured_old_grid_convention CHECK (grid_convention = 'novgorod_g1_cardinal_grid_v1');`);
+  assert.equal(legacyShape.status, 0, legacyShape.stderr);
+  const upgrade = psql(await readFile('infra/world-base/schema/12.sql', 'utf8'));
+  assert.equal(upgrade.status, 0, upgrade.stderr);
+  const upgraded = psql("SELECT grid_convention FROM world_base.spatial_v3_g1_grid_cells WHERE node_id = 'g1';");
+  assert.match(upgraded.stdout, /grid_east_north_v1/u);
+  const unknownShape = psql(`
+    ALTER TABLE world_base.spatial_v3_g1_grid_cells DROP CONSTRAINT spatial_v3_g1_grid_cells_convention_canonical;
+    ALTER TABLE world_base.spatial_v3_g1_grid_cells ADD CONSTRAINT captured_permissive_grid_convention CHECK (grid_convention IN ('grid_east_north_v1', 'unknown_grid'));
+    UPDATE world_base.spatial_v3_g1_grid_cells SET grid_convention = 'unknown_grid' WHERE node_id = 'g1';`);
+  assert.equal(unknownShape.status, 0, unknownShape.stderr);
+  const blockedUpgrade = psql(await readFile('infra/world-base/schema/12.sql', 'utf8'));
+  assert.notEqual(blockedUpgrade.status, 0, 'unknown legacy convention must fail closed before conversion');
+  assert.match(blockedUpgrade.stderr, /unknown legacy value/u);
+  const retainedUnknown = psql("SELECT grid_convention FROM world_base.spatial_v3_g1_grid_cells WHERE node_id = 'g1';");
+  assert.match(retainedUnknown.stdout, /unknown_grid/u, 'failed preflight must not silently convert or delete data');
+  const classCollision = psql(`
+    ALTER TABLE world_base.spatial_v3_g1_grid_cells DROP CONSTRAINT captured_permissive_grid_convention;
+    UPDATE world_base.spatial_v3_g1_grid_cells SET grid_convention = 'grid_east_north_v1' WHERE node_id = 'g1';
+    ALTER TABLE world_base.spatial_v3_g1_grid_cells ADD CONSTRAINT spatial_v3_g1_grid_cells_convention_canonical CHECK (grid_convention = 'grid_east_north_v1');
+    INSERT INTO world_base.universal_categories (id, domain, stable_code, facet, preferred_label, definition, scope_note, inclusion_rules, exclusion_rules, title, status) VALUES ('cat2','spatial','cat2','class','class2','d','s','i','e','t2','approved');
+    DO $$ DECLARE constraint_row RECORD; BEGIN
+      FOR constraint_row IN SELECT conname FROM pg_constraint WHERE conrelid = 'world_base.spatial_v3_node_classes'::regclass AND contype = 'u'
+      LOOP EXECUTE format('ALTER TABLE world_base.spatial_v3_node_classes DROP CONSTRAINT %I', constraint_row.conname); END LOOP;
+    END $$;
+    INSERT INTO world_base.spatial_v3_node_classes VALUES ('g1',1,'cat2',1);`);
+  assert.equal(classCollision.status, 0, classCollision.stderr);
+  const blockedClassUpgrade = psql(await readFile('infra/world-base/schema/12.sql', 'utf8'));
+  assert.notEqual(blockedClassUpgrade.status, 0, 'multiple legacy primary classes must block upgrade');
+  assert.match(blockedClassUpgrade.stderr, /multiple legacy classes/u);
+  const retainedClasses = psql("SELECT count(*) FROM world_base.spatial_v3_node_classes WHERE node_id = 'g1';");
+  assert.match(retainedClasses.stdout, /2/u, 'failed collision preflight must retain both legacy rows');
   for (const statement of [
     "INSERT INTO world_base.spatial_v3_authoring_dependency_edges VALUES ('spatial_node','missing',1,'rev','uses','spatial_node','g0',1,0,'src');",
     "INSERT INTO world_base.spatial_v3_controlled_vocabulary_bindings VALUES ('controlled_entity_kind','registry','path','1',repeat('a',64),'rev','approved','src'); INSERT INTO world_base.spatial_v3_controlled_vocabulary_bindings VALUES ('controlled_entity_kind','registry2','path','1',repeat('b',64),'rev','approved','src');"

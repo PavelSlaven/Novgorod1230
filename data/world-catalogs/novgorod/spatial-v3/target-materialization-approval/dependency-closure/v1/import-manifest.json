@@ -90,7 +90,7 @@
     {
       "table": "spatial_v3_g1_grid_cells",
       "file": "datasets/spatial_v3_g1_grid_cells.json",
-      "sha256": "a54295e4f1739abf6e9a64d72db36db5f30387059284c488a01ce48b65dd34b4",
+      "sha256": "91861fd0fd5a4ed074a3b5f0f6242fa7067d7ebc2ed1d2884517f79ebad3c70e",
       "status": "draft",
       "provenance_ref": "prov_p12_g1_r2_r3_v1",
       "delete_policy": "forbid",

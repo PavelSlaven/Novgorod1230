@@ -336,7 +336,7 @@ const importRows = new Map([
   ["spatial_v3_nodes", nodes.map((r) => ({ entity_kind: "spatial_node", id: r.id, version: 1, world_revision_id: worldRevisionId, spatial_level: r.scale, stable_label_id: null, primary_class_id: classes.find((c) => c.node_id === r.id).category_id, evidence_status: "reviewed", traversal_model: null, status: "approved", provenance_ref: provenance.id, canonical_digest: r.canonical_digest }))],
   ["spatial_v3_node_classes", classes.map((r) => ({ ...r, class_ordinal: 0 }))],
   ["spatial_v3_node_parents", parents.map((r) => ({ ...r, world_revision_id: worldRevisionId }))],
-  ["spatial_v3_g1_grid_cells", [{ node_id: g1.id, node_version: 1, world_revision_id: worldRevisionId, root_g0_id: "region_novgorod_land", root_g0_version: 1, grid_convention: "novgorod_g1_cardinal_grid_v1", grid_x: 17, grid_y: 26, cell_code: "xp017_yp026" }]],
+  ["spatial_v3_g1_grid_cells", [{ node_id: g1.id, node_version: 1, world_revision_id: worldRevisionId, root_g0_id: "region_novgorod_land", root_g0_version: 1, grid_convention: "grid_east_north_v1", grid_x: 17, grid_y: 26, cell_code: "xp017_yp026" }]],
   ["spatial_v3_regional_scene_template_bases", regionalBases.map((r) => ({ entity_kind: "regional_scene_template_basis", id: r.id, version: r.version, world_revision_id: worldRevisionId, source_profile_family_id: r.source_profile_family_id, geometry_claim: "topological_only", status: r.status, provenance_ref: r.provenance_ref, canonical_digest: r.canonical_digest }))],
   ["spatial_v3_scene_selection_rules", selectionRules.map((r) => ({ entity_kind: "scene_selection_rule", id: r.id, version: r.version, world_revision_id: worldRevisionId, rule_kind: "single_candidate", status: r.status, provenance_ref: r.provenance_ref, canonical_digest: digestRow(r) }))],
   ["spatial_v3_scene_applicability_rules", applicabilityRules.map((r) => ({ entity_kind: "scene_applicability_rule", id: r.id, version: r.version, world_revision_id: worldRevisionId, rule_kind: "exact_source_ref", status: r.status, provenance_ref: r.provenance_ref, canonical_digest: digestRow(r) }))],
@@ -420,8 +420,33 @@ write("reports/v1_1-physical-projection-coverage.json", {
 const counts = { source_ledger: ledger.length, repository_provenance: 1, spatial_v3_nodes: nodes.length, spatial_node_authoring_versions: nodeAuthoringVersions.length, dependency_authoring_versions: dependencyAuthoringVersions.length, authoring_versions_total: authoringVersions.length, spatial_v3_node_parents: parents.length, spatial_v3_node_classes: classes.length, spatial_v3_g1_grid_cells: grid.length, g3_classification_decisions: classifications.length, universal_categories: categories.length, regional_scene_template_bases: regionalBases.length, scene_templates: sceneTemplates.length, g6_slots: g6Slots.length, position_templates: positions.length, endpoint_slots: endpoints.length, movement_edges: edges.length, stable_structures: 0, portals: 0, hard_gaps: 0 };
 write("reports/count-ledger.json", { expected: counts, actual: counts, status: "PASS" });
 write("schemas/dependency-closure.schema.json", { $schema: "https://json-schema.org/draft/2020-12/schema", title: "P12 dependency closure bundle", type: "object", required: ["schema_version", "status", "records"], properties: { schema_version: { type: "string" }, status: { type: "string" }, records: { type: "array" } } });
-write("APPROVAL_DECISION.json", { schema_version: "rus.p12_dependency_closure_approval.v1", status: "PROPOSED_FOR_P12_DEPENDENCY_CLOSURE", blocker_addressed: "P12_V11_DEPENDENCY_CLOSURE_EVIDENCE_MISSING", independent_audit: "pending", production_activation: "blocked", p28_status: "blocked" });
-write("README.md", `# P12 dependency closure v1\n\nStatus: \`PROPOSED_FOR_P12_DEPENDENCY_CLOSURE\`.\n\nThis bundle materializes only the exact approved dependencies required by P12 V1.1. It does not activate production, P28, or spatial runtime v3. Historical geometry remains topological unless explicitly marked as a technical G1 grid cell.\n\nRegenerate from repository root with:\n\n\`\`\`powershell\nnode scripts/generate-p12-dependency-closure.mjs\nnode data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/dependency-closure/v1/scripts/validate-bundle.mjs\n\`\`\`\n`);
+write("APPROVAL_DECISION.json", { schema_version: "rus.p12_dependency_closure_approval.v1", status: "PROPOSED_FOR_P12_DEPENDENCY_CLOSURE", blocker_addressed: "P12_V11_DEPENDENCY_CLOSURE_EVIDENCE_MISSING", independent_audit: "pending_reapproval", production_activation: "blocked", p28_status: "blocked" });
+write("REAPPROVAL_REQUEST.json", {
+  schema_version: "rus.p12_dependency_closure_reapproval_request.v1",
+  status: "PENDING_INDEPENDENT_REAPPROVAL",
+  reason: "P09 canonical DDL now requires grid_east_north_v1; the P12 dependency-closure import row was repinned from the non-canonical novgorod_g1_cardinal_grid_v1 value.",
+  prior_approval: {
+    subject_commit: "69b465fbbabfc8223839741d9253cd0ccc40e591",
+    evidence_commit: "690f85049c44ef099d499eca567d1460fe60ae3f",
+    disposition: "superseded_for_changed_subject_tree"
+  },
+  proposed_subject_commit: "pending_after_subject_commit",
+  exact_changed_contract: {
+    path: "datasets/spatial_v3_g1_grid_cells.json",
+    field: "grid_convention",
+    old_value: "novgorod_g1_cardinal_grid_v1",
+    new_value: "grid_east_north_v1",
+    sha256: fileSha(join(out, "datasets/spatial_v3_g1_grid_cells.json"))
+  },
+  required_reapproval_evidence: [
+    "independent critic PASS or acceptable PASS WITH NOTES for the exact subject tree",
+    "subject commit binding generated only after that exact subject commit exists",
+    "separate evidence-only commit whose sole content parent is the approved subject commit"
+  ],
+  production_activation: "blocked",
+  p28_status: "blocked"
+});
+write("README.md", `# P12 dependency closure v1\n\nStatus: \`PROPOSED_FOR_P12_DEPENDENCY_CLOSURE\`; independent reapproval is pending.\n\nThis bundle materializes only the exact approved dependencies required by P12 V1.1. The G1 import row is pinned to the target-standard convention \`grid_east_north_v1\`. The prior approval evidence applies only to the superseded subject tree and is not reused. See \`REAPPROVAL_REQUEST.json\` for the exact changed contract and required evidence sequence.\n\nThis package does not activate production, P28, or spatial runtime v3. Historical geometry remains topological unless explicitly marked as a technical G1 grid cell.\n\nRegenerate from repository root with:\n\n\`\`\`powershell\nnode scripts/generate-p12-dependency-closure.mjs\nnode data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/dependency-closure/v1/scripts/validate-bundle.mjs\n\`\`\`\n`);
 write("scripts/validate-bundle.mjs", `import { readFileSync } from "node:fs";\nimport { dirname, join } from "node:path";\nimport { fileURLToPath } from "node:url";\nconst root=dirname(dirname(fileURLToPath(import.meta.url))); const j=p=>JSON.parse(readFileSync(join(root,p),"utf8"));\nconst expected={\"source-records.json\":12,\"spatial-nodes.json\":49,\"authoring-versions.json\":68,\"node-parents.json\":48,\"node-classes.json\":49,\"g3-classification-decision.json\":32,\"universal-categories.json\":57,\"regional-scene-template-bases.json\":17,\"scene-templates.json\":17,\"g6-template-slots.json\":17,\"scene-position-templates.json\":51,\"scene-endpoint-slots.json\":34,\"scene-movement-edge-templates.json\":68,\"stable-structure-templates.json\":0,\"portal-templates.json\":0};\nfor(const [f,n] of Object.entries(expected)){const got=j(\"data/\"+f).records.length;if(got!==n)throw new Error(f+\": expected \"+n+\", got \"+got)}\nif(j(\"reports/dependency-coverage.json\").hard_gap!==0)throw new Error(\"hard gaps remain\"); console.log(\"P12 dependency closure data validation: PASS\");\n`);
 
 const pins = {

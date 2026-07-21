@@ -648,3 +648,59 @@ byte pin and both blockers.
 - Evidence Chain A preserves `e6be7c0 → 99938a6` as immutable historical intake and accepts `99938a6` only as an ancestor of the current checkout. Chain B reads its binding from the evidence commit itself, requires an evidence-only current HEAD with a sole content parent, and verifies the complete unique path-safe content manifest by raw-byte SHA-256.
 - Isolated PostgreSQL evidence applies all DDL from an empty database, imports the dependency closure, rehearses rollback, imports the complete V1.1 physical projection, verifies readback counts/digests, repeats exact-idempotently, and proves mismatch rollback. The test database has an explicit local P12 identity and never uses an operator or production connection.
 - Independent data critic verdict: `PASS`. It verified all 57 anchors, 32/32 G3 decisions, source/provenance exactness, reproducibility, and absence of stronger historical or runtime claims. Code-critic re-audit is required before the subject commit. P28 remains blocked and v2 remains the production owner.
+
+## P09 independent DDL critic closure audit (2026-07-20)
+
+- Reviewed commit: `b1939948003ca2775bc22a0cbf75e8f0c557fafd`; scope was
+  P09-S01–P09-S04 only. Repository Intelligence was rebuilt at that commit,
+  Graphify `0.9.17` was ready, and the knowledge source retained only its
+  documented semantic-coverage warning.
+- Existing owner evidence passes: `spatial-v3:check-p09` reports all ten P09
+  tables in the 185-table schema; `world-db:schema-check` and
+  `world-db:schema-doc-check` pass with generated-reference digest
+  `c06b4498a3706dcd78dff8c576b4540b05e02cbdf295f4bb6d39b36d5bb1a918`;
+  migration tests pass 2/2; isolated PostgreSQL fresh/reapply/negative tests
+  pass 1/1.
+- Independent negative probes found three uncovered MAJOR defects:
+  `grid_east_north_v1` from the target standard is rejected in favor of a
+  non-normative hardcoded convention; a second spatial class can commit for
+  one node version despite the one-class-plus-facets contract; and the
+  migration inventory summary digest is unchanged when one-row inventory
+  content changes.
+- Persisted critic verdict:
+  [`p09-ddl-critic-report.md`](./p09-ddl-critic-report.md) —
+  **`CHANGES REQUIRED`**. P09-S04 remains open until a separate implementation
+  cycle corrects the findings, adds regression cases, regenerates affected
+  target artifacts and receives an independent acceptable re-review.
+- The audit used disposable local PostgreSQL only. It changed no DDL, runtime,
+  production composition, P10+ implementation or P28 evidence.
+
+### P09 closure re-review (2026-07-21)
+
+- Independent DDL critic result: **`PASS WITH NOTES`**. CRIT-01 canonical grid
+  migration, CRIT-02 one-primary-class constraint and CRIT-03 content-sensitive
+  inventory digest are closed. Evidence covered captured old-part-12 upgrade,
+  unknown-grid and multi-class fail-closed rollback, fresh/reapply, FK/UNIQUE,
+  deferred containment negatives, schema-reference generation and P10/P11
+  target-only PostgreSQL compatibility checks.
+- The unrelated global `AGENTS.md` whitespace diff remains outside P09 scope.
+  P12 grid-package reapproval remains separately pending; P09 does not
+  self-approve P12 and does not authorize P28 or production activation.
+
+## P12 canonical-grid reapproval package (2026-07-20)
+
+- P09 makes `grid_east_north_v1` the canonical target DDL convention. The P12
+  dependency-closure generator and `spatial_v3_g1_grid_cells` import dataset
+  were repinned from `novgorod_g1_cardinal_grid_v1` to that exact value.
+- The generated bundle remains
+  `PROPOSED_FOR_P12_DEPENDENCY_CLOSURE`. Its
+  `REAPPROVAL_REQUEST.json` records the exact changed contract and digest,
+  marks the historical `69b465f… → 690f850…` approval evidence as superseded
+  for the changed subject tree, and requires a new independent acceptance plus
+  a separate evidence-only binding commit.
+- The old `subject-commit-binding.json` is intentionally removed. Therefore
+  the repository-level P12 V1.1 verifier remains fail-closed until the new
+  subject commit exists and receives independent reapproval. This is not a
+  data gap and does not weaken deterministic import validation.
+- No P28 or production activation is authorized; v2 remains the production
+  owner.

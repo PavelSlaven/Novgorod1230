@@ -358,6 +358,15 @@
       "bytes": 3398,
       "status": "proposed",
       "provenance_mode": "native"
+    },
+    {
+      "document_id": "spatial-architecture-standard-g0-g6",
+      "canonical_path": "corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
+      "file_name": "spatial_architecture_standard_g0_g6.md",
+      "sha256": "f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1",
+      "bytes": 328143,
+      "status": "active",
+      "provenance_mode": "native"
     }
   ]
 }

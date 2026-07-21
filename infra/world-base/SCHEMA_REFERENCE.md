@@ -1,9 +1,9 @@
 <!-- GENERATED FILE. Sources: infra/world-base/schema.sql, infra/world-base/schema/*.sql and infra/world-base/field-descriptions.js. Run `npm run world-db:schema-doc`; do not edit manually. -->
 # Справочник схемы `world_base`
 
-- Исполняемый источник: `infra/world-base/schema.sql` и 16 упорядоченных SQL-частей.
-- SHA-256 развёрнутого DDL: `36633dc334cd22ea9ed85583427c40d31c1fa36b4df278ccc0d248b58b0a188b`.
-- Таблиц: 185.
+- Исполняемый источник: `infra/world-base/schema.sql` и 17 упорядоченных SQL-частей.
+- SHA-256 развёрнутого DDL: `fccc625773089749ca676831ee69f8b3656e914f5f0e53cbbfaff8773df905fe`.
+- Таблиц: 186.
 - Описания берутся только из утверждённого `infra/world-base/field-descriptions.js`; отсутствие описания не заполняется эвристикой.
 
 ## Граф (каноническая карта)
@@ -5187,3 +5187,28 @@ Digests, counts и dependency order таблиц одного импорта.
 
 - `PRIMARY KEY(g4_id,g4_version)`
 - `FOREIGN KEY(g4_id,g4_version) REFERENCES world_base.spatial_v3_nodes(id,version) ON DELETE CASCADE`
+
+### `world_base.spatial_v3_migration_coverage_artifacts`
+
+Описание назначения отсутствует.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `artifact_id` | `text` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Описание отсутствует. |
+| `party_id` | `text` | да | — | — | — | Описание отсутствует. |
+| `world_revision_id` | `text` | да | — | — | — | Описание отсутствует. |
+| `source_scope` | `text` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `source_digest` | `text` | нет | — | — | `NOT NULL`<br>`CHECK (source_digest ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
+| `source_record_count` | `integer` | нет | — | — | `NOT NULL`<br>`CHECK (source_record_count >= 0)` | Описание отсутствует. |
+| `inventory_digest` | `text` | нет | — | — | `NOT NULL`<br>`CHECK (inventory_digest ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
+| `inventory_target_digest` | `text` | нет | — | — | `NOT NULL`<br>`CHECK (inventory_target_digest ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
+| `target_digest` | `text` | нет | — | — | `NOT NULL`<br>`CHECK (target_digest ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
+| `acceptance_ok` | `boolean` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `error_codes` | `jsonb` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `source_snapshot` | `jsonb` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `canonical_digest` | `text` | нет | — | — | `NOT NULL`<br>`CHECK (canonical_digest ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
+| `created_at` | `timestamptz` | нет | `now()` | — | `NOT NULL` | Время создания записи (UTC). |
+
+**Ограничения таблицы:**
+
+- `UNIQUE (source_scope, source_digest, target_digest)`

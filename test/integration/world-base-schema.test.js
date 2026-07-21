@@ -2,13 +2,13 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { inspectWorldBaseSchema } from '../../scripts/check-world-base-schema.mjs';
 
-test('world_base schema expands to exactly 185 unique tables', async () => {
+test('world_base schema expands to exactly 186 unique tables', async () => {
   const result = await inspectWorldBaseSchema({ root: process.cwd() });
   assert.equal(result.schema, 'world_base');
-  assert.equal(result.table_count, 185);
-  assert.equal(result.table_names.length, 185);
+  assert.equal(result.table_count, 186);
+  assert.equal(result.table_names.length, 186);
   assert.deepEqual(result.duplicate_table_names, []);
-  assert.equal(result.part_files.length, 16);
+  assert.equal(result.part_files.length, 17);
 });
 
 test('world_base schema keeps the read-only runtime role', async () => {

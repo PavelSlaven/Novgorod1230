@@ -1,7 +1,7 @@
 {
   "schema_version": "rus.knowledge_retrieval_policy.v1",
   "policy_version": "1.0.0",
-  "baseline_manifest_sha256": "60262d56e9ca7ef8f133b170e8369728e8e33b203168a36c52408e44fb65b863",
+  "baseline_manifest_sha256": "d5f9f97bbef72fcba9ef202619b49502840d04e9ad66424d6637f4a2e5d7d289",
   "default_statuses": [
     "active"
   ],
@@ -944,6 +944,47 @@
         "map-g0-g4-workflow"
       ],
       "semantic_coverage_disposition": "baseline_gap"
+    },
+    {
+      "document_id": "spatial-architecture-standard-g0-g6",
+      "document_type": "target_normative",
+      "priority_tier": "highest_materialization_normative",
+      "subsystems": [
+        "spatial",
+        "topology",
+        "movement",
+        "materialization",
+        "migration",
+        "release"
+      ],
+      "related_document_ids": [
+        "code-driven-world-materialization-architecture",
+        "world-base-materialization-table-requirements",
+        "read-only-database-and-graph-architecture",
+        "map-g0-g4-workflow",
+        "llm-documentation-navigation"
+      ],
+      "related_module_paths": [
+        "infra/world-base",
+        "schemas/party-db",
+        "packages/contracts/src/spatial-v3",
+        "docs/migration/spatial-v3"
+      ],
+      "related_contracts": [
+        "G0-G6 target spatial architecture",
+        "P28 atomic activation gate"
+      ],
+      "search_terms": [
+        "spatial architecture",
+        "G0",
+        "G6",
+        "topology",
+        "movement",
+        "materialization",
+        "P28"
+      ],
+      "conflicts_with_document_ids": [],
+      "semantic_coverage_disposition": "baseline_gap"
     }
   ],
   "control_queries": [
@@ -993,6 +1034,14 @@
       "query": "какие таблицы нужны для materialization profiles rules world_base",
       "expected_document_ids": [
         "world-base-materialization-table-requirements"
+      ],
+      "top_k": 5
+    },
+    {
+      "query_id": "spatial-architecture-target",
+      "query": "target spatial architecture G0 G6 topology movement materialization P28 activation",
+      "expected_document_ids": [
+        "spatial-architecture-standard-g0-g6"
       ],
       "top_k": 5
     }

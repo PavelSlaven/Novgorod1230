@@ -1216,6 +1216,18 @@
       }
     },
     {
+      "id": "canonical-document:spatial-architecture-standard-g0-g6",
+      "type": "canonical_document",
+      "label": "spatial_architecture_standard_g0_g6.md",
+      "structural_only": true,
+      "source_file": "DOCUMENTS/spatial_architecture_standard_g0_g6.md",
+      "source_location": {
+        "file": "spatial_architecture_standard_g0_g6.md",
+        "line_start": 1,
+        "line_end": 6820
+      }
+    },
+    {
       "id": "canonical-document:time-system",
       "type": "canonical_document",
       "label": "time_system.txt",

@@ -1,0 +1,2102 @@
+[
+  {
+    "id": "p12_closure_source_0001",
+    "source_id": "SRC_G1R2_MAP_RULES",
+    "target_table": "spatial_node",
+    "target_record_id": "region_novgorod_land@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0002",
+    "source_id": "SRC_G1R2_SCHAPOV_1976_CHARTER",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g1_xp017_yp026@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0003",
+    "source_id": "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g1_xp017_yp026@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0004",
+    "source_id": "SRC_G1R2_MASK_REV002",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g1_xp017_yp026@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0005",
+    "source_id": "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_south_main_channel@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0006",
+    "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_south_main_channel@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0007",
+    "source_id": "SRC_G1R2_GSHHS",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_south_main_channel@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0008",
+    "source_id": "SRC_G1R2_MASK_REV002",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_south_main_channel@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0009",
+    "source_id": "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_central_main_channel@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0010",
+    "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_central_main_channel@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0011",
+    "source_id": "SRC_G1R2_MASK_REV002",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_central_main_channel@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0012",
+    "source_id": "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_north_main_channel@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0013",
+    "source_id": "SRC_G1R2_MASK_REV002",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_north_main_channel@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0014",
+    "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_west_distributary_belt@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0015",
+    "source_id": "SRC_G1R2_GSHHS",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_west_distributary_belt@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0016",
+    "source_id": "SRC_G1R2_MASK_REV002",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_west_distributary_belt@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0017",
+    "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_east_distributary_belt@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0018",
+    "source_id": "SRC_G1R2_GSHHS",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_east_distributary_belt@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0019",
+    "source_id": "SRC_G1R2_MASK_REV002",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_east_distributary_belt@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0020",
+    "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_island_head_mosaic@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0021",
+    "source_id": "SRC_G1R2_GSHHS",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_island_head_mosaic@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0022",
+    "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_inner_floodplain@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0023",
+    "source_id": "SRC_G1R2_GSHHS",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_inner_floodplain@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0024",
+    "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_shoal_bar_field@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0025",
+    "source_id": "SRC_G1R2_GSHHS",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_shoal_bar_field@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0026",
+    "source_id": "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_backwater_wetlands@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0027",
+    "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_backwater_wetlands@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0028",
+    "source_id": "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_backwater_wetlands@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0029",
+    "source_id": "SRC_G1R2_GSHHS",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_backwater_wetlands@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0030",
+    "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_dry_ridge_belt@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0031",
+    "source_id": "SRC_G1R2_ARKHANGELSK_HOARD_1992",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0032",
+    "source_id": "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0033",
+    "source_id": "SRC_G1R2_SCHAPOV_1976_CHARTER",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0034",
+    "source_id": "SRC_G1R2_ARKHANGELSK_HOARD_1992",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0035",
+    "source_id": "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0036",
+    "source_id": "SRC_G1R2_SCHAPOV_1976_CHARTER",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0037",
+    "source_id": "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_forest_hinterland@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0038",
+    "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_forest_hinterland@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0039",
+    "source_id": "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_forest_hinterland@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0040",
+    "source_id": "SRC_G1R2_GSHHS",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_forest_hinterland@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0041",
+    "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_small_stream_network@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0042",
+    "source_id": "SRC_G1R2_GSHHS",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_small_stream_network@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0043",
+    "source_id": "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_river_sea_transition@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0044",
+    "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_river_sea_transition@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0045",
+    "source_id": "SRC_G1R2_MASK_REV002",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g2_xp017_yp026_r2_river_sea_transition@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0046",
+    "source_id": "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_south_entry_reach@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0047",
+    "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_south_entry_reach@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0048",
+    "source_id": "SRC_G1R2_GSHHS",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_south_entry_reach@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0049",
+    "source_id": "SRC_G1R2_MASK_REV002",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_south_entry_reach@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0050",
+    "source_id": "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0051",
+    "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0052",
+    "source_id": "SRC_G1R2_GSHHS",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0053",
+    "source_id": "SRC_G1R2_MASK_REV002",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0054",
+    "source_id": "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_central_navigation_reach@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0055",
+    "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_central_navigation_reach@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0056",
+    "source_id": "SRC_G1R2_MASK_REV002",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_central_navigation_reach@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0057",
+    "source_id": "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_central_current_split@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0058",
+    "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_central_current_split@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0059",
+    "source_id": "SRC_G1R2_MASK_REV002",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_central_current_split@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0060",
+    "source_id": "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_north_outflow_reach@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0061",
+    "source_id": "SRC_G1R2_MASK_REV002",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_north_outflow_reach@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0062",
+    "source_id": "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_north_exposed_turn@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0063",
+    "source_id": "SRC_G1R2_MASK_REV002",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_north_exposed_turn@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0064",
+    "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_west_side_channel@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0065",
+    "source_id": "SRC_G1R2_GSHHS",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_west_side_channel@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0066",
+    "source_id": "SRC_G1R2_MASK_REV002",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_west_side_channel@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0067",
+    "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_west_hidden_backwater@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0068",
+    "source_id": "SRC_G1R2_GSHHS",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_west_hidden_backwater@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0069",
+    "source_id": "SRC_G1R2_MASK_REV002",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_west_hidden_backwater@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0070",
+    "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_east_side_channel@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0071",
+    "source_id": "SRC_G1R2_GSHHS",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_east_side_channel@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0072",
+    "source_id": "SRC_G1R2_MASK_REV002",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_east_side_channel@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0073",
+    "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_east_flood_bypass@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0074",
+    "source_id": "SRC_G1R2_GSHHS",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_east_flood_bypass@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0075",
+    "source_id": "SRC_G1R2_MASK_REV002",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_east_flood_bypass@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0076",
+    "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_large_island_head@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0077",
+    "source_id": "SRC_G1R2_GSHHS",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_large_island_head@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0078",
+    "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_channel_split_islet@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0079",
+    "source_id": "SRC_G1R2_GSHHS",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_channel_split_islet@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0080",
+    "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_dry_island_ridge@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0081",
+    "source_id": "SRC_G1R2_GSHHS",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_dry_island_ridge@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0082",
+    "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_flooded_interior_basin@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0083",
+    "source_id": "SRC_G1R2_GSHHS",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_flooded_interior_basin@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0084",
+    "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_shifting_shoal_field@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0085",
+    "source_id": "SRC_G1R2_GSHHS",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_shifting_shoal_field@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0086",
+    "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_driftwood_bar@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0087",
+    "source_id": "SRC_G1R2_GSHHS",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_driftwood_bar@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0088",
+    "source_id": "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_reed_backwater@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0089",
+    "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_reed_backwater@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0090",
+    "source_id": "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_reed_backwater@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0091",
+    "source_id": "SRC_G1R2_GSHHS",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_reed_backwater@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0092",
+    "source_id": "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_old_channel_pool@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0093",
+    "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_old_channel_pool@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0094",
+    "source_id": "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_old_channel_pool@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0095",
+    "source_id": "SRC_G1R2_GSHHS",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_old_channel_pool@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0096",
+    "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0097",
+    "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0098",
+    "source_id": "SRC_G1R2_ARKHANGELSK_HOARD_1992",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_locality@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0099",
+    "source_id": "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_locality@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0100",
+    "source_id": "SRC_G1R2_SCHAPOV_1976_CHARTER",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_locality@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0101",
+    "source_id": "SRC_G1R2_ARKHANGELSK_HOARD_1992",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0102",
+    "source_id": "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0103",
+    "source_id": "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0104",
+    "source_id": "SRC_G1R2_MASK_REV002",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0105",
+    "source_id": "SRC_G1R2_SCHAPOV_1976_CHARTER",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0106",
+    "source_id": "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0107",
+    "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0108",
+    "source_id": "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0109",
+    "source_id": "SRC_G1R2_GSHHS",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0110",
+    "source_id": "SRC_G1R2_ARKHANGELSK_HOARD_1992",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0111",
+    "source_id": "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0112",
+    "source_id": "SRC_G1R2_SCHAPOV_1976_CHARTER",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0113",
+    "source_id": "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0114",
+    "source_id": "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_zaostrovye_landing@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0115",
+    "source_id": "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_zaostrovye_landing@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0116",
+    "source_id": "SRC_G1R2_MASK_REV002",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_zaostrovye_landing@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0117",
+    "source_id": "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_wet_conifer_tract@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0118",
+    "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_wet_conifer_tract@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0119",
+    "source_id": "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_wet_conifer_tract@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0120",
+    "source_id": "SRC_G1R2_GSHHS",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_wet_conifer_tract@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0121",
+    "source_id": "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_dry_pine_ridge@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0122",
+    "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_dry_pine_ridge@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0123",
+    "source_id": "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_dry_pine_ridge@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0124",
+    "source_id": "SRC_G1R2_GSHHS",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_dry_pine_ridge@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0125",
+    "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_tributary_mouth@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0126",
+    "source_id": "SRC_G1R2_GSHHS",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_tributary_mouth@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0127",
+    "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_forest_stream_route@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0128",
+    "source_id": "SRC_G1R2_GSHHS",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_forest_stream_route@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0129",
+    "source_id": "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_mixing_reach@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0130",
+    "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_mixing_reach@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0131",
+    "source_id": "SRC_G1R2_MASK_REV002",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_mixing_reach@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0132",
+    "source_id": "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_outer_exposed_approach@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0133",
+    "source_id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_outer_exposed_approach@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0134",
+    "source_id": "SRC_G1R2_MASK_REV002",
+    "target_table": "spatial_node",
+    "target_record_id": "gn_nov_g3_xp017_yp026_r2_outer_exposed_approach@1",
+    "support_type": "supports",
+    "summary": "Exact approved source-ledger link for the dependency-closure record.",
+    "page_or_section": null,
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0135",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "spatial.g0.historical_geographic_region@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"repository_line_range\",\"canonical_path\":\"data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md\",\"raw_sha256\":\"f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1\",\"start_line\":239,\"end_line\":247,\"required_text\":\"spatial.g0.historical_geographic_region\"}].",
+    "page_or_section": "[{\"anchor_kind\":\"repository_line_range\",\"canonical_path\":\"data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md\",\"raw_sha256\":\"f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1\",\"start_line\":239,\"end_line\":247,\"required_text\":\"spatial.g0.historical_geographic_region\"}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0136",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "spatial.g1.territorial_grid_cell@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"repository_line_range\",\"canonical_path\":\"data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md\",\"raw_sha256\":\"f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1\",\"start_line\":249,\"end_line\":269,\"required_text\":\"spatial.g1.territorial_grid_cell\"}].",
+    "page_or_section": "[{\"anchor_kind\":\"repository_line_range\",\"canonical_path\":\"data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md\",\"raw_sha256\":\"f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1\",\"start_line\":249,\"end_line\":269,\"required_text\":\"spatial.g1.territorial_grid_cell\"}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0137",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "spatial.g2.territorial_zone@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"repository_line_range\",\"canonical_path\":\"data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md\",\"raw_sha256\":\"f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1\",\"start_line\":271,\"end_line\":286,\"required_text\":\"spatial.g2.territorial_zone\"}].",
+    "page_or_section": "[{\"anchor_kind\":\"repository_line_range\",\"canonical_path\":\"data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md\",\"raw_sha256\":\"f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1\",\"start_line\":271,\"end_line\":286,\"required_text\":\"spatial.g2.territorial_zone\"}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0138",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "spatial.g3.settlement@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"repository_line_range\",\"canonical_path\":\"data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md\",\"raw_sha256\":\"f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1\",\"start_line\":288,\"end_line\":303,\"required_text\":\"spatial.g3.settlement\"},{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip\",\"raw_sha256\":\"6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b\",\"internal_path\":\"gn_nov_g1_xp017_yp026_rebuild_002/04-g3/g3-places.json\",\"internal_raw_sha256\":\"bfd84b3b5fd38cbdda70dbe2c3acf3083ac515c2b8940cfd7808b3b6c0f2b16b\",\"json_pointer\":\"\",\"record_predicate\":{\"field\":\"id\",\"equals\":\"gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"repository_line_range\",\"canonical_path\":\"data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md\",\"raw_sha256\":\"f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1\",\"start_line\":288,\"end_line\":303,\"required_text\":\"spatial.g3.settlement\"},{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip\",\"raw_sha256\":\"6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b\",\"internal_path\":\"gn_nov_g1_xp017_yp026_rebuild_002/04-g3/g3-places.json\",\"internal_raw_sha256\":\"bfd84b3b5fd38cbdda70dbe2c3acf3083ac515c2b8940cfd7808b3b6c0f2b16b\",\"json_pointer\":\"\",\"record_predicate\":{\"field\":\"id\",\"equals\":\"gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0139",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "spatial.g3.built_site@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"repository_line_range\",\"canonical_path\":\"data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md\",\"raw_sha256\":\"f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1\",\"start_line\":288,\"end_line\":303,\"required_text\":\"spatial.g3.built_site\"},{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip\",\"raw_sha256\":\"6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b\",\"internal_path\":\"gn_nov_g1_xp017_yp026_rebuild_002/04-g3/g3-places.json\",\"internal_raw_sha256\":\"bfd84b3b5fd38cbdda70dbe2c3acf3083ac515c2b8940cfd7808b3b6c0f2b16b\",\"json_pointer\":\"\",\"record_predicate\":{\"field\":\"id\",\"equals\":\"gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"repository_line_range\",\"canonical_path\":\"data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md\",\"raw_sha256\":\"f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1\",\"start_line\":288,\"end_line\":303,\"required_text\":\"spatial.g3.built_site\"},{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip\",\"raw_sha256\":\"6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b\",\"internal_path\":\"gn_nov_g1_xp017_yp026_rebuild_002/04-g3/g3-places.json\",\"internal_raw_sha256\":\"bfd84b3b5fd38cbdda70dbe2c3acf3083ac515c2b8940cfd7808b3b6c0f2b16b\",\"json_pointer\":\"\",\"record_predicate\":{\"field\":\"id\",\"equals\":\"gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0140",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "spatial.g3.natural_feature@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"repository_line_range\",\"canonical_path\":\"data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md\",\"raw_sha256\":\"f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1\",\"start_line\":288,\"end_line\":303,\"required_text\":\"spatial.g3.natural_feature\"},{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip\",\"raw_sha256\":\"6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b\",\"internal_path\":\"gn_nov_g1_xp017_yp026_rebuild_002/04-g3/g3-places.json\",\"internal_raw_sha256\":\"bfd84b3b5fd38cbdda70dbe2c3acf3083ac515c2b8940cfd7808b3b6c0f2b16b\",\"json_pointer\":\"\",\"record_predicate\":{\"field\":\"id\",\"equals\":\"gn_nov_g3_xp017_yp026_r2_south_entry_reach\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"repository_line_range\",\"canonical_path\":\"data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md\",\"raw_sha256\":\"f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1\",\"start_line\":288,\"end_line\":303,\"required_text\":\"spatial.g3.natural_feature\"},{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip\",\"raw_sha256\":\"6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b\",\"internal_path\":\"gn_nov_g1_xp017_yp026_rebuild_002/04-g3/g3-places.json\",\"internal_raw_sha256\":\"bfd84b3b5fd38cbdda70dbe2c3acf3083ac515c2b8940cfd7808b3b6c0f2b16b\",\"json_pointer\":\"\",\"record_predicate\":{\"field\":\"id\",\"equals\":\"gn_nov_g3_xp017_yp026_r2_south_entry_reach\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0141",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "spatial.g3.route_site@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"repository_line_range\",\"canonical_path\":\"data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md\",\"raw_sha256\":\"f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1\",\"start_line\":288,\"end_line\":303,\"required_text\":\"spatial.g3.route_site\"},{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip\",\"raw_sha256\":\"6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b\",\"internal_path\":\"gn_nov_g1_xp017_yp026_rebuild_002/04-g3/g3-places.json\",\"internal_raw_sha256\":\"bfd84b3b5fd38cbdda70dbe2c3acf3083ac515c2b8940cfd7808b3b6c0f2b16b\",\"json_pointer\":\"\",\"record_predicate\":{\"field\":\"id\",\"equals\":\"gn_nov_g3_xp017_yp026_r2_central_current_split\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"repository_line_range\",\"canonical_path\":\"data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md\",\"raw_sha256\":\"f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1\",\"start_line\":288,\"end_line\":303,\"required_text\":\"spatial.g3.route_site\"},{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip\",\"raw_sha256\":\"6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b\",\"internal_path\":\"gn_nov_g1_xp017_yp026_rebuild_002/04-g3/g3-places.json\",\"internal_raw_sha256\":\"bfd84b3b5fd38cbdda70dbe2c3acf3083ac515c2b8940cfd7808b3b6c0f2b16b\",\"json_pointer\":\"\",\"record_predicate\":{\"field\":\"id\",\"equals\":\"gn_nov_g3_xp017_yp026_r2_central_current_split\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0142",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "spatial.g3.resource_site@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"repository_line_range\",\"canonical_path\":\"data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md\",\"raw_sha256\":\"f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1\",\"start_line\":288,\"end_line\":303,\"required_text\":\"spatial.g3.resource_site\"},{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip\",\"raw_sha256\":\"6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b\",\"internal_path\":\"gn_nov_g1_xp017_yp026_rebuild_002/04-g3/g3-places.json\",\"internal_raw_sha256\":\"bfd84b3b5fd38cbdda70dbe2c3acf3083ac515c2b8940cfd7808b3b6c0f2b16b\",\"json_pointer\":\"\",\"record_predicate\":{\"field\":\"id\",\"equals\":\"gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"repository_line_range\",\"canonical_path\":\"data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md\",\"raw_sha256\":\"f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1\",\"start_line\":288,\"end_line\":303,\"required_text\":\"spatial.g3.resource_site\"},{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip\",\"raw_sha256\":\"6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b\",\"internal_path\":\"gn_nov_g1_xp017_yp026_rebuild_002/04-g3/g3-places.json\",\"internal_raw_sha256\":\"bfd84b3b5fd38cbdda70dbe2c3acf3083ac515c2b8940cfd7808b3b6c0f2b16b\",\"json_pointer\":\"\",\"record_predicate\":{\"field\":\"id\",\"equals\":\"gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0143",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "spatial.g3.recurrent_site@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"repository_line_range\",\"canonical_path\":\"data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md\",\"raw_sha256\":\"f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1\",\"start_line\":288,\"end_line\":303,\"required_text\":\"spatial.g3.recurrent_site\"},{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip\",\"raw_sha256\":\"6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b\",\"internal_path\":\"gn_nov_g1_xp017_yp026_rebuild_002/04-g3/g3-places.json\",\"internal_raw_sha256\":\"bfd84b3b5fd38cbdda70dbe2c3acf3083ac515c2b8940cfd7808b3b6c0f2b16b\",\"json_pointer\":\"\",\"record_predicate\":{\"field\":\"id\",\"equals\":\"gn_nov_g3_xp017_yp026_r2_vikhtuy_locality\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"repository_line_range\",\"canonical_path\":\"data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md\",\"raw_sha256\":\"f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1\",\"start_line\":288,\"end_line\":303,\"required_text\":\"spatial.g3.recurrent_site\"},{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip\",\"raw_sha256\":\"6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b\",\"internal_path\":\"gn_nov_g1_xp017_yp026_rebuild_002/04-g3/g3-places.json\",\"internal_raw_sha256\":\"bfd84b3b5fd38cbdda70dbe2c3acf3083ac515c2b8940cfd7808b3b6c0f2b16b\",\"json_pointer\":\"\",\"record_predicate\":{\"field\":\"id\",\"equals\":\"gn_nov_g3_xp017_yp026_r2_vikhtuy_locality\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0144",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "spatial.g4.sector@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"spatial.g4.sector@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"spatial.g4.sector@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0145",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "spatial.g5.parcel@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"spatial.g5.parcel@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"spatial.g5.parcel@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0146",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "access_zone@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"access_zone@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"access_zone@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0147",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "areal@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"areal@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"areal@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0148",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "boundary_route_zone@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"boundary_route_zone@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"boundary_route_zone@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0149",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "boundary_zone@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"boundary_zone@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"boundary_zone@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0150",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "buffer_zone@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"buffer_zone@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"buffer_zone@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0151",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "burial_zone@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"burial_zone@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"burial_zone@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0152",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "concealment_zone@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"concealment_zone@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"concealment_zone@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0153",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "crossing_candidate@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"crossing_candidate@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"crossing_candidate@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0154",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "dry_route_zone@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"dry_route_zone@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"dry_route_zone@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0155",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "estate_cluster_candidate@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"estate_cluster_candidate@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"estate_cluster_candidate@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0156",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "exploration_route@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"exploration_route@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"exploration_route@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0157",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "exposure_zone@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"exposure_zone@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"exposure_zone@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0158",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "fauna_zone@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"fauna_zone@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"fauna_zone@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0159",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "hazard_zone@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"hazard_zone@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"hazard_zone@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0160",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "landing_candidate@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"landing_candidate@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"landing_candidate@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0161",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "landing_hazard_zone@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"landing_hazard_zone@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"landing_hazard_zone@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0162",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "landing_or_hazard_zone@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"landing_or_hazard_zone@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"landing_or_hazard_zone@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0163",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "landing_zone@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"landing_zone@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"landing_zone@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0164",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "linear@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"linear@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"linear@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0165",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "natural_boundary@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"natural_boundary@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"natural_boundary@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0166",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "navigation_decision_zone@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"navigation_decision_zone@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"navigation_decision_zone@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0167",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "navigation_zone@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"navigation_zone@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"navigation_zone@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0168",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "observation_zone@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"observation_zone@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"observation_zone@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0169",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "occupation_candidate@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"occupation_candidate@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"occupation_candidate@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0170",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "orientation_hazard_zone@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"orientation_hazard_zone@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"orientation_hazard_zone@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0171",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "orientation_zone@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"orientation_zone@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"orientation_zone@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0172",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "resource_hazard_zone@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"resource_hazard_zone@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"resource_hazard_zone@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0173",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "resource_zone@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"resource_zone@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"resource_zone@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0174",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "rest_candidate@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"rest_candidate@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"rest_candidate@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0175",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "rest_or_use_zone@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"rest_or_use_zone@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"rest_or_use_zone@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0176",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "rest_or_work_zone@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"rest_or_work_zone@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"rest_or_work_zone@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0177",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "ritual_use_candidate@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"ritual_use_candidate@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"ritual_use_candidate@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0178",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "river_hazard_zone@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"river_hazard_zone@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"river_hazard_zone@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0179",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "route_approach@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"route_approach@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"route_approach@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0180",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "route_merge_zone@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"route_merge_zone@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"route_merge_zone@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0181",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "route_zone@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"route_zone@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"route_zone@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0182",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "seasonal_hazard_zone@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"seasonal_hazard_zone@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"seasonal_hazard_zone@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0183",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "seasonal_route@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"seasonal_route@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"seasonal_route@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0184",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "settlement_cluster_candidate@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"settlement_cluster_candidate@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"settlement_cluster_candidate@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0185",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "shelter_candidate@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"shelter_candidate@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"shelter_candidate@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0186",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "shelter_zone@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"shelter_zone@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"shelter_zone@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0187",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "small_water_route@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"small_water_route@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"small_water_route@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0188",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "social_use_candidate@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"social_use_candidate@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"social_use_candidate@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0189",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "storage_zone_candidate@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"storage_zone_candidate@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"storage_zone_candidate@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0190",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "wetland_zone@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"wetland_zone@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"wetland_zone@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0191",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "universal_category",
+    "target_record_id": "work_zone_candidate@1",
+    "support_type": "supports",
+    "summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"work_zone_candidate@1\"}}].",
+    "page_or_section": "[{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip\",\"raw_sha256\":\"cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698\",\"internal_path\":\"P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json\",\"internal_raw_sha256\":\"f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235\",\"json_pointer\":\"/records\",\"record_predicate\":{\"field\":\"ref\",\"equals\":\"work_zone_candidate@1\"}}]",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0192",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "regional_scene_template",
+    "target_record_id": "stfv3__g5_boundary_access_v1@1",
+    "support_type": "supports",
+    "summary": "approved-scene-template-families.json#id=stfv3__g5_boundary_access_v1@1 binds exact approved family stfv3__g5_boundary_access_v1@1; source_profile_family_id=g5_boundary_access_v1; regional_template_ref=regional_scene_basis__g5_boundary_access_v1@1.",
+    "page_or_section": "approved-scene-template-families.json#id=stfv3__g5_boundary_access_v1@1",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0193",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "regional_scene_template",
+    "target_record_id": "stfv3__g5_burial_ritual_buffer_v1@1",
+    "support_type": "supports",
+    "summary": "approved-scene-template-families.json#id=stfv3__g5_burial_ritual_buffer_v1@1 binds exact approved family stfv3__g5_burial_ritual_buffer_v1@1; source_profile_family_id=g5_burial_ritual_buffer_v1; regional_template_ref=regional_scene_basis__g5_burial_ritual_buffer_v1@1.",
+    "page_or_section": "approved-scene-template-families.json#id=stfv3__g5_burial_ritual_buffer_v1@1",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0194",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "regional_scene_template",
+    "target_record_id": "stfv3__g5_dry_route_v1@1",
+    "support_type": "supports",
+    "summary": "approved-scene-template-families.json#id=stfv3__g5_dry_route_v1@1 binds exact approved family stfv3__g5_dry_route_v1@1; source_profile_family_id=g5_dry_route_v1; regional_template_ref=regional_scene_basis__g5_dry_route_v1@1.",
+    "page_or_section": "approved-scene-template-families.json#id=stfv3__g5_dry_route_v1@1",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0195",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "regional_scene_template",
+    "target_record_id": "stfv3__g5_exploration_concealment_v1@1",
+    "support_type": "supports",
+    "summary": "approved-scene-template-families.json#id=stfv3__g5_exploration_concealment_v1@1 binds exact approved family stfv3__g5_exploration_concealment_v1@1; source_profile_family_id=g5_exploration_concealment_v1; regional_template_ref=regional_scene_basis__g5_exploration_concealment_v1@1.",
+    "page_or_section": "approved-scene-template-families.json#id=stfv3__g5_exploration_concealment_v1@1",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0196",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "regional_scene_template",
+    "target_record_id": "stfv3__g5_general_hazard_v1@1",
+    "support_type": "supports",
+    "summary": "approved-scene-template-families.json#id=stfv3__g5_general_hazard_v1@1 binds exact approved family stfv3__g5_general_hazard_v1@1; source_profile_family_id=g5_general_hazard_v1; regional_template_ref=regional_scene_basis__g5_general_hazard_v1@1.",
+    "page_or_section": "approved-scene-template-families.json#id=stfv3__g5_general_hazard_v1@1",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0197",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "regional_scene_template",
+    "target_record_id": "stfv3__g5_habitation_v1@1",
+    "support_type": "supports",
+    "summary": "approved-scene-template-families.json#id=stfv3__g5_habitation_v1@1 binds exact approved family stfv3__g5_habitation_v1@1; source_profile_family_id=g5_habitation_v1; regional_template_ref=regional_scene_basis__g5_habitation_v1@1.",
+    "page_or_section": "approved-scene-template-families.json#id=stfv3__g5_habitation_v1@1",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0198",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "regional_scene_template",
+    "target_record_id": "stfv3__g5_landing_transition_v1@1",
+    "support_type": "supports",
+    "summary": "approved-scene-template-families.json#id=stfv3__g5_landing_transition_v1@1 binds exact approved family stfv3__g5_landing_transition_v1@1; source_profile_family_id=g5_landing_transition_v1; regional_template_ref=regional_scene_basis__g5_landing_transition_v1@1.",
+    "page_or_section": "approved-scene-template-families.json#id=stfv3__g5_landing_transition_v1@1",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0199",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "regional_scene_template",
+    "target_record_id": "stfv3__g5_observation_orientation_v1@1",
+    "support_type": "supports",
+    "summary": "approved-scene-template-families.json#id=stfv3__g5_observation_orientation_v1@1 binds exact approved family stfv3__g5_observation_orientation_v1@1; source_profile_family_id=g5_observation_orientation_v1; regional_template_ref=regional_scene_basis__g5_observation_orientation_v1@1.",
+    "page_or_section": "approved-scene-template-families.json#id=stfv3__g5_observation_orientation_v1@1",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0200",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "regional_scene_template",
+    "target_record_id": "stfv3__g5_resource_hazard_v1@1",
+    "support_type": "supports",
+    "summary": "approved-scene-template-families.json#id=stfv3__g5_resource_hazard_v1@1 binds exact approved family stfv3__g5_resource_hazard_v1@1; source_profile_family_id=g5_resource_hazard_v1; regional_template_ref=regional_scene_basis__g5_resource_hazard_v1@1.",
+    "page_or_section": "approved-scene-template-families.json#id=stfv3__g5_resource_hazard_v1@1",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0201",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "regional_scene_template",
+    "target_record_id": "stfv3__g5_resource_v1@1",
+    "support_type": "supports",
+    "summary": "approved-scene-template-families.json#id=stfv3__g5_resource_v1@1 binds exact approved family stfv3__g5_resource_v1@1; source_profile_family_id=g5_resource_v1; regional_template_ref=regional_scene_basis__g5_resource_v1@1.",
+    "page_or_section": "approved-scene-template-families.json#id=stfv3__g5_resource_v1@1",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0202",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "regional_scene_template",
+    "target_record_id": "stfv3__g5_route_approach_v1@1",
+    "support_type": "supports",
+    "summary": "approved-scene-template-families.json#id=stfv3__g5_route_approach_v1@1 binds exact approved family stfv3__g5_route_approach_v1@1; source_profile_family_id=g5_route_approach_v1; regional_template_ref=regional_scene_basis__g5_route_approach_v1@1.",
+    "page_or_section": "approved-scene-template-families.json#id=stfv3__g5_route_approach_v1@1",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0203",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "regional_scene_template",
+    "target_record_id": "stfv3__g5_seasonal_route_hazard_v1@1",
+    "support_type": "supports",
+    "summary": "approved-scene-template-families.json#id=stfv3__g5_seasonal_route_hazard_v1@1 binds exact approved family stfv3__g5_seasonal_route_hazard_v1@1; source_profile_family_id=g5_seasonal_route_hazard_v1; regional_template_ref=regional_scene_basis__g5_seasonal_route_hazard_v1@1.",
+    "page_or_section": "approved-scene-template-families.json#id=stfv3__g5_seasonal_route_hazard_v1@1",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0204",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "regional_scene_template",
+    "target_record_id": "stfv3__g5_shelter_rest_v1@1",
+    "support_type": "supports",
+    "summary": "approved-scene-template-families.json#id=stfv3__g5_shelter_rest_v1@1 binds exact approved family stfv3__g5_shelter_rest_v1@1; source_profile_family_id=g5_shelter_rest_v1; regional_template_ref=regional_scene_basis__g5_shelter_rest_v1@1.",
+    "page_or_section": "approved-scene-template-families.json#id=stfv3__g5_shelter_rest_v1@1",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0205",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "regional_scene_template",
+    "target_record_id": "stfv3__g5_water_hazard_v1@1",
+    "support_type": "supports",
+    "summary": "approved-scene-template-families.json#id=stfv3__g5_water_hazard_v1@1 binds exact approved family stfv3__g5_water_hazard_v1@1; source_profile_family_id=g5_water_hazard_v1; regional_template_ref=regional_scene_basis__g5_water_hazard_v1@1.",
+    "page_or_section": "approved-scene-template-families.json#id=stfv3__g5_water_hazard_v1@1",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0206",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "regional_scene_template",
+    "target_record_id": "stfv3__g5_water_navigation_v1@1",
+    "support_type": "supports",
+    "summary": "approved-scene-template-families.json#id=stfv3__g5_water_navigation_v1@1 binds exact approved family stfv3__g5_water_navigation_v1@1; source_profile_family_id=g5_water_navigation_v1; regional_template_ref=regional_scene_basis__g5_water_navigation_v1@1.",
+    "page_or_section": "approved-scene-template-families.json#id=stfv3__g5_water_navigation_v1@1",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0207",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "regional_scene_template",
+    "target_record_id": "stfv3__g5_wetland_flood_v1@1",
+    "support_type": "supports",
+    "summary": "approved-scene-template-families.json#id=stfv3__g5_wetland_flood_v1@1 binds exact approved family stfv3__g5_wetland_flood_v1@1; source_profile_family_id=g5_wetland_flood_v1; regional_template_ref=regional_scene_basis__g5_wetland_flood_v1@1.",
+    "page_or_section": "approved-scene-template-families.json#id=stfv3__g5_wetland_flood_v1@1",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0208",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "regional_scene_template",
+    "target_record_id": "stfv3__g5_work_storage_social_v1@1",
+    "support_type": "supports",
+    "summary": "approved-scene-template-families.json#id=stfv3__g5_work_storage_social_v1@1 binds exact approved family stfv3__g5_work_storage_social_v1@1; source_profile_family_id=g5_work_storage_social_v1; regional_template_ref=regional_scene_basis__g5_work_storage_social_v1@1.",
+    "page_or_section": "approved-scene-template-families.json#id=stfv3__g5_work_storage_social_v1@1",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0209",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "scene_rule",
+    "target_record_id": "scene_selection_single_candidate_v1@1",
+    "support_type": "supports",
+    "summary": "external-dependency-pins.json#ref=scene_selection_single_candidate_v1@1 is the exact V1.1 scene-rule dependency pin.",
+    "page_or_section": "external-dependency-pins.json#ref=scene_selection_single_candidate_v1@1",
+    "confidence": "high"
+  },
+  {
+    "id": "p12_closure_source_0210",
+    "source_id": "prov_p12_g1_r2_r3_v1",
+    "target_table": "scene_rule",
+    "target_record_id": "scene_applicability_exact_source_ref_v1@1",
+    "support_type": "supports",
+    "summary": "external-dependency-pins.json#ref=scene_applicability_exact_source_ref_v1@1 is the exact V1.1 scene-rule dependency pin.",
+    "page_or_section": "external-dependency-pins.json#ref=scene_applicability_exact_source_ref_v1@1",
+    "confidence": "high"
+  }
+]

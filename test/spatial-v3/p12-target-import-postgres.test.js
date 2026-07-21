@@ -19,14 +19,18 @@ test('P12 target bundle applies closure and V1.1 projection atomically in an iso
     try { await pool.query('SELECT 1'); break; }
     catch { await new Promise((done) => setTimeout(done, 200)); if (attempt === 49) throw new Error('postgres unavailable'); }
   }
-  for (let part = 1; part <= 16; part += 1) await pool.query(await readFile(`infra/world-base/schema/${String(part).padStart(2, '0')}.sql`, 'utf8'));
+  const schemaEntrypoint = await readFile('infra/world-base/schema.sql', 'utf8');
+  const schemaParts = [...schemaEntrypoint.matchAll(/^\\ir\s+schema\/([^\s]+\.sql)\s*$/gmu)].map((match) => match[1]);
+  assert.ok(schemaParts.length > 0, 'schema.sql must declare ordered schema parts');
+  for (const part of schemaParts) await pool.query(await readFile(`infra/world-base/schema/${part}`, 'utf8'));
   const plan = await buildP12TargetImportPlan();
   await pool.query(plan.sql);
   const counts = await pool.query(`SELECT
     (SELECT count(*) FROM world_base.spatial_v3_nodes)::int AS nodes,
+    (SELECT count(*) FROM world_base.spatial_v3_approved_physical_source_pairs)::int AS source_pairs,
     (SELECT count(*) FROM world_base.spatial_v3_world_routes)::int AS routes,
     (SELECT count(*) FROM world_base.spatial_v3_world_route_segments)::int AS segments,
     (SELECT count(*) FROM world_base.spatial_v3_world_route_endpoint_bindings)::int AS endpoints,
     (SELECT count(*) FROM world_base.spatial_v3_authoring_dependency_edges)::int AS dependencies`);
-  assert.deepEqual(counts.rows[0], { nodes: 276, routes: 86, segments: 86, endpoints: 172, dependencies: 3249 });
+  assert.deepEqual(counts.rows[0], { nodes: 276, source_pairs: 358, routes: 86, segments: 86, endpoints: 172, dependencies: 3249 });
 });

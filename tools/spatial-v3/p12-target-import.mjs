@@ -33,13 +33,13 @@ export async function buildP12TargetImportPlan({
   if (!approval.ok || approval.materialization_authorized !== false || approval.p28_activation !== 'not_authorized') throw failure('V1.1 approval gate', approval.errors ?? []);
   const source = await validateSource({ root: projectRoot });
   if (!source.ok || source.activation !== 'not_authorized') throw failure('approved source gate', source.errors ?? []);
-  const closure = await validateBundle({ root: projectRoot, manifestPath: CLOSURE_MANIFEST });
+  const closure = await validateBundle({ root: projectRoot, manifestPath: CLOSURE_MANIFEST, validateTargetApproval: async () => approval });
   if (!closure.ok || closure.errors.length || closure.data_gaps.length) throw failure('complete dependency-closure bundle', [...closure.errors, ...closure.data_gaps]);
   const projection = await assessProjection({ root: projectRoot });
   if (!projection.ok || !projection.compilation_authorized) throw failure('compiled physical target bundle', projection.errors ?? []);
   const [closureSql, projectionSql] = await Promise.all([
-    buildClosureSql({ root: projectRoot, manifestPath: CLOSURE_MANIFEST, wrapTransaction: false }),
-    buildProjectionSql({ root: projectRoot, wrapTransaction: false })
+    buildClosureSql({ root: projectRoot, manifestPath: CLOSURE_MANIFEST, wrapTransaction: false, temporaryTablePrefix: 'p12_closure_candidate' }),
+    buildProjectionSql({ root: projectRoot, wrapTransaction: false, temporaryTablePrefix: 'p12_projection_candidate' })
   ]);
   return Object.freeze({
     ok: true,

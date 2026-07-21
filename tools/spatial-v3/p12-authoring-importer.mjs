@@ -7,12 +7,13 @@ import vocabularyRegistry from '../../data/contracts/spatial-v3/controlled-vocab
 import bundleSchema from '../../data/contracts/spatial-v3/world-base-authoring-bundle.schema.json' with { type: 'json' };
 import { proveExpansionCapacity } from './p11-capacity-proof.mjs';
 import { validateP12SourceApproval } from './p12-source-approval.mjs';
+import { validateP12TargetMaterializationApprovalV11 } from './p12-target-materialization-approval-v1_1.mjs';
 
 const ROOT = resolve(import.meta.dirname, '../..');
 const REGISTRY = 'data/contracts/spatial-v3/world-base-import-registry.v1.json';
 const DEFAULT_MANIFEST = 'data/world-catalogs/novgorod/spatial-v3/manifest.json';
 
-export async function validateAuthoringBundle({ root = ROOT, manifestPath = DEFAULT_MANIFEST } = {}) {
+export async function validateAuthoringBundle({ root = ROOT, manifestPath = DEFAULT_MANIFEST, validateTargetApproval = validateP12TargetMaterializationApprovalV11 } = {}) {
   const projectRoot = resolve(root);
   const manifestFile = resolve(projectRoot, manifestPath);
   const manifest = await json(manifestFile);
@@ -20,6 +21,10 @@ export async function validateAuthoringBundle({ root = ROOT, manifestPath = DEFA
   const ddl = await buildWorldBaseSchemaReference({ root: projectRoot });
   const tableSchemas = new Map(ddl.schema.tables.map((table) => [table.name, table]));
   const errors = [], gaps = [], datasets = new Map(), tables = new Set();
+  const targetApproval = await validateTargetApproval({ root: projectRoot });
+  if (!targetApproval.ok || targetApproval.materialization_authorized !== false || targetApproval.p28_activation !== 'not_authorized') {
+    for (const approvalError of targetApproval.errors?.length ? targetApproval.errors : [{ code: 'P12_TARGET_APPROVAL_STATE_INVALID' }]) errors.push(issue('P12_TARGET_APPROVAL_INVALID', approvalError.code));
+  }
   const sourceApproval = await validateP12SourceApproval({ root: projectRoot });
   for (const sourceError of sourceApproval.errors) errors.push(issue('P12_SOURCE_APPROVAL_INVALID', `${sourceError.code}:${sourceError.subject_ref}`));
   for (const violation of validateJsonSchema(bundleSchema, manifest)) errors.push(issue('SCHEMA_VALIDATION_FAILED', violation));
@@ -57,14 +62,14 @@ export async function validateAuthoringBundle({ root = ROOT, manifestPath = DEFA
   validateRouteTopology(datasets, errors);
   validateControlledVocabularyBindings(datasets, errors);
   validateCapacityProof(datasets, errors);
-  return Object.freeze({ ok: errors.length === 0 && gaps.length === 0, manifest: relative(projectRoot, manifestFile).replaceAll('\\', '/'), errors: Object.freeze(errors), data_gaps: Object.freeze(gaps), dataset_counts: Object.freeze(Object.fromEntries([...datasets].map(([table, rows]) => [table, rows.length]))), source_approval: sourceApproval });
+  return Object.freeze({ ok: errors.length === 0 && gaps.length === 0, manifest: relative(projectRoot, manifestFile).replaceAll('\\', '/'), errors: Object.freeze(errors), data_gaps: Object.freeze(gaps), dataset_counts: Object.freeze(Object.fromEntries([...datasets].map(([table, rows]) => [table, rows.length]))), source_approval: sourceApproval, target_approval: targetApproval });
 }
 
 export async function buildStagedDryRunSql({ root = ROOT, manifestPath = DEFAULT_MANIFEST } = {}) {
   return buildTransactionalImportSql({ root, manifestPath, rollback: true, allowTypedGaps: true });
 }
 
-export async function buildTransactionalImportSql({ root = ROOT, manifestPath = DEFAULT_MANIFEST, rollback = false, allowTypedGaps = false, wrapTransaction = true } = {}) {
+export async function buildTransactionalImportSql({ root = ROOT, manifestPath = DEFAULT_MANIFEST, rollback = false, allowTypedGaps = false, wrapTransaction = true, temporaryTablePrefix = 'p12_candidate' } = {}) {
   const projectRoot = resolve(root); const manifestFile = resolve(projectRoot, manifestPath);
   const result = await validateAuthoringBundle({ root: projectRoot, manifestPath });
   if (result.errors.length || (!allowTypedGaps && result.data_gaps.length)) throw new Error(`P12 import refuses incomplete bundle: ${[...result.errors, ...result.data_gaps].map((error) => error.code).join(', ')}`);
@@ -79,7 +84,8 @@ export async function buildTransactionalImportSql({ root = ROOT, manifestPath = 
       primaryKey = names.map((name) => schema.columns.find((column) => column.name === name)).filter(Boolean);
     }
     if (!primaryKey.length) throw new Error(`P12 import requires a primary key: ${dataset.table}`);
-    const candidateTable = `p12_candidate_${dataset.table}`;
+    if (!/^[a-z][a-z0-9_]*$/u.test(temporaryTablePrefix)) throw new Error(`P12 invalid temporary table prefix: ${temporaryTablePrefix}`);
+    const candidateTable = `${temporaryTablePrefix}_${dataset.table}`;
     const serverManaged = schema.columns.filter((column) => ['created_at', 'updated_at'].includes(column.name)).map((column) => column.name);
     const canonicalJson = (alias) => serverManaged.length
       ? `(to_jsonb(${alias}) - ARRAY[${serverManaged.map((column) => `'${column}'`).join(', ')}]::text[])`

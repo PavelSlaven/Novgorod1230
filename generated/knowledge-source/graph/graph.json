@@ -996,7 +996,7 @@
       "source_location": {
         "file": "code_driven_world_materialization_architecture.md",
         "line_start": 1,
-        "line_end": 303
+        "line_end": 309
       }
     },
     {
@@ -1140,7 +1140,7 @@
       "source_location": {
         "file": "map_g0_g4_workflow.txt",
         "line_start": 1,
-        "line_end": 2341
+        "line_end": 2347
       }
     },
     {
@@ -1212,7 +1212,7 @@
       "source_location": {
         "file": "read_only_database_and_graph_architecture.md",
         "line_start": 1,
-        "line_end": 185
+        "line_end": 191
       }
     },
     {
@@ -1248,7 +1248,7 @@
       "source_location": {
         "file": "world_base_materialization_table_requirements.md",
         "line_start": 1,
-        "line_end": 262
+        "line_end": 268
       }
     },
     {

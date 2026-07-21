@@ -5,19 +5,20 @@
 
 ## Target v3 migration impact (не production readiness)
 
-Этот раздел — authoring inventory для будущей migration v3, не утверждение о готовом import/runtime и не источник новых исторических фактов. До P28 active production остаётся v2. Инвентаризация основана только на текущем каталоге: `15 G2`, `32 G3`, `195 G4`, `243` graph nodes и `600` edges, из которых `358` physical.
+Этот раздел отражает утверждённую P12 source-to-target compilation и не является утверждением о production import/runtime или источником новых исторических фактов. До P28 active production остаётся v2. Исходная инвентаризация по-прежнему содержит `15 G2`, `32 G3`, `195 legacy G4`, `243` graph nodes и `600` edges, из которых `358` physical. Утверждённая точная переклассификация создаёт `32 target G4 sectors` из retained G3 и `195 canonical G5` из legacy local G4; она привязана к исходным IDs и provenance, а не к совпадению названий.
 
-| Группа текущего каталога | Target action | Evidence status |
+| Группа утверждённого source package | Утверждённая target compilation | Evidence status |
 |---|---|---|
-| 195 описанных G4 типов/экземпляров | Каждый должен пройти явную классификацию как target G4 с canonical G5 inventory и directional exits либо получить typed authoring gap. Name-based migration запрещён. | `inventory_known; mapping_not_performed` |
-| G4 в речных ходах, протоках, островах, пойме, лесном тыле и переходной зоне | Нужны target traversal/expansion profile, approved G5 candidates и явные endpoint bindings; фактический набор не выводится из текста каталога. | `requires_authoring_evidence` |
-| 358 physical edges | Требуют проверки directional route authoring, physical segment/connection kind, endpoint roles, cost/context и reciprocal/reverse policy. Текущий счётчик не доказывает полноту bindings. | `topology_inventory_known; bindings_unverified` |
-| 242 непроверенных по классификации edges | Не допускаются к automatic migration по имени/близости/координате; для каждого нужен явный authoring decision или typed gap. | `classification_gap` |
-| NPC, items, containers и локальные объекты | Требуют canonical G5 slot inventory и approved profiles/templates; каталог прямо не подтверждает конкретные instances. | `no_instance_authoring_evidence` |
+| 32 retained G3 | Скомпилированы в 32 target G4 sectors — scope owners для локальных canonical G5; exact legacy ID и provenance сохранены. | `source_approved; target_compilation_approved` |
+| 195 legacy local G4 | Скомпилированы в 195 canonical G5 parcels. Ни один record не классифицирован как `compound`, поскольку source не содержит доказательства самостоятельной внутренней структуры. | `source_approved; target_compilation_approved` |
+| 358 physical exit pairs | Все source-pair identities сохранены и дают 716 проверенных directional identities. Target decomposition является полной и непересекающейся: 227 intra-G4, 32 host-entry, 43 cross-G4 route и 56 route-context pairs. | `source_approved; target_compilation_approved` |
+| 600 typed edge mappings | Полностью классифицированы как 47 retained hierarchy, 195 canonical-G5 parent и 358 physical mappings; автоматическая migration по имени, близости или координате по-прежнему запрещена. | `source_approved; target_compilation_approved` |
+| 17 scene families и 195 profiles/candidates | Для каждого canonical G5 утверждены ровно один scene materialization profile и один candidate; четыре boundary sites сохраняют локальный profile, но не получают доступный внешний маршрут. | `source_approved; target_compilation_approved` |
+| NPC, items, containers и party instances | P12 compilation их не создаёт и этот каталог их не утверждает. Их materialization по-прежнему требует отдельных approved slots/profiles/rules и causal basis. | `no_concrete_instances_asserted` |
 
-`G4→target G4` — это migration decision по утверждённому inventory, а не автоматическое сохранение прежнего имени или графового узла. Если для конкретного G4 отсутствуют canonical G5 inventory, directional exits, route authoring или evidence, migration останавливается с typed gap. Конкретные исторические объекты, NPC, предметы, владельцы, маршруты и точные локализации не добавляются этим разделом.
+Все четыре прежних source-data gap (`canonical_g5_inventory`, `physical_exit_source_pairs`, `legacy_edge_mapping_bindings`, `approved_scene_profiles`) имеют статус `resolved_in_package`. Основной P12 authoring manifest имеет status `approved`, `datasets: 37` с SHA-256 pins и `data_gaps: 0`. Это утверждение означает только полную однозначную target-компиляцию уже утверждённых source records. Name-based migration запрещён; любой новый или изменённый record вне этого точного approved set снова требует authoring review и при неоднозначности создаёт typed gap.
 
-Production readiness остаётся `not_verified`: section не меняет `draft`, `production import: not_performed`, status соседней границы или runtime visibility.
+Production import: `not_performed`; runtime visibility: `not_verified`; P28 activation: `not_performed`. Раздел не меняет статус G1 `draft`, не открывает северную внешнюю границу, не подтверждает production readiness и не разрешает runtime materialization, write или activation.
 
 ## Правило использования
 

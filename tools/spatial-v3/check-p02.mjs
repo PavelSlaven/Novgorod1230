@@ -19,10 +19,10 @@ const schemaPath = schemaArgumentIndex === -1
 if (!schemaPath) throw new Error('--schema requires a file');
 const trustedSchemaSha256 = '38c334b8d0997f22245aa711343dfe9a689f29878b2813ffbaef86bae00ad8cc';
 const activeTrustAnchors = {
-  architecture: '2a2787c3f7f9c081ac4844dd8adaf0b291167b2125ea1ce8e5342d10a1685838',
-  requirements: 'd08c7d35d39c9f901e038dd6fb83300e36aa0744674cf055298eef2164cc1943',
-  graph: '791b8eed78844c8a3d5f19de99218a7524f7b0353669c719b40d3b6bb4fe38ef',
-  workflow: '00e32749b9625d1654b6fe55878f49bcf8d57bcd6579a0d35f8feee7ee9fc69d'
+  architecture: '62333e73aa39ba3600572307a22fba87f97d2109a41be2a1b3844d02ce9e7e2e',
+  requirements: 'df72964b9a22e81178b23adda312cd53202be5a0a12fd0e902d6ebc1ae325890',
+  graph: '75a6baf30e37841db6c81ca5ac81b8e5696a8448ac975f44b12bafff14555347',
+  workflow: 'e0c779e6e2dc33b3c417cb8d5cf7b1975e8d469d4d733981907fc3d948866798'
 };
 
 const documentPairs = {
@@ -275,10 +275,16 @@ const documents = Object.fromEntries(await Promise.all(
 for (const [name, pair] of Object.entries(documentPairs)) {
   const { active, target } = documents[name];
   const declared = declaredById.get(name);
-  assert(declared.active.sha256 === activeTrustAnchors[name], `${name}: manifest active pin does not match origin/main trust anchor`);
-  assert(sha256(active) === activeTrustAnchors[name], `${name}: active document bytes do not match origin/main trust anchor`);
+  assert(active.includes('## P02 target routing (inactive until P28)'), `${name}: explicit P02 target routing is missing`);
+  assert(active.includes(pair.target), `${name}: active owner does not route to its target supplement`);
+  assert(active.includes('spatial_architecture_standard_g0_g6.md'), `${name}: canonical target standard route is missing`);
+  assert(active.includes('data/world-catalogs/novgorod/spatial-v3/manifest.json'), `${name}: approved P12 manifest route is missing`);
+  assert(/37 SHA-256-pinned datasets/.test(active) && /data_gaps:\s*\[\]/.test(active), `${name}: approved P12 state is missing`);
+  assert(/v2 remains the sole production owner until P28/i.test(active), `${name}: pre-P28 production ownership is ambiguous`);
+  assert(/does not authorize production import, runtime use, write, or activation/i.test(active), `${name}: P12 authoring approval boundary is missing`);
+  assert(declared.active.sha256 === activeTrustAnchors[name], `${name}: declaration active pin does not match the reviewed P02 owner-document trust anchor`);
+  assert(sha256(active) === activeTrustAnchors[name], `${name}: active owner-document bytes do not match the reviewed P02 trust anchor`);
   assert(sha256(target) === declared.target.sha256, `${name}: target document digest does not match declaration`);
-  assert(!active.includes('P28') && !active.includes('target normative'), `${name}: target activation language leaked into active v2 normative`);
   assert(/target/i.test(target) && /P28/i.test(target) && /\bv2\b/i.test(target), `${name}: target/active boundary missing`);
   assert(/G5/i.test(target) && /G6/i.test(target), `${name}: target G5/G6 coverage missing`);
   assert(!/\bactive\s+v3\b/i.test(target), `${name}: target supplement claims premature v3 activation`);

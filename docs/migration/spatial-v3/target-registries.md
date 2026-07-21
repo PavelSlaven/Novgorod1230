@@ -2,7 +2,7 @@
 
 ## Status
 
-All entries below have status `target`. They are implementation/migration ownership records, not active runtime interfaces. Until the P28 atomic activation gate, production remains on materialization v2 and no entry authorizes dual write, mixed reads or fallback.
+All entries below have status `target`. They are implementation/migration ownership records, not active runtime interfaces. The Novgorod P12 source package and its exact target compilation are approved authoring inputs; this does not mean production import, runtime visibility or P28 activation. Until the P28 atomic activation gate, production remains on materialization v2 and no entry authorizes dual write, mixed reads or fallback.
 
 ## Stable documentation IDs
 
@@ -11,7 +11,7 @@ All entries below have status `target`. They are implementation/migration owners
 | `spatial-architecture-standard-g0-g6` | `data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md` | canonical target v4.2.0 |
 | `world-generation-and-turns` | `data/knowledge-source/corpus/DOCUMENTS/world_generation_and_turns.txt` | target v3 profile; archived v2 traceability |
 | `interface-ux` | `data/knowledge-source/corpus/DOCUMENTS/interface_ux.md` | target player projection; archived v2 traceability |
-| `novgorod-g1-semantic-catalog` | `data/world-catalogs/novgorod/G1_SEMANTIC_CATALOG.md` | target authoring inventory; production readiness not verified |
+| `novgorod-g1-semantic-catalog` | `data/world-catalogs/novgorod/G1_SEMANTIC_CATALOG.md` | approved P12 source-to-target authoring compilation; production import `not_performed`, runtime/P28 `not_verified`/`not_performed` |
 | `llm-documentation-navigation` | `data/knowledge-source/corpus/DOCUMENTS/llm_documentation_navigation.md` | navigation only; not normative activation |
 
 The corpus manifest and generated RAG indexes derive stable IDs from these source documents through `npm run knowledge:generate`; generated artifacts are never edited manually.

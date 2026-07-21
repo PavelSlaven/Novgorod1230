@@ -3,7 +3,7 @@
   "generator": "tools/docs-tools/src/knowledge-materializer-v2.js",
   "generation_mode": "approved_semantic_snapshot_plus_structural_document_nodes",
   "corpus_root": "data/knowledge-source/corpus/DOCUMENTS",
-  "corpus_manifest_sha256": "d5f9f97bbef72fcba9ef202619b49502840d04e9ad66424d6637f4a2e5d7d289",
+  "corpus_manifest_sha256": "a57f052f144526e34222cff8e88c0d455c9634c1556d50cf8d651e72de95094c",
   "source_snapshot": "data/knowledge-source/imports/graph/graph.json",
   "source_snapshot_sha256": "b70f50a053634f717aa6665e87ee7a9fab655db11c08faef6129b8b3f54652fc",
   "registered_document_count": 35,
@@ -13,5 +13,5 @@
   "node_count": 451,
   "link_count": 816,
   "hyperedge_count": 0,
-  "graph_sha256": "2cae0a4a34f5d7b93cb76ebafa81c66d38de7800b1666113993ed452152d1b63"
+  "graph_sha256": "31fd50c2c18ddbaa96b480f9fa608682d1edc61b9ba4a25debd7e89b5975b590"
 }

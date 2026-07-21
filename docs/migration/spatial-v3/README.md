@@ -422,8 +422,8 @@ negative activation flags, G5 ownership, maximum level and the exact four
 active/target path and whole-document digest pairs. Prose marker checks and
 contradiction detection are defense-in-depth; they are not the authoritative
 proof of production ownership.
-The checker also embeds independent origin/main SHA-256 trust anchors for all
-four active-v2 documents. An active file must match its hardcoded anchor and
+The checker also embeds independent reviewed P02 SHA-256 trust anchors for all
+four active-v2 documents. An active file must match its hardcoded reviewed anchor and
 the declaration pin must equal the same anchor, so jointly editing active text
 and its mutable declaration cannot authorize drift. Target supplements may be
 repinned only as an explicit reviewed P02 change. The JSON Schema itself is
@@ -455,7 +455,7 @@ JSON Schema validator before the additional P02 invariants.
   requirements only in the target supplements. It performs no DDL, import,
   runtime composition or P28 mutation.
 - Critic repair: `node --test test/spatial-v3/p02-normative-boundary.test.js`
-  passes 50/50 isolated cases. Temporary copies prove fail-closed behavior for
+  passes 56/56 isolated cases. Temporary copies prove fail-closed behavior for
   English and Russian variants of pre-P28 dual write, mixed read/execution
   authority, v3→v2 fallback, partial activation, canonical-G5 prohibition or
   party-only ownership, G7/G8 introduction, and mutation of a pinned active
@@ -464,19 +464,32 @@ JSON Schema validator before the additional P02 invariants.
   v2`, canonical G5 nonexistence/party-only ownership and a split-line
   permission assertion. Controls prove that explicit prohibition wording and
   `G7 is not introduced and is not required` remain valid.
-  Every top-level declaration field is mutated independently; additional and
+  Unsafe target-prose fixtures repin both the target digest and whole-document
+  section digest before execution, and assert the named contradiction-policy
+  diagnostic instead of accepting an earlier digest mismatch. Separate active
+  owner fixtures omit the target supplement, canonical target standard, P12
+  manifest, approved `37`/`data_gaps: []` state and sole-v2 ownership in turn;
+  each asserts its intended routing diagnostic before the immutable trust-anchor
+  check. Every top-level declaration field is mutated independently; additional and
   missing properties, duplicate/unknown pair identity, active/target path and
   digest changes, section identity/digest changes and pin-level extra
   properties all fail closed. Safe prose controls pass only after their exact
   target digest is explicitly repinned in the temporary declaration.
   A separate regression proves that modifying an active document and repinning
   the declaration to the same modified digest still fails the independent
-  origin/main trust anchor. Schema mutations of `dual_write.const`,
+  reviewed P02 trust anchor. Schema mutations of `dual_write.const`,
   `required`, `pair_id`, `documentPin.additionalProperties` and exact
   four-pair cardinality also fail the independently pinned schema check.
   `npm run spatial-v3:check-p02`, `npm run spatial-v3:check-p05`,
   `npm run docs:check`, `npm run architecture:check` and
   `npm run knowledge:check` all pass after the repair.
+
+### Reopened P02 — owner-document routing reconciliation
+
+- At HEAD `2a478e9c23d2f4b33f5f132d2ba4bd0e16ab401b`, the earlier P02 arrangement kept the four active v2 owner documents byte-identical to `origin/main` and described target v3 only in supplements. This left the main owners without an explicit route to their target replacement and therefore did not prove literal P02-S01–S04 synchronization. The reconciliation query was `P02 active v2 owner documents target v3 supplements approved P12 routing production ownership before P28 activation`; both RAG and Graphify were executed first. Knowledge retrieval remained available with its existing `degraded` coverage warning; Graphify `0.9.17` identified the P02 checker/declaration boundary.
+- Each active owner now contains one small `P02 target routing (inactive until P28)` section naming its exact `spatial_v3_target_*` supplement and the canonical target standard. The section also routes to the approved root P12 manifest (`37` SHA-256-pinned datasets, `data_gaps: []`) and explicitly states that authoring approval grants no production import, runtime use, write or activation. The complete v2 body remains authoritative for production, and v2 remains the sole production owner until P28; no target rule was copied into the active body, no fact was created and no v3 activation occurred.
+- TDD evidence: the new routing contract failed first against all four untouched owners, then passed after the minimal document changes. After critic repair, `node --test test/spatial-v3/p02-normative-boundary.test.js` passes `56/56`: unsafe target mutations are explicitly repinned and reach the intended contradiction diagnostics, while five independent routing omissions reach their exact semantic diagnostics. `npm run spatial-v3:check-p02` passes. The nonexistent `spatial-v3:test-p02` npm alias was also attempted and reported as missing; the canonical targeted invocation is the direct Node test command above.
+- The strict P02 declaration and checker now pin the reviewed routed owner bytes through reviewed P02 trust anchors; jointly repinning an arbitrary active mutation still fails the independent hardcoded trust anchor. The baseline context remains separate: the branch was created from `origin/main` commit `9f2a8c1477793e3baac376d558a64b1b2272cc4a`, while the routing reconciliation was performed at HEAD `2a478e9c23d2f4b33f5f132d2ba4bd0e16ab401b`. Because indexed normatives and P02 evidence changed, the existing P05 normative freeze digests are intentionally stale and must be regenerated/re-audited by the separate P05 owner before release. This P02 executor did not edit P05, P04 or P28 artifacts and did not run production DB/import/composition operations.
 
 ## P05 normative re-freeze after the formal P02 boundary gate
 
@@ -571,6 +584,11 @@ composition, or production database operation is allowed. Run
 `npm run spatial-v3:test-p12-target-materialization-approval` to verify the
 byte pin and both blockers.
 
+## P04 — semantic catalog and ownership synchronization
+
+- Reopened P04-S03 synchronization at `2a478e9c23d2f4b33f5f132d2ba4bd0e16ab401b` used the RAG/Graphify query `P04 G1 semantic catalog ownership authoring status versus approved P12 target compilation datasets gaps production import readiness activation`. Repository Graph was current at Graphify `0.9.17`; knowledge-source returned the applicable target/materialization norms with its existing `degraded` coverage warning. Fully read inputs included both AGENTS files, `development_rules.txt`, `code_critic_invocation_rule.txt`, `code_driven_world_materialization_architecture.md`, `llm_documentation_navigation.md`, `world_base_materialization_table_requirements.md`, `map_g0_g4_workflow.txt`, the complete target standard, P04/P12 plan sections, the regional catalog, and both P12 source/root manifests. The catalog and target ownership registry now distinguish approved authoring compilation (32 target G4 sectors, 195 canonical G5, 358 physical pairs/716 directions, 600 typed mappings, 17 families and 195 profiles/candidates, 37 datasets, zero authoring gaps) from production import/runtime/P28, which remain `not_performed`/`not_verified`/`not_performed`. No source fact, production write, runtime readiness or activation claim was added.
+- Critic hardening makes `spatial-v3:check-p04` verify the raw-byte SHA-256 of all 37 approved datasets and derive the evidence rather than trust prose: 32 retained-G3→target-G4 identities and parents, zero compounds, four blocked external boundaries, and the disjoint 227 intra-G4 + 32 host-entry + 43 direct-route + (32 + 24) route-context partition. `spatial-v3:test-p04` is part of `test:tools` and rejects 227→999, four→forty, forged all-zero manifest SHA, compound, and missing-G4 evidence mutations. The focused P04 suite passes 7/7, `spatial-v3:check-p04` passes, and `spatial-v3:test-p12` passes 16/16. Documentation generation completed, but final `docs:check`/`test:tools` are temporarily blocked by the concurrently changed P05 normative/corpus parity baseline; P04 did not modify or refreeze that baseline.
+
 ## P12 rescue — approved Novgorod source package
 
 - Immutable editorial input is committed under `data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/`. Its package manifest is digest-verified and its approval record is `APPROVED_FOR_P12_INTEGRATION`, explicitly not production activation evidence.
@@ -624,7 +642,7 @@ byte pin and both blockers.
 - Fresh DDL evidence: isolated PostgreSQL `spatial-v3:test-p11-postgres` applies all schema parts 01–14 from an empty database, safely reapplies part 14 and rejects malformed finite-scene authoring.
 - P11 independent closure is recorded in `p11-expansion-scene-ddl-critic-report.md`: `PASS WITH NOTES` at commit `2983d7ef941acc161b7d327b063b15259c62ea49`. It records static 20-table coverage, deterministic capacity proofs, an isolated fresh/reapply/deferred-negative PostgreSQL rehearsal, and P12 importer-consumer regression coverage. Its only note is the deliberate target-only fixture scope; it does not approve P12 data or P28 activation.
 - RAG repair: P25's deferred failures were genuine stale assertions, not waived checks. Tests now derive the active baseline-gap count from the policy plus corpus status (so proposed/deprecated gaps are not miscounted), and the materialization-boundary control query uses the stable code/LLM/candidate-set terminology. After regeneration, targeted knowledge tests pass 11/11 and `test:domain` passes 123/123; `knowledge:check` and `controls` pass.
-- Regression checks: `spatial-v3:check-p24` and `spatial-v3:check-p25` pass. P26 is ready for an independent audit; P27+ are not started.
+- Regression checks: `spatial-v3:check-p24` and `spatial-v3:check-p25` pass. **Superseded status:** the former pre-audit handoff is replaced by the accepted generated-artifact audit, exact-subject project audit and the completion matrix below.
 
 ## P27 — full verification and release hygiene rescue
 
@@ -648,7 +666,47 @@ byte pin and both blockers.
 - **Superseded P12 recovery step.** P12 has closed the four authoring gaps with approved version-pinned target data, independent critic `PASS`, and isolated PostgreSQL import/readback evidence; P27 subject-level verification and `PASS WITH NOTES` evidence are also complete for `45b4b9697663426a9543cd959bc927081334da5c`. The remaining recovery sequence is limited to binding the current evidence commit as the exact activation candidate and recording the candidate-bound signed P27 object, signed fresh-checkout attestation, completed Appendix D evidence, release-authority decision and final P28 authorization before any atomic activation patch. These remain release blockers, not permissible notes.
 - **Superseded fresh-checkout `not_run` statement.** An isolated detached worktree and a fresh exact-branch clone were executed for subject `45b4b9697663426a9543cd959bc927081334da5c`, and hosted `clean-clone-generation-test` also passed. These witnesses establish P27 clean-checkout reproducibility, but `p28_fresh_checkout` correctly remains `not_run` in the activation manifest because no signed attestation binds the current evidence commit to an exact P28 activation candidate.
 - P28 readiness audit at `82aea44b33f69f73e153b75f82f83639716f8f64` used `repo-intel:ensure`, `repo-intel:status`, `repo-intel:query` and the matching direct `graphify query` for the exact activation/evidence-binding need. Repository Graph was current at Graphify `0.9.17`; the normative knowledge source returned the active spatial standard with a visible pre-existing degraded semantic-coverage warning. The audit found and repaired only the gate's unreachable candidate/HEAD binding; it did not mark any Appendix D item passed, create a signature, alter production composition, or perform a production write.
+- P28 operator readiness at `2a478e9c23d2f4b33f5f132d2ba4bd0e16ab401b` queried RAG and Graphify for `P28 operator offline signing workflow canonical payload manifest digest p27 critic fresh checkout attestor release authority candidate evidence HEAD chain`. No complete operator payload workflow existed. `tools/spatial-v3/p28-signing-payloads.mjs` now provides a deterministic read-only workflow through `npm run spatial-v3:p28-signing-payloads`: before reading an operator-selected manifest it requires a canonical repository-relative POSIX path whose real path stays inside the checkout; it loads the exact committed trust store and PEM bytes; requires three unrevoked Ed25519 roles with distinct key ids, public-key paths and canonical SPKI identities; validates every Appendix D, P12, P27 and fresh-checkout digest against both working-tree bytes and the tracked HEAD blob; and checks the strict candidate→evidence HEAD binding. It reports every unresolved prerequisite and prints the exact UTF-8 payload strings plus SHA-256 operator checksums. It accesses zero private keys, creates zero signatures, changes zero files, performs zero DB writes and cannot alter composition.
+- Offline signing is deliberately staged. First commit the unsigned evidence manifest as the sole direct child of the candidate and run the tool to obtain the `p27_critic` and `fresh_checkout_attestor` payloads. Independent operators sign outside the repository; after recording those signatures, amend the same evidence commit and rerun the tool. The `p28_release_authority` payload is emitted only after the tool cryptographically verifies both independent Ed25519 signatures against their exact role-bound payloads; a merely present or placeholder signature never unlocks it. Record the external release signature and digest, amend the same direct-child evidence commit again, then run both the payload tool and the non-injectable P28 gate. These checks do not make payload generation an activation authority: only the final gate can authorize the separate atomic activation patch.
 - Checks run: `npm run spatial-v3:test-p28` exercises the role/revocation, commit-binding and Windows-path negative gates; the direct gate exits **1** with the listed blockers (expected). No negative test alters production writes or composition. Repository Intelligence remains ready; knowledge-source remains its documented `degraded` warning.
+
+## P00–P28 completion evidence matrix
+
+This is a compact index into the detailed sections and persisted reports above; it does not replace their exact commands, counts or scope qualifications. `PASS` means the cited checker/test or persisted critic accepted the implemented phase scope, not that production activation occurred.
+
+**Process-evidence exception:** repository artifacts and Git history do not prove that every historical phase was originally executed by its own distinct subagent in the required sequence. No such sequencing is reconstructed or claimed here. Final plan acceptance therefore requires an explicit plan-owner decision accepting this process-evidence exception; the exception cannot be converted into Appendix D or activation evidence by documentation alone.
+
+| Phase | Implementation evidence | Actual verification status | Remaining limitation |
+|---|---|---|---|
+| P00 | this README baseline/readiness sections and `contract-implementation-matrix.*` | `PASS WITH NOTES`; forensic recovery accepted as recorded above | retrospective evidence does not prove original execution ordering; covered by the explicit process exception |
+| P01 | `data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md`, `docs/adr/ADR-001-materialization-v3-spatial-g0-g6.md`, `normative-conflicts.md` | `spatial-v3:check-p01` PASS in the accepted project suite | target standard and ADR remain non-production until atomic authority exists |
+| P02 | four active-owner target routes, four `spatial_v3_target_*` supplements, `evidence/p02-boundary-declaration.json` | latest critic repair PASS; boundary test 56/56 and `spatial-v3:check-p02` PASS | v2 bodies remain active owners; routing grants no import or runtime authority |
+| P03 | movement/time/formula/orchestration normatives and `tools/spatial-v3/check-p03.mjs` | checker PASS in the accepted project suite | normative synchronization only; runtime switching is outside this phase |
+| P04 | `data/world-catalogs/novgorod/G1_SEMANTIC_CATALOG.md`, `target-registries.md`, `data/world-catalogs/novgorod/spatial-v3/manifest.json` | latest critic repair PASS; focused catalog suite 8/8 and `spatial-v3:check-p04` PASS | catalog records authoring approval, while production import/readiness remain unverified |
+| P05 | current `normative-freeze.json` and `tools/spatial-v3/p05-reviewed-baseline.mjs`; `p05-document-critic-report.md` is historical evidence for the earlier baseline only | current reopened baseline: `spatial-v3:test-p05`, `spatial-v3:check-p05` and `spatial-v3:freeze-check` PASS; independent re-review PASS, with no persisted SHA-bound report claimed | freeze proves document consistency only and grants no activation |
+| P06 | `red-contract-harness.mjs` and `test/spatial-v3/p06-red-*.test.js` | `spatial-v3:verify-red` and `spatial-v3:check-p06` PASS | compatibility harness is defensive evidence, not a production composition |
+| P07 | `packages/contracts/src/spatial-v3/`, controlled-vocabulary registry and `p07-controlled-vocabulary-gap.md` | `spatial-v3:check-p07` and controlled-vocabulary integration test PASS | contracts do not independently materialize or activate data |
+| P08 | `p08-public-interface-registry.json`, `p08-interaction-map.md`, module public ports | `spatial-v3:check-p08` and public-port tests PASS | API skeletons remain behind the target-only boundary |
+| P09 | world-base schema part 12, graph-node migration tool and `p09-ddl-critic-report.md` | independent critic `PASS WITH NOTES`; static and isolated PostgreSQL checks PASS | accepted notes preserve target-only DDL scope; no production migration |
+| P10 | world-base schema part 13, graph-edge migration tool and legacy-edge inventories | `spatial-v3:check-p10`, DDL/migration and isolated PostgreSQL tests PASS | migration mapping remains an offline target operation |
+| P11 | world-base schema part 14, capacity proof and `p11-expansion-scene-ddl-critic-report.md` | independent critic `PASS WITH NOTES`; capacity and PostgreSQL checks PASS | finite-scene evidence uses isolated target fixtures only |
+| P12 | approved source package, `data/world-catalogs/novgorod/spatial-v3/manifest.json`, 37 compiled datasets and `p12-approved-target-projection-critic-report.md` | exact approved compilation `PASS`: 195 canonical G5, 358 physical pairs, 600 typed mappings, 17 families plus 195 profiles/candidates; targeted and isolated PostgreSQL checks PASS | closes authoring gaps only; `materialization_authorized=false`, no production import or activation |
+| P13 | party schema migration 002 and `p13-party-runtime-postgres.test.js` | isolated PostgreSQL test PASS in the accepted project suite | schema remains target-only and unselected by production composition |
+| P14 | planning/execution DDL and `p14-planning-execution-ddl-critic-report.md` | repaired independent re-audit `PASS`; checker and PostgreSQL test PASS | DDL acceptance does not authorize runtime cutover |
+| P15 | carrier/time/idempotency schema and `p15-party-journeys-postgres.test.js` | checker and isolated PostgreSQL journey test PASS | persisted target contracts remain inactive in production |
+| P16 | repositories, combined atomic committer and `p16-persistence-critic-report.md` | sole-writer repair independently re-reviewed `PASS`; unit/PostgreSQL/architecture checks PASS | accepted writer is reachable only through target composition, which remains inactive |
+| P17 | `packages/space-map/src/spatial-v3*.js` and `p17-space-map.test.js` | checker and targeted tests PASS | compatibility boundary still prevents production v3 ownership |
+| P18 | `packages/movement-routes/src/spatial-v3*.js` and `p18-planner-critic-report.md` | independent critic `PASS`; checker and planner tests 22/22 PASS | planner proposes bounded target plans but cannot activate composition |
+| P19 | turn execution/time modules and `p19-execution.test.js` | checker and targeted execution/property tests PASS | execution remains target-only and cannot bypass the atomic committer |
+| P20 | `packages/materialization/src/spatial-v3*.js` and `p20-materialization.test.js` | checker and targeted materialization tests PASS | empty candidate sets still hard-block; no production materialization |
+| P21 | turn/new-game target orchestration and `p21-orchestration-critic-report.md` | independent critic `PASS WITH NOTES`; checker and orchestration tests PASS | orchestration is not selected by the production profile |
+| P22 | presentation projection plus visibility/knowledge resolvers and `p22-projection.test.js` | checker and player-safe projection tests PASS | read models do not confer hidden topology or activation authority |
+| P23 | sealed cross-domain proposal path and `p23-cross-domain-critic-report.md` | independent critic `PASS WITH NOTES`; targeted and PostgreSQL concurrency checks PASS | domain integrations write only through the inactive target sole-writer path |
+| P24 | migration inventories/tools and `p24-migration-critic-report.md` | repaired independent critic `PASS`; unit and party/world PostgreSQL migrations PASS | production migration has not been run; rollback evidence is isolated |
+| P25 | explicit profiles, shadow/cutover/rollback tooling and `p25-compatibility-cutover-critic-report.md` | independent critic `PASS WITH NOTES`; checker, tests and PostgreSQL rollback drill PASS | `production_v2` remains the only active profile |
+| P26 | generated schema/knowledge/repository-intelligence artifacts and `p26-generated-artifacts-critic-report.md` | independent critic `PASS WITH NOTES`; schema, knowledge and repository-intelligence checks passed with the documented semantic warning | generated evidence is commit-sensitive and must be refreshed after indexed changes |
+| P27 | `p27-exact-commit-critic-report.md` and release-hygiene test | exact-subject independent critic `PASS WITH NOTES` for `45b4b9697663426a9543cd959bc927081334da5c`; full, Chrome, PostgreSQL and release checks PASS | verdict covers that subject tree only and is not a candidate-bound release signature |
+| P28 | activation gate, offline signing-payload tool and their two targeted test files | signing/readiness workflow repaired after critic and PASS; activation assessment remains intentionally fail-closed | Appendix D completion, candidate-bound signed P27/fresh evidence and release-authority signature are absent; no activation patch is authorized |
 
 ## P12 V1.1 dependency closure
 

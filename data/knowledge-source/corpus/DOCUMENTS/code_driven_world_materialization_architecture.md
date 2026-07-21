@@ -4,6 +4,12 @@
 **Версия:** 1.0.0
 **Область:** граница ответственности редакторских данных, кода, LLM, `world_base` и party state
 
+## P02 target routing (inactive until P28)
+
+This document remains the active materialization v2 production owner. The complete spatial v3 target semantics for this responsibility are owned by `spatial_v3_target_code_driven_world_materialization_architecture.md` together with `spatial_architecture_standard_g0_g6.md`; the target documents must not be combined with the v2 production path before the atomic gate.
+
+The approved P12 authoring projection is rooted at `data/world-catalogs/novgorod/spatial-v3/manifest.json`: it has 37 SHA-256-pinned datasets and `data_gaps: []`, compiling only previously approved source records. This approved authoring state does not authorize production import, runtime use, write, or activation. Materialization v2 remains the sole production owner until P28.
+
 ## 0. Назначение и приоритет
 
 Документ задаёт архитектуру материализации конкретных сущностей мира и является высшим нормативом для вопросов:

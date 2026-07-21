@@ -9,14 +9,26 @@ const FREEZE = (value) => Object.freeze(value);
 const MANIFEST_PATH = 'docs/migration/spatial-v3/release-evidence.v1.json';
 const TRUST_STORE_PATH = 'docs/migration/spatial-v3/activation-trust-store.v1.json';
 const execFile = promisify(execFileCallback);
-const BLOCKING_GAP_CODES = FREEZE([
-  'CANONICAL_G5_INVENTORY_DATA_GAP',
-  'DIRECTIONAL_EXIT_READINESS_DATA_GAP',
-  'ROUTE_BINDING_DATA_GAP',
-  'APPROVED_PROFILE_DATA_GAP'
+export const P28_P12_GAPS = FREEZE([
+  FREEZE({ code: 'CANONICAL_G5_INVENTORY_DATA_GAP', subject_ref: 'novgorod:g4-inventory:195' }),
+  FREEZE({ code: 'DIRECTIONAL_EXIT_READINESS_DATA_GAP', subject_ref: 'novgorod:physical-edge-inventory:358' }),
+  FREEZE({ code: 'ROUTE_BINDING_DATA_GAP', subject_ref: 'novgorod:graph-edge-inventory:600' }),
+  FREEZE({ code: 'APPROVED_PROFILE_DATA_GAP', subject_ref: 'novgorod:g4-scene-profiles' })
 ]);
 
-const APPENDIX_D_ITEMS = FREEZE([
+export function validateP28P12GapIdentities(gaps) {
+  if (!Array.isArray(gaps) || gaps.length !== P28_P12_GAPS.length
+    || new Set(gaps.map((gap) => gap?.code)).size !== P28_P12_GAPS.length
+    || P28_P12_GAPS.some(({ code }) => !gaps.some((gap) => gap?.code === code))) {
+    return FREEZE([FREEZE({ code: 'p12_gap_evidence_coverage_invalid' })]);
+  }
+  return FREEZE(P28_P12_GAPS.flatMap(({ code, subject_ref }) => {
+    const gap = gaps.find((entry) => entry?.code === code);
+    return gap?.subject_ref === subject_ref ? [] : [FREEZE({ code: 'p12_gap_identity_or_quantity_mismatch', gap_code: code, subject_ref })];
+  }));
+}
+
+export const P28_APPENDIX_D_ITEMS = FREEZE([
   'D1.github_main_fixed', 'D1.root_agents_read', 'D1.github_agents_read', 'D1.conditional_documents_read', 'D1.navigation_and_catalog_read', 'D1.rag_and_graphify_recorded', 'D1.norm_conflicts_empty',
   'D2.public_contracts_single_declaration', 'D2.contract_types_resolve', 'D2.no_placeholder_or_unresolved_branch', 'D2.versioned_authoring_refs', 'D2.contract_schema_dto_ddl_match', 'D2.plural_relations_normalized', 'D2.schema_reference_ddl_digest', 'D2.route_endpoint_context_validators', 'D2.capacity_proof', 'D2.regional_g5_and_exits_complete', 'D2.empty_candidate_sets_hard_block',
   'D3.one_production_owner_writer', 'D3.preparation_before_activation', 'D3.frontier_no_move_or_time', 'D3.separate_executor_contracts', 'D3.failed_retry_lineage', 'D3.no_open_interval_result', 'D3.rational_time_slice_independent', 'D3.boundary_zero_time_context', 'D3.carrier_root_projection', 'D3.mode_transition_new_plan', 'D3.stranded_save_load_rescue', 'D3.player_projection_no_hidden_topology', 'D3.knowledge_token_pinned_resolution', 'D3.portal_state_exhaustive', 'D3.blocker_capacity_deterministic_locks', 'D3.journey_exact_handoff_snapshot',
@@ -49,7 +61,9 @@ async function gitRaw(root, args) {
   return stdout;
 }
 
-function isSafeRepositoryPath(value) {
+export { gitRaw as readP28GitRaw };
+
+export function isSafeRepositoryPath(value) {
   if (typeof value !== 'string' || value.length === 0 || value.includes('\0') || value.includes('\\')
     || win32.isAbsolute(value) || posix.isAbsolute(value) || /^[a-z]:/iu.test(value) || /^[\\/]{2}/u.test(value)) return false;
   const segments = value.split('/');
@@ -132,7 +146,7 @@ function canonicalEd25519PublicKey(publicKeyPem) {
   });
 }
 
-async function safePath(root, evidencePath, realpath = realpathFs) {
+export async function resolveSafeRepositoryPath(root, evidencePath, realpath = realpathFs) {
   // Evidence paths are canonical repository-relative POSIX paths.  Rejecting
   // alternate spellings is intentional: it prevents drive/UNC ambiguity and
   // makes a manifest byte-for-byte portable between Windows and POSIX.
@@ -155,6 +169,10 @@ async function safePath(root, evidencePath, realpath = realpathFs) {
 function immutablePayload(manifest) {
   const { manifest_sha256: _digest, manifest_signature: _signature, ...payload } = manifest;
   return payload;
+}
+
+export function computeP28ManifestDigest(manifest) {
+  return sha256(stableJson(immutablePayload(manifest)));
 }
 
 /**
@@ -186,17 +204,17 @@ export async function assessSpatialV3Activation({
     return result(blockers);
   }
   try {
-    trust = await loadTrustStore({ root, read, realpath, gitRaw: decisionGitRaw, add });
+    trust = await loadP28TrustStore({ root, read, realpath, gitRaw: decisionGitRaw, add });
   } catch {
-    // loadTrustStore records a typed blocker. This catch only preserves the
+    // loadP28TrustStore records a typed blocker. This catch only preserves the
     // fail-closed property if an injected reader itself throws unexpectedly.
     add('release_evidence_trust_store_invalid', TRUST_STORE_PATH);
   }
 
   if (manifest.schema !== 'rus.spatial-v3.release-evidence.v1' || manifest.version !== 1) add('release_evidence_manifest_schema_invalid');
-  const calculatedManifestDigest = sha256(stableJson(immutablePayload(manifest)));
+  const calculatedManifestDigest = computeP28ManifestDigest(manifest);
   if (manifest.manifest_sha256 !== calculatedManifestDigest) add('release_evidence_manifest_digest_mismatch');
-  await validateRoleSignature({ trust, role: 'p28_release_authority', signer: manifest.manifest_signer,
+  await validateP28RoleSignature({ trust, role: 'p28_release_authority', signer: manifest.manifest_signer,
     signature: manifest.manifest_signature, payload: `p28:${manifest.release_id}:${manifest.activation_candidate_commit}:${calculatedManifestDigest}`,
     add, code: 'release_evidence_manifest_signature_invalid' });
 
@@ -206,8 +224,8 @@ export async function assessSpatialV3Activation({
   })) add(blocker.code, blocker.evidence, Object.fromEntries(Object.entries(blocker).filter(([key]) => !['code', 'evidence'].includes(key))));
 
   const items = manifest.appendix_d_items;
-  if (!Array.isArray(items) || items.length !== APPENDIX_D_ITEMS.length || new Set(items.map((item) => item?.id)).size !== APPENDIX_D_ITEMS.length
-    || APPENDIX_D_ITEMS.some((id) => !items.some((item) => item?.id === id))) {
+  if (!Array.isArray(items) || items.length !== P28_APPENDIX_D_ITEMS.length || new Set(items.map((item) => item?.id)).size !== P28_APPENDIX_D_ITEMS.length
+    || P28_APPENDIX_D_ITEMS.some((id) => !items.some((item) => item?.id === id))) {
     add('appendix_d_evidence_coverage_invalid');
   } else {
     for (const item of items) await validateChecklistItem({ root, read, realpath, gitRaw: decisionGitRaw, item, add });
@@ -221,8 +239,8 @@ export async function assessSpatialV3Activation({
     add('p28_fresh_checkout_evidence_missing');
   } else {
     for (const evidence of manifest.p28_fresh_checkout.evidence) {
-      const digest = await validateHashedEvidence({ root, read, realpath, gitRaw: decisionGitRaw, evidence, add, code: 'p28_fresh_checkout_evidence_invalid' });
-      if (digest) await validateRoleSignature({ trust, role: 'fresh_checkout_attestor', signer: evidence.signer, signature: evidence.signature,
+      const digest = await validateP28HashedEvidence({ root, read, realpath, gitRaw: decisionGitRaw, evidence, add, code: 'p28_fresh_checkout_evidence_invalid' });
+      if (digest) await validateP28RoleSignature({ trust, role: 'fresh_checkout_attestor', signer: evidence.signer, signature: evidence.signature,
         payload: `p28:fresh-checkout:${manifest.release_id}:${manifest.activation_candidate_commit}:${digest}`, add,
         code: 'p28_fresh_checkout_signature_invalid' });
     }
@@ -239,31 +257,22 @@ async function validateChecklistItem({ root, read, realpath, gitRaw, item, add }
     add('appendix_d_item_evidence_missing', MANIFEST_PATH, { item_id: item.id });
     return;
   }
-  for (const evidence of item.evidence) await validateHashedEvidence({ root, read, realpath, gitRaw, evidence, add, code: 'appendix_d_evidence_hash_mismatch', details: { item_id: item.id } });
+  for (const evidence of item.evidence) await validateP28HashedEvidence({ root, read, realpath, gitRaw, evidence, add, code: 'appendix_d_evidence_hash_mismatch', details: { item_id: item.id } });
 }
 
 async function validateP12Gaps({ root, read, gitRaw, gaps, add }) {
-  const expected = new Map([
-    ['CANONICAL_G5_INVENTORY_DATA_GAP', 'novgorod:g4-inventory:195'],
-    ['DIRECTIONAL_EXIT_READINESS_DATA_GAP', 'novgorod:physical-edge-inventory:358'],
-    ['ROUTE_BINDING_DATA_GAP', 'novgorod:graph-edge-inventory:600'],
-    ['APPROVED_PROFILE_DATA_GAP', 'novgorod:g4-scene-profiles']
-  ]);
-  if (!Array.isArray(gaps) || gaps.length !== expected.size || new Set(gaps.map((gap) => gap?.code)).size !== expected.size) {
-    add('p12_gap_evidence_coverage_invalid');
-    return;
-  }
-  for (const [code, subject_ref] of expected) {
+  const identityErrors = validateP28P12GapIdentities(gaps);
+  for (const { code, ...details } of identityErrors) add(code, MANIFEST_PATH, details);
+  if (identityErrors.some((entry) => entry.code === 'p12_gap_evidence_coverage_invalid')) return;
+  const invalidCodes = new Set(identityErrors.map((entry) => entry.gap_code).filter(Boolean));
+  for (const { code, subject_ref } of P28_P12_GAPS) {
     const gap = gaps.find((entry) => entry?.code === code);
-    if (!gap || gap.subject_ref !== subject_ref) {
-      add('p12_gap_identity_or_quantity_mismatch', MANIFEST_PATH, { gap_code: code, subject_ref });
-      continue;
-    }
+    if (invalidCodes.has(code)) continue;
     if (gap.status !== 'resolved' || !Array.isArray(gap.resolution_evidence) || gap.resolution_evidence.length === 0) {
       add('spatial_candidate_gap', MANIFEST_PATH, { gap_code: code, subject_ref, resolution_status: gap.status ?? 'missing' });
       continue;
     }
-    for (const evidence of gap.resolution_evidence) await validateHashedEvidence({ root, read, gitRaw, evidence, add, code: 'p12_gap_resolution_evidence_invalid', details: { gap_code: code, subject_ref } });
+    for (const evidence of gap.resolution_evidence) await validateP28HashedEvidence({ root, read, gitRaw, evidence, add, code: 'p12_gap_resolution_evidence_invalid', details: { gap_code: code, subject_ref } });
   }
 }
 
@@ -273,13 +282,13 @@ async function validateP27Critic({ root, read, realpath, gitRaw, releaseId, cand
     add('p27_independent_critic_evidence_missing');
     return;
   }
-  const reportDigest = await validateHashedEvidence({ root, read, realpath, gitRaw, evidence: report, add, code: 'p27_independent_critic_hash_mismatch' });
-  if (reportDigest) await validateRoleSignature({ trust, role: 'p27_critic', signer: report.signer, signature: report.signature,
+  const reportDigest = await validateP28HashedEvidence({ root, read, realpath, gitRaw, evidence: report, add, code: 'p27_independent_critic_hash_mismatch' });
+  if (reportDigest) await validateP28RoleSignature({ trust, role: 'p27_critic', signer: report.signer, signature: report.signature,
     payload: `p27:${releaseId}:${candidateCommit}:${reportDigest}`, add, code: 'p27_independent_critic_signature_invalid' });
 }
 
-async function validateHashedEvidence({ root, read, realpath, gitRaw, evidence, add, code, details = {} }) {
-  const absolute = await safePath(root, evidence?.path, realpath);
+export async function validateP28HashedEvidence({ root, read, realpath, gitRaw, evidence, add, code, details = {} }) {
+    const absolute = await resolveSafeRepositoryPath(root, evidence?.path, realpath);
   if (!absolute || !isDigest(evidence?.sha256)) {
     add(code, MANIFEST_PATH, details);
     return null;
@@ -302,7 +311,7 @@ async function validateHashedEvidence({ root, read, realpath, gitRaw, evidence, 
   }
 }
 
-async function loadTrustStore({ root, read, realpath, gitRaw, add }) {
+export async function loadP28TrustStore({ root, read, realpath, gitRaw, add }) {
   let store;
   let storeBytes;
   try {
@@ -332,12 +341,13 @@ async function loadTrustStore({ root, read, realpath, gitRaw, add }) {
   for (const role of required) {
     const matches = store.keys.filter((key) => key?.role === role);
     const entry = matches[0];
-    if (matches.length !== 1 || typeof entry.key_id !== 'string' || !entry.key_id || typeof entry.public_key_path !== 'string') {
+    if (matches.length !== 1 || typeof entry.key_id !== 'string' || !entry.key_id || typeof entry.public_key_path !== 'string'
+      || entry.revoked !== false) {
       add('release_evidence_trust_store_invalid', TRUST_STORE_PATH, { role });
       continue;
     }
     protectedPaths.push(entry.public_key_path);
-    const absolute = await safePath(root, entry.public_key_path, realpath);
+    const absolute = await resolveSafeRepositoryPath(root, entry.public_key_path, realpath);
     try {
       const sourcePem = absolute ? await read(absolute, 'utf8') : null;
       if (!sourcePem) throw new Error('trusted public key is unavailable');
@@ -352,6 +362,7 @@ async function loadTrustStore({ root, read, realpath, gitRaw, add }) {
   }
   if (keys.size !== required.length
     || new Set([...keys.values()].map((key) => key.key_id)).size !== required.length
+    || new Set([...keys.values()].map((key) => key.public_key_path)).size !== required.length
     || new Set([...keys.values()].map((key) => key.spkiSha256)).size !== required.length) {
     add('release_evidence_trust_store_invalid', TRUST_STORE_PATH);
     return null;
@@ -359,14 +370,19 @@ async function loadTrustStore({ root, read, realpath, gitRaw, add }) {
   return FREEZE({ keys, protectedPaths: FREEZE(protectedPaths) });
 }
 
-async function validateRoleSignature({ trust, role, signer, signature, payload, add, code }) {
+export async function validateP28RoleSignature({ trust, role, signer, signature, payload, add, code }) {
   const key = trust?.keys?.get(role);
   try {
     if (!key || key.revoked === true || signer?.role !== role || signer?.key_id !== key.key_id
       || signature?.algorithm !== 'ed25519' || typeof signature?.value !== 'string' || !key.publicKey
-      || !verify(null, Buffer.from(payload, 'utf8'), key.publicKey, Buffer.from(signature.value, 'base64'))) add(code);
+      || !verify(null, Buffer.from(payload, 'utf8'), key.publicKey, Buffer.from(signature.value, 'base64'))) {
+      add(code);
+      return false;
+    }
+    return true;
   } catch {
     add(code);
+    return false;
   }
 }
 

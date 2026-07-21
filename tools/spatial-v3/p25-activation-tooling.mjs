@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { validateRuntimeComposition } from '@rus/contracts/spatial-v3/compatibility';
 
 const PROFILES = new Set(['production_v2', 'shadow_v3']);
 const OBSERVATION_KEYS = Object.freeze(['endpoints', 'time', 'visibility', 'errors', 'migration_classifications']);
@@ -62,6 +63,37 @@ export function createSpatialV3CompositionProfile({ party_id, request_id, profil
   });
 }
 
+/**
+ * The P25 request boundary is the only supported way to compose target code
+ * before P28.  It consumes an immutable, request-local profile list and
+ * delegates version-mixing validation to the P06 release contract.  A v3
+ * composition is consequently observable only as a separately identified
+ * shadow request; it is never returned as a production handler.
+ */
+export function createSpatialV3RequestCompositionBoundary({ request_profiles, production_v2, shadow_v3, p06_guard = validateRuntimeComposition } = {}) {
+  if (!Array.isArray(request_profiles) || typeof p06_guard !== 'function') throw new TypeError('P25 requires immutable request_profiles and the P06 composition guard.');
+  const profiles = freeze(request_profiles.map((entry) => freeze({ party_id: entry?.party_id, request_id: entry?.request_id, profile: entry?.profile })));
+  if (typeof production_v2 !== 'function' || typeof shadow_v3 !== 'function') throw new TypeError('P25 requires explicit v2 and shadow-v3 composition factories.');
+  return freeze({
+    request_profiles: profiles,
+    compose(input = {}) {
+      const profile = createSpatialV3CompositionProfile({ ...input, request_profiles: profiles });
+      if (!profile.ok) return profile;
+      const p06 = p06_guard({
+        storage_versions: [2, 3], request_schema_version: profile.reader_schema_version,
+        reader_schema_version: profile.reader_schema_version, writer_schema_version: profile.writer_schema_version,
+        current_position_contract: `v${profile.reader_schema_version}`,
+        target_records_schema_version: profile.reader_schema_version
+      });
+      if (!p06?.ok) return freeze({ ok: false, errors: freeze((p06?.errors ?? ['mixed_runtime_composition']).map((code) => issue(code, `${profile.party_id}:${profile.request_id}`))) });
+      if (profile.profile === 'production_v2') return freeze({ ok: true, profile, runtime: production_v2(freeze({ party_id: profile.party_id, request_id: profile.request_id, profile })) });
+      const runtime = shadow_v3(freeze({ party_id: profile.party_id, request_id: profile.request_id, profile, target_state_writes: false }));
+      if (runtime?.target_state_writes === true || typeof runtime?.commit === 'function' || typeof runtime?.write === 'function') return freeze({ ok: false, errors: freeze([issue('dual_writer_forbidden', `${profile.party_id}:${profile.request_id}`)]) });
+      return freeze({ ok: true, profile, runtime });
+    }
+  });
+}
+
 /** A deterministic, no-write comparison of the approved P25 structural surface. */
 export function runSpatialV3StructuralShadow({ legacy, target, expected_divergences = [] } = {}) {
   const errors = [];
@@ -95,6 +127,21 @@ export function runSpatialV3StructuralShadow({ legacy, target, expected_divergen
     target_state_writes: 0
   };
   return freeze({ ok: report.parity, ...(errors.length ? { errors: freeze(errors) } : {}), report: freeze({ ...report, digest: digest(report) }), writes: freeze([]) });
+}
+
+/** Runs real supplied v2 and target-shadow observers over the same immutable
+ * snapshot.  Observers receive no writer, pool or mutable request object. */
+export async function runSpatialV3ImmutableShadowRun({ party_id, request_id, snapshot, observe_v2, observe_target_shadow, expected_divergences = [] } = {}) {
+  if (!text(party_id) || !text(request_id) || !snapshot || typeof observe_v2 !== 'function' || typeof observe_target_shadow !== 'function') {
+    return freeze({ ok: false, errors: freeze([issue('shadow_runner_input_invalid', `${party_id ?? 'unknown'}:${request_id ?? 'unknown'}`)]), writes: freeze([]) });
+  }
+  if (containsForbiddenShadowWrite(snapshot)) return freeze({ ok: false, errors: freeze([issue('shadow_write_forbidden', 'shadow_snapshot')]), writes: freeze([]) });
+  const immutableSnapshot = freeze(clone(snapshot));
+  const input = freeze({ party_id, request_id, snapshot: immutableSnapshot });
+  const [legacy, target] = await Promise.all([observe_v2(input), observe_target_shadow(input)]);
+  const result = runSpatialV3StructuralShadow({ legacy, target, expected_divergences });
+  if (!result.report) return result;
+  return freeze({ ...result, report: freeze({ ...result.report, party_id, request_id, snapshot_digest: digest(immutableSnapshot), runner_kind: 'immutable_v2_target_shadow' }) });
 }
 
 /**
@@ -138,6 +185,43 @@ export async function runSpatialV3CutoverRehearsal({ mode, shadow_report, migrat
   return freeze({ ok: true, events: freeze(events), production_writes: 0, next_profile: 'production_v2', activation_permitted: false });
 }
 
+/**
+ * P25's cutover rehearsal is constrained to target databases and proves P24
+ * evidence from append-only rows inside a transaction.  Caller booleans are
+ * intentionally ignored: absent exact artifacts abort before any handler.
+ */
+export async function runSpatialV3ConstrainedCutover({ mode, shadow_report, world_pool, party_pool, party_id, world_artifact_id, party_artifact_id, startup_probes = [], smoke_tests = [], apply_target_migration = null, abort = null } = {}) {
+  const fail = async (code, subject_ref, details = {}) => {
+    const error = issue(code, subject_ref, details); if (typeof abort === 'function') await abort(error);
+    return freeze({ ok: false, error, production_writes: 0 });
+  };
+  if (mode !== 'target_rehearsal') return fail('cutover_mode_forbidden', String(mode ?? 'unknown'));
+  if (shadow_report?.schema !== 'rus.spatial_v3_shadow_report.v1' || shadow_report?.parity !== true || shadow_report?.target_state_writes !== 0) return fail('cutover_shadow_gate_failed', 'shadow_report');
+  if (!world_pool?.connect || !party_pool?.connect || !text(party_id) || !text(world_artifact_id) || !text(party_artifact_id)) return fail('cutover_p24_evidence_input_invalid', 'p24_evidence');
+  const world = await world_pool.connect(); const party = await party_pool.connect();
+  try {
+    await world.query('BEGIN'); await party.query('BEGIN');
+    const worldEvidence = await world.query('SELECT artifact_id, acceptance_ok, canonical_digest FROM world_base.spatial_v3_migration_coverage_artifacts WHERE artifact_id=$1 FOR SHARE', [world_artifact_id]);
+    const partyEvidence = await party.query('SELECT artifact_id, acceptance_ok, canonical_digest FROM party_runtime.spatial_v3_migration_coverage_artifacts WHERE artifact_id=$1 AND party_id=$2 FOR SHARE', [party_artifact_id, party_id]);
+    if (worldEvidence.rows.length !== 1 || partyEvidence.rows.length !== 1 || worldEvidence.rows[0].acceptance_ok !== true || partyEvidence.rows[0].acceptance_ok !== true) {
+      await world.query('ROLLBACK'); await party.query('ROLLBACK'); return fail('cutover_p24_evidence_gate_failed', party_id);
+    }
+    for (const gate of [...startup_probes, ...smoke_tests]) {
+      const result = await runGate(gate, 'target_probe');
+      if (result.status !== 'passed') { await world.query('ROLLBACK'); await party.query('ROLLBACK'); return fail('cutover_startup_probe_failed', result.id); }
+    }
+    if (typeof apply_target_migration === 'function') {
+      const applied = await apply_target_migration(freeze({ world_client: world, party_client: party, party_id, target_only: true, p24_evidence: freeze({ world: worldEvidence.rows[0], party: partyEvidence.rows[0] }) }));
+      if (applied?.ok !== true || applied?.production === true) { await world.query('ROLLBACK'); await party.query('ROLLBACK'); return fail('cutover_target_rehearsal_write_failed', party_id); }
+    }
+    await world.query('ROLLBACK'); await party.query('ROLLBACK');
+    return freeze({ ok: true, production_writes: 0, activation_permitted: false, p24_evidence: freeze({ world: worldEvidence.rows[0], party: partyEvidence.rows[0] }) });
+  } catch (cause) {
+    await world.query('ROLLBACK').catch(() => {}); await party.query('ROLLBACK').catch(() => {});
+    return fail('cutover_target_transaction_aborted', party_id, { cause: cause?.code ?? cause?.message ?? 'unknown' });
+  } finally { world.release(); party.release(); }
+}
+
 /** Explicit rollback boundary: no implicit reinterpretation of v3 state as v2. */
 export async function runSpatialV3RollbackDrill({ first_v3_only_mutation, snapshot, mutate = null, restore_snapshot, reverse_migration = null } = {}) {
   if (typeof snapshot !== 'function') return freeze({ ok: false, error: issue('rollback_snapshot_missing', 'snapshot') });
@@ -155,6 +239,25 @@ export async function runSpatialV3RollbackDrill({ first_v3_only_mutation, snapsh
   return freeze({ ok: true, mode: typeof reverse_migration === 'function' ? 'validated_reverse_migration' : 'snapshot_restore', snapshot_digest: digest(captured), restored: true });
 }
 
+/** Snapshot/restore drill for actual P24 evidence rows in both isolated DBs. */
+export async function runSpatialV3P24RollbackDrill({ world_pool, party_pool, party_id, world_artifact_id, party_artifact_id, mutate = null } = {}) {
+  if (!world_pool?.connect || !party_pool?.connect || !text(party_id) || !text(world_artifact_id) || !text(party_artifact_id)) return freeze({ ok: false, error: issue('rollback_snapshot_missing', 'p24_party_world') });
+  const world = await world_pool.connect(); const party = await party_pool.connect();
+  try {
+    await world.query('BEGIN'); await party.query('BEGIN');
+    const beforeWorld = await world.query('SELECT canonical_digest FROM world_base.spatial_v3_migration_coverage_artifacts WHERE artifact_id=$1 FOR SHARE', [world_artifact_id]);
+    const beforeParty = await party.query('SELECT canonical_digest FROM party_runtime.spatial_v3_migration_coverage_artifacts WHERE artifact_id=$1 AND party_id=$2 FOR SHARE', [party_artifact_id, party_id]);
+    if (beforeWorld.rows.length !== 1 || beforeParty.rows.length !== 1) throw Object.assign(new Error('missing P24 evidence'), { code: 'rollback_p24_evidence_missing' });
+    if (mutate) { const result = await mutate(freeze({ world_client: world, party_client: party, party_id })); if (result?.ok !== true) throw Object.assign(new Error('mutation rejected'), { code: 'rollback_mutation_failed' }); }
+    await world.query('ROLLBACK'); await party.query('ROLLBACK');
+    const afterWorld = await world_pool.query('SELECT canonical_digest FROM world_base.spatial_v3_migration_coverage_artifacts WHERE artifact_id=$1', [world_artifact_id]);
+    const afterParty = await party_pool.query('SELECT canonical_digest FROM party_runtime.spatial_v3_migration_coverage_artifacts WHERE artifact_id=$1 AND party_id=$2', [party_artifact_id, party_id]);
+    const restored = afterWorld.rows[0]?.canonical_digest === beforeWorld.rows[0].canonical_digest && afterParty.rows[0]?.canonical_digest === beforeParty.rows[0].canonical_digest;
+    return freeze({ ok: restored, mode: 'p24_party_world_snapshot_restore', restored, snapshot_digest: digest({ world: beforeWorld.rows[0], party: beforeParty.rows[0] }) });
+  } catch (cause) { await world.query('ROLLBACK').catch(() => {}); await party.query('ROLLBACK').catch(() => {}); return freeze({ ok: false, error: issue(cause?.code ?? 'rollback_restore_failed', party_id) }); }
+  finally { world.release(); party.release(); }
+}
+
 function structuralSurface(input, errors, label) {
   if (!input || typeof input !== 'object' || Array.isArray(input)) { errors.push(issue('shadow_observation_invalid', label)); return {}; }
   const unknown = Object.keys(input).filter((key) => !OBSERVATION_KEYS.includes(key));
@@ -168,6 +271,7 @@ function containsForbiddenShadowWrite(value) {
   if (Array.isArray(value)) return value.some(containsForbiddenShadowWrite);
   return Object.entries(value).some(([key, nested]) => forbiddenShadowKeys.has(key) || containsForbiddenShadowWrite(nested));
 }
+function clone(value) { return structuredClone(value); }
 function compare(left, right, path = '$', output = []) {
   if (Array.isArray(left) || Array.isArray(right)) {
     if (!Array.isArray(left) || !Array.isArray(right) || left.length !== right.length) { output.push(freeze({ path, legacy: left, target: right })); return output; }

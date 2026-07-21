@@ -17,6 +17,7 @@ const WORLD_TABLES = new Set([
   'spatial_v3_world_route_segments', 'spatial_v3_world_route_segment_spatial_contexts',
   'spatial_v3_world_route_endpoint_bindings', 'spatial_v3_g4_expansion_profiles',
   'spatial_v3_g5_generation_templates', 'spatial_v3_terminal_policies', 'spatial_v3_expansion_slots', 'spatial_v3_expansion_slot_templates', 'spatial_v3_expansion_profile_template_limits', 'spatial_v3_g5_successor_frontier_rules',
+  'spatial_v3_regional_scene_template_bases', 'spatial_v3_scene_selection_rules', 'spatial_v3_scene_applicability_rules',
   'spatial_v3_scene_templates', 'spatial_v3_scene_materialization_profiles',
   'spatial_v3_scene_materialization_candidates', 'spatial_v3_g6_template_slots',
   'spatial_v3_scene_position_templates', 'spatial_v3_scene_endpoint_slots'
@@ -45,7 +46,7 @@ const WORLD_CHAIN = Object.freeze([
   ['g4_exit', ['spatial_v3_g4_directional_exits']],
   ['profiles', ['spatial_v3_orientation_reference_frames', 'spatial_v3_movement_orientation_profiles', 'spatial_v3_transition_environment_profiles', 'spatial_v3_movement_method_cost_profiles', 'spatial_v3_dynamic_recheck_policies']],
   ['routes', ['spatial_v3_world_routes', 'spatial_v3_world_route_points', 'spatial_v3_world_route_segments', 'spatial_v3_world_route_segment_spatial_contexts', 'spatial_v3_world_route_endpoint_bindings']],
-  ['templates', ['spatial_v3_g4_expansion_profiles', 'spatial_v3_g5_generation_templates', 'spatial_v3_expansion_slots', 'spatial_v3_expansion_slot_templates', 'spatial_v3_scene_templates', 'spatial_v3_scene_materialization_profiles', 'spatial_v3_scene_materialization_candidates']]
+  ['templates', ['spatial_v3_g4_expansion_profiles', 'spatial_v3_g5_generation_templates', 'spatial_v3_expansion_slots', 'spatial_v3_expansion_slot_templates', 'spatial_v3_regional_scene_template_bases', 'spatial_v3_scene_selection_rules', 'spatial_v3_scene_applicability_rules', 'spatial_v3_scene_templates', 'spatial_v3_scene_materialization_profiles', 'spatial_v3_scene_materialization_candidates']]
 ]);
 const PARTY_CHAIN = Object.freeze([
   ['g5_scene_position', ['party_scene_baselines', 'party_g6_instances', 'scene_position_nodes']],
@@ -331,7 +332,7 @@ async function persistCoverageArtifact(client, schema, artifact) {
     `INSERT INTO ${schema}.spatial_v3_migration_coverage_artifacts
       (artifact_id,party_id,world_revision_id,source_scope,source_digest,source_record_count,inventory_digest,inventory_target_digest,target_digest,acceptance_ok,error_codes,source_snapshot,canonical_digest)
      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`,
-    [artifact.artifact_id, artifact.party_id, artifact.world_revision_id, artifact.source_scope, artifact.source_digest, artifact.source_record_count, artifact.inventory_digest, artifact.inventory_target_digest, artifact.target_digest, artifact.acceptance_ok, artifact.error_codes, artifact.source_snapshot, artifact.canonical_digest]
+    [artifact.artifact_id, artifact.party_id, artifact.world_revision_id, artifact.source_scope, artifact.source_digest, artifact.source_record_count, artifact.inventory_digest, artifact.inventory_target_digest, artifact.target_digest, artifact.acceptance_ok, JSON.stringify(artifact.error_codes), JSON.stringify(artifact.source_snapshot), artifact.canonical_digest]
   );
 }
 

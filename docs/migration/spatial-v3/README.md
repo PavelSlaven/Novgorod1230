@@ -705,3 +705,37 @@ byte pin and both blockers.
   data gap and does not weaken deterministic import validation.
 - No P28 or production activation is authorized; v2 remains the production
   owner.
+
+## P14 planning/execution DDL independent critic (2026-07-21)
+
+- Original independent critic result: **`CHANGES REQUIRED`**; final independent
+  re-audit: **`PASS`**. The persisted review is
+  [`p14-planning-execution-ddl-critic-report.md`](./p14-planning-execution-ddl-critic-report.md).
+- Existing P14 static and PostgreSQL tests pass, as do the dependent P09/P13
+  PostgreSQL regressions and the generated world schema-reference check. They
+  do not prove complete execution-history integrity.
+- CRIT-01 is **closed**: every execution-row update increments `state_version`,
+  carries an exact matching append-only event/change-set, and retains a non-null current endpoint
+  that matches the immutable current plan-step endpoint. Same-status writes
+  cannot change lifecycle/final/suspension/abort/supersession fields and can
+  advance an ordinal only through the matching `step_completed` causal event.
+  The causally typed result/idempotency checks remain in force.
+- PostgreSQL regression rejects the original forged same-status update and
+  a version-only same-status update; it accepts a valid versioned causal
+  `active → active` event and proves nested rollback/reapply preserves exact
+  current/history lineage. `spatial-v3:check-p14`, P14/P13/P09 PostgreSQL
+  suites pass after remediation; P15 PostgreSQL also passes.
+- CRIT-02 is **closed** and makes event/result mapping physical:
+  `step_progressed` accepts only positive nonterminal timed activity/traversal
+  progress; non-final completed immediate actions use `step_completed`, while
+  final completed actions/traversals use `completed`. The isolated suite rejects
+  a completed action forged as progress.
+- CRIT-03 is **closed** and adds a deferred bidirectional execution/event ledger:
+  the contiguous latest event must equal the current execution status,
+  `state_version - 1`, current step rule, and `updated_change_set_id`, while
+  each execution update requires that exact event. The isolated suite rejects
+  an event-only final transition and verifies unchanged current/history state.
+- Exact independent re-audit probes covered CRIT-01 direct same-status and
+  version-only rejection plus rollback/reapply, CRIT-02 completed-action mapping
+  rejection, and CRIT-03 event-only final-transition rejection. **P14-S06 is
+  accepted (`PASS`)**. No P28 state or production-owner boundary changed.

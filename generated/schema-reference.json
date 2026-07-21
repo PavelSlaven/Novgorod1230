@@ -865,9 +865,9 @@
       "type": "sql"
     },
     {
-      "bytes": 42197,
+      "bytes": 48130,
       "path": "schemas/party-db/003_party_runtime_v3_planning.sql",
-      "sha256": "574fed6b6207e3b79c9f16e40c42519bb45584d4d97524fd65fc1dca88d27cec",
+      "sha256": "da050d482cac75631029eab25cb458f4fca0ee33c9d8955feaa12929ddc10d1f",
       "type": "sql"
     },
     {

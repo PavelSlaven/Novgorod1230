@@ -193,16 +193,24 @@ BEGIN
   RETURN NEW;
 END $$;
 CREATE OR REPLACE FUNCTION party_runtime.v3_event_causal_integrity() RETURNS trigger LANGUAGE plpgsql AS $$
-DECLARE step_kind text; actual_change_set text; actual_idempotency text; causal_id text; causal_kind text;
+DECLARE step_kind text; actual_change_set text; actual_idempotency text; actual_kind text; causal_id text; causal_kind text; is_final boolean; positive_nonterminal boolean;
 BEGIN
   IF NEW.event_kind NOT IN ('step_progressed','step_paused','step_completed','wait_started','suspended','stranded','completed') THEN RETURN NEW; END IF;
   causal_id:=NEW.causal_result_ref->>'entity_id'; causal_kind:=NEW.causal_result_ref->>'entity_kind';
   SELECT s.step_kind INTO step_kind FROM party_runtime.party_route_plan_executions e JOIN party_runtime.party_route_plan_steps s ON s.route_plan_id=e.route_plan_id AND s.ordinal=NEW.step_ordinal WHERE e.id=NEW.execution_id;
-  IF step_kind='immediate_action' AND causal_kind='party_action_step_run' THEN SELECT result_change_set_id,idempotency_record_id INTO actual_change_set,actual_idempotency FROM party_runtime.party_action_step_runs WHERE id=causal_id AND execution_id=NEW.execution_id AND plan_step_ordinal=NEW.step_ordinal;
-  ELSIF step_kind='timed_activity' AND causal_kind='party_timed_activity_attempt' THEN SELECT a.result_change_set_id,a.idempotency_record_id INTO actual_change_set,actual_idempotency FROM party_runtime.party_timed_activity_attempts a JOIN party_runtime.party_timed_activity_executions x ON x.id=a.activity_execution_id WHERE a.activity_execution_id=causal_id AND a.attempt_ordinal=(NEW.causal_result_ref->>'attempt_ordinal')::integer AND x.route_plan_execution_id=NEW.execution_id AND x.plan_step_ordinal=NEW.step_ordinal;
-  ELSIF step_kind='timed_traversal' AND causal_kind='party_traversal_interval_result' THEN SELECT result_change_set_id,idempotency_record_id INTO actual_change_set,actual_idempotency FROM party_runtime.party_traversal_interval_results WHERE id=causal_id AND route_plan_execution_id=NEW.execution_id AND plan_step_ordinal=NEW.step_ordinal;
+  SELECT NOT EXISTS(SELECT 1 FROM party_runtime.party_route_plan_executions e JOIN party_runtime.party_route_plan_steps next_step ON next_step.route_plan_id=e.route_plan_id AND next_step.ordinal=NEW.step_ordinal+1 WHERE e.id=NEW.execution_id) INTO is_final;
+  IF step_kind='immediate_action' AND causal_kind='party_action_step_run' THEN SELECT result_change_set_id,idempotency_record_id,result_kind,false INTO actual_change_set,actual_idempotency,actual_kind,positive_nonterminal FROM party_runtime.party_action_step_runs WHERE id=causal_id AND execution_id=NEW.execution_id AND plan_step_ordinal=NEW.step_ordinal;
+  ELSIF step_kind='timed_activity' AND causal_kind='party_timed_activity_attempt' THEN SELECT a.result_change_set_id,a.idempotency_record_id,a.result_kind,(a.result_kind='progressed' AND a.actual_time_numerator>0 AND a.remaining_after_numerator>0) INTO actual_change_set,actual_idempotency,actual_kind,positive_nonterminal FROM party_runtime.party_timed_activity_attempts a JOIN party_runtime.party_timed_activity_executions x ON x.id=a.activity_execution_id WHERE a.activity_execution_id=causal_id AND a.attempt_ordinal=(NEW.causal_result_ref->>'attempt_ordinal')::integer AND x.route_plan_execution_id=NEW.execution_id AND x.plan_step_ordinal=NEW.step_ordinal;
+  ELSIF step_kind='timed_traversal' AND causal_kind='party_traversal_interval_result' THEN SELECT result_change_set_id,idempotency_record_id,result_kind,(result_kind='progressed' AND actual_progress_after_ppm>progress_before_ppm AND actual_progress_after_ppm<1000000) INTO actual_change_set,actual_idempotency,actual_kind,positive_nonterminal FROM party_runtime.party_traversal_interval_results WHERE id=causal_id AND route_plan_execution_id=NEW.execution_id AND plan_step_ordinal=NEW.step_ordinal;
   ELSE RAISE EXCEPTION 'spatial_execution_event_causal_invalid: typed result'; END IF;
   IF actual_change_set IS NULL OR actual_change_set<>NEW.change_set_id OR actual_idempotency<>NEW.idempotency_record_id THEN RAISE EXCEPTION 'spatial_execution_event_causal_invalid: change set or idempotency'; END IF;
+  IF NEW.event_kind='step_progressed' AND NOT positive_nonterminal THEN RAISE EXCEPTION 'spatial_execution_event_causal_invalid: positive nonterminal progress'; END IF;
+  IF NEW.event_kind='step_paused' AND NOT ((step_kind='timed_activity' AND actual_kind='paused') OR (step_kind='timed_traversal' AND actual_kind='paused_in_transit')) THEN RAISE EXCEPTION 'spatial_execution_event_causal_invalid: paused result'; END IF;
+  IF NEW.event_kind='step_completed' AND (is_final OR actual_kind NOT IN ('completed','segment_completed')) THEN RAISE EXCEPTION 'spatial_execution_event_causal_invalid: nonfinal completed step'; END IF;
+  IF NEW.event_kind='completed' AND (NOT is_final OR actual_kind NOT IN ('completed','segment_completed')) THEN RAISE EXCEPTION 'spatial_execution_event_causal_invalid: final completed step'; END IF;
+  IF NEW.event_kind='wait_started' AND actual_kind NOT IN ('blocked','failed','blocked_before_progress') THEN RAISE EXCEPTION 'spatial_execution_event_causal_invalid: waiting result'; END IF;
+  IF NEW.event_kind='suspended' AND actual_kind<>'interrupted_at_anchor' THEN RAISE EXCEPTION 'spatial_execution_event_causal_invalid: suspension result'; END IF;
+  IF NEW.event_kind='stranded' AND actual_kind<>'stranded' THEN RAISE EXCEPTION 'spatial_execution_event_causal_invalid: stranded result'; END IF;
   RETURN NEW;
 END $$;
 CREATE OR REPLACE FUNCTION party_runtime.v3_execution_transition_valid() RETURNS trigger LANGUAGE plpgsql AS $$
@@ -212,11 +220,17 @@ BEGIN
     IF NEW.status<>'planned' THEN RAISE EXCEPTION 'spatial_execution_transition_invalid: creation must be planned'; END IF;
     RETURN NEW;
   END IF;
-  IF NEW.status=OLD.status THEN RETURN NEW; END IF;
+  -- The execution row is the sole mutable journey-state projection.  Every
+  -- update, including an active -> active causal step, is a new version and
+  -- is coupled by the deferred check below to one append-only event.
+  IF NEW.state_version<>OLD.state_version+1 THEN RAISE EXCEPTION 'spatial_execution_transition_invalid: state version'; END IF;
+  IF NEW.status=OLD.status THEN
+    IF (to_jsonb(NEW)-ARRAY['state_version','current_step_ordinal','current_endpoint_ref','active_travel_state_id','active_activity_execution_id','updated_change_set_id'])<>(to_jsonb(OLD)-ARRAY['state_version','current_step_ordinal','current_endpoint_ref','active_travel_state_id','active_activity_execution_id','updated_change_set_id']) THEN RAISE EXCEPTION 'spatial_execution_transition_invalid: same-status immutable fields'; END IF;
+    RETURN NEW;
+  END IF;
   allowed=(OLD.status='planned' AND NEW.status IN ('active','aborted')) OR (OLD.status='active' AND NEW.status IN ('waiting_at_anchor','suspended_at_scene','stranded_in_transit','completed','aborted','superseded')) OR (OLD.status='waiting_at_anchor' AND NEW.status IN ('active','aborted','superseded')) OR (OLD.status='suspended_at_scene' AND NEW.status IN ('aborted','superseded')) OR (OLD.status='stranded_in_transit' AND NEW.status='superseded');
   IF NOT allowed THEN RAISE EXCEPTION 'spatial_execution_transition_invalid: % -> %',OLD.status,NEW.status; END IF;
   IF OLD.status='active' AND NEW.status='superseded' AND OLD.active_travel_state_id IS NOT NULL THEN RAISE EXCEPTION 'spatial_execution_transition_invalid: raw in-transit supersession'; END IF;
-  IF NEW.state_version<>OLD.state_version+1 THEN RAISE EXCEPTION 'spatial_execution_transition_invalid: state version'; END IF;
   RETURN NEW;
 END $$;
 CREATE OR REPLACE FUNCTION party_runtime.v3_execution_event_valid() RETURNS trigger LANGUAGE plpgsql AS $$
@@ -231,14 +245,31 @@ BEGIN
   END IF;
   RETURN NEW;
 END $$;
+CREATE OR REPLACE FUNCTION party_runtime.v3_execution_event_ledger_integrity() RETURNS trigger LANGUAGE plpgsql AS $$
+DECLARE current_execution party_runtime.party_route_plan_executions%ROWTYPE; latest_event party_runtime.party_route_plan_execution_events%ROWTYPE; expected_step integer;
+BEGIN
+  SELECT * INTO current_execution FROM party_runtime.party_route_plan_executions WHERE id=NEW.execution_id;
+  SELECT * INTO latest_event FROM party_runtime.party_route_plan_execution_events WHERE execution_id=NEW.execution_id ORDER BY event_ordinal DESC LIMIT 1;
+  IF latest_event.execution_id IS NULL OR EXISTS(SELECT 1 FROM party_runtime.party_route_plan_execution_events e JOIN party_runtime.party_route_plan_execution_events prior ON prior.execution_id=e.execution_id AND prior.event_ordinal=e.event_ordinal-1 WHERE e.execution_id=NEW.execution_id AND e.event_ordinal>0 AND e.from_status<>prior.to_status) THEN RAISE EXCEPTION 'spatial_execution_event_ledger_invalid: status chain'; END IF;
+  IF current_execution.state_version<>latest_event.event_ordinal+1 OR current_execution.updated_change_set_id<>latest_event.change_set_id OR current_execution.status<>latest_event.to_status THEN RAISE EXCEPTION 'spatial_execution_event_ledger_invalid: current version/status/change set'; END IF;
+  IF current_execution.status IN ('completed','aborted','superseded') THEN
+    IF current_execution.current_step_ordinal IS NOT NULL THEN RAISE EXCEPTION 'spatial_execution_event_ledger_invalid: terminal step'; END IF;
+  ELSE
+    expected_step=latest_event.step_ordinal+CASE WHEN latest_event.event_kind='step_completed' THEN 1 ELSE 0 END;
+    IF current_execution.current_step_ordinal<>expected_step THEN RAISE EXCEPTION 'spatial_execution_event_ledger_invalid: current step'; END IF;
+  END IF;
+  RETURN NEW;
+END $$;
 CREATE OR REPLACE FUNCTION party_runtime.v3_planning_deferred_integrity() RETURNS trigger LANGUAGE plpgsql AS $$
 DECLARE e party_runtime.party_route_plan_executions%ROWTYPE; plan_row party_runtime.party_route_plans%ROWTYPE; exclusive_member boolean; step_kind text;
 BEGIN
   IF TG_TABLE_NAME='party_route_plan_executions' THEN
     SELECT * INTO plan_row FROM party_runtime.party_route_plans WHERE id=NEW.route_plan_id;
     IF plan_row.party_id<>NEW.party_id OR plan_row.journey_owner_ref<>NEW.journey_owner_ref OR plan_row.journey_scope<>NEW.journey_scope THEN RAISE EXCEPTION 'spatial_party_or_plan_mismatch'; END IF;
-    IF NOT EXISTS(SELECT 1 FROM party_runtime.party_route_plan_execution_events x WHERE x.execution_id=NEW.id AND x.event_ordinal=0) THEN RAISE EXCEPTION 'spatial_execution_event_missing: planned'; END IF;
-    IF TG_OP='UPDATE' AND NEW.status<>OLD.status AND NOT EXISTS(SELECT 1 FROM party_runtime.party_route_plan_execution_events x WHERE x.execution_id=NEW.id AND x.from_status=OLD.status AND x.to_status=NEW.status) THEN RAISE EXCEPTION 'spatial_execution_event_missing: transition'; END IF;
+    IF NOT EXISTS(SELECT 1 FROM party_runtime.party_route_plan_execution_events x WHERE x.execution_id=NEW.id AND x.event_ordinal=0 AND (TG_OP<>'INSERT' OR x.change_set_id=NEW.updated_change_set_id)) THEN RAISE EXCEPTION 'spatial_execution_event_missing: planned'; END IF;
+    IF TG_OP='UPDATE' AND NOT EXISTS(SELECT 1 FROM party_runtime.party_route_plan_execution_events x WHERE x.execution_id=NEW.id AND x.event_ordinal=NEW.state_version-1 AND x.from_status=OLD.status AND x.to_status=NEW.status AND x.change_set_id=NEW.updated_change_set_id AND (NEW.status<>OLD.status OR x.step_ordinal=OLD.current_step_ordinal)) THEN RAISE EXCEPTION 'spatial_execution_event_missing: versioned transition'; END IF;
+    IF TG_OP='UPDATE' AND NEW.status=OLD.status AND NEW.current_step_ordinal<>OLD.current_step_ordinal AND (NEW.current_step_ordinal<>OLD.current_step_ordinal+1 OR NOT EXISTS(SELECT 1 FROM party_runtime.party_route_plan_execution_events x WHERE x.execution_id=NEW.id AND x.from_status='active' AND x.to_status='active' AND x.event_kind='step_completed' AND x.step_ordinal=OLD.current_step_ordinal AND x.change_set_id=NEW.updated_change_set_id)) THEN RAISE EXCEPTION 'spatial_execution_state_invalid: same-status step advance'; END IF;
+    IF NEW.current_endpoint_ref IS NOT NULL AND NOT EXISTS(SELECT 1 FROM party_runtime.party_route_plan_steps s WHERE s.route_plan_id=NEW.route_plan_id AND s.ordinal=NEW.current_step_ordinal AND NEW.current_endpoint_ref IN (s.departure_endpoint_snapshot,s.arrival_endpoint_snapshot)) THEN RAISE EXCEPTION 'spatial_execution_state_invalid: endpoint is not an exact step endpoint'; END IF;
     IF plan_row.request_kind='rescue' AND NOT EXISTS(SELECT 1 FROM party_runtime.party_recovery_transition_bindings b JOIN party_runtime.party_route_plan_steps s ON s.route_plan_id=plan_row.id AND s.ordinal=0 JOIN party_runtime.party_route_plan_executions current_execution ON current_execution.id=NEW.id WHERE b.id=plan_row.recovery_binding_id AND b.party_id=plan_row.party_id AND b.status=CASE WHEN current_execution.status='completed' THEN 'consumed' ELSE 'active' END AND b.source_endpoint_snapshot=plan_row.source_endpoint_snapshot AND plan_row.target_request=b.target_endpoint_snapshot AND plan_row.resolved_factual_target_ref=b.target_endpoint_snapshot AND s.departure_endpoint_snapshot=b.source_endpoint_snapshot AND s.arrival_endpoint_snapshot=b.target_endpoint_snapshot AND (b.executable_cost_step_snapshot IS NULL OR s.static_contract_snapshot=b.executable_cost_step_snapshot)) THEN RAISE EXCEPTION 'spatial_recovery_plan_invalid: exact binding target/cost'; END IF;
     IF plan_row.request_kind='rescue' AND EXISTS(SELECT 1 FROM party_runtime.party_route_plan_executions current_execution WHERE current_execution.id=NEW.id AND current_execution.status='completed') AND NOT EXISTS(SELECT 1 FROM party_runtime.party_recovery_transition_bindings b JOIN party_runtime.party_route_plan_executions current_execution ON current_execution.id=NEW.id WHERE b.id=plan_row.recovery_binding_id AND b.status='consumed' AND b.terminal_change_set_id=current_execution.updated_change_set_id) THEN RAISE EXCEPTION 'spatial_recovery_plan_invalid: successful binding must be consumed'; END IF;
     IF NEW.status='superseded' AND NOT EXISTS(SELECT 1 FROM party_runtime.party_route_plan_executions s WHERE s.id=NEW.superseded_by_execution_id AND s.supersedes_execution_id=NEW.id) THEN RAISE EXCEPTION 'spatial_supersession_invalid: reciprocal successor'; END IF;
@@ -278,6 +309,8 @@ DROP TRIGGER IF EXISTS v3_execution_event_mapping ON party_runtime.party_route_p
 CREATE TRIGGER v3_execution_event_mapping BEFORE INSERT ON party_runtime.party_route_plan_execution_events FOR EACH ROW EXECUTE FUNCTION party_runtime.v3_execution_event_valid();
 DROP TRIGGER IF EXISTS v3_execution_event_causal ON party_runtime.party_route_plan_execution_events;
 CREATE CONSTRAINT TRIGGER v3_execution_event_causal AFTER INSERT ON party_runtime.party_route_plan_execution_events DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION party_runtime.v3_event_causal_integrity();
+DROP TRIGGER IF EXISTS v3_execution_event_ledger ON party_runtime.party_route_plan_execution_events;
+CREATE CONSTRAINT TRIGGER v3_execution_event_ledger AFTER INSERT ON party_runtime.party_route_plan_execution_events DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION party_runtime.v3_execution_event_ledger_integrity();
 DROP TRIGGER IF EXISTS v3_execution_event_append_only ON party_runtime.party_route_plan_execution_events;
 CREATE TRIGGER v3_execution_event_append_only BEFORE UPDATE OR DELETE ON party_runtime.party_route_plan_execution_events FOR EACH ROW EXECUTE FUNCTION party_runtime.v3_append_only();
 DROP TRIGGER IF EXISTS v3_action_run_append_only ON party_runtime.party_action_step_runs;

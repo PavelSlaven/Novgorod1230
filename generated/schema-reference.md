@@ -175,7 +175,7 @@ Release: `0.23.0-migration.24`
 | `schemas/materialization/world-revisions-v1.schema.json` | json | 571 | `47693c523b2000430235dafd8e7a5669355cf67208c53f6f497f95a985df4214` |
 | `schemas/party-db/001_party_runtime.sql` | sql | 19734 | `5cab24b65540da3f9857c2e70cd9e93c9761bac439839dbde1940cde24b5f6a1` |
 | `schemas/party-db/002_party_runtime_v3.sql` | sql | 47191 | `b5e97046fc0a2e7f14ca727402acd0c1b13f44d69aacfb381afb82f03e59c67b` |
-| `schemas/party-db/003_party_runtime_v3_planning.sql` | sql | 42197 | `574fed6b6207e3b79c9f16e40c42519bb45584d4d97524fd65fc1dca88d27cec` |
+| `schemas/party-db/003_party_runtime_v3_planning.sql` | sql | 48130 | `da050d482cac75631029eab25cb458f4fca0ee33c9d8955feaa12929ddc10d1f` |
 | `schemas/party-db/004_party_runtime_v3_journeys.sql` | sql | 32016 | `ad0015952902da0c8c4f5ee9fac21eaa5da17df83174ab11c14a2f0272252568` |
 | `schemas/party-db/005_party_runtime_v3_domain.sql` | sql | 2184 | `2b06c19a706f9122d6318a038ee49600ba215cc0686361bd6af1dc32a8b504f0` |
 | `schemas/world-base/world-base-source-bundle.schema.json` | json | 1447 | `358430badf2821197ffc74d4600b2cc2b153d1a1a141020e998650cb1c325dc2` |

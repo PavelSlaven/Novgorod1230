@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { classifyP28CiProfile } from '../../tools/spatial-v3/p28-ci-profile.mjs';
-import { fetchGitHubReleaseProof, P28_APPENDIX_D_ITEMS, P28_P12_GAPS, validateAppendixDItems, validateGitHubReleaseProof, validateReleaseEvidenceShape, verifyP28EvidenceCommitBinding } from '../../tools/spatial-v3/p28-activation-gate.mjs';
+import { fetchGitHubReleaseProof, isAcceptedP27Critic, P28_APPENDIX_D_ITEMS, P28_P12_GAPS, validateAppendixDItems, validateGitHubReleaseProof, validateReleaseEvidenceShape, verifyP28EvidenceCommitBinding } from '../../tools/spatial-v3/p28-activation-gate.mjs';
 
 const evidenceCommit = 'a'.repeat(40);
 const config = Object.freeze({
@@ -9,10 +9,9 @@ const config = Object.freeze({
   repository: 'PavelSlaven/Novgorod1230', base_ref: 'main', pull_request_number: 14,
   required_checks: ['clean-clone-generation-test'], completion_proof: { kind: 'github_merge' }
 });
-function approvedProof(overrides = {}) {
+function completedProof(overrides = {}) {
   return {
     pull: { draft: false, merged: true, base: { ref: 'main', repo: { full_name: 'PavelSlaven/Novgorod1230' } }, head: { sha: evidenceCommit }, merge_commit_sha: 'b'.repeat(40) },
-    reviews: [{ state: 'APPROVED', commit_id: evidenceCommit }],
     checks: { check_runs: [{ name: 'clean-clone-generation-test', status: 'completed', conclusion: 'success' }] },
     completion: { kind: 'github_merge', compare: { status: 'ahead' } }, ...overrides
   };
@@ -23,41 +22,49 @@ function codes(configToTest, proof) {
   return blockers;
 }
 
-test('P28 GitHub proof accepts only an exact approved PR head with its pinned successful check and merge ancestry', () => {
-  assert.deepEqual(codes(config, approvedProof()), []);
+test('P28 GitHub proof accepts a solo-maintainer exact PR head with its pinned successful check and merge ancestry', () => {
+  assert.deepEqual(codes(config, completedProof()), []);
+  assert.deepEqual(codes(config, completedProof({ reviews: [] })), []);
   assert.equal(P28_APPENDIX_D_ITEMS.length, 58);
   assert.equal(P28_P12_GAPS.length, 4);
 });
 
-test('P28 GitHub proof fails closed for a stale approval, pending/missing check, draft or unmerged PR, and merge mismatch', () => {
-  assert(codes(config, approvedProof({ reviews: [{ state: 'APPROVED', commit_id: 'c'.repeat(40) }] })).some(({ code }) => code === 'github_release_proof_exact_approval_missing'));
-  assert(codes(config, approvedProof({ checks: { check_runs: [{ name: 'clean-clone-generation-test', conclusion: 'in_progress' }] } })).some(({ code }) => code === 'github_release_proof_required_check_missing_or_not_success'));
-  assert(codes(config, approvedProof({ checks: { check_runs: [{ name: 'clean-clone-generation-test', status: 'in_progress', conclusion: 'success' }] } })).some(({ code }) => code === 'github_release_proof_required_check_missing_or_not_success'));
-  assert(codes(config, approvedProof({ pull: { draft: true, merged: false, head: { sha: evidenceCommit }, merge_commit_sha: 'b'.repeat(40) } })).some(({ code }) => code === 'github_release_proof_pr_draft'));
-  assert(codes(config, approvedProof({ pull: { draft: false, merged: false, head: { sha: evidenceCommit }, merge_commit_sha: 'b'.repeat(40) } })).some(({ code }) => code === 'github_release_proof_pr_unmerged'));
-  assert(codes(config, approvedProof({ pull: { ...approvedProof().pull, base: { ref: 'release', repo: { full_name: 'PavelSlaven/Novgorod1230' } } } })).some(({ code }) => code === 'github_release_proof_base_mismatch'));
-  assert(codes(config, approvedProof({ completion: { kind: 'github_merge', compare: { status: 'diverged' } } })).some(({ code }) => code === 'github_release_proof_merge_mismatch'));
+test('P28 GitHub proof fails closed for a pending/missing check, draft or unmerged PR, and merge mismatch', () => {
+  assert(codes(config, completedProof({ pull: { ...completedProof().pull, head: { sha: 'c'.repeat(40) } } })).some(({ code }) => code === 'github_release_proof_head_mismatch'));
+  assert(codes(config, completedProof({ checks: { check_runs: [{ name: 'clean-clone-generation-test', conclusion: 'in_progress' }] } })).some(({ code }) => code === 'github_release_proof_required_check_missing_or_not_success'));
+  assert(codes(config, completedProof({ checks: { check_runs: [{ name: 'clean-clone-generation-test', status: 'in_progress', conclusion: 'success' }] } })).some(({ code }) => code === 'github_release_proof_required_check_missing_or_not_success'));
+  assert(codes(config, completedProof({ pull: { draft: true, merged: false, head: { sha: evidenceCommit }, merge_commit_sha: 'b'.repeat(40) } })).some(({ code }) => code === 'github_release_proof_pr_draft'));
+  assert(codes(config, completedProof({ pull: { draft: false, merged: false, head: { sha: evidenceCommit }, merge_commit_sha: 'b'.repeat(40) } })).some(({ code }) => code === 'github_release_proof_pr_unmerged'));
+  assert(codes(config, completedProof({ pull: { ...completedProof().pull, base: { ref: 'release', repo: { full_name: 'PavelSlaven/Novgorod1230' } } } })).some(({ code }) => code === 'github_release_proof_base_mismatch'));
+  assert(codes(config, completedProof({ completion: { kind: 'github_merge', compare: { status: 'diverged' } } })).some(({ code }) => code === 'github_release_proof_merge_mismatch'));
+});
+
+test('P28 accepts only an exact PASS from the candidate-bound independent critic', () => {
+  const report = { status: 'passed', verdict: 'PASS', activation_candidate_commit: evidenceCommit };
+  assert.equal(isAcceptedP27Critic(report, evidenceCommit), true);
+  assert.equal(isAcceptedP27Critic({ ...report, verdict: 'PASS WITH NOTES' }, evidenceCommit), false);
+  assert.equal(isAcceptedP27Critic({ ...report, activation_candidate_commit: 'c'.repeat(40) }, evidenceCommit), false);
 });
 
 test('P28 GitHub proof validates signed annotated tags against the exact commit and configured local trust', () => {
   const tagConfig = { ...config, completion_proof: { kind: 'signed_annotated_tag', tag_name: 'spatial-v3-v1' } };
-  const valid = approvedProof({ completion: { kind: 'signed_annotated_tag', tag: { object: { type: 'tag', sha: 'd'.repeat(40) } }, annotated: { object: { type: 'commit', sha: evidenceCommit }, verification: { verified: true, reason: 'valid' } }, local_verification: { verified: true, fingerprint: 'f'.repeat(40) } } });
+  const valid = completedProof({ completion: { kind: 'signed_annotated_tag', tag: { object: { type: 'tag', sha: 'd'.repeat(40) } }, annotated: { object: { type: 'commit', sha: evidenceCommit }, verification: { verified: true, reason: 'valid' } }, local_verification: { verified: true, fingerprint: 'f'.repeat(40) } } });
   assert.deepEqual(codes(tagConfig, valid), []);
   assert.deepEqual(codes(tagConfig, { ...valid, pull: { ...valid.pull, merged: false } }), []);
   assert(codes(tagConfig, { ...valid, completion: { ...valid.completion, local_verification: { verified: false } } }).some(({ code }) => code === 'github_release_proof_signed_tag_invalid_or_untrusted'));
 });
 
-test('GitHub adapter is a network boundary and assembles exact PR, review, check and merge evidence', async () => {
+test('GitHub adapter is a network boundary and assembles exact PR, check and merge evidence', async () => {
   const urls = [];
   const response = (body) => ({ ok: true, json: async () => body });
   const proof = await fetchGitHubReleaseProof({ ...config, evidenceCommit, fetchImpl: async (url) => {
     urls.push(url);
-    if (url.includes('/pulls/14/reviews')) return response([{ state: 'APPROVED', commit_id: evidenceCommit }]);
     if (url.includes('/check-runs')) return response({ check_runs: [{ name: 'clean-clone-generation-test', status: 'completed', conclusion: 'success' }] });
     if (url.includes('/compare/')) return response({ status: 'ahead' });
     return response({ draft: false, merged: true, base: { ref: 'main', repo: { full_name: 'PavelSlaven/Novgorod1230' } }, head: { sha: evidenceCommit }, merge_commit_sha: 'b'.repeat(40) });
   } });
-  assert.equal(urls.length, 4);
+  assert.equal(urls.length, 3);
+  assert(!urls.some((url) => url.includes('/reviews')));
   assert.deepEqual(codes(config, proof), []);
 });
 

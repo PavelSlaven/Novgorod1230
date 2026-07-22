@@ -14,7 +14,7 @@
 
 Работа ведётся в ветке `codex/spatial-architecture-g0-g6-v4-2` и PR №14. Функциональный кандидат `11c9f0c1de2d510c29be51546d16851f0d719f76` прошёл полный clean-clone CI: PostgreSQL, проверку 186 таблиц актуального DDL, воспроизводимость generated-файлов, Graphify и полный набор тестов. Последующий release-candidate меняет только документацию, policy и generated metadata и проходит локальные профильные проверки; его strict evidence-child проходит облегчённый CI, не повторяющий PostgreSQL, браузер и полный набор тестов.
 
-P12 закрыт: canonical manifest имеет статус `approved`, содержит 37 datasets и `data_gaps: []`; утверждённая dependency closure включает 195 canonical G5 records, 358 physical exit pairs, 600 typed edge mappings, 17 scene families, 195 profiles и 195 candidates. Production ownership остаётся у v2, а target v3 до P28 не активирован. P28 использует GitHub approval точного HEAD, обязательный успешный CI и подтверждение merge commit либо trusted signed release tag; старые Ed25519 role signatures и отдельная fresh-checkout authority не требуются.
+P12 закрыт: canonical manifest имеет статус `approved`, содержит 37 datasets и `data_gaps: []`; утверждённая dependency closure включает 195 canonical G5 records, 358 physical exit pairs, 600 typed edge mappings, 17 scene families, 195 profiles и 195 candidates. Production ownership остаётся у v2, а target v3 до P28 не активирован. Для solo-maintainer P28 использует точный HEAD готового PR, обязательный успешный CI и подтверждение merge commit либо trusted signed release tag; отдельный self-approval, старые Ed25519 role signatures и fresh-checkout authority не требуются. Независимость технической проверки обеспечивает итоговый critic report.
 
 ## Основные принципы
 

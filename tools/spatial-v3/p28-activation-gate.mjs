@@ -106,12 +106,11 @@ export async function fetchGitHubReleaseProof({ repository, pullRequestNumber, p
   completionProof ??= completion_proof;
   if (!fetchImpl || !isCommit(evidenceCommit)) throw new Error('github_proof_input_invalid');
   const base = `https://api.github.com/repos/${repository}`;
-  const [pull, reviews, checks] = await Promise.all([
+  const [pull, checks] = await Promise.all([
     githubJson(fetchImpl, `${base}/pulls/${pullRequestNumber}`),
-    githubJson(fetchImpl, `${base}/pulls/${pullRequestNumber}/reviews?per_page=100`),
     githubJson(fetchImpl, `${base}/commits/${evidenceCommit}/check-runs?per_page=100`)
   ]);
-  const proof = { pull, reviews, checks, completion: null };
+  const proof = { pull, checks, completion: null };
   if (completionProof.kind === 'github_merge') proof.completion = { kind: 'github_merge', compare: await githubJson(fetchImpl, `${base}/compare/${evidenceCommit}...${pull.merge_commit_sha}`) };
   else {
     const tag = await githubJson(fetchImpl, `${base}/git/ref/tags/${completionProof.tag_name}`);
@@ -135,7 +134,6 @@ export function validateGitHubReleaseProof({ config, proof, evidenceCommit, add 
   if (pull?.draft === true) add('github_release_proof_pr_draft');
   if (pull?.base?.repo?.full_name !== config.repository || pull?.base?.ref !== config.base_ref) add('github_release_proof_base_mismatch');
   if (pull?.head?.sha?.toLowerCase() !== evidenceCommit) add('github_release_proof_head_mismatch');
-  if (!Array.isArray(proof?.reviews) || !proof.reviews.some((review) => review?.state === 'APPROVED' && review?.commit_id?.toLowerCase() === evidenceCommit)) add('github_release_proof_exact_approval_missing');
   const runs = proof?.checks?.check_runs;
   for (const required of config.required_checks) if (!Array.isArray(runs) || !runs.some((run) => run?.name === required && run?.status === 'completed' && run?.conclusion === 'success')) add('github_release_proof_required_check_missing_or_not_success', MANIFEST_PATH, { check: required });
   if (config.completion_proof.kind === 'github_merge') {
@@ -165,8 +163,11 @@ async function validateP12Gaps({ root, read, gitRaw: readGitRaw, gaps, add }) {
   if (identityErrors.some((error) => error.code === 'p12_gap_evidence_coverage_invalid')) return;
   for (const { code, subject_ref } of P28_P12_GAPS) { const gap = gaps.find((entry) => entry?.code === code); if (gap.status !== 'resolved' || !Array.isArray(gap.resolution_evidence) || !gap.resolution_evidence.length) { add('spatial_candidate_gap', MANIFEST_PATH, { gap_code: code, subject_ref, resolution_status: gap?.status ?? 'missing' }); continue; } for (const evidence of gap.resolution_evidence) await validateP28HashedEvidence({ root, read, gitRaw: readGitRaw, evidence, add, code: 'p12_gap_resolution_evidence_invalid', details: { gap_code: code, subject_ref } }); }
 }
+export function isAcceptedP27Critic(report, candidateCommit) {
+  return report?.status === 'passed' && report.verdict === 'PASS' && report.activation_candidate_commit === candidateCommit;
+}
 async function validateP27Critic({ root, read, realpath, gitRaw: readGitRaw, candidateCommit, report, add }) {
-  if (!report || report.status !== 'passed' || !['PASS', 'PASS WITH NOTES'].includes(report.verdict) || report.activation_candidate_commit !== candidateCommit) return add('p27_independent_critic_evidence_missing');
+  if (!isAcceptedP27Critic(report, candidateCommit)) return add('p27_independent_critic_evidence_missing');
   await validateP28HashedEvidence({ root, read, realpath, gitRaw: readGitRaw, evidence: report, add, code: 'p27_independent_critic_hash_mismatch' });
 }
 function result(blockers) { return FREEZE({ schema: 'rus.spatial-v3.p28-activation-assessment.v2', activation_permitted: blockers.length === 0, production_writes: 0, composition_changed: false, blockers: FREEZE(blockers), required_action: blockers.length === 0 ? 'release_proof_accepted_no_repository_patch' : 'keep_v2_production' }); }

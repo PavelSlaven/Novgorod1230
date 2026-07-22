@@ -1,17 +1,19 @@
-# P28 candidate `11c9f0c` — Appendix D evidence ledger
+# P28 candidate `29e5e1d` — Appendix D evidence ledger
 
 ## Scope
 
 This ledger is a reproducible preparation record for candidate
-`11c9f0c1de2d510c29be51546d16851f0d719f76`. It is intended to be committed
+`29e5e1dbcf5e4b58d1c036308262f0e68bc562e4`. Its functional subject is
+`11c9f0c1de2d510c29be51546d16851f0d719f76`, which passed the full clean-clone
+CI. This ledger is intended to be committed
 with the release manifest as part of that candidate's single direct-child
 evidence commit. Its own raw SHA-256 is pinned by every Appendix D reference
 in that manifest; the candidate SHA pins the cited candidate-tree files.
 
 The related independent P27 critic record is
-`docs/migration/spatial-v3/p27-candidate-evidence.md`
+`docs/migration/spatial-v3/p27-final-critic-report.md`
 with raw SHA-256
-`ef5524b643fe62982c8202b3f64830376e1de1dbd0bdc22398740ec81d0ebc3a`.
+`a5b31b48cc2cc187303eede2943b1f9414cb2daa06f4b362a69ff4a58210c8ba`.
 That record is independent-review evidence, not authority.
 
 Every row below is **passed** by one final independent audit over the cited
@@ -20,16 +22,6 @@ creating a separate approval procedure for each row. Exact PR approval, the
 manifest-pinned successful check and canonical-main merge or locally verified
 signed-tag completion remain separate live P28 prerequisites and are not
 represented as evidence for these rows.
-
-## Owner-authorized process-evidence exception
-
-The plan owner has approved the documented process-evidence exception for this
-candidate. It is a governance-only acceptance that permits preparation of this
-evidence package despite the absence of retrospective proof that every
-historical phase used a distinct subagent in the prescribed sequence. It does
-not by itself satisfy any Appendix D item, confer P28 activation or runtime
-authority, alter production composition, or replace the final independent
-review and live GitHub release proof.
 
 | Appendix item | Candidate evidence pointer | Current disposition |
 |---|---|---|
@@ -82,7 +74,7 @@ review and live GitHub release proof.
 | D5.postgres_import_lifecycle | candidate P12 isolated PostgreSQL checks | passed; final audit accepted cited evidence |
 | D5.new_game_existing_save_e2e | candidate P24/P25 migration and rollback tests | passed; final audit accepted cited evidence |
 | D5.docs_catalogs_ownership_sync | candidate P02/P04/P05 checks and completion matrix | passed; final audit accepted cited evidence |
-| D5.readme_checks_critic_cycles | candidate README and independent P27 record | passed; final audit accepted cited evidence |
+| D5.readme_checks_critic_cycles | candidate README and final P27 critic report | passed; final audit accepted cited evidence |
 | D6.contract_unit_tests | candidate P27 exact local test record | passed; final audit accepted cited evidence |
 | D6.negative_invariant_tests | candidate P27 exact local test record | passed; final audit accepted cited evidence |
 | D6.property_time_route_tests | candidate P27 exact local test record | passed; final audit accepted cited evidence |
@@ -90,7 +82,7 @@ review and live GitHub release proof.
 | D6.full_project_tests | candidate P27 exact local test record | passed; final audit accepted cited evidence |
 | D6.postgres_integration | candidate P27 exact local PostgreSQL record | passed; final audit accepted cited evidence |
 | D6.generated_artifacts_reproduced | candidate P27 docs/knowledge checks | passed; final audit accepted cited evidence |
-| D6.independent_critic_accepted | independent P27 record only | passed; final audit accepted cited evidence |
+| D6.independent_critic_accepted | final P27 critic report for functional subject and docs/policy release-candidate | passed; final audit accepted cited evidence |
 
 ## Non-authority boundary
 

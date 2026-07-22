@@ -474,7 +474,8 @@ approval_request_digest = a0a667b47bf42225a4bc2a1059c43f8dc3697008618b929359e1e9
 approve_all_120 = pending_exact_digest_confirmation
 current_diff_independent_critic = PASS
 current_diff_standards_review = PASS_WITH_NOTES
-current_diff_clean_clone_acceptance = pending
+current_diff_clean_clone_acceptance = PASS
+current_diff_clean_clone_sha = 317fd35e179161d3d941adce827f74636bc2666a
 stage3c_postgresql_lifecycle = pending_human_approval
 stage3c_promotion = false
 runtime_activation = false
@@ -488,9 +489,14 @@ ordering, digest-bound request/attestation, exact 120 IDs, readiness и G4 cover
 а также отсутствие activation, rematerialization и operator DB access. Targeted
 tamper probes для readiness, coverage, 120 IDs и transitions блокируются fail-closed.
 
-Предыдущий clean-clone acceptance относится к commit
-`8eceed830b0fc5428be6837ff4dd2ab6fdffa703` и не считается финальной приёмкой
-текущего Stage 3C diff. Следующий разрешённый порядок: clean-clone acceptance
-текущего functional commit → явное подтверждение пользователем exact request и
+Clean-clone acceptance выполнен на отдельной свежей копии exact functional commit
+`317fd35e179161d3d941adce827f74636bc2666a`. Внутри clone прошли `npm ci`,
+generated-check (43 files), candidate validation, Stage 3C request-check,
+`test:world-catalog` (130/130) и полный `npm test`: modules 193/193, shadow 6/6,
+cutover 4/4, integration 21 PASS с 5 явными PostgreSQL skips, docs и architecture
+PASS. Browser E2E сохранил один явный skip из-за отсутствия Chromium executable.
+После PASS временная копия удалена.
+
+Следующий разрешённый порядок: явное подтверждение пользователем exact request и
 candidate digests → изолированный PostgreSQL Stage 3C rollback/apply/repeat lifecycle
 без activation → финальный аудит и обновление существующего PR №17.

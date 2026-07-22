@@ -8,6 +8,7 @@ import { normalizeStage13MaterializationPolicy, runStage13G5MaterializationBlock
 import { buildStage14G5SceneCodePrecheck, normalizeStage14AuditPolicy, STAGE14_INPUT_SCHEMA } from '@rus/new-game/stages/stage-14';
 import { buildStage16ItemPlacementCodePrecheck, normalizeStage16ItemPlacementPolicy } from '@rus/new-game/stages/stage-16';
 import { retrieveApprovedItemProfileCandidates } from '@rus/new-game/stages/stage-8';
+import { enterG4WithMaterialization } from '@rus/turn';
 import { buildAllowedG5TemplateSet, buildApprovedItemCatalogSnapshot } from '../src/index.js';
 
 const root = resolve(import.meta.dirname, '../../..');
@@ -250,6 +251,56 @@ test('all nine approved G4 contexts preserve item and container candidate isolat
   }
 });
 
+test('a craft tool is absent from household candidates and a generic G4 has explicit no-item/container materialization', async () => {
+  const { records, mappings } = loadApprovedCandidate();
+  const snapshot = buildApprovedItemCatalogSnapshot({ records_by_table: records, world_revision_id: worldRevisionId, catalog_digest: runtimeDigest(records) });
+  const stage8 = await retrieveApprovedItemProfileCandidates(stage8Input(snapshot));
+  const adze = stage8.item_profile_candidates.find((candidate) => candidate.item_template_id === 'item_tpl_nov_adze_v1');
+  assert.equal(adze.item_profile_id, 'profile_craft_work_v3');
+
+  const household = mappings.find((mapping) => mapping.context_domain === 'household_personal');
+  const householdSet = buildAllowedG5TemplateSet({ records_by_table: records, graph_node_id: household.graph_node_id, world_revision_id: worldRevisionId, source_catalog_digest: runtimeDigest(records) });
+  const householdIds = householdSet.allowed_g5_templates[0].slot_rules.filter((slot) => slot.slot_domain === 'item').flatMap((slot) => slot.candidate_ids);
+  assert.equal(householdIds.includes(adze.item_profile_candidate_id), false);
+
+  records.graph_nodes.push({ id: 'g4_explicit_no_item_container', title: 'Explicit empty context', node_type: 'location', scale_level: 'G4', region_id: 'region_novgorod_land', status: 'approved' });
+  const emptySet = buildAllowedG5TemplateSet({ records_by_table: records, graph_node_id: 'g4_explicit_no_item_container', world_revision_id: worldRevisionId, source_catalog_digest: runtimeDigest(records) });
+  assert.deepEqual(emptySet.allowed_g5_templates[0].slot_rules.filter((slot) => ['item', 'container'].includes(slot.slot_domain)), []);
+});
+
+test('representative V5 first-entry materializes once and repeat-entry reuses the committed item/container baseline', async () => {
+  const { records, mappings } = loadApprovedCandidate();
+  const mapping = mappings.find((record) => record.context_domain === 'craft_work');
+  const snapshot = buildApprovedItemCatalogSnapshot({ records_by_table: records, world_revision_id: worldRevisionId, catalog_digest: runtimeDigest(records) });
+  const stage8 = await retrieveApprovedItemProfileCandidates(stage8Input(snapshot));
+  const allowed = buildAllowedG5TemplateSet({ records_by_table: records, graph_node_id: mapping.graph_node_id, world_revision_id: worldRevisionId, selected_g4_type_id: mapping.node_type, source_catalog_digest: runtimeDigest(records) });
+  let baseline = null;
+  let materializeCalls = 0;
+  const enter = () => enterG4WithMaterialization({
+    partyId: 'party_pr17_first_entry',
+    g4Id: mapping.graph_node_id,
+    transact: async (work) => work({ id: 'tx-pr17' }),
+    loadCommittedBaseline: async () => baseline,
+    buildMaterializationRequest: async () => ({ mapping, stage8, allowed }),
+    materialize: async () => {
+      materializeCalls += 1;
+      const scene = materializeG5Scene(firstEntrySceneInput(mapping, stage8, allowed));
+      const placement = materializeItemPlacement(firstEntryPlacementInput(mapping, stage8, scene));
+      return { run_id: scene.materialization_run.run_id, scene, placement };
+    },
+    commitMaterializationAndMovement: async ({ materialization }) => { baseline = materialization; return { operation: 'materialize_and_move', ...materialization }; },
+    commitMovement: async ({ baselineRunId }) => ({ operation: 'move_to_existing_g4', baseline_run_id: baselineRunId })
+  });
+  const first = await enter();
+  const repeated = await enter();
+  assert.equal(first.operation, 'materialize_and_move');
+  assert.equal(first.placement.item_instances.length, 1);
+  assert.equal(first.placement.container_instances.length, 1);
+  assert.equal(repeated.operation, 'move_to_existing_g4');
+  assert.equal(repeated.baseline_run_id, first.run_id);
+  assert.equal(materializeCalls, 1);
+});
+
 function loadApprovedCandidate() {
   const manifest = readJson(resolve(candidateRoot, 'manifest.json'));
   const records = Object.fromEntries(manifest.datasets.map((dataset) => [dataset.table, promote(readJson(resolve(candidateRoot, dataset.path)))]));
@@ -303,6 +354,36 @@ function selectedNode(mapping) {
       g3_node_id: 'gn_nov_g1_03_04_g3_test',
       g4_node_id: mapping.graph_node_id
     }
+  };
+}
+
+function firstEntrySceneInput(mapping, stage8, allowed) {
+  return {
+    version: 1,
+    schema: 'g5_materialization_input',
+    request_id: 'pr17-first-entry',
+    selected_start_node: selectedNode(mapping),
+    weather_state: { condition: 'clear' },
+    item_profile_candidate_set: stage8,
+    materialization_context: { party_id: 'party_pr17_first_entry', g1_id: 'gn_nov_g1_03_04', world_revision_id: worldRevisionId, region_id: 'region_novgorod_land', year: 1230, season: 'spring', trigger: 'first_entry', occurrence: 0, materializer_version: 'code_materializer_v2', rng_version: 'mulberry32_v1' },
+    allowed_g5_template_set: allowed
+  };
+}
+
+function firstEntryPlacementInput(mapping, stage8, scene) {
+  return {
+    version: 1,
+    schema: 'item_placement_input',
+    request_id: 'pr17-first-entry',
+    historical_frame: stage8.frame,
+    selected_start_node: selectedNode(mapping),
+    g5_scene_graph: scene,
+    item_profile_candidate_set: stage8,
+    eligible_item_profile_candidates: stage8.item_profile_candidates,
+    eligible_container_profile_candidates: stage8.container_profile_candidates,
+    eligible_property_rule_candidates: stage8.property_rule_candidates,
+    eligible_g5_item_anchors: scene.g5_anchors.filter((anchor) => anchor.supports.can_hold_item),
+    eligible_g5_container_anchors: scene.g5_anchors.filter((anchor) => anchor.supports.can_hold_container)
   };
 }
 

@@ -17,4 +17,5 @@ export { buildG4ItemContainerCoverageReport, resolveG4MaterializationBinding } f
 export { compileItemContainerG4Projection } from './item-container-g4-projection.js';
 export { compileV5CanonicalCatalog } from './v5-canonical-catalog.js';
 export { applyPr17ItemContainerCandidateBundle, validatePr17ItemContainerCandidateBundle } from './pr17-candidate-bundle.js';
+export { buildPr17Stage3CApprovalRequest, buildPr17Stage3CPromotionPlan } from './pr17-stage3c.js';
 export { buildApprovedItemCatalogSnapshot, buildAllowedG5TemplateSet } from './runtime-catalog-loaders.js';

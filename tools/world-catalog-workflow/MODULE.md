@@ -14,7 +14,7 @@
 - `validateItemContainerClassificationCatalog`, `assessItemContainerClassificationMigration` и `assessItemContainerClassificationReadiness`: normalised facets, compatibility, typed legacy gaps/conflicts и required profile/G4 rule;
 - чистой `calculatePackingSlots({ quantity, packing_slot_cost, packing_bundle_size })` без доступа к БД, файлам, глобальному состоянию, массы или fallback;
 - `validateSupplementalCatalogBundle` и `applySupplementalCatalogBundle`: draft-only manifest, canonical SHA-256, table registry, local/external FK, XOR и injected transaction adapter с readback digest/count и rollback.
-- Stage 3C contracts: `buildCatalogEditorialReadinessReport`, evidence/approval plans, verified legacy inventory и all-120-only revision promotion/rollback without activation.
+- Stage 3C contracts: `buildCatalogEditorialReadinessReport`, evidence/approval plans, verified legacy inventory, exact PR17 approval request и all-120-only revision promotion/rollback with atomic G4 status transitions and without activation.
 
 ## Публичные интерфейсы
 
@@ -24,7 +24,7 @@
 | classification | `validateCatalogImportManifest`, `validateClassificationCatalog`, `importClassificationCatalog` | manifest + records + injected transaction adapter → validation/dry-run/apply result без semantic repair |
 | item/container | `validateItemContainerClassificationCatalog`, `assessItemContainerClassificationMigration`, `assessItemContainerClassificationReadiness`, `calculatePackingSlots` | normalised records/legacy inventory → errors, typed gaps/conflicts/readiness или exact packing count |
 | supplemental | `SUPPLEMENTAL_AUTHORING_TABLES`, `supplementalDigest`, `validateSupplementalCatalogBundle`, `applySupplementalCatalogBundle` | draft manifest + datasets + declared external IDs → deterministic validation или transactional adapter result |
-| Stage 3C readiness/promotion | `LEGACY_CLASSIFICATION_FIELD_REGISTRY`, `flattenLegacyRows`, `buildLegacyClassificationInventory`, `buildCatalogEditorialReadinessReport`, `buildEditorialEvidenceReviewPlan`, `buildCoherentEditorialApprovalPlan`, `buildRevisionPromotionPlan`, `buildAllTemplateRevisionPromotionPlan`, `validateApprovedDependencyClosure`, `applyRevisionPromotionPlan`, `buildRevisionRollbackPlan` | verified operator export + all-120 cohort + attestations → typed readiness/blocked plan или revision-pinned transactional promotion without activation |
+| Stage 3C readiness/promotion | `LEGACY_CLASSIFICATION_FIELD_REGISTRY`, `flattenLegacyRows`, `buildLegacyClassificationInventory`, `buildCatalogEditorialReadinessReport`, `buildEditorialEvidenceReviewPlan`, `buildCoherentEditorialApprovalPlan`, `buildPr17Stage3CApprovalRequest`, `buildPr17Stage3CPromotionPlan`, `buildRevisionPromotionPlan`, `buildAllTemplateRevisionPromotionPlan`, `validateApprovedDependencyClosure`, `applyRevisionPromotionPlan`, `buildRevisionRollbackPlan` | verified operator export + exact candidate/coverage digests + all-120 attestation → typed readiness/blocked plan или revision-pinned transactional promotion with exact G4 transitions and without activation |
 
 `validateSupplementalCatalogBundle` и `applySupplementalCatalogBundle` никогда не переводят `draft` records в `approved`, не активируют revision и не создают party/runtime candidates. Детали всех входов, результатов, ошибок и test cases приведены в [CONTRACTS.md](CONTRACTS.md).
 
@@ -32,7 +32,7 @@
 
 - exported validators и calculators чисты: не читают сеть, БД, часы, случайность или глобальное состояние;
 - JSON Schema и DDL-derived rules являются входной нормативной зависимостью validator-а;
-- `applySupplementalCatalogBundle` имеет единственный разрешённый side effect: вызовы явно переданного `adapter.begin/insert/readback/commit/rollback`;
+- apply APIs имеют только явно переданные adapter side effects; Stage 3C дополнительно использует `transition/readTransition` для exact G4 status transitions в той же transaction;
 - CLI/readers могут читать явно переданные versioned files, но не являются runtime loader-ами.
 
 ## Ошибки и stop conditions
@@ -64,3 +64,4 @@
 - 2026-07-15: добавлены quantity profiles и typed template-source bindings с revision guards.
 - 2026-07-16: публичные контракты, ошибки, зависимости и Stage 3B-1 interaction boundary зарегистрированы явно; runtime behaviour не изменён.
 - 2026-07-16: добавлены Stage 3C fail-closed readiness, verified legacy inventory и all-120-only promotion APIs; activation и existing parties по-прежнему вне модуля.
+- 2026-07-23: Stage 3C расширен полной item/container spatial closure, exact candidate/coverage approval request и атомарными G4 transitions без activation.

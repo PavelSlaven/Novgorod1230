@@ -387,7 +387,7 @@ Runtime integration test доказывает:
 - все девять контекстов изолируют свои candidate sets;
 - unapproved G4 и unapproved revision отклоняются fail-closed.
 
-### Reproducibility и PostgreSQL lifecycle
+### Reproducibility и Stage 3C closure
 
 Сгенерированный candidate содержит 39 datasets и три reports. Его exact digest:
 
@@ -403,42 +403,62 @@ activation = not_requested
 deletion_policy = none
 ```
 
-На изолированной временной PostgreSQL 16 БД `pr17_item_container` выполнены schema
-initialization, rollback probe, exact apply/readback и повторный idempotent apply:
+После completion-аудита прежнего кандидата обнаружен отдельный dependency gap:
+обычный Stage 3C workflow продвигал item/container rows, но не включал spatial
+closure и атомарные переходы выбранных G4. Gap закрыт без создания 9 332 профилей и
+без ослабления readiness:
+
+- 9 существующих G4 выбраны по фактическим `node_type`, `place_template_id`,
+  `building_template_id` и функции места, а не случайно для прохождения проверки;
+- bindings разрешают общий профиль по допустимому DDL selector, но каждое из 9 item
+  rules и 18 container rules указывает конкретные `graph_node_id` и `slot_rule_id`;
+- общий coverage report доказывает разрешение всех 9 332 G4, включая явный
+  no-item/container profile для остальных approved узлов;
+- Stage 3C plan содержит все 39 таблиц, 102 item и 18 container transitions, а также
+  ровно 9 G4 status transitions в одной транзакции;
+- readback mismatch откатывает и datasets, и G4 transitions;
+- promotion не активирует revision, не запускает rematerialization и не изменяет
+  existing parties.
+
+Технический запрос на человеческое утверждение сформирован только после проверки
+manifest, всех dataset digests, readiness 120/120 и полного G4 coverage. Его exact
+request digest:
 
 ```text
-rollback = pass
-apply = true
-repeat_apply = true
-readback_candidate_digest = d55b4e8a7ac44340301f89dbb2d1cc9dca13d5761fdad92afb11a599af29745e
-world_revision_status = draft
-non_draft_materialization_rule_count = 0
-approved_selected_g4_count = 0
-activation_performed = false
+a0a667b47bf42225a4bc2a1059c43f8dc3697008618b929359e1e9f228a8ea91
 ```
 
-Временный Docker container удалён. Operator/production database не изменялась.
+Approval attestation дополнительно должна содержать exact candidate digest, request
+digest, решение `approve_all_120` и `activation_authorized = false`. До явного ответа
+пользователя файл attestation не создаётся, а PostgreSQL Stage 3C lifecycle не
+запускается.
 
-### Фактически выполненные проверки
+Предыдущий draft-only lifecycle на изолированной PostgreSQL 16 БД
+`pr17_item_container` доказал rollback, exact apply/readback и repeat apply кандидата
+до promotion. Временный container удалён; operator/production database не
+изменялась. Этот результат остаётся pre-promotion evidence и не подменяет новый
+approval-bound Stage 3C lifecycle.
+
+### Фактически выполненные проверки текущего diff
 
 ```text
-npm run item-container-120:generated-check                         PASS
-npm run item-container-120:validate                                PASS
-npm run item-container-120:postgres:dry-run                        PASS
-npm run item-container-120:postgres:lifecycle                      PASS
-npm run world-db:schema-doc-check                                  PASS
-npm run test:world-catalog                                         122/122 PASS
 npm run docs:generate                                              PASS
 npm run docs:check                                                 PASS
+npm run item-container-120:generated-check                         PASS (43 files)
+npm run item-container-120:validate                                PASS
+npm run item-container-120:stage3c-request-check                   PASS
+npm run test:world-catalog                                         130/130 PASS
 npm test                                                           PASS
 git diff --check                                                   PASS
 graphify update .                                                  PASS
 ```
 
-В составе `npm test`: modules `185/185`, shadow `6/6`, cutover `4/4`, integration
-`21 PASS` и `5` PostgreSQL-dependent skips. Browser E2E имеет один skip из-за
-отсутствия Chromium executable в локальной test-конфигурации; это не скрытый runtime
-failure, но остаётся явно зафиксированным ограничением.
+В составе последнего полного `npm test`: modules `193/193`, shadow `6/6`, cutover
+`4/4`, integration `21 PASS` и `5` PostgreSQL-dependent skips. Browser E2E имеет
+один skip из-за отсутствия Chromium executable в локальной test-конфигурации; это
+явно зафиксированное ограничение, а не скрытый runtime failure. Graphify обновлён до
+24 276 nodes, 48 062 edges и 1 424 communities; отдельно сохранены предупреждения о
+31 SQL-файле без `tree_sitter_sql` и 292 файлах без извлечённых nodes.
 
 ### Текущий gate
 
@@ -446,39 +466,31 @@ failure, но остаётся явно зафиксированным огра�
 historical_review = user_confirmed
 canonical_candidate_compiled = true
 canonical_candidate_validated = true
-postgresql_lifecycle = pass
-independent_final_critic = PASS
-standards_review = PASS_WITH_NOTES
-clean_clone_acceptance = PASS
-clean_clone_sha = 8eceed830b0fc5428be6837ff4dd2ab6fdffa703
+all_9332_g4_resolved = true
+selected_context_g4_count = 9
+stage3c_technical_plan = PASS
+stage3c_atomic_rollback_unit_test = PASS
+approval_request_digest = a0a667b47bf42225a4bc2a1059c43f8dc3697008618b929359e1e9f228a8ea91
 approve_all_120 = pending_exact_digest_confirmation
+current_diff_independent_critic = PASS
+current_diff_standards_review = PASS_WITH_NOTES
+current_diff_clean_clone_acceptance = pending
+stage3c_postgresql_lifecycle = pending_human_approval
 stage3c_promotion = false
 runtime_activation = false
 pr_state = draft
 ```
 
-Следующий разрешённый порядок: независимый critic → исправления при необходимости →
-clean-clone acceptance → отдельное подтверждение пользователем exact digest → atomic
-all-120 approval и Stage 3C promotion без activation.
+Повторный независимый critic текущего Stage 3C diff дал `PASS`; Standards-аудит —
+`PASS WITH NOTES` без hard violations. Проверены 39-table FK closure и self-reference
+ordering, digest-bound request/attestation, exact 120 IDs, readiness и G4 coverage,
+атомарность и rollback девяти G4 transitions, совместимость прежнего promotion API,
+а также отсутствие activation, rematerialization и operator DB access. Targeted
+tamper probes для readiness, coverage, 120 IDs и transitions блокируются fail-closed.
 
-Первый независимый проход обнаружил и заблокировал cross-revision/draft bypass в
-runtime loader. После TDD-исправления оба runtime loader требуют существующую
-`world_revisions` запись со статусом `approved`, exact совпадение её `catalog_digest`,
-revision-scoped dependencies, approved G4 и совпадающий region. Добавлены негативные
-тесты для draft/missing revision, digest mismatch, direct draft G4, cross-revision
-item и layout. Повторный critic дал `PASS`, standards axis — `PASS WITH NOTES` без
-оставшихся hard violations и разрешил clean-clone acceptance.
-
-Candidate manifest digest
-`d55b4e8a7ac44340301f89dbb2d1cc9dca13d5761fdad92afb11a599af29745e`
-связывает будущую человеческую
-аттестацию с exact набором входных datasets. Runtime catalog pin является отдельным
-`world_revisions.catalog_digest`; loader не смешивает эти два digest и проверяет
-runtime pin по точной revision record.
-
-Clean-clone acceptance выполнен на отдельной свежей копии exact functional commit
-`8eceed830b0fc5428be6837ff4dd2ab6fdffa703`. Внутри clone фактически прошли
-`npm ci`, generated-check, candidate validation, PostgreSQL dry-run,
-`test:world-catalog` (`122/122`) и полный `npm test`. После PASS временная копия
-удалена. Этот evidence-only README update не меняет проверенные code, DDL, schemas,
-datasets или candidate digest.
+Предыдущий clean-clone acceptance относится к commit
+`8eceed830b0fc5428be6837ff4dd2ab6fdffa703` и не считается финальной приёмкой
+текущего Stage 3C diff. Следующий разрешённый порядок: clean-clone acceptance
+текущего functional commit → явное подтверждение пользователем exact request и
+candidate digests → изолированный PostgreSQL Stage 3C rollback/apply/repeat lifecycle
+без activation → финальный аудит и обновление существующего PR №17.

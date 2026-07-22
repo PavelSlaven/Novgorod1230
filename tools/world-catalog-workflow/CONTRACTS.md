@@ -28,7 +28,8 @@
 | `buildEditorialEvidenceReviewPlan`, `buildCoherentEditorialApprovalPlan` | valid readiness digest and human attestation | atomic status-transition proposal or blocked plan | missing attestation, incomplete all-120 cohort | editorial workflow; no direct write |
 | `buildRevisionPromotionPlan`, `validateApprovedDependencyClosure`, `buildRevisionRollbackPlan` | approved parent, new target revision, explicit subset/attestation | revision-pinned manifest, dependency closure and rollback plan | missing approved dependency, wrong revision pin, empty subset | promotion dry-run |
 | `buildAllTemplateRevisionPromotionPlan` | exact 120 IDs, complete readiness report, verified legacy snapshot, `approve_all_120` attestation | blocked or ready promotion plan | partial cohort, digest/attestation mismatch, unresolved legacy inventory | mandatory Stage 3C promotion gate |
-| `applyRevisionPromotionPlan` | ready promotion plan and adapter `{ begin, insert, readback, readRevision, commit, rollback }` | transaction audit or rejected promise after rollback | parent changed, target exists, readback mismatch | explicitly approved database apply only |
+| `buildPr17Stage3CApprovalRequest`, `buildPr17Stage3CPromotionPlan` | exact candidate datasets/manifest, 120/120 readiness, zero-gap 9 332-G4 coverage, nine declared transitions, target revision and human attestation | digest-bound request or complete spatial promotion plan | dataset/count/digest mismatch, stale coverage, wrong request/attestation digest | PR17 exact approval gate |
+| `applyRevisionPromotionPlan` | ready promotion plan and adapter `{ begin, transition, readTransition, insert, readback, readRevision, commit, rollback }` (`transition` methods required only when declared) | transaction audit or rejected promise after rollback | transition precondition/readback, parent changed, target exists, dataset readback mismatch | explicitly approved database apply only |
 
 ## Общие гарантии
 
@@ -38,7 +39,7 @@
 4. Supplemental path принимает только registered authoring tables, `approval = draft` и `deletion_policy = none`; party tables запрещены.
 5. Transactional apply читает count/digest после каждой таблицы, а при исключении вызывает rollback.
 6. Любая SQL-запись принадлежит injected adapter; module не владеет database connection и не выполняет live external query.
-7. Stage 3C promotion не делает activation, не меняет runtime loader и не rematerialize existing parties; partial promotion из 120 templates запрещён.
+7. Stage 3C promotion не делает activation, не меняет runtime loader и не rematerialize existing parties; partial promotion из 120 templates запрещён. Объявленные G4 status transitions входят в тот же manifest и transaction, проверяются readback и откатываются вместе с datasets.
 
 ## Внешние и внутренние зависимости
 

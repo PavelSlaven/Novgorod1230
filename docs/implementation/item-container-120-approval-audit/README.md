@@ -449,7 +449,8 @@ canonical_candidate_validated = true
 postgresql_lifecycle = pass
 independent_final_critic = PASS
 standards_review = PASS_WITH_NOTES
-clean_clone_acceptance = pending
+clean_clone_acceptance = PASS
+clean_clone_sha = 8eceed830b0fc5428be6837ff4dd2ab6fdffa703
 approve_all_120 = pending_exact_digest_confirmation
 stage3c_promotion = false
 runtime_activation = false
@@ -474,3 +475,10 @@ Candidate manifest digest
 аттестацию с exact набором входных datasets. Runtime catalog pin является отдельным
 `world_revisions.catalog_digest`; loader не смешивает эти два digest и проверяет
 runtime pin по точной revision record.
+
+Clean-clone acceptance выполнен на отдельной свежей копии exact functional commit
+`8eceed830b0fc5428be6837ff4dd2ab6fdffa703`. Внутри clone фактически прошли
+`npm ci`, generated-check, candidate validation, PostgreSQL dry-run,
+`test:world-catalog` (`122/122`) и полный `npm test`. После PASS временная копия
+удалена. Этот evidence-only README update не меняет проверенные code, DDL, schemas,
+datasets или candidate digest.

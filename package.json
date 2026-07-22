@@ -117,6 +117,7 @@
     "spatial-v3:check-p25": "node tools/spatial-v3/check-p25.mjs",
     "spatial-v3:test-p28": "node --test test/spatial-v3/p28-activation.test.js",
     "spatial-v3:check-p28": "node tools/spatial-v3/check-p28.mjs",
+    "spatial-v3:p28-local-evidence": "node tools/spatial-v3/p28-activation-gate.mjs --local-evidence-only",
     "spatial-v3:p28-github-release-proof": "node tools/spatial-v3/p28-activation-gate.mjs",
     "spatial-v3:check-p12": "node tools/spatial-v3/p12-authoring-importer.mjs",
     "world-db:spatial-v3-import:dry-run": "node tools/spatial-v3/p12-authoring-importer.mjs",

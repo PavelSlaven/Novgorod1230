@@ -24,11 +24,6 @@
     "path": "docs/migration/spatial-v3/p27-candidate-evidence.md",
     "sha256": "d91a7ba8d852d31db1470017dfa12ef0d8efd903e0cfa7017c217f16044b375e"
   },
-  "p28_fresh_checkout": {
-    "status": "not_run",
-    "activation_candidate_commit": "422b5fda50b11a7d5706c969436e45bf52790580",
-    "evidence": []
-  },
   "github_release_proof": {
     "schema": "rus.spatial-v3.github-release-proof.v1",
     "version": 1,

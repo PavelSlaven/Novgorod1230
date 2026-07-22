@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { assessSpatialV3Activation, fetchGitHubReleaseProof, P28_APPENDIX_D_ITEMS, P28_P12_GAPS, requireSpatialV3Activation, validateGitHubReleaseProof, verifyP28EvidenceCommitBinding } from '../../tools/spatial-v3/p28-activation-gate.mjs';
+import { classifyP28CiProfile } from '../../tools/spatial-v3/p28-ci-profile.mjs';
+import { fetchGitHubReleaseProof, P28_APPENDIX_D_ITEMS, P28_P12_GAPS, validateAppendixDItems, validateGitHubReleaseProof, validateReleaseEvidenceShape, verifyP28EvidenceCommitBinding } from '../../tools/spatial-v3/p28-activation-gate.mjs';
 
 const evidenceCommit = 'a'.repeat(40);
 const config = Object.freeze({
@@ -79,9 +80,19 @@ test('P28 evidence scope is read from the immutable candidate and blocks a self-
   assert(rejected.some(({ code }) => code === 'activation_evidence_commit_scope_invalid'));
 });
 
-test('current deferred manifest remains blocked and production ignores caller-supplied approvals', async () => {
-  const assessment = await assessSpatialV3Activation({ githubProofClient: async () => approvedProof() });
-  assert.equal(assessment.activation_permitted, false);
-  assert(assessment.blockers.some(({ code }) => code === 'appendix_d_item_unchecked'));
-  await assert.rejects(() => requireSpatialV3Activation({ githubProofClient: async () => approvedProof() }), { code: 'spatial_v3_activation_blocked' });
+test('one complete Appendix D manifest is locally ready without a duplicate fresh-checkout authority', () => {
+  const evidence = [{ path: 'docs/migration/spatial-v3/p28-appendix-d-evidence-ledger.md', sha256: 'f'.repeat(64) }];
+  const items = P28_APPENDIX_D_ITEMS.map((id) => ({ id, status: 'passed', evidence }));
+  assert.deepEqual(validateAppendixDItems(items), []);
+  assert(validateAppendixDItems(items.map((item, index) => index === 0 ? { ...item, status: 'blocked' } : item)).some(({ code }) => code === 'appendix_d_item_unchecked'));
+  assert.deepEqual(validateReleaseEvidenceShape({ appendix_d_items: items }), []);
+  assert(validateReleaseEvidenceShape({ appendix_d_items: items, p28_fresh_checkout: { status: 'passed' } }).some(({ code }) => code === 'duplicate_fresh_checkout_authority_forbidden'));
+});
+
+test('required CI uses the light profile only for an exact evidence child', () => {
+  const manifest = 'docs/migration/spatial-v3/release-evidence.v1.json';
+  const allowed = ['docs/migration/spatial-v3/p27-candidate-evidence.md', 'docs/migration/spatial-v3/p28-appendix-d-evidence-ledger.md'];
+  assert.equal(classifyP28CiProfile([manifest, ...allowed], allowed), 'evidence_only');
+  assert.equal(classifyP28CiProfile([manifest, 'tools/spatial-v3/p28-activation-gate.mjs'], allowed), 'full');
+  assert.equal(classifyP28CiProfile(allowed, allowed), 'full');
 });

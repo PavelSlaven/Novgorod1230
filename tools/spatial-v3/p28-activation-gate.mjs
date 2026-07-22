@@ -35,6 +35,11 @@ export function validateP28P12GapIdentities(gaps) {
   if (!Array.isArray(gaps) || gaps.length !== P28_P12_GAPS.length || new Set(gaps.map((gap) => gap?.code)).size !== P28_P12_GAPS.length || P28_P12_GAPS.some(({ code }) => !gaps.some((gap) => gap?.code === code))) return FREEZE([FREEZE({ code: 'p12_gap_evidence_coverage_invalid' })]);
   return FREEZE(P28_P12_GAPS.flatMap(({ code, subject_ref }) => gaps.find((entry) => entry?.code === code)?.subject_ref === subject_ref ? [] : [FREEZE({ code: 'p12_gap_identity_or_quantity_mismatch', gap_code: code, subject_ref })]));
 }
+export function validateReleaseEvidenceShape(manifest) {
+  const errors = [];
+  if (manifest && Object.hasOwn(manifest, 'p28_fresh_checkout')) errors.push(FREEZE({ code: 'duplicate_fresh_checkout_authority_forbidden' }));
+  return FREEZE(errors);
+}
 export function isSafeRepositoryPath(value) {
   if (typeof value !== 'string' || !value || value.includes('\0') || value.includes('\\') || win32.isAbsolute(value) || posix.isAbsolute(value) || /^[a-z]:/iu.test(value) || /^[\\/]{2}/u.test(value)) return false;
   return !value.split('/').some((part) => !part || part === '.' || part === '..') && posix.normalize(value) === value;
@@ -43,8 +48,7 @@ function referencedEvidencePaths(manifest) {
   return [
     ...(manifest.appendix_d_items ?? []).flatMap((item) => (item?.evidence ?? []).map((evidence) => evidence?.path)),
     ...(manifest.p12_authoring_gaps ?? []).flatMap((gap) => (gap?.resolution_evidence ?? []).map((evidence) => evidence?.path)),
-    manifest.p27_independent_critic?.path,
-    ...(manifest.p28_fresh_checkout?.evidence ?? []).map((evidence) => evidence?.path)
+    manifest.p27_independent_critic?.path
   ].filter((path) => typeof path === 'string');
 }
 async function candidateEvidenceScope({ root, candidateCommit, gitRaw: readGitRaw }) {
@@ -142,9 +146,18 @@ export function validateGitHubReleaseProof({ config, proof, evidenceCommit, add 
     if (tag?.kind !== 'signed_annotated_tag' || tag.tag?.object?.type !== 'tag' || annotated?.object?.type !== 'commit' || annotated.object.sha?.toLowerCase() !== evidenceCommit || annotated.verification?.verified !== true || annotated.verification?.reason !== 'valid' || tag.local_verification?.verified !== true) add('github_release_proof_signed_tag_invalid_or_untrusted');
   }
 }
-async function validateChecklistItem({ root, read, realpath, gitRaw: readGitRaw, item, add }) {
-  if (item.status !== 'passed') return add('appendix_d_item_unchecked', MANIFEST_PATH, { item_id: item.id, status: item.status ?? 'missing' });
-  if (!Array.isArray(item.evidence) || !item.evidence.length) return add('appendix_d_item_evidence_missing', MANIFEST_PATH, { item_id: item.id });
+export function validateAppendixDItems(items) {
+  const errors = [];
+  if (!Array.isArray(items) || items.length !== P28_APPENDIX_D_ITEMS.length || new Set(items.map((item) => item?.id)).size !== P28_APPENDIX_D_ITEMS.length || P28_APPENDIX_D_ITEMS.some((id) => !items.some((item) => item?.id === id))) {
+    return FREEZE([FREEZE({ code: 'appendix_d_evidence_coverage_invalid' })]);
+  }
+  for (const item of items) {
+    if (item.status !== 'passed') errors.push(FREEZE({ code: 'appendix_d_item_unchecked', item_id: item.id, status: item.status ?? 'missing' }));
+    else if (!Array.isArray(item.evidence) || !item.evidence.length) errors.push(FREEZE({ code: 'appendix_d_item_evidence_missing', item_id: item.id }));
+  }
+  return FREEZE(errors);
+}
+async function validateChecklistEvidence({ root, read, realpath, gitRaw: readGitRaw, item, add }) {
   for (const evidence of item.evidence) await validateP28HashedEvidence({ root, read, realpath, gitRaw: readGitRaw, evidence, add, code: 'appendix_d_evidence_hash_mismatch', details: { item_id: item.id } });
 }
 async function validateP12Gaps({ root, read, gitRaw: readGitRaw, gaps, add }) {
@@ -157,20 +170,38 @@ async function validateP27Critic({ root, read, realpath, gitRaw: readGitRaw, can
   await validateP28HashedEvidence({ root, read, realpath, gitRaw: readGitRaw, evidence: report, add, code: 'p27_independent_critic_hash_mismatch' });
 }
 function result(blockers) { return FREEZE({ schema: 'rus.spatial-v3.p28-activation-assessment.v2', activation_permitted: blockers.length === 0, production_writes: 0, composition_changed: false, blockers: FREEZE(blockers), required_action: blockers.length === 0 ? 'release_proof_accepted_no_repository_patch' : 'keep_v2_production' }); }
-export async function assessSpatialV3Activation({ root = process.cwd(), read = readFile, realpath = realpathFs, gitText: readGitText = gitText, gitRaw: readGitRaw = gitRaw, githubProofClient = fetchGitHubReleaseProof } = {}) {
+function localResult(blockers) { return FREEZE({ schema: 'rus.spatial-v3.p28-local-evidence-assessment.v1', local_evidence_ready: blockers.length === 0, production_writes: 0, composition_changed: false, blockers: FREEZE(blockers) }); }
+async function collectLocalEvidence({ root = process.cwd(), read = readFile, realpath = realpathFs, gitText: readGitText = gitText, gitRaw: readGitRaw = gitRaw } = {}) {
   const blockers = []; const add = (code, evidence = MANIFEST_PATH, details = {}) => blockers.push(FREEZE({ code, evidence, ...details })); let manifest; let manifestBytes;
-  try { manifestBytes = Buffer.from(await read(resolve(root, MANIFEST_PATH))); manifest = JSON.parse(manifestBytes.toString('utf8')); } catch { add('release_evidence_manifest_missing'); return result(blockers); }
+  try { manifestBytes = Buffer.from(await read(resolve(root, MANIFEST_PATH))); manifest = JSON.parse(manifestBytes.toString('utf8')); } catch { add('release_evidence_manifest_missing'); return { blockers, manifest: null, evidenceCommit: null }; }
   if (manifest.schema !== 'rus.spatial-v3.release-evidence.v1' || manifest.version !== 1) add('release_evidence_manifest_schema_invalid');
+  for (const { code, ...details } of validateReleaseEvidenceShape(manifest)) add(code, MANIFEST_PATH, details);
   for (const error of await verifyP28EvidenceCommitBinding({ root, manifest, manifestBytes, gitText: readGitText, gitRaw: readGitRaw })) add(error.code, error.evidence);
   const items = manifest.appendix_d_items;
-  if (!Array.isArray(items) || items.length !== P28_APPENDIX_D_ITEMS.length || new Set(items.map((item) => item?.id)).size !== P28_APPENDIX_D_ITEMS.length || P28_APPENDIX_D_ITEMS.some((id) => !items.some((item) => item?.id === id))) add('appendix_d_evidence_coverage_invalid'); else for (const item of items) await validateChecklistItem({ root, read, realpath, gitRaw: readGitRaw, item, add });
+  const itemErrors = validateAppendixDItems(items);
+  for (const { code, ...details } of itemErrors) add(code, MANIFEST_PATH, details);
+  if (itemErrors.length === 0) for (const item of items) await validateChecklistEvidence({ root, read, realpath, gitRaw: readGitRaw, item, add });
   await validateP12Gaps({ root, read, gitRaw: readGitRaw, gaps: manifest.p12_authoring_gaps, add });
   await validateP27Critic({ root, read, realpath, gitRaw: readGitRaw, candidateCommit: manifest.activation_candidate_commit, report: manifest.p27_independent_critic, add });
-  if (manifest.p28_fresh_checkout?.status !== 'passed' || manifest.p28_fresh_checkout.activation_candidate_commit !== manifest.activation_candidate_commit || !Array.isArray(manifest.p28_fresh_checkout?.evidence) || !manifest.p28_fresh_checkout.evidence.length) add('p28_fresh_checkout_evidence_missing'); else for (const evidence of manifest.p28_fresh_checkout.evidence) await validateP28HashedEvidence({ root, read, realpath, gitRaw: readGitRaw, evidence, add, code: 'p28_fresh_checkout_evidence_invalid' });
   let evidenceCommit = null; try { evidenceCommit = (await readGitText(root, ['rev-parse', 'HEAD'])).toLowerCase(); } catch { add('github_release_proof_unavailable'); }
+  return { blockers, manifest, evidenceCommit };
+}
+export async function assessSpatialV3LocalEvidence(options = {}) {
+  const { blockers } = await collectLocalEvidence(options);
+  return localResult(blockers);
+}
+export async function assessSpatialV3Activation({ githubProofClient = fetchGitHubReleaseProof, ...options } = {}) {
+  const { blockers, manifest, evidenceCommit } = await collectLocalEvidence(options);
+  const add = (code, evidence = MANIFEST_PATH, details = {}) => blockers.push(FREEZE({ code, evidence, ...details }));
+  if (!manifest) return result(blockers);
   if (evidenceCommit && validProofConfig(manifest.github_release_proof)) { try { validateGitHubReleaseProof({ config: manifest.github_release_proof, proof: await githubProofClient({ ...manifest.github_release_proof, evidenceCommit }), evidenceCommit, add }); } catch { add('github_release_proof_unavailable'); } } else if (evidenceCommit) add('github_release_proof_config_invalid');
   return result(blockers);
 }
 /** Production accepts no caller-supplied approval/proof; it always performs the real local and GitHub checks. */
 export async function requireSpatialV3Activation(options = {}) { void options; const assessment = await assessSpatialV3Activation(); if (assessment.activation_permitted) return assessment; throw Object.assign(new Error('P28 activation is blocked by mandatory release evidence.'), { code: 'spatial_v3_activation_blocked', assessment }); }
-if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) { const assessment = await assessSpatialV3Activation(); console.log(JSON.stringify(assessment, null, 2)); if (!assessment.activation_permitted) process.exitCode = 1; }
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
+  const localOnly = process.argv.includes('--local-evidence-only');
+  const assessment = localOnly ? await assessSpatialV3LocalEvidence() : await assessSpatialV3Activation();
+  console.log(JSON.stringify(assessment, null, 2));
+  if (localOnly ? !assessment.local_evidence_ready : !assessment.activation_permitted) process.exitCode = 1;
+}

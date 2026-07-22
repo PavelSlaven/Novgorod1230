@@ -183,3 +183,59 @@ pr_state = draft
 10. независимый critic verdict;
 11. Stage 3C result и подтверждение отсутствия activation;
 12. известные gaps и ограничения.
+
+## Фактический локальный проход V5 — 2026-07-22
+
+Внешний архив с ожидаемым SHA-256
+`dc95ee730beea3f4ae7e153cd30fb505ea7b7285a765ea2b7b56979446075fc3` получен и
+проверен, но согласно handoff не добавлен в Git. Пользователь явно подтвердил
+историческую проверку всей когорты; digest-bound запись этого решения сохранена в
+`evidence/HISTORICAL_REVIEW_ATTESTATION.json`. Она закрывает только historical scope и
+не подменяет gameplay balance, canonical mapping, final all-120 approval или runtime
+activation.
+
+На чистой распаковке V5 фактически выполнены:
+
+- `python tools/verify_integrity.py .` — `PASS`, 50 файлов, 0 ошибок;
+- `python tools/audit_package.py .` — historical/gameplay `PASS`, 0 findings;
+- `python tools/independent_gameplay_audit.py .` — 0 findings;
+- `PYTHONUTF8=1 python tools/historical_critic.py .` — 0 findings;
+- `python tools/deep_semantic_audit.py .` — `PASS`, 0 findings.
+
+Пакетные audit-команды изменяют `reports/SEMANTIC_AUDIT.json` и
+`reports/DEEP_SEMANTIC_AUDIT.json`, поэтому integrity проверялась первой на чистой
+распаковке. Без `PYTHONUTF8=1` historical critic падает в Windows CP1251; это defect
+package tooling, не содержательный historical finding.
+
+Отдельно проверен работающий локальный operator PostgreSQL/NocoDB. В `world_db`
+таблица `world_base.item_templates` существует и содержит 0 строк; новые
+`container_templates`, migration inventory и materialization tables отсутствуют.
+Проверенный zero-row input сохранён в
+`evidence/OPERATOR_LEGACY_INVENTORY_SNAPSHOT.json`. Он позволяет пересчитать canonical
+readiness без прежнего неизвестного состояния operator source; существующие Stage 3C
+reports ещё не пересобраны и не объявляются актуальными.
+
+Для канонической проверки был поднят отдельный PostgreSQL 16 на порту `55439`, применён
+текущий DDL и штатно импортирован `rus13-base-v1`: 42 577 строк, 30 таблиц, 0 validation
+errors/warnings. После проверки временные container, network и volume удалены. В базе
+было обнаружено 9 332 G4 nodes, но:
+
+- `g4_materialization_profiles`: 0;
+- `g4_materialization_bindings`: 0;
+- `materialization_slot_rules`: 0.
+
+V5 содержит девять региональных context profiles и 120 generic rules, но не содержит
+`graph_node_id`, `slot_rule_id` или approved profile-to-G4 bindings. Поэтому эти records
+нельзя честно преобразовать в `g4_item_materialization_rules` и
+`g4_container_materialization_rules`: required candidate/dependency set пуст. По
+правилу materialization data gap это остаётся hard block; создавать фиктивный G4,
+назначать один context всем 9 332 узлам или ослаблять readiness запрещено.
+
+Независимый итоговый critic дал `PASS WITH NOTES`: evidence сохраняет fail-closed
+Approval, historical attestation корректно ограничена, operator snapshot согласован с
+zero-row состоянием, G4 dependency gap подтверждён. Package-local gameplay `PASS`
+остаётся автоматическим результатом пакета, а не человеческим final approval.
+
+Текущий результат: historical review и verified operator legacy input получены;
+canonical G4/slot dependency closure отсутствует. До появления утверждённого mapping
+для девяти profiles atomic Approval и Stage 3C promotion остаются запрещены.

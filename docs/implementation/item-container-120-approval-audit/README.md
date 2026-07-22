@@ -268,3 +268,209 @@ canonical G4/slot dependency closure отсутствует. До появлен
 До явного digest-bound подтверждения
 этого exact набора его записи остаются только proposal; G5 templates, slot rules,
 concrete item/container rules, PostgreSQL apply и Stage 3C promotion не выполняются.
+
+## Реализация минимальной dependency-проекции — 2026-07-23
+
+Два предыдущих абзаца фиксируют состояние до решения пользователя по
+spatial/materialization gap. Пользователь подтвердил правильный способ закрытия gap:
+не создавать 9 332 отдельных profiles, а использовать допустимые DDL bindings и
+небольшой набор семантически подходящих G4. Это разрешило техническую компиляцию
+проекции, но не является финальной digest-bound аттестацией `approve_all_120`.
+
+### Зафиксированная локальная среда
+
+```text
+repository_root = C:\Users\Slaven\Documents\Новгород\.tmp-pr17-review
+repository = PavelSlaven/Novgorod1230
+branch = chatgpt/item-container-120-approval-audit
+head_before_implementation_commit = 32d24ac49f3b1c79a7e2e58003b85f7da025e38b
+origin_main = 8c9e8db9b275e2be9b9e5eb28b59c49e8baef068
+node = v24.16.0
+npm = 11.13.0
+python = 3.13.3
+uv = 0.8.12
+docker_client_server = 29.5.3 / 29.5.3
+docker_compose = v5.1.4
+graphify = 0.9.17
+```
+
+Перед анализом полностью прочитаны обязательные `AGENTS.md`, `.github/AGENTS.md`,
+`development_rules.txt`, `code_critic_invocation_rule.txt`,
+`code_driven_world_materialization_architecture.md`,
+`llm_documentation_navigation.md` и
+`world_base_materialization_table_requirements.md`, а также найденные навигацией
+профильные contracts Stage 3C, Stage 8 и Stage 13–16.
+
+Выполнены оба канала Repository Intelligence со следующими точными запросами:
+
+```text
+PR17 item container V5 canonical approval Stage 3C promotion without activation
+G4 materialization profiles bindings slot rules item container runtime Stage 8 Stage 13 Stage 16
+```
+
+`repo-intel:status` вернул готовый Graphify graph версии `0.9.17`; нормативный
+knowledge-source имеет известный `degraded` warning о semantic coverage gaps, но без
+readiness errors. Graphify после итоговых исправлений пересобран: 24 202 nodes,
+47 933 edges, 1 418 communities. Его результаты использовались только для навигации и не
+подменяли нормативы.
+
+### Канонический mapping и coverage
+
+V5 перенесён в существующие canonical contracts, без второй schema family:
+
+- templates и физические параметры → `item_templates`, `container_templates`,
+  `item_template_inventory_profiles`, `container_template_inventory_profiles`;
+- quantities → `quantity_unit_definitions`, `item_template_quantity_profiles`;
+- категории и facets → `universal_categories`, `universal_category_relations`,
+  `category_labels`, `region_category_options`, template bindings;
+- sources → `source_records`, `record_sources`, template source bindings;
+- contents/access/equipment → существующие content, property и equipment tables;
+- spatial dependency closure → `g4_materialization_profiles`, bindings, G5 templates,
+  anchors, layout edges, slot rules и concrete G4 item/container rules.
+
+Скомпилированы девять exact context bindings для выбранных реальных G4 и один
+явный общий `node_type=location` профиль без предметной материализации. Поэтому все
+9 332 импортированных G4 однозначно разрешаются в профиль, но предметы и контейнеры
+доступны только в девяти семантически обоснованных контекстах; случайный G4 не может
+использоваться для прохождения readiness.
+
+Фактические ключевые counts:
+
+```text
+item_templates = 102
+container_templates = 18
+cohort_templates = 120
+item_quantity_profiles = 102
+context_profiles = 9
+g4_nodes_with_deterministic_profile_resolution = 9332
+g4_materialization_profiles = 10
+g4_materialization_bindings = 10
+g5_minilocation_templates = 10
+g5_anchor_templates = 30
+g5_edge_templates = 10
+g4_materialization_layout_edges = 20
+materialization_slot_rules = 52
+g4_item_materialization_rules = 9
+g4_container_materialization_rules = 18
+```
+
+Каждый G5 template имеет `start`, `work`, `exit`, связный маршрут
+`start -> work -> exit` и явный resource slot на `work`. Item rules связываются с
+девятью profile sets, которые в совокупности содержат все 102 items; container rules
+ссылаются на все 18 templates напрямую. Каждое правило сохраняет конкретные
+`graph_node_id`, `slot_rule_id`, count bounds, causal basis, applicability и status.
+
+### Реализация и проверенные contracts
+
+Добавлены детерминированные compiler/generator/validator/importer и runtime loaders:
+
+- `v5-canonical-catalog.js` компилирует проверенный source snapshot;
+- `g4-item-container-coverage.js` разрешает bindings и доказывает coverage;
+- `item-container-g4-projection.js` строит profiles, G5 layouts, slots и rules;
+- `pr17-candidate-bundle.js` проверяет manifest, digest, schemas, FK closure,
+  dependency order и выполняет transactional apply/readback;
+- `runtime-catalog-loaders.js` fail-closed загружает только approved revision/catalog
+  в Stage 8 и Stage 13–16;
+- `run-pr17-item-container-postgres.mjs` разрешает apply только в отдельную БД с
+  именем `pr17_*`.
+
+Схема `mass_grams_per_unit` приведена к `NUMERIC`, а JSON/runtime contracts — к
+положительному конечному числу. Это необходимо для сохранения V5 density-derived
+значения мёда `1.4 g/ml` без округления и не ослабляет обязательность поля.
+
+Runtime integration test доказывает:
+
+- Stage 8 получает 102 items, 18 containers, 120 quantity records и equipment profile;
+- фактический Stage 13 materialization block проходит на разрешённых G5 templates;
+- Stage 14 code precheck получает явный approved weather state;
+- Stage 16 materializer и code precheck проходят с packing, size, weight и capacity;
+- все девять контекстов изолируют свои candidate sets;
+- unapproved G4 и unapproved revision отклоняются fail-closed.
+
+### Reproducibility и PostgreSQL lifecycle
+
+Сгенерированный candidate содержит 39 datasets и три reports. Его exact digest:
+
+```text
+d55b4e8a7ac44340301f89dbb2d1cc9dca13d5761fdad92afb11a599af29745e
+```
+
+Manifest намеренно остаётся:
+
+```text
+approval = pending_approve_all_120
+activation = not_requested
+deletion_policy = none
+```
+
+На изолированной временной PostgreSQL 16 БД `pr17_item_container` выполнены schema
+initialization, rollback probe, exact apply/readback и повторный idempotent apply:
+
+```text
+rollback = pass
+apply = true
+repeat_apply = true
+readback_candidate_digest = d55b4e8a7ac44340301f89dbb2d1cc9dca13d5761fdad92afb11a599af29745e
+world_revision_status = draft
+non_draft_materialization_rule_count = 0
+approved_selected_g4_count = 0
+activation_performed = false
+```
+
+Временный Docker container удалён. Operator/production database не изменялась.
+
+### Фактически выполненные проверки
+
+```text
+npm run item-container-120:generated-check                         PASS
+npm run item-container-120:validate                                PASS
+npm run item-container-120:postgres:dry-run                        PASS
+npm run item-container-120:postgres:lifecycle                      PASS
+npm run world-db:schema-doc-check                                  PASS
+npm run test:world-catalog                                         122/122 PASS
+npm run docs:generate                                              PASS
+npm run docs:check                                                 PASS
+npm test                                                           PASS
+git diff --check                                                   PASS
+graphify update .                                                  PASS
+```
+
+В составе `npm test`: modules `185/185`, shadow `6/6`, cutover `4/4`, integration
+`21 PASS` и `5` PostgreSQL-dependent skips. Browser E2E имеет один skip из-за
+отсутствия Chromium executable в локальной test-конфигурации; это не скрытый runtime
+failure, но остаётся явно зафиксированным ограничением.
+
+### Текущий gate
+
+```text
+historical_review = user_confirmed
+canonical_candidate_compiled = true
+canonical_candidate_validated = true
+postgresql_lifecycle = pass
+independent_final_critic = PASS
+standards_review = PASS_WITH_NOTES
+clean_clone_acceptance = pending
+approve_all_120 = pending_exact_digest_confirmation
+stage3c_promotion = false
+runtime_activation = false
+pr_state = draft
+```
+
+Следующий разрешённый порядок: независимый critic → исправления при необходимости →
+clean-clone acceptance → отдельное подтверждение пользователем exact digest → atomic
+all-120 approval и Stage 3C promotion без activation.
+
+Первый независимый проход обнаружил и заблокировал cross-revision/draft bypass в
+runtime loader. После TDD-исправления оба runtime loader требуют существующую
+`world_revisions` запись со статусом `approved`, exact совпадение её `catalog_digest`,
+revision-scoped dependencies, approved G4 и совпадающий region. Добавлены негативные
+тесты для draft/missing revision, digest mismatch, direct draft G4, cross-revision
+item и layout. Повторный critic дал `PASS`, standards axis — `PASS WITH NOTES` без
+оставшихся hard violations и разрешил clean-clone acceptance.
+
+Candidate manifest digest
+`d55b4e8a7ac44340301f89dbb2d1cc9dca13d5761fdad92afb11a599af29745e`
+связывает будущую человеческую
+аттестацию с exact набором входных datasets. Runtime catalog pin является отдельным
+`world_revisions.catalog_digest`; loader не смешивает эти два digest и проверяет
+runtime pin по точной revision record.

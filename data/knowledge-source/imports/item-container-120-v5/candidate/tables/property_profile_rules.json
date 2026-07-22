@@ -1,0 +1,315 @@
+[
+  {
+    "id": "rule_property_borrowed_entrusted_item_v1",
+    "property_profile_id": "property_borrowed_entrusted_item_v1",
+    "owner_kind": "person",
+    "holder_kind": "person",
+    "controller_kind": "person",
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit"
+    },
+    "claim_conditions": {
+      "version": 1,
+      "mode": "none"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "rule_property_communal_resource_v1",
+    "property_profile_id": "property_communal_resource_v1",
+    "owner_kind": "person",
+    "holder_kind": "person",
+    "controller_kind": "person",
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit"
+    },
+    "claim_conditions": {
+      "version": 1,
+      "mode": "none"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "rule_property_context_agriculture_v1",
+    "property_profile_id": "property_context_agriculture_v1",
+    "owner_kind": "household",
+    "holder_kind": "household",
+    "controller_kind": "household",
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_owner_holder_controller",
+      "context_domain": "agriculture"
+    },
+    "claim_conditions": {
+      "version": 1,
+      "causal_basis_required": true
+    },
+    "status": "draft"
+  },
+  {
+    "id": "rule_property_context_craft_work_v1",
+    "property_profile_id": "property_context_craft_work_v1",
+    "owner_kind": "workshop",
+    "holder_kind": "workshop",
+    "controller_kind": "workshop",
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_owner_holder_controller",
+      "context_domain": "craft_work"
+    },
+    "claim_conditions": {
+      "version": 1,
+      "causal_basis_required": true
+    },
+    "status": "draft"
+  },
+  {
+    "id": "rule_property_context_fishing_v1",
+    "property_profile_id": "property_context_fishing_v1",
+    "owner_kind": "household",
+    "holder_kind": "household",
+    "controller_kind": "household",
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_owner_holder_controller",
+      "context_domain": "fishing"
+    },
+    "claim_conditions": {
+      "version": 1,
+      "causal_basis_required": true
+    },
+    "status": "draft"
+  },
+  {
+    "id": "rule_property_context_food_trade_household_v1",
+    "property_profile_id": "property_context_food_trade_household_v1",
+    "owner_kind": "household",
+    "holder_kind": "household",
+    "controller_kind": "household",
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_owner_holder_controller",
+      "context_domain": "food_trade_household"
+    },
+    "claim_conditions": {
+      "version": 1,
+      "causal_basis_required": true
+    },
+    "status": "draft"
+  },
+  {
+    "id": "rule_property_context_household_personal_v1",
+    "property_profile_id": "property_context_household_personal_v1",
+    "owner_kind": "household",
+    "holder_kind": "household",
+    "controller_kind": "household",
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_owner_holder_controller",
+      "context_domain": "household_personal"
+    },
+    "claim_conditions": {
+      "version": 1,
+      "causal_basis_required": true
+    },
+    "status": "draft"
+  },
+  {
+    "id": "rule_property_context_military_service_v1",
+    "property_profile_id": "property_context_military_service_v1",
+    "owner_kind": "institution",
+    "holder_kind": "institution",
+    "controller_kind": "institution",
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_owner_holder_controller",
+      "context_domain": "military_service"
+    },
+    "claim_conditions": {
+      "version": 1,
+      "causal_basis_required": true
+    },
+    "status": "draft"
+  },
+  {
+    "id": "rule_property_context_religious_personal_v1",
+    "property_profile_id": "property_context_religious_personal_v1",
+    "owner_kind": "institution",
+    "holder_kind": "institution",
+    "controller_kind": "institution",
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_owner_holder_controller",
+      "context_domain": "religious_personal"
+    },
+    "claim_conditions": {
+      "version": 1,
+      "causal_basis_required": true
+    },
+    "status": "draft"
+  },
+  {
+    "id": "rule_property_context_trade_administration_v1",
+    "property_profile_id": "property_context_trade_administration_v1",
+    "owner_kind": "institution",
+    "holder_kind": "institution",
+    "controller_kind": "institution",
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_owner_holder_controller",
+      "context_domain": "trade_administration"
+    },
+    "claim_conditions": {
+      "version": 1,
+      "causal_basis_required": true
+    },
+    "status": "draft"
+  },
+  {
+    "id": "rule_property_context_writing_accounting_v1",
+    "property_profile_id": "property_context_writing_accounting_v1",
+    "owner_kind": "institution",
+    "holder_kind": "institution",
+    "controller_kind": "institution",
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_owner_holder_controller",
+      "context_domain": "writing_accounting"
+    },
+    "claim_conditions": {
+      "version": 1,
+      "causal_basis_required": true
+    },
+    "status": "draft"
+  },
+  {
+    "id": "rule_property_household_property_v1",
+    "property_profile_id": "property_household_property_v1",
+    "owner_kind": "person",
+    "holder_kind": "person",
+    "controller_kind": "person",
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit"
+    },
+    "claim_conditions": {
+      "version": 1,
+      "mode": "none"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "rule_property_military_service_gear_v1",
+    "property_profile_id": "property_military_service_gear_v1",
+    "owner_kind": "person",
+    "holder_kind": "person",
+    "controller_kind": "person",
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit"
+    },
+    "claim_conditions": {
+      "version": 1,
+      "mode": "none"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "rule_property_personal_possession_v1",
+    "property_profile_id": "property_personal_possession_v1",
+    "owner_kind": "person",
+    "holder_kind": "person",
+    "controller_kind": "person",
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit"
+    },
+    "claim_conditions": {
+      "version": 1,
+      "mode": "none"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "rule_property_pledged_disputed_property_v1",
+    "property_profile_id": "property_pledged_disputed_property_v1",
+    "owner_kind": "person",
+    "holder_kind": "person",
+    "controller_kind": "person",
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit"
+    },
+    "claim_conditions": {
+      "version": 1,
+      "mode": "none"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "rule_property_religious_object_v1",
+    "property_profile_id": "property_religious_object_v1",
+    "owner_kind": "person",
+    "holder_kind": "person",
+    "controller_kind": "person",
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit"
+    },
+    "claim_conditions": {
+      "version": 1,
+      "mode": "none"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "rule_property_service_equipment_v1",
+    "property_profile_id": "property_service_equipment_v1",
+    "owner_kind": "person",
+    "holder_kind": "person",
+    "controller_kind": "person",
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit"
+    },
+    "claim_conditions": {
+      "version": 1,
+      "mode": "none"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "rule_property_trade_stock_v1",
+    "property_profile_id": "property_trade_stock_v1",
+    "owner_kind": "person",
+    "holder_kind": "person",
+    "controller_kind": "person",
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit"
+    },
+    "claim_conditions": {
+      "version": 1,
+      "mode": "none"
+    },
+    "status": "draft"
+  },
+  {
+    "id": "rule_property_workshop_tool_property_v1",
+    "property_profile_id": "property_workshop_tool_property_v1",
+    "owner_kind": "person",
+    "holder_kind": "person",
+    "controller_kind": "person",
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit"
+    },
+    "claim_conditions": {
+      "version": 1,
+      "mode": "none"
+    },
+    "status": "draft"
+  }
+]

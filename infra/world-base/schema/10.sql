@@ -355,7 +355,7 @@ CREATE TABLE world_base.item_template_quantity_profiles (
   minimum_quantity INTEGER NOT NULL CHECK (minimum_quantity > 0),
   maximum_quantity INTEGER CHECK (maximum_quantity IS NULL OR maximum_quantity >= minimum_quantity),
   default_quantity_policy JSONB NOT NULL,
-  mass_grams_per_unit INTEGER NOT NULL CHECK (mass_grams_per_unit > 0),
+  mass_grams_per_unit NUMERIC NOT NULL CHECK (mass_grams_per_unit > 0),
   stackable BOOLEAN NOT NULL,
   partial_consumption_allowed BOOLEAN NOT NULL,
   source_id TEXT NOT NULL REFERENCES world_base.source_records(id) ON DELETE RESTRICT,

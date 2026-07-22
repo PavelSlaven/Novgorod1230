@@ -7,6 +7,7 @@ export function validateStage14G5SceneDraftForAudit(draft = {}, input = {}) {
   return validateStage13G5SceneGraphDraft(draft, {
     selected_start_node: input.selected_start_node,
     historical_frame: input.historical_frame,
+    weather_state: input.weather_state,
     allowed_g5_template_set: input.allowed_g5_template_set
   }).map((item) => ({
     ...item,

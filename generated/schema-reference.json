@@ -727,9 +727,9 @@
       "type": "json"
     },
     {
-      "bytes": 1456,
+      "bytes": 1464,
       "path": "schemas/materialization/item-template-quantity-profiles-v1.schema.json",
-      "sha256": "e96f91a8160b756018d9941bd8005505ee19f10c43135599cd7f2ad5e9011eb0",
+      "sha256": "8724c21d8e2def3958cb3cfa906f99f02b6d41ff343ee60f79df2e633d51d25a",
       "type": "json"
     },
     {
@@ -760,6 +760,12 @@
       "bytes": 2816,
       "path": "schemas/materialization/party-change-set-v2.schema.json",
       "sha256": "cabbce3e6d6091391cba5b1fa0b6ea09c69f2db6bbed3ac241563171e95b62c1",
+      "type": "json"
+    },
+    {
+      "bytes": 11675,
+      "path": "schemas/materialization/pr17-spatial-records-v1.schema.json",
+      "sha256": "5c7cc08f829b29d4f8c919c94596d6f3524f2ce0c8e1934abf105e0a5b58592a",
       "type": "json"
     },
     {

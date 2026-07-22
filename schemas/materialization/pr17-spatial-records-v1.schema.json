@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rus.pr17.spatial_records.v1",
+  "$defs": {
+    "building_templates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "region_id", "title", "slug", "summary", "allowed_place_types", "allowed_location_types", "typical_users", "materials", "layout_rules", "room_templates", "storage_rules", "access_rules", "locked_area_rules", "hidden_area_rules", "typical_objects", "typical_npc_roles", "typical_activities", "game_use", "limits", "status", "confidence", "sources", "audit_notes"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 }, "region_id": { "type": "string", "minLength": 1 }, "title": { "type": "string", "minLength": 1 }, "slug": { "type": "string", "minLength": 1 }, "building_type": { "type": ["string", "null"] }, "summary": { "type": "string", "minLength": 1 },
+          "allowed_place_types": { "type": "array" }, "allowed_location_types": { "type": "array" }, "required_economy": { "type": ["string", "null"] }, "required_social_order": { "type": ["string", "null"] }, "typical_owner": { "type": ["string", "null"] }, "typical_controller": { "type": ["string", "null"] }, "typical_users": { "type": "array" }, "materials": { "type": "array" }, "size_band": { "type": ["string", "null"] }, "wealth_level": { "type": ["string", "null"] }, "condition_band": { "type": ["string", "null"] },
+          "layout_rules": { "type": "array" }, "room_templates": { "type": "array" }, "storage_rules": { "type": "array" }, "access_rules": { "type": "array" }, "locked_area_rules": { "type": "array" }, "hidden_area_rules": { "type": "array" }, "fire_risk": { "type": ["string", "null"] }, "theft_risk": { "type": ["string", "null"] }, "social_risk": { "type": ["string", "null"] }, "typical_objects": { "type": "array" }, "typical_npc_roles": { "type": "array" }, "typical_activities": { "type": "array" }, "game_use": { "type": "string", "minLength": 1 }, "limits": { "type": "string", "minLength": 1 }, "status": { "const": "approved" }, "confidence": { "enum": ["medium", "medium_high", "high"] }, "sources": { "type": "array", "minItems": 1 }, "audit_notes": { "type": "string", "minLength": 1 }
+        },
+        "additionalProperties": false
+      }
+    },
+    "room_templates": { "type": "array", "items": { "$ref": "#/$defs/roomTemplate" } },
+    "building_layout_templates": { "type": "array", "items": { "$ref": "#/$defs/layoutTemplate" } },
+    "building_layout_nodes": { "type": "array", "items": { "$ref": "#/$defs/layoutNode" } },
+    "g5_minilocation_templates": { "type": "array", "items": { "$ref": "#/$defs/g5Node" } },
+    "g5_anchor_templates": { "type": "array", "items": { "$ref": "#/$defs/g5Anchor" } },
+    "g4_materialization_profiles": { "type": "array", "items": { "$ref": "#/$defs/g4Profile" } },
+    "g4_materialization_bindings": { "type": "array", "items": { "$ref": "#/$defs/g4Binding" } },
+    "materialization_slot_rules": { "type": "array", "items": { "$ref": "#/$defs/slotRule" } },
+    "g4_item_materialization_rules": { "type": "array", "items": { "$ref": "#/$defs/itemRule" } },
+    "g4_container_materialization_rules": { "type": "array", "items": { "$ref": "#/$defs/containerRule" } },
+    "roomTemplate": {
+      "type": "object", "required": ["id", "region_id", "room_category_id", "capacity", "access_policy", "visibility_policy", "status"],
+      "properties": { "id": { "$ref": "#/$defs/id" }, "region_id": { "$ref": "#/$defs/id" }, "room_category_id": { "$ref": "#/$defs/id" }, "capacity": { "type": "integer", "minimum": 1 }, "access_policy": { "type": "object" }, "visibility_policy": { "type": "object" }, "status": { "const": "approved" } }, "additionalProperties": false
+    },
+    "layoutTemplate": {
+      "type": "object", "required": ["id", "world_revision_id", "region_id", "building_template_id", "valid_from", "valid_to", "status"],
+      "properties": { "id": { "$ref": "#/$defs/id" }, "world_revision_id": { "$ref": "#/$defs/id" }, "region_id": { "$ref": "#/$defs/id" }, "building_template_id": { "$ref": "#/$defs/id" }, "valid_from": { "$ref": "#/$defs/date" }, "valid_to": { "$ref": "#/$defs/date" }, "status": { "const": "approved" } }, "additionalProperties": false
+    },
+    "layoutNode": {
+      "type": "object", "required": ["id", "layout_template_id", "slot_key", "room_template_id", "required", "ordinal"],
+      "properties": { "id": { "$ref": "#/$defs/id" }, "layout_template_id": { "$ref": "#/$defs/id" }, "slot_key": { "$ref": "#/$defs/id" }, "room_template_id": { "$ref": "#/$defs/id" }, "required": { "type": "boolean" }, "ordinal": { "type": "integer", "minimum": 0 } }, "additionalProperties": false
+    },
+    "g5Node": {
+      "type": "object", "required": ["id", "category_id", "capacity", "access_policy", "visibility_policy", "initial_state", "status", "valid_from", "valid_to", "confidence"],
+      "properties": { "id": { "$ref": "#/$defs/id" }, "category_id": { "$ref": "#/$defs/id" }, "capacity": { "type": "integer", "minimum": 1 }, "access_policy": { "type": "object" }, "visibility_policy": { "type": "object" }, "initial_state": { "type": "object" }, "status": { "const": "approved" }, "valid_from": { "$ref": "#/$defs/date" }, "valid_to": { "$ref": "#/$defs/date" }, "confidence": { "$ref": "#/$defs/confidence" } }, "additionalProperties": false
+    },
+    "g5Anchor": {
+      "type": "object", "required": ["id", "category_id", "can_hold_npc", "can_hold_item", "can_hold_container", "npc_capacity", "item_capacity", "container_capacity", "access_policy", "visibility_policy", "initial_state", "status", "valid_from", "valid_to", "confidence"],
+      "properties": { "id": { "$ref": "#/$defs/id" }, "category_id": { "$ref": "#/$defs/id" }, "can_hold_npc": { "type": "boolean" }, "can_hold_item": { "type": "boolean" }, "can_hold_container": { "type": "boolean" }, "npc_capacity": { "type": "integer", "minimum": 0 }, "item_capacity": { "type": "integer", "minimum": 0 }, "container_capacity": { "type": "integer", "minimum": 0 }, "access_policy": { "type": "object" }, "visibility_policy": { "type": "object" }, "initial_state": { "type": "object" }, "status": { "const": "approved" }, "valid_from": { "$ref": "#/$defs/date" }, "valid_to": { "$ref": "#/$defs/date" }, "confidence": { "$ref": "#/$defs/confidence" } }, "additionalProperties": false
+    },
+    "g4Profile": {
+      "type": "object", "required": ["id", "world_revision_id", "region_id", "layout_template_id", "maximum_g5_nodes", "player_start_anchor_slot_key", "visibility_model", "access_model", "status", "valid_from", "valid_to", "confidence"],
+      "properties": { "id": { "$ref": "#/$defs/id" }, "world_revision_id": { "$ref": "#/$defs/id" }, "region_id": { "$ref": "#/$defs/id" }, "layout_template_id": { "$ref": "#/$defs/id" }, "maximum_g5_nodes": { "type": "integer", "minimum": 1 }, "player_start_anchor_slot_key": { "$ref": "#/$defs/id" }, "visibility_model": { "type": "object" }, "access_model": { "type": "object" }, "status": { "const": "approved" }, "valid_from": { "$ref": "#/$defs/date" }, "valid_to": { "$ref": "#/$defs/date" }, "confidence": { "$ref": "#/$defs/confidence" } }, "additionalProperties": false
+    },
+    "g4Binding": {
+      "type": "object", "required": ["id", "profile_id", "priority", "applicability", "status", "valid_from", "valid_to", "confidence"],
+      "properties": { "id": { "$ref": "#/$defs/id" }, "profile_id": { "$ref": "#/$defs/id" }, "graph_node_id": { "$ref": "#/$defs/id" }, "node_type": { "$ref": "#/$defs/id" }, "place_template_id": { "$ref": "#/$defs/id" }, "building_template_id": { "$ref": "#/$defs/id" }, "priority": { "type": "integer" }, "applicability": { "type": "object" }, "status": { "const": "approved" }, "valid_from": { "$ref": "#/$defs/date" }, "valid_to": { "$ref": "#/$defs/date" }, "confidence": { "$ref": "#/$defs/confidence" } },
+      "oneOf": [{ "required": ["graph_node_id"] }, { "required": ["node_type"] }, { "required": ["place_template_id"] }, { "required": ["building_template_id"] }], "additionalProperties": false
+    },
+    "slotRule": {
+      "type": "object", "required": ["id", "profile_id", "slot_key", "slot_domain", "min_count", "max_count", "entry_role", "required", "status", "valid_from", "valid_to", "applicability", "confidence"],
+      "properties": { "id": { "$ref": "#/$defs/id" }, "profile_id": { "$ref": "#/$defs/id" }, "slot_key": { "$ref": "#/$defs/id" }, "slot_domain": { "enum": ["g5_node", "anchor", "npc", "item", "container"] }, "min_count": { "type": "integer", "minimum": 0 }, "max_count": { "type": "integer", "minimum": 0 }, "g5_minilocation_template_id": { "type": ["string", "null"] }, "g5_anchor_template_id": { "type": ["string", "null"] }, "g5_edge_template_id": { "type": ["string", "null"] }, "parent_node_slot_key": { "type": ["string", "null"] }, "entry_role": { "enum": ["none", "start", "exit", "start_and_exit"] }, "required": { "type": "boolean" }, "status": { "const": "approved" }, "valid_from": { "$ref": "#/$defs/date" }, "valid_to": { "$ref": "#/$defs/date" }, "applicability": { "type": "object" }, "confidence": { "$ref": "#/$defs/confidence" } }, "additionalProperties": false
+    },
+    "itemRule": {
+      "type": "object", "required": ["id", "world_revision_id", "graph_node_id", "slot_rule_id", "item_profile_id", "min_count", "max_count", "economic_basis", "causal_basis_type", "causal_basis_id", "applicability", "valid_from", "valid_to", "confidence", "weight", "status"],
+      "properties": { "id": { "$ref": "#/$defs/id" }, "world_revision_id": { "$ref": "#/$defs/id" }, "graph_node_id": { "$ref": "#/$defs/id" }, "slot_rule_id": { "$ref": "#/$defs/id" }, "item_profile_id": { "$ref": "#/$defs/id" }, "property_profile_id": { "type": ["string", "null"] }, "min_count": { "type": "integer", "minimum": 0 }, "max_count": { "type": "integer", "minimum": 0 }, "economic_basis": { "$ref": "#/$defs/id" }, "causal_basis_type": { "$ref": "#/$defs/id" }, "causal_basis_id": { "$ref": "#/$defs/id" }, "applicability": { "type": "object" }, "valid_from": { "$ref": "#/$defs/date" }, "valid_to": { "$ref": "#/$defs/date" }, "confidence": { "$ref": "#/$defs/confidence" }, "weight": { "type": "integer", "minimum": 1 }, "status": { "enum": ["draft", "approved"] } }, "additionalProperties": false
+    },
+    "containerRule": {
+      "type": "object", "required": ["id", "world_revision_id", "graph_node_id", "slot_rule_id", "container_template_id", "min_count", "max_count", "causal_basis_type", "causal_basis_id", "applicability", "valid_from", "valid_to", "confidence", "weight", "status"],
+      "properties": { "id": { "$ref": "#/$defs/id" }, "world_revision_id": { "$ref": "#/$defs/id" }, "graph_node_id": { "$ref": "#/$defs/id" }, "slot_rule_id": { "$ref": "#/$defs/id" }, "container_template_id": { "$ref": "#/$defs/id" }, "content_profile_id": { "type": ["string", "null"] }, "property_profile_id": { "type": ["string", "null"] }, "min_count": { "type": "integer", "minimum": 0 }, "max_count": { "type": "integer", "minimum": 0 }, "causal_basis_type": { "$ref": "#/$defs/id" }, "causal_basis_id": { "$ref": "#/$defs/id" }, "applicability": { "type": "object" }, "valid_from": { "$ref": "#/$defs/date" }, "valid_to": { "$ref": "#/$defs/date" }, "confidence": { "$ref": "#/$defs/confidence" }, "weight": { "type": "integer", "minimum": 1 }, "status": { "enum": ["draft", "approved"] } }, "additionalProperties": false
+    },
+    "id": { "type": "string", "minLength": 1 },
+    "date": { "type": "string", "format": "date" },
+    "confidence": { "enum": ["unknown", "low", "medium_low", "medium", "medium_high", "high"] }
+  }
+}

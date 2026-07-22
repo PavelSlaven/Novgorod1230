@@ -1,0 +1,137 @@
+[
+  {
+    "id": "record_source_item_tpl_nov_billhook_v1",
+    "source_id": "src_novgorod_agriculture",
+    "target_table": "item_templates",
+    "target_record_id": "item_tpl_nov_billhook_v1",
+    "support_type": "background",
+    "summary": "Поддерживает только проверку широкого типа; не доказывает узкую типологию, параметры или commonness.",
+    "confidence": "medium"
+  },
+  {
+    "id": "record_source_item_tpl_nov_fish_trap_v1",
+    "source_id": "src_novgorod_promysly",
+    "target_table": "item_templates",
+    "target_record_id": "item_tpl_nov_fish_trap_v1",
+    "support_type": "background",
+    "summary": "Поддерживает только проверку широкого типа; не доказывает узкую типологию, параметры или commonness.",
+    "confidence": "medium"
+  },
+  {
+    "id": "record_source_item_tpl_nov_fishhook_v1",
+    "source_id": "src_novgorod_promysly",
+    "target_table": "item_templates",
+    "target_record_id": "item_tpl_nov_fishhook_v1",
+    "support_type": "background",
+    "summary": "Поддерживает только проверку широкого типа; не доказывает узкую типологию, параметры или commonness.",
+    "confidence": "medium"
+  },
+  {
+    "id": "record_source_item_tpl_nov_fishing_line_v1",
+    "source_id": "src_novgorod_promysly",
+    "target_table": "item_templates",
+    "target_record_id": "item_tpl_nov_fishing_line_v1",
+    "support_type": "background",
+    "summary": "Поддерживает только проверку широкого типа; не доказывает узкую типологию, параметры или commonness.",
+    "confidence": "medium"
+  },
+  {
+    "id": "record_source_item_tpl_nov_fishing_net_v1",
+    "source_id": "src_novgorod_promysly",
+    "target_table": "item_templates",
+    "target_record_id": "item_tpl_nov_fishing_net_v1",
+    "support_type": "background",
+    "summary": "Поддерживает только проверку широкого типа; не доказывает узкую типологию, параметры или commonness.",
+    "confidence": "medium"
+  },
+  {
+    "id": "record_source_item_tpl_nov_fishing_spear_v1",
+    "source_id": "src_novgorod_promysly",
+    "target_table": "item_templates",
+    "target_record_id": "item_tpl_nov_fishing_spear_v1",
+    "support_type": "background",
+    "summary": "Поддерживает только проверку широкого типа; не доказывает узкую типологию, параметры или commonness.",
+    "confidence": "medium"
+  },
+  {
+    "id": "record_source_item_tpl_nov_hoe_v1",
+    "source_id": "src_novgorod_agriculture",
+    "target_table": "item_templates",
+    "target_record_id": "item_tpl_nov_hoe_v1",
+    "support_type": "background",
+    "summary": "Поддерживает только проверку широкого типа; не доказывает узкую типологию, параметры или commonness.",
+    "confidence": "medium"
+  },
+  {
+    "id": "record_source_item_tpl_nov_iron_edged_spade_v1",
+    "source_id": "src_novgorod_agriculture",
+    "target_table": "item_templates",
+    "target_record_id": "item_tpl_nov_iron_edged_spade_v1",
+    "support_type": "background",
+    "summary": "Поддерживает только проверку широкого типа; не доказывает узкую типологию, параметры или commonness.",
+    "confidence": "medium"
+  },
+  {
+    "id": "record_source_item_tpl_nov_net_float_v1",
+    "source_id": "src_novgorod_promysly",
+    "target_table": "item_templates",
+    "target_record_id": "item_tpl_nov_net_float_v1",
+    "support_type": "background",
+    "summary": "Поддерживает только проверку широкого типа; не доказывает узкую типологию, параметры или commonness.",
+    "confidence": "medium"
+  },
+  {
+    "id": "record_source_item_tpl_nov_net_sinker_v1",
+    "source_id": "src_novgorod_promysly",
+    "target_table": "item_templates",
+    "target_record_id": "item_tpl_nov_net_sinker_v1",
+    "support_type": "background",
+    "summary": "Поддерживает только проверку широкого типа; не доказывает узкую типологию, параметры или commonness.",
+    "confidence": "medium"
+  },
+  {
+    "id": "record_source_item_tpl_nov_pitchfork_v1",
+    "source_id": "src_novgorod_agriculture",
+    "target_table": "item_templates",
+    "target_record_id": "item_tpl_nov_pitchfork_v1",
+    "support_type": "background",
+    "summary": "Поддерживает только проверку широкого типа; не доказывает узкую типологию, параметры или commonness.",
+    "confidence": "medium"
+  },
+  {
+    "id": "record_source_item_tpl_nov_rake_v1",
+    "source_id": "src_novgorod_agriculture",
+    "target_table": "item_templates",
+    "target_record_id": "item_tpl_nov_rake_v1",
+    "support_type": "background",
+    "summary": "Поддерживает только проверку широкого типа; не доказывает узкую типологию, параметры или commonness.",
+    "confidence": "medium"
+  },
+  {
+    "id": "record_source_item_tpl_nov_scythe_v1",
+    "source_id": "src_novgorod_agriculture",
+    "target_table": "item_templates",
+    "target_record_id": "item_tpl_nov_scythe_v1",
+    "support_type": "background",
+    "summary": "Поддерживает только проверку широкого типа; не доказывает узкую типологию, параметры или commonness.",
+    "confidence": "medium"
+  },
+  {
+    "id": "record_source_item_tpl_nov_sickle_v1",
+    "source_id": "src_novgorod_agriculture",
+    "target_table": "item_templates",
+    "target_record_id": "item_tpl_nov_sickle_v1",
+    "support_type": "background",
+    "summary": "Поддерживает только проверку широкого типа; не доказывает узкую типологию, параметры или commonness.",
+    "confidence": "medium"
+  },
+  {
+    "id": "record_source_item_tpl_nov_wooden_shovel_v1",
+    "source_id": "src_novgorod_agriculture",
+    "target_table": "item_templates",
+    "target_record_id": "item_tpl_nov_wooden_shovel_v1",
+    "support_type": "background",
+    "summary": "Поддерживает только проверку широкого типа; не доказывает узкую типологию, параметры или commonness.",
+    "confidence": "medium"
+  }
+]

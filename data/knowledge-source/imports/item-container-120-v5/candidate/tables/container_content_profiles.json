@@ -1,0 +1,110 @@
+[
+  {
+    "id": "content_container_tpl_nov_birch_bark_box_v1",
+    "container_template_id": "container_tpl_nov_birch_bark_box_v1",
+    "empty_allowed": true,
+    "status": "draft"
+  },
+  {
+    "id": "content_container_tpl_nov_bucket_v1",
+    "container_template_id": "container_tpl_nov_bucket_v1",
+    "empty_allowed": true,
+    "status": "draft"
+  },
+  {
+    "id": "content_container_tpl_nov_carrying_basket_v1",
+    "container_template_id": "container_tpl_nov_carrying_basket_v1",
+    "empty_allowed": true,
+    "status": "draft"
+  },
+  {
+    "id": "content_container_tpl_nov_cask_v1",
+    "container_template_id": "container_tpl_nov_cask_v1",
+    "empty_allowed": true,
+    "status": "draft"
+  },
+  {
+    "id": "content_container_tpl_nov_chest_v1",
+    "container_template_id": "container_tpl_nov_chest_v1",
+    "empty_allowed": true,
+    "status": "draft"
+  },
+  {
+    "id": "content_container_tpl_nov_drawstring_pouch_v1",
+    "container_template_id": "container_tpl_nov_drawstring_pouch_v1",
+    "empty_allowed": true,
+    "status": "draft"
+  },
+  {
+    "id": "content_container_tpl_nov_flap_belt_pouch_v1",
+    "container_template_id": "container_tpl_nov_flap_belt_pouch_v1",
+    "empty_allowed": true,
+    "status": "draft"
+  },
+  {
+    "id": "content_container_tpl_nov_jug_v1",
+    "container_template_id": "container_tpl_nov_jug_v1",
+    "empty_allowed": true,
+    "status": "draft"
+  },
+  {
+    "id": "content_container_tpl_nov_knife_sheath_v1",
+    "container_template_id": "container_tpl_nov_knife_sheath_v1",
+    "empty_allowed": false,
+    "status": "draft"
+  },
+  {
+    "id": "content_container_tpl_nov_needle_case_v1",
+    "container_template_id": "container_tpl_nov_needle_case_v1",
+    "empty_allowed": false,
+    "status": "draft"
+  },
+  {
+    "id": "content_container_tpl_nov_quiver_v1",
+    "container_template_id": "container_tpl_nov_quiver_v1",
+    "empty_allowed": false,
+    "status": "draft"
+  },
+  {
+    "id": "content_container_tpl_nov_sack_v1",
+    "container_template_id": "container_tpl_nov_sack_v1",
+    "empty_allowed": true,
+    "status": "draft"
+  },
+  {
+    "id": "content_container_tpl_nov_small_casket_v1",
+    "container_template_id": "container_tpl_nov_small_casket_v1",
+    "empty_allowed": true,
+    "status": "draft"
+  },
+  {
+    "id": "content_container_tpl_nov_small_soft_bag_v1",
+    "container_template_id": "container_tpl_nov_small_soft_bag_v1",
+    "empty_allowed": true,
+    "status": "draft"
+  },
+  {
+    "id": "content_container_tpl_nov_storage_pot_v1",
+    "container_template_id": "container_tpl_nov_storage_pot_v1",
+    "empty_allowed": true,
+    "status": "draft"
+  },
+  {
+    "id": "content_container_tpl_nov_sword_scabbard_v1",
+    "container_template_id": "container_tpl_nov_sword_scabbard_v1",
+    "empty_allowed": false,
+    "status": "draft"
+  },
+  {
+    "id": "content_container_tpl_nov_tub_v1",
+    "container_template_id": "container_tpl_nov_tub_v1",
+    "empty_allowed": true,
+    "status": "draft"
+  },
+  {
+    "id": "content_container_tpl_nov_wooden_box_v1",
+    "container_template_id": "container_tpl_nov_wooden_box_v1",
+    "empty_allowed": true,
+    "status": "draft"
+  }
+]

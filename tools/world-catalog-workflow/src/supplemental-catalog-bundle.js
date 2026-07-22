@@ -27,16 +27,18 @@ import propertyProfileRulesSchema from '../../../schemas/materialization/propert
 import regionEquipmentProfilesSchema from '../../../schemas/materialization/region-equipment-profiles-v1.schema.json' with { type: 'json' };
 import regionEquipmentProfileEntriesSchema from '../../../schemas/materialization/region-equipment-profile-entries-v1.schema.json' with { type: 'json' };
 import itemClassificationMigrationInventorySchema from '../../../schemas/materialization/item-classification-migration-inventory-v1.schema.json' with { type: 'json' };
+import universalCategoryRelationsSchema from '../../../schemas/materialization/universal-category-relations-v1.schema.json' with { type: 'json' };
+import containerContentCategoryRelationsSchema from '../../../schemas/materialization/container-content-category-relations-v1.schema.json' with { type: 'json' };
 
 // A supplemental catalog is intentionally separate from the approved base archive.
 // It is authoring input only; this validator never makes draft rows runtime candidates.
 export const SUPPLEMENTAL_AUTHORING_TABLES = Object.freeze(new Set([
-  'source_records', 'record_sources', 'world_revisions', 'universal_categories', 'category_labels',
+  'source_records', 'record_sources', 'world_revisions', 'universal_categories', 'universal_category_relations', 'category_labels',
   'region_category_options', 'item_templates', 'item_template_category_bindings',
   'item_template_inventory_profiles', 'item_template_source_bindings', 'quantity_unit_definitions', 'item_template_quantity_profiles',
   'container_templates', 'container_template_facet_bindings',
   'container_template_inventory_profiles', 'container_template_source_bindings', 'container_content_profiles',
-  'container_content_profile_entries', 'item_profile_sets', 'item_profile_entries',
+  'container_content_profile_entries', 'container_content_category_relations', 'item_profile_sets', 'item_profile_entries',
   'property_profiles', 'property_profile_rules', 'region_equipment_profiles',
   'region_equipment_profile_entries', 'item_classification_migration_inventory'
 ]));
@@ -45,6 +47,7 @@ const PARTY_PREFIXES = Object.freeze(['party_', 'runtime_', 'instance_']);
 const STATUS = new Set(['draft', 'approved', 'deprecated']);
 const STRICT_FIELDS = Object.freeze({
   universal_categories: new Set(['id', 'domain', 'parent_category_id', 'stable_code', 'facet', 'preferred_label', 'definition', 'scope_note', 'inclusion_rules', 'exclusion_rules', 'replaced_by_category_id', 'title', 'status']),
+  universal_category_relations: new Set(['id', 'from_category_id', 'to_category_id', 'relation_type']),
   category_labels: new Set(['id', 'category_id', 'language', 'label', 'label_type', 'valid_from', 'valid_to', 'source_id']),
   region_category_options: new Set(['id', 'world_revision_id', 'region_id', 'category_id', 'valid_from', 'valid_to', 'weight', 'applicability', 'status']),
   item_template_category_bindings: new Set(['id', 'item_template_id', 'category_id', 'binding_kind', 'packing_slot_cost', 'packing_bundle_size', 'exclusivity_group', 'requires_regional_permission', 'status']),
@@ -64,6 +67,7 @@ const STRICT_FIELDS = Object.freeze({
   item_profile_entries: new Set(['id', 'profile_id', 'item_template_id', 'item_category_id', 'slot_key', 'min_quantity', 'max_quantity', 'required', 'weight']),
   container_content_profiles: new Set(['id', 'container_template_id', 'empty_allowed', 'status']),
   container_content_profile_entries: new Set(['id', 'profile_id', 'item_template_id', 'item_category_id', 'min_quantity', 'max_quantity', 'required', 'weight']),
+  container_content_category_relations: new Set(['id', 'container_category_id', 'content_category_id', 'compatibility', 'status']),
   property_profiles: new Set(['id', 'world_revision_id', 'region_id', 'property_category_id', 'status']),
   property_profile_rules: new Set(['id', 'property_profile_id', 'owner_kind', 'holder_kind', 'controller_kind', 'access_policy', 'claim_conditions', 'status']),
   region_equipment_profiles: new Set(['id', 'region_id', 'social_role_id', 'occupation_id', 'status']),
@@ -71,19 +75,20 @@ const STRICT_FIELDS = Object.freeze({
   item_classification_migration_inventory: new Set(['id', 'legacy_table_name', 'legacy_record_id', 'legacy_field_name', 'legacy_value', 'resolution_status', 'resolved_category_id', 'report_note'])
 });
 const SCHEMA_IDS = Object.freeze({
-  source_records: 'rus.source_records.v1', record_sources: 'rus.record_sources.v1', world_revisions: 'rus.world_revisions.v1', universal_categories: 'rus.universal_categories.v1', category_labels: 'rus.category_labels.v1', region_category_options: 'rus.region_category_options.v1',
+  source_records: 'rus.source_records.v1', record_sources: 'rus.record_sources.v1', world_revisions: 'rus.world_revisions.v1', universal_categories: 'rus.universal_categories.v1', universal_category_relations: 'rus.universal_category_relations.v1', category_labels: 'rus.category_labels.v1', region_category_options: 'rus.region_category_options.v1',
   item_templates: 'rus.item_templates.v1', item_template_category_bindings: 'rus.item_template_category_bindings.v1', item_template_inventory_profiles: 'rus.item_template_inventory_profiles.v1',
   item_template_source_bindings: 'rus.item_template_source_bindings.v1',
   quantity_unit_definitions: 'rus.quantity_unit_definitions.v1', item_template_quantity_profiles: 'rus.item_template_quantity_profiles.v1',
   container_templates: 'rus.container_templates.v1', container_template_facet_bindings: 'rus.container_template_facet_bindings.v1', container_template_inventory_profiles: 'rus.container_template_inventory_profiles.v1',
   container_template_source_bindings: 'rus.container_template_source_bindings.v1',
   container_content_profiles: 'rus.container_content_profiles.v1', container_content_profile_entries: 'rus.container_content_profile_entries.v1',
+  container_content_category_relations: 'rus.container_content_category_relations.v1',
   item_profile_sets: 'rus.item_profile_sets.v1', item_profile_entries: 'rus.item_profile_entries.v1',
   property_profiles: 'rus.property_profiles.v1', property_profile_rules: 'rus.property_profile_rules.v1',
   region_equipment_profiles: 'rus.region_equipment_profiles.v1', region_equipment_profile_entries: 'rus.region_equipment_profile_entries.v1', item_classification_migration_inventory: 'rus.item_classification_migration_inventory.v1'
 });
 const SUPPLEMENTAL_FK_DEPENDENCIES = Object.freeze({
-  world_revisions: ['world_revisions'], universal_categories: ['universal_categories'],
+  world_revisions: ['world_revisions'], universal_categories: ['universal_categories'], universal_category_relations: ['universal_categories'],
   record_sources: ['source_records'],
   category_labels: ['universal_categories', 'source_records'], region_category_options: ['world_revisions', 'universal_categories'],
   item_templates: ['world_revisions', 'universal_categories', 'source_records'],
@@ -94,18 +99,20 @@ const SUPPLEMENTAL_FK_DEPENDENCIES = Object.freeze({
   container_template_inventory_profiles: ['container_templates', 'world_revisions', 'source_records'], container_content_profiles: ['container_templates'],
   container_template_source_bindings: ['container_templates', 'world_revisions', 'source_records'],
   container_content_profile_entries: ['container_content_profiles', 'item_templates', 'universal_categories'], item_profile_sets: ['world_revisions'],
+  container_content_category_relations: ['universal_categories'],
   item_profile_entries: ['item_profile_sets', 'item_templates', 'universal_categories'], property_profiles: ['world_revisions', 'universal_categories'],
   property_profile_rules: ['property_profiles'], region_equipment_profile_entries: ['region_equipment_profiles', 'item_templates', 'universal_categories'],
   item_classification_migration_inventory: ['universal_categories']
 });
 const SCHEMAS = Object.freeze({
-  source_records: sourceRecordsSchema, record_sources: recordSourcesSchema, world_revisions: worldRevisionsSchema, universal_categories: universalCategoriesSchema, category_labels: categoryLabelsSchema, region_category_options: regionCategoryOptionsSchema,
+  source_records: sourceRecordsSchema, record_sources: recordSourcesSchema, world_revisions: worldRevisionsSchema, universal_categories: universalCategoriesSchema, universal_category_relations: universalCategoryRelationsSchema, category_labels: categoryLabelsSchema, region_category_options: regionCategoryOptionsSchema,
   item_templates: itemTemplatesSchema, item_template_category_bindings: itemTemplateCategoryBindingsSchema, item_template_inventory_profiles: itemTemplateInventoryProfilesSchema,
   item_template_source_bindings: itemTemplateSourceBindingsSchema,
   quantity_unit_definitions: quantityUnitDefinitionsSchema, item_template_quantity_profiles: itemTemplateQuantityProfilesSchema,
   container_templates: containerTemplatesSchema, container_template_facet_bindings: containerTemplateFacetBindingsSchema, container_template_inventory_profiles: containerTemplateInventoryProfilesSchema,
   container_template_source_bindings: containerTemplateSourceBindingsSchema,
   container_content_profiles: containerContentProfilesSchema, container_content_profile_entries: containerContentProfileEntriesSchema,
+  container_content_category_relations: containerContentCategoryRelationsSchema,
   item_profile_sets: itemProfileSetsSchema, item_profile_entries: itemProfileEntriesSchema,
   property_profiles: propertyProfilesSchema, property_profile_rules: propertyProfileRulesSchema,
   region_equipment_profiles: regionEquipmentProfilesSchema, region_equipment_profile_entries: regionEquipmentProfileEntriesSchema, item_classification_migration_inventory: itemClassificationMigrationInventorySchema
@@ -182,6 +189,10 @@ export function validateSupplementalCatalogBundle(manifest, recordsByTable = {},
     }
     if (record.parent_category_id && !categories.has(record.parent_category_id)) errors.push(`CATEGORY_PARENT_UNKNOWN:${record.id}`);
     if (record.replaced_by_category_id && !categories.has(record.replaced_by_category_id)) errors.push(`CATEGORY_REPLACEMENT_UNKNOWN:${record.id}`);
+  }
+  for (const record of recordsByTable.universal_category_relations ?? []) {
+    if (!categories.has(record.from_category_id)) errors.push(`CATEGORY_RELATION_FROM_UNKNOWN:${record.id}`);
+    if (!categories.has(record.to_category_id)) errors.push(`CATEGORY_RELATION_TO_UNKNOWN:${record.id}`);
   }
   for (const record of recordsByTable.category_labels ?? []) {
     if (!categories.has(record.category_id)) errors.push(`LABEL_CATEGORY_UNKNOWN:${record.id}`);
@@ -291,6 +302,10 @@ export function validateSupplementalCatalogBundle(manifest, recordsByTable = {},
     if ((record.item_template_id == null) === (record.item_category_id == null)) errors.push(`CONTENT_ENTRY_TARGET_XOR_INVALID:${record.id}`);
     if (record.item_template_id != null && !templates.has(record.item_template_id)) errors.push(`CONTENT_ENTRY_TEMPLATE_UNKNOWN:${record.id}`);
     if (record.item_category_id != null && !categories.has(record.item_category_id)) errors.push(`CONTENT_ENTRY_CATEGORY_UNKNOWN:${record.id}`);
+  }
+  for (const record of recordsByTable.container_content_category_relations ?? []) {
+    if (!categories.has(record.container_category_id)) errors.push(`CONTAINER_CONTENT_RELATION_CONTAINER_CATEGORY_UNKNOWN:${record.id}`);
+    if (!categories.has(record.content_category_id)) errors.push(`CONTAINER_CONTENT_RELATION_CONTENT_CATEGORY_UNKNOWN:${record.id}`);
   }
   for (const record of recordsByTable.item_profile_entries ?? []) {
     if (!profiles.has(record.profile_id)) errors.push(`PROFILE_ENTRY_PROFILE_UNKNOWN:${record.id}`);

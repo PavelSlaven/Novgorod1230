@@ -3,17 +3,19 @@ import { normalizeStage14AuditPolicy } from '../policy/constants.js';
 import { dedupeConcerns, isPlainObject, normalizeArray } from '../shared/utils.js';
 
 export function buildStage14G5AuditInput(context, options = {}) {
+  const draft = options.g5_scene_graph_draft ?? options.g5SceneGraphDraft ?? context.requireStageOutput?.(13, 'G5 scene graph draft');
   return {
     version: 1,
     schema: STAGE14_INPUT_SCHEMA,
     request_id: context.requestId,
     historical_frame: options.historical_frame ?? options.historicalFrame ?? context.requireStageOutput?.(3, 'historical frame'),
+    weather_state: options.weather_state ?? options.weatherState ?? context.getFrozenArtifactBySchema?.('weather_state')?.artifact ?? draft?.frame?.weather_state ?? null,
     selected_start_node: options.selected_start_node ?? options.selectedStartNode ?? context.requireStageOutput?.(9, 'selected start node'),
     start_place_audit: options.start_place_audit ?? options.startPlaceAudit ?? context.requireStageOutput?.(10, 'start place audit'),
     player_character: options.player_character ?? options.playerCharacter ?? context.getStageOutput?.(1101) ?? context.requireStageOutput?.(11, 'player character'),
     player_character_audit: options.player_character_audit ?? options.playerCharacterAudit ?? context.requireStageOutput?.(12, 'player character audit'),
     allowed_g5_template_set: normalizeAllowedG5TemplateSet(options.allowed_g5_template_set ?? options.allowedG5TemplateSet ?? context.getStageOutput?.(1300) ?? {}),
-    g5_scene_graph_draft: options.g5_scene_graph_draft ?? options.g5SceneGraphDraft ?? context.requireStageOutput?.(13, 'G5 scene graph draft'),
+    g5_scene_graph_draft: draft,
     g5_scene_code_precheck: options.g5_scene_code_precheck ?? options.g5SceneCodePrecheck ?? context.getStageOutput?.(1301) ?? null,
     npc_candidate_set: options.npc_candidate_set ?? options.npcCandidateSet ?? context.requireStageOutput?.(7, 'NPC candidate set'),
     item_profile_candidate_set: options.item_profile_candidate_set ?? options.itemProfileCandidateSet ?? context.requireStageOutput?.(8, 'item profile candidate set'),

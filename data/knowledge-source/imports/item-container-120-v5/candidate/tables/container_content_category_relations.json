@@ -1,0 +1,660 @@
+[
+  {
+    "id": "compat_cat_container_form_birch_bark_box_v1_content_food_dry_allowed",
+    "container_category_id": "cat_container_form_birch_bark_box_v1",
+    "content_category_id": "content_food_dry",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_birch_bark_box_v1_content_hot_forbidden",
+    "container_category_id": "cat_container_form_birch_bark_box_v1",
+    "content_category_id": "content_hot",
+    "compatibility": "forbidden",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_birch_bark_box_v1_content_personal_small_items_allowed",
+    "container_category_id": "cat_container_form_birch_bark_box_v1",
+    "content_category_id": "content_personal_small_items",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_birch_bark_box_v1_content_trade_goods_allowed",
+    "container_category_id": "cat_container_form_birch_bark_box_v1",
+    "content_category_id": "content_trade_goods",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_bucket_v1_content_fish_allowed",
+    "container_category_id": "cat_container_form_bucket_v1",
+    "content_category_id": "content_fish",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_bucket_v1_content_liquid_allowed",
+    "container_category_id": "cat_container_form_bucket_v1",
+    "content_category_id": "content_liquid",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_bucket_v1_content_water_allowed",
+    "container_category_id": "cat_container_form_bucket_v1",
+    "content_category_id": "content_water",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_bucket_v1_content_wet_bulk_allowed",
+    "container_category_id": "cat_container_form_bucket_v1",
+    "content_category_id": "content_wet_bulk",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_carrying_basket_v1_content_fish_allowed",
+    "container_category_id": "cat_container_form_carrying_basket_v1",
+    "content_category_id": "content_fish",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_carrying_basket_v1_content_food_dry_allowed",
+    "container_category_id": "cat_container_form_carrying_basket_v1",
+    "content_category_id": "content_food_dry",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_carrying_basket_v1_content_household_goods_allowed",
+    "container_category_id": "cat_container_form_carrying_basket_v1",
+    "content_category_id": "content_household_goods",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_carrying_basket_v1_content_meat_allowed",
+    "container_category_id": "cat_container_form_carrying_basket_v1",
+    "content_category_id": "content_meat",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_carrying_basket_v1_content_textiles_allowed",
+    "container_category_id": "cat_container_form_carrying_basket_v1",
+    "content_category_id": "content_textiles",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_carrying_basket_v1_content_trade_goods_allowed",
+    "container_category_id": "cat_container_form_carrying_basket_v1",
+    "content_category_id": "content_trade_goods",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_cask_v1_content_fermented_liquid_allowed",
+    "container_category_id": "cat_container_form_cask_v1",
+    "content_category_id": "content_fermented_liquid",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_cask_v1_content_grain_allowed",
+    "container_category_id": "cat_container_form_cask_v1",
+    "content_category_id": "content_grain",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_cask_v1_content_honey_allowed",
+    "container_category_id": "cat_container_form_cask_v1",
+    "content_category_id": "content_honey",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_cask_v1_content_hot_forbidden",
+    "container_category_id": "cat_container_form_cask_v1",
+    "content_category_id": "content_hot",
+    "compatibility": "forbidden",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_cask_v1_content_liquid_allowed",
+    "container_category_id": "cat_container_form_cask_v1",
+    "content_category_id": "content_liquid",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_cask_v1_content_salt_allowed",
+    "container_category_id": "cat_container_form_cask_v1",
+    "content_category_id": "content_salt",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_cask_v1_content_water_allowed",
+    "container_category_id": "cat_container_form_cask_v1",
+    "content_category_id": "content_water",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_chest_v1_content_hot_forbidden",
+    "container_category_id": "cat_container_form_chest_v1",
+    "content_category_id": "content_hot",
+    "compatibility": "forbidden",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_chest_v1_content_household_goods_allowed",
+    "container_category_id": "cat_container_form_chest_v1",
+    "content_category_id": "content_household_goods",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_chest_v1_content_textiles_allowed",
+    "container_category_id": "cat_container_form_chest_v1",
+    "content_category_id": "content_textiles",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_chest_v1_content_trade_goods_allowed",
+    "container_category_id": "cat_container_form_chest_v1",
+    "content_category_id": "content_trade_goods",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_drawstring_pouch_v1_content_coins_allowed",
+    "container_category_id": "cat_container_form_drawstring_pouch_v1",
+    "content_category_id": "content_coins",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_drawstring_pouch_v1_content_hot_forbidden",
+    "container_category_id": "cat_container_form_drawstring_pouch_v1",
+    "content_category_id": "content_hot",
+    "compatibility": "forbidden",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_drawstring_pouch_v1_content_liquid_forbidden",
+    "container_category_id": "cat_container_form_drawstring_pouch_v1",
+    "content_category_id": "content_liquid",
+    "compatibility": "forbidden",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_drawstring_pouch_v1_content_personal_small_items_allowed",
+    "container_category_id": "cat_container_form_drawstring_pouch_v1",
+    "content_category_id": "content_personal_small_items",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_drawstring_pouch_v1_content_salt_allowed",
+    "container_category_id": "cat_container_form_drawstring_pouch_v1",
+    "content_category_id": "content_salt",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_drawstring_pouch_v1_content_sharp_uncovered_forbidden",
+    "container_category_id": "cat_container_form_drawstring_pouch_v1",
+    "content_category_id": "content_sharp_uncovered",
+    "compatibility": "forbidden",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_drawstring_pouch_v1_content_small_dry_goods_allowed",
+    "container_category_id": "cat_container_form_drawstring_pouch_v1",
+    "content_category_id": "content_small_dry_goods",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_drawstring_pouch_v1_content_weights_allowed",
+    "container_category_id": "cat_container_form_drawstring_pouch_v1",
+    "content_category_id": "content_weights",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_drawstring_pouch_v1_content_wet_bulk_forbidden",
+    "container_category_id": "cat_container_form_drawstring_pouch_v1",
+    "content_category_id": "content_wet_bulk",
+    "compatibility": "forbidden",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_flap_belt_pouch_v1_content_folded_documents_allowed",
+    "container_category_id": "cat_container_form_flap_belt_pouch_v1",
+    "content_category_id": "content_folded_documents",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_flap_belt_pouch_v1_content_hot_forbidden",
+    "container_category_id": "cat_container_form_flap_belt_pouch_v1",
+    "content_category_id": "content_hot",
+    "compatibility": "forbidden",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_flap_belt_pouch_v1_content_liquid_forbidden",
+    "container_category_id": "cat_container_form_flap_belt_pouch_v1",
+    "content_category_id": "content_liquid",
+    "compatibility": "forbidden",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_flap_belt_pouch_v1_content_personal_small_items_allowed",
+    "container_category_id": "cat_container_form_flap_belt_pouch_v1",
+    "content_category_id": "content_personal_small_items",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_flap_belt_pouch_v1_content_salt_allowed",
+    "container_category_id": "cat_container_form_flap_belt_pouch_v1",
+    "content_category_id": "content_salt",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_flap_belt_pouch_v1_content_sharp_uncovered_forbidden",
+    "container_category_id": "cat_container_form_flap_belt_pouch_v1",
+    "content_category_id": "content_sharp_uncovered",
+    "compatibility": "forbidden",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_flap_belt_pouch_v1_content_small_dry_goods_allowed",
+    "container_category_id": "cat_container_form_flap_belt_pouch_v1",
+    "content_category_id": "content_small_dry_goods",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_flap_belt_pouch_v1_content_small_tools_allowed",
+    "container_category_id": "cat_container_form_flap_belt_pouch_v1",
+    "content_category_id": "content_small_tools",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_jug_v1_content_fermented_liquid_allowed",
+    "container_category_id": "cat_container_form_jug_v1",
+    "content_category_id": "content_fermented_liquid",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_jug_v1_content_honey_allowed",
+    "container_category_id": "cat_container_form_jug_v1",
+    "content_category_id": "content_honey",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_jug_v1_content_liquid_allowed",
+    "container_category_id": "cat_container_form_jug_v1",
+    "content_category_id": "content_liquid",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_jug_v1_content_water_allowed",
+    "container_category_id": "cat_container_form_jug_v1",
+    "content_category_id": "content_water",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_knife_sheath_v1_content_knife_fitted_allowed",
+    "container_category_id": "cat_container_form_knife_sheath_v1",
+    "content_category_id": "content_knife_fitted",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_knife_sheath_v1_content_liquid_forbidden",
+    "container_category_id": "cat_container_form_knife_sheath_v1",
+    "content_category_id": "content_liquid",
+    "compatibility": "forbidden",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_needle_case_v1_content_liquid_forbidden",
+    "container_category_id": "cat_container_form_needle_case_v1",
+    "content_category_id": "content_liquid",
+    "compatibility": "forbidden",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_needle_case_v1_content_needles_allowed",
+    "container_category_id": "cat_container_form_needle_case_v1",
+    "content_category_id": "content_needles",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_quiver_v1_content_arrows_allowed",
+    "container_category_id": "cat_container_form_quiver_v1",
+    "content_category_id": "content_arrows",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_quiver_v1_content_liquid_forbidden",
+    "container_category_id": "cat_container_form_quiver_v1",
+    "content_category_id": "content_liquid",
+    "compatibility": "forbidden",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_sack_v1_content_dry_bulk_allowed",
+    "container_category_id": "cat_container_form_sack_v1",
+    "content_category_id": "content_dry_bulk",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_sack_v1_content_fish_allowed",
+    "container_category_id": "cat_container_form_sack_v1",
+    "content_category_id": "content_fish",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_sack_v1_content_flour_allowed",
+    "container_category_id": "cat_container_form_sack_v1",
+    "content_category_id": "content_flour",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_sack_v1_content_food_dry_allowed",
+    "container_category_id": "cat_container_form_sack_v1",
+    "content_category_id": "content_food_dry",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_sack_v1_content_grain_allowed",
+    "container_category_id": "cat_container_form_sack_v1",
+    "content_category_id": "content_grain",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_sack_v1_content_hot_forbidden",
+    "container_category_id": "cat_container_form_sack_v1",
+    "content_category_id": "content_hot",
+    "compatibility": "forbidden",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_sack_v1_content_salt_allowed",
+    "container_category_id": "cat_container_form_sack_v1",
+    "content_category_id": "content_salt",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_sack_v1_content_textiles_allowed",
+    "container_category_id": "cat_container_form_sack_v1",
+    "content_category_id": "content_textiles",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_sack_v1_content_trade_goods_allowed",
+    "container_category_id": "cat_container_form_sack_v1",
+    "content_category_id": "content_trade_goods",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_small_casket_v1_content_hot_forbidden",
+    "container_category_id": "cat_container_form_small_casket_v1",
+    "content_category_id": "content_hot",
+    "compatibility": "forbidden",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_small_casket_v1_content_personal_small_items_allowed",
+    "container_category_id": "cat_container_form_small_casket_v1",
+    "content_category_id": "content_personal_small_items",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_small_soft_bag_v1_content_fish_allowed",
+    "container_category_id": "cat_container_form_small_soft_bag_v1",
+    "content_category_id": "content_fish",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_small_soft_bag_v1_content_food_dry_allowed",
+    "container_category_id": "cat_container_form_small_soft_bag_v1",
+    "content_category_id": "content_food_dry",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_small_soft_bag_v1_content_hot_forbidden",
+    "container_category_id": "cat_container_form_small_soft_bag_v1",
+    "content_category_id": "content_hot",
+    "compatibility": "forbidden",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_small_soft_bag_v1_content_meat_allowed",
+    "container_category_id": "cat_container_form_small_soft_bag_v1",
+    "content_category_id": "content_meat",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_small_soft_bag_v1_content_small_tools_allowed",
+    "container_category_id": "cat_container_form_small_soft_bag_v1",
+    "content_category_id": "content_small_tools",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_small_soft_bag_v1_content_textiles_allowed",
+    "container_category_id": "cat_container_form_small_soft_bag_v1",
+    "content_category_id": "content_textiles",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_small_soft_bag_v1_content_trade_goods_allowed",
+    "container_category_id": "cat_container_form_small_soft_bag_v1",
+    "content_category_id": "content_trade_goods",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_storage_pot_v1_content_dry_bulk_allowed",
+    "container_category_id": "cat_container_form_storage_pot_v1",
+    "content_category_id": "content_dry_bulk",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_storage_pot_v1_content_fermented_liquid_allowed",
+    "container_category_id": "cat_container_form_storage_pot_v1",
+    "content_category_id": "content_fermented_liquid",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_storage_pot_v1_content_flour_allowed",
+    "container_category_id": "cat_container_form_storage_pot_v1",
+    "content_category_id": "content_flour",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_storage_pot_v1_content_food_dry_allowed",
+    "container_category_id": "cat_container_form_storage_pot_v1",
+    "content_category_id": "content_food_dry",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_storage_pot_v1_content_grain_allowed",
+    "container_category_id": "cat_container_form_storage_pot_v1",
+    "content_category_id": "content_grain",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_storage_pot_v1_content_honey_allowed",
+    "container_category_id": "cat_container_form_storage_pot_v1",
+    "content_category_id": "content_honey",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_storage_pot_v1_content_liquid_allowed",
+    "container_category_id": "cat_container_form_storage_pot_v1",
+    "content_category_id": "content_liquid",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_storage_pot_v1_content_meat_allowed",
+    "container_category_id": "cat_container_form_storage_pot_v1",
+    "content_category_id": "content_meat",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_storage_pot_v1_content_salt_allowed",
+    "container_category_id": "cat_container_form_storage_pot_v1",
+    "content_category_id": "content_salt",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_storage_pot_v1_content_trade_goods_allowed",
+    "container_category_id": "cat_container_form_storage_pot_v1",
+    "content_category_id": "content_trade_goods",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_storage_pot_v1_content_water_allowed",
+    "container_category_id": "cat_container_form_storage_pot_v1",
+    "content_category_id": "content_water",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_sword_scabbard_v1_content_liquid_forbidden",
+    "container_category_id": "cat_container_form_sword_scabbard_v1",
+    "content_category_id": "content_liquid",
+    "compatibility": "forbidden",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_sword_scabbard_v1_content_sword_fitted_allowed",
+    "container_category_id": "cat_container_form_sword_scabbard_v1",
+    "content_category_id": "content_sword_fitted",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_tub_v1_content_fermented_liquid_allowed",
+    "container_category_id": "cat_container_form_tub_v1",
+    "content_category_id": "content_fermented_liquid",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_tub_v1_content_fish_allowed",
+    "container_category_id": "cat_container_form_tub_v1",
+    "content_category_id": "content_fish",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_tub_v1_content_liquid_allowed",
+    "container_category_id": "cat_container_form_tub_v1",
+    "content_category_id": "content_liquid",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_tub_v1_content_meat_allowed",
+    "container_category_id": "cat_container_form_tub_v1",
+    "content_category_id": "content_meat",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_tub_v1_content_water_allowed",
+    "container_category_id": "cat_container_form_tub_v1",
+    "content_category_id": "content_water",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_tub_v1_content_wet_bulk_allowed",
+    "container_category_id": "cat_container_form_tub_v1",
+    "content_category_id": "content_wet_bulk",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_wooden_box_v1_content_food_dry_allowed",
+    "container_category_id": "cat_container_form_wooden_box_v1",
+    "content_category_id": "content_food_dry",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_wooden_box_v1_content_hot_forbidden",
+    "container_category_id": "cat_container_form_wooden_box_v1",
+    "content_category_id": "content_hot",
+    "compatibility": "forbidden",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_wooden_box_v1_content_household_goods_allowed",
+    "container_category_id": "cat_container_form_wooden_box_v1",
+    "content_category_id": "content_household_goods",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_wooden_box_v1_content_textiles_allowed",
+    "container_category_id": "cat_container_form_wooden_box_v1",
+    "content_category_id": "content_textiles",
+    "compatibility": "allowed",
+    "status": "draft"
+  },
+  {
+    "id": "compat_cat_container_form_wooden_box_v1_content_trade_goods_allowed",
+    "container_category_id": "cat_container_form_wooden_box_v1",
+    "content_category_id": "content_trade_goods",
+    "compatibility": "allowed",
+    "status": "draft"
+  }
+]

@@ -55,6 +55,12 @@ test('Stage 16 approved catalog accepts mutually pinned quantity, equipment and 
   assert.equal(output[0].total_mass_grams, 100);
 });
 
+test('Stage 16 preserves fractional grams-per-unit for approved volume quantities', () => {
+  const quantity = requirement({ minimum_quantity: 100, maximum_quantity: 5000, quantity_unit_id: 'millilitre', quantity_dimension: 'volume', mass_grams_per_unit: 1.4 });
+  const output = materialize({ quantity, candidateOverrides: { quantity: 100, quantity_unit_id: 'millilitre', physical_state: { condition: 'intact', mass_grams_per_unit: 1.4, external_hand_cost: 0 } } });
+  assert.equal(output[0].total_mass_grams, 140);
+});
+
 test('Stage 16 input gate rejects missing approved catalog blocks before a custom materializer can bypass them', async () => {
   const input = makeStage16Input();
   delete input.item_profile_candidate_set.quantity_requirements;

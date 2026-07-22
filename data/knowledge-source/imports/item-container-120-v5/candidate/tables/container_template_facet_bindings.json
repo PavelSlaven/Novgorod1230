@@ -1,0 +1,1344 @@
+[
+  {
+    "id": "facet_container_tpl_nov_birch_bark_box_v1_access_model_cat_container_access_remove_lid_v1",
+    "container_template_id": "container_tpl_nov_birch_bark_box_v1",
+    "category_id": "cat_container_access_remove_lid_v1",
+    "facet": "access_model",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_birch_bark_box_v1_capacity_band_cat_container_capacity_00c241407520aae5_v5",
+    "container_template_id": "container_tpl_nov_birch_bark_box_v1",
+    "category_id": "cat_container_capacity_00c241407520aae5_v5",
+    "facet": "capacity_band",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_birch_bark_box_v1_closure_type_cat_container_closure_fitted_lid_variant_v1",
+    "container_template_id": "container_tpl_nov_birch_bark_box_v1",
+    "category_id": "cat_container_closure_fitted_lid_variant_v1",
+    "facet": "closure_type",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_birch_bark_box_v1_condition_cat_container_condition_serviceable_initial_v1",
+    "container_template_id": "container_tpl_nov_birch_bark_box_v1",
+    "category_id": "cat_container_condition_serviceable_initial_v1",
+    "facet": "condition",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_birch_bark_box_v1_content_compatibility_cat_container_compatibility_container_tpl_nov_birch_bark_box_v1_v5",
+    "container_template_id": "container_tpl_nov_birch_bark_box_v1",
+    "category_id": "cat_container_compatibility_container_tpl_nov_birch_bark_box_v1_v5",
+    "facet": "content_compatibility",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_birch_bark_box_v1_form",
+    "container_template_id": "container_tpl_nov_birch_bark_box_v1",
+    "category_id": "cat_container_form_birch_bark_box_v1",
+    "facet": "container_form",
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_birch_bark_box_v1_material_cat_container_material_birch_bark_v1",
+    "container_template_id": "container_tpl_nov_birch_bark_box_v1",
+    "category_id": "cat_container_material_birch_bark_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_birch_bark_box_v1_material_cat_container_material_wood_v1",
+    "container_template_id": "container_tpl_nov_birch_bark_box_v1",
+    "category_id": "cat_container_material_wood_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_birch_bark_box_v1_portability_cat_container_portability_portable_v1",
+    "container_template_id": "container_tpl_nov_birch_bark_box_v1",
+    "category_id": "cat_container_portability_portable_v1",
+    "facet": "portability",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_bucket_v1_access_model_cat_container_access_direct_access_v1",
+    "container_template_id": "container_tpl_nov_bucket_v1",
+    "category_id": "cat_container_access_direct_access_v1",
+    "facet": "access_model",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_bucket_v1_capacity_band_cat_container_capacity_9907e317d18baa15_v5",
+    "container_template_id": "container_tpl_nov_bucket_v1",
+    "category_id": "cat_container_capacity_9907e317d18baa15_v5",
+    "facet": "capacity_band",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_bucket_v1_closure_type_cat_container_closure_open_v1",
+    "container_template_id": "container_tpl_nov_bucket_v1",
+    "category_id": "cat_container_closure_open_v1",
+    "facet": "closure_type",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_bucket_v1_condition_cat_container_condition_serviceable_initial_v1",
+    "container_template_id": "container_tpl_nov_bucket_v1",
+    "category_id": "cat_container_condition_serviceable_initial_v1",
+    "facet": "condition",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_bucket_v1_content_compatibility_cat_container_compatibility_container_tpl_nov_bucket_v1_v5",
+    "container_template_id": "container_tpl_nov_bucket_v1",
+    "category_id": "cat_container_compatibility_container_tpl_nov_bucket_v1_v5",
+    "facet": "content_compatibility",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_bucket_v1_form",
+    "container_template_id": "container_tpl_nov_bucket_v1",
+    "category_id": "cat_container_form_bucket_v1",
+    "facet": "container_form",
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_bucket_v1_material_cat_container_material_iron_v1",
+    "container_template_id": "container_tpl_nov_bucket_v1",
+    "category_id": "cat_container_material_iron_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_bucket_v1_material_cat_container_material_wood_v1",
+    "container_template_id": "container_tpl_nov_bucket_v1",
+    "category_id": "cat_container_material_wood_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_bucket_v1_portability_cat_container_portability_portable_v1",
+    "container_template_id": "container_tpl_nov_bucket_v1",
+    "category_id": "cat_container_portability_portable_v1",
+    "facet": "portability",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_carrying_basket_v1_access_model_cat_container_access_direct_access_v1",
+    "container_template_id": "container_tpl_nov_carrying_basket_v1",
+    "category_id": "cat_container_access_direct_access_v1",
+    "facet": "access_model",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_carrying_basket_v1_capacity_band_cat_container_capacity_1b7e492ce0368a4f_v5",
+    "container_template_id": "container_tpl_nov_carrying_basket_v1",
+    "category_id": "cat_container_capacity_1b7e492ce0368a4f_v5",
+    "facet": "capacity_band",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_carrying_basket_v1_closure_type_cat_container_closure_open_or_lid_variant_v1",
+    "container_template_id": "container_tpl_nov_carrying_basket_v1",
+    "category_id": "cat_container_closure_open_or_lid_variant_v1",
+    "facet": "closure_type",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_carrying_basket_v1_condition_cat_container_condition_serviceable_initial_v1",
+    "container_template_id": "container_tpl_nov_carrying_basket_v1",
+    "category_id": "cat_container_condition_serviceable_initial_v1",
+    "facet": "condition",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_carrying_basket_v1_content_compatibility_cat_container_compatibility_container_tpl_nov_carrying_basket_v1_v5",
+    "container_template_id": "container_tpl_nov_carrying_basket_v1",
+    "category_id": "cat_container_compatibility_container_tpl_nov_carrying_basket_v1_v5",
+    "facet": "content_compatibility",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_carrying_basket_v1_form",
+    "container_template_id": "container_tpl_nov_carrying_basket_v1",
+    "category_id": "cat_container_form_carrying_basket_v1",
+    "facet": "container_form",
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_carrying_basket_v1_material_cat_container_material_reed_or_splint_v1",
+    "container_template_id": "container_tpl_nov_carrying_basket_v1",
+    "category_id": "cat_container_material_reed_or_splint_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_carrying_basket_v1_material_cat_container_material_willow_or_roots_v1",
+    "container_template_id": "container_tpl_nov_carrying_basket_v1",
+    "category_id": "cat_container_material_willow_or_roots_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_carrying_basket_v1_portability_cat_container_portability_portable_v1",
+    "container_template_id": "container_tpl_nov_carrying_basket_v1",
+    "category_id": "cat_container_portability_portable_v1",
+    "facet": "portability",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_cask_v1_access_model_cat_container_access_unbung_or_open_head_v1",
+    "container_template_id": "container_tpl_nov_cask_v1",
+    "category_id": "cat_container_access_unbung_or_open_head_v1",
+    "facet": "access_model",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_cask_v1_capacity_band_cat_container_capacity_f80e12cef2c45da3_v5",
+    "container_template_id": "container_tpl_nov_cask_v1",
+    "category_id": "cat_container_capacity_f80e12cef2c45da3_v5",
+    "facet": "capacity_band",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_cask_v1_closure_type_cat_container_closure_bung_or_head_v1",
+    "container_template_id": "container_tpl_nov_cask_v1",
+    "category_id": "cat_container_closure_bung_or_head_v1",
+    "facet": "closure_type",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_cask_v1_condition_cat_container_condition_serviceable_initial_v1",
+    "container_template_id": "container_tpl_nov_cask_v1",
+    "category_id": "cat_container_condition_serviceable_initial_v1",
+    "facet": "condition",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_cask_v1_content_compatibility_cat_container_compatibility_container_tpl_nov_cask_v1_v5",
+    "container_template_id": "container_tpl_nov_cask_v1",
+    "category_id": "cat_container_compatibility_container_tpl_nov_cask_v1_v5",
+    "facet": "content_compatibility",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_cask_v1_form",
+    "container_template_id": "container_tpl_nov_cask_v1",
+    "category_id": "cat_container_form_cask_v1",
+    "facet": "container_form",
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_cask_v1_material_cat_container_material_iron_v1",
+    "container_template_id": "container_tpl_nov_cask_v1",
+    "category_id": "cat_container_material_iron_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_cask_v1_material_cat_container_material_wood_v1",
+    "container_template_id": "container_tpl_nov_cask_v1",
+    "category_id": "cat_container_material_wood_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_cask_v1_portability_cat_container_portability_stationary_loaded_v1",
+    "container_template_id": "container_tpl_nov_cask_v1",
+    "category_id": "cat_container_portability_stationary_loaded_v1",
+    "facet": "portability",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_chest_v1_access_model_cat_container_access_open_or_unlock_v1",
+    "container_template_id": "container_tpl_nov_chest_v1",
+    "category_id": "cat_container_access_open_or_unlock_v1",
+    "facet": "access_model",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_chest_v1_capacity_band_cat_container_capacity_4abb95308292f2ab_v5",
+    "container_template_id": "container_tpl_nov_chest_v1",
+    "category_id": "cat_container_capacity_4abb95308292f2ab_v5",
+    "facet": "capacity_band",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_chest_v1_closure_type_cat_container_closure_hinged_lid_possible_lock_v1",
+    "container_template_id": "container_tpl_nov_chest_v1",
+    "category_id": "cat_container_closure_hinged_lid_possible_lock_v1",
+    "facet": "closure_type",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_chest_v1_condition_cat_container_condition_serviceable_initial_v1",
+    "container_template_id": "container_tpl_nov_chest_v1",
+    "category_id": "cat_container_condition_serviceable_initial_v1",
+    "facet": "condition",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_chest_v1_content_compatibility_cat_container_compatibility_container_tpl_nov_chest_v1_v5",
+    "container_template_id": "container_tpl_nov_chest_v1",
+    "category_id": "cat_container_compatibility_container_tpl_nov_chest_v1_v5",
+    "facet": "content_compatibility",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_chest_v1_form",
+    "container_template_id": "container_tpl_nov_chest_v1",
+    "category_id": "cat_container_form_chest_v1",
+    "facet": "container_form",
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_chest_v1_material_cat_container_material_iron_v1",
+    "container_template_id": "container_tpl_nov_chest_v1",
+    "category_id": "cat_container_material_iron_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_chest_v1_material_cat_container_material_wood_v1",
+    "container_template_id": "container_tpl_nov_chest_v1",
+    "category_id": "cat_container_material_wood_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_chest_v1_portability_cat_container_portability_stationary_or_two_person_v1",
+    "container_template_id": "container_tpl_nov_chest_v1",
+    "category_id": "cat_container_portability_stationary_or_two_person_v1",
+    "facet": "portability",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_drawstring_pouch_v1_access_model_cat_container_access_open_close_one_step_v1",
+    "container_template_id": "container_tpl_nov_drawstring_pouch_v1",
+    "category_id": "cat_container_access_open_close_one_step_v1",
+    "facet": "access_model",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_drawstring_pouch_v1_capacity_band_cat_container_capacity_484786637fb03ae2_v5",
+    "container_template_id": "container_tpl_nov_drawstring_pouch_v1",
+    "category_id": "cat_container_capacity_484786637fb03ae2_v5",
+    "facet": "capacity_band",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_drawstring_pouch_v1_closure_type_cat_container_closure_drawstring_v1",
+    "container_template_id": "container_tpl_nov_drawstring_pouch_v1",
+    "category_id": "cat_container_closure_drawstring_v1",
+    "facet": "closure_type",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_drawstring_pouch_v1_condition_cat_container_condition_serviceable_initial_v1",
+    "container_template_id": "container_tpl_nov_drawstring_pouch_v1",
+    "category_id": "cat_container_condition_serviceable_initial_v1",
+    "facet": "condition",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_drawstring_pouch_v1_content_compatibility_cat_container_compatibility_container_tpl_nov_drawstring_pouch_v1_v5",
+    "container_template_id": "container_tpl_nov_drawstring_pouch_v1",
+    "category_id": "cat_container_compatibility_container_tpl_nov_drawstring_pouch_v1_v5",
+    "facet": "content_compatibility",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_drawstring_pouch_v1_form",
+    "container_template_id": "container_tpl_nov_drawstring_pouch_v1",
+    "category_id": "cat_container_form_drawstring_pouch_v1",
+    "facet": "container_form",
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_drawstring_pouch_v1_material_cat_container_material_hemp_v1",
+    "container_template_id": "container_tpl_nov_drawstring_pouch_v1",
+    "category_id": "cat_container_material_hemp_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_drawstring_pouch_v1_material_cat_container_material_leather_v1",
+    "container_template_id": "container_tpl_nov_drawstring_pouch_v1",
+    "category_id": "cat_container_material_leather_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_drawstring_pouch_v1_material_cat_container_material_linen_v1",
+    "container_template_id": "container_tpl_nov_drawstring_pouch_v1",
+    "category_id": "cat_container_material_linen_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_drawstring_pouch_v1_material_cat_container_material_wool_v1",
+    "container_template_id": "container_tpl_nov_drawstring_pouch_v1",
+    "category_id": "cat_container_material_wool_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_drawstring_pouch_v1_portability_cat_container_portability_portable_v1",
+    "container_template_id": "container_tpl_nov_drawstring_pouch_v1",
+    "category_id": "cat_container_portability_portable_v1",
+    "facet": "portability",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_flap_belt_pouch_v1_access_model_cat_container_access_open_flap_v1",
+    "container_template_id": "container_tpl_nov_flap_belt_pouch_v1",
+    "category_id": "cat_container_access_open_flap_v1",
+    "facet": "access_model",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_flap_belt_pouch_v1_capacity_band_cat_container_capacity_5d2e430ad1b15811_v5",
+    "container_template_id": "container_tpl_nov_flap_belt_pouch_v1",
+    "category_id": "cat_container_capacity_5d2e430ad1b15811_v5",
+    "facet": "capacity_band",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_flap_belt_pouch_v1_closure_type_cat_container_closure_flap_v1",
+    "container_template_id": "container_tpl_nov_flap_belt_pouch_v1",
+    "category_id": "cat_container_closure_flap_v1",
+    "facet": "closure_type",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_flap_belt_pouch_v1_condition_cat_container_condition_serviceable_initial_v1",
+    "container_template_id": "container_tpl_nov_flap_belt_pouch_v1",
+    "category_id": "cat_container_condition_serviceable_initial_v1",
+    "facet": "condition",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_flap_belt_pouch_v1_content_compatibility_cat_container_compatibility_container_tpl_nov_flap_belt_pouch_v1_v5",
+    "container_template_id": "container_tpl_nov_flap_belt_pouch_v1",
+    "category_id": "cat_container_compatibility_container_tpl_nov_flap_belt_pouch_v1_v5",
+    "facet": "content_compatibility",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_flap_belt_pouch_v1_form",
+    "container_template_id": "container_tpl_nov_flap_belt_pouch_v1",
+    "category_id": "cat_container_form_flap_belt_pouch_v1",
+    "facet": "container_form",
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_flap_belt_pouch_v1_material_cat_container_material_hemp_v1",
+    "container_template_id": "container_tpl_nov_flap_belt_pouch_v1",
+    "category_id": "cat_container_material_hemp_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_flap_belt_pouch_v1_material_cat_container_material_leather_v1",
+    "container_template_id": "container_tpl_nov_flap_belt_pouch_v1",
+    "category_id": "cat_container_material_leather_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_flap_belt_pouch_v1_material_cat_container_material_linen_v1",
+    "container_template_id": "container_tpl_nov_flap_belt_pouch_v1",
+    "category_id": "cat_container_material_linen_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_flap_belt_pouch_v1_material_cat_container_material_wool_v1",
+    "container_template_id": "container_tpl_nov_flap_belt_pouch_v1",
+    "category_id": "cat_container_material_wool_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_flap_belt_pouch_v1_portability_cat_container_portability_portable_v1",
+    "container_template_id": "container_tpl_nov_flap_belt_pouch_v1",
+    "category_id": "cat_container_portability_portable_v1",
+    "facet": "portability",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_jug_v1_access_model_cat_container_access_remove_stopper_v1",
+    "container_template_id": "container_tpl_nov_jug_v1",
+    "category_id": "cat_container_access_remove_stopper_v1",
+    "facet": "access_model",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_jug_v1_capacity_band_cat_container_capacity_e7430d6912e49d50_v5",
+    "container_template_id": "container_tpl_nov_jug_v1",
+    "category_id": "cat_container_capacity_e7430d6912e49d50_v5",
+    "facet": "capacity_band",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_jug_v1_closure_type_cat_container_closure_stopper_variant_v1",
+    "container_template_id": "container_tpl_nov_jug_v1",
+    "category_id": "cat_container_closure_stopper_variant_v1",
+    "facet": "closure_type",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_jug_v1_condition_cat_container_condition_serviceable_initial_v1",
+    "container_template_id": "container_tpl_nov_jug_v1",
+    "category_id": "cat_container_condition_serviceable_initial_v1",
+    "facet": "condition",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_jug_v1_content_compatibility_cat_container_compatibility_container_tpl_nov_jug_v1_v5",
+    "container_template_id": "container_tpl_nov_jug_v1",
+    "category_id": "cat_container_compatibility_container_tpl_nov_jug_v1_v5",
+    "facet": "content_compatibility",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_jug_v1_form",
+    "container_template_id": "container_tpl_nov_jug_v1",
+    "category_id": "cat_container_form_jug_v1",
+    "facet": "container_form",
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_jug_v1_material_cat_container_material_clay_v1",
+    "container_template_id": "container_tpl_nov_jug_v1",
+    "category_id": "cat_container_material_clay_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_jug_v1_portability_cat_container_portability_portable_v1",
+    "container_template_id": "container_tpl_nov_jug_v1",
+    "category_id": "cat_container_portability_portable_v1",
+    "facet": "portability",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_knife_sheath_v1_access_model_cat_container_access_draw_knife_v1",
+    "container_template_id": "container_tpl_nov_knife_sheath_v1",
+    "category_id": "cat_container_access_draw_knife_v1",
+    "facet": "access_model",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_knife_sheath_v1_capacity_band_cat_container_capacity_82e54ea2e16f2cad_v5",
+    "container_template_id": "container_tpl_nov_knife_sheath_v1",
+    "category_id": "cat_container_capacity_82e54ea2e16f2cad_v5",
+    "facet": "capacity_band",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_knife_sheath_v1_closure_type_cat_container_closure_friction_fit_v1",
+    "container_template_id": "container_tpl_nov_knife_sheath_v1",
+    "category_id": "cat_container_closure_friction_fit_v1",
+    "facet": "closure_type",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_knife_sheath_v1_condition_cat_container_condition_serviceable_initial_v1",
+    "container_template_id": "container_tpl_nov_knife_sheath_v1",
+    "category_id": "cat_container_condition_serviceable_initial_v1",
+    "facet": "condition",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_knife_sheath_v1_content_compatibility_cat_container_compatibility_container_tpl_nov_knife_sheath_v1_v5",
+    "container_template_id": "container_tpl_nov_knife_sheath_v1",
+    "category_id": "cat_container_compatibility_container_tpl_nov_knife_sheath_v1_v5",
+    "facet": "content_compatibility",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_knife_sheath_v1_form",
+    "container_template_id": "container_tpl_nov_knife_sheath_v1",
+    "category_id": "cat_container_form_knife_sheath_v1",
+    "facet": "container_form",
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_knife_sheath_v1_material_cat_container_material_leather_v1",
+    "container_template_id": "container_tpl_nov_knife_sheath_v1",
+    "category_id": "cat_container_material_leather_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_knife_sheath_v1_material_cat_container_material_wood_v1",
+    "container_template_id": "container_tpl_nov_knife_sheath_v1",
+    "category_id": "cat_container_material_wood_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_knife_sheath_v1_portability_cat_container_portability_portable_worn_v1",
+    "container_template_id": "container_tpl_nov_knife_sheath_v1",
+    "category_id": "cat_container_portability_portable_worn_v1",
+    "facet": "portability",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_needle_case_v1_access_model_cat_container_access_remove_cap_v1",
+    "container_template_id": "container_tpl_nov_needle_case_v1",
+    "category_id": "cat_container_access_remove_cap_v1",
+    "facet": "access_model",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_needle_case_v1_capacity_band_cat_container_capacity_48204ade568a77b9_v5",
+    "container_template_id": "container_tpl_nov_needle_case_v1",
+    "category_id": "cat_container_capacity_48204ade568a77b9_v5",
+    "facet": "capacity_band",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_needle_case_v1_closure_type_cat_container_closure_cap_or_plug_v1",
+    "container_template_id": "container_tpl_nov_needle_case_v1",
+    "category_id": "cat_container_closure_cap_or_plug_v1",
+    "facet": "closure_type",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_needle_case_v1_condition_cat_container_condition_serviceable_initial_v1",
+    "container_template_id": "container_tpl_nov_needle_case_v1",
+    "category_id": "cat_container_condition_serviceable_initial_v1",
+    "facet": "condition",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_needle_case_v1_content_compatibility_cat_container_compatibility_container_tpl_nov_needle_case_v1_v5",
+    "container_template_id": "container_tpl_nov_needle_case_v1",
+    "category_id": "cat_container_compatibility_container_tpl_nov_needle_case_v1_v5",
+    "facet": "content_compatibility",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_needle_case_v1_form",
+    "container_template_id": "container_tpl_nov_needle_case_v1",
+    "category_id": "cat_container_form_needle_case_v1",
+    "facet": "container_form",
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_needle_case_v1_material_cat_container_material_bone_or_antler_v1",
+    "container_template_id": "container_tpl_nov_needle_case_v1",
+    "category_id": "cat_container_material_bone_or_antler_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_needle_case_v1_material_cat_container_material_leather_v1",
+    "container_template_id": "container_tpl_nov_needle_case_v1",
+    "category_id": "cat_container_material_leather_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_needle_case_v1_material_cat_container_material_wood_v1",
+    "container_template_id": "container_tpl_nov_needle_case_v1",
+    "category_id": "cat_container_material_wood_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_needle_case_v1_portability_cat_container_portability_portable_v1",
+    "container_template_id": "container_tpl_nov_needle_case_v1",
+    "category_id": "cat_container_portability_portable_v1",
+    "facet": "portability",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_quiver_v1_access_model_cat_container_access_draw_arrow_v1",
+    "container_template_id": "container_tpl_nov_quiver_v1",
+    "category_id": "cat_container_access_draw_arrow_v1",
+    "facet": "access_model",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_quiver_v1_capacity_band_cat_container_capacity_178e24a1326aee6c_v5",
+    "container_template_id": "container_tpl_nov_quiver_v1",
+    "category_id": "cat_container_capacity_178e24a1326aee6c_v5",
+    "facet": "capacity_band",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_quiver_v1_closure_type_cat_container_closure_open_or_flap_v1",
+    "container_template_id": "container_tpl_nov_quiver_v1",
+    "category_id": "cat_container_closure_open_or_flap_v1",
+    "facet": "closure_type",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_quiver_v1_condition_cat_container_condition_serviceable_initial_v1",
+    "container_template_id": "container_tpl_nov_quiver_v1",
+    "category_id": "cat_container_condition_serviceable_initial_v1",
+    "facet": "condition",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_quiver_v1_content_compatibility_cat_container_compatibility_container_tpl_nov_quiver_v1_v5",
+    "container_template_id": "container_tpl_nov_quiver_v1",
+    "category_id": "cat_container_compatibility_container_tpl_nov_quiver_v1_v5",
+    "facet": "content_compatibility",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_quiver_v1_form",
+    "container_template_id": "container_tpl_nov_quiver_v1",
+    "category_id": "cat_container_form_quiver_v1",
+    "facet": "container_form",
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_quiver_v1_material_cat_container_material_birch_bark_v1",
+    "container_template_id": "container_tpl_nov_quiver_v1",
+    "category_id": "cat_container_material_birch_bark_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_quiver_v1_material_cat_container_material_leather_v1",
+    "container_template_id": "container_tpl_nov_quiver_v1",
+    "category_id": "cat_container_material_leather_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_quiver_v1_material_cat_container_material_wood_v1",
+    "container_template_id": "container_tpl_nov_quiver_v1",
+    "category_id": "cat_container_material_wood_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_quiver_v1_portability_cat_container_portability_portable_worn_v1",
+    "container_template_id": "container_tpl_nov_quiver_v1",
+    "category_id": "cat_container_portability_portable_worn_v1",
+    "facet": "portability",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_sack_v1_access_model_cat_container_access_untie_v1",
+    "container_template_id": "container_tpl_nov_sack_v1",
+    "category_id": "cat_container_access_untie_v1",
+    "facet": "access_model",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_sack_v1_capacity_band_cat_container_capacity_c16c25672223a547_v5",
+    "container_template_id": "container_tpl_nov_sack_v1",
+    "category_id": "cat_container_capacity_c16c25672223a547_v5",
+    "facet": "capacity_band",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_sack_v1_closure_type_cat_container_closure_tie_v1",
+    "container_template_id": "container_tpl_nov_sack_v1",
+    "category_id": "cat_container_closure_tie_v1",
+    "facet": "closure_type",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_sack_v1_condition_cat_container_condition_serviceable_initial_v1",
+    "container_template_id": "container_tpl_nov_sack_v1",
+    "category_id": "cat_container_condition_serviceable_initial_v1",
+    "facet": "condition",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_sack_v1_content_compatibility_cat_container_compatibility_container_tpl_nov_sack_v1_v5",
+    "container_template_id": "container_tpl_nov_sack_v1",
+    "category_id": "cat_container_compatibility_container_tpl_nov_sack_v1_v5",
+    "facet": "content_compatibility",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_sack_v1_form",
+    "container_template_id": "container_tpl_nov_sack_v1",
+    "category_id": "cat_container_form_sack_v1",
+    "facet": "container_form",
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_sack_v1_material_cat_container_material_hemp_v1",
+    "container_template_id": "container_tpl_nov_sack_v1",
+    "category_id": "cat_container_material_hemp_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_sack_v1_material_cat_container_material_leather_v1",
+    "container_template_id": "container_tpl_nov_sack_v1",
+    "category_id": "cat_container_material_leather_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_sack_v1_material_cat_container_material_linen_v1",
+    "container_template_id": "container_tpl_nov_sack_v1",
+    "category_id": "cat_container_material_linen_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_sack_v1_material_cat_container_material_wool_v1",
+    "container_template_id": "container_tpl_nov_sack_v1",
+    "category_id": "cat_container_material_wool_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_sack_v1_portability_cat_container_portability_portable_loaded_v1",
+    "container_template_id": "container_tpl_nov_sack_v1",
+    "category_id": "cat_container_portability_portable_loaded_v1",
+    "facet": "portability",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_small_casket_v1_access_model_cat_container_access_open_or_unlock_v1",
+    "container_template_id": "container_tpl_nov_small_casket_v1",
+    "category_id": "cat_container_access_open_or_unlock_v1",
+    "facet": "access_model",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_small_casket_v1_capacity_band_cat_container_capacity_47b9ba46e7d0edd1_v5",
+    "container_template_id": "container_tpl_nov_small_casket_v1",
+    "category_id": "cat_container_capacity_47b9ba46e7d0edd1_v5",
+    "facet": "capacity_band",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_small_casket_v1_closure_type_cat_container_closure_lid_possible_lock_v1",
+    "container_template_id": "container_tpl_nov_small_casket_v1",
+    "category_id": "cat_container_closure_lid_possible_lock_v1",
+    "facet": "closure_type",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_small_casket_v1_condition_cat_container_condition_serviceable_initial_v1",
+    "container_template_id": "container_tpl_nov_small_casket_v1",
+    "category_id": "cat_container_condition_serviceable_initial_v1",
+    "facet": "condition",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_small_casket_v1_content_compatibility_cat_container_compatibility_container_tpl_nov_small_casket_v1_v5",
+    "container_template_id": "container_tpl_nov_small_casket_v1",
+    "category_id": "cat_container_compatibility_container_tpl_nov_small_casket_v1_v5",
+    "facet": "content_compatibility",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_small_casket_v1_form",
+    "container_template_id": "container_tpl_nov_small_casket_v1",
+    "category_id": "cat_container_form_small_casket_v1",
+    "facet": "container_form",
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_small_casket_v1_material_cat_container_material_iron_v1",
+    "container_template_id": "container_tpl_nov_small_casket_v1",
+    "category_id": "cat_container_material_iron_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_small_casket_v1_material_cat_container_material_wood_v1",
+    "container_template_id": "container_tpl_nov_small_casket_v1",
+    "category_id": "cat_container_material_wood_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_small_casket_v1_portability_cat_container_portability_portable_v1",
+    "container_template_id": "container_tpl_nov_small_casket_v1",
+    "category_id": "cat_container_portability_portable_v1",
+    "facet": "portability",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_small_soft_bag_v1_access_model_cat_container_access_open_tie_v1",
+    "container_template_id": "container_tpl_nov_small_soft_bag_v1",
+    "category_id": "cat_container_access_open_tie_v1",
+    "facet": "access_model",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_small_soft_bag_v1_capacity_band_cat_container_capacity_172ccfea52f995ee_v5",
+    "container_template_id": "container_tpl_nov_small_soft_bag_v1",
+    "category_id": "cat_container_capacity_172ccfea52f995ee_v5",
+    "facet": "capacity_band",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_small_soft_bag_v1_closure_type_cat_container_closure_tie_or_fold_v1",
+    "container_template_id": "container_tpl_nov_small_soft_bag_v1",
+    "category_id": "cat_container_closure_tie_or_fold_v1",
+    "facet": "closure_type",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_small_soft_bag_v1_condition_cat_container_condition_serviceable_initial_v1",
+    "container_template_id": "container_tpl_nov_small_soft_bag_v1",
+    "category_id": "cat_container_condition_serviceable_initial_v1",
+    "facet": "condition",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_small_soft_bag_v1_content_compatibility_cat_container_compatibility_container_tpl_nov_small_soft_bag_v1_v5",
+    "container_template_id": "container_tpl_nov_small_soft_bag_v1",
+    "category_id": "cat_container_compatibility_container_tpl_nov_small_soft_bag_v1_v5",
+    "facet": "content_compatibility",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_small_soft_bag_v1_form",
+    "container_template_id": "container_tpl_nov_small_soft_bag_v1",
+    "category_id": "cat_container_form_small_soft_bag_v1",
+    "facet": "container_form",
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_small_soft_bag_v1_material_cat_container_material_hemp_v1",
+    "container_template_id": "container_tpl_nov_small_soft_bag_v1",
+    "category_id": "cat_container_material_hemp_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_small_soft_bag_v1_material_cat_container_material_leather_v1",
+    "container_template_id": "container_tpl_nov_small_soft_bag_v1",
+    "category_id": "cat_container_material_leather_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_small_soft_bag_v1_material_cat_container_material_linen_v1",
+    "container_template_id": "container_tpl_nov_small_soft_bag_v1",
+    "category_id": "cat_container_material_linen_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_small_soft_bag_v1_material_cat_container_material_wool_v1",
+    "container_template_id": "container_tpl_nov_small_soft_bag_v1",
+    "category_id": "cat_container_material_wool_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_small_soft_bag_v1_portability_cat_container_portability_portable_v1",
+    "container_template_id": "container_tpl_nov_small_soft_bag_v1",
+    "category_id": "cat_container_portability_portable_v1",
+    "facet": "portability",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_storage_pot_v1_access_model_cat_container_access_remove_lid_v1",
+    "container_template_id": "container_tpl_nov_storage_pot_v1",
+    "category_id": "cat_container_access_remove_lid_v1",
+    "facet": "access_model",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_storage_pot_v1_capacity_band_cat_container_capacity_1b7e492ce0368a4f_v5",
+    "container_template_id": "container_tpl_nov_storage_pot_v1",
+    "category_id": "cat_container_capacity_1b7e492ce0368a4f_v5",
+    "facet": "capacity_band",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_storage_pot_v1_closure_type_cat_container_closure_lid_or_stop_variant_v1",
+    "container_template_id": "container_tpl_nov_storage_pot_v1",
+    "category_id": "cat_container_closure_lid_or_stop_variant_v1",
+    "facet": "closure_type",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_storage_pot_v1_condition_cat_container_condition_serviceable_initial_v1",
+    "container_template_id": "container_tpl_nov_storage_pot_v1",
+    "category_id": "cat_container_condition_serviceable_initial_v1",
+    "facet": "condition",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_storage_pot_v1_content_compatibility_cat_container_compatibility_container_tpl_nov_storage_pot_v1_v5",
+    "container_template_id": "container_tpl_nov_storage_pot_v1",
+    "category_id": "cat_container_compatibility_container_tpl_nov_storage_pot_v1_v5",
+    "facet": "content_compatibility",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_storage_pot_v1_form",
+    "container_template_id": "container_tpl_nov_storage_pot_v1",
+    "category_id": "cat_container_form_storage_pot_v1",
+    "facet": "container_form",
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_storage_pot_v1_material_cat_container_material_clay_v1",
+    "container_template_id": "container_tpl_nov_storage_pot_v1",
+    "category_id": "cat_container_material_clay_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_storage_pot_v1_portability_cat_container_portability_portable_heavy_v1",
+    "container_template_id": "container_tpl_nov_storage_pot_v1",
+    "category_id": "cat_container_portability_portable_heavy_v1",
+    "facet": "portability",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_sword_scabbard_v1_access_model_cat_container_access_draw_sword_v1",
+    "container_template_id": "container_tpl_nov_sword_scabbard_v1",
+    "category_id": "cat_container_access_draw_sword_v1",
+    "facet": "access_model",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_sword_scabbard_v1_capacity_band_cat_container_capacity_82e54ea2e16f2cad_v5",
+    "container_template_id": "container_tpl_nov_sword_scabbard_v1",
+    "category_id": "cat_container_capacity_82e54ea2e16f2cad_v5",
+    "facet": "capacity_band",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_sword_scabbard_v1_closure_type_cat_container_closure_friction_fit_v1",
+    "container_template_id": "container_tpl_nov_sword_scabbard_v1",
+    "category_id": "cat_container_closure_friction_fit_v1",
+    "facet": "closure_type",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_sword_scabbard_v1_condition_cat_container_condition_serviceable_initial_v1",
+    "container_template_id": "container_tpl_nov_sword_scabbard_v1",
+    "category_id": "cat_container_condition_serviceable_initial_v1",
+    "facet": "condition",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_sword_scabbard_v1_content_compatibility_cat_container_compatibility_container_tpl_nov_sword_scabbard_v1_v5",
+    "container_template_id": "container_tpl_nov_sword_scabbard_v1",
+    "category_id": "cat_container_compatibility_container_tpl_nov_sword_scabbard_v1_v5",
+    "facet": "content_compatibility",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_sword_scabbard_v1_form",
+    "container_template_id": "container_tpl_nov_sword_scabbard_v1",
+    "category_id": "cat_container_form_sword_scabbard_v1",
+    "facet": "container_form",
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_sword_scabbard_v1_material_cat_container_material_leather_v1",
+    "container_template_id": "container_tpl_nov_sword_scabbard_v1",
+    "category_id": "cat_container_material_leather_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_sword_scabbard_v1_material_cat_container_material_wood_v1",
+    "container_template_id": "container_tpl_nov_sword_scabbard_v1",
+    "category_id": "cat_container_material_wood_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_sword_scabbard_v1_portability_cat_container_portability_portable_worn_v1",
+    "container_template_id": "container_tpl_nov_sword_scabbard_v1",
+    "category_id": "cat_container_portability_portable_worn_v1",
+    "facet": "portability",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_tub_v1_access_model_cat_container_access_direct_access_v1",
+    "container_template_id": "container_tpl_nov_tub_v1",
+    "category_id": "cat_container_access_direct_access_v1",
+    "facet": "access_model",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_tub_v1_capacity_band_cat_container_capacity_f80e12cef2c45da3_v5",
+    "container_template_id": "container_tpl_nov_tub_v1",
+    "category_id": "cat_container_capacity_f80e12cef2c45da3_v5",
+    "facet": "capacity_band",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_tub_v1_closure_type_cat_container_closure_open_or_cover_v1",
+    "container_template_id": "container_tpl_nov_tub_v1",
+    "category_id": "cat_container_closure_open_or_cover_v1",
+    "facet": "closure_type",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_tub_v1_condition_cat_container_condition_serviceable_initial_v1",
+    "container_template_id": "container_tpl_nov_tub_v1",
+    "category_id": "cat_container_condition_serviceable_initial_v1",
+    "facet": "condition",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_tub_v1_content_compatibility_cat_container_compatibility_container_tpl_nov_tub_v1_v5",
+    "container_template_id": "container_tpl_nov_tub_v1",
+    "category_id": "cat_container_compatibility_container_tpl_nov_tub_v1_v5",
+    "facet": "content_compatibility",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_tub_v1_form",
+    "container_template_id": "container_tpl_nov_tub_v1",
+    "category_id": "cat_container_form_tub_v1",
+    "facet": "container_form",
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_tub_v1_material_cat_container_material_iron_v1",
+    "container_template_id": "container_tpl_nov_tub_v1",
+    "category_id": "cat_container_material_iron_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_tub_v1_material_cat_container_material_wood_v1",
+    "container_template_id": "container_tpl_nov_tub_v1",
+    "category_id": "cat_container_material_wood_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_tub_v1_portability_cat_container_portability_stationary_loaded_v1",
+    "container_template_id": "container_tpl_nov_tub_v1",
+    "category_id": "cat_container_portability_stationary_loaded_v1",
+    "facet": "portability",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_wooden_box_v1_access_model_cat_container_access_open_lid_v1",
+    "container_template_id": "container_tpl_nov_wooden_box_v1",
+    "category_id": "cat_container_access_open_lid_v1",
+    "facet": "access_model",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_wooden_box_v1_capacity_band_cat_container_capacity_4cd3107224326163_v5",
+    "container_template_id": "container_tpl_nov_wooden_box_v1",
+    "category_id": "cat_container_capacity_4cd3107224326163_v5",
+    "facet": "capacity_band",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_wooden_box_v1_closure_type_cat_container_closure_lid_v1",
+    "container_template_id": "container_tpl_nov_wooden_box_v1",
+    "category_id": "cat_container_closure_lid_v1",
+    "facet": "closure_type",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_wooden_box_v1_condition_cat_container_condition_serviceable_initial_v1",
+    "container_template_id": "container_tpl_nov_wooden_box_v1",
+    "category_id": "cat_container_condition_serviceable_initial_v1",
+    "facet": "condition",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_wooden_box_v1_content_compatibility_cat_container_compatibility_container_tpl_nov_wooden_box_v1_v5",
+    "container_template_id": "container_tpl_nov_wooden_box_v1",
+    "category_id": "cat_container_compatibility_container_tpl_nov_wooden_box_v1_v5",
+    "facet": "content_compatibility",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_wooden_box_v1_form",
+    "container_template_id": "container_tpl_nov_wooden_box_v1",
+    "category_id": "cat_container_form_wooden_box_v1",
+    "facet": "container_form",
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_wooden_box_v1_material_cat_container_material_iron_v1",
+    "container_template_id": "container_tpl_nov_wooden_box_v1",
+    "category_id": "cat_container_material_iron_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_wooden_box_v1_material_cat_container_material_wood_v1",
+    "container_template_id": "container_tpl_nov_wooden_box_v1",
+    "category_id": "cat_container_material_wood_v1",
+    "facet": "material",
+    "requires_regional_permission": true,
+    "status": "draft"
+  },
+  {
+    "id": "facet_container_tpl_nov_wooden_box_v1_portability_cat_container_portability_portable_heavy_v1",
+    "container_template_id": "container_tpl_nov_wooden_box_v1",
+    "category_id": "cat_container_portability_portable_heavy_v1",
+    "facet": "portability",
+    "requires_regional_permission": true,
+    "status": "draft"
+  }
+]

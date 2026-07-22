@@ -1,0 +1,248 @@
+[
+  {
+    "id": "relation_cat_container_form_birch_bark_box_v1_requires_cat_item_manufacturing_bent_wood_v1",
+    "from_category_id": "cat_container_form_birch_bark_box_v1",
+    "to_category_id": "cat_item_manufacturing_bent_wood_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_birch_bark_box_v1_requires_cat_item_manufacturing_sewn_v1",
+    "from_category_id": "cat_container_form_birch_bark_box_v1",
+    "to_category_id": "cat_item_manufacturing_sewn_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_bucket_v1_requires_cat_item_manufacturing_hooped_with_iron_v1",
+    "from_category_id": "cat_container_form_bucket_v1",
+    "to_category_id": "cat_item_manufacturing_hooped_with_iron_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_bucket_v1_requires_cat_item_manufacturing_hooped_with_wood_v1",
+    "from_category_id": "cat_container_form_bucket_v1",
+    "to_category_id": "cat_item_manufacturing_hooped_with_wood_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_bucket_v1_requires_cat_item_manufacturing_staved_v1",
+    "from_category_id": "cat_container_form_bucket_v1",
+    "to_category_id": "cat_item_manufacturing_staved_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_carrying_basket_v1_requires_cat_item_manufacturing_woven_v1",
+    "from_category_id": "cat_container_form_carrying_basket_v1",
+    "to_category_id": "cat_item_manufacturing_woven_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_cask_v1_requires_cat_item_manufacturing_hooped_with_iron_v1",
+    "from_category_id": "cat_container_form_cask_v1",
+    "to_category_id": "cat_item_manufacturing_hooped_with_iron_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_cask_v1_requires_cat_item_manufacturing_hooped_with_wood_v1",
+    "from_category_id": "cat_container_form_cask_v1",
+    "to_category_id": "cat_item_manufacturing_hooped_with_wood_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_cask_v1_requires_cat_item_manufacturing_staved_v1",
+    "from_category_id": "cat_container_form_cask_v1",
+    "to_category_id": "cat_item_manufacturing_staved_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_chest_v1_requires_cat_item_manufacturing_iron_fittings_optional_v1",
+    "from_category_id": "cat_container_form_chest_v1",
+    "to_category_id": "cat_item_manufacturing_iron_fittings_optional_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_chest_v1_requires_cat_item_manufacturing_lid_or_hinged_cover_v1",
+    "from_category_id": "cat_container_form_chest_v1",
+    "to_category_id": "cat_item_manufacturing_lid_or_hinged_cover_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_chest_v1_requires_cat_item_manufacturing_plank_joined_v1",
+    "from_category_id": "cat_container_form_chest_v1",
+    "to_category_id": "cat_item_manufacturing_plank_joined_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_drawstring_pouch_v1_requires_cat_item_manufacturing_drawstring_v1",
+    "from_category_id": "cat_container_form_drawstring_pouch_v1",
+    "to_category_id": "cat_item_manufacturing_drawstring_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_drawstring_pouch_v1_requires_cat_item_manufacturing_sewn_v1",
+    "from_category_id": "cat_container_form_drawstring_pouch_v1",
+    "to_category_id": "cat_item_manufacturing_sewn_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_flap_belt_pouch_v1_requires_cat_item_manufacturing_flap_closure_v1",
+    "from_category_id": "cat_container_form_flap_belt_pouch_v1",
+    "to_category_id": "cat_item_manufacturing_flap_closure_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_flap_belt_pouch_v1_requires_cat_item_manufacturing_sewn_v1",
+    "from_category_id": "cat_container_form_flap_belt_pouch_v1",
+    "to_category_id": "cat_item_manufacturing_sewn_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_jug_v1_requires_cat_item_manufacturing_fired_clay_v1",
+    "from_category_id": "cat_container_form_jug_v1",
+    "to_category_id": "cat_item_manufacturing_fired_clay_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_jug_v1_requires_cat_item_manufacturing_wheel_thrown_or_hand_finished_v1",
+    "from_category_id": "cat_container_form_jug_v1",
+    "to_category_id": "cat_item_manufacturing_wheel_thrown_or_hand_finished_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_knife_sheath_v1_requires_cat_item_manufacturing_assembled_v1",
+    "from_category_id": "cat_container_form_knife_sheath_v1",
+    "to_category_id": "cat_item_manufacturing_assembled_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_knife_sheath_v1_requires_cat_item_manufacturing_fitted_sheath_v1",
+    "from_category_id": "cat_container_form_knife_sheath_v1",
+    "to_category_id": "cat_item_manufacturing_fitted_sheath_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_knife_sheath_v1_requires_cat_item_manufacturing_sewn_v1",
+    "from_category_id": "cat_container_form_knife_sheath_v1",
+    "to_category_id": "cat_item_manufacturing_sewn_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_needle_case_v1_requires_cat_item_manufacturing_carved_v1",
+    "from_category_id": "cat_container_form_needle_case_v1",
+    "to_category_id": "cat_item_manufacturing_carved_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_needle_case_v1_requires_cat_item_manufacturing_sewn_v1",
+    "from_category_id": "cat_container_form_needle_case_v1",
+    "to_category_id": "cat_item_manufacturing_sewn_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_quiver_v1_requires_cat_item_manufacturing_assembled_v1",
+    "from_category_id": "cat_container_form_quiver_v1",
+    "to_category_id": "cat_item_manufacturing_assembled_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_quiver_v1_requires_cat_item_manufacturing_sewn_v1",
+    "from_category_id": "cat_container_form_quiver_v1",
+    "to_category_id": "cat_item_manufacturing_sewn_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_sack_v1_requires_cat_item_manufacturing_sewn_v1",
+    "from_category_id": "cat_container_form_sack_v1",
+    "to_category_id": "cat_item_manufacturing_sewn_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_small_casket_v1_requires_cat_item_manufacturing_iron_fittings_optional_v1",
+    "from_category_id": "cat_container_form_small_casket_v1",
+    "to_category_id": "cat_item_manufacturing_iron_fittings_optional_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_small_casket_v1_requires_cat_item_manufacturing_lid_or_hinged_cover_v1",
+    "from_category_id": "cat_container_form_small_casket_v1",
+    "to_category_id": "cat_item_manufacturing_lid_or_hinged_cover_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_small_casket_v1_requires_cat_item_manufacturing_plank_joined_v1",
+    "from_category_id": "cat_container_form_small_casket_v1",
+    "to_category_id": "cat_item_manufacturing_plank_joined_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_small_soft_bag_v1_requires_cat_item_manufacturing_sewn_v1",
+    "from_category_id": "cat_container_form_small_soft_bag_v1",
+    "to_category_id": "cat_item_manufacturing_sewn_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_storage_pot_v1_requires_cat_item_manufacturing_fired_clay_v1",
+    "from_category_id": "cat_container_form_storage_pot_v1",
+    "to_category_id": "cat_item_manufacturing_fired_clay_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_storage_pot_v1_requires_cat_item_manufacturing_wheel_thrown_or_hand_finished_v1",
+    "from_category_id": "cat_container_form_storage_pot_v1",
+    "to_category_id": "cat_item_manufacturing_wheel_thrown_or_hand_finished_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_sword_scabbard_v1_requires_cat_item_manufacturing_assembled_v1",
+    "from_category_id": "cat_container_form_sword_scabbard_v1",
+    "to_category_id": "cat_item_manufacturing_assembled_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_sword_scabbard_v1_requires_cat_item_manufacturing_fitted_sheath_v1",
+    "from_category_id": "cat_container_form_sword_scabbard_v1",
+    "to_category_id": "cat_item_manufacturing_fitted_sheath_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_sword_scabbard_v1_requires_cat_item_manufacturing_sewn_v1",
+    "from_category_id": "cat_container_form_sword_scabbard_v1",
+    "to_category_id": "cat_item_manufacturing_sewn_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_tub_v1_requires_cat_item_manufacturing_hooped_with_iron_v1",
+    "from_category_id": "cat_container_form_tub_v1",
+    "to_category_id": "cat_item_manufacturing_hooped_with_iron_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_tub_v1_requires_cat_item_manufacturing_hooped_with_wood_v1",
+    "from_category_id": "cat_container_form_tub_v1",
+    "to_category_id": "cat_item_manufacturing_hooped_with_wood_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_tub_v1_requires_cat_item_manufacturing_staved_v1",
+    "from_category_id": "cat_container_form_tub_v1",
+    "to_category_id": "cat_item_manufacturing_staved_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_wooden_box_v1_requires_cat_item_manufacturing_iron_fittings_optional_v1",
+    "from_category_id": "cat_container_form_wooden_box_v1",
+    "to_category_id": "cat_item_manufacturing_iron_fittings_optional_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_wooden_box_v1_requires_cat_item_manufacturing_lid_or_hinged_cover_v1",
+    "from_category_id": "cat_container_form_wooden_box_v1",
+    "to_category_id": "cat_item_manufacturing_lid_or_hinged_cover_v1",
+    "relation_type": "requires"
+  },
+  {
+    "id": "relation_cat_container_form_wooden_box_v1_requires_cat_item_manufacturing_plank_joined_v1",
+    "from_category_id": "cat_container_form_wooden_box_v1",
+    "to_category_id": "cat_item_manufacturing_plank_joined_v1",
+    "relation_type": "requires"
+  }
+]

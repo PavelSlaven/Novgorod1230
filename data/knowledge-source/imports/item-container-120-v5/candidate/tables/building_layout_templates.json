@@ -1,0 +1,92 @@
+[
+  {
+    "id": "layout_agriculture_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "building_template_id": "building_agriculture_v1",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "status": "approved"
+  },
+  {
+    "id": "layout_craft_work_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "building_template_id": "building_craft_work_v1",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "status": "approved"
+  },
+  {
+    "id": "layout_explicit_no_item_container_default_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "building_template_id": "building_explicit_no_item_container_default_v1",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "status": "approved"
+  },
+  {
+    "id": "layout_fishing_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "building_template_id": "building_fishing_v1",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "status": "approved"
+  },
+  {
+    "id": "layout_food_trade_household_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "building_template_id": "building_food_trade_household_v1",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "status": "approved"
+  },
+  {
+    "id": "layout_household_personal_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "building_template_id": "building_household_personal_v1",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "status": "approved"
+  },
+  {
+    "id": "layout_military_service_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "building_template_id": "building_military_service_v1",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "status": "approved"
+  },
+  {
+    "id": "layout_religious_personal_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "building_template_id": "building_religious_personal_v1",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "status": "approved"
+  },
+  {
+    "id": "layout_trade_administration_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "building_template_id": "building_trade_administration_v1",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "status": "approved"
+  },
+  {
+    "id": "layout_writing_accounting_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "building_template_id": "building_writing_accounting_v1",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "status": "approved"
+  }
+]

@@ -13,3 +13,4 @@ legacy/data/regional-summary-cache/
 *.log
 graphify-out/
 generated/repository-intelligence/
+data/rus13-base-staging/

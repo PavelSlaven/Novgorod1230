@@ -1,0 +1,182 @@
+[
+  {
+    "id": "g4_layout_edge_agriculture_start_work_v1",
+    "profile_id": "g4_profile_agriculture_v1",
+    "from_anchor_slot_key": "anchor_start",
+    "to_anchor_slot_key": "anchor_work",
+    "g5_edge_template_id": "g5_edge_agriculture_internal_v1",
+    "ordinal": 0,
+    "status": "approved"
+  },
+  {
+    "id": "g4_layout_edge_agriculture_work_exit_v1",
+    "profile_id": "g4_profile_agriculture_v1",
+    "from_anchor_slot_key": "anchor_work",
+    "to_anchor_slot_key": "anchor_exit",
+    "g5_edge_template_id": "g5_edge_agriculture_internal_v1",
+    "ordinal": 1,
+    "status": "approved"
+  },
+  {
+    "id": "g4_layout_edge_craft_work_start_work_v1",
+    "profile_id": "g4_profile_craft_work_v1",
+    "from_anchor_slot_key": "anchor_start",
+    "to_anchor_slot_key": "anchor_work",
+    "g5_edge_template_id": "g5_edge_craft_work_internal_v1",
+    "ordinal": 0,
+    "status": "approved"
+  },
+  {
+    "id": "g4_layout_edge_craft_work_work_exit_v1",
+    "profile_id": "g4_profile_craft_work_v1",
+    "from_anchor_slot_key": "anchor_work",
+    "to_anchor_slot_key": "anchor_exit",
+    "g5_edge_template_id": "g5_edge_craft_work_internal_v1",
+    "ordinal": 1,
+    "status": "approved"
+  },
+  {
+    "id": "g4_layout_edge_explicit_no_item_container_default_start_work_v1",
+    "profile_id": "g4_profile_explicit_no_item_container_default_v1",
+    "from_anchor_slot_key": "anchor_start",
+    "to_anchor_slot_key": "anchor_work",
+    "g5_edge_template_id": "g5_edge_explicit_no_item_container_default_internal_v1",
+    "ordinal": 0,
+    "status": "approved"
+  },
+  {
+    "id": "g4_layout_edge_explicit_no_item_container_default_work_exit_v1",
+    "profile_id": "g4_profile_explicit_no_item_container_default_v1",
+    "from_anchor_slot_key": "anchor_work",
+    "to_anchor_slot_key": "anchor_exit",
+    "g5_edge_template_id": "g5_edge_explicit_no_item_container_default_internal_v1",
+    "ordinal": 1,
+    "status": "approved"
+  },
+  {
+    "id": "g4_layout_edge_fishing_start_work_v1",
+    "profile_id": "g4_profile_fishing_v1",
+    "from_anchor_slot_key": "anchor_start",
+    "to_anchor_slot_key": "anchor_work",
+    "g5_edge_template_id": "g5_edge_fishing_internal_v1",
+    "ordinal": 0,
+    "status": "approved"
+  },
+  {
+    "id": "g4_layout_edge_fishing_work_exit_v1",
+    "profile_id": "g4_profile_fishing_v1",
+    "from_anchor_slot_key": "anchor_work",
+    "to_anchor_slot_key": "anchor_exit",
+    "g5_edge_template_id": "g5_edge_fishing_internal_v1",
+    "ordinal": 1,
+    "status": "approved"
+  },
+  {
+    "id": "g4_layout_edge_food_trade_household_start_work_v1",
+    "profile_id": "g4_profile_food_trade_household_v1",
+    "from_anchor_slot_key": "anchor_start",
+    "to_anchor_slot_key": "anchor_work",
+    "g5_edge_template_id": "g5_edge_food_trade_household_internal_v1",
+    "ordinal": 0,
+    "status": "approved"
+  },
+  {
+    "id": "g4_layout_edge_food_trade_household_work_exit_v1",
+    "profile_id": "g4_profile_food_trade_household_v1",
+    "from_anchor_slot_key": "anchor_work",
+    "to_anchor_slot_key": "anchor_exit",
+    "g5_edge_template_id": "g5_edge_food_trade_household_internal_v1",
+    "ordinal": 1,
+    "status": "approved"
+  },
+  {
+    "id": "g4_layout_edge_household_personal_start_work_v1",
+    "profile_id": "g4_profile_household_personal_v1",
+    "from_anchor_slot_key": "anchor_start",
+    "to_anchor_slot_key": "anchor_work",
+    "g5_edge_template_id": "g5_edge_household_personal_internal_v1",
+    "ordinal": 0,
+    "status": "approved"
+  },
+  {
+    "id": "g4_layout_edge_household_personal_work_exit_v1",
+    "profile_id": "g4_profile_household_personal_v1",
+    "from_anchor_slot_key": "anchor_work",
+    "to_anchor_slot_key": "anchor_exit",
+    "g5_edge_template_id": "g5_edge_household_personal_internal_v1",
+    "ordinal": 1,
+    "status": "approved"
+  },
+  {
+    "id": "g4_layout_edge_military_service_start_work_v1",
+    "profile_id": "g4_profile_military_service_v1",
+    "from_anchor_slot_key": "anchor_start",
+    "to_anchor_slot_key": "anchor_work",
+    "g5_edge_template_id": "g5_edge_military_service_internal_v1",
+    "ordinal": 0,
+    "status": "approved"
+  },
+  {
+    "id": "g4_layout_edge_military_service_work_exit_v1",
+    "profile_id": "g4_profile_military_service_v1",
+    "from_anchor_slot_key": "anchor_work",
+    "to_anchor_slot_key": "anchor_exit",
+    "g5_edge_template_id": "g5_edge_military_service_internal_v1",
+    "ordinal": 1,
+    "status": "approved"
+  },
+  {
+    "id": "g4_layout_edge_religious_personal_start_work_v1",
+    "profile_id": "g4_profile_religious_personal_v1",
+    "from_anchor_slot_key": "anchor_start",
+    "to_anchor_slot_key": "anchor_work",
+    "g5_edge_template_id": "g5_edge_religious_personal_internal_v1",
+    "ordinal": 0,
+    "status": "approved"
+  },
+  {
+    "id": "g4_layout_edge_religious_personal_work_exit_v1",
+    "profile_id": "g4_profile_religious_personal_v1",
+    "from_anchor_slot_key": "anchor_work",
+    "to_anchor_slot_key": "anchor_exit",
+    "g5_edge_template_id": "g5_edge_religious_personal_internal_v1",
+    "ordinal": 1,
+    "status": "approved"
+  },
+  {
+    "id": "g4_layout_edge_trade_administration_start_work_v1",
+    "profile_id": "g4_profile_trade_administration_v1",
+    "from_anchor_slot_key": "anchor_start",
+    "to_anchor_slot_key": "anchor_work",
+    "g5_edge_template_id": "g5_edge_trade_administration_internal_v1",
+    "ordinal": 0,
+    "status": "approved"
+  },
+  {
+    "id": "g4_layout_edge_trade_administration_work_exit_v1",
+    "profile_id": "g4_profile_trade_administration_v1",
+    "from_anchor_slot_key": "anchor_work",
+    "to_anchor_slot_key": "anchor_exit",
+    "g5_edge_template_id": "g5_edge_trade_administration_internal_v1",
+    "ordinal": 1,
+    "status": "approved"
+  },
+  {
+    "id": "g4_layout_edge_writing_accounting_start_work_v1",
+    "profile_id": "g4_profile_writing_accounting_v1",
+    "from_anchor_slot_key": "anchor_start",
+    "to_anchor_slot_key": "anchor_work",
+    "g5_edge_template_id": "g5_edge_writing_accounting_internal_v1",
+    "ordinal": 0,
+    "status": "approved"
+  },
+  {
+    "id": "g4_layout_edge_writing_accounting_work_exit_v1",
+    "profile_id": "g4_profile_writing_accounting_v1",
+    "from_anchor_slot_key": "anchor_work",
+    "to_anchor_slot_key": "anchor_exit",
+    "g5_edge_template_id": "g5_edge_writing_accounting_internal_v1",
+    "ordinal": 1,
+    "status": "approved"
+  }
+]

@@ -257,6 +257,26 @@ Canonical Stage 3C artifacts по-прежнему подтверждают hard
 - `APPROVED_DEPENDENCY_CLOSURE_INCOMPLETE`;
 - target revision `blocked_not_created`, inserted rows `0`.
 
+Дополнительная сверка Stage 3B-1 bundle с handoff-контрактом выявила технические
+пробелы, которые также не позволяют построить all-120 readiness:
+
+- 102 item inventory profiles содержат только mass/carry/hand fields и не содержат
+  обязательных dimensions, packing, condition и review metadata;
+- 18 container inventory profiles не содержат обязательных internal/external
+  dimensions/capacity, closure/access, mobility, nesting, condition и review metadata;
+- 12 quantity profiles существуют, но schema/bundle не содержат полный набор
+  historical measure conversion и packaging constraints из handoff;
+- `container_content_category_relations` отсутствует в bundle;
+- `g4_item_materialization_rules` и `g4_container_materialization_rules` отсутствуют
+  в bundle;
+- reviewed source bindings присутствуют только для 15 item templates; container source
+  bindings отсутствуют.
+
+Существующие public seams для закрытия этих пробелов — versioned JSON Schemas,
+`validateSupplementalCatalogBundle` и `buildCatalogEditorialReadinessReport`. Изменять
+их можно только через TDD с подтверждёнными test seams и без ослабления fail-closed
+readiness.
+
 Итог локальной проверки: `CHANGES REQUIRED BEFORE APPROVAL`. До появления и ручной
 проверки первичных page/object evidence, закрытия параметров/quantity/compatibility и
 dependency closure запрещены PostgreSQL apply, atomic approval и Stage 3C promotion.

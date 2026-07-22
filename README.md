@@ -12,9 +12,9 @@
 
 ## Статус spatial v3 P12/P28
 
-Работа ведётся в ветке `codex/spatial-architecture-g0-g6-v4-2` и draft PR №14. Active-нормативы production v2 восстановлены; target v3 хранится отдельно со статусом `proposed`. P12 target materialization разрешена только для изолированной PostgreSQL после проверяемого immutable bundle и branch binding. Production и P28 не активируются автоматически.
+Работа ведётся в ветке `codex/spatial-architecture-g0-g6-v4-2` и PR №14. Функциональный кандидат `11c9f0c1de2d510c29be51546d16851f0d719f76` прошёл полный clean-clone CI: PostgreSQL, проверку 186 таблиц актуального DDL, воспроизводимость generated-файлов, Graphify и полный набор тестов. Последующий release-candidate меняет только документацию, policy и generated metadata и проходит локальные профильные проверки; его strict evidence-child проходит облегчённый CI, не повторяющий PostgreSQL, браузер и полный набор тестов.
 
-Текущий P12 hard block: в утверждённом V1.1 bundle отсутствуют утверждённые dependency rows для обязательных G0/G1/G3 родителей, source records, универсальных категорий, scene templates и selector/applicability rules. Их нельзя синтезировать кодом. P28 требует отдельные role-bound signed evidence, exact activation-candidate commit, fresh-checkout и независимый аудит.
+P12 закрыт: canonical manifest имеет статус `approved`, содержит 37 datasets и `data_gaps: []`; утверждённая dependency closure включает 195 canonical G5 records, 358 physical exit pairs, 600 typed edge mappings, 17 scene families, 195 profiles и 195 candidates. Production ownership остаётся у v2, а target v3 до P28 не активирован. P28 использует GitHub approval точного HEAD, обязательный успешный CI и подтверждение merge commit либо trusted signed release tag; старые Ed25519 role signatures и отдельная fresh-checkout authority не требуются.
 
 ## Основные принципы
 

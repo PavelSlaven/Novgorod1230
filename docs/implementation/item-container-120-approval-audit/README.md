@@ -203,3 +203,60 @@ Ledger содержит все 120 template IDs, source group, библиогр�
 - Не построена approved dependency closure.
 - Не выполнены локальные readiness, PostgreSQL, full tests и critic.
 - Approval и promotion обоснованно не выполнены.
+
+## Локальная проверка Codex 2026-07-22
+
+Проверка выполнена в отдельном worktree на точном HEAD PR
+`56f268257d7438c3e948485c8b6e99e57373a511` относительно
+`origin/main` `8c9e8db9b275e2be9b9e5eb28b59c49e8baef068`.
+Канонический remote: `https://github.com/PavelSlaven/Novgorod1230.git`;
+ветка: `chatgpt/item-container-120-approval-audit`.
+
+Выполнены обязательные Repository Intelligence queries:
+
+- `all-120 editorial readiness and atomic promotion`;
+- `item/container source bindings and claim scopes`;
+- `physical parameter, quantity and compatibility profiles`;
+- `Stage 3C promotion and PostgreSQL integration`.
+
+`repo-intel:ensure` пересобрал Repository Graph для HEAD PR; `repo-intel:status`
+вернул `repository_graph=ready`, Graphify `0.9.17` и предупреждение
+`KNOWLEDGE_SOURCE_DEGRADED`. Предупреждение учтено полным чтением обязательных и
+профильных нормативов.
+
+Фактически выполнены:
+
+- `npm ci` — успешно, 0 vulnerabilities;
+- `npm run repo-intel:ensure` — успешно;
+- `npm run repo-intel:status` — успешно с указанным warning;
+- четыре `repo-intel:query` — успешно, `partial=false`;
+- `npm run docs:check` — успешно;
+- `npm run test:docs` — 8/8 tests passed;
+- `python -m json.tool SOURCE_RESEARCH_LEDGER.json` — успешно;
+- `git diff --check origin/main...HEAD` — успешно;
+- GitHub `clean-clone-generation-test` — `SUCCESS`.
+
+Live-проверка 11 external source groups не состоялась: Browser Harness не смог
+подключиться к Chrome (`active browser connections: 0`), cloud auth отсутствует, а в
+checkout нет локальных PDF/DJVU/EPUB payload. Поэтому доступность первичных payload,
+page/object/table/figure/catalog locators и содержащихся в них claims не подтверждена.
+Альтернативный web-инструмент не использовался.
+
+Независимые оси review дали:
+
+- Standards: `CHANGES REQUIRED` — прежний отчёт не содержал обязательной локальной
+  readiness/navigation проверки; этот раздел фиксирует её фактическое выполнение;
+- Spec: `CHANGES REQUIRED` — нормативный all-120 результат не достигнут.
+
+Canonical Stage 3C artifacts по-прежнему подтверждают hard block:
+
+- `fully_ready=0`;
+- `ready_for_editorial_approval=0`;
+- `LEGACY_SOURCE_NOT_VERIFIED`;
+- `EDITORIAL_APPROVAL_COHORT_INCOMPLETE`;
+- `APPROVED_DEPENDENCY_CLOSURE_INCOMPLETE`;
+- target revision `blocked_not_created`, inserted rows `0`.
+
+Итог локальной проверки: `CHANGES REQUIRED BEFORE APPROVAL`. До появления и ручной
+проверки первичных page/object evidence, закрытия параметров/quantity/compatibility и
+dependency closure запрещены PostgreSQL apply, atomic approval и Stage 3C promotion.

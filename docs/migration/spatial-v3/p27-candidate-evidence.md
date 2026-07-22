@@ -1,4 +1,4 @@
-# P27 candidate `422b5fd` — independent review evidence
+# P27 candidate `11c9f0c` — independent review evidence
 
 ## Scope and subject binding
 
@@ -6,8 +6,8 @@ This is a non-authoritative P27 review record for exactly
 the candidate commit:
 
 ```text
-candidate_commit: 422b5fda50b11a7d5706c969436e45bf52790580
-candidate_parent: 80ae1ae39a17a6657ad39e148dce96072affc7b0
+candidate_commit: 11c9f0c1de2d510c29be51546d16851f0d719f76
+candidate_parent: d28662ed0bae60ad2646eeffa46ce552ff8857ba
 branch: codex/spatial-architecture-g0-g6-v4-2
 repository: PavelSlaven/Novgorod1230
 ```
@@ -32,14 +32,14 @@ independent review, fresh-checkout evidence and GitHub release proof.
 
 ## Verdict
 
-**PASS WITH NOTES** for the exact subject above.
+**PASS** for the exact subject above.
 
 This assessment combines the recorded full acceptance of the preceding
 functional tree with focused validation of the later P12 metadata-generator
-delta. One final independent PR audit is required before handoff. The verdict
-is limited to the subject tree and its recorded evidence; it is not P28
-authority. P28 authority is exclusively the separately live-verified GitHub
-release proof.
+delta and the final P28 risk-based CI correction. The independent final audit
+returned `PASS`. The verdict is limited to the subject tree and its recorded
+evidence; it is not P28 authority. P28 authority is exclusively the separately
+live-verified GitHub release proof.
 
 ## Validation evidence
 
@@ -62,9 +62,13 @@ release proof.
   `world-db:schema-doc-check` (digest
   `fccc625773089749ca676831ee69f8b3656e914f5f0e53cbbfaff8773df905fe`)
   passed for this delta.
-- The final hosted `clean-clone-generation-test` is the one full acceptance for
-  the final evidence HEAD. Its live exact-head result is required by the P28
-  GitHub adapter and is deliberately not copied into this commit-bound record.
+- The hosted `clean-clone-generation-test` run `29908936914` passed for exact
+  functional candidate `11c9f0c1de2d510c29be51546d16851f0d719f76`.
+  It selected the `full` profile and completed clean checkout, PostgreSQL,
+  reproducibility, Repository Graph and the full project suite. The direct
+  evidence child is restricted to the three candidate-owned evidence paths
+  and therefore receives only P28 local-evidence and documentation checks.
+  Its exact-head result remains live-verified by the P28 GitHub adapter.
 - Repository readiness was checked after `git fetch --prune origin`; Graphify
   is `0.9.17`. Repository Intelligence and Graphify were refreshed after the
   indexed P12/README changes. The known knowledge-source semantic-coverage
@@ -108,12 +112,12 @@ as a successful P23 result.
 
 ## Remaining P28 blockers
 
-At the candidate subject, `release-evidence.v1.json` still has no activation
-the strict candidate-to-evidence binding is still pending final amendment, all
-`58` Appendix D entries remain `blocked`, and neither fresh-checkout evidence
-nor GitHub release proof exists. P28 therefore
-remains fail-closed; v2 is the sole production composition. This record does
-not change any of those facts.
+The strict direct-child manifest and ledger record all `58` Appendix D entries
+as locally passed by this single final audit. The approved P12 compilation has
+zero remaining source/target gaps. P28 nevertheless remains fail-closed because
+PR #14 is draft and lacks exact-head GitHub approval and merge/tag completion.
+The live required check is the only fresh-checkout authority; no duplicate
+fresh-checkout attestation exists. V2 remains the sole production composition.
 
 ## P28 authority boundary
 

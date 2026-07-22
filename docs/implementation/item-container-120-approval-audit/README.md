@@ -239,3 +239,32 @@ zero-row состоянием, G4 dependency gap подтверждён. Package
 Текущий результат: historical review и verified operator legacy input получены;
 canonical G4/slot dependency closure отсутствует. До появления утверждённого mapping
 для девяти profiles atomic Approval и Stage 3C promotion остаются запрещены.
+
+## Проверка spatial/materialization dependency gap — 2026-07-23
+
+После уточнения допустимой минимальной проекции повторно проверены source bundle и
+фактическая operator DB. В `world_base.graph_nodes` действительно существуют 9 332 G4,
+но ни один из них не имеет `status = approved`:
+
+- `draft`: 8 895;
+- `usable_with_caution`: 437;
+- `approved`: 0.
+
+Поэтому начать цепочку с «existing approved G4 nodes» пока невозможно. Stage 3C
+проверяет `graph_node_id` через approved dependency closure; использование
+`usable_with_caution` как external approved ID означало бы обход нормативного gate.
+Локально approved G1 content revision также не заменяет этот gate: его approval явно
+исключает production import.
+
+Из 437 существующих `usable_with_caution` G4 выбран минимальный семантически
+обоснованный набор из девяти узлов: жилые дворы, ремесленные дворы, монастырские
+огороды, лодочная зона, торговые ряды, Ярославово дворище, писцовый угол, сторожевое
+место и монастырский храм. Он покрывает девять V5 profiles без полного mapping 9 332
+узлов и без обращения к inactive Spatial v3 projection.
+
+Точный запрос на approval сохранён в
+`evidence/G4_DEPENDENCY_APPROVAL_REQUEST.json`; SHA-256 exact payload:
+`1a583ba6be5c66b11baa9d8b799bed446e8d0b2a811d1d2d2573325f868d8350`.
+До явного digest-bound подтверждения
+этого exact набора его записи остаются только proposal; G5 templates, slot rules,
+concrete item/container rules, PostgreSQL apply и Stage 3C promotion не выполняются.

@@ -1,282 +1,185 @@
-# Item/container 120 approval audit and execution handoff
+# Item/container 120: V5 integration handoff
 
 ## Цель
 
-Проверить и подготовить к атомарному approval полный набор из 120 item/container templates. Выполнить в доступной среде source discovery, mapping и формализацию требований. Действия, требующие канонического локального checkout, PDF/page extraction, Graphify, PostgreSQL, полного test suite и независимого критика, передать Codex в этом же PR.
+Интегрировать в существующий PR #17 проверенный редакторский пакет из 120 предметов и контейнеров для Новгородской земли около 1230 года, не создавая параллельную архитектуру и не подменяя package-local проверки каноническими approval/import gates.
 
-Approval допускается только при полном прохождении всех gates. Частичное утверждение, ослабление фильтров и фиктивные evidence bindings запрещены.
+Работа продолжается только в этом PR. Новый PR запрещён.
 
 ## Каноническая база
 
 - Repository: `PavelSlaven/Novgorod1230`.
 - Base branch: `main`.
-- Base commit при создании ветки: `8c9e8db9b275e2be9b9e5eb28b59c49e8baef068`.
 - Working branch: `chatgpt/item-container-120-approval-audit`.
 - Pull request: `#17`.
+- PR остаётся draft до завершения локальной интеграции, тестов, PostgreSQL lifecycle и независимого аудита.
 
-## Граница работы
+Перед локальной работой Codex обязан актуализировать ветку относительно текущего `origin/main` и зафиксировать фактические SHA. Указанный при создании ветки base SHA `8c9e8db9b275e2be9b9e5eb28b59c49e8baef068` не должен использоваться как предположение об актуальном `main`.
 
-В PR входят только:
+## Внешний вход V5
 
-- аудит и подготовка approval 120 item/container templates;
-- исторические source records и claim-scoped evidence;
-- physical, quantity и container compatibility review;
-- dependency closure;
-- readiness, Stage 3C promotion и связанные проверки.
+Пользователь передаёт архив Codex вручную. Архив намеренно не добавлен в GitHub этим изменением.
 
-В PR не входят Spatial v3, P28, production cutover, new-game orchestration, preflight и миграция старых партий.
+```text
+filename: ITEM_CONTAINER_120_HISTORICAL_GAMEPLAY_V5_2026-07-22.zip
+sha256: dc95ee730beea3f4ae7e153cd30fb505ea7b7285a765ea2b7b56979446075fc3
+size_bytes: 84080
+archive_files: 51
+```
 
-## Изученные нормативы и реализация
+Codex обязан первым действием проверить SHA-256. При несовпадении работа с архивом блокируется.
 
-Полностью либо последовательными диапазонами прочитаны актуальные:
+Архив содержит отдельные datasets, schemas, manifests, canonical mapping, integrity checks и аудиторы. Его package-local результат:
 
-- `AGENTS.md`;
-- `.github/AGENTS.md`;
-- `data/knowledge-source/corpus/DOCUMENTS/development_rules.txt`;
-- `data/knowledge-source/corpus/DOCUMENTS/code_critic_invocation_rule.txt`;
-- `data/knowledge-source/corpus/DOCUMENTS/code_driven_world_materialization_architecture.md`;
-- `data/knowledge-source/corpus/DOCUMENTS/llm_documentation_navigation.md`;
-- `data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md`;
-- `data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt`;
-- `data/knowledge-source/corpus/DOCUMENTS/character_inventory_equipment.txt`;
-- `data/knowledge-source/corpus/DOCUMENTS/npc_inventory_item_marks.txt`;
-- `data/knowledge-source/corpus/DOCUMENTS/information_sources_llm_prompts.md`.
+```text
+historical_readiness = PASS
+gameplay_readiness = PASS
+package_local_blocking_findings = 0
+anachronisms = 0
+content_ready = true
+```
 
-Изучены связанные данные и workflow:
+## Граница результата V5
 
-- Stage 3B-1 catalog, bundle и readiness report;
-- Stage 3B-2 source register, assignments, review policies, gaps и audit summary;
-- Stage 3C request/result/README;
-- `tools/world-catalog-workflow/src/editorial-readiness.js`;
-- `tools/world-catalog-workflow/src/all-template-promotion.js`.
+V5 подтверждает содержательную готовность редакторского кандидата в пределах собственной модели. Он не подтверждает и не выполняет:
 
-## Исходное состояние
+```text
+canonical_repository_apply_performed = false
+human_approval_attestation_present = false
+postgresql_lifecycle_performed = false
+canonical_world_revision_activated = false
+```
 
-Канонические reports фиксируют:
+Нельзя интерпретировать package-local `PASS` как канонический approval, Stage 3C promotion, импорт в `world_base` или runtime activation.
 
-- templates total: `120`;
-- item templates: `102`;
-- container templates: `18`;
-- ready for approval: `0`;
-- blocked: `120`;
-- activation: `forbidden`;
-- promotion: `blocked`;
-- target revision: `blocked_not_created`;
-- inserted rows: `0`.
+## Правило разумной достаточности
 
-Все 120 templates остаются `draft`.
+Для проверки отсутствия анахронизма не требуется отдельная монография или отдельная страница на каждую однородную бытовую вещь.
 
-## Выполненный план
+Допустимо использовать один профильный источник для группы однородных templates, если одновременно:
 
-### 1. Инвентаризация когорты
+- источник охватывает период, включающий 1230 год;
+- источник относится к Новгороду, Северо-Западной Руси либо явно допустимому сравнительному древнерусскому материалу;
+- claim ограничен широким присутствием типа, материалом или технологией, которые источник действительно подтверждает;
+- из группового источника не выводятся точные размеры, масса, частотность, цена или социальная доступность;
+- спорный узкий подтип расширен до исторически безопасного класса либо имеет отдельный locator;
+- редкая, военная, статусная или импортная вещь имеет ограниченный access policy и causal basis.
 
-Подтверждены ровно 120 уникальных IDs: 102 items и 18 containers. Текущие Stage 3B-2 assignments объединяют их в 11 source groups.
+Главный исторический gate: предмет не должен быть анахронизмом для Новгородской земли около 1230 года. Дополнительные источники добавляются только для устранения конкретного риска, а не ради формального количества ссылок.
 
-### 2. Source discovery
+## Что закрывает пакет
 
-Для всех 11 групп найдены или подтверждены стабильные точки доступа к официальным каталогам, библиотечным записям, цифровым корпусам либо каноническим repository-ссылкам. В частности охвачены корпуса Колчина, Медведева, Кирпичникова, Седовой, Рыбиной, берестяных грамот, сельскохозяйственных орудий и промыслов.
+V5 включает полную когорту:
 
-Результат записан в:
+- 102 item templates;
+- 18 container templates;
+- ровно 120 стабильных template IDs.
 
-- `SOURCE_RESEARCH_LEDGER.json`.
+Для когорты подготовлены:
 
-Ledger содержит все 120 template IDs, source group, библиографию, access points, обязательные claim scopes и остающиеся gates. Каталожная карточка или поисковый результат не объявлены page/object-level evidence.
+- исторические evidence и claim bindings;
+- варианты материалов и конструкций;
+- physical profiles с диапазонами и явным derivation kind;
+- access policies по роли, занятию, статусу и хозяйственному контексту;
+- quantity units и quantity profiles;
+- packaging categories;
+- container compatibility и nesting policy;
+- materialization profiles и rules;
+- canonical mapping;
+- schemas и integrity manifest;
+- package-local historical, gameplay и semantic audits.
 
-### 3. Формализация approval требований
+Gameplay estimates не объявляются археологическими измерениями. Масса количественных ресурсов вычисляется из quantity. Неизвестная container compatibility запрещается, а не угадывается.
 
-Для каждого шаблона зафиксированы обязательные направления:
+## Что остаётся выполнить Codex
 
-- historical presence;
-- narrow typology;
-- dating and region;
-- material;
-- construction;
-- physical parameters;
-- commonness and access.
+1. Проверить архив и его SHA-256.
+2. Открыть актуальные `AGENTS.md`, `.github/AGENTS.md` и все обязательные профильные нормативы.
+3. Выполнить обязательный локальный readiness и RAG + Graphify workflow.
+4. Сверить V5 с актуальными canonical DDL, JSON Schemas, table registry, generators, readiness и Stage 3C contracts.
+5. Использовать `data/CANONICAL_MAPPING.json` как план преобразования, но не как разрешение создавать параллельные таблицы или второй approval workflow.
+6. Перенести данные в существующие canonical datasets либо минимально расширить существующие contracts по нормативному основанию.
+7. Сохранить exact cohort из 120 IDs и полную нормализованную dependency closure.
+8. Запустить canonical generators, schema validation, cross-reference checks и readiness.
+9. Выполнить PostgreSQL dry-run, transactional apply, readback и rollback только на локальной тестовой базе.
+10. Получить независимый verdict `PASS` или допустимый `PASS WITH NOTES`.
+11. Получить требуемую контрактом digest-bound human approval attestation. Не подделывать её и не считать передачу файла автоматической аттестацией, если формальный contract требует отдельного подтверждения.
+12. Выполнить atomic all-120 approval и Stage 3C promotion без activation только после всех gates.
+13. Обновить этот README фактическими командами, SHA, counts, digests, critic verdict и оставшимися ограничениями.
 
-Дополнительно зафиксированы:
+## Запреты интеграции
 
-- обязательные physical fields для items и containers;
-- 12 quantity templates и их обязательные поля;
-- 18 containers и полный compatibility review;
-- минимальный контракт claim-scoped binding;
-- запрет hidden defaults, source-family substitution и page-free exact claims.
+- Не создавать новый PR.
+- Не коммитить переданный ZIP без отдельного указания пользователя.
+- Не добавлять package-local schemas как вторую каноническую schema family, если существует canonical schema с той же ответственностью.
+- Не ослаблять readiness, source, dependency или candidate filters.
+- Не создавать fallback для отсутствующей category/template/profile/rule связи.
+- Не активировать revision.
+- Не менять Spatial v3, P28, production runtime, new-game orchestration или legacy-party migration вне необходимой совместимости текущего scope.
+- Не утверждать частичную когорту.
+- Не превращать gameplay estimate в историческое измерение.
 
-### 4. Проверка штатного approval workflow
-
-Подтверждено, что существующий код требует:
-
-- exact cohort из 120 IDs;
-- reviewed обязательные source scopes;
-- полную profile/rule dependency closure;
-- `approval_cohort_ready = true`;
-- `ready_for_editorial_approval_count = 120`;
-- digest-bound all-120 attestation;
-- атомарные transitions;
-- запрет partial approval.
-
-Проверки не ослаблялись и параллельный approval mechanism не создавался.
-
-### 5. Передача локальных этапов Codex
-
-Создан:
-
-- `CODEX_HANDOFF_PROMPT.md`.
-
-Он требует продолжать только branch/PR #17 и последовательно выполнить page/object extraction, historical review, physical parameters, quantity, container compatibility, normalized bindings, dependency closure, readiness, PostgreSQL lifecycle, полный test suite, независимый аудит и только затем atomic approval и Stage 3C promotion без activation.
-
-## Блокирующие gates
-
-На текущем состоянии остаются:
-
-- narrow typology: `120`;
-- dating and region: `120`;
-- materials and construction: `120`;
-- physical parameters: `120`;
-- commonness and access: `120`;
-- quantity models: `12`;
-- container compatibility: `18`;
-- materialization chain: `120`.
-
-Для source groups найдены точки доступа, но в этой среде не были получены и проверены PDF/page/object payloads. Поэтому claim bindings не переводились в `reviewed`, а templates и dependencies не переводились в `approved`.
-
-## Принятые решения
-
-- Bibliographic/source location не считается доказательством конкретного claim.
-- Broad presence не расширяется до типологии, материала, размеров, commonness или социальной доступности.
-- Точные параметры не создаются по памяти или аналогии.
-- Gameplay estimate допустим только как явно reviewed estimate с методикой и диапазоном.
-- При одном незакрытом обязательном claim вся cohort остаётся `draft`.
-- Stage 3C promotion не выполняется до readiness `120/120` и независимого PASS.
-
-## Изменённые файлы
+## Файлы PR до интеграции V5
 
 - `docs/implementation/item-container-120-approval-audit/README.md`;
 - `docs/implementation/item-container-120-approval-audit/SOURCE_RESEARCH_LEDGER.json`;
 - `docs/implementation/item-container-120-approval-audit/CODEX_HANDOFF_PROMPT.md`.
 
-Игровые данные, template statuses, source-binding statuses, revisions, runtime candidates, DDL и код не изменялись.
+`SOURCE_RESEARCH_LEDGER.json` остаётся вспомогательной картой первоначального source discovery. При конфликте с проверенными V5 datasets или актуальным `main` применяется актуальная каноническая модель и фиксируется решение в этом README.
 
-## Фактически выполненные проверки
+## Ранее выполненная локальная проверка
 
-- сверка канонических GitHub `main` reports по totals и statuses;
-- проверка соответствия 120 template IDs Stage 3B-2 source assignments;
-- локальная генерация ledger с assertion: `120` IDs и `120` unique IDs;
-- JSON syntax validation для ledger через `python -m json.tool` до публикации;
-- inspection существующих readiness и all-template promotion contracts;
-- внешний source discovery с сохранением provenance и без повышения статуса claims.
+Codex ранее проверял отдельный worktree на HEAD `56f268257d7438c3e948485c8b6e99e57373a511` относительно `origin/main` `8c9e8db9b275e2be9b9e5eb28b59c49e8baef068`.
 
-Не запускались:
+Были выполнены:
 
-- `npm ci` и npm suites;
-- локальные RAG/Graphify команды;
-- PostgreSQL dry-run/apply/readback/rollback;
-- clean-clone acceptance;
-- независимый агент-критик.
-
-Причина: текущая среда не предоставляет канонический локальный checkout и обязательные local services; GitHub API не используется как замена локальным проверкам.
-
-## Аудит
-
-Текущий результат: `CHANGES REQUIRED BEFORE APPROVAL`.
-
-Это содержательный fail-closed вывод, а не verdict независимого критика. Независимый critic должен быть вызван Codex после фактического закрытия evidence и technical gates. Цикл продолжается до `PASS` или допустимого `PASS WITH NOTES`.
-
-## Порядок интеграции
-
-1. Codex открывает branch PR #17 и актуализирует её относительно `main` без создания нового PR.
-2. Выполняет обязательное чтение, RAG и Graphify.
-3. Использует `SOURCE_RESEARCH_LEDGER.json` как карту поиска, не как evidence.
-4. Заполняет page/object extraction ledger и normalized claim bindings.
-5. Закрывает physical, quantity, compatibility и dependency gaps.
-6. Получает readiness `120/120`.
-7. Выполняет PostgreSQL lifecycle и тесты.
-8. Получает независимый PASS.
-9. Применяет atomic all-120 approval и Stage 3C promotion без activation.
-10. Обновляет этот README фактическими командами, результатами, commit SHA и оставшимися ограничениями.
-
-## Известные ограничения и оставшиеся задачи
-
-- Не извлечены страницы, таблицы, рисунки и object/catalog locators для всех 120 templates.
-- Не выполнена редакторская аттестация конкретных claims.
-- Не закрыты physical parameters, quantity и container compatibility.
-- Не построена approved dependency closure.
-- Не выполнены локальные readiness, PostgreSQL, full tests и critic.
-- Approval и promotion обоснованно не выполнены.
-
-## Локальная проверка Codex 2026-07-22
-
-Проверка выполнена в отдельном worktree на точном HEAD PR
-`56f268257d7438c3e948485c8b6e99e57373a511` относительно
-`origin/main` `8c9e8db9b275e2be9b9e5eb28b59c49e8baef068`.
-Канонический remote: `https://github.com/PavelSlaven/Novgorod1230.git`;
-ветка: `chatgpt/item-container-120-approval-audit`.
-
-Выполнены обязательные Repository Intelligence queries:
-
-- `all-120 editorial readiness and atomic promotion`;
-- `item/container source bindings and claim scopes`;
-- `physical parameter, quantity and compatibility profiles`;
-- `Stage 3C promotion and PostgreSQL integration`.
-
-`repo-intel:ensure` пересобрал Repository Graph для HEAD PR; `repo-intel:status`
-вернул `repository_graph=ready`, Graphify `0.9.17` и предупреждение
-`KNOWLEDGE_SOURCE_DEGRADED`. Предупреждение учтено полным чтением обязательных и
-профильных нормативов.
-
-Фактически выполнены:
-
-- `npm ci` — успешно, 0 vulnerabilities;
-- `npm run repo-intel:ensure` — успешно;
-- `npm run repo-intel:status` — успешно с указанным warning;
-- четыре `repo-intel:query` — успешно, `partial=false`;
-- `npm run docs:check` — успешно;
-- `npm run test:docs` — 8/8 tests passed;
-- `python -m json.tool SOURCE_RESEARCH_LEDGER.json` — успешно;
-- `git diff --check origin/main...HEAD` — успешно;
+- `npm ci`;
+- `npm run repo-intel:ensure`;
+- `npm run repo-intel:status`;
+- четыре `repo-intel:query`;
+- `npm run docs:check`;
+- `npm run test:docs` — 8/8;
+- JSON syntax validation ledger;
+- `git diff --check origin/main...HEAD`;
 - GitHub `clean-clone-generation-test` — `SUCCESS`.
 
-Live-проверка 11 external source groups не состоялась: Browser Harness не смог
-подключиться к Chrome (`active browser connections: 0`), cloud auth отсутствует, а в
-checkout нет локальных PDF/DJVU/EPUB payload. Поэтому доступность первичных payload,
-page/object/table/figure/catalog locators и содержащихся в них claims не подтверждена.
-Альтернативный web-инструмент не использовался.
+Эти результаты относятся к прежнему HEAD и не подтверждают интеграцию V5. После изменения игровых данных, schemas, generators или contracts обязательные проверки выполняются заново.
 
-Независимые оси review дали:
+## Изменения текущего прохода
 
-- Standards: `CHANGES REQUIRED` — прежний отчёт не содержал обязательной локальной
-  readiness/navigation проверки; этот раздел фиксирует её фактическое выполнение;
-- Spec: `CHANGES REQUIRED` — нормативный all-120 результат не достигнут.
+- README переведён с исходного source-discovery handoff на V5 integration handoff.
+- `CODEX_HANDOFF_PROMPT.md` обновлён для работы с конкретным архивом и его digest.
+- PR description обновляется с точной границей package-local и canonical readiness.
+- Архив, игровые datasets, DDL и runtime-код этим проходом не коммитятся.
 
-Canonical Stage 3C artifacts по-прежнему подтверждают hard block:
+## Текущий статус
 
-- `fully_ready=0`;
-- `ready_for_editorial_approval=0`;
-- `LEGACY_SOURCE_NOT_VERIFIED`;
-- `EDITORIAL_APPROVAL_COHORT_INCOMPLETE`;
-- `APPROVED_DEPENDENCY_CLOSURE_INCOMPLETE`;
-- target revision `blocked_not_created`, inserted rows `0`.
+```text
+v5_external_package_received_by_chatgpt = true
+v5_archive_committed_to_repository = false
+content_package_ready_for_codex_integration = true
+canonical_readiness_verified = false
+canonical_approval_performed = false
+stage3c_promotion_performed = false
+runtime_activation_performed = false
+pr_state = draft
+```
 
-Дополнительная сверка Stage 3B-1 bundle с handoff-контрактом выявила технические
-пробелы, которые также не позволяют построить all-120 readiness:
+Текущий технический вывод: `READY_FOR_CODEX_LOCAL_INTEGRATION`, но не `READY_FOR_MERGE`.
 
-- 102 item inventory profiles содержат только mass/carry/hand fields и не содержат
-  обязательных dimensions, packing, condition и review metadata;
-- 18 container inventory profiles не содержат обязательных internal/external
-  dimensions/capacity, closure/access, mobility, nesting, condition и review metadata;
-- 12 quantity profiles существуют, но schema/bundle не содержат полный набор
-  historical measure conversion и packaging constraints из handoff;
-- `container_content_category_relations` отсутствует в bundle;
-- `g4_item_materialization_rules` и `g4_container_materialization_rules` отсутствуют
-  в bundle;
-- reviewed source bindings присутствуют только для 15 item templates; container source
-  bindings отсутствуют.
+## Обязательный итоговый отчёт Codex
 
-Существующие public seams для закрытия этих пробелов — versioned JSON Schemas,
-`validateSupplementalCatalogBundle` и `buildCatalogEditorialReadinessReport`. Изменять
-их можно только через TDD с подтверждёнными test seams и без ослабления fail-closed
-readiness.
+После завершения интеграции в этом README должны быть указаны:
 
-Итог локальной проверки: `CHANGES REQUIRED BEFORE APPROVAL`. До появления и ручной
-проверки первичных page/object evidence, закрытия параметров/quantity/compatibility и
-dependency closure запрещены PostgreSQL apply, atomic approval и Stage 3C promotion.
+1. актуальные repository root, branch, HEAD и `origin/main` SHA;
+2. прочитанные нормативы;
+3. выполненные RAG и Graphify queries;
+4. список изменённых canonical files;
+5. mapping каждого V5 dataset в canonical tables/contracts;
+6. фактически выполненные generators и tests;
+7. PostgreSQL dry-run/apply/readback/rollback results;
+8. readiness totals и digests;
+9. human approval attestation status;
+10. независимый critic verdict;
+11. Stage 3C result и подтверждение отсутствия activation;
+12. известные gaps и ограничения.

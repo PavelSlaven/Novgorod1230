@@ -1,11 +1,10 @@
-# P28 candidate `29e5e1d` — Appendix D evidence ledger
+# P28 candidate `d078b590` — Appendix D evidence ledger
 
 ## Scope
 
 This ledger is a reproducible preparation record for candidate
-`29e5e1dbcf5e4b58d1c036308262f0e68bc562e4`. Its functional subject is
-`11c9f0c1de2d510c29be51546d16851f0d719f76`, which passed the full clean-clone
-CI. This ledger is intended to be committed
+`d078b5906c7237db5fa7bc97ae8f55b8cbfa9422`, which passed the full clean-clone
+CI run `29915053964`. This ledger is intended to be committed
 with the release manifest as part of that candidate's single direct-child
 evidence commit. Its own raw SHA-256 is pinned by every Appendix D reference
 in that manifest; the candidate SHA pins the cited candidate-tree files.
@@ -13,15 +12,16 @@ in that manifest; the candidate SHA pins the cited candidate-tree files.
 The related independent P27 critic record is
 `docs/migration/spatial-v3/p27-final-critic-report.md`
 with raw SHA-256
-`a5b31b48cc2cc187303eede2943b1f9414cb2daa06f4b362a69ff4a58210c8ba`.
+`dad8807824209c575e43419a22dce6c43cc3f31d549e04e293698a6272c24020`.
 That record is independent-review evidence, not authority.
 
 Every row below is **passed** by one final independent audit over the cited
 candidate evidence. The manifest hash-binds this complete ledger rather than
-creating a separate approval procedure for each row. Exact PR approval, the
-manifest-pinned successful check and canonical-main merge or locally verified
-signed-tag completion remain separate live P28 prerequisites and are not
-represented as evidence for these rows.
+creating a separate approval procedure for each row. The manifest-pinned
+successful check and owner merge or locally verified signed-tag completion
+remain separate live P28 prerequisites and are not represented as evidence for
+these rows. In this solo-maintainer repository no self-approval is required;
+independent technical acceptance is the exact candidate-bound critic `PASS`.
 
 | Appendix item | Candidate evidence pointer | Current disposition |
 |---|---|---|
@@ -89,4 +89,4 @@ represented as evidence for these rows.
 This ledger records local Appendix D acceptance but changes no production
 profile, database or runtime composition. It contains no activation authority.
 The P28 gate must still validate all committed bytes, the direct
-candidate-child chain and the live GitHub approval/check/completion proof.
+candidate-child chain and the live GitHub required-check/completion proof.

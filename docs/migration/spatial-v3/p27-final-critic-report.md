@@ -1,4 +1,4 @@
-# P27 final critic report — release candidate `29e5e1d`
+# P27 final critic report — functional candidate `d078b590`
 
 ## Verdict
 
@@ -6,194 +6,195 @@
 
 Дата аудита: 2026-07-22.
 
-Аудит выполнен read-only по committed bytes. Dirty worktree и прежний
-release-candidate `e4f8854…` не использовались как предмет проверки.
+Независимый повторный аудит выполнен read-only по committed bytes. Dirty
+worktree не использовался как доказательство.
 
-## Subject и scope
+## Subject binding
 
 - Репозиторий: `PavelSlaven/Novgorod1230`
 - Ветка: `codex/spatial-architecture-g0-g6-v4-2`
-- Functional subject: `11c9f0c1de2d510c29be51546d16851f0d719f76`
-- Docs/policy release-candidate: `29e5e1dbcf5e4b58d1c036308262f0e68bc562e4`
-- Родитель release-candidate: `557172fc8af6d41912c615d077c3d9fe106513f5`
+- Exact functional candidate: `d078b5906c7237db5fa7bc97ae8f55b8cbfa9422`
+- Parent commit: `92b0d759429490407131febbdd3b65beb0666352`
+- Назначение: достижимый fail-closed P28 release proof для solo-maintainer repository без невозможного self-approval
 
-Сам `29e5e1d…` меняет только:
+Этот отчёт принимает только указанный exact candidate. Он не является
+самостоятельным разрешением production activation: его bytes и SHA-256 должны
+быть привязаны последующим strict direct evidence child.
 
-- `AGENTS.md`
-- `.github/AGENTS.md`
+## Scope
+
+Delta `92b0d759…d078b590` ограничен:
+
+- `tools/spatial-v3/p28-activation-gate.mjs`
+- `tools/spatial-v3/check-p28.mjs`
+- `test/spatial-v3/p28-activation.test.js`
 - `README.md`
-- `docs/migration/spatial-v3/p28-evidence-scope.v1.json`
+- `docs/migration/spatial-v3/README.md`
 - `generated/generated-manifest.json`
 
-Полный delta `11c9f0c…29e5e1d` дополнительно содержит P28 evidence-документы
-из промежуточного direct evidence child. Изменений runtime-кода, contracts,
-DDL, importer, игровых данных или production composition нет.
-
-`git diff --check` прошёл для release-candidate и полного рассматриваемого
-delta.
+DDL, importer, world/party data, runtime spatial composition и production
+profile не изменены. `git diff --check` прошёл.
 
 ## Нормативная база
 
-Сверены committed-версии:
+При аудите учитывались:
 
 - `AGENTS.md`
 - `.github/AGENTS.md`
 - `data/knowledge-source/corpus/DOCUMENTS/code_critic_invocation_rule.txt`
-- `data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md`, включая activation boundary и Appendix D
+- `data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md`
+- P28 release manifest, evidence scope и Appendix D ledger
+- текущие gate, adapter, checker и targeted tests
 
-Нормативный RAG и Graphify использовались как независимые навигационные
-каналы. Нормативные выводы сделаны по committed-документам, а не по inferred
-graph relations.
+Нормативный RAG и Repository Graph использовались как независимые
+навигационные каналы. Нормативные выводы сделаны по committed-документам и
+formal contracts.
 
-## Функциональная готовность
+## Solo-maintainer authority
 
-GitHub Actions run `29908936914` подтверждает exact functional subject:
+P28 authority состоит из следующих независимых условий:
 
-- `headSha`: `11c9f0c1de2d510c29be51546d16851f0d719f76`
-- workflow: `test`
-- conclusion: `success`
-- full test profile: выполнен успешно
-- evidence-only profile: пропущен
+1. Hash-bound final critic report:
 
-Полный clean-clone CI включал PostgreSQL, проверку актуального DDL, generated
-reproducibility, Repository Graph и полный набор тестов.
+   - `status: passed`
+   - verdict строго `PASS`
+   - `activation_candidate_commit` равен exact candidate
+   - committed report bytes совпадают с SHA-256 в release manifest
 
-После `11c9f0c…` runtime/code/DDL/import/game-data не менялись, поэтому
-повторный тяжёлый acceptance для документационного release-candidate
-нормативно не требуется.
+2. GitHub release proof:
 
-## Проверка исправлений прошлого аудита
+   - PR относится к `PavelSlaven/Novgorod1230`;
+   - base — canonical `main`;
+   - PR не draft;
+   - PR head равен exact evidence HEAD;
+   - каждый required check завершён с `conclusion: success`;
+   - completion подтверждён owner merge с ancestry exact evidence HEAD либо trusted signed annotated tag, указывающим на exact evidence HEAD.
 
-### Repository Intelligence
+Для solo-maintainer repository reviews и self-approval не запрашиваются и не
+являются authority. Независимость технической приёмки обеспечивает
+candidate-bound hash-bound critic `PASS`; решение о выпуске подтверждается
+owner merge либо trusted signed tag.
 
-Предыдущее замечание `REPOSITORY_GRAPH_STALE` устранено.
+Fail-closed blockers сохранены для draft PR, неправильного repository/base,
+wrong PR head, отсутствующего или неуспешного required check, unmerged PR при
+`github_merge`, merge ancestry mismatch, неправильного tag object/commit target,
+неподтверждённой GitHub tag signature, неуспешного локального `git verify-tag`
+и недоступного или malformed GitHub proof.
 
-`repo-intel:status` на exact `29e5e1d…` возвращает:
+Production path не принимает caller-supplied approval или proof и выполняет
+реальную локальную и GitHub-проверку.
 
-- `ok: true`
-- Repository Graph: `ready`
-- Graphify: `ready`
+## Critic contract
+
+Gate принимает только:
+
+```text
+status = passed
+verdict = PASS
+activation_candidate_commit = exact candidate
+```
+
+`PASS WITH NOTES`, неправильный candidate SHA, отсутствующий report и hash
+mismatch блокируют P28.
+
+Checker дополнительно закрепляет обязательность
+`github_release_proof_head_mismatch`, отсутствие reviews/self-approval
+authority, запрет `PASS WITH NOTES`, отсутствие старых Ed25519 role signatures
+и отсутствие отдельного `p28_fresh_checkout` authority object.
+
+## GitHub full CI
+
+GitHub Actions run `29915053964`:
+
+- exact head: `d078b5906c7237db5fa7bc97ae8f55b8cbfa9422`
+- status: completed
+- conclusion: success
+- selected profile: `full`
+- duration: 3m18s
+- evidence-only profile: skipped
+
+Успешно выполнены clean exact-head checkout, PostgreSQL startup/schema,
+canonical 186-table `world_base` DDL, importer integration, documentation
+generation, generated reproducibility, Repository Graph и полный `npm test`.
+
+## Targeted verification
+
+- P28 targeted tests: **8/8 PASS**
+- `tools/spatial-v3/check-p28.mjs`: **PASS**
+- documentation checks: **PASS**
+- knowledge-source checks: **PASS**
+- Repository Intelligence: **ready**
 - Graphify version: `0.9.17`
-- `source_commit`: `29e5e1dbcf5e4b58d1c036308262f0e68bc562e4`
-- `errors: []`
+- Graphify source commit: `d078b5906c7237db5fa7bc97ae8f55b8cbfa9422`
+- Repository Intelligence errors: `[]`
 
-После commit также был выполнен `repo-intel:ensure`.
+Negative coverage включает `PASS WITH NOTES`, critic candidate mismatch, wrong
+PR head, pending/missing required check, draft PR, wrong base, unmerged PR,
+merge mismatch, invalid/untrusted signed tag и evidence-child scope expansion.
 
-### Risk-based checks
+## P12 and DDL continuity
 
-Предыдущее расхождение README и фактической CI-модели устранено.
+P12 facts не изменены:
 
-README теперь явно различает:
-
-- локальные профильные проверки docs/policy/generated release-candidate;
-- облегчённый GitHub CI только для следующего strict evidence child.
-
-Таким образом, README больше не утверждает, что сам пятифайловый policy
-release-candidate обязан классифицироваться как `evidence_only`.
-
-Оба `AGENTS.md` согласованно закрепляют:
-
-- профильные проверки по риску изменения;
-- один полный clean-clone acceptance функционального кандидата;
-- отсутствие повторного PostgreSQL/browser/full-suite цикла для неизменившихся code/data;
-- отдельный strict evidence commit;
-- обязательный `fork_turns: "none"` для каждого `spawn_agent`;
-- один итоговый независимый critic вместо отдельных аудиторов для мелких служебных стадий.
-
-## P12 и DDL
-
-Подтверждённые ранее committed-факты не изменены:
-
-- P12 manifest: `status: approved`
+- canonical manifest: `approved`
 - datasets: 37
-- все dataset SHA-256 совпадают
 - `data_gaps: []`
 - 195 canonical G5 records
 - 358 physical source pairs
 - 600 typed source edge mappings
 - 17 scene families
-- 195 profiles
-- 195 candidates
+- 195 materialization profiles
+- 195 materialization candidates
 
-По committed DDL:
+DDL facts не изменены:
 
-- SQL parts: 17
+- ordered SQL parts: 17
 - `world_base` tables: 186
 - expanded DDL SHA-256: `fccc625773089749ca676831ee69f8b3656e914f5f0e53cbbfaff8773df905fe`
 
-P12 остаётся approved authoring compilation и не активирует production v3.
+P12 остаётся approved authoring compilation и не предоставляет production
+import/runtime authority.
 
-## P28 boundary
+## Production boundary
 
-`p28-evidence-scope.v1.json` в release-candidate разрешает следующему evidence
-child только три evidence-документа:
+Gate остаётся не мутирующим:
 
-- `docs/migration/spatial-v3/p27-candidate-evidence.md`
-- `docs/migration/spatial-v3/p27-final-critic-report.md`
-- `docs/migration/spatial-v3/p28-appendix-d-evidence-ledger.md`
+```text
+production_writes: 0
+composition_changed: false
+```
 
-Release manifest добавляется classifier/gate отдельно. Scope принадлежит
-immutable candidate `29e5e1d…`; evidence child не может самостоятельно
-расширить его.
-
-P28 по-прежнему требует:
-
-- required CI exact evidence HEAD;
-- exact-head GitHub approval;
-- merge completion либо trusted signed annotated tag.
-
-Отдельного `p28_fresh_checkout` authority object и старых Ed25519 role
-signatures нет. До полного live proof сохраняются:
-
-- `production_v2`
-- `production_writes: 0`
-- `composition_changed: false`
-- deferred v3 activation
-
-## Generated metadata
-
-`generated/generated-manifest.json` меняет только generator input digest:
-
-`e92ee35d18076438764da24867ab9ddb7753a319d3123945f0f34aba65cf5442`
-
-Содержательные generated outputs и их SHA-256 не изменены.
-
-## Фактические проверки
-
-Для functional subject:
-
-- GitHub Actions `29908936914` — **PASS**, exact `11c9f0c…`, full profile.
-
-Для release-candidate зафиксированы:
-
-- `npm run docs:check` — **PASS**
-- `npm run knowledge:check` — **PASS**
-- P28 targeted tests — **7/7 PASS**
-- `repo-intel:ensure` — completed
-- `repo-intel:status` — **ready**, exact `29e5e1d…`
-- Graphify `0.9.17`
-- `git diff --check` — **PASS**
-
-В этом повторном аудите тяжёлые тесты и PostgreSQL не запускались.
+До успешного live release proof `production_v2` остаётся единственным
+production profile, spatial v3 остаётся deferred, migrations/production writes
+и composition cutover не выполняются. Успешный proof принимает release
+evidence, но не выполняет production activation автоматически.
 
 ## Findings
 
-Blocking, major или minor findings не обнаружены.
+Blocking, major, minor или note-level findings не обнаружены.
 
-Оба замечания предыдущего `CHANGES REQUIRED` устранены без расширения
-runtime/data scope.
+Предыдущие замечания устранены: critic authority сужена до строгого `PASS`,
+добавлена wrong-head negative coverage, checker закрепляет exact-head blocker и
+запрет reviews authority, Repository Graph пересобран для exact candidate.
 
-## Notes
+## Remaining release sequence
 
-- Knowledge source сохраняет известный статус `degraded` из-за semantic coverage gaps, но blocker document IDs отсутствуют; Repository Graph полностью готов.
-- `29e5e1d…` является release-candidate, а не evidence child. Следующий commit должен быть его строгим прямым потомком, содержать итоговый critic report и обновлённый hash-bound manifest/ledger, после чего пройти evidence-only CI и live GitHub approval/completion proof.
-- PASS подтверждает готовность release-candidate к этому следующему evidence-шагу. Он не является разрешением production activation.
+После этого `PASS` ожидается один strict direct evidence child:
 
-## Итог
+1. parent — exact `d078b5906c7237db5fa7bc97ae8f55b8cbfa9422`;
+2. manifest связывает exact candidate и SHA-256 этого отчёта;
+3. diff ограничен candidate-owned evidence scope;
+4. evidence-only CI проходит на exact child HEAD;
+5. owner выполняет merge exact HEAD либо создаёт trusted signed annotated tag;
+6. live P28 gate повторно подтверждает required check и completion proof.
 
-Functional subject `11c9f0c…` подтверждён полным exact-subject CI.
-Release-candidate `29e5e1d…` ограничен документацией, policy, immutable evidence
-scope и generated metadata; Repository Graph актуален, policy согласована с
-фактической CI-моделью, нормативные P12/DDL/P28 утверждения подтверждены.
+Эти шаги являются release completion, а не замечаниями к functional candidate.
+
+## Final conclusion
+
+Functional candidate `d078b5906c7237db5fa7bc97ae8f55b8cbfa9422`
+реализует минимальную и достижимую solo-maintainer P28 authority без
+self-approval, сохраняя независимый hash-bound critic, exact-head required CI,
+fail-closed merge/tag completion и нулевые production side effects.
 
 **Final verdict: PASS.**

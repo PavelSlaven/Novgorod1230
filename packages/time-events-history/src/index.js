@@ -1,5 +1,17 @@
 import { deepFreeze } from '@rus/kernel';
 
+/** Exact target-v3 minutes. Fractions are never rounded; legacy addMinutes remains compatibility-only. */
+export function normalizeRational(value = {}) {
+  if (!Number.isSafeInteger(value.numerator) || !Number.isSafeInteger(value.denominator) || value.denominator <= 0 || value.numerator < 0) throw new RangeError('rational must use non-negative safe integers with positive denominator');
+  const divisor = gcd(value.numerator, value.denominator);
+  return deepFreeze({ numerator: value.numerator / divisor, denominator: value.denominator / divisor });
+}
+const safe = (n) => { if (n > BigInt(Number.MAX_SAFE_INTEGER) || n < 0n) throw new RangeError('exact rational exceeds safe persisted representation'); return Number(n); };
+export function addRational(left, right) { const a = normalizeRational(left); const b = normalizeRational(right); return normalizeRational({ numerator: safe(BigInt(a.numerator) * BigInt(b.denominator) + BigInt(b.numerator) * BigInt(a.denominator)), denominator: safe(BigInt(a.denominator) * BigInt(b.denominator)) }); }
+export function subtractRational(left, right) { const a = normalizeRational(left); const b = normalizeRational(right); const numerator = BigInt(a.numerator) * BigInt(b.denominator) - BigInt(b.numerator) * BigInt(a.denominator); if (numerator < 0n) throw new RangeError('exact time cannot be negative'); return normalizeRational({ numerator: safe(numerator), denominator: safe(BigInt(a.denominator) * BigInt(b.denominator)) }); }
+export function compareRational(left, right) { const a = normalizeRational(left); const b = normalizeRational(right); return (BigInt(a.numerator) * BigInt(b.denominator) > BigInt(b.numerator) * BigInt(a.denominator)) - (BigInt(a.numerator) * BigInt(b.denominator) < BigInt(b.numerator) * BigInt(a.denominator)); }
+export function advanceExactClock(previous, elapsed) { const before = normalizeRational(previous); const exact_minutes = addRational(before, elapsed); return deepFreeze({ exact_minutes, whole_minute_index: Math.floor(exact_minutes.numerator / exact_minutes.denominator), crossed_whole_minute_boundaries: Math.floor(exact_minutes.numerator / exact_minutes.denominator) - Math.floor(before.numerator / before.denominator) }); }
+
 export function normalizeClock(clock = {}) {
   const day = integer(clock.day, 0);
   const hour = boundedInteger(clock.hour, 0, 23, 0);
@@ -71,3 +83,4 @@ function integerOrNull(value) { const n = Number(value); return Number.isInteger
 function finite(value) { const n = Number(value); return Number.isFinite(n) ? n : null; }
 function text(value) { return String(value ?? '').trim(); }
 function plainObject(value) { return Boolean(value) && typeof value === 'object' && !Array.isArray(value); }
+function gcd(a, b) { let x = Math.abs(a); let y = Math.abs(b); while (y) [x, y] = [y, x % y]; return x || 1; }

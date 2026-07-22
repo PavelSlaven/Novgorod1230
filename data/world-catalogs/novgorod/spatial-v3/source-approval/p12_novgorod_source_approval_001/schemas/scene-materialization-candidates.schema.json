@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Scene materialization candidates",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "records"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "profile_id",
+          "profile_version",
+          "scene_template_ref",
+          "weight",
+          "applicability_rule_ref"
+        ],
+        "properties": {
+          "profile_id": {
+            "$ref": "#/$defs/stable_id"
+          },
+          "profile_version": {
+            "$ref": "#/$defs/version"
+          },
+          "scene_template_ref": {
+            "$ref": "#/$defs/versioned_ref"
+          },
+          "weight": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "applicability_rule_ref": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "stable_id": {
+      "type": "string",
+      "minLength": 3,
+      "pattern": "^[A-Za-z0-9_.:-]+$"
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status_approved": {
+      "const": "approved"
+    },
+    "versioned_ref": {
+      "type": "string",
+      "pattern": "^[^@]+@[^@]+$"
+    },
+    "transformed_ref": {
+      "type": "object",
+      "required": [
+        "kind",
+        "id"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "canonical_g5",
+            "retained_g3_with_host_g4",
+            "retained_g2",
+            "retained_g1"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "host_g4_id": {
+          "type": "string"
+        },
+        "entry_canonical_g5_id": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

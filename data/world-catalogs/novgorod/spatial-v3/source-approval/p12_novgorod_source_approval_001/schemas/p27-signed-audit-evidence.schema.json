@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "P27 signed audit evidence",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "status",
+    "repository",
+    "commit_sha",
+    "auditor",
+    "verdict",
+    "payload_digest",
+    "signature"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "rus.p27_signed_audit_evidence.v1"
+    },
+    "status": {
+      "const": "signed_evidence"
+    },
+    "repository": {
+      "const": "PavelSlaven/Novgorod1230"
+    },
+    "commit_sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "auditor": {
+      "type": "object",
+      "required": [
+        "identity",
+        "key_id"
+      ],
+      "properties": {
+        "identity": {
+          "type": "string",
+          "minLength": 1
+        },
+        "key_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "verdict": {
+      "enum": [
+        "PASS",
+        "PASS WITH NOTES"
+      ]
+    },
+    "payload_digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "signature": {
+      "type": "object",
+      "required": [
+        "algorithm",
+        "value"
+      ],
+      "properties": {
+        "algorithm": {
+          "enum": [
+            "ed25519",
+            "minisign",
+            "gpg"
+          ]
+        },
+        "value": {
+          "type": "string",
+          "minLength": 32
+        }
+      }
+    }
+  },
+  "additionalProperties": true
+}

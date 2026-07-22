@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rus13.local/contracts/spatial-v3/p02-boundary-declaration.v1.schema.json",
+  "title": "P02 active/target normative boundary declaration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "phase",
+    "active_owner",
+    "target_status",
+    "production_read",
+    "production_write",
+    "dual_write",
+    "mixed_authority",
+    "fallback",
+    "partial_activation",
+    "canonical_g5",
+    "generated_g5",
+    "max_level",
+    "documents"
+  ],
+  "properties": {
+    "schema_version": { "const": "p02-boundary-declaration.v1" },
+    "phase": { "const": "P02" },
+    "active_owner": { "const": "v2" },
+    "target_status": { "const": "inactive_until_P28" },
+    "production_read": { "const": "v2_only" },
+    "production_write": { "const": "v2_only" },
+    "dual_write": { "const": false },
+    "mixed_authority": { "const": false },
+    "fallback": { "const": false },
+    "partial_activation": { "const": false },
+    "canonical_g5": { "const": "world_base" },
+    "generated_g5": { "const": "party_runtime" },
+    "max_level": { "const": "G6" },
+    "documents": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["pair_id", "active", "target"],
+        "properties": {
+          "pair_id": {
+            "enum": ["architecture", "requirements", "graph", "workflow"]
+          },
+          "active": { "$ref": "#/$defs/documentPin" },
+          "target": { "$ref": "#/$defs/documentPin" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "documentPin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "section_id", "section_sha256"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "section_id": { "const": "whole_document" },
+        "section_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
+    }
+  }
+}

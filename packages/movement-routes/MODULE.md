@@ -25,6 +25,7 @@ Route availability, knowledge, traversal contracts, GU/time cost and orientation
 - `assessRouteAvailability`
 - `buildTraversalRequest`
 - `validateTraversalResult`
+- `@rus/movement-routes/spatial-v3`: `createTraversalResolver`, `createTraversalCommitValidator` — P18 target ports. При передаче всех явных factual/capability ports они вызывают реальный planner/activation validator; без wiring возвращают типизированный fail-closed результат и не используют v2/fallback.
 
 ## Контракты и инварианты
 
@@ -32,7 +33,7 @@ Route availability, knowledge, traversal contracts, GU/time cost and orientation
 
 ## Зависимости
 
-Разрешён только `@rus/kernel`. Запрещены импорты из `apps`, `legacy`, UI, БД, конкретного LLM provider и соседних workflow stages.
+Разрешены только `@rus/kernel` и `@rus/contracts`. Запрещены импорты из `apps`, `legacy`, UI, БД, конкретного LLM provider и соседних workflow stages.
 
 ## Ошибки
 

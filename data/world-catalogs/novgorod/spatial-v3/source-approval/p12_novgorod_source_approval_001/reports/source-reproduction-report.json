@@ -1,0 +1,12 @@
+{
+  "schema_version": "rus.p12_source_reproduction_report.v1",
+  "result": "PASS",
+  "errors": [],
+  "source_counts": {
+    "g4": 195,
+    "edges": 600,
+    "physical_edges": 358,
+    "profile_families": 17,
+    "profile_assignments": 195
+  }
+}

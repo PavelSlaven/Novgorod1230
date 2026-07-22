@@ -1,0 +1,23 @@
+{
+  "schema_version": "rus.g1_local_approval.v1",
+  "approval_id": "APP_G1_001_R2_LOCAL",
+  "g1_id": "gn_nov_g1_xp017_yp026",
+  "package_id": "gn_nov_g1_xp017_yp026_rebuild_002",
+  "content_revision_id": "gn_nov_g1_xp017_yp026_content_revision_002",
+  "status": "approved_local",
+  "approved_scope": "internal G1 structure and matched southern boundary",
+  "not_approved_scope": [
+    "production import",
+    "north external transition",
+    "exact historical polygons",
+    "exact settlement layout"
+  ],
+  "validation_result": "PASS",
+  "historical_audit_result": "PASS_WITH_NOTES",
+  "gameplay_completeness_result": "PASS",
+  "data_critic_result": "PASS_WITH_NOTES",
+  "conditions": [
+    "Use append-only overlays; do not overwrite old package.",
+    "G5 may materialize only within profiles."
+  ]
+}

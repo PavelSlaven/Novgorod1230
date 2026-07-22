@@ -3,6 +3,23 @@
 Статус: рабочий региональный каталог утверждённых G1  
 Назначение: обязательный вход при проектировании каждой следующей G1; предотвращает необоснованное смысловое дублирование ячеек, их вложенных G2–G4, маршрутов, рисков и игровых функций.
 
+## Target v3 migration impact (не production readiness)
+
+Этот раздел отражает утверждённую P12 source-to-target compilation и не является утверждением о production import/runtime или источником новых исторических фактов. До P28 active production остаётся v2. Исходная инвентаризация по-прежнему содержит `15 G2`, `32 G3`, `195 legacy G4`, `243` graph nodes и `600` edges, из которых `358` physical. Утверждённая точная переклассификация создаёт `32 target G4 sectors` из retained G3 и `195 canonical G5` из legacy local G4; она привязана к исходным IDs и provenance, а не к совпадению названий.
+
+| Группа утверждённого source package | Утверждённая target compilation | Evidence status |
+|---|---|---|
+| 32 retained G3 | Скомпилированы в 32 target G4 sectors — scope owners для локальных canonical G5; exact legacy ID и provenance сохранены. | `source_approved; target_compilation_approved` |
+| 195 legacy local G4 | Скомпилированы в 195 canonical G5 parcels. Ни один record не классифицирован как `compound`, поскольку source не содержит доказательства самостоятельной внутренней структуры. | `source_approved; target_compilation_approved` |
+| 358 physical exit pairs | Все source-pair identities сохранены и дают 716 проверенных directional identities. Target decomposition является полной и непересекающейся: 227 intra-G4, 32 host-entry, 43 cross-G4 route и 56 route-context pairs. | `source_approved; target_compilation_approved` |
+| 600 typed edge mappings | Полностью классифицированы как 47 retained hierarchy, 195 canonical-G5 parent и 358 physical mappings; автоматическая migration по имени, близости или координате по-прежнему запрещена. | `source_approved; target_compilation_approved` |
+| 17 scene families и 195 profiles/candidates | Для каждого canonical G5 утверждены ровно один scene materialization profile и один candidate; четыре boundary sites сохраняют локальный profile, но не получают доступный внешний маршрут. | `source_approved; target_compilation_approved` |
+| NPC, items, containers и party instances | P12 compilation их не создаёт и этот каталог их не утверждает. Их materialization по-прежнему требует отдельных approved slots/profiles/rules и causal basis. | `no_concrete_instances_asserted` |
+
+Все четыре прежних source-data gap (`canonical_g5_inventory`, `physical_exit_source_pairs`, `legacy_edge_mapping_bindings`, `approved_scene_profiles`) имеют статус `resolved_in_package`. Основной P12 authoring manifest имеет status `approved`, `datasets: 37` с SHA-256 pins и `data_gaps: 0`. Это утверждение означает только полную однозначную target-компиляцию уже утверждённых source records. Name-based migration запрещён; любой новый или изменённый record вне этого точного approved set снова требует authoring review и при неоднозначности создаёт typed gap.
+
+Production import: `not_performed`; runtime visibility: `not_verified`; P28 activation: `not_performed`. Раздел не меняет статус G1 `draft`, не открывает северную внешнюю границу, не подтверждает production readiness и не разрешает runtime materialization, write или activation.
+
 ## Правило использования
 
 Перед созданием новой G1 агент обязан прочитать весь актуальный каталог и сравнить проектируемую ячейку со всеми ранее утверждёнными G1. После статуса `approved_local` или изменения действующей ревизии запись соответствующей G1 обновляется. Допустимо повторение естественных элементов общего ландшафта и продолжающихся коридоров, но не необоснованное копирование полной смысловой композиции, структуры G2–G4 и игрового назначения.

@@ -6,8 +6,10 @@ import { resolve } from 'node:path';
 test('GitHub Actions clean-clone workflow keeps all required gates in order', async () => {
   const workflow = await readFile(resolve(process.cwd(), '.github/workflows/test.yml'), 'utf8');
   const requiredFragments = [
-    'services:',
-    'image: postgres:16',
+    'ref: ${{ github.event.pull_request.head.sha || github.sha }}',
+    'name: Determine required check profile',
+    'git show HEAD^:tools/spatial-v3/p28-ci-profile.mjs',
+    'echo "profile=full"',
     'name: Normalize lockfile registry',
     'packages.applied-caas-gateway1.internal.api.openai.org/artifactory/api/npm/npm-public/',
     'https://registry.npmjs.org/',
@@ -18,6 +20,8 @@ test('GitHub Actions clean-clone workflow keeps all required gates in order', as
     'name: Validate canonical world_base schema',
     'npm run world-db:schema-check',
     'npm run world-db:schema-doc-check',
+    'name: Start PostgreSQL for full profile',
+    '--publish 5432:5432 postgres:16',
     'name: Execute world_base DDL in PostgreSQL',
     'if pg_isready --dbname postgres',
     'createdb',
@@ -41,7 +45,9 @@ test('GitHub Actions clean-clone workflow keeps all required gates in order', as
     'npm run repo-intel:status',
     'npm run test:repository-intelligence',
     'name: Run full test suite',
-    'npm test'
+    'npm test',
+    'name: Run evidence-only checks',
+    'npm run spatial-v3:p28-local-evidence'
   ];
 
   let previousIndex = -1;
@@ -53,11 +59,11 @@ test('GitHub Actions clean-clone workflow keeps all required gates in order', as
   }
 });
 
-test('world_base PostgreSQL gate tracks the 121-table schema and grants every table read-only', async () => {
+test('world_base PostgreSQL gate tracks the 186-table schema and grants every table read-only', async () => {
   const workflow = await readFile(resolve(process.cwd(), '.github/workflows/test.yml'), 'utf8');
 
   assert.doesNotMatch(workflow, /test "\$table_count" -eq 62/u);
-  assert.match(workflow, /test "\$table_count" -eq 121/u);
+  assert.match(workflow, /test "\$table_count" -eq 186/u);
   assert.doesNotMatch(workflow, /test "\$select_grants" -eq 62/u);
   assert.match(workflow, /test "\$select_grants" -eq "\$table_count"/u);
   assert.match(workflow, /test "\$write_grants" -eq 0/u);

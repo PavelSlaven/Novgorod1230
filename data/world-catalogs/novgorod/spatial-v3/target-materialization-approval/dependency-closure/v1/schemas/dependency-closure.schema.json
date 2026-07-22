@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "P12 dependency closure bundle",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "status",
+    "records"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "records": {
+      "type": "array"
+    }
+  }
+}

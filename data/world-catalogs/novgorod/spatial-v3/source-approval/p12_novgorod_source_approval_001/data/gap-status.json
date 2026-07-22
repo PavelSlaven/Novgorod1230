@@ -1,0 +1,36 @@
+{
+  "schema_version": "rus.p12_gap_status.v1",
+  "source_data": {
+    "canonical_g5_inventory": {
+      "status": "resolved_in_package",
+      "count": 195
+    },
+    "physical_exit_source_pairs": {
+      "status": "resolved_in_package",
+      "count": 358,
+      "derived_directions": 716
+    },
+    "legacy_edge_mapping_bindings": {
+      "status": "resolved_in_package",
+      "count": 600,
+      "hierarchy": 242,
+      "physical": 358
+    },
+    "approved_scene_profiles": {
+      "status": "resolved_in_package",
+      "profile_families": 17,
+      "profiles": 195,
+      "candidates": 195
+    }
+  },
+  "external_activation_evidence": {
+    "signed_p27_audit_evidence": {
+      "status": "hard_block_pending_real_evidence"
+    },
+    "fresh_checkout_evidence": {
+      "status": "hard_block_pending_real_evidence"
+    }
+  },
+  "production_activation_allowed": false,
+  "rule": "Resolved source-data gaps do not waive commit-bound evidence, branch-contract validation or P28 activation gates."
+}

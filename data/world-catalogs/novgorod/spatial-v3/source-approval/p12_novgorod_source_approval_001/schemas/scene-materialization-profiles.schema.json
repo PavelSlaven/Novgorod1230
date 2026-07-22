@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Scene materialization profiles",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "records"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "version",
+          "source_kind",
+          "source_ref",
+          "selection_rule_ref",
+          "status",
+          "provenance_ref"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/stable_id"
+          },
+          "version": {
+            "$ref": "#/$defs/version"
+          },
+          "source_kind": {
+            "const": "canonical_g5"
+          },
+          "source_ref": {
+            "$ref": "#/$defs/versioned_ref"
+          },
+          "selection_rule_ref": {
+            "$ref": "#/$defs/versioned_ref"
+          },
+          "status": {
+            "$ref": "#/$defs/status_approved"
+          },
+          "provenance_ref": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "stable_id": {
+      "type": "string",
+      "minLength": 3,
+      "pattern": "^[A-Za-z0-9_.:-]+$"
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status_approved": {
+      "const": "approved"
+    },
+    "versioned_ref": {
+      "type": "string",
+      "pattern": "^[^@]+@[^@]+$"
+    },
+    "transformed_ref": {
+      "type": "object",
+      "required": [
+        "kind",
+        "id"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "canonical_g5",
+            "retained_g3_with_host_g4",
+            "retained_g2",
+            "retained_g1"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "host_g4_id": {
+          "type": "string"
+        },
+        "entry_canonical_g5_id": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,42 @@
+# Workflow authoring карты G0–G5 (compatibility filename)
+
+**Статус:** target workflow для spatial v3; active production workflow остаётся v2 до P28.
+**Совместимость имени:** filename сохранён для ссылок; его содержание заменяет прежний G0–G4 workflow и не вводит G7/G8.
+
+## 1. Масштабы и причинность
+
+```text
+G0 historical-geographic region
+→ G1 stable territorial grid cell (~32×32 km)
+→ G2 territorial zone
+→ G3 recurrent concrete place
+→ G4 sector and expansion scope
+→ G5 local location/complex
+→ G6 party scene space
+→ scene_position_node
+```
+
+G0–G5 authorятся как canonical world data. G6 and positions materialизуются в party state. Функция, сезонность, риск, material, access and history — facets/relations, не новые levels. Историческая опора задаёт provenance and uncertainty; она не разрешает выдумывать exact site, NPC, items or route.
+
+## 2. Authoring sequence
+
+1. Подтвердить region, revision, historical frame и G1 semantic catalog.
+2. Определить G1 grid identity; diagonals не являются physical boundary.
+3. Создать G2 zones, затем G3 recurrent places и G4 sectors с parent/class/facet compatibility.
+4. Создать canonical G5 inventory для каждой локальной карты: stable identity, class, parent G4, source/provenance, readiness and directional relations.
+5. Author explicit directed site/route topology, exits, route points/segments, endpoint roles и physical-owner context. Containment и coordinates не заменяют edge.
+6. При необходимости author finite G4 expansion profile: candidate sets, capacities, frontier/terminal rules и exact templates. Generated G5 не заменяет обязательный canonical inventory.
+7. Author scene templates: G6 and position slots, physical/perception relations and portal behavior.
+8. Validate refs, capacity, boundary matching, route continuity, canonical G5 readiness and absence of G7/G8; unresolved data gap blocks approval.
+
+## 3. Boundary and exit rules
+
+Cross-G1/G4/G5 movement требует matched explicit directional contract and exact endpoint. Diagonal intent раскладывается на two ordered cardinal crossings. Boundary switch сам по себе не добавляет time; time belongs only to explicit action/activity/traversal relation. Multiple valid exits are options, not ambiguity, unless contract requires exactly one binding.
+
+## 4. Readiness and runtime boundary
+
+`semantic_ready` обязателен для runtime; `visual_map_ready` обязателен только для map view. V3 authoring remains target until P28: no production DDL/import/runtime activation, dual write or mixed fallback is permitted. Empty candidate set, missing terminal target, incomplete endpoint scene/binding or absent route contract creates a typed hard block.
+
+## 5. Migration history
+
+Прежний workflow G0–G4 и party-only G5 описывал materialization v2. Он сохранён только как migration context; после target activation canonical G5 becomes authoring responsibility, while party-generated G5 remains finite profile-bound state.

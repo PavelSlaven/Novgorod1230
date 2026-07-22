@@ -1,11 +1,11 @@
 # World Base (PostgreSQL + NocoDB) — Schema v2
 
-Read-only база утверждённых справочных данных мира: **107 таблиц** для ручного аудита, materialization profiles/rules и утверждённого импорта.
+Read-only база утверждённых справочных данных мира: **186 таблиц** для ручного аудита, materialization profiles/rules и утверждённого импорта.
 
 Код игрового runtime не создаёт категории или историю и не изменяет `world_base`; он материализует party instances из активных записей. Канонический DDL хранится только в этом инфраструктурном контуре:
 
 - [`schema.sql`](./schema.sql) — исполняемый entrypoint;
-- [`schema/`](./schema/) — одиннадцать упорядоченных SQL-частей;
+- [`schema/`](./schema/) — семнадцать упорядоченных SQL-частей;
 - [`IMPORT.md`](./IMPORT.md) — правила импорта и аудита.
 
 Архитектурное описание разделения read-only project DB и party DB хранится в canonical knowledge corpus как `read_only_database_and_graph_architecture.md`. README не подменяет этот нормативный документ.
@@ -21,15 +21,15 @@ npm run world-db:schema-doc-check
 Проверка подтверждает:
 
 - наличие entrypoint;
-- одиннадцать SQL-частей в установленном порядке;
-- 107 уникальных таблиц `world_base`;
+- семнадцать SQL-частей в установленном порядке;
+- 186 уникальных таблиц `world_base`;
 - отсутствие небезопасных include-путей;
 - запрет `PUBLIC CREATE`;
 - наличие read-only роли и разрешений чтения.
 
 `world-db:schema-doc` детерминированно строит [`SCHEMA_REFERENCE.md`](./SCHEMA_REFERENCE.md) из текущего DDL. Таблицы, колонки, типы, FK и constraints извлекаются из SQL; смысловые описания берутся только из [`field-descriptions.js`](./field-descriptions.js). Неописанные поля остаются явно неописанными.
 
-GitHub Actions дополнительно исполняет весь entrypoint в PostgreSQL 16 с `ON_ERROR_STOP=1`, подтверждает 107 таблиц, роль `world_reader`, `USAGE`/`SELECT` и отсутствие `CREATE`/write grants.
+GitHub Actions дополнительно исполняет весь entrypoint в PostgreSQL 16 с `ON_ERROR_STOP=1`, подтверждает 186 таблиц, роль `world_reader`, `USAGE`/`SELECT` и отсутствие `CREATE`/write grants.
 
 ## Слои данных
 
@@ -47,7 +47,7 @@ GitHub Actions дополнительно исполняет весь entrypoint
 
 ## Источник истины
 
-`infra/world-base/schema.sql` и одиннадцать файлов `infra/world-base/schema/*.sql` являются единственным исполняемым источником истины для структуры базы.
+`infra/world-base/schema.sql` и семнадцать файлов `infra/world-base/schema/*.sql` являются единственным исполняемым источником истины для структуры базы.
 
 Справочник полей является generated representation и не должен редактироваться вручную или существовать как независимая нормативная копия. Единственный исполняемый источник структуры — текущий DDL; `field-descriptions.js` владеет только утверждёнными пояснениями.
 

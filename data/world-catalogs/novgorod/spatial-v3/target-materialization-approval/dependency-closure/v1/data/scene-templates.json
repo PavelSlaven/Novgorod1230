@@ -1,0 +1,191 @@
+{
+  "records": [
+    {
+      "id": "stfv3__g5_boundary_access_v1",
+      "version": 1,
+      "regional_template_basis_id": "regional_scene_basis__g5_boundary_access_v1",
+      "regional_template_basis_version": 1,
+      "source_profile_family_id": "g5_boundary_access_v1",
+      "geometry_claim": "topological_only",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "9931c18d833b50d999c33a40f633945308365c503fface9c0a9ad734cbe6a27c"
+    },
+    {
+      "id": "stfv3__g5_burial_ritual_buffer_v1",
+      "version": 1,
+      "regional_template_basis_id": "regional_scene_basis__g5_burial_ritual_buffer_v1",
+      "regional_template_basis_version": 1,
+      "source_profile_family_id": "g5_burial_ritual_buffer_v1",
+      "geometry_claim": "topological_only",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "12f7f92377add9752b7130a960ed21a23da22d5f382492653ef65db8002d1026"
+    },
+    {
+      "id": "stfv3__g5_dry_route_v1",
+      "version": 1,
+      "regional_template_basis_id": "regional_scene_basis__g5_dry_route_v1",
+      "regional_template_basis_version": 1,
+      "source_profile_family_id": "g5_dry_route_v1",
+      "geometry_claim": "topological_only",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "d1e5e28876fdfc79ca2c6ce3767c48220d59865e31dd484b760e1f22ecef8311"
+    },
+    {
+      "id": "stfv3__g5_exploration_concealment_v1",
+      "version": 1,
+      "regional_template_basis_id": "regional_scene_basis__g5_exploration_concealment_v1",
+      "regional_template_basis_version": 1,
+      "source_profile_family_id": "g5_exploration_concealment_v1",
+      "geometry_claim": "topological_only",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "443081549c5088f98ffc7455c10c3af75afd460b5fb095debe5d33249419f7bb"
+    },
+    {
+      "id": "stfv3__g5_general_hazard_v1",
+      "version": 1,
+      "regional_template_basis_id": "regional_scene_basis__g5_general_hazard_v1",
+      "regional_template_basis_version": 1,
+      "source_profile_family_id": "g5_general_hazard_v1",
+      "geometry_claim": "topological_only",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "ee48b38d693960b8160869587ee67cb338c090526f04f00b5208aaa44b45e6e2"
+    },
+    {
+      "id": "stfv3__g5_habitation_v1",
+      "version": 1,
+      "regional_template_basis_id": "regional_scene_basis__g5_habitation_v1",
+      "regional_template_basis_version": 1,
+      "source_profile_family_id": "g5_habitation_v1",
+      "geometry_claim": "topological_only",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "a1ff5a56232841c0a10ecef2e4da1b5af3131ef2678d2c366f60ff585f52fc91"
+    },
+    {
+      "id": "stfv3__g5_landing_transition_v1",
+      "version": 1,
+      "regional_template_basis_id": "regional_scene_basis__g5_landing_transition_v1",
+      "regional_template_basis_version": 1,
+      "source_profile_family_id": "g5_landing_transition_v1",
+      "geometry_claim": "topological_only",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "27867ff20db31d60db9c4f3dc78fea35b5abcdcdc5595f97b97e40a38b68da20"
+    },
+    {
+      "id": "stfv3__g5_observation_orientation_v1",
+      "version": 1,
+      "regional_template_basis_id": "regional_scene_basis__g5_observation_orientation_v1",
+      "regional_template_basis_version": 1,
+      "source_profile_family_id": "g5_observation_orientation_v1",
+      "geometry_claim": "topological_only",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "b197e6f5b41fbab3360e42b50c4c6c8d24d8c0c6d07a99e640d90ec69ab5618e"
+    },
+    {
+      "id": "stfv3__g5_resource_hazard_v1",
+      "version": 1,
+      "regional_template_basis_id": "regional_scene_basis__g5_resource_hazard_v1",
+      "regional_template_basis_version": 1,
+      "source_profile_family_id": "g5_resource_hazard_v1",
+      "geometry_claim": "topological_only",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "047fce07f3275f9d587486d975736db13451d726ac36257728e9421d4c98bf2f"
+    },
+    {
+      "id": "stfv3__g5_resource_v1",
+      "version": 1,
+      "regional_template_basis_id": "regional_scene_basis__g5_resource_v1",
+      "regional_template_basis_version": 1,
+      "source_profile_family_id": "g5_resource_v1",
+      "geometry_claim": "topological_only",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "164b5fc889174034986a840e8cda7b4f786510b8522a0c1bc3e9da662aa97668"
+    },
+    {
+      "id": "stfv3__g5_route_approach_v1",
+      "version": 1,
+      "regional_template_basis_id": "regional_scene_basis__g5_route_approach_v1",
+      "regional_template_basis_version": 1,
+      "source_profile_family_id": "g5_route_approach_v1",
+      "geometry_claim": "topological_only",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "3e389ce47b58746ec1eadec95739582a5b7922f2a63bf13fe3cac4f333bee2e9"
+    },
+    {
+      "id": "stfv3__g5_seasonal_route_hazard_v1",
+      "version": 1,
+      "regional_template_basis_id": "regional_scene_basis__g5_seasonal_route_hazard_v1",
+      "regional_template_basis_version": 1,
+      "source_profile_family_id": "g5_seasonal_route_hazard_v1",
+      "geometry_claim": "topological_only",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "63c3e16df456fd2136526c44cad642d5c69ba70358238f7b402ca7d272ce393e"
+    },
+    {
+      "id": "stfv3__g5_shelter_rest_v1",
+      "version": 1,
+      "regional_template_basis_id": "regional_scene_basis__g5_shelter_rest_v1",
+      "regional_template_basis_version": 1,
+      "source_profile_family_id": "g5_shelter_rest_v1",
+      "geometry_claim": "topological_only",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "00a2cb29f68a79d6d42b73de5f45438b7d228dd308cae2fe9ff19d87596aaba4"
+    },
+    {
+      "id": "stfv3__g5_water_hazard_v1",
+      "version": 1,
+      "regional_template_basis_id": "regional_scene_basis__g5_water_hazard_v1",
+      "regional_template_basis_version": 1,
+      "source_profile_family_id": "g5_water_hazard_v1",
+      "geometry_claim": "topological_only",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "b9f7f20403046017619d773ccb069cc710eb51bfdccdf1b5d02480fa20a44ef3"
+    },
+    {
+      "id": "stfv3__g5_water_navigation_v1",
+      "version": 1,
+      "regional_template_basis_id": "regional_scene_basis__g5_water_navigation_v1",
+      "regional_template_basis_version": 1,
+      "source_profile_family_id": "g5_water_navigation_v1",
+      "geometry_claim": "topological_only",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "fe6ae1a24cbb41b3fd2562c9008b0f7ff7383c323d8407b596d5237eafff9064"
+    },
+    {
+      "id": "stfv3__g5_wetland_flood_v1",
+      "version": 1,
+      "regional_template_basis_id": "regional_scene_basis__g5_wetland_flood_v1",
+      "regional_template_basis_version": 1,
+      "source_profile_family_id": "g5_wetland_flood_v1",
+      "geometry_claim": "topological_only",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "3e4fbf0128ef38a10c9c4b5b122d59958d02341b49381dad0dc188cee59f5f2c"
+    },
+    {
+      "id": "stfv3__g5_work_storage_social_v1",
+      "version": 1,
+      "regional_template_basis_id": "regional_scene_basis__g5_work_storage_social_v1",
+      "regional_template_basis_version": 1,
+      "source_profile_family_id": "g5_work_storage_social_v1",
+      "geometry_claim": "topological_only",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "ec0320df19eedcdc2fd227a42a8b1336772ec07e97451fa1e55563084bae2044"
+    }
+  ]
+}

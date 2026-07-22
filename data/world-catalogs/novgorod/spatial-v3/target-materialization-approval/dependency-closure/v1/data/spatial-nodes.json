@@ -1,0 +1,726 @@
+{
+  "records": [
+    {
+      "id": "region_novgorod_land",
+      "version": 1,
+      "scale": "G0",
+      "title": "Новгородская земля",
+      "evidence_status": "approved_regional_identity",
+      "reconstruction_method": "Canonical regional identity only.",
+      "source_refs": [
+        "SRC_G1R2_MAP_RULES"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "7c2c6abeaf1cb2499498e4972f9f80cd9011c891fa407e9f2be7078192cbe70d"
+    },
+    {
+      "id": "gn_nov_g1_xp017_yp026",
+      "version": 1,
+      "scale": "G1",
+      "title": "Нижнедвинская устьевая ячейка: расширенная историко-игровая реконструкция",
+      "evidence_status": "mixed_source_backed_archaeologically_supported_and_reconstructed",
+      "reconstruction_method": "Retain the technical cell as a broad corridor/estuary transition. Do not infer exact settlement, shoreline, channel, ethnic composition or direct administration.",
+      "source_refs": [
+        "SRC_G1R2_SCHAPOV_1976_CHARTER",
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "8c2959cfc536c633bf7b711cc29849a57afbe5958ca60b9a42d82ec29e0568f9"
+    },
+    {
+      "id": "gn_nov_g2_xp017_yp026_r2_south_main_channel",
+      "version": 1,
+      "scale": "G2",
+      "title": "Южный входной речной коридор",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Topological zone reconstructed from approved claims; boundaries are not exact medieval polygons.",
+      "source_refs": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "4a2815a572e171815b99c338245c3bc31529ba6c9cd66d36c429fa2606a209e6"
+    },
+    {
+      "id": "gn_nov_g2_xp017_yp026_r2_central_main_channel",
+      "version": 1,
+      "scale": "G2",
+      "title": "Средний сход русловых потоков",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Topological zone reconstructed from approved claims; boundaries are not exact medieval polygons.",
+      "source_refs": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "77d26ce170788dfdc6cfe56a084343f8cc21d81e4c90ffa832683a1cabded94e"
+    },
+    {
+      "id": "gn_nov_g2_xp017_yp026_r2_north_main_channel",
+      "version": 1,
+      "scale": "G2",
+      "title": "Северный устьевой ход",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Topological zone reconstructed from approved claims; boundaries are not exact medieval polygons.",
+      "source_refs": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "e47cc815fe29a1b9dfbd18e236295697c1eea370fe41209fca178ed2d15125d6"
+    },
+    {
+      "id": "gn_nov_g2_xp017_yp026_r2_west_distributary_belt",
+      "version": 1,
+      "scale": "G2",
+      "title": "Западная полоса боковых проток",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Topological zone reconstructed from approved claims; boundaries are not exact medieval polygons.",
+      "source_refs": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "751fadbe3354b19988338c259f98f8262e5c9a5cc2b208421b0a2eb6bdabbc74"
+    },
+    {
+      "id": "gn_nov_g2_xp017_yp026_r2_east_distributary_belt",
+      "version": 1,
+      "scale": "G2",
+      "title": "Восточная полоса боковых проток",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Topological zone reconstructed from approved claims; boundaries are not exact medieval polygons.",
+      "source_refs": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "1ce05177ab6bbe686c319ad983d61e1697c02b24681c3ea78f47e97b35a50672"
+    },
+    {
+      "id": "gn_nov_g2_xp017_yp026_r2_island_head_mosaic",
+      "version": 1,
+      "scale": "G2",
+      "title": "Островные головы и разделения русел",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Topological zone reconstructed from approved claims; boundaries are not exact medieval polygons.",
+      "source_refs": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "ba377df673b9dd462425f627109c54f13aeb6ff7e068d4f277c4825f3980f160"
+    },
+    {
+      "id": "gn_nov_g2_xp017_yp026_r2_inner_floodplain",
+      "version": 1,
+      "scale": "G2",
+      "title": "Внутренняя пойменно-островная зона",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Topological zone reconstructed from approved claims; boundaries are not exact medieval polygons.",
+      "source_refs": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "cf772f6d87c50cdd2fadbaef0789c1ef6cd6215aa9da18cc5c81630eb9383f1a"
+    },
+    {
+      "id": "gn_nov_g2_xp017_yp026_r2_shoal_bar_field",
+      "version": 1,
+      "scale": "G2",
+      "title": "Полоса мелей и наносных гряд",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Topological zone reconstructed from approved claims; boundaries are not exact medieval polygons.",
+      "source_refs": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "b1a7954a080d4e0f74aeac5b1a450b0ed742042072cadf95c145b6c51bc959cf"
+    },
+    {
+      "id": "gn_nov_g2_xp017_yp026_r2_backwater_wetlands",
+      "version": 1,
+      "scale": "G2",
+      "title": "Затоны и староречные понижения",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Topological zone reconstructed from approved claims; boundaries are not exact medieval polygons.",
+      "source_refs": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+        "SRC_G1R2_GSHHS"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "7d3490ccfaab260e9094fd98ca5733bcbdd5f418f171d0bb07df59bb5e20cbc8"
+    },
+    {
+      "id": "gn_nov_g2_xp017_yp026_r2_dry_ridge_belt",
+      "version": 1,
+      "scale": "G2",
+      "title": "Сухие пойменные гряды",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Topological zone reconstructed from approved claims; boundaries are not exact medieval polygons.",
+      "source_refs": [
+        "SRC_G1R2_CHALOV_DVINA_2012"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "b3ece1b32950979dba8326ce65aa9b27887cc996d7fc38320475c31aa6f379c1"
+    },
+    {
+      "id": "gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area",
+      "version": 1,
+      "scale": "G2",
+      "title": "Вихтуйская локализационная зона",
+      "evidence_status": "source_backed_with_localization_uncertainty",
+      "reconstruction_method": "Topological zone reconstructed from approved claims; boundaries are not exact medieval polygons.",
+      "source_refs": [
+        "SRC_G1R2_ARKHANGELSK_HOARD_1992",
+        "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+        "SRC_G1R2_SCHAPOV_1976_CHARTER"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "1617aaa88a1d23988ea4602030ec5e6538a2fec8c8bb31da123699699fe0ccaf"
+    },
+    {
+      "id": "gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area",
+      "version": 1,
+      "scale": "G2",
+      "title": "Заостровский археологический участок",
+      "evidence_status": "archaeologically_supported_with_access_limit",
+      "reconstruction_method": "Topological zone reconstructed from approved claims; boundaries are not exact medieval polygons.",
+      "source_refs": [
+        "SRC_G1R2_ARKHANGELSK_HOARD_1992",
+        "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+        "SRC_G1R2_SCHAPOV_1976_CHARTER"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "5154c0142d6f894e9530b537828d06c56109df6e6fc900c2d9438dea40a92292"
+    },
+    {
+      "id": "gn_nov_g2_xp017_yp026_r2_forest_hinterland",
+      "version": 1,
+      "scale": "G2",
+      "title": "Пойменно-таёжный тыл",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Topological zone reconstructed from approved claims; boundaries are not exact medieval polygons.",
+      "source_refs": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+        "SRC_G1R2_GSHHS"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "2d79681e9a3c29b935c99cf14f2255c69603d612f02a8d56f5c04d4ef50b643a"
+    },
+    {
+      "id": "gn_nov_g2_xp017_yp026_r2_small_stream_network",
+      "version": 1,
+      "scale": "G2",
+      "title": "Ручьи и внутренние стоки",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Topological zone reconstructed from approved claims; boundaries are not exact medieval polygons.",
+      "source_refs": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "8a7a240d308cef6229a95f9c8a3c6c4e90287365d8c48cb4e14d8ea8ac2030f1"
+    },
+    {
+      "id": "gn_nov_g2_xp017_yp026_r2_river_sea_transition",
+      "version": 1,
+      "scale": "G2",
+      "title": "Открытая речная устьевая переходная зона",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Topological zone reconstructed from approved claims; boundaries are not exact medieval polygons.",
+      "source_refs": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "9df097a6e85e16b38ffea7dbf41ed2642c3fc9f3cbc5dd5e490bd8c3daac2e8f"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+      "version": 1,
+      "scale": "G3",
+      "title": "Южный входной плёс",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined.",
+      "source_refs": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "02417a794d205da140a725f5f2608f94debee9fd48bdd6834f258d853377d497"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+      "version": 1,
+      "scale": "G3",
+      "title": "Защищённый внутренний плёс",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined.",
+      "source_refs": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "cc2d862a70dfbdaeff002c58f244c67ee70d52c0aa04f31ff3c888833652cf6a"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+      "version": 1,
+      "scale": "G3",
+      "title": "Средний судоходный плёс",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined.",
+      "source_refs": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "030f08b579b9d77998cbedd7c4a9867e4d603252f4bec504f0f920e7cb3ca4f2"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp026_r2_central_current_split",
+      "version": 1,
+      "scale": "G3",
+      "title": "Срединное разделение течений",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined.",
+      "source_refs": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "fcc4df650e91383142d64982d0d558420b348382f5f7a80afd8630b97f9a4e5a"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+      "version": 1,
+      "scale": "G3",
+      "title": "Северный выходной плёс",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined.",
+      "source_refs": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "c56fb3887f6fe5901bcf9c47b3a729e0cc81b7dd82c241c1b36d87ae493eb612"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+      "version": 1,
+      "scale": "G3",
+      "title": "Открытый поворот устьевого хода",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined.",
+      "source_refs": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "c43885e8f96a9a1d6058acac7aa2db3ed6cbbdee815609ad12767f76c21feea4"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp026_r2_west_side_channel",
+      "version": 1,
+      "scale": "G3",
+      "title": "Западная боковая протока",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined.",
+      "source_refs": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "45a911d57e36c255fd3e614392154f0849dc4c2203d3df51b8862a2c925e642b"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+      "version": 1,
+      "scale": "G3",
+      "title": "Западный скрытый затон",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined.",
+      "source_refs": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "532c0c075e93966c264617f09cfcb115e670dae8bad3c1872783a67ec87d6a54"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp026_r2_east_side_channel",
+      "version": 1,
+      "scale": "G3",
+      "title": "Восточная боковая протока",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined.",
+      "source_refs": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "86d06755178c21d9d06fea9d191704e1365916c19d791c5a31eac3765f06c4f5"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+      "version": 1,
+      "scale": "G3",
+      "title": "Восточный паводковый обход",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined.",
+      "source_refs": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "efaffb91d518d1911f3c438f1c0987fac70ed1f2f1a71fc76bde86e60e5ca7f3"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp026_r2_large_island_head",
+      "version": 1,
+      "scale": "G3",
+      "title": "Голова крупного пойменного острова",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined.",
+      "source_refs": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "d54e227c3b83d4cd1fdf6f1754ce78a8e4404b524cf06f8e7ddf785f9ea5195a"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+      "version": 1,
+      "scale": "G3",
+      "title": "Островок у разделения русел",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined.",
+      "source_refs": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "267a9fc79d99bead2fadb5d6bc9cb8790b7cf761a4d2321d54500b024a55c462"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+      "version": 1,
+      "scale": "G3",
+      "title": "Сухая островная грива",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined.",
+      "source_refs": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "03940bea8bcb4c4df519f8ae493a560a8e22a173dbc4804821d13fb80bb0077a"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+      "version": 1,
+      "scale": "G3",
+      "title": "Внутренняя затапливаемая котловина",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined.",
+      "source_refs": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "9abec5bd0b14af06c82551c5e0dc85e0f96ce06417455b4c013cd840dfb5842b"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+      "version": 1,
+      "scale": "G3",
+      "title": "Поле меняющихся мелей",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined.",
+      "source_refs": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "630e9f0eb74f99be385febbd0a1be437cd442ff9e9caa3d52c027412ea7b3c98"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+      "version": 1,
+      "scale": "G3",
+      "title": "Наносная гряда с плавником",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined.",
+      "source_refs": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "6ca593fb1a4356be4e2c8a1bf185681f6e03646e77b80a427db1f1a15043a51f"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp026_r2_reed_backwater",
+      "version": 1,
+      "scale": "G3",
+      "title": "Камышовый затон",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined.",
+      "source_refs": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+        "SRC_G1R2_GSHHS"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "de00503be6209dac893ba31267dd87b258db53fa61d21f0440bf50e706758248"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+      "version": 1,
+      "scale": "G3",
+      "title": "Староречный плёс",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined.",
+      "source_refs": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+        "SRC_G1R2_GSHHS"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "7221f4122f66a3f2c3c89431ecd7fbf6d63c8b72f99616530d8b3e592a9323aa"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+      "version": 1,
+      "scale": "G3",
+      "title": "Проход по сухой пойменной гриве",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined.",
+      "source_refs": [
+        "SRC_G1R2_CHALOV_DVINA_2012"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "457eaa7fa232266c6c326145c6378988faf55b3afec227991e3bc0c230cd0c64"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+      "version": 1,
+      "scale": "G3",
+      "title": "Защищённая береговая терраса",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined.",
+      "source_refs": [
+        "SRC_G1R2_CHALOV_DVINA_2012"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "fb534d13f79e810eaa127afa914a148191f012cf24914ee2818404673682594b"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+      "version": 1,
+      "scale": "G3",
+      "title": "Вихтуй: зона локализации",
+      "evidence_status": "source_backed_with_localization_uncertainty",
+      "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined.",
+      "source_refs": [
+        "SRC_G1R2_ARKHANGELSK_HOARD_1992",
+        "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+        "SRC_G1R2_SCHAPOV_1976_CHARTER"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "0ab3d9bd79e646af2af2954222d7833d4e54a282a7fd2e7c96981f99ad6c04d4"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+      "version": 1,
+      "scale": "G3",
+      "title": "Речной подход к Вихтую",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined.",
+      "source_refs": [
+        "SRC_G1R2_ARKHANGELSK_HOARD_1992",
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+        "SRC_G1R2_MASK_REV002",
+        "SRC_G1R2_SCHAPOV_1976_CHARTER"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "21f79ad3334941e5183b9f96b6ceb4acee2fe586ba2ad55db384b67a23c498b1"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+      "version": 1,
+      "scale": "G3",
+      "title": "Ресурсная окраина Вихтуйской зоны",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined.",
+      "source_refs": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+        "SRC_G1R2_GSHHS"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "26e8efd363ae1c6eb05b5d96bf92976a90ddb367e8ad519da9c27f69301cc586"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+      "version": 1,
+      "scale": "G3",
+      "title": "Заостровский поселенческий участок",
+      "evidence_status": "archaeologically_supported_with_access_limit",
+      "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined.",
+      "source_refs": [
+        "SRC_G1R2_ARKHANGELSK_HOARD_1992",
+        "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+        "SRC_G1R2_SCHAPOV_1976_CHARTER"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "8ff5cdc3670e77b54d25976d738aa56141fd0bdc9664a3ebfe1060871287f32a"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+      "version": 1,
+      "scale": "G3",
+      "title": "Заостровская погребальная зона",
+      "evidence_status": "archaeologically_supported_with_access_limit",
+      "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined.",
+      "source_refs": [
+        "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "7041f3f1c438a0ddb619762484fed603ca5f9bac7976a882098e97463d49b728"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+      "version": 1,
+      "scale": "G3",
+      "title": "Заостровский береговой подход",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined.",
+      "source_refs": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "30ff373726018f5919edfd26ea7948c179894bf9ad0194780a98d3029621a4ec"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+      "version": 1,
+      "scale": "G3",
+      "title": "Влажный хвойный лес",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined.",
+      "source_refs": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+        "SRC_G1R2_GSHHS"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "59f4614f5185fef120f2af8d0181153e1bf2cd4aac2838c95b9713ff4d59042e"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+      "version": 1,
+      "scale": "G3",
+      "title": "Сухая лесная гряда",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined.",
+      "source_refs": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+        "SRC_G1R2_GSHHS"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "f1f70aa37c2488306e649aea90ab976190890daa9f9060e19ee195a7aff00f52"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+      "version": 1,
+      "scale": "G3",
+      "title": "Устье малого водотока",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined.",
+      "source_refs": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "49e6316edfd9b463f748892846867989349617dbd2ae347c488acb1ebc6c9128"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+      "version": 1,
+      "scale": "G3",
+      "title": "Лесной ручьевой ход",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined.",
+      "source_refs": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "25496103054fb9f0bac951c9acedd6950915e98656bb6cf1601403b251912ee0"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp026_r2_mixing_reach",
+      "version": 1,
+      "scale": "G3",
+      "title": "Плёс речного и морского смешения",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined.",
+      "source_refs": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "0f3c8ba0cc2e713fbe20f0b3dd9d2553729e521ebec41c5a6914d1ddb469e0f0"
+    },
+    {
+      "id": "gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+      "version": 1,
+      "scale": "G3",
+      "title": "Открытый внешний подход",
+      "evidence_status": "comparative_reconstruction",
+      "reconstruction_method": "Stable functional place represented topologically; exact medieval geometry and current occupants are not predefined.",
+      "source_refs": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "c6c1bf887563bce5470f9501a86f2720c2c5524047fde12100d5e12d867abbb1"
+    }
+  ]
+}

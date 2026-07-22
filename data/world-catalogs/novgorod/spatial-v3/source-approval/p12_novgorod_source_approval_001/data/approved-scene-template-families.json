@@ -1,0 +1,1280 @@
+{
+  "schema_version": "rus.approved_scene_template_families.v1",
+  "records": [
+    {
+      "id": "stfv3__g5_boundary_access_v1",
+      "version": "1",
+      "source_profile_family_id": "g5_boundary_access_v1",
+      "regional_template_ref": "regional_scene_basis__g5_boundary_access_v1@1",
+      "g6_slots": [
+        {
+          "slot_key": "main",
+          "physical_class": "spatial.g6.open",
+          "vertical_context_id": "surface",
+          "overhead_cover_id": "none",
+          "required": true
+        }
+      ],
+      "position_templates": [
+        {
+          "slot_key": "arrival",
+          "g6_slot_key": "main",
+          "role": "passage"
+        },
+        {
+          "slot_key": "focus",
+          "g6_slot_key": "main",
+          "role": "passage"
+        },
+        {
+          "slot_key": "departure",
+          "g6_slot_key": "main",
+          "role": "passage"
+        }
+      ],
+      "endpoint_slots": [
+        {
+          "slot_key": "arrival",
+          "endpoint_role": "arrival",
+          "position_slot_key": "arrival"
+        },
+        {
+          "slot_key": "departure",
+          "endpoint_role": "departure",
+          "position_slot_key": "departure"
+        }
+      ],
+      "movement_edges": [
+        {
+          "from": "arrival",
+          "to": "focus",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "focus",
+          "to": "arrival",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "focus",
+          "to": "departure",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "departure",
+          "to": "focus",
+          "cost_kind": "action",
+          "action_units": 1
+        }
+      ],
+      "stable_structure_templates": [],
+      "portal_templates": [],
+      "geometry_claim": "topological_only",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "stfv3__g5_burial_ritual_buffer_v1",
+      "version": "1",
+      "source_profile_family_id": "g5_burial_ritual_buffer_v1",
+      "regional_template_ref": "regional_scene_basis__g5_burial_ritual_buffer_v1@1",
+      "g6_slots": [
+        {
+          "slot_key": "main",
+          "physical_class": "spatial.g6.open",
+          "vertical_context_id": "surface",
+          "overhead_cover_id": "none",
+          "required": true
+        }
+      ],
+      "position_templates": [
+        {
+          "slot_key": "arrival",
+          "g6_slot_key": "main",
+          "role": "passage"
+        },
+        {
+          "slot_key": "focus",
+          "g6_slot_key": "main",
+          "role": "work"
+        },
+        {
+          "slot_key": "departure",
+          "g6_slot_key": "main",
+          "role": "passage"
+        }
+      ],
+      "endpoint_slots": [
+        {
+          "slot_key": "arrival",
+          "endpoint_role": "arrival",
+          "position_slot_key": "arrival"
+        },
+        {
+          "slot_key": "departure",
+          "endpoint_role": "departure",
+          "position_slot_key": "departure"
+        }
+      ],
+      "movement_edges": [
+        {
+          "from": "arrival",
+          "to": "focus",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "focus",
+          "to": "arrival",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "focus",
+          "to": "departure",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "departure",
+          "to": "focus",
+          "cost_kind": "action",
+          "action_units": 1
+        }
+      ],
+      "stable_structure_templates": [],
+      "portal_templates": [],
+      "geometry_claim": "topological_only",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "stfv3__g5_dry_route_v1",
+      "version": "1",
+      "source_profile_family_id": "g5_dry_route_v1",
+      "regional_template_ref": "regional_scene_basis__g5_dry_route_v1@1",
+      "g6_slots": [
+        {
+          "slot_key": "main",
+          "physical_class": "spatial.g6.open",
+          "vertical_context_id": "surface",
+          "overhead_cover_id": "none",
+          "required": true
+        }
+      ],
+      "position_templates": [
+        {
+          "slot_key": "arrival",
+          "g6_slot_key": "main",
+          "role": "passage"
+        },
+        {
+          "slot_key": "focus",
+          "g6_slot_key": "main",
+          "role": "passage"
+        },
+        {
+          "slot_key": "departure",
+          "g6_slot_key": "main",
+          "role": "passage"
+        }
+      ],
+      "endpoint_slots": [
+        {
+          "slot_key": "arrival",
+          "endpoint_role": "arrival",
+          "position_slot_key": "arrival"
+        },
+        {
+          "slot_key": "departure",
+          "endpoint_role": "departure",
+          "position_slot_key": "departure"
+        }
+      ],
+      "movement_edges": [
+        {
+          "from": "arrival",
+          "to": "focus",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "focus",
+          "to": "arrival",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "focus",
+          "to": "departure",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "departure",
+          "to": "focus",
+          "cost_kind": "action",
+          "action_units": 1
+        }
+      ],
+      "stable_structure_templates": [],
+      "portal_templates": [],
+      "geometry_claim": "topological_only",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "stfv3__g5_exploration_concealment_v1",
+      "version": "1",
+      "source_profile_family_id": "g5_exploration_concealment_v1",
+      "regional_template_ref": "regional_scene_basis__g5_exploration_concealment_v1@1",
+      "g6_slots": [
+        {
+          "slot_key": "main",
+          "physical_class": "spatial.g6.open",
+          "vertical_context_id": "surface",
+          "overhead_cover_id": "none",
+          "required": true
+        }
+      ],
+      "position_templates": [
+        {
+          "slot_key": "arrival",
+          "g6_slot_key": "main",
+          "role": "passage"
+        },
+        {
+          "slot_key": "focus",
+          "g6_slot_key": "main",
+          "role": "passage"
+        },
+        {
+          "slot_key": "departure",
+          "g6_slot_key": "main",
+          "role": "passage"
+        }
+      ],
+      "endpoint_slots": [
+        {
+          "slot_key": "arrival",
+          "endpoint_role": "arrival",
+          "position_slot_key": "arrival"
+        },
+        {
+          "slot_key": "departure",
+          "endpoint_role": "departure",
+          "position_slot_key": "departure"
+        }
+      ],
+      "movement_edges": [
+        {
+          "from": "arrival",
+          "to": "focus",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "focus",
+          "to": "arrival",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "focus",
+          "to": "departure",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "departure",
+          "to": "focus",
+          "cost_kind": "action",
+          "action_units": 1
+        }
+      ],
+      "stable_structure_templates": [],
+      "portal_templates": [],
+      "geometry_claim": "topological_only",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "stfv3__g5_general_hazard_v1",
+      "version": "1",
+      "source_profile_family_id": "g5_general_hazard_v1",
+      "regional_template_ref": "regional_scene_basis__g5_general_hazard_v1@1",
+      "g6_slots": [
+        {
+          "slot_key": "main",
+          "physical_class": "spatial.g6.open",
+          "vertical_context_id": "surface",
+          "overhead_cover_id": "none",
+          "required": true
+        }
+      ],
+      "position_templates": [
+        {
+          "slot_key": "arrival",
+          "g6_slot_key": "main",
+          "role": "passage"
+        },
+        {
+          "slot_key": "focus",
+          "g6_slot_key": "main",
+          "role": "passage"
+        },
+        {
+          "slot_key": "departure",
+          "g6_slot_key": "main",
+          "role": "passage"
+        }
+      ],
+      "endpoint_slots": [
+        {
+          "slot_key": "arrival",
+          "endpoint_role": "arrival",
+          "position_slot_key": "arrival"
+        },
+        {
+          "slot_key": "departure",
+          "endpoint_role": "departure",
+          "position_slot_key": "departure"
+        }
+      ],
+      "movement_edges": [
+        {
+          "from": "arrival",
+          "to": "focus",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "focus",
+          "to": "arrival",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "focus",
+          "to": "departure",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "departure",
+          "to": "focus",
+          "cost_kind": "action",
+          "action_units": 1
+        }
+      ],
+      "stable_structure_templates": [],
+      "portal_templates": [],
+      "geometry_claim": "topological_only",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "stfv3__g5_habitation_v1",
+      "version": "1",
+      "source_profile_family_id": "g5_habitation_v1",
+      "regional_template_ref": "regional_scene_basis__g5_habitation_v1@1",
+      "g6_slots": [
+        {
+          "slot_key": "main",
+          "physical_class": "spatial.g6.open",
+          "vertical_context_id": "surface",
+          "overhead_cover_id": "none",
+          "required": true
+        }
+      ],
+      "position_templates": [
+        {
+          "slot_key": "arrival",
+          "g6_slot_key": "main",
+          "role": "passage"
+        },
+        {
+          "slot_key": "focus",
+          "g6_slot_key": "main",
+          "role": "work"
+        },
+        {
+          "slot_key": "departure",
+          "g6_slot_key": "main",
+          "role": "passage"
+        }
+      ],
+      "endpoint_slots": [
+        {
+          "slot_key": "arrival",
+          "endpoint_role": "arrival",
+          "position_slot_key": "arrival"
+        },
+        {
+          "slot_key": "departure",
+          "endpoint_role": "departure",
+          "position_slot_key": "departure"
+        }
+      ],
+      "movement_edges": [
+        {
+          "from": "arrival",
+          "to": "focus",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "focus",
+          "to": "arrival",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "focus",
+          "to": "departure",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "departure",
+          "to": "focus",
+          "cost_kind": "action",
+          "action_units": 1
+        }
+      ],
+      "stable_structure_templates": [],
+      "portal_templates": [],
+      "geometry_claim": "topological_only",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "stfv3__g5_landing_transition_v1",
+      "version": "1",
+      "source_profile_family_id": "g5_landing_transition_v1",
+      "regional_template_ref": "regional_scene_basis__g5_landing_transition_v1@1",
+      "g6_slots": [
+        {
+          "slot_key": "main",
+          "physical_class": "spatial.g6.open",
+          "vertical_context_id": "surface",
+          "overhead_cover_id": "none",
+          "required": true
+        }
+      ],
+      "position_templates": [
+        {
+          "slot_key": "arrival",
+          "g6_slot_key": "main",
+          "role": "passage"
+        },
+        {
+          "slot_key": "focus",
+          "g6_slot_key": "main",
+          "role": "work"
+        },
+        {
+          "slot_key": "departure",
+          "g6_slot_key": "main",
+          "role": "passage"
+        }
+      ],
+      "endpoint_slots": [
+        {
+          "slot_key": "arrival",
+          "endpoint_role": "arrival",
+          "position_slot_key": "arrival"
+        },
+        {
+          "slot_key": "departure",
+          "endpoint_role": "departure",
+          "position_slot_key": "departure"
+        }
+      ],
+      "movement_edges": [
+        {
+          "from": "arrival",
+          "to": "focus",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "focus",
+          "to": "arrival",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "focus",
+          "to": "departure",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "departure",
+          "to": "focus",
+          "cost_kind": "action",
+          "action_units": 1
+        }
+      ],
+      "stable_structure_templates": [],
+      "portal_templates": [],
+      "geometry_claim": "topological_only",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "stfv3__g5_observation_orientation_v1",
+      "version": "1",
+      "source_profile_family_id": "g5_observation_orientation_v1",
+      "regional_template_ref": "regional_scene_basis__g5_observation_orientation_v1@1",
+      "g6_slots": [
+        {
+          "slot_key": "main",
+          "physical_class": "spatial.g6.open",
+          "vertical_context_id": "surface",
+          "overhead_cover_id": "none",
+          "required": true
+        }
+      ],
+      "position_templates": [
+        {
+          "slot_key": "arrival",
+          "g6_slot_key": "main",
+          "role": "passage"
+        },
+        {
+          "slot_key": "focus",
+          "g6_slot_key": "main",
+          "role": "passage"
+        },
+        {
+          "slot_key": "departure",
+          "g6_slot_key": "main",
+          "role": "passage"
+        }
+      ],
+      "endpoint_slots": [
+        {
+          "slot_key": "arrival",
+          "endpoint_role": "arrival",
+          "position_slot_key": "arrival"
+        },
+        {
+          "slot_key": "departure",
+          "endpoint_role": "departure",
+          "position_slot_key": "departure"
+        }
+      ],
+      "movement_edges": [
+        {
+          "from": "arrival",
+          "to": "focus",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "focus",
+          "to": "arrival",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "focus",
+          "to": "departure",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "departure",
+          "to": "focus",
+          "cost_kind": "action",
+          "action_units": 1
+        }
+      ],
+      "stable_structure_templates": [],
+      "portal_templates": [],
+      "geometry_claim": "topological_only",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "stfv3__g5_resource_hazard_v1",
+      "version": "1",
+      "source_profile_family_id": "g5_resource_hazard_v1",
+      "regional_template_ref": "regional_scene_basis__g5_resource_hazard_v1@1",
+      "g6_slots": [
+        {
+          "slot_key": "main",
+          "physical_class": "spatial.g6.open",
+          "vertical_context_id": "surface",
+          "overhead_cover_id": "none",
+          "required": true
+        }
+      ],
+      "position_templates": [
+        {
+          "slot_key": "arrival",
+          "g6_slot_key": "main",
+          "role": "passage"
+        },
+        {
+          "slot_key": "focus",
+          "g6_slot_key": "main",
+          "role": "work"
+        },
+        {
+          "slot_key": "departure",
+          "g6_slot_key": "main",
+          "role": "passage"
+        }
+      ],
+      "endpoint_slots": [
+        {
+          "slot_key": "arrival",
+          "endpoint_role": "arrival",
+          "position_slot_key": "arrival"
+        },
+        {
+          "slot_key": "departure",
+          "endpoint_role": "departure",
+          "position_slot_key": "departure"
+        }
+      ],
+      "movement_edges": [
+        {
+          "from": "arrival",
+          "to": "focus",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "focus",
+          "to": "arrival",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "focus",
+          "to": "departure",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "departure",
+          "to": "focus",
+          "cost_kind": "action",
+          "action_units": 1
+        }
+      ],
+      "stable_structure_templates": [],
+      "portal_templates": [],
+      "geometry_claim": "topological_only",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "stfv3__g5_resource_v1",
+      "version": "1",
+      "source_profile_family_id": "g5_resource_v1",
+      "regional_template_ref": "regional_scene_basis__g5_resource_v1@1",
+      "g6_slots": [
+        {
+          "slot_key": "main",
+          "physical_class": "spatial.g6.open",
+          "vertical_context_id": "surface",
+          "overhead_cover_id": "none",
+          "required": true
+        }
+      ],
+      "position_templates": [
+        {
+          "slot_key": "arrival",
+          "g6_slot_key": "main",
+          "role": "passage"
+        },
+        {
+          "slot_key": "focus",
+          "g6_slot_key": "main",
+          "role": "work"
+        },
+        {
+          "slot_key": "departure",
+          "g6_slot_key": "main",
+          "role": "passage"
+        }
+      ],
+      "endpoint_slots": [
+        {
+          "slot_key": "arrival",
+          "endpoint_role": "arrival",
+          "position_slot_key": "arrival"
+        },
+        {
+          "slot_key": "departure",
+          "endpoint_role": "departure",
+          "position_slot_key": "departure"
+        }
+      ],
+      "movement_edges": [
+        {
+          "from": "arrival",
+          "to": "focus",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "focus",
+          "to": "arrival",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "focus",
+          "to": "departure",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "departure",
+          "to": "focus",
+          "cost_kind": "action",
+          "action_units": 1
+        }
+      ],
+      "stable_structure_templates": [],
+      "portal_templates": [],
+      "geometry_claim": "topological_only",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "stfv3__g5_route_approach_v1",
+      "version": "1",
+      "source_profile_family_id": "g5_route_approach_v1",
+      "regional_template_ref": "regional_scene_basis__g5_route_approach_v1@1",
+      "g6_slots": [
+        {
+          "slot_key": "main",
+          "physical_class": "spatial.g6.open",
+          "vertical_context_id": "surface",
+          "overhead_cover_id": "none",
+          "required": true
+        }
+      ],
+      "position_templates": [
+        {
+          "slot_key": "arrival",
+          "g6_slot_key": "main",
+          "role": "passage"
+        },
+        {
+          "slot_key": "focus",
+          "g6_slot_key": "main",
+          "role": "passage"
+        },
+        {
+          "slot_key": "departure",
+          "g6_slot_key": "main",
+          "role": "passage"
+        }
+      ],
+      "endpoint_slots": [
+        {
+          "slot_key": "arrival",
+          "endpoint_role": "arrival",
+          "position_slot_key": "arrival"
+        },
+        {
+          "slot_key": "departure",
+          "endpoint_role": "departure",
+          "position_slot_key": "departure"
+        }
+      ],
+      "movement_edges": [
+        {
+          "from": "arrival",
+          "to": "focus",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "focus",
+          "to": "arrival",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "focus",
+          "to": "departure",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "departure",
+          "to": "focus",
+          "cost_kind": "action",
+          "action_units": 1
+        }
+      ],
+      "stable_structure_templates": [],
+      "portal_templates": [],
+      "geometry_claim": "topological_only",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "stfv3__g5_seasonal_route_hazard_v1",
+      "version": "1",
+      "source_profile_family_id": "g5_seasonal_route_hazard_v1",
+      "regional_template_ref": "regional_scene_basis__g5_seasonal_route_hazard_v1@1",
+      "g6_slots": [
+        {
+          "slot_key": "main",
+          "physical_class": "spatial.g6.open",
+          "vertical_context_id": "surface",
+          "overhead_cover_id": "none",
+          "required": true
+        }
+      ],
+      "position_templates": [
+        {
+          "slot_key": "arrival",
+          "g6_slot_key": "main",
+          "role": "passage"
+        },
+        {
+          "slot_key": "focus",
+          "g6_slot_key": "main",
+          "role": "passage"
+        },
+        {
+          "slot_key": "departure",
+          "g6_slot_key": "main",
+          "role": "passage"
+        }
+      ],
+      "endpoint_slots": [
+        {
+          "slot_key": "arrival",
+          "endpoint_role": "arrival",
+          "position_slot_key": "arrival"
+        },
+        {
+          "slot_key": "departure",
+          "endpoint_role": "departure",
+          "position_slot_key": "departure"
+        }
+      ],
+      "movement_edges": [
+        {
+          "from": "arrival",
+          "to": "focus",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "focus",
+          "to": "arrival",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "focus",
+          "to": "departure",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "departure",
+          "to": "focus",
+          "cost_kind": "action",
+          "action_units": 1
+        }
+      ],
+      "stable_structure_templates": [],
+      "portal_templates": [],
+      "geometry_claim": "topological_only",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "stfv3__g5_shelter_rest_v1",
+      "version": "1",
+      "source_profile_family_id": "g5_shelter_rest_v1",
+      "regional_template_ref": "regional_scene_basis__g5_shelter_rest_v1@1",
+      "g6_slots": [
+        {
+          "slot_key": "main",
+          "physical_class": "spatial.g6.open",
+          "vertical_context_id": "surface",
+          "overhead_cover_id": "none",
+          "required": true
+        }
+      ],
+      "position_templates": [
+        {
+          "slot_key": "arrival",
+          "g6_slot_key": "main",
+          "role": "passage"
+        },
+        {
+          "slot_key": "focus",
+          "g6_slot_key": "main",
+          "role": "work"
+        },
+        {
+          "slot_key": "departure",
+          "g6_slot_key": "main",
+          "role": "passage"
+        }
+      ],
+      "endpoint_slots": [
+        {
+          "slot_key": "arrival",
+          "endpoint_role": "arrival",
+          "position_slot_key": "arrival"
+        },
+        {
+          "slot_key": "departure",
+          "endpoint_role": "departure",
+          "position_slot_key": "departure"
+        }
+      ],
+      "movement_edges": [
+        {
+          "from": "arrival",
+          "to": "focus",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "focus",
+          "to": "arrival",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "focus",
+          "to": "departure",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "departure",
+          "to": "focus",
+          "cost_kind": "action",
+          "action_units": 1
+        }
+      ],
+      "stable_structure_templates": [],
+      "portal_templates": [],
+      "geometry_claim": "topological_only",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "stfv3__g5_water_hazard_v1",
+      "version": "1",
+      "source_profile_family_id": "g5_water_hazard_v1",
+      "regional_template_ref": "regional_scene_basis__g5_water_hazard_v1@1",
+      "g6_slots": [
+        {
+          "slot_key": "main",
+          "physical_class": "spatial.g6.water",
+          "vertical_context_id": "surface",
+          "overhead_cover_id": "none",
+          "required": true
+        }
+      ],
+      "position_templates": [
+        {
+          "slot_key": "arrival",
+          "g6_slot_key": "main",
+          "role": "passage"
+        },
+        {
+          "slot_key": "focus",
+          "g6_slot_key": "main",
+          "role": "passage"
+        },
+        {
+          "slot_key": "departure",
+          "g6_slot_key": "main",
+          "role": "passage"
+        }
+      ],
+      "endpoint_slots": [
+        {
+          "slot_key": "arrival",
+          "endpoint_role": "arrival",
+          "position_slot_key": "arrival"
+        },
+        {
+          "slot_key": "departure",
+          "endpoint_role": "departure",
+          "position_slot_key": "departure"
+        }
+      ],
+      "movement_edges": [
+        {
+          "from": "arrival",
+          "to": "focus",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "focus",
+          "to": "arrival",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "focus",
+          "to": "departure",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "departure",
+          "to": "focus",
+          "cost_kind": "action",
+          "action_units": 1
+        }
+      ],
+      "stable_structure_templates": [],
+      "portal_templates": [],
+      "geometry_claim": "topological_only",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "stfv3__g5_water_navigation_v1",
+      "version": "1",
+      "source_profile_family_id": "g5_water_navigation_v1",
+      "regional_template_ref": "regional_scene_basis__g5_water_navigation_v1@1",
+      "g6_slots": [
+        {
+          "slot_key": "main",
+          "physical_class": "spatial.g6.water",
+          "vertical_context_id": "surface",
+          "overhead_cover_id": "none",
+          "required": true
+        }
+      ],
+      "position_templates": [
+        {
+          "slot_key": "arrival",
+          "g6_slot_key": "main",
+          "role": "passage"
+        },
+        {
+          "slot_key": "focus",
+          "g6_slot_key": "main",
+          "role": "passage"
+        },
+        {
+          "slot_key": "departure",
+          "g6_slot_key": "main",
+          "role": "passage"
+        }
+      ],
+      "endpoint_slots": [
+        {
+          "slot_key": "arrival",
+          "endpoint_role": "arrival",
+          "position_slot_key": "arrival"
+        },
+        {
+          "slot_key": "departure",
+          "endpoint_role": "departure",
+          "position_slot_key": "departure"
+        }
+      ],
+      "movement_edges": [
+        {
+          "from": "arrival",
+          "to": "focus",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "focus",
+          "to": "arrival",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "focus",
+          "to": "departure",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "departure",
+          "to": "focus",
+          "cost_kind": "action",
+          "action_units": 1
+        }
+      ],
+      "stable_structure_templates": [],
+      "portal_templates": [],
+      "geometry_claim": "topological_only",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "stfv3__g5_wetland_flood_v1",
+      "version": "1",
+      "source_profile_family_id": "g5_wetland_flood_v1",
+      "regional_template_ref": "regional_scene_basis__g5_wetland_flood_v1@1",
+      "g6_slots": [
+        {
+          "slot_key": "main",
+          "physical_class": "spatial.g6.open",
+          "vertical_context_id": "surface",
+          "overhead_cover_id": "none",
+          "required": true
+        }
+      ],
+      "position_templates": [
+        {
+          "slot_key": "arrival",
+          "g6_slot_key": "main",
+          "role": "passage"
+        },
+        {
+          "slot_key": "focus",
+          "g6_slot_key": "main",
+          "role": "passage"
+        },
+        {
+          "slot_key": "departure",
+          "g6_slot_key": "main",
+          "role": "passage"
+        }
+      ],
+      "endpoint_slots": [
+        {
+          "slot_key": "arrival",
+          "endpoint_role": "arrival",
+          "position_slot_key": "arrival"
+        },
+        {
+          "slot_key": "departure",
+          "endpoint_role": "departure",
+          "position_slot_key": "departure"
+        }
+      ],
+      "movement_edges": [
+        {
+          "from": "arrival",
+          "to": "focus",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "focus",
+          "to": "arrival",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "focus",
+          "to": "departure",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "departure",
+          "to": "focus",
+          "cost_kind": "action",
+          "action_units": 1
+        }
+      ],
+      "stable_structure_templates": [],
+      "portal_templates": [],
+      "geometry_claim": "topological_only",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "stfv3__g5_work_storage_social_v1",
+      "version": "1",
+      "source_profile_family_id": "g5_work_storage_social_v1",
+      "regional_template_ref": "regional_scene_basis__g5_work_storage_social_v1@1",
+      "g6_slots": [
+        {
+          "slot_key": "main",
+          "physical_class": "spatial.g6.open",
+          "vertical_context_id": "surface",
+          "overhead_cover_id": "none",
+          "required": true
+        }
+      ],
+      "position_templates": [
+        {
+          "slot_key": "arrival",
+          "g6_slot_key": "main",
+          "role": "passage"
+        },
+        {
+          "slot_key": "focus",
+          "g6_slot_key": "main",
+          "role": "work"
+        },
+        {
+          "slot_key": "departure",
+          "g6_slot_key": "main",
+          "role": "passage"
+        }
+      ],
+      "endpoint_slots": [
+        {
+          "slot_key": "arrival",
+          "endpoint_role": "arrival",
+          "position_slot_key": "arrival"
+        },
+        {
+          "slot_key": "departure",
+          "endpoint_role": "departure",
+          "position_slot_key": "departure"
+        }
+      ],
+      "movement_edges": [
+        {
+          "from": "arrival",
+          "to": "focus",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "focus",
+          "to": "arrival",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "focus",
+          "to": "departure",
+          "cost_kind": "action",
+          "action_units": 1
+        },
+        {
+          "from": "departure",
+          "to": "focus",
+          "cost_kind": "action",
+          "action_units": 1
+        }
+      ],
+      "stable_structure_templates": [],
+      "portal_templates": [],
+      "geometry_claim": "topological_only",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    }
+  ]
+}

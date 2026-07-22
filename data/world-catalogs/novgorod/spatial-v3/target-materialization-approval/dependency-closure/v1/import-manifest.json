@@ -1,0 +1,211 @@
+{
+  "schema_version": "rus.spatial-v3.world-base-authoring-bundle.v1",
+  "bundle_kind": "dependency_closure",
+  "bundle_id": "p12_novgorod_dependency_closure_v1_import",
+  "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+  "status": "draft",
+  "provenance_ref": "prov_p12_g1_r2_r3_v1",
+  "delete_policy": "forbid",
+  "datasets": [
+    {
+      "table": "source_records",
+      "file": "datasets/source_records.json",
+      "sha256": "4b7039c32e6bc0c45cbf903d9a0872c4108f11670c88555c935d787d8a915ae9",
+      "status": "draft",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "delete_policy": "forbid",
+      "depends_on": []
+    },
+    {
+      "table": "universal_categories",
+      "file": "datasets/universal_categories.json",
+      "sha256": "30befc1659dc4e70eb58a23275a349585edf81c39d9b1094081d2f4dca62ba4e",
+      "status": "draft",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records"
+      ]
+    },
+    {
+      "table": "spatial_v3_world_revisions",
+      "file": "datasets/spatial_v3_world_revisions.json",
+      "sha256": "5792b6a25936e581f63fd61d022e4fcb4f5819c9743f27697adbdadc06c4aa05",
+      "status": "draft",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records"
+      ]
+    },
+    {
+      "table": "spatial_v3_authoring_versions",
+      "file": "datasets/spatial_v3_authoring_versions.json",
+      "sha256": "c4a689eed06c749102409c354ae2ec08473fc0652149e3039038e19e40fc5ad6",
+      "status": "draft",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records",
+        "spatial_v3_world_revisions"
+      ]
+    },
+    {
+      "table": "spatial_v3_nodes",
+      "file": "datasets/spatial_v3_nodes.json",
+      "sha256": "d0435fece6f3b08eb908b073c1228ad280dd23150b3f585707030dc1c2653feb",
+      "status": "draft",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records",
+        "universal_categories",
+        "spatial_v3_world_revisions",
+        "spatial_v3_authoring_versions"
+      ]
+    },
+    {
+      "table": "spatial_v3_node_classes",
+      "file": "datasets/spatial_v3_node_classes.json",
+      "sha256": "4218874b278d67e640686a6c3db068c5708791d83a4c8729fa13e1f99d63821a",
+      "status": "draft",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "universal_categories",
+        "spatial_v3_nodes"
+      ]
+    },
+    {
+      "table": "spatial_v3_node_parents",
+      "file": "datasets/spatial_v3_node_parents.json",
+      "sha256": "a1914dd1e44a17b446aa26e7f2f34d8f8bfa6ad3beab4ca22bc2aaa98e9d08a6",
+      "status": "draft",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "spatial_v3_nodes"
+      ]
+    },
+    {
+      "table": "spatial_v3_g1_grid_cells",
+      "file": "datasets/spatial_v3_g1_grid_cells.json",
+      "sha256": "91861fd0fd5a4ed074a3b5f0f6242fa7067d7ebc2ed1d2884517f79ebad3c70e",
+      "status": "draft",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "spatial_v3_world_revisions",
+        "spatial_v3_nodes"
+      ]
+    },
+    {
+      "table": "spatial_v3_regional_scene_template_bases",
+      "file": "datasets/spatial_v3_regional_scene_template_bases.json",
+      "sha256": "9940778870bc98cd258a3e6b99da57796cc542f9f8d1e0b062c599d12e528fd2",
+      "status": "draft",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records",
+        "spatial_v3_world_revisions",
+        "spatial_v3_authoring_versions"
+      ]
+    },
+    {
+      "table": "spatial_v3_scene_selection_rules",
+      "file": "datasets/spatial_v3_scene_selection_rules.json",
+      "sha256": "bd77b595594e947a39f9b64ba47b3eb6bfe38ec0a87b184c2d79a0f495d9b7b6",
+      "status": "draft",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records",
+        "spatial_v3_world_revisions",
+        "spatial_v3_authoring_versions"
+      ]
+    },
+    {
+      "table": "spatial_v3_scene_applicability_rules",
+      "file": "datasets/spatial_v3_scene_applicability_rules.json",
+      "sha256": "0ed9b6d6e23b528f5c8ac8975c47ca44e09d9c1a46d95ed8adaac57c5de99bf1",
+      "status": "draft",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records",
+        "spatial_v3_world_revisions",
+        "spatial_v3_authoring_versions"
+      ]
+    },
+    {
+      "table": "spatial_v3_scene_templates",
+      "file": "datasets/spatial_v3_scene_templates.json",
+      "sha256": "67a7fc39a6547a587960931acf4cb84bc01102a6ac06b6aed7690643ff9d2626",
+      "status": "draft",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records",
+        "spatial_v3_world_revisions",
+        "spatial_v3_regional_scene_template_bases"
+      ]
+    },
+    {
+      "table": "spatial_v3_g6_template_slots",
+      "file": "datasets/spatial_v3_g6_template_slots.json",
+      "sha256": "6f63f52c3be0293e8d365f66fc0ee996b0edced2b468fc40d22d449c36f7708e",
+      "status": "draft",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "spatial_v3_scene_templates"
+      ]
+    },
+    {
+      "table": "spatial_v3_scene_position_templates",
+      "file": "datasets/spatial_v3_scene_position_templates.json",
+      "sha256": "d729ec63d6d7aef8921eb30019265096320de6c9f7fbab39c60b9c1793f21a04",
+      "status": "draft",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "spatial_v3_g6_template_slots"
+      ]
+    },
+    {
+      "table": "spatial_v3_scene_endpoint_slots",
+      "file": "datasets/spatial_v3_scene_endpoint_slots.json",
+      "sha256": "80c49facf7a3b4c68dae7b611d7d2e8f5dd3b62308901a440dd825eed3f0030a",
+      "status": "draft",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "spatial_v3_scene_position_templates"
+      ]
+    },
+    {
+      "table": "spatial_v3_scene_movement_edge_templates",
+      "file": "datasets/spatial_v3_scene_movement_edge_templates.json",
+      "sha256": "d6d987f3fe2748f48300d9bf9a285afe8f98619d77677329fbbcd12f6e69a91e",
+      "status": "draft",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "spatial_v3_scene_position_templates"
+      ]
+    },
+    {
+      "table": "record_sources",
+      "file": "datasets/record_sources.json",
+      "sha256": "3c9705734bb0666ab9443a0346fef3e8671d30426b7cd13242a7fe11b17470a1",
+      "status": "draft",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records"
+      ]
+    }
+  ],
+  "data_gaps": []
+}

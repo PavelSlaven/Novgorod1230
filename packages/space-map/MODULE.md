@@ -2,14 +2,14 @@
 
 ## Назначение
 
-G0-G5 graph contracts, position chains, scene anchors, layout metadata and structural validation. Код модуля работает только с переданными данными и не создаёт смысловые сущности мира.
+Target-only pure spatial contracts for canonical G0–G5, party G5/G6 and scene positions; typed topology, orientation and factual context. Код модуля работает only with supplied data and does not create world entities. До P28 это не меняет active v2 production composition.
 
 ## Владеет
 
-- graph scale and node/edge contracts
-- position chain
-- current position and scene anchors
-- graph structural validation
+- closed spatial refs, direct containment, G1 grid and class/facet validation
+- separated directed physical, visibility and acoustic topology indexes
+- integer-millidegree orientation transforms and factual context snapshots
+- explicit v2 migration/shadow adapter boundary
 
 ## Не делает
 
@@ -19,21 +19,17 @@ G0-G5 graph contracts, position chains, scene anchors, layout metadata and struc
 
 ## Public API
 
-- `GRAPH_LEVELS`
-- `normalizePosition`
-- `validatePositionChain`
-- `validateGraphNode`
-- `validateGraphEdge`
-- `buildGraphIndex`
-- `resolveAdjacentEdges`
+- Default `@rus/space-map`: `SPATIAL_REF_KINDS`, direct containment/G1-grid/classification validation, typed physical/perception topology indexes, orientation and factual-context helpers.
+- `@rus/space-map/spatial-v2-compat`: only an explicit `migration` or `shadow_fixture` adapter with reviewed mappings; it is never part of v3 composition.
+- `@rus/space-map/spatial-v3`: `createSpatialContextLoader`, `createSpatialTopologyRepository` (P08 target stubs)
 
 ## Контракты и инварианты
 
-Входы являются plain-object/array значениями. Функции нормализации не придумывают отсутствующие ID, имена, предметы, причины или последствия. Выходы, которые предназначены для handoff, замораживаются. Нарушения структуры возвращаются как `{ ok, errors }` либо выбрасываются только для неверно подключённого технического порта.
+Входы являются plain-object/array значениями. Default API не принимает dangling или cross-kind topology endpoints и не выводит physical relation из containment, координат, canvas или title. Функции не придумывают отсутствующие ID, имена, предметы, причины или последствия. Выходы, которые предназначены для handoff, замораживаются. Нарушения структуры возвращаются как `{ ok, errors }` либо выбрасываются только для неверно подключённого технического порта.
 
 ## Зависимости
 
-Разрешён только `@rus/kernel`. Запрещены импорты из `apps`, `legacy`, UI, БД, конкретного LLM provider и соседних workflow stages.
+Разрешены только `@rus/kernel` и `@rus/contracts`. Запрещены импорты из `apps`, `legacy`, UI, БД, конкретного LLM provider и соседних workflow stages.
 
 ## Ошибки
 
@@ -41,4 +37,4 @@ G0-G5 graph contracts, position chains, scene anchors, layout metadata and struc
 
 ## Совместимость и тесты
 
-Модуль сохраняет подтверждённые чистые формулы legacy там, где они существовали, но не импортирует legacy runtime. Unit/contract tests находятся в `test/domain.test.js`. Cutover выполняется отдельно после shadow run.
+Default entrypoint is v3-only. Legacy graph/position functions are available solely through the explicit fixture adapter with `mode: migration | shadow_fixture`; it is not imported by v3 composition. Unit/contract tests are in `test/domain.test.js` and `test/spatial-v3/p17-space-map.test.js`. Cutover remains separate after shadow run.

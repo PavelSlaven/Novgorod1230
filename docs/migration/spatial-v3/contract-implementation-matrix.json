@@ -1,0 +1,2074 @@
+{
+  "schema_version": "1.0.0",
+  "source_standard": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
+  "source_version": "4.2.0",
+  "activation_status": "target",
+  "contracts": [
+    {
+      "contract_name": "acoustic_edge",
+      "owner_package": "@rus/space-map",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "acoustic_edge_template",
+      "owner_package": "@rus/space-map",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "action_contract",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "action_step_static_snapshot",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "activity_contract",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "authoring_dependency_edge",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "boundary_crossing_contract",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "canonical_spatial_node",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "checkpoint_departure_template",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "combined_write_plan",
+      "owner_package": "@rus/party-store",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "completion_effect_contract",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "continuation_length_candidate",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "continuation_length_rule",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "dependency_pin",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "dependency_pin_set",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "dynamic_recheck_policy",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "endpoint_contract_snapshot",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "entity_placement",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "entity_ref",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "expansion_capacity_reservation",
+      "owner_package": "@rus/party-store",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "expansion_capacity_reservation_request",
+      "owner_package": "@rus/party-store",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "expansion_frontier",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "expansion_profile_template_limit",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "expansion_slot",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "expansion_slot_template",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "expansion_terminal_policy",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "expected_state_version",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "expected_state_version_set",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "factual_spatial_context_snapshot",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "frontier_topology_command_proposal",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "frontier_topology_resolution_result",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "g4_directional_exit",
+      "owner_package": "@rus/world-base",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "g4_expansion_profile",
+      "owner_package": "@rus/world-base",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "g4_traversal_profile",
+      "owner_package": "@rus/world-base",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "g5_generation_template",
+      "owner_package": "@rus/world-base",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "g5_site_connection",
+      "owner_package": "@rus/world-base",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "g5_successor_frontier_rule",
+      "owner_package": "@rus/world-base",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "g6_acoustic_profile",
+      "owner_package": "@rus/space-map",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "g6_template_slot",
+      "owner_package": "@rus/space-map",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "hazard_resolution",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "historical_applicability_frame",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "idempotency_record",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "interaction_capability",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "interruption_anchor_policy",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "journey_location",
+      "owner_package": "@rus/movement-routes",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "journey_location_snapshot",
+      "owner_package": "@rus/movement-routes",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "knowledge_fact_reference",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "knowledge_spatial_ref",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "materialization_choice",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "materialization_trace",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "mounted_relation",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "movement_blocking_reason",
+      "owner_package": "@rus/movement-routes",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "movement_capability_context",
+      "owner_package": "@rus/movement-routes",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "movement_cost_summary",
+      "owner_package": "@rus/movement-routes",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "movement_edge_blocker",
+      "owner_package": "@rus/movement-routes",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "movement_endpoint_ref",
+      "owner_package": "@rus/movement-routes",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "movement_method_cost_option",
+      "owner_package": "@rus/movement-routes",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "movement_method_cost_profile",
+      "owner_package": "@rus/movement-routes",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "movement_mode_transition_contract",
+      "owner_package": "@rus/movement-routes",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "movement_option",
+      "owner_package": "@rus/movement-routes",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "movement_orientation_profile",
+      "owner_package": "@rus/movement-routes",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "movement_orientation_profile_point",
+      "owner_package": "@rus/movement-routes",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "movement_risk_summary",
+      "owner_package": "@rus/movement-routes",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "movement_target_request",
+      "owner_package": "@rus/movement-routes",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "navigation_belief",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "navigation_resolution",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "orientation_reference_frame",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "party_action_step_run",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "party_actor_carrier_position",
+      "owner_package": "@rus/space-map",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "party_actor_posture",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "party_carrier_attachment",
+      "owner_package": "@rus/space-map",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "party_change_set",
+      "owner_package": "@rus/party-store",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "party_checkpoint_route_departure",
+      "owner_package": "@rus/movement-routes",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "party_cohort_membership",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "party_continuation_chain",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "party_g4_expansion_ledger",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "party_g5_site",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "party_g5_state_overlay",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "party_g6_instance",
+      "owner_package": "@rus/space-map",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "party_journey_location",
+      "owner_package": "@rus/movement-routes",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "party_recovery_transition_binding",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "party_route_anchor_identity",
+      "owner_package": "@rus/movement-routes",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "party_route_anchor_location_binding",
+      "owner_package": "@rus/movement-routes",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "party_route_plan",
+      "owner_package": "@rus/movement-routes",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "party_route_plan_execution",
+      "owner_package": "@rus/movement-routes",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "party_route_plan_execution_event",
+      "owner_package": "@rus/movement-routes",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "party_route_plan_step",
+      "owner_package": "@rus/movement-routes",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "party_scene_baseline",
+      "owner_package": "@rus/space-map",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "party_site_connection_endpoint_binding",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "party_stable_structure",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "party_timed_activity_attempt",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "party_timed_activity_execution",
+      "owner_package": "@rus/party-store",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "party_transit_anchor",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "party_travel_cohort",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "party_traversal_interval_result",
+      "owner_package": "@rus/movement-routes",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "party_world_route_endpoint_position_binding",
+      "owner_package": "@rus/movement-routes",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "path_query",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "physical_segment_ref",
+      "owner_package": "@rus/movement-routes",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "physical_segment_spatial_context_snapshot",
+      "owner_package": "@rus/movement-routes",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "portal_entity",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "portal_template",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "preparation_claim",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "preparation_command_proposal",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "preparation_member_proposal",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "preparation_snapshot",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "preparation_snapshot_member",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "random_source_descriptor",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "recovery_transition_template",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "relative_position",
+      "owner_package": "@rus/space-map",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "resolved_additive_delay",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "resolved_rational_factor",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "route_plan_step_proposal",
+      "owner_package": "@rus/movement-routes",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "route_plan_step_static_snapshot",
+      "owner_package": "@rus/movement-routes",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "route_point_context_snapshot",
+      "owner_package": "@rus/movement-routes",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "runtime_calendar_snapshot",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "scene_endpoint_slot",
+      "owner_package": "@rus/space-map",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "scene_frontier_binding",
+      "owner_package": "@rus/space-map",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "scene_host_ref",
+      "owner_package": "@rus/space-map",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "scene_materialization_candidate",
+      "owner_package": "@rus/space-map",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "scene_materialization_profile",
+      "owner_package": "@rus/space-map",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "scene_movement_edge",
+      "owner_package": "@rus/movement-routes",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "scene_movement_edge_template",
+      "owner_package": "@rus/movement-routes",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "scene_position_node",
+      "owner_package": "@rus/space-map",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "scene_position_template",
+      "owner_package": "@rus/space-map",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "scene_template",
+      "owner_package": "@rus/space-map",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "sound_event",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "spatial_admin_mapping_contract",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "spatial_facet_binding",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "spatial_materialization_input",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "spatial_materialization_result",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "spatial_ref",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "spatial_relative_orientation",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "spatial_transition_contract",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "spatial_validation_finding",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "spatial_validation_report",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "stable_environment_context_snapshot",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "stable_structure_template",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "start_position_binding",
+      "owner_package": "@rus/space-map",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "synchronized_time_slice_result",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "timed_activity_static_snapshot",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "timed_traversal_static_snapshot",
+      "owner_package": "@rus/movement-routes",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "transition_environment_profile",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "traveller_travel_state",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "traversal_dynamic_snapshot",
+      "owner_package": "@rus/movement-routes",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "version_pin",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "versioned_physical_segment_ref",
+      "owner_package": "@rus/movement-routes",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "versioned_ref",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "visibility_link",
+      "owner_package": "@rus/space-map",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "visibility_link_template",
+      "owner_package": "@rus/space-map",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "visibility_modifier",
+      "owner_package": "@rus/space-map",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "visual_edge_path",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "visual_layout",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "visual_layout_node",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "visual_path_point",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "world_perception_signal",
+      "owner_package": "@rus/world-base",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "world_route",
+      "owner_package": "@rus/world-base",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "world_route_endpoint_binding",
+      "owner_package": "@rus/world-base",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "world_route_point",
+      "owner_package": "@rus/world-base",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "world_route_segment",
+      "owner_package": "@rus/world-base",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "world_route_segment_spatial_context",
+      "owner_package": "@rus/world-base",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    }
+  ],
+  "errors": [
+    {
+      "error_code": "activity_retry_lineage_invalid",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "attachment_graph_invalid",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "authoring_dependency_pin_missing",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "boundary_crossing_contract_gap",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "classification_gap",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "cohort_membership_conflict",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "continuation_capacity_violation",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "continuation_terminal_ordinal_invalid",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "controlled_vocabulary_gap",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "dual_execution_owner",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "dual_location_owner",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "duplicate_departure_source",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "expansion_capacity_temporarily_reserved",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "expansion_reservation_conflict",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "generated_schema_mismatch",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "hidden_information_leak",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "idempotency_conflict",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "journey_handoff_snapshot_invalid",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "journey_location_ownership_mismatch",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "knowledge_fact_reference_invalid",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "knowledge_target_resolution_gap",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "lock_order_violation",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "migration_mapping_gap",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "migration_version_gap",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "mode_transition_contract_missing",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "movement_anchor_unresolved",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "movement_capability_missing",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "movement_endpoint_kind_invalid",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "movement_method_cost_missing",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "normative_contract_conflict",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "orientation_frame_cycle",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "orientation_profile_invalid",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "portal_state_contract_gap",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "preparation_claim_conflict",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "relation_capacity_undefined",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "route_chain_discontinuous",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "route_contract_missing",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "route_cycle_or_branch",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "route_endpoint_invalid",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "route_plan_digest_mismatch",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "route_plan_execution_conflict",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "route_plan_snapshot_missing",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "route_plan_version_pin_missing",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "route_segment_context_gap",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "scene_endpoint_slot_ambiguous",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "scene_endpoint_slot_missing",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "spatial_candidate_gap",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "state_version_conflict",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "stranded_rescue_contract_missing",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "target_preparation_failed",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "terminal_endpoint_preparation_gap",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "terminal_target_gap",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "time_accumulator_invalid",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "time_delay_occurrence_invalid",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "time_factor_invalid",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "travel_interruption_unresolved",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "travel_interval_conflict",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "visual_layout_gap",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    }
+  ]
+}

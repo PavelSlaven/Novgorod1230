@@ -1,0 +1,463 @@
+{
+  "records": [
+    {
+      "scene_template_id": "stfv3__g5_boundary_access_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "arrival",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_boundary_access_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "focus",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_boundary_access_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "departure",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_burial_ritual_buffer_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "arrival",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_burial_ritual_buffer_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "focus",
+      "g6_slot_key": "main",
+      "role": "work"
+    },
+    {
+      "scene_template_id": "stfv3__g5_burial_ritual_buffer_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "departure",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_dry_route_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "arrival",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_dry_route_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "focus",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_dry_route_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "departure",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_exploration_concealment_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "arrival",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_exploration_concealment_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "focus",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_exploration_concealment_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "departure",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_general_hazard_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "arrival",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_general_hazard_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "focus",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_general_hazard_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "departure",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_habitation_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "arrival",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_habitation_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "focus",
+      "g6_slot_key": "main",
+      "role": "work"
+    },
+    {
+      "scene_template_id": "stfv3__g5_habitation_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "departure",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_landing_transition_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "arrival",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_landing_transition_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "focus",
+      "g6_slot_key": "main",
+      "role": "work"
+    },
+    {
+      "scene_template_id": "stfv3__g5_landing_transition_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "departure",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_observation_orientation_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "arrival",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_observation_orientation_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "focus",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_observation_orientation_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "departure",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_resource_hazard_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "arrival",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_resource_hazard_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "focus",
+      "g6_slot_key": "main",
+      "role": "work"
+    },
+    {
+      "scene_template_id": "stfv3__g5_resource_hazard_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "departure",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_resource_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "arrival",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_resource_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "focus",
+      "g6_slot_key": "main",
+      "role": "work"
+    },
+    {
+      "scene_template_id": "stfv3__g5_resource_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "departure",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_route_approach_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "arrival",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_route_approach_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "focus",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_route_approach_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "departure",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_seasonal_route_hazard_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "arrival",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_seasonal_route_hazard_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "focus",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_seasonal_route_hazard_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "departure",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_shelter_rest_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "arrival",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_shelter_rest_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "focus",
+      "g6_slot_key": "main",
+      "role": "work"
+    },
+    {
+      "scene_template_id": "stfv3__g5_shelter_rest_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "departure",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_water_hazard_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "arrival",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_water_hazard_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "focus",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_water_hazard_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "departure",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_water_navigation_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "arrival",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_water_navigation_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "focus",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_water_navigation_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "departure",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_wetland_flood_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "arrival",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_wetland_flood_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "focus",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_wetland_flood_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "departure",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_work_storage_social_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "arrival",
+      "g6_slot_key": "main",
+      "role": "passage"
+    },
+    {
+      "scene_template_id": "stfv3__g5_work_storage_social_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "focus",
+      "g6_slot_key": "main",
+      "role": "work"
+    },
+    {
+      "scene_template_id": "stfv3__g5_work_storage_social_v1",
+      "scene_template_version": 1,
+      "instance_count": 1,
+      "capacity": 1,
+      "slot_key": "departure",
+      "g6_slot_key": "main",
+      "role": "passage"
+    }
+  ]
+}

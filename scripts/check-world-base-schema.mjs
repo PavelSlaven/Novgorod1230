@@ -3,7 +3,7 @@ import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 // Updated only after the executable DDL and generated schema reference agree.
-const EXPECTED_TABLE_COUNT = 121;
+const EXPECTED_TABLE_COUNT = 186;
 const ENTRYPOINT = 'infra/world-base/schema.sql';
 
 export async function inspectWorldBaseSchema({ root = '.' } = {}) {
@@ -25,7 +25,7 @@ export async function inspectWorldBaseSchema({ root = '.' } = {}) {
   }
 
   const ddl = [entryText, ...texts].join('\n');
-  const tableNames = [...ddl.matchAll(/CREATE\s+TABLE\s+world_base\.([a-z_][a-z0-9_]*)/giu)].map((match) => match[1]);
+  const tableNames = [...ddl.matchAll(/CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?world_base\.([a-z_][a-z0-9_]*)/giu)].map((match) => match[1]);
   const seen = new Set();
   const duplicates = new Set();
   for (const name of tableNames) {

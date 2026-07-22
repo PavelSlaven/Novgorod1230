@@ -1,0 +1,22 @@
+{
+  "schema_version": "rus.p12_editorial_source_approval.v1",
+  "decision": "APPROVED_FOR_P12_INTEGRATION",
+  "target_g1_id": "gn_nov_g1_xp017_yp026",
+  "world_revision_id": "novgorod_spatial_v3_p12_source_approval_001",
+  "approved_inputs": [
+    "195 canonical G5 source records",
+    "358 physical exit source pairs",
+    "600 typed edge mapping bindings",
+    "17 scene families and 195 exact scene profiles/candidates"
+  ],
+  "not_approved": [
+    "production activation",
+    "unconfirmed external northern boundary",
+    "unsigned P27 report",
+    "unexecuted fresh checkout",
+    "branch-specific import without tests"
+  ],
+  "audit_result": "PASS",
+  "unresolved_package_findings": 0,
+  "production_activation_allowed": false
+}

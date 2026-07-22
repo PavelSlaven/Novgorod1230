@@ -1,0 +1,30 @@
+{
+  "schema_version": "rus.p12_repository_subject_commit_binding.v1_1",
+  "status": "BOUND_FOR_REPOSITORY_APPLY",
+  "repository": "PavelSlaven/Novgorod1230",
+  "pr_number": 14,
+  "branch_name": "codex/spatial-architecture-g0-g6-v4-2",
+  "subject_commit": "e6be7c06cbd6c37c375658af6f2fe529d4f64353",
+  "base_main_sha": "9f2a8c1477793e3baac376d558a64b1b2272cc4a",
+  "approval_package_id": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1",
+  "approval_package_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+  "approval_manifest_sha256": "17a49c54b92015110770b35ca60bc325866f791633817ad729b04af9de39f37e",
+  "source_approval_zip_sha256": "e3342beac492ff6433a03ecbf7c32dbffdc9dafce8e7ebd623af826b33d7bbbe",
+  "target_contract_spec_zip_sha256": "1833b383e5ee2568330ab88ae40c7d5b9d057dbde81aa4f43641c48ecd3eb6f3",
+  "allowed_evidence_paths": [],
+  "required_subject_tree_paths": [
+    { "path": "data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_content_revision_003_production_candidate.zip", "sha256": "eafa5ee1e583c74ba3e06161340d85963c43da5ed563da1b4f47280a880ca7bc" },
+    { "path": "data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip", "sha256": "6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b" },
+    { "path": "data/world-catalogs/novgorod/spatial-v3/target-contract-spec/P12_TARGET_CONTRACT_COMPILATION_SPEC_V1.zip", "sha256": "1833b383e5ee2568330ab88ae40c7d5b9d057dbde81aa4f43641c48ecd3eb6f3" },
+    { "path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip", "sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698" },
+    { "path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/index.v1_1.json", "sha256": "42a5ebf76843e8efea0209e5c738cbb3428514c583718a530362c868d9c105cb" },
+    { "path": "tools/spatial-v3/p12-canonical-manifest.mjs", "sha256": "9dbbce248cf18a09c68425ea2dbc546e4a4f1d51a8342816481f8e569309dbee" },
+    { "path": "tools/spatial-v3/p12-target-materialization-approval-v1_1.mjs", "sha256": "3456481e58c1f883f79fdb84012796bd0986fa7158ed11dfa0702c0a7f2d97f4" },
+    { "path": "test/spatial-v3/p12-target-materialization-approval-v1_1.test.js", "sha256": "b08b94a2b2eb50db2c8879500624f8ed129dc50c0e29f373cf91302a4b410c96" }
+  ],
+  "approved_dependency_closure": {
+    "status": "PENDING",
+    "evidence_commit": null,
+    "evidence_id": null
+  }
+}

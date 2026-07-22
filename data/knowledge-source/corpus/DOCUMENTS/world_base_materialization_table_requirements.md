@@ -4,6 +4,12 @@
 **Версия:** 1.0.0
 **Область:** назначение, наполнение, связи и порядок готовности данных `world_base` и party materialization
 
+## P02 target routing (inactive until P28)
+
+This document remains the active materialization v2 table-purpose owner. The complete spatial v3 target table-purpose semantics are owned by `spatial_v3_target_world_base_materialization_table_requirements.md` together with `spatial_architecture_standard_g0_g6.md`; logical target requirements do not change the active physical production schema before the atomic gate.
+
+The approved P12 authoring projection is rooted at `data/world-catalogs/novgorod/spatial-v3/manifest.json`: it has 37 SHA-256-pinned datasets and `data_gaps: []`, compiling only previously approved source records. This approved authoring state does not authorize production import, runtime use, write, or activation. Materialization v2 remains the sole production owner until P28.
+
 ## 0. Роль документа
 
 Документ не является DDL и не перечисляет полный набор колонок.

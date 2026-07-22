@@ -10,6 +10,16 @@
       "document_count": 19,
       "inventory_sha256": "2023840f5566ccb45c8aaab66d79befd2639181588a2691ffc4d52f005601e74",
       "status": "verified"
+    },
+    {
+      "migration_id": "knowledge-source-0.23.0-7213a340d842",
+      "imported_at": "2026-07-12T00:00:00.000Z",
+      "source_release": "0.22.0-migration.22",
+      "source_root": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS",
+      "target_root": "data/knowledge-source/corpus/DOCUMENTS",
+      "document_count": 19,
+      "inventory_sha256": "7213a340d842c69be926d8ea90c31364461cf59030b1e6d3b0c9380192d1e5fc",
+      "status": "verified"
     }
   ]
 }

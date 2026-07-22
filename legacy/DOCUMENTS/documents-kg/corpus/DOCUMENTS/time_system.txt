@@ -1,3 +1,62 @@
+# Время и точные временные срезы
+
+## Статус и граница миграции
+
+Это target-норматив materialization v3. До P28 active production использует materialization v2; target-текст не разрешает partial activation, dual write или fallback. После активации authoritative game clock имеет exact rational sub-minute precision.
+
+## 1. Единственная арифметика времени
+
+`game_timestamp` хранит reduced positive rational sub-minute component. Whole minute — производная граница событий, а не authoritative clock. Каждая time-bearing операция фиксирует exact elapsed rational, world time before/after и clock commit mode.
+
+```text
+world_time_after = world_time_before + actual_exact_elapsed
+crossed_whole_minute_boundaries = whole_minute_index(after) - whole_minute_index(before)
+```
+
+Сложение ассоциативно: разбиение действия на произвольные technical slices даёт тот же final timestamp и total crossed boundaries. Запрещены terminal ceil, minimum minute per step, private rounding carry и authoritative округление.
+
+## 2. Владение часами
+
+`direct_party_clock` обновляет party clock ровно один раз в committed time-bearing result. `shared_root_transport_clock` сохраняет local exact elapsed, но имеет `crossed_whole_minute_boundaries=0`; clock обновляет только root transport interval. Idempotent retry не может продвинуть часы повторно.
+
+Time-bearing result передаёт time system exact elapsed, crossed boundaries, action/segment digest, intensity, factual context и change-set refs. Body, NPC, weather, places, events и timers обновляются ровно один раз на этом boundary; они не пересчитывают terrain или duration.
+
+## 3. Dynamic duration
+
+Authoritative duration для traversal определена только в `formulas.md`; этот документ не дублирует формулу. Все factors/delays положительны, versioned и pinned. Dynamic snapshot захватывается на interval start: timestamp, weather/light/environment, portal/access, carrier/body/load/pace, resolved factors/delays и digest. Будущие conditions не замораживаются route plan.
+
+Каждая additive delay имеет `application_scope` и stable `occurrence_key`. Одна occurrence commit-ится максимум раз; `segment_once` и `step_once` не повторяются в slice, `interval_once` создаётся точным interval recheck. Missing/duplicate identity — `time_delay_occurrence_invalid` hard rejection.
+
+## 4. Activity и traversal
+
+`immediate_action` не двигает time. `timed_activity` и `timed_traversal` хранят exact cumulative/remaining values и append-only attempts/results. Positive sub-minute elapsed двигает exact time даже если crossed whole-minute boundaries равно 0. `blocked_before_progress` имеет zero traversal elapsed; explicit pause/interruption/strand может иметь zero или positive exact elapsed только по committed control outcome.
+
+## 5. Синхронизированный carrier-local slice
+
+При active root transport traversal orchestrator создаёт один atomic slice:
+
+```text
+one root interval + zero-or-more carrier-local timed results
+→ one shared exact clock update → one change set
+```
+
+Root transport — clock owner. Slice заканчивается на earliest root recheck/segment boundary, local completion или explicit synchronized boundary. Все local participants получают то же exact elapsed, capped своим remaining duration. При zero root elapsed local normal result не создаётся; local zero-time допустим только для explicit blocked/paused/failed control outcome. Local outcome не меняет root progress без explicit pinned carrier effect. Independent asynchronous clock advancement запрещено.
+
+## 6. Таймеры и последствия
+
+Exact-timestamp timer сравнивается с exact timestamp; minute-indexed event запускается только на crossed boundary. Every committed time change имеет append-only change set, idempotency record и causal trace. Нет скрытого продвижения часов при смене G-level, endpoint binding, topology resolution, preparation или UI operation.
+
+## 7. Traceability
+
+Target источник: `spatial_architecture_standard_g0_g6.md` §11.2–§11.10. До P28 v2 остаётся active runtime boundary; этот документ — target contract, не заявление о готовой persistence/runtime реализации.
+
+
+---
+
+## Приложение A. Архивный v2-источник для migration traceability
+
+Нижеследующий текст сохранён только как historical/migration source для ссылочной совместимости и аудита. Он **не является target-правилом**, не активирует v2 semantics в target v3 и не разрешает mixed execution, dual write либо fallback. При конфликте применяется основной target-раздел этого документа и target standard; active production boundary до P28 определён отдельно.
+
 ## Время в игре
 
 Время показывает, когда происходит сцена и сколько прошло после действий игрока.
@@ -181,6 +240,3 @@ NPC завершает текущее дело и переходит к след
 `время = длительность действия + изменения мира + последствия`
 
 Время не должно двигаться случайно. Оно проходит только из-за действия, ожидания, сна, дороги, работы, лечения, разговора, боя или другого понятного события.
-
-
-

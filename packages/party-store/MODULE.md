@@ -22,13 +22,15 @@
 
 `createPartyStore` и экспорт `./stage-25`.
 
+`@rus/party-store/spatial-v3` contains only P08 fail-closed target ports: `createSpatialV3Repository` and `createCombinedWritePlanCommitter`. They neither invoke the v2 store nor write data.
+
 ## Контракты
 
 Получает только утверждённый `party_runtime_v2` write plan и injected transaction function. Party v1 не поддерживается для новых партий.
 
 ## Допустимые зависимости
 
-`@rus/kernel`.
+`@rus/kernel` и `@rus/contracts`.
 
 ## Запрещённые зависимости
 

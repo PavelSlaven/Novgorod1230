@@ -1,10 +1,17 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const root = resolve(import.meta.dirname, '../../..');
 const cli = resolve(root, 'packages/knowledge-source/src/cli.js');
+const retrievalPolicy = JSON.parse(readFileSync(resolve(root, 'data/knowledge-source/retrieval-policy.json'), 'utf8'));
+const corpusManifest = JSON.parse(readFileSync(resolve(root, 'data/knowledge-source/corpus-manifest.json'), 'utf8'));
+const activeDocumentIds = new Set(corpusManifest.documents.filter((document) => document.status === 'active').map((document) => document.document_id));
+const baselineGapCount = retrievalPolicy.documents
+  .filter((document) => activeDocumentIds.has(document.document_id) && document.semantic_coverage_disposition === 'baseline_gap')
+  .length;
 
 function runCli(args) {
   return spawnSync(process.execPath, [cli, ...args], {
@@ -22,7 +29,7 @@ test('status returns machine-readable RAG readiness', () => {
   const result = parseJson(runCli(['status', '--root', root]));
   assert.equal(result.schema_version, 'rus.knowledge_rag_readiness.v1');
   assert.equal(result.status, 'degraded');
-  assert.equal(result.semantic_coverage_gap_document_ids.length, 24);
+  assert.equal(result.semantic_coverage_gap_document_ids.length, baselineGapCount);
 });
 
 test('query returns ranked chunks with provenance', () => {

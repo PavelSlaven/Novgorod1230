@@ -1,5 +1,43 @@
 # Интерфейс и UX
 
+## Статус и граница миграции
+
+Этот документ задаёт **target materialization v3** для player projection. До P28 active production остаётся materialization v2; target UI contract не включает runtime activation, dual write или v3→v2 fallback. UI читает player-safe projection и никогда не является источником factual topology, readiness или layout-derived semantics.
+
+## 1. Player-safe movement and knowledge projection
+
+Игрок получает intent-oriented movement options, а не скрытые IDs, все factual routes или candidate diagnostics. Каждая видимая опция сообщает только допустимую player-safe цель/направление, наблюдаемые условия, безопасно объяснённую readiness и последствия, которые персонаж может воспринять или знать.
+
+```text
+mechanical_readiness = ready | requires_frontier_resolution
+                     | requires_preparation | temporarily_blocked | data_gap
+knowledge_visibility = visible | hidden | misidentified
+```
+
+`ready` может показывать выполнимое намерение, но не обязан раскрывать endpoint chain. `requires_frontier_resolution` и `requires_preparation` показываются как нейтральное ожидание/подготовка без hidden topology, capacities, candidate IDs, internal validators или причины, недоступной персонажу. `temporarily_blocked` показывает наблюдаемое препятствие только в разрешённом knowledge scope. `data_gap` не раскрывает техническую диагностику: игрок видит безопасный отказ или необходимость вернуться к другому действию; полный typed error остаётся в development diagnostics.
+
+`hidden` route, frontier, NPC motive, item slot, exact cost, internal route binding и candidate-set contents не попадают в игровой экран. `misidentified` отображается лишь как belief/слух/неуверенная ориентировка, не как factual correction. Свободный ввод игрока остаётся намерением и не подтверждает существование маршрута или объекта.
+
+## 2. Route, scene and map behavior
+
+Scene view отображает visible G6 и доступные `scene_position` relations только через perception/knowledge projection. Route map отображает известные или наблюдаемые связи, never factual topology by default. Линии, координаты, слои, zoom и визуальная близость — presentation only: они не создают containment, movement edge, distance, route cost или readiness.
+
+Карта может явно показывать неизвестность, неполноту и ошибочное знание, но не может автоматически дорисовывать hidden branch. Отсутствие `visual_map_ready` не блокирует movement/simulation; отсутствие `semantic_ready` не маскируется layout или prose. UI не выводит G7/G8 и не превращает visual anchor в новый G-level.
+
+## 3. Interruption, stranded state and diagnostics boundary
+
+При interruption UI показывает только player-safe состояние: текущую наблюдаемую сцену/anchor, доступные безопасные действия, последствия для персонажа и то, что дальнейшее движение требует нового решения. `stranded` не получает invented nearest endpoint, скрытый teleport или ложную карту; интерфейс сообщает ограничение без раскрытия recovery topology.
+
+Development diagnostics отделены от игрового UI: они могут содержать typed errors, traces, candidate diagnostics и raw payloads только в явном developer context. Ни журнал, ни prose, ни browser payload player-facing слоя не должны их включать. Target traceability: `spatial_architecture_standard_g0_g6.md` §§1.5, 7, 9, 14 и Appendix A §§A.7–A.8.
+
+---
+
+## Приложение A. Архивный v2-источник для migration traceability
+
+Нижеследующий текст сохранён только как historical/migration source. Он не активирует v2 semantics в target v3 и не разрешает mixed execution, dual write или fallback. До P28 active production boundary определён отдельно.
+
+# Интерфейс и UX
+
 Интерфейс игры обслуживает историческую текстовую RPG-симуляцию XIII века. Игра охватывает период **1230–1250** и строится вокруг свободного ввода игрока, устойчивого состояния мира, исторического давления, памяти персонажа, видимого знания и постепенной материализации окружающей среды.
 
 Интерфейс не является энциклопедией мира, редактором состояния или панелью администратора. Он показывает игроку то, что важно для действия здесь и сейчас: прозу сцены, положение персонажа, телесное состояние, доступные по восприятию сведения, ввод действия, сохранение, журнал памяти, инвентарь при персонаже, карту знаний и отдельную диагностику генерации для разработки.

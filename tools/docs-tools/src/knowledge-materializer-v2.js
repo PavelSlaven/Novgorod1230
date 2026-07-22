@@ -20,8 +20,8 @@ export async function buildKnowledgeSourceOutputsV2({ root = '.' } = {}) {
   const compatibleGraphSnapshot = filterGraphSnapshotBySemanticFiles(graphSnapshot, semanticFiles);
   const activeManifest = { ...manifest, documents: activeDocuments };
   const graphErrors = [
-    ...validateGraphSnapshotSources(graphSnapshot, activeCorpusFiles, snapshotSemanticFiles),
-    ...validateStructuralGraphBoundary(graphSnapshot, activeManifest, snapshotSemanticFiles)
+    ...validateGraphSnapshotSources(graphSnapshot, activeCorpusFiles, semanticFiles, snapshotSemanticFiles),
+    ...validateStructuralGraphBoundary(compatibleGraphSnapshot, activeManifest, semanticFiles)
   ];
   if (graphErrors.length) throw new Error(`Knowledge graph snapshot is incompatible with corpus:\n${graphErrors.join('\n')}`);
   const graph = addStructuralDocumentNodes(compatibleGraphSnapshot, activeManifest, activeCorpusFiles, semanticFiles);
@@ -162,12 +162,14 @@ export function filterGraphSnapshotBySemanticFiles(graph, semanticFiles) {
   const sourceFile = (entity) => basename(String(entity?.source_location?.file ?? entity?.source_file ?? ''));
   const nodes = (graph?.nodes ?? []).filter((node) => semanticFiles.has(sourceFile(node)));
   const nodeIds = new Set(nodes.map((node) => node.id));
-  const links = (graph?.links ?? []).filter((link) => semanticFiles.has(sourceFile(link)) && nodeIds.has(link.source) && nodeIds.has(link.target));
-  const hyperedges = (graph?.hyperedges ?? []).filter((edge) => semanticFiles.has(sourceFile(edge)) && (edge.nodes ?? []).every((id) => nodeIds.has(id)));
+  const isReservedStructuralId = (value) => typeof value === 'string' && value.startsWith('canonical-document:');
+  const hasCompatibleEndpoint = (value) => nodeIds.has(value) || isReservedStructuralId(value);
+  const links = (graph?.links ?? []).filter((link) => semanticFiles.has(sourceFile(link)) && hasCompatibleEndpoint(link.source) && hasCompatibleEndpoint(link.target));
+  const hyperedges = (graph?.hyperedges ?? []).filter((edge) => semanticFiles.has(sourceFile(edge)) && (edge.nodes ?? []).every(hasCompatibleEndpoint));
   return { ...graph, nodes, links, hyperedges };
 }
 
-export function validateGraphSnapshotSources(graph, corpusFiles, approvedSemanticFiles = null) {
+export function validateGraphSnapshotSources(graph, corpusFiles, approvedSemanticFiles = null, snapshotSemanticFiles = null) {
   const errors = [];
   const referencedFiles = new Set();
   const collections = [
@@ -177,10 +179,10 @@ export function validateGraphSnapshotSources(graph, corpusFiles, approvedSemanti
   ];
   for (const [kind, entities] of collections) {
     for (const entity of entities) {
-      const file = validateGraphEntitySource(entity, kind, corpusFiles, approvedSemanticFiles, errors);
+      const file = validateGraphEntitySource(entity, kind, corpusFiles, approvedSemanticFiles, snapshotSemanticFiles, errors);
       if (file) referencedFiles.add(file);
       if (kind === 'hyperedge') {
-        for (const memberFile of validateHyperedgeMemberSources(entity, corpusFiles, approvedSemanticFiles, errors)) referencedFiles.add(memberFile);
+        for (const memberFile of validateHyperedgeMemberSources(entity, corpusFiles, approvedSemanticFiles, snapshotSemanticFiles, errors)) referencedFiles.add(memberFile);
       }
     }
   }
@@ -192,7 +194,7 @@ export function validateGraphSnapshotSources(graph, corpusFiles, approvedSemanti
   return Object.freeze(errors);
 }
 
-function validateGraphEntitySource(entity, kind, corpusFiles, approvedSemanticFiles, errors) {
+function validateGraphEntitySource(entity, kind, corpusFiles, approvedSemanticFiles, snapshotSemanticFiles, errors) {
   const label = graphEntityLabel(entity, kind);
   const location = entity?.source_location ?? entity?.sourceLocation;
   if (!location) {
@@ -227,6 +229,7 @@ function validateGraphEntitySource(entity, kind, corpusFiles, approvedSemanticFi
     return null;
   }
   if (approvedSemanticFiles && !approvedSemanticFiles.has(file)) {
+    if (snapshotSemanticFiles?.has(file)) return file;
     errors.push(`${label} references ${file}, which is not approved for semantic graph coverage`);
     return file;
   }
@@ -240,7 +243,7 @@ function validateGraphEntitySource(entity, kind, corpusFiles, approvedSemanticFi
   return file;
 }
 
-function validateHyperedgeMemberSources(hyperedge, corpusFiles, approvedSemanticFiles, errors) {
+function validateHyperedgeMemberSources(hyperedge, corpusFiles, approvedSemanticFiles, snapshotSemanticFiles, errors) {
   const files = [];
   const members = hyperedge?.member_source_files;
   if (members === undefined) return files;
@@ -259,6 +262,7 @@ function validateHyperedgeMemberSources(hyperedge, corpusFiles, approvedSemantic
       continue;
     }
     if (approvedSemanticFiles && !approvedSemanticFiles.has(file)) {
+      if (snapshotSemanticFiles?.has(file)) continue;
       errors.push(`${graphEntityLabel(hyperedge, 'hyperedge')} member source ${file} is not approved for semantic graph coverage`);
       continue;
     }

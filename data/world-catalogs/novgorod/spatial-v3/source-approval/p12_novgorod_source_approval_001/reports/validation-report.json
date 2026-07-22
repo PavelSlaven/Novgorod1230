@@ -1,0 +1,18 @@
+{
+  "schema_version": "rus.p12_bundle_validation.v1",
+  "result": "PASS",
+  "errors": [],
+  "notes": [],
+  "actual_counts": {
+    "target_g4_host_sectors": 32,
+    "canonical_g5": 195,
+    "legacy_edge_mapping_bindings": 600,
+    "physical_exit_source_pairs": 358,
+    "derived_directional_traversals": 716,
+    "scene_profile_families": 17,
+    "scene_template_families": 17,
+    "scene_materialization_profiles": 195,
+    "scene_materialization_candidates": 195,
+    "scene_assignments": 195
+  }
+}

@@ -1,0 +1,764 @@
+{
+  "schema_version": "rus.target_g4_host_sector_catalog.v1",
+  "records": [
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+      "version": "1",
+      "parent_g3_id": "gn_nov_g3_xp017_yp026_r2_central_current_split",
+      "class_id": "spatial.g4.sector",
+      "shape_id": "linear",
+      "title": "Сектор: Срединное разделение течений",
+      "name_status": "functional_descriptive",
+      "migration_action": "create_host_sector_by_reclassification_group",
+      "migration_basis": "One target G4 sector groups all legacy local G4 records under the same retained G3; it adds no new place or historical claim.",
+      "source_place_type": "channel_split",
+      "evidence_status": "comparative_reconstruction",
+      "source_ids": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "claim_ids": [
+        "CLM_G1R2_DVINA_CORRIDOR",
+        "CLM_G1R2_NAVIGATION_KNOWLEDGE"
+      ],
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+      "version": "1",
+      "parent_g3_id": "gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+      "class_id": "spatial.g4.sector",
+      "shape_id": "linear",
+      "title": "Сектор: Средний судоходный плёс",
+      "name_status": "functional_descriptive",
+      "migration_action": "create_host_sector_by_reclassification_group",
+      "migration_basis": "One target G4 sector groups all legacy local G4 records under the same retained G3; it adds no new place or historical claim.",
+      "source_place_type": "river_reach",
+      "evidence_status": "comparative_reconstruction",
+      "source_ids": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "claim_ids": [
+        "CLM_G1R2_DVINA_CORRIDOR",
+        "CLM_G1R2_NAVIGATION_KNOWLEDGE"
+      ],
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+      "version": "1",
+      "parent_g3_id": "gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+      "class_id": "spatial.g4.sector",
+      "shape_id": "areal",
+      "title": "Сектор: Островок у разделения русел",
+      "name_status": "functional_descriptive",
+      "migration_action": "create_host_sector_by_reclassification_group",
+      "migration_basis": "One target G4 sector groups all legacy local G4 records under the same retained G3; it adds no new place or historical claim.",
+      "source_place_type": "island_head",
+      "evidence_status": "comparative_reconstruction",
+      "source_ids": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS"
+      ],
+      "claim_ids": [
+        "CLM_G1R2_MULTICHANNEL"
+      ],
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+      "version": "1",
+      "parent_g3_id": "gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+      "class_id": "spatial.g4.sector",
+      "shape_id": "areal",
+      "title": "Сектор: Наносная гряда с плавником",
+      "name_status": "functional_descriptive",
+      "migration_action": "create_host_sector_by_reclassification_group",
+      "migration_basis": "One target G4 sector groups all legacy local G4 records under the same retained G3; it adds no new place or historical claim.",
+      "source_place_type": "driftwood_bar",
+      "evidence_status": "comparative_reconstruction",
+      "source_ids": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS"
+      ],
+      "claim_ids": [
+        "CLM_G1R2_MULTICHANNEL",
+        "CLM_G1R2_NAVIGATION_KNOWLEDGE"
+      ],
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+      "version": "1",
+      "parent_g3_id": "gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+      "class_id": "spatial.g4.sector",
+      "shape_id": "areal",
+      "title": "Сектор: Сухая островная грива",
+      "name_status": "functional_descriptive",
+      "migration_action": "create_host_sector_by_reclassification_group",
+      "migration_basis": "One target G4 sector groups all legacy local G4 records under the same retained G3; it adds no new place or historical claim.",
+      "source_place_type": "island_ridge",
+      "evidence_status": "comparative_reconstruction",
+      "source_ids": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS"
+      ],
+      "claim_ids": [
+        "CLM_G1R2_MULTICHANNEL",
+        "CLM_G1R2_FLOODPLAIN_RIDGES"
+      ],
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+      "version": "1",
+      "parent_g3_id": "gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+      "class_id": "spatial.g4.sector",
+      "shape_id": "areal",
+      "title": "Сектор: Сухая лесная гряда",
+      "name_status": "functional_descriptive",
+      "migration_action": "create_host_sector_by_reclassification_group",
+      "migration_basis": "One target G4 sector groups all legacy local G4 records under the same retained G3; it adds no new place or historical claim.",
+      "source_place_type": "pine_ridge",
+      "evidence_status": "comparative_reconstruction",
+      "source_ids": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+        "SRC_G1R2_GSHHS"
+      ],
+      "claim_ids": [
+        "CLM_G1R2_FOREST_HINTERLAND",
+        "CLM_G1R2_RESOURCE_USE"
+      ],
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+      "version": "1",
+      "parent_g3_id": "gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+      "class_id": "spatial.g4.sector",
+      "shape_id": "linear",
+      "title": "Сектор: Восточный паводковый обход",
+      "name_status": "functional_descriptive",
+      "migration_action": "create_host_sector_by_reclassification_group",
+      "migration_basis": "One target G4 sector groups all legacy local G4 records under the same retained G3; it adds no new place or historical claim.",
+      "source_place_type": "side_channel",
+      "evidence_status": "comparative_reconstruction",
+      "source_ids": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "claim_ids": [
+        "CLM_G1R2_MULTICHANNEL",
+        "CLM_G1R2_SHORELINE_LIMIT"
+      ],
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+      "version": "1",
+      "parent_g3_id": "gn_nov_g3_xp017_yp026_r2_east_side_channel",
+      "class_id": "spatial.g4.sector",
+      "shape_id": "linear",
+      "title": "Сектор: Восточная боковая протока",
+      "name_status": "functional_descriptive",
+      "migration_action": "create_host_sector_by_reclassification_group",
+      "migration_basis": "One target G4 sector groups all legacy local G4 records under the same retained G3; it adds no new place or historical claim.",
+      "source_place_type": "side_channel",
+      "evidence_status": "comparative_reconstruction",
+      "source_ids": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "claim_ids": [
+        "CLM_G1R2_MULTICHANNEL",
+        "CLM_G1R2_SHORELINE_LIMIT"
+      ],
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+      "version": "1",
+      "parent_g3_id": "gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+      "class_id": "spatial.g4.sector",
+      "shape_id": "areal",
+      "title": "Сектор: Внутренняя затапливаемая котловина",
+      "name_status": "functional_descriptive",
+      "migration_action": "create_host_sector_by_reclassification_group",
+      "migration_basis": "One target G4 sector groups all legacy local G4 records under the same retained G3; it adds no new place or historical claim.",
+      "source_place_type": "floodplain_basin",
+      "evidence_status": "comparative_reconstruction",
+      "source_ids": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS"
+      ],
+      "claim_ids": [
+        "CLM_G1R2_MULTICHANNEL",
+        "CLM_G1R2_FLOODPLAIN_RIDGES"
+      ],
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+      "version": "1",
+      "parent_g3_id": "gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+      "class_id": "spatial.g4.sector",
+      "shape_id": "linear",
+      "title": "Сектор: Проход по сухой пойменной гриве",
+      "name_status": "functional_descriptive",
+      "migration_action": "create_host_sector_by_reclassification_group",
+      "migration_basis": "One target G4 sector groups all legacy local G4 records under the same retained G3; it adds no new place or historical claim.",
+      "source_place_type": "dry_ridge_route",
+      "evidence_status": "comparative_reconstruction",
+      "source_ids": [
+        "SRC_G1R2_CHALOV_DVINA_2012"
+      ],
+      "claim_ids": [
+        "CLM_G1R2_FLOODPLAIN_RIDGES"
+      ],
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+      "version": "1",
+      "parent_g3_id": "gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+      "class_id": "spatial.g4.sector",
+      "shape_id": "linear",
+      "title": "Сектор: Лесной ручьевой ход",
+      "name_status": "functional_descriptive",
+      "migration_action": "create_host_sector_by_reclassification_group",
+      "migration_basis": "One target G4 sector groups all legacy local G4 records under the same retained G3; it adds no new place or historical claim.",
+      "source_place_type": "forest_stream",
+      "evidence_status": "comparative_reconstruction",
+      "source_ids": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS"
+      ],
+      "claim_ids": [
+        "CLM_G1R2_MULTICHANNEL",
+        "CLM_G1R2_FOREST_HINTERLAND"
+      ],
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+      "version": "1",
+      "parent_g3_id": "gn_nov_g3_xp017_yp026_r2_large_island_head",
+      "class_id": "spatial.g4.sector",
+      "shape_id": "areal",
+      "title": "Сектор: Голова крупного пойменного острова",
+      "name_status": "functional_descriptive",
+      "migration_action": "create_host_sector_by_reclassification_group",
+      "migration_basis": "One target G4 sector groups all legacy local G4 records under the same retained G3; it adds no new place or historical claim.",
+      "source_place_type": "island_head",
+      "evidence_status": "comparative_reconstruction",
+      "source_ids": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS"
+      ],
+      "claim_ids": [
+        "CLM_G1R2_MULTICHANNEL"
+      ],
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+      "version": "1",
+      "parent_g3_id": "gn_nov_g3_xp017_yp026_r2_mixing_reach",
+      "class_id": "spatial.g4.sector",
+      "shape_id": "linear",
+      "title": "Сектор: Плёс речного и морского смешения",
+      "name_status": "functional_descriptive",
+      "migration_action": "create_host_sector_by_reclassification_group",
+      "migration_basis": "One target G4 sector groups all legacy local G4 records under the same retained G3; it adds no new place or historical claim.",
+      "source_place_type": "estuary_mixing",
+      "evidence_status": "comparative_reconstruction",
+      "source_ids": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "claim_ids": [
+        "CLM_G1R2_DVINA_CORRIDOR",
+        "CLM_G1R2_NORTH_EXIT",
+        "CLM_G1R2_SEASONAL_WATER"
+      ],
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+      "version": "1",
+      "parent_g3_id": "gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+      "class_id": "spatial.g4.sector",
+      "shape_id": "linear",
+      "title": "Сектор: Открытый поворот устьевого хода",
+      "name_status": "functional_descriptive",
+      "migration_action": "create_host_sector_by_reclassification_group",
+      "migration_basis": "One target G4 sector groups all legacy local G4 records under the same retained G3; it adds no new place or historical claim.",
+      "source_place_type": "river_reach",
+      "evidence_status": "comparative_reconstruction",
+      "source_ids": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "claim_ids": [
+        "CLM_G1R2_DVINA_CORRIDOR",
+        "CLM_G1R2_NORTH_EXIT"
+      ],
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+      "version": "1",
+      "parent_g3_id": "gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+      "class_id": "spatial.g4.sector",
+      "shape_id": "linear",
+      "title": "Сектор: Северный выходной плёс",
+      "name_status": "functional_descriptive",
+      "migration_action": "create_host_sector_by_reclassification_group",
+      "migration_basis": "One target G4 sector groups all legacy local G4 records under the same retained G3; it adds no new place or historical claim.",
+      "source_place_type": "river_reach",
+      "evidence_status": "comparative_reconstruction",
+      "source_ids": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "claim_ids": [
+        "CLM_G1R2_DVINA_CORRIDOR",
+        "CLM_G1R2_NORTH_EXIT"
+      ],
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+      "version": "1",
+      "parent_g3_id": "gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+      "class_id": "spatial.g4.sector",
+      "shape_id": "linear",
+      "title": "Сектор: Староречный плёс",
+      "name_status": "functional_descriptive",
+      "migration_action": "create_host_sector_by_reclassification_group",
+      "migration_basis": "One target G4 sector groups all legacy local G4 records under the same retained G3; it adds no new place or historical claim.",
+      "source_place_type": "old_channel",
+      "evidence_status": "comparative_reconstruction",
+      "source_ids": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+        "SRC_G1R2_GSHHS"
+      ],
+      "claim_ids": [
+        "CLM_G1R2_MULTICHANNEL",
+        "CLM_G1R2_RESOURCE_USE"
+      ],
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+      "version": "1",
+      "parent_g3_id": "gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+      "class_id": "spatial.g4.sector",
+      "shape_id": "linear",
+      "title": "Сектор: Открытый внешний подход",
+      "name_status": "functional_descriptive",
+      "migration_action": "create_host_sector_by_reclassification_group",
+      "migration_basis": "One target G4 sector groups all legacy local G4 records under the same retained G3; it adds no new place or historical claim.",
+      "source_place_type": "outer_exposed",
+      "evidence_status": "comparative_reconstruction",
+      "source_ids": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "claim_ids": [
+        "CLM_G1R2_DVINA_CORRIDOR",
+        "CLM_G1R2_NORTH_EXIT",
+        "CLM_G1R2_SEASONAL_WATER"
+      ],
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+      "version": "1",
+      "parent_g3_id": "gn_nov_g3_xp017_yp026_r2_reed_backwater",
+      "class_id": "spatial.g4.sector",
+      "shape_id": "areal",
+      "title": "Сектор: Камышовый затон",
+      "name_status": "functional_descriptive",
+      "migration_action": "create_host_sector_by_reclassification_group",
+      "migration_basis": "One target G4 sector groups all legacy local G4 records under the same retained G3; it adds no new place or historical claim.",
+      "source_place_type": "reed_backwater",
+      "evidence_status": "comparative_reconstruction",
+      "source_ids": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+        "SRC_G1R2_GSHHS"
+      ],
+      "claim_ids": [
+        "CLM_G1R2_MULTICHANNEL",
+        "CLM_G1R2_RESOURCE_USE"
+      ],
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+      "version": "1",
+      "parent_g3_id": "gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+      "class_id": "spatial.g4.sector",
+      "shape_id": "linear",
+      "title": "Сектор: Защищённый внутренний плёс",
+      "name_status": "functional_descriptive",
+      "migration_action": "create_host_sector_by_reclassification_group",
+      "migration_basis": "One target G4 sector groups all legacy local G4 records under the same retained G3; it adds no new place or historical claim.",
+      "source_place_type": "river_reach",
+      "evidence_status": "comparative_reconstruction",
+      "source_ids": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "claim_ids": [
+        "CLM_G1R2_DVINA_CORRIDOR",
+        "CLM_G1R2_MULTICHANNEL"
+      ],
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+      "version": "1",
+      "parent_g3_id": "gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+      "class_id": "spatial.g4.sector",
+      "shape_id": "areal",
+      "title": "Сектор: Защищённая береговая терраса",
+      "name_status": "functional_descriptive",
+      "migration_action": "create_host_sector_by_reclassification_group",
+      "migration_basis": "One target G4 sector groups all legacy local G4 records under the same retained G3; it adds no new place or historical claim.",
+      "source_place_type": "landing_terrace",
+      "evidence_status": "comparative_reconstruction",
+      "source_ids": [
+        "SRC_G1R2_CHALOV_DVINA_2012"
+      ],
+      "claim_ids": [
+        "CLM_G1R2_FLOODPLAIN_RIDGES"
+      ],
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+      "version": "1",
+      "parent_g3_id": "gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+      "class_id": "spatial.g4.sector",
+      "shape_id": "areal",
+      "title": "Сектор: Поле меняющихся мелей",
+      "name_status": "functional_descriptive",
+      "migration_action": "create_host_sector_by_reclassification_group",
+      "migration_basis": "One target G4 sector groups all legacy local G4 records under the same retained G3; it adds no new place or historical claim.",
+      "source_place_type": "shoal_field",
+      "evidence_status": "comparative_reconstruction",
+      "source_ids": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS"
+      ],
+      "claim_ids": [
+        "CLM_G1R2_MULTICHANNEL",
+        "CLM_G1R2_NAVIGATION_KNOWLEDGE"
+      ],
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+      "version": "1",
+      "parent_g3_id": "gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+      "class_id": "spatial.g4.sector",
+      "shape_id": "linear",
+      "title": "Сектор: Южный входной плёс",
+      "name_status": "functional_descriptive",
+      "migration_action": "create_host_sector_by_reclassification_group",
+      "migration_basis": "One target G4 sector groups all legacy local G4 records under the same retained G3; it adds no new place or historical claim.",
+      "source_place_type": "river_reach",
+      "evidence_status": "comparative_reconstruction",
+      "source_ids": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "claim_ids": [
+        "CLM_G1R2_DVINA_CORRIDOR",
+        "CLM_G1R2_MULTICHANNEL"
+      ],
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+      "version": "1",
+      "parent_g3_id": "gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+      "class_id": "spatial.g4.sector",
+      "shape_id": "linear",
+      "title": "Сектор: Устье малого водотока",
+      "name_status": "functional_descriptive",
+      "migration_action": "create_host_sector_by_reclassification_group",
+      "migration_basis": "One target G4 sector groups all legacy local G4 records under the same retained G3; it adds no new place or historical claim.",
+      "source_place_type": "tributary_mouth",
+      "evidence_status": "comparative_reconstruction",
+      "source_ids": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS"
+      ],
+      "claim_ids": [
+        "CLM_G1R2_MULTICHANNEL",
+        "CLM_G1R2_FOREST_HINTERLAND"
+      ],
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+      "version": "1",
+      "parent_g3_id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+      "class_id": "spatial.g4.sector",
+      "shape_id": "areal",
+      "title": "Сектор: Вихтуй: зона локализации",
+      "name_status": "functional_descriptive",
+      "migration_action": "create_host_sector_by_reclassification_group",
+      "migration_basis": "One target G4 sector groups all legacy local G4 records under the same retained G3; it adds no new place or historical claim.",
+      "source_place_type": "vikhtuy_locality",
+      "evidence_status": "source_backed_with_localization_uncertainty",
+      "source_ids": [
+        "SRC_G1R2_ARKHANGELSK_HOARD_1992",
+        "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+        "SRC_G1R2_SCHAPOV_1976_CHARTER"
+      ],
+      "claim_ids": [
+        "CLM_G1R2_VIKHTUY",
+        "CLM_G1R2_VIKHTUY_LOCALIZATION",
+        "CLM_G1R2_1230_CONTINUITY"
+      ],
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+      "version": "1",
+      "parent_g3_id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+      "class_id": "spatial.g4.sector",
+      "shape_id": "areal",
+      "title": "Сектор: Ресурсная окраина Вихтуйской зоны",
+      "name_status": "functional_descriptive",
+      "migration_action": "create_host_sector_by_reclassification_group",
+      "migration_basis": "One target G4 sector groups all legacy local G4 records under the same retained G3; it adds no new place or historical claim.",
+      "source_place_type": "forest_tract",
+      "evidence_status": "comparative_reconstruction",
+      "source_ids": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+        "SRC_G1R2_GSHHS"
+      ],
+      "claim_ids": [
+        "CLM_G1R2_RESOURCE_USE",
+        "CLM_G1R2_FOREST_HINTERLAND"
+      ],
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+      "version": "1",
+      "parent_g3_id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+      "class_id": "spatial.g4.sector",
+      "shape_id": "areal",
+      "title": "Сектор: Речной подход к Вихтую",
+      "name_status": "functional_descriptive",
+      "migration_action": "create_host_sector_by_reclassification_group",
+      "migration_basis": "One target G4 sector groups all legacy local G4 records under the same retained G3; it adds no new place or historical claim.",
+      "source_place_type": "landing_terrace",
+      "evidence_status": "comparative_reconstruction",
+      "source_ids": [
+        "SRC_G1R2_ARKHANGELSK_HOARD_1992",
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+        "SRC_G1R2_MASK_REV002",
+        "SRC_G1R2_SCHAPOV_1976_CHARTER"
+      ],
+      "claim_ids": [
+        "CLM_G1R2_VIKHTUY_LOCALIZATION",
+        "CLM_G1R2_DVINA_CORRIDOR"
+      ],
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+      "version": "1",
+      "parent_g3_id": "gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+      "class_id": "spatial.g4.sector",
+      "shape_id": "areal",
+      "title": "Сектор: Западный скрытый затон",
+      "name_status": "functional_descriptive",
+      "migration_action": "create_host_sector_by_reclassification_group",
+      "migration_basis": "One target G4 sector groups all legacy local G4 records under the same retained G3; it adds no new place or historical claim.",
+      "source_place_type": "backwater",
+      "evidence_status": "comparative_reconstruction",
+      "source_ids": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "claim_ids": [
+        "CLM_G1R2_MULTICHANNEL",
+        "CLM_G1R2_SHORELINE_LIMIT"
+      ],
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+      "version": "1",
+      "parent_g3_id": "gn_nov_g3_xp017_yp026_r2_west_side_channel",
+      "class_id": "spatial.g4.sector",
+      "shape_id": "linear",
+      "title": "Сектор: Западная боковая протока",
+      "name_status": "functional_descriptive",
+      "migration_action": "create_host_sector_by_reclassification_group",
+      "migration_basis": "One target G4 sector groups all legacy local G4 records under the same retained G3; it adds no new place or historical claim.",
+      "source_place_type": "side_channel",
+      "evidence_status": "comparative_reconstruction",
+      "source_ids": [
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_GSHHS",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "claim_ids": [
+        "CLM_G1R2_MULTICHANNEL",
+        "CLM_G1R2_SHORELINE_LIMIT"
+      ],
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+      "version": "1",
+      "parent_g3_id": "gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+      "class_id": "spatial.g4.sector",
+      "shape_id": "areal",
+      "title": "Сектор: Влажный хвойный лес",
+      "name_status": "functional_descriptive",
+      "migration_action": "create_host_sector_by_reclassification_group",
+      "migration_basis": "One target G4 sector groups all legacy local G4 records under the same retained G3; it adds no new place or historical claim.",
+      "source_place_type": "forest_tract",
+      "evidence_status": "comparative_reconstruction",
+      "source_ids": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_CHALOV_DVINA_2012",
+        "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+        "SRC_G1R2_GSHHS"
+      ],
+      "claim_ids": [
+        "CLM_G1R2_FOREST_HINTERLAND",
+        "CLM_G1R2_RESOURCE_USE"
+      ],
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+      "version": "1",
+      "parent_g3_id": "gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+      "class_id": "spatial.g4.sector",
+      "shape_id": "areal",
+      "title": "Сектор: Заостровская погребальная зона",
+      "name_status": "functional_descriptive",
+      "migration_action": "create_host_sector_by_reclassification_group",
+      "migration_basis": "One target G4 sector groups all legacy local G4 records under the same retained G3; it adds no new place or historical claim.",
+      "source_place_type": "burial_area",
+      "evidence_status": "archaeologically_supported_with_access_limit",
+      "source_ids": [
+        "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019"
+      ],
+      "claim_ids": [
+        "CLM_G1R2_ZAOSTROVYE"
+      ],
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+      "version": "1",
+      "parent_g3_id": "gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+      "class_id": "spatial.g4.sector",
+      "shape_id": "areal",
+      "title": "Сектор: Заостровский береговой подход",
+      "name_status": "functional_descriptive",
+      "migration_action": "create_host_sector_by_reclassification_group",
+      "migration_basis": "One target G4 sector groups all legacy local G4 records under the same retained G3; it adds no new place or historical claim.",
+      "source_place_type": "local_landing",
+      "evidence_status": "comparative_reconstruction",
+      "source_ids": [
+        "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+        "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+        "SRC_G1R2_MASK_REV002"
+      ],
+      "claim_ids": [
+        "CLM_G1R2_ZAOSTROVYE",
+        "CLM_G1R2_DVINA_CORRIDOR"
+      ],
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+      "version": "1",
+      "parent_g3_id": "gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+      "class_id": "spatial.g4.sector",
+      "shape_id": "areal",
+      "title": "Сектор: Заостровский поселенческий участок",
+      "name_status": "functional_descriptive",
+      "migration_action": "create_host_sector_by_reclassification_group",
+      "migration_basis": "One target G4 sector groups all legacy local G4 records under the same retained G3; it adds no new place or historical claim.",
+      "source_place_type": "archaeological_settlement",
+      "evidence_status": "archaeologically_supported_with_access_limit",
+      "source_ids": [
+        "SRC_G1R2_ARKHANGELSK_HOARD_1992",
+        "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+        "SRC_G1R2_SCHAPOV_1976_CHARTER"
+      ],
+      "claim_ids": [
+        "CLM_G1R2_ZAOSTROVYE",
+        "CLM_G1R2_1230_CONTINUITY"
+      ],
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    }
+  ]
+}

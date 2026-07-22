@@ -1,0 +1,19 @@
+{
+  "schema_version": "rus.p12_v1_1_physical_projection_coverage.v1",
+  "status": "PASS",
+  "blocker_code": null,
+  "immutable_projection_counts": {
+    "canonical_g5_connection_profiles": 12,
+    "canonical_g5_connection_bindings": 454,
+    "g4_entry_endpoint_bindings": 32,
+    "topological_direction_contexts": 86,
+    "g4_traversal_profiles": 32
+  },
+  "missing_physical_contracts": [],
+  "forbidden_substitutions": [
+    "spatial_v3_spatial_transition_contracts",
+    "spatial_v3_relative_orientations",
+    "spatial_v3_g4_expansion_profiles"
+  ],
+  "reason": "Every immutable V1.1 DDL-matrix contract has an exact target-only physical table and deterministic compiler; staging-only route-context links remain denied to runtime roles."
+}

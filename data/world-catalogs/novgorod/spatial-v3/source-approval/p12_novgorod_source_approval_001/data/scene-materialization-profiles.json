@@ -1,0 +1,1760 @@
+{
+  "schema_version": "rus.scene_materialization_profiles.v1",
+  "records": [
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_central_current_split_fast_branch",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_fast_branch@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_central_current_split_islet_margin",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_islet_margin@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_central_current_split_rejoin_reach",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_rejoin_reach@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_central_current_split_slow_branch",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_slow_branch@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_central_current_split_split_point",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_split_point@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_central_current_split_upstream_nose",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_upstream_nose@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_deep_thread",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_deep_thread@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_downstream_approach",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_downstream_approach@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_lee_bank",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_lee_bank@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_observation_bank",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_observation_bank@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_shoal_margin",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_shoal_margin@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_upstream_approach",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_upstream_approach@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_downstream_tail",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_downstream_tail@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_east_channel",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_east_channel@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_high_bank",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_high_bank@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_upstream_tip",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_upstream_tip@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_west_channel",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_west_channel@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_wet_hollow",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_wet_hollow@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_downstream_cut",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_downstream_cut@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_driftwood_mass",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_driftwood_mass@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_dry_cap",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_dry_cap@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_shallow_pool",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_shallow_pool@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_upstream_edge",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_upstream_edge@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_camp_candidate",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_camp_candidate@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_downstream_exit",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_downstream_exit@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_forest_edge",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_forest_edge@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_landing",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_landing@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_ridge_crest",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_ridge_crest@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_wet_hollow",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_wet_hollow@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_north_descent",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_north_descent@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_pine_stand",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_pine_stand@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_ridge_top",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_ridge_top@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_sandy_hollow",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_sandy_hollow@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_south_approach",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_south_approach@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_view_gap",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_view_gap@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_entrance",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_entrance@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_exit",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_exit@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_mud_bank",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_mud_bank@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_narrow_reach",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_narrow_reach@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_quiet_reach",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_quiet_reach@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_seasonal_barrier",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_seasonal_barrier@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_east_side_channel_entrance",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_entrance@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_east_side_channel_exit",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_exit@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_east_side_channel_mud_bank",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_mud_bank@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_east_side_channel_narrow_reach",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_narrow_reach@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_east_side_channel_quiet_reach",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_quiet_reach@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_east_side_channel_seasonal_barrier",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_seasonal_barrier@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_bog_edge",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_bog_edge@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_dry_mound",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_dry_mound@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_inlet",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_inlet@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_overflow",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_overflow@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_reed_margin",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_reed_margin@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_shallow_basin",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_shallow_basin@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_forest_shelter",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_forest_shelter@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_north_exit",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_north_exit@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_ridge_path",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_ridge_path@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_south_approach",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_south_approach@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_water_access",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_water_access@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_wet_gap",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_wet_gap@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_bank_path",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_bank_path@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_bog_crossing",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_bog_crossing@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_fallen_timber",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_fallen_timber@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_headwater_fork",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_headwater_fork@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_lower_reach",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_lower_reach@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_pool",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_pool@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_large_island_head_downstream_tail",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_downstream_tail@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_large_island_head_east_channel",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_east_channel@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_large_island_head_high_bank",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_high_bank@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_large_island_head_upstream_tip",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_upstream_tip@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_large_island_head_west_channel",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_west_channel@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_large_island_head_wet_hollow",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_wet_hollow@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_mixing_reach_current_shear",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_current_shear@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_mixing_reach_ice_edge",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_ice_edge@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_mixing_reach_inner_approach",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_inner_approach@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_mixing_reach_lee_margin",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_lee_margin@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_mixing_reach_open_water",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_open_water@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_mixing_reach_outer_route",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_outer_route@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_deep_thread",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_deep_thread@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_downstream_approach",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_downstream_approach@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_lee_bank",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_lee_bank@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_observation_bank",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_observation_bank@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_shoal_margin",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_shoal_margin@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_upstream_approach",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_upstream_approach@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_deep_thread",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_deep_thread@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_downstream_approach",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_downstream_approach@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_lee_bank",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_lee_bank@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_observation_bank",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_observation_bank@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_shoal_margin",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_shoal_margin@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_upstream_approach",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_upstream_approach@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_deep_pool",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_deep_pool@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_dry_crossing",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_dry_crossing@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_hidden_link",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_hidden_link@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_old_mouth",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_old_mouth@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_silted_reach",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_silted_reach@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_willow_bank",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_willow_bank@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_ice_break_zone",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_ice_break_zone@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_river_side",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_river_side@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_sea_exit",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_sea_exit@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_sheltered_inlet",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_sheltered_inlet@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_shoal_margin",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_shoal_margin@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_wind_fetch",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_wind_fetch@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_reed_backwater_bird_shallows",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_bird_shallows@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_reed_backwater_entrance",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_entrance@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_reed_backwater_mud_bank",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_mud_bank@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_reed_backwater_open_pool",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_open_pool@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_reed_backwater_reed_channel",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_reed_channel@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_reed_backwater_winter_thin_ice",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_winter_thin_ice@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_deep_thread",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_deep_thread@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_downstream_approach",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_downstream_approach@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_lee_bank",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_lee_bank@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_observation_bank",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_observation_bank@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_shoal_margin",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_shoal_margin@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_upstream_approach",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_upstream_approach@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_flood_edge",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_flood_edge@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_high_platform",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_high_platform@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_inland_path",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_inland_path@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_landing_edge",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_landing_edge@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_water_approach",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_water_approach@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_water_source",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_water_source@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_cross_current",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_cross_current@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_deep_thread",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_deep_thread@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_emergency_bank",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_emergency_bank@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_shallow_bars",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_shallow_bars@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_warning_reach",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_warning_reach@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_winter_crack",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_winter_crack@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_deep_thread",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_deep_thread@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_downstream_approach",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_downstream_approach@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_lee_bank",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_lee_bank@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_observation_bank",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_observation_bank@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_shoal_margin",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_shoal_margin@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_upstream_approach",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_upstream_approach@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_crossing",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_crossing@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_inland_path",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_inland_path@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_lower_stream",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_lower_stream@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_main_river_approach",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_main_river_approach@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_marsh_bank",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_marsh_bank@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_mouth_bar",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_mouth_bar@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_forest_path",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_forest_path@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_household_cluster",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_household_cluster@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_landing_candidate",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_landing_candidate@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_meeting_area",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_meeting_area@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_occupation_terrace",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_occupation_terrace@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_river_approach",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_river_approach@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_water_access",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_water_access@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_work_storage",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_work_storage@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_deep_forest",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_deep_forest@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_dry_patch",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_dry_patch@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_game_trail",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_game_trail@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_resource_patch",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_resource_patch@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_river_edge",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_river_edge@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_wet_forest",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_wet_forest@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_flood_edge",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_flood_edge@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_high_platform",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_high_platform@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_inland_path",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_inland_path@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_landing_edge",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_landing_edge@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_water_approach",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_water_approach@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_water_source",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_water_source@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_dry_patch",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_dry_patch@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_entrance",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_entrance@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_hidden_outlet",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_hidden_outlet@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_muddy_shore",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_muddy_shore@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_reed_edge",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_reed_edge@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_still_water",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_still_water@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_west_side_channel_entrance",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_entrance@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_west_side_channel_exit",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_exit@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_west_side_channel_mud_bank",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_mud_bank@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_west_side_channel_narrow_reach",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_narrow_reach@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_west_side_channel_quiet_reach",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_quiet_reach@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_west_side_channel_seasonal_barrier",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_seasonal_barrier@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_deep_forest",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_deep_forest@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_dry_patch",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_dry_patch@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_game_trail",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_game_trail@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_resource_patch",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_resource_patch@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_river_edge",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_river_edge@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_wet_forest",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_wet_forest@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_approach",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_approach@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_burial_core",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_burial_core@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_outer_edge",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_outer_edge@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_ritual_edge",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_ritual_edge@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_wet_boundary",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_wet_boundary@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_woodland_buffer",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_woodland_buffer@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_boat_drawing",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_boat_drawing@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_dry_platform",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_dry_platform@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_flood_limit",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_flood_limit@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_landing_edge",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_landing_edge@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_path_to_settlement",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_path_to_settlement@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_river_approach",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_river_approach@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_habitation_terrace",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_habitation_terrace@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_hinterland_path",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_hinterland_path@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_household_zone",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_household_zone@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_landing",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_landing@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_river_approach",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_river_approach@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_storage_zone",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_storage_zone@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_water_source",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_water_source@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    },
+    {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_work_zone",
+      "version": "1",
+      "source_kind": "canonical_g5",
+      "source_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_work_zone@1",
+      "selection_rule_ref": "scene_selection_single_candidate_v1@1",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    }
+  ]
+}

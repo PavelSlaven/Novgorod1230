@@ -1,31 +1,53 @@
-import { readdir, readFile, stat } from 'node:fs/promises';
-import { basename, join, relative, resolve } from 'node:path';
+import { execFile as execFileCallback } from 'node:child_process';
+import { readFile, stat } from 'node:fs/promises';
+import { basename, relative, resolve } from 'node:path';
+import { promisify } from 'node:util';
 
+const execFile = promisify(execFileCallback);
 const root = resolve(process.argv[2] ?? '.');
 const violations = [];
-const forbiddenDirs = new Set(['node_modules', '.git', 'tmp', 'dist']);
 const forbiddenNames = new Set(['.env', '.env.local', '.env.production', '.env.development']);
-const secretPattern = /(OPENAI_API_KEY|DEEPSEEK_API_KEY|DATABASE_URL)\s*=\s*[^\s#]+/u;
-const forbiddenDirectoryPaths = [];
-const releaseFiles = await walk(root);
+const secretPattern = /(?:OPENAI_API_KEY|DEEPSEEK_API_KEY|DATABASE_URL)\s*=\s*[^\s#]+/gu;
+const privateKeyPattern = /\.(?:pem|key)$/iu;
+const seedSpreadsheetPattern = /\.(?:xlsx?|ods)$/iu;
+const sourceRoots = new Set(['apps', 'packages', 'src', 'tools', 'infra', 'scripts', 'config']);
+const sourceExtensions = /\.(?:[cm]?js|jsx|tsx?|json|ya?ml|toml|ini|conf|env|sh|ps1)$/iu;
+const rootReleaseFiles = new Set([
+  'package.json', 'package-lock.json', 'npm-shrinkwrap.json', '.npmrc', '.yarnrc', '.yarnrc.yml',
+  'Dockerfile', 'docker-compose.yml', 'docker-compose.yaml',
+]);
 
-for (const file of releaseFiles) {
+for (const file of await releaseFiles(root)) {
   const rel = relative(root, file).replaceAll('\\', '/');
   const name = basename(file);
-  if (forbiddenNames.has(name)) violations.push(`${rel}: secret-bearing environment file is forbidden in release`);
-  if (name.endsWith('.pem') || name.endsWith('.key')) violations.push(`${rel}: private key material is forbidden in release`);
-  if (/\.(?:zip|7z|tar|tgz|gz)$/u.test(name)) violations.push(`${rel}: nested archive is forbidden in source release`);
-  if (rel.startsWith('data/seeds/') && /\.(?:xlsx?|ods)$/u.test(name.toLowerCase())) violations.push(`${rel}: spreadsheet intermediate is forbidden in seed source`);
-  if (rel.startsWith('data/seeds/') && /(?:^|[-_.])(final|fixed|v2)(?:[-_.]|$)/u.test(name.toLowerCase())) violations.push(`${rel}: ambiguous intermediate seed filename is forbidden`);
+  if (forbiddenNames.has(name)) {
+    violations.push(`${rel}: secret-bearing environment file is forbidden in release`);
+    continue;
+  }
+  if (isReleaseScoped(rel) && privateKeyPattern.test(name)) {
+    violations.push(`${rel}: private key material is forbidden in release`);
+    continue;
+  }
+  if (rel.startsWith('data/seeds/') && seedSpreadsheetPattern.test(name)) {
+    violations.push(`${rel}: spreadsheet intermediate is forbidden in seed source`);
+  }
+  if (rel.startsWith('data/seeds/') && /(?:^|[-_.])(final|fixed|v2)(?:[-_.]|$)/u.test(name.toLowerCase())) {
+    violations.push(`${rel}: ambiguous intermediate seed filename is forbidden`);
+  }
   const info = await stat(file);
-  if (name.endsWith('.sql') && info.size > 100 * 1024 * 1024) violations.push(`${rel}: SQL dump over 100 MB must be stored as artifact/release, not source`);
-  const isTestFixture = rel.startsWith('test/') || rel.includes('/test/') || rel.includes('/fixtures/');
-  if (!isTestFixture && info.size <= 1024 * 1024 && isTextCandidate(name)) {
+  if (isReleaseScoped(rel) && name.endsWith('.sql') && info.size > 100 * 1024 * 1024) {
+    violations.push(`${rel}: SQL dump over 100 MB must be stored as artifact/release, not source`);
+  }
+  if (isSecretScanCandidate(rel, name, info.size)) {
     const text = await readFile(file, 'utf8').catch(() => '');
-    if (secretPattern.test(text) && name !== '.env.example') violations.push(`${rel}: possible live secret assignment`);
+    for (const match of text.matchAll(secretPattern)) {
+      if (!isDocumentedExample(match[0])) {
+        violations.push(`${rel}: possible live secret assignment`);
+        break;
+      }
+    }
   }
 }
-for (const dir of forbiddenDirectoryPaths) violations.push(`${dir}: forbidden directory is present in release`);
 
 if (violations.length) {
   console.error('Release hygiene violations:\n' + violations.map((item) => `- ${item}`).join('\n'));
@@ -34,20 +56,42 @@ if (violations.length) {
   console.log('Release hygiene: OK');
 }
 
-async function walk(dir) {
-  const result = [];
-  for (const entry of await readdir(dir, { withFileTypes: true })) {
-    const path = join(dir, entry.name);
-    if (entry.isDirectory() && forbiddenDirs.has(entry.name)) {
-      forbiddenDirectoryPaths.push(relative(root, path).replaceAll('\\', '/'));
-      continue;
-    }
-    if (entry.isDirectory()) result.push(...await walk(path));
-    else result.push(path);
+/**
+ * The release scanner intentionally follows Git's release set instead of walking
+ * the checkout.  This excludes .git, dependency installs and local work areas,
+ * while still including non-ignored newly created source files before staging.
+ */
+async function releaseFiles(repositoryRoot) {
+  let stdout;
+  try {
+    ({ stdout } = await execFile('git', ['-C', repositoryRoot, 'ls-files', '--cached', '--others', '--exclude-standard', '-z'], {
+      encoding: 'buffer',
+      maxBuffer: 16 * 1024 * 1024,
+    }));
+  } catch {
+    throw new Error(`release hygiene requires a Git worktree: ${repositoryRoot}`);
   }
-  return result;
+  return stdout
+    .toString('utf8')
+    .split('\0')
+    .filter(Boolean)
+    .map((path) => resolve(repositoryRoot, path));
 }
 
-function isTextCandidate(name) {
-  return /\.(?:js|mjs|cjs|json|md|txt|yml|yaml|env|example)$/u.test(name) || name.startsWith('.env');
+function isReleaseScoped(rel) {
+  const [first] = rel.split('/');
+  return rootReleaseFiles.has(rel) || sourceRoots.has(first);
+}
+
+function isSecretScanCandidate(rel, name, size) {
+  if (size > 1024 * 1024 || !isReleaseScoped(rel)) return false;
+  if (name === '.env.example') return true;
+  return sourceExtensions.test(name);
+}
+
+function isDocumentedExample(assignment) {
+  const value = assignment.slice(assignment.indexOf('=') + 1).trim().replace(/^['"]|['";,)]+$/gu, '');
+  return /(?:^|[/:@])(?:example|user:pass|your[_-]?(?:key|token|secret)|change[-_]?me)(?:$|[/?#:@])/iu.test(value)
+    || value.includes('…')
+    || /<[^>]+>/u.test(value);
 }

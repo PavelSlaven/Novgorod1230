@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Legacy edge mapping bindings",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "records"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "binding_id",
+          "version",
+          "legacy_edge_id",
+          "source_from",
+          "source_to",
+          "legacy_scale_pair",
+          "edge_type",
+          "physical",
+          "bidirectional",
+          "target_mapping_kind",
+          "status",
+          "provenance_ref"
+        ],
+        "properties": {
+          "binding_id": {
+            "$ref": "#/$defs/stable_id"
+          },
+          "version": {
+            "$ref": "#/$defs/version"
+          },
+          "legacy_edge_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_from": {
+            "$ref": "#/$defs/transformed_ref"
+          },
+          "source_to": {
+            "$ref": "#/$defs/transformed_ref"
+          },
+          "legacy_scale_pair": {
+            "type": "array",
+            "prefixItems": [
+              {
+                "enum": [
+                  "G1",
+                  "G2",
+                  "G3",
+                  "G4"
+                ]
+              },
+              {
+                "enum": [
+                  "G1",
+                  "G2",
+                  "G3",
+                  "G4"
+                ]
+              }
+            ],
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "edge_type": {
+            "type": "string",
+            "minLength": 1
+          },
+          "physical": {
+            "type": "boolean"
+          },
+          "bidirectional": {
+            "type": "boolean"
+          },
+          "seasonal_rule": {},
+          "evidence_status": {},
+          "target_mapping_kind": {
+            "enum": [
+              "retained_hierarchy_dependency",
+              "canonical_g5_parent_dependency",
+              "intra_g4_site_connection_source",
+              "cross_g4_world_route_source",
+              "host_entry_site_connection_source",
+              "corridor_to_host_route_context_source",
+              "world_route_segment_context_source"
+            ]
+          },
+          "status": {
+            "$ref": "#/$defs/status_approved"
+          },
+          "provenance_ref": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "stable_id": {
+      "type": "string",
+      "minLength": 3,
+      "pattern": "^[A-Za-z0-9_.:-]+$"
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status_approved": {
+      "const": "approved"
+    },
+    "versioned_ref": {
+      "type": "string",
+      "pattern": "^[^@]+@[^@]+$"
+    },
+    "transformed_ref": {
+      "type": "object",
+      "required": [
+        "kind",
+        "id"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "canonical_g5",
+            "retained_g3_with_host_g4",
+            "retained_g2",
+            "retained_g1"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "host_g4_id": {
+          "type": "string"
+        },
+        "entry_canonical_g5_id": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

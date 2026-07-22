@@ -3141,9 +3141,9 @@
       "source_location": {
         "file": "DOCUMENTS/llm_agent_prompt_templates.md",
         "section": "# 14. Минимальные правила для всех промтов",
-        "line_start": 900,
-        "line_end": 919,
-        "line_range": "L900-L919"
+        "line_start": 986,
+        "line_end": 1007,
+        "line_range": "L986-L1007"
       },
       "source_url": null,
       "captured_at": "2026-06-25",
@@ -3542,9 +3542,9 @@
       "source_location": {
         "file": "DOCUMENTS/llm_agent_prompt_templates.md",
         "section": "# 17. Короткий эталон промта отсечения скрытого",
-        "line_start": 970,
-        "line_end": 999,
-        "line_range": "L970-L999"
+        "line_start": 1056,
+        "line_end": 1080,
+        "line_range": "L1056-L1080"
       },
       "source_url": null,
       "captured_at": "2026-06-25",
@@ -3565,9 +3565,9 @@
       "source_location": {
         "file": "DOCUMENTS/llm_agent_prompt_templates.md",
         "section": "# 16. Короткий эталон промта прозы",
-        "line_start": 948,
-        "line_end": 967,
-        "line_range": "L948-L967"
+        "line_start": 1034,
+        "line_end": 1055,
+        "line_range": "L1034-L1055"
       },
       "source_url": null,
       "captured_at": "2026-06-25",
@@ -22535,9 +22535,9 @@
       "source_location": {
         "file": "DOCUMENTS/llm_agent_prompt_templates.md",
         "section": "# 15. Специальное правило для художественной прозы",
-        "line_start": 922,
-        "line_end": 945,
-        "line_range": "L922-L945"
+        "line_start": 1008,
+        "line_end": 1032,
+        "line_range": "L1008-L1032"
       },
       "source_url": null,
       "captured_at": "2026-06-25",
@@ -32434,9 +32434,9 @@
       "source_location": {
         "file": "DOCUMENTS/llm_agent_prompt_templates.md",
         "section": "# 14. Минимальные правила для всех промтов",
-        "line_start": 900,
-        "line_end": 919,
-        "line_range": "L900-L919"
+        "line_start": 986,
+        "line_end": 1007,
+        "line_range": "L986-L1007"
       },
       "weight": 0.75,
       "description": "Minimum rules for all prompts — Prompt-template section belongs to the documented internal prompt rules.",
@@ -35583,9 +35583,9 @@
       "source_location": {
         "file": "DOCUMENTS/llm_agent_prompt_templates.md",
         "section": "# 14. Минимальные правила для всех промтов",
-        "line_start": 900,
-        "line_end": 919,
-        "line_range": "L900-L919"
+        "line_start": 986,
+        "line_end": 1007,
+        "line_range": "L986-L1007"
       },
       "weight": 1.0,
       "description": "LLM agent prompt templates --defines--> Minimum rules for all prompts; confidence=EXTRACTED."
@@ -35619,9 +35619,9 @@
       "source_location": {
         "file": "DOCUMENTS/llm_agent_prompt_templates.md",
         "section": "# 17. Короткий эталон промта отсечения скрытого",
-        "line_start": 970,
-        "line_end": 999,
-        "line_range": "L970-L999"
+        "line_start": 1056,
+        "line_end": 1080,
+        "line_range": "L1056-L1080"
       },
       "weight": 1.0,
       "description": "LLM agent prompt templates --defines--> Short hidden-cutoff prompt reference; confidence=EXTRACTED."
@@ -35745,9 +35745,9 @@
       "source_location": {
         "file": "DOCUMENTS/llm_agent_prompt_templates.md",
         "section": "# 16. Короткий эталон промта прозы",
-        "line_start": 948,
-        "line_end": 967,
-        "line_range": "L948-L967"
+        "line_start": 1034,
+        "line_end": 1055,
+        "line_range": "L1034-L1055"
       },
       "weight": 1.0,
       "description": "LLM agent prompt templates --defines--> Short prose prompt reference; confidence=EXTRACTED."
@@ -35763,9 +35763,9 @@
       "source_location": {
         "file": "DOCUMENTS/llm_agent_prompt_templates.md",
         "section": "# 15. Специальное правило для художественной прозы",
-        "line_start": 922,
-        "line_end": 945,
-        "line_range": "L922-L945"
+        "line_start": 1008,
+        "line_end": 1032,
+        "line_range": "L1008-L1032"
       },
       "weight": 1.0,
       "description": "LLM agent prompt templates --defines--> Special hidden-information rule for prose; confidence=EXTRACTED."
@@ -69008,9 +69008,9 @@
       "source_location": {
         "file": "DOCUMENTS/llm_agent_prompt_templates.md",
         "section": "# 17. Короткий эталон промта отсечения скрытого",
-        "line_start": 970,
-        "line_end": 989,
-        "line_range": "L970-L989"
+        "line_start": 1056,
+        "line_end": 1075,
+        "line_range": "L1056-L1075"
       },
       "weight": 1.0,
       "description": "Short hidden-cutoff prompt reference --supports--> Visible context selection agent; confidence=EXTRACTED."
@@ -78321,9 +78321,9 @@
       "source_location": {
         "file": "DOCUMENTS/llm_agent_prompt_templates.md",
         "section": "# 16. Короткий эталон промта прозы",
-        "line_start": 948,
-        "line_end": 967,
-        "line_range": "L948-L967"
+        "line_start": 1034,
+        "line_end": 1055,
+        "line_range": "L1034-L1055"
       },
       "weight": 0.75,
       "description": "Short prose prompt reference — Prompt-template section belongs to the documented internal prompt rules.",
@@ -78342,9 +78342,9 @@
       "source_location": {
         "file": "DOCUMENTS/llm_agent_prompt_templates.md",
         "section": "# 15. Специальное правило для художественной прозы",
-        "line_start": 922,
-        "line_end": 941,
-        "line_range": "L922-L941"
+        "line_start": 1008,
+        "line_end": 1027,
+        "line_range": "L1008-L1027"
       },
       "weight": 1.0,
       "description": "Special hidden-information rule for prose --prevents_leakage_of--> Hidden world layer; confidence=EXTRACTED."
@@ -94368,9 +94368,9 @@
       "source_location": {
         "file": "DOCUMENTS/llm_agent_prompt_templates.md",
         "section": "# 15. Специальное правило для художественной прозы",
-        "line_start": 922,
-        "line_end": 941,
-        "line_range": "L922-L941"
+        "line_start": 1008,
+        "line_end": 1027,
+        "line_range": "L1008-L1027"
       },
       "weight": 1.0,
       "description": "Secondary navigation edge: verify in cited documents before using as a rule."

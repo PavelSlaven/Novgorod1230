@@ -4,9 +4,13 @@
   "type": "module",
   "exports": {
     ".": "./src/index.js",
+    "./spatial-v3": "./src/spatial-v3-ports.js",
+    "./spatial-v3-domain-integration": "./src/spatial-v3-domain-integration.js",
     "./stage-25": "./src/stage-25/index.js"
   },
   "dependencies": {
-    "@rus/kernel": "0.9.0"
+    "@rus/contracts": "0.9.0",
+    "@rus/kernel": "0.9.0",
+    "@rus/turn": "0.15.0"
   }
 }

@@ -1,3 +1,67 @@
+# Базовая оркестрация хода
+
+## Статус и граница миграции
+
+Этот документ задаёт target v3 command sequence. До P28 production обслуживается только active v2 path. Он не разрешает внедрять v3 в текущий runtime частично, dual write, first-entry fallback или смешанный request path.
+
+## 1. Границы оркестратора
+
+Player input — намерение, не факт. Orchestrator загружает pinned factual state и player-safe knowledge projection, классифицирует команду, получает deterministic proposals, валидирует command и передаёт один approved combined write plan единственному commit writer. LLM может интерпретировать/создавать prose лишь в bounded protocol; он не создаёт topology, G5/G6, route, endpoint или state change.
+
+Ни stage не читает hidden global state и не делает скрытый DB/filesystem/network/LLM call. Каждый stage имеет typed input/output/errors и не запускает соседний stage.
+
+## 2. Явная последовательность команд
+
+```text
+1. parse/normalize intention (без признания нового world fact)
+2. load factual + knowledge context и expected versions
+3. classify: immediate_action | timed_activity | timed_traversal | topology/preparation command
+4. resolve proposal и mechanical readiness
+5. если required: отдельно commit topology/frontier resolution ИЛИ target preparation
+6. выполнить новую path query; выбрать только ready executable option
+7. validate exact endpoints, pins, capability, locks и idempotency
+8. create immutable plan + planned execution
+9. dispatch one explicit action/activity/traversal child command
+10. build one combined write plan; single writer commits it atomically
+11. append history/events, apply exactly-once time integration
+12. build player-safe projection; validate hidden-information boundary; then prose
+```
+
+Topology/frontier resolution и preparation не перемещают traveller, не продвигают time и не превращают old option в ready. Нужна новая query с `derived_from_option_id`.
+
+## 3. Отдельные стадии выполнения
+
+- `immediate_action`: atomic action units; no time, no continuous progress.
+- `timed_activity`: exact rational elapsed, activity attempt/history; no physical segment progress.
+- `timed_traversal`: ровно один pinned physical segment; interval state machine и exact progress.
+
+Cross-G4 movement больше не является atomic «first entry materialization + movement». Generated G5 topology разрешается только явной topology command из approved finite frontier; endpoint scenes materialизуются только target preparation. Ordinary traversal использует уже готовый exact endpoint и не создаёт semantic data.
+
+## 4. Commit и single writer
+
+Resolvers/materializers/validators не пишут состояние и не выбирают option при commit. Commit validator проверяет versions, endpoint snapshots, dependency pins, readiness, capability, state-machine transition, idempotency и lock order. Единственный commit component применяет approved write set в одной транзакции, создаёт immutable plan/history/change set и clock update максимум один раз.
+
+При data gap, empty candidate set, missing terminal target/route/endpoint/preparation или invalid pin commit fail-closed с typed error. Нет semantic fallback, teleport, nearest endpoint, free time или v3→v2 fallback.
+
+## 5. Порядок для time и carriers
+
+Time-bearing command передаёт exact rational elapsed только в time owner. Во время root transport travel один synchronized slice владеет общим clock; carrier-local results не обновляют его отдельно. Root/attached ownership change завершает current plan на exact handoff endpoint; следующий movement — new plan, не transfer active execution.
+
+## 6. Player projection
+
+После commit формируется visible context только из разрешённого knowledge/perception слоя. Factual hidden route, candidates, diagnostics, unselected options и internal errors не попадают в prose/UI. Presentation не создаёт factual topology.
+
+## 7. Traceability
+
+Target источник: `spatial_architecture_standard_g0_g6.md` §§1.4, 1.7–1.8, 5–6, 9–11, 16.3. До P28 active v2 хранится только как migration boundary; P03 не меняет runtime, DDL, persistence или production composition.
+
+
+---
+
+## Приложение A. Архивный v2-источник для migration traceability
+
+Нижеследующий текст сохранён только как historical/migration source для ссылочной совместимости и аудита. Он **не является target-правилом**, не активирует v2 semantics в target v3 и не разрешает mixed execution, dual write либо fallback. При конфликте применяется основной target-раздел этого документа и target standard; active production boundary до P28 определён отдельно.
+
 # Режимы хода для агента-оркестратора
 
 ## Нормативная актуализация materialization v2
@@ -321,177 +385,7 @@ LLM используется только для персонажа игрока
 13. Если действие простое и разрешённое — применить изменение.
 14. Если действие спорное — выполнить проверку силы, ловкости, внимания, ремесла, скрытности или обычая/закона.
 15. Обновить предмет, контейнер, владение, доступ, следы, состояние, инвентарь.
-16. Обновить NPC reactions, если действие заметили.
-17. Обновить hidden_state и события.
-18. Обновить visible_context.
-19. Сгенерировать prose.
-```
-
-### Жёсткие запреты
-
-```text
-Заявка игрока не создаёт предмет.
-Физически взять предмет ≠ стать владельцем.
-Имущество вне физического доступа не считается инвентарём.
-Содержимое контейнера не пересоздаётся после определения.
-Нельзя раскрывать содержимое закрытого контейнера без основания.
-```
-
-## 7. Режим 6. Разговор, вопрос, просьба, торг, ложь, договорённость, социальное давление
-
-### Включает намерения
-
-```text
-говорить;
-спрашивать;
-просить;
-торговаться;
-лгать;
-договариваться;
-убеждать;
-угрожать словами;
-давить статусом;
-просить помощи;
-просить разрешения;
-выяснять слух;
-нанимать;
-обещать;
-обмениваться.
-```
-
-### Когда выбирать
-
-Если действие адресовано NPC, группе, власти, хозяину, свидетелю, торговцу, старшему, спутнику или неизвестному человеку.
-
-### Последовательность
-
-```text
-1. Определить адресата.
-2. Проверить, существует ли NPC/группа в текущей сцене или известной зоне.
-3. Проверить, видит/слышит ли персонаж адресата.
-4. Проверить, может ли адресат видеть/слышать персонажа.
-5. Проверить дистанцию, шум, свет, занятость, статус ситуации.
-6. Загрузить профиль NPC нужной глубины.
-7. Если фоновый NPC вступает в адресное взаимодействие и должен оставить последствия — повысить профиль до сценического или ключевого.
-8. Проверить, знает ли NPC персонажа.
-9. Проверить отношение: свой/чужой, статус, страх, долг, интерес, память.
-10. Проверить, что NPC знает и что скрывает.
-11. Проверить, кто слышит разговор.
-12. Определить цель игрока: информация, помощь, доступ, сделка, обман, угроза, просьба.
-13. Проверить, может ли NPC вообще дать желаемое.
-14. Если результат очевиден по роли и ситуации — дать результат без броска.
-15. Если результат спорный — выполнить социальную проверку.
-16. Обновить отношение NPC, знание NPC, слухи, обещания, долги, доступ или отказ.
-17. Обновить время.
-18. Обновить visible_context.
-19. Сгенерировать prose/реплику без раскрытия private motives.
-```
-
-### Жёсткие запреты
-
-```text
-NPC не обязан быть полезным.
-NPC действует из статуса, страха, интереса, долга, памяти и ситуации.
-Нельзя раскрывать скрытое знание NPC как авторскую истину.
-Нельзя заставить NPC согласиться броском, если он не может или не имеет права согласиться.
-```
-
-## 8. Режим 7. Бой, насилие, защита, физическая угроза
-
-### Включает намерения
-
-```text
-нападать;
-защищаться;
-ударить;
-схватить;
-повалить;
-удержать;
-вырваться;
-достать оружие для применения;
-угрожать оружием;
-бросить предмет как оружие;
-сбежать из непосредственной угрозы;
-закрыться щитом;
-позвать помощь в опасности;
-сдаться;
-обезоружить.
-```
-
-### Когда выбирать
-
-Если в сцене появилась прямая физическая угроза: атака, борьба, погоня, попытка удержать, оружие в применении, сопротивление вреду.
-
-### Последовательность
-
-```text
-1. Определить, начался ли бой или это ещё социальный конфликт с риском боя.
-2. Определить участников.
-3. Определить, кто кого видит.
-4. Определить готовность сторон.
-5. Определить, кто застигнут врасплох.
-6. Определить дистанцию.
-7. Определить оружие и предметы в руках.
-8. Проверить броню, щит, укрытие.
-9. Проверить состояние тела.
-10. Проверить нагрузку и занятые руки.
-11. Проверить свидетелей.
-12. Проверить право и последствия насилия.
-13. Проверить возможность отступить, спрятаться, позвать помощь или сдаться.
-14. Определить главное боевое действие хода.
-15. Если действие невозможно — отказать или дать частичный результат.
-16. Если действие возможно и спорно — выполнить боевую проверку.
-17. Рассчитать результат, вред, состояние, позицию, шум, следы.
-18. Обновить NPC reactions.
-19. Обновить предметы, оружие, броню, снаряды.
-20. Обновить время на короткий боевой отрезок.
-21. Запустить таймеры: кровотечение, огонь, подмога, паника, слух.
-22. Обновить социальные последствия: свидетели, страх, обвинение, закон, слухи.
-23. Записать изменения.
-24. Сформировать visible_context после боевого действия.
-25. Сгенерировать prose.
-```
-
-### Жёсткие запреты
-
-```text
-Бой не является отдельной мини-игрой.
-Один боевой ход — одно значимое действие.
-Оружие не создаётся заявкой игрока.
-Если действие невозможно по фактам сцены, бросок не назначается.
-Насилие почти всегда имеет социальные последствия.
-```
-
-## 9. Режим 8. Время, ожидание, сон, работа, длительное действие
-
-### Включает намерения
-
-```text
-ждать;
-спать;
-работать;
-долго искать;
-лечить долго;
-торговаться долго;
-идти долго;
-ехать;
-сидеть до утра;
-караулить;
-прятаться какое-то время;
-наблюдать;
-отдыхать;
-есть/пить, если это занимает время;
-заниматься ремеслом.
-```
-
-### Когда выбирать
-
-Если главное в заявке — прохождение времени, длительность или ожидание события.
-
-### Последовательность
-
-```text
-1. Определить, сколько времени намерен потратить игрок.
+16. Обновить NPC reactions, если действ…2097 tokens truncated…ить игрок.
 2. Если длительность не указана — выбрать минимально разумную длительность по действию.
 3. Проверить, возможно ли действие в текущем месте.
 4. Проверить безопасность ожидания/сна/работы.

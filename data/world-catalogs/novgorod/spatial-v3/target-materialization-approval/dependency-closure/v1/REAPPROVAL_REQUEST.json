@@ -1,0 +1,25 @@
+{
+  "schema_version": "rus.p12_dependency_closure_reapproval_request.v1",
+  "status": "PENDING_INDEPENDENT_REAPPROVAL",
+  "reason": "P09 canonical DDL now requires grid_east_north_v1; the P12 dependency-closure import row was repinned from the non-canonical novgorod_g1_cardinal_grid_v1 value.",
+  "prior_approval": {
+    "subject_commit": "69b465fbbabfc8223839741d9253cd0ccc40e591",
+    "evidence_commit": "690f85049c44ef099d499eca567d1460fe60ae3f",
+    "disposition": "superseded_for_changed_subject_tree"
+  },
+  "proposed_subject_commit": "pending_after_subject_commit",
+  "exact_changed_contract": {
+    "path": "datasets/spatial_v3_g1_grid_cells.json",
+    "field": "grid_convention",
+    "old_value": "novgorod_g1_cardinal_grid_v1",
+    "new_value": "grid_east_north_v1",
+    "sha256": "91861fd0fd5a4ed074a3b5f0f6242fa7067d7ebc2ed1d2884517f79ebad3c70e"
+  },
+  "required_reapproval_evidence": [
+    "independent critic PASS or acceptable PASS WITH NOTES for the exact subject tree",
+    "subject commit binding generated only after that exact subject commit exists",
+    "separate evidence-only commit whose sole content parent is the approved subject commit"
+  ],
+  "production_activation": "blocked",
+  "p28_status": "blocked"
+}

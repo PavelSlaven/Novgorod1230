@@ -1,0 +1,24 @@
+{
+  "schema_version": "rus.fresh_checkout_evidence.v1",
+  "status": "template_not_evidence",
+  "repository": "PavelSlaven/Novgorod1230",
+  "commit_sha": "REPLACE_WITH_40_HEX_COMMIT",
+  "checkout": {
+    "fresh_clone": false,
+    "clean_before": false,
+    "clean_after": false
+  },
+  "tool_versions": {},
+  "commands": [],
+  "result_digest": "REPLACE_WITH_64_HEX_DIGEST",
+  "required_commands": [
+    "git clone/fetch and SHA confirmation",
+    "npm ci",
+    "repo-intel ensure/status/query",
+    "Graphify status/query",
+    "targeted P12 validators",
+    "database dry-run/import/readback/rollback",
+    "full npm test",
+    "git diff --check"
+  ]
+}

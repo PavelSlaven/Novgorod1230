@@ -7,6 +7,11 @@ import { basename, join, resolve } from 'node:path';
 import { buildKnowledgeSourceOutputsV2 } from '../src/knowledge-materializer-v2.js';
 
 const root = resolve(import.meta.dirname, '../../..');
+const compatibleSemanticFixtureFile = 'world_regions.txt';
+
+function sourceFile(entity) {
+  return basename(String(entity?.source_location?.file ?? entity?.source_file ?? ''));
+}
 
 function sha256(value) {
   return createHash('sha256').update(value).digest('hex');
@@ -147,9 +152,14 @@ test('knowledge materializer downgrades changed semantic text to lexical-only co
 
   const outputs = await buildKnowledgeSourceOutputsV2({ root: fixtureRoot });
   const ragManifest = JSON.parse(outputs.get('generated/knowledge-source/rag/manifest.json'));
+  const lexicalIndex = JSON.parse(outputs.get('generated/knowledge-source/rag/lexical-index.json'));
+  const graph = JSON.parse(outputs.get('generated/knowledge-source/graph/graph.json'));
   const coverage = ragManifest.coverage.find((item) => item.file_name === semanticFile);
   assert.equal(coverage.semantic_indexed, false);
   assert.equal(coverage.lexical_indexed, true);
+  assert.ok(lexicalIndex.chunks.some((chunk) => basename(String(chunk.file)) === semanticFile));
+  assert.equal(graph.nodes.some((node) => node.structural_only !== true && basename(String(node.source_file ?? '')) === semanticFile), false);
+  assert.ok(graph.nodes.some((node) => node.id === `canonical-document:${record.document_id}` && node.structural_only === true));
 });
 
 test('knowledge materializer rejects invalid semantic graph source locations', async () => {
@@ -157,7 +167,9 @@ test('knowledge materializer rejects invalid semantic graph source locations', a
   const sourceRoot = join(fixtureRoot, 'data/knowledge-source');
   const graphPath = join(fixtureRoot, 'data/knowledge-source/imports/graph/graph.json');
   const original = JSON.parse(await readFile(graphPath, 'utf8'));
-  const firstFile = basename(String(original.nodes[0].source_location.file));
+  const semanticNode = original.nodes.find((node) => sourceFile(node) === compatibleSemanticFixtureFile);
+  assert.ok(semanticNode);
+  const firstFile = sourceFile(semanticNode);
   const manifest = JSON.parse(await readFile(join(sourceRoot, 'corpus-manifest.json'), 'utf8'));
   const firstRecord = manifest.documents.find((record) => record.file_name === firstFile);
   const firstText = await readFile(join(sourceRoot, firstRecord.canonical_path), 'utf8');
@@ -181,7 +193,8 @@ test('knowledge materializer rejects invalid semantic graph source locations', a
 
   for (const [label, corrupt, pattern] of cases) {
     const graph = structuredClone(original);
-    corrupt(graph.nodes[0].source_location, graph.nodes[0]);
+    const node = graph.nodes.find((item) => item.id === semanticNode.id);
+    corrupt(node.source_location, node);
     await writeFile(graphPath, JSON.stringify(graph));
     await assert.rejects(
       () => buildKnowledgeSourceOutputsV2({ root: fixtureRoot }),
@@ -197,6 +210,20 @@ test('knowledge materializer rejects invalid link and hyperedge provenance', asy
   const graphPath = join(sourceRoot, 'imports/graph/graph.json');
   const original = JSON.parse(await readFile(graphPath, 'utf8'));
   const manifest = JSON.parse(await readFile(join(sourceRoot, 'corpus-manifest.json'), 'utf8'));
+  const sourceByNodeId = new Map(original.nodes.map((node) => [node.id, sourceFile(node)]));
+  const compatibleLink = original.links.find((link) => sourceFile(link) === compatibleSemanticFixtureFile
+    && sourceByNodeId.get(link.source) === compatibleSemanticFixtureFile
+    && sourceByNodeId.get(link.target) === compatibleSemanticFixtureFile);
+  assert.ok(compatibleLink);
+  const fixtures = {
+    links: compatibleLink,
+    hyperedges: {
+      id: 'compatible-hyperedge-fixture',
+      source_file: `DOCUMENTS/${compatibleSemanticFixtureFile}`,
+      source_location: { file: `DOCUMENTS/${compatibleSemanticFixtureFile}`, line_start: 1, line_end: 1 },
+      nodes: [compatibleLink.source, compatibleLink.target]
+    }
+  };
   const cases = [
     ['missing location', (_location, entity) => { delete entity.source_location; }, /source_location is missing/u],
     ['missing source_file', (_location, entity) => { delete entity.source_file; }, /source_file is missing/u],
@@ -209,8 +236,9 @@ test('knowledge materializer rejects invalid link and hyperedge provenance', asy
   for (const collection of ['links', 'hyperedges']) {
     for (const [label, corrupt, pattern] of cases) {
       const graph = structuredClone(original);
-      const entity = graph[collection][0];
-      const file = basename(String(entity.source_location.file));
+      const entity = structuredClone(fixtures[collection]);
+      graph[collection].push(entity);
+      const file = sourceFile(entity);
       const record = manifest.documents.find((item) => item.file_name === file);
       const text = await readFile(join(sourceRoot, record.canonical_path), 'utf8');
       const lineCount = text.split(/\r?\n/u).length - (text.endsWith('\n') ? 1 : 0);
@@ -258,9 +286,21 @@ test('knowledge materializer rejects links and hyperedges touching structural do
   const graphPath = join(fixtureRoot, 'data/knowledge-source/imports/graph/graph.json');
   const original = JSON.parse(await readFile(graphPath, 'utf8'));
   const structuralId = 'canonical-document:development-rules';
+  const sourceByNodeId = new Map(original.nodes.map((node) => [node.id, sourceFile(node)]));
+  const compatibleLink = original.links.find((link) => sourceFile(link) === compatibleSemanticFixtureFile
+    && sourceByNodeId.get(link.source) === compatibleSemanticFixtureFile
+    && sourceByNodeId.get(link.target) === compatibleSemanticFixtureFile);
+  const compatibleHyperedge = {
+    id: 'compatible-hyperedge-fixture',
+    source_file: `DOCUMENTS/${compatibleSemanticFixtureFile}`,
+    source_location: { file: `DOCUMENTS/${compatibleSemanticFixtureFile}`, line_start: 1, line_end: 1 },
+    nodes: [compatibleLink?.source, compatibleLink?.target]
+  };
+  assert.ok(compatibleLink);
+  assert.ok(compatibleHyperedge);
   const cases = [
-    ['link', (graph) => graph.links.push({ ...structuredClone(graph.links[0]), source: structuralId })],
-    ['hyperedge', (graph) => graph.hyperedges.push({ ...structuredClone(graph.hyperedges[0]), id: 'invalid-structural-hyperedge', nodes: [...graph.hyperedges[0].nodes, structuralId] })]
+    ['link', (graph) => graph.links.push({ ...structuredClone(compatibleLink), source: structuralId })],
+    ['hyperedge', (graph) => graph.hyperedges.push({ ...structuredClone(compatibleHyperedge), id: 'invalid-structural-hyperedge', nodes: [...compatibleHyperedge.nodes, structuralId] })]
   ];
 
   for (const [label, mutate] of cases) {

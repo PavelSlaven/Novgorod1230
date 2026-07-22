@@ -960,7 +960,7 @@
       "source_location": {
         "file": "base_turn_orchestration.txt",
         "line_start": 1,
-        "line_end": 874
+        "line_end": 768
       }
     },
     {
@@ -996,7 +996,7 @@
       "source_location": {
         "file": "code_driven_world_materialization_architecture.md",
         "line_start": 1,
-        "line_end": 303
+        "line_end": 309
       }
     },
     {
@@ -1032,7 +1032,7 @@
       "source_location": {
         "file": "README.md",
         "line_start": 1,
-        "line_end": 64
+        "line_end": 65
       }
     },
     {
@@ -1044,7 +1044,7 @@
       "source_location": {
         "file": "formulas.md",
         "line_start": 1,
-        "line_end": 2678
+        "line_end": 1020
       }
     },
     {
@@ -1092,7 +1092,7 @@
       "source_location": {
         "file": "interface_ux.md",
         "line_start": 1,
-        "line_end": 1157
+        "line_end": 1195
       }
     },
     {
@@ -1128,7 +1128,7 @@
       "source_location": {
         "file": "llm_documentation_navigation.md",
         "line_start": 1,
-        "line_end": 253
+        "line_end": 258
       }
     },
     {
@@ -1140,7 +1140,7 @@
       "source_location": {
         "file": "map_g0_g4_workflow.txt",
         "line_start": 1,
-        "line_end": 2341
+        "line_end": 2347
       }
     },
     {
@@ -1152,7 +1152,7 @@
       "source_location": {
         "file": "movement_locations_regions.txt",
         "line_start": 1,
-        "line_end": 1077
+        "line_end": 910
       }
     },
     {
@@ -1212,7 +1212,31 @@
       "source_location": {
         "file": "read_only_database_and_graph_architecture.md",
         "line_start": 1,
-        "line_end": 185
+        "line_end": 191
+      }
+    },
+    {
+      "id": "canonical-document:spatial-architecture-standard-g0-g6",
+      "type": "canonical_document",
+      "label": "spatial_architecture_standard_g0_g6.md",
+      "structural_only": true,
+      "source_file": "DOCUMENTS/spatial_architecture_standard_g0_g6.md",
+      "source_location": {
+        "file": "spatial_architecture_standard_g0_g6.md",
+        "line_start": 1,
+        "line_end": 6820
+      }
+    },
+    {
+      "id": "canonical-document:time-system",
+      "type": "canonical_document",
+      "label": "time_system.txt",
+      "structural_only": true,
+      "source_file": "DOCUMENTS/time_system.txt",
+      "source_location": {
+        "file": "time_system.txt",
+        "line_start": 1,
+        "line_end": 244
       }
     },
     {
@@ -1224,7 +1248,7 @@
       "source_location": {
         "file": "world_base_materialization_table_requirements.md",
         "line_start": 1,
-        "line_end": 262
+        "line_end": 268
       }
     },
     {
@@ -1236,7 +1260,7 @@
       "source_location": {
         "file": "world_generation_and_turns.txt",
         "line_start": 1,
-        "line_end": 1508
+        "line_end": 1551
       }
     },
     {
@@ -1388,31 +1412,6 @@
       "formula_kind": "calculation_or_structural_formula"
     },
     {
-      "id": "day_part_model",
-      "label": "Day and day-part model",
-      "node_type": "schema",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/time_system.txt",
-      "source_location": {
-        "file": "DOCUMENTS/time_system.txt",
-        "section": "### 9. День и часть суток",
-        "line_start": 157,
-        "line_end": 169,
-        "line_range": "L157-L169"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 11,
-      "community_label": "Time",
-      "norm_label": "day and day-part model",
-      "aliases": [],
-      "description": "Смена части суток влияет на сцену. | Часть суток | Что меняется | | ----------- | ------------------------------------------------------------------- | | Утро | люди начинают работу, холод после ночи, открываются дворы и рынок | | День | больше свидетелей,...",
-      "semantic_category": "schema",
-      "formula_kind": "schema_model"
-    },
-    {
       "id": "dexterity_attribute",
       "label": "Dexterity attribute",
       "node_type": "attribute",
@@ -1480,29 +1479,6 @@
       "norm_label": "rus13 world regions reference",
       "aliases": [],
       "description": "Document: world_regions.txt"
-    },
-    {
-      "id": "doc_time",
-      "label": "Time system",
-      "node_type": "document",
-      "file_type": "document",
-      "source_file": "DOCUMENTS/time_system.txt",
-      "source_location": {
-        "file": "DOCUMENTS/time_system.txt",
-        "section": "Время в игре",
-        "line_start": 1,
-        "line_end": 20,
-        "line_range": "L1-L20"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 11,
-      "community_label": "Time",
-      "norm_label": "time system",
-      "aliases": [],
-      "description": "Document: time_system.txt"
     },
     {
       "id": "doc_weapons",
@@ -2177,194 +2153,6 @@
       "norm_label": "strength attribute",
       "aliases": [],
       "description": "| **Сила** | 3–18 | Мышечная мощь: поднять, тащить, толкнуть, удержать, выломать, бороться, рубить, нести тяжесть, выбить дверь, удержать лошадь, перетащить раненого. | | **Ловкость** | 3–18 | Проворство и точность тела: уклониться, пролезть, удержать равно..."
-    },
-    {
-      "id": "time_body_state_effect",
-      "label": "Time effect on body state",
-      "node_type": "state_update",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/time_system.txt",
-      "source_location": {
-        "file": "DOCUMENTS/time_system.txt",
-        "section": "### 5. Влияние на состояние тела",
-        "line_start": 63,
-        "line_end": 83,
-        "line_range": "L63-L83"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 15,
-      "community_label": "Character states",
-      "norm_label": "time effect on body state",
-      "aliases": [],
-      "description": "Если прошло значимое время, тело может ухудшиться или восстановиться. Формула: `новое состояние = старое состояние + восстановление − расход − вред` Время влияет на состояния только при причине: | Причина | Что меняется | | ------------------------------ |..."
-    },
-    {
-      "id": "time_events_timers",
-      "label": "Events and timers",
-      "node_type": "event",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/time_system.txt",
-      "source_location": {
-        "file": "DOCUMENTS/time_system.txt",
-        "section": "### 8. События и таймеры",
-        "line_start": 126,
-        "line_end": 150,
-        "line_range": "L126-L150"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 11,
-      "community_label": "Time",
-      "norm_label": "events and timers",
-      "aliases": [],
-      "description": "Отложенное событие — это последствие, которое уже имеет причину, но срабатывает не сразу, а после прохождения времени. Формула: если текущее время >= время события → событие срабатывает Отложенное событие должно иметь: причину — почему оно вообще началось;..."
-    },
-    {
-      "id": "time_moves_when",
-      "label": "When time moves",
-      "node_type": "rule",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/time_system.txt",
-      "source_location": {
-        "file": "DOCUMENTS/time_system.txt",
-        "section": "### 2. Когда время движется",
-        "line_start": 26,
-        "line_end": 41,
-        "line_range": "L26-L41"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 11,
-      "community_label": "Time",
-      "norm_label": "when time moves",
-      "aliases": [],
-      "description": "Время проходит после любого действия, которое не мгновенное. Примеры: | Действие | Примерное время | | ---------------------------------------------- | --------------: | | быстро осмотреться, сказать фразу | 0–1 минута | | поговорить, осмотреть предмет, под..."
-    },
-    {
-      "id": "time_npc_effect",
-      "label": "Time effect on NPCs",
-      "node_type": "state_update",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/time_system.txt",
-      "source_location": {
-        "file": "DOCUMENTS/time_system.txt",
-        "section": "### 6. Влияние на NPC",
-        "line_start": 84,
-        "line_end": 104,
-        "line_range": "L84-L104"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 12,
-      "community_label": "NPC",
-      "norm_label": "time effect on npcs",
-      "aliases": [],
-      "description": "NPC не стоят на месте, пока игрок действует. После значимого времени NPC могут: 1. продолжить текущее дело; 2. завершить текущее дело; 3. перейти к следующему делу; 4. уйти; 5. прийти; 6. заметить следы или шум; 7. позвать других; 8. изменить отношение; 9...."
-    },
-    {
-      "id": "time_place_effect",
-      "label": "Time effect on places",
-      "node_type": "state_update",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/time_system.txt",
-      "source_location": {
-        "file": "DOCUMENTS/time_system.txt",
-        "section": "### 7. Влияние на место",
-        "line_start": 105,
-        "line_end": 125,
-        "line_range": "L105-L125"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 5,
-      "community_label": "World and turns",
-      "norm_label": "time effect on places",
-      "aliases": [],
-      "description": "Место тоже меняется со временем. После ожидания, сна, путешествия или возвращения нужно проверить: 1. погоду; 2. свет и время суток; 3. доступность ворот, рынка, переправы, ночлега; 4. движение NPC; 5. слухи; 6. следы; 7. опасность; 8. последствия прежних д..."
-    },
-    {
-      "id": "time_recalculation_after",
-      "label": "What recalculates after time",
-      "node_type": "workflow",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/time_system.txt",
-      "source_location": {
-        "file": "DOCUMENTS/time_system.txt",
-        "section": "### 4. Что пересчитывается после времени",
-        "line_start": 53,
-        "line_end": 62,
-        "line_range": "L53-L62"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 11,
-      "community_label": "Time",
-      "norm_label": "what recalculates after time",
-      "aliases": [],
-      "description": "После значимого хода проверяется: `погода + состояние тела + NPC + место + события` Минимальная цепочка: `прошло время → обновить состояния → обновить NPC → проверить события → собрать новую видимую сцену`"
-    },
-    {
-      "id": "time_two_levels",
-      "label": "Two-level time model",
-      "node_type": "schema",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/time_system.txt",
-      "source_location": {
-        "file": "DOCUMENTS/time_system.txt",
-        "section": "### 1. Уровни времени",
-        "line_start": 13,
-        "line_end": 25,
-        "line_range": "L13-L25"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 11,
-      "community_label": "Time",
-      "norm_label": "two-level time model",
-      "aliases": [],
-      "description": "В игре используются два уровня времени: `день + точное время внутри дня` День отвечает за общий исторический и календарный фон. Время внутри дня отвечает за текущую сцену: утро, день, вечер, ночь, свет, усталость, доступность NPC, работу мест, дорогу и ожид...",
-      "semantic_category": "schema",
-      "formula_kind": "schema_model"
-    },
-    {
-      "id": "turn_time_simple_formula",
-      "label": "Simple turn time formula",
-      "node_type": "formula",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/time_system.txt",
-      "source_location": {
-        "file": "DOCUMENTS/time_system.txt",
-        "section": "### 3. Простая формула времени хода",
-        "line_start": 42,
-        "line_end": 52,
-        "line_range": "L42-L52"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 11,
-      "community_label": "Time",
-      "norm_label": "simple turn time formula",
-      "aliases": [],
-      "description": "`новое время = старое время + длительность действия` Длительность выбирается по смыслу действия. Точность до минуты нужна только в напряжённых сценах: бой, погоня, стража, скрытность, пожар, болезнь, ожидание события. В обычной сцене достаточно крупных шаго...",
-      "semantic_category": "formula",
-      "formula_kind": "calculation_or_structural_formula"
     },
     {
       "id": "weapon_armor_combat_formula",
@@ -19650,168 +19438,6 @@
       "is_index_edge": true,
       "edge_role": "index",
       "semantic_weight": 0.1
-    },
-    {
-      "source": "doc_time",
-      "target": "day_part_model",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/time_system.txt",
-      "source_location": {
-        "file": "DOCUMENTS/time_system.txt",
-        "section": "### 9. День и часть суток",
-        "line_start": 157,
-        "line_end": 169,
-        "line_range": "L157-L169"
-      },
-      "weight": 1,
-      "description": "Time system --defines--> Day and day-part model; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_time",
-      "target": "time_body_state_effect",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/time_system.txt",
-      "source_location": {
-        "file": "DOCUMENTS/time_system.txt",
-        "section": "### 5. Влияние на состояние тела",
-        "line_start": 63,
-        "line_end": 83,
-        "line_range": "L63-L83"
-      },
-      "weight": 1,
-      "description": "Time system --defines--> Time effect on body state; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_time",
-      "target": "time_events_timers",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/time_system.txt",
-      "source_location": {
-        "file": "DOCUMENTS/time_system.txt",
-        "section": "### 8. События и таймеры",
-        "line_start": 126,
-        "line_end": 150,
-        "line_range": "L126-L150"
-      },
-      "weight": 1,
-      "description": "Time system --defines--> Events and timers; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_time",
-      "target": "time_moves_when",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/time_system.txt",
-      "source_location": {
-        "file": "DOCUMENTS/time_system.txt",
-        "section": "### 2. Когда время движется",
-        "line_start": 26,
-        "line_end": 41,
-        "line_range": "L26-L41"
-      },
-      "weight": 1,
-      "description": "Time system --defines--> When time moves; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_time",
-      "target": "time_npc_effect",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/time_system.txt",
-      "source_location": {
-        "file": "DOCUMENTS/time_system.txt",
-        "section": "### 6. Влияние на NPC",
-        "line_start": 84,
-        "line_end": 104,
-        "line_range": "L84-L104"
-      },
-      "weight": 1,
-      "description": "Time system --defines--> Time effect on NPCs; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_time",
-      "target": "time_place_effect",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/time_system.txt",
-      "source_location": {
-        "file": "DOCUMENTS/time_system.txt",
-        "section": "### 7. Влияние на место",
-        "line_start": 105,
-        "line_end": 125,
-        "line_range": "L105-L125"
-      },
-      "weight": 1,
-      "description": "Time system --defines--> Time effect on places; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_time",
-      "target": "time_recalculation_after",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/time_system.txt",
-      "source_location": {
-        "file": "DOCUMENTS/time_system.txt",
-        "section": "### 4. Что пересчитывается после времени",
-        "line_start": 53,
-        "line_end": 62,
-        "line_range": "L53-L62"
-      },
-      "weight": 1,
-      "description": "Time system --defines--> What recalculates after time; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_time",
-      "target": "time_two_levels",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/time_system.txt",
-      "source_location": {
-        "file": "DOCUMENTS/time_system.txt",
-        "section": "### 1. Уровни времени",
-        "line_start": 13,
-        "line_end": 25,
-        "line_range": "L13-L25"
-      },
-      "weight": 1,
-      "description": "Time system --defines--> Two-level time model; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_time",
-      "target": "turn_time_simple_formula",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/time_system.txt",
-      "source_location": {
-        "file": "DOCUMENTS/time_system.txt",
-        "section": "### 3. Простая формула времени хода",
-        "line_start": 42,
-        "line_end": 52,
-        "line_range": "L42-L52"
-      },
-      "weight": 1,
-      "description": "Time system --defines--> Simple turn time formula; confidence=EXTRACTED."
     },
     {
       "source": "doc_weapons",

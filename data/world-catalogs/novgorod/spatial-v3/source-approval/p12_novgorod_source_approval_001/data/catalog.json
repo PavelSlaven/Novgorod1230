@@ -1,0 +1,29 @@
+{
+  "schema_version": "rus.p12_novgorod_source_approval.v1",
+  "world_revision_id": "novgorod_spatial_v3_p12_source_approval_001",
+  "target_g1_id": "gn_nov_g1_xp017_yp026",
+  "region_id": "region_novgorod_land",
+  "status": "approved_for_p12_integration",
+  "production_activation_allowed": false,
+  "counts": {
+    "retained_g2": 15,
+    "retained_g3": 32,
+    "target_g4_host_sectors": 32,
+    "canonical_g5": 195,
+    "legacy_edge_mapping_bindings": 600,
+    "physical_exit_source_pairs": 358,
+    "derived_directional_traversals": 716,
+    "scene_profile_families": 17,
+    "scene_template_families": 17,
+    "scene_materialization_profiles": 195,
+    "scene_materialization_candidates": 195,
+    "scene_assignments": 195
+  },
+  "count_semantics": {
+    "195": "canonical G5 records reclassified one-to-one from approved-local legacy G4 records",
+    "358": "approved bidirectional physical source connections; each expands to two directional target traversals",
+    "600": "all approved legacy graph-edge mapping bindings: 242 hierarchy plus 358 physical",
+    "scene_profiles": "17 approved reusable source families and exactly one approved single-candidate materialization profile for each of 195 canonical G5 records"
+  },
+  "provenance_ref": "prov_p12_g1_r2_r3_v1"
+}

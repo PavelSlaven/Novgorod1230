@@ -37,6 +37,8 @@ function stage26Fixture() {
 }
 
 function turnFixture(input) {
+  const leaking = input.raw_text === 'Проверка утечки';
+  const coordinateLeak = input.raw_text === 'Проверка координат';
   return {
     version: 1, schema: 'turn_result', party_id: input.party_id, turn_id: 'turn-e2e-1', turn_number: input.turn_number,
     status: 'resolved', mode: 'attention', summary: { outcome: 'observed' }, commit: { status: 'committed' },
@@ -45,7 +47,7 @@ function turnFixture(input) {
       turn_id: 'turn-e2e-1', turn_number: input.turn_number,
       main_prose: 'Ты замечаешь свежие следы на дороге.',
       visible_context: { current_position: { g1_id: 'g1-1' } },
-      input_panel: { input_contract: 'intent_not_fact' }, action_panel: { suggested_actions: [] }, panels: {}
+      input_panel: { input_contract: 'intent_not_fact' }, action_panel: { suggested_actions: [] }, panels: leaking ? { route: { wrapper: { dependencyPins: [{ private_candidate: 'secret' }], rawTrace: 'opaque-trace', endpointBindings: ['binding-42'], routes: ['hidden-route-value'], route: 'nested-route-value' } } } : coordinateLeak ? { map: { wrapper: { layoutX: 42 } } } : {}
     }
   };
 }
@@ -107,4 +109,19 @@ test('real browser completes new game, opening acknowledgement, and first turn',
   assert.equal(contract, 'turn_screen');
   const hiddenLeak = await page.locator('body').evaluate((node) => /hidden_state|private_motives|write_plan/u.test(node.textContent ?? ''));
   assert.equal(hiddenLeak, false);
+  await page.fill('[data-turn-form] textarea[name="raw_text"]', 'Проверка утечки');
+  await page.click('[data-turn-form] button[type="submit"]');
+  await page.waitForSelector('.error');
+  const errorBody = await page.textContent('body');
+  assert.match(errorBody, /Public payload contains forbidden hidden fields/u);
+  assert.doesNotMatch(errorBody, /secret|dependencyPins|private_candidate|opaque-trace|binding-42|hidden-route-value|nested-route-value/u);
+  await page.fill('[data-new-game-form] textarea[name="start_text"]', 'Начать снова');
+  await page.click('[data-new-game-form] button[type="submit"]');
+  await page.waitForSelector('[data-screen-schema="first_game_screen"]');
+  await page.fill('[data-turn-form] textarea[name="raw_text"]', 'Проверка координат');
+  await page.click('[data-turn-form] button[type="submit"]');
+  await page.waitForSelector('.error');
+  const coordinateError = await page.textContent('body');
+  assert.match(coordinateError, /Public payload contains forbidden hidden fields/u);
+  assert.doesNotMatch(coordinateError, /layoutX|42/u);
 });

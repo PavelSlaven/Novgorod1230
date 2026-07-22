@@ -75,7 +75,7 @@ async function readExpandedDdl(projectRoot) {
 
 function parseWorldBaseTables(ddl) {
   const tables = [];
-  const pattern = /CREATE\s+TABLE\s+world_base\.([a-z_][a-z0-9_]*)\s*\(/giu;
+  const pattern = /CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?world_base\.([a-z_][a-z0-9_]*)\s*\(/giu;
   for (const match of ddl.matchAll(pattern)) {
     const bodyStart = match.index + match[0].length;
     const bodyEnd = findMatchingParenthesis(ddl, bodyStart - 1);

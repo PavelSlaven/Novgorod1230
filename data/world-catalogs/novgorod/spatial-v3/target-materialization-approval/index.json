@@ -1,0 +1,18 @@
+{
+  "schema_version": "rus.spatial-v3.p12-target-materialization-approval-index.v1",
+  "package_id": "P12_TARGET_MATERIALIZATION_APPROVAL_V1",
+  "package_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1.zip",
+  "sha256": "c26077b7ed2ac2a92f8883e46ec5aa02519cf3dc9a231022d9a7d347ce2a8b67",
+  "approval_status": "APPROVED_WITH_ACTIVATION_BOUNDARY",
+  "input_pins": {
+    "source_approval_zip_sha256": "e3342beac492ff6433a03ecbf7c32dbffdc9dafce8e7ebd623af826b33d7bbbe",
+    "target_contract_spec_zip_sha256": "1833b383e5ee2568330ab88ae40c7d5b9d057dbde81aa4f43641c48ecd3eb6f3"
+  },
+  "intake_status": "blocked_fail_closed",
+  "materialization_authorized": false,
+  "blockers": [
+    "P12_APPROVAL_UPSTREAM_MANIFEST_ORDER_MISMATCH",
+    "P12_APPROVAL_BRANCH_HEAD_UNBOUND"
+  ],
+  "production_activation": "not_authorized"
+}

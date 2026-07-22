@@ -1,0 +1,11 @@
+{
+  "records": [
+    {
+      "id": "scene_applicability_exact_source_ref_v1",
+      "version": 1,
+      "rule_kind": "exact_source_ref",
+      "status": "approved",
+      "provenance_ref": "prov_p12_g1_r2_r3_v1"
+    }
+  ]
+}

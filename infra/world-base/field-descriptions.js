@@ -114,6 +114,18 @@ export const TABLE_GROUPS = [
     tables: ['world_revisions', 'classification_schemes', 'universal_categories', 'category_labels', 'category_scheme_mappings', 'universal_category_relations', 'universal_parameter_definitions', 'region_category_options']
   },
   {
+    title: 'Spatial architecture v3: canonical authoring core (target only)',
+    tables: ['spatial_v3_world_revisions', 'spatial_v3_authoring_versions', 'spatial_v3_nodes', 'spatial_v3_node_parents', 'spatial_v3_node_classes', 'spatial_v3_node_facets', 'spatial_v3_g1_grid_cells', 'spatial_v3_controlled_vocabulary_bindings', 'spatial_v3_authoring_dependency_edges', 'spatial_v3_graph_node_migration_inventory']
+  },
+  {
+    title: 'Spatial architecture v3: orientation and route authoring (target only)',
+    tables: ['spatial_v3_orientation_reference_frames', 'spatial_v3_movement_orientation_profiles', 'spatial_v3_movement_orientation_profile_points', 'spatial_v3_relative_orientations', 'spatial_v3_g4_directional_exits', 'spatial_v3_world_routes', 'spatial_v3_world_route_points', 'spatial_v3_world_route_segments', 'spatial_v3_world_route_segment_spatial_contexts', 'spatial_v3_world_route_endpoint_bindings', 'spatial_v3_boundary_crossing_contracts', 'spatial_v3_spatial_transition_contracts', 'spatial_v3_spatial_transition_allowed_route_kinds', 'spatial_v3_transition_environment_profiles', 'spatial_v3_movement_method_cost_profiles', 'spatial_v3_movement_method_cost_options', 'spatial_v3_dynamic_recheck_policies', 'spatial_v3_dynamic_recheck_policy_points', 'spatial_v3_activity_contracts', 'spatial_v3_action_contracts', 'spatial_v3_movement_mode_transition_contracts', 'spatial_v3_recovery_transition_templates']
+  },
+  {
+    title: 'Spatial architecture v3: scene dependency closure (target only)',
+    tables: ['spatial_v3_regional_scene_template_bases', 'spatial_v3_scene_selection_rules', 'spatial_v3_scene_applicability_rules']
+  },
+  {
     title: 'Materialization v2: NPC-профили',
     tables: ['region_npc_archetypes', 'region_demographic_profiles', 'region_name_pools', 'region_name_pool_entries', 'region_appearance_profiles', 'region_clothing_profiles', 'region_equipment_profiles', 'region_equipment_profile_entries', 'region_knowledge_profiles', 'region_behavior_profiles', 'region_relationship_profiles', 'region_activity_profiles', 'region_schedule_profiles', 'region_npc_profile_sets']
   },
@@ -191,6 +203,41 @@ export const TABLE_PURPOSE_FALLBACK = {
   record_sources: 'Связь источника с любой записью справочника (полиморфная).',
   audit_log: 'Журнал ручных правок и утверждений (полиморфная цель).',
   world_revisions: 'Неизменяемые утверждённые ревизии каталогов мира и их общий digest.',
+  spatial_v3_world_revisions: 'Target v3 version graph canonical world authoring; остаётся read-only и не активирует v3 до P28.',
+  spatial_v3_authoring_versions: 'Явные читаемые версии authoring aggregate с revision и canonical digest; latest-row resolution запрещён.',
+  spatial_v3_nodes: 'Версионированные canonical G0–G5 spatial nodes; legacy graph_nodes не являются их implicit replacement.',
+  spatial_v3_node_parents: 'Единственная direct-parent containment relation canonical G0–G5.',
+  spatial_v3_node_classes: 'Упорядоченные universal category classes spatial node version.',
+  spatial_v3_node_facets: 'Упорядоченные facet categories spatial node version.',
+  spatial_v3_g1_grid_cells: 'Явная G1 grid convention и координаты, без выводов из title/label.',
+  spatial_v3_controlled_vocabulary_bindings: 'Versioned digest-pinned bindings controlled vocabulary registry for one spatial authoring revision.',
+  spatial_v3_authoring_dependency_edges: 'Нормализованные version-pinned mechanically relevant authoring dependencies.',
+  spatial_v3_regional_scene_template_bases: 'Утверждённые региональные основы scene templates с topological-only geometry claim.',
+  spatial_v3_scene_selection_rules: 'Закрытые versioned правила выбора scene template; P12 поддерживает только single_candidate.',
+  spatial_v3_scene_applicability_rules: 'Закрытые versioned правила применимости scene candidate к точному source reference.',
+  spatial_v3_graph_node_migration_inventory: 'Review-only deterministic mapping legacy graph_nodes to v3 canonical entities; ambiguity/unreviewed row остаётся gap.',
+  spatial_v3_orientation_reference_frames: 'Версионированные orientation frames с детерминированным millidegree offset и запрещёнными циклами.',
+  spatial_v3_movement_orientation_profiles: 'Fixed/curved profiles движения и только явная reciprocal reverse relation.',
+  spatial_v3_movement_orientation_profile_points: 'Упорядоченные точки curved profile, включая границы 0 и 1_000_000 ppm.',
+  spatial_v3_relative_orientations: 'Контекстные относительные направления; они не создают traversable edge.',
+  spatial_v3_g4_directional_exits: 'Явные G4 exits к canonical G5 или physical boundary, без inferred destination.',
+  spatial_v3_world_routes: 'Направленные finite routes; topology materialized только точками, сегментами и bindings.',
+  spatial_v3_world_route_points: 'Упорядоченные route points и boundary switch phase.',
+  spatial_v3_world_route_segments: 'Физические directed segments с pinned profiles и base_minutes.',
+  spatial_v3_world_route_segment_spatial_contexts: 'Ровно один factual spatial context для каждого segment version.',
+  spatial_v3_world_route_endpoint_bindings: 'Единственные authored route endpoints, canonical G5 и departure exit/scene slot.',
+  spatial_v3_boundary_crossing_contracts: 'Zero-own-time boundary switch между exact adjacent segment contexts.',
+  spatial_v3_spatial_transition_contracts: 'Явные G1/G0/jurisdiction transitions; diagonals и implicit decomposition запрещены.',
+  spatial_v3_spatial_transition_allowed_route_kinds: 'Нормализованный непустой allowlist route kinds для exact spatial transition contract.',
+  spatial_v3_transition_environment_profiles: 'Версионированные dynamic environment rules без дублирования geometry времени.',
+  spatial_v3_movement_method_cost_profiles: 'Выбор baseline movement method и finite method-cost options.',
+  spatial_v3_movement_method_cost_options: 'Нормализованные baseline/rational-factor cost варианты.',
+  spatial_v3_dynamic_recheck_policies: 'Политика recheck segment movement; slicing не меняет итоговую длительность.',
+  spatial_v3_dynamic_recheck_policy_points: 'Явные возрастающие interior progress points recheck policy.',
+  spatial_v3_activity_contracts: 'Time-only activity authoring без physical segment progress.',
+  spatial_v3_action_contracts: 'Action-only contracts; blocked/failed action preserves exact departure endpoint.',
+  spatial_v3_movement_mode_transition_contracts: 'Board/disembark/load/control transitions без transfer active execution.',
+  spatial_v3_recovery_transition_templates: 'Finite deterministic recovery selectors без party IDs и nearest fallback.',
   classification_schemes: 'Локально зафиксированные версии внешних классификационных схем без runtime live-запросов.',
   universal_categories: 'Универсальные категории, которые код вправе использовать, но не создавать.',
   category_labels: 'Нормализованные preferred, alternative, historical и deprecated labels категорий.',
@@ -480,6 +527,33 @@ export const fields = {
       'JSON: id соседних graph_nodes. Не источник истины; кеш/подсказка для редактора. Истина о связях — в graph_edges.',
     is_known_to_player_default: 'Известен ли узел игроку по умолчанию (канон, не партия).',
     is_known_to_character_default: 'Известен ли узел персонажу по умолчанию.'
+  },
+  spatial_v3_nodes: {
+    entity_kind: 'Константный discriminator spatial_node для FK на version graph.',
+    id: 'Стабильный ID canonical spatial entity; не legacy display name.',
+    version: 'Положительная immutable authoring version.',
+    world_revision_id: 'FK → spatial_v3_world_revisions(id): совместимая revision/version graph.',
+    spatial_level: 'Ровно один canonical уровень G0–G5.',
+    traversal_model: 'Обязателен только для G4: enclosed, bounded или through_area.',
+    provenance_ref: 'FK → source_records(id): provenance версии.',
+    canonical_digest: 'SHA-256 canonical aggregate representation.'
+  },
+  spatial_v3_node_parents: {
+    child_id: 'Canonical child spatial node ID.',
+    parent_id: 'Canonical direct parent spatial node ID; self-parent запрещён.',
+    world_revision_id: 'Revision graph, в котором relation reviewed.'
+  },
+  spatial_v3_authoring_dependency_edges: {
+    dependency_role: 'Controlled dependency role из digest-pinned registry; не free text.',
+    canonical_ordinal: 'Контрактный порядок dependency edge внутри source и role.',
+    provenance_ref: 'FK → source_records(id): evidence dependency edge.'
+  },
+  spatial_v3_graph_node_migration_inventory: {
+    legacy_graph_node_id: 'FK → legacy graph_nodes(id); mapping только по explicit source ID.',
+    mapping_status: 'reviewed, gap, ambiguous или not_applicable; name matching не допускается.',
+    source_digest: 'Digest ровно той legacy source row, для которой сделан review.',
+    mapping_digest: 'Digest детерминированной migration inventory row.',
+    gap_code: 'Обязателен для gap/ambiguous; блокирует migration apply.'
   },
   graph_edges: {
     edge_type:

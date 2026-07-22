@@ -23,7 +23,12 @@ function firstScreen() {
 
 test('public screen contract accepts versioned read models and rejects hidden fields', () => {
   assert.equal(validatePublicScreen(firstScreen()).schema, 'first_game_screen');
+  assert.equal(validatePublicScreen({ ...firstScreen(), panels: { route: { player_label: 'Дорога' } } }).schema, 'first_game_screen');
   assert.throws(() => validatePublicScreen({ ...firstScreen(), hidden_state: {} }), { code: 'PUBLIC_PAYLOAD_HIDDEN_LEAK' });
+  assert.throws(() => validatePublicScreen({ ...firstScreen(), panels: { route: { factual_route: 'internal' } } }), { code: 'PUBLIC_PAYLOAD_HIDDEN_LEAK' });
+  for (const leak of ['dependencyPins', 'route', 'routePlan', 'routes', 'candidateSet', 'rawDiagnostic', 'rawTrace', 'trace', 'endpointBindings', 'bindings', 'nested-route', 'layoutX']) {
+    assert.throws(() => validatePublicScreen({ ...firstScreen(), wrapper: { [leak]: { secret: 'never public' } } }), { code: 'PUBLIC_PAYLOAD_HIDDEN_LEAK' }, leak);
+  }
   assert.throws(() => assertNoHiddenFields({ nested: { private_motives: [] } }), { code: 'PUBLIC_PAYLOAD_HIDDEN_LEAK' });
 });
 

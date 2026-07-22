@@ -1,5 +1,48 @@
 # Генерация мира и ходы
 
+## Статус и граница миграции
+
+Этот документ задаёт **target materialization v3** для генерации мира и ходов. До единого activation gate P28 production runtime обслуживается только active materialization v2. Target-правила разрешены лишь для документации, contracts, fixtures, migration и shadow composition; partial activation, dual write и v3→v2 fallback запрещены.
+
+## 1. Target spatial vocabulary and player projection
+
+В target модели вопросы масштаба разделены строго:
+
+```text
+G0 = историко-географический регион
+G1 = территориальная ячейка
+G2 = крупная зона ячейки
+G3 = устойчивое конкретное место
+G4 = крупная часть места
+G5 = конкретная локальная локация или комплекс
+G6 = непосредственно разыгрываемое пространство
+scene_position = устойчивая позиция внутри G6
+```
+
+Старые слова `place`, `location`, `minilocation` и `anchor` не являются новыми уровнями и не могут заменять typed refs. Player-facing описание может использовать естественные слова, но factual position хранится только через утверждённый endpoint и соответствующий G6/`scene_position`. UI-координаты, проза и предполагаемое направление не являются factual topology.
+
+## 2. New-game, materialization and scene preparation
+
+New-game фиксирует только утверждённые входы: историческую рамку, canonical G0–G5, factual endpoint, персонажа и необходимые pinned versions/digests. Если required candidate set пуст, binding неоднозначен или отсутствует approved cost/topology, результатом является typed data gap и hard block; nearest/first-row/name-based/LLM fallback запрещены.
+
+`world_base` target-владельцем canonical G0–G5, route topology, templates и profiles. Party state владеет ограниченно generated G5 из approved G4 expansion profile, G6, `scene_position`, динамическими instances и append-only последствиями. Generated G5 создаётся только через конкретный open frontier, конечные approved candidates и capacity; код не создаёт G1–G4 или исторические факты во время хода.
+
+Подготовка G6, NPC, items, containers и slots возвращает proposal/report из существующих templates/profiles/rules. Единственный commit component применяет утверждённый write set атомарно. NPC и предметы не создаются по имени, свободному тексту игрока или LLM; для каждого нужен approved slot/candidate и причинная связь. Повторная preparation использует idempotency/trace, а не создаёт второй baseline.
+
+## 3. Expansion and turn boundary
+
+Path query отделён от resolution/preparation: option с `requires_frontier_resolution` или `requires_preparation` не executable, не перемещает персонажа и не двигает время. Только новый запрос после отдельного commit может вернуть `ready` option с полными steps. Ход исполняет только `immediate_action`, `timed_activity` или `timed_traversal`; смена G-ancestor, endpoint binding и подготовка не добавляют скрытого времени.
+
+LLM выбирает только bounded option и создаёт разрешённую прозу из player-safe context. Он не создаёт factual topology, routes, endpoints, G5/G6, NPC/item slots или write patch. Target traceability: `spatial_architecture_standard_g0_g6.md` §§1–2, 5–6, 9–10, 12, 14–16.
+
+---
+
+## Приложение A. Архивный v2-источник для migration traceability
+
+Нижеследующий текст сохранён только как historical/migration source. Он не активирует v2 semantics в target v3 и не разрешает mixed execution, dual write или fallback. До P28 active production boundary определён отдельно.
+
+# Генерация мира и ходы
+
 Мир игры должен генерироваться не как готовая энциклопедия всей Руси, а как слой за слоем материализуемая историческая среда. Сначала создаётся достаточный стартовый узел партии, затем мир расширяется только там, где игрок, персонаж, время, дорога, слухи, NPC или последствия действительно к нему прикасаются.
 
 Главное правило materialization v2:

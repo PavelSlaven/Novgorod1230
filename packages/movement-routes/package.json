@@ -2,8 +2,13 @@
   "name": "@rus/movement-routes",
   "version": "0.13.0",
   "type": "module",
-  "exports": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./spatial-v3": "./src/spatial-v3-ports.js",
+    "./spatial-v3-planner": "./src/spatial-v3.js"
+  },
   "dependencies": {
+    "@rus/contracts": "0.9.0",
     "@rus/kernel": "0.9.0"
   }
 }

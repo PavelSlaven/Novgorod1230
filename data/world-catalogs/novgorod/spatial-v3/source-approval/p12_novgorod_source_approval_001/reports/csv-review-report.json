@@ -1,0 +1,11 @@
+{
+  "result": "PASS",
+  "counts": {
+    "canonical-g5-inventory.csv": 195,
+    "edge-mapping-review.csv": 600
+  },
+  "expected": {
+    "canonical-g5-inventory.csv": 195,
+    "edge-mapping-review.csv": 600
+  }
+}

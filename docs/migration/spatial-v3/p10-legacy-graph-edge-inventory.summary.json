@@ -1,0 +1,14 @@
+{
+  "source_archive": "data/world-base-sources/rus13-base-v1.tar.gz",
+  "source_member": "nov_region_audit/novgorod_full_graph_g1_g4_v6_game_ready_EXTRACTED/novgorod_full_graph_g1_g4_v6_game_ready/tsv_import/novgorod_graph_edges_g1_g4_full_v6.tsv",
+  "source_sha256": "04631ac503d2febe251e48957fae4d82f412243d75aaa69bd55602c56f75b945",
+  "row_count": 30248,
+  "counts": {
+    "containment_only": 0,
+    "deprecated_editor_hint": 0,
+    "gap": 30248,
+    "route_chain_candidate": 0
+  },
+  "digest": "4dcd068fbb9e6355f3b4fc9d2d3e2641fb1f0a5e8d2fb6ce2e9785160a7e3733",
+  "policy": "Every unreviewed legacy edge is a typed gap; no terrain/time/reverse field becomes authoritative v3 topology."
+}

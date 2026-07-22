@@ -55,6 +55,7 @@
     "./stages/stage-12": "./src/stages/stage-12-player-character-audit/index.js",
     "./stages/stage-12/compat": "./src/stages/stage-12-player-character-audit/compat.js",
     "./orchestrator": "./src/orchestrator/index.js",
+    "./spatial-v3-stage-mapping": "./src/spatial-v3-stage-mapping.js",
     "./legacy": "./src/legacy-adapter.js"
   },
   "dependencies": {

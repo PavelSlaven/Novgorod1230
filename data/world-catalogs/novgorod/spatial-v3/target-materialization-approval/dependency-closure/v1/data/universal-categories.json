@@ -1,0 +1,1922 @@
+{
+  "schema_version": "rus.p12_closure.universal_categories.v1",
+  "records": [
+    {
+      "id": "spatial.g0.historical_geographic_region",
+      "domain": "spatial_structure",
+      "stable_code": "spatial.g0.historical_geographic_region",
+      "facet": "structural_g0",
+      "preferred_label": "Historical-geographic region",
+      "definition": "A broad historical-geographic region that scopes canonical authoring while leaving medieval administrative borders unresolved.",
+      "scope_note": "Only the exact approved Historical-geographic region meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Use for an approved G0 regional root."
+      ],
+      "exclusion_rules": [
+        "Exclude technical cells and claims of exact political control."
+      ],
+      "title": "Historical-geographic region",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "repository_line_range",
+          "canonical_path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
+          "raw_sha256": "f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1",
+          "start_line": 239,
+          "end_line": 247,
+          "required_text": "spatial.g0.historical_geographic_region"
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "abbefe7c499bbbde95e7a50ddb0259993ef9bb0bfd0ca37ef069472f1ddb69ba"
+    },
+    {
+      "id": "spatial.g1.territorial_grid_cell",
+      "domain": "spatial_structure",
+      "stable_code": "spatial.g1.territorial_grid_cell",
+      "facet": "structural_g1",
+      "preferred_label": "Territorial grid cell",
+      "definition": "A fixed technical grid cell for regional authoring whose perimeter has no medieval boundary meaning.",
+      "scope_note": "Only the exact approved Territorial grid cell meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Use for one approved coordinate cell under a G0 root."
+      ],
+      "exclusion_rules": [
+        "Exclude historical-border or ownership interpretation."
+      ],
+      "title": "Territorial grid cell",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "repository_line_range",
+          "canonical_path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
+          "raw_sha256": "f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1",
+          "start_line": 249,
+          "end_line": 269,
+          "required_text": "spatial.g1.territorial_grid_cell"
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "5e056d92ea3903021e5b2536a98d3baf90eddd47c100241fcf4b250ca415620e"
+    },
+    {
+      "id": "spatial.g2.territorial_zone",
+      "domain": "spatial_structure",
+      "stable_code": "spatial.g2.territorial_zone",
+      "facet": "structural_g2",
+      "preferred_label": "Territorial zone",
+      "definition": "A stable topological subdivision of one G1 that groups related places without asserting an exact polygon.",
+      "scope_note": "Only the exact approved Territorial zone meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Use for an approved G2 parent zone."
+      ],
+      "exclusion_rules": [
+        "Exclude parcel, scene, and exact cadastral readings."
+      ],
+      "title": "Territorial zone",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "repository_line_range",
+          "canonical_path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
+          "raw_sha256": "f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1",
+          "start_line": 271,
+          "end_line": 286,
+          "required_text": "spatial.g2.territorial_zone"
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "044d423e229b2467fec6e48359922b8635cfd01cb52b989f3c2a54650bc2f99c"
+    },
+    {
+      "id": "spatial.g3.settlement",
+      "domain": "spatial_structure",
+      "stable_code": "spatial.g3.settlement",
+      "facet": "structural_g3",
+      "preferred_label": "Settlement place",
+      "definition": "A stable place supported as inhabited, with population, continuity and layout limited to separately approved evidence.",
+      "scope_note": "Only the exact approved Settlement place meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Use only where settlement evidence is explicit."
+      ],
+      "exclusion_rules": [
+        "Exclude inferred town rank, household count, or plan."
+      ],
+      "title": "Settlement place",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "repository_line_range",
+          "canonical_path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
+          "raw_sha256": "f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1",
+          "start_line": 288,
+          "end_line": 303,
+          "required_text": "spatial.g3.settlement"
+        },
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip",
+          "raw_sha256": "6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b",
+          "internal_path": "gn_nov_g1_xp017_yp026_rebuild_002/04-g3/g3-places.json",
+          "internal_raw_sha256": "bfd84b3b5fd38cbdda70dbe2c3acf3083ac515c2b8940cfd7808b3b6c0f2b16b",
+          "json_pointer": "",
+          "record_predicate": {
+            "field": "id",
+            "equals": "gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "4de2c2ebb07f0eab72c19f1a46706cfc1ebb061072932d2cd3aeb099ce3ed74e"
+    },
+    {
+      "id": "spatial.g3.built_site",
+      "domain": "spatial_structure",
+      "stable_code": "spatial.g3.built_site",
+      "facet": "structural_g3",
+      "preferred_label": "Built or ritual site",
+      "definition": "A stable place supported by construction or ritual-use evidence without supplying an undocumented structure inventory.",
+      "scope_note": "Only the exact approved Built or ritual site meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Use for the approved Zaostrovye burial context."
+      ],
+      "exclusion_rules": [
+        "Exclude exact burial plan, buildings, and continuous use."
+      ],
+      "title": "Built or ritual site",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "repository_line_range",
+          "canonical_path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
+          "raw_sha256": "f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1",
+          "start_line": 288,
+          "end_line": 303,
+          "required_text": "spatial.g3.built_site"
+        },
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip",
+          "raw_sha256": "6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b",
+          "internal_path": "gn_nov_g1_xp017_yp026_rebuild_002/04-g3/g3-places.json",
+          "internal_raw_sha256": "bfd84b3b5fd38cbdda70dbe2c3acf3083ac515c2b8940cfd7808b3b6c0f2b16b",
+          "json_pointer": "",
+          "record_predicate": {
+            "field": "id",
+            "equals": "gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "39363b00ecf638fd72e5fabee80162f1431b42856beec1e9814ae82fdf85872f"
+    },
+    {
+      "id": "spatial.g3.natural_feature",
+      "domain": "spatial_structure",
+      "stable_code": "spatial.g3.natural_feature",
+      "facet": "structural_g3",
+      "preferred_label": "Natural feature place",
+      "definition": "A stable hydrographic, landform, vegetation, island, or floodplain feature represented topologically.",
+      "scope_note": "Only the exact approved Natural feature place meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Use for explicitly classified natural G3 features."
+      ],
+      "exclusion_rules": [
+        "Exclude settlement, built-site, and exact 1230 geometry claims."
+      ],
+      "title": "Natural feature place",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "repository_line_range",
+          "canonical_path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
+          "raw_sha256": "f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1",
+          "start_line": 288,
+          "end_line": 303,
+          "required_text": "spatial.g3.natural_feature"
+        },
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip",
+          "raw_sha256": "6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b",
+          "internal_path": "gn_nov_g1_xp017_yp026_rebuild_002/04-g3/g3-places.json",
+          "internal_raw_sha256": "bfd84b3b5fd38cbdda70dbe2c3acf3083ac515c2b8940cfd7808b3b6c0f2b16b",
+          "json_pointer": "",
+          "record_predicate": {
+            "field": "id",
+            "equals": "gn_nov_g3_xp017_yp026_r2_south_entry_reach"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "74bf48e0a31962d7fa4b253122e5daf2d299194d570373bdf9f099f2c39f75b4"
+    },
+    {
+      "id": "spatial.g3.route_site",
+      "domain": "spatial_structure",
+      "stable_code": "spatial.g3.route_site",
+      "facet": "structural_g3",
+      "preferred_label": "Route-function place",
+      "definition": "A stable passage, approach, landing, bypass, or navigation-decision place without implied engineering.",
+      "scope_note": "Only the exact approved Route-function place meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Use only for explicitly classified route-function G3 records."
+      ],
+      "exclusion_rules": [
+        "Exclude roads, harbours, and all-season access unless separately evidenced."
+      ],
+      "title": "Route-function place",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "repository_line_range",
+          "canonical_path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
+          "raw_sha256": "f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1",
+          "start_line": 288,
+          "end_line": 303,
+          "required_text": "spatial.g3.route_site"
+        },
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip",
+          "raw_sha256": "6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b",
+          "internal_path": "gn_nov_g1_xp017_yp026_rebuild_002/04-g3/g3-places.json",
+          "internal_raw_sha256": "bfd84b3b5fd38cbdda70dbe2c3acf3083ac515c2b8940cfd7808b3b6c0f2b16b",
+          "json_pointer": "",
+          "record_predicate": {
+            "field": "id",
+            "equals": "gn_nov_g3_xp017_yp026_r2_central_current_split"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "bbba4cb9fe570a5bb46acb3427271006d44a2a49423c1cd213e74b6dfbe0bb47"
+    },
+    {
+      "id": "spatial.g3.resource_site",
+      "domain": "spatial_structure",
+      "stable_code": "spatial.g3.resource_site",
+      "facet": "structural_g3",
+      "preferred_label": "Resource-use place",
+      "definition": "A stable bounded resource-use place that does not establish ownership, installations, or permanent exploitation.",
+      "scope_note": "Only the exact approved Resource-use place meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Use for the approved Vikh Tuy resource edge."
+      ],
+      "exclusion_rules": [
+        "Exclude exclusive rights and fixed production facilities."
+      ],
+      "title": "Resource-use place",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "repository_line_range",
+          "canonical_path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
+          "raw_sha256": "f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1",
+          "start_line": 288,
+          "end_line": 303,
+          "required_text": "spatial.g3.resource_site"
+        },
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip",
+          "raw_sha256": "6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b",
+          "internal_path": "gn_nov_g1_xp017_yp026_rebuild_002/04-g3/g3-places.json",
+          "internal_raw_sha256": "bfd84b3b5fd38cbdda70dbe2c3acf3083ac515c2b8940cfd7808b3b6c0f2b16b",
+          "json_pointer": "",
+          "record_predicate": {
+            "field": "id",
+            "equals": "gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "9efc5542156ece4d2233ec8e8662bd1c20eec81a187603cf46bd2834279d32ac"
+    },
+    {
+      "id": "spatial.g3.recurrent_site",
+      "domain": "spatial_structure",
+      "stable_code": "spatial.g3.recurrent_site",
+      "facet": "structural_g3",
+      "preferred_label": "Recurrent locality",
+      "definition": "A recurrent human-associated locality retained when exact settlement status and localization remain unproved.",
+      "scope_note": "Only the exact approved Recurrent locality meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Use for the approved Vikh Tuy localization area."
+      ],
+      "exclusion_rules": [
+        "Exclude exact settlement, permanent occupation, and exact coordinates."
+      ],
+      "title": "Recurrent locality",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "repository_line_range",
+          "canonical_path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
+          "raw_sha256": "f3226c1da844c88393a72d516cbf66102e183488e76eee84d3cab84121217cb1",
+          "start_line": 288,
+          "end_line": 303,
+          "required_text": "spatial.g3.recurrent_site"
+        },
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip",
+          "raw_sha256": "6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b",
+          "internal_path": "gn_nov_g1_xp017_yp026_rebuild_002/04-g3/g3-places.json",
+          "internal_raw_sha256": "bfd84b3b5fd38cbdda70dbe2c3acf3083ac515c2b8940cfd7808b3b6c0f2b16b",
+          "json_pointer": "",
+          "record_predicate": {
+            "field": "id",
+            "equals": "gn_nov_g3_xp017_yp026_r2_vikhtuy_locality"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "1ff0455c9fec6315cd8e47f8d03759c8ab66722d88ee17cd44efc9edcabc552f"
+    },
+    {
+      "id": "spatial.g4.sector",
+      "domain": "spatial_structure",
+      "stable_code": "spatial.g4.sector",
+      "facet": "structural_g4",
+      "preferred_label": "Authored G4 sector",
+      "definition": "A canonical authored sector inside one G3 that hosts bounded traversal and materialization contracts.",
+      "scope_note": "Only the exact approved Authored G4 sector meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Use only for version-pinned G4 authoring rows."
+      ],
+      "exclusion_rules": [
+        "Exclude runtime-created parcels and arbitrary subdivisions."
+      ],
+      "title": "Authored G4 sector",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "spatial.g4.sector@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "7e32dddde76f78929d1013ec4af9587538195a0a2ef25c434e4c1d536b84467a"
+    },
+    {
+      "id": "spatial.g5.parcel",
+      "domain": "spatial_structure",
+      "stable_code": "spatial.g5.parcel",
+      "facet": "structural_g5",
+      "preferred_label": "Materializable G5 parcel",
+      "definition": "A parcel-scale template category instantiated only from an approved G4 expansion profile into party state.",
+      "scope_note": "Only the exact approved Materializable G5 parcel meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Use only through an approved bounded materialization profile."
+      ],
+      "exclusion_rules": [
+        "Exclude canonical G0-G4 authoring and pre-created runtime instances."
+      ],
+      "title": "Materializable G5 parcel",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "spatial.g5.parcel@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "f19492d595577416a35a6d0be82b09541b553007b1d293663825f4df57444525"
+    },
+    {
+      "id": "access_zone",
+      "domain": "spatial_materialization",
+      "stable_code": "access_zone",
+      "facet": "spatial_function",
+      "preferred_label": "Access-control zone",
+      "definition": "An area whose approved function is to govern approach or entry conditions for a materialized scene.",
+      "scope_note": "Only the exact approved Access-control zone meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include only when an approved profile declares an access function."
+      ],
+      "exclusion_rules": [
+        "Exclude ownership, fortification, or guaranteed passage."
+      ],
+      "title": "Access-control zone",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "access_zone@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "a03f26d38bcb7f76ba00141cecc344d58b951f3896917b60aab3de4230379b74"
+    },
+    {
+      "id": "areal",
+      "domain": "spatial_materialization",
+      "stable_code": "areal",
+      "facet": "geometry",
+      "preferred_label": "Areal geometry facet",
+      "definition": "A geometry facet recording area-like topological extent rather than point-like or line-like extent.",
+      "scope_note": "Only the exact approved Areal geometry facet meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include only on records whose approved geometry contract is areal."
+      ],
+      "exclusion_rules": [
+        "Exclude surveyed boundary precision and historical polygon claims."
+      ],
+      "title": "Areal geometry facet",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "areal@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "0515c209563c0022186597de2f6d77bc258f35fbacc34b61bd264f30c8aabf5a"
+    },
+    {
+      "id": "boundary_route_zone",
+      "domain": "spatial_materialization",
+      "stable_code": "boundary_route_zone",
+      "facet": "spatial_function",
+      "preferred_label": "Boundary-route zone",
+      "definition": "A zone combining boundary proximity with an approved traversable route function.",
+      "scope_note": "Only the exact approved Boundary-route zone meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include where both route and boundary functions are source-classified."
+      ],
+      "exclusion_rules": [
+        "Exclude legal-border status and automatic crossing permission."
+      ],
+      "title": "Boundary-route zone",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "boundary_route_zone@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "750dc9a1dc2c928777912f0444a6cbbcf6e1746398eb7339fcefb32fc4665c16"
+    },
+    {
+      "id": "boundary_zone",
+      "domain": "spatial_materialization",
+      "stable_code": "boundary_zone",
+      "facet": "spatial_function",
+      "preferred_label": "Boundary-adjacent zone",
+      "definition": "A zone used to stage or describe an approved topological boundary context.",
+      "scope_note": "Only the exact approved Boundary-adjacent zone meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include for explicitly bound boundary contexts."
+      ],
+      "exclusion_rules": [
+        "Exclude political delimitation and inferred neighbouring authority."
+      ],
+      "title": "Boundary-adjacent zone",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "boundary_zone@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "8ffc57d62a64d54713082d4083971dbe632cd521fc21f2bcadbdaacef63f89c3"
+    },
+    {
+      "id": "buffer_zone",
+      "domain": "spatial_materialization",
+      "stable_code": "buffer_zone",
+      "facet": "spatial_function",
+      "preferred_label": "Protective buffer zone",
+      "definition": "A separating area maintained around another approved function to prevent direct overlap or access.",
+      "scope_note": "Only the exact approved Protective buffer zone meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include only when a source family declares buffering."
+      ],
+      "exclusion_rules": [
+        "Exclude undocumented distance, fence, or exclusion enforcement."
+      ],
+      "title": "Protective buffer zone",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "buffer_zone@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "5993c90cddc56a35b69cfab903c117f0e8a289a26c40d02c5574dc2a89f72495"
+    },
+    {
+      "id": "burial_zone",
+      "domain": "spatial_materialization",
+      "stable_code": "burial_zone",
+      "facet": "ritual_function",
+      "preferred_label": "Burial-context zone",
+      "definition": "An archaeological or ritual-use area whose burial context is approved but exact graves and plan are not.",
+      "scope_note": "Only the exact approved Burial-context zone meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include only for the approved burial-context family."
+      ],
+      "exclusion_rules": [
+        "Exclude individual burials, monuments, and continuous 1230 use."
+      ],
+      "title": "Burial-context zone",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "burial_zone@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "c0d57ac4c6c8e19533f44206686344059d2d70e7fcc42e2ab01a75a270ecf515"
+    },
+    {
+      "id": "concealment_zone",
+      "domain": "spatial_materialization",
+      "stable_code": "concealment_zone",
+      "facet": "spatial_function",
+      "preferred_label": "Concealment zone",
+      "definition": "An area offering topological concealment potential under an approved scene family.",
+      "scope_note": "Only the exact approved Concealment zone meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include only where concealment is a declared profile function."
+      ],
+      "exclusion_rules": [
+        "Exclude guaranteed invisibility and invented vegetation details."
+      ],
+      "title": "Concealment zone",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "concealment_zone@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "0f8c338c39949f52a21e120678da90f312157412c051e7c07bcb167799b48e40"
+    },
+    {
+      "id": "crossing_candidate",
+      "domain": "spatial_materialization",
+      "stable_code": "crossing_candidate",
+      "facet": "candidate_function",
+      "preferred_label": "Crossing candidate",
+      "definition": "A bounded possible crossing location awaiting runtime selection from an approved finite candidate set.",
+      "scope_note": "Only the exact approved Crossing candidate meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include only as a candidate named by an approved profile."
+      ],
+      "exclusion_rules": [
+        "Exclude an existing bridge, ford, or guaranteed safe crossing."
+      ],
+      "title": "Crossing candidate",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "crossing_candidate@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "5cbe4616f2273ebb19e047e046269831f151445a4835a00075b4176a582fce5b"
+    },
+    {
+      "id": "dry_route_zone",
+      "domain": "spatial_materialization",
+      "stable_code": "dry_route_zone",
+      "facet": "route_function",
+      "preferred_label": "Dry-ground route zone",
+      "definition": "A route area whose approved function is passage over relatively dry ground in the topological model.",
+      "scope_note": "Only the exact approved Dry-ground route zone meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include where dry-ground passage is source-classified."
+      ],
+      "exclusion_rules": [
+        "Exclude engineered roads and permanent dryness."
+      ],
+      "title": "Dry-ground route zone",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "dry_route_zone@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "26a4fe13feb63685b19c037109cd550682f5dac0ec7f5a4a0f3a7a22a3010561"
+    },
+    {
+      "id": "estate_cluster_candidate",
+      "domain": "spatial_materialization",
+      "stable_code": "estate_cluster_candidate",
+      "facet": "candidate_function",
+      "preferred_label": "Estate-cluster candidate",
+      "definition": "A bounded possible household-scale cluster that may materialize only when its profile and evidence allow it.",
+      "scope_note": "Only the exact approved Estate-cluster candidate meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include only as an approved finite candidate."
+      ],
+      "exclusion_rules": [
+        "Exclude a pre-existing estate, owner, buildings, or population."
+      ],
+      "title": "Estate-cluster candidate",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "estate_cluster_candidate@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "59ddec8e9ae877e316e1c4f045e2e824793c808612fcbd6972804d8a42fb2edd"
+    },
+    {
+      "id": "exploration_route",
+      "domain": "spatial_materialization",
+      "stable_code": "exploration_route",
+      "facet": "route_function",
+      "preferred_label": "Exploration route",
+      "definition": "A route function supporting investigation of an approved area without guaranteeing destination knowledge or safety.",
+      "scope_note": "Only the exact approved Exploration route meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include where exploration movement is declared."
+      ],
+      "exclusion_rules": [
+        "Exclude mapped certainty, engineered path, and discovered state."
+      ],
+      "title": "Exploration route",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "exploration_route@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "df2a6794fac6ce5398d37ecbcf446389f3e69dd291077eec3c6c48070773be84"
+    },
+    {
+      "id": "exposure_zone",
+      "domain": "spatial_materialization",
+      "stable_code": "exposure_zone",
+      "facet": "hazard_function",
+      "preferred_label": "Environmental exposure zone",
+      "definition": "An area where wind, open water, or lack of cover creates an approved exposure condition.",
+      "scope_note": "Only the exact approved Environmental exposure zone meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include only for declared environmental exposure."
+      ],
+      "exclusion_rules": [
+        "Exclude a concrete weather event or automatic harm."
+      ],
+      "title": "Environmental exposure zone",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "exposure_zone@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "68ffa06fa6d07c52e64ceed091e3f71707f9307b016a3384b6d1c0837fac2390"
+    },
+    {
+      "id": "fauna_zone",
+      "domain": "spatial_materialization",
+      "stable_code": "fauna_zone",
+      "facet": "resource_function",
+      "preferred_label": "Fauna-use zone",
+      "definition": "An area eligible for fauna-related materialization under a separately approved fauna profile.",
+      "scope_note": "Only the exact approved Fauna-use zone meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include only where the profile permits fauna use."
+      ],
+      "exclusion_rules": [
+        "Exclude concrete animals, counts, nests, and guaranteed encounters."
+      ],
+      "title": "Fauna-use zone",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "fauna_zone@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "80739738cf9afdcfdae7972811d1c3c173b80466be36c7b0bf4a54ed8ae11b34"
+    },
+    {
+      "id": "hazard_zone",
+      "domain": "spatial_materialization",
+      "stable_code": "hazard_zone",
+      "facet": "hazard_function",
+      "preferred_label": "General hazard zone",
+      "definition": "An area carrying a declared traversal or occupancy hazard whose concrete event remains dynamic.",
+      "scope_note": "Only the exact approved General hazard zone meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include only for an approved hazard family."
+      ],
+      "exclusion_rules": [
+        "Exclude invented cause, severity, and guaranteed incident."
+      ],
+      "title": "General hazard zone",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "hazard_zone@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "3302e46018846e4e4da6b455bef896c23b8251204ac52b174fae3bb9665f2a82"
+    },
+    {
+      "id": "landing_candidate",
+      "domain": "spatial_materialization",
+      "stable_code": "landing_candidate",
+      "facet": "candidate_function",
+      "preferred_label": "Landing candidate",
+      "definition": "A bounded possible landing position selected only from an approved source-bound candidate set.",
+      "scope_note": "Only the exact approved Landing candidate meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include only where landing applicability is exact."
+      ],
+      "exclusion_rules": [
+        "Exclude a quay, boat, crew, or guaranteed usable bank."
+      ],
+      "title": "Landing candidate",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "landing_candidate@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "4e7bb2792c47f3aa5c5c0d145f04757d08deee271d5a732812854ed3e9fce73c"
+    },
+    {
+      "id": "landing_hazard_zone",
+      "domain": "spatial_materialization",
+      "stable_code": "landing_hazard_zone",
+      "facet": "hazard_function",
+      "preferred_label": "Hazardous landing zone",
+      "definition": "A landing-function area with a separately declared access or environmental hazard.",
+      "scope_note": "Only the exact approved Hazardous landing zone meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include where both landing and hazard functions are approved."
+      ],
+      "exclusion_rules": [
+        "Exclude fixed infrastructure and automatic failure."
+      ],
+      "title": "Hazardous landing zone",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "landing_hazard_zone@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "5d383e8d3168451e2d7a865b1ccd36c1627b0a523615a7027fdd34643b4ed9e7"
+    },
+    {
+      "id": "landing_or_hazard_zone",
+      "domain": "spatial_materialization",
+      "stable_code": "landing_or_hazard_zone",
+      "facet": "candidate_function",
+      "preferred_label": "Landing-or-hazard alternative zone",
+      "definition": "A bounded alternative whose selected function may be landing or hazard according to the approved profile.",
+      "scope_note": "Only the exact approved Landing-or-hazard alternative zone meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include only in the exact dual-function family."
+      ],
+      "exclusion_rules": [
+        "Exclude simultaneous assertion of both concrete outcomes."
+      ],
+      "title": "Landing-or-hazard alternative zone",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "landing_or_hazard_zone@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "ffd911616146ff5271c170fd82e773ed1a8882e1d5d4f6a4561b9cee13204d47"
+    },
+    {
+      "id": "landing_zone",
+      "domain": "spatial_materialization",
+      "stable_code": "landing_zone",
+      "facet": "spatial_function",
+      "preferred_label": "Landing-function zone",
+      "definition": "An area whose stable approved function is transition between water movement and shore access.",
+      "scope_note": "Only the exact approved Landing-function zone meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include for source-classified landing contexts."
+      ],
+      "exclusion_rules": [
+        "Exclude harbour works, vessels, and permanent availability."
+      ],
+      "title": "Landing-function zone",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "landing_zone@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "a5cb718aec39cdd91e59678bf497b2ba7e32e638c05bb76a802a501e24be4ca4"
+    },
+    {
+      "id": "linear",
+      "domain": "spatial_materialization",
+      "stable_code": "linear",
+      "facet": "geometry",
+      "preferred_label": "Linear geometry facet",
+      "definition": "A geometry facet recording line-like topological extent without asserting surveyed alignment or width.",
+      "scope_note": "Only the exact approved Linear geometry facet meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include only on records whose approved geometry is linear."
+      ],
+      "exclusion_rules": [
+        "Exclude exact historical track geometry."
+      ],
+      "title": "Linear geometry facet",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "linear@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "7c44cee6ad9f6945d2e7180a8309845ea497e51c8deff7cb9fcecfc2df8b1fda"
+    },
+    {
+      "id": "natural_boundary",
+      "domain": "spatial_materialization",
+      "stable_code": "natural_boundary",
+      "facet": "boundary_function",
+      "preferred_label": "Natural boundary facet",
+      "definition": "A boundary context grounded in a natural feature rather than an administrative demarcation.",
+      "scope_note": "Only the exact approved Natural boundary facet meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include only where the natural feature supplies boundary function."
+      ],
+      "exclusion_rules": [
+        "Exclude legal sovereignty and exact border lines."
+      ],
+      "title": "Natural boundary facet",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "natural_boundary@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "ffacc8bfca5f33d0947de4a579c0a1e8fea62ef93c61ce72744a09667b1e9682"
+    },
+    {
+      "id": "navigation_decision_zone",
+      "domain": "spatial_materialization",
+      "stable_code": "navigation_decision_zone",
+      "facet": "route_function",
+      "preferred_label": "Navigation decision zone",
+      "definition": "An area where approved topology requires choosing among finite movement continuations.",
+      "scope_note": "Only the exact approved Navigation decision zone meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include only at explicit route-choice contexts."
+      ],
+      "exclusion_rules": [
+        "Exclude hidden routes, optimal-choice claims, and automatic success."
+      ],
+      "title": "Navigation decision zone",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "navigation_decision_zone@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "05b0b3ca62fc0356dd5b5d444736231947bb78402c0f80ba9b22e82f6a920bdf"
+    },
+    {
+      "id": "navigation_zone",
+      "domain": "spatial_materialization",
+      "stable_code": "navigation_zone",
+      "facet": "route_function",
+      "preferred_label": "Navigation zone",
+      "definition": "An area whose approved primary function is water or terrain navigation through known topology.",
+      "scope_note": "Only the exact approved Navigation zone meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include for source-classified navigation contexts."
+      ],
+      "exclusion_rules": [
+        "Exclude exact channel geometry and guaranteed passability."
+      ],
+      "title": "Navigation zone",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "navigation_zone@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "6ad0a7ed6c13a9472313a4279beaf4b71345832c203bdfdddcb3e0076809b64b"
+    },
+    {
+      "id": "observation_zone",
+      "domain": "spatial_materialization",
+      "stable_code": "observation_zone",
+      "facet": "spatial_function",
+      "preferred_label": "Observation zone",
+      "definition": "An area supporting orientation or observation from an approved scene position.",
+      "scope_note": "Only the exact approved Observation zone meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include only where an observation function is declared."
+      ],
+      "exclusion_rules": [
+        "Exclude guaranteed visibility, discovered facts, and structures."
+      ],
+      "title": "Observation zone",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "observation_zone@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "d2655c260e698f981e5ea1b95150ef36e525fd8bb5088dfdc5657da7cab04913"
+    },
+    {
+      "id": "occupation_candidate",
+      "domain": "spatial_materialization",
+      "stable_code": "occupation_candidate",
+      "facet": "candidate_function",
+      "preferred_label": "Occupation candidate",
+      "definition": "A bounded possible human-use locus that remains unoccupied until causal materialization permits it.",
+      "scope_note": "Only the exact approved Occupation candidate meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include only as a finite profile candidate."
+      ],
+      "exclusion_rules": [
+        "Exclude residents, tenure, buildings, and continuous use."
+      ],
+      "title": "Occupation candidate",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "occupation_candidate@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "88726f45ce0f233be321b6837f46fddf4d684c6650edb6ac54fd909ec4938db4"
+    },
+    {
+      "id": "orientation_hazard_zone",
+      "domain": "spatial_materialization",
+      "stable_code": "orientation_hazard_zone",
+      "facet": "hazard_function",
+      "preferred_label": "Orientation-hazard zone",
+      "definition": "An area where loss of direction is an approved traversal risk under relevant conditions.",
+      "scope_note": "Only the exact approved Orientation-hazard zone meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include only for declared orientation hazards."
+      ],
+      "exclusion_rules": [
+        "Exclude guaranteed disorientation and invented landmarks."
+      ],
+      "title": "Orientation-hazard zone",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "orientation_hazard_zone@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "96256ec55cb0a58791dc221ceb7a39254a18bd7dd283239b8aea26ce8b78320d"
+    },
+    {
+      "id": "orientation_zone",
+      "domain": "spatial_materialization",
+      "stable_code": "orientation_zone",
+      "facet": "spatial_function",
+      "preferred_label": "Orientation zone",
+      "definition": "An area providing approved topological cues for movement orientation.",
+      "scope_note": "Only the exact approved Orientation zone meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include where orientation is a declared scene function."
+      ],
+      "exclusion_rules": [
+        "Exclude exact bearings, maps, and guaranteed knowledge."
+      ],
+      "title": "Orientation zone",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "orientation_zone@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "9d9a3d6e84afa63b060ca0de8faf5e112fe08e3b1d60a43edd5b30c3c55b5815"
+    },
+    {
+      "id": "resource_hazard_zone",
+      "domain": "spatial_materialization",
+      "stable_code": "resource_hazard_zone",
+      "facet": "hazard_function",
+      "preferred_label": "Resource-hazard zone",
+      "definition": "A resource-use area carrying a declared environmental or access hazard.",
+      "scope_note": "Only the exact approved Resource-hazard zone meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include only when resource and hazard functions are both approved."
+      ],
+      "exclusion_rules": [
+        "Exclude concrete resources, ownership, and automatic injury."
+      ],
+      "title": "Resource-hazard zone",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "resource_hazard_zone@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "84bcbebff803ba5c5552a1709254f2fde32b9a609b585fb70468ad18db70226d"
+    },
+    {
+      "id": "resource_zone",
+      "domain": "spatial_materialization",
+      "stable_code": "resource_zone",
+      "facet": "resource_function",
+      "preferred_label": "Resource-use zone",
+      "definition": "An area eligible for bounded subsistence or material use under an approved resource profile.",
+      "scope_note": "Only the exact approved Resource-use zone meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include only for source-classified resource contexts."
+      ],
+      "exclusion_rules": [
+        "Exclude inventory, yield, ownership, and permanent works."
+      ],
+      "title": "Resource-use zone",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "resource_zone@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "0ea508f106a0ddf41f9533a234e2028b8d5f0b325cd65c16f6f9067555dfcf6e"
+    },
+    {
+      "id": "rest_candidate",
+      "domain": "spatial_materialization",
+      "stable_code": "rest_candidate",
+      "facet": "candidate_function",
+      "preferred_label": "Rest candidate",
+      "definition": "A bounded possible resting position selected only when an approved profile and current conditions permit.",
+      "scope_note": "Only the exact approved Rest candidate meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include only as a finite scene candidate."
+      ],
+      "exclusion_rules": [
+        "Exclude shelter, safety, occupants, and established camp."
+      ],
+      "title": "Rest candidate",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "rest_candidate@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "2ca64396b7cc53a96a328e003ec7a9740fd840698d6475f6c37a882008ec9bb3"
+    },
+    {
+      "id": "rest_or_use_zone",
+      "domain": "spatial_materialization",
+      "stable_code": "rest_or_use_zone",
+      "facet": "candidate_function",
+      "preferred_label": "Rest-or-use alternative zone",
+      "definition": "A bounded area whose approved profile may realize rest or another limited use without preselecting either.",
+      "scope_note": "Only the exact approved Rest-or-use alternative zone meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include only in the exact rest-or-use dual-function family."
+      ],
+      "exclusion_rules": [
+        "Exclude simultaneous concrete activities and permanent facilities."
+      ],
+      "title": "Rest-or-use alternative zone",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "rest_or_use_zone@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "c3912d52672c65cab1a06f7838eee034133e328daf8f79c8db8e653ca6f69afc"
+    },
+    {
+      "id": "rest_or_work_zone",
+      "domain": "spatial_materialization",
+      "stable_code": "rest_or_work_zone",
+      "facet": "candidate_function",
+      "preferred_label": "Rest-or-work alternative zone",
+      "definition": "A bounded area eligible for either rest or household-scale work under an approved selection.",
+      "scope_note": "Only the exact approved Rest-or-work alternative zone meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include only where the family names both alternatives."
+      ],
+      "exclusion_rules": [
+        "Exclude workshops, workers, stored items, and simultaneous outcomes."
+      ],
+      "title": "Rest-or-work alternative zone",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "rest_or_work_zone@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "3ce071c504805e786657990724a7f8bf69c6ef78f2b121953d5ed0dc34158aa8"
+    },
+    {
+      "id": "ritual_use_candidate",
+      "domain": "spatial_materialization",
+      "stable_code": "ritual_use_candidate",
+      "facet": "candidate_function",
+      "preferred_label": "Ritual-use candidate",
+      "definition": "A bounded possible ritual-use locus constrained by approved archaeological context.",
+      "scope_note": "Only the exact approved Ritual-use candidate meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include only as a candidate within the burial-context family."
+      ],
+      "exclusion_rules": [
+        "Exclude specific rites, actors, objects, and exact layout."
+      ],
+      "title": "Ritual-use candidate",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "ritual_use_candidate@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "14af3dc51550fa3080824d4551d4915e34e0f78235da663d3c8e760a2613bcc2"
+    },
+    {
+      "id": "river_hazard_zone",
+      "domain": "spatial_materialization",
+      "stable_code": "river_hazard_zone",
+      "facet": "hazard_function",
+      "preferred_label": "River hazard zone",
+      "definition": "A water-movement area carrying approved current, depth, ice, or bank uncertainty.",
+      "scope_note": "Only the exact approved River hazard zone meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include where a river hazard is source-classified."
+      ],
+      "exclusion_rules": [
+        "Exclude exact depth, current speed, and guaranteed incident."
+      ],
+      "title": "River hazard zone",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "river_hazard_zone@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "35c36eb4b631e93df8a3655f4d131c83a6d5d01cc5315268fbbec370d187f5d6"
+    },
+    {
+      "id": "route_approach",
+      "domain": "spatial_materialization",
+      "stable_code": "route_approach",
+      "facet": "route_function",
+      "preferred_label": "Route approach",
+      "definition": "A bounded approach segment leading toward an approved route or scene endpoint.",
+      "scope_note": "Only the exact approved Route approach meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include only where topology declares an approach."
+      ],
+      "exclusion_rules": [
+        "Exclude road construction and guaranteed endpoint access."
+      ],
+      "title": "Route approach",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "route_approach@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "c7bcdb0dbce24496e3691e18c6e080302a8e616bc00b460bb9054375220fc355"
+    },
+    {
+      "id": "route_merge_zone",
+      "domain": "spatial_materialization",
+      "stable_code": "route_merge_zone",
+      "facet": "route_function",
+      "preferred_label": "Route merge zone",
+      "definition": "An area where two or more approved topological continuations converge.",
+      "scope_note": "Only the exact approved Route merge zone meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include only for explicit convergence topology."
+      ],
+      "exclusion_rules": [
+        "Exclude traffic control, road works, and unlisted branches."
+      ],
+      "title": "Route merge zone",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "route_merge_zone@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "66fa61ba40dbea26024099d4fb5a0ae230cb3268bfa31b2dcf4445b92c69e99c"
+    },
+    {
+      "id": "route_zone",
+      "domain": "spatial_materialization",
+      "stable_code": "route_zone",
+      "facet": "route_function",
+      "preferred_label": "General route zone",
+      "definition": "An area whose approved stable function is movement between bounded scene positions.",
+      "scope_note": "Only the exact approved General route zone meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include for source-classified route contexts."
+      ],
+      "exclusion_rules": [
+        "Exclude exact track geometry, vehicles, and all-season use."
+      ],
+      "title": "General route zone",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "route_zone@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "838aa2719a07ad711d1fbe120534722ecf8228bb5da0bb4c8981e372c562534b"
+    },
+    {
+      "id": "seasonal_hazard_zone",
+      "domain": "spatial_materialization",
+      "stable_code": "seasonal_hazard_zone",
+      "facet": "hazard_function",
+      "preferred_label": "Seasonal hazard zone",
+      "definition": "An area whose approved hazard applicability depends on season, water state, ice, or flood conditions.",
+      "scope_note": "Only the exact approved Seasonal hazard zone meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include only with a declared seasonal condition."
+      ],
+      "exclusion_rules": [
+        "Exclude permanent hazard state and predicted weather."
+      ],
+      "title": "Seasonal hazard zone",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "seasonal_hazard_zone@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "b360cbffb2fde9652b943e84c7407d4f13a91ca125114953426962890a133517"
+    },
+    {
+      "id": "seasonal_route",
+      "domain": "spatial_materialization",
+      "stable_code": "seasonal_route",
+      "facet": "route_function",
+      "preferred_label": "Seasonal route",
+      "definition": "A movement continuation available only under approved seasonal conditions and dynamic recheck.",
+      "scope_note": "Only the exact approved Seasonal route meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include only where a seasonal network is declared."
+      ],
+      "exclusion_rules": [
+        "Exclude guaranteed availability and permanent route status."
+      ],
+      "title": "Seasonal route",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "seasonal_route@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "0964c8792ee0af9b513552d9396fb67cd38c7289c269b07b191079e05bc33a09"
+    },
+    {
+      "id": "settlement_cluster_candidate",
+      "domain": "spatial_materialization",
+      "stable_code": "settlement_cluster_candidate",
+      "facet": "candidate_function",
+      "preferred_label": "Settlement-cluster candidate",
+      "definition": "A bounded possible habitation cluster allowed by settlement evidence but not materialized in authoring data.",
+      "scope_note": "Only the exact approved Settlement-cluster candidate meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include only under an approved habitation profile."
+      ],
+      "exclusion_rules": [
+        "Exclude town rank, households, buildings, and exact continuity."
+      ],
+      "title": "Settlement-cluster candidate",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "settlement_cluster_candidate@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "43e5d30753dad48d7e5347f7b7d69aa27af02db88816354f84f853fe5166cb46"
+    },
+    {
+      "id": "shelter_candidate",
+      "domain": "spatial_materialization",
+      "stable_code": "shelter_candidate",
+      "facet": "candidate_function",
+      "preferred_label": "Shelter candidate",
+      "definition": "A bounded possible shelter position selected from an approved family without pre-creating a structure.",
+      "scope_note": "Only the exact approved Shelter candidate meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include only as a finite conditional candidate."
+      ],
+      "exclusion_rules": [
+        "Exclude buildings, ownership, occupants, and guaranteed protection."
+      ],
+      "title": "Shelter candidate",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "shelter_candidate@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "85b438f10022ef0a516a6265ac6990d5d86498aa39f0c7466078dbbb2a5e2c33"
+    },
+    {
+      "id": "shelter_zone",
+      "domain": "spatial_materialization",
+      "stable_code": "shelter_zone",
+      "facet": "spatial_function",
+      "preferred_label": "Shelter-function zone",
+      "definition": "An area whose approved environmental function is relative protection from exposure.",
+      "scope_note": "Only the exact approved Shelter-function zone meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include where a shelter function is source-classified."
+      ],
+      "exclusion_rules": [
+        "Exclude constructed shelter and guaranteed safety."
+      ],
+      "title": "Shelter-function zone",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "shelter_zone@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "f7461e925719547941fcd1e814a38770b282be0fadc1be2005abfbf87ca771d6"
+    },
+    {
+      "id": "small_water_route",
+      "domain": "spatial_materialization",
+      "stable_code": "small_water_route",
+      "facet": "route_function",
+      "preferred_label": "Small-water route",
+      "definition": "A route function along a minor stream or narrow watercourse represented topologically.",
+      "scope_note": "Only the exact approved Small-water route meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include for approved tributary or forest-stream movement."
+      ],
+      "exclusion_rules": [
+        "Exclude exact channel, vessel, and year-round navigability."
+      ],
+      "title": "Small-water route",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "small_water_route@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "20559ca62daa814575508c8fec5eea305ead56f9ba3003775a917b4996f2805b"
+    },
+    {
+      "id": "social_use_candidate",
+      "domain": "spatial_materialization",
+      "stable_code": "social_use_candidate",
+      "facet": "candidate_function",
+      "preferred_label": "Social-use candidate",
+      "definition": "A bounded possible social-use position that materializes only with causally permitted participants.",
+      "scope_note": "Only the exact approved Social-use candidate meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include only as an approved profile candidate."
+      ],
+      "exclusion_rules": [
+        "Exclude NPCs, gatherings, ownership, and ongoing occupation."
+      ],
+      "title": "Social-use candidate",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "social_use_candidate@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "10730fe4fa053518a7c4e12d21abfffed63f97f9c7ac3213ef5e193bf96d4273"
+    },
+    {
+      "id": "storage_zone_candidate",
+      "domain": "spatial_materialization",
+      "stable_code": "storage_zone_candidate",
+      "facet": "candidate_function",
+      "preferred_label": "Storage-zone candidate",
+      "definition": "A bounded possible household-scale storage area requiring an approved profile and materialized containers.",
+      "scope_note": "Only the exact approved Storage-zone candidate meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include only as a finite work-storage candidate."
+      ],
+      "exclusion_rules": [
+        "Exclude stored goods, containers, buildings, and owners."
+      ],
+      "title": "Storage-zone candidate",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "storage_zone_candidate@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "dfa851908a4ddaf821bb07095ecc0542105d0114ee88904d6c1762bd6161774d"
+    },
+    {
+      "id": "wetland_zone",
+      "domain": "spatial_materialization",
+      "stable_code": "wetland_zone",
+      "facet": "spatial_function",
+      "preferred_label": "Wetland-function zone",
+      "definition": "An area characterized by approved wet-ground or shallow-water traversal conditions.",
+      "scope_note": "Only the exact approved Wetland-function zone meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include for source-classified wetland contexts."
+      ],
+      "exclusion_rules": [
+        "Exclude exact hydrology, permanent inundation, and specific fauna."
+      ],
+      "title": "Wetland-function zone",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "wetland_zone@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "a0efb4a4e5545ec965eea33f570f21c9405c012b8e50feffa17419fa6ddcea3c"
+    },
+    {
+      "id": "work_zone_candidate",
+      "domain": "spatial_materialization",
+      "stable_code": "work_zone_candidate",
+      "facet": "candidate_function",
+      "preferred_label": "Work-zone candidate",
+      "definition": "A bounded possible work position materialized only from an approved activity profile.",
+      "scope_note": "Only the exact approved Work-zone candidate meaning and version pin may be used; broader interpretation is outside P12 closure.",
+      "inclusion_rules": [
+        "Include only as a finite household-scale candidate."
+      ],
+      "exclusion_rules": [
+        "Exclude workers, tools, output, ownership, and permanent workshop."
+      ],
+      "title": "Work-zone candidate",
+      "status": "approved",
+      "basis_anchors": [
+        {
+          "anchor_kind": "immutable_zip_json_record",
+          "canonical_path": "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+          "raw_sha256": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
+          "internal_path": "P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/external-dependency-pins.json",
+          "internal_raw_sha256": "f2d58cefb183344cc7a29c6d5e89437901464d5379ba431612209cfd7274c235",
+          "json_pointer": "/records",
+          "record_predicate": {
+            "field": "ref",
+            "equals": "work_zone_candidate@1"
+          }
+        }
+      ],
+      "provenance_ref": "prov_p12_g1_r2_r3_v1",
+      "canonical_digest": "16713e05f7abf0e8025b030706c20fa87beb4f97f2fe9c55b0e56abb99f045b6"
+    }
+  ]
+}

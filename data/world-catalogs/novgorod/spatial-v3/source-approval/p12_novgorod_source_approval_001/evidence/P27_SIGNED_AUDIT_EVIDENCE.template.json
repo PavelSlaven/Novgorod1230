@@ -1,0 +1,22 @@
+{
+  "schema_version": "rus.p27_signed_audit_evidence.v1",
+  "status": "template_not_evidence",
+  "repository": "PavelSlaven/Novgorod1230",
+  "commit_sha": "REPLACE_WITH_40_HEX_COMMIT",
+  "auditor": {
+    "identity": "REPLACE_WITH_INDEPENDENT_AUDITOR",
+    "key_id": "REPLACE_WITH_KEY_ID"
+  },
+  "verdict": "REPLACE_WITH_PASS_OR_PASS_WITH_NOTES",
+  "payload_digest": "REPLACE_WITH_64_HEX_DIGEST",
+  "signature": {
+    "algorithm": "REPLACE_WITH_ed25519_minisign_or_gpg",
+    "value": "REPLACE_WITH_DETACHED_SIGNATURE"
+  },
+  "required_payloads": [
+    "P27 audit report",
+    "test result manifest",
+    "changed-file manifest",
+    "normative input digests"
+  ]
+}

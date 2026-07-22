@@ -30,11 +30,79 @@ test("P12 dependency closure generator is reproducible and validates exact count
     assert.equal(reapproval.status, "PENDING_INDEPENDENT_REAPPROVAL");
     assert.equal(reapproval.exact_changed_contract.new_value, "grid_east_north_v1");
     assert.equal(reapproval.exact_changed_contract.sha256, sha(readFileSync(join(bundle, reapproval.exact_changed_contract.path))));
-    assert.equal(json("APPROVAL_DECISION.json").independent_audit, "pending_reapproval");
+    assert.equal(json("APPROVAL_DECISION.json").status, "APPROVED_FOR_P12_DEPENDENCY_CLOSURE");
+    assert.match(json("APPROVAL_DECISION.json").independent_audit, /^PASS_FOR_SUBJECT_/u);
   } finally {
     // Evidence-only commits add this file outside the deterministic subject
     // bundle. Generator tests must not leave an approved checkout dirty.
     if (evidenceBinding) writeFileSync(bindingPath, evidenceBinding);
+  }
+});
+
+test("technical DDL digest-only drift preserves an existing approval", () => {
+  const trackedMetadata = ["APPROVAL_DECISION.json", "manifest.json", "manifest.sha256", "subject-commit-binding.json"];
+  const saved = new Map(trackedMetadata.filter((path) => existsSync(join(bundle, path))).map((path) => [path, readFileSync(join(bundle, path))]));
+  try {
+    const staleManifest = json("manifest.json");
+    staleManifest.pins.current_ddl_sha256 = "0".repeat(64);
+    const staleManifestBytes = `${JSON.stringify(staleManifest, null, 2)}\n`;
+    writeFileSync(join(bundle, "manifest.json"), staleManifestBytes);
+    writeFileSync(join(bundle, "manifest.sha256"), `${sha(staleManifestBytes)}  manifest.json\n`);
+
+    execFileSync(process.execPath, [join(root, "scripts/generate-p12-dependency-closure.mjs")], { cwd: root });
+    assert.equal(json("APPROVAL_DECISION.json").status, "APPROVED_FOR_P12_DEPENDENCY_CLOSURE");
+    assert.match(json("APPROVAL_DECISION.json").independent_audit, /^PASS_FOR_SUBJECT_/u);
+    assert.notEqual(json("manifest.json").pins.current_ddl_sha256, "0".repeat(64));
+    const manifestBytes = readFileSync(join(bundle, "manifest.json"));
+    assert.equal(readFileSync(join(bundle, "manifest.sha256"), "utf8"), `${sha(manifestBytes)}  manifest.json\n`);
+    assert.equal(json("manifest.json").files.find((entry) => entry.path === "APPROVAL_DECISION.json").sha256, sha(readFileSync(join(bundle, "APPROVAL_DECISION.json"))));
+  } finally {
+    for (const [path, bytes] of saved) writeFileSync(join(bundle, path), bytes);
+  }
+});
+
+test("self-consistent approval tamper cannot replace the committed authority", () => {
+  const trackedMetadata = ["APPROVAL_DECISION.json", "manifest.json", "manifest.sha256", "subject-commit-binding.json"];
+  const saved = new Map(trackedMetadata.filter((path) => existsSync(join(bundle, path))).map((path) => [path, readFileSync(join(bundle, path))]));
+  try {
+    const forgedApproval = json("APPROVAL_DECISION.json");
+    forgedApproval.independent_audit = "PASS_FOR_SUBJECT_FORGED";
+    writeFileSync(join(bundle, "APPROVAL_DECISION.json"), `${JSON.stringify(forgedApproval, null, 2)}\n`);
+    const forgedManifest = json("manifest.json");
+    forgedManifest.files.find((entry) => entry.path === "APPROVAL_DECISION.json").sha256 = sha(readFileSync(join(bundle, "APPROVAL_DECISION.json")));
+    const forgedManifestBytes = `${JSON.stringify(forgedManifest, null, 2)}\n`;
+    writeFileSync(join(bundle, "manifest.json"), forgedManifestBytes);
+    writeFileSync(join(bundle, "manifest.sha256"), `${sha(forgedManifestBytes)}  manifest.json\n`);
+
+    execFileSync(process.execPath, [join(root, "scripts/generate-p12-dependency-closure.mjs")], { cwd: root });
+    assert.equal(json("APPROVAL_DECISION.json").status, "PROPOSED_FOR_P12_DEPENDENCY_CLOSURE");
+    assert.equal(json("APPROVAL_DECISION.json").independent_audit, "pending_reapproval");
+  } finally {
+    for (const [path, bytes] of saved) writeFileSync(join(bundle, path), bytes);
+  }
+});
+
+test("semantic content drift demotes approval and remains fail-closed", () => {
+  const trackedMetadata = ["APPROVAL_DECISION.json", "manifest.json", "manifest.sha256", "subject-commit-binding.json"];
+  const saved = new Map(trackedMetadata.filter((path) => existsSync(join(bundle, path))).map((path) => [path, readFileSync(join(bundle, path))]));
+  try {
+    const semanticPath = join(bundle, "data/category-decision-ledger.json");
+    const semantic = JSON.parse(readFileSync(semanticPath, "utf8"));
+    semantic.records[0].decision = `${semantic.records[0].decision ?? "approved"}_tampered`;
+    writeFileSync(semanticPath, `${JSON.stringify(semantic, null, 2)}\n`);
+    const tamperedManifest = json("manifest.json");
+    tamperedManifest.files.find((entry) => entry.path === "data/category-decision-ledger.json").sha256 = sha(readFileSync(semanticPath));
+    const tamperedManifestBytes = `${JSON.stringify(tamperedManifest, null, 2)}\n`;
+    writeFileSync(join(bundle, "manifest.json"), tamperedManifestBytes);
+    writeFileSync(join(bundle, "manifest.sha256"), `${sha(tamperedManifestBytes)}  manifest.json\n`);
+
+    execFileSync(process.execPath, [join(root, "scripts/generate-p12-dependency-closure.mjs")], { cwd: root });
+    assert.equal(json("APPROVAL_DECISION.json").status, "PROPOSED_FOR_P12_DEPENDENCY_CLOSURE");
+    assert.equal(json("APPROVAL_DECISION.json").independent_audit, "pending_reapproval");
+    assert.equal(json("APPROVAL_DECISION.json").production_activation, "blocked");
+    assert.equal(json("APPROVAL_DECISION.json").p28_status, "blocked");
+  } finally {
+    for (const [path, bytes] of saved) writeFileSync(join(bundle, path), bytes);
   }
 });
 

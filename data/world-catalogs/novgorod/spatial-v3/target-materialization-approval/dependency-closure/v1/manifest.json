@@ -7,7 +7,7 @@
     "target_contract_spec_zip": "1833b383e5ee2568330ab88ae40c7d5b9d057dbde81aa4f43641c48ecd3eb6f3",
     "p12_target_materialization_approval_v1_1_zip": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
     "immutable_v1_1_subject_commit": "e6be7c06cbd6c37c375658af6f2fe529d4f64353",
-    "current_ddl_sha256": "36633dc334cd22ea9ed85583427c40d31c1fa36b4df278ccc0d248b58b0a188b"
+    "current_ddl_sha256": "fccc625773089749ca676831ee69f8b3656e914f5f0e53cbbfaff8773df905fe"
   },
   "counts": {
     "source_ledger": 11,
@@ -34,7 +34,7 @@
   "files": [
     {
       "path": "APPROVAL_DECISION.json",
-      "sha256": "c87b8b59aff13659417dc3aa345fe12d3eeec00b37e19b466dd9dd86e48e3146"
+      "sha256": "00108293dfa29eeb26cbed4719a0f905f39f413597ab756f7aebae17195db822"
     },
     {
       "path": "data/authoring-versions.json",

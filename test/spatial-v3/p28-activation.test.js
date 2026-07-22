@@ -1,484 +1,87 @@
 import assert from 'node:assert/strict';
-import { execFile as execFileCallback } from 'node:child_process';
-import { createHash, generateKeyPairSync, sign } from 'node:crypto';
-import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
-import { join, resolve } from 'node:path';
-import { test } from 'node:test';
-import { promisify } from 'node:util';
-import { assessSpatialV3Activation, requireSpatialV3Activation, verifyP28EvidenceCommitBinding } from '../../tools/spatial-v3/p28-activation-gate.mjs';
+import test from 'node:test';
+import { assessSpatialV3Activation, fetchGitHubReleaseProof, P28_APPENDIX_D_ITEMS, P28_P12_GAPS, requireSpatialV3Activation, validateGitHubReleaseProof, verifyP28EvidenceCommitBinding } from '../../tools/spatial-v3/p28-activation-gate.mjs';
 
-const execFile = promisify(execFileCallback);
-
-async function git(cwd, ...args) {
-  const isolatedHooksPath = join(cwd, '.p28-disabled-hooks');
-  const { stdout } = await execFile('git', [
-    '-c', 'commit.gpgSign=false',
-    '-c', `core.hooksPath=${isolatedHooksPath}`,
-    ...args
-  ], { cwd, windowsHide: true, encoding: 'utf8', timeout: 15_000, killSignal: 'SIGKILL' });
-  return stdout.trim();
-}
-
-function stableJson(value) {
-  if (Array.isArray(value)) return `[${value.map(stableJson).join(',')}]`;
-  if (value && typeof value === 'object') return `{${Object.keys(value).sort().map((key) => `${JSON.stringify(key)}:${stableJson(value[key])}`).join(',')}}`;
-  return JSON.stringify(value);
-}
-
-function digest(value) {
-  return createHash('sha256').update(value).digest('hex');
-}
-
-function encodedSignature(privateKey, payload) {
-  return { algorithm: 'ed25519', value: sign(null, Buffer.from(payload, 'utf8'), privateKey).toString('base64') };
-}
-
-function rewrapPem(pem, width = 48) {
-  const base64 = pem.replace(/-----BEGIN PUBLIC KEY-----|-----END PUBLIC KEY-----|\s/gu, '');
-  return `-----BEGIN PUBLIC KEY-----\n${base64.match(new RegExp(`.{1,${width}}`, 'g')).join('\n')}\n-----END PUBLIC KEY-----\n`;
-}
-
-test('P28 binds a candidate subject to one direct evidence-only HEAD commit without a SHA fixed point', async () => {
-  const candidate = 'a'.repeat(40);
-  const evidenceCommit = 'b'.repeat(40);
-  const head = evidenceCommit;
-  const manifestPath = 'docs/migration/spatial-v3/release-evidence.v1.json';
-  const evidencePath = 'docs/migration/spatial-v3/p28-evidence.json';
-  const manifest = {
-    activation_candidate_commit: candidate,
-    appendix_d_items: [{ id: 'D1.github_main_fixed', status: 'passed', evidence: [{ path: evidencePath, sha256: 'c'.repeat(64) }] }],
-    p12_authoring_gaps: [],
-    p27_independent_critic: { path: evidencePath },
-    p28_fresh_checkout: { evidence: [{ path: evidencePath }] }
+const evidenceCommit = 'a'.repeat(40);
+const config = Object.freeze({
+  schema: 'rus.spatial-v3.github-release-proof.v1', version: 1,
+  repository: 'PavelSlaven/Novgorod1230', base_ref: 'main', pull_request_number: 14,
+  required_checks: ['clean-clone-generation-test'], completion_proof: { kind: 'github_merge' }
+});
+function approvedProof(overrides = {}) {
+  return {
+    pull: { draft: false, merged: true, base: { ref: 'main', repo: { full_name: 'PavelSlaven/Novgorod1230' } }, head: { sha: evidenceCommit }, merge_commit_sha: 'b'.repeat(40) },
+    reviews: [{ state: 'APPROVED', commit_id: evidenceCommit }],
+    checks: { check_runs: [{ name: 'clean-clone-generation-test', status: 'completed', conclusion: 'success' }] },
+    completion: { kind: 'github_merge', compare: { status: 'ahead' } }, ...overrides
   };
+}
+function codes(configToTest, proof) {
+  const blockers = [];
+  validateGitHubReleaseProof({ config: configToTest, proof, evidenceCommit, add: (code, _path, details = {}) => blockers.push({ code, ...details }) });
+  return blockers;
+}
+
+test('P28 GitHub proof accepts only an exact approved PR head with its pinned successful check and merge ancestry', () => {
+  assert.deepEqual(codes(config, approvedProof()), []);
+  assert.equal(P28_APPENDIX_D_ITEMS.length, 58);
+  assert.equal(P28_P12_GAPS.length, 4);
+});
+
+test('P28 GitHub proof fails closed for a stale approval, pending/missing check, draft or unmerged PR, and merge mismatch', () => {
+  assert(codes(config, approvedProof({ reviews: [{ state: 'APPROVED', commit_id: 'c'.repeat(40) }] })).some(({ code }) => code === 'github_release_proof_exact_approval_missing'));
+  assert(codes(config, approvedProof({ checks: { check_runs: [{ name: 'clean-clone-generation-test', conclusion: 'in_progress' }] } })).some(({ code }) => code === 'github_release_proof_required_check_missing_or_not_success'));
+  assert(codes(config, approvedProof({ checks: { check_runs: [{ name: 'clean-clone-generation-test', status: 'in_progress', conclusion: 'success' }] } })).some(({ code }) => code === 'github_release_proof_required_check_missing_or_not_success'));
+  assert(codes(config, approvedProof({ pull: { draft: true, merged: false, head: { sha: evidenceCommit }, merge_commit_sha: 'b'.repeat(40) } })).some(({ code }) => code === 'github_release_proof_pr_draft'));
+  assert(codes(config, approvedProof({ pull: { draft: false, merged: false, head: { sha: evidenceCommit }, merge_commit_sha: 'b'.repeat(40) } })).some(({ code }) => code === 'github_release_proof_pr_unmerged'));
+  assert(codes(config, approvedProof({ pull: { ...approvedProof().pull, base: { ref: 'release', repo: { full_name: 'PavelSlaven/Novgorod1230' } } } })).some(({ code }) => code === 'github_release_proof_base_mismatch'));
+  assert(codes(config, approvedProof({ completion: { kind: 'github_merge', compare: { status: 'diverged' } } })).some(({ code }) => code === 'github_release_proof_merge_mismatch'));
+});
+
+test('P28 GitHub proof validates signed annotated tags against the exact commit and configured local trust', () => {
+  const tagConfig = { ...config, completion_proof: { kind: 'signed_annotated_tag', tag_name: 'spatial-v3-v1' } };
+  const valid = approvedProof({ completion: { kind: 'signed_annotated_tag', tag: { object: { type: 'tag', sha: 'd'.repeat(40) } }, annotated: { object: { type: 'commit', sha: evidenceCommit }, verification: { verified: true, reason: 'valid' } }, local_verification: { verified: true, fingerprint: 'f'.repeat(40) } } });
+  assert.deepEqual(codes(tagConfig, valid), []);
+  assert.deepEqual(codes(tagConfig, { ...valid, pull: { ...valid.pull, merged: false } }), []);
+  assert(codes(tagConfig, { ...valid, completion: { ...valid.completion, local_verification: { verified: false } } }).some(({ code }) => code === 'github_release_proof_signed_tag_invalid_or_untrusted'));
+});
+
+test('GitHub adapter is a network boundary and assembles exact PR, review, check and merge evidence', async () => {
+  const urls = [];
+  const response = (body) => ({ ok: true, json: async () => body });
+  const proof = await fetchGitHubReleaseProof({ ...config, evidenceCommit, fetchImpl: async (url) => {
+    urls.push(url);
+    if (url.includes('/pulls/14/reviews')) return response([{ state: 'APPROVED', commit_id: evidenceCommit }]);
+    if (url.includes('/check-runs')) return response({ check_runs: [{ name: 'clean-clone-generation-test', status: 'completed', conclusion: 'success' }] });
+    if (url.includes('/compare/')) return response({ status: 'ahead' });
+    return response({ draft: false, merged: true, base: { ref: 'main', repo: { full_name: 'PavelSlaven/Novgorod1230' } }, head: { sha: evidenceCommit }, merge_commit_sha: 'b'.repeat(40) });
+  } });
+  assert.equal(urls.length, 4);
+  assert.deepEqual(codes(config, proof), []);
+});
+
+test('P28 evidence scope is read from the immutable candidate and blocks a self-added runtime allowlist', async () => {
+  const candidate = 'b'.repeat(40); const head = 'c'.repeat(40);
+  const scopePath = 'docs/migration/spatial-v3/p28-evidence-scope.v1.json';
+  const manifest = { activation_candidate_commit: candidate, evidence_commit_allowed_paths: ['apps/game-server/src/server.js'] };
   const manifestBytes = Buffer.from(JSON.stringify(manifest));
-  const gitText = async (_root, args) => {
+  const scopeBytes = Buffer.from(JSON.stringify({ schema: 'rus.spatial-v3.p28-evidence-scope.v1', version: 1, allowed_evidence_child_paths: ['docs/migration/spatial-v3/p28-appendix-d-evidence-ledger.md'] }));
+  const verify = async ({ args }) => {
     if (args[0] === 'rev-parse') return head;
-    if (args[0] === 'log') return evidenceCommit;
-    if (args[0] === 'rev-list') return `${evidenceCommit} ${candidate}`;
-    if (args[0] === 'diff-tree') return `${manifestPath}\n${evidencePath}`;
-    throw new Error(`unexpected git command: ${args.join(' ')}`);
+    if (args[0] === 'log') return head;
+    if (args[0] === 'rev-list') return `${head} ${candidate}`;
+    if (args[0] === 'diff-tree') return 'docs/migration/spatial-v3/release-evidence.v1.json\ndocs/migration/spatial-v3/p28-appendix-d-evidence-ledger.md';
+    throw new Error(`unexpected git text ${args.join(' ')}`);
   };
-  const gitRaw = async (_root, args) => {
-    if (args[0] === 'show' && args[1] === `${evidenceCommit}:${manifestPath}`) return manifestBytes;
-    throw new Error(`unexpected git command: ${args.join(' ')}`);
-  };
-
-  assert.deepEqual(await verifyP28EvidenceCommitBinding({ root: '.', manifestPath, manifest, manifestBytes, gitText, gitRaw }), []);
-
-  for (const [name, mutate, expected] of [
-    ['descendant HEAD', ({ setHead }) => setHead('d'.repeat(40)), 'activation_evidence_commit_not_current_head'],
-    ['non-direct parent', ({ setParent }) => setParent('e'.repeat(40)), 'activation_evidence_commit_parent_mismatch'],
-    ['uncommitted manifest', ({ setBlob }) => setBlob(Buffer.from('changed')), 'release_evidence_manifest_not_committed_exactly'],
-    ['broad evidence commit', ({ setDiff }) => setDiff(`${manifestPath}\n${evidencePath}\napps/game-server/src/composition/production.js`), 'activation_evidence_commit_scope_invalid']
-  ]) {
-    let currentHead = head;
-    let parent = candidate;
-    let blob = manifestBytes;
-    let diff = `${manifestPath}\n${evidencePath}`;
-    const controls = { setHead: (value) => { currentHead = value; }, setParent: (value) => { parent = value; }, setBlob: (value) => { blob = value; }, setDiff: (value) => { diff = value; } };
-    mutate(controls);
-    const errors = await verifyP28EvidenceCommitBinding({
-      root: '.', manifestPath, manifest, manifestBytes,
-      gitText: async (_root, args) => {
-        if (args[0] === 'rev-parse') return currentHead;
-        if (args[0] === 'log') return evidenceCommit;
-        if (args[0] === 'rev-list') return `${evidenceCommit} ${parent}`;
-        if (args[0] === 'diff-tree') return diff;
-        throw new Error(`unexpected git command: ${args.join(' ')}`);
-      },
-      gitRaw: async () => blob
-    });
-    assert(errors.some((entry) => entry.code === expected), `${name} must fail with ${expected}`);
-  }
-
-  const runtimePath = 'apps/game-server/src/composition/production.js';
-  const runtimeAsEvidence = structuredClone(manifest);
-  runtimeAsEvidence.appendix_d_items[0].evidence[0].path = runtimePath;
-  const unsafeBytes = Buffer.from(JSON.stringify(runtimeAsEvidence));
-  const unsafeScope = await verifyP28EvidenceCommitBinding({
-    root: '.', manifestPath, manifest: runtimeAsEvidence, manifestBytes: unsafeBytes,
-    gitText: async (_root, args) => {
-      if (args[0] === 'rev-parse' || args[0] === 'log') return evidenceCommit;
-      if (args[0] === 'rev-list') return `${evidenceCommit} ${candidate}`;
-      if (args[0] === 'diff-tree') return `${manifestPath}\n${runtimePath}`;
-      throw new Error(`unexpected git command: ${args.join(' ')}`);
-    },
-    gitRaw: async () => unsafeBytes
-  });
-  assert(unsafeScope.some((entry) => entry.code === 'activation_evidence_commit_scope_invalid'), 'runtime files cannot be smuggled in as evidence paths');
-
-  const trustPath = 'docs/migration/spatial-v3/activation-trust-store.v1.json';
-  const trustAsEvidence = structuredClone(manifest);
-  trustAsEvidence.appendix_d_items[0].evidence[0].path = trustPath;
-  const trustBytes = Buffer.from(JSON.stringify(trustAsEvidence));
-  const protectedScope = await verifyP28EvidenceCommitBinding({
-    root: '.', manifestPath, manifest: trustAsEvidence, manifestBytes: trustBytes, protectedPaths: [trustPath],
-    gitText: async (_root, args) => {
-      if (args[0] === 'rev-parse' || args[0] === 'log') return evidenceCommit;
-      if (args[0] === 'rev-list') return `${evidenceCommit} ${candidate}`;
-      if (args[0] === 'diff-tree') return `${manifestPath}\n${trustPath}`;
-      throw new Error(`unexpected git command: ${args.join(' ')}`);
-    },
-    gitRaw: async () => trustBytes
-  });
-  assert(protectedScope.some((entry) => entry.code === 'activation_evidence_commit_protected_path_changed'), 'candidate trust roots must not change in the evidence commit');
+  const options = { manifest, manifestBytes, gitText: (_root, args) => verify({ args }), gitRaw: async (_root, args) => args[1] === `${candidate}:${scopePath}` ? scopeBytes : manifestBytes };
+  assert.deepEqual(await verifyP28EvidenceCommitBinding(options), []);
+  const rejected = await verifyP28EvidenceCommitBinding({ ...options, gitText: async (_root, args) => args[0] === 'diff-tree' ? 'docs/migration/spatial-v3/release-evidence.v1.json\napps/game-server/src/server.js' : verify({ args }) });
+  assert(rejected.some(({ code }) => code === 'activation_evidence_commit_scope_invalid'));
 });
 
-test('P28 strict evidence binding works in a real temporary Git repository', async (context) => {
-  const roots = [];
-  context.after(async () => Promise.all(roots.map((root) => rm(root, { recursive: true, force: true }))));
-  const manifestPath = 'docs/migration/spatial-v3/release-evidence.v1.json';
-  const evidencePath = 'docs/migration/spatial-v3/p28-evidence.json';
-  const createRepository = async ({ descendant = false, merge = false, broad = false, dirty = false } = {}) => {
-    const root = await mkdtemp(join(tmpdir(), 'p28-git-'));
-    roots.push(root);
-    await git(root, 'init');
-    await git(root, 'config', 'user.email', 'p28-test@example.invalid');
-    await git(root, 'config', 'user.name', 'P28 Test');
-    await writeFile(join(root, 'candidate.txt'), 'candidate\n');
-    await git(root, 'add', 'candidate.txt');
-    await git(root, 'commit', '-m', 'candidate');
-    const candidate = await git(root, 'rev-parse', 'HEAD');
-    let sideBranch;
-    if (merge) {
-      sideBranch = 'side-evidence-test';
-      await git(root, 'checkout', '-b', sideBranch);
-      await writeFile(join(root, 'side.txt'), 'side\n');
-      await git(root, 'add', 'side.txt');
-      await git(root, 'commit', '-m', 'side');
-      await git(root, 'checkout', '-');
-    }
-    await mkdir(join(root, 'docs/migration/spatial-v3'), { recursive: true });
-    const manifest = {
-      activation_candidate_commit: candidate,
-      appendix_d_items: [{ id: 'D1.github_main_fixed', status: 'passed', evidence: [{ path: evidencePath, sha256: 'c'.repeat(64) }] }],
-      p12_authoring_gaps: [], p27_independent_critic: null, p28_fresh_checkout: { evidence: [] }
-    };
-    await writeFile(join(root, manifestPath), JSON.stringify(manifest));
-    await writeFile(join(root, evidencePath), '{}');
-    await git(root, 'add', manifestPath, evidencePath);
-    if (broad) {
-      await mkdir(join(root, 'apps/game-server/src/composition'), { recursive: true });
-      await writeFile(join(root, 'apps/game-server/src/composition/production.js'), 'export default true;\n');
-      await git(root, 'add', 'apps/game-server/src/composition/production.js');
-    }
-    await git(root, 'commit', '-m', 'evidence');
-    if (merge) {
-      await git(root, 'merge', '--no-ff', sideBranch, '-m', 'merge evidence');
-      await writeFile(join(root, manifestPath), `${JSON.stringify(manifest)}\n`);
-      await git(root, 'add', manifestPath);
-      await git(root, 'commit', '--amend', '--no-edit');
-    }
-    if (descendant) {
-      await writeFile(join(root, 'descendant.txt'), 'descendant\n');
-      await git(root, 'add', 'descendant.txt');
-      await git(root, 'commit', '-m', 'descendant');
-    }
-    if (dirty) await writeFile(join(root, manifestPath), `${JSON.stringify(manifest)}  \n`);
-    const manifestBytes = await readFile(join(root, manifestPath));
-    return { root, manifestPath, manifest, manifestBytes };
-  };
-
-  assert.deepEqual(await verifyP28EvidenceCommitBinding(await createRepository()), []);
-  const cases = [
-    [{ descendant: true }, 'activation_evidence_commit_not_current_head'],
-    [{ merge: true }, 'activation_evidence_commit_parent_mismatch'],
-    [{ broad: true }, 'activation_evidence_commit_scope_invalid'],
-    [{ dirty: true }, 'release_evidence_manifest_not_committed_exactly']
-  ];
-  for (const [scenario, expected] of cases) {
-    const errors = await verifyP28EvidenceCommitBinding(await createRepository(scenario));
-    assert(errors.some((entry) => entry.code === expected), `${expected} must fail in a real Git repository`);
-  }
-});
-
-test('P28 refuses an atomic activation while regional authoring and release evidence are incomplete', async () => {
-  const assessment = await assessSpatialV3Activation();
+test('current deferred manifest remains blocked and production ignores caller-supplied approvals', async () => {
+  const assessment = await assessSpatialV3Activation({ githubProofClient: async () => approvedProof() });
   assert.equal(assessment.activation_permitted, false);
-  assert.equal(assessment.production_writes, 0);
-  assert.equal(assessment.composition_changed, false);
-  assert.equal(assessment.required_action, 'reopen_owner_phase_and_keep_v2_production');
-  assert(assessment.blockers.some((entry) => entry.code === 'p28_fresh_checkout_evidence_missing'));
-  assert.deepEqual(assessment.blockers.filter((entry) => entry.code === 'spatial_candidate_gap'), []);
-  await assert.rejects(() => requireSpatialV3Activation(), { code: 'spatial_v3_activation_blocked' });
-});
-
-test('P28 rejects caller-crafted activation approval and revalidates immutable release evidence', async () => {
-  const accepted = Object.freeze({ activation_permitted: true, production_writes: 0, composition_changed: false });
-  await assert.rejects(() => requireSpatialV3Activation(accepted), {
-    code: 'spatial_v3_activation_blocked'
-  });
-});
-
-test('P28 rejects hash-mismatched and missing Appendix D evidence', async () => {
-  const originalManifest = JSON.parse(await readFile('docs/migration/spatial-v3/release-evidence.v1.json', 'utf8'));
-  const mismatched = structuredClone(originalManifest);
-  mismatched.appendix_d_items[0] = {
-    ...mismatched.appendix_d_items[0],
-    status: 'passed',
-    evidence: [{ path: 'docs/migration/spatial-v3/README.md', sha256: '0'.repeat(64) }]
-  };
-  const missing = structuredClone(originalManifest);
-  missing.appendix_d_items[1] = { ...missing.appendix_d_items[1], status: 'passed', evidence: [] };
-  for (const [manifest, expectedCode] of [[mismatched, 'appendix_d_evidence_hash_mismatch'], [missing, 'appendix_d_item_evidence_missing']]) {
-    const assessment = await assessSpatialV3Activation({
-      read: async (path, encoding) => path.endsWith('release-evidence.v1.json') ? JSON.stringify(manifest) : readFile(path, encoding)
-    });
-    assert(assessment.blockers.some((entry) => entry.code === expectedCode), `${expectedCode} must block activation`);
-  }
-});
-
-test('P28 manifest pins all four P12 gaps with their exact quantities and requires resolution evidence', async () => {
-  const originalManifest = JSON.parse(await readFile('docs/migration/spatial-v3/release-evidence.v1.json', 'utf8'));
-  const unresolvedManifest = structuredClone(originalManifest);
-  unresolvedManifest.p12_authoring_gaps = unresolvedManifest.p12_authoring_gaps.map((gap) => ({ ...gap, status: 'unresolved', resolution_evidence: [] }));
-  const missingEvidenceManifest = structuredClone(originalManifest);
-  missingEvidenceManifest.p12_authoring_gaps = missingEvidenceManifest.p12_authoring_gaps.map((gap) => ({ ...gap, status: 'resolved', resolution_evidence: [] }));
-  for (const manifest of [unresolvedManifest, missingEvidenceManifest]) {
-    const assessment = await assessSpatialV3Activation({
-      read: async (path, encoding) => path.endsWith('release-evidence.v1.json') ? JSON.stringify(manifest) : readFile(path, encoding)
-    });
-    const gaps = assessment.blockers.filter((entry) => entry.code === 'spatial_candidate_gap');
-    assert.deepEqual(gaps.map((entry) => [entry.gap_code, entry.subject_ref]).sort(), [
-      ['APPROVED_PROFILE_DATA_GAP', 'novgorod:g4-scene-profiles'],
-      ['CANONICAL_G5_INVENTORY_DATA_GAP', 'novgorod:g4-inventory:195'],
-      ['DIRECTIONAL_EXIT_READINESS_DATA_GAP', 'novgorod:physical-edge-inventory:358'],
-      ['ROUTE_BINDING_DATA_GAP', 'novgorod:graph-edge-inventory:600']
-    ]);
-  }
-});
-
-test('P28 rejects Windows absolute, UNC, traversal and ambiguous evidence paths before reading them', async () => {
-  const originalManifest = JSON.parse(await readFile('docs/migration/spatial-v3/release-evidence.v1.json', 'utf8'));
-  const unsafePaths = ['C:\\outside\\evidence.json', '\\\\server\\share\\evidence.json', '../outside.json', './evidence.json', 'docs//migration/evidence.json'];
-  for (const unsafePath of unsafePaths) {
-    const manifest = structuredClone(originalManifest);
-    manifest.p12_authoring_gaps[0] = {
-      ...manifest.p12_authoring_gaps[0],
-      status: 'resolved',
-      resolution_evidence: [{ path: unsafePath, sha256: 'a'.repeat(64) }]
-    };
-    const assessment = await assessSpatialV3Activation({
-      read: async (path, encoding) => path.endsWith('release-evidence.v1.json') ? JSON.stringify(manifest) : readFile(path, encoding)
-    });
-    assert(assessment.blockers.some((entry) => entry.code === 'p12_gap_resolution_evidence_invalid'), `${unsafePath} must be rejected`);
-  }
-});
-
-test('P28 rejects a repository-relative evidence path whose realpath escapes through a symlink', async () => {
-  const originalManifest = JSON.parse(await readFile('docs/migration/spatial-v3/release-evidence.v1.json', 'utf8'));
-  const manifest = structuredClone(originalManifest);
-  manifest.p12_authoring_gaps[0] = {
-    ...manifest.p12_authoring_gaps[0],
-    status: 'resolved',
-    resolution_evidence: [{ path: 'docs/migration/spatial-v3/README.md', sha256: 'a'.repeat(64) }]
-  };
-  const root = process.cwd();
-  const assessment = await assessSpatialV3Activation({
-    root,
-    read: async (path, encoding) => path.endsWith('release-evidence.v1.json') ? JSON.stringify(manifest) : readFile(path, encoding),
-    realpath: async (path) => path === root ? root : resolve(root, '..', 'outside-repository')
-  });
-  assert(assessment.blockers.some((entry) => entry.code === 'p12_gap_resolution_evidence_invalid'));
-});
-
-test('P28 requires every role-bound trust-store entry and never accepts a revoked release key', async () => {
-  const trust = JSON.parse(await readFile('docs/migration/spatial-v3/activation-trust-store.v1.json', 'utf8'));
-  trust.keys.find((entry) => entry.role === 'p28_release_authority').revoked = true;
-  const assessment = await assessSpatialV3Activation({
-    read: async (path, encoding) => path.endsWith('activation-trust-store.v1.json') ? JSON.stringify(trust) : readFile(path, encoding)
-  });
-  assert(assessment.blockers.some((entry) => entry.code === 'release_evidence_manifest_signature_invalid'));
-  assert.equal(assessment.activation_permitted, false);
-});
-
-test('P28 rejects shared, unknown and role-misused trust keys', async () => {
-  const original = JSON.parse(await readFile('docs/migration/spatial-v3/activation-trust-store.v1.json', 'utf8'));
-  const sharedId = structuredClone(original);
-  sharedId.keys[1].key_id = sharedId.keys[0].key_id;
-  const sharedPublicKey = structuredClone(original);
-  sharedPublicKey.keys[1].public_key_path = sharedPublicKey.keys[0].public_key_path;
-  const unknownRole = structuredClone(original);
-  unknownRole.keys[2].role = 'untrusted_release_authority';
-  for (const trust of [sharedId, sharedPublicKey, unknownRole]) {
-    const assessment = await assessSpatialV3Activation({
-      read: async (path, encoding) => path.endsWith('activation-trust-store.v1.json') ? JSON.stringify(trust) : readFile(path, encoding)
-    });
-    assert(assessment.blockers.some((entry) => entry.code === 'release_evidence_trust_store_invalid'));
-    assert.equal(assessment.activation_permitted, false);
-  }
-});
-
-test('P28 canonicalizes SPKI identity and rejects alternate PEM encodings, malformed keys and non-Ed25519 keys', async () => {
-  const original = JSON.parse(await readFile('docs/migration/spatial-v3/activation-trust-store.v1.json', 'utf8'));
-  const root = process.cwd();
-  const firstPath = original.keys[0].public_key_path;
-  const firstPem = await readFile(firstPath, 'utf8');
-  const sameSpkiDifferentPem = structuredClone(original);
-  sameSpkiDifferentPem.keys[1].public_key_path = 'docs/migration/spatial-v3/reencoded-same-key.pem';
-  const malformed = structuredClone(original);
-  malformed.keys[1].public_key_path = 'docs/migration/spatial-v3/malformed-key.pem';
-  const rsa = generateKeyPairSync('rsa', { modulusLength: 2048 });
-  const nonEd25519 = structuredClone(original);
-  nonEd25519.keys[1].public_key_path = 'docs/migration/spatial-v3/rsa-key.pem';
-  const fixtures = [
-    [sameSpkiDifferentPem, { 'reencoded-same-key.pem': rewrapPem(firstPem) }],
-    [malformed, { 'malformed-key.pem': 'not a PEM key' }],
-    [nonEd25519, { 'rsa-key.pem': rsa.publicKey.export({ type: 'spki', format: 'pem' }) }]
-  ];
-  for (const [trust, extraFiles] of fixtures) {
-    const assessment = await assessSpatialV3Activation({
-      root,
-      read: async (path, encoding) => {
-        if (path.endsWith('activation-trust-store.v1.json')) return JSON.stringify(trust);
-        const extra = Object.entries(extraFiles).find(([name]) => path.endsWith(name));
-        return extra ? extra[1] : readFile(path, encoding);
-      }
-    });
-    assert(assessment.blockers.some((entry) => entry.code === 'release_evidence_trust_store_invalid'));
-    assert.equal(assessment.activation_permitted, false);
-  }
-});
-
-test('P28 accepts only a complete, independently role-signed evidence set', async () => {
-  const root = process.cwd();
-  const candidateCommit = 'a'.repeat(40);
-  const evidenceCommit = 'b'.repeat(40);
-  const evidencePath = 'docs/migration/spatial-v3/README.md';
-  const evidenceBytes = await readFile(evidencePath);
-  const evidenceDigest = digest(evidenceBytes);
-  const roles = ['p27_critic', 'fresh_checkout_attestor', 'p28_release_authority'];
-  const keys = Object.fromEntries(roles.map((role) => [role, generateKeyPairSync('ed25519')]));
-  const trust = {
-    schema: 'rus.spatial-v3.activation-trust-store.v1', version: 1,
-    keys: roles.map((role) => ({
-      role, key_id: `${role}-test-key`, public_key_path: `docs/migration/spatial-v3/${role}-test.pem`, revoked: false
-    }))
-  };
-  const manifest = {
-    schema: 'rus.spatial-v3.release-evidence.v1', version: 1, release_id: 'p28-positive-test', activation_candidate_commit: candidateCommit,
-    appendix_d_items: [
-      'D1.github_main_fixed', 'D1.root_agents_read', 'D1.github_agents_read', 'D1.conditional_documents_read', 'D1.navigation_and_catalog_read', 'D1.rag_and_graphify_recorded', 'D1.norm_conflicts_empty',
-      'D2.public_contracts_single_declaration', 'D2.contract_types_resolve', 'D2.no_placeholder_or_unresolved_branch', 'D2.versioned_authoring_refs', 'D2.contract_schema_dto_ddl_match', 'D2.plural_relations_normalized', 'D2.schema_reference_ddl_digest', 'D2.route_endpoint_context_validators', 'D2.capacity_proof', 'D2.regional_g5_and_exits_complete', 'D2.empty_candidate_sets_hard_block',
-      'D3.one_production_owner_writer', 'D3.preparation_before_activation', 'D3.frontier_no_move_or_time', 'D3.separate_executor_contracts', 'D3.failed_retry_lineage', 'D3.no_open_interval_result', 'D3.rational_time_slice_independent', 'D3.boundary_zero_time_context', 'D3.carrier_root_projection', 'D3.mode_transition_new_plan', 'D3.stranded_save_load_rescue', 'D3.player_projection_no_hidden_topology', 'D3.knowledge_token_pinned_resolution', 'D3.portal_state_exhaustive', 'D3.blocker_capacity_deterministic_locks', 'D3.journey_exact_handoff_snapshot',
-      'D4.partial_unique_predicates', 'D4.global_lock_order', 'D4.idempotency_identical_result', 'D4.idempotency_digest_rejected', 'D4.clock_matching_committed_result', 'D4.frontier_capacity_concurrency', 'D4.branch_committed_exhaustion', 'D4.movement_topology_no_free_move', 'D4.journey_reload_no_latest_catalog',
-      'D5.full_v2_inventory_mapping', 'D5.ambiguous_hard_block', 'D5.no_dual_write', 'D5.postgres_import_lifecycle', 'D5.new_game_existing_save_e2e', 'D5.docs_catalogs_ownership_sync', 'D5.readme_checks_critic_cycles',
-      'D6.contract_unit_tests', 'D6.negative_invariant_tests', 'D6.property_time_route_tests', 'D6.targeted_package_tests', 'D6.full_project_tests', 'D6.postgres_integration', 'D6.generated_artifacts_reproduced', 'D6.independent_critic_accepted'
-    ].map((id) => ({ id, status: 'passed', evidence: [{ path: evidencePath, sha256: evidenceDigest }] })),
-    p12_authoring_gaps: [
-      ['CANONICAL_G5_INVENTORY_DATA_GAP', 'novgorod:g4-inventory:195'], ['DIRECTIONAL_EXIT_READINESS_DATA_GAP', 'novgorod:physical-edge-inventory:358'], ['ROUTE_BINDING_DATA_GAP', 'novgorod:graph-edge-inventory:600'], ['APPROVED_PROFILE_DATA_GAP', 'novgorod:g4-scene-profiles']
-    ].map(([code, subject_ref]) => ({ code, subject_ref, status: 'resolved', resolution_evidence: [{ path: evidencePath, sha256: evidenceDigest }] })),
-    p27_independent_critic: { status: 'passed', verdict: 'PASS', activation_candidate_commit: candidateCommit, path: evidencePath, sha256: evidenceDigest,
-      signer: { role: 'p27_critic', key_id: 'p27_critic-test-key' }, signature: null },
-    p28_fresh_checkout: { status: 'passed', activation_candidate_commit: candidateCommit, evidence: [{ path: evidencePath, sha256: evidenceDigest,
-      signer: { role: 'fresh_checkout_attestor', key_id: 'fresh_checkout_attestor-test-key' }, signature: null }] }
-  };
-  manifest.p27_independent_critic.signature = encodedSignature(keys.p27_critic.privateKey, `p27:${manifest.release_id}:${candidateCommit}:${evidenceDigest}`);
-  manifest.p28_fresh_checkout.evidence[0].signature = encodedSignature(keys.fresh_checkout_attestor.privateKey, `p28:fresh-checkout:${manifest.release_id}:${candidateCommit}:${evidenceDigest}`);
-  manifest.manifest_signer = { role: 'p28_release_authority', key_id: 'p28_release_authority-test-key' };
-  manifest.manifest_sha256 = digest(stableJson(manifest));
-  manifest.manifest_signature = encodedSignature(keys.p28_release_authority.privateKey, `p28:${manifest.release_id}:${candidateCommit}:${manifest.manifest_sha256}`);
-  const testRead = (providedManifest = manifest, providedTrust = trust) => async (path, encoding) => {
-    if (path.endsWith('release-evidence.v1.json')) return JSON.stringify(providedManifest);
-    if (path.endsWith('activation-trust-store.v1.json')) return JSON.stringify(providedTrust);
-    const role = roles.find((candidate) => path.endsWith(`${candidate}-test.pem`));
-    return role ? keys[role].publicKey.export({ type: 'spki', format: 'pem' }) : readFile(path, encoding);
-  };
-  const options = (providedManifest = manifest, providedTrust = trust) => ({
-    root,
-    realpath: async (path) => path,
-    gitText: async (_root, args) => {
-      if (args[0] === 'rev-parse' || args[0] === 'log') return evidenceCommit;
-      if (args[0] === 'rev-list') return `${evidenceCommit} ${candidateCommit}`;
-      if (args[0] === 'diff-tree') return `docs/migration/spatial-v3/release-evidence.v1.json\n${evidencePath}`;
-      throw new Error(`unexpected git command: ${args.join(' ')}`);
-    },
-    gitRaw: async (_root, args) => {
-      const repositoryPath = args[1].slice(args[1].indexOf(':') + 1);
-      if (repositoryPath === 'docs/migration/spatial-v3/release-evidence.v1.json') return Buffer.from(JSON.stringify(providedManifest));
-      if (repositoryPath === 'docs/migration/spatial-v3/activation-trust-store.v1.json') return Buffer.from(JSON.stringify(providedTrust));
-      if (repositoryPath === evidencePath) return evidenceBytes;
-      const role = roles.find((candidate) => repositoryPath.endsWith(`${candidate}-test.pem`));
-      if (role) return Buffer.from(keys[role].publicKey.export({ type: 'spki', format: 'pem' }));
-      throw new Error(`unexpected git blob: ${args[1]}`);
-    }
-  });
-  const assessment = await assessSpatialV3Activation({ ...options(), read: testRead() });
-  assert.deepEqual(assessment.blockers, []);
-  assert.equal(assessment.activation_permitted, true);
-  assert.equal(assessment.production_writes, 0);
-  assert.equal(assessment.composition_changed, false);
-  await assert.rejects(
-    () => requireSpatialV3Activation({ ...options(), read: testRead() }),
-    { code: 'spatial_v3_activation_blocked' },
-    'production authorization must ignore caller-supplied root/read/realpath/git dependencies'
-  );
-
-  const dirtyEvidenceBytes = Buffer.from('working-tree-only evidence');
-  const dirtyEvidenceDigest = digest(dirtyEvidenceBytes);
-  const dirtyEvidenceManifest = structuredClone(manifest);
-  for (const item of dirtyEvidenceManifest.appendix_d_items) for (const evidence of item.evidence) evidence.sha256 = dirtyEvidenceDigest;
-  for (const gap of dirtyEvidenceManifest.p12_authoring_gaps) for (const evidence of gap.resolution_evidence) evidence.sha256 = dirtyEvidenceDigest;
-  dirtyEvidenceManifest.p27_independent_critic.sha256 = dirtyEvidenceDigest;
-  dirtyEvidenceManifest.p27_independent_critic.signature = encodedSignature(keys.p27_critic.privateKey,
-    `p27:${dirtyEvidenceManifest.release_id}:${candidateCommit}:${dirtyEvidenceDigest}`);
-  dirtyEvidenceManifest.p28_fresh_checkout.evidence[0].sha256 = dirtyEvidenceDigest;
-  dirtyEvidenceManifest.p28_fresh_checkout.evidence[0].signature = encodedSignature(keys.fresh_checkout_attestor.privateKey,
-    `p28:fresh-checkout:${dirtyEvidenceManifest.release_id}:${candidateCommit}:${dirtyEvidenceDigest}`);
-  delete dirtyEvidenceManifest.manifest_sha256;
-  delete dirtyEvidenceManifest.manifest_signature;
-  dirtyEvidenceManifest.manifest_sha256 = digest(stableJson(dirtyEvidenceManifest));
-  dirtyEvidenceManifest.manifest_signature = encodedSignature(keys.p28_release_authority.privateKey,
-    `p28:${dirtyEvidenceManifest.release_id}:${candidateCommit}:${dirtyEvidenceManifest.manifest_sha256}`);
-  const dirtyEvidenceAssessment = await assessSpatialV3Activation({
-    ...options(dirtyEvidenceManifest),
-    read: async (path, encoding) => path.endsWith('README.md') ? dirtyEvidenceBytes : testRead(dirtyEvidenceManifest)(path, encoding)
-  });
-  assert(dirtyEvidenceAssessment.blockers.some((entry) => entry.code === 'release_evidence_path_not_committed_exactly'));
-
-  const dirtyTrustBytes = `${JSON.stringify(trust)}\n `;
-  const dirtyTrustAssessment = await assessSpatialV3Activation({
-    ...options(),
-    read: async (path, encoding) => path.endsWith('activation-trust-store.v1.json') ? dirtyTrustBytes : testRead()(path, encoding)
-  });
-  assert(dirtyTrustAssessment.blockers.some((entry) => entry.code === 'release_evidence_trust_store_not_committed_exactly'));
-
-  const p27PublicKeyPath = trust.keys.find((entry) => entry.role === 'p27_critic').public_key_path;
-  const p27PublicKeyName = p27PublicKeyPath.split('/').at(-1);
-  const reencodedP27Key = rewrapPem(keys.p27_critic.publicKey.export({ type: 'spki', format: 'pem' }));
-  const dirtyKeyAssessment = await assessSpatialV3Activation({
-    ...options(),
-    read: async (path, encoding) => path.endsWith(p27PublicKeyName) ? reencodedP27Key : testRead()(path, encoding)
-  });
-  assert(dirtyKeyAssessment.blockers.some((entry) => entry.code === 'release_evidence_public_key_not_committed_exactly'));
-
-  const roleMisused = structuredClone(manifest);
-  roleMisused.p28_fresh_checkout.evidence[0].signer = { role: 'p27_critic', key_id: 'p27_critic-test-key' };
-  roleMisused.manifest_sha256 = digest(stableJson(roleMisused));
-  roleMisused.manifest_signature = encodedSignature(keys.p28_release_authority.privateKey,
-    `p28:${roleMisused.release_id}:${candidateCommit}:${roleMisused.manifest_sha256}`);
-  const roleMisuseAssessment = await assessSpatialV3Activation({ ...options(roleMisused), read: testRead(roleMisused) });
-  assert(roleMisuseAssessment.blockers.some((entry) => entry.code === 'p28_fresh_checkout_signature_invalid'));
-
-  const wrongKey = structuredClone(manifest);
-  wrongKey.p28_fresh_checkout.evidence[0].signer = { role: 'fresh_checkout_attestor', key_id: 'p27_critic-test-key' };
-  wrongKey.manifest_sha256 = digest(stableJson(wrongKey));
-  wrongKey.manifest_signature = encodedSignature(keys.p28_release_authority.privateKey,
-    `p28:${wrongKey.release_id}:${candidateCommit}:${wrongKey.manifest_sha256}`);
-  const wrongKeyAssessment = await assessSpatialV3Activation({ ...options(wrongKey), read: testRead(wrongKey) });
-  assert(wrongKeyAssessment.blockers.some((entry) => entry.code === 'p28_fresh_checkout_signature_invalid'));
-
-  const revokedTrust = structuredClone(trust);
-  revokedTrust.keys.find((entry) => entry.role === 'p28_release_authority').revoked = true;
-  const revokedAssessment = await assessSpatialV3Activation({ ...options(manifest, revokedTrust), read: testRead(manifest, revokedTrust) });
-  assert(revokedAssessment.blockers.some((entry) => entry.code === 'release_evidence_manifest_signature_invalid'));
-});
-
-test('P28 command exits nonzero rather than silently applying an incomplete activation', async () => {
-  await assert.rejects(
-    execFile(process.execPath, ['tools/spatial-v3/p28-activation-gate.mjs'], { cwd: process.cwd() }),
-    (error) => error.code === 1 && String(error.stdout).includes('"activation_permitted": false')
-  );
+  assert(assessment.blockers.some(({ code }) => code === 'appendix_d_item_unchecked'));
+  await assert.rejects(() => requireSpatialV3Activation({ githubProofClient: async () => approvedProof() }), { code: 'spatial_v3_activation_blocked' });
 });

@@ -1,0 +1,8 @@
+{
+  "schema": "rus.spatial-v3.p28-evidence-scope.v1",
+  "version": 1,
+  "allowed_evidence_child_paths": [
+    "docs/migration/spatial-v3/p27-candidate-evidence.md",
+    "docs/migration/spatial-v3/p28-appendix-d-evidence-ledger.md"
+  ]
+}

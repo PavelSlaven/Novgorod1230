@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
-import { mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 
 const root = resolve(import.meta.dirname, "..");
@@ -30,6 +30,17 @@ const write = (path, value) => {
   writeFileSync(full, typeof value === "string" ? value : JSON.stringify(value, null, 2) + "\n");
 };
 const digestRow = (row) => sha(Buffer.from(JSON.stringify(row)));
+const approvalContentFingerprint = ({ schema_version, bundle_id, status, pins, counts, files }) => {
+  const { current_ddl_sha256: _technicalDdlDigest, ...semanticPins } = pins ?? {};
+  return sha(Buffer.from(JSON.stringify({
+    schema_version,
+    bundle_id,
+    status,
+    pins: semanticPins,
+    counts,
+    files: files.filter((entry) => entry.path !== "APPROVAL_DECISION.json").sort((a, b) => a.path.localeCompare(b.path))
+  })));
+};
 
 const provenance = json(join(sourceRoot, "data/provenance.json"));
 const ledger = provenance.source_ledger.sources;
@@ -252,6 +263,28 @@ const positions = families.flatMap((f) => f.position_templates.map((r) => ({ sce
 const endpoints = families.flatMap((f) => f.endpoint_slots.map((r) => ({ scene_template_id: f.id, scene_template_version: Number(f.version), required_position_instance_ordinal: 0, required_position_slot_key: r.position_slot_key, ...r })));
 const edges = families.flatMap((f) => f.movement_edges.map((r, ordinal) => ({ scene_template_id: f.id, scene_template_version: Number(f.version), edge_slot_key: `edge_${ordinal + 1}`, from_position_slot_key: r.from, to_position_slot_key: r.to, passage_type_id: "internal_passage", transition_environment_profile_id: "topological_default", transition_environment_profile_version: 1, movement_orientation_profile_id: "topological_default", movement_orientation_profile_version: 1, ...r })));
 
+const previousApprovedSubject = (() => {
+  const approvalPath = join(out, "APPROVAL_DECISION.json");
+  const manifestPath = join(out, "manifest.json");
+  const manifestDigestPath = join(out, "manifest.sha256");
+  if (![approvalPath, manifestPath, manifestDigestPath].every(existsSync)) return null;
+  try {
+    const approvalBytes = readFileSync(approvalPath);
+    const approvalRepositoryPath = relative(root, approvalPath).replaceAll("\\", "/");
+    const committedApprovalBytes = execFileSync("git", ["show", `HEAD:${approvalRepositoryPath}`], { cwd: root, encoding: "buffer" });
+    if (!approvalBytes.equals(committedApprovalBytes)) return null;
+    const approval = JSON.parse(approvalBytes.toString("utf8"));
+    const manifestBytes = readFileSync(manifestPath);
+    const manifest = JSON.parse(manifestBytes.toString("utf8"));
+    if (approval.status !== "APPROVED_FOR_P12_DEPENDENCY_CLOSURE" || !/^PASS_FOR_SUBJECT_/u.test(approval.independent_audit ?? "")) return null;
+    if (readFileSync(manifestDigestPath, "utf8") !== `${sha(manifestBytes)}  manifest.json\n`) return null;
+    if (!Array.isArray(manifest.files) || new Set(manifest.files.map((entry) => entry.path)).size !== manifest.files.length) return null;
+    if (manifest.files.some((entry) => !existsSync(join(out, entry.path)) || fileSha(join(out, entry.path)) !== entry.sha256)) return null;
+    return { approval, fingerprint: approvalContentFingerprint(manifest) };
+  } catch {
+    return null;
+  }
+})();
 rmSync(out, { recursive: true, force: true });
 const provenanceRecord = {
   id: provenance.id,
@@ -420,7 +453,7 @@ write("reports/v1_1-physical-projection-coverage.json", {
 const counts = { source_ledger: ledger.length, repository_provenance: 1, spatial_v3_nodes: nodes.length, spatial_node_authoring_versions: nodeAuthoringVersions.length, dependency_authoring_versions: dependencyAuthoringVersions.length, authoring_versions_total: authoringVersions.length, spatial_v3_node_parents: parents.length, spatial_v3_node_classes: classes.length, spatial_v3_g1_grid_cells: grid.length, g3_classification_decisions: classifications.length, universal_categories: categories.length, regional_scene_template_bases: regionalBases.length, scene_templates: sceneTemplates.length, g6_slots: g6Slots.length, position_templates: positions.length, endpoint_slots: endpoints.length, movement_edges: edges.length, stable_structures: 0, portals: 0, hard_gaps: 0 };
 write("reports/count-ledger.json", { expected: counts, actual: counts, status: "PASS" });
 write("schemas/dependency-closure.schema.json", { $schema: "https://json-schema.org/draft/2020-12/schema", title: "P12 dependency closure bundle", type: "object", required: ["schema_version", "status", "records"], properties: { schema_version: { type: "string" }, status: { type: "string" }, records: { type: "array" } } });
-write("APPROVAL_DECISION.json", { schema_version: "rus.p12_dependency_closure_approval.v1", status: "PROPOSED_FOR_P12_DEPENDENCY_CLOSURE", blocker_addressed: "P12_V11_DEPENDENCY_CLOSURE_EVIDENCE_MISSING", independent_audit: "pending_reapproval", production_activation: "blocked", p28_status: "blocked" });
+const proposedApprovalDecision = { schema_version: "rus.p12_dependency_closure_approval.v1", status: "PROPOSED_FOR_P12_DEPENDENCY_CLOSURE", blocker_addressed: "P12_V11_DEPENDENCY_CLOSURE_EVIDENCE_MISSING", independent_audit: "pending_reapproval", production_activation: "blocked", p28_status: "blocked" };
 write("REAPPROVAL_REQUEST.json", {
   schema_version: "rus.p12_dependency_closure_reapproval_request.v1",
   status: "PENDING_INDEPENDENT_REAPPROVAL",
@@ -466,7 +499,14 @@ const collect = (dir) => {
 };
 collect(out);
 filesBeforeManifest.sort((a, b) => a.path.localeCompare(b.path));
-const manifest = { schema_version: "rus.p12_dependency_closure_manifest.v1", bundle_id: "p12_novgorod_dependency_closure_v1", status: "PROPOSED_FOR_P12_DEPENDENCY_CLOSURE", pins, counts, files: filesBeforeManifest };
+const manifestIdentity = { schema_version: "rus.p12_dependency_closure_manifest.v1", bundle_id: "p12_novgorod_dependency_closure_v1", status: "PROPOSED_FOR_P12_DEPENDENCY_CLOSURE", pins, counts };
+const approvalDecision = previousApprovedSubject?.fingerprint === approvalContentFingerprint({ ...manifestIdentity, files: filesBeforeManifest })
+  ? previousApprovedSubject.approval
+  : proposedApprovalDecision;
+write("APPROVAL_DECISION.json", approvalDecision);
+filesBeforeManifest.push({ path: "APPROVAL_DECISION.json", sha256: fileSha(join(out, "APPROVAL_DECISION.json")) });
+filesBeforeManifest.sort((a, b) => a.path.localeCompare(b.path));
+const manifest = { ...manifestIdentity, files: filesBeforeManifest };
 write("manifest.json", manifest);
 write("manifest.sha256", `${fileSha(join(out, "manifest.json"))}  manifest.json\n`);
 console.log(JSON.stringify({ ok: true, out, counts, pins }, null, 2));

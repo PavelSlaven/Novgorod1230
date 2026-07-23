@@ -1,0 +1,866 @@
+[
+  {
+    "id": "g5_anchor_agriculture_exit_v1",
+    "category_id": "cat_g5_anchor_storage_surface_v1",
+    "can_hold_npc": false,
+    "can_hold_item": false,
+    "can_hold_container": false,
+    "npc_capacity": 0,
+    "item_capacity": 0,
+    "container_capacity": 0,
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_context_policy",
+      "context_domain": "agriculture",
+      "access_state": "open",
+      "traversal_permission": true,
+      "fallback": "deny"
+    },
+    "visibility_policy": {
+      "version": 1,
+      "mode": "authored",
+      "context_domain": "agriculture",
+      "default": "visible_if_accessible"
+    },
+    "initial_state": {
+      "version": 1,
+      "mode": "authored_empty"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "g5_anchor_agriculture_start_v1",
+    "category_id": "cat_g5_anchor_storage_surface_v1",
+    "can_hold_npc": false,
+    "can_hold_item": false,
+    "can_hold_container": false,
+    "npc_capacity": 0,
+    "item_capacity": 0,
+    "container_capacity": 0,
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_context_policy",
+      "context_domain": "agriculture",
+      "access_state": "open",
+      "traversal_permission": true,
+      "fallback": "deny"
+    },
+    "visibility_policy": {
+      "version": 1,
+      "mode": "authored",
+      "context_domain": "agriculture",
+      "default": "visible_if_accessible"
+    },
+    "initial_state": {
+      "version": 1,
+      "mode": "authored_empty"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "g5_anchor_agriculture_work_v1",
+    "category_id": "cat_g5_anchor_storage_surface_v1",
+    "can_hold_npc": false,
+    "can_hold_item": true,
+    "can_hold_container": false,
+    "npc_capacity": 0,
+    "item_capacity": 8,
+    "container_capacity": 0,
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_context_policy",
+      "context_domain": "agriculture",
+      "access_state": "open",
+      "traversal_permission": true,
+      "fallback": "deny"
+    },
+    "visibility_policy": {
+      "version": 1,
+      "mode": "authored",
+      "context_domain": "agriculture",
+      "default": "visible_if_accessible"
+    },
+    "initial_state": {
+      "version": 1,
+      "mode": "authored_empty"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "g5_anchor_craft_work_exit_v1",
+    "category_id": "cat_g5_anchor_storage_surface_v1",
+    "can_hold_npc": false,
+    "can_hold_item": false,
+    "can_hold_container": false,
+    "npc_capacity": 0,
+    "item_capacity": 0,
+    "container_capacity": 0,
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_context_policy",
+      "context_domain": "craft_work",
+      "access_state": "open",
+      "traversal_permission": true,
+      "fallback": "deny"
+    },
+    "visibility_policy": {
+      "version": 1,
+      "mode": "authored",
+      "context_domain": "craft_work",
+      "default": "visible_if_accessible"
+    },
+    "initial_state": {
+      "version": 1,
+      "mode": "authored_empty"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "g5_anchor_craft_work_start_v1",
+    "category_id": "cat_g5_anchor_storage_surface_v1",
+    "can_hold_npc": false,
+    "can_hold_item": false,
+    "can_hold_container": false,
+    "npc_capacity": 0,
+    "item_capacity": 0,
+    "container_capacity": 0,
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_context_policy",
+      "context_domain": "craft_work",
+      "access_state": "open",
+      "traversal_permission": true,
+      "fallback": "deny"
+    },
+    "visibility_policy": {
+      "version": 1,
+      "mode": "authored",
+      "context_domain": "craft_work",
+      "default": "visible_if_accessible"
+    },
+    "initial_state": {
+      "version": 1,
+      "mode": "authored_empty"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "g5_anchor_craft_work_work_v1",
+    "category_id": "cat_g5_anchor_storage_surface_v1",
+    "can_hold_npc": false,
+    "can_hold_item": true,
+    "can_hold_container": true,
+    "npc_capacity": 0,
+    "item_capacity": 15,
+    "container_capacity": 1,
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_context_policy",
+      "context_domain": "craft_work",
+      "access_state": "open",
+      "traversal_permission": true,
+      "fallback": "deny"
+    },
+    "visibility_policy": {
+      "version": 1,
+      "mode": "authored",
+      "context_domain": "craft_work",
+      "default": "visible_if_accessible"
+    },
+    "initial_state": {
+      "version": 1,
+      "mode": "authored_empty"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "g5_anchor_fishing_exit_v1",
+    "category_id": "cat_g5_anchor_storage_surface_v1",
+    "can_hold_npc": false,
+    "can_hold_item": false,
+    "can_hold_container": false,
+    "npc_capacity": 0,
+    "item_capacity": 0,
+    "container_capacity": 0,
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_context_policy",
+      "context_domain": "fishing",
+      "access_state": "open",
+      "traversal_permission": true,
+      "fallback": "deny"
+    },
+    "visibility_policy": {
+      "version": 1,
+      "mode": "authored",
+      "context_domain": "fishing",
+      "default": "visible_if_accessible"
+    },
+    "initial_state": {
+      "version": 1,
+      "mode": "authored_empty"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "g5_anchor_fishing_start_v1",
+    "category_id": "cat_g5_anchor_storage_surface_v1",
+    "can_hold_npc": false,
+    "can_hold_item": false,
+    "can_hold_container": false,
+    "npc_capacity": 0,
+    "item_capacity": 0,
+    "container_capacity": 0,
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_context_policy",
+      "context_domain": "fishing",
+      "access_state": "open",
+      "traversal_permission": true,
+      "fallback": "deny"
+    },
+    "visibility_policy": {
+      "version": 1,
+      "mode": "authored",
+      "context_domain": "fishing",
+      "default": "visible_if_accessible"
+    },
+    "initial_state": {
+      "version": 1,
+      "mode": "authored_empty"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "g5_anchor_fishing_work_v1",
+    "category_id": "cat_g5_anchor_storage_surface_v1",
+    "can_hold_npc": false,
+    "can_hold_item": true,
+    "can_hold_container": false,
+    "npc_capacity": 0,
+    "item_capacity": 7,
+    "container_capacity": 0,
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_context_policy",
+      "context_domain": "fishing",
+      "access_state": "open",
+      "traversal_permission": true,
+      "fallback": "deny"
+    },
+    "visibility_policy": {
+      "version": 1,
+      "mode": "authored",
+      "context_domain": "fishing",
+      "default": "visible_if_accessible"
+    },
+    "initial_state": {
+      "version": 1,
+      "mode": "authored_empty"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "g5_anchor_food_trade_household_exit_v1",
+    "category_id": "cat_g5_anchor_storage_surface_v1",
+    "can_hold_npc": false,
+    "can_hold_item": false,
+    "can_hold_container": false,
+    "npc_capacity": 0,
+    "item_capacity": 0,
+    "container_capacity": 0,
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_context_policy",
+      "context_domain": "food_trade_household",
+      "access_state": "open",
+      "traversal_permission": true,
+      "fallback": "deny"
+    },
+    "visibility_policy": {
+      "version": 1,
+      "mode": "authored",
+      "context_domain": "food_trade_household",
+      "default": "visible_if_accessible"
+    },
+    "initial_state": {
+      "version": 1,
+      "mode": "authored_empty"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "g5_anchor_food_trade_household_start_v1",
+    "category_id": "cat_g5_anchor_storage_surface_v1",
+    "can_hold_npc": false,
+    "can_hold_item": false,
+    "can_hold_container": false,
+    "npc_capacity": 0,
+    "item_capacity": 0,
+    "container_capacity": 0,
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_context_policy",
+      "context_domain": "food_trade_household",
+      "access_state": "open",
+      "traversal_permission": true,
+      "fallback": "deny"
+    },
+    "visibility_policy": {
+      "version": 1,
+      "mode": "authored",
+      "context_domain": "food_trade_household",
+      "default": "visible_if_accessible"
+    },
+    "initial_state": {
+      "version": 1,
+      "mode": "authored_empty"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "g5_anchor_food_trade_household_work_v1",
+    "category_id": "cat_g5_anchor_storage_surface_v1",
+    "can_hold_npc": false,
+    "can_hold_item": true,
+    "can_hold_container": false,
+    "npc_capacity": 0,
+    "item_capacity": 12,
+    "container_capacity": 0,
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_context_policy",
+      "context_domain": "food_trade_household",
+      "access_state": "open",
+      "traversal_permission": true,
+      "fallback": "deny"
+    },
+    "visibility_policy": {
+      "version": 1,
+      "mode": "authored",
+      "context_domain": "food_trade_household",
+      "default": "visible_if_accessible"
+    },
+    "initial_state": {
+      "version": 1,
+      "mode": "authored_empty"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "g5_anchor_household_personal_exit_v1",
+    "category_id": "cat_g5_anchor_storage_surface_v1",
+    "can_hold_npc": false,
+    "can_hold_item": false,
+    "can_hold_container": false,
+    "npc_capacity": 0,
+    "item_capacity": 0,
+    "container_capacity": 0,
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_context_policy",
+      "context_domain": "household_personal",
+      "access_state": "open",
+      "traversal_permission": true,
+      "fallback": "deny"
+    },
+    "visibility_policy": {
+      "version": 1,
+      "mode": "authored",
+      "context_domain": "household_personal",
+      "default": "visible_if_accessible"
+    },
+    "initial_state": {
+      "version": 1,
+      "mode": "authored_empty"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "g5_anchor_household_personal_start_v1",
+    "category_id": "cat_g5_anchor_storage_surface_v1",
+    "can_hold_npc": false,
+    "can_hold_item": false,
+    "can_hold_container": false,
+    "npc_capacity": 0,
+    "item_capacity": 0,
+    "container_capacity": 0,
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_context_policy",
+      "context_domain": "household_personal",
+      "access_state": "open",
+      "traversal_permission": true,
+      "fallback": "deny"
+    },
+    "visibility_policy": {
+      "version": 1,
+      "mode": "authored",
+      "context_domain": "household_personal",
+      "default": "visible_if_accessible"
+    },
+    "initial_state": {
+      "version": 1,
+      "mode": "authored_empty"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "g5_anchor_household_personal_work_v1",
+    "category_id": "cat_g5_anchor_storage_surface_v1",
+    "can_hold_npc": false,
+    "can_hold_item": true,
+    "can_hold_container": true,
+    "npc_capacity": 0,
+    "item_capacity": 45,
+    "container_capacity": 15,
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_context_policy",
+      "context_domain": "household_personal",
+      "access_state": "open",
+      "traversal_permission": true,
+      "fallback": "deny"
+    },
+    "visibility_policy": {
+      "version": 1,
+      "mode": "authored",
+      "context_domain": "household_personal",
+      "default": "visible_if_accessible"
+    },
+    "initial_state": {
+      "version": 1,
+      "mode": "authored_empty"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "g5_anchor_military_service_exit_v1",
+    "category_id": "cat_g5_anchor_storage_surface_v1",
+    "can_hold_npc": false,
+    "can_hold_item": false,
+    "can_hold_container": false,
+    "npc_capacity": 0,
+    "item_capacity": 0,
+    "container_capacity": 0,
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_context_policy",
+      "context_domain": "military_service",
+      "access_state": "open",
+      "traversal_permission": true,
+      "fallback": "deny"
+    },
+    "visibility_policy": {
+      "version": 1,
+      "mode": "authored",
+      "context_domain": "military_service",
+      "default": "visible_if_accessible"
+    },
+    "initial_state": {
+      "version": 1,
+      "mode": "authored_empty"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "g5_anchor_military_service_start_v1",
+    "category_id": "cat_g5_anchor_storage_surface_v1",
+    "can_hold_npc": false,
+    "can_hold_item": false,
+    "can_hold_container": false,
+    "npc_capacity": 0,
+    "item_capacity": 0,
+    "container_capacity": 0,
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_context_policy",
+      "context_domain": "military_service",
+      "access_state": "open",
+      "traversal_permission": true,
+      "fallback": "deny"
+    },
+    "visibility_policy": {
+      "version": 1,
+      "mode": "authored",
+      "context_domain": "military_service",
+      "default": "visible_if_accessible"
+    },
+    "initial_state": {
+      "version": 1,
+      "mode": "authored_empty"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "g5_anchor_military_service_work_v1",
+    "category_id": "cat_g5_anchor_storage_surface_v1",
+    "can_hold_npc": false,
+    "can_hold_item": true,
+    "can_hold_container": true,
+    "npc_capacity": 0,
+    "item_capacity": 9,
+    "container_capacity": 2,
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_context_policy",
+      "context_domain": "military_service",
+      "access_state": "open",
+      "traversal_permission": true,
+      "fallback": "deny"
+    },
+    "visibility_policy": {
+      "version": 1,
+      "mode": "authored",
+      "context_domain": "military_service",
+      "default": "visible_if_accessible"
+    },
+    "initial_state": {
+      "version": 1,
+      "mode": "authored_empty"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "g5_anchor_religious_personal_exit_v1",
+    "category_id": "cat_g5_anchor_storage_surface_v1",
+    "can_hold_npc": false,
+    "can_hold_item": false,
+    "can_hold_container": false,
+    "npc_capacity": 0,
+    "item_capacity": 0,
+    "container_capacity": 0,
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_context_policy",
+      "context_domain": "religious_personal",
+      "access_state": "open",
+      "traversal_permission": true,
+      "fallback": "deny"
+    },
+    "visibility_policy": {
+      "version": 1,
+      "mode": "authored",
+      "context_domain": "religious_personal",
+      "default": "visible_if_accessible"
+    },
+    "initial_state": {
+      "version": 1,
+      "mode": "authored_empty"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "g5_anchor_religious_personal_start_v1",
+    "category_id": "cat_g5_anchor_storage_surface_v1",
+    "can_hold_npc": false,
+    "can_hold_item": false,
+    "can_hold_container": false,
+    "npc_capacity": 0,
+    "item_capacity": 0,
+    "container_capacity": 0,
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_context_policy",
+      "context_domain": "religious_personal",
+      "access_state": "open",
+      "traversal_permission": true,
+      "fallback": "deny"
+    },
+    "visibility_policy": {
+      "version": 1,
+      "mode": "authored",
+      "context_domain": "religious_personal",
+      "default": "visible_if_accessible"
+    },
+    "initial_state": {
+      "version": 1,
+      "mode": "authored_empty"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "g5_anchor_religious_personal_work_v1",
+    "category_id": "cat_g5_anchor_storage_surface_v1",
+    "can_hold_npc": false,
+    "can_hold_item": true,
+    "can_hold_container": false,
+    "npc_capacity": 0,
+    "item_capacity": 1,
+    "container_capacity": 0,
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_context_policy",
+      "context_domain": "religious_personal",
+      "access_state": "open",
+      "traversal_permission": true,
+      "fallback": "deny"
+    },
+    "visibility_policy": {
+      "version": 1,
+      "mode": "authored",
+      "context_domain": "religious_personal",
+      "default": "visible_if_accessible"
+    },
+    "initial_state": {
+      "version": 1,
+      "mode": "authored_empty"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "g5_anchor_trade_administration_exit_v1",
+    "category_id": "cat_g5_anchor_storage_surface_v1",
+    "can_hold_npc": false,
+    "can_hold_item": false,
+    "can_hold_container": false,
+    "npc_capacity": 0,
+    "item_capacity": 0,
+    "container_capacity": 0,
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_context_policy",
+      "context_domain": "trade_administration",
+      "access_state": "open",
+      "traversal_permission": true,
+      "fallback": "deny"
+    },
+    "visibility_policy": {
+      "version": 1,
+      "mode": "authored",
+      "context_domain": "trade_administration",
+      "default": "visible_if_accessible"
+    },
+    "initial_state": {
+      "version": 1,
+      "mode": "authored_empty"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "g5_anchor_trade_administration_start_v1",
+    "category_id": "cat_g5_anchor_storage_surface_v1",
+    "can_hold_npc": false,
+    "can_hold_item": false,
+    "can_hold_container": false,
+    "npc_capacity": 0,
+    "item_capacity": 0,
+    "container_capacity": 0,
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_context_policy",
+      "context_domain": "trade_administration",
+      "access_state": "open",
+      "traversal_permission": true,
+      "fallback": "deny"
+    },
+    "visibility_policy": {
+      "version": 1,
+      "mode": "authored",
+      "context_domain": "trade_administration",
+      "default": "visible_if_accessible"
+    },
+    "initial_state": {
+      "version": 1,
+      "mode": "authored_empty"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "g5_anchor_trade_administration_work_v1",
+    "category_id": "cat_g5_anchor_storage_surface_v1",
+    "can_hold_npc": false,
+    "can_hold_item": true,
+    "can_hold_container": false,
+    "npc_capacity": 0,
+    "item_capacity": 3,
+    "container_capacity": 0,
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_context_policy",
+      "context_domain": "trade_administration",
+      "access_state": "open",
+      "traversal_permission": true,
+      "fallback": "deny"
+    },
+    "visibility_policy": {
+      "version": 1,
+      "mode": "authored",
+      "context_domain": "trade_administration",
+      "default": "visible_if_accessible"
+    },
+    "initial_state": {
+      "version": 1,
+      "mode": "authored_empty"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "g5_anchor_writing_accounting_exit_v1",
+    "category_id": "cat_g5_anchor_storage_surface_v1",
+    "can_hold_npc": false,
+    "can_hold_item": false,
+    "can_hold_container": false,
+    "npc_capacity": 0,
+    "item_capacity": 0,
+    "container_capacity": 0,
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_context_policy",
+      "context_domain": "writing_accounting",
+      "access_state": "open",
+      "traversal_permission": true,
+      "fallback": "deny"
+    },
+    "visibility_policy": {
+      "version": 1,
+      "mode": "authored",
+      "context_domain": "writing_accounting",
+      "default": "visible_if_accessible"
+    },
+    "initial_state": {
+      "version": 1,
+      "mode": "authored_empty"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "g5_anchor_writing_accounting_start_v1",
+    "category_id": "cat_g5_anchor_storage_surface_v1",
+    "can_hold_npc": false,
+    "can_hold_item": false,
+    "can_hold_container": false,
+    "npc_capacity": 0,
+    "item_capacity": 0,
+    "container_capacity": 0,
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_context_policy",
+      "context_domain": "writing_accounting",
+      "access_state": "open",
+      "traversal_permission": true,
+      "fallback": "deny"
+    },
+    "visibility_policy": {
+      "version": 1,
+      "mode": "authored",
+      "context_domain": "writing_accounting",
+      "default": "visible_if_accessible"
+    },
+    "initial_state": {
+      "version": 1,
+      "mode": "authored_empty"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "g5_anchor_writing_accounting_work_v1",
+    "category_id": "cat_g5_anchor_storage_surface_v1",
+    "can_hold_npc": false,
+    "can_hold_item": true,
+    "can_hold_container": false,
+    "npc_capacity": 0,
+    "item_capacity": 2,
+    "container_capacity": 0,
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_context_policy",
+      "context_domain": "writing_accounting",
+      "access_state": "open",
+      "traversal_permission": true,
+      "fallback": "deny"
+    },
+    "visibility_policy": {
+      "version": 1,
+      "mode": "authored",
+      "context_domain": "writing_accounting",
+      "default": "visible_if_accessible"
+    },
+    "initial_state": {
+      "version": 1,
+      "mode": "authored_empty"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  }
+]

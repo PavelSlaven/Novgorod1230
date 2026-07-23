@@ -1,0 +1,64 @@
+{
+  "schema_version": "rus.pr17.item_container_stage3c_result.v2",
+  "executed_at": "2026-07-23T07:45:21.694Z",
+  "command": "npm run item-container-120:stage3c:postgres:lifecycle",
+  "environment": {
+    "kind": "isolated_local_review_database",
+    "database": "pr17_remediation_stage3c",
+    "container_image": "postgres:16-alpine",
+    "container_removed_after_verification": true,
+    "operator_database_changed": false,
+    "production_database_changed": false
+  },
+  "candidate_digest": "e3bddda4b31cdbb91d430254db5e6f2d34a8d9d0a08e5f7e4c1e1d6cb9832a24",
+  "approval_request_digest": "046344b570789b008da8685d0dad3824512d529f9c161a122ecdc59e3cb73771",
+  "approval_attestation_digest": "67baf3e92a2aacde2566a60c13e5a3a2410e3544549f096684d473d8588f18f8",
+  "promotion_manifest_digest": "9daf6cd47e341869ee3c0e2641873a507cc6fb38dcef145f9d33a48843f3ed94",
+  "target_revision_id": "world_revision_novgorod_1230_item_container_approved_001",
+  "target_catalog_digest": "a24fe55497a8aca018fa28a43ab1f54e26e2f30a5c74931ed2570ab69bc07a87",
+  "dataset_count": 39,
+  "status_transition_count": 9,
+  "rollback_probe": "pass",
+  "first_apply": {
+    "applied": true,
+    "all_dataset_readbacks_passed": true,
+    "target_revision_status": "approved",
+    "parent_revision_unchanged": true,
+    "approved_g4_count": 9,
+    "approved_item_template_count": 102,
+    "approved_container_template_count": 18
+  },
+  "runtime_e2e": {
+    "pass": true,
+    "source": "postgres_readback",
+    "stage8_item_candidate_count": 102,
+    "stage8_container_candidate_count": 18,
+    "approved_g4_context_count": 9,
+    "stage13_pass_count": 9,
+    "stage14_pass_count": 9,
+    "stage16_pass_count": 9,
+    "repeat_entry_baseline_reuse_count": 9,
+    "graph_node_ids": [
+      "gn_nov_g1_03_04_g4_001_novgorod_06_yaroslav_court_market_core",
+      "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards",
+      "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_05_craft_yards",
+      "gn_nov_g1_03_04_g4_003_novgorodskiy_torg_03_trade_rows",
+      "gn_nov_g1_03_04_g4_005_yurev_monastyr_03_church",
+      "gn_nov_g1_03_04_g4_005_yurev_monastyr_09_gardens",
+      "gn_nov_g1_03_04_g4_007_novgorodskaya_pristan_na_volhove_04_boat_shelter",
+      "gn_nov_g1_03_04_g4_009_dvor_vlasti_v_novgorode_04_clerks_corner",
+      "gn_nov_g1_03_04_g4_009_dvor_vlasti_v_novgorode_05_guard_place"
+    ]
+  },
+  "repeat_clean_apply": {
+    "applied": true,
+    "all_dataset_readbacks_passed": true,
+    "target_revision_status": "approved",
+    "parent_revision_unchanged": true,
+    "approved_g4_count": 9,
+    "approved_item_template_count": 102,
+    "approved_container_template_count": 18
+  },
+  "activation_performed": false,
+  "existing_parties_rematerialized": false
+}

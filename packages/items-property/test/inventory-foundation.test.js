@@ -78,6 +78,8 @@ test('inventory foundation: a bulk quantity profile requires an explicit matchin
   assert.equal(calculateInventoryMass(state(carried)).total_mass_grams, 450);
   assert.equal(calculateInventoryMass(state({ ...carried, items: [{ ...carried.items[0], quantity_unit_id: null }] })).errors[0].code, 'ITEM_QUANTITY_UNIT_REQUIRED');
   assert.equal(calculateInventoryMass(state({ ...carried, items: [{ ...carried.items[0], quantity_unit_id: 'quantity_unit_litre_v1' }] })).errors[0].code, 'ITEM_QUANTITY_UNIT_MISMATCH');
+  const honey = { ...carried, items: [{ item_id: 'honey-1', template_id: 'honey', quantity: 100, quantity_unit_id: 'millilitre' }], item_profiles: { ...bulkProfiles, honey: { ...bulkProfiles.grain, quantity_dimension: 'volume', quantity_unit_id: 'millilitre', mass_grams_per_unit: 1.4 } }, item_placements: [{ item_id: 'honey-1', holder_character_id: actorId, physical_position: 'hands' }] };
+  assert.equal(calculateInventoryMass(state(honey)).total_mass_grams, 140);
 });
 
 test('inventory foundation: topology blocks duplicate placement, cycles, depth, party mismatch and duplicate primary container', () => {

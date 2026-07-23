@@ -1,0 +1,135 @@
+[
+  {
+    "id": "property_borrowed_entrusted_item_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "property_category_id": "cat_item_property_borrowed_entrusted_item_v1",
+    "status": "draft"
+  },
+  {
+    "id": "property_communal_resource_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "property_category_id": "cat_item_property_communal_resource_v1",
+    "status": "draft"
+  },
+  {
+    "id": "property_context_agriculture_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "property_category_id": "cat_item_property_context_controlled_v1",
+    "status": "draft"
+  },
+  {
+    "id": "property_context_craft_work_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "property_category_id": "cat_item_property_context_controlled_v1",
+    "status": "draft"
+  },
+  {
+    "id": "property_context_fishing_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "property_category_id": "cat_item_property_context_controlled_v1",
+    "status": "draft"
+  },
+  {
+    "id": "property_context_food_trade_household_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "property_category_id": "cat_item_property_context_controlled_v1",
+    "status": "draft"
+  },
+  {
+    "id": "property_context_household_personal_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "property_category_id": "cat_item_property_context_controlled_v1",
+    "status": "draft"
+  },
+  {
+    "id": "property_context_military_service_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "property_category_id": "cat_item_property_context_controlled_v1",
+    "status": "draft"
+  },
+  {
+    "id": "property_context_religious_personal_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "property_category_id": "cat_item_property_context_controlled_v1",
+    "status": "draft"
+  },
+  {
+    "id": "property_context_trade_administration_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "property_category_id": "cat_item_property_context_controlled_v1",
+    "status": "draft"
+  },
+  {
+    "id": "property_context_writing_accounting_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "property_category_id": "cat_item_property_context_controlled_v1",
+    "status": "draft"
+  },
+  {
+    "id": "property_household_property_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "property_category_id": "cat_item_property_household_property_v1",
+    "status": "draft"
+  },
+  {
+    "id": "property_military_service_gear_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "property_category_id": "cat_item_property_military_service_gear_v1",
+    "status": "draft"
+  },
+  {
+    "id": "property_personal_possession_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "property_category_id": "cat_item_property_personal_possession_v1",
+    "status": "draft"
+  },
+  {
+    "id": "property_pledged_disputed_property_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "property_category_id": "cat_item_property_pledged_disputed_property_v1",
+    "status": "draft"
+  },
+  {
+    "id": "property_religious_object_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "property_category_id": "cat_item_property_religious_object_v1",
+    "status": "draft"
+  },
+  {
+    "id": "property_service_equipment_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "property_category_id": "cat_item_property_service_equipment_v1",
+    "status": "draft"
+  },
+  {
+    "id": "property_trade_stock_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "property_category_id": "cat_item_property_trade_stock_v1",
+    "status": "draft"
+  },
+  {
+    "id": "property_workshop_tool_property_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "property_category_id": "cat_item_property_workshop_tool_property_v1",
+    "status": "draft"
+  }
+]

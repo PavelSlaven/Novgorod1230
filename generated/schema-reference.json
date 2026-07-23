@@ -727,9 +727,9 @@
       "type": "json"
     },
     {
-      "bytes": 1456,
+      "bytes": 1464,
       "path": "schemas/materialization/item-template-quantity-profiles-v1.schema.json",
-      "sha256": "e96f91a8160b756018d9941bd8005505ee19f10c43135599cd7f2ad5e9011eb0",
+      "sha256": "8724c21d8e2def3958cb3cfa906f99f02b6d41ff343ee60f79df2e633d51d25a",
       "type": "json"
     },
     {

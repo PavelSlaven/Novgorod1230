@@ -1,0 +1,245 @@
+[
+  {
+    "id": "g5_node_agriculture_v1",
+    "category_id": "cat_g5_zone_functional_v1",
+    "capacity": 8,
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_context_policy",
+      "context_domain": "agriculture",
+      "access_state": "open",
+      "traversal_permission": true,
+      "fallback": "deny"
+    },
+    "visibility_policy": {
+      "version": 1,
+      "mode": "authored",
+      "context_domain": "agriculture",
+      "default": "visible_if_accessible"
+    },
+    "initial_state": {
+      "version": 1,
+      "mode": "authored_empty"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "g5_node_craft_work_v1",
+    "category_id": "cat_g5_zone_functional_v1",
+    "capacity": 16,
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_context_policy",
+      "context_domain": "craft_work",
+      "access_state": "open",
+      "traversal_permission": true,
+      "fallback": "deny"
+    },
+    "visibility_policy": {
+      "version": 1,
+      "mode": "authored",
+      "context_domain": "craft_work",
+      "default": "visible_if_accessible"
+    },
+    "initial_state": {
+      "version": 1,
+      "mode": "authored_empty"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "g5_node_fishing_v1",
+    "category_id": "cat_g5_zone_functional_v1",
+    "capacity": 7,
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_context_policy",
+      "context_domain": "fishing",
+      "access_state": "open",
+      "traversal_permission": true,
+      "fallback": "deny"
+    },
+    "visibility_policy": {
+      "version": 1,
+      "mode": "authored",
+      "context_domain": "fishing",
+      "default": "visible_if_accessible"
+    },
+    "initial_state": {
+      "version": 1,
+      "mode": "authored_empty"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "g5_node_food_trade_household_v1",
+    "category_id": "cat_g5_zone_functional_v1",
+    "capacity": 12,
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_context_policy",
+      "context_domain": "food_trade_household",
+      "access_state": "open",
+      "traversal_permission": true,
+      "fallback": "deny"
+    },
+    "visibility_policy": {
+      "version": 1,
+      "mode": "authored",
+      "context_domain": "food_trade_household",
+      "default": "visible_if_accessible"
+    },
+    "initial_state": {
+      "version": 1,
+      "mode": "authored_empty"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "g5_node_household_personal_v1",
+    "category_id": "cat_g5_zone_functional_v1",
+    "capacity": 60,
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_context_policy",
+      "context_domain": "household_personal",
+      "access_state": "open",
+      "traversal_permission": true,
+      "fallback": "deny"
+    },
+    "visibility_policy": {
+      "version": 1,
+      "mode": "authored",
+      "context_domain": "household_personal",
+      "default": "visible_if_accessible"
+    },
+    "initial_state": {
+      "version": 1,
+      "mode": "authored_empty"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "g5_node_military_service_v1",
+    "category_id": "cat_g5_zone_functional_v1",
+    "capacity": 11,
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_context_policy",
+      "context_domain": "military_service",
+      "access_state": "open",
+      "traversal_permission": true,
+      "fallback": "deny"
+    },
+    "visibility_policy": {
+      "version": 1,
+      "mode": "authored",
+      "context_domain": "military_service",
+      "default": "visible_if_accessible"
+    },
+    "initial_state": {
+      "version": 1,
+      "mode": "authored_empty"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "g5_node_religious_personal_v1",
+    "category_id": "cat_g5_zone_functional_v1",
+    "capacity": 1,
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_context_policy",
+      "context_domain": "religious_personal",
+      "access_state": "open",
+      "traversal_permission": true,
+      "fallback": "deny"
+    },
+    "visibility_policy": {
+      "version": 1,
+      "mode": "authored",
+      "context_domain": "religious_personal",
+      "default": "visible_if_accessible"
+    },
+    "initial_state": {
+      "version": 1,
+      "mode": "authored_empty"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "g5_node_trade_administration_v1",
+    "category_id": "cat_g5_zone_functional_v1",
+    "capacity": 3,
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_context_policy",
+      "context_domain": "trade_administration",
+      "access_state": "open",
+      "traversal_permission": true,
+      "fallback": "deny"
+    },
+    "visibility_policy": {
+      "version": 1,
+      "mode": "authored",
+      "context_domain": "trade_administration",
+      "default": "visible_if_accessible"
+    },
+    "initial_state": {
+      "version": 1,
+      "mode": "authored_empty"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "g5_node_writing_accounting_v1",
+    "category_id": "cat_g5_zone_functional_v1",
+    "capacity": 2,
+    "access_policy": {
+      "version": 1,
+      "mode": "explicit_context_policy",
+      "context_domain": "writing_accounting",
+      "access_state": "open",
+      "traversal_permission": true,
+      "fallback": "deny"
+    },
+    "visibility_policy": {
+      "version": 1,
+      "mode": "authored",
+      "context_domain": "writing_accounting",
+      "default": "visible_if_accessible"
+    },
+    "initial_state": {
+      "version": 1,
+      "mode": "authored_empty"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  }
+]

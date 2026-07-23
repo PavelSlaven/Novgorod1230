@@ -1,0 +1,165 @@
+{
+  "schema_version": "rus.g4_item_container_coverage.v1",
+  "pass": true,
+  "summary": {
+    "g4_count": 9,
+    "resolved_profile_count": 9,
+    "runtime_accessible_g4_count": 9,
+    "ambiguous_binding_count": 0,
+    "missing_profile_count": 0,
+    "missing_required_slot_count": 0,
+    "missing_item_rule_count": 0,
+    "missing_container_rule_count": 0,
+    "invalid_causal_basis_count": 0,
+    "invalid_rule_slot_count": 0,
+    "draft_dependency_rule_count": 0,
+    "unapproved_dependency_count": 0
+  },
+  "concerns": [],
+  "entries": [
+    {
+      "graph_node_id": "gn_nov_g1_03_04_g4_001_novgorod_06_yaroslav_court_market_core",
+      "graph_node_status": "approved",
+      "runtime_accessible": true,
+      "binding_status": "resolved",
+      "binding_id": "binding_trade_administration_v1",
+      "binding_match_kind": "graph_node_id",
+      "profile_id": "g4_profile_trade_administration_v1",
+      "item_container_policy": "rules_only",
+      "context_profile_ids": [
+        "profile_trade_administration_v3"
+      ],
+      "approved_slot_count": 5,
+      "approved_item_rule_count": 1,
+      "approved_container_rule_count": 0
+    },
+    {
+      "graph_node_id": "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards",
+      "graph_node_status": "approved",
+      "runtime_accessible": true,
+      "binding_status": "resolved",
+      "binding_id": "binding_household_personal_v1",
+      "binding_match_kind": "graph_node_id",
+      "profile_id": "g4_profile_household_personal_v1",
+      "item_container_policy": "rules_only",
+      "context_profile_ids": [
+        "profile_household_personal_v3"
+      ],
+      "approved_slot_count": 6,
+      "approved_item_rule_count": 1,
+      "approved_container_rule_count": 15
+    },
+    {
+      "graph_node_id": "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_05_craft_yards",
+      "graph_node_status": "approved",
+      "runtime_accessible": true,
+      "binding_status": "resolved",
+      "binding_id": "binding_craft_work_v1",
+      "binding_match_kind": "graph_node_id",
+      "profile_id": "g4_profile_craft_work_v1",
+      "item_container_policy": "rules_only",
+      "context_profile_ids": [
+        "profile_craft_work_v3"
+      ],
+      "approved_slot_count": 6,
+      "approved_item_rule_count": 1,
+      "approved_container_rule_count": 1
+    },
+    {
+      "graph_node_id": "gn_nov_g1_03_04_g4_003_novgorodskiy_torg_03_trade_rows",
+      "graph_node_status": "approved",
+      "runtime_accessible": true,
+      "binding_status": "resolved",
+      "binding_id": "binding_food_trade_household_v1",
+      "binding_match_kind": "graph_node_id",
+      "profile_id": "g4_profile_food_trade_household_v1",
+      "item_container_policy": "rules_only",
+      "context_profile_ids": [
+        "profile_food_trade_household_v3"
+      ],
+      "approved_slot_count": 5,
+      "approved_item_rule_count": 1,
+      "approved_container_rule_count": 0
+    },
+    {
+      "graph_node_id": "gn_nov_g1_03_04_g4_005_yurev_monastyr_03_church",
+      "graph_node_status": "approved",
+      "runtime_accessible": true,
+      "binding_status": "resolved",
+      "binding_id": "binding_religious_personal_v1",
+      "binding_match_kind": "graph_node_id",
+      "profile_id": "g4_profile_religious_personal_v1",
+      "item_container_policy": "rules_only",
+      "context_profile_ids": [
+        "profile_religious_personal_v3"
+      ],
+      "approved_slot_count": 5,
+      "approved_item_rule_count": 1,
+      "approved_container_rule_count": 0
+    },
+    {
+      "graph_node_id": "gn_nov_g1_03_04_g4_005_yurev_monastyr_09_gardens",
+      "graph_node_status": "approved",
+      "runtime_accessible": true,
+      "binding_status": "resolved",
+      "binding_id": "binding_agriculture_v1",
+      "binding_match_kind": "graph_node_id",
+      "profile_id": "g4_profile_agriculture_v1",
+      "item_container_policy": "rules_only",
+      "context_profile_ids": [
+        "profile_agriculture_v3"
+      ],
+      "approved_slot_count": 5,
+      "approved_item_rule_count": 1,
+      "approved_container_rule_count": 0
+    },
+    {
+      "graph_node_id": "gn_nov_g1_03_04_g4_007_novgorodskaya_pristan_na_volhove_04_boat_shelter",
+      "graph_node_status": "approved",
+      "runtime_accessible": true,
+      "binding_status": "resolved",
+      "binding_id": "binding_fishing_v1",
+      "binding_match_kind": "graph_node_id",
+      "profile_id": "g4_profile_fishing_v1",
+      "item_container_policy": "rules_only",
+      "context_profile_ids": [
+        "profile_fishing_v3"
+      ],
+      "approved_slot_count": 5,
+      "approved_item_rule_count": 1,
+      "approved_container_rule_count": 0
+    },
+    {
+      "graph_node_id": "gn_nov_g1_03_04_g4_009_dvor_vlasti_v_novgorode_04_clerks_corner",
+      "graph_node_status": "approved",
+      "runtime_accessible": true,
+      "binding_status": "resolved",
+      "binding_id": "binding_writing_accounting_v1",
+      "binding_match_kind": "graph_node_id",
+      "profile_id": "g4_profile_writing_accounting_v1",
+      "item_container_policy": "rules_only",
+      "context_profile_ids": [
+        "profile_writing_accounting_v3"
+      ],
+      "approved_slot_count": 5,
+      "approved_item_rule_count": 1,
+      "approved_container_rule_count": 0
+    },
+    {
+      "graph_node_id": "gn_nov_g1_03_04_g4_009_dvor_vlasti_v_novgorode_05_guard_place",
+      "graph_node_status": "approved",
+      "runtime_accessible": true,
+      "binding_status": "resolved",
+      "binding_id": "binding_military_service_v1",
+      "binding_match_kind": "graph_node_id",
+      "profile_id": "g4_profile_military_service_v1",
+      "item_container_policy": "rules_only",
+      "context_profile_ids": [
+        "profile_military_service_v3"
+      ],
+      "approved_slot_count": 6,
+      "approved_item_rule_count": 1,
+      "approved_container_rule_count": 2
+    }
+  ]
+}

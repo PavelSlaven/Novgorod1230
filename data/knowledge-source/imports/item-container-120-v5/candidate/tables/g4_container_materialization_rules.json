@@ -1,0 +1,488 @@
+[
+  {
+    "id": "g4_container_rule_craft_work_container_tpl_nov_needle_case_v1_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "graph_node_id": "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_05_craft_yards",
+    "slot_rule_id": "slot_craft_work_container_v1",
+    "container_template_id": "container_tpl_nov_needle_case_v1",
+    "content_profile_id": "content_container_tpl_nov_needle_case_v1",
+    "property_profile_id": "property_context_craft_work_v1",
+    "min_count": 0,
+    "max_count": 1,
+    "causal_basis_type": "functional_place_context",
+    "causal_basis_id": "craft_yards:мастерские_и_заказы",
+    "applicability": {
+      "version": 1,
+      "mode": "approved_context_only",
+      "context_domain": "craft_work",
+      "graph_node_ids": [
+        "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_05_craft_yards"
+      ],
+      "causal_basis_required": true
+    },
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium",
+    "weight": 50,
+    "status": "draft"
+  },
+  {
+    "id": "g4_container_rule_household_personal_container_tpl_nov_birch_bark_box_v1_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "graph_node_id": "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards",
+    "slot_rule_id": "slot_household_personal_container_v1",
+    "container_template_id": "container_tpl_nov_birch_bark_box_v1",
+    "content_profile_id": "content_container_tpl_nov_birch_bark_box_v1",
+    "property_profile_id": "property_context_household_personal_v1",
+    "min_count": 0,
+    "max_count": 1,
+    "causal_basis_type": "functional_place_context",
+    "causal_basis_id": "dense_yards:жильё_и_свидетели",
+    "applicability": {
+      "version": 1,
+      "mode": "approved_context_only",
+      "context_domain": "household_personal",
+      "graph_node_ids": [
+        "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards"
+      ],
+      "causal_basis_required": true
+    },
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium",
+    "weight": 70,
+    "status": "draft"
+  },
+  {
+    "id": "g4_container_rule_household_personal_container_tpl_nov_bucket_v1_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "graph_node_id": "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards",
+    "slot_rule_id": "slot_household_personal_container_v1",
+    "container_template_id": "container_tpl_nov_bucket_v1",
+    "content_profile_id": "content_container_tpl_nov_bucket_v1",
+    "property_profile_id": "property_context_household_personal_v1",
+    "min_count": 0,
+    "max_count": 1,
+    "causal_basis_type": "functional_place_context",
+    "causal_basis_id": "dense_yards:жильё_и_свидетели",
+    "applicability": {
+      "version": 1,
+      "mode": "approved_context_only",
+      "context_domain": "household_personal",
+      "graph_node_ids": [
+        "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards"
+      ],
+      "causal_basis_required": true
+    },
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium",
+    "weight": 70,
+    "status": "draft"
+  },
+  {
+    "id": "g4_container_rule_household_personal_container_tpl_nov_carrying_basket_v1_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "graph_node_id": "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards",
+    "slot_rule_id": "slot_household_personal_container_v1",
+    "container_template_id": "container_tpl_nov_carrying_basket_v1",
+    "content_profile_id": "content_container_tpl_nov_carrying_basket_v1",
+    "property_profile_id": "property_context_household_personal_v1",
+    "min_count": 0,
+    "max_count": 1,
+    "causal_basis_type": "functional_place_context",
+    "causal_basis_id": "dense_yards:жильё_и_свидетели",
+    "applicability": {
+      "version": 1,
+      "mode": "approved_context_only",
+      "context_domain": "household_personal",
+      "graph_node_ids": [
+        "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards"
+      ],
+      "causal_basis_required": true
+    },
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium",
+    "weight": 70,
+    "status": "draft"
+  },
+  {
+    "id": "g4_container_rule_household_personal_container_tpl_nov_cask_v1_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "graph_node_id": "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards",
+    "slot_rule_id": "slot_household_personal_container_v1",
+    "container_template_id": "container_tpl_nov_cask_v1",
+    "content_profile_id": "content_container_tpl_nov_cask_v1",
+    "property_profile_id": "property_context_household_personal_v1",
+    "min_count": 0,
+    "max_count": 1,
+    "causal_basis_type": "functional_place_context",
+    "causal_basis_id": "dense_yards:жильё_и_свидетели",
+    "applicability": {
+      "version": 1,
+      "mode": "approved_context_only",
+      "context_domain": "household_personal",
+      "graph_node_ids": [
+        "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards"
+      ],
+      "causal_basis_required": true
+    },
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium",
+    "weight": 70,
+    "status": "draft"
+  },
+  {
+    "id": "g4_container_rule_household_personal_container_tpl_nov_chest_v1_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "graph_node_id": "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards",
+    "slot_rule_id": "slot_household_personal_container_v1",
+    "container_template_id": "container_tpl_nov_chest_v1",
+    "content_profile_id": "content_container_tpl_nov_chest_v1",
+    "property_profile_id": "property_context_household_personal_v1",
+    "min_count": 0,
+    "max_count": 1,
+    "causal_basis_type": "functional_place_context",
+    "causal_basis_id": "dense_yards:жильё_и_свидетели",
+    "applicability": {
+      "version": 1,
+      "mode": "approved_context_only",
+      "context_domain": "household_personal",
+      "graph_node_ids": [
+        "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards"
+      ],
+      "causal_basis_required": true
+    },
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium",
+    "weight": 70,
+    "status": "draft"
+  },
+  {
+    "id": "g4_container_rule_household_personal_container_tpl_nov_drawstring_pouch_v1_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "graph_node_id": "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards",
+    "slot_rule_id": "slot_household_personal_container_v1",
+    "container_template_id": "container_tpl_nov_drawstring_pouch_v1",
+    "content_profile_id": "content_container_tpl_nov_drawstring_pouch_v1",
+    "property_profile_id": "property_context_household_personal_v1",
+    "min_count": 0,
+    "max_count": 1,
+    "causal_basis_type": "functional_place_context",
+    "causal_basis_id": "dense_yards:жильё_и_свидетели",
+    "applicability": {
+      "version": 1,
+      "mode": "approved_context_only",
+      "context_domain": "household_personal",
+      "graph_node_ids": [
+        "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards"
+      ],
+      "causal_basis_required": true
+    },
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium",
+    "weight": 70,
+    "status": "draft"
+  },
+  {
+    "id": "g4_container_rule_household_personal_container_tpl_nov_flap_belt_pouch_v1_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "graph_node_id": "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards",
+    "slot_rule_id": "slot_household_personal_container_v1",
+    "container_template_id": "container_tpl_nov_flap_belt_pouch_v1",
+    "content_profile_id": "content_container_tpl_nov_flap_belt_pouch_v1",
+    "property_profile_id": "property_context_household_personal_v1",
+    "min_count": 0,
+    "max_count": 1,
+    "causal_basis_type": "functional_place_context",
+    "causal_basis_id": "dense_yards:жильё_и_свидетели",
+    "applicability": {
+      "version": 1,
+      "mode": "approved_context_only",
+      "context_domain": "household_personal",
+      "graph_node_ids": [
+        "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards"
+      ],
+      "causal_basis_required": true
+    },
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium",
+    "weight": 70,
+    "status": "draft"
+  },
+  {
+    "id": "g4_container_rule_household_personal_container_tpl_nov_jug_v1_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "graph_node_id": "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards",
+    "slot_rule_id": "slot_household_personal_container_v1",
+    "container_template_id": "container_tpl_nov_jug_v1",
+    "content_profile_id": "content_container_tpl_nov_jug_v1",
+    "property_profile_id": "property_context_household_personal_v1",
+    "min_count": 0,
+    "max_count": 1,
+    "causal_basis_type": "functional_place_context",
+    "causal_basis_id": "dense_yards:жильё_и_свидетели",
+    "applicability": {
+      "version": 1,
+      "mode": "approved_context_only",
+      "context_domain": "household_personal",
+      "graph_node_ids": [
+        "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards"
+      ],
+      "causal_basis_required": true
+    },
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium",
+    "weight": 70,
+    "status": "draft"
+  },
+  {
+    "id": "g4_container_rule_household_personal_container_tpl_nov_knife_sheath_v1_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "graph_node_id": "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards",
+    "slot_rule_id": "slot_household_personal_container_v1",
+    "container_template_id": "container_tpl_nov_knife_sheath_v1",
+    "content_profile_id": "content_container_tpl_nov_knife_sheath_v1",
+    "property_profile_id": "property_context_household_personal_v1",
+    "min_count": 0,
+    "max_count": 1,
+    "causal_basis_type": "functional_place_context",
+    "causal_basis_id": "dense_yards:жильё_и_свидетели",
+    "applicability": {
+      "version": 1,
+      "mode": "approved_context_only",
+      "context_domain": "household_personal",
+      "graph_node_ids": [
+        "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards"
+      ],
+      "causal_basis_required": true
+    },
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium",
+    "weight": 70,
+    "status": "draft"
+  },
+  {
+    "id": "g4_container_rule_household_personal_container_tpl_nov_sack_v1_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "graph_node_id": "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards",
+    "slot_rule_id": "slot_household_personal_container_v1",
+    "container_template_id": "container_tpl_nov_sack_v1",
+    "content_profile_id": "content_container_tpl_nov_sack_v1",
+    "property_profile_id": "property_context_household_personal_v1",
+    "min_count": 0,
+    "max_count": 1,
+    "causal_basis_type": "functional_place_context",
+    "causal_basis_id": "dense_yards:жильё_и_свидетели",
+    "applicability": {
+      "version": 1,
+      "mode": "approved_context_only",
+      "context_domain": "household_personal",
+      "graph_node_ids": [
+        "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards"
+      ],
+      "causal_basis_required": true
+    },
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium",
+    "weight": 70,
+    "status": "draft"
+  },
+  {
+    "id": "g4_container_rule_household_personal_container_tpl_nov_small_casket_v1_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "graph_node_id": "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards",
+    "slot_rule_id": "slot_household_personal_container_v1",
+    "container_template_id": "container_tpl_nov_small_casket_v1",
+    "content_profile_id": "content_container_tpl_nov_small_casket_v1",
+    "property_profile_id": "property_context_household_personal_v1",
+    "min_count": 0,
+    "max_count": 1,
+    "causal_basis_type": "functional_place_context",
+    "causal_basis_id": "dense_yards:жильё_и_свидетели",
+    "applicability": {
+      "version": 1,
+      "mode": "approved_context_only",
+      "context_domain": "household_personal",
+      "graph_node_ids": [
+        "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards"
+      ],
+      "causal_basis_required": true
+    },
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium",
+    "weight": 70,
+    "status": "draft"
+  },
+  {
+    "id": "g4_container_rule_household_personal_container_tpl_nov_small_soft_bag_v1_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "graph_node_id": "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards",
+    "slot_rule_id": "slot_household_personal_container_v1",
+    "container_template_id": "container_tpl_nov_small_soft_bag_v1",
+    "content_profile_id": "content_container_tpl_nov_small_soft_bag_v1",
+    "property_profile_id": "property_context_household_personal_v1",
+    "min_count": 0,
+    "max_count": 1,
+    "causal_basis_type": "functional_place_context",
+    "causal_basis_id": "dense_yards:жильё_и_свидетели",
+    "applicability": {
+      "version": 1,
+      "mode": "approved_context_only",
+      "context_domain": "household_personal",
+      "graph_node_ids": [
+        "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards"
+      ],
+      "causal_basis_required": true
+    },
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium",
+    "weight": 70,
+    "status": "draft"
+  },
+  {
+    "id": "g4_container_rule_household_personal_container_tpl_nov_storage_pot_v1_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "graph_node_id": "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards",
+    "slot_rule_id": "slot_household_personal_container_v1",
+    "container_template_id": "container_tpl_nov_storage_pot_v1",
+    "content_profile_id": "content_container_tpl_nov_storage_pot_v1",
+    "property_profile_id": "property_context_household_personal_v1",
+    "min_count": 0,
+    "max_count": 1,
+    "causal_basis_type": "functional_place_context",
+    "causal_basis_id": "dense_yards:жильё_и_свидетели",
+    "applicability": {
+      "version": 1,
+      "mode": "approved_context_only",
+      "context_domain": "household_personal",
+      "graph_node_ids": [
+        "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards"
+      ],
+      "causal_basis_required": true
+    },
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium",
+    "weight": 70,
+    "status": "draft"
+  },
+  {
+    "id": "g4_container_rule_household_personal_container_tpl_nov_tub_v1_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "graph_node_id": "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards",
+    "slot_rule_id": "slot_household_personal_container_v1",
+    "container_template_id": "container_tpl_nov_tub_v1",
+    "content_profile_id": "content_container_tpl_nov_tub_v1",
+    "property_profile_id": "property_context_household_personal_v1",
+    "min_count": 0,
+    "max_count": 1,
+    "causal_basis_type": "functional_place_context",
+    "causal_basis_id": "dense_yards:жильё_и_свидетели",
+    "applicability": {
+      "version": 1,
+      "mode": "approved_context_only",
+      "context_domain": "household_personal",
+      "graph_node_ids": [
+        "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards"
+      ],
+      "causal_basis_required": true
+    },
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium",
+    "weight": 70,
+    "status": "draft"
+  },
+  {
+    "id": "g4_container_rule_household_personal_container_tpl_nov_wooden_box_v1_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "graph_node_id": "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards",
+    "slot_rule_id": "slot_household_personal_container_v1",
+    "container_template_id": "container_tpl_nov_wooden_box_v1",
+    "content_profile_id": "content_container_tpl_nov_wooden_box_v1",
+    "property_profile_id": "property_context_household_personal_v1",
+    "min_count": 0,
+    "max_count": 1,
+    "causal_basis_type": "functional_place_context",
+    "causal_basis_id": "dense_yards:жильё_и_свидетели",
+    "applicability": {
+      "version": 1,
+      "mode": "approved_context_only",
+      "context_domain": "household_personal",
+      "graph_node_ids": [
+        "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards"
+      ],
+      "causal_basis_required": true
+    },
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium",
+    "weight": 70,
+    "status": "draft"
+  },
+  {
+    "id": "g4_container_rule_military_service_container_tpl_nov_quiver_v1_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "graph_node_id": "gn_nov_g1_03_04_g4_009_dvor_vlasti_v_novgorode_05_guard_place",
+    "slot_rule_id": "slot_military_service_container_v1",
+    "container_template_id": "container_tpl_nov_quiver_v1",
+    "content_profile_id": "content_container_tpl_nov_quiver_v1",
+    "property_profile_id": "property_context_military_service_v1",
+    "min_count": 0,
+    "max_count": 1,
+    "causal_basis_type": "functional_place_context",
+    "causal_basis_id": "guard_place:стража_оружие_и_риск",
+    "applicability": {
+      "version": 1,
+      "mode": "approved_context_only",
+      "context_domain": "military_service",
+      "graph_node_ids": [
+        "gn_nov_g1_03_04_g4_009_dvor_vlasti_v_novgorode_05_guard_place"
+      ],
+      "causal_basis_required": true
+    },
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium",
+    "weight": 15,
+    "status": "draft"
+  },
+  {
+    "id": "g4_container_rule_military_service_container_tpl_nov_sword_scabbard_v1_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "graph_node_id": "gn_nov_g1_03_04_g4_009_dvor_vlasti_v_novgorode_05_guard_place",
+    "slot_rule_id": "slot_military_service_container_v1",
+    "container_template_id": "container_tpl_nov_sword_scabbard_v1",
+    "content_profile_id": "content_container_tpl_nov_sword_scabbard_v1",
+    "property_profile_id": "property_context_military_service_v1",
+    "min_count": 0,
+    "max_count": 1,
+    "causal_basis_type": "functional_place_context",
+    "causal_basis_id": "guard_place:стража_оружие_и_риск",
+    "applicability": {
+      "version": 1,
+      "mode": "approved_context_only",
+      "context_domain": "military_service",
+      "graph_node_ids": [
+        "gn_nov_g1_03_04_g4_009_dvor_vlasti_v_novgorode_05_guard_place"
+      ],
+      "causal_basis_required": true
+    },
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium",
+    "weight": 5,
+    "status": "draft"
+  }
+]

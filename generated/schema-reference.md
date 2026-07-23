@@ -152,7 +152,7 @@ Release: `0.23.0-migration.24`
 | `schemas/materialization/item-profile-sets-v1.schema.json` | json | 668 | `da28c42211e937f4d186d3750b95b92762847ee15a0e9c07b8f75248a0f4cd90` |
 | `schemas/materialization/item-template-category-bindings-v1.schema.json` | json | 871 | `0a355b2f66a9eec372b44ef31605bbbd3c808fed9411fa5dafca3baf83e15908` |
 | `schemas/materialization/item-template-inventory-profiles-v1.schema.json` | json | 694 | `61b5a6c6c13c65dc116edf74ba0b9fec6e9fd61daef1ca1688b91aaf1e4a56b4` |
-| `schemas/materialization/item-template-quantity-profiles-v1.schema.json` | json | 1456 | `e96f91a8160b756018d9941bd8005505ee19f10c43135599cd7f2ad5e9011eb0` |
+| `schemas/materialization/item-template-quantity-profiles-v1.schema.json` | json | 1464 | `8724c21d8e2def3958cb3cfa906f99f02b6d41ff343ee60f79df2e633d51d25a` |
 | `schemas/materialization/item-template-source-bindings-v1.schema.json` | json | 1319 | `ba7289cbaa289d09e6aba32c29f15154ffbf37b9afa05298035488ac4c67a14f` |
 | `schemas/materialization/item-templates-v1.schema.json` | json | 582 | `5c508b395d78888f1c7d02f4dfccf3e6e98b19db51b5cb9cca5040e4679ff5f8` |
 | `schemas/materialization/normalized-instance-candidate-v2.schema.json` | json | 3150 | `ccbd9e9d518a8ab4b28e937e6e4eb19b88a26f3ea6eeff89aaf24432dd9a0b1d` |

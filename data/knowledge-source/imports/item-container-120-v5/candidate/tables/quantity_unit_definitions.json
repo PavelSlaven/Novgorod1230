@@ -1,0 +1,56 @@
+[
+  {
+    "id": "gram",
+    "dimension": "mass",
+    "canonical_unit": "gram",
+    "conversion_policy": {
+      "version": 1,
+      "mode": "exact_factor",
+      "factor": 1
+    },
+    "status": "draft"
+  },
+  {
+    "id": "loaf",
+    "dimension": "count",
+    "canonical_unit": "loaf",
+    "conversion_policy": {
+      "version": 1,
+      "mode": "exact_factor",
+      "factor": 1
+    },
+    "status": "draft"
+  },
+  {
+    "id": "millilitre",
+    "dimension": "volume",
+    "canonical_unit": "millilitre",
+    "conversion_policy": {
+      "version": 1,
+      "mode": "exact_factor",
+      "factor": 1
+    },
+    "status": "draft"
+  },
+  {
+    "id": "piece",
+    "dimension": "count",
+    "canonical_unit": "piece",
+    "conversion_policy": {
+      "version": 1,
+      "mode": "exact_factor",
+      "factor": 1
+    },
+    "status": "draft"
+  },
+  {
+    "id": "quantity_unit_gram_v1",
+    "dimension": "mass",
+    "canonical_unit": "g",
+    "conversion_policy": {
+      "version": 1,
+      "mode": "identity"
+    },
+    "status": "draft"
+  }
+]

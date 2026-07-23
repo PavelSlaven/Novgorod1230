@@ -1,0 +1,125 @@
+{
+  "schema_version": "rus.pr17.item_container_compilation_report.v1",
+  "pass": true,
+  "candidate_digest": "e3bddda4b31cdbb91d430254db5e6f2d34a8d9d0a08e5f7e4c1e1d6cb9832a24",
+  "projection_digest": "2b693685d8c09e95934213a9e4efeb3e6351810dc1a4713a8a04f1895aa81c56",
+  "canonical_catalog_digest": "02141639ab75a536cc82d46d51f4678e042708284342fe4d53c54014d26b253e",
+  "editorial_readiness_report_digest": "b65b9a966c4b07a97cbad30cb09456b63272ae3891607819790f2eff0315dcf6",
+  "coverage_report_digest": "1bee1492cb25f615414f951282a14f3228b892afeda327c7703653df6577e8e0",
+  "graph_node_status_transitions": [
+    {
+      "graph_node_id": "gn_nov_g1_03_04_g4_001_novgorod_06_yaroslav_court_market_core",
+      "from_status": "usable_with_caution",
+      "to_status": "approved",
+      "approval_basis": "approved_semantic_mapping:profile_trade_administration_v3",
+      "causal_basis_type": "functional_place_context",
+      "causal_basis_id": "yaroslav_court_market_core:торговое_и_вечевое_ядро"
+    },
+    {
+      "graph_node_id": "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards",
+      "from_status": "usable_with_caution",
+      "to_status": "approved",
+      "approval_basis": "approved_semantic_mapping:profile_household_personal_v3",
+      "causal_basis_type": "functional_place_context",
+      "causal_basis_id": "dense_yards:жильё_и_свидетели"
+    },
+    {
+      "graph_node_id": "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_05_craft_yards",
+      "from_status": "usable_with_caution",
+      "to_status": "approved",
+      "approval_basis": "approved_semantic_mapping:profile_craft_work_v3",
+      "causal_basis_type": "functional_place_context",
+      "causal_basis_id": "craft_yards:мастерские_и_заказы"
+    },
+    {
+      "graph_node_id": "gn_nov_g1_03_04_g4_003_novgorodskiy_torg_03_trade_rows",
+      "from_status": "usable_with_caution",
+      "to_status": "approved",
+      "approval_basis": "approved_semantic_mapping:profile_food_trade_household_v3",
+      "causal_basis_type": "functional_place_context",
+      "causal_basis_id": "trade_rows:торг_цены_и_товары"
+    },
+    {
+      "graph_node_id": "gn_nov_g1_03_04_g4_005_yurev_monastyr_03_church",
+      "from_status": "usable_with_caution",
+      "to_status": "approved",
+      "approval_basis": "approved_semantic_mapping:profile_religious_personal_v3",
+      "causal_basis_type": "functional_place_context",
+      "causal_basis_id": "church:культовое_ядро"
+    },
+    {
+      "graph_node_id": "gn_nov_g1_03_04_g4_005_yurev_monastyr_09_gardens",
+      "from_status": "usable_with_caution",
+      "to_status": "approved",
+      "approval_basis": "approved_semantic_mapping:profile_agriculture_v3",
+      "causal_basis_type": "functional_place_context",
+      "causal_basis_id": "gardens:огородные_и_сезонные_работы"
+    },
+    {
+      "graph_node_id": "gn_nov_g1_03_04_g4_007_novgorodskaya_pristan_na_volhove_04_boat_shelter",
+      "from_status": "usable_with_caution",
+      "to_status": "approved",
+      "approval_basis": "approved_semantic_mapping:profile_fishing_v3",
+      "causal_basis_type": "functional_place_context",
+      "causal_basis_id": "boat_shelter:лодки_снасти_и_ремонт"
+    },
+    {
+      "graph_node_id": "gn_nov_g1_03_04_g4_009_dvor_vlasti_v_novgorode_04_clerks_corner",
+      "from_status": "usable_with_caution",
+      "to_status": "approved",
+      "approval_basis": "approved_semantic_mapping:profile_writing_accounting_v3",
+      "causal_basis_type": "functional_place_context",
+      "causal_basis_id": "clerks_corner:память_записи_и_споры"
+    },
+    {
+      "graph_node_id": "gn_nov_g1_03_04_g4_009_dvor_vlasti_v_novgorode_05_guard_place",
+      "from_status": "usable_with_caution",
+      "to_status": "approved",
+      "approval_basis": "approved_semantic_mapping:profile_military_service_v3",
+      "causal_basis_type": "functional_place_context",
+      "causal_basis_id": "guard_place:стража_оружие_и_риск"
+    }
+  ],
+  "counts": {
+    "building_templates": 9,
+    "quantity_unit_definitions": 5,
+    "region_equipment_profiles": 1,
+    "source_records": 19,
+    "universal_categories": 366,
+    "world_revisions": 1,
+    "building_layout_templates": 9,
+    "category_labels": 146,
+    "container_content_category_relations": 94,
+    "container_templates": 18,
+    "g5_anchor_templates": 27,
+    "g5_edge_templates": 9,
+    "g5_minilocation_templates": 9,
+    "item_profile_sets": 9,
+    "item_templates": 102,
+    "property_profiles": 19,
+    "region_category_options": 362,
+    "room_templates": 9,
+    "universal_category_relations": 41,
+    "building_layout_nodes": 9,
+    "container_content_profiles": 18,
+    "container_template_facet_bindings": 170,
+    "container_template_inventory_profiles": 18,
+    "container_template_source_bindings": 72,
+    "g4_materialization_profiles": 9,
+    "item_profile_entries": 102,
+    "item_template_category_bindings": 842,
+    "item_template_inventory_profiles": 102,
+    "item_template_quantity_profiles": 102,
+    "item_template_source_bindings": 408,
+    "property_profile_rules": 19,
+    "region_equipment_profile_entries": 1,
+    "container_content_profile_entries": 4,
+    "g4_materialization_bindings": 9,
+    "g4_materialization_layout_edges": 18,
+    "materialization_slot_rules": 48,
+    "g4_container_materialization_rules": 18,
+    "g4_item_materialization_rules": 9,
+    "record_sources": 15
+  },
+  "activation_performed": false
+}

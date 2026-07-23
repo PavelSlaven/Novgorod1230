@@ -1,0 +1,146 @@
+[
+  {
+    "id": "profile_agriculture_v3",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "context_domain": "agriculture",
+    "applicability": {
+      "version": 1,
+      "mode": "approved_context_only",
+      "context_domain": "agriculture",
+      "graph_node_ids": [
+        "gn_nov_g1_03_04_g4_005_yurev_monastyr_09_gardens"
+      ],
+      "causal_basis_required": true
+    },
+    "status": "draft"
+  },
+  {
+    "id": "profile_craft_work_v3",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "context_domain": "craft_work",
+    "applicability": {
+      "version": 1,
+      "mode": "approved_context_only",
+      "context_domain": "craft_work",
+      "graph_node_ids": [
+        "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_05_craft_yards"
+      ],
+      "causal_basis_required": true
+    },
+    "status": "draft"
+  },
+  {
+    "id": "profile_fishing_v3",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "context_domain": "fishing",
+    "applicability": {
+      "version": 1,
+      "mode": "approved_context_only",
+      "context_domain": "fishing",
+      "graph_node_ids": [
+        "gn_nov_g1_03_04_g4_007_novgorodskaya_pristan_na_volhove_04_boat_shelter"
+      ],
+      "causal_basis_required": true
+    },
+    "status": "draft"
+  },
+  {
+    "id": "profile_food_trade_household_v3",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "context_domain": "food_trade_household",
+    "applicability": {
+      "version": 1,
+      "mode": "approved_context_only",
+      "context_domain": "food_trade_household",
+      "graph_node_ids": [
+        "gn_nov_g1_03_04_g4_003_novgorodskiy_torg_03_trade_rows"
+      ],
+      "causal_basis_required": true
+    },
+    "status": "draft"
+  },
+  {
+    "id": "profile_household_personal_v3",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "context_domain": "household_personal",
+    "applicability": {
+      "version": 1,
+      "mode": "approved_context_only",
+      "context_domain": "household_personal",
+      "graph_node_ids": [
+        "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards"
+      ],
+      "causal_basis_required": true
+    },
+    "status": "draft"
+  },
+  {
+    "id": "profile_military_service_v3",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "context_domain": "military_service",
+    "applicability": {
+      "version": 1,
+      "mode": "approved_context_only",
+      "context_domain": "military_service",
+      "graph_node_ids": [
+        "gn_nov_g1_03_04_g4_009_dvor_vlasti_v_novgorode_05_guard_place"
+      ],
+      "causal_basis_required": true
+    },
+    "status": "draft"
+  },
+  {
+    "id": "profile_religious_personal_v3",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "context_domain": "religious_personal",
+    "applicability": {
+      "version": 1,
+      "mode": "approved_context_only",
+      "context_domain": "religious_personal",
+      "graph_node_ids": [
+        "gn_nov_g1_03_04_g4_005_yurev_monastyr_03_church"
+      ],
+      "causal_basis_required": true
+    },
+    "status": "draft"
+  },
+  {
+    "id": "profile_trade_administration_v3",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "context_domain": "trade_administration",
+    "applicability": {
+      "version": 1,
+      "mode": "approved_context_only",
+      "context_domain": "trade_administration",
+      "graph_node_ids": [
+        "gn_nov_g1_03_04_g4_001_novgorod_06_yaroslav_court_market_core"
+      ],
+      "causal_basis_required": true
+    },
+    "status": "draft"
+  },
+  {
+    "id": "profile_writing_accounting_v3",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "region_id": "region_novgorod_land",
+    "context_domain": "writing_accounting",
+    "applicability": {
+      "version": 1,
+      "mode": "approved_context_only",
+      "context_domain": "writing_accounting",
+      "graph_node_ids": [
+        "gn_nov_g1_03_04_g4_009_dvor_vlasti_v_novgorode_04_clerks_corner"
+      ],
+      "causal_basis_required": true
+    },
+    "status": "draft"
+  }
+]

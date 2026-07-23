@@ -1,0 +1,203 @@
+[
+  {
+    "id": "binding_agriculture_v1",
+    "profile_id": "g4_profile_agriculture_v1",
+    "graph_node_id": "gn_nov_g1_03_04_g4_005_yurev_monastyr_09_gardens",
+    "priority": 100,
+    "applicability": {
+      "version": 1,
+      "item_container_policy": "rules_only",
+      "required_rule_domains": [
+        "item"
+      ],
+      "context_profile_ids": [
+        "profile_agriculture_v3"
+      ],
+      "causal_basis_type": "functional_place_context",
+      "causal_basis_id": "gardens:огородные_и_сезонные_работы"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "binding_craft_work_v1",
+    "profile_id": "g4_profile_craft_work_v1",
+    "graph_node_id": "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_05_craft_yards",
+    "priority": 100,
+    "applicability": {
+      "version": 1,
+      "item_container_policy": "rules_only",
+      "required_rule_domains": [
+        "item",
+        "container"
+      ],
+      "context_profile_ids": [
+        "profile_craft_work_v3"
+      ],
+      "causal_basis_type": "functional_place_context",
+      "causal_basis_id": "craft_yards:мастерские_и_заказы"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "binding_fishing_v1",
+    "profile_id": "g4_profile_fishing_v1",
+    "graph_node_id": "gn_nov_g1_03_04_g4_007_novgorodskaya_pristan_na_volhove_04_boat_shelter",
+    "priority": 100,
+    "applicability": {
+      "version": 1,
+      "item_container_policy": "rules_only",
+      "required_rule_domains": [
+        "item"
+      ],
+      "context_profile_ids": [
+        "profile_fishing_v3"
+      ],
+      "causal_basis_type": "functional_place_context",
+      "causal_basis_id": "boat_shelter:лодки_снасти_и_ремонт"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "binding_food_trade_household_v1",
+    "profile_id": "g4_profile_food_trade_household_v1",
+    "graph_node_id": "gn_nov_g1_03_04_g4_003_novgorodskiy_torg_03_trade_rows",
+    "priority": 100,
+    "applicability": {
+      "version": 1,
+      "item_container_policy": "rules_only",
+      "required_rule_domains": [
+        "item"
+      ],
+      "context_profile_ids": [
+        "profile_food_trade_household_v3"
+      ],
+      "causal_basis_type": "functional_place_context",
+      "causal_basis_id": "trade_rows:торг_цены_и_товары"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "binding_household_personal_v1",
+    "profile_id": "g4_profile_household_personal_v1",
+    "graph_node_id": "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards",
+    "priority": 100,
+    "applicability": {
+      "version": 1,
+      "item_container_policy": "rules_only",
+      "required_rule_domains": [
+        "item",
+        "container"
+      ],
+      "context_profile_ids": [
+        "profile_household_personal_v3"
+      ],
+      "causal_basis_type": "functional_place_context",
+      "causal_basis_id": "dense_yards:жильё_и_свидетели"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "binding_military_service_v1",
+    "profile_id": "g4_profile_military_service_v1",
+    "graph_node_id": "gn_nov_g1_03_04_g4_009_dvor_vlasti_v_novgorode_05_guard_place",
+    "priority": 100,
+    "applicability": {
+      "version": 1,
+      "item_container_policy": "rules_only",
+      "required_rule_domains": [
+        "item",
+        "container"
+      ],
+      "context_profile_ids": [
+        "profile_military_service_v3"
+      ],
+      "causal_basis_type": "functional_place_context",
+      "causal_basis_id": "guard_place:стража_оружие_и_риск"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "binding_religious_personal_v1",
+    "profile_id": "g4_profile_religious_personal_v1",
+    "graph_node_id": "gn_nov_g1_03_04_g4_005_yurev_monastyr_03_church",
+    "priority": 100,
+    "applicability": {
+      "version": 1,
+      "item_container_policy": "rules_only",
+      "required_rule_domains": [
+        "item"
+      ],
+      "context_profile_ids": [
+        "profile_religious_personal_v3"
+      ],
+      "causal_basis_type": "functional_place_context",
+      "causal_basis_id": "church:культовое_ядро"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "binding_trade_administration_v1",
+    "profile_id": "g4_profile_trade_administration_v1",
+    "graph_node_id": "gn_nov_g1_03_04_g4_001_novgorod_06_yaroslav_court_market_core",
+    "priority": 100,
+    "applicability": {
+      "version": 1,
+      "item_container_policy": "rules_only",
+      "required_rule_domains": [
+        "item"
+      ],
+      "context_profile_ids": [
+        "profile_trade_administration_v3"
+      ],
+      "causal_basis_type": "functional_place_context",
+      "causal_basis_id": "yaroslav_court_market_core:торговое_и_вечевое_ядро"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  },
+  {
+    "id": "binding_writing_accounting_v1",
+    "profile_id": "g4_profile_writing_accounting_v1",
+    "graph_node_id": "gn_nov_g1_03_04_g4_009_dvor_vlasti_v_novgorode_04_clerks_corner",
+    "priority": 100,
+    "applicability": {
+      "version": 1,
+      "item_container_policy": "rules_only",
+      "required_rule_domains": [
+        "item"
+      ],
+      "context_profile_ids": [
+        "profile_writing_accounting_v3"
+      ],
+      "causal_basis_type": "functional_place_context",
+      "causal_basis_id": "clerks_corner:память_записи_и_споры"
+    },
+    "status": "approved",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "confidence": "medium"
+  }
+]

@@ -1,0 +1,200 @@
+[
+  {
+    "id": "inventory_container_tpl_nov_birch_bark_box_v1",
+    "container_template_id": "container_tpl_nov_birch_bark_box_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "source_id": "src_gameplay_physical_policy_v3",
+    "mass_grams": 400,
+    "carry_form": "regular",
+    "external_hand_cost": 1,
+    "inventory_role": "primary_container",
+    "status": "draft"
+  },
+  {
+    "id": "inventory_container_tpl_nov_bucket_v1",
+    "container_template_id": "container_tpl_nov_bucket_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "source_id": "src_gameplay_physical_policy_v3",
+    "mass_grams": 2500,
+    "carry_form": "regular",
+    "external_hand_cost": 1,
+    "inventory_role": "primary_container",
+    "status": "draft"
+  },
+  {
+    "id": "inventory_container_tpl_nov_carrying_basket_v1",
+    "container_template_id": "container_tpl_nov_carrying_basket_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "source_id": "src_gameplay_physical_policy_v3",
+    "mass_grams": 1200,
+    "carry_form": "regular",
+    "external_hand_cost": 1,
+    "inventory_role": "primary_container",
+    "status": "draft"
+  },
+  {
+    "id": "inventory_container_tpl_nov_cask_v1",
+    "container_template_id": "container_tpl_nov_cask_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "source_id": "src_gameplay_physical_policy_v3",
+    "mass_grams": 18000,
+    "carry_form": "bulky",
+    "external_hand_cost": 2,
+    "inventory_role": "primary_container",
+    "status": "draft"
+  },
+  {
+    "id": "inventory_container_tpl_nov_chest_v1",
+    "container_template_id": "container_tpl_nov_chest_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "source_id": "src_gameplay_physical_policy_v3",
+    "mass_grams": 15000,
+    "carry_form": "bulky",
+    "external_hand_cost": 2,
+    "inventory_role": "primary_container",
+    "status": "draft"
+  },
+  {
+    "id": "inventory_container_tpl_nov_drawstring_pouch_v1",
+    "container_template_id": "container_tpl_nov_drawstring_pouch_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "source_id": "src_gameplay_physical_policy_v3",
+    "mass_grams": 120,
+    "carry_form": "compact",
+    "external_hand_cost": 0,
+    "inventory_role": "quick_container",
+    "status": "draft"
+  },
+  {
+    "id": "inventory_container_tpl_nov_flap_belt_pouch_v1",
+    "container_template_id": "container_tpl_nov_flap_belt_pouch_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "source_id": "src_gameplay_physical_policy_v3",
+    "mass_grams": 220,
+    "carry_form": "compact",
+    "external_hand_cost": 0,
+    "inventory_role": "quick_container",
+    "status": "draft"
+  },
+  {
+    "id": "inventory_container_tpl_nov_jug_v1",
+    "container_template_id": "container_tpl_nov_jug_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "source_id": "src_gameplay_physical_policy_v3",
+    "mass_grams": 1500,
+    "carry_form": "regular",
+    "external_hand_cost": 1,
+    "inventory_role": "primary_container",
+    "status": "draft"
+  },
+  {
+    "id": "inventory_container_tpl_nov_knife_sheath_v1",
+    "container_template_id": "container_tpl_nov_knife_sheath_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "source_id": "src_gameplay_physical_policy_v3",
+    "mass_grams": 80,
+    "carry_form": "compact",
+    "external_hand_cost": 0,
+    "inventory_role": "quick_container",
+    "status": "draft"
+  },
+  {
+    "id": "inventory_container_tpl_nov_needle_case_v1",
+    "container_template_id": "container_tpl_nov_needle_case_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "source_id": "src_gameplay_physical_policy_v3",
+    "mass_grams": 40,
+    "carry_form": "regular",
+    "external_hand_cost": 0,
+    "inventory_role": "none",
+    "status": "draft"
+  },
+  {
+    "id": "inventory_container_tpl_nov_quiver_v1",
+    "container_template_id": "container_tpl_nov_quiver_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "source_id": "src_gameplay_physical_policy_v3",
+    "mass_grams": 900,
+    "carry_form": "regular",
+    "external_hand_cost": 0,
+    "inventory_role": "none",
+    "status": "draft"
+  },
+  {
+    "id": "inventory_container_tpl_nov_sack_v1",
+    "container_template_id": "container_tpl_nov_sack_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "source_id": "src_gameplay_physical_policy_v3",
+    "mass_grams": 800,
+    "carry_form": "regular",
+    "external_hand_cost": 2,
+    "inventory_role": "primary_container",
+    "status": "draft"
+  },
+  {
+    "id": "inventory_container_tpl_nov_small_casket_v1",
+    "container_template_id": "container_tpl_nov_small_casket_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "source_id": "src_gameplay_physical_policy_v3",
+    "mass_grams": 1500,
+    "carry_form": "regular",
+    "external_hand_cost": 1,
+    "inventory_role": "primary_container",
+    "status": "draft"
+  },
+  {
+    "id": "inventory_container_tpl_nov_small_soft_bag_v1",
+    "container_template_id": "container_tpl_nov_small_soft_bag_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "source_id": "src_gameplay_physical_policy_v3",
+    "mass_grams": 300,
+    "carry_form": "regular",
+    "external_hand_cost": 1,
+    "inventory_role": "primary_container",
+    "status": "draft"
+  },
+  {
+    "id": "inventory_container_tpl_nov_storage_pot_v1",
+    "container_template_id": "container_tpl_nov_storage_pot_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "source_id": "src_gameplay_physical_policy_v3",
+    "mass_grams": 3000,
+    "carry_form": "regular",
+    "external_hand_cost": 2,
+    "inventory_role": "primary_container",
+    "status": "draft"
+  },
+  {
+    "id": "inventory_container_tpl_nov_sword_scabbard_v1",
+    "container_template_id": "container_tpl_nov_sword_scabbard_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "source_id": "src_gameplay_physical_policy_v3",
+    "mass_grams": 900,
+    "carry_form": "compact",
+    "external_hand_cost": 0,
+    "inventory_role": "quick_container",
+    "status": "draft"
+  },
+  {
+    "id": "inventory_container_tpl_nov_tub_v1",
+    "container_template_id": "container_tpl_nov_tub_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "source_id": "src_gameplay_physical_policy_v3",
+    "mass_grams": 8000,
+    "carry_form": "bulky",
+    "external_hand_cost": 2,
+    "inventory_role": "primary_container",
+    "status": "draft"
+  },
+  {
+    "id": "inventory_container_tpl_nov_wooden_box_v1",
+    "container_template_id": "container_tpl_nov_wooden_box_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "source_id": "src_gameplay_physical_policy_v3",
+    "mass_grams": 2500,
+    "carry_form": "regular",
+    "external_hand_cost": 2,
+    "inventory_role": "primary_container",
+    "status": "draft"
+  }
+]

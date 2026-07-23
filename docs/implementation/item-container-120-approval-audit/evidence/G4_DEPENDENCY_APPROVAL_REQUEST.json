@@ -1,0 +1,190 @@
+{
+  "schema_version": "rus.pr17.g4_dependency_approval_request.v1",
+  "request_id": "pr17_g4_dependency_approval_2026_07_23",
+  "created_at": "2026-07-23T00:00:00+03:00",
+  "decision_status": "pending_human_approval",
+  "scope": {
+    "pr": 17,
+    "region_id": "region_novgorod_land",
+    "historical_year": 1230,
+    "v5_profile_count": 9,
+    "template_count": 120,
+    "item_template_count": 102,
+    "container_template_count": 18
+  },
+  "source_snapshot": {
+    "bundle_id": "rus13_world_base_v1",
+    "archive_path": "data/world-base-sources/rus13-base-v1.tar.gz",
+    "archive_sha256": "c2aa107250d859d3c2a6f3a49f15f70598b0fc869c6aa416e5b3de6b95c117d9",
+    "g4_dataset_path": "nov_region_audit/novgorod_full_graph_g1_g4_v6_game_ready_EXTRACTED/novgorod_full_graph_g1_g4_v6_game_ready/tsv_import/novgorod_g2_g4_70_cells_v6_g4_locations.tsv"
+  },
+  "operator_readback": {
+    "database": "world_db",
+    "table": "world_base.graph_nodes",
+    "scale_level": "G4",
+    "total_count": 9332,
+    "status_counts": {
+      "draft": 8895,
+      "usable_with_caution": 437,
+      "approved": 0
+    },
+    "checked_at": "2026-07-23",
+    "read_only": true
+  },
+  "profile_mappings": [
+    {
+      "profile_id": "profile_household_personal_v3",
+      "context_domain": "household_personal",
+      "template_count": 60,
+      "graph_node_id": "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards",
+      "graph_node_title": "Новгородский посад: плотные посадские дворы",
+      "node_type": "location",
+      "place_template_id": "pt_posad_suburb",
+      "g4_location_type": "dense_yards",
+      "causal_basis_type": "functional_place_context",
+      "causal_basis_id": "dense_yards:жильё_и_свидетели",
+      "current_status": "usable_with_caution",
+      "requested_status": "approved",
+      "confidence": "medium"
+    },
+    {
+      "profile_id": "profile_craft_work_v3",
+      "context_domain": "craft_work",
+      "template_count": 16,
+      "graph_node_id": "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_05_craft_yards",
+      "graph_node_title": "Новгородский посад: ремесленные дворы",
+      "node_type": "location",
+      "place_template_id": "pt_posad_suburb",
+      "g4_location_type": "craft_yards",
+      "causal_basis_type": "functional_place_context",
+      "causal_basis_id": "craft_yards:мастерские_и_заказы",
+      "current_status": "usable_with_caution",
+      "requested_status": "approved",
+      "confidence": "medium"
+    },
+    {
+      "profile_id": "profile_agriculture_v3",
+      "context_domain": "agriculture",
+      "template_count": 8,
+      "graph_node_id": "gn_nov_g1_03_04_g4_005_yurev_monastyr_09_gardens",
+      "graph_node_title": "Юрьев монастырь: огороды и сад",
+      "node_type": "location",
+      "place_template_id": "pt_monastery",
+      "g4_location_type": "gardens",
+      "causal_basis_type": "functional_place_context",
+      "causal_basis_id": "gardens:огородные_и_сезонные_работы",
+      "current_status": "usable_with_caution",
+      "requested_status": "approved",
+      "confidence": "medium"
+    },
+    {
+      "profile_id": "profile_fishing_v3",
+      "context_domain": "fishing",
+      "template_count": 7,
+      "graph_node_id": "gn_nov_g1_03_04_g4_007_novgorodskaya_pristan_na_volhove_04_boat_shelter",
+      "graph_node_title": "Новгородская пристань на Волхове: лодочная зона и навес",
+      "node_type": "location",
+      "place_template_id": "pt_river_landing",
+      "g4_location_type": "boat_shelter",
+      "causal_basis_type": "functional_place_context",
+      "causal_basis_id": "boat_shelter:лодки_снасти_и_ремонт",
+      "current_status": "usable_with_caution",
+      "requested_status": "approved",
+      "confidence": "medium"
+    },
+    {
+      "profile_id": "profile_food_trade_household_v3",
+      "context_domain": "food_trade_household",
+      "template_count": 12,
+      "graph_node_id": "gn_nov_g1_03_04_g4_003_novgorodskiy_torg_03_trade_rows",
+      "graph_node_title": "Новгородский торг: торговые ряды и лавочные места",
+      "node_type": "location",
+      "place_template_id": "pt_market_place",
+      "g4_location_type": "trade_rows",
+      "causal_basis_type": "functional_place_context",
+      "causal_basis_id": "trade_rows:торг_цены_и_товары",
+      "current_status": "usable_with_caution",
+      "requested_status": "approved",
+      "confidence": "medium"
+    },
+    {
+      "profile_id": "profile_trade_administration_v3",
+      "context_domain": "trade_administration",
+      "template_count": 3,
+      "graph_node_id": "gn_nov_g1_03_04_g4_001_novgorod_06_yaroslav_court_market_core",
+      "graph_node_title": "Новгород: Ярославово дворище и торг",
+      "node_type": "location",
+      "place_template_id": "pt_city_major_center",
+      "g4_location_type": "yaroslav_court_market_core",
+      "causal_basis_type": "functional_place_context",
+      "causal_basis_id": "yaroslav_court_market_core:торговое_и_вечевое_ядро",
+      "current_status": "usable_with_caution",
+      "requested_status": "approved",
+      "confidence": "medium"
+    },
+    {
+      "profile_id": "profile_writing_accounting_v3",
+      "context_domain": "writing_accounting",
+      "template_count": 2,
+      "graph_node_id": "gn_nov_g1_03_04_g4_009_dvor_vlasti_v_novgorode_04_clerks_corner",
+      "graph_node_title": "Двор власти в Новгороде: писцовый/счётный угол",
+      "node_type": "location",
+      "place_template_id": "pt_administrative_court",
+      "g4_location_type": "clerks_corner",
+      "causal_basis_type": "functional_place_context",
+      "causal_basis_id": "clerks_corner:память_записи_и_споры",
+      "current_status": "usable_with_caution",
+      "requested_status": "approved",
+      "confidence": "medium"
+    },
+    {
+      "profile_id": "profile_military_service_v3",
+      "context_domain": "military_service",
+      "template_count": 11,
+      "graph_node_id": "gn_nov_g1_03_04_g4_009_dvor_vlasti_v_novgorode_05_guard_place",
+      "graph_node_title": "Двор власти в Новгороде: сторожевое место",
+      "node_type": "location",
+      "place_template_id": "pt_administrative_court",
+      "g4_location_type": "guard_place",
+      "causal_basis_type": "functional_place_context",
+      "causal_basis_id": "guard_place:стража_оружие_и_риск",
+      "current_status": "usable_with_caution",
+      "requested_status": "approved",
+      "confidence": "medium"
+    },
+    {
+      "profile_id": "profile_religious_personal_v3",
+      "context_domain": "religious_personal",
+      "template_count": 1,
+      "graph_node_id": "gn_nov_g1_03_04_g4_005_yurev_monastyr_03_church",
+      "graph_node_title": "Юрьев монастырь: монастырский храм",
+      "node_type": "location",
+      "place_template_id": "pt_monastery",
+      "g4_location_type": "church",
+      "causal_basis_type": "functional_place_context",
+      "causal_basis_id": "church:культовое_ядро",
+      "current_status": "usable_with_caution",
+      "requested_status": "approved",
+      "confidence": "medium"
+    }
+  ],
+  "requested_decision": {
+    "decision": "approve_selected_g4_dependency_projection",
+    "exact_graph_node_count": 9,
+    "exact_profile_count": 9,
+    "allowed_next_actions": [
+      "author minimal approved G4 materialization profiles and bindings for these nodes",
+      "author matching G5 templates and materialization slot rules",
+      "author concrete g4 item and container materialization rules for the V5 cohort",
+      "run canonical dry-run and isolated PostgreSQL lifecycle",
+      "prepare the separate all-120 Stage 3C approval attestation"
+    ],
+    "forbidden_actions": [
+      "approve any G4 node not listed in this request",
+      "use Spatial v3 target projection as active materialization v2 input",
+      "activate a world revision",
+      "rematerialize existing parties",
+      "weaken readiness or synthesize fallback candidates"
+    ]
+  }
+}

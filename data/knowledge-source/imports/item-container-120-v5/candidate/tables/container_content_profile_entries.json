@@ -1,0 +1,38 @@
+[
+  {
+    "id": "content_entry_container_tpl_nov_knife_sheath_v1",
+    "profile_id": "content_container_tpl_nov_knife_sheath_v1",
+    "item_template_id": "item_tpl_nov_utility_knife_v1",
+    "min_quantity": 1,
+    "max_quantity": 1,
+    "required": false,
+    "weight": 1
+  },
+  {
+    "id": "content_entry_container_tpl_nov_needle_case_v1",
+    "profile_id": "content_container_tpl_nov_needle_case_v1",
+    "item_template_id": "item_tpl_nov_sewing_needle_v1",
+    "min_quantity": 1,
+    "max_quantity": 1,
+    "required": false,
+    "weight": 1
+  },
+  {
+    "id": "content_entry_container_tpl_nov_quiver_v1",
+    "profile_id": "content_container_tpl_nov_quiver_v1",
+    "item_template_id": "item_tpl_nov_arrow_v1",
+    "min_quantity": 1,
+    "max_quantity": 1,
+    "required": false,
+    "weight": 1
+  },
+  {
+    "id": "content_entry_container_tpl_nov_sword_scabbard_v1",
+    "profile_id": "content_container_tpl_nov_sword_scabbard_v1",
+    "item_template_id": "item_tpl_nov_sword_v1",
+    "min_quantity": 1,
+    "max_quantity": 1,
+    "required": false,
+    "weight": 1
+  }
+]

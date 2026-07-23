@@ -1,0 +1,1838 @@
+[
+  {
+    "id": "quantity_item_tpl_nov_adze_v1_count_v5",
+    "item_template_id": "item_tpl_nov_adze_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 500,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_arrow_v1_count_v5",
+    "item_template_id": "item_tpl_nov_arrow_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 60,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_auger_v1_count_v5",
+    "item_template_id": "item_tpl_nov_auger_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 450,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_awl_v1_count_v5",
+    "item_template_id": "item_tpl_nov_awl_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 50,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_beeswax_v1_v3",
+    "item_template_id": "item_tpl_nov_beeswax_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "gram",
+    "quantity_dimension": "mass",
+    "minimum_quantity": 50,
+    "maximum_quantity": 5000,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 1,
+    "stackable": true,
+    "partial_consumption_allowed": true,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_belt_v1_count_v5",
+    "item_template_id": "item_tpl_nov_belt_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 250,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_billhook_v1_count_v5",
+    "item_template_id": "item_tpl_nov_billhook_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 600,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_birch_bark_sheet_v1_count_v5",
+    "item_template_id": "item_tpl_nov_birch_bark_sheet_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 20,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_boots_v1_count_v5",
+    "item_template_id": "item_tpl_nov_boots_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 1600,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_bow_v1_count_v5",
+    "item_template_id": "item_tpl_nov_bow_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 1100,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_bread_v1_v3",
+    "item_template_id": "item_tpl_nov_bread_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "loaf",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 4,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 700,
+    "stackable": true,
+    "partial_consumption_allowed": true,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_cap_v1_count_v5",
+    "item_template_id": "item_tpl_nov_cap_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 250,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_carving_knife_v1_count_v5",
+    "item_template_id": "item_tpl_nov_carving_knife_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 100,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_cheese_v1_v3",
+    "item_template_id": "item_tpl_nov_cheese_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 6,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 500,
+    "stackable": true,
+    "partial_consumption_allowed": true,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_chisel_v1_count_v5",
+    "item_template_id": "item_tpl_nov_chisel_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 250,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_chopping_board_v1_count_v5",
+    "item_template_id": "item_tpl_nov_chopping_board_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 1200,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_cloak_v1_count_v5",
+    "item_template_id": "item_tpl_nov_cloak_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 2000,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_comb_v1_count_v5",
+    "item_template_id": "item_tpl_nov_comb_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 70,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_combat_axe_v1_count_v5",
+    "item_template_id": "item_tpl_nov_combat_axe_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 1200,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_cooking_pot_v1_count_v5",
+    "item_template_id": "item_tpl_nov_cooking_pot_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 2500,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_distaff_v1_count_v5",
+    "item_template_id": "item_tpl_nov_distaff_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 800,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_dried_fish_v1_v3",
+    "item_template_id": "item_tpl_nov_dried_fish_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 12,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 700,
+    "stackable": true,
+    "partial_consumption_allowed": true,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_fiber_comb_v1_count_v5",
+    "item_template_id": "item_tpl_nov_fiber_comb_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 350,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_file_v1_count_v5",
+    "item_template_id": "item_tpl_nov_file_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 300,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_firesteel_v1_count_v5",
+    "item_template_id": "item_tpl_nov_firesteel_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 70,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_fish_trap_v1_count_v5",
+    "item_template_id": "item_tpl_nov_fish_trap_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 4000,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_fishhook_v1_count_v5",
+    "item_template_id": "item_tpl_nov_fishhook_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 10,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_fishing_line_v1_count_v5",
+    "item_template_id": "item_tpl_nov_fishing_line_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 200,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_fishing_net_v1_count_v5",
+    "item_template_id": "item_tpl_nov_fishing_net_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 5000,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_fishing_spear_v1_count_v5",
+    "item_template_id": "item_tpl_nov_fishing_spear_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 1800,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_flour_v1_v3",
+    "item_template_id": "item_tpl_nov_flour_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "gram",
+    "quantity_dimension": "mass",
+    "minimum_quantity": 100,
+    "maximum_quantity": 10000,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 1,
+    "stackable": true,
+    "partial_consumption_allowed": true,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_folding_balance_v1_count_v5",
+    "item_template_id": "item_tpl_nov_folding_balance_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 300,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_fresh_fish_v1_v3",
+    "item_template_id": "item_tpl_nov_fresh_fish_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 8,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 1000,
+    "stackable": true,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_fur_outerwear_v1_count_v5",
+    "item_template_id": "item_tpl_nov_fur_outerwear_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 4000,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_grain_v1_v3",
+    "item_template_id": "item_tpl_nov_grain_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "gram",
+    "quantity_dimension": "mass",
+    "minimum_quantity": 100,
+    "maximum_quantity": 10000,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 1,
+    "stackable": true,
+    "partial_consumption_allowed": true,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_groats_v1_v3",
+    "item_template_id": "item_tpl_nov_groats_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "gram",
+    "quantity_dimension": "mass",
+    "minimum_quantity": 100,
+    "maximum_quantity": 10000,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 1,
+    "stackable": true,
+    "partial_consumption_allowed": true,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_hammer_v1_count_v5",
+    "item_template_id": "item_tpl_nov_hammer_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 800,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_hand_quern_v1_count_v5",
+    "item_template_id": "item_tpl_nov_hand_quern_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 25000,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_helmet_v1_count_v5",
+    "item_template_id": "item_tpl_nov_helmet_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 1400,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_hoe_v1_count_v5",
+    "item_template_id": "item_tpl_nov_hoe_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 1500,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_honey_v1_v3",
+    "item_template_id": "item_tpl_nov_honey_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "millilitre",
+    "quantity_dimension": "volume",
+    "minimum_quantity": 100,
+    "maximum_quantity": 5000,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 1.4,
+    "stackable": true,
+    "partial_consumption_allowed": true,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_hood_v1_count_v5",
+    "item_template_id": "item_tpl_nov_hood_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 500,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_iron_edged_spade_v1_count_v5",
+    "item_template_id": "item_tpl_nov_iron_edged_spade_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 2500,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_key_v1_count_v5",
+    "item_template_id": "item_tpl_nov_key_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 120,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_kindling_bundle_v1_count_v5",
+    "item_template_id": "item_tpl_nov_kindling_bundle_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 500,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_ladle_v1_count_v5",
+    "item_template_id": "item_tpl_nov_ladle_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 100,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_leg_wraps_v1_count_v5",
+    "item_template_id": "item_tpl_nov_leg_wraps_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 500,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_linen_shirt_v1_count_v5",
+    "item_template_id": "item_tpl_nov_linen_shirt_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 600,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_lock_v1_count_v5",
+    "item_template_id": "item_tpl_nov_lock_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 900,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_low_leather_shoes_v1_count_v5",
+    "item_template_id": "item_tpl_nov_low_leather_shoes_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 800,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_mace_v1_count_v5",
+    "item_template_id": "item_tpl_nov_mace_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 900,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_mail_armour_v1_count_v5",
+    "item_template_id": "item_tpl_nov_mail_armour_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 11000,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_metal_cauldron_v1_count_v5",
+    "item_template_id": "item_tpl_nov_metal_cauldron_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 5000,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_metal_mirror_v1_count_v5",
+    "item_template_id": "item_tpl_nov_metal_mirror_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 120,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_mittens_v1_count_v5",
+    "item_template_id": "item_tpl_nov_mittens_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 250,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_mortar_v1_count_v5",
+    "item_template_id": "item_tpl_nov_mortar_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 1500,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_net_float_v1_count_v5",
+    "item_template_id": "item_tpl_nov_net_float_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 50,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_net_sinker_v1_count_v5",
+    "item_template_id": "item_tpl_nov_net_sinker_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 200,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_pectoral_cross_v1_count_v5",
+    "item_template_id": "item_tpl_nov_pectoral_cross_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 15,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_pestle_v1_count_v5",
+    "item_template_id": "item_tpl_nov_pestle_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 500,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_pitchfork_v1_count_v5",
+    "item_template_id": "item_tpl_nov_pitchfork_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 1600,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_preserved_meat_v1_v3",
+    "item_template_id": "item_tpl_nov_preserved_meat_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 8,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 500,
+    "stackable": true,
+    "partial_consumption_allowed": true,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_rake_v1_count_v5",
+    "item_template_id": "item_tpl_nov_rake_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 1300,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_razor_v1_count_v5",
+    "item_template_id": "item_tpl_nov_razor_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 70,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_rope_v1_count_v5",
+    "item_template_id": "item_tpl_nov_rope_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 3000,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_salt_v1_v3",
+    "item_template_id": "item_tpl_nov_salt_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "gram",
+    "quantity_dimension": "mass",
+    "minimum_quantity": 50,
+    "maximum_quantity": 5000,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 1,
+    "stackable": true,
+    "partial_consumption_allowed": true,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_saw_v1_count_v5",
+    "item_template_id": "item_tpl_nov_saw_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 500,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_scoop_v1_count_v5",
+    "item_template_id": "item_tpl_nov_scoop_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 200,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_scraper_v1_count_v5",
+    "item_template_id": "item_tpl_nov_scraper_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 200,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_scythe_v1_count_v5",
+    "item_template_id": "item_tpl_nov_scythe_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 1500,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_seal_v1_count_v5",
+    "item_template_id": "item_tpl_nov_seal_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 50,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_sewing_needle_v1_count_v5",
+    "item_template_id": "item_tpl_nov_sewing_needle_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 2,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_shears_v1_count_v5",
+    "item_template_id": "item_tpl_nov_shears_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 300,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_shield_v1_count_v5",
+    "item_template_id": "item_tpl_nov_shield_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 4000,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_sickle_v1_count_v5",
+    "item_template_id": "item_tpl_nov_sickle_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 500,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_sieve_v1_count_v5",
+    "item_template_id": "item_tpl_nov_sieve_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 700,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_simple_lamp_v1_count_v5",
+    "item_template_id": "item_tpl_nov_simple_lamp_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 600,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_smithing_tongs_v1_count_v5",
+    "item_template_id": "item_tpl_nov_smithing_tongs_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 900,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_spear_v1_count_v5",
+    "item_template_id": "item_tpl_nov_spear_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 2400,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_spindle_v1_count_v5",
+    "item_template_id": "item_tpl_nov_spindle_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 80,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_spindle_whorl_v1_count_v5",
+    "item_template_id": "item_tpl_nov_spindle_whorl_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 30,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_striking_flint_v1_count_v5",
+    "item_template_id": "item_tpl_nov_striking_flint_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 50,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_stylus_v1_count_v5",
+    "item_template_id": "item_tpl_nov_stylus_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 40,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_sword_v1_count_v5",
+    "item_template_id": "item_tpl_nov_sword_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 1300,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_tinder_v1_count_v5",
+    "item_template_id": "item_tpl_nov_tinder_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 50,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_torch_v1_count_v5",
+    "item_template_id": "item_tpl_nov_torch_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 1000,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_trough_v1_count_v5",
+    "item_template_id": "item_tpl_nov_trough_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 8000,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_trousers_v1_count_v5",
+    "item_template_id": "item_tpl_nov_trousers_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 700,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_utility_knife_v1_count_v5",
+    "item_template_id": "item_tpl_nov_utility_knife_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 400,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_water_v1_v3",
+    "item_template_id": "item_tpl_nov_water_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "millilitre",
+    "quantity_dimension": "volume",
+    "minimum_quantity": 100,
+    "maximum_quantity": 10000,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 1,
+    "stackable": true,
+    "partial_consumption_allowed": true,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_wax_candle_v1_count_v5",
+    "item_template_id": "item_tpl_nov_wax_candle_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 100,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_weaving_shuttle_v1_count_v5",
+    "item_template_id": "item_tpl_nov_weaving_shuttle_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 150,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_wedge_v1_count_v5",
+    "item_template_id": "item_tpl_nov_wedge_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 300,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_weight_set_v1_count_v5",
+    "item_template_id": "item_tpl_nov_weight_set_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 1000,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_wooden_bowl_v1_count_v5",
+    "item_template_id": "item_tpl_nov_wooden_bowl_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 400,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_wooden_cup_v1_count_v5",
+    "item_template_id": "item_tpl_nov_wooden_cup_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 180,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_wooden_dish_v1_count_v5",
+    "item_template_id": "item_tpl_nov_wooden_dish_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 500,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_wooden_mallet_v1_count_v5",
+    "item_template_id": "item_tpl_nov_wooden_mallet_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 700,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_wooden_shovel_v1_count_v5",
+    "item_template_id": "item_tpl_nov_wooden_shovel_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 1800,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_wooden_spoon_v1_count_v5",
+    "item_template_id": "item_tpl_nov_wooden_spoon_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 25,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_wool_outer_garment_v1_count_v5",
+    "item_template_id": "item_tpl_nov_wool_outer_garment_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 1800,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  },
+  {
+    "id": "quantity_item_tpl_nov_working_axe_v1_count_v5",
+    "item_template_id": "item_tpl_nov_working_axe_v1",
+    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+    "quantity_unit_id": "piece",
+    "quantity_dimension": "count",
+    "minimum_quantity": 1,
+    "maximum_quantity": 1,
+    "default_quantity_policy": {
+      "version": 1,
+      "mode": "explicit_only"
+    },
+    "mass_grams_per_unit": 1400,
+    "stackable": false,
+    "partial_consumption_allowed": false,
+    "source_id": "src_gameplay_physical_policy_v3",
+    "status": "draft"
+  }
+]

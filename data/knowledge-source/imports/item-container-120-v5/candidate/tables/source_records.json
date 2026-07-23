@@ -1,0 +1,154 @@
+[
+  {
+    "id": "src_birchbark_219_trade_goods",
+    "title": "Берестяная грамота №219",
+    "source_type": "academic_database",
+    "summary": "Новгородская грамота начала XIII в.; хозяйственные товары, включая зерно, соль и рыбу.",
+    "status": "draft",
+    "confidence": "medium_high"
+  },
+  {
+    "id": "src_birchbark_334_rye",
+    "title": "Берестяная грамота №334",
+    "source_type": "academic_database",
+    "summary": "Новгородская грамота 1220-1240 гг.; хозяйственный контекст ржи.",
+    "status": "draft",
+    "confidence": "medium_high"
+  },
+  {
+    "id": "src_birchbark_528_cheese",
+    "title": "Берестяная грамота №528",
+    "source_type": "academic_database",
+    "summary": "Позднейший новгородский документ о продаже сыров и масла; используется только как подтверждение долгой региональной традиции, не как датировка 1230 г.",
+    "status": "draft",
+    "confidence": "medium_high"
+  },
+  {
+    "id": "src_birchbark_616_period_anchor",
+    "title": "Берестяная грамота №616",
+    "source_type": "academic_database",
+    "summary": "Новгородский документ 1220-1240 гг.; прямой хронологический якорь письменной культуры.",
+    "status": "draft",
+    "confidence": "medium_high"
+  },
+  {
+    "id": "src_birchbark_983_bread_honey",
+    "title": "Берестяная грамота №983",
+    "source_type": "academic_database",
+    "summary": "Новгородская хозяйственная запись конца XII - первой четверти XIII в.; прямое упоминание хлеба и мёда.",
+    "status": "draft",
+    "confidence": "medium_high"
+  },
+  {
+    "id": "src_gameplay_physical_policy_v3",
+    "title": "Gameplay engineering ranges v3",
+    "source_type": "project_note",
+    "summary": "Редакторские игровые диапазоны массы, размера, переноски и упаковки. Не являются историческими измерениями.",
+    "status": "draft",
+    "confidence": "medium"
+  },
+  {
+    "id": "src_mirror_continuity",
+    "title": "Новгородские металлические зеркала XII-XIII вв.",
+    "source_type": "book",
+    "summary": "Новгородские зеркала известны до 1230 г. и во второй половине XIII в.; для 1230 г. допускается редкий предмет по непрерывности класса, без утверждения конкретного типа.",
+    "status": "draft",
+    "confidence": "medium_high"
+  },
+  {
+    "id": "src_novgorod_agriculture",
+    "title": "Сельскохозяйственные орудия средневекового Новгорода",
+    "source_type": "article",
+    "summary": "Систематизация и хронология сельскохозяйственных орудий Новгорода середины X-XV вв.",
+    "status": "draft",
+    "confidence": "medium_high"
+  },
+  {
+    "id": "src_novgorod_promysly",
+    "title": "Промыслы в средневековом Новгороде: рыболовство",
+    "source_type": "book",
+    "summary": "Археологические данные о рыболовстве Новгорода, снастях и промысловом контексте.",
+    "status": "draft",
+    "confidence": "medium_high"
+  },
+  {
+    "id": "src_project_stage_3b1_physical_parameter_policy",
+    "title": "Stage 3B-1 physical parameter authoring policy",
+    "source_type": "project_note",
+    "summary": "Норматив для игровых инженерных оценок физического профиля; не является историческим доказательством.",
+    "status": "draft",
+    "confidence": "medium"
+  },
+  {
+    "id": "src_shm_novgorod_stylus",
+    "title": "Писало из средневекового Новгорода, ГИМ",
+    "source_type": "book",
+    "summary": "Археологическое писало из Новгорода; железо; музейная датировка X-XV вв.",
+    "status": "draft",
+    "confidence": "medium_high"
+  },
+  {
+    "id": "src_stage3b2_drevnyaya_rus_byt_1997",
+    "title": "Древняя Русь. Быт и культура",
+    "source_type": "book",
+    "summary": "Материальная культура Руси IX-XIV вв.; включает новгородские материалы.",
+    "status": "draft",
+    "confidence": "medium_high"
+  },
+  {
+    "id": "src_stage3b2_kirpichnikov_arms",
+    "title": "Древнерусское оружие, вып. 1-3",
+    "source_type": "book",
+    "summary": "Типология и хронология древнерусского оружия и защитного снаряжения IX-XIII вв.",
+    "status": "draft",
+    "confidence": "medium_high"
+  },
+  {
+    "id": "src_stage3b2_kolchin_iron_1959",
+    "title": "Железообрабатывающее ремесло Новгорода Великого",
+    "source_type": "book",
+    "summary": "Каталог железных изделий из стратифицированных слоёв Новгорода, включая XII-XIII вв.",
+    "status": "draft",
+    "confidence": "medium_high"
+  },
+  {
+    "id": "src_stage3b2_kolchin_wooden_1968",
+    "title": "Новгородские древности. Деревянные изделия",
+    "source_type": "book",
+    "summary": "Каталог деревянных изделий из раскопок Новгорода с типологией и хронологией.",
+    "status": "draft",
+    "confidence": "medium_high"
+  },
+  {
+    "id": "src_stage3b2_kolchin_yanin_yamshchikov_1985",
+    "title": "Древний Новгород: прикладное искусство и археология",
+    "source_type": "book",
+    "summary": "Археологическая сводка материальной культуры древнего Новгорода.",
+    "status": "draft",
+    "confidence": "medium_high"
+  },
+  {
+    "id": "src_stage3b2_medvedev_projectile_1966",
+    "title": "Ручное метательное оружие VIII-XIV вв.",
+    "source_type": "book",
+    "summary": "Типология и хронология луков, стрел и колчанов Руси VIII-XIV вв.",
+    "status": "draft",
+    "confidence": "medium_high"
+  },
+  {
+    "id": "src_stage3b2_rybina_trade_2001",
+    "title": "Торговля средневекового Новгорода",
+    "source_type": "book",
+    "summary": "Историко-археологическая сводка торговли Новгорода и товарных категорий.",
+    "status": "draft",
+    "confidence": "medium_high"
+  },
+  {
+    "id": "src_stage3b2_sedova_jewelry_1981",
+    "title": "Ювелирные изделия Древнего Новгорода X-XV вв.",
+    "source_type": "book",
+    "summary": "Каталог ювелирных изделий из Новгорода X-XV вв. с типологией и хронологией.",
+    "status": "draft",
+    "confidence": "medium_high"
+  }
+]

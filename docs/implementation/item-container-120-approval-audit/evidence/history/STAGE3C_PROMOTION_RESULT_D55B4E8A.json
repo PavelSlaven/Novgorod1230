@@ -1,0 +1,44 @@
+{
+  "schema_version": "rus.pr17.item_container_stage3c_result.v1",
+  "executed_at": "2026-07-23T05:16:42.443Z",
+  "command": "npm run item-container-120:stage3c:postgres:lifecycle",
+  "environment": {
+    "kind": "isolated_local_review_database",
+    "database": "pr17_item_container_stage3c",
+    "container_image": "postgres:16-alpine",
+    "container_removed_after_verification": true,
+    "operator_database_changed": false,
+    "production_database_changed": false
+  },
+  "candidate_digest": "d55b4e8a7ac44340301f89dbb2d1cc9dca13d5761fdad92afb11a599af29745e",
+  "approval_request_digest": "a0a667b47bf42225a4bc2a1059c43f8dc3697008618b929359e1e9f228a8ea91",
+  "approval_attestation_digest": "207338995ea7c8849793216d2cec668dea4e7371291b690da7f32cbc06d28471",
+  "promotion_manifest_digest": "5b779e37142c7519fb7519778725f6f787d1551420c8a4c7b7c55b09591d78ac",
+  "target_revision_id": "world_revision_novgorod_1230_item_container_approved_001",
+  "target_catalog_digest": "996c823c373fedf9080f7395233c54d78807c3a768c2ca9c39a3c0c53927d951",
+  "dataset_count": 39,
+  "status_transition_count": 9,
+  "rollback_probe": "pass",
+  "first_apply": {
+    "applied": true,
+    "all_dataset_readbacks_passed": true,
+    "readback_dataset_count": 39,
+    "target_revision_status": "approved",
+    "parent_revision_unchanged": true,
+    "approved_g4_count": 9,
+    "approved_item_template_count": 102,
+    "approved_container_template_count": 18
+  },
+  "repeat_clean_apply": {
+    "applied": true,
+    "all_dataset_readbacks_passed": true,
+    "readback_dataset_count": 39,
+    "target_revision_status": "approved",
+    "parent_revision_unchanged": true,
+    "approved_g4_count": 9,
+    "approved_item_template_count": 102,
+    "approved_container_template_count": 18
+  },
+  "activation_performed": false,
+  "existing_parties_rematerialized": false
+}

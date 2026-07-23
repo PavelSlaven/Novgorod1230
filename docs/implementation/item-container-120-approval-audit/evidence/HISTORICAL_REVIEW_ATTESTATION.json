@@ -1,0 +1,35 @@
+{
+  "schema_version": "rus.item_container_historical_review_attestation.v1",
+  "decision": "review_historical_evidence_all_120",
+  "reviewed_by": "PavelSlaven",
+  "reviewed_at": "2026-07-22T20:55:30.2889883Z",
+  "source_archive": {
+    "path": "ITEM_CONTAINER_120_HISTORICAL_GAMEPLAY_V5_2026-07-22.zip",
+    "sha256": "dc95ee730beea3f4ae7e153cd30fb505ea7b7285a765ea2b7b56979446075fc3",
+    "manifest_sha256": "6cfcb2e762ee87ef40fdfdaae3526b87f43505099861aa305108ba50e1f637a5",
+    "archive_manifest_sha256": "0cd1f50b6933f771167fc2552397549363b35eea893661964371aba09350be27"
+  },
+  "cohort": {
+    "template_count": 120,
+    "item_template_count": 102,
+    "container_template_count": 18
+  },
+  "confirmed_scope": [
+    "historical_presence",
+    "material_family",
+    "construction_family",
+    "novgorod_or_bounded_rus_period_applicability",
+    "period_1200_1250_with_focus_year_1230",
+    "documented_claim_limitations"
+  ],
+  "excluded_scope": [
+    "gameplay_numeric_balance",
+    "canonical_repository_mapping",
+    "g4_materialization_dependency_closure",
+    "postgresql_import_lifecycle",
+    "final_all_120_editorial_approval",
+    "runtime_activation"
+  ],
+  "user_statement_ru": "Историческую проверку подтверждаю, всё остальное за тобой.",
+  "atomic_historical_cohort": true
+}

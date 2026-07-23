@@ -1,0 +1,74 @@
+[
+  {
+    "id": "layout_node_agriculture_main_v1",
+    "layout_template_id": "layout_agriculture_v1",
+    "slot_key": "main_zone",
+    "room_template_id": "room_agriculture_v1",
+    "required": true,
+    "ordinal": 0
+  },
+  {
+    "id": "layout_node_craft_work_main_v1",
+    "layout_template_id": "layout_craft_work_v1",
+    "slot_key": "main_zone",
+    "room_template_id": "room_craft_work_v1",
+    "required": true,
+    "ordinal": 0
+  },
+  {
+    "id": "layout_node_fishing_main_v1",
+    "layout_template_id": "layout_fishing_v1",
+    "slot_key": "main_zone",
+    "room_template_id": "room_fishing_v1",
+    "required": true,
+    "ordinal": 0
+  },
+  {
+    "id": "layout_node_food_trade_household_main_v1",
+    "layout_template_id": "layout_food_trade_household_v1",
+    "slot_key": "main_zone",
+    "room_template_id": "room_food_trade_household_v1",
+    "required": true,
+    "ordinal": 0
+  },
+  {
+    "id": "layout_node_household_personal_main_v1",
+    "layout_template_id": "layout_household_personal_v1",
+    "slot_key": "main_zone",
+    "room_template_id": "room_household_personal_v1",
+    "required": true,
+    "ordinal": 0
+  },
+  {
+    "id": "layout_node_military_service_main_v1",
+    "layout_template_id": "layout_military_service_v1",
+    "slot_key": "main_zone",
+    "room_template_id": "room_military_service_v1",
+    "required": true,
+    "ordinal": 0
+  },
+  {
+    "id": "layout_node_religious_personal_main_v1",
+    "layout_template_id": "layout_religious_personal_v1",
+    "slot_key": "main_zone",
+    "room_template_id": "room_religious_personal_v1",
+    "required": true,
+    "ordinal": 0
+  },
+  {
+    "id": "layout_node_trade_administration_main_v1",
+    "layout_template_id": "layout_trade_administration_v1",
+    "slot_key": "main_zone",
+    "room_template_id": "room_trade_administration_v1",
+    "required": true,
+    "ordinal": 0
+  },
+  {
+    "id": "layout_node_writing_accounting_main_v1",
+    "layout_template_id": "layout_writing_accounting_v1",
+    "slot_key": "main_zone",
+    "room_template_id": "room_writing_accounting_v1",
+    "required": true,
+    "ordinal": 0
+  }
+]

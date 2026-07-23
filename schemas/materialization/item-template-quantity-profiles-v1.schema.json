@@ -19,7 +19,7 @@
         "properties": { "version": { "const": 1 }, "mode": { "const": "explicit_only" } },
         "additionalProperties": false
       },
-      "mass_grams_per_unit": { "type": "integer", "minimum": 1 },
+      "mass_grams_per_unit": { "type": "number", "exclusiveMinimum": 0 },
       "stackable": { "type": "boolean" },
       "partial_consumption_allowed": { "type": "boolean" },
       "source_id": { "type": "string", "minLength": 1 },

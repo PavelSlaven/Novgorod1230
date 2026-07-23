@@ -1,0 +1,300 @@
+{
+  "schema_version": "rus.pr17.item_container_candidate.v1",
+  "bundle_id": "novgorod_1230_item_container_v5_candidate_001",
+  "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
+  "approval": "pending_approve_all_120",
+  "activation": "not_requested",
+  "deletion_policy": "none",
+  "provenance": {
+    "v5_package_id": "item_container_120_historical_gameplay_v5_2026-07-22",
+    "v5_archive_sha256": "dc95ee730beea3f4ae7e153cd30fb505ea7b7285a765ea2b7b56979446075fc3",
+    "historical_attestation_path": "docs/implementation/item-container-120-approval-audit/evidence/HISTORICAL_REVIEW_ATTESTATION.json",
+    "g4_semantic_mapping_path": "docs/implementation/item-container-120-approval-audit/evidence/G4_DEPENDENCY_APPROVAL_REQUEST.json",
+    "g4_semantic_mapping_sha256": "93c1773a7e30cb5fe17d4a9c26634ca8ccb06ffa503f159cf53f0c7b794e8ecb",
+    "parent_bundle_id": "novgorod_1230_item_catalogue_draft_001",
+    "compiler": "scripts/generate-pr17-item-container-candidate.mjs"
+  },
+  "cohort": {
+    "template_count": 120,
+    "item_template_count": 102,
+    "container_template_count": 18,
+    "context_profile_count": 9,
+    "imported_g4_count": 9332
+  },
+  "datasets": [
+    {
+      "table": "building_templates",
+      "path": "tables/building_templates.json",
+      "record_count": 9,
+      "sha256": "88f4d837f3f2089558587bccfa960f4578ec0a12a0f790883988ad18ba2cc008",
+      "dependency_order": 0
+    },
+    {
+      "table": "quantity_unit_definitions",
+      "path": "tables/quantity_unit_definitions.json",
+      "record_count": 5,
+      "sha256": "5816a56e9438b221d42f836bd71ebcca3765c3e929c3096a4195a798085d6032",
+      "dependency_order": 1
+    },
+    {
+      "table": "region_equipment_profiles",
+      "path": "tables/region_equipment_profiles.json",
+      "record_count": 1,
+      "sha256": "da7cf8cb10f3ad5754756727dab36b628ab48729bdbb2495ce1039e634f38cb0",
+      "dependency_order": 2
+    },
+    {
+      "table": "source_records",
+      "path": "tables/source_records.json",
+      "record_count": 19,
+      "sha256": "4e78d7ee73e79f3531de8ea7837f2bcc42ea73879b126047e0256a79569d65a6",
+      "dependency_order": 3
+    },
+    {
+      "table": "universal_categories",
+      "path": "tables/universal_categories.json",
+      "record_count": 366,
+      "sha256": "d098aa6dbf306b6f35659611c4e5cf10eac7359972a5d0e3d11bea4d31fe6351",
+      "dependency_order": 4
+    },
+    {
+      "table": "world_revisions",
+      "path": "tables/world_revisions.json",
+      "record_count": 1,
+      "sha256": "8cd99dd7a1fc5e7a60778d6f0eda67dfbf98edc8263e788e6fb43a51f87f8dfd",
+      "dependency_order": 5
+    },
+    {
+      "table": "building_layout_templates",
+      "path": "tables/building_layout_templates.json",
+      "record_count": 9,
+      "sha256": "a6f1f52306f6d877cbe5ef76ad3cd28dd97fe949b74883539ea0961eb55f3b52",
+      "dependency_order": 6
+    },
+    {
+      "table": "category_labels",
+      "path": "tables/category_labels.json",
+      "record_count": 146,
+      "sha256": "32b3a115683661be80e782ba7cb9891ac8c9b461c447cab2b2f6cbead5d8e1f2",
+      "dependency_order": 7
+    },
+    {
+      "table": "container_content_category_relations",
+      "path": "tables/container_content_category_relations.json",
+      "record_count": 94,
+      "sha256": "1d50e1d8c414d7e193e2172fa17c20f062aee4094a2953ffa8ac1d9a8fd59563",
+      "dependency_order": 8
+    },
+    {
+      "table": "container_templates",
+      "path": "tables/container_templates.json",
+      "record_count": 18,
+      "sha256": "cb54d6459be25bf80f4c473dc54cd32f8bc219670f42c749942e20ac135d3b26",
+      "dependency_order": 9
+    },
+    {
+      "table": "g5_anchor_templates",
+      "path": "tables/g5_anchor_templates.json",
+      "record_count": 27,
+      "sha256": "4cfde51fc38bc1ca86f2b59f40904811af720011ca570a094c21b34145781387",
+      "dependency_order": 10
+    },
+    {
+      "table": "g5_edge_templates",
+      "path": "tables/g5_edge_templates.json",
+      "record_count": 9,
+      "sha256": "520433963c0aa47481cef4fe680d9d88c4d71bb3d6aae89a4b2379fc7f47c61c",
+      "dependency_order": 11
+    },
+    {
+      "table": "g5_minilocation_templates",
+      "path": "tables/g5_minilocation_templates.json",
+      "record_count": 9,
+      "sha256": "784bc0044f01415496d4a2758edb5ef8d2887aafc26a41a2e050ff75d2ef9266",
+      "dependency_order": 12
+    },
+    {
+      "table": "item_profile_sets",
+      "path": "tables/item_profile_sets.json",
+      "record_count": 9,
+      "sha256": "ff10e7c1b9bd883f581501523509a68156604a0758a19576fbf61ae64ab82e70",
+      "dependency_order": 13
+    },
+    {
+      "table": "item_templates",
+      "path": "tables/item_templates.json",
+      "record_count": 102,
+      "sha256": "07c9c2df46849d0b8cf5e37b5bc6fa27d1b67db14760eceef4b5f07bbfc7022f",
+      "dependency_order": 14
+    },
+    {
+      "table": "property_profiles",
+      "path": "tables/property_profiles.json",
+      "record_count": 19,
+      "sha256": "5e2552eaeb60fe0e5ee49f9099541ee25f98887f7beb8a73cf378f99fcde6b17",
+      "dependency_order": 15
+    },
+    {
+      "table": "region_category_options",
+      "path": "tables/region_category_options.json",
+      "record_count": 362,
+      "sha256": "07446a366263bfa63367d37dd98e501ed61f78405daf0c17e561b7c08135ce36",
+      "dependency_order": 16
+    },
+    {
+      "table": "room_templates",
+      "path": "tables/room_templates.json",
+      "record_count": 9,
+      "sha256": "ba3cdca86b9a2ddfa4a90987426c68e934afb0933928fc72e4210bc29f046bc9",
+      "dependency_order": 17
+    },
+    {
+      "table": "universal_category_relations",
+      "path": "tables/universal_category_relations.json",
+      "record_count": 41,
+      "sha256": "44b25c8decbcd69b8f60cd6a108fa3937bc3da5cc289f888e67edf8e1ff172f3",
+      "dependency_order": 18
+    },
+    {
+      "table": "building_layout_nodes",
+      "path": "tables/building_layout_nodes.json",
+      "record_count": 9,
+      "sha256": "6a4ddd7703136c0454c4eb977bf0ced3851c06ea3034988b8e73a1a998bffb5a",
+      "dependency_order": 19
+    },
+    {
+      "table": "container_content_profiles",
+      "path": "tables/container_content_profiles.json",
+      "record_count": 18,
+      "sha256": "6b0fff7821bae4a9d35268510a8e1bb5eb1114a67bf6d784d8eeae325964aa6a",
+      "dependency_order": 20
+    },
+    {
+      "table": "container_template_facet_bindings",
+      "path": "tables/container_template_facet_bindings.json",
+      "record_count": 170,
+      "sha256": "2f3296ff394fb9e3cf8ab18ffa76f5b8e81eef12acf5ea1831bc09927a225297",
+      "dependency_order": 21
+    },
+    {
+      "table": "container_template_inventory_profiles",
+      "path": "tables/container_template_inventory_profiles.json",
+      "record_count": 18,
+      "sha256": "22fe0700e2e4390db0a6f0ad8e47bd486de347b795589b42f58d2ca3e16a8d00",
+      "dependency_order": 22
+    },
+    {
+      "table": "container_template_source_bindings",
+      "path": "tables/container_template_source_bindings.json",
+      "record_count": 72,
+      "sha256": "4687d516eb0906de6b328f583e3e5bc531166cbea514cc80db993e33a3abc843",
+      "dependency_order": 23
+    },
+    {
+      "table": "g4_materialization_profiles",
+      "path": "tables/g4_materialization_profiles.json",
+      "record_count": 9,
+      "sha256": "409926d375c554543b6ecd6547e5b3625abd7df32ef6e27021667c8c49561e7c",
+      "dependency_order": 24
+    },
+    {
+      "table": "item_profile_entries",
+      "path": "tables/item_profile_entries.json",
+      "record_count": 102,
+      "sha256": "96e92db04f612905f6c4d21d460884d2d54e105a6953e591cec8188457a18fbe",
+      "dependency_order": 25
+    },
+    {
+      "table": "item_template_category_bindings",
+      "path": "tables/item_template_category_bindings.json",
+      "record_count": 842,
+      "sha256": "045de24be179c502ff5a086a0a4c623d662f2b235cd419a96bf1745073140771",
+      "dependency_order": 26
+    },
+    {
+      "table": "item_template_inventory_profiles",
+      "path": "tables/item_template_inventory_profiles.json",
+      "record_count": 102,
+      "sha256": "ccc5bb3adef224cecfc88c762c9121d5d5057a5c8bf22cadef59632cda1edd12",
+      "dependency_order": 27
+    },
+    {
+      "table": "item_template_quantity_profiles",
+      "path": "tables/item_template_quantity_profiles.json",
+      "record_count": 102,
+      "sha256": "6604af0c5eff5c60d527e229c25d2a169804152fcc9f11db349aecda436eb50a",
+      "dependency_order": 28
+    },
+    {
+      "table": "item_template_source_bindings",
+      "path": "tables/item_template_source_bindings.json",
+      "record_count": 408,
+      "sha256": "2d9461b71873b811f45fac1160212aed863c3ebe9c9e4a0c19b30eaac7851292",
+      "dependency_order": 29
+    },
+    {
+      "table": "property_profile_rules",
+      "path": "tables/property_profile_rules.json",
+      "record_count": 19,
+      "sha256": "c10a811ba4e21fc87bc977b35935f5de4c9ced2c466ba83184211d5015a14b82",
+      "dependency_order": 30
+    },
+    {
+      "table": "region_equipment_profile_entries",
+      "path": "tables/region_equipment_profile_entries.json",
+      "record_count": 1,
+      "sha256": "dd8b179d060f9842dc08348e5f974ea5b64ddf01cb71676a053bba91df96e219",
+      "dependency_order": 31
+    },
+    {
+      "table": "container_content_profile_entries",
+      "path": "tables/container_content_profile_entries.json",
+      "record_count": 4,
+      "sha256": "0757b989678b53fc0b9acca1c41188d4262ea586eb88a23e0e144d1d484c5b7d",
+      "dependency_order": 32
+    },
+    {
+      "table": "g4_materialization_bindings",
+      "path": "tables/g4_materialization_bindings.json",
+      "record_count": 9,
+      "sha256": "ad64c52fd7130b9bf25bfb1a9d5b7c1dc10d8fadcfabac30e47e461d231bd6d0",
+      "dependency_order": 33
+    },
+    {
+      "table": "g4_materialization_layout_edges",
+      "path": "tables/g4_materialization_layout_edges.json",
+      "record_count": 18,
+      "sha256": "d531f3a6d4a790cb057c4fed8b880607f94c4b9681a19357226b78d7145a9ff0",
+      "dependency_order": 34
+    },
+    {
+      "table": "materialization_slot_rules",
+      "path": "tables/materialization_slot_rules.json",
+      "record_count": 48,
+      "sha256": "534e1466127183d648065adb6a99126971bce51cde2b9938832832f4f6e07230",
+      "dependency_order": 35
+    },
+    {
+      "table": "g4_container_materialization_rules",
+      "path": "tables/g4_container_materialization_rules.json",
+      "record_count": 18,
+      "sha256": "d265782d9ec6dc7f50e9cd5a15b1a4a8b8ba26d2ecbd48f95c6838856f73d048",
+      "dependency_order": 36
+    },
+    {
+      "table": "g4_item_materialization_rules",
+      "path": "tables/g4_item_materialization_rules.json",
+      "record_count": 9,
+      "sha256": "1ae618dc65cda48393ae01d7fae01288f94f07bf7c9caba5c0a308d502611d73",
+      "dependency_order": 37
+    },
+    {
+      "table": "record_sources",
+      "path": "tables/record_sources.json",
+      "record_count": 15,
+      "sha256": "de1c8a008a9c695cd6a163c6e3394738a5c7fe1984e892c1031da447e7ade369",
+      "dependency_order": 38
+    }
+  ],
+  "candidate_digest": "e3bddda4b31cdbb91d430254db5e6f2d34a8d9d0a08e5f7e4c1e1d6cb9832a24"
+}

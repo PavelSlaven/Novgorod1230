@@ -1,0 +1,30 @@
+{
+  "schema_version": "rus.legacy_item_classification_inventory.v1",
+  "source": {
+    "kind": "operator_database",
+    "verified": true,
+    "identity": {
+      "database": "world_db",
+      "database_user": "world_admin",
+      "server_version": "16.14 (Debian 16.14-1.pgdg13+1)",
+      "schema": "world_base",
+      "container": "world-base-postgres-1",
+      "table_availability": {
+        "item_templates": true,
+        "container_templates": false
+      }
+    }
+  },
+  "exported_at": "2026-07-22T20:55:30.2889883Z",
+  "complete": true,
+  "source_snapshot_digest": "94e7062acbdab90f2bb012e4122a46c95a5df0871cb3b4f891e9b7f66d0d9256",
+  "legacy_field_row_count": 0,
+  "resolution_counts": {
+    "mapped": 0,
+    "data_gap": 0,
+    "migration_conflict": 0,
+    "deferred": 0
+  },
+  "rows": [],
+  "issues": []
+}

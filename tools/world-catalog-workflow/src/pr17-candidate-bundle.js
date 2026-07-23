@@ -1,4 +1,4 @@
-import spatialSchema from '../../../schemas/materialization/pr17-spatial-records-v1.schema.json' with { type: 'json' };
+import spatialSchema from './internal/pr17-spatial-records-v1.schema.json' with { type: 'json' };
 import { digestValue } from './digest.js';
 import {
   MATERIALIZATION_AUTHORING_TABLES,
@@ -56,7 +56,7 @@ export function validatePr17ItemContainerCandidateBundle({ manifest, records_by_
   const readiness = reports.editorial_readiness;
   if (readiness?.approval_cohort_ready !== true || readiness?.summary?.ready_for_editorial_approval_count !== 120) errors.push('CANDIDATE_EDITORIAL_READINESS_INCOMPLETE');
   const coverage = reports.g4_coverage;
-  if (coverage?.pass !== true || coverage?.summary?.g4_count !== 9332 || coverage?.summary?.resolved_profile_count !== 9332 || coverage?.summary?.ambiguous_binding_count !== 0 || coverage?.summary?.unapproved_dependency_count !== 0) errors.push('CANDIDATE_G4_COVERAGE_INCOMPLETE');
+  if (coverage?.pass !== true || coverage?.summary?.g4_count !== 9 || coverage?.summary?.resolved_profile_count !== 9 || coverage?.summary?.runtime_accessible_g4_count !== 9 || coverage?.summary?.ambiguous_binding_count !== 0 || coverage?.summary?.missing_profile_count !== 0 || coverage?.summary?.unapproved_dependency_count !== 0) errors.push('CANDIDATE_G4_COVERAGE_INCOMPLETE');
   const compilation = reports.compilation;
   if (compilation?.pass !== true || compilation?.candidate_digest !== manifest?.candidate_digest || compilation?.activation_performed !== false) errors.push('CANDIDATE_COMPILATION_REPORT_INVALID');
   return deepFreeze({ pass: errors.length === 0, errors: [...new Set(errors)].sort(), candidate_digest: manifest?.candidate_digest ?? null });

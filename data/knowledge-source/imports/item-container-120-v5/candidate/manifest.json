@@ -25,8 +25,8 @@
     {
       "table": "building_templates",
       "path": "tables/building_templates.json",
-      "record_count": 10,
-      "sha256": "1718722fcd4bb341e6d3fb9721875ad37ac89780d199eabf35bf7ad88ec1c042",
+      "record_count": 9,
+      "sha256": "88f4d837f3f2089558587bccfa960f4578ec0a12a0f790883988ad18ba2cc008",
       "dependency_order": 0
     },
     {
@@ -67,8 +67,8 @@
     {
       "table": "building_layout_templates",
       "path": "tables/building_layout_templates.json",
-      "record_count": 10,
-      "sha256": "111f8a289ddaedbfdc888b2cf2ffaf942f8dd754ec738d79d5d89ce7cbdced5c",
+      "record_count": 9,
+      "sha256": "a6f1f52306f6d877cbe5ef76ad3cd28dd97fe949b74883539ea0961eb55f3b52",
       "dependency_order": 6
     },
     {
@@ -95,22 +95,22 @@
     {
       "table": "g5_anchor_templates",
       "path": "tables/g5_anchor_templates.json",
-      "record_count": 30,
-      "sha256": "f0272f328b7532ed559d8cbd0b9b2f17a99d6a791e7e478b6ba50e2392302431",
+      "record_count": 27,
+      "sha256": "4cfde51fc38bc1ca86f2b59f40904811af720011ca570a094c21b34145781387",
       "dependency_order": 10
     },
     {
       "table": "g5_edge_templates",
       "path": "tables/g5_edge_templates.json",
-      "record_count": 10,
-      "sha256": "87bb402be524aad5733bb1344eda41e73a8204f81711627633aa73adf4bb21ee",
+      "record_count": 9,
+      "sha256": "520433963c0aa47481cef4fe680d9d88c4d71bb3d6aae89a4b2379fc7f47c61c",
       "dependency_order": 11
     },
     {
       "table": "g5_minilocation_templates",
       "path": "tables/g5_minilocation_templates.json",
-      "record_count": 10,
-      "sha256": "0e64144d05da5bc9910586b8ebe134000444ade4c2ca8f2be26c10440de3a167",
+      "record_count": 9,
+      "sha256": "784bc0044f01415496d4a2758edb5ef8d2887aafc26a41a2e050ff75d2ef9266",
       "dependency_order": 12
     },
     {
@@ -144,8 +144,8 @@
     {
       "table": "room_templates",
       "path": "tables/room_templates.json",
-      "record_count": 10,
-      "sha256": "35d06174da4cabb9662dfd009f83957462ea6531db0cae06b3862c5a5b2603dc",
+      "record_count": 9,
+      "sha256": "ba3cdca86b9a2ddfa4a90987426c68e934afb0933928fc72e4210bc29f046bc9",
       "dependency_order": 17
     },
     {
@@ -158,8 +158,8 @@
     {
       "table": "building_layout_nodes",
       "path": "tables/building_layout_nodes.json",
-      "record_count": 10,
-      "sha256": "ac69728a98bcf6303cde24145f658a54916323acae21aac7a1d326bc0b7c5b9d",
+      "record_count": 9,
+      "sha256": "6a4ddd7703136c0454c4eb977bf0ced3851c06ea3034988b8e73a1a998bffb5a",
       "dependency_order": 19
     },
     {
@@ -193,8 +193,8 @@
     {
       "table": "g4_materialization_profiles",
       "path": "tables/g4_materialization_profiles.json",
-      "record_count": 10,
-      "sha256": "d05e0d1160fdf4e9c6c5305cbc704dc202095926212c76ace834dc5677028ae6",
+      "record_count": 9,
+      "sha256": "409926d375c554543b6ecd6547e5b3625abd7df32ef6e27021667c8c49561e7c",
       "dependency_order": 24
     },
     {
@@ -256,22 +256,22 @@
     {
       "table": "g4_materialization_bindings",
       "path": "tables/g4_materialization_bindings.json",
-      "record_count": 10,
-      "sha256": "1ea1bd1e1377cc99ac960e3a7d32d4117f8ad1ec9f362f40f07dc185077d21be",
+      "record_count": 9,
+      "sha256": "ad64c52fd7130b9bf25bfb1a9d5b7c1dc10d8fadcfabac30e47e461d231bd6d0",
       "dependency_order": 33
     },
     {
       "table": "g4_materialization_layout_edges",
       "path": "tables/g4_materialization_layout_edges.json",
-      "record_count": 20,
-      "sha256": "7586497d7fc6aace3e68ca62472609a52c4e7cfdd50bf1aef4126d91b0533d49",
+      "record_count": 18,
+      "sha256": "d531f3a6d4a790cb057c4fed8b880607f94c4b9681a19357226b78d7145a9ff0",
       "dependency_order": 34
     },
     {
       "table": "materialization_slot_rules",
       "path": "tables/materialization_slot_rules.json",
-      "record_count": 52,
-      "sha256": "d98658101a7a778d0ec5a617d0b7ccd520203e501d2d92beeb521c48f921385a",
+      "record_count": 48,
+      "sha256": "534e1466127183d648065adb6a99126971bce51cde2b9938832832f4f6e07230",
       "dependency_order": 35
     },
     {
@@ -296,5 +296,5 @@
       "dependency_order": 38
     }
   ],
-  "candidate_digest": "d55b4e8a7ac44340301f89dbb2d1cc9dca13d5761fdad92afb11a599af29745e"
+  "candidate_digest": "e3bddda4b31cdbb91d430254db5e6f2d34a8d9d0a08e5f7e4c1e1d6cb9832a24"
 }

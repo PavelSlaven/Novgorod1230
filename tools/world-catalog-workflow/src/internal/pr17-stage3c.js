@@ -1,5 +1,5 @@
-import { buildAllTemplateRevisionPromotionPlan } from './all-template-promotion.js';
-import { digestValue } from './digest.js';
+import { buildAllTemplateRevisionPromotionPlan } from '../all-template-promotion.js';
+import { digestValue } from '../digest.js';
 
 export function buildPr17Stage3CApprovalRequest({ candidate_manifest: manifest, records_by_table: records = {}, editorial_readiness_report: readiness, g4_coverage_report: coverage, compilation_report: compilation, template_ids: templateIds = [], target_revision: targetRevision } = {}) {
   const errors = [];
@@ -23,7 +23,7 @@ export function buildPr17Stage3CApprovalRequest({ candidate_manifest: manifest, 
     if (!Array.isArray(rows) || rows.length !== dataset.record_count || digestValue(rows) !== dataset.sha256) errors.push(problem('PR17_CANDIDATE_DATASET_MISMATCH', `Candidate dataset ${dataset.table} does not match its exact manifest count and digest.`));
   }
   if (readiness?.approval_cohort_ready !== true || readiness?.summary?.ready_for_editorial_approval_count !== 120 || readiness?.report_digest !== digestValue((({ report_digest, ...core }) => core)(readiness ?? {}))) errors.push(problem('PR17_READINESS_REPORT_INVALID', 'The exact 120/120 editorial readiness report is required.'));
-  if (coverage?.pass !== true || coverage?.summary?.g4_count !== 9332 || coverage?.summary?.resolved_profile_count !== 9332 || coverage?.summary?.ambiguous_binding_count !== 0 || coverage?.summary?.missing_required_slot_count !== 0 || coverage?.summary?.draft_dependency_rule_count !== 0 || coverage?.summary?.unapproved_dependency_count !== 0) errors.push(problem('PR17_G4_COVERAGE_REPORT_INVALID', 'The exact zero-gap 9,332-G4 coverage report is required.'));
+  if (coverage?.pass !== true || coverage?.summary?.g4_count !== 9 || coverage?.summary?.resolved_profile_count !== 9 || coverage?.summary?.runtime_accessible_g4_count !== 9 || coverage?.summary?.ambiguous_binding_count !== 0 || coverage?.summary?.missing_profile_count !== 0 || coverage?.summary?.missing_required_slot_count !== 0 || coverage?.summary?.draft_dependency_rule_count !== 0 || coverage?.summary?.unapproved_dependency_count !== 0) errors.push(problem('PR17_G4_COVERAGE_REPORT_INVALID', 'The exact zero-gap 9/9 approved runtime-G4 coverage report is required.'));
   if (compilation?.pass !== true || compilation?.candidate_digest !== manifest?.candidate_digest || compilation?.coverage_report_digest !== digestValue(coverage) || compilation?.activation_performed !== false || compilation?.graph_node_status_transitions?.length !== 9) errors.push(problem('PR17_COMPILATION_REPORT_INVALID', 'The exact non-activating compilation report with nine G4 transitions is required.'));
   if (ids.length !== 120 || new Set(ids).size !== 120) errors.push(problem('PR17_APPROVAL_COHORT_INVALID', 'The approval request must contain exactly 120 unique template IDs.'));
   if (!targetRevision?.id || !targetRevision?.title) errors.push(problem('PR17_TARGET_REVISION_INVALID', 'The Stage 3C target revision is required.'));

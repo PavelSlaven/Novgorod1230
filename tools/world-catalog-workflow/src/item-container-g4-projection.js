@@ -1,6 +1,5 @@
 import { digestValue } from './digest.js';
 
-const GENERIC_CONTEXT = 'explicit_no_item_container_default';
 const PERIOD_FROM = '1200-01-01';
 const PERIOD_TO = '1250-12-31';
 
@@ -50,14 +49,13 @@ export function compileItemContainerG4Projection(input = {}) {
     if (template.kind === 'container' && !contentProfileByContainer.has(template.id)) errors.push(`CONTAINER_CONTENT_PROFILE_MISSING:${template.id}`);
   }
 
-  const contexts = [genericContext(), ...contextProfiles.map((profile) => ({
+  const contexts = contextProfiles.map((profile) => ({
     key: profile.context_domain,
     source_profile_id: profile.id,
     period_from: profile.period?.from ?? PERIOD_FROM,
     period_to: profile.period?.to ?? PERIOD_TO,
-    mapping: mappingByProfile.get(profile.id),
-    generic: false
-  }))].sort((left, right) => left.key.localeCompare(right.key));
+    mapping: mappingByProfile.get(profile.id)
+  })).sort((left, right) => left.key.localeCompare(right.key));
 
   const records = emptyRecords();
   records.universal_categories.push(...baseCategories());
@@ -182,11 +180,9 @@ function appendSpatialContext(records, { context, worldRevisionId, regionId, tem
   records.g4_materialization_profiles.push({ id: profileId, world_revision_id: worldRevisionId, region_id: regionId, layout_template_id: layoutId, maximum_g5_nodes: 1, player_start_anchor_slot_key: 'anchor_start', visibility_model: visibilityModel(context), access_model: accessModel(context), status: 'approved', valid_from: context.period_from, valid_to: context.period_to, confidence: mapping?.confidence ?? 'medium' });
   records.g4_materialization_bindings.push({
     id: `binding_${key}_v1`, profile_id: profileId,
-    ...(context.generic ? { node_type: 'location' } : { graph_node_id: mapping?.graph_node_id }),
-    priority: context.generic ? 0 : 100,
-    applicability: context.generic
-      ? { version: 1, item_container_policy: 'none', required_rule_domains: [], context_profile_ids: [], reason: 'explicit_default_without_item_or_container_inference' }
-      : { version: 1, item_container_policy: 'rules_only', required_rule_domains: requiredDomains(itemCount, containerCount), context_profile_ids: [context.source_profile_id], causal_basis_type: mapping?.causal_basis_type, causal_basis_id: mapping?.causal_basis_id },
+    graph_node_id: mapping?.graph_node_id,
+    priority: 100,
+    applicability: { version: 1, item_container_policy: 'rules_only', required_rule_domains: requiredDomains(itemCount, containerCount), context_profile_ids: [context.source_profile_id], causal_basis_type: mapping?.causal_basis_type, causal_basis_id: mapping?.causal_basis_id },
     status: 'approved', valid_from: context.period_from, valid_to: context.period_to, confidence: mapping?.confidence ?? 'medium'
   });
   records.materialization_slot_rules.push(
@@ -237,7 +233,6 @@ function applicability(profile, mapping) {
 function requiredDomains(itemCount, containerCount) { return [...(itemCount > 0 ? ['item'] : []), ...(containerCount > 0 ? ['container'] : [])]; }
 function visibilityModel(context) { return { version: 1, mode: 'authored', context_domain: context.key, default: 'visible_if_accessible' }; }
 function accessModel(context) { return { version: 1, mode: 'explicit_context_policy', context_domain: context.key, access_state: 'open', traversal_permission: true, fallback: 'deny' }; }
-function genericContext() { return { key: GENERIC_CONTEXT, source_profile_id: null, period_from: PERIOD_FROM, period_to: PERIOD_TO, mapping: null, generic: true }; }
 function emptyRecords() { return { universal_categories: [], building_templates: [], room_templates: [], building_layout_templates: [], building_layout_nodes: [], building_layout_edges: [], g5_minilocation_templates: [], g5_anchor_templates: [], g5_edge_templates: [], g4_materialization_profiles: [], g4_materialization_bindings: [], materialization_slot_rules: [], g4_materialization_layout_edges: [], item_profile_sets: [], item_profile_entries: [], property_profiles: [], property_profile_rules: [], g4_item_materialization_rules: [], g4_container_materialization_rules: [] }; }
 function required(value, error, errors) { if (!nonEmpty(value)) errors.push(error); return value ?? ''; }
 function sorted(values, key = 'id') { return [...(values ?? [])].sort((left, right) => String(left?.[key] ?? '').localeCompare(String(right?.[key] ?? ''))); }

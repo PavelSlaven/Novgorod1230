@@ -79,7 +79,7 @@ export function buildApprovedItemCatalogSnapshot({ records_by_table: records = {
       visibility_state: { visibility: 'visible_if_accessible', visible_to_player: false },
       access_state: { access: 'context_policy', policy: structuredClone(property.access_model) },
       risk_state: { legal_risk: 'context_dependent', social_risk: 'context_dependent' },
-      physical_state: { mass_grams_per_unit: quantity.mass_grams_per_unit, external_hand_cost: inventory.external_hand_cost, carry_form: inventory.carry_form, condition, size_band: sizeBinding.category_id, material_category_id: materials[0], approved_material_category_ids: materials, approved_construction_category_ids: constructions },
+      physical_state: { mass_grams_per_unit: positiveNumber(quantity.mass_grams_per_unit, 'RUNTIME_QUANTITY_UNIT_MASS_INVALID', quantity.id), external_hand_cost: inventory.external_hand_cost, carry_form: inventory.carry_form, condition, size_band: sizeBinding.category_id, material_category_id: materials[0], approved_material_category_ids: materials, approved_construction_category_ids: constructions },
       packing_slot_cost: sizeBinding.packing_slot_cost,
       packing_bundle_size: sizeBinding.packing_bundle_size,
       variant_selection: { mode: 'deterministic_from_approved_bindings', selected_material_category_id: materials[0], candidate_material_category_ids: materials },
@@ -210,7 +210,7 @@ export function buildAllowedG5TemplateSet({ records_by_table: records = {}, grap
   return deepFreeze({ ...core, catalog_digest: digestValue(core) });
 }
 
-function quantityRequirement(record) { return { quantity_requirement_id: record.id, item_template_id: record.item_template_id, world_revision_id: record.world_revision_id, quantity_unit_id: record.quantity_unit_id, quantity_dimension: record.quantity_dimension, minimum_quantity: record.minimum_quantity, maximum_quantity: record.maximum_quantity, default_quantity_policy: structuredClone(record.default_quantity_policy), mass_grams_per_unit: record.mass_grams_per_unit, stackable: record.stackable, partial_consumption_allowed: record.partial_consumption_allowed, status: 'approved' }; }
+function quantityRequirement(record) { return { quantity_requirement_id: record.id, item_template_id: record.item_template_id, world_revision_id: record.world_revision_id, quantity_unit_id: record.quantity_unit_id, quantity_dimension: record.quantity_dimension, minimum_quantity: record.minimum_quantity, maximum_quantity: record.maximum_quantity, default_quantity_policy: structuredClone(record.default_quantity_policy), mass_grams_per_unit: positiveNumber(record.mass_grams_per_unit, 'RUNTIME_QUANTITY_UNIT_MASS_INVALID', record.id), stackable: record.stackable, partial_consumption_allowed: record.partial_consumption_allowed, status: 'approved' }; }
 function propertyState(property) { return { property_rule_candidate_id: property.property_rule_candidate_id, owner_model: property.owner_model, holder_model: property.holder_model, controller_model: property.controller_model }; }
 function sourceTrace(record) { return { source_id: record.source_id, binding_id: record.id, claim_scope: record.claim_scope }; }
 function runtimeNode(record) { return { template_id: record.id, status: record.status, capacity: record.capacity, access_policy: structuredClone(record.access_policy), visibility_policy: structuredClone(record.visibility_policy), initial_state: structuredClone(record.initial_state) }; }
@@ -228,6 +228,7 @@ function approvedRevisionMap(values = [], worldRevisionId) { return new Map(appr
 function indexBy(values = [], key, requireApproved = false) { const map = new Map(); for (const record of values) if ((!requireApproved || record.status === 'approved') && record[key]) { if (map.has(record[key])) fail('RUNTIME_DEPENDENCY_AMBIGUOUS', `${key}:${record[key]}`); map.set(record[key], record); } return map; }
 function groupBy(values = [], key) { const map = new Map(); for (const record of values) { const list = map.get(record[key]) ?? []; list.push(record); map.set(record[key], list); } return map; }
 function year(value, fallback) { return typeof value === 'string' && /^\d{4}/u.test(value) ? Number(value.slice(0, 4)) : fallback; }
+function positiveNumber(value, code, id) { const number = Number(value); if (!Number.isFinite(number) || number <= 0) fail(code, id); return number; }
 function requireDigest(value) { if (!/^[a-f0-9]{64}$/u.test(String(value ?? ''))) fail('RUNTIME_SOURCE_CATALOG_DIGEST_INVALID', value); }
 function requireApprovedRevision(values, worldRevisionId, catalogDigest) {
   requireDigest(catalogDigest);

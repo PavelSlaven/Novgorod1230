@@ -45,23 +45,6 @@
     "confidence": "medium"
   },
   {
-    "id": "binding_explicit_no_item_container_default_v1",
-    "profile_id": "g4_profile_explicit_no_item_container_default_v1",
-    "node_type": "location",
-    "priority": 0,
-    "applicability": {
-      "version": 1,
-      "item_container_policy": "none",
-      "required_rule_domains": [],
-      "context_profile_ids": [],
-      "reason": "explicit_default_without_item_or_container_inference"
-    },
-    "status": "approved",
-    "valid_from": "1200-01-01",
-    "valid_to": "1250-12-31",
-    "confidence": "medium"
-  },
-  {
     "id": "binding_fishing_v1",
     "profile_id": "g4_profile_fishing_v1",
     "graph_node_id": "gn_nov_g1_03_04_g4_007_novgorodskaya_pristan_na_volhove_04_boat_shelter",

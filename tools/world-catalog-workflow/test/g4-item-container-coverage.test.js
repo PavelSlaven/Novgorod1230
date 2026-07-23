@@ -42,13 +42,13 @@ test('G4 binding resolution rejects equal-priority ambiguity at the same specifi
   assert.deepEqual(result.binding_ids, ['binding-a', 'binding-b']);
 });
 
-test('coverage reports every imported G4 while excluding draft nodes from approved rule closure', () => {
+test('coverage reports only runtime-approved G4 and hard-blocks a new approved G4 without an exact binding', () => {
   const records = {
     world_revisions: [{ id: 'revision-1', ...approved }],
-    building_templates: [{ id: 'building-generic', ...approved }, { id: 'building-house', ...approved }],
-    building_layout_templates: [{ id: 'layout-generic', building_template_id: 'building-generic', ...approved }, { id: 'layout-house', building_template_id: 'building-house', ...approved }],
-    g5_minilocation_templates: [{ id: 'g5-node-generic', ...approved }, { id: 'g5-node-house', ...approved }],
-    g5_anchor_templates: [{ id: 'g5-anchor-generic', ...approved }, { id: 'g5-anchor-house', ...approved }],
+    building_templates: [{ id: 'building-house', ...approved }],
+    building_layout_templates: [{ id: 'layout-house', building_template_id: 'building-house', ...approved }],
+    g5_minilocation_templates: [{ id: 'g5-node-house', ...approved }],
+    g5_anchor_templates: [{ id: 'g5-anchor-house', ...approved }],
     item_profile_sets: [{ id: 'profile_household_personal_v3', ...approved }],
     container_templates: [{ id: 'container-1', ...approved }],
     graph_nodes: [
@@ -56,16 +56,12 @@ test('coverage reports every imported G4 while excluding draft nodes from approv
       { id: 'g4-draft', scale_level: 'G4', node_type: 'location', place_template_id: 'pt-village', status: 'draft' }
     ],
     g4_materialization_profiles: [
-      { id: 'profile-generic', world_revision_id: 'revision-1', layout_template_id: 'layout-generic', ...approved },
       { id: 'profile-household', world_revision_id: 'revision-1', layout_template_id: 'layout-house', ...approved }
     ],
     g4_materialization_bindings: [
-      { id: 'binding-generic', profile_id: 'profile-generic', node_type: 'location', priority: 0, applicability: { item_container_policy: 'none' }, ...approved },
       { id: 'binding-household', profile_id: 'profile-household', graph_node_id: 'g4-household', priority: 100, applicability: { item_container_policy: 'rules_only', context_profile_ids: ['profile_household_personal_v3'] }, ...approved }
     ],
     materialization_slot_rules: [
-      { id: 'generic-node', profile_id: 'profile-generic', slot_key: 'main', slot_domain: 'g5_node', g5_minilocation_template_id: 'g5-node-generic', required: true, min_count: 1, max_count: 1, ...approved },
-      { id: 'generic-anchor', profile_id: 'profile-generic', slot_key: 'entry', slot_domain: 'anchor', g5_anchor_template_id: 'g5-anchor-generic', required: true, min_count: 1, max_count: 1, ...approved },
       { id: 'house-node', profile_id: 'profile-household', slot_key: 'main', slot_domain: 'g5_node', g5_minilocation_template_id: 'g5-node-house', required: true, min_count: 1, max_count: 1, ...approved },
       { id: 'house-anchor', profile_id: 'profile-household', slot_key: 'entry', slot_domain: 'anchor', g5_anchor_template_id: 'g5-anchor-house', required: true, min_count: 1, max_count: 1, ...approved },
       { id: 'house-item', profile_id: 'profile-household', slot_key: 'items', slot_domain: 'item', required: false, min_count: 0, max_count: 20, ...approved },
@@ -81,20 +77,28 @@ test('coverage reports every imported G4 while excluding draft nodes from approv
 
   const report = buildG4ItemContainerCoverageReport(records);
 
-  assert.equal(report.summary.g4_count, 2);
-  assert.equal(report.summary.resolved_profile_count, 2);
+  assert.equal(report.summary.g4_count, 1);
+  assert.equal(report.summary.resolved_profile_count, 1);
   assert.equal(report.summary.runtime_accessible_g4_count, 1);
   assert.equal(report.summary.ambiguous_binding_count, 0);
   assert.equal(report.summary.missing_required_slot_count, 0);
   assert.equal(report.summary.draft_dependency_rule_count, 0);
   assert.equal(report.pass, true);
-  assert.equal(report.entries.find((entry) => entry.graph_node_id === 'g4-draft').item_container_policy, 'none');
+  assert.equal(report.entries.some((entry) => entry.graph_node_id === 'g4-draft'), false);
+
+  const missingBinding = structuredClone(records);
+  missingBinding.graph_nodes.push({ id: 'g4-new-approved', scale_level: 'G4', node_type: 'location', place_template_id: 'pt-new', ...approved });
+  const missingBindingReport = buildG4ItemContainerCoverageReport(missingBinding);
+  assert.equal(missingBindingReport.pass, false);
+  assert.equal(missingBindingReport.summary.g4_count, 2);
+  assert.equal(missingBindingReport.summary.missing_profile_count, 1);
+  assert.equal(missingBindingReport.concerns.some((entry) => entry.code === 'G4_MATERIALIZATION_BINDING_MISSING' && entry.graph_node_id === 'g4-new-approved'), true);
 
   const invalid = structuredClone(records);
   invalid.g4_item_materialization_rules.push({
     id: 'draft-item-rule',
     graph_node_id: 'g4-draft',
-    slot_rule_id: 'generic-anchor',
+    slot_rule_id: 'house-item',
     item_profile_id: 'profile_household_personal_v3',
     causal_basis_type: 'functional_place_context',
     causal_basis_id: 'invented',
@@ -109,6 +113,6 @@ test('coverage reports every imported G4 while excluding draft nodes from approv
   draftDependency.world_revisions[0].status = 'draft';
   const draftDependencyReport = buildG4ItemContainerCoverageReport(draftDependency);
   assert.equal(draftDependencyReport.pass, false);
-  assert.equal(draftDependencyReport.summary.unapproved_dependency_count, 2);
+  assert.equal(draftDependencyReport.summary.unapproved_dependency_count, 1);
   assert.equal(draftDependencyReport.concerns.some((entry) => entry.dependency_type === 'world_revision'), true);
 });

@@ -14,7 +14,7 @@
 - `validateItemContainerClassificationCatalog`, `assessItemContainerClassificationMigration` и `assessItemContainerClassificationReadiness`: normalised facets, compatibility, typed legacy gaps/conflicts и required profile/G4 rule;
 - чистой `calculatePackingSlots({ quantity, packing_slot_cost, packing_bundle_size })` без доступа к БД, файлам, глобальному состоянию, массы или fallback;
 - `validateSupplementalCatalogBundle` и `applySupplementalCatalogBundle`: draft-only manifest, canonical SHA-256, table registry, local/external FK, XOR и injected transaction adapter с readback digest/count и rollback.
-- Stage 3C contracts: `buildCatalogEditorialReadinessReport`, evidence/approval plans, verified legacy inventory, exact PR17 approval request и all-120-only revision promotion/rollback with atomic G4 status transitions and without activation.
+- Stage 3C contracts: `buildCatalogEditorialReadinessReport`, evidence/approval plans, verified legacy inventory и all-120-only revision promotion/rollback with atomic G4 status transitions and without activation.
 
 ## Публичные интерфейсы
 
@@ -24,9 +24,11 @@
 | classification | `validateCatalogImportManifest`, `validateClassificationCatalog`, `importClassificationCatalog` | manifest + records + injected transaction adapter → validation/dry-run/apply result без semantic repair |
 | item/container | `validateItemContainerClassificationCatalog`, `assessItemContainerClassificationMigration`, `assessItemContainerClassificationReadiness`, `calculatePackingSlots` | normalised records/legacy inventory → errors, typed gaps/conflicts/readiness или exact packing count |
 | supplemental | `SUPPLEMENTAL_AUTHORING_TABLES`, `supplementalDigest`, `validateSupplementalCatalogBundle`, `applySupplementalCatalogBundle` | draft manifest + datasets + declared external IDs → deterministic validation или transactional adapter result |
-| Stage 3C readiness/promotion | `LEGACY_CLASSIFICATION_FIELD_REGISTRY`, `flattenLegacyRows`, `buildLegacyClassificationInventory`, `buildCatalogEditorialReadinessReport`, `buildEditorialEvidenceReviewPlan`, `buildCoherentEditorialApprovalPlan`, `buildPr17Stage3CApprovalRequest`, `buildPr17Stage3CPromotionPlan`, `buildRevisionPromotionPlan`, `buildAllTemplateRevisionPromotionPlan`, `validateApprovedDependencyClosure`, `applyRevisionPromotionPlan`, `buildRevisionRollbackPlan` | verified operator export + exact candidate/coverage digests + all-120 attestation → typed readiness/blocked plan или revision-pinned transactional promotion with exact G4 transitions and without activation |
+| Stage 3C readiness/promotion | `LEGACY_CLASSIFICATION_FIELD_REGISTRY`, `flattenLegacyRows`, `buildLegacyClassificationInventory`, `buildCatalogEditorialReadinessReport`, `buildEditorialEvidenceReviewPlan`, `buildCoherentEditorialApprovalPlan`, `buildRevisionPromotionPlan`, `buildAllTemplateRevisionPromotionPlan`, `validateApprovedDependencyClosure`, `applyRevisionPromotionPlan`, `buildRevisionRollbackPlan` | verified operator export + exact candidate/coverage digests + all-120 attestation → typed readiness/blocked plan или revision-pinned transactional promotion with exact G4 transitions and without activation |
 
 `validateSupplementalCatalogBundle` и `applySupplementalCatalogBundle` никогда не переводят `draft` records в `approved`, не активируют revision и не создают party/runtime candidates. Детали всех входов, результатов, ошибок и test cases приведены в [CONTRACTS.md](CONTRACTS.md).
+
+PR17-specific `buildPr17Stage3CApprovalRequest`, `buildPr17Stage3CPromotionPlan` и их spatial JSON Schema находятся в `src/internal/`. Это immutable migration tooling для единственного PR17 lifecycle: оно не экспортируется package entrypoint и не является постоянным публичным контрактом модуля.
 
 ## Внешние зависимости и побочные эффекты
 

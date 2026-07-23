@@ -1,7 +1,7 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
-import { buildPr17Stage3CApprovalRequest } from '../tools/world-catalog-workflow/src/index.js';
+import { buildPr17Stage3CApprovalRequest } from '../tools/world-catalog-workflow/src/internal/pr17-stage3c.js';
 
 const root = resolve(import.meta.dirname, '..');
 const candidateRoot = resolve(root, 'data/knowledge-source/imports/item-container-120-v5/candidate');

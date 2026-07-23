@@ -38,7 +38,7 @@ export function resolveG4MaterializationBinding({ graph_node: graphNode, binding
 
 export function buildG4ItemContainerCoverageReport(recordsByTable = {}) {
   const graphNodes = [...(recordsByTable.graph_nodes ?? [])]
-    .filter((record) => record?.scale_level === 'G4')
+    .filter((record) => record?.scale_level === 'G4' && record.status === 'approved')
     .sort(byId);
   const profiles = new Map((recordsByTable.g4_materialization_profiles ?? []).map((record) => [record.id, record]));
   const revisions = mapById(recordsByTable.world_revisions);

@@ -53,8 +53,13 @@ test('projection compiler deterministically expands approved semantic mappings w
 
   assert.deepEqual(first, second);
   assert.equal(first.errors.length, 0);
-  assert.equal(first.records_by_table.g4_materialization_profiles.length, 2);
-  assert.equal(first.records_by_table.g4_materialization_bindings.length, 2);
+  assert.equal(first.records_by_table.g4_materialization_profiles.length, 1);
+  assert.equal(first.records_by_table.g4_materialization_bindings.length, 1);
+  assert.deepEqual(
+    first.records_by_table.g4_materialization_bindings.map((binding) => binding.graph_node_id),
+    ['g4_craft_yard']
+  );
+  assert.equal(first.records_by_table.g4_materialization_bindings.some((binding) => binding.node_type != null), false);
   assert.equal(first.records_by_table.item_profile_sets.length, 1);
   assert.equal(first.records_by_table.item_profile_entries.length, 1);
   assert.equal(first.records_by_table.g4_item_materialization_rules.length, 1);

@@ -158,7 +158,6 @@ Release: `0.23.0-migration.24`
 | `schemas/materialization/normalized-instance-candidate-v2.schema.json` | json | 3150 | `ccbd9e9d518a8ab4b28e937e6e4eb19b88a26f3ea6eeff89aaf24432dd9a0b1d` |
 | `schemas/materialization/party-autonomous-update-v2.schema.json` | json | 2515 | `974cf66248b18851ac64b2e80522b0207a28f049088318d578ffbc11b8712397` |
 | `schemas/materialization/party-change-set-v2.schema.json` | json | 2816 | `cabbce3e6d6091391cba5b1fa0b6ea09c69f2db6bbed3ac241563171e95b62c1` |
-| `schemas/materialization/pr17-spatial-records-v1.schema.json` | json | 11675 | `5c7cc08f829b29d4f8c919c94596d6f3524f2ce0c8e1934abf105e0a5b58592a` |
 | `schemas/materialization/property-profile-rules-v1.schema.json` | json | 1078 | `fdb63b23c9ffdbbaa9e7562141cc2763ea1538300c5ed79f0b7d8c55604f9c30` |
 | `schemas/materialization/property-profiles-v1.schema.json` | json | 499 | `6cd5d5bdb462d8f4e1a60af1457faaba4c1aa11f9ded629a2cade6ae37adf0cd` |
 | `schemas/materialization/quantity-unit-definitions-v1.schema.json` | json | 790 | `88aa7a168a8c973a32e358d126708eabab81b5bc690db417fc872b7a0f37c186` |

@@ -12,7 +12,7 @@
 - Base branch: `main`.
 - Working branch: `chatgpt/item-container-120-approval-audit`.
 - Pull request: `#17`.
-- PR остаётся draft до завершения локальной интеграции, тестов, PostgreSQL lifecycle и независимого аудита.
+- PR переведён в ready for review; актуальный merge gate указан только в последнем разделе `Актуальный статус`.
 
 Перед локальной работой Codex обязан актуализировать ветку относительно текущего `origin/main` и зафиксировать фактические SHA. Указанный при создании ветки base SHA `8c9e8db9b275e2be9b9e5eb28b59c49e8baef068` не должен использоваться как предположение об актуальном `main`.
 
@@ -91,7 +91,7 @@ V5 включает полную когорту:
 
 Gameplay estimates не объявляются археологическими измерениями. Масса количественных ресурсов вычисляется из quantity. Неизвестная container compatibility запрещается, а не угадывается.
 
-## Что остаётся выполнить Codex
+## Исходный план интеграции (история)
 
 1. Проверить архив и его SHA-256.
 2. Открыть актуальные `AGENTS.md`, `.github/AGENTS.md` и все обязательные профильные нормативы.
@@ -145,14 +145,14 @@ Codex ранее проверял отдельный worktree на HEAD `56f2682
 
 Эти результаты относятся к прежнему HEAD и не подтверждают интеграцию V5. После изменения игровых данных, schemas, generators или contracts обязательные проверки выполняются заново.
 
-## Изменения текущего прохода
+## Изменения исходного handoff-прохода (история)
 
 - README переведён с исходного source-discovery handoff на V5 integration handoff.
 - `CODEX_HANDOFF_PROMPT.md` обновлён для работы с конкретным архивом и его digest.
 - PR description обновляется с точной границей package-local и canonical readiness.
 - Архив, игровые datasets, DDL и runtime-код этим проходом не коммитятся.
 
-## Текущий статус
+## Статус исходного handoff-прохода (история)
 
 ```text
 v5_external_package_received_by_chatgpt = true
@@ -165,7 +165,7 @@ runtime_activation_performed = false
 pr_state = draft
 ```
 
-Текущий технический вывод: `READY_FOR_CODEX_LOCAL_INTEGRATION`, но не `READY_FOR_MERGE`.
+Технический вывод того прохода был `READY_FOR_CODEX_LOCAL_INTEGRATION`, но не `READY_FOR_MERGE`.
 
 ## Обязательный итоговый отчёт Codex
 
@@ -236,7 +236,7 @@ Approval, historical attestation корректно ограничена, operat
 zero-row состоянием, G4 dependency gap подтверждён. Package-local gameplay `PASS`
 остаётся автоматическим результатом пакета, а не человеческим final approval.
 
-Текущий результат: historical review и verified operator legacy input получены;
+Результат того прохода: historical review и verified operator legacy input получены;
 canonical G4/slot dependency closure отсутствует. До появления утверждённого mapping
 для девяти profiles atomic Approval и Stage 3C promotion остаются запрещены.
 
@@ -269,7 +269,11 @@ canonical G4/slot dependency closure отсутствует. До появлен
 этого exact набора его записи остаются только proposal; G5 templates, slot rules,
 concrete item/container rules, PostgreSQL apply и Stage 3C promotion не выполняются.
 
-## Реализация минимальной dependency-проекции — 2026-07-23
+## История реализации минимальной dependency-проекции — 2026-07-23
+
+Весь раздел ниже до `Актуальный статус` описывает прежний кандидат
+`d55b4e8a7ac44340301f89dbb2d1cc9dca13d5761fdad92afb11a599af29745e`.
+Он сохранён как история и не является состоянием текущего рабочего дерева.
 
 Два предыдущих абзаца фиксируют состояние до решения пользователя по
 spatial/materialization gap. Пользователь подтвердил правильный способ закрытия gap:
@@ -467,7 +471,7 @@ existing_parties_rematerialized = false
 Promotion result сохранён в `evidence/STAGE3C_PROMOTION_RESULT.json`. Временный
 container удалён; operator/production database не изменялась.
 
-### Фактически выполненные проверки текущего diff
+### Исторически выполненные проверки кандидата d55b4e8a
 
 ```text
 npm run docs:generate                                              PASS
@@ -504,7 +508,7 @@ supplemental bundle содержит JSON number. Исправлен тольк�
 проходит 25 datasets, repeat apply, rollback и все quantity/source guards.
 Независимый повторный critic дал `PASS`.
 
-### Текущий gate
+### Исторический gate кандидата d55b4e8a
 
 ```text
 historical_review = user_confirmed
@@ -528,7 +532,7 @@ runtime_activation = false
 pr_state = ready_for_review_ci_rerun_pending
 ```
 
-Повторный независимый critic текущего Stage 3C diff дал `PASS`; Standards-аудит —
+Повторный независимый critic прежнего Stage 3C diff дал `PASS`; Standards-аудит —
 `PASS WITH NOTES` без hard violations. Проверены 39-table FK closure и self-reference
 ordering, digest-bound request/attestation, exact 120 IDs, readiness и G4 coverage,
 атомарность и rollback девяти G4 transitions, совместимость прежнего promotion API,
@@ -555,6 +559,155 @@ rollback/apply/readback/repeat против `pr17_clean_stage3c_ci`. Stage 3C р
 совпал с сохранённым promotion evidence; оба временных database container и
 clean-clone удалены.
 
-PR №17 уже переведён из draft в ready for review. Следующий разрешённый порядок:
-финальный evidence commit → push только в существующую ветку PR №17 → успешный
-GitHub CI без merge, activation и rematerialization.
+На том этапе PR №17 был переведён из draft в ready for review. Дальнейшее состояние
+этого кандидата заменено актуальным remediation gate ниже.
+
+## Актуальный статус — remediation после `CHANGES REQUIRED`, 2026-07-23
+
+Единственный актуальный вывод для текущего рабочего дерева:
+`LOCAL_VALIDATION_PASS_AWAITING_INDEPENDENT_CRITIC_AND_CI`.
+Прежние аттестация и PostgreSQL promotion относятся к кандидату `d55b4e8a...` и
+перемещены в `evidence/history/`. Они не переносятся на новый candidate автоматически.
+
+Исправления:
+
+- удалён общий `node_type=location` binding
+  `explicit_no_item_container_default` со всеми синтетическими G5 dependencies;
+- coverage ограничен runtime-доступными `approved` G4 и теперь доказывает ровно
+  `9/9`; новый approved G4 без отдельного approved binding возвращает
+  `G4_MATERIALIZATION_BINDING_MISSING` в coverage и
+  `RUNTIME_G4_BINDING_UNRESOLVED` в runtime loader;
+- PostgreSQL Stage 3C lifecycle расширен обязательным чтением target revision и
+  всех 39 datasets обратно из `world_base`, после чего все девять G4 проходят
+  `buildApprovedItemCatalogSnapshot` → `buildAllowedG5TemplateSet` → Stage 8 →
+  Stage 13 → Stage 14 → Stage 16 → repeat-entry;
+- PR17-specific approval helpers и spatial schema переведены во внутреннее immutable
+  migration tooling (`src/internal/`) и удалены из публичного package entrypoint;
+- старые взаимоисключающие статусы выше явно помечены историей.
+
+Реальный DB-readback E2E последовательно обнаружил и закрыл два ранее невидимых
+integration gaps: Stage 16 должен получать canonical historical frame с
+`calendar.year/season`, а PostgreSQL `NUMERIC mass_grams_per_unit` должен
+преобразовываться runtime loader-ом в конечное положительное число. Для второго
+случая добавлен red/green regression test; неверное значение возвращает
+`RUNTIME_QUANTITY_UNIT_MASS_INVALID`.
+
+Текущие counts:
+
+```text
+item_templates = 102
+container_templates = 18
+cohort_templates = 120
+approved_runtime_g4_coverage = 9/9
+g4_materialization_profiles = 9
+g4_materialization_bindings = 9
+g5_minilocation_templates = 9
+g5_anchor_templates = 27
+g5_edge_templates = 9
+g4_materialization_layout_edges = 18
+materialization_slot_rules = 48
+g4_item_materialization_rules = 9
+g4_container_materialization_rules = 18
+```
+
+Актуальные immutable inputs:
+
+```text
+candidate_digest = e3bddda4b31cdbb91d430254db5e6f2d34a8d9d0a08e5f7e4c1e1d6cb9832a24
+approval_request_digest = 046344b570789b008da8685d0dad3824512d529f9c161a122ecdc59e3cb73771
+readiness_report_digest = b65b9a966c4b07a97cbad30cb09456b63272ae3891607819790f2eff0315dcf6
+g4_coverage_report_digest = 1bee1492cb25f615414f951282a14f3228b892afeda327c7703653df6577e8e0
+approval_attestation_digest = 67baf3e92a2aacde2566a60c13e5a3a2410e3544549f096684d473d8588f18f8
+promotion_manifest_digest = 9daf6cd47e341869ee3c0e2641873a507cc6fb38dcef145f9d33a48843f3ed94
+target_revision_id = world_revision_novgorod_1230_item_container_approved_001
+target_catalog_digest = a24fe55497a8aca018fa28a43ab1f54e26e2f30a5c74931ed2570ab69bc07a87
+activation = not_requested
+existing_parties_rematerialized = false
+```
+
+Текущая среда перед remediation:
+
+```text
+repository_root = C:\Users\Slaven\Documents\Новгород\.tmp-pr17-review
+repository = PavelSlaven/Novgorod1230
+branch = chatgpt/item-container-120-approval-audit
+head_before_remediation = c6279bad5971636adefb68c12c33da4b79b8df80
+origin_main = 8c9e8db9b275e2be9b9e5eb28b59c49e8baef068
+node = v24.16.0
+npm = 11.13.0
+python = 3.13.3
+uv = 0.8.12
+docker = 29.5.3
+docker_compose = v5.1.4
+graphify = 0.9.17
+```
+
+Полностью перечитаны обязательные нормативы: `AGENTS.md`, `.github/AGENTS.md`,
+`development_rules.txt`, `code_critic_invocation_rule.txt`,
+`code_driven_world_materialization_architecture.md`,
+`llm_documentation_navigation.md`, `world_base_materialization_table_requirements.md`,
+`read_only_database_and_graph_architecture.md`, `map_g0_g4_workflow.txt`,
+`G1_SEMANTIC_CATALOG.md`, `SCHEMA_REFERENCE.md`, `items_and_property.txt`,
+`character_inventory_equipment.txt`, `npc_inventory_item_marks.txt` и профильные
+разделы `world_generation_and_turns.txt`.
+
+Выполнены нормативный RAG и Graphify queries:
+
+```text
+Stage 3C promoted target revision PostgreSQL runtime loader Stage 8 Stage 13 Stage 14 Stage 16 repeat entry
+generic node_type location materialization binding fallback G4 coverage typed hard block
+PR17 Stage 3C approval request promotion plan public API internal migration tooling
+```
+
+Фактически выполненные проверки нового кандидата:
+
+```text
+npm run repo-intel:ensure                                           PASS
+npm run repo-intel:status                                           PASS (knowledge-source degraded warning only)
+repo-intel:query + graphify query, три запроса                       PASS
+npm run item-container-120:generate                                 PASS (43 files)
+node --test item-container-g4-projection, g4 coverage,
+  runtime-catalog-loaders, pr17-stage3c-promotion                    24/24 PASS
+npm run item-container-120:stage3c-request                          PASS
+npm run item-container-120:stage3c:dry-run                         PASS
+npm run item-container-120:stage3c:postgres:lifecycle              PASS
+  rollback/apply/readback 39 datasets/repeat clean apply            PASS
+  PostgreSQL readback → Stage 8/13/14/16 → repeat-entry, 9 G4       PASS
+node --test runtime-catalog-loaders                                 12/12 PASS
+npm test                                                            PASS
+  world-catalog                                                     131/131 PASS
+  modules                                                           194/194 PASS
+  shadow                                                            6/6 PASS
+  cutover                                                           4/4 PASS
+  integration                                                       21 PASS, 5 PostgreSQL skips
+  browser E2E                                                       1 skip: Chromium executable absent
+  architecture                                                      PASS
+```
+
+Актуальный gate:
+
+```text
+historical_review = user_confirmed
+canonical_candidate_compiled = true
+canonical_candidate_validated = true
+generic_location_fallback = removed
+approved_runtime_g4_coverage = 9/9
+fresh_approve_all_120_attestation = completed
+stage3c_postgresql_runtime_e2e = PASS
+stage3c_promotion_for_current_candidate = completed_in_isolated_review_database
+full_npm_test = PASS
+independent_critic_for_current_candidate = PASS
+clean_clone_ci_for_current_candidate = pending
+runtime_activation = false
+existing_parties_rematerialized = false
+pr_state = ready_for_review_local_remediation_validated
+merge_ready = false
+```
+
+Независимый critic проверил текущий exact remediation diff, digests, evidence,
+отсутствие generic fallback, coverage `9/9`, PostgreSQL DB-readback runtime E2E,
+internal API boundary и актуальность README; verdict: `PASS`.
+
+Следующий разрешённый шаг: функциональный commit, clean-clone acceptance exact commit,
+затем push только в существующий PR №17 и GitHub CI. Merge, activation и
+rematerialization этим approval не разрешены.

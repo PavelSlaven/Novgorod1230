@@ -3,7 +3,8 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import test from 'node:test';
 
-import { applyRevisionPromotionPlan, buildPr17Stage3CApprovalRequest, buildPr17Stage3CPromotionPlan, digestValue } from '../src/index.js';
+import { applyRevisionPromotionPlan, digestValue } from '../src/index.js';
+import { buildPr17Stage3CApprovalRequest, buildPr17Stage3CPromotionPlan } from '../src/internal/pr17-stage3c.js';
 
 const root = resolve(import.meta.dirname, '../../..');
 const candidateRoot = resolve(root, 'data/knowledge-source/imports/item-container-120-v5/candidate');

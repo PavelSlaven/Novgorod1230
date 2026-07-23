@@ -54,33 +54,6 @@
     "confidence": "medium"
   },
   {
-    "id": "g5_node_explicit_no_item_container_default_v1",
-    "category_id": "cat_g5_zone_functional_v1",
-    "capacity": 1,
-    "access_policy": {
-      "version": 1,
-      "mode": "explicit_context_policy",
-      "context_domain": "explicit_no_item_container_default",
-      "access_state": "open",
-      "traversal_permission": true,
-      "fallback": "deny"
-    },
-    "visibility_policy": {
-      "version": 1,
-      "mode": "authored",
-      "context_domain": "explicit_no_item_container_default",
-      "default": "visible_if_accessible"
-    },
-    "initial_state": {
-      "version": 1,
-      "mode": "authored_empty"
-    },
-    "status": "approved",
-    "valid_from": "1200-01-01",
-    "valid_to": "1250-12-31",
-    "confidence": "medium"
-  },
-  {
     "id": "g5_node_fishing_v1",
     "category_id": "cat_g5_zone_functional_v1",
     "capacity": 7,

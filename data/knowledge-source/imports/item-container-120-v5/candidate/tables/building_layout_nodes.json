@@ -16,14 +16,6 @@
     "ordinal": 0
   },
   {
-    "id": "layout_node_explicit_no_item_container_default_main_v1",
-    "layout_template_id": "layout_explicit_no_item_container_default_v1",
-    "slot_key": "main_zone",
-    "room_template_id": "room_explicit_no_item_container_default_v1",
-    "required": true,
-    "ordinal": 0
-  },
-  {
     "id": "layout_node_fishing_main_v1",
     "layout_template_id": "layout_fishing_v1",
     "slot_key": "main_zone",

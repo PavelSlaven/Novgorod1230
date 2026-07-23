@@ -88,50 +88,6 @@
     "audit_notes": "Generated from approved PR17 semantic mapping; building_type intentionally null for building-or-complex layouts."
   },
   {
-    "id": "building_explicit_no_item_container_default_v1",
-    "region_id": "region_novgorod_land",
-    "title": "Materialization complex: explicit_no_item_container_default",
-    "slug": "building_explicit_no_item_container_default_v1",
-    "building_type": null,
-    "summary": "Functional building or site complex for explicit_no_item_container_default.",
-    "allowed_place_types": [],
-    "allowed_location_types": [],
-    "required_economy": null,
-    "required_social_order": null,
-    "typical_owner": null,
-    "typical_controller": null,
-    "typical_users": [],
-    "materials": [],
-    "size_band": null,
-    "wealth_level": null,
-    "condition_band": null,
-    "layout_rules": [
-      {
-        "version": 1,
-        "mode": "single_authored_zone"
-      }
-    ],
-    "room_templates": [],
-    "storage_rules": [],
-    "access_rules": [],
-    "locked_area_rules": [],
-    "hidden_area_rules": [],
-    "fire_risk": null,
-    "theft_risk": null,
-    "social_risk": null,
-    "typical_objects": [],
-    "typical_npc_roles": [],
-    "typical_activities": [],
-    "game_use": "active-v2 deterministic G4 to G5 materialization",
-    "limits": "No semantic expansion beyond approved context mapping.",
-    "status": "approved",
-    "confidence": "medium",
-    "sources": [
-      "src_pr17_v5_historical_gameplay"
-    ],
-    "audit_notes": "Generated from approved PR17 semantic mapping; building_type intentionally null for building-or-complex layouts."
-  },
-  {
     "id": "building_fishing_v1",
     "region_id": "region_novgorod_land",
     "title": "Materialization complex: fishing",

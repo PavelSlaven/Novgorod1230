@@ -1,0 +1,15 @@
+{
+  "schema_version": "rus.pr17.item_container_approval_attestation.v1",
+  "decision": "approve_all_120",
+  "request_digest": "a0a667b47bf42225a4bc2a1059c43f8dc3697008618b929359e1e9f228a8ea91",
+  "candidate_digest": "d55b4e8a7ac44340301f89dbb2d1cc9dca13d5761fdad92afb11a599af29745e",
+  "readiness_report_digest": "b65b9a966c4b07a97cbad30cb09456b63272ae3891607819790f2eff0315dcf6",
+  "g4_coverage_report_digest": "3d3dd8f8162da1ec0dd80b9446877e9a3392608fa8fab94f47f4932b79826347",
+  "template_ids_digest": "e96504e878980905f33c6fdbf63b9520bdf02593c2c2cd8107c094955d45818b",
+  "g4_status_transition_count": 9,
+  "approved_by": "Codex thread user (Slaven)",
+  "approved_at": "2026-07-23T05:12:54.456Z",
+  "activation_authorized": false,
+  "existing_parties_rematerialization_authorized": false,
+  "approval_text": "Подтверждаю approve_all_120: request_digest=a0a667b47bf42225a4bc2a1059c43f8dc3697008618b929359e1e9f228a8ea91, candidate_digest=d55b4e8a7ac44340301f89dbb2d1cc9dca13d5761fdad92afb11a599af29745e; разрешаю Stage 3C promotion и 9 G4 transitions без activation и rematerialization."
+}

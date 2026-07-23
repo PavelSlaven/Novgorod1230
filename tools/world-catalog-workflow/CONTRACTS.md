@@ -28,7 +28,6 @@
 | `buildEditorialEvidenceReviewPlan`, `buildCoherentEditorialApprovalPlan` | valid readiness digest and human attestation | atomic status-transition proposal or blocked plan | missing attestation, incomplete all-120 cohort | editorial workflow; no direct write |
 | `buildRevisionPromotionPlan`, `validateApprovedDependencyClosure`, `buildRevisionRollbackPlan` | approved parent, new target revision, explicit subset/attestation | revision-pinned manifest, dependency closure and rollback plan | missing approved dependency, wrong revision pin, empty subset | promotion dry-run |
 | `buildAllTemplateRevisionPromotionPlan` | exact 120 IDs, complete readiness report, verified legacy snapshot, `approve_all_120` attestation | blocked or ready promotion plan | partial cohort, digest/attestation mismatch, unresolved legacy inventory | mandatory Stage 3C promotion gate |
-| `buildPr17Stage3CApprovalRequest`, `buildPr17Stage3CPromotionPlan` | exact candidate datasets/manifest, 120/120 readiness, zero-gap 9 332-G4 coverage, nine declared transitions, target revision and human attestation | digest-bound request or complete spatial promotion plan | dataset/count/digest mismatch, stale coverage, wrong request/attestation digest | PR17 exact approval gate |
 | `applyRevisionPromotionPlan` | ready promotion plan and adapter `{ begin, transition, readTransition, insert, readback, readRevision, commit, rollback }` (`transition` methods required only when declared) | transaction audit or rejected promise after rollback | transition precondition/readback, parent changed, target exists, dataset readback mismatch | explicitly approved database apply only |
 
 ## Общие гарантии
@@ -61,9 +60,13 @@
 
 The utility never treats `record_sources` as the sole evidence source: typed item/container source bindings are included. It neither changes source records nor grants historical, regional or runtime permission.
 
+## Internal immutable migration tooling: PR17
+
+`src/internal/pr17-stage3c.js` and `src/internal/pr17-spatial-records-v1.schema.json` bind the one-time PR17 candidate, 9/9 approved runtime-G4 coverage, approval request and attestation to exact digests. They are used only by PR17 scripts/tests, are absent from `src/index.js`, and are not reusable or permanent public API.
+
 ## Версии и совместимость
 
-- Existing public entrypoint and exports remain unchanged.
+- Existing reusable public contracts remain unchanged; PR17-only migration helpers are deliberately excluded from the public entrypoint.
 - Stage 3B-1/3C add draft-only validation and blocked-or-approved promotion planning; they do not alter Stage 8/16 candidate loading until a separately activated revision exists.
 - Existing party instances are outside this module and are never rematerialized by its validators, generator or import helpers.
 - New incompatible public behaviour requires a versioned schema/contract change and updates to this registry, [MODULE.md](MODULE.md), module index and interaction map.

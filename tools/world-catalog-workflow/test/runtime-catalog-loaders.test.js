@@ -185,6 +185,24 @@ test('runtime catalog loaders refuse a catalog digest that is not pinned to the 
   );
 });
 
+test('Stage 8 snapshot normalizes PostgreSQL NUMERIC unit mass without accepting invalid values', () => {
+  const { records } = loadApprovedCandidate();
+  const profile = records.item_template_quantity_profiles[0];
+  profile.mass_grams_per_unit = String(profile.mass_grams_per_unit);
+  const snapshot = buildApprovedItemCatalogSnapshot({ records_by_table: records, world_revision_id: worldRevisionId, catalog_digest: runtimeDigest(records) });
+  const requirement = snapshot.quantity_requirements.find((record) => record.item_template_id === profile.item_template_id);
+  assert.equal(typeof requirement.mass_grams_per_unit, 'number');
+  assert.ok(Number.isFinite(requirement.mass_grams_per_unit));
+  assert.throws(
+    () => buildApprovedItemCatalogSnapshot({
+      records_by_table: { ...records, item_template_quantity_profiles: records.item_template_quantity_profiles.map((record) => record.id === profile.id ? { ...record, mass_grams_per_unit: 'not-a-number' } : record) },
+      world_revision_id: worldRevisionId,
+      catalog_digest: runtimeDigest(records)
+    }),
+    (error) => error.code === 'RUNTIME_QUANTITY_UNIT_MASS_INVALID'
+  );
+});
+
 test('G5 template loader refuses a layout from another revision', () => {
   const { manifest, records, mappings } = loadApprovedCandidate();
   const mapping = mappings[0];
@@ -251,7 +269,7 @@ test('all nine approved G4 contexts preserve item and container candidate isolat
   }
 });
 
-test('a craft tool is absent from household candidates and a generic G4 has explicit no-item/container materialization', async () => {
+test('a craft tool is absent from household candidates and an unmapped approved G4 hard-blocks', async () => {
   const { records, mappings } = loadApprovedCandidate();
   const snapshot = buildApprovedItemCatalogSnapshot({ records_by_table: records, world_revision_id: worldRevisionId, catalog_digest: runtimeDigest(records) });
   const stage8 = await retrieveApprovedItemProfileCandidates(stage8Input(snapshot));
@@ -263,9 +281,11 @@ test('a craft tool is absent from household candidates and a generic G4 has expl
   const householdIds = householdSet.allowed_g5_templates[0].slot_rules.filter((slot) => slot.slot_domain === 'item').flatMap((slot) => slot.candidate_ids);
   assert.equal(householdIds.includes(adze.item_profile_candidate_id), false);
 
-  records.graph_nodes.push({ id: 'g4_explicit_no_item_container', title: 'Explicit empty context', node_type: 'location', scale_level: 'G4', region_id: 'region_novgorod_land', status: 'approved' });
-  const emptySet = buildAllowedG5TemplateSet({ records_by_table: records, graph_node_id: 'g4_explicit_no_item_container', world_revision_id: worldRevisionId, source_catalog_digest: runtimeDigest(records) });
-  assert.deepEqual(emptySet.allowed_g5_templates[0].slot_rules.filter((slot) => ['item', 'container'].includes(slot.slot_domain)), []);
+  records.graph_nodes.push({ id: 'g4_unmapped_approved', title: 'Unmapped approved context', node_type: 'location', scale_level: 'G4', region_id: 'region_novgorod_land', status: 'approved' });
+  assert.throws(
+    () => buildAllowedG5TemplateSet({ records_by_table: records, graph_node_id: 'g4_unmapped_approved', world_revision_id: worldRevisionId, source_catalog_digest: runtimeDigest(records) }),
+    (error) => error.code === 'RUNTIME_G4_BINDING_UNRESOLVED'
+  );
 });
 
 test('representative V5 first-entry materializes once and repeat-entry reuses the committed item/container baseline', async () => {

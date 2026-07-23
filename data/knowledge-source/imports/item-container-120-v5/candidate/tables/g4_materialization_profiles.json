@@ -52,32 +52,6 @@
     "confidence": "medium"
   },
   {
-    "id": "g4_profile_explicit_no_item_container_default_v1",
-    "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
-    "region_id": "region_novgorod_land",
-    "layout_template_id": "layout_explicit_no_item_container_default_v1",
-    "maximum_g5_nodes": 1,
-    "player_start_anchor_slot_key": "anchor_start",
-    "visibility_model": {
-      "version": 1,
-      "mode": "authored",
-      "context_domain": "explicit_no_item_container_default",
-      "default": "visible_if_accessible"
-    },
-    "access_model": {
-      "version": 1,
-      "mode": "explicit_context_policy",
-      "context_domain": "explicit_no_item_container_default",
-      "access_state": "open",
-      "traversal_permission": true,
-      "fallback": "deny"
-    },
-    "status": "approved",
-    "valid_from": "1200-01-01",
-    "valid_to": "1250-12-31",
-    "confidence": "medium"
-  },
-  {
     "id": "g4_profile_fishing_v1",
     "world_revision_id": "world_revision_novgorod_1230_item_catalogue_001",
     "region_id": "region_novgorod_land",

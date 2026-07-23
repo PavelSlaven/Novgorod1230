@@ -1,9 +1,9 @@
 {
   "schema_version": "rus.pr17.item_container_approval_request.v1",
   "decision": "approve_all_120",
-  "candidate_digest": "d55b4e8a7ac44340301f89dbb2d1cc9dca13d5761fdad92afb11a599af29745e",
+  "candidate_digest": "e3bddda4b31cdbb91d430254db5e6f2d34a8d9d0a08e5f7e4c1e1d6cb9832a24",
   "readiness_report_digest": "b65b9a966c4b07a97cbad30cb09456b63272ae3891607819790f2eff0315dcf6",
-  "g4_coverage_report_digest": "3d3dd8f8162da1ec0dd80b9446877e9a3392608fa8fab94f47f4932b79826347",
+  "g4_coverage_report_digest": "1bee1492cb25f615414f951282a14f3228b892afeda327c7703653df6577e8e0",
   "template_ids": [
     "container_tpl_nov_birch_bark_box_v1",
     "container_tpl_nov_bucket_v1",
@@ -209,5 +209,5 @@
   },
   "activation": "not_requested",
   "existing_parties_rematerialized": false,
-  "request_digest": "a0a667b47bf42225a4bc2a1059c43f8dc3697008618b929359e1e9f228a8ea91"
+  "request_digest": "046344b570789b008da8685d0dad3824512d529f9c161a122ecdc59e3cb73771"
 }

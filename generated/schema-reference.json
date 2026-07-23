@@ -763,12 +763,6 @@
       "type": "json"
     },
     {
-      "bytes": 11675,
-      "path": "schemas/materialization/pr17-spatial-records-v1.schema.json",
-      "sha256": "5c7cc08f829b29d4f8c919c94596d6f3524f2ce0c8e1934abf105e0a5b58592a",
-      "type": "json"
-    },
-    {
       "bytes": 1078,
       "path": "schemas/materialization/property-profile-rules-v1.schema.json",
       "sha256": "fdb63b23c9ffdbbaa9e7562141cc2763ea1538300c5ed79f0b7d8c55604f9c30",

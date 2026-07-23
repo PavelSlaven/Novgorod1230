@@ -285,7 +285,7 @@ repository_root = C:\Users\Slaven\Documents\Новгород\.tmp-pr17-review
 repository = PavelSlaven/Novgorod1230
 branch = chatgpt/item-container-120-approval-audit
 head_before_implementation_commit = 32d24ac49f3b1c79a7e2e58003b85f7da025e38b
-post_approval_functional_commit = 7ef5dc2a21ef7ae5efbee9a8360074e11e9c079c
+post_approval_functional_commit = 95ac6665c245a806a21cedc4762a366de1c4ad26
 origin_main = 8c9e8db9b275e2be9b9e5eb28b59c49e8baef068
 node = v24.16.0
 npm = 11.13.0
@@ -313,7 +313,7 @@ G4 materialization profiles bindings slot rules item container runtime Stage 8 S
 `repo-intel:status` вернул готовый Graphify graph версии `0.9.17`; нормативный
 knowledge-source имеет известный `degraded` warning о semantic coverage gaps, но без
 readiness errors. Graphify после итоговых исправлений пересобран: 24 276 nodes,
-48 062 edges, 1 424 communities. Его результаты использовались только для навигации и не
+48 066 edges, 1 426 communities. Его результаты использовались только для навигации и не
 подменяли нормативы.
 
 ### Канонический mapping и coverage
@@ -477,6 +477,8 @@ npm run item-container-120:validate                                PASS
 npm run item-container-120:stage3c-request-check                   PASS
 npm run item-container-120:stage3c:dry-run                         PASS
 npm run item-container-120:stage3c:postgres:lifecycle              PASS
+DATABASE_URL=<isolated-world_base_ci>
+npm run world-db:import:stage3b1:integration                       PASS
 node --test tools/world-catalog-workflow/test/pr17-stage3c-promotion.test.js
                                                                    6/6 PASS
 npm run test:world-catalog                                         130/130 PASS
@@ -489,8 +491,18 @@ graphify update .                                                  PASS
 `4/4`, integration `21 PASS` и `5` PostgreSQL-dependent skips. Browser E2E имеет
 один skip из-за отсутствия Chromium executable в локальной test-конфигурации; это
 явно зафиксированное ограничение, а не скрытый runtime failure. Graphify обновлён до
-24 276 nodes, 48 062 edges и 1 424 communities; отдельно сохранены предупреждения о
+24 276 nodes, 48 066 edges и 1 426 communities; отдельно сохранены предупреждения о
 31 SQL-файле без `tree_sitter_sql` и 294 файлах без извлечённых nodes.
+
+Первый GitHub CI для evidence commit `2e7d9bd9dceba68510c53157b4a92e89615212df`
+обнаружил отдельное расхождение Stage 3B-1 PostgreSQL readback:
+`mass_grams_per_unit NUMERIC` возвращался драйвером `pg` как строка, тогда как
+supplemental bundle содержит JSON number. Исправлен только readback projection:
+поле явно читается как `float8`, аналогично уже проверенному Stage 3C adapter.
+Проверка сохраняет дробное значение `1.4`, остальные поля и canonical digest не
+изменены. Точная команда CI воспроизведена локально до исправления и после него
+проходит 25 datasets, repeat apply, rollback и все quantity/source guards.
+Независимый повторный critic дал `PASS`.
 
 ### Текущий gate
 
@@ -510,10 +522,10 @@ stage3c_promotion = completed_in_isolated_review_database
 current_post_fix_independent_critic = PASS
 current_post_fix_standards_review = PASS
 current_post_fix_clean_clone_acceptance = PASS
-current_post_fix_clean_clone_sha = 7ef5dc2a21ef7ae5efbee9a8360074e11e9c079c
+current_post_fix_clean_clone_sha = 95ac6665c245a806a21cedc4762a366de1c4ad26
 remaining_item_container_architecture_gaps = 0
 runtime_activation = false
-pr_state = draft_pending_final_evidence_push
+pr_state = ready_for_review_ci_rerun_pending
 ```
 
 Повторный независимый critic текущего Stage 3C diff дал `PASS`; Standards-аудит —
@@ -535,11 +547,14 @@ attestation digest, воспроизвёл dry-run digests, проверил 39 
 `[a-z0-9_]+` IDs в проверенных locales.
 
 Финальный clean-clone acceptance выполнен на exact functional commit
-`7ef5dc2a21ef7ae5efbee9a8360074e11e9c079c`. В чистой копии прошли `npm ci`, docs,
+`95ac6665c245a806a21cedc4762a366de1c4ad26`. В чистой копии прошли `npm ci`, docs,
 43 generated files, candidate/request/attestation dry-run digests, world-catalog
-130/130, полный `npm test` и повторный PostgreSQL rollback/apply/readback/repeat в
-новой БД `pr17_clean_stage3c`. Результат совпал с сохранённым promotion evidence;
-временные clone и container удалены.
+130/130 и полный `npm test`. В одном новом PostgreSQL 16 container независимо
+проверены оба контура: Stage 3B-1 против `world_base_ci` и Stage 3C
+rollback/apply/readback/repeat против `pr17_clean_stage3c_ci`. Stage 3C результат
+совпал с сохранённым promotion evidence; оба временных database container и
+clean-clone удалены.
 
-Следующий разрешённый порядок: финальный evidence commit → push только в существующую
-ветку PR №17 → перевод PR из draft в `READY_FOR_MERGE` без activation.
+PR №17 уже переведён из draft в ready for review. Следующий разрешённый порядок:
+финальный evidence commit → push только в существующую ветку PR №17 → успешный
+GitHub CI без merge, activation и rematerialization.

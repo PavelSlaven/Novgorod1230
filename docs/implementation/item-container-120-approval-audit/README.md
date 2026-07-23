@@ -395,7 +395,7 @@ Runtime integration test доказывает:
 d55b4e8a7ac44340301f89dbb2d1cc9dca13d5761fdad92afb11a599af29745e
 ```
 
-Manifest намеренно остаётся:
+Immutable candidate manifest намеренно остаётся исходным approval input:
 
 ```text
 approval = pending_approve_all_120
@@ -428,16 +428,42 @@ request digest:
 a0a667b47bf42225a4bc2a1059c43f8dc3697008618b929359e1e9f228a8ea91
 ```
 
-Approval attestation дополнительно должна содержать exact candidate digest, request
-digest, решение `approve_all_120` и `activation_authorized = false`. До явного ответа
-пользователя файл attestation не создаётся, а PostgreSQL Stage 3C lifecycle не
-запускается.
+Пользователь явно подтвердил `approve_all_120`, exact request и candidate digests,
+девять G4 transitions и запрет activation/rematerialization. Аттестация сохранена в
+`evidence/FINAL_APPROVAL_ATTESTATION.json`; её digest:
 
-Предыдущий draft-only lifecycle на изолированной PostgreSQL 16 БД
-`pr17_item_container` доказал rollback, exact apply/readback и repeat apply кандидата
-до promotion. Временный container удалён; operator/production database не
-изменялась. Этот результат остаётся pre-promotion evidence и не подменяет новый
-approval-bound Stage 3C lifecycle.
+```text
+207338995ea7c8849793216d2cec668dea4e7371291b690da7f32cbc06d28471
+```
+
+Approval-bound lifecycle выполнен на одноразовой PostgreSQL 16 БД
+`pr17_item_container_stage3c`. Первый реальный проход выявил порядок readback,
+который отличался от canonical locale-sort manifest для `universal_categories`;
+транзакция корректно откатила все datasets и девять G4 transitions. Executor
+исправлен так, чтобы insert/readback использовали тот же canonical sorter, и
+добавлен красно-зелёный regression test.
+
+После исправления выполнены rollback probe, полный apply/readback всех 39 datasets и
+повторный apply в заново созданной чистой schema:
+
+```text
+rollback = pass
+first_apply = pass
+first_readback_dataset_count = 39
+repeat_clean_apply = pass
+repeat_readback_dataset_count = 39
+target_revision_status = approved
+target_catalog_digest = 996c823c373fedf9080f7395233c54d78807c3a768c2ca9c39a3c0c53927d951
+approved_g4_count = 9
+approved_item_template_count = 102
+approved_container_template_count = 18
+parent_revision_unchanged = true
+activation_performed = false
+existing_parties_rematerialized = false
+```
+
+Promotion result сохранён в `evidence/STAGE3C_PROMOTION_RESULT.json`. Временный
+container удалён; operator/production database не изменялась.
 
 ### Фактически выполненные проверки текущего diff
 
@@ -447,6 +473,10 @@ npm run docs:check                                                 PASS
 npm run item-container-120:generated-check                         PASS (43 files)
 npm run item-container-120:validate                                PASS
 npm run item-container-120:stage3c-request-check                   PASS
+npm run item-container-120:stage3c:dry-run                         PASS
+npm run item-container-120:stage3c:postgres:lifecycle              PASS
+node --test tools/world-catalog-workflow/test/pr17-stage3c-promotion.test.js
+                                                                   6/6 PASS
 npm run test:world-catalog                                         130/130 PASS
 npm test                                                           PASS
 git diff --check                                                   PASS
@@ -471,13 +501,13 @@ selected_context_g4_count = 9
 stage3c_technical_plan = PASS
 stage3c_atomic_rollback_unit_test = PASS
 approval_request_digest = a0a667b47bf42225a4bc2a1059c43f8dc3697008618b929359e1e9f228a8ea91
-approve_all_120 = pending_exact_digest_confirmation
-current_diff_independent_critic = PASS
-current_diff_standards_review = PASS_WITH_NOTES
-current_diff_clean_clone_acceptance = PASS
-current_diff_clean_clone_sha = 317fd35e179161d3d941adce827f74636bc2666a
-stage3c_postgresql_lifecycle = pending_human_approval
-stage3c_promotion = false
+approval_attestation_digest = 207338995ea7c8849793216d2cec668dea4e7371291b690da7f32cbc06d28471
+approve_all_120 = completed
+stage3c_postgresql_lifecycle = PASS
+stage3c_promotion = completed_in_isolated_review_database
+current_post_fix_independent_critic = PASS
+current_post_fix_standards_review = PASS
+current_post_fix_clean_clone_acceptance = pending
 runtime_activation = false
 pr_state = draft
 ```
@@ -489,14 +519,17 @@ ordering, digest-bound request/attestation, exact 120 IDs, readiness и G4 cover
 а также отсутствие activation, rematerialization и operator DB access. Targeted
 tamper probes для readiness, coverage, 120 IDs и transitions блокируются fail-closed.
 
-Clean-clone acceptance выполнен на отдельной свежей копии exact functional commit
-`317fd35e179161d3d941adce827f74636bc2666a`. Внутри clone прошли `npm ci`,
-generated-check (43 files), candidate validation, Stage 3C request-check,
-`test:world-catalog` (130/130) и полный `npm test`: modules 193/193, shadow 6/6,
-cutover 4/4, integration 21 PASS с 5 явными PostgreSQL skips, docs и architecture
-PASS. Browser E2E сохранил один явный skip из-за отсутствия Chromium executable.
-После PASS временная копия удалена.
+Предыдущий clean-clone acceptance exact commit
+`317fd35e179161d3d941adce827f74636bc2666a` прошёл полностью, но после обнаруженного
+PostgreSQL ordering defect executor и regression test изменены. Поэтому он не
+подменяет обязательные повторные post-fix full tests, critic и clean-clone.
 
-Следующий разрешённый порядок: явное подтверждение пользователем exact request и
-candidate digests → изолированный PostgreSQL Stage 3C rollback/apply/repeat lifecycle
-без activation → финальный аудит и обновление существующего PR №17.
+Post-fix independent critic и Standards-аудит дали `PASS`. Критик пересчитал
+attestation digest, воспроизвёл dry-run digests, проверил 39 datasets, 9 transitions,
+102/18 cohort, rollback/readback/repeat и отсутствие activation/rematerialization.
+Для текущего exact candidate также подтверждено одинаковое ordering всех
+`[a-z0-9_]+` IDs в проверенных locales.
+
+Следующий разрешённый порядок: clean-clone acceptance exact functional commit →
+финальный evidence commit → push только в существующую ветку PR №17 → перевод PR из
+draft в `READY_FOR_MERGE` без activation.

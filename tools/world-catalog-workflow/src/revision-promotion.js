@@ -190,7 +190,7 @@ export async function applyRevisionPromotionPlan({ plan, adapter } = {}) {
       if (!pass) throw new Error(`PROMOTION_STATUS_TRANSITION_READBACK_MISMATCH:graph_nodes:${transition.id}`);
     }
     for (const dataset of plan.manifest.datasets) {
-      const rows = plan.records_by_table[dataset.table];
+      const rows = sort(plan.records_by_table[dataset.table]);
       await adapter.insert(dataset.table, orderSelfReferentialRows(dataset.table, rows));
       const actual = await adapter.readback(dataset.table, rows);
       const pass = actual?.record_count === dataset.record_count && actual?.payload_digest === dataset.payload_digest;

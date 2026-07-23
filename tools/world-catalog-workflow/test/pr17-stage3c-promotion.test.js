@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import test from 'node:test';
 
-import { applyRevisionPromotionPlan, buildPr17Stage3CApprovalRequest, buildPr17Stage3CPromotionPlan } from '../src/index.js';
+import { applyRevisionPromotionPlan, buildPr17Stage3CApprovalRequest, buildPr17Stage3CPromotionPlan, digestValue } from '../src/index.js';
 
 const root = resolve(import.meta.dirname, '../../..');
 const candidateRoot = resolve(root, 'data/knowledge-source/imports/item-container-120-v5/candidate');
@@ -79,7 +79,7 @@ test('PR17 Stage 3C applies G4 transitions and datasets in one transaction witho
       async transition(table, transition) { assert.equal(table, 'graph_nodes'); transitionState.set(transition.id, transition.to_status); events.push(`transition:${transition.id}`); },
       async readTransition(table, id) { assert.equal(table, 'graph_nodes'); return { id, status: transitionState.get(id) }; },
       async insert(table, rows) { if (table === 'world_revisions') target = rows[0]; events.push(`insert:${table}`); },
-      async readback(table) { const dataset = plan.manifest.datasets.find((entry) => entry.table === table); return { record_count: dataset.record_count, payload_digest: dataset.payload_digest }; },
+      async readback(_table, rows) { return { record_count: rows.length, payload_digest: digestValue(rows) }; },
       async readRevision(id) { if (id === parentRevision.id) return parentRevision; if (id === targetRevision.id) return target; return null; },
       async commit() { events.push('commit'); },
       async rollback() { events.push('rollback'); }

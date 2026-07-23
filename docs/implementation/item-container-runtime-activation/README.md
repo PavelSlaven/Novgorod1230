@@ -461,5 +461,9 @@ activation-ready production environment. Operator database activation remains
 out of scope for this code PR and was not performed.
 
 Current branch: `codex/item-container-runtime-activation`.
-Current base/HEAD: `bb5db7cde2b0e38420234beba8c9bdf6e34a45cf`.
-Commit and PR: not created until critic passes.
+Base `origin/main`: `bb5db7cde2b0e38420234beba8c9bdf6e34a45cf`.
+Implementation commit:
+`2ac568894a6ec8eee1e44624ac8bb61cd21b953c`.
+Draft PR:
+[`PavelSlaven/Novgorod1230#18`](https://github.com/PavelSlaven/Novgorod1230/pull/18).
+GitHub CI: pending on the final evidence commit.

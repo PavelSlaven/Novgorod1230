@@ -704,10 +704,10 @@ full_npm_test = PASS
 independent_critic_for_current_candidate = PASS
 clean_clone_acceptance_for_current_candidate = PASS
 clean_clone_functional_sha = 7ddb03e11e8c432e7ced1f0e7b86923ee87b4038
-github_ci_for_current_candidate = pending
+github_ci_for_current_candidate = queued_after_pull_request_ref_resync
 runtime_activation = false
 existing_parties_rematerialized = false
-pr_state = ready_for_review_awaiting_github_ci
+pr_state = ready_for_review_github_ci_queued
 merge_ready = false
 ```
 

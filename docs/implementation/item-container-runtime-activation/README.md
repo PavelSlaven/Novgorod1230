@@ -403,8 +403,8 @@ post-test candidate parity
 
 The operator-source backup is valid but is not an activation-ready baseline.
 Its provisioning/migration rehearsal and approval evidence belong to the
-post-merge operator procedure. The independent critic returned `PASS`;
-commit/push and GitHub CI are the remaining PR gates.
+post-merge operator procedure. The independent critic returned `PASS`; the
+functional GitHub CI run completed successfully. No tooling-PR gate remains.
 
 ## Plan completion matrix
 
@@ -431,9 +431,9 @@ Status meanings:
 | 15: operator CLI | `IMPLEMENTED` | All eight modes exist, default to read-only/dry-run where applicable, produce machine-readable results and require `--confirm` plus the exact request digest for writes. |
 | 16: maintenance-window rollout | `POST-MERGE OPERATOR` | Exact ordered procedure, evidence set, hard blocks and non-destructive recovery are documented in `OPERATOR_RUNBOOK.md`; only backup/read-only inspection occurred. |
 | 17: coverage matrix | `IMPLEMENTED` | Consolidated parameterized/contract suites plus one PostgreSQL lifecycle cover 17.1–17.9 and the synthetic CI lifecycle in 17.10. Assertions are not duplicated one-for-one across test levels. |
-| 18: final PR gates | `PR GATE PENDING` | Implementation, generated artifacts, focused/profile/full tests, PostgreSQL lifecycle, one clean-clone acceptance, affected post-critic regressions and repeated critic (`PASS`) completed. Commit/push and CI remain. |
+| 18: final PR gates | `IMPLEMENTED` | Implementation, generated artifacts, focused/profile/full tests, PostgreSQL lifecycle, one clean-clone acceptance, affected post-critic regressions, repeated critic (`PASS`), commit/push and GitHub CI completed. |
 | 19: PR deliverables | `IMPLEMENTED` + `POST-MERGE OPERATOR` | Normatives, documentation, DDL, schemas, validators, runtime/operator code and tests exist. Concrete operator manifests, report and attestations remain local maintenance evidence. |
-| 20: Definition of Done | `PR GATE PENDING` | Tooling implementation, clean-clone acceptance and critic are complete; GitHub CI remains. Production provisioning/rehearsal is a post-merge operator gate. |
+| 20: Definition of Done | `IMPLEMENTED` + `POST-MERGE OPERATOR` | Tooling implementation, clean-clone acceptance, critic, push and GitHub CI are complete. Production provisioning/rehearsal remains a separate post-merge operator gate. |
 
 ### Coverage matrix evidence
 
@@ -472,6 +472,10 @@ Current branch: `codex/item-container-runtime-activation`.
 Base `origin/main`: `bb5db7cde2b0e38420234beba8c9bdf6e34a45cf`.
 Implementation commit:
 `2ac568894a6ec8eee1e44624ac8bb61cd21b953c`.
+CI-verified functional head:
+`f5e02c1109a1b151f3d70eaba778bf90dacd7bb6`.
 Draft PR:
 [`PavelSlaven/Novgorod1230#18`](https://github.com/PavelSlaven/Novgorod1230/pull/18).
-GitHub CI: pending on the final evidence commit.
+GitHub CI:
+[`test` run 30015124254](https://github.com/PavelSlaven/Novgorod1230/actions/runs/30015124254)
+— `success`.

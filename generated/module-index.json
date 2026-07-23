@@ -549,11 +549,12 @@
         "`validateItemContainerClassificationCatalog`, `assessItemContainerClassificationMigration` и `assessItemContainerClassificationReadiness`: normalised facets, compatibility, typed legacy gaps/conflicts и required profile/G4 rule",
         "чистой `calculatePackingSlots({ quantity, packing_slot_cost, packing_bundle_size })` без доступа к БД, файлам, глобальному состоянию, массы или fallback",
         "`validateSupplementalCatalogBundle` и `applySupplementalCatalogBundle`: draft-only manifest, canonical SHA-256, table registry, local/external FK, XOR и injected transaction adapter с readback digest/count и rollback",
-        "Stage 3C contracts: `buildCatalogEditorialReadinessReport`, evidence/approval plans, verified legacy inventory и all-120-only revision promotion/rollback with atomic G4 status transitions and without activation"
+        "Stage 3C contracts: `buildCatalogEditorialReadinessReport`, evidence/approval plans, verified legacy inventory и all-120-only revision promotion/rollback with atomic G4 status transitions and without activation",
+        "`buildApprovedItemCatalogSnapshot` и `buildAllowedG5TemplateSet`: чистые immutable projections caller-provided approved `world_base` readback records, revision ID и catalog digest в Stage 8 catalog snapshot и разрешённый G5 template set"
       ],
       "path": "tools/world-catalog-workflow",
       "public_entry": "./src/index.js",
-      "purpose": "Автономный редакторский инструмент для регистрации ревизий региональной карты, структурной проверки G1-маски, построения координатной очереди, проверки G1-пакетов и fail-closed проверки authoring-каталогов materialization. Он не является game runtime, не создаёт исторические факты и не изменяет `world_base` без явно переданного transaction adapter.",
+      "purpose": "Автономный редакторский инструмент для регистрации ревизий региональной карты, структурной проверки G1-маски, построения координатной очереди, проверки G1-пакетов и fail-closed проверки authoring-каталогов materialization. Модуль также предоставляет нейтральные чистые projections утверждённых `world_base` records для Stage 8 и G5 materialization. Он не владеет runtime I/O, не создаёт исторические факты и не изменяет `world_base` без явно переданного transaction adapter.",
       "version": "0.1.0"
     }
   ]

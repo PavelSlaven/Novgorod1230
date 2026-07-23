@@ -564,8 +564,15 @@ clean-clone удалены.
 
 ## Актуальный статус — remediation после `CHANGES REQUIRED`, 2026-07-23
 
-Единственный актуальный вывод для текущего рабочего дерева:
-`LOCAL_AND_CLEAN_CLONE_VALIDATION_PASS_AWAITING_GITHUB_CI`.
+Единственный актуальный вывод:
+`READY_FOR_MANUAL_MERGE`.
+
+```text
+verified_head = c616a6740165bf339ebeed284db97fb37b3b6586
+verified_head_workflow = 29990561724
+verified_head_workflow_result = SUCCESS
+```
+
 Прежние аттестация и PostgreSQL promotion относятся к кандидату `d55b4e8a...` и
 перемещены в `evidence/history/`. Они не переносятся на новый candidate автоматически.
 
@@ -657,7 +664,29 @@ graphify = 0.9.17
 Stage 3C promoted target revision PostgreSQL runtime loader Stage 8 Stage 13 Stage 14 Stage 16 repeat entry
 generic node_type location materialization binding fallback G4 coverage typed hard block
 PR17 Stage 3C approval request promotion plan public API internal migration tooling
+buildApprovedItemCatalogSnapshot buildAllowedG5TemplateSet public loader projection contracts MODULE CONTRACTS pure no I/O caller PostgreSQL readback
 ```
+
+Последний query подтвердил exports обоих runtime projections из package entrypoint,
+их реализацию в `runtime-catalog-loaders.js`, contract tests и потребителей
+Stage 8/13/14/16. `MODULE.md` и `CONTRACTS.md` теперь регистрируют эти функции как
+чистые immutable projections; PostgreSQL readback, connection lifecycle и сборка
+`records_by_table` остаются обязанностью caller.
+
+Профиль повторного независимого аудита:
+
+```text
+complexity = standard
+risk = low
+ambiguity = low
+selected_model = gpt-5.6-terra
+selected_reasoning_effort = medium
+```
+
+Повторный независимый read-only audit после этих двух исправлений: `PASS`.
+Подтверждены единый статус, точная регистрация обоих public exports, отсутствие I/O
+в projections и неизменность runtime-кода, tests, candidate и approval/Stage 3C
+evidence.
 
 Фактически выполненные проверки нового кандидата:
 
@@ -704,7 +733,7 @@ full_npm_test = PASS
 independent_critic_for_current_candidate = PASS
 clean_clone_acceptance_for_current_candidate = PASS
 clean_clone_functional_sha = 7ddb03e11e8c432e7ced1f0e7b86923ee87b4038
-github_ci_for_current_candidate = PASS (workflow 29990348896, head 622fe847f67eb212771f8c7a25d1dc42ad823346)
+github_ci_for_current_candidate = PASS (workflow 29990561724, head c616a6740165bf339ebeed284db97fb37b3b6586)
 runtime_activation = false
 existing_parties_rematerialized = false
 pr_state = ready_for_review

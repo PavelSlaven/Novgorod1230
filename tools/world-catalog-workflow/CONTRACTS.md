@@ -4,7 +4,7 @@
 
 **Владелец:** `@rus/world-catalog-workflow`.
 **Публичный entrypoint:** [`src/index.js`](src/index.js).
-**Статус:** editor/import tool; не является runtime и не владеет party state.
+**Статус:** editor/import tool с нейтральными чистыми runtime-facing projections; не владеет runtime I/O или party state.
 
 Этот документ — реестр контрактов и публичных интерфейсов модуля. Он дополняет [MODULE.md](MODULE.md); физические поля authoring-данных определяют DDL, `SCHEMA_REFERENCE.md` и versioned JSON Schema.
 
@@ -29,6 +29,8 @@
 | `buildRevisionPromotionPlan`, `validateApprovedDependencyClosure`, `buildRevisionRollbackPlan` | approved parent, new target revision, explicit subset/attestation | revision-pinned manifest, dependency closure and rollback plan | missing approved dependency, wrong revision pin, empty subset | promotion dry-run |
 | `buildAllTemplateRevisionPromotionPlan` | exact 120 IDs, complete readiness report, verified legacy snapshot, `approve_all_120` attestation | blocked or ready promotion plan | partial cohort, digest/attestation mismatch, unresolved legacy inventory | mandatory Stage 3C promotion gate |
 | `applyRevisionPromotionPlan` | ready promotion plan and adapter `{ begin, transition, readTransition, insert, readback, readRevision, commit, rollback }` (`transition` methods required only when declared) | transaction audit or rejected promise after rollback | transition precondition/readback, parent changed, target exists, dataset readback mismatch | explicitly approved database apply only |
+| `buildApprovedItemCatalogSnapshot` | `{ records_by_table, world_revision_id, catalog_digest }`: caller-provided approved `world_base` readback records, exact revision ID and its pinned catalog digest | deep-frozen `approved_item_catalog_snapshot` with item/container/equipment candidates, quantity requirements, property rules, source digest and deterministic projection digest | `RUNTIME_SOURCE_CATALOG_DIGEST_INVALID`, `RUNTIME_WORLD_REVISION_NOT_APPROVED`, `RUNTIME_SOURCE_CATALOG_DIGEST_MISMATCH`, `RUNTIME_DEPENDENCY_AMBIGUOUS`, `RUNTIME_*_DEPENDENCY_NOT_APPROVED`, `RUNTIME_*_CONTEXT_NOT_APPROVED`, `RUNTIME_CATEGORY_BINDING_*`, `RUNTIME_QUANTITY_UNIT_MASS_INVALID`, `RUNTIME_EQUIPMENT_*_NOT_APPROVED` | caller → Stage 8 approved candidate retrieval |
+| `buildAllowedG5TemplateSet` | `{ records_by_table, graph_node_id, world_revision_id, source_catalog_digest, selected_g4_type_id? }`: the same caller-owned readback plus exact approved G4 | deep-frozen `allowed_g5_template_set` with one resolved G4 profile/layout, G5 node/anchor/edge templates, slot rules, resource candidates and deterministic projection digest | all snapshot errors plus `RUNTIME_G4_NOT_APPROVED`, `RUNTIME_G4_BINDING_UNRESOLVED`, `RUNTIME_G4_PROFILE_NOT_APPROVED`, `RUNTIME_G5_TEMPLATE_NOT_APPROVED`, `RUNTIME_RESOURCE_ANCHOR_SLOT_UNRESOLVED`, `RUNTIME_REQUIRED_RESOURCE_CANDIDATES_EMPTY` | caller → Stages 13/14/16 and first-entry materialization |
 
 ## Общие гарантии
 
@@ -39,6 +41,7 @@
 5. Transactional apply читает count/digest после каждой таблицы, а при исключении вызывает rollback.
 6. Любая SQL-запись принадлежит injected adapter; module не владеет database connection и не выполняет live external query.
 7. Stage 3C promotion не делает activation, не меняет runtime loader и не rematerialize existing parties; partial promotion из 120 templates запрещён. Объявленные G4 status transitions входят в тот же manifest и transaction, проверяются readback и откатываются вместе с datasets.
+8. `buildApprovedItemCatalogSnapshot` и `buildAllowedG5TemplateSet` являются чистыми deterministic projections: не читают PostgreSQL/filesystem/network, не изменяют input и возвращают deep-frozen results. PostgreSQL readback, connection lifecycle и сборка `records_by_table` принадлежат caller.
 
 ## Внешние и внутренние зависимости
 
@@ -47,6 +50,7 @@
 | `schemas/materialization/*.schema.json` | closed structural validation datasets | read-only versioned schema |
 | `infra/world-base/schema*.sql` / `SCHEMA_REFERENCE.md` | FK/table semantics | authoritative physical contract, не читается runtime через этот module |
 | transaction adapter | explicit apply/readback/rollback | caller owns connection and approval |
+| approved `world_base` readback records | вход runtime projection contracts | caller owns PostgreSQL query/readback, revision selection and connection; module receives immutable records only |
 | `scripts/stage3b1-parent-source-bundle.mjs` | verified parent source IDs for Stage 3B-1 callers | caller-side utility; module receives its result only through declared `externalIds` |
 
 ## Internal reusable utility: parent source bundle
@@ -66,7 +70,7 @@ The utility never treats `record_sources` as the sole evidence source: typed ite
 
 ## Версии и совместимость
 
-- Existing reusable public contracts remain unchanged; PR17-only migration helpers are deliberately excluded from the public entrypoint.
+- Existing editor/import contracts remain unchanged. `buildApprovedItemCatalogSnapshot` and `buildAllowedG5TemplateSet` are registered reusable public projection contracts; PR17-only migration helpers remain deliberately excluded from the public entrypoint.
 - Stage 3B-1/3C add draft-only validation and blocked-or-approved promotion planning; they do not alter Stage 8/16 candidate loading until a separately activated revision exists.
 - Existing party instances are outside this module and are never rematerialized by its validators, generator or import helpers.
 - New incompatible public behaviour requires a versioned schema/contract change and updates to this registry, [MODULE.md](MODULE.md), module index and interaction map.
@@ -81,3 +85,4 @@ The utility never treats `record_sources` as the sole evidence source: typed ite
 | readiness hard blocks | `materialization-readiness.test.js`, `materialization-readiness-positive.test.js` |
 | packing formula | `packing-slots.test.js` and Stage 16 regression tests |
 | legacy inventory, all-120 readiness and promotion rollback | `legacy-classification-inventory.test.js`, `editorial-readiness.test.js`, `all-template-promotion.test.js`, `revision-promotion.test.js` |
+| approved runtime projections and typed fail-closed errors | `runtime-catalog-loaders.test.js` |

@@ -263,6 +263,82 @@ Implicit delete запрещён. Неизвестная таблица, ID вн
 9. Command envelope — request-bound `cmd.v1` digest и exact option match.
 10. Runtime v2 создаёт только новые партии; legacy JSONB sessions не мигрируют и не загружаются.
 
-## 14. Критерий повышения в active
+## 14. Domain-scoped activation и exact import membership
+
+### `domain_catalog_revisions`
+
+Companion к `world_revisions`, доказывающий, что revision является утверждённым
+domain overlay, а не полным world pin. Хранит scope, parent registration,
+target digest, compatible world tuple, registry/runtime-contract digests и
+approved status. Общий world selector исключает такие revisions.
+
+### `catalog_baseline_registrations`
+
+Append-only регистрация точного operator baseline: parent tuple, snapshot
+manifest, schema fingerprint, record registry, compatible world tuple,
+registration request и attestation. Регистрация выполняется одной транзакцией,
+exact repeat идемпотентен, а конфликтующий digest блокирует продолжение.
+
+### `catalog_imports`
+
+Единственный immutable audit root успешного import. Связывает scope, parent и
+compatible tuples, target revision/digest, registry, promotion/approval,
+migration, tables, records, dependency assertions и итоговый import audit
+digest. Строка появляется только после полного transactional readback.
+
+### `catalog_import_tables`
+
+Exact table-level membership: dependency order, counts операций
+`insert`/`assert_existing`, общий record count и payload digest. Digest
+вычисляется по membership entries, а не по выборке всех строк revision.
+
+### `catalog_import_records`
+
+Exact record-level membership с composite record key, operation kind,
+canonical payload, record digest и ordinal:
+
+```text
+insert
+assert_existing
+```
+
+`insert` создаёт утверждённую overlay row. `assert_existing` проверяет точную
+parent row без записи. Canonical payload является immutable audit snapshot, но
+не заменяет normalized authoring rows.
+
+### `catalog_import_dependency_assertions`
+
+Scoped assertion связывает materialization scope с exact G4 dependency и
+canonical base-row snapshot. Она не изменяет `graph_nodes.status`, не создаёт
+новый G4 и не меняет историческую или пространственную семантику узла. Любое
+расхождение текущей canonical base row со snapshot является hard block.
+
+### `runtime_catalog_activation_events`
+
+Append-only read pointer на успешно импортированный domain catalog. Event
+связывает exact import, compatible world tuple, registry/runtime contract,
+activation request/attestation, runtime release и previous event. Активация
+разрешена только после exact import readback, успешного party preflight,
+проверки runtime identity и CAS под фиксированной scope lock.
+
+### `party_catalog_pins`
+
+Нормализованный immutable pin каталога партии: scope, revision/digest, exact
+import и audit digest, registry/runtime contract, compatible world tuple и
+activation event. Межбазового FK в `world_base` нет; ссылку проверяет
+приложение.
+
+### `party_materialization_run_catalog_pins`
+
+Run-level provenance того же exact domain pin. Для materialization v2
+существующее `party_materialization_runs.catalog_digest` обязано совпадать с
+нормализованной row; источником полного provenance является run-pin row.
+
+Import, activation и party persistence проходят exact readback до commit.
+Runtime loader восстанавливает только membership данного `import_id`, проверяет
+все record/table/root digests и compatible world tuple. Live authoring rows и
+текущий active event не могут подменить historical catalog существующей партии.
+
+## 15. Критерий повышения в active
 
 Технический норматив повышается вместе с основным архитектурным документом только после синхронизации DDL, generated schema reference, schemas/contracts, importer/readiness checks, party persistence и PASS отдельного критика.

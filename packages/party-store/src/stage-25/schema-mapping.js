@@ -10,7 +10,8 @@ const PARTY_RUNTIME_V2_TARGETS = new Set([
   'party_materialization_choices', 'party_g5_nodes', 'party_g5_edges', 'party_g5_anchors', 'party_npcs', 'party_npc_traits',
   'party_npc_relations', 'party_npc_knowledge', 'party_npc_schedules', 'party_containers', 'party_items', 'party_item_placements',
   'party_ownership', 'party_decision_requests', 'party_decision_options', 'party_decision_results', 'party_change_sets',
-  'party_autonomous_updates', 'party_visible_read_models'
+  'party_autonomous_updates', 'party_visible_read_models', 'party_catalog_pins',
+  'party_materialization_run_catalog_pins'
 ]);
 
 const SPEC_STATUS_TO_DDL_STATUS = Object.freeze({
@@ -175,7 +176,8 @@ export const PARTY_SPEC_TARGET_MAPPINGS = Object.freeze({
     'party_materialization_runs', 'party_materialization_choices', 'party_g5_nodes', 'party_g5_edges', 'party_g5_anchors',
     'party_npcs', 'party_npc_traits', 'party_npc_relations', 'party_npc_knowledge', 'party_npc_schedules', 'party_containers',
     'party_items', 'party_item_placements', 'party_ownership', 'party_decision_requests', 'party_decision_options',
-    'party_decision_results', 'party_change_sets', 'party_autonomous_updates', 'party_visible_read_models'
+    'party_decision_results', 'party_change_sets', 'party_autonomous_updates', 'party_visible_read_models',
+    'party_catalog_pins', 'party_materialization_run_catalog_pins'
   ].map((table) => [table, { actualTargetTable: table, storage: 'party_runtime_v2' }]))
 });
 

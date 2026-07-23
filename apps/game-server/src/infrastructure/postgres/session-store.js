@@ -1,5 +1,8 @@
-export function createPostgresSessionStore({ pool } = {}) {
+export function createPostgresSessionStore({ pool, verifyPartyCatalogPin = null } = {}) {
   requirePool(pool);
+  if (verifyPartyCatalogPin != null && typeof verifyPartyCatalogPin !== 'function') {
+    throw new TypeError('verifyPartyCatalogPin must be a function when provided.');
+  }
   return Object.freeze({
     async load(partyId) {
       const id = key(partyId);
@@ -10,6 +13,7 @@ export function createPostgresSessionStore({ pool } = {}) {
         WHERE p.party_id = $1`, [id]);
       if (rows.length === 0) return null;
       if (Number(rows[0].schema_version) !== 2) throw storeError('LEGACY_PARTY_RUNTIME_REJECTED', `Party ${id} is not party_runtime_v2.`);
+      await verifyPartyCatalogPin?.(id);
       if (rows[0].request_id == null) return null;
       return structuredClone({ version: 2, schema: 'game_server_session_v2', party_id: id, request_id: rows[0].request_id, stage26_result: rows[0].stage26_result, delivery_attempt: rows[0].delivery_attempt, delivery_ack_result: rows[0].delivery_ack_result, screen: rows[0].screen, turn_number: Number(rows[0].turn_number), last_turn_id: rows[0].last_turn_id, updated_at: rows[0].updated_at instanceof Date ? rows[0].updated_at.toISOString() : rows[0].updated_at });
     },

@@ -109,6 +109,7 @@ export function materializeWorldInstances(input) {
     seed_digest: seed.digest,
     input_digest: canonicalDigest(input),
     catalog_digest: input.catalog_digest,
+    catalog_bundle_digest: input.catalog_bundle_digest ?? input.catalog_digest,
     choices,
     rng_draw_count: random.drawCount,
     created_refs: instances.map((instance) => ({ domain: instance.domain, instance_id: instance.instance_id, candidate_id: instance.candidate_id, rule_id: instance.rule_id }))
@@ -154,9 +155,18 @@ export function repairWorldInstances(input) {
 export function materializeG5Scene(input) {
   const catalogSet = input?.allowed_g5_template_set ?? {};
   const suppliedCatalogDigest = catalogSet.catalog_digest;
-  const catalogSnapshot = { version: catalogSet.version, schema: catalogSet.schema, selected_g4_type_id: catalogSet.selected_g4_type_id, world_revision_id: catalogSet.world_revision_id, allowed_g5_templates: catalogSet.allowed_g5_templates };
+  const sourceCatalogDigest = catalogSet.source_catalog_digest ?? null;
+  const catalogSnapshot = {
+    version: catalogSet.version,
+    schema: catalogSet.schema,
+    selected_g4_type_id: catalogSet.selected_g4_type_id,
+    world_revision_id: catalogSet.world_revision_id,
+    ...(sourceCatalogDigest == null ? {} : { source_catalog_digest: sourceCatalogDigest }),
+    allowed_g5_templates: catalogSet.allowed_g5_templates
+  };
   const actualCatalogDigest = canonicalDigest(catalogSnapshot);
   if (!/^[a-f0-9]{64}$/.test(String(suppliedCatalogDigest ?? '')) || suppliedCatalogDigest !== actualCatalogDigest) throw new MaterializationError('CATALOG_DIGEST_MISMATCH', 'Stage 13 catalog digest must bind the complete immutable allowed G5 template snapshot.');
+  if (sourceCatalogDigest != null && !/^[a-f0-9]{64}$/.test(String(sourceCatalogDigest))) throw new MaterializationError('CATALOG_DIGEST_MISMATCH', 'Stage 13 source catalog digest must be a SHA-256 domain pin.');
   const suppliedTemplates = catalogSet.allowed_g5_templates ?? [];
   const selectedG4TypeId = input.selected_start_node?.selected?.selected_g4_type_id ?? catalogSet.selected_g4_type_id;
   const templates = suppliedTemplates
@@ -279,7 +289,7 @@ export function materializeG5Scene(input) {
   const startAnchor = anchors.find((anchor) => anchor.anchor_id === startIds[0]);
   const exitAnchorIds = selected.slot_rules.filter((rule) => rule.slot_domain === 'anchor' && ['exit', 'start_and_exit'].includes(rule.entry_role)).flatMap((rule) => anchorBySlot.get(rule.slot_key) ?? []);
   assertConnectedG5Graph(minilocations, anchors, edges, startAnchor.anchor_id, exitAnchorIds);
-  const trace = { run_id: runId, run_kind: 'baseline', occurrence: materializationContext.occurrence, world_revision_id: selected.materialization_profile.world_revision_id, materializer_version: MATERIALIZER_VERSION, rng_version: RNG_VERSION, seed_context: seedContext, seed_digest: seed.digest, input_digest: canonicalDigest(input), catalog_digest: actualCatalogDigest, idempotency_key: `materialization:${materializationContext.party_id}:${runId}`, selected_template_id: selected.template_id, profile_id: selected.materialization_profile.profile_id, layout_template_id: selected.materialization_profile.layout_template_id, choices };
+  const trace = { run_id: runId, run_kind: 'baseline', occurrence: materializationContext.occurrence, world_revision_id: selected.materialization_profile.world_revision_id, materializer_version: MATERIALIZER_VERSION, rng_version: RNG_VERSION, seed_context: seedContext, seed_digest: seed.digest, input_digest: canonicalDigest(input), catalog_digest: sourceCatalogDigest ?? actualCatalogDigest, catalog_bundle_digest: actualCatalogDigest, idempotency_key: `materialization:${materializationContext.party_id}:${runId}`, selected_template_id: selected.template_id, profile_id: selected.materialization_profile.profile_id, layout_template_id: selected.materialization_profile.layout_template_id, choices };
   trace.result_digest = canonicalDigest({ party_id: materializationContext.party_id, run_id: runId, g4_id: g4Id, g5_minilocations: minilocations, g5_anchors: anchors, g5_edges: edges, player_start_anchor_id: startAnchor.anchor_id });
   return deepFreeze({
     version: 1,

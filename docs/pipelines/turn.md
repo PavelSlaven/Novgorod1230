@@ -26,6 +26,14 @@
 
 State reader, code-owned command registry, visible projector, narrator, party store, materializer, random source и screen projector передаются явно. Bounded decision executor, secret и expiry нужны только при неоднозначном закрытом наборе команд.
 
+Reload/turn получает item/container catalog только из persisted
+`party_catalog_pins` и exact historical import через `@rus/runtime-catalog`.
+Для first-entry materialization persisted domain `catalog_digest` и canonical
+`catalog_bundle_digest` проверяются отдельно; run pin записывается атомарно с
+materialization run.
+Текущий active event не читается. Отсутствующий pin возвращает
+`PARTY_CATALOG_PIN_MISSING` без backfill и rematerialization.
+
 ## Границы
 
 Код не придумывает смысловые категории и отсутствующие варианты. Он выбирает зарегистрированный handler, рассчитывает штатные последствия и формирует change set. LLM не возвращает mode/consequence/write targets; её допустимый структурированный ответ — только точный bounded-decision result. Неизвестная команда, stale state/policy, поддельный token или невалидный change set останавливают pipeline.

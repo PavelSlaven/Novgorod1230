@@ -1,0 +1,44 @@
+{
+  "schema_version": "rus.runtime_catalog_public_interface_registry.v2",
+  "catalog_scope": "item_container_materialization_v2",
+  "owner": "@rus/runtime-catalog",
+  "interfaces": [
+    {
+      "name": "createRuntimeCatalogLoader",
+      "kind": "factory",
+      "dependencies": [
+        "worldBaseReader",
+        "supportedRuntimeContractDigests"
+      ]
+    },
+    {
+      "name": "loadActivePin",
+      "kind": "read_operation",
+      "input_schema": "rus.runtime_catalog_active_pin_request.v2",
+      "output_schema": "rus.runtime_catalog_pin.v2"
+    },
+    {
+      "name": "loadApprovedItemCatalog",
+      "kind": "read_operation",
+      "input_schema": "rus.runtime_catalog_pin.v2",
+      "output_schema": "rus.verified_item_catalog.v2"
+    },
+    {
+      "name": "assertCompatibleWorldPin",
+      "kind": "pure_validation"
+    },
+    {
+      "name": "selectApplicableItemCatalog",
+      "kind": "pure_projection"
+    },
+    {
+      "name": "RUNTIME_CATALOG_CONTRACT",
+      "kind": "versioned_contract",
+      "output_schema": "rus.runtime_catalog_contract.v2"
+    },
+    {
+      "name": "RUNTIME_CATALOG_CONTRACT_DIGEST",
+      "kind": "contract_digest"
+    }
+  ]
+}

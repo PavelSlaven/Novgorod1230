@@ -9,6 +9,7 @@
         "@rus/new-game",
         "@rus/party-store",
         "@rus/presentation",
+        "@rus/runtime-catalog",
         "@rus/turn",
         "@rus/visibility-knowledge-memory",
         "@rus/world-base",
@@ -333,6 +334,23 @@
     },
     {
       "dependencies": [
+        "@rus/materialization",
+        "@rus/world-base"
+      ],
+      "name": "@rus/runtime-catalog",
+      "owns": [
+        "domain catalog pin и typed runtime-catalog errors",
+        "exact reconstruction по immutable import membership",
+        "проверкой compatible full-world pin и runtime contract",
+        "чистой projection по region/effective date после полной проверки"
+      ],
+      "path": "packages/runtime-catalog",
+      "public_entry": "./src/index.js",
+      "purpose": "Read-only загрузка и exact verification активного или исторически pinned item/container runtime catalog.",
+      "version": "0.1.0"
+    },
+    {
+      "dependencies": [
         "@rus/kernel"
       ],
       "name": "@rus/social-law",
@@ -521,6 +539,27 @@
       "public_entry": "./src/index.js",
       "purpose": "Автономный редакторский инструмент для импорта, проверки, раскладки и экспорта игровых графов G0-G5. Инструмент не участвует в new-game/turn runtime и не изменяет каноническую БД.",
       "version": "0.17.0"
+    },
+    {
+      "dependencies": [
+        "@rus/runtime-catalog",
+        "@rus/world-catalog-workflow",
+        "pg"
+      ],
+      "name": "@rus/runtime-catalog-activation-tooling",
+      "owns": [
+        "pure delta compiler и semantic-equivalence gate",
+        "versioned requests, attestations, manifests и ledger digests",
+        "explicit typed PostgreSQL adapters и operator CLI",
+        "preflight/migration/import/activation orchestration",
+        "exact baseline snapshot reproduction и authoritative compatible-world",
+        "deterministic baseline registration ID и strict attestation bindings",
+        "generated static readers/writers для 40 registry tables"
+      ],
+      "path": "tools/runtime-catalog-activation",
+      "public_entry": "package exports",
+      "purpose": "Operator-only tooling для baseline registration, exact overlay compilation, import/readback и append-only domain catalog activation.",
+      "version": "0.1.0"
     },
     {
       "dependencies": [],

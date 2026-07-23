@@ -2,13 +2,11 @@ import { executePhysicalWritePlan } from './sql-plan.js';
 import { computeMaterializationResultDigest } from '@rus/contracts';
 import { applyLogicalOperations, digestRunIdentity, executeOptionalTurnPlan } from './party-store-turn.js';
 import { isCodeOwnedAutonomousUpdate } from '@rus/turn';
-
-const PARTY_RUNTIME_V2_TABLES = new Set([
-  'party_materialization_runs', 'party_materialization_choices', 'party_g5_nodes', 'party_g5_anchors', 'party_g5_edges',
-  'party_npcs', 'party_npc_traits', 'party_npc_relations', 'party_npc_knowledge', 'party_npc_schedules',
-  'party_containers', 'party_items', 'party_item_placements', 'party_ownership', 'party_state_snapshots',
-  'party_decision_requests', 'party_decision_options', 'party_decision_results', 'party_change_sets', 'party_autonomous_updates'
-]);
+import {
+  attachMaterializationRunCatalogPin,
+  loadPartyDomainPin,
+  normalizeMaterializationPlan
+} from './party-store-runtime-catalog.js';
 
 export function createPostgresPartyStore({ pool, catalogBundleLoader, materializerVersion = 'code_materializer_v2', rngVersion = 'mulberry32_v1' } = {}) {
   requirePool(pool);
@@ -47,8 +45,9 @@ export function createPostgresPartyStore({ pool, catalogBundleLoader, materializ
         FROM party_runtime.parties WHERE party_id=$1 FOR UPDATE`, [partyId]);
       if (party.rows.length !== 1 || Number(party.rows[0].schema_version) !== 2) throw repositoryError('PARTY_RUNTIME_V2_REQUIRED', 'First-entry materialization requires a committed party_runtime_v2 party.');
       if (party.rows[0].materializer_version !== materializerVersion || party.rows[0].rng_version !== rngVersion) throw repositoryError('MATERIALIZER_VERSION_PIN_MISMATCH', 'Party materializer/RNG pins are not supported by this runtime.');
-      const catalog = await catalogBundleLoader({ party: structuredClone(party.rows[0]), g4_id: g4Id, trigger, transaction });
-      if (!catalog || catalog.world_revision_id !== party.rows[0].world_revision_id || catalog.catalog_digest !== party.rows[0].world_catalog_digest || !catalog.historical_frame || typeof catalog.historical_frame !== 'object' || typeof catalog.region_id !== 'string' || !catalog.region_id.trim() || typeof catalog.g1_id !== 'string' || !catalog.g1_id.trim() || !Array.isArray(catalog.catalog_bundle?.rules) || !Array.isArray(catalog.catalog_bundle?.candidates) || typeof catalog.catalog_bundle?.player_start_anchor_slot_key !== 'string' || !catalog.catalog_bundle.player_start_anchor_slot_key.trim()) {
+      const domainPin = await loadPartyDomainPin(transaction, partyId, party.rows[0]);
+      const catalog = await catalogBundleLoader({ party: structuredClone(party.rows[0]), domain_catalog_pin: structuredClone(domainPin), g4_id: g4Id, trigger, transaction });
+      if (!catalog || catalog.world_revision_id !== party.rows[0].world_revision_id || catalog.catalog_digest !== domainPin.catalog_digest || !catalog.historical_frame || typeof catalog.historical_frame !== 'object' || typeof catalog.region_id !== 'string' || !catalog.region_id.trim() || typeof catalog.g1_id !== 'string' || !catalog.g1_id.trim() || !Array.isArray(catalog.catalog_bundle?.rules) || !Array.isArray(catalog.catalog_bundle?.candidates) || typeof catalog.catalog_bundle?.player_start_anchor_slot_key !== 'string' || !catalog.catalog_bundle.player_start_anchor_slot_key.trim()) {
         throw repositoryError('MATERIALIZATION_CATALOG_INVALID', 'Catalog bundle must match the party version pins.');
       }
       const occurrenceResult = await transaction.query('SELECT count(*)::int AS count FROM party_runtime.party_materialization_runs WHERE party_id=$1 AND g4_id=$2', [partyId, g4Id]);
@@ -71,7 +70,9 @@ export function createPostgresPartyStore({ pool, catalogBundleLoader, materializ
         world_revision_id: party.rows[0].world_revision_id, region_id: catalog.region_id, historical_frame: structuredClone(catalog.historical_frame), g1_id: catalog.g1_id, g4_id: g4Id, trigger, occurrence,
         materializer_version: party.rows[0].materializer_version, rng_algorithm_id: party.rows[0].rng_version, seed_context: seedContext,
         existing_party_state: { state_version: Number(party.rows[0].state_version), current_position: positionResult.rows[0] ?? null, latest_snapshot: snapshotResult.rows[0] ?? null, baseline_exists: false },
-        catalog_digest: catalog.catalog_digest, catalog_bundle: structuredClone(catalog.catalog_bundle)
+        catalog_digest: catalog.catalog_digest,
+        catalog_bundle_digest: digestRunIdentity(catalog.catalog_bundle),
+        catalog_bundle: structuredClone(catalog.catalog_bundle)
       });
     },
 
@@ -86,8 +87,10 @@ export function createPostgresPartyStore({ pool, catalogBundleLoader, materializ
 
     async commitMaterializationAndMovement({ partyId, g4Id, materialization, writePlan, idempotencyKey }, { transaction } = {}) {
       requireTransaction(transaction);
-      const plan = normalizeMaterializationPlan(materialization);
+      let plan = normalizeMaterializationPlan(materialization);
       const identity = validateMaterializationIdentity({ partyId, g4Id, materialization, plan, position: writePlan?.destination_position ?? materialization.player_start_position });
+      const domainPin = await loadPartyDomainPin(transaction, partyId);
+      plan = attachMaterializationRunCatalogPin({ plan, materialization, identity, domainPin });
       const replay = await claimTurnCommit(transaction, { partyId, idempotencyKey, writePlan, g4Id });
       if (replay) return replay;
       await executePhysicalWritePlan(transaction, plan);
@@ -98,7 +101,7 @@ export function createPostgresPartyStore({ pool, catalogBundleLoader, materializ
 
     async commitMaterializationRepair({ partyId, g4Id, previousRunId, previousResultDigest, materialization, idempotencyKey }) {
       return transact(async (transaction) => {
-        const plan = normalizeMaterializationPlan(materialization);
+        let plan = normalizeMaterializationPlan(materialization);
         const identity = validateMaterializationIdentity({ partyId, g4Id, materialization, plan, position: null });
         if (computeMaterializationResultDigest(materialization) !== materialization?.trace?.result_digest) throw repositoryError('MATERIALIZATION_REPAIR_RESULT_TAMPERED', 'Repair result does not match its code-generated result digest.');
         const repair = materialization?.trace?.repair;
@@ -111,6 +114,8 @@ export function createPostgresPartyStore({ pool, catalogBundleLoader, materializ
         if (!row || row.status !== 'committed' || row.result_digest !== previousResultDigest || row.world_revision_id !== materialization.trace.world_revision_id || row.materializer_version !== materialization.trace.materializer_version || row.rng_version !== materialization.trace.rng_version) throw repositoryError('MATERIALIZATION_REPAIR_PREVIOUS_RUN_MISMATCH', 'Persisted previous run or version pins do not match the repair request.');
         const runRecord = plan.write_batches.find((batch) => batch.target_table === 'party_materialization_runs')?.records?.[0];
         if (runRecord?.run_kind !== 'repair' || runRecord.supersedes_run_id !== previousRunId || runRecord.result_digest !== materialization.trace.result_digest) throw repositoryError('MATERIALIZATION_REPAIR_PLAN_INVALID', 'Repair write set does not preserve run history and result digest.');
+        const domainPin = await loadPartyDomainPin(transaction, partyId);
+        plan = attachMaterializationRunCatalogPin({ plan, materialization, identity, domainPin });
         const replay = await claimTurnCommit(transaction, { partyId, idempotencyKey, writePlan: materialization, g4Id });
         if (replay) return replay;
         await executePhysicalWritePlan(transaction, plan);
@@ -208,15 +213,6 @@ function resolveExistingCommit(row, payloadHash, planDigest) {
 async function finishTurnCommit(transaction, idempotencyKey, result) {
   await transaction.query(`UPDATE party_runtime.commit_idempotency SET status='committed', committed_result=$2, updated_at=NOW() WHERE idempotency_key=$1`, [idempotencyKey, result]);
   return result;
-}
-
-function normalizeMaterializationPlan(materialization) {
-  const plan = materialization?.physical_write_plan ?? materialization?.proposed_write_set;
-  if (!plan || !Array.isArray(plan.write_batches) || !Array.isArray(plan.transaction?.write_order)) throw repositoryError('MATERIALIZATION_WRITE_PLAN_REQUIRED', 'Materializer must return an executable normalized write plan.');
-  for (const batch of plan.write_batches) {
-    if (!PARTY_RUNTIME_V2_TABLES.has(batch.target_table) || batch.target_schema !== 'party_runtime' || batch.operation_mode !== 'insert_only') throw repositoryError('MATERIALIZATION_WRITE_TARGET_FORBIDDEN', `Forbidden materialization target ${batch.target_schema}.${batch.target_table}.`);
-  }
-  return plan;
 }
 
 async function upsertPosition(transaction, partyId, g4Id, position = {}) {

@@ -1,0 +1,128 @@
+{
+  "schema_version": "rus.runtime_catalog_contract_registry.v2",
+  "catalog_scope": "item_container_materialization_v2",
+  "contracts": [
+    {
+      "schema": "rus.catalog_record_registry.v1",
+      "owner": "@rus/runtime-catalog/canonical-records",
+      "status": "implemented"
+    },
+    {
+      "schema": "rus.catalog_record_projection.v2",
+      "owner": "@rus/runtime-catalog/canonical-records",
+      "status": "implemented"
+    },
+    {
+      "schema": "rus.runtime_catalog_pin.v2",
+      "owner": "@rus/runtime-catalog",
+      "status": "implemented"
+    },
+    {
+      "schema": "rus.verified_item_catalog.v2",
+      "owner": "@rus/runtime-catalog",
+      "status": "implemented"
+    },
+    {
+      "schema": "rus.domain_catalog_payload.v2",
+      "owner": "@rus/runtime-catalog/ledger-digests",
+      "status": "implemented"
+    },
+    {
+      "schema": "rus.item_container_overlay_candidate_semantic_payload.v1",
+      "owner": "@rus/runtime-catalog-activation-tooling",
+      "status": "implemented"
+    },
+    {
+      "schema": "rus.item_container_overlay_candidate.v3",
+      "owner": "@rus/runtime-catalog-activation-tooling",
+      "status": "implemented"
+    },
+    {
+      "schema": "rus.operator_baseline_snapshot_manifest.v2",
+      "owner": "@rus/runtime-catalog-activation-tooling",
+      "status": "implemented"
+    },
+    {
+      "schema": "rus.base_world_compatibility_manifest.v1",
+      "owner": "@rus/runtime-catalog-activation-tooling",
+      "status": "implemented"
+    },
+    {
+      "schema": "rus.baseline_registration_request.v2",
+      "owner": "@rus/runtime-catalog-activation-tooling",
+      "status": "implemented"
+    },
+    {
+      "schema": "rus.revision_promotion_manifest.v3",
+      "owner": "@rus/runtime-catalog-activation-tooling",
+      "status": "implemented"
+    },
+    {
+      "schema": "rus.item_container_overlay_approval_request.v2",
+      "owner": "@rus/runtime-catalog-activation-tooling",
+      "status": "implemented"
+    },
+    {
+      "schema": "rus.catalog_import_audit.v2",
+      "owner": "@rus/runtime-catalog/ledger-digests",
+      "status": "implemented"
+    },
+    {
+      "schema": "rus.runtime_catalog_party_preflight.v2",
+      "owner": "@rus/runtime-catalog-activation-tooling",
+      "status": "implemented"
+    },
+    {
+      "schema": "rus.runtime_catalog_activation_request.v2",
+      "owner": "@rus/runtime-catalog-activation-tooling",
+      "status": "implemented"
+    },
+    {
+      "schema": "rus.runtime_catalog_activation_event.v2",
+      "owner": "@rus/runtime-catalog-activation-tooling",
+      "status": "implemented"
+    },
+    {
+      "schema": "rus.runtime_catalog_context.v2",
+      "owner": "@rus/game-server",
+      "status": "implemented"
+    },
+    {
+      "schema": "rus.runtime_catalog_contract.v2",
+      "owner": "@rus/runtime-catalog/runtime-contract",
+      "status": "implemented"
+    }
+  ],
+  "typed_errors": [
+    "BASELINE_MANIFEST_MISMATCH",
+    "BASELINE_REGISTRATION_ID_MISMATCH",
+    "BASELINE_REGISTRATION_MISSING",
+    "BASE_WORLD_COMPATIBILITY_MISMATCH",
+    "PROMOTION_PARENT_DIGEST_MISMATCH",
+    "RUNTIME_CATALOG_ACTIVATION_MISSING",
+    "RUNTIME_CATALOG_SCOPE_MISMATCH",
+    "RUNTIME_CATALOG_REVISION_MISMATCH",
+    "RUNTIME_CATALOG_DIGEST_MISMATCH",
+    "RUNTIME_CATALOG_IMPORT_AUDIT_INVALID",
+    "RUNTIME_CATALOG_MEMBERSHIP_INVALID",
+    "RUNTIME_CATALOG_DEPENDENCY_ASSERTION_INVALID",
+    "RUNTIME_CATALOG_BASE_WORLD_PIN_MISMATCH",
+    "RUNTIME_CATALOG_CONTRACT_UNSUPPORTED",
+    "RUNTIME_CATALOG_CONTEXT_MISSING",
+    "RUNTIME_CATALOG_CONTEXT_INVALID",
+    "RUNTIME_CATALOG_STAGE_PIN_MISMATCH",
+    "ACTIVATION_PREVIOUS_EVENT_STALE",
+    "ACTIVATION_PARTY_PREFLIGHT_BLOCKED",
+    "ACTIVATION_PARTY_PREFLIGHT_STALE",
+    "MIGRATION_SCHEMA_FINGERPRINT_UNKNOWN",
+    "MIGRATION_PARTIAL_STATE",
+    "MIGRATION_LEDGER_CONFLICT",
+    "CATALOG_IMPORT_CONFLICT",
+    "CATALOG_IMPORT_PARTIAL_STATE",
+    "CATALOG_IMPORT_ASSERT_EXISTING_MISSING",
+    "CATALOG_IMPORT_ASSERT_EXISTING_MISMATCH",
+    "PARTY_CATALOG_PIN_MISSING",
+    "PARTY_CATALOG_PIN_MISMATCH",
+    "MATERIALIZATION_RUN_CATALOG_PIN_FORGED"
+  ]
+}

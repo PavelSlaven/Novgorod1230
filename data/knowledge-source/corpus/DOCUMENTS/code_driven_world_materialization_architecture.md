@@ -158,13 +158,21 @@ historical_frame
 g1_id
 g4_id
 catalog_bundle (immutable catalog snapshot)
-catalog_digest
+catalog_digest (exact domain catalog pin)
+catalog_bundle_digest (canonical digest применимой immutable projection)
 materializer_version
 rng_algorithm_id
 seed_context
 existing_party_state
 trigger
 ```
+
+`catalog_digest` и `catalog_bundle_digest` являются разными идентичностями.
+Первый связывает materialization run с approved domain revision/import и
+persisted party pin. Второй доказывает неизменность уже проверенной применимой
+projection. Подмена одного digest другим запрещена. Legacy input без
+`catalog_bundle_digest` допускается только внутри прежнего compatibility
+контракта и проверяет `catalog_digest` непосредственно против bundle.
 
 Обязательный результат:
 
@@ -307,3 +315,56 @@ generated artifacts актуальны;
 полный test suite и PostgreSQL integration проходят;
 отдельный агент-критик вернул PASS.
 ```
+
+## 14. Domain-scoped runtime catalog activation
+
+Полный world pin партии и pin предметно-контейнерного каталога являются
+разными identities.
+
+```text
+full world pin
+= parties.world_revision_id + parties.world_catalog_digest
+
+domain pin
+= item_container_materialization_v2 catalog revision
++ catalog digest
++ exact successful import
++ runtime contract
++ compatible world tuple
+```
+
+Domain revision не является полной world revision и не может выбираться общим
+world-pin selector. Parent tuple фиксирует точный operator snapshot, относительно
+которого собран overlay. Compatible world tuple фиксирует полный world pin, с
+которым overlay разрешён runtime; равенство этих tuple не предполагается.
+
+Active domain pin читается ровно один раз при создании новой партии, до
+композиции Stage 8. Один immutable pin проходит через Stage 8, 13, 14, 16, 24 и
+25. Stage 24 включает party pin и run pin в тот же logical write plan, что и
+materialization rows, а Stage 25 записывает и проверяет их в одной party
+transaction.
+
+Reload, turn и повторный вход читают только persisted party pin и exact
+historical import snapshots. Active pointer повторно не читается. Смена active
+catalog не меняет существующие партии и не запускает автоматическую
+рематериализацию или backfill. Отсутствующий party domain pin является typed
+hard block.
+
+Runtime восстанавливает каталог только по exact import membership. Membership
+различает:
+
+- `insert` — строка принадлежит overlay и была создана import;
+- `assert_existing` — точная каноническая строка уже существовала в parent
+  snapshot и была проверена без записи.
+
+Scoped dependency assertion является утверждённым входом только одного
+materialization scope. Она хранит точный canonical base-row snapshot и не
+создаёт G4, не меняет его canonical status, историческую или пространственную
+семантику. Изменение base row после утверждения блокирует использование
+assertion.
+
+До materialization runtime обязан fail-closed проверить compatible world tuple,
+exact import и runtime contract. Domain pin, import provenance, activation event
+и их digests сохраняются в party state и run trace. Неполный pin, несовместимый
+tuple, отсутствующее membership или несовпавший digest запрещают запуск
+materialization.

@@ -1,11 +1,11 @@
 import { shapePlayerCharacterGameProfile } from '../stages/stage-11-player-character/contract.js';
 
-export function commitApprovedStage(context, stage, executionResult) {
+export function commitApprovedStage(context, stage, executionResult, { input = null } = {}) {
   const bundle = executionResult?.artifact ?? executionResult;
   const primary = selectPrimaryArtifact(stage.id, bundle);
   context.setStageResult(stage.id, executionResult);
   context.setStageOutput(stage.id, primary);
-  commitAuxiliaryArtifacts(context, stage.id, bundle);
+  commitAuxiliaryArtifacts(context, stage.id, bundle, input);
   context.freezeArtifact({
     artifactId: `stage:${stage.id}:${primary?.schema ?? stage.name}`,
     artifact: primary,
@@ -44,9 +44,9 @@ function selectPrimaryArtifact(stageId, bundle) {
   }
 }
 
-function commitAuxiliaryArtifacts(context, stageId, bundle) {
+function commitAuxiliaryArtifacts(context, stageId, bundle, input) {
   const entries = [];
-  if (stageId === 13) entries.push([1301, bundle?.code_precheck]);
+  if (stageId === 13) entries.push([1300, input?.allowed_g5_template_set], [1301, bundle?.code_precheck]);
   if (stageId === 14) entries.push([1401, bundle?.code_precheck]);
   if (stageId === 15) entries.push([1501, bundle?.code_precheck], [1502, bundle?.audit]);
   if (stageId === 16) entries.push([1601, bundle?.code_precheck], [1602, bundle?.audit]);

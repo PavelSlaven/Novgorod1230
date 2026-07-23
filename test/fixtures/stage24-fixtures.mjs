@@ -56,7 +56,7 @@ export function makeStage24Fixture() {
       g5_minilocations: [{ g5_minilocation_id: position.minilocation_id, parent_g4_node_id: position.location_id, template_id: 'g5-node-template-1', slot_key: 'main', state: {}, access: { access_state: 'open' }, visibility: { visibility_default: 'visible' } }],
       g5_anchors: [{ anchor_id: anchorId, minilocation_id: position.minilocation_id, anchor_template_id: 'g5-anchor-template-1', slot_key: 'entry', supports: { npc_capacity: 1, item_capacity: 2, container_capacity: 1 }, visibility: { visibility_default: 'visible' }, access: { access_state: 'open' } }],
       g5_edges: [], validation_report: { pass: true },
-      materialization_run: { run_id: 'baseline-stage24-001', run_kind: 'baseline', occurrence: 0, world_revision_id: 'revision-1', seed_digest: 'seed-stage24-001', input_digest: 'input-stage24-001', catalog_digest: 'catalog-digest', result_digest: 'result-stage24-001', materializer_version: 'code_materializer_v2', rng_version: 'mulberry32_v1', idempotency_key: 'materialization:party-stage24-001:baseline-stage24-001', seed_context: { party_id: partyId, g4_id: position.location_id }, choices: [], created_refs: [] }
+      materialization_run: { run_id: 'baseline-stage24-001', run_kind: 'baseline', occurrence: 0, world_revision_id: 'revision-1', seed_digest: 'seed-stage24-001', input_digest: 'input-stage24-001', catalog_digest: 'domain-catalog-digest', result_digest: 'result-stage24-001', materializer_version: 'code_materializer_v2', rng_version: 'mulberry32_v1', idempotency_key: 'materialization:party-stage24-001:baseline-stage24-001', seed_context: { party_id: partyId, g4_id: position.location_id }, choices: [], created_refs: [] }
     },
     g5_scene_audit: { version: 1, schema: 'g5_scene_audit', request_id: requestId, pass: true },
     initial_npc_placement: { version: 1, schema: 'initial_npc_placement', request_id: requestId, npcs: [] },
@@ -123,7 +123,21 @@ export function makeStage24Fixture() {
     player_character_id: playerId,
     idempotency_key: 'idem-stage24-001',
     schema_version: 'party_runtime_v2',
-    version_pins: { world_revision_id: 'revision-1', world_catalog_digest: 'catalog-digest', materializer_version: 'code_materializer_v2', rng_version: 'mulberry32_v1', command_catalog_digest: 'command-digest', profile_bundle_digest: 'profile-digest' }
+    version_pins: { world_revision_id: 'revision-1', world_catalog_digest: 'catalog-digest', materializer_version: 'code_materializer_v2', rng_version: 'mulberry32_v1', command_catalog_digest: 'command-digest', profile_bundle_digest: 'profile-digest' },
+    domain_catalog_pin: {
+      schema: 'rus.runtime_catalog_pin.v2',
+      catalog_scope: 'item_container_materialization_v2',
+      catalog_revision_id: 'domain-revision-2',
+      catalog_digest: 'domain-catalog-digest',
+      import_id: 'import-2',
+      import_audit_digest: 'import-audit-digest',
+      record_registry_digest: 'registry-digest',
+      runtime_contract_digest: 'runtime-contract-digest',
+      compatible_world_revision_id: 'revision-1',
+      compatible_world_catalog_digest: 'catalog-digest',
+      compatible_world_pin_manifest_digest: 'world-pin-manifest-digest',
+      activation_event_id: 'activation-2'
+    }
   };
   const approvedPipelineManifest = buildApprovedPipelineManifest({ request_id: requestId, artifacts: approvedPipelineOutputs });
   const inputArgs = {

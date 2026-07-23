@@ -206,7 +206,7 @@ export function buildAllowedG5TemplateSet({ records_by_table: records = {}, grap
     access_model: structuredClone(profile.access_model),
     source_catalog_digest: sourceCatalogDigest
   };
-  const core = { version: 1, schema: 'allowed_g5_template_set', selected_g4_type_id: template.g4_type_id, world_revision_id: worldRevisionId, allowed_g5_templates: [template] };
+  const core = { version: 1, schema: 'allowed_g5_template_set', selected_g4_type_id: template.g4_type_id, world_revision_id: worldRevisionId, source_catalog_digest: sourceCatalogDigest, allowed_g5_templates: [template] };
   return deepFreeze({ ...core, catalog_digest: digestValue(core) });
 }
 

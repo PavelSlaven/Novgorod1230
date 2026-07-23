@@ -29,6 +29,26 @@ function createMemoryPostgres() {
   return { db, Pool };
 }
 
+async function installRuntimeCatalogPinTables(pool) {
+  // Exact DDL, constraints and immutability triggers are exercised in the
+  // PostgreSQL 16 migration suite. pg-mem needs only the SQL-plan target shape.
+  await pool.query(`CREATE TABLE party_runtime.party_catalog_pins (
+    party_id TEXT NOT NULL, catalog_scope TEXT NOT NULL, catalog_revision_id TEXT NOT NULL,
+    catalog_digest TEXT NOT NULL, import_id TEXT NOT NULL, import_audit_digest TEXT NOT NULL,
+    record_registry_digest TEXT NOT NULL, runtime_contract_digest TEXT NOT NULL,
+    compatible_world_revision_id TEXT NOT NULL, compatible_world_catalog_digest TEXT NOT NULL,
+    compatible_world_pin_manifest_digest TEXT NOT NULL, activation_event_id TEXT NOT NULL,
+    PRIMARY KEY (party_id,catalog_scope)
+  )`);
+  await pool.query(`CREATE TABLE party_runtime.party_materialization_run_catalog_pins (
+    party_id TEXT NOT NULL, run_id TEXT NOT NULL, catalog_scope TEXT NOT NULL,
+    catalog_revision_id TEXT NOT NULL, catalog_digest TEXT NOT NULL, import_id TEXT NOT NULL,
+    import_audit_digest TEXT NOT NULL, record_registry_digest TEXT NOT NULL,
+    runtime_contract_digest TEXT NOT NULL, activation_event_id TEXT NOT NULL,
+    PRIMARY KEY (party_id,run_id,catalog_scope)
+  )`);
+}
+
 async function createProviderServer(t) {
   const calls = [];
   const server = createServer(async (request, response) => {
@@ -112,6 +132,7 @@ test('production Stage 25 ports execute the actual Stage 24 party_runtime_v2 pla
   const { Pool } = createMemoryPostgres();
   const pool = new Pool();
   await runPartyRuntimeMigrations(pool);
+  await installRuntimeCatalogPinTables(pool);
   const fixture = makeStage24Fixture();
   const input = structuredClone(fixture.input);
   input.party_creation_context.party_id = 'party-stage25-production-path';
@@ -134,7 +155,7 @@ test('production Stage 25 ports execute the actual Stage 24 party_runtime_v2 pla
     party_creation_context: { ...input.party_creation_context, payload_hash: 'payload-stage25-production-path' },
     postconditions: logicalPlan.postconditions
   });
-  assert.equal(result.pass, true);
+  assert.equal(result.pass, true, result.rollback?.reason);
   assert.equal((await pool.query("SELECT status FROM party_runtime.parties WHERE party_id='party-stage25-production-path'")).rows[0].status, 'active');
   assert.equal((await pool.query("SELECT count(*)::int AS count FROM party_runtime.party_g5_anchors WHERE party_id='party-stage25-production-path'")).rows[0].count, 1);
   await pool.end();
@@ -162,6 +183,7 @@ test('production first-entry repository commits the generic materializer propose
   const { Pool } = createMemoryPostgres();
   const pool = new Pool();
   await runPartyRuntimeMigrations(pool);
+  await installRuntimeCatalogPinTables(pool);
   const partyId = 'party-generic-materializer-path';
   await pool.query(`INSERT INTO party_runtime.parties
     (party_id,schema_version,world_revision_id,world_catalog_digest,materializer_version,rng_version,command_catalog_digest,profile_bundle_digest,status)
@@ -182,24 +204,34 @@ test('production first-entry repository commits the generic materializer propose
   const scope = { status:'approved',world_revision_id:'revision-generic',region_id:'region-generic',valid_from_year:1200,valid_to_year:1300,allowed_seasons:['spring'] };
   catalog_bundle.rules = catalog_bundle.rules.map((record) => ({ ...scope, ...record }));
   catalog_bundle.candidates = catalog_bundle.candidates.map((record) => ({ ...scope, ...record, attributes: { ...record.attributes, ...(record.domain === 'g5_node' || record.domain === 'g5_anchor' ? { state: { state_version: 1 } } : {}), ...(record.domain === 'g5_anchor' ? { entry_role: 'start_and_exit' } : {}), ...(record.domain === 'npc' ? { causal_basis: { causal_basis_type:'regional_profile',causal_basis_id:'npc-rule' } } : {}) } }));
+  const domainCatalogDigest = canonicalDigest(catalog_bundle);
+  await pool.query(`INSERT INTO party_runtime.party_catalog_pins
+    (party_id,catalog_scope,catalog_revision_id,catalog_digest,import_id,import_audit_digest,
+     record_registry_digest,runtime_contract_digest,compatible_world_revision_id,
+     compatible_world_catalog_digest,compatible_world_pin_manifest_digest,activation_event_id)
+    VALUES ($1,'item_container_materialization_v2','domain-generic',$2,'import-generic',$3,$4,$5,
+            'revision-generic','catalog-generic',$6,'activation-generic')`,
+  [partyId, domainCatalogDigest, 'a'.repeat(64), 'b'.repeat(64), 'c'.repeat(64), 'd'.repeat(64)]);
   const materialization = materializeWorldInstances({
     version: 2, schema: 'world_materialization_request_v2', party_id: partyId, run_id: 'run-generic', world_revision_id: 'revision-generic', region_id:'region-generic',
     historical_frame: { calendar: { year: 1230, season:'spring' } }, g1_id: 'g1-generic', g4_id: 'g4-generic', trigger: 'first_entry', occurrence: 0,
     materializer_version: 'code_materializer_v2', rng_algorithm_id: 'mulberry32_v1',
     seed_context: { party_id: partyId, world_revision_id: 'revision-generic', g1_id: 'g1-generic', g4_id: 'g4-generic', trigger: 'first_entry', occurrence: 0, materializer_version: 'code_materializer_v2', rng_algorithm_id: 'mulberry32_v1' },
-    existing_party_state: { state_version: 0, baseline_exists: false }, catalog_bundle, catalog_digest: canonicalDigest(catalog_bundle)
+    existing_party_state: { state_version: 0, baseline_exists: false }, catalog_bundle, catalog_digest: domainCatalogDigest
   });
   const store = createPostgresPartyStore({ pool, catalogBundleLoader: async () => ({}) });
   await store.transact((transaction) => store.commitMaterializationAndMovement({ partyId, g4Id: 'g4-generic', materialization, writePlan: {}, idempotencyKey:'turn:generic:first-entry' }, { transaction }));
   assert.equal((await pool.query("SELECT count(*)::int AS count FROM party_runtime.party_materialization_runs WHERE party_id=$1 AND status='committed'", [partyId])).rows[0].count, 1);
   assert.equal((await pool.query('SELECT count(*)::int AS count FROM party_runtime.party_g5_anchors WHERE party_id=$1', [partyId])).rows[0].count, 1);
   assert.equal((await pool.query('SELECT count(*)::int AS count FROM party_runtime.party_npcs WHERE party_id=$1', [partyId])).rows[0].count, 1);
+  assert.equal((await pool.query('SELECT count(*)::int AS count FROM party_runtime.party_materialization_run_catalog_pins WHERE party_id=$1 AND run_id=$2', [partyId, materialization.run_id])).rows[0].count, 1);
   const replacementRequest = { version: 2, schema: 'world_materialization_request_v2', party_id: partyId, run_id: 'run-generic-repair', world_revision_id: 'revision-generic', region_id:'region-generic', historical_frame: { calendar: { year: 1230, season:'spring' } }, g1_id: 'g1-generic', g4_id: 'g4-generic', trigger: 'expansion', occurrence: 1, materializer_version: 'code_materializer_v2', rng_algorithm_id: 'mulberry32_v1', seed_context: { party_id: partyId, world_revision_id: 'revision-generic', g1_id: 'g1-generic', g4_id: 'g4-generic', trigger: 'expansion', occurrence: 1, materializer_version: 'code_materializer_v2', rng_algorithm_id: 'mulberry32_v1' }, existing_party_state: { state_version: 0, baseline_exists: true }, catalog_bundle, catalog_digest: canonicalDigest(catalog_bundle) };
   const repaired = repairWorldInstances({ version: 2, schema: 'world_materialization_repair_request_v2', repair_reason: 'approved repair', previous_result: materialization, previous_result_digest: materialization.trace.result_digest, replacement_request_digest: canonicalDigest(replacementRequest), repair_history: [{ previous_run_id: materialization.run_id }], replacement_request: replacementRequest });
   const repairedCommit = await store.commitMaterializationRepair({ partyId, g4Id:'g4-generic', previousRunId:materialization.run_id, previousResultDigest:materialization.trace.result_digest, materialization:repaired, idempotencyKey:'repair:generic:1' });
   assert.equal(repairedCommit.repaired, true);
   assert.equal((await store.commitMaterializationRepair({ partyId, g4Id:'g4-generic', previousRunId:materialization.run_id, previousResultDigest:materialization.trace.result_digest, materialization:repaired, idempotencyKey:'repair:generic:1' })).replayed, true);
   assert.equal((await pool.query("SELECT count(*)::int AS count FROM party_runtime.party_materialization_runs WHERE party_id=$1 AND run_kind='repair' AND supersedes_run_id=$2", [partyId, materialization.run_id])).rows[0].count, 1);
+  assert.equal((await pool.query('SELECT count(*)::int AS count FROM party_runtime.party_materialization_run_catalog_pins WHERE party_id=$1', [partyId])).rows[0].count, 2);
   await assert.rejects(() => store.commitMaterializationRepair({ partyId, g4Id:'g4-generic', previousRunId:materialization.run_id, previousResultDigest:'0'.repeat(64), materialization:repaired, idempotencyKey:'repair:generic:tampered' }), (error) => error.code === 'MATERIALIZATION_REPAIR_IDENTITY_MISMATCH');
   await pool.end();
 });
@@ -307,7 +339,7 @@ test('builtin production composition runs with PostgreSQL-backed session and del
   const root = await createProductionCompositionRoot({
     env,
     PoolClass: Pool,
-    config: { runtimeBindingsModule: bindings, runMigrations: true, probeProvider: true },
+    config: { runtimeBindingsModule: bindings, runMigrations: true, probeProvider: true, requireRuntimeCatalog: false },
     now: () => '2026-07-12T12:00:00.000Z'
   });
   t.after(() => root.close());

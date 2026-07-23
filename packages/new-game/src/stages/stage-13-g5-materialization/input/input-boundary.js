@@ -3,9 +3,19 @@ import { concern, isPlainObject, readSelectedChain, readSelectedPlaceTemplateId,
 import { filterAllowedG5Templates, normalizeAllowedG5TemplateSet } from '../../../g5-scene/templates.js';
 import { normalizeStage13MaterializationPolicy } from '../policy/constants.js';
 import { MATERIALIZER_VERSION, RNG_VERSION } from '@rus/materialization';
+import { buildAllowedG5TemplateSet } from '@rus/world-catalog-workflow';
 
 export function buildStage13G5MaterializationInput(context, options = {}) {
-  const allowedG5TemplateSet = normalizeAllowedG5TemplateSet(options.allowed_g5_template_set ?? options.allowedG5TemplateSet ?? context.getStageOutput?.(1300) ?? {});
+  const selectedStartNode = options.selected_start_node
+    ?? options.selectedStartNode
+    ?? context.getStageOutput?.(9);
+  const allowedG5TemplateSet = normalizeAllowedG5TemplateSet(
+    options.allowed_g5_template_set
+    ?? options.allowedG5TemplateSet
+    ?? context.getStageOutput?.(1300)
+    ?? buildRuntimeTemplateSet(context.runtimeCatalogContext, selectedStartNode)
+    ?? {}
+  );
   const input = {
     version: 1,
     schema: STAGE13_INPUT_SCHEMA,
@@ -14,7 +24,7 @@ export function buildStage13G5MaterializationInput(context, options = {}) {
     historical_frame: options.historical_frame ?? options.historicalFrame ?? context.requireStageOutput?.(3, 'historical frame'),
     weather_state: options.weather_state ?? options.weatherState ?? context.getFrozenArtifactBySchema?.('weather_state')?.artifact ?? null,
     regional_context_package: options.regional_context_package ?? options.regionalContextPackage ?? context.requireStageOutput?.(4, 'regional context package'),
-    selected_start_node: options.selected_start_node ?? options.selectedStartNode ?? context.requireStageOutput?.(9, 'selected start node'),
+    selected_start_node: selectedStartNode ?? context.requireStageOutput?.(9, 'selected start node'),
     start_place_audit: options.start_place_audit ?? options.startPlaceAudit ?? context.requireStageOutput?.(10, 'start place audit'),
     player_character: options.player_character ?? options.playerCharacter ?? context.getStageOutput?.(1101) ?? context.requireStageOutput?.(11, 'player character'),
     player_character_audit: options.player_character_audit ?? options.playerCharacterAudit ?? context.requireStageOutput?.(12, 'player character audit'),
@@ -42,6 +52,21 @@ export function buildStage13G5MaterializationInput(context, options = {}) {
       allowed_g5_templates: filterAllowedG5Templates(input)
     }
   };
+}
+
+function buildRuntimeTemplateSet(runtimeContext, selectedStartNode) {
+  const records = runtimeContext?.applicable_catalog?.records_by_table;
+  const pin = runtimeContext?.pin;
+  const selectedChain = readSelectedChain(selectedStartNode);
+  const graphNodeId = selectedChain.g4_node_id;
+  if (!records || !pin || !graphNodeId) return null;
+  return buildAllowedG5TemplateSet({
+    records_by_table: records,
+    graph_node_id: graphNodeId,
+    world_revision_id: pin.compatible_world_revision_id,
+    selected_g4_type_id: selectedStartNode?.selected?.selected_g4_type_id ?? null,
+    source_catalog_digest: pin.catalog_digest
+  });
 }
 
 export function validateStage13G5MaterializationInput(input = {}) {

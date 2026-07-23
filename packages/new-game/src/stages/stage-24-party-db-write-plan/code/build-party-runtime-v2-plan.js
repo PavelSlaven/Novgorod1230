@@ -1,15 +1,18 @@
 import { sha256 } from '@rus/kernel';
 import { STAGE24_PLAN_SCHEMA } from '../policy/constants.js';
 import { approvedPlayerPlacement } from './player-placement.js';
+import {
+  assertMaterializationRuntimeCatalogPins,
+  assertPartyRuntimeCatalogPins,
+  buildMaterializationRunCatalogPinRecord,
+  buildPartyCatalogPinRecord
+} from './runtime-catalog-pins.js';
 
 export function buildPartyRuntimeV2WritePlan(input) {
   const context = input?.party_creation_context ?? {};
   const pins = context.version_pins ?? {};
-  const requiredPins = ['world_revision_id', 'world_catalog_digest', 'materializer_version', 'rng_version', 'command_catalog_digest', 'profile_bundle_digest'];
-  const missing = requiredPins.filter((key) => !pins[key]);
-  if (context.schema_version !== 'party_runtime_v2' || missing.length > 0) {
-    throw Object.assign(new Error(`party_runtime_v2 version pins are missing: ${missing.join(', ')}`), { code: 'WRITE_PLAN_VERSION_PINS_MISSING', missing });
-  }
+  const domainPin = context.domain_catalog_pin ?? {};
+  assertPartyRuntimeCatalogPins(context);
 
   const outputs = input.approved_pipeline_outputs ?? {};
   const g5 = outputs.g5_scene_graph ?? {};
@@ -26,13 +29,18 @@ export function buildPartyRuntimeV2WritePlan(input) {
   if (!Number.isInteger(g5.materialization_run.occurrence) || !Array.isArray(g5.materialization_run.choices) || g5.validation_report?.pass !== true) throw stage24BuildError('WRITE_PLAN_MATERIALIZATION_TRACE_INCOMPLETE', 'Materialization occurrence, choices and passing validation_report are required.');
   const trace = { ...g5.materialization_run, stage15: npcTrace, stage16: itemTrace, choices: mergeChoices(g5.materialization_run.choices, npcTrace.choices, itemTrace.choices), created_refs: [...(g5.materialization_run.created_refs ?? []), ...(npcTrace.created_refs ?? []), ...(itemTrace.created_refs ?? [])] };
   if (trace.seed_context?.party_id !== partyId || trace.seed_context?.g4_id !== g4Id) throw stage24BuildError('WRITE_PLAN_MATERIALIZATION_IDENTITY_MISMATCH', 'Materialization seed identity must match party and G4 context.');
-  const pinPairs = [['world_revision_id', 'world_revision_id'], ['catalog_digest', 'world_catalog_digest'], ['materializer_version', 'materializer_version'], ['rng_version', 'rng_version']];
-  const mismatches = pinPairs.filter(([traceKey, pinKey]) => trace[traceKey] !== pins[pinKey]);
-  if (mismatches.length > 0) throw stage24BuildError('WRITE_PLAN_VERSION_PIN_MISMATCH', `Materialization trace differs from party pins: ${mismatches.map(([key]) => key).join(', ')}.`);
+  assertMaterializationRuntimeCatalogPins({ trace, pins, domainPin });
   const sourceTrace = [{ source_id: requestId, source_kind: 'approved_pipeline_manifest', digest: input.approved_pipeline_manifest_digest }];
 
   const batches = [];
   addBatch(batches, 'parties', [{ party_id: partyId, schema_version: 2, ...pins, state_version: 0, status: 'active' }], [], sourceTrace);
+  addBatch(
+    batches,
+    'party_catalog_pins',
+    [buildPartyCatalogPinRecord(partyId, domainPin)],
+    ['parties'],
+    sourceTrace
+  );
   addBatch(batches, 'party_materialization_runs', [{
     party_id: partyId, run_id: runId, g4_id: g4Id, run_kind: trace.run_kind, occurrence: trace.occurrence,
     seed_digest: trace.seed_digest,
@@ -42,6 +50,13 @@ export function buildPartyRuntimeV2WritePlan(input) {
     status: 'committed', validation_report: g5.validation_report ?? {}, trace,
     created_refs: collectCreatedRefs(g5, npcPlacement, itemPlacement)
   }], ['parties'], sourceTrace);
+  addBatch(
+    batches,
+    'party_materialization_run_catalog_pins',
+    [buildMaterializationRunCatalogPinRecord({ partyId, runId, domainPin })],
+    ['party_catalog_pins', 'party_materialization_runs'],
+    sourceTrace
+  );
   addBatch(batches, 'party_materialization_choices', (trace.choices ?? []).map((choice) => ({
     party_id: partyId, run_id: runId, choice_ordinal: choice.choice_ordinal, slot_key: choice.slot_key,
     candidate_set_digest: choice.candidate_set_digest, candidate_ids: choice.candidate_ids, selected_id: choice.selected_id, rng_draw: choice.rng_draw

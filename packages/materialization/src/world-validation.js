@@ -10,7 +10,12 @@ export function assertMaterializationInput(input) {
   if (typeof input.existing_party_state.baseline_exists !== 'boolean') throw new MaterializationError('MATERIALIZATION_INPUT_INVALID', 'existing_party_state.baseline_exists must be explicit.');
   if (!Array.isArray(input.catalog_bundle?.rules) || !Array.isArray(input.catalog_bundle?.candidates)) throw new MaterializationError('MATERIALIZATION_INPUT_INVALID', 'Catalog bundle rules and candidates are required.');
   if (typeof input.catalog_bundle.player_start_anchor_slot_key !== 'string' || !input.catalog_bundle.player_start_anchor_slot_key.trim()) throw new MaterializationError('MATERIALIZATION_INPUT_INVALID', 'Catalog bundle player_start_anchor_slot_key is required.');
-  if (canonicalDigest(input.catalog_bundle) !== input.catalog_digest) throw new MaterializationError('CATALOG_DIGEST_MISMATCH', 'Catalog digest does not match the supplied bundle.');
+  const actualBundleDigest = canonicalDigest(input.catalog_bundle);
+  if (input.catalog_bundle_digest != null) {
+    if (input.catalog_bundle_digest !== actualBundleDigest) throw new MaterializationError('CATALOG_BUNDLE_DIGEST_MISMATCH', 'Catalog bundle digest does not match the supplied immutable projection.');
+  } else if (actualBundleDigest !== input.catalog_digest) {
+    throw new MaterializationError('CATALOG_DIGEST_MISMATCH', 'Legacy catalog digest does not match the supplied bundle.');
+  }
   for (const rule of input.catalog_bundle.rules) {
     if (!rule.rule_id || !rule.slot_key || !rule.domain || !Array.isArray(rule.candidate_ids)) throw new MaterializationError('MATERIALIZATION_RULE_INVALID', 'Every rule requires IDs, domain and candidate_ids.');
     if (!Number.isInteger(rule.min_count) || !Number.isInteger(rule.max_count) || rule.min_count < 0 || rule.max_count < rule.min_count) throw new MaterializationError('MATERIALIZATION_RULE_INVALID', `Invalid count range for ${rule.rule_id}.`);

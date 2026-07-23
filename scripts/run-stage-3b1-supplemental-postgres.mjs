@@ -63,7 +63,11 @@ function createPostgresAdapter(client) {
     async readback(table, records) {
       if (records.length === 0) return { record_count: 0, payload_digest: supplementalDigest([]) };
       const columns = [...new Set(records.flatMap((record) => Object.keys(record)))];
-      const projections = columns.map((column) => records.some((record) => /^\d{4}-\d{2}-\d{2}$/u.test(record[column] ?? '')) ? `${quoteIdentifier(column)}::text AS ${quoteIdentifier(column)}` : quoteIdentifier(column)).join(', ');
+      const projections = columns.map((column) => {
+        const quoted = quoteIdentifier(column);
+        if (column === 'mass_grams_per_unit') return `${quoted}::float8 AS ${quoted}`;
+        return records.some((record) => /^\d{4}-\d{2}-\d{2}$/u.test(record[column] ?? '')) ? `${quoted}::text AS ${quoted}` : quoted;
+      }).join(', ');
       const rows = await client.query(`SELECT ${projections} FROM world_base.${quoteIdentifier(table)} WHERE id = ANY($1::text[])`, [records.map((record) => record.id)]);
       const byId = new Map(rows.rows.map((row) => [row.id, row]));
       const canonicalRows = records.map((record) => Object.fromEntries(Object.keys(record).map((column) => [column, byId.get(record.id)?.[column]])));

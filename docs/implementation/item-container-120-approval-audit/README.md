@@ -275,7 +275,8 @@ concrete item/container rules, PostgreSQL apply и Stage 3C promotion не вы�
 spatial/materialization gap. Пользователь подтвердил правильный способ закрытия gap:
 не создавать 9 332 отдельных profiles, а использовать допустимые DDL bindings и
 небольшой набор семантически подходящих G4. Это разрешило техническую компиляцию
-проекции, но не является финальной digest-bound аттестацией `approve_all_120`.
+проекции. Финальная digest-bound аттестация `approve_all_120` впоследствии получена
+и сохранена отдельным immutable evidence.
 
 ### Зафиксированная локальная среда
 
@@ -284,6 +285,7 @@ repository_root = C:\Users\Slaven\Documents\Новгород\.tmp-pr17-review
 repository = PavelSlaven/Novgorod1230
 branch = chatgpt/item-container-120-approval-audit
 head_before_implementation_commit = 32d24ac49f3b1c79a7e2e58003b85f7da025e38b
+post_approval_functional_commit = 7ef5dc2a21ef7ae5efbee9a8360074e11e9c079c
 origin_main = 8c9e8db9b275e2be9b9e5eb28b59c49e8baef068
 node = v24.16.0
 npm = 11.13.0
@@ -310,8 +312,8 @@ G4 materialization profiles bindings slot rules item container runtime Stage 8 S
 
 `repo-intel:status` вернул готовый Graphify graph версии `0.9.17`; нормативный
 knowledge-source имеет известный `degraded` warning о semantic coverage gaps, но без
-readiness errors. Graphify после итоговых исправлений пересобран: 24 202 nodes,
-47 933 edges, 1 418 communities. Его результаты использовались только для навигации и не
+readiness errors. Graphify после итоговых исправлений пересобран: 24 276 nodes,
+48 062 edges, 1 424 communities. Его результаты использовались только для навигации и не
 подменяли нормативы.
 
 ### Канонический mapping и coverage
@@ -488,7 +490,7 @@ graphify update .                                                  PASS
 один skip из-за отсутствия Chromium executable в локальной test-конфигурации; это
 явно зафиксированное ограничение, а не скрытый runtime failure. Graphify обновлён до
 24 276 nodes, 48 062 edges и 1 424 communities; отдельно сохранены предупреждения о
-31 SQL-файле без `tree_sitter_sql` и 292 файлах без извлечённых nodes.
+31 SQL-файле без `tree_sitter_sql` и 294 файлах без извлечённых nodes.
 
 ### Текущий gate
 
@@ -507,9 +509,11 @@ stage3c_postgresql_lifecycle = PASS
 stage3c_promotion = completed_in_isolated_review_database
 current_post_fix_independent_critic = PASS
 current_post_fix_standards_review = PASS
-current_post_fix_clean_clone_acceptance = pending
+current_post_fix_clean_clone_acceptance = PASS
+current_post_fix_clean_clone_sha = 7ef5dc2a21ef7ae5efbee9a8360074e11e9c079c
+remaining_item_container_architecture_gaps = 0
 runtime_activation = false
-pr_state = draft
+pr_state = draft_pending_final_evidence_push
 ```
 
 Повторный независимый critic текущего Stage 3C diff дал `PASS`; Standards-аудит —
@@ -530,6 +534,12 @@ attestation digest, воспроизвёл dry-run digests, проверил 39 
 Для текущего exact candidate также подтверждено одинаковое ordering всех
 `[a-z0-9_]+` IDs в проверенных locales.
 
-Следующий разрешённый порядок: clean-clone acceptance exact functional commit →
-финальный evidence commit → push только в существующую ветку PR №17 → перевод PR из
-draft в `READY_FOR_MERGE` без activation.
+Финальный clean-clone acceptance выполнен на exact functional commit
+`7ef5dc2a21ef7ae5efbee9a8360074e11e9c079c`. В чистой копии прошли `npm ci`, docs,
+43 generated files, candidate/request/attestation dry-run digests, world-catalog
+130/130, полный `npm test` и повторный PostgreSQL rollback/apply/readback/repeat в
+новой БД `pr17_clean_stage3c`. Результат совпал с сохранённым promotion evidence;
+временные clone и container удалены.
+
+Следующий разрешённый порядок: финальный evidence commit → push только в существующую
+ветку PR №17 → перевод PR из draft в `READY_FOR_MERGE` без activation.

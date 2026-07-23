@@ -565,7 +565,7 @@ clean-clone удалены.
 ## Актуальный статус — remediation после `CHANGES REQUIRED`, 2026-07-23
 
 Единственный актуальный вывод для текущего рабочего дерева:
-`LOCAL_VALIDATION_PASS_AWAITING_INDEPENDENT_CRITIC_AND_CI`.
+`LOCAL_AND_CLEAN_CLONE_VALIDATION_PASS_AWAITING_GITHUB_CI`.
 Прежние аттестация и PostgreSQL promotion относятся к кандидату `d55b4e8a...` и
 перемещены в `evidence/history/`. Они не переносятся на новый candidate автоматически.
 
@@ -682,6 +682,11 @@ npm test                                                            PASS
   integration                                                       21 PASS, 5 PostgreSQL skips
   browser E2E                                                       1 skip: Chromium executable absent
   architecture                                                      PASS
+clean-clone acceptance exact commit
+  7ddb03e11e8c432e7ced1f0e7b86923ee87b4038                         PASS
+  npm ci, docs/generated reproducibility, candidate/request/dry-run  PASS
+  PostgreSQL Stage 3C runtime E2E 9/9 and repeat clean apply         PASS
+  npm test                                                           PASS
 ```
 
 Актуальный gate:
@@ -697,10 +702,12 @@ stage3c_postgresql_runtime_e2e = PASS
 stage3c_promotion_for_current_candidate = completed_in_isolated_review_database
 full_npm_test = PASS
 independent_critic_for_current_candidate = PASS
-clean_clone_ci_for_current_candidate = pending
+clean_clone_acceptance_for_current_candidate = PASS
+clean_clone_functional_sha = 7ddb03e11e8c432e7ced1f0e7b86923ee87b4038
+github_ci_for_current_candidate = pending
 runtime_activation = false
 existing_parties_rematerialized = false
-pr_state = ready_for_review_local_remediation_validated
+pr_state = ready_for_review_awaiting_github_ci
 merge_ready = false
 ```
 
@@ -708,6 +715,6 @@ merge_ready = false
 отсутствие generic fallback, coverage `9/9`, PostgreSQL DB-readback runtime E2E,
 internal API boundary и актуальность README; verdict: `PASS`.
 
-Следующий разрешённый шаг: функциональный commit, clean-clone acceptance exact commit,
-затем push только в существующий PR №17 и GitHub CI. Merge, activation и
-rematerialization этим approval не разрешены.
+Следующий разрешённый шаг: evidence-only README commit, затем push только в
+существующий PR №17 и GitHub CI. Merge, activation и rematerialization этим approval
+не разрешены.

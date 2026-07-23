@@ -704,17 +704,17 @@ full_npm_test = PASS
 independent_critic_for_current_candidate = PASS
 clean_clone_acceptance_for_current_candidate = PASS
 clean_clone_functional_sha = 7ddb03e11e8c432e7ced1f0e7b86923ee87b4038
-github_ci_for_current_candidate = queued_after_pull_request_ref_resync
+github_ci_for_current_candidate = PASS (workflow 29990348896, head 622fe847f67eb212771f8c7a25d1dc42ad823346)
 runtime_activation = false
 existing_parties_rematerialized = false
-pr_state = ready_for_review_github_ci_queued
-merge_ready = false
+pr_state = ready_for_review
+merge_ready = true
 ```
 
 Независимый critic проверил текущий exact remediation diff, digests, evidence,
 отсутствие generic fallback, coverage `9/9`, PostgreSQL DB-readback runtime E2E,
 internal API boundary и актуальность README; verdict: `PASS`.
 
-Следующий разрешённый шаг: evidence-only README commit, затем push только в
-существующий PR №17 и GitHub CI. Merge, activation и rematerialization этим approval
-не разрешены.
+GitHub clean-clone CI для текущего functional/evidence tree завершён успешно.
+Следующий возможный шаг — только ручной merge после review. Автоматический merge,
+activation и rematerialization этим approval не разрешены.

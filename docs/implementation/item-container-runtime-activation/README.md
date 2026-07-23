@@ -257,6 +257,11 @@ after critic findings
 - The same independent critic repeated the audit after the fixes and returned
   `PASS`. It repeated the focused runtime/new-game/migration suites (23 tests),
   the PostgreSQL forward-migration lifecycle and `git diff --check`; all passed.
+- The first GitHub CI run exposed a test-cleanup race only: the disposable
+  PostgreSQL container could stop before the test pool closed, producing late
+  asynchronous activity under Node.js 22 after an otherwise passing lifecycle.
+  Cleanup is now one ordered async callback (`pool.end()` then container removal);
+  the affected PostgreSQL integration suite passed locally.
 
 ## Implemented files and contracts
 
@@ -330,6 +335,9 @@ node --test test/integration/runtime-catalog-forward-migrations-postgres.test.js
 → PASS after first critic; privilege-drift regression proves that a temporary
   unauthorized GRANT invalidates the target fingerprint and exact REVOKE restores
   idempotent already_applied classification
+
+node --test test/integration/runtime-catalog-forward-migrations-postgres.test.js
+→ PASS after CI cleanup-order fix; no asynchronous activity after test completion
 
 npm run architecture:check
 → PASS

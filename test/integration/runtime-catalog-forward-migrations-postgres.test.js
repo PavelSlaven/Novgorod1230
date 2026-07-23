@@ -52,7 +52,11 @@ test('runtime catalog forward migrations are exact, additive, immutable and idem
     return;
   }
   const name = `runtime-catalog-migrations-${process.pid}`;
-  t.after(() => docker(['rm', '-f', name]));
+  let pool;
+  t.after(async () => {
+    if (pool) await pool.end();
+    docker(['rm', '-f', name]);
+  });
   const started = docker([
     'run', '-d', '--name', name, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=local_only',
@@ -82,7 +86,7 @@ test('runtime catalog forward migrations are exact, additive, immutable and idem
   const port = Number(portOutput.match(/:(\d+)\s*$/u)?.[1]);
   assert.ok(Number.isInteger(port));
 
-  const pool = new pg.Pool({
+  pool = new pg.Pool({
     host: '127.0.0.1',
     port,
     user: 'runtime_migration',
@@ -90,7 +94,6 @@ test('runtime catalog forward migrations are exact, additive, immutable and idem
     database: 'runtime_migration',
     max: 2
   });
-  t.after(() => pool.end());
 
   const worldFiles = (await readdir(new URL('../../infra/world-base/schema/', import.meta.url)))
     .filter((file) => file.endsWith('.sql'))

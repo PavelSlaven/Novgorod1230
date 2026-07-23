@@ -34,6 +34,7 @@
     },
     "existing_party_state": { "type": "object", "required": ["baseline_exists"], "properties": { "baseline_exists": { "type": "boolean" } } },
     "catalog_digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "catalog_bundle_digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
     "catalog_bundle": {
       "type": "object",
       "required": ["rules", "candidates", "player_start_anchor_slot_key"],

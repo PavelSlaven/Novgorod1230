@@ -1,0 +1,19 @@
+{
+  "name": "@rus/runtime-catalog-activation-tooling",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./overlay-compiler": "./src/overlay-compiler.js",
+    "./forward-migration": "./src/forward-migration.js",
+    "./forward-migrations": "./src/forward-migrations.js",
+    "./artifact-contracts": "./src/artifact-contracts.js",
+    "./semantic-equivalence": "./src/semantic-equivalence.js",
+    "./operator-executors": "./src/operator-executors.js"
+  },
+  "dependencies": {
+    "@rus/runtime-catalog": "0.1.0",
+    "@rus/world-catalog-workflow": "0.1.0",
+    "pg": "^8.22.0"
+  }
+}

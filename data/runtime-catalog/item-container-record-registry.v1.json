@@ -1,0 +1,1467 @@
+{
+  "schema": "rus.catalog_record_registry.v1",
+  "catalog_scope": "item_container_materialization_v2",
+  "entries": [
+    {
+      "table_name": "building_templates",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "region_id",
+        "title",
+        "slug",
+        "building_type",
+        "summary",
+        "allowed_place_types",
+        "allowed_location_types",
+        "required_economy",
+        "required_social_order",
+        "typical_owner",
+        "typical_controller",
+        "typical_users",
+        "materials",
+        "size_band",
+        "wealth_level",
+        "condition_band",
+        "layout_rules",
+        "room_templates",
+        "storage_rules",
+        "access_rules",
+        "locked_area_rules",
+        "hidden_area_rules",
+        "fire_risk",
+        "theft_risk",
+        "social_risk",
+        "typical_objects",
+        "typical_npc_roles",
+        "typical_activities",
+        "game_use",
+        "limits",
+        "status",
+        "confidence",
+        "sources",
+        "audit_notes"
+      ],
+      "excluded_operational_columns": [
+        "created_at",
+        "updated_at"
+      ],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "region_id": "text_nfc",
+        "title": "text_nfc",
+        "slug": "text_nfc",
+        "building_type": "text_nfc",
+        "summary": "text_nfc",
+        "allowed_place_types": "jsonb",
+        "allowed_location_types": "jsonb",
+        "required_economy": "text_nfc",
+        "required_social_order": "text_nfc",
+        "typical_owner": "text_nfc",
+        "typical_controller": "text_nfc",
+        "typical_users": "jsonb",
+        "materials": "jsonb",
+        "size_band": "text_nfc",
+        "wealth_level": "text_nfc",
+        "condition_band": "text_nfc",
+        "layout_rules": "jsonb",
+        "room_templates": "jsonb",
+        "storage_rules": "jsonb",
+        "access_rules": "jsonb",
+        "locked_area_rules": "jsonb",
+        "hidden_area_rules": "jsonb",
+        "fire_risk": "text_nfc",
+        "theft_risk": "text_nfc",
+        "social_risk": "text_nfc",
+        "typical_objects": "jsonb",
+        "typical_npc_roles": "jsonb",
+        "typical_activities": "jsonb",
+        "game_use": "text_nfc",
+        "limits": "text_nfc",
+        "status": "text_nfc",
+        "confidence": "text_nfc",
+        "sources": "jsonb",
+        "audit_notes": "text_nfc"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 0,
+      "reader_adapter_id": "building-templates-reader-v1",
+      "writer_adapter_id": "building-templates-writer-v1"
+    },
+    {
+      "table_name": "quantity_unit_definitions",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "dimension",
+        "canonical_unit",
+        "conversion_policy",
+        "status"
+      ],
+      "excluded_operational_columns": [],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "dimension": "text_nfc",
+        "canonical_unit": "text_nfc",
+        "conversion_policy": "jsonb",
+        "status": "text_nfc"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 1,
+      "reader_adapter_id": "quantity-unit-definitions-reader-v1",
+      "writer_adapter_id": "quantity-unit-definitions-writer-v1"
+    },
+    {
+      "table_name": "region_equipment_profiles",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "region_id",
+        "social_role_id",
+        "status"
+      ],
+      "excluded_operational_columns": [],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "region_id": "text_nfc",
+        "social_role_id": "text_nfc",
+        "status": "text_nfc"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 2,
+      "reader_adapter_id": "region-equipment-profiles-reader-v1",
+      "writer_adapter_id": "region-equipment-profiles-writer-v1"
+    },
+    {
+      "table_name": "source_records",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "title",
+        "source_type",
+        "summary",
+        "status",
+        "confidence"
+      ],
+      "excluded_operational_columns": [
+        "checked_at",
+        "created_at",
+        "updated_at"
+      ],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "title": "text_nfc",
+        "source_type": "text_nfc",
+        "summary": "text_nfc",
+        "status": "text_nfc",
+        "confidence": "text_nfc"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 3,
+      "reader_adapter_id": "source-records-reader-v1",
+      "writer_adapter_id": "source-records-writer-v1"
+    },
+    {
+      "table_name": "universal_categories",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "domain",
+        "stable_code",
+        "facet",
+        "preferred_label",
+        "definition",
+        "scope_note",
+        "inclusion_rules",
+        "exclusion_rules",
+        "title",
+        "status"
+      ],
+      "excluded_operational_columns": [],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "domain": "text_nfc",
+        "stable_code": "text_nfc",
+        "facet": "text_nfc",
+        "preferred_label": "text_nfc",
+        "definition": "text_nfc",
+        "scope_note": "text_nfc",
+        "inclusion_rules": "text_nfc",
+        "exclusion_rules": "text_nfc",
+        "title": "text_nfc",
+        "status": "text_nfc"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 4,
+      "reader_adapter_id": "universal-categories-reader-v1",
+      "writer_adapter_id": "universal-categories-writer-v1"
+    },
+    {
+      "table_name": "world_revisions",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "parent_revision_id",
+        "title",
+        "catalog_digest",
+        "status"
+      ],
+      "excluded_operational_columns": [
+        "approved_at",
+        "created_at"
+      ],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "parent_revision_id": "text_nfc",
+        "title": "text_nfc",
+        "catalog_digest": "text_nfc",
+        "status": "text_nfc"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 5,
+      "reader_adapter_id": "world-revisions-reader-v1",
+      "writer_adapter_id": "world-revisions-writer-v1"
+    },
+    {
+      "table_name": "building_layout_templates",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "world_revision_id",
+        "region_id",
+        "building_template_id",
+        "valid_from",
+        "valid_to",
+        "status"
+      ],
+      "excluded_operational_columns": [],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "world_revision_id": "text_nfc",
+        "region_id": "text_nfc",
+        "building_template_id": "text_nfc",
+        "valid_from": "date",
+        "valid_to": "date",
+        "status": "text_nfc"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 6,
+      "reader_adapter_id": "building-layout-templates-reader-v1",
+      "writer_adapter_id": "building-layout-templates-writer-v1"
+    },
+    {
+      "table_name": "category_labels",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "category_id",
+        "language",
+        "label",
+        "label_type",
+        "source_id"
+      ],
+      "excluded_operational_columns": [],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "category_id": "text_nfc",
+        "language": "text_nfc",
+        "label": "text_nfc",
+        "label_type": "text_nfc",
+        "source_id": "text_nfc"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 7,
+      "reader_adapter_id": "category-labels-reader-v1",
+      "writer_adapter_id": "category-labels-writer-v1"
+    },
+    {
+      "table_name": "container_content_category_relations",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "container_category_id",
+        "content_category_id",
+        "compatibility",
+        "status"
+      ],
+      "excluded_operational_columns": [],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "container_category_id": "text_nfc",
+        "content_category_id": "text_nfc",
+        "compatibility": "text_nfc",
+        "status": "text_nfc"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 8,
+      "reader_adapter_id": "container-content-category-relations-reader-v1",
+      "writer_adapter_id": "container-content-category-relations-writer-v1"
+    },
+    {
+      "table_name": "container_templates",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "world_revision_id",
+        "region_id",
+        "category_id",
+        "source_id",
+        "capacity",
+        "packing_slot_cost",
+        "capacity_policy",
+        "access_policy",
+        "status"
+      ],
+      "excluded_operational_columns": [],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "world_revision_id": "text_nfc",
+        "region_id": "text_nfc",
+        "category_id": "text_nfc",
+        "source_id": "text_nfc",
+        "capacity": "integer_decimal",
+        "packing_slot_cost": "integer_decimal",
+        "capacity_policy": "jsonb",
+        "access_policy": "jsonb",
+        "status": "text_nfc"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 9,
+      "reader_adapter_id": "container-templates-reader-v1",
+      "writer_adapter_id": "container-templates-writer-v1"
+    },
+    {
+      "table_name": "g5_anchor_templates",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "category_id",
+        "can_hold_npc",
+        "can_hold_item",
+        "can_hold_container",
+        "npc_capacity",
+        "item_capacity",
+        "container_capacity",
+        "access_policy",
+        "visibility_policy",
+        "initial_state",
+        "status",
+        "valid_from",
+        "valid_to",
+        "confidence"
+      ],
+      "excluded_operational_columns": [],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "category_id": "text_nfc",
+        "can_hold_npc": "boolean",
+        "can_hold_item": "boolean",
+        "can_hold_container": "boolean",
+        "npc_capacity": "integer_decimal",
+        "item_capacity": "integer_decimal",
+        "container_capacity": "integer_decimal",
+        "access_policy": "jsonb",
+        "visibility_policy": "jsonb",
+        "initial_state": "jsonb",
+        "status": "text_nfc",
+        "valid_from": "date",
+        "valid_to": "date",
+        "confidence": "text_nfc"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 10,
+      "reader_adapter_id": "g5-anchor-templates-reader-v1",
+      "writer_adapter_id": "g5-anchor-templates-writer-v1"
+    },
+    {
+      "table_name": "g5_edge_templates",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "passage_category_id",
+        "access_policy",
+        "visibility_policy",
+        "initial_state",
+        "status",
+        "valid_from",
+        "valid_to",
+        "confidence"
+      ],
+      "excluded_operational_columns": [],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "passage_category_id": "text_nfc",
+        "access_policy": "jsonb",
+        "visibility_policy": "jsonb",
+        "initial_state": "jsonb",
+        "status": "text_nfc",
+        "valid_from": "date",
+        "valid_to": "date",
+        "confidence": "text_nfc"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 11,
+      "reader_adapter_id": "g5-edge-templates-reader-v1",
+      "writer_adapter_id": "g5-edge-templates-writer-v1"
+    },
+    {
+      "table_name": "g5_minilocation_templates",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "category_id",
+        "capacity",
+        "access_policy",
+        "visibility_policy",
+        "initial_state",
+        "status",
+        "valid_from",
+        "valid_to",
+        "confidence"
+      ],
+      "excluded_operational_columns": [],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "category_id": "text_nfc",
+        "capacity": "integer_decimal",
+        "access_policy": "jsonb",
+        "visibility_policy": "jsonb",
+        "initial_state": "jsonb",
+        "status": "text_nfc",
+        "valid_from": "date",
+        "valid_to": "date",
+        "confidence": "text_nfc"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 12,
+      "reader_adapter_id": "g5-minilocation-templates-reader-v1",
+      "writer_adapter_id": "g5-minilocation-templates-writer-v1"
+    },
+    {
+      "table_name": "item_profile_sets",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "world_revision_id",
+        "region_id",
+        "context_domain",
+        "applicability",
+        "status"
+      ],
+      "excluded_operational_columns": [],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "world_revision_id": "text_nfc",
+        "region_id": "text_nfc",
+        "context_domain": "text_nfc",
+        "applicability": "jsonb",
+        "status": "text_nfc"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 13,
+      "reader_adapter_id": "item-profile-sets-reader-v1",
+      "writer_adapter_id": "item-profile-sets-writer-v1"
+    },
+    {
+      "table_name": "item_templates",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "region_id",
+        "title",
+        "status",
+        "category_id",
+        "world_revision_id",
+        "source_id"
+      ],
+      "excluded_operational_columns": [
+        "created_at",
+        "updated_at"
+      ],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "region_id": "text_nfc",
+        "title": "text_nfc",
+        "status": "text_nfc",
+        "category_id": "text_nfc",
+        "world_revision_id": "text_nfc",
+        "source_id": "text_nfc"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 14,
+      "reader_adapter_id": "item-templates-reader-v1",
+      "writer_adapter_id": "item-templates-writer-v1"
+    },
+    {
+      "table_name": "property_profiles",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "world_revision_id",
+        "region_id",
+        "property_category_id",
+        "status"
+      ],
+      "excluded_operational_columns": [],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "world_revision_id": "text_nfc",
+        "region_id": "text_nfc",
+        "property_category_id": "text_nfc",
+        "status": "text_nfc"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 15,
+      "reader_adapter_id": "property-profiles-reader-v1",
+      "writer_adapter_id": "property-profiles-writer-v1"
+    },
+    {
+      "table_name": "region_category_options",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "world_revision_id",
+        "region_id",
+        "category_id",
+        "valid_from",
+        "valid_to",
+        "weight",
+        "applicability",
+        "status"
+      ],
+      "excluded_operational_columns": [],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "world_revision_id": "text_nfc",
+        "region_id": "text_nfc",
+        "category_id": "text_nfc",
+        "valid_from": "date",
+        "valid_to": "date",
+        "weight": "integer_decimal",
+        "applicability": "jsonb",
+        "status": "text_nfc"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 16,
+      "reader_adapter_id": "region-category-options-reader-v1",
+      "writer_adapter_id": "region-category-options-writer-v1"
+    },
+    {
+      "table_name": "room_templates",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "region_id",
+        "room_category_id",
+        "capacity",
+        "access_policy",
+        "visibility_policy",
+        "status"
+      ],
+      "excluded_operational_columns": [],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "region_id": "text_nfc",
+        "room_category_id": "text_nfc",
+        "capacity": "integer_decimal",
+        "access_policy": "jsonb",
+        "visibility_policy": "jsonb",
+        "status": "text_nfc"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 17,
+      "reader_adapter_id": "room-templates-reader-v1",
+      "writer_adapter_id": "room-templates-writer-v1"
+    },
+    {
+      "table_name": "universal_category_relations",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "from_category_id",
+        "to_category_id",
+        "relation_type"
+      ],
+      "excluded_operational_columns": [],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "from_category_id": "text_nfc",
+        "to_category_id": "text_nfc",
+        "relation_type": "text_nfc"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 18,
+      "reader_adapter_id": "universal-category-relations-reader-v1",
+      "writer_adapter_id": "universal-category-relations-writer-v1"
+    },
+    {
+      "table_name": "building_layout_nodes",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "layout_template_id",
+        "slot_key",
+        "room_template_id",
+        "required",
+        "ordinal"
+      ],
+      "excluded_operational_columns": [],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "layout_template_id": "text_nfc",
+        "slot_key": "text_nfc",
+        "room_template_id": "text_nfc",
+        "required": "boolean",
+        "ordinal": "integer_decimal"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 19,
+      "reader_adapter_id": "building-layout-nodes-reader-v1",
+      "writer_adapter_id": "building-layout-nodes-writer-v1"
+    },
+    {
+      "table_name": "container_content_profiles",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "container_template_id",
+        "empty_allowed",
+        "status"
+      ],
+      "excluded_operational_columns": [],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "container_template_id": "text_nfc",
+        "empty_allowed": "boolean",
+        "status": "text_nfc"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 20,
+      "reader_adapter_id": "container-content-profiles-reader-v1",
+      "writer_adapter_id": "container-content-profiles-writer-v1"
+    },
+    {
+      "table_name": "container_template_facet_bindings",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "container_template_id",
+        "category_id",
+        "facet",
+        "requires_regional_permission",
+        "status"
+      ],
+      "excluded_operational_columns": [],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "container_template_id": "text_nfc",
+        "category_id": "text_nfc",
+        "facet": "text_nfc",
+        "requires_regional_permission": "boolean",
+        "status": "text_nfc"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 21,
+      "reader_adapter_id": "container-template-facet-bindings-reader-v1",
+      "writer_adapter_id": "container-template-facet-bindings-writer-v1"
+    },
+    {
+      "table_name": "container_template_inventory_profiles",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "container_template_id",
+        "world_revision_id",
+        "source_id",
+        "mass_grams",
+        "carry_form",
+        "external_hand_cost",
+        "inventory_role",
+        "status"
+      ],
+      "excluded_operational_columns": [],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "container_template_id": "text_nfc",
+        "world_revision_id": "text_nfc",
+        "source_id": "text_nfc",
+        "mass_grams": "integer_decimal",
+        "carry_form": "text_nfc",
+        "external_hand_cost": "integer_decimal",
+        "inventory_role": "text_nfc",
+        "status": "text_nfc"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 22,
+      "reader_adapter_id": "container-template-inventory-profiles-reader-v1",
+      "writer_adapter_id": "container-template-inventory-profiles-writer-v1"
+    },
+    {
+      "table_name": "container_template_source_bindings",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "container_template_id",
+        "source_id",
+        "world_revision_id",
+        "evidence_class",
+        "claim_scope",
+        "valid_from",
+        "valid_to",
+        "confidence",
+        "review_status",
+        "notes",
+        "status"
+      ],
+      "excluded_operational_columns": [],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "container_template_id": "text_nfc",
+        "source_id": "text_nfc",
+        "world_revision_id": "text_nfc",
+        "evidence_class": "text_nfc",
+        "claim_scope": "text_nfc",
+        "valid_from": "date",
+        "valid_to": "date",
+        "confidence": "text_nfc",
+        "review_status": "text_nfc",
+        "notes": "text_nfc",
+        "status": "text_nfc"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 23,
+      "reader_adapter_id": "container-template-source-bindings-reader-v1",
+      "writer_adapter_id": "container-template-source-bindings-writer-v1"
+    },
+    {
+      "table_name": "g4_materialization_profiles",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "world_revision_id",
+        "region_id",
+        "layout_template_id",
+        "maximum_g5_nodes",
+        "player_start_anchor_slot_key",
+        "visibility_model",
+        "access_model",
+        "status",
+        "valid_from",
+        "valid_to",
+        "confidence"
+      ],
+      "excluded_operational_columns": [],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "world_revision_id": "text_nfc",
+        "region_id": "text_nfc",
+        "layout_template_id": "text_nfc",
+        "maximum_g5_nodes": "integer_decimal",
+        "player_start_anchor_slot_key": "text_nfc",
+        "visibility_model": "jsonb",
+        "access_model": "jsonb",
+        "status": "text_nfc",
+        "valid_from": "date",
+        "valid_to": "date",
+        "confidence": "text_nfc"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 24,
+      "reader_adapter_id": "g4-materialization-profiles-reader-v1",
+      "writer_adapter_id": "g4-materialization-profiles-writer-v1"
+    },
+    {
+      "table_name": "item_profile_entries",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "profile_id",
+        "item_template_id",
+        "slot_key",
+        "min_quantity",
+        "max_quantity",
+        "required",
+        "weight"
+      ],
+      "excluded_operational_columns": [],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "profile_id": "text_nfc",
+        "item_template_id": "text_nfc",
+        "slot_key": "text_nfc",
+        "min_quantity": "integer_decimal",
+        "max_quantity": "integer_decimal",
+        "required": "boolean",
+        "weight": "integer_decimal"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 25,
+      "reader_adapter_id": "item-profile-entries-reader-v1",
+      "writer_adapter_id": "item-profile-entries-writer-v1"
+    },
+    {
+      "table_name": "item_template_category_bindings",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "item_template_id",
+        "category_id",
+        "binding_kind",
+        "packing_slot_cost",
+        "packing_bundle_size",
+        "exclusivity_group",
+        "requires_regional_permission",
+        "status"
+      ],
+      "excluded_operational_columns": [],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "item_template_id": "text_nfc",
+        "category_id": "text_nfc",
+        "binding_kind": "text_nfc",
+        "packing_slot_cost": "integer_decimal",
+        "packing_bundle_size": "integer_decimal",
+        "exclusivity_group": "text_nfc",
+        "requires_regional_permission": "boolean",
+        "status": "text_nfc"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 26,
+      "reader_adapter_id": "item-template-category-bindings-reader-v1",
+      "writer_adapter_id": "item-template-category-bindings-writer-v1"
+    },
+    {
+      "table_name": "item_template_inventory_profiles",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "item_template_id",
+        "world_revision_id",
+        "source_id",
+        "mass_grams",
+        "carry_form",
+        "external_hand_cost",
+        "status"
+      ],
+      "excluded_operational_columns": [],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "item_template_id": "text_nfc",
+        "world_revision_id": "text_nfc",
+        "source_id": "text_nfc",
+        "mass_grams": "integer_decimal",
+        "carry_form": "text_nfc",
+        "external_hand_cost": "integer_decimal",
+        "status": "text_nfc"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 27,
+      "reader_adapter_id": "item-template-inventory-profiles-reader-v1",
+      "writer_adapter_id": "item-template-inventory-profiles-writer-v1"
+    },
+    {
+      "table_name": "item_template_quantity_profiles",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "item_template_id",
+        "world_revision_id",
+        "quantity_unit_id",
+        "quantity_dimension",
+        "minimum_quantity",
+        "maximum_quantity",
+        "default_quantity_policy",
+        "mass_grams_per_unit",
+        "stackable",
+        "partial_consumption_allowed",
+        "source_id",
+        "status"
+      ],
+      "excluded_operational_columns": [],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "item_template_id": "text_nfc",
+        "world_revision_id": "text_nfc",
+        "quantity_unit_id": "text_nfc",
+        "quantity_dimension": "text_nfc",
+        "minimum_quantity": "integer_decimal",
+        "maximum_quantity": "integer_decimal",
+        "default_quantity_policy": "jsonb",
+        "mass_grams_per_unit": "numeric_decimal",
+        "stackable": "boolean",
+        "partial_consumption_allowed": "boolean",
+        "source_id": "text_nfc",
+        "status": "text_nfc"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 28,
+      "reader_adapter_id": "item-template-quantity-profiles-reader-v1",
+      "writer_adapter_id": "item-template-quantity-profiles-writer-v1"
+    },
+    {
+      "table_name": "item_template_source_bindings",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "item_template_id",
+        "source_id",
+        "world_revision_id",
+        "evidence_class",
+        "claim_scope",
+        "valid_from",
+        "valid_to",
+        "confidence",
+        "review_status",
+        "notes",
+        "status"
+      ],
+      "excluded_operational_columns": [],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "item_template_id": "text_nfc",
+        "source_id": "text_nfc",
+        "world_revision_id": "text_nfc",
+        "evidence_class": "text_nfc",
+        "claim_scope": "text_nfc",
+        "valid_from": "date",
+        "valid_to": "date",
+        "confidence": "text_nfc",
+        "review_status": "text_nfc",
+        "notes": "text_nfc",
+        "status": "text_nfc"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 29,
+      "reader_adapter_id": "item-template-source-bindings-reader-v1",
+      "writer_adapter_id": "item-template-source-bindings-writer-v1"
+    },
+    {
+      "table_name": "property_profile_rules",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "property_profile_id",
+        "owner_kind",
+        "holder_kind",
+        "controller_kind",
+        "access_policy",
+        "claim_conditions",
+        "status"
+      ],
+      "excluded_operational_columns": [],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "property_profile_id": "text_nfc",
+        "owner_kind": "text_nfc",
+        "holder_kind": "text_nfc",
+        "controller_kind": "text_nfc",
+        "access_policy": "jsonb",
+        "claim_conditions": "jsonb",
+        "status": "text_nfc"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 30,
+      "reader_adapter_id": "property-profile-rules-reader-v1",
+      "writer_adapter_id": "property-profile-rules-writer-v1"
+    },
+    {
+      "table_name": "region_equipment_profile_entries",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "equipment_profile_id",
+        "item_template_id",
+        "slot_key",
+        "required",
+        "weight"
+      ],
+      "excluded_operational_columns": [],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "equipment_profile_id": "text_nfc",
+        "item_template_id": "text_nfc",
+        "slot_key": "text_nfc",
+        "required": "boolean",
+        "weight": "integer_decimal"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 31,
+      "reader_adapter_id": "region-equipment-profile-entries-reader-v1",
+      "writer_adapter_id": "region-equipment-profile-entries-writer-v1"
+    },
+    {
+      "table_name": "container_content_profile_entries",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "profile_id",
+        "item_template_id",
+        "min_quantity",
+        "max_quantity",
+        "required",
+        "weight"
+      ],
+      "excluded_operational_columns": [],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "profile_id": "text_nfc",
+        "item_template_id": "text_nfc",
+        "min_quantity": "integer_decimal",
+        "max_quantity": "integer_decimal",
+        "required": "boolean",
+        "weight": "integer_decimal"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 32,
+      "reader_adapter_id": "container-content-profile-entries-reader-v1",
+      "writer_adapter_id": "container-content-profile-entries-writer-v1"
+    },
+    {
+      "table_name": "g4_materialization_bindings",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "profile_id",
+        "graph_node_id",
+        "priority",
+        "applicability",
+        "status",
+        "valid_from",
+        "valid_to",
+        "confidence"
+      ],
+      "excluded_operational_columns": [],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "profile_id": "text_nfc",
+        "graph_node_id": "text_nfc",
+        "priority": "integer_decimal",
+        "applicability": "jsonb",
+        "status": "text_nfc",
+        "valid_from": "date",
+        "valid_to": "date",
+        "confidence": "text_nfc"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 33,
+      "reader_adapter_id": "g4-materialization-bindings-reader-v1",
+      "writer_adapter_id": "g4-materialization-bindings-writer-v1"
+    },
+    {
+      "table_name": "g4_materialization_layout_edges",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "profile_id",
+        "from_anchor_slot_key",
+        "to_anchor_slot_key",
+        "g5_edge_template_id",
+        "ordinal",
+        "status"
+      ],
+      "excluded_operational_columns": [],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "profile_id": "text_nfc",
+        "from_anchor_slot_key": "text_nfc",
+        "to_anchor_slot_key": "text_nfc",
+        "g5_edge_template_id": "text_nfc",
+        "ordinal": "integer_decimal",
+        "status": "text_nfc"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 34,
+      "reader_adapter_id": "g4-materialization-layout-edges-reader-v1",
+      "writer_adapter_id": "g4-materialization-layout-edges-writer-v1"
+    },
+    {
+      "table_name": "materialization_slot_rules",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "profile_id",
+        "slot_key",
+        "slot_domain",
+        "min_count",
+        "max_count",
+        "g5_minilocation_template_id",
+        "g5_anchor_template_id",
+        "g5_edge_template_id",
+        "parent_node_slot_key",
+        "entry_role",
+        "required",
+        "status",
+        "valid_from",
+        "valid_to",
+        "applicability",
+        "confidence"
+      ],
+      "excluded_operational_columns": [],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "profile_id": "text_nfc",
+        "slot_key": "text_nfc",
+        "slot_domain": "text_nfc",
+        "min_count": "integer_decimal",
+        "max_count": "integer_decimal",
+        "g5_minilocation_template_id": "text_nfc",
+        "g5_anchor_template_id": "text_nfc",
+        "g5_edge_template_id": "text_nfc",
+        "parent_node_slot_key": "text_nfc",
+        "entry_role": "text_nfc",
+        "required": "boolean",
+        "status": "text_nfc",
+        "valid_from": "date",
+        "valid_to": "date",
+        "applicability": "jsonb",
+        "confidence": "text_nfc"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 35,
+      "reader_adapter_id": "materialization-slot-rules-reader-v1",
+      "writer_adapter_id": "materialization-slot-rules-writer-v1"
+    },
+    {
+      "table_name": "g4_container_materialization_rules",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "world_revision_id",
+        "graph_node_id",
+        "slot_rule_id",
+        "container_template_id",
+        "content_profile_id",
+        "property_profile_id",
+        "min_count",
+        "max_count",
+        "causal_basis_type",
+        "causal_basis_id",
+        "applicability",
+        "valid_from",
+        "valid_to",
+        "confidence",
+        "weight",
+        "status"
+      ],
+      "excluded_operational_columns": [],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "world_revision_id": "text_nfc",
+        "graph_node_id": "text_nfc",
+        "slot_rule_id": "text_nfc",
+        "container_template_id": "text_nfc",
+        "content_profile_id": "text_nfc",
+        "property_profile_id": "text_nfc",
+        "min_count": "integer_decimal",
+        "max_count": "integer_decimal",
+        "causal_basis_type": "text_nfc",
+        "causal_basis_id": "text_nfc",
+        "applicability": "jsonb",
+        "valid_from": "date",
+        "valid_to": "date",
+        "confidence": "text_nfc",
+        "weight": "integer_decimal",
+        "status": "text_nfc"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 36,
+      "reader_adapter_id": "g4-container-materialization-rules-reader-v1",
+      "writer_adapter_id": "g4-container-materialization-rules-writer-v1"
+    },
+    {
+      "table_name": "g4_item_materialization_rules",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "world_revision_id",
+        "graph_node_id",
+        "slot_rule_id",
+        "item_profile_id",
+        "property_profile_id",
+        "min_count",
+        "max_count",
+        "economic_basis",
+        "causal_basis_type",
+        "causal_basis_id",
+        "applicability",
+        "valid_from",
+        "valid_to",
+        "confidence",
+        "weight",
+        "status"
+      ],
+      "excluded_operational_columns": [],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "world_revision_id": "text_nfc",
+        "graph_node_id": "text_nfc",
+        "slot_rule_id": "text_nfc",
+        "item_profile_id": "text_nfc",
+        "property_profile_id": "text_nfc",
+        "min_count": "integer_decimal",
+        "max_count": "integer_decimal",
+        "economic_basis": "text_nfc",
+        "causal_basis_type": "text_nfc",
+        "causal_basis_id": "text_nfc",
+        "applicability": "jsonb",
+        "valid_from": "date",
+        "valid_to": "date",
+        "confidence": "text_nfc",
+        "weight": "integer_decimal",
+        "status": "text_nfc"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 37,
+      "reader_adapter_id": "g4-item-materialization-rules-reader-v1",
+      "writer_adapter_id": "g4-item-materialization-rules-writer-v1"
+    },
+    {
+      "table_name": "record_sources",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "source_id",
+        "target_table",
+        "target_record_id",
+        "support_type",
+        "summary",
+        "confidence"
+      ],
+      "excluded_operational_columns": [
+        "created_at",
+        "updated_at"
+      ],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "source_id": "text_nfc",
+        "target_table": "text_nfc",
+        "target_record_id": "text_nfc",
+        "support_type": "text_nfc",
+        "summary": "text_nfc",
+        "confidence": "text_nfc"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 38,
+      "reader_adapter_id": "record-sources-reader-v1",
+      "writer_adapter_id": "record-sources-writer-v1"
+    },
+    {
+      "table_name": "graph_nodes",
+      "operation_domain": "dependency_assertion",
+      "primary_key_fields": [
+        "id"
+      ],
+      "canonical_columns": [
+        "id",
+        "slug",
+        "title",
+        "node_type",
+        "scale_level",
+        "parent_node_id",
+        "region_id",
+        "place_id",
+        "grid_x",
+        "grid_y",
+        "grid_z",
+        "region_cell_code",
+        "cell_shape",
+        "region_cell_status",
+        "cell_size_km",
+        "crossing_base_gu",
+        "crossing_base_time_hours",
+        "primary_landscape_template_id",
+        "secondary_landscape_template_ids",
+        "landscape_mix_notes",
+        "primary_water_body_template_id",
+        "secondary_water_body_template_ids",
+        "hydrology_notes",
+        "land_use_template_ids",
+        "place_template_id",
+        "terrain_profile",
+        "water_profile",
+        "road_profile",
+        "settlement_density",
+        "dominant_content",
+        "known_landmarks",
+        "canonical_corridors",
+        "neighbor_node_ids",
+        "historical_status",
+        "is_known_to_player_default",
+        "is_known_to_character_default",
+        "summary",
+        "status",
+        "confidence",
+        "sources",
+        "audit_notes"
+      ],
+      "excluded_operational_columns": [
+        "created_at",
+        "updated_at"
+      ],
+      "column_normalizers": {
+        "id": "text_nfc",
+        "slug": "text_nfc",
+        "title": "text_nfc",
+        "node_type": "text_nfc",
+        "scale_level": "text_nfc",
+        "parent_node_id": "text_nfc",
+        "region_id": "text_nfc",
+        "place_id": "text_nfc",
+        "grid_x": "integer_decimal",
+        "grid_y": "integer_decimal",
+        "grid_z": "integer_decimal",
+        "region_cell_code": "text_nfc",
+        "cell_shape": "text_nfc",
+        "region_cell_status": "text_nfc",
+        "cell_size_km": "numeric_decimal",
+        "crossing_base_gu": "numeric_decimal",
+        "crossing_base_time_hours": "numeric_decimal",
+        "primary_landscape_template_id": "text_nfc",
+        "secondary_landscape_template_ids": "jsonb",
+        "landscape_mix_notes": "text_nfc",
+        "primary_water_body_template_id": "text_nfc",
+        "secondary_water_body_template_ids": "jsonb",
+        "hydrology_notes": "text_nfc",
+        "land_use_template_ids": "jsonb",
+        "place_template_id": "text_nfc",
+        "terrain_profile": "text_nfc",
+        "water_profile": "text_nfc",
+        "road_profile": "text_nfc",
+        "settlement_density": "text_nfc",
+        "dominant_content": "text_nfc",
+        "known_landmarks": "jsonb",
+        "canonical_corridors": "jsonb",
+        "neighbor_node_ids": "jsonb",
+        "historical_status": "text_nfc",
+        "is_known_to_player_default": "boolean",
+        "is_known_to_character_default": "boolean",
+        "summary": "text_nfc",
+        "status": "text_nfc",
+        "confidence": "text_nfc",
+        "sources": "jsonb",
+        "audit_notes": "text_nfc"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 39,
+      "reader_adapter_id": "graph-nodes-reader-v1",
+      "writer_adapter_id": "graph-nodes-assertion-v1"
+    }
+  ]
+}

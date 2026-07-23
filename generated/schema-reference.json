@@ -835,9 +835,9 @@
       "type": "json"
     },
     {
-      "bytes": 10347,
+      "bytes": 10427,
       "path": "schemas/materialization/world-materialization-request-v2.schema.json",
-      "sha256": "3b6739984a1ec31a01d99867f13d8a5c9f4f87f4ab7a2d4ba5b911282629ae7f",
+      "sha256": "3c6fc28c1078baf73aca4b3eb62607576b6c59874568f432a20e4925ceb358e0",
       "type": "json"
     },
     {
@@ -887,6 +887,12 @@
       "path": "schemas/party-db/006_party_runtime_v3_migration.sql",
       "sha256": "485971bd9301a41edd107a83d1b4ef875fdbc118fb0641988c5f3bc27637629f",
       "type": "sql"
+    },
+    {
+      "bytes": 18438,
+      "path": "schemas/runtime-catalog/runtime-catalog-artifacts-v2.schema.json",
+      "sha256": "2d8e9167f701e193b2e2eb03c162e4b8228cb2c46cea7cc26368de4304a3ed40",
+      "type": "json"
     },
     {
       "bytes": 1447,

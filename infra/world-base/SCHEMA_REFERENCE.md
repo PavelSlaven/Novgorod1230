@@ -2157,6 +2157,8 @@
 | `created_at` | `TIMESTAMPTZ` | нет | `now()` | — | `NOT NULL` | Время создания записи (UTC). |
 | `updated_at` | `TIMESTAMPTZ` | нет | `now()` | — | `NOT NULL` | Время последнего изменения (обновляется триггером). |
 | `category_id` | `TEXT` | да | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | — | FK → universal_categories(id): object-type category template; legacy item_type не является вторым классификатором. |
+| `world_revision_id` | `TEXT` | да | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | — | FK → world_revisions(id): pinned revision для нового нормализованного authoring template. |
+| `source_id` | `TEXT` | да | — | `world_base.source_records(id) ON DELETE RESTRICT` | — | FK → source_records(id): provenance template; для legacy строк может быть NULL до reviewed migration. |
 
 **Ограничения таблицы:**
 
@@ -3824,7 +3826,9 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 | `visibility_policy` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
 | `initial_state` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
 | `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
-| `valid_from` | `DATE, ADD COLUMN valid_to DATE, ADD COLUMN confidence TEXT` | нет | `'unknown'` | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown','low','medium_low','medium','medium_high','high'))` | Описание отсутствует. |
+| `valid_from` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `valid_to` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `confidence` | `TEXT` | нет | `'unknown'` | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown','low','medium_low','medium','medium_high','high'))` | Уверенность в достоверности. Допустимо: unknown, low, medium_low, medium, medium_high, high. |
 
 **Ограничения таблицы:**
 
@@ -3848,7 +3852,9 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 | `visibility_policy` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
 | `initial_state` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
 | `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
-| `valid_from` | `DATE, ADD COLUMN valid_to DATE, ADD COLUMN confidence TEXT` | нет | `'unknown'` | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown','low','medium_low','medium','medium_high','high'))` | Описание отсутствует. |
+| `valid_from` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `valid_to` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `confidence` | `TEXT` | нет | `'unknown'` | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown','low','medium_low','medium','medium_high','high'))` | Уверенность в достоверности. Допустимо: unknown, low, medium_low, medium, medium_high, high. |
 
 **Ограничения таблицы:**
 
@@ -3866,7 +3872,9 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 | `visibility_policy` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
 | `initial_state` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
 | `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
-| `valid_from` | `DATE, ADD COLUMN valid_to DATE, ADD COLUMN confidence TEXT` | нет | `'unknown'` | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown','low','medium_low','medium','medium_high','high'))` | Описание отсутствует. |
+| `valid_from` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `valid_to` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `confidence` | `TEXT` | нет | `'unknown'` | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown','low','medium_low','medium','medium_high','high'))` | Уверенность в достоверности. Допустимо: unknown, low, medium_low, medium, medium_high, high. |
 
 **Ограничения таблицы:**
 
@@ -3887,7 +3895,9 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 | `visibility_model` | `JSONB` | нет | — | — | `NOT NULL` | Описание отсутствует. |
 | `access_model` | `JSONB` | нет | — | — | `NOT NULL` | Описание отсутствует. |
 | `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
-| `valid_from` | `DATE, ADD COLUMN valid_to DATE, ADD COLUMN confidence TEXT` | нет | `'unknown'` | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown','low','medium_low','medium','medium_high','high'))` | Описание отсутствует. |
+| `valid_from` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `valid_to` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `confidence` | `TEXT` | нет | `'unknown'` | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown','low','medium_low','medium','medium_high','high'))` | Уверенность в достоверности. Допустимо: unknown, low, medium_low, medium, medium_high, high. |
 
 **Ограничения таблицы:**
 
@@ -3908,7 +3918,9 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 | `priority` | `INTEGER` | нет | `0` | — | `NOT NULL` | Описание отсутствует. |
 | `applicability` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
 | `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
-| `valid_from` | `DATE, ADD COLUMN valid_to DATE, ADD COLUMN confidence TEXT` | нет | `'unknown'` | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown','low','medium_low','medium','medium_high','high'))` | Описание отсутствует. |
+| `valid_from` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `valid_to` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `confidence` | `TEXT` | нет | `'unknown'` | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown','low','medium_low','medium','medium_high','high'))` | Уверенность в достоверности. Допустимо: unknown, low, medium_low, medium, medium_high, high. |
 
 **Ограничения таблицы:**
 
@@ -3934,7 +3946,10 @@ Required/optional slots и количественные границы materiali
 | `entry_role` | `TEXT` | нет | `'none'` | — | `NOT NULL`<br>`CHECK (entry_role IN ('none','start','exit','start_and_exit'))` | Описание отсутствует. |
 | `required` | `BOOLEAN` | нет | `false` | — | `NOT NULL` | Описание отсутствует. |
 | `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
-| `valid_from` | `DATE, ADD COLUMN valid_to DATE, ADD COLUMN applicability JSONB` | нет | `'{}'::jsonb, ADD COLUMN confidence TEXT` | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown','low','medium_low','medium','medium_high','high'))` | Описание отсутствует. |
+| `valid_from` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `valid_to` | `DATE` | да | — | — | — | Описание отсутствует. |
+| `applicability` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL` | Описание отсутствует. |
+| `confidence` | `TEXT` | нет | `'unknown'` | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown','low','medium_low','medium','medium_high','high'))` | Уверенность в достоверности. Допустимо: unknown, low, medium_low, medium, medium_high, high. |
 
 **Ограничения таблицы:**
 

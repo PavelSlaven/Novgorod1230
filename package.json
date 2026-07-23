@@ -173,7 +173,10 @@
     "new-game:preflight": "node scripts/check-new-game-prerequisites.js",
     "world-db:schema-check": "node scripts/check-world-base-schema.mjs",
     "world-db:schema-doc": "node scripts/generate-world-base-schema-reference.mjs --write",
-    "world-db:schema-doc-check": "node scripts/generate-world-base-schema-reference.mjs --check"
+    "world-db:schema-doc-check": "node scripts/generate-world-base-schema-reference.mjs --check",
+    "runtime-catalog:registry": "node scripts/generate-item-container-record-registry.mjs --write",
+    "runtime-catalog:registry-check": "node scripts/generate-item-container-record-registry.mjs --check",
+    "runtime-catalog:operator": "node tools/runtime-catalog-activation/src/cli.js"
   },
   "dependencies": {
     "pg": "^8.22.0"

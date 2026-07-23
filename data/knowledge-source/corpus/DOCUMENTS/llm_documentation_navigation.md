@@ -8,6 +8,15 @@
 
 Высший норматив разделения кода и LLM — `code_driven_world_materialization_architecture.md`; технический норматив данных — `world_base_materialization_table_requirements.md`. Код не придумывает категории и историю, но материализует конкретные G5/NPC/items из утверждённых profiles/rules. LLM ограничен bounded decisions, персонажем игрока, аудитом и прозой. Это правило заменяет прежние формулы «LLM создаёт смысл, код только хранит» во всех нижестоящих описаниях.
 
+Для domain-scoped activation `item_container_materialization_v2` дополнительно
+обязательны `read_only_database_and_graph_architecture.md` и generated
+`infra/world-base/SCHEMA_REFERENCE.md`. Implementation owners:
+`packages/runtime-catalog/MODULE.md` для read-only active/historical catalog,
+`tools/runtime-catalog-activation/MODULE.md` для operator-only writes и
+`docs/implementation/item-container-runtime-activation/README.md` для
+readiness, выполненных queries/checks и operator blockers. Эти implementation
+paths не заменяют active-нормативы.
+
 Актуализировано: 2026-07-14.
 
 Этот файл нужен для быстрой ориентации LLM, разработчика или аудитора в папке `DOCUMENTS`. Он не заменяет нормативные документы и не вводит новых правил. Если этот README расходится с высшим нормативом materialization v2 или профильным документом, применяется установленный ниже приоритет.

@@ -2345,3 +2345,31 @@ G1 получает `approved_integrated`, если дополнительно:
 а не только то, что её данные хорошо выглядят в отчёте.
 ```
 
+## 26. Scoped dependency assertion для materialization
+
+Scoped dependency assertion не является новым состоянием канонической карты и
+не изменяет G0–G4 workflow.
+
+```text
+canonical G4 row
+→ canonical row projection
+→ exact base-row digest
+→ approved materialization scope assertion
+```
+
+Assertion:
+
+- не создаёт новый G4;
+- не меняет `graph_nodes.status`;
+- не повышает `draft`, `repair_required` или `blocked` до approved;
+- не меняет parent chain, координаты, границы, историческую или
+  пространственную семантику;
+- разрешает использовать exact G4 dependency только внутри одного
+  утверждённого materialization scope;
+- хранит canonical base-row snapshot и provenance утверждения;
+- блокируется, если текущая canonical base row отличается от snapshot.
+
+Scoped assertion не заменяет `approved_local`/`approved_integrated`, профильные
+аудиты, source evidence или catalog entry. Она лишь фиксирует, что уже
+существующая каноническая dependency была точной на момент утверждения overlay.
+

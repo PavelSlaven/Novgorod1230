@@ -54,7 +54,7 @@ PR17-specific `buildPr17Stage3CApprovalRequest`, `buildPr17Stage3CPromotionPlan`
 ## Взаимодействия и потребители
 
 - `@rus/new-game` и `@rus/items-property` используют только публичную `calculatePackingSlots` для fail-closed inventory checks;
-- caller читает approved revision records из `world_base`, затем `buildApprovedItemCatalogSnapshot` передаёт чистую проекцию в Stage 8, а `buildAllowedG5TemplateSet` — G4-specific template set в Stage 13/14/16; database readback остаётся вне модуля;
+- caller читает approved revision records из `world_base`; new-game orchestration строит через `buildApprovedItemCatalogSnapshot` чистую Stage 8 projection и через `buildAllowedG5TemplateSet` — один G4-specific template set для Stage 13/14/16. Обе projection сохраняют exact domain `source_catalog_digest`, а собственный `catalog_digest` связывает их canonical payload; database readback остаётся вне модуля;
 - Stage 3B-1 CLI использует supplemental validator и injected PostgreSQL executor только в editor/import workflow;
 - карта взаимодействий и границы party/runtime Stage 3B-1/3C — [INTERACTION_MAP.md](../../data/knowledge-source/imports/universal-category-classification-2026-07-15/stage-3b1/INTERACTION_MAP.md).
 

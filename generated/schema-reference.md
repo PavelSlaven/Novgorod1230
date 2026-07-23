@@ -170,7 +170,7 @@ Release: `0.23.0-migration.24`
 | `schemas/materialization/universal-category-relations-v1.schema.json` | json | 512 | `31fd11130f43de9a61d58b8fde877527649eaad8915af99225f982033b179f38` |
 | `schemas/materialization/universal-parameter-definitions-v1.schema.json` | json | 1050 | `0c646047b8e48a43b7c5250d264cf27b84604810f754f41d4504fa1360347748` |
 | `schemas/materialization/world-materialization-repair-request-v2.schema.json` | json | 945 | `ba34924dd6587d7a5044498766cc8c0ff81167eae9fbee3e98e63ad0fb75fd59` |
-| `schemas/materialization/world-materialization-request-v2.schema.json` | json | 10347 | `3b6739984a1ec31a01d99867f13d8a5c9f4f87f4ab7a2d4ba5b911282629ae7f` |
+| `schemas/materialization/world-materialization-request-v2.schema.json` | json | 10427 | `3c6fc28c1078baf73aca4b3eb62607576b6c59874568f432a20e4925ceb358e0` |
 | `schemas/materialization/world-materialization-result-v2.schema.json` | json | 5190 | `92ee591037949a9e55ded6fe2813516718b5ade28b7cd7c8b592185c356db163` |
 | `schemas/materialization/world-revisions-v1.schema.json` | json | 571 | `47693c523b2000430235dafd8e7a5669355cf67208c53f6f497f95a985df4214` |
 | `schemas/party-db/001_party_runtime.sql` | sql | 19734 | `5cab24b65540da3f9857c2e70cd9e93c9761bac439839dbde1940cde24b5f6a1` |
@@ -179,6 +179,7 @@ Release: `0.23.0-migration.24`
 | `schemas/party-db/004_party_runtime_v3_journeys.sql` | sql | 32016 | `ad0015952902da0c8c4f5ee9fac21eaa5da17df83174ab11c14a2f0272252568` |
 | `schemas/party-db/005_party_runtime_v3_domain.sql` | sql | 2184 | `2b06c19a706f9122d6318a038ee49600ba215cc0686361bd6af1dc32a8b504f0` |
 | `schemas/party-db/006_party_runtime_v3_migration.sql` | sql | 1640 | `485971bd9301a41edd107a83d1b4ef875fdbc118fb0641988c5f3bc27637629f` |
+| `schemas/runtime-catalog/runtime-catalog-artifacts-v2.schema.json` | json | 18438 | `2d8e9167f701e193b2e2eb03c162e4b8228cb2c46cea7cc26368de4304a3ed40` |
 | `schemas/world-base/world-base-source-bundle.schema.json` | json | 1447 | `358430badf2821197ffc74d4600b2cc2b153d1a1a141020e998650cb1c325dc2` |
 | `schemas/world-catalogs/g1-boundary-contract.schema.json` | json | 1199 | `9a255c612dc382e4ead28c5566ae6583878840651904a134f364bb1b1291f3aa` |
 | `schemas/world-catalogs/g1-cell-package.schema.json` | json | 1794 | `d917ec67f99c965c0257f7dbc1b2498e123aff756f4b71c68e7da0f1b6fe8381` |

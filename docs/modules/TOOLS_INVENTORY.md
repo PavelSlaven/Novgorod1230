@@ -7,6 +7,7 @@ Tools are autonomous and are not imported by production runtime.
 | `@rus/map-maker` | Import approved graph contracts, create separate layout sidecars and previews | No canonical DB writes |
 | `@rus/db-tools` | Build and validate dry-run/approval packages | No SQL execution |
 | `@rus/docs-tools` | Deterministic documentation generation, canonical-path validation, corpus delegation checks, graph/RAG materialization and migration verification | Writes generated documentation only through explicit CLI |
+| `@rus/runtime-catalog-activation-tooling` | Exact forward migrations, baseline/compatible-world verification, overlay compile, immutable import/readback and append-only activation | Writes only through explicit confirmed operator CLI against operator-selected databases |
 | `scripts/check-world-base-schema.mjs` | Validate the executable 62-table `world_base` DDL, ordered SQL parts and read-only permissions | Read-only source inspection |
 | `scripts/generate-world-base-schema-reference.mjs` | Extract tables, columns, types, FK and constraints from current DDL and apply only approved field descriptions | Writes only generated `infra/world-base/SCHEMA_REFERENCE.md` through explicit commands/docs CLI |
 | `tools/docs-tools/src/knowledge-corpus-verifier.js` | Validate corpus manifest, aliases, file existence, bytes and SHA-256 | Read-only corpus inspection |

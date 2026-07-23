@@ -2,6 +2,7 @@ import { ArtifactRegistry } from '@rus/pipeline-engine';
 import { createModularNewGameContext } from './context.js';
 import { commitApprovedStage } from './commit.js';
 import { MODULAR_NEW_GAME_STAGE_PLAN, validateModularStagePlan } from './stage-plan.js';
+import { bindRuntimeCatalogStageInput } from './runtime-catalog-context.js';
 
 export async function runModularNewGamePipeline(options = {}) {
   if (options.enableNewGamePipeline !== true) {
@@ -37,7 +38,7 @@ export async function runModularNewGamePipeline(options = {}) {
       context.setStageResult(stage.id, result);
 
       if (result.status === 'approved') {
-        const artifact = commitApprovedStage(context, stage, result);
+        const artifact = commitApprovedStage(context, stage, result, { input });
         if (!registry.has(`stage:${stage.id}`)) registry.put(`stage:${stage.id}`, artifact, { stageName: stage.name });
         emit(options, context, { type: 'stage_approved', stage_id: stage.id, stage_name: stage.name });
         await saveCheckpoint(options, context, stage.id);
@@ -101,12 +102,21 @@ async function buildStageInput(stage, context, options, builders) {
   const key = String(stage.id);
   const builder = builders[stage.id] ?? builders[key] ?? builders[stage.name] ?? stage.buildInput;
   const provided = options.stageInputs?.[stage.id] ?? options.stageInputs?.[key] ?? options.stageInputs?.[stage.name];
-  if (typeof provided === 'function') return provided({ stage, context, options });
-  if (provided != null) return structuredClone(provided);
-  if (typeof builder !== 'function') {
-    throw new Error(`Stage ${stage.id} (${stage.name}) requires an explicit stage input builder.`);
+  let input;
+  if (typeof provided === 'function') input = await provided({ stage, context, options });
+  else if (provided != null) input = structuredClone(provided);
+  else {
+    if (typeof builder !== 'function') {
+      throw new Error(`Stage ${stage.id} (${stage.name}) requires an explicit stage input builder.`);
+    }
+    input = await builder(context, options.stageOptions?.[stage.id] ?? options.stageOptions?.[stage.name] ?? {}, options.services ?? {});
   }
-  return builder(context, options.stageOptions?.[stage.id] ?? options.stageOptions?.[stage.name] ?? {}, options.services ?? {});
+  return bindRuntimeCatalogStageInput({
+    stage,
+    input,
+    runtimeCatalogContext: context.runtimeCatalogContext,
+    required: options.requireRuntimeCatalog === true
+  });
 }
 
 function normalizeExecutionResult(stage, rawResult, context) {

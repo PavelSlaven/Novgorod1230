@@ -99,13 +99,17 @@ function parseWorldBaseTables(ddl) {
 
 function applyAddedColumns(tables, ddl) {
   const byName = new Map(tables.map((table) => [table.name, table]));
-  const pattern = /ALTER\s+TABLE\s+world_base\.([a-z_][a-z0-9_]*)\s+ADD\s+COLUMN\s+([\s\S]*?);/giu;
+  const pattern = /ALTER\s+TABLE\s+world_base\.([a-z_][a-z0-9_]*)\s+([\s\S]*?);/giu;
   for (const match of ddl.matchAll(pattern)) {
     const table = byName.get(match[1]);
     if (!table) throw new Error(`ALTER TABLE references unknown world_base.${match[1]}`);
-    const column = parseColumn(match[2], match[1]);
-    if (table.columns.some((item) => item.name === column.name)) throw new Error(`Duplicate column world_base.${match[1]}.${column.name}`);
-    table.columns.push(column);
+    for (const action of splitTopLevel(match[2])) {
+      const addition = /^ADD\s+COLUMN\s+(?:IF\s+NOT\s+EXISTS\s+)?([\s\S]+)$/iu.exec(action);
+      if (!addition) continue;
+      const column = parseColumn(addition[1], match[1]);
+      if (table.columns.some((item) => item.name === column.name)) throw new Error(`Duplicate column world_base.${match[1]}.${column.name}`);
+      table.columns.push(column);
+    }
   }
 }
 

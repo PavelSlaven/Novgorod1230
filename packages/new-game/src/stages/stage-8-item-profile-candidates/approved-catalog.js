@@ -55,17 +55,23 @@ export async function retrieveApprovedItemProfileCandidates(input = {}) {
     request_id: input.request_id,
     selection_status: ready ? 'ready' : 'blocked',
     world_revision_id: input.world_revision_id,
+    source_catalog_digest: snapshot.source_catalog_digest ?? null,
     catalog_digest: snapshot.catalog_digest,
     frame,
     ...output,
     rejected_candidates: Object.freeze(rejected),
     data_gaps: Object.freeze(dataGaps),
     downstream_constraints: Object.freeze({
-      must_preserve: Object.freeze(['world_revision_id', 'catalog_digest', 'candidate IDs', 'quantity requirement IDs']),
+      must_preserve: Object.freeze(['world_revision_id', 'source_catalog_digest', 'catalog_digest', 'candidate IDs', 'quantity requirement IDs']),
       must_not_create_yet: Object.freeze(['item_instance_id', 'container_instance_id', 'ownership relation']),
       hard_block_on_empty_required_candidate_set: true
     }),
-    source_trace: Object.freeze([{ source_kind: 'approved_item_catalog_snapshot', world_revision_id: input.world_revision_id, catalog_digest: snapshot.catalog_digest }]),
+    source_trace: Object.freeze([{
+      source_kind: 'approved_item_catalog_snapshot',
+      world_revision_id: input.world_revision_id,
+      source_catalog_digest: snapshot.source_catalog_digest ?? null,
+      catalog_digest: snapshot.catalog_digest
+    }]),
     audit: Object.freeze({ pass: ready, concerns: Object.freeze(dataGaps), evidence: Object.freeze([{ kind: 'approved_catalog_filter', rejected_count: rejected.length }]) })
   });
 }
@@ -75,6 +81,7 @@ export function validateItemProfileCandidateSet(output = {}, { input = {}, polic
   if (output?.version !== 1 || output?.schema !== STAGE8_OUTPUT_SCHEMA) concerns.push(concern('ITEM_PROFILE_OUTPUT_SCHEMA_INVALID', 'schema', 'Stage 8 output schema/version is invalid.'));
   if (output?.request_id !== input?.request_id) concerns.push(concern('ITEM_PROFILE_REQUEST_ID_MISMATCH', 'request_id', 'Stage 8 request_id must match input.'));
   if (output?.world_revision_id !== input?.world_revision_id) concerns.push(concern('ITEM_PROFILE_REVISION_PIN_MISMATCH', 'world_revision_id', 'Stage 8 output must preserve world revision pin.'));
+  if (output?.source_catalog_digest !== (input?.approved_catalog_snapshot?.source_catalog_digest ?? null)) concerns.push(concern('ITEM_PROFILE_SOURCE_CATALOG_DIGEST_MISMATCH', 'source_catalog_digest', 'Stage 8 output must preserve the source domain catalog digest.'));
   if (output?.catalog_digest !== input?.approved_catalog_snapshot?.catalog_digest) concerns.push(concern('ITEM_PROFILE_CATALOG_DIGEST_MISMATCH', 'catalog_digest', 'Stage 8 output must preserve catalog digest.'));
   const normalized = normalizeStage8ItemProfilePolicy(policy);
   for (const [domain, field] of Object.entries(DOMAIN_FIELDS)) {

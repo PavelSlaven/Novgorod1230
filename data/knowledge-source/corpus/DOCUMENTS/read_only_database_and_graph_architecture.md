@@ -179,7 +179,29 @@ Materializer сначала проверяет committed baseline для `(party
 - рематериализовать G5 после reload/repeat-entry;
 - позволять LLM сформировать SQL или party write plan.
 
-## 10. Источники истины
+## 10. Runtime activation boundary
+
+Runtime role имеет только `SELECT` к `world_base`. Baseline registration,
+import, activation и любые другие writes выполняет только явное operator
+tooling после merge и вне игрового runtime.
+
+Последний append-only `runtime_catalog_activation_events` является read-only
+pointer для создания новой партии. После сохранения party domain pin reload и
+turn читают exact historical import, а не active pointer. Operator approval,
+attestation и rollout evidence доказывают готовность, но не являются
+обязательной сетевой или файловой runtime-зависимостью.
+
+Item/container activation не изменяет `graph_nodes` и `graph_edges`. Scoped G4
+dependency assertion только сверяет exact canonical base row в пределах
+утверждённого materialization scope. Несовпадение snapshot блокирует
+materialization.
+
+Физические FK из party database в `world_base` не создаются. Приложение через
+два независимых read ports проверяет full world pin, domain pin, compatible
+world tuple, exact import membership и runtime contract до materialization и
+до commit party state.
+
+## 11. Источники истины
 
 | Вопрос | Источник |
 |---|---|

@@ -8,6 +8,7 @@ import {
   checkDocumentationOutputs,
   validateDocumentationTree
 } from '../src/index.js';
+import { buildWorldBaseSchemaReference } from '../../../scripts/generate-world-base-schema-reference.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../../..');
 
@@ -86,6 +87,24 @@ test('schema reference binds contract names and external DDL', async () => {
   assert.ok(ddl);
   assert.match(ddl.sha256, /^[a-f0-9]{64}$/u);
   assert.ok(ddl.bytes > 0);
+});
+
+test('world-base schema reference expands every column in multi-column ALTER TABLE', async () => {
+  const { schema } = await buildWorldBaseSchemaReference({ root });
+  const byTable = new Map(schema.tables.map((table) => [table.name, table]));
+  const expectedAddedColumns = {
+    item_templates: ['category_id', 'world_revision_id', 'source_id'],
+    g5_anchor_templates: ['valid_from', 'valid_to', 'confidence'],
+    materialization_slot_rules: ['valid_from', 'valid_to', 'applicability', 'confidence']
+  };
+
+  for (const [tableName, columnNames] of Object.entries(expectedAddedColumns)) {
+    const actual = new Map(byTable.get(tableName).columns.map((column) => [column.name, column.type]));
+    for (const columnName of columnNames) {
+      assert.equal(actual.has(columnName), true, `${tableName}.${columnName}`);
+      assert.doesNotMatch(actual.get(columnName), /\bADD\s+COLUMN\b/iu);
+    }
+  }
 });
 
 test('canonical document registry has unique existing targets and no obsolete root copies', async () => {

@@ -36,6 +36,21 @@ test('materializer is deterministic and traces every choice', () => {
   assert.ok(left.proposed_write_set.write_batches.every((batch) => batch.target_schema === 'party_runtime' && batch.operation_mode === 'insert_only'));
 });
 
+test('materializer keeps the domain pin distinct from the immutable projection digest', () => {
+  const input = request();
+  input.catalog_bundle_digest = canonicalDigest(input.catalog_bundle);
+  input.catalog_digest = 'd'.repeat(64);
+  const result = materializeWorldInstances(input);
+  assert.equal(result.trace.catalog_digest, input.catalog_digest);
+  assert.equal(result.trace.catalog_bundle_digest, input.catalog_bundle_digest);
+
+  input.catalog_bundle_digest = 'f'.repeat(64);
+  assert.throws(
+    () => materializeWorldInstances(input),
+    (error) => error.code === 'CATALOG_BUNDLE_DIGEST_MISMATCH'
+  );
+});
+
 test('required empty candidate set blocks instead of inventing a value', () => {
   const input = request();
   input.catalog_bundle.candidates = [];

@@ -39,8 +39,18 @@ test('Stage 24 code builder emits version-pinned party_runtime_v2 batches', () =
   const targets = new Set(plan.write_batches.map((batch) => batch.target_table));
   assert.ok(targets.has('parties'));
   assert.ok(targets.has('party_materialization_runs'));
+  assert.ok(targets.has('party_catalog_pins'));
+  assert.ok(targets.has('party_materialization_run_catalog_pins'));
   assert.ok(targets.has('party_state_snapshots'));
   assert.equal(plan.write_batches.find((batch) => batch.target_table === 'parties').records[0].materializer_version, 'code_materializer_v2');
+  assert.equal(
+    plan.write_batches.find((batch) => batch.target_table === 'party_materialization_runs').records[0].catalog_digest,
+    f.partyCreationContext.domain_catalog_pin.catalog_digest
+  );
+  assert.equal(
+    plan.write_batches.find((batch) => batch.target_table === 'party_catalog_pins').records[0].compatible_world_revision_id,
+    f.partyCreationContext.version_pins.world_revision_id
+  );
   assert.ok(![...targets].some((target) => ['party_state', 'party_minilocations', 'party_scene_anchors'].includes(target)));
 });
 

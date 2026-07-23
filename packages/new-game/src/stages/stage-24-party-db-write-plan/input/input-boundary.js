@@ -96,6 +96,7 @@ export function validateStage24Input(input = {}) {
   for (const key of ['world_revision_id', 'world_catalog_digest', 'materializer_version', 'rng_version', 'command_catalog_digest', 'profile_bundle_digest']) {
     if (!text(party?.version_pins?.[key])) concerns.push(issue('WRITE_PLAN_INPUT_BINDING_INVALID', `party_creation_context.version_pins.${key} is required.`, `party_creation_context.version_pins.${key}`));
   }
+  concerns.push(...validateDomainCatalogPin(party?.domain_catalog_pin, party?.version_pins));
   if (!isObject(input.approved_pipeline_outputs)) concerns.push(issue('WRITE_PLAN_INPUT_BINDING_INVALID', 'approved_pipeline_outputs is required.', 'approved_pipeline_outputs'));
   else for (const key of REQUIRED_ARTIFACT_KEYS) if (input.approved_pipeline_outputs[key] == null) concerns.push(issue('WRITE_PLAN_INPUT_BINDING_INVALID', `approved_pipeline_outputs.${key} is required.`, `approved_pipeline_outputs.${key}`));
   concerns.push(...validateApprovedPipelineManifest(input.approved_pipeline_manifest, input.approved_pipeline_outputs, input.request_id));
@@ -105,7 +106,11 @@ export function validateStage24Input(input = {}) {
   concerns.push(...validateWorldBaseReferenceSnapshot(input.world_base_reference_snapshot));
   if (input.world_base_reference_digest !== computeStage24Digest(input.world_base_reference_snapshot)) concerns.push(issue('WRITE_PLAN_INPUT_BINDING_INVALID', 'world_base_reference_digest mismatch.', 'world_base_reference_digest'));
   for (const [key, expected] of Object.entries(REQUIRED_WRITE_POLICY)) if (input.write_policy?.[key] !== expected) concerns.push(issue('WRITE_PLAN_INPUT_BINDING_INVALID', `write_policy.${key} cannot be weakened.`, `write_policy.${key}`));
-  concerns.push(...validateMaterializationVersionPins(input.approved_pipeline_outputs?.g5_scene_graph?.materialization_run, party?.version_pins));
+  concerns.push(...validateMaterializationVersionPins(
+    input.approved_pipeline_outputs?.g5_scene_graph?.materialization_run,
+    party?.version_pins,
+    party?.domain_catalog_pin
+  ));
   concerns.push(...validateMaterializationIdentity(input.approved_pipeline_outputs?.g5_scene_graph, party));
   const expectedInputDigest = computeStage24Digest({ ...input, party_db_write_plan_input_digest: undefined });
   if (input.party_db_write_plan_input_digest !== expectedInputDigest) concerns.push(issue('WRITE_PLAN_INPUT_BINDING_INVALID', 'party_db_write_plan_input_digest mismatch.', 'party_db_write_plan_input_digest'));
@@ -123,15 +128,37 @@ function validateMaterializationIdentity(g5, party) {
   return concerns;
 }
 
-export function validateMaterializationVersionPins(trace, pins) {
-  if (!isObject(trace) || !isObject(pins)) return [issue('WRITE_PLAN_VERSION_PIN_MISMATCH', 'Materialization trace and party version pins are required.', 'approved_pipeline_outputs.g5_scene_graph.materialization_run')];
+export function validateMaterializationVersionPins(trace, pins, domainPin) {
+  if (!isObject(trace) || !isObject(pins) || !isObject(domainPin)) return [issue('WRITE_PLAN_VERSION_PIN_MISMATCH', 'Materialization trace, world pins and domain catalog pin are required.', 'approved_pipeline_outputs.g5_scene_graph.materialization_run')];
   const pairs = [
     ['world_revision_id', 'world_revision_id'],
-    ['catalog_digest', 'world_catalog_digest'],
     ['materializer_version', 'materializer_version'],
     ['rng_version', 'rng_version']
   ];
-  return pairs.flatMap(([traceKey, pinKey]) => trace[traceKey] === pins[pinKey] ? [] : [issue('WRITE_PLAN_VERSION_PIN_MISMATCH', `materialization_run.${traceKey} must match version_pins.${pinKey}.`, `approved_pipeline_outputs.g5_scene_graph.materialization_run.${traceKey}`)]);
+  const concerns = pairs.flatMap(([traceKey, pinKey]) => trace[traceKey] === pins[pinKey] ? [] : [issue('WRITE_PLAN_VERSION_PIN_MISMATCH', `materialization_run.${traceKey} must match version_pins.${pinKey}.`, `approved_pipeline_outputs.g5_scene_graph.materialization_run.${traceKey}`)]);
+  if (trace.catalog_digest !== domainPin.catalog_digest) concerns.push(issue('WRITE_PLAN_VERSION_PIN_MISMATCH', 'materialization_run.catalog_digest must match domain_catalog_pin.catalog_digest.', 'approved_pipeline_outputs.g5_scene_graph.materialization_run.catalog_digest'));
+  return concerns;
+}
+
+function validateDomainCatalogPin(pin, worldPins) {
+  if (!isObject(pin) || pin.schema !== 'rus.runtime_catalog_pin.v2') {
+    return [issue('PARTY_CATALOG_PIN_MISSING', 'Exact item/container domain catalog pin is required.', 'party_creation_context.domain_catalog_pin')];
+  }
+  const required = [
+    'catalog_scope', 'catalog_revision_id', 'catalog_digest', 'import_id',
+    'import_audit_digest', 'record_registry_digest', 'runtime_contract_digest',
+    'compatible_world_revision_id', 'compatible_world_catalog_digest',
+    'compatible_world_pin_manifest_digest', 'activation_event_id'
+  ];
+  const concerns = required.flatMap((key) => text(pin[key])
+    ? []
+    : [issue('PARTY_CATALOG_PIN_MISSING', `domain_catalog_pin.${key} is required.`, `party_creation_context.domain_catalog_pin.${key}`)]);
+  if (pin.catalog_scope !== 'item_container_materialization_v2') concerns.push(issue('PARTY_CATALOG_PIN_MISMATCH', 'Unsupported domain catalog scope.', 'party_creation_context.domain_catalog_pin.catalog_scope'));
+  if (pin.compatible_world_revision_id !== worldPins?.world_revision_id
+      || pin.compatible_world_catalog_digest !== worldPins?.world_catalog_digest) {
+    concerns.push(issue('PARTY_CATALOG_PIN_MISMATCH', 'Domain catalog compatible world tuple must match the full party world pin.', 'party_creation_context.domain_catalog_pin'));
+  }
+  return concerns;
 }
 
 export function validatePartyDatabaseSchemaSnapshot(snapshot = {}) {

@@ -9,6 +9,7 @@ export function createModularNewGameContext({
   clientDefaults = null,
   env = process.env,
   tracker = null,
+  runtimeCatalogContext = null,
   checkpoint = null
 } = {}) {
   const outputs = new Map();
@@ -27,6 +28,9 @@ export function createModularNewGameContext({
     clientDefaults: structuredClone(clientDefaults),
     env,
     tracker,
+    runtimeCatalogContext: structuredClone(
+      checkpoint?.runtime_catalog_context ?? runtimeCatalogContext
+    ),
 
     note(stageId, payload = {}) {
       const event = {
@@ -140,6 +144,7 @@ export function createModularNewGameContext({
         player_name: context.playerName,
         ui_fields: structuredClone(context.uiFields),
         client_defaults: structuredClone(context.clientDefaults),
+        runtime_catalog_context: structuredClone(context.runtimeCatalogContext),
         last_completed_stage: lastCompletedStage,
         outputs: Object.fromEntries(outputs),
         results: Object.fromEntries(results),

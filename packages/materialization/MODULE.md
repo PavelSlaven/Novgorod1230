@@ -37,7 +37,10 @@ Apps, DB drivers, provider SDK, UI, legacy и смысловые workflow packag
 
 ## Инварианты
 
-Одинаковые versioned inputs дают byte-equivalent output; каждый выбор входит в trace; `Math.random` запрещён.
+Одинаковые versioned inputs дают byte-equivalent output; каждый выбор входит в
+trace; `Math.random` запрещён. Для runtime-catalog materialization
+`trace.catalog_digest` сохраняет exact domain pin, а
+`trace.catalog_bundle_digest` — digest конкретной immutable projection.
 
 ## Ошибки
 

@@ -1,0 +1,484 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rus.runtime_catalog_artifacts.v2",
+  "title": "Runtime catalog activation artifacts",
+  "oneOf": [
+    { "$ref": "#/$defs/operatorBaselineSnapshot" },
+    { "$ref": "#/$defs/baseWorldCompatibility" },
+    { "$ref": "#/$defs/baselineRegistrationRequest" },
+    { "$ref": "#/$defs/baselineRegistrationAttestation" },
+    { "$ref": "#/$defs/overlayCandidate" },
+    { "$ref": "#/$defs/promotionManifest" },
+    { "$ref": "#/$defs/overlayApprovalRequest" },
+    { "$ref": "#/$defs/overlayApprovalAttestation" },
+    { "$ref": "#/$defs/catalogImportAudit" },
+    { "$ref": "#/$defs/runtimeCatalogPin" },
+    { "$ref": "#/$defs/partyPreflight" },
+    { "$ref": "#/$defs/activationRequest" },
+    { "$ref": "#/$defs/activationAttestation" },
+    { "$ref": "#/$defs/activationEvent" },
+    { "$ref": "#/$defs/runtimeRelease" }
+  ],
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "nonEmptyText": {
+      "type": "string",
+      "minLength": 1
+    },
+    "parentTuple": {
+      "type": "object",
+      "required": [
+        "parent_revision_id",
+        "parent_catalog_digest",
+        "parent_snapshot_manifest_digest"
+      ],
+      "properties": {
+        "parent_revision_id": { "$ref": "#/$defs/nonEmptyText" },
+        "parent_catalog_digest": { "$ref": "#/$defs/digest" },
+        "parent_snapshot_manifest_digest": { "$ref": "#/$defs/digest" }
+      }
+    },
+    "compatibleWorldTuple": {
+      "type": "object",
+      "required": [
+        "compatible_world_revision_id",
+        "compatible_world_catalog_digest",
+        "compatible_world_pin_manifest_digest"
+      ],
+      "properties": {
+        "compatible_world_revision_id": { "$ref": "#/$defs/nonEmptyText" },
+        "compatible_world_catalog_digest": { "$ref": "#/$defs/digest" },
+        "compatible_world_pin_manifest_digest": { "$ref": "#/$defs/digest" }
+      }
+    },
+    "operatorBaselineSnapshot": {
+      "type": "object",
+      "required": [
+        "schema",
+        "schema_fingerprint",
+        "canonicalization_algorithm",
+        "canonicalization_version",
+        "record_registry_digest",
+        "included_tables",
+        "excluded_tables",
+        "records_aggregate_digest",
+        "parent_snapshot_manifest_digest"
+      ],
+      "properties": {
+        "schema": { "const": "rus.operator_baseline_snapshot_manifest.v2" },
+        "schema_fingerprint": { "$ref": "#/$defs/digest" },
+        "canonicalization_algorithm": { "const": "canonical-json-sha256" },
+        "canonicalization_version": { "const": 2 },
+        "record_registry_digest": { "$ref": "#/$defs/digest" },
+        "included_tables": { "type": "array" },
+        "excluded_tables": { "type": "array" },
+        "records_aggregate_digest": { "$ref": "#/$defs/digest" },
+        "parent_snapshot_manifest_digest": { "$ref": "#/$defs/digest" }
+      },
+      "additionalProperties": false
+    },
+    "baseWorldCompatibility": {
+      "type": "object",
+      "required": [
+        "schema",
+        "compatible_world_revision_id",
+        "compatible_world_catalog_digest",
+        "source_runtime_configuration_digest",
+        "source_artifact_paths",
+        "source_commit_sha",
+        "validation_contract_version",
+        "compatible_world_pin_manifest_digest"
+      ],
+      "properties": {
+        "schema": { "const": "rus.base_world_compatibility_manifest.v1" },
+        "compatible_world_revision_id": { "$ref": "#/$defs/nonEmptyText" },
+        "compatible_world_catalog_digest": { "$ref": "#/$defs/digest" },
+        "source_runtime_configuration_digest": { "$ref": "#/$defs/digest" },
+        "source_artifact_paths": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/nonEmptyText" }
+        },
+        "source_commit_sha": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "validation_contract_version": { "$ref": "#/$defs/nonEmptyText" },
+        "compatible_world_pin_manifest_digest": { "$ref": "#/$defs/digest" }
+      },
+      "additionalProperties": false
+    },
+    "baselineRegistrationRequest": {
+      "allOf": [
+        { "$ref": "#/$defs/parentTuple" },
+        { "$ref": "#/$defs/compatibleWorldTuple" },
+        {
+          "type": "object",
+          "required": [
+            "schema",
+            "schema_fingerprint",
+            "record_registry_digest",
+            "registration_request_digest"
+          ],
+          "properties": {
+            "schema": { "const": "rus.baseline_registration_request.v2" },
+            "schema_fingerprint": { "$ref": "#/$defs/digest" },
+            "record_registry_digest": { "$ref": "#/$defs/digest" },
+            "registration_request_digest": { "$ref": "#/$defs/digest" }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "baselineRegistrationAttestation": {
+      "type": "object",
+      "required": [
+        "schema",
+        "registration_request_digest",
+        "parent_tuple",
+        "compatible_world_tuple",
+        "decision",
+        "action",
+        "attested_by",
+        "attestation_digest"
+      ],
+      "properties": {
+        "schema": { "const": "rus.baseline_registration_attestation.v2" },
+        "registration_request_digest": { "$ref": "#/$defs/digest" },
+        "parent_tuple": { "$ref": "#/$defs/parentTuple" },
+        "compatible_world_tuple": { "$ref": "#/$defs/compatibleWorldTuple" },
+        "decision": { "const": "approve_register_baseline" },
+        "action": { "const": "register_baseline" },
+        "attested_by": { "$ref": "#/$defs/nonEmptyText" },
+        "attested_at": { "type": ["string", "null"] },
+        "attestation_digest": { "$ref": "#/$defs/digest" }
+      },
+      "additionalProperties": false
+    },
+    "overlayCandidate": {
+      "type": "object",
+      "required": [
+        "schema",
+        "catalog_scope",
+        "parent_tuple",
+        "compatible_world_tuple",
+        "record_registry_digest",
+        "target_revision_id",
+        "record_operations_by_table",
+        "dependency_assertions",
+        "semantic_equivalence_report_digest",
+        "candidate_digest"
+      ],
+      "properties": {
+        "schema": { "const": "rus.item_container_overlay_candidate.v3" },
+        "catalog_scope": { "const": "item_container_materialization_v2" },
+        "parent_tuple": { "$ref": "#/$defs/parentTuple" },
+        "compatible_world_tuple": { "$ref": "#/$defs/compatibleWorldTuple" },
+        "record_registry_digest": { "$ref": "#/$defs/digest" },
+        "target_revision_id": { "$ref": "#/$defs/nonEmptyText" },
+        "record_operations_by_table": { "type": "array" },
+        "dependency_assertions": { "type": "array", "minItems": 9, "maxItems": 9 },
+        "semantic_equivalence_report_digest": { "$ref": "#/$defs/digest" },
+        "candidate_digest": { "$ref": "#/$defs/digest" }
+      },
+      "additionalProperties": false
+    },
+    "promotionManifest": {
+      "type": "object",
+      "required": [
+        "schema",
+        "catalog_scope",
+        "parent_tuple",
+        "compatible_world_tuple",
+        "record_registry_digest",
+        "target_revision_id",
+        "target_catalog_digest",
+        "candidate_digest",
+        "tables",
+        "dependency_assertions_semantic_digest",
+        "promotion_manifest_digest"
+      ],
+      "properties": {
+        "schema": { "const": "rus.revision_promotion_manifest.v3" },
+        "catalog_scope": { "const": "item_container_materialization_v2" },
+        "parent_tuple": { "$ref": "#/$defs/parentTuple" },
+        "compatible_world_tuple": { "$ref": "#/$defs/compatibleWorldTuple" },
+        "record_registry_digest": { "$ref": "#/$defs/digest" },
+        "target_revision_id": { "$ref": "#/$defs/nonEmptyText" },
+        "target_catalog_digest": { "$ref": "#/$defs/digest" },
+        "candidate_digest": { "$ref": "#/$defs/digest" },
+        "tables": { "type": "array" },
+        "dependency_assertions_semantic_digest": { "$ref": "#/$defs/digest" },
+        "promotion_manifest_digest": { "$ref": "#/$defs/digest" }
+      },
+      "additionalProperties": false
+    },
+    "overlayApprovalRequest": {
+      "type": "object",
+      "required": [
+        "schema",
+        "parent_tuple",
+        "compatible_world_tuple",
+        "record_registry_digest",
+        "candidate_digest",
+        "promotion_manifest_digest",
+        "target_catalog_digest",
+        "semantic_equivalence_report_digest",
+        "historical_pr17_attestation_digest",
+        "approval_request_digest"
+      ],
+      "properties": {
+        "schema": { "const": "rus.item_container_overlay_approval_request.v2" },
+        "parent_tuple": { "$ref": "#/$defs/parentTuple" },
+        "compatible_world_tuple": { "$ref": "#/$defs/compatibleWorldTuple" },
+        "record_registry_digest": { "$ref": "#/$defs/digest" },
+        "candidate_digest": { "$ref": "#/$defs/digest" },
+        "promotion_manifest_digest": { "$ref": "#/$defs/digest" },
+        "target_catalog_digest": { "$ref": "#/$defs/digest" },
+        "semantic_equivalence_report_digest": { "$ref": "#/$defs/digest" },
+        "historical_pr17_attestation_digest": { "$ref": "#/$defs/digest" },
+        "approval_request_digest": { "$ref": "#/$defs/digest" }
+      },
+      "additionalProperties": false
+    },
+    "overlayApprovalAttestation": {
+      "type": "object",
+      "required": [
+        "schema",
+        "approval_request_digest",
+        "decision",
+        "activation_authorized",
+        "attested_by",
+        "attestation_digest"
+      ],
+      "properties": {
+        "schema": { "const": "rus.item_container_overlay_approval_attestation.v2" },
+        "approval_request_digest": { "$ref": "#/$defs/digest" },
+        "decision": { "const": "approve_overlay_import" },
+        "activation_authorized": { "const": false },
+        "attested_by": { "$ref": "#/$defs/nonEmptyText" },
+        "attested_at": { "type": ["string", "null"] },
+        "attestation_digest": { "$ref": "#/$defs/digest" }
+      },
+      "additionalProperties": true
+    },
+    "catalogImportAudit": {
+      "type": "object",
+      "required": [
+        "schema",
+        "import_id",
+        "catalog_scope",
+        "target_revision_id",
+        "target_catalog_digest",
+        "record_registry_digest",
+        "tables_digest",
+        "records_digest",
+        "dependency_assertions_semantic_digest",
+        "dependency_assertions_audit_digest",
+        "import_audit_digest"
+      ],
+      "properties": {
+        "schema": { "const": "rus.catalog_import_audit.v2" },
+        "import_id": { "$ref": "#/$defs/nonEmptyText" },
+        "catalog_scope": { "const": "item_container_materialization_v2" },
+        "target_revision_id": { "$ref": "#/$defs/nonEmptyText" },
+        "target_catalog_digest": { "$ref": "#/$defs/digest" },
+        "record_registry_digest": { "$ref": "#/$defs/digest" },
+        "tables_digest": { "$ref": "#/$defs/digest" },
+        "records_digest": { "$ref": "#/$defs/digest" },
+        "dependency_assertions_semantic_digest": { "$ref": "#/$defs/digest" },
+        "dependency_assertions_audit_digest": { "$ref": "#/$defs/digest" },
+        "import_audit_digest": { "$ref": "#/$defs/digest" }
+      },
+      "additionalProperties": true
+    },
+    "runtimeCatalogPin": {
+      "allOf": [
+        { "$ref": "#/$defs/compatibleWorldTuple" },
+        {
+          "type": "object",
+          "required": [
+            "schema",
+            "catalog_scope",
+            "catalog_revision_id",
+            "catalog_digest",
+            "activation_event_id",
+            "import_id",
+            "import_audit_digest",
+            "record_registry_digest",
+            "runtime_contract_digest"
+          ],
+          "properties": {
+            "schema": { "const": "rus.runtime_catalog_pin.v2" },
+            "catalog_scope": { "const": "item_container_materialization_v2" },
+            "catalog_revision_id": { "$ref": "#/$defs/nonEmptyText" },
+            "catalog_digest": { "$ref": "#/$defs/digest" },
+            "activation_event_id": { "$ref": "#/$defs/nonEmptyText" },
+            "import_id": { "$ref": "#/$defs/nonEmptyText" },
+            "import_audit_digest": { "$ref": "#/$defs/digest" },
+            "record_registry_digest": { "$ref": "#/$defs/digest" },
+            "runtime_contract_digest": { "$ref": "#/$defs/digest" }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "partyPreflight": {
+      "type": "object",
+      "required": [
+        "schema",
+        "catalog_scope",
+        "party_count",
+        "pinned_party_count",
+        "missing_domain_pin_count",
+        "inflight_stage24_stage25_count",
+        "runtime_release_id",
+        "runtime_contract_digest",
+        "party_preflight_digest"
+      ],
+      "properties": {
+        "schema": { "const": "rus.runtime_catalog_party_preflight.v2" },
+        "catalog_scope": { "const": "item_container_materialization_v2" },
+        "party_count": { "type": "integer", "minimum": 0 },
+        "pinned_party_count": { "type": "integer", "minimum": 0 },
+        "missing_domain_pin_count": { "type": "integer", "minimum": 0 },
+        "inflight_stage24_stage25_count": { "type": "integer", "minimum": 0 },
+        "runtime_release_id": { "$ref": "#/$defs/digest" },
+        "runtime_contract_digest": { "$ref": "#/$defs/digest" },
+        "checked_at": { "type": ["string", "null"] },
+        "party_preflight_digest": { "$ref": "#/$defs/digest" }
+      },
+      "additionalProperties": false
+    },
+    "activationRequest": {
+      "type": "object",
+      "required": [
+        "schema",
+        "catalog_scope",
+        "target_revision_id",
+        "target_catalog_digest",
+        "import_id",
+        "import_audit_digest",
+        "record_registry_digest",
+        "runtime_contract_digest",
+        "runtime_release_id",
+        "party_preflight_digest",
+        "activation_request_digest"
+      ],
+      "properties": {
+        "schema": { "const": "rus.runtime_catalog_activation_request.v2" },
+        "catalog_scope": { "const": "item_container_materialization_v2" },
+        "target_revision_id": { "$ref": "#/$defs/nonEmptyText" },
+        "target_catalog_digest": { "$ref": "#/$defs/digest" },
+        "import_id": { "$ref": "#/$defs/nonEmptyText" },
+        "import_audit_digest": { "$ref": "#/$defs/digest" },
+        "record_registry_digest": { "$ref": "#/$defs/digest" },
+        "runtime_contract_digest": { "$ref": "#/$defs/digest" },
+        "runtime_release_id": { "$ref": "#/$defs/digest" },
+        "party_preflight_digest": { "$ref": "#/$defs/digest" },
+        "activation_request_digest": { "$ref": "#/$defs/digest" }
+      },
+      "additionalProperties": true
+    },
+    "activationAttestation": {
+      "type": "object",
+      "required": [
+        "schema",
+        "activation_request_digest",
+        "catalog_scope",
+        "target_revision_id",
+        "target_catalog_digest",
+        "import_id",
+        "import_audit_digest",
+        "runtime_contract_digest",
+        "runtime_release_id",
+        "decision",
+        "attested_by",
+        "attestation_digest"
+      ],
+      "properties": {
+        "schema": { "const": "rus.runtime_catalog_activation_attestation.v2" },
+        "activation_request_digest": { "$ref": "#/$defs/digest" },
+        "catalog_scope": { "const": "item_container_materialization_v2" },
+        "target_revision_id": { "$ref": "#/$defs/nonEmptyText" },
+        "target_catalog_digest": { "$ref": "#/$defs/digest" },
+        "import_id": { "$ref": "#/$defs/nonEmptyText" },
+        "import_audit_digest": { "$ref": "#/$defs/digest" },
+        "runtime_contract_digest": { "$ref": "#/$defs/digest" },
+        "runtime_release_id": { "$ref": "#/$defs/digest" },
+        "decision": { "const": "approve_activation" },
+        "attested_by": { "$ref": "#/$defs/nonEmptyText" },
+        "attested_at": { "type": ["string", "null"] },
+        "attestation_digest": { "$ref": "#/$defs/digest" }
+      },
+      "additionalProperties": false
+    },
+    "activationEvent": {
+      "type": "object",
+      "required": [
+        "schema",
+        "event_id",
+        "event_sequence",
+        "event_type",
+        "catalog_scope",
+        "catalog_revision_id",
+        "catalog_digest",
+        "import_id",
+        "import_audit_digest",
+        "record_registry_digest",
+        "runtime_contract_digest",
+        "request_digest",
+        "attestation_digest",
+        "runtime_release_id",
+        "operator_principal",
+        "event_digest"
+      ],
+      "properties": {
+        "schema": { "const": "rus.runtime_catalog_activation_event.v2" },
+        "event_id": { "$ref": "#/$defs/nonEmptyText" },
+        "event_sequence": { "type": "integer", "minimum": 1 },
+        "event_type": { "const": "activate" },
+        "catalog_scope": { "const": "item_container_materialization_v2" },
+        "catalog_revision_id": { "$ref": "#/$defs/nonEmptyText" },
+        "catalog_digest": { "$ref": "#/$defs/digest" },
+        "import_id": { "$ref": "#/$defs/nonEmptyText" },
+        "import_audit_digest": { "$ref": "#/$defs/digest" },
+        "record_registry_digest": { "$ref": "#/$defs/digest" },
+        "runtime_contract_digest": { "$ref": "#/$defs/digest" },
+        "request_digest": { "$ref": "#/$defs/digest" },
+        "attestation_digest": { "$ref": "#/$defs/digest" },
+        "runtime_release_id": { "$ref": "#/$defs/digest" },
+        "operator_principal": { "$ref": "#/$defs/nonEmptyText" },
+        "event_digest": { "$ref": "#/$defs/digest" }
+      },
+      "additionalProperties": true
+    },
+    "runtimeRelease": {
+      "type": "object",
+      "required": [
+        "schema",
+        "git_commit_sha",
+        "build_release_manifest_digest",
+        "supported_runtime_contract_digests",
+        "runtime_release_id"
+      ],
+      "properties": {
+        "schema": { "const": "rus.runtime_release.v2" },
+        "git_commit_sha": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+        "build_release_manifest_digest": { "$ref": "#/$defs/digest" },
+        "supported_runtime_contract_digests": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/digest" }
+        },
+        "runtime_release_id": { "$ref": "#/$defs/digest" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

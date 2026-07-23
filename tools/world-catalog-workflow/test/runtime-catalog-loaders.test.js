@@ -4,10 +4,10 @@ import { resolve } from 'node:path';
 import test from 'node:test';
 
 import { materializeG5Scene, materializeItemPlacement } from '@rus/materialization';
-import { normalizeStage13MaterializationPolicy, runStage13G5MaterializationBlock } from '@rus/new-game/stages/stage-13';
+import { buildStage13G5MaterializationInput, normalizeStage13MaterializationPolicy, runStage13G5MaterializationBlock } from '@rus/new-game/stages/stage-13';
 import { buildStage14G5SceneCodePrecheck, normalizeStage14AuditPolicy, STAGE14_INPUT_SCHEMA } from '@rus/new-game/stages/stage-14';
 import { buildStage16ItemPlacementCodePrecheck, normalizeStage16ItemPlacementPolicy } from '@rus/new-game/stages/stage-16';
-import { retrieveApprovedItemProfileCandidates } from '@rus/new-game/stages/stage-8';
+import { buildStage8ItemProfileInputFromPipeline, retrieveApprovedItemProfileCandidates } from '@rus/new-game/stages/stage-8';
 import { enterG4WithMaterialization } from '@rus/turn';
 import { buildAllowedG5TemplateSet, buildApprovedItemCatalogSnapshot } from '../src/index.js';
 
@@ -75,6 +75,8 @@ test('approved PR17 catalog feeds deterministic Stage 8, Stage 13 and Stage 16 m
   assert.equal(stage13.pass, true, JSON.stringify(stage13.concerns));
   const scene = stage13.output;
   assert.deepEqual(scene, materializeG5Scene(stage13Input));
+  assert.equal(scene.materialization_run.catalog_digest, allowed.source_catalog_digest);
+  assert.equal(scene.materialization_run.catalog_bundle_digest, allowed.catalog_digest);
   assert.equal(scene.item_materialization_slots.filter((slot) => slot.slot_domain === 'item').length, 1);
   assert.equal(scene.item_materialization_slots.filter((slot) => slot.slot_domain === 'container').length, 1);
 
@@ -126,6 +128,66 @@ test('approved PR17 catalog feeds deterministic Stage 8, Stage 13 and Stage 16 m
   assert.equal(stage14Precheck.pass, true, JSON.stringify(stage14Precheck.concerns));
   const stage16Precheck = buildStage16ItemPlacementCodePrecheck(placement, stage16Input);
   assert.equal(stage16Precheck.pass, true, JSON.stringify(stage16Precheck.concerns));
+});
+
+test('new-game builders derive Stage 8 and Stage 13 projections from one verified runtime context', () => {
+  const { records, mappings } = loadApprovedCandidate();
+  const mapping = mappings.find((record) => record.context_domain === 'craft_work');
+  const sourceCatalogDigest = runtimeDigest(records);
+  const runtimeCatalogContext = {
+    pin: {
+      catalog_digest: sourceCatalogDigest,
+      compatible_world_revision_id: worldRevisionId
+    },
+    applicable_catalog: {
+      records_by_table: records
+    }
+  };
+  const outputs = new Map([
+    [4, { region_id: 'region_novgorod_land' }],
+    [8, { source_catalog_digest: sourceCatalogDigest }],
+    [9, selectedNode(mapping)]
+  ]);
+  const context = {
+    requestId: 'runtime-builder-test',
+    partyId: 'party-runtime-builder-test',
+    runtimeCatalogContext,
+    getStageOutput: (stageId) => structuredClone(outputs.get(stageId) ?? null),
+    requireStageOutput: (stageId) => structuredClone(outputs.get(stageId) ?? {})
+  };
+
+  const stage8 = buildStage8ItemProfileInputFromPipeline(context, {
+    historical_frame: { calendar: { year: 1230, season: 'spring' } },
+    candidate_place_template_set: {},
+    npc_candidate_set: {}
+  });
+  assert.equal(stage8.approved_catalog_snapshot.source_catalog_digest, sourceCatalogDigest);
+  assert.equal(stage8.world_revision_id, worldRevisionId);
+
+  const stage13 = buildStage13G5MaterializationInput(context, {
+    normalized_request: {},
+    historical_frame: { calendar: { year: 1230, season: 'spring' } },
+    weather_state: {},
+    regional_context_package: { region_id: 'region_novgorod_land' },
+    selected_start_node: selectedNode(mapping),
+    start_place_audit: {},
+    player_character: {},
+    player_character_audit: {},
+    npc_candidate_set: {},
+    item_profile_candidate_set: { source_catalog_digest: sourceCatalogDigest },
+    year: 1230,
+    season: 'spring'
+  });
+  assert.equal(stage13.allowed_g5_template_set.source_catalog_digest, sourceCatalogDigest);
+  const expectedAllowed = buildAllowedG5TemplateSet({
+    records_by_table: records,
+    graph_node_id: mapping.graph_node_id,
+    world_revision_id: worldRevisionId,
+    selected_g4_type_id: mapping.node_type,
+    source_catalog_digest: sourceCatalogDigest
+  });
+  assert.equal(stage13.allowed_g5_template_set.catalog_digest, expectedAllowed.catalog_digest);
+  assert.deepEqual(stage13.allowed_g5_template_set.allowed_g5_templates, expectedAllowed.allowed_g5_templates);
 });
 
 test('runtime loader refuses an unapproved selected G4', () => {

@@ -27,7 +27,13 @@ function inputBuilders(events = []) {
     const id = index + 2;
     return [id, (context) => {
       events.push(id);
-      return { request_id: context.requestId, prior_stage: id === 2 ? 1 : context.getStageOutput(id - 1)?.stage_id ?? null };
+      return {
+        request_id: context.requestId,
+        prior_stage: id === 2 ? 1 : context.getStageOutput(id - 1)?.stage_id ?? null,
+        ...(id === 13
+          ? { allowed_g5_template_set: { schema: 'allowed_g5_template_set', catalog_digest: 'stage-13-catalog' } }
+          : {})
+      };
     }];
   }));
 }
@@ -55,6 +61,7 @@ test('orchestrator executes the complete Stage 2-26 chain and checkpoints every 
   assert.equal(saved.length, 25);
   assert.equal(result.checkpoint.last_completed_stage, 26);
   assert.equal(result.checkpoint.outputs['26'].schema, 'stage_26_artifact');
+  assert.equal(result.checkpoint.outputs['1300'].catalog_digest, 'stage-13-catalog');
 });
 
 test('repair route clears downstream state and reruns from the declared upstream stage', async () => {

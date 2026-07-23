@@ -1,7 +1,7 @@
 {
   "schema_version": "rus.lexical_index.v1",
-  "corpus_hash": "4551b66c10c5f3466d0901f355a2c37132c6825503c63020af6f15e3b6a042ac",
-  "chunk_count": 1525,
+  "corpus_hash": "e42d8f87c30ccd1e00fd0c7c8f1331aa50c10369ab2b19282809509edc5f2f83",
+  "chunk_count": 1541,
   "chunks": [
     {
       "id": "base_turn_orchestration.txt:Базовая оркестрация хода:0",
@@ -1142,16 +1142,25 @@
       "file": "code_driven_world_materialization_architecture.md",
       "section": "5. Контракт materializer v2",
       "line_start": 150,
-      "line_end": 190,
-      "text": "## code_driven_world_materialization_architecture.md — 5. Контракт materializer v2\n## 5. Контракт materializer v2\n\nОбязательный вход:\n\n```text\nparty_id\nworld_revision_id\nhistorical_frame\ng1_id\ng4_id\ncatalog_bundle (immutable catalog snapshot)\ncatalog_digest\nmaterializer_version\nrng_algorithm_id\nseed_context\nexisting_party_state\ntrigger\n```\n\nОбязательный результат:\n\n```text\nmaterialization_status\ng5_nodes\ng5_edges\ng5_anchors\nnpc_instances\nitem_instances\ncontainer_instances\nownership_relations\nknowledge_records\nschedule_records\nmaterialization_trace\nvalidation_report\nproposed_write_set\n```\n\nMaterializer является чистым относительно persistence. Он не выполняет запись и не читает скрытое глобальное состояние.\n\nКаталог ссылается на будущие экземпляры только через утверждённые `slot_key`: `g5_node_slot_key`, `anchor_slot_key`, `from_anchor_slot_key`, `to_anchor_slot_key` и аналогичные domain-specific ссылки. Instance ID не хранится в authoring catalog: materializer разрешает однозначные slot-ссылки после deterministic selection, блокирует отсутствующие и неоднозначные ссылки и только затем формирует `player_start_position` и schema-qualified `proposed_write_set`.",
-      "char_count": 1176
+      "line_end": 198,
+      "text": "## code_driven_world_materialization_architecture.md — 5. Контракт materializer v2\n## 5. Контракт materializer v2\n\nОбязательный вход:\n\n```text\nparty_id\nworld_revision_id\nhistorical_frame\ng1_id\ng4_id\ncatalog_bundle (immutable catalog snapshot)\ncatalog_digest (exact domain catalog pin)\ncatalog_bundle_digest (canonical digest применимой immutable projection)\nmaterializer_version\nrng_algorithm_id\nseed_context\nexisting_party_state\ntrigger\n```\n\n`catalog_digest` и `catalog_bundle_digest` являются разными идентичностями.\nПервый связывает materialization run с approved domain revision/import и\npersisted party pin. Второй доказывает неизменность уже проверенной применимой\nprojection. Подмена одного digest другим запрещена. Legacy input без\n`catalog_bundle_digest` допускается только внутри прежнего compatibility\nконтракта и проверяет `catalog_digest` непосредственно против bundle.\n\nОбязательный результат:\n\n```text\nmaterialization_status\ng5_nodes\ng5_edges\ng5_anchors\nnpc_instances\nitem_instances\ncontainer_instances\nownership_relations\nknowledge_records\nschedule_records\nmaterialization_trace\nvalidation_report\nproposed_write_set\n```\n\nMaterializer является чистым относительно persistence. Он не выполняет запись и не читает скрытое глобальное состояние.",
+      "char_count": 1256
+    },
+    {
+      "id": "code_driven_world_materialization_architecture.md:5. Контракт materializer v2:1",
+      "file": "code_driven_world_materialization_architecture.md",
+      "section": "5. Контракт materializer v2",
+      "line_start": 150,
+      "line_end": 198,
+      "text": "## code_driven_world_materialization_architecture.md — 5. Контракт materializer v2\nreport\nproposed_write_set\n```\n\nMaterializer является чистым относительно persistence. Он не выполняет запись и не читает скрытое глобальное состояние.\n\nКаталог ссылается на будущие экземпляры только через утверждённые `slot_key`: `g5_node_slot_key`, `anchor_slot_key`, `from_anchor_slot_key`, `to_anchor_slot_key` и аналогичные domain-specific ссылки. Instance ID не хранится в authoring catalog: materializer разрешает однозначные slot-ссылки после deterministic selection, блокирует отсутствующие и неоднозначные ссылки и только затем формирует `player_start_position` и schema-qualified `proposed_write_set`.",
+      "char_count": 694
     },
     {
       "id": "code_driven_world_materialization_architecture.md:6. Детерминизм и identity:0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "6. Детерминизм и identity",
-      "line_start": 191,
-      "line_end": 207,
+      "line_start": 199,
+      "line_end": 215,
       "text": "## code_driven_world_materialization_architecture.md — 6. Детерминизм и identity\n## 6. Детерминизм и identity\n\nSeed material включает party ID, world revision, G4, trigger, materializer/RNG versions и occurrence. Итоговый seed — SHA-256 canonical JSON. Алгоритм v2 использует `mulberry32_v1` через явный `RandomSource`.\n\nДля каждого выбора сохраняются:\n\n```text\nchoice_key\ncandidate_digest\nselected_id\nrng_counter\nselected_weight\nrejection_summary\n```\n\nInstance ID детерминированно выводится из party, run, domain, slot key и ordinal. Изменение candidate set меняет digest и требует нового осознанного запуска, а не молчаливой замены.",
       "char_count": 634
     },
@@ -1159,8 +1168,8 @@
       "id": "code_driven_world_materialization_architecture.md:7. Материализация G5:0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "7. Материализация G5",
-      "line_start": 208,
-      "line_end": 226,
+      "line_start": 216,
+      "line_end": 234,
       "text": "## code_driven_world_materialization_architecture.md — 7. Материализация G5\n## 7. Материализация G5\n\nПорядок:\n\n1. Проверить отсутствие сохранённого baseline G5.\n2. Загрузить применимый G4 profile и binding.\n3. Загрузить layout, G5 templates и slot rules.\n4. Проверить период, сезон, время, погоду, доступ и состояние G4.\n5. Создать обязательные nodes и допустимые optional nodes.\n6. Создать edges и проверить связность, входы и выходы.\n7. Создать anchors и slots.\n8. Материализовать NPC и предметный слой.\n9. Проверить capacity, access, visibility, ownership и causal basis.\n10. Сформировать trace и единый write set.\n\nRuntime-вход Stage 13 обязан содержать отдельные approved profile, layout, node/anchor/edge templates и slot rules с нормализованными ссылками. Capacity, access, visibility, parent slot и start anchor не выводятся из «типового» значения и не имеют fallback.\n\nИнварианты: принадлежность одному G4, отсутствие G6, существование обязательных входов/выходов, физическая связность, отсутствие anchor без slot, совместимость NPC/items со slot и отсутствие доступа в закрытую зону без разрешённого прохода.",
       "char_count": 1118
     },
@@ -1168,8 +1177,8 @@
       "id": "code_driven_world_materialization_architecture.md:8. Материализация NPC:0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "8. Материализация NPC",
-      "line_start": 227,
-      "line_end": 243,
+      "line_start": 235,
+      "line_end": 251,
       "text": "## code_driven_world_materialization_architecture.md — 8. Материализация NPC\n## 8. Материализация NPC\n\nИсточники NPC образуют обязательную цепочку:\n\n```text\nG4 rule → regional archetype/profile set\n→ social role/occupation/legal status\n→ demographic/name/appearance\n→ clothing/equipment\n→ knowledge/behavior\n→ activity/schedule/relationship\n```\n\nЭкземпляр хранит машинные параметры, profile/source refs, причину присутствия, права доступа, route/resource basis и уровень `background|scene|key`. Художественное описание не заменяет данные.\n\nПовышение профиля использует отдельный deterministic expansion seed, заполняет только отсутствующие поля и не меняет ранее выбранные значения.",
       "char_count": 682
     },
@@ -1177,8 +1186,8 @@
       "id": "code_driven_world_materialization_architecture.md:9. Предметы, контейнеры и имущество:0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "9. Предметы, контейнеры и имущество",
-      "line_start": 244,
-      "line_end": 249,
+      "line_start": 252,
+      "line_end": 257,
       "text": "## code_driven_world_materialization_architecture.md — 9. Предметы, контейнеры и имущество\n## 9. Предметы, контейнеры и имущество\n\nПредмет создаётся только при наличии категории, template/profile, materialization rule, causal basis, допустимого slot, количества и ownership/holder policy. Location, holder, owner, controller, access, visibility, condition, quantity, legal status и container relation хранятся раздельно.\n\nСодержимое контейнера материализуется один раз при создании контейнера либо при первом причинном раскрытии заранее предусмотренного slot. Заявка игрока не создаёт новый slot.",
       "char_count": 596
     },
@@ -1186,8 +1195,8 @@
       "id": "code_driven_world_materialization_architecture.md:10. Bounded decision protocol:0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "10. Bounded decision protocol",
-      "line_start": 250,
-      "line_end": 270,
+      "line_start": 258,
+      "line_end": 278,
       "text": "## code_driven_world_materialization_architecture.md — 10. Bounded decision protocol\n## 10. Bounded decision protocol\n\nКод сначала исключает невозможные варианты. Каждый option содержит:\n\n```text\noption_id\ncommand_token\ncommand_id\nactor_id\ntarget_id\npreconditions\nexpected_cost\nknown_risks\nreason_visible_to_actor\nstate_version\n```\n\nДопустимый ответ содержит только `request_id`, один известный `option_id` и точный token. Token связан с request, actor, option, command, policy version, state version и options digest.\n\nНедопустимы неизвестный token, несколько вариантов, свободный текст, SQL, patch, новый план, утверждение результата и ответ на устаревшую версию состояния.",
       "char_count": 675
     },
@@ -1195,8 +1204,8 @@
       "id": "code_driven_world_materialization_architecture.md:11. Автономные обновления и базовый ход:0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "11. Автономные обновления и базовый ход",
-      "line_start": 271,
-      "line_end": 278,
+      "line_start": 279,
+      "line_end": 286,
       "text": "## code_driven_world_materialization_architecture.md — 11. Автономные обновления и базовый ход\n## 11. Автономные обновления и базовый ход\n\nКаждое code-only обновление имеет правило, входное состояние, change set, trace, idempotency key и commit gate. Если требуется неоднозначное решение NPC, создаётся bounded request; после ответа последствия рассчитывает код.\n\nПервый успешный вход в нематериализованный G4 включает G5 materialization в ту же атомарную транзакцию, что и перемещение. Ошибка либо пустой candidate set отменяют весь переход.\n\nПроверка отсутствующего baseline сериализуется transaction-scoped advisory lock по `(party_id,g4_id)`: блокировка берётся до чтения baseline и защищает также случай, когда строки baseline ещё нет.",
       "char_count": 740
     },
@@ -1204,8 +1213,8 @@
       "id": "code_driven_world_materialization_architecture.md:12. New-game pipeline:0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "12. New-game pipeline",
-      "line_start": 279,
-      "line_end": 293,
+      "line_start": 287,
+      "line_end": 301,
       "text": "## code_driven_world_materialization_architecture.md — 12. New-game pipeline\n## 12. New-game pipeline\n\n- Stage 9 выбирает стартовый узел через bounded protocol.\n- Stage 13 кодом создаёт G5 structure и общий run context.\n- Stage 14 кодом проверяет G5.\n- Stage 15 кодом создаёт NPC.\n- Stage 16 кодом создаёт items/containers/property.\n- Stage 19 кодом собирает hidden state из уже утверждённых экземпляров.\n- Stage 24 кодом строит фиксированный party write plan.\n- Stage 25 атомарно фиксирует результат.\n\nStage 24 не подставляет run/seed/profile/quantity/condition/legal status. Он принимает эти значения только из approved outputs/trace, формирует `insert_only` batches для полного нормализованного набора relations и переводит party в `active` внутри того же плана. Stage 25 квалифицирует физические targets схемой `party_runtime` и исполняет их production SQL adapter.\n\nProduction-роли `G5SceneMaterializer`, `InitialNpcPlacer`, `InitialItemPlacer` и LLM write-plan builder запрещены.",
       "char_count": 985
     },
@@ -1213,10 +1222,37 @@
       "id": "code_driven_world_materialization_architecture.md:13. Проверки и условие повышения:0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "13. Проверки и условие повышения",
-      "line_start": 294,
-      "line_end": 309,
+      "line_start": 302,
+      "line_end": 318,
       "text": "## code_driven_world_materialization_architecture.md — 13. Проверки и условие повышения\n## 13. Проверки и условие повышения\n\nОбязательны unit/property/integration tests детерминизма, filters, graph connectivity, capacity, ownership, repeat-entry, no-rematerialization, decision tokens, invalid LLM responses, autonomous updates, rollback, full new-game и first-entry turn.\n\nДокумент может стать `active` только когда:\n\n```text\nвсе противоречащие active-нормативы исправлены;\nDDL, contracts и JSON Schema обновлены;\nproduction Stage 13–16, 19 и 24 переведены на код;\nparty write path сохраняет trace и version pins;\nlegacy party v1 не попадает в runtime v2;\ngenerated artifacts актуальны;\nполный test suite и PostgreSQL integration проходят;\nотдельный агент-критик вернул PASS.\n```",
       "char_count": 780
+    },
+    {
+      "id": "code_driven_world_materialization_architecture.md:14. Domain-scoped runtime catalog activation:0",
+      "file": "code_driven_world_materialization_architecture.md",
+      "section": "14. Domain-scoped runtime catalog activation",
+      "line_start": 319,
+      "line_end": 370,
+      "text": "## code_driven_world_materialization_architecture.md — 14. Domain-scoped runtime catalog activation\n## 14. Domain-scoped runtime catalog activation\n\nПолный world pin партии и pin предметно-контейнерного каталога являются\nразными identities.\n\n```text\nfull world pin\n= parties.world_revision_id + parties.world_catalog_digest\n\ndomain pin\n= item_container_materialization_v2 catalog revision\n+ catalog digest\n+ exact successful import\n+ runtime contract\n+ compatible world tuple\n```\n\nDomain revision не является полной world revision и не может выбираться общим\nworld-pin selector. Parent tuple фиксирует точный operator snapshot, относительно\nкоторого собран overlay. Compatible world tuple фиксирует полный world pin, с\nкоторым overlay разрешён runtime; равенство этих tuple не предполагается.\n\nActive domain pin читается ровно один раз при создании новой партии, до\nкомпозиции Stage 8. Один immutable pin проходит через Stage 8, 13, 14, 16, 24 и\n25. Stage 24 включает party pin и run pin в тот же logical write plan, что и\nmaterialization rows, а Stage 25 записывает и проверяет их в одной party\ntransaction.",
+      "char_count": 1108
+    },
+    {
+      "id": "code_driven_world_materialization_architecture.md:14. Domain-scoped runtime catalog activation:1",
+      "file": "code_driven_world_materialization_architecture.md",
+      "section": "14. Domain-scoped runtime catalog activation",
+      "line_start": 319,
+      "line_end": 370,
+      "text": "## code_driven_world_materialization_architecture.md — 14. Domain-scoped runtime catalog activation\n включает party pin и run pin в тот же logical write plan, что и\nmaterialization rows, а Stage 25 записывает и проверяет их в одной party\ntransaction.\n\nReload, turn и повторный вход читают только persisted party pin и exact\nhistorical import snapshots. Active pointer повторно не читается. Смена active\ncatalog не меняет существующие партии и не запускает автоматическую\nрематериализацию или backfill. Отсутствующий party domain pin является typed\nhard block.\n\nRuntime восстанавливает каталог только по exact import membership. Membership\nразличает:\n\n- `insert` — строка принадлежит overlay и была создана import;\n- `assert_existing` — точная каноническая строка уже существовала в parent\n  snapshot и была проверена без записи.\n\nScoped dependency assertion является утверждённым входом только одного\nmaterialization scope. Она хранит точный canonical base-row snapshot и не\nсоздаёт G4, не меняет его canonical status, историческую или пространственную\nсемантику. Изменение base row после утверждения блокирует использование\nassertion.",
+      "char_count": 1135
+    },
+    {
+      "id": "code_driven_world_materialization_architecture.md:14. Domain-scoped runtime catalog activation:2",
+      "file": "code_driven_world_materialization_architecture.md",
+      "section": "14. Domain-scoped runtime catalog activation",
+      "line_start": 319,
+      "line_end": 370,
+      "text": "## code_driven_world_materialization_architecture.md — 14. Domain-scoped runtime catalog activation\n, не меняет его canonical status, историческую или пространственную\nсемантику. Изменение base row после утверждения блокирует использование\nassertion.\n\nДо materialization runtime обязан fail-closed проверить compatible world tuple,\nexact import и runtime contract. Domain pin, import provenance, activation event\nи их digests сохраняются в party state и run trace. Неполный pin, несовместимый\ntuple, отсутствующее membership или несовпавший digest запрещают запуск\nmaterialization.",
+      "char_count": 581
     },
     {
       "id": "combat_system.md:Боевая система:0",
@@ -5120,25 +5156,25 @@
       "file": "llm_documentation_navigation.md",
       "section": "Приоритет materialization v2",
       "line_start": 7,
-      "line_end": 22,
-      "text": "## llm_documentation_navigation.md — Приоритет materialization v2\n## Приоритет materialization v2\n\nВысший норматив разделения кода и LLM — `code_driven_world_materialization_architecture.md`; технический норматив данных — `world_base_materialization_table_requirements.md`. Код не придумывает категории и историю, но материализует конкретные G5/NPC/items из утверждённых profiles/rules. LLM ограничен bounded decisions, персонажем игрока, аудитом и прозой. Это правило заменяет прежние формулы «LLM создаёт смысл, код только хранит» во всех нижестоящих описаниях.\n\nАктуализировано: 2026-07-14.\n\nЭтот файл нужен для быстрой ориентации LLM, разработчика или аудитора в папке `DOCUMENTS`. Он не заменяет нормативные документы и не вводит новых правил. Если этот README расходится с высшим нормативом materialization v2 или профильным документом, применяется установленный ниже приоритет.\n\nГлавное правило работы:\n\n```text\nсначала определить систему → открыть профильный документ → сверить связанные документы → только потом отвечать, писать код, менять промт или фиксировать состояние\n```",
-      "char_count": 1085
+      "line_end": 31,
+      "text": "## llm_documentation_navigation.md — Приоритет materialization v2\n## Приоритет materialization v2\n\nВысший норматив разделения кода и LLM — `code_driven_world_materialization_architecture.md`; технический норматив данных — `world_base_materialization_table_requirements.md`. Код не придумывает категории и историю, но материализует конкретные G5/NPC/items из утверждённых profiles/rules. LLM ограничен bounded decisions, персонажем игрока, аудитом и прозой. Это правило заменяет прежние формулы «LLM создаёт смысл, код только хранит» во всех нижестоящих описаниях.\n\nДля domain-scoped activation `item_container_materialization_v2` дополнительно\nобязательны `read_only_database_and_graph_architecture.md` и generated\n`infra/world-base/SCHEMA_REFERENCE.md`. Implementation owners:\n`packages/runtime-catalog/MODULE.md` для read-only active/historical catalog,\n`tools/runtime-catalog-activation/MODULE.md` для operator-only writes и\n`docs/implementation/item-container-runtime-activation/README.md` для\nreadiness, выполненных queries/checks и operator blockers. Эти implementation\npaths не заменяют active-нормативы.\n\nАктуализировано: 2026-07-14.",
+      "char_count": 1141
     },
     {
       "id": "llm_documentation_navigation.md:Приоритет materialization v2:1",
       "file": "llm_documentation_navigation.md",
       "section": "Приоритет materialization v2",
       "line_start": 7,
-      "line_end": 22,
-      "text": "## llm_documentation_navigation.md — Приоритет materialization v2\nть систему → открыть профильный документ → сверить связанные документы → только потом отвечать, писать код, менять промт или фиксировать состояние\n```\n\nНельзя придумывать новые механики, категории, формулы, исторические допущения, игровые факты или UI-слои, если они не следуют из текущих документов проекта. Код материализует и изменяет экземпляры из утверждённых данных; LLM принимает только формально ограниченные решения и формулирует разрешённую прозу.",
-      "char_count": 523
+      "line_end": 31,
+      "text": "## llm_documentation_navigation.md — Приоритет materialization v2\nd` для\nreadiness, выполненных queries/checks и operator blockers. Эти implementation\npaths не заменяют active-нормативы.\n\nАктуализировано: 2026-07-14.\n\nЭтот файл нужен для быстрой ориентации LLM, разработчика или аудитора в папке `DOCUMENTS`. Он не заменяет нормативные документы и не вводит новых правил. Если этот README расходится с высшим нормативом materialization v2 или профильным документом, применяется установленный ниже приоритет.\n\nГлавное правило работы:\n\n```text\nсначала определить систему → открыть профильный документ → сверить связанные документы → только потом отвечать, писать код, менять промт или фиксировать состояние\n```\n\nНельзя придумывать новые механики, категории, формулы, исторические допущения, игровые факты или UI-слои, если они не следуют из текущих документов проекта. Код материализует и изменяет экземпляры из утверждённых данных; LLM принимает только формально ограниченные решения и формулирует разрешённую прозу.",
+      "char_count": 1015
     },
     {
       "id": "llm_documentation_navigation.md:1. Приоритет источников:0",
       "file": "llm_documentation_navigation.md",
       "section": "1. Приоритет источников",
-      "line_start": 23,
-      "line_end": 32,
+      "line_start": 32,
+      "line_end": 41,
       "text": "## llm_documentation_navigation.md — 1. Приоритет источников\n## 1. Приоритет источников\n\n1. `code_driven_world_materialization_architecture.md` — для границы кода/LLM и материализации.\n2. Профильный норматив конкретной подсистемы.\n3. `development_rules.txt`.\n4. DDL, схемы и формальные контракты.\n5. Навигационные документы.\n6. Реализация.\n7. Комментарии и примеры.",
       "char_count": 365
     },
@@ -5146,8 +5182,8 @@
       "id": "llm_documentation_navigation.md:Proposed-классификация:0",
       "file": "llm_documentation_navigation.md",
       "section": "Proposed-классификация",
-      "line_start": 33,
-      "line_end": 46,
+      "line_start": 42,
+      "line_end": 55,
       "text": "## llm_documentation_navigation.md — Proposed-классификация\n### Proposed-классификация\n\n`universal_category_classification_policy.md` и `universal_category_classification_references.md` зарегистрированы в canonical corpus со статусом `proposed`. Они задают целевую модель классификации и внешние опоры, но не отменяют active-нормативы и не подтверждают готовность предметных каталогов, regional permissions или materializer. До отдельного повышения действует приоритет выше.\n\nДополнительные правила навигации:",
       "char_count": 509
     },
@@ -5155,8 +5191,8 @@
       "id": "llm_documentation_navigation.md:Proposed-классификация:1",
       "file": "llm_documentation_navigation.md",
       "section": "Proposed-классификация",
-      "line_start": 33,
-      "line_end": 46,
+      "line_start": 42,
+      "line_end": 55,
       "text": "## llm_documentation_navigation.md — Proposed-классификация\nость предметных каталогов, regional permissions или materializer. До отдельного повышения действует приоритет выше.\n\nДополнительные правила навигации:\n\n- `formulas.md` помогает быстро найти формулу, но не заменяет профильный документ, где эта формула объяснена.\n- `README.md` и этот `llm_documentation_navigation.md` являются навигацией, а не источником новых правил.\n- `world_regions.txt` задаёт допустимую региональную сетку, но не описывает всю внутреннюю логику региона.\n- Исторический слой всегда уточняется через год, сезон, регион, текущую сцену и уже зафиксированные факты партии.\n- LLM не должна менять уже зафиксированные факты без игровой причины и явной фиксации изменения.\n- Новые предметы, NPC, места, слухи, исторические события и последствия материализуются только при причинном основании и в пределах текущего контекста.\n- Скрытые факты мира, мотивы NPC, будущие события, технические промты и raw-диагностика не должны попадать в player-facing прозу или UI.",
       "char_count": 1034
     },
@@ -5164,8 +5200,8 @@
       "id": "llm_documentation_navigation.md:2. Быстрый порядок чтения:0",
       "file": "llm_documentation_navigation.md",
       "section": "2. Быстрый порядок чтения",
-      "line_start": 47,
-      "line_end": 48,
+      "line_start": 56,
+      "line_end": 57,
       "text": "## llm_documentation_navigation.md — 2. Быстрый порядок чтения\n## 2. Быстрый порядок чтения",
       "char_count": 91
     },
@@ -5173,8 +5209,8 @@
       "id": "llm_documentation_navigation.md:Для общего понимания проекта:0",
       "file": "llm_documentation_navigation.md",
       "section": "Для общего понимания проекта",
-      "line_start": 49,
-      "line_end": 58,
+      "line_start": 58,
+      "line_end": 67,
       "text": "## llm_documentation_navigation.md — Для общего понимания проекта\n### Для общего понимания проекта\n\n1. `README.md`\n2. `world_generation_and_turns.txt`\n3. `player_character_generation.txt`\n4. `character_parameters.txt`\n5. `time_system.txt`\n6. `movement_locations_regions.txt`\n7. `interface_ux.md`",
       "char_count": 295
     },
@@ -5182,8 +5218,8 @@
       "id": "llm_documentation_navigation.md:Для игровых систем и последствий:0",
       "file": "llm_documentation_navigation.md",
       "section": "Для игровых систем и последствий",
-      "line_start": 59,
-      "line_end": 70,
+      "line_start": 68,
+      "line_end": 79,
       "text": "## llm_documentation_navigation.md — Для игровых систем и последствий\n### Для игровых систем и последствий\n\n1. `items_and_property.txt`\n2. `character_inventory_equipment.txt`\n3. `npc_inventory_item_marks.txt`\n4. `npc_generation_profiles.txt`\n5. `weapons_and_armor.txt`\n6. `combat_system.md`\n7. `historical_events_and_figures.txt`\n8. `world_regions.txt`\n9. `formulas.md`",
       "char_count": 369
     },
@@ -5191,8 +5227,8 @@
       "id": "llm_documentation_navigation.md:Для LLM-архитектуры, промтов и работы с источниками:0",
       "file": "llm_documentation_navigation.md",
       "section": "Для LLM-архитектуры, промтов и работы с источниками",
-      "line_start": 71,
-      "line_end": 77,
+      "line_start": 80,
+      "line_end": 86,
       "text": "## llm_documentation_navigation.md — Для LLM-архитектуры, промтов и работы с источниками\n### Для LLM-архитектуры, промтов и работы с источниками\n\n1. `information_sources_llm_prompts.md`\n2. `llm_agent_prompt_templates.md`\n3. `world_generation_and_turns.txt`\n4. `interface_ux.md`",
       "char_count": 277
     },
@@ -5200,8 +5236,8 @@
       "id": "llm_documentation_navigation.md:3. Карта документов:0",
       "file": "llm_documentation_navigation.md",
       "section": "3. Карта документов",
-      "line_start": 78,
-      "line_end": 103,
+      "line_start": 87,
+      "line_end": 112,
       "text": "## llm_documentation_navigation.md — 3. Карта документов\n## 3. Карта документов",
       "char_count": 79
     },
@@ -5209,8 +5245,8 @@
       "id": "llm_documentation_navigation.md:3. Карта документов:1",
       "file": "llm_documentation_navigation.md",
       "section": "3. Карта документов",
-      "line_start": 78,
-      "line_end": 103,
+      "line_start": 87,
+      "line_end": 112,
       "text": "## llm_documentation_navigation.md — 3. Карта документов\n## 3. Карта документов\n\n| Файл | Краткое содержание | Когда использовать |\n|---|---|---|\n| `README.md` | Общее описание проекта, состава `DOCUMENTS`, запуска, тестов и правил будущих изменений. | При первом входе в проект, объяснении назначения репозитория, проверке состава документации и базовых команд. |\n| `world_regions.txt` | Список допустимых регионов мира RUS13. Задаёт историко-географическую сетку, в пределах которой выбираются стартовые и последующие регионы партии. | При выборе региона, смене региона, проверке географической допустимости, создании исторического фона и маршрутов. |\n| `spatial_architecture_standard_g0_g6.md` | Главный target v4.2.0: G0–G6, topology, movement, materialization, player projection, migration и release gate. До P28 не является active runtime нормативом. | При target-проектировании пространственной модели, contracts, DDL/migration plan и проверке границы active/target. |\n| `world_generation_and_turns.txt` | Target v3: G0–G6/position, bounded preparation/materialization и turn boundary; archived v2 источник сохранён для traceability. | При target-проектировании start/materialization/slots/expansion и сверке active v2 до P28. |\n| `player_character_generation.txt` | Правила создания персонажа игрока как человека, встроенного в эпоху, место, статус, тело, знания, имущество, связи и стартовую сцену. | При создании нового персонажа, интерпретации заявки игрока, проверке стартового статуса, биографии, навыков, имущества, связей и причин нахождения в сцене. |\n| `character_parameters.txt` | Базовая механика характеристик, навыков, бонусов, состояний, тела и проверок. Фиксирует формулу d20, диапазоны характеристик, здоровье, сытость, бодрость, активные состояния и влияние тела. | При любой проверке, расчёте бонусов, изменении состояния, создании персонажа/NPC, применении штрафов от голода, усталости, ран, болезни и иных состояний. |\n| `time_system.txt` | Правила игрового времени: день, время суток, длительность действий, ход часов и дней, сон, отдых, ожидание, обновление тела, NPC, погоды, дорог и последствий. | При любом действии, которое занимает время; при сне, ожидании, дороге, работе, лечении, изменении состояния тела, расписаний NPC и отложенных последствий. |\n| `movement_locations_regions.txt` | Target v3: typed endpoints, authored topology, readiness, immutable plans и execution; archived v2 источник сохранён для traceability. | При target-проектировании перемещения, path query, route/segment authoring и boundary. |\n| `items_and_property.txt` | Общие правила материальной среды: предметы, имущество, доступ, контейнеры, обнаружимость, право владения, состояние, ценность, следы, риски, материализация предметов и связь вещей с локацией/персонажами. | При создании или проверке предметов сцены, контейнеров, собственности, доступа, кражи, обмена, ремонта, поиска, ценности и правдоподобия материальной среды. |\n| `character_inventory_equipment.txt` | Правила для вещей, которые персонаж физически несёт при себе. Описывает вес, нагрузку, быстрый доступ, контейнеры, занятые руки, влияние предметов на проверки, износ, владение и социально-правовые риски. | Когда персонаж берёт, несёт, достаёт, теряет, использует или показывает предмет; при расчёте нагрузки, доступа к вещам и влияния снаряжения на действия. |\n| `npc_inventory_item_marks.txt` | Правила для предметов, которые NPC держит при себе или контролирует в текущей сцене. Описывает владельца, держателя, доступность, видимость, метки, узнавание вещи, скрытые предметы, кражу, передачу и последствия обнаружения. | При обыске NPC, краже, передаче вещей, распознавании чужого предмета, проверке улик, меток собственности и реакции владельца. |\n| `npc_generation_profiles.txt` | Описывает три уровня NPC: фоновый, сценический и ключевой. Задаёт, какие параметры нужны каждому уровню, когда профиль повышается/понижается, как хранить память, отношение, знания, ресурсы, навыки и последствия. | При создании NPC, взаимодействии с NPC, повышении NPC до сценического или ключевого уровня, сохранении отношений, долгов, памяти и долговременных последствий. |\n| `weapons_and_armor.txt` | Типы оружия, брони, щитов и боевого снаряжения как сочетание боевого эффекта, веса, доступности, состояния, права и риска. | При выборе оружия, определении опасности попадания, снижении вреда бронёй, проверке допустимости ношения оружия, социального риска и физической нагрузки. |\n| `combat_system.md` | Правила начала боя, боевого хода, проверок атаки/защиты, активной защиты, вреда, уязвимости, брони, дистанции, борьбы, дальнего боя, ранений, добивания, бегства, сдачи и последствий насилия. | При любой физической угрозе, атаке, борьбе, погоне, защите, попытке сбежать, удержать позицию, нанести вред или оценить последствия насилия. |\n| `historical_events_and_figures.txt` | Правила исторического слоя: события и личности как внешнее давление, фазы событий, слухи, предвестники, последствия, связь с местом, временем, властью, дорогами, ценами и настроением. | При генерации исторического фона, слухов, крупных событий, власти, войн, известных личностей, смене региона, большом пропуске времени или изменении исторического давления. |\n| `interface_ux.md` | Target v3 player-safe projection: movement readiness, knowledge visibility, scene/route maps, interruption/stranded state и diagnostics boundary; archived v2 источник сохранён для traceability. | При UI, `ui-state`, журнале, карте знаний, player payload или проверке hidden-leak boundary. |\n| `formulas.md` | Справочник расчётных и структурных формул проекта с пояснениями. Объединяет формулы проверок, состояний, веса, нагрузки, боя, времени, перемещения и структуры сущностей. | Когда нужно быстро найти формулу, а затем проверить её смысл в профильном документе. |\n| `universal_category_classification_policy.md` | Proposed-норматив базового слоя universal categories, external mappings и фасетной модели; не является active. | При работе с классификационными схемами, labels, mappings, category relations и планировании этапов 3–9. |\n| `universal_category_classification_references.md` | Proposed-реестр внешних классификационных опор; не подтверждает историческую применимость. | При редакторском mapping к внешней схеме, без live runtime-запросов и без regional permission. |\n| `information_sources_llm_prompts.md` | Правила работы с исторической, игровой и технической информацией: происхождение сведений, статус достоверности, пополнение базы, сжатие источников, черновики, утверждённые данные и аудит. | При проектировании RAG/поиска, пополнении базы, сохранении источников, работе с внешними сведениями, снижении токенов, отделении чернового знания от утверждённого. |\n| `llm_agent_prompt_templates.md` | Рабочие шаблоны промтов для агентов: ведущий игры, отбор видимого контекста, художественная проза, память, пополнение базы, структурирование. Фиксирует разделение скрытого и видимого. | При изменении LLM-пайплайна, промтов, ролей агентов, формата visible context, генерации прозы, записи памяти и структурировании ответа. |",
       "char_count": 7072
     },
@@ -5218,8 +5254,8 @@
       "id": "llm_documentation_navigation.md:4. Как выбирать нужный документ по задаче:0",
       "file": "llm_documentation_navigation.md",
       "section": "4. Как выбирать нужный документ по задаче",
-      "line_start": 104,
-      "line_end": 124,
+      "line_start": 113,
+      "line_end": 133,
       "text": "## llm_documentation_navigation.md — 4. Как выбирать нужный документ по задаче\n## 4. Как выбирать нужный документ по задаче",
       "char_count": 123
     },
@@ -5227,8 +5263,8 @@
       "id": "llm_documentation_navigation.md:4. Как выбирать нужный документ по задаче:1",
       "file": "llm_documentation_navigation.md",
       "section": "4. Как выбирать нужный документ по задаче",
-      "line_start": 104,
-      "line_end": 124,
+      "line_start": 113,
+      "line_end": 133,
       "text": "## llm_documentation_navigation.md — 4. Как выбирать нужный документ по задаче\n## 4. Как выбирать нужный документ по задаче\n\n| Задача | Читать сначала | Затем сверить |\n|---|---|---|\n| Создать новую партию, стартовую сцену, новый узел мира или обработать ход | `world_generation_and_turns.txt` | `time_system.txt`, `movement_locations_regions.txt`, `interface_ux.md` |\n| Создать или проверить персонажа игрока | `player_character_generation.txt` | `character_parameters.txt`, `character_inventory_equipment.txt`, `items_and_property.txt` |\n| Рассчитать проверку, состояние тела, штраф или навык | `character_parameters.txt` | `formulas.md`, релевантный документ системы действия |\n| Изменить время, сон, отдых, ожидание, расписание или отложенное последствие | `time_system.txt` | `character_parameters.txt`, `historical_events_and_figures.txt` |\n| Переместить персонажа, построить маршрут, вернуть назад, заблудиться | `movement_locations_regions.txt` | `time_system.txt`, `world_regions.txt`, `world_generation_and_turns.txt` |\n| Создать предмет сцены, проверить имущество, контейнер, доступ или кражу | `items_and_property.txt` | `character_inventory_equipment.txt`, `npc_inventory_item_marks.txt` |\n| Проверить, что персонаж несёт, где предмет лежит, сколько весит и доступен ли он | `character_inventory_equipment.txt` | `items_and_property.txt`, `character_parameters.txt`, `weapons_and_armor.txt` |\n| Работать с вещами NPC, метками, узнаваемостью и реакцией владельца | `npc_inventory_item_marks.txt` | `items_and_property.txt`, `npc_generation_profiles.txt`, `interface_ux.md` |\n| Создать NPC, повысить профиль, сохранить отношения или память | `npc_generation_profiles.txt` | `character_parameters.txt`, `items_and_property.txt`, `interface_ux.md` |\n| Обработать физический конфликт, угрозу, удар, борьбу, стрельбу, защиту, бегство | `combat_system.md` | `weapons_and_armor.txt`, `character_parameters.txt`, `character_inventory_equipment.txt` |\n| Проверить оружие, броню, щит, опасность, защиту, право ношения и социальный риск | `weapons_and_armor.txt` | `combat_system.md`, `character_inventory_equipment.txt`, `items_and_property.txt` |\n| Создать исторический фон, слух, войну, власть, князя, фазу события | `historical_events_and_figures.txt` | `world_regions.txt`, `time_system.txt`, `world_generation_and_turns.txt` |\n| Изменить UI, журнал, подсказки, видимость данных, dev-diagnostics | `interface_ux.md` | `llm_agent_prompt_templates.md`, `information_sources_llm_prompts.md` |\n| Изменить LLM-пайплайн, роли агентов, prompt templates, visible context | `llm_agent_prompt_templates.md` | `information_sources_llm_prompts.md`, `world_generation_and_turns.txt`, `interface_ux.md` |\n| Добавить внешние источники или пополнить базу знаний | `information_sources_llm_prompts.md` | `historical_events_and_figures.txt`, `world_regions.txt`, профильный документ системы |\n| Быстро найти формулу | `formulas.md` | профильный документ, из которого формула взята |",
       "char_count": 2970
     },
@@ -5236,8 +5272,8 @@
       "id": "llm_documentation_navigation.md:5. Минимальные связки документов по подсистемам:0",
       "file": "llm_documentation_navigation.md",
       "section": "5. Минимальные связки документов по подсистемам",
-      "line_start": 125,
-      "line_end": 126,
+      "line_start": 134,
+      "line_end": 135,
       "text": "## llm_documentation_navigation.md — 5. Минимальные связки документов по подсистемам\n## 5. Минимальные связки документов по подсистемам",
       "char_count": 135
     },
@@ -5245,8 +5281,8 @@
       "id": "llm_documentation_navigation.md:Мир и ход:0",
       "file": "llm_documentation_navigation.md",
       "section": "Мир и ход",
-      "line_start": 127,
-      "line_end": 137,
+      "line_start": 136,
+      "line_end": 146,
       "text": "## llm_documentation_navigation.md — Мир и ход\n### Мир и ход\n\n```text\nworld_generation_and_turns.txt\n+ time_system.txt\n+ movement_locations_regions.txt\n+ interface_ux.md\n```\n\nИспользовать при обработке обычной заявки игрока, потому что ход почти всегда меняет сцену, время, видимость и сохранённые факты.",
       "char_count": 304
     },
@@ -5254,8 +5290,8 @@
       "id": "llm_documentation_navigation.md:Персонаж и проверки:0",
       "file": "llm_documentation_navigation.md",
       "section": "Персонаж и проверки",
-      "line_start": 138,
-      "line_end": 147,
+      "line_start": 147,
+      "line_end": 156,
       "text": "## llm_documentation_navigation.md — Персонаж и проверки\n### Персонаж и проверки\n\n```text\nplayer_character_generation.txt\n+ character_parameters.txt\n+ formulas.md\n```\n\nИспользовать при генерации, миграции или проверке `health / satiety / vigor`, характеристик, навыков, активных состояний и d20-формулы.",
       "char_count": 303
     },
@@ -5263,8 +5299,8 @@
       "id": "llm_documentation_navigation.md:Предметы, имущество и инвентарь:0",
       "file": "llm_documentation_navigation.md",
       "section": "Предметы, имущество и инвентарь",
-      "line_start": 148,
-      "line_end": 157,
+      "line_start": 157,
+      "line_end": 166,
       "text": "## llm_documentation_navigation.md — Предметы, имущество и инвентарь\n### Предметы, имущество и инвентарь\n\n```text\nitems_and_property.txt\n+ character_inventory_equipment.txt\n+ npc_inventory_item_marks.txt\n```\n\nИспользовать, чтобы не смешивать физический инвентарь, право собственности, доступ, держателя, владельца, контейнеры, метки, риск и сценическую видимость.",
       "char_count": 363
     },
@@ -5272,8 +5308,8 @@
       "id": "llm_documentation_navigation.md:NPC и социальная память:0",
       "file": "llm_documentation_navigation.md",
       "section": "NPC и социальная память",
-      "line_start": 158,
-      "line_end": 168,
+      "line_start": 167,
+      "line_end": 177,
       "text": "## llm_documentation_navigation.md — NPC и социальная память\n### NPC и социальная память\n\n```text\nnpc_generation_profiles.txt\n+ character_parameters.txt\n+ items_and_property.txt\n+ interface_ux.md\n```\n\nИспользовать, чтобы фоновые NPC не получали лишнюю скрытую биографию, а сценические и ключевые NPC получали ровно тот объём состояния, который нужен для честных последствий.",
       "char_count": 374
     },
@@ -5281,8 +5317,8 @@
       "id": "llm_documentation_navigation.md:Бой, оружие и последствия насилия:0",
       "file": "llm_documentation_navigation.md",
       "section": "Бой, оружие и последствия насилия",
-      "line_start": 169,
-      "line_end": 180,
+      "line_start": 178,
+      "line_end": 189,
       "text": "## llm_documentation_navigation.md — Бой, оружие и последствия насилия\n### Бой, оружие и последствия насилия\n\n```text\ncombat_system.md\n+ weapons_and_armor.txt\n+ character_parameters.txt\n+ character_inventory_equipment.txt\n+ npc_inventory_item_marks.txt\n```\n\nИспользовать при любой физической угрозе. Оружие не создаётся заявкой игрока: оно должно быть при персонаже, в руках, доступно в сцене или причинно присутствовать в мире.",
       "char_count": 428
     },
@@ -5290,8 +5326,8 @@
       "id": "llm_documentation_navigation.md:История, регион и источники:0",
       "file": "llm_documentation_navigation.md",
       "section": "История, регион и источники",
-      "line_start": 181,
-      "line_end": 191,
+      "line_start": 190,
+      "line_end": 200,
       "text": "## llm_documentation_navigation.md — История, регион и источники\n### История, регион и источники\n\n```text\nhistorical_events_and_figures.txt\n+ world_regions.txt\n+ time_system.txt\n+ information_sources_llm_prompts.md\n```\n\nИспользовать для фаз исторических событий, слухов, влияния власти, внешнего давления, региональных ограничений и пополнения базы знаний.",
       "char_count": 356
     },
@@ -5299,8 +5335,8 @@
       "id": "llm_documentation_navigation.md:UI и LLM-слои:0",
       "file": "llm_documentation_navigation.md",
       "section": "UI и LLM-слои",
-      "line_start": 192,
-      "line_end": 201,
+      "line_start": 201,
+      "line_end": 210,
       "text": "## llm_documentation_navigation.md — UI и LLM-слои\n### UI и LLM-слои\n\n```text\ninterface_ux.md\n+ llm_agent_prompt_templates.md\n+ information_sources_llm_prompts.md\n```\n\nИспользовать при отделении player-facing данных от скрытого состояния, raw diagnostics, prompt payloads, debug/admin слоя и художественной прозы.",
       "char_count": 313
     },
@@ -5308,8 +5344,8 @@
       "id": "llm_documentation_navigation.md:6. Правила для LLM при ответах и изменениях кода:0",
       "file": "llm_documentation_navigation.md",
       "section": "6. Правила для LLM при ответах и изменениях кода",
-      "line_start": 202,
-      "line_end": 214,
+      "line_start": 211,
+      "line_end": 223,
       "text": "## llm_documentation_navigation.md — 6. Правила для LLM при ответах и изменениях кода\n## 6. Правила для LLM при ответах и изменениях кода",
       "char_count": 137
     },
@@ -5317,8 +5353,8 @@
       "id": "llm_documentation_navigation.md:6. Правила для LLM при ответах и изменениях кода:1",
       "file": "llm_documentation_navigation.md",
       "section": "6. Правила для LLM при ответах и изменениях кода",
-      "line_start": 202,
-      "line_end": 214,
+      "line_start": 211,
+      "line_end": 223,
       "text": "## llm_documentation_navigation.md — 6. Правила для LLM при ответах и изменениях кода\n## 6. Правила для LLM при ответах и изменениях кода\n\n1. Не добавлять новую механику, если она не описана в профильном документе.\n2. Не менять формулу в коде без сверки с `formulas.md` и профильным документом.\n3. Не считать старый код источником истины, если он противоречит `DOCUMENTS`.\n4. Не считать художественную прозу состоянием мира. Состояние должно быть структурировано и сохранено отдельно.\n5. Не раскрывать скрытые мотивы NPC, скрытые предметы, будущие события, полный JSON мира или technical diagnostics в игровом UI/прозе.\n6. Не материализовать новый предмет, NPC, место или событие только потому, что игрок это назвал. Сначала проверить уже зафиксированное, затем допустимые категории, доступ, риск и причинное основание.\n7. Не менять owner при простой передаче предмета: передача обычно меняет holder, а право собственности может остаться прежним.\n8. Не обновлять историческое событие как внезапный факт без фаз, предвестников, видимых признаков или регионального давления.\n9. Не смешивать инвентарь и имущество: инвентарь — только то, что персонаж физически несёт и может использовать в текущей сцене.\n10. Не считать `llm_documentation_navigation.md` самостоятельным источником правил; он только указывает, где искать правило.",
       "char_count": 1326
     },
@@ -5326,8 +5362,8 @@
       "id": "llm_documentation_navigation.md:7. Чеклист перед изменением проекта:0",
       "file": "llm_documentation_navigation.md",
       "section": "7. Чеклист перед изменением проекта",
-      "line_start": 215,
-      "line_end": 229,
+      "line_start": 224,
+      "line_end": 238,
       "text": "## llm_documentation_navigation.md — 7. Чеклист перед изменением проекта\n## 7. Чеклист перед изменением проекта\n\nПеред изменением кода, промта, схемы данных или UI нужно ответить:\n\n1. Какая подсистема затронута?\n2. Какой профильный документ её описывает?\n3. Какие связанные документы нужно сверить?\n4. Есть ли формула в `formulas.md`?\n5. Меняется ли сохранённое состояние мира или только отображение?\n6. Не попадут ли скрытые факты в player-facing слой?\n7. Нужна ли миграция старых сохранений?\n8. Нужны ли новые тесты на формулу, схему, UI-фильтрацию или LLM-контракт?\n9. Не создаёт ли изменение новую механику, отсутствующую в документах?\n10. Нужно ли обновить профильный документ, если изменение действительно новое?",
       "char_count": 718
     },
@@ -5335,8 +5371,8 @@
       "id": "llm_documentation_navigation.md:8. Чеклист перед ответом LLM по игровой ситуации:0",
       "file": "llm_documentation_navigation.md",
       "section": "8. Чеклист перед ответом LLM по игровой ситуации",
-      "line_start": 230,
-      "line_end": 244,
+      "line_start": 239,
+      "line_end": 253,
       "text": "## llm_documentation_navigation.md — 8. Чеклист перед ответом LLM по игровой ситуации\n## 8. Чеклист перед ответом LLM по игровой ситуации\n\nПеред ответом игроку или генерацией хода LLM должна проверить:\n\n1. Что персонаж видит, слышит, помнит или разумно предполагает?\n2. Что скрыто от персонажа и не должно попасть в прозу?\n3. Есть ли уже зафиксированные факты о месте, NPC, предметах, маршруте и времени?\n4. Занимает ли заявка время и как оно влияет на тело, NPC, погоду, дороги и последствия?\n5. Нужна ли проверка d20 и какие характеристика/навык/состояние/обстоятельства в неё входят?\n6. Есть ли предмет физически при персонаже или в сцене?\n7. Есть ли владелец, держатель, доступ, риск или метки предмета?\n8. Может ли действие изменить отношение NPC, слух, обязательство, право собственности, следы или историческое давление?\n9. Нужно ли записать событие в память/журнал как факт, слух, обязательство или последствие?\n10. Не раскрывает ли ответ техническую или будущую информацию?",
       "char_count": 982
     },
@@ -5344,8 +5380,8 @@
       "id": "llm_documentation_navigation.md:9. Что делать при конфликте документов:0",
       "file": "llm_documentation_navigation.md",
       "section": "9. Что делать при конфликте документов",
-      "line_start": 245,
-      "line_end": 253,
+      "line_start": 254,
+      "line_end": 262,
       "text": "## llm_documentation_navigation.md — 9. Что делать при конфликте документов\n## 9. Что делать при конфликте документов\n\n1. Не выбирать удобную трактовку молча.\n2. Найти профильные документы обеих подсистем.\n3. Проверить, не является ли один файл справочником или README, а другой профильным источником.\n4. Если конфликт остаётся, явно зафиксировать его как проблему документации.\n5. В коде не закреплять новую трактовку до правки профильного документа.\n6. В отчёте или задаче указывать конкретные файлы и разделы, где возник конфликт.",
       "char_count": 533
     },
@@ -5353,8 +5389,8 @@
       "id": "llm_documentation_navigation.md:10. Где должен лежать этот файл:0",
       "file": "llm_documentation_navigation.md",
       "section": "10. Где должен лежать этот файл",
-      "line_start": 254,
-      "line_end": 258,
+      "line_start": 263,
+      "line_end": 267,
       "text": "## llm_documentation_navigation.md — 10. Где должен лежать этот файл\n## 10. Где должен лежать этот файл\n\nРекомендуемое место: корень проекта рядом с `README.md`.\n\nПричина: основной `README.md` ссылается на `llm_documentation_navigation.md` как на навигационный файл для LLM. При желании можно дополнительно держать копию в `DOCUMENTS/llm_documentation_navigation.md`, но источником для разработчиков должен быть один актуальный файл, чтобы не появилось двух расходящихся навигационных README.",
       "char_count": 492
     },
@@ -6596,9 +6632,18 @@
       "file": "map_g0_g4_workflow.txt",
       "section": "25.3. Жёсткое итоговое правило",
       "line_start": 2327,
-      "line_end": 2346,
-      "text": "## map_g0_g4_workflow.txt — 25.3. Жёсткое итоговое правило\n## 25.3. Жёсткое итоговое правило\r\n\r\n```text\r\nФормально валидная, но примитивная карта не завершена.\r\n\r\nСодержательно богатая, но не импортированная карта не завершена.\r\n\r\nИмпортированная карта без стартовых G4 не завершена.\r\n\r\nКарта без конкретных G5-профилей не завершена.\r\n\r\nКарта без NPC-, предметных и сезонных правил не завершена.\r\n\r\nКарта, на которой не прошёл полный тест новой игры,\r\nне считается пригодной для игровой сессии.\r\n\r\nСтатус approved_local означает:\r\nячейка уже может использоваться runtime,\r\nа не только то, что её данные хорошо выглядят в отчёте.\r\n```",
-      "char_count": 633
+      "line_end": 2347,
+      "text": "## map_g0_g4_workflow.txt — 25.3. Жёсткое итоговое правило\n## 25.3. Жёсткое итоговое правило\r\n\r\n```text\r\nФормально валидная, но примитивная карта не завершена.\r\n\r\nСодержательно богатая, но не импортированная карта не завершена.\r\n\r\nИмпортированная карта без стартовых G4 не завершена.\r\n\r\nКарта без конкретных G5-профилей не завершена.\r\n\r\nКарта без NPC-, предметных и сезонных правил не завершена.\r\n\r\nКарта, на которой не прошёл полный тест новой игры,\r\nне считается пригодной для игровой сессии.\r\n\r\nСтатус approved_local означает:\nячейка уже может использоваться runtime,\nа не только то, что её данные хорошо выглядят в отчёте.\n```",
+      "char_count": 630
+    },
+    {
+      "id": "map_g0_g4_workflow.txt:26. Scoped dependency assertion для materialization:0",
+      "file": "map_g0_g4_workflow.txt",
+      "section": "26. Scoped dependency assertion для materialization",
+      "line_start": 2348,
+      "line_end": 2374,
+      "text": "## map_g0_g4_workflow.txt — 26. Scoped dependency assertion для materialization\n## 26. Scoped dependency assertion для materialization\n\nScoped dependency assertion не является новым состоянием канонической карты и\nне изменяет G0–G4 workflow.\n\n```text\ncanonical G4 row\n→ canonical row projection\n→ exact base-row digest\n→ approved materialization scope assertion\n```\n\nAssertion:\n\n- не создаёт новый G4;\n- не меняет `graph_nodes.status`;\n- не повышает `draft`, `repair_required` или `blocked` до approved;\n- не меняет parent chain, координаты, границы, историческую или\n  пространственную семантику;\n- разрешает использовать exact G4 dependency только внутри одного\n  утверждённого materialization scope;\n- хранит canonical base-row snapshot и provenance утверждения;\n- блокируется, если текущая canonical base row отличается от snapshot.\n\nScoped assertion не заменяет `approved_local`/`approved_integrated`, профильные\nаудиты, source evidence или catalog entry. Она лишь фиксирует, что уже\nсуществующая каноническая dependency была точной на момент утверждения overlay.",
+      "char_count": 1068
     },
     {
       "id": "movement_locations_regions.txt:Перемещение, локации и регионы:0",
@@ -7789,12 +7834,21 @@
       "char_count": 515
     },
     {
-      "id": "read_only_database_and_graph_architecture.md:10. Источники истины:0",
+      "id": "read_only_database_and_graph_architecture.md:10. Runtime activation boundary:0",
       "file": "read_only_database_and_graph_architecture.md",
-      "section": "10. Источники истины",
+      "section": "10. Runtime activation boundary",
       "line_start": 182,
-      "line_end": 191,
-      "text": "## read_only_database_and_graph_architecture.md — 10. Источники истины\n## 10. Источники истины\n\n| Вопрос | Источник |\n|---|---|\n| Граница код/LLM и materialization | `code_driven_world_materialization_architecture.md` после active promotion |\n| Физические таблицы и constraints | `infra/world-base/schema.sql`, `schema/*.sql` |\n| Фактические колонки | генерируемый `infra/world-base/SCHEMA_REFERENCE.md` |\n| Назначение и readiness таблиц | `world_base_materialization_table_requirements.md` |\n| Map authoring G0–G4 | `map_g0_g4_workflow.txt` |\n| Конкретное состояние партии | committed normalized `party_runtime` rows |",
+      "line_end": 203,
+      "text": "## read_only_database_and_graph_architecture.md — 10. Runtime activation boundary\n## 10. Runtime activation boundary\n\nRuntime role имеет только `SELECT` к `world_base`. Baseline registration,\nimport, activation и любые другие writes выполняет только явное operator\ntooling после merge и вне игрового runtime.\n\nПоследний append-only `runtime_catalog_activation_events` является read-only\npointer для создания новой партии. После сохранения party domain pin reload и\nturn читают exact historical import, а не active pointer. Operator approval,\nattestation и rollout evidence доказывают готовность, но не являются\nобязательной сетевой или файловой runtime-зависимостью.\n\nItem/container activation не изменяет `graph_nodes` и `graph_edges`. Scoped G4\ndependency assertion только сверяет exact canonical base row в пределах\nутверждённого materialization scope. Несовпадение snapshot блокирует\nmaterialization.\n\nФизические FK из party database в `world_base` не создаются. Приложение через\nдва независимых read ports проверяет full world pin, domain pin, compatible\nworld tuple, exact import membership и runtime contract до materialization и\nдо commit party state.",
+      "char_count": 1159
+    },
+    {
+      "id": "read_only_database_and_graph_architecture.md:11. Источники истины:0",
+      "file": "read_only_database_and_graph_architecture.md",
+      "section": "11. Источники истины",
+      "line_start": 204,
+      "line_end": 213,
+      "text": "## read_only_database_and_graph_architecture.md — 11. Источники истины\n## 11. Источники истины\n\n| Вопрос | Источник |\n|---|---|\n| Граница код/LLM и materialization | `code_driven_world_materialization_architecture.md` после active promotion |\n| Физические таблицы и constraints | `infra/world-base/schema.sql`, `schema/*.sql` |\n| Фактические колонки | генерируемый `infra/world-base/SCHEMA_REFERENCE.md` |\n| Назначение и readiness таблиц | `world_base_materialization_table_requirements.md` |\n| Map authoring G0–G4 | `map_g0_g4_workflow.txt` |\n| Конкретное состояние партии | committed normalized `party_runtime` rows |",
       "char_count": 619
     },
     {
@@ -13000,12 +13054,102 @@
       "char_count": 845
     },
     {
-      "id": "world_base_materialization_table_requirements.md:14. Критерий повышения в active:0",
+      "id": "world_base_materialization_table_requirements.md:14. Domain-scoped activation и exact import membership:0",
       "file": "world_base_materialization_table_requirements.md",
-      "section": "14. Критерий повышения в active",
+      "section": "14. Domain-scoped activation и exact import membership",
       "line_start": 266,
-      "line_end": 268,
-      "text": "## world_base_materialization_table_requirements.md — 14. Критерий повышения в active\n## 14. Критерий повышения в active\n\nТехнический норматив повышается вместе с основным архитектурным документом только после синхронизации DDL, generated schema reference, schemas/contracts, importer/readiness checks, party persistence и PASS отдельного критика.",
+      "line_end": 267,
+      "text": "## world_base_materialization_table_requirements.md — 14. Domain-scoped activation и exact import membership\n## 14. Domain-scoped activation и exact import membership",
+      "char_count": 166
+    },
+    {
+      "id": "world_base_materialization_table_requirements.md:`domain_catalog_revisions`:0",
+      "file": "world_base_materialization_table_requirements.md",
+      "section": "`domain_catalog_revisions`",
+      "line_start": 268,
+      "line_end": 274,
+      "text": "## world_base_materialization_table_requirements.md — `domain_catalog_revisions`\n### `domain_catalog_revisions`\n\nCompanion к `world_revisions`, доказывающий, что revision является утверждённым\ndomain overlay, а не полным world pin. Хранит scope, parent registration,\ntarget digest, compatible world tuple, registry/runtime-contract digests и\napproved status. Общий world selector исключает такие revisions.",
+      "char_count": 406
+    },
+    {
+      "id": "world_base_materialization_table_requirements.md:`catalog_baseline_registrations`:0",
+      "file": "world_base_materialization_table_requirements.md",
+      "section": "`catalog_baseline_registrations`",
+      "line_start": 275,
+      "line_end": 281,
+      "text": "## world_base_materialization_table_requirements.md — `catalog_baseline_registrations`\n### `catalog_baseline_registrations`\n\nAppend-only регистрация точного operator baseline: parent tuple, snapshot\nmanifest, schema fingerprint, record registry, compatible world tuple,\nregistration request и attestation. Регистрация выполняется одной транзакцией,\nexact repeat идемпотентен, а конфликтующий digest блокирует продолжение.",
+      "char_count": 421
+    },
+    {
+      "id": "world_base_materialization_table_requirements.md:`catalog_imports`:0",
+      "file": "world_base_materialization_table_requirements.md",
+      "section": "`catalog_imports`",
+      "line_start": 282,
+      "line_end": 288,
+      "text": "## world_base_materialization_table_requirements.md — `catalog_imports`\n### `catalog_imports`\n\nЕдинственный immutable audit root успешного import. Связывает scope, parent и\ncompatible tuples, target revision/digest, registry, promotion/approval,\nmigration, tables, records, dependency assertions и итоговый import audit\ndigest. Строка появляется только после полного transactional readback.",
+      "char_count": 390
+    },
+    {
+      "id": "world_base_materialization_table_requirements.md:`catalog_import_tables`:0",
+      "file": "world_base_materialization_table_requirements.md",
+      "section": "`catalog_import_tables`",
+      "line_start": 289,
+      "line_end": 294,
+      "text": "## world_base_materialization_table_requirements.md — `catalog_import_tables`\n### `catalog_import_tables`\n\nExact table-level membership: dependency order, counts операций\n`insert`/`assert_existing`, общий record count и payload digest. Digest\nвычисляется по membership entries, а не по выборке всех строк revision.",
+      "char_count": 314
+    },
+    {
+      "id": "world_base_materialization_table_requirements.md:`catalog_import_records`:0",
+      "file": "world_base_materialization_table_requirements.md",
+      "section": "`catalog_import_records`",
+      "line_start": 295,
+      "line_end": 308,
+      "text": "## world_base_materialization_table_requirements.md — `catalog_import_records`\n### `catalog_import_records`\n\nExact record-level membership с composite record key, operation kind,\ncanonical payload, record digest и ordinal:\n\n```text\ninsert\nassert_existing\n```\n\n`insert` создаёт утверждённую overlay row. `assert_existing` проверяет точную\nparent row без записи. Canonical payload является immutable audit snapshot, но\nне заменяет normalized authoring rows.",
+      "char_count": 455
+    },
+    {
+      "id": "world_base_materialization_table_requirements.md:`catalog_import_dependency_assertions`:0",
+      "file": "world_base_materialization_table_requirements.md",
+      "section": "`catalog_import_dependency_assertions`",
+      "line_start": 309,
+      "line_end": 315,
+      "text": "## world_base_materialization_table_requirements.md — `catalog_import_dependency_assertions`\n### `catalog_import_dependency_assertions`\n\nScoped assertion связывает materialization scope с exact G4 dependency и\ncanonical base-row snapshot. Она не изменяет `graph_nodes.status`, не создаёт\nновый G4 и не меняет историческую или пространственную семантику узла. Любое\nрасхождение текущей canonical base row со snapshot является hard block.",
+      "char_count": 436
+    },
+    {
+      "id": "world_base_materialization_table_requirements.md:`runtime_catalog_activation_events`:0",
+      "file": "world_base_materialization_table_requirements.md",
+      "section": "`runtime_catalog_activation_events`",
+      "line_start": 316,
+      "line_end": 323,
+      "text": "## world_base_materialization_table_requirements.md — `runtime_catalog_activation_events`\n### `runtime_catalog_activation_events`\n\nAppend-only read pointer на успешно импортированный domain catalog. Event\nсвязывает exact import, compatible world tuple, registry/runtime contract,\nactivation request/attestation, runtime release и previous event. Активация\nразрешена только после exact import readback, успешного party preflight,\nпроверки runtime identity и CAS под фиксированной scope lock.",
+      "char_count": 490
+    },
+    {
+      "id": "world_base_materialization_table_requirements.md:`party_catalog_pins`:0",
+      "file": "world_base_materialization_table_requirements.md",
+      "section": "`party_catalog_pins`",
+      "line_start": 324,
+      "line_end": 330,
+      "text": "## world_base_materialization_table_requirements.md — `party_catalog_pins`\n### `party_catalog_pins`\n\nНормализованный immutable pin каталога партии: scope, revision/digest, exact\nimport и audit digest, registry/runtime contract, compatible world tuple и\nactivation event. Межбазового FK в `world_base` нет; ссылку проверяет\nприложение.",
+      "char_count": 334
+    },
+    {
+      "id": "world_base_materialization_table_requirements.md:`party_materialization_run_catalog_pins`:0",
+      "file": "world_base_materialization_table_requirements.md",
+      "section": "`party_materialization_run_catalog_pins`",
+      "line_start": 331,
+      "line_end": 341,
+      "text": "## world_base_materialization_table_requirements.md — `party_materialization_run_catalog_pins`\n### `party_materialization_run_catalog_pins`\n\nRun-level provenance того же exact domain pin. Для materialization v2\nсуществующее `party_materialization_runs.catalog_digest` обязано совпадать с\nнормализованной row; источником полного provenance является run-pin row.\n\nImport, activation и party persistence проходят exact readback до commit.\nRuntime loader восстанавливает только membership данного `import_id`, проверяет\nвсе record/table/root digests и compatible world tuple. Live authoring rows и\nтекущий active event не могут подменить historical catalog существующей партии.",
+      "char_count": 673
+    },
+    {
+      "id": "world_base_materialization_table_requirements.md:15. Критерий повышения в active:0",
+      "file": "world_base_materialization_table_requirements.md",
+      "section": "15. Критерий повышения в active",
+      "line_start": 342,
+      "line_end": 344,
+      "text": "## world_base_materialization_table_requirements.md — 15. Критерий повышения в active\n## 15. Критерий повышения в active\n\nТехнический норматив повышается вместе с основным архитектурным документом только после синхронизации DDL, generated schema reference, schemas/contracts, importer/readiness checks, party persistence и PASS отдельного критика.",
       "char_count": 347
     },
     {

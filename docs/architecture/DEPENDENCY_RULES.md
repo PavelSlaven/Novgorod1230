@@ -17,7 +17,7 @@ Infrastructure adapters реализуют публичные ports пакето
 - `apps/*` — composition roots и transport wiring; доменная логика запрещена.
 - `packages/new-game`, `packages/turn`, `packages/narration`, `packages/presentation` — workflow и player-facing boundaries.
 - domain packages — владельцы локальных формул и контрактов предметной области.
-- `packages/contracts`, `packages/materialization`, `packages/pipeline-engine`, `packages/llm-runtime`, `packages/world-base`, `packages/party-store`, `packages/kernel` — platform layer.
+- `packages/contracts`, `packages/materialization`, `packages/pipeline-engine`, `packages/llm-runtime`, `packages/world-base`, `packages/runtime-catalog`, `packages/party-store`, `packages/kernel` — platform layer.
 - `tools/*` — автономные CLI; production runtime их не импортирует.
 
 ## Запрещённые связи
@@ -31,6 +31,8 @@ Infrastructure adapters реализуют публичные ports пакето
 - `kernel -> @rus/*`;
 - production runtime -> `tools/*`;
 - source code -> `generated/*` как редактируемый источник истины.
+- `runtime-catalog -> tools/*`, party store или PostgreSQL driver;
+- `materialization -> runtime-catalog` или database I/O.
 
 ## Публичные entrypoints
 

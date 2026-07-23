@@ -35,6 +35,7 @@ export function normalizeAllowedG5TemplateSet(value = {}) {
     selected_g4_type_id: value.selected_g4_type_id ?? value.g4_type_id ?? null,
     world_revision_id: value.world_revision_id ?? value.revision_id ?? null,
     bundle_id: value.bundle_id ?? null,
+    source_catalog_digest: value.source_catalog_digest ?? null,
     catalog_digest: value.catalog_digest ?? null,
     allowed_g5_templates: normalizeArray(value.allowed_g5_templates ?? value.templates ?? value.g5_templates)
   };

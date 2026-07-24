@@ -18,19 +18,19 @@
 17 scene families, 195 profiles и 195 candidates. Это не является production
 activation.
 
-Temporal World v4 разрабатывается как target amendment
+Temporal World v4 реализован как target amendment
 `temporal-world-v1` / `4.3.0-target.1`: exact rational game time,
 interruptible activities, deterministic temporal boundaries, NPC/carrier/
 environment/remote updates и post-commit narration. Его профильный норматив
-остаётся `proposed` до завершения implementation, tests и независимого
+имеет status `active` после полной implementation acceptance и независимого
 критика.
 
-До единственного атомарного P28 production ownership остаётся у v2. Target v3
-и Temporal World v4 разрешены только для contracts, fixtures, migration,
-tests и shadow composition. Partial activation, dual write, authoritative
-mixed read и v3→v2 fallback запрещены. P28 оценивает точный HEAD готового PR,
-обязательный успешный CI, hash-bound critic evidence и подтверждённый
-merge/signed-tag completion proof.
+Exact-head P28 release evidence принят в merged PR #19: обязательный CI,
+hash-bound critic evidence и merge proof прошли live-проверку. Это разрешение
+не выполняло production write и не меняло composition автоматически:
+production v2 остаётся текущим sole owner до отдельного versioned activation
+cutover. Partial activation, dual write, authoritative mixed read и v3→v2
+fallback запрещены.
 
 ## Основные принципы
 

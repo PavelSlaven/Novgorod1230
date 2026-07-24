@@ -1,9 +1,13 @@
 # Temporal World v4 — рабочий журнал
 
 Дата начала: 2026-07-23
-Статус: `final_candidate_validation`
+Статус: `completed`
 Ветка: `codex/temporal-world-v4`
 Base commit: `520c0ea8cc366fc16c949a874c710f3547a322f6`
+Functional candidate: `2ec109c99c5e2b33f43dc5f89735e6e72686299b`
+Evidence HEAD: `6f087ab53d2f819696460e101b0d82327d37f4f7`
+Merged PR: `#19`
+Canonical merge commit: `28ffc4580fb8d73fefe706fc11a26b147cd21b5b`
 Remote: `https://github.com/PavelSlaven/Novgorod1230.git`
 
 ## 1. Цель, scope и non-goals
@@ -711,13 +715,22 @@ generated schema reference. P28 преобразует каждый неразр
 | Final exact-candidate independent critic | read-only audit of `2ec109c99c5e2b33f43dc5f89735e6e72686299b` plus focused 38-test profile and exact status/diff checks | 0 | `PASS`; no new findings; P12/P28 remain fail-closed and no production write/composition change occurred |
 | Candidate publication | `git push -u origin codex/temporal-world-v4`; create draft PR through GitHub connector | 0 | exact candidate published; single PR #19 created against `main`; draft retained until direct-child evidence and CI are complete |
 | P28 evidence preparation checks | `npm run spatial-v3:test-p28`; `npm run spatial-v3:check-p28`; `npm run docs:check`; exact SHA/shape verifier; `git diff --check` in one `Promise.allSettled` batch | 0 | P28 8/8, static gate, docs/generated 6/6 and all 58 Appendix D / 4 P12 / critic raw hashes pass; diff is exactly the manifest plus four candidate-allowed evidence documents |
+| Committed direct-child evidence acceptance | `npm run spatial-v3:p28-local-evidence`; `npm run spatial-v3:test-p28`; `npm run spatial-v3:check-p28`; `npm run docs:check`; lineage/scope checks in one `Promise.allSettled` batch | 0 | evidence HEAD `6f087ab…` has exact parent `2ec109c…`, five allowed paths only, `local_evidence_ready:true`, zero blockers/writes/composition changes, P28 8/8 and docs pass |
+| Exact-head evidence CI | push `6f087ab…`; mark PR #19 ready; GitHub Actions run `30103618436`, job `clean-clone-generation-test` | 0 | required evidence-only profile completed `SUCCESS` for exact PR head; full functional profile was not redundantly repeated |
+| PR completion | merge PR #19 with expected exact head `6f087ab…` using merge method `merge`; fetch `origin/main`; ancestry/status verification | 0 | PR merged at `2026-07-24T15:04:28Z`; merge commit `28ffc458…`; exact evidence head is an ancestor of canonical main |
+| Live P28 proof without auth context | `node tools/spatial-v3/p28-activation-gate.mjs` | 1 | fail-closed `github_release_proof_unavailable`; production writes remained 0 and composition unchanged |
+| Live P28 proof with authenticated GitHub adapter | set `GITHUB_TOKEN` from the existing authenticated `gh` session; rerun `node tools/spatial-v3/p28-activation-gate.mjs` | 0 | `activation_permitted:true`, blockers `[]`, `production_writes:0`, `composition_changed:false`, required action `release_proof_accepted_no_repository_patch` |
+| Post-merge documentation readiness and double search | `git fetch --prune origin`; tool-version checks; `npm run repo-intel:ensure`; `npm run repo-intel:status`; combined query `post-merge Temporal World v4 active normative status root README final_candidate_validation exact-head CI merge proof work journal` | 0 | correction branch starts at canonical merge `28ffc458…`; Graphify 0.9.17 rebuilt for that SHA; RAG/Graphify query `partial:false`, readiness errors empty; documented semantic baseline warning remains |
+| First post-merge documentation consistency batch | `npm run docs:check`; stale-claim scan; explicit root/AGENTS/journal assertions; `git diff --check` in one `Promise.allSettled` batch | expected mixed | semantic assertions and whitespace passed; `docs:check` correctly rejected stale `generated/generated-manifest.json` |
+| Post-merge documentation generation | `npm run docs:generate` | 0 | canonical generator refreshed `generated/generated-manifest.json`; no unrelated generated content changed |
+| Post-merge status correction and index refresh | update root `README.md`, `.github/AGENTS.md` and this journal; repeat `npm run docs:generate`; `graphify update .`; `npm run repo-intel:build` | 0 | obsolete `proposed`/`final_candidate_validation`/pending release claims removed; generated manifest refreshed; graph rebuilt to 27,701 nodes / 54,405 edges with communities recomputed; Repository Intelligence build completed |
+| Final post-merge documentation validation | `npm run docs:check`; explicit status assertions; `git diff --check`; broad then scoped stale-claim scans | expected mixed then 0 | docs/generated and assertions pass; first broad scan matched the historical query/log text rather than an active claim, corrected path-specific scan reports no stale Temporal status or pending release assertion |
 
 Полный domain/turn/narration/integration профиль, точный `npm test`, реальный
-Chromium, documentation/generated acceptance и последовательный реальный
-PostgreSQL-пакет выполнены. Active promotion и post-promotion Graphify refresh
-также выполнены. Clean-clone acceptance откладывается до появления полного
-функционального кандидата с утверждёнными data families, чтобы не повторять
-ресурсоёмкий gate на заведомо неполном release candidate.
+Chromium, documentation/generated acceptance, последовательный реальный
+PostgreSQL-пакет и exact-candidate clean-clone acceptance выполнены. Active
+promotion, Graphify refresh, independent `PASS`, exact-head evidence CI, merge
+PR #19 и live P28 proof также завершены.
 
 ## 13. Generated evidence, critic и P28
 
@@ -730,9 +743,9 @@ PostgreSQL-пакет выполнены. Active promotion и post-promotion Gra
 - Final exact-candidate critic: `PASS`, zero findings, subject
   `2ec109c99c5e2b33f43dc5f89735e6e72686299b`.
 - P28 authoring-data prerequisite is closed: 13/13 families are byte-verified
-  and `activation_ready:true`. Exact candidate, clean-clone and candidate-bound
-  critic evidence are complete; PR #19 is created for exact-head CI and merge
-  proof.
+  and `activation_ready:true`. Exact candidate, clean-clone, candidate-bound
+  critic, evidence HEAD, required CI and merge proof complete; authenticated
+  live P28 assessment returned `activation_permitted:true` with zero blockers.
 
 ## 14. Known gaps / limitations
 
@@ -749,7 +762,7 @@ PostgreSQL-пакет выполнены. Active promotion и post-promotion Gra
 
 ## 15. Integration and rollback order
 
-Планируемый порядок:
+Фактически завершённый порядок:
 
 ```text
 norm/contracts/red tests
@@ -760,10 +773,12 @@ norm/contracts/red tests
 → generated artifacts + full checks + critic
 → promote temporal norm active
 → exact-head P28
-→ sole Spatial v3 read/write activation
+→ release proof accepted without repository patch
 ```
 
-До P28 rollback — оставить production v2 sole owner и не активировать target artifacts. После P28 rollback допускается только штатным versioned release procedure; dual-write/mixed-read fallback не создаётся.
+P28 доказательство принято, но сам gate не выполнял production write или
+composition cutover. Production v2 остаётся текущим sole owner до отдельной
+versioned activation procedure; dual-write/mixed-read fallback не создаётся.
 
 ## 16. Required-output completion ledger
 
@@ -775,15 +790,16 @@ norm/contracts/red tests
 | 4. Owners/ADRs | §7 and ADR-002…ADR-006 freeze the one-owner decisions and non-owner boundaries | complete |
 | 5. Contracts and DDL migrated | §§5, 9, 11–12 record contract `4.2.0-target.1`, migration 007, committer integration and real PostgreSQL acceptance | complete at target scope; production activation intentionally absent |
 | 6. Approved data and remaining gaps | §8 records the exact 13-family matrix, external decisions and resolved typed authoring gaps; no data is self-approved or replaced by fallback | complete; 13/13 families verified and `activation_ready:true` |
-| 7. Commands actually run | §12 records every accepted, failed, expected-failed and skipped command with its factual result | complete through the current safe candidate |
-| 8. Generated docs/RAG/Graphify | §§12–13 record canonical active docs/RAG/freeze generation and exact-candidate graph/status/query | complete for `2ec109c…` |
+| 7. Commands actually run | §12 records every accepted, failed, expected-failed and skipped command with its factual result | complete through merge and live P28 proof |
+| 8. Generated docs/RAG/Graphify | §§12–13 record canonical active docs/RAG/freeze generation and exact-candidate graph/status/query | complete for the merged release |
 | 9. Critic verdict and fixes | §§12–13 record both correction cycles and the final exact-candidate `PASS` | complete |
-| 10. P28 evidence/status | §§12–14 record exact candidate, clean clone, critic, PR #19, zero production writes and unchanged composition | direct-child evidence prepared; exact-head CI and merge proof remain |
+| 10. P28 evidence/status | §§12–14 record exact candidate, clean clone, critic, evidence HEAD, PR #19, CI, merge and live proof | complete; `activation_permitted:true`, zero blockers/writes/composition changes |
 | 11. Known limitations | §14 lists every known environmental, evidence and data limitation without fallback | complete |
 | 12. Integration and rollback | §15 gives the exact forward order, pre-P28 rollback and the prohibition on dual-write/mixed-read fallback | complete |
 
-The implementation candidate is stable, active-promoted and fully tested at
-target scope. Approved data, exact-candidate RAG/Graphify, clean-clone and
-independent `PASS` evidence are complete. The remaining release sequence is
-limited to the strict direct-child evidence commit, exact-head CI and PR #19
-merge proof; production/operator databases remain untouched.
+Temporal World v4 is implemented, active-promoted and fully tested at target
+scope. Approved data, exact-candidate RAG/Graphify, clean-clone, independent
+`PASS`, direct-child evidence, exact-head CI, PR #19 merge and authenticated
+live P28 proof are complete. No release-evidence step remains. Production and
+operator databases were not opened or modified; composition remains unchanged
+until the separate versioned activation procedure.

@@ -706,6 +706,11 @@ generated schema reference. P28 преобразует каждый неразр
 | Final exact root wrapper | real-Chrome escalated `npm test` after P12 evidence/full Spatial acceptance | 0 | all root stages pass; tools 216/216, integration 22 pass with five explicit separately covered PostgreSQL skips, real Chromium 1/1, architecture boundaries OK |
 | P28 journal evidence scope | candidate-owned `p28-evidence-scope.v1.json` adds only the mandatory Temporal work README to the explicit evidence-child allowlist | pending validation | permits logging clean-clone, final critic and P28 commands without allowing code/runtime/composition changes in the evidence child |
 | P28 scope affected acceptance | P28 tests/check, docs check and `git diff --check` in one `Promise.allSettled` batch | 0 | P28 8/8 and static checker pass; immutable candidate-owned scope still rejects self-added runtime allowlists; docs/diff clean |
+| Exact candidate Graphify/Repo Intel refresh | `graphify update .`; `npm run repo-intel:build`; `npm run repo-intel:status`; exact combined `repo-intel:query` | 0 | graph has 27,711 nodes / 54,415 edges / 1,757 communities; Graphify 0.9.17 and Repository Intelligence bind exact `2ec109c…`; query `partial:false`, readiness errors empty |
+| Final clean-clone acceptance | `C:\tmp\run-temporal-clean-clone.ps1` against detached exact `2ec109c…` in `C:\tmp\Novgorod-temporal-clean-2ec109c` | 0 | 125.9 s; `npm ci`; 42,577 staged/imported rows and FK audit with 0 errors/warnings; PostgreSQL 16 with 190 tables/190 read-only grants; Stage3B1, knowledge/docs reproducibility, Repo Intel, full `npm test`, real Chrome and architecture all pass |
+| Final exact-candidate independent critic | read-only audit of `2ec109c99c5e2b33f43dc5f89735e6e72686299b` plus focused 38-test profile and exact status/diff checks | 0 | `PASS`; no new findings; P12/P28 remain fail-closed and no production write/composition change occurred |
+| Candidate publication | `git push -u origin codex/temporal-world-v4`; create draft PR through GitHub connector | 0 | exact candidate published; single PR #19 created against `main`; draft retained until direct-child evidence and CI are complete |
+| P28 evidence preparation checks | `npm run spatial-v3:test-p28`; `npm run spatial-v3:check-p28`; `npm run docs:check`; exact SHA/shape verifier; `git diff --check` in one `Promise.allSettled` batch | 0 | P28 8/8, static gate, docs/generated 6/6 and all 58 Appendix D / 4 P12 / critic raw hashes pass; diff is exactly the manifest plus four candidate-allowed evidence documents |
 
 Полный domain/turn/narration/integration профиль, точный `npm test`, реальный
 Chromium, documentation/generated acceptance и последовательный реальный
@@ -716,25 +721,24 @@ PostgreSQL-пакет выполнены. Active promotion и post-promotion Gra
 
 ## 13. Generated evidence, critic и P28
 
-- Repository graph пересобран после active promotion с SQL parser: 26,498
-  nodes / 53,175 edges / 1,518 communities; Repository Intelligence status
-  `ready`, exact combined query `partial:false`; migration 007 присутствует как
-  extracted node. Graphify отдельно сообщает 306 zero-node data/assets без
-  извлекаемых AST-сущностей; этот coverage warning не скрыт.
+- Repository graph финально пересобран для exact candidate `2ec109c…`: 27,711
+  nodes / 54,415 edges / 1,757 communities; Repository Intelligence и Graphify
+  0.9.17 имеют exact source commit, status `ready`, combined query
+  `partial:false`, readiness errors отсутствуют.
 - Generated schema reference now has 190 tables / 18 SQL parts; Temporal World
   v4 approved authoring data is represented by four immutable read-only tables.
-- WP14 repeat critic: `PASS WITH NOTES`, zero code findings; final
-  exact-candidate critic после promotion/Graphify остаётся pending.
+- Final exact-candidate critic: `PASS`, zero findings, subject
+  `2ec109c99c5e2b33f43dc5f89735e6e72686299b`.
 - P28 authoring-data prerequisite is closed: 13/13 families are byte-verified
-  and `activation_ready:true`. Exact candidate commit/clean-clone,
-  candidate-bound critic and GitHub proof still require the final candidate.
+  and `activation_ready:true`. Exact candidate, clean-clone and candidate-bound
+  critic evidence are complete; PR #19 is created for exact-head CI and merge
+  proof.
 
 ## 14. Known gaps / limitations
 
 - RAG coverage baseline degraded, но обязательные документы доступны и прочитаны;
 - literal source corruptions сохранены только в balanced retrieval-excluded ranges; classification sections 10–11.4 explicitly remain a documentation data gap;
-- real PostgreSQL acceptance выполнен; clean-clone acceptance требует полного
-  exact candidate с утверждёнными data families и не считается пройденным;
+- real PostgreSQL и clean-clone acceptance exact candidate выполнены;
 - Temporal norm находится в проверенном `active` состоянии; canonical
   docs/RAG/freeze writers, active-only retrieval и post-promotion Graphify
   refresh выполнены;
@@ -766,20 +770,20 @@ norm/contracts/red tests
 | §27 requirement | Evidence in this README | State |
 |---|---|---|
 | 1. All documents read | §§3–4 record the RAG/Graphify needs, queries and every fully read mandatory/profile document | complete |
-| 2. Files changed | §11 records the change groups and their concrete owner files; `git status` evidence is recorded in §12 | complete for the implementation candidate; final commit scope is blocked |
+| 2. Files changed | §11 records the change groups and their concrete owner files; `git status` evidence is recorded in §12 | complete; final direct-child commit is restricted to declared evidence paths |
 | 3. Conflicts resolved | §6 records C01–C18 and the selected resolution; active promotion resolved C13/C17 without production activation | complete |
 | 4. Owners/ADRs | §7 and ADR-002…ADR-006 freeze the one-owner decisions and non-owner boundaries | complete |
 | 5. Contracts and DDL migrated | §§5, 9, 11–12 record contract `4.2.0-target.1`, migration 007, committer integration and real PostgreSQL acceptance | complete at target scope; production activation intentionally absent |
-| 6. Approved data and remaining gaps | §8 records the exact 13-family matrix and 16 typed authoring gaps; no data is self-approved or replaced by fallback | structurally complete; editorial/source approval blocked |
+| 6. Approved data and remaining gaps | §8 records the exact 13-family matrix, external decisions and resolved typed authoring gaps; no data is self-approved or replaced by fallback | complete; 13/13 families verified and `activation_ready:true` |
 | 7. Commands actually run | §12 records every accepted, failed, expected-failed and skipped command with its factual result | complete through the current safe candidate |
-| 8. Generated docs/RAG/Graphify | §§12–13 record canonical active docs/RAG/freeze generation and the post-promotion graph/status/query | complete for the current implementation candidate; final data-bearing candidate will require one final refresh |
-| 9. Critic verdict and fixes | §§12–13 record the initial critical hidden-leak finding, RED reproduction, root fix, affected/full checks and repeat `PASS WITH NOTES` | implementation audit complete; final exact-candidate critic pending |
-| 10. P28 evidence/status | §§12–14 record 17 fail-closed blockers, zero production writes and unchanged composition | correctly blocked; not activated |
+| 8. Generated docs/RAG/Graphify | §§12–13 record canonical active docs/RAG/freeze generation and exact-candidate graph/status/query | complete for `2ec109c…` |
+| 9. Critic verdict and fixes | §§12–13 record both correction cycles and the final exact-candidate `PASS` | complete |
+| 10. P28 evidence/status | §§12–14 record exact candidate, clean clone, critic, PR #19, zero production writes and unchanged composition | direct-child evidence prepared; exact-head CI and merge proof remain |
 | 11. Known limitations | §14 lists every known environmental, evidence and data limitation without fallback | complete |
 | 12. Integration and rollback | §15 gives the exact forward order, pre-P28 rollback and the prohibition on dual-write/mixed-read fallback | complete |
 
 The implementation candidate is stable, active-promoted and fully tested at
-target scope. Release completion is not claimed: approved data, the final
-data-bearing candidate RAG/Graphify/clean-clone evidence, exact `PASS` critic
-evidence, P28, commit, push and the single PR remain gated by the recorded
-authoring-data prerequisites.
+target scope. Approved data, exact-candidate RAG/Graphify, clean-clone and
+independent `PASS` evidence are complete. The remaining release sequence is
+limited to the strict direct-child evidence commit, exact-head CI and PR #19
+merge proof; production/operator databases remain untouched.

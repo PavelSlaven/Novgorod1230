@@ -1,129 +1,70 @@
-# P27 candidate `11c9f0c` — independent review evidence
+# P27 candidate `2ec109c` — exact acceptance evidence
 
-## Scope and subject binding
-
-This is a non-authoritative P27 review record for exactly
-the candidate commit:
+## Subject binding
 
 ```text
-candidate_commit: 11c9f0c1de2d510c29be51546d16851f0d719f76
-candidate_parent: d28662ed0bae60ad2646eeffa46ce552ff8857ba
-branch: codex/spatial-architecture-g0-g6-v4-2
 repository: PavelSlaven/Novgorod1230
+branch: codex/temporal-world-v4
+candidate_commit: 2ec109c99c5e2b33f43dc5f89735e6e72686299b
+candidate_parent: 5d3c3e6a9d9408ef2472250bb1653542646f8bb5
+base_commit: 520c0ea8cc366fc16c949a874c710f3547a322f6
+pull_request: 19
 ```
 
-It is not a P28 approval, does not change production composition, does not
-authorize an import or a production write. It must be
-committed only as referenced evidence in the strict direct-child evidence
-commit for the candidate. The earlier P27 report for
-`45b4b9697663426a9543cd959bc927081334da5c` is explicitly excluded: it is
-evidence only for that older subject tree and cannot establish this candidate.
+This record is non-authoritative evidence for exactly the candidate above. It
+does not authorize a production import, database write, composition change or
+activation. P28 authority remains the live exact-head GitHub proof configured
+in `release-evidence.v1.json`.
 
-## Plan-owner process-evidence decision
+## Exact clean-clone acceptance
 
-The plan owner has explicitly accepted the documented process-evidence
-exception for this candidate: repository history does not prove that every
-historical phase was executed by a distinct subagent in the prescribed order.
-That acceptance permits preparation of this candidate-bound evidence package;
-it does **not** establish any runtime fact, mark an Appendix D item passed,
-replace independent review, or authorize activation. The decision remains a
-governance record only and does not alter the requirement for externally held
-independent review, fresh-checkout evidence and GitHub release proof.
+The candidate was checked out detached into
+`C:\tmp\Novgorod-temporal-clean-2ec109c` from a `--no-local` clone. The run
+completed successfully in 125.9 seconds:
 
-## Verdict
+- `npm ci`: 91 packages, 0 vulnerabilities;
+- world staging/import: 42,577 rows across 30 tables, 0 errors, 0 warnings;
+- staged FK audit: 42,577 rows, 0 errors, 0 warnings;
+- PostgreSQL 16 schema: 18 ordered SQL parts, 190 `world_base` tables;
+- `world_reader`: 190 SELECT grants, schema USAGE, no CREATE/write grants;
+- Stage 3B-1 PostgreSQL integration: passed;
+- knowledge corpus, generated documentation and reproducibility: passed;
+- Graphify/Repository Intelligence build, status and tests: passed;
+- full root `npm test` with real Chrome: passed;
+- architecture boundary check: passed.
 
-**PASS** for the exact subject above.
+The PostgreSQL container was isolated on host port `55433` and removed by the
+runner. No operator or production database was opened.
 
-This assessment combines the recorded full acceptance of the preceding
-functional tree with focused validation of the later P12 metadata-generator
-delta and the final P28 risk-based CI correction. The independent final audit
-returned `PASS`. The verdict is limited to the subject tree and its recorded
-evidence; it is not P28 authority. P28 authority is exclusively the separately
-live-verified GitHub release proof.
+## Full candidate validation
 
-## Validation evidence
+- Full Spatial/Temporal suite: 280 passed, 0 failed, one explicit Windows
+  symlink-capability skip. The skipped capability is covered by committed-path
+  validation and was not counted as a pass.
+- Root wrapper with real Chromium: all modules, domain, apps, tools, shadow,
+  cutover, documentation, integration, browser and architecture stages passed.
+- Temporal approved-data PostgreSQL acceptance: atomic rollback/commit,
+  idempotent replay, immutable rows, read-only role and corruption rejection
+  passed.
+- P12 target/import/closure suites, P02/P05, runtime catalog forward migration,
+  schema/reference and P28 static tests passed.
+- Repository Intelligence and Graphify `0.9.17` are bound to the exact
+  candidate. The documented knowledge-source semantic-coverage baseline remains
+  a non-blocking warning with no readiness errors.
 
-- The preceding functional candidate passed the recorded spatial, PostgreSQL,
-  full-project and real-Chrome acceptance. Later changes are limited to the
-  P12 dependency-closure metadata guard, the P28 GitHub release-proof
-  corrections and their focused tests, plus README consistency corrections.
-- The P12 delta changes no primary source dataset. The approved source-package
-  aggregate remains
-  `6f9869450605b338cb6c987abe8c1330bcfd1197159f715bfc0d615153271c21`,
-  and the approved counts remain `195/358/600/17+195+195`.
-- The focused dependency-metadata suite passed `10/10`: a DDL-digest-only update
-  preserves the byte-identical approval, while a self-consistent semantic
-  payload change demotes the package to `PROPOSED/pending_reapproval` and keeps
-  production/P28 blocked. A self-consistent forged approval, manifest entry and
-  manifest digest is also rejected because reusable approval bytes must match
-  the committed `HEAD` blob. Two generator runs produced the same manifest.
-- `npm run spatial-v3:check-p12`, bundle validation,
-  `world-db:schema-check` (`186` tables), and
-  `world-db:schema-doc-check` (digest
-  `fccc625773089749ca676831ee69f8b3656e914f5f0e53cbbfaff8773df905fe`)
-  passed for this delta.
-- The hosted `clean-clone-generation-test` run `29908936914` passed for exact
-  functional candidate `11c9f0c1de2d510c29be51546d16851f0d719f76`.
-  It selected the `full` profile and completed clean checkout, PostgreSQL,
-  reproducibility, Repository Graph and the full project suite. The direct
-  evidence child is restricted to the three candidate-owned evidence paths
-  and therefore receives only P28 local-evidence and documentation checks.
-  Its exact-head result remains live-verified by the P28 GitHub adapter.
-- Repository readiness was checked after `git fetch --prune origin`; Graphify
-  is `0.9.17`. Repository Intelligence and Graphify were refreshed after the
-  indexed P12/README changes. The known knowledge-source semantic-coverage
-  warning remains non-blocking.
-- The matching RAG and Graphify query was `P27 exact candidate independent
-  critic evidence report activation candidate 80ae GitHub release proof`.
-- The prior functional acceptance `npm test` passed. Its default browser job
-  reported one skip because
-  `RUS_CHROMIUM_PATH` was unset; the actual browser witness was then rerun as
-  `RUS_CHROMIUM_PATH='C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
-  npm run test:browser-e2e` and passed `1/1`.
-- In that acceptance, `npm run docs:check`, `npm run architecture:check`,
-  `npm run knowledge:check-corpus`, and `npm run knowledge:check` passed.
-  The corpus check reported `35` documents and the generated knowledge graph
-  and RAG current.
-- `npm run spatial-v3:test-p27-release` passed `2/2`; `npm run release:check`
-  passed. `npm run spatial-v3:test-p12` passed `16/16`, and
-  `npm run spatial-v3:check-p12` accepted the approved root authoring manifest:
-  `37` datasets, `data_gaps: []`, `195` canonical G5 records, `358` physical
-  exit pairs, `600` typed mappings, `17` scene families, `195` profiles and
-  `195` candidates.
-- P28 remains a deferred fail-closed gate until GitHub has an exact approval,
-  successful manifest-pinned check and accepted completion proof; it reports
-  zero production writes and no composition change.
-- In that acceptance, isolated local PostgreSQL checks passed for P09, P10,
-  P11, P12, P13, P14,
-  P15, P16 persistence, P16 committer, P23, P24 party migration, P24 world
-  migration and P25. They use repository-created local test databases only;
-  no operator or production database was opened.
+## Independent review
 
-## P23 startup note
+The independent final critic audited this exact candidate and returned
+`VERDICT: PASS`, with no content findings. The complete report is
+`docs/migration/spatial-v3/p27-final-critic-report.md`.
 
-During the serial PostgreSQL matrix, the first P23 invocation stopped before
-migration/setup because `docker run` returned status `125`. No stale
-`p23-domain-*` container was present; a separate `docker run --rm hello-world`
-confirmed the daemon. The immediate rerun
-`npm run spatial-v3:test-p23-postgres` passed `1/1`. This is recorded as a
-Docker startup flake, not a waived test failure. A future evidence operator
-must retain the exact command log and rerun rather than treating a status `125`
-as a successful P23 result.
+## Boundary
 
-## Remaining P28 blockers
+The clean-clone and critic evidence establish candidate readiness only. This
+direct evidence child still has to pass its evidence-only CI and live GitHub
+completion proof. The gate remains non-mutating:
 
-The strict direct-child manifest and ledger record all `58` Appendix D entries
-as locally passed by this single final audit. The approved P12 compilation has
-zero remaining source/target gaps. P28 nevertheless remains fail-closed because
-PR #14 is draft and lacks exact-head GitHub approval and merge/tag completion.
-The live required check is the only fresh-checkout authority; no duplicate
-fresh-checkout attestation exists. V2 remains the sole production composition.
-
-## P28 authority boundary
-
-This report remains hash-bound independent-review evidence only. Once the
-strict direct-child evidence commit is pushed, the P28 gate itself must live
-verify the configured GitHub repository and PR: exact evidence head, exact
-commit approval, manifest-versioned successful check and canonical-main merge
-or locally verified signed-tag completion. No external authority route can supplement or
-replace that proof.
+```text
+production_writes: 0
+composition_changed: false
+```

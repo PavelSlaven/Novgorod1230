@@ -1,7 +1,7 @@
 # Temporal World v4 — рабочий журнал
 
 Дата начала: 2026-07-23
-Статус: `p12_evidence_pending_commit`
+Статус: `final_candidate_validation`
 Ветка: `codex/temporal-world-v4`
 Base commit: `520c0ea8cc366fc16c949a874c710f3547a322f6`
 Remote: `https://github.com/PavelSlaven/Novgorod1230.git`
@@ -700,6 +700,12 @@ generated schema reference. P28 преобразует каждый неразр
 | Repeat exact-subject independent critic | read-only repeat audit of `3b57dbd7da75be4e8e0b5ff3630c726b947d62b5` after RAG/Graphify fixes | 0 | verdict `PASS`; no content findings; explicit P12 subject audit `PASS_FOR_SUBJECT_3b57dbd7da75be4e8e0b5ff3630c72`; production/P28 remain blocked |
 | P12 evidence generation | local mechanical evidence generator; corrected audit-id length; sandbox retry; escalated retry | expected mixed then 0 | first invocation rejected the incorrect 31-hex assertion, second hit sandbox `EPERM`; approved retry created a 48-path SHA-256 subject binding and updated only allowed approval/manifest evidence files |
 | P12 evidence precommit validation | closure bundle validator; exact evidence scope/subject/count/uniqueness probe; manifest SHA check; `git diff --check` | 0 | bundle PASS; subject is exact `3b57dbd…`; 48/48 unique required paths; manifest digest exact; no whitespace defects |
+| P12 direct-child evidence commit | commit `5d3c3e6…` with exact parent `3b57dbd…`; six allowed evidence paths only | 0 | committed binding, approved decision, manifest/digest, independent audit record and mandatory README journal; production/P28 flags remain blocked |
+| P12 committed-evidence acceptance | escalated V1.1 validator; sequential dependency-closure generator/adversarial tests | 0 | validator has zero errors while retaining `materialization_authorized:false` and `p28_activation:not_authorized`; generator suite 10/10 |
+| Final full Spatial/Temporal suite | escalated `node --test --test-concurrency=1 test/spatial-v3/*.test.js` | 0 | 280 passed, 0 failed, 1 explicit Windows symlink-capability skip; all P02–P28 unit/static profiles, real PostgreSQL P09–P25, P12 imports, Temporal approved-data import and Temporal runtime persistence passed |
+| Final exact root wrapper | real-Chrome escalated `npm test` after P12 evidence/full Spatial acceptance | 0 | all root stages pass; tools 216/216, integration 22 pass with five explicit separately covered PostgreSQL skips, real Chromium 1/1, architecture boundaries OK |
+| P28 journal evidence scope | candidate-owned `p28-evidence-scope.v1.json` adds only the mandatory Temporal work README to the explicit evidence-child allowlist | pending validation | permits logging clean-clone, final critic and P28 commands without allowing code/runtime/composition changes in the evidence child |
+| P28 scope affected acceptance | P28 tests/check, docs check and `git diff --check` in one `Promise.allSettled` batch | 0 | P28 8/8 and static checker pass; immutable candidate-owned scope still rejects self-added runtime allowlists; docs/diff clean |
 
 Полный domain/turn/narration/integration профиль, точный `npm test`, реальный
 Chromium, documentation/generated acceptance и последовательный реальный

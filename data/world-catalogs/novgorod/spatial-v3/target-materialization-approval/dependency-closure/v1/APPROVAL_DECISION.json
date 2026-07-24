@@ -1,8 +1,8 @@
 {
   "schema_version": "rus.p12_dependency_closure_approval.v1",
-  "status": "PROPOSED_FOR_P12_DEPENDENCY_CLOSURE",
+  "status": "APPROVED_FOR_P12_DEPENDENCY_CLOSURE",
   "blocker_addressed": "P12_V11_DEPENDENCY_CLOSURE_EVIDENCE_MISSING",
-  "independent_audit": "pending_reapproval",
+  "independent_audit": "PASS_FOR_SUBJECT_3b57dbd7da75be4e8e0b5ff3630c72",
   "production_activation": "blocked",
   "p28_status": "blocked"
 }

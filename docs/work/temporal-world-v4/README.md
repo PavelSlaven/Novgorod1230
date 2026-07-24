@@ -1,7 +1,7 @@
 # Temporal World v4 — рабочий журнал
 
 Дата начала: 2026-07-23
-Статус: `candidate_subject_pending_p12_reapproval`
+Статус: `p12_evidence_pending_commit`
 Ветка: `codex/temporal-world-v4`
 Base commit: `520c0ea8cc366fc16c949a874c710f3547a322f6`
 Remote: `https://github.com/PavelSlaven/Novgorod1230.git`
@@ -696,6 +696,10 @@ generated schema reference. P28 преобразует каждый неразр
 | First exact-subject independent critic | read-only audit of `d373ff261ecf7095ba6321d03d1951d64b277ad3` plus focused 108-test Temporal profile, P02/P05, P12, schema and runtime-catalog checks | changes required | functional/data checks passed; critic found stale retrieval-policy corpus pin and Repository Intelligence still bound to the parent commit; P12 binding absence remains the intentionally ordered pre-evidence state |
 | Retrieval-policy audit fix | exact SHA-256 of current `corpus-manifest.json` repinned in `retrieval-policy.json` | pending validation | removes `RETRIEVAL_POLICY_STALE` at its source without suppressing baseline semantic-gap reporting |
 | Retrieval-policy affected acceptance | `knowledge:status`; exact Temporal/P12 `knowledge:query`; docs/knowledge checks; `git diff --check` in one `Promise.allSettled` batch | 0 | status/query execute normally; only the documented non-blocking semantic coverage baseline remains, blocker list empty; docs/RAG and diff hygiene pass |
+| Exact subject navigation refresh | commit `3b57dbd7da75be4e8e0b5ff3630c726b947d62b5`; escalated `graphify update .`; `repo-intel:build`; status, combined query and direct Graphify query | 0 | graph rebuilt to 27,711 nodes / 54,415 edges / 1,752 communities; Repository Intelligence and Graphify both bind exact subject SHA; combined query `partial:false` |
+| Repeat exact-subject independent critic | read-only repeat audit of `3b57dbd7da75be4e8e0b5ff3630c726b947d62b5` after RAG/Graphify fixes | 0 | verdict `PASS`; no content findings; explicit P12 subject audit `PASS_FOR_SUBJECT_3b57dbd7da75be4e8e0b5ff3630c72`; production/P28 remain blocked |
+| P12 evidence generation | local mechanical evidence generator; corrected audit-id length; sandbox retry; escalated retry | expected mixed then 0 | first invocation rejected the incorrect 31-hex assertion, second hit sandbox `EPERM`; approved retry created a 48-path SHA-256 subject binding and updated only allowed approval/manifest evidence files |
+| P12 evidence precommit validation | closure bundle validator; exact evidence scope/subject/count/uniqueness probe; manifest SHA check; `git diff --check` | 0 | bundle PASS; subject is exact `3b57dbd…`; 48/48 unique required paths; manifest digest exact; no whitespace defects |
 
 Полный domain/turn/narration/integration профиль, точный `npm test`, реальный
 Chromium, documentation/generated acceptance и последовательный реальный

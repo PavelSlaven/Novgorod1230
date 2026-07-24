@@ -1,0 +1,30 @@
+{
+  "schema": "rus.temporal-world-v4.external-auditor-family-decision.v1",
+  "version": 1,
+  "family_id": "weather_transition_profiles_processes",
+  "verdict": "approved",
+  "approved_record_ids": [
+    "record:weather_transition_profiles_processes:novgorod_weather_v2"
+  ],
+  "source_ids_reviewed": [
+    "source:weather_transition_profiles_processes:noaa_synoptic",
+    "source:weather_transition_profiles_processes:temporal_world_v4_normative",
+    "source:weather_transition_profiles_processes:user_reconstruction_authorization",
+    "source:weather_transition_profiles_processes:weather_reconstruction_decisions"
+  ],
+  "applicability": [
+    "novgorod"
+  ],
+  "data_gaps": [],
+  "auditor": {
+    "name": "OpenAI GPT-5.6 Thinking",
+    "organization_or_role": "independent external data authoring auditor"
+  },
+  "decision_id": "decision:weather_transition_profiles_processes:2026-07-24-reaudit-2",
+  "decided_at": "2026-07-24T17:45:00+03:00",
+  "method": "independent source, contract, controlled-vocabulary, exactness, closure, historical-labeling and no-fallback audit",
+  "rationale": "The profile is a closed deterministic six-hour weather state machine with mutually coherent composite candidates, equal reconstruction weights, exact rational movement factors, explicit mulberry32_v1/SHA-256 selection identity and no LLM or implicit weather fallback.",
+  "limitations": [
+    "Weather candidates, movement factors and season sets are gameplay reconstruction, not medieval statistical observations."
+  ]
+}

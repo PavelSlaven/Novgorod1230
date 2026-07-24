@@ -1,0 +1,50 @@
+{
+  "schema_version": "rus.temporal_world.normative_freeze.v1",
+  "status": "active_after_final_acceptance",
+  "base_commit_sha": "520c0ea8cc366fc16c949a874c710f3547a322f6",
+  "approved_external_inputs": {
+    "implementation_plan_sha256": "d8464cbb91708379c3a4cf288b1842ee41676199fb8a0acaf51b79bcb0623016",
+    "mechanic_specification_sha256": "f97e71536c08a3b5cc0414fe25460bf70b2d95ee94ff861f785b0a3d9fbfb26e"
+  },
+  "contract": {
+    "amendment": "temporal-world-v1",
+    "spatial_target_version": "4.3.0-target.1"
+  },
+  "activation_boundary": {
+    "before_p28": "production_v2_only",
+    "after_successful_p28": "spatial_v3_only",
+    "forbidden": [
+      "dual_write",
+      "mixed_authoritative_read",
+      "fallback",
+      "partial_temporal_cutover"
+    ]
+  },
+  "source_digests": {
+    ".github/AGENTS.md": "75896ddace8751f469ac77eb0b3dd311c91dca971317e37e10c72c11d8089df0",
+    "AGENTS.md": "241b1160606b23566f8a4d5c04934088079d11eadb9f738007398f676c714c65",
+    "README.md": "797f0e52ed960a6543dc2be95ef131db7dcfa48ff9a54fff1dfc0a8d38b26fc4",
+    "data/knowledge-source/corpus/DOCUMENTS/base_turn_orchestration.txt": "b48eedcff1c232c3d79d7cc3d826ec389c3894d96fbf18c56857062aa803ab66",
+    "data/knowledge-source/corpus/DOCUMENTS/character_parameters.txt": "21cd1b9fba7dcf7a2e6e858faf4606294da61f4d4054e76d41ae48ef25602470",
+    "data/knowledge-source/corpus/DOCUMENTS/formulas.md": "87a93418b60ef244187affed4c9fe2b1716e969ccb596d5b6ccf151537470134",
+    "data/knowledge-source/corpus/DOCUMENTS/historical_events_and_figures.txt": "1487d4d4c8167ea4948d846204d048966a1700cd08f9ad1e350709277b8757a7",
+    "data/knowledge-source/corpus/DOCUMENTS/information_sources_llm_prompts.md": "c0b3a547865e927441cbe8cde09aa1d5fa14c7765ac86155aea1ed96a3914df3",
+    "data/knowledge-source/corpus/DOCUMENTS/interface_ux.md": "52333c6b26faccd57ba537e853fd71f6cd41cd10fa0b762a5eecf93f67abbdbf",
+    "data/knowledge-source/corpus/DOCUMENTS/llm_agent_prompt_templates.md": "9bac1e1e7859e739b2420a6c004ad9ea63a60296dfb724c1c2d4803e69a3fc62",
+    "data/knowledge-source/corpus/DOCUMENTS/llm_documentation_navigation.md": "7738ef61d56949f625b9f7894f59e7b1ec85ffc2fceba087a2bb461b4a452738",
+    "data/knowledge-source/corpus/DOCUMENTS/movement_locations_regions.txt": "24c8bc264dee393ea85d44d304f4f1ab2b3160af23f222f29d02ee3b880d93c1",
+    "data/knowledge-source/corpus/DOCUMENTS/npc_generation_profiles.txt": "c2efe02659d7e704664c0134bb8ed0abd3a9f43492aae717ad8267a70876b9b4",
+    "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md": "5dcd02a9486694f9977f9e8e587db7d00c43cf41f3ad4c5f97172e0a99ed067a",
+    "data/knowledge-source/corpus/DOCUMENTS/spatial_v3_target_code_driven_world_materialization_architecture.md": "6d5fabccb9348c789e19722076a95b7572b8254c55a0e83ee0c87c927ac094ce",
+    "data/knowledge-source/corpus/DOCUMENTS/spatial_v3_target_read_only_database_and_graph_architecture.md": "c2851ccd8bd4f1cf87cf382396ddf32c24f883ee921511dab63a908c46ec76a7",
+    "data/knowledge-source/corpus/DOCUMENTS/spatial_v3_target_world_base_materialization_table_requirements.md": "578ed6ba43b92a840f2ad5186d26ee73d09d3a7d797a9a9145d74c36a7e2d9ae",
+    "data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md": "84b1ed645a0a62eb84bdf97c282ce1f8b4d9a99766e7483cf0e6faadc092d741",
+    "data/knowledge-source/corpus/DOCUMENTS/time_system.txt": "b1ed38570211d5cdb96022e7bc8e75a76514200078ac927cd4c0c311dfef58e9",
+    "data/knowledge-source/corpus/DOCUMENTS/world_generation_and_turns.txt": "c70eeff6b3ede4c2e56aba4ba302da2de7489d63a7a704cc2f30c36682043552",
+    "docs/adr/ADR-002-temporal-world-v4.md": "5feb66bb4c51be117351dc3f0d3227e10050614693ab1c8bc08f27744eaae1dc",
+    "docs/adr/ADR-003-temporal-npc-runtime-owner.md": "8fb5ad5e99993335cc57a9f7007c86d5ff5316a779adf63e760fbbf0be2d6b94",
+    "docs/adr/ADR-004-temporal-place-access-owner.md": "e7b2816a48939afa6920c9bec42059169e5ed6e651831140ae0b2c3a896ad57d",
+    "docs/adr/ADR-005-temporal-environment-owner.md": "219bc44a456c7e4ed8812d4c954b37af703f37e8889fecb7ec68bb732d08b5b2",
+    "docs/adr/ADR-006-temporal-world-process-owner.md": "c922ddcb6eb86deb8ac88596ca4b68eda8276a76ba26245660afe85c80c4c258"
+  }
+}

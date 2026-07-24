@@ -140,6 +140,10 @@ export const TABLE_GROUPS = [
   {
     title: 'Materialization v2: решения и импорт',
     tables: ['decision_command_catalog', 'decision_policy_profiles', 'decision_policy_options', 'catalog_imports', 'catalog_import_tables']
+  },
+  {
+    title: 'Temporal World v4: утверждённые авторские данные',
+    tables: ['temporal_source_history', 'temporal_provenance', 'temporal_authoring_records', 'temporal_normalized_references']
   }
 ];
 
@@ -290,7 +294,11 @@ export const TABLE_PURPOSE_FALLBACK = {
   g4_item_materialization_rules: 'G4-specific правила предметов, имущества и economic basis.',
   g4_container_materialization_rules: 'G4-specific правила контейнеров, содержимого и доступа.',
   catalog_imports: 'Проверяемые импорты versioned authoring manifest.',
-  catalog_import_tables: 'Digests, counts и dependency order таблиц одного импорта.'
+  catalog_import_tables: 'Digests, counts и dependency order таблиц одного импорта.',
+  temporal_source_history: 'Точные источники утверждённых Temporal World v4 записей и контрольные суммы их байтов.',
+  temporal_provenance: 'Утверждённая трассировка происхождения каждой семьи Temporal World v4.',
+  temporal_authoring_records: 'Нормализованные утверждённые авторские записи Temporal World v4; runtime читает их без права изменения.',
+  temporal_normalized_references: 'Физические привязки утверждённых ссылок Temporal World v4 к авторским записям.'
 };
 
 export const common = {

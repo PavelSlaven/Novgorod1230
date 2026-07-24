@@ -1,0 +1,20 @@
+[
+  {
+    "reference_id": "reference:propagation_profiles:rumor_path_v2",
+    "status": "approved",
+    "table": "temporal_authoring_records",
+    "record_id": "record:propagation_profiles:rumor_path_v2",
+    "source_record_key": "record:propagation_profiles:rumor_path_v2",
+    "logical_record_id": "rumor_by_approved_carrier_path_v2",
+    "authoring_version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "source_ids": [
+      "source:propagation_profiles:temporal_world_v4_normative",
+      "source:propagation_profiles:user_reconstruction_authorization",
+      "source:propagation_profiles:controlled_vocabularies"
+    ],
+    "binding_notes": "Bound to world_base.temporal_authoring_records by the approved Temporal v4 importer."
+  }
+]

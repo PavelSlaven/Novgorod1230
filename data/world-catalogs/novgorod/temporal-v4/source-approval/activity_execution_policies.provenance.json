@@ -1,0 +1,17 @@
+[
+  {
+    "provenance_id": "provenance:activity_execution_policies:novgorod_v1",
+    "status": "approved",
+    "source_ids": [
+      "source:activity_execution_policies:controlled_vocabularies",
+      "source:activity_execution_policies:temporal_world_v4_normative",
+      "source:activity_execution_policies:user_reconstruction_authorization"
+    ],
+    "approved_by": "OpenAI GPT-5.6 Thinking",
+    "approver_role": "independent external data authoring auditor",
+    "approved_at": "2026-07-24T17:45:00+03:00",
+    "decision_id": "decision:activity_execution_policies:2026-07-24-reaudit-2",
+    "method": "contract audit against the handoff requirements, canonical repository snapshot, exact source bytes, controlled vocabularies, and explicitly labeled bounded reconstruction authorized by the user",
+    "notes": "The policy family exhaustively defines exact progress, resource/participant handling, continuation, interruption, completion and deterministic same-time ordering while preserving all committed effects."
+  }
+]

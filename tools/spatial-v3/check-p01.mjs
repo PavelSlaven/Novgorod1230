@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises';
 
 const standard = await readFile('data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md', 'utf8');
+const temporalAmendment = await readFile('data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md', 'utf8');
 const matrix = JSON.parse(await readFile('docs/migration/spatial-v3/contract-implementation-matrix.json', 'utf8'));
 const conflicts = await readFile('docs/migration/spatial-v3/normative-conflicts.md', 'utf8');
 const count = (value) => new Set(value).size === value.length;
@@ -11,9 +12,16 @@ if (!standard.includes('**Статус:** `target`') || !standard.includes('**В
 if (!count(contracts) || contracts.length !== 160) throw new Error(`Contract audit failed: ${contracts.length}`);
 if (!count(errors) || errors.length !== 58) throw new Error(`Error audit failed: ${errors.length}`);
 if (standard.includes('TODO') || standard.includes('{{') || standard.includes('TBD')) throw new Error('Placeholder found');
-if (matrix.contracts.length !== 160 || matrix.errors.length !== 58) throw new Error('Matrix totals failed');
+if (matrix.contracts.length !== 188 || matrix.errors.length !== 82) throw new Error('Current target matrix totals failed');
 if (!matrix.contracts.every((x) => x.owner_package && x.json_schema_or_dto && x.ddl_table_or_value && x.validator && x.repository && x.tests && x.migration_step)) throw new Error('Unassigned contract matrix field');
 if (!matrix.errors.every((x) => x.owner_package && x.json_schema_or_dto && x.validator && x.tests && x.migration_step)) throw new Error('Unassigned error matrix field');
 const conflictRows = conflicts.split(/\r?\n/).filter((line) => /^\| NC-\d+ /.test(line));
 if (conflictRows.length !== 10 || conflictRows.some((line) => line.split('|').length !== 8) || conflicts.includes('решить позднее')) throw new Error('Incomplete conflict record');
-console.log('P01 checks passed: 160 contracts, 58 errors, target metadata and complete matrix.');
+const temporalContracts = [...temporalAmendment.matchAll(/```yaml\r?\ncontract_name:\s*([^\r\n]+)[\s\S]*?```/g)].map((m) => m[1].trim());
+const temporalErrorAppendix = temporalAmendment.slice(temporalAmendment.indexOf('# Приложение B. Temporal typed-error amendment'), temporalAmendment.indexOf('# Приложение C.'));
+const temporalErrors = [...temporalErrorAppendix.matchAll(/^\|\s*`([^`]+)`\s*\|/gm)].map((m) => m[1]).filter((x) => x !== 'code');
+if (!count(temporalContracts) || temporalContracts.length !== 35 || !count(temporalErrors) || temporalErrors.length !== 24) throw new Error('Temporal amendment audit failed');
+const currentContracts = new Set([...contracts, ...temporalContracts]);
+const currentErrors = new Set([...errors, ...temporalErrors]);
+if (currentContracts.size !== 188 || currentErrors.size !== 82) throw new Error('Current 4.3 target union audit failed');
+console.log('P01 checks passed: historical P05 160/58 is immutable; current 4.3 target union is 188 contracts/82 errors.');

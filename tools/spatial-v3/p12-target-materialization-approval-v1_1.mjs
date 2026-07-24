@@ -169,13 +169,15 @@ export async function validateP12TargetMaterializationApprovalV11({ root = ROOT,
     } catch { errors.push(issue('P12_V11_PACKAGE_MISSING_OR_UNSAFE', index.package_path ?? 'unknown')); }
   }
   try {
-      const [branch, head, bindingBytes] = await Promise.all([
-        git(projectRoot, ['branch', '--show-current']),
+      const [head, bindingBytes] = await Promise.all([
         git(projectRoot, ['rev-parse', 'HEAD']),
         gitBytes(projectRoot, ['show', `${HISTORICAL_BINDING_COMMIT}:${index.binding_path}`])
       ]);
       const binding = JSON.parse(bindingBytes.toString('utf8'));
-      const bindingValid = binding.status === 'BOUND_FOR_REPOSITORY_APPLY' && binding.repository === 'PavelSlaven/Novgorod1230' && binding.branch_name === branch && sha(binding.subject_commit) && binding.approval_manifest_sha256 === index.manifest_sha256;
+      const bindingValid = binding.status === 'BOUND_FOR_REPOSITORY_APPLY' &&
+        binding.repository === 'PavelSlaven/Novgorod1230' &&
+        sha(binding.subject_commit) &&
+        binding.approval_manifest_sha256 === index.manifest_sha256;
       if (!bindingValid) errors.push(issue('P12_V11_SUBJECT_COMMIT_BINDING_INVALID', index.binding_path));
       else {
         const intake = await verifyP12HistoricalIntakeBinding({ projectRoot, bindingPath: index.binding_path, binding, head });

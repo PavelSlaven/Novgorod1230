@@ -20,7 +20,10 @@ const requirePort = (value, name) => { if (typeof value !== 'function') throw ne
  */
 export function createSpatialV3TargetShadowComposition({
   planner, activationValidator, executionEngine, targetPreparation, frontierResolver,
-  loadSnapshots, validateProposal, projectVisible, narrate, committer, verifyApproval,
+  loadSnapshots, validateProposal, advanceTemporal, deriveVisiblePackage,
+  loadCommittedVisiblePackage, claimPresentationAttempt, narrate,
+  persistNarrationOutput, finalizePresentationAttempt, projectScreen,
+  committer, verifyApproval,
   loadStartSnapshot, prepareStart, buildStartWritePlanInput, commandAdapters = {},
   createStartChangeSet = null, modeHandoff = null, buildModeHandoffProposal = null
 } = {}) {
@@ -28,7 +31,37 @@ export function createSpatialV3TargetShadowComposition({
   if (!activationValidator || typeof activationValidator.validate !== 'function') throw new TypeError('P21 requires P18 activation validator.');
   if (!executionEngine || typeof executionEngine !== 'object') throw new TypeError('P21 requires P19 execution engine object.');
   if (!targetPreparation || typeof targetPreparation.prepare !== 'function' || !frontierResolver || typeof frontierResolver.resolve !== 'function') throw new TypeError('P21 requires P20 preparation and frontier resolvers.');
-  [loadSnapshots, validateProposal, projectVisible, narrate, verifyApproval, loadStartSnapshot, prepareStart, buildStartWritePlanInput].forEach((port, index) => requirePort(port, ['loadSnapshots', 'validateProposal', 'projectVisible', 'narrate', 'verifyApproval', 'loadStartSnapshot', 'prepareStart', 'buildStartWritePlanInput'][index]));
+  [
+    loadSnapshots,
+    validateProposal,
+    advanceTemporal,
+    deriveVisiblePackage,
+    loadCommittedVisiblePackage,
+    claimPresentationAttempt,
+    narrate,
+    persistNarrationOutput,
+    finalizePresentationAttempt,
+    projectScreen,
+    verifyApproval,
+    loadStartSnapshot,
+    prepareStart,
+    buildStartWritePlanInput
+  ].forEach((port, index) => requirePort(port, [
+    'loadSnapshots',
+    'validateProposal',
+    'advanceTemporal',
+    'deriveVisiblePackage',
+    'loadCommittedVisiblePackage',
+    'claimPresentationAttempt',
+    'narrate',
+    'persistNarrationOutput',
+    'finalizePresentationAttempt',
+    'projectScreen',
+    'verifyApproval',
+    'loadStartSnapshot',
+    'prepareStart',
+    'buildStartWritePlanInput'
+  ][index]));
   if (!committer || typeof committer.commit !== 'function') throw new TypeError('P21 requires P16 CombinedAtomicCommitter.');
   if (createStartChangeSet != null) requirePort(createStartChangeSet, 'createStartChangeSet');
   if (!modeHandoff || typeof modeHandoff.handoff !== 'function') throw new TypeError('P21 requires P21-S04 modeHandoff.handoff port.');
@@ -72,7 +105,7 @@ export function createSpatialV3TargetShadowComposition({
     resolve_frontier: async (command) => adapt(command, await frontierResolver.resolve(command.command_payload)),
     activate_plan: async (command) => adapt(command, await activationValidator.validate(command.command_payload)),
     immediate_action: async (command) => adapt(command, await invokeP19('executeImmediateAction', command.command_payload, 'immediate_action')),
-    timed_activity: async (command) => adapt(command, await invokeP19('resolveTimedActivity', command.command_payload, 'timed_activity')),
+    timed_activity: async (command) => adapt(command, await invokeP19('resolveActivityBoundary', command.command_payload, 'timed_activity')),
     // P19's traversal operations are asynchronous.  The approved adapter must
     // see their resolved result, never the Promise itself: otherwise a truthy
     // Promise would bypass the sealed-proposal and typed-failure boundary.
@@ -86,19 +119,78 @@ export function createSpatialV3TargetShadowComposition({
     change_cohort: invokeModeHandoff
   });
   const registry = createSpatialV3CommandRegistry(handlers);
+  const buildCombinedChangeSet = async (input) => {
+    const source = input.proposal?.combined_write_plan_input?.change_set;
+    if (!text(source?.id)) return failure(input.party_id, 'combined_change_set', 'approved proposal change-set identity is missing');
+    return freeze({
+      ok: true,
+      change_set: seal({
+        party_id: input.party_id,
+        kind: 'combined_change_set_candidate',
+        id: source.id,
+        proposal_digest: input.proposal.canonical_digest,
+        temporal_result_digest: input.temporal_result.canonical_digest,
+        dependency_pins: input.snapshot.dependency_pins
+      })
+    });
+  };
   const buildWritePlan = async (input) => {
-    const built = await buildCombinedWritePlan(input.proposal.combined_write_plan_input, { verifyApproval });
+    if (input.proposal.combined_write_plan_input?.change_set?.id !== input.combined_change_set.id) {
+      return failure(input.party_id, 'write_plan', 'proposal and combined change-set identities disagree');
+    }
+    const built = await buildCombinedWritePlan({
+      ...clone(input.proposal.combined_write_plan_input),
+      visible_package_envelope: clone(input.visible_package_envelope)
+    }, { verifyApproval });
     if (!built.ok) return built;
-    return freeze({ ok: true, plan: seal({ kind: 'combined_write_plan', party_id: input.party_id, command_id: input.command.command_id, validation_report_digest: input.validation_report.canonical_digest, dependency_pins: input.snapshot.dependency_pins, combined_write_plan: built.plan }) });
+    return freeze({
+      ok: true,
+      plan: seal({
+        kind: 'combined_write_plan',
+        party_id: input.party_id,
+        command_id: input.command.command_id,
+        validation_report_digest: input.validation_report.canonical_digest,
+        combined_change_set_digest: input.combined_change_set.canonical_digest,
+        visible_package_envelope: clone(input.visible_package_envelope),
+        dependency_pins: input.snapshot.dependency_pins,
+        combined_write_plan: built.plan
+      })
+    });
   };
   const commit = async ({ party_id, plan }) => {
     const raw = plan?.combined_write_plan;
     if (!raw) return failure(party_id, 'commit', 'P16 plan envelope is missing');
     const result = await committer.commit({ plan: raw });
     if (!result?.ok) return result;
-    return freeze({ ok: true, change_set: seal({ kind: 'committed_change_set', party_id, id: result.change_set_id, write_plan_digest: plan.canonical_digest, dependency_pins: plan.dependency_pins, p16_result: clone(result) }) });
+    return freeze({
+      ok: true,
+      change_set: seal({
+        kind: 'committed_change_set',
+        party_id,
+        id: result.change_set_id,
+        write_plan_digest: plan.canonical_digest,
+        dependency_pins: plan.dependency_pins,
+        p16_result: clone(result)
+      }),
+      visible_package_envelope: clone(plan.visible_package_envelope)
+    });
   };
-  const turn = createSpatialV3TurnOrchestrator({ loadSnapshots, registry, validateProposal, buildWritePlan, commit, projectVisible, narrate });
+  const turn = createSpatialV3TurnOrchestrator({
+    loadSnapshots,
+    registry,
+    validateProposal,
+    advanceTemporal,
+    buildCombinedChangeSet,
+    deriveVisiblePackage,
+    buildWritePlan,
+    commit,
+    loadCommittedVisiblePackage,
+    claimPresentationAttempt,
+    narrate,
+    persistNarrationOutput,
+    finalizePresentationAttempt,
+    projectScreen
+  });
   const starter = createSpatialV3NewGameStarter({
     loadStartSnapshot,
     prepareStart,
@@ -116,5 +208,14 @@ export function createSpatialV3TargetShadowComposition({
       return freeze({ ok: true, schema_version: 3, write_plan, change_set: boundChange });
     }
   });
-  return freeze({ status: 'target_shadow_only', registry, turn, new_game: starter, handoff: modeHandoff, submitTurn: turn.run.bind(turn), startNewGame: starter.start.bind(starter) });
+  return freeze({
+    status: 'target_shadow_only',
+    registry,
+    turn,
+    new_game: starter,
+    handoff: modeHandoff,
+    submitTurn: turn.run.bind(turn),
+    retryPresentation: turn.retryPresentation.bind(turn),
+    startNewGame: starter.start.bind(starter)
+  });
 }

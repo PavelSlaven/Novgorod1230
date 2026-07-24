@@ -3,6 +3,10 @@
 **Статус:** target technical normative; активная физическая схема остаётся v2 до P28.
 **Назначение:** логический table-purpose contract для target v3; физические имена, типы и constraints определяются только будущими DDL и generated `SCHEMA_REFERENCE.md`.
 
+Temporal amendment `temporal-world-v1` / `4.3.0-target.1` определяется active
+target-нормативом `temporal_world_and_interruptible_activities.md`. Он расширяет
+существующие owners/tables, а не создаёт параллельный temporal store.
+
 ## 1. Граница хранилищ
 
 `world_base` является read-only canonical authoring store: world revision, G0–G5, directed world topology/routes, historical provenance, approved templates, expansion profiles/capacities, controlled vocabularies и readiness evidence. `party_runtime` — mutable party store: generated G5, G6/positions, scene/route plans and executions, dynamic entities, perception и append-only history.
@@ -25,7 +29,17 @@ Queryable plural relations (candidates, dependencies, route members, slots, exit
 
 ## 3. Party runtime authoring-derived state
 
-`party_runtime` нормализованно хранит party/version pins, expansion reservations and committed generated G5, scene baselines/G6/positions, physical and perception overlays, carriers/attachments, plans, executions, exact rational time, change sets, idempotency records и append-only results/history.
+`party_runtime` нормализованно хранит party/version pins, expansion
+reservations and committed generated G5, scene baselines/G6/positions,
+physical/perception overlays, carriers/attachments, plans, executions,
+activities/participants/resources, exact rational `GameTimestamp`, boundary
+candidates/results, domain/NPC/remote traces, factual visible packages, change
+sets, idempotency records и append-only results/history.
+
+Все потенциально неограниченные integral temporal components хранятся как
+PostgreSQL `NUMERIC` с `scale=0`, не `BIGINT`, и проходят application-level
+canonical decimal-string/GCD validation. Gameplay due times не используют
+`TIMESTAMPTZ`; wall-clock timestamps остаются только technical metadata/leases.
 
 Dynamic NPC, items, containers, ownership, access and blockers принадлежат party state и никогда не становятся authoring rows. Active uniqueness, lock order, idempotency and state-version constraints реализуются в physical DDL, а не только в application convention.
 

@@ -92,6 +92,22 @@ test('repository registers the audited spatial architecture standard as an activ
   assert.ok(policy.control_queries.some((item) => item.expected_document_ids.includes('spatial-architecture-standard-g0-g6')));
 });
 
+test('repository exposes the accepted Temporal World amendment through active-only retrieval', async () => {
+  const manifest = validateCorpusManifest(JSON.parse(await readFile(resolve(sourceRoot, 'corpus-manifest.json'), 'utf8')));
+  const freeze = JSON.parse(await readFile(resolve(root, 'docs/work/temporal-world-v4/normative-freeze.json'), 'utf8'));
+  const document = manifest.documents.find((item) => item.document_id === 'temporal-world-and-interruptible-activities');
+  assert.equal(document?.status, 'active');
+  assert.equal(freeze.status, 'active_after_final_acceptance');
+
+  const reader = createKnowledgeRagReader({
+    storage: createFileSystemKnowledgeSourceStorage({ sourceRoot, generatedRoot })
+  });
+  const result = await reader.searchKnowledge({
+    query: 'exact GameTimestamp interruptible activities same-time cascades'
+  });
+  assert.ok(result.results.some((item) => item.document_id === document.document_id));
+});
+
 test('repository RAG exposes explicit baseline semantic gaps and no unacknowledged blocker', async () => {
   const storage = createFileSystemKnowledgeSourceStorage({ sourceRoot, generatedRoot });
   const status = await createKnowledgeRagReader({ storage }).getReadinessStatus();

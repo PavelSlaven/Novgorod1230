@@ -1,9 +1,9 @@
 <!-- GENERATED FILE. Sources: infra/world-base/schema.sql, infra/world-base/schema/*.sql and infra/world-base/field-descriptions.js. Run `npm run world-db:schema-doc`; do not edit manually. -->
 # Справочник схемы `world_base`
 
-- Исполняемый источник: `infra/world-base/schema.sql` и 17 упорядоченных SQL-частей.
-- SHA-256 развёрнутого DDL: `8e4bbb7d1128ad560a16e84a61736ae21c79245314c6866b240bd252037e51d2`.
-- Таблиц: 186.
+- Исполняемый источник: `infra/world-base/schema.sql` и 18 упорядоченных SQL-частей.
+- SHA-256 развёрнутого DDL: `6e60005176cd22816887f3c82e1de866ba627728b673a8b3cb7667fd41906d4e`.
+- Таблиц: 190.
 - Описания берутся только из утверждённого `infra/world-base/field-descriptions.js`; отсутствие описания не заполняется эвристикой.
 
 ## Граф (каноническая карта)
@@ -4391,6 +4391,88 @@ Digests, counts и dependency order таблиц одного импорта.
 **Ограничения таблицы:**
 
 - `PRIMARY KEY (import_id, table_name)`
+
+## Temporal World v4: утверждённые авторские данные
+
+### `world_base.temporal_source_history`
+
+Точные источники утверждённых Temporal World v4 записей и контрольные суммы их байтов.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `source_id` | `text` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | FK → source_records(id): подтверждающий источник. |
+| `family_id` | `text` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `status` | `text` | нет | — | — | `NOT NULL`<br>`CHECK (status = 'approved')` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `source_path` | `text` | нет | — | — | `NOT NULL`<br>`UNIQUE` | Описание отсутствует. |
+| `source_sha256` | `text` | нет | — | — | `NOT NULL`<br>`CHECK (source_sha256 ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
+| `metadata` | `jsonb` | нет | — | — | `NOT NULL`<br>`CHECK (jsonb_typeof(metadata) = 'object')` | Описание отсутствует. |
+| `canonical_digest` | `text` | нет | — | — | `NOT NULL`<br>`CHECK (canonical_digest ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
+| `created_at` | `timestamptz` | нет | `now()` | — | `NOT NULL` | Время создания записи (UTC). |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.temporal_provenance`
+
+Утверждённая трассировка происхождения каждой семьи Temporal World v4.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `provenance_id` | `text` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Описание отсутствует. |
+| `family_id` | `text` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `status` | `text` | нет | — | — | `NOT NULL`<br>`CHECK (status = 'approved')` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `source_ids` | `text[]` | нет | — | — | `NOT NULL`<br>`CHECK (cardinality(source_ids) > 0)` | Описание отсутствует. |
+| `approval` | `jsonb` | нет | — | — | `NOT NULL`<br>`CHECK (jsonb_typeof(approval) = 'object')` | Описание отсутствует. |
+| `canonical_digest` | `text` | нет | — | — | `NOT NULL`<br>`CHECK (canonical_digest ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
+| `created_at` | `timestamptz` | нет | `now()` | — | `NOT NULL` | Время создания записи (UTC). |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.temporal_authoring_records`
+
+Нормализованные утверждённые авторские записи Temporal World v4; runtime читает их без права изменения.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `record_id` | `text` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Описание отсутствует. |
+| `family_id` | `text` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `record_kind` | `text` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `record_version` | `text` | нет | — | — | `NOT NULL`<br>`CHECK (record_version ~ '^[1-9][0-9]*$')` | Описание отсутствует. |
+| `applicability` | `text[]` | нет | — | — | `NOT NULL`<br>`CHECK (cardinality(applicability) > 0)` | Описание отсутствует. |
+| `status` | `text` | нет | — | — | `NOT NULL`<br>`CHECK (status = 'approved')` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `provenance_refs` | `text[]` | нет | — | — | `NOT NULL`<br>`CHECK (cardinality(provenance_refs) > 0)` | Описание отсутствует. |
+| `normalized_reference_ids` | `text[]` | нет | — | — | `NOT NULL`<br>`CHECK (cardinality(normalized_reference_ids) > 0)` | Описание отсутствует. |
+| `source_history_refs` | `text[]` | нет | — | — | `NOT NULL`<br>`CHECK (cardinality(source_history_refs) > 0)` | Описание отсутствует. |
+| `payload` | `jsonb` | нет | — | — | `NOT NULL`<br>`CHECK (jsonb_typeof(payload) = 'object')` | Описание отсутствует. |
+| `canonical_digest` | `text` | нет | — | — | `NOT NULL`<br>`CHECK (canonical_digest ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
+| `created_at` | `timestamptz` | нет | `now()` | — | `NOT NULL` | Время создания записи (UTC). |
+
+**Ограничения таблицы:**
+
+- Явные табличные constraints отсутствуют.
+
+### `world_base.temporal_normalized_references`
+
+Физические привязки утверждённых ссылок Temporal World v4 к авторским записям.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `reference_id` | `text` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Описание отсутствует. |
+| `family_id` | `text` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `status` | `text` | нет | — | — | `NOT NULL`<br>`CHECK (status = 'approved')` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `source_record_id` | `text` | нет | — | `world_base.temporal_authoring_records(record_id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `target_table` | `text` | нет | — | — | `NOT NULL`<br>`CHECK (target_table = 'temporal_authoring_records')` | Имя таблицы цели (полиморфная ссылка, без FK в DDL). |
+| `target_record_id` | `text` | нет | — | `world_base.temporal_authoring_records(record_id) ON DELETE RESTRICT` | `NOT NULL` | id записи в target_table (полиморфная ссылка). |
+| `binding` | `jsonb` | нет | — | — | `NOT NULL`<br>`CHECK (jsonb_typeof(binding) = 'object')` | Описание отсутствует. |
+| `canonical_digest` | `text` | нет | — | — | `NOT NULL`<br>`CHECK (canonical_digest ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
+| `created_at` | `timestamptz` | нет | `now()` | — | `NOT NULL` | Время создания записи (UTC). |
+
+**Ограничения таблицы:**
+
+- `CHECK (source_record_id = target_record_id)`
 
 ## Без утверждённой группы
 

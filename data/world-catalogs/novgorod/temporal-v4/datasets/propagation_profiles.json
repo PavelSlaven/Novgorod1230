@@ -1,0 +1,83 @@
+[
+  {
+    "record_id": "record:propagation_profiles:rumor_path_v2",
+    "family_id": "propagation_profiles",
+    "record_kind": "propagation_profile",
+    "status": "approved",
+    "version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "provenance_refs": [
+      "provenance:propagation_profiles:novgorod_v1"
+    ],
+    "normalized_reference_ids": [
+      "reference:propagation_profiles:rumor_path_v2"
+    ],
+    "source_history_refs": [
+      "source:propagation_profiles:temporal_world_v4_normative",
+      "source:propagation_profiles:user_reconstruction_authorization",
+      "source:propagation_profiles:controlled_vocabularies"
+    ],
+    "payload": {
+      "propagation_profile_id": "rumor_by_approved_carrier_path_v2",
+      "process_kind_id": "rumor",
+      "process_kind_binding": {
+        "registry_id": "temporal.propagation_process_kind",
+        "registry_version": "2.0.0",
+        "registry_digest": "eae3da75a6536935b5cd0214301dc5f2b722e3cf69d43d7f4258dca06d0032c4",
+        "value_id": "rumor",
+        "source_id": "source:propagation_profiles:controlled_vocabularies"
+      },
+      "source_target_applicability": {
+        "source": "materialized actor/place with committed knowledge evidence",
+        "target": "approved neighboring actor/place reachable by an approved communication carrier/path",
+        "same_subject": "forbidden"
+      },
+      "path_or_neighbor_rule": "only a pinned approved graph edge or route whose applicability permits the carrier and rumor process",
+      "exact_timing_rule": {
+        "formula": "sum exact RationalMinutes traversal and transfer durations of the bound carrier path",
+        "per_edge_fixed_default": "forbidden",
+        "missing_path_or_duration": "propagation_rule_gap",
+        "same_time_order": "stable path-step id"
+      },
+      "effect_rule_refs": [
+        {
+          "entity_ref": {
+            "entity_kind": "propagation_effect",
+            "entity_id": "add_candidate_knowledge_after_exact_arrival_v1"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:propagation_profiles:temporal_world_v4_normative",
+            "source:propagation_profiles:user_reconstruction_authorization",
+            "source:propagation_profiles:controlled_vocabularies"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        }
+      ],
+      "effect_rule_definition": {
+        "effect_id": "add_candidate_knowledge_after_exact_arrival_v1",
+        "preconditions": [
+          "exact arrival committed",
+          "recipient perception/communication validation succeeds"
+        ],
+        "result": "candidate knowledge record with rumor status; never verified fact by default"
+      },
+      "termination_and_replacement_rules": [
+        "terminate when no unvisited approved neighbor remains",
+        "terminate at a pinned maximum lifetime if the process profile supplies one",
+        "replace only through an explicit stronger process instance with a distinct idempotency identity",
+        "missing termination basis is propagation_rule_gap"
+      ],
+      "visibility_and_knowledge_rules": [
+        "knowledge is added only after exact arrival and domain validation",
+        "no omniscient player disclosure",
+        "rumor content remains distinct from verified fact status",
+        "distortion requires a separate approved rule"
+      ]
+    }
+  }
+]

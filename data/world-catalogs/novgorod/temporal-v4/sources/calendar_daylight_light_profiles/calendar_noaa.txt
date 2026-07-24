@@ -1,0 +1,10 @@
+Source: NOAA Global Monitoring Laboratory, Solar Calculation Details
+URL: https://gml.noaa.gov/grad/solcalc/calcdetails.html
+Retrieved: 2026-07-24
+Issuing body: National Oceanic and Atmospheric Administration
+Evidence role: daylight calculation method
+
+Short exact excerpt:
+“based on equations from Astronomical Algorithms, by Jean Meeus”
+
+Source-derived note: NOAA states approximately one-minute theoretical accuracy for locations within 72 degrees latitude, while actual atmospheric conditions may shift observed values. The package uses the method only at authoring time and stores whole-minute lookup data; runtime floating-point astronomy and rounding are forbidden.

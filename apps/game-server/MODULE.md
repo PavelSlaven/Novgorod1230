@@ -2,47 +2,31 @@
 
 ## Назначение
 
-Composition root, production infrastructure adapters и HTTP boundary модульной игры. Пакет связывает публичные APIs, но не содержит игровых правил.
+Production composition root and the only physical PostgreSQL transaction owner. It binds domain public APIs to HTTP, verified knowledge/runtime catalog, read-only world-base and `party_runtime` adapters; it owns persisted presentation delivery state, not its domain projection rules.
 
 ## Владеет
 
-- versioned HTTP routes `/api/v1/*`;
-- static delivery `@rus/game-web`;
-- builtin production composition;
-- PostgreSQL pool/normalized v2 session/delivery/Stage 25/first-entry repository adapters;
-- provider role-runner adapter;
-- startup probes и применение полного `schemas/party-db/001_party_runtime.sql`;
-- feature-flag bootstrap.
-
-## Spatial v3 target boundary
-
-P08 records `@rus/game-server` only as the future composition owner. It must not duplicate route, endpoint or materialization logic, import target stubs into production composition, or activate them before P28.
+- Владеет production composition, HTTP `/api/v1/*`, pool/probe/migrations, physical `party_runtime` transaction/Stage 25/combined atomic commit adapters, session/delivery stores and `createTemporalPresentationPostgresStore`.
 
 ## Не владеет
 
-- выбором мира, персонажей, предметов, причин или последствий;
-- prompts и semantic repair policy;
-- созданием write plan;
-- UI read models;
-- domain formulas.
+Не владеет temporal/body/movement/visibility formulae, route or endpoint logic, write-plan construction, materialization semantics, LLM prompts/repair policy, narration prose, UI read-model rules or world-base writes.
 
-## Public API
+## Public API и контракты
 
-Основной entrypoint экспортирует composition, HTTP и generic adapters. Production infrastructure доступна через `@rus/game-server/production`, включая `createPostgresPartyStore` для атомарного first-entry materialization.
+- `.` exports composition roots, adapters, HTTP server/handler/static resolver and startup config validation.
+- `./production` exports production composition, PostgreSQL pools/probes/migrations, party/session/delivery/world-base/Stage 25 adapters and provider runner.
+- Target infrastructure factories `createSpatialV3CombinedAtomicCommitter` and
+  `createTemporalPresentationPostgresStore` remain server-owned adapters; they
+  accept only validated sealed plans/explicit pool transactions and are not
+  domain decision APIs.
 
-## Инварианты
+Infrastructure inputs are explicit pool/config/binding/plan DTO and transactional callbacks; output is a committed physical result, HTTP envelope or typed server/infrastructure error. SQL targets are explicitly `party_runtime`; world-base adapter is read-only. Temporal presentation persistence stores package/pending-delivery lifecycle separately from narrator output, atomically with factual write when required by the combined plan.
 
-- SQL и `pg` находятся только в `src/infrastructure/postgres`;
-- world-base adapter read-only;
-- Stage 25 исполняет только approved physical plan;
-- SQL physical targets явно квалифицируются схемой `party_runtime`;
-- first-entry repository берёт advisory transaction lock по `(party_id,g4_id)` до проверки baseline;
-- legacy `game_sessions` не создаётся и не читается production runtime;
-- runtime bindings обязательны и не имеют deterministic fallback;
-- HTTP route вызывает только composition root;
-- public response проходит hidden-leak gate;
-- party runtime с `schema_version != 2` отклоняется.
+## Ошибки, зависимости и effects
 
-## Knowledge-source binding
+Uses `pg` only under `src/infrastructure/postgres`; `GameServerError`/server error envelopes, startup probes and adapter failures are explicit. This is the persistence and external-I/O boundary: owns pool/transaction/HTTP/provider calls and rejects invalid schema, hidden public payload, stale knowledge artifacts and unqualified targets. No deterministic runtime fallback is allowed.
 
-Production composition creates a verified `KnowledgeSourceReader` from explicit source/generated roots and passes it to runtime bindings as `ports.knowledgeSource`. Startup is fail-closed for damaged corpus or stale generated artifacts.
+## Target / P28 и тесты
+
+Spatial/Temporal `temporal-world-v1` / `4.3.0-target.1` composition is shadow/target only before atomic P28; production v2 remains sole owner and no target stub is imported into production composition. `test/game-server.test.js`, `party-store-runtime-catalog.test.js`, `runtime-catalog-boundary.test.js`, `test/spatial-v3/p16-committer-postgres.test.js`, `temporal-world-postgres.test.js` and `presentation-store.test.js` cover composition, atomic transaction/lock/idempotency, exact persistence and the leased post-commit presentation lifecycle.

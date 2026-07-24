@@ -1,0 +1,186 @@
+[
+  {
+    "record_id": "record:carrier_synchronization_rescue_recovery_policies:carrier_root_clock_v2",
+    "family_id": "carrier_synchronization_rescue_recovery_policies",
+    "record_kind": "carrier_synchronization_policy",
+    "status": "approved",
+    "version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "provenance_refs": [
+      "provenance:carrier_synchronization_rescue_recovery_policies:novgorod_v1"
+    ],
+    "normalized_reference_ids": [
+      "reference:carrier_synchronization_rescue_recovery_policies:carrier_root_clock_v2"
+    ],
+    "source_history_refs": [
+      "source:carrier_synchronization_rescue_recovery_policies:activity_reconstruction_decisions",
+      "source:carrier_synchronization_rescue_recovery_policies:temporal_world_v4_normative",
+      "source:carrier_synchronization_rescue_recovery_policies:user_reconstruction_authorization"
+    ],
+    "payload": {
+      "carrier_policy_id": "carrier_root_clock_transition_bound_v2",
+      "carrier_kind_and_applicability": [
+        {
+          "carrier_kind_id": "boat",
+          "requires": "approved carrier profile with exact capacity/access/route bindings",
+          "carrier_kind_ref": {
+            "entity_ref": {
+              "entity_kind": "carrier_kind",
+              "entity_id": "boat"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:carrier_synchronization_rescue_recovery_policies:activity_reconstruction_decisions",
+              "source:carrier_synchronization_rescue_recovery_policies:temporal_world_v4_normative",
+              "source:carrier_synchronization_rescue_recovery_policies:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        },
+        {
+          "carrier_kind_id": "cart",
+          "requires": "approved carrier profile with exact capacity/access/route bindings",
+          "carrier_kind_ref": {
+            "entity_ref": {
+              "entity_kind": "carrier_kind",
+              "entity_id": "cart"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:carrier_synchronization_rescue_recovery_policies:activity_reconstruction_decisions",
+              "source:carrier_synchronization_rescue_recovery_policies:temporal_world_v4_normative",
+              "source:carrier_synchronization_rescue_recovery_policies:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        },
+        {
+          "carrier_kind_id": "sledge",
+          "requires": "approved carrier profile with exact capacity/access/route bindings",
+          "carrier_kind_ref": {
+            "entity_ref": {
+              "entity_kind": "carrier_kind",
+              "entity_id": "sledge"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:carrier_synchronization_rescue_recovery_policies:activity_reconstruction_decisions",
+              "source:carrier_synchronization_rescue_recovery_policies:temporal_world_v4_normative",
+              "source:carrier_synchronization_rescue_recovery_policies:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        },
+        {
+          "carrier_kind_id": "mounted_group",
+          "requires": "approved carrier profile with exact capacity/access/route bindings",
+          "carrier_kind_ref": {
+            "entity_ref": {
+              "entity_kind": "carrier_kind",
+              "entity_id": "mounted_group"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:carrier_synchronization_rescue_recovery_policies:activity_reconstruction_decisions",
+              "source:carrier_synchronization_rescue_recovery_policies:temporal_world_v4_normative",
+              "source:carrier_synchronization_rescue_recovery_policies:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        }
+      ],
+      "root_clock_ownership_rule": "one attached carrier synchronization execution owns the single root clock update for the slice; attached subjects never advance it independently",
+      "synchronized_slice_rule": "all attached subjects receive the identical exact (start,end] slice and commit atomically with the carrier outcome",
+      "attachment_and_capacity_constraints": [
+        "one active carrier attachment per subject",
+        "capacity only from pinned approved carrier profile",
+        "attach/detach require exact co-location and approved transition",
+        "silent replacement or over-capacity attachment forbidden"
+      ],
+      "rescue_transition_templates": [
+        {
+          "template_id": "wait_for_assistance",
+          "activity_profile_ref": {
+            "entity_ref": {
+              "entity_kind": "activity_profile",
+              "entity_id": "activity_wait_exact_v2"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          "requires": [
+            "safe stranded state",
+            "positive exact wait duration"
+          ],
+          "completion": "ends only at selected exact boundary or interruption; does not itself create rescue"
+        },
+        {
+          "template_id": "transfer_to_replacement_carrier_stable_10m",
+          "activity_profile_ref": {
+            "entity_ref": {
+              "entity_kind": "activity_profile",
+              "entity_id": "activity_carrier_transfer_stable_colocated_10m_v1"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          "requires": [
+            "approved replacement carrier",
+            "exact co-location",
+            "capacity/access valid",
+            "stable footing",
+            "no emergency"
+          ],
+          "duration": {
+            "numerator": "10",
+            "denominator": "1"
+          },
+          "outside_scope": "spatial_candidate_gap"
+        }
+      ],
+      "recovery_and_handoff_rules": [
+        "handoff preserves exact timestamp, location, attachments and committed progress",
+        "replacement carrier becomes sole clock owner only after atomic transition commit",
+        "failed transition leaves prior factual state unchanged",
+        "all participant/body/resource changes share the root slice"
+      ],
+      "stranded_behavior": [
+        "remain at exact last valid location",
+        "world processes and body effects continue through approved boundaries",
+        "no automatic movement or rescue"
+      ],
+      "no_teleport_invariants": [
+        "location changes only through approved traversal or co-located transfer",
+        "rescue cannot bypass route/access/capacity/body constraints",
+        "missing applicable transition profile is spatial_candidate_gap",
+        "attached subject never owns a second clock or world location"
+      ]
+    }
+  }
+]

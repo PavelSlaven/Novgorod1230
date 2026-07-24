@@ -1,0 +1,29 @@
+{
+  "schema": "rus.temporal-world-v4.external-auditor-family-decision.v1",
+  "version": 1,
+  "family_id": "propagation_profiles",
+  "verdict": "approved",
+  "approved_record_ids": [
+    "record:propagation_profiles:rumor_path_v2"
+  ],
+  "source_ids_reviewed": [
+    "source:propagation_profiles:temporal_world_v4_normative",
+    "source:propagation_profiles:user_reconstruction_authorization",
+    "source:propagation_profiles:controlled_vocabularies"
+  ],
+  "applicability": [
+    "novgorod"
+  ],
+  "data_gaps": [],
+  "auditor": {
+    "name": "OpenAI GPT-5.6 Thinking",
+    "organization_or_role": "independent external data authoring auditor"
+  },
+  "decision_id": "decision:propagation_profiles:2026-07-24-reaudit-2",
+  "decided_at": "2026-07-24T17:45:00+03:00",
+  "method": "independent source, contract, controlled-vocabulary, exactness, closure, historical-labeling and no-fallback audit",
+  "rationale": "A finite approved rumor profile uses the controlled process kind, exact bound carrier-path timing, source/target applicability, a source-bound knowledge effect, deterministic termination and strict separation between factual events and rumor knowledge.",
+  "limitations": [
+    "Approval covers authoring data only; physical DDL binding, importer implementation, PostgreSQL integration, runtime tests and P28 remain developer-owned."
+  ]
+}

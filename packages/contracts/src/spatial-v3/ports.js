@@ -16,7 +16,7 @@ export function createSpatialV3PortUnavailableResult(port_name) {
   const pins = Object.freeze([Object.freeze({
     dependency_role: 'source_authoring',
     entity_ref: subject_ref,
-    version_pin: Object.freeze({ pin_kind: 'authoring_version', authoring_version: '4.2.0-target.1' })
+    version_pin: Object.freeze({ pin_kind: 'authoring_version', authoring_version: '4.3.0-target.1' })
   })]);
   const dependency_pins = Object.freeze({
     pins,

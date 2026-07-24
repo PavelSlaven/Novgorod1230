@@ -63,25 +63,68 @@ function domainSnapshot() {
   ], npc_schedules: [{ npc_ref: npc, active: true, current_endpoint_ref: { endpoint_kind: 'scene_position', endpoint_id: 'p1' }, schedule_profile_ref: { entity_ref: ref('schedule_profile', 'watch'), authoring_version: 'r1' }, dependency_pins: pins, causal_state_ref: { entity_ref: ref('npc_causal_state', 'watch') } }], active_route_endpoint_ids: ['p1'], carrier: { transport_ref: transport, approved_attached_scene_template_ref: { entity_ref: ref('transport_template', 'boat-cabin'), authoring_version: 'r1' }, bound_attached_g6: { id: 'cabin', template_ref: { entity_id: 'boat-cabin', authoring_version: 'r1' } }, active_attachment_chain: [{ subject_ref: actor, carrier_ref: transport }], actor_carrier_position: { actor_ref: actor, root_carrier_ref: transport } } };
 }
 function mutation(overrides = {}) { const request = { party_id: 'party', idempotency_key: 'p23-idem', expected_state_versions: [{ resource: 'entity_placements', id: 'npc:guard', state_version: 1 }], domain_mutation: { entity_kind: 'npc', entity_id: 'guard', placement_kind: 'scene_position', position_node_id: 'p1', capacity_units: 1 }, ...overrides }; return { ...request, canonical_digest: computeSpatialV3CanonicalDigest(request) }; }
+function visibleEnvelope(request) {
+  const changeSetId = `p23:${request.party_id}:${request.canonical_digest}`;
+  const visiblePayload = {
+    schema: 'temporal_visible_package.v1',
+    perceived_scene: 'Положение зафиксировано.',
+    perceived_changes: ['Положение сущности изменено.'],
+    sensory_details: [],
+    visible_npcs: [],
+    visible_objects: [],
+    known_context: [],
+    uncertainties: [],
+    hypotheses: [],
+    player_safe_interruption: null,
+    allowed_action_affordances: []
+  };
+  const dependencyPins = [{
+    dependency_role: 'source_authoring',
+    entity_ref: { entity_kind: 'world_revision', entity_id: 'temporal-v4' },
+    version_pin: { pin_kind: 'authoring_version', authoring_version: '4.3.0-target.1', state_version: null }
+  }];
+  return {
+    package_id: `visible:${changeSetId}`,
+    party_id: request.party_id,
+    turn_id: `p23:${request.idempotency_key}`,
+    committed_state_version: String(request.expected_state_versions[0].state_version + 1),
+    change_set_id: changeSetId,
+    package_digest: computeSpatialV3CanonicalDigest(visiblePayload),
+    visible_payload: visiblePayload,
+    presentation_status: 'pending',
+    projection_policy_ref: {
+      entity_ref: { entity_kind: 'visibility_modifier', entity_id: 'projection-v1' },
+      authoring_version: '4.3.0-target.1'
+    },
+    dependency_pins: {
+      pins: dependencyPins,
+      canonical_digest: computeSpatialV3CanonicalDigest(dependencyPins).replace('sha256:', '')
+    },
+    idempotency_record_id: `p23-idem:${request.party_id}:${request.idempotency_key}`
+  };
+}
+const commit = (service, request) => service.commit(request, {
+  visible_package_envelope: visibleEnvelope(request)
+});
 
 test('P23 mutation protocol locks exact snapshot, retries only identical input and commits one atomic effect', async () => {
   const calls = []; let committed = false; const repository = { loadSnapshot: async () => { calls.push(['load']); return domainSnapshot(); }, recheck: async () => { calls.push(['recheck']); return { ok: true, snapshot: domainSnapshot() }; } };
   const committer = { commit: async ({ plan, recheck }) => { calls.push(['committer', plan.schema]); if (committed) return { ok: true, replay: true, change_set_id: 'cs' }; for (const check of plan.commit_rechecks) assert.equal((await recheck({ transaction: {}, check, plan })).ok, true); committed = true; return { ok: true, replay: false, change_set_id: 'cs' }; } };
   const service = createSpatialV3DomainMutationService({ repository, committer, verifyApproval: async () => ({ ok: true }) }); const request = mutation();
-  assert.equal((await service.commit(request)).ok, true); assert.equal((await service.commit(structuredClone(request))).replay, true); assert.deepEqual(calls.map(([kind]) => kind), ['load', 'committer', 'recheck', 'recheck', 'recheck', 'recheck', 'recheck', 'recheck', 'recheck', 'recheck', 'load', 'committer']);
-  assert.equal((await service.commit({ ...request, expected_state_versions: [{ resource: 'entity_placements', id: 'npc:guard', state_version: 2 }] })).error.code, 'generated_schema_mismatch');
+  assert.equal((await commit(service, request)).ok, true); assert.equal((await commit(service, structuredClone(request))).replay, true); assert.deepEqual(calls.map(([kind]) => kind), ['load', 'committer', 'recheck', 'recheck', 'recheck', 'recheck', 'recheck', 'recheck', 'recheck', 'recheck', 'load', 'committer']);
+  assert.equal((await commit(service, { ...request, expected_state_versions: [{ resource: 'entity_placements', id: 'npc:guard', state_version: 2 }] })).error.code, 'generated_schema_mismatch');
 });
 
 test('P23 adversarial persisted snapshot checks schedule, ownership capacity, carrier binding and root time identity', async () => {
   const committer = { commit: async ({ recheck }) => recheck({ transaction: {} }) };
   const repo = (snapshot) => ({ loadSnapshot: async () => snapshot, recheck: async () => ({ ok: true, snapshot }) });
   const badSchedule = domainSnapshot(); badSchedule.npc_schedules[0].current_endpoint_ref.endpoint_id = 'wrong';
-  assert.equal((await createSpatialV3DomainMutationService({ repository: repo(badSchedule), committer, verifyApproval: async () => ({ ok: true }) }).commit(mutation())).ok, false);
+  assert.equal((await commit(createSpatialV3DomainMutationService({ repository: repo(badSchedule), committer, verifyApproval: async () => ({ ok: true }) }), mutation())).ok, false);
   const badCarrier = domainSnapshot(); badCarrier.carrier.bound_attached_g6.template_ref.authoring_version = 'other';
-  assert.equal((await createSpatialV3DomainMutationService({ repository: repo(badCarrier), committer, verifyApproval: async () => ({ ok: true }) }).commit(mutation())).error.code, 'journey_location_ownership_mismatch');
+  assert.equal((await commit(createSpatialV3DomainMutationService({ repository: repo(badCarrier), committer, verifyApproval: async () => ({ ok: true }) }), mutation())).error.code, 'journey_location_ownership_mismatch');
   const badSlice = domainSnapshot(); badSlice.synchronized_slice = { root_execution_id: 'root', root_travel_state_id: 'travel', root_execution_state_version: 1, root_travel_state_version: 1, canonical_digest: 'slice' };
   const request = mutation({ carrier_local: { root_execution_id: 'root', root_travel_state_id: 'travel', root_execution_state_version: 1, root_travel_state_version: 1, slice_digest: 'forged' } });
-  assert.equal((await createSpatialV3DomainMutationService({ repository: repo(badSlice), committer, verifyApproval: async () => ({ ok: true }) }).commit(request)).ok, false);
+  assert.equal((await commit(createSpatialV3DomainMutationService({ repository: repo(badSlice), committer, verifyApproval: async () => ({ ok: true }) }), request)).ok, false);
 });
 
 test('P23 fails closed without an injected approval verifier', () => {
@@ -92,6 +135,19 @@ test('P23 approval rejection fails before the committer receives a plan', async 
   let committed = false;
   const repository = { loadSnapshot: async () => domainSnapshot(), recheck: async () => ({ ok: true, snapshot: domainSnapshot() }) };
   const service = createSpatialV3DomainMutationService({ repository, committer: { commit: async () => { committed = true; return { ok: true }; } }, verifyApproval: async () => ({ ok: false }) });
-  assert.equal((await service.commit(mutation())).error.code, 'generated_schema_mismatch');
+  assert.equal((await commit(service, mutation())).error.code, 'generated_schema_mismatch');
+  assert.equal(committed, false);
+});
+
+test('P23 rejects a semantic mutation before approval and commit when its visible package is absent', async () => {
+  let approved = false; let committed = false;
+  const repository = { loadSnapshot: async () => domainSnapshot(), recheck: async () => ({ ok: true, snapshot: domainSnapshot() }) };
+  const service = createSpatialV3DomainMutationService({
+    repository,
+    committer: { commit: async () => { committed = true; return { ok: true }; } },
+    verifyApproval: async () => { approved = true; return { ok: true }; }
+  });
+  assert.equal((await service.commit(mutation())).error.code, 'visible_package_persistence_gap');
+  assert.equal(approved, false);
   assert.equal(committed, false);
 });

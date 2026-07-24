@@ -1,0 +1,45 @@
+{
+  "schema": "rus.temporal-world-v4.data-family-approval.v1",
+  "version": 1,
+  "family_id": "exact_event_profiles",
+  "status": "approved",
+  "record_version": "1",
+  "applicability": [
+    "novgorod"
+  ],
+  "record_ids": [
+    "record:exact_event_profiles:one_shot_exact_due_v2"
+  ],
+  "data_gaps": [],
+  "external_audit_decision": {
+    "path": "docs/work/temporal-world-v4/external-data-audit/decisions/exact_event_profiles.decision.json",
+    "sha256": "1c7989e81f1341e6b1f69bf36549bf0c2dde46e27d51caa2c2beada39e753423",
+    "decision_id": "decision:exact_event_profiles:2026-07-24-reaudit-2"
+  },
+  "artifacts": {
+    "dataset": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/datasets/exact_event_profiles.json",
+      "sha256": "65e543194a99e95ac88709508e69457f66bb117b370cf2fda99248a703815f26"
+    },
+    "provenance": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/source-approval/exact_event_profiles.provenance.json",
+      "sha256": "0eddb1ccc7f0873fd4f59e63e230d5e2fd240b61fd02385254843338eabaad3f"
+    },
+    "normalized_references": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/datasets/exact_event_profiles.references.json",
+      "sha256": "1e76765d4bbb52500655e766e2f3cb711a84ddf66d08fb7baa3c2a15b00101f5"
+    },
+    "source_history": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/source-approval/exact_event_profiles.sources.json",
+      "sha256": "ff5bbb636e4d204f155f760a33e08c63399bb0f29229c408faa74025c7f1e84f"
+    },
+    "deterministic_import": {
+      "path": "tools/temporal-v4/import-approved-data.mjs",
+      "sha256": "c566a47c1a49fa18f26ffc1a744dbeb9348d6dadb42430b6f462f73c867c2ba5"
+    },
+    "generated_schema": {
+      "path": "infra/world-base/SCHEMA_REFERENCE.md",
+      "sha256": "2033c4c5a8ddd50e8fb5f8fab159710bb28c6d8a9c3cee72d5fda464de171091"
+    }
+  }
+}

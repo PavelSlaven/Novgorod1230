@@ -2,43 +2,24 @@
 
 ## Назначение
 
-Security boundary for visible context, hidden state, character knowledge, memory facts and safe narrator packages. Код модуля работает только с переданными данными и не создаёт смысловые сущности мира.
+Pure player-safety projection boundary: validates and constructs narrator-safe visible data and validates/merges knowledge-memory facts. В temporal flow вызывается только from committed factual state/change set, never as a source of facts or a pre-commit persistence substitute.
 
 ## Владеет
 
-- visible-context validation
-- hidden leak detection and stripping
-- knowledge and memory fact contracts
-- safe narrator package
+- Владеет visible package allow-list, hidden-leak detection/stripping, memory/knowledge validation and deterministic merge, safe narrator package.
 
-## Не делает
+## Не владеет
 
-- writing prose
-- deciding objective truth
-- database access or UI rendering
+Не владеет objective truth, perception calculation, time/body/movement rules, narration, UI rendering, DB reads/writes, commit or presentation delivery.
 
-## Public API
+## Public API и контракты
 
-- `VISIBLE_PACKAGE_KEYS`
-- `detectHiddenLeaks`
-- `stripHiddenForNarrator`
-- `validateVisibleContext`
-- `mergeKnowledgeFacts`
-- `validateMemoryFact`
-- `buildSafeNarratorPackage`
+`VISIBLE_PACKAGE_KEYS`, `detectHiddenLeaks`, `stripHiddenForNarrator`, `validateVisibleContext`, `mergeKnowledgeFacts`, `validateMemoryFact`, `buildSafeNarratorPackage`. Inputs are plain closed data; visible context requires version `1`, schema `visible_context_package`, `visible_scene` and only allowed keys. Outputs are frozen sanitized package, validation `{ ok, errors }`, leak paths or merged facts. The Temporal caller supplies the persisted `visible_package_persistence_envelope` only after factual commit; this module never reads an uncommitted state snapshot as presentation truth.
 
-## Контракты и инварианты
+## Ошибки, зависимости и effects
 
-Входы являются plain-object/array значениями. Функции нормализации не придумывают отсутствующие ID, имена, предметы, причины или последствия. Выходы, которые предназначены для handoff, замораживаются. Нарушения структуры возвращаются как `{ ok, errors }` либо выбрасываются только для неверно подключённого технического порта.
+Invalid package/fact is reported in result errors (including hidden-leak paths); this module does not silently grant knowledge or infer missing fields. Depends only on `@rus/kernel`; has no I/O, DB, LLM, persistence or UI side effects.
 
-## Зависимости
+## Target / P28 и тесты
 
-Разрешён только `@rus/kernel`. Запрещены импорты из `apps`, `legacy`, UI, БД, конкретного LLM provider и соседних workflow stages.
-
-## Ошибки
-
-Структурные ошибки возвращаются списком. Ошибки обязательных технических портов (`RandomSource`) являются `TypeError`/`RangeError`.
-
-## Совместимость и тесты
-
-Модуль сохраняет подтверждённые чистые формулы legacy там, где они существовали, но не импортирует legacy runtime. Unit/contract tests находятся в `test/domain.test.js`. Cutover выполняется отдельно после shadow run.
+Temporal visible-package persistence is target `temporal-world-v1`/`4.3.0-target.1`: factual commit and pending presentation status are owned by game-server transaction; this package only projects after commit. It neither activates target nor dual-writes before P28. `test/domain.test.js` covers allow-list, leak stripping/detection, safe-package and memory contracts.

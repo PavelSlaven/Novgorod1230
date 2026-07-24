@@ -1,0 +1,116 @@
+[
+  {
+    "reference_id": "reference:activity_categories_profiles:wait_exact_v2",
+    "status": "approved",
+    "table": "temporal_authoring_records",
+    "record_id": "record:activity_categories_profiles:wait_exact_v2",
+    "source_record_key": "record:activity_categories_profiles:wait_exact_v2",
+    "logical_record_id": "wait",
+    "authoring_version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "source_ids": [
+      "source:activity_categories_profiles:activity_reconstruction_decisions",
+      "source:activity_categories_profiles:controlled_vocabularies",
+      "source:activity_categories_profiles:temporal_world_v4_normative",
+      "source:activity_categories_profiles:user_reconstruction_authorization"
+    ],
+    "binding_notes": "Bound to world_base.temporal_authoring_records by the approved Temporal v4 importer."
+  },
+  {
+    "reference_id": "reference:activity_categories_profiles:sleep_bounded_v1",
+    "status": "approved",
+    "table": "temporal_authoring_records",
+    "record_id": "record:activity_categories_profiles:sleep_bounded_v1",
+    "source_record_key": "record:activity_categories_profiles:sleep_bounded_v1",
+    "logical_record_id": "sleep",
+    "authoring_version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "source_ids": [
+      "source:activity_categories_profiles:activity_reconstruction_decisions",
+      "source:activity_categories_profiles:controlled_vocabularies",
+      "source:activity_categories_profiles:temporal_world_v4_normative",
+      "source:activity_categories_profiles:user_reconstruction_authorization"
+    ],
+    "binding_notes": "Bound to world_base.temporal_authoring_records by the approved Temporal v4 importer."
+  },
+  {
+    "reference_id": "reference:activity_categories_profiles:manual_labor_segment_v1",
+    "status": "approved",
+    "table": "temporal_authoring_records",
+    "record_id": "record:activity_categories_profiles:manual_labor_segment_v1",
+    "source_record_key": "record:activity_categories_profiles:manual_labor_segment_v1",
+    "logical_record_id": "manual_labor",
+    "authoring_version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "source_ids": [
+      "source:activity_categories_profiles:activity_reconstruction_decisions",
+      "source:activity_categories_profiles:controlled_vocabularies",
+      "source:activity_categories_profiles:temporal_world_v4_normative",
+      "source:activity_categories_profiles:user_reconstruction_authorization"
+    ],
+    "binding_notes": "Bound to world_base.temporal_authoring_records by the approved Temporal v4 importer."
+  },
+  {
+    "reference_id": "reference:activity_categories_profiles:sacred_reading_segment_v1",
+    "status": "approved",
+    "table": "temporal_authoring_records",
+    "record_id": "record:activity_categories_profiles:sacred_reading_segment_v1",
+    "source_record_key": "record:activity_categories_profiles:sacred_reading_segment_v1",
+    "logical_record_id": "sacred_reading_or_recitation",
+    "authoring_version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "source_ids": [
+      "source:activity_categories_profiles:activity_reconstruction_decisions",
+      "source:activity_categories_profiles:controlled_vocabularies",
+      "source:activity_categories_profiles:temporal_world_v4_normative",
+      "source:activity_categories_profiles:user_reconstruction_authorization"
+    ],
+    "binding_notes": "Bound to world_base.temporal_authoring_records by the approved Temporal v4 importer."
+  },
+  {
+    "reference_id": "reference:activity_categories_profiles:meal_quiet_rest_segment_v1",
+    "status": "approved",
+    "table": "temporal_authoring_records",
+    "record_id": "record:activity_categories_profiles:meal_quiet_rest_segment_v1",
+    "source_record_key": "record:activity_categories_profiles:meal_quiet_rest_segment_v1",
+    "logical_record_id": "meal_and_quiet_rest",
+    "authoring_version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "source_ids": [
+      "source:activity_categories_profiles:activity_reconstruction_decisions",
+      "source:activity_categories_profiles:controlled_vocabularies",
+      "source:activity_categories_profiles:temporal_world_v4_normative",
+      "source:activity_categories_profiles:user_reconstruction_authorization"
+    ],
+    "binding_notes": "Bound to world_base.temporal_authoring_records by the approved Temporal v4 importer."
+  },
+  {
+    "reference_id": "reference:activity_categories_profiles:carrier_transfer_10m_v1",
+    "status": "approved",
+    "table": "temporal_authoring_records",
+    "record_id": "record:activity_categories_profiles:carrier_transfer_10m_v1",
+    "source_record_key": "record:activity_categories_profiles:carrier_transfer_10m_v1",
+    "logical_record_id": "carrier_transfer",
+    "authoring_version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "source_ids": [
+      "source:activity_categories_profiles:activity_reconstruction_decisions",
+      "source:activity_categories_profiles:controlled_vocabularies",
+      "source:activity_categories_profiles:temporal_world_v4_normative",
+      "source:activity_categories_profiles:user_reconstruction_authorization"
+    ],
+    "binding_notes": "Bound to world_base.temporal_authoring_records by the approved Temporal v4 importer."
+  }
+]

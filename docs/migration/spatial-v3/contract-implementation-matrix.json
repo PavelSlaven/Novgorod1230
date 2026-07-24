@@ -1,7 +1,8 @@
 {
   "schema_version": "1.0.0",
   "source_standard": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
-  "source_version": "4.2.0",
+  "source_amendment": "data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md",
+  "source_version": "4.3.0-target.1",
   "activation_status": "target",
   "contracts": [
     {
@@ -45,8 +46,38 @@
       "migration_step": "planned/P06-P25"
     },
     {
+      "contract_name": "activity_completion_model_snapshot",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
       "contract_name": "activity_contract",
       "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "activity_profile_ref",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "activity_progress_snapshot",
+      "owner_package": "@rus/contracts",
       "json_schema_or_dto": "planned/P06+",
       "ddl_table_or_value": "planned/P09+",
       "validator": "planned/P06+",
@@ -67,6 +98,16 @@
     {
       "contract_name": "boundary_crossing_contract",
       "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "calendar_profile_ref",
+      "owner_package": "@rus/contracts",
       "json_schema_or_dto": "planned/P06+",
       "ddl_table_or_value": "planned/P09+",
       "validator": "planned/P06+",
@@ -157,6 +198,16 @@
     {
       "contract_name": "dynamic_recheck_policy",
       "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "elapsed_time",
+      "owner_package": "@rus/contracts",
       "json_schema_or_dto": "planned/P06+",
       "ddl_table_or_value": "planned/P09+",
       "validator": "planned/P06+",
@@ -395,6 +446,16 @@
       "migration_step": "planned/P06-P25"
     },
     {
+      "contract_name": "game_timestamp",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
       "contract_name": "hazard_resolution",
       "owner_package": "@rus/materialization",
       "json_schema_or_dto": "planned/P06+",
@@ -437,6 +498,16 @@
     {
       "contract_name": "interruption_anchor_policy",
       "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "interruption_outcome",
+      "owner_package": "@rus/contracts",
       "json_schema_or_dto": "planned/P06+",
       "ddl_table_or_value": "planned/P09+",
       "validator": "planned/P06+",
@@ -665,8 +736,48 @@
       "migration_step": "planned/P06-P25"
     },
     {
+      "contract_name": "npc_decision_option",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "npc_decision_request",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "npc_decision_trace",
+      "owner_package": "@rus/party-store",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
       "contract_name": "orientation_reference_frame",
       "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "participant_binding",
+      "owner_package": "@rus/contracts",
       "json_schema_or_dto": "planned/P06+",
       "ddl_table_or_value": "planned/P09+",
       "validator": "planned/P06+",
@@ -906,7 +1017,7 @@
     },
     {
       "contract_name": "party_timed_activity_attempt",
-      "owner_package": "@rus/materialization",
+      "owner_package": "@rus/party-store",
       "json_schema_or_dto": "planned/P06+",
       "ddl_table_or_value": "planned/P09+",
       "validator": "planned/P06+",
@@ -967,6 +1078,16 @@
     {
       "contract_name": "path_query",
       "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "perception_result",
+      "owner_package": "@rus/party-store",
       "json_schema_or_dto": "planned/P06+",
       "ddl_table_or_value": "planned/P09+",
       "validator": "planned/P06+",
@@ -1065,8 +1186,38 @@
       "migration_step": "planned/P06-P25"
     },
     {
+      "contract_name": "propagation_process_ref",
+      "owner_package": "@rus/party-store",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
       "contract_name": "random_source_descriptor",
       "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "rational_minutes",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "rational_quantity",
+      "owner_package": "@rus/contracts",
       "json_schema_or_dto": "planned/P06+",
       "ddl_table_or_value": "planned/P09+",
       "validator": "planned/P06+",
@@ -1095,6 +1246,36 @@
       "migration_step": "planned/P06-P25"
     },
     {
+      "contract_name": "remote_aggregate_state",
+      "owner_package": "@rus/party-store",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "remote_catch_up_request",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "remote_catch_up_result",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
       "contract_name": "resolved_additive_delay",
       "owner_package": "@rus/materialization",
       "json_schema_or_dto": "planned/P06+",
@@ -1107,6 +1288,16 @@
     {
       "contract_name": "resolved_rational_factor",
       "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "resource_binding",
+      "owner_package": "@rus/contracts",
       "json_schema_or_dto": "planned/P06+",
       "ddl_table_or_value": "planned/P09+",
       "validator": "planned/P06+",
@@ -1146,7 +1337,7 @@
     },
     {
       "contract_name": "runtime_calendar_snapshot",
-      "owner_package": "@rus/materialization",
+      "owner_package": "@rus/contracts",
       "json_schema_or_dto": "planned/P06+",
       "ddl_table_or_value": "planned/P09+",
       "validator": "planned/P06+",
@@ -1386,7 +1577,87 @@
     },
     {
       "contract_name": "synchronized_time_slice_result",
-      "owner_package": "@rus/materialization",
+      "owner_package": "@rus/party-store",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "temporal_advance_request",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "temporal_advance_result",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "temporal_boundary_batch",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "temporal_boundary_candidate",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "temporal_boundary_provider_input",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "temporal_resolution_policy_ref",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "time_slice_plan",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "time_slice_result",
+      "owner_package": "@rus/party-store",
       "json_schema_or_dto": "planned/P06+",
       "ddl_table_or_value": "planned/P09+",
       "validator": "planned/P06+",
@@ -1396,7 +1667,7 @@
     },
     {
       "contract_name": "timed_activity_static_snapshot",
-      "owner_package": "@rus/materialization",
+      "owner_package": "@rus/contracts",
       "json_schema_or_dto": "planned/P06+",
       "ddl_table_or_value": "planned/P09+",
       "validator": "planned/P06+",
@@ -1497,6 +1768,16 @@
     {
       "contract_name": "visibility_modifier",
       "owner_package": "@rus/space-map",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "visible_package_persistence_envelope",
+      "owner_package": "@rus/party-store",
       "json_schema_or_dto": "planned/P06+",
       "ddl_table_or_value": "planned/P09+",
       "validator": "planned/P06+",
@@ -1607,7 +1888,39 @@
   ],
   "errors": [
     {
+      "error_code": "activity_policy_gap",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "activity_precondition_stale",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "activity_profile_gap",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
       "error_code": "activity_retry_lineage_invalid",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "activity_transition_invalid",
       "owner_package": "@rus/contracts",
       "json_schema_or_dto": "planned/P06+",
       "validator": "planned/P06+",
@@ -1703,6 +2016,22 @@
       "migration_step": "planned/P06-P25"
     },
     {
+      "error_code": "event_effect_gap",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "event_rule_gap",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
       "error_code": "expansion_capacity_temporarily_reserved",
       "owner_package": "@rus/contracts",
       "json_schema_or_dto": "planned/P06+",
@@ -1728,6 +2057,14 @@
     },
     {
       "error_code": "hidden_information_leak",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "historical_phase_rule_gap",
       "owner_package": "@rus/contracts",
       "json_schema_or_dto": "planned/P06+",
       "validator": "planned/P06+",
@@ -1847,6 +2184,22 @@
       "migration_step": "planned/P06-P25"
     },
     {
+      "error_code": "npc_decision_policy_gap",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "npc_schedule_gap",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
       "error_code": "orientation_frame_cycle",
       "owner_package": "@rus/contracts",
       "json_schema_or_dto": "planned/P06+",
@@ -1856,6 +2209,14 @@
     },
     {
       "error_code": "orientation_profile_invalid",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "perception_policy_gap",
       "owner_package": "@rus/contracts",
       "json_schema_or_dto": "planned/P06+",
       "validator": "planned/P06+",
@@ -1879,7 +2240,23 @@
       "migration_step": "planned/P06-P25"
     },
     {
+      "error_code": "propagation_rule_gap",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
       "error_code": "relation_capacity_undefined",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "remote_catch_up_rule_gap",
       "owner_package": "@rus/contracts",
       "json_schema_or_dto": "planned/P06+",
       "validator": "planned/P06+",
@@ -2007,6 +2384,46 @@
       "migration_step": "planned/P06-P25"
     },
     {
+      "error_code": "temporal_boundary_ambiguous",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "temporal_boundary_cycle",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "temporal_candidate_stale",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "temporal_change_set_conflict",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "temporal_execution_unbounded",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
       "error_code": "terminal_endpoint_preparation_gap",
       "owner_package": "@rus/contracts",
       "json_schema_or_dto": "planned/P06+",
@@ -2031,6 +2448,14 @@
       "migration_step": "planned/P06-P25"
     },
     {
+      "error_code": "time_calendar_profile_gap",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
       "error_code": "time_delay_occurrence_invalid",
       "owner_package": "@rus/contracts",
       "json_schema_or_dto": "planned/P06+",
@@ -2039,7 +2464,39 @@
       "migration_step": "planned/P06-P25"
     },
     {
+      "error_code": "time_elapsed_invalid",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
       "error_code": "time_factor_invalid",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "time_owner_conflict",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "time_timestamp_invalid",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "time_window_invalid",
       "owner_package": "@rus/contracts",
       "json_schema_or_dto": "planned/P06+",
       "validator": "planned/P06+",
@@ -2063,7 +2520,23 @@
       "migration_step": "planned/P06-P25"
     },
     {
+      "error_code": "visible_package_persistence_gap",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
       "error_code": "visual_layout_gap",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "weather_profile_gap",
       "owner_package": "@rus/contracts",
       "json_schema_or_dto": "planned/P06+",
       "validator": "planned/P06+",

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { activeHistoricalPhases, addMinutes, buildTimeDrivenUpdateRequest, dueTimers } from '../src/index.js';
+import { activeHistoricalPhases, addMinutes, buildTimeDrivenUpdateRequest, dueTimers } from '../src/legacy.js';
 
 test('time-events-history advances clock and selects already approved due records', () => {
   const next = addMinutes({ day:2, hour:23, minute:50 }, 20);

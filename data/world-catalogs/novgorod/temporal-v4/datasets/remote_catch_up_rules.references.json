@@ -1,0 +1,20 @@
+[
+  {
+    "reference_id": "reference:remote_catch_up_rules:coarse_remote_v2",
+    "status": "approved",
+    "table": "temporal_authoring_records",
+    "record_id": "record:remote_catch_up_rules:coarse_remote_v2",
+    "source_record_key": "record:remote_catch_up_rules:coarse_remote_v2",
+    "logical_record_id": "coarse_remote_materialized_boundary_catchup_v2",
+    "authoring_version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "source_ids": [
+      "source:remote_catch_up_rules:temporal_world_v4_normative",
+      "source:remote_catch_up_rules:user_reconstruction_authorization",
+      "source:remote_catch_up_rules:controlled_vocabularies"
+    ],
+    "binding_notes": "Bound to world_base.temporal_authoring_records by the approved Temporal v4 importer."
+  }
+]

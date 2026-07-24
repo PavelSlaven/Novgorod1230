@@ -153,7 +153,7 @@ function validatePersistedDomainSnapshot(snapshot, request) {
   return null;
 }
 
-function p23PlanInput(request, snapshot) {
+function p23PlanInput(request, snapshot, visiblePackageEnvelope) {
   const mutation = request.domain_mutation;
   const placementId = `${mutation.entity_kind}:${mutation.entity_id}`;
   const targetExpected = request.expected_state_versions.filter((entry) => entry.resource === 'entity_placements' && entry.id === placementId);
@@ -178,6 +178,7 @@ function p23PlanInput(request, snapshot) {
     validation_report: { status: 'pass', digest: recheckDigest },
     idempotency: { id: `p23-idem:${request.party_id}:${request.idempotency_key}`, key: request.idempotency_key },
     change_set: { id: changeSetId },
+    visible_package_envelope: visiblePackageEnvelope,
     lock_context: { owner_keys, execution_keys, g4_keys: [], physical_keys },
     commit_rechecks: ['physical', 'state', 'pin', 'endpoint', 'route', 'capacity', 'time', 'change_set'].map((kind) => ({ kind, digest: recheckDigest })),
     approved_write_sets: [{
@@ -191,14 +192,15 @@ function p23PlanInput(request, snapshot) {
 /** P23 prepares a sealed plan; only CombinedAtomicCommitter may write it. */
 export function createSpatialV3DomainMutationService({ repository, committer, verifyApproval } = {}) {
   if (!repository || typeof repository.loadSnapshot !== 'function' || typeof repository.recheck !== 'function' || !committer || typeof committer.commit !== 'function' || typeof verifyApproval !== 'function') throw new TypeError('P23 requires injected read/recheck repository, approval verifier and CombinedAtomicCommitter');
-  return Object.freeze({ async commit(request) {
+  return Object.freeze({ async commit(request, options = {}) {
+    const visiblePackageEnvelope = options?.visible_package_envelope ?? null;
     const body = request && { ...request }; if (body) delete body.canonical_digest;
     if (!request || !stableText(request.party_id) || !stableText(request.idempotency_key) || !exactVersionSet(request.expected_state_versions) || request.canonical_digest !== computeSpatialV3CanonicalDigest(body)) return error('generated_schema_mismatch', { reason: 'sealed P23 mutation request is required' });
     const snapshot = await repository.loadSnapshot({ party_id: request.party_id, expected_state_versions: request.expected_state_versions, carrier_local: request.carrier_local });
     if (!snapshot) return error('state_version_conflict', { reason: 'exact expected version set is unavailable' });
     const invalid = validatePersistedDomainSnapshot(snapshot, request);
     if (invalid) return error(invalid.includes('capacity') ? 'relation_capacity_undefined' : (invalid.includes('carrier') || invalid.includes('G6 template')) ? 'journey_location_ownership_mismatch' : 'route_plan_version_pin_missing', { reason: invalid });
-    const input = p23PlanInput(request, snapshot);
+    const input = p23PlanInput(request, snapshot, visiblePackageEnvelope);
     if (!input) return error('state_version_conflict', { reason: 'target placement CAS expectation is required exactly once' });
     const built = await buildCombinedWritePlan(input, { verifyApproval });
     if (!built.ok) return built;

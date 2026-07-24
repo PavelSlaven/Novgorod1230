@@ -1,0 +1,20 @@
+[
+  {
+    "reference_id": "reference:exact_event_profiles:one_shot_exact_due_v2",
+    "status": "approved",
+    "table": "temporal_authoring_records",
+    "record_id": "record:exact_event_profiles:one_shot_exact_due_v2",
+    "source_record_key": "record:exact_event_profiles:one_shot_exact_due_v2",
+    "logical_record_id": "one_shot_exact_due_change_set_v2",
+    "authoring_version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "source_ids": [
+      "source:exact_event_profiles:temporal_world_v4_normative",
+      "source:exact_event_profiles:user_reconstruction_authorization",
+      "source:exact_event_profiles:controlled_vocabularies"
+    ],
+    "binding_notes": "Bound to world_base.temporal_authoring_records by the approved Temporal v4 importer."
+  }
+]

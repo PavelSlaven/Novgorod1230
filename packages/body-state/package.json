@@ -4,6 +4,8 @@
   "type": "module",
   "exports": "./src/index.js",
   "dependencies": {
-    "@rus/kernel": "0.9.0"
+    "@rus/contracts": "0.9.0",
+    "@rus/kernel": "0.9.0",
+    "@rus/time-events-history": "0.13.0"
   }
 }

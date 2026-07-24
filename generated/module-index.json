@@ -17,17 +17,11 @@
       ],
       "name": "@rus/game-server",
       "owns": [
-        "versioned HTTP routes `/api/v1/*`",
-        "static delivery `@rus/game-web`",
-        "builtin production composition",
-        "PostgreSQL pool/normalized v2 session/delivery/Stage 25/first-entry repository adapters",
-        "provider role-runner adapter",
-        "startup probes и применение полного `schemas/party-db/001_party_runtime.sql`",
-        "feature-flag bootstrap"
+        "Владеет production composition, HTTP `/api/v1/*`, pool/probe/migrations, physical `party_runtime` transaction/Stage 25/combined atomic commit adapters, session/delivery stores and `createTemporalPresentationPostgresStore`"
       ],
       "path": "apps/game-server",
       "public_entry": "./src/index.js",
-      "purpose": "Composition root, production infrastructure adapters и HTTP boundary модульной игры. Пакет связывает публичные APIs, но не содержит игровых правил.",
+      "purpose": "Production composition root and the only physical PostgreSQL transaction owner. It binds domain public APIs to HTTP, verified knowledge/runtime catalog, read-only world-base and `party_runtime` adapters; it owns persisted presentation delivery state, not its domain projection rules.",
       "version": "0.23.0"
     },
     {
@@ -66,18 +60,17 @@
     },
     {
       "dependencies": [
-        "@rus/kernel"
+        "@rus/contracts",
+        "@rus/kernel",
+        "@rus/time-events-history"
       ],
       "name": "@rus/body-state",
       "owns": [
-        "health, satiety and energy",
-        "active conditions",
-        "body-part state",
-        "state modifiers and bounded changes"
+        "Владеет `health`/`satiety`/`energy`, conditions, body-state validation/modifiers, `calculateBodyTimeEffectProposal` и `predictNearestBodyThreshold`"
       ],
       "path": "packages/body-state",
       "public_entry": "./src/index.js",
-      "purpose": "Body metrics, active conditions, body-part state and approved state-change formulas. Код модуля работает только с переданными данными и не создаёт смысловые сущности мира.",
+      "purpose": "Pure owner body metrics and target Temporal v4 body-time proposals. Из exact elapsed, approved body profile, explicit body/environment/condition context and pins он выводит изменение тела либо ближайший threshold boundary; clock arithmetic не дублирует.",
       "version": "0.13.0"
     },
     {
@@ -118,16 +111,29 @@
       ],
       "name": "@rus/contracts",
       "owns": [
-        "Schema names for approvals, handoffs, delivery, and public read models",
-        "Stable digest functions",
-        "Approval builders and binding validators",
-        "Stage handoff validators that do not execute game logic",
-        "P08 target-only spatial-v3 typed-error and fail-closed public-port primitives"
+        "Владеет schema/approval/handoff validators, digests, visible/hidden boundaries, Spatial/Temporal registry, state machines and typed errors"
       ],
       "path": "packages/contracts",
       "public_entry": "./src/index.js",
-      "purpose": "Canonical machine-readable contracts shared across stages and applications.",
+      "purpose": "Canonical machine-readable contract/typed-error registry shared by packages and applications. It defines names, validators, canonical digests, controlled vocabularies and public target-port primitives; it executes no game workflow.",
       "version": "0.9.0"
+    },
+    {
+      "dependencies": [
+        "@rus/contracts",
+        "@rus/kernel",
+        "@rus/time-events-history"
+      ],
+      "name": "@rus/environment-state",
+      "owns": [
+        "применением supplied approved weather, light и access profiles к supplied exact clock",
+        "выводом environment snapshot и ближайших domain boundaries",
+        "proposal соответствующего weather, light или access effect"
+      ],
+      "path": "packages/environment-state",
+      "public_entry": "./src/index.js",
+      "purpose": "`@rus/environment-state` — active-norm, target-only Temporal World v4 owner чистого вывода weather/light/access environment state и boundary-effect proposals. До P28 он shadow/fixture-only; production v2 остаётся sole production owner.",
+      "version": "0.1.0"
     },
     {
       "dependencies": [
@@ -209,18 +215,16 @@
     {
       "dependencies": [
         "@rus/contracts",
-        "@rus/kernel"
+        "@rus/kernel",
+        "@rus/time-events-history"
       ],
       "name": "@rus/movement-routes",
       "owns": [
-        "route availability and requirements",
-        "travel cost formulas",
-        "traversal request/result shapes",
-        "orientation and failure consequence requests"
+        "Владеет legacy pure travel helpers, `createMovementPlanner`, `createRoutePlanActivationValidator`, target traversal resolver/commit-validator adapters, route-plan static snapshot and capability/readiness validation"
       ],
       "path": "packages/movement-routes",
       "public_entry": "./src/index.js",
-      "purpose": "Route availability, knowledge, traversal contracts, GU/time cost and orientation requests. Код модуля работает только с переданными данными и не создаёт смысловые сущности мира.",
+      "purpose": "Owner of route query/planning, approved movement method/time resolution, traversal progress/readiness and activation validation. It is a pure/pluggable domain module; all factual reads and commit are explicit external ports.",
       "version": "0.13.0"
     },
     {
@@ -267,18 +271,32 @@
       "dependencies": [
         "@rus/contracts",
         "@rus/kernel",
+        "@rus/time-events-history"
+      ],
+      "name": "@rus/npc-runtime",
+      "owns": [
+        "проверкой и построением детерминированных proposal из переданных sealed snapshots",
+        "применением supplied approved profiles и versioned dependency pins",
+        "schedule, perception и bounded-decision traces в границах формальных контрактов"
+      ],
+      "path": "packages/npc-runtime",
+      "public_entry": "./src/index.js",
+      "purpose": "`@rus/npc-runtime` — active-norm, target-only owner Temporal World v4 для чистых предложений переходов расписания NPC, восприятия и ограниченного выбора действия. До атомарной активации P28 пакет используется только в target/shadow/migration; `production_v2` остаётся единственным production read/write owner.",
+      "version": "0.1.0"
+    },
+    {
+      "dependencies": [
+        "@rus/contracts",
+        "@rus/kernel",
         "@rus/turn"
       ],
       "name": "@rus/party-store",
       "owns": [
-        "party persistence contract",
-        "idempotency key и committed-result semantics",
-        "Stage 25 persistence port",
-        "границей между утверждённым write plan и infrastructure executor"
+        "Владеет `createPartyStore`, Stage 25 adapter/target safety, v2 plan/idempotency handoff and target spatial-v3 domain repository/mutation service interfaces"
       ],
       "path": "packages/party-store",
       "public_entry": "./src/index.js",
-      "purpose": "Публичный порт persistence v2 для нормализованной и идемпотентной фиксации состояния партии.",
+      "purpose": "Logical party persistence boundary: validates/adapts approved plans and delegates their execution to an injected transaction port. It owns neither PostgreSQL nor a physical transaction.",
       "version": "0.9.0"
     },
     {
@@ -384,18 +402,16 @@
     },
     {
       "dependencies": [
+        "@rus/contracts",
         "@rus/kernel"
       ],
       "name": "@rus/time-events-history",
       "owns": [
-        "clock arithmetic",
-        "timer due checks",
-        "delayed event contracts",
-        "historical phase activation"
+        "Владеет canonical temporal digest, нормализацией и сравнением exact time, crossing whole-minute boundaries, `projectCalendar`, историческими phase handlers и `temporal-resolution-v1` (`normalizeTemporalBoundaryCandidates`, earliest batch, same-time cascade)"
       ],
       "path": "packages/time-events-history",
       "public_entry": "./src/index.js",
-      "purpose": "Clock, durations, timers, delayed events, historical phases and time-driven update requests. Код модуля работает только с переданными данными и не создаёт смысловые сущности мира.",
+      "purpose": "Единственный domain owner target Temporal World v4 для exact `GameTimestamp`, `ElapsedTime`, rational-minute arithmetic, календарной проекции и выбора/разрешения temporal boundaries. Модуль чистый: работает только с переданными DTO и утверждёнными profile/rule inputs.",
       "version": "0.13.0"
     },
     {
@@ -412,20 +428,11 @@
       ],
       "name": "@rus/turn",
       "owns": [
-        "контрактом `PlayerTurnInput`",
-        "декларативным порядком блоков хода",
-        "orchestration context и run summary",
-        "вызовом code resolvers и bounded decision protocol через явные ports",
-        "исполнением только явно запрошенных проверок через `RandomSource`",
-        "применением утверждённой длительности к clock formula",
-        "hidden/visible security boundary",
-        "commit gate и передачей утверждённого write plan в party store",
-        "формальным `position_transition`; cross-G4 transition всегда включает first-entry materialization в тот же commit",
-        "публичным `TurnResult` и compatibility adapter"
+        "Владеет `PlayerTurnInput`/`TurnResult`, stage plan, command sequence, idempotency/lock orchestration, bounded decision handoff, temporal advance/carrier proposal engines, `mergeTemporalProposals`, combined logical write-plan composition и visible-package security gate"
       ],
       "path": "packages/turn",
       "public_entry": "./src/index.js",
-      "purpose": "Единый модульный workflow одного игрового хода. Модуль принимает слова игрока как намерение, запускает изолированные блоки обработки, фиксирует утверждённые последствия и возвращает публичный экран.",
+      "purpose": "Оркестратор игрового хода и target Temporal World v4 execution composition. Он связывает explicit ports, собирает proposals и carriers, применяет gates и передаёт approved logical plan дальше; не владеет доменными формулами или физической транзакцией.",
       "version": "0.15.0"
     },
     {
@@ -434,14 +441,11 @@
       ],
       "name": "@rus/visibility-knowledge-memory",
       "owns": [
-        "visible-context validation",
-        "hidden leak detection and stripping",
-        "knowledge and memory fact contracts",
-        "safe narrator package"
+        "Владеет visible package allow-list, hidden-leak detection/stripping, memory/knowledge validation and deterministic merge, safe narrator package"
       ],
       "path": "packages/visibility-knowledge-memory",
       "public_entry": "./src/index.js",
-      "purpose": "Security boundary for visible context, hidden state, character knowledge, memory facts and safe narrator packages. Код модуля работает только с переданными данными и не создаёт смысловые сущности мира.",
+      "purpose": "Pure player-safety projection boundary: validates and constructs narrator-safe visible data and validates/merges knowledge-memory facts. В temporal flow вызывается только from committed factual state/change set, never as a source of facts or a pre-commit persistence substitute.",
       "version": "0.13.0"
     },
     {
@@ -456,6 +460,23 @@
       "public_entry": "./src/index.js",
       "purpose": "Read-only порт доступа к канонической базе мира.",
       "version": "0.9.0"
+    },
+    {
+      "dependencies": [
+        "@rus/contracts",
+        "@rus/kernel",
+        "@rus/time-events-history"
+      ],
+      "name": "@rus/world-processes",
+      "owns": [
+        "bounded deterministic advancement supplied remote process aggregate до supplied activation timestamp",
+        "coarse process boundaries, termination и next boundary",
+        "разделением factual и player-visible proposal output"
+      ],
+      "path": "packages/world-processes",
+      "public_entry": "./src/index.js",
+      "purpose": "`@rus/world-processes` — active-norm, target-only Temporal World v4 owner pure remote catch-up и propagation proposals. До P28 результаты предназначены для shadow/fixtures/migration и не меняют production v2.",
+      "version": "0.1.0"
     }
   ],
   "release": "0.23.0-migration.24",

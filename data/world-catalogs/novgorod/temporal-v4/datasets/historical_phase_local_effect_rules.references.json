@@ -1,0 +1,21 @@
+[
+  {
+    "reference_id": "reference:historical_phase_local_effect_rules:novgorod_famine_1230_v2",
+    "status": "approved",
+    "table": "temporal_authoring_records",
+    "record_id": "record:historical_phase_local_effect_rules:novgorod_famine_1230_v2",
+    "source_record_key": "record:historical_phase_local_effect_rules:novgorod_famine_1230_v2",
+    "logical_record_id": "novgorod_famine_1230_source_year_v2",
+    "authoring_version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "source_ids": [
+      "source:historical_phase_local_effect_rules:canonical_historical_policy",
+      "source:historical_phase_local_effect_rules:epimeddat_1230_novgorod",
+      "source:historical_phase_local_effect_rules:temporal_world_v4_normative",
+      "source:historical_phase_local_effect_rules:user_reconstruction_authorization"
+    ],
+    "binding_notes": "Bound to world_base.temporal_authoring_records by the approved Temporal v4 importer."
+  }
+]

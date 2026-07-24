@@ -1,0 +1,20 @@
+[
+  {
+    "reference_id": "reference:activity_execution_policies:novgorod_v2",
+    "status": "approved",
+    "table": "temporal_authoring_records",
+    "record_id": "record:activity_execution_policies:novgorod_v2",
+    "source_record_key": "record:activity_execution_policies:novgorod_v2",
+    "logical_record_id": "activity_execution_exact_interruptible_v2",
+    "authoring_version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "source_ids": [
+      "source:activity_execution_policies:controlled_vocabularies",
+      "source:activity_execution_policies:temporal_world_v4_normative",
+      "source:activity_execution_policies:user_reconstruction_authorization"
+    ],
+    "binding_notes": "Bound to world_base.temporal_authoring_records by the approved Temporal v4 importer."
+  }
+]

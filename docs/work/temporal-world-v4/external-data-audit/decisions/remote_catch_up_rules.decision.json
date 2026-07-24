@@ -1,0 +1,29 @@
+{
+  "schema": "rus.temporal-world-v4.external-auditor-family-decision.v1",
+  "version": 1,
+  "family_id": "remote_catch_up_rules",
+  "verdict": "approved",
+  "approved_record_ids": [
+    "record:remote_catch_up_rules:coarse_remote_v2"
+  ],
+  "source_ids_reviewed": [
+    "source:remote_catch_up_rules:temporal_world_v4_normative",
+    "source:remote_catch_up_rules:user_reconstruction_authorization",
+    "source:remote_catch_up_rules:controlled_vocabularies"
+  ],
+  "applicability": [
+    "novgorod"
+  ],
+  "data_gaps": [],
+  "auditor": {
+    "name": "OpenAI GPT-5.6 Thinking",
+    "organization_or_role": "independent external data authoring auditor"
+  },
+  "decision_id": "decision:remote_catch_up_rules:2026-07-24-reaudit-2",
+  "decided_at": "2026-07-24T17:45:00+03:00",
+  "method": "independent source, contract, controlled-vocabulary, exactness, closure, historical-labeling and no-fallback audit",
+  "rationale": "The approved catch-up rule uses the controlled coarse remote mode, monotonic exact boundary processing, proof-gated closed form, pre-activation completion and strict no-materialization/no-fallback gates.",
+  "limitations": [
+    "Approval covers authoring data only; physical DDL binding, importer implementation, PostgreSQL integration, runtime tests and P28 remain developer-owned."
+  ]
+}

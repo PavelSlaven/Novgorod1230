@@ -1,0 +1,287 @@
+[
+  {
+    "record_id": "record:traversal_recheck_contracts:spatial_v3_recheck_v2",
+    "family_id": "traversal_recheck_contracts",
+    "record_kind": "traversal_recheck_contract",
+    "status": "approved",
+    "version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "provenance_refs": [
+      "provenance:traversal_recheck_contracts:novgorod_v1"
+    ],
+    "normalized_reference_ids": [
+      "reference:traversal_recheck_contracts:spatial_v3_recheck_v2"
+    ],
+    "source_history_refs": [
+      "source:traversal_recheck_contracts:temporal_world_v4_normative",
+      "source:traversal_recheck_contracts:user_reconstruction_authorization",
+      "source:traversal_recheck_contracts:spatial_v3_dynamic_recheck_policies"
+    ],
+    "payload": {
+      "traversal_recheck_contract_id": "spatial_v3_bound_dynamic_recheck_v2",
+      "route_segment_method_and_environment_refs": [
+        {
+          "role": "route_segment",
+          "binding_mode": "runtime exact entity_ref from sealed plan step",
+          "missing": "spatial_candidate_gap"
+        },
+        {
+          "role": "movement_method",
+          "binding_mode": "runtime approved versioned_ref",
+          "missing": "spatial_candidate_gap"
+        },
+        {
+          "role": "environment_snapshot",
+          "binding_mode": "runtime digest-bound snapshot",
+          "missing": "spatial_candidate_gap"
+        }
+      ],
+      "recheck_trigger_rules": [
+        "segment boundary",
+        "weather transition",
+        "access transition",
+        "carrier state change",
+        "body threshold",
+        "explicit interruption",
+        "event trigger declared by the pinned dynamic policy"
+      ],
+      "exact_interval_policy": {
+        "policies": [
+          {
+            "policy_version": "1",
+            "maximum_interval_minutes": "30",
+            "canonical_digest": "b56aa27de361414fa975871891d8084739ab7b1f17b30fcf93dfcb01e31a3d81",
+            "policy_ref": {
+              "entity_ref": {
+                "entity_kind": "dynamic_recheck_policy",
+                "entity_id": "recheck.land_30m"
+              },
+              "authoring_version": "1",
+              "source_ids": [
+                "source:traversal_recheck_contracts:temporal_world_v4_normative",
+                "source:traversal_recheck_contracts:user_reconstruction_authorization",
+                "source:traversal_recheck_contracts:spatial_v3_dynamic_recheck_policies"
+              ],
+              "applicability": [
+                "novgorod",
+                "novgorod_spatial_v3_target_contract_approval_001"
+              ]
+            },
+            "world_revision_ref": {
+              "entity_ref": {
+                "entity_kind": "world_revision",
+                "entity_id": "novgorod_spatial_v3_target_contract_approval_001"
+              },
+              "authoring_version": "1",
+              "source_ids": [
+                "source:traversal_recheck_contracts:temporal_world_v4_normative",
+                "source:traversal_recheck_contracts:user_reconstruction_authorization",
+                "source:traversal_recheck_contracts:spatial_v3_dynamic_recheck_policies"
+              ],
+              "applicability": [
+                "novgorod"
+              ]
+            }
+          },
+          {
+            "policy_version": "1",
+            "maximum_interval_minutes": "15",
+            "canonical_digest": "04d8893fb22d034b4aca41980a563ff06d874f47c6c79a2843d976aff4c78246",
+            "policy_ref": {
+              "entity_ref": {
+                "entity_kind": "dynamic_recheck_policy",
+                "entity_id": "recheck.shore_15m"
+              },
+              "authoring_version": "1",
+              "source_ids": [
+                "source:traversal_recheck_contracts:temporal_world_v4_normative",
+                "source:traversal_recheck_contracts:user_reconstruction_authorization",
+                "source:traversal_recheck_contracts:spatial_v3_dynamic_recheck_policies"
+              ],
+              "applicability": [
+                "novgorod",
+                "novgorod_spatial_v3_target_contract_approval_001"
+              ]
+            },
+            "world_revision_ref": {
+              "entity_ref": {
+                "entity_kind": "world_revision",
+                "entity_id": "novgorod_spatial_v3_target_contract_approval_001"
+              },
+              "authoring_version": "1",
+              "source_ids": [
+                "source:traversal_recheck_contracts:temporal_world_v4_normative",
+                "source:traversal_recheck_contracts:user_reconstruction_authorization",
+                "source:traversal_recheck_contracts:spatial_v3_dynamic_recheck_policies"
+              ],
+              "applicability": [
+                "novgorod"
+              ]
+            }
+          },
+          {
+            "policy_version": "1",
+            "maximum_interval_minutes": "15",
+            "canonical_digest": "fb8f43d324d104de24ab6f042324f4aeef652944a725d70f667c52ec1353d018",
+            "policy_ref": {
+              "entity_ref": {
+                "entity_kind": "dynamic_recheck_policy",
+                "entity_id": "recheck.water_15m"
+              },
+              "authoring_version": "1",
+              "source_ids": [
+                "source:traversal_recheck_contracts:temporal_world_v4_normative",
+                "source:traversal_recheck_contracts:user_reconstruction_authorization",
+                "source:traversal_recheck_contracts:spatial_v3_dynamic_recheck_policies"
+              ],
+              "applicability": [
+                "novgorod",
+                "novgorod_spatial_v3_target_contract_approval_001"
+              ]
+            },
+            "world_revision_ref": {
+              "entity_ref": {
+                "entity_kind": "world_revision",
+                "entity_id": "novgorod_spatial_v3_target_contract_approval_001"
+              },
+              "authoring_version": "1",
+              "source_ids": [
+                "source:traversal_recheck_contracts:temporal_world_v4_normative",
+                "source:traversal_recheck_contracts:user_reconstruction_authorization",
+                "source:traversal_recheck_contracts:spatial_v3_dynamic_recheck_policies"
+              ],
+              "applicability": [
+                "novgorod"
+              ]
+            }
+          },
+          {
+            "policy_version": "1",
+            "maximum_interval_minutes": "15",
+            "canonical_digest": "7fd815464aaeadd8e35f1df7da121537c22dfcca514f28709629ba55819fc094",
+            "policy_ref": {
+              "entity_ref": {
+                "entity_kind": "dynamic_recheck_policy",
+                "entity_id": "recheck.wetland_15m"
+              },
+              "authoring_version": "1",
+              "source_ids": [
+                "source:traversal_recheck_contracts:temporal_world_v4_normative",
+                "source:traversal_recheck_contracts:user_reconstruction_authorization",
+                "source:traversal_recheck_contracts:spatial_v3_dynamic_recheck_policies"
+              ],
+              "applicability": [
+                "novgorod",
+                "novgorod_spatial_v3_target_contract_approval_001"
+              ]
+            },
+            "world_revision_ref": {
+              "entity_ref": {
+                "entity_kind": "world_revision",
+                "entity_id": "novgorod_spatial_v3_target_contract_approval_001"
+              },
+              "authoring_version": "1",
+              "source_ids": [
+                "source:traversal_recheck_contracts:temporal_world_v4_normative",
+                "source:traversal_recheck_contracts:user_reconstruction_authorization",
+                "source:traversal_recheck_contracts:spatial_v3_dynamic_recheck_policies"
+              ],
+              "applicability": [
+                "novgorod"
+              ]
+            }
+          }
+        ],
+        "earlier_predicted_boundary_wins": true,
+        "serialization": "canonical decimal minute strings"
+      },
+      "completion_hazard_same_time_order": [
+        "continuous_finalize",
+        "cooccurring_completion_arrival_body_threshold",
+        "physical_hazard_access",
+        "execution_outcome",
+        "post_commit_narration"
+      ],
+      "cancel_execute_replace_disposition": {
+        "invalidated": "cancel",
+        "still_valid": "execute",
+        "changed_inputs_with_exact_approved_candidate": "replace",
+        "otherwise": "temporal_candidate_stale"
+      },
+      "dynamic_recheck_policy_refs": [
+        {
+          "entity_ref": {
+            "entity_kind": "dynamic_recheck_policy",
+            "entity_id": "recheck.land_30m"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:traversal_recheck_contracts:temporal_world_v4_normative",
+            "source:traversal_recheck_contracts:user_reconstruction_authorization",
+            "source:traversal_recheck_contracts:spatial_v3_dynamic_recheck_policies"
+          ],
+          "applicability": [
+            "novgorod",
+            "novgorod_spatial_v3_target_contract_approval_001"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "dynamic_recheck_policy",
+            "entity_id": "recheck.shore_15m"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:traversal_recheck_contracts:temporal_world_v4_normative",
+            "source:traversal_recheck_contracts:user_reconstruction_authorization",
+            "source:traversal_recheck_contracts:spatial_v3_dynamic_recheck_policies"
+          ],
+          "applicability": [
+            "novgorod",
+            "novgorod_spatial_v3_target_contract_approval_001"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "dynamic_recheck_policy",
+            "entity_id": "recheck.water_15m"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:traversal_recheck_contracts:temporal_world_v4_normative",
+            "source:traversal_recheck_contracts:user_reconstruction_authorization",
+            "source:traversal_recheck_contracts:spatial_v3_dynamic_recheck_policies"
+          ],
+          "applicability": [
+            "novgorod",
+            "novgorod_spatial_v3_target_contract_approval_001"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "dynamic_recheck_policy",
+            "entity_id": "recheck.wetland_15m"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:traversal_recheck_contracts:temporal_world_v4_normative",
+            "source:traversal_recheck_contracts:user_reconstruction_authorization",
+            "source:traversal_recheck_contracts:spatial_v3_dynamic_recheck_policies"
+          ],
+          "applicability": [
+            "novgorod",
+            "novgorod_spatial_v3_target_contract_approval_001"
+          ]
+        }
+      ],
+      "interruption_and_stranding_rules": [
+        "preserve exact committed position and progress",
+        "no teleport",
+        "stranded state requires an explicit approved rescue/recovery transition",
+        "missing applicable recheck policy is spatial_candidate_gap and hard block"
+      ]
+    }
+  }
+]

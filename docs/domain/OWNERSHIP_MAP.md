@@ -32,6 +32,28 @@ These records are target-only until P28. They do not reroute production v2, perm
 
 The target public ports are deliberately typed-failure stubs until their individual implementation phases. A caller must surface the error or stop; it must not try v2, choose a substitute record or write a partial result.
 
+## Temporal World v4 target ownership
+
+These responsibilities are proposed target-only until P28; active production
+v2 remains the sole production owner.
+
+| Owner | Exact target responsibility | Explicit boundary |
+|---|---|---|
+| `@rus/time-events-history` | exact `GameTimestamp`/rational arithmetic, calendar projection, `(from,to]` boundary selection, ordering and same-time cascade; historical proposals | no body/environment/NPC/access calculation and no commit |
+| `@rus/body-state` | pure body effect and threshold proposals from supplied exact elapsed and pins | no clock arithmetic, state persistence or cause invention |
+| `@rus/turn` | temporal workflow, owner invocation, deterministic proposal merge, logical combined plan, limits and idempotency orchestration | no PostgreSQL transaction and no second place/access engine |
+| `@rus/party-store` | normalized placement/capacity/ownership/holder/controller/access validation and logical-plan persistence boundary | no orchestration, semantic fallback or physical database transaction ownership |
+| `@rus/game-server` | physical target PostgreSQL transaction for the combined factual commit | no domain proposals or narration fact creation |
+| `@rus/environment-state` | pure pinned weather/light/access-effect proposals from supplied time result | no global clock, DB, defaults or place/access persistence override |
+| `@rus/npc-runtime` | pure pinned schedule, perception and bounded-decision proposals | no initial NPC materialization, DB, LLM or workflow control |
+| `@rus/turn` carrier proposal engine | synchronized root/local transport proposals; root result owns the one shared clock update | local carrier result never advances the party clock again |
+| `@rus/world-processes` | pure bounded remote catch-up and propagation proposals | no continuous global simulation, persistence, or direct calls to peer owners |
+| `@rus/visibility-knowledge-memory` | code-owned player-safe factual visible package | no narration, hidden-state mutation or factual commit |
+| `@rus/narration` | post-commit prose only from the persisted visible package | no temporal fact, consequence, package mutation or factual write |
+
+ADR-004 is intentional: place/access remains split between `@rus/turn` and
+`@rus/party-store`; no standalone place/access package exists.
+
 ## Канонические владельцы формул
 
 - `attributeBonus` и итог проверки — `@rus/checks-rng`;

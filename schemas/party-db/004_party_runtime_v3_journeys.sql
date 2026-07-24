@@ -91,7 +91,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS party_actor_carrier_position_active_uq ON part
 
 CREATE TABLE IF NOT EXISTS party_runtime.party_clocks (
   party_id text PRIMARY KEY REFERENCES party_runtime.parties(party_id) ON DELETE CASCADE,
-  whole_minutes bigint NOT NULL CHECK(whole_minutes >= 0), subminute_numerator bigint NOT NULL CHECK(subminute_numerator >= 0), subminute_denominator bigint NOT NULL CHECK(subminute_denominator > 0),
+  whole_minutes numeric NOT NULL CHECK(whole_minutes >= 0 AND party_runtime.integral_numeric(whole_minutes)), subminute_numerator numeric NOT NULL CHECK(subminute_numerator >= 0 AND party_runtime.integral_numeric(subminute_numerator)), subminute_denominator numeric NOT NULL CHECK(subminute_denominator > 0 AND party_runtime.integral_numeric(subminute_denominator)),
   clock_owner_kind text NOT NULL CHECK(clock_owner_kind IN ('party','cohort','transport')), clock_owner_id text,
   state_version bigint NOT NULL CHECK(state_version >= 0), updated_change_set_id text NOT NULL,
   CHECK(subminute_numerator < subminute_denominator), CHECK(gcd(subminute_numerator, subminute_denominator) = 1),
@@ -102,7 +102,7 @@ CREATE TABLE IF NOT EXISTS party_runtime.party_clock_owner_handoffs (
   id text PRIMARY KEY, party_id text NOT NULL REFERENCES party_runtime.parties(party_id) ON DELETE CASCADE,
   old_owner_kind text NOT NULL CHECK(old_owner_kind IN ('party','cohort','transport')), old_owner_id text,
   new_owner_kind text NOT NULL CHECK(new_owner_kind IN ('party','cohort','transport')), new_owner_id text,
-  effective_whole_minutes bigint NOT NULL CHECK(effective_whole_minutes >= 0), effective_subminute_numerator bigint NOT NULL CHECK(effective_subminute_numerator >= 0), effective_subminute_denominator bigint NOT NULL CHECK(effective_subminute_denominator > 0),
+  effective_whole_minutes numeric NOT NULL CHECK(effective_whole_minutes >= 0 AND party_runtime.integral_numeric(effective_whole_minutes)), effective_subminute_numerator numeric NOT NULL CHECK(effective_subminute_numerator >= 0 AND party_runtime.integral_numeric(effective_subminute_numerator)), effective_subminute_denominator numeric NOT NULL CHECK(effective_subminute_denominator > 0 AND party_runtime.integral_numeric(effective_subminute_denominator)),
   change_set_id text NOT NULL REFERENCES party_runtime.party_v3_change_sets(id) ON DELETE RESTRICT,
   CHECK(effective_subminute_numerator < effective_subminute_denominator), CHECK(gcd(effective_subminute_numerator,effective_subminute_denominator)=1),
   CHECK((old_owner_kind='party')=(old_owner_id IS NULL)), CHECK((new_owner_kind='party')=(new_owner_id IS NULL)),
@@ -114,10 +114,10 @@ CREATE TABLE IF NOT EXISTS party_runtime.party_synchronized_time_slices (
   root_execution_id text NOT NULL REFERENCES party_runtime.party_route_plan_executions(id) ON DELETE RESTRICT,
   root_travel_state_id text NOT NULL REFERENCES party_runtime.traveller_travel_states(id) ON DELETE RESTRICT,
   clock_owner_kind text NOT NULL CHECK(clock_owner_kind IN ('cohort','transport')), clock_owner_id text NOT NULL,
-  elapsed_numerator bigint NOT NULL CHECK(elapsed_numerator > 0), elapsed_denominator bigint NOT NULL CHECK(elapsed_denominator > 0),
-  clock_before_whole_minutes bigint NOT NULL CHECK(clock_before_whole_minutes >= 0), clock_before_subminute_numerator bigint NOT NULL CHECK(clock_before_subminute_numerator >= 0), clock_before_subminute_denominator bigint NOT NULL CHECK(clock_before_subminute_denominator > 0),
-  clock_after_whole_minutes bigint NOT NULL CHECK(clock_after_whole_minutes >= 0), clock_after_subminute_numerator bigint NOT NULL CHECK(clock_after_subminute_numerator >= 0), clock_after_subminute_denominator bigint NOT NULL CHECK(clock_after_subminute_denominator > 0),
-  crossed_whole_minute_boundaries integer NOT NULL CHECK(crossed_whole_minute_boundaries >= 0), change_set_id text NOT NULL REFERENCES party_runtime.party_v3_change_sets(id) ON DELETE RESTRICT,
+  elapsed_numerator numeric NOT NULL CHECK(elapsed_numerator > 0 AND party_runtime.integral_numeric(elapsed_numerator)), elapsed_denominator numeric NOT NULL CHECK(elapsed_denominator > 0 AND party_runtime.integral_numeric(elapsed_denominator)),
+  clock_before_whole_minutes numeric NOT NULL CHECK(clock_before_whole_minutes >= 0 AND party_runtime.integral_numeric(clock_before_whole_minutes)), clock_before_subminute_numerator numeric NOT NULL CHECK(clock_before_subminute_numerator >= 0 AND party_runtime.integral_numeric(clock_before_subminute_numerator)), clock_before_subminute_denominator numeric NOT NULL CHECK(clock_before_subminute_denominator > 0 AND party_runtime.integral_numeric(clock_before_subminute_denominator)),
+  clock_after_whole_minutes numeric NOT NULL CHECK(clock_after_whole_minutes >= 0 AND party_runtime.integral_numeric(clock_after_whole_minutes)), clock_after_subminute_numerator numeric NOT NULL CHECK(clock_after_subminute_numerator >= 0 AND party_runtime.integral_numeric(clock_after_subminute_numerator)), clock_after_subminute_denominator numeric NOT NULL CHECK(clock_after_subminute_denominator > 0 AND party_runtime.integral_numeric(clock_after_subminute_denominator)),
+  crossed_whole_minute_boundaries numeric NOT NULL CHECK(crossed_whole_minute_boundaries >= 0 AND party_runtime.integral_numeric(crossed_whole_minute_boundaries)), change_set_id text NOT NULL REFERENCES party_runtime.party_v3_change_sets(id) ON DELETE RESTRICT,
   idempotency_record_id text NOT NULL REFERENCES party_runtime.party_command_idempotency(id) ON DELETE RESTRICT,
   CHECK(gcd(elapsed_numerator, elapsed_denominator) = 1), CHECK(clock_before_subminute_numerator < clock_before_subminute_denominator), CHECK(gcd(clock_before_subminute_numerator, clock_before_subminute_denominator) = 1), CHECK(clock_after_subminute_numerator < clock_after_subminute_denominator), CHECK(gcd(clock_after_subminute_numerator, clock_after_subminute_denominator) = 1),
   UNIQUE(root_execution_id, change_set_id), UNIQUE(change_set_id)
@@ -127,7 +127,7 @@ CREATE TABLE IF NOT EXISTS party_runtime.party_synchronized_time_slice_results (
   id text PRIMARY KEY, slice_id text NOT NULL REFERENCES party_runtime.party_synchronized_time_slices(id) ON DELETE RESTRICT,
   participant_execution_id text NOT NULL REFERENCES party_runtime.party_route_plan_executions(id) ON DELETE RESTRICT,
   participant_actor_id text, result_kind text NOT NULL CHECK(result_kind IN ('root_traversal','carrier_local_activity','carrier_local_traversal','blocked','paused','failed')),
-  elapsed_numerator bigint NOT NULL CHECK(elapsed_numerator >= 0), elapsed_denominator bigint NOT NULL CHECK(elapsed_denominator > 0),
+  elapsed_numerator numeric NOT NULL CHECK(elapsed_numerator >= 0 AND party_runtime.integral_numeric(elapsed_numerator)), elapsed_denominator numeric NOT NULL CHECK(elapsed_denominator > 0 AND party_runtime.integral_numeric(elapsed_denominator)),
   result_ref jsonb NOT NULL, CHECK(gcd(elapsed_numerator, elapsed_denominator) = 1), UNIQUE(slice_id, participant_execution_id)
 );
 
@@ -166,7 +166,7 @@ BEGIN
     IF NEW.status='active' AND NOT EXISTS(WITH RECURSIVE chain(kind,id,depth) AS (SELECT a.carrier_kind,a.carrier_id,1 FROM party_runtime.party_carrier_attachments a WHERE a.party_id=NEW.party_id AND a.subject_kind='actor' AND a.subject_id=NEW.actor_id AND a.status='active' UNION ALL SELECT a.carrier_kind,a.carrier_id,c.depth+1 FROM chain c JOIN party_runtime.party_carrier_attachments a ON a.party_id=NEW.party_id AND a.subject_kind=c.kind AND a.subject_id=c.id AND a.status='active' WHERE c.depth<2) SELECT 1 FROM chain WHERE kind=NEW.root_carrier_kind AND id=NEW.root_carrier_id) THEN RAISE EXCEPTION 'spatial_actor_carrier_position_attachment_invalid'; END IF;
   ELSIF TG_TABLE_NAME = 'party_synchronized_time_slices' THEN
     IF NOT EXISTS(SELECT 1 FROM party_runtime.party_route_plan_executions e JOIN party_runtime.traveller_travel_states s ON s.id=NEW.root_travel_state_id JOIN party_runtime.party_clocks c ON c.party_id=NEW.party_id WHERE e.id=NEW.root_execution_id AND e.party_id=NEW.party_id AND s.party_id=NEW.party_id AND e.journey_scope='world_travel' AND s.route_plan_execution_id=e.id AND e.journey_owner_ref->>'entity_kind'=NEW.clock_owner_kind AND e.journey_owner_ref->>'entity_id'=NEW.clock_owner_id AND c.clock_owner_kind=NEW.clock_owner_kind AND c.clock_owner_id=NEW.clock_owner_id AND c.whole_minutes=NEW.clock_after_whole_minutes AND c.subminute_numerator=NEW.clock_after_subminute_numerator AND c.subminute_denominator=NEW.clock_after_subminute_denominator) THEN RAISE EXCEPTION 'spatial_synchronized_slice_root_or_clock_invalid'; END IF;
-    IF NEW.clock_after_whole_minutes < NEW.clock_before_whole_minutes OR (NEW.clock_after_whole_minutes=NEW.clock_before_whole_minutes AND NEW.clock_after_subminute_numerator::numeric/NEW.clock_after_subminute_denominator < NEW.clock_before_subminute_numerator::numeric/NEW.clock_before_subminute_denominator) THEN RAISE EXCEPTION 'spatial_clock_non_monotonic'; END IF;
+    IF NEW.clock_after_whole_minutes < NEW.clock_before_whole_minutes OR (NEW.clock_after_whole_minutes=NEW.clock_before_whole_minutes AND NEW.clock_after_subminute_numerator * NEW.clock_before_subminute_denominator < NEW.clock_before_subminute_numerator * NEW.clock_after_subminute_denominator) THEN RAISE EXCEPTION 'spatial_clock_non_monotonic'; END IF;
     IF (((NEW.clock_after_whole_minutes-NEW.clock_before_whole_minutes)*NEW.clock_after_subminute_denominator*NEW.clock_before_subminute_denominator+NEW.clock_after_subminute_numerator*NEW.clock_before_subminute_denominator-NEW.clock_before_subminute_numerator*NEW.clock_after_subminute_denominator)*NEW.elapsed_denominator) <> (NEW.elapsed_numerator*NEW.clock_after_subminute_denominator*NEW.clock_before_subminute_denominator) THEN RAISE EXCEPTION 'spatial_synchronized_slice_clock_delta_invalid'; END IF;
     IF NEW.crossed_whole_minute_boundaries<>(NEW.clock_after_whole_minutes-NEW.clock_before_whole_minutes) THEN RAISE EXCEPTION 'spatial_synchronized_slice_boundary_count_invalid'; END IF;
   ELSIF TG_TABLE_NAME = 'party_synchronized_time_slice_results' THEN
@@ -184,7 +184,7 @@ END $$;
 
 CREATE OR REPLACE FUNCTION party_runtime.v3_clock_integrity() RETURNS trigger LANGUAGE plpgsql AS $$
 BEGIN
-  IF NEW.whole_minutes < OLD.whole_minutes OR (NEW.whole_minutes=OLD.whole_minutes AND NEW.subminute_numerator::numeric/NEW.subminute_denominator < OLD.subminute_numerator::numeric/OLD.subminute_denominator) THEN RAISE EXCEPTION 'spatial_clock_non_monotonic'; END IF;
+  IF NEW.whole_minutes < OLD.whole_minutes OR (NEW.whole_minutes=OLD.whole_minutes AND NEW.subminute_numerator * OLD.subminute_denominator < OLD.subminute_numerator * NEW.subminute_denominator) THEN RAISE EXCEPTION 'spatial_clock_non_monotonic'; END IF;
   IF NEW.state_version<>OLD.state_version+1 THEN RAISE EXCEPTION 'spatial_clock_state_version_invalid'; END IF;
   IF (NEW.clock_owner_kind<>OLD.clock_owner_kind OR NEW.clock_owner_id IS DISTINCT FROM OLD.clock_owner_id) AND NOT EXISTS(SELECT 1 FROM party_runtime.party_clock_owner_handoffs h JOIN party_runtime.party_v3_change_sets c ON c.id=h.change_set_id AND c.party_id=h.party_id WHERE h.party_id=NEW.party_id AND h.change_set_id=NEW.updated_change_set_id AND c.operation_kind='clock_handoff' AND h.old_owner_kind=OLD.clock_owner_kind AND h.old_owner_id IS NOT DISTINCT FROM OLD.clock_owner_id AND h.new_owner_kind=NEW.clock_owner_kind AND h.new_owner_id IS NOT DISTINCT FROM NEW.clock_owner_id AND h.effective_whole_minutes=NEW.whole_minutes AND h.effective_subminute_numerator=NEW.subminute_numerator AND h.effective_subminute_denominator=NEW.subminute_denominator) THEN RAISE EXCEPTION 'spatial_clock_owner_handoff_invalid'; END IF;
   RETURN NEW;
@@ -214,7 +214,7 @@ END $$;
 CREATE OR REPLACE FUNCTION party_runtime.v3_synchronized_slice_result_integrity() RETURNS trigger LANGUAGE plpgsql AS $$
 BEGIN
   IF NOT EXISTS(SELECT 1 FROM party_runtime.party_synchronized_time_slice_results r WHERE r.slice_id=NEW.id AND r.result_kind='root_traversal' AND r.elapsed_numerator=NEW.elapsed_numerator AND r.elapsed_denominator=NEW.elapsed_denominator) THEN RAISE EXCEPTION 'spatial_synchronized_slice_missing_root_result'; END IF;
-  IF EXISTS(SELECT 1 FROM party_runtime.party_synchronized_time_slice_results r WHERE r.slice_id=NEW.id AND r.result_kind IN ('carrier_local_activity','carrier_local_traversal') AND (r.elapsed_numerator::numeric/r.elapsed_denominator > NEW.elapsed_numerator::numeric/NEW.elapsed_denominator)) THEN RAISE EXCEPTION 'spatial_synchronized_slice_local_elapsed_invalid'; END IF;
+  IF EXISTS(SELECT 1 FROM party_runtime.party_synchronized_time_slice_results r WHERE r.slice_id=NEW.id AND r.result_kind IN ('carrier_local_activity','carrier_local_traversal') AND r.elapsed_numerator * NEW.elapsed_denominator > NEW.elapsed_numerator * r.elapsed_denominator) THEN RAISE EXCEPTION 'spatial_synchronized_slice_local_elapsed_invalid'; END IF;
   RETURN NEW;
 END $$;
 

@@ -4,6 +4,13 @@
 
 Этот документ задаёт target v3 command sequence. До P28 production обслуживается только active v2 path. Он не разрешает внедрять v3 в текущий runtime частично, dual write, first-entry fallback или смешанный request path.
 
+Temporal World v4 дополняет sequence профильным нормативом
+`temporal_world_and_interruptible_activities.md` (status `active`). Target
+turn сначала атомарно сохраняет factual state, exact clock/effects и
+`VisiblePackagePersistenceEnvelope`; code-owned projector читает только
+committed change set. Narrator вызывается после commit и не входит в factual
+write plan.
+
 ## 1. Границы оркестратора
 
 Player input — намерение, не факт. Orchestrator загружает pinned factual state и player-safe knowledge projection, классифицирует команду, получает deterministic proposals, валидирует command и передаёт один approved combined write plan единственному commit writer. LLM может интерпретировать/создавать prose лишь в bounded protocol; он не создаёт topology, G5/G6, route, endpoint или state change.
@@ -23,8 +30,10 @@ Player input — намерение, не факт. Orchestrator загружа�
 8. create immutable plan + planned execution
 9. dispatch one explicit action/activity/traversal child command
 10. build one combined write plan; single writer commits it atomically
-11. append history/events, apply exactly-once time integration
-12. build player-safe projection; validate hidden-information boundary; then prose
+11. append history/events and apply exactly-once time integration
+12. build and persist factual player-safe package in the same transaction
+13. after commit, project the committed package and validate hidden-information boundary
+14. invoke narrator from that persisted package only
 ```
 
 Topology/frontier resolution и preparation не перемещают traveller, не продвигают time и не превращают old option в ready. Нужна новая query с `derived_from_option_id`.
@@ -49,7 +58,12 @@ Time-bearing command передаёт exact rational elapsed только в tim
 
 ## 6. Player projection
 
-После commit формируется visible context только из разрешённого knowledge/perception слоя. Factual hidden route, candidates, diagnostics, unselected options и internal errors не попадают в prose/UI. Presentation не создаёт factual topology.
+Factual visible package формируется кодом из разрешённого
+knowledge/perception слоя и сохраняется в том же commit, что и state change.
+После commit presentation читает именно этот pin-bound package. Factual hidden
+route, candidates, diagnostics, unselected options и internal errors не
+попадают в prose/UI. Presentation и narrator не создают factual topology,
+temporal effect или consequence.
 
 ## 7. Traceability
 
@@ -58,6 +72,7 @@ Target источник: `spatial_architecture_standard_g0_g6.md` §§1.4, 1.7�
 
 ---
 
+<!-- knowledge-retrieval-exclude:start -->
 ## Приложение A. Архивный v2-источник для migration traceability
 
 Нижеследующий текст сохранён только как historical/migration source для ссылочной совместимости и аудита. Он **не является target-правилом**, не активирует v2 semantics в target v3 и не разрешает mixed execution, dual write либо fallback. При конфликте применяется основной target-раздел этого документа и target standard; active production boundary до P28 определён отдельно.
@@ -766,3 +781,4 @@ NPC и место не замирают, пока игрок ждёт.
 двигать время без причины;
 перезаписывать уже сохранённое место.
 ```
+<!-- knowledge-retrieval-exclude:end -->

@@ -6,11 +6,33 @@ const SUBCHUNK_OVERLAP = 150;
 export function buildCorpusChunks(corpusFiles) {
   const chunks = [];
   for (const file of Object.keys(corpusFiles).sort((left, right) => left.localeCompare(right))) {
-    const text = String(corpusFiles[file] ?? '').trim();
+    const text = maskRetrievalExcludedRanges(file, String(corpusFiles[file] ?? '')).trim();
     if (!text) continue;
     for (const section of splitDocumentSections(file, text)) chunks.push(...sectionToChunks(section));
   }
   return chunks;
+}
+
+function maskRetrievalExcludedRanges(file, text) {
+  const startMarker = '<!-- knowledge-retrieval-exclude:start -->';
+  const endMarker = '<!-- knowledge-retrieval-exclude:end -->';
+  let excluded = false;
+  const lines = text.split(/\r?\n/u).map((line) => {
+    const marker = line.trim();
+    if (marker === startMarker) {
+      if (excluded) throw new Error(`unbalanced knowledge retrieval exclusion in ${file}: nested start marker`);
+      excluded = true;
+      return '';
+    }
+    if (marker === endMarker) {
+      if (!excluded) throw new Error(`unbalanced knowledge retrieval exclusion in ${file}: end marker without start`);
+      excluded = false;
+      return '';
+    }
+    return excluded ? '' : line;
+  });
+  if (excluded) throw new Error(`unbalanced knowledge retrieval exclusion in ${file}: missing end marker`);
+  return lines.join('\n');
 }
 
 export function computeCorpusHashFromFiles(corpusFiles) {

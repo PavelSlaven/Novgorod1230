@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { cp, mkdtemp, readFile, rename, writeFile } from 'node:fs/promises';
+import { cp, mkdtemp, readFile, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { basename, join, resolve } from 'node:path';
 import {
@@ -35,24 +35,22 @@ test('stored legacy DOCUMENTS inventory exactly covers manifest legacy records',
 test('migrated corpus and generated provenance verify without requiring legacy', { concurrency: false }, async () => {
   const manifest = await readCorpusManifest();
   const legacyCount = manifest.documents.filter((record) => record.source_legacy_path).length;
-  const legacy = resolve(root, 'legacy/DOCUMENTS');
-  const hidden = resolve(root, 'legacy/DOCUMENTS.__knowledge_source_test__');
-  await rename(legacy, hidden);
-  try {
-    const result = await verifyKnowledgeSourceMigration({ root });
-    assert.equal(result.ok, true, result.errors.join('\n'));
-    assert.equal(result.document_count, manifest.documents.length);
-    assert.equal(result.legacy_document_count, legacyCount);
-    assert.equal(result.native_document_count, manifest.documents.length - legacyCount);
-    assert.equal(result.hash_parity, true);
-    assert.equal(result.legacy_sources_compared, 0);
-    assert.equal(result.legacy_required, false);
-    assert.equal(result.generated_provenance_complete, true);
-    assert.equal(result.graph.current, true);
-    assert.equal(result.rag.current, true);
-  } finally {
-    await rename(hidden, legacy);
-  }
+  const fixtureRoot = await mkdtemp(join(tmpdir(), 'rus-knowledge-no-legacy-'));
+  await cp(resolve(root, 'data/knowledge-source'), join(fixtureRoot, 'data/knowledge-source'), { recursive: true });
+  await cp(resolve(root, 'generated/knowledge-source'), join(fixtureRoot, 'generated/knowledge-source'), { recursive: true });
+  await cp(resolve(root, 'package.json'), join(fixtureRoot, 'package.json'));
+
+  const result = await verifyKnowledgeSourceMigration({ root: fixtureRoot });
+  assert.equal(result.ok, true, result.errors.join('\n'));
+  assert.equal(result.document_count, manifest.documents.length);
+  assert.equal(result.legacy_document_count, legacyCount);
+  assert.equal(result.native_document_count, manifest.documents.length - legacyCount);
+  assert.equal(result.hash_parity, true);
+  assert.equal(result.legacy_sources_compared, 0);
+  assert.equal(result.legacy_required, false);
+  assert.equal(result.generated_provenance_complete, true);
+  assert.equal(result.graph.current, true);
+  assert.equal(result.rag.current, true);
 });
 
 test('graph and RAG materializers are deterministic and preserve approved semantic coverage', async () => {
@@ -88,7 +86,11 @@ test('graph and RAG materializers are deterministic and preserve approved semant
 test('public knowledge writer uses the v2 structural and lexical materializer', { concurrency: false }, async () => {
   const manifest = await readCorpusManifest();
   const activeDocuments = manifest.documents.filter((record) => record.status === 'active');
-  const result = await writePublicKnowledgeSourceOutputs({ root });
+  const fixtureRoot = await mkdtemp(join(tmpdir(), 'rus-knowledge-writer-'));
+  await cp(resolve(root, 'data/knowledge-source'), join(fixtureRoot, 'data/knowledge-source'), { recursive: true });
+  await cp(resolve(root, 'package.json'), join(fixtureRoot, 'package.json'));
+
+  const result = await writePublicKnowledgeSourceOutputs({ root: fixtureRoot });
   assert.deepEqual(result.files, [
     'generated/knowledge-source/graph/GRAPH_REPORT.md',
     'generated/knowledge-source/graph/graph.html',
@@ -101,9 +103,9 @@ test('public knowledge writer uses the v2 structural and lexical materializer', 
     'generated/knowledge-source/rag/manifest.json'
   ]);
 
-  const graph = JSON.parse(await readFile(resolve(root, 'generated/knowledge-source/graph/graph.json'), 'utf8'));
-  const ragManifest = JSON.parse(await readFile(resolve(root, 'generated/knowledge-source/rag/manifest.json'), 'utf8'));
-  const lexicalIndex = JSON.parse(await readFile(resolve(root, 'generated/knowledge-source/rag/lexical-index.json'), 'utf8'));
+  const graph = JSON.parse(await readFile(resolve(fixtureRoot, 'generated/knowledge-source/graph/graph.json'), 'utf8'));
+  const ragManifest = JSON.parse(await readFile(resolve(fixtureRoot, 'generated/knowledge-source/rag/manifest.json'), 'utf8'));
+  const lexicalIndex = JSON.parse(await readFile(resolve(fixtureRoot, 'generated/knowledge-source/rag/lexical-index.json'), 'utf8'));
   const expectedLexicalOnlyCount = manifest.documents.length - ragManifest.semantic_document_count;
   const expectedStructuralOnlyCount = activeDocuments.length - ragManifest.semantic_document_count;
   assert.equal(graph.nodes.filter((node) => node.structural_only === true).length, expectedStructuralOnlyCount);

@@ -1,0 +1,20 @@
+[
+  {
+    "reference_id": "reference:carrier_synchronization_rescue_recovery_policies:carrier_root_clock_v2",
+    "status": "approved",
+    "table": "temporal_authoring_records",
+    "record_id": "record:carrier_synchronization_rescue_recovery_policies:carrier_root_clock_v2",
+    "source_record_key": "record:carrier_synchronization_rescue_recovery_policies:carrier_root_clock_v2",
+    "logical_record_id": "carrier_root_clock_transition_bound_v2",
+    "authoring_version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "source_ids": [
+      "source:carrier_synchronization_rescue_recovery_policies:activity_reconstruction_decisions",
+      "source:carrier_synchronization_rescue_recovery_policies:temporal_world_v4_normative",
+      "source:carrier_synchronization_rescue_recovery_policies:user_reconstruction_authorization"
+    ],
+    "binding_notes": "Bound to world_base.temporal_authoring_records by the approved Temporal v4 importer."
+  }
+]

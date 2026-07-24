@@ -23,13 +23,105 @@ const command = sealed({ party_id: 'party-1', command_id: 'command-1', command_k
 const snapshot = sealed({ party_id: 'party-1', kind: 'turn_factual_snapshot', state_version: 1, dependency_pins: dependencyPins });
 const proposal = sealed({ party_id: 'party-1', kind: 'immediate_action_proposal', command_id: 'command-1', idempotency_key: 'idem-1', dependency_pins: dependencyPins });
 const report = sealed({ party_id: 'party-1', kind: 'turn_validation_report', command_id: 'command-1', proposal_digest: proposal.canonical_digest, dependency_pins: dependencyPins });
-const plan = sealed({ party_id: 'party-1', kind: 'combined_write_plan', command_id: 'command-1', validation_report_digest: report.canonical_digest, dependency_pins: dependencyPins });
+const temporalResult = sealed({ party_id: 'party-1', kind: 'temporal_advance_not_required', command_id: 'command-1', dependency_pins: dependencyPins });
+const combinedChangeSet = sealed({ party_id: 'party-1', kind: 'combined_change_set_candidate', id: 'change-1', proposal_digest: proposal.canonical_digest, dependency_pins: dependencyPins });
+const visiblePayload = {
+  schema: 'temporal_visible_package.v1',
+  perceived_scene: 'Перед героем открывается двор.',
+  perceived_changes: [],
+  sensory_details: [],
+  visible_npcs: [],
+  visible_objects: [],
+  known_context: [],
+  uncertainties: [],
+  hypotheses: [],
+  player_safe_interruption: null,
+  allowed_action_affordances: []
+};
+const visibleEnvelope = {
+  package_id: 'visible-1',
+  party_id: 'party-1',
+  turn_id: 'request-1',
+  committed_state_version: '2',
+  change_set_id: 'change-1',
+  package_digest: computeSpatialV3CanonicalDigest(visiblePayload),
+  visible_payload: visiblePayload,
+  presentation_status: 'pending',
+  projection_policy_ref: { entity_ref: { entity_kind: 'visibility_modifier', entity_id: 'projection-v1' }, authoring_version: '4.3.0-target.1' },
+  dependency_pins: dependencyPins,
+  idempotency_record_id: 'idem-record-1'
+};
+const plan = sealed({ party_id: 'party-1', kind: 'combined_write_plan', command_id: 'command-1', validation_report_digest: report.canonical_digest, combined_change_set_digest: combinedChangeSet.canonical_digest, visible_package_envelope: visibleEnvelope, dependency_pins: dependencyPins });
 const changeSet = sealed({ party_id: 'party-1', kind: 'committed_change_set', id: 'change-1', write_plan_digest: plan.canonical_digest, dependency_pins: dependencyPins });
-const projection = sealed({ party_id: 'party-1', kind: 'visible_projection', change_set_digest: changeSet.canonical_digest, known: [], dependency_pins: dependencyPins });
-const narration = sealed({ party_id: 'party-1', kind: 'approved_narration', projection_digest: projection.canonical_digest, text: 'ok', dependency_pins: dependencyPins });
+const narration = sealed({ party_id: 'party-1', kind: 'approved_narration', package_digest: visibleEnvelope.package_digest, text: 'ok', dependency_pins: dependencyPins });
 
 function allHandlers(overrides = {}) {
   return Object.fromEntries(SPATIAL_V3_COMMAND_KINDS.map((kind) => [kind, async () => ({ ok: true, proposal })]).map(([kind, handler]) => [kind, overrides[kind] ?? handler]));
+}
+
+function directLifecyclePorts(calls = []) {
+  return {
+    advanceTemporal: async () => ({ ok: true, result: temporalResult }),
+    buildCombinedChangeSet: async () => ({ ok: true, change_set: combinedChangeSet }),
+    deriveVisiblePackage: async () => ({ ok: true, envelope: visibleEnvelope }),
+    loadCommittedVisiblePackage: async () => ({ ok: true, envelope: visibleEnvelope }),
+    claimPresentationAttempt: async () => ({ ok: true, disposition: 'claimed', attempt_id: 'presentation-attempt-1', claim_token: 'claim-1' }),
+    narrate: async () => ({ ok: true, result: narration }),
+    persistNarrationOutput: async ({ attempt_id, narration_result }) => ({ ok: true, disposition: 'output_ready', attempt_id, output_digest: narration_result.canonical_digest, narration_result }),
+    finalizePresentationAttempt: async ({ presentation_status, attempt_id, output_digest }) => ({ ok: true, presentation_status, attempt_id, output_digest }),
+    projectScreen: async () => ({ ok: true, screen: { schema: 'turn_screen_target' } }),
+    buildWritePlan: async () => {
+      calls.push('plan');
+      return { ok: true, plan };
+    },
+    commit: async () => {
+      calls.push('commit');
+      return { ok: true, change_set: changeSet, visible_package_envelope: visibleEnvelope };
+    }
+  };
+}
+
+function targetPresentationPorts() {
+  const packages = new Map();
+  return {
+    advanceTemporal: async ({ party_id, command: input, snapshot: factual }) => ({
+      ok: true,
+      result: sealed({ party_id, kind: 'temporal_advance_not_required', command_id: input.command_id, dependency_pins: factual.dependency_pins })
+    }),
+    deriveVisiblePackage: async ({ party_id, turn_id, proposal: resolved, combined_change_set }) => {
+      const payload = {
+        ...structuredClone(visiblePayload),
+        perceived_changes: [`Выполнена команда ${resolved.command_id}.`]
+      };
+      const envelope = {
+        package_id: `visible-${combined_change_set.id}`,
+        party_id,
+        turn_id,
+        committed_state_version: '2',
+        change_set_id: combined_change_set.id,
+        package_digest: computeSpatialV3CanonicalDigest(payload),
+        visible_payload: payload,
+        presentation_status: 'pending',
+        projection_policy_ref: { entity_ref: { entity_kind: 'visibility_modifier', entity_id: 'projection-v1' }, authoring_version: '4.3.0-target.1' },
+        dependency_pins: resolved.dependency_pins,
+        idempotency_record_id: resolved.combined_write_plan_input.idempotency.id
+      };
+      packages.set(envelope.package_id, envelope);
+      return { ok: true, envelope };
+    },
+    loadCommittedVisiblePackage: async ({ package_id }) => ({ ok: packages.has(package_id), envelope: packages.get(package_id) }),
+    claimPresentationAttempt: async () => ({ ok: true, disposition: 'claimed', attempt_id: 'presentation-attempt-1', claim_token: 'claim-1' }),
+    narrate: async ({ party_id, visible_package }) => ({
+      ok: true,
+      result: sealed({ party_id, kind: 'approved_narration', package_digest: visible_package.package_digest, text: 'ok', dependency_pins: visible_package.dependency_pins })
+    }),
+    persistNarrationOutput: async ({ attempt_id, narration_result }) => ({ ok: true, disposition: 'output_ready', attempt_id, output_digest: narration_result.canonical_digest, narration_result }),
+    finalizePresentationAttempt: async ({ presentation_status, attempt_id, output_digest }) => ({ ok: true, presentation_status, attempt_id, output_digest }),
+    projectScreen: async ({ visible_package, narration_result, outer_status }) => ({
+      ok: true,
+      screen: { schema: 'turn_screen_target', visible_payload: visible_package.visible_payload, narration: narration_result?.text ?? null, outer_status }
+    })
+  };
 }
 
 test('P21 registry is exhaustive and rejects free-text/unknown commands', async () => {
@@ -46,10 +138,10 @@ test('P21 registry is exhaustive and rejects free-text/unknown commands', async 
 test('P21 turn graph stops before commit when validation fails', async () => {
   const calls = [];
   const orchestrator = createSpatialV3TurnOrchestrator({
+    ...directLifecyclePorts(calls),
     loadSnapshots: async () => ({ ok: true, snapshot }), registry: createSpatialV3CommandRegistry(allHandlers()),
-    validateProposal: async () => ({ ok: false }), buildWritePlan: async () => { calls.push('write'); return { ok: true, plan }; },
-    commit: async () => { calls.push('commit'); return { ok: true, change_set: changeSet }; },
-    projectVisible: async () => ({ ok: true, projection }), narrate: async () => ({ ok: true, result: narration })
+    validateProposal: async () => ({ ok: false }),
+    buildWritePlan: async () => { calls.push('write'); return { ok: true, plan }; }
   });
   const result = await orchestrator.run({ party_id: 'party-1', request_id: 'request-1', command });
   assert.equal(result.ok, false); assert.deepEqual(calls, []);
@@ -58,12 +150,23 @@ test('P21 turn graph stops before commit when validation fails', async () => {
 test('P21 turn graph invokes ports in one gate-ordered path and has no v2 fallback', async () => {
   const calls = [];
   const orchestrator = createSpatialV3TurnOrchestrator({
-    loadSnapshots: async () => { calls.push('load'); return { ok: true, snapshot }; }, registry: createSpatialV3CommandRegistry(allHandlers({ immediate_action: async () => { calls.push('resolve'); return { ok: true, proposal }; } })),
-    validateProposal: async () => { calls.push('validate'); return { ok: true, report }; }, buildWritePlan: async () => { calls.push('plan'); return { ok: true, plan }; },
-    commit: async () => { calls.push('commit'); return { ok: true, change_set: changeSet }; }, projectVisible: async () => { calls.push('project'); return { ok: true, projection }; }, narrate: async () => { calls.push('narrate'); return { ok: true, result: narration }; }
+    ...directLifecyclePorts(calls),
+    loadSnapshots: async () => { calls.push('load'); return { ok: true, snapshot }; },
+    registry: createSpatialV3CommandRegistry(allHandlers({ immediate_action: async () => { calls.push('resolve'); return { ok: true, proposal }; } })),
+    validateProposal: async () => { calls.push('validate'); return { ok: true, report }; },
+    advanceTemporal: async () => { calls.push('temporal'); return { ok: true, result: temporalResult }; },
+    buildCombinedChangeSet: async () => { calls.push('combine'); return { ok: true, change_set: combinedChangeSet }; },
+    deriveVisiblePackage: async () => { calls.push('project'); return { ok: true, envelope: visibleEnvelope }; },
+    loadCommittedVisiblePackage: async () => { calls.push('read-visible'); return { ok: true, envelope: visibleEnvelope }; },
+    claimPresentationAttempt: async () => { calls.push('claim-presentation'); return { ok: true, disposition: 'claimed', attempt_id: 'attempt-1', claim_token: 'claim-1' }; },
+    narrate: async () => { calls.push('narrate'); return { ok: true, result: narration }; },
+    persistNarrationOutput: async ({ attempt_id, narration_result }) => { calls.push('persist-narration'); return { ok: true, disposition: 'output_ready', attempt_id, output_digest: narration_result.canonical_digest, narration_result }; },
+    finalizePresentationAttempt: async ({ presentation_status, attempt_id, output_digest }) => { calls.push('finalize-presentation'); return { ok: true, presentation_status, attempt_id, output_digest }; },
+    projectScreen: async () => { calls.push('screen'); return { ok: true, screen: { schema: 'turn_screen_target' } }; }
   });
   const result = await orchestrator.run({ party_id: 'party-1', request_id: 'request-1', command });
-  assert.equal(result.ok, true); assert.deepEqual(calls, ['load', 'resolve', 'validate', 'plan', 'commit', 'project', 'narrate']);
+  assert.equal(result.ok, true);
+  assert.deepEqual(calls, ['resolve', 'load', 'validate', 'temporal', 'combine', 'project', 'plan', 'commit', 'read-visible', 'claim-presentation', 'narrate', 'persist-narration', 'finalize-presentation', 'screen']);
 });
 
 test('P21 new game requires prepared v3 G6/position and handoff requires an exact endpoint', async () => {
@@ -117,21 +220,39 @@ test('P21 target root binds a P19 ownership transition and v3 new-game through t
   const artifact = sealed({ contract_kind: 'p19_mode_transition_result', capability: 'trusted_p19_transition', execution_id: 'execution-1' });
   const transition = sealed({ kind: 'mode_transition', transition_kind: 'board_carrier', from_mode: 'attached', to_mode: 'root_authoritative', final_step: true, next_owner_ref: nextOwner, post_transition_state_binding: expectedState, p19_artifact_digest: artifact.canonical_digest });
   const handoffInput = { party_id: 'party-1', execution_id: 'execution-1', next_owner_ref: nextOwner, mode_transition: transition, trusted_transition_artifact: artifact, handoff_endpoint_snapshot: handoffEndpoint, expected_persisted_state: expectedState };
-  const p16Input = ({ operation_kind, idempotency_key, command_id }) => ({
-    plan_id: `plan-${command_id}`, party_id: 'party-1', write_plan_kind: 'semantic_commit', operation_kind,
-    canonical_input_digest: computeSpatialV3CanonicalDigest({ command_id }), expected_state_versions: [],
-    validation_report: { status: 'pass', digest: computeSpatialV3CanonicalDigest({ command_id, report: true }) },
-    idempotency: { id: `idem-${command_id}`, key: idempotency_key }, change_set: { id: `change-${command_id}` },
-    lock_context: { owner_keys: [], execution_keys: [], g4_keys: [], physical_keys: [`party_runtime.party_v3_change_sets:change-${command_id}`] },
-    commit_rechecks: ['physical', 'state', 'pin', 'endpoint', 'route', 'capacity', 'time', 'change_set'].map((kind) => ({ kind, digest: computeSpatialV3CanonicalDigest({ kind, command_id }) })),
-    approved_write_sets: [{ inserts: [], updates: [], appends: [{ target_table: 'party_v3_change_sets', id: `change-${command_id}`, record: { id: `change-${command_id}`, party_id: 'party-1', operation_kind, idempotency_record_id: `idem-${command_id}` } }] }]
-  });
+  const p16Input = ({ operation_kind, idempotency_key, command_id }) => {
+    const visible_payload = {
+      ...structuredClone(visiblePayload),
+      perceived_changes: [`Выполнена команда ${command_id}.`]
+    };
+    return {
+      plan_id: `plan-${command_id}`, party_id: 'party-1', write_plan_kind: 'semantic_commit', operation_kind,
+      canonical_input_digest: computeSpatialV3CanonicalDigest({ command_id }), expected_state_versions: [],
+      validation_report: { status: 'pass', digest: computeSpatialV3CanonicalDigest({ command_id, report: true }) },
+      idempotency: { id: `idem-${command_id}`, key: idempotency_key }, change_set: { id: `change-${command_id}` },
+      visible_package_envelope: {
+        package_id: `visible-change-${command_id}`,
+        party_id: 'party-1',
+        turn_id: command_id,
+        committed_state_version: '2',
+        change_set_id: `change-${command_id}`,
+        package_digest: computeSpatialV3CanonicalDigest(visible_payload),
+        visible_payload,
+        presentation_status: 'pending',
+        projection_policy_ref: { entity_ref: { entity_kind: 'visibility_modifier', entity_id: 'projection-v1' }, authoring_version: '4.3.0-target.1' },
+        dependency_pins: dependencyPins,
+        idempotency_record_id: `idem-${command_id}`
+      },
+      lock_context: { owner_keys: [], execution_keys: [], g4_keys: [], physical_keys: [`party_runtime.party_v3_change_sets:change-${command_id}`] },
+      commit_rechecks: ['physical', 'state', 'pin', 'endpoint', 'route', 'capacity', 'time', 'change_set'].map((kind) => ({ kind, digest: computeSpatialV3CanonicalDigest({ kind, command_id }) })),
+      approved_write_sets: [{ inserts: [], updates: [], appends: [{ target_table: 'party_v3_change_sets', id: `change-${command_id}`, record: { id: `change-${command_id}`, party_id: 'party-1', operation_kind, idempotency_record_id: `idem-${command_id}` } }] }]
+    };
+  };
   const basePorts = {
+    ...targetPresentationPorts(),
     planner: { resolve: async () => ({ ok: true, proposal }) }, activationValidator: { validate: async () => ({ ok: true, proposal }) },
     targetPreparation: { prepare: async () => ({ ok: true, proposal }) }, frontierResolver: { resolve: async () => ({ ok: true, proposal }) },
     loadSnapshots: async () => ({ ok: true, snapshot }), validateProposal: async ({ command: input, proposal: resolved }) => ({ ok: true, report: sealed({ party_id: 'party-1', kind: 'turn_validation_report', command_id: input.command_id, proposal_digest: resolved.canonical_digest, dependency_pins: dependencyPins }) }),
-    projectVisible: async ({ change_set }) => ({ ok: true, projection: sealed({ party_id: 'party-1', kind: 'visible_projection', change_set_digest: change_set.canonical_digest, known: [], dependency_pins: dependencyPins }) }),
-    narrate: async ({ projection: visible }) => ({ ok: true, result: sealed({ party_id: 'party-1', kind: 'approved_narration', projection_digest: visible.canonical_digest, text: 'ok', dependency_pins: dependencyPins }) }),
     verifyApproval: async () => ({ ok: true }), loadStartSnapshot: async () => ({ ok: false }), prepareStart: async () => ({ ok: false }), buildStartWritePlanInput: async () => ({ ok: false }),
     modeHandoff: createSpatialV3ModeHandoffOrchestrator({ handoffAtomically: async () => ({ ok: true, execution_status: 'superseded', handoff_endpoint_snapshot: handoffEndpoint, persisted_state: expectedState, successor_plan: sealed({ predecessor_execution_id: 'execution-1', source_endpoint_snapshot: handoffEndpoint, journey_owner_ref: nextOwner }) }), verifyTransitionArtifact: async () => ({ ok: true, artifact }) }),
     buildModeHandoffProposal: async ({ command: input }) => ({ ok: true, proposal: sealed({ party_id: 'party-1', kind: `${input.command_kind}_proposal`, command_id: input.command_id, idempotency_key: input.idempotency_key, dependency_pins: dependencyPins, combined_write_plan_input: p16Input({ operation_kind: input.command_kind, idempotency_key: input.idempotency_key, command_id: input.command_id }) }) })
@@ -148,7 +269,7 @@ test('P21 target root binds a P19 ownership transition and v3 new-game through t
     recheck: async () => ({ ok: true })
   });
   const composition = createSpatialV3TargetShadowCompositionRoot({ ...basePorts, executionEngine: {
-    executeImmediateAction: async () => ({ ok: true, proposal }), resolveTimedActivity: async () => ({ ok: true, proposal }), resolveTraversalInterval: async () => ({ ok: true, proposal }), startTraversal: async () => ({ ok: true, proposal }), resolveSynchronizedSlice: async () => ({ ok: true, proposal }),
+    executeImmediateAction: async () => ({ ok: true, proposal }), resolveActivityBoundary: async () => ({ ok: true, proposal }), resolveTraversalInterval: async () => ({ ok: true, proposal }), startTraversal: async () => ({ ok: true, proposal }), resolveSynchronizedSlice: async () => ({ ok: true, proposal }),
     resolveModeTransition: async () => ({ ok: true, handoff_input: handoffInput })
   }, committer: { commit: async ({ plan: committed }) => { commits.push(committed); return committer.commit({ plan: committed }); } } });
   assert.equal(composition.status, 'target_shadow_only');
@@ -161,13 +282,13 @@ test('P21 target root binds a P19 ownership transition and v3 new-game through t
   const startSnapshot = sealed({ party_id: 'party-1', kind: 'canonical_party_g5_start_snapshot', dependency_pins: dependencyPins, canonical_party_g5_projection: g5, start_scene_baseline: baseline, start_position_binding: binding });
   const preparation = sealed({ party_id: 'party-1', kind: 'prepared_start', dependency_pins: dependencyPins, canonical_party_g5_projection: g5, start_scene_baseline: baseline, start_position_binding: binding, start_position: { g6_id: 'g6-1', position_id: 'position-1' } });
   const startComposition = createSpatialV3TargetShadowCompositionRoot({ ...basePorts, executionEngine: {
-    executeImmediateAction: async () => ({ ok: true, proposal }), resolveTimedActivity: async () => ({ ok: true, proposal }), resolveTraversalInterval: async () => ({ ok: true, proposal }), startTraversal: async () => ({ ok: true, proposal }), resolveSynchronizedSlice: async () => ({ ok: true, proposal }), resolveModeTransition: async () => ({ ok: true, handoff_input: handoffInput })
+    executeImmediateAction: async () => ({ ok: true, proposal }), resolveActivityBoundary: async () => ({ ok: true, proposal }), resolveTraversalInterval: async () => ({ ok: true, proposal }), startTraversal: async () => ({ ok: true, proposal }), resolveSynchronizedSlice: async () => ({ ok: true, proposal }), resolveModeTransition: async () => ({ ok: true, handoff_input: handoffInput })
   }, loadStartSnapshot: async () => ({ ok: true, start_snapshot: startSnapshot }), prepareStart: async () => ({ ok: true, preparation }), buildStartWritePlanInput: async () => ({ ok: true, input: p16Input({ operation_kind: 'new_game_start', idempotency_key: 'idem-start', command_id: 'start-1' }) }), committer: { commit: async ({ plan: committed }) => { commits.push(committed); return committer.commit({ plan: committed }); } } });
   const started = await startComposition.startNewGame(sealed({ party_id: 'party-1', request_id: 'start-1' }));
   assert.equal(started.ok, true, JSON.stringify(started)); assert.equal(started.schema_version, 3); assert.equal(commits.length, 2); assert.equal(commits[1].schema, 'spatial_v3.combined_write_plan.v2');
   assert.ok(transactionQueries.some((sql) => sql.includes('pg_advisory_xact_lock')));
   assert.ok(transactionQueries.some((sql) => sql.includes('party_command_idempotency')));
-  const missingP19 = createSpatialV3TargetShadowComposition({ ...basePorts, executionEngine: { executeImmediateAction: async () => ({ ok: true, proposal }), resolveTimedActivity: async () => ({ ok: true, proposal }), resolveTraversalInterval: async () => ({ ok: true, proposal }) }, committer: { commit: async () => ({ ok: true, change_set_id: 'nope' }) } });
+  const missingP19 = createSpatialV3TargetShadowComposition({ ...basePorts, executionEngine: { executeImmediateAction: async () => ({ ok: true, proposal }), resolveActivityBoundary: async () => ({ ok: true, proposal }), resolveTraversalInterval: async () => ({ ok: true, proposal }) }, committer: { commit: async () => ({ ok: true, change_set_id: 'nope' }) } });
   const typedFailure = await missingP19.registry.dispatch(sealed({ party_id: 'party-1', command_id: 'traversal-missing', command_kind: 'timed_traversal', idempotency_key: 'idem-missing', command_payload: sealed({ operation: 'synchronized_slice' }) }));
   assert.equal(typedFailure.ok, false); assert.equal(typedFailure.error.code, 'generated_schema_mismatch');
 });
@@ -175,10 +296,11 @@ test('P21 target root binds a P19 ownership transition and v3 new-game through t
 test('P21 rejects forged stage envelopes and arbitrary prepared starts before persistence', async () => {
   let persisted = false;
   const forged = createSpatialV3TurnOrchestrator({
+    ...directLifecyclePorts(),
     loadSnapshots: async () => ({ ok: true, snapshot }), registry: createSpatialV3CommandRegistry(allHandlers()),
     validateProposal: async () => ({ ok: true, report: sealed({ party_id: 'party-1', kind: 'generic_report', dependency_pins: dependencyPins }) }),
-    buildWritePlan: async () => { throw new Error('must not build'); }, commit: async () => { throw new Error('must not commit'); },
-    projectVisible: async () => ({ ok: true, projection }), narrate: async () => ({ ok: true, result: narration })
+    buildWritePlan: async () => { throw new Error('must not build'); },
+    commit: async () => { throw new Error('must not commit'); }
   });
   assert.equal((await forged.run({ party_id: 'party-1', request_id: 'request-1', command })).ok, false);
   const g5 = sealed({ kind: 'canonical_party_g5_projection', party_id: 'party-1' }); const baseline = sealed({ kind: 'scene_baseline', party_id: 'party-1' }); const binding = sealed({ kind: 'start_position_binding', party_id: 'party-1' });
@@ -219,10 +341,11 @@ test('P21 root awaits real P19 traversal results before the only approved adapte
   const planner = createMovementPlanner({ loadTopology: async () => ({ ok: false }), snapshotEndpoint: async () => null, validateCapability: async () => ({ ok: false }) });
   const frontier = createFrontierTopologyResolver({ selectTemplate: async () => ({ ok: false }), acquireExclusiveReservation: async () => ({ ok: false }) });
   const root = createSpatialV3TargetShadowCompositionRoot({
+    ...targetPresentationPorts(),
     planner, activationValidator: { validate: async () => ({ ok: false }) }, targetPreparation: p20, frontierResolver: frontier,
     executionEngine: engine, commandAdapters: { timed_traversal: traversalAdapter },
     loadSnapshots: async () => ({ ok: true, snapshot }), validateProposal: async () => ({ ok: false }),
-    projectVisible: async () => ({ ok: false }), narrate: async () => ({ ok: false }), verifyApproval: async () => ({ ok: true }),
+    verifyApproval: async () => ({ ok: true }),
     loadStartSnapshot: async () => ({ ok: false }), prepareStart: async () => ({ ok: false }), buildStartWritePlanInput: async () => ({ ok: false }),
     committer: { commit: async (input) => { writes.push(input); return { ok: true, change_set_id: 'unexpected' }; } },
     modeHandoff: { handoff: async () => ({ ok: false }) }, buildModeHandoffProposal: async () => ({ ok: false })
@@ -232,11 +355,12 @@ test('P21 root awaits real P19 traversal results before the only approved adapte
   const startDispatch = await dispatch('traversal-start', startPayload);
   assert.equal(startDispatch.ok, true, JSON.stringify(startDispatch));
   const start = seen.at(-1).result.travel_state;
-  const intervalPayload = sealed({ operation: 'interval', party_id: 'party-1', execution_id: 'execution-1', idempotency_key: 'traversal-interval', idempotency_record_id: 'idem-record-interval', change_set_id: 'change-interval', occurred_at_turn: 0, step_ordinal: 0, interval_ordinal: 0, clock_commit_mode: 'direct_party_clock', world_time_before: { numerator: 0, denominator: 1 }, travel_state: start, execution_context_snapshot: context, dynamic_dependency_pins: p19Pins, dynamic_snapshot: sealed({ snapshot_id: 'p19-dynamic', resolved_factors: [], resolved_delays: [] }), source_signals: sealed({ dependency_pins: p19Pins }), delay_occurrence_history: sealed({ id: 'delay-history', committed_occurrence_keys: [] }), progress_before_ppm: 0, planned_progress_after_ppm: 100, actual_progress_after_ppm: 100, planned_time: { numerator: 1, denominator: 1 }, actual_time: { numerator: 1, denominator: 1 }, cumulative_before: { numerator: 0, denominator: 1 } });
-  assert.equal((await dispatch('traversal-interval', intervalPayload)).ok, true);
+  const intervalPayload = sealed({ operation: 'interval', party_id: 'party-1', execution_id: 'execution-1', idempotency_key: 'traversal-interval', idempotency_record_id: 'idem-record-interval', change_set_id: 'change-interval', occurred_at_turn: 0, step_ordinal: 0, interval_ordinal: 0, clock_commit_mode: 'direct_party_clock', world_time_before: { whole_minutes: '0', subminute_numerator: '0', subminute_denominator: '1' }, travel_state: start, execution_context_snapshot: context, dynamic_dependency_pins: p19Pins, dynamic_snapshot: sealed({ snapshot_id: 'p19-dynamic', resolved_factors: [], resolved_delays: [] }), source_signals: sealed({ dependency_pins: p19Pins }), delay_occurrence_history: sealed({ id: 'delay-history', committed_occurrence_keys: [] }), progress_before_ppm: 0, planned_progress_after_ppm: 100, actual_progress_after_ppm: 100, planned_time: { numerator: '1', denominator: '1' }, actual_time: { numerator: '1', denominator: '1' }, cumulative_before: { numerator: '0', denominator: '1' } });
+  const intervalDispatch = await dispatch('traversal-interval', intervalPayload);
+  assert.equal(intervalDispatch.ok, true, JSON.stringify(intervalDispatch));
   const interval = seen.at(-1).result.result;
-  const sliceRoot = sealed({ id: 'root-slice-result', party_id: 'party-1', route_plan_execution_id: 'execution-1', actual_time: { numerator: 1, denominator: 1 }, result_kind: 'progressed' });
-  const slicePayload = sealed({ operation: 'synchronized_slice', id: 'slice-1', party_id: 'party-1', root_transport_execution_id: 'execution-1', change_set_id: 'change-slice', idempotency_record_id: 'idem-record-slice', dependency_pins: p19Pins, world_time_before: { numerator: 0, denominator: 1 }, root: sliceRoot, locals: [], atomic_trace: sealed({ root_result_id: sliceRoot.id, root_transport_execution_id: 'execution-1', local_result_ids: [], change_set_id: 'change-slice', idempotency_record_id: 'idem-record-slice' }) });
+  const sliceRoot = sealed({ id: 'root-slice-result', party_id: 'party-1', route_plan_execution_id: 'execution-1', actual_time: { numerator: '1', denominator: '1' }, result_kind: 'progressed' });
+  const slicePayload = sealed({ operation: 'synchronized_slice', id: 'slice-1', party_id: 'party-1', root_transport_execution_id: 'execution-1', change_set_id: 'change-slice', idempotency_record_id: 'idem-record-slice', dependency_pins: p19Pins, world_time_before: { whole_minutes: '0', subminute_numerator: '0', subminute_denominator: '1' }, root: sliceRoot, locals: [], atomic_trace: sealed({ root_result_id: sliceRoot.id, root_transport_execution_id: 'execution-1', local_result_ids: [], change_set_id: 'change-slice', idempotency_record_id: 'idem-record-slice' }) });
   const sliceDispatch = await dispatch('traversal-slice', slicePayload);
   assert.equal(sliceDispatch.ok, true, JSON.stringify(sliceDispatch));
   assert.deepEqual(seen.map(({ operation }) => operation), ['start', 'interval', 'synchronized_slice']);
@@ -245,9 +369,10 @@ test('P21 root awaits real P19 traversal results before the only approved adapte
   assert.equal((await root.registry.dispatch(sealed({ party_id: 'party-1', command_id: 'bad-preparation', command_kind: 'prepare_target', idempotency_key: 'bad-preparation', command_payload: sealed({}) }))).error.code, 'generated_schema_mismatch');
   assert.deepEqual(writes, []);
   const missing = createSpatialV3TargetShadowCompositionRoot({
+    ...targetPresentationPorts(),
     planner, activationValidator: { validate: async () => ({ ok: false }) }, targetPreparation: p20, frontierResolver: frontier,
     executionEngine: { startTraversal: async () => { throw new Error('P19 rejected start'); } }, commandAdapters: { timed_traversal: traversalAdapter },
-    loadSnapshots: async () => ({ ok: true, snapshot }), validateProposal: async () => ({ ok: false }), projectVisible: async () => ({ ok: false }), narrate: async () => ({ ok: false }), verifyApproval: async () => ({ ok: true }), loadStartSnapshot: async () => ({ ok: false }), prepareStart: async () => ({ ok: false }), buildStartWritePlanInput: async () => ({ ok: false }), committer: { commit: async (input) => { writes.push(input); return { ok: true, change_set_id: 'unexpected' }; } }, modeHandoff: { handoff: async () => ({ ok: false }) }, buildModeHandoffProposal: async () => ({ ok: false })
+    loadSnapshots: async () => ({ ok: true, snapshot }), validateProposal: async () => ({ ok: false }), verifyApproval: async () => ({ ok: true }), loadStartSnapshot: async () => ({ ok: false }), prepareStart: async () => ({ ok: false }), buildStartWritePlanInput: async () => ({ ok: false }), committer: { commit: async (input) => { writes.push(input); return { ok: true, change_set_id: 'unexpected' }; } }, modeHandoff: { handoff: async () => ({ ok: false }) }, buildModeHandoffProposal: async () => ({ ok: false })
   });
   for (const payload of [startPayload, sealed({ operation: 'interval' }), sealed({ operation: 'synchronized_slice' })]) {
     const result = await missing.registry.dispatch(sealed({ party_id: 'party-1', command_id: `missing-${payload.operation}`, command_kind: 'timed_traversal', idempotency_key: `missing-${payload.operation}`, command_payload: payload }));

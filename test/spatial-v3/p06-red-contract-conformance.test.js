@@ -1,16 +1,22 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { collectConformanceReport } from '../../tools/spatial-v3/red-contract-harness.mjs';
+import { collectConformanceReport, loadHistoricalTarget } from '../../tools/spatial-v3/red-contract-harness.mjs';
 
-test('P06 harness parses the frozen 160-contract / 58-error target independently of v3 artifacts', async () => {
+test('P05 historical snapshot remains 160 contracts / 58 errors independently of v3 artifacts', async () => {
+  const target = await loadHistoricalTarget();
+  assert.equal(target.contracts.length, 160);
+  assert.equal(target.errors.length, 58);
+});
+
+test('P06 harness parses the current 188-contract / 82-error union independently of runtime artifacts', async () => {
   const report = await collectConformanceReport();
-  assert.equal(report.target.contracts.length, 160);
-  assert.equal(report.target.errors.length, 58);
+  assert.equal(report.target.contracts.length, 188);
+  assert.equal(report.target.errors.length, 82);
   assert.equal(report.target.stateMachines.executionTransitions.length, 16);
   assert.equal(report.target.stateMachines.executionEvents.length, 12);
 });
 
-test('P07: every frozen contract has schema/DTO and validator evidence, and every typed error is registered', async () => {
+test('P07: every current contract has schema/DTO and validator evidence, and every typed error is registered', async () => {
   const report = await collectConformanceReport();
   assert.deepEqual(report.missing.jsonSchemaOrDto, []);
   assert.deepEqual(report.missing.validator, []);

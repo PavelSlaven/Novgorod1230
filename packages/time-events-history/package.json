@@ -2,8 +2,15 @@
   "name": "@rus/time-events-history",
   "version": "0.13.0",
   "type": "module",
-  "exports": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./calendar": "./src/calendar.js",
+    "./historical-phases": "./src/historical-phases.js",
+    "./legacy": "./src/legacy.js",
+    "./temporal-boundaries": "./src/temporal-boundaries.js"
+  },
   "dependencies": {
+    "@rus/contracts": "0.9.0",
     "@rus/kernel": "0.9.0"
   }
 }

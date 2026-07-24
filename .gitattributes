@@ -1,0 +1,2 @@
+# External auditor source snapshots are immutable, digest-bound evidence.
+data/world-catalogs/novgorod/temporal-v4/sources/** -whitespace

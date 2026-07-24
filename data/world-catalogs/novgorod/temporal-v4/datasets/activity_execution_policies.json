@@ -1,0 +1,108 @@
+[
+  {
+    "record_id": "record:activity_execution_policies:novgorod_v2",
+    "family_id": "activity_execution_policies",
+    "record_kind": "activity_execution_policy_set",
+    "status": "approved",
+    "version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "provenance_refs": [
+      "provenance:activity_execution_policies:novgorod_v1"
+    ],
+    "normalized_reference_ids": [
+      "reference:activity_execution_policies:novgorod_v2"
+    ],
+    "source_history_refs": [
+      "source:activity_execution_policies:controlled_vocabularies",
+      "source:activity_execution_policies:temporal_world_v4_normative",
+      "source:activity_execution_policies:user_reconstruction_authorization"
+    ],
+    "payload": {
+      "policy_set_id": "activity_execution_exact_interruptible_v2",
+      "progress_policy": {
+        "calculation": "exact elapsed RationalMinutes against the pinned completion branch",
+        "commit": "each validated slice appends committed progress",
+        "rollback": "committed progress is never rolled back",
+        "overrun": "forbidden"
+      },
+      "resource_policy": {
+        "reservation": "before first consuming slice when profile requires it",
+        "consumption": "only according to the pinned resource policy at committed slice/checkpoint boundaries",
+        "missing_binding": "activity_policy_gap",
+        "silent_substitution": "forbidden",
+        "intrinsic_none": "no reservation or consumption"
+      },
+      "participant_policy": {
+        "one_execution_owns_progress": true,
+        "attendance_intervals": "exact",
+        "required_participant_departure": [
+          "pause",
+          "fail",
+          "hard_block_as_pinned"
+        ],
+        "silent_replacement": "forbidden"
+      },
+      "continuation_policy": {
+        "recheck": [
+          "profile applicability",
+          "preconditions",
+          "participants",
+          "resources",
+          "access",
+          "body state",
+          "world events"
+        ],
+        "continue_only_with_same_pinned_profile_and_valid_bindings": true,
+        "authored_default": "none"
+      },
+      "interruption_policy": {
+        "preserve": [
+          "committed elapsed",
+          "committed progress",
+          "committed resource consumption",
+          "committed body changes"
+        ],
+        "reason_code_required": true,
+        "resume_requires_new_valid_attempt": true
+      },
+      "completion_policy": {
+        "complete_at_exact_target": true,
+        "apply_completion_effect_once": true,
+        "idempotency_key_required": true,
+        "post_completion_overrun": "forbidden"
+      },
+      "same_time_policy": {
+        "interval": "(from,to]",
+        "resolution": "temporal.resolution_class ordinal then stable candidate id",
+        "cascade_guard": "explicit finite configured guard; exhaustion is temporal_boundary_cycle",
+        "deduplicate_effect_identity": true,
+        "resolution_order": [
+          "continuous_finalize",
+          "cooccurring_fact",
+          "physical_hazard_access",
+          "execution_outcome",
+          "npc_schedule",
+          "perception_knowledge",
+          "reaction_decision",
+          "propagation_background",
+          "interruption_terminal"
+        ]
+      },
+      "precedence_and_conflict_rules": [
+        "continuous_finalize before cooccurring_fact",
+        "physical_hazard_access before execution_outcome",
+        "npc_schedule before perception_knowledge before reaction_decision",
+        "interruption_terminal last",
+        "incompatible applicable policies produce activity_policy_gap"
+      ],
+      "controlled_resolution_binding": {
+        "registry_id": "temporal.resolution_class",
+        "registry_version": "2.0.0",
+        "registry_digest": "cfd6204f09945bbda2c4fe723af01f2bca11fdd1202364c132293bb385e5d533",
+        "source_id": "source:activity_execution_policies:controlled_vocabularies"
+      }
+    }
+  }
+]

@@ -1,3 +1,16 @@
+# Параметры персонажа
+
+## Temporal World v4 amendment
+
+Для target Temporal World v4 изменения тела за `(from,to]` рассчитывает
+`@rus/body-state` как pure proposal из exact elapsed, activity intensity,
+environment context и approved profile pins. `@rus/time-events-history`
+владеет только clock/boundary arithmetic. Threshold prediction возвращает
+точный boundary candidate; округление к часу/минуте и скрытый доступ к БД
+запрещены. Полный proposed-норматив:
+`temporal_world_and_interruptible_activities.md`. До P28 production v2
+остаётся единственным owner.
+
 ## Физические характеристики
 
 d20 + бонус характеристики + бонус навыка/опыта + модификатор состояния + обстоятельства >= сложность
@@ -240,4 +253,3 @@ d20 + бонус характеристики + бонус навыка + мод
 ```
 
 Главное правило: состояние меняется только по понятной причине — прошло время, персонаж действовал, ел, спал, лечился, получил вред или оказался в опасной среде.
-

@@ -1,0 +1,11 @@
+Source: St. Benedict's Rule for Monasteries, Chapters 41 and 48
+Project Gutenberg eBook 50040
+URL: https://www.gutenberg.org/cache/epub/50040/pg50040-images.html
+Public domain in the USA
+Evidence role: historical analogue for bounded monastic schedule reconstruction; not direct evidence for Orthodox Novgorod practice
+
+Short exact excerpts:
+“from the fourth hour until about the sixth let them apply themselves to reading”
+“take dinner at the sixth hour”
+
+Source-derived note: the rule also assigns early daylight to manual labor, resumes work after the midday period, and requires evening meals to finish while daylight remains. The dataset uses only a clearly labeled comparative monastic analogue.

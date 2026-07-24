@@ -33,6 +33,9 @@ Infrastructure adapters реализуют публичные ports пакето
 - source code -> `generated/*` как редактируемый источник истины.
 - `runtime-catalog -> tools/*`, party store или PostgreSQL driver;
 - `materialization -> runtime-catalog` или database I/O.
+- `body-state`, `environment-state`, `npc-runtime` или `world-processes` ->
+  PostgreSQL, network, LLM, narrator, UI, global clock or another temporal
+  runtime owner.
 
 ## Публичные entrypoints
 
@@ -43,6 +46,13 @@ Infrastructure adapters реализуют публичные ports пакето
 - PostgreSQL driver разрешён только в `apps/game-server/src/infrastructure/postgres/`.
 - Provider transport подключается через `@rus/llm-runtime` и production provider adapter.
 - Прямой импорт `legacy` разрешён только явно названному compatibility facade/adapter до cutover.
+- Temporal factual commit is mapped to PostgreSQL only by
+  `apps/game-server/src/infrastructure/postgres/`; pure temporal owners and
+  `@rus/turn` depend on ports/contracts, never on that adapter.
+- `@rus/body-state` and `@rus/movement-routes` may import the public exact-time
+  surface of `@rus/time-events-history`; `@rus/turn` may additionally import its
+  explicit `legacy` compatibility and `temporal-boundaries` subpaths. These
+  dependencies consume arithmetic/ordering only and do not transfer ownership.
 
 ## Проверка
 

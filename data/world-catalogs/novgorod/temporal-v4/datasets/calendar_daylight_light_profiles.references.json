@@ -1,0 +1,23 @@
+[
+  {
+    "reference_id": "reference:calendar_daylight_light_profiles:novgorod_1230_1233_v2",
+    "status": "approved",
+    "table": "temporal_authoring_records",
+    "record_id": "record:calendar_daylight_light_profiles:novgorod_1230_1233_v2",
+    "source_record_key": "record:calendar_daylight_light_profiles:novgorod_1230_1233_v2",
+    "logical_record_id": "novgorod_julian_lmst_1230_1233_v2",
+    "authoring_version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "source_ids": [
+      "source:calendar_daylight_light_profiles:historical_daylight_derivation",
+      "source:calendar_daylight_light_profiles:noaa_solar",
+      "source:calendar_daylight_light_profiles:temporal_world_v4_normative",
+      "source:calendar_daylight_light_profiles:user_reconstruction_authorization",
+      "source:calendar_daylight_light_profiles:usno_julian",
+      "source:calendar_daylight_light_profiles:wikidata_coordinates"
+    ],
+    "binding_notes": "Bound to world_base.temporal_authoring_records by the approved Temporal v4 importer."
+  }
+]

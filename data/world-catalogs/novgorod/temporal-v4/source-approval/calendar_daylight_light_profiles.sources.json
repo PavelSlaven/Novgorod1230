@@ -1,0 +1,80 @@
+[
+  {
+    "source_id": "source:calendar_daylight_light_profiles:historical_daylight_derivation",
+    "status": "approved",
+    "source_path": "data/world-catalogs/novgorod/temporal-v4/sources/calendar_daylight_light_profiles/calendar_daylight_derivation_v2.py",
+    "source_sha256": "9dc143f9c69f3cce8540863ca641b9900a00007f9f58f4f7fb612a36fd85b8fa",
+    "title": "Historical Julian-date-aware daylight derivation v2",
+    "author_or_issuing_body": "External authoring auditor",
+    "publication_or_record_date": "2026-07-24",
+    "license_or_transfer_basis": "User-authorized bounded reconstruction included as reproducible authoring evidence",
+    "locator_or_citation": "Executable Julian-calendar to Julian Day and NOAA/Meeus authoring derivation included in this return package; output is frozen lookup data.",
+    "evidence_role": "reconstruction_derivation",
+    "notes": "Reproducible authoring-only calculation for 1230-1233. Whole-minute values are gameplay reconstruction, not observed medieval clock readings. Runtime floating-point astronomy is forbidden."
+  },
+  {
+    "source_id": "source:calendar_daylight_light_profiles:noaa_solar",
+    "status": "approved",
+    "source_path": "data/world-catalogs/novgorod/temporal-v4/sources/calendar_daylight_light_profiles/calendar_noaa.txt",
+    "source_sha256": "379bf16af0bce6410b66e0eb6d3987de6f1bd153b25861a1c1e0ae43c9c3ccb0",
+    "title": "NOAA Solar Calculation Details",
+    "author_or_issuing_body": "NOAA Global Monitoring Laboratory",
+    "publication_or_record_date": "source-specific; see exact source bytes",
+    "license_or_transfer_basis": "U.S. Government public information",
+    "locator_or_citation": "https://gml.noaa.gov/grad/solcalc/calcdetails.html",
+    "evidence_role": "method_source",
+    "notes": "Supports the authoring-time daylight calculation method and stated approximation limits."
+  },
+  {
+    "source_id": "source:calendar_daylight_light_profiles:temporal_world_v4_normative",
+    "status": "approved",
+    "source_path": "data/world-catalogs/novgorod/temporal-v4/sources/calendar_daylight_light_profiles/Temporal_World_v4_implementation_ready.md",
+    "source_sha256": "f97e71536c08a3b5cc0414fe25460bf70b2d95ee94ff861f785b0a3d9fbfb26e",
+    "title": "Механика течения времени, длительных действий и автономного мира v4",
+    "author_or_issuing_body": "Project Rus XIII century authoring team",
+    "publication_or_record_date": "2026-07-24",
+    "license_or_transfer_basis": "User-supplied project material authorized for return package",
+    "locator_or_citation": "REFERENCE_EXTERNAL_INPUTS implementation-ready mechanics document; exact bytes copied into family source directory",
+    "evidence_role": "normative_contract",
+    "notes": "Defines the formal Temporal World v4 contract and strict no-fallback/materialization boundaries; it does not by itself supply every regional or historical value."
+  },
+  {
+    "source_id": "source:calendar_daylight_light_profiles:user_reconstruction_authorization",
+    "status": "approved",
+    "source_path": "data/world-catalogs/novgorod/temporal-v4/sources/calendar_daylight_light_profiles/USER_RECONSTRUCTION_AUTHORIZATION.txt",
+    "source_sha256": "93898618ce8fff34352fb208661d6640d1716e66d1016c3f7336550e9c3678a2",
+    "title": "User reconstruction authorization",
+    "author_or_issuing_body": "User",
+    "publication_or_record_date": "2026-07-24",
+    "license_or_transfer_basis": "User-provided instruction authorized for this return package",
+    "locator_or_citation": "Current task instruction, 2026-07-24",
+    "evidence_role": "authoring_authorization",
+    "notes": "Authorizes bounded reconstruction while requiring three clean audit cycles; reconstruction remains labeled and is not represented as a primary historical fact."
+  },
+  {
+    "source_id": "source:calendar_daylight_light_profiles:usno_julian",
+    "status": "approved",
+    "source_path": "data/world-catalogs/novgorod/temporal-v4/sources/calendar_daylight_light_profiles/calendar_usno.txt",
+    "source_sha256": "8d5acb5d74c2510447db8f22701287d02e29fb96c2267ca632015d8553d13657",
+    "title": "USNO Julian calendar rule",
+    "author_or_issuing_body": "U.S. Naval Observatory",
+    "publication_or_record_date": "source-specific; see exact source bytes",
+    "license_or_transfer_basis": "U.S. Government public information",
+    "locator_or_citation": "https://aa.usno.navy.mil/data/JulianDate",
+    "evidence_role": "calendar_source",
+    "notes": "Supports the Julian leap-year rule."
+  },
+  {
+    "source_id": "source:calendar_daylight_light_profiles:wikidata_coordinates",
+    "status": "approved",
+    "source_path": "data/world-catalogs/novgorod/temporal-v4/sources/calendar_daylight_light_profiles/calendar_wikidata.txt",
+    "source_sha256": "c36d12ddf6ce72430811ed43973808812ae1635008dc9b701b0c054adc93076e",
+    "title": "Wikidata Q2235 Veliky Novgorod coordinates",
+    "author_or_issuing_body": "Wikidata community",
+    "publication_or_record_date": "source-specific; see exact source bytes",
+    "license_or_transfer_basis": "CC0 1.0",
+    "locator_or_citation": "https://www.wikidata.org/wiki/Q2235",
+    "evidence_role": "spatial_source",
+    "notes": "Supplies the coordinate anchor used by the daylight reconstruction."
+  }
+]

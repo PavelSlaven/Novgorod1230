@@ -904,54 +904,6 @@
       "formula_kind": "calculation_or_structural_formula"
     },
     {
-      "id": "attention_attribute",
-      "label": "Attention attribute",
-      "node_type": "attribute",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "Физические характеристики",
-        "line_start": 12,
-        "line_end": 36,
-        "line_range": "L12-L36"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 6,
-      "community_label": "Characters",
-      "norm_label": "attention attribute",
-      "aliases": [],
-      "description": "| **Внимание** | 3–18 | Восприятие и житейское чутьё: заметить след, услышать шум, почувствовать опасность, распознать ложь, понять настроение NPC, сориентироваться в лесу, не попасться на очевидную уловку. | | **Влияние** | 3–18 | Социальная сила: убедить,..."
-    },
-    {
-      "id": "attribute_balance_rules",
-      "label": "Attribute balance rules",
-      "node_type": "constraint",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "### Баланс характеристик",
-        "line_start": 22,
-        "line_end": 31,
-        "line_range": "L22-L31"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 6,
-      "community_label": "Characters",
-      "norm_label": "attribute balance rules",
-      "aliases": [],
-      "description": "На старте нельзя иметь больше двух характеристик 14+. 2. На старте нельзя иметь характеристику 16+ без особого основания. 3. Если есть характеристика 15+, должна быть хотя бы одна характеристика 8 или ниже. 4. Если есть две характеристики 14+, должна быть х...",
-      "semantic_category": "constraint",
-      "formula_kind": "constraint"
-    },
-    {
       "id": "canonical-document:base-turn-orchestration",
       "type": "canonical_document",
       "label": "base_turn_orchestration.txt",
@@ -960,7 +912,7 @@
       "source_location": {
         "file": "base_turn_orchestration.txt",
         "line_start": 1,
-        "line_end": 768
+        "line_end": 784
       }
     },
     {
@@ -973,6 +925,18 @@
         "file": "character_inventory_equipment.txt",
         "line_start": 1,
         "line_end": 345
+      }
+    },
+    {
+      "id": "canonical-document:character-parameters",
+      "type": "canonical_document",
+      "label": "character_parameters.txt",
+      "structural_only": true,
+      "source_file": "DOCUMENTS/character_parameters.txt",
+      "source_location": {
+        "file": "character_parameters.txt",
+        "line_start": 1,
+        "line_end": 255
       }
     },
     {
@@ -1032,7 +996,7 @@
       "source_location": {
         "file": "README.md",
         "line_start": 1,
-        "line_end": 65
+        "line_end": 67
       }
     },
     {
@@ -1044,7 +1008,7 @@
       "source_location": {
         "file": "formulas.md",
         "line_start": 1,
-        "line_end": 1020
+        "line_end": 1031
       }
     },
     {
@@ -1068,7 +1032,7 @@
       "source_location": {
         "file": "historical_events_and_figures.txt",
         "line_start": 1,
-        "line_end": 177
+        "line_end": 193
       }
     },
     {
@@ -1080,7 +1044,7 @@
       "source_location": {
         "file": "information_sources_llm_prompts.md",
         "line_start": 1,
-        "line_end": 1060
+        "line_end": 1067
       }
     },
     {
@@ -1092,7 +1056,7 @@
       "source_location": {
         "file": "interface_ux.md",
         "line_start": 1,
-        "line_end": 1195
+        "line_end": 1203
       }
     },
     {
@@ -1116,7 +1080,7 @@
       "source_location": {
         "file": "llm_agent_prompt_templates.md",
         "line_start": 1,
-        "line_end": 1006
+        "line_end": 1022
       }
     },
     {
@@ -1128,7 +1092,7 @@
       "source_location": {
         "file": "llm_documentation_navigation.md",
         "line_start": 1,
-        "line_end": 267
+        "line_end": 277
       }
     },
     {
@@ -1152,7 +1116,7 @@
       "source_location": {
         "file": "movement_locations_regions.txt",
         "line_start": 1,
-        "line_end": 910
+        "line_end": 919
       }
     },
     {
@@ -1176,7 +1140,7 @@
       "source_location": {
         "file": "npc_generation_profiles.txt",
         "line_start": 1,
-        "line_end": 197
+        "line_end": 204
       }
     },
     {
@@ -1224,7 +1188,19 @@
       "source_location": {
         "file": "spatial_architecture_standard_g0_g6.md",
         "line_start": 1,
-        "line_end": 6820
+        "line_end": 6841
+      }
+    },
+    {
+      "id": "canonical-document:temporal-world-and-interruptible-activities",
+      "type": "canonical_document",
+      "label": "temporal_world_and_interruptible_activities.md",
+      "structural_only": true,
+      "source_file": "DOCUMENTS/temporal_world_and_interruptible_activities.md",
+      "source_location": {
+        "file": "temporal_world_and_interruptible_activities.md",
+        "line_start": 1,
+        "line_end": 2091
       }
     },
     {
@@ -1236,7 +1212,7 @@
       "source_location": {
         "file": "time_system.txt",
         "line_start": 1,
-        "line_end": 244
+        "line_end": 252
       }
     },
     {
@@ -1260,108 +1236,8 @@
       "source_location": {
         "file": "world_generation_and_turns.txt",
         "line_start": 1,
-        "line_end": 1551
+        "line_end": 1559
       }
-    },
-    {
-      "id": "character_attribute_schema",
-      "label": "Six character attributes schema",
-      "node_type": "schema",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "## Физические характеристики",
-        "line_start": 1,
-        "line_end": 25,
-        "line_range": "L1-L25"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 6,
-      "community_label": "Characters",
-      "norm_label": "six character attributes schema",
-      "aliases": [],
-      "description": "d20 + бонус характеристики + бонус навыка/опыта + модификатор состояния + обстоятельства >= сложность бонус характеристики = floor((значение характеристики - 10) / 2) В проверках всегда используется бонус характеристики, а не сырое значение характеристики....",
-      "semantic_category": "schema",
-      "formula_kind": "schema_model"
-    },
-    {
-      "id": "character_body_states",
-      "label": "Character body states",
-      "node_type": "schema",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "## Состояния персонажа",
-        "line_start": 66,
-        "line_end": 90,
-        "line_range": "L66-L90"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 15,
-      "community_label": "Character states",
-      "norm_label": "character body states",
-      "aliases": [],
-      "description": "Состояния персонажа описывают текущее состояние тела и влияют на доступные действия, проверки, прозу сцены и последствия времени. В базовой системе используются три числовых состояния: 1. **Здоровье** — общий запас тела: раны, болезнь, изнурение, боль, кров...",
-      "semantic_category": "schema",
-      "formula_kind": "schema_model"
-    },
-    {
-      "id": "character_skills_schema",
-      "label": "Character skills schema",
-      "node_type": "schema",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "## Навыки",
-        "line_start": 32,
-        "line_end": 56,
-        "line_range": "L32-L56"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 6,
-      "community_label": "Characters",
-      "norm_label": "character skills schema",
-      "aliases": [],
-      "description": "d20 + бонус характеристики + бонус навыка + модификаторы состояния/обстоятельств >= сложность | Уровень | Бонус | Смысл | | ------------- | ----: | -------------------------------------------------------- | | **Нет опыта** | +0 | Может пробовать, но без под...",
-      "semantic_category": "schema",
-      "formula_kind": "schema_model"
-    },
-    {
-      "id": "character_state_change_profile_formula",
-      "label": "Character state change profile formula",
-      "node_type": "formula",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "### Общая формула изменения",
-        "line_start": 83,
-        "line_end": 98,
-        "line_range": "L83-L98"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 15,
-      "community_label": "Character states",
-      "norm_label": "character state change profile formula",
-      "aliases": [],
-      "description": "Состояния пересчитываются после прохождения игрового времени, значимого действия, отдыха, сна, еды, лечения или вредного события. новое значение = старое значение + восстановление − расход − вред После расчёта значение всегда ограничивается диапазоном: 0 ≤...",
-      "semantic_category": "formula",
-      "formula_kind": "calculation_or_structural_formula"
     },
     {
       "id": "combat_equipment_processing_order",
@@ -1412,52 +1288,6 @@
       "formula_kind": "calculation_or_structural_formula"
     },
     {
-      "id": "dexterity_attribute",
-      "label": "Dexterity attribute",
-      "node_type": "attribute",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "Физические характеристики",
-        "line_start": 9,
-        "line_end": 33,
-        "line_range": "L9-L33"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 6,
-      "community_label": "Characters",
-      "norm_label": "dexterity attribute",
-      "aliases": [],
-      "description": "| **Ловкость** | 3–18 | Проворство и точность тела: уклониться, пролезть, удержать равновесие, двигаться тихо, стрелять, метнуть, работать пальцами, развязать узел, не поскользнуться, быстро сменить позицию. | | **Выносливость** | 3–18 | Запас тела: холод,..."
-    },
-    {
-      "id": "doc_char_params",
-      "label": "Character parameters",
-      "node_type": "document",
-      "file_type": "document",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "Физические характеристики",
-        "line_start": 1,
-        "line_end": 20,
-        "line_range": "L1-L20"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 6,
-      "community_label": "Characters",
-      "norm_label": "character parameters",
-      "aliases": [],
-      "description": "Document: character_parameters.txt"
-    },
-    {
       "id": "doc_regions",
       "label": "RUS13 world regions reference",
       "node_type": "document",
@@ -1502,54 +1332,6 @@
       "norm_label": "weapons and armor",
       "aliases": [],
       "description": "Document: weapons_and_armor.txt"
-    },
-    {
-      "id": "endurance_attribute",
-      "label": "Endurance attribute",
-      "node_type": "attribute",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "Физические характеристики",
-        "line_start": 10,
-        "line_end": 34,
-        "line_range": "L10-L34"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 6,
-      "community_label": "Characters",
-      "norm_label": "endurance attribute",
-      "aliases": [],
-      "description": "| **Выносливость** | 3–18 | Запас тела: холод, голод, жажда, болезнь, яд, боль, кровопотеря, долгий путь, тяжёлая работа, бой на износ, недосып, восстановление после ран. | | **Разум** | 3–18 | Память, расчёт и понимание устройства вещей: сообразить, вспомн..."
-    },
-    {
-      "id": "energy_profile",
-      "label": "Energy profile",
-      "node_type": "state",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "### Бодрость",
-        "line_start": 163,
-        "line_end": 185,
-        "line_range": "L163-L185"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 15,
-      "community_label": "Character states",
-      "norm_label": "energy profile",
-      "aliases": [],
-      "description": "Бодрость показывает, насколько персонаж выспался и способен продолжать действовать. Бодрость уменьшается от времени без сна и от активности. Она восстанавливается сном и полноценным отдыхом. новая бодрость = бодрость − расход усталости + сон/отдых Если бодр...",
-      "semantic_category": "state",
-      "formula_kind": "state_model"
     },
     {
       "id": "equipment_attribute_links",
@@ -1817,31 +1599,6 @@
       "description": "Весь боевой комплект входит в общий вес. Формула: `общий вес = вес оружия + вес брони + вес щита + вес снарядов + вес одежды + вес прочих вещей` Коэффициент нагрузки: `коэффициент нагрузки = общий вес / Сила` Категории нагрузки: | Нагрузка | Условие | Эффек..."
     },
     {
-      "id": "health_profile",
-      "label": "Health profile",
-      "node_type": "state",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "### Здоровье",
-        "line_start": 186,
-        "line_end": 199,
-        "line_range": "L186-L199"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 15,
-      "community_label": "Character states",
-      "norm_label": "health profile",
-      "aliases": [],
-      "description": "Здоровье показывает, сколько вреда тело ещё способно выдержать. Здоровье уменьшается от ран, болезни, яда, кровотечения, побоев, падений, переохлаждения, перегрева и голода при нулевой сытости. новое здоровье = здоровье − вред + лечение/восстановление Здоро...",
-      "semantic_category": "state",
-      "formula_kind": "state_model"
-    },
-    {
       "id": "helmet_profile",
       "label": "Helmet profile",
       "node_type": "schema",
@@ -1865,29 +1622,6 @@
       "description": "Шлем — отдельная защита головы. Обычно: `шлем = защита головы 2 или +1 к общей защите при опасности удара по голове` Шлем не должен давать глобальную защиту от всех ударов. Он важен при: 1. ударе по голове; 2. падении; 3. стрелах и камнях сверху; 4. бою в т...",
       "semantic_category": "schema",
       "formula_kind": "schema_model"
-    },
-    {
-      "id": "influence_attribute",
-      "label": "Influence attribute",
-      "node_type": "attribute",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "Физические характеристики",
-        "line_start": 13,
-        "line_end": 37,
-        "line_range": "L13-L37"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 6,
-      "community_label": "Characters",
-      "norm_label": "influence attribute",
-      "aliases": [],
-      "description": "| **Влияние** | 3–18 | Социальная сила: убедить, солгать, запугать, договориться, вызвать доверие, держаться достойно, произвести впечатление, просить милости, спорить, торговаться, отдавать приказ. | большинство людей в диапазоне 8–13, крепких и опытных —..."
     },
     {
       "id": "npc_equipment",
@@ -1940,29 +1674,6 @@
       "formula_kind": "schema_model"
     },
     {
-      "id": "reason_attribute",
-      "label": "Reason attribute",
-      "node_type": "attribute",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "Физические характеристики",
-        "line_start": 11,
-        "line_end": 35,
-        "line_range": "L11-L35"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 6,
-      "community_label": "Characters",
-      "norm_label": "reason attribute",
-      "aliases": [],
-      "description": "| **Разум** | 3–18 | Память, расчёт и понимание устройства вещей: сообразить, вспомнить, понять механизм, оценить цену, разобраться в ремесле, прочитать знак, сопоставить факты, не ошибиться в сложной задаче. | | **Внимание** | 3–18 | Восприятие и житейское..."
-    },
-    {
       "id": "right_to_carry",
       "label": "Right to carry",
       "node_type": "rule",
@@ -2009,31 +1720,6 @@
       "description": "Allowed regional grid for the XIII-century world scope."
     },
     {
-      "id": "satiety_profile",
-      "label": "Satiety profile",
-      "node_type": "state",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "### Сытость",
-        "line_start": 140,
-        "line_end": 162,
-        "line_range": "L140-L162"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 15,
-      "community_label": "Character states",
-      "norm_label": "satiety profile",
-      "aliases": [],
-      "description": "Сытость показывает, насколько персонаж накормлен. Сытость уменьшается от времени и активности. Она восстанавливается едой, если персонаж действительно получил пищу и смог её съесть. новая сытость = сытость − расход голода + еда Если сытость выше `50`, персо...",
-      "semantic_category": "state",
-      "formula_kind": "state_model"
-    },
-    {
       "id": "shield_profile",
       "label": "Shield profile",
       "node_type": "schema",
@@ -2059,31 +1745,6 @@
       "formula_kind": "schema_model"
     },
     {
-      "id": "skill_balance_rules",
-      "label": "Skill balance rules",
-      "node_type": "constraint",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "### Баланс навыков",
-        "line_start": 58,
-        "line_end": 65,
-        "line_range": "L58-L65"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 6,
-      "community_label": "Characters",
-      "norm_label": "skill balance rules",
-      "aliases": [],
-      "description": "На старте нельзя иметь больше одного навыка +4. 2. Навык +4 требует биографического основания. 3. Нельзя иметь больше двух боевых навыков выше +1 без военной/охотничьей биографии. 4. Нельзя иметь одновременно высокий Ближний бой, Дальний бой, Лечение, Ремес...",
-      "semantic_category": "constraint",
-      "formula_kind": "constraint"
-    },
-    {
       "id": "starting_equipment",
       "label": "Starting equipment",
       "node_type": "schema",
@@ -2107,52 +1768,6 @@
       "description": "Стартовое снаряжение должно вытекать из происхождения, статуса, занятия, места и причины начала партии. Обычный персонаж не должен получать сильный боевой комплект без цены. Ориентиры: | Профиль | Допустимое снаряжение | | ---------------------------- | ---...",
       "semantic_category": "schema",
       "formula_kind": "schema_model"
-    },
-    {
-      "id": "state_penalty_profile",
-      "label": "State penalty profile",
-      "node_type": "rule",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "### Штрафы от состояний",
-        "line_start": 200,
-        "line_end": 218,
-        "line_range": "L200-L218"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 15,
-      "community_label": "Character states",
-      "norm_label": "state penalty profile",
-      "aliases": [],
-      "description": "Штрафы применяются только к тем проверкам, где состояние действительно мешает действию. d20 + бонус характеристики + бонус навыка + модификатор состояния + модификатор снаряжения/предмета + обстоятельства >= сложность Рекомендуемые штрафы: | Значение состоя..."
-    },
-    {
-      "id": "strength_attribute",
-      "label": "Strength attribute",
-      "node_type": "attribute",
-      "file_type": "concept",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "Физические характеристики",
-        "line_start": 8,
-        "line_end": 32,
-        "line_range": "L8-L32"
-      },
-      "source_url": null,
-      "captured_at": "2026-06-25",
-      "author": null,
-      "contributor": null,
-      "community": 6,
-      "community_label": "Characters",
-      "norm_label": "strength attribute",
-      "aliases": [],
-      "description": "| **Сила** | 3–18 | Мышечная мощь: поднять, тащить, толкнуть, удержать, выломать, бороться, рубить, нести тяжесть, выбить дверь, удержать лошадь, перетащить раненого. | | **Ловкость** | 3–18 | Проворство и точность тела: уклониться, пролезть, удержать равно..."
     },
     {
       "id": "weapon_armor_combat_formula",
@@ -10995,474 +10610,6 @@
   ],
   "links": [
     {
-      "source": "attribute_balance_rules",
-      "target": "character_attribute_schema",
-      "relation": "constrains",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "### Баланс характеристик",
-        "line_start": 22,
-        "line_end": 31,
-        "line_range": "L22-L31"
-      },
-      "weight": 1,
-      "description": "Attribute balance rules --constrains--> Six character attributes schema; confidence=EXTRACTED."
-    },
-    {
-      "source": "character_attribute_schema",
-      "target": "attention_attribute",
-      "relation": "includes",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "## Физические характеристики",
-        "line_start": 1,
-        "line_end": 20,
-        "line_range": "L1-L20"
-      },
-      "weight": 1,
-      "description": "Six character attributes schema --includes--> Attention attribute; confidence=EXTRACTED."
-    },
-    {
-      "source": "character_attribute_schema",
-      "target": "dexterity_attribute",
-      "relation": "includes",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "## Физические характеристики",
-        "line_start": 1,
-        "line_end": 20,
-        "line_range": "L1-L20"
-      },
-      "weight": 1,
-      "description": "Six character attributes schema --includes--> Dexterity attribute; confidence=EXTRACTED."
-    },
-    {
-      "source": "character_attribute_schema",
-      "target": "endurance_attribute",
-      "relation": "includes",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "## Физические характеристики",
-        "line_start": 1,
-        "line_end": 20,
-        "line_range": "L1-L20"
-      },
-      "weight": 1,
-      "description": "Six character attributes schema --includes--> Endurance attribute; confidence=EXTRACTED."
-    },
-    {
-      "source": "character_attribute_schema",
-      "target": "influence_attribute",
-      "relation": "includes",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "## Физические характеристики",
-        "line_start": 1,
-        "line_end": 20,
-        "line_range": "L1-L20"
-      },
-      "weight": 1,
-      "description": "Six character attributes schema --includes--> Influence attribute; confidence=EXTRACTED."
-    },
-    {
-      "source": "character_attribute_schema",
-      "target": "reason_attribute",
-      "relation": "includes",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "## Физические характеристики",
-        "line_start": 1,
-        "line_end": 20,
-        "line_range": "L1-L20"
-      },
-      "weight": 1,
-      "description": "Six character attributes schema --includes--> Reason attribute; confidence=EXTRACTED."
-    },
-    {
-      "source": "character_attribute_schema",
-      "target": "strength_attribute",
-      "relation": "includes",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "## Физические характеристики",
-        "line_start": 1,
-        "line_end": 20,
-        "line_range": "L1-L20"
-      },
-      "weight": 1,
-      "description": "Six character attributes schema --includes--> Strength attribute; confidence=EXTRACTED."
-    },
-    {
-      "source": "character_body_states",
-      "target": "energy_profile",
-      "relation": "includes",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "## Состояния персонажа",
-        "line_start": 66,
-        "line_end": 85,
-        "line_range": "L66-L85"
-      },
-      "weight": 1,
-      "description": "Character body states --includes--> Energy profile; confidence=EXTRACTED."
-    },
-    {
-      "source": "character_body_states",
-      "target": "health_profile",
-      "relation": "includes",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "## Состояния персонажа",
-        "line_start": 66,
-        "line_end": 85,
-        "line_range": "L66-L85"
-      },
-      "weight": 1,
-      "description": "Character body states --includes--> Health profile; confidence=EXTRACTED."
-    },
-    {
-      "source": "character_body_states",
-      "target": "satiety_profile",
-      "relation": "includes",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "## Состояния персонажа",
-        "line_start": 66,
-        "line_end": 85,
-        "line_range": "L66-L85"
-      },
-      "weight": 1,
-      "description": "Character body states --includes--> Satiety profile; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_char_params",
-      "target": "attention_attribute",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "Физические характеристики",
-        "line_start": 12,
-        "line_end": 36,
-        "line_range": "L12-L36"
-      },
-      "weight": 1,
-      "description": "Character parameters --defines--> Attention attribute; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_char_params",
-      "target": "attribute_balance_rules",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "### Баланс характеристик",
-        "line_start": 22,
-        "line_end": 31,
-        "line_range": "L22-L31"
-      },
-      "weight": 1,
-      "description": "Character parameters --defines--> Attribute balance rules; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_char_params",
-      "target": "character_attribute_schema",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "## Физические характеристики",
-        "line_start": 1,
-        "line_end": 25,
-        "line_range": "L1-L25"
-      },
-      "weight": 1,
-      "description": "Character parameters --defines--> Six character attributes schema; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_char_params",
-      "target": "character_body_states",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "## Состояния персонажа",
-        "line_start": 66,
-        "line_end": 90,
-        "line_range": "L66-L90"
-      },
-      "weight": 1,
-      "description": "Character parameters --defines--> Character body states; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_char_params",
-      "target": "character_skills_schema",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "## Навыки",
-        "line_start": 32,
-        "line_end": 56,
-        "line_range": "L32-L56"
-      },
-      "weight": 1,
-      "description": "Character parameters --defines--> Character skills schema; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_char_params",
-      "target": "character_state_change_profile_formula",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "### Общая формула изменения",
-        "line_start": 83,
-        "line_end": 98,
-        "line_range": "L83-L98"
-      },
-      "weight": 1,
-      "description": "Character parameters --defines--> Character state change profile formula; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_char_params",
-      "target": "dexterity_attribute",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "Физические характеристики",
-        "line_start": 9,
-        "line_end": 33,
-        "line_range": "L9-L33"
-      },
-      "weight": 1,
-      "description": "Character parameters --defines--> Dexterity attribute; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_char_params",
-      "target": "endurance_attribute",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "Физические характеристики",
-        "line_start": 10,
-        "line_end": 34,
-        "line_range": "L10-L34"
-      },
-      "weight": 1,
-      "description": "Character parameters --defines--> Endurance attribute; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_char_params",
-      "target": "energy_profile",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "### Бодрость",
-        "line_start": 163,
-        "line_end": 185,
-        "line_range": "L163-L185"
-      },
-      "weight": 1,
-      "description": "Character parameters --defines--> Energy profile; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_char_params",
-      "target": "health_profile",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "### Здоровье",
-        "line_start": 186,
-        "line_end": 199,
-        "line_range": "L186-L199"
-      },
-      "weight": 1,
-      "description": "Character parameters --defines--> Health profile; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_char_params",
-      "target": "influence_attribute",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "Физические характеристики",
-        "line_start": 13,
-        "line_end": 37,
-        "line_range": "L13-L37"
-      },
-      "weight": 1,
-      "description": "Character parameters --defines--> Influence attribute; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_char_params",
-      "target": "reason_attribute",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "Физические характеристики",
-        "line_start": 11,
-        "line_end": 35,
-        "line_range": "L11-L35"
-      },
-      "weight": 1,
-      "description": "Character parameters --defines--> Reason attribute; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_char_params",
-      "target": "satiety_profile",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "### Сытость",
-        "line_start": 140,
-        "line_end": 162,
-        "line_range": "L140-L162"
-      },
-      "weight": 1,
-      "description": "Character parameters --defines--> Satiety profile; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_char_params",
-      "target": "skill_balance_rules",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "### Баланс навыков",
-        "line_start": 58,
-        "line_end": 65,
-        "line_range": "L58-L65"
-      },
-      "weight": 1,
-      "description": "Character parameters --defines--> Skill balance rules; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_char_params",
-      "target": "state_penalty_profile",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "### Штрафы от состояний",
-        "line_start": 200,
-        "line_end": 218,
-        "line_range": "L200-L218"
-      },
-      "weight": 1,
-      "description": "Character parameters --defines--> State penalty profile; confidence=EXTRACTED."
-    },
-    {
-      "source": "doc_char_params",
-      "target": "strength_attribute",
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "Физические характеристики",
-        "line_start": 8,
-        "line_end": 32,
-        "line_range": "L8-L32"
-      },
-      "weight": 1,
-      "description": "Character parameters --defines--> Strength attribute; confidence=EXTRACTED."
-    },
-    {
       "source": "doc_regions",
       "target": "rus13_region_grid",
       "relation": "defines",
@@ -19908,42 +19055,6 @@
       "description": "Weapons and armor --defines--> Weapon types; confidence=EXTRACTED."
     },
     {
-      "source": "equipment_attribute_links",
-      "target": "character_attribute_schema",
-      "relation": "uses",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/weapons_and_armor.txt",
-      "source_location": {
-        "file": "DOCUMENTS/weapons_and_armor.txt",
-        "section": "### 3. Связь с характеристиками персонажа",
-        "line_start": 72,
-        "line_end": 86,
-        "line_range": "L72-L86"
-      },
-      "weight": 1,
-      "description": "Equipment links to attributes --uses--> Six character attributes schema; confidence=EXTRACTED."
-    },
-    {
-      "source": "equipment_body_requirements",
-      "target": "strength_attribute",
-      "relation": "may_require",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/weapons_and_armor.txt",
-      "source_location": {
-        "file": "DOCUMENTS/weapons_and_armor.txt",
-        "section": "### 4. Требования снаряжения к телу",
-        "line_start": 87,
-        "line_end": 105,
-        "line_range": "L87-L105"
-      },
-      "weight": 1,
-      "description": "Equipment body requirements --may_require--> Strength attribute; confidence=EXTRACTED."
-    },
-    {
       "source": "helmet_profile",
       "target": "combined_protection",
       "relation": "adds_to",
@@ -27937,24 +27048,6 @@
       },
       "weight": 1,
       "description": "Shield profile --adds_to--> Combined protection; confidence=EXTRACTED."
-    },
-    {
-      "source": "skill_balance_rules",
-      "target": "character_skills_schema",
-      "relation": "constrains",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence_type": "source_backed",
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "DOCUMENTS/character_parameters.txt",
-        "section": "### Баланс навыков",
-        "line_start": 58,
-        "line_end": 65,
-        "line_range": "L58-L65"
-      },
-      "weight": 1,
-      "description": "Skill balance rules --constrains--> Character skills schema; confidence=EXTRACTED."
     }
   ],
   "hyperedges": []

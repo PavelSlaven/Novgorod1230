@@ -1,6 +1,7 @@
 {
   "source": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
-  "source_version": "4.2.0",
+  "amendment_source": "data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md",
+  "source_version": "4.3.0-target.1",
   "specifications": [
     {
       "contract_name": "entity_ref",
@@ -690,7 +691,12 @@
           "type": "stable_id"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "points",
+          "type": "relation_set[movement_orientation_profile_point]"
+        }
+      ],
       "invariants": [
         "fixed requires fixed_local_azimuth_mdeg and no points.",
         "curved requires at least two ordered points and null fixed_local_azimuth_mdeg.",
@@ -1837,7 +1843,16 @@
           "type": "stable_id"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "template_limits",
+          "type": "relation_set[expansion_profile_template_limit]"
+        },
+        {
+          "name": "slots",
+          "type": "relation_set[expansion_slot]"
+        }
+      ],
       "invariants": [
         "Exactly one approved profile version is selected for one exact G4 revision identified by authoring_dependency_edge, and this profile version changes when that G4 revision or any mechanically relevant child relation changes.",
         "No independent max_generated_g5 field exists.",
@@ -1943,7 +1958,12 @@
           "type": "enum[approved, deprecated, retired]"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "allowed_templates",
+          "type": "relation_set[expansion_slot_template]"
+        }
+      ],
       "invariants": [
         "through requires direction, directional exit and length rule and requires terminal policy kind world_route_exit or physical_boundary matching that exit.",
         "branch forbids direction, directional exit and length rule and requires terminal policy kind connect_existing or physical_boundary.",
@@ -2025,7 +2045,12 @@
           "type": "stable_id"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "candidates",
+          "type": "relation_set[continuation_length_candidate]"
+        }
+      ],
       "invariants": [
         "Candidate set is finite and non-empty.",
         "fixed has exactly one candidate."
@@ -2616,7 +2641,12 @@
           "type": "stable_id"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "secondary_scene_roles",
+          "type": "relation_set[controlled_scene_role]"
+        }
+      ],
       "invariants": [
         "UNIQUE scene_baseline_id and scene_slot_key.",
         "Active G6 requires an active scene baseline; superseding or destroying the baseline atomically makes all child G6 non-active.",
@@ -2715,7 +2745,12 @@
           "type": "stable_id"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "posture_options",
+          "type": "relation_set[controlled_posture_option]"
+        }
+      ],
       "invariants": [
         "UNIQUE g6_instance_id, template_slot_key and template_instance_ordinal.",
         "template_instance_ordinal is in 0..instance_count-1 of the exact scene_position_template.",
@@ -3509,7 +3544,12 @@
           "type": "stable_id"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "source_facts",
+          "type": "relation_set[knowledge_fact_reference]"
+        }
+      ],
       "invariants": [
         "Belief may be false without changing factual topology or location.",
         "exact requires a non-null perceived area or direction supported by exact source facts.",
@@ -3636,7 +3676,12 @@
           "type": "enum[approved, deprecated, retired]"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "allowed_position_types",
+          "type": "relation_set[controlled_position_type]"
+        }
+      ],
       "invariants": [
         "Capability stores requirements, not a cached interaction result.",
         "same_position resolves only from equal current position; adjacent_position requires at least one currently traversable directed scene edge to an allowed position; visible requires an actual current visibility result.",
@@ -4085,7 +4130,28 @@
           "type": "dependency_pin_set"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "allowed_movement_methods",
+          "type": "relation_set[controlled_movement_method]"
+        },
+        {
+          "name": "available_transport_pins",
+          "type": "relation_set[dependency_pin]"
+        },
+        {
+          "name": "equipment_state_pins",
+          "type": "relation_set[dependency_pin]"
+        },
+        {
+          "name": "legal_access_fact_pins",
+          "type": "relation_set[dependency_pin]"
+        },
+        {
+          "name": "allowed_pace_modes",
+          "type": "relation_set[controlled_pace_mode]"
+        }
+      ],
       "invariants": [
         "Every selected plan method, carrier and pace is present in this context.",
         "Empty allowed_movement_methods makes physical traversal unavailable."
@@ -4387,7 +4453,12 @@
           "type": "sha256_hex"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "visible_risk_tags",
+          "type": "relation_set[controlled_risk_tag]"
+        }
+      ],
       "invariants": [
         "Summary contains only information permitted by knowledge visibility.",
         "knowledge_precision=hidden requires risk_class=unknown and an empty visible_risk_tags set.",
@@ -4555,7 +4626,12 @@
           "type": "sha256_hex"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "required_member_proposals",
+          "type": "relation_set[preparation_member_proposal]"
+        }
+      ],
       "invariants": [
         "planning_request_digest equals the originating path_query canonical_digest.",
         "Member proposals form a finite non-empty set in contiguous ordinal order.",
@@ -4741,7 +4817,16 @@
           "type": "sha256_hex"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "blocking_reasons",
+          "type": "relation_set[movement_blocking_reason]"
+        },
+        {
+          "name": "proposed_steps",
+          "type": "relation_set[route_plan_step_proposal]"
+        }
+      ],
       "invariants": [
         "planning_request_id, path_query_digest, party_id, request kind, journey owner/scope, recovery/administrative authorization, knowledge_scope and knowledge_subject_ref exactly copy the originating path_query.",
         "knowledge_scope=character_known requires knowledge_subject_ref kind actor; factual and admin forbid it.",
@@ -4967,23 +5052,63 @@
       "identity": [],
       "fields": [
         {
-          "name": "activity_contract_ref",
+          "name": "activity_profile_ref",
+          "required": true,
+          "type": "activity_profile_ref"
+        },
+        {
+          "name": "completion_model_snapshot",
+          "required": true,
+          "type": "activity_completion_model_snapshot"
+        },
+        {
+          "name": "progress_policy_ref",
           "required": true,
           "type": "versioned_ref"
         },
         {
-          "name": "planned_total_minutes",
+          "name": "resource_policy_ref",
           "required": true,
-          "type": "positive_integer"
-        },
-        {
-          "name": "mode_transition_contract_ref",
-          "required": false,
           "type": "versioned_ref"
         },
         {
-          "name": "completion_effect_contract_ref",
-          "required": false,
+          "name": "participant_policy_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "continuation_policy_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "interruption_policy_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "completion_policy_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "same_timestamp_policy_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "body_intensity_profile_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "perception_visibility_policy_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "recheck_policy_ref",
+          "required": true,
           "type": "versioned_ref"
         },
         {
@@ -4999,8 +5124,8 @@
       ],
       "relations": [],
       "invariants": [
-        "Referenced contract has time cost and no physical segment progress.",
-        "Completion effect has this step as its only owner."
+        "This replaces planned_total_minutes and seals one exact completion model.",
+        "Every active execution derived from the snapshot has a finite completion or recheck boundary."
       ]
     },
     {
@@ -5157,7 +5282,12 @@
           "type": "stable_id"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "members",
+          "type": "relation_set[preparation_snapshot_member]"
+        }
+      ],
       "invariants": [
         "Members are finite, non-empty, contiguous by ordinal and immutable.",
         "Every member is fully materialized, location-bearing where applicable and dependency-valid at snapshot creation.",
@@ -5460,7 +5590,12 @@
           "type": "non_negative_integer"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "steps",
+          "type": "relation_set[party_route_plan_step]"
+        }
+      ],
       "invariants": [
         "journey_owner_ref kind is actor, cohort or transport.",
         "world_travel requires a root owner with no active outgoing attachment; carrier_local requires an actor owner, an active attachment chain and a scene-position source inside that carrier scene.",
@@ -5621,7 +5756,12 @@
           "type": "stable_id"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "options",
+          "type": "relation_set[movement_method_cost_option]"
+        }
+      ],
       "invariants": [
         "Exactly one baseline option exists.",
         "Missing selected method blocks traversal."
@@ -5712,7 +5852,12 @@
           "type": "stable_id"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "explicit_progress_points",
+          "type": "relation_set[controlled_progress_point]"
+        }
+      ],
       "invariants": [
         "segment_once forbids slice and explicit points.",
         "fixed_progress_slices requires progress_slice_ppm in 1..1000000 and forbids explicit points.",
@@ -5769,7 +5914,16 @@
           "type": "stable_id"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "allowed_departure_endpoint_kinds",
+          "type": "relation_set[controlled_endpoint_kind]"
+        },
+        {
+          "name": "allowed_arrival_endpoint_kinds",
+          "type": "relation_set[controlled_endpoint_kind]"
+        }
+      ],
       "invariants": [
         "Contract cannot advance physical segment progress.",
         "blocked or failed action preserves the exact departure endpoint in this contract version."
@@ -5829,7 +5983,12 @@
           "type": "stable_id"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "allowed_endpoint_kinds",
+          "type": "relation_set[controlled_endpoint_kind]"
+        }
+      ],
       "invariants": [
         "Activity has no physical segment progress.",
         "Failure never rolls back already committed exact elapsed time and preserves the departure endpoint."
@@ -5935,7 +6094,12 @@
           "type": "stable_id"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "allowed_write_targets",
+          "type": "relation_set[controlled_write_target]"
+        }
+      ],
       "invariants": [
         "Every runtime effect is owned by exactly one plan step snapshot.",
         "Effect cannot select new semantic candidates during commit."
@@ -6318,29 +6482,29 @@
           "type": "timed_activity_static_snapshot"
         },
         {
-          "name": "original_total_minutes",
+          "name": "status",
           "required": true,
-          "type": "positive_integer"
+          "type": "enum[active, paused, completed, failed, aborted]"
         },
         {
-          "name": "cumulative_elapsed_numerator",
+          "name": "started_at",
           "required": true,
-          "type": "non_negative_integer"
+          "type": "game_timestamp"
         },
         {
-          "name": "cumulative_elapsed_denominator",
+          "name": "last_processed_at",
           "required": true,
-          "type": "positive_integer"
+          "type": "game_timestamp"
         },
         {
-          "name": "remaining_time_numerator",
-          "required": true,
-          "type": "non_negative_integer"
+          "name": "next_boundary_at",
+          "required": false,
+          "type": "game_timestamp"
         },
         {
-          "name": "remaining_time_denominator",
+          "name": "exact_elapsed",
           "required": true,
-          "type": "positive_integer"
+          "type": "rational_minutes"
         },
         {
           "name": "next_attempt_ordinal",
@@ -6348,14 +6512,19 @@
           "type": "non_negative_integer"
         },
         {
-          "name": "status",
+          "name": "progress",
+          "required": false,
+          "type": "activity_progress_snapshot"
+        },
+        {
+          "name": "preconditions_digest",
           "required": true,
-          "type": "enum[active, paused, completed, failed, aborted]"
+          "type": "sha256_hex"
         },
         {
           "name": "state_version",
           "required": true,
-          "type": "state_version"
+          "type": "positive_decimal_string"
         },
         {
           "name": "updated_change_set_id",
@@ -6366,23 +6535,28 @@
           "name": "terminal_change_set_id",
           "required": false,
           "type": "stable_id"
+        },
+        {
+          "name": "terminal_reason_code",
+          "required": false,
+          "type": "stable_id"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "active_participant_bindings",
+          "type": "relation_set[participant_binding]"
+        },
+        {
+          "name": "reserved_resource_bindings",
+          "type": "relation_set[resource_binding]"
+        }
+      ],
       "invariants": [
-        "activity_snapshot equals the immutable plan-step activity snapshot and original_total_minutes equals its planned_total_minutes.",
-        "UNIQUE route_plan_execution_id, plan_step_ordinal and series_ordinal.",
-        "The initial row has series_ordinal zero and null predecessor. A later row requires series_ordinal=predecessor.series_ordinal+1, references a failed predecessor for the same route execution and step, and copies its exact cumulative elapsed and remaining time as the new initial state.",
-        "Every series row starts with next_attempt_ordinal zero; attempt ordinals are local to that activity-execution row and never continue across a failed predecessor.",
-        "One failed predecessor has at most one successor; lineage is acyclic and terminal rows never reactivate.",
-        "Cumulative and remaining fractions are reduced, use exact rational minutes and sum exactly to original_total_minutes.",
-        "next_attempt_ordinal equals the number of committed attempts.",
-        "active and paused require positive remaining time and forbid terminal_change_set_id.",
-        "completed requires zero remaining time and terminal_change_set_id.",
-        "failed and aborted require terminal_change_set_id; their remaining time may be positive. A failed row may receive a successor only when its pinned activity contract selected waiting_at_anchor.",
-        "Latest attempt mapping is exact; progressed or blocked leaves status active, paused sets paused, completed sets completed and failed sets failed, while explicit abort between attempts sets aborted without fabricating an attempt.",
-        "The route execution field active_activity_execution_id references this row only while route execution status is active on the same timed-activity step and this activity status is active or paused. When a blocked attempt moves the route execution to waiting_at_anchor, that field is cleared but this nonterminal row is reused on resume. When a failed attempt moves the route execution to waiting_at_anchor, resume creates the next linked series row instead.",
-        "UNIQUE one nonterminal activity execution per journey execution and step across the full series."
+        "Active requires a finite next_boundary_at; paused and terminal statuses forbid it.",
+        "last_processed_at never decreases and equals the end of the latest committed attempt.",
+        "next_attempt_ordinal starts at zero and increments atomically with each committed append-only attempt.",
+        "failed may have at most one approved successor; terminal rows never reactivate."
       ]
     },
     {
@@ -6404,102 +6578,57 @@
           "type": "non_negative_integer"
         },
         {
-          "name": "remaining_before_numerator",
+          "name": "started_at",
           "required": true,
-          "type": "positive_integer"
+          "type": "game_timestamp"
         },
         {
-          "name": "remaining_before_denominator",
+          "name": "ended_at",
           "required": true,
-          "type": "positive_integer"
+          "type": "game_timestamp"
         },
         {
-          "name": "planned_time_numerator",
+          "name": "planned_elapsed",
           "required": true,
-          "type": "positive_integer"
+          "type": "rational_minutes"
         },
         {
-          "name": "planned_time_denominator",
+          "name": "actual_elapsed",
           "required": true,
-          "type": "positive_integer"
+          "type": "rational_minutes"
         },
         {
-          "name": "actual_time_numerator",
-          "required": true,
-          "type": "non_negative_integer"
-        },
-        {
-          "name": "actual_time_denominator",
-          "required": true,
-          "type": "positive_integer"
-        },
-        {
-          "name": "remaining_after_numerator",
-          "required": true,
-          "type": "non_negative_integer"
-        },
-        {
-          "name": "remaining_after_denominator",
-          "required": true,
-          "type": "positive_integer"
-        },
-        {
-          "name": "cumulative_time_before_numerator",
-          "required": true,
-          "type": "non_negative_integer"
-        },
-        {
-          "name": "cumulative_time_before_denominator",
-          "required": true,
-          "type": "positive_integer"
-        },
-        {
-          "name": "cumulative_time_after_numerator",
-          "required": true,
-          "type": "non_negative_integer"
-        },
-        {
-          "name": "cumulative_time_after_denominator",
-          "required": true,
-          "type": "positive_integer"
-        },
-        {
-          "name": "crossed_whole_minute_boundaries",
-          "required": true,
-          "type": "non_negative_integer"
-        },
-        {
-          "name": "clock_commit_mode",
-          "required": true,
-          "type": "enum[direct_party_clock, shared_root_transport_clock]"
-        },
-        {
-          "name": "synchronized_time_slice_result_id",
+          "name": "progress_before",
           "required": false,
-          "type": "stable_id"
+          "type": "activity_progress_snapshot"
         },
         {
-          "name": "execution_context_snapshot",
-          "required": true,
-          "type": "factual_spatial_context_snapshot"
+          "name": "progress_after",
+          "required": false,
+          "type": "activity_progress_snapshot"
         },
         {
-          "name": "result_kind",
+          "name": "outcome",
           "required": true,
           "type": "enum[progressed, completed, paused, blocked, failed]"
         },
         {
-          "name": "result_code",
+          "name": "reason_code",
           "required": true,
           "type": "stable_id"
         },
         {
-          "name": "dynamic_dependency_pins",
+          "name": "failure_class",
+          "required": false,
+          "type": "controlled_activity_failure_class"
+        },
+        {
+          "name": "rule_and_policy_pins",
           "required": true,
           "type": "dependency_pin_set"
         },
         {
-          "name": "result_change_set_id",
+          "name": "change_set_id",
           "required": true,
           "type": "stable_id"
         },
@@ -6509,25 +6638,33 @@
           "type": "stable_id"
         },
         {
-          "name": "occurred_at_turn",
+          "name": "trace",
           "required": true,
-          "type": "non_negative_integer"
+          "type": "json_object"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "resource_reservations",
+          "type": "relation_set[resource_binding]"
+        },
+        {
+          "name": "resource_consumptions",
+          "type": "relation_set[resource_binding]"
+        },
+        {
+          "name": "body_effect_refs",
+          "type": "relation_set[entity_ref]"
+        },
+        {
+          "name": "participant_attendance",
+          "type": "relation_set[participant_binding]"
+        }
+      ],
       "invariants": [
-        "No active/open result exists and all rational values are reduced.",
-        "planned time is not greater than remaining-before time; actual time is between zero and planned time.",
-        "remaining after equals remaining before minus actual time; cumulative after equals cumulative before plus actual time.",
-        "progressed requires positive actual time and positive remaining-after time.",
-        "completed requires positive actual time and zero remaining-after time.",
-        "paused permits zero or positive actual time and requires positive remaining-after time.",
-        "blocked requires zero actual time, unchanged remaining/cumulative time and zero crossed whole-minute boundaries.",
-        "failed follows retain_committed_elapsed; already committed exact time is never rolled back.",
-        "direct_party_clock forbids synchronized_time_slice_result_id; its result change set advances the exact party timestamp by actual_time and crossed_whole_minute_boundaries is derived from the before/after absolute minute indexes.",
-        "shared_root_transport_clock requires synchronized_time_slice_result_id and crossed_whole_minute_boundaries zero; the referenced synchronized slice owns the one exact party-clock update.",
-        "execution_context_snapshot is the endpoint context or the current pinned root-transport context for the exact slice.",
-        "Attempt ordinals are contiguous from zero and match the activity execution next_attempt_ordinal before commit."
+        "Ordinals are contiguous and retry of one slice never creates another attempt.",
+        "blocked has zero elapsed and unchanged progress; completed satisfies the sealed completion model.",
+        "Committed elapsed, progress and consumption never roll back; abort between attempts creates no attempt."
       ]
     },
     {
@@ -6844,9 +6981,7 @@
       "contract_name": "party_traversal_interval_result",
       "storage": "party_runtime_append_only",
       "identity": [
-        "route_plan_execution_id",
-        "plan_step_ordinal",
-        "interval_ordinal"
+        "id"
       ],
       "fields": [
         {
@@ -6885,49 +7020,29 @@
           "type": "ppm"
         },
         {
-          "name": "planned_time_numerator",
+          "name": "planned_elapsed",
           "required": true,
-          "type": "positive_integer"
+          "type": "rational_minutes"
         },
         {
-          "name": "planned_time_denominator",
+          "name": "actual_elapsed",
           "required": true,
-          "type": "positive_integer"
+          "type": "rational_minutes"
         },
         {
-          "name": "actual_time_numerator",
+          "name": "cumulative_elapsed_before",
           "required": true,
-          "type": "non_negative_integer"
+          "type": "rational_minutes"
         },
         {
-          "name": "actual_time_denominator",
+          "name": "cumulative_elapsed_after",
           "required": true,
-          "type": "positive_integer"
-        },
-        {
-          "name": "cumulative_time_before_numerator",
-          "required": true,
-          "type": "non_negative_integer"
-        },
-        {
-          "name": "cumulative_time_before_denominator",
-          "required": true,
-          "type": "positive_integer"
-        },
-        {
-          "name": "cumulative_time_after_numerator",
-          "required": true,
-          "type": "non_negative_integer"
-        },
-        {
-          "name": "cumulative_time_after_denominator",
-          "required": true,
-          "type": "positive_integer"
+          "type": "rational_minutes"
         },
         {
           "name": "crossed_whole_minute_boundaries",
           "required": true,
-          "type": "non_negative_integer"
+          "type": "non_negative_decimal_string"
         },
         {
           "name": "clock_commit_mode",
@@ -6940,9 +7055,9 @@
           "type": "stable_id"
         },
         {
-          "name": "dynamic_snapshot",
+          "name": "execution_context_snapshot",
           "required": true,
-          "type": "traversal_dynamic_snapshot"
+          "type": "factual_spatial_context_snapshot"
         },
         {
           "name": "result_kind",
@@ -6955,29 +7070,9 @@
           "type": "stable_id"
         },
         {
-          "name": "navigation_resolution",
-          "required": false,
-          "type": "navigation_resolution"
-        },
-        {
-          "name": "hazard_resolution",
-          "required": false,
-          "type": "hazard_resolution"
-        },
-        {
-          "name": "outcome_composition_policy_version",
+          "name": "dynamic_dependency_pins",
           "required": true,
-          "type": "authoring_version"
-        },
-        {
-          "name": "outcome_composition_trace_digest",
-          "required": true,
-          "type": "sha256_hex"
-        },
-        {
-          "name": "interruption_anchor_id",
-          "required": false,
-          "type": "stable_id"
+          "type": "dependency_pin_set"
         },
         {
           "name": "result_change_set_id",
@@ -6988,28 +7083,13 @@
           "name": "idempotency_record_id",
           "required": true,
           "type": "stable_id"
-        },
-        {
-          "name": "occurred_at_turn",
-          "required": true,
-          "type": "non_negative_integer"
         }
       ],
       "relations": [],
       "invariants": [
-        "No active/open result exists and all rational values are reduced.",
-        "progress_before_ppm is below one million; planned progress is strictly greater than progress before.",
-        "actual progress is between progress before and planned progress.",
-        "cumulative actual time after equals cumulative actual time before plus actual interval time.",
-        "Interval ordinal equals travel-state next_interval_ordinal before commit; after commit next_interval_ordinal equals interval_ordinal plus one.",
-        "progressed requires progress_before < actual_progress_after < one million and positive exact actual time.",
-        "segment_completed requires planned_progress_after_ppm=actual_progress_after_ppm=one million and positive exact actual time; no other outcome permits actual progress one million.",
-        "paused_in_transit, interrupted_at_anchor and stranded require actual progress below one million; equality with progress_before is allowed only when the control outcome occurs before further physical advancement.",
-        "interrupted_at_anchor requires interruption_anchor_id resolving to an active usable route anchor; all other outcomes forbid it.",
-        "blocked_before_progress has unchanged progress/cumulative time, zero actual time and zero crossed whole-minute boundaries, and changes only travel-state next_interval_ordinal/state-version audit fields.",
-        "direct_party_clock advances the exact party timestamp by actual_time under section 11.4; crossed_whole_minute_boundaries is derived from the result change-set timestamps; synchronized_time_slice_result_id is null for a standalone result and otherwise names the synchronized slice for which this interval is the root clock owner.",
-        "shared_root_transport_clock requires synchronized_time_slice_result_id and crossed_whole_minute_boundaries zero; the referenced synchronized slice owns the exact party-clock update.",
-        "result_kind equals the deterministic composition of navigation, hazard, data-gap, blocker and progress signals under outcome_composition_policy_version."
+        "Exact elapsed and cumulative state reconcile without float conversion.",
+        "direct_party_clock owns one clock update; shared_root_transport_clock owns none.",
+        "Existing six traversal outcomes and spatial completion/interruption semantics are unchanged."
       ]
     },
     {
@@ -7040,19 +7120,14 @@
           "type": "stable_id"
         },
         {
-          "name": "exact_elapsed_numerator",
+          "name": "exact_elapsed",
           "required": true,
-          "type": "non_negative_integer"
-        },
-        {
-          "name": "exact_elapsed_denominator",
-          "required": true,
-          "type": "positive_integer"
+          "type": "rational_minutes"
         },
         {
           "name": "crossed_whole_minute_boundaries",
           "required": true,
-          "type": "non_negative_integer"
+          "type": "non_negative_decimal_string"
         },
         {
           "name": "world_time_before",
@@ -7080,18 +7155,15 @@
           "type": "stable_id"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "carrier_local_result_refs",
+          "type": "relation_set[entity_ref]"
+        }
+      ],
       "invariants": [
-        "The root execution has journey_scope=world_travel and owner kind transport.",
-        "The root interval result uses direct_party_clock, names this synchronized slice ID and owns crossed_whole_minute_boundaries.",
-        "Every local activity-attempt or traversal-interval result belongs to a carrier_local execution attached to the same root transport, uses shared_root_transport_clock, names this slice ID and has zero local crossed whole-minute boundaries.",
-        "All linked results are committed by result_change_set_id and share one world-time boundary.",
-        "exact_elapsed equals the root interval actual exact time and every linked local result with positive actual time; a linked zero-time result is allowed only for blocked or contract-valid failed-before-elapsed semantics. The root interval advances the exact party timestamp once and supplies the one crossed-minute count.",
-        "If the root result is blocked_before_progress, exact_elapsed is zero, carrier_local_result_refs is empty and every local execution remains unchanged.",
-        "Planned slice end is the earliest root/local completion or recheck boundary, so every completion occurs exactly at that boundary.",
-        "A blocked local result may use zero elapsed time but cannot shorten or alter root progress without an explicit root-carrier effect in its pinned contract.",
-        "world_time_after minus world_time_before equals exact_elapsed; crossed_whole_minute_boundaries equals the difference of their absolute whole-minute indexes.",
-        "The record is immutable."
+        "Root result advances the clock once; linked local results use shared_root_transport_clock and zero local crossing count.",
+        "All linked positive results share exact_elapsed; root zero forbids local positive progress."
       ]
     },
     {
@@ -7472,7 +7544,12 @@
           "type": "sha256_hex"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "durable_fact_pins",
+          "type": "relation_set[dependency_pin]"
+        }
+      ],
       "invariants": [
         "durable_fact_pins is finite and contains only approved landform, land-cover, hydrography, built-form or other topology-stable facts.",
         "Weather, light, body, load, temporary access, damage overlay and party belief are forbidden.",
@@ -7516,7 +7593,12 @@
           "type": "sha256_hex"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "region_scope_ids",
+          "type": "relation_set[stable_id]"
+        }
+      ],
       "invariants": [
         "Frame is approved before use and does not contain runtime weather or party state.",
         "region_scope_ids is non-empty.",
@@ -7540,6 +7622,36 @@
           "type": "game_timestamp"
         },
         {
+          "name": "calendar_profile_ref",
+          "required": true,
+          "type": "calendar_profile_ref"
+        },
+        {
+          "name": "year",
+          "required": true,
+          "type": "non_negative_decimal_string"
+        },
+        {
+          "name": "month",
+          "required": true,
+          "type": "positive_decimal_string"
+        },
+        {
+          "name": "day",
+          "required": true,
+          "type": "positive_decimal_string"
+        },
+        {
+          "name": "local_time_of_day",
+          "required": true,
+          "type": "rational_minutes"
+        },
+        {
+          "name": "daypart_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
           "name": "season_id",
           "required": true,
           "type": "stable_id"
@@ -7550,11 +7662,6 @@
           "type": "stable_id"
         },
         {
-          "name": "calendar_version",
-          "required": true,
-          "type": "authoring_version"
-        },
-        {
           "name": "canonical_digest",
           "required": true,
           "type": "sha256_hex"
@@ -7562,8 +7669,8 @@
       ],
       "relations": [],
       "invariants": [
-        "season_id and daylight_phase_id are the unique values resolved from exact_game_timestamp by calendar_version.",
-        "Snapshot is used for dynamic execution and does not select permanent topology."
+        "Projection is uniquely derived from exact_game_timestamp and the pinned calendar profile.",
+        "The snapshot is a cache/projection and never becomes a second clock."
       ]
     },
     {
@@ -7813,7 +7920,12 @@
           "type": "stable_id"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "rejected_candidate_refs",
+          "type": "relation_set[versioned_ref]"
+        }
+      ],
       "invariants": [
         "Candidate set is finite, unique and stably sorted before selection.",
         "selected_ref does not occur in rejected_candidate_refs.",
@@ -7889,7 +8001,16 @@
           "type": "non_negative_integer"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "dependency_pins",
+          "type": "relation_set[dependency_pin]"
+        },
+        {
+          "name": "choice_ids",
+          "type": "relation_set[stable_id]"
+        }
+      ],
       "invariants": [
         "Trace is append-only and sufficient to reproduce candidate filtering, sorting and selection.",
         "trigger equals the source materialization input trigger.",
@@ -7955,7 +8076,12 @@
           "type": "sha256_hex"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "findings",
+          "type": "relation_set[spatial_validation_finding]"
+        }
+      ],
       "invariants": [
         "pass has an empty finding set.",
         "fail has at least one error.",
@@ -8073,7 +8199,24 @@
           "type": "sha256_hex"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "created_entity_refs",
+          "type": "relation_set[entity_ref]"
+        },
+        {
+          "name": "created_relation_refs",
+          "type": "relation_set[entity_ref]"
+        },
+        {
+          "name": "mutated_entity_refs",
+          "type": "relation_set[entity_ref]"
+        },
+        {
+          "name": "blocking_reasons",
+          "type": "relation_set[movement_blocking_reason]"
+        }
+      ],
       "invariants": [
         "success requires pass or pass_with_notes validation, an empty blocking-reason set and preallocated semantic output refs exactly matching a semantic_commit write plan; no output ref exists as a party fact before commit.",
         "blocked requires fail validation or at least one hard blocking reason, null transition_result and empty semantic created/mutated ref sets; its write plan is blocked_audit and may append only trace, choices, report, idempotency and change-set audit rows.",
@@ -8132,16 +8275,17 @@
           "name": "idempotency_record_id",
           "required": true,
           "type": "stable_id"
+        },
+        {
+          "name": "visible_package_envelope",
+          "required": false,
+          "type": "visible_package_persistence_envelope"
         }
       ],
       "relations": [],
       "invariants": [
-        "Plan contains no semantic alternatives.",
-        "insert, update and append sets are pairwise disjoint and canonically ordered.",
-        "semantic_commit requires a pass/pass_with_notes validator report and may contain approved domain writes.",
-        "blocked_audit requires a blocked result, has empty domain insert/update sets and appends only trace, choice, report, idempotency and change-set audit rows; it changes no world state or game time.",
-        "Every mutable update has an expected state version; inserts and append-only rows do not.",
-        "write_set_digest covers all three ordered sets and exact serialized row payloads.",
+        "semantic_commit requires a hidden-safe visible package in the same write set; blocked_audit forbids it.",
+        "Plan contains no narration output, semantic alternatives or duplicate write targets.",
         "Only CombinedAtomicCommitter may apply the plan."
       ]
     },
@@ -8286,7 +8430,12 @@
           "type": "non_negative_integer"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "affected_entity_refs",
+          "type": "relation_set[entity_ref]"
+        }
+      ],
       "invariants": [
         "world_time_after is not earlier than world_time_before.",
         "Exact timestamp difference equals the one direct-clock or synchronized-root actual elapsed time for time-bearing operations; non-time and blocked-audit operations keep both timestamps equal.",
@@ -8375,7 +8524,16 @@
           "type": "enum[authoring, diagnostic, player_projection]"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "nodes",
+          "type": "relation_set[visual_layout_node]"
+        },
+        {
+          "name": "edge_paths",
+          "type": "relation_set[visual_edge_path]"
+        }
+      ],
       "invariants": [
         "world_base requires null party_id, audience authoring or diagnostic, and permits only world_overview through G4 scopes; its G4 children are canonical G5.",
         "party_runtime requires party_id and audience diagnostic or player_projection; it may scope a canonical G0–G4 reference for a party projection and permits G4 to party G5, party G5 to party G6, and party G6 to scene_position.",
@@ -8604,7 +8762,16 @@
           "type": "stable_id"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "secondary_functions",
+          "type": "relation_set[controlled_spatial_function]"
+        },
+        {
+          "name": "facets",
+          "type": "relation_set[spatial_facet_binding]"
+        }
+      ],
       "invariants": [
         "G0 has null parent; G1 through G5 have one versioned parent at the immediately preceding scale in the same world revision.",
         "G1 requires grid_x, grid_y and grid_convention_ref; every other scale forbids them.",
@@ -8688,7 +8855,16 @@
           "type": "enum[approved, deprecated, retired]"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "traversable_direction_contexts",
+          "type": "relation_set[controlled_direction_context]"
+        },
+        {
+          "name": "directional_exit_refs",
+          "type": "relation_set[versioned_ref]"
+        }
+      ],
       "invariants": [
         "g4_id resolves through one exact authoring_dependency_edge of this profile version.",
         "through_area has at least one applicable exit for every outward context.",
@@ -8797,7 +8973,12 @@
           "type": "stable_id"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "condition_refs",
+          "type": "relation_set[entity_ref]"
+        }
+      ],
       "invariants": [
         "g5_site_id resolves one active or terminal party_g5_site; for canonical origin the overlay never mutates the world_base G5 record.",
         "access_state_id, damage_state_id, occupation_state_id and condition_refs come from approved controlled state catalogs and are mutually compatible under the exact site context.",
@@ -9233,7 +9414,12 @@
           "type": "stable_id"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "allowed_route_kind_ids",
+          "type": "relation_set[stable_id]"
+        }
+      ],
       "invariants": [
         "from/to G0 and G1 stable IDs each have exact authoring_dependency_edge rows in this contract version.",
         "g1_adjacency keeps G0 equal, changes G1 by one cardinal grid delta of absolute length one and forbids legal_customs_profile_ref.",
@@ -9287,7 +9473,12 @@
           "type": "stable_id"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "successor_frontier_rules",
+          "type": "relation_set[g5_successor_frontier_rule]"
+        }
+      ],
       "invariants": [
         "Successor rule set is finite and non-empty.",
         "Every generated site context resolves exactly one successor rule: through sites create one same-chain successor and branch sites create one branch successor.",
@@ -9394,7 +9585,12 @@
           "type": "stable_id"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "candidates",
+          "type": "relation_set[scene_materialization_candidate]"
+        }
+      ],
       "invariants": [
         "source_ref kind exactly matches source_kind.",
         "Candidate set is finite and non-empty before approval.",
@@ -9478,7 +9674,40 @@
           "type": "stable_id"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "stable_structure_templates",
+          "type": "relation_set[stable_structure_template]"
+        },
+        {
+          "name": "portal_templates",
+          "type": "relation_set[portal_template]"
+        },
+        {
+          "name": "g6_slots",
+          "type": "relation_set[g6_template_slot]"
+        },
+        {
+          "name": "endpoint_slots",
+          "type": "relation_set[scene_endpoint_slot]"
+        },
+        {
+          "name": "position_templates",
+          "type": "relation_set[scene_position_template]"
+        },
+        {
+          "name": "movement_edge_templates",
+          "type": "relation_set[scene_movement_edge_template]"
+        },
+        {
+          "name": "visibility_link_templates",
+          "type": "relation_set[visibility_link_template]"
+        },
+        {
+          "name": "acoustic_edge_templates",
+          "type": "relation_set[acoustic_edge_template]"
+        }
+      ],
       "invariants": [
         "Every referenced slot key resolves inside this template version.",
         "Every required endpoint slot resolves to exactly one declared position-template instance by slot key plus instance ordinal.",
@@ -9664,7 +9893,12 @@
           "type": "stable_id"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "secondary_scene_role_ids",
+          "type": "relation_set[stable_id]"
+        }
+      ],
       "invariants": [
         "scene_template_id/version identify one approved scene_template version and scene_slot_key is unique within it.",
         "default_clear requires default distance band, forbids pair-specific permanent occluders and implies clear base geometry for all permitted position pairs; explicit forbids the default band.",
@@ -9737,7 +9971,12 @@
           "type": "versioned_ref"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "posture_options",
+          "type": "relation_set[controlled_posture_option]"
+        }
+      ],
       "invariants": [
         "Referenced G6 slot exists in the same scene template.",
         "Stable basis can reference only a stable structure/terrain slot in the same template and cannot be a movable item or NPC template.",
@@ -10068,6 +10307,1390 @@
         "Host equals the scene-baseline host.",
         "Structure may enclose or provide stable basis for G6/positions but never becomes a G-level.",
         "active forbids terminal_change_set_id; superseded and destroyed require it."
+      ]
+    },
+    {
+      "contract_name": "rational_minutes",
+      "storage": "embedded_value",
+      "identity": [],
+      "fields": [
+        {
+          "name": "numerator",
+          "required": true,
+          "type": "non_negative_decimal_string"
+        },
+        {
+          "name": "denominator",
+          "required": true,
+          "type": "positive_decimal_string"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "Values use canonical unsigned decimal strings without leading zero or exponent notation.",
+        "Denominator is positive, the fraction is reduced and zero is exactly 0/1."
+      ]
+    },
+    {
+      "contract_name": "rational_quantity",
+      "storage": "embedded_value",
+      "identity": [],
+      "fields": [
+        {
+          "name": "numerator",
+          "required": true,
+          "type": "non_negative_decimal_string"
+        },
+        {
+          "name": "denominator",
+          "required": true,
+          "type": "positive_decimal_string"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "Values use the same canonical reduced representation as rational_minutes.",
+        "Unit compatibility belongs to the consuming domain binding and cannot be inferred here."
+      ]
+    },
+    {
+      "contract_name": "game_timestamp",
+      "storage": "embedded_value",
+      "identity": [],
+      "fields": [
+        {
+          "name": "whole_minutes",
+          "required": true,
+          "type": "non_negative_decimal_string"
+        },
+        {
+          "name": "subminute_numerator",
+          "required": true,
+          "type": "non_negative_decimal_string"
+        },
+        {
+          "name": "subminute_denominator",
+          "required": true,
+          "type": "positive_decimal_string"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "The subminute fraction is reduced and proper; zero is exactly 0/1.",
+        "This linear exact value is the sole authoritative gameplay clock."
+      ]
+    },
+    {
+      "contract_name": "elapsed_time",
+      "storage": "embedded_value",
+      "identity": [],
+      "fields": [
+        {
+          "name": "exact_minutes",
+          "required": true,
+          "type": "rational_minutes"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "A time-bearing success is positive; zero is allowed only for an explicit registered control outcome."
+      ]
+    },
+    {
+      "contract_name": "calendar_profile_ref",
+      "storage": "immutable_snapshot",
+      "identity": [],
+      "fields": [
+        {
+          "name": "profile_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "canonical_digest",
+          "required": true,
+          "type": "sha256_hex"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "The referenced calendar profile is approved, source-backed and contains epoch, calendar, month, leap, day-start, offset, daypart, season and daylight rules."
+      ]
+    },
+    {
+      "contract_name": "activity_profile_ref",
+      "storage": "immutable_snapshot",
+      "identity": [],
+      "fields": [
+        {
+          "name": "profile_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "canonical_digest",
+          "required": true,
+          "type": "sha256_hex"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "The referenced activity profile is approved and pins all applicability, completion, progress, resource, participant, continuation, interruption, same-time, body, perception and recheck policies."
+      ]
+    },
+    {
+      "contract_name": "activity_completion_model_snapshot",
+      "storage": "immutable_snapshot",
+      "identity": [],
+      "fields": [
+        {
+          "name": "kind",
+          "required": true,
+          "type": "controlled_activity_completion_model"
+        },
+        {
+          "name": "fixed_duration",
+          "required": false,
+          "type": "rational_minutes"
+        },
+        {
+          "name": "progress_target_ref",
+          "required": false,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "completion_condition_ref",
+          "required": false,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "hard_deadline_at",
+          "required": false,
+          "type": "game_timestamp"
+        },
+        {
+          "name": "hard_deadline_policy_ref",
+          "required": false,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "next_recheck_at",
+          "required": false,
+          "type": "game_timestamp"
+        },
+        {
+          "name": "canonical_digest",
+          "required": true,
+          "type": "sha256_hex"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "fixed_exact requires only fixed_duration.",
+        "progress_target requires only progress_target_ref plus a finite next_recheck_at.",
+        "condition_or_deadline requires completion_condition_ref and at least one finite next_recheck_at or hard_deadline_at."
+      ]
+    },
+    {
+      "contract_name": "activity_progress_snapshot",
+      "storage": "immutable_snapshot",
+      "identity": [],
+      "fields": [
+        {
+          "name": "unit_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "current",
+          "required": true,
+          "type": "rational_quantity"
+        },
+        {
+          "name": "required",
+          "required": true,
+          "type": "rational_quantity"
+        },
+        {
+          "name": "checkpoint_ref",
+          "required": false,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "canonical_digest",
+          "required": true,
+          "type": "sha256_hex"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "Current and required quantities use the same unit and current does not exceed required."
+      ]
+    },
+    {
+      "contract_name": "participant_binding",
+      "storage": "party_runtime_relation",
+      "identity": [
+        "participant_ref",
+        "role_id",
+        "attendance_started_at"
+      ],
+      "fields": [
+        {
+          "name": "participant_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "role_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "attendance_started_at",
+          "required": true,
+          "type": "game_timestamp"
+        },
+        {
+          "name": "attendance_ended_at",
+          "required": false,
+          "type": "game_timestamp"
+        },
+        {
+          "name": "contribution_policy_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "state_version",
+          "required": true,
+          "type": "positive_decimal_string"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "Attendance end is not earlier than start and one active binding has no end.",
+        "A missing required participant is resolved only by the pinned participant policy."
+      ]
+    },
+    {
+      "contract_name": "resource_binding",
+      "storage": "party_runtime_relation",
+      "identity": [
+        "resource_ref",
+        "binding_kind"
+      ],
+      "fields": [
+        {
+          "name": "resource_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "unit_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "quantity",
+          "required": true,
+          "type": "rational_quantity"
+        },
+        {
+          "name": "binding_kind",
+          "required": true,
+          "type": "enum[required_tool, reserved_input, consumable_input, output_target]"
+        },
+        {
+          "name": "consumption_policy_ref",
+          "required": false,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "state_version",
+          "required": true,
+          "type": "positive_decimal_string"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "Quantity unit exactly matches the pinned activity resource policy.",
+        "Retry cannot reserve or consume the same identity twice."
+      ]
+    },
+    {
+      "contract_name": "temporal_boundary_provider_input",
+      "storage": "immutable_request",
+      "identity": [],
+      "fields": [
+        {
+          "name": "from_timestamp",
+          "required": true,
+          "type": "game_timestamp"
+        },
+        {
+          "name": "limit_timestamp",
+          "required": true,
+          "type": "game_timestamp"
+        },
+        {
+          "name": "party_state_version",
+          "required": true,
+          "type": "positive_decimal_string"
+        },
+        {
+          "name": "relevant_state_projection",
+          "required": true,
+          "type": "json_object"
+        },
+        {
+          "name": "calendar_profile_ref",
+          "required": true,
+          "type": "calendar_profile_ref"
+        },
+        {
+          "name": "catalog_pins",
+          "required": true,
+          "type": "dependency_pin_set"
+        },
+        {
+          "name": "provider_version",
+          "required": true,
+          "type": "authoring_version"
+        }
+      ],
+      "relations": [
+        {
+          "name": "active_execution_refs",
+          "type": "relation_set[entity_ref]"
+        }
+      ],
+      "invariants": [
+        "Input is frozen and explicit; a provider performs no IO, mutation, event execution or semantic fallback."
+      ]
+    },
+    {
+      "contract_name": "temporal_boundary_candidate",
+      "storage": "immutable_proposal",
+      "identity": [
+        "boundary_id"
+      ],
+      "fields": [
+        {
+          "name": "boundary_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "boundary_kind",
+          "required": true,
+          "type": "enum[activity, traversal, exact_timer, minute_indexed_timer, body_threshold, npc_schedule, place_access, light, weather, historical_phase, perception_follow_up, propagation, remote_catch_up, carrier_sync]"
+        },
+        {
+          "name": "scheduled_at",
+          "required": true,
+          "type": "game_timestamp"
+        },
+        {
+          "name": "source_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "primary_subject_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "scope_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "rule_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "policy_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "preconditions_digest",
+          "required": true,
+          "type": "sha256_hex"
+        },
+        {
+          "name": "resolution_class",
+          "required": true,
+          "type": "controlled_temporal_resolution_class"
+        },
+        {
+          "name": "interrupt_effect",
+          "required": true,
+          "type": "controlled_interruption_level"
+        },
+        {
+          "name": "visibility_policy_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "idempotency_key",
+          "required": true,
+          "type": "stable_id"
+        }
+      ],
+      "relations": [
+        {
+          "name": "subject_refs",
+          "type": "relation_set[entity_ref]"
+        },
+        {
+          "name": "causal_parent_refs",
+          "type": "relation_set[entity_ref]"
+        }
+      ],
+      "invariants": [
+        "Candidate references one registered handler or approved effect profile and contains no free-text consequence.",
+        "Identity, schedule and pins are immutable; conflicting duplicate identities are an ambiguity."
+      ]
+    },
+    {
+      "contract_name": "temporal_resolution_policy_ref",
+      "storage": "immutable_snapshot",
+      "identity": [],
+      "fields": [
+        {
+          "name": "policy_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "canonical_digest",
+          "required": true,
+          "type": "sha256_hex"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "Policy orders by timestamp, resolution class, rule ID, primary subject ID and boundary ID."
+      ]
+    },
+    {
+      "contract_name": "temporal_boundary_batch",
+      "storage": "immutable_snapshot",
+      "identity": [
+        "batch_id"
+      ],
+      "fields": [
+        {
+          "name": "batch_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "scheduled_at",
+          "required": true,
+          "type": "game_timestamp"
+        },
+        {
+          "name": "is_current_timestamp_batch",
+          "required": true,
+          "type": "boolean"
+        },
+        {
+          "name": "resolution_policy_ref",
+          "required": true,
+          "type": "temporal_resolution_policy_ref"
+        },
+        {
+          "name": "candidate_set_digest",
+          "required": true,
+          "type": "sha256_hex"
+        }
+      ],
+      "relations": [
+        {
+          "name": "candidates",
+          "type": "relation_set[temporal_boundary_candidate]"
+        }
+      ],
+      "invariants": [
+        "Candidates are non-empty, unique and share scheduled_at.",
+        "Candidate order is canonical and independent of input/SQL order."
+      ]
+    },
+    {
+      "contract_name": "time_slice_plan",
+      "storage": "immutable_commit_input",
+      "identity": [
+        "slice_id"
+      ],
+      "fields": [
+        {
+          "name": "slice_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "from_timestamp",
+          "required": true,
+          "type": "game_timestamp"
+        },
+        {
+          "name": "to_timestamp",
+          "required": true,
+          "type": "game_timestamp"
+        },
+        {
+          "name": "planned_elapsed",
+          "required": true,
+          "type": "elapsed_time"
+        },
+        {
+          "name": "clock_commit_mode",
+          "required": true,
+          "type": "enum[direct_party_clock, shared_root_transport_clock]"
+        },
+        {
+          "name": "clock_owner_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "requested_execution_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "boundary_batch",
+          "required": false,
+          "type": "temporal_boundary_batch"
+        },
+        {
+          "name": "dependency_pins",
+          "required": true,
+          "type": "dependency_pin_set"
+        },
+        {
+          "name": "idempotency_key",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "canonical_digest",
+          "required": true,
+          "type": "sha256_hex"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "Positive slice covers exactly the interval from exclusive to inclusive; a current-timestamp batch has zero elapsed.",
+        "Exactly one clock owner is named and shared local work cannot advance the clock."
+      ]
+    },
+    {
+      "contract_name": "time_slice_result",
+      "storage": "party_runtime_append_only",
+      "identity": [
+        "slice_id"
+      ],
+      "fields": [
+        {
+          "name": "slice_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "result_kind",
+          "required": true,
+          "type": "enum[positive_slice, zero_time_cascade]"
+        },
+        {
+          "name": "actual_elapsed",
+          "required": true,
+          "type": "elapsed_time"
+        },
+        {
+          "name": "clock_before",
+          "required": true,
+          "type": "game_timestamp"
+        },
+        {
+          "name": "clock_after",
+          "required": true,
+          "type": "game_timestamp"
+        },
+        {
+          "name": "crossed_whole_minute_boundaries",
+          "required": true,
+          "type": "non_negative_decimal_string"
+        },
+        {
+          "name": "proposal_digest",
+          "required": true,
+          "type": "sha256_hex"
+        },
+        {
+          "name": "change_set_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "idempotency_record_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "trace",
+          "required": true,
+          "type": "json_object"
+        }
+      ],
+      "relations": [
+        {
+          "name": "processed_boundary_refs",
+          "type": "relation_set[entity_ref]"
+        }
+      ],
+      "invariants": [
+        "clock_after minus clock_before equals actual_elapsed and the crossing count is exact.",
+        "A replay returns this result and repeats no effect."
+      ]
+    },
+    {
+      "contract_name": "temporal_advance_request",
+      "storage": "immutable_request",
+      "identity": [],
+      "fields": [
+        {
+          "name": "party_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "turn_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "base_state_version",
+          "required": true,
+          "type": "positive_decimal_string"
+        },
+        {
+          "name": "clock_before",
+          "required": true,
+          "type": "game_timestamp"
+        },
+        {
+          "name": "clock_commit_mode",
+          "required": true,
+          "type": "enum[direct_party_clock, shared_root_transport_clock]"
+        },
+        {
+          "name": "clock_owner_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "requested_execution_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "inclusive_limit_timestamp",
+          "required": true,
+          "type": "game_timestamp"
+        },
+        {
+          "name": "active_scope",
+          "required": true,
+          "type": "controlled_remote_scope_mode"
+        },
+        {
+          "name": "relevant_state_projection",
+          "required": true,
+          "type": "json_object"
+        },
+        {
+          "name": "catalog_pins",
+          "required": true,
+          "type": "dependency_pin_set"
+        },
+        {
+          "name": "temporal_resolution_policy_ref",
+          "required": true,
+          "type": "temporal_resolution_policy_ref"
+        },
+        {
+          "name": "idempotency_context",
+          "required": true,
+          "type": "json_object"
+        }
+      ],
+      "relations": [
+        {
+          "name": "provider_versions",
+          "type": "relation_set[versioned_ref]"
+        }
+      ],
+      "invariants": [
+        "Limit is not earlier than clock_before and request names exactly one authoritative clock owner.",
+        "Provider inputs and state projection are complete; hidden reads and implicit providers are forbidden."
+      ]
+    },
+    {
+      "contract_name": "temporal_advance_result",
+      "storage": "immutable_result",
+      "identity": [],
+      "fields": [
+        {
+          "name": "temporal_status",
+          "required": true,
+          "type": "controlled_temporal_advance_status"
+        },
+        {
+          "name": "clock_before",
+          "required": true,
+          "type": "game_timestamp"
+        },
+        {
+          "name": "clock_after",
+          "required": true,
+          "type": "game_timestamp"
+        },
+        {
+          "name": "execution_state_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "combined_change_set",
+          "required": true,
+          "type": "json_object"
+        },
+        {
+          "name": "visible_package_candidate",
+          "required": true,
+          "type": "visible_package_persistence_envelope"
+        },
+        {
+          "name": "validation_report",
+          "required": true,
+          "type": "json_object"
+        },
+        {
+          "name": "trace",
+          "required": true,
+          "type": "json_object"
+        }
+      ],
+      "relations": [
+        {
+          "name": "processed_slice_refs",
+          "type": "relation_set[entity_ref]"
+        }
+      ],
+      "invariants": [
+        "Technical iteration exhaustion is an error and never a progressed result.",
+        "Result contains one combined factual change set and no narration output."
+      ]
+    },
+    {
+      "contract_name": "interruption_outcome",
+      "storage": "immutable_result",
+      "identity": [],
+      "fields": [
+        {
+          "name": "interruption_level",
+          "required": true,
+          "type": "controlled_interruption_level"
+        },
+        {
+          "name": "outcome_kind",
+          "required": true,
+          "type": "enum[continue, pause, fail, abort, strand, decision_required]"
+        },
+        {
+          "name": "execution_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "boundary_ref",
+          "required": false,
+          "type": "entity_ref"
+        },
+        {
+          "name": "exact_anchor_ref",
+          "required": false,
+          "type": "movement_endpoint_ref"
+        },
+        {
+          "name": "elapsed",
+          "required": true,
+          "type": "elapsed_time"
+        },
+        {
+          "name": "reason_code",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "progress_preservation_policy_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "resource_preservation_policy_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "player_decision_required",
+          "required": true,
+          "type": "boolean"
+        },
+        {
+          "name": "dependency_pins",
+          "required": true,
+          "type": "dependency_pin_set"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "Resume is possible only from paused and rechecks place, access, participants, tools and resources.",
+        "strand requires an exact approved anchor or explicit stranded-state reference."
+      ]
+    },
+    {
+      "contract_name": "perception_result",
+      "storage": "party_runtime_append_only",
+      "identity": [
+        "perception_id"
+      ],
+      "fields": [
+        {
+          "name": "perception_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "perceiver_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "event_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "perceived_at",
+          "required": true,
+          "type": "game_timestamp"
+        },
+        {
+          "name": "result",
+          "required": true,
+          "type": "controlled_perception_result"
+        },
+        {
+          "name": "recognition_policy_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "visibility_policy_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "canonical_digest",
+          "required": true,
+          "type": "sha256_hex"
+        }
+      ],
+      "relations": [
+        {
+          "name": "signal_refs",
+          "type": "relation_set[entity_ref]"
+        },
+        {
+          "name": "knowledge_update_refs",
+          "type": "relation_set[entity_ref]"
+        }
+      ],
+      "invariants": [
+        "Knowledge or memory update requires this perception or a received message.",
+        "misinterpreted creates belief/hypothesis only and never changes the factual event."
+      ]
+    },
+    {
+      "contract_name": "npc_decision_option",
+      "storage": "immutable_snapshot_member",
+      "identity": [
+        "option_id"
+      ],
+      "fields": [
+        {
+          "name": "option_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "command_token",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "canonical_ordinal",
+          "required": true,
+          "type": "non_negative_integer"
+        },
+        {
+          "name": "preconditions_digest",
+          "required": true,
+          "type": "sha256_hex"
+        },
+        {
+          "name": "consequence_policy_ref",
+          "required": true,
+          "type": "versioned_ref"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "Option belongs to one finite approved set and contains no free-text consequence."
+      ]
+    },
+    {
+      "contract_name": "npc_decision_request",
+      "storage": "immutable_request",
+      "identity": [
+        "request_id"
+      ],
+      "fields": [
+        {
+          "name": "request_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "npc_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "requested_at",
+          "required": true,
+          "type": "game_timestamp"
+        },
+        {
+          "name": "state_version",
+          "required": true,
+          "type": "positive_decimal_string"
+        },
+        {
+          "name": "decision_policy_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "options_digest",
+          "required": true,
+          "type": "sha256_hex"
+        },
+        {
+          "name": "gameplay_deadline",
+          "required": false,
+          "type": "game_timestamp"
+        },
+        {
+          "name": "dependency_pins",
+          "required": true,
+          "type": "dependency_pin_set"
+        }
+      ],
+      "relations": [
+        {
+          "name": "options",
+          "type": "relation_set[npc_decision_option]"
+        }
+      ],
+      "invariants": [
+        "Zero options is a data gap; one option is resolved by code; LLM is allowed only for a multi-option policy.",
+        "request_id and options_digest are deterministic from causal state."
+      ]
+    },
+    {
+      "contract_name": "npc_decision_trace",
+      "storage": "party_runtime_append_only",
+      "identity": [
+        "request_id"
+      ],
+      "fields": [
+        {
+          "name": "request_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "state_version",
+          "required": true,
+          "type": "positive_decimal_string"
+        },
+        {
+          "name": "option_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "command_token",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "options_digest",
+          "required": true,
+          "type": "sha256_hex"
+        },
+        {
+          "name": "validated_at",
+          "required": true,
+          "type": "game_timestamp"
+        },
+        {
+          "name": "status",
+          "required": true,
+          "type": "enum[validated, committed, cancelled]"
+        },
+        {
+          "name": "idempotency_key",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "change_set_id",
+          "required": false,
+          "type": "stable_id"
+        },
+        {
+          "name": "trace_digest",
+          "required": true,
+          "type": "sha256_hex"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "Token, membership, policy version, state version and preconditions are revalidated before consequence calculation.",
+        "Retry reuses the validated selection and cannot ask for a different option."
+      ]
+    },
+    {
+      "contract_name": "propagation_process_ref",
+      "storage": "party_runtime_mutable",
+      "identity": [
+        "process_ref"
+      ],
+      "fields": [
+        {
+          "name": "process_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "process_kind",
+          "required": true,
+          "type": "controlled_propagation_process_kind"
+        },
+        {
+          "name": "source_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "causal_basis_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "scope_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "path_ref",
+          "required": false,
+          "type": "entity_ref"
+        },
+        {
+          "name": "started_at",
+          "required": true,
+          "type": "game_timestamp"
+        },
+        {
+          "name": "next_boundary_at",
+          "required": false,
+          "type": "game_timestamp"
+        },
+        {
+          "name": "status",
+          "required": true,
+          "type": "enum[pending, active, completed, terminated]"
+        },
+        {
+          "name": "visibility_policy_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "termination_policy_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "rule_pins",
+          "required": true,
+          "type": "dependency_pin_set"
+        },
+        {
+          "name": "idempotency_key",
+          "required": true,
+          "type": "stable_id"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "Factual process and information about it are separate.",
+        "Process target, path, timing and effect are pinned and never invented during catch-up."
+      ]
+    },
+    {
+      "contract_name": "remote_aggregate_state",
+      "storage": "party_runtime_mutable",
+      "identity": [
+        "aggregate_id"
+      ],
+      "fields": [
+        {
+          "name": "aggregate_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "scope_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "scope_mode",
+          "required": true,
+          "type": "controlled_remote_scope_mode"
+        },
+        {
+          "name": "last_updated_at",
+          "required": true,
+          "type": "game_timestamp"
+        },
+        {
+          "name": "next_boundary_at",
+          "required": false,
+          "type": "game_timestamp"
+        },
+        {
+          "name": "state_version",
+          "required": true,
+          "type": "positive_decimal_string"
+        },
+        {
+          "name": "canonical_digest",
+          "required": true,
+          "type": "sha256_hex"
+        }
+      ],
+      "relations": [
+        {
+          "name": "aggregate_process_refs",
+          "type": "relation_set[propagation_process_ref]"
+        },
+        {
+          "name": "pending_incoming_effect_refs",
+          "type": "relation_set[entity_ref]"
+        },
+        {
+          "name": "coarse_rule_versions",
+          "type": "relation_set[versioned_ref]"
+        }
+      ],
+      "invariants": [
+        "State is persisted and deterministic; catalog revision never rematerializes or rewrites it.",
+        "Coarse remote scope never expands into minute-by-minute NPC simulation."
+      ]
+    },
+    {
+      "contract_name": "remote_catch_up_request",
+      "storage": "immutable_request",
+      "identity": [],
+      "fields": [
+        {
+          "name": "aggregate_state",
+          "required": true,
+          "type": "remote_aggregate_state"
+        },
+        {
+          "name": "activation_timestamp",
+          "required": true,
+          "type": "game_timestamp"
+        },
+        {
+          "name": "exact_elapsed",
+          "required": true,
+          "type": "elapsed_time"
+        },
+        {
+          "name": "rule_pins",
+          "required": true,
+          "type": "dependency_pin_set"
+        },
+        {
+          "name": "idempotency_key",
+          "required": true,
+          "type": "stable_id"
+        }
+      ],
+      "relations": [
+        {
+          "name": "incoming_process_refs",
+          "type": "relation_set[propagation_process_ref]"
+        }
+      ],
+      "invariants": [
+        "Activation timestamp is not earlier than aggregate last_updated_at and exact_elapsed reconciles them."
+      ]
+    },
+    {
+      "contract_name": "remote_catch_up_result",
+      "storage": "immutable_result",
+      "identity": [],
+      "fields": [
+        {
+          "name": "status",
+          "required": true,
+          "type": "enum[completed, blocked]"
+        },
+        {
+          "name": "clock_before",
+          "required": true,
+          "type": "game_timestamp"
+        },
+        {
+          "name": "clock_after",
+          "required": true,
+          "type": "game_timestamp"
+        },
+        {
+          "name": "aggregate_state",
+          "required": true,
+          "type": "remote_aggregate_state"
+        },
+        {
+          "name": "proposed_change_set",
+          "required": true,
+          "type": "json_object"
+        },
+        {
+          "name": "trace",
+          "required": true,
+          "type": "json_object"
+        }
+      ],
+      "relations": [
+        {
+          "name": "applied_process_refs",
+          "type": "relation_set[propagation_process_ref]"
+        },
+        {
+          "name": "deferred_work_refs",
+          "type": "relation_set[entity_ref]"
+        }
+      ],
+      "invariants": [
+        "Result is deterministic and idempotent for the same state, elapsed time, pins and incoming processes.",
+        "Entering active detail first catches up exactly and only then materializes approved detail."
+      ]
+    },
+    {
+      "contract_name": "visible_package_persistence_envelope",
+      "storage": "party_runtime_append_only",
+      "identity": [
+        "package_id"
+      ],
+      "fields": [
+        {
+          "name": "package_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "party_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "turn_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "committed_state_version",
+          "required": true,
+          "type": "positive_decimal_string"
+        },
+        {
+          "name": "change_set_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "package_digest",
+          "required": true,
+          "type": "sha256_hex"
+        },
+        {
+          "name": "visible_payload",
+          "required": true,
+          "type": "json_object"
+        },
+        {
+          "name": "presentation_status",
+          "required": true,
+          "type": "enum[pending, delivered, failed_retryable]"
+        },
+        {
+          "name": "projection_policy_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "dependency_pins",
+          "required": true,
+          "type": "dependency_pin_set"
+        },
+        {
+          "name": "idempotency_record_id",
+          "required": true,
+          "type": "stable_id"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "Payload contains only perceived/known player-safe facts, uncertainty and already calculated affordances.",
+        "Hidden queues, future timestamps, unperceived knowledge, motives, raw options, traces, rolls, DC and state patches are forbidden.",
+        "Package and pending status commit atomically with facts; narration output is stored separately."
       ]
     }
   ]

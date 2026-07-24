@@ -2,6 +2,7 @@ import { access, readFile } from 'node:fs/promises';
 import { constants as fsConstants } from 'node:fs';
 
 const standardPath = 'data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md';
+const temporalAmendmentPath = 'data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md';
 const matrixPath = 'docs/migration/spatial-v3/contract-implementation-matrix.json';
 
 const exists = async (path) => access(path, fsConstants.F_OK).then(() => true, () => false);
@@ -40,15 +41,35 @@ export function parseAppendixA(standard) {
   };
 }
 
-export async function loadCanonicalTarget() {
+const parseContracts = (document) => unique([...document.matchAll(/```yaml\r?\ncontract_name:\s*([^\r\n]+)[\s\S]*?```/g)]).map((match) => match[1].trim());
+const parseTypedErrors = (document, startHeading, endHeading = null) => {
+  const start = document.indexOf(startHeading);
+  const end = endHeading == null ? document.length : document.indexOf(endHeading, start);
+  if (start < 0 || end < 0) throw new Error(`Typed-error appendix is missing: ${startHeading}`);
+  return unique([...document.slice(start, end).matchAll(/^\|\s*`([^`]+)`\s*\|/gm)])
+    .map((match) => match[1].trim())
+    .filter((name) => name !== 'code');
+};
+const mergeByName = (base, amendment) => [...new Map([...base, ...amendment].map((name) => [name, name])).keys()].sort();
+
+export async function loadHistoricalTarget() {
   const [standard, matrixText] = await Promise.all([readFile(standardPath, 'utf8'), readFile(matrixPath, 'utf8')]);
   const matrix = JSON.parse(matrixText);
-  const contracts = unique([...standard.matchAll(/```yaml\r?\ncontract_name:\s*([^\r\n]+)[\s\S]*?```/g)].map((match) => match[1].trim())).sort();
-  const appendixC = standard.slice(standard.indexOf('# Приложение C.'), standard.indexOf('# Приложение D.'));
-  const errors = unique([...appendixC.matchAll(/^\|\s*`([^`]+)`\s*\|/gm)].map((match) => match[1].trim()).filter((name) => name !== 'code')).sort();
+  const contracts = parseContracts(standard).sort();
+  const errors = parseTypedErrors(standard, '# Приложение C.', '# Приложение D.').sort();
   if (contracts.length !== 160 || errors.length !== 58) throw new Error('Canonical P05 totals changed; rerun the normative freeze before P06');
-  if (matrix.contracts.length !== 160 || matrix.errors.length !== 58) throw new Error('Contract implementation matrix no longer matches the frozen canonical target');
   return { contracts, errors, stateMachines: parseAppendixA(standard) };
+}
+
+export async function loadCanonicalTarget() {
+  const [historical, temporalAmendment] = await Promise.all([loadHistoricalTarget(), readFile(temporalAmendmentPath, 'utf8')]);
+  const amendmentContracts = parseContracts(temporalAmendment);
+  const amendmentErrors = parseTypedErrors(temporalAmendment, '# Приложение B. Temporal typed-error amendment', '# Приложение C.');
+  const contracts = mergeByName(historical.contracts, amendmentContracts);
+  const errors = mergeByName(historical.errors, amendmentErrors);
+  if (amendmentContracts.length !== 35 || amendmentErrors.length !== 24) throw new Error('Temporal amendment totals changed; refresh the target contract evidence');
+  if (contracts.length !== 188 || errors.length !== 82) throw new Error('Current 4.3 target union no longer matches the base plus temporal amendment');
+  return { contracts, errors, stateMachines: historical.stateMachines, historical, amendment: { contracts: amendmentContracts.sort(), errors: amendmentErrors.sort() } };
 }
 
 async function loadJsonModule(path) {

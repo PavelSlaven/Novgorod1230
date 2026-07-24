@@ -6,6 +6,13 @@
 
 Допустимые runtime-роли LLM: bounded decision по закрытому списку с `option_id` и `command_token`, генерация персонажа игрока, аудит и проза только из visible context. Любой структурированный ответ проходит JSON Schema, state-version, token, option-membership и change-set gates; фактическое последствие всегда рассчитывает код.
 
+Для Temporal World v4 security projection является code-owned. Factual
+visible package создаётся и сохраняется в atomic commit до narration;
+narrator получает только persisted player-safe package после commit. LLM не
+создаёт дату, schedule, weather transition, temporal boundary, consequence,
+route или отсутствующий candidate. Профильный proposed-норматив:
+`temporal_world_and_interruptible_activities.md`.
+
 ## Назначение документа
 
 Этот документ описывает, как игра работает с исторической, игровой и технической информацией, как отдельный offline/editorial workflow пополняет базу знаний и обращается к внешним источникам, как сведения проходят через черновой слой, как отделяются факты от слухов и как должны строиться внутренние промты runtime LLM-агентов.

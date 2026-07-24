@@ -1,0 +1,29 @@
+{
+  "schema": "rus.temporal-world-v4.external-auditor-family-decision.v1",
+  "version": 1,
+  "family_id": "place_access_schedules",
+  "verdict": "approved",
+  "approved_record_ids": [
+    "record:place_access_schedules:monastic_refectory_v2"
+  ],
+  "source_ids_reviewed": [
+    "source:place_access_schedules:temporal_world_v4_normative",
+    "source:place_access_schedules:user_reconstruction_authorization",
+    "source:place_access_schedules:rule_of_benedict_analog"
+  ],
+  "applicability": [
+    "novgorod"
+  ],
+  "data_gaps": [],
+  "auditor": {
+    "name": "OpenAI GPT-5.6 Thinking",
+    "organization_or_role": "independent external data authoring auditor"
+  },
+  "decision_id": "decision:place_access_schedules:2026-07-24-reaudit-2",
+  "decided_at": "2026-07-24T17:45:00+03:00",
+  "method": "independent source, contract, controlled-vocabulary, exactness, closure, historical-labeling and no-fallback audit",
+  "rationale": "The access schedule separates physical portal state from scheduled authorization and provides exact daylight/activity boundaries for a narrowly scoped reconstructed monastic refectory, with fail-closed conflicts and no default-open behavior.",
+  "limitations": [
+    "Comparative monastic analogue only; not a generic Novgorod place schedule."
+  ]
+}

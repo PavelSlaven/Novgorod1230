@@ -1,0 +1,33 @@
+{
+  "schema": "rus.temporal-world-v4.external-auditor-family-decision.v1",
+  "version": 1,
+  "family_id": "body_time_effect_profiles_thresholds",
+  "verdict": "approved",
+  "approved_record_ids": [
+    "record:body_time_effect_profiles_thresholds:satiety_hourly_spend_v2",
+    "record:body_time_effect_profiles_thresholds:energy_awake_spend_v2",
+    "record:body_time_effect_profiles_thresholds:energy_sleep_recovery_v1",
+    "record:body_time_effect_profiles_thresholds:starvation_health_harm_v2"
+  ],
+  "source_ids_reviewed": [
+    "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+    "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+    "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+    "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+  ],
+  "applicability": [
+    "novgorod"
+  ],
+  "data_gaps": [],
+  "auditor": {
+    "name": "OpenAI GPT-5.6 Thinking",
+    "organization_or_role": "independent external data authoring auditor"
+  },
+  "decision_id": "decision:body_time_effect_profiles_thresholds:2026-07-24-reaudit-2",
+  "decided_at": "2026-07-24T17:45:00+03:00",
+  "method": "independent source, contract, controlled-vocabulary, exactness, closure, historical-labeling and no-fallback audit",
+  "rationale": "Canonical body semantics are implemented with exact 100/72 = 25/18 hourly deterioration, 3/2 heavy multiplier, source ranges 50-100/21-49/1-20/0, conditional starvation harm, and a transparent 16h/8h equilibrium sleep-recovery reconstruction.",
+  "limitations": [
+    "The 25/9 sleep recovery rate is an explicit gameplay balance reconstruction, not a medical or historical assertion."
+  ]
+}

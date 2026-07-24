@@ -1,6 +1,7 @@
 {
   "source": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
-  "source_version": "4.2.0",
+  "amendment_source": "data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md",
+  "source_version": "4.3.0-target.1",
   "errors": [
     {
       "error_code": "normative_contract_conflict",
@@ -291,6 +292,150 @@
       "error_code": "visual_layout_gap",
       "meaning": "Requested visual representation absent",
       "required_reaction": "Block only that map view"
+    },
+    {
+      "error_code": "time_timestamp_invalid",
+      "meaning": "GameTimestamp is malformed, noncanonical or inconsistent",
+      "required_reaction": "Reject request/read; preserve factual state",
+      "retryability": "no"
+    },
+    {
+      "error_code": "time_elapsed_invalid",
+      "meaning": "ElapsedTime is malformed, negative or invalid for the control outcome",
+      "required_reaction": "Reject request/result",
+      "retryability": "no"
+    },
+    {
+      "error_code": "time_calendar_profile_gap",
+      "meaning": "Required approved calendar profile is absent",
+      "required_reaction": "Hard block; authoring repair",
+      "retryability": "after_data_repair"
+    },
+    {
+      "error_code": "time_owner_conflict",
+      "meaning": "More than one clock owner or a shared local update attempts to own time",
+      "required_reaction": "Reject combined plan/commit",
+      "retryability": "fresh_state"
+    },
+    {
+      "error_code": "time_window_invalid",
+      "meaning": "Temporal limit or slice window is reversed or inconsistent",
+      "required_reaction": "Reject request",
+      "retryability": "no"
+    },
+    {
+      "error_code": "temporal_execution_unbounded",
+      "meaning": "Active execution has no finite completion/recheck boundary",
+      "required_reaction": "Hard block execution",
+      "retryability": "after_data_repair"
+    },
+    {
+      "error_code": "temporal_boundary_ambiguous",
+      "meaning": "Candidate identity/order/replacement has conflicting definitions",
+      "required_reaction": "Reject resolution",
+      "retryability": "after_data_repair"
+    },
+    {
+      "error_code": "temporal_boundary_cycle",
+      "meaning": "Same-time causal dependency graph contains a cycle",
+      "required_reaction": "Abort factual resolution",
+      "retryability": "no"
+    },
+    {
+      "error_code": "temporal_candidate_stale",
+      "meaning": "Candidate has no valid cancel/execute/replacement disposition",
+      "required_reaction": "Reject resolution; re-read state",
+      "retryability": "fresh_state"
+    },
+    {
+      "error_code": "temporal_change_set_conflict",
+      "meaning": "Temporal proposals conflict or fail exact reconciliation",
+      "required_reaction": "Reject combined plan/commit",
+      "retryability": "fresh_state"
+    },
+    {
+      "error_code": "activity_profile_gap",
+      "meaning": "Required approved activity profile is absent",
+      "required_reaction": "Hard block; authoring repair",
+      "retryability": "after_data_repair"
+    },
+    {
+      "error_code": "activity_policy_gap",
+      "meaning": "Required activity policy ref or finite candidate set is absent",
+      "required_reaction": "Hard block; authoring repair",
+      "retryability": "after_data_repair"
+    },
+    {
+      "error_code": "activity_precondition_stale",
+      "meaning": "Activity preconditions changed before resolution/commit",
+      "required_reaction": "Re-resolve under pinned policy",
+      "retryability": "fresh_state"
+    },
+    {
+      "error_code": "activity_transition_invalid",
+      "meaning": "Activity status/attempt transition violates the canonical machine",
+      "required_reaction": "Reject transition",
+      "retryability": "no"
+    },
+    {
+      "error_code": "event_rule_gap",
+      "meaning": "Required exact timer/event rule is absent",
+      "required_reaction": "Hard block; authoring repair",
+      "retryability": "after_data_repair"
+    },
+    {
+      "error_code": "event_effect_gap",
+      "meaning": "Event has no approved registered effect profile",
+      "required_reaction": "Hard block; authoring repair",
+      "retryability": "after_data_repair"
+    },
+    {
+      "error_code": "npc_schedule_gap",
+      "meaning": "Required NPC schedule/activity transition is absent",
+      "required_reaction": "Hard block relevant transition",
+      "retryability": "after_data_repair"
+    },
+    {
+      "error_code": "npc_decision_policy_gap",
+      "meaning": "Bounded NPC option/policy set is missing or empty",
+      "required_reaction": "Hard block decision",
+      "retryability": "after_data_repair"
+    },
+    {
+      "error_code": "perception_policy_gap",
+      "meaning": "Required propagation/attention/recognition policy is absent",
+      "required_reaction": "Hard block perception update",
+      "retryability": "after_data_repair"
+    },
+    {
+      "error_code": "weather_profile_gap",
+      "meaning": "Required approved weather/light transition profile is absent",
+      "required_reaction": "Hard block environment transition",
+      "retryability": "after_data_repair"
+    },
+    {
+      "error_code": "historical_phase_rule_gap",
+      "meaning": "Required source-backed historical phase/local rule is absent",
+      "required_reaction": "Hard block historical transition",
+      "retryability": "after_data_repair"
+    },
+    {
+      "error_code": "remote_catch_up_rule_gap",
+      "meaning": "Required coarse aggregate catch-up rule is absent",
+      "required_reaction": "Hard block scope activation",
+      "retryability": "after_data_repair"
+    },
+    {
+      "error_code": "propagation_rule_gap",
+      "meaning": "Required process path/timing/effect rule is absent",
+      "required_reaction": "Hard block propagation",
+      "retryability": "after_data_repair"
+    },
+    {
+      "error_code": "visible_package_persistence_gap",
+      "meaning": "Hidden-safe visible package cannot be built or committed with facts",
+      "required_reaction": "Abort factual commit",
+      "retryability": "fresh_state"
     }
   ]
 }

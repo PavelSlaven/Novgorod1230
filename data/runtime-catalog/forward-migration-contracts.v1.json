@@ -3,17 +3,17 @@
   "fingerprint_algorithm": "rus.postgres_schema_fingerprint.v2",
   "source_contract": {
     "repository_commit_sha": "bb5db7cde2b0e38420234beba8c9bdf6e34a45cf",
-    "world_bootstrap": "infra/world-base/schema/01.sql..17.sql",
+    "world_bootstrap": "infra/world-base/schema/01.sql..18.sql",
     "party_bootstrap": "schemas/party-db/001_party_runtime.sql",
     "operator_backup_verified": false
   },
   "migrations": [
     {
       "migration_id": "world_runtime_catalog_activation_v1",
-      "migration_digest": "e5c2cf0fecbe3e8a8461bc2f17983cc3e58ebe1dba66e458b6ed38d04090d28e",
+      "migration_digest": "e757ab24f02399470564044bcb82a4f62490985b4946cb50a07f33a8c48b7201",
       "schema_name": "world_base",
-      "source_schema_fingerprint": "486ef58ba51684f6f2580e444b9421e658508cf23633025a19dad53192694be6",
-      "target_schema_fingerprint": "7f85a1a17155fb2c3e63344a0ba0c8311f70204b40dcae5cac129c84fbe6e4a1",
+      "source_schema_fingerprint": "8f5d28619bb2f666c5efae6c376f89c0b9f21c0e9b90889c3b975c772cecdb08",
+      "target_schema_fingerprint": "d6eb5c68e8df74989443de56b77145569e65d43988953ddeb0bff6256f3df89f",
       "sql_path": "tools/runtime-catalog-activation/migrations/world/001_runtime_catalog_activation.sql"
     },
     {

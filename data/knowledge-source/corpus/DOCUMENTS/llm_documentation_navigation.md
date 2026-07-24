@@ -2,7 +2,7 @@
 
 ## Статус navigation и target/active boundary
 
-Навигация отражает два раздельных слоя: до P28 active production следует materialization v2; `spatial_architecture_standard_g0_g6.md` v4.2.0 задаёт target v3 для документации, contracts, fixtures, migration и shadow composition. Навигационный файл не активирует target, не разрешает partial activation, dual write или fallback.
+Навигация отражает два раздельных слоя: до P28 active production следует materialization v2; `spatial_architecture_standard_g0_g6.md` v4.2.0 задаёт target v3 для документации, contracts, fixtures, migration и shadow composition. `temporal_world_and_interruptible_activities.md` задаёт active Temporal World v4 target amendment (`temporal-world-v1`, Spatial contract `4.3.0-target.1`) и доступен в default active-only retrieval. Навигационный файл не активирует target, не разрешает partial activation, dual write или fallback.
 
 ## Приоритет materialization v2
 
@@ -39,9 +39,17 @@ paths не заменяют active-нормативы.
 6. Реализация.
 7. Комментарии и примеры.
 
-### Proposed-классификация
+### Статусы целевых нормативов
 
 `universal_category_classification_policy.md` и `universal_category_classification_references.md` зарегистрированы в canonical corpus со статусом `proposed`. Они задают целевую модель классификации и внешние опоры, но не отменяют active-нормативы и не подтверждают готовность предметных каталогов, regional permissions или materializer. До отдельного повышения действует приоритет выше.
+
+`temporal_world_and_interruptible_activities.md` имеет status `active` после
+реализации, полного набора проверок и независимого критика. Для exact time,
+activities, boundaries, NPC temporal runtime, carriers, environment или remote
+processes его необходимо читать полностью вместе с target spatial standard.
+Его active status означает нормативную власть target amendment, а не
+production activation; финальное P28 exact-head evidence остаётся отдельным
+обязательным gate.
 
 Дополнительные правила навигации:
 
@@ -62,8 +70,9 @@ paths не заменяют active-нормативы.
 3. `player_character_generation.txt`
 4. `character_parameters.txt`
 5. `time_system.txt`
-6. `movement_locations_regions.txt`
-7. `interface_ux.md`
+6. `temporal_world_and_interruptible_activities.md` при temporal target work
+7. `movement_locations_regions.txt`
+8. `interface_ux.md`
 
 ### Для игровых систем и последствий
 
@@ -91,10 +100,11 @@ paths не заменяют active-нормативы.
 | `README.md` | Общее описание проекта, состава `DOCUMENTS`, запуска, тестов и правил будущих изменений. | При первом входе в проект, объяснении назначения репозитория, проверке состава документации и базовых команд. |
 | `world_regions.txt` | Список допустимых регионов мира RUS13. Задаёт историко-географическую сетку, в пределах которой выбираются стартовые и последующие регионы партии. | При выборе региона, смене региона, проверке географической допустимости, создании исторического фона и маршрутов. |
 | `spatial_architecture_standard_g0_g6.md` | Главный target v4.2.0: G0–G6, topology, movement, materialization, player projection, migration и release gate. До P28 не является active runtime нормативом. | При target-проектировании пространственной модели, contracts, DDL/migration plan и проверке границы active/target. |
+| `temporal_world_and_interruptible_activities.md` | Active Temporal World v4 target amendment: exact `GameTimestamp`, interruptible activities, event-driven boundaries, domain/NPC/carrier/remote updates, persistence и post-commit narration. | При любой target-задаче времени, activity/traversal timing, schedules, same-time cascades, environment, carrier clocks, catch-up или propagation; default active-only retrieval обязан находить документ. |
 | `world_generation_and_turns.txt` | Target v3: G0–G6/position, bounded preparation/materialization и turn boundary; archived v2 источник сохранён для traceability. | При target-проектировании start/materialization/slots/expansion и сверке active v2 до P28. |
 | `player_character_generation.txt` | Правила создания персонажа игрока как человека, встроенного в эпоху, место, статус, тело, знания, имущество, связи и стартовую сцену. | При создании нового персонажа, интерпретации заявки игрока, проверке стартового статуса, биографии, навыков, имущества, связей и причин нахождения в сцене. |
 | `character_parameters.txt` | Базовая механика характеристик, навыков, бонусов, состояний, тела и проверок. Фиксирует формулу d20, диапазоны характеристик, здоровье, сытость, бодрость, активные состояния и влияние тела. | При любой проверке, расчёте бонусов, изменении состояния, создании персонажа/NPC, применении штрафов от голода, усталости, ран, болезни и иных состояний. |
-| `time_system.txt` | Правила игрового времени: день, время суток, длительность действий, ход часов и дней, сон, отдых, ожидание, обновление тела, NPC, погоды, дорог и последствий. | При любом действии, которое занимает время; при сне, ожидании, дороге, работе, лечении, изменении состояния тела, расписаний NPC и отложенных последствий. |
+| `time_system.txt` | Target routing для exact времени; authoritative Temporal World v4 details находятся в профильном amendment, архивная v2-проза исключена из retrieval. | При любом действии, которое занимает время; для target implementation обязательно затем читать active temporal amendment. |
 | `movement_locations_regions.txt` | Target v3: typed endpoints, authored topology, readiness, immutable plans и execution; archived v2 источник сохранён для traceability. | При target-проектировании перемещения, path query, route/segment authoring и boundary. |
 | `items_and_property.txt` | Общие правила материальной среды: предметы, имущество, доступ, контейнеры, обнаружимость, право владения, состояние, ценность, следы, риски, материализация предметов и связь вещей с локацией/персонажами. | При создании или проверке предметов сцены, контейнеров, собственности, доступа, кражи, обмена, ремонта, поиска, ценности и правдоподобия материальной среды. |
 | `character_inventory_equipment.txt` | Правила для вещей, которые персонаж физически несёт при себе. Описывает вес, нагрузку, быстрый доступ, контейнеры, занятые руки, влияние предметов на проверки, износ, владение и социально-правовые риски. | Когда персонаж берёт, несёт, достаёт, теряет, использует или показывает предмет; при расчёте нагрузки, доступа к вещам и влияния снаряжения на действия. |
@@ -108,7 +118,7 @@ paths не заменяют active-нормативы.
 | `universal_category_classification_policy.md` | Proposed-норматив базового слоя universal categories, external mappings и фасетной модели; не является active. | При работе с классификационными схемами, labels, mappings, category relations и планировании этапов 3–9. |
 | `universal_category_classification_references.md` | Proposed-реестр внешних классификационных опор; не подтверждает историческую применимость. | При редакторском mapping к внешней схеме, без live runtime-запросов и без regional permission. |
 | `information_sources_llm_prompts.md` | Правила работы с исторической, игровой и технической информацией: происхождение сведений, статус достоверности, пополнение базы, сжатие источников, черновики, утверждённые данные и аудит. | При проектировании RAG/поиска, пополнении базы, сохранении источников, работе с внешними сведениями, снижении токенов, отделении чернового знания от утверждённого. |
-| `llm_agent_prompt_templates.md` | Рабочие шаблоны промтов для агентов: ведущий игры, отбор видимого контекста, художественная проза, память, пополнение базы, структурирование. Фиксирует разделение скрытого и видимого. | При изменении LLM-пайплайна, промтов, ролей агентов, формата visible context, генерации прозы, записи памяти и структурировании ответа. |
+| `llm_agent_prompt_templates.md` | Рабочие шаблоны только для разрешённых LLM-ролей. Security projection является code-owned; narrator получает уже persisted player-safe package. | При изменении LLM-пайплайна, разрешённых bounded/audit/narrator ролей, генерации прозы и post-commit presentation. |
 
 ## 4. Как выбирать нужный документ по задаче
 
@@ -117,7 +127,7 @@ paths не заменяют active-нормативы.
 | Создать новую партию, стартовую сцену, новый узел мира или обработать ход | `world_generation_and_turns.txt` | `time_system.txt`, `movement_locations_regions.txt`, `interface_ux.md` |
 | Создать или проверить персонажа игрока | `player_character_generation.txt` | `character_parameters.txt`, `character_inventory_equipment.txt`, `items_and_property.txt` |
 | Рассчитать проверку, состояние тела, штраф или навык | `character_parameters.txt` | `formulas.md`, релевантный документ системы действия |
-| Изменить время, сон, отдых, ожидание, расписание или отложенное последствие | `time_system.txt` | `character_parameters.txt`, `historical_events_and_figures.txt` |
+| Изменить время, сон, отдых, ожидание, расписание или отложенное последствие | `temporal_world_and_interruptible_activities.md` | `time_system.txt`, `character_parameters.txt`, `historical_events_and_figures.txt` |
 | Переместить персонажа, построить маршрут, вернуть назад, заблудиться | `movement_locations_regions.txt` | `time_system.txt`, `world_regions.txt`, `world_generation_and_turns.txt` |
 | Создать предмет сцены, проверить имущество, контейнер, доступ или кражу | `items_and_property.txt` | `character_inventory_equipment.txt`, `npc_inventory_item_marks.txt` |
 | Проверить, что персонаж несёт, где предмет лежит, сколько весит и доступен ли он | `character_inventory_equipment.txt` | `items_and_property.txt`, `character_parameters.txt`, `weapons_and_armor.txt` |

@@ -1,0 +1,20 @@
+[
+  {
+    "reference_id": "reference:place_access_schedules:monastic_refectory_v2",
+    "status": "approved",
+    "table": "temporal_authoring_records",
+    "record_id": "record:place_access_schedules:monastic_refectory_v2",
+    "source_record_key": "record:place_access_schedules:monastic_refectory_v2",
+    "logical_record_id": "monastic_refectory_midday_access_analogue_v2",
+    "authoring_version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "source_ids": [
+      "source:place_access_schedules:temporal_world_v4_normative",
+      "source:place_access_schedules:user_reconstruction_authorization",
+      "source:place_access_schedules:rule_of_benedict_analog"
+    ],
+    "binding_notes": "Bound to world_base.temporal_authoring_records by the approved Temporal v4 importer."
+  }
+]

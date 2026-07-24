@@ -1,14 +1,35 @@
-import { normalizeRational } from '@rus/time-events-history';
+import { normalizeGameTimestamp, normalizeRationalMinutes } from '@rus/time-events-history';
 import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
 
 export const isRecord = (value) => value !== null && typeof value === 'object' && !Array.isArray(value) &&
   (Object.getPrototypeOf(value) === Object.prototype || Object.getPrototypeOf(value) === null);
 export const stableId = (value) => typeof value === 'string' && value.trim().length > 0;
-export const isRational = (value) => value && Number.isSafeInteger(value.numerator) &&
-  Number.isSafeInteger(value.denominator) && value.numerator >= 0 && value.denominator > 0;
-export const positiveRational = (value) => isRational(value) && value.numerator > 0;
+export function isRational(value) {
+  try {
+    const normalized = normalizeRationalMinutes(value);
+    return normalized.numerator === value.numerator && normalized.denominator === value.denominator;
+  } catch {
+    return false;
+  }
+}
+export const positiveRational = (value) => isRational(value) && normalized(value).numerator !== '0';
+export function isGameTimestamp(value) {
+  try {
+    const normalized = normalizeGameTimestamp(value);
+    return normalized.whole_minutes === value.whole_minutes
+      && normalized.subminute_numerator === value.subminute_numerator
+      && normalized.subminute_denominator === value.subminute_denominator;
+  } catch {
+    return false;
+  }
+}
 export const nonNegativeInteger = (value) => Number.isSafeInteger(value) && value >= 0;
 export const CLOCK_MODES = new Set(['direct_party_clock', 'shared_root_transport_clock']);
+export const ACTIVITY_STATUSES = new Set(['active', 'paused', 'completed', 'failed', 'aborted']);
+export const ACTIVITY_COMPLETION_KINDS = new Set(['fixed_exact', 'progress_target', 'condition_or_deadline']);
+
+/** Decimal strings are used for persisted optimistic state versions. */
+export const positiveDecimalString = (value) => typeof value === 'string' && /^[1-9][0-9]*$/.test(value);
 
 export function hasValidDigest(value) {
   if (!isRecord(value) || typeof value.canonical_digest !== 'string') return false;
@@ -66,4 +87,4 @@ export function canonicalSignals(input) {
   return sealedRecord(raw) && sealedPinSet(raw.dependency_pins) ? raw : null;
 }
 
-export const normalized = (value) => normalizeRational(value);
+export const normalized = (value) => normalizeRationalMinutes(value);

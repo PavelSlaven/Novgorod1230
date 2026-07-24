@@ -1,0 +1,45 @@
+{
+  "schema": "rus.temporal-world-v4.data-family-approval.v1",
+  "version": 1,
+  "family_id": "npc_temporal_profiles_policies",
+  "status": "approved",
+  "record_version": "1",
+  "applicability": [
+    "novgorod"
+  ],
+  "record_ids": [
+    "record:npc_temporal_profiles_policies:monastic_worker_v2"
+  ],
+  "data_gaps": [],
+  "external_audit_decision": {
+    "path": "docs/work/temporal-world-v4/external-data-audit/decisions/npc_temporal_profiles_policies.decision.json",
+    "sha256": "6d6c24531146e68a6adc03850cdc89170546db8ee838930fc80f70ef427e60ad",
+    "decision_id": "decision:npc_temporal_profiles_policies:2026-07-24-reaudit-2"
+  },
+  "artifacts": {
+    "dataset": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/datasets/npc_temporal_profiles_policies.json",
+      "sha256": "ca549216bfc123aa2fa59d082d5ef16b99c9e582e8bb7d9d6f20afe84db5546a"
+    },
+    "provenance": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/source-approval/npc_temporal_profiles_policies.provenance.json",
+      "sha256": "dd9f4f53e6faab412b76c350a64614ccf663337d2979cb4856645d87970dbe90"
+    },
+    "normalized_references": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/datasets/npc_temporal_profiles_policies.references.json",
+      "sha256": "ec575366d615c7177016520d096ebad4df6a752e5c9eca6328bfc5bd8cdb9f53"
+    },
+    "source_history": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/source-approval/npc_temporal_profiles_policies.sources.json",
+      "sha256": "0b65b87be43b09f9621dfb575335d452544aaf34d7bd9dd9e4e05ced5cb43ba4"
+    },
+    "deterministic_import": {
+      "path": "tools/temporal-v4/import-approved-data.mjs",
+      "sha256": "c566a47c1a49fa18f26ffc1a744dbeb9348d6dadb42430b6f462f73c867c2ba5"
+    },
+    "generated_schema": {
+      "path": "infra/world-base/SCHEMA_REFERENCE.md",
+      "sha256": "2033c4c5a8ddd50e8fb5f8fab159710bb28c6d8a9c3cee72d5fda464de171091"
+    }
+  }
+}

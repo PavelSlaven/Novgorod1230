@@ -3,21 +3,21 @@
   "generator": "tools/docs-tools/src/knowledge-materializer-v2.js",
   "generation_mode": "approved_semantic_snapshot_plus_deterministic_lexical_coverage",
   "corpus_root": "data/knowledge-source/corpus/DOCUMENTS",
-  "corpus_manifest_sha256": "f0a5330cc843d16e55e8da47e02dfe2686c93ef394653c0099e9f764309ef898",
-  "corpus_hash": "e42d8f87c30ccd1e00fd0c7c8f1331aa50c10369ab2b19282809509edc5f2f83",
+  "corpus_manifest_sha256": "3ca8374ff6320fee74863f984f13a14b03bb723cb8dfdbe45dc2ae3f604635b3",
+  "corpus_hash": "340f1eb9d6b1aae10be9ffeb6c6b1a712918b94b0ad8b9e20a0cddd80cc70e25",
   "source_snapshot": "data/knowledge-source/imports/rag/index.json",
   "source_snapshot_sha256": "b89d573dd6c3fec6c9e42eca8ba629475098a3ba96b147d9a205ae4e37bc383e",
   "semantic_index": "generated/knowledge-source/rag/index.json",
-  "semantic_index_sha256": "f410bed12c27762dce3ace8b6f55f36962d971864bc8425e6e3197cd07cf2cdc",
+  "semantic_index_sha256": "90b5ced51daf4b5b3d2d1c502e8f23df62ef8fcb0213eeece5badaab2bfffcc0",
   "lexical_index": "generated/knowledge-source/rag/lexical-index.json",
-  "lexical_index_sha256": "963f4ad69d255be654fa68b97c1f2de67d6ae891ca5cb5b462895a26bb24c4ed",
-  "registered_document_count": 35,
-  "source_document_count": 35,
-  "active_document_count": 29,
-  "semantic_document_count": 3,
-  "lexical_only_document_count": 32,
-  "semantic_chunk_count": 60,
-  "lexical_chunk_count": 1541,
+  "lexical_index_sha256": "320250cb78fac576a531433dcad4b00a6bf4ab85899c298b6233e8620980a763",
+  "registered_document_count": 36,
+  "source_document_count": 36,
+  "active_document_count": 30,
+  "semantic_document_count": 2,
+  "lexical_only_document_count": 34,
+  "semantic_chunk_count": 44,
+  "lexical_chunk_count": 1357,
   "model": "jina-embeddings-v3",
   "dimensions": 1024,
   "coverage": [
@@ -38,9 +38,9 @@
     {
       "document_id": "character-parameters",
       "file_name": "character_parameters.txt",
-      "lexical_indexed": false,
-      "semantic_indexed": true,
-      "semantic_reason": "approved_embedding_snapshot"
+      "lexical_indexed": true,
+      "semantic_indexed": false,
+      "semantic_reason": "approved_embedding_absent"
     },
     {
       "document_id": "code-critic-invocation-rule",
@@ -183,6 +183,48 @@
       "semantic_reason": "approved_embedding_absent"
     },
     {
+      "document_id": "spatial-architecture-standard-g0-g6",
+      "file_name": "spatial_architecture_standard_g0_g6.md",
+      "lexical_indexed": true,
+      "semantic_indexed": false,
+      "semantic_reason": "approved_embedding_absent"
+    },
+    {
+      "document_id": "spatial-v3-target-code-driven-world-materialization-architecture",
+      "file_name": "spatial_v3_target_code_driven_world_materialization_architecture.md",
+      "lexical_indexed": true,
+      "semantic_indexed": false,
+      "semantic_reason": "approved_embedding_absent"
+    },
+    {
+      "document_id": "spatial-v3-target-map-g0-g4-workflow",
+      "file_name": "spatial_v3_target_map_g0_g4_workflow.txt",
+      "lexical_indexed": true,
+      "semantic_indexed": false,
+      "semantic_reason": "approved_embedding_absent"
+    },
+    {
+      "document_id": "spatial-v3-target-read-only-database-and-graph-architecture",
+      "file_name": "spatial_v3_target_read_only_database_and_graph_architecture.md",
+      "lexical_indexed": true,
+      "semantic_indexed": false,
+      "semantic_reason": "approved_embedding_absent"
+    },
+    {
+      "document_id": "spatial-v3-target-world-base-materialization-table-requirements",
+      "file_name": "spatial_v3_target_world_base_materialization_table_requirements.md",
+      "lexical_indexed": true,
+      "semantic_indexed": false,
+      "semantic_reason": "approved_embedding_absent"
+    },
+    {
+      "document_id": "temporal-world-and-interruptible-activities",
+      "file_name": "temporal_world_and_interruptible_activities.md",
+      "lexical_indexed": true,
+      "semantic_indexed": false,
+      "semantic_reason": "approved_embedding_absent"
+    },
+    {
       "document_id": "time-system",
       "file_name": "time_system.txt",
       "lexical_indexed": true,
@@ -230,41 +272,6 @@
       "lexical_indexed": false,
       "semantic_indexed": true,
       "semantic_reason": "approved_embedding_snapshot"
-    },
-    {
-      "document_id": "spatial-v3-target-code-driven-world-materialization-architecture",
-      "file_name": "spatial_v3_target_code_driven_world_materialization_architecture.md",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
-    },
-    {
-      "document_id": "spatial-v3-target-world-base-materialization-table-requirements",
-      "file_name": "spatial_v3_target_world_base_materialization_table_requirements.md",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
-    },
-    {
-      "document_id": "spatial-v3-target-read-only-database-and-graph-architecture",
-      "file_name": "spatial_v3_target_read_only_database_and_graph_architecture.md",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
-    },
-    {
-      "document_id": "spatial-v3-target-map-g0-g4-workflow",
-      "file_name": "spatial_v3_target_map_g0_g4_workflow.txt",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
-    },
-    {
-      "document_id": "spatial-architecture-standard-g0-g6",
-      "file_name": "spatial_architecture_standard_g0_g6.md",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
     }
   ]
 }

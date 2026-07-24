@@ -1,0 +1,18 @@
+[
+  {
+    "provenance_id": "provenance:body_time_effect_profiles_thresholds:novgorod_v1",
+    "status": "approved",
+    "source_ids": [
+      "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+      "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+      "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+      "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+    ],
+    "approved_by": "OpenAI GPT-5.6 Thinking",
+    "approver_role": "independent external data authoring auditor",
+    "approved_at": "2026-07-24T17:45:00+03:00",
+    "decision_id": "decision:body_time_effect_profiles_thresholds:2026-07-24-reaudit-2",
+    "method": "contract audit against the handoff requirements, canonical repository snapshot, exact source bytes, controlled vocabularies, and explicitly labeled bounded reconstruction authorized by the user",
+    "notes": "Canonical body semantics are implemented with exact 100/72 = 25/18 hourly deterioration, 3/2 heavy multiplier, source ranges 50-100/21-49/1-20/0, conditional starvation harm, and a transparent 16h/8h equilibrium sleep-recovery reconstruction."
+  }
+]

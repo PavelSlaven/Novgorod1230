@@ -4,6 +4,11 @@
 
 Этот справочник описывает target v3 formulas только там, где они меняются пространственной миграцией. До P28 active production semantics — materialization v2. Профильные документы владеют назначением формул; этот файл — единственный источник их записи и owner mapping.
 
+Для Temporal World v4 профильным active target-нормативом является
+`temporal_world_and_interruptible_activities.md`. Формулы ниже используют
+decimal-string rational DTO и exact `BigInt` core; ни один consumer не
+округляет duration и не переносит domain effects в time owner.
+
 ## 1. Движение: positive rational factor model
 
 ```text
@@ -46,13 +51,18 @@ delay_application_identity = versioned_delay_ref + application_scope + occurrenc
 | exact timestamp и crossed-minute derivation | `@rus/time-events-history` | turn, persistence |
 | dynamic snapshot | `@rus/movement-routes` | traversal executor |
 | synchronized carrier-local slice | turn orchestrator | movement, time events |
-| body/NPC/weather/event effects from elapsed time | `@rus/time-events-history` | turn projection |
+| body effects from elapsed time | `@rus/body-state` | turn boundary handler |
+| NPC schedule/perception effects | `@rus/npc-runtime` | turn boundary handler |
+| weather/light effects | `@rus/environment-state` | turn boundary handler |
+| historical phase local effects | профильный domain owner | turn boundary handler |
+| remote catch-up/propagation | `@rus/world-processes` | turn boundary handler |
 
 Consumers не копируют формулы и не пересчитывают duration. Target источник: `spatial_architecture_standard_g0_g6.md` §11.2–§11.10. До P28 это target, не active runtime formula.
 
 
 ---
 
+<!-- knowledge-retrieval-exclude:start -->
 ## Приложение A. Архивный v2-источник для migration traceability
 
 Нижеследующий текст сохранён только как historical/migration source для ссылочной совместимости и аудита. Он **не является target-правилом**, не активирует v2 semantics в target v3 и не разрешает mixed execution, dual write либо fallback. При конфликте применяется основной target-раздел этого документа и target standard; active production boundary до P28 определён отдельно.
@@ -1018,3 +1028,4 @@ d20 + бонус характеристики + бонус навыка + мод
 Формулы проекта намеренно простые. Их задача — не симулировать мир до физической точности, а дать коду детерминированно учитывать уже зафиксированные факты: время, тело, предметы, вес, статус, сцену, свидетелей, риск и последствия. LLM получает готовый видимый результат и может только отразить его в прозе без изменения расчёта.
 
 Главное правило применения: **сначала расчёт и фиксация последствий, потом видимое состояние, потом художественная проза**.
+<!-- knowledge-retrieval-exclude:end -->

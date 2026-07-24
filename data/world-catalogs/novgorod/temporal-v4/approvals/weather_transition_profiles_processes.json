@@ -1,0 +1,45 @@
+{
+  "schema": "rus.temporal-world-v4.data-family-approval.v1",
+  "version": 1,
+  "family_id": "weather_transition_profiles_processes",
+  "status": "approved",
+  "record_version": "1",
+  "applicability": [
+    "novgorod"
+  ],
+  "record_ids": [
+    "record:weather_transition_profiles_processes:novgorod_weather_v2"
+  ],
+  "data_gaps": [],
+  "external_audit_decision": {
+    "path": "docs/work/temporal-world-v4/external-data-audit/decisions/weather_transition_profiles_processes.decision.json",
+    "sha256": "1340670b762bdbe0142f055b504bb4e39f92b4079d5da2a3019b007e111c8055",
+    "decision_id": "decision:weather_transition_profiles_processes:2026-07-24-reaudit-2"
+  },
+  "artifacts": {
+    "dataset": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/datasets/weather_transition_profiles_processes.json",
+      "sha256": "b8a66008bf3830f5353b325ad913c2a2a95c085303ae5d8950f5a72265a38922"
+    },
+    "provenance": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/source-approval/weather_transition_profiles_processes.provenance.json",
+      "sha256": "93f8141e1e7c3d13d37bcf6d82491350242bb964ade0c26f108e1fbd16fbb756"
+    },
+    "normalized_references": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/datasets/weather_transition_profiles_processes.references.json",
+      "sha256": "438ad08c4ef22dd8bd3f17c9279c8d0d6a38836e20b2531dd221b456d49528a0"
+    },
+    "source_history": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/source-approval/weather_transition_profiles_processes.sources.json",
+      "sha256": "620f29a05c2b00d2646974944429b865ff0634dcebeb1707b0c36b938a1ef0af"
+    },
+    "deterministic_import": {
+      "path": "tools/temporal-v4/import-approved-data.mjs",
+      "sha256": "c566a47c1a49fa18f26ffc1a744dbeb9348d6dadb42430b6f462f73c867c2ba5"
+    },
+    "generated_schema": {
+      "path": "infra/world-base/SCHEMA_REFERENCE.md",
+      "sha256": "2033c4c5a8ddd50e8fb5f8fab159710bb28c6d8a9c3cee72d5fda464de171091"
+    }
+  }
+}

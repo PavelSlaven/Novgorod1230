@@ -10,6 +10,9 @@
     "./spatial-v3-request-profile": "./src/spatial-v3-request-profile.js",
     "./spatial-v3-execution": "./src/spatial-v3-execution.js",
     "./spatial-v3-write-plan": "./src/spatial-v3-write-plan.js",
+    "./temporal-advance": "./src/temporal-advance.js",
+    "./temporal-carriers": "./src/temporal-carriers.js",
+    "./temporal-proposal-merger": "./src/temporal-proposal-merger.js",
     "./compat": "./src/compat/index.js"
   },
   "dependencies": {

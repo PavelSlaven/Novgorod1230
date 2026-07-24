@@ -1,0 +1,45 @@
+{
+  "schema": "rus.temporal-world-v4.data-family-approval.v1",
+  "version": 1,
+  "family_id": "calendar_daylight_light_profiles",
+  "status": "approved",
+  "record_version": "1",
+  "applicability": [
+    "novgorod"
+  ],
+  "record_ids": [
+    "record:calendar_daylight_light_profiles:novgorod_1230_1233_v2"
+  ],
+  "data_gaps": [],
+  "external_audit_decision": {
+    "path": "docs/work/temporal-world-v4/external-data-audit/decisions/calendar_daylight_light_profiles.decision.json",
+    "sha256": "2c31f5695242c8abce1fce6bb63c90822375a2f2e3f42ce5390d85796f644575",
+    "decision_id": "decision:calendar_daylight_light_profiles:2026-07-24-reaudit-2"
+  },
+  "artifacts": {
+    "dataset": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json",
+      "sha256": "e861c4136307507880451532a76e8729a874d459650a905383b70661776fe86e"
+    },
+    "provenance": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/source-approval/calendar_daylight_light_profiles.provenance.json",
+      "sha256": "0143b28c077ea6810614ef216b53117962e3783b35cf288f5799368365a6bf7f"
+    },
+    "normalized_references": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.references.json",
+      "sha256": "11223d8f54bd058bb107b0140060da68a66a5ecaf471b63c967410ed1824fc50"
+    },
+    "source_history": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/source-approval/calendar_daylight_light_profiles.sources.json",
+      "sha256": "1e8e7ca5986e1683a57b1139daca9a4589e37a958feb84b8d088ccbf040dace5"
+    },
+    "deterministic_import": {
+      "path": "tools/temporal-v4/import-approved-data.mjs",
+      "sha256": "c566a47c1a49fa18f26ffc1a744dbeb9348d6dadb42430b6f462f73c867c2ba5"
+    },
+    "generated_schema": {
+      "path": "infra/world-base/SCHEMA_REFERENCE.md",
+      "sha256": "2033c4c5a8ddd50e8fb5f8fab159710bb28c6d8a9c3cee72d5fda464de171091"
+    }
+  }
+}

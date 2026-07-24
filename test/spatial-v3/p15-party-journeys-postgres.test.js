@@ -15,8 +15,11 @@ const dockerAsync = (args, input) => new Promise((resolve) => {
 
 test('P15 target-only journey, exact time and idempotency constraints are physical', async (t) => {
   assert.equal(RUNTIME_MIGRATIONS.length, 1, 'production runtime remains v2 before P28');
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 5, 'the current target-only sequence includes the later P23 domain migration');
-  if (docker(['version']).status !== 0) t.skip('Docker required for isolated PostgreSQL test');
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 7, 'the current target-only sequence includes P23, migration coverage and Temporal World');
+  if (docker(['version']).status !== 0) {
+    t.skip('Docker required for isolated PostgreSQL test');
+    return;
+  }
   t.after(() => docker(['rm', '-f', name]));
   assert.equal(docker(['run', '-d', '--name', name, '-e', 'POSTGRES_PASSWORD=p15_local', '-e', 'POSTGRES_USER=p15', '-e', 'POSTGRES_DB=p15', 'postgres:16-alpine']).status, 0);
   let ready = false;
@@ -30,6 +33,19 @@ test('P15 target-only journey, exact time and idempotency constraints are physic
   assert.equal(psql("INSERT INTO party_runtime.party_v3_change_sets(id,party_id,operation_kind,expected_state_version_set_digest,expected_state_version_set,committed_state_version_set_digest,write_plan_digest,created_at_turn,committed_at_turn) VALUES ('cs','p','turn','expected','[{\"entity\":\"p\",\"version\":1}]','committed','plan',0,0); INSERT INTO party_runtime.party_change_set_write_plans(change_set_id,canonical_write_plan,canonical_write_plan_digest,expected_state_version_set,expected_state_version_set_digest,lock_key_set) VALUES ('cs','{}','plan','[{\"entity\":\"p\",\"version\":1}]','expected','[]'); INSERT INTO party_runtime.party_command_idempotency(id,party_id,operation_kind,idempotency_key,canonical_input_digest,expected_state_version_set_digest,status,lease_token,lease_expires_at,created_at_turn) VALUES ('idem','p','turn','key','input','expected','leased','lease',now()+interval '1 minute',0);").status, 0);
   assert.notEqual(psql("INSERT INTO party_runtime.party_clocks(party_id,whole_minutes,subminute_numerator,subminute_denominator,clock_owner_kind,clock_owner_id,state_version,updated_change_set_id) VALUES ('p',0,2,4,'transport','boat',0,'cs');").status, 0, 'clock rational is reduced');
   assert.equal(psql("INSERT INTO party_runtime.party_clocks(party_id,whole_minutes,subminute_numerator,subminute_denominator,clock_owner_kind,clock_owner_id,state_version,updated_change_set_id) VALUES ('p',0,1,2,'transport','boat',0,'cs');").status, 0, 'exact sub-minute clock is accepted');
+  const hugeWholeMinutes = '99999999999999999999999999999999999999999999999999999999999999999999999999999999';
+  const hugeDenominator = '100000000000000000000000000000000000000000000000000000000000000000000000000000003';
+  assert.equal(psql(`INSERT INTO party_runtime.parties(party_id,schema_version,world_revision_id,world_catalog_digest,materializer_version,rng_version,command_catalog_digest,profile_bundle_digest) VALUES ('p-big',3,'w','d','m','r','c','b'); INSERT INTO party_runtime.party_clocks(party_id,whole_minutes,subminute_numerator,subminute_denominator,clock_owner_kind,state_version,updated_change_set_id) VALUES ('p-big',${hugeWholeMinutes},1,${hugeDenominator},'party',0,'cs');`).status, 0, 'unbounded exact clock components are accepted');
+  const hugeRoundTrip = psql("COPY (SELECT whole_minutes::text || '|' || subminute_numerator::text || '|' || subminute_denominator::text FROM party_runtime.party_clocks WHERE party_id='p-big') TO STDOUT;");
+  assert.equal(hugeRoundTrip.status, 0, hugeRoundTrip.stderr);
+  assert.equal(hugeRoundTrip.stdout.trim(), `${hugeWholeMinutes}|1|${hugeDenominator}`, 'unbounded exact clock components round-trip without loss');
+  for (const invalidWholeMinutes of ["'NaN'", "'Infinity'", "'-Infinity'", '1.5']) {
+    assert.notEqual(
+      psql(`UPDATE party_runtime.party_clocks SET whole_minutes=${invalidWholeMinutes}::numeric,state_version=1 WHERE party_id='p-big';`).status,
+      0,
+      `non-integral or non-finite clock component ${invalidWholeMinutes} is rejected`
+    );
+  }
   assert.notEqual(psql("UPDATE party_runtime.party_clocks SET whole_minutes=0,subminute_numerator=1,subminute_denominator=3,state_version=1 WHERE party_id='p';").status, 0, 'direct clock update cannot regress');
   assert.equal(psql("INSERT INTO party_runtime.party_journey_locations(id,party_id,owner_kind,owner_id,location_kind,scene_position_id,state_version,updated_change_set_id) VALUES ('actor-location','p','actor','a','scene','pos',1,'cs');").status, 0);
   assert.notEqual(psql("BEGIN; INSERT INTO party_runtime.party_carrier_attachments(id,party_id,subject_kind,subject_id,carrier_kind,carrier_id,status,state_version,attached_change_set_id) VALUES ('bad-attachment','p','actor','a','transport','boat','active',1,'cs'); COMMIT;" ).status, 0, 'attached subject cannot retain an own root location');

@@ -464,6 +464,15 @@ const domainModuleNames = [
   'social-law',
   'visibility-knowledge-memory'
 ];
+const baseApprovedDomainImports = new Set([
+  '@rus/kernel',
+  '@rus/contracts/spatial-v3/ports',
+  '@rus/contracts/spatial-v3/registry'
+]);
+const approvedDomainImportsByModule = new Map([
+  ['body-state', new Set([...baseApprovedDomainImports, '@rus/time-events-history'])],
+  ['movement-routes', new Set([...baseApprovedDomainImports, '@rus/time-events-history'])]
+]);
 const domainSourceByModule = new Map();
 for (const moduleName of domainModuleNames) {
   const moduleRoot = join(root, 'packages', moduleName);
@@ -487,7 +496,8 @@ for (const moduleName of domainModuleNames) {
     const deps = [];
     for (const specifier of importsOf(source)) {
       if (!specifier.startsWith('.')) {
-        if (!['@rus/kernel', '@rus/contracts/spatial-v3/ports', '@rus/contracts/spatial-v3/registry'].includes(specifier) && !specifier.startsWith('node:')) violations.push(`${rel}: domain import is not approved (${specifier})`);
+        const approvedImports = approvedDomainImportsByModule.get(moduleName) ?? baseApprovedDomainImports;
+        if (!approvedImports.has(specifier) && !specifier.startsWith('node:')) violations.push(`${rel}: domain import is not approved (${specifier})`);
         continue;
       }
       const candidateBase = resolve(dirname(file), specifier);
@@ -510,6 +520,55 @@ for (const [formulaName, owner] of [
   const declarations = [...domainSourceByModule.entries()].filter(([, source]) => new RegExp(`export\\s+function\\s+${formulaName}\\b`).test(source));
   if (declarations.length !== 1 || declarations[0]?.[0] !== owner) {
     violations.push(`${formulaName}: canonical formula owner must be packages/${owner}; found ${declarations.map(([name]) => name).join(', ') || 'none'}`);
+  }
+}
+
+const temporalPureModules = new Map([
+  ['environment-state', 'test/environment-state.test.js'],
+  ['npc-runtime', 'test/npc-runtime.test.js'],
+  ['world-processes', 'test/world-processes.test.js']
+]);
+const temporalPureImports = new Set([
+  '@rus/contracts/spatial-v3/registry',
+  '@rus/kernel',
+  '@rus/time-events-history'
+]);
+for (const [moduleName, testPath] of temporalPureModules) {
+  const moduleRoot = join(root, 'packages', moduleName);
+  for (const requiredPath of ['MODULE.md', 'package.json', 'src/index.js', testPath]) {
+    try { await readFile(join(moduleRoot, requiredPath), 'utf8'); }
+    catch { violations.push(`packages/${moduleName}/${requiredPath}: required pure Temporal owner file is missing`); }
+  }
+  const files = (await walk(join(moduleRoot, 'src'))).filter((file) => ['.js', '.mjs'].includes(extname(file)));
+  const fileSet = new Set(files.map((file) => resolve(file)));
+  const graph = new Map();
+  for (const file of files) {
+    const rel = relative(root, file).replaceAll('\\', '/');
+    const source = await readFile(file, 'utf8');
+    if (source.split('\n').length > 500) violations.push(`${rel}: exceeds 500 line pure Temporal owner limit`);
+    if (Buffer.byteLength(source) > hardBytes) violations.push(`${rel}: exceeds pure Temporal owner hard byte limit`);
+    for (const token of [
+      'legacy/', '/apps/', '/ui/', '/server/', 'provider.js', '@rus/llm-runtime',
+      '@rus/world-base', '@rus/party-store', '@rus/new-game', '@rus/turn',
+      '@rus/presentation', '@rus/narration', "from 'pg'", 'from "pg"',
+      'Math.random(', 'SELECT ', 'INSERT ', 'UPDATE ', 'DELETE FROM '
+    ]) {
+      if (source.includes(token)) violations.push(`${rel}: forbidden pure Temporal owner dependency or side effect ${token}`);
+    }
+    const deps = [];
+    for (const specifier of importsOf(source)) {
+      if (!specifier.startsWith('.')) {
+        if (!temporalPureImports.has(specifier)) violations.push(`${rel}: pure Temporal owner import is not approved (${specifier})`);
+        continue;
+      }
+      const candidateBase = resolve(dirname(file), specifier);
+      const candidate = fileSet.has(candidateBase) ? candidateBase : fileSet.has(`${candidateBase}.js`) ? `${candidateBase}.js` : null;
+      if (candidate) deps.push(candidate);
+    }
+    graph.set(resolve(file), deps);
+  }
+  for (const cycle of findCycles(graph)) {
+    violations.push(`Pure Temporal owner ${moduleName} cyclic import: ${cycle.map((file) => relative(root, file).replaceAll('\\', '/')).join(' -> ')}`);
   }
 }
 
@@ -586,6 +645,8 @@ const approvedTurnImports = new Set([
   '@rus/kernel',
   '@rus/checks-rng',
   '@rus/time-events-history',
+  '@rus/time-events-history/legacy',
+  '@rus/time-events-history/temporal-boundaries',
   '@rus/visibility-knowledge-memory',
   '@rus/presentation',
     '@rus/narration',

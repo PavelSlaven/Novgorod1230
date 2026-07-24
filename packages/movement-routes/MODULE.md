@@ -2,43 +2,27 @@
 
 ## Назначение
 
-Route availability, knowledge, traversal contracts, GU/time cost and orientation requests. Код модуля работает только с переданными данными и не создаёт смысловые сущности мира.
+Owner of route query/planning, approved movement method/time resolution, traversal progress/readiness and activation validation. It is a pure/pluggable domain module; all factual reads and commit are explicit external ports.
 
 ## Владеет
 
-- route availability and requirements
-- travel cost formulas
-- traversal request/result shapes
-- orientation and failure consequence requests
+- Владеет legacy pure travel helpers, `createMovementPlanner`, `createRoutePlanActivationValidator`, target traversal resolver/commit-validator adapters, route-plan static snapshot and capability/readiness validation.
 
-## Не делает
+## Не владеет
 
-- choosing a destination for the player
-- rolling checks
-- mutating position or party state
+Не владеет player destination choice, RNG checks, exact clock arithmetic, temporal slice merge, position mutation, DB/SQL, materialization, UI or narration.
 
-## Public API
+## Public API и контракты
 
-- `TRAVEL_CONDITION_MULTIPLIERS`
-- `TRAVEL_LOAD_MULTIPLIERS`
-- `calculateTravelTime`
-- `assessRouteAvailability`
-- `buildTraversalRequest`
-- `validateTraversalResult`
-- `@rus/movement-routes/spatial-v3`: `createTraversalResolver`, `createTraversalCommitValidator` — P18 target ports. При передаче всех явных factual/capability ports они вызывают реальный planner/activation validator; без wiring возвращают типизированный fail-closed результат и не используют v2/fallback.
+- `.`: `TRAVEL_CONDITION_MULTIPLIERS`, `TRAVEL_LOAD_MULTIPLIERS`, `calculateTravelTime`, `assessRouteAvailability`, `buildTraversalRequest`, `validateTraversalResult`, planner and activation validator.
+- `./spatial-v3`: `createTraversalResolver`, `createTraversalCommitValidator`; `./spatial-v3-planner`: planner/activation implementation.
 
-## Контракты и инварианты
+Planner receives explicit `resolveKnowledgeTarget`, `loadTopology`, `snapshotEndpoint`, `validateCapability` ports and returns a route plan/proposal or typed fail-closed result. Activation validator receives explicit preparation/current-state/capability/recheck ports and returns accepted/rejected activation validation. Inputs/outputs use pinned target DTO and never fabricate endpoint, capability, time factor or route fallback.
 
-Входы являются plain-object/array значениями. Функции нормализации не придумывают отсутствующие ID, имена, предметы, причины или последствия. Выходы, которые предназначены для handoff, замораживаются. Нарушения структуры возвращаются как `{ ok, errors }` либо выбрасываются только для неверно подключённого технического порта.
+## Ошибки, зависимости и effects
 
-## Зависимости
+Typed target failures include route/endpoint/capability/readiness/pin/state-version conflicts (for example `route_contract_missing`, `movement_capability_missing`, `route_plan_snapshot_missing`, `route_plan_execution_conflict`). Depends on `@rus/kernel`, `@rus/contracts`, `@rus/time-events-history`; no direct I/O, DB or state mutation. Duration is consumed by turn/time owner, not committed here.
 
-Разрешены только `@rus/kernel` и `@rus/contracts`. Запрещены импорты из `apps`, `legacy`, UI, БД, конкретного LLM provider и соседних workflow stages.
+## Target / P28 и тесты
 
-## Ошибки
-
-Структурные ошибки возвращаются списком. Ошибки обязательных технических портов (`RandomSource`) являются `TypeError`/`RangeError`.
-
-## Совместимость и тесты
-
-Модуль сохраняет подтверждённые чистые формулы legacy там, где они существовали, но не импортирует legacy runtime. Unit/contract tests находятся в `test/domain.test.js`. Cutover выполняется отдельно после shadow run.
+Target route planning/activation is `temporal-world-v1`/`4.3.0-target.1` only until P28, without production fallback or activation. `test/domain.test.js` covers public helpers; `test/spatial-v3/p18-movement-planning.test.js` covers target planner/activation behavior.

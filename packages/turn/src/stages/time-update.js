@@ -1,4 +1,4 @@
-import { buildTimeDrivenUpdateRequest } from '@rus/time-events-history';
+import { buildTimeDrivenUpdateRequest } from '@rus/time-events-history/legacy';
 import { freezeOutput } from './shared.js';
 
 export function buildTimeUpdateStage({ retrievedState, consequence }) {

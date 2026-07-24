@@ -1,0 +1,35 @@
+{
+  "schema": "rus.temporal-world-v4.external-auditor-family-decision.v1",
+  "version": 1,
+  "family_id": "activity_categories_profiles",
+  "verdict": "approved",
+  "approved_record_ids": [
+    "record:activity_categories_profiles:wait_exact_v2",
+    "record:activity_categories_profiles:sleep_bounded_v1",
+    "record:activity_categories_profiles:manual_labor_segment_v1",
+    "record:activity_categories_profiles:sacred_reading_segment_v1",
+    "record:activity_categories_profiles:meal_quiet_rest_segment_v1",
+    "record:activity_categories_profiles:carrier_transfer_10m_v1"
+  ],
+  "source_ids_reviewed": [
+    "source:activity_categories_profiles:activity_reconstruction_decisions",
+    "source:activity_categories_profiles:controlled_vocabularies",
+    "source:activity_categories_profiles:temporal_world_v4_normative",
+    "source:activity_categories_profiles:user_reconstruction_authorization"
+  ],
+  "applicability": [
+    "novgorod"
+  ],
+  "data_gaps": [],
+  "auditor": {
+    "name": "OpenAI GPT-5.6 Thinking",
+    "organization_or_role": "independent external data authoring auditor"
+  },
+  "decision_id": "decision:activity_categories_profiles:2026-07-24-reaudit-2",
+  "decided_at": "2026-07-24T17:45:00+03:00",
+  "method": "independent source, contract, controlled-vocabulary, exactness, closure, historical-labeling and no-fallback audit",
+  "rationale": "Six closed, source-bound activity profiles provide the minimum cross-family Temporal v4 candidate set. Exact duration is either sealed from an approved boundary/input or, for the narrow stable transfer only, the explicitly reconstructed 10-minute value.",
+  "limitations": [
+    "The ten-minute transfer duration is a narrowly scoped gameplay reconstruction and must not be reused outside its stated preconditions."
+  ]
+}

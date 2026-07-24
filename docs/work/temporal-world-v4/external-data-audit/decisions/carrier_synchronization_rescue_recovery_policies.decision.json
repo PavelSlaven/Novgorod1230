@@ -1,0 +1,29 @@
+{
+  "schema": "rus.temporal-world-v4.external-auditor-family-decision.v1",
+  "version": 1,
+  "family_id": "carrier_synchronization_rescue_recovery_policies",
+  "verdict": "approved",
+  "approved_record_ids": [
+    "record:carrier_synchronization_rescue_recovery_policies:carrier_root_clock_v2"
+  ],
+  "source_ids_reviewed": [
+    "source:carrier_synchronization_rescue_recovery_policies:activity_reconstruction_decisions",
+    "source:carrier_synchronization_rescue_recovery_policies:temporal_world_v4_normative",
+    "source:carrier_synchronization_rescue_recovery_policies:user_reconstruction_authorization"
+  ],
+  "applicability": [
+    "novgorod"
+  ],
+  "data_gaps": [],
+  "auditor": {
+    "name": "OpenAI GPT-5.6 Thinking",
+    "organization_or_role": "independent external data authoring auditor"
+  },
+  "decision_id": "decision:carrier_synchronization_rescue_recovery_policies:2026-07-24-reaudit-2",
+  "decided_at": "2026-07-24T17:45:00+03:00",
+  "method": "independent source, contract, controlled-vocabulary, exactness, closure, historical-labeling and no-fallback audit",
+  "rationale": "The carrier policy enforces one root clock and one location, exact synchronized slices, capacity/access gates, fail-closed stranding, and two explicit rescue transitions bound to approved activity profiles; only the narrow stable co-located transfer has a reconstructed ten-minute duration.",
+  "limitations": [
+    "The ten-minute transfer is a bounded gameplay reconstruction and cannot be reused when its exact stable/co-located/capacity preconditions do not hold."
+  ]
+}

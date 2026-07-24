@@ -16,6 +16,7 @@ The project documents define how the LLM should generate, interpret, and update 
 | `world_base_materialization_table_requirements.md` | Purpose, population and normalization requirements for world-base materialization data. |
 | `llm_documentation_navigation.md` | LLM navigation, source priority, reading order, cross-document bundles. |
 | `spatial_architecture_standard_g0_g6.md` | Target v4.2.0 spatial G0–G6 standard. It remains inactive for production until the P28 atomic activation gate. |
+| `temporal_world_and_interruptible_activities.md` | Active Temporal World v4 target amendment. It remains non-production until the P28 atomic activation gate. |
 | `world_generation_and_turns.txt` | World materialization, start pipeline, turn processing, visible/hidden facts. |
 | `player_character_generation.txt` | Player character creation pipeline and output contract. |
 | `character_parameters.txt` | Attributes, skills, body states, active conditions, checks, modifiers. |
@@ -63,3 +64,4 @@ The graph was rebuilt as a detailed documentation map. It now includes formulas,
 3. Keep filename references in English snake_case.
 4. When a document changes, update the graph node/edge source locations and the graph report.
 5. Treat `EXTRACTED` graph edges as source-backed. Treat `INFERRED_SECONDARY` edges as navigation hints that still require document verification.
+6. Preserve legacy traceability prose when needed, but wrap only explicitly archived, non-normative ranges in the balanced `knowledge-retrieval-exclude:start` / `knowledge-retrieval-exclude:end` markers defined by `@rus/knowledge-source`; never use them to hide an active rule or an unresolved conflict.

@@ -3,8 +3,9 @@ import { resolve } from 'node:path';
 
 const root = process.cwd();
 const read = (path) => readFile(resolve(root, path), 'utf8');
-const [moduleSource, compositionSource, writePlanSource, rootSource, productionSource, testSource, packageSource, rootPackageSource, stageMapping] = await Promise.all([
+const [moduleSource, lifecycleSource, compositionSource, writePlanSource, rootSource, productionSource, testSource, packageSource, rootPackageSource, stageMapping] = await Promise.all([
   read('packages/turn/src/spatial-v3-orchestration.js'),
+  read('packages/turn/src/spatial-v3-orchestration-lifecycle.js'),
   read('packages/turn/src/spatial-v3-target-composition.js'),
   read('packages/turn/src/spatial-v3-write-plan.js'),
   read('apps/game-server/src/composition/spatial-v3-target-shadow.js'),
@@ -14,13 +15,14 @@ const [moduleSource, compositionSource, writePlanSource, rootSource, productionS
   read('package.json'),
   read('packages/new-game/src/spatial-v3-stage-mapping.js')
 ]);
+const orchestrationSource = `${moduleSource}\n${lifecycleSource}`;
 const required = [
   'createSpatialV3CommandRegistry', 'createSpatialV3TurnOrchestrator',
   'createSpatialV3NewGameStarter', 'createSpatialV3ModeHandoffOrchestrator',
   'SPATIAL_V3_COMMAND_KINDS', 'route_plan_version_pin_missing',
   'schema_version: 3', 'execution_status !== \'superseded\''
 ];
-const absent = required.filter((token) => !moduleSource.includes(token));
+const absent = required.filter((token) => !orchestrationSource.includes(token));
 const compositionRequired = ['modeHandoff.handoff', 'buildModeHandoffProposal', 'resolveModeTransition', 'handoff: modeHandoff', 'invokeP19'];
 const missingComposition = compositionRequired.filter((token) => !compositionSource.includes(token));
 const unsafeModeAdapters = ['commandAdapters.board_carrier', 'commandAdapters.disembark_carrier', 'commandAdapters.load_carrier', 'commandAdapters.change_cohort'].filter((token) => compositionSource.includes(token));

@@ -25,6 +25,16 @@
 
 Для выбора профильных нормативов используй `llm_documentation_navigation.md`, после чего полностью прочитай каждый найденный обязательный или профильный документ.
 
+Если задача затрагивает игровое время, календарь, длительность, activity,
+traversal timing, temporal boundaries, NPC schedule/perception, carrier clock,
+weather/light transition, remote catch-up или propagation, дополнительно
+полностью прочитай
+`data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md`.
+После финальной implementation acceptance этот документ имеет status `active`.
+Нормативная приёмка не активирует production: до атомарного P28 он применяется
+только к target/shadow/migration работе, а production v2 остаётся
+единственным owner.
+
 Если задача затрагивает базу данных, DDL, импорт, категории, шаблоны, профили, materialization rules, G5, NPC, предметы, контейнеры, имущество, транспорт или bounded decisions, полностью прочитай:
 
 - `data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md`.

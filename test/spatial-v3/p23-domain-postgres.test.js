@@ -15,6 +15,49 @@ function request(overrides = {}) {
   const body = { party_id: 'p', idempotency_key: 'key', expected_state_versions: [{ resource: 'entity_placements', id: 'transport:boat', state_version: 0 }], domain_mutation: { entity_kind: 'transport', entity_id: 'boat', placement_kind: 'scene_position', position_node_id: 'pos', capacity_units: 1, required_access_profile_ref: profile('pilot') }, ...overrides };
   return { ...body, canonical_digest: computeSpatialV3CanonicalDigest(body) };
 }
+function visibleEnvelope(input) {
+  const changeSetId = `p23:${input.party_id}:${input.canonical_digest}`;
+  const visiblePayload = {
+    schema: 'temporal_visible_package.v1',
+    perceived_scene: 'Положение зафиксировано.',
+    perceived_changes: ['Положение сущности изменено.'],
+    sensory_details: [],
+    visible_npcs: [],
+    visible_objects: [],
+    known_context: [],
+    uncertainties: [],
+    hypotheses: [],
+    player_safe_interruption: null,
+    allowed_action_affordances: []
+  };
+  const dependencyPins = [{
+    dependency_role: 'source_authoring',
+    entity_ref: { entity_kind: 'world_revision', entity_id: 'temporal-v4' },
+    version_pin: { pin_kind: 'authoring_version', authoring_version: '4.3.0-target.1', state_version: null }
+  }];
+  return {
+    package_id: `visible:${changeSetId}`,
+    party_id: input.party_id,
+    turn_id: `p23:${input.idempotency_key}`,
+    committed_state_version: String(Math.max(...input.expected_state_versions.map(({ state_version }) => state_version)) + 1),
+    change_set_id: changeSetId,
+    package_digest: computeSpatialV3CanonicalDigest(visiblePayload),
+    visible_payload: visiblePayload,
+    presentation_status: 'pending',
+    projection_policy_ref: {
+      entity_ref: { entity_kind: 'visibility_modifier', entity_id: 'projection-v1' },
+      authoring_version: '4.3.0-target.1'
+    },
+    dependency_pins: {
+      pins: dependencyPins,
+      canonical_digest: computeSpatialV3CanonicalDigest(dependencyPins).replace('sha256:', '')
+    },
+    idempotency_record_id: `p23-idem:${input.party_id}:${input.idempotency_key}`
+  };
+}
+const commit = (service, input) => service.commit(input, {
+  visible_package_envelope: visibleEnvelope(input)
+});
 function carrierLocalRequest(overrides = {}) {
   return request({
     idempotency_key: 'carrier-local-key',
@@ -29,7 +72,7 @@ function carrierLocalRequest(overrides = {}) {
 }
 
 async function migrate(pool) {
-  for (const file of ['001_party_runtime.sql', '002_party_runtime_v3.sql', '003_party_runtime_v3_planning.sql', '004_party_runtime_v3_journeys.sql', '005_party_runtime_v3_domain.sql']) await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
+  for (const file of ['001_party_runtime.sql', '002_party_runtime_v3.sql', '003_party_runtime_v3_planning.sql', '004_party_runtime_v3_journeys.sql', '005_party_runtime_v3_domain.sql', '006_party_runtime_v3_migration.sql', '007_party_runtime_temporal_world.sql']) await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
 }
 async function seed(pool) {
   await pool.query(`
@@ -43,7 +86,7 @@ async function seed(pool) {
     INSERT INTO party_runtime.party_entity_controls(party_id,entity_kind,entity_id,owner_ref,holder_ref,controller_ref,access_profile_ref,capacity_units,state_version,updated_change_set_id) VALUES
       ('p','npc','guard','{"entity_kind":"actor","entity_id":"a"}','{"entity_kind":"actor","entity_id":"a"}','{"entity_kind":"actor","entity_id":"a"}','{"entity_ref":{"entity_kind":"access_profile","entity_id":"open"},"authoring_version":"r1"}',2,0,'c'),
       ('p','transport','boat','{"entity_kind":"actor","entity_id":"a"}','{"entity_kind":"actor","entity_id":"a"}','{"entity_kind":"actor","entity_id":"a"}','{"entity_ref":{"entity_kind":"access_profile","entity_id":"pilot"},"authoring_version":"r1"}',2,0,'c');
-    INSERT INTO party_runtime.party_npc_spatial_schedules(id,party_id,npc_id,current_position_node_id,schedule_profile_ref,dependency_pins,causal_state_ref,status,state_version,updated_change_set_id) VALUES('sched','p','guard','pos','{"entity_ref":{"entity_kind":"schedule_profile","entity_id":"watch"},"authoring_version":"r1"}','{"canonical_digest":"pin"}','{"entity_ref":{"entity_kind":"npc_causal_state","entity_id":"watch"}}','active',0,'c');
+    INSERT INTO party_runtime.party_npc_spatial_schedules(id,party_id,npc_id,current_position_node_id,schedule_profile_ref,dependency_pins,causal_state_ref,status,state_version,updated_change_set_id,next_transition_at_whole_minutes,next_transition_at_subminute_numerator,next_transition_at_subminute_denominator) VALUES('sched','p','guard','pos','{"entity_ref":{"entity_kind":"schedule_profile","entity_id":"watch"},"authoring_version":"r1"}','{"canonical_digest":"pin"}','{"entity_ref":{"entity_kind":"npc_causal_state","entity_id":"watch"}}','active',1,'c',10,0,1);
     INSERT INTO party_runtime.party_carrier_attachments(id,party_id,subject_kind,subject_id,carrier_kind,carrier_id,status,state_version,attached_change_set_id) VALUES('attach','p','actor','a','transport','boat','active',0,'c');
     INSERT INTO party_runtime.party_transport_attached_g6(id,party_id,transport_id,g6_instance_id,approved_template_ref,status,state_version,updated_change_set_id) VALUES('attached','p','boat','g6','{"entity_ref":{"entity_kind":"transport_template","entity_id":"boat-cabin"},"authoring_version":"r1"}','active',0,'c');
     INSERT INTO party_runtime.party_actor_carrier_positions(id,party_id,actor_id,root_carrier_kind,root_carrier_id,scene_baseline_id,g6_instance_id,position_node_id,status,state_version,created_change_set_id) VALUES('carrier-pos','p','a','transport','boat','base','g6','pos','active',0,'c');
@@ -62,40 +105,47 @@ async function seed(pool) {
   `);
 }
 
-test('P23 Node→PostgreSQL service port validates persisted P13/P15/005 domain rows and commits exactly once', async (t) => {
+test('P23 Node→PostgreSQL service validates persisted domain rows and commits one factual package atomically', async (t) => {
   if (docker(['version']).status !== 0) t.skip('Docker required');
   t.after(() => docker(['rm', '-f', name]));
-  assert.equal(docker(['run', '-d', '--name', name, '-p', `${port}:5432`, '-e', 'POSTGRES_PASSWORD=p23', '-e', 'POSTGRES_USER=p23', '-e', 'POSTGRES_DB=p23', 'postgres:16-alpine']).status, 0);
+  const started = docker(['run', '-d', '--name', name, '-p', `${port}:5432`, '-e', 'POSTGRES_PASSWORD=p23', '-e', 'POSTGRES_USER=p23', '-e', 'POSTGRES_DB=p23', 'postgres:16-alpine']);
+  assert.equal(started.status, 0, started.stderr || started.stdout);
   const pool = new pg.Pool({ host: '127.0.0.1', port, user: 'p23', password: 'p23', database: 'p23' }); t.after(() => pool.end());
   for (let i = 0; i < 45; i += 1) { try { await pool.query('SELECT 1'); break; } catch { await new Promise((done) => setTimeout(done, 250)); if (i === 44) throw new Error('PostgreSQL unavailable'); } }
   await migrate(pool); await seed(pool);
   const service = createSpatialV3DomainMutationService({ repository: createSpatialV3P23DomainRepository({ pool }), committer: createSpatialV3PostgresCombinedAtomicCommitter({ pool }), verifyApproval: async () => ({ ok: true }) });
-  const first = request(); assert.equal((await service.commit(first)).ok, true);
-  assert.equal((await service.commit(structuredClone(first))).replay, true);
-  assert.equal((await service.commit(request({ domain_mutation: { ...first.domain_mutation, capacity_units: 2 } }))).error.code, 'idempotency_conflict');
-  assert.equal((await service.commit(request({ idempotency_key: 'stale', expected_state_versions: [{ resource: 'entity_placements', id: 'transport:boat', state_version: 0 }] }))).error.code, 'state_version_conflict');
+  const first = request(); const firstResult = await commit(service, first);
+  assert.equal(firstResult.ok, true, JSON.stringify(firstResult));
+  assert.equal((await commit(service, structuredClone(first))).replay, true);
+  assert.equal((await commit(service, request({ domain_mutation: { ...first.domain_mutation, capacity_units: 2 } }))).error.code, 'idempotency_conflict');
+  assert.equal((await commit(service, request({ idempotency_key: 'stale', expected_state_versions: [{ resource: 'entity_placements', id: 'transport:boat', state_version: 0 }] }))).error.code, 'state_version_conflict');
   const row = await pool.query("SELECT occupies_capacity_units,state_version FROM party_runtime.entity_placements WHERE party_id='p' AND entity_kind='transport' AND entity_id='boat'"); assert.deepEqual(row.rows[0], { occupies_capacity_units: 1, state_version: '1' });
+  await assert.rejects(
+    pool.query("UPDATE party_runtime.party_npc_spatial_schedules SET schedule_profile_ref='{}',state_version=state_version+1 WHERE id='sched'"),
+    /identity, pins or state version changed/u
+  );
+  await assert.rejects(
+    pool.query("UPDATE party_runtime.party_npc_spatial_schedules SET dependency_pins='{}',state_version=state_version+1 WHERE id='sched'"),
+    /identity, pins or state version changed/u
+  );
 
   // Every rejection goes through the service and rolls back its transient idempotency lease.
-  await pool.query("UPDATE party_runtime.party_npc_spatial_schedules SET current_position_node_id='pos' WHERE id='sched'");
   for (const [key, sql, reset, code] of [
-    ['bad-endpoint', "UPDATE party_runtime.party_npc_spatial_schedules SET current_position_node_id='pos2' WHERE id='sched'", "UPDATE party_runtime.party_npc_spatial_schedules SET current_position_node_id='pos' WHERE id='sched'", 'route_plan_version_pin_missing'],
-    ['bad-profile', "UPDATE party_runtime.party_npc_spatial_schedules SET schedule_profile_ref='{}' WHERE id='sched'", "UPDATE party_runtime.party_npc_spatial_schedules SET schedule_profile_ref='{\"entity_ref\":{\"entity_kind\":\"schedule_profile\",\"entity_id\":\"watch\"},\"authoring_version\":\"r1\"}' WHERE id='sched'", 'route_plan_version_pin_missing'],
-    ['bad-pin', "UPDATE party_runtime.party_npc_spatial_schedules SET dependency_pins='{}' WHERE id='sched'", "UPDATE party_runtime.party_npc_spatial_schedules SET dependency_pins='{\"canonical_digest\":\"pin\"}' WHERE id='sched'", 'route_plan_version_pin_missing'],
+    ['bad-endpoint', "UPDATE party_runtime.party_npc_spatial_schedules SET current_position_node_id='pos2',state_version=state_version+1 WHERE id='sched'", "UPDATE party_runtime.party_npc_spatial_schedules SET current_position_node_id='pos',state_version=state_version+1 WHERE id='sched'", 'route_plan_version_pin_missing'],
     ['bad-access', "UPDATE party_runtime.party_entity_controls SET access_profile_ref='{\"entity_ref\":{\"entity_kind\":\"access_profile\",\"entity_id\":\"closed\"},\"authoring_version\":\"r1\"}' WHERE entity_kind='transport'", "UPDATE party_runtime.party_entity_controls SET access_profile_ref='{\"entity_ref\":{\"entity_kind\":\"access_profile\",\"entity_id\":\"pilot\"},\"authoring_version\":\"r1\"}' WHERE entity_kind='transport'", 'route_plan_version_pin_missing'],
     ['bad-template', "UPDATE party_runtime.party_transport_attached_g6 SET approved_template_ref='{\"entity_ref\":{\"entity_kind\":\"transport_template\",\"entity_id\":\"other\"},\"authoring_version\":\"r1\"}' WHERE id='attached'", "UPDATE party_runtime.party_transport_attached_g6 SET approved_template_ref='{\"entity_ref\":{\"entity_kind\":\"transport_template\",\"entity_id\":\"boat-cabin\"},\"authoring_version\":\"r1\"}' WHERE id='attached'", 'journey_location_ownership_mismatch'],
     ['bad-capacity', "UPDATE party_runtime.scene_position_nodes SET capacity=1 WHERE id='pos'", "UPDATE party_runtime.scene_position_nodes SET capacity=6 WHERE id='pos'", 'relation_capacity_undefined']
   ]) {
-    await pool.query(sql); const result = await service.commit(request({ idempotency_key: key, expected_state_versions: [{ resource: 'entity_placements', id: 'transport:boat', state_version: 1 }] })); await pool.query(reset);
+    await pool.query(sql); const result = await commit(service, request({ idempotency_key: key, expected_state_versions: [{ resource: 'entity_placements', id: 'transport:boat', state_version: 1 }] })); await pool.query(reset);
     assert.equal(result.error.code, code, key);
     assert.equal((await pool.query("SELECT count(*)::int AS n FROM party_runtime.party_command_idempotency WHERE idempotency_key=$1", [key])).rows[0].n, 0, `${key} rollback`);
   }
-  const concurrent = [service.commit(request({ idempotency_key: 'same', expected_state_versions: [{ resource: 'entity_placements', id: 'transport:boat', state_version: 1 }] })), service.commit(request({ idempotency_key: 'same', expected_state_versions: [{ resource: 'entity_placements', id: 'transport:boat', state_version: 1 }] }))];
+  const concurrent = [commit(service, request({ idempotency_key: 'same', expected_state_versions: [{ resource: 'entity_placements', id: 'transport:boat', state_version: 1 }] })), commit(service, request({ idempotency_key: 'same', expected_state_versions: [{ resource: 'entity_placements', id: 'transport:boat', state_version: 1 }] }))];
   const pair = await Promise.all(concurrent); assert.equal(pair.filter((entry) => entry.ok).length, 2); assert.equal(pair.some((entry) => entry.replay), true);
 
   // Carrier-local time participates only through a physical root transport slice.
   const local = carrierLocalRequest({ expected_state_versions: [{ resource: 'entity_placements', id: 'transport:boat', state_version: 2 }] });
-  const localResult = await service.commit(local);
+  const localResult = await commit(service, local);
   assert.equal(localResult.ok, true, `valid P14 root execution/travel/slice witness admits carrier-local mutation: ${JSON.stringify(localResult)}`);
   for (const [key, carrier_local] of [
     ['missing-slice', { ...local.carrier_local, slice_id: 'missing' }],
@@ -106,16 +156,16 @@ test('P23 Node→PostgreSQL service port validates persisted P13/P15/005 domain 
     ['forged-change-set', { ...local.carrier_local, change_set_id: 'forged-change-set' }],
     ['forged-digest', { ...local.carrier_local, slice_digest: 'forged-digest' }]
   ]) {
-    const result = await service.commit(carrierLocalRequest({ idempotency_key: key, expected_state_versions: [{ resource: 'entity_placements', id: 'transport:boat', state_version: 3 }], carrier_local }));
+    const result = await commit(service, carrierLocalRequest({ idempotency_key: key, expected_state_versions: [{ resource: 'entity_placements', id: 'transport:boat', state_version: 3 }], carrier_local }));
     assert.equal(result.error.code, 'journey_location_ownership_mismatch', key);
     assert.equal((await pool.query("SELECT count(*)::int AS n FROM party_runtime.party_command_idempotency WHERE idempotency_key=$1", [key])).rows[0].n, 0, `${key} rolls back its lease`);
   }
   const sameCarrierLocal = carrierLocalRequest({ idempotency_key: 'carrier-local-same', expected_state_versions: [{ resource: 'entity_placements', id: 'transport:boat', state_version: 3 }] });
-  const carrierPair = await Promise.all([service.commit(sameCarrierLocal), service.commit(structuredClone(sameCarrierLocal))]);
+  const carrierPair = await Promise.all([commit(service, sameCarrierLocal), commit(service, structuredClone(sameCarrierLocal))]);
   assert.equal(carrierPair.filter((entry) => entry.ok).length, 2, 'same carrier-local command serializes at the physical root lock');
   assert.equal(carrierPair.some((entry) => entry.replay), true, 'the losing concurrent carrier-local request replays its exact committed result');
   await pool.query("UPDATE party_runtime.traveller_travel_states SET movement_carrier_ref='{\"entity_kind\":\"transport\",\"entity_id\":\"other\"}' WHERE id='root-travel'");
-  const badRoot = await service.commit(carrierLocalRequest({ idempotency_key: 'wrong-root-carrier', expected_state_versions: [{ resource: 'entity_placements', id: 'transport:boat', state_version: 4 }] }));
+  const badRoot = await commit(service, carrierLocalRequest({ idempotency_key: 'wrong-root-carrier', expected_state_versions: [{ resource: 'entity_placements', id: 'transport:boat', state_version: 4 }] }));
   assert.equal(badRoot.error.code, 'journey_location_ownership_mismatch');
   await pool.query("UPDATE party_runtime.traveller_travel_states SET movement_carrier_ref='{\"entity_kind\":\"transport\",\"entity_id\":\"boat\"}' WHERE id='root-travel'");
 
@@ -138,13 +188,13 @@ test('P23 Node→PostgreSQL service port validates persisted P13/P15/005 domain 
   });
   let inverseTimeout;
   const inversePair = await Promise.race([
-    Promise.all([service.commit(inverseBoat), service.commit(inverseActor)]),
+    Promise.all([commit(service, inverseBoat), commit(service, inverseActor)]),
     new Promise((_, reject) => { inverseTimeout = setTimeout(() => reject(new Error('inverse carrier-local lock order deadlocked')), 12_000); })
   ]).finally(() => clearTimeout(inverseTimeout));
   assert.equal(inversePair.filter((result) => result.ok).length, 1, 'exactly one inverse CAS wins');
   assert.equal(inversePair.filter((result) => result.error?.code === 'state_version_conflict').length, 1, 'the losing inverse request observes CAS, not a deadlock');
   const winner = inversePair[0].ok ? inverseBoat : inverseActor;
-  assert.equal((await service.commit(structuredClone(winner))).replay, true, 'committed inverse request replays after its own version advanced');
+  assert.equal((await commit(service, structuredClone(winner))).replay, true, 'committed inverse request replays after its own version advanced');
   const versions = await pool.query("SELECT entity_kind,entity_id,state_version FROM party_runtime.entity_placements WHERE party_id='p' AND (entity_kind,entity_id) IN (('transport','boat'),('actor','a')) ORDER BY entity_kind,entity_id");
   const fresh = new Map(versions.rows.map((row) => [`${row.entity_kind}:${row.entity_id}`, Number(row.state_version)]));
   const loserIsBoat = !inversePair[0].ok;
@@ -154,5 +204,5 @@ test('P23 Node→PostgreSQL service port validates persisted P13/P15/005 domain 
     expected_state_versions: (loserIsBoat ? inverseBase : [...inverseBase].reverse()).map((entry) => ({ ...entry, state_version: fresh.get(entry.id) })),
     domain_mutation: retryMutation
   });
-  assert.equal((await service.commit(retry)).ok, true, 'fresh inverse retry succeeds with exact post-CAS versions');
+  assert.equal((await commit(service, retry)).ok, true, 'fresh inverse retry succeeds with exact post-CAS versions');
 });

@@ -28,6 +28,7 @@ export { createTurnCommandRegistry, isCodeOwnedTurnWritePlan } from './command-r
 export { createAutonomousUpdateRegistry, isCodeOwnedAutonomousUpdate, runAutonomousUpdates } from './autonomous-update.js';
 export {
   SPATIAL_V3_COMMAND_KINDS,
+  SPATIAL_V3_TURN_STAGE_IDS,
   createSpatialV3CommandRegistry,
   createSpatialV3TurnOrchestrator,
   createSpatialV3NewGameStarter,

@@ -1,0 +1,21 @@
+[
+  {
+    "reference_id": "reference:weather_transition_profiles_processes:novgorod_weather_v2",
+    "status": "approved",
+    "table": "temporal_authoring_records",
+    "record_id": "record:weather_transition_profiles_processes:novgorod_weather_v2",
+    "source_record_key": "record:weather_transition_profiles_processes:novgorod_weather_v2",
+    "logical_record_id": "novgorod_six_hour_equal_weight_reconstruction_v2",
+    "authoring_version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "source_ids": [
+      "source:weather_transition_profiles_processes:noaa_synoptic",
+      "source:weather_transition_profiles_processes:temporal_world_v4_normative",
+      "source:weather_transition_profiles_processes:user_reconstruction_authorization",
+      "source:weather_transition_profiles_processes:weather_reconstruction_decisions"
+    ],
+    "binding_notes": "Bound to world_base.temporal_authoring_records by the approved Temporal v4 importer."
+  }
+]

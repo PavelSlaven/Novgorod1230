@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 import test from 'node:test';
 import pg from 'pg';
+import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
 import { buildCombinedWritePlan } from '../../packages/turn/src/spatial-v3-write-plan.js';
 import { createSpatialV3CombinedAtomicCommitter } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
 
@@ -12,6 +13,24 @@ const hex = 'a'.repeat(64);
 const later = new Date('2030-01-01T00:00:00.000Z');
 
 async function makePlan({ planId, idempotencyId, idempotencyKey, changeSetId, canonicalInputDigest = `sha256:${hex}`, expectedStateVersions = [], updates = [], extraAppends = [], physicalKeys = [] }) {
+  const visiblePayload = {
+    schema: 'temporal_visible_package.v1',
+    perceived_scene: 'Изменение зафиксировано.',
+    perceived_changes: ['Состояние сохранено.'],
+    sensory_details: [],
+    visible_npcs: [],
+    visible_objects: [],
+    known_context: [],
+    uncertainties: [],
+    hypotheses: [],
+    player_safe_interruption: null,
+    allowed_action_affordances: []
+  };
+  const dependencyPins = [{
+    dependency_role: 'source_authoring',
+    entity_ref: { entity_kind: 'world_revision', entity_id: 'temporal-v4' },
+    version_pin: { pin_kind: 'authoring_version', authoring_version: '4.3.0-target.1', state_version: null }
+  }];
   const appends = [{
     target_table: 'party_v3_change_sets', id: changeSetId,
     record: { id: changeSetId, party_id: 'p', operation_kind: 'move', idempotency_record_id: idempotencyId, expected_state_version_set_digest: 'expected', expected_state_version_set: [], committed_state_version_set_digest: 'committed', write_plan_digest: `${changeSetId}-write`, created_at_turn: 0, committed_at_turn: 0 }
@@ -20,6 +39,25 @@ async function makePlan({ planId, idempotencyId, idempotencyKey, changeSetId, ca
     plan_id: planId, party_id: 'p', write_plan_kind: 'semantic_commit', operation_kind: 'move', canonical_input_digest: canonicalInputDigest,
     expected_state_versions: expectedStateVersions, validation_report: { status: 'pass', digest: `sha256:${hex}` },
     idempotency: { id: idempotencyId, key: idempotencyKey }, change_set: { id: changeSetId },
+    visible_package_envelope: {
+      package_id: `visible-${changeSetId}`,
+      party_id: 'p',
+      turn_id: `turn-${changeSetId}`,
+      committed_state_version: '1',
+      change_set_id: changeSetId,
+      package_digest: computeSpatialV3CanonicalDigest(visiblePayload),
+      visible_payload: visiblePayload,
+      presentation_status: 'pending',
+      projection_policy_ref: {
+        entity_ref: { entity_kind: 'visibility_modifier', entity_id: 'projection-v1' },
+        authoring_version: '4.3.0-target.1'
+      },
+      dependency_pins: {
+        pins: dependencyPins,
+        canonical_digest: computeSpatialV3CanonicalDigest(dependencyPins).replace('sha256:', '')
+      },
+      idempotency_record_id: idempotencyId
+    },
     lock_context: { owner_keys: [], execution_keys: [], g4_keys: [], physical_keys: [`party_runtime.party_v3_change_sets:${changeSetId}`, ...physicalKeys] },
     commit_rechecks: ['physical', 'state', 'pin', 'endpoint', 'route', 'capacity', 'time', 'change_set'].map((kind) => ({ kind, digest: `sha256:${hex}` })),
     approved_write_sets: [{ inserts: [], updates, appends }]
@@ -28,12 +66,15 @@ async function makePlan({ planId, idempotencyId, idempotencyKey, changeSetId, ca
   return built.plan;
 }
 
-function transactionOwner(client, lockKeys) {
+function transactionOwner(client, lockKeys, shouldFailSettle = () => false) {
   return async (work) => {
     await client.query('BEGIN');
     try {
       const result = await work({ query: async (sql, params) => {
         if (sql.includes('pg_advisory_xact_lock')) lockKeys.push(params[0]);
+        if (shouldFailSettle() && sql.startsWith('UPDATE party_runtime.party_command_idempotency SET status=')) {
+          throw new Error('injected idempotency settlement failure');
+        }
         return client.query(sql, params);
       } });
       await client.query('COMMIT');
@@ -60,15 +101,16 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
   const client = new pg.Client({ host: '127.0.0.1', port, user: 'p16', password: 'p16', database: 'p16' });
   await client.connect();
   t.after(() => client.end());
-  for (const file of ['001_party_runtime.sql', '002_party_runtime_v3.sql', '003_party_runtime_v3_planning.sql', '004_party_runtime_v3_journeys.sql']) await client.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
+  for (const file of ['001_party_runtime.sql', '002_party_runtime_v3.sql', '003_party_runtime_v3_planning.sql', '004_party_runtime_v3_journeys.sql', '005_party_runtime_v3_domain.sql', '006_party_runtime_v3_migration.sql', '007_party_runtime_temporal_world.sql']) await client.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
   await client.query("INSERT INTO party_runtime.parties(party_id,schema_version,world_revision_id,world_catalog_digest,materializer_version,rng_version,command_catalog_digest,profile_bundle_digest) VALUES ('p',3,'w','d','m','r','c','b'); INSERT INTO party_runtime.party_clocks(party_id,whole_minutes,subminute_numerator,subminute_denominator,clock_owner_kind,state_version,updated_change_set_id) VALUES ('p',0,0,1,'party',1,'old');");
 
   const locks = [];
   let rechecks = 0;
+  let failSettle = false;
   const committer = createSpatialV3CombinedAtomicCommitter({
     now: () => later,
     recheck: async () => { rechecks += 1; return { ok: true }; },
-    withTransaction: transactionOwner(client, locks)
+    withTransaction: transactionOwner(client, locks, () => failSettle)
   });
 
   const first = await makePlan({
@@ -78,6 +120,8 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
     physicalKeys: ['party_runtime.party_clocks:p']
   });
   assert.equal((await committer.commit({ plan: first })).ok, true);
+  assert.equal((await client.query("SELECT count(*) FROM party_runtime.party_visible_packages WHERE package_id='visible-cs'")).rows[0].count, '1');
+  assert.equal((await client.query("SELECT count(*) FROM party_runtime.party_narration_jobs WHERE package_id='visible-cs' AND status='pending'")).rows[0].count, '1');
   assert.equal((await client.query("SELECT state_version FROM party_runtime.party_clocks WHERE party_id='p' ")).rows[0].state_version, '2');
   assert.deepEqual(locks, [...locks].sort(), 'lock phases are globally sorted');
   rechecks = 0;
@@ -88,6 +132,9 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
   const digestConflict = await makePlan({ planId: 'conflict-plan', idempotencyId: 'idem', idempotencyKey: 'key', changeSetId: 'conflict-cs', canonicalInputDigest: `sha256:${'b'.repeat(64)}` });
   assert.equal((await committer.commit({ plan: digestConflict })).error.code, 'idempotency_conflict', 'same idempotency key cannot change the persisted digest');
   assert.equal((await client.query("SELECT count(*) FROM party_runtime.party_v3_change_sets WHERE id='conflict-cs'")).rows[0].count, '0');
+  const replayWriteSetConflict = await makePlan({ planId: 'replay-conflict-plan', idempotencyId: 'idem', idempotencyKey: 'key', changeSetId: 'different-cs' });
+  assert.equal((await committer.commit({ plan: replayWriteSetConflict })).error.code, 'idempotency_conflict', 'replay must match the exact persisted change set and write-set digest');
+  assert.equal((await client.query("SELECT count(*) FROM party_runtime.party_v3_change_sets WHERE id='different-cs'")).rows[0].count, '0');
 
   const expired = await makePlan({ planId: 'reclaim-plan', idempotencyId: 'reclaim-idem', idempotencyKey: 'reclaim-key', changeSetId: 'reclaim-cs' });
   await client.query("INSERT INTO party_runtime.party_command_idempotency(id,party_id,operation_kind,idempotency_key,canonical_input_digest,expected_state_version_set_digest,status,lease_token,lease_expires_at,created_at_turn) VALUES ('reclaim-idem','p','move','reclaim-key',$1,$2,'leased','old lease','2000-01-01T00:00:00Z',0)", [hex, expired.expected_state_versions_digest.replace('sha256:', '')]);
@@ -116,11 +163,13 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
   assert.deepEqual((await client.query("SELECT execution_id,event_ordinal,event_kind,to_status,change_set_id,idempotency_record_id FROM party_runtime.party_route_plan_execution_events WHERE execution_id='history-exec' AND event_ordinal=1")).rows[0], { execution_id: 'history-exec', event_ordinal: 1, event_kind: 'activated', to_status: 'active', change_set_id: 'history-cs', idempotency_record_id: 'history-idem' }, 'committer persists composite execution history identity');
 
   const rollback = await makePlan({
-    planId: 'rollback-plan', idempotencyId: 'rollback-idem', idempotencyKey: 'rollback-key', changeSetId: 'rollback-cs',
-    extraAppends: [{ target_table: 'party_route_plan_execution_events', id: 'missing-exec:0', record: { execution_id: 'missing-exec', event_ordinal: 0, event_kind: 'planned', to_status: 'planned', step_ordinal: 0, location_snapshot: {}, change_set_id: 'rollback-cs', idempotency_record_id: 'rollback-idem', occurred_at_turn: 0 } }],
-    physicalKeys: ['party_runtime.party_route_plan_execution_events:missing-exec:0']
+    planId: 'rollback-plan', idempotencyId: 'rollback-idem', idempotencyKey: 'rollback-key', changeSetId: 'rollback-cs'
   });
-  assert.equal((await committer.commit({ plan: rollback })).ok, false, 'foreign-key failure is returned by the real committer');
+  failSettle = true;
+  assert.equal((await committer.commit({ plan: rollback })).ok, false, 'late persistence failure is returned by the real committer');
+  failSettle = false;
   assert.equal((await client.query("SELECT count(*) FROM party_runtime.party_v3_change_sets WHERE id='rollback-cs'")).rows[0].count, '0');
   assert.equal((await client.query("SELECT count(*) FROM party_runtime.party_command_idempotency WHERE id='rollback-idem'")).rows[0].count, '0', 'failed write rolls back both change set and leased idempotency row');
+  assert.equal((await client.query("SELECT count(*) FROM party_runtime.party_visible_packages WHERE package_id='visible-rollback-cs'")).rows[0].count, '0', 'failed write rolls back the factual presentation package');
+  assert.equal((await client.query("SELECT count(*) FROM party_runtime.party_narration_jobs WHERE package_id='visible-rollback-cs'")).rows[0].count, '0', 'failed write rolls back its narration job');
 });

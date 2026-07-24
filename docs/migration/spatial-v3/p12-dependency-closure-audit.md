@@ -1,24 +1,27 @@
 # P12 dependency-closure audit
 
-## Current reapproval status (P09 canonical-grid repair)
+## Current reapproval status (Temporal World v4 integration)
 
 Status: **INDEPENDENT REAPPROVAL PASS** for exact subject commit
-`8962b543052917193708137f5b4051b85758c701`.
+`3b57dbd7da75be4e8e0b5ff3630c726b947d62b5`.
 
-P09 replaced the non-normative `novgorod_g1_cardinal_grid_v1` convention with
-the target-standard `grid_east_north_v1` contract. The deterministic P12
-dependency-closure generator and its physical import row now use that exact
-canonical value. This changes the approved subject tree, so the historical
-`69b465f… → 690f850…` closure approval is not reused.
+Temporal World v4 adds world-base schema part 18 and active normative
+amendments without changing the approved P12 category identities or target
+materialization meaning. The deterministic dependency-closure generator now
+binds the current DDL digest and the exact shifted line-range anchors; the
+checked-in P12 target bundle was regenerated from those inputs. This changes
+the raw approved subject tree, so the earlier `8962b54…` closure approval is
+not reused.
 
 The generated `REAPPROVAL_REQUEST.json` pins the exact changed dataset digest
 and records the prior evidence as superseded for this changed subject tree.
 `subject-commit-binding.json` raw-byte pins the complete exact subject tree:
 the bundle manifest and its digest, every manifest payload file, and the
 declared verifier test. Its only permitted post-subject evidence changes are
-this independent approval decision and this audit record. A separate
-evidence-only commit must be the direct child of the subject commit. The V1.1
-repository verifier must still report `materialization_authorized: false`,
+the independent approval decision, its manifest hash update, this audit
+record, the mandatory work README journal, and the binding itself. A separate
+evidence-only commit is the direct child of the subject commit. The V1.1
+repository verifier still reports `materialization_authorized: false`,
 `p12_operational_gaps_closed: false`, and `p28_activation: not_authorized`;
 production, P28 and spatial runtime v3 remain blocked.
 

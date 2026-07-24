@@ -1,0 +1,45 @@
+{
+  "schema": "rus.temporal-world-v4.data-family-approval.v1",
+  "version": 1,
+  "family_id": "carrier_synchronization_rescue_recovery_policies",
+  "status": "approved",
+  "record_version": "1",
+  "applicability": [
+    "novgorod"
+  ],
+  "record_ids": [
+    "record:carrier_synchronization_rescue_recovery_policies:carrier_root_clock_v2"
+  ],
+  "data_gaps": [],
+  "external_audit_decision": {
+    "path": "docs/work/temporal-world-v4/external-data-audit/decisions/carrier_synchronization_rescue_recovery_policies.decision.json",
+    "sha256": "87181ba1eaaf264ed5d2376d4e0d836a024e02416ba9957d46596e1a77d9e0a5",
+    "decision_id": "decision:carrier_synchronization_rescue_recovery_policies:2026-07-24-reaudit-2"
+  },
+  "artifacts": {
+    "dataset": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/datasets/carrier_synchronization_rescue_recovery_policies.json",
+      "sha256": "938f66ca3af6c27f372f824a4aeb34fd759726bcae3760970dcae9e7ce86795e"
+    },
+    "provenance": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/source-approval/carrier_synchronization_rescue_recovery_policies.provenance.json",
+      "sha256": "59926a5f0510abf0ffc566909c256df5ce335a3048a448e220e8c4edff079910"
+    },
+    "normalized_references": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/datasets/carrier_synchronization_rescue_recovery_policies.references.json",
+      "sha256": "588660d75ca316db2be2485d2c64c7d56d1ea82b942bc8cc05ba8929ed64cd12"
+    },
+    "source_history": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/source-approval/carrier_synchronization_rescue_recovery_policies.sources.json",
+      "sha256": "6ac3c0cbe8274e1b1fae9299b6efc0014f328509e76ac1b1f4e3655e61ae5973"
+    },
+    "deterministic_import": {
+      "path": "tools/temporal-v4/import-approved-data.mjs",
+      "sha256": "c566a47c1a49fa18f26ffc1a744dbeb9348d6dadb42430b6f462f73c867c2ba5"
+    },
+    "generated_schema": {
+      "path": "infra/world-base/SCHEMA_REFERENCE.md",
+      "sha256": "2033c4c5a8ddd50e8fb5f8fab159710bb28c6d8a9c3cee72d5fda464de171091"
+    }
+  }
+}

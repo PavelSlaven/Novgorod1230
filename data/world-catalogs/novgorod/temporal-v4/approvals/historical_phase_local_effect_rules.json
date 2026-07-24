@@ -1,0 +1,45 @@
+{
+  "schema": "rus.temporal-world-v4.data-family-approval.v1",
+  "version": 1,
+  "family_id": "historical_phase_local_effect_rules",
+  "status": "approved",
+  "record_version": "1",
+  "applicability": [
+    "novgorod"
+  ],
+  "record_ids": [
+    "record:historical_phase_local_effect_rules:novgorod_famine_1230_v2"
+  ],
+  "data_gaps": [],
+  "external_audit_decision": {
+    "path": "docs/work/temporal-world-v4/external-data-audit/decisions/historical_phase_local_effect_rules.decision.json",
+    "sha256": "2d55b644868b15f189d3994dc12faa2373b3c2141281756c3831dc91a3a56b93",
+    "decision_id": "decision:historical_phase_local_effect_rules:2026-07-24-reaudit-2"
+  },
+  "artifacts": {
+    "dataset": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/datasets/historical_phase_local_effect_rules.json",
+      "sha256": "64d291563632478af1d91d07b8430b61b515ea6835811487b2fb2a22507b9f43"
+    },
+    "provenance": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/source-approval/historical_phase_local_effect_rules.provenance.json",
+      "sha256": "cdbb9032c149b3624dabc8e7a8dd6f0c461b91cbe6edbf8600c00773d32e991a"
+    },
+    "normalized_references": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/datasets/historical_phase_local_effect_rules.references.json",
+      "sha256": "b64113a3e9659c87f79cc1347b8c8bd1ed898eeb81e7a116ba3a7806dfa498cf"
+    },
+    "source_history": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/source-approval/historical_phase_local_effect_rules.sources.json",
+      "sha256": "69ab4713893ddd48940f78e76a894dd4382f60d4c9eb0ab10b1f6ddebb509d9d"
+    },
+    "deterministic_import": {
+      "path": "tools/temporal-v4/import-approved-data.mjs",
+      "sha256": "c566a47c1a49fa18f26ffc1a744dbeb9348d6dadb42430b6f462f73c867c2ba5"
+    },
+    "generated_schema": {
+      "path": "infra/world-base/SCHEMA_REFERENCE.md",
+      "sha256": "2033c4c5a8ddd50e8fb5f8fab159710bb28c6d8a9c3cee72d5fda464de171091"
+    }
+  }
+}

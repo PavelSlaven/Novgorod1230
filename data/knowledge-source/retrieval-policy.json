@@ -1,7 +1,7 @@
 {
   "schema_version": "rus.knowledge_retrieval_policy.v1",
   "policy_version": "1.0.0",
-  "baseline_manifest_sha256": "f0a5330cc843d16e55e8da47e02dfe2686c93ef394653c0099e9f764309ef898",
+  "baseline_manifest_sha256": "3ca8374ff6320fee74863f984f13a14b03bb723cb8dfdbe45dc2ae3f604635b3",
   "default_statuses": [
     "active"
   ],
@@ -143,7 +143,7 @@
         "здоровье"
       ],
       "conflicts_with_document_ids": [],
-      "semantic_coverage_disposition": "covered"
+      "semantic_coverage_disposition": "baseline_gap"
     },
     {
       "document_id": "code-critic-invocation-rule",
@@ -673,6 +673,51 @@
       "semantic_coverage_disposition": "baseline_gap"
     },
     {
+      "document_id": "temporal-world-and-interruptible-activities",
+      "document_type": "target_normative",
+      "priority_tier": "profile_normative",
+      "subsystems": [
+        "time",
+        "turn",
+        "activities",
+        "npc",
+        "environment",
+        "remote-world"
+      ],
+      "related_document_ids": [
+        "time-system",
+        "base-turn-orchestration",
+        "spatial-architecture-standard-g0-g6",
+        "code-driven-world-materialization-architecture",
+        "llm-documentation-navigation"
+      ],
+      "related_module_paths": [
+        "packages/time-events-history",
+        "packages/turn",
+        "packages/body-state",
+        "packages/environment-state",
+        "packages/npc-runtime",
+        "packages/world-processes"
+      ],
+      "related_contracts": [
+        "temporal-world-v1",
+        "spatial-v3 4.3.0-target.1",
+        "GameTimestamp",
+        "interruptible activity lifecycle"
+      ],
+      "search_terms": [
+        "exact rational game time",
+        "temporal boundary",
+        "interruptible activity",
+        "same-time cascade",
+        "shared carrier clock",
+        "remote catch-up",
+        "post-commit visible package"
+      ],
+      "conflicts_with_document_ids": [],
+      "semantic_coverage_disposition": "baseline_gap"
+    },
+    {
       "document_id": "time-system",
       "document_type": "canonical_normative",
       "priority_tier": "profile_normative",
@@ -680,7 +725,8 @@
         "time"
       ],
       "related_document_ids": [
-        "llm-documentation-navigation"
+        "llm-documentation-navigation",
+        "temporal-world-and-interruptible-activities"
       ],
       "related_module_paths": [
         "packages/time-events-history"

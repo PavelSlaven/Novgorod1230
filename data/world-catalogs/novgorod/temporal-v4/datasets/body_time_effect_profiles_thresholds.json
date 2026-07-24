@@ -1,0 +1,601 @@
+[
+  {
+    "record_id": "record:body_time_effect_profiles_thresholds:satiety_hourly_spend_v2",
+    "family_id": "body_time_effect_profiles_thresholds",
+    "record_kind": "body_time_effect_profile",
+    "status": "approved",
+    "version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "provenance_refs": [
+      "provenance:body_time_effect_profiles_thresholds:novgorod_v1"
+    ],
+    "normalized_reference_ids": [
+      "reference:body_time_effect_profiles_thresholds:satiety_hourly_spend_v2"
+    ],
+    "source_history_refs": [
+      "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+      "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+      "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+      "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+    ],
+    "payload": {
+      "body_effect_profile_id": "satiety_hourly_spend_v2",
+      "body_metric_id": "satiety",
+      "activity_intensity_applicability": [
+        {
+          "intensity_id": "sleep_or_full_rest",
+          "multiplier": {
+            "numerator": "1",
+            "denominator": "1"
+          }
+        },
+        {
+          "intensity_id": "rest_or_ordinary_activity",
+          "multiplier": {
+            "numerator": "1",
+            "denominator": "1"
+          }
+        },
+        {
+          "intensity_id": "heavy_activity",
+          "multiplier": {
+            "numerator": "3",
+            "denominator": "2"
+          }
+        }
+      ],
+      "exact_rate_or_piecewise_rule": {
+        "base_spend_points_per_hour": {
+          "numerator": "25",
+          "denominator": "18"
+        },
+        "formula": "exact_elapsed_hours * 25/18 * pinned_intensity_multiplier",
+        "heavy_activity_spend_points_per_hour": {
+          "numerator": "25",
+          "denominator": "12"
+        },
+        "clamp_range": [
+          "0",
+          "100"
+        ],
+        "binary_float": "forbidden"
+      },
+      "threshold_rules": [
+        {
+          "range_min": "50",
+          "range_max": "100",
+          "state_modifier": "0",
+          "availability": "normal"
+        },
+        {
+          "range_min": "21",
+          "range_max": "49",
+          "state_modifier": "-1",
+          "availability": "relevant_actions_penalized"
+        },
+        {
+          "range_min": "1",
+          "range_max": "20",
+          "state_modifier": "-2",
+          "availability": "some_relevant_actions_unavailable"
+        },
+        {
+          "range_min": "0",
+          "range_max": "0",
+          "state_modifier": "critical",
+          "availability": "critical_consequence"
+        }
+      ],
+      "boundary_prediction_rule": "solve the next lower threshold crossing with exact rational arithmetic from current satiety and pinned rate",
+      "effect_kind": "continuous_satiety_spend",
+      "recovery_or_deterioration_constraints": [
+        "food restoration requires a separately approved food effect",
+        "clamp 0..100",
+        "@rus/body-state owns calculation and proposal"
+      ],
+      "metric_binding": {
+        "entity_ref": {
+          "entity_kind": "body_metric",
+          "entity_id": "satiety"
+        },
+        "authoring_version": "1",
+        "source_ids": [
+          "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+          "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+          "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+          "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+        ],
+        "applicability": [
+          "novgorod"
+        ]
+      },
+      "activity_intensity_bindings": [
+        {
+          "entity_ref": {
+            "entity_kind": "activity_intensity",
+            "entity_id": "sleep_or_full_rest"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+            "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+            "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+            "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "activity_intensity",
+            "entity_id": "rest_or_ordinary_activity"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+            "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+            "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+            "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "activity_intensity",
+            "entity_id": "heavy_activity"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+            "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+            "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+            "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        }
+      ],
+      "missing_applicable_profile": "event_effect_gap"
+    }
+  },
+  {
+    "record_id": "record:body_time_effect_profiles_thresholds:energy_awake_spend_v2",
+    "family_id": "body_time_effect_profiles_thresholds",
+    "record_kind": "body_time_effect_profile",
+    "status": "approved",
+    "version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "provenance_refs": [
+      "provenance:body_time_effect_profiles_thresholds:novgorod_v1"
+    ],
+    "normalized_reference_ids": [
+      "reference:body_time_effect_profiles_thresholds:energy_awake_spend_v2"
+    ],
+    "source_history_refs": [
+      "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+      "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+      "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+      "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+    ],
+    "payload": {
+      "body_effect_profile_id": "energy_awake_spend_v2",
+      "body_metric_id": "energy",
+      "activity_intensity_applicability": [
+        {
+          "intensity_id": "sleep_or_full_rest",
+          "mode": "ordinary_spend_suspended"
+        },
+        {
+          "intensity_id": "rest_or_ordinary_activity",
+          "multiplier": {
+            "numerator": "1",
+            "denominator": "1"
+          }
+        },
+        {
+          "intensity_id": "heavy_activity",
+          "multiplier": {
+            "numerator": "3",
+            "denominator": "2"
+          }
+        }
+      ],
+      "exact_rate_or_piecewise_rule": {
+        "base_spend_points_per_hour": {
+          "numerator": "25",
+          "denominator": "18"
+        },
+        "formula": "while awake: exact_elapsed_hours * 25/18 * pinned_intensity_multiplier",
+        "heavy_activity_spend_points_per_hour": {
+          "numerator": "25",
+          "denominator": "12"
+        },
+        "sleep_or_full_rest": "ordinary spend suspended; recovery profile applies",
+        "clamp_range": [
+          "0",
+          "100"
+        ],
+        "binary_float": "forbidden"
+      },
+      "threshold_rules": [
+        {
+          "range_min": "50",
+          "range_max": "100",
+          "state_modifier": "0",
+          "availability": "normal"
+        },
+        {
+          "range_min": "21",
+          "range_max": "49",
+          "state_modifier": "-1",
+          "availability": "relevant_actions_penalized"
+        },
+        {
+          "range_min": "1",
+          "range_max": "20",
+          "state_modifier": "-2",
+          "availability": "some_relevant_actions_unavailable"
+        },
+        {
+          "range_min": "0",
+          "range_max": "0",
+          "state_modifier": "critical",
+          "availability": "critical_consequence"
+        }
+      ],
+      "boundary_prediction_rule": "solve next lower threshold with exact arithmetic; energy 0 is unconsciousness/involuntary-sleep boundary",
+      "effect_kind": "continuous_energy_spend",
+      "recovery_or_deterioration_constraints": [
+        "energy 0 causes loss of consciousness or involuntary sleep unless immediate danger changes the committed consequence",
+        "clamp 0..100",
+        "@rus/body-state owns calculation and proposal"
+      ],
+      "metric_binding": {
+        "entity_ref": {
+          "entity_kind": "body_metric",
+          "entity_id": "energy"
+        },
+        "authoring_version": "1",
+        "source_ids": [
+          "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+          "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+          "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+          "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+        ],
+        "applicability": [
+          "novgorod"
+        ]
+      },
+      "activity_intensity_bindings": [
+        {
+          "entity_ref": {
+            "entity_kind": "activity_intensity",
+            "entity_id": "sleep_or_full_rest"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+            "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+            "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+            "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "activity_intensity",
+            "entity_id": "rest_or_ordinary_activity"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+            "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+            "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+            "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "activity_intensity",
+            "entity_id": "heavy_activity"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+            "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+            "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+            "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        }
+      ],
+      "canonical_document_term": "Бодрость",
+      "runtime_metric_alias": "energy",
+      "missing_applicable_profile": "event_effect_gap"
+    }
+  },
+  {
+    "record_id": "record:body_time_effect_profiles_thresholds:energy_sleep_recovery_v1",
+    "family_id": "body_time_effect_profiles_thresholds",
+    "record_kind": "body_time_effect_profile",
+    "status": "approved",
+    "version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "provenance_refs": [
+      "provenance:body_time_effect_profiles_thresholds:novgorod_v1"
+    ],
+    "normalized_reference_ids": [
+      "reference:body_time_effect_profiles_thresholds:energy_sleep_recovery_v1"
+    ],
+    "source_history_refs": [
+      "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+      "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+      "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+      "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+    ],
+    "payload": {
+      "body_effect_profile_id": "energy_sleep_recovery_v1",
+      "body_metric_id": "energy",
+      "activity_intensity_applicability": [
+        {
+          "intensity_id": "sleep_or_full_rest",
+          "recovery_multiplier": {
+            "numerator": "1",
+            "denominator": "1"
+          }
+        }
+      ],
+      "exact_rate_or_piecewise_rule": {
+        "base_restore_points_per_hour": {
+          "numerator": "25",
+          "denominator": "9"
+        },
+        "formula": "exact_sleep_hours * 25/9",
+        "eight_hour_restore": {
+          "numerator": "200",
+          "denominator": "9"
+        },
+        "ordinary_awake_spend_suspended": true,
+        "clamp_range": [
+          "0",
+          "100"
+        ],
+        "binary_float": "forbidden"
+      },
+      "threshold_rules": [
+        {
+          "range_min": "50",
+          "range_max": "100",
+          "state_modifier": "0",
+          "availability": "normal"
+        },
+        {
+          "range_min": "21",
+          "range_max": "49",
+          "state_modifier": "-1",
+          "availability": "relevant_actions_penalized"
+        },
+        {
+          "range_min": "1",
+          "range_max": "20",
+          "state_modifier": "-2",
+          "availability": "some_relevant_actions_unavailable"
+        },
+        {
+          "range_min": "0",
+          "range_max": "0",
+          "state_modifier": "critical",
+          "availability": "critical_consequence"
+        }
+      ],
+      "boundary_prediction_rule": "solve next upper threshold crossing including energy 100 with exact rational arithmetic",
+      "effect_kind": "continuous_energy_recovery",
+      "recovery_or_deterioration_constraints": [
+        "only an approved sleep/full-rest activity activates recovery",
+        "interruption preserves committed recovery",
+        "heavy-activity debt is not silently erased beyond the exact recovery amount",
+        "@rus/body-state owns calculation and proposal"
+      ],
+      "metric_binding": {
+        "entity_ref": {
+          "entity_kind": "body_metric",
+          "entity_id": "energy"
+        },
+        "authoring_version": "1",
+        "source_ids": [
+          "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+          "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+          "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+          "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+        ],
+        "applicability": [
+          "novgorod"
+        ]
+      },
+      "activity_intensity_bindings": [
+        {
+          "entity_ref": {
+            "entity_kind": "activity_intensity",
+            "entity_id": "sleep_or_full_rest"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+            "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+            "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+            "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        }
+      ],
+      "canonical_document_term": "Бодрость",
+      "runtime_metric_alias": "energy",
+      "missing_applicable_profile": "event_effect_gap"
+    }
+  },
+  {
+    "record_id": "record:body_time_effect_profiles_thresholds:starvation_health_harm_v2",
+    "family_id": "body_time_effect_profiles_thresholds",
+    "record_kind": "body_time_effect_profile",
+    "status": "approved",
+    "version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "provenance_refs": [
+      "provenance:body_time_effect_profiles_thresholds:novgorod_v1"
+    ],
+    "normalized_reference_ids": [
+      "reference:body_time_effect_profiles_thresholds:starvation_health_harm_v2"
+    ],
+    "source_history_refs": [
+      "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+      "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+      "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+      "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+    ],
+    "payload": {
+      "body_effect_profile_id": "starvation_health_harm_v2",
+      "body_metric_id": "health",
+      "activity_intensity_applicability": [
+        {
+          "condition": "satiety_equals_0",
+          "intensity_id": "rest_or_ordinary_activity",
+          "multiplier": {
+            "numerator": "1",
+            "denominator": "1"
+          }
+        },
+        {
+          "condition": "satiety_equals_0",
+          "intensity_id": "heavy_activity",
+          "multiplier": {
+            "numerator": "3",
+            "denominator": "2"
+          }
+        }
+      ],
+      "exact_rate_or_piecewise_rule": {
+        "activation_condition": "satiety == 0",
+        "base_harm_points_per_hour": {
+          "numerator": "25",
+          "denominator": "18"
+        },
+        "formula": "exact_elapsed_hours_at_satiety_zero * 25/18 * pinned_intensity_multiplier",
+        "heavy_activity_harm_points_per_hour": {
+          "numerator": "25",
+          "denominator": "12"
+        },
+        "inactive_when": "satiety > 0",
+        "clamp_range": [
+          "0",
+          "100"
+        ],
+        "binary_float": "forbidden"
+      },
+      "threshold_rules": [
+        {
+          "range_min": "50",
+          "range_max": "100",
+          "state_modifier": "0",
+          "availability": "normal"
+        },
+        {
+          "range_min": "21",
+          "range_max": "49",
+          "state_modifier": "-1",
+          "availability": "relevant_actions_penalized"
+        },
+        {
+          "range_min": "1",
+          "range_max": "20",
+          "state_modifier": "-2",
+          "availability": "some_relevant_actions_unavailable"
+        },
+        {
+          "range_min": "0",
+          "range_max": "0",
+          "state_modifier": "critical",
+          "availability": "critical_consequence"
+        }
+      ],
+      "boundary_prediction_rule": "while satiety is 0 solve next lower health threshold; otherwise no due boundary",
+      "effect_kind": "conditional_continuous_health_harm",
+      "recovery_or_deterioration_constraints": [
+        "health is not spent by time alone",
+        "health 0 is severe defeat and mortal danger, not automatic context-free death",
+        "@rus/body-state owns calculation and proposal"
+      ],
+      "metric_binding": {
+        "entity_ref": {
+          "entity_kind": "body_metric",
+          "entity_id": "health"
+        },
+        "authoring_version": "1",
+        "source_ids": [
+          "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+          "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+          "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+          "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+        ],
+        "applicability": [
+          "novgorod"
+        ]
+      },
+      "activity_intensity_bindings": [
+        {
+          "entity_ref": {
+            "entity_kind": "activity_intensity",
+            "entity_id": "rest_or_ordinary_activity"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+            "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+            "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+            "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "activity_intensity",
+            "entity_id": "heavy_activity"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+            "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+            "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+            "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        }
+      ],
+      "missing_applicable_profile": "event_effect_gap"
+    }
+  }
+]

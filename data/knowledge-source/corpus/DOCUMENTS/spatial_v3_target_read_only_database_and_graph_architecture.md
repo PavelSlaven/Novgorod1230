@@ -3,6 +3,12 @@
 **Статус:** target technical normative; production runtime остаётся v2 до P28.
 **Источник физических деталей:** будущие v3 DDL и сгенерированный из них `infra/world-base/SCHEMA_REFERENCE.md`; этот документ не подменяет DDL.
 
+Temporal amendment `temporal-world-v1` / `4.3.0-target.1` находится в active
+target-нормативе `temporal_world_and_interruptible_activities.md`. `world_base` хранит
+только approved calendar/activity/environment/NPC/process profiles и rules;
+точные executions, clocks, effects и visible packages принадлежат
+`party_runtime`.
+
 ## 1. Single-source matrix
 
 | Вопрос | Единственный источник истины v3 |
@@ -31,7 +37,11 @@ Route topology включает directional exits, route segments/points, side c
 
 Resolvers/materializers read pinned authoring records and produce proposals. Один commit owner применяет approved normalized party write set atomically under declared lock order. Factual state, knowledge и visible projection раздельны; player-facing map and narrator consume approved projection only.
 
-Save/load использует pinned records, immutable plans/executions and append-only history; mutable latest catalog не может переопределять active journey. Missing/ambiguous reference, endpoint, route contract или candidate set — typed hard block, не semantic fallback.
+Save/load использует pinned records, immutable plans/executions, canonical
+decimal-string `GameTimestamp` и append-only history; mutable latest catalog
+не может переопределять active journey или уже committed temporal boundary.
+Missing/ambiguous reference, endpoint, route/time contract или candidate set —
+typed hard block, не semantic fallback.
 
 ## 4. Coexistence and activation
 

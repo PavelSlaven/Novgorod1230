@@ -12,7 +12,10 @@ test('P13 applies 001→002 idempotently and enforces the v3 spatial foundation'
   assert.equal(RUNTIME_MIGRATIONS.length, 1, 'production composition remains v2 before P28');
   assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length >= 2, true, 'later target migrations may extend the preserved 001→002 prefix');
   assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.slice(0, 2).length, 2, 'target upgrade manifest preserves 001→002 prefix');
-  if (docker(['version']).status !== 0) t.skip('Docker required for isolated P13 PostgreSQL test');
+  if (docker(['version']).status !== 0) {
+    t.skip('Docker required for isolated P13 PostgreSQL test');
+    return;
+  }
   t.after(() => docker(['rm', '-f', name]));
   assert.equal(docker(['run', '-d', '--name', name, '-e', 'POSTGRES_PASSWORD=p13_local', '-e', 'POSTGRES_USER=p13', '-e', 'POSTGRES_DB=p13', 'postgres:16-alpine']).status, 0);
   let ready = false;

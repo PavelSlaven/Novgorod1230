@@ -1,0 +1,45 @@
+{
+  "schema": "rus.temporal-world-v4.data-family-approval.v1",
+  "version": 1,
+  "family_id": "traversal_recheck_contracts",
+  "status": "approved",
+  "record_version": "1",
+  "applicability": [
+    "novgorod"
+  ],
+  "record_ids": [
+    "record:traversal_recheck_contracts:spatial_v3_recheck_v2"
+  ],
+  "data_gaps": [],
+  "external_audit_decision": {
+    "path": "docs/work/temporal-world-v4/external-data-audit/decisions/traversal_recheck_contracts.decision.json",
+    "sha256": "fd1d88e9407c73c97a58f1158afccb7a531f9b516b0e40e697dfccd67b46962d",
+    "decision_id": "decision:traversal_recheck_contracts:2026-07-24-reaudit-2"
+  },
+  "artifacts": {
+    "dataset": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/datasets/traversal_recheck_contracts.json",
+      "sha256": "20053db87347fd102b970ae7b78539c4a484993c2fe4237f4c3b77cc87455f84"
+    },
+    "provenance": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/source-approval/traversal_recheck_contracts.provenance.json",
+      "sha256": "a65c1668b37408d190ba8a8941581a8643a42eeb2acc9bc7120d82cbb63a53fd"
+    },
+    "normalized_references": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/datasets/traversal_recheck_contracts.references.json",
+      "sha256": "fd650acad913b30cc2ac71aef8e1c2abea9b2ca68bb02929d22fb43ff07b5efb"
+    },
+    "source_history": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/source-approval/traversal_recheck_contracts.sources.json",
+      "sha256": "f60394c59b35cd5e4dbedf439c10e8abb067e2aa9ea6567dc88b7c7f832cf64e"
+    },
+    "deterministic_import": {
+      "path": "tools/temporal-v4/import-approved-data.mjs",
+      "sha256": "c566a47c1a49fa18f26ffc1a744dbeb9348d6dadb42430b6f462f73c867c2ba5"
+    },
+    "generated_schema": {
+      "path": "infra/world-base/SCHEMA_REFERENCE.md",
+      "sha256": "2033c4c5a8ddd50e8fb5f8fab159710bb28c6d8a9c3cee72d5fda464de171091"
+    }
+  }
+}

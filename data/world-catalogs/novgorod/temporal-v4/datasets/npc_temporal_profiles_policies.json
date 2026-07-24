@@ -1,0 +1,330 @@
+[
+  {
+    "record_id": "record:npc_temporal_profiles_policies:monastic_worker_v2",
+    "family_id": "npc_temporal_profiles_policies",
+    "record_kind": "npc_schedule_profile",
+    "status": "approved",
+    "version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "provenance_refs": [
+      "provenance:npc_temporal_profiles_policies:novgorod_v1"
+    ],
+    "normalized_reference_ids": [
+      "reference:npc_temporal_profiles_policies:monastic_worker_v2"
+    ],
+    "source_history_refs": [
+      "source:npc_temporal_profiles_policies:temporal_world_v4_normative",
+      "source:npc_temporal_profiles_policies:user_reconstruction_authorization",
+      "source:npc_temporal_profiles_policies:rule_of_benedict_analog"
+    ],
+    "payload": {
+      "npc_temporal_profile_id": "monastic_worker_may_to_september_daylight_analogue_v2",
+      "npc_archetype_refs": [
+        {
+          "entity_ref": {
+            "entity_kind": "npc_archetype",
+            "entity_id": "monastic_worker_reconstruction_v1"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:npc_temporal_profiles_policies:temporal_world_v4_normative",
+            "source:npc_temporal_profiles_policies:user_reconstruction_authorization",
+            "source:npc_temporal_profiles_policies:rule_of_benedict_analog"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        }
+      ],
+      "schedule_rules_and_exact_boundaries": {
+        "calendar_applicability": {
+          "start_inclusive": {
+            "month": "5",
+            "day": "1"
+          },
+          "end_exclusive": {
+            "month": "10",
+            "day": "1"
+          },
+          "calendar_profile_ref": {
+            "entity_ref": {
+              "entity_kind": "calendar_profile",
+              "entity_id": "novgorod_julian_lmst_1230_1233_v2"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:calendar_daylight_light_profiles:historical_daylight_derivation",
+              "source:calendar_daylight_light_profiles:noaa_solar",
+              "source:calendar_daylight_light_profiles:temporal_world_v4_normative",
+              "source:calendar_daylight_light_profiles:user_reconstruction_authorization",
+              "source:calendar_daylight_light_profiles:usno_julian",
+              "source:calendar_daylight_light_profiles:wikidata_coordinates"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        },
+        "daylight_hour_formula": "sunrise + (sunset - sunrise) * daylight_hour / 12 using exact rational arithmetic",
+        "segments": [
+          {
+            "activity_profile_ref": {
+              "entity_ref": {
+                "entity_kind": "activity_profile",
+                "entity_id": "activity_manual_labor_daylight_segment_v1"
+              },
+              "authoring_version": "1",
+              "source_ids": [
+                "source:activity_categories_profiles:activity_reconstruction_decisions",
+                "source:activity_categories_profiles:controlled_vocabularies",
+                "source:activity_categories_profiles:temporal_world_v4_normative",
+                "source:activity_categories_profiles:user_reconstruction_authorization"
+              ],
+              "applicability": [
+                "novgorod"
+              ]
+            },
+            "start_daylight_hour": {
+              "numerator": "0",
+              "denominator": "1"
+            },
+            "end_daylight_hour": {
+              "numerator": "4",
+              "denominator": "1"
+            }
+          },
+          {
+            "activity_profile_ref": {
+              "entity_ref": {
+                "entity_kind": "activity_profile",
+                "entity_id": "activity_sacred_reading_daylight_segment_v1"
+              },
+              "authoring_version": "1",
+              "source_ids": [
+                "source:activity_categories_profiles:activity_reconstruction_decisions",
+                "source:activity_categories_profiles:controlled_vocabularies",
+                "source:activity_categories_profiles:temporal_world_v4_normative",
+                "source:activity_categories_profiles:user_reconstruction_authorization"
+              ],
+              "applicability": [
+                "novgorod"
+              ]
+            },
+            "start_daylight_hour": {
+              "numerator": "4",
+              "denominator": "1"
+            },
+            "end_daylight_hour": {
+              "numerator": "6",
+              "denominator": "1"
+            }
+          },
+          {
+            "activity_profile_ref": {
+              "entity_ref": {
+                "entity_kind": "activity_profile",
+                "entity_id": "activity_meal_quiet_rest_daylight_segment_v1"
+              },
+              "authoring_version": "1",
+              "source_ids": [
+                "source:activity_categories_profiles:activity_reconstruction_decisions",
+                "source:activity_categories_profiles:controlled_vocabularies",
+                "source:activity_categories_profiles:temporal_world_v4_normative",
+                "source:activity_categories_profiles:user_reconstruction_authorization"
+              ],
+              "applicability": [
+                "novgorod"
+              ]
+            },
+            "start_daylight_hour": {
+              "numerator": "6",
+              "denominator": "1"
+            },
+            "end_daylight_hour": {
+              "numerator": "15",
+              "denominator": "2"
+            }
+          },
+          {
+            "activity_profile_ref": {
+              "entity_ref": {
+                "entity_kind": "activity_profile",
+                "entity_id": "activity_manual_labor_daylight_segment_v1"
+              },
+              "authoring_version": "1",
+              "source_ids": [
+                "source:activity_categories_profiles:activity_reconstruction_decisions",
+                "source:activity_categories_profiles:controlled_vocabularies",
+                "source:activity_categories_profiles:temporal_world_v4_normative",
+                "source:activity_categories_profiles:user_reconstruction_authorization"
+              ],
+              "applicability": [
+                "novgorod"
+              ]
+            },
+            "start_daylight_hour": {
+              "numerator": "15",
+              "denominator": "2"
+            },
+            "end_daylight_hour": {
+              "numerator": "12",
+              "denominator": "1"
+            }
+          }
+        ],
+        "outside_applicability": "npc_schedule_gap",
+        "historical_scope_note": "Benedictine text is a comparative analogue; May-September and sunset closure are explicit reconstruction, not direct Orthodox Novgorod evidence"
+      },
+      "activity_profile_refs": [
+        {
+          "entity_ref": {
+            "entity_kind": "activity_profile",
+            "entity_id": "activity_manual_labor_daylight_segment_v1"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "activity_profile",
+            "entity_id": "activity_sacred_reading_daylight_segment_v1"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "activity_profile",
+            "entity_id": "activity_meal_quiet_rest_daylight_segment_v1"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        }
+      ],
+      "perception_signal_and_scope_rules": {
+        "factual_signals": [
+          "visible_event",
+          "audible_event",
+          "direct_message"
+        ],
+        "scope": "line_of_sight or approved acoustic/communication neighbor",
+        "hidden_fact_inference": "forbidden",
+        "no_signal": "not_perceived",
+        "missing_applicable_policy": "perception_policy_gap"
+      },
+      "recognition_policy": {
+        "requires": "direct observation or existing committed knowledge evidence",
+        "unknown_identity_remains_unknown": true,
+        "misinterpretation_requires_approved_rule": true
+      },
+      "bounded_option_ids_and_command_tokens": [
+        {
+          "option_id": "investigate_signal",
+          "command_id": "npc_investigate_signal",
+          "command_token_contract": {
+            "format": "cmd.v1",
+            "derivation": "request-bound digest over request/actor/option/command/policy/state/options",
+            "static_token": "forbidden"
+          },
+          "command_ref": {
+            "entity_ref": {
+              "entity_kind": "decision_command",
+              "entity_id": "npc_investigate_signal"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:npc_temporal_profiles_policies:temporal_world_v4_normative",
+              "source:npc_temporal_profiles_policies:user_reconstruction_authorization",
+              "source:npc_temporal_profiles_policies:rule_of_benedict_analog"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        },
+        {
+          "option_id": "seek_safety",
+          "command_id": "npc_seek_safety",
+          "command_token_contract": {
+            "format": "cmd.v1",
+            "derivation": "request-bound digest over request/actor/option/command/policy/state/options",
+            "static_token": "forbidden"
+          },
+          "command_ref": {
+            "entity_ref": {
+              "entity_kind": "decision_command",
+              "entity_id": "npc_seek_safety"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:npc_temporal_profiles_policies:temporal_world_v4_normative",
+              "source:npc_temporal_profiles_policies:user_reconstruction_authorization",
+              "source:npc_temporal_profiles_policies:rule_of_benedict_analog"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        },
+        {
+          "option_id": "report_to_authority",
+          "command_id": "npc_report_to_authority",
+          "command_token_contract": {
+            "format": "cmd.v1",
+            "derivation": "request-bound digest over request/actor/option/command/policy/state/options",
+            "static_token": "forbidden"
+          },
+          "command_ref": {
+            "entity_ref": {
+              "entity_kind": "decision_command",
+              "entity_id": "npc_report_to_authority"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:npc_temporal_profiles_policies:temporal_world_v4_normative",
+              "source:npc_temporal_profiles_policies:user_reconstruction_authorization",
+              "source:npc_temporal_profiles_policies:rule_of_benedict_analog"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        }
+      ],
+      "decision_applicability_and_authored_default": {
+        "bounded_decision_only_when_multiple_valid_reactions_remain": true,
+        "deterministic_continue_schedule_is_not_a_bounded_decision": true,
+        "no_default": true,
+        "empty_option_set": "npc_decision_policy_gap",
+        "llm_output": "one supplied option_id and exact request-bound token only",
+        "decision_owner": "@rus/turn orchestrates request-bound selection; @rus/npc-runtime only proposes the approved option set"
+      }
+    }
+  }
+]

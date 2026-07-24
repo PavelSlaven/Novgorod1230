@@ -1,13 +1,20 @@
 import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
+import { compareRationalMinutes, normalizeRationalMinutes } from '@rus/time-events-history';
 
 const text = (value) => typeof value === 'string' && value.trim() ? value.trim() : null;
 const digest = (value) => computeSpatialV3CanonicalDigest(value);
 const validEntityRef = (value) => value && typeof value === 'object' && text(value.entity_kind) && text(value.entity_id);
 const validVersionedRef = (value) => value && typeof value === 'object' && validEntityRef(value.entity_ref) && text(value.authoring_version);
 const integer = (value) => Number.isInteger(value) && value > 0;
-const rational = (value) => value && typeof value === 'object' && Object.keys(value).length === 2
-  && integer(value.numerator) && integer(value.denominator) && gcd(value.numerator, value.denominator) === 1;
-const gcd = (left, right) => right ? gcd(right, left % right) : left;
+const rational = (value) => {
+  if (!value || typeof value !== 'object' || Array.isArray(value) || Object.keys(value).sort().join(',') !== 'denominator,numerator') return false;
+  try {
+    const normalized = normalizeRationalMinutes(value);
+    return normalized.numerator === value.numerator && normalized.denominator === value.denominator;
+  } catch {
+    return false;
+  }
+};
 
 export function validPins(value) {
   return value && typeof value === 'object' && Array.isArray(value.pins) && value.pins.length > 0 && text(value.canonical_digest)
@@ -68,13 +75,13 @@ export function validMovementCostSummary(value) {
   const actionPresent = action.some((item) => item != null); const minutesPresent = minutes.some((item) => item != null);
   if (value.precision === 'unknown') return !actionPresent && !minutesPresent;
   if (actionPresent && (!integer(action[0]) || !integer(action[1]) || action[0] > action[1])) return false;
-  if (minutesPresent && (!rational(minutes[0]) || !rational(minutes[1]) || compareRational(minutes[0], minutes[1]) > 0)) return false;
+  if (minutesPresent && (!rational(minutes[0]) || !rational(minutes[1]) || compareRationalMinutes(minutes[0], minutes[1]) > 0)) return false;
   if (value.cost_kind === 'action' && (!actionPresent || minutesPresent)) return false;
   if (value.cost_kind === 'time' && (!minutesPresent || actionPresent)) return false;
   if (value.cost_kind === 'segmented' && !actionPresent && !minutesPresent) return false;
   return value.precision === 'exact'
-    ? (!actionPresent || action[0] === action[1]) && (!minutesPresent || compareRational(minutes[0], minutes[1]) === 0)
-    : (!actionPresent || action[0] < action[1]) && (!minutesPresent || compareRational(minutes[0], minutes[1]) < 0);
+    ? (!actionPresent || action[0] === action[1]) && (!minutesPresent || compareRationalMinutes(minutes[0], minutes[1]) === 0)
+    : (!actionPresent || action[0] < action[1]) && (!minutesPresent || compareRationalMinutes(minutes[0], minutes[1]) < 0);
 }
 
 export function validMovementRiskSummary(value) {
@@ -88,8 +95,6 @@ export function validMovementRiskSummary(value) {
   if (value.knowledge_precision === 'hidden' && (value.risk_class !== 'unknown' || tags.length)) return false;
   return !(value.knowledge_precision === 'rumor' && value.risk_class === 'none');
 }
-
-function compareRational(left, right) { return left.numerator * right.denominator - right.numerator * left.denominator; }
 
 export function validStaticSnapshot(stepKind, value) {
   if (!value || typeof value !== 'object' || value.snapshot_kind !== stepKind || !text(value.canonical_digest)) return false;

@@ -7,7 +7,7 @@
     "target_contract_spec_zip": "1833b383e5ee2568330ab88ae40c7d5b9d057dbde81aa4f43641c48ecd3eb6f3",
     "p12_target_materialization_approval_v1_1_zip": "cdfaea77a808da9ed11c1510f494c05adb18134d76fe7a5bceed9daeca9a3698",
     "immutable_v1_1_subject_commit": "e6be7c06cbd6c37c375658af6f2fe529d4f64353",
-    "current_ddl_sha256": "fccc625773089749ca676831ee69f8b3656e914f5f0e53cbbfaff8773df905fe"
+    "current_ddl_sha256": "6e60005176cd22816887f3c82e1de866ba627728b673a8b3cb7667fd41906d4e"
   },
   "counts": {
     "source_ledger": 11,
@@ -34,7 +34,7 @@
   "files": [
     {
       "path": "APPROVAL_DECISION.json",
-      "sha256": "00108293dfa29eeb26cbed4719a0f905f39f413597ab756f7aebae17195db822"
+      "sha256": "7c506f63ea621bc09c8be67631ae5e4b244e7f58d82b3a40c67aec3ce2bac821"
     },
     {
       "path": "data/authoring-versions.json",
@@ -42,7 +42,7 @@
     },
     {
       "path": "data/category-decision-ledger.json",
-      "sha256": "96ee983b1b8297b21981d89943f0719e60c4960a50be3988eab27f0f5b14b528"
+      "sha256": "88f6dd2c8ce3cc0b3b0608894475721f09ebee1cdb13e73417e17eb83813e57b"
     },
     {
       "path": "data/g1-grid-cells.json",
@@ -70,7 +70,7 @@
     },
     {
       "path": "data/record-sources.json",
-      "sha256": "725b197410cac5dffba27feb288c6ff04ca0d84ca1b5d15f2710b695e85f3169"
+      "sha256": "e59d4f2ff27fb55e48aa0ba1c2952bbe3e7b87a35d1723c9776ce0397f2c8a72"
     },
     {
       "path": "data/regional-scene-template-bases.json",
@@ -114,11 +114,11 @@
     },
     {
       "path": "data/universal-categories.json",
-      "sha256": "e0ee7eb76810b4f7f64c32af5257062741b6c90c47c69a066d038c5766ee7df6"
+      "sha256": "e41fe7e15beb0fa7c888d9ee051ac0320ed0989e79e2d81f95cb0365e2c323d8"
     },
     {
       "path": "datasets/record_sources.json",
-      "sha256": "3c9705734bb0666ab9443a0346fef3e8671d30426b7cd13242a7fe11b17470a1"
+      "sha256": "d3806185f30ce30b2955b4cbcfe81752b597eff2e8cf040ce50d959ef5a4749d"
     },
     {
       "path": "datasets/source_records.json",

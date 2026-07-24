@@ -1,5 +1,6 @@
 import { deepFreeze } from '@rus/kernel';
 import { computeSpatialV3CanonicalDigest, createSpatialV3TypedError } from '@rus/contracts/spatial-v3/registry';
+import { addRationalMinutes } from '@rus/time-events-history';
 import { expectedStateVersionsCoverCapability, validCapabilityContext, validExpectedStateVersions, validMovementCostSummary, validMovementRiskSummary, validPins, validReason, validStaticSnapshot } from './spatial-v3-validation.js';
 import { matchesTarget, validCommandProposal } from './spatial-v3-proposals.js';
 import { createRoutePlanActivationValidatorImpl } from './spatial-v3-activation.js';
@@ -19,7 +20,7 @@ function pins(subjectId = 'spatial-v3-target') {
   const entry = {
     dependency_role: 'source_authoring',
     entity_ref: { entity_kind: 'world_revision', entity_id: subjectId },
-    version_pin: { pin_kind: 'authoring_version', authoring_version: '4.2.0-target.1' }
+    version_pin: { pin_kind: 'authoring_version', authoring_version: '4.3.0-target.1' }
   };
   return { pins: [entry], canonical_digest: digest([entry]).replace('sha256:', '') };
 }
@@ -131,8 +132,6 @@ function findPaths(edges, start, target, direction) {
 
 function unknownCost(kind) { const value = { cost_kind: kind, action_units_min: null, action_units_max: null, minutes_min: null, minutes_max: null, precision: 'unknown' }; return freeze({ ...value, canonical_digest: digest(value) }); }
 function unknownRisk() { const value = { risk_class: 'unknown', knowledge_precision: 'hidden', visible_risk_tags: [] }; return freeze({ ...value, canonical_digest: digest(value) }); }
-function addRational(left, right) { const numerator = left.numerator * right.denominator + right.numerator * left.denominator; const denominator = left.denominator * right.denominator; const divisor = gcd(numerator, denominator); return { numerator: numerator / divisor, denominator: denominator / divisor }; }
-function gcd(left, right) { return right ? gcd(right, left % right) : left; }
 function sumCost(kind, edges, forceUnknown = false) {
   if (forceUnknown || edges.some((edge) => edge.cost_summary.precision === 'unknown')) return unknownCost(kind);
   const summaries = edges.map((edge) => edge.cost_summary);
@@ -140,8 +139,8 @@ function sumCost(kind, edges, forceUnknown = false) {
   const minutes = summaries.filter((value) => value.minutes_min != null);
   const action_units_min = actions.length ? actions.reduce((sum, value) => sum + value.action_units_min, 0) : null;
   const action_units_max = actions.length ? actions.reduce((sum, value) => sum + value.action_units_max, 0) : null;
-  const minutes_min = minutes.length ? minutes.map((value) => value.minutes_min).reduce(addRational) : null;
-  const minutes_max = minutes.length ? minutes.map((value) => value.minutes_max).reduce(addRational) : null;
+  const minutes_min = minutes.length ? minutes.map((value) => value.minutes_min).reduce(addRationalMinutes) : null;
+  const minutes_max = minutes.length ? minutes.map((value) => value.minutes_max).reduce(addRationalMinutes) : null;
   if ((kind === 'action' && !actions.length) || (kind === 'time' && !minutes.length) || (kind === 'segmented' && !actions.length && !minutes.length)) return unknownCost(kind);
   const precision = summaries.every((value) => value.precision === 'exact') ? 'exact' : 'bounded';
   const value = { cost_kind: kind, action_units_min, action_units_max, minutes_min, minutes_max, precision };

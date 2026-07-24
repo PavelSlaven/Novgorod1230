@@ -1,0 +1,122 @@
+[
+  {
+    "record_id": "record:place_access_schedules:monastic_refectory_v2",
+    "family_id": "place_access_schedules",
+    "record_kind": "place_access_schedule",
+    "status": "approved",
+    "version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "provenance_refs": [
+      "provenance:place_access_schedules:novgorod_v1"
+    ],
+    "normalized_reference_ids": [
+      "reference:place_access_schedules:monastic_refectory_v2"
+    ],
+    "source_history_refs": [
+      "source:place_access_schedules:temporal_world_v4_normative",
+      "source:place_access_schedules:user_reconstruction_authorization",
+      "source:place_access_schedules:rule_of_benedict_analog"
+    ],
+    "payload": {
+      "access_schedule_id": "monastic_refectory_midday_access_analogue_v2",
+      "host_or_portal_refs": [
+        {
+          "entity_ref": {
+            "entity_kind": "place_template",
+            "entity_id": "monastic_refectory_reconstruction_v1"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:place_access_schedules:temporal_world_v4_normative",
+            "source:place_access_schedules:user_reconstruction_authorization",
+            "source:place_access_schedules:rule_of_benedict_analog"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        }
+      ],
+      "applicability": {
+        "region": "novgorod",
+        "calendar_range": {
+          "start_inclusive": {
+            "month": "5",
+            "day": "1"
+          },
+          "end_exclusive": {
+            "month": "10",
+            "day": "1"
+          }
+        },
+        "npc_status": "bound monastic household member or explicitly authorized guest"
+      },
+      "exact_open_close_boundary_rules": {
+        "open": "sixth daylight-hour boundary calculated exactly from the approved calendar/daylight profile",
+        "close": "exact completion boundary of activity_meal_quiet_rest_daylight_segment_v1 for the same service instance",
+        "daylight_hour_formula": "sunrise + (sunset - sunrise) * 6 / 12",
+        "missing_host_activity_or_calendar_binding": "spatial_candidate_gap",
+        "runtime_default": "forbidden",
+        "calendar_profile_ref": {
+          "entity_ref": {
+            "entity_kind": "calendar_profile",
+            "entity_id": "novgorod_julian_lmst_1230_1233_v2"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:calendar_daylight_light_profiles:historical_daylight_derivation",
+            "source:calendar_daylight_light_profiles:noaa_solar",
+            "source:calendar_daylight_light_profiles:temporal_world_v4_normative",
+            "source:calendar_daylight_light_profiles:user_reconstruction_authorization",
+            "source:calendar_daylight_light_profiles:usno_julian",
+            "source:calendar_daylight_light_profiles:wikidata_coordinates"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        }
+      },
+      "access_state_transitions": [
+        {
+          "from": "closed",
+          "to": "meal_service_available",
+          "at": "open boundary"
+        },
+        {
+          "from": "meal_service_available",
+          "to": "closed",
+          "at": "close boundary"
+        }
+      ],
+      "eligibility_or_authorization_rules": [
+        "physical portal relation is evaluated separately from scheduled authorization",
+        "bound monastic household members and explicitly authorized guests only",
+        "eligibility comes from approved status/authorization records"
+      ],
+      "exception_and_conflict_rules": [
+        "physical blockage or emergency closure overrides scheduled authorization",
+        "zero or multiple applicable schedule rules produce spatial_candidate_gap",
+        "missing schedule never implies open",
+        "no runtime fallback access state"
+      ],
+      "activity_profile_ref": {
+        "entity_ref": {
+          "entity_kind": "activity_profile",
+          "entity_id": "activity_meal_quiet_rest_daylight_segment_v1"
+        },
+        "authoring_version": "1",
+        "source_ids": [
+          "source:activity_categories_profiles:activity_reconstruction_decisions",
+          "source:activity_categories_profiles:controlled_vocabularies",
+          "source:activity_categories_profiles:temporal_world_v4_normative",
+          "source:activity_categories_profiles:user_reconstruction_authorization"
+        ],
+        "applicability": [
+          "novgorod"
+        ]
+      },
+      "historical_scope_note": "Benedictine text is a comparative analogue; this schedule is not asserted as direct Orthodox Novgorod practice"
+    }
+  }
+]

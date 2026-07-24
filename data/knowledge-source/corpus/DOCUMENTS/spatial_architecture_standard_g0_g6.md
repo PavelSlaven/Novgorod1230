@@ -2,13 +2,13 @@
 
 **Статус:** `target`; не используется production runtime до прохождения единого integration gate<br>
 **Версия:** `4.2.0`<br>
-**Дата:** `2026-07-18`<br>
+**Дата:** `2026-07-23`<br>
 **Проект:** «Русь XIII век»<br>
 **Канонический репозиторий:** `PavelSlaven/Novgorod1230`, ветка `main`<br>
-**Базовая ревизия:** `9f2a8c1477793e3baac376d558a64b1b2272cc4a`<br>
+**Базовая ревизия:** `520c0ea8cc366fc16c949a874c710f3547a322f6`<br>
 **Действующая до активации модель:** materialization v2 — канонические G0–G4 и party-scoped G5<br>
 **Целевая модель:** materialization v3 — канонические G0–G5, ограниченные party-scoped generated G5, party-scoped G6 и устойчивые сценические позиции<br>
-**Область:** пространственные уровни, topology, movement, route planning, first-entry preparation, materialization, visibility, acoustics, carriers, persistence, concurrency, migration и release gate
+**Область:** пространственные уровни, topology, movement, route planning, first-entry preparation, materialization, visibility, acoustics, carriers, exact temporal integration, persistence, concurrency, migration и release gate
 
 ---
 
@@ -74,7 +74,8 @@ G7 и G8 не вводятся.
 
 ### 0.4. Условия активации
 
-Версия 4.2 становится `active` только одной атомарной поставкой, когда одновременно:
+Spatial v3 вместе с Temporal World v4 становится production-active только
+одной атомарной поставкой P28, когда одновременно:
 
 1. принят ADR materialization v2 → v3;
 2. синхронизированы `AGENTS.md`, `.github/AGENTS.md`, профильные нормативы и навигация;
@@ -96,7 +97,7 @@ G7 и G8 не вводятся.
 Редакция сверена с GitHub `main` на commit:
 
 ```text
-9f2a8c1477793e3baac376d558a64b1b2272cc4a
+520c0ea8cc366fc16c949a874c710f3547a322f6
 ```
 
 Read-only копия Google Drive в этом документном проходе не использовалась и не считается подтверждением актуальности. Для release-интеграции любые материалы из неё должны отдельно сверяться с GitHub `main` по пути и SHA; GitHub остаётся каноническим источником.
@@ -126,6 +127,26 @@ Read-only копия Google Drive в этом документном прохо�
 - все выявленные замечания либо исправлены, либо явно вынесены в release-gate limitation без утверждения функциональной готовности.
 
 Ноль замечаний в этом смысле относится только к статической непротиворечивости текста и contracts. Он не означает прохождение DDL, migration, compiler, runtime, PostgreSQL, Graphify или independent critic checks.
+
+### 0.8. Temporal World v4 amendment
+
+Профильный документ
+`temporal_world_and_interruptible_activities.md` имеет status `active` после
+финальной implementation acceptance. Он задаёт `temporal-world-v1` и
+следующую Spatial DTO version `4.3.0-target.1` для exact `GameTimestamp`,
+activities, temporal boundaries, domain/NPC/carrier/remote processing,
+persistence и post-commit narration.
+
+До атомарного P28 он используется только в target contracts, tests, migration
+и shadow composition. Promotion выполнен после полной реализации и
+независимого критика, но до final P28 exact-head evidence. Нормативный status
+`active` не является production activation: production v2 остаётся sole owner
+до атомарного P28.
+
+При temporal-конфликте профильный amendment имеет приоритет над
+пространственной прозой §11 и соответствующими Appendix B temporal contracts;
+до синхронного изменения этих contracts операция блокируется как
+`normative_contract_conflict`.
 
 ---
 

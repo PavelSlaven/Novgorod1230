@@ -1,0 +1,78 @@
+[
+  {
+    "reference_id": "reference:body_time_effect_profiles_thresholds:satiety_hourly_spend_v2",
+    "status": "approved",
+    "table": "temporal_authoring_records",
+    "record_id": "record:body_time_effect_profiles_thresholds:satiety_hourly_spend_v2",
+    "source_record_key": "record:body_time_effect_profiles_thresholds:satiety_hourly_spend_v2",
+    "logical_record_id": "satiety_hourly_spend_v2",
+    "authoring_version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "source_ids": [
+      "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+      "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+      "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+      "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+    ],
+    "binding_notes": "Bound to world_base.temporal_authoring_records by the approved Temporal v4 importer."
+  },
+  {
+    "reference_id": "reference:body_time_effect_profiles_thresholds:energy_awake_spend_v2",
+    "status": "approved",
+    "table": "temporal_authoring_records",
+    "record_id": "record:body_time_effect_profiles_thresholds:energy_awake_spend_v2",
+    "source_record_key": "record:body_time_effect_profiles_thresholds:energy_awake_spend_v2",
+    "logical_record_id": "energy_awake_spend_v2",
+    "authoring_version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "source_ids": [
+      "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+      "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+      "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+      "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+    ],
+    "binding_notes": "Bound to world_base.temporal_authoring_records by the approved Temporal v4 importer."
+  },
+  {
+    "reference_id": "reference:body_time_effect_profiles_thresholds:energy_sleep_recovery_v1",
+    "status": "approved",
+    "table": "temporal_authoring_records",
+    "record_id": "record:body_time_effect_profiles_thresholds:energy_sleep_recovery_v1",
+    "source_record_key": "record:body_time_effect_profiles_thresholds:energy_sleep_recovery_v1",
+    "logical_record_id": "energy_sleep_recovery_v1",
+    "authoring_version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "source_ids": [
+      "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+      "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+      "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+      "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+    ],
+    "binding_notes": "Bound to world_base.temporal_authoring_records by the approved Temporal v4 importer."
+  },
+  {
+    "reference_id": "reference:body_time_effect_profiles_thresholds:starvation_health_harm_v2",
+    "status": "approved",
+    "table": "temporal_authoring_records",
+    "record_id": "record:body_time_effect_profiles_thresholds:starvation_health_harm_v2",
+    "source_record_key": "record:body_time_effect_profiles_thresholds:starvation_health_harm_v2",
+    "logical_record_id": "starvation_health_harm_v2",
+    "authoring_version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "source_ids": [
+      "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+      "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+      "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+      "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+    ],
+    "binding_notes": "Bound to world_base.temporal_authoring_records by the approved Temporal v4 importer."
+  }
+]

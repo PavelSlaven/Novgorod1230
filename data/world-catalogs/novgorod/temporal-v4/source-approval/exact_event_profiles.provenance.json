@@ -1,0 +1,17 @@
+[
+  {
+    "provenance_id": "provenance:exact_event_profiles:novgorod_v1",
+    "status": "approved",
+    "source_ids": [
+      "source:exact_event_profiles:temporal_world_v4_normative",
+      "source:exact_event_profiles:user_reconstruction_authorization",
+      "source:exact_event_profiles:controlled_vocabularies"
+    ],
+    "approved_by": "OpenAI GPT-5.6 Thinking",
+    "approver_role": "independent external data authoring auditor",
+    "approved_at": "2026-07-24T17:45:00+03:00",
+    "decision_id": "decision:exact_event_profiles:2026-07-24-reaudit-2",
+    "method": "contract audit against the handoff requirements, canonical repository snapshot, exact source bytes, controlled vocabularies, and explicitly labeled bounded reconstruction authorized by the user",
+    "notes": "A closed one-shot exact event profile uses canonical GameTimestamp, the approved cooccurring_fact resolution class/ordinal, a source-bound effect proposal and explicit stale cancel/execute/replace handling."
+  }
+]

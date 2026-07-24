@@ -1,0 +1,10 @@
+Source: EpiMedDat, record 1230-00-00-Novgorod
+URL: https://epimeddat.net/1230
+Retrieved: 2026-07-24
+License: CC BY-SA 4.0
+Evidence role: historical event and source precision
+
+Short exact translation excerpt:
+“That year [1230] there was an epidemic in Novgorod from famine”
+
+Source-derived note: the record describes extreme substitution foods and consumption of human remains, numerous deaths, and failure of burial capacity. EpiMedDat reports year-level precision and cites the Suzdal chronicle, PSRL vol. I, col. 512; translation attributed to Adrian Jusupovic. No exact month, price, population or mortality count is inferred.

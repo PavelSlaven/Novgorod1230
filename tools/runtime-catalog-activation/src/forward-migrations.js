@@ -13,8 +13,8 @@ const PARTY_SQL = readFileSync(
 export const WORLD_RUNTIME_CATALOG_MIGRATION = createForwardMigration({
   migrationId: 'world_runtime_catalog_activation_v1',
   schemaName: 'world_base',
-  sourceSchemaFingerprint: '486ef58ba51684f6f2580e444b9421e658508cf23633025a19dad53192694be6',
-  targetSchemaFingerprint: '7f85a1a17155fb2c3e63344a0ba0c8311f70204b40dcae5cac129c84fbe6e4a1',
+  sourceSchemaFingerprint: '8f5d28619bb2f666c5efae6c376f89c0b9f21c0e9b90889c3b975c772cecdb08',
+  targetSchemaFingerprint: 'd6eb5c68e8df74989443de56b77145569e65d43988953ddeb0bff6256f3df89f',
   sql: WORLD_SQL
 });
 

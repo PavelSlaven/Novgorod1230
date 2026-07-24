@@ -1,0 +1,17 @@
+[
+  {
+    "provenance_id": "provenance:place_access_schedules:novgorod_v1",
+    "status": "approved",
+    "source_ids": [
+      "source:place_access_schedules:temporal_world_v4_normative",
+      "source:place_access_schedules:user_reconstruction_authorization",
+      "source:place_access_schedules:rule_of_benedict_analog"
+    ],
+    "approved_by": "OpenAI GPT-5.6 Thinking",
+    "approver_role": "independent external data authoring auditor",
+    "approved_at": "2026-07-24T17:45:00+03:00",
+    "decision_id": "decision:place_access_schedules:2026-07-24-reaudit-2",
+    "method": "contract audit against the handoff requirements, canonical repository snapshot, exact source bytes, controlled vocabularies, and explicitly labeled bounded reconstruction authorized by the user",
+    "notes": "The access schedule separates physical portal state from scheduled authorization and provides exact daylight/activity boundaries for a narrowly scoped reconstructed monastic refectory, with fail-closed conflicts and no default-open behavior."
+  }
+]

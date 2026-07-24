@@ -1,0 +1,10 @@
+Source: St. Benedict's Rule for Monasteries, Chapters 41 and 48
+Project Gutenberg eBook 50040
+URL: https://www.gutenberg.org/cache/epub/50040/pg50040-images.html
+Public domain in the USA
+Evidence role: historical analogue for bounded monastic meal-access reconstruction; not direct evidence for Orthodox Novgorod practice
+
+Short exact excerpt:
+“take dinner at the sixth hour”
+
+Source-derived note: the rule varies meal timing by season and expects evening eating to finish in daylight. The dataset therefore binds access to an exact service event and does not infer that a missing schedule means open.

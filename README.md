@@ -10,11 +10,27 @@
 
 Проект находится в активной разработке и пока не является законченной игрой.
 
-## Статус spatial v3 P12/P28
+## Статус spatial v3 / Temporal World v4
 
-Работа ведётся в ветке `codex/spatial-architecture-g0-g6-v4-2` и PR №14. Функциональный кандидат `11c9f0c1de2d510c29be51546d16851f0d719f76` прошёл полный clean-clone CI: PostgreSQL, проверку 186 таблиц актуального DDL, воспроизводимость generated-файлов, Graphify и полный набор тестов. Последующий release-candidate меняет только документацию, policy и generated metadata и проходит локальные профильные проверки; его strict evidence-child проходит облегчённый CI, не повторяющий PostgreSQL, браузер и полный набор тестов.
+Базовая Spatial v3 authoring-компиляция P12 утверждена: canonical manifest
+содержит 37 SHA-256-pinned datasets и `data_gaps: []`; dependency closure
+включает 195 canonical G5, 358 physical exit pairs, 600 typed edge mappings,
+17 scene families, 195 profiles и 195 candidates. Это не является production
+activation.
 
-P12 закрыт: canonical manifest имеет статус `approved`, содержит 37 datasets и `data_gaps: []`; утверждённая dependency closure включает 195 canonical G5 records, 358 physical exit pairs, 600 typed edge mappings, 17 scene families, 195 profiles и 195 candidates. Production ownership остаётся у v2, а target v3 до P28 не активирован. Для solo-maintainer P28 использует точный HEAD готового PR, обязательный успешный CI и подтверждение merge commit либо trusted signed release tag; отдельный self-approval, старые Ed25519 role signatures и fresh-checkout authority не требуются. Независимость технической проверки обеспечивает итоговый critic report.
+Temporal World v4 разрабатывается как target amendment
+`temporal-world-v1` / `4.3.0-target.1`: exact rational game time,
+interruptible activities, deterministic temporal boundaries, NPC/carrier/
+environment/remote updates и post-commit narration. Его профильный норматив
+остаётся `proposed` до завершения implementation, tests и независимого
+критика.
+
+До единственного атомарного P28 production ownership остаётся у v2. Target v3
+и Temporal World v4 разрешены только для contracts, fixtures, migration,
+tests и shadow composition. Partial activation, dual write, authoritative
+mixed read и v3→v2 fallback запрещены. P28 оценивает точный HEAD готового PR,
+обязательный успешный CI, hash-bound critic evidence и подтверждённый
+merge/signed-tag completion proof.
 
 ## Основные принципы
 
@@ -33,6 +49,10 @@ P12 закрыт: canonical manifest имеет статус `approved`, сод�
 - `packages/new-game` — конвейер создания новой игры, Stages 2–26;
 - `packages/materialization` — code-only materializer v2 и bounded decision protocol;
 - `packages/turn` — обработка игрового хода;
+- `packages/time-events-history` — exact game timestamp, calendar projection и temporal boundary ordering;
+- `packages/environment-state` — pure target weather/light/access-effect proposals;
+- `packages/npc-runtime` — pure target schedule, perception и bounded-decision proposals;
+- `packages/world-processes` — pure target remote catch-up и propagation proposals;
 - `packages/narration` — генерация player-facing прозы из разрешённого видимого контекста;
 - `packages/presentation` — модели первого экрана и игрового хода;
 - `apps/game-server` — сервер и production composition;
@@ -73,8 +93,10 @@ npm run start:cli
 - [Политика knowledge-source](docs/architecture/KNOWLEDGE_SOURCE_POLICY.md)
 - [Конвейер новой игры](docs/pipelines/new-game.md)
 - [Конвейер игрового хода](docs/pipelines/turn.md)
+- [Temporal advance target pipeline](docs/pipelines/temporal-advance.md)
 - [Схема world_base](infra/world-base/SCHEMA_REFERENCE.md)
 - [Высший норматив materialization v2](data/knowledge-source/corpus/DOCUMENTS/code_driven_world_materialization_architecture.md)
+- [Temporal World v4 (active target normative)](data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md)
 
 ## Нормативный корпус
 

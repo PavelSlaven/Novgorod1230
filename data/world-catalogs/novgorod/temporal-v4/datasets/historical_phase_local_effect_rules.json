@@ -1,0 +1,173 @@
+[
+  {
+    "record_id": "record:historical_phase_local_effect_rules:novgorod_famine_1230_v2",
+    "family_id": "historical_phase_local_effect_rules",
+    "record_kind": "historical_phase_rule",
+    "status": "approved",
+    "version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "provenance_refs": [
+      "provenance:historical_phase_local_effect_rules:novgorod_v1"
+    ],
+    "normalized_reference_ids": [
+      "reference:historical_phase_local_effect_rules:novgorod_famine_1230_v2"
+    ],
+    "source_history_refs": [
+      "source:historical_phase_local_effect_rules:canonical_historical_policy",
+      "source:historical_phase_local_effect_rules:epimeddat_1230_novgorod",
+      "source:historical_phase_local_effect_rules:temporal_world_v4_normative",
+      "source:historical_phase_local_effect_rules:user_reconstruction_authorization"
+    ],
+    "payload": {
+      "historical_rule_id": "novgorod_famine_1230_source_year_v2",
+      "historical_event_or_figure_refs": [
+        {
+          "entity_ref": {
+            "entity_kind": "historical_event",
+            "entity_id": "novgorod_famine_1230"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:historical_phase_local_effect_rules:canonical_historical_policy",
+            "source:historical_phase_local_effect_rules:epimeddat_1230_novgorod",
+            "source:historical_phase_local_effect_rules:temporal_world_v4_normative",
+            "source:historical_phase_local_effect_rules:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        }
+      ],
+      "phase_ids": [
+        "documented_famine_source_year"
+      ],
+      "source_backed_exact_boundaries_or_authored_ranges": {
+        "calendar_profile_ref": {
+          "entity_ref": {
+            "entity_kind": "calendar_profile",
+            "entity_id": "novgorod_julian_lmst_1230_1233_v2"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:calendar_daylight_light_profiles:historical_daylight_derivation",
+            "source:calendar_daylight_light_profiles:noaa_solar",
+            "source:calendar_daylight_light_profiles:temporal_world_v4_normative",
+            "source:calendar_daylight_light_profiles:user_reconstruction_authorization",
+            "source:calendar_daylight_light_profiles:usno_julian",
+            "source:calendar_daylight_light_profiles:wikidata_coordinates"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        "source_precision": "calendar_year only",
+        "source_year": "1230",
+        "formal_range": {
+          "start_inclusive": {
+            "year": "1230",
+            "month": "1",
+            "day": "1",
+            "boundary": "local_day_start"
+          },
+          "end_exclusive": {
+            "year": "1231",
+            "month": "1",
+            "day": "1",
+            "boundary": "local_day_start"
+          }
+        },
+        "range_semantics": "formal representation of the cited source year, not a claim that intensity was constant throughout the year",
+        "runtime_may_narrow_or_shift_without_new_source": "forbidden",
+        "formal_game_timestamp_range": {
+          "start_inclusive": {
+            "whole_minutes": "0",
+            "subminute_numerator": "0",
+            "subminute_denominator": "1"
+          },
+          "end_exclusive": {
+            "whole_minutes": "525600",
+            "subminute_numerator": "0",
+            "subminute_denominator": "1"
+          },
+          "derivation": "365 Julian days of source year 1230 from the approved party epoch"
+        }
+      },
+      "region_and_place_applicability": [
+        "novgorod",
+        "only bound Novgorod places with separately approved effect applicability"
+      ],
+      "local_effect_rules": [
+        {
+          "effect_ref": {
+            "entity_ref": {
+              "entity_kind": "historical_local_effect",
+              "entity_id": "food_supply_pressure"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:historical_phase_local_effect_rules:canonical_historical_policy",
+              "source:historical_phase_local_effect_rules:epimeddat_1230_novgorod",
+              "source:historical_phase_local_effect_rules:temporal_world_v4_normative",
+              "source:historical_phase_local_effect_rules:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          "numeric_magnitude": "not authored; requires separate source-backed profile"
+        },
+        {
+          "effect_ref": {
+            "entity_ref": {
+              "entity_kind": "historical_local_effect",
+              "entity_id": "mortality_pressure"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:historical_phase_local_effect_rules:canonical_historical_policy",
+              "source:historical_phase_local_effect_rules:epimeddat_1230_novgorod",
+              "source:historical_phase_local_effect_rules:temporal_world_v4_normative",
+              "source:historical_phase_local_effect_rules:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          "numeric_magnitude": "not authored; requires separate source-backed profile"
+        },
+        {
+          "effect_ref": {
+            "entity_ref": {
+              "entity_kind": "historical_local_effect",
+              "entity_id": "burial_capacity_failure_pressure"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:historical_phase_local_effect_rules:canonical_historical_policy",
+              "source:historical_phase_local_effect_rules:epimeddat_1230_novgorod",
+              "source:historical_phase_local_effect_rules:temporal_world_v4_normative",
+              "source:historical_phase_local_effect_rules:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          "numeric_magnitude": "not authored; requires separate source-backed profile"
+        },
+        {
+          "visible_fact": "source-attested extreme substitution foods may appear only after separate materialization and perception evidence"
+        }
+      ],
+      "visibility_and_knowledge_restrictions": [
+        "internal phase id is hidden",
+        "player sees only locally observable committed effects",
+        "event identity requires testimony, direct evidence or existing knowledge",
+        "the source theological interpretation is not converted into an objective causal mechanic",
+        "no price, population, inventory or mortality number is inferred"
+      ],
+      "missing_or_ambiguous_rule": "historical_phase_rule_gap"
+    }
+  }
+]

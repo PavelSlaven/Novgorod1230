@@ -1,0 +1,59 @@
+[
+  {
+    "record_id": "record:remote_catch_up_rules:coarse_remote_v2",
+    "family_id": "remote_catch_up_rules",
+    "record_kind": "remote_catch_up_rule",
+    "status": "approved",
+    "version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "provenance_refs": [
+      "provenance:remote_catch_up_rules:novgorod_v1"
+    ],
+    "normalized_reference_ids": [
+      "reference:remote_catch_up_rules:coarse_remote_v2"
+    ],
+    "source_history_refs": [
+      "source:remote_catch_up_rules:temporal_world_v4_normative",
+      "source:remote_catch_up_rules:user_reconstruction_authorization",
+      "source:remote_catch_up_rules:controlled_vocabularies"
+    ],
+    "payload": {
+      "remote_catch_up_rule_id": "coarse_remote_materialized_boundary_catchup_v2",
+      "remote_scope_mode_ids": [
+        "coarse_remote_materialized_scope"
+      ],
+      "remote_scope_mode_bindings": [
+        {
+          "registry_id": "temporal.remote_scope_mode",
+          "registry_version": "2.0.0",
+          "registry_digest": "b49edbf5ceba5159b741d33e3b175921b22dad77b54872aef438b5cba85468f5",
+          "value_id": "coarse_remote_materialized_scope",
+          "source_id": "source:remote_catch_up_rules:controlled_vocabularies"
+        }
+      ],
+      "aggregate_state_contract": [
+        "scope_ref",
+        "scope_mode",
+        "last_updated_at",
+        "next_boundary_at when applicable",
+        "aggregate_process_refs",
+        "coarse_rule_versions",
+        "canonical_digest",
+        "state_version"
+      ],
+      "catch_up_boundary_rule": "advance monotonically through the minimum exact approved process boundary not later than activation timestamp",
+      "deterministic_step_or_closed_form_rule": "closed form is allowed only when the pinned rule proves exact equivalence; otherwise process ordered exact boundaries",
+      "activation_catch_up_rule": "complete and validate (last_updated_at, activation_timestamp] before active-scope exposure",
+      "termination_rule": "complete only when last_updated_at equals activation timestamp and every due boundary in the interval is resolved",
+      "materialization_and_data_gap_gate": [
+        "do not create missing categories, facts, paths, profiles or process instances",
+        "missing/incompatible pin is remote_catch_up_rule_gap",
+        "empty required candidate set is hard block",
+        "no fallback to exact simulation of absent entities",
+        "catalog revision never rewrites persisted party state"
+      ]
+    }
+  }
+]

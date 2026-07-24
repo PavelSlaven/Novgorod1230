@@ -1,27 +1,25 @@
 # @rus/contracts
 
-## Purpose
-Canonical machine-readable contracts shared across stages and applications.
+## Назначение
 
-## Responsibilities
-- Schema names for approvals, handoffs, delivery, and public read models.
-- Stable digest functions.
-- Approval builders and binding validators.
-- Stage handoff validators that do not execute game logic.
-- P08 target-only spatial-v3 typed-error and fail-closed public-port primitives.
+Canonical machine-readable contract/typed-error registry shared by packages and applications. It defines names, validators, canonical digests, controlled vocabularies and public target-port primitives; it executes no game workflow.
 
-## Non-responsibilities
-- No LLM calls.
-- No database access.
-- No world invention or semantic repair.
-- No UI rendering.
-- No port implementation, repository access or compatibility fallback.
+## Владеет
 
-## Allowed dependencies
-- @rus/kernel
+- Владеет schema/approval/handoff validators, digests, visible/hidden boundaries, Spatial/Temporal registry, state machines and typed errors.
 
-## Forbidden dependencies
-- apps/*
-- legacy/*
-- provider SDKs
-- database drivers
+## Не владеет
+
+Не владеет domain formulae, LLM, repository/port implementation, DB, UI, write-plan execution, semantic repair or compatibility fallback.
+
+## Public API и контракты
+
+Exports `.` plus documented subpaths for JSON, stages, approvals, digests, schema names, handoffs and `./spatial-v3/{registry,compatibility,ports,state-machines}`. `SPATIAL_V3_CONTRACT_VERSION` is `4.3.0-target.1` (baseline `4.2.0-target.1`); the current generated registry contains exactly 188 contracts and 82 typed errors while retaining immutable 160/58 historical snapshots. Principal target APIs are canonicalization/digest, `validateSpatialV3Contract`, `validatePlayerSafeVisiblePayload`, controlled-vocabulary validation and `createSpatialV3TypedError`; ports expose fail-closed `target_stub` results.
+
+## Ошибки, зависимости и effects
+
+Validators return structured validation errors or typed-error DTO; malformed canonical input may throw type/range errors. Missing vocabulary, schema mismatch and target port availability never degrade to inferred data. Depends only on `@rus/kernel`; no I/O, DB, network, LLM, persistence or side effects.
+
+## Target / P28 и тесты
+
+Registry carries `temporal-world-v1` and `4.3.0-target.1` for contracts/tests/shadow work only; it does not activate target production before P28. `test/spatial-v3-registry.test.js` and `test/temporal-world-v1.test.js` cover registry version, contract and temporal vocabulary/error behavior.

@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 
-const files = ['001_party_runtime.sql', '002_party_runtime_v3.sql', '003_party_runtime_v3_planning.sql', '004_party_runtime_v3_journeys.sql', '005_party_runtime_v3_domain.sql'];
+const files = ['001_party_runtime.sql', '002_party_runtime_v3.sql', '003_party_runtime_v3_planning.sql', '004_party_runtime_v3_journeys.sql', '005_party_runtime_v3_domain.sql', '006_party_runtime_v3_migration.sql', '007_party_runtime_temporal_world.sql'];
 export const SPATIAL_V3_TARGET_MIGRATIONS = Object.freeze(files.map((file) => readFileSync(new URL(`../../../../../schemas/party-db/${file}`, import.meta.url), 'utf8')));
 
 /** Applies only to an explicitly selected disposable/upgrade test database. */

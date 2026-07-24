@@ -4,6 +4,11 @@
 **Версия target:** spatial v3 / G0–G6 v4.2.0.
 **Приоритет:** высший норматив границы authoring data, кода, LLM, `world_base` и `party_runtime`.
 
+**Temporal amendment:** active target normative
+`temporal_world_and_interruptible_activities.md`,
+`temporal-world-v1` / Spatial DTO `4.3.0-target.1`. Он не активирует
+production до P28.
+
 ## 1. Active/target boundary
 
 Этот документ фиксирует целевую семантику v3, но не активирует её. До атомарного activation gate production request обслуживается только v2 composition. V3 разрешён исключительно для документации, contracts, fixtures, migration и shadow composition.
@@ -46,7 +51,12 @@ LLM допускается только для bounded decision, разрешё�
 
 ## 6. Party state и visible boundary
 
-`party_runtime` хранит mutable party state: party-generated G5, G6/positions, actors, NPC/items, carriers, blockers, plans/executions, perception, knowledge и history. Factual state, character knowledge и visible projection различны. Narrator получает только approved visible context.
+`party_runtime` хранит mutable party state: party-generated G5, G6/positions,
+actors, NPC/items, carriers, blockers, plans/executions, exact temporal state,
+perception, knowledge и history. Factual state, character knowledge и visible
+projection различны. Code-owned projector формирует factual player-safe
+package и сохраняет его в том же atomic commit, что и state change. Narrator
+получает только этот persisted package после commit.
 
 ## 7. Условия активации
 

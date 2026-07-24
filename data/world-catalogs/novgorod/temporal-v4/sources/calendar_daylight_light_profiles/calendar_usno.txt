@@ -1,0 +1,10 @@
+Source: U.S. Naval Observatory, Julian Date Converter
+URL: https://aa.usno.navy.mil/data/JulianDate
+Retrieved: 2026-07-24
+Issuing body: U.S. Naval Observatory
+Evidence role: calendar rule
+
+Short exact excerpt:
+“The Julian calendar has a leap year every fourth year”
+
+Authoring use: years divisible by four use February 29; no Gregorian century exception is applied.

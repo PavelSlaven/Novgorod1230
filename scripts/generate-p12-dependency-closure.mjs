@@ -175,9 +175,9 @@ const sourceSnapshotDigest = fileSha(sourceZip);
 const sourceG3Member = `${zipPrefix}04-g3/g3-places.json`;
 const sourceG3MemberDigest = sha(zipBytes(sourceZip, sourceG3Member));
 const repositoryAnchorByCategory = {
-  "spatial.g0.historical_geographic_region": { anchor_kind: "repository_line_range", canonical_path: standardPath, raw_sha256: standardDigest, start_line: 239, end_line: 247, required_text: "spatial.g0.historical_geographic_region" },
-  "spatial.g1.territorial_grid_cell": { anchor_kind: "repository_line_range", canonical_path: standardPath, raw_sha256: standardDigest, start_line: 249, end_line: 269, required_text: "spatial.g1.territorial_grid_cell" },
-  "spatial.g2.territorial_zone": { anchor_kind: "repository_line_range", canonical_path: standardPath, raw_sha256: standardDigest, start_line: 271, end_line: 286, required_text: "spatial.g2.territorial_zone" }
+  "spatial.g0.historical_geographic_region": { anchor_kind: "repository_line_range", canonical_path: standardPath, raw_sha256: standardDigest, start_line: 260, end_line: 268, required_text: "spatial.g0.historical_geographic_region" },
+  "spatial.g1.territorial_grid_cell": { anchor_kind: "repository_line_range", canonical_path: standardPath, raw_sha256: standardDigest, start_line: 270, end_line: 290, required_text: "spatial.g1.territorial_grid_cell" },
+  "spatial.g2.territorial_zone": { anchor_kind: "repository_line_range", canonical_path: standardPath, raw_sha256: standardDigest, start_line: 292, end_line: 307, required_text: "spatial.g2.territorial_zone" }
 };
 const g3SourceIdByCategory = {
   "spatial.g3.settlement": "gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
@@ -191,8 +191,8 @@ for (const id of Object.keys(g3SourceIdByCategory)) repositoryAnchorByCategory[i
   anchor_kind: "repository_line_range",
   canonical_path: standardPath,
   raw_sha256: standardDigest,
-  start_line: 288,
-  end_line: 303,
+  start_line: 309,
+  end_line: 324,
   required_text: id
 };
 const g3RecordAnchor = (categoryId) => ({

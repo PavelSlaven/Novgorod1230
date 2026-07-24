@@ -1,0 +1,29 @@
+{
+  "schema": "rus.temporal-world-v4.external-auditor-family-decision.v1",
+  "version": 1,
+  "family_id": "traversal_recheck_contracts",
+  "verdict": "approved",
+  "approved_record_ids": [
+    "record:traversal_recheck_contracts:spatial_v3_recheck_v2"
+  ],
+  "source_ids_reviewed": [
+    "source:traversal_recheck_contracts:temporal_world_v4_normative",
+    "source:traversal_recheck_contracts:user_reconstruction_authorization",
+    "source:traversal_recheck_contracts:spatial_v3_dynamic_recheck_policies"
+  ],
+  "applicability": [
+    "novgorod"
+  ],
+  "data_gaps": [],
+  "auditor": {
+    "name": "OpenAI GPT-5.6 Thinking",
+    "organization_or_role": "independent external data authoring auditor"
+  },
+  "decision_id": "decision:traversal_recheck_contracts:2026-07-24-reaudit-2",
+  "decided_at": "2026-07-24T17:45:00+03:00",
+  "method": "independent source, contract, controlled-vocabulary, exactness, closure, historical-labeling and no-fallback audit",
+  "rationale": "The full Temporal traversal contract closes over the four exact approved Spatial v3 interval rows, adds all earlier-boundary triggers, deterministic same-time ordering, stale disposition, committed-progress preservation and fail-closed stranding.",
+  "limitations": [
+    "The supplied Spatial v3 rows remain target authoring evidence and do not authorize production activation before developer import/P28."
+  ]
+}

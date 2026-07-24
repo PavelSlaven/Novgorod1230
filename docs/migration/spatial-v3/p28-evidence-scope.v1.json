@@ -4,6 +4,7 @@
   "allowed_evidence_child_paths": [
     "docs/migration/spatial-v3/p27-candidate-evidence.md",
     "docs/migration/spatial-v3/p27-final-critic-report.md",
-    "docs/migration/spatial-v3/p28-appendix-d-evidence-ledger.md"
+    "docs/migration/spatial-v3/p28-appendix-d-evidence-ledger.md",
+    "docs/work/temporal-world-v4/README.md"
   ]
 }

@@ -1,0 +1,5 @@
+User authoring authorization, 2026-07-24
+
+Проверь ещё раз в цикле согласно readme.md : "1. Нашёл необходимые материалы, проверил их, заполнил. 2. Проверил полноту, логичность и соответствие." Выход из цикла только когда после трёх проверок подряд не останется замечаний. Для решения противоречий и недостатка данных пользуйся логикой, историчностью и опытом из похожих игр. Помни о принципе разумной достаточности. Там, где нет источников, делай историческую реконструкцию. Архив должен быть полностью approved. архив нужен на @Google Drive
+
+Evidence role: explicit authorization to create bounded historical/gameplay reconstructions where direct sources do not define a necessary authoring value. This authorization does not convert reconstruction into a primary historical fact; every reconstructed value is labeled as such.

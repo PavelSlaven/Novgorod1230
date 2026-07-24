@@ -4,6 +4,12 @@
 
 Этот документ задаёт **target materialization v3** для player projection. До P28 active production остаётся materialization v2; target UI contract не включает runtime activation, dual write или v3→v2 fallback. UI читает player-safe projection и никогда не является источником factual topology, readiness или layout-derived semantics.
 
+Temporal World v4 требует `VisiblePackagePersistenceEnvelope`: code-owned
+projector формирует player-safe factual package до commit, package сохраняется
+атомарно со state change, а UI и narrator читают его только после commit.
+Narration, layout и browser payload не могут добавить temporal fact,
+consequence, schedule, route или hidden candidate.
+
 ## 1. Player-safe movement and knowledge projection
 
 Игрок получает intent-oriented movement options, а не скрытые IDs, все factual routes или candidate diagnostics. Каждая видимая опция сообщает только допустимую player-safe цель/направление, наблюдаемые условия, безопасно объяснённую readiness и последствия, которые персонаж может воспринять или знать.
@@ -32,6 +38,7 @@ Development diagnostics отделены от игрового UI: они мог
 
 ---
 
+<!-- knowledge-retrieval-exclude:start -->
 ## Приложение A. Архивный v2-источник для migration traceability
 
 Нижеследующий текст сохранён только как historical/migration source. Он не активирует v2 semantics в target v3 и не разрешает mixed execution, dual write или fallback. До P28 active production boundary определён отдельно.
@@ -1193,3 +1200,4 @@ UI = проза + видимый контекст + краткое состоя�
 ```text
 хороший UI = меньше админки + больше сцены + честная память + видимые ограничения персонажа
 ```
+<!-- knowledge-retrieval-exclude:end -->

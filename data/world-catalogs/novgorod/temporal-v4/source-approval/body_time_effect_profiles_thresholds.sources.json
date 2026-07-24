@@ -1,0 +1,54 @@
+[
+  {
+    "source_id": "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+    "status": "approved",
+    "source_path": "data/world-catalogs/novgorod/temporal-v4/sources/body_time_effect_profiles_thresholds/character_parameters.txt",
+    "source_sha256": "7a84abd27da7898c20abf8e493342fb0a6c5dca1852098063e8ffaffa9a29b30",
+    "title": "Character parameters — canonical body-state rules",
+    "author_or_issuing_body": "PavelSlaven/Novgorod1230 project",
+    "publication_or_record_date": "2026-07-24",
+    "license_or_transfer_basis": "Canonical private project repository content supplied for project integration",
+    "locator_or_citation": "PavelSlaven/Novgorod1230 main@520c0ea8; data/knowledge-source/corpus/DOCUMENTS/character_parameters.txt; Git blob 41386af70c76f75c47bd7c5ad231c61ddd7084a6",
+    "evidence_role": "canonical_body_mechanics",
+    "notes": "Exact canonical bytes. Supplies health/satiety/wakefulness semantics, 100/72 baseline derivation, 3/2 heavy multiplier and threshold ranges."
+  },
+  {
+    "source_id": "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+    "status": "approved",
+    "source_path": "data/world-catalogs/novgorod/temporal-v4/sources/body_time_effect_profiles_thresholds/ENERGY_SLEEP_RECOVERY_RECONSTRUCTION.md",
+    "source_sha256": "a5e59bc6b17602f3e975f70c6445d5cb2db9050eadf546273519052536e760dc",
+    "title": "Energy sleep-recovery reconstruction v1",
+    "author_or_issuing_body": "External authoring auditor",
+    "publication_or_record_date": "2026-07-24",
+    "license_or_transfer_basis": "User-authorized gameplay reconstruction using canonical project rates",
+    "locator_or_citation": "Derived from canonical 100/72 awake expenditure and a conventional 16h awake / 8h sleep daily cycle",
+    "evidence_role": "authoring_reconstruction",
+    "notes": "Closes the sleep recovery data gap with an exact, transparent equilibrium rule; not a medical fact."
+  },
+  {
+    "source_id": "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+    "status": "approved",
+    "source_path": "data/world-catalogs/novgorod/temporal-v4/sources/body_time_effect_profiles_thresholds/Temporal_World_v4_implementation_ready.md",
+    "source_sha256": "f97e71536c08a3b5cc0414fe25460bf70b2d95ee94ff861f785b0a3d9fbfb26e",
+    "title": "Механика течения времени, длительных действий и автономного мира v4",
+    "author_or_issuing_body": "Project Rus XIII century authoring team",
+    "publication_or_record_date": "2026-07-24",
+    "license_or_transfer_basis": "User-supplied project material authorized for return package",
+    "locator_or_citation": "REFERENCE_EXTERNAL_INPUTS implementation-ready mechanics document; exact bytes copied into family source directory",
+    "evidence_role": "normative_contract",
+    "notes": "Defines the formal Temporal World v4 contract and strict no-fallback/materialization boundaries; it does not by itself supply every regional or historical value."
+  },
+  {
+    "source_id": "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization",
+    "status": "approved",
+    "source_path": "data/world-catalogs/novgorod/temporal-v4/sources/body_time_effect_profiles_thresholds/USER_RECONSTRUCTION_AUTHORIZATION.txt",
+    "source_sha256": "93898618ce8fff34352fb208661d6640d1716e66d1016c3f7336550e9c3678a2",
+    "title": "User reconstruction authorization",
+    "author_or_issuing_body": "User",
+    "publication_or_record_date": "2026-07-24",
+    "license_or_transfer_basis": "User-provided instruction authorized for this return package",
+    "locator_or_citation": "Current task instruction, 2026-07-24",
+    "evidence_role": "authoring_authorization",
+    "notes": "Authorizes bounded reconstruction while requiring three clean audit cycles; reconstruction remains labeled and is not represented as a primary historical fact."
+  }
+]

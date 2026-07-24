@@ -69,6 +69,23 @@ Legacy runtime, apps, provider SDK, party state, world-base, UI и скрыты�
 
 Каждый документ, зарегистрированный в canonical corpus manifest, независимо от статуса, обязан иметь retrieval-policy metadata и ровно одну запись generated RAG coverage. Для `proposed` и `deprecated` генератор создаёт только deterministic lexical chunks с byte-faithful provenance; это не меняет их статус, не создаёт approved semantic embedding и не включает их в active semantic graph. Default query и default reader остаются active-only. Для видимости non-active документа требуется явный `--statuses`, а изменение его текста делает generated RAG stale до штатной пересборки.
 
+Архивный фрагмент внутри сохраняемого canonical документа может быть исключён
+только из generated retrieval следующей сбалансированной парой на отдельных
+строках:
+
+```html
+<!-- knowledge-retrieval-exclude:start -->
+архивный текст
+<!-- knowledge-retrieval-exclude:end -->
+```
+
+Исключение не меняет source bytes, manifest status или доступность полного
+документа через `knowledge:read`. Материализатор заменяет весь помеченный
+диапазон пустыми строками до chunking, поэтому source line numbers последующих
+active разделов сохраняются. Несбалансированные и вложенные маркеры являются
+ошибкой генерации. Маркеры разрешены только для явно помеченной архивной
+traceability-прозы; ими нельзя скрывать действующий норматив, конфликт или gap.
+
 ## Ошибки
 
 `CORPUS_NOT_FOUND`, `MANIFEST_NOT_FOUND`, `MANIFEST_INVALID`, `DOCUMENT_NOT_REGISTERED`, `DOCUMENT_FILE_MISSING`, `DOCUMENT_HASH_MISMATCH`, `DOCUMENT_STATUS_NOT_ALLOWED`, `SOURCE_LOCATION_INVALID`, `PATH_TRAVERSAL_REJECTED`, `GENERATED_INDEX_NOT_FOUND`, `GENERATED_INDEX_STALE`, `GENERATED_PROVENANCE_INVALID`, `RETRIEVAL_POLICY_STALE`, `SEMANTIC_COVERAGE_GAP`, `SEARCH_BACKEND_UNAVAILABLE`, `CLI_ARGUMENT_INVALID`.

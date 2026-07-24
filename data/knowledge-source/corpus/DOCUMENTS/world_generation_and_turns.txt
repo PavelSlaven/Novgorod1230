@@ -4,6 +4,12 @@
 
 Этот документ задаёт **target materialization v3** для генерации мира и ходов. До единого activation gate P28 production runtime обслуживается только active materialization v2. Target-правила разрешены лишь для документации, contracts, fixtures, migration и shadow composition; partial activation, dual write и v3→v2 fallback запрещены.
 
+Temporal execution дополнительно регулирует active target-норматив
+`temporal_world_and_interruptible_activities.md`. Ход применяет event-driven
+earliest boundary, deterministic same-time cascade и ровно одного clock owner.
+Factual visible package сохраняется вместе с change set; художественная проза
+создаётся только после успешного commit.
+
 ## 1. Target spatial vocabulary and player projection
 
 В target модели вопросы масштаба разделены строго:
@@ -37,6 +43,7 @@ LLM выбирает только bounded option и создаёт разреш�
 
 ---
 
+<!-- knowledge-retrieval-exclude:start -->
 ## Приложение A. Архивный v2-источник для migration traceability
 
 Нижеследующий текст сохранён только как historical/migration source. Он не активирует v2 semantics в target v3 и не разрешает mixed execution, dual write или fallback. До P28 active production boundary определён отдельно.
@@ -1549,3 +1556,4 @@ party_state:
 ```
 
 Код рассчитывает факты, материализацию и последствия, валидирует и фиксирует состояние. LLM выбирает только из закрытых команд, когда это явно требует policy, и формулирует прозу из visible context. Проза идёт последней.
+<!-- knowledge-retrieval-exclude:end -->

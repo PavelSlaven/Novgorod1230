@@ -1,0 +1,32 @@
+{
+  "schema": "rus.temporal-world-v4.external-auditor-family-decision.v1",
+  "version": 1,
+  "family_id": "calendar_daylight_light_profiles",
+  "verdict": "approved",
+  "approved_record_ids": [
+    "record:calendar_daylight_light_profiles:novgorod_1230_1233_v2"
+  ],
+  "source_ids_reviewed": [
+    "source:calendar_daylight_light_profiles:historical_daylight_derivation",
+    "source:calendar_daylight_light_profiles:noaa_solar",
+    "source:calendar_daylight_light_profiles:temporal_world_v4_normative",
+    "source:calendar_daylight_light_profiles:user_reconstruction_authorization",
+    "source:calendar_daylight_light_profiles:usno_julian",
+    "source:calendar_daylight_light_profiles:wikidata_coordinates"
+  ],
+  "applicability": [
+    "novgorod"
+  ],
+  "data_gaps": [],
+  "auditor": {
+    "name": "OpenAI GPT-5.6 Thinking",
+    "organization_or_role": "independent external data authoring auditor"
+  },
+  "decision_id": "decision:calendar_daylight_light_profiles:2026-07-24-reaudit-2",
+  "decided_at": "2026-07-24T17:45:00+03:00",
+  "method": "independent source, contract, controlled-vocabulary, exactness, closure, historical-labeling and no-fallback audit",
+  "rationale": "Approved as a bounded Novgorod 1230-1233 Julian-calendar profile. The earlier generic annual table was replaced by historical Julian-date-aware authoring values and an exact GameTimestamp epoch.",
+  "limitations": [
+    "Daylight values are calculated whole-minute gameplay reconstruction, not observed medieval clock readings. Dates outside the declared 1230-1233 applicability are fail-closed and require another approved version."
+  ]
+}

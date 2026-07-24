@@ -1,0 +1,698 @@
+[
+  {
+    "record_id": "record:weather_transition_profiles_processes:novgorod_weather_v2",
+    "family_id": "weather_transition_profiles_processes",
+    "record_kind": "weather_transition_profile",
+    "status": "approved",
+    "version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "provenance_refs": [
+      "provenance:weather_transition_profiles_processes:novgorod_v1"
+    ],
+    "normalized_reference_ids": [
+      "reference:weather_transition_profiles_processes:novgorod_weather_v2"
+    ],
+    "source_history_refs": [
+      "source:weather_transition_profiles_processes:noaa_synoptic",
+      "source:weather_transition_profiles_processes:temporal_world_v4_normative",
+      "source:weather_transition_profiles_processes:user_reconstruction_authorization",
+      "source:weather_transition_profiles_processes:weather_reconstruction_decisions"
+    ],
+    "payload": {
+      "weather_profile_id": "novgorod_six_hour_equal_weight_reconstruction_v2",
+      "region_season_applicability": {
+        "region": "novgorod",
+        "calendar_seasons": {
+          "winter": [
+            "12",
+            "1",
+            "2"
+          ],
+          "spring": [
+            "3",
+            "4",
+            "5"
+          ],
+          "summer": [
+            "6",
+            "7",
+            "8"
+          ],
+          "autumn": [
+            "9",
+            "10",
+            "11"
+          ]
+        },
+        "calendar_system": "Julian",
+        "calendar_profile_ref": {
+          "entity_ref": {
+            "entity_kind": "calendar_profile",
+            "entity_id": "novgorod_julian_lmst_1230_1233_v2"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:calendar_daylight_light_profiles:historical_daylight_derivation",
+            "source:calendar_daylight_light_profiles:noaa_solar",
+            "source:calendar_daylight_light_profiles:temporal_world_v4_normative",
+            "source:calendar_daylight_light_profiles:user_reconstruction_authorization",
+            "source:calendar_daylight_light_profiles:usno_julian",
+            "source:calendar_daylight_light_profiles:wikidata_coordinates"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        }
+      },
+      "weather_states": [
+        {
+          "weather_state_id": "clear_dry_calm",
+          "sky": "clear",
+          "precipitation": "none",
+          "visibility": "normal",
+          "wind": "calm_or_light",
+          "movement_factor": {
+            "numerator": "1",
+            "denominator": "1"
+          }
+        },
+        {
+          "weather_state_id": "overcast_dry_calm",
+          "sky": "overcast",
+          "precipitation": "none",
+          "visibility": "normal",
+          "wind": "calm_or_light",
+          "movement_factor": {
+            "numerator": "1",
+            "denominator": "1"
+          }
+        },
+        {
+          "weather_state_id": "moderate_rain",
+          "sky": "overcast",
+          "precipitation": "rain",
+          "visibility": "reduced",
+          "wind": "light_or_moderate",
+          "movement_factor": {
+            "numerator": "3",
+            "denominator": "2"
+          }
+        },
+        {
+          "weather_state_id": "light_snow",
+          "sky": "overcast",
+          "precipitation": "snow",
+          "visibility": "reduced",
+          "wind": "light_or_moderate",
+          "movement_factor": {
+            "numerator": "3",
+            "denominator": "2"
+          }
+        },
+        {
+          "weather_state_id": "dense_fog",
+          "sky": "obscured",
+          "precipitation": "none",
+          "visibility": "poor",
+          "wind": "calm_or_light",
+          "movement_factor": {
+            "numerator": "5",
+            "denominator": "4"
+          }
+        },
+        {
+          "weather_state_id": "strong_wind",
+          "sky": "variable",
+          "precipitation": "none",
+          "visibility": "normal_or_reduced",
+          "wind": "strong",
+          "movement_factor": {
+            "numerator": "5",
+            "denominator": "4"
+          }
+        }
+      ],
+      "transition_rules": {
+        "method": "deterministic weighted selection from explicit finite season set; current state may be selected again",
+        "seasonal_candidates": {
+          "winter": [
+            {
+              "weather_state_id": "clear_dry_calm",
+              "weight": "1",
+              "weather_state_ref": {
+                "entity_ref": {
+                  "entity_kind": "weather_state",
+                  "entity_id": "clear_dry_calm"
+                },
+                "authoring_version": "1",
+                "source_ids": [
+                  "source:weather_transition_profiles_processes:noaa_synoptic",
+                  "source:weather_transition_profiles_processes:temporal_world_v4_normative",
+                  "source:weather_transition_profiles_processes:user_reconstruction_authorization",
+                  "source:weather_transition_profiles_processes:weather_reconstruction_decisions"
+                ],
+                "applicability": [
+                  "novgorod"
+                ]
+              }
+            },
+            {
+              "weather_state_id": "overcast_dry_calm",
+              "weight": "1",
+              "weather_state_ref": {
+                "entity_ref": {
+                  "entity_kind": "weather_state",
+                  "entity_id": "overcast_dry_calm"
+                },
+                "authoring_version": "1",
+                "source_ids": [
+                  "source:weather_transition_profiles_processes:noaa_synoptic",
+                  "source:weather_transition_profiles_processes:temporal_world_v4_normative",
+                  "source:weather_transition_profiles_processes:user_reconstruction_authorization",
+                  "source:weather_transition_profiles_processes:weather_reconstruction_decisions"
+                ],
+                "applicability": [
+                  "novgorod"
+                ]
+              }
+            },
+            {
+              "weather_state_id": "light_snow",
+              "weight": "1",
+              "weather_state_ref": {
+                "entity_ref": {
+                  "entity_kind": "weather_state",
+                  "entity_id": "light_snow"
+                },
+                "authoring_version": "1",
+                "source_ids": [
+                  "source:weather_transition_profiles_processes:noaa_synoptic",
+                  "source:weather_transition_profiles_processes:temporal_world_v4_normative",
+                  "source:weather_transition_profiles_processes:user_reconstruction_authorization",
+                  "source:weather_transition_profiles_processes:weather_reconstruction_decisions"
+                ],
+                "applicability": [
+                  "novgorod"
+                ]
+              }
+            },
+            {
+              "weather_state_id": "dense_fog",
+              "weight": "1",
+              "weather_state_ref": {
+                "entity_ref": {
+                  "entity_kind": "weather_state",
+                  "entity_id": "dense_fog"
+                },
+                "authoring_version": "1",
+                "source_ids": [
+                  "source:weather_transition_profiles_processes:noaa_synoptic",
+                  "source:weather_transition_profiles_processes:temporal_world_v4_normative",
+                  "source:weather_transition_profiles_processes:user_reconstruction_authorization",
+                  "source:weather_transition_profiles_processes:weather_reconstruction_decisions"
+                ],
+                "applicability": [
+                  "novgorod"
+                ]
+              }
+            },
+            {
+              "weather_state_id": "strong_wind",
+              "weight": "1",
+              "weather_state_ref": {
+                "entity_ref": {
+                  "entity_kind": "weather_state",
+                  "entity_id": "strong_wind"
+                },
+                "authoring_version": "1",
+                "source_ids": [
+                  "source:weather_transition_profiles_processes:noaa_synoptic",
+                  "source:weather_transition_profiles_processes:temporal_world_v4_normative",
+                  "source:weather_transition_profiles_processes:user_reconstruction_authorization",
+                  "source:weather_transition_profiles_processes:weather_reconstruction_decisions"
+                ],
+                "applicability": [
+                  "novgorod"
+                ]
+              }
+            }
+          ],
+          "spring": [
+            {
+              "weather_state_id": "clear_dry_calm",
+              "weight": "1",
+              "weather_state_ref": {
+                "entity_ref": {
+                  "entity_kind": "weather_state",
+                  "entity_id": "clear_dry_calm"
+                },
+                "authoring_version": "1",
+                "source_ids": [
+                  "source:weather_transition_profiles_processes:noaa_synoptic",
+                  "source:weather_transition_profiles_processes:temporal_world_v4_normative",
+                  "source:weather_transition_profiles_processes:user_reconstruction_authorization",
+                  "source:weather_transition_profiles_processes:weather_reconstruction_decisions"
+                ],
+                "applicability": [
+                  "novgorod"
+                ]
+              }
+            },
+            {
+              "weather_state_id": "overcast_dry_calm",
+              "weight": "1",
+              "weather_state_ref": {
+                "entity_ref": {
+                  "entity_kind": "weather_state",
+                  "entity_id": "overcast_dry_calm"
+                },
+                "authoring_version": "1",
+                "source_ids": [
+                  "source:weather_transition_profiles_processes:noaa_synoptic",
+                  "source:weather_transition_profiles_processes:temporal_world_v4_normative",
+                  "source:weather_transition_profiles_processes:user_reconstruction_authorization",
+                  "source:weather_transition_profiles_processes:weather_reconstruction_decisions"
+                ],
+                "applicability": [
+                  "novgorod"
+                ]
+              }
+            },
+            {
+              "weather_state_id": "moderate_rain",
+              "weight": "1",
+              "weather_state_ref": {
+                "entity_ref": {
+                  "entity_kind": "weather_state",
+                  "entity_id": "moderate_rain"
+                },
+                "authoring_version": "1",
+                "source_ids": [
+                  "source:weather_transition_profiles_processes:noaa_synoptic",
+                  "source:weather_transition_profiles_processes:temporal_world_v4_normative",
+                  "source:weather_transition_profiles_processes:user_reconstruction_authorization",
+                  "source:weather_transition_profiles_processes:weather_reconstruction_decisions"
+                ],
+                "applicability": [
+                  "novgorod"
+                ]
+              }
+            },
+            {
+              "weather_state_id": "light_snow",
+              "weight": "1",
+              "weather_state_ref": {
+                "entity_ref": {
+                  "entity_kind": "weather_state",
+                  "entity_id": "light_snow"
+                },
+                "authoring_version": "1",
+                "source_ids": [
+                  "source:weather_transition_profiles_processes:noaa_synoptic",
+                  "source:weather_transition_profiles_processes:temporal_world_v4_normative",
+                  "source:weather_transition_profiles_processes:user_reconstruction_authorization",
+                  "source:weather_transition_profiles_processes:weather_reconstruction_decisions"
+                ],
+                "applicability": [
+                  "novgorod"
+                ]
+              }
+            },
+            {
+              "weather_state_id": "dense_fog",
+              "weight": "1",
+              "weather_state_ref": {
+                "entity_ref": {
+                  "entity_kind": "weather_state",
+                  "entity_id": "dense_fog"
+                },
+                "authoring_version": "1",
+                "source_ids": [
+                  "source:weather_transition_profiles_processes:noaa_synoptic",
+                  "source:weather_transition_profiles_processes:temporal_world_v4_normative",
+                  "source:weather_transition_profiles_processes:user_reconstruction_authorization",
+                  "source:weather_transition_profiles_processes:weather_reconstruction_decisions"
+                ],
+                "applicability": [
+                  "novgorod"
+                ]
+              }
+            },
+            {
+              "weather_state_id": "strong_wind",
+              "weight": "1",
+              "weather_state_ref": {
+                "entity_ref": {
+                  "entity_kind": "weather_state",
+                  "entity_id": "strong_wind"
+                },
+                "authoring_version": "1",
+                "source_ids": [
+                  "source:weather_transition_profiles_processes:noaa_synoptic",
+                  "source:weather_transition_profiles_processes:temporal_world_v4_normative",
+                  "source:weather_transition_profiles_processes:user_reconstruction_authorization",
+                  "source:weather_transition_profiles_processes:weather_reconstruction_decisions"
+                ],
+                "applicability": [
+                  "novgorod"
+                ]
+              }
+            }
+          ],
+          "summer": [
+            {
+              "weather_state_id": "clear_dry_calm",
+              "weight": "1",
+              "weather_state_ref": {
+                "entity_ref": {
+                  "entity_kind": "weather_state",
+                  "entity_id": "clear_dry_calm"
+                },
+                "authoring_version": "1",
+                "source_ids": [
+                  "source:weather_transition_profiles_processes:noaa_synoptic",
+                  "source:weather_transition_profiles_processes:temporal_world_v4_normative",
+                  "source:weather_transition_profiles_processes:user_reconstruction_authorization",
+                  "source:weather_transition_profiles_processes:weather_reconstruction_decisions"
+                ],
+                "applicability": [
+                  "novgorod"
+                ]
+              }
+            },
+            {
+              "weather_state_id": "overcast_dry_calm",
+              "weight": "1",
+              "weather_state_ref": {
+                "entity_ref": {
+                  "entity_kind": "weather_state",
+                  "entity_id": "overcast_dry_calm"
+                },
+                "authoring_version": "1",
+                "source_ids": [
+                  "source:weather_transition_profiles_processes:noaa_synoptic",
+                  "source:weather_transition_profiles_processes:temporal_world_v4_normative",
+                  "source:weather_transition_profiles_processes:user_reconstruction_authorization",
+                  "source:weather_transition_profiles_processes:weather_reconstruction_decisions"
+                ],
+                "applicability": [
+                  "novgorod"
+                ]
+              }
+            },
+            {
+              "weather_state_id": "moderate_rain",
+              "weight": "1",
+              "weather_state_ref": {
+                "entity_ref": {
+                  "entity_kind": "weather_state",
+                  "entity_id": "moderate_rain"
+                },
+                "authoring_version": "1",
+                "source_ids": [
+                  "source:weather_transition_profiles_processes:noaa_synoptic",
+                  "source:weather_transition_profiles_processes:temporal_world_v4_normative",
+                  "source:weather_transition_profiles_processes:user_reconstruction_authorization",
+                  "source:weather_transition_profiles_processes:weather_reconstruction_decisions"
+                ],
+                "applicability": [
+                  "novgorod"
+                ]
+              }
+            },
+            {
+              "weather_state_id": "dense_fog",
+              "weight": "1",
+              "weather_state_ref": {
+                "entity_ref": {
+                  "entity_kind": "weather_state",
+                  "entity_id": "dense_fog"
+                },
+                "authoring_version": "1",
+                "source_ids": [
+                  "source:weather_transition_profiles_processes:noaa_synoptic",
+                  "source:weather_transition_profiles_processes:temporal_world_v4_normative",
+                  "source:weather_transition_profiles_processes:user_reconstruction_authorization",
+                  "source:weather_transition_profiles_processes:weather_reconstruction_decisions"
+                ],
+                "applicability": [
+                  "novgorod"
+                ]
+              }
+            },
+            {
+              "weather_state_id": "strong_wind",
+              "weight": "1",
+              "weather_state_ref": {
+                "entity_ref": {
+                  "entity_kind": "weather_state",
+                  "entity_id": "strong_wind"
+                },
+                "authoring_version": "1",
+                "source_ids": [
+                  "source:weather_transition_profiles_processes:noaa_synoptic",
+                  "source:weather_transition_profiles_processes:temporal_world_v4_normative",
+                  "source:weather_transition_profiles_processes:user_reconstruction_authorization",
+                  "source:weather_transition_profiles_processes:weather_reconstruction_decisions"
+                ],
+                "applicability": [
+                  "novgorod"
+                ]
+              }
+            }
+          ],
+          "autumn": [
+            {
+              "weather_state_id": "clear_dry_calm",
+              "weight": "1",
+              "weather_state_ref": {
+                "entity_ref": {
+                  "entity_kind": "weather_state",
+                  "entity_id": "clear_dry_calm"
+                },
+                "authoring_version": "1",
+                "source_ids": [
+                  "source:weather_transition_profiles_processes:noaa_synoptic",
+                  "source:weather_transition_profiles_processes:temporal_world_v4_normative",
+                  "source:weather_transition_profiles_processes:user_reconstruction_authorization",
+                  "source:weather_transition_profiles_processes:weather_reconstruction_decisions"
+                ],
+                "applicability": [
+                  "novgorod"
+                ]
+              }
+            },
+            {
+              "weather_state_id": "overcast_dry_calm",
+              "weight": "1",
+              "weather_state_ref": {
+                "entity_ref": {
+                  "entity_kind": "weather_state",
+                  "entity_id": "overcast_dry_calm"
+                },
+                "authoring_version": "1",
+                "source_ids": [
+                  "source:weather_transition_profiles_processes:noaa_synoptic",
+                  "source:weather_transition_profiles_processes:temporal_world_v4_normative",
+                  "source:weather_transition_profiles_processes:user_reconstruction_authorization",
+                  "source:weather_transition_profiles_processes:weather_reconstruction_decisions"
+                ],
+                "applicability": [
+                  "novgorod"
+                ]
+              }
+            },
+            {
+              "weather_state_id": "moderate_rain",
+              "weight": "1",
+              "weather_state_ref": {
+                "entity_ref": {
+                  "entity_kind": "weather_state",
+                  "entity_id": "moderate_rain"
+                },
+                "authoring_version": "1",
+                "source_ids": [
+                  "source:weather_transition_profiles_processes:noaa_synoptic",
+                  "source:weather_transition_profiles_processes:temporal_world_v4_normative",
+                  "source:weather_transition_profiles_processes:user_reconstruction_authorization",
+                  "source:weather_transition_profiles_processes:weather_reconstruction_decisions"
+                ],
+                "applicability": [
+                  "novgorod"
+                ]
+              }
+            },
+            {
+              "weather_state_id": "light_snow",
+              "weight": "1",
+              "weather_state_ref": {
+                "entity_ref": {
+                  "entity_kind": "weather_state",
+                  "entity_id": "light_snow"
+                },
+                "authoring_version": "1",
+                "source_ids": [
+                  "source:weather_transition_profiles_processes:noaa_synoptic",
+                  "source:weather_transition_profiles_processes:temporal_world_v4_normative",
+                  "source:weather_transition_profiles_processes:user_reconstruction_authorization",
+                  "source:weather_transition_profiles_processes:weather_reconstruction_decisions"
+                ],
+                "applicability": [
+                  "novgorod"
+                ]
+              }
+            },
+            {
+              "weather_state_id": "dense_fog",
+              "weight": "1",
+              "weather_state_ref": {
+                "entity_ref": {
+                  "entity_kind": "weather_state",
+                  "entity_id": "dense_fog"
+                },
+                "authoring_version": "1",
+                "source_ids": [
+                  "source:weather_transition_profiles_processes:noaa_synoptic",
+                  "source:weather_transition_profiles_processes:temporal_world_v4_normative",
+                  "source:weather_transition_profiles_processes:user_reconstruction_authorization",
+                  "source:weather_transition_profiles_processes:weather_reconstruction_decisions"
+                ],
+                "applicability": [
+                  "novgorod"
+                ]
+              }
+            },
+            {
+              "weather_state_id": "strong_wind",
+              "weight": "1",
+              "weather_state_ref": {
+                "entity_ref": {
+                  "entity_kind": "weather_state",
+                  "entity_id": "strong_wind"
+                },
+                "authoring_version": "1",
+                "source_ids": [
+                  "source:weather_transition_profiles_processes:noaa_synoptic",
+                  "source:weather_transition_profiles_processes:temporal_world_v4_normative",
+                  "source:weather_transition_profiles_processes:user_reconstruction_authorization",
+                  "source:weather_transition_profiles_processes:weather_reconstruction_decisions"
+                ],
+                "applicability": [
+                  "novgorod"
+                ]
+              }
+            }
+          ]
+        },
+        "weights_meaning": "equal gameplay candidates, not measured medieval probabilities",
+        "empty_candidates": "weather_profile_gap",
+        "random_source": {
+          "algorithm_id": "mulberry32_v1",
+          "seed_derivation": "SHA-256 canonical JSON",
+          "candidate_order": "weather_state_id ascending",
+          "trace": [
+            "candidate_digest",
+            "selected_id",
+            "rng_counter",
+            "selected_weight"
+          ],
+          "hidden_or_llm_randomness": "forbidden",
+          "execution_owner": "@rus/turn supplies the deterministic selected candidate; @rus/environment-state validates and applies it without direct RNG access"
+        }
+      },
+      "exact_duration_or_boundary_ranges": {
+        "boundary_grid_minutes_from_local_midnight": [
+          "0",
+          "360",
+          "720",
+          "1080",
+          "1440"
+        ],
+        "transition_interval": {
+          "numerator": "360",
+          "denominator": "1"
+        },
+        "earlier_approved_boundary_wins": true
+      },
+      "environment_effect_refs": [
+        {
+          "entity_ref": {
+            "entity_kind": "environment_effect",
+            "entity_id": "visibility"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:weather_transition_profiles_processes:noaa_synoptic",
+            "source:weather_transition_profiles_processes:temporal_world_v4_normative",
+            "source:weather_transition_profiles_processes:user_reconstruction_authorization",
+            "source:weather_transition_profiles_processes:weather_reconstruction_decisions"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "environment_effect",
+            "entity_id": "surface_condition"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:weather_transition_profiles_processes:noaa_synoptic",
+            "source:weather_transition_profiles_processes:temporal_world_v4_normative",
+            "source:weather_transition_profiles_processes:user_reconstruction_authorization",
+            "source:weather_transition_profiles_processes:weather_reconstruction_decisions"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "environment_effect",
+            "entity_id": "movement_factor"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:weather_transition_profiles_processes:noaa_synoptic",
+            "source:weather_transition_profiles_processes:temporal_world_v4_normative",
+            "source:weather_transition_profiles_processes:user_reconstruction_authorization",
+            "source:weather_transition_profiles_processes:weather_reconstruction_decisions"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        }
+      ],
+      "termination_and_replacement_rules": [
+        "current process terminates at the exact selected boundary",
+        "replacement is exactly one candidate from the pinned finite seasonal set",
+        "same-state persistence must be an explicit selected candidate",
+        "missing state/effect binding is weather_profile_gap"
+      ],
+      "source_basis": [
+        {
+          "kind": "technical_contract",
+          "source_ref": "source:weather_transition_profiles_processes:temporal_world_v4_normative"
+        },
+        {
+          "kind": "six_hour_cadence_analogue",
+          "source_ref": "source:weather_transition_profiles_processes:noaa_synoptic"
+        },
+        {
+          "kind": "reconstruction_decisions",
+          "source_ref": "source:weather_transition_profiles_processes:weather_reconstruction_decisions"
+        },
+        {
+          "kind": "authorization",
+          "source_ref": "source:weather_transition_profiles_processes:user_reconstruction_authorization"
+        }
+      ],
+      "unmodeled_effects": [
+        "temperature exposure requires a separate approved temperature profile; this weather profile does not infer it"
+      ]
+    }
+  }
+]

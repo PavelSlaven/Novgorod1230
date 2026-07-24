@@ -2,47 +2,35 @@
 
 ## Назначение
 
-Clock, durations, timers, delayed events, historical phases and time-driven update requests. Код модуля работает только с переданными данными и не создаёт смысловые сущности мира.
+Единственный domain owner target Temporal World v4 для exact `GameTimestamp`, `ElapsedTime`, rational-minute arithmetic, календарной проекции и выбора/разрешения temporal boundaries. Модуль чистый: работает только с переданными DTO и утверждёнными profile/rule inputs.
 
 ## Владеет
 
-- clock arithmetic
-- timer due checks
-- delayed event contracts
-- historical phase activation
+- Владеет canonical temporal digest, нормализацией и сравнением exact time, crossing whole-minute boundaries, `projectCalendar`, историческими phase handlers и `temporal-resolution-v1` (`normalizeTemporalBoundaryCandidates`, earliest batch, same-time cascade).
 
-## Не делает
+## Не владеет
 
-- inventing events or dates
-- NPC decisions
-- persistence or narration
-
-## Spatial v3 target boundary
-
-P08 records this module as the sole owner of target exact-clock, timers and historical update contracts. It exposes no spatial repository, traversal, materialization or commit port and does not activate v3 before P28.
+Не владеет duration/factor/delay formula маршрута, body/NPC/environment effects, orchestration, write-plan merge, PostgreSQL, narration и visible projection. Не изобретает events, dates, profiles или effect rules.
 
 ## Public API
 
-- `normalizeClock`
-- `addMinutes`
-- `normalizeDelayedEvent`
-- `dueTimers`
-- `activeHistoricalPhases`
-- `buildTimeDrivenUpdateRequest`
-- `normalizeRational`, `addRational`, `subtractRational`, `compareRational`, `advanceExactClock` (P19 target-only exact time)
+- `.`: exact-time primitives `normalizeGameTimestamp`, `normalizeElapsedTime`, rational arithmetic, `addElapsedTime`, `subtractGameTimestamp`, `compareGameTimestamp`, `countCrossedWholeMinuteBoundaries`, `computeTemporalDigest`; historical-phase exports.
+- `./calendar`: `projectCalendar(timestamp, approvedProfile)`.
+- `./temporal-boundaries`: `TEMPORAL_RESOLUTION_POLICY_VERSION`, order, `TemporalBoundaryError`, normalization, earliest-batch selection и `resolveSameTimeCascade`.
+- `./legacy`: compatibility-only clock/timer helpers; не является target temporal execution API.
 
-## Контракты и инварианты
+## Формальные входы, выходы и ошибки
 
-Входы являются plain-object/array значениями. Функции нормализации не придумывают отсутствующие ID, имена, предметы, причины или последствия. Выходы, которые предназначены для handoff, замораживаются. Нарушения структуры возвращаются как `{ ok, errors }` либо выбрасываются только для неверно подключённого технического порта.
+Входы — closed JSON-safe DTO: canonical decimal strings, rational minutes, exact timestamps, approved calendar/phase/boundary policies и явные callbacks для same-time resolution. Выходы — frozen canonical DTO, ordered boundary batch/cascade result либо typed error. Ошибки валидации времени — `RangeError`/`TypeError`; calendar profile выдаёт `time_calendar_profile_gap`; boundary errors — `TemporalBoundaryError` с temporal code (в том числе `temporal_boundary_ambiguous`, `temporal_boundary_cycle`, `temporal_candidate_stale`). Никакого fallback, округления или hidden read.
 
-## Зависимости
+## Зависимости и side effects
 
-Разрешён только `@rus/kernel`. Запрещены импорты из `apps`, `legacy`, UI, БД, конкретного LLM provider и соседних workflow stages.
+Зависит только от `@rus/kernel` и `@rus/contracts`; не имеет I/O, DB, network, LLM или persistence boundary. Результат передаётся `@rus/turn` и persistence owner, которые не пересчитывают temporal arithmetic.
 
-## Ошибки
+## Target / P28
 
-Структурные ошибки возвращаются списком. Ошибки обязательных технических портов (`RandomSource`) являются `TypeError`/`RangeError`.
+Temporal World v4 — `temporal-world-v1`, target contract `4.3.0-target.1`; до atomic P28 production v2 остаётся sole runtime owner. Модуль не активирует target и не делает dual write.
 
-## Совместимость и тесты
+## Тесты
 
-Модуль сохраняет подтверждённые чистые формулы legacy там, где они существовали, но не импортирует legacy runtime. Unit/contract tests находятся в `test/domain.test.js`. Cutover выполняется отдельно после shadow run.
+`test/exact-time.test.js`, `calendar.test.js`, `temporal-boundaries.test.js`, `historical-phases.test.js`, `domain.test.js` проверяют exact arithmetic, profile gaps, ordering/cascades, phase boundary и legacy-compatible pure helpers.

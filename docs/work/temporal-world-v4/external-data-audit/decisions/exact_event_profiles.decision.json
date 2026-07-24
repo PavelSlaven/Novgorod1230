@@ -1,0 +1,29 @@
+{
+  "schema": "rus.temporal-world-v4.external-auditor-family-decision.v1",
+  "version": 1,
+  "family_id": "exact_event_profiles",
+  "verdict": "approved",
+  "approved_record_ids": [
+    "record:exact_event_profiles:one_shot_exact_due_v2"
+  ],
+  "source_ids_reviewed": [
+    "source:exact_event_profiles:temporal_world_v4_normative",
+    "source:exact_event_profiles:user_reconstruction_authorization",
+    "source:exact_event_profiles:controlled_vocabularies"
+  ],
+  "applicability": [
+    "novgorod"
+  ],
+  "data_gaps": [],
+  "auditor": {
+    "name": "OpenAI GPT-5.6 Thinking",
+    "organization_or_role": "independent external data authoring auditor"
+  },
+  "decision_id": "decision:exact_event_profiles:2026-07-24-reaudit-2",
+  "decided_at": "2026-07-24T17:45:00+03:00",
+  "method": "independent source, contract, controlled-vocabulary, exactness, closure, historical-labeling and no-fallback audit",
+  "rationale": "A closed one-shot exact event profile uses canonical GameTimestamp, the approved cooccurring_fact resolution class/ordinal, a source-bound effect proposal and explicit stale cancel/execute/replace handling.",
+  "limitations": [
+    "Approval covers authoring data only; physical DDL binding, importer implementation, PostgreSQL integration, runtime tests and P28 remain developer-owned."
+  ]
+}

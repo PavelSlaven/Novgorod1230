@@ -859,21 +859,21 @@
       "type": "sql"
     },
     {
-      "bytes": 47191,
+      "bytes": 47598,
       "path": "schemas/party-db/002_party_runtime_v3.sql",
-      "sha256": "b5e97046fc0a2e7f14ca727402acd0c1b13f44d69aacfb381afb82f03e59c67b",
+      "sha256": "f81e9a5b36cccee90ff72cc3757506e75af5dec1662a6e4837c240181e007cd1",
       "type": "sql"
     },
     {
-      "bytes": 48130,
+      "bytes": 50974,
       "path": "schemas/party-db/003_party_runtime_v3_planning.sql",
-      "sha256": "da050d482cac75631029eab25cb458f4fca0ee33c9d8955feaa12929ddc10d1f",
+      "sha256": "1efbd7a6b7249e515004de25408453295069a47ce4720306ba13bad6f3664090",
       "type": "sql"
     },
     {
-      "bytes": 32016,
+      "bytes": 33037,
       "path": "schemas/party-db/004_party_runtime_v3_journeys.sql",
-      "sha256": "ad0015952902da0c8c4f5ee9fac21eaa5da17df83174ab11c14a2f0272252568",
+      "sha256": "6844852262270c76c71a2a153aea0bc9d177f52e76daeb9ebe0f034da748d6cd",
       "type": "sql"
     },
     {
@@ -886,6 +886,12 @@
       "bytes": 1640,
       "path": "schemas/party-db/006_party_runtime_v3_migration.sql",
       "sha256": "485971bd9301a41edd107a83d1b4ef875fdbc118fb0641988c5f3bc27637629f",
+      "type": "sql"
+    },
+    {
+      "bytes": 39898,
+      "path": "schemas/party-db/007_party_runtime_temporal_world.sql",
+      "sha256": "664085c1330763e234fcdd806662964c7eac12b08daf4789a298c2f8bb563c7b",
       "type": "sql"
     },
     {

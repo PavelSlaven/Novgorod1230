@@ -1,0 +1,45 @@
+{
+  "schema": "rus.temporal-world-v4.data-family-approval.v1",
+  "version": 1,
+  "family_id": "place_access_schedules",
+  "status": "approved",
+  "record_version": "1",
+  "applicability": [
+    "novgorod"
+  ],
+  "record_ids": [
+    "record:place_access_schedules:monastic_refectory_v2"
+  ],
+  "data_gaps": [],
+  "external_audit_decision": {
+    "path": "docs/work/temporal-world-v4/external-data-audit/decisions/place_access_schedules.decision.json",
+    "sha256": "c42372501d0e81666fb512133cd80384a3a5f2ff5a29721299ad25d4a69b3ef7",
+    "decision_id": "decision:place_access_schedules:2026-07-24-reaudit-2"
+  },
+  "artifacts": {
+    "dataset": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/datasets/place_access_schedules.json",
+      "sha256": "95cdf197ce940828171a6842bed9b2ea20b31852c79974bd0514bf0821f1cbf1"
+    },
+    "provenance": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/source-approval/place_access_schedules.provenance.json",
+      "sha256": "583589e6dbcf77c5768ef629a658b7744e273190ee61ca0e5991b49c83208201"
+    },
+    "normalized_references": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/datasets/place_access_schedules.references.json",
+      "sha256": "c916b318f933c91b2dae71c69b40398b8844e3ab98e32ef6372d13399953dfe7"
+    },
+    "source_history": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/source-approval/place_access_schedules.sources.json",
+      "sha256": "493b2aac8f9d7e5188ecd25fa1bc31b49e26381c9c48034fd959fe4d4c4ea4b2"
+    },
+    "deterministic_import": {
+      "path": "tools/temporal-v4/import-approved-data.mjs",
+      "sha256": "c566a47c1a49fa18f26ffc1a744dbeb9348d6dadb42430b6f462f73c867c2ba5"
+    },
+    "generated_schema": {
+      "path": "infra/world-base/SCHEMA_REFERENCE.md",
+      "sha256": "2033c4c5a8ddd50e8fb5f8fab159710bb28c6d8a9c3cee72d5fda464de171091"
+    }
+  }
+}

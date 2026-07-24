@@ -23,6 +23,14 @@
 
 Затем через `llm_documentation_navigation.md` выбери и полностью прочитай профильные нормативы.
 
+Для задач игрового времени, календаря, duration/activity/traversal timing,
+temporal boundaries, NPC schedule/perception, carrier clock, weather/light,
+remote catch-up или propagation полностью прочитай
+`data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md`.
+До финальной приёмки Temporal World v4 он имеет status `proposed`, относится
+только к target/shadow/migration и не меняет sole production owner v2 до
+атомарного P28.
+
 Для database/DDL/import/category/template/profile/materialization/G5/NPC/item/container/property/transport/bounded-decision задач дополнительно обязателен:
 
 - `data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md`.

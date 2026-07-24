@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 
 export const REVIEWED_BASELINE_PATH = 'data/contracts/spatial-v3/p05-reviewed-baseline.json';
-export const REVIEWED_BASELINE_SHA256 = 'dc1ea2abf005b5e3ab869f3d7c7139699e23c2f5d1b72d40de6a373af6ae6e6b';
+export const REVIEWED_BASELINE_SHA256 = '7ae611f6db1edc7315272ea8600a3034d2f934675e60c30a8d20a3de23862c8a';
 
 export const EXPECTED_P02_PAIRS = {
   architecture: {

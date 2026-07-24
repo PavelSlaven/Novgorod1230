@@ -1,0 +1,504 @@
+{
+  "schema": "rus.temporal-world-v4.data-readiness.v1",
+  "version": 1,
+  "normative_source": "data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md",
+  "activation_status": "ready",
+  "families": [
+    {
+      "id": "calendar_daylight_light_profiles",
+      "dataset_profile_family": "calendar/daylight/light profiles",
+      "existing_status": "complete",
+      "approved": true,
+      "owner": "@rus/time-events-history + @rus/environment-state + world_base authoring",
+      "import_paths": [
+        "tools/temporal-v4/import-approved-data.mjs"
+      ],
+      "tests": [
+        "packages/time-events-history/test/calendar.test.js",
+        "packages/environment-state/test/environment-state.test.js",
+        "test/spatial-v3/temporal-approved-data-import.test.js",
+        "test/spatial-v3/temporal-approved-data-postgres.test.js"
+      ],
+      "evidence_paths": [
+        "packages/time-events-history/src/calendar.js",
+        "packages/environment-state/src/index.js",
+        "data/contracts/spatial-v3/world-base-import-registry.v1.json",
+        "data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json",
+        "data/world-catalogs/novgorod/temporal-v4/source-approval/calendar_daylight_light_profiles.provenance.json",
+        "data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.references.json",
+        "data/world-catalogs/novgorod/temporal-v4/source-approval/calendar_daylight_light_profiles.sources.json",
+        "docs/work/temporal-world-v4/external-data-audit/decisions/calendar_daylight_light_profiles.decision.json",
+        "data/world-catalogs/novgorod/temporal-v4/approvals/calendar_daylight_light_profiles.json",
+        "tools/temporal-v4/import-approved-data.mjs",
+        "infra/world-base/SCHEMA_REFERENCE.md"
+      ],
+      "approval": {
+        "status": "approved",
+        "version": "1",
+        "applicability": [
+          "novgorod"
+        ],
+        "manifest_path": "data/world-catalogs/novgorod/temporal-v4/approvals/calendar_daylight_light_profiles.json",
+        "manifest_sha256": "8e1cd44ca8f9bf7455de40cdbac6e6db21e59d03600046135c5f1f2927cadc9d"
+      },
+      "blockers": []
+    },
+    {
+      "id": "activity_categories_profiles",
+      "dataset_profile_family": "activity categories and profiles",
+      "existing_status": "complete",
+      "approved": true,
+      "owner": "@rus/turn + world_base authoring",
+      "import_paths": [
+        "tools/temporal-v4/import-approved-data.mjs"
+      ],
+      "tests": [
+        "packages/turn/test/temporal-activity-engine.test.js",
+        "test/spatial-v3/temporal-approved-data-import.test.js",
+        "test/spatial-v3/temporal-approved-data-postgres.test.js"
+      ],
+      "evidence_paths": [
+        "packages/turn/src/temporal-advance.js",
+        "data/contracts/spatial-v3/world-base-import-registry.v1.json",
+        "data/world-catalogs/novgorod/temporal-v4/datasets/activity_categories_profiles.json",
+        "data/world-catalogs/novgorod/temporal-v4/source-approval/activity_categories_profiles.provenance.json",
+        "data/world-catalogs/novgorod/temporal-v4/datasets/activity_categories_profiles.references.json",
+        "data/world-catalogs/novgorod/temporal-v4/source-approval/activity_categories_profiles.sources.json",
+        "docs/work/temporal-world-v4/external-data-audit/decisions/activity_categories_profiles.decision.json",
+        "data/world-catalogs/novgorod/temporal-v4/approvals/activity_categories_profiles.json",
+        "tools/temporal-v4/import-approved-data.mjs",
+        "infra/world-base/SCHEMA_REFERENCE.md"
+      ],
+      "approval": {
+        "status": "approved",
+        "version": "1",
+        "applicability": [
+          "novgorod"
+        ],
+        "manifest_path": "data/world-catalogs/novgorod/temporal-v4/approvals/activity_categories_profiles.json",
+        "manifest_sha256": "036bbf064758e761beb7c8caa81f034bb5bcb49e347c25c3f9c9776615133142"
+      },
+      "blockers": []
+    },
+    {
+      "id": "activity_execution_policies",
+      "dataset_profile_family": "progress/resource/participant/continuation/interruption/completion/same-time policies",
+      "existing_status": "complete",
+      "approved": true,
+      "owner": "@rus/turn + world_base authoring",
+      "import_paths": [
+        "tools/temporal-v4/import-approved-data.mjs"
+      ],
+      "tests": [
+        "packages/turn/test/temporal-activity-engine.test.js",
+        "packages/turn/test/temporal-advance.test.js",
+        "test/spatial-v3/temporal-approved-data-import.test.js",
+        "test/spatial-v3/temporal-approved-data-postgres.test.js"
+      ],
+      "evidence_paths": [
+        "packages/turn/src/temporal-advance.js",
+        "data/contracts/spatial-v3/world-base-import-registry.v1.json",
+        "data/world-catalogs/novgorod/temporal-v4/datasets/activity_execution_policies.json",
+        "data/world-catalogs/novgorod/temporal-v4/source-approval/activity_execution_policies.provenance.json",
+        "data/world-catalogs/novgorod/temporal-v4/datasets/activity_execution_policies.references.json",
+        "data/world-catalogs/novgorod/temporal-v4/source-approval/activity_execution_policies.sources.json",
+        "docs/work/temporal-world-v4/external-data-audit/decisions/activity_execution_policies.decision.json",
+        "data/world-catalogs/novgorod/temporal-v4/approvals/activity_execution_policies.json",
+        "tools/temporal-v4/import-approved-data.mjs",
+        "infra/world-base/SCHEMA_REFERENCE.md"
+      ],
+      "approval": {
+        "status": "approved",
+        "version": "1",
+        "applicability": [
+          "novgorod"
+        ],
+        "manifest_path": "data/world-catalogs/novgorod/temporal-v4/approvals/activity_execution_policies.json",
+        "manifest_sha256": "f0d29c3f0196f852821c35cffec29ae0b52587828a2f02520ce172906fcd72f4"
+      },
+      "blockers": []
+    },
+    {
+      "id": "body_time_effect_profiles_thresholds",
+      "dataset_profile_family": "body time-effect profiles and thresholds",
+      "existing_status": "complete",
+      "approved": true,
+      "owner": "@rus/body-state + world_base authoring",
+      "import_paths": [
+        "tools/temporal-v4/import-approved-data.mjs"
+      ],
+      "tests": [
+        "packages/body-state/test/domain.test.js",
+        "test/spatial-v3/temporal-approved-data-import.test.js",
+        "test/spatial-v3/temporal-approved-data-postgres.test.js"
+      ],
+      "evidence_paths": [
+        "packages/body-state/src/index.js",
+        "data/contracts/spatial-v3/world-base-import-registry.v1.json",
+        "data/world-catalogs/novgorod/temporal-v4/datasets/body_time_effect_profiles_thresholds.json",
+        "data/world-catalogs/novgorod/temporal-v4/source-approval/body_time_effect_profiles_thresholds.provenance.json",
+        "data/world-catalogs/novgorod/temporal-v4/datasets/body_time_effect_profiles_thresholds.references.json",
+        "data/world-catalogs/novgorod/temporal-v4/source-approval/body_time_effect_profiles_thresholds.sources.json",
+        "docs/work/temporal-world-v4/external-data-audit/decisions/body_time_effect_profiles_thresholds.decision.json",
+        "data/world-catalogs/novgorod/temporal-v4/approvals/body_time_effect_profiles_thresholds.json",
+        "tools/temporal-v4/import-approved-data.mjs",
+        "infra/world-base/SCHEMA_REFERENCE.md"
+      ],
+      "approval": {
+        "status": "approved",
+        "version": "1",
+        "applicability": [
+          "novgorod"
+        ],
+        "manifest_path": "data/world-catalogs/novgorod/temporal-v4/approvals/body_time_effect_profiles_thresholds.json",
+        "manifest_sha256": "84b4d67ea000844511d0753a575d1d6c7efd8fd8cff8fa29e19d47f4bede02dd"
+      },
+      "blockers": []
+    },
+    {
+      "id": "npc_temporal_profiles_policies",
+      "dataset_profile_family": "NPC schedules, activities, perception and decision policies",
+      "existing_status": "complete",
+      "approved": true,
+      "owner": "@rus/npc-runtime + world_base authoring",
+      "import_paths": [
+        "tools/temporal-v4/import-approved-data.mjs"
+      ],
+      "tests": [
+        "packages/npc-runtime/test/npc-runtime.test.js",
+        "test/spatial-v3/temporal-approved-data-import.test.js",
+        "test/spatial-v3/temporal-approved-data-postgres.test.js"
+      ],
+      "evidence_paths": [
+        "packages/npc-runtime/src/index.js",
+        "docs/adr/ADR-003-temporal-npc-runtime-owner.md",
+        "data/contracts/spatial-v3/world-base-import-registry.v1.json",
+        "data/world-catalogs/novgorod/temporal-v4/datasets/npc_temporal_profiles_policies.json",
+        "data/world-catalogs/novgorod/temporal-v4/source-approval/npc_temporal_profiles_policies.provenance.json",
+        "data/world-catalogs/novgorod/temporal-v4/datasets/npc_temporal_profiles_policies.references.json",
+        "data/world-catalogs/novgorod/temporal-v4/source-approval/npc_temporal_profiles_policies.sources.json",
+        "docs/work/temporal-world-v4/external-data-audit/decisions/npc_temporal_profiles_policies.decision.json",
+        "data/world-catalogs/novgorod/temporal-v4/approvals/npc_temporal_profiles_policies.json",
+        "tools/temporal-v4/import-approved-data.mjs",
+        "infra/world-base/SCHEMA_REFERENCE.md"
+      ],
+      "approval": {
+        "status": "approved",
+        "version": "1",
+        "applicability": [
+          "novgorod"
+        ],
+        "manifest_path": "data/world-catalogs/novgorod/temporal-v4/approvals/npc_temporal_profiles_policies.json",
+        "manifest_sha256": "6b4e764767bc4199e34e651102fd6d53695428e902cb1e14110ab6fc16f5a690"
+      },
+      "blockers": []
+    },
+    {
+      "id": "exact_event_profiles",
+      "dataset_profile_family": "exact timer/event/trigger/effect profiles",
+      "existing_status": "complete",
+      "approved": true,
+      "owner": "@rus/time-events-history + @rus/turn + world_base authoring",
+      "import_paths": [
+        "tools/temporal-v4/import-approved-data.mjs"
+      ],
+      "tests": [
+        "packages/time-events-history/test/temporal-boundaries.test.js",
+        "packages/turn/test/temporal-advance.test.js",
+        "test/spatial-v3/temporal-approved-data-import.test.js",
+        "test/spatial-v3/temporal-approved-data-postgres.test.js"
+      ],
+      "evidence_paths": [
+        "packages/time-events-history/src/temporal-boundaries.js",
+        "packages/turn/src/temporal-advance.js",
+        "data/contracts/spatial-v3/world-base-import-registry.v1.json",
+        "data/world-catalogs/novgorod/temporal-v4/datasets/exact_event_profiles.json",
+        "data/world-catalogs/novgorod/temporal-v4/source-approval/exact_event_profiles.provenance.json",
+        "data/world-catalogs/novgorod/temporal-v4/datasets/exact_event_profiles.references.json",
+        "data/world-catalogs/novgorod/temporal-v4/source-approval/exact_event_profiles.sources.json",
+        "docs/work/temporal-world-v4/external-data-audit/decisions/exact_event_profiles.decision.json",
+        "data/world-catalogs/novgorod/temporal-v4/approvals/exact_event_profiles.json",
+        "tools/temporal-v4/import-approved-data.mjs",
+        "infra/world-base/SCHEMA_REFERENCE.md"
+      ],
+      "approval": {
+        "status": "approved",
+        "version": "1",
+        "applicability": [
+          "novgorod"
+        ],
+        "manifest_path": "data/world-catalogs/novgorod/temporal-v4/approvals/exact_event_profiles.json",
+        "manifest_sha256": "37d3d27dbb2fe0c35725a94639a45fda0d535bbcef4fea0ba3abfe868bbbebdf"
+      },
+      "blockers": []
+    },
+    {
+      "id": "place_access_schedules",
+      "dataset_profile_family": "place access schedules",
+      "existing_status": "complete",
+      "approved": true,
+      "owner": "@rus/turn + @rus/party-store + world_base authoring",
+      "import_paths": [
+        "tools/temporal-v4/import-approved-data.mjs"
+      ],
+      "tests": [
+        "packages/turn/test/temporal-advance.test.js",
+        "test/spatial-v3/p19-execution.test.js",
+        "test/spatial-v3/temporal-approved-data-import.test.js",
+        "test/spatial-v3/temporal-approved-data-postgres.test.js"
+      ],
+      "evidence_paths": [
+        "docs/adr/ADR-004-temporal-place-access-owner.md",
+        "data/contracts/spatial-v3/world-base-import-registry.v1.json",
+        "data/world-catalogs/novgorod/temporal-v4/datasets/place_access_schedules.json",
+        "data/world-catalogs/novgorod/temporal-v4/source-approval/place_access_schedules.provenance.json",
+        "data/world-catalogs/novgorod/temporal-v4/datasets/place_access_schedules.references.json",
+        "data/world-catalogs/novgorod/temporal-v4/source-approval/place_access_schedules.sources.json",
+        "docs/work/temporal-world-v4/external-data-audit/decisions/place_access_schedules.decision.json",
+        "data/world-catalogs/novgorod/temporal-v4/approvals/place_access_schedules.json",
+        "tools/temporal-v4/import-approved-data.mjs",
+        "infra/world-base/SCHEMA_REFERENCE.md"
+      ],
+      "approval": {
+        "status": "approved",
+        "version": "1",
+        "applicability": [
+          "novgorod"
+        ],
+        "manifest_path": "data/world-catalogs/novgorod/temporal-v4/approvals/place_access_schedules.json",
+        "manifest_sha256": "76bcfba5b33986766683770b777bd5c36ec6509e454d58f186f10edac9f9252b"
+      },
+      "blockers": []
+    },
+    {
+      "id": "weather_transition_profiles_processes",
+      "dataset_profile_family": "weather transition profiles/processes",
+      "existing_status": "complete",
+      "approved": true,
+      "owner": "@rus/environment-state + world_base authoring",
+      "import_paths": [
+        "tools/temporal-v4/import-approved-data.mjs"
+      ],
+      "tests": [
+        "packages/environment-state/test/environment-state.test.js",
+        "test/spatial-v3/temporal-approved-data-import.test.js",
+        "test/spatial-v3/temporal-approved-data-postgres.test.js"
+      ],
+      "evidence_paths": [
+        "packages/environment-state/src/index.js",
+        "docs/adr/ADR-005-temporal-environment-owner.md",
+        "infra/world-base/schema/08.sql",
+        "data/world-catalogs/novgorod/temporal-v4/datasets/weather_transition_profiles_processes.json",
+        "data/world-catalogs/novgorod/temporal-v4/source-approval/weather_transition_profiles_processes.provenance.json",
+        "data/world-catalogs/novgorod/temporal-v4/datasets/weather_transition_profiles_processes.references.json",
+        "data/world-catalogs/novgorod/temporal-v4/source-approval/weather_transition_profiles_processes.sources.json",
+        "docs/work/temporal-world-v4/external-data-audit/decisions/weather_transition_profiles_processes.decision.json",
+        "data/world-catalogs/novgorod/temporal-v4/approvals/weather_transition_profiles_processes.json",
+        "tools/temporal-v4/import-approved-data.mjs",
+        "infra/world-base/SCHEMA_REFERENCE.md"
+      ],
+      "approval": {
+        "status": "approved",
+        "version": "1",
+        "applicability": [
+          "novgorod"
+        ],
+        "manifest_path": "data/world-catalogs/novgorod/temporal-v4/approvals/weather_transition_profiles_processes.json",
+        "manifest_sha256": "44d0091fb10b5663f567b00880b9620c3d62e7a47dae88bf2eae29a7b9890412"
+      },
+      "blockers": []
+    },
+    {
+      "id": "historical_phase_local_effect_rules",
+      "dataset_profile_family": "historical phase/local-effect rules",
+      "existing_status": "complete",
+      "approved": true,
+      "owner": "@rus/time-events-history + world_base authoring",
+      "import_paths": [
+        "tools/temporal-v4/import-approved-data.mjs"
+      ],
+      "tests": [
+        "packages/time-events-history/test/historical-phases.test.js",
+        "test/spatial-v3/temporal-approved-data-import.test.js",
+        "test/spatial-v3/temporal-approved-data-postgres.test.js"
+      ],
+      "evidence_paths": [
+        "packages/time-events-history/src/historical-phases.js",
+        "data/contracts/spatial-v3/world-base-import-registry.v1.json",
+        "data/world-catalogs/novgorod/temporal-v4/datasets/historical_phase_local_effect_rules.json",
+        "data/world-catalogs/novgorod/temporal-v4/source-approval/historical_phase_local_effect_rules.provenance.json",
+        "data/world-catalogs/novgorod/temporal-v4/datasets/historical_phase_local_effect_rules.references.json",
+        "data/world-catalogs/novgorod/temporal-v4/source-approval/historical_phase_local_effect_rules.sources.json",
+        "docs/work/temporal-world-v4/external-data-audit/decisions/historical_phase_local_effect_rules.decision.json",
+        "data/world-catalogs/novgorod/temporal-v4/approvals/historical_phase_local_effect_rules.json",
+        "tools/temporal-v4/import-approved-data.mjs",
+        "infra/world-base/SCHEMA_REFERENCE.md"
+      ],
+      "approval": {
+        "status": "approved",
+        "version": "1",
+        "applicability": [
+          "novgorod"
+        ],
+        "manifest_path": "data/world-catalogs/novgorod/temporal-v4/approvals/historical_phase_local_effect_rules.json",
+        "manifest_sha256": "c88385c760778feb404e4da22522ec063c9eaf840df93e372688ac76f400d509"
+      },
+      "blockers": []
+    },
+    {
+      "id": "traversal_recheck_contracts",
+      "dataset_profile_family": "traversal recheck contracts",
+      "existing_status": "complete",
+      "approved": true,
+      "owner": "@rus/movement-routes + @rus/turn + world_base authoring",
+      "import_paths": [
+        "tools/temporal-v4/import-approved-data.mjs"
+      ],
+      "tests": [
+        "test/spatial-v3/p18-movement-planning.test.js",
+        "packages/turn/test/temporal-advance.test.js",
+        "test/spatial-v3/temporal-approved-data-import.test.js",
+        "test/spatial-v3/temporal-approved-data-postgres.test.js"
+      ],
+      "evidence_paths": [
+        "data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_dynamic_recheck_policies.json",
+        "data/world-catalogs/novgorod/spatial-v3/manifest.json",
+        "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/index.v1_1.json",
+        "data/world-catalogs/novgorod/temporal-v4/datasets/traversal_recheck_contracts.json",
+        "data/world-catalogs/novgorod/temporal-v4/source-approval/traversal_recheck_contracts.provenance.json",
+        "data/world-catalogs/novgorod/temporal-v4/datasets/traversal_recheck_contracts.references.json",
+        "data/world-catalogs/novgorod/temporal-v4/source-approval/traversal_recheck_contracts.sources.json",
+        "docs/work/temporal-world-v4/external-data-audit/decisions/traversal_recheck_contracts.decision.json",
+        "data/world-catalogs/novgorod/temporal-v4/approvals/traversal_recheck_contracts.json",
+        "tools/temporal-v4/import-approved-data.mjs",
+        "infra/world-base/SCHEMA_REFERENCE.md"
+      ],
+      "approval": {
+        "status": "approved",
+        "version": "1",
+        "applicability": [
+          "novgorod"
+        ],
+        "manifest_path": "data/world-catalogs/novgorod/temporal-v4/approvals/traversal_recheck_contracts.json",
+        "manifest_sha256": "27deaec74af34ae6a80326fe2d8da75edf026f4e1d51848ceb44a69aa3b4d4df"
+      },
+      "blockers": []
+    },
+    {
+      "id": "propagation_profiles",
+      "dataset_profile_family": "propagation profiles",
+      "existing_status": "complete",
+      "approved": true,
+      "owner": "@rus/world-processes + world_base authoring",
+      "import_paths": [
+        "tools/temporal-v4/import-approved-data.mjs"
+      ],
+      "tests": [
+        "packages/world-processes/test/world-processes.test.js",
+        "test/spatial-v3/temporal-approved-data-import.test.js",
+        "test/spatial-v3/temporal-approved-data-postgres.test.js"
+      ],
+      "evidence_paths": [
+        "packages/world-processes/src/index.js",
+        "docs/adr/ADR-006-temporal-world-process-owner.md",
+        "data/contracts/spatial-v3/world-base-import-registry.v1.json",
+        "data/world-catalogs/novgorod/temporal-v4/datasets/propagation_profiles.json",
+        "data/world-catalogs/novgorod/temporal-v4/source-approval/propagation_profiles.provenance.json",
+        "data/world-catalogs/novgorod/temporal-v4/datasets/propagation_profiles.references.json",
+        "data/world-catalogs/novgorod/temporal-v4/source-approval/propagation_profiles.sources.json",
+        "docs/work/temporal-world-v4/external-data-audit/decisions/propagation_profiles.decision.json",
+        "data/world-catalogs/novgorod/temporal-v4/approvals/propagation_profiles.json",
+        "tools/temporal-v4/import-approved-data.mjs",
+        "infra/world-base/SCHEMA_REFERENCE.md"
+      ],
+      "approval": {
+        "status": "approved",
+        "version": "1",
+        "applicability": [
+          "novgorod"
+        ],
+        "manifest_path": "data/world-catalogs/novgorod/temporal-v4/approvals/propagation_profiles.json",
+        "manifest_sha256": "f550e4bb48763a458ff39d15c98bd9936ae52bb07a088cdc43a981209bf33649"
+      },
+      "blockers": []
+    },
+    {
+      "id": "remote_catch_up_rules",
+      "dataset_profile_family": "remote catch-up rules",
+      "existing_status": "complete",
+      "approved": true,
+      "owner": "@rus/world-processes + world_base authoring",
+      "import_paths": [
+        "tools/temporal-v4/import-approved-data.mjs"
+      ],
+      "tests": [
+        "packages/world-processes/test/world-processes.test.js",
+        "test/spatial-v3/temporal-approved-data-import.test.js",
+        "test/spatial-v3/temporal-approved-data-postgres.test.js"
+      ],
+      "evidence_paths": [
+        "packages/world-processes/src/index.js",
+        "docs/adr/ADR-006-temporal-world-process-owner.md",
+        "schemas/party-db/007_party_runtime_temporal_world.sql",
+        "data/world-catalogs/novgorod/temporal-v4/datasets/remote_catch_up_rules.json",
+        "data/world-catalogs/novgorod/temporal-v4/source-approval/remote_catch_up_rules.provenance.json",
+        "data/world-catalogs/novgorod/temporal-v4/datasets/remote_catch_up_rules.references.json",
+        "data/world-catalogs/novgorod/temporal-v4/source-approval/remote_catch_up_rules.sources.json",
+        "docs/work/temporal-world-v4/external-data-audit/decisions/remote_catch_up_rules.decision.json",
+        "data/world-catalogs/novgorod/temporal-v4/approvals/remote_catch_up_rules.json",
+        "tools/temporal-v4/import-approved-data.mjs",
+        "infra/world-base/SCHEMA_REFERENCE.md"
+      ],
+      "approval": {
+        "status": "approved",
+        "version": "1",
+        "applicability": [
+          "novgorod"
+        ],
+        "manifest_path": "data/world-catalogs/novgorod/temporal-v4/approvals/remote_catch_up_rules.json",
+        "manifest_sha256": "5c5a5f61b2734d6c4ccde044fec17ca1444534729d18ae7e55a3bd51d18f1279"
+      },
+      "blockers": []
+    },
+    {
+      "id": "carrier_synchronization_rescue_recovery_policies",
+      "dataset_profile_family": "carrier synchronization and rescue/recovery policies",
+      "existing_status": "complete",
+      "approved": true,
+      "owner": "@rus/turn + @rus/party-store + world_base authoring",
+      "import_paths": [
+        "tools/temporal-v4/import-approved-data.mjs"
+      ],
+      "tests": [
+        "packages/turn/test/temporal-carriers.test.js",
+        "test/spatial-v3/p19-execution.test.js",
+        "test/spatial-v3/temporal-approved-data-import.test.js",
+        "test/spatial-v3/temporal-approved-data-postgres.test.js"
+      ],
+      "evidence_paths": [
+        "packages/turn/src/temporal-carriers.js",
+        "schemas/party-db/004_party_runtime_v3_journeys.sql",
+        "schemas/party-db/003_party_runtime_v3_planning.sql",
+        "data/contracts/spatial-v3/world-base-import-registry.v1.json",
+        "data/world-catalogs/novgorod/temporal-v4/datasets/carrier_synchronization_rescue_recovery_policies.json",
+        "data/world-catalogs/novgorod/temporal-v4/source-approval/carrier_synchronization_rescue_recovery_policies.provenance.json",
+        "data/world-catalogs/novgorod/temporal-v4/datasets/carrier_synchronization_rescue_recovery_policies.references.json",
+        "data/world-catalogs/novgorod/temporal-v4/source-approval/carrier_synchronization_rescue_recovery_policies.sources.json",
+        "docs/work/temporal-world-v4/external-data-audit/decisions/carrier_synchronization_rescue_recovery_policies.decision.json",
+        "data/world-catalogs/novgorod/temporal-v4/approvals/carrier_synchronization_rescue_recovery_policies.json",
+        "tools/temporal-v4/import-approved-data.mjs",
+        "infra/world-base/SCHEMA_REFERENCE.md"
+      ],
+      "approval": {
+        "status": "approved",
+        "version": "1",
+        "applicability": [
+          "novgorod"
+        ],
+        "manifest_path": "data/world-catalogs/novgorod/temporal-v4/approvals/carrier_synchronization_rescue_recovery_policies.json",
+        "manifest_sha256": "1424dcc6ef98736ba057b4df6d654c14af4a00c332e6d6df5c89bbee947ece54"
+      },
+      "blockers": []
+    }
+  ]
+}

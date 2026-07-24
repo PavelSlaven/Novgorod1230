@@ -6,6 +6,13 @@
 
 LLM не создаёт NPC и не дополняет отсутствующие категории. Для key NPC допускается только формальный override разрешённых полей через bounded change-set gate; базовая психология, знания, снаряжение, расписание и отношения остаются ссылочно обусловленными профилями. Повышение уровня NPC детерминированно заполняет только отсутствующие поля и не меняет сохранённые значения.
 
+Temporal runtime NPC регулирует active target-норматив
+`temporal_world_and_interruptible_activities.md`. Расписание хранит exact
+`GameTimestamp` boundaries и approved profile pins; perception вычисляется
+кодом только из factual signals и knowledge scope. LLM может выбрать ровно
+один `option_id`/`command_token` из bounded decision request, но не создаёт
+реакцию, consequence, расписание или отсутствующий вариант.
+
 В игре используются три профиля генерации NPC:
 1. **Фоновый NPC** — нужен для видимости сцены.
 2. **Сценический NPC** — нужен для честного взаимодействия.

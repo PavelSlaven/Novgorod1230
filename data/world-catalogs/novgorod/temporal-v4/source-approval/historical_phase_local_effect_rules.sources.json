@@ -1,0 +1,54 @@
+[
+  {
+    "source_id": "source:historical_phase_local_effect_rules:canonical_historical_policy",
+    "status": "approved",
+    "source_path": "data/world-catalogs/novgorod/temporal-v4/sources/historical_phase_local_effect_rules/historical_events_and_figures.txt",
+    "source_sha256": "e0ea2a5f3b4f227191095ba32f3cd7a4900b6766070b7fecd581c3ecc3cea911",
+    "title": "Historical events and figures — canonical policy",
+    "author_or_issuing_body": "PavelSlaven/Novgorod1230 project",
+    "publication_or_record_date": "2026-07-24",
+    "license_or_transfer_basis": "Canonical private project repository content supplied for project integration",
+    "locator_or_citation": "PavelSlaven/Novgorod1230 main@520c0ea8; data/knowledge-source/corpus/DOCUMENTS/historical_events_and_figures.txt",
+    "evidence_role": "canonical_historical_policy",
+    "notes": "Exact canonical bytes defining editor ownership, source-backed phases, visibility and no runtime date invention."
+  },
+  {
+    "source_id": "source:historical_phase_local_effect_rules:epimeddat_1230_novgorod",
+    "status": "approved",
+    "source_path": "data/world-catalogs/novgorod/temporal-v4/sources/historical_phase_local_effect_rules/epimeddat_1230_novgorod_excerpt.txt",
+    "source_sha256": "74a71dd1fafc5097a2460fc213fe438eb29a1b1384593114de5be57e5d3d6d16",
+    "title": "EpiMedDat 1230 Novgorod famine record",
+    "author_or_issuing_body": "EpiMedDat project; underlying chronicle source cited in file",
+    "publication_or_record_date": "source-specific; see exact source bytes",
+    "license_or_transfer_basis": "CC BY-SA 4.0 for EpiMedDat record",
+    "locator_or_citation": "https://epimeddat.net/1230",
+    "evidence_role": "historical_source",
+    "notes": "Supports the event, location, year precision, famine, extreme food substitution, mortality and burial-capacity failure."
+  },
+  {
+    "source_id": "source:historical_phase_local_effect_rules:temporal_world_v4_normative",
+    "status": "approved",
+    "source_path": "data/world-catalogs/novgorod/temporal-v4/sources/historical_phase_local_effect_rules/Temporal_World_v4_implementation_ready.md",
+    "source_sha256": "f97e71536c08a3b5cc0414fe25460bf70b2d95ee94ff861f785b0a3d9fbfb26e",
+    "title": "Механика течения времени, длительных действий и автономного мира v4",
+    "author_or_issuing_body": "Project Rus XIII century authoring team",
+    "publication_or_record_date": "2026-07-24",
+    "license_or_transfer_basis": "User-supplied project material authorized for return package",
+    "locator_or_citation": "REFERENCE_EXTERNAL_INPUTS implementation-ready mechanics document; exact bytes copied into family source directory",
+    "evidence_role": "normative_contract",
+    "notes": "Defines the formal Temporal World v4 contract and strict no-fallback/materialization boundaries; it does not by itself supply every regional or historical value."
+  },
+  {
+    "source_id": "source:historical_phase_local_effect_rules:user_reconstruction_authorization",
+    "status": "approved",
+    "source_path": "data/world-catalogs/novgorod/temporal-v4/sources/historical_phase_local_effect_rules/USER_RECONSTRUCTION_AUTHORIZATION.txt",
+    "source_sha256": "93898618ce8fff34352fb208661d6640d1716e66d1016c3f7336550e9c3678a2",
+    "title": "User reconstruction authorization",
+    "author_or_issuing_body": "User",
+    "publication_or_record_date": "2026-07-24",
+    "license_or_transfer_basis": "User-provided instruction authorized for this return package",
+    "locator_or_citation": "Current task instruction, 2026-07-24",
+    "evidence_role": "authoring_authorization",
+    "notes": "Authorizes bounded reconstruction while requiring three clean audit cycles; reconstruction remains labeled and is not represented as a primary historical fact."
+  }
+]

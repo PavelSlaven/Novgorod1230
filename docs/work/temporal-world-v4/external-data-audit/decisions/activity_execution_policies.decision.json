@@ -1,0 +1,29 @@
+{
+  "schema": "rus.temporal-world-v4.external-auditor-family-decision.v1",
+  "version": 1,
+  "family_id": "activity_execution_policies",
+  "verdict": "approved",
+  "approved_record_ids": [
+    "record:activity_execution_policies:novgorod_v2"
+  ],
+  "source_ids_reviewed": [
+    "source:activity_execution_policies:controlled_vocabularies",
+    "source:activity_execution_policies:temporal_world_v4_normative",
+    "source:activity_execution_policies:user_reconstruction_authorization"
+  ],
+  "applicability": [
+    "novgorod"
+  ],
+  "data_gaps": [],
+  "auditor": {
+    "name": "OpenAI GPT-5.6 Thinking",
+    "organization_or_role": "independent external data authoring auditor"
+  },
+  "decision_id": "decision:activity_execution_policies:2026-07-24-reaudit-2",
+  "decided_at": "2026-07-24T17:45:00+03:00",
+  "method": "independent source, contract, controlled-vocabulary, exactness, closure, historical-labeling and no-fallback audit",
+  "rationale": "The policy family exhaustively defines exact progress, resource/participant handling, continuation, interruption, completion and deterministic same-time ordering while preserving all committed effects.",
+  "limitations": [
+    "Approval covers authoring data only; physical DDL binding, importer implementation, PostgreSQL integration, runtime tests and P28 remain developer-owned."
+  ]
+}

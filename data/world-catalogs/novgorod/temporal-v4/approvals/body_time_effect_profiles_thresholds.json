@@ -1,0 +1,48 @@
+{
+  "schema": "rus.temporal-world-v4.data-family-approval.v1",
+  "version": 1,
+  "family_id": "body_time_effect_profiles_thresholds",
+  "status": "approved",
+  "record_version": "1",
+  "applicability": [
+    "novgorod"
+  ],
+  "record_ids": [
+    "record:body_time_effect_profiles_thresholds:satiety_hourly_spend_v2",
+    "record:body_time_effect_profiles_thresholds:energy_awake_spend_v2",
+    "record:body_time_effect_profiles_thresholds:energy_sleep_recovery_v1",
+    "record:body_time_effect_profiles_thresholds:starvation_health_harm_v2"
+  ],
+  "data_gaps": [],
+  "external_audit_decision": {
+    "path": "docs/work/temporal-world-v4/external-data-audit/decisions/body_time_effect_profiles_thresholds.decision.json",
+    "sha256": "10598e7e772cd930ba9549a708e0c70f2ac4be0e0294138527fd8a9159c00371",
+    "decision_id": "decision:body_time_effect_profiles_thresholds:2026-07-24-reaudit-2"
+  },
+  "artifacts": {
+    "dataset": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/datasets/body_time_effect_profiles_thresholds.json",
+      "sha256": "ba00b460190ba94565d32d8dba3f648cc049e07469a6444b016728d2751415a8"
+    },
+    "provenance": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/source-approval/body_time_effect_profiles_thresholds.provenance.json",
+      "sha256": "b9d9cbf6d7b70e938dd47f71ffdef6dc632bd1b59dfdf8dbe0d7e60a43908b97"
+    },
+    "normalized_references": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/datasets/body_time_effect_profiles_thresholds.references.json",
+      "sha256": "885b4d4a15c5ac07553f801d83b2245ae34274cf1fef557efaa2320e185b12cf"
+    },
+    "source_history": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/source-approval/body_time_effect_profiles_thresholds.sources.json",
+      "sha256": "22bbafef268fd112e1a8371ee7a73f12fa39c4f518beca6f05a8ca47d20cd656"
+    },
+    "deterministic_import": {
+      "path": "tools/temporal-v4/import-approved-data.mjs",
+      "sha256": "c566a47c1a49fa18f26ffc1a744dbeb9348d6dadb42430b6f462f73c867c2ba5"
+    },
+    "generated_schema": {
+      "path": "infra/world-base/SCHEMA_REFERENCE.md",
+      "sha256": "2033c4c5a8ddd50e8fb5f8fab159710bb28c6d8a9c3cee72d5fda464de171091"
+    }
+  }
+}

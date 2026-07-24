@@ -1,0 +1,41 @@
+[
+  {
+    "source_id": "source:traversal_recheck_contracts:temporal_world_v4_normative",
+    "status": "approved",
+    "source_path": "data/world-catalogs/novgorod/temporal-v4/sources/traversal_recheck_contracts/Temporal_World_v4_implementation_ready.md",
+    "source_sha256": "f97e71536c08a3b5cc0414fe25460bf70b2d95ee94ff861f785b0a3d9fbfb26e",
+    "title": "Механика течения времени, длительных действий и автономного мира v4",
+    "author_or_issuing_body": "Project Rus XIII century authoring team",
+    "publication_or_record_date": "2026-07-24",
+    "license_or_transfer_basis": "User-supplied project material authorized for return package",
+    "locator_or_citation": "REFERENCE_EXTERNAL_INPUTS implementation-ready mechanics document; exact bytes copied into family source directory",
+    "evidence_role": "normative_contract",
+    "notes": "Defines the formal Temporal World v4 contract and strict no-fallback/materialization boundaries; it does not by itself supply every regional or historical value."
+  },
+  {
+    "source_id": "source:traversal_recheck_contracts:user_reconstruction_authorization",
+    "status": "approved",
+    "source_path": "data/world-catalogs/novgorod/temporal-v4/sources/traversal_recheck_contracts/USER_RECONSTRUCTION_AUTHORIZATION.txt",
+    "source_sha256": "93898618ce8fff34352fb208661d6640d1716e66d1016c3f7336550e9c3678a2",
+    "title": "User reconstruction authorization",
+    "author_or_issuing_body": "User",
+    "publication_or_record_date": "2026-07-24",
+    "license_or_transfer_basis": "User-provided instruction authorized for this return package",
+    "locator_or_citation": "Current task instruction, 2026-07-24",
+    "evidence_role": "authoring_authorization",
+    "notes": "Authorizes bounded reconstruction while requiring three clean audit cycles; reconstruction remains labeled and is not represented as a primary historical fact."
+  },
+  {
+    "source_id": "source:traversal_recheck_contracts:spatial_v3_dynamic_recheck_policies",
+    "status": "approved",
+    "source_path": "data/world-catalogs/novgorod/temporal-v4/sources/traversal_recheck_contracts/spatial_v3_dynamic_recheck_policies.json",
+    "source_sha256": "cb3f3c5dd2e895a6c815f7f30d7a4e3f0ea7e4662e8d4bd8c88d42ced934081c",
+    "title": "Approved Novgorod Spatial v3 dynamic recheck policies",
+    "author_or_issuing_body": "Project Rus XIII century",
+    "publication_or_record_date": "2026-07-24",
+    "license_or_transfer_basis": "Canonical project repository snapshot at commit 520c0ea8cc366fc16c949a874c710f3547a322f6",
+    "locator_or_citation": "data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_dynamic_recheck_policies.json",
+    "evidence_role": "approved_project_authoring_data",
+    "notes": "Exact policy IDs and maximum intervals copied from approved source data."
+  }
+]

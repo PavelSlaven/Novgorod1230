@@ -1,0 +1,1543 @@
+[
+  {
+    "record_id": "record:activity_categories_profiles:wait_exact_v2",
+    "family_id": "activity_categories_profiles",
+    "record_kind": "activity_profile",
+    "status": "approved",
+    "version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "provenance_refs": [
+      "provenance:activity_categories_profiles:novgorod_v1"
+    ],
+    "normalized_reference_ids": [
+      "reference:activity_categories_profiles:wait_exact_v2"
+    ],
+    "source_history_refs": [
+      "source:activity_categories_profiles:activity_reconstruction_decisions",
+      "source:activity_categories_profiles:controlled_vocabularies",
+      "source:activity_categories_profiles:temporal_world_v4_normative",
+      "source:activity_categories_profiles:user_reconstruction_authorization"
+    ],
+    "payload": {
+      "activity_category_id": "wait",
+      "activity_profile_id": "activity_wait_exact_v2",
+      "completion_model_id": "fixed_exact",
+      "completion_model_binding": {
+        "registry_id": "temporal.activity_completion_model",
+        "registry_version": "2.0.0",
+        "registry_digest": "769b059bf5fdb0545e96aa06e9fcc43becd7d2bf56b27261cc7b97c3fc35a43d",
+        "value_id": "fixed_exact",
+        "source_id": "source:activity_categories_profiles:controlled_vocabularies"
+      },
+      "fixed_duration_or_progress_contract": {
+        "mode": "fixed_exact",
+        "duration_source": "positive command-supplied RationalMinutes or exact end GameTimestamp",
+        "zero_duration": "time_elapsed_invalid",
+        "progress_unit": "elapsed_exact_minutes",
+        "partial_progress_persists": true,
+        "runtime_default_duration": "forbidden"
+      },
+      "allowed_intensity_ids": [
+        "rest_or_ordinary_activity"
+      ],
+      "participant_requirements": {
+        "minimum": "1",
+        "maximum": "1",
+        "simultaneous_required": true,
+        "participant_ref_required": true
+      },
+      "resource_requirements": {
+        "mode": "intrinsic_none",
+        "consumable_resource": "none",
+        "ownership_note": "body effects remain separately owned"
+      },
+      "precondition_refs": [
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "actor_available"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "no_unresolved_decision_boundary"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        }
+      ],
+      "boundary_policy_refs": [
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "fixed_exact_completion"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "next_interruption"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "next_body_threshold"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "next_world_event"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        }
+      ],
+      "execution_policy_set_ref": {
+        "entity_ref": {
+          "entity_kind": "activity_execution_policy_set",
+          "entity_id": "activity_execution_exact_interruptible_v2"
+        },
+        "authoring_version": "1",
+        "source_ids": [
+          "source:activity_execution_policies:temporal_world_v4_normative",
+          "source:activity_execution_policies:user_reconstruction_authorization"
+        ],
+        "applicability": [
+          "novgorod"
+        ]
+      },
+      "reference_rule": "every reference is authoring-version/source/applicability bound; missing required binding is activity_profile_gap",
+      "allowed_intensity_bindings": [
+        {
+          "entity_ref": {
+            "entity_kind": "activity_intensity",
+            "entity_id": "rest_or_ordinary_activity"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        }
+      ],
+      "participant_departure_disposition": "fail before completion; committed elapsed/body/resource effects remain",
+      "body_effect_profile_refs": [
+        {
+          "entity_ref": {
+            "entity_kind": "body_effect_profile",
+            "entity_id": "satiety_hourly_spend_v2"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+            "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+            "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+            "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "body_effect_profile",
+            "entity_id": "starvation_health_harm_v2"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+            "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+            "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+            "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "body_effect_profile",
+            "entity_id": "energy_awake_spend_v2"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+            "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+            "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+            "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "record_id": "record:activity_categories_profiles:sleep_bounded_v1",
+    "family_id": "activity_categories_profiles",
+    "record_kind": "activity_profile",
+    "status": "approved",
+    "version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "provenance_refs": [
+      "provenance:activity_categories_profiles:novgorod_v1"
+    ],
+    "normalized_reference_ids": [
+      "reference:activity_categories_profiles:sleep_bounded_v1"
+    ],
+    "source_history_refs": [
+      "source:activity_categories_profiles:activity_reconstruction_decisions",
+      "source:activity_categories_profiles:controlled_vocabularies",
+      "source:activity_categories_profiles:temporal_world_v4_normative",
+      "source:activity_categories_profiles:user_reconstruction_authorization"
+    ],
+    "payload": {
+      "activity_category_id": "sleep",
+      "activity_profile_id": "activity_sleep_until_deadline_or_energy_full_v1",
+      "completion_model_id": "condition_or_deadline",
+      "completion_model_binding": {
+        "registry_id": "temporal.activity_completion_model",
+        "registry_version": "2.0.0",
+        "registry_digest": "769b059bf5fdb0545e96aa06e9fcc43becd7d2bf56b27261cc7b97c3fc35a43d",
+        "value_id": "condition_or_deadline",
+        "source_id": "source:activity_categories_profiles:controlled_vocabularies"
+      },
+      "fixed_duration_or_progress_contract": {
+        "mode": "condition_or_deadline",
+        "completion_condition_ref": {
+          "entity_ref": {
+            "entity_kind": "condition",
+            "entity_id": "energy_reaches_100"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        "hard_deadline": "required exact GameTimestamp",
+        "next_recheck": "nearest approved body threshold or deadline",
+        "unbounded": "temporal_execution_unbounded"
+      },
+      "allowed_intensity_ids": [
+        "sleep_or_full_rest"
+      ],
+      "participant_requirements": {
+        "minimum": "1",
+        "maximum": "1",
+        "simultaneous_required": true,
+        "participant_ref_required": true
+      },
+      "resource_requirements": {
+        "mode": "required_non_consumable_binding",
+        "required_binding": "approved_sleep_place_or_bed",
+        "missing_binding": "activity_profile_gap"
+      },
+      "precondition_refs": [
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "actor_can_sleep"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "approved_sleep_place_accessible"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        }
+      ],
+      "boundary_policy_refs": [
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "hard_deadline"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "next_body_threshold"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "next_interruption"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "next_world_event"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        }
+      ],
+      "execution_policy_set_ref": {
+        "entity_ref": {
+          "entity_kind": "activity_execution_policy_set",
+          "entity_id": "activity_execution_exact_interruptible_v2"
+        },
+        "authoring_version": "1",
+        "source_ids": [
+          "source:activity_execution_policies:temporal_world_v4_normative",
+          "source:activity_execution_policies:user_reconstruction_authorization"
+        ],
+        "applicability": [
+          "novgorod"
+        ]
+      },
+      "reference_rule": "every reference is authoring-version/source/applicability bound; missing required binding is activity_profile_gap",
+      "allowed_intensity_bindings": [
+        {
+          "entity_ref": {
+            "entity_kind": "activity_intensity",
+            "entity_id": "sleep_or_full_rest"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        }
+      ],
+      "participant_departure_disposition": "pause and preserve committed elapsed/progress/resources/body effects; resume requires a new validated attempt",
+      "body_effect_profile_refs": [
+        {
+          "entity_ref": {
+            "entity_kind": "body_effect_profile",
+            "entity_id": "satiety_hourly_spend_v2"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+            "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+            "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+            "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "body_effect_profile",
+            "entity_id": "starvation_health_harm_v2"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+            "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+            "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+            "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "body_effect_profile",
+            "entity_id": "energy_sleep_recovery_v1"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+            "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+            "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+            "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "record_id": "record:activity_categories_profiles:manual_labor_segment_v1",
+    "family_id": "activity_categories_profiles",
+    "record_kind": "activity_profile",
+    "status": "approved",
+    "version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "provenance_refs": [
+      "provenance:activity_categories_profiles:novgorod_v1"
+    ],
+    "normalized_reference_ids": [
+      "reference:activity_categories_profiles:manual_labor_segment_v1"
+    ],
+    "source_history_refs": [
+      "source:activity_categories_profiles:activity_reconstruction_decisions",
+      "source:activity_categories_profiles:controlled_vocabularies",
+      "source:activity_categories_profiles:temporal_world_v4_normative",
+      "source:activity_categories_profiles:user_reconstruction_authorization"
+    ],
+    "payload": {
+      "activity_category_id": "manual_labor",
+      "activity_profile_id": "activity_manual_labor_daylight_segment_v1",
+      "completion_model_id": "fixed_exact",
+      "completion_model_binding": {
+        "registry_id": "temporal.activity_completion_model",
+        "registry_version": "2.0.0",
+        "registry_digest": "769b059bf5fdb0545e96aa06e9fcc43becd7d2bf56b27261cc7b97c3fc35a43d",
+        "value_id": "fixed_exact",
+        "source_id": "source:activity_categories_profiles:controlled_vocabularies"
+      },
+      "fixed_duration_or_progress_contract": {
+        "mode": "fixed_exact",
+        "duration_source": "difference between two pinned exact schedule boundaries",
+        "progress_unit": "elapsed_exact_minutes",
+        "partial_progress_persists": true,
+        "runtime_default_duration": "forbidden"
+      },
+      "allowed_intensity_ids": [
+        "heavy_activity"
+      ],
+      "participant_requirements": {
+        "minimum": "1",
+        "maximum": "1",
+        "simultaneous_required": true,
+        "participant_ref_required": true
+      },
+      "resource_requirements": {
+        "mode": "intrinsic_none",
+        "scope": "untooled general labor only",
+        "scope_note": "specialized work requires another approved profile"
+      },
+      "precondition_refs": [
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "actor_available"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "assigned_work_area_accessible"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        }
+      ],
+      "boundary_policy_refs": [
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "schedule_segment_end"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "next_interruption"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "next_body_threshold"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "next_world_event"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        }
+      ],
+      "execution_policy_set_ref": {
+        "entity_ref": {
+          "entity_kind": "activity_execution_policy_set",
+          "entity_id": "activity_execution_exact_interruptible_v2"
+        },
+        "authoring_version": "1",
+        "source_ids": [
+          "source:activity_execution_policies:temporal_world_v4_normative",
+          "source:activity_execution_policies:user_reconstruction_authorization"
+        ],
+        "applicability": [
+          "novgorod"
+        ]
+      },
+      "reference_rule": "every reference is authoring-version/source/applicability bound; missing required binding is activity_profile_gap",
+      "allowed_intensity_bindings": [
+        {
+          "entity_ref": {
+            "entity_kind": "activity_intensity",
+            "entity_id": "heavy_activity"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        }
+      ],
+      "participant_departure_disposition": "pause and preserve committed elapsed/progress/resources/body effects; resume requires a new validated attempt",
+      "body_effect_profile_refs": [
+        {
+          "entity_ref": {
+            "entity_kind": "body_effect_profile",
+            "entity_id": "satiety_hourly_spend_v2"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+            "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+            "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+            "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "body_effect_profile",
+            "entity_id": "starvation_health_harm_v2"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+            "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+            "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+            "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "body_effect_profile",
+            "entity_id": "energy_awake_spend_v2"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+            "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+            "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+            "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "record_id": "record:activity_categories_profiles:sacred_reading_segment_v1",
+    "family_id": "activity_categories_profiles",
+    "record_kind": "activity_profile",
+    "status": "approved",
+    "version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "provenance_refs": [
+      "provenance:activity_categories_profiles:novgorod_v1"
+    ],
+    "normalized_reference_ids": [
+      "reference:activity_categories_profiles:sacred_reading_segment_v1"
+    ],
+    "source_history_refs": [
+      "source:activity_categories_profiles:activity_reconstruction_decisions",
+      "source:activity_categories_profiles:controlled_vocabularies",
+      "source:activity_categories_profiles:temporal_world_v4_normative",
+      "source:activity_categories_profiles:user_reconstruction_authorization"
+    ],
+    "payload": {
+      "activity_category_id": "sacred_reading_or_recitation",
+      "activity_profile_id": "activity_sacred_reading_daylight_segment_v1",
+      "completion_model_id": "fixed_exact",
+      "completion_model_binding": {
+        "registry_id": "temporal.activity_completion_model",
+        "registry_version": "2.0.0",
+        "registry_digest": "769b059bf5fdb0545e96aa06e9fcc43becd7d2bf56b27261cc7b97c3fc35a43d",
+        "value_id": "fixed_exact",
+        "source_id": "source:activity_categories_profiles:controlled_vocabularies"
+      },
+      "fixed_duration_or_progress_contract": {
+        "mode": "fixed_exact",
+        "duration_source": "difference between two pinned exact schedule boundaries",
+        "progress_unit": "elapsed_exact_minutes",
+        "partial_progress_persists": true,
+        "runtime_default_duration": "forbidden"
+      },
+      "allowed_intensity_ids": [
+        "rest_or_ordinary_activity"
+      ],
+      "participant_requirements": {
+        "minimum": "1",
+        "maximum": "1",
+        "simultaneous_required": true,
+        "participant_ref_required": true
+      },
+      "resource_requirements": {
+        "mode": "required_binding",
+        "required_binding": "approved_text_or_recitation_leader",
+        "consumption": "none",
+        "missing_binding": "activity_profile_gap"
+      },
+      "precondition_refs": [
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "actor_available"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "approved_text_or_leader_accessible"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        }
+      ],
+      "boundary_policy_refs": [
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "schedule_segment_end"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "next_interruption"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "next_body_threshold"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "next_world_event"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        }
+      ],
+      "execution_policy_set_ref": {
+        "entity_ref": {
+          "entity_kind": "activity_execution_policy_set",
+          "entity_id": "activity_execution_exact_interruptible_v2"
+        },
+        "authoring_version": "1",
+        "source_ids": [
+          "source:activity_execution_policies:temporal_world_v4_normative",
+          "source:activity_execution_policies:user_reconstruction_authorization"
+        ],
+        "applicability": [
+          "novgorod"
+        ]
+      },
+      "reference_rule": "every reference is authoring-version/source/applicability bound; missing required binding is activity_profile_gap",
+      "allowed_intensity_bindings": [
+        {
+          "entity_ref": {
+            "entity_kind": "activity_intensity",
+            "entity_id": "rest_or_ordinary_activity"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        }
+      ],
+      "participant_departure_disposition": "pause and preserve committed elapsed/progress/resources/body effects; resume requires a new validated attempt",
+      "body_effect_profile_refs": [
+        {
+          "entity_ref": {
+            "entity_kind": "body_effect_profile",
+            "entity_id": "satiety_hourly_spend_v2"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+            "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+            "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+            "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "body_effect_profile",
+            "entity_id": "starvation_health_harm_v2"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+            "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+            "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+            "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "body_effect_profile",
+            "entity_id": "energy_awake_spend_v2"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+            "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+            "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+            "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "record_id": "record:activity_categories_profiles:meal_quiet_rest_segment_v1",
+    "family_id": "activity_categories_profiles",
+    "record_kind": "activity_profile",
+    "status": "approved",
+    "version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "provenance_refs": [
+      "provenance:activity_categories_profiles:novgorod_v1"
+    ],
+    "normalized_reference_ids": [
+      "reference:activity_categories_profiles:meal_quiet_rest_segment_v1"
+    ],
+    "source_history_refs": [
+      "source:activity_categories_profiles:activity_reconstruction_decisions",
+      "source:activity_categories_profiles:controlled_vocabularies",
+      "source:activity_categories_profiles:temporal_world_v4_normative",
+      "source:activity_categories_profiles:user_reconstruction_authorization"
+    ],
+    "payload": {
+      "activity_category_id": "meal_and_quiet_rest",
+      "activity_profile_id": "activity_meal_quiet_rest_daylight_segment_v1",
+      "completion_model_id": "fixed_exact",
+      "completion_model_binding": {
+        "registry_id": "temporal.activity_completion_model",
+        "registry_version": "2.0.0",
+        "registry_digest": "769b059bf5fdb0545e96aa06e9fcc43becd7d2bf56b27261cc7b97c3fc35a43d",
+        "value_id": "fixed_exact",
+        "source_id": "source:activity_categories_profiles:controlled_vocabularies"
+      },
+      "fixed_duration_or_progress_contract": {
+        "mode": "fixed_exact",
+        "duration_source": "difference between two pinned exact schedule boundaries",
+        "progress_unit": "elapsed_exact_minutes",
+        "partial_progress_persists": true,
+        "runtime_default_duration": "forbidden"
+      },
+      "allowed_intensity_ids": [
+        "rest_or_ordinary_activity"
+      ],
+      "participant_requirements": {
+        "minimum": "1",
+        "maximum": "1",
+        "simultaneous_required": true,
+        "participant_ref_required": true
+      },
+      "resource_requirements": {
+        "mode": "required_consumable_binding",
+        "required_binding": "approved_meal_ration",
+        "consumption": "only through separately approved food effect",
+        "missing_binding": "activity_profile_gap"
+      },
+      "precondition_refs": [
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "actor_available"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "meal_place_accessible"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "meal_ration_available"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        }
+      ],
+      "boundary_policy_refs": [
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "schedule_segment_end"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "resource_exhaustion"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "next_interruption"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "next_body_threshold"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "next_world_event"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        }
+      ],
+      "execution_policy_set_ref": {
+        "entity_ref": {
+          "entity_kind": "activity_execution_policy_set",
+          "entity_id": "activity_execution_exact_interruptible_v2"
+        },
+        "authoring_version": "1",
+        "source_ids": [
+          "source:activity_execution_policies:temporal_world_v4_normative",
+          "source:activity_execution_policies:user_reconstruction_authorization"
+        ],
+        "applicability": [
+          "novgorod"
+        ]
+      },
+      "reference_rule": "every reference is authoring-version/source/applicability bound; missing required binding is activity_profile_gap",
+      "allowed_intensity_bindings": [
+        {
+          "entity_ref": {
+            "entity_kind": "activity_intensity",
+            "entity_id": "rest_or_ordinary_activity"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        }
+      ],
+      "participant_departure_disposition": "pause and preserve committed elapsed/progress/resources/body effects; resume requires a new validated attempt",
+      "body_effect_profile_refs": [
+        {
+          "entity_ref": {
+            "entity_kind": "body_effect_profile",
+            "entity_id": "satiety_hourly_spend_v2"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+            "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+            "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+            "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "body_effect_profile",
+            "entity_id": "starvation_health_harm_v2"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+            "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+            "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+            "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "body_effect_profile",
+            "entity_id": "energy_awake_spend_v2"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+            "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+            "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+            "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "record_id": "record:activity_categories_profiles:carrier_transfer_10m_v1",
+    "family_id": "activity_categories_profiles",
+    "record_kind": "activity_profile",
+    "status": "approved",
+    "version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "provenance_refs": [
+      "provenance:activity_categories_profiles:novgorod_v1"
+    ],
+    "normalized_reference_ids": [
+      "reference:activity_categories_profiles:carrier_transfer_10m_v1"
+    ],
+    "source_history_refs": [
+      "source:activity_categories_profiles:activity_reconstruction_decisions",
+      "source:activity_categories_profiles:controlled_vocabularies",
+      "source:activity_categories_profiles:temporal_world_v4_normative",
+      "source:activity_categories_profiles:user_reconstruction_authorization"
+    ],
+    "payload": {
+      "activity_category_id": "carrier_transfer",
+      "activity_profile_id": "activity_carrier_transfer_stable_colocated_10m_v1",
+      "completion_model_id": "fixed_exact",
+      "completion_model_binding": {
+        "registry_id": "temporal.activity_completion_model",
+        "registry_version": "2.0.0",
+        "registry_digest": "769b059bf5fdb0545e96aa06e9fcc43becd7d2bf56b27261cc7b97c3fc35a43d",
+        "value_id": "fixed_exact",
+        "source_id": "source:activity_categories_profiles:controlled_vocabularies"
+      },
+      "fixed_duration_or_progress_contract": {
+        "mode": "fixed_exact",
+        "fixed_duration": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "scope": "small group; stable footing; exact co-location; valid capacity; no emergency",
+        "outside_scope": "activity_profile_gap",
+        "progress_unit": "elapsed_exact_minutes",
+        "runtime_default_duration": "forbidden"
+      },
+      "allowed_intensity_ids": [
+        "rest_or_ordinary_activity"
+      ],
+      "participant_requirements": {
+        "minimum": "1",
+        "maximum_rule": "approved replacement-carrier available capacity",
+        "simultaneous_required": true,
+        "participant_ref_required": true,
+        "role_bindings_required": [
+          "transfer_subject",
+          "handler_or_self_transfer_when_profile_allows"
+        ],
+        "empty_or_over_capacity": "activity_profile_gap"
+      },
+      "resource_requirements": {
+        "mode": "required_non_consumable_binding",
+        "required_binding": "approved_replacement_carrier_with_capacity_and_access",
+        "missing_binding": "activity_profile_gap"
+      },
+      "precondition_refs": [
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "exact_colocation"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "capacity_valid"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "access_valid"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "stable_transfer_conditions"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        }
+      ],
+      "boundary_policy_refs": [
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "fixed_exact_completion"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "carrier_state_change"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "next_interruption"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "next_body_threshold"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "condition_set",
+            "entity_id": "next_world_event"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        }
+      ],
+      "execution_policy_set_ref": {
+        "entity_ref": {
+          "entity_kind": "activity_execution_policy_set",
+          "entity_id": "activity_execution_exact_interruptible_v2"
+        },
+        "authoring_version": "1",
+        "source_ids": [
+          "source:activity_execution_policies:temporal_world_v4_normative",
+          "source:activity_execution_policies:user_reconstruction_authorization"
+        ],
+        "applicability": [
+          "novgorod"
+        ]
+      },
+      "reference_rule": "every reference is authoring-version/source/applicability bound; missing required binding is activity_profile_gap",
+      "allowed_intensity_bindings": [
+        {
+          "entity_ref": {
+            "entity_kind": "activity_intensity",
+            "entity_id": "rest_or_ordinary_activity"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_categories_profiles:activity_reconstruction_decisions",
+            "source:activity_categories_profiles:controlled_vocabularies",
+            "source:activity_categories_profiles:temporal_world_v4_normative",
+            "source:activity_categories_profiles:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        }
+      ],
+      "participant_departure_disposition": "pause and require a new validated attempt; fail if exact co-location/capacity preconditions are lost",
+      "body_effect_profile_refs": [
+        {
+          "entity_ref": {
+            "entity_kind": "body_effect_profile",
+            "entity_id": "satiety_hourly_spend_v2"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+            "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+            "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+            "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "body_effect_profile",
+            "entity_id": "starvation_health_harm_v2"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+            "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+            "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+            "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        {
+          "entity_ref": {
+            "entity_kind": "body_effect_profile",
+            "entity_id": "energy_awake_spend_v2"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+            "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+            "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+            "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        }
+      ]
+    }
+  }
+]

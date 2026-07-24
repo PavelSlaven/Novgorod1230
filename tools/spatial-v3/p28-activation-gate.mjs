@@ -4,6 +4,10 @@ import { execFile as execFileCallback } from 'node:child_process';
 import { promisify } from 'node:util';
 import { posix, relative, resolve, win32 } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import {
+  assessTemporalDataReadinessForActivation,
+  TEMPORAL_DATA_READINESS_PATH
+} from './temporal-data-readiness.mjs';
 
 const FREEZE = (value) => Object.freeze(value);
 const MANIFEST_PATH = 'docs/migration/spatial-v3/release-evidence.v1.json';
@@ -155,6 +159,37 @@ export function validateAppendixDItems(items) {
   }
   return FREEZE(errors);
 }
+export async function temporalDataReadinessP28Blockers(manifest, options = {}) {
+  const assessment = await assessTemporalDataReadinessForActivation(manifest, options);
+  if (!assessment.valid) {
+    return FREEZE(assessment.errors.map((error) => FREEZE({
+      code: 'temporal_data_readiness_invalid',
+      readiness_error_code: error.code,
+      ...(error.family_id ? { family_id: error.family_id } : {})
+    })));
+  }
+  return FREEZE(assessment.blockers.map((blocker) => FREEZE({
+    code: 'temporal_required_data_gap',
+    family_id: blocker.family_id,
+    gap_code: blocker.gap_code,
+    existing_status: blocker.existing_status
+  })));
+}
+async function validateTemporalDataReadiness({ root, read, add }) {
+  let manifest;
+  try {
+    manifest = JSON.parse(await read(resolve(root, TEMPORAL_DATA_READINESS_PATH), 'utf8'));
+  } catch {
+    add('temporal_data_readiness_manifest_missing_or_invalid', TEMPORAL_DATA_READINESS_PATH);
+    return;
+  }
+  for (const { code, ...details } of await temporalDataReadinessP28Blockers(manifest, {
+    root,
+    readRepositoryFile: (path) => read(resolve(root, path))
+  })) {
+    add(code, TEMPORAL_DATA_READINESS_PATH, details);
+  }
+}
 async function validateChecklistEvidence({ root, read, realpath, gitRaw: readGitRaw, item, add }) {
   for (const evidence of item.evidence) await validateP28HashedEvidence({ root, read, realpath, gitRaw: readGitRaw, evidence, add, code: 'appendix_d_evidence_hash_mismatch', details: { item_id: item.id } });
 }
@@ -174,6 +209,7 @@ function result(blockers) { return FREEZE({ schema: 'rus.spatial-v3.p28-activati
 function localResult(blockers) { return FREEZE({ schema: 'rus.spatial-v3.p28-local-evidence-assessment.v1', local_evidence_ready: blockers.length === 0, production_writes: 0, composition_changed: false, blockers: FREEZE(blockers) }); }
 async function collectLocalEvidence({ root = process.cwd(), read = readFile, realpath = realpathFs, gitText: readGitText = gitText, gitRaw: readGitRaw = gitRaw } = {}) {
   const blockers = []; const add = (code, evidence = MANIFEST_PATH, details = {}) => blockers.push(FREEZE({ code, evidence, ...details })); let manifest; let manifestBytes;
+  await validateTemporalDataReadiness({ root, read, add });
   try { manifestBytes = Buffer.from(await read(resolve(root, MANIFEST_PATH))); manifest = JSON.parse(manifestBytes.toString('utf8')); } catch { add('release_evidence_manifest_missing'); return { blockers, manifest: null, evidenceCommit: null }; }
   if (manifest.schema !== 'rus.spatial-v3.release-evidence.v1' || manifest.version !== 1) add('release_evidence_manifest_schema_invalid');
   for (const { code, ...details } of validateReleaseEvidenceShape(manifest)) add(code, MANIFEST_PATH, details);

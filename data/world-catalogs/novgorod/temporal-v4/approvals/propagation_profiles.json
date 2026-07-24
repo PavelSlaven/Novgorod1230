@@ -1,0 +1,45 @@
+{
+  "schema": "rus.temporal-world-v4.data-family-approval.v1",
+  "version": 1,
+  "family_id": "propagation_profiles",
+  "status": "approved",
+  "record_version": "1",
+  "applicability": [
+    "novgorod"
+  ],
+  "record_ids": [
+    "record:propagation_profiles:rumor_path_v2"
+  ],
+  "data_gaps": [],
+  "external_audit_decision": {
+    "path": "docs/work/temporal-world-v4/external-data-audit/decisions/propagation_profiles.decision.json",
+    "sha256": "08343c4466cb6a38d78758737f82471837fec5c0bf7e1da0ee2f31b66b95f373",
+    "decision_id": "decision:propagation_profiles:2026-07-24-reaudit-2"
+  },
+  "artifacts": {
+    "dataset": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/datasets/propagation_profiles.json",
+      "sha256": "14ec5f786f37df1362f8a452265b64f3226ba9796f17ba29bc19e6d210c99617"
+    },
+    "provenance": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/source-approval/propagation_profiles.provenance.json",
+      "sha256": "62046384462492f0cf85398e1847c167f9eaaec4b78e746179fb1a7ef9f3bf8f"
+    },
+    "normalized_references": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/datasets/propagation_profiles.references.json",
+      "sha256": "766f2862ac82fa0d45298a683998551e8d3ab65f1dcb24dc7baf3b73b6d44ea7"
+    },
+    "source_history": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/source-approval/propagation_profiles.sources.json",
+      "sha256": "984987a4a54761b819dfc6d154835b4907e48c1f4631c1447d319d1bf8e89848"
+    },
+    "deterministic_import": {
+      "path": "tools/temporal-v4/import-approved-data.mjs",
+      "sha256": "c566a47c1a49fa18f26ffc1a744dbeb9348d6dadb42430b6f462f73c867c2ba5"
+    },
+    "generated_schema": {
+      "path": "infra/world-base/SCHEMA_REFERENCE.md",
+      "sha256": "2033c4c5a8ddd50e8fb5f8fab159710bb28c6d8a9c3cee72d5fda464de171091"
+    }
+  }
+}

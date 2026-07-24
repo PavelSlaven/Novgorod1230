@@ -1,0 +1,82 @@
+[
+  {
+    "record_id": "record:exact_event_profiles:one_shot_exact_due_v2",
+    "family_id": "exact_event_profiles",
+    "record_kind": "exact_event_profile",
+    "status": "approved",
+    "version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "provenance_refs": [
+      "provenance:exact_event_profiles:novgorod_v1"
+    ],
+    "normalized_reference_ids": [
+      "reference:exact_event_profiles:one_shot_exact_due_v2"
+    ],
+    "source_history_refs": [
+      "source:exact_event_profiles:temporal_world_v4_normative",
+      "source:exact_event_profiles:user_reconstruction_authorization",
+      "source:exact_event_profiles:controlled_vocabularies"
+    ],
+    "payload": {
+      "event_profile_id": "one_shot_exact_due_change_set_v2",
+      "trigger_kind": "exact_game_timestamp",
+      "exact_due_or_boundary_rule": {
+        "due_time_type": "GameTimestamp",
+        "required_components": [
+          "whole_minutes",
+          "subminute_numerator",
+          "subminute_denominator"
+        ],
+        "due_test": "current GameTimestamp >= scheduled_at; provider selects the earliest eligible boundary and idempotency prevents replay",
+        "TIMESTAMPTZ": "forbidden",
+        "rounded_duration_boundary": "forbidden",
+        "current_timestamp_batch": "scheduled_at equal to current timestamp is processed before any positive slice"
+      },
+      "recurrence_and_termination_rule": {
+        "recurrence": "none",
+        "termination": "after one successful idempotent effect application",
+        "missing_due_or_effect": "event_rule_gap"
+      },
+      "effect_profile_ref": {
+        "entity_ref": {
+          "entity_kind": "event_effect_profile",
+          "entity_id": "combined_change_set_proposal_only_v1"
+        },
+        "authoring_version": "1",
+        "source_ids": [
+          "source:exact_event_profiles:temporal_world_v4_normative",
+          "source:exact_event_profiles:user_reconstruction_authorization",
+          "source:exact_event_profiles:controlled_vocabularies"
+        ],
+        "applicability": [
+          "novgorod"
+        ]
+      },
+      "effect_profile_definition": {
+        "effect_profile_id": "combined_change_set_proposal_only_v1",
+        "owner": "originating domain",
+        "output": "validated proposal for combined change set",
+        "direct_database_write": "forbidden",
+        "idempotency_key_required": true,
+        "missing_or_invalid_effect_profile": "event_effect_gap"
+      },
+      "resolution_class_id": "cooccurring_fact",
+      "resolution_class_binding": {
+        "registry_id": "temporal.resolution_class",
+        "registry_version": "2.0.0",
+        "registry_digest": "cfd6204f09945bbda2c4fe723af01f2bca11fdd1202364c132293bb385e5d533",
+        "value_id": "cooccurring_fact",
+        "source_id": "source:exact_event_profiles:controlled_vocabularies"
+      },
+      "precedence": "20",
+      "cancel_execute_replace_disposition": {
+        "stale_and_cancellable": "cancel",
+        "valid": "execute",
+        "superseded_with_exact_approved_candidate": "replace",
+        "otherwise": "temporal_candidate_stale"
+      }
+    }
+  }
+]

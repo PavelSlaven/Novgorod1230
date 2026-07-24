@@ -1,0 +1,29 @@
+{
+  "schema": "rus.temporal-world-v4.external-auditor-family-decision.v1",
+  "version": 1,
+  "family_id": "npc_temporal_profiles_policies",
+  "verdict": "approved",
+  "approved_record_ids": [
+    "record:npc_temporal_profiles_policies:monastic_worker_v2"
+  ],
+  "source_ids_reviewed": [
+    "source:npc_temporal_profiles_policies:temporal_world_v4_normative",
+    "source:npc_temporal_profiles_policies:user_reconstruction_authorization",
+    "source:npc_temporal_profiles_policies:rule_of_benedict_analog"
+  ],
+  "applicability": [
+    "novgorod"
+  ],
+  "data_gaps": [],
+  "auditor": {
+    "name": "OpenAI GPT-5.6 Thinking",
+    "organization_or_role": "independent external data authoring auditor"
+  },
+  "decision_id": "decision:npc_temporal_profiles_policies:2026-07-24-reaudit-2",
+  "decided_at": "2026-07-24T17:45:00+03:00",
+  "method": "independent source, contract, controlled-vocabulary, exactness, closure, historical-labeling and no-fallback audit",
+  "rationale": "The NPC family is deliberately narrow: one comparative monastic schedule with exact daylight fractions, closed activity bindings, factual perception, evidence-based recognition and three finite request-bound decision options with no authored default.",
+  "limitations": [
+    "The schedule is a labeled comparative reconstruction and is not a generic schedule for all Novgorod NPCs or direct evidence of Orthodox monastic observance."
+  ]
+}

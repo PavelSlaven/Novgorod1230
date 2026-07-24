@@ -1,0 +1,106 @@
+{
+  "schema": "rus.temporal-world-v4.external-auditor-return-index.v1",
+  "version": 1,
+  "auditor": {
+    "name": "OpenAI GPT-5.6 Thinking",
+    "organization_or_role": "independent external data authoring auditor",
+    "decision_id": "decision:temporal_world_v4_full_package:2026-07-24-reaudit-2",
+    "audited_at": "2026-07-24T17:45:00+03:00"
+  },
+  "scope": [
+    "novgorod"
+  ],
+  "families": [
+    {
+      "family_id": "calendar_daylight_light_profiles",
+      "verdict": "approved",
+      "record_count": 1,
+      "source_count": 6,
+      "data_gaps": []
+    },
+    {
+      "family_id": "activity_categories_profiles",
+      "verdict": "approved",
+      "record_count": 6,
+      "source_count": 4,
+      "data_gaps": []
+    },
+    {
+      "family_id": "activity_execution_policies",
+      "verdict": "approved",
+      "record_count": 1,
+      "source_count": 3,
+      "data_gaps": []
+    },
+    {
+      "family_id": "body_time_effect_profiles_thresholds",
+      "verdict": "approved",
+      "record_count": 4,
+      "source_count": 4,
+      "data_gaps": []
+    },
+    {
+      "family_id": "npc_temporal_profiles_policies",
+      "verdict": "approved",
+      "record_count": 1,
+      "source_count": 3,
+      "data_gaps": []
+    },
+    {
+      "family_id": "exact_event_profiles",
+      "verdict": "approved",
+      "record_count": 1,
+      "source_count": 3,
+      "data_gaps": []
+    },
+    {
+      "family_id": "place_access_schedules",
+      "verdict": "approved",
+      "record_count": 1,
+      "source_count": 3,
+      "data_gaps": []
+    },
+    {
+      "family_id": "weather_transition_profiles_processes",
+      "verdict": "approved",
+      "record_count": 1,
+      "source_count": 4,
+      "data_gaps": []
+    },
+    {
+      "family_id": "historical_phase_local_effect_rules",
+      "verdict": "approved",
+      "record_count": 1,
+      "source_count": 4,
+      "data_gaps": []
+    },
+    {
+      "family_id": "traversal_recheck_contracts",
+      "verdict": "approved",
+      "record_count": 1,
+      "source_count": 3,
+      "data_gaps": []
+    },
+    {
+      "family_id": "propagation_profiles",
+      "verdict": "approved",
+      "record_count": 1,
+      "source_count": 3,
+      "data_gaps": []
+    },
+    {
+      "family_id": "remote_catch_up_rules",
+      "verdict": "approved",
+      "record_count": 1,
+      "source_count": 3,
+      "data_gaps": []
+    },
+    {
+      "family_id": "carrier_synchronization_rescue_recovery_policies",
+      "verdict": "approved",
+      "record_count": 1,
+      "source_count": 3,
+      "data_gaps": []
+    }
+  ]
+}

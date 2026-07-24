@@ -19,10 +19,10 @@ const schemaPath = schemaArgumentIndex === -1
 if (!schemaPath) throw new Error('--schema requires a file');
 const trustedSchemaSha256 = '38c334b8d0997f22245aa711343dfe9a689f29878b2813ffbaef86bae00ad8cc';
 const activeTrustAnchors = {
-  architecture: '62333e73aa39ba3600572307a22fba87f97d2109a41be2a1b3844d02ce9e7e2e',
-  requirements: 'df72964b9a22e81178b23adda312cd53202be5a0a12fd0e902d6ebc1ae325890',
-  graph: '75a6baf30e37841db6c81ca5ac81b8e5696a8448ac975f44b12bafff14555347',
-  workflow: 'e0c779e6e2dc33b3c417cb8d5cf7b1975e8d469d4d733981907fc3d948866798'
+  architecture: '7f46bbb187356eb31920b7fa2f915a866f3923dde6d1f5538bd523a5683161dc',
+  requirements: '0428d1c62a5431911480b7ea67bac136b2362b7253c388c9b48bb33cf55c71bf',
+  graph: '6da82a0545c1f428e9dce85aafd058ad6fe75baa693243fac98e2753863906ca',
+  workflow: '965e569be0f123fda0c882ce195bd387c9942cf1e92b8a59da1f7cbe7286dcb2'
 };
 
 const documentPairs = {

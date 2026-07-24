@@ -1,0 +1,20 @@
+[
+  {
+    "reference_id": "reference:traversal_recheck_contracts:spatial_v3_recheck_v2",
+    "status": "approved",
+    "table": "temporal_authoring_records",
+    "record_id": "record:traversal_recheck_contracts:spatial_v3_recheck_v2",
+    "source_record_key": "record:traversal_recheck_contracts:spatial_v3_recheck_v2",
+    "logical_record_id": "spatial_v3_bound_dynamic_recheck_v2",
+    "authoring_version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "source_ids": [
+      "source:traversal_recheck_contracts:temporal_world_v4_normative",
+      "source:traversal_recheck_contracts:user_reconstruction_authorization",
+      "source:traversal_recheck_contracts:spatial_v3_dynamic_recheck_policies"
+    ],
+    "binding_notes": "Bound to world_base.temporal_authoring_records by the approved Temporal v4 importer."
+  }
+]

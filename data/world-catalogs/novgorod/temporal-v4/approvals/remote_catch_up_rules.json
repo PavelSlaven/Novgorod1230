@@ -1,0 +1,45 @@
+{
+  "schema": "rus.temporal-world-v4.data-family-approval.v1",
+  "version": 1,
+  "family_id": "remote_catch_up_rules",
+  "status": "approved",
+  "record_version": "1",
+  "applicability": [
+    "novgorod"
+  ],
+  "record_ids": [
+    "record:remote_catch_up_rules:coarse_remote_v2"
+  ],
+  "data_gaps": [],
+  "external_audit_decision": {
+    "path": "docs/work/temporal-world-v4/external-data-audit/decisions/remote_catch_up_rules.decision.json",
+    "sha256": "02bd72c263437d2caa3a48ce42d8d387c6ab256ccc9245c6905772d189bae792",
+    "decision_id": "decision:remote_catch_up_rules:2026-07-24-reaudit-2"
+  },
+  "artifacts": {
+    "dataset": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/datasets/remote_catch_up_rules.json",
+      "sha256": "f9d005293dda7038ab41d76f6978842901bba7c72d207946ec3ffbe95104f329"
+    },
+    "provenance": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/source-approval/remote_catch_up_rules.provenance.json",
+      "sha256": "480e052c4d20f19772348e30bb81e4a44cbed23b75b99f1f843a34c88eaf5bba"
+    },
+    "normalized_references": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/datasets/remote_catch_up_rules.references.json",
+      "sha256": "af8b8aceb44dc88cd3f38a82bc063660325f32da84625cc8beda3468579fccaf"
+    },
+    "source_history": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/source-approval/remote_catch_up_rules.sources.json",
+      "sha256": "850c9b5f35c543b272d6c282139df176faa5f343379def271a4467f5c3b93c4b"
+    },
+    "deterministic_import": {
+      "path": "tools/temporal-v4/import-approved-data.mjs",
+      "sha256": "c566a47c1a49fa18f26ffc1a744dbeb9348d6dadb42430b6f462f73c867c2ba5"
+    },
+    "generated_schema": {
+      "path": "infra/world-base/SCHEMA_REFERENCE.md",
+      "sha256": "2033c4c5a8ddd50e8fb5f8fab159710bb28c6d8a9c3cee72d5fda464de171091"
+    }
+  }
+}

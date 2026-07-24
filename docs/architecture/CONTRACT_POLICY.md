@@ -36,6 +36,21 @@ Hidden state не передаётся narration, presentation или game-web. 
 
 Код исполняет только утверждённый physical write plan. `party-store` не дополняет план смысловыми данными. Dry-run выполняется с rollback; commit защищён idempotency key.
 
+## Temporal target boundary
+
+Until P28, `temporal-world-v1` contracts are target/shadow/migration-only;
+they cannot create a v2 compatibility write or mixed authoritative read. A
+temporal advance carries exact `(from,to]` timestamps, policy/profile/catalog
+pins, one clock owner, explicit finite limits and an idempotency context.
+Missing data and conflicts use typed fail-closed results.
+
+Pure owner outputs are proposals. `@rus/turn` merges them deterministically
+into one logical change set; `@rus/party-store` validates the persistence
+boundary; game-server's PostgreSQL transaction atomically stores factual state,
+clock/effects, idempotency and `VisiblePackagePersistenceEnvelope`. Narration
+is post-commit delivery work and consumes only that persisted player-safe
+package.
+
 ## Generated reference
 
 `npm run docs:generate` строит schema reference из экспортированных `*_SCHEMA*` constants и файлов `schemas/`. `npm run docs:check` подтверждает, что committed generated output совпадает с повторной генерацией.

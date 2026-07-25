@@ -16,7 +16,19 @@
 
 - `.`: `runTurnWorkflow`, `createTurnWorkflowContext`, `TURN_WORKFLOW_STAGE_PLAN`, contract validators/constants.
 - `./temporal-advance`: `createTemporalAdvanceEngine`; `./temporal-carriers`: `createTemporalCarrierProposalEngine`; `./temporal-proposal-merger`: `mergeTemporalProposals`, `TemporalProposalMergeError`.
+- `createTemporalAdvanceEngine` повторно собирает candidates после каждого
+  deterministic slice из последней явно возвращённой immutable working
+  projection; handlers не получают скрытое состояние и не владеют clock
+  ordering.
 - Spatial/target surfaces: `./spatial-v3-*` (request profile, orchestration, execution, write plan, target shadow composition) и `createCombinedWritePlanBuilder`; `./compat` — explicit legacy adapter.
+- `./spatial-v3-target-composition` exports separate reviewed factories for
+  historical target/shadow tests and active `production_sole_owner` wiring;
+  production game-server imports only the production factory.
+- `./spatial-v3-journey-commands`: `createSpatialV3JourneyCommandCoordinator` validates the four Appendix A.7 tagged intents against a sealed server projection, supplies the authoritative exact clock to explicit handlers and enforces immutable plan lineage, zero-time cancel and idempotent replay.
+- `./spatial-v3-reaction-handlers`: `resolveSpatialV3NpcReaction` dispatches only the three approved current-target reaction command bindings to deterministic code-owned effect builders, validates the complete request/proposal contract and replays only an identical persisted proposal.
+- `./spatial-v3-perception-reaction-write-set`: `buildSpatialV3PerceptionReactionWriteSet` validates already resolved perception/replay/reaction/knowledge contracts and maps them to target rows, expected versions and physical lock keys without reads, decisions or writes.
+- `./spatial-v3-perception-boundary-participant`: adapts one sealed perception work item to the pure Temporal boundary callback and returns proposals only.
+- `./spatial-v3-temporal-write-integration`: mechanically combines already validated temporal write fragments before the single combined-plan build.
 
 ## Формальные входы, выходы и ошибки
 
@@ -26,9 +38,14 @@
 
 Зависимости: declared public packages and injected ports (`commandRegistry`, state reader, projector, narrator, party store, optional decision executor/RNG). Сам модуль не использует DB/network/LLM implicitly и не пишет PostgreSQL: commit передаётся party-store/server adapter. Narrator получает только validated safe package после factual commit boundary.
 
-## Target / P28
+## Target / activation
 
-Temporal v4 surfaces — target/shadow only (`temporal-world-v1`, `4.3.0-target.1`); production v2 остаётся active до atomic P28. `turn` не активирует target и не реализует persistence fallback.
+Temporal v4 surfaces use current `temporal-world-v1.1` /
+`4.4.0-target.1` and immutable accepted base `temporal-world-v1` /
+`4.3.0-target.1`. Accepted historical P28 evidence не активировало runtime;
+последующий `versioned production activation cutover` release
+`spatial-v3-production-v1` сделал v3 sole production composition. `turn` не
+реализует persistence fallback.
 
 ## Тесты
 

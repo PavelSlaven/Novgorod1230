@@ -132,7 +132,7 @@
       ],
       "path": "packages/environment-state",
       "public_entry": "./src/index.js",
-      "purpose": "`@rus/environment-state` — active-norm, target-only Temporal World v4 owner чистого вывода weather/light/access environment state и boundary-effect proposals. До P28 он shadow/fixture-only; production v2 остаётся sole production owner.",
+      "purpose": "`@rus/environment-state` — active-norm Temporal World v4 owner чистого вывода weather/light/access environment state и boundary-effect proposals. Historical P28 evidence не активировало runtime; последующий `versioned production activation cutover` release `spatial-v3-production-v1` включил его в sole production v3 composition.",
       "version": "0.1.0"
     },
     {
@@ -281,7 +281,7 @@
       ],
       "path": "packages/npc-runtime",
       "public_entry": "./src/index.js",
-      "purpose": "`@rus/npc-runtime` — active-norm, target-only owner Temporal World v4 для чистых предложений переходов расписания NPC, восприятия и ограниченного выбора действия. До атомарной активации P28 пакет используется только в target/shadow/migration; `production_v2` остаётся единственным production read/write owner.",
+      "purpose": "`@rus/npc-runtime` — active-norm owner Temporal World v4 для чистых предложений переходов расписания NPC, восприятия и ограниченного выбора действия. Historical P28 evidence не активировало runtime; последующий `versioned production activation cutover` release `spatial-v3-production-v1` включил пакет в sole production v3 composition.",
       "version": "0.1.0"
     },
     {
@@ -397,7 +397,7 @@
       ],
       "path": "packages/space-map",
       "public_entry": "./src/index.js",
-      "purpose": "Target-only pure spatial contracts for canonical G0–G5, party G5/G6 and scene positions; typed topology, orientation and factual context. Код модуля работает only with supplied data and does not create world entities. До P28 это не меняет active v2 production composition.",
+      "purpose": "Pure spatial contracts for canonical G0–G5, party G5/G6 and scene positions; typed topology, orientation and factual context. Код модуля работает only with supplied data and does not create world entities. Принятое историческое P28 evidence не меняло composition; последующий `versioned production activation cutover` release `spatial-v3-production-v1` сделал v3 sole production owner.",
       "version": "0.13.0"
     },
     {
@@ -421,6 +421,7 @@
         "@rus/kernel",
         "@rus/materialization",
         "@rus/narration",
+        "@rus/npc-runtime",
         "@rus/pipeline-engine",
         "@rus/presentation",
         "@rus/time-events-history",
@@ -437,6 +438,7 @@
     },
     {
       "dependencies": [
+        "@rus/contracts",
         "@rus/kernel"
       ],
       "name": "@rus/visibility-knowledge-memory",
@@ -475,7 +477,7 @@
       ],
       "path": "packages/world-processes",
       "public_entry": "./src/index.js",
-      "purpose": "`@rus/world-processes` — active-norm, target-only Temporal World v4 owner pure remote catch-up и propagation proposals. До P28 результаты предназначены для shadow/fixtures/migration и не меняют production v2.",
+      "purpose": "`@rus/world-processes` — active-norm Temporal World v4 owner pure remote catch-up и propagation proposals. Historical P28 evidence не активировало runtime; последующий `versioned production activation cutover` release `spatial-v3-production-v1` включил этот owner в sole production v3 composition.",
       "version": "0.1.0"
     }
   ],

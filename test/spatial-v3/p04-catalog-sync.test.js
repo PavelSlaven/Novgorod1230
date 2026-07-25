@@ -49,7 +49,7 @@ async function loadEvidence() {
   };
 }
 
-test('P04 catalog reflects the approved P12 source-to-target compilation without claiming activation', async () => {
+test('P04 catalog reflects the approved P12 compilation and completed versioned cutover', async () => {
   const evidence = await loadEvidence();
   assert.doesNotThrow(() => validateP04CatalogProjection(evidence));
 });
@@ -64,20 +64,27 @@ test('P04 catalog validation rejects stale authoring-gap statuses', async () => 
   }
 });
 
-test('P04 catalog validation preserves the production and P28 boundary', async () => {
+test('P04 catalog validation preserves the production and versioned cutover boundary', async () => {
   const evidence = await loadEvidence();
-  const activatedCatalog = evidence.catalog
-    .replace('Production import: `not_performed`', 'Production import: `performed`')
-    .replace('P28 activation: `not_performed`', 'P28 activation: `performed`');
+  const stalePreCutoverCatalog = evidence.catalog
+    .replace('Production import: `performed`', 'Production import: `not_performed`')
+    .replace('runtime visibility: `verified`', 'runtime visibility: `not_verified`')
+    .replace(
+      '`versioned production activation cutover`: `performed`',
+      '`versioned production activation cutover`: `not_performed`'
+    );
   assert.throws(
-    () => validateP04CatalogProjection({ ...evidence, catalog: activatedCatalog }),
+    () => validateP04CatalogProjection({
+      ...evidence,
+      catalog: stalePreCutoverCatalog
+    }),
     /production boundary|contradictory/u
   );
 });
 
 test('P04 catalog validation rejects an additive contradictory activation status', async () => {
   const evidence = await loadEvidence();
-  const contradictoryCatalog = `${evidence.catalog}\nProduction import: performed; runtime visibility: verified; P28 activation: performed.\n`;
+  const contradictoryCatalog = `${evidence.catalog}\nProduction import: not_performed; runtime visibility: not_verified; versioned production activation cutover: not_performed.\n`;
   assert.throws(
     () => validateP04CatalogProjection({ ...evidence, catalog: contradictoryCatalog }),
     /contradictory|exactly one structured status/u

@@ -1,5 +1,12 @@
 # Spatial v3 migration work log
 
+> **Historical work log.** Phase labels and future-tense P28 statements below
+> describe the completed PR14/PR19 sequence and are not current activation
+> authority. Accepted P28 evidence changed neither production writes nor
+> composition. Current production status is defined by
+> `production-activation-boundary.v1.json`: production v2 remains the sole
+> owner until the separate `versioned production activation cutover`.
+
 ## P00 — baseline, governance and repository inventory
 
 ### P00-S01 — reproducible baseline and one-PR governance

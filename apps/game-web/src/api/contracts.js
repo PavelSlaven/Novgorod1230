@@ -47,7 +47,7 @@ function walk(value, path, leaks) {
   if (!plain(value)) return;
   for (const [key, child] of Object.entries(value)) {
     const normalized = normalizeKey(key);
-    const panelRoute = path === '$.panels' && normalized === 'route';
+    const panelRoute = path.endsWith('.panels') && normalized === 'route';
     if (!panelRoute && forbidden(normalized)) leaks.push(`${path}.${key}`);
     walk(child, `${path}.${key}`, leaks);
   }

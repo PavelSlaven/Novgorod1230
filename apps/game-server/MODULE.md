@@ -14,12 +14,20 @@ Production composition root and the only physical PostgreSQL transaction owner. 
 
 ## Public API и контракты
 
-- `.` exports composition roots, adapters, HTTP server/handler/static resolver and startup config validation.
-- `./production` exports production composition, PostgreSQL pools/probes/migrations, party/session/delivery/world-base/Stage 25 adapters and provider runner.
+- `.` exports the activated Spatial-v3 composition root, adapters, HTTP server/handler/static resolver and startup config validation.
+- `./production-spatial-v3` exports the sole production composition.
+- `./production-v2-migration-source` exports v2 PostgreSQL helpers only for explicit migration/rollback tooling; it exports no runtime composition.
 - Target infrastructure factories `createSpatialV3CombinedAtomicCommitter` and
   `createTemporalPresentationPostgresStore` remain server-owned adapters; they
   accept only validated sealed plans/explicit pool transactions and are not
   domain decision APIs.
+
+For target `first_entry`, the combined committer accepts the already-defined
+Spatial-v3 core G5/baseline/G6/position rows and the root journey-location
+update only through one approved combined plan. The plan binds a stable
+scene-baseline materialization-scope key; its transaction-scoped advisory
+lock precedes the idempotency lease, baseline absence/reuse recheck and every
+domain write.
 
 Infrastructure inputs are explicit pool/config/binding/plan DTO and transactional callbacks; output is a committed physical result, HTTP envelope or typed server/infrastructure error. SQL targets are explicitly `party_runtime`; world-base adapter is read-only. Temporal presentation persistence stores package/pending-delivery lifecycle separately from narrator output, atomically with factual write when required by the combined plan.
 
@@ -27,6 +35,21 @@ Infrastructure inputs are explicit pool/config/binding/plan DTO and transactiona
 
 Uses `pg` only under `src/infrastructure/postgres`; `GameServerError`/server error envelopes, startup probes and adapter failures are explicit. This is the persistence and external-I/O boundary: owns pool/transaction/HTTP/provider calls and rejects invalid schema, hidden public payload, stale knowledge artifacts and unqualified targets. No deterministic runtime fallback is allowed.
 
-## Target / P28 и тесты
+## Production activation и тесты
 
-Spatial/Temporal `temporal-world-v1` / `4.3.0-target.1` composition is shadow/target only before atomic P28; production v2 remains sole owner and no target stub is imported into production composition. `test/game-server.test.js`, `party-store-runtime-catalog.test.js`, `runtime-catalog-boundary.test.js`, `test/spatial-v3/p16-committer-postgres.test.js`, `temporal-world-postgres.test.js` and `presentation-store.test.js` cover composition, atomic transaction/lock/idempotency, exact persistence and the leased post-commit presentation lifecycle.
+The separate versioned production activation cutover completed as
+`spatial-v3-production-v1`. The server and config expose only
+`builtin:production-spatial-v3`; v2 has no runtime selector or public
+composition export. Startup requires the complete Spatial-v3 bindings module
+and the completed cutover stage `13`, and fails closed while any persisted
+party remains on schema v2. Release metadata pins
+`novgorod_spatial_v3_target_contract_approval_001`, the exact approved Spatial
+manifest digest, `temporal-world-v1.1`, exact dependency-pin mode and the
+existing `rus.runtime_catalog_pin.v2` policy (active event only for a new
+party; persisted historical pin thereafter).
+`test/game-server.test.js`, `party-store-runtime-catalog.test.js`,
+`runtime-catalog-boundary.test.js`,
+`test/spatial-v3/p16-committer-postgres.test.js`,
+`temporal-world-postgres.test.js` and `presentation-store.test.js` cover
+composition, atomic transaction/lock/idempotency, exact persistence and the
+leased post-commit presentation lifecycle.

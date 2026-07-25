@@ -3,7 +3,9 @@ import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { newDb, DataType } from 'pg-mem';
-import { createProductionCompositionRoot } from '@rus/game-server/production';
+import {
+  createProductionV2RollbackSourceRoot
+} from '../../apps/game-server/src/composition/production-v2-rollback-source.js';
 
 function createMemoryPostgres() {
   const db = newDb({ autoCreateForeignKeyIndices: true });
@@ -16,7 +18,7 @@ test('production composition injects explicit knowledge-source port and starts w
   const here = dirname(fileURLToPath(import.meta.url));
   const bindings = resolve(here, '../fixtures/runtime-bindings/knowledge-source-bindings.js');
   const projectRoot = resolve(here, '../..');
-  const root = await createProductionCompositionRoot({
+  const root = await createProductionV2RollbackSourceRoot({
     env: {
       RUS_WORLD_DATABASE_URL: 'postgres://memory',
       RUS_PARTY_DATABASE_URL: 'postgres://memory',

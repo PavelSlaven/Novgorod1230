@@ -2,13 +2,19 @@
 
 - Status: accepted
 - Date: 2026-07-23
-- Decision scope: target-only Temporal World v4; no production activation before P28.
+- Decision scope: production Temporal World v4. Accepted historical P28
+  evidence did not activate production; the later cutover release
+  `spatial-v3-production-v1` did.
 
 ## Decision
 
 Adopt `temporal-world-v1` as the active target contract for exact game time and bump the Spatial v3 target contract set to `4.3.0-target.1`. This decision is based on the approved Temporal World v4 implementation plan (`d8464cbb91708379c3a4cf288b1842ee41676199fb8a0acaf51b79bcb0623016`) and specification (`f97e71536c08a3b5cc0414fe25460bf70b2d95ee94ff861f785b0a3d9fbfb26e`), recorded in `docs/work/temporal-world-v4/README.md`.
 
-Until the atomic P28 gate, `production_v2` remains the sole production read/write profile. Temporal World v4 is target/shadow/migration-only: no dual write, mixed authoritative read, in-turn fallback, or temporal-only cutover is permitted.
+The separate `versioned production activation cutover` release
+`spatial-v3-production-v1` makes v3 the sole production read/write profile.
+Production v2 remains only the explicit migration/rollback source. No dual
+write, mixed authoritative read, in-turn fallback, or temporal-only activation
+is permitted.
 
 `GameTimestamp` is an exact linear game-time value with
 `whole_minutes`, `subminute_numerator` and `subminute_denominator`. Calendar
@@ -34,4 +40,9 @@ The active v2 `addMinutes`, rounded travel-duration helpers, and legacy delayed-
 
 ## Rollback
 
-Before P28, rollback means keeping `production_v2` as the sole production profile and discarding target/shadow work without converting a partial target commit into v2. After P28, recovery follows the approved versioned release, migration and snapshot-restore procedure. It never uses dual write, mixed authoritative reads, or reinterpretation of v4 temporal state through legacy rounding rules.
+Before the completed `versioned production activation cutover`, rollback meant
+keeping `production_v2` as the sole production profile and discarding
+target/shadow work. After cutover, recovery follows the declared rollback
+release identity, migration and snapshot-restore procedure. It never uses dual
+write, mixed authoritative reads, or reinterpretation of v4 temporal state
+through legacy rounding rules.

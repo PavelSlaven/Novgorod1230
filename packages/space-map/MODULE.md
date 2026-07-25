@@ -2,7 +2,11 @@
 
 ## Назначение
 
-Target-only pure spatial contracts for canonical G0–G5, party G5/G6 and scene positions; typed topology, orientation and factual context. Код модуля работает only with supplied data and does not create world entities. До P28 это не меняет active v2 production composition.
+Pure spatial contracts for canonical G0–G5, party G5/G6 and scene positions;
+typed topology, orientation and factual context. Код модуля работает only with
+supplied data and does not create world entities. Принятое историческое P28
+evidence не меняло composition; последующий `versioned production activation
+cutover` release `spatial-v3-production-v1` сделал v3 sole production owner.
 
 ## Владеет
 
@@ -37,4 +41,8 @@ Target-only pure spatial contracts for canonical G0–G5, party G5/G6 and scene 
 
 ## Совместимость и тесты
 
-Default entrypoint is v3-only. Legacy graph/position functions are available solely through the explicit fixture adapter with `mode: migration | shadow_fixture`; it is not imported by v3 composition. Unit/contract tests are in `test/domain.test.js` and `test/spatial-v3/p17-space-map.test.js`. Cutover remains separate after shadow run.
+Default entrypoint is v3-only. Legacy graph/position functions are available
+solely through the explicit fixture adapter with `mode: migration |
+shadow_fixture`; it is not imported by v3 composition. Production v2 is only
+an explicit migration/rollback source. Unit/contract tests are in
+`test/domain.test.js` and `test/spatial-v3/p17-space-map.test.js`.

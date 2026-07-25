@@ -21,6 +21,8 @@ const APPROVAL_ARTIFACTS = FREEZE([
 const TEMPORAL_DATA_ROOT = 'data/world-catalogs/novgorod/temporal-v4/';
 const EXTERNAL_DECISION_ROOT =
   'docs/work/temporal-world-v4/external-data-audit/decisions/';
+const HISTORICAL_DECISION_ROOT =
+  'docs/work/temporal-world-v4/external-data-audit/historical-decisions/';
 
 export const TEMPORAL_DATA_READINESS_PATH =
   'docs/work/temporal-world-v4/data-readiness.v1.json';
@@ -355,12 +357,55 @@ async function verifyFamilyApproval(family, readRepositoryFile) {
     issue('temporal_data_readiness_external_decision_invalid');
     return errors;
   }
+  const priorDecisions = decision.prior_decisions ?? [];
+  if (!Array.isArray(priorDecisions) ||
+      new Set(priorDecisions.map((prior) => prior?.decision_id)).size
+        !== priorDecisions.length ||
+      priorDecisions.some((prior) =>
+        !nonEmptyString(prior?.decision_id) ||
+        prior.decision_id === decision.decision_id ||
+        !repositoryPath(prior?.path) ||
+        !prior.path.startsWith(HISTORICAL_DECISION_ROOT) ||
+        !prior.path.endsWith('.decision.json') ||
+        !isDigest(prior?.sha256))) {
+    issue('temporal_data_readiness_external_decision_invalid');
+    return errors;
+  }
+  const priorDecisionErrors = [];
+  await Promise.all(priorDecisions.map(async (prior) => {
+    try {
+      const bytes = Buffer.from(await readRepositoryFile(prior.path));
+      const historical = JSON.parse(bytes.toString('utf8'));
+      if (digest(bytes) !== prior.sha256 ||
+          historical?.schema !== EXTERNAL_DECISION_SCHEMA ||
+          historical?.version !== 1 ||
+          historical?.family_id !== family.id ||
+          historical?.verdict !== 'approved' ||
+          historical?.decision_id !== prior.decision_id ||
+          !Array.isArray(historical?.data_gaps) ||
+          historical.data_gaps.length !== 0) {
+        priorDecisionErrors.push(prior.decision_id);
+      }
+    } catch {
+      priorDecisionErrors.push(prior.decision_id);
+    }
+  }));
+  if (priorDecisionErrors.length > 0) {
+    issue('temporal_data_readiness_external_decision_invalid', {
+      invalid_prior_decision_ids: priorDecisionErrors.sort()
+    });
+    return errors;
+  }
+  const allowedDecisionIds = new Set([
+    decision.decision_id,
+    ...priorDecisions.map(({ decision_id }) => decision_id)
+  ]);
   if (provenanceIds.size !== provenance.length ||
       referenceIds.size !== references.length ||
       sourceIds.size !== history.length ||
       provenance.some((row) => !nonEmptyString(row?.provenance_id) ||
         row?.status !== 'approved' ||
-        row?.decision_id !== externalDecision.decision_id ||
+        !allowedDecisionIds.has(row?.decision_id) ||
         !validStringArray(row?.source_ids) ||
         row.source_ids.some((id) => !sourceIds.has(id))) ||
       references.some((row) => !nonEmptyString(row?.reference_id) ||

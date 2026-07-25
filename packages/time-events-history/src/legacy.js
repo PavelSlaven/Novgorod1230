@@ -4,7 +4,8 @@ import { deepFreeze } from '@rus/kernel';
  * Frozen v2 compatibility surface.
  *
  * This module intentionally preserves the old rounded integer-minute behavior
- * for the production-v2 pipeline until P28. Target-v3 code must import the
+ * for the production-v2 pipeline until the versioned production activation
+ * cutover. Historical P28 evidence did not activate v3. Target-v3 code must import the
  * exact root API instead.
  */
 export function normalizeClock(clock = {}) {

@@ -814,13 +814,13 @@
         {
           "anchor_kind": "repository_line_range",
           "canonical_path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
-          "raw_sha256": "5dcd02a9486694f9977f9e8e587db7d00c43cf41f3ad4c5f97172e0a99ed067a",
-          "start_line": 260,
-          "end_line": 268,
+          "raw_sha256": "b19c9b5d1ccb98f8c775778375626b9277353f83befafd2863316a936471eb87",
+          "start_line": 273,
+          "end_line": 273,
           "required_text": "spatial.g0.historical_geographic_region"
         }
       ],
-      "support_summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"repository_line_range\",\"canonical_path\":\"data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md\",\"raw_sha256\":\"5dcd02a9486694f9977f9e8e587db7d00c43cf41f3ad4c5f97172e0a99ed067a\",\"start_line\":260,\"end_line\":268,\"required_text\":\"spatial.g0.historical_geographic_region\"}]."
+      "support_summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"repository_line_range\",\"canonical_path\":\"data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md\",\"raw_sha256\":\"b19c9b5d1ccb98f8c775778375626b9277353f83befafd2863316a936471eb87\",\"start_line\":273,\"end_line\":273,\"required_text\":\"spatial.g0.historical_geographic_region\"}]."
     },
     {
       "record_kind": "universal_category",
@@ -831,13 +831,13 @@
         {
           "anchor_kind": "repository_line_range",
           "canonical_path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
-          "raw_sha256": "5dcd02a9486694f9977f9e8e587db7d00c43cf41f3ad4c5f97172e0a99ed067a",
-          "start_line": 270,
-          "end_line": 290,
+          "raw_sha256": "b19c9b5d1ccb98f8c775778375626b9277353f83befafd2863316a936471eb87",
+          "start_line": 283,
+          "end_line": 283,
           "required_text": "spatial.g1.territorial_grid_cell"
         }
       ],
-      "support_summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"repository_line_range\",\"canonical_path\":\"data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md\",\"raw_sha256\":\"5dcd02a9486694f9977f9e8e587db7d00c43cf41f3ad4c5f97172e0a99ed067a\",\"start_line\":270,\"end_line\":290,\"required_text\":\"spatial.g1.territorial_grid_cell\"}]."
+      "support_summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"repository_line_range\",\"canonical_path\":\"data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md\",\"raw_sha256\":\"b19c9b5d1ccb98f8c775778375626b9277353f83befafd2863316a936471eb87\",\"start_line\":283,\"end_line\":283,\"required_text\":\"spatial.g1.territorial_grid_cell\"}]."
     },
     {
       "record_kind": "universal_category",
@@ -848,13 +848,13 @@
         {
           "anchor_kind": "repository_line_range",
           "canonical_path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
-          "raw_sha256": "5dcd02a9486694f9977f9e8e587db7d00c43cf41f3ad4c5f97172e0a99ed067a",
-          "start_line": 292,
-          "end_line": 307,
+          "raw_sha256": "b19c9b5d1ccb98f8c775778375626b9277353f83befafd2863316a936471eb87",
+          "start_line": 303,
+          "end_line": 303,
           "required_text": "spatial.g2.territorial_zone"
         }
       ],
-      "support_summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"repository_line_range\",\"canonical_path\":\"data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md\",\"raw_sha256\":\"5dcd02a9486694f9977f9e8e587db7d00c43cf41f3ad4c5f97172e0a99ed067a\",\"start_line\":292,\"end_line\":307,\"required_text\":\"spatial.g2.territorial_zone\"}]."
+      "support_summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"repository_line_range\",\"canonical_path\":\"data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md\",\"raw_sha256\":\"b19c9b5d1ccb98f8c775778375626b9277353f83befafd2863316a936471eb87\",\"start_line\":303,\"end_line\":303,\"required_text\":\"spatial.g2.territorial_zone\"}]."
     },
     {
       "record_kind": "universal_category",
@@ -865,9 +865,9 @@
         {
           "anchor_kind": "repository_line_range",
           "canonical_path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
-          "raw_sha256": "5dcd02a9486694f9977f9e8e587db7d00c43cf41f3ad4c5f97172e0a99ed067a",
-          "start_line": 309,
-          "end_line": 324,
+          "raw_sha256": "b19c9b5d1ccb98f8c775778375626b9277353f83befafd2863316a936471eb87",
+          "start_line": 322,
+          "end_line": 322,
           "required_text": "spatial.g3.settlement"
         },
         {
@@ -883,7 +883,7 @@
           }
         }
       ],
-      "support_summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"repository_line_range\",\"canonical_path\":\"data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md\",\"raw_sha256\":\"5dcd02a9486694f9977f9e8e587db7d00c43cf41f3ad4c5f97172e0a99ed067a\",\"start_line\":309,\"end_line\":324,\"required_text\":\"spatial.g3.settlement\"},{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip\",\"raw_sha256\":\"6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b\",\"internal_path\":\"gn_nov_g1_xp017_yp026_rebuild_002/04-g3/g3-places.json\",\"internal_raw_sha256\":\"bfd84b3b5fd38cbdda70dbe2c3acf3083ac515c2b8940cfd7808b3b6c0f2b16b\",\"json_pointer\":\"\",\"record_predicate\":{\"field\":\"id\",\"equals\":\"gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center\"}}]."
+      "support_summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"repository_line_range\",\"canonical_path\":\"data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md\",\"raw_sha256\":\"b19c9b5d1ccb98f8c775778375626b9277353f83befafd2863316a936471eb87\",\"start_line\":322,\"end_line\":322,\"required_text\":\"spatial.g3.settlement\"},{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip\",\"raw_sha256\":\"6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b\",\"internal_path\":\"gn_nov_g1_xp017_yp026_rebuild_002/04-g3/g3-places.json\",\"internal_raw_sha256\":\"bfd84b3b5fd38cbdda70dbe2c3acf3083ac515c2b8940cfd7808b3b6c0f2b16b\",\"json_pointer\":\"\",\"record_predicate\":{\"field\":\"id\",\"equals\":\"gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center\"}}]."
     },
     {
       "record_kind": "universal_category",
@@ -894,9 +894,9 @@
         {
           "anchor_kind": "repository_line_range",
           "canonical_path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
-          "raw_sha256": "5dcd02a9486694f9977f9e8e587db7d00c43cf41f3ad4c5f97172e0a99ed067a",
-          "start_line": 309,
-          "end_line": 324,
+          "raw_sha256": "b19c9b5d1ccb98f8c775778375626b9277353f83befafd2863316a936471eb87",
+          "start_line": 323,
+          "end_line": 323,
           "required_text": "spatial.g3.built_site"
         },
         {
@@ -912,7 +912,7 @@
           }
         }
       ],
-      "support_summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"repository_line_range\",\"canonical_path\":\"data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md\",\"raw_sha256\":\"5dcd02a9486694f9977f9e8e587db7d00c43cf41f3ad4c5f97172e0a99ed067a\",\"start_line\":309,\"end_line\":324,\"required_text\":\"spatial.g3.built_site\"},{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip\",\"raw_sha256\":\"6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b\",\"internal_path\":\"gn_nov_g1_xp017_yp026_rebuild_002/04-g3/g3-places.json\",\"internal_raw_sha256\":\"bfd84b3b5fd38cbdda70dbe2c3acf3083ac515c2b8940cfd7808b3b6c0f2b16b\",\"json_pointer\":\"\",\"record_predicate\":{\"field\":\"id\",\"equals\":\"gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area\"}}]."
+      "support_summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"repository_line_range\",\"canonical_path\":\"data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md\",\"raw_sha256\":\"b19c9b5d1ccb98f8c775778375626b9277353f83befafd2863316a936471eb87\",\"start_line\":323,\"end_line\":323,\"required_text\":\"spatial.g3.built_site\"},{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip\",\"raw_sha256\":\"6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b\",\"internal_path\":\"gn_nov_g1_xp017_yp026_rebuild_002/04-g3/g3-places.json\",\"internal_raw_sha256\":\"bfd84b3b5fd38cbdda70dbe2c3acf3083ac515c2b8940cfd7808b3b6c0f2b16b\",\"json_pointer\":\"\",\"record_predicate\":{\"field\":\"id\",\"equals\":\"gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area\"}}]."
     },
     {
       "record_kind": "universal_category",
@@ -923,8 +923,8 @@
         {
           "anchor_kind": "repository_line_range",
           "canonical_path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
-          "raw_sha256": "5dcd02a9486694f9977f9e8e587db7d00c43cf41f3ad4c5f97172e0a99ed067a",
-          "start_line": 309,
+          "raw_sha256": "b19c9b5d1ccb98f8c775778375626b9277353f83befafd2863316a936471eb87",
+          "start_line": 324,
           "end_line": 324,
           "required_text": "spatial.g3.natural_feature"
         },
@@ -941,7 +941,7 @@
           }
         }
       ],
-      "support_summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"repository_line_range\",\"canonical_path\":\"data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md\",\"raw_sha256\":\"5dcd02a9486694f9977f9e8e587db7d00c43cf41f3ad4c5f97172e0a99ed067a\",\"start_line\":309,\"end_line\":324,\"required_text\":\"spatial.g3.natural_feature\"},{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip\",\"raw_sha256\":\"6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b\",\"internal_path\":\"gn_nov_g1_xp017_yp026_rebuild_002/04-g3/g3-places.json\",\"internal_raw_sha256\":\"bfd84b3b5fd38cbdda70dbe2c3acf3083ac515c2b8940cfd7808b3b6c0f2b16b\",\"json_pointer\":\"\",\"record_predicate\":{\"field\":\"id\",\"equals\":\"gn_nov_g3_xp017_yp026_r2_south_entry_reach\"}}]."
+      "support_summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"repository_line_range\",\"canonical_path\":\"data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md\",\"raw_sha256\":\"b19c9b5d1ccb98f8c775778375626b9277353f83befafd2863316a936471eb87\",\"start_line\":324,\"end_line\":324,\"required_text\":\"spatial.g3.natural_feature\"},{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip\",\"raw_sha256\":\"6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b\",\"internal_path\":\"gn_nov_g1_xp017_yp026_rebuild_002/04-g3/g3-places.json\",\"internal_raw_sha256\":\"bfd84b3b5fd38cbdda70dbe2c3acf3083ac515c2b8940cfd7808b3b6c0f2b16b\",\"json_pointer\":\"\",\"record_predicate\":{\"field\":\"id\",\"equals\":\"gn_nov_g3_xp017_yp026_r2_south_entry_reach\"}}]."
     },
     {
       "record_kind": "universal_category",
@@ -952,9 +952,9 @@
         {
           "anchor_kind": "repository_line_range",
           "canonical_path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
-          "raw_sha256": "5dcd02a9486694f9977f9e8e587db7d00c43cf41f3ad4c5f97172e0a99ed067a",
-          "start_line": 309,
-          "end_line": 324,
+          "raw_sha256": "b19c9b5d1ccb98f8c775778375626b9277353f83befafd2863316a936471eb87",
+          "start_line": 325,
+          "end_line": 325,
           "required_text": "spatial.g3.route_site"
         },
         {
@@ -970,7 +970,7 @@
           }
         }
       ],
-      "support_summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"repository_line_range\",\"canonical_path\":\"data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md\",\"raw_sha256\":\"5dcd02a9486694f9977f9e8e587db7d00c43cf41f3ad4c5f97172e0a99ed067a\",\"start_line\":309,\"end_line\":324,\"required_text\":\"spatial.g3.route_site\"},{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip\",\"raw_sha256\":\"6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b\",\"internal_path\":\"gn_nov_g1_xp017_yp026_rebuild_002/04-g3/g3-places.json\",\"internal_raw_sha256\":\"bfd84b3b5fd38cbdda70dbe2c3acf3083ac515c2b8940cfd7808b3b6c0f2b16b\",\"json_pointer\":\"\",\"record_predicate\":{\"field\":\"id\",\"equals\":\"gn_nov_g3_xp017_yp026_r2_central_current_split\"}}]."
+      "support_summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"repository_line_range\",\"canonical_path\":\"data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md\",\"raw_sha256\":\"b19c9b5d1ccb98f8c775778375626b9277353f83befafd2863316a936471eb87\",\"start_line\":325,\"end_line\":325,\"required_text\":\"spatial.g3.route_site\"},{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip\",\"raw_sha256\":\"6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b\",\"internal_path\":\"gn_nov_g1_xp017_yp026_rebuild_002/04-g3/g3-places.json\",\"internal_raw_sha256\":\"bfd84b3b5fd38cbdda70dbe2c3acf3083ac515c2b8940cfd7808b3b6c0f2b16b\",\"json_pointer\":\"\",\"record_predicate\":{\"field\":\"id\",\"equals\":\"gn_nov_g3_xp017_yp026_r2_central_current_split\"}}]."
     },
     {
       "record_kind": "universal_category",
@@ -981,9 +981,9 @@
         {
           "anchor_kind": "repository_line_range",
           "canonical_path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
-          "raw_sha256": "5dcd02a9486694f9977f9e8e587db7d00c43cf41f3ad4c5f97172e0a99ed067a",
-          "start_line": 309,
-          "end_line": 324,
+          "raw_sha256": "b19c9b5d1ccb98f8c775778375626b9277353f83befafd2863316a936471eb87",
+          "start_line": 326,
+          "end_line": 326,
           "required_text": "spatial.g3.resource_site"
         },
         {
@@ -999,7 +999,7 @@
           }
         }
       ],
-      "support_summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"repository_line_range\",\"canonical_path\":\"data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md\",\"raw_sha256\":\"5dcd02a9486694f9977f9e8e587db7d00c43cf41f3ad4c5f97172e0a99ed067a\",\"start_line\":309,\"end_line\":324,\"required_text\":\"spatial.g3.resource_site\"},{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip\",\"raw_sha256\":\"6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b\",\"internal_path\":\"gn_nov_g1_xp017_yp026_rebuild_002/04-g3/g3-places.json\",\"internal_raw_sha256\":\"bfd84b3b5fd38cbdda70dbe2c3acf3083ac515c2b8940cfd7808b3b6c0f2b16b\",\"json_pointer\":\"\",\"record_predicate\":{\"field\":\"id\",\"equals\":\"gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge\"}}]."
+      "support_summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"repository_line_range\",\"canonical_path\":\"data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md\",\"raw_sha256\":\"b19c9b5d1ccb98f8c775778375626b9277353f83befafd2863316a936471eb87\",\"start_line\":326,\"end_line\":326,\"required_text\":\"spatial.g3.resource_site\"},{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip\",\"raw_sha256\":\"6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b\",\"internal_path\":\"gn_nov_g1_xp017_yp026_rebuild_002/04-g3/g3-places.json\",\"internal_raw_sha256\":\"bfd84b3b5fd38cbdda70dbe2c3acf3083ac515c2b8940cfd7808b3b6c0f2b16b\",\"json_pointer\":\"\",\"record_predicate\":{\"field\":\"id\",\"equals\":\"gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge\"}}]."
     },
     {
       "record_kind": "universal_category",
@@ -1010,9 +1010,9 @@
         {
           "anchor_kind": "repository_line_range",
           "canonical_path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
-          "raw_sha256": "5dcd02a9486694f9977f9e8e587db7d00c43cf41f3ad4c5f97172e0a99ed067a",
-          "start_line": 309,
-          "end_line": 324,
+          "raw_sha256": "b19c9b5d1ccb98f8c775778375626b9277353f83befafd2863316a936471eb87",
+          "start_line": 327,
+          "end_line": 327,
           "required_text": "spatial.g3.recurrent_site"
         },
         {
@@ -1028,7 +1028,7 @@
           }
         }
       ],
-      "support_summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"repository_line_range\",\"canonical_path\":\"data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md\",\"raw_sha256\":\"5dcd02a9486694f9977f9e8e587db7d00c43cf41f3ad4c5f97172e0a99ed067a\",\"start_line\":309,\"end_line\":324,\"required_text\":\"spatial.g3.recurrent_site\"},{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip\",\"raw_sha256\":\"6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b\",\"internal_path\":\"gn_nov_g1_xp017_yp026_rebuild_002/04-g3/g3-places.json\",\"internal_raw_sha256\":\"bfd84b3b5fd38cbdda70dbe2c3acf3083ac515c2b8940cfd7808b3b6c0f2b16b\",\"json_pointer\":\"\",\"record_predicate\":{\"field\":\"id\",\"equals\":\"gn_nov_g3_xp017_yp026_r2_vikhtuy_locality\"}}]."
+      "support_summary": "Exact editorial category decision backed by [{\"anchor_kind\":\"repository_line_range\",\"canonical_path\":\"data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md\",\"raw_sha256\":\"b19c9b5d1ccb98f8c775778375626b9277353f83befafd2863316a936471eb87\",\"start_line\":327,\"end_line\":327,\"required_text\":\"spatial.g3.recurrent_site\"},{\"anchor_kind\":\"immutable_zip_json_record\",\"canonical_path\":\"data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/source-snapshots/gn_nov_g1_xp017_yp026_rebuild_002_approved_local.zip\",\"raw_sha256\":\"6a1fd22bfd9d11ef09bd294c16c65f116831df4062a52f5400e571c04ee9926b\",\"internal_path\":\"gn_nov_g1_xp017_yp026_rebuild_002/04-g3/g3-places.json\",\"internal_raw_sha256\":\"bfd84b3b5fd38cbdda70dbe2c3acf3083ac515c2b8940cfd7808b3b6c0f2b16b\",\"json_pointer\":\"\",\"record_predicate\":{\"field\":\"id\",\"equals\":\"gn_nov_g3_xp017_yp026_r2_vikhtuy_locality\"}}]."
     },
     {
       "record_kind": "universal_category",

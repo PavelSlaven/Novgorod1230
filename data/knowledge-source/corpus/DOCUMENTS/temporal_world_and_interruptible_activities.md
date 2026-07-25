@@ -1,29 +1,49 @@
 ---
 title: temporal_world_and_interruptible_activities
 status: active
-scope: target-only
-production_runtime: materialization_v2_until_p28
+scope: production
+production_runtime: spatial_v3_production_v1
 source_sha256: f97e71536c08a3b5cc0414fe25460bf70b2d95ee94ff861f785b0a3d9fbfb26e
 ---
 
 # Механика течения времени, длительных действий и автономного мира v4
 
 **Проект:** «Русь XIII век»
-**Статус:** `active` — принятый целевой норматив; не описывает уже активированный production runtime
+**Статус:** `active` — production normative release `spatial-v3-production-v1`
 **Канонический репозиторий:** `PavelSlaven/Novgorod1230`
 **Базовая ветка и снимок сверки:** `main` @ `520c0ea8cc366fc16c949a874c710f3547a322f6`
-**Целевая архитектура:** materialization/spatial v3 после атомарного P28 activation gate
-**Предлагаемая версия amendment:** `temporal-world-v1`; версия spatial-v3 contract set: `4.3.0-target.1`
+**Production архитектура:** materialization/spatial v3 после завершённого `versioned production activation cutover`
+**Принятый базовый amendment:** `temporal-world-v1`; immutable spatial-v3
+contract snapshot: `4.3.0-target.1`
+**Additive PR8 handoff amendment:** `temporal-world-v1.1`; current spatial-v3
+contract set: `4.4.0-target.1`
 **Связанный план:** `План_реализации_механики_времени_v4_implementation_ready.md`
 
 ## 0. Нормативная сила и модель активации
 
-Этот документ задаёт целевое поведение механики времени после её реализации и активации. На базовом снимке репозитория production-владельцем остаётся materialization v2, а spatial v3 является target-моделью до P28. Поэтому применяются два разных утверждения:
+Этот документ задаёт целевое поведение механики времени после её реализации и
+активации. P28 exact-head evidence прежнего кандидата принято как immutable
+historical evidence и не выполняло production write либо composition switch.
+Исторически применялись два разных утверждения:
 
-1. **До P28:** production продолжает работать по v2; temporal-v3/v4 код, DDL и contracts допускаются только в target-, test-, migration- и shadow-контуре. Запрещены mixed read, dual write и fallback из v3 в v2.
-2. **После успешного P28:** v3 становится единственным production runtime; старый путь не вызывается, не выбирается по feature flag и не используется как semantic fallback.
+1. **До `versioned production activation cutover`:** production продолжает
+   работать по v2; temporal-v3/v4 код, DDL и contracts допускаются только в
+   target-, test-, migration- и shadow-контуре. Запрещены mixed read, dual
+   write и fallback из v3 в v2.
+2. **После атомарного cutover:** v3 становится единственным production
+   runtime; старый путь не вызывается, не выбирается по feature flag и не
+   используется как semantic fallback. V2 допустим только как явно выбранный
+   migration/rollback source.
 
-Документ переведён из `proposed` в `active` после реализации полного обязательного scope, прохождения tests, документационной и индексной интеграции и независимого аудита, до формирования финального P28 exact-head evidence. Само изменение статуса не активирует runtime.
+Текущее состояние соответствует пункту 2: cutover завершён release
+`spatial-v3-production-v1`; v3 является sole production owner.
+
+Документ переведён из `proposed` в `active` после реализации полного
+обязательного scope, tests, документационной и индексной интеграции и
+независимого аудита. P28 затем приняло exact-head evidence прежнего кандидата,
+не активируя runtime. Новый кандидат получает собственную exact-head
+validation; изменение технического digest без изменения содержания, схемы или
+семантики само по себе не требует повторного semantic approval.
 
 При конфликте с текущими target-контрактами spatial v3 этот документ считается предложением к их согласованному versioned amendment, а не разрешением создать параллельную модель.
 
@@ -399,7 +419,9 @@ Exactly one completion-model branch is populated. Every model produces either a 
 
 ### 8.3. Static snapshot amendment
 
-Existing `timed_activity_static_snapshot.planned_total_minutes: positive_integer` is replaced before P28 by a versioned snapshot containing:
+Before the completed versioned production activation cutover, existing
+`timed_activity_static_snapshot.planned_total_minutes: positive_integer` was
+replaced by a versioned snapshot containing:
 
 - exact `activity_profile_ref`;
 - sealed completion model snapshot;
@@ -1205,7 +1227,8 @@ Expected outcomes `blocked`, `paused`, `decision_required`, `stranded`, stale-ca
 
 ## 22. Readiness данных
 
-До P28 должны существовать approved records:
+Для versioned production activation cutover были обязательны и остаются
+обязательными approved records:
 
 - calendar/daylight/light profiles;
 - activity categories and profiles;
@@ -1266,17 +1289,18 @@ Expected outcomes `blocked`, `paused`, `decision_required`, `stranded`, stale-ca
 - factual state and player knowledge separated;
 - visible package is committed before narration;
 - narration cannot mutate or roll back facts;
-- target v3 has no production authority before P28;
-- after P28 no legacy production path, mixed read, dual write or fallback remains.
+- target v3 had no production authority before the completed versioned production activation cutover;
+- release `spatial-v3-production-v1` leaves no legacy production path, mixed
+  read, dual write or fallback.
 
 ## 25. Устранённые противоречия исходных drafts
 
 | Проблема | Итоговое решение |
 |---|---|
-| Draft объявлял v3 уже production-active, тогда как `main` держит v2 до P28 | Документ нормативно `active`, но v2 остаётся production owner до атомарного P28 |
-| Предлагалось удалить ожидание cutover | Существующий P28 сохраняется и расширяется temporal evidence |
+| Draft объявлял v3 уже production-active до отдельного cutover | Документ нормативно `active`; историческое P28 evidence не активировало runtime, а последующий `spatial-v3-production-v1` cutover сделал v3 sole owner |
+| Предлагалось удалить ожидание cutover | P28 сохранено как immutable historical evidence; production activation является отдельной versioned operation |
 | Activity status включал `planned` и `invalidated` | Сохранён spatial-v3 vocabulary; planned принадлежит parent execution, invalidation — failure class |
-| Fixed integer `planned_total_minutes` конфликтовал с rational/condition activities | Обязательный versioned amendment existing target snapshot/DDL до P28 |
+| Fixed integer `planned_total_minutes` конфликтовал с rational/condition activities | Обязательный versioned amendment existing target snapshot/DDL до production cutover |
 | Narration была до commit в current pipeline | Visible package входит в factual commit; narration только после commit |
 | `scheduled_for TIMESTAMPTZ` использовался как game time | Gameplay due time переводится в `GameTimestamp`; TIMESTAMPTZ остаётся technical metadata |
 | В movement был собственный Number-based rational helper | Вся arithmetic переносится к sole owner `@rus/time-events-history` |
@@ -1304,10 +1328,14 @@ Expected outcomes `blocked`, `paused`, `decision_required`, `stranded`, stale-ca
 # Приложение A. Canonical contract amendment `temporal-world-v1`
 
 Этот appendix является единственным formal source новых и заменённых DTO
-Spatial `4.3.0-target.1`. Базовые declarations `4.2.0-target.1` сохраняются как
-pinned historical snapshot. Блок с совпадающим `contract_name` заменяет только
-current-target definition; новый блок добавляется к base registry. Параллельный
-runtime contract или side-by-side activity engine не создаётся.
+Temporal World. Разделы A.1–A.6 образуют принятый immutable snapshot Spatial
+`4.3.0-target.1`; базовые declarations `4.2.0-target.1` также сохраняются как
+pinned historical snapshot. Additive раздел A.7 создаёт current contract set
+`4.4.0-target.1` только после inventory доказанных cross-package handoff gaps.
+Это contract-version amendment, а не новый release stage и не production
+activation. Блок с совпадающим `contract_name` заменяет только current-target
+definition; новый блок добавляется к registry. Параллельный runtime contract
+или side-by-side activity engine не создаётся.
 
 ## A.1. Exact temporal values
 
@@ -2017,6 +2045,734 @@ invariants:
   - All linked positive results share exact_elapsed; root zero forbids local positive progress.
 ```
 
+## A.7. PR8 journey and perception handoff amendment
+
+Inventory PR8/PR10 и последующий contract/storage mapping подтвердили восемь
+отсутствующих public handoff:
+
+1. четыре отдельные intent-класса journey ingress при уже существующих
+   route-plan, execution, timed-activity, traversal, idempotency и write-plan
+   contracts;
+2. closed cross-package input и replay evidence для уже существующего pure
+   perception resolver `@rus/npc-runtime`;
+3. явную связь каждого NPC decision option с approved versioned
+   `decision_command`, без которой token membership не доказывает наличие
+   command record и зарегистрированного code-owned handler;
+4. immutable prepared-scene member для first-entry, когда approved target
+   preparation должна существовать до пути, но G5/G6 baseline создаётся
+   атомарно только вместе с arrival.
+5. sealed read projection approved decision-command record, включая exact
+   handler и declared consequence contract;
+6. formal request/result envelope для code-owned reaction handler;
+7. perception/message-to-knowledge delta и deterministic merge result,
+   которые не передают ownership от `@rus/visibility-knowledge-memory`;
+8. sealed reaction-option context, approved policy rules и formal option-set
+   proposal, без которых `@rus/npc-runtime` не может code-owned способом
+   доказать 0/1/many semantics до bounded selection.
+
+Именно эти declarations обосновывают `4.4.0-target.1`. Journey/perception
+request handoffs additive; overrides `preparation_snapshot_member` и
+`npc_decision_option` несовместимы с прежними определениями и действуют только
+в current-target registry. Snapshot
+`4.3.0-target.1` не изменяется задним числом. Новые declarations не требуют
+собственного package, route/activity engine, clock или journal.
+
+Journey command producer — authenticated game-server/turn ingress. Он
+нормализует client intent вместе с sealed server-side state projection.
+Клиент не передаёт authoritative `game_timestamp`, `clock_before`,
+`scheduled_at` или elapsed interval. Consumer — `@rus/turn`; он вызывает
+существующие movement/activity owners и объединяет proposals. Persistence
+использует существующие route-plan/execution/event/idempotency contracts.
+
+Perception request producer — `@rus/turn` из sealed factual event, exact
+server-side timestamp, topology, environment, observer state, policies,
+versions and pins. Consumer — pure `@rus/npc-runtime`. Result остаётся
+`perception_result`; validation/merge knowledge and memory принадлежит
+`@rus/visibility-knowledge-memory`. Replay evidence связывает существующие
+append-only perception result и idempotency record и не создаёт отдельный
+store. Наличие `world_perception_signal` в base registry само по себе не
+делает его общим handoff и не заменяет declarations ниже.
+
+Reaction option producer — pure `@rus/npc-runtime` из applicable approved
+decision policy, approved command records, registered handler identities,
+perception/knowledge state, exact timestamp, state versions and pins.
+`command_ref` обязан разрешаться в approved command record, быть покрыт
+dependency pins и иметь ровно один зарегистрированный handler. Ноль
+применимых options является typed data gap; один option выполняется без LLM;
+несколько options передаются bounded selector только когда policy это
+разрешает. `command_token` детерминированно связывает request, NPC, option,
+command, policy, state version, preconditions и полный option-set digest.
+Ни token, ни LLM response не являются consequence: выбранный command
+исполняется только соответствующим code-owned handler.
+
+`world_base.decision_command_catalog` является runtime projection approved
+Temporal authoring record, а не самостоятельным источником новых команд.
+Reader возвращает полный `approved_decision_command_snapshot`; строка без
+source binding, version, applicability, declared contracts либо ровно одного
+зарегистрированного handler не участвует в candidate set. Handler получает
+только formal `npc_reaction_consequence_request`, не читает скрытое состояние
+и возвращает formal proposal, payload которого валидируется по объявленному
+contract до объединения turn proposals.
+
+`@rus/npc-runtime` возвращает только formal knowledge delta proposal.
+`@rus/visibility-knowledge-memory` проверяет его causal perception/message,
+разделяет facts и hypotheses, выполняет deterministic merge и возвращает
+formal merge result. `misinterpreted` не создаёт factual knowledge.
+Persistence mapping использует append-only
+`party_perception_replay_evidence`,
+`party_npc_reaction_consequences`,
+`party_npc_knowledge_merge_results`, versioned
+`party_npc_knowledge_merge_states` и target-owned nullable branch
+существующей `party_npc_knowledge`. Legacy v2 rows сохраняют все target-поля
+`NULL`; target row атомарно заполняет полный набор target-полей и ссылается на
+validated perception, merge proposal/result и change set. Частичное заполнение
+target branch, недоказуемый backfill и смешанное authoritative чтение v2/v3
+запрещены. Полный knowledge ref сохраняется как исходные `entity_kind` и
+`entity_id`; legacy `fact_id` не считается достаточным target reference.
+Доказанный current-target storage gap закрывает immutable target
+migration `009_party_runtime_pr8_reaction_knowledge.sql`; после
+`spatial-v3-production-v1` она входит в sole-owner v3 production loader.
+
+First-entry использует существующие `preparation_snapshot`,
+`preparation_claim`, route-plan и execution identities. Для уже
+materialized target member сохраняет resolved baseline/G6/position. Для
+ещё не materialized target member сохраняет полный approved
+`prepared_scene_materialization_snapshot`; он резервирует стабильные IDs,
+G4 scope, template/profile, catalog/materializer versions и pins, но не
+утверждает существование строк baseline. Arrival commit берёт lock
+`(party_id, g4_id)` до absence read, повторно читает exact
+snapshot/member/plan/execution/claim, создаёт зарезервированную цепочку,
+переводит claim в consumed и меняет position в одной транзакции.
+Существующая migration `003_party_runtime_v3_planning.sql` не имеет prepared
+branch и требует уже resolved triple; доказанный current-target storage gap
+закрывает immutable target migration
+`008_party_runtime_pr8_first_entry.sql`. После `spatial-v3-production-v1` она
+входит в sole-owner v3 production loader.
+
+```yaml
+contract_name: prepared_scene_materialization_snapshot
+storage: immutable_snapshot
+identity:
+fields:
+  g4_id: required stable_id
+  g5_site_id: required stable_id
+  g5_origin: required enum[canonical, generated]
+  scene_baseline_id: required stable_id
+  g6_instance_id: required stable_id
+  position_id: required stable_id
+  scene_template_ref: required versioned_ref
+  materialization_profile_ref: required versioned_ref
+  catalog_digest: required sha256_hex
+  materializer_version: required authoring_version
+  dependency_pins: required dependency_pin_set
+  canonical_digest: required sha256_hex
+invariants:
+  - IDs are reserved by approved target preparation and do not prove that party baseline rows already exist.
+  - g4_id is the exact canonical target G4 and defines the absence-lock scope together with party_id.
+  - Template, profile, catalog, materializer and dependency pins are complete and applicable to the target.
+```
+
+Следующее определение является current-target override одноимённого
+`4.3.0-target.1` contract:
+
+```yaml
+contract_name: preparation_snapshot_member
+storage: party_runtime_immutable_relation
+identity:
+  - preparation_snapshot_id
+  - ordinal
+fields:
+  preparation_snapshot_id: required stable_id
+  ordinal: required non_negative_integer
+  member_kind: required enum[endpoint, transfer_scene]
+  source_authoring_ref: required versioned_ref
+  resolved_endpoint_snapshot: optional endpoint_contract_snapshot
+  resolved_scene_baseline_id: optional stable_id
+  resolved_g6_instance_id: optional stable_id
+  resolved_position_id: optional stable_id
+  prepared_scene_materialization: optional prepared_scene_materialization_snapshot
+  dependency_pins: required dependency_pin_set
+  share_mode: required enum[execution_exclusive, reusable]
+  member_digest: required sha256_hex
+invariants:
+  - endpoint requires resolved_endpoint_snapshot and forbids every scene field.
+  - transfer_scene requires exactly one branch: the complete resolved baseline/G6/position triple or prepared_scene_materialization.
+  - A resolved position belongs to the declared G6 and active baseline; a prepared branch is materialized only by its atomic first-entry commit.
+  - Ordinals are contiguous from zero and the selected member is linked to the exact route-plan execution through preparation_claim.
+  - Duplicate member_kind plus dependency-pin digest is forbidden within one snapshot.
+  - member_digest covers kind, source, resolved or prepared payload, share mode and dependency pins.
+```
+
+Следующее определение является current-target override одноимённого
+`4.3.0-target.1` contract:
+
+```yaml
+contract_name: npc_decision_option
+storage: immutable_snapshot_member
+identity:
+  - option_id
+fields:
+  option_id: required stable_id
+  command_ref: required versioned_ref
+  command_token: required stable_id
+  canonical_ordinal: required non_negative_integer
+  preconditions_digest: required sha256_hex
+  consequence_policy_ref: required versioned_ref
+invariants:
+  - command_ref resolves to one applicable approved decision-command record and is covered by dependency_pins of the enclosing request.
+  - The approved command record names one registered code-owned handler and the handler output is validated as the declared consequence contract.
+  - command_token binds request, NPC, option, command_ref, policy, state version, preconditions and the complete immutable option set.
+  - Option belongs to one finite approved set and contains no free-text consequence.
+```
+
+```yaml
+contract_name: approved_decision_command_snapshot
+storage: immutable_read_projection
+identity:
+  - command_ref
+fields:
+  command_ref: required versioned_ref
+  domain: required stable_id
+  handler_id: required stable_id
+  input_contract_name: required stable_id
+  consequence_contract_name: required stable_id
+  source_record_ref: required versioned_ref
+  applicability: required snapshot_list[stable_id]
+  status: required enum[approved]
+  dependency_pins: required dependency_pin_set
+  canonical_digest: required sha256_hex
+invariants:
+  - command_ref resolves to the exact approved world_base.decision_command_catalog projection and uses entity kind decision_command.
+  - source_record_ref resolves to the approved Temporal authoring record whose provenance, sources, version and applicability created this projection.
+  - handler_id, command_ref, input_contract_name and consequence_contract_name match exactly one entry in the closed current-target code-owned reaction-handler registry.
+  - canonical_digest covers the complete projection; a self-asserted or unregistered handler identity is invalid.
+  - Missing, draft, ambiguous, unpinned or inapplicable records are excluded; an empty required command set is npc_decision_policy_gap.
+```
+
+```yaml
+contract_name: npc_reaction_handler_input_snapshot
+storage: immutable_snapshot
+identity:
+fields:
+  source_perception: required perception_result
+  reaction_scope_ref: required entity_ref
+  observed_preconditions_digest: required sha256_hex
+  dependency_pins: required dependency_pin_set
+  canonical_digest: required sha256_hex
+invariants:
+  - The source perception is the complete formal causal result; a bare observer/event pair is insufficient.
+  - The snapshot has a closed field set and cannot contain a state patch, clock mutation, SQL, IO handle or arbitrary command payload.
+  - dependency_pins match the enclosing request and canonical_digest covers the complete handler input.
+```
+
+```yaml
+contract_name: npc_reaction_consequence_request
+storage: immutable_request
+identity:
+  - request_id
+  - canonical_input_digest
+fields:
+  request_id: required stable_id
+  npc_ref: required entity_ref
+  selected_option: required npc_decision_option
+  decision_trace: required npc_decision_trace
+  command_record: required approved_decision_command_snapshot
+  consequence_input_snapshot: required npc_reaction_handler_input_snapshot
+  current_state_version: required positive_decimal_string
+  executed_at: required game_timestamp
+  dependency_pins: required dependency_pin_set
+  idempotency_key: required stable_id
+  canonical_input_digest: required sha256_hex
+invariants:
+  - Option, trace, command record, NPC, state version, command/source/policy pins and idempotency identity match exactly.
+  - consequence_input_snapshot contains every causal handler input and no hidden IO is permitted.
+  - idempotency_key is derived deterministically from request, state, trace and command-record digests; callers cannot substitute an unrelated handler retry identity.
+  - Retry with the same validated trace and canonical input reuses the same deterministic consequence; changed state is rejected stale.
+```
+
+```yaml
+contract_name: npc_reaction_consequence_proposal
+storage: immutable_proposal
+identity:
+  - request_id
+  - canonical_input_digest
+fields:
+  request_id: required stable_id
+  npc_ref: required entity_ref
+  option_id: required stable_id
+  command_ref: required versioned_ref
+  handler_id: required stable_id
+  consequence_contract_name: required stable_id
+  consequence_payload: required immutable_snapshot
+  state_version: required positive_decimal_string
+  proposed_at: required game_timestamp
+  dependency_pins: required dependency_pin_set
+  canonical_input_digest: required sha256_hex
+  request_snapshot: required npc_reaction_consequence_request
+  canonical_digest: required sha256_hex
+invariants:
+  - The exact registered handler named by the approved command record is the sole producer.
+  - request, NPC, option, command, handler, state version, timestamp, dependency pins and canonical input digest match request_snapshot exactly.
+  - consequence_payload validates against consequence_contract_name before turn may merge it.
+  - The proposal changes no clock, performs no IO and is not itself a database write.
+```
+
+```yaml
+contract_name: npc_reaction_effect_snapshot
+storage: immutable_snapshot
+identity:
+fields:
+  effect_kind: required enum[investigate_signal, seek_safety, report_to_authority]
+  source_perception_ref: required entity_ref
+  successor_command_kind: required enum[prepare_target, replan, immediate_action]
+  successor_command_payload: required immutable_snapshot
+  effective_at: required game_timestamp
+  canonical_digest: required sha256_hex
+invariants:
+  - investigate_signal maps only to prepare_target, seek_safety only to replan and report_to_authority only to immediate_action.
+  - successor_command_payload is constructed by the registered handler from the sealed request and is revalidated by the existing target command adapter.
+  - The snapshot is a proposal for turn orchestration, not a direct state patch, clock update or database write.
+```
+
+```yaml
+contract_name: knowledge_memory_delta_proposal
+storage: immutable_proposal
+identity:
+  - proposal_id
+fields:
+  proposal_id: required stable_id
+  owner_ref: required entity_ref
+  source_kind: required enum[perception]
+  source_ref: required entity_ref
+  source_perception: required perception_result
+  expected_state_versions: required expected_state_version_set
+  dependency_pins: required dependency_pin_set
+  canonical_digest: required sha256_hex
+relations:
+  fact_refs: relation_set[entity_ref]
+  hypothesis_refs: relation_set[entity_ref]
+invariants:
+  - perception source requires the complete matching formal perception_result; a received-message branch remains a formal DATA_GAP until a committed-message evidence contract exists.
+  - not_perceived grants neither facts nor hypotheses; misinterpreted grants hypotheses only.
+  - fact_refs plus hypothesis_refs equal source_perception.knowledge_update_refs exactly; merge cannot invent a reference absent from the causal result.
+  - Facts and hypotheses are unique, canonically ordered and disjoint.
+  - The proposal does not mutate knowledge and contains no player-facing prose.
+```
+
+```yaml
+contract_name: knowledge_memory_merge_result
+storage: immutable_result
+identity:
+  - proposal_id
+  - result_digest
+fields:
+  proposal_id: required stable_id
+  owner_ref: required entity_ref
+  source_ref: required entity_ref
+  state_version_before: required state_version
+  state_version_after: required state_version
+  state_changed: required boolean
+  dependency_pins: required dependency_pin_set
+  proposal: required knowledge_memory_delta_proposal
+  result_digest: required sha256_hex
+relations:
+  state_before_fact_refs: relation_set[entity_ref]
+  state_before_hypothesis_refs: relation_set[entity_ref]
+  accepted_fact_refs: relation_set[entity_ref]
+  accepted_hypothesis_refs: relation_set[entity_ref]
+invariants:
+  - @rus/visibility-knowledge-memory is the sole merge owner and deterministically unions accepted references with current sealed state.
+  - proposal, owner, source and dependency pins match exactly; accepted sets equal the canonical union of the corresponding sealed state-before set and proposal set.
+  - state_changed is true exactly when the canonical merged state differs; state_version_after then equals state_version_before plus one, otherwise it preserves the version.
+  - The result creates no objective fact and is persisted only through the combined write plan.
+```
+
+```yaml
+contract_name: journey_prepared_execution_start_command
+storage: immutable_request
+identity:
+  - command_id
+fields:
+  command_id: required stable_id
+  intent_kind: required enum[start_prepared_execution]
+  party_id: required stable_id
+  route_plan_id: required stable_id
+  route_plan_execution_id: required stable_id
+  route_plan_digest: required sha256_hex
+  expected_state_versions: required expected_state_version_set
+  dependency_pins: required dependency_pin_set
+  idempotency_key: required stable_id
+invariants:
+  - The execution is planned, uniquely owns the immutable ready plan and repeats no prior committed start.
+  - Exact current time is read only from the sealed server-side state projection; the command contains no client-authored clock.
+  - Start performs no replanning and cannot change the active immutable route plan.
+```
+
+```yaml
+contract_name: journey_execution_continue_command
+storage: immutable_request
+identity:
+  - command_id
+fields:
+  command_id: required stable_id
+  intent_kind: required enum[continue_execution]
+  party_id: required stable_id
+  route_plan_id: required stable_id
+  route_plan_execution_id: required stable_id
+  route_plan_digest: required sha256_hex
+  expected_state_versions: required expected_state_version_set
+  dependency_pins: required dependency_pin_set
+  idempotency_key: required stable_id
+invariants:
+  - Continue rechecks execution status, immutable plan digest, versions and dependencies before collecting boundaries.
+  - Exact current time is read only from the sealed server-side state projection.
+  - Continue cannot replace the plan or revise already committed intervals.
+```
+
+```yaml
+contract_name: journey_execution_cancel_command
+storage: immutable_request
+identity:
+  - command_id
+fields:
+  command_id: required stable_id
+  intent_kind: required enum[cancel_execution]
+  party_id: required stable_id
+  route_plan_id: required stable_id
+  route_plan_execution_id: required stable_id
+  route_plan_digest: required sha256_hex
+  control_reason_code: required stable_id
+  expected_state_versions: required expected_state_version_set
+  dependency_pins: required dependency_pin_set
+  idempotency_key: required stable_id
+invariants:
+  - Cancel is a zero-time command/control outcome at the sealed current timestamp, not a future temporal boundary candidate.
+  - Cancel creates no fictitious traversal interval or activity attempt and preserves committed elapsed, progress and effects.
+  - Result status follows only the pinned activity/traversal policy and existing execution state machine.
+```
+
+```yaml
+contract_name: journey_successor_plan_preparation_command
+storage: immutable_request
+identity:
+  - command_id
+fields:
+  command_id: required stable_id
+  intent_kind: required enum[prepare_successor_plan]
+  party_id: required stable_id
+  predecessor_route_plan_id: required stable_id
+  predecessor_execution_id: required stable_id
+  predecessor_handoff_endpoint_ref: required movement_endpoint_ref
+  predecessor_handoff_snapshot_digest: required sha256_hex
+  successor_path_query: required path_query
+  expected_state_versions: required expected_state_version_set
+  dependency_pins: required dependency_pin_set
+  idempotency_key: required stable_id
+invariants:
+  - Preparation has zero elapsed and starts a new plan/execution lineage from the predecessor exact committed handoff endpoint.
+  - The successor path query start endpoint equals predecessor_handoff_endpoint_ref and its digest binds all target, method, carrier, capability and recovery inputs.
+  - Preparation never mutates the predecessor immutable payload, active plan or committed intervals.
+```
+
+```yaml
+contract_name: perception_signal_snapshot
+storage: immutable_snapshot
+identity:
+fields:
+  signal_ref: required entity_ref
+  channel: required enum[visual, acoustic]
+  source_scope_ref: required entity_ref
+  source_ref: required entity_ref
+  emission_strength: required enum[1, 2, 3, 4]
+  signal_state_version: required state_version
+  player_visibility_class: required enum[public_source, visible_if_perceived, hidden_source]
+  canonical_digest: required sha256_hex
+invariants:
+  - The snapshot references an already existing factual event signal and creates no world fact.
+  - For acoustic signals emission_strength equals sound_event.loudness; for visual or world signals it is the closed 1..4 band resolved from the pinned approved strength profile.
+  - hidden_source never becomes player-visible merely because the signal or approximate direction was perceived.
+```
+
+```yaml
+contract_name: perception_propagation_edge_snapshot
+storage: immutable_snapshot_member
+identity:
+fields:
+  edge_ref: required entity_ref
+  from_ref: required entity_ref
+  to_ref: required entity_ref
+  permitted_channels: required snapshot_list[enum[visual, acoustic]]
+  relation_kind: required enum[visibility_link, acoustic_edge]
+  relation_state_version: required state_version
+  visibility_quality: optional enum[clear, partial]
+  distance_band: optional enum[near, short, medium, long, remote]
+  acoustic_base_loss: optional enum[0, 1, 2]
+  portal_ref: optional entity_ref
+  portal_state: optional enum[open, closed, locked, destroyed]
+  visibility_portal_result: optional enum[clear, partial, blocked]
+  acoustic_portal_extra_loss: optional enum[0, 1, 2, blocked]
+  condition_profile_ref: optional versioned_ref
+  resolved_condition_visibility: optional enum[clear, partial, blocked]
+  resolved_condition_acoustic_loss: optional enum[0, 1, 2, blocked]
+  canonical_digest: required sha256_hex
+invariants:
+  - Permitted channels are unique and canonically ordered.
+  - visibility_link requires exactly visual, visibility_quality and distance_band; it forbids acoustic loss fields.
+  - acoustic_edge requires exactly acoustic and acoustic_base_loss; it forbids visibility_quality and distance_band.
+  - portal_ref, portal_state and the channel-specific portal result are all present or all absent.
+  - condition_profile_ref and the channel-specific resolved condition result are both present or both absent.
+  - Every copied value equals the pinned active visibility_link or acoustic_edge row and the resolved portal/condition state at the request timestamp.
+```
+
+```yaml
+contract_name: perception_propagation_snapshot
+storage: immutable_snapshot
+identity:
+fields:
+  source_scope_ref: required entity_ref
+  target_scope_ref: required entity_ref
+  canonical_digest: required sha256_hex
+relations:
+  edges: relation_set[perception_propagation_edge_snapshot]
+invariants:
+  - Edges form one finite, ordered, acyclic path from source_scope_ref to target_scope_ref.
+  - An empty path is valid only when source and target scopes are equal.
+```
+
+```yaml
+contract_name: perception_environment_snapshot
+storage: immutable_snapshot
+identity:
+fields:
+  light_state_id: required enum[bright, dim, dark]
+  environment_state_ref: required entity_ref
+  environment_state_version: required state_version
+  weather_state_ref: required entity_ref
+  weather_state_version: required state_version
+  weather_visibility_result: required enum[clear, partial, blocked]
+  weather_acoustic_loss: required enum[0, 1, 2, blocked]
+  target_acoustic_profile_ref: required entity_ref
+  target_acoustic_profile_state_version: required state_version
+  target_ambient_noise: required enum[0, 1, 2]
+  transient_visibility_result: required enum[clear, partial, blocked]
+  transient_acoustic_loss: required enum[0, 1, 2, blocked]
+  transient_modifier_dependency_pins: required dependency_pin_set
+  canonical_digest: required sha256_hex
+relations:
+  visibility_modifiers: relation_set[visibility_modifier]
+invariants:
+  - weather visibility/acoustic values are the resolved closed effects of the pinned weather state; they are not free numeric modifiers.
+  - target_ambient_noise and profile state version equal the pinned receiving g6_acoustic_profile.
+  - visibility_modifiers contain the complete applicable active set and preserve their source pins and state versions.
+  - transient effects are closed categorical values derived only from transient_modifier_dependency_pins; absent applicable modifiers resolve to clear and zero.
+  - The digest covers all light, weather, access and transient propagation inputs used by the resolver.
+  - A changed environment state/version creates a different canonical request.
+```
+
+```yaml
+contract_name: perception_attention_snapshot
+storage: immutable_snapshot
+identity:
+fields:
+  attention_state_ref: required entity_ref
+  status: required enum[awake, sleeping]
+  attended_channels: required snapshot_list[enum[visual, acoustic]]
+  observer_position_ref: required movement_endpoint_ref
+  observer_position_state_version: required state_version
+  observer_azimuth_mdeg: required azimuth_mdeg
+  observer_vertical_direction: required enum[level, up, down, mixed]
+  visual_capability_level: required enum[0, 1, 2, 3, 4]
+  acoustic_capability_level: required enum[0, 1, 2, 3, 4]
+  orientation_digest: required sha256_hex
+  canonical_digest: required sha256_hex
+invariants:
+  - Attended channels are unique and canonically ordered.
+  - Orientation and capability values are explicit resolver inputs; their digests never stand in for hidden payload.
+  - Position, orientation, attention or state-version change permits a new evaluation and forbids observer/event-only deduplication.
+```
+
+```yaml
+contract_name: perception_recognition_snapshot
+storage: immutable_snapshot
+identity:
+fields:
+  recognition_state_ref: required entity_ref
+  outcome: required enum[recognized, misinterpreted, partial, unidentified]
+  canonical_digest: required sha256_hex
+invariants:
+  - misinterpreted is an interpretation/hypothesis input and never rewrites the factual signal.
+```
+
+```yaml
+contract_name: perception_policy_snapshot
+storage: immutable_snapshot
+identity:
+fields:
+  recognition_policy_ref: required versioned_ref
+  visibility_policy_ref: required versioned_ref
+  acoustic_policy_ref: optional versioned_ref
+  provenance_ref: required versioned_ref
+  status: required enum[approved]
+  darkness_visual_result_cap: required controlled_perception_result
+  sleeping_attention_channels: required snapshot_list[enum[visual, acoustic]]
+  canonical_digest: required sha256_hex
+invariants:
+  - All referenced policies are approved, applicable and present in dependency_pins.
+  - darkness_visual_result_cap is one of not_perceived, perceived_unidentified or perceived_partial.
+```
+
+```yaml
+contract_name: npc_perception_request
+storage: immutable_request
+identity:
+  - perception_id
+  - canonical_input_digest
+fields:
+  perception_id: required stable_id
+  perceiver_ref: required entity_ref
+  event_ref: required entity_ref
+  perceived_at: required game_timestamp
+  target_scope_ref: required entity_ref
+  factual_signal: required perception_signal_snapshot
+  propagation_snapshot: required perception_propagation_snapshot
+  environment_snapshot: required perception_environment_snapshot
+  attention_snapshot: required perception_attention_snapshot
+  recognition_snapshot: required perception_recognition_snapshot
+  perception_profile: required perception_policy_snapshot
+  expected_state_versions: required expected_state_version_set
+  dependency_pins: required dependency_pin_set
+  idempotency_key: required stable_id
+  canonical_input_digest: required sha256_hex
+relations:
+  known_fact_refs: relation_set[entity_ref]
+  candidate_knowledge_fact_refs: relation_set[entity_ref]
+invariants:
+  - The request is sealed by @rus/turn and contains every causal input used by the pure resolver; hidden reads and IO are forbidden.
+  - Opaque digests prove identity but never substitute for a causal value required by the resolver.
+  - canonical_input_digest covers all fields, ordered relations, exact timestamp, policy versions, dependency pins, state versions and idempotency identity.
+  - candidate_knowledge_fact_refs are proposals only; @rus/npc-runtime never mutates knowledge or memory.
+  - A change in light, position, orientation, attention, propagation, recognition policy, state version or another digest-bound input creates a new valid evaluation.
+```
+
+```yaml
+contract_name: perception_replay_evidence
+storage: immutable_result
+identity:
+  - perception_id
+  - canonical_input_digest
+fields:
+  perception_id: required stable_id
+  canonical_input_digest: required sha256_hex
+  perception_digest: required sha256_hex
+  expected_state_versions_digest: required sha256_hex
+  dependency_pins_digest: required sha256_hex
+  policy_versions_digest: required sha256_hex
+  idempotency_key: required stable_id
+  canonical_digest: required sha256_hex
+invariants:
+  - Replay is permitted only when all identity and digest fields equal the current sealed request and committed perception result.
+  - Evidence maps to the existing idempotency record plus append-only perception result; it creates no separate persistence owner.
+  - Perceiver/event identity alone is insufficient, and no extra causal-parent field is introduced without a later formal gap.
+```
+
+```yaml
+contract_name: npc_reaction_option_rule_snapshot
+storage: immutable_snapshot_member
+identity:
+  - option_id
+fields:
+  option_id: required stable_id
+  command_ref: required versioned_ref
+  consequence_policy_ref: required versioned_ref
+  allowed_perception_results: required relation_set[stable_id]
+  required_capability: required enum[investigate_signal, seek_safety, report_to_authority]
+  requires_direct_threat: required boolean
+  requires_safe_anchor: required boolean
+  requires_authority_recipient: required boolean
+  canonical_digest: required sha256_hex
+invariants:
+  - Every allowed_perception_results value is a controlled_perception_result and not_perceived is forbidden.
+  - command_ref resolves to one approved_decision_command_snapshot and consequence_policy_ref is pinned.
+  - Rules are declarative filters only and contain no consequence patch, default option or prose.
+```
+
+```yaml
+contract_name: npc_reaction_policy_snapshot
+storage: immutable_snapshot
+identity:
+  - policy_ref
+fields:
+  policy_ref: required versioned_ref
+  source_record_ref: required versioned_ref
+  status: required enum[approved]
+  bounded_decision_when_multiple: required boolean
+  zero_options_outcome: required enum[npc_decision_policy_gap]
+  one_option_mode: required enum[code_owned_without_llm]
+  many_options_mode: required enum[bounded_selection]
+  dependency_pins: required dependency_pin_set
+  canonical_digest: required sha256_hex
+relations:
+  option_rules: nonempty_relation_set[npc_reaction_option_rule_snapshot]
+  approved_command_records: nonempty_relation_set[approved_decision_command_snapshot]
+invariants:
+  - option_id and command_ref are unique, canonically ordered and source-backed; every rule resolves exactly one approved_command_record with the same source_record_ref.
+  - dependency_pins include the source record, every command record dependency and every consequence policy.
+  - No authored default or semantic fallback is permitted.
+```
+
+```yaml
+contract_name: npc_reaction_option_context_snapshot
+storage: immutable_snapshot
+identity:
+  - source_perception
+  - npc_ref
+  - npc_state_version
+fields:
+  source_perception: required perception_result
+  npc_ref: required entity_ref
+  reaction_scope_ref: required entity_ref
+  npc_state_version: required positive_decimal_string
+  can_investigate_signal: required boolean
+  can_seek_safety: required boolean
+  can_report_to_authority: required boolean
+  threat_level: required enum[none, possible, direct]
+  safe_anchor_ref: optional movement_endpoint_ref
+  authority_recipient_ref: optional entity_ref
+  expected_state_versions: required expected_state_version_set
+  dependency_pins: required dependency_pin_set
+  canonical_digest: required sha256_hex
+invariants:
+  - npc_ref equals source_perception.perceiver_ref and is covered by expected_state_versions.
+  - Capability, threat, anchor and authority values come from one sealed server-side projection.
+  - The snapshot contains no DB handle, hidden read instruction, LLM output or state patch.
+```
+
+```yaml
+contract_name: npc_reaction_option_set_proposal
+storage: immutable_proposal
+identity:
+  - request_id
+  - source_perception_ref
+  - state_version
+  - options_digest
+fields:
+  request_id: required stable_id
+  source_perception_ref: required entity_ref
+  state_version: required positive_decimal_string
+  options_digest: required sha256_hex
+  context_snapshot: required npc_reaction_option_context_snapshot
+  policy_snapshot: required npc_reaction_policy_snapshot
+  decision_request: required npc_decision_request
+  canonical_digest: required sha256_hex
+invariants:
+  - source_perception_ref identifies the complete context perception and decision_request binds the same NPC, timestamp, state version, policy, pins and canonical filtered options.
+  - request_id is npc-reaction:<sha256> of source perception digest, NPC, state version, policy digest and context digest.
+  - Each preconditions_digest covers context_digest, policy_digest and rule_digest. The ordered token-free option descriptors form option_set_digest; each command_token is cmd.v1:<sha256> over contract version, request_id, NPC, option, command, policy, state version, preconditions_digest and option_set_digest.
+  - options_digest equals decision_request.options_digest and covers the complete ordered options including their request-bound command_token values.
+  - Zero applicable options returns npc_decision_policy_gap instead of this proposal.
+  - One option proceeds without LLM; more than one uses bounded selection only when policy_snapshot permits it.
+```
+
 ---
 
 # Приложение B. Temporal typed-error amendment
@@ -2056,13 +2812,13 @@ outcomes и не превращаются в generic exceptions.
 
 # Приложение C. Controlled vocabulary amendment
 
-Current-target registry `data/contracts/spatial-v3/controlled-vocabularies.v2.json`
+Accepted Temporal baseline registry `data/contracts/spatial-v3/controlled-vocabularies.v2.json`
 наследует все 13 закрытых B.0.1 registries версии 1.0.0, нормативно расширяет
 `controlled_entity_kind` и `controlled_write_target`, а также добавляет следующие
 8 закрытых registries. Полный current-target registry содержит ровно 21
 vocabulary и 498 values; aggregate digest:
 `c0529491f7cda2e22081e5fc0db5618aeabeebe5cbaebb1412961364fd42098c`.
-Baseline v1 остаётся immutable historical artifact и не подменяется v2.
+Baseline v1 и accepted Temporal v2 остаются immutable historical artifacts.
 
 В `controlled_entity_kind` добавлены только именованные Temporal World entity
 targets: `activity_profile`, `body_effect`, `body_state`, `calendar_profile`,
@@ -2089,3 +2845,22 @@ proposal, snapshot и combined-plan DTO не становятся write targets.
 | `controlled_temporal_advance_status` | `temporal.advance_status` | `data/contracts/spatial-v3/controlled-vocabularies.v2.json` | `2.0.0` | `8f63771d967c308dd0cda610b8b418934fada9ea77b9f9f982ce8daaf7c14e0c` |
 | `controlled_remote_scope_mode` | `temporal.remote_scope_mode` | `data/contracts/spatial-v3/controlled-vocabularies.v2.json` | `2.0.0` | `b49edbf5ceba5159b741d33e3b175921b22dad77b54872aef438b5cba85468f5` |
 | `controlled_propagation_process_kind` | `temporal.propagation_process_kind` | `data/contracts/spatial-v3/controlled-vocabularies.v2.json` | `2.0.0` | `eae3da75a6536935b5cd0214301dc5f2b722e3cf69d43d7f4258dca06d0032c4` |
+
+## C.1. PR8 current-target vocabulary amendment
+
+Contract gap A.7 доказал, что approved Temporal authoring и
+`world_base.decision_command_catalog` используют stable entity kind
+`decision_command`, которого нет в immutable registry v2. Current-target
+registry `data/contracts/spatial-v3/controlled-vocabularies.v3.json` наследует
+v2, добавляет только это значение в `controlled_entity_kind` и содержит
+21 vocabulary / 499 values. Aggregate digest:
+`a325d72c1a7eabd5717216371d61e7505444c7dbb75ca94c25ce25156deaa7db`.
+
+| Pseudo-type | Registry ID | Registry path | Version | Digest |
+|---|---|---|---|---|
+| `controlled_entity_kind` | `spatial.contract.entity_kind` | `data/contracts/spatial-v3/controlled-vocabularies.v3.json` | `3.0.0` | `3c3a2587415a41513f5bce842453d8bf79fb729ae107e64e37936dc51334c49a` |
+
+Все остальные значения и consumer semantics наследуются из v2 без
+содержательного расширения. Изменившиеся технические digests v3 обусловлены
+новыми version/path bindings и перечислены в generated registry; они не
+переобъявляют semantic approval неизменённых values.

@@ -5,7 +5,7 @@ import {
   runPartyRuntimeMigrations,
   createPostgresSessionStore,
   createPostgresDeliveryStore
-} from '@rus/game-server/production';
+} from '@rus/game-server/production-v2-migration-source';
 
 function createPool() {
   const db = newDb({ autoCreateForeignKeyIndices: true });

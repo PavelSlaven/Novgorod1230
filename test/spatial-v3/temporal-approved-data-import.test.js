@@ -25,9 +25,9 @@ test('Temporal authoring DDL adds the four normalized read-only world_base table
 test('approved Temporal bundle has exact family, record, reference and source coverage', async () => {
   const bundle = await collectApprovedTemporalBundle({ root });
   assert.equal(bundle.family_count, 13);
-  assert.equal(bundle.record_count, 21);
-  assert.equal(bundle.reference_count, 21);
-  assert.equal(bundle.provenance_count, 13);
+  assert.equal(bundle.record_count, 22);
+  assert.equal(bundle.reference_count, 22);
+  assert.equal(bundle.provenance_count, 14);
   assert.equal(bundle.source_count, 46);
   assert.equal(bundle.developer_table_binding_count, 0);
   assert.deepEqual(bundle.errors, []);
@@ -48,6 +48,28 @@ test('Temporal importer emits one atomic idempotent transaction and supports rol
   assert.equal(await buildApprovedTemporalImportSql({ root }), commitSql);
 });
 
+test('approved reaction policy uses the existing immutable Temporal record store without duplicate decision DDL', async () => {
+  const schema = await inspectWorldBaseSchema({ root });
+  const bundle = await collectApprovedTemporalBundle({ root });
+  const records = bundle.families.flatMap((family) => family.records);
+  const reactionPolicies = records.filter(
+    ({ record_kind }) => record_kind === 'npc_reaction_policy'
+  );
+
+  assert.equal(reactionPolicies.length, 1);
+  assert.equal(
+    reactionPolicies[0].record_id,
+    'record:npc_temporal_profiles_policies:reaction_signal_policy_v1'
+  );
+  assert.equal(schema.part_files.at(-1), 'infra/world-base/schema/18.sql');
+  assert.equal(
+    schema.table_names.some((name) =>
+      name.startsWith('spatial_v3_decision_')
+    ),
+    false
+  );
+});
+
 test('normalized references bind every returned record to the physical Temporal table', async () => {
   const base = 'data/world-catalogs/novgorod/temporal-v4';
   const matrix = JSON.parse(await readFile(
@@ -66,5 +88,5 @@ test('normalized references bind every returned record to the physical Temporal 
       count += 1;
     }
   }
-  assert.equal(count, 21);
+  assert.equal(count, 22);
 });

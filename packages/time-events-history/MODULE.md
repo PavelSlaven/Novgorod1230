@@ -27,9 +27,14 @@
 
 Зависит только от `@rus/kernel` и `@rus/contracts`; не имеет I/O, DB, network, LLM или persistence boundary. Результат передаётся `@rus/turn` и persistence owner, которые не пересчитывают temporal arithmetic.
 
-## Target / P28
+## Target / activation
 
-Temporal World v4 — `temporal-world-v1`, target contract `4.3.0-target.1`; до atomic P28 production v2 остаётся sole runtime owner. Модуль не активирует target и не делает dual write.
+Temporal World v4 base — immutable `temporal-world-v1` /
+`4.3.0-target.1`; current additive handoff contract set —
+`temporal-world-v1.1` / `4.4.0-target.1`. Historical P28 evidence не
+активировало runtime; последующий `versioned production activation cutover`
+release `spatial-v3-production-v1` сделал v3 sole production owner. Модуль
+остаётся pure domain owner и не делает writes.
 
 ## Тесты
 

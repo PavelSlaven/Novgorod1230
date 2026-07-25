@@ -1,0 +1,86 @@
+{
+  "schema": "rus.pr8.target-functional-exact-head-evidence.v1",
+  "version": 1,
+  "repository": "PavelSlaven/Novgorod1230",
+  "pull_request": 8,
+  "branch": "codex/pr8-travel-system",
+  "subject_commit": "5c35975fafdf001236e861d84b0d546f2bd1ee2d",
+  "subject_tree": "3043cf2008bd558b90920e703b9d6ea72bbb9d24",
+  "base_commit": "ef490ecd8cf91f9e07531fc5d56b2abd7b044c41",
+  "candidate_kind": "target_shadow_functional",
+  "production_activation": {
+    "performed": false,
+    "production_owner": "production_v2",
+    "target_writes": false,
+    "dual_write": false,
+    "mixed_authoritative_read": false,
+    "runtime_fallback": false
+  },
+  "historical_evidence": {
+    "p28_subject_commit": "2ec109c99c5e2b33f43dc5f89735e6e72686299b",
+    "rewritten": false,
+    "redeclared_for_subject": false
+  },
+  "semantic_approval": [
+    {
+      "scope": "spatial_v3_p12_dependency_closure",
+      "content_or_interpretation_changed": false,
+      "semantic_reapproval_required": false,
+      "exact_head_revalidation_required": true,
+      "result": "passed"
+    },
+    {
+      "scope": "temporal_v4_approved_families_and_npc_reaction_policy",
+      "content_or_interpretation_changed": true,
+      "semantic_reapproval_required": true,
+      "exact_head_revalidation_required": true,
+      "result": "passed_13_of_13"
+    }
+  ],
+  "validation": [
+    {
+      "id": "clean_clone_dependency_install",
+      "command": "npm ci",
+      "result": "passed",
+      "details": "91 packages; 0 vulnerabilities"
+    },
+    {
+      "id": "generated_reproducibility",
+      "command": "npm run docs:generate && git diff --exit-code",
+      "result": "passed",
+      "details": "zero tracked diff"
+    },
+    {
+      "id": "repository_intelligence",
+      "command": "npm run repo-intel:ensure && npm run repo-intel:status",
+      "result": "passed",
+      "details": "Graphify 0.9.17 ready; source commit equals subject; known RAG degraded warning only"
+    },
+    {
+      "id": "full_root_suite",
+      "command": "npm test",
+      "result": "passed",
+      "details": "all configured suites passed; five environment-gated party PostgreSQL cases covered by the sequential Spatial suite"
+    },
+    {
+      "id": "spatial_temporal_postgres_suite",
+      "command": "node --test --test-concurrency=1 test/spatial-v3/*.test.js",
+      "result": "passed",
+      "details": "292 passed; 0 failed; 1 Windows symlink-capability skip"
+    },
+    {
+      "id": "real_chromium_e2e",
+      "command": "RUS_CHROMIUM_PATH=<local Chrome> npm run test:browser-e2e",
+      "result": "passed",
+      "details": "1 passed; 0 failed; 0 skipped"
+    },
+    {
+      "id": "independent_critic",
+      "command": "read-only exact-commit audit",
+      "result": "pass_with_notes",
+      "details": "no open P0/P1/P2; target/shadow acceptance only"
+    }
+  ],
+  "evidence_report": "docs/implementation/pr8-travel-system/evidence/target-functional-exact-head-report.md",
+  "accepted": true
+}

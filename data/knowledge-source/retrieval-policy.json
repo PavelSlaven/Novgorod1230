@@ -1,7 +1,7 @@
 {
   "schema_version": "rus.knowledge_retrieval_policy.v1",
   "policy_version": "1.0.0",
-  "baseline_manifest_sha256": "3ca8374ff6320fee74863f984f13a14b03bb723cb8dfdbe45dc2ae3f604635b3",
+  "baseline_manifest_sha256": "62cb287f8c21089f156b2598be9135be22d6c112c9fc733f6ed5a42026224ad1",
   "default_statuses": [
     "active"
   ],
@@ -702,6 +702,8 @@
       "related_contracts": [
         "temporal-world-v1",
         "spatial-v3 4.3.0-target.1",
+        "temporal-world-v1.1",
+        "spatial-v3 4.4.0-target.1",
         "GameTimestamp",
         "interruptible activity lifecycle"
       ],
@@ -712,7 +714,9 @@
         "same-time cascade",
         "shared carrier clock",
         "remote catch-up",
-        "post-commit visible package"
+        "post-commit visible package",
+        "journey command ingress",
+        "perception replay evidence"
       ],
       "conflicts_with_document_ids": [],
       "semantic_coverage_disposition": "baseline_gap"

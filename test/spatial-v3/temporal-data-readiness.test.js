@@ -283,6 +283,22 @@ test('Temporal v4 activation rejects a tampered external audit decision', async 
   ));
 });
 
+test('Temporal v4 activation verifies immutable prior decisions before accepting inherited provenance', async () => {
+  const historicalPath =
+    'docs/work/temporal-world-v4/external-data-audit/historical-decisions/npc_temporal_profiles_policies.2026-07-24-reaudit-2.decision.json';
+  const assessment = await assessTemporalDataReadinessForActivation(manifest, {
+    readRepositoryFile: async (path) => path === historicalPath
+      ? Buffer.from('{"verdict":"approved"}')
+      : readFile(path)
+  });
+
+  assert.equal(assessment.activation_ready, false);
+  assert(assessment.errors.some(({ code, family_id }) =>
+    code === 'temporal_data_readiness_external_decision_invalid'
+    && family_id === 'npc_temporal_profiles_policies'
+  ));
+});
+
 test('P28 converts every unresolved Temporal family into a fail-closed activation blocker', async () => {
   const blockedManifest = {
     ...manifest,

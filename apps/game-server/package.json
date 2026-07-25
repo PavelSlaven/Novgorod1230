@@ -5,7 +5,8 @@
   "type": "module",
   "exports": {
     ".": "./src/index.js",
-    "./production": "./src/production.js"
+    "./production-spatial-v3": "./src/composition/production-spatial-v3.js",
+    "./production-v2-migration-source": "./src/production-v2-migration-source.js"
   },
   "dependencies": {
     "@rus/checks-rng": "0.13.0",

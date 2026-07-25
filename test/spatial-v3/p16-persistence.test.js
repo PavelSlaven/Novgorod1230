@@ -8,6 +8,47 @@ import { createSpatialV3CombinedAtomicCommitter } from '../../apps/game-server/s
 import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
 const digest = 'a'.repeat(64);
 const approval = async () => ({ ok: true });
+const firstEntryBindingFields = [
+  'baseline_disposition',
+  'g4_id',
+  'preparation_snapshot_id',
+  'preparation_member_ordinal',
+  'preparation_snapshot_digest',
+  'preparation_member_digest',
+  'route_plan_id',
+  'route_plan_digest',
+  'route_plan_execution_id',
+  'preparation_claim_id',
+  'scene_baseline_id',
+  'g5_site_id',
+  'g6_instance_id',
+  'position_id'
+];
+function firstEntryPhysicalRecheck(overrides = {}) {
+  const value = {
+    kind: 'physical',
+    materialization_scope_key: 'party_runtime.party_scene_baselines:baseline-new',
+    baseline_disposition: 'create',
+    g4_id: 'g4-existing',
+    preparation_snapshot_id: 'preparation-snapshot-1',
+    preparation_member_ordinal: 0,
+    preparation_snapshot_digest: digest,
+    preparation_member_digest: digest,
+    route_plan_id: 'route-plan-1',
+    route_plan_digest: digest,
+    route_plan_execution_id: 'route-execution-1',
+    preparation_claim_id: 'preparation-claim-1',
+    scene_baseline_id: 'baseline-new',
+    g5_site_id: 'g5-new',
+    g6_instance_id: 'g6-new',
+    position_id: 'position-new',
+    ...overrides
+  };
+  return { ...value, digest: computeSpatialV3CanonicalDigest(value) };
+}
+function firstEntryEvidence(check) {
+  return Object.fromEntries(firstEntryBindingFields.map((field) => [field, check[field]]));
+}
 function input(overrides = {}) {
   const visible_payload = {
     schema: 'temporal_visible_package.v1',
@@ -41,6 +82,62 @@ test('P16 reader requires exact id/version/revision/digest and uses typed projec
 test('P16 repository models composite history identity without generic id ordering', async () => {
   const calls = []; const repository = createSpatialV3PartyRepository({ transaction: { query: async (sql) => { calls.push(sql); return { rows: [{ execution_id: 'e', event_ordinal: 1, party_id: 'p' }] }; } } });
   assert.equal((await repository.loadHistory({ party_id: 'p', execution_id: 'e', event_ordinal: 1 })).ok, true); assert.match(calls[0], /ORDER BY execution_id,event_ordinal/); assert.doesNotMatch(calls[0], /SELECT \*/);
+});
+
+test('P16 target repository reads perception, reaction and knowledge without a v2 mixed branch', async () => {
+  const calls = [];
+  const transaction = {
+    query: async (sql, params) => {
+      calls.push({ sql, params });
+      if (sql.includes('party_npc_knowledge_merge_states')) {
+        return { rows: [{
+          party_id: 'p',
+          npc_id: 'npc',
+          state_version: 5,
+          last_proposal_id: 'proposal',
+          last_result_digest: digest,
+          updated_change_set_id: 'change'
+        }] };
+      }
+      if (sql.includes('party_npc_knowledge') && !sql.includes('merge_results')) {
+        return { rows: [{
+          fact_id: 'fact',
+          knowledge_ref_kind: 'knowledge_fact',
+          knowledge_classification: 'fact'
+        }] };
+      }
+      return { rows: [{ party_id: 'p' }] };
+    }
+  };
+  const repository = createSpatialV3PartyRepository({ transaction });
+  assert.equal((await repository.loadPerceptionReplay({
+    party_id: 'p',
+    perception_id: 'perception'
+  })).ok, true);
+  assert.equal((await repository.loadReactionConsequence({
+    party_id: 'p',
+    request_id: 'request'
+  })).ok, true);
+  assert.equal((await repository.loadReactionOptionProposal({
+    party_id: 'p',
+    request_id: 'request'
+  })).ok, true);
+  assert.equal((await repository.loadKnowledgeMergeResult({
+    party_id: 'p',
+    proposal_id: 'proposal'
+  })).ok, true);
+  const knowledge = await repository.loadKnowledgeState({
+    party_id: 'p',
+    npc_id: 'npc',
+    expected_state_version: 5
+  });
+  assert.equal(knowledge.ok, true);
+  assert.equal(knowledge.knowledge[0].knowledge_ref_kind, 'knowledge_fact');
+  assert.equal(calls.every(({ sql }) => !/SELECT\s+\*/u.test(sql)), true);
+  const targetKnowledgeQuery = calls.find(({ sql }) =>
+    sql.includes("target_contract_version='4.4.0-target.1'"));
+  assert.ok(targetKnowledgeQuery);
+  assert.doesNotMatch(targetKnowledgeQuery.sql, /target_contract_version IS NULL/u);
 });
 
 test('P16 builder verifies approval, preserves three disjoint sets and rejects a foreign table', async () => {
@@ -79,6 +176,233 @@ test('P16 committer locks ordered phases, rejects stale update before writes and
   const built = await buildCombinedWritePlan(input({ expected_state_versions: [{ target_table: 'party_route_plan_executions', id: 'e', state_version: 2 }], approved_write_sets: [{ inserts: [], appends: [{ target_table: 'party_v3_change_sets', id: 'cs', record: { id: 'cs', party_id: 'p', operation_kind: 'move', idempotency_record_id: 'idem' } }], updates: [{ target_table: 'party_route_plan_executions', id: 'e', record: { id: 'e', party_id: 'p', status: 'active' } }] }] }), { verifyApproval: approval });
   const calls = []; const committer = createSpatialV3CombinedAtomicCommitter({ recheck: async () => ({ ok: true }), withTransaction: async (work) => work({ query: async (sql) => { calls.push(sql); if (sql.includes('party_command_idempotency') && sql.startsWith('SELECT')) return { rows: [] }; if (sql.startsWith('UPDATE party_runtime.') && sql.includes('party_route_plan_executions')) return { rowCount: 0, rows: [] }; return { rowCount: 1, rows: [] }; } }) });
   const result = await committer.commit({ plan: built.plan }); assert.equal(result.error.code, 'state_version_conflict'); assert.match(calls[0], /pg_advisory_xact_lock/);
+});
+
+test('P16 first-entry locks the prepared baseline scope before absence recheck and atomically admits G5/G6/position/location writes', async () => {
+  const materializationScopeKey = 'party_runtime.party_scene_baselines:baseline-new';
+  const inserts = [
+    {
+      target_table: 'party_g5_sites',
+      id: 'g5-new',
+      record: {
+        id: 'g5-new', party_id: 'p', origin: 'generated',
+        parent_g4_id: 'g4-existing', status: 'active'
+      }
+    },
+    {
+      target_table: 'party_scene_baselines',
+      id: 'baseline-new',
+      record: {
+        id: 'baseline-new', party_id: 'p', host_kind: 'g5_site',
+        host_id: 'g5-new', source_kind: 'generated_template',
+        status: 'active'
+      }
+    },
+    {
+      target_table: 'party_g6_instances',
+      id: 'g6-new',
+      record: {
+        id: 'g6-new', party_id: 'p', scene_baseline_id: 'baseline-new',
+        scene_slot_key: 'entry', host_kind: 'g5_site', host_id: 'g5-new',
+        status: 'active'
+      }
+    },
+    {
+      target_table: 'scene_position_nodes',
+      id: 'position-new',
+      record: {
+        id: 'position-new', party_id: 'p', g6_instance_id: 'g6-new',
+        template_slot_key: 'arrival', status: 'active'
+      }
+    }
+  ];
+  const location = {
+    target_table: 'party_journey_locations',
+    id: 'journey-location',
+    record: {
+      id: 'journey-location', party_id: 'p', owner_kind: 'actor',
+      owner_id: 'actor-1', location_kind: 'scene',
+      scene_position_id: 'position-new'
+    }
+  };
+  const consumedClaim = {
+    target_table: 'preparation_claims',
+    id: 'preparation-claim-1',
+    record: {
+      id: 'preparation-claim-1',
+      claim_status: 'consumed',
+      terminal_change_set_id: 'cs'
+    }
+  };
+  const physicalKeys = [
+    'party_runtime.party_v3_change_sets:cs',
+    ...inserts.map((write) => `party_runtime.${write.target_table}:${write.id}`),
+    'party_runtime.party_journey_locations:journey-location',
+    'party_runtime.preparation_claims:preparation-claim-1'
+  ];
+  const physicalRecheck = firstEntryPhysicalRecheck();
+  const commitRechecks = ['physical', 'state', 'pin', 'endpoint', 'route', 'capacity', 'time', 'change_set']
+    .map((kind) => ({
+      kind,
+      digest: `sha256:${digest}`,
+      ...(kind === 'physical' ? physicalRecheck : {})
+    }));
+  const built = await buildCombinedWritePlan(input({
+    operation_kind: 'first_entry',
+    expected_state_versions: [{
+      target_table: 'party_journey_locations',
+      id: 'journey-location',
+      state_version: 4
+    }, {
+      target_table: 'preparation_claims',
+      id: 'preparation-claim-1',
+      state_version: 1
+    }],
+    lock_context: {
+      owner_keys: ['actor:actor-1'],
+      execution_keys: ['route-execution-1'],
+      g4_keys: ['p:g4-existing'],
+      physical_keys: physicalKeys
+    },
+    commit_rechecks: commitRechecks,
+    approved_write_sets: [{
+      inserts,
+      updates: [location, consumedClaim],
+      appends: [{
+        target_table: 'party_v3_change_sets',
+        id: 'cs',
+        record: {
+          id: 'cs', party_id: 'p', operation_kind: 'first_entry',
+          idempotency_record_id: 'idem'
+        }
+      }]
+    }]
+  }), { verifyApproval: approval });
+  assert.equal(built.ok, true, JSON.stringify(built));
+
+  const calls = [];
+  const committer = createSpatialV3CombinedAtomicCommitter({
+    recheck: async ({ transaction, check }) => {
+      calls.push(`recheck:${check.kind}`);
+      if (check.kind === 'physical') {
+        assert.equal(check.materialization_scope_key, materializationScopeKey);
+        await transaction.query(
+          `SELECT s.canonical_digest,m.member_digest,p.canonical_serialization_digest,
+                  e.id,c.id
+             FROM party_runtime.preparation_snapshots s
+             JOIN party_runtime.preparation_snapshot_members m
+               ON m.preparation_snapshot_id=s.id AND m.ordinal=$2
+             JOIN party_runtime.party_route_plans p
+               ON p.id=$3 AND p.preparation_snapshot_id=s.id
+             JOIN party_runtime.party_route_plan_executions e
+               ON e.id=$4 AND e.route_plan_id=p.id
+             JOIN party_runtime.preparation_claims c
+               ON c.id=$5 AND c.preparation_snapshot_id=s.id
+              AND c.preparation_member_ordinal=m.ordinal
+              AND c.route_plan_execution_id=e.id
+            WHERE s.id=$1 AND c.claim_status='reserved'`,
+          [
+            check.preparation_snapshot_id,
+            check.preparation_member_ordinal,
+            check.route_plan_id,
+            check.route_plan_execution_id,
+            check.preparation_claim_id
+          ]
+        );
+        return {
+          ok: true,
+          first_entry_binding: firstEntryEvidence(check)
+        };
+      }
+      return { ok: true };
+    },
+    withTransaction: async (work) => work({
+      query: async (sql, params = []) => {
+        if (sql.includes('pg_advisory_xact_lock')) calls.push(`lock:${params[0]}`);
+        else if (sql.includes('FROM party_runtime.preparation_snapshots')) calls.push('preparation-read');
+        else if (sql.includes('party_command_idempotency') && sql.startsWith('SELECT')) return { rows: [] };
+        else if ((sql.startsWith('INSERT INTO party_runtime.') || sql.startsWith('UPDATE party_runtime.'))
+          && !sql.includes('party_command_idempotency')) calls.push('domain-write');
+        return { rowCount: 1, rows: [] };
+      }
+    })
+  });
+  const committed = await committer.commit({ plan: built.plan });
+
+  assert.equal(committed.ok, true, JSON.stringify(committed));
+  const baselineLockIndex = calls.indexOf(`lock:05:physical:${materializationScopeKey}`);
+  const baselineReadIndex = calls.indexOf('preparation-read');
+  const firstWriteIndex = calls.indexOf('domain-write');
+  assert.ok(baselineLockIndex >= 0);
+  assert.ok(baselineReadIndex > baselineLockIndex);
+  assert.ok(firstWriteIndex > baselineReadIndex);
+  assert.ok(committed.lock_keys.includes('06:idempotency:p:first_entry:key'));
+  assert.ok(!committed.lock_keys.includes('06:idempotency:idem'));
+
+  const unrelatedBinding = firstEntryPhysicalRecheck({
+    position_id: 'unrelated-position'
+  });
+  const rejected = await buildCombinedWritePlan(input({
+    operation_kind: 'first_entry',
+    expected_state_versions: [{
+      target_table: 'party_journey_locations',
+      id: 'journey-location',
+      state_version: 4
+    }, {
+      target_table: 'preparation_claims',
+      id: 'preparation-claim-1',
+      state_version: 1
+    }],
+    lock_context: {
+      owner_keys: ['actor:actor-1'],
+      execution_keys: ['route-execution-1'],
+      g4_keys: ['p:g4-existing'],
+      physical_keys: physicalKeys
+    },
+    commit_rechecks: commitRechecks.map((check) => (
+      check.kind === 'physical' ? unrelatedBinding : check
+    )),
+    approved_write_sets: [{
+      inserts,
+      updates: [location, consumedClaim],
+      appends: [{
+        target_table: 'party_v3_change_sets',
+        id: 'cs',
+        record: {
+          id: 'cs', party_id: 'p', operation_kind: 'first_entry',
+          idempotency_record_id: 'idem'
+        }
+      }]
+    }]
+  }), { verifyApproval: approval });
+  assert.equal(rejected.ok, false);
+  assert.equal(rejected.error.code, 'target_preparation_failed');
+
+  const wrongG4Lock = await buildCombinedWritePlan(input({
+    operation_kind: 'first_entry',
+    expected_state_versions: [
+      { target_table: 'party_journey_locations', id: 'journey-location', state_version: 4 },
+      { target_table: 'preparation_claims', id: 'preparation-claim-1', state_version: 1 }
+    ],
+    lock_context: {
+      owner_keys: ['actor:actor-1'],
+      execution_keys: ['route-execution-1'],
+      g4_keys: ['g4-existing'],
+      physical_keys: physicalKeys
+    },
+    commit_rechecks: commitRechecks,
+    approved_write_sets: [{
+      inserts,
+      updates: [location, consumedClaim],
+      appends: [{
+        target_table: 'party_v3_change_sets',
+        id: 'cs',
+        record: { id: 'cs', party_id: 'p', operation_kind: 'first_entry', idempotency_record_id: 'idem' }
+      }]
+    }]
+  }), { verifyApproval: approval });
+  assert.equal(wrongG4Lock.ok, false);
+  assert.equal(wrongG4Lock.error.code, 'lock_order_violation');
 });
 
 test('P16 idempotency replay compares input and expected-version digests', async () => {

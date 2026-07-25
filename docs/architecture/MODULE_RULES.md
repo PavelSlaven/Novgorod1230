@@ -10,7 +10,8 @@
 8. Публичный API пакета — не более 15 экспортов.
 9. Соседние стадии не импортируют реализации друг друга. Передача выполняется через артефакты и контракты.
 10. `legacy` является временной карантинной зоной: новые функции в нём не создаются.
-11. Temporal World v4 до P28 — target-only: new pure owners receive frozen,
+11. Завершённый `versioned production activation cutover` release
+    `spatial-v3-production-v1` включает Temporal World v4 owners, которые receive frozen,
    pinned inputs and emit proposals or typed gaps; they do not read DB/network/
    LLM/global state, mutate input, persist facts or invoke peer owners.
 12. Exact time, boundary ordering and same-time cascade belong only to

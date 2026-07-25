@@ -2,7 +2,11 @@
 
 ## Назначение
 
-`@rus/world-processes` — active-norm, target-only Temporal World v4 owner pure remote catch-up и propagation proposals. До P28 результаты предназначены для shadow/fixtures/migration и не меняют production v2.
+`@rus/world-processes` — active-norm Temporal World v4 owner pure remote
+catch-up и propagation proposals. Historical P28 evidence не активировало
+runtime; последующий `versioned production activation cutover` release
+`spatial-v3-production-v1` включил этот owner в sole production v3
+composition.
 
 ## Владеет
 
@@ -31,6 +35,13 @@ Blocked result содержит typed code в trace: `time_window_invalid`, `pro
 
 Разрешены `@rus/kernel`, `@rus/contracts` и `@rus/time-events-history` для pure exact temporal arithmetic. Нет DB, network, LLM, narration, UI, global state, direct calls к другим runtime owners или иных side effects. Пакет не пишет SQL и не commit-ит change set: только `@rus/turn` валидирует/submit-ит approved output через `CombinedAtomicCommitter` и `@rus/party-store` является persistence boundary.
 
-## P28 и тесты
+## Activation и тесты
 
-До P28 proposals не имеют production effect; rollback отбрасывает uncommitted result. P28 допускает activation только одной атомарной поставкой, без dual writers, partial fallback или reinterpretation committed history through v2. Tests: `test/world-processes.test.js` проверяет huge rational exact interval, deterministic retry/state version/termination, immutable blocked aggregate and player-visible handoff, all registered process kinds, pending/corrupt lifecycle, full pins и explicit optional path pinning.
+В active `spatial-v3-production-v1` proposals применяются только через единый
+combined write plan. Rollback отбрасывает uncommitted result; production v2
+доступен лишь как explicit migration/rollback source, без dual writers,
+partial fallback или reinterpretation committed history through v2. Tests:
+`test/world-processes.test.js` проверяет huge rational exact interval,
+deterministic retry/state version/termination, immutable blocked aggregate and
+player-visible handoff, all registered process kinds, pending/corrupt
+lifecycle, full pins и explicit optional path pinning.

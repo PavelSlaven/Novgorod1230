@@ -18,8 +18,8 @@
 17 scene families, 195 profiles и 195 candidates. Это не является production
 activation.
 
-Temporal World v4 реализован как target amendment
-`temporal-world-v1` / `4.3.0-target.1`: exact rational game time,
+Temporal World v4 реализован как current target amendment
+`temporal-world-v1.1` / `4.4.0-target.1`: exact rational game time,
 interruptible activities, deterministic temporal boundaries, NPC/carrier/
 environment/remote updates и post-commit narration. Его профильный норматив
 имеет status `active` после полной implementation acceptance и независимого
@@ -27,10 +27,17 @@ environment/remote updates и post-commit narration. Его профильный
 
 Exact-head P28 release evidence принят в merged PR #19: обязательный CI,
 hash-bound critic evidence и merge proof прошли live-проверку. Это разрешение
-не выполняло production write и не меняло composition автоматически:
-production v2 остаётся текущим sole owner до отдельного versioned activation
-cutover. Partial activation, dual write, authoritative mixed read и v3→v2
-fallback запрещены.
+само не выполняло production write и не меняло composition. Последующий
+`versioned production activation cutover` завершён release
+`spatial-v3-production-v1`: composition, authoritative reads/writes, target
+migration path, runtime pins и rollback release identity переключены одной
+версией. Spatial v3/Temporal World v4 теперь являются sole production owner.
+Startup принимает только завершённую cutover stage `13`; release фиксирует
+approved Spatial world revision/manifest, `temporal-world-v1.1`, exact
+dependency pins и существующий `rus.runtime_catalog_pin.v2` lifecycle.
+Production v2 сохранён только как explicit migration/rollback source; partial
+activation, dual write, authoritative mixed read и v3→v2 runtime fallback
+запрещены.
 
 ## Основные принципы
 

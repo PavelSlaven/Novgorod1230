@@ -3,6 +3,7 @@ import { clone, fail, freeze, record, sealed, text } from './spatial-v3-orchestr
 export const SPATIAL_V3_COMMAND_KINDS = Object.freeze([
   'path_query', 'prepare_target', 'resolve_frontier', 'activate_plan',
   'immediate_action', 'timed_activity', 'timed_traversal',
+  'journey_command',
   'resume_plan', 'replan', 'recover_journey',
   'board_carrier', 'disembark_carrier', 'load_carrier', 'change_cohort'
 ]);

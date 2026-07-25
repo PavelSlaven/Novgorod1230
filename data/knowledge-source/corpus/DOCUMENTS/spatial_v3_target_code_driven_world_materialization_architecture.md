@@ -1,17 +1,22 @@
 # Архитектура кодовой материализации мира
 
-**Статус:** target normative; active runtime остаётся materialization v2 до P28.
+**Статус:** active production normative после завершённого
+`versioned production activation cutover`; historical P28 evidence само
+runtime не активировало.
 **Версия target:** spatial v3 / G0–G6 v4.2.0.
 **Приоритет:** высший норматив границы authoring data, кода, LLM, `world_base` и `party_runtime`.
 
 **Temporal amendment:** active target normative
 `temporal_world_and_interruptible_activities.md`,
-`temporal-world-v1` / Spatial DTO `4.3.0-target.1`. Он не активирует
-production до P28.
+current `temporal-world-v1.1` / Spatial DTO `4.4.0-target.1`, сохраняя
+immutable `temporal-world-v1` / `4.3.0-target.1`. Production activation
+выполнена release `spatial-v3-production-v1`.
 
-## 1. Active/target boundary
+## 1. Production boundary
 
-Этот документ фиксирует целевую семантику v3, но не активирует её. До атомарного activation gate production request обслуживается только v2 composition. V3 разрешён исключительно для документации, contracts, fixtures, migration и shadow composition.
+Этот документ фиксирует authoritative семантику v3 release
+`spatial-v3-production-v1`. Production request обслуживается только v3
+composition; v2 не имеет runtime selector.
 
 Физическое сосуществование v2/v3 допустимо, но dual write, authoritative mixed read, fallback внутри хода и частичная активация запрещены. После activation v3 становится единственным production owner; v2 остаётся только read-only источником rollback/migration в пределах утверждённой операции.
 
@@ -60,8 +65,19 @@ package и сохраняет его в том же atomic commit, что и sta
 
 ## 7. Условия активации
 
-Status flip запрещён до одновременного выполнения target §0.4: DDL/SCHEMA_REFERENCE/contracts/import/save-load синхронизированы, migration and rollback validated, tests включая PostgreSQL проходят, generated/repository-intelligence artifacts актуальны, independent critic вернул PASS или допустимый PASS WITH NOTES, а P27 закрыт. P28 выполняет единственный атомарный activation.
+Status flip запрещён до одновременного выполнения target §0.4:
+DDL/SCHEMA_REFERENCE/contracts/import/save-load синхронизированы, migration and
+rollback validated, tests включая PostgreSQL проходят,
+generated/repository-intelligence artifacts актуальны, independent critic
+вернул PASS или допустимый PASS WITH NOTES. Единственную атомарную activation
+выполнил release `spatial-v3-production-v1` как отдельный `versioned
+production activation cutover`; историческое P28 evidence не является этой
+операцией.
 
 ## 8. Migration history: materialization v2
 
-До P28 active v2 использует canonical G0–G4 в `world_base` и party-scoped G5. Эта историческая модель сохранена только как описание migration source и не является target production semantics. Ни один v3 request не может читать или записывать её как fallback.
+До завершённого `versioned production activation cutover` active v2
+использовал canonical G0–G4 в `world_base` и party-scoped G5. Эта историческая
+модель сохранена только как описание migration/rollback source и не является
+production v3 semantics. Ни один v3 request не может читать или записывать её
+как fallback.

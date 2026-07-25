@@ -14,9 +14,13 @@
 | `@rus/visibility-knowledge-memory` | visible projection, hidden boundary, knowledge map, memory facts, leak detection, safe narrator package | prose generation, hidden-state mutation, DB reads |
 | `@rus/runtime-catalog` | read-only active/historical domain pin loading, exact import reconstruction, world-pin compatibility и applicable item/container projection | authoring, import/activation writes, party persistence, materialization |
 
-## Spatial v3 target ownership (P08)
+## Spatial v3 production ownership (P08)
 
-These records are target-only until P28. They do not reroute production v2, permit dual write, mixed reads or compatibility fallback.
+Historical P28 evidence did not itself activate production. The later
+`versioned production activation cutover` completed as
+`spatial-v3-production-v1`; these owners now form the sole production
+composition. Dual write, mixed reads and compatibility fallback remain
+forbidden.
 
 | Owner | Sole target responsibility | Explicit boundary |
 |---|---|---|
@@ -28,14 +32,15 @@ These records are target-only until P28. They do not reroute production v2, perm
 | `@rus/turn` | command order, locks, idempotency and combined write-plan construction | no repository implementation |
 | `@rus/contracts` | shared discriminated DTOs, controlled vocabularies and typed errors | no domain execution or adapters |
 | presentation/knowledge | player-safe projection only | never factual topology creation |
-| `@rus/game-server` | production composition after the P28 gate | no duplicate spatial/movement/materialization logic |
+| `@rus/game-server` | sole production composition after the completed `versioned production activation cutover` | no duplicate spatial/movement/materialization logic |
 
 The target public ports are deliberately typed-failure stubs until their individual implementation phases. A caller must surface the error or stop; it must not try v2, choose a substitute record or write a partial result.
 
-## Temporal World v4 target ownership
+## Temporal World v4 production ownership
 
-These responsibilities are proposed target-only until P28; active production
-v2 remains the sole production owner.
+The completed `versioned production activation cutover` made these
+responsibilities authoritative in release `spatial-v3-production-v1`.
+Production v2 is an explicit migration/rollback source only.
 
 | Owner | Exact target responsibility | Explicit boundary |
 |---|---|---|

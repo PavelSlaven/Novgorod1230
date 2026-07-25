@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import registry from '../../../../data/contracts/spatial-v3/controlled-vocabularies.v2.json' with { type: 'json' };
+import registry from '../../../../data/contracts/spatial-v3/controlled-vocabularies.v3.json' with { type: 'json' };
 
 export class ControlledVocabularyError extends Error {
   constructor(message, details = {}) {
@@ -25,7 +25,7 @@ export function canonicalDigest(value) {
 export function validateControlledVocabularyRegistry(input = registry) {
   const errors = [];
   if (input?.registry_id !== 'spatial.controlled_vocabularies') errors.push('registry_id');
-  if (!['1.0.0', '2.0.0'].includes(input?.version)) errors.push('version');
+  if (!['1.0.0', '2.0.0', '3.0.0'].includes(input?.version)) errors.push('version');
   if (input?.status !== 'approved') errors.push('status');
   if (!Array.isArray(input?.vocabularies) || input.vocabularies.length !== input?.vocabulary_count) errors.push('vocabulary_count');
   if ((input?.vocabularies ?? []).reduce((sum, vocabulary) => sum + (vocabulary.values?.length ?? 0), 0) !== input?.value_count) errors.push('value_count');

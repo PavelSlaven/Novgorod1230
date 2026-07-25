@@ -2,7 +2,12 @@
 
 ## Статус и граница миграции
 
-Этот документ задаёт **target materialization v3** для генерации мира и ходов. До единого activation gate P28 production runtime обслуживается только active materialization v2. Target-правила разрешены лишь для документации, contracts, fixtures, migration и shadow composition; partial activation, dual write и v3→v2 fallback запрещены.
+Этот документ задаёт **target materialization v3** для генерации мира и ходов.
+Принятое историческое P28 evidence не активировало runtime. До отдельного
+`versioned production activation cutover` production runtime обслуживается
+только active materialization v2. Target-правила разрешены лишь для
+документации, contracts, fixtures, migration и shadow composition; partial
+activation, dual write и v3→v2 fallback запрещены.
 
 Temporal execution дополнительно регулирует active target-норматив
 `temporal_world_and_interruptible_activities.md`. Ход применяет event-driven
@@ -46,7 +51,9 @@ LLM выбирает только bounded option и создаёт разреш�
 <!-- knowledge-retrieval-exclude:start -->
 ## Приложение A. Архивный v2-источник для migration traceability
 
-Нижеследующий текст сохранён только как historical/migration source. Он не активирует v2 semantics в target v3 и не разрешает mixed execution, dual write или fallback. До P28 active production boundary определён отдельно.
+Нижеследующий текст сохранён только как historical/migration source. Он не
+активирует v2 semantics в v3 и не разрешает mixed execution, dual write или
+fallback. Active production boundary — release `spatial-v3-production-v1`.
 
 # Генерация мира и ходы
 

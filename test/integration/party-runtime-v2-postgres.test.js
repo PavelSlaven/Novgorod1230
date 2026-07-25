@@ -3,7 +3,10 @@ import { readFile } from 'node:fs/promises';
 import { randomUUID } from 'node:crypto';
 import test from 'node:test';
 import pg from 'pg';
-import { createPostgresPartyStore, runPartyRuntimeMigrations } from '@rus/game-server/production';
+import {
+  createPostgresPartyStore,
+  runPartyRuntimeMigrations
+} from '@rus/game-server/production-v2-migration-source';
 import { createAutonomousUpdateRegistry, createTurnCommandRegistry, enterG4WithMaterialization, runAutonomousUpdates } from '@rus/turn';
 import { canonicalDigest, issueBoundedDecisionRequest, materializeWorldInstances, repairWorldInstances, validateBoundedDecisionResult } from '@rus/materialization';
 import { buildPersistencePlanStage } from '../../packages/turn/src/stages/persistence-plan.js';

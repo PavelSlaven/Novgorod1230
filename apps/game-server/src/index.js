@@ -1,5 +1,7 @@
 export { createGameCompositionRoot } from './composition/root.js';
-export { createProductionCompositionRoot } from './composition/production.js';
+export {
+  createSpatialV3ProductionCompositionRoot
+} from './composition/production-spatial-v3.js';
 export { createInMemorySessionStore } from './adapters/session-store.js';
 export { createLlmRoleRunnerAdapter } from './adapters/llm-role-runner.js';
 export { createWorldBaseAdapter } from './adapters/world-base.js';

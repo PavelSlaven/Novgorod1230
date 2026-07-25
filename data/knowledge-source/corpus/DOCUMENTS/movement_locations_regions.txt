@@ -2,7 +2,11 @@
 
 ## Статус и граница миграции
 
-Этот документ фиксирует **target materialization v3**. До атомарного activation gate P28 единственным active production path остаётся materialization v2. Документ не разрешает частичную активацию, dual write, v3→v2 fallback или использование target-контрактов production runtime.
+Этот документ фиксирует **target materialization v3**. Принятое историческое
+P28 evidence не активировало runtime. До отдельного `versioned production
+activation cutover` единственным active production path остаётся
+materialization v2. Документ не разрешает частичную активацию, dual write,
+v3→v2 fallback или использование target-контрактов production runtime.
 
 Temporal duration и interruption дополнительно регулирует active target-норматив
 `temporal_world_and_interruptible_activities.md`. Movement владеет только
@@ -11,7 +15,10 @@ arithmetic, timestamp comparison и boundary ordering принадлежат
 `@rus/time-events-history`. Traversal interval не округляет duration и не
 использует gameplay `TIMESTAMPTZ`.
 
-После P28 пространственная модель: canonical G0–G5 в `world_base`; party G5 overlay/generated G5, G6 и `scene_position` — в `party_runtime`. G7/G8 не вводятся. Factual topology, знание персонажа и player projection — независимые слои.
+После `versioned production activation cutover` пространственная модель:
+canonical G0–G5 в `world_base`; party G5 overlay/generated G5, G6 и
+`scene_position` — в `party_runtime`. G7/G8 не вводятся. Factual topology,
+знание персонажа и player projection — независимые слои.
 
 ## 1. Авторитетное положение и носители
 
@@ -77,7 +84,9 @@ Resolver/materializer/validator возвращают proposals и reports. Ед�
 
 ## 7. Traceability
 
-Target источники: `spatial_architecture_standard_g0_g6.md` §§4, 8–10, 11. До P28 active v2 сохраняется только как migration source; v3 runtime-заявка не читает и не пишет v2 fallback.
+Target источники: `spatial_architecture_standard_g0_g6.md` §§4, 8–10, 11. До
+`versioned production activation cutover` active v2 остаётся sole production
+owner; v3 runtime-заявка не читает и не пишет v2 fallback.
 
 
 ---
@@ -85,7 +94,11 @@ Target источники: `spatial_architecture_standard_g0_g6.md` §§4, 8–1
 <!-- knowledge-retrieval-exclude:start -->
 ## Приложение A. Архивный v2-источник для migration traceability
 
-Нижеследующий текст сохранён только как historical/migration source для ссылочной совместимости и аудита. Он **не является target-правилом**, не активирует v2 semantics в target v3 и не разрешает mixed execution, dual write либо fallback. При конфликте применяется основной target-раздел этого документа и target standard; active production boundary до P28 определён отдельно.
+Нижеследующий текст сохранён только как historical/migration source для
+ссылочной совместимости и аудита. Он **не является production-правилом**, не
+активирует v2 semantics в v3 и не разрешает mixed execution, dual write либо
+fallback. При конфликте применяется основной v3-раздел этого документа и
+active production boundary release `spatial-v3-production-v1`.
 
 # Перемещение по локациям и регионам
 

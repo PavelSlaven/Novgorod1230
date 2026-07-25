@@ -14,12 +14,20 @@ Pure player-safety projection boundary: validates and constructs narrator-safe v
 
 ## Public API и контракты
 
-`VISIBLE_PACKAGE_KEYS`, `detectHiddenLeaks`, `stripHiddenForNarrator`, `validateVisibleContext`, `mergeKnowledgeFacts`, `validateMemoryFact`, `buildSafeNarratorPackage`. Inputs are plain closed data; visible context requires version `1`, schema `visible_context_package`, `visible_scene` and only allowed keys. Outputs are frozen sanitized package, validation `{ ok, errors }`, leak paths or merged facts. The Temporal caller supplies the persisted `visible_package_persistence_envelope` only after factual commit; this module never reads an uncommitted state snapshot as presentation truth.
+`VISIBLE_PACKAGE_KEYS`, `detectHiddenLeaks`, `stripHiddenForNarrator`, `validateVisibleContext`, `mergeKnowledgeFacts`, `validateMemoryFact`, `buildSafeNarratorPackage`, `buildPlayerSafeVisiblePackageEnvelope`. Inputs are plain closed data; visible context requires version `1`, schema `visible_context_package`, `visible_scene` and only allowed keys. Outputs are frozen sanitized package, validation `{ ok, errors }`, leak paths or merged facts. The Temporal caller supplies the persisted `visible_package_persistence_envelope` only after factual commit; this module never reads an uncommitted state snapshot as presentation truth.
 
 ## Ошибки, зависимости и effects
 
 Invalid package/fact is reported in result errors (including hidden-leak paths); this module does not silently grant knowledge or infer missing fields. Depends only on `@rus/kernel`; has no I/O, DB, LLM, persistence or UI side effects.
 
-## Target / P28 и тесты
+## Target / activation и тесты
 
-Temporal visible-package persistence is target `temporal-world-v1`/`4.3.0-target.1`: factual commit and pending presentation status are owned by game-server transaction; this package only projects after commit. It neither activates target nor dual-writes before P28. `test/domain.test.js` covers allow-list, leak stripping/detection, safe-package and memory contracts.
+Temporal visible-package persistence is target current
+`temporal-world-v1.1` / `4.4.0-target.1`; its visible-envelope definition is
+compatible with immutable `temporal-world-v1` / `4.3.0-target.1`: factual commit and pending presentation
+status are owned by the game-server transaction. This package creates and
+validates the player-safe candidate from candidate post-change facts before the
+combined commit; narration and the final screen consume only the persisted
+package after commit. It neither activates target nor dual-writes before the
+versioned production activation cutover. `test/domain.test.js` covers
+allow-list, leak stripping/detection, safe-package and memory contracts.

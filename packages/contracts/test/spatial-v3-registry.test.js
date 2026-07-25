@@ -8,10 +8,10 @@ import {
 import { loadCanonicalTarget } from '../../../tools/spatial-v3/red-contract-harness.mjs';
 import { stateMachineDefinitions } from '../src/spatial-v3/state-machines.js';
 
-test('P07 registry exposes exactly the current 188 contracts and 82 typed errors once', async () => {
+test('P07 registry exposes exactly the current 213 contracts and 82 typed errors once', async () => {
   const target = await loadCanonicalTarget();
-  assert.equal(contractDefinitions.length, 188);
-  assert.equal(new Set(contractDefinitions.map(({ contract_name }) => contract_name)).size, 188);
+  assert.equal(contractDefinitions.length, 213);
+  assert.equal(new Set(contractDefinitions.map(({ contract_name }) => contract_name)).size, 213);
   assert.ok(contractImplementationBatches.every(({ contract_names }) => contract_names.length <= 20));
   assert.equal(typedErrorDefinitions.length, 82);
   assert.equal(new Set(typedErrorDefinitions.map(({ error_code }) => error_code)).size, 82);
@@ -34,12 +34,13 @@ test('P07 canonical serialization is order independent', () => {
 test('P07 controlled vocabularies are exact, approved, versioned, digest-pinned and fail closed for unknown values', () => {
   assert.equal(controlledVocabularyDefinitions.length, 21);
   for (const definition of controlledVocabularyDefinitions) {
-    assert.match(definition.registry_path, /^data\/contracts\/spatial-v3\/controlled-vocabularies\.v2\.json#\/vocabularies\/\d+$/);
+    assert.match(definition.registry_path, /^data\/contracts\/spatial-v3\/controlled-vocabularies\.v3\.json#\/vocabularies\/\d+$/);
     assert.match(definition.digest, /^[a-f0-9]{64}$/);
     assert.equal(definition.status, 'approved');
     assert.ok(definition.values.length > 0);
   }
   assert.deepEqual(validateControlledVocabulary('controlled_entity_kind', 'access_class'), []);
+  assert.deepEqual(validateControlledVocabulary('controlled_entity_kind', 'decision_command'), []);
   assert.deepEqual(validateControlledVocabulary('controlled_entity_kind', 'invented').map(({ code }) => code), ['controlled_vocabulary_gap']);
 });
 

@@ -7,9 +7,10 @@
 environment context и approved profile pins. `@rus/time-events-history`
 владеет только clock/boundary arithmetic. Threshold prediction возвращает
 точный boundary candidate; округление к часу/минуте и скрытый доступ к БД
-запрещены. Полный proposed-норматив:
-`temporal_world_and_interruptible_activities.md`. До P28 production v2
-остаётся единственным owner.
+запрещены. Полный active production-норматив:
+`temporal_world_and_interruptible_activities.md`. Historical P28 evidence не
+активировало production; отдельный `versioned production activation cutover`
+завершён release `spatial-v3-production-v1`, и v3 является единственным owner.
 
 ## Физические характеристики
 

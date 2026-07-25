@@ -2,7 +2,9 @@
 
 - Status: accepted
 - Date: 2026-07-23
-- Decision scope: target architecture; no production activation before P28.
+- Decision scope: production architecture. Historical P28 acceptance did not
+  activate production; the later `versioned production activation cutover`
+  release `spatial-v3-production-v1` did.
 
 ## Decision
 
@@ -14,4 +16,8 @@ Process profiles, causal rules and candidate data are read-only `world_base` dat
 
 ## Rollback
 
-Before P28, this owner is shadow/fixture-only and its proposals have no production effect. Rollback drops uncommitted proposals; after activation it uses the approved reverse migration or checkpoint recovery, without dual writers, partial fallback, or recomputation of already committed party history.
+Before the completed `versioned production activation cutover`, this owner was
+shadow/fixture-only. It is now consumed only through the v3 combined write
+plan. Rollback drops uncommitted proposals and uses the declared reverse
+migration or checkpoint recovery, without dual writers, partial fallback, or
+recomputation of already committed party history.

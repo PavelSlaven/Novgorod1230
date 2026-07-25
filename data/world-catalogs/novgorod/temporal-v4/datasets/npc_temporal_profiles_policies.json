@@ -326,5 +326,200 @@
         "decision_owner": "@rus/turn orchestrates request-bound selection; @rus/npc-runtime only proposes the approved option set"
       }
     }
+  },
+  {
+    "record_id": "record:npc_temporal_profiles_policies:reaction_signal_policy_v1",
+    "family_id": "npc_temporal_profiles_policies",
+    "record_kind": "npc_reaction_policy",
+    "status": "approved",
+    "version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "provenance_refs": [
+      "provenance:npc_temporal_profiles_policies:reaction_policy_v1"
+    ],
+    "normalized_reference_ids": [
+      "reference:npc_temporal_profiles_policies:reaction_signal_policy_v1"
+    ],
+    "source_history_refs": [
+      "source:npc_temporal_profiles_policies:temporal_world_v4_normative",
+      "source:npc_temporal_profiles_policies:user_reconstruction_authorization"
+    ],
+    "payload": {
+      "evidence_classification": {
+        "kind": "bounded_gameplay_reconstruction",
+        "historical_fact_claim": false,
+        "limitations": [
+          "The policy authorizes only three closed technical reactions and is not evidence of historical NPC behavior.",
+          "Applicability requires a sealed runtime context and does not create capabilities, authority relationships, safe anchors or threats."
+        ]
+      },
+      "policy_ref": {
+        "entity_ref": {
+          "entity_kind": "action_contract",
+          "entity_id": "npc_reaction_signal_policy_v1"
+        },
+        "authoring_version": "1"
+      },
+      "bounded_decision_when_multiple": true,
+      "zero_options_outcome": "npc_decision_policy_gap",
+      "one_option_mode": "code_owned_without_llm",
+      "many_options_mode": "bounded_selection",
+      "no_authored_default": true,
+      "command_records": [
+        {
+          "command_ref": {
+            "entity_ref": {
+              "entity_kind": "decision_command",
+              "entity_id": "npc_investigate_signal"
+            },
+            "authoring_version": "1"
+          },
+          "domain": "npc_reaction",
+          "handler_id": "npc.reaction.investigate-signal.v1",
+          "input_contract_name": "npc_reaction_consequence_request",
+          "consequence_contract_name": "npc_reaction_effect_snapshot",
+          "consequence_policy_ref": {
+            "entity_ref": {
+              "entity_kind": "action_contract",
+              "entity_id": "npc_investigate_signal_consequence_v1"
+            },
+            "authoring_version": "1"
+          },
+          "applicability": [
+            "novgorod"
+          ],
+          "status": "approved"
+        },
+        {
+          "command_ref": {
+            "entity_ref": {
+              "entity_kind": "decision_command",
+              "entity_id": "npc_report_to_authority"
+            },
+            "authoring_version": "1"
+          },
+          "domain": "npc_reaction",
+          "handler_id": "npc.reaction.report-to-authority.v1",
+          "input_contract_name": "npc_reaction_consequence_request",
+          "consequence_contract_name": "npc_reaction_effect_snapshot",
+          "consequence_policy_ref": {
+            "entity_ref": {
+              "entity_kind": "action_contract",
+              "entity_id": "npc_report_to_authority_consequence_v1"
+            },
+            "authoring_version": "1"
+          },
+          "applicability": [
+            "novgorod"
+          ],
+          "status": "approved"
+        },
+        {
+          "command_ref": {
+            "entity_ref": {
+              "entity_kind": "decision_command",
+              "entity_id": "npc_seek_safety"
+            },
+            "authoring_version": "1"
+          },
+          "domain": "npc_reaction",
+          "handler_id": "npc.reaction.seek-safety.v1",
+          "input_contract_name": "npc_reaction_consequence_request",
+          "consequence_contract_name": "npc_reaction_effect_snapshot",
+          "consequence_policy_ref": {
+            "entity_ref": {
+              "entity_kind": "action_contract",
+              "entity_id": "npc_seek_safety_consequence_v1"
+            },
+            "authoring_version": "1"
+          },
+          "applicability": [
+            "novgorod"
+          ],
+          "status": "approved"
+        }
+      ],
+      "consequence_policies": [
+        {
+          "policy_ref": {
+            "entity_ref": {
+              "entity_kind": "action_contract",
+              "entity_id": "npc_investigate_signal_consequence_v1"
+            },
+            "authoring_version": "1"
+          },
+          "effect_kind": "investigate_signal",
+          "successor_command_kind": "prepare_target",
+          "state_patch_allowed": false
+        },
+        {
+          "policy_ref": {
+            "entity_ref": {
+              "entity_kind": "action_contract",
+              "entity_id": "npc_report_to_authority_consequence_v1"
+            },
+            "authoring_version": "1"
+          },
+          "effect_kind": "report_to_authority",
+          "successor_command_kind": "immediate_action",
+          "state_patch_allowed": false
+        },
+        {
+          "policy_ref": {
+            "entity_ref": {
+              "entity_kind": "action_contract",
+              "entity_id": "npc_seek_safety_consequence_v1"
+            },
+            "authoring_version": "1"
+          },
+          "effect_kind": "seek_safety",
+          "successor_command_kind": "replan",
+          "state_patch_allowed": false
+        }
+      ],
+      "option_rules": [
+        {
+          "option_id": "investigate_signal",
+          "command_id": "npc_investigate_signal",
+          "allowed_perception_results": [
+            "misinterpreted",
+            "perceived_partial",
+            "perceived_unidentified",
+            "recognized"
+          ],
+          "required_capability": "investigate_signal",
+          "requires_direct_threat": false,
+          "requires_safe_anchor": false,
+          "requires_authority_recipient": false
+        },
+        {
+          "option_id": "report_to_authority",
+          "command_id": "npc_report_to_authority",
+          "allowed_perception_results": [
+            "recognized"
+          ],
+          "required_capability": "report_to_authority",
+          "requires_direct_threat": false,
+          "requires_safe_anchor": false,
+          "requires_authority_recipient": true
+        },
+        {
+          "option_id": "seek_safety",
+          "command_id": "npc_seek_safety",
+          "allowed_perception_results": [
+            "misinterpreted",
+            "perceived_partial",
+            "perceived_unidentified",
+            "recognized"
+          ],
+          "required_capability": "seek_safety",
+          "requires_direct_threat": true,
+          "requires_safe_anchor": true,
+          "requires_authority_recipient": false
+        }
+      ]
+    }
   }
 ]

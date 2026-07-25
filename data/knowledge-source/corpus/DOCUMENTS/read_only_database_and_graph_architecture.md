@@ -1,13 +1,13 @@
 # Read-only world base и графовая архитектура
 
-Статус: рабочая архитектурная спецификация materialization v2
+Статус: migration-source спецификация materialization v2
 Дата ревизии: 2026-07-14
 
-## P02 target routing (inactive until P28)
+## Production/target routing
 
-This document remains the active materialization v2 database/graph owner. The complete spatial v3 target single-source and graph semantics are owned by `spatial_v3_target_read_only_database_and_graph_architecture.md` together with `spatial_architecture_standard_g0_g6.md`; target reads and writes must not be mixed with the v2 production path before the atomic gate.
+The completed `versioned production activation cutover` made `spatial_v3_target_read_only_database_and_graph_architecture.md` together with `spatial_architecture_standard_g0_g6.md` the sole production database/graph owner. This v2 document is retained only for explicit migration/rollback interpretation.
 
-The approved P12 authoring projection is rooted at `data/world-catalogs/novgorod/spatial-v3/manifest.json`: it has 37 SHA-256-pinned datasets and `data_gaps: []`, compiling only previously approved source records. This approved authoring state does not authorize production import, runtime use, write, or activation. Materialization v2 remains the sole production owner until P28.
+The approved P12 authoring projection is rooted at `data/world-catalogs/novgorod/spatial-v3/manifest.json`: it has 37 SHA-256-pinned datasets and `data_gaps: []`. Release `spatial-v3-production-v1`, not historical P28 evidence alone, activates its production use.
 
 Физические таблицы и колонки определяются [`infra/world-base/schema.sql`](../../../../infra/world-base/schema.sql) и автоматически созданным [`infra/world-base/SCHEMA_REFERENCE.md`](../../../../infra/world-base/SCHEMA_REFERENCE.md). Назначение, наполнение и readiness таблиц задаёт `world_base_materialization_table_requirements.md`.
 

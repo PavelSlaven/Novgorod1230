@@ -27,7 +27,11 @@ export function readServerConfig(env = process.env) {
     port,
     maxBodyBytes,
     runtimeRoute,
-    cutoverStage: integer(env.RUS_CUTOVER_STAGE, modularDefault ? 13 : 0, { min: 0, max: 13 }),
+    cutoverStage: strictInteger(
+      env.RUS_CUTOVER_STAGE,
+      modularDefault ? 13 : 0,
+      { min: 0, max: 13 }
+    ),
     modulesEnabled: bool(env.RUS_MODULES_ENABLED, modularDefault),
     llmRuntimeModulesEnabled: bool(env.RUS_LLM_RUNTIME_MODULES_ENABLED, modularDefault),
     dataModulesEnabled: bool(env.RUS_DATA_MODULES_ENABLED, modularDefault),
@@ -41,9 +45,13 @@ export function readServerConfig(env = process.env) {
     gameServerModulesEnabled: bool(env.RUS_GAME_SERVER_MODULES_ENABLED, modularDefault),
     modularUiEnabled: bool(env.RUS_UI_MODULES_ENABLED, modularDefault),
     toolsModulesEnabled: bool(env.RUS_TOOLS_MODULES_ENABLED, modularDefault),
-    compositionModule: text(env.RUS_COMPOSITION_MODULE) || 'builtin:production',
-    runtimeBindingsModule: text(env.RUS_RUNTIME_BINDINGS_MODULE) || null,
-    runMigrations: bool(env.RUS_RUN_PARTY_MIGRATIONS, true),
+    compositionModule:
+      text(env.RUS_COMPOSITION_MODULE) || 'builtin:production-spatial-v3',
+    spatialV3BindingsModule:
+      text(env.RUS_SPATIAL_V3_BINDINGS_MODULE) || null,
+    runtimeCatalogPinManifestDigest: digestText(
+      env.RUS_SPATIAL_V3_RUNTIME_CATALOG_PIN_MANIFEST_DIGEST
+    ),
     probeProvider: bool(env.RUS_PROBE_LLM_PROVIDER_ON_STARTUP, false),
     developerMode: bool(env.RUS_DEVELOPER_MODE, false)
   };
@@ -53,13 +61,37 @@ export function readServerConfig(env = process.env) {
 const STARTUP_FLAGS = Object.freeze(MODULAR_FLAGS.filter((name) => name !== 'toolsModulesEnabled'));
 
 export function assertModularStartupConfig(config) {
-  if (config.runtimeRoute === 'legacy') return config;
+  if (config.runtimeRoute !== 'modular') {
+    throw serverError(
+      'RUNTIME_ROUTE_INACTIVE',
+      'Legacy runtime is not selectable after spatial-v3 production cutover.',
+      { status: 500 }
+    );
+  }
   const disabled = STARTUP_FLAGS.filter((name) => config[name] !== true);
   if (disabled.length) throw serverError('MODULAR_FEATURE_FLAGS_INCOMPLETE', `Modular runtime requires all cutover flags; disabled: ${disabled.join(', ')}.`, { status: 500, details: { disabled } });
-  if (config.cutoverStage < 12) throw serverError('CUTOVER_STAGE_INCOMPLETE', 'Modular runtime cannot become default before cutover step 12.', { status: 500 });
+  if (config.cutoverStage !== 13) throw serverError('CUTOVER_STAGE_INCOMPLETE', 'Spatial-v3 production requires the completed atomic cutover stage 13.', { status: 500 });
   if (!config.compositionModule) throw serverError('COMPOSITION_MODULE_REQUIRED', 'Composition module is required.', { status: 500 });
-  if (config.compositionModule === 'builtin:production' && !config.runtimeBindingsModule) {
-    throw serverError('RUNTIME_BINDINGS_MODULE_REQUIRED', 'RUS_RUNTIME_BINDINGS_MODULE is required for builtin production composition.', { status: 500 });
+  if (config.compositionModule !== 'builtin:production-spatial-v3') {
+    throw serverError(
+      'COMPOSITION_MODULE_INACTIVE',
+      'Only the activated spatial-v3 production composition may be selected.',
+      { status: 500 }
+    );
+  }
+  if (!config.spatialV3BindingsModule) {
+    throw serverError(
+      'RUNTIME_BINDINGS_MODULE_REQUIRED',
+      'RUS_SPATIAL_V3_BINDINGS_MODULE is required for spatial-v3 production.',
+      { status: 500 }
+    );
+  }
+  if (!config.runtimeCatalogPinManifestDigest) {
+    throw serverError(
+      'RUNTIME_CATALOG_PIN_MANIFEST_DIGEST_REQUIRED',
+      'Spatial-v3 production requires one exact compatible-world pin manifest digest.',
+      { status: 500 }
+    );
   }
   return config;
 }
@@ -76,3 +108,14 @@ function route(value, fallback) {
 function bool(value, fallback) { if (value == null || value === '') return fallback; return ['1', 'true', 'yes', 'on'].includes(String(value).trim().toLowerCase()); }
 function text(value) { return String(value ?? '').trim(); }
 function integer(value, fallback, { min, max }) { const parsed = Number(value); if (!Number.isInteger(parsed)) return fallback; return Math.max(min, Math.min(max, parsed)); }
+function strictInteger(value, fallback, { min, max }) {
+  if (value == null || value === '') return fallback;
+  const parsed = Number(value);
+  return Number.isInteger(parsed) && parsed >= min && parsed <= max
+    ? parsed
+    : null;
+}
+function digestText(value) {
+  const normalized = text(value).toLowerCase();
+  return /^[a-f0-9]{64}$/u.test(normalized) ? normalized : null;
+}

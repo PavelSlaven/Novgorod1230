@@ -4,6 +4,7 @@ const standardSource = 'data/knowledge-source/corpus/DOCUMENTS/spatial_architect
 const temporalSource = 'data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md';
 const output = 'packages/contracts/src/spatial-v3/typed-error-specifications.json';
 const baselineOutput = 'packages/contracts/src/spatial-v3/typed-error-specifications-4.2.0-target.1.json';
+const temporalBaselineOutput = 'packages/contracts/src/spatial-v3/typed-error-specifications-4.3.0-target.1.json';
 const check = process.argv.includes('--check');
 const standard = await readFile(standardSource, 'utf8');
 const temporal = await readFile(temporalSource, 'utf8');
@@ -42,10 +43,12 @@ const errors = [...byCode.values()];
 if (errors.length !== 82) throw new Error(`Expected 82 merged typed errors, got ${errors.length}`);
 await mkdir('packages/contracts/src/spatial-v3', { recursive: true });
 await writeArtifact(baselineOutput, { source: standardSource, source_version: '4.2.0-target.1', errors: baselineErrors });
-await writeArtifact(output, {
+const acceptedTemporalArtifact = {
   source: standardSource,
   amendment_source: temporalSource,
   source_version: '4.3.0-target.1',
   errors
-});
+};
+await writeArtifact(temporalBaselineOutput, acceptedTemporalArtifact);
+await writeArtifact(output, { ...acceptedTemporalArtifact, source_version: '4.4.0-target.1' });
 console.log(`Generated ${output}: ${errors.length} merged Spatial v4.2 + Temporal v4 typed errors.`);

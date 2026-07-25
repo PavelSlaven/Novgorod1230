@@ -2,7 +2,8 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { readFile } from 'node:fs/promises';
 import historicalCatalog from '../../data/contracts/spatial-v3/controlled-vocabularies.v1.json' with { type: 'json' };
-import currentCatalog from '../../data/contracts/spatial-v3/controlled-vocabularies.v2.json' with { type: 'json' };
+import temporalBaselineCatalog from '../../data/contracts/spatial-v3/controlled-vocabularies.v2.json' with { type: 'json' };
+import currentCatalog from '../../data/contracts/spatial-v3/controlled-vocabularies.v3.json' with { type: 'json' };
 import { controlledVocabularyRegistrySnapshot, validateControlledVocabularyRegistry, validateControlledValue, ControlledVocabularyError } from '../../packages/contracts/src/spatial-v3/controlled-vocabularies.js';
 
 const temporalEntityKinds = [
@@ -19,15 +20,20 @@ const temporalWriteTargets = [
   'time_slice_result', 'visible_package_persistence_envelope'
 ];
 
-test('P07 keeps the approved v1 13/426 catalog immutable and current v2 is 21/498', async () => {
+test('P07 keeps approved v1 and Temporal v2 immutable while PR8 current v3 is 21/499', async () => {
   assert.equal(historicalCatalog.version, '1.0.0');
   assert.equal(historicalCatalog.vocabulary_count, 13);
   assert.equal(historicalCatalog.value_count, 426);
   assert.deepEqual(validateControlledVocabularyRegistry(historicalCatalog), { ok: true, errors: [] });
 
-  assert.equal(currentCatalog.version, '2.0.0');
+  assert.equal(temporalBaselineCatalog.version, '2.0.0');
+  assert.equal(temporalBaselineCatalog.vocabulary_count, 21);
+  assert.equal(temporalBaselineCatalog.value_count, 498);
+  assert.deepEqual(validateControlledVocabularyRegistry(temporalBaselineCatalog), { ok: true, errors: [] });
+
+  assert.equal(currentCatalog.version, '3.0.0');
   assert.equal(currentCatalog.vocabulary_count, 21);
-  assert.equal(currentCatalog.value_count, 498);
+  assert.equal(currentCatalog.value_count, 499);
   assert.deepEqual(controlledVocabularyRegistrySnapshot(), currentCatalog);
   assert.deepEqual(validateControlledVocabularyRegistry(currentCatalog), { ok: true, errors: [] });
 
@@ -40,23 +46,30 @@ test('P07 keeps the approved v1 13/426 catalog immutable and current v2 is 21/49
 
   const temporalAmendment = await readFile('data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md', 'utf8');
   assert.ok(temporalAmendment.includes(`\`${currentCatalog.aggregate_digest}\``));
-  const temporalVocabularies = currentCatalog.vocabularies.filter(({ pseudo_type }) => !historicalCatalog.vocabularies.some((historical) => historical.pseudo_type === pseudo_type));
+  const temporalVocabularies = temporalBaselineCatalog.vocabularies.filter(({ pseudo_type }) => !historicalCatalog.vocabularies.some((historical) => historical.pseudo_type === pseudo_type));
   assert.equal(temporalVocabularies.length, 8);
   for (const vocabulary of temporalVocabularies) {
     const row = `| \`${vocabulary.pseudo_type}\` | \`${vocabulary.registry_id}\` | \`data/contracts/spatial-v3/controlled-vocabularies.v2.json\` | \`${vocabulary.version}\` | \`${vocabulary.digest}\` |`;
     assert.ok(temporalAmendment.includes(row), `Temporal Appendix C mapping missing: ${vocabulary.pseudo_type}`);
   }
   for (const pseudoType of ['controlled_entity_kind', 'controlled_write_target']) {
-    const vocabulary = currentCatalog.vocabularies.find(({ pseudo_type }) => pseudo_type === pseudoType);
+    const vocabulary = temporalBaselineCatalog.vocabularies.find(({ pseudo_type }) => pseudo_type === pseudoType);
     const row = `| \`${vocabulary.pseudo_type}\` | \`${vocabulary.registry_id}\` | \`data/contracts/spatial-v3/controlled-vocabularies.v2.json\` | \`${vocabulary.version}\` | \`${vocabulary.digest}\` |`;
     assert.ok(temporalAmendment.includes(row), `Temporal Appendix C amended mapping missing: ${pseudoType}`);
   }
   const historicalEntityKinds = historicalCatalog.vocabularies.find(({ pseudo_type }) => pseudo_type === 'controlled_entity_kind').values.map(({ id }) => id);
+  const temporalBaselineEntityKinds = temporalBaselineCatalog.vocabularies.find(({ pseudo_type }) => pseudo_type === 'controlled_entity_kind').values.map(({ id }) => id);
   const currentEntityKinds = currentCatalog.vocabularies.find(({ pseudo_type }) => pseudo_type === 'controlled_entity_kind').values.map(({ id }) => id);
   const historicalWriteTargets = historicalCatalog.vocabularies.find(({ pseudo_type }) => pseudo_type === 'controlled_write_target').values.map(({ id }) => id);
-  const currentWriteTargets = currentCatalog.vocabularies.find(({ pseudo_type }) => pseudo_type === 'controlled_write_target').values.map(({ id }) => id);
-  assert.deepEqual(currentEntityKinds.filter((id) => !historicalEntityKinds.includes(id)), temporalEntityKinds);
-  assert.deepEqual(currentWriteTargets.filter((id) => !historicalWriteTargets.includes(id)), temporalWriteTargets);
+  const temporalBaselineWriteTargets = temporalBaselineCatalog.vocabularies.find(({ pseudo_type }) => pseudo_type === 'controlled_write_target').values.map(({ id }) => id);
+  assert.deepEqual(temporalBaselineEntityKinds.filter((id) => !historicalEntityKinds.includes(id)), temporalEntityKinds);
+  assert.deepEqual(temporalBaselineWriteTargets.filter((id) => !historicalWriteTargets.includes(id)), temporalWriteTargets);
+  assert.deepEqual(
+    currentEntityKinds.filter((id) => !temporalBaselineCatalog.vocabularies.find(({ pseudo_type }) => pseudo_type === 'controlled_entity_kind').values.some((value) => value.id === id)),
+    ['decision_command']
+  );
+  const currentEntityVocabulary = currentCatalog.vocabularies.find(({ pseudo_type }) => pseudo_type === 'controlled_entity_kind');
+  assert.ok(temporalAmendment.includes(`| \`${currentEntityVocabulary.pseudo_type}\` | \`${currentEntityVocabulary.registry_id}\` | \`data/contracts/spatial-v3/controlled-vocabularies.v3.json\` | \`${currentEntityVocabulary.version}\` | \`${currentEntityVocabulary.digest}\` |`));
 
   for (const vocabulary of currentCatalog.vocabularies) {
     const known = vocabulary.values[0].id;

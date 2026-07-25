@@ -43,18 +43,23 @@ const requiredFragments = new Map([
     'status: active',
     '`temporal-world-v1`',
     '`4.3.0-target.1`',
-    'production-владельцем остаётся materialization v2'
+    '`temporal-world-v1.1`',
+    '`4.4.0-target.1`',
+    'production_runtime: spatial_v3_production_v1',
+    'v3 является sole production owner.'
   ]],
   ['DOCUMENTS/llm_documentation_navigation.md', [
     'temporal_world_and_interruptible_activities.md',
-    '`4.3.0-target.1`'
+    '`4.4.0-target.1`'
   ]],
   ['DOCUMENTS/time_system.txt', [
-    '`temporal-world-v1`',
+    '`temporal-world-v1.1`',
     'decimal strings'
   ]],
   ['DOCUMENTS/base_turn_orchestration.txt', [
-    'Narrator вызывается после commit'
+    'Narrator',
+    'persisted package',
+    'hidden-leak validation'
   ]],
   ['DOCUMENTS/movement_locations_regions.txt', [
     'Traversal interval не округляет duration'

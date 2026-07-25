@@ -31,9 +31,12 @@ weather/light transition, remote catch-up или propagation, дополните
 полностью прочитай
 `data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md`.
 После финальной implementation acceptance этот документ имеет status `active`.
-Нормативная приёмка не активирует production: до атомарного P28 он применяется
-только к target/shadow/migration работе, а production v2 остаётся
-единственным owner.
+Нормативная приёмка и исторически принятое P28 exact-head evidence сами по
+себе не активировали production. Отдельный
+`versioned production activation cutover` завершён release
+`spatial-v3-production-v1`: Temporal World v4 и Spatial v3 теперь являются
+единственным production read/write owner. Production v2 доступен только как
+явный migration/rollback source и не является runtime fallback.
 
 Если задача затрагивает базу данных, DDL, импорт, категории, шаблоны, профили, materialization rules, G5, NPC, предметы, контейнеры, имущество, транспорт или bounded decisions, полностью прочитай:
 
@@ -407,3 +410,24 @@ selected_reasoning_effort:
 9. оставшиеся gaps, ограничения и противоречия.
 
 Не сообщай о завершении, если обязательная локальная готовность, двойной поиск, tests, индексация или требуемый аудит не выполнены.
+
+## graphify
+
+This project has a knowledge graph at `graphify-out/` with god nodes,
+community structure, and cross-file relationships.
+
+When the user types `/graphify`, use the installed graphify skill or
+instructions before doing anything else.
+
+Rules:
+
+- For codebase questions, first run `graphify query "<question>"` when
+  `graphify-out/graph.json` exists. Use `graphify path "<A>" "<B>"` for
+  relationships and `graphify explain "<concept>"` for focused concepts.
+- Dirty `graphify-out/` files are expected after hooks or incremental updates;
+  dirty graph files are not a reason to skip Graphify.
+- If `graphify-out/wiki/index.md` exists, use it for broad navigation instead
+  of raw source browsing.
+- Read `graphify-out/GRAPH_REPORT.md` only for broad architecture review or
+  when query/path/explain do not surface enough context.
+- After modifying code, run `graphify update .` to keep the graph current.

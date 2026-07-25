@@ -2,7 +2,11 @@
 
 ## Назначение
 
-`@rus/environment-state` — active-norm, target-only Temporal World v4 owner чистого вывода weather/light/access environment state и boundary-effect proposals. До P28 он shadow/fixture-only; production v2 остаётся sole production owner.
+`@rus/environment-state` — active-norm Temporal World v4 owner чистого вывода
+weather/light/access environment state и boundary-effect proposals.
+Historical P28 evidence не активировало runtime; последующий `versioned
+production activation cutover` release `spatial-v3-production-v1` включил
+его в sole production v3 composition.
 
 ## Владеет
 
@@ -32,6 +36,12 @@ Input включает exact clock, sealed approved weather/light transition pro
 
 Разрешены `@rus/kernel`, `@rus/contracts` и `@rus/time-events-history`. Пакет не читает DB, network, LLM, narration, UI, global clock или random source, не обращается к authoring data самостоятельно и не имеет side effects. Он не пишет SQL и не создаёт persistence plan: `@rus/turn` — единственный workflow consumer, а factual commit выполняет target `CombinedAtomicCommitter`.
 
-## P28 и тесты
+## Activation и тесты
 
-До P28 предложения не имеют production effect; откат отбрасывает незафиксированное proposal. Атомарный P28 не допускает partial activation, dual write или перерасчёт уже committed facts из изменившихся authoring data. Tests: `test/environment-state.test.js` проверяет dawn/light, artificial light и weather transition, exact ordering boundaries, access invalidation proposal, typed blocks и отсутствие implicit defaults.
+В active `spatial-v3-production-v1` предложения применяются только единым
+combined write plan; rollback отбрасывает uncommitted proposal. Production v2
+не является fallback. Partial activation, dual write и перерасчёт уже
+committed facts из изменившихся authoring data запрещены. Tests:
+`test/environment-state.test.js` проверяет
+dawn/light, artificial light и weather transition, exact ordering boundaries,
+access invalidation proposal, typed blocks и отсутствие implicit defaults.

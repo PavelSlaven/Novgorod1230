@@ -198,7 +198,7 @@
     {
       "table": "record_sources",
       "file": "datasets/record_sources.json",
-      "sha256": "d3806185f30ce30b2955b4cbcfe81752b597eff2e8cf040ce50d959ef5a4749d",
+      "sha256": "f319770713fed3fd2e3562e4961c2c5d79bece662ad123b6ad62f0dc9501689c",
       "status": "draft",
       "provenance_ref": "prov_p12_g1_r2_r3_v1",
       "delete_policy": "forbid",

@@ -1,6 +1,8 @@
 import { canonicalStringify } from './canonical-records.js';
 import { createHash } from 'node:crypto';
 
+export const RUNTIME_CATALOG_ACTIVATION_LOCK_KEY = '742019261003';
+
 export const RUNTIME_CATALOG_CONTRACT = deepFreeze({
   schema: 'rus.runtime_catalog_contract.v2',
   catalog_scope: 'item_container_materialization_v2',

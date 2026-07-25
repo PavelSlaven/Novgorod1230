@@ -6,6 +6,9 @@ import {
 } from '@rus/runtime-catalog/canonical-records';
 import { createRuntimeCatalogLoader } from '@rus/runtime-catalog';
 import {
+  RUNTIME_CATALOG_ACTIVATION_LOCK_KEY
+} from '@rus/runtime-catalog/runtime-contract';
+import {
   buildBaselineRegistrationId,
   buildActivationEvent,
   buildOperatorBaselineSnapshotManifest,
@@ -17,7 +20,6 @@ import { RECORD_ADAPTERS } from './record-adapters.generated.js';
 
 const BASELINE_LOCK = '742019261001';
 const IMPORT_LOCK = '742019261002';
-const ACTIVATION_LOCK = '742019261003';
 
 export async function registerCatalogBaseline({
   pool,
@@ -323,7 +325,10 @@ export async function activateApprovedCatalog({
   attestation
 }) {
   return transaction(worldPool, async (client) => {
-    await client.query('SELECT pg_advisory_xact_lock($1::bigint)', [ACTIVATION_LOCK]);
+    await client.query(
+      'SELECT pg_advisory_xact_lock($1::bigint)',
+      [RUNTIME_CATALOG_ACTIVATION_LOCK_KEY]
+    );
     const latest = await client.query(
       `SELECT event_id, event_sequence, request_digest
        FROM world_base.runtime_catalog_activation_events

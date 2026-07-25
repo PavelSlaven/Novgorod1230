@@ -3,13 +3,34 @@ import specificationsDocument from './specifications.json' with { type: 'json' }
 import typedErrorDocument from './typed-error-specifications.json' with { type: 'json' };
 import { controlledVocabularyRegistrySnapshot, validateControlledVocabularyRegistry } from './controlled-vocabularies.js';
 import { validateVisiblePackageEnvelope } from './player-safe-visible-payload.js';
+import { validatePr8HandoffContract } from './pr8-handoff-validation.js';
+import {
+  SPATIAL_V3_NPC_REACTION_HANDLER_BINDINGS,
+  validateReactionHandoffContract
+} from './reaction-handoff-validation.js';
+import {
+  deriveNpcReactionCommandToken,
+  deriveNpcReactionOptionSetDigest,
+  deriveNpcReactionPreconditionsDigest,
+  deriveNpcReactionRequestId,
+  validateReactionOptionContract
+} from './reaction-option-validation.js';
 export { PLAYER_SAFE_VISIBLE_PAYLOAD_KEYS, validatePlayerSafeVisiblePayload } from './player-safe-visible-payload.js';
 export { stateMachineDefinitions } from './state-machines.js';
+export { SPATIAL_V3_NPC_REACTION_HANDLER_BINDINGS };
+export {
+  deriveNpcReactionCommandToken,
+  deriveNpcReactionOptionSetDigest,
+  deriveNpcReactionPreconditionsDigest,
+  deriveNpcReactionRequestId
+};
 
 export const SPATIAL_V3_BASELINE_CONTRACT_VERSION = '4.2.0-target.1';
-export const SPATIAL_V3_CONTRACT_VERSION = '4.3.0-target.1';
+export const SPATIAL_V3_TEMPORAL_BASELINE_CONTRACT_VERSION = '4.3.0-target.1';
+export const SPATIAL_V3_CONTRACT_VERSION = '4.4.0-target.1';
 export const SPATIAL_V3_SUPPORTED_CONTRACT_VERSIONS = Object.freeze([
   SPATIAL_V3_BASELINE_CONTRACT_VERSION,
+  SPATIAL_V3_TEMPORAL_BASELINE_CONTRACT_VERSION,
   SPATIAL_V3_CONTRACT_VERSION
 ]);
 
@@ -20,8 +41,8 @@ export const contractSpecifications = Object.freeze(specificationsDocument.speci
   identity: Object.freeze(specification.identity),
   invariants: Object.freeze(specification.invariants)
 })));
-if (specificationsDocument.source_version !== SPATIAL_V3_CONTRACT_VERSION || contractSpecifications.length !== 188) {
-  throw new Error(`Spatial target contract artifact must be ${SPATIAL_V3_CONTRACT_VERSION} with 188 declarations.`);
+if (specificationsDocument.source_version !== SPATIAL_V3_CONTRACT_VERSION || contractSpecifications.length !== 213) {
+  throw new Error(`Spatial target contract artifact must be ${SPATIAL_V3_CONTRACT_VERSION} with 213 declarations.`);
 }
 const specificationByName = Object.freeze(Object.fromEntries(contractSpecifications.map((specification) => [specification.contract_name, specification])));
 const CONTRACT_NAMES = contractSpecifications.map(({ contract_name }) => contract_name);
@@ -193,6 +214,10 @@ function validateCombinedWritePlan(value) {
   return [];
 }
 
+function canonicalEqual(left, right) {
+  return JSON.stringify(canonicalizeSpatialV3(left)) === JSON.stringify(canonicalizeSpatialV3(right));
+}
+
 function validateControlledValue(type, value) {
   const definition = controlledVocabularyByName[type];
   if (!definition) return [issue('controlled_vocabulary_gap', type, `Unknown controlled vocabulary ${type}.`)];
@@ -203,8 +228,14 @@ function validateControlledValue(type, value) {
 function validateType(type, value, path) {
   if (type.startsWith('enum[')) return type.slice(5, -1).split(', ').includes(String(value)) ? [] : [issue('generated_schema_mismatch', path, `${path} must be one of ${type}.`)];
   if (type.startsWith('controlled_')) return validateControlledValue(type, value);
-  const list = type.match(/^(?:relation_set|snapshot_list)\[(.+)]$/);
-  if (list) return Array.isArray(value) ? value.flatMap((entry, index) => validateType(list[1], entry, `${path}[${index}]`)) : [issue('generated_schema_mismatch', path, `${path} must be an array.`)];
+  const list = type.match(/^(nonempty_relation_set|relation_set|snapshot_list)\[(.+)]$/);
+  if (list) {
+    if (!Array.isArray(value)) return [issue('generated_schema_mismatch', path, `${path} must be an array.`)];
+    if (list[1] === 'nonempty_relation_set' && value.length === 0) {
+      return [issue('generated_schema_mismatch', path, `${path} must be a non-empty array.`)];
+    }
+    return value.flatMap((entry, index) => validateType(list[2], entry, `${path}[${index}]`));
+  }
   if (specificationByName[type]) return validateSpatialV3Contract(type, value).map((entry) => ({ ...entry, field: `${path}.${entry.field}` }));
   if (['stable_id', 'authoring_version', 'string', 'system_timestamp'].includes(type)) return stableId(value) ? [] : [issue('generated_schema_mismatch', path, `${path} must be a non-empty string.`)];
   if (type === 'non_negative_decimal_string') return nonNegativeDecimalString(value) ? [] : [issue('generated_schema_mismatch', path, `${path} must be a canonical non-negative decimal string.`)];
@@ -229,6 +260,29 @@ function validateSpecification(specification, value) {
   return errors;
 }
 
+function validatePreparationSnapshotMember(value) {
+  const errors = [];
+  const hasEndpoint = value?.resolved_endpoint_snapshot != null;
+  const resolvedSceneFields = [
+    value?.resolved_scene_baseline_id,
+    value?.resolved_g6_instance_id,
+    value?.resolved_position_id
+  ];
+  const resolvedSceneCount = resolvedSceneFields.filter((field) => field != null).length;
+  const hasResolvedScene = resolvedSceneCount === resolvedSceneFields.length;
+  const hasPreparedScene = value?.prepared_scene_materialization != null;
+
+  if (value?.member_kind === 'endpoint') {
+    if (!hasEndpoint) errors.push(issue('generated_schema_mismatch', 'resolved_endpoint_snapshot', 'endpoint member requires resolved_endpoint_snapshot.'));
+    if (resolvedSceneCount > 0 || hasPreparedScene) errors.push(issue('generated_schema_mismatch', 'member_kind', 'endpoint member forbids resolved and prepared scene fields.'));
+  } else if (value?.member_kind === 'transfer_scene') {
+    if (hasEndpoint) errors.push(issue('generated_schema_mismatch', 'resolved_endpoint_snapshot', 'transfer_scene member forbids resolved_endpoint_snapshot.'));
+    if (resolvedSceneCount > 0 && !hasResolvedScene) errors.push(issue('generated_schema_mismatch', 'resolved_scene_baseline_id', 'resolved transfer_scene branch requires the complete baseline/G6/position triple.'));
+    if (Number(hasResolvedScene) + Number(hasPreparedScene) !== 1) errors.push(issue('generated_schema_mismatch', 'member_kind', 'transfer_scene member requires exactly one resolved or prepared scene branch.'));
+  }
+  return errors;
+}
+
 export function validateSpatialV3Contract(contractName, value) {
   const specification = specificationByName[contractName];
   if (!specification) return [issue('generated_schema_mismatch', 'contract_name', `Unknown spatial v3 contract ${contractName}.`)];
@@ -245,6 +299,10 @@ export function validateSpatialV3Contract(contractName, value) {
   if (contractName === 'party_timed_activity_execution') errors.push(...validateTimedActivityExecution(value));
   if (contractName === 'visible_package_persistence_envelope') errors.push(...validateVisiblePackageEnvelope(value));
   if (contractName === 'combined_write_plan') errors.push(...validateCombinedWritePlan(value));
+  if (contractName === 'preparation_snapshot_member') errors.push(...validatePreparationSnapshotMember(value));
+  errors.push(...validatePr8HandoffContract(contractName, value));
+  errors.push(...validateReactionHandoffContract(contractName, value));
+  errors.push(...validateReactionOptionContract(contractName, value));
   return errors;
 }
 

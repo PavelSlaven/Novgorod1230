@@ -28,9 +28,11 @@ temporal boundaries, NPC schedule/perception, carrier clock, weather/light,
 remote catch-up или propagation полностью прочитай
 `data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md`.
 После финальной implementation acceptance Temporal World v4 имеет status
-`active`. Нормативная приёмка не выполняет production activation: до отдельного
-versioned cutover он применяется к target/shadow/migration, а production v2
-остаётся sole owner.
+`active`. Нормативная приёмка и исторически принятое P28 exact-head evidence
+сами по себе не выполняли production activation. Отдельный
+`versioned production activation cutover` завершён release
+`spatial-v3-production-v1`; Spatial v3/Temporal World v4 являются sole
+production owner, а production v2 не выбирается как runtime fallback.
 
 Для database/DDL/import/category/template/profile/materialization/G5/NPC/item/container/property/transport/bounded-decision задач дополнительно обязателен:
 

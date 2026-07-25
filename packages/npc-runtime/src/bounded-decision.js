@@ -24,6 +24,7 @@ function validateDecisionRequest(value) {
     || !pinned(value.dependency_pins, 'profile', value.decision_policy_ref)
     || !Array.isArray(value.options)
     || value.options.some((option) => !formal('npc_decision_option', option))
+    || value.options.some((option) => !pinned(value.dependency_pins, 'action_contract', option.command_ref))
     || value.options.some((option) => !pinned(value.dependency_pins, 'consequence_rule', option.consequence_policy_ref))) {
     return false;
   }
@@ -34,6 +35,7 @@ function validateDecisionRequest(value) {
   const sorted = canonicalOptions(value.options);
   return value.options_digest === digest(sorted)
     && new Set(sorted.map(({ option_id }) => option_id)).size === sorted.length
+    && new Set(sorted.map(({ command_ref }) => refKey(command_ref.entity_ref))).size === sorted.length
     && new Set(sorted.map(({ command_token }) => command_token)).size === sorted.length
     && new Set(sorted.map(({ canonical_ordinal }) => canonical_ordinal)).size === sorted.length;
 }

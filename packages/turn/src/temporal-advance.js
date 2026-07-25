@@ -15,7 +15,7 @@ import {
   finalizeResult,
   idempotencyDigests,
   immutableConfiguration,
-  normalizeHandlerProposals,
+  normalizeHandlerOutcome,
   normalizeResolution,
   replayCommittedResult,
   validateConfiguration,
@@ -48,7 +48,7 @@ function advance(config, rawRequest) {
   const allProposals = [];
   const timeSliceResults = [];
   const deferredCandidates = [];
-  const projection = request.relevant_state_projection;
+  let projection = request.relevant_state_projection;
   let clock = request.clock_before;
   let sliceIndex = 0;
 
@@ -74,7 +74,9 @@ function advance(config, rawRequest) {
 
     if (compareGameTimestamp(clock, toTimestamp) < 0) {
       const continuous = config.handlers.applyContinuous(plan, cloneFrozen({ request, projection }));
-      sliceProposals.push(...normalizeHandlerProposals(continuous, 'applyContinuous'));
+      const continuousOutcome = normalizeHandlerOutcome(continuous, 'applyContinuous');
+      sliceProposals.push(...continuousOutcome.proposals);
+      if (continuousOutcome.state_projection) projection = continuousOutcome.state_projection;
     }
 
     if (batch) {
@@ -84,7 +86,12 @@ function advance(config, rawRequest) {
         max_candidates: config.safety_limits.max_candidates,
         max_iterations: config.safety_limits.max_iterations,
         resolveCandidate: (candidate) => {
-          const raw = config.handlers.resolve(candidate, cloneFrozen({ request, projection, clock_before: clock, slice_plan: plan }));
+          const raw = config.handlers.resolve(candidate, cloneFrozen({
+            request,
+            projection,
+            clock_before: toTimestamp,
+            slice_plan: plan
+          }));
           const resolution = normalizeResolution(raw, candidate, toTimestamp, request, deferredCandidates);
           processed.add(candidate.boundary_id);
           processedBoundaryIds.push(candidate.boundary_id);
@@ -93,6 +100,7 @@ function advance(config, rawRequest) {
           dispositions.push(disposition);
           sliceDispositions.push(disposition);
           sliceProposals.push(...resolution.proposals);
+          if (resolution.state_projection) projection = resolution.state_projection;
           return { follow_up_candidates: resolution.follow_up_candidates };
         }
       });
@@ -111,6 +119,7 @@ function advance(config, rawRequest) {
   return finalizeResult(
     config,
     request,
+    projection,
     clock,
     allProposals,
     timeSliceResults,

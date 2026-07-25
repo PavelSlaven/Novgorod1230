@@ -13,5 +13,19 @@
     "decision_id": "decision:npc_temporal_profiles_policies:2026-07-24-reaudit-2",
     "method": "contract audit against the handoff requirements, canonical repository snapshot, exact source bytes, controlled vocabularies, and explicitly labeled bounded reconstruction authorized by the user",
     "notes": "The NPC family is deliberately narrow: one comparative monastic schedule with exact daylight fractions, closed activity bindings, factual perception, evidence-based recognition and three finite request-bound decision options with no authored default."
+  },
+  {
+    "provenance_id": "provenance:npc_temporal_profiles_policies:reaction_policy_v1",
+    "status": "approved",
+    "source_ids": [
+      "source:npc_temporal_profiles_policies:temporal_world_v4_normative",
+      "source:npc_temporal_profiles_policies:user_reconstruction_authorization"
+    ],
+    "approved_by": "OpenAI GPT-5.6 independent critic",
+    "approver_role": "independent semantic data auditor",
+    "approved_at": "2026-07-25T02:55:04.9211962+03:00",
+    "decision_id": "decision:npc_temporal_profiles_policies:2026-07-25-pr8-reaction-policy-1",
+    "method": "source, Appendix A.7, controlled-vocabulary, existing identity, closed registry and code-owned handler audit",
+    "notes": "Approved as bounded gameplay reconstruction only; it defines three closed reaction bindings and makes no claim about historical NPC behavior."
   }
 ]

@@ -6,9 +6,19 @@ export {
 export { orderNpcDecisionRequests } from './bounded-decision.js';
 export { proposeNpcPerception } from './perception.js';
 export { proposeNpcScheduleTransition } from './schedule.js';
+export {
+  buildNpcReactionPolicySnapshotFromAuthoringRow
+} from './reaction-policy.js';
 
 import { decideBoundedNpcAction as decideBoundedNpcActionInternal } from './bounded-decision.js';
+import { proposeNpcReactionOptions as proposeNpcReactionOptionsInternal } from './reaction-options.js';
 import { NPC_RUNTIME_RESOURCE_LIMITS } from './runtime-configuration.js';
+
+export function proposeNpcReactionOptions(input = {}) {
+  return proposeNpcReactionOptionsInternal(input, {
+    maxDecisionOptions: NPC_RUNTIME_RESOURCE_LIMITS.max_decision_options
+  });
+}
 
 export function decideBoundedNpcAction({
   request,

@@ -1,10 +1,13 @@
-# Temporal advance pipeline (target-only v4)
+# Temporal advance pipeline (production v4)
 
-`temporal-world-v1` / `4.3.0-target.1` is an active-norm target pipeline. Until the
-single atomic P28 gate, active `production_v2` remains the sole production
-read/write owner. This document permits target contracts, fixtures, migration,
-tests and shadow composition only; it does not permit dual write, mixed
-authoritative reads, in-turn v4-to-v2 fallback or a partial temporal cutover.
+`temporal-world-v1.1` / `4.4.0-target.1` is the current active-norm target
+pipeline; accepted `temporal-world-v1` / `4.3.0-target.1` remains an immutable
+historical contract snapshot.
+Accepted historical P28 evidence changed no production composition. The later
+`versioned production activation cutover` completed as
+`spatial-v3-production-v1`; this pipeline is now the sole production path.
+Dual write, mixed authoritative reads, in-turn v4-to-v2 fallback and partial
+activation remain forbidden.
 
 ## Interval and boundary rule
 
@@ -46,12 +49,16 @@ and configured slice/candidate/iteration limits fail closed with typed errors.
    incompatible transition, double move/resource consumption, missing event
    dependency or conflicting clock owner is `temporal_change_set_conflict` or
    `time_owner_conflict`, never a best-effort choice.
-5. `@rus/turn` creates the logical combined plan. `@rus/party-store` validates
-   party persistence and submits it; `apps/game-server` executes the physical
-   PostgreSQL transaction. The factual state, exact clock result, effects,
-   time-slice results, idempotency record and player-safe
-   `VisiblePackagePersistenceEnvelope` commit atomically.
-6. Only after commit may presentation load that persisted package and ask
+5. `@rus/turn` applies the merged proposals to an immutable candidate
+   post-change state. `@rus/visibility-knowledge-memory` creates a player-safe
+   package candidate and validates hidden-leak absence.
+6. Only after that validation does `@rus/turn` create the logical combined
+   plan. `@rus/party-store` validates party persistence and submits it;
+   `apps/game-server` executes the physical PostgreSQL transaction. The
+   factual state, exact clock result, effects, time-slice results, idempotency
+   record, player-safe `VisiblePackagePersistenceEnvelope` and
+   presentation-pending metadata commit atomically.
+7. Only after commit may presentation load that persisted package and ask
    narration for prose. Narration is retryable delivery work, is never inside
    the factual write plan, and cannot add a time, event, schedule, route or
    consequence.
@@ -75,5 +82,5 @@ catch-up boundary, not as continuous simulation of every distant entity.
 ## Boundary of this document
 
 This describes the target lifecycle and its contracts, not a new production
-entrypoint. Production activation remains impossible before the complete,
-atomic P28 decision for the exact final PR HEAD.
+entrypoint. Production activation remains impossible before the separate
+`versioned production activation cutover` for the exact final PR HEAD.

@@ -1252,3 +1252,41 @@ Focused validation after the cycle-3 corrections:
 
 A new exact functional subject, clean validation and another independent audit
 remain mandatory before evidence admission.
+
+### Cutover audit cycle 4
+
+The exact functional subject
+`bfa24bf7810146c37e461d6dc689b8f7450bd8b8` received
+`CHANGES REQUIRED`. The critic confirmed the complete approved tuple,
+shared activation lock, historical-pin handling, independent migration digest
+and v3-only production boundary, but found one remaining fail-open query
+ordering defect:
+
+- approved revision/import joins ran before `ORDER BY event_sequence DESC
+  LIMIT 1`, so a corrupt latest activation event could be filtered out and the
+  preceding valid event could be mistaken for the active pointer.
+
+The replacement candidate first selects the raw latest scope event in a
+`latest_event` CTE and only then joins that single event to the full approved
+revision/import tuple. A corrupt latest event therefore produces no approved
+row and blocks startup; it can never fall back to an earlier activation.
+
+The regression was developed Red → Green against isolated PostgreSQL 16:
+
+| Check | Result |
+|---|---|
+| unchanged previous binding + corrupt latest event before fix | expected Red: missing rejection |
+| same exact scenario after latest-event-first fix | Green: 1 pass, 0 fail |
+| activation lock race and historical pin lifecycle in the same test | pass |
+| temporary PostgreSQL resources | removed |
+
+The first full sequential exact-head run then exposed two failures in the
+in-memory production composition fixture: its transaction client forwarded
+only SQL beginning with `SELECT`, so the new `WITH latest_event` read was
+incorrectly replaced with an empty mock result. The fixture now forwards both
+`SELECT` and `WITH` read statements. Its complete production composition file
+passes 9/9; no runtime behavior was weakened to accommodate the test double.
+
+The exact-head checker now also requires the latest-event-first query shape.
+A new exact functional subject, complete clean validation and repeated
+independent audit remain mandatory before evidence admission.

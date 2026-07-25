@@ -51,13 +51,25 @@ export async function assertWorldReleaseReadiness(
     [release.world_revision_id, release.world_catalog_digest]
   );
   const activation = await worldPool.query(
-    `SELECT
+    `WITH latest_event AS (
+       SELECT
+         e.event_id,e.catalog_scope,e.catalog_revision_id,e.catalog_digest,
+         e.import_id,e.import_audit_digest,e.record_registry_digest,
+         e.runtime_contract_digest,e.compatible_world_revision_id,
+         e.compatible_world_catalog_digest,
+         e.compatible_world_pin_manifest_digest
+       FROM world_base.runtime_catalog_activation_events e
+       WHERE e.catalog_scope=$1
+       ORDER BY e.event_sequence DESC
+       LIMIT 1
+     )
+     SELECT
        e.event_id,e.catalog_scope,e.catalog_revision_id,e.catalog_digest,
        e.import_id,e.import_audit_digest,e.record_registry_digest,
        e.runtime_contract_digest,e.compatible_world_revision_id,
        e.compatible_world_catalog_digest,
        e.compatible_world_pin_manifest_digest
-     FROM world_base.runtime_catalog_activation_events e
+     FROM latest_event e
      JOIN world_base.domain_catalog_revisions r
        ON r.catalog_revision_id=e.catalog_revision_id
       AND r.catalog_scope=e.catalog_scope
@@ -81,9 +93,7 @@ export async function assertWorldReleaseReadiness(
       AND i.compatible_world_pin_manifest_digest=
         e.compatible_world_pin_manifest_digest
       AND i.record_registry_digest=e.record_registry_digest
-     WHERE e.catalog_scope=$1
-     ORDER BY e.event_sequence DESC
-     LIMIT 1`,
+    `,
     [release.runtime_catalog_scope]
   );
   const actualPin = activation.rows?.[0];

@@ -186,6 +186,8 @@ try {
   for (const token of [
     'RUNTIME_CATALOG_ACTIVATION_LOCK_KEY',
     'pg_advisory_xact_lock',
+    'WITH latest_event AS (',
+    'FROM latest_event e',
     'r.compatible_world_revision_id=e.compatible_world_revision_id',
     'r.compatible_world_catalog_digest=e.compatible_world_catalog_digest',
     'r.record_registry_digest=e.record_registry_digest',

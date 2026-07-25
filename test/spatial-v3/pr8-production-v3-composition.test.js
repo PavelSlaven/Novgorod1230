@@ -47,7 +47,7 @@ function fixture() {
   let closed = 0;
   const pool = {
     connect: async () => ({
-      query: async (sql, params) => /^\s*SELECT/u.test(sql)
+      query: async (sql, params) => /^\s*(?:SELECT|WITH)\b/u.test(sql)
         ? pool.query(sql, params)
         : ({ rows: [] }),
       release() {}

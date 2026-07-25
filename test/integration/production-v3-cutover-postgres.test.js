@@ -12,9 +12,6 @@ import {
 import {
   RUNTIME_CATALOG_ACTIVATION_LOCK_KEY
 } from '@rus/runtime-catalog/runtime-contract';
-import {
-  createSpatialV3RuntimeBindings
-} from '../fixtures/runtime-bindings/spatial-v3-production-bindings.js';
 
 const hasDatabase =
   Boolean(process.env.PARTY_DATABASE_URL)
@@ -217,21 +214,10 @@ test(
     );
 
     await seedMismatchedApprovedTuple(worldPool);
-    const validBindings = createSpatialV3RuntimeBindings();
     await assert.rejects(
       loadConfiguredComposition(
         'builtin:production-spatial-v3',
-        {
-          ...compositionOptions,
-          bindingsFactory: async () => ({
-            ...validBindings,
-            runtimeCatalogPin: {
-              ...validBindings.runtimeCatalogPin,
-              activation_event_id: 'cutover-runtime-activation-corrupt',
-              record_registry_digest: 'f'.repeat(64)
-            }
-          })
-        }
+        compositionOptions
       ),
       (error) =>
         error.code === 'SPATIAL_V3_WORLD_RELEASE_PIN_MISMATCH'

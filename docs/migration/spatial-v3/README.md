@@ -850,3 +850,79 @@ This is a compact index into the detailed sections and persisted reports above; 
 - The PostgreSQL evidence uses disposable Docker PostgreSQL and covers normal
   commit/replay, invalid schedule/access/template/capacity rollback,
   carrier-local root slice pins, and inverse actor/transport lock ordering.
+
+## Repository post-merge archival rule maintenance (2026-07-25)
+
+- Scope: documentation-only process update. Root `AGENTS.md` contains the
+  canonical post-merge archival rule; `.github/AGENTS.md` contains its concise,
+  semantically equivalent GitHub/Codex/Cursor mirror. No runtime, schema,
+  catalog, service or database behavior is changed.
+- Repository readiness: root
+  `C:\Users\Slaven\Documents\Новгород`; canonical remote
+  `https://github.com/PavelSlaven/Novgorod1230.git`; branch
+  `codex/spatial-architecture-g0-g6-v4-2`; starting HEAD
+  `65d4d50bd3b3484421ffc61da7bb84d98ef122cf`; fetched
+  `origin/main=0d2fb5047086899ad93535a8a98cdc7a3d082fc0`.
+  Node/npm `v24.16.0`/`11.13.0`, Python `3.12.12`,
+  Docker Compose `5.1.4`, Graphify `0.9.17`. `uv` is not exposed in the
+  sandbox `PATH`, but the pinned uv-managed Graphify executable is available
+  outside the sandbox. Docker API readiness is not required for this
+  documentation-only change.
+- The publishable integration worktree is
+  `C:\tmp\Novgorod-post-merge-archival-rule` on branch
+  `codex/post-merge-archival-rule-main`, based on fetched canonical
+  `origin/main=0d2fb5047086899ad93535a8a98cdc7a3d082fc0`. It was used because
+  protected untracked `.codex/hooks.json` in the original checkout correctly
+  blocked a checkout/rebase that would have overwritten it.
+- Existing local state was inventoried before editing. The pre-existing root
+  `AGENTS.md` Graphify section and all unrelated untracked paths are preserved;
+  this documentation step does not authorize moving user-owned, unknown or
+  active materials.
+- Repository Intelligence need:
+  `post-merge архивирование временных локальных материалов AGENTS git clean worktree cleanup rule`.
+  `npm run knowledge:status` reported the existing non-blocking `degraded`
+  semantic coverage. With access to the local uv environment,
+  `npm run repo-intel:ensure` returned `rebuilt=false` at the starting HEAD,
+  and escalated `repo-intel:status`/`repo-intel:query` returned a ready
+  Graphify `0.9.17` graph and a complete dual-channel query.
+- Fully read for this maintenance chain: root and `.github/AGENTS.md`,
+  `development_rules.txt`, `code_critic_invocation_rule.txt`,
+  `code_driven_world_materialization_architecture.md`,
+  `llm_documentation_navigation.md`,
+  `information_sources_llm_prompts.md`, the Graphify skill/query instructions
+  and the user-approved archival plan.
+- Policy change: automatic deletion is replaced with archival outside the
+  checkout at
+  `C:\Users\Slaven\Documents\Новгород-archive\<YYYY-MM-DD>__<task>__<merge-SHA>\`.
+  For PR work the gate is confirmed canonical merge, successful required CI
+  and saved evidence; no-PR work requires a separate user instruction.
+  Archives are not indexed, linked back into the checkout or automatically
+  deleted.
+- `git clean` is removed from the workflow entirely. Read-only inventory uses
+  `git status`, separate untracked/ignored `git ls-files` commands, diff,
+  stash and worktree/commit checks. Exact-path movement requires a reviewed
+  manifest, SHA-256 before and after, archive metadata and restore
+  instructions. Unknown, user-owned, active or unique material remains
+  protected.
+- Current local state is intentionally not moved by this documentation step.
+  The active `.tmp.driveupload`, `.codex/hooks.json`, tracked rule/README
+  changes, stash and dirty or unique worktrees remain protected. The
+  previously classified P07/P12 inspection copies, invalid-copy, `NEW PLAN`,
+  PR17 ZIP and disposable PR17 checkout/worktree are only post-merge
+  candidates and require the final exact manifest before movement.
+- Validation: `npm run docs:check` passed; `npm run test:docs` passed 8/8;
+  `git diff --check` passed. `graphify update .` completed after the caller
+  timeout while its child process continued normally; the original graph
+  remained intact until the final atomic update. In the original enriched
+  graph, the complete dual-channel query finds `Правило post-merge
+  складирования локальных материалов` at `AGENTS.md:85`.
+- In the clean main-based worktree, `npm ci` installed lockfile-pinned
+  dependencies with zero reported vulnerabilities and
+  `repo-intel:ensure` rebuilt a ready Graphify `0.9.17` graph at the exact
+  branch commit. `repo-intel:status` has no readiness errors. Its fresh
+  AST-only extraction does not surface the Markdown rule node in an exact
+  Graphify query; this is recorded as a non-blocking document semantic
+  extraction coverage gap, not hidden as a successful match. The
+  knowledge-source `degraded` warning also remains non-blocking.
+- The eventual archival operation is a separate post-merge action and must not
+  run against this unmerged checkout.

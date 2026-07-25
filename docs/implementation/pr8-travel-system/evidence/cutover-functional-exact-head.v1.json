@@ -1,0 +1,103 @@
+{
+  "schema": "rus.pr8.cutover-functional-exact-head-evidence.v1",
+  "version": 1,
+  "repository": "PavelSlaven/Novgorod1230",
+  "pull_request": 8,
+  "branch": "codex/pr8-travel-system",
+  "subject_commit": "52b60422e8a5e6165ddc88d1a3ab8ac743959c70",
+  "subject_tree": "88a92076289b3d3fb9bf5e969768c1ecb0b7e359",
+  "base_commit": "bfa24bf7810146c37e461d6dc689b8f7450bd8b8",
+  "candidate_kind": "production_activation_cutover",
+  "production_activation": {
+    "performed": true,
+    "release": "spatial-v3-production-v1",
+    "composition": "builtin:production-spatial-v3",
+    "production_owner": "production_v3",
+    "authoritative_reads": "spatial_v3_only",
+    "authoritative_writes": "spatial_v3_only",
+    "dual_write": false,
+    "mixed_authoritative_read": false,
+    "runtime_fallback": false,
+    "rollback_runtime_selectable": false
+  },
+  "historical_evidence": {
+    "p28_subject_commit": "2ec109c99c5e2b33f43dc5f89735e6e72686299b",
+    "rewritten": false,
+    "redeclared_for_subject": false
+  },
+  "target_evidence": {
+    "subject_commit": "5c35975fafdf001236e861d84b0d546f2bd1ee2d",
+    "rewritten": false,
+    "redeclared_for_subject": false
+  },
+  "validation": [
+    {
+      "id": "clean_clone_dependency_install",
+      "command": "npm ci",
+      "result": "passed",
+      "details": "91 packages installed; 0 vulnerabilities"
+    },
+    {
+      "id": "full_root_suite",
+      "command": "npm test",
+      "result": "passed",
+      "details": "all configured suites passed; environment-gated PostgreSQL and Chromium checks were repeated explicitly"
+    },
+    {
+      "id": "full_spatial_temporal_suite",
+      "command": "node --test --test-concurrency=1 test/spatial-v3/*.test.js",
+      "result": "passed",
+      "details": "298 total; 297 passed; 0 failed; 1 Windows symlink-capability skip"
+    },
+    {
+      "id": "production_cutover_postgresql",
+      "command": "node --test --test-concurrency=1 test/integration/production-v3-cutover-postgres.test.js",
+      "result": "passed",
+      "details": "fresh PostgreSQL 16; migrations 001..010, historical pin, advisory-lock race, complete approved tuple and corrupt latest fail-closed"
+    },
+    {
+      "id": "real_chromium_e2e",
+      "command": "RUS_CHROMIUM_PATH=<local Chrome> npm run test:browser-e2e",
+      "result": "passed",
+      "details": "1 passed; 0 failed; 0 skipped"
+    },
+    {
+      "id": "generated_reproducibility",
+      "command": "npm run docs:generate && git diff --exit-code",
+      "result": "passed",
+      "details": "zero tracked diff"
+    },
+    {
+      "id": "documentation_static_stability",
+      "command": "npm run docs:check (three consecutive executions)",
+      "result": "passed",
+      "details": "three passes; zero activation-boundary findings"
+    },
+    {
+      "id": "architecture_boundaries",
+      "command": "npm run architecture:check",
+      "result": "passed",
+      "details": "architecture boundaries OK"
+    },
+    {
+      "id": "repository_intelligence",
+      "command": "repo-intel ensure/status/query; Graphify query; npm run test:repository-intelligence",
+      "result": "pass_with_notes",
+      "details": "Graphify 0.9.17 ready at exact subject; 17/17 tests; documented RAG degraded semantic-coverage warning only"
+    },
+    {
+      "id": "immutable_evidence_boundary",
+      "command": "git diff --quiet base subject -- historical and target evidence",
+      "result": "passed",
+      "details": "historical P28 and prior target evidence are unchanged"
+    },
+    {
+      "id": "independent_critic",
+      "command": "read-only exact-commit functional audit",
+      "result": "pass_with_notes",
+      "details": "no blocking findings; only the then-pending evidence-only direct child was noted"
+    }
+  ],
+  "evidence_report": "docs/implementation/pr8-travel-system/evidence/cutover-functional-exact-head-report.md",
+  "accepted": true
+}

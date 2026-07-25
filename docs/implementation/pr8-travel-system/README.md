@@ -1290,3 +1290,39 @@ passes 9/9; no runtime behavior was weakened to accommodate the test double.
 The exact-head checker now also requires the latest-event-first query shape.
 A new exact functional subject, complete clean validation and repeated
 independent audit remain mandatory before evidence admission.
+
+## Final production-cutover exact-head evidence
+
+The final functional subject is
+`52b60422e8a5e6165ddc88d1a3ab8ac743959c70`, tree
+`88a92076289b3d3fb9bf5e969768c1ecb0b7e359`. Its exact clean-worktree
+validation completed:
+
+| Check | Result |
+|---|---|
+| `npm ci` | 91 packages; 0 vulnerabilities |
+| full `npm test` | pass |
+| sequential Spatial/Temporal | 298 total; 297 pass; 0 fail; 1 Windows symlink-capability skip |
+| fresh PostgreSQL 16 production-cutover lifecycle | 1 pass; `001..010`, historical pin, lock race, full tuple, corrupt latest fail-closed |
+| real Chrome E2E | 1 pass; 0 skip |
+| generated reproducibility | zero tracked diff |
+| `docs:check` | three consecutive passes; zero findings |
+| architecture boundaries | pass |
+| Repository Intelligence | Graphify `0.9.17` ready at exact SHA; 17/17 tests; documented RAG degraded warning only |
+| immutable historical/target evidence | unchanged |
+
+The independent exact-subject audit returned `PASS WITH NOTES`: Standards and
+Spec both passed, there were no blocking findings, and the sole note was the
+then-pending direct evidence-only child.
+
+The direct-child evidence package is:
+
+- `evidence/cutover-functional-exact-head.v1.json`;
+- `evidence/cutover-functional-exact-head-report.md`.
+
+It declares the completed versioned production activation cutover for release
+`spatial-v3-production-v1` and composition
+`builtin:production-spatial-v3`, with v3 as sole production read/write owner,
+no dual write, no mixed authoritative read, no runtime fallback and no
+runtime-selectable rollback. No operator or production database was read or
+modified during validation.

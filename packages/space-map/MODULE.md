@@ -2,7 +2,11 @@
 
 ## Назначение
 
-Target-only pure spatial contracts for canonical G0–G5, party G5/G6 and scene positions; typed topology, orientation and factual context. Код модуля работает only with supplied data and does not create world entities. До P28 это не меняет active v2 production composition.
+Target-only pure spatial contracts for canonical G0–G5, party G5/G6 and scene
+positions; typed topology, orientation and factual context. Код модуля работает
+only with supplied data and does not create world entities. Принятое
+историческое P28 evidence не меняло composition; до отдельного `versioned
+production activation cutover` active v2 остаётся sole production owner.
 
 ## Владеет
 

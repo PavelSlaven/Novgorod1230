@@ -42,7 +42,7 @@
     },
     {
       "path": "data/category-decision-ledger.json",
-      "sha256": "88f6dd2c8ce3cc0b3b0608894475721f09ebee1cdb13e73417e17eb83813e57b"
+      "sha256": "db10f3a4b779f484106d9286e45f018c371a25e88fa756eab8994189970c465d"
     },
     {
       "path": "data/g1-grid-cells.json",
@@ -70,7 +70,7 @@
     },
     {
       "path": "data/record-sources.json",
-      "sha256": "e59d4f2ff27fb55e48aa0ba1c2952bbe3e7b87a35d1723c9776ce0397f2c8a72"
+      "sha256": "a63a625642ac4deaf57aed25a23c510cb7013fc1dcb3430d2cfa67fe59b7b119"
     },
     {
       "path": "data/regional-scene-template-bases.json",
@@ -114,11 +114,11 @@
     },
     {
       "path": "data/universal-categories.json",
-      "sha256": "e41fe7e15beb0fa7c888d9ee051ac0320ed0989e79e2d81f95cb0365e2c323d8"
+      "sha256": "66594c6a4456236179e0574837ca70b047189ea2cf6ebb0bdfc4d3e3ccbeb26e"
     },
     {
       "path": "datasets/record_sources.json",
-      "sha256": "d3806185f30ce30b2955b4cbcfe81752b597eff2e8cf040ce50d959ef5a4749d"
+      "sha256": "39abad43afc0662038785f33a72fe6682e1658a6a8ca73c4be975449574760ef"
     },
     {
       "path": "datasets/source_records.json",

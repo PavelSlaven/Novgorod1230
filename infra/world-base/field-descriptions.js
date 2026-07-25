@@ -207,7 +207,7 @@ export const TABLE_PURPOSE_FALLBACK = {
   record_sources: 'Связь источника с любой записью справочника (полиморфная).',
   audit_log: 'Журнал ручных правок и утверждений (полиморфная цель).',
   world_revisions: 'Неизменяемые утверждённые ревизии каталогов мира и их общий digest.',
-  spatial_v3_world_revisions: 'Target v3 version graph canonical world authoring; остаётся read-only и не активирует v3 до P28.',
+  spatial_v3_world_revisions: 'Target v3 version graph canonical world authoring; остаётся read-only и не активирует v3 до отдельного versioned production activation cutover.',
   spatial_v3_authoring_versions: 'Явные читаемые версии authoring aggregate с revision и canonical digest; latest-row resolution запрещён.',
   spatial_v3_nodes: 'Версионированные canonical G0–G5 spatial nodes; legacy graph_nodes не являются их implicit replacement.',
   spatial_v3_node_parents: 'Единственная direct-parent containment relation canonical G0–G5.',

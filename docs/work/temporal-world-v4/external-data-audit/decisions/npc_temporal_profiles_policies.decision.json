@@ -4,7 +4,8 @@
   "family_id": "npc_temporal_profiles_policies",
   "verdict": "approved",
   "approved_record_ids": [
-    "record:npc_temporal_profiles_policies:monastic_worker_v2"
+    "record:npc_temporal_profiles_policies:monastic_worker_v2",
+    "record:npc_temporal_profiles_policies:reaction_signal_policy_v1"
   ],
   "source_ids_reviewed": [
     "source:npc_temporal_profiles_policies:temporal_world_v4_normative",
@@ -15,15 +16,27 @@
     "novgorod"
   ],
   "data_gaps": [],
-  "auditor": {
-    "name": "OpenAI GPT-5.6 Thinking",
-    "organization_or_role": "independent external data authoring auditor"
+  "prior_decisions": [
+    {
+      "decision_id": "decision:npc_temporal_profiles_policies:2026-07-24-reaudit-2",
+      "path": "docs/work/temporal-world-v4/external-data-audit/historical-decisions/npc_temporal_profiles_policies.2026-07-24-reaudit-2.decision.json",
+      "sha256": "6d6c24531146e68a6adc03850cdc89170546db8ee838930fc80f70ef427e60ad"
+    }
+  ],
+  "record_classifications": {
+    "record:npc_temporal_profiles_policies:monastic_worker_v2": "labeled comparative reconstruction",
+    "record:npc_temporal_profiles_policies:reaction_signal_policy_v1": "bounded_gameplay_reconstruction; historical_fact_claim=false"
   },
-  "decision_id": "decision:npc_temporal_profiles_policies:2026-07-24-reaudit-2",
-  "decided_at": "2026-07-24T17:45:00+03:00",
-  "method": "independent source, contract, controlled-vocabulary, exactness, closure, historical-labeling and no-fallback audit",
-  "rationale": "The NPC family is deliberately narrow: one comparative monastic schedule with exact daylight fractions, closed activity bindings, factual perception, evidence-based recognition and three finite request-bound decision options with no authored default.",
+  "auditor": {
+    "name": "OpenAI GPT-5.6 independent critic",
+    "organization_or_role": "independent semantic data auditor"
+  },
+  "decision_id": "decision:npc_temporal_profiles_policies:2026-07-25-pr8-reaction-policy-1",
+  "decided_at": "2026-07-25T02:55:04.9211962+03:00",
+  "method": "independent source, Appendix A.7, controlled-vocabulary, existing-identity, closed-registry, code-owned-handler, exactness and no-fallback audit",
+  "rationale": "The existing comparative schedule remains approved. The separate reaction policy reuses exactly the three previously approved command identities; handler, input/consequence contract, effect and successor mappings match the closed registry and code-owned handlers. Perception filters are closed, not_perceived is excluded, zero/one/many behavior is fail-closed, and no default, fallback or state patch is present.",
   "limitations": [
-    "The schedule is a labeled comparative reconstruction and is not a generic schedule for all Novgorod NPCs or direct evidence of Orthodox monastic observance."
+    "The schedule is a labeled comparative reconstruction and is not a generic schedule for all Novgorod NPCs or direct evidence of Orthodox monastic observance.",
+    "The reaction policy is bounded gameplay reconstruction, not evidence of historical NPC behavior, and does not create capabilities, authority relations, safe anchors or threats."
   ]
 }

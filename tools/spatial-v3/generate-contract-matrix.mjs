@@ -18,7 +18,11 @@ const temporalContracts = new Set([
   'temporal_advance_request', 'temporal_advance_result', 'interruption_outcome', 'perception_result', 'npc_decision_option',
   'npc_decision_request', 'npc_decision_trace', 'propagation_process_ref', 'remote_aggregate_state', 'remote_catch_up_request',
   'remote_catch_up_result', 'visible_package_persistence_envelope', 'combined_write_plan', 'party_traversal_interval_result',
-  'synchronized_time_slice_result'
+  'synchronized_time_slice_result',
+  'journey_prepared_execution_start_command', 'journey_execution_continue_command', 'journey_execution_cancel_command',
+  'journey_successor_plan_preparation_command', 'perception_signal_snapshot', 'perception_propagation_edge_snapshot',
+  'perception_propagation_snapshot', 'perception_environment_snapshot', 'perception_attention_snapshot',
+  'perception_recognition_snapshot', 'perception_policy_snapshot', 'npc_perception_request', 'perception_replay_evidence'
 ]);
 const temporalPartyRuntimeContracts = new Set([
   'party_timed_activity_execution', 'party_timed_activity_attempt', 'time_slice_result', 'perception_result', 'npc_decision_trace',
@@ -44,7 +48,7 @@ const errors = typedErrors.errors
   .map(({ error_code }) => error_code)
   .sort((a, b) => a.localeCompare(b));
 
-if (new Set(contracts).size !== 188 || contracts.length !== 188) throw new Error(`Expected 188 unique contracts, got ${contracts.length}/${new Set(contracts).size}`);
+if (new Set(contracts).size !== 213 || contracts.length !== 213) throw new Error(`Expected 213 unique contracts, got ${contracts.length}/${new Set(contracts).size}`);
 if (new Set(errors).size !== 82 || errors.length !== 82) throw new Error(`Expected 82 unique errors, got ${errors.length}/${new Set(errors).size}`);
 
 const matrix = {
@@ -78,7 +82,7 @@ const summary = [
   '',
   'Статус: `target`; записи являются обязательным планом владения, не утверждением о существующей реализации.',
   '',
-  `- Contracts: ${matrix.contracts.length}/188; errors: ${matrix.errors.length}/82.`,
+  `- Contracts: ${matrix.contracts.length}/213; errors: ${matrix.errors.length}/82.`,
   '- Каждый contract и error имеет ровно одного planned owner; все implementation fields привязаны к последующим шагам плана.',
   '',
   '## Распределение контрактов',

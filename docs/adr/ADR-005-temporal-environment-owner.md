@@ -2,7 +2,7 @@
 
 - Status: accepted
 - Date: 2026-07-23
-- Decision scope: target architecture; no production activation before P28.
+- Decision scope: target architecture; historical P28 acceptance did not activate production, and production activation requires the separate `versioned production activation cutover`.
 
 ## Decision
 
@@ -14,4 +14,4 @@ Weather/light profiles and regional applicability remain read-only `world_base` 
 
 ## Rollback
 
-Before P28, environment proposals are shadow/fixture-only. Rollback discards an uncommitted proposal; after activation it follows the approved reverse migration or a validated checkpoint and never silently recomputes old party facts from changed authoring data.
+Before the `versioned production activation cutover`, environment proposals are shadow/fixture-only. Rollback discards an uncommitted proposal; after activation it follows the approved reverse migration or a validated checkpoint and never silently recomputes old party facts from changed authoring data.

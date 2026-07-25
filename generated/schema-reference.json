@@ -895,6 +895,24 @@
       "type": "sql"
     },
     {
+      "bytes": 1935,
+      "path": "schemas/party-db/008_party_runtime_pr8_first_entry.sql",
+      "sha256": "25ac03085a41e9cc5963c4cdf06e59ee2319c3b254d25b297e4871608d05a1ac",
+      "type": "sql"
+    },
+    {
+      "bytes": 7121,
+      "path": "schemas/party-db/009_party_runtime_pr8_reaction_knowledge.sql",
+      "sha256": "1fdaba3f43f15502f64e2644b13f3ac07beaffacb1b8260fa8db37720d3f54b2",
+      "type": "sql"
+    },
+    {
+      "bytes": 1633,
+      "path": "schemas/party-db/010_party_runtime_pr8_reaction_options.sql",
+      "sha256": "bd832815094990299b76af286fd4a4e8250d8d1992d6f3846dbfa0cf944ce264",
+      "type": "sql"
+    },
+    {
       "bytes": 18438,
       "path": "schemas/runtime-catalog/runtime-catalog-artifacts-v2.schema.json",
       "sha256": "2d8e9167f701e193b2e2eb03c162e4b8228cb2c46cea7cc26368de4304a3ed40",

@@ -74,8 +74,10 @@ G7 и G8 не вводятся.
 
 ### 0.4. Условия активации
 
-Spatial v3 вместе с Temporal World v4 становится production-active только
-одной атомарной поставкой P28, когда одновременно:
+P28 exact-head evidence прежнего кандидата принято как immutable historical
+record и не меняло production composition. Spatial v3 вместе с Temporal World
+v4 становится production-active только отдельным атомарным
+`versioned production activation cutover`, когда одновременно:
 
 1. принят ADR materialization v2 → v3;
 2. синхронизированы `AGENTS.md`, `.github/AGENTS.md`, профильные нормативы и навигация;
@@ -88,7 +90,11 @@ Spatial v3 вместе с Temporal World v4 становится production-act
 9. пройдены обязательные unit, contract, negative, property, integration и PostgreSQL tests;
 10. обновлены module/contract/interface registries и repository graph artifacts;
 11. независимый критик вернул `PASS` или допустимый `PASS WITH NOTES`;
-12. единственный PR содержит рабочий `README.md`, изменения, результаты проверок, аудит и порядок интеграции.
+12. новый exact-head evidence manifest привязан к фактическому кандидату, не
+    переписывает историческое P28 evidence и повторяет semantic approval только
+    при изменении содержания, обязательной схемы, семантики или правил
+    интерпретации;
+13. единственный PR содержит рабочий `README.md`, изменения, результаты проверок, аудит и порядок интеграции.
 
 Частичная активация запрещена.
 
@@ -132,16 +138,19 @@ Read-only копия Google Drive в этом документном прохо�
 
 Профильный документ
 `temporal_world_and_interruptible_activities.md` имеет status `active` после
-финальной implementation acceptance. Он задаёт `temporal-world-v1` и
-следующую Spatial DTO version `4.3.0-target.1` для exact `GameTimestamp`,
-activities, temporal boundaries, domain/NPC/carrier/remote processing,
-persistence и post-commit narration.
+финальной implementation acceptance. Его A.1–A.6 задают immutable
+`temporal-world-v1` / `4.3.0-target.1` для exact `GameTimestamp`, activities,
+temporal boundaries, domain/NPC/carrier/remote processing, persistence и
+post-commit narration. Доказанный PR8 handoff gap оформлен additive A.7 как
+current `temporal-world-v1.1` / Spatial DTO `4.4.0-target.1`; это не новый
+release stage и не production activation.
 
-До атомарного P28 он используется только в target contracts, tests, migration
-и shadow composition. Promotion выполнен после полной реализации и
-независимого критика, но до final P28 exact-head evidence. Нормативный status
-`active` не является production activation: production v2 остаётся sole owner
-до атомарного P28.
+Он используется только в target contracts, tests, migration и shadow
+composition до отдельного `versioned production activation cutover`.
+Promotion выполнен после полной реализации и независимого критика; последующее
+P28 exact-head evidence принято без production write или composition switch.
+Нормативный status `active` и принятое P28 evidence не являются production
+activation: production v2 остаётся sole owner до отдельного cutover.
 
 При temporal-конфликте профильный amendment имеет приоритет над
 пространственной прозой §11 и соответствующими Appendix B temporal contracts;

@@ -1,6 +1,9 @@
 import { computeSpatialV3CanonicalDigest, createSpatialV3TypedError } from '@rus/contracts/spatial-v3/registry';
 import { createSpatialV3CommandRegistry, createSpatialV3NewGameStarter, createSpatialV3TurnOrchestrator } from './spatial-v3-orchestration.js';
 import { buildCombinedWritePlan } from './spatial-v3-write-plan.js';
+import {
+  integrateSpatialV3TemporalWriteFragments
+} from './spatial-v3-temporal-write-integration.js';
 
 const clone = (value) => structuredClone(value);
 const text = (value) => typeof value === 'string' && value.trim() ? value.trim() : null;
@@ -20,6 +23,7 @@ const requirePort = (value, name) => { if (typeof value !== 'function') throw ne
  */
 export function createSpatialV3TargetShadowComposition({
   planner, activationValidator, executionEngine, targetPreparation, frontierResolver,
+  journeyCommandCoordinator = null, loadJourneyState = null,
   loadSnapshots, validateProposal, advanceTemporal, deriveVisiblePackage,
   loadCommittedVisiblePackage, claimPresentationAttempt, narrate,
   persistNarrationOutput, finalizePresentationAttempt, projectScreen,
@@ -90,6 +94,36 @@ export function createSpatialV3TargetShadowComposition({
     if (operation === 'synchronized_slice') return invokeP19('resolveSynchronizedSlice', payload, 'timed_traversal.synchronized_slice');
     return failure(payload?.party_id, 'timed_traversal', 'explicit traversal operation is required');
   };
+  const invokeJourneyCommand = async (command) => {
+    if (!journeyCommandCoordinator || typeof journeyCommandCoordinator.resolve !== 'function'
+      || typeof loadJourneyState !== 'function') {
+      return failure(command.party_id, 'journey_command', 'journey command coordinator and sealed state loader are required');
+    }
+    const payload = command.command_payload;
+    const { canonical_digest: _outerPayloadDigest, ...taggedCommand } = payload ?? {};
+    if (taggedCommand.party_id !== command.party_id
+      || taggedCommand.command_id !== command.command_id
+      || taggedCommand.idempotency_key !== command.idempotency_key) {
+      return failure(
+        command.party_id,
+        'journey_command',
+        'outer command identity must match the tagged journey command identity'
+      );
+    }
+    const loaded = await loadJourneyState(freeze({
+      party_id: command.party_id,
+      command_id: command.command_id,
+      intent_kind: taggedCommand.intent_kind,
+      idempotency_key: command.idempotency_key
+    }));
+    if (!loaded?.ok || !plain(loaded.state_projection)) {
+      return failure(command.party_id, 'journey_command', 'sealed journey state projection is unavailable');
+    }
+    return journeyCommandCoordinator.resolve(freeze({
+      command: clone(taggedCommand),
+      state_projection: clone(loaded.state_projection)
+    }));
+  };
   const invokeModeHandoff = async (command) => {
     const transition = await invokeP19('resolveModeTransition', command.command_payload, `mode_handoff.${command.command_kind}`);
     if (!transition?.ok || !plain(transition.handoff_input)) return transition ?? failure(command.party_id, 'mode_handoff', 'P19 transition result is unavailable');
@@ -110,6 +144,7 @@ export function createSpatialV3TargetShadowComposition({
     // see their resolved result, never the Promise itself: otherwise a truthy
     // Promise would bypass the sealed-proposal and typed-failure boundary.
     timed_traversal: async (command) => adapt(command, await invokeTraversal(command.command_payload)),
+    journey_command: async (command) => adapt(command, await invokeJourneyCommand(command)),
     resume_plan: async (command) => adapt(command, await commandAdapters.resume_plan?.({ command: clone(command) })),
     replan: async (command) => adapt(command, await commandAdapters.replan?.({ command: clone(command) })),
     recover_journey: async (command) => adapt(command, await commandAdapters.recover_journey?.({ command: clone(command) })),
@@ -138,8 +173,13 @@ export function createSpatialV3TargetShadowComposition({
     if (input.proposal.combined_write_plan_input?.change_set?.id !== input.combined_change_set.id) {
       return failure(input.party_id, 'write_plan', 'proposal and combined change-set identities disagree');
     }
+    const integrated = integrateSpatialV3TemporalWriteFragments({
+      base_write_plan_input: input.proposal.combined_write_plan_input,
+      temporal_result: input.temporal_result
+    });
+    if (!integrated.ok) return integrated;
     const built = await buildCombinedWritePlan({
-      ...clone(input.proposal.combined_write_plan_input),
+      ...clone(integrated.input),
       visible_package_envelope: clone(input.visible_package_envelope)
     }, { verifyApproval });
     if (!built.ok) return built;

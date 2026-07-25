@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rus.spatial-v3.production-activation-boundary.v1",
+  "title": "Spatial v3 current production activation boundary",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "version",
+    "current_production_owner",
+    "target_status",
+    "activation_operation",
+    "historical_p05_freeze",
+    "historical_p28_evidence",
+    "forbidden"
+  ],
+  "properties": {
+    "schema": {
+      "const": "rus.spatial-v3.production-activation-boundary.v1"
+    },
+    "version": {
+      "const": 1
+    },
+    "current_production_owner": {
+      "const": "production_v2"
+    },
+    "target_status": {
+      "const": "target_shadow_until_versioned_production_activation_cutover"
+    },
+    "activation_operation": {
+      "const": "versioned production activation cutover"
+    },
+    "historical_p05_freeze": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "current_status_authority"],
+      "properties": {
+        "path": {
+          "const": "docs/migration/spatial-v3/normative-freeze.json"
+        },
+        "sha256": {
+          "const": "131738c4086c6d483b569407c3de02b2e9f12af3d1883a3fe92afea6a826feb4"
+        },
+        "current_status_authority": {
+          "const": false
+        }
+      }
+    },
+    "historical_p28_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "activation_candidate_commit",
+        "manifest_path",
+        "manifest_sha256",
+        "composition_changed",
+        "production_writes"
+      ],
+      "properties": {
+        "activation_candidate_commit": {
+          "const": "2ec109c99c5e2b33f43dc5f89735e6e72686299b"
+        },
+        "manifest_path": {
+          "const": "docs/migration/spatial-v3/release-evidence.v1.json"
+        },
+        "manifest_sha256": {
+          "const": "84e4fd93fad37b83424533970621f74e7a96adfa84534188f939b7ad0dd2f29f"
+        },
+        "composition_changed": {
+          "const": false
+        },
+        "production_writes": {
+          "const": 0
+        }
+      }
+    },
+    "forbidden": {
+      "const": [
+        "partial_activation",
+        "dual_write",
+        "authoritative_mixed_read",
+        "semantic_fallback_v3_to_v2"
+      ]
+    }
+  }
+}

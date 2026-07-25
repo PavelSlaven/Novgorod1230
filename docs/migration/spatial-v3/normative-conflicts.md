@@ -1,6 +1,10 @@
 # Реестр нормативных конфликтов Spatial v3
 
-Статус: все записи `planned`; active materialization v2 остаётся единственным production runtime до P28.
+Статус: исторические conflict rows закрыты принятым target implementation
+evidence, но не активировали production. Active materialization v2 остаётся
+единственным production runtime до отдельного `versioned production activation
+cutover`. Значения P02–P28 в таблице ниже — исторические phase labels, не
+будущая activation boundary.
 
 | ID | Active v2 wording / source | Target v3 exact replacement | Решение | Owner file | Activation phase |
 |---|---|---|---|---|---|

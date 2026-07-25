@@ -21,12 +21,28 @@ Production composition root and the only physical PostgreSQL transaction owner. 
   accept only validated sealed plans/explicit pool transactions and are not
   domain decision APIs.
 
+For target `first_entry`, the combined committer accepts the already-defined
+Spatial-v3 core G5/baseline/G6/position rows and the root journey-location
+update only through one approved combined plan. The plan binds a stable
+scene-baseline materialization-scope key; its transaction-scoped advisory
+lock precedes the idempotency lease, baseline absence/reuse recheck and every
+domain write.
+
 Infrastructure inputs are explicit pool/config/binding/plan DTO and transactional callbacks; output is a committed physical result, HTTP envelope or typed server/infrastructure error. SQL targets are explicitly `party_runtime`; world-base adapter is read-only. Temporal presentation persistence stores package/pending-delivery lifecycle separately from narrator output, atomically with factual write when required by the combined plan.
 
 ## Ошибки, зависимости и effects
 
 Uses `pg` only under `src/infrastructure/postgres`; `GameServerError`/server error envelopes, startup probes and adapter failures are explicit. This is the persistence and external-I/O boundary: owns pool/transaction/HTTP/provider calls and rejects invalid schema, hidden public payload, stale knowledge artifacts and unqualified targets. No deterministic runtime fallback is allowed.
 
-## Target / P28 и тесты
+## Target / activation и тесты
 
-Spatial/Temporal `temporal-world-v1` / `4.3.0-target.1` composition is shadow/target only before atomic P28; production v2 remains sole owner and no target stub is imported into production composition. `test/game-server.test.js`, `party-store-runtime-catalog.test.js`, `runtime-catalog-boundary.test.js`, `test/spatial-v3/p16-committer-postgres.test.js`, `temporal-world-postgres.test.js` and `presentation-store.test.js` cover composition, atomic transaction/lock/idempotency, exact persistence and the leased post-commit presentation lifecycle.
+Spatial/Temporal `temporal-world-v1` / `4.3.0-target.1` composition is
+shadow/target only before the separate versioned production activation
+cutover. Accepted historical P28 evidence did not switch composition;
+production v2 remains sole owner and no target stub is imported into production
+composition. `test/game-server.test.js`, `party-store-runtime-catalog.test.js`,
+`runtime-catalog-boundary.test.js`,
+`test/spatial-v3/p16-committer-postgres.test.js`,
+`temporal-world-postgres.test.js` and `presentation-store.test.js` cover
+composition, atomic transaction/lock/idempotency, exact persistence and the
+leased post-commit presentation lifecycle.

@@ -67,8 +67,8 @@ export async function loadCanonicalTarget() {
   const amendmentErrors = parseTypedErrors(temporalAmendment, '# Приложение B. Temporal typed-error amendment', '# Приложение C.');
   const contracts = mergeByName(historical.contracts, amendmentContracts);
   const errors = mergeByName(historical.errors, amendmentErrors);
-  if (amendmentContracts.length !== 35 || amendmentErrors.length !== 24) throw new Error('Temporal amendment totals changed; refresh the target contract evidence');
-  if (contracts.length !== 188 || errors.length !== 82) throw new Error('Current 4.3 target union no longer matches the base plus temporal amendment');
+  if (amendmentContracts.length !== 62 || amendmentErrors.length !== 24) throw new Error('Temporal/PR8 amendment totals changed; refresh the target contract evidence');
+  if (contracts.length !== 213 || errors.length !== 82) throw new Error('Current 4.4 target union no longer matches the base plus temporal/PR8 amendment');
   return { contracts, errors, stateMachines: historical.stateMachines, historical, amendment: { contracts: amendmentContracts.sort(), errors: amendmentErrors.sort() } };
 }
 

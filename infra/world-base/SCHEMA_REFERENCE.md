@@ -2566,7 +2566,7 @@
 
 ### `world_base.spatial_v3_world_revisions`
 
-Target v3 version graph canonical world authoring; остаётся read-only и не активирует v3 до P28.
+Target v3 version graph canonical world authoring; остаётся read-only и не активирует v3 до отдельного versioned production activation cutover.
 
 | Поле | Тип | NULL | Default | FK | Constraints | Описание |
 |---|---|---:|---|---|---|---|

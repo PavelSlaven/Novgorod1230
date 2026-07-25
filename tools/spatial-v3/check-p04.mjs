@@ -187,25 +187,25 @@ export function validateP04CatalogProjection({
   ]) {
     if (!catalog.includes(token)) throw new Error(`Novgorod catalog approved P12 projection: ${token} missing`);
   }
-  const structuredStatusPattern = /Production import:\s*`?([a-z_]+)`?;\s*runtime visibility:\s*`?([a-z_]+)`?;\s*P28 activation:\s*`?([a-z_]+)`?\./giu;
+  const structuredStatusPattern = /Production import:\s*`?([a-z_]+)`?;\s*runtime visibility:\s*`?([a-z_]+)`?;\s*`?versioned production activation cutover`?:\s*`?([a-z_]+)`?\./giu;
   const structuredStatuses = [...catalog.matchAll(structuredStatusPattern)];
   if (structuredStatuses.length !== 1) {
     throw new Error(`P04 catalog must contain exactly one structured status assertion; found ${structuredStatuses.length}`);
   }
-  const [, productionImport, runtimeVisibility, p28Activation] = structuredStatuses[0];
-  if (productionImport !== 'not_performed' || runtimeVisibility !== 'not_verified' || p28Activation !== 'not_performed') {
-    throw new Error('P04 catalog contains a contradictory production/runtime/P28 status assertion');
+  const [, productionImport, runtimeVisibility, cutover] = structuredStatuses[0];
+  if (productionImport !== 'not_performed' || runtimeVisibility !== 'not_verified' || cutover !== 'not_performed') {
+    throw new Error('P04 catalog contains a contradictory production/runtime/cutover status assertion');
   }
   for (const contradictoryStatus of [
     /Production import:\s*`?performed`?/iu,
     /runtime visibility:\s*`?verified`?/iu,
-    /P28 activation:\s*`?performed`?/iu
+    /`?versioned production activation cutover`?:\s*`?performed`?/iu
   ]) {
     if (contradictoryStatus.test(catalog)) {
-      throw new Error('P04 catalog contains a contradictory production/runtime/P28 status assertion');
+      throw new Error('P04 catalog contains a contradictory production/runtime/cutover status assertion');
     }
   }
-  if (!catalog.includes('Production import: `not_performed`; runtime visibility: `not_verified`; P28 activation: `not_performed`.')) {
+  if (!catalog.includes('Production import: `not_performed`; runtime visibility: `not_verified`; `versioned production activation cutover`: `not_performed`.')) {
     throw new Error('P04 catalog production boundary is missing or was weakened');
   }
   if (sourceGapStatus.production_activation_allowed !== false) {
@@ -274,7 +274,7 @@ async function main() {
     sourceGapStatus,
     ...projectionEvidence
   });
-  console.log('P04 checks passed: approved P12 authoring projection is synchronized while production/P28 and hidden-information boundaries remain closed.');
+  console.log('P04 checks passed: approved P12 authoring projection is synchronized while production/cutover and hidden-information boundaries remain closed.');
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) await main();

@@ -58,6 +58,13 @@ export function assertModularStartupConfig(config) {
   if (disabled.length) throw serverError('MODULAR_FEATURE_FLAGS_INCOMPLETE', `Modular runtime requires all cutover flags; disabled: ${disabled.join(', ')}.`, { status: 500, details: { disabled } });
   if (config.cutoverStage < 12) throw serverError('CUTOVER_STAGE_INCOMPLETE', 'Modular runtime cannot become default before cutover step 12.', { status: 500 });
   if (!config.compositionModule) throw serverError('COMPOSITION_MODULE_REQUIRED', 'Composition module is required.', { status: 500 });
+  if (config.compositionModule !== 'builtin:production') {
+    throw serverError(
+      'COMPOSITION_MODULE_INACTIVE',
+      'Only production v2 may be selected before versioned production activation cutover.',
+      { status: 500 }
+    );
+  }
   if (config.compositionModule === 'builtin:production' && !config.runtimeBindingsModule) {
     throw serverError('RUNTIME_BINDINGS_MODULE_REQUIRED', 'RUS_RUNTIME_BINDINGS_MODULE is required for builtin production composition.', { status: 500 });
   }

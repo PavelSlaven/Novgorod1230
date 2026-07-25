@@ -28,9 +28,11 @@ environment/remote updates и post-commit narration. Его профильный
 Exact-head P28 release evidence принят в merged PR #19: обязательный CI,
 hash-bound critic evidence и merge proof прошли live-проверку. Это разрешение
 не выполняло production write и не меняло composition автоматически:
-production v2 остаётся текущим sole owner до отдельного versioned activation
-cutover. Partial activation, dual write, authoritative mixed read и v3→v2
-fallback запрещены.
+production v2 остаётся текущим sole read/write owner до отдельного
+`versioned production activation cutover`. Эта операция атомарно переключает
+composition, authoritative reads/writes, migration path, runtime pins и
+rollback release identity. Partial activation, dual write, authoritative mixed
+read и v3→v2 fallback запрещены.
 
 ## Основные принципы
 

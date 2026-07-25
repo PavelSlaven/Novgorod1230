@@ -16,7 +16,10 @@
 
 ## Spatial v3 target ownership (P08)
 
-These records are target-only until P28. They do not reroute production v2, permit dual write, mixed reads or compatibility fallback.
+Historical P28 evidence did not activate production. These records remain
+target/shadow-only until the separate `versioned production activation
+cutover`. They do not reroute production v2, permit dual write, mixed reads or
+compatibility fallback.
 
 | Owner | Sole target responsibility | Explicit boundary |
 |---|---|---|
@@ -28,14 +31,15 @@ These records are target-only until P28. They do not reroute production v2, perm
 | `@rus/turn` | command order, locks, idempotency and combined write-plan construction | no repository implementation |
 | `@rus/contracts` | shared discriminated DTOs, controlled vocabularies and typed errors | no domain execution or adapters |
 | presentation/knowledge | player-safe projection only | never factual topology creation |
-| `@rus/game-server` | production composition after the P28 gate | no duplicate spatial/movement/materialization logic |
+| `@rus/game-server` | production composition after the `versioned production activation cutover` | no duplicate spatial/movement/materialization logic |
 
 The target public ports are deliberately typed-failure stubs until their individual implementation phases. A caller must surface the error or stop; it must not try v2, choose a substitute record or write a partial result.
 
 ## Temporal World v4 target ownership
 
-These responsibilities are proposed target-only until P28; active production
-v2 remains the sole production owner.
+These responsibilities remain target/shadow-only until the separate
+`versioned production activation cutover`; production v2 remains the sole
+production owner.
 
 | Owner | Exact target responsibility | Explicit boundary |
 |---|---|---|

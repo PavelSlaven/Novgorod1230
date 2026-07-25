@@ -22,7 +22,7 @@
 
 ## Spatial v3 target boundary
 
-P08 assigns presentation/knowledge only player-safe projection. This module never creates factual topology, resolves an endpoint, or invokes a target spatial port before P28.
+P08 assigns presentation/knowledge only player-safe projection. This module never creates factual topology, resolves an endpoint, or invokes a target spatial port before the `versioned production activation cutover`.
 
 P22 adds the explicit `@rus/presentation/spatial-v3-projection` target-only entrypoint. It resolves only supplied explicit perception relations, projects knowledge beliefs and derives player-safe map/route panels for the existing game-web renderer. It does not read persistence, derive topology from coordinates, write beliefs, or alter the P08 fail-closed port boundary.
 

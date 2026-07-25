@@ -99,14 +99,47 @@ test('approved Temporal data imports atomically and idempotently in isolated Pos
     );
   `, { tuples: true });
   assert.equal(committedCounts.status, 0, committedCounts.stderr);
-  assert.deepEqual(JSON.parse(committedCounts.stdout), [46, 13, 21, 21]);
+  assert.deepEqual(JSON.parse(committedCounts.stdout), [46, 14, 22, 22]);
 
   const readerSelect = psql(`
     SET ROLE world_reader;
     SELECT count(*) FROM world_base.temporal_authoring_records;
   `, { tuples: true });
   assert.equal(readerSelect.status, 0, readerSelect.stderr);
-  assert.match(readerSelect.stdout, /21/u);
+  assert.match(readerSelect.stdout, /22/u);
+  const reactionReadback = psql(`
+    SET ROLE world_reader;
+    SELECT json_build_object(
+      'record_id', record_id,
+      'record_version', record_version,
+      'record_kind', record_kind,
+      'status', status,
+      'command_ids', (
+        SELECT json_agg(command_record->'command_ref'->'entity_ref'->>'entity_id'
+          ORDER BY command_record->'command_ref'->'entity_ref'->>'entity_id')
+        FROM jsonb_array_elements(payload->'command_records') command_record
+      )
+    )
+    FROM world_base.temporal_authoring_records
+    WHERE record_id =
+      'record:npc_temporal_profiles_policies:reaction_signal_policy_v1'
+      AND record_version = '1'
+      AND record_kind = 'npc_reaction_policy'
+      AND status = 'approved';
+  `, { tuples: true });
+  assert.equal(reactionReadback.status, 0, reactionReadback.stderr);
+  assert.deepEqual(JSON.parse(reactionReadback.stdout), {
+    record_id:
+      'record:npc_temporal_profiles_policies:reaction_signal_policy_v1',
+    record_version: '1',
+    record_kind: 'npc_reaction_policy',
+    status: 'approved',
+    command_ids: [
+      'npc_investigate_signal',
+      'npc_report_to_authority',
+      'npc_seek_safety'
+    ]
+  });
   const readerWrite = psql(`
     SET ROLE world_reader;
     INSERT INTO world_base.temporal_authoring_records (

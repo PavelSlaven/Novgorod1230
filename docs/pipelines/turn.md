@@ -2,9 +2,11 @@
 
 Канонический владелец orchestration: `@rus/turn`.
 
-Active production continues to use v2 until atomic P28. The Temporal World v4
-sequence below is target/shadow/migration-only and must not be combined with a
-v2 write, authoritative read or fallback.
+Accepted historical P28 evidence changed no production composition. Active
+production continues to use v2 until the separate `versioned production
+activation cutover`. The Temporal World v4 sequence below is
+target/shadow/migration-only and must not be combined with a v2 write,
+authoritative read or fallback.
 
 ## Этапы
 
@@ -15,12 +17,13 @@ v2 write, authoritative read or fallback.
 5. `checks` — выполняет только явно запрошенные проверки через `RandomSource`.
 6. `consequence` — зарегистрированный code handler вычисляет последствия либо возвращает repair request.
 7. `time_update` — применяет утверждённую длительность к формуле времени.
-8. `hidden_update` — код проецирует утверждённое consequence в hidden update.
-9. `visible_projection` — строит visible context без hidden утечек.
-10. `narration` — запускает approved narration flow.
-11. `persistence_plan` — код строит и in-process запечатывает логический write plan из allowlist targets.
-12. `commit` — party store принимает только запечатанный code-owned plan, сам отображает его в физические таблицы и сохраняет bounded-decision trace.
-13. `screen_projection` — строит versioned `TurnScreen`.
+8. `hidden_update` — код применяет утверждённое consequence к immutable candidate post-change state.
+9. `visible_projection` — code-owned projection строит player-safe candidate.
+10. `hidden_leak_validation` — отклоняет unsafe candidate до write plan.
+11. `persistence_plan` — код строит и in-process запечатывает логический write plan из allowlist targets, включая safe package и presentation-pending metadata.
+12. `commit` — game-server одной PostgreSQL-транзакцией сохраняет facts, visible package и pending metadata.
+13. `narration` — после commit читает только persisted package и создаёт prose, но не facts.
+14. `screen_projection` — строит versioned `TurnScreen` из persisted package и narration.
 
 ## Результат
 

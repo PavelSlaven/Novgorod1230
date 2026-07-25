@@ -14,7 +14,7 @@ Canonical machine-readable contract/typed-error registry shared by packages and 
 
 ## Public API и контракты
 
-Exports `.` plus documented subpaths for JSON, stages, approvals, digests, schema names, handoffs and `./spatial-v3/{registry,compatibility,ports,state-machines}`. `SPATIAL_V3_CONTRACT_VERSION` is `4.3.0-target.1` (baseline `4.2.0-target.1`); the current generated registry contains exactly 188 contracts and 82 typed errors while retaining immutable 160/58 historical snapshots. Principal target APIs are canonicalization/digest, `validateSpatialV3Contract`, `validatePlayerSafeVisiblePayload`, controlled-vocabulary validation and `createSpatialV3TypedError`; ports expose fail-closed `target_stub` results.
+Exports `.` plus documented subpaths for JSON, stages, approvals, digests, schema names, handoffs and `./spatial-v3/{registry,compatibility,ports,state-machines}`. `SPATIAL_V3_CONTRACT_VERSION` is `4.4.0-target.1` (baselines `4.2.0-target.1` and immutable accepted Temporal `4.3.0-target.1`); the current generated registry contains exactly 213 contracts and 82 typed errors while retaining byte-identical 160/58 and 188/82 historical snapshots. Principal target APIs are canonicalization/digest, `validateSpatialV3Contract`, `validatePlayerSafeVisiblePayload`, controlled-vocabulary validation and `createSpatialV3TypedError`; ports expose fail-closed `target_stub` results.
 
 ## Ошибки, зависимости и effects
 
@@ -22,4 +22,10 @@ Validators return structured validation errors or typed-error DTO; malformed can
 
 ## Target / P28 и тесты
 
-Registry carries `temporal-world-v1` and `4.3.0-target.1` for contracts/tests/shadow work only; it does not activate target production before P28. `test/spatial-v3-registry.test.js` and `test/temporal-world-v1.test.js` cover registry version, contract and temporal vocabulary/error behavior.
+Registry carries current `temporal-world-v1.1` and `4.4.0-target.1`, plus the
+immutable accepted `temporal-world-v1` / `4.3.0-target.1` snapshot, for
+contracts/tests/shadow work only; it does not activate target production
+before the separate `versioned production activation cutover`. Historical P28
+evidence changed no composition. `test/spatial-v3-registry.test.js` and
+`test/temporal-world-v1.test.js` cover registry version, contract and temporal
+vocabulary/error behavior.

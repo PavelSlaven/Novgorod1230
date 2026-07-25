@@ -23,6 +23,13 @@ Planner receives explicit `resolveKnowledgeTarget`, `loadTopology`, `snapshotEnd
 
 Typed target failures include route/endpoint/capability/readiness/pin/state-version conflicts (for example `route_contract_missing`, `movement_capability_missing`, `route_plan_snapshot_missing`, `route_plan_execution_conflict`). Depends on `@rus/kernel`, `@rus/contracts`, `@rus/time-events-history`; no direct I/O, DB or state mutation. Duration is consumed by turn/time owner, not committed here.
 
-## Target / P28 и тесты
+## Target / activation и тесты
 
-Target route planning/activation is `temporal-world-v1`/`4.3.0-target.1` only until P28, without production fallback or activation. `test/domain.test.js` covers public helpers; `test/spatial-v3/p18-movement-planning.test.js` covers target planner/activation behavior.
+Target route planning/activation uses current `temporal-world-v1.1` /
+`4.4.0-target.1` with immutable `temporal-world-v1` / `4.3.0-target.1`
+baseline, only
+until the separate `versioned production activation cutover`, without
+production fallback or activation. Historical P28 evidence did not change
+composition. `test/domain.test.js` covers public helpers;
+`test/spatial-v3/p18-movement-planning.test.js` covers target
+planner/activation behavior.

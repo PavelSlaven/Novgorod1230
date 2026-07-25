@@ -38,11 +38,14 @@ Hidden state не передаётся narration, presentation или game-web. 
 
 ## Temporal target boundary
 
-Until P28, `temporal-world-v1` contracts are target/shadow/migration-only;
-they cannot create a v2 compatibility write or mixed authoritative read. A
-temporal advance carries exact `(from,to]` timestamps, policy/profile/catalog
-pins, one clock owner, explicit finite limits and an idempotency context.
-Missing data and conflicts use typed fail-closed results.
+Historical P28 evidence did not activate production. Before the separate
+`versioned production activation cutover`, current `temporal-world-v1.1`
+contracts are target/shadow/migration-only; accepted `temporal-world-v1`
+remains an immutable `4.3.0-target.1` snapshot. Neither may create a v2
+compatibility write or mixed authoritative read. A temporal advance carries exact `(from,to]`
+timestamps, policy/profile/catalog pins, one clock owner, explicit finite
+limits and an idempotency context. Missing data and conflicts use typed
+fail-closed results.
 
 Pure owner outputs are proposals. `@rus/turn` merges them deterministically
 into one logical change set; `@rus/party-store` validates the persistence

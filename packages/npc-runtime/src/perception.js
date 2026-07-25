@@ -1,70 +1,301 @@
 import { NPC_RUNTIME_OWNER, NPC_RUNTIME_RESOURCE_LIMITS } from './runtime-configuration.js';
-import { allowedKeys, blocked, dependencyPins, digest, entityRef, exactKeys, formal, freeze, normalizeTimestamp, pinned, refKey, sealedRecord, sameRef, stableId, success, uniqueEntityRefs, uniqueStableIds, versionedRef } from './internal.js';
+import {
+  blocked,
+  dependencyPins,
+  digest,
+  formal,
+  freeze,
+  normalizeTimestamp,
+  pinned,
+  refKey,
+  sealedRecord,
+  success
+} from './internal.js';
 
-const SIGNAL_CHANNELS = new Set(['visual', 'acoustic']);
-const ATTENTION_STATUSES = new Set(['awake', 'sleeping']);
-const RECOGNITION_OUTCOMES = new Set(['recognized', 'misinterpreted', 'partial', 'unidentified']);
-const PERCEPTION_RESULTS = new Set(['not_perceived', 'perceived_unidentified', 'perceived_partial', 'recognized', 'misinterpreted']);
-const PERCEPTION_PROFILE_KEYS = ['recognition_policy_ref', 'visibility_policy_ref', 'provenance_ref', 'status', 'darkness_visual_result_cap', 'sleeping_attention_channels', 'canonical_digest'];
-const SIGNAL_KEYS = ['signal_ref', 'channel', 'source_scope_ref', 'canonical_digest'];
-const PROPAGATION_KEYS = ['source_scope_ref', 'target_scope_ref', 'edges', 'canonical_digest'];
-const PATH_EDGE_KEYS = ['edge_ref', 'from_ref', 'to_ref', 'permitted_channels'];
-const ENVIRONMENT_KEYS = ['light_state_id', 'canonical_digest'];
-const ATTENTION_KEYS = ['attention_state_ref', 'status', 'attended_channels', 'canonical_digest'];
-const RECOGNITION_KEYS = ['recognition_state_ref', 'outcome', 'canonical_digest'];
-const PERCEPTION_EVIDENCE_KEYS = ['perception_id', 'input_digest', 'perception_digest', 'canonical_digest'];
+const PERCEPTION_RESULTS = new Set([
+  'not_perceived',
+  'perceived_unidentified',
+  'perceived_partial',
+  'recognized',
+  'misinterpreted'
+]);
 
-function validatePerceptionProfile(value, pins) {
-  return exactKeys(value, PERCEPTION_PROFILE_KEYS) && sealedRecord(value) && value.status === 'approved'
-    && versionedRef(value.recognition_policy_ref) && versionedRef(value.visibility_policy_ref)
-    && versionedRef(value.provenance_ref, 'source_record')
-    && ['not_perceived', 'perceived_unidentified', 'perceived_partial'].includes(value.darkness_visual_result_cap)
-    && uniqueStableIds(value.sleeping_attention_channels) && value.sleeping_attention_channels.every((channel) => SIGNAL_CHANNELS.has(channel))
-    && dependencyPins(pins) && pinned(pins, 'profile', value.recognition_policy_ref)
-    && pinned(pins, 'condition', value.visibility_policy_ref) && pinned(pins, 'source_dependency', value.provenance_ref);
-}
-function validateSignal(value) { return exactKeys(value, SIGNAL_KEYS) && sealedRecord(value) && entityRef(value.signal_ref) && SIGNAL_CHANNELS.has(value.channel) && entityRef(value.source_scope_ref); }
-function validatePropagation(value) {
-  if (!exactKeys(value, PROPAGATION_KEYS) || !sealedRecord(value) || !entityRef(value.source_scope_ref) || !entityRef(value.target_scope_ref) || !Array.isArray(value.edges) || value.edges.length > NPC_RUNTIME_RESOURCE_LIMITS.max_signal_path_edges) return false;
-  const edgeIds = new Set(); const visitedScopes = new Set([refKey(value.source_scope_ref)]); let cursor = value.source_scope_ref;
-  for (const edge of value.edges) {
-    if (!exactKeys(edge, PATH_EDGE_KEYS) || !entityRef(edge.edge_ref) || !entityRef(edge.from_ref) || !entityRef(edge.to_ref) || !sameRef(edge.from_ref, cursor) || edgeIds.has(refKey(edge.edge_ref)) || visitedScopes.has(refKey(edge.to_ref)) || !uniqueStableIds(edge.permitted_channels) || edge.permitted_channels.some((channel) => !SIGNAL_CHANNELS.has(channel))) return false;
-    edgeIds.add(refKey(edge.edge_ref)); visitedScopes.add(refKey(edge.to_ref)); cursor = edge.to_ref;
+const orderedRefs = (values) => [...values].sort(
+  (left, right) => refKey(left).localeCompare(refKey(right), 'en')
+);
+
+function sealedPerceptionRequest(value) {
+  if (!formal('npc_perception_request', value)
+    || value.perceiver_ref.entity_kind !== 'npc'
+    || normalizeTimestamp(value.perceived_at) === null
+    || !dependencyPins(value.dependency_pins)
+    || !dependencyPins(value.environment_snapshot?.transient_modifier_dependency_pins)) {
+    return false;
   }
-  return sameRef(cursor, value.target_scope_ref);
+  const snapshots = [
+    value.factual_signal,
+    value.propagation_snapshot,
+    value.environment_snapshot,
+    value.attention_snapshot,
+    value.recognition_snapshot,
+    value.perception_profile,
+    ...value.propagation_snapshot.edges
+  ];
+  if (snapshots.some((snapshot) => !sealedRecord(snapshot))) return false;
+  const profile = value.perception_profile;
+  return pinned(value.dependency_pins, 'profile', profile.recognition_policy_ref)
+    && pinned(value.dependency_pins, 'condition', profile.visibility_policy_ref)
+    && (profile.acoustic_policy_ref == null
+      || pinned(value.dependency_pins, 'condition', profile.acoustic_policy_ref))
+    && pinned(value.dependency_pins, 'source_dependency', profile.provenance_ref);
 }
-function validateEnvironment(value) { return exactKeys(value, ENVIRONMENT_KEYS) && sealedRecord(value) && ['bright', 'dim', 'dark'].includes(value.light_state_id); }
-function validateAttention(value) { return exactKeys(value, ATTENTION_KEYS) && sealedRecord(value) && entityRef(value.attention_state_ref) && ATTENTION_STATUSES.has(value.status) && uniqueStableIds(value.attended_channels) && value.attended_channels.every((channel) => SIGNAL_CHANNELS.has(channel)); }
-function validateRecognition(value) { return exactKeys(value, RECOGNITION_KEYS) && sealedRecord(value) && entityRef(value.recognition_state_ref) && RECOGNITION_OUTCOMES.has(value.outcome); }
-function perceptionEvidence(value) { return exactKeys(value, PERCEPTION_EVIDENCE_KEYS) && sealedRecord(value) && stableId(value.perception_id) && typeof value.input_digest === 'string' && typeof value.perception_digest === 'string'; }
-function pathAllowsChannel(propagation, channel) { return propagation.edges.every((edge) => edge.permitted_channels.includes(channel)); }
-function recognitionResult(outcome) { if (outcome === 'partial') return 'perceived_partial'; if (outcome === 'unidentified') return 'perceived_unidentified'; return outcome; }
-function capVisualRecognition(result, lightStateId, cap) { return lightStateId !== 'dark' || result !== 'recognized' ? result : cap; }
 
-export function proposeNpcPerception({ perception_input: value } = {}) {
-  const required = ['perception_id', 'perceiver_ref', 'event_ref', 'perceived_at', 'target_scope_ref', 'factual_signal', 'propagation_snapshot', 'environment_snapshot', 'attention_snapshot', 'recognition_snapshot', 'perception_profile', 'known_fact_refs', 'knowledge_update_refs', 'dependency_pins'];
-  const allowed = [...required, 'persisted_perception', 'persisted_perception_evidence'];
-  if (!allowedKeys(value, allowed, required) || !stableId(value.perception_id) || !entityRef(value.perceiver_ref, 'npc') || !entityRef(value.event_ref) || !entityRef(value.target_scope_ref) || normalizeTimestamp(value.perceived_at) === null || !validateSignal(value.factual_signal) || !validatePropagation(value.propagation_snapshot) || !validateEnvironment(value.environment_snapshot) || !validateAttention(value.attention_snapshot) || !validateRecognition(value.recognition_snapshot) || !validatePerceptionProfile(value.perception_profile, value.dependency_pins) || !uniqueEntityRefs(value.known_fact_refs) || !uniqueEntityRefs(value.knowledge_update_refs)) return blocked('perception_policy_gap', 'Perception requires sealed topology, attention, recognition, policy and pin snapshots', value?.perceiver_ref, value?.dependency_pins);
-  if (value.known_fact_refs.length > NPC_RUNTIME_RESOURCE_LIMITS.max_known_fact_refs || value.knowledge_update_refs.length > NPC_RUNTIME_RESOURCE_LIMITS.max_known_fact_refs) return blocked('temporal_execution_unbounded', 'Perception knowledge input exceeded its explicit resource cap', value.perceiver_ref, value.dependency_pins);
-  if (!sameRef(value.factual_signal.source_scope_ref, value.propagation_snapshot.source_scope_ref) || !sameRef(value.target_scope_ref, value.propagation_snapshot.target_scope_ref)) return blocked('perception_policy_gap', 'Signal and propagation path endpoints disagree', value.perceiver_ref, value.dependency_pins);
-  const channel = value.factual_signal.channel;
-  const reaches = pathAllowsChannel(value.propagation_snapshot, channel);
-  const awakeOrAllowedSleeping = value.attention_snapshot.status === 'awake' || value.perception_profile.sleeping_attention_channels.includes(channel);
-  const attends = awakeOrAllowedSleeping && value.attention_snapshot.attended_channels.includes(channel);
-  let result = 'not_perceived';
-  if (reaches && attends) result = capVisualRecognition(recognitionResult(value.recognition_snapshot.outcome), channel === 'visual' ? value.environment_snapshot.light_state_id : 'bright', value.perception_profile.darkness_visual_result_cap);
-  if (!PERCEPTION_RESULTS.has(result)) return blocked('perception_policy_gap', 'Recognition policy produced an unregistered perception result', value.perceiver_ref, value.dependency_pins);
-  const perceivedAt = normalizeTimestamp(value.perceived_at);
-  const inputDigest = digest({ perception_id: value.perception_id, perceiver_ref: value.perceiver_ref, event_ref: value.event_ref, perceived_at: perceivedAt, target_scope_ref: value.target_scope_ref, factual_signal_digest: value.factual_signal.canonical_digest, propagation_snapshot_digest: value.propagation_snapshot.canonical_digest, environment_snapshot_digest: value.environment_snapshot.canonical_digest, attention_snapshot_digest: value.attention_snapshot.canonical_digest, recognition_snapshot_digest: value.recognition_snapshot.canonical_digest, perception_profile_digest: value.perception_profile.canonical_digest, known_fact_refs: [...value.known_fact_refs].sort((left, right) => refKey(left).localeCompare(refKey(right), 'en')), knowledge_update_refs: [...value.knowledge_update_refs].sort((left, right) => refKey(left).localeCompare(refKey(right), 'en')), dependency_pins_digest: value.dependency_pins.canonical_digest });
-  const payload = { perception_id: value.perception_id, perceiver_ref: value.perceiver_ref, event_ref: value.event_ref, perceived_at: perceivedAt, result, recognition_policy_ref: value.perception_profile.recognition_policy_ref, visibility_policy_ref: value.perception_profile.visibility_policy_ref, signal_refs: [value.factual_signal.signal_ref], knowledge_update_refs: result === 'not_perceived' ? [] : value.knowledge_update_refs };
+function visualPathState(request) {
+  const states = [
+    request.environment_snapshot.weather_visibility_result,
+    request.environment_snapshot.transient_visibility_result
+  ];
+  for (const edge of request.propagation_snapshot.edges) {
+    if (!edge.permitted_channels.includes('visual')) return 'blocked';
+    states.push(edge.visibility_quality === 'partial' ? 'partial' : 'clear');
+    if (edge.visibility_portal_result) states.push(edge.visibility_portal_result);
+    if (edge.resolved_condition_visibility) states.push(edge.resolved_condition_visibility);
+  }
+  if (states.includes('blocked')) return 'blocked';
+  return states.includes('partial') ? 'partial' : 'clear';
+}
+
+function acousticPathState(request) {
+  const losses = [
+    request.environment_snapshot.weather_acoustic_loss,
+    request.environment_snapshot.transient_acoustic_loss
+  ];
+  for (const edge of request.propagation_snapshot.edges) {
+    if (!edge.permitted_channels.includes('acoustic')) return 'blocked';
+    losses.push(String(edge.acoustic_base_loss));
+    if (edge.acoustic_portal_extra_loss != null) losses.push(String(edge.acoustic_portal_extra_loss));
+    if (edge.resolved_condition_acoustic_loss != null) losses.push(String(edge.resolved_condition_acoustic_loss));
+  }
+  if (losses.includes('blocked')) return 'blocked';
+  return losses.some((loss) => loss !== '0') ? 'partial' : 'clear';
+}
+
+function recognitionResult(outcome) {
+  if (outcome === 'partial') return 'perceived_partial';
+  if (outcome === 'unidentified') return 'perceived_unidentified';
+  return outcome;
+}
+
+function capResult(request, pathState, result) {
+  if (pathState === 'blocked') return 'not_perceived';
+  const channel = request.factual_signal.channel;
+  const capability = channel === 'visual'
+    ? request.attention_snapshot.visual_capability_level
+    : request.attention_snapshot.acoustic_capability_level;
+  if (capability === 0) return 'not_perceived';
+  if (channel === 'visual'
+    && request.environment_snapshot.light_state_id === 'dark'
+    && result === 'recognized') {
+    return request.perception_profile.darkness_visual_result_cap;
+  }
+  if (pathState === 'partial' && result === 'recognized') return 'perceived_partial';
+  return result;
+}
+
+function knowledgeRefs(request, result) {
+  const candidates = orderedRefs(request.candidate_knowledge_fact_refs ?? []);
+  if (result === 'not_perceived') {
+    return freeze({ fact_refs: [], hypothesis_refs: [] });
+  }
+  if (result === 'misinterpreted') {
+    return freeze({ fact_refs: [], hypothesis_refs: candidates });
+  }
+  return freeze({ fact_refs: candidates, hypothesis_refs: [] });
+}
+
+function knowledgeProposal(request, perception, refs) {
+  const payload = {
+    proposal_id: `knowledge-delta:${request.perception_id}:${request.expected_state_versions.canonical_digest}`,
+    owner_ref: request.perceiver_ref,
+    source_kind: 'perception',
+    source_ref: {
+      entity_kind: 'perception_result',
+      entity_id: request.perception_id
+    },
+    source_perception: perception,
+    expected_state_versions: request.expected_state_versions,
+    dependency_pins: request.dependency_pins,
+    fact_refs: refs.fact_refs,
+    hypothesis_refs: refs.hypothesis_refs
+  };
+  return freeze({ ...payload, canonical_digest: digest(payload) });
+}
+
+function policyVersionsDigest(request) {
+  return digest({
+    recognition_policy_ref: request.perception_profile.recognition_policy_ref,
+    visibility_policy_ref: request.perception_profile.visibility_policy_ref,
+    acoustic_policy_ref: request.perception_profile.acoustic_policy_ref ?? null,
+    provenance_ref: request.perception_profile.provenance_ref
+  });
+}
+
+function replayEvidence(request, perception) {
+  const payload = {
+    perception_id: request.perception_id,
+    canonical_input_digest: request.canonical_input_digest,
+    perception_digest: perception.canonical_digest,
+    expected_state_versions_digest: digest(request.expected_state_versions),
+    dependency_pins_digest: request.dependency_pins.canonical_digest,
+    policy_versions_digest: policyVersionsDigest(request),
+    idempotency_key: request.idempotency_key
+  };
+  return freeze({ ...payload, canonical_digest: digest(payload) });
+}
+
+function matchesReplay(request, perception, evidence) {
+  if (!formal('perception_result', perception)
+    || !formal('perception_replay_evidence', evidence)
+    || !sealedRecord(evidence)
+    || perception.perception_id !== request.perception_id
+    || evidence.perception_id !== request.perception_id
+    || evidence.canonical_input_digest !== request.canonical_input_digest
+    || evidence.perception_digest !== perception.canonical_digest
+    || evidence.expected_state_versions_digest !== digest(request.expected_state_versions)
+    || evidence.dependency_pins_digest !== request.dependency_pins.canonical_digest
+    || evidence.policy_versions_digest !== policyVersionsDigest(request)
+    || evidence.idempotency_key !== request.idempotency_key) {
+    return false;
+  }
+  return true;
+}
+
+export function proposeNpcPerception({
+  request,
+  persisted_perception = null,
+  persisted_replay_evidence = null
+} = {}) {
+  if (!sealedPerceptionRequest(request)) {
+    return blocked(
+      'perception_policy_gap',
+      'Perception requires one complete formal sealed request with approved policy pins',
+      request?.perceiver_ref,
+      request?.dependency_pins
+    );
+  }
+  if ((request.known_fact_refs?.length ?? 0) > NPC_RUNTIME_RESOURCE_LIMITS.max_known_fact_refs
+    || (request.candidate_knowledge_fact_refs?.length ?? 0) > NPC_RUNTIME_RESOURCE_LIMITS.max_known_fact_refs) {
+    return blocked(
+      'temporal_execution_unbounded',
+      'Perception knowledge input exceeded its explicit resource cap',
+      request.perceiver_ref,
+      request.dependency_pins
+    );
+  }
+
+  const channel = request.factual_signal.channel;
+  const pathState = channel === 'visual'
+    ? visualPathState(request)
+    : acousticPathState(request);
+  const attention = request.attention_snapshot;
+  const attentionPermits = attention.attended_channels.includes(channel)
+    && (attention.status === 'awake'
+      || request.perception_profile.sleeping_attention_channels.includes(channel));
+  const rawRecognition = recognitionResult(request.recognition_snapshot.outcome);
+  const result = attentionPermits
+    ? capResult(request, pathState, rawRecognition)
+    : 'not_perceived';
+  if (!PERCEPTION_RESULTS.has(result)) {
+    return blocked(
+      'perception_policy_gap',
+      'Approved perception policy produced an unknown result',
+      request.perceiver_ref,
+      request.dependency_pins
+    );
+  }
+
+  const knowledge = knowledgeRefs(request, result);
+  const payload = {
+    perception_id: request.perception_id,
+    perceiver_ref: request.perceiver_ref,
+    event_ref: request.event_ref,
+    perceived_at: normalizeTimestamp(request.perceived_at),
+    result,
+    recognition_policy_ref: request.perception_profile.recognition_policy_ref,
+    visibility_policy_ref: request.perception_profile.visibility_policy_ref,
+    signal_refs: [request.factual_signal.signal_ref],
+    knowledge_update_refs: [...knowledge.fact_refs, ...knowledge.hypothesis_refs]
+  };
   const perception = freeze({ ...payload, canonical_digest: digest(payload) });
-  if (!formal('perception_result', perception)) return blocked('generated_schema_mismatch', 'Perception owner produced a non-formal result', value.perceiver_ref, value.dependency_pins);
-  const evidencePayload = { perception_id: value.perception_id, input_digest: inputDigest, perception_digest: perception.canonical_digest };
-  const evidence = freeze({ ...evidencePayload, canonical_digest: digest(evidencePayload) });
-  if (value.persisted_perception !== undefined || value.persisted_perception_evidence !== undefined) {
-    if (!formal('perception_result', value.persisted_perception) || !perceptionEvidence(value.persisted_perception_evidence) || value.persisted_perception.perception_id !== value.perception_id || value.persisted_perception_evidence.perception_id !== value.perception_id) return blocked('temporal_change_set_conflict', 'Persisted perception replay material is incomplete or belongs to another identity', value.perceiver_ref, value.dependency_pins);
-    if (value.persisted_perception_evidence.input_digest !== inputDigest || value.persisted_perception_evidence.perception_digest !== value.persisted_perception.canonical_digest || value.persisted_perception.canonical_digest !== perception.canonical_digest) return blocked('idempotency_conflict', 'Persisted perception conflicts with current causal input', value.perceiver_ref, value.dependency_pins);
-    return success({ perception: value.persisted_perception, perception_evidence: value.persisted_perception_evidence, replay_status: 'already_committed', trace: { owner: NPC_RUNTIME_OWNER, input_digest: inputDigest, signal_reached: reaches, attended: attends } });
+  if (!formal('perception_result', perception)) {
+    return blocked(
+      'generated_schema_mismatch',
+      'NPC runtime produced a non-formal perception result',
+      request.perceiver_ref,
+      request.dependency_pins
+    );
   }
-  return success({ perception, perception_evidence: evidence, replay_status: 'new', trace: { owner: NPC_RUNTIME_OWNER, input_digest: inputDigest, signal_reached: reaches, attended: attends } });
+  const proposal = knowledgeProposal(request, perception, knowledge);
+  if (!formal('knowledge_memory_delta_proposal', proposal)) {
+    return blocked(
+      'generated_schema_mismatch',
+      'NPC runtime produced a non-formal knowledge delta proposal',
+      request.perceiver_ref,
+      request.dependency_pins
+    );
+  }
+  const evidence = replayEvidence(request, perception);
+  if (!formal('perception_replay_evidence', evidence)) {
+    return blocked(
+      'generated_schema_mismatch',
+      'NPC runtime produced non-formal replay evidence',
+      request.perceiver_ref,
+      request.dependency_pins
+    );
+  }
+
+  const suppliedReplay = persisted_perception !== null || persisted_replay_evidence !== null;
+  if (suppliedReplay) {
+    if (!matchesReplay(request, persisted_perception, persisted_replay_evidence)) {
+      return blocked(
+        'idempotency_conflict',
+        'Persisted perception does not match the full sealed request identity',
+        request.perceiver_ref,
+        request.dependency_pins
+      );
+    }
+    if (persisted_perception.canonical_digest !== perception.canonical_digest) {
+      return blocked(
+        'idempotency_conflict',
+        'Persisted perception conflicts with the deterministic current result',
+        request.perceiver_ref,
+        request.dependency_pins
+      );
+    }
+    return success({
+      perception: persisted_perception,
+      perception_evidence: persisted_replay_evidence,
+      knowledge_proposal: proposal,
+      replay_status: 'already_committed',
+      trace: {
+        owner: NPC_RUNTIME_OWNER,
+        canonical_input_digest: request.canonical_input_digest,
+        path_state: pathState,
+        attended: attentionPermits
+      }
+    });
+  }
+
+  return success({
+    perception,
+    perception_evidence: evidence,
+    knowledge_proposal: proposal,
+    replay_status: 'new',
+    trace: {
+      owner: NPC_RUNTIME_OWNER,
+      canonical_input_digest: request.canonical_input_digest,
+      path_state: pathState,
+      attended: attentionPermits
+    }
+  });
 }

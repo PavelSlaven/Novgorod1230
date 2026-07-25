@@ -1,0 +1,441 @@
+{
+  "source": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
+  "amendment_source": "data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md",
+  "source_version": "4.3.0-target.1",
+  "errors": [
+    {
+      "error_code": "normative_contract_conflict",
+      "meaning": "Prose and canonical schema conflict",
+      "required_reaction": "Stop implementation; amend norm"
+    },
+    {
+      "error_code": "classification_gap",
+      "meaning": "Spatial class is not unique",
+      "required_reaction": "Hard block authoring/approval"
+    },
+    {
+      "error_code": "spatial_candidate_gap",
+      "meaning": "Required materialization candidate set is empty",
+      "required_reaction": "Hard block; authoring repair"
+    },
+    {
+      "error_code": "terminal_target_gap",
+      "meaning": "Frontier terminal target cannot be resolved",
+      "required_reaction": "Hard block topology resolution"
+    },
+    {
+      "error_code": "terminal_endpoint_preparation_gap",
+      "meaning": "Exact terminal target cannot produce one complete endpoint scene/binding set",
+      "required_reaction": "Roll back entire topology transaction"
+    },
+    {
+      "error_code": "continuation_terminal_ordinal_invalid",
+      "meaning": "Ordinal outside `0..max_instances` or state mismatch",
+      "required_reaction": "Reject commit"
+    },
+    {
+      "error_code": "continuation_capacity_violation",
+      "meaning": "Slot/template assignment cannot satisfy limits",
+      "required_reaction": "Reject profile or commit"
+    },
+    {
+      "error_code": "expansion_reservation_conflict",
+      "meaning": "Concurrent capacity lease conflicts",
+      "required_reaction": "Retry from fresh state; no alternate choice"
+    },
+    {
+      "error_code": "expansion_capacity_temporarily_reserved",
+      "meaning": "Committed capacity remains but active reservations leave no reservable unit",
+      "required_reaction": "Return temporarily blocked; do not terminal-resolve"
+    },
+    {
+      "error_code": "route_contract_missing",
+      "meaning": "Required route/profile/boundary contract absent",
+      "required_reaction": "Hard block planning"
+    },
+    {
+      "error_code": "route_endpoint_invalid",
+      "meaning": "Route endpoint role, point, G5 or slot mismatch",
+      "required_reaction": "Reject authoring/commit"
+    },
+    {
+      "error_code": "movement_endpoint_kind_invalid",
+      "meaning": "Endpoint kind not allowed by step/relation",
+      "required_reaction": "Reject plan"
+    },
+    {
+      "error_code": "journey_handoff_snapshot_invalid",
+      "meaning": "Successor source does not equal the predecessor's exact handoff endpoint snapshot",
+      "required_reaction": "Reject supersession/recovery"
+    },
+    {
+      "error_code": "route_chain_discontinuous",
+      "meaning": "Point/segment ordinal or endpoint mismatch",
+      "required_reaction": "Reject route"
+    },
+    {
+      "error_code": "route_cycle_or_branch",
+      "meaning": "Branch or cycle inside one route",
+      "required_reaction": "Reject route"
+    },
+    {
+      "error_code": "route_segment_context_gap",
+      "meaning": "Physical segment lacks one factual context",
+      "required_reaction": "Hard block planning"
+    },
+    {
+      "error_code": "boundary_crossing_contract_gap",
+      "meaning": "Crossing lacks matched exact contract",
+      "required_reaction": "Hard block dispatch"
+    },
+    {
+      "error_code": "scene_endpoint_slot_missing",
+      "meaning": "Required slot resolves to zero positions",
+      "required_reaction": "Block materialization"
+    },
+    {
+      "error_code": "scene_endpoint_slot_ambiguous",
+      "meaning": "Required slot resolves to more than one position",
+      "required_reaction": "Block materialization"
+    },
+    {
+      "error_code": "duplicate_departure_source",
+      "meaning": "More than one active binding where exactly one is required",
+      "required_reaction": "Reject commit"
+    },
+    {
+      "error_code": "movement_method_cost_missing",
+      "meaning": "Selected method has no approved cost option",
+      "required_reaction": "Block traversal"
+    },
+    {
+      "error_code": "movement_capability_missing",
+      "meaning": "Owner/carrier lacks required method/equipment/access",
+      "required_reaction": "Block option or execution"
+    },
+    {
+      "error_code": "mode_transition_contract_missing",
+      "meaning": "Carrier transition lacks explicit contract",
+      "required_reaction": "Block plan"
+    },
+    {
+      "error_code": "time_factor_invalid",
+      "meaning": "Factor is nonpositive, duplicated or unpinned",
+      "required_reaction": "Reject interval"
+    },
+    {
+      "error_code": "time_delay_occurrence_invalid",
+      "meaning": "Additive delay lacks unique scope/occurrence identity or is applied more than once",
+      "required_reaction": "Reject time-bearing result"
+    },
+    {
+      "error_code": "relation_capacity_undefined",
+      "meaning": "Capacity reduction targets a relation without explicit base capacity",
+      "required_reaction": "Reject blocker/commit"
+    },
+    {
+      "error_code": "portal_state_contract_gap",
+      "meaning": "Portal-linked relation lacks exhaustive open/closed/locked/destroyed behavior",
+      "required_reaction": "Block scene readiness"
+    },
+    {
+      "error_code": "controlled_vocabulary_gap",
+      "meaning": "A `controlled_*` pseudo-type has no exact finite versioned registry mapping",
+      "required_reaction": "Block contract activation"
+    },
+    {
+      "error_code": "knowledge_target_resolution_gap",
+      "meaning": "Character-facing target cannot be resolved to one pinned factual target where execution requires it",
+      "required_reaction": "Return data_gap; do not guess"
+    },
+    {
+      "error_code": "knowledge_fact_reference_invalid",
+      "meaning": "Navigation belief cites an unpinned or incompatible knowledge fact",
+      "required_reaction": "Reject knowledge update"
+    },
+    {
+      "error_code": "time_accumulator_invalid",
+      "meaning": "Exact timestamp arithmetic, cumulative elapsed time or crossed-minute count does not reconcile",
+      "required_reaction": "Reject interval"
+    },
+    {
+      "error_code": "orientation_frame_cycle",
+      "meaning": "Frame parent graph contains a cycle",
+      "required_reaction": "Reject authoring"
+    },
+    {
+      "error_code": "orientation_profile_invalid",
+      "meaning": "Fixed/curved/reverse profile violates constraints",
+      "required_reaction": "Reject authoring"
+    },
+    {
+      "error_code": "route_plan_snapshot_missing",
+      "meaning": "Static step or endpoint snapshot incomplete",
+      "required_reaction": "Reject plan"
+    },
+    {
+      "error_code": "route_plan_version_pin_missing",
+      "meaning": "Mechanically relevant dependency unpinned",
+      "required_reaction": "Reject plan"
+    },
+    {
+      "error_code": "authoring_dependency_pin_missing",
+      "meaning": "Bare authoring ID has no exact dependency edge/version",
+      "required_reaction": "Reject authoring aggregate or pinned read"
+    },
+    {
+      "error_code": "route_plan_digest_mismatch",
+      "meaning": "Canonical serialization differs from digest",
+      "required_reaction": "Reject read/commit"
+    },
+    {
+      "error_code": "route_plan_execution_conflict",
+      "meaning": "Execution field-state or owner uniqueness invalid",
+      "required_reaction": "Reject commit"
+    },
+    {
+      "error_code": "travel_interval_conflict",
+      "meaning": "Interval ordinal/progress/outcome invalid",
+      "required_reaction": "Reject commit"
+    },
+    {
+      "error_code": "activity_retry_lineage_invalid",
+      "meaning": "Timed-activity retry reactivates history or fails to copy exact cumulative/remaining state",
+      "required_reaction": "Reject resume/commit"
+    },
+    {
+      "error_code": "travel_interruption_unresolved",
+      "meaning": "Interruption outcome has no exact usable anchor",
+      "required_reaction": "Convert deterministically to stranded"
+    },
+    {
+      "error_code": "movement_anchor_unresolved",
+      "meaning": "Replan/recovery source is not location-bearing",
+      "required_reaction": "Block request"
+    },
+    {
+      "error_code": "target_preparation_failed",
+      "meaning": "Mandatory endpoint/transfer scene not ready",
+      "required_reaction": "Plan remains non-executable"
+    },
+    {
+      "error_code": "preparation_claim_conflict",
+      "meaning": "Exclusive prepared member already claimed",
+      "required_reaction": "Retry/replan; no stealing"
+    },
+    {
+      "error_code": "cohort_membership_conflict",
+      "meaning": "Membership/leader/snapshot inconsistent",
+      "required_reaction": "Block movement"
+    },
+    {
+      "error_code": "attachment_graph_invalid",
+      "meaning": "Attachment cycle, depth or kind violation",
+      "required_reaction": "Block movement"
+    },
+    {
+      "error_code": "dual_location_owner",
+      "meaning": "Attached subject also owns world location",
+      "required_reaction": "Treat as corruption; block"
+    },
+    {
+      "error_code": "journey_location_ownership_mismatch",
+      "meaning": "Snapshot ownership mode disagrees with post-transition root location or attachment state",
+      "required_reaction": "Reject commit; no implicit conversion"
+    },
+    {
+      "error_code": "dual_execution_owner",
+      "meaning": "Conflicting active world-travel executions",
+      "required_reaction": "Reject activation"
+    },
+    {
+      "error_code": "stranded_rescue_contract_missing",
+      "meaning": "No approved rescue from exact stranded state",
+      "required_reaction": "Remain stranded; authoring repair"
+    },
+    {
+      "error_code": "idempotency_conflict",
+      "meaning": "Same key with different input digest",
+      "required_reaction": "Reject request"
+    },
+    {
+      "error_code": "state_version_conflict",
+      "meaning": "Optimistic state version changed",
+      "required_reaction": "Re-resolve from fresh state"
+    },
+    {
+      "error_code": "lock_order_violation",
+      "meaning": "Transaction violates global lock order",
+      "required_reaction": "Abort transaction"
+    },
+    {
+      "error_code": "migration_mapping_gap",
+      "meaning": "Legacy entity has no exact target mapping",
+      "required_reaction": "Block migration item"
+    },
+    {
+      "error_code": "migration_version_gap",
+      "meaning": "Required historical version pin is missing",
+      "required_reaction": "Block save migration"
+    },
+    {
+      "error_code": "generated_schema_mismatch",
+      "meaning": "DDL, generated reference and contracts disagree",
+      "required_reaction": "Block release"
+    },
+    {
+      "error_code": "hidden_information_leak",
+      "meaning": "Player projection contains hidden factual data",
+      "required_reaction": "Reject presentation package"
+    },
+    {
+      "error_code": "visual_layout_gap",
+      "meaning": "Requested visual representation absent",
+      "required_reaction": "Block only that map view"
+    },
+    {
+      "error_code": "time_timestamp_invalid",
+      "meaning": "GameTimestamp is malformed, noncanonical or inconsistent",
+      "required_reaction": "Reject request/read; preserve factual state",
+      "retryability": "no"
+    },
+    {
+      "error_code": "time_elapsed_invalid",
+      "meaning": "ElapsedTime is malformed, negative or invalid for the control outcome",
+      "required_reaction": "Reject request/result",
+      "retryability": "no"
+    },
+    {
+      "error_code": "time_calendar_profile_gap",
+      "meaning": "Required approved calendar profile is absent",
+      "required_reaction": "Hard block; authoring repair",
+      "retryability": "after_data_repair"
+    },
+    {
+      "error_code": "time_owner_conflict",
+      "meaning": "More than one clock owner or a shared local update attempts to own time",
+      "required_reaction": "Reject combined plan/commit",
+      "retryability": "fresh_state"
+    },
+    {
+      "error_code": "time_window_invalid",
+      "meaning": "Temporal limit or slice window is reversed or inconsistent",
+      "required_reaction": "Reject request",
+      "retryability": "no"
+    },
+    {
+      "error_code": "temporal_execution_unbounded",
+      "meaning": "Active execution has no finite completion/recheck boundary",
+      "required_reaction": "Hard block execution",
+      "retryability": "after_data_repair"
+    },
+    {
+      "error_code": "temporal_boundary_ambiguous",
+      "meaning": "Candidate identity/order/replacement has conflicting definitions",
+      "required_reaction": "Reject resolution",
+      "retryability": "after_data_repair"
+    },
+    {
+      "error_code": "temporal_boundary_cycle",
+      "meaning": "Same-time causal dependency graph contains a cycle",
+      "required_reaction": "Abort factual resolution",
+      "retryability": "no"
+    },
+    {
+      "error_code": "temporal_candidate_stale",
+      "meaning": "Candidate has no valid cancel/execute/replacement disposition",
+      "required_reaction": "Reject resolution; re-read state",
+      "retryability": "fresh_state"
+    },
+    {
+      "error_code": "temporal_change_set_conflict",
+      "meaning": "Temporal proposals conflict or fail exact reconciliation",
+      "required_reaction": "Reject combined plan/commit",
+      "retryability": "fresh_state"
+    },
+    {
+      "error_code": "activity_profile_gap",
+      "meaning": "Required approved activity profile is absent",
+      "required_reaction": "Hard block; authoring repair",
+      "retryability": "after_data_repair"
+    },
+    {
+      "error_code": "activity_policy_gap",
+      "meaning": "Required activity policy ref or finite candidate set is absent",
+      "required_reaction": "Hard block; authoring repair",
+      "retryability": "after_data_repair"
+    },
+    {
+      "error_code": "activity_precondition_stale",
+      "meaning": "Activity preconditions changed before resolution/commit",
+      "required_reaction": "Re-resolve under pinned policy",
+      "retryability": "fresh_state"
+    },
+    {
+      "error_code": "activity_transition_invalid",
+      "meaning": "Activity status/attempt transition violates the canonical machine",
+      "required_reaction": "Reject transition",
+      "retryability": "no"
+    },
+    {
+      "error_code": "event_rule_gap",
+      "meaning": "Required exact timer/event rule is absent",
+      "required_reaction": "Hard block; authoring repair",
+      "retryability": "after_data_repair"
+    },
+    {
+      "error_code": "event_effect_gap",
+      "meaning": "Event has no approved registered effect profile",
+      "required_reaction": "Hard block; authoring repair",
+      "retryability": "after_data_repair"
+    },
+    {
+      "error_code": "npc_schedule_gap",
+      "meaning": "Required NPC schedule/activity transition is absent",
+      "required_reaction": "Hard block relevant transition",
+      "retryability": "after_data_repair"
+    },
+    {
+      "error_code": "npc_decision_policy_gap",
+      "meaning": "Bounded NPC option/policy set is missing or empty",
+      "required_reaction": "Hard block decision",
+      "retryability": "after_data_repair"
+    },
+    {
+      "error_code": "perception_policy_gap",
+      "meaning": "Required propagation/attention/recognition policy is absent",
+      "required_reaction": "Hard block perception update",
+      "retryability": "after_data_repair"
+    },
+    {
+      "error_code": "weather_profile_gap",
+      "meaning": "Required approved weather/light transition profile is absent",
+      "required_reaction": "Hard block environment transition",
+      "retryability": "after_data_repair"
+    },
+    {
+      "error_code": "historical_phase_rule_gap",
+      "meaning": "Required source-backed historical phase/local rule is absent",
+      "required_reaction": "Hard block historical transition",
+      "retryability": "after_data_repair"
+    },
+    {
+      "error_code": "remote_catch_up_rule_gap",
+      "meaning": "Required coarse aggregate catch-up rule is absent",
+      "required_reaction": "Hard block scope activation",
+      "retryability": "after_data_repair"
+    },
+    {
+      "error_code": "propagation_rule_gap",
+      "meaning": "Required process path/timing/effect rule is absent",
+      "required_reaction": "Hard block propagation",
+      "retryability": "after_data_repair"
+    },
+    {
+      "error_code": "visible_package_persistence_gap",
+      "meaning": "Hidden-safe visible package cannot be built or committed with facts",
+      "required_reaction": "Abort factual commit",
+      "retryability": "fresh_state"
+    }
+  ]
+}

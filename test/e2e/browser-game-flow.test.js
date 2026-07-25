@@ -7,6 +7,10 @@ import { chromium } from 'playwright-core';
 import { build } from 'esbuild';
 import { computeStage26ScreenDigest } from '@rus/contracts';
 import { createGameCompositionRoot, createGameHttpServer, createInMemorySessionStore, createStaticAssetResolver, listen } from '@rus/game-server';
+import {
+  createSpatialV3PlayerProjection,
+  createSpatialV3ProjectionPanels
+} from '@rus/presentation/spatial-v3-projection';
 
 const executablePath = [process.env.RUS_CHROMIUM_PATH, '/usr/bin/chromium', '/usr/bin/chromium-browser', '/usr/bin/google-chrome'].find((item) => item && existsSync(item));
 
@@ -39,6 +43,42 @@ function stage26Fixture() {
 function turnFixture(input) {
   const leaking = input.raw_text === 'Проверка утечки';
   const coordinateLeak = input.raw_text === 'Проверка координат';
+  const targetProjection = createSpatialV3PlayerProjection({
+    journey_execution: {
+      status: 'suspended_at_scene',
+      player_message: 'Путь остановлен у ворот после слышимого сигнала.'
+    },
+    scene: {
+      nodes: [
+        {
+          id: 'gate-visible',
+          display_token: 'gate',
+          label: 'Городские ворота',
+          knowledge_visibility: 'visible'
+        },
+        {
+          id: 'guard-hidden',
+          display_token: 'guard-secret',
+          label: 'Скрытый страж',
+          knowledge_visibility: 'hidden'
+        }
+      ],
+      links: []
+    },
+    route_options: [{
+      option_id: 'wait-at-gate',
+      player_label: 'Остаться у ворот',
+      knowledge_visibility: 'visible',
+      mechanical_readiness: 'ready',
+      observed_conditions: ['путь временно остановлен']
+    }],
+    world_signals: [{
+      kind: 'sound',
+      approximate_direction: 'впереди',
+      approximate_area: 'у ворот'
+    }]
+  });
+  const targetPanels = createSpatialV3ProjectionPanels(targetProjection);
   return {
     version: 1, schema: 'turn_result', party_id: input.party_id, turn_id: 'turn-e2e-1', turn_number: input.turn_number,
     status: 'resolved', mode: 'attention', summary: { outcome: 'observed' }, commit: { status: 'committed' },
@@ -47,7 +87,7 @@ function turnFixture(input) {
       turn_id: 'turn-e2e-1', turn_number: input.turn_number,
       main_prose: 'Ты замечаешь свежие следы на дороге.',
       visible_context: { current_position: { g1_id: 'g1-1' } },
-      input_panel: { input_contract: 'intent_not_fact' }, action_panel: { suggested_actions: [] }, panels: leaking ? { route: { wrapper: { dependencyPins: [{ private_candidate: 'secret' }], rawTrace: 'opaque-trace', endpointBindings: ['binding-42'], routes: ['hidden-route-value'], route: 'nested-route-value' } } } : coordinateLeak ? { map: { wrapper: { layoutX: 42 } } } : {}
+      input_panel: { input_contract: 'intent_not_fact' }, action_panel: { suggested_actions: [] }, panels: leaking ? { route: { wrapper: { dependencyPins: [{ private_candidate: 'secret' }], rawTrace: 'opaque-trace', endpointBindings: ['binding-42'], routes: ['hidden-route-value'], route: 'nested-route-value' } } } : coordinateLeak ? { map: { wrapper: { layoutX: 42 } } } : targetPanels
     }
   };
 }
@@ -102,9 +142,18 @@ test('real browser completes new game, opening acknowledgement, and first turn',
   assert.match(await page.textContent('body'), /дорога к Новгороду/u);
   await page.fill('[data-turn-form] textarea[name="raw_text"]', 'Осматриваюсь');
   await page.click('[data-turn-form] button[type="submit"]');
-  await page.waitForSelector('[data-screen-schema="turn_screen"]');
+  await page.waitForSelector('[data-screen-schema="turn_screen"], .error');
+  assert.equal(
+    await page.locator('.error').count(),
+    0,
+    await page.textContent('body')
+  );
   const body = await page.textContent('body');
   assert.match(body, /свежие следы/u);
+  assert.match(body, /Городские ворота/u);
+  assert.match(body, /Остаться у ворот/u);
+  assert.match(body, /впереди/u);
+  assert.doesNotMatch(body, /Скрытый страж|guard-secret/u);
   const contract = await page.getAttribute('[data-screen-schema="turn_screen"]', 'data-screen-schema');
   assert.equal(contract, 'turn_screen');
   const hiddenLeak = await page.locator('body').evaluate((node) => /hidden_state|private_motives|write_plan/u.test(node.textContent ?? ''));

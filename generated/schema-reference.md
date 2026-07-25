@@ -180,6 +180,9 @@ Release: `0.23.0-migration.24`
 | `schemas/party-db/005_party_runtime_v3_domain.sql` | sql | 2184 | `2b06c19a706f9122d6318a038ee49600ba215cc0686361bd6af1dc32a8b504f0` |
 | `schemas/party-db/006_party_runtime_v3_migration.sql` | sql | 1640 | `485971bd9301a41edd107a83d1b4ef875fdbc118fb0641988c5f3bc27637629f` |
 | `schemas/party-db/007_party_runtime_temporal_world.sql` | sql | 39898 | `664085c1330763e234fcdd806662964c7eac12b08daf4789a298c2f8bb563c7b` |
+| `schemas/party-db/008_party_runtime_pr8_first_entry.sql` | sql | 1935 | `25ac03085a41e9cc5963c4cdf06e59ee2319c3b254d25b297e4871608d05a1ac` |
+| `schemas/party-db/009_party_runtime_pr8_reaction_knowledge.sql` | sql | 7121 | `1fdaba3f43f15502f64e2644b13f3ac07beaffacb1b8260fa8db37720d3f54b2` |
+| `schemas/party-db/010_party_runtime_pr8_reaction_options.sql` | sql | 1633 | `bd832815094990299b76af286fd4a4e8250d8d1992d6f3846dbfa0cf944ce264` |
 | `schemas/runtime-catalog/runtime-catalog-artifacts-v2.schema.json` | json | 18438 | `2d8e9167f701e193b2e2eb03c162e4b8228cb2c46cea7cc26368de4304a3ed40` |
 | `schemas/world-base/world-base-source-bundle.schema.json` | json | 1447 | `358430badf2821197ffc74d4600b2cc2b153d1a1a141020e998650cb1c325dc2` |
 | `schemas/world-catalogs/g1-boundary-contract.schema.json` | json | 1199 | `9a255c612dc382e4ead28c5566ae6583878840651904a134f364bb1b1291f3aa` |

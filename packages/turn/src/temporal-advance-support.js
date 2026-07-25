@@ -119,9 +119,17 @@ export function createSlicePlan(request, sliceIndex, fromTimestamp, toTimestamp,
   const plan = { ...draft, canonical_digest: computeSpatialV3CanonicalDigest(draft) }; assertContract('time_slice_plan', plan); return cloneFrozen(plan);
 }
 
-export function normalizeHandlerProposals(raw, handlerName) {
+export function normalizeHandlerOutcome(raw, handlerName) {
   if (!object(raw) || !Array.isArray(raw.proposals)) fail('temporal_change_set_conflict', `${handlerName} must return an explicit proposal array.`);
-  return raw.proposals;
+  if (raw.state_projection !== undefined && !object(raw.state_projection)) {
+    fail('temporal_change_set_conflict', `${handlerName} state_projection must be an explicit object.`);
+  }
+  return {
+    proposals: raw.proposals,
+    state_projection: raw.state_projection === undefined
+      ? null
+      : cloneFrozen(raw.state_projection)
+  };
 }
 
 export function normalizeResolution(raw, candidate, clock, request, deferredCandidates) {
@@ -131,7 +139,18 @@ export function normalizeResolution(raw, candidate, clock, request, deferredCand
   const sameTimeFollowUps = [...(raw.follow_up_candidates ?? [])]; for (const followUp of sameTimeFollowUps) assertContract('temporal_boundary_candidate', followUp);
   if (raw.disposition === 'replace') { if (!object(raw.replacement)) fail('temporal_candidate_stale', 'Replace disposition requires an explicit replacement boundary.', { boundary_id: candidate.boundary_id }); assertContract('temporal_boundary_candidate', raw.replacement); if (compareGameTimestamp(raw.replacement.scheduled_at, clock) < 0) fail('time_window_invalid', 'A replacement boundary cannot precede the resolved boundary.', { boundary_id: candidate.boundary_id, replacement_boundary_id: raw.replacement.boundary_id }); if (compareGameTimestamp(raw.replacement.scheduled_at, clock) === 0) sameTimeFollowUps.push(raw.replacement); else deferredCandidates.push(raw.replacement); }
   for (const followUp of sameTimeFollowUps) if (compareGameTimestamp(followUp.scheduled_at, clock) !== 0) fail('time_window_invalid', 'Same-time follow-up candidates must use the current cascade timestamp.', { boundary_id: followUp.boundary_id });
-  return { disposition: raw.disposition, proposals: raw.proposals ?? [], follow_up_candidates: sameTimeFollowUps, replacement_outside_window: raw.disposition === 'replace' && compareGameTimestamp(raw.replacement.scheduled_at, request.inclusive_limit_timestamp) > 0 };
+  if (raw.state_projection !== undefined && !object(raw.state_projection)) {
+    fail('temporal_change_set_conflict', 'Temporal resolution state_projection must be an explicit object.', { boundary_id: candidate.boundary_id });
+  }
+  return {
+    disposition: raw.disposition,
+    proposals: raw.proposals ?? [],
+    follow_up_candidates: sameTimeFollowUps,
+    replacement_outside_window: raw.disposition === 'replace' && compareGameTimestamp(raw.replacement.scheduled_at, request.inclusive_limit_timestamp) > 0,
+    state_projection: raw.state_projection === undefined
+      ? null
+      : cloneFrozen(raw.state_projection)
+  };
 }
 
 export function createSliceResult(request, plan, proposals, processedCandidates, dispositions) {
@@ -140,11 +159,11 @@ export function createSliceResult(request, plan, proposals, processedCandidates,
   assertContract('time_slice_result', value); return cloneFrozen(value);
 }
 
-export function finalizeResult(config, request, clockAfter, proposals, timeSliceResults, processedBoundaryIds, dispositions, deferredCandidates, digests) {
+export function finalizeResult(config, request, projection, clockAfter, proposals, timeSliceResults, processedBoundaryIds, dispositions, deferredCandidates, digests) {
   const clockProposal = request.clock_commit_mode !== 'direct_party_clock' || compareGameTimestamp(request.clock_before, clockAfter) === 0 ? null : { proposal_id: `${request.turn_id}:party-clock-update`, write_target: `party_clock:${request.party_id}`, clock_owner_ref: request.clock_owner_ref, clock_update: { clock_before: request.clock_before, clock_after: clockAfter, actual_elapsed: { exact_minutes: subtractGameTimestamp(clockAfter, request.clock_before) }, crossed_whole_minute_boundaries: countCrossedWholeMinuteBoundaries(request.clock_before, clockAfter) } };
   const merged = mergeTemporalProposals({ proposals: clockProposal ? [...proposals, clockProposal] : proposals, expected_clock_owner_ref: request.clock_owner_ref, available_event_ids: request.relevant_state_projection.available_event_ids ?? [] });
   const combinedChangeSet = cloneFrozen({ change_set_id: request.idempotency_context.change_set_id, proposals: merged.proposals, clock_owner_ref: merged.clock_owner_ref, time_slice_results: timeSliceResults, deferred_boundary_candidates: deferredCandidates.filter((candidate) => !processedBoundaryIds.includes(candidate.boundary_id)), idempotency_claim: { record_id: request.idempotency_context.record_id, idempotency_key: request.idempotency_context.idempotency_key, ...digests } });
-  const finalization = config.handlers.finalize(cloneFrozen({ request, clock_after: clockAfter, combined_change_set: combinedChangeSet, time_slice_results: timeSliceResults, processed_boundary_ids: processedBoundaryIds, dispositions }));
+  const finalization = config.handlers.finalize(cloneFrozen({ request, state_projection: projection, clock_after: clockAfter, combined_change_set: combinedChangeSet, time_slice_results: timeSliceResults, processed_boundary_ids: processedBoundaryIds, dispositions }));
   if (!object(finalization) || !object(finalization.execution_state_ref) || !object(finalization.visible_package_candidate) || !object(finalization.validation_report)) fail('generated_schema_mismatch', 'Temporal finalizer must return status, execution ref, visible package and validation report.');
   assertContract('visible_package_persistence_envelope', finalization.visible_package_candidate);
   if (finalization.visible_package_candidate.party_id !== request.party_id || finalization.visible_package_candidate.turn_id !== request.turn_id || finalization.visible_package_candidate.change_set_id !== request.idempotency_context.change_set_id || finalization.visible_package_candidate.idempotency_record_id !== request.idempotency_context.record_id || finalization.visible_package_candidate.package_digest !== computeSpatialV3CanonicalDigest(finalization.visible_package_candidate.visible_payload)) fail('visible_package_persistence_gap', 'Visible package identity or digest does not match the temporal commit.');

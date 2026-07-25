@@ -1,7 +1,8 @@
 {
   "source": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
   "amendment_source": "data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md",
-  "source_version": "4.3.0-target.1",
+  "amendment_scope": "Appendix A.1-A.7",
+  "source_version": "4.4.0-target.1",
   "specifications": [
     {
       "contract_name": "entity_ref",
@@ -5344,6 +5345,11 @@
           "type": "stable_id"
         },
         {
+          "name": "prepared_scene_materialization",
+          "required": false,
+          "type": "prepared_scene_materialization_snapshot"
+        },
+        {
           "name": "dependency_pins",
           "required": true,
           "type": "dependency_pin_set"
@@ -5361,11 +5367,12 @@
       ],
       "relations": [],
       "invariants": [
-        "endpoint requires resolved_endpoint_snapshot and forbids scene fields.",
-        "transfer_scene requires all scene fields and forbids resolved_endpoint_snapshot; the position belongs to the declared G6 and active scene baseline.",
-        "Ordinals are contiguous from zero.",
+        "endpoint requires resolved_endpoint_snapshot and forbids every scene field.",
+        "transfer_scene requires exactly one branch: the complete resolved baseline/G6/position triple or prepared_scene_materialization.",
+        "A resolved position belongs to the declared G6 and active baseline; a prepared branch is materialized only by its atomic first-entry commit.",
+        "Ordinals are contiguous from zero and the selected member is linked to the exact route-plan execution through preparation_claim.",
         "Duplicate member_kind plus dependency-pin digest is forbidden within one snapshot.",
-        "member_digest covers kind, source, resolved payload, share mode and dependency pins."
+        "member_digest covers kind, source, resolved or prepared payload, share mode and dependency pins."
       ]
     },
     {
@@ -11242,6 +11249,11 @@
           "type": "stable_id"
         },
         {
+          "name": "command_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
           "name": "command_token",
           "required": true,
           "type": "stable_id"
@@ -11264,6 +11276,9 @@
       ],
       "relations": [],
       "invariants": [
+        "command_ref resolves to one applicable approved decision-command record and is covered by dependency_pins of the enclosing request.",
+        "The approved command record names one registered code-owned handler and the handler output is validated as the declared consequence contract.",
+        "command_token binds request, NPC, option, command_ref, policy, state version, preconditions and the complete immutable option set.",
         "Option belongs to one finite approved set and contains no free-text consequence."
       ]
     },
@@ -11691,6 +11706,1634 @@
         "Payload contains only perceived/known player-safe facts, uncertainty and already calculated affordances.",
         "Hidden queues, future timestamps, unperceived knowledge, motives, raw options, traces, rolls, DC and state patches are forbidden.",
         "Package and pending status commit atomically with facts; narration output is stored separately."
+      ]
+    },
+    {
+      "contract_name": "prepared_scene_materialization_snapshot",
+      "storage": "immutable_snapshot",
+      "identity": [],
+      "fields": [
+        {
+          "name": "g4_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "g5_site_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "g5_origin",
+          "required": true,
+          "type": "enum[canonical, generated]"
+        },
+        {
+          "name": "scene_baseline_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "g6_instance_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "position_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "scene_template_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "materialization_profile_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "catalog_digest",
+          "required": true,
+          "type": "sha256_hex"
+        },
+        {
+          "name": "materializer_version",
+          "required": true,
+          "type": "authoring_version"
+        },
+        {
+          "name": "dependency_pins",
+          "required": true,
+          "type": "dependency_pin_set"
+        },
+        {
+          "name": "canonical_digest",
+          "required": true,
+          "type": "sha256_hex"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "IDs are reserved by approved target preparation and do not prove that party baseline rows already exist.",
+        "g4_id is the exact canonical target G4 and defines the absence-lock scope together with party_id.",
+        "Template, profile, catalog, materializer and dependency pins are complete and applicable to the target."
+      ]
+    },
+    {
+      "contract_name": "approved_decision_command_snapshot",
+      "storage": "immutable_read_projection",
+      "identity": [
+        "command_ref"
+      ],
+      "fields": [
+        {
+          "name": "command_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "domain",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "handler_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "input_contract_name",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "consequence_contract_name",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "source_record_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "applicability",
+          "required": true,
+          "type": "snapshot_list[stable_id]"
+        },
+        {
+          "name": "status",
+          "required": true,
+          "type": "enum[approved]"
+        },
+        {
+          "name": "dependency_pins",
+          "required": true,
+          "type": "dependency_pin_set"
+        },
+        {
+          "name": "canonical_digest",
+          "required": true,
+          "type": "sha256_hex"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "command_ref resolves to the exact approved world_base.decision_command_catalog projection and uses entity kind decision_command.",
+        "source_record_ref resolves to the approved Temporal authoring record whose provenance, sources, version and applicability created this projection.",
+        "handler_id, command_ref, input_contract_name and consequence_contract_name match exactly one entry in the closed current-target code-owned reaction-handler registry.",
+        "canonical_digest covers the complete projection; a self-asserted or unregistered handler identity is invalid.",
+        "Missing, draft, ambiguous, unpinned or inapplicable records are excluded; an empty required command set is npc_decision_policy_gap."
+      ]
+    },
+    {
+      "contract_name": "npc_reaction_handler_input_snapshot",
+      "storage": "immutable_snapshot",
+      "identity": [],
+      "fields": [
+        {
+          "name": "source_perception",
+          "required": true,
+          "type": "perception_result"
+        },
+        {
+          "name": "reaction_scope_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "observed_preconditions_digest",
+          "required": true,
+          "type": "sha256_hex"
+        },
+        {
+          "name": "dependency_pins",
+          "required": true,
+          "type": "dependency_pin_set"
+        },
+        {
+          "name": "canonical_digest",
+          "required": true,
+          "type": "sha256_hex"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "The source perception is the complete formal causal result; a bare observer/event pair is insufficient.",
+        "The snapshot has a closed field set and cannot contain a state patch, clock mutation, SQL, IO handle or arbitrary command payload.",
+        "dependency_pins match the enclosing request and canonical_digest covers the complete handler input."
+      ]
+    },
+    {
+      "contract_name": "npc_reaction_consequence_request",
+      "storage": "immutable_request",
+      "identity": [
+        "request_id",
+        "canonical_input_digest"
+      ],
+      "fields": [
+        {
+          "name": "request_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "npc_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "selected_option",
+          "required": true,
+          "type": "npc_decision_option"
+        },
+        {
+          "name": "decision_trace",
+          "required": true,
+          "type": "npc_decision_trace"
+        },
+        {
+          "name": "command_record",
+          "required": true,
+          "type": "approved_decision_command_snapshot"
+        },
+        {
+          "name": "consequence_input_snapshot",
+          "required": true,
+          "type": "npc_reaction_handler_input_snapshot"
+        },
+        {
+          "name": "current_state_version",
+          "required": true,
+          "type": "positive_decimal_string"
+        },
+        {
+          "name": "executed_at",
+          "required": true,
+          "type": "game_timestamp"
+        },
+        {
+          "name": "dependency_pins",
+          "required": true,
+          "type": "dependency_pin_set"
+        },
+        {
+          "name": "idempotency_key",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "canonical_input_digest",
+          "required": true,
+          "type": "sha256_hex"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "Option, trace, command record, NPC, state version, command/source/policy pins and idempotency identity match exactly.",
+        "consequence_input_snapshot contains every causal handler input and no hidden IO is permitted.",
+        "idempotency_key is derived deterministically from request, state, trace and command-record digests; callers cannot substitute an unrelated handler retry identity.",
+        "Retry with the same validated trace and canonical input reuses the same deterministic consequence; changed state is rejected stale."
+      ]
+    },
+    {
+      "contract_name": "npc_reaction_consequence_proposal",
+      "storage": "immutable_proposal",
+      "identity": [
+        "request_id",
+        "canonical_input_digest"
+      ],
+      "fields": [
+        {
+          "name": "request_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "npc_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "option_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "command_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "handler_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "consequence_contract_name",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "consequence_payload",
+          "required": true,
+          "type": "immutable_snapshot"
+        },
+        {
+          "name": "state_version",
+          "required": true,
+          "type": "positive_decimal_string"
+        },
+        {
+          "name": "proposed_at",
+          "required": true,
+          "type": "game_timestamp"
+        },
+        {
+          "name": "dependency_pins",
+          "required": true,
+          "type": "dependency_pin_set"
+        },
+        {
+          "name": "canonical_input_digest",
+          "required": true,
+          "type": "sha256_hex"
+        },
+        {
+          "name": "request_snapshot",
+          "required": true,
+          "type": "npc_reaction_consequence_request"
+        },
+        {
+          "name": "canonical_digest",
+          "required": true,
+          "type": "sha256_hex"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "The exact registered handler named by the approved command record is the sole producer.",
+        "request, NPC, option, command, handler, state version, timestamp, dependency pins and canonical input digest match request_snapshot exactly.",
+        "consequence_payload validates against consequence_contract_name before turn may merge it.",
+        "The proposal changes no clock, performs no IO and is not itself a database write."
+      ]
+    },
+    {
+      "contract_name": "npc_reaction_effect_snapshot",
+      "storage": "immutable_snapshot",
+      "identity": [],
+      "fields": [
+        {
+          "name": "effect_kind",
+          "required": true,
+          "type": "enum[investigate_signal, seek_safety, report_to_authority]"
+        },
+        {
+          "name": "source_perception_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "successor_command_kind",
+          "required": true,
+          "type": "enum[prepare_target, replan, immediate_action]"
+        },
+        {
+          "name": "successor_command_payload",
+          "required": true,
+          "type": "immutable_snapshot"
+        },
+        {
+          "name": "effective_at",
+          "required": true,
+          "type": "game_timestamp"
+        },
+        {
+          "name": "canonical_digest",
+          "required": true,
+          "type": "sha256_hex"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "investigate_signal maps only to prepare_target, seek_safety only to replan and report_to_authority only to immediate_action.",
+        "successor_command_payload is constructed by the registered handler from the sealed request and is revalidated by the existing target command adapter.",
+        "The snapshot is a proposal for turn orchestration, not a direct state patch, clock update or database write."
+      ]
+    },
+    {
+      "contract_name": "knowledge_memory_delta_proposal",
+      "storage": "immutable_proposal",
+      "identity": [
+        "proposal_id"
+      ],
+      "fields": [
+        {
+          "name": "proposal_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "owner_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "source_kind",
+          "required": true,
+          "type": "enum[perception]"
+        },
+        {
+          "name": "source_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "source_perception",
+          "required": true,
+          "type": "perception_result"
+        },
+        {
+          "name": "expected_state_versions",
+          "required": true,
+          "type": "expected_state_version_set"
+        },
+        {
+          "name": "dependency_pins",
+          "required": true,
+          "type": "dependency_pin_set"
+        },
+        {
+          "name": "canonical_digest",
+          "required": true,
+          "type": "sha256_hex"
+        }
+      ],
+      "relations": [
+        {
+          "name": "fact_refs",
+          "type": "relation_set[entity_ref]"
+        },
+        {
+          "name": "hypothesis_refs",
+          "type": "relation_set[entity_ref]"
+        }
+      ],
+      "invariants": [
+        "perception source requires the complete matching formal perception_result; a received-message branch remains a formal DATA_GAP until a committed-message evidence contract exists.",
+        "not_perceived grants neither facts nor hypotheses; misinterpreted grants hypotheses only.",
+        "fact_refs plus hypothesis_refs equal source_perception.knowledge_update_refs exactly; merge cannot invent a reference absent from the causal result.",
+        "Facts and hypotheses are unique, canonically ordered and disjoint.",
+        "The proposal does not mutate knowledge and contains no player-facing prose."
+      ]
+    },
+    {
+      "contract_name": "knowledge_memory_merge_result",
+      "storage": "immutable_result",
+      "identity": [
+        "proposal_id",
+        "result_digest"
+      ],
+      "fields": [
+        {
+          "name": "proposal_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "owner_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "source_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "state_version_before",
+          "required": true,
+          "type": "state_version"
+        },
+        {
+          "name": "state_version_after",
+          "required": true,
+          "type": "state_version"
+        },
+        {
+          "name": "state_changed",
+          "required": true,
+          "type": "boolean"
+        },
+        {
+          "name": "dependency_pins",
+          "required": true,
+          "type": "dependency_pin_set"
+        },
+        {
+          "name": "proposal",
+          "required": true,
+          "type": "knowledge_memory_delta_proposal"
+        },
+        {
+          "name": "result_digest",
+          "required": true,
+          "type": "sha256_hex"
+        }
+      ],
+      "relations": [
+        {
+          "name": "state_before_fact_refs",
+          "type": "relation_set[entity_ref]"
+        },
+        {
+          "name": "state_before_hypothesis_refs",
+          "type": "relation_set[entity_ref]"
+        },
+        {
+          "name": "accepted_fact_refs",
+          "type": "relation_set[entity_ref]"
+        },
+        {
+          "name": "accepted_hypothesis_refs",
+          "type": "relation_set[entity_ref]"
+        }
+      ],
+      "invariants": [
+        "@rus/visibility-knowledge-memory is the sole merge owner and deterministically unions accepted references with current sealed state.",
+        "proposal, owner, source and dependency pins match exactly; accepted sets equal the canonical union of the corresponding sealed state-before set and proposal set.",
+        "state_changed is true exactly when the canonical merged state differs; state_version_after then equals state_version_before plus one, otherwise it preserves the version.",
+        "The result creates no objective fact and is persisted only through the combined write plan."
+      ]
+    },
+    {
+      "contract_name": "journey_prepared_execution_start_command",
+      "storage": "immutable_request",
+      "identity": [
+        "command_id"
+      ],
+      "fields": [
+        {
+          "name": "command_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "intent_kind",
+          "required": true,
+          "type": "enum[start_prepared_execution]"
+        },
+        {
+          "name": "party_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "route_plan_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "route_plan_execution_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "route_plan_digest",
+          "required": true,
+          "type": "sha256_hex"
+        },
+        {
+          "name": "expected_state_versions",
+          "required": true,
+          "type": "expected_state_version_set"
+        },
+        {
+          "name": "dependency_pins",
+          "required": true,
+          "type": "dependency_pin_set"
+        },
+        {
+          "name": "idempotency_key",
+          "required": true,
+          "type": "stable_id"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "The execution is planned, uniquely owns the immutable ready plan and repeats no prior committed start.",
+        "Exact current time is read only from the sealed server-side state projection; the command contains no client-authored clock.",
+        "Start performs no replanning and cannot change the active immutable route plan."
+      ]
+    },
+    {
+      "contract_name": "journey_execution_continue_command",
+      "storage": "immutable_request",
+      "identity": [
+        "command_id"
+      ],
+      "fields": [
+        {
+          "name": "command_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "intent_kind",
+          "required": true,
+          "type": "enum[continue_execution]"
+        },
+        {
+          "name": "party_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "route_plan_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "route_plan_execution_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "route_plan_digest",
+          "required": true,
+          "type": "sha256_hex"
+        },
+        {
+          "name": "expected_state_versions",
+          "required": true,
+          "type": "expected_state_version_set"
+        },
+        {
+          "name": "dependency_pins",
+          "required": true,
+          "type": "dependency_pin_set"
+        },
+        {
+          "name": "idempotency_key",
+          "required": true,
+          "type": "stable_id"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "Continue rechecks execution status, immutable plan digest, versions and dependencies before collecting boundaries.",
+        "Exact current time is read only from the sealed server-side state projection.",
+        "Continue cannot replace the plan or revise already committed intervals."
+      ]
+    },
+    {
+      "contract_name": "journey_execution_cancel_command",
+      "storage": "immutable_request",
+      "identity": [
+        "command_id"
+      ],
+      "fields": [
+        {
+          "name": "command_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "intent_kind",
+          "required": true,
+          "type": "enum[cancel_execution]"
+        },
+        {
+          "name": "party_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "route_plan_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "route_plan_execution_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "route_plan_digest",
+          "required": true,
+          "type": "sha256_hex"
+        },
+        {
+          "name": "control_reason_code",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "expected_state_versions",
+          "required": true,
+          "type": "expected_state_version_set"
+        },
+        {
+          "name": "dependency_pins",
+          "required": true,
+          "type": "dependency_pin_set"
+        },
+        {
+          "name": "idempotency_key",
+          "required": true,
+          "type": "stable_id"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "Cancel is a zero-time command/control outcome at the sealed current timestamp, not a future temporal boundary candidate.",
+        "Cancel creates no fictitious traversal interval or activity attempt and preserves committed elapsed, progress and effects.",
+        "Result status follows only the pinned activity/traversal policy and existing execution state machine."
+      ]
+    },
+    {
+      "contract_name": "journey_successor_plan_preparation_command",
+      "storage": "immutable_request",
+      "identity": [
+        "command_id"
+      ],
+      "fields": [
+        {
+          "name": "command_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "intent_kind",
+          "required": true,
+          "type": "enum[prepare_successor_plan]"
+        },
+        {
+          "name": "party_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "predecessor_route_plan_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "predecessor_execution_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "predecessor_handoff_endpoint_ref",
+          "required": true,
+          "type": "movement_endpoint_ref"
+        },
+        {
+          "name": "predecessor_handoff_snapshot_digest",
+          "required": true,
+          "type": "sha256_hex"
+        },
+        {
+          "name": "successor_path_query",
+          "required": true,
+          "type": "path_query"
+        },
+        {
+          "name": "expected_state_versions",
+          "required": true,
+          "type": "expected_state_version_set"
+        },
+        {
+          "name": "dependency_pins",
+          "required": true,
+          "type": "dependency_pin_set"
+        },
+        {
+          "name": "idempotency_key",
+          "required": true,
+          "type": "stable_id"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "Preparation has zero elapsed and starts a new plan/execution lineage from the predecessor exact committed handoff endpoint.",
+        "The successor path query start endpoint equals predecessor_handoff_endpoint_ref and its digest binds all target, method, carrier, capability and recovery inputs.",
+        "Preparation never mutates the predecessor immutable payload, active plan or committed intervals."
+      ]
+    },
+    {
+      "contract_name": "perception_signal_snapshot",
+      "storage": "immutable_snapshot",
+      "identity": [],
+      "fields": [
+        {
+          "name": "signal_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "channel",
+          "required": true,
+          "type": "enum[visual, acoustic]"
+        },
+        {
+          "name": "source_scope_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "source_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "emission_strength",
+          "required": true,
+          "type": "enum[1, 2, 3, 4]"
+        },
+        {
+          "name": "signal_state_version",
+          "required": true,
+          "type": "state_version"
+        },
+        {
+          "name": "player_visibility_class",
+          "required": true,
+          "type": "enum[public_source, visible_if_perceived, hidden_source]"
+        },
+        {
+          "name": "canonical_digest",
+          "required": true,
+          "type": "sha256_hex"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "The snapshot references an already existing factual event signal and creates no world fact.",
+        "For acoustic signals emission_strength equals sound_event.loudness; for visual or world signals it is the closed 1..4 band resolved from the pinned approved strength profile.",
+        "hidden_source never becomes player-visible merely because the signal or approximate direction was perceived."
+      ]
+    },
+    {
+      "contract_name": "perception_propagation_edge_snapshot",
+      "storage": "immutable_snapshot_member",
+      "identity": [],
+      "fields": [
+        {
+          "name": "edge_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "from_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "to_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "permitted_channels",
+          "required": true,
+          "type": "snapshot_list[enum[visual, acoustic]]"
+        },
+        {
+          "name": "relation_kind",
+          "required": true,
+          "type": "enum[visibility_link, acoustic_edge]"
+        },
+        {
+          "name": "relation_state_version",
+          "required": true,
+          "type": "state_version"
+        },
+        {
+          "name": "visibility_quality",
+          "required": false,
+          "type": "enum[clear, partial]"
+        },
+        {
+          "name": "distance_band",
+          "required": false,
+          "type": "enum[near, short, medium, long, remote]"
+        },
+        {
+          "name": "acoustic_base_loss",
+          "required": false,
+          "type": "enum[0, 1, 2]"
+        },
+        {
+          "name": "portal_ref",
+          "required": false,
+          "type": "entity_ref"
+        },
+        {
+          "name": "portal_state",
+          "required": false,
+          "type": "enum[open, closed, locked, destroyed]"
+        },
+        {
+          "name": "visibility_portal_result",
+          "required": false,
+          "type": "enum[clear, partial, blocked]"
+        },
+        {
+          "name": "acoustic_portal_extra_loss",
+          "required": false,
+          "type": "enum[0, 1, 2, blocked]"
+        },
+        {
+          "name": "condition_profile_ref",
+          "required": false,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "resolved_condition_visibility",
+          "required": false,
+          "type": "enum[clear, partial, blocked]"
+        },
+        {
+          "name": "resolved_condition_acoustic_loss",
+          "required": false,
+          "type": "enum[0, 1, 2, blocked]"
+        },
+        {
+          "name": "canonical_digest",
+          "required": true,
+          "type": "sha256_hex"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "Permitted channels are unique and canonically ordered.",
+        "visibility_link requires exactly visual, visibility_quality and distance_band; it forbids acoustic loss fields.",
+        "acoustic_edge requires exactly acoustic and acoustic_base_loss; it forbids visibility_quality and distance_band.",
+        "portal_ref, portal_state and the channel-specific portal result are all present or all absent.",
+        "condition_profile_ref and the channel-specific resolved condition result are both present or both absent.",
+        "Every copied value equals the pinned active visibility_link or acoustic_edge row and the resolved portal/condition state at the request timestamp."
+      ]
+    },
+    {
+      "contract_name": "perception_propagation_snapshot",
+      "storage": "immutable_snapshot",
+      "identity": [],
+      "fields": [
+        {
+          "name": "source_scope_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "target_scope_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "canonical_digest",
+          "required": true,
+          "type": "sha256_hex"
+        }
+      ],
+      "relations": [
+        {
+          "name": "edges",
+          "type": "relation_set[perception_propagation_edge_snapshot]"
+        }
+      ],
+      "invariants": [
+        "Edges form one finite, ordered, acyclic path from source_scope_ref to target_scope_ref.",
+        "An empty path is valid only when source and target scopes are equal."
+      ]
+    },
+    {
+      "contract_name": "perception_environment_snapshot",
+      "storage": "immutable_snapshot",
+      "identity": [],
+      "fields": [
+        {
+          "name": "light_state_id",
+          "required": true,
+          "type": "enum[bright, dim, dark]"
+        },
+        {
+          "name": "environment_state_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "environment_state_version",
+          "required": true,
+          "type": "state_version"
+        },
+        {
+          "name": "weather_state_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "weather_state_version",
+          "required": true,
+          "type": "state_version"
+        },
+        {
+          "name": "weather_visibility_result",
+          "required": true,
+          "type": "enum[clear, partial, blocked]"
+        },
+        {
+          "name": "weather_acoustic_loss",
+          "required": true,
+          "type": "enum[0, 1, 2, blocked]"
+        },
+        {
+          "name": "target_acoustic_profile_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "target_acoustic_profile_state_version",
+          "required": true,
+          "type": "state_version"
+        },
+        {
+          "name": "target_ambient_noise",
+          "required": true,
+          "type": "enum[0, 1, 2]"
+        },
+        {
+          "name": "transient_visibility_result",
+          "required": true,
+          "type": "enum[clear, partial, blocked]"
+        },
+        {
+          "name": "transient_acoustic_loss",
+          "required": true,
+          "type": "enum[0, 1, 2, blocked]"
+        },
+        {
+          "name": "transient_modifier_dependency_pins",
+          "required": true,
+          "type": "dependency_pin_set"
+        },
+        {
+          "name": "canonical_digest",
+          "required": true,
+          "type": "sha256_hex"
+        }
+      ],
+      "relations": [
+        {
+          "name": "visibility_modifiers",
+          "type": "relation_set[visibility_modifier]"
+        }
+      ],
+      "invariants": [
+        "weather visibility/acoustic values are the resolved closed effects of the pinned weather state; they are not free numeric modifiers.",
+        "target_ambient_noise and profile state version equal the pinned receiving g6_acoustic_profile.",
+        "visibility_modifiers contain the complete applicable active set and preserve their source pins and state versions.",
+        "transient effects are closed categorical values derived only from transient_modifier_dependency_pins; absent applicable modifiers resolve to clear and zero.",
+        "The digest covers all light, weather, access and transient propagation inputs used by the resolver.",
+        "A changed environment state/version creates a different canonical request."
+      ]
+    },
+    {
+      "contract_name": "perception_attention_snapshot",
+      "storage": "immutable_snapshot",
+      "identity": [],
+      "fields": [
+        {
+          "name": "attention_state_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "status",
+          "required": true,
+          "type": "enum[awake, sleeping]"
+        },
+        {
+          "name": "attended_channels",
+          "required": true,
+          "type": "snapshot_list[enum[visual, acoustic]]"
+        },
+        {
+          "name": "observer_position_ref",
+          "required": true,
+          "type": "movement_endpoint_ref"
+        },
+        {
+          "name": "observer_position_state_version",
+          "required": true,
+          "type": "state_version"
+        },
+        {
+          "name": "observer_azimuth_mdeg",
+          "required": true,
+          "type": "azimuth_mdeg"
+        },
+        {
+          "name": "observer_vertical_direction",
+          "required": true,
+          "type": "enum[level, up, down, mixed]"
+        },
+        {
+          "name": "visual_capability_level",
+          "required": true,
+          "type": "enum[0, 1, 2, 3, 4]"
+        },
+        {
+          "name": "acoustic_capability_level",
+          "required": true,
+          "type": "enum[0, 1, 2, 3, 4]"
+        },
+        {
+          "name": "orientation_digest",
+          "required": true,
+          "type": "sha256_hex"
+        },
+        {
+          "name": "canonical_digest",
+          "required": true,
+          "type": "sha256_hex"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "Attended channels are unique and canonically ordered.",
+        "Orientation and capability values are explicit resolver inputs; their digests never stand in for hidden payload.",
+        "Position, orientation, attention or state-version change permits a new evaluation and forbids observer/event-only deduplication."
+      ]
+    },
+    {
+      "contract_name": "perception_recognition_snapshot",
+      "storage": "immutable_snapshot",
+      "identity": [],
+      "fields": [
+        {
+          "name": "recognition_state_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "outcome",
+          "required": true,
+          "type": "enum[recognized, misinterpreted, partial, unidentified]"
+        },
+        {
+          "name": "canonical_digest",
+          "required": true,
+          "type": "sha256_hex"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "misinterpreted is an interpretation/hypothesis input and never rewrites the factual signal."
+      ]
+    },
+    {
+      "contract_name": "perception_policy_snapshot",
+      "storage": "immutable_snapshot",
+      "identity": [],
+      "fields": [
+        {
+          "name": "recognition_policy_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "visibility_policy_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "acoustic_policy_ref",
+          "required": false,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "provenance_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "status",
+          "required": true,
+          "type": "enum[approved]"
+        },
+        {
+          "name": "darkness_visual_result_cap",
+          "required": true,
+          "type": "controlled_perception_result"
+        },
+        {
+          "name": "sleeping_attention_channels",
+          "required": true,
+          "type": "snapshot_list[enum[visual, acoustic]]"
+        },
+        {
+          "name": "canonical_digest",
+          "required": true,
+          "type": "sha256_hex"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "All referenced policies are approved, applicable and present in dependency_pins.",
+        "darkness_visual_result_cap is one of not_perceived, perceived_unidentified or perceived_partial."
+      ]
+    },
+    {
+      "contract_name": "npc_perception_request",
+      "storage": "immutable_request",
+      "identity": [
+        "perception_id",
+        "canonical_input_digest"
+      ],
+      "fields": [
+        {
+          "name": "perception_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "perceiver_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "event_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "perceived_at",
+          "required": true,
+          "type": "game_timestamp"
+        },
+        {
+          "name": "target_scope_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "factual_signal",
+          "required": true,
+          "type": "perception_signal_snapshot"
+        },
+        {
+          "name": "propagation_snapshot",
+          "required": true,
+          "type": "perception_propagation_snapshot"
+        },
+        {
+          "name": "environment_snapshot",
+          "required": true,
+          "type": "perception_environment_snapshot"
+        },
+        {
+          "name": "attention_snapshot",
+          "required": true,
+          "type": "perception_attention_snapshot"
+        },
+        {
+          "name": "recognition_snapshot",
+          "required": true,
+          "type": "perception_recognition_snapshot"
+        },
+        {
+          "name": "perception_profile",
+          "required": true,
+          "type": "perception_policy_snapshot"
+        },
+        {
+          "name": "expected_state_versions",
+          "required": true,
+          "type": "expected_state_version_set"
+        },
+        {
+          "name": "dependency_pins",
+          "required": true,
+          "type": "dependency_pin_set"
+        },
+        {
+          "name": "idempotency_key",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "canonical_input_digest",
+          "required": true,
+          "type": "sha256_hex"
+        }
+      ],
+      "relations": [
+        {
+          "name": "known_fact_refs",
+          "type": "relation_set[entity_ref]"
+        },
+        {
+          "name": "candidate_knowledge_fact_refs",
+          "type": "relation_set[entity_ref]"
+        }
+      ],
+      "invariants": [
+        "The request is sealed by @rus/turn and contains every causal input used by the pure resolver; hidden reads and IO are forbidden.",
+        "Opaque digests prove identity but never substitute for a causal value required by the resolver.",
+        "canonical_input_digest covers all fields, ordered relations, exact timestamp, policy versions, dependency pins, state versions and idempotency identity.",
+        "candidate_knowledge_fact_refs are proposals only; @rus/npc-runtime never mutates knowledge or memory.",
+        "A change in light, position, orientation, attention, propagation, recognition policy, state version or another digest-bound input creates a new valid evaluation."
+      ]
+    },
+    {
+      "contract_name": "perception_replay_evidence",
+      "storage": "immutable_result",
+      "identity": [
+        "perception_id",
+        "canonical_input_digest"
+      ],
+      "fields": [
+        {
+          "name": "perception_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "canonical_input_digest",
+          "required": true,
+          "type": "sha256_hex"
+        },
+        {
+          "name": "perception_digest",
+          "required": true,
+          "type": "sha256_hex"
+        },
+        {
+          "name": "expected_state_versions_digest",
+          "required": true,
+          "type": "sha256_hex"
+        },
+        {
+          "name": "dependency_pins_digest",
+          "required": true,
+          "type": "sha256_hex"
+        },
+        {
+          "name": "policy_versions_digest",
+          "required": true,
+          "type": "sha256_hex"
+        },
+        {
+          "name": "idempotency_key",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "canonical_digest",
+          "required": true,
+          "type": "sha256_hex"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "Replay is permitted only when all identity and digest fields equal the current sealed request and committed perception result.",
+        "Evidence maps to the existing idempotency record plus append-only perception result; it creates no separate persistence owner.",
+        "Perceiver/event identity alone is insufficient, and no extra causal-parent field is introduced without a later formal gap."
+      ]
+    },
+    {
+      "contract_name": "npc_reaction_option_rule_snapshot",
+      "storage": "immutable_snapshot_member",
+      "identity": [
+        "option_id"
+      ],
+      "fields": [
+        {
+          "name": "option_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "command_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "consequence_policy_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "allowed_perception_results",
+          "required": true,
+          "type": "relation_set[stable_id]"
+        },
+        {
+          "name": "required_capability",
+          "required": true,
+          "type": "enum[investigate_signal, seek_safety, report_to_authority]"
+        },
+        {
+          "name": "requires_direct_threat",
+          "required": true,
+          "type": "boolean"
+        },
+        {
+          "name": "requires_safe_anchor",
+          "required": true,
+          "type": "boolean"
+        },
+        {
+          "name": "requires_authority_recipient",
+          "required": true,
+          "type": "boolean"
+        },
+        {
+          "name": "canonical_digest",
+          "required": true,
+          "type": "sha256_hex"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "Every allowed_perception_results value is a controlled_perception_result and not_perceived is forbidden.",
+        "command_ref resolves to one approved_decision_command_snapshot and consequence_policy_ref is pinned.",
+        "Rules are declarative filters only and contain no consequence patch, default option or prose."
+      ]
+    },
+    {
+      "contract_name": "npc_reaction_policy_snapshot",
+      "storage": "immutable_snapshot",
+      "identity": [
+        "policy_ref"
+      ],
+      "fields": [
+        {
+          "name": "policy_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "source_record_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "status",
+          "required": true,
+          "type": "enum[approved]"
+        },
+        {
+          "name": "bounded_decision_when_multiple",
+          "required": true,
+          "type": "boolean"
+        },
+        {
+          "name": "zero_options_outcome",
+          "required": true,
+          "type": "enum[npc_decision_policy_gap]"
+        },
+        {
+          "name": "one_option_mode",
+          "required": true,
+          "type": "enum[code_owned_without_llm]"
+        },
+        {
+          "name": "many_options_mode",
+          "required": true,
+          "type": "enum[bounded_selection]"
+        },
+        {
+          "name": "dependency_pins",
+          "required": true,
+          "type": "dependency_pin_set"
+        },
+        {
+          "name": "canonical_digest",
+          "required": true,
+          "type": "sha256_hex"
+        }
+      ],
+      "relations": [
+        {
+          "name": "option_rules",
+          "type": "nonempty_relation_set[npc_reaction_option_rule_snapshot]"
+        },
+        {
+          "name": "approved_command_records",
+          "type": "nonempty_relation_set[approved_decision_command_snapshot]"
+        }
+      ],
+      "invariants": [
+        "option_id and command_ref are unique, canonically ordered and source-backed; every rule resolves exactly one approved_command_record with the same source_record_ref.",
+        "dependency_pins include the source record, every command record dependency and every consequence policy.",
+        "No authored default or semantic fallback is permitted."
+      ]
+    },
+    {
+      "contract_name": "npc_reaction_option_context_snapshot",
+      "storage": "immutable_snapshot",
+      "identity": [
+        "source_perception",
+        "npc_ref",
+        "npc_state_version"
+      ],
+      "fields": [
+        {
+          "name": "source_perception",
+          "required": true,
+          "type": "perception_result"
+        },
+        {
+          "name": "npc_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "reaction_scope_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "npc_state_version",
+          "required": true,
+          "type": "positive_decimal_string"
+        },
+        {
+          "name": "can_investigate_signal",
+          "required": true,
+          "type": "boolean"
+        },
+        {
+          "name": "can_seek_safety",
+          "required": true,
+          "type": "boolean"
+        },
+        {
+          "name": "can_report_to_authority",
+          "required": true,
+          "type": "boolean"
+        },
+        {
+          "name": "threat_level",
+          "required": true,
+          "type": "enum[none, possible, direct]"
+        },
+        {
+          "name": "safe_anchor_ref",
+          "required": false,
+          "type": "movement_endpoint_ref"
+        },
+        {
+          "name": "authority_recipient_ref",
+          "required": false,
+          "type": "entity_ref"
+        },
+        {
+          "name": "expected_state_versions",
+          "required": true,
+          "type": "expected_state_version_set"
+        },
+        {
+          "name": "dependency_pins",
+          "required": true,
+          "type": "dependency_pin_set"
+        },
+        {
+          "name": "canonical_digest",
+          "required": true,
+          "type": "sha256_hex"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "npc_ref equals source_perception.perceiver_ref and is covered by expected_state_versions.",
+        "Capability, threat, anchor and authority values come from one sealed server-side projection.",
+        "The snapshot contains no DB handle, hidden read instruction, LLM output or state patch."
+      ]
+    },
+    {
+      "contract_name": "npc_reaction_option_set_proposal",
+      "storage": "immutable_proposal",
+      "identity": [
+        "request_id",
+        "source_perception_ref",
+        "state_version",
+        "options_digest"
+      ],
+      "fields": [
+        {
+          "name": "request_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "source_perception_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "state_version",
+          "required": true,
+          "type": "positive_decimal_string"
+        },
+        {
+          "name": "options_digest",
+          "required": true,
+          "type": "sha256_hex"
+        },
+        {
+          "name": "context_snapshot",
+          "required": true,
+          "type": "npc_reaction_option_context_snapshot"
+        },
+        {
+          "name": "policy_snapshot",
+          "required": true,
+          "type": "npc_reaction_policy_snapshot"
+        },
+        {
+          "name": "decision_request",
+          "required": true,
+          "type": "npc_decision_request"
+        },
+        {
+          "name": "canonical_digest",
+          "required": true,
+          "type": "sha256_hex"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "source_perception_ref identifies the complete context perception and decision_request binds the same NPC, timestamp, state version, policy, pins and canonical filtered options.",
+        "request_id is npc-reaction:<sha256> of source perception digest, NPC, state version, policy digest and context digest.",
+        "Each preconditions_digest covers context_digest, policy_digest and rule_digest. The ordered token-free option descriptors form option_set_digest; each command_token is cmd.v1:<sha256> over contract version, request_id, NPC, option, command, policy, state version, preconditions_digest and option_set_digest.",
+        "options_digest equals decision_request.options_digest and covers the complete ordered options including their request-bound command_token values.",
+        "Zero applicable options returns npc_decision_policy_gap instead of this proposal.",
+        "One option proceeds without LLM; more than one uses bounded selection only when policy_snapshot permits it."
       ]
     }
   ]

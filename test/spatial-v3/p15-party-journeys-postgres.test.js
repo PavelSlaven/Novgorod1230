@@ -14,8 +14,16 @@ const dockerAsync = (args, input) => new Promise((resolve) => {
 });
 
 test('P15 target-only journey, exact time and idempotency constraints are physical', async (t) => {
-  assert.equal(RUNTIME_MIGRATIONS.length, 1, 'production runtime remains v2 before P28');
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 7, 'the current target-only sequence includes P23, migration coverage and Temporal World');
+  assert.equal(
+    RUNTIME_MIGRATIONS.length,
+    1,
+    'production runtime remains v2 before the versioned production activation cutover'
+  );
+  assert.equal(
+    SPATIAL_V3_TARGET_MIGRATIONS.length,
+    10,
+    'the target-only sequence includes Temporal World and all three PR8 persistence amendments'
+  );
   if (docker(['version']).status !== 0) {
     t.skip('Docker required for isolated PostgreSQL test');
     return;

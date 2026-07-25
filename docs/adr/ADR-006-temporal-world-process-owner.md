@@ -2,7 +2,7 @@
 
 - Status: accepted
 - Date: 2026-07-23
-- Decision scope: target architecture; no production activation before P28.
+- Decision scope: target architecture; historical P28 acceptance did not activate production, and production activation requires the separate `versioned production activation cutover`.
 
 ## Decision
 
@@ -14,4 +14,4 @@ Process profiles, causal rules and candidate data are read-only `world_base` dat
 
 ## Rollback
 
-Before P28, this owner is shadow/fixture-only and its proposals have no production effect. Rollback drops uncommitted proposals; after activation it uses the approved reverse migration or checkpoint recovery, without dual writers, partial fallback, or recomputation of already committed party history.
+Before the `versioned production activation cutover`, this owner is shadow/fixture-only and its proposals have no production effect. Rollback drops uncommitted proposals; after activation it uses the approved reverse migration or checkpoint recovery, without dual writers, partial fallback, or recomputation of already committed party history.

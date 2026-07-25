@@ -912,7 +912,7 @@
       "source_location": {
         "file": "base_turn_orchestration.txt",
         "line_start": 1,
-        "line_end": 784
+        "line_end": 793
       }
     },
     {
@@ -936,7 +936,7 @@
       "source_location": {
         "file": "character_parameters.txt",
         "line_start": 1,
-        "line_end": 255
+        "line_end": 256
       }
     },
     {
@@ -1008,7 +1008,7 @@
       "source_location": {
         "file": "formulas.md",
         "line_start": 1,
-        "line_end": 1031
+        "line_end": 1037
       }
     },
     {
@@ -1056,7 +1056,7 @@
       "source_location": {
         "file": "interface_ux.md",
         "line_start": 1,
-        "line_end": 1203
+        "line_end": 1209
       }
     },
     {
@@ -1092,7 +1092,7 @@
       "source_location": {
         "file": "llm_documentation_navigation.md",
         "line_start": 1,
-        "line_end": 277
+        "line_end": 286
       }
     },
     {
@@ -1116,7 +1116,7 @@
       "source_location": {
         "file": "movement_locations_regions.txt",
         "line_start": 1,
-        "line_end": 919
+        "line_end": 928
       }
     },
     {
@@ -1188,7 +1188,7 @@
       "source_location": {
         "file": "spatial_architecture_standard_g0_g6.md",
         "line_start": 1,
-        "line_end": 6841
+        "line_end": 6850
       }
     },
     {
@@ -1200,7 +1200,7 @@
       "source_location": {
         "file": "temporal_world_and_interruptible_activities.md",
         "line_start": 1,
-        "line_end": 2091
+        "line_end": 2859
       }
     },
     {
@@ -1212,7 +1212,7 @@
       "source_location": {
         "file": "time_system.txt",
         "line_start": 1,
-        "line_end": 252
+        "line_end": 260
       }
     },
     {
@@ -1236,7 +1236,7 @@
       "source_location": {
         "file": "world_generation_and_turns.txt",
         "line_start": 1,
-        "line_end": 1559
+        "line_end": 1564
       }
     },
     {

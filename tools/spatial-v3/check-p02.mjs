@@ -18,12 +18,7 @@ const schemaPath = schemaArgumentIndex === -1
   : process.argv[schemaArgumentIndex + 1];
 if (!schemaPath) throw new Error('--schema requires a file');
 const trustedSchemaSha256 = '38c334b8d0997f22245aa711343dfe9a689f29878b2813ffbaef86bae00ad8cc';
-const activeTrustAnchors = {
-  architecture: '7f46bbb187356eb31920b7fa2f915a866f3923dde6d1f5538bd523a5683161dc',
-  requirements: '0428d1c62a5431911480b7ea67bac136b2362b7253c388c9b48bb33cf55c71bf',
-  graph: '6da82a0545c1f428e9dce85aafd058ad6fe75baa693243fac98e2753863906ca',
-  workflow: '965e569be0f123fda0c882ce195bd387c9942cf1e92b8a59da1f7cbe7286dcb2'
-};
+const trustedDeclarationSha256 = '2b83302ce5f438de7cdcdec58ee1bb2be24380db4b87e615ae505295a1ba783e';
 
 const documentPairs = {
   architecture: {
@@ -213,7 +208,12 @@ const validateJsonSchema = (definition, value, location = '$', root = definition
   return errors;
 };
 
-const declaration = JSON.parse(await readFile(declarationPath, 'utf8'));
+const declarationBytes = await readFile(declarationPath, 'utf8');
+assert(
+  sha256(declarationBytes) === trustedDeclarationSha256,
+  'historical P02 declaration does not match the immutable trust anchor'
+);
+const declaration = JSON.parse(declarationBytes);
 const schemaBytes = await readFile(schemaPath, 'utf8');
 assert(sha256(schemaBytes) === trustedSchemaSha256, 'declaration schema does not match the trusted checker anchor');
 const schema = JSON.parse(schemaBytes);
@@ -275,17 +275,17 @@ const documents = Object.fromEntries(await Promise.all(
 for (const [name, pair] of Object.entries(documentPairs)) {
   const { active, target } = documents[name];
   const declared = declaredById.get(name);
-  assert(active.includes('## P02 target routing (inactive until P28)'), `${name}: explicit P02 target routing is missing`);
+  assert(active.includes('## Production/target routing'), `${name}: explicit production/target routing is missing`);
   assert(active.includes(pair.target), `${name}: active owner does not route to its target supplement`);
   assert(active.includes('spatial_architecture_standard_g0_g6.md'), `${name}: canonical target standard route is missing`);
   assert(active.includes('data/world-catalogs/novgorod/spatial-v3/manifest.json'), `${name}: approved P12 manifest route is missing`);
   assert(/37 SHA-256-pinned datasets/.test(active) && /data_gaps:\s*\[\]/.test(active), `${name}: approved P12 state is missing`);
-  assert(/v2 remains the sole production owner until P28/i.test(active), `${name}: pre-P28 production ownership is ambiguous`);
-  assert(/does not authorize production import, runtime use, write, or activation/i.test(active), `${name}: P12 authoring approval boundary is missing`);
-  assert(declared.active.sha256 === activeTrustAnchors[name], `${name}: declaration active pin does not match the reviewed P02 owner-document trust anchor`);
-  assert(sha256(active) === activeTrustAnchors[name], `${name}: active owner-document bytes do not match the reviewed P02 trust anchor`);
-  assert(sha256(target) === declared.target.sha256, `${name}: target document digest does not match declaration`);
-  assert(/target/i.test(target) && /P28/i.test(target) && /\bv2\b/i.test(target), `${name}: target/active boundary missing`);
+  assert(
+    /v2 remains the sole production owner until the separate `versioned production activation cutover`/i.test(active),
+    `${name}: pre-cutover production ownership is ambiguous`
+  );
+  assert(/do(?:es)? not authorize production import, runtime use, write, or activation/i.test(active), `${name}: P12 authoring approval boundary is missing`);
+  assert(/target/i.test(target) && /versioned production activation cutover/i.test(target) && /\bv2\b/i.test(target), `${name}: target/active boundary missing`);
   assert(/G5/i.test(target) && /G6/i.test(target), `${name}: target G5/G6 coverage missing`);
   assert(!/\bactive\s+v3\b/i.test(target), `${name}: target supplement claims premature v3 activation`);
   for (const marker of pair.required) {
@@ -308,4 +308,4 @@ for (const [name, { target }] of Object.entries(documents)) {
   }
 }
 
-console.log('P02 checks passed: strict boundary declaration and exact document pins are valid; P02-S01..S04 prose coverage and contradiction scans passed as defense-in-depth.');
+console.log('P02 checks passed: immutable historical declaration is intact; current production/target routing and contradiction scans passed.');

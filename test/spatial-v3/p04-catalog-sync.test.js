@@ -64,11 +64,14 @@ test('P04 catalog validation rejects stale authoring-gap statuses', async () => 
   }
 });
 
-test('P04 catalog validation preserves the production and P28 boundary', async () => {
+test('P04 catalog validation preserves the production and versioned cutover boundary', async () => {
   const evidence = await loadEvidence();
   const activatedCatalog = evidence.catalog
     .replace('Production import: `not_performed`', 'Production import: `performed`')
-    .replace('P28 activation: `not_performed`', 'P28 activation: `performed`');
+    .replace(
+      '`versioned production activation cutover`: `not_performed`',
+      '`versioned production activation cutover`: `performed`'
+    );
   assert.throws(
     () => validateP04CatalogProjection({ ...evidence, catalog: activatedCatalog }),
     /production boundary|contradictory/u
@@ -77,7 +80,7 @@ test('P04 catalog validation preserves the production and P28 boundary', async (
 
 test('P04 catalog validation rejects an additive contradictory activation status', async () => {
   const evidence = await loadEvidence();
-  const contradictoryCatalog = `${evidence.catalog}\nProduction import: performed; runtime visibility: verified; P28 activation: performed.\n`;
+  const contradictoryCatalog = `${evidence.catalog}\nProduction import: performed; runtime visibility: verified; versioned production activation cutover: performed.\n`;
   assert.throws(
     () => validateP04CatalogProjection({ ...evidence, catalog: contradictoryCatalog }),
     /contradictory|exactly one structured status/u

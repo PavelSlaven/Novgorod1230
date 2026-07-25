@@ -5,7 +5,7 @@
 
 ## Target v3 migration impact (не production readiness)
 
-Этот раздел отражает утверждённую P12 source-to-target compilation и не является утверждением о production import/runtime или источником новых исторических фактов. До P28 active production остаётся v2. Исходная инвентаризация по-прежнему содержит `15 G2`, `32 G3`, `195 legacy G4`, `243` graph nodes и `600` edges, из которых `358` physical. Утверждённая точная переклассификация создаёт `32 target G4 sectors` из retained G3 и `195 canonical G5` из legacy local G4; она привязана к исходным IDs и provenance, а не к совпадению названий.
+Этот раздел отражает утверждённую P12 source-to-target compilation и не является утверждением о production import/runtime или источником новых исторических фактов. Historical P28 evidence не активировало production; до отдельного `versioned production activation cutover` production v2 остаётся единственным owner. Исходная инвентаризация по-прежнему содержит `15 G2`, `32 G3`, `195 legacy G4`, `243` graph nodes и `600` edges, из которых `358` physical. Утверждённая точная переклассификация создаёт `32 target G4 sectors` из retained G3 и `195 canonical G5` из legacy local G4; она привязана к исходным IDs и provenance, а не к совпадению названий.
 
 | Группа утверждённого source package | Утверждённая target compilation | Evidence status |
 |---|---|---|
@@ -18,7 +18,7 @@
 
 Все четыре прежних source-data gap (`canonical_g5_inventory`, `physical_exit_source_pairs`, `legacy_edge_mapping_bindings`, `approved_scene_profiles`) имеют статус `resolved_in_package`. Основной P12 authoring manifest имеет status `approved`, `datasets: 37` с SHA-256 pins и `data_gaps: 0`. Это утверждение означает только полную однозначную target-компиляцию уже утверждённых source records. Name-based migration запрещён; любой новый или изменённый record вне этого точного approved set снова требует authoring review и при неоднозначности создаёт typed gap.
 
-Production import: `not_performed`; runtime visibility: `not_verified`; P28 activation: `not_performed`. Раздел не меняет статус G1 `draft`, не открывает северную внешнюю границу, не подтверждает production readiness и не разрешает runtime materialization, write или activation.
+Production import: `not_performed`; runtime visibility: `not_verified`; `versioned production activation cutover`: `not_performed`. Раздел не меняет статус G1 `draft`, не открывает северную внешнюю границу, не подтверждает production readiness и не разрешает runtime materialization, write или activation.
 
 ## Правило использования
 

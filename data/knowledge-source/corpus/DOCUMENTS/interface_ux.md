@@ -2,7 +2,13 @@
 
 ## Статус и граница миграции
 
-Этот документ задаёт **target materialization v3** для player projection. До P28 active production остаётся materialization v2; target UI contract не включает runtime activation, dual write или v3→v2 fallback. UI читает player-safe projection и никогда не является источником factual topology, readiness или layout-derived semantics.
+Этот документ задаёт **target materialization v3** для player projection.
+Принятое историческое P28 evidence не меняло production composition. До
+отдельного `versioned production activation cutover` active production
+остаётся materialization v2; target UI contract не включает runtime
+activation, dual write или v3→v2 fallback. UI читает player-safe projection и
+никогда не является источником factual topology, readiness или layout-derived
+semantics.
 
 Temporal World v4 требует `VisiblePackagePersistenceEnvelope`: code-owned
 projector формирует player-safe factual package до commit, package сохраняется
@@ -41,7 +47,7 @@ Development diagnostics отделены от игрового UI: они мог
 <!-- knowledge-retrieval-exclude:start -->
 ## Приложение A. Архивный v2-источник для migration traceability
 
-Нижеследующий текст сохранён только как historical/migration source. Он не активирует v2 semantics в target v3 и не разрешает mixed execution, dual write или fallback. До P28 active production boundary определён отдельно.
+Нижеследующий текст сохранён только как historical/migration source. Он не активирует v2 semantics в target v3 и не разрешает mixed execution, dual write или fallback. До `versioned production activation cutover` active production boundary определён отдельно.
 
 # Интерфейс и UX
 

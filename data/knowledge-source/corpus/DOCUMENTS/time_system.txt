@@ -2,11 +2,16 @@
 
 ## Статус и граница миграции
 
-Это target-норматив materialization v3. До P28 active production использует materialization v2; target-текст не разрешает partial activation, dual write или fallback. После активации authoritative game clock имеет exact rational sub-minute precision.
+Это target-норматив materialization v3. Принятое историческое P28 evidence не
+активировало runtime. До отдельного `versioned production activation cutover`
+active production использует materialization v2; target-текст не разрешает
+partial activation, dual write или fallback. После cutover authoritative game
+clock имеет exact rational sub-minute precision.
 
 Полный active target amendment Temporal World v4 находится в
 `temporal_world_and_interruptible_activities.md`. Этот документ маршрутизирует
-target-разработку к `temporal-world-v1` / `4.3.0-target.1`, не активируя
+target-разработку к current `temporal-world-v1.1` / `4.4.0-target.1`, сохраняя
+`temporal-world-v1` / `4.3.0-target.1` immutable snapshot и не активируя
 production runtime. `GameTimestamp` хранится как canonical
 decimal strings, arithmetic выполняется через `BigInt`, а calendar/daylight —
 только version-pinned projection, не второй clock.
@@ -55,7 +60,10 @@ Exact-timestamp timer сравнивается с exact timestamp; minute-indexe
 
 ## 7. Traceability
 
-Target источник: `spatial_architecture_standard_g0_g6.md` §11.2–§11.10. До P28 v2 остаётся active runtime boundary; этот документ — target contract, не заявление о готовой persistence/runtime реализации.
+Target источник: `spatial_architecture_standard_g0_g6.md` §11.2–§11.10. До
+`versioned production activation cutover` v2 остаётся active runtime boundary;
+этот документ — target contract, не заявление о готовой persistence/runtime
+реализации.
 
 
 ---
@@ -63,7 +71,7 @@ Target источник: `spatial_architecture_standard_g0_g6.md` §11.2–§11.
 <!-- knowledge-retrieval-exclude:start -->
 ## Приложение A. Архивный v2-источник для migration traceability
 
-Нижеследующий текст сохранён только как historical/migration source для ссылочной совместимости и аудита. Он **не является target-правилом**, не активирует v2 semantics в target v3 и не разрешает mixed execution, dual write либо fallback. При конфликте применяется основной target-раздел этого документа и target standard; active production boundary до P28 определён отдельно.
+Нижеследующий текст сохранён только как historical/migration source для ссылочной совместимости и аудита. Он **не является target-правилом**, не активирует v2 semantics в target v3 и не разрешает mixed execution, dual write либо fallback. При конфликте применяется основной target-раздел этого документа и target standard; active production boundary до `versioned production activation cutover` определён отдельно.
 
 ## Время в игре
 

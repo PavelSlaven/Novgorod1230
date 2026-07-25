@@ -2,7 +2,12 @@
 
 ## Назначение
 
-`@rus/npc-runtime` — active-norm, target-only owner Temporal World v4 для чистых предложений переходов расписания NPC, восприятия и ограниченного выбора действия. До атомарной активации P28 пакет используется только в target/shadow/migration; `production_v2` остаётся единственным production read/write owner.
+`@rus/npc-runtime` — active-norm, target-only owner Temporal World v4 для
+чистых предложений переходов расписания NPC, восприятия и ограниченного выбора
+действия. Historical P28 evidence не активировало runtime. До отдельного
+`versioned production activation cutover` пакет используется только в
+target/shadow/migration; `production_v2` остаётся единственным production
+read/write owner.
 
 ## Владеет
 
@@ -19,6 +24,8 @@
 - `NPC_RUNTIME_OWNER`, `NPC_RUNTIME_RESOURCE_LIMITS`, `NPC_RUNTIME_TYPED_ERRORS`
 - `proposeNpcScheduleTransition(input)` — возвращает frozen schedule proposal, evidence и exact temporal boundary.
 - `proposeNpcPerception({ perception_input })` — возвращает frozen formal perception result и replay evidence.
+- `proposeNpcReactionOptions({ context_snapshot, policy_snapshot, persisted_proposal? })` — чисто фильтрует approved rules, возвращает формальный конечный request и проверяет replay по полной causal identity.
+- `buildNpcReactionPolicySnapshotFromAuthoringRow(row)` — чисто проецирует одну exact approved authoring-запись в закрытый policy/command snapshot и fail-closed проверяет handler/consequence bindings.
 - `decideBoundedNpcAction(...)` — валидирует один `option_id` и `command_token` из конечного option set и возвращает decision trace.
 - `orderNpcDecisionRequests(requests)` — детерминированно упорядочивает formal requests по exact timestamp, NPC и request id.
 
@@ -34,6 +41,11 @@
 
 Разрешены `@rus/kernel`, versioned `@rus/contracts` и `@rus/time-events-history` для формальных контрактов, digest и exact timestamp comparison/normalization. Нет скрытых IO: пакет не читает DB, network, LLM, narrator, UI, global clock или скрытое process state; он не пишет SQL и не создаёт write plan. Persisted inputs служат только для pure replay verification. `@rus/turn` валидирует и передаёт одобренные изменения в target `CombinedAtomicCommitter`.
 
-## P28 и тесты
+## Activation и тесты
 
-До P28 это shadow/fixture-only contract и не заменяет v2 path. P28 требует единой атомарной поставки всех target owners; частичный cutover, dual write и in-turn fallback запрещены. Tests: `test/npc-runtime.test.js` покрывает exact schedule boundary, pins/recheck/replay, perception topology/light/attention, bounded decision, отказ при пустом/недопустимом option set и deterministic same-time ordering.
+До versioned production activation cutover это shadow/fixture-only contract и
+не заменяет v2 path. Cutover требует единой атомарной поставки всех target
+owners; partial activation, dual write и in-turn fallback запрещены. Tests:
+`test/npc-runtime.test.js` покрывает exact schedule boundary,
+pins/recheck/replay, perception topology/light/attention, bounded decision,
+отказ при пустом/недопустимом option set и deterministic same-time ordering.

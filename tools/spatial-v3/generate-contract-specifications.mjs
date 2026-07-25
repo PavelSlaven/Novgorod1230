@@ -4,11 +4,15 @@ const standardSource = 'data/knowledge-source/corpus/DOCUMENTS/spatial_architect
 const temporalSource = 'data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md';
 const output = 'packages/contracts/src/spatial-v3/specifications.json';
 const baselineOutput = 'packages/contracts/src/spatial-v3/specifications-4.2.0-target.1.json';
+const temporalBaselineOutput = 'packages/contracts/src/spatial-v3/specifications-4.3.0-target.1.json';
 const check = process.argv.includes('--check');
 const standard = await readFile(standardSource, 'utf8');
 const temporal = await readFile(temporalSource, 'utf8');
 const appendix = standard.slice(standard.indexOf('# Приложение B.'), standard.indexOf('# Приложение C.'));
 const temporalAppendix = temporal.slice(temporal.indexOf('# Приложение A.'), temporal.indexOf('# Приложение B.'));
+const pr8AmendmentIndex = temporalAppendix.indexOf('## A.7.');
+if (pr8AmendmentIndex < 0) throw new Error('Temporal Appendix A.7 PR8 handoff amendment is missing');
+const acceptedTemporalAppendix = temporalAppendix.slice(0, pr8AmendmentIndex);
 
 function list(lines, heading) {
   const index = lines.findIndex((line) => line === `${heading}:`);
@@ -62,19 +66,33 @@ async function writeArtifact(path, artifact) {
 }
 
 const baselineSpecifications = parseSpecifications(appendix);
+const acceptedTemporalSpecifications = parseSpecifications(acceptedTemporalAppendix);
 const temporalSpecifications = parseSpecifications(temporalAppendix);
 if (baselineSpecifications.length !== 160 || baselineSpecifications.some((specification) => !specification.contract_name || !specification.storage)) throw new Error('Appendix B contract specification parse failed');
-if (temporalSpecifications.length !== 35 || temporalSpecifications.some((specification) => !specification.contract_name || !specification.storage)) throw new Error('Temporal Appendix A contract specification parse failed');
-const byName = new Map(baselineSpecifications.map((specification) => [specification.contract_name, specification]));
-for (const specification of temporalSpecifications) byName.set(specification.contract_name, specification);
-const specifications = [...byName.values()];
-if (specifications.length !== 188) throw new Error(`Expected 188 merged contract specifications, got ${specifications.length}`);
+if (acceptedTemporalSpecifications.length !== 35 || acceptedTemporalSpecifications.some((specification) => !specification.contract_name || !specification.storage)) throw new Error('Accepted Temporal Appendix A.1-A.6 parse failed');
+if (temporalSpecifications.length !== 62 || temporalSpecifications.some((specification) => !specification.contract_name || !specification.storage)) throw new Error('Current Temporal Appendix A contract specification parse failed');
+const merge = (amendment) => {
+  const byName = new Map(baselineSpecifications.map((specification) => [specification.contract_name, specification]));
+  for (const specification of amendment) byName.set(specification.contract_name, specification);
+  return [...byName.values()];
+};
+const acceptedSpecifications = merge(acceptedTemporalSpecifications);
+const specifications = merge(temporalSpecifications);
+if (acceptedSpecifications.length !== 188) throw new Error(`Expected 188 accepted 4.3 contract specifications, got ${acceptedSpecifications.length}`);
+if (specifications.length !== 213) throw new Error(`Expected 213 current 4.4 contract specifications, got ${specifications.length}`);
 await mkdir('packages/contracts/src/spatial-v3', { recursive: true });
 await writeArtifact(baselineOutput, { source: standardSource, source_version: '4.2.0-target.1', specifications: baselineSpecifications });
-await writeArtifact(output, {
+await writeArtifact(temporalBaselineOutput, {
   source: standardSource,
   amendment_source: temporalSource,
   source_version: '4.3.0-target.1',
+  specifications: acceptedSpecifications
+});
+await writeArtifact(output, {
+  source: standardSource,
+  amendment_source: temporalSource,
+  amendment_scope: 'Appendix A.1-A.7',
+  source_version: '4.4.0-target.1',
   specifications
 });
-console.log(`Generated ${output}: ${specifications.length} merged Spatial v4.2 + Temporal v4 contract specifications.`);
+console.log(`Generated ${output}: ${specifications.length} merged Spatial v4.2 + Temporal v4/PR8 handoff contract specifications.`);

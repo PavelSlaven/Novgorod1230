@@ -2,6 +2,9 @@ import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import {
+  buildNpcReactionPolicySnapshotFromAuthoringRow
+} from '@rus/npc-runtime';
 import { TEMPORAL_REQUIRED_DATA_FAMILIES } from '../spatial-v3/temporal-data-readiness.mjs';
 
 const DATA_ROOT = 'data/world-catalogs/novgorod/temporal-v4';
@@ -86,7 +89,7 @@ function validateFamily({
   const provenanceIds = new Set(provenance.map((row) => row?.provenance_id));
   const sourceIds = new Set(sources.map((row) => row?.source_id));
 
-  if (provenance.length !== 1) errors.push(`${familyId}:provenance:expected_one_row`);
+  if (provenance.length === 0) errors.push(`${familyId}:provenance:expected_nonempty_rows`);
   if (decision?.schema !== 'rus.temporal-world-v4.external-auditor-family-decision.v1' ||
       decision?.version !== 1 ||
       decision?.family_id !== familyId ||
@@ -129,10 +132,14 @@ function validateFamily({
   }
 
   for (const row of provenance) {
+    const allowedDecisionIds = new Set([
+      decision?.decision_id,
+      ...(decision?.prior_decisions ?? []).map((item) => item?.decision_id)
+    ]);
     if (row?.status !== 'approved' ||
         !nonEmptyStrings(row?.source_ids) ||
         row.source_ids.some((id) => !sourceIds.has(id)) ||
-        row?.decision_id !== decision?.decision_id) {
+        !allowedDecisionIds.has(row?.decision_id)) {
       errors.push(`${familyId}:provenance_invalid:${row?.provenance_id ?? 'missing'}`);
     }
   }
@@ -210,6 +217,19 @@ export async function collectApprovedTemporalBundle({ root = process.cwd() } = {
         }
       } catch (error) {
         errors.push(`${familyId}:source_missing:${source.source_id}:${error.code ?? error.name}`);
+      }
+    }));
+    await Promise.all((decision.prior_decisions ?? []).map(async (prior) => {
+      try {
+        const priorBytes = await readFile(resolve(root, prior.path));
+        const priorDecision = JSON.parse(priorBytes.toString('utf8'));
+        if (digest(priorBytes) !== prior.sha256 ||
+            priorDecision.decision_id !== prior.decision_id ||
+            priorDecision.family_id !== familyId) {
+          errors.push(`${familyId}:prior_decision_invalid:${prior.decision_id ?? 'missing'}`);
+        }
+      } catch (error) {
+        errors.push(`${familyId}:prior_decision_missing:${prior?.decision_id ?? 'missing'}:${error.code ?? error.name}`);
       }
     }));
 
@@ -361,13 +381,28 @@ export async function buildApprovedTemporalImportSql({
   const bundle = await collectApprovedTemporalBundle({ root });
   if (bundle.errors.length > 0 ||
       bundle.family_count !== TEMPORAL_REQUIRED_DATA_FAMILIES.length ||
-      bundle.record_count !== 21 ||
-      bundle.reference_count !== 21 ||
-      bundle.provenance_count !== 13 ||
+      bundle.record_count !== 22 ||
+      bundle.reference_count !== 22 ||
+      bundle.provenance_count !== 14 ||
       bundle.source_count !== 46) {
     throw new Error(`Temporal approved import is not closed:\n- ${bundle.errors.join('\n- ')}`);
   }
   const { sourceRows, provenanceRows, recordRows, referenceRows } = normalizeRows(bundle);
+  const reactionPolicyRows = recordRows.filter(
+    ({ record_kind }) => record_kind === 'npc_reaction_policy'
+  );
+  if (reactionPolicyRows.length !== 1) {
+    throw new Error(
+      `Temporal approved import requires exactly one npc_reaction_policy; received ${reactionPolicyRows.length}.`
+    );
+  }
+  const reactionProjection =
+    buildNpcReactionPolicySnapshotFromAuthoringRow(reactionPolicyRows[0]);
+  if (!reactionProjection.ok) {
+    throw new Error(
+      `Temporal approved reaction policy projection is invalid: ${JSON.stringify(reactionProjection.error)}`
+    );
+  }
   const statements = [
     'BEGIN;',
     `SELECT pg_advisory_xact_lock(${ADVISORY_LOCK_KEY});`

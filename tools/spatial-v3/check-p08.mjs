@@ -25,10 +25,10 @@ for (const owner of ['@rus/space-map', '@rus/movement-routes', '@rus/materializa
 const registry = JSON.parse(await readFile(resolve(root, 'docs/migration/spatial-v3/p08-public-interface-registry.json'), 'utf8').catch(() => '{}'));
 if (registry.schema_version !== 'rus.spatial_v3_public_interface_registry.v1'
   || registry.status !== 'target'
-  || registry.activation !== 'P28 only'
+  || registry.activation !== 'versioned production activation cutover only'
   || registry.failure_mode !== 'typed_fail_closed_without_fallback'
-  || registry.contract_version !== '4.3.0-target.1'
-  || registry.temporal_contract !== 'temporal-world-v1'
+  || registry.contract_version !== '4.4.0-target.1'
+  || registry.temporal_contract !== 'temporal-world-v1.1'
   || !Array.isArray(registry.interfaces)) {
   errors.push('P08 public interface registry metadata is invalid');
 }
@@ -51,15 +51,20 @@ const expectedInterfaces = [
   ['@rus/body-state', '@rus/body-state', 'calculateBodyTimeEffectProposal', 'call'],
   ['@rus/body-state', '@rus/body-state', 'predictNearestBodyThreshold', 'call'],
   ['@rus/visibility-knowledge-memory', '@rus/visibility-knowledge-memory', 'buildSafeNarratorPackage', 'call'],
+  ['@rus/visibility-knowledge-memory', '@rus/visibility-knowledge-memory', 'mergeFormalKnowledgeMemory', 'call'],
   ['@rus/party-store', '@rus/party-store/spatial-v3-domain-integration', 'createSpatialV3DomainPlacementIntegrator', 'validatePlacements'],
   ['@rus/movement-routes', '@rus/movement-routes/spatial-v3-planner', 'createMovementPlanner', 'resolve'],
   ['@rus/movement-routes', '@rus/movement-routes/spatial-v3-planner', 'createRoutePlanActivationValidator', 'validate'],
   ['@rus/contracts', '@rus/contracts/spatial-v3/registry', 'validateSpatialV3Contract', 'call'],
+  ['@rus/contracts', '@rus/contracts/spatial-v3/registry', 'SPATIAL_V3_NPC_REACTION_HANDLER_BINDINGS', 'read'],
   ['@rus/contracts', '@rus/contracts/spatial-v3/registry', 'createSpatialV3TypedError', 'call'],
   ['@rus/npc-runtime', '@rus/npc-runtime', 'proposeNpcScheduleTransition', 'call'],
   ['@rus/npc-runtime', '@rus/npc-runtime', 'proposeNpcPerception', 'call'],
+  ['@rus/npc-runtime', '@rus/npc-runtime', 'proposeNpcReactionOptions', 'call'],
   ['@rus/npc-runtime', '@rus/npc-runtime', 'decideBoundedNpcAction', 'call'],
   ['@rus/npc-runtime', '@rus/npc-runtime', 'orderNpcDecisionRequests', 'call'],
+  ['@rus/turn', '@rus/turn/spatial-v3-reaction-handlers', 'resolveSpatialV3NpcReaction', 'call'],
+  ['@rus/turn', '@rus/turn/spatial-v3-perception-reaction-write-set', 'buildSpatialV3PerceptionReactionWriteSet', 'call'],
   ['@rus/environment-state', '@rus/environment-state', 'findNearestEnvironmentBoundaries', 'call'],
   ['@rus/environment-state', '@rus/environment-state', 'deriveEnvironment', 'call'],
   ['@rus/environment-state', '@rus/environment-state', 'proposeEnvironmentBoundaryEffect', 'call'],

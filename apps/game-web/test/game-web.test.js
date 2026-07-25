@@ -51,6 +51,47 @@ test('invalid API envelopes are blocked before UI state update', () => {
   assert.throws(() => validateApiEnvelope({ version: 1, schema: 'rus_api_success', ok: true, data: { write_plan: {} } }), { code: 'PUBLIC_PAYLOAD_HIDDEN_LEAK' });
 });
 
+test('safe route panels survive API envelope nesting without admitting internal route facts', () => {
+  const screen = {
+    ...firstScreen(),
+    panels: {
+      route: {
+        version: 1,
+        schema: 'presentation_panel',
+        kind: 'route',
+        visible: true,
+        data: {
+          movement: {
+            status: 'suspended_at_scene',
+            message: 'Путь остановлен.',
+            requires_new_decision: true,
+            options: []
+          }
+        }
+      }
+    }
+  };
+  assert.doesNotThrow(() => validateApiEnvelope({
+    version: 1,
+    schema: 'rus_api_success',
+    ok: true,
+    data: { screen }
+  }));
+  assert.throws(() => validateApiEnvelope({
+    version: 1,
+    schema: 'rus_api_success',
+    ok: true,
+    data: {
+      screen: {
+        ...screen,
+        panels: {
+          route: { data: { factual_route: 'internal-only' } }
+        }
+      }
+    }
+  }), { code: 'PUBLIC_PAYLOAD_HIDDEN_LEAK' });
+});
+
 test('UI store keeps screen read model instead of duplicating party state', () => {
   const store = createUiStore();
   store.setScreen(firstScreen());

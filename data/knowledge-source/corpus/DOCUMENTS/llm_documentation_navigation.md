@@ -2,7 +2,16 @@
 
 ## Статус navigation и target/active boundary
 
-Навигация отражает два раздельных слоя: до P28 active production следует materialization v2; `spatial_architecture_standard_g0_g6.md` v4.2.0 задаёт target v3 для документации, contracts, fixtures, migration и shadow composition. `temporal_world_and_interruptible_activities.md` задаёт active Temporal World v4 target amendment (`temporal-world-v1`, Spatial contract `4.3.0-target.1`) и доступен в default active-only retrieval. Навигационный файл не активирует target, не разрешает partial activation, dual write или fallback.
+Навигация отражает два раздельных слоя: до отдельного `versioned production
+activation cutover` active production следует materialization v2;
+`spatial_architecture_standard_g0_g6.md` v4.2.0 задаёт target v3 для
+документации, contracts, fixtures, migration и shadow composition.
+`temporal_world_and_interruptible_activities.md` задаёт active Temporal World
+v4 current target amendment (`temporal-world-v1.1`, Spatial contract
+`4.4.0-target.1`) и immutable accepted snapshot (`temporal-world-v1`,
+`4.3.0-target.1`); документ доступен в default active-only retrieval. Историческое
+P28 exact-head evidence не активировало production. Навигационный файл не
+активирует target, не разрешает partial activation, dual write или fallback.
 
 ## Приоритет materialization v2
 
@@ -99,9 +108,9 @@ production activation; финальное P28 exact-head evidence остаётс
 |---|---|---|
 | `README.md` | Общее описание проекта, состава `DOCUMENTS`, запуска, тестов и правил будущих изменений. | При первом входе в проект, объяснении назначения репозитория, проверке состава документации и базовых команд. |
 | `world_regions.txt` | Список допустимых регионов мира RUS13. Задаёт историко-географическую сетку, в пределах которой выбираются стартовые и последующие регионы партии. | При выборе региона, смене региона, проверке географической допустимости, создании исторического фона и маршрутов. |
-| `spatial_architecture_standard_g0_g6.md` | Главный target v4.2.0: G0–G6, topology, movement, materialization, player projection, migration и release gate. До P28 не является active runtime нормативом. | При target-проектировании пространственной модели, contracts, DDL/migration plan и проверке границы active/target. |
+| `spatial_architecture_standard_g0_g6.md` | Главный target v4.2.0: G0–G6, topology, movement, materialization, player projection, migration и release gate. До versioned production activation cutover не является active runtime нормативом. | При target-проектировании пространственной модели, contracts, DDL/migration plan и проверке границы active/target. |
 | `temporal_world_and_interruptible_activities.md` | Active Temporal World v4 target amendment: exact `GameTimestamp`, interruptible activities, event-driven boundaries, domain/NPC/carrier/remote updates, persistence и post-commit narration. | При любой target-задаче времени, activity/traversal timing, schedules, same-time cascades, environment, carrier clocks, catch-up или propagation; default active-only retrieval обязан находить документ. |
-| `world_generation_and_turns.txt` | Target v3: G0–G6/position, bounded preparation/materialization и turn boundary; archived v2 источник сохранён для traceability. | При target-проектировании start/materialization/slots/expansion и сверке active v2 до P28. |
+| `world_generation_and_turns.txt` | Target v3: G0–G6/position, bounded preparation/materialization и turn boundary; archived v2 источник сохранён для traceability. | При target-проектировании start/materialization/slots/expansion и сверке active v2 до versioned production activation cutover. |
 | `player_character_generation.txt` | Правила создания персонажа игрока как человека, встроенного в эпоху, место, статус, тело, знания, имущество, связи и стартовую сцену. | При создании нового персонажа, интерпретации заявки игрока, проверке стартового статуса, биографии, навыков, имущества, связей и причин нахождения в сцене. |
 | `character_parameters.txt` | Базовая механика характеристик, навыков, бонусов, состояний, тела и проверок. Фиксирует формулу d20, диапазоны характеристик, здоровье, сытость, бодрость, активные состояния и влияние тела. | При любой проверке, расчёте бонусов, изменении состояния, создании персонажа/NPC, применении штрафов от голода, усталости, ран, болезни и иных состояний. |
 | `time_system.txt` | Target routing для exact времени; authoritative Temporal World v4 details находятся в профильном amendment, архивная v2-проза исключена из retrieval. | При любом действии, которое занимает время; для target implementation обязательно затем читать active temporal amendment. |

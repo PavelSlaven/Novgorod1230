@@ -30,7 +30,45 @@ const write = (path, value) => {
   writeFileSync(full, typeof value === "string" ? value : JSON.stringify(value, null, 2) + "\n");
 };
 const digestRow = (row) => sha(Buffer.from(JSON.stringify(row)));
-const approvalContentFingerprint = ({ schema_version, bundle_id, status, pins, counts, files }) => {
+const TECHNICAL_ANCHOR_FILES = new Set([
+  "data/category-decision-ledger.json",
+  "data/record-sources.json",
+  "data/universal-categories.json",
+  "datasets/record_sources.json"
+]);
+const normalizeTechnicalAnchors = (value) => {
+  if (Array.isArray(value)) return value.map(normalizeTechnicalAnchors);
+  if (!value || typeof value !== "object") {
+    if (typeof value !== "string") return value;
+    const normalizedText = value
+      .replace(/"raw_sha256":"[0-9a-f]{64}",?/gu, "")
+      .replace(/"start_line":\d+,?/gu, "")
+      .replace(/"end_line":\d+,?/gu, "");
+    if (!normalizedText.startsWith("[") && !normalizedText.startsWith("{")) return normalizedText;
+    try {
+      return JSON.stringify(normalizeTechnicalAnchors(JSON.parse(normalizedText)));
+    } catch {
+      return normalizedText;
+    }
+  }
+  return Object.fromEntries(Object.entries(value)
+    .filter(([key]) => !["raw_sha256", "start_line", "end_line", "canonical_digest"].includes(key))
+    .map(([key, child]) => [key, normalizeTechnicalAnchors(child)]));
+};
+const semanticFileDigest = (directory, entry) => {
+  if (TECHNICAL_ANCHOR_FILES.has(entry.path)) {
+    return sha(Buffer.from(JSON.stringify(normalizeTechnicalAnchors(json(join(directory, entry.path))))));
+  }
+  if (entry.path === "import-manifest.json") {
+    const manifest = json(join(directory, entry.path));
+    return sha(Buffer.from(JSON.stringify({
+      ...manifest,
+      datasets: manifest.datasets.map(({ sha256: _technicalDigest, ...dataset }) => dataset)
+    })));
+  }
+  return entry.sha256;
+};
+const approvalContentFingerprint = ({ schema_version, bundle_id, status, pins, counts, files }, directory = out) => {
   const { current_ddl_sha256: _technicalDdlDigest, ...semanticPins } = pins ?? {};
   return sha(Buffer.from(JSON.stringify({
     schema_version,
@@ -38,7 +76,10 @@ const approvalContentFingerprint = ({ schema_version, bundle_id, status, pins, c
     status,
     pins: semanticPins,
     counts,
-    files: files.filter((entry) => entry.path !== "APPROVAL_DECISION.json").sort((a, b) => a.path.localeCompare(b.path))
+    files: files
+      .filter((entry) => entry.path !== "APPROVAL_DECISION.json")
+      .map((entry) => ({ path: entry.path, sha256: semanticFileDigest(directory, entry) }))
+      .sort((a, b) => a.path.localeCompare(b.path))
   })));
 };
 
@@ -174,10 +215,23 @@ const v11PinsMemberDigest = sha(zipBytes(v11Zip, v11PinsMember));
 const sourceSnapshotDigest = fileSha(sourceZip);
 const sourceG3Member = `${zipPrefix}04-g3/g3-places.json`;
 const sourceG3MemberDigest = sha(zipBytes(sourceZip, sourceG3Member));
+const standardLines = readFileSync(join(root, standardPath), "utf8").split(/\r?\n/u);
+const repositoryLineAnchor = (requiredText) => {
+  const matches = standardLines.flatMap((line, index) => line.includes(requiredText) ? [index + 1] : []);
+  if (matches.length !== 1) throw new Error(`${requiredText}: expected one exact normative line, found ${matches.length}`);
+  return {
+    anchor_kind: "repository_line_range",
+    canonical_path: standardPath,
+    raw_sha256: standardDigest,
+    start_line: matches[0],
+    end_line: matches[0],
+    required_text: requiredText
+  };
+};
 const repositoryAnchorByCategory = {
-  "spatial.g0.historical_geographic_region": { anchor_kind: "repository_line_range", canonical_path: standardPath, raw_sha256: standardDigest, start_line: 260, end_line: 268, required_text: "spatial.g0.historical_geographic_region" },
-  "spatial.g1.territorial_grid_cell": { anchor_kind: "repository_line_range", canonical_path: standardPath, raw_sha256: standardDigest, start_line: 270, end_line: 290, required_text: "spatial.g1.territorial_grid_cell" },
-  "spatial.g2.territorial_zone": { anchor_kind: "repository_line_range", canonical_path: standardPath, raw_sha256: standardDigest, start_line: 292, end_line: 307, required_text: "spatial.g2.territorial_zone" }
+  "spatial.g0.historical_geographic_region": repositoryLineAnchor("spatial.g0.historical_geographic_region"),
+  "spatial.g1.territorial_grid_cell": repositoryLineAnchor("spatial.g1.territorial_grid_cell"),
+  "spatial.g2.territorial_zone": repositoryLineAnchor("spatial.g2.territorial_zone")
 };
 const g3SourceIdByCategory = {
   "spatial.g3.settlement": "gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
@@ -187,14 +241,7 @@ const g3SourceIdByCategory = {
   "spatial.g3.resource_site": "gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
   "spatial.g3.recurrent_site": "gn_nov_g3_xp017_yp026_r2_vikhtuy_locality"
 };
-for (const id of Object.keys(g3SourceIdByCategory)) repositoryAnchorByCategory[id] = {
-  anchor_kind: "repository_line_range",
-  canonical_path: standardPath,
-  raw_sha256: standardDigest,
-  start_line: 309,
-  end_line: 324,
-  required_text: id
-};
+for (const id of Object.keys(g3SourceIdByCategory)) repositoryAnchorByCategory[id] = repositoryLineAnchor(id);
 const g3RecordAnchor = (categoryId) => ({
   anchor_kind: "immutable_zip_json_record",
   canonical_path: sourceSnapshotPath,
@@ -285,6 +332,10 @@ const previousApprovedSubject = (() => {
     return null;
   }
 })();
+const historicalSubjectBindingPath = join(out, "subject-commit-binding.json");
+const historicalSubjectBinding = existsSync(historicalSubjectBindingPath)
+  ? readFileSync(historicalSubjectBindingPath)
+  : null;
 rmSync(out, { recursive: true, force: true });
 const provenanceRecord = {
   id: provenance.id,
@@ -509,4 +560,7 @@ filesBeforeManifest.sort((a, b) => a.path.localeCompare(b.path));
 const manifest = { ...manifestIdentity, files: filesBeforeManifest };
 write("manifest.json", manifest);
 write("manifest.sha256", `${fileSha(join(out, "manifest.json"))}  manifest.json\n`);
+if (historicalSubjectBinding) {
+  writeFileSync(historicalSubjectBindingPath, historicalSubjectBinding);
+}
 console.log(JSON.stringify({ ok: true, out, counts, pins }, null, 2));

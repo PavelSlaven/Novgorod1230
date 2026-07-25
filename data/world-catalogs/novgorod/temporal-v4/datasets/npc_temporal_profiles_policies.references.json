@@ -16,5 +16,22 @@
       "source:npc_temporal_profiles_policies:rule_of_benedict_analog"
     ],
     "binding_notes": "Bound to world_base.temporal_authoring_records by the approved Temporal v4 importer."
+  },
+  {
+    "reference_id": "reference:npc_temporal_profiles_policies:reaction_signal_policy_v1",
+    "status": "approved",
+    "table": "temporal_authoring_records",
+    "record_id": "record:npc_temporal_profiles_policies:reaction_signal_policy_v1",
+    "source_record_key": "record:npc_temporal_profiles_policies:reaction_signal_policy_v1",
+    "logical_record_id": "npc_reaction_signal_policy_v1",
+    "authoring_version": "1",
+    "applicability": [
+      "novgorod"
+    ],
+    "source_ids": [
+      "source:npc_temporal_profiles_policies:temporal_world_v4_normative",
+      "source:npc_temporal_profiles_policies:user_reconstruction_authorization"
+    ],
+    "binding_notes": "Bound to world_base.temporal_authoring_records by the approved Temporal v4 importer; the target-only decision catalog projection is built from this source record."
   }
 ]

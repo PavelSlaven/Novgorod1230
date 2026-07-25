@@ -646,8 +646,9 @@ const approvedTurnImports = new Set([
   '@rus/checks-rng',
   '@rus/time-events-history',
   '@rus/time-events-history/legacy',
-  '@rus/time-events-history/temporal-boundaries',
-  '@rus/visibility-knowledge-memory',
+    '@rus/time-events-history/temporal-boundaries',
+    '@rus/npc-runtime',
+    '@rus/visibility-knowledge-memory',
   '@rus/presentation',
     '@rus/narration',
     '@rus/materialization',
@@ -701,7 +702,8 @@ for (const appSpec of [
     approved: new Set([
       '@rus/checks-rng', '@rus/contracts', '@rus/contracts/spatial-v3/registry', '@rus/knowledge-source', '@rus/llm-runtime', '@rus/new-game', '@rus/narration',
       '@rus/party-store', '@rus/presentation', '@rus/presentation/opening-delivery', '@rus/turn', '@rus/turn/spatial-v3-target-composition',
-      '@rus/runtime-catalog', '@rus/runtime-catalog/runtime-contract', '@rus/visibility-knowledge-memory', '@rus/world-base', 'pg'
+      '@rus/runtime-catalog', '@rus/runtime-catalog/runtime-contract', '@rus/visibility-knowledge-memory', '@rus/world-base',
+      '@rus/npc-runtime', 'pg'
     ])
   },
   {

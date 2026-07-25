@@ -1,5 +1,4 @@
 import assert from 'node:assert/strict';
-import { createHash } from 'node:crypto';
 import { mkdtemp, cp, appendFile, readFile, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -49,17 +48,6 @@ async function mutateDeclaration(root, mutate) {
   await writeFile(declarationPath, `${JSON.stringify(declaration, null, 2)}\n`);
 }
 
-async function repinTarget(root, targetFile) {
-  const targetPath = path.join(root, targetFile);
-  const digest = createHash('sha256').update(await readFile(targetPath)).digest('hex');
-  await mutateDeclaration(root, (declaration) => {
-    const pair = declaration.documents.find((document) => document.target.path === targetFile);
-    assert.ok(pair, `declaration pair missing for ${targetFile}`);
-    pair.target.sha256 = digest;
-    pair.target.section_sha256 = digest;
-  });
-}
-
 async function replaceRequiredText(file, expected, replacement) {
   const content = await readFile(file, 'utf8');
   assert.ok(content.includes(expected), `fixture text missing: ${expected}`);
@@ -81,13 +69,13 @@ test('P02 active owner documents route explicitly to target supplements and the 
   ];
   for (const [activeName, targetName] of pairs) {
     const active = await readFile(path.join(sourceRoot, activeName), 'utf8');
-    assert.match(active, /P02 target routing/);
+    assert.match(active, /Production\/target routing/);
     assert.ok(active.includes(targetName), `${activeName}: target supplement route missing`);
     assert.ok(active.includes('data/world-catalogs/novgorod/spatial-v3/manifest.json'), `${activeName}: P12 manifest route missing`);
     assert.match(active, /37 SHA-256-pinned datasets/);
     assert.match(active, /data_gaps:\s*\[\]/);
-    assert.match(active, /v2 remains the sole production owner until P28/i);
-    assert.match(active, /does not authorize production import, runtime use, write, or activation/i);
+    assert.match(active, /v2 remains the sole production owner until the separate `versioned production activation cutover`/i);
+    assert.match(active, /do(?:es)? not authorize production import, runtime use, write, or activation/i);
   }
 });
 
@@ -115,7 +103,6 @@ for (const [name, file, assertion, diagnostic] of unsafeCases) {
   test(`P02 checker rejects ${name}`, async () => {
     const root = await fixture();
     await appendFile(path.join(root, file), `\n${assertion}\n`);
-    await repinTarget(root, file);
     const result = run(root);
     assert.notEqual(result.status, 0, `checker accepted unsafe assertion: ${assertion}`);
     assert.match(`${result.stderr}\n${result.stdout}`, new RegExp(`unsafe target assertion permits ${diagnostic.replaceAll('/', '\\/')}`));
@@ -127,7 +114,12 @@ const routingOmissions = [
   ['canonical target standard', 'spatial_architecture_standard_g0_g6.md', 'omitted_target_standard.md', /canonical target standard route is missing/],
   ['P12 manifest', 'data/world-catalogs/novgorod/spatial-v3/manifest.json', 'omitted/p12-manifest.json', /approved P12 manifest route is missing/],
   ['P12 37+0 state', '37 SHA-256-pinned datasets and `data_gaps: []`', 'approved dataset and gap counts omitted', /approved P12 state is missing/],
-  ['sole-v2 ownership', 'Materialization v2 remains the sole production owner until P28.', 'Production ownership statement omitted.', /pre-P28 production ownership is ambiguous/]
+  [
+    'sole-v2 ownership',
+    'Materialization v2 remains the sole production owner until the separate `versioned production activation cutover`.',
+    'Production ownership statement omitted.',
+    /pre-cutover production ownership is ambiguous/
+  ]
 ];
 
 for (const [name, expected, replacement, diagnostic] of routingOmissions) {
@@ -141,23 +133,22 @@ for (const [name, expected, replacement, diagnostic] of routingOmissions) {
   });
 }
 
-test('P02 checker rejects mutation of a pinned active v2 normative', async () => {
+test('P02 checker permits non-semantic evolution of a current active normative', async () => {
   const root = await fixture();
-  await appendFile(path.join(root, 'code_driven_world_materialization_architecture.md'), '\nmutation\n');
+  await appendFile(path.join(root, 'code_driven_world_materialization_architecture.md'), '\nEditorial clarification.\n');
   const result = run(root);
-  assert.notEqual(result.status, 0, 'checker accepted mutated active v2 bytes');
+  assert.equal(result.status, 0, result.stderr);
 });
 
-test('P02 checker rejects active mutation even when manifest is repinned to it', async () => {
+test('P02 checker rejects mutation of the immutable historical declaration', async () => {
   const root = await fixture();
-  const activePath = path.join(root, 'code_driven_world_materialization_architecture.md');
-  await appendFile(activePath, '\nmutation with matching mutable manifest pin\n');
-  const digest = createHash('sha256').update(await readFile(activePath)).digest('hex');
   await mutateDeclaration(root, (declaration) => {
-    declaration.documents[0].active.sha256 = digest;
-    declaration.documents[0].active.section_sha256 = digest;
+    declaration.documents[0].active.sha256 = '0'.repeat(64);
+    declaration.documents[0].active.section_sha256 = '0'.repeat(64);
   });
-  assert.notEqual(run(root).status, 0, 'checker trusted a mutually repinned active document and manifest');
+  const result = run(root);
+  assert.notEqual(result.status, 0, 'checker accepted mutated historical declaration');
+  assert.match(`${result.stderr}\n${result.stdout}`, /immutable trust anchor/);
 });
 
 test('P02 checker accepts explicit prohibition wording', async () => {
@@ -167,11 +158,6 @@ test('P02 checker accepts explicit prohibition wording', async () => {
     targetPath,
     '\nDual write, mixed execution, v3 fallback to v2 and partial activation are prohibited before P28.\n\nG7 is not introduced and is not required.\n'
   );
-  const digest = createHash('sha256').update(await readFile(targetPath)).digest('hex');
-  await mutateDeclaration(root, (declaration) => {
-    declaration.documents[0].target.sha256 = digest;
-    declaration.documents[0].target.section_sha256 = digest;
-  });
   const result = run(root);
   assert.equal(result.status, 0, result.stderr);
 });

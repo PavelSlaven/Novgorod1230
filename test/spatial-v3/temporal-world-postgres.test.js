@@ -3,7 +3,10 @@ import { spawnSync } from 'node:child_process';
 import test from 'node:test';
 import pg from 'pg';
 import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
-import { runSpatialV3TargetMigrations } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
+import {
+  SPATIAL_V3_TARGET_MIGRATIONS,
+  runSpatialV3TargetMigrations
+} from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
 import { createTemporalPresentationPostgresStore } from '../../apps/game-server/src/infrastructure/postgres/temporal-presentation-store.js';
 
 const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 45_000 });
@@ -86,8 +89,32 @@ test('Temporal World target persistence is exact, party-isolated, replay-safe an
     docker(['rm', '-f', containerName]);
   });
 
-  assert.equal((await runSpatialV3TargetMigrations(pool)).applied, 7);
-  assert.equal((await runSpatialV3TargetMigrations(pool)).applied, 7, '001→007 chain is re-applicable');
+  const rollbackClient = await pool.connect();
+  let migrationFailure = null;
+  try {
+    await rollbackClient.query('BEGIN');
+    for (const sql of SPATIAL_V3_TARGET_MIGRATIONS.slice(0, 9)) {
+      await rollbackClient.query(sql);
+    }
+    await rollbackClient.query('SELECT * FROM party_runtime.__forced_migration_010_failure__');
+    await rollbackClient.query('COMMIT');
+  } catch (error) {
+    migrationFailure = error;
+    await rollbackClient.query('ROLLBACK');
+  } finally {
+    rollbackClient.release();
+  }
+  assert.ok(migrationFailure, 'forced failure after migration 009 must abort the target chain');
+  assert.deepEqual(
+    (await pool.query(`SELECT
+      to_regclass('party_runtime.parties') AS migration_001_effect,
+      to_regclass('party_runtime.party_perception_replay_evidence') AS migration_009_effect`)).rows[0],
+    { migration_001_effect: null, migration_009_effect: null },
+    'failure after migration 009 must roll back every 001→009 DDL effect'
+  );
+
+  assert.equal((await runSpatialV3TargetMigrations(pool)).applied, 10);
+  assert.equal((await runSpatialV3TargetMigrations(pool)).applied, 10, '001→010 chain is re-applicable');
 
   const timestampTruth = await pool.query(`SELECT
     party_runtime.game_timestamp_parts_valid(12,1,3) AS valid,
@@ -124,7 +151,7 @@ test('Temporal World target persistence is exact, party-isolated, replay-safe an
     VALUES ('transition-cross','party-one','npc','schedule','event-two','cs','transition-cross',1,0,1)`, [], 'NPC transition must not reference another party event');
   await expectRejected(pool, `INSERT INTO party_runtime.party_perception_records
     (perception_id,party_id,event_id,perceiver_kind,perceiver_id,result_kind,perceived_at_whole_minutes,perceived_at_subminute_numerator,perceived_at_subminute_denominator,recognition_policy_ref,visibility_policy_ref,canonical_digest,signal_refs,knowledge_update_refs,change_set_id,idempotency_record_id)
-    VALUES ('perception-cross','party-one','event-two','npc','npc','perceived',1,0,1,'{}','{}','d','[]','[]','cs','perception-cross')`, [], 'perception must not reference another party event');
+    VALUES ('perception-cross','party-one','event-two','npc','npc','recognized',1,0,1,'{}','{}','d','[]','[]','cs','perception-cross')`, [], 'perception must not reference another party event');
 
   await pool.query(`INSERT INTO party_runtime.party_remote_aggregate_states
     (aggregate_id,party_id,scope_ref,scope_mode,last_updated_at_whole_minutes,last_updated_at_subminute_numerator,last_updated_at_subminute_denominator,state_version,canonical_digest,aggregate_process_refs,pending_incoming_effect_refs,coarse_rule_versions)

@@ -6,6 +6,9 @@ import {
 } from '@rus/contracts/spatial-v3/registry';
 import { createTemporalAdvanceEngine } from '../src/temporal-advance.js';
 import { mergeTemporalProposals } from '../src/temporal-proposal-merger.js';
+import {
+  createSpatialV3PerceptionBoundaryParticipant
+} from '../src/spatial-v3-perception-boundary-participant.js';
 
 const at = (wholeMinutes) => ({
   whole_minutes: String(wholeMinutes),
@@ -236,6 +239,197 @@ test('same-time fire, smoke and alarm follow-ups stabilize in one zero-time slic
   assert.deepEqual(result.trace.processed_boundary_ids, ['fire', 'smoke', 'alarm']);
   assert.equal(result.combined_change_set.time_slice_results.length, 1);
   assert.equal(result.combined_change_set.time_slice_results[0].result_kind, 'zero_time_cascade');
+});
+
+test('journey providers observe the latest immutable working projection between slices and same-time handlers', () => {
+  const observed = [];
+  const providers = [
+    {
+      provider_ref: versioned('dynamic_recheck_policy', 'journey-traversal-provider'),
+      collect: ({ from_timestamp, relevant_state_projection }) => {
+        observed.push(`traversal:${from_timestamp.whole_minutes}:${relevant_state_projection.journey_phase}`);
+        return relevant_state_projection.journey_phase === 'moving'
+          ? [candidate('segment-recheck', 11, {
+            boundary_kind: 'traversal',
+            source_ref: ref('party_route_plan_execution_event', 'journey-a')
+          })]
+          : [];
+      }
+    },
+    {
+      provider_ref: versioned('dynamic_recheck_policy', 'journey-body-provider'),
+      collect: ({ from_timestamp, relevant_state_projection }) => {
+        observed.push(`body:${from_timestamp.whole_minutes}:${relevant_state_projection.journey_phase}`);
+        return relevant_state_projection.journey_phase === 'after-recheck'
+          ? [candidate('body-threshold', 12, {
+            boundary_kind: 'body_threshold',
+            source_ref: ref('body_state', 'body-a'),
+            resolution_class: 'physical_hazard_access'
+          })]
+          : [];
+      }
+    }
+  ];
+  const advanceRequest = request(providers, 12);
+  advanceRequest.relevant_state_projection.journey_phase = 'moving';
+  const seenByHandlers = [];
+  const seenBoundaryClocks = [];
+  const result = engine({
+    providers,
+    applyContinuous: (slice, { projection }) => ({
+      proposals: [{
+        proposal_id: `progress:${slice.slice_id}`,
+        write_target: `progress:${slice.slice_id}`
+      }],
+      state_projection: {
+        ...projection,
+        continuous_to: slice.to_timestamp.whole_minutes
+      }
+    }),
+    resolve: (value, { projection, clock_before, slice_plan }) => {
+      seenByHandlers.push(`${value.boundary_id}:${projection.journey_phase}:${projection.continuous_to}`);
+      seenBoundaryClocks.push(
+        `${value.boundary_id}:${clock_before.whole_minutes}:${slice_plan.from_timestamp.whole_minutes}`
+      );
+      if (value.boundary_id === 'segment-recheck') {
+        return {
+          disposition: 'execute',
+          proposals: [{ proposal_id: value.boundary_id, write_target: value.boundary_id }],
+          state_projection: {
+            ...projection,
+            journey_phase: 'after-recheck'
+          },
+          follow_up_candidates: [candidate('perception-follow-up', 11, {
+            boundary_kind: 'perception_follow_up',
+            source_ref: ref('perception_result', 'perception-a'),
+            causal_parent_refs: [ref('temporal_boundary_candidate', 'segment-recheck')],
+            resolution_class: 'propagation_background'
+          })]
+        };
+      }
+      return {
+        disposition: 'execute',
+        proposals: [{ proposal_id: value.boundary_id, write_target: value.boundary_id }],
+        state_projection: value.boundary_id === 'perception-follow-up'
+          ? { ...projection, perception_processed: true }
+          : projection
+      };
+    }
+  }).advance(advanceRequest);
+
+  assert.deepEqual(result.trace.processed_boundary_ids, [
+    'segment-recheck',
+    'perception-follow-up',
+    'body-threshold'
+  ]);
+  assert.deepEqual(seenByHandlers, [
+    'segment-recheck:moving:11',
+    'perception-follow-up:after-recheck:11',
+    'body-threshold:after-recheck:12'
+  ]);
+  assert.deepEqual(seenBoundaryClocks, [
+    'segment-recheck:11:10',
+    'perception-follow-up:11:10',
+    'body-threshold:12:11'
+  ]);
+  assert.ok(observed.includes('body:11:after-recheck'));
+});
+
+test('perception follow-up participates in the same-time cascade and yields one mapped pending decision proposal', () => {
+  const perceptionCandidate = candidate('perception-boundary', 10, {
+    boundary_kind: 'perception_follow_up',
+    source_ref: ref('action_contract', 'signal-event'),
+    primary_subject_ref: ref('npc', 'npc-a'),
+    resolution_class: 'propagation_background'
+  });
+  const participant = createSpatialV3PerceptionBoundaryParticipant({
+    resolveBoundary: (input) => {
+      assert.equal(Object.isFrozen(input), true);
+      return {
+        ok: true,
+        status: 'awaiting_bounded_decision',
+        decision_mode: 'bounded_selection',
+        perception_result: { perception_id: 'perception-a' },
+        perception_replay_evidence: { perception_id: 'perception-a' },
+        knowledge_merge_result: { proposal_id: 'knowledge-a' },
+        reaction_option_proposal: {
+          request_id: 'reaction-a',
+          decision_request: { request_id: 'reaction-a' }
+        },
+        reaction_proposal: null,
+        decision_request: { request_id: 'reaction-a' }
+      };
+    },
+    buildInitialWriteSet: () => ({
+      ok: true,
+      write_set: {
+        appends: [{ target_table: 'party_npc_reaction_option_proposals' }],
+        inserts: [],
+        updates: []
+      },
+      expected_state_versions: [],
+      physical_keys: [
+        'party_runtime.party_npc_reaction_option_proposals:reaction-a'
+      ]
+    }),
+    buildCompletionWriteSet: () => {
+      throw new Error('pending work must use the initial write mapper');
+    }
+  });
+  const providers = [
+    provider('perception-provider', perceptionCandidate)
+  ];
+  const advanceRequest = request(providers, 10);
+  advanceRequest.relevant_state_projection.perception_boundary_work_items = [{
+    boundary_id: perceptionCandidate.boundary_id,
+    cycle_input: {
+      perception_request: {
+        perceiver_ref: perceptionCandidate.primary_subject_ref,
+        event_ref: perceptionCandidate.source_ref,
+        perceived_at: perceptionCandidate.scheduled_at
+      }
+    },
+    write_context: {
+      party_id: advanceRequest.party_id,
+      change_set_id: advanceRequest.idempotency_context.change_set_id,
+      idempotency_record_id:
+        advanceRequest.idempotency_context.record_id
+    }
+  }];
+  const result = engine({
+    providers,
+    temporalStatus: 'decision_required',
+    resolve: (value, context) => participant.resolve(value, context)
+  }).advance(advanceRequest);
+  const proposal = result.combined_change_set.proposals.find(
+    ({ boundary_id }) => boundary_id === perceptionCandidate.boundary_id
+  );
+  assert.equal(proposal.status, 'awaiting_bounded_decision');
+  assert.equal(
+    proposal.write_set.appends[0].target_table,
+    'party_npc_reaction_option_proposals'
+  );
+  assert.equal(result.temporal_status, 'decision_required');
+  assert.equal(
+    result.trace.processed_boundary_ids.includes(
+      perceptionCandidate.boundary_id
+    ),
+    true
+  );
+});
+
+test('working projection updates fail closed when a handler returns a non-object', () => {
+  const providers = [provider('projection-provider', candidate('projection', 11))];
+  assert.throws(
+    () => engine({
+      providers,
+      applyContinuous: () => ({
+        proposals: [],
+        state_projection: 'hidden-mutable-state'
+      })
+    }).advance(request(providers, 11)),
+    (error) => error.code === 'temporal_change_set_conflict'
+  );
 });
 
 test('stale candidates require explicit cancel, replacement or hard block', () => {

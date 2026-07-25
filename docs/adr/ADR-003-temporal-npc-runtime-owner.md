@@ -2,7 +2,7 @@
 
 - Status: accepted
 - Date: 2026-07-23
-- Decision scope: target architecture; no production activation before P28.
+- Decision scope: target architecture; historical P28 acceptance did not activate production, and production activation requires the separate `versioned production activation cutover`.
 
 ## Decision
 
@@ -14,4 +14,4 @@ Profiles and candidate data remain read-only authoring data owned by `world_base
 
 ## Rollback
 
-Before P28 the package is shadow/fixture-only and can be removed from composition without changing production v2 state. After activation, rollback uses the last validated checkpoint or an approved reverse migration; a partially committed NPC update is never reinterpreted as v2.
+Before the `versioned production activation cutover`, the package is shadow/fixture-only and can be removed from composition without changing production v2 state. After activation, rollback uses the last validated checkpoint or an approved reverse migration; a partially committed NPC update is never reinterpreted as v2.

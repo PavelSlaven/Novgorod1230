@@ -1,9 +1,12 @@
 # Требования к таблицам materialization и spatial v3
 
-**Статус:** target technical normative; активная физическая схема остаётся v2 до P28.
+**Статус:** target technical normative; активная физическая схема остаётся v2
+до отдельного `versioned production activation cutover`; историческое P28
+evidence не меняло loader или production composition.
 **Назначение:** логический table-purpose contract для target v3; физические имена, типы и constraints определяются только будущими DDL и generated `SCHEMA_REFERENCE.md`.
 
-Temporal amendment `temporal-world-v1` / `4.3.0-target.1` определяется active
+Current Temporal amendment `temporal-world-v1.1` / `4.4.0-target.1` с
+immutable baseline `temporal-world-v1` / `4.3.0-target.1` определяется active
 target-нормативом `temporal_world_and_interruptible_activities.md`. Он расширяет
 существующие owners/tables, а не создаёт параллельный temporal store.
 
@@ -51,7 +54,11 @@ Required candidate gap, unresolved ref, ambiguous active binding, invalid route 
 
 ## 5. Activation boundary
 
-Этот норматив не разрешает применять v3 DDL или importer в production до P28. Его статус может стать active только вместе с canonical architecture после совпадения DDL, generated reference, schemas/DTO/validators, importer/readiness, persistence/save-load, migration evidence и PASS независимого критика.
+Этот норматив не разрешает применять v3 DDL или importer в production до
+`versioned production activation cutover`. Его статус может стать active
+только вместе с canonical architecture после совпадения DDL, generated
+reference, schemas/DTO/validators, importer/readiness, persistence/save-load,
+migration evidence и PASS независимого критика.
 
 ## 6. Migration history
 

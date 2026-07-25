@@ -368,7 +368,7 @@
     {
       "table": "record_sources",
       "file": "datasets/record_sources.json",
-      "sha256": "d3806185f30ce30b2955b4cbcfe81752b597eff2e8cf040ce50d959ef5a4749d",
+      "sha256": "39abad43afc0662038785f33a72fe6682e1658a6a8ca73c4be975449574760ef",
       "status": "approved",
       "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/source-approval/index.json#p12_novgorod_source_approval_001+target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
       "delete_policy": "forbid",

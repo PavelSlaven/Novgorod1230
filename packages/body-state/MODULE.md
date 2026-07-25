@@ -23,7 +23,8 @@ Malformed legacy body values return validation errors or range/type errors. Targ
 ## Target / activation и тесты
 
 Current `temporal-world-v1.1` / `4.4.0-target.1` behavior (with immutable
-`temporal-world-v1` / `4.3.0-target.1` baseline) remains target-only before the
-versioned production activation cutover; historical P28 evidence did not
-activate it and production v2 is untouched. `test/domain.test.js` covers base
-body API and Temporal proposal/threshold hard-block behavior.
+`temporal-world-v1` / `4.3.0-target.1` baseline) is active in
+`spatial-v3-production-v1`. Historical P28 evidence did not activate it; the
+later `versioned production activation cutover` did. Production v2 is only an
+explicit migration/rollback source. `test/domain.test.js` covers base body API
+and Temporal proposal/threshold hard-block behavior.

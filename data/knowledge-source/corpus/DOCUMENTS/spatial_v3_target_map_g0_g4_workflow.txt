@@ -1,8 +1,8 @@
 # Workflow authoring карты G0–G5 (compatibility filename)
 
-**Статус:** target workflow для spatial v3; active production workflow остаётся
-v2 до отдельного `versioned production activation cutover`; историческое P28
-evidence не активировало workflow.
+**Статус:** active production workflow для spatial v3 после завершённого
+`versioned production activation cutover`; историческое P28 evidence само
+workflow не активировало.
 **Совместимость имени:** filename сохранён для ссылок; его содержание заменяет прежний G0–G4 workflow и не вводит G7/G8.
 
 ## 1. Масштабы и причинность
@@ -38,9 +38,9 @@ Cross-G1/G4/G5 movement требует matched explicit directional contract and
 ## 4. Readiness and runtime boundary
 
 `semantic_ready` обязателен для runtime; `visual_map_ready` обязателен только
-для map view. V3 authoring remains target until the `versioned production
-activation cutover`: no production DDL/import/runtime activation, dual write
-or mixed fallback is permitted. Empty candidate set, missing terminal target,
+для map view. Release `spatial-v3-production-v1` завершил `versioned
+production activation cutover`: active v3 composition не допускает dual write
+или mixed fallback. Empty candidate set, missing terminal target,
 incomplete endpoint scene/binding or absent route contract creates a typed
 hard block.
 

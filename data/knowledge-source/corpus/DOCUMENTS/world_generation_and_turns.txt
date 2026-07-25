@@ -51,7 +51,9 @@ LLM выбирает только bounded option и создаёт разреш�
 <!-- knowledge-retrieval-exclude:start -->
 ## Приложение A. Архивный v2-источник для migration traceability
 
-Нижеследующий текст сохранён только как historical/migration source. Он не активирует v2 semantics в target v3 и не разрешает mixed execution, dual write или fallback. До `versioned production activation cutover` active production boundary определён отдельно.
+Нижеследующий текст сохранён только как historical/migration source. Он не
+активирует v2 semantics в v3 и не разрешает mixed execution, dual write или
+fallback. Active production boundary — release `spatial-v3-production-v1`.
 
 # Генерация мира и ходы
 

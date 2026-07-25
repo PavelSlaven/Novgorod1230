@@ -2,8 +2,9 @@
 
 - Status: accepted
 - Date: 2026-07-23
-- Decision scope: target architecture; accepted historical P28 evidence did
-  not activate production.
+- Decision scope: production architecture. Accepted historical P28 evidence did
+  not activate production; the later `versioned production activation cutover`
+  release `spatial-v3-production-v1` did.
 
 ## Decision
 
@@ -11,8 +12,8 @@ Do not create a second place or access engine. Extend `@rus/turn` for code-owned
 availability and consequence orchestration, and `@rus/party-store` for
 normalized placement, capacity, ownership, holder, controller and access
 validation. The target spatial-v3 boundary is
-`@rus/party-store/spatial-v3-domain-integration`; it remains target-only until
-the separate `versioned production activation cutover`.
+`@rus/party-store/spatial-v3-domain-integration`; release
+`spatial-v3-production-v1` activates this path as the sole production route.
 
 Public turn input is the frozen turn context with `{ current_position, actor, target, access_context, catalog_pins }`; public output is an availability/consequence package or a typed gap. The party-store target input is a frozen placement/control snapshot and approved mutation; its output is validation or an atomic commit proposal. Allowed dependencies are existing `@rus/turn`, `@rus/party-store`, `@rus/contracts` and `@rus/kernel` boundaries. No place/access owner may call a database, network, LLM, narrator or UI directly.
 
@@ -20,8 +21,8 @@ Profiles and data are read-only `world_base` G4/G5 templates, slot rules, access
 
 ## Rollback
 
-Before the `versioned production activation cutover`, target validation is
-shadow-only and production v2 remains authoritative. Rollback discards the
-target proposal before commit; after activation it requires the approved
+Before the completed `versioned production activation cutover`, target
+validation was shadow-only and production v2 was authoritative. Rollback
+discards an uncommitted target proposal; committed recovery requires the approved
 reverse migration or snapshot restoration, never dual write or an in-turn v2
 fallback.

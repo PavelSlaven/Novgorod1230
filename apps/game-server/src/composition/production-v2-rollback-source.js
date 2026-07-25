@@ -11,7 +11,13 @@ import { createProductionLlmRoleRunner, probeLlmProvider } from '../infrastructu
 import { loadRuntimeBindings } from '../runtime/load-bindings.js';
 import { createRuntimeCatalogCoordinator } from '../runtime/runtime-catalog.js';
 
-export async function createProductionCompositionRoot({ env = process.env, config = {}, PoolClass, now } = {}) {
+/**
+ * Explicit production-v2 rollback-source harness.
+ *
+ * This module is not registered by the production composition loader and is
+ * retained only for migration/rollback verification.
+ */
+export async function createProductionV2RollbackSourceRoot({ env = process.env, config = {}, PoolClass, now } = {}) {
   const pools = createPostgresPools({ env, PoolClass });
   try {
     if (config.runMigrations !== false) await runPartyRuntimeMigrations(pools.partyPool);
@@ -101,7 +107,7 @@ export async function createProductionCompositionRoot({ env = process.env, confi
   }
 }
 
-export default createProductionCompositionRoot;
+export default createProductionV2RollbackSourceRoot;
 
 async function prepareNewGameRuntimeCatalog({ runtimeCatalog, options }) {
   const checkpointContext = options?.checkpoint?.runtime_catalog_context;

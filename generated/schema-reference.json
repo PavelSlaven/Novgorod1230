@@ -895,9 +895,9 @@
       "type": "sql"
     },
     {
-      "bytes": 1935,
+      "bytes": 1965,
       "path": "schemas/party-db/008_party_runtime_pr8_first_entry.sql",
-      "sha256": "25ac03085a41e9cc5963c4cdf06e59ee2319c3b254d25b297e4871608d05a1ac",
+      "sha256": "bf072dd080e7daca2c922c60d07090b0dd34efcaef0e20c97e6607ae64611e7e",
       "type": "sql"
     },
     {
@@ -907,9 +907,9 @@
       "type": "sql"
     },
     {
-      "bytes": 1633,
+      "bytes": 1589,
       "path": "schemas/party-db/010_party_runtime_pr8_reaction_options.sql",
-      "sha256": "bd832815094990299b76af286fd4a4e8250d8d1992d6f3846dbfa0cf944ce264",
+      "sha256": "7a8b686fd0a74402d94284ef74a2c93e38402a3884c1d69b7de28fe07b6c9698",
       "type": "sql"
     },
     {

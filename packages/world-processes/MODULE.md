@@ -2,11 +2,11 @@
 
 ## Назначение
 
-`@rus/world-processes` — active-norm, target-only Temporal World v4 owner pure
-remote catch-up и propagation proposals. Historical P28 evidence не
-активировало runtime. До отдельного `versioned production activation cutover`
-результаты предназначены для shadow/fixtures/migration и не меняют production
-v2.
+`@rus/world-processes` — active-norm Temporal World v4 owner pure remote
+catch-up и propagation proposals. Historical P28 evidence не активировало
+runtime; последующий `versioned production activation cutover` release
+`spatial-v3-production-v1` включил этот owner в sole production v3
+composition.
 
 ## Владеет
 
@@ -37,10 +37,10 @@ Blocked result содержит typed code в trace: `time_window_invalid`, `pro
 
 ## Activation и тесты
 
-До versioned production activation cutover proposals не имеют production
-effect; rollback отбрасывает uncommitted result. Cutover допускает activation
-только одной атомарной поставкой, без dual writers, partial fallback или
-reinterpretation committed history through v2. Tests:
+В active `spatial-v3-production-v1` proposals применяются только через единый
+combined write plan. Rollback отбрасывает uncommitted result; production v2
+доступен лишь как explicit migration/rollback source, без dual writers,
+partial fallback или reinterpretation committed history through v2. Tests:
 `test/world-processes.test.js` проверяет huge rational exact interval,
 deterministic retry/state version/termination, immutable blocked aggregate and
 player-visible handoff, all registered process kinds, pending/corrupt

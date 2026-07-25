@@ -9,7 +9,7 @@ const [moduleSource, lifecycleSource, compositionSource, writePlanSource, rootSo
   read('packages/turn/src/spatial-v3-target-composition.js'),
   read('packages/turn/src/spatial-v3-write-plan.js'),
   read('apps/game-server/src/composition/spatial-v3-target-shadow.js'),
-  read('apps/game-server/src/composition/production.js'),
+  read('apps/game-server/src/composition/production-v2-rollback-source.js'),
   read('test/spatial-v3/p21-orchestration.test.js'),
   read('packages/turn/package.json'),
   read('package.json'),

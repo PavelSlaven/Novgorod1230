@@ -3,9 +3,9 @@
 Статус: рабочий региональный каталог утверждённых G1  
 Назначение: обязательный вход при проектировании каждой следующей G1; предотвращает необоснованное смысловое дублирование ячеек, их вложенных G2–G4, маршрутов, рисков и игровых функций.
 
-## Target v3 migration impact (не production readiness)
+## Spatial v3 production authoring boundary
 
-Этот раздел отражает утверждённую P12 source-to-target compilation и не является утверждением о production import/runtime или источником новых исторических фактов. Historical P28 evidence не активировало production; до отдельного `versioned production activation cutover` production v2 остаётся единственным owner. Исходная инвентаризация по-прежнему содержит `15 G2`, `32 G3`, `195 legacy G4`, `243` graph nodes и `600` edges, из которых `358` physical. Утверждённая точная переклассификация создаёт `32 target G4 sectors` из retained G3 и `195 canonical G5` из legacy local G4; она привязана к исходным IDs и provenance, а не к совпадению названий.
+Этот раздел отражает утверждённую P12 source-to-target compilation и не является источником новых исторических фактов. Historical P28 evidence не активировало production; последующий `versioned production activation cutover` release `spatial-v3-production-v1` активировал только exact approved/pinned target compilation. Исходная инвентаризация по-прежнему содержит `15 G2`, `32 G3`, `195 legacy G4`, `243` graph nodes и `600` edges, из которых `358` physical. Утверждённая точная переклассификация создаёт `32 target G4 sectors` из retained G3 и `195 canonical G5` из legacy local G4; она привязана к исходным IDs и provenance, а не к совпадению названий.
 
 | Группа утверждённого source package | Утверждённая target compilation | Evidence status |
 |---|---|---|
@@ -18,7 +18,7 @@
 
 Все четыре прежних source-data gap (`canonical_g5_inventory`, `physical_exit_source_pairs`, `legacy_edge_mapping_bindings`, `approved_scene_profiles`) имеют статус `resolved_in_package`. Основной P12 authoring manifest имеет status `approved`, `datasets: 37` с SHA-256 pins и `data_gaps: 0`. Это утверждение означает только полную однозначную target-компиляцию уже утверждённых source records. Name-based migration запрещён; любой новый или изменённый record вне этого точного approved set снова требует authoring review и при неоднозначности создаёт typed gap.
 
-Production import: `not_performed`; runtime visibility: `not_verified`; `versioned production activation cutover`: `not_performed`. Раздел не меняет статус G1 `draft`, не открывает северную внешнюю границу, не подтверждает production readiness и не разрешает runtime materialization, write или activation.
+Production import: `performed`; runtime visibility: `verified`; `versioned production activation cutover`: `performed`. Release `spatial-v3-production-v1` активировал только этот exact approved/pinned set. Historical P12 source approval сам по себе не разрешал activation и остаётся immutable; current status определяется отдельным production activation boundary. Раздел не меняет статус G1 `draft`, не открывает северную внешнюю границу и не разрешает использование записей вне approved manifest.
 
 ## Правило использования
 

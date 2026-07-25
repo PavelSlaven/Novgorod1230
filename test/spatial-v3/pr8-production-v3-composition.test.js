@@ -1,12 +1,19 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
+  SPATIAL_V3_PRODUCTION_RELEASE,
   SPATIAL_V3_PRODUCTION_RELEASE_ID,
+  assertSpatialV3ProductionReadiness,
+  assertSpatialV3WorldReleaseReadiness,
+  createSpatialV3ProductionRelease,
   createSpatialV3ProductionCompositionRoot
 } from '../../apps/game-server/src/composition/production-spatial-v3.js';
 import {
   loadConfiguredComposition
 } from '../../apps/game-server/src/runtime/load-composition.js';
+import {
+  runSpatialV3TargetMigrations
+} from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
 import {
   validateSpatialV3RuntimeBindings
 } from '../../apps/game-server/src/runtime/load-spatial-v3-bindings.js';
@@ -15,19 +22,89 @@ import {
   readServerConfig
 } from '../../apps/game-server/src/config.js';
 
+const TEST_PIN_MANIFEST_DIGEST = 'e'.repeat(64);
+const TEST_RELEASE = createSpatialV3ProductionRelease(
+  TEST_PIN_MANIFEST_DIGEST
+);
+const TEST_RUNTIME_CATALOG_PIN = Object.freeze({
+  schema: 'rus.runtime_catalog_pin.v2',
+  catalog_scope: 'item_container_materialization_v2',
+  catalog_revision_id: 'catalog-revision-v3',
+  catalog_digest: 'a'.repeat(64),
+  activation_event_id: 'activation-v3',
+  import_id: 'import-v3',
+  import_audit_digest: 'b'.repeat(64),
+  record_registry_digest: 'c'.repeat(64),
+  runtime_contract_digest: 'd'.repeat(64),
+  compatible_world_revision_id:
+    SPATIAL_V3_PRODUCTION_RELEASE.world_revision_id,
+  compatible_world_catalog_digest:
+    SPATIAL_V3_PRODUCTION_RELEASE.world_catalog_digest,
+  compatible_world_pin_manifest_digest: TEST_PIN_MANIFEST_DIGEST
+});
+
 function fixture() {
   let closed = 0;
   const pool = {
-    connect: async () => {
-      throw new Error('unit composition must not open a transaction');
-    },
-    query: async () => ({
-      rows: [{
-        database_name: 'isolated',
-        user_name: 'test',
-        ok: 1
-      }]
-    })
+    connect: async () => ({
+      query: async (sql, params) => /^\s*SELECT/u.test(sql)
+        ? pool.query(sql, params)
+        : ({ rows: [] }),
+      release() {}
+    }),
+    query: async (sql) => {
+      if (/spatial_v3_world_revisions/u.test(sql)) {
+        return {
+          rows: [{
+            id: SPATIAL_V3_PRODUCTION_RELEASE.world_revision_id,
+            catalog_digest:
+              SPATIAL_V3_PRODUCTION_RELEASE.world_catalog_digest,
+            status: 'approved'
+          }]
+        };
+      }
+      if (/runtime_catalog_activation_events/u.test(sql)) {
+        return {
+          rows: [{
+            event_id: TEST_RUNTIME_CATALOG_PIN.activation_event_id,
+            ...TEST_RUNTIME_CATALOG_PIN
+          }]
+        };
+      }
+      if (/schema_migrations/u.test(sql)) {
+        return {
+          rows: [{
+            migration_id:
+              SPATIAL_V3_PRODUCTION_RELEASE
+                .party_runtime_catalog_migration_id,
+            migration_digest:
+              SPATIAL_V3_PRODUCTION_RELEASE
+                .party_runtime_catalog_migration_digest,
+            target_schema_fingerprint:
+              SPATIAL_V3_PRODUCTION_RELEASE
+                .party_runtime_catalog_target_fingerprint
+          }]
+        };
+      }
+      if (/SELECT DISTINCT/u.test(sql)) {
+        return { rows: [] };
+      }
+      if (/incompatible_party_count/u.test(sql)) {
+        return {
+          rows: [{
+            party_count: 0,
+            incompatible_party_count: 0
+          }]
+        };
+      }
+      return {
+        rows: [{
+          database_name: 'isolated',
+          user_name: 'test',
+          ok: 1
+        }]
+      };
+    }
   };
   const pools = {
     worldPool: pool,
@@ -52,7 +129,9 @@ function fixture() {
       targetCompositionPorts: { port_marker: 'v3-only' },
       commitRecheck: async () => ({ ok: true }),
       acknowledgeOpening: async () => ({ ok: true, owner: 'v3' }),
-      getPartyScreen: async () => ({ ok: true, owner: 'v3' })
+      getPartyScreen: async () => ({ ok: true, owner: 'v3' }),
+      releaseBinding: { ...release },
+      runtimeCatalogPin: { ...TEST_RUNTIME_CATALOG_PIN }
     };
   };
   return {
@@ -67,7 +146,9 @@ function fixture() {
 test('production-v3 root is a sole-owner composition with no v2 fallback identity', async () => {
   const setup = fixture();
   const root = await createSpatialV3ProductionCompositionRoot({
-    config: { runMigrations: false },
+    config: {
+      runtimeCatalogPinManifestDigest: TEST_PIN_MANIFEST_DIGEST
+    },
     pools: setup.pools,
     bindingsFactory: setup.bindingsFactory,
     targetRootFactory: setup.targetRootFactory
@@ -79,7 +160,41 @@ test('production-v3 root is a sole-owner composition with no v2 fallback identit
   assert.equal(health.authoritative_reads, 'spatial_v3_only');
   assert.equal(health.authoritative_writes, 'spatial_v3_only');
   assert.equal(health.runtime_fallback, 'forbidden');
+  assert.equal(health.rollback_source_release_id, 'production-v2');
+  assert.equal(health.rollback_runtime_selectable, false);
+  assert.equal(health.temporal_contract_id, 'temporal-world-v1.1');
+  assert.equal(
+    health.world_revision_id,
+    'novgorod_spatial_v3_target_contract_approval_001'
+  );
+  assert.match(health.world_catalog_manifest_sha256, /^[a-f0-9]{64}$/u);
+  assert.equal(health.dependency_pin_mode, 'exact_only');
+  assert.equal(
+    health.runtime_catalog_pin_schema,
+    'rus.runtime_catalog_pin.v2'
+  );
+  assert.equal(
+    health.runtime_catalog_scope,
+    'item_container_materialization_v2'
+  );
+  assert.equal(
+    health.runtime_catalog_resolution,
+    'active_for_new_party_persisted_for_existing_party'
+  );
+  assert.equal(
+    health.runtime_catalog_pin.activation_event_id,
+    TEST_RUNTIME_CATALOG_PIN.activation_event_id
+  );
+  assert.equal(health.migration_count, 10);
+  assert.match(health.migration_chain_digest, /^[a-f0-9]{64}$/u);
+  assert.deepEqual(health.migration_readiness, {
+    party_count: 0,
+    incompatible_party_count: 0,
+    historical_pin_count: 0,
+    status: 'ready'
+  });
   assert.equal(health.release_id, SPATIAL_V3_PRODUCTION_RELEASE_ID);
+  assert.equal(SPATIAL_V3_PRODUCTION_RELEASE.composition_id, 'builtin:production-spatial-v3');
   assert.equal(setup.received().port_marker, 'v3-only');
   assert.equal(typeof setup.received().committer.commit, 'function');
   assert.equal((await root.getPartyScreen()).owner, 'v3');
@@ -87,9 +202,48 @@ test('production-v3 root is a sole-owner composition with no v2 fallback identit
   assert.equal(setup.closed(), 1);
 });
 
-test('configured composition loader rejects the prepared v3 root before cutover', async () => {
+test('production cutover fails closed while any persisted party remains v2', async () => {
   await assert.rejects(
-    loadConfiguredComposition('builtin:production-spatial-v3'),
+    assertSpatialV3ProductionReadiness({
+      query: async (sql) => /schema_migrations/u.test(sql)
+        ? {
+            rows: [{
+              migration_id:
+                SPATIAL_V3_PRODUCTION_RELEASE
+                  .party_runtime_catalog_migration_id,
+              migration_digest:
+                SPATIAL_V3_PRODUCTION_RELEASE
+                  .party_runtime_catalog_migration_digest,
+              target_schema_fingerprint:
+                SPATIAL_V3_PRODUCTION_RELEASE
+                  .party_runtime_catalog_target_fingerprint
+            }]
+          }
+        : {
+            rows: [{ party_count: 2, incompatible_party_count: 1 }]
+          }
+    }, TEST_RUNTIME_CATALOG_PIN),
+    (error) => error.code === 'SPATIAL_V3_PARTY_MIGRATION_REQUIRED'
+  );
+});
+
+test('configured composition loader selects only the activated v3 builtin', async () => {
+  const setup = fixture();
+  const root = await loadConfiguredComposition(
+    'builtin:production-spatial-v3',
+    {
+      config: {
+        runtimeCatalogPinManifestDigest: TEST_PIN_MANIFEST_DIGEST
+      },
+      pools: setup.pools,
+      bindingsFactory: setup.bindingsFactory,
+      targetRootFactory: setup.targetRootFactory
+    }
+  );
+  assert.equal(root.health().composition, 'spatial_v3_production');
+  await root.close();
+  await assert.rejects(
+    loadConfiguredComposition('builtin:production'),
     (error) => error.code === 'COMPOSITION_MODULE_INACTIVE'
   );
   await assert.rejects(
@@ -105,19 +259,224 @@ test('production-v3 binding validation fails closed without every sole-owner por
     () => validateSpatialV3RuntimeBindings({
       targetCompositionPorts: {},
       commitRecheck: async () => ({ ok: true }),
-      acknowledgeOpening: async () => ({ ok: true })
-    }),
+      acknowledgeOpening: async () => ({ ok: true }),
+      releaseBinding: { ...TEST_RELEASE },
+      runtimeCatalogPin: { ...TEST_RUNTIME_CATALOG_PIN }
+    }, TEST_RELEASE),
     /getPartyScreen/
   );
 });
 
-test('pre-cutover server config does not expose a v3 bindings selector', () => {
-  const configured = readServerConfig({
-    RUS_COMPOSITION_MODULE: 'builtin:production-spatial-v3'
-  });
+test('production-v3 bindings reject release and runtime-catalog pin drift', () => {
+  const valid = {
+    targetCompositionPorts: {},
+    commitRecheck: async () => ({ ok: true }),
+    acknowledgeOpening: async () => ({ ok: true }),
+    getPartyScreen: async () => ({ ok: true }),
+    releaseBinding: { ...TEST_RELEASE },
+    runtimeCatalogPin: { ...TEST_RUNTIME_CATALOG_PIN }
+  };
   assert.throws(
-    () => assertModularStartupConfig(configured),
+    () => validateSpatialV3RuntimeBindings({
+      ...valid,
+      releaseBinding: {
+        ...valid.releaseBinding,
+        temporal_contract_id: 'temporal-world-v1'
+      }
+    }, TEST_RELEASE),
+    (error) => error.code === 'RUNTIME_BINDINGS_RELEASE_MISMATCH'
+  );
+  assert.throws(
+    () => validateSpatialV3RuntimeBindings({
+      ...valid,
+      runtimeCatalogPin: {
+        ...valid.runtimeCatalogPin,
+        compatible_world_catalog_digest: 'f'.repeat(64)
+      }
+    }, TEST_RELEASE),
+    (error) => error.code === 'RUNTIME_BINDINGS_CATALOG_PIN_MISMATCH'
+  );
+  const incompleteRelease = { ...valid.releaseBinding };
+  for (const field of [
+    'party_runtime_catalog_migration_id',
+    'party_runtime_catalog_migration_digest',
+    'party_runtime_catalog_target_fingerprint',
+    'target_migration_count',
+    'target_migration_chain_digest'
+  ]) delete incompleteRelease[field];
+  assert.throws(
+    () => validateSpatialV3RuntimeBindings({
+      ...valid,
+      releaseBinding: incompleteRelease
+    }, TEST_RELEASE),
+    (error) => error.code === 'RUNTIME_BINDINGS_RELEASE_MISMATCH'
+  );
+});
+
+test('production-v3 world readiness rejects active catalog pin drift', async () => {
+  await assert.rejects(
+    assertSpatialV3WorldReleaseReadiness({
+      query: async (sql) => /spatial_v3_world_revisions/u.test(sql)
+        ? {
+            rows: [{
+              id: SPATIAL_V3_PRODUCTION_RELEASE.world_revision_id,
+              catalog_digest:
+                SPATIAL_V3_PRODUCTION_RELEASE.world_catalog_digest
+            }]
+          }
+        : {
+            rows: [{
+              event_id: TEST_RUNTIME_CATALOG_PIN.activation_event_id,
+              ...TEST_RUNTIME_CATALOG_PIN,
+              catalog_digest: 'f'.repeat(64)
+            }]
+          }
+    }, TEST_RUNTIME_CATALOG_PIN),
+    (error) => error.code === 'SPATIAL_V3_WORLD_RELEASE_PIN_MISMATCH'
+  );
+});
+
+test('persisted historical catalog pins survive a later active activation', async () => {
+  const historicalPin = Object.freeze({
+    ...TEST_RUNTIME_CATALOG_PIN,
+    catalog_revision_id: 'catalog-revision-v2',
+    catalog_digest: '1'.repeat(64),
+    activation_event_id: 'activation-v2',
+    import_id: 'import-v2',
+    import_audit_digest: '2'.repeat(64),
+    record_registry_digest: '3'.repeat(64),
+    runtime_contract_digest: '4'.repeat(64)
+  });
+  const partyReadiness = await assertSpatialV3ProductionReadiness({
+    query: async (sql) => {
+      if (/schema_migrations/u.test(sql)) {
+        return {
+          rows: [{
+            migration_id:
+              TEST_RELEASE.party_runtime_catalog_migration_id,
+            migration_digest:
+              TEST_RELEASE.party_runtime_catalog_migration_digest,
+            target_schema_fingerprint:
+              TEST_RELEASE.party_runtime_catalog_target_fingerprint
+          }]
+        };
+      }
+      if (/SELECT DISTINCT/u.test(sql)) {
+        return { rows: [{ ...historicalPin }] };
+      }
+      return {
+        rows: [{ party_count: 1, incompatible_party_count: 0 }]
+      };
+    }
+  }, TEST_RUNTIME_CATALOG_PIN);
+  assert.equal(partyReadiness.historical_pin_count, 1);
+
+  const activationQueries = [];
+  const worldReadiness = await assertSpatialV3WorldReleaseReadiness({
+    query: async (sql, params) => {
+      if (/spatial_v3_world_revisions/u.test(sql)) {
+        return {
+          rows: [{
+            id: TEST_RELEASE.world_revision_id,
+            catalog_digest: TEST_RELEASE.world_catalog_digest
+          }]
+        };
+      }
+      activationQueries.push({ sql, params });
+      return {
+        rows: [{
+          event_id: params.length === 2
+            ? historicalPin.activation_event_id
+            : TEST_RUNTIME_CATALOG_PIN.activation_event_id,
+          ...(params.length === 2
+            ? historicalPin
+            : TEST_RUNTIME_CATALOG_PIN)
+        }]
+      };
+    }
+  }, TEST_RUNTIME_CATALOG_PIN, partyReadiness.historical_pins);
+  assert.equal(worldReadiness.historical_activation_count, 1);
+  assert.match(activationQueries[0].sql, /LIMIT 1/u);
+  assert.equal(activationQueries[1].params[1], 'activation-v2');
+});
+
+test('target DDL rolls back when the in-transaction release gate fails', async () => {
+  const statements = [];
+  const expected = new Error('release pin mismatch');
+  await assert.rejects(
+    runSpatialV3TargetMigrations({
+      connect: async () => ({
+        query: async (sql) => {
+          statements.push(sql);
+          return { rows: [] };
+        },
+        release() {}
+      })
+    }, {
+      beforeCommit: async () => {
+        throw expected;
+      }
+    }),
+    expected
+  );
+  assert.equal(statements[0], 'BEGIN');
+  assert.equal(statements.at(-1), 'ROLLBACK');
+  assert.equal(statements.includes('COMMIT'), false);
+});
+
+test('cutover config defaults to v3 and rejects v2 or missing bindings', () => {
+  const configured = readServerConfig({
+    RUS_SPATIAL_V3_BINDINGS_MODULE: './spatial-v3-bindings.js',
+    RUS_SPATIAL_V3_RUNTIME_CATALOG_PIN_MANIFEST_DIGEST:
+      TEST_PIN_MANIFEST_DIGEST
+  });
+  assert.equal(
+    configured.compositionModule,
+    'builtin:production-spatial-v3'
+  );
+  assert.equal(assertModularStartupConfig(configured), configured);
+  assert.throws(
+    () => assertModularStartupConfig(readServerConfig({
+      RUS_SPATIAL_V3_RUNTIME_CATALOG_PIN_MANIFEST_DIGEST:
+        TEST_PIN_MANIFEST_DIGEST
+    })),
+    (error) => error.code === 'RUNTIME_BINDINGS_MODULE_REQUIRED'
+  );
+  assert.throws(
+    () => assertModularStartupConfig(readServerConfig({
+      RUS_SPATIAL_V3_BINDINGS_MODULE: './spatial-v3-bindings.js'
+    })),
+    (error) =>
+      error.code === 'RUNTIME_CATALOG_PIN_MANIFEST_DIGEST_REQUIRED'
+  );
+  assert.throws(
+    () => assertModularStartupConfig(readServerConfig({
+      RUS_COMPOSITION_MODULE: 'builtin:production',
+      RUS_SPATIAL_V3_BINDINGS_MODULE: './spatial-v3-bindings.js',
+      RUS_SPATIAL_V3_RUNTIME_CATALOG_PIN_MANIFEST_DIGEST:
+        TEST_PIN_MANIFEST_DIGEST
+    })),
     (error) => error.code === 'COMPOSITION_MODULE_INACTIVE'
   );
-  assert.equal('spatialV3BindingsModule' in configured, false);
+  assert.throws(
+    () => assertModularStartupConfig(readServerConfig({
+      RUS_CUTOVER_STAGE: '12',
+      RUS_SPATIAL_V3_BINDINGS_MODULE: './spatial-v3-bindings.js',
+      RUS_SPATIAL_V3_RUNTIME_CATALOG_PIN_MANIFEST_DIGEST:
+        TEST_PIN_MANIFEST_DIGEST
+    })),
+    (error) => error.code === 'CUTOVER_STAGE_INCOMPLETE'
+  );
+  for (const invalidStage of ['14', '999', 'garbage']) {
+    assert.throws(
+      () => assertModularStartupConfig(readServerConfig({
+        RUS_CUTOVER_STAGE: invalidStage,
+        RUS_SPATIAL_V3_BINDINGS_MODULE: './spatial-v3-bindings.js',
+        RUS_SPATIAL_V3_RUNTIME_CATALOG_PIN_MANIFEST_DIGEST:
+          TEST_PIN_MANIFEST_DIGEST
+      })),
+      (error) => error.code === 'CUTOVER_STAGE_INCOMPLETE',
+      `RUS_CUTOVER_STAGE=${invalidStage} must fail closed`
+    );
+  }
 });

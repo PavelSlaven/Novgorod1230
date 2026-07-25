@@ -1,7 +1,7 @@
 # ADR-007: PR8 journey, perception, reaction and first-entry contract amendment
 
-Status: accepted for target/shadow implementation after independent
-`PASS WITH NOTES`; no production activation
+Status: accepted; activated by the later `versioned production activation
+cutover` release `spatial-v3-production-v1`
 
 ## Context
 
@@ -96,11 +96,13 @@ The amendment:
   existing `party_npc_knowledge` table through an all-null legacy branch versus
   a complete target branch, preserves both parts of the formal knowledge
   `entity_ref`, and does not create a duplicate knowledge store.
-  Production migration loading remains unchanged.
+  Target migration loading contains these migrations; production activation is
+  recorded separately by the versioned cutover boundary.
 
-This contract version is not a release stage. Before the separate
-`versioned production activation cutover`, it remains target/shadow-only and
-cannot write production, mix authoritative reads or fall back to v2.
+This contract version is not a release stage. Historical P28 evidence did not
+activate it. The later `versioned production activation cutover` release
+`spatial-v3-production-v1` activated the complete v3 composition atomically;
+it cannot mix authoritative reads or fall back to v2.
 
 ## Consequences
 
@@ -121,8 +123,8 @@ worktree independently completed Graphify `0.9.17`, Repository Intelligence
 status/query and all normative checks without readiness errors. The target
   runtime gate is open for those audited slices. The pure perception, reaction-handler and
   knowledge-merge slices now implement the audited contracts; target
-  persistence migration 009 is physically verified against PostgreSQL but is
-  not in the production loader. Combined-write mapping is now physically
+  persistence migration 009 is physically verified against PostgreSQL and is
+  part of the v3-only production migration chain. Combined-write mapping is now physically
   verified. The subsequently proven reaction-option producer gap is covered
   by four additional Appendix A.7 declarations and strict Red→Green
   validators, but its dependent runtime remains blocked until a focused
@@ -131,7 +133,8 @@ status/query and all normative checks without readiness errors. The target
   probes now fail closed; the only note is a pre-existing P08 registry
   synchronization issue for the already implemented combined-write mapper,
   outside the option-contract content. Approved option production and
-  activation remain separate gates. Later runtime slices must
+  activation were subsequently closed by the PR8 target acceptance and
+  `spatial-v3-production-v1` cutover. Later runtime slices must
   reuse existing route-plan, execution, timed-activity, traversal,
   idempotency, perception-result and combined-write contracts. A newly
   discovered incompatible field or storage need requires a new formal gap and

@@ -21,14 +21,14 @@
         {
           "anchor_kind": "repository_line_range",
           "canonical_path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
-          "raw_sha256": "c20f3472d0b1efcb7c5170620f40988f2961d8d8c8c5542cec8fe68ab23a623f",
-          "start_line": 276,
-          "end_line": 276,
+          "raw_sha256": "b19c9b5d1ccb98f8c775778375626b9277353f83befafd2863316a936471eb87",
+          "start_line": 273,
+          "end_line": 273,
           "required_text": "spatial.g0.historical_geographic_region"
         }
       ],
       "provenance_ref": "prov_p12_g1_r2_r3_v1",
-      "canonical_digest": "bbd52aab9209306b9e54bf4ad19980c206a9dcefa6d839e3858187fab52b2639"
+      "canonical_digest": "1975debaa5896538a5590676f0a86db98114e68fd1ffc85ca902c5963f63e3d7"
     },
     {
       "id": "spatial.g1.territorial_grid_cell",
@@ -50,14 +50,14 @@
         {
           "anchor_kind": "repository_line_range",
           "canonical_path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
-          "raw_sha256": "c20f3472d0b1efcb7c5170620f40988f2961d8d8c8c5542cec8fe68ab23a623f",
-          "start_line": 286,
-          "end_line": 286,
+          "raw_sha256": "b19c9b5d1ccb98f8c775778375626b9277353f83befafd2863316a936471eb87",
+          "start_line": 283,
+          "end_line": 283,
           "required_text": "spatial.g1.territorial_grid_cell"
         }
       ],
       "provenance_ref": "prov_p12_g1_r2_r3_v1",
-      "canonical_digest": "34fb12c5038ef1862d46f73b26fa6fd37ff6848eaadd835e32fd488ab90b1625"
+      "canonical_digest": "05921f7044380b6c6d9594d4dc20cd01abfd0da690fa24b6a7cc3b82518fff83"
     },
     {
       "id": "spatial.g2.territorial_zone",
@@ -79,14 +79,14 @@
         {
           "anchor_kind": "repository_line_range",
           "canonical_path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
-          "raw_sha256": "c20f3472d0b1efcb7c5170620f40988f2961d8d8c8c5542cec8fe68ab23a623f",
-          "start_line": 306,
-          "end_line": 306,
+          "raw_sha256": "b19c9b5d1ccb98f8c775778375626b9277353f83befafd2863316a936471eb87",
+          "start_line": 303,
+          "end_line": 303,
           "required_text": "spatial.g2.territorial_zone"
         }
       ],
       "provenance_ref": "prov_p12_g1_r2_r3_v1",
-      "canonical_digest": "e89009ff70144f9ff1bc9671725c133c5a1eb19b45ca988881c1231b714329aa"
+      "canonical_digest": "fa917f360d6fbeb1eff1f12f79d558f92bb52ce69e52442c1e8ff7ace2d76b11"
     },
     {
       "id": "spatial.g3.settlement",
@@ -108,9 +108,9 @@
         {
           "anchor_kind": "repository_line_range",
           "canonical_path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
-          "raw_sha256": "c20f3472d0b1efcb7c5170620f40988f2961d8d8c8c5542cec8fe68ab23a623f",
-          "start_line": 325,
-          "end_line": 325,
+          "raw_sha256": "b19c9b5d1ccb98f8c775778375626b9277353f83befafd2863316a936471eb87",
+          "start_line": 322,
+          "end_line": 322,
           "required_text": "spatial.g3.settlement"
         },
         {
@@ -127,7 +127,7 @@
         }
       ],
       "provenance_ref": "prov_p12_g1_r2_r3_v1",
-      "canonical_digest": "155ca0ebe84927f23e93d4e41e3b03a778f045812b2676bf5bc53e59e3383fc8"
+      "canonical_digest": "0deb12dd2fa79109e33ba050162d5e09efdfff3c79c9c3c53f358802218d05e2"
     },
     {
       "id": "spatial.g3.built_site",
@@ -149,9 +149,9 @@
         {
           "anchor_kind": "repository_line_range",
           "canonical_path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
-          "raw_sha256": "c20f3472d0b1efcb7c5170620f40988f2961d8d8c8c5542cec8fe68ab23a623f",
-          "start_line": 326,
-          "end_line": 326,
+          "raw_sha256": "b19c9b5d1ccb98f8c775778375626b9277353f83befafd2863316a936471eb87",
+          "start_line": 323,
+          "end_line": 323,
           "required_text": "spatial.g3.built_site"
         },
         {
@@ -168,7 +168,7 @@
         }
       ],
       "provenance_ref": "prov_p12_g1_r2_r3_v1",
-      "canonical_digest": "07ebb1adf7756d860690ee4add9970ced08f0440cb71652aefc65b95539ef601"
+      "canonical_digest": "381dcbaf2bf02e029360a56310e7d3214ed8439a08dd21be862a59753ce57ddb"
     },
     {
       "id": "spatial.g3.natural_feature",
@@ -190,9 +190,9 @@
         {
           "anchor_kind": "repository_line_range",
           "canonical_path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
-          "raw_sha256": "c20f3472d0b1efcb7c5170620f40988f2961d8d8c8c5542cec8fe68ab23a623f",
-          "start_line": 327,
-          "end_line": 327,
+          "raw_sha256": "b19c9b5d1ccb98f8c775778375626b9277353f83befafd2863316a936471eb87",
+          "start_line": 324,
+          "end_line": 324,
           "required_text": "spatial.g3.natural_feature"
         },
         {
@@ -209,7 +209,7 @@
         }
       ],
       "provenance_ref": "prov_p12_g1_r2_r3_v1",
-      "canonical_digest": "9d5fe6ed9799f9a369f03f76cc1132a04a51bae2c59c8aeea8076cc85197e679"
+      "canonical_digest": "c381a72b7e363a9eaaeb944d37b176a706fe6a5753716773e9401d5671d62f3f"
     },
     {
       "id": "spatial.g3.route_site",
@@ -231,9 +231,9 @@
         {
           "anchor_kind": "repository_line_range",
           "canonical_path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
-          "raw_sha256": "c20f3472d0b1efcb7c5170620f40988f2961d8d8c8c5542cec8fe68ab23a623f",
-          "start_line": 328,
-          "end_line": 328,
+          "raw_sha256": "b19c9b5d1ccb98f8c775778375626b9277353f83befafd2863316a936471eb87",
+          "start_line": 325,
+          "end_line": 325,
           "required_text": "spatial.g3.route_site"
         },
         {
@@ -250,7 +250,7 @@
         }
       ],
       "provenance_ref": "prov_p12_g1_r2_r3_v1",
-      "canonical_digest": "a3429a4be5872041bd539565d1e4ab1bd8f0310da3d037fc8e54ad555973b3db"
+      "canonical_digest": "c200b76505d768ad53d44cf31a4baa8efe16f127a2d873eee466e0188d58319b"
     },
     {
       "id": "spatial.g3.resource_site",
@@ -272,9 +272,9 @@
         {
           "anchor_kind": "repository_line_range",
           "canonical_path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
-          "raw_sha256": "c20f3472d0b1efcb7c5170620f40988f2961d8d8c8c5542cec8fe68ab23a623f",
-          "start_line": 329,
-          "end_line": 329,
+          "raw_sha256": "b19c9b5d1ccb98f8c775778375626b9277353f83befafd2863316a936471eb87",
+          "start_line": 326,
+          "end_line": 326,
           "required_text": "spatial.g3.resource_site"
         },
         {
@@ -291,7 +291,7 @@
         }
       ],
       "provenance_ref": "prov_p12_g1_r2_r3_v1",
-      "canonical_digest": "89d214bf28e106170fc2ddbd26a4b2cfd7ee8062fd2c629716031a30cae67e00"
+      "canonical_digest": "7ad55fff5aa1ca4b5e92764b94b7fb67d76efe2a5f524813e67dbd556786adce"
     },
     {
       "id": "spatial.g3.recurrent_site",
@@ -313,9 +313,9 @@
         {
           "anchor_kind": "repository_line_range",
           "canonical_path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
-          "raw_sha256": "c20f3472d0b1efcb7c5170620f40988f2961d8d8c8c5542cec8fe68ab23a623f",
-          "start_line": 330,
-          "end_line": 330,
+          "raw_sha256": "b19c9b5d1ccb98f8c775778375626b9277353f83befafd2863316a936471eb87",
+          "start_line": 327,
+          "end_line": 327,
           "required_text": "spatial.g3.recurrent_site"
         },
         {
@@ -332,7 +332,7 @@
         }
       ],
       "provenance_ref": "prov_p12_g1_r2_r3_v1",
-      "canonical_digest": "180bd947efe941a455b5f8a61343f100e9082ea03163028cb2c0373284bbc962"
+      "canonical_digest": "61dcb2d9c8e7ef104ec65da67083a6365645fc7be7e0b4190a1f3279bbbb33f0"
     },
     {
       "id": "spatial.g4.sector",

@@ -15,8 +15,8 @@ The project documents define how the LLM should generate, interpret, and update 
 | `code_driven_world_materialization_architecture.md` | Highest normative boundary between authoring data, code, LLM and party state. |
 | `world_base_materialization_table_requirements.md` | Purpose, population and normalization requirements for world-base materialization data. |
 | `llm_documentation_navigation.md` | LLM navigation, source priority, reading order, cross-document bundles. |
-| `spatial_architecture_standard_g0_g6.md` | Target v4.2.0 spatial G0–G6 standard. Historical P28 evidence did not activate it; production remains v2 until a separate versioned production activation cutover. |
-| `temporal_world_and_interruptible_activities.md` | Active Temporal World v4 target amendment. Historical P28 evidence did not activate it; production remains v2 until a separate versioned production activation cutover. |
+| `spatial_architecture_standard_g0_g6.md` | Active production Spatial v3 G0–G6 standard after release `spatial-v3-production-v1`. Historical P28 evidence did not itself activate it; the later versioned production activation cutover did. |
+| `temporal_world_and_interruptible_activities.md` | Active production Temporal World v4 amendment in release `spatial-v3-production-v1`. |
 | `world_generation_and_turns.txt` | World materialization, start pipeline, turn processing, visible/hidden facts. |
 | `player_character_generation.txt` | Player character creation pipeline and output contract. |
 | `character_parameters.txt` | Attributes, skills, body states, active conditions, checks, modifiers. |

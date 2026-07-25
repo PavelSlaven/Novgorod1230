@@ -94,7 +94,11 @@ owner; v3 runtime-заявка не читает и не пишет v2 fallback.
 <!-- knowledge-retrieval-exclude:start -->
 ## Приложение A. Архивный v2-источник для migration traceability
 
-Нижеследующий текст сохранён только как historical/migration source для ссылочной совместимости и аудита. Он **не является target-правилом**, не активирует v2 semantics в target v3 и не разрешает mixed execution, dual write либо fallback. При конфликте применяется основной target-раздел этого документа и target standard; active production boundary до `versioned production activation cutover` определён отдельно.
+Нижеследующий текст сохранён только как historical/migration source для
+ссылочной совместимости и аудита. Он **не является production-правилом**, не
+активирует v2 semantics в v3 и не разрешает mixed execution, dual write либо
+fallback. При конфликте применяется основной v3-раздел этого документа и
+active production boundary release `spatial-v3-production-v1`.
 
 # Перемещение по локациям и регионам
 

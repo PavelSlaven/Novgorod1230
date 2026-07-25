@@ -7,7 +7,6 @@
     "./spatial-v3": "./src/spatial-v3-ports.js",
     "./spatial-v3-orchestration": "./src/spatial-v3-orchestration.js",
     "./spatial-v3-target-composition": "./src/spatial-v3-target-composition.js",
-    "./spatial-v3-request-profile": "./src/spatial-v3-request-profile.js",
     "./spatial-v3-execution": "./src/spatial-v3-execution.js",
     "./spatial-v3-journey-commands": "./src/spatial-v3-journey-commands.js",
     "./spatial-v3-reaction-handlers": "./src/spatial-v3-reaction-handlers.js",

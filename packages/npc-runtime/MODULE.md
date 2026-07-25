@@ -2,12 +2,11 @@
 
 ## Назначение
 
-`@rus/npc-runtime` — active-norm, target-only owner Temporal World v4 для
-чистых предложений переходов расписания NPC, восприятия и ограниченного выбора
-действия. Historical P28 evidence не активировало runtime. До отдельного
-`versioned production activation cutover` пакет используется только в
-target/shadow/migration; `production_v2` остаётся единственным production
-read/write owner.
+`@rus/npc-runtime` — active-norm owner Temporal World v4 для чистых
+предложений переходов расписания NPC, восприятия и ограниченного выбора
+действия. Historical P28 evidence не активировало runtime; последующий
+`versioned production activation cutover` release
+`spatial-v3-production-v1` включил пакет в sole production v3 composition.
 
 ## Владеет
 
@@ -43,9 +42,10 @@ read/write owner.
 
 ## Activation и тесты
 
-До versioned production activation cutover это shadow/fixture-only contract и
-не заменяет v2 path. Cutover требует единой атомарной поставки всех target
-owners; partial activation, dual write и in-turn fallback запрещены. Tests:
+В active `spatial-v3-production-v1` contract применяется только через единый
+v3 orchestration/write path. Production v2 является explicit
+migration/rollback source, но не runtime path; partial activation, dual write
+и in-turn fallback запрещены. Tests:
 `test/npc-runtime.test.js` покрывает exact schedule boundary,
 pins/recheck/replay, perception topology/light/attention, bounded decision,
 отказ при пустом/недопустимом option set и deterministic same-time ordering.

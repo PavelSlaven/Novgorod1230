@@ -1,8 +1,8 @@
 # Read-only world base и графовая архитектура
 
-**Статус:** target technical normative; production runtime остаётся v2 до
-отдельного `versioned production activation cutover`; историческое P28
-evidence не переключало authoritative reads или writes.
+**Статус:** active production technical normative после завершённого
+`versioned production activation cutover`; historical P28 evidence само не
+переключало authoritative reads или writes.
 **Источник физических деталей:** будущие v3 DDL и сгенерированный из них `infra/world-base/SCHEMA_REFERENCE.md`; этот документ не подменяет DDL.
 
 Current Temporal amendment `temporal-world-v1.1` / `4.4.0-target.1` с
@@ -48,11 +48,11 @@ typed hard block, не semantic fallback.
 
 ## 4. Coexistence and activation
 
-До `versioned production activation cutover` v3 разрешён только для fixtures,
-migration and shadow composition. Storage coexistence допустимо, однако один
-request выбирает ровно один schema/runtime path; dual write, mixed
-authoritative reads и in-turn fallback запрещены. Историческое P28 evidence не
-переключало composition.
+До завершённого `versioned production activation cutover` v3 был разрешён
+только для fixtures, migration и shadow composition. После release
+`spatial-v3-production-v1` один production request выбирает ровно один v3
+schema/runtime path; dual write, mixed authoritative reads и in-turn fallback
+запрещены. Историческое P28 evidence не переключало composition.
 
 ## 5. Migration history
 

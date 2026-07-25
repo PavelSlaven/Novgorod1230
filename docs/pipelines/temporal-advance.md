@@ -1,14 +1,13 @@
-# Temporal advance pipeline (target-only v4)
+# Temporal advance pipeline (production v4)
 
 `temporal-world-v1.1` / `4.4.0-target.1` is the current active-norm target
 pipeline; accepted `temporal-world-v1` / `4.3.0-target.1` remains an immutable
 historical contract snapshot.
-Accepted historical P28 evidence changed no production composition. Until the
-separate `versioned production activation cutover`, active `production_v2`
-remains the sole production read/write owner. This document permits target
-contracts, fixtures, migration, tests and shadow composition only; it does not
-permit dual write, mixed authoritative reads, in-turn v4-to-v2 fallback or a
-partial temporal cutover.
+Accepted historical P28 evidence changed no production composition. The later
+`versioned production activation cutover` completed as
+`spatial-v3-production-v1`; this pipeline is now the sole production path.
+Dual write, mixed authoritative reads, in-turn v4-to-v2 fallback and partial
+activation remain forbidden.
 
 ## Interval and boundary rule
 

@@ -25,11 +25,11 @@ Typed target failures include route/endpoint/capability/readiness/pin/state-vers
 
 ## Target / activation и тесты
 
-Target route planning/activation uses current `temporal-world-v1.1` /
+Production route planning/activation uses current `temporal-world-v1.1` /
 `4.4.0-target.1` with immutable `temporal-world-v1` / `4.3.0-target.1`
-baseline, only
-until the separate `versioned production activation cutover`, without
-production fallback or activation. Historical P28 evidence did not change
-composition. `test/domain.test.js` covers public helpers;
+baseline. Historical P28 evidence did not change composition; the later
+`versioned production activation cutover` release `spatial-v3-production-v1`
+made v3 the sole production route. Production v2 remains only an explicit
+migration/rollback source, never a fallback. `test/domain.test.js` covers public helpers;
 `test/spatial-v3/p18-movement-planning.test.js` covers target
 planner/activation behavior.

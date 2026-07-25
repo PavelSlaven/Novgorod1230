@@ -1,18 +1,18 @@
 ---
 title: temporal_world_and_interruptible_activities
 status: active
-scope: target-only
-production_runtime: materialization_v2_until_versioned_production_activation_cutover
+scope: production
+production_runtime: spatial_v3_production_v1
 source_sha256: f97e71536c08a3b5cc0414fe25460bf70b2d95ee94ff861f785b0a3d9fbfb26e
 ---
 
 # Механика течения времени, длительных действий и автономного мира v4
 
 **Проект:** «Русь XIII век»
-**Статус:** `active` — принятый целевой норматив; не описывает уже активированный production runtime
+**Статус:** `active` — production normative release `spatial-v3-production-v1`
 **Канонический репозиторий:** `PavelSlaven/Novgorod1230`
 **Базовая ветка и снимок сверки:** `main` @ `520c0ea8cc366fc16c949a874c710f3547a322f6`
-**Целевая архитектура:** materialization/spatial v3 после отдельного `versioned production activation cutover`
+**Production архитектура:** materialization/spatial v3 после завершённого `versioned production activation cutover`
 **Принятый базовый amendment:** `temporal-world-v1`; immutable spatial-v3
 contract snapshot: `4.3.0-target.1`
 **Additive PR8 handoff amendment:** `temporal-world-v1.1`; current spatial-v3
@@ -24,7 +24,7 @@ contract set: `4.4.0-target.1`
 Этот документ задаёт целевое поведение механики времени после её реализации и
 активации. P28 exact-head evidence прежнего кандидата принято как immutable
 historical evidence и не выполняло production write либо composition switch.
-Поэтому применяются два разных утверждения:
+Исторически применялись два разных утверждения:
 
 1. **До `versioned production activation cutover`:** production продолжает
    работать по v2; temporal-v3/v4 код, DDL и contracts допускаются только в
@@ -34,6 +34,9 @@ historical evidence и не выполняло production write либо composi
    runtime; старый путь не вызывается, не выбирается по feature flag и не
    используется как semantic fallback. V2 допустим только как явно выбранный
    migration/rollback source.
+
+Текущее состояние соответствует пункту 2: cutover завершён release
+`spatial-v3-production-v1`; v3 является sole production owner.
 
 Документ переведён из `proposed` в `active` после реализации полного
 обязательного scope, tests, документационной и индексной интеграции и
@@ -416,7 +419,9 @@ Exactly one completion-model branch is populated. Every model produces either a 
 
 ### 8.3. Static snapshot amendment
 
-Existing `timed_activity_static_snapshot.planned_total_minutes: positive_integer` is replaced before the versioned production activation cutover by a versioned snapshot containing:
+Before the completed versioned production activation cutover, existing
+`timed_activity_static_snapshot.planned_total_minutes: positive_integer` was
+replaced by a versioned snapshot containing:
 
 - exact `activity_profile_ref`;
 - sealed completion model snapshot;
@@ -1222,7 +1227,8 @@ Expected outcomes `blocked`, `paused`, `decision_required`, `stranded`, stale-ca
 
 ## 22. Readiness данных
 
-До versioned production activation cutover должны существовать approved records:
+Для versioned production activation cutover были обязательны и остаются
+обязательными approved records:
 
 - calendar/daylight/light profiles;
 - activity categories and profiles;
@@ -1283,14 +1289,15 @@ Expected outcomes `blocked`, `paused`, `decision_required`, `stranded`, stale-ca
 - factual state and player knowledge separated;
 - visible package is committed before narration;
 - narration cannot mutate or roll back facts;
-- target v3 has no production authority before the versioned production activation cutover;
-- after the cutover no legacy production path, mixed read, dual write or fallback remains.
+- target v3 had no production authority before the completed versioned production activation cutover;
+- release `spatial-v3-production-v1` leaves no legacy production path, mixed
+  read, dual write or fallback.
 
 ## 25. Устранённые противоречия исходных drafts
 
 | Проблема | Итоговое решение |
 |---|---|
-| Draft объявлял v3 уже production-active, тогда как `main` держит v2 до отдельного cutover | Документ нормативно `active`, историческое P28 evidence не активирует runtime, v2 остаётся production owner до `versioned production activation cutover` |
+| Draft объявлял v3 уже production-active до отдельного cutover | Документ нормативно `active`; историческое P28 evidence не активировало runtime, а последующий `spatial-v3-production-v1` cutover сделал v3 sole owner |
 | Предлагалось удалить ожидание cutover | P28 сохранено как immutable historical evidence; production activation является отдельной versioned operation |
 | Activity status включал `planned` и `invalidated` | Сохранён spatial-v3 vocabulary; planned принадлежит parent execution, invalidation — failure class |
 | Fixed integer `planned_total_minutes` конфликтовал с rational/condition activities | Обязательный versioned amendment existing target snapshot/DDL до production cutover |
@@ -2123,8 +2130,8 @@ target branch, недоказуемый backfill и смешанное authorita
 запрещены. Полный knowledge ref сохраняется как исходные `entity_kind` и
 `entity_id`; legacy `fact_id` не считается достаточным target reference.
 Доказанный current-target storage gap закрывает immutable target
-migration `009_party_runtime_pr8_reaction_knowledge.sql`; production loader до
-versioned production activation cutover не изменяется.
+migration `009_party_runtime_pr8_reaction_knowledge.sql`; после
+`spatial-v3-production-v1` она входит в sole-owner v3 production loader.
 
 First-entry использует существующие `preparation_snapshot`,
 `preparation_claim`, route-plan и execution identities. Для уже
@@ -2139,8 +2146,8 @@ snapshot/member/plan/execution/claim, создаёт зарезервирова�
 Существующая migration `003_party_runtime_v3_planning.sql` не имеет prepared
 branch и требует уже resolved triple; доказанный current-target storage gap
 закрывает immutable target migration
-`008_party_runtime_pr8_first_entry.sql`. Production loader до versioned
-production activation cutover не изменяется.
+`008_party_runtime_pr8_first_entry.sql`. После `spatial-v3-production-v1` она
+входит в sole-owner v3 production loader.
 
 ```yaml
 contract_name: prepared_scene_materialization_snapshot

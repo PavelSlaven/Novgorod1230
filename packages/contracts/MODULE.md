@@ -23,9 +23,9 @@ Validators return structured validation errors or typed-error DTO; malformed can
 ## Target / P28 и тесты
 
 Registry carries current `temporal-world-v1.1` and `4.4.0-target.1`, plus the
-immutable accepted `temporal-world-v1` / `4.3.0-target.1` snapshot, for
-contracts/tests/shadow work only; it does not activate target production
-before the separate `versioned production activation cutover`. Historical P28
-evidence changed no composition. `test/spatial-v3-registry.test.js` and
+immutable accepted `temporal-world-v1` / `4.3.0-target.1` snapshot. Historical
+P28 evidence changed no composition; the later `versioned production
+activation cutover` release `spatial-v3-production-v1` activated the current
+contract set as the sole production route. `test/spatial-v3-registry.test.js` and
 `test/temporal-world-v1.test.js` cover registry version, contract and temporal
 vocabulary/error behavior.

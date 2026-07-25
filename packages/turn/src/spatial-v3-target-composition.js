@@ -17,9 +17,9 @@ const failure = (party_id, stage, reason) => {
 const requirePort = (value, name) => { if (typeof value !== 'function') throw new TypeError(`P21 target/shadow ${name} port is required.`); };
 
 /**
- * P21 target/shadow composition. It deliberately has no v2 imports, no active
- * runtime registration and no direct storage access. Every mutation is sealed
- * into combined_write_plan.v2 and delegated to the P16 sole writer.
+ * P21 v3 composition core. It deliberately has no v2 imports and no direct
+ * storage access. Every mutation is sealed into combined_write_plan.v2 and
+ * delegated to the P16 sole writer.
  */
 export function createSpatialV3TargetShadowComposition({
   planner, activationValidator, executionEngine, targetPreparation, frontierResolver,
@@ -257,5 +257,18 @@ export function createSpatialV3TargetShadowComposition({
     submitTurn: turn.run.bind(turn),
     retryPresentation: turn.retryPresentation.bind(turn),
     startNewGame: starter.start.bind(starter)
+  });
+}
+
+/**
+ * Production wrapper for the same reviewed v3 execution core. The separate
+ * export prevents production wiring from importing a shadow composition root
+ * or manufacturing activation metadata in the application layer.
+ */
+export function createSpatialV3ProductionComposition(ports = {}) {
+  const root = createSpatialV3TargetShadowComposition(ports);
+  return freeze({
+    ...root,
+    status: 'production_sole_owner'
   });
 }

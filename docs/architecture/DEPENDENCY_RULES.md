@@ -45,7 +45,9 @@ Infrastructure adapters реализуют публичные ports пакето
 
 - PostgreSQL driver разрешён только в `apps/game-server/src/infrastructure/postgres/`.
 - Provider transport подключается через `@rus/llm-runtime` и production provider adapter.
-- Прямой импорт `legacy` разрешён только явно названному compatibility facade/adapter до cutover.
+- После `spatial-v3-production-v1` прямой импорт `legacy` разрешён только
+  явно названному migration/rollback source либо test-only fixture adapter; из
+  production composition он запрещён.
 - Temporal factual commit is mapped to PostgreSQL only by
   `apps/game-server/src/infrastructure/postgres/`; pure temporal owners and
   `@rus/turn` depend on ports/contracts, never on that adapter.

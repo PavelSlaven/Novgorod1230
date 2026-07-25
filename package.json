@@ -10,7 +10,6 @@
   ],
   "scripts": {
     "start": "node apps/game-server/src/server.js",
-    "start:cli": "node apps/game-server/src/cli.js",
     "test": "npm run test:modules && npm run test:domain && npm run test:apps && npm run test:tools && npm run test:shadow && npm run test:cutover && npm run docs:check && npm run test:integration && npm run test:browser-e2e && npm run architecture:check",
     "test:modules": "node --test test/modules/*.test.js",
     "test:legacy": "cd legacy && node --test --test-concurrency=1 test/*.test.js",
@@ -133,6 +132,7 @@
     "spatial-v3:test-p28": "node --test test/spatial-v3/p28-activation.test.js",
     "spatial-v3:check-p28": "node tools/spatial-v3/check-p28.mjs",
     "pr8:check-exact-head": "node tools/spatial-v3/check-pr8-exact-head-evidence.mjs",
+    "pr8:check-cutover-exact-head": "node tools/spatial-v3/check-pr8-cutover-exact-head-evidence.mjs",
     "spatial-v3:p28-local-evidence": "node tools/spatial-v3/p28-activation-gate.mjs --local-evidence-only",
     "spatial-v3:p28-github-release-proof": "node tools/spatial-v3/p28-activation-gate.mjs",
     "spatial-v3:check-p12": "node tools/spatial-v3/p12-authoring-importer.mjs",
@@ -141,7 +141,6 @@
     "spatial-v3:inventory-p10-legacy-edges": "node tools/spatial-v3/p10-build-legacy-edge-inventory.mjs",
     "test:shadow": "node --test test/shadow/*.test.js",
     "shadow:run": "node tools/shadow-run/src/cli.js run --root . --out artifacts/2026-07-12/shadow-run-0.21.0 --run-id migration-0.21.0-shadow",
-    "start:legacy": "node apps/game-server/src/legacy-entry.js",
     "test:cutover": "node --test test/cutover/*.test.js",
     "cutover:run": "node tools/cutover/src/cli.js run --root . --plan data/cutover/plan.json --out artifacts/2026-07-12/cutover-0.21.0 --run-id migration-0.21.0-cutover",
     "test:finalization": "node --test tools/finalization/test/*.test.js",

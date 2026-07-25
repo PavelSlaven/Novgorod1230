@@ -2,11 +2,11 @@
 
 ## Назначение
 
-`@rus/environment-state` — active-norm, target-only Temporal World v4 owner
-чистого вывода weather/light/access environment state и boundary-effect
-proposals. Historical P28 evidence не активировало runtime. До отдельного
-`versioned production activation cutover` он shadow/fixture-only; production
-v2 остаётся sole production owner.
+`@rus/environment-state` — active-norm Temporal World v4 owner чистого вывода
+weather/light/access environment state и boundary-effect proposals.
+Historical P28 evidence не активировало runtime; последующий `versioned
+production activation cutover` release `spatial-v3-production-v1` включил
+его в sole production v3 composition.
 
 ## Владеет
 
@@ -38,9 +38,10 @@ Input включает exact clock, sealed approved weather/light transition pro
 
 ## Activation и тесты
 
-До versioned production activation cutover предложения не имеют production
-effect; rollback отбрасывает uncommitted proposal. Атомарный cutover не
-допускает partial activation, dual write или перерасчёт уже committed facts из
-изменившихся authoring data. Tests: `test/environment-state.test.js` проверяет
+В active `spatial-v3-production-v1` предложения применяются только единым
+combined write plan; rollback отбрасывает uncommitted proposal. Production v2
+не является fallback. Partial activation, dual write и перерасчёт уже
+committed facts из изменившихся authoring data запрещены. Tests:
+`test/environment-state.test.js` проверяет
 dawn/light, artificial light и weather transition, exact ordering boundaries,
 access invalidation proposal, typed blocks и отсутствие implicit defaults.

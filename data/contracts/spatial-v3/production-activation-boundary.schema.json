@@ -10,6 +10,8 @@
     "current_production_owner",
     "target_status",
     "activation_operation",
+    "activation_status",
+    "release",
     "historical_p05_freeze",
     "historical_p28_evidence",
     "forbidden"
@@ -22,13 +24,100 @@
       "const": 1
     },
     "current_production_owner": {
-      "const": "production_v2"
+      "const": "production_v3"
     },
     "target_status": {
-      "const": "target_shadow_until_versioned_production_activation_cutover"
+      "const": "production_activated_sole_owner"
     },
     "activation_operation": {
       "const": "versioned production activation cutover"
+    },
+    "activation_status": {
+      "const": "completed"
+    },
+    "release": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "release_id",
+        "composition_id",
+        "contract_version",
+        "temporal_contract_id",
+        "party_schema_version",
+        "world_revision_id",
+        "world_catalog_digest",
+        "world_catalog_manifest_sha256",
+        "dependency_pin_mode",
+        "runtime_catalog_pin_schema",
+        "runtime_catalog_scope",
+        "runtime_catalog_resolution",
+        "party_runtime_catalog_migration_id",
+        "party_runtime_catalog_migration_digest",
+        "party_runtime_catalog_target_fingerprint",
+        "target_migration_count",
+        "target_migration_chain_digest",
+        "rollback_source_release_id",
+        "rollback_runtime_selectable"
+      ],
+      "properties": {
+        "release_id": {
+          "const": "spatial-v3-production-v1"
+        },
+        "composition_id": {
+          "const": "builtin:production-spatial-v3"
+        },
+        "contract_version": {
+          "const": "4.4.0-target.1"
+        },
+        "temporal_contract_id": {
+          "const": "temporal-world-v1.1"
+        },
+        "party_schema_version": {
+          "const": "party_runtime_v3_target"
+        },
+        "world_revision_id": {
+          "const": "novgorod_spatial_v3_target_contract_approval_001"
+        },
+        "world_catalog_digest": {
+          "const": "0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e"
+        },
+        "world_catalog_manifest_sha256": {
+          "const": "4056b93acc2a3c7ed4c76c18182d74b7ef5b9f5fc9c31f206670f11a6283192e"
+        },
+        "dependency_pin_mode": {
+          "const": "exact_only"
+        },
+        "runtime_catalog_pin_schema": {
+          "const": "rus.runtime_catalog_pin.v2"
+        },
+        "runtime_catalog_scope": {
+          "const": "item_container_materialization_v2"
+        },
+        "runtime_catalog_resolution": {
+          "const": "active_for_new_party_persisted_for_existing_party"
+        },
+        "party_runtime_catalog_migration_id": {
+          "const": "party_runtime_catalog_pins_v1"
+        },
+        "party_runtime_catalog_migration_digest": {
+          "const": "f251623759b60799ea75b17b7234833a092b97a5443b8b831643c0544ef25a31"
+        },
+        "party_runtime_catalog_target_fingerprint": {
+          "const": "329a84c3c5ccd76e4a84b67454bcbd6e6c176fafbd285e77d44824dddcd8d2dd"
+        },
+        "target_migration_count": {
+          "const": 10
+        },
+        "target_migration_chain_digest": {
+          "const": "a71b95540c6422ccee5b3d598cb6b0cefe108de3bf41216dea96a99068a5a370"
+        },
+        "rollback_source_release_id": {
+          "const": "production-v2"
+        },
+        "rollback_runtime_selectable": {
+          "const": false
+        }
+      }
     },
     "historical_p05_freeze": {
       "type": "object",

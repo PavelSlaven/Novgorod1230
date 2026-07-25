@@ -193,23 +193,14 @@ export function validateP04CatalogProjection({
     throw new Error(`P04 catalog must contain exactly one structured status assertion; found ${structuredStatuses.length}`);
   }
   const [, productionImport, runtimeVisibility, cutover] = structuredStatuses[0];
-  if (productionImport !== 'not_performed' || runtimeVisibility !== 'not_verified' || cutover !== 'not_performed') {
+  if (productionImport !== 'performed' || runtimeVisibility !== 'verified' || cutover !== 'performed') {
     throw new Error('P04 catalog contains a contradictory production/runtime/cutover status assertion');
   }
-  for (const contradictoryStatus of [
-    /Production import:\s*`?performed`?/iu,
-    /runtime visibility:\s*`?verified`?/iu,
-    /`?versioned production activation cutover`?:\s*`?performed`?/iu
-  ]) {
-    if (contradictoryStatus.test(catalog)) {
-      throw new Error('P04 catalog contains a contradictory production/runtime/cutover status assertion');
-    }
-  }
-  if (!catalog.includes('Production import: `not_performed`; runtime visibility: `not_verified`; `versioned production activation cutover`: `not_performed`.')) {
+  if (!catalog.includes('Production import: `performed`; runtime visibility: `verified`; `versioned production activation cutover`: `performed`.')) {
     throw new Error('P04 catalog production boundary is missing or was weakened');
   }
   if (sourceGapStatus.production_activation_allowed !== false) {
-    throw new Error('P04 catalog production boundary conflicts with source approval');
+    throw new Error('P04 historical source approval must not claim activation authority');
   }
 }
 
@@ -250,7 +241,7 @@ async function main() {
   for (const token of ['mechanical_readiness', 'knowledge_visibility', 'hidden topology', 'layout', 'stranded', 'diagnostics']) {
     if (!docs.ux.includes(token)) throw new Error(`interface_ux: ${token} missing`);
   }
-  for (const token of ['195 canonical G5', 'directional', 'Name-based migration запрещён', 'typed gap', 'not_verified']) {
+  for (const token of ['195 canonical G5', 'directional', 'Name-based migration запрещён', 'typed gap', 'runtime visibility: `verified`']) {
     if (!docs.catalog.includes(token)) throw new Error(`Novgorod catalog: ${token} missing`);
   }
   for (const token of ['spatial_architecture_standard_g0_g6.md', 'world_generation_and_turns.txt', 'interface_ux.md']) {
@@ -274,7 +265,7 @@ async function main() {
     sourceGapStatus,
     ...projectionEvidence
   });
-  console.log('P04 checks passed: approved P12 authoring projection is synchronized while production/cutover and hidden-information boundaries remain closed.');
+  console.log('P04 checks passed: approved P12 authoring projection is synchronized with the completed versioned cutover and preserves hidden-information boundaries.');
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) await main();

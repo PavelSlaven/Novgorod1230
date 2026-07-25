@@ -6,9 +6,9 @@
 
 ## Production/target routing
 
-This document remains the active materialization v2 production owner. The complete spatial v3 target semantics for this responsibility are owned by `spatial_v3_target_code_driven_world_materialization_architecture.md` together with `spatial_architecture_standard_g0_g6.md`; the target documents must not be combined with the v2 production path before the separate `versioned production activation cutover`.
+The completed `versioned production activation cutover` made the spatial-v3 semantics in `spatial_v3_target_code_driven_world_materialization_architecture.md` and `spatial_architecture_standard_g0_g6.md` the production specialization of this highest code/LLM boundary. Materialization v2 is retained only as an explicit migration/rollback source.
 
-The approved P12 authoring projection is rooted at `data/world-catalogs/novgorod/spatial-v3/manifest.json`: it has 37 SHA-256-pinned datasets and `data_gaps: []`, compiling only previously approved source records. This approved authoring state and accepted historical P28 exact-head evidence do not authorize production import, runtime use, write, or activation. Materialization v2 remains the sole production owner until the separate `versioned production activation cutover`.
+The approved P12 authoring projection is rooted at `data/world-catalogs/novgorod/spatial-v3/manifest.json`: it has 37 SHA-256-pinned datasets and `data_gaps: []`, compiling only previously approved source records. Historical P28 exact-head evidence did not itself authorize production activation; the later cutover release `spatial-v3-production-v1` did. Spatial v3 is now the sole production owner.
 
 ## 0. Назначение и приоритет
 

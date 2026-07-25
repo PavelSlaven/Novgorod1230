@@ -125,7 +125,7 @@ Initial findings:
 | Formal handoff contract amendment | complete (`PASS WITH NOTES`) | Appendix A, registry, validators and independent normative audit |
 | Runtime implementation | functional candidate complete | profile and integration validation |
 | Final target validation | complete | exact functional HEAD, clean-clone acceptance and independent `PASS WITH NOTES` recorded |
-| Production cutover | pending | separate atomic release change after accepted target evidence |
+| Production cutover | implementation complete; final validation pending | v3-only composition, migrations, live isolated-PostgreSQL startup, exact-head evidence and independent audit |
 
 ## Inventory matrices
 
@@ -629,6 +629,10 @@ scope until the separate versioned production activation cutover.
 
 ### Matrix 3: persistence and DDL
 
+The first two disposition rows record the target-candidate inventory state
+before the later cutover commit; the cutover outcome is recorded in the
+dedicated section below.
+
 | Production/target table or loader | Owning contract | Repository / writer / reader | Migration and rollback mapping | Cutover disposition |
 |---|---|---|---|---|
 | production `migrations.js` → only `001_party_runtime.sql` | production v2 | v2 party store/repositories | current production path unchanged | sole production owner until cutover |
@@ -695,8 +699,8 @@ infer those bindings.
 | `temporal-world-v1` specifications, controlled vocabularies and generated contract artifacts | prior target acceptance/P28 exact head | expected only if a proven contract gap is amended | normative audit, not automatic data reapproval | yes | new PR8 contract evidence section |
 | historical target migrations `001..007`; PR8 candidate adds `008`, schema reference, recheck adapter and committer changes | historical P28 exact head covers only `001..007` | yes | no semantic authoring approval; Appendix A.7 already received normative audit | yes | new PR8 DDL/runtime evidence section |
 | travel/perception/reaction runtime and tests | donor evidence is non-authoritative | yes | command/catalog approval only when content changes | yes | new PR8 functional exact-head package |
-| current production composition/loader | production v2 sole owner | no during target implementation | no | verify unchanged on functional candidate | pre-cutover proof |
-| versioned production activation cutover commit | no historical binding | future separate phase | all required approvals must already be closed | exact cutover HEAD plus live composition verification | new cutover evidence/rollback identity |
+| target functional composition/loader | production v2 sole owner at subject `5c35975f...` | no during target implementation | no | verified unchanged on the functional candidate | immutable pre-cutover proof |
+| versioned production activation cutover commit | no historical binding | yes, separate child of accepted target evidence | no new semantic authoring approval; all prior gates remain closed | exact cutover HEAD plus live composition verification | `spatial-v3-production-v1`; new cutover evidence/rollback identity |
 
 No donor artifact or proposed runtime interface may be transferred without a
 completed disposition row. Inventory established the cross-package sealed
@@ -733,13 +737,13 @@ and candidate `2ec109c99c5e2b33f43dc5f89735e6e72686299b`. The historical record
 states `production_writes: 0` and `composition_changed: false`; neither it nor
 the P02/P05 records was rewritten.
 
-The current canonical rule is:
+The completed canonical sequence is:
 
 ```text
-production_v2 sole owner
+historical production_v2 sole owner
 → target/shadow validation
 → versioned production activation cutover
-→ spatial/temporal v3 sole production owner
+→ current spatial/temporal v3 sole production owner
 ```
 
 The cutover atomically switches composition, authoritative readers, writers,
@@ -879,8 +883,9 @@ reproducible in this main clean worktree.
 
 ## Functional candidate implementation
 
-The rebuilt candidate reuses the accepted Spatial/Temporal owners instead of
-copying either donor engine:
+The immutable target subject `5c35975fafdf001236e861d84b0d546f2bd1ee2d`
+reuses the accepted Spatial/Temporal owners instead of copying either donor
+engine:
 
 - journey ingress is four tagged Appendix A.7 intents over a sealed
   server-owned exact clock; cancellation is a zero-time control outcome and
@@ -897,11 +902,12 @@ copying either donor engine:
   builds the hidden-safe visible envelope;
 - migrations `008..010` add only the proven preparation, causal
   perception/knowledge and pending bounded-option persistence gaps;
-- `production-spatial-v3` is an internal prepared sole-owner test harness with
-  explicit bindings and no v2 import or fallback. Before cutover it has no
-  config selector, loader route, root export or package export; both a proposed
-  built-in alias and a direct module path are rejected. Production v2 remains
-  the only selectable composition until the separate cutover change.
+- At the immutable target subject, `production-spatial-v3` was an internal
+  prepared sole-owner test harness with explicit bindings and no v2 import or
+  fallback. It had no config selector, loader route, root export or package
+  export; both a proposed built-in alias and a direct module path were
+  rejected. The later cutover changes this boundary atomically, as recorded
+  below.
 
 The donor `environment-landmarks` implementation was not transferred:
 weather, light and access duplicate `@rus/environment-state`; its narrower
@@ -923,7 +929,7 @@ therefore explicitly retained as `DATA_GAP`, not synthesized by PR8.
 
 The exact-head evidence, clean-clone acceptance and final exact-commit critic
 are complete for subject `5c35975fafdf001236e861d84b0d546f2bd1ee2d`.
-Production cutover and PR operations remain separate later phases.
+Production cutover is a separate child phase with its own exact-head package.
 
 ### Functional validation completion
 
@@ -1002,3 +1008,247 @@ The package explicitly records that production v2 remains the sole owner and
 that no production activation occurred. It neither edits nor reuses the
 historical PR19/P28 evidence. The machine check is
 `npm run pr8:check-exact-head`.
+
+## Versioned production activation cutover
+
+The cutover is a separate child of the accepted target evidence commit
+`8d7b970b83e66e7a6d8a170d751340e964d8ce4e`. It does not modify or
+redeclare historical P28 evidence or
+`evidence/target-functional-exact-head.v1.json`.
+
+Release identity:
+
+| Field | Value |
+|---|---|
+| release | `spatial-v3-production-v1` |
+| composition | `builtin:production-spatial-v3` |
+| contract | `4.4.0-target.1` |
+| Temporal contract | `temporal-world-v1.1` |
+| party schema | `party_runtime_v3_target` |
+| world revision | `novgorod_spatial_v3_target_contract_approval_001` |
+| world catalog digest | `0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e` |
+| world manifest SHA-256 | `4056b93acc2a3c7ed4c76c18182d74b7ef5b9f5fc9c31f206670f11a6283192e` |
+| dependency pins | `exact_only` |
+| runtime catalog | `rus.runtime_catalog_pin.v2` / `item_container_materialization_v2` |
+| catalog resolution | active event for a new party; persisted historical pin thereafter |
+| party catalog migration | `party_runtime_catalog_pins_v1` / `f251623759b60799ea75b17b7234833a092b97a5443b8b831643c0544ef25a31` |
+| party catalog target fingerprint | `329a84c3c5ccd76e4a84b67454bcbd6e6c176fafbd285e77d44824dddcd8d2dd` |
+| target migration chain | `001..010` / `a71b95540c6422ccee5b3d598cb6b0cefe108de3bf41216dea96a99068a5a370` |
+| authoritative reads/writes | `spatial_v3_only` / `spatial_v3_only` |
+| rollback source | `production-v2` |
+| rollback runtime selectable | `false` |
+
+The release changes one boundary atomically:
+
+- server startup imports only the modular entrypoint;
+- config defaults to and accepts only
+  `builtin:production-spatial-v3`;
+- startup accepts only completed atomic cutover stage `13`;
+- the composition loader has no v2 or arbitrary-module route;
+- package/root runtime exports expose only production v3; v2 is available
+  solely as `production-v2-migration-source`;
+- the production root uses the explicit
+  `createSpatialV3ProductionComposition` factory, never the target/shadow root;
+- the production migration path is the immutable `001..010` chain;
+- startup rejects any persisted party whose `schema_version` is not `3`;
+- deployment-specific bindings are mandatory and validated fail closed;
+- health publishes the exact release, schema, reader/writer and rollback
+  identities, approved world/Temporal bindings and runtime-catalog pin policy.
+
+No feature-flag fallback, dual write, mixed authoritative read or partial
+owner activation remains. Existing v2 parties are not silently upgraded:
+startup blocks with `SPATIAL_V3_PARTY_MIGRATION_REQUIRED` until the explicit
+migration procedure has produced v3 state.
+
+Current cutover validation:
+
+| Check | Result |
+|---|---|
+| production-boundary machine checker | zero findings |
+| v3 configuration/loader/rollback routing tests | 11 pass |
+| P21 journey/orchestration regressions | 16 pass |
+| architecture boundaries | pass |
+| actual production factory versus shadow-root wiring | production factory only |
+| isolated PostgreSQL live startup | pass; migrations `001..010`, zero incompatible parties, sole-owner health identity |
+| temporary PostgreSQL resource | container removed after the test |
+| historical target exact-head GitHub CI | pass (`clean-clone-generation-test`) |
+
+The current-status wording changed repository line anchors referenced by the
+approved P12 source closure. The project generators were used to update those
+technical anchors and their derived file/manifest digests. The approved
+category records, decisions, source identities and semantic fingerprints were
+not changed. The Spatial target bundle was then regenerated from that approved
+closure. Likewise, regeneration of `SCHEMA_REFERENCE.md` changed the technical
+generated-schema digest recorded by each of the thirteen already-approved
+Temporal families; `temporal-v4:finalize-data` repinned that digest and the
+derived readiness-manifest digests without changing authoring content,
+required fields, semantics or interpretation rules. No semantic reapproval was
+claimed for either technical repin.
+
+Final in-place validation completed before the functional cutover commit:
+
+| Check | Result |
+|---|---|
+| full root `npm test` | pass; all configured suites and gates completed |
+| full sequential Spatial/Temporal suite | 293 pass, 0 fail, 1 Windows symlink-capability skip |
+| explicit real Chrome E2E | 1 pass, 0 fail, 0 skip |
+| isolated PostgreSQL production-v3 startup | 1 pass; migrations `001..010`, sole-owner health identity |
+| P02 current/historical boundary tests | 56 pass, 0 fail |
+| P04 catalog/current-status tests | 8 pass, 0 fail |
+| P12 data and approval tests | 13 pass, 0 fail |
+| P12 approved-target reproducibility | 8 pass, 0 fail |
+| Temporal approval finalization/readiness | pass; all 13 families ready |
+| documentation generation | completed |
+| documentation/current-status checker | three consecutive passes, zero findings |
+| production activation boundary | zero findings |
+| architecture boundaries | pass |
+| temporary PostgreSQL resource | stopped and automatically removed |
+
+Refreshed RAG/Graphify, clean-clone cutover acceptance, the independent critic
+and cutover exact-head evidence follow the functional commit. They are recorded
+only after execution and remain required before the lease-protected PR8 update.
+
+### Cutover audit cycle 1
+
+The first independent exact-commit audit of
+`6a582c08fce410a10b074217ce282334628fb5da` returned
+`CHANGES REQUIRED`. That commit is rejected and is not an accepted evidence
+subject. The critic identified:
+
+- a stale `temporal-world-v1` release pin instead of the approved
+  `temporal-world-v1.1` amendment;
+- fail-open parsing of invalid cutover-stage values;
+- an optional migration bypass and missing exact enforcement for world,
+  runtime-catalog, party-schema and migration-chain pins;
+- exact-head checker assertions that did not inspect the actual subject
+  implementation;
+- two callable v2 runtime surfaces after the declared sole-owner cutover.
+
+Corrections applied for the replacement candidate:
+
+- the release, boundary schema and bindings handshake pin the approved Temporal
+  amendment, exact Spatial world tuple, party runtime-catalog migration and
+  immutable target migration-chain digest;
+- invalid, out-of-range and non-integral cutover-stage input now fails closed;
+- the production root cannot bypass migrations; release/world/bindings gates
+  run before the party transaction, while target DDL and exact party pin
+  readiness run in the same transaction before commit;
+- the production-v2 composition root was renamed and isolated as a non-public
+  rollback-source harness, and the turn package no longer exports the
+  production-v2 request router;
+- both current-boundary and exact-head checkers verify the real loader,
+  release, migration and removed-surface state.
+
+Replacement-candidate focused evidence already completed:
+
+| Check | Result |
+|---|---|
+| production-v3 release/bindings/config tests | 8 pass, 0 fail |
+| P25 migration/shadow tooling tests | 7 pass, Docker-only drill separately scheduled |
+| architecture boundaries | pass |
+| production activation boundary | zero findings |
+| production-v2 rollback-harness infrastructure tests | 11 pass |
+| isolated PostgreSQL production-v3 startup | 1 pass; exact world/catalog pins, external party migration, `001..010`, pre-commit party readiness |
+| migration gate rollback test | pass; failed readiness emits `ROLLBACK`, never `COMMIT` |
+
+The isolated PostgreSQL containers were removed after the successful run.
+Operator/production databases were not read or changed. Full regeneration,
+clean-worktree acceptance, repeated audit and new exact-head evidence remain
+mandatory and are recorded only after they actually complete.
+
+### Cutover audit cycle 2
+
+The replacement exact functional commit
+`d12aab23f971e5512926633ad8b8aae528fab053` also received
+`CHANGES REQUIRED` and is not an accepted evidence subject. The critic
+confirmed the sole-owner routing, strict stage parsing, complete transactional
+migration chain and Temporal pin, but found four remaining release-admission
+defects:
+
+- readiness incorrectly required exactly one append-only runtime-catalog
+  activation event and forced persisted parties onto the latest active pin;
+- the release migration-chain digest was initialized from the value it was
+  intended to verify;
+- the bindings handshake omitted five migration/schema identity fields;
+- the exact-head checker did not require a direct evidence-only child of its
+  functional subject.
+
+The next replacement candidate corrects those defects:
+
+- the latest approved activation is used only for new-party resolution;
+  existing parties retain their persisted historical pin, which is checked
+  against its exact immutable approved activation event;
+- every persisted party must still match the production Spatial world tuple
+  and deployment-pinned compatible-world manifest;
+- the computed `001..010` chain is compared with the independently fixed
+  release digest
+  `a71b95540c6422ccee5b3d598cb6b0cefe108de3bf41216dea96a99068a5a370`;
+- the binding identity includes the party migration id/digest/fingerprint,
+  target migration count/digest and compatible-world pin-manifest digest;
+- the compatible-world manifest is mandatory deployment configuration, not a
+  binding/DB self-comparison;
+- exact-head admission requires a direct child of the functional subject and
+  rejects every non-evidence file in that child.
+
+Focused validation after these corrections:
+
+| Check | Result |
+|---|---|
+| production-v3 lifecycle/bindings/config tests | 10 pass, including multiple activation events and historical persisted pin |
+| cutover/rollback configuration tests | 5 pass |
+| isolated PostgreSQL lifecycle E2E | pass; two activation events, current new-party pin plus persisted historical-party pin |
+| production activation boundary | zero findings |
+| documentation regeneration/check | pass |
+| `git diff --check` | pass |
+
+Full exact-worktree validation and the third independent audit remain pending
+until the replacement functional commit is sealed.
+
+### Cutover audit cycle 3
+
+The exact functional subject
+`28eba75f10375d8ba1760005e621a73af027e21a` received
+`CHANGES REQUIRED`. The critic confirmed all cycle-2 corrections and the
+v3-only production boundary, then found two remaining runtime races:
+
+- world readiness joined activation events to approved revision/import rows
+  without proving every field of the approved tuple;
+- readiness read the latest world activation inside the party transaction but
+  did not hold the activation writer's world advisory lock through party
+  `COMMIT`.
+
+The next candidate uses one code-owned activation lock key shared by the
+operator writer and production readiness. Startup now executes:
+
+```text
+world BEGIN
+→ world activation advisory lock
+→ party BEGIN
+→ target migrations
+→ party readiness
+→ full world revision/import/activation tuple readiness
+→ party COMMIT
+→ world COMMIT and activation-lock release
+```
+
+Both current and historical activation reads require equality for catalog
+scope/revision/digest, compatible world revision/digest/manifest,
+record-registry digest, runtime-contract digest, import identity/audit and
+approved status. A PostgreSQL race test proves that an activation writer
+cannot acquire the lock before party commit and can acquire it immediately
+afterward. The same isolated test injects a structurally valid activation
+whose approved revision/import tuple disagrees on the registry digest and
+proves fail-closed startup.
+
+Focused validation after the cycle-3 corrections:
+
+| Check | Result |
+|---|---|
+| production-v3 lifecycle/bindings/config tests | 10 pass |
+| cutover/rollback configuration tests | 5 pass |
+| isolated PostgreSQL activation-lock race | pass |
+| isolated PostgreSQL corrupt approved-tuple rejection | pass |
+| temporary PostgreSQL resource | removed |
+
+A new exact functional subject, clean validation and another independent audit
+remain mandatory before evidence admission.

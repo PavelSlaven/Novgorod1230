@@ -2,18 +2,19 @@
 
 ## Статус navigation и target/active boundary
 
-Навигация отражает два раздельных слоя: до отдельного `versioned production
-activation cutover` active production следует materialization v2;
-`spatial_architecture_standard_g0_g6.md` v4.2.0 задаёт target v3 для
-документации, contracts, fixtures, migration и shadow composition.
+Навигация отражает завершённый `versioned production activation cutover`:
+release `spatial-v3-production-v1` следует Spatial v3/Temporal World v4 как
+единственному production read/write пути; materialization v2 остаётся только
+explicit migration/rollback source.
 `temporal_world_and_interruptible_activities.md` задаёт active Temporal World
 v4 current target amendment (`temporal-world-v1.1`, Spatial contract
 `4.4.0-target.1`) и immutable accepted snapshot (`temporal-world-v1`,
 `4.3.0-target.1`); документ доступен в default active-only retrieval. Историческое
-P28 exact-head evidence не активировало production. Навигационный файл не
-активирует target, не разрешает partial activation, dual write или fallback.
+P28 exact-head evidence само не активировало production; это сделал отдельный
+cutover. Навигационный файл не разрешает partial activation, dual write или
+fallback.
 
-## Приоритет materialization v2
+## Приоритет кодовой материализации
 
 Высший норматив разделения кода и LLM — `code_driven_world_materialization_architecture.md`; технический норматив данных — `world_base_materialization_table_requirements.md`. Код не придумывает категории и историю, но материализует конкретные G5/NPC/items из утверждённых profiles/rules. LLM ограничен bounded decisions, персонажем игрока, аудитом и прозой. Это правило заменяет прежние формулы «LLM создаёт смысл, код только хранит» во всех нижестоящих описаниях.
 
@@ -56,9 +57,9 @@ paths не заменяют active-нормативы.
 реализации, полного набора проверок и независимого критика. Для exact time,
 activities, boundaries, NPC temporal runtime, carriers, environment или remote
 processes его необходимо читать полностью вместе с target spatial standard.
-Его active status означает нормативную власть target amendment, а не
-production activation; финальное P28 exact-head evidence остаётся отдельным
-обязательным gate.
+Его active status означает нормативную власть amendment. Историческое P28
+exact-head evidence не активировало production; последующий release
+`spatial-v3-production-v1` прошёл собственную candidate-bound validation.
 
 Дополнительные правила навигации:
 
@@ -108,9 +109,9 @@ production activation; финальное P28 exact-head evidence остаётс
 |---|---|---|
 | `README.md` | Общее описание проекта, состава `DOCUMENTS`, запуска, тестов и правил будущих изменений. | При первом входе в проект, объяснении назначения репозитория, проверке состава документации и базовых команд. |
 | `world_regions.txt` | Список допустимых регионов мира RUS13. Задаёт историко-географическую сетку, в пределах которой выбираются стартовые и последующие регионы партии. | При выборе региона, смене региона, проверке географической допустимости, создании исторического фона и маршрутов. |
-| `spatial_architecture_standard_g0_g6.md` | Главный target v4.2.0: G0–G6, topology, movement, materialization, player projection, migration и release gate. До versioned production activation cutover не является active runtime нормативом. | При target-проектировании пространственной модели, contracts, DDL/migration plan и проверке границы active/target. |
-| `temporal_world_and_interruptible_activities.md` | Active Temporal World v4 target amendment: exact `GameTimestamp`, interruptible activities, event-driven boundaries, domain/NPC/carrier/remote updates, persistence и post-commit narration. | При любой target-задаче времени, activity/traversal timing, schedules, same-time cascades, environment, carrier clocks, catch-up или propagation; default active-only retrieval обязан находить документ. |
-| `world_generation_and_turns.txt` | Target v3: G0–G6/position, bounded preparation/materialization и turn boundary; archived v2 источник сохранён для traceability. | При target-проектировании start/materialization/slots/expansion и сверке active v2 до versioned production activation cutover. |
+| `spatial_architecture_standard_g0_g6.md` | Главный production v4.2.0: G0–G6, topology, movement, materialization, player projection, migration и release boundary. | При проектировании пространственной модели, contracts, DDL/migration plan и проверке sole-owner production boundary. |
+| `temporal_world_and_interruptible_activities.md` | Active production Temporal World v4 amendment: exact `GameTimestamp`, interruptible activities, event-driven boundaries, domain/NPC/carrier/remote updates, persistence и post-commit narration. | При любой задаче времени, activity/traversal timing, schedules, same-time cascades, environment, carrier clocks, catch-up или propagation; default active-only retrieval обязан находить документ. |
+| `world_generation_and_turns.txt` | Production v3: G0–G6/position, bounded preparation/materialization и turn boundary; archived v2 источник сохранён для migration/rollback traceability. | При проектировании start/materialization/slots/expansion и проверке active v3 boundary. |
 | `player_character_generation.txt` | Правила создания персонажа игрока как человека, встроенного в эпоху, место, статус, тело, знания, имущество, связи и стартовую сцену. | При создании нового персонажа, интерпретации заявки игрока, проверке стартового статуса, биографии, навыков, имущества, связей и причин нахождения в сцене. |
 | `character_parameters.txt` | Базовая механика характеристик, навыков, бонусов, состояний, тела и проверок. Фиксирует формулу d20, диапазоны характеристик, здоровье, сытость, бодрость, активные состояния и влияние тела. | При любой проверке, расчёте бонусов, изменении состояния, создании персонажа/NPC, применении штрафов от голода, усталости, ран, болезни и иных состояний. |
 | `time_system.txt` | Target routing для exact времени; authoritative Temporal World v4 details находятся в профильном amendment, архивная v2-проза исключена из retrieval. | При любом действии, которое занимает время; для target implementation обязательно затем читать active temporal amendment. |

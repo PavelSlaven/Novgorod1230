@@ -1,9 +1,9 @@
 # Требования к таблицам materialization и spatial v3
 
-**Статус:** target technical normative; активная физическая схема остаётся v2
-до отдельного `versioned production activation cutover`; историческое P28
-evidence не меняло loader или production composition.
-**Назначение:** логический table-purpose contract для target v3; физические имена, типы и constraints определяются только будущими DDL и generated `SCHEMA_REFERENCE.md`.
+**Статус:** active production technical normative после завершённого
+`versioned production activation cutover`; historical P28 evidence само не
+меняло loader или production composition.
+**Назначение:** table-purpose contract для production v3; физические имена, типы и constraints определяются DDL и generated `SCHEMA_REFERENCE.md`.
 
 Current Temporal amendment `temporal-world-v1.1` / `4.4.0-target.1` с
 immutable baseline `temporal-world-v1` / `4.3.0-target.1` определяется active
@@ -14,7 +14,7 @@ target-нормативом `temporal_world_and_interruptible_activities.md`. О
 
 `world_base` является read-only canonical authoring store: world revision, G0–G5, directed world topology/routes, historical provenance, approved templates, expansion profiles/capacities, controlled vocabularies и readiness evidence. `party_runtime` — mutable party store: generated G5, G6/positions, scene/route plans and executions, dynamic entities, perception и append-only history.
 
-Cross-database relation хранит exact versioned ref, revision and digest; bare ID не является достаточной ссылкой. V3 до cutover не становится production writer. V2/v3 rows могут сосуществовать только без dual write и mixed authoritative read.
+Cross-database relation хранит exact versioned ref, revision and digest; bare ID не является достаточной ссылкой. V3 является sole production writer. V2 rows допустимы только как migration/rollback source без dual write и mixed authoritative read.
 
 ## 2. Canonical world authoring
 
@@ -54,12 +54,14 @@ Required candidate gap, unresolved ref, ambiguous active binding, invalid route 
 
 ## 5. Activation boundary
 
-Этот норматив не разрешает применять v3 DDL или importer в production до
-`versioned production activation cutover`. Его статус может стать active
-только вместе с canonical architecture после совпадения DDL, generated
-reference, schemas/DTO/validators, importer/readiness, persistence/save-load,
-migration evidence и PASS независимого критика.
+Этот норматив разрешает production применение v3 DDL и importer только через
+завершённый `versioned production activation cutover` release
+`spatial-v3-production-v1`, после совпадения DDL, generated reference,
+schemas/DTO/validators, importer/readiness, persistence/save-load, migration
+evidence и PASS независимого критика.
 
 ## 6. Migration history
 
-V2 table-purpose использовал canonical G0–G4 и party G5. Он остаётся migration/rollback source до cutover, не target schema и не fallback для v3 request.
+V2 table-purpose использовал canonical G0–G4 и party G5. После cutover он
+остаётся только explicit migration/rollback source, не production schema и не
+fallback для v3 request.

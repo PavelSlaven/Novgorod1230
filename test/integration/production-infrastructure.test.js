@@ -11,9 +11,11 @@ import {
   createPostgresWorldBaseReader,
   createPostgresStage25Ports,
   createPostgresPartyStore,
-  createProductionLlmRoleRunner,
-  createProductionCompositionRoot
-} from '@rus/game-server/production';
+  createProductionLlmRoleRunner
+} from '@rus/game-server/production-v2-migration-source';
+import {
+  createProductionV2RollbackSourceRoot
+} from '../../apps/game-server/src/composition/production-v2-rollback-source.js';
 import { buildPartyRuntimeV2WritePlan } from '@rus/new-game/stages/stage-24/compat';
 import { materializeStage25PhysicalPlan } from '@rus/new-game/stages/stage-25/compat';
 import { canonicalDigest, issueBoundedDecisionRequest, materializeWorldInstances, repairWorldInstances, validateBoundedDecisionResult } from '@rus/materialization';
@@ -336,7 +338,7 @@ test('builtin production composition runs with PostgreSQL-backed session and del
     DEEPSEEK_API_KEY: 'test-key',
     DEEPSEEK_BASE_URL: provider.baseUrl
   };
-  const root = await createProductionCompositionRoot({
+  const root = await createProductionV2RollbackSourceRoot({
     env,
     PoolClass: Pool,
     config: { runtimeBindingsModule: bindings, runMigrations: true, probeProvider: true, requireRuntimeCatalog: false },

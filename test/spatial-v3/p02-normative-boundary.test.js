@@ -74,8 +74,9 @@ test('P02 active owner documents route explicitly to target supplements and the 
     assert.ok(active.includes('data/world-catalogs/novgorod/spatial-v3/manifest.json'), `${activeName}: P12 manifest route missing`);
     assert.match(active, /37 SHA-256-pinned datasets/);
     assert.match(active, /data_gaps:\s*\[\]/);
-    assert.match(active, /v2 remains the sole production owner until the separate `versioned production activation cutover`/i);
-    assert.match(active, /do(?:es)? not authorize production import, runtime use, write, or activation/i);
+    assert.match(active, /completed `versioned production activation cutover`/i);
+    assert.match(active, /spatial-v3-production-v1/i);
+    assert.match(active, /(?:sole production|production .*specialization|production table-purpose)/i);
   }
 });
 
@@ -115,10 +116,10 @@ const routingOmissions = [
   ['P12 manifest', 'data/world-catalogs/novgorod/spatial-v3/manifest.json', 'omitted/p12-manifest.json', /approved P12 manifest route is missing/],
   ['P12 37+0 state', '37 SHA-256-pinned datasets and `data_gaps: []`', 'approved dataset and gap counts omitted', /approved P12 state is missing/],
   [
-    'sole-v2 ownership',
-    'Materialization v2 remains the sole production owner until the separate `versioned production activation cutover`.',
-    'Production ownership statement omitted.',
-    /pre-cutover production ownership is ambiguous/
+    'cutover release identity',
+    'spatial-v3-production-v1',
+    'omitted-cutover-release',
+    /post-cutover production ownership is ambiguous/
   ]
 ];
 
@@ -156,7 +157,7 @@ test('P02 checker accepts explicit prohibition wording', async () => {
   const targetPath = path.join(root, 'spatial_v3_target_code_driven_world_materialization_architecture.md');
   await appendFile(
     targetPath,
-    '\nDual write, mixed execution, v3 fallback to v2 and partial activation are prohibited before P28.\n\nG7 is not introduced and is not required.\n'
+    '\nDual write, mixed execution, v3 fallback to v2 and partial activation remain prohibited after the completed cutover.\n\nG7 is not introduced and is not required.\n'
   );
   const result = run(root);
   assert.equal(result.status, 0, result.stderr);

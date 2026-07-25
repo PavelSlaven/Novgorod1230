@@ -2,11 +2,11 @@
 
 ## Статус и граница миграции
 
-Этот документ задаёт target v3 command sequence. Принятое историческое P28
-evidence не переключало composition: до отдельного `versioned production
-activation cutover` production обслуживается только active v2 path. Документ
-не разрешает внедрять v3 в текущий runtime частично, dual write, first-entry
-fallback или смешанный request path.
+Этот документ задаёт production v3 command sequence. Принятое историческое P28
+evidence не переключало composition; последующий `versioned production
+activation cutover` release `spatial-v3-production-v1` сделал v3 sole
+production path. Документ не разрешает partial activation, dual write,
+first-entry fallback или смешанный request path.
 
 Temporal World v4 дополняет sequence профильным нормативом
 `temporal_world_and_interruptible_activities.md` (status `active`). Target
@@ -76,7 +76,10 @@ temporal effect или consequence.
 
 ## 7. Traceability
 
-Target источник: `spatial_architecture_standard_g0_g6.md` §§1.4, 1.7–1.8, 5–6, 9–11, 16.3. До `versioned production activation cutover` active v2 остаётся единственным production owner; историческое P28 evidence не меняло runtime, DDL, persistence или production composition.
+Target источник: `spatial_architecture_standard_g0_g6.md` §§1.4, 1.7–1.8,
+5–6, 9–11, 16.3. Историческое P28 evidence не меняло runtime, DDL,
+persistence или production composition; это сделал release
+`spatial-v3-production-v1`.
 
 
 ---
@@ -84,7 +87,11 @@ Target источник: `spatial_architecture_standard_g0_g6.md` §§1.4, 1.7�
 <!-- knowledge-retrieval-exclude:start -->
 ## Приложение A. Архивный v2-источник для migration traceability
 
-Нижеследующий текст сохранён только как historical/migration source для ссылочной совместимости и аудита. Он **не является target-правилом**, не активирует v2 semantics в target v3 и не разрешает mixed execution, dual write либо fallback. При конфликте применяется основной target-раздел этого документа и target standard; active production boundary до `versioned production activation cutover` определён отдельно.
+Нижеследующий текст сохранён только как historical/migration source для
+ссылочной совместимости и аудита. Он **не является production-правилом**, не
+активирует v2 semantics в v3 и не разрешает mixed execution, dual write либо
+fallback. При конфликте применяется основной v3-раздел этого документа и
+active production boundary release `spatial-v3-production-v1`.
 
 # Режимы хода для агента-оркестратора
 

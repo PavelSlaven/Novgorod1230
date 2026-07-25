@@ -32,9 +32,9 @@
 Temporal World v4 base — immutable `temporal-world-v1` /
 `4.3.0-target.1`; current additive handoff contract set —
 `temporal-world-v1.1` / `4.4.0-target.1`. Historical P28 evidence не
-активировало runtime; до
-отдельного `versioned production activation cutover` production v2 остаётся
-sole runtime owner. Модуль не активирует target и не делает dual write.
+активировало runtime; последующий `versioned production activation cutover`
+release `spatial-v3-production-v1` сделал v3 sole production owner. Модуль
+остаётся pure domain owner и не делает writes.
 
 ## Тесты
 

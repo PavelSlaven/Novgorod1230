@@ -22,7 +22,7 @@ export const SPATIAL_V3_NEW_GAME_STAGE_MAPPING = Object.freeze({
 export function assertSpatialV3TargetStageMapping(activeStages) {
   const ids = Array.isArray(activeStages) ? activeStages.map((stage) => stage?.id) : [];
   if (JSON.stringify(ids) !== JSON.stringify(Array.from({ length: 25 }, (_, index) => index + 2))) {
-    throw new Error('P21 target mapping does not permit altering the active v2 Stage 2-26 plan before the versioned production activation cutover.');
+    throw new Error('P21 mapping does not permit altering the activated v3 Stage 2-26 plan outside the approved spatial-v3-production-v1 composition.');
   }
   return SPATIAL_V3_NEW_GAME_STAGE_MAPPING;
 }

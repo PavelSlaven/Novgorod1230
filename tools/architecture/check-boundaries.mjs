@@ -47,9 +47,12 @@ for (const sourceRoot of ['apps', 'packages']) {
     if (/legacy[\\/]DOCUMENTS|DOCUMENTS[\\/]documents-kg/u.test(source)) violations.push(`${rel}: production source may not reference legacy DOCUMENTS`);
   }
 }
-const knowledgeProductionComposition = await readFile(join(root, 'apps/game-server/src/composition/production.js'), 'utf8');
+const knowledgeProductionComposition = await readFile(
+  join(root, 'apps/game-server/src/composition/production-v2-rollback-source.js'),
+  'utf8'
+);
 for (const required of ['createKnowledgeSourceReader', 'createFileSystemKnowledgeSourceStorage', 'knowledgeSource.verifyCorpus()', 'knowledgeSource.getGeneratedIndexStatus()', 'basePorts = Object.freeze({ knowledgeSource']) {
-  if (!knowledgeProductionComposition.includes(required)) violations.push(`production composition missing knowledge-source gate: ${required}`);
+  if (!knowledgeProductionComposition.includes(required)) violations.push(`production-v2 rollback source missing knowledge-source gate: ${required}`);
 }
 
 const stage26FacadePath = join(root, 'legacy/src/world/new-game-pipeline/stages/stage26-first-game-screen.js');
@@ -738,7 +741,7 @@ for (const appSpec of [
         }
       }
       if (importsOf(source).includes('pg') && !postgresInfrastructure) violations.push(`${rel}: pg import is restricted to PostgreSQL infrastructure adapters`);
-      if (source.includes('legacy/') && !rel.endsWith('/legacy-entry.js')) violations.push(`${rel}: legacy import is restricted to legacy-entry.js`);
+      if (source.includes('legacy/')) violations.push(`${rel}: legacy imports are forbidden after production-v3 cutover`);
       if (rel.includes('/http/') && importsOf(source).some((specifier) => specifier.startsWith('@rus/'))) violations.push(`${rel}: HTTP routes may not import workflow/domain packages`);
     }
     const deps = [];
@@ -758,22 +761,22 @@ for (const appSpec of [
 
 
 const productionRequired = [
-  'apps/game-server/src/composition/production.js',
+  'apps/game-server/src/composition/production-spatial-v3.js',
   'apps/game-server/src/infrastructure/postgres/pools.js',
   'apps/game-server/src/infrastructure/postgres/session-store.js',
   'apps/game-server/src/infrastructure/postgres/stage25.js',
   'apps/game-server/src/infrastructure/provider/deepseek.js',
   'test/integration/production-infrastructure.test.js',
   'test/e2e/browser-game-flow.test.js',
-  'schemas/party-db/001_party_runtime.sql'
+  'schemas/party-db/010_party_runtime_pr8_reaction_options.sql'
 ];
 for (const requiredPath of productionRequired) {
   try { await readFile(join(root, requiredPath), 'utf8'); }
   catch { violations.push(`${requiredPath}: required production integration artifact is missing`); }
 }
-const productionComposition = await readFile(join(root, 'apps/game-server/src/composition/production.js'), 'utf8');
-for (const marker of ['createPostgresPools', 'createPostgresSessionStore', 'createPostgresStage25Ports', 'createProductionLlmRoleRunner', 'loadRuntimeBindings']) {
-  if (!productionComposition.includes(marker)) violations.push(`production composition is missing ${marker}`);
+const productionComposition = await readFile(join(root, 'apps/game-server/src/composition/production-spatial-v3.js'), 'utf8');
+for (const marker of ['createPostgresPools', 'runSpatialV3TargetMigrations', 'createSpatialV3WorldBaseReader', 'createSpatialV3PostgresCombinedAtomicCommitter', 'loadSpatialV3RuntimeBindings']) {
+  if (!productionComposition.includes(marker)) violations.push(`production-v3 composition is missing ${marker}`);
 }
 const browserE2e = await readFile(join(root, 'test/e2e/browser-game-flow.test.js'), 'utf8');
 for (const marker of ['playwright-core', 'first_game_screen', 'turn_screen', 'intent_not_fact']) {
@@ -781,7 +784,7 @@ for (const marker of ['playwright-core', 'first_game_screen', 'turn_screen', 'in
 }
 
 const gameServerEntry = await readFile(join(root, 'apps/game-server/src/server.js'), 'utf8');
-if (!gameServerEntry.includes('runtimeRoute') || !gameServerEntry.includes('modular-entry.js') || !gameServerEntry.includes('legacy-entry.js')) violations.push('game-server entrypoint must use modular default with explicit legacy rollback route');
+if (!gameServerEntry.includes('modular-entry.js') || gameServerEntry.includes('legacy-entry.js') || gameServerEntry.includes('runtimeRoute')) violations.push('game-server entrypoint must expose only the activated modular spatial-v3 route');
 const gameWebBootstrap = await readFile(join(root, 'apps/game-web/src/app/bootstrap.js'), 'utf8');
 if (!gameWebBootstrap.includes('intent') && !gameWebBootstrap.includes('raw_text')) violations.push('game-web bootstrap must submit player input as an intent payload');
 const gameWebContracts = await readFile(join(root, 'apps/game-web/src/api/contracts.js'), 'utf8');

@@ -41,7 +41,7 @@ import {
   createPostgresPartyStore,
   createPostgresStage25Ports,
   createRuntimeCatalogCoordinator
-} from '@rus/game-server/production';
+} from '@rus/game-server/production-v2-migration-source';
 import { materializeWorldInstances } from '@rus/materialization';
 
 const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 45_000 });

@@ -1,5 +1,5 @@
--- PR8 current-target only. Production v2 remains unchanged until the
--- versioned production activation cutover.
+-- PR8 migration authored while target-only; activated only as part of the
+-- spatial-v3-production-v1 versioned production activation cutover.
 ALTER TABLE party_runtime.preparation_snapshot_members
   ADD COLUMN IF NOT EXISTS prepared_scene_materialization jsonb;
 

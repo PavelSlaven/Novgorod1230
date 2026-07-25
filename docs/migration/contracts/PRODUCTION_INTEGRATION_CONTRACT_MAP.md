@@ -2,40 +2,36 @@
 
 ## Composition
 
-`builtin:production` → `createProductionCompositionRoot`
+`builtin:production-spatial-v3` → `createSpatialV3ProductionCompositionRoot`
 
-Обязательный внешний binding:
+Обязательный внешний binding обязан предъявлять точные `releaseBinding` и
+`runtimeCatalogPin`, а также:
 
-- `newGameOptionsFactory(input, ports)`;
-- `turnServicesFactory(input, ports)`;
-- `stage25PostcommitProjector({ pool, input })`.
+- `targetCompositionPorts`;
+- `commitRecheck(input)`;
+- `acknowledgeOpening(input)`;
+- `getPartyScreen(input)`.
 
-Опционально для тестов/альтернативной сборки:
-
-- `newGameRunner`;
-- `turnRunner`;
-- `turnOptionsFactory`.
+`production-v2` отсутствует в runtime loader. Его infrastructure exports и
+непубличный root допускаются только как явно названный migration/rollback
+source и не являются selectable composition.
 
 ## Infrastructure ports
 
-- `worldBase.read(sql, params)` — только read-only SQL;
-- `llmRoleRunner.run(descriptor)` — provider-independent role execution;
-- `sessionStore.load/save/delete` — JSONB session persistence;
-- `deliveryStore.recordAttempt/commitAcknowledgement`;
-- `stage25.idempotencyChecker`;
-- `stage25.dryRunExecutor`;
-- `stage25.transactionExecutor`;
-- `stage25.postcommitReader`;
-- `stage25.recordCommittedResult`.
+- `worldBase` — только target-v3 read-only projection;
+- `committer.commit(writePlan)` — единственная PostgreSQL-транзакция
+  combined write plan;
+- domain ports — чистые handlers без скрытых DB/FS/network/LLM reads.
 
 ## Runtime tables
 
 Schema `party_runtime`:
 
-- `parties` + `party_server_sessions` (только `schema_version=2`);
-- `delivery_attempts`;
-- `delivery_acknowledgements`;
-- `commit_idempotency`.
+- `parties` с `schema_version=3` и exact release pins;
+- `party_catalog_pins`;
+- target-v3 journey, traversal, first-entry, perception, reaction,
+  knowledge и visible-package relations;
+- presentation-pending metadata.
 
 Эти таблицы технические. Они не определяют мир, игровые сущности или последствия.
 

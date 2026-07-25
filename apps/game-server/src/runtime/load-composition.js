@@ -3,13 +3,14 @@ import { serverError } from '../errors.js';
 export async function loadConfiguredComposition(moduleReference, context = {}) {
   const reference = String(moduleReference ?? '').trim();
   if (!reference) throw serverError('COMPOSITION_MODULE_REQUIRED', 'Composition module reference is required.');
-  if (reference === 'builtin:production') {
-    const { createProductionCompositionRoot } = await import('../composition/production.js');
-    return validateRoot(await createProductionCompositionRoot(context));
+  if (reference === 'builtin:production-spatial-v3') {
+    const { createSpatialV3ProductionCompositionRoot } =
+      await import('../composition/production-spatial-v3.js');
+    return validateRoot(await createSpatialV3ProductionCompositionRoot(context));
   }
   throw serverError(
     'COMPOSITION_MODULE_INACTIVE',
-    `Composition is not available before versioned production activation cutover: ${reference}.`
+    `Composition is not available in active release spatial-v3-production-v1: ${reference}.`
   );
 }
 

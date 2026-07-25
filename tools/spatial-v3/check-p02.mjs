@@ -48,7 +48,7 @@ const documentPairs = {
       /controlled vocabularies/i,
       /Import order/i,
       /readiness/i,
-      /логический table-purpose contract/i,
+      /table-purpose contract/i,
       /физические имена/i
     ]
   },
@@ -281,13 +281,15 @@ for (const [name, pair] of Object.entries(documentPairs)) {
   assert(active.includes('data/world-catalogs/novgorod/spatial-v3/manifest.json'), `${name}: approved P12 manifest route is missing`);
   assert(/37 SHA-256-pinned datasets/.test(active) && /data_gaps:\s*\[\]/.test(active), `${name}: approved P12 state is missing`);
   assert(
-    /v2 remains the sole production owner until the separate `versioned production activation cutover`/i.test(active),
-    `${name}: pre-cutover production ownership is ambiguous`
+    /completed `versioned production activation cutover`/i.test(active)
+      && /spatial-v3-production-v1/i.test(active)
+      && /(?:sole production|production .*specialization|production table-purpose)/i.test(active),
+    `${name}: post-cutover production ownership is ambiguous`
   );
-  assert(/do(?:es)? not authorize production import, runtime use, write, or activation/i.test(active), `${name}: P12 authoring approval boundary is missing`);
-  assert(/target/i.test(target) && /versioned production activation cutover/i.test(target) && /\bv2\b/i.test(target), `${name}: target/active boundary missing`);
+  assert(/target/i.test(target)
+    && /versioned production activation cutover/i.test(target)
+    && /spatial-v3-production-v1/i.test(target), `${name}: target/active boundary missing`);
   assert(/G5/i.test(target) && /G6/i.test(target), `${name}: target G5/G6 coverage missing`);
-  assert(!/\bactive\s+v3\b/i.test(target), `${name}: target supplement claims premature v3 activation`);
   for (const marker of pair.required) {
     assert(marker.test(target), `${name}: required P02 evidence missing (${marker})`);
   }

@@ -31,10 +31,12 @@ weather/light transition, remote catch-up или propagation, дополните
 полностью прочитай
 `data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md`.
 После финальной implementation acceptance этот документ имеет status `active`.
-Нормативная приёмка и исторически принятое P28 exact-head evidence не
-активируют production. До отдельного `versioned production activation cutover`
-Temporal World v4 применяется только к target/shadow/migration работе, а
-production v2 остаётся единственным read/write owner.
+Нормативная приёмка и исторически принятое P28 exact-head evidence сами по
+себе не активировали production. Отдельный
+`versioned production activation cutover` завершён release
+`spatial-v3-production-v1`: Temporal World v4 и Spatial v3 теперь являются
+единственным production read/write owner. Production v2 доступен только как
+явный migration/rollback source и не является runtime fallback.
 
 Если задача затрагивает базу данных, DDL, импорт, категории, шаблоны, профили, materialization rules, G5, NPC, предметы, контейнеры, имущество, транспорт или bounded decisions, полностью прочитай:
 

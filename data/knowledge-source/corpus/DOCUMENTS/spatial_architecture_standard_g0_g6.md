@@ -1,13 +1,13 @@
 # Архитектурный стандарт пространственной модели G0–G6 и сценической топологии
 
-**Статус:** `target`; не используется production runtime до прохождения единого integration gate<br>
+**Статус:** `active production`; release `spatial-v3-production-v1`<br>
 **Версия:** `4.2.0`<br>
 **Дата:** `2026-07-23`<br>
 **Проект:** «Русь XIII век»<br>
 **Канонический репозиторий:** `PavelSlaven/Novgorod1230`, ветка `main`<br>
 **Базовая ревизия:** `520c0ea8cc366fc16c949a874c710f3547a322f6`<br>
-**Действующая до активации модель:** materialization v2 — канонические G0–G4 и party-scoped G5<br>
-**Целевая модель:** materialization v3 — канонические G0–G5, ограниченные party-scoped generated G5, party-scoped G6 и устойчивые сценические позиции<br>
+**Migration/rollback source:** materialization v2 — канонические G0–G4 и party-scoped G5<br>
+**Production модель:** materialization v3 — канонические G0–G5, ограниченные party-scoped generated G5, party-scoped G6 и устойчивые сценические позиции<br>
 **Область:** пространственные уровни, topology, movement, route planning, first-entry preparation, materialization, visibility, acoustics, carriers, exact temporal integration, persistence, concurrency, migration и release gate
 
 ---
@@ -76,8 +76,9 @@ G7 и G8 не вводятся.
 
 P28 exact-head evidence прежнего кандидата принято как immutable historical
 record и не меняло production composition. Spatial v3 вместе с Temporal World
-v4 становится production-active только отдельным атомарным
-`versioned production activation cutover`, когда одновременно:
+v4 стало production-active отдельным атомарным `versioned production
+activation cutover` release `spatial-v3-production-v1` после выполнения
+следующих условий:
 
 1. принят ADR materialization v2 → v3;
 2. синхронизированы `AGENTS.md`, `.github/AGENTS.md`, профильные нормативы и навигация;
@@ -108,19 +109,13 @@ v4 становится production-active только отдельным ато
 
 Read-only копия Google Drive в этом документном проходе не использовалась и не считается подтверждением актуальности. Для release-интеграции любые материалы из неё должны отдельно сверяться с GitHub `main` по пути и SHA; GitHub остаётся каноническим источником.
 
-### 0.6. Граница выполненного прохода
+### 0.6. Граница документа и release evidence
 
-Настоящий документ является архитектурным target и не утверждает, что:
-
-- DDL уже изменён;
-- generated schemas уже пересобраны;
-- миграции применены;
-- tests или PostgreSQL integration выполнены;
-- Graphify artifacts пересобраны;
-- независимый critic вызван;
-- PR создан.
-
-Эти действия входят в release gate, а не в документный аудит.
+Настоящий документ определяет архитектуру, но сам по себе не доказывает
+выполнение DDL, migrations, tests, PostgreSQL integration, generated
+reproducibility, Graphify или independent critic checks. Такие доказательства
+привязаны к exact release HEAD и его evidence manifest. Для active production
+boundary применяется release `spatial-v3-production-v1`.
 
 ### 0.7. Критерий нулевого документного аудита
 
@@ -129,7 +124,8 @@ Read-only копия Google Drive в этом документном прохо�
 - отсутствуют неразрешённые противоречия между разделами 0–17 и приложениями A–C;
 - каждый `contract_name` объявлен ровно один раз, а каждый contract type разрешается в primitive, canonical contract или явно зарегистрированный controlled vocabulary;
 - отсутствуют рабочие placeholders, незакрытые schema branches и альтернативные трактовки одного state transition;
-- target-правила не выдаются за действующий runtime и не ослабляют active materialization v2 до атомарной активации;
+- historical target-правила не смешиваются с действующим v3 runtime и не
+  возвращают materialization v2 как fallback после атомарной активации;
 - все выявленные замечания либо исправлены, либо явно вынесены в release-gate limitation без утверждения функциональной готовности.
 
 Ноль замечаний в этом смысле относится только к статической непротиворечивости текста и contracts. Он не означает прохождение DDL, migration, compiler, runtime, PostgreSQL, Graphify или independent critic checks.
@@ -142,15 +138,16 @@ Read-only копия Google Drive в этом документном прохо�
 `temporal-world-v1` / `4.3.0-target.1` для exact `GameTimestamp`, activities,
 temporal boundaries, domain/NPC/carrier/remote processing, persistence и
 post-commit narration. Доказанный PR8 handoff gap оформлен additive A.7 как
-current `temporal-world-v1.1` / Spatial DTO `4.4.0-target.1`; это не новый
-release stage и не production activation.
+current `temporal-world-v1.1` / Spatial DTO `4.4.0-target.1`; это contract
+version, а не release stage.
 
-Он используется только в target contracts, tests, migration и shadow
-composition до отдельного `versioned production activation cutover`.
-Promotion выполнен после полной реализации и независимого критика; последующее
-P28 exact-head evidence принято без production write или composition switch.
-Нормативный status `active` и принятое P28 evidence не являются production
-activation: production v2 остаётся sole owner до отдельного cutover.
+До завершённого `versioned production activation cutover` он использовался
+только в target contracts, tests, migration и shadow composition. Promotion
+выполнен после полной реализации и независимого критика; историческое P28
+exact-head evidence было принято без production write или composition switch.
+Production activation выполнена позднее release
+`spatial-v3-production-v1`; production v2 теперь только explicit
+migration/rollback source.
 
 При temporal-конфликте профильный amendment имеет приоритет над
 пространственной прозой §11 и соответствующими Appendix B temporal contracts;

@@ -21,6 +21,9 @@
   projection; handlers не получают скрытое состояние и не владеют clock
   ordering.
 - Spatial/target surfaces: `./spatial-v3-*` (request profile, orchestration, execution, write plan, target shadow composition) и `createCombinedWritePlanBuilder`; `./compat` — explicit legacy adapter.
+- `./spatial-v3-target-composition` exports separate reviewed factories for
+  historical target/shadow tests and active `production_sole_owner` wiring;
+  production game-server imports only the production factory.
 - `./spatial-v3-journey-commands`: `createSpatialV3JourneyCommandCoordinator` validates the four Appendix A.7 tagged intents against a sealed server projection, supplies the authoritative exact clock to explicit handlers and enforces immutable plan lineage, zero-time cancel and idempotent replay.
 - `./spatial-v3-reaction-handlers`: `resolveSpatialV3NpcReaction` dispatches only the three approved current-target reaction command bindings to deterministic code-owned effect builders, validates the complete request/proposal contract and replays only an identical persisted proposal.
 - `./spatial-v3-perception-reaction-write-set`: `buildSpatialV3PerceptionReactionWriteSet` validates already resolved perception/replay/reaction/knowledge contracts and maps them to target rows, expected versions and physical lock keys without reads, decisions or writes.
@@ -37,11 +40,11 @@
 
 ## Target / activation
 
-Temporal v4 surfaces — target/shadow only (current `temporal-world-v1.1` /
-`4.4.0-target.1`, immutable accepted base `temporal-world-v1` /
-`4.3.0-target.1`); accepted historical P28 evidence не активировало runtime,
-и production v2 остаётся active до отдельного
-`versioned production activation cutover`. `turn` не активирует target и не
+Temporal v4 surfaces use current `temporal-world-v1.1` /
+`4.4.0-target.1` and immutable accepted base `temporal-world-v1` /
+`4.3.0-target.1`. Accepted historical P28 evidence не активировало runtime;
+последующий `versioned production activation cutover` release
+`spatial-v3-production-v1` сделал v3 sole production composition. `turn` не
 реализует persistence fallback.
 
 ## Тесты

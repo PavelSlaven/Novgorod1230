@@ -14,8 +14,6 @@ import {
   runSpatialV3RollbackDrill,
   runSpatialV3StructuralShadow
 } from '../../tools/spatial-v3/p25-activation-tooling.mjs';
-import { createSpatialV3RequestProfileBoundary } from '@rus/turn/spatial-v3-request-profile';
-import { validateRuntimeComposition } from '@rus/contracts/spatial-v3/compatibility';
 
 const observation = (overrides = {}) => ({ endpoints: { departure: 'a', arrival: 'b' }, time: { numerator: 5, denominator: 1 }, visibility: { mode: 'known' }, errors: [], migration_classifications: ['canonical_projection'], ...overrides });
 const bindings = (...entries) => entries;
@@ -32,16 +30,7 @@ test('P25 gives each request exactly one v2 production or no-write v3 shadow own
   assert.equal(conflict.ok, false); assert.equal(conflict.errors[0].code, 'composition_profile_binding_conflict');
 });
 
-test('P25 wires P06 and immutable request profiles into the actual request composition boundary', async () => {
-  const factory = createSpatialV3RequestProfileBoundary({
-    request_profiles: [{ party_id: 'p', request_id: 'v2', profile: 'production_v2' }, { party_id: 'p', request_id: 'v3', profile: 'shadow_v3' }],
-    p06Guard: validateRuntimeComposition,
-    runProductionV2: async (input) => ({ owner: 'v2', payload: input.payload }),
-    runShadowV3: async () => ({ target_state_writes: false, observation: 'shadow' })
-  });
-  assert.equal((await factory.run({ party_id: 'p', request_id: 'v2', profile: 'production_v2', payload: { id: 1 } })).result.owner, 'v2');
-  assert.equal((await factory.run({ party_id: 'p', request_id: 'v3', profile: 'shadow_v3', payload: { id: 2 } })).activation_permitted, false);
-  assert.equal((await factory.run({ party_id: 'p', request_id: 'v3', profile: 'production_v2' })).errors[0].code, 'composition_profile_binding_mismatch');
+test('P25 request-profile composition remains migration tooling, not a runtime package export', () => {
   const tooling = createToolingRequestCompositionBoundary({
     request_profiles: [{ party_id: 'p', request_id: 'r', profile: 'production_v2' }],
     production_v2: () => ({ owner: 'v2' }), shadow_v3: () => ({ target_state_writes: false })
@@ -112,7 +101,10 @@ test('P25 P24 party/world rollback drill requires real evidence rows and rolls b
 
 test('P25 local PostgreSQL snapshot/restore drill refuses silent v3-to-v2 reinterpretation', async (t) => {
   const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 45_000 });
-  if (docker(['version']).status !== 0) t.skip('Docker required');
+  if (docker(['version']).status !== 0) {
+    t.skip('Docker required');
+    return;
+  }
   const port = 57600 + (process.pid % 300); const name = `p25-${process.pid}`;
   t.after(() => docker(['rm', '-f', name]));
   assert.equal(docker(['run', '-d', '--name', name, '-p', `${port}:5432`, '-e', 'POSTGRES_PASSWORD=p25', '-e', 'POSTGRES_USER=p25', '-e', 'POSTGRES_DB=p25', 'postgres:16-alpine']).status, 0);

@@ -8,6 +8,8 @@ const boundaryPath = 'docs/migration/spatial-v3/production-activation-boundary.v
 const schemaPath = 'data/contracts/spatial-v3/production-activation-boundary.schema.json';
 const evidencePath = 'docs/migration/spatial-v3/release-evidence.v1.json';
 const historicalFreezePath = 'docs/migration/spatial-v3/normative-freeze.json';
+const worldCatalogManifestPath =
+  'data/world-catalogs/novgorod/spatial-v3/manifest.json';
 const expectedCutover = 'versioned production activation cutover';
 const errors = [];
 
@@ -16,15 +18,187 @@ const schema = JSON.parse(await read(schemaPath));
 const evidenceBytes = await readFile(resolve(root, evidencePath));
 const evidence = JSON.parse(evidenceBytes);
 const historicalFreezeBytes = await readFile(resolve(root, historicalFreezePath));
+const worldCatalogManifestBytes = await readFile(
+  resolve(root, worldCatalogManifestPath)
+);
+const serverConfig = await read('apps/game-server/src/config.js');
+const compositionLoader = await read(
+  'apps/game-server/src/runtime/load-composition.js'
+);
+const serverEntrypoint = await read('apps/game-server/src/server.js');
+const serverPackage = JSON.parse(await read('apps/game-server/package.json'));
+const turnPackage = JSON.parse(await read('packages/turn/package.json'));
+const serverPublicApi = await read('apps/game-server/src/index.js');
+const productionRoot = await read(
+  'apps/game-server/src/composition/production-spatial-v3.js'
+);
+const targetMigrations = await read(
+  'apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js'
+);
 
 check(boundary.schema === 'rus.spatial-v3.production-activation-boundary.v1', 'boundary schema mismatch');
 check(boundary.version === 1, 'boundary version mismatch');
-check(boundary.current_production_owner === 'production_v2', 'production v2 must remain sole current owner');
+check(boundary.current_production_owner === 'production_v3', 'production v3 must be the sole current owner');
 check(
-  boundary.target_status === 'target_shadow_until_versioned_production_activation_cutover',
+  boundary.target_status === 'production_activated_sole_owner',
   'target status mismatch'
 );
 check(boundary.activation_operation === expectedCutover, 'cutover term mismatch');
+check(boundary.activation_status === 'completed', 'cutover completion status mismatch');
+check(boundary.release?.release_id === 'spatial-v3-production-v1', 'release id mismatch');
+check(boundary.release?.composition_id === 'builtin:production-spatial-v3', 'composition id mismatch');
+check(boundary.release?.contract_version === '4.4.0-target.1', 'contract version mismatch');
+check(boundary.release?.temporal_contract_id === 'temporal-world-v1.1', 'temporal contract id mismatch');
+check(boundary.release?.party_schema_version === 'party_runtime_v3_target', 'party schema version mismatch');
+check(
+  boundary.release?.world_revision_id
+    === 'novgorod_spatial_v3_target_contract_approval_001',
+  'world revision pin mismatch'
+);
+check(
+  boundary.release?.world_catalog_digest
+    === '0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e',
+  'world catalog digest pin mismatch'
+);
+check(
+  boundary.release?.world_catalog_manifest_sha256
+    === sha256(worldCatalogManifestBytes),
+  'world catalog manifest pin mismatch'
+);
+check(boundary.release?.dependency_pin_mode === 'exact_only', 'dependency pin mode mismatch');
+check(
+  boundary.release?.runtime_catalog_pin_schema
+    === 'rus.runtime_catalog_pin.v2',
+  'runtime catalog pin schema mismatch'
+);
+check(
+  boundary.release?.runtime_catalog_scope
+    === 'item_container_materialization_v2',
+  'runtime catalog scope mismatch'
+);
+check(
+  boundary.release?.runtime_catalog_resolution
+    === 'active_for_new_party_persisted_for_existing_party',
+  'runtime catalog resolution mismatch'
+);
+check(
+  boundary.release?.party_runtime_catalog_migration_id
+    === 'party_runtime_catalog_pins_v1',
+  'party runtime-catalog migration id mismatch'
+);
+check(
+  boundary.release?.party_runtime_catalog_migration_digest
+    === 'f251623759b60799ea75b17b7234833a092b97a5443b8b831643c0544ef25a31',
+  'party runtime-catalog migration digest mismatch'
+);
+check(
+  boundary.release?.party_runtime_catalog_target_fingerprint
+    === '329a84c3c5ccd76e4a84b67454bcbd6e6c176fafbd285e77d44824dddcd8d2dd',
+  'party runtime-catalog target fingerprint mismatch'
+);
+check(boundary.release?.target_migration_count === 10, 'target migration count mismatch');
+check(
+  boundary.release?.target_migration_chain_digest
+    === 'a71b95540c6422ccee5b3d598cb6b0cefe108de3bf41216dea96a99068a5a370',
+  'target migration chain digest mismatch'
+);
+check(boundary.release?.rollback_source_release_id === 'production-v2', 'rollback source identity mismatch');
+check(boundary.release?.rollback_runtime_selectable === false, 'rollback source must not be runtime selectable');
+check(
+  serverConfig.includes(
+    "text(env.RUS_COMPOSITION_MODULE) || 'builtin:production-spatial-v3'"
+  ),
+  'server config does not default to the activated v3 composition'
+);
+check(
+  serverConfig.includes("config.compositionModule !== 'builtin:production-spatial-v3'"),
+  'server config does not fail closed for non-v3 composition'
+);
+check(
+  serverConfig.includes('config.cutoverStage !== 13'),
+  'server config permits an incomplete or partial cutover stage'
+);
+check(
+  compositionLoader.includes("reference === 'builtin:production-spatial-v3'"),
+  'composition loader does not select the activated v3 composition'
+);
+check(
+  !compositionLoader.includes("import('../composition/production.js')"),
+  'composition loader still imports production v2'
+);
+check(
+  !compositionLoader.includes('production-v2-rollback-source'),
+  'composition loader imports the explicit production-v2 rollback source'
+);
+check(
+  serverEntrypoint.trim() === "await import('./modular-entry.js');",
+  'server entrypoint is not v3 modular-only'
+);
+check(
+  serverPackage.exports?.['./production'] == null,
+  'production v2 remains a public runtime export'
+);
+check(
+  serverPackage.exports?.['./production-spatial-v3']
+    === './src/composition/production-spatial-v3.js',
+  'production v3 public export mismatch'
+);
+check(
+  serverPackage.exports?.['./production-v2-migration-source']
+    === './src/production-v2-migration-source.js',
+  'explicit production-v2 migration/rollback source export mismatch'
+);
+check(
+  !serverPublicApi.includes("from './production.js'"),
+  'game-server root API still exports production v2 runtime'
+);
+check(
+  turnPackage.exports?.['./spatial-v3-request-profile'] == null,
+  'turn package still exports the pre-cutover production-v2 request router'
+);
+for (const removedRuntimePath of [
+  'apps/game-server/src/composition/production.js',
+  'packages/turn/src/spatial-v3-request-profile.js'
+]) {
+  try {
+    await read(removedRuntimePath);
+    errors.push(`inactive runtime surface remains callable: ${removedRuntimePath}`);
+  } catch {
+    // Expected after the atomic cutover.
+  }
+}
+check(
+  productionRoot.includes('createSpatialV3ProductionComposition'),
+  'production root does not use the production v3 turn factory'
+);
+check(
+  !productionRoot.includes('createSpatialV3TargetShadowCompositionRoot'),
+  'production root still imports a shadow composition root'
+);
+check(
+  targetMigrations.includes(
+    "'010_party_runtime_pr8_reaction_options.sql'"
+  ),
+  'production v3 migration chain does not reach migration 010'
+);
+check(
+  productionRoot.includes('assertSpatialV3ProductionReadiness'),
+  'production root lacks migrated-party readiness gate'
+);
+for (const fragment of [
+  'novgorod_spatial_v3_target_contract_approval_001',
+  sha256(worldCatalogManifestBytes),
+  boundary.release.world_catalog_digest,
+  'temporal-world-v1.1',
+  'exact_only',
+  'rus.runtime_catalog_pin.v2',
+  'active_for_new_party_persisted_for_existing_party'
+]) {
+  check(
+    productionRoot.includes(fragment),
+    `production release pin is missing: ${fragment}`
+  );
+}
 check(boundary.historical_p05_freeze?.path === historicalFreezePath, 'historical P05 freeze path mismatch');
 check(boundary.historical_p05_freeze?.sha256 === sha256(historicalFreezeBytes), 'historical P05 freeze digest mismatch');
 check(boundary.historical_p05_freeze?.current_status_authority === false, 'historical P05 freeze must not claim current authority');
@@ -34,7 +208,7 @@ check(boundary.historical_p28_evidence?.manifest_sha256 === sha256(evidenceBytes
 check(boundary.historical_p28_evidence?.composition_changed === false, 'historical P28 must not claim composition activation');
 check(boundary.historical_p28_evidence?.production_writes === 0, 'historical P28 must not claim production writes');
 check(schema.properties?.activation_operation?.const === expectedCutover, 'schema cutover term mismatch');
-check(schema.properties?.current_production_owner?.const === 'production_v2', 'schema production owner mismatch');
+check(schema.properties?.current_production_owner?.const === 'production_v3', 'schema production owner mismatch');
 check(
   JSON.stringify(boundary.forbidden) === JSON.stringify([
     'partial_activation',
@@ -102,7 +276,9 @@ const stalePatterns = [
   /\bP28 (?:performs|выполняет)\b/giu,
   /(?:^|\s)до (?:атомарного )?P28(?:\s|[.,;:])/giu,
   /(?:^|\s)после P28(?:\s|[.,;:])/giu,
-  /(?:^|\s)атомарн\w* P28(?:\s|[.,;:])/giu
+  /(?:^|\s)атомарн\w* P28(?:\s|[.,;:])/giu,
+  /\bproduction_v?2\b.{0,100}\b(?:remains|оста[её]тся)\b.{0,80}\b(?:sole|единственн\w*)/giu,
+  /\b(?:active|current)\b.{0,80}\bproduction v2\b/giu
 ];
 for (const path of currentStatusPaths) {
   const content = await read(path);

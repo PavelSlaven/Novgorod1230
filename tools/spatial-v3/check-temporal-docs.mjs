@@ -45,7 +45,8 @@ const requiredFragments = new Map([
     '`4.3.0-target.1`',
     '`temporal-world-v1.1`',
     '`4.4.0-target.1`',
-    'production_runtime: materialization_v2_until_versioned_production_activation_cutover'
+    'production_runtime: spatial_v3_production_v1',
+    'v3 является sole production owner.'
   ]],
   ['DOCUMENTS/llm_documentation_navigation.md', [
     'temporal_world_and_interruptible_activities.md',

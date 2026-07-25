@@ -1,7 +1,6 @@
--- PR8 target-only immutable reaction option proposals.
--- This migration is loaded only by spatial-v3-target-migrations.js until the
--- versioned production activation cutover. It does not reuse the v2 generic
--- party_decision_requests tables or their wall-clock timestamps.
+-- PR8 immutable reaction option proposals, introduced in target-only scope
+-- and activated by the spatial-v3-production-v1 cutover. It does not reuse
+-- the v2 generic party_decision_requests tables or their wall-clock timestamps.
 CREATE TABLE IF NOT EXISTS party_runtime.party_npc_reaction_option_proposals (
   request_id text PRIMARY KEY,
   party_id text NOT NULL

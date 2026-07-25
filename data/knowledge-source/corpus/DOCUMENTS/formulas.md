@@ -2,11 +2,11 @@
 
 ## Статус
 
-Этот справочник описывает target v3 formulas только там, где они меняются
-пространственной миграцией. Принятое историческое P28 evidence не активировало
-runtime. До отдельного `versioned production activation cutover` active
-production semantics — materialization v2. Профильные документы владеют
-назначением формул; этот файл — единственный источник их записи и owner mapping.
+Этот справочник описывает production v3 formulas. Принятое историческое P28
+evidence само не активировало runtime; последующий
+`versioned production activation cutover` завершён release
+`spatial-v3-production-v1`. Профильные документы владеют назначением формул;
+этот файл — единственный источник их записи и owner mapping.
 
 Для Temporal World v4 профильным active target-нормативом является
 `temporal_world_and_interruptible_activities.md`. Формулы ниже используют
@@ -71,7 +71,11 @@ production activation cutover` это target, не active runtime formula.
 <!-- knowledge-retrieval-exclude:start -->
 ## Приложение A. Архивный v2-источник для migration traceability
 
-Нижеследующий текст сохранён только как historical/migration source для ссылочной совместимости и аудита. Он **не является target-правилом**, не активирует v2 semantics в target v3 и не разрешает mixed execution, dual write либо fallback. При конфликте применяется основной target-раздел этого документа и target standard; active production boundary до `versioned production activation cutover` определён отдельно.
+Нижеследующий текст сохранён только как historical/migration source для
+ссылочной совместимости и аудита. Он **не является production-правилом**, не
+активирует v2 semantics в v3 и не разрешает mixed execution, dual write либо
+fallback. При конфликте применяется основной v3-раздел этого документа и
+active production boundary release `spatial-v3-production-v1`.
 
 # Формулы проекта с пояснениями
 

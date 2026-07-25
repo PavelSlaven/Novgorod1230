@@ -124,7 +124,8 @@ Initial findings:
 | Donor/contracts/persistence/commands/evidence inventory | complete (`PASS WITH NOTES`) | five complete matrices and independent audit |
 | Formal handoff contract amendment | complete (`PASS WITH NOTES`) | Appendix A, registry, validators and independent normative audit |
 | Runtime implementation | functional candidate complete | profile and integration validation |
-| Final validation and cutover | pending | exact-head evidence and atomic release |
+| Final target validation | complete | exact functional HEAD, clean-clone acceptance and independent `PASS WITH NOTES` recorded |
+| Production cutover | pending | separate atomic release change after accepted target evidence |
 
 ## Inventory matrices
 
@@ -233,7 +234,7 @@ additive current designation `temporal-world-v1.1 / Spatial
 | Spatial route/plan/execution family: `movement_target_request`, `path_query`, `movement_option`, `party_route_plan`, `party_route_plan_step`, `party_route_plan_execution`, `party_route_plan_execution_event`, `traveller_travel_state` | movement planner + execution engine | turn/committer/reload | migrations `003`–`004` | P18/P19/P21/P15 | `ALREADY_IN_MAIN`; no new travel engine |
 | Spatial first-entry family: `party_g5_site`, `party_scene_baseline`, `party_g6_instance`, `scene_position_node`, preparation/frontier contracts | materialization/preparation owners | turn/atomic committer | migration `002` plus domain mapping | first-entry/P20/P21/P13 | `ALREADY_IN_MAIN`; first-entry reuses canonical/generated G5 and creates/reuses G6 |
 | `world_perception_signal` (base Spatial contract) | no complete public producer proven | no complete shared consumer path proven | table exists in migration `002` | registry/DDL only | `DATA_GAP`; registry presence alone is not a handoff |
-| sealed perception input and replay evidence used internally by `@rus/npc-runtime` | `@rus/turn` sealed producer | `proposeNpcPerception`; result then goes to knowledge owner | existing perception result + idempotency mapping; no new store | new public-registry contract tests | contract gap resolved by Appendix A.7; runtime adoption remains pending audit |
+| sealed perception input and replay evidence used internally by `@rus/npc-runtime` | `@rus/turn` sealed producer | `proposeNpcPerception`; result then goes to knowledge owner | existing perception result + idempotency mapping; no new store | new public-registry contract tests | contract gap resolved by Appendix A.7; target/shadow runtime and exact-commit audit accepted |
 | tagged journey start/continue/successor command ingress | authenticated ingress + sealed server state | target command registry/execution engine | existing execution, event and idempotency tables | new public-registry contract tests | contract gap resolved by three separate command DTO plus successor-preparation DTO; no nullable catch-all |
 | zero-time journey cancel/control command payload | authenticated ingress + sealed server state | existing `abortActivity`/execution transitions | existing execution/change-set tables | new public-registry cancel/no-clock tests | contract gap resolved; cancel is explicitly not a boundary candidate |
 
@@ -920,9 +921,9 @@ therefore explicitly retained as `DATA_GAP`, not synthesized by PR8.
 | browser-harness doctor | Chrome discovered, but its local CDP daemon was unavailable; the repository Playwright/Chrome E2E was used and is recorded rather than claiming harness success |
 | `git diff --check` | pass |
 
-The exact-head evidence, clean-clone acceptance, final independent critic,
-production cutover and PR operations remain pending and must use the final
-committed HEAD rather than this working-tree checkpoint.
+The exact-head evidence, clean-clone acceptance and final exact-commit critic
+are complete for subject `5c35975fafdf001236e861d84b0d546f2bd1ee2d`.
+Production cutover and PR operations remain separate later phases.
 
 ### Functional validation completion
 
@@ -987,3 +988,17 @@ PR8 versioned production activation cutover travel perception ownership exact ti
 Both RAG and Graphify resolved the PR8 handoff amendment, sole clock owner,
 perception/reaction ownership, target-only migrations and separate production
 cutover boundary.
+
+### Exact functional HEAD
+
+Target/shadow functional commit
+`5c35975fafdf001236e861d84b0d546f2bd1ee2d` passed a separate clean-clone
+acceptance. The immutable candidate-bound record is
+`evidence/target-functional-exact-head.v1.json`; the human-readable command,
+result, approval and production-boundary record is
+`evidence/target-functional-exact-head-report.md`.
+
+The package explicitly records that production v2 remains the sole owner and
+that no production activation occurred. It neither edits nor reuses the
+historical PR19/P28 evidence. The machine check is
+`npm run pr8:check-exact-head`.

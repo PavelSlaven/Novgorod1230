@@ -4,11 +4,25 @@ import {
 } from '@rus/contracts/spatial-v3/registry';
 
 export const TABLES = Object.freeze({
+  parties: { modes: ['update'], key: ['party_id'], version: true },
+  party_server_sessions: {
+    modes: ['update'],
+    key: ['party_id'],
+    version: true
+  },
+  party_state_snapshots: {
+    modes: ['insert'],
+    key: ['party_id', 'state_version']
+  },
   party_v3_change_sets: { modes: ['append'], key: ['id'] },
   party_route_plan_execution_events: { modes: ['append'], key: ['execution_id', 'event_ordinal'] },
   party_traversal_interval_results: { modes: ['append'], key: ['id'] },
   party_timed_activity_attempts: { modes: ['append'], key: ['activity_execution_id', 'attempt_ordinal'] },
-  party_activity_resource_bindings: { modes: ['append'], key: ['activity_execution_id', 'resource_kind', 'resource_id', 'binding_kind', 'change_set_id'] },
+  party_action_step_runs: { modes: ['append'], key: ['id'] },
+  party_activity_resource_bindings: { modes: ['append'], key: ['activity_execution_id', 'resource_kind', 'resource_id', 'binding_kind'] },
+  party_check_resolutions: { modes: ['append'], key: ['check_resolution_id'] },
+  party_actor_npc_interactions: { modes: ['append'], key: ['interaction_id'] },
+  party_actor_npc_interaction_summaries: { modes: ['append'], key: ['summary_id'] },
   party_temporal_event_subjects: { modes: ['append'], key: ['event_id', 'subject_kind', 'subject_id', 'subject_role'] },
   party_temporal_event_dependencies: { modes: ['append'], key: ['event_id', 'depends_on_event_id'] },
   party_npc_runtime_transitions: { modes: ['append'], key: ['transition_id'] },
@@ -21,14 +35,25 @@ export const TABLES = Object.freeze({
   party_npc_knowledge_merge_results: { modes: ['append'], key: ['proposal_id'] },
   party_body_temporal_history: { modes: ['append'], key: ['history_id'] },
   party_visible_packages: { modes: ['append'], key: ['package_id'] },
-  party_route_plan_executions: { modes: ['update'], key: ['id'], version: true },
+  party_route_plan_executions: { modes: ['insert', 'update'], key: ['id'], version: true },
   party_timed_activity_executions: { modes: ['insert', 'update'], key: ['id'], version: true },
-  traveller_travel_states: { modes: ['update'], key: ['id'], version: true },
-  party_journey_locations: { modes: ['update'], key: ['id'], version: true },
+  traveller_travel_states: { modes: ['insert', 'update'], key: ['id'], version: true },
+  party_journey_locations: {
+    modes: ['insert', 'update', 'delete'],
+    key: ['id'],
+    version: true
+  },
   party_clocks: { modes: ['update'], key: ['party_id'], version: true },
-  party_carrier_attachments: { modes: ['update'], key: ['id'], version: true },
+  party_carrier_attachments: { modes: ['insert', 'update'], key: ['id'], version: true },
   party_npc_spatial_schedules: { modes: ['update'], key: ['id'], version: true },
-  entity_placements: { modes: ['update'], key: ['party_id', 'entity_kind', 'entity_id'], version: true },
+  entity_placements: { modes: ['insert', 'update', 'delete'], key: ['party_id', 'entity_kind', 'entity_id'], version: true },
+  party_entity_controls: { modes: ['insert', 'update'], key: ['party_id', 'entity_kind', 'entity_id'], version: true },
+  party_actor_profile_bindings: { modes: ['insert', 'update'], key: ['party_id', 'actor_kind', 'actor_id'], version: true },
+  party_actor_body_states: { modes: ['insert', 'update'], key: ['party_id', 'actor_kind', 'actor_id'], version: true },
+  party_actor_active_conditions: { modes: ['insert', 'update'], key: ['party_id', 'actor_kind', 'actor_id', 'condition_id'], version: true },
+  party_resource_nodes: { modes: ['insert', 'update'], key: ['resource_node_id'], version: true },
+  party_transports: { modes: ['insert', 'update'], key: ['party_id', 'transport_id'], version: true },
+  party_actor_relations: { modes: ['insert', 'update'], key: ['relation_id'], version: true },
   expansion_frontiers: { modes: ['update'], key: ['id'], version: true },
   expansion_capacity_reservations: { modes: ['update'], key: ['id'], version: true },
   party_activity_participant_bindings: { modes: ['insert', 'update'], key: ['activity_execution_id', 'participant_kind', 'participant_id'], version: true },
@@ -37,6 +62,14 @@ export const TABLES = Object.freeze({
   party_propagation_processes: { modes: ['insert', 'update'], key: ['process_id'], version: true },
   party_npc_knowledge_merge_states: { modes: ['update'], key: ['party_id', 'npc_id'], version: true },
   party_npc_knowledge: { modes: ['insert'], key: ['party_id', 'npc_id', 'fact_id'] },
+  party_npcs: { modes: ['insert'], key: ['party_id', 'npc_id'] },
+  party_npc_traits: { modes: ['insert'], key: ['party_id', 'npc_id', 'trait_domain', 'category_id'] },
+  party_items: { modes: ['insert'], key: ['party_id', 'item_id'] },
+  party_containers: {
+    modes: ['insert', 'update'],
+    key: ['party_id', 'container_id'],
+    version: true
+  },
   party_route_plans: { modes: ['insert'], key: ['id'] },
   party_route_plan_steps: { modes: ['insert'], key: ['route_plan_id', 'ordinal'] },
   preparation_claims: { modes: ['insert', 'update'], key: ['id'], version: true },
@@ -57,6 +90,7 @@ export const CHILD_TABLES = new Set([
   'preparation_claims',
   'party_activity_participant_bindings',
   'party_activity_resource_bindings',
+  'party_actor_npc_interaction_summaries',
   'party_temporal_event_subjects',
   'party_temporal_event_dependencies',
   'party_perception_witnesses'
@@ -93,6 +127,12 @@ export const digestInput = (plan) => { const { digest, ...value } = plan; return
 export const keyOf = (write) => `${write.target_schema ?? 'party_runtime'}.${write.target_table}:${write.id}`;
 export const validIdentity = (write) => write?.target_table === 'entity_placements'
   ? write.id === `${write.record?.entity_kind}:${write.record?.entity_id}`
+  : write?.target_table === 'party_entity_controls' ? write.id === `${write.record?.entity_kind}:${write.record?.entity_id}`
+    : write?.target_table === 'parties' ? write.record?.party_id === write.id
+      : write?.target_table === 'party_server_sessions'
+        ? write.record?.party_id === write.id
+        : write?.target_table === 'party_state_snapshots'
+          ? write.id === `${write.record?.party_id}:${write.record?.state_version}`
   : write?.target_table === 'party_clocks' ? write.record?.party_id === write.id
     : write?.target_table === 'party_route_plan_execution_events' ? write.id === `${write.record?.execution_id}:${write.record?.event_ordinal}`
       : write?.target_table === 'party_timed_activity_attempts' ? write.id === `${write.record?.activity_execution_id}:${write.record?.attempt_ordinal}`
@@ -100,7 +140,20 @@ export const validIdentity = (write) => write?.target_table === 'entity_placemen
           : write?.target_table === 'party_visible_packages' ? write.record?.package_id === write.id
         : write?.target_table === 'party_narration_jobs' ? write.record?.job_id === write.id
           : write?.target_table === 'party_activity_participant_bindings' ? write.id === `${write.record?.activity_execution_id}:${write.record?.participant_kind}:${write.record?.participant_id}`
-            : write?.target_table === 'party_activity_resource_bindings' ? write.id === `${write.record?.activity_execution_id}:${write.record?.resource_kind}:${write.record?.resource_id}:${write.record?.binding_kind}:${write.record?.change_set_id}`
+            : write?.target_table === 'party_activity_resource_bindings' ? write.id === `${write.record?.activity_execution_id}:${write.record?.resource_kind}:${write.record?.resource_id}:${write.record?.binding_kind}`
+              : write?.target_table === 'party_actor_profile_bindings' ? write.id === `${write.record?.actor_kind}:${write.record?.actor_id}`
+                : write?.target_table === 'party_actor_body_states' ? write.id === `${write.record?.actor_kind}:${write.record?.actor_id}`
+                  : write?.target_table === 'party_actor_active_conditions' ? write.id === `${write.record?.actor_kind}:${write.record?.actor_id}:${write.record?.condition_id}`
+                    : write?.target_table === 'party_resource_nodes' ? write.record?.resource_node_id === write.id
+                      : write?.target_table === 'party_transports' ? write.record?.transport_id === write.id
+                        : write?.target_table === 'party_actor_relations' ? write.record?.relation_id === write.id
+                          : write?.target_table === 'party_check_resolutions' ? write.record?.check_resolution_id === write.id
+                            : write?.target_table === 'party_actor_npc_interactions' ? write.record?.interaction_id === write.id
+                              : write?.target_table === 'party_actor_npc_interaction_summaries' ? write.record?.summary_id === write.id
+                                : write?.target_table === 'party_npcs' ? write.record?.npc_id === write.id
+                                  : write?.target_table === 'party_npc_traits' ? write.id === `${write.record?.npc_id}:${write.record?.trait_domain}:${write.record?.category_id}`
+                                    : write?.target_table === 'party_items' ? write.record?.item_id === write.id
+                                      : write?.target_table === 'party_containers' ? write.record?.container_id === write.id
               : write?.target_table === 'party_temporal_events' ? write.record?.event_id === write.id
                 : write?.target_table === 'party_temporal_event_subjects' ? write.id === `${write.record?.event_id}:${write.record?.subject_kind}:${write.record?.subject_id}:${write.record?.subject_role}`
                   : write?.target_table === 'party_temporal_event_dependencies' ? write.id === `${write.record?.event_id}:${write.record?.depends_on_event_id}`
@@ -125,6 +178,13 @@ export function childParentKeys(write) {
     case 'party_timed_activity_attempts':
       return [`party_runtime.party_timed_activity_executions:${write.record?.activity_execution_id}`];
     case 'party_timed_activity_executions':
+      return write.record?.execution_scope === 'standalone'
+        ? []
+        : [`party_runtime.party_route_plan_executions:${write.record?.route_plan_execution_id}`];
+    case 'party_action_step_runs':
+      return write.record?.action_scope === 'standalone'
+        ? []
+        : [`party_runtime.party_route_plan_executions:${write.record?.execution_id}`];
     case 'party_route_plan_execution_events':
     case 'party_traversal_interval_results':
       return [`party_runtime.party_route_plan_executions:${write.record?.route_plan_execution_id ?? write.record?.execution_id}`];
@@ -175,56 +235,11 @@ export function childParentKeys(write) {
       return [`party_runtime.party_v3_change_sets:${write.record?.change_set_id}`];
     case 'party_narration_jobs':
       return [`party_runtime.party_visible_packages:${write.record?.package_id}`];
+    case 'party_actor_npc_interaction_summaries':
+      return [`party_runtime.party_actor_npc_interactions:${write.record?.interaction_id}`];
+    case 'party_actor_active_conditions':
+      return [`party_runtime.party_actor_body_states:${write.record?.actor_kind}:${write.record?.actor_id}`];
     default:
       return [];
   }
-}
-
-function orderingParentKeys(write) {
-  const parents = new Set();
-  for (const required of childParentKeys(write)) parents.add(required);
-  if (write?.target_table === 'party_scene_baselines' && write.record?.host_kind === 'g5_site') {
-    parents.add(`party_runtime.party_g5_sites:${write.record.host_id}`);
-  }
-  if (write?.target_table === 'party_journey_locations'
-    && write.record?.location_kind === 'scene'
-    && write.record?.scene_position_id) {
-    parents.add(`party_runtime.scene_position_nodes:${write.record.scene_position_id}`);
-  }
-  if (write?.target_table === 'party_temporal_event_dependencies' && write.record?.depends_on_event_id) {
-    parents.add(`party_runtime.party_temporal_events:${write.record.depends_on_event_id}`);
-  }
-  if (write?.target_table === 'party_propagation_processes' && write.record?.aggregate_id) {
-    parents.add(`party_runtime.party_remote_aggregate_states:${write.record.aggregate_id}`);
-  }
-  if (write?.target_table === 'party_npc_spatial_schedules' && write.record?.current_activity_execution_id) {
-    parents.add(`party_runtime.party_timed_activity_executions:${write.record.current_activity_execution_id}`);
-  }
-  return [...parents];
-}
-
-export function orderWrites(plan) {
-  const modeRank = Object.freeze({ update: 0, insert: 1, append: 2 });
-  const pending = new Map([
-    ...plan.updates.map((write) => [keyOf(write), { mode: 'update', write }]),
-    ...plan.inserts.map((write) => [keyOf(write), { mode: 'insert', write }]),
-    ...plan.appends.map((write) => [keyOf(write), { mode: 'append', write }])
-  ]);
-  const planKeys = new Set(pending.keys());
-  const completed = new Set();
-  const ordered = [];
-  while (pending.size) {
-    const ready = [...pending.entries()]
-      .filter(([, entry]) => orderingParentKeys(entry.write)
-        .filter((parent) => planKeys.has(parent))
-        .every((parent) => completed.has(parent)))
-      .sort((left, right) => modeRank[left[1].mode] - modeRank[right[1].mode] || left[0].localeCompare(right[0]));
-    if (!ready.length) throw Object.assign(new Error('write dependency cycle'), { spatialCode: 'generated_schema_mismatch' });
-    for (const [key, entry] of ready) {
-      pending.delete(key);
-      completed.add(key);
-      ordered.push(entry);
-    }
-  }
-  return ordered;
 }

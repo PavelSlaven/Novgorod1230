@@ -102,6 +102,9 @@ function normalizeBoolean(value, field) {
 }
 
 function normalizeDate(value, field) {
+  if (value instanceof Date && !Number.isNaN(value.getTime())) {
+    value = value.toISOString().slice(0, 10);
+  }
   if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/u.test(value)) {
     throw new TypeError(`${field} must be an ISO date.`);
   }

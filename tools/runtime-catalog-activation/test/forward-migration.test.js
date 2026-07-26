@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import migrationContracts from '../../../data/runtime-catalog/forward-migration-contracts.v1.json'
+import migrationContracts from '../../../data/runtime-catalog/forward-migration-contracts.v2.json'
   with { type: 'json' };
 import {
   ForwardMigrationError,

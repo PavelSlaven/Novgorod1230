@@ -106,12 +106,22 @@ export function firstEntryEvidenceMatches(check, evidence) {
 }
 export function validateSpatialV3CombinedWritePlan(plan) {
   if (!plan || plan.schema !== 'spatial_v3.combined_write_plan.v2' || !stable(plan.party_id) || !stable(plan.operation_kind) || !stable(plan.canonical_input_digest) || !stable(plan.digest) || computeSpatialV3CanonicalDigest(digestInput(plan)) !== plan.digest) return false;
-  if (computeSpatialV3CanonicalDigest({ inserts: plan.inserts, updates: plan.updates, appends: plan.appends }) !== plan.write_set_digest || computeSpatialV3CanonicalDigest(plan.expected_state_versions) !== plan.expected_state_versions_digest) return false;
+  if (computeSpatialV3CanonicalDigest({
+    inserts: plan.inserts,
+    updates: plan.updates,
+    appends: plan.appends,
+    deletes: plan.deletes
+  }) !== plan.write_set_digest || computeSpatialV3CanonicalDigest(plan.expected_state_versions) !== plan.expected_state_versions_digest) return false;
   if (!['physical', 'state', 'pin', 'endpoint', 'route', 'capacity', 'time', 'change_set'].every((kind) => plan.commit_rechecks?.some((check) => check?.kind === kind && stable(check.digest))) || ['owner_keys', 'execution_keys', 'g4_keys', 'physical_keys'].some((key) => !Array.isArray(plan[key]) || plan[key].some((value) => !stable(value)))) return false;
   if (plan.operation_kind === 'first_entry') {
     if (!validFirstEntryPhysicalRecheck(plan)) return false;
   }
-  const all = [['insert', plan.inserts], ['update', plan.updates], ['append', plan.appends]]; const keys = [];
+  const all = [
+    ['insert', plan.inserts],
+    ['update', plan.updates],
+    ['append', plan.appends],
+    ['delete', plan.deletes]
+  ]; const keys = [];
   for (const [mode, writes] of all) {
     if (!Array.isArray(writes)) return false;
     for (const write of writes) {
@@ -128,9 +138,11 @@ export function validateSpatialV3CombinedWritePlan(plan) {
       keys.push(keyOf(write));
     }
   }
-  if (new Set(keys).size !== keys.length || plan.updates.length !== plan.expected_state_versions.length) return false;
+  if (new Set(keys).size !== keys.length
+    || plan.updates.length + plan.deletes.length
+      !== plan.expected_state_versions.length) return false;
   const keySet = new Set(keys);
-  if ([...plan.inserts, ...plan.updates, ...plan.appends].some((write) =>
+  if ([...plan.inserts, ...plan.updates, ...plan.appends, ...plan.deletes].some((write) =>
     childParentKeys(write).some((parent) => !keySet.has(parent)))) return false;
   if (!keys.every((key) => plan.physical_keys.includes(key))) return false;
   const changes = plan.appends.filter((write) => write.target_table === 'party_v3_change_sets' && write.id === plan.change_set_id && write.record.operation_kind === plan.operation_kind && write.record.idempotency_record_id === plan.idempotency_record_id);
@@ -162,5 +174,10 @@ export function validateSpatialV3CombinedWritePlan(plan) {
   } else if (plan.visible_package_envelope != null || visibleWrites.length || narrationJobs.length) {
     return false;
   }
-  return plan.updates.every((write) => plan.expected_state_versions.some((item) => item.target_table === write.target_table && item.id === write.id && Number.isInteger(item.state_version) && item.state_version >= 0));
+  return [...plan.updates, ...plan.deletes].every((write) =>
+    plan.expected_state_versions.some((item) =>
+      item.target_table === write.target_table
+      && item.id === write.id
+      && Number.isInteger(item.state_version)
+      && item.state_version >= 0));
 }

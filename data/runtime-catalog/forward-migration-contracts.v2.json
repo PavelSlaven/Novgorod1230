@@ -1,0 +1,28 @@
+{
+  "schema": "rus.forward_migration_contracts.v1",
+  "fingerprint_algorithm": "rus.postgres_schema_fingerprint.v2",
+  "source_contract": {
+    "repository_commit_sha": "d4be6a6014b80ceae937b3900dad6cbe7c1e787d",
+    "world_bootstrap": "infra/world-base/schema/01.sql..19.sql",
+    "party_bootstrap": "schemas/party-db/001_party_runtime.sql..011_party_runtime_first_playable.sql",
+    "operator_backup_verified": false
+  },
+  "migrations": [
+    {
+      "migration_id": "world_runtime_catalog_activation_v2",
+      "migration_digest": "15f36e5c02c28660d83bd3b5923036f138dbeec727c03e60c16cdb4cbc13c506",
+      "schema_name": "world_base",
+      "source_schema_fingerprint": "6138fa8253fb95373d42e8467793c70596825529d7e10e177f27f60b486eddb5",
+      "target_schema_fingerprint": "d932870f0ca0e1ad8a3ebe702f35083ba48f36282c420614cdd4385f78192679",
+      "sql_path": "tools/runtime-catalog-activation/migrations/world/001_runtime_catalog_activation.sql"
+    },
+    {
+      "migration_id": "party_runtime_catalog_pins_v2",
+      "migration_digest": "9f574d2782cdbaeeba190d8237fe38c26bddd65775f060749079d3d0163ef32d",
+      "schema_name": "party_runtime",
+      "source_schema_fingerprint": "16f99b12e58ce60f6c87e29e0824518987ddb66b9ee6c7d945daebc2b0957817",
+      "target_schema_fingerprint": "47cb21b39db8be7336d10533ed319fe314f5bda65d850f1297c8321de6c9d165",
+      "sql_path": "tools/runtime-catalog-activation/migrations/party/001_runtime_catalog_pins.sql"
+    }
+  ]
+}

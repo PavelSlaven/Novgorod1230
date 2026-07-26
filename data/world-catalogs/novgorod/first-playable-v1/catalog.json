@@ -1,0 +1,350 @@
+{
+  "schema": "rus.first_playable.content_catalog.v1",
+  "catalog_id": "lower_dvina_first_playable_content_v1",
+  "version": 1,
+  "status": "approved",
+  "applicability": {
+    "region_id": "region_novgorod_land",
+    "period": "1230-1250",
+    "season_mode": "late_summer_open_water",
+    "host_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+    "start_canonical_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_high_platform"
+  },
+  "source_bindings": [
+    {
+      "source_id": "source:first_playable:approved_roles",
+      "path": "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv",
+      "status": "approved"
+    },
+    {
+      "source_id": "source:first_playable:approved_occupations",
+      "path": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+      "status": "approved"
+    },
+    {
+      "source_id": "source:first_playable:bounded_reconstruction_authorization",
+      "path": "data/world-catalogs/novgorod/temporal-v4/sources/activity_categories_profiles/USER_RECONSTRUCTION_AUTHORIZATION.txt",
+      "status": "approved"
+    },
+    {
+      "source_id": "source:first_playable:temporal_normative",
+      "path": "data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md",
+      "status": "approved"
+    },
+    {
+      "source_id": "source:first_playable:player_generation_normative",
+      "path": "data/knowledge-source/corpus/DOCUMENTS/player_character_generation.txt",
+      "status": "approved"
+    },
+    {
+      "source_id": "source:first_playable:npc_generation_normative",
+      "path": "data/knowledge-source/corpus/DOCUMENTS/npc_generation_profiles.txt",
+      "status": "approved"
+    },
+    {
+      "source_id": "source:first_playable:item_container_promotion",
+      "path": "docs/implementation/item-container-120-approval-audit/evidence/FINAL_APPROVAL_ATTESTATION.json",
+      "status": "approved"
+    },
+    {
+      "source_id": "source:first_playable:spatial_v3_v1",
+      "path": "data/world-catalogs/novgorod/spatial-v3/manifest.json",
+      "status": "approved"
+    }
+  ],
+  "character_candidate_sets": {
+    "player_boatman": {
+      "selection_policy": "canonical_digest_modulo_ordered_candidates_v1",
+      "role_candidates": ["nov_role_boatman"],
+      "occupation_candidates": ["nov_occ_boatman"],
+      "skill_profile_candidates": [{
+        "profile_id": "skill_profile_nov_boatman_first_playable_v1",
+        "skills": {
+          "travel_transport": 2,
+          "survival": 2,
+          "observation": 1,
+          "communication_trade": 1
+        }
+      }],
+      "name_candidates": [
+        {"name_id": "nov_name_ivan_v1", "display_name": "Иван"},
+        {"name_id": "nov_name_mikula_v1", "display_name": "Микула"}
+      ],
+      "language_profile_candidates": [{
+        "profile_id": "language_novgorod_russian_common_v1",
+        "speech_scope": "новгородская русская речь",
+        "foreign_language_claims": []
+      }],
+      "knowledge_profile_candidates": [{
+        "profile_id": "knowledge_lower_dvina_boatman_limited_v1",
+        "known_scopes": [
+          "start_high_platform",
+          "landing_edge",
+          "water_approach"
+        ],
+        "unknown_scopes": [
+          "exact_boundary_crossing",
+          "yp025_receiving_scene"
+        ]
+      }],
+      "body_profile_candidates": [{
+        "profile_id": "body_ready_traveller_v1",
+        "metrics": {"health": 100, "energy": 80, "satiety": 70},
+        "active_conditions": []
+      }],
+      "equipment_profile_candidates": [{
+        "profile_id": "equipment_nov_boatman_minimal_v1",
+        "clothing_template_refs": [
+          "item_tpl_nov_linen_shirt_v1",
+          "item_tpl_nov_wool_outer_garment_v1"
+        ],
+        "owned_item_template_refs": [
+          "item_tpl_nov_rope_v1",
+          "item_tpl_nov_dried_fish_v1"
+        ],
+        "owned_container_template_refs": [
+          "container_tpl_nov_bucket_v1",
+          "container_tpl_nov_small_soft_bag_v1"
+        ],
+        "initial_item_allocations": [
+          {
+            "slot_id": "rope",
+            "display_name": "верёвка",
+            "template_id": "item_tpl_nov_rope_v1",
+            "category_id": "cat_item_object_rope_v1",
+            "quantity_profile_id": "quantity_item_tpl_nov_rope_v1_count_v5",
+            "quantity_candidates": [{"quantity": 1, "unit_id": "piece"}],
+            "equipment_role": "owned_tool"
+          },
+          {
+            "slot_id": "dried-fish",
+            "display_name": "сушёная рыба",
+            "template_id": "item_tpl_nov_dried_fish_v1",
+            "category_id": "cat_item_object_dried_fish_v1",
+            "quantity_profile_id": "quantity_item_tpl_nov_dried_fish_v1_v3",
+            "quantity_candidates": [{"quantity": 1, "unit_id": "piece"}],
+            "equipment_role": "owned_food"
+          },
+          {
+            "slot_id": "linen-shirt",
+            "display_name": "нижняя рубаха",
+            "template_id": "item_tpl_nov_linen_shirt_v1",
+            "category_id": "cat_item_object_linen_shirt_v1",
+            "quantity_profile_id": "quantity_item_tpl_nov_linen_shirt_v1_count_v5",
+            "quantity_candidates": [{"quantity": 1, "unit_id": "piece"}],
+            "equipment_role": "worn_clothing"
+          },
+          {
+            "slot_id": "wool-outer-garment",
+            "display_name": "верхняя шерстяная одежда",
+            "template_id": "item_tpl_nov_wool_outer_garment_v1",
+            "category_id": "cat_item_object_wool_outer_garment_v1",
+            "quantity_profile_id": "quantity_item_tpl_nov_wool_outer_garment_v1_count_v5",
+            "quantity_candidates": [{"quantity": 1, "unit_id": "piece"}],
+            "equipment_role": "worn_clothing"
+          }
+        ],
+        "initial_container_allocations": [
+          {
+            "slot_id": "bucket",
+            "display_name": "ведро",
+            "template_id": "container_tpl_nov_bucket_v1",
+            "count_candidates": [1]
+          },
+          {
+            "slot_id": "soft-bag",
+            "display_name": "мягкая сумка",
+            "template_id": "container_tpl_nov_small_soft_bag_v1",
+            "count_candidates": [1]
+          }
+        ]
+      }]
+    },
+    "scene_fisher": {
+      "selection_policy": "canonical_digest_modulo_ordered_candidates_v1",
+      "role_candidates": ["nov_role_fisher"],
+      "occupation_candidates": ["nov_occ_fisher"],
+      "name_candidates": [
+        {"name_id": "nov_name_ivan_v1", "display_name": "Иван"},
+        {"name_id": "nov_name_mikula_v1", "display_name": "Микула"},
+        {"name_id": "nov_name_yakov_v1", "display_name": "Яков"}
+      ],
+      "language_profile_candidates": [
+        {"profile_id": "language_novgorod_russian_common_v1"}
+      ],
+      "knowledge_profile_candidates": [{
+        "profile_id": "knowledge_lower_dvina_fisher_local_v1",
+        "known_scopes": [
+          "landing_edge",
+          "water_source_quality_unknown",
+          "local_shore_risk"
+        ],
+        "unknown_scopes": ["exact_boundary_crossing"]
+      }],
+      "equipment_profile_candidates": [{
+        "profile_id": "equipment_nov_fisher_station_v1",
+        "owned_item_template_refs": ["item_tpl_nov_fishing_net_v1"],
+        "owned_container_template_refs": [
+          "container_tpl_nov_carrying_basket_v1"
+        ],
+        "initial_item_allocations": [{
+          "slot_id": "fishing-net",
+          "display_name": "рыболовная сеть",
+          "template_id": "item_tpl_nov_fishing_net_v1",
+          "category_id": "cat_item_object_fishing_net_v1",
+          "quantity_profile_id": "quantity_item_tpl_nov_fishing_net_v1_count_v5",
+          "quantity_candidates": [{"quantity": 1, "unit_id": "piece"}],
+          "equipment_role": "work_tool"
+        }],
+        "initial_container_allocations": [{
+          "slot_id": "fisher-basket",
+          "display_name": "переносная корзина",
+          "template_id": "container_tpl_nov_carrying_basket_v1",
+          "count_candidates": [1]
+        }]
+      }]
+    }
+  },
+  "transport_contracts": [{
+    "transport_contract_id": "transport_small_rowing_boat_lower_dvina_v1",
+    "transport_category_ref": "transport.small_rowing_boat@1",
+    "transport_template_ref": "transport_tpl_nov_small_rowing_boat_v1@1",
+    "movement_capability_refs": ["movement.small_river_craft@1"],
+    "capacity_policy": {"maximum_actors": 2, "packing_slots": 8},
+    "control_requirements": {
+      "required_occupation_archetype": "transport_guiding",
+      "required_skill_id": "travel_transport",
+      "minimum_skill_modifier": 1
+    },
+    "route_applicability": [
+      "river_channel",
+      "sheltered_water_approach"
+    ],
+    "interior_topology": "forbidden"
+  }],
+  "activity_profiles": [
+    {
+      "activity_profile_id": "activity_conversation_brief_v1",
+      "category": "conversation",
+      "completion_model": "fixed_exact",
+      "fixed_duration_minutes": 5,
+      "applicability": {"addressed_scene_npc_required": true},
+      "priority": 100,
+      "completion_policy_ref": "conversation_terminal_projection_v1"
+    },
+    {
+      "activity_profile_id": "activity_collect_surface_water_1000ml_v1",
+      "category": "collect_resource",
+      "completion_model": "fixed_exact",
+      "fixed_duration_minutes": 5,
+      "applicability": {
+        "resource_quality": "untested_surface_water",
+        "quantity": {"numerator": 1000, "denominator": 1, "unit": "millilitre"},
+        "container_required": true
+      },
+      "priority": 110,
+      "completion_policy_ref": "collect_exact_quantity_preserve_quality_v1"
+    },
+    {
+      "activity_profile_id": "activity_collect_deadwood_bundle_v1",
+      "category": "collect_resource",
+      "completion_model": "fixed_exact",
+      "fixed_duration_minutes": 10,
+      "applicability": {
+        "resource_kind": "fallen_deadwood",
+        "quantity": {"numerator": 1, "denominator": 1, "unit": "bundle"}
+      },
+      "priority": 110,
+      "completion_policy_ref": "collect_exact_quantity_v1"
+    },
+    {
+      "activity_profile_id": "activity_assist_fishing_net_v1",
+      "category": "perform_simple_work",
+      "completion_model": "fixed_exact",
+      "fixed_duration_minutes": 30,
+      "applicability": {
+        "occupation_context": "fishing_water",
+        "required_participant_role": "nov_role_fisher"
+      },
+      "priority": 120,
+      "resource_policy_ref": "resource_policy_temporary_rope_holder_v1",
+      "completion_policy_ref": "assist_net_relation_effect_v1"
+    },
+    {
+      "activity_profile_id": "activity_rest_player_selected_v1",
+      "category": "rest",
+      "completion_model": "bounded_decision",
+      "allowed_duration_minutes": [30, 60, 120],
+      "applicability": {"rest_place_required": true},
+      "priority": 100,
+      "completion_policy_ref": "rest_exact_selected_duration_v1"
+    }
+  ],
+  "resource_policies": [{
+    "resource_policy_id": "resource_policy_temporary_rope_holder_v1",
+    "binding_kind": "required_tool",
+    "owner_transition": "forbidden",
+    "activation_effect": "holder_and_controller_to_required_participant",
+    "successful_completion_effect": "return_holder_and_controller_to_owner_after_recheck",
+    "non_success_effect": "preserve_committed_current_state_and_offer_return_action"
+  }],
+  "local_scene_slots": {
+    "player_start": {
+      "canonical_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_high_platform",
+      "reason_for_presence": "boatman_sheltered_stop_on_high_platform"
+    },
+    "boat_mooring": {
+      "canonical_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_landing_edge",
+      "transport_contract_id": "transport_small_rowing_boat_lower_dvina_v1",
+      "reason_for_presence": "player_transport_at_landing"
+    },
+    "seasonal_fisher": {
+      "canonical_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_landing_edge",
+      "profile_set_id": "scene_fisher",
+      "materialization_trigger": "first_entry",
+      "reason_for_presence": "late_summer_seasonal_net_work"
+    },
+    "surface_water": {
+      "canonical_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_water_source",
+      "quality": "untested_surface_water",
+      "access_policy_ref": "shoreline_direct_access_v1"
+    },
+    "deadwood": {
+      "canonical_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_pine_stand",
+      "resource_kind": "fallen_deadwood",
+      "access_policy_ref": "limited_one_bundle_v1"
+    },
+    "rest_place": {
+      "canonical_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_high_platform",
+      "rest_policy_ref": "activity_rest_player_selected_v1"
+    }
+  },
+  "local_risk_profiles": [{
+    "risk_profile_id": "risk_landing_edge_slip_nonfatal_v1",
+    "scope": "landing_edge",
+    "check_policy": {
+      "check_kind": "d20",
+      "modifier_skill_id": "survival",
+      "target_value": 10,
+      "identity_scope": "traversal_interval_result_id"
+    },
+    "failure_consequence": {
+      "fatal": false,
+      "position_change": false,
+      "elapsed_minutes": 5,
+      "energy_delta": -2,
+      "condition_candidate": "wet"
+    },
+    "safe_next_actions": ["return_to_high_platform", "wait", "retry"]
+  }],
+  "boundary_capability": {
+    "status": "blocked",
+    "typed_gaps": [
+      "approved_directed_segments_missing",
+      "approved_boundary_check_policy_missing",
+      "approved_boundary_risk_policy_missing",
+      "approved_boundary_consequence_policy_missing"
+    ],
+    "fallback": "forbidden"
+  }
+}

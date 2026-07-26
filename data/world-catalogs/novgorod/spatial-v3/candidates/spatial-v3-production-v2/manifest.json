@@ -1,0 +1,381 @@
+{
+  "schema_version": "rus.spatial-v3.world-base-authoring-bundle.v2",
+  "bundle_id": "novgorod-spatial-v3-production-v2-candidate-001",
+  "release_id": "spatial-v3-production-v2",
+  "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001",
+  "parent_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+  "status": "approved",
+  "release_status": "validated_candidate_not_active",
+  "production_activation": false,
+  "canonical_head_changed": false,
+  "operator_db_touched": false,
+  "runtime_selectable_in_canonical_production": false,
+  "delete_policy": "forbid",
+  "compiler_version": "lower-dvina-v2-compiler@1",
+  "dependency_resolution_bundle_digest": "cb3fdeb58f2b4f98e3fc2930f452bc36ac17fee1acd2fbfd148989fb8cae3d9b",
+  "version_allocation_manifest_digest": "330a209e8cff1a1354fd7aed49713c43eb6923af0d68159d0122992078fe3b38",
+  "source_transition_set_digest": "5b8c70f69c1bb77a612c5f182336f9ab1a383f3c6561c8bf891673b4f3a1da02",
+  "external_pin_set_digest": "31ec187d534bceb3b2b2fa25f83c0e9257ab2b0bf9c25648479fa260594e3337",
+  "catalog_digest": "fd75d9cb1ad0e949ff3b0bb5ef044e510f340a967f43867e9c4d41c16ba9f255",
+  "datasets": [
+    {
+      "table": "source_records",
+      "file": "datasets/source_records.json",
+      "sha256": "4b7039c32e6bc0c45cbf903d9a0872c4108f11670c88555c935d787d8a915ae9",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": []
+    },
+    {
+      "table": "universal_categories",
+      "file": "datasets/universal_categories.json",
+      "sha256": "30befc1659dc4e70eb58a23275a349585edf81c39d9b1094081d2f4dca62ba4e",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records"
+      ]
+    },
+    {
+      "table": "spatial_v3_world_revisions",
+      "file": "datasets/spatial_v3_world_revisions.json",
+      "sha256": "5dd8065452aa0ee3916be67953d548472fbbd9c6562dafa47a56ed382bc29585",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records"
+      ]
+    },
+    {
+      "table": "spatial_v3_authoring_versions",
+      "file": "datasets/spatial_v3_authoring_versions.json",
+      "sha256": "fa1c17949f8feeb000710c3f1748fa6ce278e49301bc35af26be58fdba066181",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records",
+        "spatial_v3_world_revisions"
+      ]
+    },
+    {
+      "table": "spatial_v3_nodes",
+      "file": "datasets/spatial_v3_nodes.json",
+      "sha256": "b491a6a3c93064d89eff4fc1d82b6bcd88ec5304de321fb328fd05c17822571e",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records",
+        "universal_categories",
+        "spatial_v3_world_revisions",
+        "spatial_v3_authoring_versions"
+      ]
+    },
+    {
+      "table": "spatial_v3_node_classes",
+      "file": "datasets/spatial_v3_node_classes.json",
+      "sha256": "01047838dfce98f1a9cd30a96cfe6952cd180e54cef8588b42cc2015dc802a82",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "universal_categories",
+        "spatial_v3_nodes"
+      ]
+    },
+    {
+      "table": "spatial_v3_node_parents",
+      "file": "datasets/spatial_v3_node_parents.json",
+      "sha256": "b715122197a116e8e4a33b3ce952f0b66e3bac09c8f3892e98f38f7fed1ba119",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "spatial_v3_nodes"
+      ]
+    },
+    {
+      "table": "spatial_v3_g1_grid_cells",
+      "file": "datasets/spatial_v3_g1_grid_cells.json",
+      "sha256": "aa9f0a002d7b562562bbbb7255e99d40cf87c23731300759d922a761b7b02396",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "spatial_v3_world_revisions",
+        "spatial_v3_nodes"
+      ]
+    },
+    {
+      "table": "spatial_v3_approved_physical_source_pairs",
+      "file": "datasets/spatial_v3_approved_physical_source_pairs.json",
+      "sha256": "d029094f5e4a20b4365b2cad4f2dbef126c99b44b411c1ca4831e315883ece18",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": []
+    },
+    {
+      "table": "spatial_v3_topological_movement_orientation_profiles",
+      "file": "datasets/spatial_v3_topological_movement_orientation_profiles.json",
+      "sha256": "f5b8f74712bc99371bcedd109305267b7f676220f96d6f412c51875d2ebbece9",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": []
+    },
+    {
+      "table": "spatial_v3_topological_exit_orientation_rules",
+      "file": "datasets/spatial_v3_topological_exit_orientation_rules.json",
+      "sha256": "ba881a2e07ce4b0144d3112c24b0143b80aaeecbe29ee7698cdca9bc7f7e34bb",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": []
+    },
+    {
+      "table": "spatial_v3_transition_environment_profiles",
+      "file": "datasets/spatial_v3_transition_environment_profiles.json",
+      "sha256": "02f5e5430055653a294446c6a711791deb980460610327cab5c88ef7dcd36147",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": []
+    },
+    {
+      "table": "spatial_v3_movement_method_cost_profiles",
+      "file": "datasets/spatial_v3_movement_method_cost_profiles.json",
+      "sha256": "9702e6ea6ed1f91bb6a6ab59363ed9507b31e6a47c679faca8ce3badbd4509f3",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": []
+    },
+    {
+      "table": "spatial_v3_dynamic_recheck_policies",
+      "file": "datasets/spatial_v3_dynamic_recheck_policies.json",
+      "sha256": "4310b05db1249a0acbea52cb7a37b3875fadc301cd474a3f6aa9ff2542bc7be4",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": []
+    },
+    {
+      "table": "spatial_v3_canonical_g5_connection_profiles",
+      "file": "datasets/spatial_v3_canonical_g5_connection_profiles.json",
+      "sha256": "36c5c07d5dad078cbdb9d9f2e344f420667e3ddd292f92f708bd0ff50f5d6562",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": []
+    },
+    {
+      "table": "spatial_v3_g4_directional_exits",
+      "file": "datasets/spatial_v3_g4_directional_exits.json",
+      "sha256": "a7b68e4feb862baeccedd5f013ce19e4126d12b359f2f5fb035fedf68c886b08",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": []
+    },
+    {
+      "table": "spatial_v3_world_routes",
+      "file": "datasets/spatial_v3_world_routes.json",
+      "sha256": "8847a839016363eb7f60ecbcac74a6b050db20b5569fabae2eb73e65d8a5be99",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": []
+    },
+    {
+      "table": "spatial_v3_world_route_points",
+      "file": "datasets/spatial_v3_world_route_points.json",
+      "sha256": "4bbe440d0c81c0c6047a6c9b43f4d4715ec92de6bc906307e9f74fb9e17c9245",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": []
+    },
+    {
+      "table": "spatial_v3_world_route_segments",
+      "file": "datasets/spatial_v3_world_route_segments.json",
+      "sha256": "372341597e6132fd718eb4b7a822bf14818be20bf709abfaafd644635ecd3e9d",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": []
+    },
+    {
+      "table": "spatial_v3_world_route_segment_spatial_contexts",
+      "file": "datasets/spatial_v3_world_route_segment_spatial_contexts.json",
+      "sha256": "daa4eeaeac57b55a326bd0b9fb47adc6c27bf012f5854ebd23fd5298265e081a",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": []
+    },
+    {
+      "table": "spatial_v3_world_route_endpoint_bindings",
+      "file": "datasets/spatial_v3_world_route_endpoint_bindings.json",
+      "sha256": "8c9456e808c2062126194b2197e5a31ea30d6733d9c4ea12007f51e4103c9c1d",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": []
+    },
+    {
+      "table": "spatial_v3_regional_scene_template_bases",
+      "file": "datasets/spatial_v3_regional_scene_template_bases.json",
+      "sha256": "6ec0a87f4217fecde38a882d0bfe2c51762bb008edb0ad14713e2a419477a545",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records",
+        "spatial_v3_world_revisions",
+        "spatial_v3_authoring_versions"
+      ]
+    },
+    {
+      "table": "spatial_v3_scene_selection_rules",
+      "file": "datasets/spatial_v3_scene_selection_rules.json",
+      "sha256": "aba59bdd87499b058c14ca6b35aad4636e032b71ce2bde1945c9766332836dda",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records",
+        "spatial_v3_world_revisions",
+        "spatial_v3_authoring_versions"
+      ]
+    },
+    {
+      "table": "spatial_v3_scene_applicability_rules",
+      "file": "datasets/spatial_v3_scene_applicability_rules.json",
+      "sha256": "da23f386b969a0ced56ae4ac4877cd9148a04b49f5f6cc09c12569ee5dc1771a",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records",
+        "spatial_v3_world_revisions",
+        "spatial_v3_authoring_versions"
+      ]
+    },
+    {
+      "table": "spatial_v3_canonical_g5_connection_bindings",
+      "file": "datasets/spatial_v3_canonical_g5_connection_bindings.json",
+      "sha256": "52bf47851e57ef752184b0601eb0e4fb893cb9b2ad6d6ceb48ab58ca536ed726",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": []
+    },
+    {
+      "table": "spatial_v3_g4_entry_endpoint_bindings",
+      "file": "datasets/spatial_v3_g4_entry_endpoint_bindings.json",
+      "sha256": "43398fd73c8239e201d3754d0f897e88f1b946710f2e97e087e8b7a85033b838",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": []
+    },
+    {
+      "table": "spatial_v3_topological_direction_contexts",
+      "file": "datasets/spatial_v3_topological_direction_contexts.json",
+      "sha256": "5092ddcfa4b529a3a4aa0faa2ca3a0bec0a8a6caebdf07083bb85ce86feb13eb",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": []
+    },
+    {
+      "table": "spatial_v3_g4_traversal_profiles",
+      "file": "datasets/spatial_v3_g4_traversal_profiles.json",
+      "sha256": "81d2b27033edf442bec34679dbbc368c6b651ed78cf75a354cd464c8a564a86a",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": []
+    },
+    {
+      "table": "spatial_v3_scene_templates",
+      "file": "datasets/spatial_v3_scene_templates.json",
+      "sha256": "087f39e156bd76fece9faccb856e70b334a373cff698638c3ea6edba74762c67",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records",
+        "spatial_v3_world_revisions",
+        "spatial_v3_regional_scene_template_bases"
+      ]
+    },
+    {
+      "table": "spatial_v3_scene_materialization_profiles",
+      "file": "datasets/spatial_v3_scene_materialization_profiles.json",
+      "sha256": "ec8af620f848a75437f7dc8b7b887722c1edd1bed8772294690f22e0c3e897e0",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": []
+    },
+    {
+      "table": "spatial_v3_scene_materialization_candidates",
+      "file": "datasets/spatial_v3_scene_materialization_candidates.json",
+      "sha256": "97c8136a9b781b7efa979e3bb5fba7411f3ef2336e09b5fa3c3666b2cee31b69",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": []
+    },
+    {
+      "table": "spatial_v3_g6_template_slots",
+      "file": "datasets/spatial_v3_g6_template_slots.json",
+      "sha256": "6f63f52c3be0293e8d365f66fc0ee996b0edced2b468fc40d22d449c36f7708e",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "spatial_v3_scene_templates"
+      ]
+    },
+    {
+      "table": "spatial_v3_scene_position_templates",
+      "file": "datasets/spatial_v3_scene_position_templates.json",
+      "sha256": "d729ec63d6d7aef8921eb30019265096320de6c9f7fbab39c60b9c1793f21a04",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "spatial_v3_g6_template_slots"
+      ]
+    },
+    {
+      "table": "spatial_v3_scene_endpoint_slots",
+      "file": "datasets/spatial_v3_scene_endpoint_slots.json",
+      "sha256": "80c49facf7a3b4c68dae7b611d7d2e8f5dd3b62308901a440dd825eed3f0030a",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "spatial_v3_scene_position_templates"
+      ]
+    },
+    {
+      "table": "spatial_v3_scene_movement_edge_templates",
+      "file": "datasets/spatial_v3_scene_movement_edge_templates.json",
+      "sha256": "d6d987f3fe2748f48300d9bf9a285afe8f98619d77677329fbbcd12f6e69a91e",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "spatial_v3_scene_position_templates"
+      ]
+    },
+    {
+      "table": "record_sources",
+      "file": "datasets/record_sources.json",
+      "sha256": "f319770713fed3fd2e3562e4961c2c5d79bece662ad123b6ad62f0dc9501689c",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records"
+      ]
+    },
+    {
+      "table": "spatial_v3_authoring_dependency_edges",
+      "file": "datasets/spatial_v3_authoring_dependency_edges.json",
+      "sha256": "36a532fd74039d0de42eceaee5135a15b411fcde6dc99076820d5f0a5e0152f3",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": []
+    },
+    {
+      "table": "world_revisions",
+      "file": "datasets/world_revisions.json",
+      "sha256": "f3b2770c7e123fd06415bc312074b58ffee157e3b98594c1b9918ad20792618f",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": []
+    },
+    {
+      "table": "spatial_v3_external_dependency_versions",
+      "file": "datasets/spatial_v3_external_dependency_versions.json",
+      "sha256": "43de895c4c714cac2e9b9fb9cdcf8d54a80ad643d0067676c27a786d447932a3",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": []
+    }
+  ],
+  "canonical_output_digest": "bbb27c7adde3919ca4d7f34b428a38fee94b943d5d8fd96266830aa9bc6f1c0c"
+}

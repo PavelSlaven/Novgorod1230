@@ -1,17 +1,11 @@
-import {
-  createSpatialV3ProductionComposition
-} from '@rus/turn/spatial-v3-target-composition';
-import {
-  createSpatialV3PostgresCombinedAtomicCommitter
-} from '../infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
+import { createSpatialV3ProductionComposition } from '@rus/turn/spatial-v3-target-composition';
+import { createSpatialV3PostgresCombinedAtomicCommitter } from '../infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
 import {
   SPATIAL_V3_TARGET_MIGRATIONS,
   SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST,
   runSpatialV3TargetMigrations
 } from '../infrastructure/postgres/spatial-v3-target-migrations.js';
-import {
-  createSpatialV3WorldBaseReader
-} from '../infrastructure/postgres/spatial-v3-world-base-reader.js';
+import { createSpatialV3WorldBaseReader } from '../infrastructure/postgres/spatial-v3-world-base-reader.js';
 import {
   assertPartyReleaseReadiness,
   assertWorldReleaseReadiness,
@@ -26,41 +20,55 @@ import {
   validateSpatialV3RuntimeBindings
 } from '../runtime/load-spatial-v3-bindings.js';
 import { serverError } from '../errors.js';
+import { deriveActivatedReleaseFromReadback } from './production-v2-activation-state.js';
+export { deriveActivatedReleaseFromReadback };
 
-export const SPATIAL_V3_PRODUCTION_RELEASE_ID =
-  'spatial-v3-production-v1';
+export const SPATIAL_V3_PRODUCTION_RELEASE_ID = 'spatial-v3-production-v2';
 export const SPATIAL_V3_PRODUCTION_RELEASE = Object.freeze({
   release_id: SPATIAL_V3_PRODUCTION_RELEASE_ID,
   composition_id: 'builtin:production-spatial-v3',
-  contract_version: '4.4.0-target.1',
+  contract_version: '4.5.0-first-playable.1',
   temporal_contract_id: 'temporal-world-v1.1',
-  party_schema_version: 'party_runtime_v3_target',
+  party_schema_version: 'party_runtime_v3_first_playable',
   world_revision_id:
-    'novgorod_spatial_v3_target_contract_approval_001',
+    'novgorod_spatial_v3_production_v2_candidate_001',
   world_catalog_digest:
-    '0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e',
+    'fd75d9cb1ad0e949ff3b0bb5ef044e510f340a967f43867e9c4d41c16ba9f255',
   world_catalog_manifest_sha256:
-    '4056b93acc2a3c7ed4c76c18182d74b7ef5b9f5fc9c31f206670f11a6283192e',
+    '3ed17f7d540f5707a8b72392d7e4d5736be947048673ff5135d5c07aacbb951a',
   dependency_pin_mode: 'exact_only',
   runtime_catalog_pin_schema: 'rus.runtime_catalog_pin.v2',
   runtime_catalog_scope: 'item_container_materialization_v2',
   runtime_catalog_resolution:
     'active_for_new_party_persisted_for_existing_party',
+  runtime_catalog_contract_digest:
+    '60c3a601bcb561c39017fed915cb9b9cdaa779115f4f0f2c0175db3eda64a0c7',
   party_runtime_catalog_migration_id:
-    'party_runtime_catalog_pins_v1',
+    'party_runtime_catalog_pins_v2',
   party_runtime_catalog_migration_digest:
-    'f251623759b60799ea75b17b7234833a092b97a5443b8b831643c0544ef25a31',
+    '9f574d2782cdbaeeba190d8237fe38c26bddd65775f060749079d3d0163ef32d',
   party_runtime_catalog_target_fingerprint:
-    '329a84c3c5ccd76e4a84b67454bcbd6e6c176fafbd285e77d44824dddcd8d2dd',
-  target_migration_count: 10,
+    '47cb21b39db8be7336d10533ed319fe314f5bda65d850f1297c8321de6c9d165',
+  target_migration_count: 11,
   target_migration_chain_digest:
-    'a71b95540c6422ccee5b3d598cb6b0cefe108de3bf41216dea96a99068a5a370',
+    'b7a9eb899b5d302dc27bff6797f1bb6abf31b245ace3e7c285f94543e3039d45',
   authoritative_reads: 'spatial_v3_only',
   authoritative_writes: 'spatial_v3_only',
-  rollback_source_release_id: 'production-v2',
-  rollback_runtime_selectable: false
+  rollback_source_release_id: 'spatial-v3-production-v1',
+  rollback_runtime_selectable: false,
+  parent_release_exact_pins: Object.freeze({
+    world_revision_id:
+      'novgorod_spatial_v3_target_contract_approval_001',
+    world_catalog_digest:
+      '0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e',
+    world_catalog_manifest_sha256:
+      '4056b93acc2a3c7ed4c76c18182d74b7ef5b9f5fc9c31f206670f11a6283192e'
+  }),
+  release_status: 'validated_candidate_not_active',
+  production_activation: false,
+  runtime_selectable_in_canonical_production: false,
+  scenario_binding_id: 'lower_dvina_late_summer_open_water_v1'
 });
-
 export function createSpatialV3ProductionRelease(
   compatibleWorldPinManifestDigest
 ) {
@@ -78,11 +86,6 @@ export function createSpatialV3ProductionRelease(
     compatible_world_pin_manifest_digest: digest
   });
 }
-
-/**
- * Sole-owner production-v3 root. It has no production-v2 composition import,
- * never runs the v2-only migration loader and admits no fallback bindings.
- */
 export async function createSpatialV3ProductionCompositionRoot({
   env = process.env,
   config = {},
@@ -145,11 +148,45 @@ export async function createSpatialV3ProductionCompositionRoot({
       ...bindings.targetCompositionPorts,
       committer
     });
+    const activatedRelease = deriveActivatedReleaseFromReadback(
+      release,
+      bindings.runtimeCatalogPin
+    );
+    const publicRuntime = await bindings.createPublicRuntimeFacade({
+      technicalCore: target,
+      committer,
+      partyPool: pools.partyPool,
+      worldPool: pools.worldPool,
+      release: activatedRelease,
+      runtimeCatalogPin: bindings.runtimeCatalogPin
+    });
+    for (const method of [
+      'listScenarios',
+      'startNewGame',
+      'acknowledgeOpening',
+      'submitTurn',
+      'getPartyScreen'
+    ]) {
+      if (typeof publicRuntime?.[method] !== 'function') {
+        throw serverError(
+          'RUNTIME_PUBLIC_FACADE_INVALID',
+          `Release-pinned public runtime facade is missing ${method}().`
+        );
+      }
+    }
     const migration = await withRuntimeCatalogActivationLock(
       pools.worldPool,
       (worldClient) => runSpatialV3TargetMigrations(
         pools.partyPool,
         {
+          exactAppliedMigration: {
+            migration_id:
+              release.party_runtime_catalog_migration_id,
+            migration_digest:
+              release.party_runtime_catalog_migration_digest,
+            target_schema_fingerprint:
+              release.party_runtime_catalog_target_fingerprint
+          },
           beforeCommit: async (partyClient) => {
             const partyReadiness = await assertPartyReleaseReadiness(
               partyClient,
@@ -158,7 +195,7 @@ export async function createSpatialV3ProductionCompositionRoot({
             const worldReadiness = await assertWorldReleaseReadiness(
               worldClient,
               bindings.runtimeCatalogPin,
-              release,
+              activatedRelease,
               partyReadiness.historical_pins
             );
             return Object.freeze({
@@ -180,14 +217,17 @@ export async function createSpatialV3ProductionCompositionRoot({
     });
     return Object.freeze({
       ...target,
+      ...publicRuntime,
       status: 'production_sole_owner',
-      acknowledgeOpening: bindings.acknowledgeOpening,
-      getPartyScreen: bindings.getPartyScreen,
       health: () => Object.freeze({
         status: 'ok',
         composition: 'spatial_v3_production',
         activation: 'sole_owner',
         release_id: SPATIAL_V3_PRODUCTION_RELEASE_ID,
+        release_status: activatedRelease.release_status,
+        production_activation: activatedRelease.production_activation,
+        runtime_selectable_in_canonical_production:
+          activatedRelease.runtime_selectable_in_canonical_production,
         authoritative_reads: 'spatial_v3_only',
         authoritative_writes: 'spatial_v3_only',
         runtime_fallback: 'forbidden',
@@ -214,7 +254,7 @@ export async function createSpatialV3ProductionCompositionRoot({
           release.compatible_world_pin_manifest_digest,
         runtime_catalog_pin:
           structuredClone(bindings.runtimeCatalogPin),
-        party_schema_version: 'party_runtime_v3_target',
+        party_schema_version: release.party_schema_version,
         migration_count: migration.applied,
         migration_chain_digest: migration.chain_digest,
         world_readiness: cutoverReadiness.world,

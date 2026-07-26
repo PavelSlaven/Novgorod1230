@@ -50,7 +50,11 @@ const RELEASE_IDENTITY_FIELDS = Object.freeze([
   'target_migration_chain_digest',
   'compatible_world_pin_manifest_digest',
   'rollback_source_release_id',
-  'rollback_runtime_selectable'
+  'rollback_runtime_selectable',
+  'release_status',
+  'production_activation',
+  'runtime_selectable_in_canonical_production',
+  'scenario_binding_id'
 ]);
 const RUNTIME_PIN_FIELDS = Object.freeze([
   'schema',
@@ -117,11 +121,7 @@ export function validateSpatialV3RuntimeBindings(bindings, expectedRelease) {
       'Spatial-v3 bindings require one exact compatible runtime-catalog pin.'
     );
   }
-  for (const name of [
-    'commitRecheck',
-    'acknowledgeOpening',
-    'getPartyScreen'
-  ]) {
+  for (const name of ['commitRecheck', 'createPublicRuntimeFacade']) {
     if (typeof bindings[name] !== 'function') {
       throw serverError(
         'RUNTIME_BINDINGS_INVALID',
@@ -134,8 +134,7 @@ export function validateSpatialV3RuntimeBindings(bindings, expectedRelease) {
       ...bindings.targetCompositionPorts
     }),
     commitRecheck: bindings.commitRecheck,
-    acknowledgeOpening: bindings.acknowledgeOpening,
-    getPartyScreen: bindings.getPartyScreen,
+    createPublicRuntimeFacade: bindings.createPublicRuntimeFacade,
     releaseBinding: Object.freeze({ ...bindings.releaseBinding }),
     runtimeCatalogPin: Object.freeze({ ...runtimeCatalogPin })
   });

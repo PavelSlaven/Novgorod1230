@@ -10,12 +10,18 @@ export function createApiClient({ baseUrl = '', fetchImpl = globalThis.fetch } =
     });
     const payload = await response.json().catch(() => null);
     if (!response.ok || payload?.ok !== true) {
-      throw webError(payload?.error?.code ?? 'HTTP_REQUEST_FAILED', payload?.error?.message ?? `HTTP ${response.status}`);
+      const error = webError(
+        payload?.error?.code ?? 'HTTP_REQUEST_FAILED',
+        payload?.error?.message ?? `HTTP ${response.status}`
+      );
+      error.httpStatus = response.status;
+      throw error;
     }
     return validateApiEnvelope(payload).data;
   };
   return Object.freeze({
     health: () => request('/api/v1/health'),
+    listScenarios: () => request('/api/v1/scenarios'),
     startNewGame: (input) => request('/api/v1/new-games', post(input)),
     getPartyScreen: (partyId) => request(`/api/v1/parties/${encodeURIComponent(partyId)}/screen`),
     acknowledgeOpening: (partyId, input) => request(`/api/v1/parties/${encodeURIComponent(partyId)}/opening-ack`, post(input)),

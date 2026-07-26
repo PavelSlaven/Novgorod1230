@@ -75,6 +75,25 @@ function createRoot() {
     newGameWorkflow: { run: async () => ({ status: 'approved', artifact: stage26Fixture() }) },
     turnWorkflow: { run: async () => turnResult() },
     sessionStore: createInMemorySessionStore(),
+    scenarioRegistry: {
+      listPublic: () => [{
+        scenario_id: 'lower_dvina_late_summer_open_water_v1',
+        title: 'Нижняя Двина: позднее лето',
+        description: 'Первый тестовый сценарий.',
+        available: true
+      }],
+      resolveForNewGame: (scenarioId) => {
+        if (scenarioId !== 'lower_dvina_late_summer_open_water_v1') return null;
+        return {
+          scenario_id: scenarioId,
+          start_text: 'Начать утверждённый сценарий Нижней Двины',
+          scenario_context: {
+            archetype_requirement: 'boatman',
+            season_mode: 'late_summer_open_water'
+          }
+        };
+      }
+    },
     now: () => '2026-07-12T10:00:00.000Z'
   });
 }
@@ -91,6 +110,50 @@ test('composition root starts game, requires acknowledgement, and returns versio
   assert.equal(turn.turn.turn_number, 1);
 });
 
+test('scenario launch resolves scenario_id before new-game workflow without breaking baseline start', async () => {
+  const workflowInputs = [];
+  const root = createGameCompositionRoot({
+    newGameWorkflow: {
+      run: async (input) => {
+        workflowInputs.push(input);
+        return { status: 'approved', artifact: stage26Fixture() };
+      }
+    },
+    turnWorkflow: { run: async () => turnResult() },
+    sessionStore: createInMemorySessionStore(),
+    scenarioRegistry: {
+      listPublic: () => [{
+        scenario_id: 'lower_dvina_late_summer_open_water_v1',
+        title: 'Нижняя Двина: позднее лето',
+        description: 'Первый тестовый сценарий.',
+        available: true
+      }],
+      resolveForNewGame: (scenarioId) => scenarioId === 'lower_dvina_late_summer_open_water_v1'
+        ? {
+            scenario_id: scenarioId,
+            start_text: 'Начать утверждённый сценарий Нижней Двины',
+            scenario_context: { archetype_requirement: 'boatman' }
+          }
+        : null
+    },
+    now: () => '2026-07-12T10:00:00.000Z'
+  });
+
+  assert.equal((await root.listScenarios()).scenarios.length, 1);
+  await root.startNewGame({ scenario_id: 'lower_dvina_late_summer_open_water_v1' });
+  assert.equal(workflowInputs[0].scenario_id, 'lower_dvina_late_summer_open_water_v1');
+  assert.equal(workflowInputs[0].scenario_context.archetype_requirement, 'boatman');
+
+  await root.startNewGame({ start_text: 'Обычное начало', player_name: 'Садко' });
+  assert.equal(workflowInputs[1].start_text, 'Обычное начало');
+  assert.equal(workflowInputs[1].scenario_id, null);
+
+  await assert.rejects(
+    () => root.startNewGame({ scenario_id: 'unknown' }),
+    { code: 'SCENARIO_NOT_SUPPORTED' }
+  );
+});
+
 test('HTTP server publishes only versioned /api/v1 envelopes', async (t) => {
   const server = createGameHttpServer({ root: createRoot(), maxBodyBytes: 64_000 });
   const address = await listen(server, { host: '127.0.0.1', port: 0 });
@@ -103,6 +166,7 @@ test('HTTP server publishes only versioned /api/v1 envelopes', async (t) => {
 });
 
 test('API route matcher is declarative and bounded', () => {
+  assert.deepEqual(matchApiRoute('GET', '/api/v1/scenarios'), { id: 'scenarios', status: 200 });
   assert.deepEqual(matchApiRoute('POST', '/api/v1/new-games'), { id: 'new_game', status: 201 });
   assert.equal(matchApiRoute('DELETE', '/api/v1/new-games'), null);
   assert.equal(matchApiRoute('GET', '/api/v2/health'), null);

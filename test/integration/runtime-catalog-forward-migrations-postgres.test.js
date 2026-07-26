@@ -104,10 +104,15 @@ test('runtime catalog forward migrations are exact, additive, immutable and idem
       'utf8'
     ));
   }
-  await pool.query(await readFile(
-    new URL('../../schemas/party-db/001_party_runtime.sql', import.meta.url),
-    'utf8'
-  ));
+  const partyFiles = (await readdir(new URL('../../schemas/party-db/', import.meta.url)))
+    .filter((file) => /^\d+.*\.sql$/u.test(file))
+    .sort();
+  for (const file of partyFiles) {
+    await pool.query(await readFile(
+      new URL(`../../schemas/party-db/${file}`, import.meta.url),
+      'utf8'
+    ));
+  }
   await pool.query(
     `INSERT INTO party_runtime.parties
        (party_id, schema_version, world_revision_id, world_catalog_digest,

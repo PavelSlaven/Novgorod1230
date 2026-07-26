@@ -1,0 +1,194 @@
+[
+  {
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+    "g4_version": 2,
+    "traversal_model": "through_area",
+    "status": "approved"
+  },
+  {
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+    "g4_version": 2,
+    "traversal_model": "through_area",
+    "status": "approved"
+  },
+  {
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+    "g4_version": 2,
+    "traversal_model": "through_area",
+    "status": "approved"
+  },
+  {
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+    "g4_version": 2,
+    "traversal_model": "through_area",
+    "status": "approved"
+  },
+  {
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+    "g4_version": 2,
+    "traversal_model": "through_area",
+    "status": "approved"
+  },
+  {
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+    "g4_version": 2,
+    "traversal_model": "through_area",
+    "status": "approved"
+  },
+  {
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+    "g4_version": 2,
+    "traversal_model": "through_area",
+    "status": "approved"
+  },
+  {
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+    "g4_version": 2,
+    "traversal_model": "through_area",
+    "status": "approved"
+  },
+  {
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+    "g4_version": 2,
+    "traversal_model": "through_area",
+    "status": "approved"
+  },
+  {
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+    "g4_version": 2,
+    "traversal_model": "through_area",
+    "status": "approved"
+  },
+  {
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+    "g4_version": 2,
+    "traversal_model": "through_area",
+    "status": "approved"
+  },
+  {
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+    "g4_version": 2,
+    "traversal_model": "through_area",
+    "status": "approved"
+  },
+  {
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+    "g4_version": 2,
+    "traversal_model": "through_area",
+    "status": "approved"
+  },
+  {
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+    "g4_version": 2,
+    "traversal_model": "through_area",
+    "status": "approved"
+  },
+  {
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+    "g4_version": 2,
+    "traversal_model": "through_area",
+    "status": "approved"
+  },
+  {
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+    "g4_version": 2,
+    "traversal_model": "through_area",
+    "status": "approved"
+  },
+  {
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+    "g4_version": 2,
+    "traversal_model": "through_area",
+    "status": "approved"
+  },
+  {
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+    "g4_version": 2,
+    "traversal_model": "through_area",
+    "status": "approved"
+  },
+  {
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+    "g4_version": 2,
+    "traversal_model": "through_area",
+    "status": "approved"
+  },
+  {
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+    "g4_version": 2,
+    "traversal_model": "through_area",
+    "status": "approved"
+  },
+  {
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+    "g4_version": 2,
+    "traversal_model": "through_area",
+    "status": "approved"
+  },
+  {
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+    "g4_version": 2,
+    "traversal_model": "through_area",
+    "status": "approved"
+  },
+  {
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+    "g4_version": 2,
+    "traversal_model": "through_area",
+    "status": "approved"
+  },
+  {
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+    "g4_version": 2,
+    "traversal_model": "through_area",
+    "status": "approved"
+  },
+  {
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+    "g4_version": 2,
+    "traversal_model": "through_area",
+    "status": "approved"
+  },
+  {
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+    "g4_version": 2,
+    "traversal_model": "through_area",
+    "status": "approved"
+  },
+  {
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+    "g4_version": 2,
+    "traversal_model": "through_area",
+    "status": "approved"
+  },
+  {
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+    "g4_version": 2,
+    "traversal_model": "through_area",
+    "status": "approved"
+  },
+  {
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+    "g4_version": 2,
+    "traversal_model": "through_area",
+    "status": "approved"
+  },
+  {
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+    "g4_version": 2,
+    "traversal_model": "through_area",
+    "status": "approved"
+  },
+  {
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+    "g4_version": 2,
+    "traversal_model": "through_area",
+    "status": "approved"
+  },
+  {
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+    "g4_version": 2,
+    "traversal_model": "through_area",
+    "status": "approved"
+  }
+]

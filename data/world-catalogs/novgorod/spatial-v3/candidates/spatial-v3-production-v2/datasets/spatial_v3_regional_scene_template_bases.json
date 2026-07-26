@@ -1,0 +1,189 @@
+[
+  {
+    "entity_kind": "regional_scene_template_basis",
+    "id": "regional_scene_basis__g5_boundary_access_v1",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001",
+    "source_profile_family_id": "g5_boundary_access_v1",
+    "geometry_claim": "topological_only",
+    "status": "approved",
+    "provenance_ref": "prov_p12_g1_r2_r3_v1",
+    "canonical_digest": "7168235126bcc501d4e7de97caedb8adf8f768264cdb5cc4b8b5d1d887ecc887"
+  },
+  {
+    "entity_kind": "regional_scene_template_basis",
+    "id": "regional_scene_basis__g5_burial_ritual_buffer_v1",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001",
+    "source_profile_family_id": "g5_burial_ritual_buffer_v1",
+    "geometry_claim": "topological_only",
+    "status": "approved",
+    "provenance_ref": "prov_p12_g1_r2_r3_v1",
+    "canonical_digest": "d54e0d809f33be9b382cf325e367ab4f35ee4c1877dda9ecc4853cd4593b1ea7"
+  },
+  {
+    "entity_kind": "regional_scene_template_basis",
+    "id": "regional_scene_basis__g5_dry_route_v1",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001",
+    "source_profile_family_id": "g5_dry_route_v1",
+    "geometry_claim": "topological_only",
+    "status": "approved",
+    "provenance_ref": "prov_p12_g1_r2_r3_v1",
+    "canonical_digest": "dc93b0416192dbea59ba619d0e101f97a814edfbf058fe4524988946736ff06f"
+  },
+  {
+    "entity_kind": "regional_scene_template_basis",
+    "id": "regional_scene_basis__g5_exploration_concealment_v1",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001",
+    "source_profile_family_id": "g5_exploration_concealment_v1",
+    "geometry_claim": "topological_only",
+    "status": "approved",
+    "provenance_ref": "prov_p12_g1_r2_r3_v1",
+    "canonical_digest": "5b682d40661950ac87175e4789688a569960df8a0a364936d719501764ff12b2"
+  },
+  {
+    "entity_kind": "regional_scene_template_basis",
+    "id": "regional_scene_basis__g5_general_hazard_v1",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001",
+    "source_profile_family_id": "g5_general_hazard_v1",
+    "geometry_claim": "topological_only",
+    "status": "approved",
+    "provenance_ref": "prov_p12_g1_r2_r3_v1",
+    "canonical_digest": "dd7a87d39c3525cb8100b17d9828533133c90e0c561f2a9b732eec10f7c72ef2"
+  },
+  {
+    "entity_kind": "regional_scene_template_basis",
+    "id": "regional_scene_basis__g5_habitation_v1",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001",
+    "source_profile_family_id": "g5_habitation_v1",
+    "geometry_claim": "topological_only",
+    "status": "approved",
+    "provenance_ref": "prov_p12_g1_r2_r3_v1",
+    "canonical_digest": "464ac753b224103f7df768eddae39f0846b18b12d0663e24a2a7577263385900"
+  },
+  {
+    "entity_kind": "regional_scene_template_basis",
+    "id": "regional_scene_basis__g5_landing_transition_v1",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001",
+    "source_profile_family_id": "g5_landing_transition_v1",
+    "geometry_claim": "topological_only",
+    "status": "approved",
+    "provenance_ref": "prov_p12_g1_r2_r3_v1",
+    "canonical_digest": "7766ad8e90d6d100dff74d2505c2ed2468733788e9cd12fc9139e22c2ceb2076"
+  },
+  {
+    "entity_kind": "regional_scene_template_basis",
+    "id": "regional_scene_basis__g5_observation_orientation_v1",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001",
+    "source_profile_family_id": "g5_observation_orientation_v1",
+    "geometry_claim": "topological_only",
+    "status": "approved",
+    "provenance_ref": "prov_p12_g1_r2_r3_v1",
+    "canonical_digest": "feaa8b1b64c09b7325740827e6e1a6c087aab9c040743d6bdf7b24208933105b"
+  },
+  {
+    "entity_kind": "regional_scene_template_basis",
+    "id": "regional_scene_basis__g5_resource_hazard_v1",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001",
+    "source_profile_family_id": "g5_resource_hazard_v1",
+    "geometry_claim": "topological_only",
+    "status": "approved",
+    "provenance_ref": "prov_p12_g1_r2_r3_v1",
+    "canonical_digest": "bc13e2b78a84841cb18a39b1f52be6c28e142a57f61ed98ccda06b0ec8945117"
+  },
+  {
+    "entity_kind": "regional_scene_template_basis",
+    "id": "regional_scene_basis__g5_resource_v1",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001",
+    "source_profile_family_id": "g5_resource_v1",
+    "geometry_claim": "topological_only",
+    "status": "approved",
+    "provenance_ref": "prov_p12_g1_r2_r3_v1",
+    "canonical_digest": "8d502226b07831ee451277abe8339a526bd91375f2f5c3a0ec45e2c6858c507f"
+  },
+  {
+    "entity_kind": "regional_scene_template_basis",
+    "id": "regional_scene_basis__g5_route_approach_v1",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001",
+    "source_profile_family_id": "g5_route_approach_v1",
+    "geometry_claim": "topological_only",
+    "status": "approved",
+    "provenance_ref": "prov_p12_g1_r2_r3_v1",
+    "canonical_digest": "3cd81c870830262285d34b497c58695e8bfed12e7be19da4fd29fc9d674adc56"
+  },
+  {
+    "entity_kind": "regional_scene_template_basis",
+    "id": "regional_scene_basis__g5_seasonal_route_hazard_v1",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001",
+    "source_profile_family_id": "g5_seasonal_route_hazard_v1",
+    "geometry_claim": "topological_only",
+    "status": "approved",
+    "provenance_ref": "prov_p12_g1_r2_r3_v1",
+    "canonical_digest": "7085e757bc4c55d17b1363b224ec1d786450e26602ef71b491a501fc897919e6"
+  },
+  {
+    "entity_kind": "regional_scene_template_basis",
+    "id": "regional_scene_basis__g5_shelter_rest_v1",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001",
+    "source_profile_family_id": "g5_shelter_rest_v1",
+    "geometry_claim": "topological_only",
+    "status": "approved",
+    "provenance_ref": "prov_p12_g1_r2_r3_v1",
+    "canonical_digest": "fa757a65c56d342c00c0799e4d20cd941bb76b4ef53156b3877f7eff8ae6543b"
+  },
+  {
+    "entity_kind": "regional_scene_template_basis",
+    "id": "regional_scene_basis__g5_water_hazard_v1",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001",
+    "source_profile_family_id": "g5_water_hazard_v1",
+    "geometry_claim": "topological_only",
+    "status": "approved",
+    "provenance_ref": "prov_p12_g1_r2_r3_v1",
+    "canonical_digest": "a6369e8ab2defcbd180efd6b7ca8c3354bada33f274f27b98554999f1950079f"
+  },
+  {
+    "entity_kind": "regional_scene_template_basis",
+    "id": "regional_scene_basis__g5_water_navigation_v1",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001",
+    "source_profile_family_id": "g5_water_navigation_v1",
+    "geometry_claim": "topological_only",
+    "status": "approved",
+    "provenance_ref": "prov_p12_g1_r2_r3_v1",
+    "canonical_digest": "d886ac0d1938faf6b077a55167690fdc65fc6c779ebfac01e6068f27ac5e15a1"
+  },
+  {
+    "entity_kind": "regional_scene_template_basis",
+    "id": "regional_scene_basis__g5_wetland_flood_v1",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001",
+    "source_profile_family_id": "g5_wetland_flood_v1",
+    "geometry_claim": "topological_only",
+    "status": "approved",
+    "provenance_ref": "prov_p12_g1_r2_r3_v1",
+    "canonical_digest": "664633477009951f8d123bdd98d3430885aec2024dcc03e0db9b18ea5927e060"
+  },
+  {
+    "entity_kind": "regional_scene_template_basis",
+    "id": "regional_scene_basis__g5_work_storage_social_v1",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001",
+    "source_profile_family_id": "g5_work_storage_social_v1",
+    "geometry_claim": "topological_only",
+    "status": "approved",
+    "provenance_ref": "prov_p12_g1_r2_r3_v1",
+    "canonical_digest": "6e6916f28172871c110160896d5c9566d79fac9c6500df9c92a584d603c02768"
+  }
+]

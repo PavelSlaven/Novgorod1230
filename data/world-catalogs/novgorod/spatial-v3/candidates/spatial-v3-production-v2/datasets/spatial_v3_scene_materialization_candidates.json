@@ -1,0 +1,1757 @@
+[
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_central_current_split_fast_branch",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_water_navigation_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_central_current_split_islet_margin",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_water_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_central_current_split_rejoin_reach",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_water_navigation_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_central_current_split_slow_branch",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_water_navigation_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_central_current_split_split_point",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_water_navigation_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_central_current_split_upstream_nose",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_route_approach_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_deep_thread",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_water_navigation_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_downstream_approach",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_route_approach_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_lee_bank",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_shelter_rest_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_observation_bank",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_observation_orientation_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_shoal_margin",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_water_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_upstream_approach",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_route_approach_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_downstream_tail",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_water_navigation_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_east_channel",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_dry_route_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_high_bank",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_observation_orientation_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_upstream_tip",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_water_navigation_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_west_channel",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_dry_route_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_wet_hollow",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_wetland_flood_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_downstream_cut",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_dry_route_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_driftwood_mass",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_resource_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_dry_cap",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_shelter_rest_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_shallow_pool",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_resource_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_upstream_edge",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_general_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_camp_candidate",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_shelter_rest_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_downstream_exit",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_route_approach_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_forest_edge",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_resource_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_landing",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_landing_transition_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_ridge_crest",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_dry_route_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_wet_hollow",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_general_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_north_descent",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_route_approach_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_pine_stand",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_resource_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_ridge_top",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_dry_route_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_sandy_hollow",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_shelter_rest_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_south_approach",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_route_approach_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_view_gap",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_observation_orientation_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_entrance",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_route_approach_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_exit",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_route_approach_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_mud_bank",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_water_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_narrow_reach",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_water_navigation_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_quiet_reach",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_shelter_rest_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_seasonal_barrier",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_seasonal_route_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_east_side_channel_entrance",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_route_approach_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_east_side_channel_exit",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_route_approach_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_east_side_channel_mud_bank",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_water_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_east_side_channel_narrow_reach",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_water_navigation_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_east_side_channel_quiet_reach",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_shelter_rest_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_east_side_channel_seasonal_barrier",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_seasonal_route_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_bog_edge",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_general_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_dry_mound",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_shelter_rest_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_inlet",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_seasonal_route_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_overflow",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_seasonal_route_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_reed_margin",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_resource_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_shallow_basin",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_wetland_flood_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_forest_shelter",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_shelter_rest_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_north_exit",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_route_approach_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_ridge_path",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_dry_route_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_south_approach",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_route_approach_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_water_access",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_landing_transition_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_wet_gap",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_general_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_bank_path",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_dry_route_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_bog_crossing",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_general_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_fallen_timber",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_general_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_headwater_fork",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_observation_orientation_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_lower_reach",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_water_navigation_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_pool",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_resource_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_large_island_head_downstream_tail",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_water_navigation_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_large_island_head_east_channel",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_dry_route_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_large_island_head_high_bank",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_observation_orientation_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_large_island_head_upstream_tip",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_water_navigation_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_large_island_head_west_channel",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_dry_route_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_large_island_head_wet_hollow",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_wetland_flood_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_mixing_reach_current_shear",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_general_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_mixing_reach_ice_edge",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_seasonal_route_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_mixing_reach_inner_approach",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_route_approach_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_mixing_reach_lee_margin",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_shelter_rest_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_mixing_reach_open_water",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_general_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_mixing_reach_outer_route",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_boundary_access_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_deep_thread",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_water_navigation_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_downstream_approach",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_route_approach_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_lee_bank",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_shelter_rest_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_observation_bank",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_observation_orientation_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_shoal_margin",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_water_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_upstream_approach",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_route_approach_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_deep_thread",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_water_navigation_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_downstream_approach",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_route_approach_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_lee_bank",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_shelter_rest_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_observation_bank",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_observation_orientation_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_shoal_margin",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_water_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_upstream_approach",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_route_approach_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_deep_pool",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_resource_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_dry_crossing",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_seasonal_route_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_hidden_link",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_exploration_concealment_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_old_mouth",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_route_approach_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_silted_reach",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_general_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_willow_bank",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_resource_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_ice_break_zone",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_seasonal_route_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_river_side",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_route_approach_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_sea_exit",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_boundary_access_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_sheltered_inlet",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_shelter_rest_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_shoal_margin",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_general_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_wind_fetch",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_general_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_reed_backwater_bird_shallows",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_resource_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_reed_backwater_entrance",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_route_approach_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_reed_backwater_mud_bank",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_general_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_reed_backwater_open_pool",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_resource_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_reed_backwater_reed_channel",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_exploration_concealment_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_reed_backwater_winter_thin_ice",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_seasonal_route_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_deep_thread",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_water_navigation_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_downstream_approach",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_route_approach_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_lee_bank",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_shelter_rest_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_observation_bank",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_observation_orientation_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_shoal_margin",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_water_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_upstream_approach",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_route_approach_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_flood_edge",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_seasonal_route_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_high_platform",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_shelter_rest_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_inland_path",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_dry_route_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_landing_edge",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_landing_transition_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_water_approach",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_route_approach_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_water_source",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_resource_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_cross_current",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_general_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_deep_thread",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_water_navigation_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_emergency_bank",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_landing_transition_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_shallow_bars",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_general_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_warning_reach",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_observation_orientation_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_winter_crack",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_seasonal_route_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_deep_thread",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_water_navigation_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_downstream_approach",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_route_approach_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_lee_bank",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_shelter_rest_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_observation_bank",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_observation_orientation_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_shoal_margin",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_water_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_upstream_approach",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_route_approach_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_crossing",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_dry_route_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_inland_path",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_dry_route_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_lower_stream",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_water_navigation_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_main_river_approach",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_route_approach_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_marsh_bank",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_general_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_mouth_bar",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_general_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_forest_path",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_dry_route_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_household_cluster",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_habitation_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_landing_candidate",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_landing_transition_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_meeting_area",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_work_storage_social_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_occupation_terrace",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_habitation_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_river_approach",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_route_approach_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_water_access",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_resource_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_work_storage",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_work_storage_social_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_deep_forest",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_general_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_dry_patch",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_shelter_rest_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_game_trail",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_exploration_concealment_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_resource_patch",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_resource_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_river_edge",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_route_approach_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_wet_forest",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_general_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_flood_edge",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_seasonal_route_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_high_platform",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_shelter_rest_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_inland_path",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_dry_route_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_landing_edge",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_landing_transition_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_water_approach",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_route_approach_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_water_source",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_resource_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_dry_patch",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_shelter_rest_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_entrance",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_route_approach_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_hidden_outlet",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_exploration_concealment_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_muddy_shore",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_general_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_reed_edge",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_exploration_concealment_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_still_water",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_resource_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_west_side_channel_entrance",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_route_approach_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_west_side_channel_exit",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_route_approach_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_west_side_channel_mud_bank",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_water_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_west_side_channel_narrow_reach",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_water_navigation_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_west_side_channel_quiet_reach",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_shelter_rest_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_west_side_channel_seasonal_barrier",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_seasonal_route_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_deep_forest",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_general_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_dry_patch",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_shelter_rest_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_game_trail",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_exploration_concealment_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_resource_patch",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_resource_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_river_edge",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_route_approach_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_wet_forest",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_general_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_approach",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_route_approach_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_burial_core",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_burial_ritual_buffer_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_outer_edge",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_boundary_access_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_ritual_edge",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_burial_ritual_buffer_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_wet_boundary",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_boundary_access_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_woodland_buffer",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_burial_ritual_buffer_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_boat_drawing",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_work_storage_social_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_dry_platform",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_shelter_rest_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_flood_limit",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_seasonal_route_hazard_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_landing_edge",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_landing_transition_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_path_to_settlement",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_dry_route_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_river_approach",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_route_approach_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_habitation_terrace",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_habitation_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_hinterland_path",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_dry_route_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_household_zone",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_habitation_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_landing",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_landing_transition_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_river_approach",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_route_approach_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_storage_zone",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_work_storage_social_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_water_source",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_resource_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  },
+  {
+    "profile_id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_work_zone",
+    "profile_version": 2,
+    "scene_template_id": "stfv3__g5_work_storage_social_v1",
+    "scene_template_version": 1,
+    "weight": 1,
+    "applicability_rule_id": "scene_applicability_exact_source_ref_v1",
+    "applicability_rule_version": 2
+  }
+]

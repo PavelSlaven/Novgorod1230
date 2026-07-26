@@ -1,0 +1,45 @@
+{
+  "schema": "rus.lower_dvina.browser_rehearsal_result.v1",
+  "status": "PASS",
+  "executed_at": "2026-07-26",
+  "repository_commit_sha": "d4be6a6014b80ceae937b3900dad6cbe7c1e787d",
+  "release_id": "spatial-v3-production-v2",
+  "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001",
+  "world_database": "pr17_rehearsal_lower_dvina_world_p16_final",
+  "party_database": "lower_dvina_rehearsal_party_p16_final",
+  "browser_driver": "browser-harness",
+  "server": {
+    "real_game_server": true,
+    "mock_core": false,
+    "llm_required": false,
+    "restart_performed": true,
+    "health_release_status_from_readback": "active"
+  },
+  "scenario_party": {
+    "party_id": "party:dd90f5ce3fe788aa29aeea76",
+    "scenario_id": "lower_dvina_late_summer_open_water_v1",
+    "player_name_resolved_by_runtime": "Иван"
+  },
+  "ordinary_new_game_party": {
+    "party_id": "party:91afe3bd4bb713397ff3da05",
+    "scenario_id_sent": false,
+    "player_name": "Ivan"
+  },
+  "assertions": [
+    "landing page exposes the ordinary new-game form",
+    "Сценарии reveals the Lower Dvina scenario button",
+    "scenario button starts the exact scenario without replacing ordinary new game",
+    "runtime resolves the complete player profile and initial visible screen",
+    "look commits and returns only visible knowledge",
+    "save is zero-time and returns a persisted-state acknowledgement",
+    "same opaque party_id restores after a real server process restart",
+    "safe local traversal materializes one seasonal fisherman",
+    "conversation enriches the existing fisherman and persists player-journal evidence",
+    "required-tool handoff preserves player ownership",
+    "network work consumes 30 minutes, changes energy and relation, and returns the rope after the ownership recheck",
+    "ordinary POST /api/v1/new-games path remains usable without scenario_id",
+    "southern boundary remains visibly unavailable while typed policy gaps are unresolved"
+  ],
+  "production_activation_performed": false,
+  "operator_database_touched": false
+}

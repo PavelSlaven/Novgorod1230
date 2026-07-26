@@ -15,7 +15,14 @@ export async function loadConfiguredComposition(moduleReference, context = {}) {
 }
 
 function validateRoot(root) {
-  for (const method of ['health', 'startNewGame', 'acknowledgeOpening', 'submitTurn', 'getPartyScreen']) {
+  for (const method of [
+    'health',
+    'listScenarios',
+    'startNewGame',
+    'acknowledgeOpening',
+    'submitTurn',
+    'getPartyScreen'
+  ]) {
     if (typeof root?.[method] !== 'function') throw serverError('COMPOSITION_ROOT_INVALID', `Composition root is missing ${method}().`);
   }
   return root;

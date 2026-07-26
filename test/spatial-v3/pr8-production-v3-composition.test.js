@@ -6,7 +6,8 @@ import {
   assertSpatialV3ProductionReadiness,
   assertSpatialV3WorldReleaseReadiness,
   createSpatialV3ProductionRelease,
-  createSpatialV3ProductionCompositionRoot
+  createSpatialV3ProductionCompositionRoot,
+  deriveActivatedReleaseFromReadback
 } from '../../apps/game-server/src/composition/production-spatial-v3.js';
 import {
   loadConfiguredComposition
@@ -35,7 +36,8 @@ const TEST_RUNTIME_CATALOG_PIN = Object.freeze({
   import_id: 'import-v3',
   import_audit_digest: 'b'.repeat(64),
   record_registry_digest: 'c'.repeat(64),
-  runtime_contract_digest: 'd'.repeat(64),
+  runtime_contract_digest:
+    SPATIAL_V3_PRODUCTION_RELEASE.runtime_catalog_contract_digest,
   compatible_world_revision_id:
     SPATIAL_V3_PRODUCTION_RELEASE.world_revision_id,
   compatible_world_catalog_digest:
@@ -128,8 +130,13 @@ function fixture() {
     return {
       targetCompositionPorts: { port_marker: 'v3-only' },
       commitRecheck: async () => ({ ok: true }),
-      acknowledgeOpening: async () => ({ ok: true, owner: 'v3' }),
-      getPartyScreen: async () => ({ ok: true, owner: 'v3' }),
+      createPublicRuntimeFacade: async () => ({
+        listScenarios: async () => ({ scenarios: [] }),
+        startNewGame: async () => ({ ok: true, owner: 'v3' }),
+        acknowledgeOpening: async () => ({ ok: true, owner: 'v3' }),
+        submitTurn: async () => ({ ok: true, owner: 'v3' }),
+        getPartyScreen: async () => ({ ok: true, owner: 'v3' })
+      }),
       releaseBinding: { ...release },
       runtimeCatalogPin: { ...TEST_RUNTIME_CATALOG_PIN }
     };
@@ -142,6 +149,37 @@ function fixture() {
     closed: () => closed
   };
 }
+
+test('v2 release remains a candidate until exact activation readback', () => {
+  assert.equal(
+    SPATIAL_V3_PRODUCTION_RELEASE.release_status,
+    'validated_candidate_not_active'
+  );
+  assert.equal(
+    SPATIAL_V3_PRODUCTION_RELEASE.production_activation,
+    false
+  );
+  assert.throws(
+    () => deriveActivatedReleaseFromReadback(
+      TEST_RELEASE,
+      {
+        ...TEST_RUNTIME_CATALOG_PIN,
+        activation_event_id: null
+      }
+    ),
+    { code: 'SPATIAL_V3_RELEASE_NOT_ACTIVATED' }
+  );
+  const active = deriveActivatedReleaseFromReadback(
+    TEST_RELEASE,
+    TEST_RUNTIME_CATALOG_PIN
+  );
+  assert.equal(active.release_status, 'active');
+  assert.equal(active.production_activation, true);
+  assert.equal(
+    active.runtime_selectable_in_canonical_production,
+    true
+  );
+});
 
 test('production-v3 root is a sole-owner composition with no v2 fallback identity', async () => {
   const setup = fixture();
@@ -160,12 +198,15 @@ test('production-v3 root is a sole-owner composition with no v2 fallback identit
   assert.equal(health.authoritative_reads, 'spatial_v3_only');
   assert.equal(health.authoritative_writes, 'spatial_v3_only');
   assert.equal(health.runtime_fallback, 'forbidden');
-  assert.equal(health.rollback_source_release_id, 'production-v2');
+  assert.equal(
+    health.rollback_source_release_id,
+    SPATIAL_V3_PRODUCTION_RELEASE.rollback_source_release_id
+  );
   assert.equal(health.rollback_runtime_selectable, false);
   assert.equal(health.temporal_contract_id, 'temporal-world-v1.1');
   assert.equal(
     health.world_revision_id,
-    'novgorod_spatial_v3_target_contract_approval_001'
+    SPATIAL_V3_PRODUCTION_RELEASE.world_revision_id
   );
   assert.match(health.world_catalog_manifest_sha256, /^[a-f0-9]{64}$/u);
   assert.equal(health.dependency_pin_mode, 'exact_only');
@@ -185,7 +226,7 @@ test('production-v3 root is a sole-owner composition with no v2 fallback identit
     health.runtime_catalog_pin.activation_event_id,
     TEST_RUNTIME_CATALOG_PIN.activation_event_id
   );
-  assert.equal(health.migration_count, 10);
+  assert.equal(health.migration_count, 11);
   assert.match(health.migration_chain_digest, /^[a-f0-9]{64}$/u);
   assert.deepEqual(health.migration_readiness, {
     party_count: 0,
@@ -259,11 +300,10 @@ test('production-v3 binding validation fails closed without every sole-owner por
     () => validateSpatialV3RuntimeBindings({
       targetCompositionPorts: {},
       commitRecheck: async () => ({ ok: true }),
-      acknowledgeOpening: async () => ({ ok: true }),
       releaseBinding: { ...TEST_RELEASE },
       runtimeCatalogPin: { ...TEST_RUNTIME_CATALOG_PIN }
     }, TEST_RELEASE),
-    /getPartyScreen/
+    /createPublicRuntimeFacade/
   );
 });
 
@@ -271,8 +311,7 @@ test('production-v3 bindings reject release and runtime-catalog pin drift', () =
   const valid = {
     targetCompositionPorts: {},
     commitRecheck: async () => ({ ok: true }),
-    acknowledgeOpening: async () => ({ ok: true }),
-    getPartyScreen: async () => ({ ok: true }),
+    createPublicRuntimeFacade: async () => ({}),
     releaseBinding: { ...TEST_RELEASE },
     runtimeCatalogPin: { ...TEST_RUNTIME_CATALOG_PIN }
   };
@@ -422,6 +461,45 @@ test('target DDL rolls back when the in-transaction release gate fails', async (
   assert.equal(statements[0], 'BEGIN');
   assert.equal(statements.at(-1), 'ROLLBACK');
   assert.equal(statements.includes('COMMIT'), false);
+});
+
+test('restart reuses only the exact immutable applied migration ledger', async () => {
+  const statements = [];
+  const migration = {
+    migration_id:
+      SPATIAL_V3_PRODUCTION_RELEASE.party_runtime_catalog_migration_id,
+    migration_digest:
+      SPATIAL_V3_PRODUCTION_RELEASE.party_runtime_catalog_migration_digest,
+    target_schema_fingerprint:
+      SPATIAL_V3_PRODUCTION_RELEASE
+        .party_runtime_catalog_target_fingerprint
+  };
+  const result = await runSpatialV3TargetMigrations({
+    connect: async () => ({
+      query: async (sql) => {
+        statements.push(sql);
+        if (sql.includes('to_regclass')) {
+          return { rows: [{ present: true }] };
+        }
+        if (sql.includes('FROM party_runtime.schema_migrations')) {
+          return { rows: [{ ...migration }] };
+        }
+        return { rows: [] };
+      },
+      release() {}
+    })
+  }, {
+    exactAppliedMigration: migration,
+    beforeCommit: async () => ({ status: 'ready' })
+  });
+  assert.equal(result.execution_mode, 'verified_existing');
+  assert.equal(result.newly_applied, 0);
+  assert.equal(
+    statements.some((sql) =>
+      sql.includes('CREATE SCHEMA IF NOT EXISTS party_runtime')),
+    false
+  );
+  assert.equal(statements.at(-1), 'COMMIT');
 });
 
 test('cutover config defaults to v3 and rejects v2 or missing bindings', () => {

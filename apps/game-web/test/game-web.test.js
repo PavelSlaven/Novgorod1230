@@ -4,6 +4,7 @@ import {
   assertNoHiddenFields,
   createApiClient,
   createUiStore,
+  renderAppState,
   renderScreen,
   validateApiEnvelope,
   validatePublicScreen
@@ -44,6 +45,8 @@ test('API client uses /api/v1 and validates success envelopes', async () => {
   const result = await client.health();
   assert.equal(result.status, 'ok');
   assert.equal(calls[0].url, 'https://example.test/api/v1/health');
+  await client.listScenarios();
+  assert.equal(calls[1].url, 'https://example.test/api/v1/scenarios');
 });
 
 test('invalid API envelopes are blocked before UI state update', () => {
@@ -108,4 +111,19 @@ test('feature rendering escapes prose and keeps action as intent', () => {
   assert.match(html, /&lt;script&gt;/u);
   assert.match(html, /data-turn-form/u);
   assert.match(html, /data-action-id="go"/u);
+});
+
+test('landing keeps baseline new game and renders a scenario launch button', () => {
+  const store = createUiStore();
+  store.setScenarios([{
+    scenario_id: 'lower_dvina_late_summer_open_water_v1',
+    title: 'Нижняя Двина: позднее лето',
+    description: 'Первый тестовый сценарий.',
+    available: true
+  }]);
+  const html = renderAppState(store.getState());
+  assert.match(html, /data-new-game-form/u);
+  assert.match(html, /data-scenarios-toggle aria-expanded="false">Сценарии</u);
+  assert.match(html, /data-scenarios-panel hidden/u);
+  assert.match(html, /data-scenario-id="lower_dvina_late_summer_open_water_v1"/u);
 });

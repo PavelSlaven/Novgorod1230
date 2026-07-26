@@ -1,0 +1,69 @@
+{
+  "schema": "rus.spatial-v3.boundary_staging_candidate.v1",
+  "candidate_id": "lower_dvina_boundary_yp025_yp026_v1",
+  "source_transition_id": "MATCH_DVINA_YP025_YP026_001",
+  "evidence_status": "comparative_reconstruction",
+  "geometry_claim": "topological_only",
+  "spatial_precision": "corridor",
+  "semantic_ready": false,
+  "runtime_selectable": false,
+  "execution_allowed": false,
+  "proposed_identities": {
+    "host_g4": "g4v3__gn_nov_g3_xp017_yp025_lower_dvina_reach",
+    "canonical_receiving_g5": "cg5v3__gn_nov_g4_xp017_yp025_navigation_corridor",
+    "materialization_profile": "smpv3__gn_nov_g4_xp017_yp025_navigation_corridor",
+    "forward_boundary": "BND_G1_001_R2_SOUTH_DVINA",
+    "reverse_boundary": "BND_G1_002_NORTH_DVINA",
+    "corridor": "COR_DVINA_WHITE_SEA"
+  },
+  "receiving_g5": {
+    "spatial_function_id": "navigation_zone",
+    "function_pin": {
+      "target_entity_kind": "external_dependency",
+      "target_entity_id": "navigation_zone",
+      "target_version": 1
+    },
+    "scene_template_ref": "stfv3__g5_water_navigation_v1@1",
+    "required_g6_count": 1,
+    "physical_class": "spatial.g6.water",
+    "positions": [
+      "arrival",
+      "focus",
+      "departure"
+    ],
+    "forward_endpoint_slot": "arrival",
+    "reverse_endpoint_slot": "departure",
+    "forbidden_claims": [
+      "shore",
+      "landing",
+      "settlement",
+      "exact_geometry"
+    ]
+  },
+  "directed_routes": {
+    "forward": {
+      "from": "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_upstream_approach",
+      "to": "cg5v3__gn_nov_g4_xp017_yp025_navigation_corridor",
+      "switch_phase": "outbound_dispatch",
+      "physical_segment_count": 2
+    },
+    "reverse": {
+      "from": "cg5v3__gn_nov_g4_xp017_yp025_navigation_corridor",
+      "to": "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_upstream_approach",
+      "switch_phase": "outbound_dispatch",
+      "physical_segment_count": 2
+    }
+  },
+  "unresolved_gaps": [
+    "approved_directed_segment_gap",
+    "approved_boundary_check_policy_gap",
+    "approved_boundary_risk_policy_gap",
+    "approved_boundary_consequence_policy_gap",
+    "approved_endpoint_readiness_gap"
+  ],
+  "compiler_policy": {
+    "production_contract_rows_emitted": false,
+    "importer_accepts_staging": false,
+    "legacy_supersession_effective": false
+  }
+}

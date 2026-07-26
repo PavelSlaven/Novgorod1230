@@ -1,0 +1,11 @@
+[
+  {
+    "id": "novgorod_spatial_v3_production_v2_candidate_001",
+    "parent_revision_id": null,
+    "title": "Novgorod Spatial-v3 production v2 compatibility pin",
+    "effective_from": "1230-01-01",
+    "effective_to": "1250-12-31",
+    "catalog_digest": "fd75d9cb1ad0e949ff3b0bb5ef044e510f340a967f43867e9c4d41c16ba9f255",
+    "status": "approved"
+  }
+]

@@ -29,6 +29,23 @@ export const RUNTIME_CATALOG_CONTRACT_DIGEST = createHash('sha256')
   .update(canonicalStringify(RUNTIME_CATALOG_CONTRACT))
   .digest('hex');
 
+/**
+ * First-playable release contract. The v2 contract above remains immutable for
+ * historical pins; this contract binds the same catalog semantics to the
+ * append-only schema-19 / party-011 activation migrations.
+ */
+export const RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT = deepFreeze({
+  ...RUNTIME_CATALOG_CONTRACT,
+  schema: 'rus.runtime_catalog_contract.v3',
+  required_world_schema_migration_id: 'world_runtime_catalog_activation_v2',
+  required_party_schema_migration_id: 'party_runtime_catalog_pins_v2'
+});
+
+export const RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT_DIGEST =
+  createHash('sha256')
+    .update(canonicalStringify(RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT))
+    .digest('hex');
+
 function deepFreeze(value) {
   if (!value || typeof value !== 'object' || Object.isFrozen(value)) return value;
   for (const nested of Object.values(value)) deepFreeze(nested);

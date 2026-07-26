@@ -113,18 +113,21 @@ test(
     const health = root.health();
     assert.equal(root.status, 'production_sole_owner');
     assert.equal(health.status, 'ok');
-    assert.equal(health.release_id, 'spatial-v3-production-v1');
+    assert.equal(health.release_id, 'spatial-v3-production-v3');
     assert.equal(health.composition, 'spatial_v3_production');
     assert.equal(health.activation, 'sole_owner');
     assert.equal(health.authoritative_reads, 'spatial_v3_only');
     assert.equal(health.authoritative_writes, 'spatial_v3_only');
     assert.equal(health.runtime_fallback, 'forbidden');
-    assert.equal(health.rollback_source_release_id, 'production-v2');
+    assert.equal(
+      health.rollback_source_release_id,
+      'spatial-v3-production-v2'
+    );
     assert.equal(health.rollback_runtime_selectable, false);
     assert.equal(health.temporal_contract_id, 'temporal-world-v1.1');
     assert.equal(
       health.world_revision_id,
-      'novgorod_spatial_v3_target_contract_approval_001'
+      'novgorod_spatial_v3_production_v3_candidate_001'
     );
     assert.match(health.world_catalog_manifest_sha256, /^[a-f0-9]{64}$/u);
     assert.equal(health.dependency_pin_mode, 'exact_only');
@@ -136,8 +139,11 @@ test(
       health.runtime_catalog_resolution,
       'active_for_new_party_persisted_for_existing_party'
     );
-    assert.equal(health.party_schema_version, 'party_runtime_v3_target');
-    assert.equal(health.migration_count, 10);
+    assert.equal(
+      health.party_schema_version,
+      'party_runtime_v3_first_playable'
+    );
+    assert.equal(health.migration_count, 11);
     assert.match(health.migration_chain_digest, /^[a-f0-9]{64}$/u);
     assert.equal(
       health.runtime_catalog_pin.activation_event_id,
@@ -146,7 +152,7 @@ test(
     assert.deepEqual(health.world_readiness, {
       status: 'ready',
       world_revision_id:
-        'novgorod_spatial_v3_target_contract_approval_001',
+        'novgorod_spatial_v3_production_v3_candidate_001',
       runtime_catalog_activation_event_id:
         'cutover-runtime-activation-v1',
       historical_activation_count: 0
@@ -167,8 +173,8 @@ test(
          ('persisted-historical-party',3,$1,$2,'materializer-v3','rng-v1',
           'commands-v1','profiles-v1')`,
       [
-        'novgorod_spatial_v3_target_contract_approval_001',
-        '0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e'
+        'novgorod_spatial_v3_production_v3_candidate_001',
+        '1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e'
       ]
     );
     await partyPool.query(
@@ -181,14 +187,14 @@ test(
        VALUES
          ('persisted-historical-party','item_container_materialization_v2',
           'cutover-runtime-catalog-v1',$1,'cutover-runtime-import-v1',$2,
-          $3,$4,'novgorod_spatial_v3_target_contract_approval_001',$5,$6,
+          $3,$4,'novgorod_spatial_v3_production_v3_candidate_001',$5,$6,
           'cutover-runtime-activation-v0')`,
       [
         'a'.repeat(64),
         'b'.repeat(64),
         'c'.repeat(64),
         'd'.repeat(64),
-        '0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e',
+        '1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e',
         'e'.repeat(64)
       ]
     );
@@ -243,9 +249,9 @@ function createCommitBlockingPool(pool, beforeCommit) {
 
 async function seedExactReleasePins(worldPool) {
   const releaseRevision =
-    'novgorod_spatial_v3_target_contract_approval_001';
+    'novgorod_spatial_v3_production_v3_candidate_001';
   const releaseDigest =
-    '0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e';
+    '1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e';
   const catalogRevision = 'cutover-runtime-catalog-v1';
   const catalogDigest = 'a'.repeat(64);
   const importId = 'cutover-runtime-import-v1';
@@ -424,14 +430,14 @@ async function seedMismatchedApprovedTuple(worldPool) {
        ('cutover-runtime-activation-corrupt',3,'activate',
         'item_container_materialization_v2','cutover-runtime-catalog-v1',$1,
         'cutover-runtime-import-v1',$2,$3,$4,
-        'novgorod_spatial_v3_target_contract_approval_001',$5,$6,$7,$8,
+        'novgorod_spatial_v3_production_v3_candidate_001',$5,$6,$7,$8,
         'cutover-runtime-activation-v1',$9,'test',$10)`,
     [
       'a'.repeat(64),
       'b'.repeat(64),
       'f'.repeat(64),
       'd'.repeat(64),
-      '0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e',
+      '1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e',
       'e'.repeat(64),
       'a'.repeat(64),
       'b'.repeat(64),

@@ -8,16 +8,16 @@ const blocked = async () => Object.freeze({
 });
 
 const releaseBinding = Object.freeze({
-  release_id: 'spatial-v3-production-v2',
+  release_id: 'spatial-v3-production-v3',
   composition_id: 'builtin:production-spatial-v3',
   contract_version: '4.5.0-first-playable.1',
   temporal_contract_id: 'temporal-world-v1.1',
   party_schema_version: 'party_runtime_v3_first_playable',
-  world_revision_id: 'novgorod_spatial_v3_production_v2_candidate_001',
+  world_revision_id: 'novgorod_spatial_v3_production_v3_candidate_001',
   world_catalog_digest:
-    'fd75d9cb1ad0e949ff3b0bb5ef044e510f340a967f43867e9c4d41c16ba9f255',
+    '1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e',
   world_catalog_manifest_sha256:
-    '3ed17f7d540f5707a8b72392d7e4d5736be947048673ff5135d5c07aacbb951a',
+    '593ccb341084f7433ec4ae9d7d0b2ea8b1dea07833636ef385550ba5a295ecea',
   dependency_pin_mode: 'exact_only',
   runtime_catalog_pin_schema: 'rus.runtime_catalog_pin.v2',
   runtime_catalog_scope: 'item_container_materialization_v2',
@@ -35,11 +35,12 @@ const releaseBinding = Object.freeze({
   target_migration_chain_digest:
     'b7a9eb899b5d302dc27bff6797f1bb6abf31b245ace3e7c285f94543e3039d45',
   compatible_world_pin_manifest_digest: 'e'.repeat(64),
-  rollback_source_release_id: 'spatial-v3-production-v1',
+  rollback_source_release_id: 'spatial-v3-production-v2',
   rollback_runtime_selectable: false,
   release_status: 'active',
   production_activation: true,
   runtime_selectable_in_canonical_production: true,
+  boundary_crossing_capability: 'ready_for_runtime_acceptance',
   scenario_binding_id: 'lower_dvina_late_summer_open_water_v1'
 });
 
@@ -54,9 +55,9 @@ const runtimeCatalogPin = Object.freeze({
   record_registry_digest: 'c'.repeat(64),
   runtime_contract_digest: 'd'.repeat(64),
   compatible_world_revision_id:
-    'novgorod_spatial_v3_production_v2_candidate_001',
+    'novgorod_spatial_v3_production_v3_candidate_001',
   compatible_world_catalog_digest:
-    'fd75d9cb1ad0e949ff3b0bb5ef044e510f340a967f43867e9c4d41c16ba9f255',
+    '1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e',
   compatible_world_pin_manifest_digest: 'e'.repeat(64)
 });
 

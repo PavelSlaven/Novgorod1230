@@ -31,6 +31,27 @@
     "production_activation": true,
     "runtime_selectable_in_canonical_production": true
   },
+  "production_smoke": {
+    "runtime_source_commit": "d1c416dee5f085079785e569b5543cdade4c5a20",
+    "browser_driver": "browser-harness",
+    "scenario_button_visible": true,
+    "scenario_id": "lower_dvina_late_summer_open_water_v1",
+    "scenario_label": "Нижняя Двина: позднее лето",
+    "party_id": "party:c1614307d7dd6c0b98e48f58",
+    "resolved_player_name": "Иван",
+    "opening_screen_verified": true,
+    "first_action": "look",
+    "save_verified": true,
+    "process_restart_verified": true,
+    "persisted_screen_restored": true,
+    "post_restart_action": "safe_move_to_shore",
+    "final_state_version": 3,
+    "player_count": 1,
+    "npc_count": 1,
+    "inflight_command_count": 0,
+    "llm_required": false,
+    "status": "PASS"
+  },
   "production_databases": {
     "world_database": "pr17_lower_dvina_world_production_v2",
     "world_principal": "world_operator",

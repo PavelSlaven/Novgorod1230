@@ -16,6 +16,8 @@
   party count после reset и до smoke равен нулю.
 - Production activation event:
   `runtime_catalog_activation_823f24b68cee4434a29404f86d98df42`.
+- Production browser smoke/restart: PASS на exact runtime source
+  `d1c416dee5f085079785e569b5543cdade4c5a20`.
 
 ## Рабочая среда
 
@@ -274,6 +276,22 @@ world_revision_id =
   novgorod_spatial_v3_production_v3_candidate_001
 world_catalog_digest =
   1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e
+```
+
+Production browser smoke:
+
+```text
+scenario button = visible
+scenario = lower_dvina_late_summer_open_water_v1
+party_id = party:c1614307d7dd6c0b98e48f58
+resolved player name = Иван
+opening screen = PASS
+look = PASS
+save = PASS
+process restart/resume = PASS
+post-restart safe move = PASS
+final state_version = 3
+inflight commands = 0
 ```
 
 Sanitized machine-readable evidence:

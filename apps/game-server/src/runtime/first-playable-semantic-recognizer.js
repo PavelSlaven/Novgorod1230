@@ -41,7 +41,16 @@ const RULES = Object.freeze([
   { verb: 'give', patterns: [/^передать (?:рыбаку )?вер[её]вку$/u] },
   { verb: 'board', patterns: [/^сесть в лодку$/u] },
   { verb: 'alight', patterns: [/^выйти из лодки$/u] },
-  { verb: 'cross_boundary', patterns: [/^перейти южную границу$/u] },
+  { verb: 'journey_to_boundary', patterns: [
+    /^пройти к южной границе$/u
+  ] },
+  { verb: 'cross_boundary', patterns: [
+    /^перейти южную границу$/u,
+    /^вернуться через границу$/u
+  ] },
+  { verb: 'resume_boundary_traversal', patterns: [
+    /^продолжить пограничный переход$/u
+  ] },
   { verb: 'save', patterns: [/^сохранить(?: игру)?$/u] }
 ]);
 
@@ -61,6 +70,7 @@ export function recognizeFirstPlayableSemanticCommand({
   selectedActionOptionId = '',
   visibleEntityRefs = [],
   currentLocation = null,
+  currentBoundaryDirection = null,
   baseStateVersion,
   requestId,
   idempotencyKey,
@@ -121,6 +131,15 @@ export function recognizeFirstPlayableSemanticCommand({
   const destinationId = verb === 'move'
     ? (/берегу|кромке/u.test(source) ? 'landing_edge' : 'high_platform')
     : null;
+  const boundaryVerb = [
+    'cross_boundary',
+    'resume_boundary_traversal'
+  ].includes(verb);
+  const boundaryForward = boundaryVerb
+    && currentBoundaryDirection !== 'reverse';
+  const boundaryRouteId = boundaryForward
+    ? 'wrv3__lower_dvina_yp026_to_yp025'
+      : 'wrv3__lower_dvina_yp025_to_yp026';
   const riskyTraversal = verb === 'move'
     && /скользкой кромке/u.test(source);
   const commandWithoutDigest = {
@@ -134,10 +153,38 @@ export function recognizeFirstPlayableSemanticCommand({
     },
     destination_ref: verb === 'move'
       ? { entity_kind: 'scene_position', entity_id: destinationId }
-      : null,
+      : verb === 'journey_to_boundary'
+        ? {
+            entity_kind: 'boundary_anchor',
+            entity_id: 'BND_G1_001_R2_SOUTH_DVINA',
+            version: 1
+          }
+      : boundaryVerb
+        ? {
+            entity_kind: 'canonical_g5',
+            entity_id: boundaryForward
+              ? 'cg5v3__gn_nov_g4_xp017_yp025_navigation_corridor'
+              : 'cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_upstream_approach',
+            version: boundaryForward ? 1 : 3
+          }
+        : null,
     route_binding_ref: verb === 'move'
       ? structuredClone(LOCAL_ROUTE_BINDINGS[destinationId])
-      : null,
+      : verb === 'journey_to_boundary'
+        ? {
+            entity_kind: 'journey_route_chain',
+            entity_id: currentLocation === 'yp025_navigation_corridor'
+              ? 'journey.lower_dvina_yp025_to_reverse_boundary_v1'
+              : 'journey.lower_dvina_start_to_south_boundary_v1',
+            version: 1
+          }
+      : boundaryVerb
+        ? {
+            entity_kind: 'world_route',
+            entity_id: boundaryRouteId,
+            version: 1
+          }
+        : null,
     risk_profile_ref: riskyTraversal
       ? {
           entity_kind: 'risk_profile',

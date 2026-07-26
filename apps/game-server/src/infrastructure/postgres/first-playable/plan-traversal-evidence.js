@@ -20,7 +20,8 @@ export function event(
   changeSet,
   idemId,
   turnNumber,
-  intervalId = null
+  intervalId = null,
+  stepOrdinal = 0
 ) {
   return row(
     'party_route_plan_execution_events',
@@ -31,7 +32,7 @@ export function event(
       event_kind: kind,
       from_status: fromStatus,
       to_status: toStatus,
-      step_ordinal: 0,
+      step_ordinal: stepOrdinal,
       location_snapshot: location,
       causal_result_ref: intervalId == null
         ? null

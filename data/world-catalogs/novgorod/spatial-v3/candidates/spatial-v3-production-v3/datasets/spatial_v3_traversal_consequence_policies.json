@@ -1,0 +1,22 @@
+[
+  {
+    "id": "consequence.lower_dvina_segment_v1",
+    "pre_progress_elapsed_minutes": 0,
+    "pre_progress_progress_ppm": 0,
+    "positive_progress_delay_minutes": 5,
+    "positive_progress_energy_delta": -2,
+    "condition_candidate_id": "wet",
+    "first_failure_state": "paused_in_transit",
+    "repeated_failure_state": "stranded_in_transit",
+    "preserves_committed_elapsed": true,
+    "preserves_committed_progress": true,
+    "fatality_allowed": false,
+    "craft_destruction_allowed": false,
+    "inventory_wipe_allowed": false,
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_production_v3_candidate_001",
+    "status": "approved",
+    "provenance_ref": "prov_lower_dvina_boundary_authoring_v1",
+    "canonical_digest": "7b0d3bcb3e40563a1cbcd15faf4c30a02476ab679a01d272542bcd7f6b92cf25"
+  }
+]

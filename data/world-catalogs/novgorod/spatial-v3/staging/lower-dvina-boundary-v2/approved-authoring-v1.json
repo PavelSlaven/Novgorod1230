@@ -1,0 +1,96 @@
+{
+  "schema": "rus.lower_dvina.approved_boundary_authoring.v1",
+  "candidate_id": "lower_dvina_boundary_yp025_yp026_authoring_v1",
+  "candidate_content_digest": "cde64b5e6317cd580a16b9178e7291c326a9c2c478811c31851eb7e45e5e8f4b",
+  "approval_decision": "APPROVE_LOWER_DVINA_BOUNDARY_AUTHORING_V1",
+  "source_zip_sha256": "244c6c98e650f20ae5bf57bc1f50b2e63ed881ce165b1561559932bb32c7641e",
+  "source_transition_id": "MATCH_DVINA_YP025_YP026_001",
+  "status": "approved",
+  "geometry_claim": "topological_only",
+  "spatial_precision": "corridor",
+  "fallback": "forbidden",
+  "scenario_id": "lower_dvina_late_summer_open_water_v1",
+  "endpoints": {
+    "yp026": "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_upstream_approach",
+    "yp025": "cg5v3__gn_nov_g4_xp017_yp025_navigation_corridor"
+  },
+  "routes": [
+    {
+      "id": "wrv3__lower_dvina_yp026_to_yp025",
+      "direction": "forward_upstream",
+      "baseline_total_minutes": 40,
+      "segments": [
+        {
+          "id": "wrsegv3__lower_dvina_yp026_to_yp025__00",
+          "environment_profile_id": "env.lower_dvina_sheltered_approach_v1",
+          "cost_profile_id": "cost.lower_dvina_sheltered_10m_v1",
+          "base_minutes": 10,
+          "risk_profile_id": "risk.lower_dvina_sheltered_approach_v1"
+        },
+        {
+          "id": "wrsegv3__lower_dvina_yp026_to_yp025__01",
+          "environment_profile_id": "env.lower_dvina_open_channel_v1",
+          "cost_profile_id": "cost.lower_dvina_upstream_open_30m_v1",
+          "base_minutes": 30,
+          "risk_profile_id": "risk.lower_dvina_upstream_open_channel_v1"
+        }
+      ]
+    },
+    {
+      "id": "wrv3__lower_dvina_yp025_to_yp026",
+      "direction": "reverse_downstream",
+      "baseline_total_minutes": 30,
+      "segments": [
+        {
+          "id": "wrsegv3__lower_dvina_yp025_to_yp026__00",
+          "environment_profile_id": "env.lower_dvina_open_channel_v1",
+          "cost_profile_id": "cost.lower_dvina_downstream_open_20m_v1",
+          "base_minutes": 20,
+          "risk_profile_id": "risk.lower_dvina_downstream_open_channel_v1"
+        },
+        {
+          "id": "wrsegv3__lower_dvina_yp025_to_yp026__01",
+          "environment_profile_id": "env.lower_dvina_sheltered_approach_v1",
+          "cost_profile_id": "cost.lower_dvina_sheltered_10m_v1",
+          "base_minutes": 10,
+          "risk_profile_id": "risk.lower_dvina_sheltered_approach_v1"
+        }
+      ]
+    }
+  ],
+  "availability_policy": {
+    "id": "availability.lower_dvina_late_summer_daylight_v1",
+    "hard_block_on_unsupported": true
+  },
+  "check_policies": [
+    {
+      "id": "check.lower_dvina_boat_control_v1",
+      "domain": "craft_control",
+      "characteristic_id": "dexterity",
+      "modifier_skill_id": "travel_transport",
+      "one_factor_dc": 10,
+      "two_factor_dc": 12
+    },
+    {
+      "id": "check.lower_dvina_orientation_v1",
+      "domain": "orientation",
+      "characteristic_id": "attention",
+      "modifier_skill_id": "observation",
+      "one_factor_dc": 10,
+      "two_factor_dc": 12
+    }
+  ],
+  "consequence_policy": {
+    "id": "consequence.lower_dvina_segment_v1",
+    "pre_progress_elapsed_minutes": 0,
+    "positive_progress_hazard_delay_minutes": 5,
+    "positive_progress_energy_delta": -2,
+    "condition_candidate": "wet",
+    "second_unresolved_failure_state": "stranded_in_transit",
+    "fatal_outcomes_allowed": false,
+    "craft_destruction_allowed": false,
+    "inventory_wipe_allowed": false,
+    "committed_progress_rollback_allowed": false
+  },
+  "recheck_policy_ref": "recheck.water_15m@2"
+}

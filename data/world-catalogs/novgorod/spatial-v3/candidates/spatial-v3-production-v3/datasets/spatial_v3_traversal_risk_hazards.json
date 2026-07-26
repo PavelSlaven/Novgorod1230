@@ -1,0 +1,62 @@
+[
+  {
+    "risk_profile_id": "risk.lower_dvina_sheltered_approach_v1",
+    "risk_profile_version": 1,
+    "hazard_class_id": "craft_control_shift",
+    "canonical_ordinal": 0
+  },
+  {
+    "risk_profile_id": "risk.lower_dvina_sheltered_approach_v1",
+    "risk_profile_version": 1,
+    "hazard_class_id": "wet_exposure",
+    "canonical_ordinal": 1
+  },
+  {
+    "risk_profile_id": "risk.lower_dvina_upstream_open_channel_v1",
+    "risk_profile_version": 1,
+    "hazard_class_id": "shoal_or_grounding",
+    "canonical_ordinal": 0
+  },
+  {
+    "risk_profile_id": "risk.lower_dvina_upstream_open_channel_v1",
+    "risk_profile_version": 1,
+    "hazard_class_id": "lateral_drift",
+    "canonical_ordinal": 1
+  },
+  {
+    "risk_profile_id": "risk.lower_dvina_upstream_open_channel_v1",
+    "risk_profile_version": 1,
+    "hazard_class_id": "orientation_loss",
+    "canonical_ordinal": 2
+  },
+  {
+    "risk_profile_id": "risk.lower_dvina_upstream_open_channel_v1",
+    "risk_profile_version": 1,
+    "hazard_class_id": "wet_exposure",
+    "canonical_ordinal": 3
+  },
+  {
+    "risk_profile_id": "risk.lower_dvina_downstream_open_channel_v1",
+    "risk_profile_version": 1,
+    "hazard_class_id": "lateral_drift",
+    "canonical_ordinal": 0
+  },
+  {
+    "risk_profile_id": "risk.lower_dvina_downstream_open_channel_v1",
+    "risk_profile_version": 1,
+    "hazard_class_id": "orientation_loss",
+    "canonical_ordinal": 1
+  },
+  {
+    "risk_profile_id": "risk.lower_dvina_downstream_open_channel_v1",
+    "risk_profile_version": 1,
+    "hazard_class_id": "shoal_or_grounding",
+    "canonical_ordinal": 2
+  },
+  {
+    "risk_profile_id": "risk.lower_dvina_downstream_open_channel_v1",
+    "risk_profile_version": 1,
+    "hazard_class_id": "wet_exposure",
+    "canonical_ordinal": 3
+  }
+]

@@ -20,13 +20,15 @@
 
 Production import: `performed`; runtime visibility: `verified`; `versioned production activation cutover`: `performed`. Release `spatial-v3-production-v1` активировал только этот exact approved/pinned set. Historical P12 source approval сам по себе не разрешал activation и остаётся immutable; current status определяется отдельным production activation boundary. Раздел не меняет статус G1 `draft`, не открывает северную внешнюю границу и не разрешает использование записей вне approved manifest.
 
-`spatial-v3-production-v2` является полной immutable snapshot-revision поверх exact
-v1 manifest. До финального cutover она имеет статус
-`validated_candidate_not_active`. Новый receiving G5 в `yp025` и взаимная
-boundary topology присутствуют только как source-bound staging candidate:
-physical segments, cost/environment/recheck/risk/check/consequence policies
-не утверждены, поэтому `boundary_crossing` остаётся fail-closed. Локальная
-capability первой сцены от этой границы не зависит.
+`spatial-v3-production-v2` остаётся immutable parent snapshot. Утверждённый
+source-bound package `lower_dvina_boundary_yp025_yp026_authoring_v1`
+скомпилирован в полный successor `spatial-v3-production-v3`: receiving G5 в
+`yp025`, две независимые directed routes, четыре physical segments, reciprocal
+endpoint roles и exact availability/check/risk/consequence policies. Candidate
+сохраняет точность `topological_only/corridor`; точный берег, линия русла и
+географическая точка перехода не утверждаются. До отдельного production
+cutover release остаётся `validated_candidate_not_active`, поэтому текущий
+canonical production head этим разделом не изменяется.
 
 ## Правило использования
 
@@ -281,7 +283,7 @@ capability первой сцены от этой границы не завис�
 - Proposed canonical receiving G5:
   `cg5v3__gn_nov_g4_xp017_yp025_navigation_corridor`,
   `spatial_function_id=navigation_zone`, template
-  `stfv3__g5_water_navigation_v1@1`.
+  `stfv3__g5_water_navigation_v1@2`.
 - Достоверность receiving scene:
   `geometry_claim=topological_only`,
   `evidence_status=comparative_reconstruction`; берег, высадка, поселение,
@@ -289,12 +291,19 @@ capability первой сцены от этой границы не завис�
 - Boundary pair:
   `BND_G1_001_R2_SOUTH_DVINA` ↔ `BND_G1_002_NORTH_DVINA`,
   corridor `COR_DVINA_WHITE_SEA`.
-- Production import и runtime visibility: не выполнялись до финального v2
+- Successor world revision:
+  `novgorod_spatial_v3_production_v3_candidate_001`.
+- Authoring package approval:
+  `APPROVE_LOWER_DVINA_BOUNDARY_AUTHORING_V1`, exact content digest
+  `cde64b5e6317cd580a16b9178e7291c326a9c2c478811c31851eb7e45e5e8f4b`.
+- Production import и runtime visibility: не выполнялись до отдельного v3
   cutover.
 - Remaining east-boundary gap сохраняется и не входит в first-playable scope.
 
-Receiving topology, reciprocal endpoint roles и proposed legacy supersession
-хранятся в staging manifest. До source-bound approval четырёх directed
-physical segments и полного policy-набора compiler не выпускает для них
-production route records, importer их не принимает, а runtime не предлагает
-переход.
+Receiving topology, reciprocal endpoint roles и source supersession evidence
+сохранены в staging input и запечатаны compiler manifests. Полный approved
+output содержит четыре directed physical segments и exact policy closure.
+Normal supported conditions не требуют d20; утверждённые неблагоприятные
+факторы разрешаются единственной check policy либо блокируются fail-closed.
+Production runtime предлагает переход только при exact v3 release pin и
+успешной activation; parent v2 и существующие party pins не перепривязываются.

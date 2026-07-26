@@ -1,12 +1,10 @@
 import { randomUUID } from 'node:crypto';
-
 import { serverError } from '../errors.js';
 import {
   createFirstPlayablePartyRepository
 } from '../infrastructure/postgres/first-playable/repository.js';
-import {
-  buildFirstPlayableTurnPlan
-} from '../infrastructure/postgres/first-playable/turn.js';
+import { buildFirstPlayableTurnPlan } from
+  '../infrastructure/postgres/first-playable/turn.js';
 import {
   recognizeFirstPlayableSemanticCommand
 } from './first-playable-semantic-recognizer.js';
@@ -79,6 +77,7 @@ export function createFirstPlayablePublicRuntime({
     submitTurn: (partyId, input) => submitTurn({
       partyId,
       input,
+      release,
       repository,
       committer,
       idFactory
@@ -149,6 +148,7 @@ async function startNewGame({
 async function acknowledgeOpening({
   partyId,
   input = {},
+  release,
   repository,
   now
 }) {
@@ -179,6 +179,7 @@ async function acknowledgeOpening({
 async function submitTurn({
   partyId,
   input = {},
+  release,
   repository,
   committer,
   idFactory
@@ -213,6 +214,8 @@ async function submitTurn({
       selectedActionOptionId: input.selected_action_option_id,
       visibleEntityRefs: visibleEntityRefs(statePayload),
       currentLocation: statePayload.location,
+      currentBoundaryDirection:
+        statePayload.boundary_dispatch_direction,
       baseStateVersion: stateVersion,
       requestId,
       idempotencyKey,
@@ -225,7 +228,9 @@ async function submitTurn({
         { status: 409 }
       );
     }
-    if (recognized.command.verb === 'cross_boundary') {
+    if (recognized.command.verb === 'cross_boundary'
+        && release.boundary_crossing_capability
+          !== 'ready_for_runtime_acceptance') {
       throw serverError(
         'BOUNDARY_CAPABILITY_BLOCKED',
         'Переход не утверждён: отсутствуют обязательные segment policies.',

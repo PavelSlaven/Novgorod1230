@@ -1,9 +1,9 @@
 <!-- GENERATED FILE. Sources: infra/world-base/schema.sql, infra/world-base/schema/*.sql and infra/world-base/field-descriptions.js. Run `npm run world-db:schema-doc`; do not edit manually. -->
 # Справочник схемы `world_base`
 
-- Исполняемый источник: `infra/world-base/schema.sql` и 19 упорядоченных SQL-частей.
-- SHA-256 развёрнутого DDL: `0b3e55c28e0a8dad52b036681ebb5d59592d11caa83c11c23dbd28c110445f04`.
-- Таблиц: 191.
+- Исполняемый источник: `infra/world-base/schema.sql` и 20 упорядоченных SQL-частей.
+- SHA-256 развёрнутого DDL: `324167311f594261f7f457604d646c97b56381bc1ce3c6db44ca73930528ab0f`.
+- Таблиц: 199.
 - Описания берутся только из утверждённого `infra/world-base/field-descriptions.js`; отсутствие описания не заполняется эвристикой.
 
 ## Граф (каноническая карта)
@@ -5338,3 +5338,190 @@ Digests, counts и dependency order таблиц одного импорта.
 
 - `PRIMARY KEY ( registry_type, registry_id, registry_version, dependency_id, dependency_version )`
 - `UNIQUE ( registry_type, registry_id, registry_version, registry_digest, dependency_id, dependency_version, dependency_digest )`
+
+### `world_base.spatial_v3_traversal_availability_policies`
+
+Описание назначения отсутствует.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `entity_kind` | `TEXT` | нет | `'traversal_availability_policy'` | — | `NOT NULL`<br>`CHECK (entity_kind = 'traversal_availability_policy')` | Описание отсутствует. |
+| `id` | `TEXT` | нет | — | — | `NOT NULL` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `version` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (version > 0)` | Описание отсутствует. |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.spatial_v3_world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `scenario_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `season_mode` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `daylight_required` | `BOOLEAN` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `fallback_behavior` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (fallback_behavior = 'forbidden')` | Описание отсутствует. |
+| `unsupported_state_behavior` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (unsupported_state_behavior = 'hard_block')` | Описание отсутствует. |
+| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (status IN ('approved','deprecated','retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `provenance_ref` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `canonical_digest` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (canonical_digest ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY (id, version)`
+- `UNIQUE (id, version, world_revision_id)`
+- `FOREIGN KEY (entity_kind,id,version,world_revision_id) REFERENCES world_base.spatial_v3_authoring_versions( entity_kind,entity_id,version,world_revision_id ) DEFERRABLE INITIALLY DEFERRED`
+
+### `world_base.spatial_v3_traversal_availability_values`
+
+Описание назначения отсутствует.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `policy_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `policy_version` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `dimension_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `value_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `disposition` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (disposition IN ('allowed','hard_block'))` | Описание отсутствует. |
+| `canonical_ordinal` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (canonical_ordinal >= 0)` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY (policy_id, policy_version, dimension_id, value_id)`
+- `UNIQUE (policy_id, policy_version, dimension_id, canonical_ordinal)`
+- `FOREIGN KEY (policy_id, policy_version) REFERENCES world_base.spatial_v3_traversal_availability_policies(id,version) ON DELETE CASCADE`
+
+### `world_base.spatial_v3_traversal_check_policies`
+
+Описание назначения отсутствует.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `entity_kind` | `TEXT` | нет | `'traversal_check_policy'` | — | `NOT NULL`<br>`CHECK (entity_kind = 'traversal_check_policy')` | Описание отсутствует. |
+| `id` | `TEXT` | нет | — | — | `NOT NULL` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `version` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (version > 0)` | Описание отсутствует. |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.spatial_v3_world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `activation_domain` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (activation_domain IN ('craft_control','orientation'))` | Описание отсутствует. |
+| `characteristic_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `modifier_skill_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `one_factor_dc` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (one_factor_dc > 0)` | Описание отсутствует. |
+| `two_factor_dc` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (two_factor_dc > one_factor_dc)` | Описание отсутствует. |
+| `maximum_factor_count` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (maximum_factor_count = 2)` | Описание отсутствует. |
+| `identity_scope_kind` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (identity_scope_kind = 'traversal_interval_result_id')` | Описание отсутствует. |
+| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (status IN ('approved','deprecated','retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `provenance_ref` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `canonical_digest` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (canonical_digest ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY (id, version)`
+- `UNIQUE (id, version, world_revision_id)`
+- `FOREIGN KEY (entity_kind,id,version,world_revision_id) REFERENCES world_base.spatial_v3_authoring_versions( entity_kind,entity_id,version,world_revision_id ) DEFERRABLE INITIALLY DEFERRED`
+
+### `world_base.spatial_v3_traversal_check_triggers`
+
+Описание назначения отсутствует.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `check_policy_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `check_policy_version` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `trigger_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `canonical_ordinal` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (canonical_ordinal >= 0)` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY (check_policy_id, check_policy_version, trigger_id)`
+- `UNIQUE (check_policy_id, check_policy_version, canonical_ordinal)`
+- `FOREIGN KEY (check_policy_id, check_policy_version) REFERENCES world_base.spatial_v3_traversal_check_policies(id,version) ON DELETE CASCADE`
+
+### `world_base.spatial_v3_traversal_consequence_policies`
+
+Описание назначения отсутствует.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `entity_kind` | `TEXT` | нет | `'traversal_consequence_policy'` | — | `NOT NULL`<br>`CHECK (entity_kind = 'traversal_consequence_policy')` | Описание отсутствует. |
+| `id` | `TEXT` | нет | — | — | `NOT NULL` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `version` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (version > 0)` | Описание отсутствует. |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.spatial_v3_world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `pre_progress_elapsed_minutes` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (pre_progress_elapsed_minutes = 0)` | Описание отсутствует. |
+| `pre_progress_progress_ppm` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (pre_progress_progress_ppm = 0)` | Описание отсутствует. |
+| `positive_progress_delay_minutes` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (positive_progress_delay_minutes >= 0)` | Описание отсутствует. |
+| `positive_progress_energy_delta` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (positive_progress_energy_delta <= 0)` | Описание отсутствует. |
+| `condition_candidate_id` | `TEXT` | да | — | — | — | Описание отсутствует. |
+| `first_failure_state` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (first_failure_state = 'paused_in_transit')` | Описание отсутствует. |
+| `repeated_failure_state` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (repeated_failure_state = 'stranded_in_transit')` | Описание отсутствует. |
+| `preserves_committed_elapsed` | `BOOLEAN` | нет | — | — | `NOT NULL`<br>`CHECK (preserves_committed_elapsed)` | Описание отсутствует. |
+| `preserves_committed_progress` | `BOOLEAN` | нет | — | — | `NOT NULL`<br>`CHECK (preserves_committed_progress)` | Описание отсутствует. |
+| `fatality_allowed` | `BOOLEAN` | нет | — | — | `NOT NULL`<br>`CHECK (NOT fatality_allowed)` | Описание отсутствует. |
+| `craft_destruction_allowed` | `BOOLEAN` | нет | — | — | `NOT NULL`<br>`CHECK (NOT craft_destruction_allowed)` | Описание отсутствует. |
+| `inventory_wipe_allowed` | `BOOLEAN` | нет | — | — | `NOT NULL`<br>`CHECK (NOT inventory_wipe_allowed)` | Описание отсутствует. |
+| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (status IN ('approved','deprecated','retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `provenance_ref` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `canonical_digest` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (canonical_digest ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY (id, version)`
+- `UNIQUE (id, version, world_revision_id)`
+- `FOREIGN KEY (entity_kind,id,version,world_revision_id) REFERENCES world_base.spatial_v3_authoring_versions( entity_kind,entity_id,version,world_revision_id ) DEFERRABLE INITIALLY DEFERRED`
+
+### `world_base.spatial_v3_traversal_risk_profiles`
+
+Описание назначения отсутствует.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `entity_kind` | `TEXT` | нет | `'traversal_risk_profile'` | — | `NOT NULL`<br>`CHECK (entity_kind = 'traversal_risk_profile')` | Описание отсутствует. |
+| `id` | `TEXT` | нет | — | — | `NOT NULL` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `version` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (version > 0)` | Описание отсутствует. |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.spatial_v3_world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `environment_profile_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `environment_profile_version` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (environment_profile_version > 0)` | Описание отсутствует. |
+| `activation_kind` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (activation_kind = 'environment_or_craft_state_trigger_only')` | Описание отсутствует. |
+| `severity_band` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `random_draw_allowed` | `BOOLEAN` | нет | — | — | `NOT NULL`<br>`CHECK (NOT random_draw_allowed)` | Описание отсутствует. |
+| `mixed_check_domain_behavior` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (mixed_check_domain_behavior = 'hard_block')` | Описание отсутствует. |
+| `consequence_policy_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `consequence_policy_version` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (consequence_policy_version > 0)` | Описание отсутствует. |
+| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (status IN ('approved','deprecated','retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `provenance_ref` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `canonical_digest` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (canonical_digest ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY (id, version)`
+- `UNIQUE (id, version, world_revision_id)`
+- `FOREIGN KEY (entity_kind,id,version,world_revision_id) REFERENCES world_base.spatial_v3_authoring_versions( entity_kind,entity_id,version,world_revision_id ) DEFERRABLE INITIALLY DEFERRED`
+- `FOREIGN KEY (environment_profile_id,environment_profile_version,world_revision_id) REFERENCES world_base.spatial_v3_transition_environment_profiles( id,version,world_revision_id ) ON DELETE RESTRICT`
+- `FOREIGN KEY (consequence_policy_id,consequence_policy_version,world_revision_id) REFERENCES world_base.spatial_v3_traversal_consequence_policies( id,version,world_revision_id ) ON DELETE RESTRICT`
+
+### `world_base.spatial_v3_traversal_risk_check_bindings`
+
+Описание назначения отсутствует.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `risk_profile_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `risk_profile_version` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `check_domain` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (check_domain IN ('craft_control','orientation'))` | Описание отсутствует. |
+| `check_policy_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `check_policy_version` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `canonical_ordinal` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (canonical_ordinal >= 0)` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY (risk_profile_id, risk_profile_version, check_domain)`
+- `UNIQUE (risk_profile_id, risk_profile_version, canonical_ordinal)`
+- `FOREIGN KEY (risk_profile_id, risk_profile_version) REFERENCES world_base.spatial_v3_traversal_risk_profiles(id,version) ON DELETE CASCADE`
+- `FOREIGN KEY (check_policy_id, check_policy_version) REFERENCES world_base.spatial_v3_traversal_check_policies(id,version) ON DELETE RESTRICT`
+
+### `world_base.spatial_v3_traversal_risk_hazards`
+
+Описание назначения отсутствует.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `risk_profile_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `risk_profile_version` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `hazard_class_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `canonical_ordinal` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (canonical_ordinal >= 0)` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY (risk_profile_id, risk_profile_version, hazard_class_id)`
+- `UNIQUE (risk_profile_id, risk_profile_version, canonical_ordinal)`
+- `FOREIGN KEY (risk_profile_id, risk_profile_version) REFERENCES world_base.spatial_v3_traversal_risk_profiles(id,version) ON DELETE CASCADE`

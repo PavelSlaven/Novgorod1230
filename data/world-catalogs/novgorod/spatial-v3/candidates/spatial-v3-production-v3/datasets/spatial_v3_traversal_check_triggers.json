@@ -1,0 +1,32 @@
+[
+  {
+    "check_policy_id": "check.lower_dvina_boat_control_v1",
+    "check_policy_version": 1,
+    "trigger_id": "moderate_supported_wind",
+    "canonical_ordinal": 0
+  },
+  {
+    "check_policy_id": "check.lower_dvina_boat_control_v1",
+    "check_policy_version": 1,
+    "trigger_id": "moderate_cross_current",
+    "canonical_ordinal": 1
+  },
+  {
+    "check_policy_id": "check.lower_dvina_boat_control_v1",
+    "check_policy_version": 1,
+    "trigger_id": "craft_control_degraded",
+    "canonical_ordinal": 2
+  },
+  {
+    "check_policy_id": "check.lower_dvina_orientation_v1",
+    "check_policy_version": 1,
+    "trigger_id": "reduced_but_navigable_visibility",
+    "canonical_ordinal": 0
+  },
+  {
+    "check_policy_id": "check.lower_dvina_orientation_v1",
+    "check_policy_version": 1,
+    "trigger_id": "landmark_confidence_reduced",
+    "canonical_ordinal": 1
+  }
+]

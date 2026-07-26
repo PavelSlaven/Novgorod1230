@@ -1,0 +1,90 @@
+[
+  {
+    "policy_id": "availability.lower_dvina_late_summer_daylight_v1",
+    "policy_version": 1,
+    "dimension_id": "season_mode",
+    "value_id": "late_summer_open_water",
+    "disposition": "allowed",
+    "canonical_ordinal": 0
+  },
+  {
+    "policy_id": "availability.lower_dvina_late_summer_daylight_v1",
+    "policy_version": 1,
+    "dimension_id": "water_surface_state",
+    "value_id": "open_water",
+    "disposition": "allowed",
+    "canonical_ordinal": 0
+  },
+  {
+    "policy_id": "availability.lower_dvina_late_summer_daylight_v1",
+    "policy_version": 1,
+    "dimension_id": "wind_band",
+    "value_id": "calm",
+    "disposition": "allowed",
+    "canonical_ordinal": 0
+  },
+  {
+    "policy_id": "availability.lower_dvina_late_summer_daylight_v1",
+    "policy_version": 1,
+    "dimension_id": "wind_band",
+    "value_id": "light",
+    "disposition": "allowed",
+    "canonical_ordinal": 1
+  },
+  {
+    "policy_id": "availability.lower_dvina_late_summer_daylight_v1",
+    "policy_version": 1,
+    "dimension_id": "wind_band",
+    "value_id": "moderate_supported",
+    "disposition": "allowed",
+    "canonical_ordinal": 2
+  },
+  {
+    "policy_id": "availability.lower_dvina_late_summer_daylight_v1",
+    "policy_version": 1,
+    "dimension_id": "visibility_band",
+    "value_id": "clear",
+    "disposition": "allowed",
+    "canonical_ordinal": 0
+  },
+  {
+    "policy_id": "availability.lower_dvina_late_summer_daylight_v1",
+    "policy_version": 1,
+    "dimension_id": "visibility_band",
+    "value_id": "light_haze",
+    "disposition": "allowed",
+    "canonical_ordinal": 1
+  },
+  {
+    "policy_id": "availability.lower_dvina_late_summer_daylight_v1",
+    "policy_version": 1,
+    "dimension_id": "visibility_band",
+    "value_id": "reduced_but_navigable",
+    "disposition": "allowed",
+    "canonical_ordinal": 2
+  },
+  {
+    "policy_id": "availability.lower_dvina_late_summer_daylight_v1",
+    "policy_version": 1,
+    "dimension_id": "craft_state",
+    "value_id": "serviceable",
+    "disposition": "allowed",
+    "canonical_ordinal": 0
+  },
+  {
+    "policy_id": "availability.lower_dvina_late_summer_daylight_v1",
+    "policy_version": 1,
+    "dimension_id": "load_state",
+    "value_id": "within_approved_capacity",
+    "disposition": "allowed",
+    "canonical_ordinal": 0
+  },
+  {
+    "policy_id": "availability.lower_dvina_late_summer_daylight_v1",
+    "policy_version": 1,
+    "dimension_id": "controller_state",
+    "value_id": "approved_boatman_in_control",
+    "disposition": "allowed",
+    "canonical_ordinal": 0
+  }
+]

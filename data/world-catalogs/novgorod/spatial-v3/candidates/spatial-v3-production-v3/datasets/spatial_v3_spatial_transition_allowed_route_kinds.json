@@ -1,0 +1,12 @@
+[
+  {
+    "transition_contract_id": "stcv3__lower_dvina_yp026_to_yp025",
+    "transition_contract_version": 1,
+    "route_kind_id": "route.river_channel"
+  },
+  {
+    "transition_contract_id": "stcv3__lower_dvina_yp025_to_yp026",
+    "transition_contract_version": 1,
+    "route_kind_id": "route.river_channel"
+  }
+]

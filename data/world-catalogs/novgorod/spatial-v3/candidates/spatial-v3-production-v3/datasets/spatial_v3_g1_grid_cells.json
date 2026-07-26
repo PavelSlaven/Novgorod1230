@@ -1,0 +1,24 @@
+[
+  {
+    "node_id": "gn_nov_g1_xp017_yp026",
+    "node_version": 3,
+    "world_revision_id": "novgorod_spatial_v3_production_v3_candidate_001",
+    "root_g0_id": "region_novgorod_land",
+    "root_g0_version": 3,
+    "grid_convention": "grid_east_north_v1",
+    "grid_x": 17,
+    "grid_y": 26,
+    "cell_code": "xp017_yp026"
+  },
+  {
+    "node_id": "gn_nov_g1_xp017_yp025",
+    "node_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_production_v3_candidate_001",
+    "root_g0_id": "region_novgorod_land",
+    "root_g0_version": 3,
+    "grid_convention": "grid_east_north_v1",
+    "grid_x": 17,
+    "grid_y": 25,
+    "cell_code": "xp017_yp025"
+  }
+]

@@ -1,5 +1,12 @@
 import { serverError } from '../../errors.js';
 import {
+  resolveBoundaryApproachJourney,
+  resolveBoundaryTraversal
+} from './boundary-command.js';
+import {
+  resolveBoundaryResume
+} from './boundary-paused-execution.js';
+import {
   LOCAL_RISK_PROFILE, NPC_PROFILE_SET, choose, hash, resolveEquipmentProfile,
   resolveNpcProfile
 } from './shared.js';
@@ -121,6 +128,63 @@ export function applyCommand(state, command, context) {
     next.boat.boarded = false;
     prose = 'Ты выходишь из лодки на проверенную посадочную кромку.';
     mode = 'movement';
+  } else if (verb === 'journey_to_boundary') {
+    const traversal = resolveBoundaryApproachJourney(next, command);
+    elapsed = traversal.elapsed_minutes;
+    next.location = traversal.destination;
+    next.boat.location = traversal.destination;
+    next.boundary_anchor_materialized ||= traversal.success;
+    next.boundary_dispatch_direction = traversal.direction;
+    next.boundary_paused_execution =
+      traversal.paused_execution;
+    next.boundary_traversals.push(structuredClone(traversal));
+    applyBoundaryConsequence(next, traversal.consequence);
+    prose = traversal.success
+      ? 'Ты проходишь на лодке утверждённую цепочку внутренних речных маршрутов и останавливаешься у южного пограничного якоря.'
+      : 'После уже пройденного участка проверка условий блокирует продолжение. Лодка остаётся в пути; пройденное время и расстояние сохранены.';
+    mode = 'movement';
+    summary.traversal = traversal;
+  } else if (verb === 'cross_boundary') {
+    const traversal = resolveBoundaryTraversal(next, command);
+    elapsed = traversal.elapsed_minutes;
+    next.location = traversal.destination;
+    next.boat.location = traversal.destination;
+    next.boundary_dispatch_direction = traversal.success
+      ? null
+      : traversal.direction;
+    next.boundary_paused_execution =
+      traversal.paused_execution;
+    next.receiving_materialized ||=
+      traversal.success && traversal.direction === 'forward';
+    next.source_boundary_materialized ||=
+      traversal.success && traversal.direction === 'reverse';
+    next.boundary_traversals.push(structuredClone(traversal));
+    applyBoundaryConsequence(next, traversal.consequence);
+    prose = traversal.success
+      ? (traversal.direction === 'forward'
+          ? 'Ты проходишь на лодке два утверждённых речных сегмента и прибываешь в принимающий водный плёс соседней ячейки.'
+          : 'Ты проходишь обратный направленный маршрут и возвращаешься к южному входу yp026.')
+      : 'После переключения пограничного контекста ты проходишь часть сегмента, но повторная проверка блокирует продолжение. Лодка остаётся в пути; время и прогресс сохранены.';
+    mode = 'movement';
+    summary.traversal = traversal;
+  } else if (verb === 'resume_boundary_traversal') {
+    const traversal = resolveBoundaryResume(next, command);
+    elapsed = traversal.elapsed_minutes;
+    next.location = traversal.destination;
+    next.boat.location = traversal.destination;
+    next.boundary_dispatch_direction = null;
+    next.boundary_paused_execution = null;
+    next.receiving_materialized ||=
+      traversal.direction === 'forward';
+    next.source_boundary_materialized ||=
+      traversal.direction === 'reverse'
+      && traversal.destination === 'yp026_south_entry_reach';
+    next.boundary_traversals.push(structuredClone(traversal));
+    prose = traversal.direction === 'forward'
+      ? 'Ты продолжаешь тот же переход, завершаешь оставшийся интервал и прибываешь в принимающий водный плёс.'
+      : 'Ты продолжаешь тот же обратный переход и достигаешь его утверждённого endpoint.';
+    mode = 'movement';
+    summary.traversal = traversal;
   } else if (verb === 'save') {
     prose = 'Состояние партии сохранено.';
     mode = 'save';
@@ -134,6 +198,20 @@ export function applyCommand(state, command, context) {
     summary,
     activity_profile: context.activityProfile
   };
+}
+
+function applyBoundaryConsequence(state, consequence) {
+  if (consequence == null) return;
+  state.player.energy = Math.max(
+    0,
+    state.player.energy + consequence.energyDelta
+  );
+  if (consequence.conditionCandidate
+      && !state.player.conditions.includes(
+        consequence.conditionCandidate
+      )) {
+    state.player.conditions.push(consequence.conditionCandidate);
+  }
 }
 
 function resolveLocalTraversal(command, state) {

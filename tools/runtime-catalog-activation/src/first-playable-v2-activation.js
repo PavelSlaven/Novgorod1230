@@ -40,14 +40,26 @@ import { RECORD_ADAPTERS } from './record-adapters.generated.js';
 const CATALOG_SCOPE = 'item_container_materialization_v2';
 const APPROVED_STAGE3C_REVISION =
   'world_revision_novgorod_1230_item_container_approved_001';
-const BASELINE_REVISION =
-  'world_revision_novgorod_1230_runtime_catalog_baseline_v2_001';
-const DOMAIN_REVISION =
-  'runtime_catalog_lower_dvina_first_playable_v2_001';
-const WORLD_REVISION =
-  'novgorod_spatial_v3_production_v2_candidate_001';
-const WORLD_CATALOG_DIGEST =
-  'fd75d9cb1ad0e949ff3b0bb5ef044e510f340a967f43867e9c4d41c16ba9f255';
+const FIRST_PLAYABLE_V2_RELEASE = Object.freeze({
+  releaseId: 'spatial-v3-production-v2',
+  baselineRevision:
+    'world_revision_novgorod_1230_runtime_catalog_baseline_v2_001',
+  domainRevision: 'runtime_catalog_lower_dvina_first_playable_v2_001',
+  worldRevision: 'novgorod_spatial_v3_production_v2_candidate_001',
+  worldCatalogDigest:
+    'fd75d9cb1ad0e949ff3b0bb5ef044e510f340a967f43867e9c4d41c16ba9f255',
+  worldSchemaFingerprint:
+    WORLD_RUNTIME_CATALOG_MIGRATION.target_schema_fingerprint,
+  candidateDirectory: 'spatial-v3-production-v2',
+  bindingsFile: 'spatial-v3-production-v2-bindings.js',
+  bundleSchema: 'rus.first_playable_v2_activation_bundle.v1',
+  bundleIdentitySchema:
+    'rus.first_playable_v2_activation_bundle_identity.v1',
+  resultSchema: 'rus.first_playable_v2_activation_result.v1',
+  baselineTitle: 'Lower Dvina runtime catalog baseline v2',
+  activationBasis:
+    'mandatory production activation for first launch; no existing parties'
+});
 
 /**
  * Builds the complete sealed release-local catalog activation input from exact
@@ -59,7 +71,8 @@ export async function buildFirstPlayableV2ActivationBundle({
   repositoryRoot,
   gitCommitSha,
   authorizationRef =
-    'Codex task 019f98cf-12d4-7790-8f0a-a336df47508f user authorization'
+    'Codex task 019f98cf-12d4-7790-8f0a-a336df47508f user authorization',
+  release = FIRST_PLAYABLE_V2_RELEASE
 }) {
   requirePool(worldPool, 'worldPool');
   requirePool(partyPool, 'partyPool');
@@ -86,11 +99,16 @@ export async function buildFirstPlayableV2ActivationBundle({
   ));
   const worldManifestPath =
     'data/world-catalogs/novgorod/spatial-v3/candidates/'
-      + 'spatial-v3-production-v2/manifest.json';
+      + `${release.candidateDirectory}/manifest.json`;
   const worldManifest = await readJson(resolve(root, worldManifestPath));
 
-  assertApprovedSources({ candidateManifest, finalApproval, worldManifest });
-  await assertExactMigrationTargets({ worldPool, partyPool });
+  assertApprovedSources({
+    candidateManifest,
+    finalApproval,
+    worldManifest,
+    release
+  });
+  await assertExactMigrationTargets({ worldPool, partyPool, release });
 
   const allRowsByTable = await readRegisteredRows(worldPool);
   const candidateRowsByTable = await readPromotedMembership({
@@ -116,9 +134,9 @@ export async function buildFirstPlayableV2ActivationBundle({
 
   const runtimeConfiguration = {
     schema: 'rus.first_playable_runtime_world_configuration.v1',
-    release_id: 'spatial-v3-production-v2',
-    world_revision_id: WORLD_REVISION,
-    world_catalog_digest: WORLD_CATALOG_DIGEST,
+    release_id: release.releaseId,
+    world_revision_id: release.worldRevision,
+    world_catalog_digest: release.worldCatalogDigest,
     world_manifest_sha256: sha256(await readFile(
       resolve(root, worldManifestPath)
     )),
@@ -127,14 +145,14 @@ export async function buildFirstPlayableV2ActivationBundle({
       RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT_DIGEST
   };
   const compatibilityManifest = buildBaseWorldCompatibilityManifest({
-    compatibleWorldRevisionId: WORLD_REVISION,
-    compatibleWorldCatalogDigest: WORLD_CATALOG_DIGEST,
+    compatibleWorldRevisionId: release.worldRevision,
+    compatibleWorldCatalogDigest: release.worldCatalogDigest,
     sourceRuntimeConfigurationDigest: digestEnvelope(runtimeConfiguration),
     sourceArtifactPaths: [
       worldManifestPath,
       'apps/game-server/src/composition/production-spatial-v3.js',
       'apps/game-server/src/runtime/releases/'
-        + 'spatial-v3-production-v2-bindings.js'
+        + release.bindingsFile
     ],
     sourceCommitSha: gitCommitSha,
     validationContractVersion: 'base_world_compatibility_v2'
@@ -156,12 +174,12 @@ export async function buildFirstPlayableV2ActivationBundle({
   );
   const baselineManifest = buildOperatorBaselineSnapshotManifest({
     schemaFingerprint:
-      WORLD_RUNTIME_CATALOG_MIGRATION.target_schema_fingerprint,
+      release.worldSchemaFingerprint,
     registry,
     rowsByTable: baselineRows
   });
   const baselineRequest = buildBaselineRegistrationRequest({
-    parentRevisionId: BASELINE_REVISION,
+    parentRevisionId: release.baselineRevision,
     parentCatalogDigest: baselineManifest.records_aggregate_digest,
     baselineManifest,
     compatibleWorldTuple
@@ -194,7 +212,7 @@ export async function buildFirstPlayableV2ActivationBundle({
         baselineRequest.parent_snapshot_manifest_digest
     },
     compatibleWorldTuple,
-    targetRevisionId: DOMAIN_REVISION,
+    targetRevisionId: release.domainRevision,
     parentRowsByTable: allRowsByTable,
     candidateRowsByTable,
     dependencyLinks: [],
@@ -285,7 +303,7 @@ export async function buildFirstPlayableV2ActivationBundle({
       parent_snapshot_manifest_digest:
         baselineRequest.parent_snapshot_manifest_digest,
       ...compatibleWorldTuple,
-      target_revision_id: DOMAIN_REVISION,
+      target_revision_id: release.domainRevision,
       target_catalog_digest: compiled.target_catalog_digest,
       record_registry_digest: compiled.record_registry_digest,
       promotion_manifest_digest:
@@ -303,10 +321,10 @@ export async function buildFirstPlayableV2ActivationBundle({
 
   const buildReleaseManifest = {
     schema: 'rus.first_playable_build_release_manifest.v1',
-    release_id: 'spatial-v3-production-v2',
+    release_id: release.releaseId,
     git_commit_sha: gitCommitSha,
     world_manifest_sha256: runtimeConfiguration.world_manifest_sha256,
-    world_catalog_digest: WORLD_CATALOG_DIGEST,
+    world_catalog_digest: release.worldCatalogDigest,
     party_migration_chain_digest:
       'b7a9eb899b5d302dc27bff6797f1bb6abf31b245ace3e7c285f94543e3039d45',
     runtime_catalog_contract_digest:
@@ -326,6 +344,8 @@ export async function buildFirstPlayableV2ActivationBundle({
     runtimeContractDigest:
       RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT_DIGEST
   });
+  const expectedPreviousEventId =
+    await readCurrentActivationEventId(worldPool);
   const activationRequest = buildActivationRequest({
     fields: {
       parent_revision_id: baselineRequest.parent_revision_id,
@@ -344,7 +364,7 @@ export async function buildFirstPlayableV2ActivationBundle({
       approval_request_digest: ledger.root.approval_request_digest,
       approval_attestation_digest:
         ledger.root.approval_attestation_digest,
-      expected_previous_event_id: null,
+      expected_previous_event_id: expectedPreviousEventId,
       runtime_release_id: runtimeRelease.runtime_release_id
     },
     partyPreflight
@@ -363,11 +383,11 @@ export async function buildFirstPlayableV2ActivationBundle({
     decision: 'approve_activation',
     attested_by: authorizationRef,
     source_authorization:
-      'mandatory production activation for first launch; no existing parties'
+      release.activationBasis
   });
 
   return deepFreeze({
-    schema: 'rus.first_playable_v2_activation_bundle.v1',
+    schema: release.bundleSchema,
     release_status: 'ready_for_operator_apply',
     git_commit_sha: gitCommitSha,
     build_release_manifest: buildReleaseManifest,
@@ -401,7 +421,7 @@ export async function buildFirstPlayableV2ActivationBundle({
     activation_request: activationRequest,
     activation_attestation: activationAttestation,
     bundle_digest: digestEnvelope({
-      schema: 'rus.first_playable_v2_activation_bundle_identity.v1',
+      schema: release.bundleIdentitySchema,
       git_commit_sha: gitCommitSha,
       baseline_request_digest:
         baselineRequest.registration_request_digest,
@@ -416,7 +436,8 @@ export async function buildFirstPlayableV2ActivationBundle({
 export async function applyFirstPlayableV2ActivationBundle({
   worldPool,
   partyPool,
-  bundle
+  bundle,
+  release = FIRST_PLAYABLE_V2_RELEASE
 }) {
   const baseline = await registerCatalogBaseline({
     pool: worldPool,
@@ -426,7 +447,7 @@ export async function applyFirstPlayableV2ActivationBundle({
     compatibilityManifest: bundle.compatibility_manifest,
     runtimeConfigurationTuple: bundle.runtime_configuration_tuple,
     registrationId: bundle.baseline_registration_id,
-    title: 'Lower Dvina runtime catalog baseline v2'
+    title: release.baselineTitle
   });
   const imported = await importApprovedCatalog({
     pool: worldPool,
@@ -441,7 +462,7 @@ export async function applyFirstPlayableV2ActivationBundle({
     attestation: bundle.activation_attestation
   });
   return deepFreeze({
-    schema: 'rus.first_playable_v2_activation_result.v1',
+    schema: release.resultSchema,
     baseline,
     imported,
     activated,
@@ -505,12 +526,12 @@ async function readPromotedMembership({
   return result;
 }
 
-async function assertExactMigrationTargets({ worldPool, partyPool }) {
+async function assertExactMigrationTargets({ worldPool, partyPool, release }) {
   const [world, party] = await Promise.all([
     readPostgresSchemaFingerprint(worldPool, 'world_base'),
     readPostgresSchemaFingerprint(partyPool, 'party_runtime')
   ]);
-  if (world !== WORLD_RUNTIME_CATALOG_MIGRATION.target_schema_fingerprint
+  if (world !== release.worldSchemaFingerprint
       || party !== PARTY_RUNTIME_CATALOG_MIGRATION.target_schema_fingerprint) {
     fail(
       'FIRST_PLAYABLE_ACTIVATION_SCHEMA_MISMATCH',
@@ -523,18 +544,31 @@ async function assertExactMigrationTargets({ worldPool, partyPool }) {
 function assertApprovedSources({
   candidateManifest,
   finalApproval,
-  worldManifest
+  worldManifest,
+  release = FIRST_PLAYABLE_V2_RELEASE
 }) {
   if (candidateManifest.candidate_digest !== finalApproval.candidate_digest
       || finalApproval.decision !== 'approve_all_120'
-      || worldManifest.world_revision_id !== WORLD_REVISION
-      || worldManifest.catalog_digest !== WORLD_CATALOG_DIGEST
+      || worldManifest.world_revision_id !== release.worldRevision
+      || worldManifest.catalog_digest !== release.worldCatalogDigest
       || worldManifest.status !== 'approved') {
     fail(
       'FIRST_PLAYABLE_APPROVAL_CHAIN_INVALID',
       'Stage 3C and Spatial-v3 approval evidence must match exact sources.'
     );
   }
+}
+
+async function readCurrentActivationEventId(pool) {
+  const row = (await pool.query(
+    `SELECT event_id
+       FROM world_base.runtime_catalog_activation_events
+      WHERE catalog_scope=$1
+      ORDER BY event_sequence DESC
+      LIMIT 1`,
+    [CATALOG_SCOPE]
+  )).rows[0];
+  return row?.event_id ?? null;
 }
 
 async function readPartyPreflightCounts(pool) {

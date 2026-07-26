@@ -72,6 +72,33 @@ export async function firstPlayableCommitRecheck({
         && Number(actual?.attachment_version)
           === check.expected_attachment_state_version);
   }
+  if (check.kind === 'boundary_carrier') {
+    const result = await transaction.query(
+      `SELECT l.state_version,l.location_kind,
+              a.state_version AS attachment_version
+         FROM party_runtime.party_journey_locations l
+         JOIN party_runtime.party_carrier_attachments a
+           ON a.party_id=l.party_id
+          AND a.subject_kind='actor'
+          AND a.subject_id=$3
+          AND a.carrier_kind='transport'
+          AND a.carrier_id=$2
+          AND a.status='active'
+        WHERE l.party_id=$1
+          AND l.owner_kind='transport'
+          AND l.owner_id=$2
+        FOR UPDATE OF l,a`,
+      [partyId, check.transport_id, check.actor_id]
+    );
+    const actual = result.rows[0];
+    return resultOf(
+      Number(actual?.state_version)
+        === check.expected_transport_location_state_version
+      && Number(actual?.attachment_version)
+        === check.expected_attachment_state_version
+      && actual?.location_kind === check.expected_location_kind
+    );
+  }
   return Object.freeze({ ok: true });
 }
 

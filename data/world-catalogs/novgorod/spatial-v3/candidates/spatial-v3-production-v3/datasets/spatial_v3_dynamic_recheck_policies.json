@@ -1,0 +1,77 @@
+[
+  {
+    "id": "recheck.water_15m",
+    "version": 3,
+    "world_revision_id": "novgorod_spatial_v3_production_v3_candidate_001",
+    "policy_kind": "fixed_time_interval",
+    "progress_slice_ppm": null,
+    "interval_minutes": 15,
+    "event_triggers": [
+      "water_state",
+      "ice_state",
+      "wind",
+      "visibility",
+      "craft_state"
+    ],
+    "definition": "re-evaluate passability, cost and risk; failure blocks continuation without fallback",
+    "status": "approved",
+    "provenance_ref": "prov_p12_g1_r2_r3_v1",
+    "canonical_digest": "00d6199a0c43728cf034b6a0fa93d660cce8d46709492503880e5f89175d6cbe"
+  },
+  {
+    "id": "recheck.land_30m",
+    "version": 3,
+    "world_revision_id": "novgorod_spatial_v3_production_v3_candidate_001",
+    "policy_kind": "fixed_time_interval",
+    "progress_slice_ppm": null,
+    "interval_minutes": 30,
+    "event_triggers": [
+      "ground_state",
+      "flood_state",
+      "snow_state",
+      "visibility",
+      "body_state"
+    ],
+    "definition": "re-evaluate passability, cost and risk; failure blocks continuation without fallback",
+    "status": "approved",
+    "provenance_ref": "prov_p12_g1_r2_r3_v1",
+    "canonical_digest": "e96d0691fce826c8ec8af402cfb59719fa762ccc64ea70e236d87f9067ca500d"
+  },
+  {
+    "id": "recheck.wetland_15m",
+    "version": 3,
+    "world_revision_id": "novgorod_spatial_v3_production_v3_candidate_001",
+    "policy_kind": "fixed_time_interval",
+    "progress_slice_ppm": null,
+    "interval_minutes": 15,
+    "event_triggers": [
+      "ground_state",
+      "flood_state",
+      "visibility",
+      "body_state"
+    ],
+    "definition": "re-evaluate passability, cost and risk; failure blocks continuation without fallback",
+    "status": "approved",
+    "provenance_ref": "prov_p12_g1_r2_r3_v1",
+    "canonical_digest": "ba0b4939fddd2f5eca2f2bc67d184624b407c986783b0585f64eb65eed718160"
+  },
+  {
+    "id": "recheck.shore_15m",
+    "version": 3,
+    "world_revision_id": "novgorod_spatial_v3_production_v3_candidate_001",
+    "policy_kind": "fixed_time_interval",
+    "progress_slice_ppm": null,
+    "interval_minutes": 15,
+    "event_triggers": [
+      "water_state",
+      "ice_state",
+      "bank_state",
+      "craft_state",
+      "load_state"
+    ],
+    "definition": "re-evaluate passability, cost and risk; failure blocks continuation without fallback",
+    "status": "approved",
+    "provenance_ref": "prov_p12_g1_r2_r3_v1",
+    "canonical_digest": "cc25dc8c1e962ec784d0ca102d8fde82aba9e489f60cd71dd4af90a54a74d14b"
+  }
+]

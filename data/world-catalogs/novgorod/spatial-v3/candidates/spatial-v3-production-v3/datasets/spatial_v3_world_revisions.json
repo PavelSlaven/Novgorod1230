@@ -1,0 +1,26 @@
+[
+  {
+    "id": "novgorod_spatial_v3_target_contract_approval_001",
+    "parent_revision_id": null,
+    "catalog_digest": "0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e",
+    "status": "approved",
+    "provenance_ref": "prov_p12_g1_r2_r3_v1",
+    "deprecated_at": null
+  },
+  {
+    "id": "novgorod_spatial_v3_production_v2_candidate_001",
+    "parent_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "catalog_digest": "fd75d9cb1ad0e949ff3b0bb5ef044e510f340a967f43867e9c4d41c16ba9f255",
+    "status": "approved",
+    "provenance_ref": "prov_p12_g1_r2_r3_v1",
+    "deprecated_at": null
+  },
+  {
+    "id": "novgorod_spatial_v3_production_v3_candidate_001",
+    "parent_revision_id": "novgorod_spatial_v3_production_v2_candidate_001",
+    "catalog_digest": "1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e",
+    "status": "approved",
+    "provenance_ref": "prov_lower_dvina_boundary_authoring_v1",
+    "deprecated_at": null
+  }
+]

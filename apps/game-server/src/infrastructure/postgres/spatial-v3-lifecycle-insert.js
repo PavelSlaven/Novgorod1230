@@ -15,7 +15,9 @@ async function insertRecord(tx, table, record) {
 
 export async function applySealedLifecycleInsert(tx, write) {
   if (write.target_table === 'party_route_plan_executions'
-      && ['completed', 'aborted'].includes(write.record.status)) {
+      && ['active', 'completed', 'aborted'].includes(
+        write.record.status
+      )) {
     return insertRouteExecution(tx, write.record);
   }
   if (write.target_table === 'party_timed_activity_executions'
@@ -54,6 +56,39 @@ async function insertRouteExecution(tx, terminal) {
     terminal_at_turn: null,
     state_version: 1
   });
+  if (terminal.status === 'active') {
+    return async () => {
+      await tx.query(
+        `UPDATE party_runtime.party_route_plan_executions
+         SET status='active',
+             current_step_ordinal=$2,
+             current_endpoint_ref=NULL,
+             active_travel_state_id=$3,
+             started_at_turn=$4,
+             state_version=2,
+             updated_change_set_id=$5
+         WHERE id=$1 AND status='planned' AND state_version=1`,
+        [
+          terminal.id,
+          terminal.current_step_ordinal,
+          terminal.active_travel_state_id,
+          terminal.started_at_turn,
+          terminal.updated_change_set_id
+        ]
+      );
+      await tx.query(
+        `UPDATE party_runtime.party_route_plan_executions
+         SET state_version=$2,
+             updated_change_set_id=$3
+         WHERE id=$1 AND status='active' AND state_version=2`,
+        [
+          terminal.id,
+          terminal.state_version,
+          terminal.updated_change_set_id
+        ]
+      );
+    };
+  }
   return async () => {
     await tx.query(
       `UPDATE party_runtime.party_route_plan_executions
@@ -74,7 +109,7 @@ async function insertRouteExecution(tx, terminal) {
          final_location_snapshot=$3,
          abort_reason_code=$4,
          terminal_at_turn=$5,
-         state_version=3,
+         state_version=$7,
          updated_change_set_id=$6
      WHERE id=$1 AND status='active' AND state_version=2`,
       [
@@ -83,7 +118,8 @@ async function insertRouteExecution(tx, terminal) {
         terminal.final_location_snapshot,
         terminal.abort_reason_code,
         terminal.terminal_at_turn,
-        terminal.updated_change_set_id
+        terminal.updated_change_set_id,
+        terminal.state_version
       ]
     );
   };

@@ -14,12 +14,19 @@ import {
   buildFirstPlayableV2ActivationBundle
 } from '../../tools/runtime-catalog-activation/src/first-playable-v2-activation.js';
 import {
+  applyLowerDvinaBoundaryV3ActivationBundle,
+  buildLowerDvinaBoundaryV3ActivationBundle
+} from '../../tools/runtime-catalog-activation/src/lower-dvina-boundary-v3-activation.js';
+import {
   runPartyRuntimeCatalogMigration,
   runWorldRuntimeCatalogMigration
 } from '../../tools/runtime-catalog-activation/src/forward-migrations.js';
 import {
   buildLowerDvinaV2ImportSql
 } from '../../tools/spatial-v3/lower-dvina-v2-importer.mjs';
+import {
+  buildLowerDvinaBoundaryV1ImportSql
+} from '../../tools/spatial-v3/lower-dvina-boundary-v1-importer.mjs';
 
 const docker = (args, options = {}) => spawnSync('docker', args, {
   encoding: 'utf8',
@@ -27,7 +34,7 @@ const docker = (args, options = {}) => spawnSync('docker', args, {
   input: options.input
 });
 
-test('approved Stage 3C rows activate as the exact first-playable domain pin', async (t) => {
+test('approved Stage 3C rows activate for v2 and advance by CAS to the exact boundary v3 pin', async (t) => {
   if (docker(['version']).status !== 0) {
     t.skip('Docker is required');
     return;
@@ -88,7 +95,7 @@ test('approved Stage 3C rows activate as the exact first-playable domain pin', a
 
   worldPool = new pg.Pool({ connectionString: worldUrl, max: 2 });
   partyPool = new pg.Pool({ connectionString: partyUrl, max: 2 });
-  for (const file of ['18.sql', '19.sql']) {
+  for (const file of ['18.sql', '19.sql', '20.sql']) {
     await worldPool.query(await readFile(`infra/world-base/schema/${file}`, 'utf8'));
   }
   await worldPool.query(await buildLowerDvinaV2ImportSql());
@@ -145,6 +152,37 @@ test('approved Stage 3C rows activate as the exact first-playable domain pin', a
     'novgorod_spatial_v3_production_v2_candidate_001');
   assert.equal(pin.runtime_contract_digest,
     RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT_DIGEST);
+  await worldPool.query(await buildLowerDvinaBoundaryV1ImportSql());
+  const v3Bundle = await buildLowerDvinaBoundaryV3ActivationBundle({
+    worldPool,
+    partyPool,
+    repositoryRoot: process.cwd(),
+    gitCommitSha: '0a196b3293cc8c87ea52ec55b7bc493b21b03d19',
+    authorizationRef: 'lower-Dvina boundary PostgreSQL integration test'
+  });
+  assert.equal(
+    v3Bundle.activation_request.expected_previous_event_id,
+    applied.activated.event_id
+  );
+  const v3Applied = await applyLowerDvinaBoundaryV3ActivationBundle({
+    worldPool,
+    partyPool,
+    bundle: v3Bundle
+  });
+  assert.equal(v3Applied.baseline.status, 'registered');
+  assert.equal(v3Applied.imported.status, 'applied');
+  assert.equal(v3Applied.activated.status, 'activated');
+  const v3Pin = await loader.loadActivePin({
+    catalogScope: 'item_container_materialization_v2'
+  });
+  assert.equal(
+    v3Pin.compatible_world_revision_id,
+    'novgorod_spatial_v3_production_v3_candidate_001'
+  );
+  assert.equal(
+    v3Pin.compatible_world_catalog_digest,
+    '1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e'
+  );
   assert.equal((await partyPool.query(
     'SELECT count(*)::int AS count FROM party_runtime.parties'
   )).rows[0].count, 0);

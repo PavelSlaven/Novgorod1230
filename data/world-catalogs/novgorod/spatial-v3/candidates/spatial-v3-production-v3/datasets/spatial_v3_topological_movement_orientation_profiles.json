@@ -1,0 +1,42 @@
+[
+  {
+    "id": "orientation.topological_local",
+    "version": 2,
+    "orientation_kind": "ordered_endpoints",
+    "vertical_direction": "level",
+    "forbids_compass_inference": true,
+    "status": "approved",
+    "provenance_ref": "prov_p12_g1_r2_r3_v1",
+    "canonical_digest": "852470c25f9e30528e86ee088464e4fbfb82538f481b06a778f88b132a39a931"
+  },
+  {
+    "id": "orientation.topological_route",
+    "version": 2,
+    "orientation_kind": "ordered_endpoints",
+    "vertical_direction": "level",
+    "forbids_compass_inference": true,
+    "status": "approved",
+    "provenance_ref": "prov_p12_g1_r2_r3_v1",
+    "canonical_digest": "97db756d0c118a15fd84cf69056b440eb4bd610dac99940e61751d53db36436a"
+  },
+  {
+    "id": "orientation.channel_ordered",
+    "version": 2,
+    "orientation_kind": "ordered_channel",
+    "vertical_direction": "level",
+    "forbids_compass_inference": true,
+    "status": "approved",
+    "provenance_ref": "prov_p12_g1_r2_r3_v1",
+    "canonical_digest": "d7e1ddb10e0688e296e042e558762e2ab430cf992378ba44655e38e54f3a4a62"
+  },
+  {
+    "id": "orientation.shore_ordered",
+    "version": 2,
+    "orientation_kind": "ordered_shore",
+    "vertical_direction": "level",
+    "forbids_compass_inference": true,
+    "status": "approved",
+    "provenance_ref": "prov_p12_g1_r2_r3_v1",
+    "canonical_digest": "a8e2307736e99bd273a7cd4523f79a6302d568d84aa1e27b76770853128bca07"
+  }
+]

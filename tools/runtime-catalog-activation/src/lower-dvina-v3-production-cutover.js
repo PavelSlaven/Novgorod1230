@@ -52,6 +52,39 @@ export const PARTY_AGGREGATE_DELETE_TRIGGERS = Object.freeze([
   ]
 ].map(Object.freeze));
 
+const PARTY_AGGREGATE_DELETE_ORDER = Object.freeze([
+  'party_narration_jobs',
+  'party_action_step_runs',
+  'party_actor_body_states',
+  'party_actor_profile_bindings',
+  'party_resource_nodes',
+  'party_transports',
+  'party_command_idempotency',
+  'party_containers',
+  'party_items',
+  'party_journey_locations',
+  'party_materialization_run_catalog_pins',
+  'entity_placements',
+  'party_entity_controls',
+  'party_server_sessions',
+  'party_state_snapshots',
+  'party_clocks',
+  'party_visible_packages',
+  'party_player_characters',
+  'party_npcs',
+  'scene_position_nodes',
+  'traveller_travel_states',
+  'party_route_plan_executions',
+  'party_route_plans',
+  'party_g6_instances',
+  'party_scene_baselines',
+  'party_g5_sites',
+  'party_materialization_runs',
+  'party_catalog_pins',
+  'party_v3_change_sets',
+  'spatial_v3_migration_coverage_artifacts'
+]);
+
 export const LOWER_DVINA_V2_WORLD_PIN = Object.freeze({
   world_revision_id:
     'novgorod_spatial_v3_production_v2_candidate_001',
@@ -365,21 +398,15 @@ export async function deleteAuthorizedProductionParties({
            DISABLE TRIGGER ${quoteIdentifier(trigger)}`
       );
     }
-    const runPins = await client.query(
-      `DELETE FROM party_runtime.party_materialization_run_catalog_pins
-        WHERE party_id = ANY($1::text[])`,
-      [expected]
-    );
-    const artifacts = await client.query(
-      `DELETE FROM party_runtime.spatial_v3_migration_coverage_artifacts
-        WHERE party_id = ANY($1::text[])`,
-      [expected]
-    );
-    const pins = await client.query(
-      `DELETE FROM party_runtime.party_catalog_pins
-        WHERE party_id = ANY($1::text[])`,
-      [expected]
-    );
+    const deletedByTable = new Map();
+    for (const table of PARTY_AGGREGATE_DELETE_ORDER) {
+      const deletion = await client.query(
+        `DELETE FROM party_runtime.${quoteIdentifier(table)}
+          WHERE party_id = ANY($1::text[])`,
+        [expected]
+      );
+      deletedByTable.set(table, deletion.rowCount);
+    }
     const roots = await client.query(
       `DELETE FROM party_runtime.parties
         WHERE party_id = ANY($1::text[])`,
@@ -422,9 +449,12 @@ export async function deleteAuthorizedProductionParties({
       status: 'deleted',
       party_ids: expected,
       deleted_party_count: roots.rowCount,
-      deleted_materialization_run_catalog_pin_count: runPins.rowCount,
-      deleted_catalog_pin_count: pins.rowCount,
-      deleted_coverage_artifact_count: artifacts.rowCount,
+      deleted_materialization_run_catalog_pin_count:
+        deletedByTable.get('party_materialization_run_catalog_pins'),
+      deleted_catalog_pin_count:
+        deletedByTable.get('party_catalog_pins'),
+      deleted_coverage_artifact_count:
+        deletedByTable.get('spatial_v3_migration_coverage_artifacts'),
       remaining_party_count: remaining
     });
   } catch (error) {

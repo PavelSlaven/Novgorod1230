@@ -18,6 +18,12 @@ import {
   buildLowerDvinaBoundaryV3ActivationBundle
 } from '../../tools/runtime-catalog-activation/src/lower-dvina-boundary-v3-activation.js';
 import {
+  buildProductionCutoverPhaseEvent,
+  deleteAuthorizedProductionParties,
+  evaluateLowerDvinaV3ProductionCutover,
+  recordProductionCutoverPhase
+} from '../../tools/runtime-catalog-activation/src/lower-dvina-v3-production-cutover.js';
+import {
   runPartyRuntimeCatalogMigration,
   runWorldRuntimeCatalogMigration
 } from '../../tools/runtime-catalog-activation/src/forward-migrations.js';
@@ -152,6 +158,109 @@ test('approved Stage 3C rows activate for v2 and advance by CAS to the exact bou
     'novgorod_spatial_v3_production_v2_candidate_001');
   assert.equal(pin.runtime_contract_digest,
     RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT_DIGEST);
+  const obsoletePartyId = 'party:authorized-obsolete-v2';
+  await seedObsoleteV2Party({
+    partyPool,
+    partyId: obsoletePartyId,
+    pin
+  });
+  await worldPool.query(await readFile(
+    'infra/operator-control/001_lower_dvina_v3_cutover_events.sql',
+    'utf8'
+  ));
+  const cutoverRequest = {
+    request_digest: 'f'.repeat(64),
+    release_id: 'spatial-v3-production-v3',
+    world_revision_id:
+      'novgorod_spatial_v3_production_v3_candidate_001',
+    world_catalog_digest:
+      '1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e',
+    expected_previous_event_id: applied.activated.event_id,
+    expected_party_ids: [obsoletePartyId],
+    authorization_ref: 'integration test exact party cleanup',
+    expected_party_database: 'first_playable_party',
+    expected_party_principal: 'party_operator'
+  };
+  const preparedEvent = buildProductionCutoverPhaseEvent({
+    request: cutoverRequest,
+    phase: 'prepared'
+  });
+  assert.equal((await recordProductionCutoverPhase({
+    worldPool,
+    event: preparedEvent
+  })).status, 'recorded');
+  const cleanup = await deleteAuthorizedProductionParties({
+    partyPool,
+    expectedPartyIds: [obsoletePartyId]
+  });
+  assert.deepEqual(cleanup, {
+    status: 'deleted',
+    party_ids: [obsoletePartyId],
+    deleted_party_count: 1,
+    deleted_materialization_run_catalog_pin_count: 1,
+    deleted_catalog_pin_count: 1,
+    deleted_coverage_artifact_count: 0,
+    remaining_party_count: 0
+  });
+  const persistedPhases = (await worldPool.query(
+    `SELECT request_digest,phase,release_id,world_revision_id,
+            world_catalog_digest,expected_previous_event_id,
+            expected_party_ids,expected_party_set_digest,
+            authorization_digest,party_database,party_principal,
+            party_cleanup_result_digest,event_digest
+       FROM operator_control.lower_dvina_v3_cutover_events
+      ORDER BY phase`
+  )).rows;
+  const resumed = evaluateLowerDvinaV3ProductionCutover({
+    world: {
+      database: 'pr17_first_playable',
+      active_event: {
+        event_id: applied.activated.event_id,
+        compatible_world_revision_id:
+          pin.compatible_world_revision_id,
+        compatible_world_catalog_digest:
+          pin.compatible_world_catalog_digest
+      },
+      cutover_events: persistedPhases
+    },
+    party: {
+      database: 'first_playable_party',
+      parties: [],
+      inflight_count: 0
+    },
+    expectedWorldDatabase: 'pr17_first_playable',
+    expectedPartyDatabase: 'first_playable_party',
+    expectedPreviousEventId: applied.activated.event_id,
+    expectedPartyIds: [obsoletePartyId],
+    requestDigest: cutoverRequest.request_digest,
+    expectedPreparedEvent: preparedEvent
+  });
+  assert.equal(resumed.status, 'resume_after_cleanup');
+  assert.equal(evaluateLowerDvinaV3ProductionCutover({
+    ...resumed,
+    world: resumed.world,
+    party: resumed.party,
+    expectedWorldDatabase: 'pr17_first_playable',
+    expectedPartyDatabase: 'first_playable_party',
+    expectedPreviousEventId: applied.activated.event_id,
+    expectedPartyIds: [obsoletePartyId],
+    requestDigest: 'e'.repeat(64),
+    expectedPreparedEvent: buildProductionCutoverPhaseEvent({
+      request: {
+        ...cutoverRequest,
+        request_digest: 'e'.repeat(64)
+      },
+      phase: 'prepared'
+    })
+  }).status, 'blocked');
+  assert.equal((await recordProductionCutoverPhase({
+    worldPool,
+    event: buildProductionCutoverPhaseEvent({
+      request: cutoverRequest,
+      phase: 'party_cleanup_committed',
+      partyCleanupResult: cleanup
+    })
+  })).status, 'recorded');
   await worldPool.query(await buildLowerDvinaBoundaryV1ImportSql());
   const v3Bundle = await buildLowerDvinaBoundaryV3ActivationBundle({
     worldPool,
@@ -187,6 +296,73 @@ test('approved Stage 3C rows activate for v2 and advance by CAS to the exact bou
     'SELECT count(*)::int AS count FROM party_runtime.parties'
   )).rows[0].count, 0);
 });
+
+async function seedObsoleteV2Party({ partyPool, partyId, pin }) {
+  await partyPool.query(
+    `INSERT INTO party_runtime.parties
+       (party_id,schema_version,world_revision_id,world_catalog_digest,
+        materializer_version,rng_version,command_catalog_digest,
+        profile_bundle_digest,status)
+     VALUES ($1,3,$2,$3,'first-playable-materializer@1',
+             'request-bound-sha256@1','commands','profiles','active')`,
+    [
+      partyId,
+      pin.compatible_world_revision_id,
+      pin.compatible_world_catalog_digest
+    ]
+  );
+  await partyPool.query(
+    `INSERT INTO party_runtime.party_materialization_runs
+       (party_id,run_id,g4_id,run_kind,seed_digest,input_digest,
+        catalog_digest,materializer_version,rng_version,result_digest,
+        idempotency_key,status)
+     VALUES ($1,'run-obsolete','g4-obsolete','baseline','seed','input',$2,
+             'first-playable-materializer@1','request-bound-sha256@1',
+             'result','materialization:obsolete','committed')`,
+    [partyId, pin.catalog_digest]
+  );
+  await partyPool.query(
+    `INSERT INTO party_runtime.party_catalog_pins
+       (party_id,catalog_scope,catalog_revision_id,catalog_digest,
+        import_id,import_audit_digest,record_registry_digest,
+        runtime_contract_digest,compatible_world_revision_id,
+        compatible_world_catalog_digest,
+        compatible_world_pin_manifest_digest,activation_event_id)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`,
+    [
+      partyId,
+      pin.catalog_scope,
+      pin.catalog_revision_id,
+      pin.catalog_digest,
+      pin.import_id,
+      pin.import_audit_digest,
+      pin.record_registry_digest,
+      pin.runtime_contract_digest,
+      pin.compatible_world_revision_id,
+      pin.compatible_world_catalog_digest,
+      pin.compatible_world_pin_manifest_digest,
+      pin.activation_event_id
+    ]
+  );
+  await partyPool.query(
+    `INSERT INTO party_runtime.party_materialization_run_catalog_pins
+       (party_id,run_id,catalog_scope,catalog_revision_id,catalog_digest,
+        import_id,import_audit_digest,record_registry_digest,
+        runtime_contract_digest,activation_event_id)
+     VALUES ($1,'run-obsolete',$2,$3,$4,$5,$6,$7,$8,$9)`,
+    [
+      partyId,
+      pin.catalog_scope,
+      pin.catalog_revision_id,
+      pin.catalog_digest,
+      pin.import_id,
+      pin.import_audit_digest,
+      pin.record_registry_digest,
+      pin.runtime_contract_digest,
+      pin.activation_event_id
+    ]
+  );
+}
 
 function startPostgres({ name, user, database }) {
   return docker([

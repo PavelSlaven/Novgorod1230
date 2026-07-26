@@ -2,7 +2,8 @@
 
 ## Статус
 
-- Этап: validated candidate; production activation blocked fail-closed.
+- Этап: production cutover implementation; operator apply выполняется только
+  после merge exact-кода в актуальный `origin/main`.
 - Capability `local_scene`: уже активна в `spatial-v3-production-v2`.
 - Capability `boundary_crossing`: интегрируется из утверждённого authoring package v1.
 - Successor: `spatial-v3-production-v3`,
@@ -11,17 +12,18 @@
   `1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e`.
 - Manifest SHA-256:
   `593ccb341084f7433ec4ae9d7d0b2ea8b1dea07833636ef385550ba5a295ecea`.
-- Production activation successor не выполнялась: empty-party preflight
-  обнаружил существующую v2-pinned party.
-- Operator/production DB текущим worktree не изменялась.
+- Пользователь подтвердил, что старых партий нет и exact обнаруженная
+  v2-pinned party может быть удалена.
+- Exact in-place cutover preflight: `ready`; production DB текущим worktree
+  пока не изменялась.
 
 ## Рабочая среда
 
 - Repository: `PavelSlaven/Novgorod1230`.
-- Checkout: `C:\tmp\Novgorod-lower-dvina-boundary-authoring-v1`.
-- Branch: `codex/lower-dvina-boundary-authoring-v1`.
-- Exact task base: `0a196b3293cc8c87ea52ec55b7bc493b21b03d19`.
-- `origin/main`: `0a196b3293cc8c87ea52ec55b7bc493b21b03d19`.
+- Checkout: `C:\tmp\Novgorod-lower-dvina-production-activation-v3`.
+- Branch: `codex/lower-dvina-production-activation-v3`.
+- Exact task base: `8c4d9e5acb1017c3f6fb0dabecab74fccdf33b3e`.
+- `origin/main`: `8c4d9e5acb1017c3f6fb0dabecab74fccdf33b3e`.
 - Node.js: `v24.16.0`.
 - npm: `11.13.0`.
 - Python: `3.13.3`.
@@ -130,8 +132,46 @@ versions/digests.
   insert/delete, boundary anchor и receiving scene materialization.
 - Forward/reverse runtime, save и restart/resume.
 - V3 activation bundle выполняет CAS после v2 active event в disposable
-  PostgreSQL; production composition остаётся pinned на текущий active v2 до
-  фактического cutover.
+  PostgreSQL. Первый merge добавляет только operator cutover; production
+  composition остаётся на v2 до фактического v3 activation readback.
+
+## Production activation и проверка актуальности источников
+
+- Перед readiness повторно выполнены `git fetch --prune origin`, сверка
+  актуального `origin/main`, merged PR #24, post-merge CI и exact approval /
+  promotion evidence. Канонический base:
+  `8c4d9e5acb1017c3f6fb0dabecab74fccdf33b3e`.
+- Production composition переключается на exact
+  `spatial-v3-production-v3` отдельным activation/evidence commit только
+  после committed DB readback.
+- In-place operator cutover принимает только exact v2 predecessor event,
+  exact DB/principal identities, нулевой inflight count и ровно
+  авторизованный набор party IDs.
+- Перед удалением world DB получает append-only, exact request-bound
+  `operator_control.lower_dvina_v3_cutover_events:prepared`. Он позволяет
+  безопасно продолжить тот же cutover после сбоя между party cleanup и
+  activation; пустая DB без exact prepared event остаётся blocked.
+- Пользователь явно разрешил удалить
+  `party:b5660e1f406bb9f83379173f`. Удаление выполняется одной party-DB
+  транзакцией: весь exact reviewed набор delete-blocking append-only
+  триггеров временно отключается, удаляются materialization-run catalog pin,
+  catalog pin, coverage evidence и party root, затем триггеры включаются и
+  проверяются до commit.
+- После cleanup записывается второй immutable phase event. Повтор допускается
+  только для того же request digest, predecessor, DB identity и prepared
+  evidence; stale/different digest блокируется.
+- Непосредственно перед destructive transaction после всех длительных world
+  preparation steps выполняется повторный exact inventory/recheck. Изменение
+  predecessor, party scope, pins или inflight state блокирует cleanup.
+- После empty-party readback применяются world schema 20, exact v3 snapshot
+  import и CAS activation поверх
+  `runtime_catalog_activation_6ee035c89a5d9c4f97adf3c76a2e7e1d`.
+- Затем запускается production game-server с exact v3 bindings и выполняется
+  smoke: scenario new game, первый экран, один ход, save, process restart и
+  resume. Созданная smoke-party является первой v3 party и удалению старых
+  партий не принадлежит.
+- Rollback/rebinding старых партий не выполняется; operator cutover не имеет
+  generic `DELETE all` или fallback-ветви.
 
 ## Команды и evidence
 
@@ -162,6 +202,9 @@ npm run test:tools
 npm run test:integration
 npm run docs:check
 npm run architecture:check
+node --test tools/runtime-catalog-activation/test/lower-dvina-v3-production-cutover.test.js
+node --test --test-concurrency=1 test/integration/first-playable-v2-activation-postgres.test.js
+npm run lower-dvina:v3:production-cutover -- preflight <exact operator args>
 ```
 
 Результаты:
@@ -187,9 +230,12 @@ npm run architecture:check
   environment skip из-за отсутствия локального Chromium.
 - Один обязательный независимый critic: финальный `PASS` после исправления
   availability/recheck и restart/resume lineage.
+- Независимый activation critic: первоначально `CHANGES REQUIRED` из-за
+  нерестартуемого окна после cleanup; после append-only phase ledger,
+  failure-injection E2E, tamper checks и fresh pre-delete recheck — `PASS`.
 - Clean-clone exact-commit acceptance: `npm ci` и полный `npm test` PASS.
 
-## Текущие blockers
+## Оставшийся operator gate
 
 Production read-only preflight 2026-07-26:
 
@@ -203,12 +249,10 @@ active catalog event =
   runtime_catalog_activation_6ee035c89a5d9c4f97adf3c76a2e7e1d
 ```
 
-Это противоречит допущению «существующих партий нет». Активный contract
-`rus.runtime_catalog_party_preflight.v2` допускает initial activation только
-при `party_count=0`. Партия и production DB не изменялись. Для cutover нужно
-отдельное решение пользователя: сохранить партию и согласовать versioned
-preflight для already-pinned parties либо явно признать exact party
-disposable. Автоматическое удаление/rebinding запрещено.
+Пользователь явно признал эту exact party disposable. Новый preflight
+подтвердил `ready=true`: DB identities, operator principals, predecessor
+event, v2 world pins, party set и отсутствие inflight-команд совпадают.
 
-Production activation/smoke остаются заблокированными только указанным
-расхождением.
+До merge activation-кода production mutation запрещена. После merge и
+успешного CI исполнитель повторяет exact preflight на новом SHA, подтверждает
+его request digest, выполняет операторский apply и production smoke/restart.

@@ -13,10 +13,6 @@ import {
   LOWER_DVINA_BOUNDARY_V3_RELEASE
 } from '../tools/runtime-catalog-activation/src/lower-dvina-boundary-v3-activation.js';
 import {
-  runPartyRuntimeCatalogMigration,
-  runWorldRuntimeCatalogMigration
-} from '../tools/runtime-catalog-activation/src/forward-migrations.js';
-import {
   buildProductionCutoverPhaseEvent,
   deleteAuthorizedProductionParties,
   evaluateLowerDvinaV3ProductionCutover,
@@ -149,10 +145,6 @@ try {
       resolve(repositoryRoot, 'infra/world-base/schema/20.sql'),
       'utf8'
     ));
-    const migrations = {
-      world: await runWorldRuntimeCatalogMigration(worldPool),
-      party: await runPartyRuntimeCatalogMigration(partyPool)
-    };
     await worldPool.query(await buildLowerDvinaBoundaryV1ImportSql({
       root: repositoryRoot
     }));
@@ -236,7 +228,6 @@ try {
       destructive_preflight: destructivePreflight,
       cleanup,
       cleanup_committed: cleanupCommitted,
-      migrations,
       bundle_digest: bundle.bundle_digest,
       activation,
       readback

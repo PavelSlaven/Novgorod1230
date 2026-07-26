@@ -23,7 +23,7 @@ export const LOWER_DVINA_BOUNDARY_V3_RELEASE = Object.freeze({
   resultSchema: 'rus.lower_dvina_boundary_v3_activation_result.v1',
   baselineTitle: 'Lower Dvina boundary runtime catalog baseline v3',
   activationBasis:
-    'APPROVE_LOWER_DVINA_BOUNDARY_AUTHORING_V1; preserve existing exact party pins'
+    'APPROVE_LOWER_DVINA_BOUNDARY_AUTHORING_V1; user authorized deletion of the exact obsolete v2 party before first v3 launch'
 });
 
 export function buildLowerDvinaBoundaryV3ActivationBundle(options) {

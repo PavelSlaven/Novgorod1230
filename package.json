@@ -215,7 +215,8 @@
     "runtime-catalog:registry": "node scripts/generate-item-container-record-registry.mjs --write",
     "runtime-catalog:registry-check": "node scripts/generate-item-container-record-registry.mjs --check",
     "runtime-catalog:operator": "node tools/runtime-catalog-activation/src/cli.js",
-    "lower-dvina:first-playable:production": "node scripts/run-lower-dvina-first-playable-production.mjs"
+    "lower-dvina:first-playable:production": "node scripts/run-lower-dvina-first-playable-production.mjs",
+    "lower-dvina:v3:production-cutover": "node scripts/run-lower-dvina-v3-production-cutover.mjs"
   },
   "dependencies": {
     "pg": "^8.22.0"

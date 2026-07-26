@@ -124,6 +124,18 @@ test('exact prepared phase permits only request-bound resume from empty party st
   assert.equal(differentRequest.status, 'blocked');
   assert.equal(differentRequest.conflicting_phase_event, true);
 
+  const freshRequestWithIntactParty =
+    evaluateLowerDvinaV3ProductionCutover(inventory({
+      world: {
+        cutover_events: [buildProductionCutoverPhaseEvent({
+          request: cutoverRequest('e'.repeat(64)),
+          phase: 'prepared'
+        })]
+      }
+    }));
+  assert.equal(freshRequestWithIntactParty.status, 'ready');
+  assert.equal(freshRequestWithIntactParty.ready_with_party, true);
+
   const exact = buildProductionCutoverPhaseEvent({
     request: cutoverRequest(),
     phase: 'prepared'

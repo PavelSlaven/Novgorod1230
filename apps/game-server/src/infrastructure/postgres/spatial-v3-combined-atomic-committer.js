@@ -4,20 +4,29 @@ import {
 import {
   TABLES,
   error,
-  orderWrites,
   quote
 } from './spatial-v3-write-layout.js';
+import { orderWrites } from './spatial-v3-write-order.js';
 import {
   firstEntryEvidenceMatches,
   lockOrder,
   validateSpatialV3CombinedWritePlan
 } from './spatial-v3-write-plan-validation.js';
+import {
+  applySealedLifecycleInsert
+} from './spatial-v3-lifecycle-insert.js';
 
 export { validateSpatialV3CombinedWritePlan };
 
 async function apply(tx, write, mode, expectedStateVersion = null, sealedPlan = null, committedAtTurn = 0) {
   const spec = TABLES[write.target_table]; const record = write.target_table === 'party_v3_change_sets' ? { ...Object.fromEntries(Object.entries(write.record).filter(([key]) => !['idempotency_record_id', 'created_at_turn', 'committed_at_turn'].includes(key))), expected_state_version_set_digest: sealedPlan.expected_state_versions_digest.replace('sha256:', ''), expected_state_version_set: sealedPlan.expected_state_versions, committed_state_version_set_digest: sealedPlan.expected_state_versions_digest.replace('sha256:', ''), write_plan_digest: sealedPlan.write_set_digest.replace('sha256:', ''), created_at_turn: committedAtTurn, committed_at_turn: committedAtTurn } : write.record; const columns = Object.keys(record); const table = `party_runtime.${quote(write.target_table)}`;
   if (mode === 'update') { const expected = expectedStateVersion; if (!Number.isInteger(expected) || expected < 0) throw Object.assign(new Error('update lacks expected version'), { spatialCode: 'state_version_conflict' }); const set = columns.filter((column) => !spec.key.includes(column) && column !== 'state_version'); const where = spec.key.map((column, index) => `${quote(column)}=$${set.length + index + 1}`).concat(`state_version=$${set.length + spec.key.length + 1}`); const params = [...set.map((column) => record[column]), ...spec.key.map((column) => record[column]), expected]; const result = await tx.query(`UPDATE ${table} SET ${set.map((column, index) => `${quote(column)}=$${index + 1}`).join(', ')}, state_version=state_version+1 WHERE ${where.join(' AND ')}`, params); if (result.rowCount !== 1) throw Object.assign(new Error('stale state version'), { spatialCode: 'state_version_conflict' }); return; }
+  if (mode === 'delete') { const expected = expectedStateVersion; if (!Number.isInteger(expected) || expected < 0) throw Object.assign(new Error('delete lacks expected version'), { spatialCode: 'state_version_conflict' }); const where = spec.key.map((column, index) => `${quote(column)}=$${index + 1}`).concat(`state_version=$${spec.key.length + 1}`); const params = [...spec.key.map((column) => record[column]), expected]; const result = await tx.query(`DELETE FROM ${table} WHERE ${where.join(' AND ')}`, params); if (result.rowCount !== 1) throw Object.assign(new Error('stale state version'), { spatialCode: 'state_version_conflict' }); return; }
+  const lifecycleFinalizer = await applySealedLifecycleInsert(tx, {
+    ...write,
+    record
+  });
+  if (lifecycleFinalizer) return lifecycleFinalizer;
   const values = columns.map((column) => Array.isArray(record[column]) ? JSON.stringify(record[column]) : record[column]); await tx.query(`INSERT INTO ${table} (${columns.map(quote).join(', ')}) VALUES (${values.map((_, index) => `$${index + 1}`).join(', ')})`, values);
 }
 
@@ -53,7 +62,35 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
         if (reclaim.rowCount !== 1) throw Object.assign(new Error('lease CAS failed'), { spatialCode: 'idempotency_conflict' });
       } else {
         if (existingChangeSet.rows.length) throw Object.assign(new Error('committed change set lacks its idempotency record'), { spatialCode: 'state_version_conflict' });
-        await tx.query(`INSERT INTO party_runtime.party_command_idempotency (id,party_id,operation_kind,idempotency_key,canonical_input_digest,expected_state_version_set_digest,status,lease_token,lease_expires_at,created_at_turn) VALUES ($1,$2,$3,$4,$5,$6,'leased',$7,$8,$9)`, [plan.idempotency_record_id, plan.party_id, plan.operation_kind, plan.idempotency_key, plan.canonical_input_digest.replace('sha256:', ''), expectedDigest, `lease:${plan.plan_id}`, new Date(now().getTime() + 30000), created_at_turn]);
+        await tx.query(
+          `INSERT INTO party_runtime.party_command_idempotency
+           (id,party_id,operation_kind,idempotency_key,
+            canonical_input_digest,expected_state_version_set_digest,
+            status,lease_token,lease_expires_at,created_at_turn,
+            semantic_command_snapshot,semantic_command_digest,
+            semantic_dependency_pins,request_id)
+           VALUES ($1,$2,$3,$4,$5,$6,'leased',$7,$8,$9,
+             $10::jsonb,$11,$12::jsonb,$13)`,
+          [
+            plan.idempotency_record_id,
+            plan.party_id,
+            plan.operation_kind,
+            plan.idempotency_key,
+            plan.canonical_input_digest.replace('sha256:', ''),
+            expectedDigest,
+            `lease:${plan.plan_id}`,
+            new Date(now().getTime() + 30000),
+            created_at_turn,
+            plan.semantic_command_snapshot == null
+              ? null
+              : JSON.stringify(plan.semantic_command_snapshot),
+            plan.semantic_command_digest?.replace('sha256:', '') ?? null,
+            plan.semantic_dependency_pins == null
+              ? null
+              : JSON.stringify(plan.semantic_dependency_pins),
+            plan.request_id
+          ]
+        );
       }
       for (const check of plan.commit_rechecks) {
         const result = await commitRecheck({
@@ -77,11 +114,25 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
           );
         }
       }
+      const lifecycleFinalizers = [];
       for (const { mode, write } of orderWrites(plan)) {
-        const expectedStateVersion = mode === 'update'
+        const expectedStateVersion = mode === 'update' || mode === 'delete'
           ? plan.expected_state_versions.find((item) => item.target_table === write.target_table && item.id === write.id).state_version
           : null;
-        await apply(tx, write, mode, expectedStateVersion, plan, created_at_turn);
+        const finalizeLifecycle = await apply(
+          tx,
+          write,
+          mode,
+          expectedStateVersion,
+          plan,
+          created_at_turn
+        );
+        if (finalizeLifecycle) {
+          lifecycleFinalizers.push(finalizeLifecycle);
+        }
+      }
+      for (const finalizeLifecycle of lifecycleFinalizers) {
+        await finalizeLifecycle();
       }
       const settled = await tx.query(`UPDATE party_runtime.party_command_idempotency SET status='committed',result_change_set_id=$1,lease_token=NULL,lease_expires_at=NULL,finalized_at_turn=$2,state_version=state_version+1 WHERE party_id=$3 AND operation_kind=$4 AND idempotency_key=$5 AND status='leased'`, [plan.change_set_id, created_at_turn, plan.party_id, plan.operation_kind, plan.idempotency_key]); if (settled.rowCount !== 1) throw Object.assign(new Error('idempotency settle failed'), { spatialCode: 'idempotency_conflict' });
       return Object.freeze({ ok: true, replay: false, change_set_id: plan.change_set_id, lock_keys: Object.freeze(locks) });

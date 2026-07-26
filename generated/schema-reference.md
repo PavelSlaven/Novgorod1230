@@ -183,6 +183,7 @@ Release: `0.23.0-migration.24`
 | `schemas/party-db/008_party_runtime_pr8_first_entry.sql` | sql | 1965 | `bf072dd080e7daca2c922c60d07090b0dd34efcaef0e20c97e6607ae64611e7e` |
 | `schemas/party-db/009_party_runtime_pr8_reaction_knowledge.sql` | sql | 7121 | `1fdaba3f43f15502f64e2644b13f3ac07beaffacb1b8260fa8db37720d3f54b2` |
 | `schemas/party-db/010_party_runtime_pr8_reaction_options.sql` | sql | 1589 | `7a8b686fd0a74402d94284ef74a2c93e38402a3884c1d69b7de28fe07b6c9698` |
+| `schemas/party-db/011_party_runtime_first_playable.sql` | sql | 20468 | `2714dd9faa9f1941ccf515e7cee6e46d46996cd00520f68492023e40ad59f79a` |
 | `schemas/runtime-catalog/runtime-catalog-artifacts-v2.schema.json` | json | 18438 | `2d8e9167f701e193b2e2eb03c162e4b8228cb2c46cea7cc26368de4304a3ed40` |
 | `schemas/world-base/world-base-source-bundle.schema.json` | json | 1447 | `358430badf2821197ffc74d4600b2cc2b153d1a1a141020e998650cb1c325dc2` |
 | `schemas/world-catalogs/g1-boundary-contract.schema.json` | json | 1199 | `9a255c612dc382e4ead28c5566ae6583878840651904a134f364bb1b1291f3aa` |

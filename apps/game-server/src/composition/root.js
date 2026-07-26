@@ -15,6 +15,7 @@ export function createGameCompositionRoot({
   newGameWorkflow,
   turnWorkflow,
   sessionStore,
+  scenarioRegistry = null,
   deliveryStore = null,
   now = () => new Date().toISOString()
 } = {}) {
@@ -26,14 +27,33 @@ export function createGameCompositionRoot({
     requireMethod(deliveryStore, 'recordAttempt', 'deliveryStore');
     requireMethod(deliveryStore, 'commitAcknowledgement', 'deliveryStore');
   }
+  if (scenarioRegistry != null) {
+    requireMethod(scenarioRegistry, 'listPublic', 'scenarioRegistry');
+    requireMethod(scenarioRegistry, 'resolveForNewGame', 'scenarioRegistry');
+  }
 
   return Object.freeze({
     health() {
       return Object.freeze({ status: 'ok', service: '@rus/game-server', api_version: 1 });
     },
 
+    async listScenarios() {
+      const scenarios = scenarioRegistry == null
+        ? []
+        : await scenarioRegistry.listPublic();
+      return Object.freeze({
+        version: 1,
+        schema: 'public_scenario_catalog',
+        scenarios: structuredClone(Array.isArray(scenarios) ? scenarios : [])
+      });
+    },
+
     async startNewGame(input) {
-      const normalized = normalizeNewGameInput(input, now());
+      const normalized = await normalizeNewGameInput(
+        input,
+        now(),
+        scenarioRegistry
+      );
       const pipeline = await newGameWorkflow.run(normalized);
       if (pipeline?.status !== 'approved') {
         throw serverError('NEW_GAME_NOT_APPROVED', 'New-game pipeline did not produce an approved result.', { status: 409 });
@@ -141,16 +161,34 @@ export function createGameCompositionRoot({
   });
 }
 
-function normalizeNewGameInput(input, receivedAt) {
+async function normalizeNewGameInput(input, receivedAt, scenarioRegistry) {
   const requestId = text(input?.request_id) || `new-game:${receivedAt}`;
-  const startText = text(input?.start_text);
-  if (!startText) throw serverError('START_TEXT_REQUIRED', 'start_text is required.', { status: 400 });
+  const scenarioId = text(input?.scenario_id);
+  let scenario = null;
+  if (scenarioId) {
+    scenario = await scenarioRegistry?.resolveForNewGame(scenarioId);
+    if (!scenario) {
+      throw serverError(
+        'SCENARIO_NOT_SUPPORTED',
+        'Scenario is not supported or is not ready.',
+        { status: 409 }
+      );
+    }
+  }
+  const startText = text(scenario?.start_text ?? input?.start_text);
+  if (!startText) {
+    throw serverError('START_TEXT_REQUIRED', 'start_text is required.', { status: 400 });
+  }
   return Object.freeze({
     version: 1,
     schema: 'new_game_http_input',
     request_id: requestId,
     start_text: startText,
-    player_name: text(input?.player_name),
+    player_name: text(scenario?.player_name ?? input?.player_name),
+    scenario_id: scenarioId || null,
+    scenario_context: plain(scenario?.scenario_context)
+      ? structuredClone(scenario.scenario_context)
+      : null,
     ui_fields: plain(input?.ui_fields) ? structuredClone(input.ui_fields) : null,
     client_defaults: plain(input?.client_defaults) ? structuredClone(input.client_defaults) : null,
     received_at: receivedAt

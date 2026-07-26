@@ -11,18 +11,18 @@ const PARTY_SQL = readFileSync(
 );
 
 export const WORLD_RUNTIME_CATALOG_MIGRATION = createForwardMigration({
-  migrationId: 'world_runtime_catalog_activation_v1',
+  migrationId: 'world_runtime_catalog_activation_v2',
   schemaName: 'world_base',
-  sourceSchemaFingerprint: '8f5d28619bb2f666c5efae6c376f89c0b9f21c0e9b90889c3b975c772cecdb08',
-  targetSchemaFingerprint: 'd6eb5c68e8df74989443de56b77145569e65d43988953ddeb0bff6256f3df89f',
+  sourceSchemaFingerprint: '6138fa8253fb95373d42e8467793c70596825529d7e10e177f27f60b486eddb5',
+  targetSchemaFingerprint: 'd932870f0ca0e1ad8a3ebe702f35083ba48f36282c420614cdd4385f78192679',
   sql: WORLD_SQL
 });
 
 export const PARTY_RUNTIME_CATALOG_MIGRATION = createForwardMigration({
-  migrationId: 'party_runtime_catalog_pins_v1',
+  migrationId: 'party_runtime_catalog_pins_v2',
   schemaName: 'party_runtime',
-  sourceSchemaFingerprint: 'bff629c600558782d860ad120a5ea8eab24f2f98b4caf6f49c70bc4ef7079a82',
-  targetSchemaFingerprint: '329a84c3c5ccd76e4a84b67454bcbd6e6c176fafbd285e77d44824dddcd8d2dd',
+  sourceSchemaFingerprint: '16f99b12e58ce60f6c87e29e0824518987ddb66b9ee6c7d945daebc2b0957817',
+  targetSchemaFingerprint: '47cb21b39db8be7336d10533ed319fe314f5bda65d850f1297c8321de6c9d165',
   sql: PARTY_SQL
 });
 

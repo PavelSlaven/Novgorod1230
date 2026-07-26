@@ -29,7 +29,8 @@ export function createSpatialV3TargetShadowComposition({
   persistNarrationOutput, finalizePresentationAttempt, projectScreen,
   committer, verifyApproval,
   loadStartSnapshot, prepareStart, buildStartWritePlanInput, commandAdapters = {},
-  createStartChangeSet = null, modeHandoff = null, buildModeHandoffProposal = null
+  createStartChangeSet = null, modeHandoff = null, buildModeHandoffProposal = null,
+  releaseVerticalSliceExecutor = null
 } = {}) {
   if (!planner || typeof planner.resolve !== 'function') throw new TypeError('P21 requires P18 planner.resolve.');
   if (!activationValidator || typeof activationValidator.validate !== 'function') throw new TypeError('P21 requires P18 activation validator.');
@@ -70,6 +71,20 @@ export function createSpatialV3TargetShadowComposition({
   if (createStartChangeSet != null) requirePort(createStartChangeSet, 'createStartChangeSet');
   if (!modeHandoff || typeof modeHandoff.handoff !== 'function') throw new TypeError('P21 requires P21-S04 modeHandoff.handoff port.');
   requirePort(buildModeHandoffProposal, 'buildModeHandoffProposal');
+  if (releaseVerticalSliceExecutor != null) {
+    for (const method of [
+      'listScenarios',
+      'startNewGame',
+      'acknowledgeOpening',
+      'submitTurn',
+      'getPartyScreen'
+    ]) {
+      requirePort(
+        releaseVerticalSliceExecutor[method],
+        `releaseVerticalSliceExecutor.${method}`
+      );
+    }
+  }
   const adapt = async (command, result) => {
     if (!result?.ok) return result ?? failure(command.party_id, 'command_adapter', 'resolver returned no result');
     const adapter = commandAdapters[command.command_kind];
@@ -256,7 +271,18 @@ export function createSpatialV3TargetShadowComposition({
     handoff: modeHandoff,
     submitTurn: turn.run.bind(turn),
     retryPresentation: turn.retryPresentation.bind(turn),
-    startNewGame: starter.start.bind(starter)
+    startNewGame: starter.start.bind(starter),
+    executeReleaseOperation: releaseVerticalSliceExecutor == null
+      ? null
+      : async (operation, ...args) => {
+          const handler = releaseVerticalSliceExecutor[operation];
+          if (typeof handler !== 'function') {
+            throw new TypeError(
+              `Unsupported release vertical-slice operation: ${operation}`
+            );
+          }
+          return handler(...args);
+        }
   });
 }
 

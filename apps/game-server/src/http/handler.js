@@ -33,6 +33,7 @@ export function createHttpHandler({ root, staticAssets, maxBodyBytes, developerM
 
 export function matchApiRoute(method, pathname) {
   if (method === 'GET' && pathname === '/api/v1/health') return { id: 'health', status: 200 };
+  if (method === 'GET' && pathname === '/api/v1/scenarios') return { id: 'scenarios', status: 200 };
   if (method === 'POST' && pathname === '/api/v1/new-games') return { id: 'new_game', status: 201 };
   const screen = pathname.match(/^\/api\/v1\/parties\/([^/]+)\/screen$/u);
   if (method === 'GET' && screen) return { id: 'party_screen', partyId: decodeURIComponent(screen[1]), status: 200 };
@@ -45,6 +46,7 @@ export function matchApiRoute(method, pathname) {
 
 async function executeRoute(route, context) {
   if (route.id === 'health') return context.root.health();
+  if (route.id === 'scenarios') return context.root.listScenarios();
   if (route.id === 'party_screen') return context.root.getPartyScreen(route.partyId);
   const body = await readJsonBody(context.request, { maxBytes: context.maxBodyBytes });
   if (route.id === 'new_game') return context.root.startNewGame(validateNewGameRequest(body));

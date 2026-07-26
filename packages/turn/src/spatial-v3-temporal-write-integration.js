@@ -80,7 +80,10 @@ export function integrateSpatialV3TemporalWriteFragments({
   }
   const seenRows = new Map();
   for (const writeSet of input.approved_write_sets) {
-    for (const mode of ['appends', 'inserts', 'updates']) {
+    for (const mode of ['appends', 'inserts', 'updates', 'deletes']) {
+      if (mode === 'deletes' && writeSet?.[mode] === undefined) {
+        writeSet.deletes = [];
+      }
       if (!Array.isArray(writeSet?.[mode])) {
         return failure(input.party_id, `base ${mode} must be an array`);
       }
@@ -100,12 +103,14 @@ export function integrateSpatialV3TemporalWriteFragments({
         'temporal write fragment must contain exact writes, versions and physical locks'
       );
     }
-    const copied = { appends: [], inserts: [], updates: [] };
-    for (const mode of ['appends', 'inserts', 'updates']) {
-      if (!Array.isArray(fragment.write_set[mode])) {
+    const copied = { appends: [], inserts: [], updates: [], deletes: [] };
+    for (const mode of ['appends', 'inserts', 'updates', 'deletes']) {
+      const fragmentWrites = fragment.write_set[mode]
+        ?? (mode === 'deletes' ? [] : null);
+      if (!Array.isArray(fragmentWrites)) {
         return failure(input.party_id, `temporal ${mode} must be an array`);
       }
-      for (const row of fragment.write_set[mode]) {
+      for (const row of fragmentWrites) {
         const rowKey = key(row);
         if (!row?.target_table || !row?.id || seenRows.has(rowKey)) {
           return failure(

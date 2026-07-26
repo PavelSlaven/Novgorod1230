@@ -913,6 +913,12 @@
       "type": "sql"
     },
     {
+      "bytes": 20468,
+      "path": "schemas/party-db/011_party_runtime_first_playable.sql",
+      "sha256": "2714dd9faa9f1941ccf515e7cee6e46d46996cd00520f68492023e40ad59f79a",
+      "type": "sql"
+    },
+    {
       "bytes": 18438,
       "path": "schemas/runtime-catalog/runtime-catalog-artifacts-v2.schema.json",
       "sha256": "2d8e9167f701e193b2e2eb03c162e4b8228cb2c46cea7cc26368de4304a3ed40",

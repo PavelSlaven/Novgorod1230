@@ -34,7 +34,15 @@ export function errorEnvelope(error, { requestId = null, developerMode = false }
 
 export function validateNewGameRequest(body) {
   if (!plain(body)) throw serverError('REQUEST_BODY_INVALID', 'JSON object body is required.', { status: 400 });
-  if (!text(body.start_text)) throw serverError('START_TEXT_REQUIRED', 'start_text is required.', { status: 400 });
+  const hasStartText = Boolean(text(body.start_text));
+  const hasScenarioId = Boolean(text(body.scenario_id));
+  if (hasStartText === hasScenarioId) {
+    throw serverError(
+      'NEW_GAME_INPUT_BRANCH_REQUIRED',
+      'Exactly one of start_text or scenario_id is required.',
+      { status: 400 }
+    );
+  }
   return body;
 }
 

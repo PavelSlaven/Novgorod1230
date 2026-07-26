@@ -1,0 +1,8 @@
+{
+  "schema": "rus.spatial-v3.source_transition_validation.v1",
+  "transition_set_digest": "5b8c70f69c1bb77a612c5f182336f9ab1a383f3c6561c8bf891673b4f3a1da02",
+  "result": "pass",
+  "production_activation_required_for_effectiveness": true,
+  "production_activation_performed": false,
+  "validation_digest": "eecb5f98c53dac39ff2fda6604041f3d44d24da84045865c18f431d4ed92cb2e"
+}

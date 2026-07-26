@@ -1,9 +1,9 @@
 <!-- GENERATED FILE. Sources: infra/world-base/schema.sql, infra/world-base/schema/*.sql and infra/world-base/field-descriptions.js. Run `npm run world-db:schema-doc`; do not edit manually. -->
 # Справочник схемы `world_base`
 
-- Исполняемый источник: `infra/world-base/schema.sql` и 18 упорядоченных SQL-частей.
-- SHA-256 развёрнутого DDL: `6e60005176cd22816887f3c82e1de866ba627728b673a8b3cb7667fd41906d4e`.
-- Таблиц: 190.
+- Исполняемый источник: `infra/world-base/schema.sql` и 19 упорядоченных SQL-частей.
+- SHA-256 развёрнутого DDL: `0b3e55c28e0a8dad52b036681ebb5d59592d11caa83c11c23dbd28c110445f04`.
+- Таблиц: 191.
 - Описания берутся только из утверждённого `infra/world-base/field-descriptions.js`; отсутствие описания не заполняется эвристикой.
 
 ## Граф (каноническая карта)
@@ -2744,6 +2744,11 @@ Versioned digest-pinned bindings controlled vocabulary registry for one spatial 
 | `target_version` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
 | `canonical_ordinal` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (canonical_ordinal >= 0)` | Контрактный порядок dependency edge внутри source и role. |
 | `provenance_ref` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | FK → source_records(id): evidence dependency edge. |
+| `target_registry_type` | `TEXT` | да | — | — | — | Описание отсутствует. |
+| `target_registry_id` | `TEXT` | да | — | — | — | Описание отсутствует. |
+| `target_registry_version` | `TEXT` | да | — | — | — | Описание отсутствует. |
+| `target_registry_digest` | `TEXT` | да | — | — | — | Описание отсутствует. |
+| `target_dependency_digest` | `TEXT` | да | — | — | — | Описание отсутствует. |
 
 **Ограничения таблицы:**
 
@@ -5309,3 +5314,27 @@ Digests, counts и dependency order таблиц одного импорта.
 **Ограничения таблицы:**
 
 - `UNIQUE (source_scope, source_digest, target_digest)`
+
+### `world_base.spatial_v3_external_dependency_versions`
+
+Описание назначения отсутствует.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `registry_type` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `registry_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `registry_version` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `registry_digest` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (registry_digest ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
+| `dependency_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `dependency_version` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (dependency_version > 0)` | Описание отсутствует. |
+| `dependency_digest` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (dependency_digest ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
+| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (status = 'approved')` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `approval_ref` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `approval_digest` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (approval_digest ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
+| `canonical_digest` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (canonical_digest ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
+| `created_at` | `TIMESTAMPTZ` | нет | `now()` | — | `NOT NULL` | Время создания записи (UTC). |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY ( registry_type, registry_id, registry_version, dependency_id, dependency_version )`
+- `UNIQUE ( registry_type, registry_id, registry_version, registry_digest, dependency_id, dependency_version, dependency_digest )`

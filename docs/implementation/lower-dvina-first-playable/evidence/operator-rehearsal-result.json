@@ -1,0 +1,78 @@
+{
+  "schema": "rus.lower_dvina_production_activation_result.v1",
+  "status": "validated_rehearsal_not_production",
+  "request": {
+    "schema": "rus.lower_dvina_production_activation_request.v1",
+    "git_commit_sha": "d4be6a6014b80ceae937b3900dad6cbe7c1e787d",
+    "origin_main_sha": "d4be6a6014b80ceae937b3900dad6cbe7c1e787d",
+    "release_id": "spatial-v3-production-v2",
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001",
+    "world_catalog_digest": "fd75d9cb1ad0e949ff3b0bb5ef044e510f340a967f43867e9c4d41c16ba9f255",
+    "world_catalog_manifest_sha256": "3ed17f7d540f5707a8b72392d7e4d5736be947048673ff5135d5c07aacbb951a",
+    "target_migration_chain_digest": "b7a9eb899b5d302dc27bff6797f1bb6abf31b245ace3e7c285f94543e3039d45",
+    "world_runtime_catalog_migration_digest": "15f36e5c02c28660d83bd3b5923036f138dbeec727c03e60c16cdb4cbc13c506",
+    "party_runtime_catalog_migration_digest": "9f574d2782cdbaeeba190d8237fe38c26bddd65775f060749079d3d0163ef32d",
+    "expected_world_database": "pr17_rehearsal_lower_dvina_world_p16_final",
+    "expected_party_database": "lower_dvina_rehearsal_party_p16_final",
+    "production_activation": true,
+    "request_digest": "c128179867c194e12ed1a499cc21aafe3db50ebb7146d8f8be6f32c2d090731b"
+  },
+  "database_identity": {
+    "world_database": "pr17_rehearsal_lower_dvina_world_p16_final",
+    "party_database": "lower_dvina_rehearsal_party_p16_final"
+  },
+  "promotion": {
+    "target_revision_id": "world_revision_novgorod_1230_item_container_approved_001",
+    "candidate_digest": "e3bddda4b31cdbb91d430254db5e6f2d34a8d9d0a08e5f7e4c1e1d6cb9832a24"
+  },
+  "migrations": {
+    "world": {
+      "status": "applied",
+      "migration_id": "world_runtime_catalog_activation_v2",
+      "migration_digest": "15f36e5c02c28660d83bd3b5923036f138dbeec727c03e60c16cdb4cbc13c506",
+      "schema_name": "world_base",
+      "schema_fingerprint": "d932870f0ca0e1ad8a3ebe702f35083ba48f36282c420614cdd4385f78192679"
+    },
+    "party": {
+      "status": "applied",
+      "migration_id": "party_runtime_catalog_pins_v2",
+      "migration_digest": "9f574d2782cdbaeeba190d8237fe38c26bddd65775f060749079d3d0163ef32d",
+      "schema_name": "party_runtime",
+      "schema_fingerprint": "47cb21b39db8be7336d10533ed319fe314f5bda65d850f1297c8321de6c9d165"
+    }
+  },
+  "bundle_digest": "2eb59106dc8211cb7c164e531af54f377b6b7a16708c3ca06c62efdea969a02f",
+  "activation": {
+    "schema": "rus.first_playable_v2_activation_result.v1",
+    "baseline": {
+      "status": "registered",
+      "registration_id": "catalog_baseline_3d7cf474095e10d98b4498cd5efdff96"
+    },
+    "imported": {
+      "status": "applied",
+      "import_id": "catalog_import_1d57db97a7d774484c0a28d821d21fd1"
+    },
+    "activated": {
+      "status": "activated",
+      "event_id": "runtime_catalog_activation_9b3174759ef3982f24d37082f315cb46",
+      "event_sequence": 1
+    },
+    "bundle_digest": "2eb59106dc8211cb7c164e531af54f377b6b7a16708c3ca06c62efdea969a02f"
+  },
+  "readback": {
+    "active_event": {
+      "event_id": "runtime_catalog_activation_9b3174759ef3982f24d37082f315cb46",
+      "catalog_scope": "item_container_materialization_v2",
+      "catalog_revision_id": "runtime_catalog_lower_dvina_first_playable_v2_001",
+      "catalog_digest": "497acf04fc1c7be37a917f1001c83f78bb31eb04bdf22ca896c36667f813902e",
+      "runtime_contract_digest": "60c3a601bcb561c39017fed915cb9b9cdaa779115f4f0f2c0175db3eda64a0c7",
+      "compatible_world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001",
+      "compatible_world_catalog_digest": "fd75d9cb1ad0e949ff3b0bb5ef044e510f340a967f43867e9c4d41c16ba9f255",
+      "compatible_world_pin_manifest_digest": "88f8b0234b11053e2dd0c6dfb0effb6a6288380f68c3bf3981911895e755d0ce"
+    },
+    "party_count_before_smoke": 0,
+    "release_status": "active",
+    "production_activation": true,
+    "runtime_selectable_in_canonical_production": true
+  }
+}

@@ -2,6 +2,9 @@ import {
   RUNTIME_CATALOG_ACTIVATION_LOCK_KEY
 } from '@rus/runtime-catalog/runtime-contract';
 import { serverError } from '../../errors.js';
+export {
+  loadActiveRuntimeCatalogPin
+} from './runtime-catalog-pin-loader.js';
 
 const PIN_FIELDS = Object.freeze([
   'catalog_scope',

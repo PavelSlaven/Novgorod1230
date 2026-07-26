@@ -1,0 +1,1927 @@
+[
+  {
+    "child_id": "gn_nov_g1_xp017_yp026",
+    "child_version": 2,
+    "parent_id": "region_novgorod_land",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g2_xp017_yp026_r2_south_main_channel",
+    "child_version": 2,
+    "parent_id": "gn_nov_g1_xp017_yp026",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g2_xp017_yp026_r2_central_main_channel",
+    "child_version": 2,
+    "parent_id": "gn_nov_g1_xp017_yp026",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g2_xp017_yp026_r2_north_main_channel",
+    "child_version": 2,
+    "parent_id": "gn_nov_g1_xp017_yp026",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g2_xp017_yp026_r2_west_distributary_belt",
+    "child_version": 2,
+    "parent_id": "gn_nov_g1_xp017_yp026",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g2_xp017_yp026_r2_east_distributary_belt",
+    "child_version": 2,
+    "parent_id": "gn_nov_g1_xp017_yp026",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g2_xp017_yp026_r2_island_head_mosaic",
+    "child_version": 2,
+    "parent_id": "gn_nov_g1_xp017_yp026",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g2_xp017_yp026_r2_inner_floodplain",
+    "child_version": 2,
+    "parent_id": "gn_nov_g1_xp017_yp026",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g2_xp017_yp026_r2_shoal_bar_field",
+    "child_version": 2,
+    "parent_id": "gn_nov_g1_xp017_yp026",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g2_xp017_yp026_r2_backwater_wetlands",
+    "child_version": 2,
+    "parent_id": "gn_nov_g1_xp017_yp026",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g2_xp017_yp026_r2_dry_ridge_belt",
+    "child_version": 2,
+    "parent_id": "gn_nov_g1_xp017_yp026",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area",
+    "child_version": 2,
+    "parent_id": "gn_nov_g1_xp017_yp026",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area",
+    "child_version": 2,
+    "parent_id": "gn_nov_g1_xp017_yp026",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g2_xp017_yp026_r2_forest_hinterland",
+    "child_version": 2,
+    "parent_id": "gn_nov_g1_xp017_yp026",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g2_xp017_yp026_r2_small_stream_network",
+    "child_version": 2,
+    "parent_id": "gn_nov_g1_xp017_yp026",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g2_xp017_yp026_r2_river_sea_transition",
+    "child_version": 2,
+    "parent_id": "gn_nov_g1_xp017_yp026",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+    "child_version": 2,
+    "parent_id": "gn_nov_g2_xp017_yp026_r2_south_main_channel",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+    "child_version": 2,
+    "parent_id": "gn_nov_g2_xp017_yp026_r2_south_main_channel",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+    "child_version": 2,
+    "parent_id": "gn_nov_g2_xp017_yp026_r2_central_main_channel",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g3_xp017_yp026_r2_central_current_split",
+    "child_version": 2,
+    "parent_id": "gn_nov_g2_xp017_yp026_r2_central_main_channel",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+    "child_version": 2,
+    "parent_id": "gn_nov_g2_xp017_yp026_r2_north_main_channel",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+    "child_version": 2,
+    "parent_id": "gn_nov_g2_xp017_yp026_r2_north_main_channel",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g3_xp017_yp026_r2_west_side_channel",
+    "child_version": 2,
+    "parent_id": "gn_nov_g2_xp017_yp026_r2_west_distributary_belt",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+    "child_version": 2,
+    "parent_id": "gn_nov_g2_xp017_yp026_r2_west_distributary_belt",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g3_xp017_yp026_r2_east_side_channel",
+    "child_version": 2,
+    "parent_id": "gn_nov_g2_xp017_yp026_r2_east_distributary_belt",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+    "child_version": 2,
+    "parent_id": "gn_nov_g2_xp017_yp026_r2_east_distributary_belt",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g3_xp017_yp026_r2_large_island_head",
+    "child_version": 2,
+    "parent_id": "gn_nov_g2_xp017_yp026_r2_island_head_mosaic",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+    "child_version": 2,
+    "parent_id": "gn_nov_g2_xp017_yp026_r2_island_head_mosaic",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+    "child_version": 2,
+    "parent_id": "gn_nov_g2_xp017_yp026_r2_inner_floodplain",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+    "child_version": 2,
+    "parent_id": "gn_nov_g2_xp017_yp026_r2_inner_floodplain",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+    "child_version": 2,
+    "parent_id": "gn_nov_g2_xp017_yp026_r2_shoal_bar_field",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+    "child_version": 2,
+    "parent_id": "gn_nov_g2_xp017_yp026_r2_shoal_bar_field",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g3_xp017_yp026_r2_reed_backwater",
+    "child_version": 2,
+    "parent_id": "gn_nov_g2_xp017_yp026_r2_backwater_wetlands",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+    "child_version": 2,
+    "parent_id": "gn_nov_g2_xp017_yp026_r2_backwater_wetlands",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+    "child_version": 2,
+    "parent_id": "gn_nov_g2_xp017_yp026_r2_dry_ridge_belt",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+    "child_version": 2,
+    "parent_id": "gn_nov_g2_xp017_yp026_r2_dry_ridge_belt",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+    "child_version": 2,
+    "parent_id": "gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+    "child_version": 2,
+    "parent_id": "gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+    "child_version": 2,
+    "parent_id": "gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+    "child_version": 2,
+    "parent_id": "gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+    "child_version": 2,
+    "parent_id": "gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+    "child_version": 2,
+    "parent_id": "gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+    "child_version": 2,
+    "parent_id": "gn_nov_g2_xp017_yp026_r2_forest_hinterland",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+    "child_version": 2,
+    "parent_id": "gn_nov_g2_xp017_yp026_r2_forest_hinterland",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+    "child_version": 2,
+    "parent_id": "gn_nov_g2_xp017_yp026_r2_small_stream_network",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+    "child_version": 2,
+    "parent_id": "gn_nov_g2_xp017_yp026_r2_small_stream_network",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g3_xp017_yp026_r2_mixing_reach",
+    "child_version": 2,
+    "parent_id": "gn_nov_g2_xp017_yp026_r2_river_sea_transition",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+    "child_version": 2,
+    "parent_id": "gn_nov_g2_xp017_yp026_r2_river_sea_transition",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+    "child_version": 2,
+    "parent_id": "gn_nov_g3_xp017_yp026_r2_central_current_split",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+    "child_version": 2,
+    "parent_id": "gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+    "child_version": 2,
+    "parent_id": "gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+    "child_version": 2,
+    "parent_id": "gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+    "child_version": 2,
+    "parent_id": "gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+    "child_version": 2,
+    "parent_id": "gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+    "child_version": 2,
+    "parent_id": "gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+    "child_version": 2,
+    "parent_id": "gn_nov_g3_xp017_yp026_r2_east_side_channel",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+    "child_version": 2,
+    "parent_id": "gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+    "child_version": 2,
+    "parent_id": "gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+    "child_version": 2,
+    "parent_id": "gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+    "child_version": 2,
+    "parent_id": "gn_nov_g3_xp017_yp026_r2_large_island_head",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+    "child_version": 2,
+    "parent_id": "gn_nov_g3_xp017_yp026_r2_mixing_reach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+    "child_version": 2,
+    "parent_id": "gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+    "child_version": 2,
+    "parent_id": "gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+    "child_version": 2,
+    "parent_id": "gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+    "child_version": 2,
+    "parent_id": "gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+    "child_version": 2,
+    "parent_id": "gn_nov_g3_xp017_yp026_r2_reed_backwater",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+    "child_version": 2,
+    "parent_id": "gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+    "child_version": 2,
+    "parent_id": "gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+    "child_version": 2,
+    "parent_id": "gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+    "child_version": 2,
+    "parent_id": "gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+    "child_version": 2,
+    "parent_id": "gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+    "child_version": 2,
+    "parent_id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+    "child_version": 2,
+    "parent_id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+    "child_version": 2,
+    "parent_id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+    "child_version": 2,
+    "parent_id": "gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+    "child_version": 2,
+    "parent_id": "gn_nov_g3_xp017_yp026_r2_west_side_channel",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+    "child_version": 2,
+    "parent_id": "gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+    "child_version": 2,
+    "parent_id": "gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+    "child_version": 2,
+    "parent_id": "gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+    "child_version": 2,
+    "parent_id": "gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_fast_branch",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_islet_margin",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_rejoin_reach",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_slow_branch",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_split_point",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_upstream_nose",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_deep_thread",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_downstream_approach",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_lee_bank",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_observation_bank",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_shoal_margin",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_upstream_approach",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_downstream_tail",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_east_channel",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_high_bank",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_upstream_tip",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_west_channel",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_wet_hollow",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_downstream_cut",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_driftwood_mass",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_dry_cap",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_shallow_pool",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_upstream_edge",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_camp_candidate",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_downstream_exit",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_forest_edge",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_landing",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_ridge_crest",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_wet_hollow",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_north_descent",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_pine_stand",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_ridge_top",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_sandy_hollow",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_south_approach",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_view_gap",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_entrance",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_exit",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_mud_bank",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_narrow_reach",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_quiet_reach",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_seasonal_barrier",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_entrance",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_exit",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_mud_bank",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_narrow_reach",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_quiet_reach",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_seasonal_barrier",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_bog_edge",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_dry_mound",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_inlet",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_overflow",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_reed_margin",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_shallow_basin",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_forest_shelter",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_north_exit",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_ridge_path",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_south_approach",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_water_access",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_wet_gap",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_bank_path",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_bog_crossing",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_fallen_timber",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_headwater_fork",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_lower_reach",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_pool",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_downstream_tail",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_east_channel",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_high_bank",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_upstream_tip",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_west_channel",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_wet_hollow",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_current_shear",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_ice_edge",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_inner_approach",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_lee_margin",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_open_water",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_outer_route",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_deep_thread",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_downstream_approach",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_lee_bank",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_observation_bank",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_shoal_margin",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_upstream_approach",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_deep_thread",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_downstream_approach",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_lee_bank",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_observation_bank",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_shoal_margin",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_upstream_approach",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_deep_pool",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_dry_crossing",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_hidden_link",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_old_mouth",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_silted_reach",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_willow_bank",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_ice_break_zone",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_river_side",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_sea_exit",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_sheltered_inlet",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_shoal_margin",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_wind_fetch",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_bird_shallows",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_entrance",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_mud_bank",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_open_pool",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_reed_channel",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_winter_thin_ice",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_deep_thread",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_downstream_approach",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_lee_bank",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_observation_bank",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_shoal_margin",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_upstream_approach",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_flood_edge",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_high_platform",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_inland_path",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_landing_edge",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_water_approach",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_water_source",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_cross_current",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_deep_thread",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_emergency_bank",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_shallow_bars",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_warning_reach",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_winter_crack",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_deep_thread",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_downstream_approach",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_lee_bank",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_observation_bank",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_shoal_margin",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_upstream_approach",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_crossing",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_inland_path",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_lower_stream",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_main_river_approach",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_marsh_bank",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_mouth_bar",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_forest_path",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_household_cluster",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_landing_candidate",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_meeting_area",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_occupation_terrace",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_river_approach",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_water_access",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_work_storage",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_deep_forest",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_dry_patch",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_game_trail",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_resource_patch",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_river_edge",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_wet_forest",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_flood_edge",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_high_platform",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_inland_path",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_landing_edge",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_water_approach",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_water_source",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_dry_patch",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_entrance",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_hidden_outlet",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_muddy_shore",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_reed_edge",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_still_water",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_entrance",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_exit",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_mud_bank",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_narrow_reach",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_quiet_reach",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_seasonal_barrier",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_deep_forest",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_dry_patch",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_game_trail",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_resource_patch",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_river_edge",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_wet_forest",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_approach",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_burial_core",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_outer_edge",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_ritual_edge",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_wet_boundary",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_woodland_buffer",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_boat_drawing",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_dry_platform",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_flood_limit",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_landing_edge",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_path_to_settlement",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_river_approach",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_habitation_terrace",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_hinterland_path",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_household_zone",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_landing",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_river_approach",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_storage_zone",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_water_source",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  },
+  {
+    "child_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_work_zone",
+    "child_version": 2,
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+    "parent_version": 2,
+    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001"
+  }
+]

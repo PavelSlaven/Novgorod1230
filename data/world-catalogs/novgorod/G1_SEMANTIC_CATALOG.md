@@ -20,6 +20,14 @@
 
 Production import: `performed`; runtime visibility: `verified`; `versioned production activation cutover`: `performed`. Release `spatial-v3-production-v1` активировал только этот exact approved/pinned set. Historical P12 source approval сам по себе не разрешал activation и остаётся immutable; current status определяется отдельным production activation boundary. Раздел не меняет статус G1 `draft`, не открывает северную внешнюю границу и не разрешает использование записей вне approved manifest.
 
+`spatial-v3-production-v2` является полной immutable snapshot-revision поверх exact
+v1 manifest. До финального cutover она имеет статус
+`validated_candidate_not_active`. Новый receiving G5 в `yp025` и взаимная
+boundary topology присутствуют только как source-bound staging candidate:
+physical segments, cost/environment/recheck/risk/check/consequence policies
+не утверждены, поэтому `boundary_crossing` остаётся fail-closed. Локальная
+capability первой сцены от этой границы не зависит.
+
 ## Правило использования
 
 Перед созданием новой G1 агент обязан прочитать весь актуальный каталог и сравнить проектируемую ячейку со всеми ранее утверждёнными G1. После статуса `approved_local` или изменения действующей ревизии запись соответствующей G1 обновляется. Допустимо повторение естественных элементов общего ландшафта и продолжающихся коридоров, но не необоснованное копирование полной смысловой композиции, структуры G2–G4 и игрового назначения.
@@ -34,9 +42,11 @@ Production import: `performed`; runtime visibility: `verified`; `versioned produ
 - Размер: приблизительно `32 × 32 км`.
 - Исторический горизонт: около 1230 года.
 - Класс: плотная речная/маршрутная, смешанная, с историко-археологическими локальными зонами.
-- Актуальная содержательная ревизия: `content_revision_002`.
+- Актуальная содержательная ревизия: `content_revision_004_first_playable_candidate`
+  (кандидат; explicit supersession поверх exact r003 package).
 - Статус: `draft`.
-- Статическая подготовка: завершена; `content_revision_003_production_candidate` собрана и не активна.
+- Статическая подготовка: завершена; r004 собрана как self-contained immutable
+  package с exact pin r003, first-playable catalog и scenario.
 - Production import: `not_performed`; runtime visibility: `not_verified`.
 - Прежний локальный статус `approved_local` отменён append-only overlay `g1-work-queue-progress-004.json` до прохождения production import, post-import validation и runtime E2E.
 - Интеграция: южная граница согласована; северный выход к Белому морю ожидает отдельного внешнего перехода.
@@ -252,3 +262,39 @@ Production import: `performed`; runtime visibility: `verified`; `versioned produ
 - Заостровье не получает точного плана и численности.
 - Политический статус `tributary` не означает прямого управления.
 - Конкретные NPC, предметы, контейнеры и G5 заранее не создаются.
+
+---
+
+# gn_nov_g1_xp017_yp025
+
+## Паспорт first-playable integration
+
+- Координаты сетки: `x=17`, `y=25`.
+- Source parent: exact `gn_nov_g1_xp017_yp025_approved_local.zip` из
+  `novgorod_1230_research_revision_002`.
+- Первая формальная content revision:
+  `content_revision_001_first_playable_candidate`.
+- Revision является self-contained immutable package; inherited lookup и
+  cross-revision authoring references запрещены.
+- Новый host G4:
+  `g4v3__gn_nov_g3_xp017_yp025_lower_dvina_reach`.
+- Proposed canonical receiving G5:
+  `cg5v3__gn_nov_g4_xp017_yp025_navigation_corridor`,
+  `spatial_function_id=navigation_zone`, template
+  `stfv3__g5_water_navigation_v1@1`.
+- Достоверность receiving scene:
+  `geometry_claim=topological_only`,
+  `evidence_status=comparative_reconstruction`; берег, высадка, поселение,
+  точная линия русла и координаты не утверждаются.
+- Boundary pair:
+  `BND_G1_001_R2_SOUTH_DVINA` ↔ `BND_G1_002_NORTH_DVINA`,
+  corridor `COR_DVINA_WHITE_SEA`.
+- Production import и runtime visibility: не выполнялись до финального v2
+  cutover.
+- Remaining east-boundary gap сохраняется и не входит в first-playable scope.
+
+Receiving topology, reciprocal endpoint roles и proposed legacy supersession
+хранятся в staging manifest. До source-bound approval четырёх directed
+physical segments и полного policy-набора compiler не выпускает для них
+production route records, importer их не принимает, а runtime не предлагает
+переход.

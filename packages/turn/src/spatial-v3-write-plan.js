@@ -4,6 +4,17 @@ import {
   validateSpatialV3Contract
 } from '@rus/contracts/spatial-v3/registry';
 
+import {
+  ALLOWED,
+  CHILD_TABLES,
+  FIRST_ENTRY_BINDING_FIELDS,
+  FIRST_ENTRY_PHYSICAL_RECHECK_FIELDS,
+  PRESENTATION_TABLES,
+  TABLE_MODES,
+  childParentIdentities,
+  validIdentity
+} from './spatial-v3-write-plan-policy.js';
+
 const clone = (value) => structuredClone(value);
 const stable = (value) => typeof value === 'string' && value.trim().length > 0;
 const sha256Hex = (value) => typeof value === 'string' && /^[0-9a-f]{64}$/u.test(value);
@@ -11,176 +22,6 @@ const pin = (party_id) => ({ dependency_role: 'planning_context_dependency', ent
 const fail = (code, party_id, diagnostics = {}) => Object.freeze({ ok: false, error: createSpatialV3TypedError(code, { subject_ref: { entity_kind: 'party_change_set', entity_id: party_id || 'unknown' }, dependency_pins: { pins: [pin(party_id)], canonical_digest: computeSpatialV3CanonicalDigest([pin(party_id)]).replace('sha256:', '') }, diagnostics }) });
 const identity = (write) => `${write.target_schema ?? 'party_runtime'}.${write.target_table}:${write.id}`;
 const canonicalWrites = (writes) => [...writes].sort((a, b) => identity(a).localeCompare(identity(b)));
-const PRESENTATION_TABLES = new Set(['party_visible_packages', 'party_narration_jobs']);
-const FIRST_ENTRY_BINDING_FIELDS = Object.freeze([
-  'baseline_disposition',
-  'g4_id',
-  'preparation_snapshot_id',
-  'preparation_member_ordinal',
-  'preparation_snapshot_digest',
-  'preparation_member_digest',
-  'route_plan_id',
-  'route_plan_digest',
-  'route_plan_execution_id',
-  'preparation_claim_id',
-  'scene_baseline_id',
-  'g5_site_id',
-  'g6_instance_id',
-  'position_id'
-]);
-const FIRST_ENTRY_PHYSICAL_RECHECK_FIELDS = Object.freeze([
-  'kind',
-  'digest',
-  'materialization_scope_key',
-  ...FIRST_ENTRY_BINDING_FIELDS
-]);
-const TABLE_MODES = Object.freeze({
-  party_v3_change_sets: ['appends'],
-  party_route_plan_execution_events: ['appends'],
-  party_traversal_interval_results: ['appends'],
-  party_timed_activity_attempts: ['appends'],
-  party_activity_resource_bindings: ['appends'],
-  party_temporal_event_subjects: ['appends'],
-  party_temporal_event_dependencies: ['appends'],
-  party_npc_runtime_transitions: ['appends'],
-  party_perception_records: ['appends'],
-  party_perception_witnesses: ['appends'],
-  party_perception_replay_evidence: ['appends'],
-  party_npc_reaction_option_proposals: ['appends'],
-  party_npc_decision_traces: ['appends'],
-  party_npc_reaction_consequences: ['appends'],
-  party_npc_knowledge_merge_results: ['appends'],
-  party_body_temporal_history: ['appends'],
-  party_visible_packages: ['appends'],
-  party_route_plan_executions: ['updates'],
-  party_timed_activity_executions: ['inserts', 'updates'],
-  traveller_travel_states: ['updates'],
-  party_journey_locations: ['updates'],
-  party_clocks: ['updates'],
-  party_carrier_attachments: ['updates'],
-  party_npc_spatial_schedules: ['updates'],
-  entity_placements: ['updates'],
-  expansion_frontiers: ['updates'],
-  expansion_capacity_reservations: ['updates'],
-  party_activity_participant_bindings: ['inserts', 'updates'],
-  party_temporal_events: ['inserts', 'updates'],
-  party_remote_aggregate_states: ['inserts', 'updates'],
-  party_propagation_processes: ['inserts', 'updates'],
-  party_npc_knowledge_merge_states: ['updates'],
-  party_npc_knowledge: ['inserts'],
-  party_route_plans: ['inserts'],
-  party_route_plan_steps: ['inserts'],
-  preparation_claims: ['inserts', 'updates'],
-  party_g5_sites: ['inserts'],
-  party_scene_baselines: ['inserts'],
-  party_g6_instances: ['inserts'],
-  scene_position_nodes: ['inserts'],
-  party_cohorts: ['inserts'],
-  party_cohort_memberships: ['inserts'],
-  party_narration_jobs: ['inserts']
-});
-const ALLOWED = new Set(Object.keys(TABLE_MODES));
-const CHILD_TABLES = new Set([
-  'party_route_plan_execution_events',
-  'party_traversal_interval_results',
-  'party_timed_activity_attempts',
-  'party_timed_activity_executions',
-  'party_route_plan_steps',
-  'preparation_claims',
-  'party_activity_participant_bindings',
-  'party_activity_resource_bindings',
-  'party_temporal_event_subjects',
-  'party_temporal_event_dependencies',
-  'party_perception_witnesses'
-]);
-const validIdentity = (write) => write?.target_table === 'entity_placements'
-  ? write.id === `${write.record?.entity_kind}:${write.record?.entity_id}`
-  : write?.target_table === 'party_clocks' ? write.record?.party_id === write.id
-    : write?.target_table === 'party_route_plan_execution_events' ? write.id === `${write.record?.execution_id}:${write.record?.event_ordinal}`
-      : write?.target_table === 'party_timed_activity_attempts' ? write.id === `${write.record?.activity_execution_id}:${write.record?.attempt_ordinal}`
-        : write?.target_table === 'party_route_plan_steps' ? write.id === `${write.record?.route_plan_id}:${write.record?.ordinal}`
-          : write?.target_table === 'party_visible_packages' ? write.record?.package_id === write.id
-        : write?.target_table === 'party_narration_jobs' ? write.record?.job_id === write.id
-          : write?.target_table === 'party_activity_participant_bindings' ? write.id === `${write.record?.activity_execution_id}:${write.record?.participant_kind}:${write.record?.participant_id}`
-            : write?.target_table === 'party_activity_resource_bindings' ? write.id === `${write.record?.activity_execution_id}:${write.record?.resource_kind}:${write.record?.resource_id}:${write.record?.binding_kind}:${write.record?.change_set_id}`
-              : write?.target_table === 'party_temporal_events' ? write.record?.event_id === write.id
-                : write?.target_table === 'party_temporal_event_subjects' ? write.id === `${write.record?.event_id}:${write.record?.subject_kind}:${write.record?.subject_id}:${write.record?.subject_role}`
-                  : write?.target_table === 'party_temporal_event_dependencies' ? write.id === `${write.record?.event_id}:${write.record?.depends_on_event_id}`
-                    : write?.target_table === 'party_npc_runtime_transitions' ? write.record?.transition_id === write.id
-                      : write?.target_table === 'party_perception_records' ? write.record?.perception_id === write.id
-                        : write?.target_table === 'party_perception_witnesses' ? write.id === `${write.record?.perception_id}:${write.record?.witness_kind}:${write.record?.witness_id}`
-                          : write?.target_table === 'party_perception_replay_evidence' ? write.record?.perception_id === write.id
-                            : write?.target_table === 'party_npc_reaction_option_proposals' ? write.record?.request_id === write.id
-                              : write?.target_table === 'party_npc_decision_traces' ? write.record?.request_id === write.id
-                            : write?.target_table === 'party_npc_reaction_consequences' ? write.record?.request_id === write.id
-                              : write?.target_table === 'party_npc_knowledge_merge_results' ? write.record?.proposal_id === write.id
-                                : write?.target_table === 'party_npc_knowledge_merge_states' ? write.id === `${write.record?.party_id}:${write.record?.npc_id}`
-                                  : write?.target_table === 'party_npc_knowledge' ? write.id === `${write.record?.npc_id}:${write.record?.knowledge_ref_kind}:${write.record?.fact_id}`
-                            : write?.target_table === 'party_body_temporal_history' ? write.record?.history_id === write.id
-                              : write?.target_table === 'party_remote_aggregate_states' ? write.record?.aggregate_id === write.id
-                                : write?.target_table === 'party_propagation_processes' ? write.record?.process_id === write.id
-                                  : write?.record?.id === write?.id;
-function childParentIdentities(write) {
-  switch (write?.target_table) {
-    case 'party_activity_participant_bindings':
-    case 'party_activity_resource_bindings':
-    case 'party_timed_activity_attempts':
-      return [`party_runtime.party_timed_activity_executions:${write.record?.activity_execution_id}`];
-    case 'party_timed_activity_executions':
-    case 'party_route_plan_execution_events':
-    case 'party_traversal_interval_results':
-      return [`party_runtime.party_route_plan_executions:${write.record?.route_plan_execution_id ?? write.record?.execution_id}`];
-    case 'party_route_plan_steps':
-      return [`party_runtime.party_route_plans:${write.record?.route_plan_id}`];
-    case 'party_g6_instances':
-      return [`party_runtime.party_scene_baselines:${write.record?.scene_baseline_id}`];
-    case 'scene_position_nodes':
-      return [`party_runtime.party_g6_instances:${write.record?.g6_instance_id}`];
-    case 'party_temporal_event_subjects':
-    case 'party_temporal_event_dependencies':
-      return [`party_runtime.party_temporal_events:${write.record?.event_id}`];
-    case 'party_npc_runtime_transitions':
-    case 'party_perception_records':
-      return write.record?.event_id ? [`party_runtime.party_temporal_events:${write.record.event_id}`] : [];
-    case 'party_perception_witnesses':
-      return [`party_runtime.party_perception_records:${write.record?.perception_id}`];
-    case 'party_perception_replay_evidence':
-      return [
-        `party_runtime.party_perception_records:${write.record?.perception_id}`,
-        `party_runtime.party_v3_change_sets:${write.record?.change_set_id}`
-      ];
-    case 'party_npc_reaction_option_proposals':
-      return [
-        `party_runtime.party_perception_records:${write.record?.source_perception_id}`,
-        `party_runtime.party_v3_change_sets:${write.record?.change_set_id}`
-      ];
-    case 'party_npc_reaction_consequences':
-      return [
-        `party_runtime.party_perception_records:${write.record?.perception_id}`,
-        `party_runtime.party_npc_decision_traces:${write.record?.request_id}`,
-        `party_runtime.party_v3_change_sets:${write.record?.change_set_id}`
-      ];
-    case 'party_npc_knowledge_merge_results':
-      return [
-        `party_runtime.party_perception_records:${write.record?.source_perception_id}`,
-        `party_runtime.party_v3_change_sets:${write.record?.change_set_id}`
-      ];
-    case 'party_npc_knowledge_merge_states':
-      return [`party_runtime.party_v3_change_sets:${write.record?.updated_change_set_id}`];
-    case 'party_npc_knowledge':
-      return [
-        `party_runtime.party_perception_records:${write.record?.source_perception_id}`,
-        `party_runtime.party_npc_knowledge_merge_results:${write.record?.proposal_id}`,
-        `party_runtime.party_v3_change_sets:${write.record?.updated_change_set_id}`
-      ];
-    case 'party_visible_packages':
-      return [`party_runtime.party_v3_change_sets:${write.record?.change_set_id}`];
-    case 'party_narration_jobs':
-      return [`party_runtime.party_visible_packages:${write.record?.package_id}`];
-    default:
-      return [];
-  }
-}
 function freeze(value) { if (value && typeof value === 'object' && !Object.isFrozen(value)) { for (const child of Object.values(value)) freeze(child); Object.freeze(value); } return value; }
 function validFirstEntryPhysicalRecheck(check, physicalKeys, partyId, g4Keys) {
   if (!check
@@ -264,7 +105,7 @@ export async function buildCombinedWritePlan(input = {}, { verifyApproval } = {}
     approved_write_sets
   }));
   if (!verified?.ok) return fail('generated_schema_mismatch', party_id, { reason: 'approved write set verifier rejected input' });
-  const sets = { inserts: [], updates: [], appends: [] };
+  const sets = { inserts: [], updates: [], appends: [], deletes: [] };
   for (const set of approved_write_sets) {
     for (const mode of Object.keys(sets)) {
       for (const write of set?.[mode] ?? []) {
@@ -303,18 +144,26 @@ export async function buildCombinedWritePlan(input = {}, { verifyApproval } = {}
     physicalKeys.add(identity(packageWrite));
     physicalKeys.add(identity(narrationJobWrite));
   }
-  if (Object.entries(sets).some(([mode, writes]) => writes.some((write) => !ALLOWED.has(write?.target_table)
+  const invalidWrite = Object.entries(sets).flatMap(([mode, writes]) =>
+    writes.map((write) => ({ mode, write }))).find(({ mode, write }) =>
+    !ALLOWED.has(write?.target_table)
     || !TABLE_MODES[write.target_table].includes(mode)
     || write.target_schema && write.target_schema !== 'party_runtime'
     || !stable(write?.id)
     || !write.record
     || !validIdentity(write)
-    || (CHILD_TABLES.has(write.target_table) ? write.record.party_id != null : write.record.party_id !== party_id)))) {
-    return fail('generated_schema_mismatch', party_id, { reason: 'write record is not a known party-owned shape or operation mode' });
+    || (CHILD_TABLES.has(write.target_table)
+      ? write.record.party_id != null
+      : write.record.party_id !== party_id));
+  if (invalidWrite) {
+    return fail('generated_schema_mismatch', party_id, {
+      reason:
+        `write record is not a known party-owned shape or operation mode: ${invalidWrite.mode}:${invalidWrite.write?.target_table}:${invalidWrite.write?.id}`
+    });
   }
   for (const mode of Object.keys(sets)) sets[mode] = canonicalWrites(sets[mode]);
   const identities = Object.values(sets).flat().map(identity);
-  if (new Set(identities).size !== identities.length) return fail('state_version_conflict', party_id, { reason: 'insert/update/append identities must be disjoint' });
+  if (new Set(identities).size !== identities.length) return fail('state_version_conflict', party_id, { reason: 'insert/update/append/delete identities must be disjoint' });
   const identitySet = new Set(identities);
   if (Object.values(sets).flat().some((write) =>
     childParentIdentities(write).some((parent) => !identitySet.has(parent)))) {
@@ -371,10 +220,10 @@ export async function buildCombinedWritePlan(input = {}, { verifyApproval } = {}
       }
     }
   }
-  const updateKeys = new Set(sets.updates.map(identity));
-  if (expected_state_versions.length !== sets.updates.length || expected_state_versions.some((expected) => !stable(expected?.target_table) || !stable(expected?.id) || !Number.isInteger(expected.state_version) || expected.state_version < 0 || !updateKeys.has(`${expected.target_schema ?? 'party_runtime'}.${expected.target_table}:${expected.id}`))) return fail('state_version_conflict', party_id, { reason: 'every mutable update requires one expected version' });
-  if (write_plan_kind === 'blocked_audit' && (sets.inserts.length || sets.updates.length || sets.appends.some((write) => !['party_v3_change_sets', 'party_command_idempotency', 'party_route_plan_execution_events'].includes(write.target_table)))) return fail('generated_schema_mismatch', party_id, { reason: 'blocked audit may append audit rows only' });
-  const write_set = { inserts: sets.inserts, updates: sets.updates, appends: sets.appends };
+  const mutableKeys = new Set([...sets.updates, ...sets.deletes].map(identity));
+  if (expected_state_versions.length !== mutableKeys.size || expected_state_versions.some((expected) => !stable(expected?.target_table) || !stable(expected?.id) || !Number.isInteger(expected.state_version) || expected.state_version < 0 || !mutableKeys.has(`${expected.target_schema ?? 'party_runtime'}.${expected.target_table}:${expected.id}`))) return fail('state_version_conflict', party_id, { reason: 'every mutable update or delete requires one expected version' });
+  if (write_plan_kind === 'blocked_audit' && (sets.inserts.length || sets.updates.length || sets.deletes.length || sets.appends.some((write) => !['party_v3_change_sets', 'party_command_idempotency', 'party_route_plan_execution_events'].includes(write.target_table)))) return fail('generated_schema_mismatch', party_id, { reason: 'blocked audit may append audit rows only' });
+  const write_set = { inserts: sets.inserts, updates: sets.updates, appends: sets.appends, deletes: sets.deletes };
   const write_set_digest = computeSpatialV3CanonicalDigest(write_set);
   const plan = {
     schema: 'spatial_v3.combined_write_plan.v2',
@@ -389,6 +238,17 @@ export async function buildCombinedWritePlan(input = {}, { verifyApproval } = {}
     idempotency_record_id: idempotency.id,
     idempotency_key: idempotency.key,
     parent_idempotency_key: idempotency.parent_key ?? null,
+    semantic_command_snapshot:
+      idempotency.semantic_command_snapshot == null
+        ? null
+        : clone(idempotency.semantic_command_snapshot),
+    semantic_command_digest:
+      idempotency.semantic_command_digest ?? null,
+    semantic_dependency_pins:
+      idempotency.semantic_dependency_pins == null
+        ? null
+        : clone(idempotency.semantic_dependency_pins),
+    request_id: idempotency.request_id ?? null,
     change_set_id: change_set.id,
     visible_package_envelope: visible_package_envelope == null ? null : clone(visible_package_envelope),
     owner_keys: [...lock_context.owner_keys].sort(),

@@ -265,13 +265,19 @@ test('authorized party cleanup deletes restrict children then exact root in one 
   assert.equal(statements[0], 'BEGIN');
   assert.match(
     statements.find((sql) =>
-      /DELETE FROM party_runtime\.spatial_v3_migration_coverage/u.test(sql)),
+      /DELETE FROM party_runtime\."spatial_v3_migration_coverage/u.test(sql)),
     /DELETE/u
   );
   assert.ok(
     statements.findIndex((sql) => /party_catalog_pins/u.test(sql))
       < statements.findIndex((sql) =>
         /DELETE FROM party_runtime\.parties/u.test(sql))
+  );
+  assert.ok(
+    statements.findIndex((sql) =>
+      /DELETE FROM party_runtime\."party_containers"/u.test(sql))
+      < statements.findIndex((sql) =>
+        /DELETE FROM party_runtime\."party_player_characters"/u.test(sql))
   );
   assert.equal(statements.at(-1), 'COMMIT');
   assert.equal(

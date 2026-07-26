@@ -24,6 +24,9 @@ import {
   runWorldRuntimeCatalogMigration
 } from '../tools/runtime-catalog-activation/src/forward-migrations.js';
 import {
+  evaluateFirstPlayableProductionPreflight
+} from '../tools/runtime-catalog-activation/src/production-preflight.js';
+import {
   buildLowerDvinaV2ImportSql
 } from '../tools/spatial-v3/lower-dvina-v2-importer.mjs';
 
@@ -265,22 +268,12 @@ async function readPreflight({
     databaseInventory(worldPool),
     databaseInventory(partyPool)
   ]);
-  const identityMatches =
-    world.database === expectedWorldDatabase
-    && party.database === expectedPartyDatabase;
-  const fresh =
-    world.user_table_count === 0
-    && party.user_table_count === 0;
-  return {
-    ready:
-      identityMatches
-      && fresh
-      && /^pr17_[a-z0-9_]+$/u.test(world.database),
-    fresh,
-    identity_matches: identityMatches,
+  return evaluateFirstPlayableProductionPreflight({
     world,
-    party
-  };
+    party,
+    expectedWorldDatabase,
+    expectedPartyDatabase
+  });
 }
 
 async function databaseInventory(pool) {

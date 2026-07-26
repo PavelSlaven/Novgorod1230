@@ -2,28 +2,28 @@
 
 ## Статус
 
-- Этап: production cutover implementation; operator apply выполняется только
-  после merge exact-кода в актуальный `origin/main`.
-- Capability `local_scene`: уже активна в `spatial-v3-production-v2`.
-- Capability `boundary_crossing`: интегрируется из утверждённого authoring package v1.
-- Successor: `spatial-v3-production-v3`,
+- Этап: production activation committed; runtime composition cutover и smoke.
+- Capability `local_scene`: ready.
+- Capability `boundary_crossing`: ready for runtime acceptance.
+- Active release: `spatial-v3-production-v3`,
   `novgorod_spatial_v3_production_v3_candidate_001`.
 - Catalog digest:
   `1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e`.
 - Manifest SHA-256:
   `593ccb341084f7433ec4ae9d7d0b2ea8b1dea07833636ef385550ba5a295ecea`.
-- Пользователь подтвердил, что старых партий нет и exact обнаруженная
-  v2-pinned party может быть удалена.
-- Exact in-place cutover preflight: `ready`; production DB текущим worktree
-  пока не изменялась.
+- Пользователь подтвердил полный reset единственной party-БД.
+- `lower_dvina_party_production_v3` пересоздана штатной цепочкой 001–011;
+  party count после reset и до smoke равен нулю.
+- Production activation event:
+  `runtime_catalog_activation_823f24b68cee4434a29404f86d98df42`.
 
 ## Рабочая среда
 
 - Repository: `PavelSlaven/Novgorod1230`.
 - Checkout: `C:\tmp\Novgorod-lower-dvina-production-activation-v3`.
-- Branch: `codex/lower-dvina-production-activation-v3`.
-- Exact task base: `8c4d9e5acb1017c3f6fb0dabecab74fccdf33b3e`.
-- `origin/main`: `8c4d9e5acb1017c3f6fb0dabecab74fccdf33b3e`.
+- Branch: `codex/lower-dvina-v3-runtime-activation`.
+- Exact production activation source:
+  `855e10a1ab45c455a7ec594988fbf95d6d187a6c`.
 - Node.js: `v24.16.0`.
 - npm: `11.13.0`.
 - Python: `3.13.3`.
@@ -235,9 +235,9 @@ npm run lower-dvina:v3:production-cutover -- preflight <exact operator args>
   failure-injection E2E, tamper checks и fresh pre-delete recheck — `PASS`.
 - Clean-clone exact-commit acceptance: `npm ci` и полный `npm test` PASS.
 
-## Оставшийся operator gate
+## Production activation result
 
-Production read-only preflight 2026-07-26:
+Исходная v2 party:
 
 ```text
 party_count = 1
@@ -249,10 +249,32 @@ active catalog event =
   runtime_catalog_activation_6ee035c89a5d9c4f97adf3c76a2e7e1d
 ```
 
-Пользователь явно признал эту exact party disposable. Новый preflight
-подтвердил `ready=true`: DB identities, operator principals, predecessor
-event, v2 world pins, party set и отсутствие inflight-команд совпадают.
+Пользователь подтвердил, что уникальных данных нет, и разрешил полный reset
+`lower_dvina_party_production_v3`. БД пересоздана без backup; старая party
+невосстановима. Применены:
 
-До merge activation-кода production mutation запрещена. После merge и
-успешного CI исполнитель повторяет exact preflight на новом SHA, подтверждает
-его request digest, выполняет операторский apply и production smoke/restart.
+```text
+party migration count = 11
+party migration chain digest =
+  b7a9eb899b5d302dc27bff6797f1bb6abf31b245ace3e7c285f94543e3039d45
+runtime catalog migration =
+  party_runtime_catalog_pins_v2
+party count before smoke = 0
+```
+
+Committed production readback:
+
+```text
+release_status = active
+production_activation = true
+runtime_selectable_in_canonical_production = true
+activation_event_id =
+  runtime_catalog_activation_823f24b68cee4434a29404f86d98df42
+world_revision_id =
+  novgorod_spatial_v3_production_v3_candidate_001
+world_catalog_digest =
+  1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e
+```
+
+Sanitized machine-readable evidence:
+`evidence/production-activation-v3.json`.

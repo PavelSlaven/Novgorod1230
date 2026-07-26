@@ -150,7 +150,7 @@ function fixture() {
   };
 }
 
-test('v2 release remains a candidate until exact activation readback', () => {
+test('v3 release requires exact committed activation readback', () => {
   assert.equal(
     SPATIAL_V3_PRODUCTION_RELEASE.release_status,
     'validated_candidate_not_active'
@@ -158,6 +158,10 @@ test('v2 release remains a candidate until exact activation readback', () => {
   assert.equal(
     SPATIAL_V3_PRODUCTION_RELEASE.production_activation,
     false
+  );
+  assert.equal(
+    SPATIAL_V3_PRODUCTION_RELEASE.boundary_crossing_capability,
+    'ready_for_runtime_acceptance'
   );
   assert.throws(
     () => deriveActivatedReleaseFromReadback(

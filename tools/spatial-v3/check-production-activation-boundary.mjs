@@ -9,7 +9,7 @@ const schemaPath = 'data/contracts/spatial-v3/production-activation-boundary.sch
 const evidencePath = 'docs/migration/spatial-v3/release-evidence.v1.json';
 const historicalFreezePath = 'docs/migration/spatial-v3/normative-freeze.json';
 const worldCatalogManifestPath =
-  'data/world-catalogs/novgorod/spatial-v3/manifest.json';
+  'data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v3/manifest.json';
 const expectedCutover = 'versioned production activation cutover';
 const errors = [];
 
@@ -45,19 +45,19 @@ check(
 );
 check(boundary.activation_operation === expectedCutover, 'cutover term mismatch');
 check(boundary.activation_status === 'completed', 'cutover completion status mismatch');
-check(boundary.release?.release_id === 'spatial-v3-production-v1', 'release id mismatch');
+check(boundary.release?.release_id === 'spatial-v3-production-v3', 'release id mismatch');
 check(boundary.release?.composition_id === 'builtin:production-spatial-v3', 'composition id mismatch');
-check(boundary.release?.contract_version === '4.4.0-target.1', 'contract version mismatch');
+check(boundary.release?.contract_version === '4.5.0-first-playable.1', 'contract version mismatch');
 check(boundary.release?.temporal_contract_id === 'temporal-world-v1.1', 'temporal contract id mismatch');
-check(boundary.release?.party_schema_version === 'party_runtime_v3_target', 'party schema version mismatch');
+check(boundary.release?.party_schema_version === 'party_runtime_v3_first_playable', 'party schema version mismatch');
 check(
   boundary.release?.world_revision_id
-    === 'novgorod_spatial_v3_target_contract_approval_001',
+    === 'novgorod_spatial_v3_production_v3_candidate_001',
   'world revision pin mismatch'
 );
 check(
   boundary.release?.world_catalog_digest
-    === '0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e',
+    === '1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e',
   'world catalog digest pin mismatch'
 );
 check(
@@ -83,26 +83,26 @@ check(
 );
 check(
   boundary.release?.party_runtime_catalog_migration_id
-    === 'party_runtime_catalog_pins_v1',
+    === 'party_runtime_catalog_pins_v2',
   'party runtime-catalog migration id mismatch'
 );
 check(
   boundary.release?.party_runtime_catalog_migration_digest
-    === 'f251623759b60799ea75b17b7234833a092b97a5443b8b831643c0544ef25a31',
+    === '9f574d2782cdbaeeba190d8237fe38c26bddd65775f060749079d3d0163ef32d',
   'party runtime-catalog migration digest mismatch'
 );
 check(
   boundary.release?.party_runtime_catalog_target_fingerprint
-    === '329a84c3c5ccd76e4a84b67454bcbd6e6c176fafbd285e77d44824dddcd8d2dd',
+    === '47cb21b39db8be7336d10533ed319fe314f5bda65d850f1297c8321de6c9d165',
   'party runtime-catalog target fingerprint mismatch'
 );
-check(boundary.release?.target_migration_count === 10, 'target migration count mismatch');
+check(boundary.release?.target_migration_count === 11, 'target migration count mismatch');
 check(
   boundary.release?.target_migration_chain_digest
-    === 'a71b95540c6422ccee5b3d598cb6b0cefe108de3bf41216dea96a99068a5a370',
+    === 'b7a9eb899b5d302dc27bff6797f1bb6abf31b245ace3e7c285f94543e3039d45',
   'target migration chain digest mismatch'
 );
-check(boundary.release?.rollback_source_release_id === 'production-v2', 'rollback source identity mismatch');
+check(boundary.release?.rollback_source_release_id === 'spatial-v3-production-v2', 'rollback source identity mismatch');
 check(boundary.release?.rollback_runtime_selectable === false, 'rollback source must not be runtime selectable');
 check(
   serverConfig.includes(
@@ -177,16 +177,16 @@ check(
 );
 check(
   targetMigrations.includes(
-    "'010_party_runtime_pr8_reaction_options.sql'"
+    "'011_party_runtime_first_playable.sql'"
   ),
-  'production v3 migration chain does not reach migration 010'
+  'production v3 migration chain does not reach migration 011'
 );
 check(
   productionRoot.includes('assertSpatialV3ProductionReadiness'),
   'production root lacks migrated-party readiness gate'
 );
 for (const fragment of [
-  'novgorod_spatial_v3_target_contract_approval_001',
+  'novgorod_spatial_v3_production_v3_candidate_001',
   sha256(worldCatalogManifestBytes),
   boundary.release.world_catalog_digest,
   'temporal-world-v1.1',

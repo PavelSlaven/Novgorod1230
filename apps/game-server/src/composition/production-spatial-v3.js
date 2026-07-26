@@ -22,8 +22,7 @@ import {
 import { serverError } from '../errors.js';
 import { deriveActivatedReleaseFromReadback } from './production-v2-activation-state.js';
 export { deriveActivatedReleaseFromReadback };
-
-export const SPATIAL_V3_PRODUCTION_RELEASE_ID = 'spatial-v3-production-v2';
+export const SPATIAL_V3_PRODUCTION_RELEASE_ID = 'spatial-v3-production-v3';
 export const SPATIAL_V3_PRODUCTION_RELEASE = Object.freeze({
   release_id: SPATIAL_V3_PRODUCTION_RELEASE_ID,
   composition_id: 'builtin:production-spatial-v3',
@@ -31,11 +30,11 @@ export const SPATIAL_V3_PRODUCTION_RELEASE = Object.freeze({
   temporal_contract_id: 'temporal-world-v1.1',
   party_schema_version: 'party_runtime_v3_first_playable',
   world_revision_id:
-    'novgorod_spatial_v3_production_v2_candidate_001',
+    'novgorod_spatial_v3_production_v3_candidate_001',
   world_catalog_digest:
-    'fd75d9cb1ad0e949ff3b0bb5ef044e510f340a967f43867e9c4d41c16ba9f255',
+    '1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e',
   world_catalog_manifest_sha256:
-    '3ed17f7d540f5707a8b72392d7e4d5736be947048673ff5135d5c07aacbb951a',
+    '593ccb341084f7433ec4ae9d7d0b2ea8b1dea07833636ef385550ba5a295ecea',
   dependency_pin_mode: 'exact_only',
   runtime_catalog_pin_schema: 'rus.runtime_catalog_pin.v2',
   runtime_catalog_scope: 'item_container_materialization_v2',
@@ -54,16 +53,17 @@ export const SPATIAL_V3_PRODUCTION_RELEASE = Object.freeze({
     'b7a9eb899b5d302dc27bff6797f1bb6abf31b245ace3e7c285f94543e3039d45',
   authoritative_reads: 'spatial_v3_only',
   authoritative_writes: 'spatial_v3_only',
-  rollback_source_release_id: 'spatial-v3-production-v1',
+  rollback_source_release_id: 'spatial-v3-production-v2',
   rollback_runtime_selectable: false,
   parent_release_exact_pins: Object.freeze({
     world_revision_id:
-      'novgorod_spatial_v3_target_contract_approval_001',
+      'novgorod_spatial_v3_production_v2_candidate_001',
     world_catalog_digest:
-      '0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e',
+      'fd75d9cb1ad0e949ff3b0bb5ef044e510f340a967f43867e9c4d41c16ba9f255',
     world_catalog_manifest_sha256:
-      '4056b93acc2a3c7ed4c76c18182d74b7ef5b9f5fc9c31f206670f11a6283192e'
+      '3ed17f7d540f5707a8b72392d7e4d5736be947048673ff5135d5c07aacbb951a'
   }),
+  boundary_crossing_capability: 'ready_for_runtime_acceptance',
   release_status: 'validated_candidate_not_active',
   production_activation: false,
   runtime_selectable_in_canonical_production: false,

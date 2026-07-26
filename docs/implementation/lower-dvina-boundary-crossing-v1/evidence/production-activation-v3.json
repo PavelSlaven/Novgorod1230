@@ -1,0 +1,41 @@
+{
+  "schema": "rus.lower_dvina.production_activation_evidence.v1",
+  "recorded_at": "2026-07-26",
+  "repository": "PavelSlaven/Novgorod1230",
+  "activation_source_commit": "855e10a1ab45c455a7ec594988fbf95d6d187a6c",
+  "authorization": {
+    "boundary_authoring": "APPROVE_LOWER_DVINA_BOUNDARY_AUTHORING_V1",
+    "party_database_reset": true,
+    "party_database": "lower_dvina_party_production_v3",
+    "backup_created": false
+  },
+  "party_database_reset": {
+    "previous_party_id": "party:b5660e1f406bb9f83379173f",
+    "previous_world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001",
+    "migration_count": 11,
+    "migration_chain_digest": "b7a9eb899b5d302dc27bff6797f1bb6abf31b245ace3e7c285f94543e3039d45",
+    "runtime_catalog_migration_id": "party_runtime_catalog_pins_v2",
+    "runtime_catalog_migration_digest": "9f574d2782cdbaeeba190d8237fe38c26bddd65775f060749079d3d0163ef32d",
+    "runtime_catalog_target_fingerprint": "47cb21b39db8be7336d10533ed319fe314f5bda65d850f1297c8321de6c9d165",
+    "party_count_before_smoke": 0
+  },
+  "production_activation": {
+    "request_digest": "88dc5d9970b5275a375f7564dceeb82c74e5412fdc58645df20f20ff402d2749",
+    "event_id": "runtime_catalog_activation_823f24b68cee4434a29404f86d98df42",
+    "release_id": "spatial-v3-production-v3",
+    "world_revision_id": "novgorod_spatial_v3_production_v3_candidate_001",
+    "world_catalog_digest": "1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e",
+    "world_catalog_manifest_sha256": "593ccb341084f7433ec4ae9d7d0b2ea8b1dea07833636ef385550ba5a295ecea",
+    "compatible_world_pin_manifest_digest": "cf01cce4a2e8f78756c40635ddd468027d1255b2bfdc911d56844284cd65c519",
+    "release_status": "active",
+    "production_activation": true,
+    "runtime_selectable_in_canonical_production": true
+  },
+  "production_databases": {
+    "world_database": "pr17_lower_dvina_world_production_v2",
+    "world_principal": "world_operator",
+    "party_database": "lower_dvina_party_production_v3",
+    "party_principal": "party_operator"
+  },
+  "secrets_included": false
+}

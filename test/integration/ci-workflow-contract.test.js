@@ -63,7 +63,7 @@ test('world_base PostgreSQL gate tracks the 199-table schema and grants every ta
   const workflow = await readFile(resolve(process.cwd(), '.github/workflows/test.yml'), 'utf8');
 
   assert.doesNotMatch(workflow, /test "\$table_count" -eq 62/u);
-  assert.match(workflow, /test "\$table_count" -eq 191/u);
+  assert.match(workflow, /test "\$table_count" -eq 199/u);
   assert.doesNotMatch(workflow, /test "\$select_grants" -eq 62/u);
   assert.match(workflow, /test "\$select_grants" -eq "\$table_count"/u);
   assert.match(workflow, /test "\$write_grants" -eq 0/u);

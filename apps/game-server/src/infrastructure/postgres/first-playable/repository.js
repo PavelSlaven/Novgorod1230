@@ -65,6 +65,13 @@ export function createFirstPlayablePartyRepository({ partyPool } = {}) {
                   ctrl.holder_ref AS rope_holder_ref,
                   ctrl.controller_ref AS rope_controller_ref,
                   loc.state_version AS actor_location_state_version,
+                  boat_loc.state_version AS boat_location_state_version,
+                  boat_place.state_version AS boat_placement_state_version,
+                  anchor.state_version AS boundary_anchor_state_version,
+                  boundary_execution.state_version
+                    AS boundary_execution_state_version,
+                  boundary_travel.state_version
+                    AS boundary_travel_state_version,
                   att.id AS attachment_id,
                   att.state_version AS attachment_state_version,
                   rel.state_version AS relation_state_version,
@@ -93,6 +100,28 @@ export function createFirstPlayablePartyRepository({ partyPool } = {}) {
            LEFT JOIN party_runtime.party_journey_locations loc
              ON loc.party_id=p.party_id
             AND loc.owner_kind='actor'
+           LEFT JOIN party_runtime.party_journey_locations boat_loc
+             ON boat_loc.party_id=p.party_id
+            AND boat_loc.owner_kind='transport'
+            AND boat_loc.owner_id='transport:' || p.party_id || ':boat'
+           LEFT JOIN party_runtime.entity_placements boat_place
+             ON boat_place.party_id=p.party_id
+            AND boat_place.entity_kind='transport'
+            AND boat_place.entity_id='transport:' || p.party_id || ':boat'
+           LEFT JOIN party_runtime.party_transit_anchors anchor
+             ON anchor.party_id=p.party_id
+            AND anchor.id='anchor:' || p.party_id || ':lower-dvina-boundary'
+            AND anchor.status='active'
+           LEFT JOIN party_runtime.party_route_plan_executions
+             boundary_execution
+             ON boundary_execution.id=
+               ss.state_payload->'boundary_paused_execution'
+                 ->>'execution_id'
+           LEFT JOIN party_runtime.traveller_travel_states
+             boundary_travel
+             ON boundary_travel.id=
+               ss.state_payload->'boundary_paused_execution'
+                 ->>'travel_state_id'
            LEFT JOIN party_runtime.party_carrier_attachments att
              ON att.party_id=p.party_id
             AND att.subject_kind='actor'
@@ -137,6 +166,17 @@ export function createFirstPlayablePartyRepository({ partyPool } = {}) {
           container: optionalNumber(row.container_state_version),
           ropeControl: optionalNumber(row.rope_control_state_version),
           actorLocation: optionalNumber(row.actor_location_state_version),
+          boatLocation: optionalNumber(row.boat_location_state_version),
+          boatPlacement: optionalNumber(row.boat_placement_state_version),
+          boundaryAnchor: optionalNumber(
+            row.boundary_anchor_state_version
+          ),
+          boundaryExecution: optionalNumber(
+            row.boundary_execution_state_version
+          ),
+          boundaryTravelState: optionalNumber(
+            row.boundary_travel_state_version
+          ),
           attachment: optionalNumber(row.attachment_state_version),
           attachmentId: row.attachment_id ?? null,
           relation: optionalNumber(row.relation_state_version),

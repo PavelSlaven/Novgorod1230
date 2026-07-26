@@ -1,0 +1,11 @@
+[
+  {
+    "id": "exit_orientation__ordered_source_to_target",
+    "version": 2,
+    "rule_kind": "ordered_source_to_target",
+    "forbids_compass_inference": true,
+    "status": "approved",
+    "provenance_ref": "prov_p12_g1_r2_r3_v1",
+    "canonical_digest": "a77794902da3d92c85f0364b9287c0810c9d68c20eda053af55696913da66c32"
+  }
+]

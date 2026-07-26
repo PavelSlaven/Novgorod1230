@@ -40,6 +40,30 @@ function orderingParentKeys(write) {
       `party_runtime.scene_position_nodes:${write.record.scene_position_id}`
     );
   }
+  if (write?.target_table === 'party_journey_locations'
+      && write.record?.location_kind === 'transit_anchor'
+      && write.record?.transit_anchor_id) {
+    parents.add(
+      `party_runtime.party_transit_anchors:${
+        write.record.transit_anchor_id
+      }`
+    );
+  }
+  if (write?.target_table === 'party_journey_locations'
+      && write.record?.location_kind === 'in_transit'
+      && write.record?.travel_state_id) {
+    parents.add(
+      `party_runtime.traveller_travel_states:${
+        write.record.travel_state_id
+      }`
+    );
+  }
+  if (write?.target_table === 'entity_placements'
+      && write.record?.position_node_id) {
+    parents.add(
+      `party_runtime.scene_position_nodes:${write.record.position_node_id}`
+    );
+  }
   if (write?.target_table === 'party_temporal_event_dependencies'
       && write.record?.depends_on_event_id) {
     parents.add(
@@ -84,6 +108,8 @@ export function orderWrites(plan) {
         .every((parent) => completed.has(parent)))
       .sort((left, right) =>
         modeRank[left[1].mode] - modeRank[right[1].mode]
+        || executionEventOrdinal(left[1].write)
+          - executionEventOrdinal(right[1].write)
         || left[0].localeCompare(right[0]));
     if (!ready.length) {
       throw Object.assign(
@@ -98,4 +124,10 @@ export function orderWrites(plan) {
     }
   }
   return ordered;
+}
+
+function executionEventOrdinal(write) {
+  return write?.target_table === 'party_route_plan_execution_events'
+    ? Number(write.record?.event_ordinal ?? 0)
+    : 0;
 }

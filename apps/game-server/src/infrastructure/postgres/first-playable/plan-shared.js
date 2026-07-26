@@ -74,6 +74,24 @@ export function requiredChecks({ partyId, stateVersion, command, versions }) {
       expected_attachment_state_version: versions.attachment
     }));
   }
+  if ([
+    'journey_to_boundary',
+    'cross_boundary',
+    'resume_boundary_traversal'
+  ].includes(command.verb)) {
+    checks.push(sealedCheck('boundary_carrier', {
+      transport_id: `transport:${partyId}:boat`,
+      actor_id: `actor:${partyId}:player`,
+      expected_transport_location_state_version: versions.boatLocation,
+      expected_attachment_state_version: versions.attachment,
+      expected_location_kind:
+        command.verb === 'journey_to_boundary'
+          ? 'scene'
+          : command.verb === 'cross_boundary'
+            ? 'transit_anchor'
+            : 'in_transit'
+    }));
+  }
   return checks;
 }
 
@@ -232,7 +250,12 @@ export const actorRef = (state) => ref('actor', state.player.id);
 
 function commandKind(optionId) {
   if (optionId === 'action:move'
-      || optionId === 'action:move_risky') return 'timed_traversal';
+      || optionId === 'action:move_risky'
+      || optionId === 'action:cross_boundary'
+      || optionId === 'action:resume_boundary_traversal') {
+    return 'timed_traversal';
+  }
+  if (optionId === 'action:journey_to_boundary') return 'journey_command';
   if (optionId === 'action:talk'
       || optionId === 'action:collect_water'
       || optionId === 'action:perform_simple_work'

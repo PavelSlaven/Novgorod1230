@@ -6,6 +6,10 @@ import {
   ACTIVITY_PROFILES, CONTENT_DIGEST, HIGH_G5, LANDING_G5, SCENARIO_ID,
   START_G4, TRANSPORT_CONTRACT, action, sealedPins
 } from './shared.js';
+import {
+  defaultBoundaryConditionTimeline
+} from './boundary-condition-state.js';
+export { visibleEntityRefs } from './visible-entities.js';
 
 export function initialState({
   partyId,
@@ -41,6 +45,9 @@ export function initialState({
     location: 'high_platform',
     clock_minutes: 0,
     landing_materialized: false,
+    receiving_materialized: false,
+    source_boundary_materialized: false,
+    boundary_anchor_materialized: false,
     npc: null,
     inventory: scenario
       ? [
@@ -53,6 +60,15 @@ export function initialState({
     relation: 0,
     journal: [],
     boat: scenario ? { id: `transport:${partyId}:boat`, location: 'landing_edge', boarded: false } : null,
+    boundary_crossing_enabled:
+      release.boundary_crossing_capability
+        === 'ready_for_runtime_acceptance',
+    boundary_condition_timeline: scenario
+      ? defaultBoundaryConditionTimeline()
+      : [],
+    boundary_dispatch_direction: null,
+    boundary_paused_execution: null,
+    boundary_traversals: [],
     exact_pins: sealedPins([
       {
         kind: 'release',
@@ -106,7 +122,15 @@ export function turnScreen(state, { turnNumber, turnId, prose }) {
     turn_number: turnNumber,
     main_prose: prose,
     visible_context: {
-      place: state.location === 'high_platform' ? 'защищённая высокая площадка' : 'посадочная кромка',
+      place: state.location === 'high_platform'
+        ? 'защищённая высокая площадка'
+        : state.location === 'yp025_navigation_corridor'
+          ? 'принимающий водный плёс Нижней Двины'
+          : state.location === 'boundary_in_transit'
+            ? 'в пути через пограничный речной сегмент'
+          : state.location === 'yp026_boundary_anchor'
+            ? 'южный пограничный якорь yp026'
+          : 'посадочная кромка',
       time_minutes: state.clock_minutes,
       weather: 'позднее лето, открытая вода'
     },
@@ -143,8 +167,14 @@ function panels(state) {
       data: {
         safe_local_path: state.location === 'high_platform'
           ? 'к посадочной кромке'
-          : 'к высокой площадке',
-        southern_boundary: 'переход пока недоступен'
+          : state.location === 'landing_edge'
+            ? 'к высокой площадке'
+            : null,
+        southern_boundary: state.boundary_crossing_enabled
+          ? (state.location === 'yp025_navigation_corridor'
+              ? 'обратный переход к yp026 доступен'
+              : 'переход к yp025 доступен после посадки в лодку')
+          : 'переход пока недоступен'
       }
     },
     journal: { visible: state.journal.length > 0, data: { entries: state.journal } }
@@ -161,7 +191,7 @@ function actionsFor(state) {
       'Спуститься по скользкой кромке'
     ));
     actions.push(action('rest:30', 'Отдохнуть 30 минут'));
-  } else {
+  } else if (state.location === 'landing_edge') {
     actions.push(action('action:move', 'Вернуться на площадку'));
     if (state.npc) {
       actions.push(action('action:talk', 'Поговорить с рыбаком'));
@@ -176,17 +206,34 @@ function actionsFor(state) {
       }
       actions.push(action(state.boat.boarded ? 'action:alight' : 'action:board',
         state.boat.boarded ? 'Выйти из лодки' : 'Сесть в лодку'));
+      if (state.boat.boarded && state.boundary_crossing_enabled) {
+        actions.push(action(
+          'action:journey_to_boundary',
+          'Пройти к южной границе'
+        ));
+      }
     }
+  } else if (state.location === 'yp026_boundary_anchor') {
+    if (state.boat?.boarded && state.boundary_crossing_enabled) {
+      actions.push(action(
+        'action:cross_boundary',
+        'Перейти южную границу'
+      ));
+    }
+  } else if (state.location === 'yp025_navigation_corridor') {
+    if (state.boat?.boarded && state.boundary_crossing_enabled) {
+      actions.push(action(
+        'action:journey_to_boundary',
+        'Подойти к обратному переходу'
+      ));
+    }
+  } else if (state.location === 'boundary_in_transit') {
+    actions.push(action(
+      'action:resume_boundary_traversal',
+      'Продолжить пограничный переход'
+    ));
   }
   return actions;
-}
-
-export function visibleEntityRefs(state) {
-  const refs = [];
-  if (state.npc && state.location === 'landing_edge') refs.push('npc:fisher');
-  if (state.location === 'landing_edge') refs.push('resource:visible');
-  if (state.boat && state.location === 'landing_edge') refs.push('transport:player_boat');
-  return refs;
 }
 
 export function resolveRuntimeActivityProfile(command, state) {

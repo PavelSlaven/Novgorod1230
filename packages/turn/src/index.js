@@ -27,7 +27,11 @@ export { enterG4WithMaterialization } from './first-entry-materialization.js';
 export { createTurnCommandRegistry, isCodeOwnedTurnWritePlan } from './command-registry.js';
 export {
   createCombinedWritePlanBuilder,
-  resolveApprovedActivityProfile
+  resolveApprovedActivityProfile,
+  applyLowerDvinaBoundaryFailure,
+  resolveLowerDvinaBoundaryCheck,
+  resolveLowerDvinaBoundaryContext,
+  selectLowerDvinaBoundaryContext
 } from './spatial-v3-public.js';
 export { createAutonomousUpdateRegistry, isCodeOwnedAutonomousUpdate, runAutonomousUpdates } from './autonomous-update.js';
 export {

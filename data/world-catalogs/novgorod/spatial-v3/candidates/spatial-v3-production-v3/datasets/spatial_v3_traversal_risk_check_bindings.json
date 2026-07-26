@@ -1,0 +1,42 @@
+[
+  {
+    "risk_profile_id": "risk.lower_dvina_sheltered_approach_v1",
+    "risk_profile_version": 1,
+    "check_domain": "craft_control",
+    "check_policy_id": "check.lower_dvina_boat_control_v1",
+    "check_policy_version": 1,
+    "canonical_ordinal": 0
+  },
+  {
+    "risk_profile_id": "risk.lower_dvina_upstream_open_channel_v1",
+    "risk_profile_version": 1,
+    "check_domain": "craft_control",
+    "check_policy_id": "check.lower_dvina_boat_control_v1",
+    "check_policy_version": 1,
+    "canonical_ordinal": 0
+  },
+  {
+    "risk_profile_id": "risk.lower_dvina_upstream_open_channel_v1",
+    "risk_profile_version": 1,
+    "check_domain": "orientation",
+    "check_policy_id": "check.lower_dvina_orientation_v1",
+    "check_policy_version": 1,
+    "canonical_ordinal": 1
+  },
+  {
+    "risk_profile_id": "risk.lower_dvina_downstream_open_channel_v1",
+    "risk_profile_version": 1,
+    "check_domain": "craft_control",
+    "check_policy_id": "check.lower_dvina_boat_control_v1",
+    "check_policy_version": 1,
+    "canonical_ordinal": 0
+  },
+  {
+    "risk_profile_id": "risk.lower_dvina_downstream_open_channel_v1",
+    "risk_profile_version": 1,
+    "check_domain": "orientation",
+    "check_policy_id": "check.lower_dvina_orientation_v1",
+    "check_policy_version": 1,
+    "canonical_ordinal": 1
+  }
+]

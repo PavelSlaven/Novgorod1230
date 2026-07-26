@@ -1,0 +1,32 @@
+[
+  {
+    "id": "check.lower_dvina_boat_control_v1",
+    "activation_domain": "craft_control",
+    "characteristic_id": "dexterity",
+    "modifier_skill_id": "travel_transport",
+    "one_factor_dc": 10,
+    "two_factor_dc": 12,
+    "maximum_factor_count": 2,
+    "identity_scope_kind": "traversal_interval_result_id",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_production_v3_candidate_001",
+    "status": "approved",
+    "provenance_ref": "prov_lower_dvina_boundary_authoring_v1",
+    "canonical_digest": "425a7a247da4309b5b0fb23f03bce0976258dbcb1404aac16ded2e0a5ff770b9"
+  },
+  {
+    "id": "check.lower_dvina_orientation_v1",
+    "activation_domain": "orientation",
+    "characteristic_id": "attention",
+    "modifier_skill_id": "observation",
+    "one_factor_dc": 10,
+    "two_factor_dc": 12,
+    "maximum_factor_count": 2,
+    "identity_scope_kind": "traversal_interval_result_id",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_production_v3_candidate_001",
+    "status": "approved",
+    "provenance_ref": "prov_lower_dvina_boundary_authoring_v1",
+    "canonical_digest": "e3f02ad7e9b8a55db891a1abb847dd426a27a4cea00c1c4d46deaaddd7f1ad57"
+  }
+]

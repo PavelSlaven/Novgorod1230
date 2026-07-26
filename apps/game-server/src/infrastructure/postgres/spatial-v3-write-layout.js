@@ -72,6 +72,7 @@ export const TABLES = Object.freeze({
   },
   party_route_plans: { modes: ['insert'], key: ['id'] },
   party_route_plan_steps: { modes: ['insert'], key: ['route_plan_id', 'ordinal'] },
+  party_transit_anchors: { modes: ['insert', 'update'], key: ['id'], version: true },
   preparation_claims: { modes: ['insert', 'update'], key: ['id'], version: true },
   party_g5_sites: { modes: ['insert'], key: ['id'] },
   party_scene_baselines: { modes: ['insert'], key: ['id'] },
@@ -190,6 +191,12 @@ export function childParentKeys(write) {
       return [`party_runtime.party_route_plan_executions:${write.record?.route_plan_execution_id ?? write.record?.execution_id}`];
     case 'party_route_plan_steps':
       return [`party_runtime.party_route_plans:${write.record?.route_plan_id}`];
+    case 'party_journey_locations':
+      return write.record?.location_kind === 'in_transit'
+        ? [`party_runtime.traveller_travel_states:${
+            write.record?.travel_state_id
+          }`]
+        : [];
     case 'party_g6_instances':
       return [`party_runtime.party_scene_baselines:${write.record?.scene_baseline_id}`];
     case 'scene_position_nodes':

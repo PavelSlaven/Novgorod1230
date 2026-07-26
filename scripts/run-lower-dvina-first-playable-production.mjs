@@ -8,15 +8,17 @@ import { parseArgs } from 'node:util';
 import pg from 'pg';
 
 import {
-  SPATIAL_V3_PRODUCTION_RELEASE
-} from '../apps/game-server/src/composition/production-spatial-v3.js';
-import {
   SPATIAL_V3_TARGET_MIGRATIONS
 } from '../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
 import {
   applyFirstPlayableV2ActivationBundle,
   buildFirstPlayableV2ActivationBundle
 } from '../tools/runtime-catalog-activation/src/first-playable-v2-activation.js';
+import {
+  applyLowerDvinaBoundaryV3ActivationBundle,
+  buildLowerDvinaBoundaryV3ActivationBundle,
+  LOWER_DVINA_BOUNDARY_V3_RELEASE
+} from '../tools/runtime-catalog-activation/src/lower-dvina-boundary-v3-activation.js';
 import {
   PARTY_RUNTIME_CATALOG_MIGRATION,
   WORLD_RUNTIME_CATALOG_MIGRATION,
@@ -29,6 +31,9 @@ import {
 import {
   buildLowerDvinaV2ImportSql
 } from '../tools/spatial-v3/lower-dvina-v2-importer.mjs';
+import {
+  buildLowerDvinaBoundaryV1ImportSql
+} from '../tools/spatial-v3/lower-dvina-boundary-v1-importer.mjs';
 
 const { values, positionals } = parseArgs({
   allowPositionals: true,
@@ -144,7 +149,7 @@ try {
         'Stage 3C did not produce the exact approved promoted state'
       );
     }
-    for (const file of ['18.sql', '19.sql']) {
+    for (const file of ['18.sql', '19.sql', '20.sql']) {
       await worldPool.query(await readFile(
         resolve(repositoryRoot, 'infra/world-base/schema', file),
         'utf8'
@@ -158,7 +163,7 @@ try {
       await runWorldRuntimeCatalogMigration(worldPool);
     const partyMigration =
       await runPartyRuntimeCatalogMigration(partyPool);
-    const bundle = await buildFirstPlayableV2ActivationBundle({
+    const parentBundle = await buildFirstPlayableV2ActivationBundle({
       worldPool,
       partyPool,
       repositoryRoot,
@@ -168,7 +173,25 @@ try {
         'authorization reference'
       )
     });
-    const activation = await applyFirstPlayableV2ActivationBundle({
+    const parentActivation = await applyFirstPlayableV2ActivationBundle({
+      worldPool,
+      partyPool,
+      bundle: parentBundle
+    });
+    await worldPool.query(await buildLowerDvinaBoundaryV1ImportSql({
+      root: repositoryRoot
+    }));
+    const bundle = await buildLowerDvinaBoundaryV3ActivationBundle({
+      worldPool,
+      partyPool,
+      repositoryRoot,
+      gitCommitSha: gitState.head,
+      authorizationRef: required(
+        values['authorization-ref'],
+        'authorization reference'
+      )
+    });
+    const activation = await applyLowerDvinaBoundaryV3ActivationBundle({
       worldPool,
       partyPool,
       bundle
@@ -198,6 +221,7 @@ try {
         party: partyMigration
       },
       bundle_digest: bundle.bundle_digest,
+      parent_v2_activation: parentActivation,
       activation,
       readback
     });
@@ -235,15 +259,15 @@ function buildProductionRequest({
     schema: 'rus.lower_dvina_production_activation_request.v1',
     git_commit_sha: gitState.head,
     origin_main_sha: gitState.origin_main,
-    release_id: SPATIAL_V3_PRODUCTION_RELEASE.release_id,
+    release_id: LOWER_DVINA_BOUNDARY_V3_RELEASE.releaseId,
     world_revision_id:
-      SPATIAL_V3_PRODUCTION_RELEASE.world_revision_id,
+      LOWER_DVINA_BOUNDARY_V3_RELEASE.worldRevision,
     world_catalog_digest:
-      SPATIAL_V3_PRODUCTION_RELEASE.world_catalog_digest,
+      LOWER_DVINA_BOUNDARY_V3_RELEASE.worldCatalogDigest,
     world_catalog_manifest_sha256:
-      SPATIAL_V3_PRODUCTION_RELEASE.world_catalog_manifest_sha256,
+      LOWER_DVINA_BOUNDARY_V3_RELEASE.worldManifestSha256,
     target_migration_chain_digest:
-      SPATIAL_V3_PRODUCTION_RELEASE.target_migration_chain_digest,
+      'b7a9eb899b5d302dc27bff6797f1bb6abf31b245ace3e7c285f94543e3039d45',
     world_runtime_catalog_migration_digest:
       WORLD_RUNTIME_CATALOG_MIGRATION.migration_digest,
     party_runtime_catalog_migration_digest:

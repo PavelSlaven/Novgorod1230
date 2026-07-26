@@ -1,0 +1,12 @@
+{
+  "schema": "rus.lower_dvina.boundary_compiler_approval_evidence.v1",
+  "candidate_id": "lower_dvina_boundary_yp025_yp026_authoring_v1",
+  "candidate_content_digest": "cde64b5e6317cd580a16b9178e7291c326a9c2c478811c31851eb7e45e5e8f4b",
+  "source_zip_sha256": "244c6c98e650f20ae5bf57bc1f50b2e63ed881ce165b1561559932bb32c7641e",
+  "decision": "APPROVE_LOWER_DVINA_BOUNDARY_AUTHORING_V1",
+  "approval_decision_sha256": "ad8399f13383db0de2af976421fed776f44c9372f6b8a5904ef58c0ded34c9cd",
+  "approved_authoring_sha256": "8813b9738bc06f4eff9ab1a6f05f69850de949b8224252a21c69653d653d60a0",
+  "exact_parent_world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001",
+  "exact_parent_manifest_sha256": "3ed17f7d540f5707a8b72392d7e4d5736be947048673ff5135d5c07aacbb951a",
+  "evidence_digest": "506cc714ff91b809c4e8b5393fe17501d9e3be3d3ea22293ac023520b950681d"
+}

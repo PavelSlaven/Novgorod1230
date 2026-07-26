@@ -1,0 +1,144 @@
+[
+  {
+    "id": "SRC_G1R2_SCHAPOV_1976_CHARTER",
+    "title": "Щапов Я. Н. (подг.). Древнерусские княжеские уставы XI–XV вв. М.: Наука, 1976. Уставная грамота новгородского князя Святослава Ольговича 1136/37 г., с. 146–148.",
+    "source_type": "chronicle",
+    "url": "https://archive.org/stream/ustavi1976/ustavi1976_djvu.txt",
+    "file_reference": null,
+    "summary": "critical_edition_primary_text; access=complete_online_text; use=binding",
+    "limitations": "Текст дошёл в более поздних списках. Форма «оу Вихтоуга» подтверждает название и фискальную связь, но не точную геометрию поселения.",
+    "status": "approved",
+    "confidence": "high"
+  },
+  {
+    "id": "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+    "title": "Brisbane, M. A.; Makarov, N. A.; Nosov, E. N. Medieval Novgorod in Its Wider Context.",
+    "source_type": "book",
+    "url": "https://eprints.bournemouth.ac.uk/23438/1/01%20Novgorod%20IV.pdf",
+    "file_reference": null,
+    "summary": "academic_historical_archaeology; access=complete_pdf; use=binding_context",
+    "limitations": "Письменные данные о северной администрации XI–XIII вв. разрежены. Не задаёт точную местную границу или структуру поселения.",
+    "status": "usable_with_caution",
+    "confidence": "high"
+  },
+  {
+    "id": "SRC_G1R2_ARKHANGELSK_HOARD_1992",
+    "title": "Nosov E. N.; Ovsyannikov O. V.; Potin V. M. The Arkhangelsk Hoard // Fennoscandia Archaeologica IX. Helsinki, 1992. P. 3–21.",
+    "source_type": "archaeology",
+    "url": null,
+    "file_reference": null,
+    "summary": "archaeological_publication; access=bibliographic_verified_corroborated; use=corroborative_with_access_limit",
+    "limitations": "Полный текст публикации в текущем окружении не получен. Клад подтверждает присутствие и обмен, но не доказывает город, порт или точную структуру поселения.",
+    "status": "usable_with_caution",
+    "confidence": "medium"
+  },
+  {
+    "id": "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+    "title": "Едовин А. Е. Заостровье — средневековый поселенческий центр дельты Северной Двины // Беломорские чтения. Вып. II. Архангельск, 2019. С. 62–73.",
+    "source_type": "archaeology",
+    "url": null,
+    "file_reference": null,
+    "summary": "regional_archaeology; access=bibliographic_verified_secondary_summary; use=corroborative_with_access_limit",
+    "limitations": "Полный текст не получен. Используется только для локально ограниченной модели археологического поселенческого и погребального участка, без точного плана.",
+    "status": "usable_with_caution",
+    "confidence": "medium"
+  },
+  {
+    "id": "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+    "title": "Едовин А. Заволочье в средневековой русской истории, X–XIII вв. Архангельск, 2001.",
+    "source_type": "book",
+    "url": null,
+    "file_reference": null,
+    "summary": "regional_historical_archaeology; access=bibliographic_verified; use=contextual",
+    "limitations": "Не используется для точной геометрии объектов.",
+    "status": "usable_with_caution",
+    "confidence": "medium"
+  },
+  {
+    "id": "SRC_G1R2_MAKAROV_2003",
+    "title": "Макаров Н. А. «Заволоцкие топонимы» новгородских берестяных грамот и деревянных цилиндров на археологической карте // Берестяные грамоты: 50 лет открытия и изучения. М.: Индрик, 2003. С. 149–164.",
+    "source_type": "article",
+    "url": null,
+    "file_reference": null,
+    "summary": "archaeology_toponymy; access=bibliographic_verified; use=contextual",
+    "limitations": "Полный текст не получен; не является единственным основанием конкретного узла.",
+    "status": "usable_with_caution",
+    "confidence": "medium"
+  },
+  {
+    "id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "title": "Русловые процессы и водные пути на реках бассейна Северной Двины / под ред. Р. С. Чалова. М., 2012. 492 с.",
+    "source_type": "book",
+    "url": null,
+    "file_reference": null,
+    "summary": "scientific_hydromorphology; access=bibliographic_verified; use=technical_typology",
+    "limitations": "Современная гидроморфология используется только как типологическое основание разветвлённого русла, поймы, островов и меняющихся мелей. Не реконструирует конкретную геометрию 1230 г.",
+    "status": "usable_with_caution",
+    "confidence": "medium"
+  },
+  {
+    "id": "SRC_G1R2_GSHHS",
+    "title": "GSHHS/GSHHG shoreline geometry used in map revision 002.",
+    "source_type": "map",
+    "url": null,
+    "file_reference": "novgorod_1230_candidate_g1_mask.json",
+    "summary": "modern_technical_geography; access=complete_project_derivative; use=technical_proxy_only",
+    "limitations": "Современная береговая линия и доли суши/воды не являются картой 1230 г.",
+    "status": "usable_with_caution",
+    "confidence": "medium"
+  },
+  {
+    "id": "SRC_G1R2_MASK_REV002",
+    "title": "RUS13 project. Novgorod 1230 G1 mask revision 002.",
+    "source_type": "project_note",
+    "url": null,
+    "file_reference": "novgorod_1230_candidate_g1_mask.json",
+    "summary": "approved_project_derivative; access=complete_local; use=binding_technical",
+    "limitations": "Определяет активность и координатную ячейку, но не заменяет исторические источники.",
+    "status": "approved",
+    "confidence": "high"
+  },
+  {
+    "id": "SRC_G1R2_GRID",
+    "title": "RUS13 project. WGS84 / local AEQD 32 km grid definition.",
+    "source_type": "project_note",
+    "url": null,
+    "file_reference": "grid_definition.json",
+    "summary": "technical_method; access=complete_local; use=binding_technical",
+    "limitations": "Сетка не имеет исторического пограничного смысла.",
+    "status": "approved",
+    "confidence": "high"
+  },
+  {
+    "id": "SRC_G1R2_MAP_RULES",
+    "title": "RUS13. Инструкция-памятка по работе с картой G0–G4.",
+    "source_type": "project_note",
+    "url": null,
+    "file_reference": "Работа с картой G0-G4.txt",
+    "summary": "project_normative; access=complete_local; use=binding_methodological",
+    "limitations": "Норматив проекта, не исторический источник.",
+    "status": "approved",
+    "confidence": "high"
+  },
+  {
+    "id": "prov_p12_g1_r2_r3_v1",
+    "title": "P12 repository provenance for approved G1 revisions 002/003",
+    "source_type": "project_note",
+    "file_reference": "source-approval/p12_novgorod_source_approval_001",
+    "summary": "Repository provenance pointer; not a historical source.",
+    "limitations": "This record is not a historical source and does not expand approved facts.",
+    "status": "approved",
+    "confidence": "high"
+  },
+  {
+    "id": "prov_lower_dvina_boundary_authoring_v1",
+    "title": "Lower Dvina yp025↔yp026 boundary authoring package v1",
+    "source_type": "project_note",
+    "url": null,
+    "file_reference": "data/world-catalogs/novgorod/spatial-v3/staging/lower-dvina-boundary-v2/approved-authoring-v1.json",
+    "summary": "approved candidate cde64b5e6317cd580a16b9178e7291c326a9c2c478811c31851eb7e45e5e8f4b; topological-only boundary authoring and gameplay calibration",
+    "limitations": "No exact geometry, bank, landing, settlement, measured historical duration, random hazard probability or fatal consequence.",
+    "status": "approved",
+    "confidence": "medium"
+  }
+]

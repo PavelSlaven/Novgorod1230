@@ -1,0 +1,13 @@
+{
+  "schema": "rus.lower_dvina.boundary_approval_decision.v1",
+  "candidate_id": "lower_dvina_boundary_yp025_yp026_authoring_v1",
+  "candidate_content_digest": "cde64b5e6317cd580a16b9178e7291c326a9c2c478811c31851eb7e45e5e8f4b",
+  "decision": "APPROVE_LOWER_DVINA_BOUNDARY_AUTHORING_V1",
+  "approved_by": "user",
+  "approval_source": "Codex task explicit user message",
+  "effect": "Authorizes integration and validation of this exact candidate digest; production activation remains gated by repository acceptance.",
+  "notes": [
+    "Gameplay timing and DC values are approved editorial calibration, not historical measurement.",
+    "Exact geometry, shore, landing, settlement and fatal outcomes remain forbidden."
+  ]
+}

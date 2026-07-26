@@ -1,0 +1,50 @@
+[
+  {
+    "id": "risk.lower_dvina_sheltered_approach_v1",
+    "environment_profile_id": "env.lower_dvina_sheltered_approach_v1",
+    "environment_profile_version": 1,
+    "activation_kind": "environment_or_craft_state_trigger_only",
+    "severity_band": "low",
+    "random_draw_allowed": false,
+    "mixed_check_domain_behavior": "hard_block",
+    "consequence_policy_id": "consequence.lower_dvina_segment_v1",
+    "consequence_policy_version": 1,
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_production_v3_candidate_001",
+    "status": "approved",
+    "provenance_ref": "prov_lower_dvina_boundary_authoring_v1",
+    "canonical_digest": "92c9506e5502792f9f1d1b4d519e92a27b8139dd5a52e11ac72929695abd225a"
+  },
+  {
+    "id": "risk.lower_dvina_upstream_open_channel_v1",
+    "environment_profile_id": "env.lower_dvina_open_channel_v1",
+    "environment_profile_version": 1,
+    "activation_kind": "environment_or_craft_state_trigger_only",
+    "severity_band": "moderate_nonfatal",
+    "random_draw_allowed": false,
+    "mixed_check_domain_behavior": "hard_block",
+    "consequence_policy_id": "consequence.lower_dvina_segment_v1",
+    "consequence_policy_version": 1,
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_production_v3_candidate_001",
+    "status": "approved",
+    "provenance_ref": "prov_lower_dvina_boundary_authoring_v1",
+    "canonical_digest": "8fed2b3c6dbd4b7d25802bc67007d43cc48855c92900f4485e7d1660e76a007b"
+  },
+  {
+    "id": "risk.lower_dvina_downstream_open_channel_v1",
+    "environment_profile_id": "env.lower_dvina_open_channel_v1",
+    "environment_profile_version": 1,
+    "activation_kind": "environment_or_craft_state_trigger_only",
+    "severity_band": "moderate_nonfatal",
+    "random_draw_allowed": false,
+    "mixed_check_domain_behavior": "hard_block",
+    "consequence_policy_id": "consequence.lower_dvina_segment_v1",
+    "consequence_policy_version": 1,
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_production_v3_candidate_001",
+    "status": "approved",
+    "provenance_ref": "prov_lower_dvina_boundary_authoring_v1",
+    "canonical_digest": "dbc3b0ec55ea4bb8871ddb3f93237a36bba02a76175ee5ff251861932e801f17"
+  }
+]

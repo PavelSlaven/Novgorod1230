@@ -1,0 +1,11 @@
+[
+  {
+    "id": "novgorod_spatial_v3_production_v3_candidate_001",
+    "parent_revision_id": null,
+    "title": "Novgorod Spatial-v3 production v3 boundary successor pin",
+    "effective_from": "1230-01-01",
+    "effective_to": "1250-12-31",
+    "catalog_digest": "1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e",
+    "status": "approved"
+  }
+]

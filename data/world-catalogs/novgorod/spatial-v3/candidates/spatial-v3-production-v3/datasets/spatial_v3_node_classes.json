@@ -1,0 +1,1688 @@
+[
+  {
+    "node_id": "region_novgorod_land",
+    "node_version": 3,
+    "category_id": "spatial.g0.historical_geographic_region",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g1_xp017_yp026",
+    "node_version": 3,
+    "category_id": "spatial.g1.territorial_grid_cell",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g2_xp017_yp026_r2_south_main_channel",
+    "node_version": 3,
+    "category_id": "spatial.g2.territorial_zone",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g2_xp017_yp026_r2_central_main_channel",
+    "node_version": 3,
+    "category_id": "spatial.g2.territorial_zone",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g2_xp017_yp026_r2_north_main_channel",
+    "node_version": 3,
+    "category_id": "spatial.g2.territorial_zone",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g2_xp017_yp026_r2_west_distributary_belt",
+    "node_version": 3,
+    "category_id": "spatial.g2.territorial_zone",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g2_xp017_yp026_r2_east_distributary_belt",
+    "node_version": 3,
+    "category_id": "spatial.g2.territorial_zone",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g2_xp017_yp026_r2_island_head_mosaic",
+    "node_version": 3,
+    "category_id": "spatial.g2.territorial_zone",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g2_xp017_yp026_r2_inner_floodplain",
+    "node_version": 3,
+    "category_id": "spatial.g2.territorial_zone",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g2_xp017_yp026_r2_shoal_bar_field",
+    "node_version": 3,
+    "category_id": "spatial.g2.territorial_zone",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g2_xp017_yp026_r2_backwater_wetlands",
+    "node_version": 3,
+    "category_id": "spatial.g2.territorial_zone",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g2_xp017_yp026_r2_dry_ridge_belt",
+    "node_version": 3,
+    "category_id": "spatial.g2.territorial_zone",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area",
+    "node_version": 3,
+    "category_id": "spatial.g2.territorial_zone",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area",
+    "node_version": 3,
+    "category_id": "spatial.g2.territorial_zone",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g2_xp017_yp026_r2_forest_hinterland",
+    "node_version": 3,
+    "category_id": "spatial.g2.territorial_zone",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g2_xp017_yp026_r2_small_stream_network",
+    "node_version": 3,
+    "category_id": "spatial.g2.territorial_zone",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g2_xp017_yp026_r2_river_sea_transition",
+    "node_version": 3,
+    "category_id": "spatial.g2.territorial_zone",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+    "node_version": 3,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+    "node_version": 3,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+    "node_version": 3,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_central_current_split",
+    "node_version": 3,
+    "category_id": "spatial.g3.route_site",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+    "node_version": 3,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+    "node_version": 3,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_west_side_channel",
+    "node_version": 3,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+    "node_version": 3,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_east_side_channel",
+    "node_version": 3,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+    "node_version": 3,
+    "category_id": "spatial.g3.route_site",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_large_island_head",
+    "node_version": 3,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+    "node_version": 3,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+    "node_version": 3,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+    "node_version": 3,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+    "node_version": 3,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+    "node_version": 3,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_reed_backwater",
+    "node_version": 3,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+    "node_version": 3,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+    "node_version": 3,
+    "category_id": "spatial.g3.route_site",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+    "node_version": 3,
+    "category_id": "spatial.g3.route_site",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+    "node_version": 3,
+    "category_id": "spatial.g3.recurrent_site",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+    "node_version": 3,
+    "category_id": "spatial.g3.route_site",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+    "node_version": 3,
+    "category_id": "spatial.g3.resource_site",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+    "node_version": 3,
+    "category_id": "spatial.g3.settlement",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+    "node_version": 3,
+    "category_id": "spatial.g3.built_site",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+    "node_version": 3,
+    "category_id": "spatial.g3.route_site",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+    "node_version": 3,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+    "node_version": 3,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+    "node_version": 3,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+    "node_version": 3,
+    "category_id": "spatial.g3.route_site",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_mixing_reach",
+    "node_version": 3,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+    "node_version": 3,
+    "category_id": "spatial.g3.route_site",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+    "node_version": 3,
+    "category_id": "spatial.g4.sector",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+    "node_version": 3,
+    "category_id": "spatial.g4.sector",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+    "node_version": 3,
+    "category_id": "spatial.g4.sector",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+    "node_version": 3,
+    "category_id": "spatial.g4.sector",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+    "node_version": 3,
+    "category_id": "spatial.g4.sector",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+    "node_version": 3,
+    "category_id": "spatial.g4.sector",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+    "node_version": 3,
+    "category_id": "spatial.g4.sector",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+    "node_version": 3,
+    "category_id": "spatial.g4.sector",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+    "node_version": 3,
+    "category_id": "spatial.g4.sector",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+    "node_version": 3,
+    "category_id": "spatial.g4.sector",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+    "node_version": 3,
+    "category_id": "spatial.g4.sector",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+    "node_version": 3,
+    "category_id": "spatial.g4.sector",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+    "node_version": 3,
+    "category_id": "spatial.g4.sector",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+    "node_version": 3,
+    "category_id": "spatial.g4.sector",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+    "node_version": 3,
+    "category_id": "spatial.g4.sector",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+    "node_version": 3,
+    "category_id": "spatial.g4.sector",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+    "node_version": 3,
+    "category_id": "spatial.g4.sector",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+    "node_version": 3,
+    "category_id": "spatial.g4.sector",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+    "node_version": 3,
+    "category_id": "spatial.g4.sector",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+    "node_version": 3,
+    "category_id": "spatial.g4.sector",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+    "node_version": 3,
+    "category_id": "spatial.g4.sector",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+    "node_version": 3,
+    "category_id": "spatial.g4.sector",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+    "node_version": 3,
+    "category_id": "spatial.g4.sector",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+    "node_version": 3,
+    "category_id": "spatial.g4.sector",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+    "node_version": 3,
+    "category_id": "spatial.g4.sector",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+    "node_version": 3,
+    "category_id": "spatial.g4.sector",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+    "node_version": 3,
+    "category_id": "spatial.g4.sector",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+    "node_version": 3,
+    "category_id": "spatial.g4.sector",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+    "node_version": 3,
+    "category_id": "spatial.g4.sector",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+    "node_version": 3,
+    "category_id": "spatial.g4.sector",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+    "node_version": 3,
+    "category_id": "spatial.g4.sector",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+    "node_version": 3,
+    "category_id": "spatial.g4.sector",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_fast_branch",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_islet_margin",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_rejoin_reach",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_slow_branch",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_split_point",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_upstream_nose",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_deep_thread",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_downstream_approach",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_lee_bank",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_observation_bank",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_shoal_margin",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_upstream_approach",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_downstream_tail",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_east_channel",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_high_bank",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_upstream_tip",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_west_channel",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_wet_hollow",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_downstream_cut",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_driftwood_mass",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_dry_cap",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_shallow_pool",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_upstream_edge",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_camp_candidate",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_downstream_exit",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_forest_edge",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_landing",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_ridge_crest",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_wet_hollow",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_north_descent",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_pine_stand",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_ridge_top",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_sandy_hollow",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_south_approach",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_view_gap",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_entrance",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_exit",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_mud_bank",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_narrow_reach",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_quiet_reach",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_seasonal_barrier",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_entrance",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_exit",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_mud_bank",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_narrow_reach",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_quiet_reach",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_seasonal_barrier",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_bog_edge",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_dry_mound",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_inlet",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_overflow",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_reed_margin",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_shallow_basin",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_forest_shelter",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_north_exit",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_ridge_path",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_south_approach",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_water_access",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_wet_gap",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_bank_path",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_bog_crossing",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_fallen_timber",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_headwater_fork",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_lower_reach",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_pool",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_downstream_tail",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_east_channel",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_high_bank",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_upstream_tip",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_west_channel",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_wet_hollow",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_current_shear",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_ice_edge",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_inner_approach",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_lee_margin",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_open_water",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_outer_route",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_deep_thread",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_downstream_approach",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_lee_bank",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_observation_bank",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_shoal_margin",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_upstream_approach",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_deep_thread",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_downstream_approach",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_lee_bank",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_observation_bank",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_shoal_margin",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_upstream_approach",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_deep_pool",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_dry_crossing",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_hidden_link",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_old_mouth",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_silted_reach",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_willow_bank",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_ice_break_zone",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_river_side",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_sea_exit",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_sheltered_inlet",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_shoal_margin",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_wind_fetch",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_bird_shallows",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_entrance",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_mud_bank",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_open_pool",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_reed_channel",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_winter_thin_ice",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_deep_thread",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_downstream_approach",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_lee_bank",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_observation_bank",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_shoal_margin",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_upstream_approach",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_flood_edge",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_high_platform",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_inland_path",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_landing_edge",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_water_approach",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_water_source",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_cross_current",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_deep_thread",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_emergency_bank",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_shallow_bars",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_warning_reach",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_winter_crack",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_deep_thread",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_downstream_approach",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_lee_bank",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_observation_bank",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_shoal_margin",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_upstream_approach",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_crossing",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_inland_path",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_lower_stream",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_main_river_approach",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_marsh_bank",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_mouth_bar",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_forest_path",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_household_cluster",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_landing_candidate",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_meeting_area",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_occupation_terrace",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_river_approach",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_water_access",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_work_storage",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_deep_forest",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_dry_patch",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_game_trail",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_resource_patch",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_river_edge",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_wet_forest",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_flood_edge",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_high_platform",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_inland_path",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_landing_edge",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_water_approach",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_water_source",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_dry_patch",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_entrance",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_hidden_outlet",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_muddy_shore",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_reed_edge",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_still_water",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_entrance",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_exit",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_mud_bank",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_narrow_reach",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_quiet_reach",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_seasonal_barrier",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_deep_forest",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_dry_patch",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_game_trail",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_resource_patch",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_river_edge",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_wet_forest",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_approach",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_burial_core",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_outer_edge",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_ritual_edge",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_wet_boundary",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_woodland_buffer",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_boat_drawing",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_dry_platform",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_flood_limit",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_landing_edge",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_path_to_settlement",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_river_approach",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_habitation_terrace",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_hinterland_path",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_household_zone",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_landing",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_river_approach",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_storage_zone",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_water_source",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_work_zone",
+    "node_version": 3,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g1_xp017_yp025",
+    "node_version": 1,
+    "category_id": "spatial.g1.territorial_grid_cell",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g2_xp017_yp025_dvina_corridor",
+    "node_version": 1,
+    "category_id": "spatial.g2.territorial_zone",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "gn_nov_g3_xp017_yp025_lower_dvina_reach",
+    "node_version": 1,
+    "category_id": "spatial.g3.natural_feature",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "g4v3__gn_nov_g3_xp017_yp025_lower_dvina_reach",
+    "node_version": 1,
+    "category_id": "spatial.g4.sector",
+    "class_ordinal": 0
+  },
+  {
+    "node_id": "cg5v3__gn_nov_g4_xp017_yp025_navigation_corridor",
+    "node_version": 1,
+    "category_id": "spatial.g5.parcel",
+    "class_ordinal": 0
+  }
+]

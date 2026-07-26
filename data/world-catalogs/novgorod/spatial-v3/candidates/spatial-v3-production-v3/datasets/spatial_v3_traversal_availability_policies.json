@@ -1,0 +1,15 @@
+[
+  {
+    "id": "availability.lower_dvina_late_summer_daylight_v1",
+    "scenario_id": "lower_dvina_late_summer_open_water_v1",
+    "season_mode": "late_summer_open_water",
+    "daylight_required": true,
+    "fallback_behavior": "forbidden",
+    "unsupported_state_behavior": "hard_block",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_production_v3_candidate_001",
+    "status": "approved",
+    "provenance_ref": "prov_lower_dvina_boundary_authoring_v1",
+    "canonical_digest": "1b707e0fd645b903d989aa395bb20eab8e050d25b98c2cb91ca347e5f417de94"
+  }
+]

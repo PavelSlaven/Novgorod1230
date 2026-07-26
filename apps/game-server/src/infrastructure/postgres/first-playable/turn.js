@@ -21,7 +21,15 @@ import {
 import {
   traversalWrites
 } from './plan-traversal.js';
+import {
+  boundaryTraversalWrites
+} from './plan-boundary-traversal.js';
+import { boundaryResumeWrites } from './plan-boundary-resume.js';
+import {
+  boundarySceneMaterializationWrites
+} from './plan-boundary-materialization.js';
 import { carrierWrites } from './plan-carrier.js';
+import { mutableStateWrites } from './plan-mutable-state.js';
 
 export async function buildFirstPlayableTurnPlan(input) {
   const {
@@ -64,6 +72,19 @@ export async function buildFirstPlayableTurnPlan(input) {
     ...input,
     changeSet
   });
+  const boundaryTraversal = boundaryTraversalWrites({
+    ...input,
+    changeSet
+  });
+  const boundaryResume = boundaryResumeWrites({
+    ...input,
+    changeSet
+  });
+  const boundaryMaterialization = boundarySceneMaterializationWrites({
+    previousState,
+    state,
+    changeSet
+  });
   const carrier = carrierWrites({
     ...input,
     changeSet
@@ -79,6 +100,9 @@ export async function buildFirstPlayableTurnPlan(input) {
     materialization,
     activity,
     traversal,
+    boundaryMaterialization,
+    boundaryTraversal,
+    boundaryResume,
     carrier,
     immediate
   );
@@ -88,6 +112,8 @@ export async function buildFirstPlayableTurnPlan(input) {
     ...(stateWrites.expected ?? []),
     ...(activity?.expected ?? []),
     ...(traversal?.expected ?? []),
+    ...(boundaryTraversal?.expected ?? []),
+    ...(boundaryResume?.expected ?? []),
     ...(carrier?.expected ?? [])
   ];
   const envelope = visibleEnvelope({
@@ -162,73 +188,6 @@ export async function buildFirstPlayableTurnPlan(input) {
     );
   }
   return built.plan;
-}
-
-function mutableStateWrites({
-  partyId,
-  state,
-  command,
-  result,
-  versions,
-  changeSet
-}) {
-  const set = {
-    inserts: [],
-    updates: [],
-    appends: [],
-    deletes: [],
-    expected: []
-  };
-  if (result.elapsed > 0) {
-    set.updates.push(row('party_clocks', partyId, {
-      party_id: partyId,
-      whole_minutes: state.clock_minutes,
-      updated_change_set_id: changeSet
-    }));
-    set.expected.push(
-      expected('party_clocks', partyId, versions.clock)
-    );
-  }
-  if ((command.verb === 'move' && result.elapsed > 0)
-      || ['perform_simple_work', 'rest'].includes(command.verb)) {
-    const id = `player_character:${state.player.id}`;
-    set.updates.push(row('party_actor_body_states', id, {
-      party_id: partyId,
-      actor_kind: 'player_character',
-      actor_id: state.player.id,
-      health: state.player.health,
-      energy: state.player.energy,
-      satiety: state.player.satiety,
-      updated_change_set_id: changeSet
-    }));
-    set.expected.push(expected(
-      'party_actor_body_states',
-      id,
-      versions.body
-    ));
-  }
-  if (command.verb === 'give') {
-    const ropeId = `item:${partyId}:rope`;
-    set.updates.push(row(
-      'party_entity_controls',
-      `item:${ropeId}`,
-      {
-        party_id: partyId,
-        entity_kind: 'item',
-        entity_id: ropeId,
-        owner_ref: ref('actor', state.player.id),
-        holder_ref: ref('npc', state.npc.id),
-        controller_ref: ref('npc', state.npc.id),
-        updated_change_set_id: changeSet
-      }
-    ));
-    set.expected.push(expected(
-      'party_entity_controls',
-      `item:${ropeId}`,
-      versions.ropeControl
-    ));
-  }
-  return set;
 }
 
 function immediateActionWrites({

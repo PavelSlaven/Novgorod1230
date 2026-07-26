@@ -149,10 +149,11 @@ export function evaluateLowerDvinaV3ProductionCutover({
   const invalidRequestPhaseEvent = phaseEvents.some((event) =>
     event.request_digest === requestDigest
     && !exactPhaseEvent(event, expectedPreparedEvent, event.phase));
-  const differentRequestPhaseEvent = phaseEvents.some((event) =>
-    event.request_digest !== requestDigest);
+  const differentRequestCleanupEvent = phaseEvents.some((event) =>
+    event.request_digest !== requestDigest
+    && event.phase === 'party_cleanup_committed');
   const conflictingPhaseEvent =
-    differentRequestPhaseEvent || invalidRequestPhaseEvent;
+    differentRequestCleanupEvent || invalidRequestPhaseEvent;
   const resumeAfterCleanup =
     identityMatches
     && exactPredecessor

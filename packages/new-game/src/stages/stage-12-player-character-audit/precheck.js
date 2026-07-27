@@ -1,5 +1,6 @@
 import { STAGE11_DOSSIER_SCHEMA, STAGE12_CODE_PRECHECK_SCHEMA } from './constants.js';
 import { concern, collectInventoryItems, collectItemProfileIds, collectNpcCandidateIds, collectOccupationIds, collectPropertyRuleIds, collectRefs, collectRelationObjects, collectSkillObjects, collectSocialRoleIds, extractNumericNamedValues, findForbiddenDossierFields, firstText, hasAny, hasNullOccupationReason, inRange, isPlainObject, nonEmptyArray, text } from './shared.js';
+import { validateTracePlayerProfilePolicy } from '../stage-11-player-character/trace-policy.js';
 
 export function buildStage12CodePrecheck(input = {}) {
   const checks = {
@@ -149,6 +150,16 @@ export function buildStage12CodePrecheck(input = {}) {
     checks.no_downstream_entities = false;
     for (const leak of leaks) {
       concerns.push(concern('PLAYER_AUDIT_DOWNSTREAM_ENTITY_LEAK', `player_character_dossier must not contain downstream field ${leak.key}.`, { field: leak.path, severity: 'hard_block' }));
+    }
+  }
+
+  const tracePolicy = input.audit_policy?.trace_player_profile_policy;
+  if (tracePolicy !== undefined && tracePolicy !== null) {
+    checks.trace_player_profile_valid = true;
+    const traceConcerns = validateTracePlayerProfilePolicy(dossier, { trace_player_profile_policy: tracePolicy }, { severity: 'hard_block' });
+    if (traceConcerns.length > 0) {
+      checks.trace_player_profile_valid = false;
+      concerns.push(...traceConcerns);
     }
   }
 

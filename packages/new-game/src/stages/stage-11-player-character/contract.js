@@ -36,7 +36,10 @@ export function normalizeCharacterGenerationPolicy(policy = {}) {
     allow_empty_or_minimal_inventory: policy.allow_empty_or_minimal_inventory ?? true,
     allow_abstract_background_relations: policy.allow_abstract_background_relations ?? true,
     temporary_source_trace_refs_allowed: policy.temporary_source_trace_refs_allowed ?? true,
-    repair_required_for_missing_critical_item_profile: policy.repair_required_for_missing_critical_item_profile ?? true
+    repair_required_for_missing_critical_item_profile: policy.repair_required_for_missing_critical_item_profile ?? true,
+    ...(Object.hasOwn(policy, 'trace_player_profile_policy') && policy.trace_player_profile_policy !== null
+      ? { trace_player_profile_policy: policy.trace_player_profile_policy }
+      : {})
   };
 }
 

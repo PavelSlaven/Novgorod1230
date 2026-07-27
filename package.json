@@ -185,6 +185,7 @@
     "test:knowledge-source": "node --test packages/knowledge-source/test/*.test.js tools/docs-tools/test/knowledge-source-migration.test.js tools/docs-tools/test/knowledge-corpus-verifier.test.js test/modules/knowledge-source-architecture.test.js test/integration/knowledge-source-production.test.js",
     "test:world-catalog": "node --test tools/world-catalog-workflow/test/*.test.js",
     "world-catalog:validate-novgorod-revision": "node tools/world-catalog-workflow/src/cli.js validate-revision --revision data/world-catalogs/novgorod/revisions/novgorod_1230_research_revision_001.json",
+    "lower-dvina:trace:phase-0a:check": "node tools/world-catalog-workflow/src/lower-dvina-trace-phase-0a-check.mjs",
     "world-db:up": "docker compose up -d",
     "world-db:seed": "node scripts/seed-world-base.js",
     "world-db:prepare-staging": "node scripts/prepare-rus13-staging.js",

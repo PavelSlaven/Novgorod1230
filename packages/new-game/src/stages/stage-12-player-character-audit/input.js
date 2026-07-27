@@ -38,7 +38,10 @@ export function normalizeStage12AuditPolicy(policy = {}) {
     require_attributes_balance: policy.require_attributes_balance ?? true,
     require_skill_basis: policy.require_skill_basis ?? true,
     require_sources: policy.require_sources ?? true,
-    reject_downstream_entities: policy.reject_downstream_entities ?? true
+    reject_downstream_entities: policy.reject_downstream_entities ?? true,
+    ...(Object.hasOwn(policy, 'trace_player_profile_policy') && policy.trace_player_profile_policy !== null
+      ? { trace_player_profile_policy: policy.trace_player_profile_policy }
+      : {})
   };
 }
 

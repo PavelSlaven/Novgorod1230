@@ -220,8 +220,6 @@ check(
 );
 
 const explicitCurrentStatusPaths = [
-  '.github/AGENTS.md',
-  'AGENTS.md',
   'README.md',
   'apps/game-server/MODULE.md',
   'data/knowledge-source/corpus/DOCUMENTS/README.md',

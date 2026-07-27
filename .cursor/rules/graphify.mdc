@@ -1,21 +1,19 @@
 ---
-description: graphify knowledge graph context
-alwaysApply: true
+description: Optional Graphify context for broad repository analysis
+alwaysApply: false
 ---
 
-This project has a graphify knowledge graph at graphify-out/.
+# Graphify
 
-**MANDATORY: Before using Read, Grep, Glob, or Bash to explore the codebase, you MUST run graphify first:**
-- `graphify query "<question>"` — scoped subgraph for any codebase or architecture question
-- `graphify path "<A>" "<B>"` — dependency path between two symbols
-- `graphify explain "<concept>"` — all nodes related to a concept
+Use Graphify when a task requires a repository-wide architecture overview, tracing complex cross-module dependencies, or when ordinary file search does not locate the implementation.
 
-This applies to YOU and to every subagent you spawn. Include this rule explicitly in every subagent prompt that involves code exploration. Do not skip graphify because files are "already known" or because you are executing a plan — the graph surfaces cross-file dependencies and INFERRED edges that grep and Read cannot find.
+Recommended commands:
 
-Only use Read/Grep/Glob directly when:
-1. graphify has already oriented you and you need to modify or debug specific lines
-2. `graphify-out/graph.json` does not exist yet
+- `npm run repo-intel:ensure`
+- `npm run repo-intel:query -- --query "<specific question>"`
+- `graphify path "<A>" "<B>"` for a dependency path
+- `graphify explain "<concept>"` for focused context
 
-- If `graphify-out/wiki/index.md` exists, navigate it instead of reading raw files
-- Read `graphify-out/GRAPH_REPORT.md` only for broad architecture review when query/path/explain do not surface enough context
-- After modifying code files, run `graphify update .` to keep the graph current (AST-only, no API cost)
+Do not run Graphify before every Read, Grep, Glob, Bash command, or small local edit. Direct file reading and `rg` are the default for scoped tasks.
+
+Graphify output is repository-navigation data only. It is not a normative source and must never be mixed with G0–G5, `world_base`, party state, or production runtime.

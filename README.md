@@ -136,7 +136,7 @@ npm run knowledge:controls
 
 Команды возвращают JSON. Поиск выдаёт `document_id`, статус, SHA-256, раздел, диапазон строк, метод retrieval, нормативный приоритет и связи. `active` используется по умолчанию; дополнительные статусы требуют явного `--statuses active,proposed`.
 
-Правила автоматического применения находятся в `AGENTS.md`, `.github/AGENTS.md` и `.cursor/rules/knowledge-rag.mdc`. RAG используется для обнаружения нормативов, после чего обязательные и профильные документы читаются полностью.
+Правила профильного применения находятся в [AGENTS.md](AGENTS.md) и `.cursor/rules/knowledge-rag.mdc`. RAG используется для обнаружения относящихся к задаче нормативов; исходные документы читаются только в необходимом объёме.
 
 ## Карта Новгородской земли
 
@@ -177,7 +177,7 @@ npm run world-catalog:validate-novgorod-revision
 - stale corpus/policy/RAG pins, отсутствующая metadata и ложное semantic coverage завершаются typed failure;
 - добавлены контрольные top-k запросы и readiness report;
 - добавлен JSON CLI `query|read|status|controls` и корневые npm-команды;
-- добавлены обязательные инструкции Codex/Cursor в `AGENTS.md`, `.github/AGENTS.md` и `.cursor/rules/knowledge-rag.mdc`;
+- добавлены профильные инструкции Codex/Cursor в `AGENTS.md` и `.cursor/rules/knowledge-rag.mdc`;
 - добавлены unit, negative, repository и subprocess CLI contract tests.
 
 ### Принятые решения
@@ -195,7 +195,7 @@ CLI является тонким adapter-слоем существующего 
 - read-only retrieval service: `packages/knowledge-source/src/services/rag-reader.js`;
 - agent CLI: `packages/knowledge-source/src/cli.js`;
 - filesystem port: `packages/knowledge-source/src/adapters/filesystem-storage.js`;
-- Codex/Cursor rules: `AGENTS.md`, `.github/AGENTS.md`, `.cursor/rules/knowledge-rag.mdc`;
+- Codex/Cursor rules: `AGENTS.md`, `.cursor/rules/knowledge-rag.mdc`;
 - нормативная техническая политика: `docs/architecture/KNOWLEDGE_SOURCE_POLICY.md`;
 - tests: `packages/knowledge-source/test/rag-*.test.js`, `packages/knowledge-source/test/agent-cli.test.js`.
 

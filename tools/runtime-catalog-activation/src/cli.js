@@ -15,6 +15,8 @@ import {
 } from './forward-migration.js';
 import {
   PARTY_RUNTIME_CATALOG_MIGRATION,
+  buildWorldRuntimeCatalogMigrationPreflight,
+  WORLD_LEGACY_SCHEMA_BRIDGE,
   WORLD_RUNTIME_CATALOG_MIGRATION,
   runPartyRuntimeCatalogMigration,
   runWorldRuntimeCatalogMigration
@@ -160,31 +162,44 @@ async function executeMode({ mode, values, input, pools }) {
 }
 
 async function migrationPreflight({ worldPool, partyPool }) {
-  const checks = [];
-  for (const [migration, pool] of [
-    [WORLD_RUNTIME_CATALOG_MIGRATION, requiredPool(worldPool, 'world')],
-    [PARTY_RUNTIME_CATALOG_MIGRATION, requiredPool(partyPool, 'party')]
-  ]) {
-    const fingerprint = await readPostgresSchemaFingerprint(pool, migration.schema_name);
-    const ledgerRow = await readMigrationLedger(pool, migration);
-    let state;
-    try {
-      state = classifyForwardMigrationState({
-        migration,
-        actualSchemaFingerprint: fingerprint,
-        ledgerRow
-      }).status;
-    } catch (error) {
-      state = error.code;
-    }
-    checks.push({
-      migration_id: migration.migration_id,
-      migration_digest: migration.migration_digest,
-      actual_schema_fingerprint: fingerprint,
-      state
-    });
+  const world = requiredPool(worldPool, 'world');
+  const worldFingerprint = await readPostgresSchemaFingerprint(world, 'world_base');
+  const worldLedger = await readMigrationLedger(world, WORLD_RUNTIME_CATALOG_MIGRATION);
+  const worldPreflight = buildWorldRuntimeCatalogMigrationPreflight({
+    actualSchemaFingerprint: worldFingerprint,
+    ledgerRow: worldLedger
+  });
+
+  const party = requiredPool(partyPool, 'party');
+  const partyFingerprint = await readPostgresSchemaFingerprint(party, 'party_runtime');
+  const partyLedger = await readMigrationLedger(party, PARTY_RUNTIME_CATALOG_MIGRATION);
+  let partyState;
+  try {
+    partyState = classifyForwardMigrationState({
+      migration: PARTY_RUNTIME_CATALOG_MIGRATION,
+      actualSchemaFingerprint: partyFingerprint,
+      ledgerRow: partyLedger
+    }).status;
+  } catch (error) {
+    partyState = error.code;
   }
-  return { status: checks.every(({ state }) => state === 'ready') ? 'ready' : 'blocked', checks };
+  const checks = [
+    ...worldPreflight.checks,
+    {
+      migration_id: PARTY_RUNTIME_CATALOG_MIGRATION.migration_id,
+      migration_digest: PARTY_RUNTIME_CATALOG_MIGRATION.migration_digest,
+      actual_schema_fingerprint: partyFingerprint,
+      target_schema_fingerprint: PARTY_RUNTIME_CATALOG_MIGRATION.target_schema_fingerprint,
+      state: partyState
+    }
+  ];
+  return {
+    status: worldPreflight.status === 'ready'
+      && ['ready', 'already_applied'].includes(partyState)
+      ? 'ready'
+      : 'blocked',
+    checks
+  };
 }
 
 async function readMigrationLedger(pool, migration) {
@@ -230,6 +245,7 @@ function assertExpectedRequestDigest(mode, input, expected) {
     ? digestEnvelope({
       schema: 'rus.runtime_catalog_migration_request.v1',
       migrations: [
+        WORLD_LEGACY_SCHEMA_BRIDGE.migration_digest,
         WORLD_RUNTIME_CATALOG_MIGRATION.migration_digest,
         PARTY_RUNTIME_CATALOG_MIGRATION.migration_digest
       ]

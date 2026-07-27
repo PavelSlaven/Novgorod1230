@@ -10,6 +10,8 @@ import {
 } from '../src/forward-migration.js';
 import {
   PARTY_RUNTIME_CATALOG_MIGRATION,
+  buildWorldRuntimeCatalogMigrationPreflight,
+  WORLD_LEGACY_SCHEMA_BRIDGE,
   WORLD_RUNTIME_CATALOG_MIGRATION
 } from '../src/forward-migrations.js';
 
@@ -27,6 +29,7 @@ test('published migration contracts exactly match executable security-aware migr
     'rus.postgres_schema_fingerprint.v2'
   );
   const executableById = new Map([
+    WORLD_LEGACY_SCHEMA_BRIDGE,
     WORLD_RUNTIME_CATALOG_MIGRATION,
     PARTY_RUNTIME_CATALOG_MIGRATION
   ].map((entry) => [entry.migration_id, entry]));
@@ -184,4 +187,83 @@ test('forward migration rolls back when target fingerprint is not exact', async 
       && error.code === 'MIGRATION_TARGET_FINGERPRINT_MISMATCH'
   );
   assert.equal(calls.at(-1), 'ROLLBACK');
+});
+
+test('forward migration rolls back bridge and target DDL in one transaction', async () => {
+  const bridge = createForwardMigration({
+    migrationId: 'legacy_world_bridge',
+    schemaName: 'world_base',
+    sourceSchemaFingerprint: 'c'.repeat(64),
+    targetSchemaFingerprint: migration.source_schema_fingerprint,
+    sql: 'ALTER TABLE world_base.legacy_example ADD COLUMN canonical_id TEXT;'
+  });
+  const calls = [];
+  const fingerprints = [
+    bridge.source_schema_fingerprint,
+    bridge.target_schema_fingerprint
+  ];
+  const client = {
+    async query(sql) {
+      calls.push(sql);
+      if (sql.includes('to_regclass')) return { rows: [{ ledger_exists: false }] };
+      if (sql === migration.sql) throw Object.assign(new Error('target DDL failed'), { code: 'XX000' });
+      return { rows: [] };
+    },
+    release() {}
+  };
+
+  await assert.rejects(
+    () => runForwardMigration({
+      pool: { async connect() { return client; } },
+      migration,
+      sourceBridge: bridge,
+      readSchemaFingerprint: async () => fingerprints.shift()
+    }),
+    (error) => error?.code === 'XX000'
+  );
+  assert.ok(calls.includes(bridge.sql));
+  assert.ok(calls.includes(migration.sql));
+  assert.equal(calls.at(-1), 'ROLLBACK');
+  assert.equal(calls.filter((sql) => sql === 'BEGIN').length, 1);
+  assert.equal(calls.includes('COMMIT'), false);
+});
+
+test('world migration preflight exposes the exact bridge and runtime chain', () => {
+  const legacy = buildWorldRuntimeCatalogMigrationPreflight({
+    actualSchemaFingerprint: WORLD_LEGACY_SCHEMA_BRIDGE.source_schema_fingerprint,
+    ledgerRow: null
+  });
+  assert.deepEqual(legacy.checks.map(({ migration_id, state }) => ({
+    migration_id,
+    state
+  })), [
+    {
+      migration_id: WORLD_LEGACY_SCHEMA_BRIDGE.migration_id,
+      state: 'ready'
+    },
+    {
+      migration_id: WORLD_RUNTIME_CATALOG_MIGRATION.migration_id,
+      state: 'ready_after_prerequisite'
+    }
+  ]);
+  assert.equal(legacy.status, 'ready');
+
+  const canonicalSource = buildWorldRuntimeCatalogMigrationPreflight({
+    actualSchemaFingerprint: WORLD_RUNTIME_CATALOG_MIGRATION.source_schema_fingerprint,
+    ledgerRow: null
+  });
+  assert.deepEqual(
+    canonicalSource.checks.map(({ state }) => state),
+    ['already_applied', 'ready']
+  );
+
+  const final = buildWorldRuntimeCatalogMigrationPreflight({
+    actualSchemaFingerprint: WORLD_RUNTIME_CATALOG_MIGRATION.target_schema_fingerprint,
+    ledgerRow: WORLD_RUNTIME_CATALOG_MIGRATION
+  });
+  assert.deepEqual(
+    final.checks.map(({ state }) => state),
+    ['already_applied', 'already_applied']
+  );
+  assert.equal(final.status, 'ready');
 });

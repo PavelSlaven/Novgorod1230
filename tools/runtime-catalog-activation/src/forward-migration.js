@@ -92,14 +92,33 @@ export function classifyForwardMigrationState({
 export async function runForwardMigration({
   pool,
   migration,
+  sourceBridge = null,
   readSchemaFingerprint = readPostgresSchemaFingerprint
 }) {
+  if (sourceBridge && (
+    sourceBridge.schema_name !== migration.schema_name
+    || sourceBridge.target_schema_fingerprint !== migration.source_schema_fingerprint
+  )) {
+    throw new TypeError('Source bridge must end at the forward migration source fingerprint.');
+  }
   const client = await pool.connect();
   const schema = SCHEMAS[migration.schema_name];
   try {
     await client.query('BEGIN');
     await client.query('SELECT pg_advisory_xact_lock($1::bigint)', [schema.advisoryLockKey]);
-    const actualSchemaFingerprint = await readSchemaFingerprint(client, migration.schema_name);
+    let actualSchemaFingerprint = await readSchemaFingerprint(client, migration.schema_name);
+    if (sourceBridge
+        && actualSchemaFingerprint === sourceBridge.source_schema_fingerprint) {
+      await client.query(sourceBridge.sql);
+      actualSchemaFingerprint = await readSchemaFingerprint(client, migration.schema_name);
+      if (actualSchemaFingerprint !== sourceBridge.target_schema_fingerprint) {
+        fail('MIGRATION_TARGET_FINGERPRINT_MISMATCH', 'Source bridge did not produce the exact target schema.', {
+          migration_id: sourceBridge.migration_id,
+          expected_schema_fingerprint: sourceBridge.target_schema_fingerprint,
+          actual_schema_fingerprint: actualSchemaFingerprint
+        });
+      }
+    }
     const ledgerRow = await readLedgerRow(client, migration);
     const state = classifyForwardMigrationState({
       migration,

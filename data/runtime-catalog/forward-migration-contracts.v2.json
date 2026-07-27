@@ -9,6 +9,17 @@
   },
   "migrations": [
     {
+      "migration_id": "world_legacy_062_to_canonical_v1",
+      "migration_digest": "52adb2e1e16fd4a2f7f4f4858b749121512714515a2a3059290d5ef54d595f11",
+      "schema_name": "world_base",
+      "source_schema_fingerprint": "869021eded07633eec27048a102600385248e5a8e5f8dd499943d404e17fad8f",
+      "target_schema_fingerprint": "9d1d4b187cd22049b60340f48c1cbcd4b6282f7cca0c08594d06c7ed0f067080",
+      "sql_paths": [
+        "infra/world-base/schema/09.sql..20.sql",
+        "tools/runtime-catalog-activation/migrations/world/000_legacy_world_bridge_finalize.sql"
+      ]
+    },
+    {
       "migration_id": "world_runtime_catalog_activation_v2",
       "migration_digest": "66afda650fbefb0560bef97602e2d30e3b8b4fb49e06b25f404d4e57cc25ec72",
       "schema_name": "world_base",

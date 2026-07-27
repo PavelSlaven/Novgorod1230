@@ -32,7 +32,10 @@ CLI modes `preflight`, `migrate`, `register-baseline`, `compile-overlay`,
 Machine-readable artifacts описаны
 `schemas/runtime-catalog/runtime-catalog-artifacts-v2.schema.json`.
 Forward-migration contracts находятся в
-`data/runtime-catalog/forward-migration-contracts.v1.json`.
+`data/runtime-catalog/forward-migration-contracts.v2.json`.
+Поле `operator_backup_verified` в статическом контракте не является
+attestation конкретного запуска: перед operator apply backup проверяется
+внешним deployment/operator gate.
 
 ## Допустимые зависимости
 

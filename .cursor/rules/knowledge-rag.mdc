@@ -1,21 +1,17 @@
 ---
-description: Mandatory RAG workflow for project documentation and normative discovery
-alwaysApply: true
+description: Project knowledge RAG for normative discovery
+alwaysApply: false
 ---
 
 # Project knowledge RAG
 
-Before searching project files for rules or architectural requirements:
+Use the knowledge-source CLI when a task changes game behavior, architecture, contracts, persistence, materialization, or another area governed by project normative documents.
 
-1. Run `npm run knowledge:status`.
-2. Run `npm run knowledge:query -- --query "<concrete information need>"`.
-3. Read each mandatory or selected profile document fully with `npm run knowledge:read -- --document-id <document_id>`.
-4. Use ordinary code search only after normative discovery, to inspect implementations, call sites, contracts and tests.
+```bash
+npm run knowledge:query -- --query "<concrete normative need>"
+npm run knowledge:read -- --document-id <document_id>
+```
 
-The CLI output is JSON and includes source provenance. Keep the returned `document_id`, status, SHA-256 and line ranges in the working evidence.
+Use the result to locate the relevant source document, then verify the requirement in that document. Do not query or read the whole normative corpus for small local, documentation-only, formatting, or mechanical tasks.
 
-Default retrieval is `active` only. Access `proposed` or `deprecated` only by an explicit command such as:
-
-`npm run knowledge:query -- --query "..." --statuses active,proposed`
-
-Do not bypass a typed failure, stale RAG, semantic blocker or missing mandatory source with a similar file, legacy copy, fallback or assumption. RAG results guide navigation but never replace the requirement to read mandatory documents fully.
+Default retrieval is `active` only. Access `proposed` or `deprecated` documents only when the task explicitly requires them.

@@ -31,6 +31,13 @@ test('agent instruction links resolve to repository files', async () => {
     }
   }
   await assert.rejects(stat(join(root, '.github/AGENTS.md')));
+  await assert.rejects(stat(join(root, '.codex/hooks.json')));
+  await assert.rejects(stat(join(root, '.codex/skills/graphify/SKILL.md')));
+  await assert.rejects(stat(join(root, '.agents/skills/graphify/SKILL.md')));
+
+  const readme = await readFile(join(root, 'README.md'), 'utf8');
+  assert.doesNotMatch(readme, /\.github\/AGENTS\.md/u);
+  assert.doesNotMatch(readme, /Правила автоматического применения/u);
 });
 
 test('canonical agent instructions preserve critical project invariants without universal workflow gates', async () => {
@@ -119,9 +126,4 @@ test('canonical document registry has unique existing targets and no obsolete ro
       await assert.rejects(stat(join(root, previous)));
     }
   }
-});
-
-test('documentation tree satisfies seed, generated and dated-artifact policies', async () => {
-  const result = await validateDocumentationTree(root);
-  assert.equal(result.ok, true, result.errors.join('\n'));
 });

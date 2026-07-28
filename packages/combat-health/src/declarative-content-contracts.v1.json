@@ -1,0 +1,62 @@
+{
+  "schema": "rus.declarative_content_contract_registry.v1",
+  "registry_id": "rus.combat_health.declarative_content_contracts.v1",
+  "revision": 1,
+  "owner": "@rus/combat-health",
+  "package_version": "0.13.0",
+  "status": "approved",
+  "contracts": [
+    {
+      "schema_id": "rus.combat_health.atomic_conflict_resolution_profile.v1",
+      "schema_version": 1,
+      "record_kind": "approved_atomic_conflict_resolution_definition",
+      "existing_support_entrypoints": [
+        "@rus/combat-health:buildAttackRequest",
+        "@rus/combat-health:buildHarmPackage",
+        "@rus/combat-health:applyHarmPackage",
+        "@rus/combat-health:validateCombatState"
+      ],
+      "existing_support_scope": [
+        "attack_request_validation",
+        "harm_proposal_building",
+        "body_harm_application",
+        "combat_state_validation"
+      ],
+      "runtime_resolution_execution": "deferred_to_first_use_integration",
+      "future_runtime_integration_inputs": [
+        "committed_actor_positions_and_body_states",
+        "committed_npc_decisions_and_group_participant_bindings",
+        "committed_weapon_holder_controller_state",
+        "approved_ordered_atomic_stage_graph",
+        "expected_state_version"
+      ],
+      "future_runtime_integration_outputs": [
+        "typed_committed_atomic_effects_or_incomplete_outcome",
+        "approved_body_effect_proposal",
+        "approved_property_transition_admission",
+        "typed_player_decision_boundary"
+      ],
+      "required_invariants": [
+        "one_code_owner_selects_only_declared_atomic_outcomes",
+        "every_atomic_effect_has_one_exact_declared_producer_stage",
+        "ordered_stages_consume_only_committed_inputs",
+        "body_and_property_mutations_remain_with_their_existing_owners",
+        "no_long_followup_action_crosses_a_player_decision_boundary",
+        "no_semantic_fallback"
+      ],
+      "forbidden_capabilities": [
+        "runtime_handler",
+        "combined_write_plan_builder",
+        "physical_transaction",
+        "persistence",
+        "llm_outcome_selection",
+        "semantic_fallback",
+        "hidden_state_invention",
+        "party_materialization",
+        "api_publication",
+        "ui"
+      ]
+    }
+  ],
+  "scenario_specific_ids_or_counts": "forbidden"
+}

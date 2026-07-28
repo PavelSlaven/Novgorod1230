@@ -1,0 +1,64 @@
+{
+  "schema": "rus.declarative_content_contract_registry.v1",
+  "registry_id": "rus.visibility_knowledge_memory.declarative_content_contracts.v1",
+  "revision": 1,
+  "owner": "@rus/visibility-knowledge-memory",
+  "package_version": "0.13.0",
+  "status": "approved",
+  "contracts": [
+    {
+      "schema_id": "rus.trace_completion_rules.v1",
+      "schema_version": 1,
+      "record_kind": "scenario_completion_rule_definition",
+      "required_top_level_fields": ["set_id", "revision", "owner", "input_contract", "evidence_resolution_outcome_to_completion_state", "completion_outcome_model", "completion_states", "separation_rules"],
+      "required_invariants": ["committed_fact_inputs", "evidence_completion_separation", "single_primary_state", "composite_independent_dimensions", "typed_full_partial_open_states", "external_documentary_inputs", "no_legal_judgment"],
+      "forbidden_capabilities": ["completion_evaluator", "epilogue_generation", "runtime_handler", "persistence", "party_materialization", "api_publication", "ui"]
+    },
+    {
+      "schema_id": "rus.visibility_knowledge_memory.committed_scene_observation.v1",
+      "schema_version": 1,
+      "record_kind": "approved_committed_scene_observation_definition",
+      "existing_support_entrypoints": [
+        "@rus/visibility-knowledge-memory:validateVisibleContext",
+        "@rus/visibility-knowledge-memory:mergeKnowledgeFacts",
+        "@rus/visibility-knowledge-memory:validateMemoryFact",
+        "@rus/visibility-knowledge-memory:mergeValidatedKnowledgeMemory"
+      ],
+      "existing_support_scope": [
+        "visible_context_validation",
+        "knowledge_fact_merge",
+        "memory_fact_validation",
+        "validated_knowledge_memory_merge"
+      ],
+      "runtime_observation_execution": "deferred_to_first_use_integration",
+      "future_runtime_integration_inputs": [
+        "committed_route_terminal_positions",
+        "committed_subject_body_condition",
+        "approved_visibility_requirement",
+        "expected_state_version"
+      ],
+      "future_runtime_integration_outputs": [
+        "typed_committed_scene_perception",
+        "approved_visible_fact_projection_or_typed_failure"
+      ],
+      "required_invariants": [
+        "perception_precedes_knowledge",
+        "observer_and_subject_positions_are_committed",
+        "objective_body_state_is_not_mutated_by_observation",
+        "treatment_is_not_required_for_direct_alive_observation",
+        "hidden_state_is_not_exposed"
+      ],
+      "forbidden_capabilities": [
+        "runtime_handler",
+        "physical_transaction",
+        "persistence",
+        "semantic_fallback",
+        "hidden_state_invention",
+        "party_materialization",
+        "api_publication",
+        "ui"
+      ]
+    }
+  ],
+  "scenario_specific_ids_or_counts": "forbidden"
+}

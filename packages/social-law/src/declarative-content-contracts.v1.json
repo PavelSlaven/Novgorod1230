@@ -1,0 +1,18 @@
+{
+  "schema": "rus.declarative_content_contract_registry.v1",
+  "registry_id": "rus.social_law.declarative_content_contracts.v1",
+  "revision": 1,
+  "owner": "@rus/social-law",
+  "status": "approved",
+  "contracts": [
+    {
+      "schema_id": "rus.trace_promise_policy.v1",
+      "schema_version": 1,
+      "record_kind": "scenario_promise_lifecycle_definition",
+      "required_top_level_fields": ["policy_id", "revision", "owner", "promise_type", "parties", "witness_binding", "scope", "offer_timing", "states", "transitions", "forbidden_transitions", "write_target_allowlist", "forbidden_effects"],
+      "required_invariants": ["offer_precedes_activation", "activation_requires_committed_conditions", "bound_witnesses", "typed_lifecycle", "legal_scope_exclusions"],
+      "forbidden_capabilities": ["pardon_or_judgment", "runtime_handler", "persistence", "party_materialization", "api_publication", "ui"]
+    }
+  ],
+  "scenario_specific_ids_or_counts": "forbidden"
+}

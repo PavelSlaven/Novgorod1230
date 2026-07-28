@@ -1,0 +1,300 @@
+{
+  "schema": "rus.trace_completion_rules.v1",
+  "set_id": "trace_ld_v1_completion_rules",
+  "revision": 1,
+  "publication_status": "unpublished",
+  "owner": "@rus/visibility-knowledge-memory",
+  "owner_schema_ref": {"path": "packages/visibility-knowledge-memory/src/declarative-content-contracts.v1.json", "digest": "5c0a3ce0953867ce2f913a6b5149d108ca85708fef38396be3ebb59357ed2a96", "registry_id": "rus.visibility_knowledge_memory.declarative_content_contracts.v1", "schema_id": "rus.trace_completion_rules.v1", "schema_version": 1},
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden",
+  "owner_contracts": ["@rus/visibility-knowledge-memory:visible_state"],
+  "input_contract": {
+    "required_commit_state": "factual_commit_complete",
+    "allowed_input_classes": ["committed_objective_fact", "committed_evidence_resolution_outcome", "committed_promise_state", "committed_typed_temporary_disposition"],
+    "forbidden_input_classes": ["player_hypothesis", "narration", "hidden_candidate_id", "uncommitted_statement", "single_check_outcome"]
+  },
+  "committed_property_state_projection_inputs": [
+    {
+      "projection_id": "trace_ld_v1_projection_intact_packet_to_completion_facts",
+      "source_property_transition_ref": "trace_ld_v1_property_packet_recovered_to_player",
+      "source_consequence_ref": "trace_ld_v1_consequence_intact_packet_returned_and_seal_observed",
+      "requires_committed_state": {
+        "physical_parent_ref": null,
+        "holder_ref": "player_clerk",
+        "controller_ref": "player_clerk",
+        "seal_state": "intact"
+      },
+      "projected_committed_facts": ["sealed_packet_returned", "seal_intact"],
+      "projection_commit_boundary": "after_source_property_transition_and_player_observation_commit",
+      "direct_completion_state_write": "forbidden"
+    },
+    {
+      "projection_id": "trace_ld_v1_projection_destroyed_packet_to_completion_facts",
+      "source_property_transition_ref": "trace_ld_v1_property_packet_destroyed",
+      "source_consequence_ref": "trace_ld_v1_consequence_zhdanko_document_destroyed",
+      "requires_committed_state": {
+        "seal_state": "destroyed",
+        "document_condition": "destroyed_unreadable",
+        "evidence_availability": "destroyed"
+      },
+      "projected_committed_facts": ["packet_lost_or_destroyed", "seal_damaged"],
+      "projection_commit_boundary": "after_source_property_transition_commit",
+      "direct_completion_state_write": "forbidden"
+    }
+  ],
+  "evidence_resolution_outcome_to_completion_state": [
+    {
+      "evidence_outcome": "conclusion:principal_zhdanko",
+      "additional_committed_facts_required": [
+        "onisim_found_alive",
+        "sealed_packet_returned",
+        "seal_intact",
+        "conclusion:physical_attack_pattern",
+        "conclusion:ratsha_participated",
+        "temporary_disposition_outcome_committed",
+        "promise_state_admitted_for_full_completion"
+      ],
+      "admitted_completion_state": "trace_ld_v1_completion_full"
+    },
+    {
+      "evidence_outcome": "partial_outcome:trace_ld_v1_principal_without_direct_voice",
+      "additional_committed_facts_required": ["temporary_disposition_outcome_committed"],
+      "admitted_completion_state": "trace_ld_v1_completion_partial",
+      "never_automatic": true
+    }
+  ],
+  "completion_fact_provenance": {
+    "undeclared_fact_policy": "forbidden",
+    "internal_producers": [
+      {
+        "producer_kind": "consequence_profile",
+        "producer_ref": "trace_ld_v1_consequence_intact_packet_returned_and_seal_observed",
+        "fact_ids": ["sealed_packet_returned", "seal_intact"]
+      },
+      {
+        "producer_kind": "consequence_profile",
+        "producer_ref": "trace_ld_v1_consequence_zhdanko_document_destroyed",
+        "fact_ids": ["packet_lost_or_destroyed", "seal_damaged"]
+      },
+      {
+        "producer_kind": "active_scope_exit_binding",
+        "producer_ref": "trace_ld_v1_scope_exit_storehouse_by_small_boat",
+        "fact_ids": ["zhdanko_fled"]
+      },
+      {
+        "producer_kind": "promise_policy_transition",
+        "producer_ref": "trace_ld_v1_promise_no_summary_killing",
+        "source_history_event_fact_ids": ["promise_offered", "promise_activated", "promise_fulfilled", "promise_broken"],
+        "source_projection_fact_ids": ["promise_activation_basis_committed", "promise_fulfillment_basis_committed", "promise_breach_basis_committed"],
+        "fact_ids": ["promise_current_active", "promise_current_fulfilled", "promise_current_broken", "promise_state_admitted_for_full_completion"],
+        "current_state_slot": "trace_ld_v1_promise_no_summary_killing_current_state",
+        "history_events_as_completion_inputs": "forbidden"
+      },
+      {
+        "producer_kind": "typed_temporary_disposition_consequence_and_activity_cancellation",
+        "producer_ref": "trace_ld_v1_consequence_temporary_disposition_committed",
+        "cancellation_activity_ref": "trace_ld_v1_activity_temporary_decision",
+        "fact_ids": ["temporary_disposition_outcome_committed", "temporary_disposition_missing"]
+      },
+      {
+        "producer_kind": "consequence_profile",
+        "producer_ref": "trace_ld_v1_consequence_zhdanko_submission_committed",
+        "source_output_fact_ids": ["zhdanko_submission_committed", "zhdanko_voluntary_bag_handover_committed"],
+        "fact_ids": ["zhdanko_submission_committed"]
+      },
+      {
+        "producer_kind": "consequence_profile",
+        "producer_ref": "trace_ld_v1_consequence_bounded_group_disarm_committed",
+        "source_output_fact_ids": ["bounded_group_disarm_atomic_effect_committed", "zhdanko_disarmed_and_temporarily_restrained"],
+        "fact_ids": ["zhdanko_disarmed_and_temporarily_restrained"]
+      }
+    ],
+    "external_committed_sources": [
+      {
+        "source_kind": "phase_0c_evidence_resolution",
+        "source_ref": "trace_ld_v1_clue_evidence_graph_set",
+        "fact_ids": [
+          "conclusion:physical_attack_pattern",
+          "conclusion:ratsha_participated",
+          "conclusion:principal_zhdanko",
+          "partial_outcome:trace_ld_v1_principal_without_direct_voice"
+        ]
+      },
+      {
+        "source_kind": "committed_scene_observation_projection",
+        "source_ref": "trace_ld_v1_observation_onisim_alive_at_drying_shed",
+        "source_consequence_ref": "trace_ld_v1_consequence_onisim_found_alive_observed",
+        "requires_route_terminal_commit_ref": "trace_ld_v1_route_camp_to_shed",
+        "requires_source_subject": "onisim_boatman",
+        "requires_any_committed_source_state": ["injured_unable_to_walk", "stabilized_unable_to_walk"],
+        "projection_commit_boundary": "after_route_terminal_position_and_direct_scene_observation_commit",
+        "treatment_dependency": "forbidden",
+        "unmapped_death_state_policy": "fail_closed_no_dead_completion_value",
+        "fact_ids": ["onisim_found_alive"]
+      }
+    ]
+  },
+  "completion_outcome_model": {
+    "kind": "primary_state_with_ordered_independent_dimensions",
+    "primary_state_precedence": [
+      "trace_ld_v1_completion_full",
+      "trace_ld_v1_completion_case_open",
+      "trace_ld_v1_completion_partial"
+    ],
+    "evaluation_order": ["validate_dimension_conflicts", "select_primary_state"],
+    "primary_state_partition_policy": {
+      "full_state_ref": "trace_ld_v1_completion_full",
+      "case_open_state_ref": "trace_ld_v1_completion_case_open",
+      "case_open_when_fact_absent": "temporary_disposition_outcome_committed",
+      "partial_state_ref": "trace_ld_v1_completion_partial",
+      "partial_when_fact_present_and_full_not_selected": "temporary_disposition_outcome_committed",
+      "unresolved_dimension_values_are_preserved": true,
+      "negative_fact_inference_from_absence": "forbidden",
+      "valid_terminal_snapshot_coverage": "exactly_one_primary_state_after_dimension_conflict_validation"
+    },
+    "dimension_order": [
+      "onisim_fate",
+      "packet_state",
+      "seal_state",
+      "wreck_cause_resolution",
+      "ratsha_participation_resolution",
+      "principal_resolution",
+      "principal_presence",
+      "promise_state",
+      "temporary_disposition_state"
+    ],
+    "primary_state_cardinality": "exactly_one_after_dimension_conflict_validation",
+    "dimension_cardinality": "exactly_one_value_per_dimension_or_typed_conflict",
+    "cross_dimension_composition": "allowed",
+    "intra_dimension_conflict": "typed_completion_dimension_conflict",
+    "ordered_output": true,
+    "result_schema": {
+      "schema": "rus.trace_composite_completion_outcome.v1",
+      "required": ["primary_completion_state", "ordered_dimension_outcomes", "source_commit_version"],
+      "additional_dimensions": "forbidden"
+    },
+    "selected_completion_outcome": null
+  },
+  "completion_states": [
+    {
+      "completion_state_id": "trace_ld_v1_completion_full",
+      "kind": "full_completion",
+      "all_of_committed_facts": [
+        "onisim_found_alive",
+        "sealed_packet_returned",
+        "seal_intact",
+        "conclusion:physical_attack_pattern",
+        "conclusion:ratsha_participated",
+        "conclusion:principal_zhdanko",
+        "temporary_disposition_outcome_committed",
+        "promise_state_admitted_for_full_completion"
+      ],
+      "none_of_committed_facts": [
+        "packet_lost_or_destroyed",
+        "seal_damaged",
+        "zhdanko_fled",
+        "promise_current_broken",
+        "partial_outcome:trace_ld_v1_principal_without_direct_voice"
+      ]
+    },
+    {
+      "completion_state_id": "trace_ld_v1_completion_case_open",
+      "kind": "ongoing_open",
+      "none_of_committed_facts": ["temporary_disposition_outcome_committed"]
+    },
+    {
+      "completion_state_id": "trace_ld_v1_completion_partial",
+      "kind": "partial_completion",
+      "all_of_committed_facts": ["temporary_disposition_outcome_committed"],
+      "none_of_completion_states": ["trace_ld_v1_completion_full"]
+    }
+  ],
+  "completion_dimensions": [
+    {
+      "dimension_id": "onisim_fate",
+      "values": [
+        {"value_id": "found_alive", "when_any_of_committed_facts": ["onisim_found_alive"]},
+        {"value_id": "unresolved", "when_no_known_fact": true}
+      ]
+    },
+    {
+      "dimension_id": "packet_state",
+      "values": [
+        {"value_id": "returned", "when_any_of_committed_facts": ["sealed_packet_returned"]},
+        {"value_id": "lost_or_destroyed", "when_any_of_committed_facts": ["packet_lost_or_destroyed"]},
+        {"value_id": "unresolved", "when_no_known_fact": true}
+      ]
+    },
+    {
+      "dimension_id": "seal_state",
+      "values": [
+        {"value_id": "intact", "when_any_of_committed_facts": ["seal_intact"]},
+        {"value_id": "damaged", "when_any_of_committed_facts": ["seal_damaged"]},
+        {"value_id": "unresolved", "when_no_known_fact": true}
+      ]
+    },
+    {
+      "dimension_id": "wreck_cause_resolution",
+      "values": [
+        {"value_id": "established", "when_any_of_committed_facts": ["conclusion:physical_attack_pattern"]},
+        {"value_id": "unresolved", "when_no_known_fact": true}
+      ]
+    },
+    {
+      "dimension_id": "ratsha_participation_resolution",
+      "values": [
+        {"value_id": "established", "when_any_of_committed_facts": ["conclusion:ratsha_participated"]},
+        {"value_id": "unresolved", "when_no_known_fact": true}
+      ]
+    },
+    {
+      "dimension_id": "principal_resolution",
+      "values": [
+        {"value_id": "zhdanko_established", "when_any_of_committed_facts": ["conclusion:principal_zhdanko"]},
+        {"value_id": "partially_corroborated", "when_any_of_committed_facts": ["partial_outcome:trace_ld_v1_principal_without_direct_voice"]},
+        {"value_id": "unresolved", "when_no_known_fact": true}
+      ]
+    },
+    {
+      "dimension_id": "principal_presence",
+      "values": [
+        {"value_id": "held_or_present", "when_any_of_committed_facts": ["zhdanko_submission_committed", "zhdanko_disarmed_and_temporarily_restrained"]},
+        {"value_id": "fled", "when_any_of_committed_facts": ["zhdanko_fled"]},
+        {"value_id": "unresolved", "when_no_known_fact": true}
+      ]
+    },
+    {
+      "dimension_id": "promise_state",
+      "values": [
+        {"value_id": "fulfilled", "when_any_of_committed_facts": ["promise_current_fulfilled"]},
+        {"value_id": "broken", "when_any_of_committed_facts": ["promise_current_broken"]},
+        {"value_id": "active", "when_any_of_committed_facts": ["promise_current_active"]},
+        {"value_id": "not_active_or_unresolved", "when_no_known_fact": true}
+      ]
+    },
+    {
+      "dimension_id": "temporary_disposition_state",
+      "values": [
+        {"value_id": "committed_typed_disposition", "when_any_of_committed_facts": ["temporary_disposition_outcome_committed"]},
+        {"value_id": "missing", "when_any_of_committed_facts": ["temporary_disposition_missing"]},
+        {"value_id": "unresolved", "when_no_known_fact": true}
+      ]
+    }
+  ],
+  "documentary_requirement": {
+    "terminal_slot_ref": "trace_ld_v1_future_goods_reconciliation",
+    "required_state": "externally_committed",
+    "cannot_be_derived_from": ["trace_ld_v1_evidence_bag_at_zhdanko", "trace_ld_v1_evidence_intact_seal"]
+  },
+  "separation_rules": {
+    "evidence_resolution_is_not_completion": true,
+    "completion_is_not_legal_judgment": true,
+    "completion_is_not_epilogue": true,
+    "confession_alone_is_insufficient": true,
+    "one_check_outcome_is_insufficient": true
+  },
+  "forbidden_outputs": ["legal_judgment", "punishment", "cure", "compensation", "epilogue", "world_stop"],
+  "selected_completion_outcome": null,
+  "excludes": ["runtime_handler", "evaluator", "persistence", "party_instance", "api", "ui"]
+}

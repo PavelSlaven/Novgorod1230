@@ -1,0 +1,18 @@
+{
+  "schema": "rus.declarative_content_contract_registry.v1",
+  "registry_id": "rus.presentation.declarative_content_contracts.v1",
+  "revision": 1,
+  "owner": "@rus/presentation",
+  "status": "approved",
+  "contracts": [
+    {
+      "schema_id": "rus.trace_epilogue_rules.v1",
+      "schema_version": 1,
+      "record_kind": "scenario_epilogue_projection_definition",
+      "required_top_level_fields": ["set_id", "revision", "owner", "narration_owner", "co_owner_contract_refs", "trigger_preconditions", "allowed_completion_states", "allowed_completion_dimensions", "terminal_projection_allowlist", "forbidden_hidden_fields", "narration_input_schema"],
+      "required_invariants": ["committed_fact_projection", "composite_completion_projection", "pinned_co_owner_contracts", "hidden_data_exclusion", "player_safe_vocabulary", "idempotent_narration", "no_factual_writes", "world_continues"],
+      "forbidden_capabilities": ["factual_write", "completion_change", "runtime_handler", "persistence", "party_materialization", "api_publication", "ui"]
+    }
+  ],
+  "scenario_specific_ids_or_counts": "forbidden"
+}

@@ -1,0 +1,18 @@
+{
+  "schema": "rus.declarative_content_contract_registry.v1",
+  "registry_id": "rus.turn.declarative_content_contracts.v1",
+  "revision": 1,
+  "owner": "@rus/turn",
+  "status": "approved",
+  "contracts": [
+    {
+      "schema_id": "rus.trace_activity_check_consequence_profiles.v1",
+      "schema_version": 1,
+      "record_kind": "scenario_activity_check_consequence_definition",
+      "required_top_level_fields": ["set_id", "revision", "owner", "clock_owner", "rng_owner", "co_owner_contract_refs", "time_profiles", "activity_profiles", "check_profiles", "consequence_profiles", "llm_authority"],
+      "required_invariants": ["closed_semantic_option_sets", "one_clock_owner", "pinned_co_owner_contracts", "code_owned_rng", "typed_outcomes", "explicit_write_targets", "interruptible_time_boundaries"],
+      "forbidden_capabilities": ["runtime_handler", "persistence", "party_materialization", "api_publication", "ui"]
+    }
+  ],
+  "scenario_specific_ids_or_counts": "forbidden"
+}

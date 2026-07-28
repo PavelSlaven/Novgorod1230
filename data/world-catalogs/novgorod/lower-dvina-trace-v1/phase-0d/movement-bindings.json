@@ -1,0 +1,367 @@
+{
+  "schema": "rus.trace_movement_bindings.v1",
+  "set_id": "trace_ld_v1_movement_bindings",
+  "revision": 1,
+  "publication_status": "unpublished",
+  "owner": "@rus/movement-routes",
+  "owner_schema_ref": {"path": "packages/movement-routes/src/declarative-content-contracts.v1.json", "digest": "8d56dd92ba5a5681b76518fba4c7fab979ba5fce6d40addcc68b89ace0252175", "registry_id": "rus.movement_routes.declarative_content_contracts.v1", "schema_id": "rus.trace_movement_bindings.v1", "schema_version": 1},
+  "clock_owner": "@rus/time-events-history",
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden",
+  "owner_contracts": [
+    "@rus/movement-routes:party_route_plan",
+    "@rus/movement-routes:party_traversal_interval_result"
+  ],
+  "co_owner_contract_refs": {
+    "exact_time": {
+      "path": "packages/time-events-history/src/declarative-content-contracts.v1.json",
+      "digest": "cdc4571c07e2c592cbfb469a7028c31791d82deadbc9b37a97f44ee58597a471",
+      "registry_id": "rus.time_events_history.declarative_content_contracts.v1",
+      "registry_revision": 1,
+      "schema_id": "rus.time_events_history.game_timestamp_and_elapsed.v1",
+      "schema_version": 1,
+      "public_entrypoints": [
+        "@rus/time-events-history:normalizeGameTimestamp",
+        "@rus/time-events-history:addElapsedTime",
+        "@rus/time-events-history:compareGameTimestamp",
+        "@rus/time-events-history:computeTemporalDigest"
+      ]
+    }
+  },
+  "route_bindings": [
+    {
+      "route_id": "trace_ld_v1_route_wreck_to_camp",
+      "schema": "rus.trace_movement_binding.v1",
+      "version": 1,
+      "source_endpoint": "trace_ld_v1_ep_wreck_path_to_camp",
+      "destination_endpoint": "trace_ld_v1_ep_camp_path_to_wreck",
+      "reverse_route_ref": "trace_ld_v1_route_camp_to_wreck",
+      "movement_method": "walk",
+      "time_profile_ref": "trace_ld_v1_time_8m",
+      "duration_minutes": 8,
+      "environment_applicability": ["trace_ld_v1_env_cold_wet_shore", "trace_ld_v1_env_open_path"],
+      "knowledge_state": "visible_from_start",
+      "knowledge_unlock_conditions": ["start_location_perception"],
+      "guide_effect": "not_required",
+      "navigation_check_policy": "no_check_on_visible_local_path",
+      "body_load_factors": ["wet_clothes", "personal_load"],
+      "participant_limits": {"min": 1, "max": 7},
+      "carried_actor_rules": "not_admitted",
+      "item_resource_constraints": [],
+      "interruption_boundaries": ["route_interval", "earliest_temporal_boundary"],
+      "terminal_position_outcome": "trace_ld_v1_loc_fishing_camp",
+      "route_history_effects": ["route_traversed", "reverse_route_known"],
+      "spatial_refs": ["trace_ld_v1_ep_wreck_path_to_camp", "trace_ld_v1_ep_camp_path_to_wreck"]
+    },
+    {
+      "route_id": "trace_ld_v1_route_camp_to_wreck",
+      "schema": "rus.trace_movement_binding.v1",
+      "version": 1,
+      "source_endpoint": "trace_ld_v1_ep_camp_path_to_wreck",
+      "destination_endpoint": "trace_ld_v1_ep_wreck_path_to_camp",
+      "reverse_route_ref": "trace_ld_v1_route_wreck_to_camp",
+      "movement_method": "walk",
+      "time_profile_ref": "trace_ld_v1_time_8m",
+      "duration_minutes": 8,
+      "environment_applicability": ["trace_ld_v1_env_open_path", "trace_ld_v1_env_cold_wet_shore"],
+      "knowledge_state": "known_after_forward_traversal",
+      "knowledge_unlock_conditions": ["trace_ld_v1_route_wreck_to_camp_committed"],
+      "guide_effect": "local_guide_can_disclose_existing_route",
+      "navigation_check_policy": "no_check_if_known_or_guided",
+      "body_load_factors": ["personal_load"],
+      "participant_limits": {"min": 1, "max": 7},
+      "carried_actor_rules": "not_admitted",
+      "item_resource_constraints": [],
+      "interruption_boundaries": ["route_interval", "earliest_temporal_boundary"],
+      "terminal_position_outcome": "trace_ld_v1_loc_wreck_shore",
+      "route_history_effects": ["route_traversed"],
+      "spatial_refs": ["trace_ld_v1_ep_camp_path_to_wreck", "trace_ld_v1_ep_wreck_path_to_camp"]
+    },
+    {
+      "route_id": "trace_ld_v1_route_camp_to_shed",
+      "schema": "rus.trace_movement_binding.v1",
+      "version": 1,
+      "source_endpoint": "trace_ld_v1_ep_camp_ridge_to_drying_shed",
+      "destination_endpoint": "trace_ld_v1_ep_drying_shed_ridge_to_camp",
+      "reverse_route_ref": "trace_ld_v1_route_shed_to_camp",
+      "movement_method": "walk",
+      "time_profile_ref": "trace_ld_v1_time_12m",
+      "duration_minutes": 12,
+      "environment_applicability": ["trace_ld_v1_env_open_path"],
+      "knowledge_state": "closed_until_disclosed",
+      "knowledge_unlock_conditions": ["eremey_bounded_disclosure_or_committed_route_source"],
+      "guide_effect": "makes_existing_route_known_and_removes_navigation_check",
+      "navigation_check_policy": "fail_closed_unknown_route_unless_guided",
+      "body_load_factors": ["personal_load"],
+      "participant_limits": {"min": 1, "max": 7},
+      "carried_actor_rules": "not_admitted_in_normal_variant",
+      "item_resource_constraints": [],
+      "interruption_boundaries": ["route_interval", "earliest_temporal_boundary"],
+      "terminal_position_outcome": "trace_ld_v1_loc_old_drying_shed",
+      "route_history_effects": ["route_traversed", "reverse_route_known"],
+      "terminal_observation_profile_refs": ["trace_ld_v1_observation_onisim_alive_at_drying_shed"],
+      "spatial_refs": ["trace_ld_v1_ep_camp_ridge_to_drying_shed", "trace_ld_v1_ep_drying_shed_ridge_to_camp"]
+    },
+    {
+      "route_id": "trace_ld_v1_route_shed_to_camp",
+      "schema": "rus.trace_movement_binding.v1",
+      "version": 1,
+      "source_endpoint": "trace_ld_v1_ep_drying_shed_ridge_to_camp",
+      "destination_endpoint": "trace_ld_v1_ep_camp_ridge_to_drying_shed",
+      "reverse_route_ref": "trace_ld_v1_route_camp_to_shed",
+      "movement_method": "walk",
+      "time_profile_ref": "trace_ld_v1_time_12m",
+      "duration_minutes": 12,
+      "elapsed_accounting": {
+        "parent_execution_roles": {
+          "trace_ld_v1_decision_execution_ratsha_continue_escape": {
+            "role": "independent_conditional_root_interval",
+            "clock_owner_mode": "direct_party_clock",
+            "clock_write": "single_if_route_admitted_and_completed",
+            "clock_write_target": "elapsed_game_time"
+          }
+        }
+      },
+      "environment_applicability": ["trace_ld_v1_env_open_path"],
+      "knowledge_state": "known_after_forward_traversal",
+      "knowledge_unlock_conditions": ["trace_ld_v1_route_camp_to_shed_committed"],
+      "guide_effect": "makes_existing_route_known",
+      "navigation_check_policy": "no_check_if_known_or_guided",
+      "body_load_factors": ["personal_load"],
+      "participant_limits": {"min": 1, "max": 7},
+      "carried_actor_rules": "use_trace_ld_v1_route_shed_to_camp_carry_onisim",
+      "item_resource_constraints": [],
+      "interruption_boundaries": ["route_interval", "earliest_temporal_boundary"],
+      "terminal_position_outcome": "trace_ld_v1_loc_fishing_camp",
+      "route_history_effects": ["route_traversed"],
+      "spatial_refs": ["trace_ld_v1_ep_drying_shed_ridge_to_camp", "trace_ld_v1_ep_camp_ridge_to_drying_shed"]
+    },
+    {
+      "route_id": "trace_ld_v1_route_shed_to_camp_carry_onisim",
+      "schema": "rus.trace_movement_binding.v1",
+      "version": 1,
+      "source_endpoint": "trace_ld_v1_ep_drying_shed_ridge_to_camp",
+      "destination_endpoint": "trace_ld_v1_ep_camp_ridge_to_drying_shed",
+      "reverse_route_ref": null,
+      "asymmetry_basis": "synchronized_carried_actor_load",
+      "movement_method": "stretcher_carry",
+      "time_profile_ref": "trace_ld_v1_time_20m",
+      "duration_minutes": 20,
+      "environment_applicability": ["trace_ld_v1_env_open_path"],
+      "knowledge_state": "known_after_forward_traversal_or_guide",
+      "knowledge_unlock_conditions": ["route_known", "guide_present"],
+      "guide_effect": "removes_navigation_check_only",
+      "navigation_check_policy": "no_check_if_known_or_guided",
+      "body_load_factors": ["carrier_load", "onisim_injured"],
+      "participant_limits": {"min": 4, "max": 7},
+      "carried_actor_rules": {
+        "carried_slot": "onisim_boatman",
+        "minimum_carrier_count": 3,
+        "carrier_candidate_slots": ["player_clerk", "eremey_fisher", "background_fisher_1", "background_fisher_2"],
+        "initial_carrier_binding": ["player_clerk", "eremey_fisher", "background_fisher_1"],
+        "carrier_eligibility_bindings": {
+          "player_clerk": "player_accepts_current_carry_activity",
+          "eremey_fisher": "assist_rescue_or_restraint",
+          "background_fisher_1": "carry",
+          "background_fisher_2": "carry"
+        },
+        "single_root_clock": true,
+        "same_progress_for_whole_group": true,
+        "independent_movement": "forbidden",
+        "carrier_rebinding": {
+          "decision_boundary": "committed_synchronized_route_interval_boundary",
+          "trigger": "bound_carrier_unavailable_or_body_load_no_longer_admitted",
+          "eligible_replacement_rules": [
+            "candidate_is_present_at_boundary",
+            "candidate_is_not_already_bound_as_carrier",
+            "candidate_body_state_admits_recalculated_load",
+            "candidate_has_slot_specific_admitted_option_ref"
+          ],
+          "binding_update": "replace_unavailable_carrier_slot_without_changing_carried_slot",
+          "preserve_committed_elapsed": true,
+          "preserve_committed_route_progress": true,
+          "rewind_or_reroll": "forbidden",
+          "load_recalculation": "recalculate_outgoing_incoming_and_remaining_carrier_load_from_committed_boundary_state",
+          "body_effect_profile_ref": "trace_ld_v1_body_carry_20m",
+          "canonical_replacement_path": {
+            "outgoing_slot": "player_clerk",
+            "incoming_slot": "background_fisher_2",
+            "basis": "player_shoulder_bruise_stops_carry_while_second_fisher_is_present_and_admits_carry"
+          },
+          "no_valid_replacement_failure": "typed_carry_rebinding_unavailable"
+        },
+        "loss_of_carrier_or_resource": "attempt_rebinding_at_committed_boundary_then_stop_without_rewind_if_minimum_count_or_resources_cannot_be_satisfied"
+      },
+      "item_resource_constraints": ["trace_ld_v1_item_carry_poles", "trace_ld_v1_item_fishing_net"],
+      "interruption_boundaries": ["synchronized_route_interval", "earliest_temporal_boundary"],
+      "terminal_position_outcome": "trace_ld_v1_loc_fishing_camp",
+      "route_history_effects": ["route_traversed", "carried_actor_arrived_with_group"],
+      "spatial_refs": ["trace_ld_v1_ep_drying_shed_ridge_to_camp", "trace_ld_v1_ep_camp_ridge_to_drying_shed"]
+    },
+    {
+      "route_id": "trace_ld_v1_route_camp_to_storehouse",
+      "schema": "rus.trace_movement_binding.v1",
+      "version": 1,
+      "source_endpoint": "trace_ld_v1_ep_camp_work_path_to_storehouse",
+      "destination_endpoint": "trace_ld_v1_ep_storehouse_work_path_to_camp",
+      "reverse_route_ref": "trace_ld_v1_route_storehouse_to_camp",
+      "movement_method": "walk",
+      "time_profile_ref": "trace_ld_v1_time_12m",
+      "duration_minutes": 12,
+      "environment_applicability": ["trace_ld_v1_env_open_path"],
+      "knowledge_state": "closed_until_disclosed",
+      "knowledge_unlock_conditions": ["eremey_bounded_disclosure_or_committed_route_source"],
+      "guide_effect": "makes_existing_route_known_and_removes_navigation_check",
+      "navigation_check_policy": "fail_closed_unknown_route_unless_guided",
+      "body_load_factors": ["personal_load"],
+      "participant_limits": {"min": 1, "max": 7},
+      "carried_actor_rules": "not_admitted",
+      "item_resource_constraints": [],
+      "interruption_boundaries": ["route_interval", "earliest_temporal_boundary"],
+      "terminal_position_outcome": "trace_ld_v1_loc_zhdanko_storehouse",
+      "route_history_effects": ["route_traversed", "reverse_route_known"],
+      "spatial_refs": ["trace_ld_v1_ep_camp_work_path_to_storehouse", "trace_ld_v1_ep_storehouse_work_path_to_camp"]
+    },
+    {
+      "route_id": "trace_ld_v1_route_storehouse_to_camp",
+      "schema": "rus.trace_movement_binding.v1",
+      "version": 1,
+      "source_endpoint": "trace_ld_v1_ep_storehouse_work_path_to_camp",
+      "destination_endpoint": "trace_ld_v1_ep_camp_work_path_to_storehouse",
+      "reverse_route_ref": "trace_ld_v1_route_camp_to_storehouse",
+      "movement_method": "walk",
+      "time_profile_ref": "trace_ld_v1_time_12m",
+      "duration_minutes": 12,
+      "environment_applicability": ["trace_ld_v1_env_open_path"],
+      "knowledge_state": "known_after_forward_traversal",
+      "knowledge_unlock_conditions": ["trace_ld_v1_route_camp_to_storehouse_committed"],
+      "guide_effect": "makes_existing_route_known",
+      "navigation_check_policy": "no_check_if_known_or_guided",
+      "body_load_factors": ["personal_load"],
+      "participant_limits": {"min": 1, "max": 7},
+      "carried_actor_rules": "not_admitted",
+      "item_resource_constraints": [],
+      "interruption_boundaries": ["route_interval", "earliest_temporal_boundary"],
+      "terminal_position_outcome": "trace_ld_v1_loc_fishing_camp",
+      "route_history_effects": ["route_traversed"],
+      "spatial_refs": ["trace_ld_v1_ep_storehouse_work_path_to_camp", "trace_ld_v1_ep_camp_work_path_to_storehouse"]
+    },
+    {
+      "route_id": "trace_ld_v1_route_storehouse_to_camp_guarded_return",
+      "schema": "rus.trace_movement_binding.v1",
+      "version": 1,
+      "source_endpoint": "trace_ld_v1_ep_storehouse_work_path_to_camp",
+      "destination_endpoint": "trace_ld_v1_ep_camp_work_path_to_storehouse",
+      "reverse_route_ref": null,
+      "asymmetry_basis": "guarded_group_and_recovered_property",
+      "movement_method": "guarded_group_walk",
+      "time_profile_ref": "trace_ld_v1_time_15m",
+      "duration_minutes": 15,
+      "environment_applicability": ["trace_ld_v1_env_open_path"],
+      "knowledge_state": "known_after_forward_traversal",
+      "knowledge_unlock_conditions": ["trace_ld_v1_route_camp_to_storehouse_committed"],
+      "guide_effect": "makes_existing_route_known",
+      "navigation_check_policy": "no_check_if_known_or_guided",
+      "body_load_factors": ["guarded_group", "recovered_property"],
+      "participant_limits": {"min": 1, "max": 7},
+      "carried_actor_rules": "not_admitted",
+      "item_resource_constraints": ["recovered_items_remain_with_committed_holder_controller"],
+      "interruption_boundaries": ["group_route_interval", "earliest_temporal_boundary"],
+      "terminal_position_outcome": "trace_ld_v1_loc_fishing_camp",
+      "route_history_effects": ["route_traversed", "group_arrived"],
+      "spatial_refs": ["trace_ld_v1_ep_storehouse_work_path_to_camp", "trace_ld_v1_ep_camp_work_path_to_storehouse"]
+    }
+  ],
+  "local_transition_bindings": [
+    {
+      "transition_id": "trace_ld_v1_local_transition_storehouse_to_river_access",
+      "schema": "rus.trace_local_zone_transition.v1",
+      "version": 1,
+      "location_ref": "trace_ld_v1_loc_zhdanko_storehouse",
+      "source_g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+        "version": 1,
+        "canonical_digest": "4d97b4672c7bee146559f0e31a0ffdb80dd2d7507630a806a09af083ef421174"
+      },
+      "source_zone_candidates": ["storehouse_interior", "yard"],
+      "destination_zone_ref": "river_access",
+      "admitted_subject_classes": ["actor", "container", "transport"],
+      "time_profile_ref": "trace_ld_v1_time_5m",
+      "duration_minutes": 5,
+      "elapsed_accounting": {
+        "parent_execution_roles": {
+          "trace_ld_v1_schedule_execution_move_bag": {
+            "role": "root_interval",
+            "clock_owner_mode": "direct_party_clock",
+            "clock_write": "single",
+            "clock_write_target": "elapsed_game_time"
+          },
+          "trace_ld_v1_schedule_execution_prepare_boat": {
+            "role": "included_child_interval",
+            "clock_owner_mode": "shared_root_transport_clock",
+            "clock_write": "forbidden",
+            "duration_accounting": "included_in_parent_root_total_never_additive"
+          }
+        }
+      },
+      "capacity_contract_ref": "trace_ld_v1_capacity_zhdanko_storehouse",
+      "interruption_boundaries": ["local_zone_transition_interval", "earliest_temporal_boundary"],
+      "terminal_outcome": "same_materialized_location_new_zone",
+      "forbidden_effects": ["new_location", "new_g5", "teleport", "external_destination_invention"]
+    }
+  ],
+  "active_scope_exit_bindings": [
+    {
+      "exit_binding_id": "trace_ld_v1_scope_exit_storehouse_by_small_boat",
+      "schema": "rus.trace_active_scope_exit_binding.v1",
+      "version": 1,
+      "actor_slot": "zhdanko_storehouse_controller",
+      "source_location_ref": "trace_ld_v1_loc_zhdanko_storehouse",
+      "source_zone_ref": "river_access",
+      "source_g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+        "version": 1,
+        "canonical_digest": "4d97b4672c7bee146559f0e31a0ffdb80dd2d7507630a806a09af083ef421174"
+      },
+      "transport_item_ref": "trace_ld_v1_item_second_small_boat",
+      "time_profile_ref": "trace_ld_v1_time_15m",
+      "duration_minutes": 15,
+      "elapsed_accounting": {
+        "parent_execution_roles": {
+          "trace_ld_v1_schedule_execution_attempt_departure": {
+            "role": "root_interval",
+            "clock_owner_mode": "direct_party_clock",
+            "clock_write": "single",
+            "clock_write_target": "elapsed_game_time"
+          },
+          "trace_ld_v1_decision_execution_zhdanko_flee_without_weapon": {
+            "role": "root_interval",
+            "clock_owner_mode": "direct_party_clock",
+            "clock_write": "single",
+            "clock_write_target": "elapsed_game_time"
+          }
+        }
+      },
+      "departure_load_variants": [
+        {"variant_id": "depart_without_road_bag_uncontrolled", "committed_load_state": "bag_not_controlled", "required_controlled_item_refs": ["trace_ld_v1_item_second_small_boat"], "property_transition_refs": [], "road_bag_effect": "preserve_committed_property_and_position_state"},
+        {"variant_id": "depart_leaving_controlled_road_bag", "committed_load_state": "bag_controlled_not_loaded", "required_controlled_item_refs": ["trace_ld_v1_item_second_small_boat"], "property_transition_refs": ["trace_ld_v1_property_zhdanko_depart_leaving_bag"]},
+        {"variant_id": "depart_with_road_bag", "committed_load_state": "bag_loaded", "required_controlled_item_refs": ["trace_ld_v1_item_second_small_boat", "trace_ld_v1_container_road_bag"], "property_transition_refs": ["trace_ld_v1_property_zhdanko_depart_with_bag"]}
+      ],
+      "variant_selection_policy": "select_exact_closed_variant_from_committed_bag_load_state",
+      "destination_contract": {
+        "kind": "outside_active_scenario_scope",
+        "destination_location_ref": null,
+        "destination_instance_materialization": "forbidden",
+        "reentry_requires_separate_approved_world_route": true
+      },
+      "terminal_commit_effects": ["active_scope_departure", "zhdanko_fled", "movement_history"],
+      "terminal_fact_timing": "only_after_full_exit_interval_and_property_transition_commit",
+      "interruption_boundaries": ["active_scope_exit_interval", "earliest_temporal_boundary"],
+      "forbidden_effects": ["new_location", "new_g5", "teleport", "guessed_external_destination", "zhdanko_fled_before_terminal_commit"]
+    }
+  ],
+  "selected_routes": [],
+  "materialized_traversals": [],
+  "excludes": ["runtime_handler", "persistence", "party_instance", "api", "ui", "teleport"]
+}

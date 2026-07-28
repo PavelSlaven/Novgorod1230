@@ -1,0 +1,26 @@
+{
+  "schema": "rus.declarative_content_contract_registry.v1",
+  "registry_id": "rus.movement_routes.declarative_content_contracts.v1",
+  "revision": 1,
+  "owner": "@rus/movement-routes",
+  "status": "approved",
+  "contracts": [
+    {
+      "schema_id": "rus.trace_movement_bindings.v1",
+      "schema_version": 1,
+      "record_kind": "scenario_movement_binding_definition",
+      "required_top_level_fields": ["set_id", "revision", "owner", "clock_owner", "co_owner_contract_refs", "route_bindings", "local_transition_bindings", "active_scope_exit_bindings"],
+      "required_invariants": ["exact_endpoints", "positive_time_profile", "terminal_position", "reverse_or_asymmetry", "typed_same_location_zone_transition", "typed_active_scope_exit_without_destination_invention", "interruptible_progress", "parent_specific_root_or_shared_elapsed_role", "single_direct_clock_write", "pinned_co_owner_contracts", "carried_actor_synchronization", "carrier_rebinding_at_committed_boundary"],
+      "forbidden_capabilities": ["teleport", "runtime_handler", "persistence", "party_materialization", "api_publication", "ui"]
+    },
+    {
+      "schema_id": "rus.trace_scene_access_policy_set.v1",
+      "schema_version": 1,
+      "record_kind": "scenario_location_access_definition",
+      "required_top_level_fields": ["set_id", "revision", "owner", "causal_source_rules", "access_policies", "decision_boundary_policy"],
+      "required_invariants": ["physical_availability", "route_knowledge", "entry_visibility", "causal_materialization", "threat_boundary", "fail_closed_unmaterialized_access"],
+      "forbidden_capabilities": ["scene_number_access", "runtime_handler", "persistence", "party_materialization", "api_publication", "ui"]
+    }
+  ],
+  "scenario_specific_ids_or_counts": "forbidden"
+}

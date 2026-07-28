@@ -1,0 +1,229 @@
+{
+  "schema": "rus.trace_scene_capacity_contract_set.v1",
+  "set_id": "trace_ld_v1_location_capacity_contracts",
+  "revision": 1,
+  "publication_status": "unpublished",
+  "owner": "@rus/party-store",
+  "owner_schema_ref": {"path": "packages/party-store/src/declarative-content-contracts.v1.json", "digest": "57573a9cec29d48971f15d84a7091c8281b7e1b11b4c61774ce39d05996c5c8e", "registry_id": "rus.party_store.declarative_content_contracts.v1", "schema_id": "rus.trace_scene_capacity_contract_set.v1", "schema_version": 1},
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden",
+  "owner_contracts": ["@rus/party-store:logical_write_plan"],
+  "capacity_contracts": [
+    {
+      "contract_id": "trace_ld_v1_capacity_wreck_shore",
+      "schema": "rus.trace_location_capacity_contract.v1",
+      "version": 1,
+      "resolves_gap_id": "trace_ld_v1_gap_capacity_wreck_shore_v1",
+      "location_ref": "trace_ld_v1_loc_wreck_shore",
+      "zones": [
+        {"zone_id": "open_shore", "max_actors": 7, "max_carried_actors": 1, "item_classes": ["personal", "evidence", "debris"]},
+        {"zone_id": "wreck_edge", "max_actors": 2, "max_carried_actors": 0, "item_classes": ["evidence", "debris"]}
+      ],
+      "entry_exit_contract": "endpoint_and_access_policy_required",
+      "decision_anchor": "open_shore",
+      "admission_model": {
+        "kind": "constraint_based",
+        "allowed_participant_slots": ["player_clerk", "onisim_boatman", "eremey_fisher", "ratsha_storehouse_helper", "zhdanko_storehouse_controller", "background_fisher_1", "background_fisher_2", "trace_ld_v1_audience_slot_participating_fisher"],
+        "allowed_social_role_refs": ["nov_role_merchant_clerk", "nov_role_boatman", "nov_role_fisher", "nov_role_servant"],
+        "slot_and_role_compatibility": "both_required_for_bound_participant",
+        "required_bindings": [],
+        "optional_bindings": ["player_clerk", "onisim_boatman", "eremey_fisher", "ratsha_storehouse_helper", "zhdanko_storehouse_controller", "background_fisher_1", "background_fisher_2", "trace_ld_v1_audience_slot_participating_fisher"],
+        "binding_identity_rules": [
+          {"slot_ref": "trace_ld_v1_audience_slot_participating_fisher", "must_bind_exactly_one_existing_slot_instance_from": ["background_fisher_1", "background_fisher_2"], "counts_as_additional_actor": false}
+        ],
+        "location_actor_bounds": {"min": 0, "max": 7},
+        "entry_group_bounds": {"min": 1, "max": 7},
+        "carried_actor_limits": {"max": 1, "allowed_slots": ["onisim_boatman"], "requires_carrier_binding": true},
+        "zone_assignment": {
+          "default_zone_ref": "open_shore",
+          "rules": [
+            {"when": {"predicate": "carried_actor_bound"}, "allowed_zone_refs": ["open_shore"]},
+            {"when": {"predicate": "participant_slot_in", "slot_refs": ["player_clerk", "eremey_fisher", "background_fisher_1", "background_fisher_2"]}, "allowed_zone_refs": ["open_shore", "wreck_edge"]}
+          ],
+          "unassigned_failure": "typed_zone_assignment_missing"
+        },
+        "incompatible_combinations": [
+          {"condition": {"predicate": "carried_actor_assigned_to_zone", "zone_ref": "wreck_edge"}, "failure": "typed_carried_actor_zone_incompatible"}
+        ]
+      },
+      "overflow_failure": "typed_location_capacity_exceeded"
+    },
+    {
+      "contract_id": "trace_ld_v1_capacity_fishing_camp",
+      "schema": "rus.trace_location_capacity_contract.v1",
+      "version": 1,
+      "resolves_gap_id": "trace_ld_v1_gap_capacity_fishing_camp_v1",
+      "location_ref": "trace_ld_v1_loc_fishing_camp",
+      "zones": [
+        {"zone_id": "working_camp", "max_actors": 7, "max_carried_actors": 1, "item_classes": ["personal", "evidence", "stretcher", "recovered_property"]},
+        {"zone_id": "fire_rest_area", "max_actors": 7, "max_carried_actors": 1, "item_classes": ["personal", "drying_clothing", "stretcher"]}
+      ],
+      "entry_exit_contract": "endpoint_and_access_policy_required",
+      "decision_anchor": "fire_rest_area",
+      "admission_model": {
+        "kind": "constraint_based",
+        "allowed_participant_slots": ["player_clerk", "onisim_boatman", "eremey_fisher", "ratsha_storehouse_helper", "zhdanko_storehouse_controller", "background_fisher_1", "background_fisher_2", "trace_ld_v1_audience_slot_participating_fisher"],
+        "allowed_social_role_refs": ["nov_role_merchant_clerk", "nov_role_boatman", "nov_role_fisher", "nov_role_servant"],
+        "slot_and_role_compatibility": "both_required_for_bound_participant",
+        "required_bindings": [],
+        "optional_bindings": ["player_clerk", "onisim_boatman", "eremey_fisher", "ratsha_storehouse_helper", "zhdanko_storehouse_controller", "background_fisher_1", "background_fisher_2", "trace_ld_v1_audience_slot_participating_fisher"],
+        "binding_identity_rules": [
+          {"slot_ref": "trace_ld_v1_audience_slot_participating_fisher", "must_bind_exactly_one_existing_slot_instance_from": ["background_fisher_1", "background_fisher_2"], "counts_as_additional_actor": false}
+        ],
+        "location_actor_bounds": {"min": 0, "max": 7},
+        "entry_group_bounds": {"min": 1, "max": 7},
+        "carried_actor_limits": {"max": 1, "allowed_slots": ["onisim_boatman"], "requires_carrier_binding": true},
+        "zone_assignment": {
+          "default_zone_ref": "working_camp",
+          "rules": [
+            {"when": {"predicate": "carried_actor_bound"}, "allowed_zone_refs": ["working_camp", "fire_rest_area"]},
+            {"when": {"predicate": "activity_category_in", "category_refs": ["rest", "treatment"]}, "allowed_zone_refs": ["fire_rest_area"]}
+          ],
+          "unassigned_failure": "typed_zone_assignment_missing"
+        },
+        "incompatible_combinations": [
+          {"condition": {"predicate": "held_actor_and_controlled_weapon_share_zone"}, "failure": "typed_dangerous_positioning"}
+        ]
+      },
+      "overflow_failure": "typed_location_capacity_exceeded"
+    },
+    {
+      "contract_id": "trace_ld_v1_capacity_old_drying_shed",
+      "schema": "rus.trace_location_capacity_contract.v1",
+      "version": 1,
+      "resolves_gap_id": "trace_ld_v1_gap_capacity_old_drying_shed_v1",
+      "location_ref": "trace_ld_v1_loc_old_drying_shed",
+      "zones": [
+        {"zone_id": "shed_interior", "max_actors": 5, "max_carried_actors": 1, "item_classes": ["personal", "bandage", "binding"]},
+        {"zone_id": "shed_approach", "max_actors": 7, "max_carried_actors": 1, "item_classes": ["personal", "stretcher", "carry_resources"]}
+      ],
+      "entry_exit_contract": "stretcher_uses_approach_then_capacity_checked_interior",
+      "decision_anchor": "shed_approach",
+      "admission_model": {
+        "kind": "constraint_based",
+        "allowed_participant_slots": ["player_clerk", "onisim_boatman", "eremey_fisher", "ratsha_storehouse_helper", "background_fisher_1", "background_fisher_2", "trace_ld_v1_audience_slot_participating_fisher"],
+        "allowed_social_role_refs": ["nov_role_merchant_clerk", "nov_role_boatman", "nov_role_fisher", "nov_role_servant"],
+        "slot_and_role_compatibility": "both_required_for_bound_participant",
+        "required_bindings": [],
+        "optional_bindings": ["player_clerk", "onisim_boatman", "eremey_fisher", "ratsha_storehouse_helper", "background_fisher_1", "background_fisher_2", "trace_ld_v1_audience_slot_participating_fisher"],
+        "binding_identity_rules": [
+          {"slot_ref": "trace_ld_v1_audience_slot_participating_fisher", "must_bind_exactly_one_existing_slot_instance_from": ["background_fisher_1", "background_fisher_2"], "counts_as_additional_actor": false}
+        ],
+        "location_actor_bounds": {"min": 0, "max": 7},
+        "entry_group_bounds": {"min": 1, "max": 7},
+        "carried_actor_limits": {"max": 1, "allowed_slots": ["onisim_boatman"], "requires_carrier_binding": true},
+        "zone_assignment": {
+          "default_zone_ref": "shed_approach",
+          "rules": [
+            {"when": {"predicate": "carried_actor_bound"}, "allowed_zone_refs": ["shed_approach"]},
+            {"when": {"predicate": "access_policy_admitted", "policy_ref": "trace_ld_v1_access_old_drying_shed", "entry_class": "actor_without_carried_actor"}, "allowed_zone_refs": ["shed_interior", "shed_approach"]}
+          ],
+          "unassigned_failure": "typed_zone_assignment_missing"
+        },
+        "incompatible_combinations": [
+          {"condition": {"predicate": "carried_actor_assigned_to_zone", "zone_ref": "shed_interior"}, "failure": "typed_carried_actor_zone_incompatible"}
+        ]
+      },
+      "overflow_failure": "typed_location_capacity_exceeded"
+    },
+    {
+      "contract_id": "trace_ld_v1_capacity_zhdanko_storehouse",
+      "schema": "rus.trace_location_capacity_contract.v1",
+      "version": 1,
+      "resolves_gap_id": "trace_ld_v1_gap_capacity_zhdanko_storehouse_v1",
+      "location_ref": "trace_ld_v1_loc_zhdanko_storehouse",
+      "zones": [
+        {"zone_id": "yard", "max_actors": 6, "max_carried_actors": 0, "item_classes": ["personal", "recovered_property", "weapon"]},
+        {"zone_id": "narrow_threshold", "max_actors": 2, "max_carried_actors": 0, "item_classes": ["personal", "weapon"]},
+        {"zone_id": "storehouse_interior", "max_actors": 4, "max_carried_actors": 0, "item_classes": ["personal", "road_bag", "sealed_packet", "weapon"]},
+        {"zone_id": "river_access", "max_actors": 3, "max_carried_actors": 0, "item_classes": ["personal", "road_bag", "sealed_packet", "small_river_boat"]}
+      ],
+      "entry_exit_contract": "threat_boundary_and_narrow_threshold_checked_before_interior",
+      "decision_anchor": "yard",
+      "admission_model": {
+        "kind": "constraint_based",
+        "allowed_participant_slots": ["player_clerk", "eremey_fisher", "ratsha_storehouse_helper", "zhdanko_storehouse_controller", "background_fisher_1", "background_fisher_2", "trace_ld_v1_audience_slot_participating_fisher"],
+        "allowed_social_role_refs": ["nov_role_merchant_clerk", "nov_role_fisher", "nov_role_servant"],
+        "slot_and_role_compatibility": "both_required_for_bound_participant",
+        "required_bindings": [],
+        "optional_bindings": ["player_clerk", "eremey_fisher", "ratsha_storehouse_helper", "zhdanko_storehouse_controller", "background_fisher_1", "background_fisher_2", "trace_ld_v1_audience_slot_participating_fisher"],
+        "binding_identity_rules": [
+          {"slot_ref": "trace_ld_v1_audience_slot_participating_fisher", "must_bind_exactly_one_existing_slot_instance_from": ["background_fisher_1", "background_fisher_2"], "counts_as_additional_actor": false}
+        ],
+        "location_actor_bounds": {"min": 0, "max": 7},
+        "entry_group_bounds": {"min": 1, "max": 7},
+        "carried_actor_limits": {"max": 0, "allowed_slots": [], "requires_carrier_binding": false},
+        "zone_assignment": {
+          "default_zone_ref": "yard",
+          "rules": [
+            {"when": {"predicate": "participant_slot_is", "slot_ref": "zhdanko_storehouse_controller"}, "allowed_zone_refs": ["yard", "narrow_threshold", "storehouse_interior", "river_access"]},
+            {"when": {"predicate": "access_policy_admitted", "policy_ref": "trace_ld_v1_access_zhdanko_storehouse", "entry_class": "external_route_entry"}, "allowed_zone_refs": ["yard"]},
+            {"when": {"predicate": "access_policy_admitted", "policy_ref": "trace_ld_v1_access_zhdanko_storehouse", "entry_class": "interior_entry"}, "allowed_zone_refs": ["narrow_threshold", "storehouse_interior"]}
+          ],
+          "unassigned_failure": "typed_zone_assignment_missing"
+        },
+        "incompatible_combinations": [
+          {"condition": {"predicate": "carried_actor_bound"}, "failure": "typed_carried_actor_zone_incompatible"},
+          {"condition": {"predicate": "armed_threat_and_group_share_zone", "zone_ref": "narrow_threshold"}, "failure": "typed_dangerous_positioning"}
+        ]
+      },
+      "overflow_failure": "typed_location_capacity_exceeded"
+    }
+  ],
+  "transit_and_holding_contracts": [
+    {
+      "contract_id": "trace_ld_v1_capacity_return_path_group",
+      "schema": "rus.trace_transit_capacity_contract.v1",
+      "version": 1,
+      "route_ref": "trace_ld_v1_route_storehouse_to_camp_guarded_return",
+      "admission_model": {
+        "kind": "constraint_based",
+        "allowed_participant_slots": ["player_clerk", "eremey_fisher", "ratsha_storehouse_helper", "zhdanko_storehouse_controller", "background_fisher_1", "background_fisher_2", "trace_ld_v1_audience_slot_participating_fisher"],
+        "allowed_social_role_refs": ["nov_role_merchant_clerk", "nov_role_fisher", "nov_role_servant"],
+        "slot_and_role_compatibility": "both_required_for_bound_participant",
+        "required_bindings": ["player_clerk"],
+        "optional_bindings": ["eremey_fisher", "ratsha_storehouse_helper", "zhdanko_storehouse_controller", "background_fisher_1", "background_fisher_2", "trace_ld_v1_audience_slot_participating_fisher"],
+        "binding_identity_rules": [
+          {"slot_ref": "trace_ld_v1_audience_slot_participating_fisher", "must_bind_exactly_one_existing_slot_instance_from": ["background_fisher_1", "background_fisher_2"], "counts_as_additional_actor": false}
+        ],
+        "actor_bounds": {"min": 1, "max": 7},
+        "carried_actor_limits": {"max": 0, "allowed_slots": []},
+        "incompatible_combinations": []
+      },
+      "significant_items": ["trace_ld_v1_container_road_bag", "trace_ld_v1_item_sealed_packet", "trace_ld_v1_item_zhdanko_axe"],
+      "decision_boundary": "each_group_route_interval",
+      "overflow_failure": "typed_location_capacity_exceeded"
+    },
+    {
+      "contract_id": "trace_ld_v1_capacity_temporary_holding",
+      "schema": "rus.trace_holding_capacity_contract.v1",
+      "version": 1,
+      "location_ref": "trace_ld_v1_loc_fishing_camp",
+      "zone_ref": "working_camp",
+      "admission_model": {
+        "kind": "constraint_based",
+        "allowed_participant_slots": ["ratsha_storehouse_helper", "zhdanko_storehouse_controller", "eremey_fisher", "background_fisher_1", "background_fisher_2"],
+        "allowed_social_role_refs": ["nov_role_merchant_clerk", "nov_role_fisher", "nov_role_servant"],
+        "slot_and_role_compatibility": "both_required_for_bound_participant",
+        "held_actor_slots": ["ratsha_storehouse_helper", "zhdanko_storehouse_controller"],
+        "guard_candidate_slots": ["eremey_fisher", "background_fisher_1", "background_fisher_2"],
+        "required_bindings": [],
+        "optional_bindings": ["ratsha_storehouse_helper", "zhdanko_storehouse_controller", "eremey_fisher", "background_fisher_1", "background_fisher_2"],
+        "held_actor_bounds": {"min": 0, "max": 2},
+        "guard_bounds_when_held_actor_present": {"min": 1, "max": 3},
+        "incompatible_combinations": [
+          {"condition": {"predicate": "held_actor_present_without_bound_guard"}, "failure": "typed_holding_guard_missing"},
+          {"condition": {"predicate": "held_actor_controls_weapon"}, "failure": "typed_dangerous_positioning"}
+        ]
+      },
+      "safe_positioning": "held_actors_separated_from_weapons_and_injured_onisim",
+      "dangerous_positioning": "forbidden",
+      "entry_exit_contract": "guard_and_access_rechecked",
+      "decision_boundary": "before_guard_or_held_actor_changes",
+      "overflow_failure": "typed_location_capacity_exceeded"
+    }
+  ],
+  "materialized_occupancy": [],
+  "excludes": ["physical_transaction", "persistence", "party_instance", "api", "ui"]
+}

@@ -88,6 +88,7 @@ Release: `0.23.0-migration.24`
 | `player_character_generator_input` | `STAGE11_INPUT_SCHEMA` | `packages/new-game/src/stages/stage-11-player-character/constants.js` |
 | `player_first_turn_input` | `PLAYER_FIRST_TURN_INPUT_SCHEMA` | `packages/contracts/src/schema-names.js` |
 | `presentation_panel` | `PANEL_SCHEMA` | `packages/presentation/src/read-models/contracts.js` |
+| `rus.trace_player_profile_policy.v1` | `TRACE_PLAYER_PROFILE_POLICY_SCHEMA` | `packages/new-game/src/stages/stage-11-player-character/trace-policy.js` |
 | `selected_start_node` | `STAGE9_OUTPUT_SCHEMA` | `packages/new-game/src/stages/stage-9-start-node-selection/constants.js` |
 | `stage18_character_knowledge_result` | `STAGE18_RESULT_SCHEMA` | `packages/contracts/src/time-knowledge-hidden-boundary.js` |
 | `stage19_hidden_state_result` | `STAGE19_RESULT_SCHEMA` | `packages/contracts/src/time-knowledge-hidden-boundary.js` |

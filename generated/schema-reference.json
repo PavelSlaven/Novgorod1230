@@ -406,6 +406,11 @@
       "source": "packages/presentation/src/read-models/contracts.js"
     },
     {
+      "constant": "TRACE_PLAYER_PROFILE_POLICY_SCHEMA",
+      "schema": "rus.trace_player_profile_policy.v1",
+      "source": "packages/new-game/src/stages/stage-11-player-character/trace-policy.js"
+    },
+    {
       "constant": "STAGE9_OUTPUT_SCHEMA",
       "schema": "selected_start_node",
       "source": "packages/new-game/src/stages/stage-9-start-node-selection/constants.js"

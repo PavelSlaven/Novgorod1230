@@ -1,0 +1,17 @@
+{
+  "schema": "rus.trace_player_profile_set.v1",
+  "profile_set_id": "lower_dvina_trace_player_profile_set_v1",
+  "revision": 1,
+  "publication_status": "unpublished",
+  "name_candidates": [{ "id": "nov_name_mikula_v1", "display_name": "Микула" }],
+  "profile_candidates": [{
+    "id": "lower_dvina_trace_player_profile_mikula_v1",
+    "revision": 1,
+    "digest": "158c4248736e9d424608ccac4394be119a05626ba5f718fad3ccaf8dfd157a2e"
+  }],
+  "approved_policy_ref": {
+    "id": "lower_dvina_trace_player_profile_v1",
+    "revision": 1,
+    "digest": "c73c636abf7b1e3728b8f929b61904ce292841786c8f01aac3265c047c114a36"
+  }
+}

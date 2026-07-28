@@ -1,0 +1,12 @@
+{
+  "schema": "rus.trace_phase_0a_manifest.v1",
+  "package_id": "lower_dvina_trace_phase_0a_v1",
+  "revision": 1,
+  "publication_status": "unpublished",
+  "files": {
+    "definition.json": "3ed251d4ef1c7538da754b70f319bb213e4422b1d5e4e1dcd20c02753995c03b",
+    "player-profile.json": "158c4248736e9d424608ccac4394be119a05626ba5f718fad3ccaf8dfd157a2e",
+    "approved-policy.json": "c73c636abf7b1e3728b8f929b61904ce292841786c8f01aac3265c047c114a36",
+    "player-profile-set.json": "2a25fd04f0e9b71f1ab2805cd3d68620d9ea2d1646e0671e128e886eb54ee865"
+  }
+}

@@ -1,0 +1,978 @@
+{
+  "schema": "rus.trace_clue_evidence_graph_set.v1",
+  "clue_evidence_graph_set_id": "trace_ld_v1_clue_evidence_graph_set",
+  "revision": 1,
+  "publication_status": "unpublished",
+  "owner": "@rus/visibility-knowledge-memory",
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden",
+  "participant_profile_set_ref": {
+    "id": "trace_ld_v1_participant_profile_set",
+    "revision": 1,
+    "digest": "33e45b8b8b57f98debb254e5e76c881cf3ffe10985042811ed85390e38f588ce"
+  },
+  "location_topology_set_ref": {
+    "id": "trace_ld_v1_location_topology_set",
+    "revision": 1,
+    "digest": "3410d8652aa87d76a2be37cf6f21b9179ac3dd61c88ea84b94486b19765342ce"
+  },
+  "item_container_set_ref": {
+    "id": "trace_ld_v1_item_container_set",
+    "revision": 1,
+    "digest": "182fb92641c8c053027718f52eed3467ce9ed79971e7168f4bc8727e1a169a3f"
+  },
+  "hidden_truth_candidate_set_ref": {
+    "id": "trace_ld_v1_hidden_truth_candidate_set",
+    "revision": 1,
+    "digest": "b4601339813dd253a7a280cd68ad0925202c989998c6cae5bca9e820f1a7b616"
+  },
+  "evidence_kinds": [
+    "physical_trace",
+    "physical_item",
+    "testimonial_statement",
+    "confession_statement",
+    "observed_possession",
+    "observed_resistance"
+  ],
+  "conclusions": [
+    "intentional_bag_removal",
+    "side_collision_occurred",
+    "second_boat_present",
+    "onisim_survived_and_reached_shore_injured",
+    "another_person_present",
+    "blue_wool_found_on_route",
+    "blue_wool_matches_ratsha_caftan",
+    "ratsha_possessed_foreign_bag",
+    "physical_attack_pattern",
+    "ratsha_participated_blue_wool_route",
+    "ratsha_participated",
+    "zhdanko_voice_connected_to_attack",
+    "stolen_bag_at_zhdanko",
+    "packet_seal_intact",
+    "zhdanko_resisted_transfer",
+    "principal_zhdanko_physical_line",
+    "principal_zhdanko_testimonial_line",
+    "principal_zhdanko_documentary_line",
+    "principal_zhdanko",
+    "conceal_entrusted_goods_shortage"
+  ],
+  "evidence_records": [
+    {
+      "evidence_id": "trace_ld_v1_evidence_cut_fastening",
+      "evidence_kind": "physical_item",
+      "source_fact_refs": [
+        "hidden_event:trace_ld_v1_hidden_event_05_bag_fastening_cut",
+        "item:trace_ld_v1_item_cut_bag_fastening"
+      ],
+      "allowed_location_refs": [
+        "trace_ld_v1_loc_wreck_shore"
+      ],
+      "allowed_actor_refs": [],
+      "allowed_item_refs": [
+        "trace_ld_v1_item_cut_bag_fastening",
+        "trace_ld_v1_container_road_bag"
+      ],
+      "discovery_slot_ref": "trace_ld_v1_slot_wreck_bag_fastening",
+      "visibility_precondition": "detailed_search",
+      "basis": {
+        "kind": "persistent_physical",
+        "preserved_after_discovery": true
+      },
+      "supports": [
+        "intentional_bag_removal"
+      ],
+      "does_not_prove": [
+        "executor_identity",
+        "principal_zhdanko"
+      ],
+      "compatible_hidden_sequence_ref": "trace_ld_v1_hidden_sequence_canonical_v1",
+      "causal_basis": "fastening_was_cut_before_first_turn"
+    },
+    {
+      "evidence_id": "trace_ld_v1_evidence_side_dent",
+      "evidence_kind": "physical_trace",
+      "source_fact_refs": [
+        "hidden_event:trace_ld_v1_hidden_event_06_boats_collide",
+        "item:trace_ld_v1_item_side_collision_trace"
+      ],
+      "allowed_location_refs": [
+        "trace_ld_v1_loc_wreck_shore"
+      ],
+      "allowed_actor_refs": [],
+      "allowed_item_refs": [
+        "trace_ld_v1_item_onisim_boat",
+        "trace_ld_v1_item_side_collision_trace"
+      ],
+      "discovery_slot_ref": "trace_ld_v1_slot_wreck_boat_side",
+      "visibility_precondition": "inspect_wrecked_boat_side",
+      "basis": {
+        "kind": "persistent_physical",
+        "preserved_after_discovery": true
+      },
+      "supports": [
+        "side_collision_occurred"
+      ],
+      "does_not_prove": [
+        "private_instruction",
+        "principal_zhdanko"
+      ],
+      "compatible_hidden_sequence_ref": "trace_ld_v1_hidden_sequence_canonical_v1",
+      "causal_basis": "boat_side_was_dented_before_first_turn"
+    },
+    {
+      "evidence_id": "trace_ld_v1_evidence_second_boat_trace",
+      "evidence_kind": "physical_trace",
+      "source_fact_refs": [
+        "hidden_event:trace_ld_v1_hidden_event_03_second_boat_departure",
+        "item:trace_ld_v1_item_second_small_boat"
+      ],
+      "allowed_location_refs": [
+        "trace_ld_v1_loc_wreck_shore"
+      ],
+      "allowed_actor_refs": [],
+      "allowed_item_refs": [
+        "trace_ld_v1_item_second_small_boat"
+      ],
+      "discovery_slot_ref": "trace_ld_v1_slot_wreck_debris_field",
+      "visibility_precondition": "inspect_shore_and_water_traces",
+      "basis": {
+        "kind": "persistent_physical",
+        "preserved_after_discovery": true
+      },
+      "supports": [
+        "second_boat_present"
+      ],
+      "does_not_prove": [
+        "boat_crew_identity",
+        "principal_zhdanko"
+      ],
+      "compatible_hidden_sequence_ref": "trace_ld_v1_hidden_sequence_canonical_v1",
+      "causal_basis": "second_boat_left_physical_route_trace"
+    },
+    {
+      "evidence_id": "trace_ld_v1_evidence_onisim_barefoot_tracks",
+      "evidence_kind": "physical_trace",
+      "source_fact_refs": [
+        "hidden_event:trace_ld_v1_hidden_event_09_onisim_reaches_shore"
+      ],
+      "allowed_location_refs": [
+        "trace_ld_v1_loc_wreck_shore"
+      ],
+      "allowed_actor_refs": [
+        "onisim_boatman"
+      ],
+      "allowed_item_refs": [],
+      "discovery_slot_ref": "trace_ld_v1_slot_wreck_debris_field",
+      "visibility_precondition": "inspect_shore_tracks",
+      "basis": {
+        "kind": "persistent_physical",
+        "preserved_after_discovery": true
+      },
+      "supports": [
+        "onisim_survived_and_reached_shore_injured"
+      ],
+      "does_not_prove": [
+        "captor_identity",
+        "principal_zhdanko"
+      ],
+      "compatible_hidden_sequence_ref": "trace_ld_v1_hidden_sequence_canonical_v1",
+      "causal_basis": "injured_onisim_left_barefoot_tracks"
+    },
+    {
+      "evidence_id": "trace_ld_v1_evidence_boot_track",
+      "evidence_kind": "physical_trace",
+      "source_fact_refs": [
+        "hidden_event:trace_ld_v1_hidden_event_10_onisim_bound_and_moved"
+      ],
+      "allowed_location_refs": [
+        "trace_ld_v1_loc_wreck_shore",
+        "trace_ld_v1_loc_old_drying_shed"
+      ],
+      "allowed_actor_refs": [
+        "ratsha_storehouse_helper"
+      ],
+      "allowed_item_refs": [],
+      "discovery_slot_ref": "trace_ld_v1_slot_wreck_debris_field",
+      "visibility_precondition": "inspect_shore_tracks",
+      "basis": {
+        "kind": "persistent_physical",
+        "preserved_after_discovery": true
+      },
+      "supports": [
+        "another_person_present"
+      ],
+      "does_not_prove": [
+        "boot_wearer_identity",
+        "principal_zhdanko"
+      ],
+      "compatible_hidden_sequence_ref": "trace_ld_v1_hidden_sequence_canonical_v1",
+      "causal_basis": "another_person_left_boot_track"
+    },
+    {
+      "evidence_id": "trace_ld_v1_evidence_blue_wool",
+      "evidence_kind": "physical_item",
+      "source_fact_refs": [
+        "item:trace_ld_v1_item_blue_wool_fragment"
+      ],
+      "allowed_location_refs": [
+        "trace_ld_v1_loc_wreck_shore"
+      ],
+      "allowed_actor_refs": [],
+      "allowed_item_refs": [
+        "trace_ld_v1_item_blue_wool_fragment"
+      ],
+      "discovery_slot_ref": "trace_ld_v1_slot_wreck_willow_branch",
+      "visibility_precondition": "detailed_search",
+      "basis": {
+        "kind": "persistent_physical",
+        "preserved_after_discovery": true
+      },
+      "supports": [
+        "blue_wool_found_on_route"
+      ],
+      "does_not_prove": [
+        "ratsha_identity_without_comparison_or_testimony",
+        "full_intent",
+        "principal_zhdanko",
+        "full_event_sequence"
+      ],
+      "compatible_hidden_sequence_ref": "trace_ld_v1_hidden_sequence_canonical_v1",
+      "causal_basis": "foreign_blue_wool_fragment_was_left_on_route_before_first_turn"
+    },
+    {
+      "evidence_id": "trace_ld_v1_evidence_eremey_words",
+      "evidence_kind": "testimonial_statement",
+      "source_fact_refs": [
+        "statement_slot:trace_ld_v1_statement_eremey_disclosure"
+      ],
+      "allowed_location_refs": [
+        "trace_ld_v1_loc_fishing_camp"
+      ],
+      "allowed_actor_refs": [
+        "eremey_fisher",
+        "ratsha_storehouse_helper"
+      ],
+      "allowed_item_refs": [
+        "trace_ld_v1_container_road_bag"
+      ],
+      "discovery_slot_ref": "trace_ld_v1_statement_eremey_disclosure",
+      "visibility_precondition": "eremey_discloses_admitted_perception",
+      "basis": {
+        "kind": "testimonial",
+        "speaker_ref": "eremey_fisher",
+        "source_knowledge_scope_ref": "trace_ld_v1_knowledge_scope_local_fisher_v1"
+      },
+      "supports": [
+        "ratsha_possessed_foreign_bag"
+      ],
+      "does_not_prove": [
+        "conceal_entrusted_goods_shortage",
+        "principal_zhdanko"
+      ],
+      "compatible_hidden_sequence_ref": "trace_ld_v1_hidden_sequence_canonical_v1",
+      "causal_basis": "eremey_reports_heard_impact_and_seen_wet_ratsha_with_foreign_bag"
+    },
+    {
+      "evidence_id": "trace_ld_v1_evidence_ratsha_confession",
+      "evidence_kind": "confession_statement",
+      "source_fact_refs": [
+        "statement_slot:trace_ld_v1_statement_ratsha_confession"
+      ],
+      "allowed_location_refs": [
+        "trace_ld_v1_loc_old_drying_shed"
+      ],
+      "allowed_actor_refs": [
+        "ratsha_storehouse_helper"
+      ],
+      "allowed_item_refs": [
+        "trace_ld_v1_container_road_bag"
+      ],
+      "discovery_slot_ref": "trace_ld_v1_statement_ratsha_confession",
+      "visibility_precondition": "ratsha_gives_committed_confession",
+      "basis": {
+        "kind": "testimonial",
+        "speaker_ref": "ratsha_storehouse_helper",
+        "requires_independent_confirmation": true
+      },
+      "supports": [
+        "ratsha_participated"
+      ],
+      "does_not_prove": [
+        "principal_zhdanko_without_independent_line",
+        "conceal_entrusted_goods_shortage"
+      ],
+      "compatible_hidden_sequence_ref": "trace_ld_v1_hidden_sequence_canonical_v1",
+      "causal_basis": "ratsha_reports_own_actions_and_received_instruction"
+    },
+    {
+      "evidence_id": "trace_ld_v1_evidence_onisim_testimony",
+      "evidence_kind": "testimonial_statement",
+      "source_fact_refs": [
+        "hidden_event:trace_ld_v1_hidden_event_04_zhdanko_audible_command",
+        "perception_template:trace_ld_v1_perception_onisim_hears_zhdanko_command",
+        "statement_slot:trace_ld_v1_statement_onisim_testimony"
+      ],
+      "allowed_location_refs": [
+        "trace_ld_v1_loc_old_drying_shed",
+        "trace_ld_v1_loc_fishing_camp"
+      ],
+      "allowed_actor_refs": [
+        "onisim_boatman",
+        "ratsha_storehouse_helper",
+        "zhdanko_storehouse_controller"
+      ],
+      "allowed_item_refs": [],
+      "discovery_slot_ref": "trace_ld_v1_statement_onisim_testimony",
+      "visibility_precondition": "onisim_is_able_and_willing_to_testify",
+      "basis": {
+        "kind": "testimonial",
+        "speaker_ref": "onisim_boatman",
+        "source_knowledge_scope_ref": "trace_ld_v1_knowledge_scope_hired_boatman_v1"
+      },
+      "supports": [
+        "ratsha_participated",
+        "zhdanko_voice_connected_to_attack"
+      ],
+      "does_not_prove": [
+        "packet_location",
+        "conceal_entrusted_goods_shortage"
+      ],
+      "compatible_hidden_sequence_ref": "trace_ld_v1_hidden_sequence_canonical_v1",
+      "causal_basis": "onisim_reports_only_perceived_voice_and_actions"
+    },
+    {
+      "evidence_id": "trace_ld_v1_evidence_bag_at_zhdanko",
+      "evidence_kind": "observed_possession",
+      "source_fact_refs": [
+        "hidden_event:trace_ld_v1_hidden_event_11_bag_delivered",
+        "item:trace_ld_v1_container_road_bag"
+      ],
+      "allowed_location_refs": [
+        "trace_ld_v1_loc_zhdanko_storehouse"
+      ],
+      "allowed_actor_refs": [
+        "zhdanko_storehouse_controller"
+      ],
+      "allowed_item_refs": [
+        "trace_ld_v1_container_road_bag"
+      ],
+      "discovery_slot_ref": "trace_ld_v1_slot_storehouse_bag_observation",
+      "visibility_precondition": "bag_is_observed_at_storehouse",
+      "basis": {
+        "kind": "persistent_physical",
+        "preserved_after_discovery": true
+      },
+      "supports": [
+        "stolen_bag_at_zhdanko"
+      ],
+      "does_not_prove": [
+        "full_motive",
+        "full_event_sequence"
+      ],
+      "compatible_hidden_sequence_ref": "trace_ld_v1_hidden_sequence_canonical_v1",
+      "causal_basis": "bag_holder_controller_transfer_template_targets_zhdanko"
+    },
+    {
+      "evidence_id": "trace_ld_v1_evidence_intact_seal",
+      "evidence_kind": "physical_item",
+      "source_fact_refs": [
+        "item:trace_ld_v1_item_sealed_packet"
+      ],
+      "allowed_location_refs": [
+        "trace_ld_v1_loc_zhdanko_storehouse"
+      ],
+      "allowed_actor_refs": [],
+      "allowed_item_refs": [
+        "trace_ld_v1_item_sealed_packet"
+      ],
+      "discovery_slot_ref": "trace_ld_v1_slot_storehouse_packet_seal",
+      "visibility_precondition": "packet_recovered_and_seal_inspected",
+      "basis": {
+        "kind": "persistent_physical",
+        "preserved_after_discovery": true
+      },
+      "supports": [
+        "packet_seal_intact"
+      ],
+      "does_not_prove": [
+        "document_contents",
+        "conceal_entrusted_goods_shortage"
+      ],
+      "compatible_hidden_sequence_ref": "trace_ld_v1_hidden_sequence_canonical_v1",
+      "causal_basis": "packet_seal_state_remains_intact_through_pre_game_transfer"
+    },
+    {
+      "evidence_id": "trace_ld_v1_evidence_zhdanko_resistance",
+      "evidence_kind": "observed_resistance",
+      "source_fact_refs": [
+        "future_event_slot:trace_ld_v1_future_zhdanko_armed_resistance"
+      ],
+      "allowed_location_refs": [
+        "trace_ld_v1_loc_zhdanko_storehouse"
+      ],
+      "allowed_actor_refs": [
+        "zhdanko_storehouse_controller"
+      ],
+      "allowed_item_refs": [
+        "trace_ld_v1_item_zhdanko_axe"
+      ],
+      "discovery_slot_ref": "trace_ld_v1_future_zhdanko_armed_resistance",
+      "visibility_precondition": "armed_resistance_occurs_and_is_perceived",
+      "basis": {
+        "kind": "behavioral_observation",
+        "future_runtime_handler_required": true
+      },
+      "supports": [
+        "zhdanko_resisted_transfer"
+      ],
+      "does_not_prove": [
+        "prior_crime",
+        "conceal_entrusted_goods_shortage"
+      ],
+      "compatible_hidden_sequence_ref": "trace_ld_v1_hidden_sequence_canonical_v1",
+      "causal_basis": "approved_late_scene_evidence_slot"
+    }
+  ],
+  "identity_binding_evidence_slots": [
+    {
+      "binding_slot_id": "trace_ld_v1_binding_blue_wool_to_ratsha_caftan",
+      "binding_kind": "physical_comparison",
+      "source_evidence_ref": "trace_ld_v1_evidence_blue_wool",
+      "comparison_item_ref": "trace_ld_v1_item_ratsha_caftan",
+      "comparison_actor_ref": "ratsha_storehouse_helper",
+      "discovery_preconditions": [
+        "blue_wool_discovered",
+        "ratsha_caftan_available_for_comparison"
+      ],
+      "supports": "blue_wool_matches_ratsha_caftan",
+      "does_not_prove": [
+        "full_intent",
+        "principal_zhdanko",
+        "full_event_sequence"
+      ],
+      "application_status": "template_only"
+    }
+  ],
+  "evidence_chains": [
+    {
+      "chain_id": "trace_ld_v1_chain_physical_to_ratsha_to_bag",
+      "independence_class": "physical",
+      "required": true,
+      "leaf_evidence_refs": [
+        "trace_ld_v1_evidence_cut_fastening",
+        "trace_ld_v1_evidence_side_dent",
+        "trace_ld_v1_evidence_second_boat_trace",
+        "trace_ld_v1_evidence_boot_track",
+        "trace_ld_v1_evidence_blue_wool",
+        "trace_ld_v1_evidence_bag_at_zhdanko"
+      ],
+      "admitted_binding_slot_refs": [
+        "binding_slot:trace_ld_v1_binding_blue_wool_to_ratsha_caftan"
+      ],
+      "admitted_terminal_slot_refs": [],
+      "node_refs": [
+        "trace_ld_v1_evidence_cut_fastening",
+        "trace_ld_v1_evidence_side_dent",
+        "trace_ld_v1_evidence_second_boat_trace",
+        "trace_ld_v1_evidence_boot_track",
+        "trace_ld_v1_evidence_blue_wool",
+        "binding_slot:trace_ld_v1_binding_blue_wool_to_ratsha_caftan",
+        "conclusion:intentional_bag_removal",
+        "conclusion:side_collision_occurred",
+        "conclusion:second_boat_present",
+        "conclusion:another_person_present",
+        "conclusion:blue_wool_found_on_route",
+        "conclusion:blue_wool_matches_ratsha_caftan",
+        "conclusion:physical_attack_pattern",
+        "conclusion:ratsha_participated_blue_wool_route",
+        "conclusion:ratsha_participated",
+        "trace_ld_v1_evidence_bag_at_zhdanko",
+        "conclusion:stolen_bag_at_zhdanko",
+        "conclusion:principal_zhdanko_physical_line"
+      ],
+      "inference_nodes": [
+        {
+          "node_ref": "conclusion:intentional_bag_removal",
+          "operator": "all_of",
+          "input_refs": [
+            "trace_ld_v1_evidence_cut_fastening"
+          ]
+        },
+        {
+          "node_ref": "conclusion:side_collision_occurred",
+          "operator": "all_of",
+          "input_refs": [
+            "trace_ld_v1_evidence_side_dent"
+          ]
+        },
+        {
+          "node_ref": "conclusion:second_boat_present",
+          "operator": "all_of",
+          "input_refs": [
+            "trace_ld_v1_evidence_second_boat_trace"
+          ]
+        },
+        {
+          "node_ref": "conclusion:another_person_present",
+          "operator": "all_of",
+          "input_refs": [
+            "trace_ld_v1_evidence_boot_track"
+          ]
+        },
+        {
+          "node_ref": "conclusion:blue_wool_found_on_route",
+          "operator": "all_of",
+          "input_refs": [
+            "trace_ld_v1_evidence_blue_wool"
+          ]
+        },
+        {
+          "node_ref": "conclusion:blue_wool_matches_ratsha_caftan",
+          "operator": "all_of",
+          "input_refs": [
+            "conclusion:blue_wool_found_on_route",
+            "binding_slot:trace_ld_v1_binding_blue_wool_to_ratsha_caftan"
+          ]
+        },
+        {
+          "node_ref": "conclusion:physical_attack_pattern",
+          "operator": "min_count",
+          "min_count": 2,
+          "input_refs": [
+            "conclusion:intentional_bag_removal",
+            "conclusion:side_collision_occurred",
+            "conclusion:second_boat_present",
+            "conclusion:another_person_present"
+          ]
+        },
+        {
+          "node_ref": "conclusion:ratsha_participated_blue_wool_route",
+          "operator": "all_of",
+          "input_refs": [
+            "conclusion:physical_attack_pattern",
+            "conclusion:blue_wool_matches_ratsha_caftan"
+          ]
+        },
+        {
+          "node_ref": "conclusion:ratsha_participated",
+          "operator": "all_of",
+          "input_refs": [
+            "conclusion:ratsha_participated_blue_wool_route"
+          ]
+        },
+        {
+          "node_ref": "conclusion:stolen_bag_at_zhdanko",
+          "operator": "all_of",
+          "input_refs": [
+            "trace_ld_v1_evidence_bag_at_zhdanko"
+          ]
+        },
+        {
+          "node_ref": "conclusion:principal_zhdanko_physical_line",
+          "operator": "all_of",
+          "input_refs": [
+            "conclusion:ratsha_participated",
+            "conclusion:stolen_bag_at_zhdanko"
+          ]
+        }
+      ],
+      "edge_pairs": [
+        [
+          "trace_ld_v1_evidence_cut_fastening",
+          "conclusion:intentional_bag_removal"
+        ],
+        [
+          "trace_ld_v1_evidence_side_dent",
+          "conclusion:side_collision_occurred"
+        ],
+        [
+          "trace_ld_v1_evidence_second_boat_trace",
+          "conclusion:second_boat_present"
+        ],
+        [
+          "trace_ld_v1_evidence_boot_track",
+          "conclusion:another_person_present"
+        ],
+        [
+          "trace_ld_v1_evidence_blue_wool",
+          "conclusion:blue_wool_found_on_route"
+        ],
+        [
+          "conclusion:blue_wool_found_on_route",
+          "conclusion:blue_wool_matches_ratsha_caftan"
+        ],
+        [
+          "binding_slot:trace_ld_v1_binding_blue_wool_to_ratsha_caftan",
+          "conclusion:blue_wool_matches_ratsha_caftan"
+        ],
+        [
+          "conclusion:intentional_bag_removal",
+          "conclusion:physical_attack_pattern"
+        ],
+        [
+          "conclusion:side_collision_occurred",
+          "conclusion:physical_attack_pattern"
+        ],
+        [
+          "conclusion:second_boat_present",
+          "conclusion:physical_attack_pattern"
+        ],
+        [
+          "conclusion:another_person_present",
+          "conclusion:physical_attack_pattern"
+        ],
+        [
+          "conclusion:physical_attack_pattern",
+          "conclusion:ratsha_participated_blue_wool_route"
+        ],
+        [
+          "conclusion:blue_wool_matches_ratsha_caftan",
+          "conclusion:ratsha_participated_blue_wool_route"
+        ],
+        [
+          "conclusion:ratsha_participated_blue_wool_route",
+          "conclusion:ratsha_participated"
+        ],
+        [
+          "trace_ld_v1_evidence_bag_at_zhdanko",
+          "conclusion:stolen_bag_at_zhdanko"
+        ],
+        [
+          "conclusion:ratsha_participated",
+          "conclusion:principal_zhdanko_physical_line"
+        ],
+        [
+          "conclusion:stolen_bag_at_zhdanko",
+          "conclusion:principal_zhdanko_physical_line"
+        ]
+      ],
+      "terminal_conclusion": "principal_zhdanko_physical_line",
+      "failure_policy": "physical_line_requires_approved_blue_wool_identity_binding"
+    },
+    {
+      "chain_id": "trace_ld_v1_chain_witnesses_confession_voice",
+      "independence_class": "testimonial",
+      "required": true,
+      "leaf_evidence_refs": [
+        "trace_ld_v1_evidence_eremey_words",
+        "trace_ld_v1_evidence_ratsha_confession",
+        "trace_ld_v1_evidence_onisim_testimony"
+      ],
+      "admitted_binding_slot_refs": [],
+      "admitted_terminal_slot_refs": [],
+      "node_refs": [
+        "trace_ld_v1_evidence_eremey_words",
+        "trace_ld_v1_evidence_ratsha_confession",
+        "trace_ld_v1_evidence_onisim_testimony",
+        "conclusion:ratsha_possessed_foreign_bag",
+        "conclusion:ratsha_participated",
+        "conclusion:zhdanko_voice_connected_to_attack",
+        "conclusion:principal_zhdanko_testimonial_line"
+      ],
+      "inference_nodes": [
+        {
+          "node_ref": "conclusion:ratsha_possessed_foreign_bag",
+          "operator": "all_of",
+          "input_refs": [
+            "trace_ld_v1_evidence_eremey_words"
+          ]
+        },
+        {
+          "node_ref": "conclusion:ratsha_participated",
+          "operator": "min_count",
+          "min_count": 2,
+          "input_refs": [
+            "conclusion:ratsha_possessed_foreign_bag",
+            "trace_ld_v1_evidence_ratsha_confession",
+            "trace_ld_v1_evidence_onisim_testimony"
+          ]
+        },
+        {
+          "node_ref": "conclusion:zhdanko_voice_connected_to_attack",
+          "operator": "all_of",
+          "input_refs": [
+            "trace_ld_v1_evidence_onisim_testimony"
+          ]
+        },
+        {
+          "node_ref": "conclusion:principal_zhdanko_testimonial_line",
+          "operator": "all_of",
+          "input_refs": [
+            "conclusion:ratsha_participated",
+            "conclusion:zhdanko_voice_connected_to_attack"
+          ]
+        }
+      ],
+      "edge_pairs": [
+        [
+          "trace_ld_v1_evidence_eremey_words",
+          "conclusion:ratsha_possessed_foreign_bag"
+        ],
+        [
+          "conclusion:ratsha_possessed_foreign_bag",
+          "conclusion:ratsha_participated"
+        ],
+        [
+          "trace_ld_v1_evidence_ratsha_confession",
+          "conclusion:ratsha_participated"
+        ],
+        [
+          "trace_ld_v1_evidence_onisim_testimony",
+          "conclusion:ratsha_participated"
+        ],
+        [
+          "trace_ld_v1_evidence_onisim_testimony",
+          "conclusion:zhdanko_voice_connected_to_attack"
+        ],
+        [
+          "conclusion:ratsha_participated",
+          "conclusion:principal_zhdanko_testimonial_line"
+        ],
+        [
+          "conclusion:zhdanko_voice_connected_to_attack",
+          "conclusion:principal_zhdanko_testimonial_line"
+        ]
+      ],
+      "terminal_conclusion": "principal_zhdanko_testimonial_line",
+      "failure_policy": "confession_requires_independent_testimonial_or_physical_confirmation"
+    },
+    {
+      "chain_id": "trace_ld_v1_chain_document_reconciliation_motive",
+      "independence_class": "documentary",
+      "required": true,
+      "leaf_evidence_refs": [
+        "trace_ld_v1_evidence_bag_at_zhdanko",
+        "trace_ld_v1_evidence_intact_seal"
+      ],
+      "admitted_binding_slot_refs": [],
+      "admitted_terminal_slot_refs": [
+        "terminal_slot:trace_ld_v1_future_goods_reconciliation"
+      ],
+      "node_refs": [
+        "trace_ld_v1_evidence_bag_at_zhdanko",
+        "trace_ld_v1_evidence_intact_seal",
+        "conclusion:stolen_bag_at_zhdanko",
+        "conclusion:packet_seal_intact",
+        "terminal_slot:trace_ld_v1_future_goods_reconciliation",
+        "conclusion:conceal_entrusted_goods_shortage",
+        "conclusion:principal_zhdanko_documentary_line"
+      ],
+      "inference_nodes": [
+        {
+          "node_ref": "conclusion:stolen_bag_at_zhdanko",
+          "operator": "all_of",
+          "input_refs": [
+            "trace_ld_v1_evidence_bag_at_zhdanko"
+          ]
+        },
+        {
+          "node_ref": "conclusion:packet_seal_intact",
+          "operator": "all_of",
+          "input_refs": [
+            "trace_ld_v1_evidence_intact_seal"
+          ]
+        },
+        {
+          "node_ref": "conclusion:conceal_entrusted_goods_shortage",
+          "operator": "all_of",
+          "input_refs": [
+            "conclusion:stolen_bag_at_zhdanko",
+            "conclusion:packet_seal_intact",
+            "terminal_slot:trace_ld_v1_future_goods_reconciliation"
+          ]
+        },
+        {
+          "node_ref": "conclusion:principal_zhdanko_documentary_line",
+          "operator": "all_of",
+          "input_refs": [
+            "conclusion:conceal_entrusted_goods_shortage"
+          ]
+        }
+      ],
+      "edge_pairs": [
+        [
+          "trace_ld_v1_evidence_bag_at_zhdanko",
+          "conclusion:stolen_bag_at_zhdanko"
+        ],
+        [
+          "trace_ld_v1_evidence_intact_seal",
+          "conclusion:packet_seal_intact"
+        ],
+        [
+          "conclusion:stolen_bag_at_zhdanko",
+          "conclusion:conceal_entrusted_goods_shortage"
+        ],
+        [
+          "conclusion:packet_seal_intact",
+          "conclusion:conceal_entrusted_goods_shortage"
+        ],
+        [
+          "terminal_slot:trace_ld_v1_future_goods_reconciliation",
+          "conclusion:conceal_entrusted_goods_shortage"
+        ],
+        [
+          "conclusion:conceal_entrusted_goods_shortage",
+          "conclusion:principal_zhdanko_documentary_line"
+        ]
+      ],
+      "terminal_conclusion": "principal_zhdanko_documentary_line",
+      "failure_policy": "terminal_slot_reserved_for_late_completion_evaluation"
+    }
+  ],
+  "terminal_evidence_slots": [
+    {
+      "terminal_slot_id": "trace_ld_v1_future_goods_reconciliation",
+      "kind": "future_goods_reconciliation",
+      "owner": "@rus/visibility-knowledge-memory",
+      "input_mode": "external_committed_input_only",
+      "commitment_status_required": "committed",
+      "may_be_inferred": false,
+      "required_prerequisite_refs": [
+        "conclusion:stolen_bag_at_zhdanko",
+        "conclusion:packet_seal_intact"
+      ],
+      "absence_policy": "fail_closed_no_motive_conclusion",
+      "runtime_status": "not_implemented",
+      "planned_phase": "later_completion_phase"
+    }
+  ],
+  "principal_inference_policy": {
+    "conclusion": "principal_zhdanko",
+    "minimum_independent_chain_count": 2,
+    "cross_chain_inference": {
+      "operator": "approved_combinations",
+      "input_chain_terminal_refs": [
+        {
+          "chain_ref": "trace_ld_v1_chain_physical_to_ratsha_to_bag",
+          "terminal_conclusion": "principal_zhdanko_physical_line",
+          "independence_class": "physical"
+        },
+        {
+          "chain_ref": "trace_ld_v1_chain_witnesses_confession_voice",
+          "terminal_conclusion": "principal_zhdanko_testimonial_line",
+          "independence_class": "testimonial"
+        },
+        {
+          "chain_ref": "trace_ld_v1_chain_document_reconciliation_motive",
+          "terminal_conclusion": "principal_zhdanko_documentary_line",
+          "independence_class": "documentary"
+        }
+      ],
+      "approved_combinations": [
+        {
+          "combination_id": "trace_ld_v1_principal_physical_testimonial_full",
+          "chain_refs": [
+            "trace_ld_v1_chain_physical_to_ratsha_to_bag",
+            "trace_ld_v1_chain_witnesses_confession_voice"
+          ],
+          "outcome_kind": "full_principal_established",
+          "outcome_ref": "conclusion:principal_zhdanko",
+          "requires_disjoint_leaf_evidence": true
+        },
+        {
+          "combination_id": "trace_ld_v1_principal_testimonial_documentary_full",
+          "chain_refs": [
+            "trace_ld_v1_chain_witnesses_confession_voice",
+            "trace_ld_v1_chain_document_reconciliation_motive"
+          ],
+          "outcome_kind": "full_principal_established",
+          "outcome_ref": "conclusion:principal_zhdanko",
+          "requires_disjoint_leaf_evidence": true
+        },
+        {
+          "combination_id": "trace_ld_v1_principal_physical_documentary_partial",
+          "chain_refs": [
+            "trace_ld_v1_chain_physical_to_ratsha_to_bag",
+            "trace_ld_v1_chain_document_reconciliation_motive"
+          ],
+          "outcome_kind": "partial_principal_corroborated",
+          "outcome_ref": "partial_outcome:trace_ld_v1_principal_without_direct_voice",
+          "requires_disjoint_leaf_evidence": false,
+          "shared_leaf_evidence_refs": [
+            "trace_ld_v1_evidence_bag_at_zhdanko"
+          ]
+        }
+      ],
+      "requires_distinct_independence_classes": true
+    },
+    "partial_outcomes": [
+      {
+        "partial_outcome_id": "trace_ld_v1_principal_without_direct_voice",
+        "resolution_status": "partial_evidence_resolution",
+        "establishes": [
+          "ratsha_participated",
+          "stolen_bag_at_zhdanko",
+          "conceal_entrusted_goods_shortage"
+        ],
+        "does_not_establish": [
+          "direct_zhdanko_voice_connection",
+          "full_principal_zhdanko"
+        ],
+        "resolution_scope": "evidence_strength_only_no_completion_state"
+      }
+    ],
+    "single_evidence_sufficient": false,
+    "confession_sufficient_alone": false,
+    "player_hypothesis_changes_truth": false,
+    "accusation_changes_culprit": false
+  },
+  "scoped_evidence_loss_outcome_contracts": [
+    {
+      "failure_case": "blue_wool_or_binding_unavailable",
+      "excluded_refs": [
+        "trace_ld_v1_evidence_blue_wool",
+        "binding_slot:trace_ld_v1_binding_blue_wool_to_ratsha_caftan"
+      ],
+      "required_outcome_kind": "full_principal_established",
+      "required_combination_ref": "trace_ld_v1_principal_testimonial_documentary_full"
+    },
+    {
+      "failure_case": "eremey_disclosure_unavailable",
+      "excluded_refs": [
+        "trace_ld_v1_evidence_eremey_words"
+      ],
+      "required_outcome_kind": "full_principal_established",
+      "required_combination_ref": "trace_ld_v1_principal_physical_testimonial_full"
+    },
+    {
+      "failure_case": "ratsha_confession_unavailable",
+      "excluded_refs": [
+        "trace_ld_v1_evidence_ratsha_confession"
+      ],
+      "required_outcome_kind": "full_principal_established",
+      "required_combination_ref": "trace_ld_v1_principal_physical_testimonial_full"
+    },
+    {
+      "failure_case": "onisim_testimony_unavailable",
+      "excluded_refs": [
+        "trace_ld_v1_evidence_onisim_testimony"
+      ],
+      "required_outcome_kind": "partial_principal_corroborated",
+      "required_combination_ref": "trace_ld_v1_principal_physical_documentary_partial",
+      "required_partial_outcome_ref": "trace_ld_v1_principal_without_direct_voice"
+    }
+  ],
+  "discovery_lifecycle_policy": {
+    "clue_exists_before_discovery": true,
+    "repeat_discovery_creates_duplicate": false,
+    "evidence_loss_contract_scope": "declared_evidence_ref_exclusions_only",
+    "check_level_resilience": {
+      "status": "unresolved_required",
+      "planned_phase": "0D",
+      "owner": "@rus/turn",
+      "profile_category": "activity_check_consequence_profiles",
+      "required_mapping": "check_outcome_to_admitted_evidence_bundle",
+      "required_validation": "evaluate_each_failed_check_bundle_against_approved_full_or_partial_outcomes"
+    }
+  },
+  "discovered_evidence_instances": [],
+  "player_hypotheses": [],
+  "accusations": [],
+  "excludes": [
+    "investigation_runtime",
+    "check_resolution",
+    "completion_evaluator",
+    "epilogue_evaluator"
+  ]
+}

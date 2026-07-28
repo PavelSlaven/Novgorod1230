@@ -1,0 +1,801 @@
+{
+  "schema": "rus.trace_item_container_set.v1",
+  "item_container_set_id": "trace_ld_v1_item_container_set",
+  "revision": 1,
+  "publication_status": "unpublished",
+  "owner": "@rus/items-property",
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden",
+  "participant_profile_set_ref": {
+    "id": "trace_ld_v1_participant_profile_set",
+    "revision": 1,
+    "digest": "33e45b8b8b57f98debb254e5e76c881cf3ffe10985042811ed85390e38f588ce"
+  },
+  "location_topology_set_ref": {
+    "id": "trace_ld_v1_location_topology_set",
+    "revision": 1,
+    "digest": "3410d8652aa87d76a2be37cf6f21b9179ac3dd61c88ea84b94486b19765342ce"
+  },
+  "canonical_item_catalog_source_ref": {
+    "schema": "rus.trace_item_catalog_source_ref.v1",
+    "version": 1,
+    "candidate_manifest": {
+      "path": "data/knowledge-source/imports/item-container-120-v5/candidate/manifest.json",
+      "schema_version": "rus.pr17.item_container_candidate.v1",
+      "candidate_digest": "e3bddda4b31cdbb91d430254db5e6f2d34a8d9d0a08e5f7e4c1e1d6cb9832a24",
+      "sha256": "e887bd52d63b83bb1a68318e0e30409ea7275e9e73637e51012eb7bf22807a98"
+    },
+    "approval_attestation": {
+      "path": "docs/implementation/item-container-120-approval-audit/evidence/FINAL_APPROVAL_ATTESTATION.json",
+      "schema_version": "rus.pr17.item_container_approval_attestation.v1",
+      "decision": "approve_all_120",
+      "sha256": "816509df226b1bab8a91a9b3d2b3afee251f925cb169a90633d5676daeb62859"
+    },
+    "promoted_world_revision_id": "world_revision_novgorod_1230_item_container_approved_001",
+    "datasets": {
+      "item_templates": {
+        "path": "data/knowledge-source/imports/item-container-120-v5/candidate/tables/item_templates.json",
+        "schema_version": "rus.item_templates.v1",
+        "sha256": "766b2e2a874a79723daaf3f9bca4580033fc5da030a2e5be5cbfba4d84f9faab"
+      },
+      "item_inventory_profiles": {
+        "path": "data/knowledge-source/imports/item-container-120-v5/candidate/tables/item_template_inventory_profiles.json",
+        "schema_version": "rus.item_template_inventory_profiles.v1",
+        "sha256": "e71a346428948b84bf5b953c5c11069bdfbf8ea67ad29f8c383c9ea39a11fc95"
+      },
+      "item_quantity_profiles": {
+        "path": "data/knowledge-source/imports/item-container-120-v5/candidate/tables/item_template_quantity_profiles.json",
+        "schema_version": "rus.item_template_quantity_profiles.v1",
+        "sha256": "caf63d4c245dffdd3e9344a8631e1304e719a8dec1cd099356ca8710e4ee5f22"
+      },
+      "container_templates": {
+        "path": "data/knowledge-source/imports/item-container-120-v5/candidate/tables/container_templates.json",
+        "schema_version": "rus.container_templates.v1",
+        "sha256": "1ec241d6fc0c7520402aa2d477636d3092cb7f7fe43638dafffbaf82a90f60a1"
+      },
+      "container_inventory_profiles": {
+        "path": "data/knowledge-source/imports/item-container-120-v5/candidate/tables/container_template_inventory_profiles.json",
+        "schema_version": "rus.container_template_inventory_profiles.v1",
+        "sha256": "f5e73d08edf8f2ff5dc1839b895d245182b4339ad5785d2ad50d26a66cd63805"
+      }
+    }
+  },
+  "external_property_principals": [
+    {
+      "principal_ref": "trace_ld_v1_external_owner_savva_tverdich",
+      "display_name": "купец Савва Твердич",
+      "allowed_relation": "owner_only",
+      "causal_basis": "merchant_service_assignment"
+    }
+  ],
+  "semantic_categories": [
+    "sealed_merchant_document_packet",
+    "road_bag_container",
+    "wet_cloak",
+    "writing_tablet",
+    "blue_wool_clue",
+    "cut_bag_fastening_clue",
+    "personal_utility_knife",
+    "working_axe",
+    "river_boat",
+    "small_river_boat",
+    "persistent_boat_debris",
+    "broken_oar",
+    "empty_birch_bark_container",
+    "side_collision_trace",
+    "hidden_trunk_trace",
+    "wool_caftan",
+    "boat_hooking_pole",
+    "fishing_net",
+    "carry_poles",
+    "bandage_cloth",
+    "utility_rope"
+  ],
+  "container_candidate_sets": [
+    {
+      "candidate_set_id": "trace_ld_v1_road_bag_candidates",
+      "required": true,
+      "selection_policy": "singleton_approved",
+      "required_count": 1,
+      "slot_binding_ref": "container_slot:trace_ld_v1_entrusted_road_bag",
+      "candidate_ids": [
+        "trace_ld_v1_container_road_bag"
+      ]
+    },
+    {
+      "candidate_set_id": "trace_ld_v1_required_debris_container_templates",
+      "required": true,
+      "selection_policy": "all_approved_templates",
+      "materialization_semantics": "required_template_set",
+      "candidate_ids": [
+        "trace_ld_v1_container_empty_birch_bark"
+      ]
+    }
+  ],
+  "container_templates": [
+    {
+      "container_template_id": "trace_ld_v1_container_road_bag",
+      "semantic_category": "road_bag_container",
+      "status": "approved",
+      "base_catalog_ref": {
+        "template_id": "container_tpl_nov_small_soft_bag_v1",
+        "inventory_profile_id": "inventory_container_tpl_nov_small_soft_bag_v1"
+      },
+      "property_state_template": {
+        "owner_ref": "trace_ld_v1_external_owner_savva_tverdich",
+        "holder_ref": "player_clerk",
+        "controller_ref": "player_clerk",
+        "legal_status": "entrusted_service_container"
+      },
+      "placement_contract": {
+        "kind": "held_by_participant",
+        "participant_ref": "player_clerk",
+        "exclusive": true
+      },
+      "mass_grams": 300,
+      "capacity_contract": {
+        "mode": "packing_slots",
+        "capacity": 4,
+        "unlisted_content_policy": "forbidden",
+        "exact_allowed_item_template_ids": [
+          "trace_ld_v1_item_sealed_packet",
+          "trace_ld_v1_item_wet_cloak",
+          "trace_ld_v1_item_writing_tablet"
+        ]
+      },
+      "physical_condition": {
+        "overall": "serviceable_with_damage",
+        "strap_state": "cut",
+        "leather_patch_state": "present"
+      },
+      "accessibility_contract": {
+        "initial_access": "held_for_others",
+        "closure_state": "tied",
+        "contents_require_open_container": true
+      },
+      "causal_basis": "merchant_service_assignment"
+    },
+    {
+      "container_template_id": "trace_ld_v1_container_empty_birch_bark",
+      "semantic_category": "empty_birch_bark_container",
+      "status": "approved",
+      "base_catalog_ref": {
+        "template_id": "container_tpl_nov_birch_bark_box_v1",
+        "inventory_profile_id": "inventory_container_tpl_nov_birch_bark_box_v1"
+      },
+      "property_state_template": {
+        "owner_ref": "onisim_boatman",
+        "holder_ref": null,
+        "controller_ref": null
+      },
+      "placement_slot_ref": "trace_ld_v1_slot_wreck_debris_field",
+      "mass_grams": 400,
+      "capacity_contract": {
+        "mode": "packing_slots",
+        "capacity": 4,
+        "unlisted_content_policy": "forbidden",
+        "exact_allowed_item_template_ids": []
+      },
+      "contents_state": "empty",
+      "preexists_first_turn": true,
+      "causal_basis": "onisim_boat_wreckage"
+    }
+  ],
+  "item_candidate_sets": [
+    {
+      "candidate_set_id": "trace_ld_v1_required_item_templates",
+      "required": true,
+      "selection_policy": "all_approved_templates",
+      "candidate_ids": [
+        "trace_ld_v1_item_sealed_packet",
+        "trace_ld_v1_item_wet_cloak",
+        "trace_ld_v1_item_writing_tablet",
+        "trace_ld_v1_item_blue_wool_fragment",
+        "trace_ld_v1_item_cut_bag_fastening",
+        "trace_ld_v1_item_mikula_knife",
+        "trace_ld_v1_item_ratsha_knife",
+        "trace_ld_v1_item_zhdanko_axe",
+        "trace_ld_v1_item_onisim_boat",
+        "trace_ld_v1_item_second_small_boat",
+        "trace_ld_v1_item_persistent_debris",
+        "trace_ld_v1_item_broken_oar",
+        "trace_ld_v1_item_side_collision_trace",
+        "trace_ld_v1_item_hidden_trunk_trace",
+        "trace_ld_v1_item_ratsha_caftan",
+        "trace_ld_v1_item_hooking_pole",
+        "trace_ld_v1_item_fishing_net",
+        "trace_ld_v1_item_carry_poles",
+        "trace_ld_v1_item_bandage_cloth",
+        "trace_ld_v1_item_ratsha_binding_rope",
+        "trace_ld_v1_item_zhdanko_rope"
+      ]
+    }
+  ],
+  "item_templates": [
+    {
+      "item_template_id": "trace_ld_v1_item_sealed_packet",
+      "semantic_category": "sealed_merchant_document_packet",
+      "status": "approved",
+      "property_state_template": {
+        "owner_ref": "trace_ld_v1_external_owner_savva_tverdich",
+        "holder_ref": "player_clerk",
+        "controller_ref": "player_clerk",
+        "legal_status": "entrusted_service_item"
+      },
+      "container_contract": {
+        "allowed_container_refs": [
+          "trace_ld_v1_container_road_bag"
+        ],
+        "maximum_simultaneous_containers": 1
+      },
+      "seal_contract": {
+        "state_candidates": [
+          "intact"
+        ],
+        "seal_state_separate_from_contents_state": true
+      },
+      "contents_contract": {
+        "player_knowledge_at_start": "forbidden",
+        "opening_right": "absent"
+      },
+      "causal_basis": "merchant_service_assignment"
+    },
+    {
+      "item_template_id": "trace_ld_v1_item_wet_cloak",
+      "semantic_category": "wet_cloak",
+      "status": "approved",
+      "base_catalog_ref": {
+        "template_id": "item_tpl_nov_cloak_v1",
+        "inventory_profile_id": "inventory_item_tpl_nov_cloak_v1"
+      },
+      "property_state_template": {
+        "owner_ref": "player_clerk",
+        "holder_ref": "player_clerk",
+        "controller_ref": "player_clerk"
+      },
+      "container_contract": {
+        "allowed_container_refs": [
+          "trace_ld_v1_container_road_bag"
+        ],
+        "maximum_simultaneous_containers": 1
+      },
+      "condition_state": "wet",
+      "causal_basis": "player_travel_equipment"
+    },
+    {
+      "item_template_id": "trace_ld_v1_item_writing_tablet",
+      "semantic_category": "writing_tablet",
+      "status": "approved",
+      "base_catalog_ref": {
+        "template_id": "item_tpl_nov_birch_bark_sheet_v1",
+        "inventory_profile_id": "inventory_item_tpl_nov_birch_bark_sheet_v1"
+      },
+      "property_state_template": {
+        "owner_ref": "player_clerk",
+        "holder_ref": "player_clerk",
+        "controller_ref": "player_clerk"
+      },
+      "container_contract": {
+        "allowed_container_refs": [
+          "trace_ld_v1_container_road_bag"
+        ],
+        "maximum_simultaneous_containers": 1
+      },
+      "causal_basis": "clerk_work_equipment"
+    },
+    {
+      "item_template_id": "trace_ld_v1_item_blue_wool_fragment",
+      "semantic_category": "blue_wool_clue",
+      "status": "approved",
+      "origin_item_ref": "trace_ld_v1_item_ratsha_caftan",
+      "property_state_template": {
+        "owner_ref": "ratsha_storehouse_helper",
+        "holder_ref": null,
+        "controller_ref": null
+      },
+      "preexists_first_turn": true,
+      "placement_slot_ref": "trace_ld_v1_slot_wreck_willow_branch",
+      "visibility_precondition": "detailed_search",
+      "inference_limit": [
+        "does_not_prove_intent",
+        "does_not_prove_principal",
+        "does_not_prove_full_event_sequence"
+      ],
+      "causal_basis": "fabric_torn_during_pre_game_attack"
+    },
+    {
+      "item_template_id": "trace_ld_v1_item_cut_bag_fastening",
+      "semantic_category": "cut_bag_fastening_clue",
+      "status": "approved",
+      "origin_item_ref": "trace_ld_v1_container_road_bag",
+      "property_state_template": {
+        "owner_ref": "trace_ld_v1_external_owner_savva_tverdich",
+        "holder_ref": null,
+        "controller_ref": null
+      },
+      "preexists_first_turn": true,
+      "placement_slot_ref": "trace_ld_v1_slot_wreck_bag_fastening",
+      "physically_removable": true,
+      "supports": [
+        "intentional_bag_removal"
+      ],
+      "inference_limit": [
+        "does_not_identify_actor"
+      ],
+      "causal_basis": "bag_fastening_cut_during_pre_game_attack"
+    },
+    {
+      "item_template_id": "trace_ld_v1_item_mikula_knife",
+      "semantic_category": "personal_utility_knife",
+      "status": "approved",
+      "base_catalog_ref": {
+        "template_id": "item_tpl_nov_utility_knife_v1",
+        "inventory_profile_id": "inventory_item_tpl_nov_utility_knife_v1"
+      },
+      "weapon_contract": {
+        "owner_ref": "player_clerk",
+        "holder_ref": "player_clerk",
+        "controller_ref": "player_clerk",
+        "accessibility": "quick"
+      },
+      "causal_basis": "personal_travel_tool"
+    },
+    {
+      "item_template_id": "trace_ld_v1_item_ratsha_knife",
+      "semantic_category": "personal_utility_knife",
+      "status": "approved",
+      "base_catalog_ref": {
+        "template_id": "item_tpl_nov_utility_knife_v1",
+        "inventory_profile_id": "inventory_item_tpl_nov_utility_knife_v1"
+      },
+      "weapon_contract": {
+        "owner_ref": "ratsha_storehouse_helper",
+        "holder_ref": "ratsha_storehouse_helper",
+        "controller_ref": "ratsha_storehouse_helper",
+        "accessibility": "quick"
+      },
+      "causal_basis": "personal_work_tool"
+    },
+    {
+      "item_template_id": "trace_ld_v1_item_zhdanko_axe",
+      "semantic_category": "working_axe",
+      "status": "approved",
+      "base_catalog_ref": {
+        "template_id": "item_tpl_nov_working_axe_v1",
+        "inventory_profile_id": "inventory_item_tpl_nov_working_axe_v1"
+      },
+      "weapon_contract": {
+        "owner_ref": "zhdanko_storehouse_controller",
+        "holder_ref": "zhdanko_storehouse_controller",
+        "controller_ref": "zhdanko_storehouse_controller",
+        "accessibility": "quick"
+      },
+      "causal_basis": "storehouse_work_tool"
+    },
+    {
+      "item_template_id": "trace_ld_v1_item_onisim_boat",
+      "semantic_category": "river_boat",
+      "status": "approved",
+      "property_state_template": {
+        "owner_ref": "onisim_boatman",
+        "holder_ref": "onisim_boatman",
+        "controller_ref": "onisim_boatman"
+      },
+      "persistence_contract": {
+        "survives_player_departure": true,
+        "destruction_does_not_remove_property": true
+      },
+      "condition_state": "wrecked",
+      "causal_basis": "onisim_transport_property"
+    },
+    {
+      "item_template_id": "trace_ld_v1_item_second_small_boat",
+      "semantic_category": "small_river_boat",
+      "status": "approved",
+      "property_state_template": {
+        "owner_ref": "zhdanko_storehouse_controller",
+        "holder_ref": "zhdanko_storehouse_controller",
+        "controller_ref": "zhdanko_storehouse_controller"
+      },
+      "causal_basis": "principal_pre_game_transport_resource"
+    },
+    {
+      "item_template_id": "trace_ld_v1_item_persistent_debris",
+      "semantic_category": "persistent_boat_debris",
+      "status": "approved",
+      "property_state_template": {
+        "owner_ref": "onisim_boatman",
+        "holder_ref": null,
+        "controller_ref": null
+      },
+      "preexists_first_turn": true,
+      "placement_slot_ref": "trace_ld_v1_slot_wreck_debris_field",
+      "portability": "not_single_actor_portable",
+      "persistence_contract": {
+        "survives_player_departure": true,
+        "repeat_inspection_creates_new_trace": false
+      },
+      "causal_basis": "onisim_boat_wreckage"
+    },
+    {
+      "item_template_id": "trace_ld_v1_item_broken_oar",
+      "semantic_category": "broken_oar",
+      "status": "approved",
+      "property_state_template": {
+        "owner_ref": "onisim_boatman",
+        "holder_ref": null,
+        "controller_ref": null
+      },
+      "preexists_first_turn": true,
+      "placement_slot_ref": "trace_ld_v1_slot_wreck_debris_field",
+      "causal_basis": "onisim_boat_wreckage"
+    },
+    {
+      "item_template_id": "trace_ld_v1_item_side_collision_trace",
+      "semantic_category": "side_collision_trace",
+      "status": "approved",
+      "property_state_template": {
+        "owner_ref": "onisim_boatman",
+        "holder_ref": null,
+        "controller_ref": null
+      },
+      "preexists_first_turn": true,
+      "placement_slot_ref": "trace_ld_v1_slot_wreck_boat_side",
+      "repeat_inspection_creates_new_trace": false,
+      "causal_basis": "boat_side_collision"
+    },
+    {
+      "item_template_id": "trace_ld_v1_item_hidden_trunk_trace",
+      "semantic_category": "hidden_trunk_trace",
+      "status": "approved",
+      "property_state_template": {
+        "owner_ref": null,
+        "holder_ref": null,
+        "controller_ref": null
+      },
+      "preexists_first_turn": true,
+      "placement_slot_ref": "trace_ld_v1_slot_wreck_hidden_trunk",
+      "repeat_inspection_creates_new_trace": false,
+      "causal_basis": "boat_impact_with_hidden_trunk"
+    },
+    {
+      "item_template_id": "trace_ld_v1_item_ratsha_caftan",
+      "semantic_category": "wool_caftan",
+      "status": "approved",
+      "base_catalog_ref": {
+        "template_id": "item_tpl_nov_wool_outer_garment_v1"
+      },
+      "property_state_template": {
+        "owner_ref": "ratsha_storehouse_helper",
+        "holder_ref": "ratsha_storehouse_helper",
+        "controller_ref": "ratsha_storehouse_helper"
+      },
+      "color": "blue",
+      "causal_basis": "ratsha_personal_clothing"
+    },
+    {
+      "item_template_id": "trace_ld_v1_item_hooking_pole",
+      "semantic_category": "boat_hooking_pole",
+      "status": "approved",
+      "property_state_template": {
+        "owner_ref": "ratsha_storehouse_helper",
+        "holder_ref": "ratsha_storehouse_helper",
+        "controller_ref": "ratsha_storehouse_helper"
+      },
+      "causal_basis": "pre_game_attack_resource"
+    },
+    {
+      "item_template_id": "trace_ld_v1_item_fishing_net",
+      "semantic_category": "fishing_net",
+      "status": "approved",
+      "base_catalog_ref": {
+        "template_id": "item_tpl_nov_fishing_net_v1",
+        "inventory_profile_id": "inventory_item_tpl_nov_fishing_net_v1"
+      },
+      "property_state_template": {
+        "owner_ref": "eremey_fisher",
+        "holder_ref": "eremey_fisher",
+        "controller_ref": "eremey_fisher"
+      },
+      "causal_basis": "fishing_work_resource"
+    },
+    {
+      "item_template_id": "trace_ld_v1_item_carry_poles",
+      "semantic_category": "carry_poles",
+      "status": "approved",
+      "property_state_template": {
+        "owner_ref": "background_fisher_1",
+        "holder_ref": "background_fisher_1",
+        "controller_ref": "background_fisher_1"
+      },
+      "source_resource_only": true,
+      "causal_basis": "fishing_camp_work_resource"
+    },
+    {
+      "item_template_id": "trace_ld_v1_item_bandage_cloth",
+      "semantic_category": "bandage_cloth",
+      "status": "approved",
+      "property_state_template": {
+        "owner_ref": "eremey_fisher",
+        "holder_ref": "eremey_fisher",
+        "controller_ref": "eremey_fisher"
+      },
+      "source_resource_only": true,
+      "causal_basis": "fishing_camp_household_resource"
+    },
+    {
+      "item_template_id": "trace_ld_v1_item_ratsha_binding_rope",
+      "semantic_category": "utility_rope",
+      "status": "approved",
+      "base_catalog_ref": {
+        "template_id": "item_tpl_nov_rope_v1",
+        "inventory_profile_id": "inventory_item_tpl_nov_rope_v1"
+      },
+      "property_state_template": {
+        "owner_ref": null,
+        "holder_ref": "ratsha_storehouse_helper",
+        "controller_ref": "ratsha_storehouse_helper"
+      },
+      "source_resource_only": true,
+      "causal_basis": "approved_pre_game_binding_event_requires_a_separate_rope_without_asserting_property_owner"
+    },
+    {
+      "item_template_id": "trace_ld_v1_item_zhdanko_rope",
+      "semantic_category": "utility_rope",
+      "status": "approved",
+      "base_catalog_ref": {
+        "template_id": "item_tpl_nov_rope_v1",
+        "inventory_profile_id": "inventory_item_tpl_nov_rope_v1"
+      },
+      "property_state_template": {
+        "owner_ref": "zhdanko_storehouse_controller",
+        "holder_ref": "zhdanko_storehouse_controller",
+        "controller_ref": "zhdanko_storehouse_controller"
+      },
+      "source_resource_only": true,
+      "causal_basis": "storehouse_work_resource"
+    }
+  ],
+  "placement_slots": [
+    {
+      "placement_slot_id": "trace_ld_v1_slot_wreck_willow_branch",
+      "location_ref": "trace_ld_v1_loc_wreck_shore",
+      "local_anchor_semantics": "willow_branch",
+      "materialization_status": "template_only"
+    },
+    {
+      "placement_slot_id": "trace_ld_v1_slot_wreck_bag_fastening",
+      "location_ref": "trace_ld_v1_loc_wreck_shore",
+      "local_anchor_semantics": "wreck_bag_fastening_area",
+      "materialization_status": "template_only"
+    },
+    {
+      "placement_slot_id": "trace_ld_v1_slot_wreck_debris_field",
+      "location_ref": "trace_ld_v1_loc_wreck_shore",
+      "local_anchor_semantics": "persistent_debris_field",
+      "materialization_status": "template_only"
+    },
+    {
+      "placement_slot_id": "trace_ld_v1_slot_wreck_boat_side",
+      "location_ref": "trace_ld_v1_loc_wreck_shore",
+      "local_anchor_semantics": "wrecked_boat_side",
+      "materialization_status": "template_only"
+    },
+    {
+      "placement_slot_id": "trace_ld_v1_slot_wreck_hidden_trunk",
+      "location_ref": "trace_ld_v1_loc_wreck_shore",
+      "local_anchor_semantics": "submerged_trunk_impact_area",
+      "materialization_status": "template_only"
+    }
+  ],
+  "container_relation_templates": [
+    {
+      "item_template_ref": "trace_ld_v1_item_sealed_packet",
+      "container_template_ref": "trace_ld_v1_container_road_bag",
+      "relation": "allowed_initial_content"
+    },
+    {
+      "item_template_ref": "trace_ld_v1_item_wet_cloak",
+      "container_template_ref": "trace_ld_v1_container_road_bag",
+      "relation": "allowed_initial_content"
+    },
+    {
+      "item_template_ref": "trace_ld_v1_item_writing_tablet",
+      "container_template_ref": "trace_ld_v1_container_road_bag",
+      "relation": "allowed_initial_content"
+    }
+  ],
+  "transition_templates": [
+    {
+      "transition_template_id": "trace_ld_v1_transition_road_bag_pre_game_transfer",
+      "kind": "entrusted_container_theft_transfer",
+      "container_template_ref": "trace_ld_v1_container_road_bag",
+      "holder_sequence": [
+        "player_clerk",
+        "ratsha_storehouse_helper",
+        "zhdanko_storehouse_controller"
+      ],
+      "controller_sequence": [
+        "player_clerk",
+        "ratsha_storehouse_helper",
+        "zhdanko_storehouse_controller"
+      ],
+      "owner_sequence": [
+        "trace_ld_v1_external_owner_savva_tverdich",
+        "trace_ld_v1_external_owner_savva_tverdich",
+        "trace_ld_v1_external_owner_savva_tverdich"
+      ],
+      "application_status": "template_only"
+    },
+    {
+      "transition_template_id": "trace_ld_v1_transition_packet_pre_game_transfer",
+      "kind": "entrusted_item_theft_transfer",
+      "item_template_ref": "trace_ld_v1_item_sealed_packet",
+      "parent_container_ref": "trace_ld_v1_container_road_bag",
+      "movement_basis": "inherit_parent_container_transfer",
+      "holder_sequence": [
+        "player_clerk",
+        "ratsha_storehouse_helper",
+        "zhdanko_storehouse_controller"
+      ],
+      "controller_sequence": [
+        "player_clerk",
+        "ratsha_storehouse_helper",
+        "zhdanko_storehouse_controller"
+      ],
+      "owner_sequence": [
+        "trace_ld_v1_external_owner_savva_tverdich",
+        "trace_ld_v1_external_owner_savva_tverdich",
+        "trace_ld_v1_external_owner_savva_tverdich"
+      ],
+      "seal_state_sequence": [
+        "intact",
+        "intact",
+        "intact"
+      ],
+      "application_status": "template_only"
+    },
+    {
+      "transition_template_id": "trace_ld_v1_transition_ratsha_binding_rope_pre_game_use",
+      "kind": "controlled_item_use_transfer",
+      "item_template_ref": "trace_ld_v1_item_ratsha_binding_rope",
+      "holder_sequence": [
+        "ratsha_storehouse_helper",
+        "onisim_boatman"
+      ],
+      "controller_sequence": [
+        "ratsha_storehouse_helper",
+        "ratsha_storehouse_helper"
+      ],
+      "owner_sequence": [
+        null,
+        null
+      ],
+      "placement_location_sequence": [
+        "trace_ld_v1_loc_wreck_shore",
+        "trace_ld_v1_loc_old_drying_shed"
+      ],
+      "use_event_ref": "trace_ld_v1_hidden_event_10_onisim_bound_and_moved",
+      "application_status": "template_only"
+    },
+    {
+      "transition_template_id": "trace_ld_v1_transition_blue_wool_pickup",
+      "kind": "clue_pickup",
+      "item_template_ref": "trace_ld_v1_item_blue_wool_fragment",
+      "changes": [
+        "placement",
+        "holder"
+      ],
+      "application_status": "template_only"
+    },
+    {
+      "transition_template_id": "trace_ld_v1_transition_mikula_knife_disarm",
+      "kind": "weapon_disarm",
+      "item_template_ref": "trace_ld_v1_item_mikula_knife",
+      "changes": [
+        "holder",
+        "controller",
+        "accessibility"
+      ],
+      "owner_change": "forbidden",
+      "use_requires_current_holder_and_accessibility": true,
+      "application_status": "template_only"
+    },
+    {
+      "transition_template_id": "trace_ld_v1_transition_ratsha_knife_disarm",
+      "kind": "weapon_disarm",
+      "item_template_ref": "trace_ld_v1_item_ratsha_knife",
+      "changes": [
+        "holder",
+        "controller",
+        "accessibility"
+      ],
+      "owner_change": "forbidden",
+      "use_requires_current_holder_and_accessibility": true,
+      "application_status": "template_only"
+    },
+    {
+      "transition_template_id": "trace_ld_v1_transition_zhdanko_axe_disarm",
+      "kind": "weapon_disarm",
+      "item_template_ref": "trace_ld_v1_item_zhdanko_axe",
+      "changes": [
+        "holder",
+        "controller",
+        "accessibility"
+      ],
+      "owner_change": "forbidden",
+      "use_requires_current_holder_and_accessibility": true,
+      "application_status": "template_only"
+    }
+  ],
+  "pre_game_opening_state_contract": {
+    "contract_id": "trace_ld_v1_opening_state_stolen_road_bag",
+    "derived_from_hidden_event_ref": "trace_ld_v1_hidden_event_11_bag_delivered",
+    "derived_from_transition_refs": [
+      "trace_ld_v1_transition_road_bag_pre_game_transfer",
+      "trace_ld_v1_transition_packet_pre_game_transfer"
+    ],
+    "container_ref": "trace_ld_v1_container_road_bag",
+    "container_opening_state": {
+      "owner_ref": "trace_ld_v1_external_owner_savva_tverdich",
+      "holder_ref": "zhdanko_storehouse_controller",
+      "controller_ref": "zhdanko_storehouse_controller",
+      "placement_location_ref": "trace_ld_v1_loc_zhdanko_storehouse"
+    },
+    "exact_content_item_refs": [
+      "trace_ld_v1_item_sealed_packet",
+      "trace_ld_v1_item_wet_cloak",
+      "trace_ld_v1_item_writing_tablet"
+    ],
+    "content_physical_parent_contract": {
+      "parent_container_ref": "trace_ld_v1_container_road_bag",
+      "physical_placement_derivation": "inherit_parent_container_path",
+      "holder_derivation": "inherit_parent_container_holder",
+      "controller_derivation": "inherit_parent_container_controller",
+      "owner_derivation": "preserve_item_owner"
+    },
+    "sealed_packet_opening_state": {
+      "item_ref": "trace_ld_v1_item_sealed_packet",
+      "parent_container_ref": "trace_ld_v1_container_road_bag",
+      "seal_state": "intact"
+    },
+    "application_status": "template_only"
+  },
+  "pre_game_binding_rope_opening_state_contract": {
+    "contract_id": "trace_ld_v1_opening_state_ratsha_binding_rope_onisim",
+    "derived_from_hidden_event_ref": "trace_ld_v1_hidden_event_10_onisim_bound_and_moved",
+    "derived_from_transition_ref": "trace_ld_v1_transition_ratsha_binding_rope_pre_game_use",
+    "item_ref": "trace_ld_v1_item_ratsha_binding_rope",
+    "owner_ref": null,
+    "holder_ref": "onisim_boatman",
+    "controller_ref": "ratsha_storehouse_helper",
+    "placement_location_ref": "trace_ld_v1_loc_old_drying_shed",
+    "use_state": "binding_onisim",
+    "application_status": "template_only"
+  },
+  "late_scene_rope_availability_contract": {
+    "contract_id": "trace_ld_v1_late_scene_zhdanko_rope_at_storehouse",
+    "state_basis": "approved_storehouse_resource_property_state",
+    "item_ref": "trace_ld_v1_item_zhdanko_rope",
+    "owner_ref": "zhdanko_storehouse_controller",
+    "holder_ref": "zhdanko_storehouse_controller",
+    "controller_ref": "zhdanko_storehouse_controller",
+    "placement_location_ref": "trace_ld_v1_loc_zhdanko_storehouse",
+    "future_use_scope": "zhdanko_restraint_requires_late_activity_consequence",
+    "automatic_transport_from_onisim_scene": false,
+    "runtime_status": "not_implemented",
+    "application_status": "template_only"
+  },
+  "item_instances": [],
+  "container_instances": [],
+  "materialized_placements": [],
+  "excludes": [
+    "inventory_runtime",
+    "item_materialization",
+    "g5_anchors",
+    "activity_rules",
+    "crafting_rules",
+    "stretcher_result"
+  ]
+}

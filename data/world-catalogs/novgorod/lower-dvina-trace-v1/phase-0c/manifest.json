@@ -1,0 +1,90 @@
+{
+  "schema": "rus.trace_phase_0c_manifest.v1",
+  "package_id": "lower_dvina_trace_phase_0c_v1",
+  "revision": 1,
+  "publication_status": "unpublished",
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden",
+  "superseded_definition_ref": {
+    "id": "lower_dvina_trace_v1",
+    "revision": 2,
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0b/definition.json",
+    "digest": "3b19de63027c1aa989f23e37c953bdb6559f569e5357c160de2ccd89905f3182"
+  },
+  "immutable_dependency_refs": {
+    "phase_0a_player_profile_set": {
+      "id": "lower_dvina_trace_player_profile_set_v1",
+      "revision": 1,
+      "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/player-profile-set.json",
+      "digest": "2a25fd04f0e9b71f1ab2805cd3d68620d9ea2d1646e0671e128e886eb54ee865"
+    },
+    "phase_0b_participant_profile_set": {
+      "id": "trace_ld_v1_participant_profile_set",
+      "revision": 1,
+      "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0b/participant-profile-set.json",
+      "digest": "33e45b8b8b57f98debb254e5e76c881cf3ffe10985042811ed85390e38f588ce"
+    },
+    "phase_0b_location_topology_set": {
+      "id": "trace_ld_v1_location_topology_set",
+      "revision": 1,
+      "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0b/location-topology-set.json",
+      "digest": "3410d8652aa87d76a2be37cf6f21b9179ac3dd61c88ea84b94486b19765342ce"
+    }
+  },
+  "content_refs": {
+    "definition": {
+      "schema": "rus.trace_scenario_definition.v1",
+      "id": "lower_dvina_trace_v1",
+      "revision": 3,
+      "path": "definition.json",
+      "digest": "23e4600585abe27557ab1acdcadde1fee041cf55e05f096a21ac025c96f26c24"
+    },
+    "item_container_set": {
+      "schema": "rus.trace_item_container_set.v1",
+      "id": "trace_ld_v1_item_container_set",
+      "revision": 1,
+      "path": "item-container-set.json",
+      "digest": "182fb92641c8c053027718f52eed3467ce9ed79971e7168f4bc8727e1a169a3f"
+    },
+    "hidden_truth_candidate_set": {
+      "schema": "rus.trace_hidden_truth_candidate_set.v1",
+      "id": "trace_ld_v1_hidden_truth_candidate_set",
+      "revision": 1,
+      "path": "hidden-truth-candidate-set.json",
+      "digest": "b4601339813dd253a7a280cd68ad0925202c989998c6cae5bca9e820f1a7b616"
+    },
+    "clue_evidence_graph_set": {
+      "schema": "rus.trace_clue_evidence_graph_set.v1",
+      "id": "trace_ld_v1_clue_evidence_graph_set",
+      "revision": 1,
+      "path": "clue-evidence-graph-set.json",
+      "digest": "7ad621e00550ddf4b1a714c4effc9c678ed7c3c2e421ce0e4128bf998b0b8222"
+    },
+    "knowledge_lie_memory_rules": {
+      "schema": "rus.trace_knowledge_lie_memory_rules.v1",
+      "id": "trace_ld_v1_knowledge_lie_memory_rules",
+      "revision": 1,
+      "path": "knowledge-lie-memory-rules.json",
+      "digest": "6c296a6ebe096633ae58c9ff45dc4a44f92ce56d7843e10bc3133718e6155046"
+    }
+  },
+  "files": {
+    "definition.json": "23e4600585abe27557ab1acdcadde1fee041cf55e05f096a21ac025c96f26c24",
+    "item-container-set.json": "182fb92641c8c053027718f52eed3467ce9ed79971e7168f4bc8727e1a169a3f",
+    "hidden-truth-candidate-set.json": "b4601339813dd253a7a280cd68ad0925202c989998c6cae5bca9e820f1a7b616",
+    "clue-evidence-graph-set.json": "7ad621e00550ddf4b1a714c4effc9c678ed7c3c2e421ce0e4128bf998b0b8222",
+    "knowledge-lie-memory-rules.json": "6c296a6ebe096633ae58c9ff45dc4a44f92ce56d7843e10bc3133718e6155046"
+  },
+  "remaining_unresolved_refs": [
+    "activity_check_consequence_profiles",
+    "npc_decision_schedule_policies",
+    "movement_bindings",
+    "location_access_policies",
+    "location_capacity_contracts",
+    "body_environment_profiles",
+    "promise_policy",
+    "completion_rules",
+    "epilogue_rules"
+  ]
+}

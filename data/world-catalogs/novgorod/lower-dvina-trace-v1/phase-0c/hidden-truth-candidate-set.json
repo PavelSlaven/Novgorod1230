@@ -1,0 +1,422 @@
+{
+  "schema": "rus.trace_hidden_truth_candidate_set.v1",
+  "hidden_truth_candidate_set_id": "trace_ld_v1_hidden_truth_candidate_set",
+  "revision": 1,
+  "publication_status": "unpublished",
+  "owner": "code-driven-world-materialization",
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden",
+  "participant_profile_set_ref": {
+    "id": "trace_ld_v1_participant_profile_set",
+    "revision": 1,
+    "digest": "33e45b8b8b57f98debb254e5e76c881cf3ffe10985042811ed85390e38f588ce"
+  },
+  "location_topology_set_ref": {
+    "id": "trace_ld_v1_location_topology_set",
+    "revision": 1,
+    "digest": "3410d8652aa87d76a2be37cf6f21b9179ac3dd61c88ea84b94486b19765342ce"
+  },
+  "item_container_set_ref": {
+    "id": "trace_ld_v1_item_container_set",
+    "revision": 1,
+    "digest": "182fb92641c8c053027718f52eed3467ce9ed79971e7168f4bc8727e1a169a3f"
+  },
+  "selection_policy": "singleton_approved_candidate",
+  "required_candidate_count": 1,
+  "motive_candidates": [
+    {
+      "motive_id": "conceal_entrusted_goods_shortage",
+      "status": "approved",
+      "principal_ref": "zhdanko_storehouse_controller",
+      "meaning": "Жданко присвоил или незаконно распорядился частью товара Саввы; запечатанная запись позволяла подтвердить объём переданного имущества, поэтому Жданко решил уничтожить документ до сверки.",
+      "does_not_include": [
+        "domestic_motive",
+        "political_motive",
+        "mystical_motive",
+        "accidental_motive"
+      ]
+    }
+  ],
+  "sequence_candidates": [
+    {
+      "hidden_sequence_candidate_id": "trace_ld_v1_hidden_sequence_canonical_v1",
+      "status": "approved",
+      "motive_ref": "conceal_entrusted_goods_shortage",
+      "actor_bindings": {
+        "principal": "zhdanko_storehouse_controller",
+        "executor": "ratsha_storehouse_helper",
+        "victim_boatman": "onisim_boatman",
+        "player": "player_clerk"
+      },
+      "excluded_pre_game_participant_refs": [
+        "eremey_fisher",
+        "background_fisher_1",
+        "background_fisher_2"
+      ],
+      "event_templates": [
+        {
+          "event_template_id": "trace_ld_v1_hidden_event_01_route_learned",
+          "order": 1,
+          "event_type": "private_information_acquired",
+          "actor_refs": [
+            "zhdanko_storehouse_controller"
+          ],
+          "location_refs": [
+            "trace_ld_v1_loc_zhdanko_storehouse"
+          ],
+          "item_refs": [
+            "trace_ld_v1_item_sealed_packet"
+          ],
+          "causal_basis": "principal_knows_document_will_enable_future_goods_reconciliation",
+          "predecessor_refs": []
+        },
+        {
+          "event_template_id": "trace_ld_v1_hidden_event_02_ratsha_recruited",
+          "order": 2,
+          "event_type": "private_instruction",
+          "actor_refs": [
+            "zhdanko_storehouse_controller",
+            "ratsha_storehouse_helper"
+          ],
+          "location_refs": [
+            "trace_ld_v1_loc_zhdanko_storehouse"
+          ],
+          "item_refs": [
+            "trace_ld_v1_item_sealed_packet"
+          ],
+          "causal_basis": "principal_uses_kinship_and_work_relation_to_recruit_executor",
+          "predecessor_refs": [
+            "trace_ld_v1_hidden_event_01_route_learned"
+          ]
+        },
+        {
+          "event_template_id": "trace_ld_v1_hidden_event_03_second_boat_departure",
+          "order": 3,
+          "event_type": "boat_departure",
+          "actor_refs": [
+            "zhdanko_storehouse_controller",
+            "ratsha_storehouse_helper"
+          ],
+          "location_refs": [
+            "trace_ld_v1_loc_zhdanko_storehouse",
+            "trace_ld_v1_loc_wreck_shore"
+          ],
+          "item_refs": [
+            "trace_ld_v1_item_second_small_boat"
+          ],
+          "causal_basis": "principal_and_executor_pursue_the_known_route",
+          "predecessor_refs": [
+            "trace_ld_v1_hidden_event_02_ratsha_recruited"
+          ]
+        },
+        {
+          "event_template_id": "trace_ld_v1_hidden_event_04_zhdanko_audible_command",
+          "order": 4,
+          "event_type": "audible_command_across_boats",
+          "actor_refs": [
+            "zhdanko_storehouse_controller",
+            "ratsha_storehouse_helper",
+            "onisim_boatman"
+          ],
+          "location_refs": [
+            "trace_ld_v1_loc_wreck_shore"
+          ],
+          "item_refs": [
+            "trace_ld_v1_item_onisim_boat",
+            "trace_ld_v1_item_second_small_boat"
+          ],
+          "causal_basis": "approved_hidden_sequence_source_for_onisim_voice_perception",
+          "audible_action_contract": {
+            "speaker_ref": "zhdanko_storehouse_controller",
+            "utterance_kind": "attack_coordination_command",
+            "content_scope": "command_to_ratsha_without_inventing_verbatim_words",
+            "audible_to_refs": [
+              "onisim_boatman"
+            ],
+            "speaker_identity_perceived_by_refs": [
+              "onisim_boatman"
+            ],
+            "perception_template_ref": "trace_ld_v1_perception_onisim_hears_zhdanko_command"
+          },
+          "predecessor_refs": [
+            "trace_ld_v1_hidden_event_03_second_boat_departure"
+          ]
+        },
+        {
+          "event_template_id": "trace_ld_v1_hidden_event_04_onisim_boat_hooked",
+          "order": 5,
+          "event_type": "boat_hooked",
+          "actor_refs": [
+            "ratsha_storehouse_helper",
+            "onisim_boatman",
+            "player_clerk"
+          ],
+          "location_refs": [
+            "trace_ld_v1_loc_wreck_shore"
+          ],
+          "item_refs": [
+            "trace_ld_v1_item_hooking_pole",
+            "trace_ld_v1_item_onisim_boat",
+            "trace_ld_v1_item_second_small_boat"
+          ],
+          "causal_basis": "executor_uses_pole_to_bring_boats_together",
+          "predecessor_refs": [
+            "trace_ld_v1_hidden_event_04_zhdanko_audible_command"
+          ]
+        },
+        {
+          "event_template_id": "trace_ld_v1_hidden_event_05_bag_fastening_cut",
+          "order": 6,
+          "event_type": "container_fastening_cut",
+          "actor_refs": [
+            "ratsha_storehouse_helper",
+            "player_clerk"
+          ],
+          "location_refs": [
+            "trace_ld_v1_loc_wreck_shore"
+          ],
+          "item_refs": [
+            "trace_ld_v1_container_road_bag",
+            "trace_ld_v1_item_cut_bag_fastening",
+            "trace_ld_v1_item_ratsha_knife"
+          ],
+          "causal_basis": "executor_intentionally_removes_entrusted_bag",
+          "predecessor_refs": [
+            "trace_ld_v1_hidden_event_04_onisim_boat_hooked"
+          ]
+        },
+        {
+          "event_template_id": "trace_ld_v1_hidden_event_06_boats_collide",
+          "order": 7,
+          "event_type": "side_collision",
+          "actor_refs": [
+            "ratsha_storehouse_helper",
+            "onisim_boatman",
+            "player_clerk"
+          ],
+          "location_refs": [
+            "trace_ld_v1_loc_wreck_shore"
+          ],
+          "item_refs": [
+            "trace_ld_v1_item_onisim_boat",
+            "trace_ld_v1_item_second_small_boat",
+            "trace_ld_v1_item_side_collision_trace"
+          ],
+          "causal_basis": "boats_are_held_together_during_forced_bag_removal",
+          "predecessor_refs": [
+            "trace_ld_v1_hidden_event_04_onisim_boat_hooked",
+            "trace_ld_v1_hidden_event_05_bag_fastening_cut"
+          ]
+        },
+        {
+          "event_template_id": "trace_ld_v1_hidden_event_07_onisim_boat_wrecked",
+          "order": 8,
+          "event_type": "boat_wreck",
+          "actor_refs": [
+            "onisim_boatman",
+            "player_clerk"
+          ],
+          "location_refs": [
+            "trace_ld_v1_loc_wreck_shore"
+          ],
+          "item_refs": [
+            "trace_ld_v1_item_onisim_boat",
+            "trace_ld_v1_item_persistent_debris",
+            "trace_ld_v1_item_broken_oar",
+            "trace_ld_v1_item_hidden_trunk_trace"
+          ],
+          "causal_basis": "side_collision_deflects_onisim_boat_onto_hidden_trunk",
+          "crash_cause_refs": [
+            "trace_ld_v1_hidden_event_06_boats_collide",
+            "trace_ld_v1_item_hidden_trunk_trace"
+          ],
+          "excluded_sole_cause_refs": [
+            "trace_ld_v1_item_cut_bag_fastening"
+          ],
+          "predecessor_refs": [
+            "trace_ld_v1_hidden_event_06_boats_collide"
+          ]
+        },
+        {
+          "event_template_id": "trace_ld_v1_hidden_event_08_player_unconscious",
+          "order": 9,
+          "event_type": "body_state_change",
+          "actor_refs": [
+            "player_clerk"
+          ],
+          "location_refs": [
+            "trace_ld_v1_loc_wreck_shore"
+          ],
+          "item_refs": [],
+          "causal_basis": "player_is_injured_during_boat_wreck",
+          "effect_template": {
+            "state": "unconscious",
+            "until_event_ref": "trace_ld_v1_hidden_event_14_player_wakes"
+          },
+          "predecessor_refs": [
+            "trace_ld_v1_hidden_event_07_onisim_boat_wrecked"
+          ]
+        },
+        {
+          "event_template_id": "trace_ld_v1_hidden_event_09_onisim_reaches_shore",
+          "order": 10,
+          "event_type": "injured_escape_to_shore",
+          "actor_refs": [
+            "onisim_boatman"
+          ],
+          "location_refs": [
+            "trace_ld_v1_loc_wreck_shore"
+          ],
+          "item_refs": [],
+          "causal_basis": "injured_boatman_survives_wreck_and_leaves_barefoot_tracks",
+          "predecessor_refs": [
+            "trace_ld_v1_hidden_event_07_onisim_boat_wrecked"
+          ]
+        },
+        {
+          "event_template_id": "trace_ld_v1_hidden_event_10_onisim_bound_and_moved",
+          "order": 11,
+          "event_type": "victim_bound_and_transferred",
+          "actor_refs": [
+            "ratsha_storehouse_helper",
+            "onisim_boatman"
+          ],
+          "location_refs": [
+            "trace_ld_v1_loc_wreck_shore",
+            "trace_ld_v1_loc_old_drying_shed"
+          ],
+          "item_refs": [
+            "trace_ld_v1_item_ratsha_binding_rope"
+          ],
+          "causal_basis": "executor_prevents_injured_witness_from_returning",
+          "transfer": {
+            "subject_ref": "onisim_boatman",
+            "source_location_ref": "trace_ld_v1_loc_wreck_shore",
+            "target_location_ref": "trace_ld_v1_loc_old_drying_shed"
+          },
+          "controlled_item_use": {
+            "item_ref": "trace_ld_v1_item_ratsha_binding_rope",
+            "required_holder_ref": "ratsha_storehouse_helper",
+            "required_controller_ref": "ratsha_storehouse_helper",
+            "transition_template_ref": "trace_ld_v1_transition_ratsha_binding_rope_pre_game_use",
+            "resulting_holder_ref": "onisim_boatman",
+            "resulting_controller_ref": "ratsha_storehouse_helper",
+            "resulting_placement_location_ref": "trace_ld_v1_loc_old_drying_shed",
+            "owner_change": "forbidden"
+          },
+          "predecessor_refs": [
+            "trace_ld_v1_hidden_event_09_onisim_reaches_shore"
+          ]
+        },
+        {
+          "event_template_id": "trace_ld_v1_hidden_event_11_bag_delivered",
+          "order": 12,
+          "event_type": "property_holder_controller_transfer",
+          "actor_refs": [
+            "ratsha_storehouse_helper",
+            "zhdanko_storehouse_controller"
+          ],
+          "location_refs": [
+            "trace_ld_v1_loc_zhdanko_storehouse"
+          ],
+          "item_refs": [
+            "trace_ld_v1_container_road_bag",
+            "trace_ld_v1_item_sealed_packet"
+          ],
+          "causal_basis": "executor_delivers_stolen_entrusted_property_to_principal",
+          "transfer": {
+            "subject_ref": "trace_ld_v1_container_road_bag",
+            "source_actor_ref": "ratsha_storehouse_helper",
+            "target_actor_ref": "zhdanko_storehouse_controller",
+            "owner_before_ref": "trace_ld_v1_external_owner_savva_tverdich",
+            "owner_after_ref": "trace_ld_v1_external_owner_savva_tverdich",
+            "holder_controller_change_only": true,
+            "transition_template_refs": [
+              "trace_ld_v1_transition_road_bag_pre_game_transfer",
+              "trace_ld_v1_transition_packet_pre_game_transfer"
+            ],
+            "contained_item_refs": [
+              "trace_ld_v1_item_sealed_packet",
+              "trace_ld_v1_item_wet_cloak",
+              "trace_ld_v1_item_writing_tablet"
+            ],
+            "content_physical_state_derivation": "inherit_parent_container_path"
+          },
+          "predecessor_refs": [
+            "trace_ld_v1_hidden_event_05_bag_fastening_cut"
+          ]
+        },
+        {
+          "event_template_id": "trace_ld_v1_hidden_event_12_ratsha_returns",
+          "order": 13,
+          "event_type": "executor_returns_to_victim",
+          "actor_refs": [
+            "ratsha_storehouse_helper",
+            "onisim_boatman"
+          ],
+          "location_refs": [
+            "trace_ld_v1_loc_old_drying_shed"
+          ],
+          "item_refs": [],
+          "causal_basis": "executor_returns_from_fear_and_guilt",
+          "predecessor_refs": [
+            "trace_ld_v1_hidden_event_10_onisim_bound_and_moved",
+            "trace_ld_v1_hidden_event_11_bag_delivered"
+          ]
+        },
+        {
+          "event_template_id": "trace_ld_v1_hidden_event_13_zhdanko_prepares_departure",
+          "order": 14,
+          "event_type": "future_departure_preparation",
+          "actor_refs": [
+            "zhdanko_storehouse_controller"
+          ],
+          "location_refs": [
+            "trace_ld_v1_loc_zhdanko_storehouse"
+          ],
+          "item_refs": [
+            "trace_ld_v1_container_road_bag",
+            "trace_ld_v1_item_sealed_packet"
+          ],
+          "causal_basis": "principal_prepares_to_avoid_goods_reconciliation",
+          "predecessor_refs": [
+            "trace_ld_v1_hidden_event_11_bag_delivered"
+          ]
+        },
+        {
+          "event_template_id": "trace_ld_v1_hidden_event_14_player_wakes",
+          "order": 15,
+          "event_type": "body_state_change",
+          "actor_refs": [
+            "player_clerk"
+          ],
+          "location_refs": [
+            "trace_ld_v1_loc_wreck_shore"
+          ],
+          "item_refs": [],
+          "causal_basis": "approved_scenario_opening_boundary",
+          "exact_local_time_marker": "07:00",
+          "effect_template": {
+            "state": "conscious"
+          },
+          "predecessor_refs": [
+            "trace_ld_v1_hidden_event_08_player_unconscious",
+            "trace_ld_v1_hidden_event_13_zhdanko_prepares_departure"
+          ]
+        }
+      ]
+    }
+  ],
+  "event_instances": [],
+  "item_instances": [],
+  "actor_instances": [],
+  "materialized_placements": [],
+  "excludes": [
+    "party_truth_selection",
+    "runtime_event_application",
+    "body_runtime",
+    "time_runtime",
+    "persistence"
+  ]
+}

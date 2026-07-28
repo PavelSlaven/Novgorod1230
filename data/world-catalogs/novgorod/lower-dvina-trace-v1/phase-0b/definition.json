@@ -1,0 +1,188 @@
+{
+  "schema": "rus.trace_scenario_definition.v1",
+  "scenario_id": "lower_dvina_trace_v1",
+  "revision": 2,
+  "publication_status": "unpublished",
+  "supersedes_definition_ref": {
+    "id": "lower_dvina_trace_v1",
+    "revision": 1,
+    "digest": "3ed251d4ef1c7538da754b70f319bb213e4422b1d5e4e1dcd20c02753995c03b"
+  },
+  "applicability": {
+    "schema": "rus.trace_scenario_applicability.v1",
+    "version": 1,
+    "region_ref": {
+      "node_id": "gn_nov_g1_xp017_yp026",
+      "node_level": "g1"
+    },
+    "season_id": "late_summer"
+  },
+  "readiness": {
+    "schema": "rus.trace_scenario_readiness.v1",
+    "version": 1,
+    "phase_status": "phase_0_incomplete",
+    "materialization_status": "not_materializable",
+    "publication_status": "not_publishable"
+  },
+  "player_profile_set_ref": {
+    "id": "lower_dvina_trace_player_profile_set_v1",
+    "revision": 1,
+    "digest": "2a25fd04f0e9b71f1ab2805cd3d68620d9ea2d1646e0671e128e886eb54ee865"
+  },
+  "social_catalog_source_ref": {
+    "schema": "rus.trace_social_catalog_source_ref.v1",
+    "version": 1,
+    "source_ref_id": "novgorod_region_social_catalogs_v1",
+    "role_catalog": {
+      "catalog_id": "novgorod_social_roles_v1",
+      "path": "data/novgorod-region/novgorod_social_roles_v1.tsv",
+      "format": "tsv",
+      "format_version": 1,
+      "sha256": "6cdb747d48fa511fdb34c18831c9c79003c7c75805fdf60b1c2fa1cda6b45e5b"
+    },
+    "occupation_catalog": {
+      "catalog_id": "novgorod_occupations_v1",
+      "path": "data/novgorod-region/novgorod_occupations_v1.tsv",
+      "format": "tsv",
+      "format_version": 1,
+      "sha256": "6273ccdeed19b1afbf22975587492e3a2754ed295879ae5b616b213ade99ab0f"
+    }
+  },
+  "spatial_source_ref": {
+    "manifest_path": "data/world-catalogs/novgorod/spatial-v3/manifest.json",
+    "manifest_schema_version": "rus.spatial-v3.world-base-authoring-bundle.v1",
+    "bundle_id": "novgorod-spatial-v3-p12-approved-target-001",
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "world_revision_catalog_digest": "0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e",
+    "required_status": "approved",
+    "manifest_digest": "4056b93acc2a3c7ed4c76c18182d74b7ef5b9f5fc9c31f206670f11a6283192e"
+  },
+  "participant_profile_set_ref": {
+    "id": "trace_ld_v1_participant_profile_set",
+    "revision": 1,
+    "digest": "33e45b8b8b57f98debb254e5e76c881cf3ffe10985042811ed85390e38f588ce"
+  },
+  "location_topology_set_ref": {
+    "id": "trace_ld_v1_location_topology_set",
+    "revision": 1,
+    "digest": "3410d8652aa87d76a2be37cf6f21b9179ac3dd61c88ea84b94486b19765342ce"
+  },
+  "required_unresolved_refs": [
+    {
+      "category": "item_container_set",
+      "expected_owner": "@rus/items-property",
+      "expected_schema": "rus.trace_item_container_set.v1",
+      "required_status": "unresolved_required",
+      "resolution_status": "unresolved",
+      "planned_phase": "0C"
+    },
+    {
+      "category": "hidden_truth_candidate_set",
+      "expected_owner": "code-driven-world-materialization",
+      "expected_schema": "rus.trace_hidden_truth_candidate_set.v1",
+      "required_status": "unresolved_required",
+      "resolution_status": "unresolved",
+      "planned_phase": "0C"
+    },
+    {
+      "category": "clue_evidence_graph_set",
+      "expected_owner": "@rus/visibility-knowledge-memory",
+      "expected_schema": "rus.trace_clue_evidence_graph_set.v1",
+      "required_status": "unresolved_required",
+      "resolution_status": "unresolved",
+      "planned_phase": "0C"
+    },
+    {
+      "category": "knowledge_lie_memory_rules",
+      "expected_owner": "@rus/visibility-knowledge-memory",
+      "expected_schema": "rus.trace_knowledge_lie_memory_rules.v1",
+      "required_status": "unresolved_required",
+      "resolution_status": "unresolved",
+      "planned_phase": "0C"
+    },
+    {
+      "category": "activity_check_consequence_profiles",
+      "expected_owner": "@rus/turn",
+      "expected_schema": "rus.trace_activity_check_consequence_profiles.v1",
+      "required_status": "unresolved_required",
+      "resolution_status": "unresolved",
+      "planned_phase": "0D"
+    },
+    {
+      "category": "npc_decision_schedule_policies",
+      "expected_owner": "@rus/npc-runtime",
+      "expected_schema": "rus.trace_npc_decision_schedule_policies.v1",
+      "required_status": "unresolved_required",
+      "resolution_status": "unresolved",
+      "planned_phase": "0D"
+    },
+    {
+      "category": "movement_bindings",
+      "expected_owner": "@rus/movement-routes",
+      "expected_schema": "rus.trace_movement_bindings.v1",
+      "required_status": "unresolved_required",
+      "resolution_status": "unresolved",
+      "planned_phase": "0D"
+    },
+    {
+      "category": "location_access_policies",
+      "expected_owner": "@rus/movement-routes",
+      "expected_schema": "rus.trace_scene_access_policy_set.v1",
+      "required_status": "unresolved_required",
+      "resolution_status": "unresolved",
+      "planned_phase": "0D"
+    },
+    {
+      "category": "location_capacity_contracts",
+      "expected_owner": "@rus/party-store",
+      "expected_schema": "rus.trace_scene_capacity_contract_set.v1",
+      "required_status": "unresolved_required",
+      "resolution_status": "unresolved",
+      "planned_phase": "0D"
+    },
+    {
+      "category": "body_environment_profiles",
+      "expected_owner": "@rus/body-state",
+      "expected_schema": "rus.trace_body_environment_profiles.v1",
+      "required_status": "unresolved_required",
+      "resolution_status": "unresolved",
+      "planned_phase": "0D"
+    },
+    {
+      "category": "promise_policy",
+      "expected_owner": "@rus/social-law",
+      "expected_schema": "rus.trace_promise_policy.v1",
+      "required_status": "unresolved_required",
+      "resolution_status": "unresolved",
+      "planned_phase": "0D"
+    },
+    {
+      "category": "completion_rules",
+      "expected_owner": "@rus/visibility-knowledge-memory",
+      "expected_schema": "rus.trace_completion_rules.v1",
+      "required_status": "unresolved_required",
+      "resolution_status": "unresolved",
+      "planned_phase": "0D"
+    },
+    {
+      "category": "epilogue_rules",
+      "expected_owner": "@rus/presentation",
+      "expected_schema": "rus.trace_epilogue_rules.v1",
+      "required_status": "unresolved_required",
+      "resolution_status": "unresolved",
+      "planned_phase": "0D"
+    }
+  ],
+  "scope": [
+    "phase_0_definition",
+    "player_definition",
+    "player_profile",
+    "participant_profile_set",
+    "location_topology_set"
+  ],
+  "excludes": [
+    "party_instance",
+    "runtime_handlers",
+    "api_publication"
+  ]
+}

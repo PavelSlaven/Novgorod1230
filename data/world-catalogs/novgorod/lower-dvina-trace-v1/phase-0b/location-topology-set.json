@@ -1,0 +1,471 @@
+{
+  "schema": "rus.trace_location_topology_set.v1",
+  "topology_set_id": "trace_ld_v1_location_topology_set",
+  "revision": 1,
+  "publication_status": "unpublished",
+  "region_ref": "gn_nov_g1_xp017_yp026",
+  "fallback_policy": "forbidden",
+  "spatial_source_ref": {
+    "manifest_path": "data/world-catalogs/novgorod/spatial-v3/manifest.json",
+    "manifest_schema_version": "rus.spatial-v3.world-base-authoring-bundle.v1",
+    "bundle_id": "novgorod-spatial-v3-p12-approved-target-001",
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "world_revision_catalog_digest": "0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e",
+    "required_status": "approved",
+    "manifest_digest": "4056b93acc2a3c7ed4c76c18182d74b7ef5b9f5fc9c31f206670f11a6283192e"
+  },
+  "location_profiles": [
+    {
+      "location_profile_id": "trace_ld_v1_loc_wreck_shore",
+      "display_name": "берег крушения",
+      "scene_template_ref": "trace_ld_v1_tpl_wreck_shore",
+      "region_ref": "gn_nov_g1_xp017_yp026",
+      "spatial_candidate_set": {
+        "candidate_set_id": "trace_ld_v1_spatial_wreck_shore_v1",
+        "selection_policy": "singleton_approved",
+        "required_count": 1,
+        "candidates": [
+          {
+            "g3_node_ref": {
+              "id": "gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+              "version": 1,
+              "canonical_digest": "fb534d13f79e810eaa127afa914a148191f012cf24914ee2818404673682594b"
+            },
+            "g4_node_ref": {
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+              "version": 1,
+              "canonical_digest": "fed6670da182073fd6d2ffd11d8d302d0f2700ac1d71bcc27d270edf79176119"
+            }
+          }
+        ]
+      },
+      "landscape_basis": "river_shore_with_willow_edge",
+      "economic_basis": "ordinary_river_route_and_landing_access",
+      "access_contract_ref": {
+        "gap_id": "trace_ld_v1_gap_access_wreck_shore_v1",
+        "required_resolution_status": "resolved_before_materialization"
+      },
+      "capacity_contract_ref": {
+        "gap_id": "trace_ld_v1_gap_capacity_wreck_shore_v1",
+        "required_resolution_status": "resolved_before_materialization"
+      }
+    },
+    {
+      "location_profile_id": "trace_ld_v1_loc_fishing_camp",
+      "display_name": "рыбацкий стан",
+      "scene_template_ref": "trace_ld_v1_tpl_fishing_camp",
+      "region_ref": "gn_nov_g1_xp017_yp026",
+      "spatial_candidate_set": {
+        "candidate_set_id": "trace_ld_v1_spatial_fishing_camp_v1",
+        "selection_policy": "singleton_approved",
+        "required_count": 1,
+        "candidates": [
+          {
+            "g3_node_ref": {
+              "id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+              "version": 1,
+              "canonical_digest": "21f79ad3334941e5183b9f96b6ceb4acee2fe586ba2ad55db384b67a23c498b1"
+            },
+            "g4_node_ref": {
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+              "version": 1,
+              "canonical_digest": "826b5dc1d74dadbbf51e59df6a16ebe049034cbc8f189fb7ed43cbc42f4ac4f8"
+            }
+          }
+        ]
+      },
+      "landscape_basis": "dry_bank_near_working_water",
+      "economic_basis": "local_fishing_work_site",
+      "access_contract_ref": {
+        "gap_id": "trace_ld_v1_gap_access_fishing_camp_v1",
+        "required_resolution_status": "resolved_before_materialization"
+      },
+      "capacity_contract_ref": {
+        "gap_id": "trace_ld_v1_gap_capacity_fishing_camp_v1",
+        "required_resolution_status": "resolved_before_materialization"
+      }
+    },
+    {
+      "location_profile_id": "trace_ld_v1_loc_old_drying_shed",
+      "display_name": "старая сушильня",
+      "scene_template_ref": "trace_ld_v1_tpl_old_drying_shed",
+      "region_ref": "gn_nov_g1_xp017_yp026",
+      "spatial_candidate_set": {
+        "candidate_set_id": "trace_ld_v1_spatial_old_drying_shed_v1",
+        "selection_policy": "singleton_approved",
+        "required_count": 1,
+        "candidates": [
+          {
+            "g3_node_ref": {
+              "id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+              "version": 1,
+              "canonical_digest": "26e8efd363ae1c6eb05b5d96bf92976a90ddb367e8ad519da9c27f69301cc586"
+            },
+            "g4_node_ref": {
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+              "version": 1,
+              "canonical_digest": "36cb1f5c0c390a03584e6fc656fefa3b567a56a76c82cd49142fb7928c54dbc7"
+            }
+          }
+        ]
+      },
+      "landscape_basis": "dry_ridge_above_wet_ground",
+      "economic_basis": "seasonal_fish_and_net_drying_structure",
+      "access_contract_ref": {
+        "gap_id": "trace_ld_v1_gap_access_old_drying_shed_v1",
+        "required_resolution_status": "resolved_before_materialization"
+      },
+      "capacity_contract_ref": {
+        "gap_id": "trace_ld_v1_gap_capacity_old_drying_shed_v1",
+        "required_resolution_status": "resolved_before_materialization"
+      }
+    },
+    {
+      "location_profile_id": "trace_ld_v1_loc_zhdanko_storehouse",
+      "display_name": "клеть Жданко",
+      "scene_template_ref": "trace_ld_v1_tpl_zhdanko_storehouse",
+      "region_ref": "gn_nov_g1_xp017_yp026",
+      "spatial_candidate_set": {
+        "candidate_set_id": "trace_ld_v1_spatial_zhdanko_storehouse_v1",
+        "selection_policy": "singleton_approved",
+        "required_count": 1,
+        "candidates": [
+          {
+            "g3_node_ref": {
+              "id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+              "version": 1,
+              "canonical_digest": "0ab3d9bd79e646af2af2954222d7833d4e54a282a7fd2e7c96981f99ad6c04d4"
+            },
+            "g4_node_ref": {
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+              "version": 1,
+              "canonical_digest": "4d97b4672c7bee146559f0e31a0ffdb80dd2d7507630a806a09af083ef421174"
+            }
+          }
+        ]
+      },
+      "landscape_basis": "dry_working_platform_near_side_channel",
+      "economic_basis": "temporary_storage_and_distribution_of_river_goods",
+      "access_contract_ref": {
+        "gap_id": "trace_ld_v1_gap_access_zhdanko_storehouse_v1",
+        "required_resolution_status": "resolved_before_materialization"
+      },
+      "capacity_contract_ref": {
+        "gap_id": "trace_ld_v1_gap_capacity_zhdanko_storehouse_v1",
+        "required_resolution_status": "resolved_before_materialization"
+      }
+    }
+  ],
+  "required_policy_gaps": [
+    {
+      "gap_id": "trace_ld_v1_gap_authorized_local_path_source_v1",
+      "category": "causal_source_rule",
+      "expected_owner": "@rus/movement-routes",
+      "expected_schema": "rus.trace_authorized_path_source_rule.v1",
+      "expected_version": 1,
+      "required_status": "unresolved_required",
+      "resolution_status": "unresolved",
+      "planned_phase": "0D",
+      "applies_to_refs": [
+        "causal_availability:trace_ld_v1_avail_drying_shed_after_disclosure",
+        "causal_availability:trace_ld_v1_avail_storehouse_after_disclosure"
+      ]
+    },
+    {
+      "gap_id": "trace_ld_v1_gap_zhdanko_external_location_access_v1",
+      "category": "location_compatibility_condition",
+      "expected_owner": "@rus/movement-routes",
+      "expected_schema": "rus.trace_location_compatibility_condition.v1",
+      "expected_version": 1,
+      "required_status": "unresolved_required",
+      "resolution_status": "unresolved",
+      "planned_phase": "0D",
+      "applies_to_refs": [
+        "compatibility:zhdanko_storehouse_controller:trace_ld_v1_loc_wreck_shore",
+        "compatibility:zhdanko_storehouse_controller:trace_ld_v1_loc_fishing_camp"
+      ]
+    },
+    {
+      "gap_id": "trace_ld_v1_gap_access_wreck_shore_v1",
+      "category": "scene_access_contract",
+      "expected_owner": "@rus/movement-routes",
+      "expected_schema": "rus.trace_scene_access_contract.v1",
+      "expected_version": 1,
+      "required_status": "unresolved_required",
+      "resolution_status": "unresolved",
+      "planned_phase": "0D",
+      "applies_to_refs": [
+        "location:trace_ld_v1_loc_wreck_shore"
+      ]
+    },
+    {
+      "gap_id": "trace_ld_v1_gap_access_fishing_camp_v1",
+      "category": "scene_access_contract",
+      "expected_owner": "@rus/movement-routes",
+      "expected_schema": "rus.trace_scene_access_contract.v1",
+      "expected_version": 1,
+      "required_status": "unresolved_required",
+      "resolution_status": "unresolved",
+      "planned_phase": "0D",
+      "applies_to_refs": [
+        "location:trace_ld_v1_loc_fishing_camp"
+      ]
+    },
+    {
+      "gap_id": "trace_ld_v1_gap_access_old_drying_shed_v1",
+      "category": "scene_access_contract",
+      "expected_owner": "@rus/movement-routes",
+      "expected_schema": "rus.trace_scene_access_contract.v1",
+      "expected_version": 1,
+      "required_status": "unresolved_required",
+      "resolution_status": "unresolved",
+      "planned_phase": "0D",
+      "applies_to_refs": [
+        "location:trace_ld_v1_loc_old_drying_shed"
+      ]
+    },
+    {
+      "gap_id": "trace_ld_v1_gap_access_zhdanko_storehouse_v1",
+      "category": "scene_access_contract",
+      "expected_owner": "@rus/movement-routes",
+      "expected_schema": "rus.trace_scene_access_contract.v1",
+      "expected_version": 1,
+      "required_status": "unresolved_required",
+      "resolution_status": "unresolved",
+      "planned_phase": "0D",
+      "applies_to_refs": [
+        "location:trace_ld_v1_loc_zhdanko_storehouse"
+      ]
+    },
+    {
+      "gap_id": "trace_ld_v1_gap_capacity_wreck_shore_v1",
+      "category": "scene_capacity_contract",
+      "expected_owner": "@rus/party-store",
+      "expected_schema": "rus.trace_scene_capacity_contract.v1",
+      "expected_version": 1,
+      "required_status": "unresolved_required",
+      "resolution_status": "unresolved",
+      "planned_phase": "0D",
+      "applies_to_refs": [
+        "location:trace_ld_v1_loc_wreck_shore"
+      ]
+    },
+    {
+      "gap_id": "trace_ld_v1_gap_capacity_fishing_camp_v1",
+      "category": "scene_capacity_contract",
+      "expected_owner": "@rus/party-store",
+      "expected_schema": "rus.trace_scene_capacity_contract.v1",
+      "expected_version": 1,
+      "required_status": "unresolved_required",
+      "resolution_status": "unresolved",
+      "planned_phase": "0D",
+      "applies_to_refs": [
+        "location:trace_ld_v1_loc_fishing_camp"
+      ]
+    },
+    {
+      "gap_id": "trace_ld_v1_gap_capacity_old_drying_shed_v1",
+      "category": "scene_capacity_contract",
+      "expected_owner": "@rus/party-store",
+      "expected_schema": "rus.trace_scene_capacity_contract.v1",
+      "expected_version": 1,
+      "required_status": "unresolved_required",
+      "resolution_status": "unresolved",
+      "planned_phase": "0D",
+      "applies_to_refs": [
+        "location:trace_ld_v1_loc_old_drying_shed"
+      ]
+    },
+    {
+      "gap_id": "trace_ld_v1_gap_capacity_zhdanko_storehouse_v1",
+      "category": "scene_capacity_contract",
+      "expected_owner": "@rus/party-store",
+      "expected_schema": "rus.trace_scene_capacity_contract.v1",
+      "expected_version": 1,
+      "required_status": "unresolved_required",
+      "resolution_status": "unresolved",
+      "planned_phase": "0D",
+      "applies_to_refs": [
+        "location:trace_ld_v1_loc_zhdanko_storehouse"
+      ]
+    }
+  ],
+  "endpoints": [
+    {
+      "endpoint_id": "trace_ld_v1_ep_wreck_path_to_camp",
+      "location_profile_id": "trace_ld_v1_loc_wreck_shore",
+      "causal_availability_id": "trace_ld_v1_avail_start_path_visible"
+    },
+    {
+      "endpoint_id": "trace_ld_v1_ep_camp_path_to_wreck",
+      "location_profile_id": "trace_ld_v1_loc_fishing_camp",
+      "causal_availability_id": "trace_ld_v1_avail_reverse_after_traversal"
+    },
+    {
+      "endpoint_id": "trace_ld_v1_ep_camp_ridge_to_drying_shed",
+      "location_profile_id": "trace_ld_v1_loc_fishing_camp",
+      "causal_availability_id": "trace_ld_v1_avail_drying_shed_after_disclosure"
+    },
+    {
+      "endpoint_id": "trace_ld_v1_ep_drying_shed_ridge_to_camp",
+      "location_profile_id": "trace_ld_v1_loc_old_drying_shed",
+      "causal_availability_id": "trace_ld_v1_avail_reverse_after_traversal"
+    },
+    {
+      "endpoint_id": "trace_ld_v1_ep_camp_work_path_to_storehouse",
+      "location_profile_id": "trace_ld_v1_loc_fishing_camp",
+      "causal_availability_id": "trace_ld_v1_avail_storehouse_after_disclosure"
+    },
+    {
+      "endpoint_id": "trace_ld_v1_ep_storehouse_work_path_to_camp",
+      "location_profile_id": "trace_ld_v1_loc_zhdanko_storehouse",
+      "causal_availability_id": "trace_ld_v1_avail_reverse_after_traversal"
+    }
+  ],
+  "topology_templates": [
+    {
+      "template_id": "trace_ld_v1_tpl_wreck_shore",
+      "endpoint_ids": [
+        "trace_ld_v1_ep_wreck_path_to_camp"
+      ]
+    },
+    {
+      "template_id": "trace_ld_v1_tpl_fishing_camp",
+      "endpoint_ids": [
+        "trace_ld_v1_ep_camp_path_to_wreck",
+        "trace_ld_v1_ep_camp_ridge_to_drying_shed",
+        "trace_ld_v1_ep_camp_work_path_to_storehouse"
+      ]
+    },
+    {
+      "template_id": "trace_ld_v1_tpl_old_drying_shed",
+      "endpoint_ids": [
+        "trace_ld_v1_ep_drying_shed_ridge_to_camp"
+      ]
+    },
+    {
+      "template_id": "trace_ld_v1_tpl_zhdanko_storehouse",
+      "endpoint_ids": [
+        "trace_ld_v1_ep_storehouse_work_path_to_camp"
+      ]
+    }
+  ],
+  "edges": [
+    [
+      "trace_ld_v1_ep_wreck_path_to_camp",
+      "trace_ld_v1_ep_camp_path_to_wreck"
+    ],
+    [
+      "trace_ld_v1_ep_camp_ridge_to_drying_shed",
+      "trace_ld_v1_ep_drying_shed_ridge_to_camp"
+    ],
+    [
+      "trace_ld_v1_ep_camp_work_path_to_storehouse",
+      "trace_ld_v1_ep_storehouse_work_path_to_camp"
+    ]
+  ],
+  "causal_availability_records": [
+    {
+      "causal_availability_id": "trace_ld_v1_avail_start_path_visible",
+      "applies_to_endpoint_ids": [
+        "trace_ld_v1_ep_wreck_path_to_camp"
+      ],
+      "gate_type": "visible_at_scenario_start"
+    },
+    {
+      "causal_availability_id": "trace_ld_v1_avail_reverse_after_traversal",
+      "applies_to_endpoint_ids": [
+        "trace_ld_v1_ep_camp_path_to_wreck",
+        "trace_ld_v1_ep_drying_shed_ridge_to_camp",
+        "trace_ld_v1_ep_storehouse_work_path_to_camp"
+      ],
+      "gate_type": "route_known_after_successful_traversal"
+    },
+    {
+      "causal_availability_id": "trace_ld_v1_avail_drying_shed_after_disclosure",
+      "applies_to_endpoint_ids": [
+        "trace_ld_v1_ep_camp_ridge_to_drying_shed"
+      ],
+      "authorized_source_rule_ref": {
+        "gap_id": "trace_ld_v1_gap_authorized_local_path_source_v1",
+        "required_resolution_status": "resolved_before_materialization"
+      },
+      "gate_type": "location_disclosed_by_authorized_source"
+    },
+    {
+      "causal_availability_id": "trace_ld_v1_avail_storehouse_after_disclosure",
+      "applies_to_endpoint_ids": [
+        "trace_ld_v1_ep_camp_work_path_to_storehouse"
+      ],
+      "authorized_source_rule_ref": {
+        "gap_id": "trace_ld_v1_gap_authorized_local_path_source_v1",
+        "required_resolution_status": "resolved_before_materialization"
+      },
+      "gate_type": "location_disclosed_by_authorized_source"
+    }
+  ],
+  "compatibility": {
+    "player_clerk": {
+      "trace_ld_v1_loc_wreck_shore": "allowed",
+      "trace_ld_v1_loc_fishing_camp": "allowed",
+      "trace_ld_v1_loc_old_drying_shed": "allowed",
+      "trace_ld_v1_loc_zhdanko_storehouse": "allowed"
+    },
+    "onisim_boatman": {
+      "trace_ld_v1_loc_wreck_shore": "allowed",
+      "trace_ld_v1_loc_fishing_camp": "allowed",
+      "trace_ld_v1_loc_old_drying_shed": "allowed",
+      "trace_ld_v1_loc_zhdanko_storehouse": "forbidden"
+    },
+    "eremey_fisher": {
+      "trace_ld_v1_loc_wreck_shore": "allowed",
+      "trace_ld_v1_loc_fishing_camp": "allowed",
+      "trace_ld_v1_loc_old_drying_shed": "allowed",
+      "trace_ld_v1_loc_zhdanko_storehouse": "allowed"
+    },
+    "ratsha_storehouse_helper": {
+      "trace_ld_v1_loc_wreck_shore": "allowed",
+      "trace_ld_v1_loc_fishing_camp": "allowed",
+      "trace_ld_v1_loc_old_drying_shed": "allowed",
+      "trace_ld_v1_loc_zhdanko_storehouse": "allowed"
+    },
+    "zhdanko_storehouse_controller": {
+      "trace_ld_v1_loc_wreck_shore": {
+        "status": "conditional",
+        "condition_policy_ref": {
+          "gap_id": "trace_ld_v1_gap_zhdanko_external_location_access_v1",
+          "required_resolution_status": "resolved_before_materialization"
+        }
+      },
+      "trace_ld_v1_loc_fishing_camp": {
+        "status": "conditional",
+        "condition_policy_ref": {
+          "gap_id": "trace_ld_v1_gap_zhdanko_external_location_access_v1",
+          "required_resolution_status": "resolved_before_materialization"
+        }
+      },
+      "trace_ld_v1_loc_old_drying_shed": "forbidden",
+      "trace_ld_v1_loc_zhdanko_storehouse": "allowed"
+    },
+    "background_fisher_1": {
+      "trace_ld_v1_loc_wreck_shore": "allowed",
+      "trace_ld_v1_loc_fishing_camp": "allowed",
+      "trace_ld_v1_loc_old_drying_shed": "allowed",
+      "trace_ld_v1_loc_zhdanko_storehouse": "allowed"
+    },
+    "background_fisher_2": {
+      "trace_ld_v1_loc_wreck_shore": "allowed",
+      "trace_ld_v1_loc_fishing_camp": "allowed",
+      "trace_ld_v1_loc_old_drying_shed": "allowed",
+      "trace_ld_v1_loc_zhdanko_storehouse": "allowed"
+    }
+  },
+  "initial_placements": [],
+  "hidden_truth": null,
+  "excludes": [
+    "movement_runtime",
+    "route_time_profiles",
+    "party_placement",
+    "clue_placement"
+  ]
+}

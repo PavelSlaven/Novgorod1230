@@ -1,0 +1,1309 @@
+{
+  "schema": "rus.trace_participant_profile_set.v1",
+  "profile_set_id": "trace_ld_v1_participant_profile_set",
+  "revision": 1,
+  "publication_status": "unpublished",
+  "fallback_policy": "forbidden",
+  "social_catalog_source_ref": {
+    "schema": "rus.trace_social_catalog_source_ref.v1",
+    "version": 1,
+    "source_ref_id": "novgorod_region_social_catalogs_v1",
+    "role_catalog": {
+      "catalog_id": "novgorod_social_roles_v1",
+      "path": "data/novgorod-region/novgorod_social_roles_v1.tsv",
+      "format": "tsv",
+      "format_version": 1,
+      "sha256": "6cdb747d48fa511fdb34c18831c9c79003c7c75805fdf60b1c2fa1cda6b45e5b"
+    },
+    "occupation_catalog": {
+      "catalog_id": "novgorod_occupations_v1",
+      "path": "data/novgorod-region/novgorod_occupations_v1.tsv",
+      "format": "tsv",
+      "format_version": 1,
+      "sha256": "6273ccdeed19b1afbf22975587492e3a2754ed295879ae5b616b213ade99ab0f"
+    }
+  },
+  "participant_slots": [
+    "player_clerk",
+    "onisim_boatman",
+    "eremey_fisher",
+    "ratsha_storehouse_helper",
+    "zhdanko_storehouse_controller",
+    "background_fisher_1",
+    "background_fisher_2"
+  ],
+  "profiles": [
+    {
+      "profile_id": "trace_ld_v1_onisim_hired_boatman_v1",
+      "revision": 1,
+      "slot": "onisim_boatman",
+      "canonical_name": "Онисим",
+      "sex_category": "male",
+      "age_category": "adult",
+      "social_role_id": "nov_role_boatman",
+      "occupation_id": "nov_occ_boatman",
+      "scenario_function": "hired_transport_boatman",
+      "initial_materialization_depth": "key",
+      "promotion_policy": "none",
+      "knowledge_scope_ref": "trace_ld_v1_knowledge_scope_hired_boatman_v1",
+      "causal_basis": "Онисим — нанятый лодочник, обеспечивающий речную перевозку Микулы и порученного имущества."
+    },
+    {
+      "profile_id": "trace_ld_v1_eremey_local_fisher_v1",
+      "revision": 1,
+      "slot": "eremey_fisher",
+      "canonical_name": "Еремей",
+      "sex_category": "male",
+      "age_category": "adult",
+      "social_role_id": "nov_role_fisher",
+      "occupation_id": "nov_occ_fisher",
+      "scenario_function": "local_fisher_guide_witness",
+      "initial_materialization_depth": "scene",
+      "allowed_promotion_depth": "key",
+      "knowledge_scope_ref": "trace_ld_v1_knowledge_scope_local_fisher_v1",
+      "causal_basis": "Еремей — местный рыбак рыбацкой стоянки, знакомый с ближайшими хозяйственными тропами и местами работы.",
+      "constraints": [
+        "not_already_guide",
+        "not_already_witness",
+        "not_already_helper"
+      ]
+    },
+    {
+      "profile_id": "trace_ld_v1_ratsha_storehouse_helper_v1",
+      "revision": 1,
+      "slot": "ratsha_storehouse_helper",
+      "canonical_name": "Ратша",
+      "sex_category": "male",
+      "age_category": "young_adult",
+      "social_role_id": "nov_role_servant",
+      "occupation_id": "nov_occ_storehouse_keeper",
+      "occupation_variant": "junior_storehouse_helper",
+      "scenario_function": "dependent_storehouse_helper",
+      "initial_materialization_depth": "key",
+      "promotion_policy": "none",
+      "knowledge_scope_ref": "trace_ld_v1_knowledge_scope_storehouse_helper_v1",
+      "causal_basis": "Ратша — младший зависимый помощник при клети с товаром. Он выполняет физические поручения, помогает с лодкой, переноской, укладкой и охраной вещей под руководством Жданко.",
+      "constraints": [
+        "not_independent_storekeeper",
+        "no_authority_over_fishers",
+        "not_owner_of_storehouse_or_goods",
+        "no_automatic_keys_records_or_stock_rights",
+        "kinship_no_formal_authority"
+      ]
+    },
+    {
+      "profile_id": "trace_ld_v1_zhdanko_storehouse_controller_v1",
+      "revision": 1,
+      "slot": "zhdanko_storehouse_controller",
+      "canonical_name": "Жданко",
+      "sex_category": "male",
+      "age_category": "adult",
+      "social_role_id": "nov_role_merchant_clerk",
+      "occupation_id": "nov_occ_storehouse_keeper",
+      "occupation_variant": "entrusted_storehouse_controller",
+      "scenario_function": "local_storehouse_controller",
+      "initial_materialization_depth": "key",
+      "promotion_policy": "none",
+      "knowledge_scope_ref": "trace_ld_v1_knowledge_scope_storehouse_controller_v1",
+      "causal_basis": "Жданко — доверенный распорядитель клети, запасов и связанных с ними работ. Он распределяет доступ к запасам и поручения местным работникам, но действует не как независимый владелец товара.",
+      "constraints": [
+        "not_merchant_or_goods_owner",
+        "no_automatic_literacy",
+        "no_judicial_or_political_authority",
+        "role_does_not_imply_criminal_motive",
+        "not_player_profile_substitute",
+        "item_rights_deferred_to_0c"
+      ]
+    },
+    {
+      "profile_id": "trace_ld_v1_background_fisher_v1",
+      "revision": 1,
+      "slot": "background_fisher",
+      "canonical_name": null,
+      "name_policy": "may_remain_unnamed_until_introduction",
+      "sex_category": "male",
+      "age_category": "adult",
+      "social_role_id": "nov_role_fisher",
+      "occupation_id": "nov_occ_fisher",
+      "scenario_function": "local_fishing_worker",
+      "initial_materialization_depth": "background",
+      "allowed_promotion_depth": "scene",
+      "knowledge_scope_ref": "trace_ld_v1_knowledge_scope_background_fisher_v1",
+      "causal_basis": "Работник рыбацкой стоянки."
+    }
+  ],
+  "candidate_sets": [
+    {
+      "candidate_set_id": "trace_ld_v1_player_clerk_profile_set",
+      "slot": "player_clerk",
+      "required_count": 1,
+      "candidates": [
+        {
+          "profile_id": "lower_dvina_trace_player_profile_mikula_v1",
+          "revision": 1,
+          "digest": "158c4248736e9d424608ccac4394be119a05626ba5f718fad3ccaf8dfd157a2e"
+        }
+      ]
+    },
+    {
+      "candidate_set_id": "trace_ld_v1_onisim_profile_set",
+      "slot": "onisim_boatman",
+      "required_count": 1,
+      "candidates": [
+        {
+          "profile_id": "trace_ld_v1_onisim_hired_boatman_v1",
+          "revision": 1
+        }
+      ]
+    },
+    {
+      "candidate_set_id": "trace_ld_v1_eremey_profile_set",
+      "slot": "eremey_fisher",
+      "required_count": 1,
+      "candidates": [
+        {
+          "profile_id": "trace_ld_v1_eremey_local_fisher_v1",
+          "revision": 1
+        }
+      ]
+    },
+    {
+      "candidate_set_id": "trace_ld_v1_ratsha_profile_set",
+      "slot": "ratsha_storehouse_helper",
+      "required_count": 1,
+      "candidates": [
+        {
+          "profile_id": "trace_ld_v1_ratsha_storehouse_helper_v1",
+          "revision": 1
+        }
+      ]
+    },
+    {
+      "candidate_set_id": "trace_ld_v1_zhdanko_profile_set",
+      "slot": "zhdanko_storehouse_controller",
+      "required_count": 1,
+      "candidates": [
+        {
+          "profile_id": "trace_ld_v1_zhdanko_storehouse_controller_v1",
+          "revision": 1
+        }
+      ]
+    },
+    {
+      "candidate_set_id": "trace_ld_v1_background_fisher_profile_set",
+      "slots": [
+        "background_fisher_1",
+        "background_fisher_2"
+      ],
+      "required_distinct_instances": 2,
+      "candidates": [
+        {
+          "profile_id": "trace_ld_v1_background_fisher_v1",
+          "revision": 1
+        }
+      ]
+    }
+  ],
+  "knowledge_scope_profiles": [
+    {
+      "profile_id": "trace_ld_v1_knowledge_scope_hired_boatman_v1",
+      "allowed_categories": [
+        "own_identity",
+        "own_social_role",
+        "own_occupation",
+        "own_formal_relations",
+        "own_workplace_familiarity",
+        "ordinary_local_route_familiarity",
+        "directly_visible_current_scene",
+        "directly_received_public_message",
+        "incident_fact",
+        "culprit_identity",
+        "executor_identity",
+        "clue_identity",
+        "clue_interpretation",
+        "lie_content",
+        "memory_content",
+        "hypothesis_content",
+        "rumor_content",
+        "confession_content"
+      ],
+      "forbidden_categories": [
+        "hidden_motive",
+        "hidden_event_sequence",
+        "private_item_state",
+        "future_schedule",
+        "future_decision",
+        "received_instruction_content",
+        "observed_item_possession"
+      ],
+      "required_future_categories": [
+        "incident_fact",
+        "executor_identity",
+        "clue_identity",
+        "memory_content"
+      ],
+      "admitted_source_types": [
+        "approved_profile_binding",
+        "direct_perception",
+        "received_message",
+        "prior_admitted_perception_or_message",
+        "derived_from_admitted_knowledge"
+      ],
+      "admission_rules": [
+        {
+          "categories": [
+            "own_identity",
+            "own_social_role",
+            "own_occupation",
+            "own_formal_relations"
+          ],
+          "allowed_source_types": [
+            "approved_profile_binding"
+          ],
+          "required_target_binding": "approved_profile_record"
+        },
+        {
+          "categories": [
+            "own_workplace_familiarity",
+            "ordinary_local_route_familiarity"
+          ],
+          "allowed_source_types": [
+            "approved_profile_binding",
+            "direct_perception"
+          ],
+          "required_target_binding": "approved_profile_or_location_record"
+        },
+        {
+          "categories": [
+            "directly_visible_current_scene"
+          ],
+          "allowed_source_types": [
+            "direct_perception"
+          ],
+          "required_target_binding": "perception_result"
+        },
+        {
+          "categories": [
+            "directly_received_public_message",
+            "rumor_content"
+          ],
+          "allowed_source_types": [
+            "received_message"
+          ],
+          "required_target_binding": "message_record"
+        },
+        {
+          "categories": [
+            "incident_fact"
+          ],
+          "allowed_source_types": [
+            "direct_perception",
+            "received_message"
+          ],
+          "required_target_binding": "factual_event_record"
+        },
+        {
+          "categories": [
+            "culprit_identity",
+            "executor_identity"
+          ],
+          "allowed_source_types": [
+            "direct_perception",
+            "received_message"
+          ],
+          "required_target_binding": "perception_or_message_record"
+        },
+        {
+          "categories": [
+            "clue_identity"
+          ],
+          "allowed_source_types": [
+            "direct_perception",
+            "received_message"
+          ],
+          "required_target_binding": "factual_clue_record"
+        },
+        {
+          "categories": [
+            "clue_interpretation",
+            "hypothesis_content"
+          ],
+          "allowed_source_types": [
+            "derived_from_admitted_knowledge"
+          ],
+          "required_target_binding": "admitted_knowledge_record"
+        },
+        {
+          "categories": [
+            "lie_content",
+            "confession_content"
+          ],
+          "allowed_source_types": [
+            "direct_perception",
+            "received_message"
+          ],
+          "required_target_binding": "statement_record"
+        },
+        {
+          "categories": [
+            "memory_content"
+          ],
+          "allowed_source_types": [
+            "prior_admitted_perception_or_message"
+          ],
+          "required_target_binding": "admitted_perception_or_message_record"
+        }
+      ]
+    },
+    {
+      "profile_id": "trace_ld_v1_knowledge_scope_local_fisher_v1",
+      "allowed_categories": [
+        "own_identity",
+        "own_social_role",
+        "own_occupation",
+        "own_formal_relations",
+        "own_workplace_familiarity",
+        "ordinary_local_route_familiarity",
+        "directly_visible_current_scene",
+        "directly_received_public_message",
+        "incident_fact",
+        "culprit_identity",
+        "executor_identity",
+        "hidden_event_sequence",
+        "clue_identity",
+        "clue_interpretation",
+        "lie_content",
+        "memory_content",
+        "hypothesis_content",
+        "rumor_content",
+        "confession_content",
+        "observed_item_possession"
+      ],
+      "forbidden_categories": [
+        "hidden_motive",
+        "private_item_state",
+        "future_schedule",
+        "future_decision",
+        "received_instruction_content"
+      ],
+      "required_future_categories": [
+        "incident_fact",
+        "executor_identity",
+        "clue_identity",
+        "observed_item_possession",
+        "lie_content",
+        "memory_content"
+      ],
+      "admitted_source_types": [
+        "approved_profile_binding",
+        "direct_perception",
+        "received_message",
+        "own_statement",
+        "prior_admitted_perception_or_message",
+        "derived_from_admitted_knowledge"
+      ],
+      "admission_rules": [
+        {
+          "categories": [
+            "own_identity",
+            "own_social_role",
+            "own_occupation",
+            "own_formal_relations"
+          ],
+          "allowed_source_types": [
+            "approved_profile_binding"
+          ],
+          "required_target_binding": "approved_profile_record"
+        },
+        {
+          "categories": [
+            "own_workplace_familiarity",
+            "ordinary_local_route_familiarity"
+          ],
+          "allowed_source_types": [
+            "approved_profile_binding",
+            "direct_perception"
+          ],
+          "required_target_binding": "approved_profile_or_location_record"
+        },
+        {
+          "categories": [
+            "directly_visible_current_scene"
+          ],
+          "allowed_source_types": [
+            "direct_perception"
+          ],
+          "required_target_binding": "perception_result"
+        },
+        {
+          "categories": [
+            "directly_received_public_message",
+            "rumor_content"
+          ],
+          "allowed_source_types": [
+            "received_message"
+          ],
+          "required_target_binding": "message_record"
+        },
+        {
+          "categories": [
+            "incident_fact"
+          ],
+          "allowed_source_types": [
+            "direct_perception",
+            "received_message"
+          ],
+          "required_target_binding": "factual_event_record"
+        },
+        {
+          "categories": [
+            "culprit_identity",
+            "executor_identity",
+            "hidden_event_sequence"
+          ],
+          "allowed_source_types": [
+            "direct_perception",
+            "received_message"
+          ],
+          "required_target_binding": "perception_or_message_record"
+        },
+        {
+          "categories": [
+            "observed_item_possession"
+          ],
+          "allowed_source_types": [
+            "direct_perception"
+          ],
+          "required_target_binding": "perception_result"
+        },
+        {
+          "categories": [
+            "clue_identity"
+          ],
+          "allowed_source_types": [
+            "direct_perception",
+            "received_message"
+          ],
+          "required_target_binding": "factual_clue_record"
+        },
+        {
+          "categories": [
+            "clue_interpretation",
+            "hypothesis_content"
+          ],
+          "allowed_source_types": [
+            "derived_from_admitted_knowledge"
+          ],
+          "required_target_binding": "admitted_knowledge_record"
+        },
+        {
+          "categories": [
+            "lie_content",
+            "confession_content"
+          ],
+          "allowed_source_types": [
+            "own_statement",
+            "direct_perception",
+            "received_message"
+          ],
+          "required_target_binding": "statement_record"
+        },
+        {
+          "categories": [
+            "memory_content"
+          ],
+          "allowed_source_types": [
+            "prior_admitted_perception_or_message"
+          ],
+          "required_target_binding": "admitted_perception_or_message_record"
+        }
+      ]
+    },
+    {
+      "profile_id": "trace_ld_v1_knowledge_scope_storehouse_helper_v1",
+      "allowed_categories": [
+        "own_identity",
+        "own_social_role",
+        "own_occupation",
+        "own_formal_relations",
+        "own_workplace_familiarity",
+        "ordinary_local_route_familiarity",
+        "directly_visible_current_scene",
+        "directly_received_public_message",
+        "incident_fact",
+        "culprit_identity",
+        "executor_identity",
+        "hidden_event_sequence",
+        "clue_identity",
+        "clue_interpretation",
+        "private_item_state",
+        "lie_content",
+        "memory_content",
+        "hypothesis_content",
+        "rumor_content",
+        "confession_content",
+        "future_decision",
+        "received_instruction_content"
+      ],
+      "forbidden_categories": [
+        "hidden_motive",
+        "future_schedule",
+        "observed_item_possession"
+      ],
+      "required_future_categories": [
+        "incident_fact",
+        "culprit_identity",
+        "executor_identity",
+        "hidden_event_sequence",
+        "received_instruction_content",
+        "memory_content",
+        "confession_content"
+      ],
+      "admitted_source_types": [
+        "approved_profile_binding",
+        "direct_perception",
+        "received_message",
+        "received_instruction",
+        "own_action",
+        "own_statement",
+        "prior_admitted_perception_or_message",
+        "derived_from_admitted_knowledge",
+        "approved_own_decision_binding"
+      ],
+      "admission_rules": [
+        {
+          "categories": [
+            "own_identity",
+            "own_social_role",
+            "own_occupation",
+            "own_formal_relations"
+          ],
+          "allowed_source_types": [
+            "approved_profile_binding"
+          ],
+          "required_target_binding": "approved_profile_record"
+        },
+        {
+          "categories": [
+            "own_workplace_familiarity",
+            "ordinary_local_route_familiarity"
+          ],
+          "allowed_source_types": [
+            "approved_profile_binding",
+            "direct_perception"
+          ],
+          "required_target_binding": "approved_profile_or_location_record"
+        },
+        {
+          "categories": [
+            "directly_visible_current_scene"
+          ],
+          "allowed_source_types": [
+            "direct_perception"
+          ],
+          "required_target_binding": "perception_result"
+        },
+        {
+          "categories": [
+            "directly_received_public_message",
+            "rumor_content"
+          ],
+          "allowed_source_types": [
+            "received_message"
+          ],
+          "required_target_binding": "message_record"
+        },
+        {
+          "categories": [
+            "incident_fact"
+          ],
+          "allowed_source_types": [
+            "own_action",
+            "direct_perception",
+            "received_message"
+          ],
+          "required_target_binding": "factual_event_record"
+        },
+        {
+          "categories": [
+            "culprit_identity"
+          ],
+          "allowed_source_types": [
+            "received_instruction",
+            "direct_perception",
+            "received_message"
+          ],
+          "required_target_binding": "perception_or_message_record"
+        },
+        {
+          "categories": [
+            "executor_identity"
+          ],
+          "allowed_source_types": [
+            "own_action"
+          ],
+          "required_target_binding": "approved_hidden_truth_fact"
+        },
+        {
+          "categories": [
+            "hidden_event_sequence"
+          ],
+          "allowed_source_types": [
+            "own_action",
+            "received_instruction",
+            "direct_perception",
+            "received_message"
+          ],
+          "required_target_binding": "admitted_event_knowledge_record"
+        },
+        {
+          "categories": [
+            "private_item_state"
+          ],
+          "allowed_source_types": [
+            "own_action"
+          ],
+          "required_target_binding": "approved_hidden_truth_fact"
+        },
+        {
+          "categories": [
+            "received_instruction_content"
+          ],
+          "allowed_source_types": [
+            "received_instruction"
+          ],
+          "required_target_binding": "message_record"
+        },
+        {
+          "categories": [
+            "clue_identity"
+          ],
+          "allowed_source_types": [
+            "own_action",
+            "direct_perception",
+            "received_message"
+          ],
+          "required_target_binding": "factual_clue_record"
+        },
+        {
+          "categories": [
+            "clue_interpretation",
+            "hypothesis_content"
+          ],
+          "allowed_source_types": [
+            "derived_from_admitted_knowledge"
+          ],
+          "required_target_binding": "admitted_knowledge_record"
+        },
+        {
+          "categories": [
+            "lie_content",
+            "confession_content"
+          ],
+          "allowed_source_types": [
+            "own_statement",
+            "direct_perception",
+            "received_message"
+          ],
+          "required_target_binding": "statement_record"
+        },
+        {
+          "categories": [
+            "memory_content"
+          ],
+          "allowed_source_types": [
+            "prior_admitted_perception_or_message"
+          ],
+          "required_target_binding": "admitted_perception_or_message_record"
+        },
+        {
+          "categories": [
+            "future_decision"
+          ],
+          "allowed_source_types": [
+            "approved_own_decision_binding",
+            "received_message"
+          ],
+          "required_target_binding": "approved_decision_profile"
+        }
+      ]
+    },
+    {
+      "profile_id": "trace_ld_v1_knowledge_scope_storehouse_controller_v1",
+      "allowed_categories": [
+        "own_identity",
+        "own_social_role",
+        "own_occupation",
+        "own_formal_relations",
+        "own_workplace_familiarity",
+        "ordinary_local_route_familiarity",
+        "directly_visible_current_scene",
+        "directly_received_public_message",
+        "incident_fact",
+        "culprit_identity",
+        "executor_identity",
+        "hidden_motive",
+        "hidden_event_sequence",
+        "clue_identity",
+        "clue_interpretation",
+        "private_item_state",
+        "lie_content",
+        "memory_content",
+        "hypothesis_content",
+        "rumor_content",
+        "confession_content",
+        "future_schedule",
+        "future_decision"
+      ],
+      "forbidden_categories": [
+        "received_instruction_content",
+        "observed_item_possession"
+      ],
+      "required_future_categories": [
+        "incident_fact",
+        "culprit_identity",
+        "executor_identity",
+        "hidden_motive",
+        "hidden_event_sequence",
+        "private_item_state",
+        "memory_content",
+        "future_schedule",
+        "future_decision"
+      ],
+      "admitted_source_types": [
+        "approved_profile_binding",
+        "direct_perception",
+        "received_message",
+        "own_action",
+        "own_instruction",
+        "own_intention",
+        "own_statement",
+        "prior_admitted_perception_or_message",
+        "derived_from_admitted_knowledge",
+        "approved_own_schedule_binding",
+        "approved_own_decision_binding"
+      ],
+      "admission_rules": [
+        {
+          "categories": [
+            "own_identity",
+            "own_social_role",
+            "own_occupation",
+            "own_formal_relations"
+          ],
+          "allowed_source_types": [
+            "approved_profile_binding"
+          ],
+          "required_target_binding": "approved_profile_record"
+        },
+        {
+          "categories": [
+            "own_workplace_familiarity",
+            "ordinary_local_route_familiarity"
+          ],
+          "allowed_source_types": [
+            "approved_profile_binding",
+            "direct_perception"
+          ],
+          "required_target_binding": "approved_profile_or_location_record"
+        },
+        {
+          "categories": [
+            "directly_visible_current_scene"
+          ],
+          "allowed_source_types": [
+            "direct_perception"
+          ],
+          "required_target_binding": "perception_result"
+        },
+        {
+          "categories": [
+            "directly_received_public_message",
+            "rumor_content"
+          ],
+          "allowed_source_types": [
+            "received_message"
+          ],
+          "required_target_binding": "message_record"
+        },
+        {
+          "categories": [
+            "incident_fact"
+          ],
+          "allowed_source_types": [
+            "own_action",
+            "direct_perception",
+            "received_message"
+          ],
+          "required_target_binding": "factual_event_record"
+        },
+        {
+          "categories": [
+            "culprit_identity"
+          ],
+          "allowed_source_types": [
+            "own_action",
+            "own_intention"
+          ],
+          "required_target_binding": "approved_hidden_truth_fact"
+        },
+        {
+          "categories": [
+            "executor_identity"
+          ],
+          "allowed_source_types": [
+            "own_instruction"
+          ],
+          "required_target_binding": "instruction_record"
+        },
+        {
+          "categories": [
+            "hidden_event_sequence"
+          ],
+          "allowed_source_types": [
+            "own_action",
+            "own_instruction"
+          ],
+          "required_target_binding": "admitted_event_knowledge_record"
+        },
+        {
+          "categories": [
+            "private_item_state"
+          ],
+          "allowed_source_types": [
+            "own_action"
+          ],
+          "required_target_binding": "approved_hidden_truth_fact"
+        },
+        {
+          "categories": [
+            "hidden_motive"
+          ],
+          "allowed_source_types": [
+            "own_intention"
+          ],
+          "required_target_binding": "approved_hidden_truth_fact"
+        },
+        {
+          "categories": [
+            "clue_identity"
+          ],
+          "allowed_source_types": [
+            "own_action",
+            "direct_perception",
+            "received_message"
+          ],
+          "required_target_binding": "factual_clue_record"
+        },
+        {
+          "categories": [
+            "clue_interpretation",
+            "hypothesis_content"
+          ],
+          "allowed_source_types": [
+            "derived_from_admitted_knowledge"
+          ],
+          "required_target_binding": "admitted_knowledge_record"
+        },
+        {
+          "categories": [
+            "lie_content",
+            "confession_content"
+          ],
+          "allowed_source_types": [
+            "own_statement",
+            "direct_perception",
+            "received_message"
+          ],
+          "required_target_binding": "statement_record"
+        },
+        {
+          "categories": [
+            "memory_content"
+          ],
+          "allowed_source_types": [
+            "prior_admitted_perception_or_message"
+          ],
+          "required_target_binding": "admitted_perception_or_message_record"
+        },
+        {
+          "categories": [
+            "future_schedule"
+          ],
+          "allowed_source_types": [
+            "approved_own_schedule_binding",
+            "received_message"
+          ],
+          "required_target_binding": "approved_schedule_profile"
+        },
+        {
+          "categories": [
+            "future_decision"
+          ],
+          "allowed_source_types": [
+            "approved_own_decision_binding",
+            "received_message"
+          ],
+          "required_target_binding": "approved_decision_profile"
+        }
+      ]
+    },
+    {
+      "profile_id": "trace_ld_v1_knowledge_scope_background_fisher_v1",
+      "allowed_categories": [
+        "own_identity",
+        "own_social_role",
+        "own_occupation",
+        "own_formal_relations",
+        "own_workplace_familiarity",
+        "ordinary_local_route_familiarity",
+        "directly_visible_current_scene",
+        "directly_received_public_message",
+        "incident_fact",
+        "culprit_identity",
+        "executor_identity",
+        "clue_identity",
+        "clue_interpretation",
+        "lie_content",
+        "memory_content",
+        "hypothesis_content",
+        "rumor_content",
+        "confession_content"
+      ],
+      "forbidden_categories": [
+        "hidden_motive",
+        "hidden_event_sequence",
+        "private_item_state",
+        "future_schedule",
+        "future_decision",
+        "received_instruction_content",
+        "observed_item_possession"
+      ],
+      "required_future_categories": [
+        "incident_fact",
+        "memory_content"
+      ],
+      "admitted_source_types": [
+        "approved_profile_binding",
+        "direct_perception",
+        "received_message",
+        "prior_admitted_perception_or_message",
+        "derived_from_admitted_knowledge"
+      ],
+      "admission_rules": [
+        {
+          "categories": [
+            "own_identity",
+            "own_social_role",
+            "own_occupation",
+            "own_formal_relations"
+          ],
+          "allowed_source_types": [
+            "approved_profile_binding"
+          ],
+          "required_target_binding": "approved_profile_record"
+        },
+        {
+          "categories": [
+            "own_workplace_familiarity",
+            "ordinary_local_route_familiarity"
+          ],
+          "allowed_source_types": [
+            "approved_profile_binding",
+            "direct_perception"
+          ],
+          "required_target_binding": "approved_profile_or_location_record"
+        },
+        {
+          "categories": [
+            "directly_visible_current_scene"
+          ],
+          "allowed_source_types": [
+            "direct_perception"
+          ],
+          "required_target_binding": "perception_result"
+        },
+        {
+          "categories": [
+            "directly_received_public_message",
+            "rumor_content"
+          ],
+          "allowed_source_types": [
+            "received_message"
+          ],
+          "required_target_binding": "message_record"
+        },
+        {
+          "categories": [
+            "incident_fact"
+          ],
+          "allowed_source_types": [
+            "direct_perception",
+            "received_message"
+          ],
+          "required_target_binding": "factual_event_record"
+        },
+        {
+          "categories": [
+            "culprit_identity",
+            "executor_identity"
+          ],
+          "allowed_source_types": [
+            "direct_perception",
+            "received_message"
+          ],
+          "required_target_binding": "perception_or_message_record"
+        },
+        {
+          "categories": [
+            "clue_identity"
+          ],
+          "allowed_source_types": [
+            "direct_perception",
+            "received_message"
+          ],
+          "required_target_binding": "factual_clue_record"
+        },
+        {
+          "categories": [
+            "clue_interpretation",
+            "hypothesis_content"
+          ],
+          "allowed_source_types": [
+            "derived_from_admitted_knowledge"
+          ],
+          "required_target_binding": "admitted_knowledge_record"
+        },
+        {
+          "categories": [
+            "lie_content",
+            "confession_content"
+          ],
+          "allowed_source_types": [
+            "direct_perception",
+            "received_message"
+          ],
+          "required_target_binding": "statement_record"
+        },
+        {
+          "categories": [
+            "memory_content"
+          ],
+          "allowed_source_types": [
+            "prior_admitted_perception_or_message"
+          ],
+          "required_target_binding": "admitted_perception_or_message_record"
+        }
+      ]
+    }
+  ],
+  "knowledge_seed_records": [],
+  "perception_records": [],
+  "memory_records": [],
+  "lie_records": [],
+  "hypothesis_records": [],
+  "rumor_records": [],
+  "initial_placements": [],
+  "hidden_truth": null,
+  "relation_types": [
+    {
+      "relation_type_id": "kinship_nephew_of",
+      "directionality": "directed",
+      "inverse_relation_type_id": "kinship_uncle_of",
+      "does_not_imply": [
+        "trust",
+        "complicity",
+        "obedience",
+        "criminal_connection"
+      ]
+    },
+    {
+      "relation_type_id": "kinship_uncle_of",
+      "directionality": "directed",
+      "inverse_relation_type_id": "kinship_nephew_of",
+      "does_not_imply": [
+        "trust",
+        "complicity",
+        "obedience",
+        "criminal_connection"
+      ]
+    },
+    {
+      "relation_type_id": "work_assistant_to",
+      "directionality": "directed",
+      "inverse_relation_type_id": "work_supervisor_of",
+      "permits": [
+        "ordinary_work_instructions"
+      ],
+      "does_not_imply": [
+        "acceptance_of_criminal_instruction"
+      ]
+    },
+    {
+      "relation_type_id": "work_supervisor_of",
+      "directionality": "directed",
+      "inverse_relation_type_id": "work_assistant_to",
+      "permits": [
+        "ordinary_work_instructions"
+      ],
+      "does_not_imply": [
+        "acceptance_of_criminal_instruction"
+      ]
+    },
+    {
+      "relation_type_id": "work_access_dependent_on",
+      "directionality": "directed",
+      "inverse_relation_type_id": "controls_work_access_of",
+      "permits": [
+        "economic_access_influence"
+      ],
+      "does_not_imply": [
+        "ownership_of_person",
+        "slavery",
+        "unconditional_personal_dependency",
+        "automatic_obedience"
+      ]
+    },
+    {
+      "relation_type_id": "controls_work_access_of",
+      "directionality": "directed",
+      "inverse_relation_type_id": "work_access_dependent_on",
+      "permits": [
+        "economic_access_influence"
+      ],
+      "does_not_imply": [
+        "ownership_of_person",
+        "slavery",
+        "unconditional_personal_dependency",
+        "automatic_obedience"
+      ]
+    },
+    {
+      "relation_type_id": "work_artel_peer_of",
+      "directionality": "symmetric",
+      "does_not_imply": [
+        "kinship",
+        "friendship",
+        "shared_opinion"
+      ]
+    },
+    {
+      "relation_type_id": "contracted_transport_provider_for",
+      "directionality": "directed",
+      "inverse_relation_type_id": "transport_service_client_of",
+      "permits": [
+        "ordinary_transport_service"
+      ],
+      "does_not_imply": [
+        "friendship",
+        "personal_subordination",
+        "client_control_of_provider_property"
+      ]
+    },
+    {
+      "relation_type_id": "transport_service_client_of",
+      "directionality": "directed",
+      "inverse_relation_type_id": "contracted_transport_provider_for",
+      "permits": [
+        "ordinary_transport_service"
+      ],
+      "does_not_imply": [
+        "friendship",
+        "personal_subordination",
+        "client_control_of_provider_property"
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "source": "ratsha_storehouse_helper",
+      "relation_type_id": "kinship_nephew_of",
+      "target": "zhdanko_storehouse_controller",
+      "inverse_relation_type_id": "kinship_uncle_of"
+    },
+    {
+      "source": "zhdanko_storehouse_controller",
+      "relation_type_id": "kinship_uncle_of",
+      "target": "ratsha_storehouse_helper",
+      "inverse_relation_type_id": "kinship_nephew_of"
+    },
+    {
+      "source": "ratsha_storehouse_helper",
+      "relation_type_id": "work_assistant_to",
+      "target": "zhdanko_storehouse_controller",
+      "inverse_relation_type_id": "work_supervisor_of"
+    },
+    {
+      "source": "zhdanko_storehouse_controller",
+      "relation_type_id": "work_supervisor_of",
+      "target": "ratsha_storehouse_helper",
+      "inverse_relation_type_id": "work_assistant_to"
+    },
+    {
+      "source": "onisim_boatman",
+      "relation_type_id": "contracted_transport_provider_for",
+      "target": "player_clerk",
+      "inverse_relation_type_id": "transport_service_client_of"
+    },
+    {
+      "source": "player_clerk",
+      "relation_type_id": "transport_service_client_of",
+      "target": "onisim_boatman",
+      "inverse_relation_type_id": "contracted_transport_provider_for"
+    },
+    {
+      "source": "eremey_fisher",
+      "relation_type_id": "work_access_dependent_on",
+      "target": "zhdanko_storehouse_controller",
+      "inverse_relation_type_id": "controls_work_access_of"
+    },
+    {
+      "source": "background_fisher_1",
+      "relation_type_id": "work_access_dependent_on",
+      "target": "zhdanko_storehouse_controller",
+      "inverse_relation_type_id": "controls_work_access_of"
+    },
+    {
+      "source": "background_fisher_2",
+      "relation_type_id": "work_access_dependent_on",
+      "target": "zhdanko_storehouse_controller",
+      "inverse_relation_type_id": "controls_work_access_of"
+    },
+    {
+      "source": "zhdanko_storehouse_controller",
+      "relation_type_id": "controls_work_access_of",
+      "target": "eremey_fisher",
+      "inverse_relation_type_id": "work_access_dependent_on"
+    },
+    {
+      "source": "zhdanko_storehouse_controller",
+      "relation_type_id": "controls_work_access_of",
+      "target": "background_fisher_1",
+      "inverse_relation_type_id": "work_access_dependent_on"
+    },
+    {
+      "source": "zhdanko_storehouse_controller",
+      "relation_type_id": "controls_work_access_of",
+      "target": "background_fisher_2",
+      "inverse_relation_type_id": "work_access_dependent_on"
+    },
+    {
+      "source": "eremey_fisher",
+      "relation_type_id": "work_artel_peer_of",
+      "target": "background_fisher_1",
+      "symmetric": true
+    },
+    {
+      "source": "eremey_fisher",
+      "relation_type_id": "work_artel_peer_of",
+      "target": "background_fisher_2",
+      "symmetric": true
+    },
+    {
+      "source": "background_fisher_1",
+      "relation_type_id": "work_artel_peer_of",
+      "target": "background_fisher_2",
+      "symmetric": true
+    }
+  ]
+}

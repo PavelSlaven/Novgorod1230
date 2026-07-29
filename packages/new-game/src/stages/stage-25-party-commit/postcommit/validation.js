@@ -9,12 +9,18 @@ export function validateStage25PostcommitState(state = {}, input = {}, transacti
   if (state.party_id !== input.party_creation_context?.party_id) concerns.push(issue('STAGE25_POSTCOMMIT_STATE_INVALID', 'Postcommit party_id mismatch.', 'postcommit_state.party_id'));
   if (state.transaction_id !== transactionResult.transaction_id) concerns.push(issue('STAGE25_POSTCOMMIT_STATE_INVALID', 'Postcommit transaction_id mismatch.', 'postcommit_state.transaction_id'));
   if (state.physical_write_plan_digest !== physicalPlanDigest) concerns.push(issue('STAGE25_POSTCOMMIT_DIGEST_MISMATCH', 'Postcommit physical plan digest mismatch.', 'postcommit_state.physical_write_plan_digest'));
-  if (state.party_state?.status !== 'ready' || state.party_state?.is_ready_for_player !== true || state.party_state?.current_phase !== 'awaiting_player_input') concerns.push(issue('STAGE25_PARTY_NOT_READY', 'Live party state is not ready for player.', 'postcommit_state.party_state'));
+  const internal = input.party_creation_context?.commit_mode === 'internal_materialization';
+  if (internal) {
+    if (state.party_state?.status !== 'active' || state.party_state?.is_ready_for_player !== false || state.party_state?.current_phase !== 'internal_materialized') concerns.push(issue('STAGE25_PARTY_NOT_READY', 'Internal party must remain non-player-facing after materialization.', 'postcommit_state.party_state'));
+  } else if (state.party_state?.status !== 'ready' || state.party_state?.is_ready_for_player !== true || state.party_state?.current_phase !== 'awaiting_player_input') concerns.push(issue('STAGE25_PARTY_NOT_READY', 'Live party state is not ready for player.', 'postcommit_state.party_state'));
   if (!isObject(state.current_position)) concerns.push(issue('STAGE25_POSTCOMMIT_POSITION_MISSING', 'Live current position is required.', 'postcommit_state.current_position'));
   if (!isObject(state.current_clock)) concerns.push(issue('STAGE25_POSTCOMMIT_CLOCK_MISSING', 'Live current clock is required.', 'postcommit_state.current_clock'));
   if (!isObject(state.player_character)) concerns.push(issue('STAGE25_POSTCOMMIT_PLAYER_MISSING', 'Live player character is required.', 'postcommit_state.player_character'));
-  if (!text(state.player_output_ref?.narrator_output_id) || state.player_output_ref?.player_visible_message_ready !== true) concerns.push(issue('STAGE25_POSTCOMMIT_OUTPUT_MISSING', 'Committed narrator output reference is required.', 'postcommit_state.player_output_ref'));
-  if (state.idempotency_record?.idempotency_key !== input.party_creation_context?.idempotency_key || state.idempotency_record?.payload_hash !== input.party_creation_context?.payload_hash || state.idempotency_record?.status !== 'committed') concerns.push(issue('STAGE25_IDEMPOTENCY_RESULT_INVALID', 'Committed idempotency record mismatch.', 'postcommit_state.idempotency_record'));
+  if (internal) {
+    if (state.player_output_ref?.narrator_output_id != null || state.player_output_ref?.player_visible_message_ready !== false) concerns.push(issue('STAGE25_POSTCOMMIT_OUTPUT_MISSING', 'Internal materialization must not create player output.', 'postcommit_state.player_output_ref'));
+  } else if (!text(state.player_output_ref?.narrator_output_id) || state.player_output_ref?.player_visible_message_ready !== true) concerns.push(issue('STAGE25_POSTCOMMIT_OUTPUT_MISSING', 'Committed narrator output reference is required.', 'postcommit_state.player_output_ref'));
+  const acceptedIdempotencyStatuses = internal ? ['transaction_committed', 'committed'] : ['committed'];
+  if (state.idempotency_record?.idempotency_key !== input.party_creation_context?.idempotency_key || state.idempotency_record?.payload_hash !== input.party_creation_context?.payload_hash || !acceptedIdempotencyStatuses.includes(state.idempotency_record?.status)) concerns.push(issue('STAGE25_IDEMPOTENCY_RESULT_INVALID', 'Committed idempotency record mismatch.', 'postcommit_state.idempotency_record'));
   const leakedPaths = findForbiddenPublicPaths(state.party_public_state);
   for (const path of leakedPaths) concerns.push(issue('STAGE25_HIDDEN_PUBLIC_LEAK', `Forbidden public field at ${path}.`, `postcommit_state.party_public_state.${path}`));
   return concerns;
@@ -22,9 +28,14 @@ export function validateStage25PostcommitState(state = {}, input = {}, transacti
 
 export function buildStage25PostcommitValidation(state = {}, input = {}, transactionResult = {}, physicalPlanDigest = null) {
   const concerns = validateStage25PostcommitState(state, input, transactionResult, physicalPlanDigest);
+  const internal = input.party_creation_context?.commit_mode === 'internal_materialization';
   const checks = {
-    party_state_ready: passCheck(state.party_state?.status === 'ready' && state.party_state?.is_ready_for_player === true),
-    player_output_allowed: passCheck(state.player_output_ref?.player_visible_message_ready === true),
+    party_state_ready: passCheck(internal
+      ? state.party_state?.status === 'active' && state.party_state?.is_ready_for_player === false
+      : state.party_state?.status === 'ready' && state.party_state?.is_ready_for_player === true),
+    player_output_allowed: passCheck(internal
+      ? state.player_output_ref?.player_visible_message_ready === false
+      : state.player_output_ref?.player_visible_message_ready === true),
     current_position_exists: passCheck(isObject(state.current_position)),
     current_clock_exists: passCheck(isObject(state.current_clock)),
     player_character_exists: passCheck(isObject(state.player_character)),
@@ -41,7 +52,9 @@ export function buildStage25PostcommitValidation(state = {}, input = {}, transac
     audit_snapshots_complete: passCheck(state.integrity?.audit_snapshots_complete !== false),
     source_trace_complete: passCheck(state.integrity?.source_trace_complete !== false),
     hidden_public_boundary_valid: passCheck(findForbiddenPublicPaths(state.party_public_state).length === 0),
-    idempotency_record_committed: passCheck(state.idempotency_record?.status === 'committed')
+    idempotency_record_committed: passCheck(internal
+      ? ['transaction_committed', 'committed'].includes(state.idempotency_record?.status)
+      : state.idempotency_record?.status === 'committed')
   };
   for (const key of REQUIRED_POSTCOMMIT_CHECKS) {
     if (checks[key]?.pass !== true && !concerns.some((item) => item.path === `checks.${key}`)) concerns.push(issue('STAGE25_POSTCOMMIT_CHECK_FAILED', `Postcommit check failed: ${key}.`, `checks.${key}`));
@@ -59,4 +72,3 @@ export function buildStage25PostcommitValidation(state = {}, input = {}, transac
     evidence: concerns.length === 0 ? ['Committed live party state passed Stage 25 postcommit validation.'] : []
   };
 }
-

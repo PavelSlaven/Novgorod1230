@@ -15,6 +15,14 @@ export function computeMaterializationResultDigest(result) {
   return sha256(canonicalResult);
 }
 
+export function computeMaterializationEnvelopeDigest(result) {
+  const payload = structuredClone(result);
+  if (payload?.trace && typeof payload.trace === 'object' && !Array.isArray(payload.trace)) {
+    delete payload.trace.result_digest;
+  }
+  return sha256(payload);
+}
+
 export const computeVisibleContextPackageDigest = computeCanonicalDigest;
 export const computeNarratorStartingProseDigest = computeCanonicalDigest;
 export const computeStage25ArtifactDigest = computeCanonicalDigest;

@@ -1,13 +1,16 @@
 import {
+  computeMaterializationEnvelopeDigest,
   PARTY_DB_SCHEMA_SNAPSHOT_SCHEMA,
   STAGE24_INPUT_SCHEMA,
   STAGE24_MANIFEST_SCHEMA,
   WORLD_BASE_REFERENCE_SCHEMA
-} from '../policy/constants.js';
+} from '@rus/contracts';
 import {
-  ARTIFACT_STAGE_IDS,
+  artifactStageIdForProfile,
   FORBIDDEN_INPUT_KEYS,
-  REQUIRED_ARTIFACT_KEYS,
+  isLowerDvinaTracePhase1AInput,
+  LOWER_DVINA_TRACE_PHASE_1A_PIPELINE_PROFILE,
+  requiredArtifactKeysForInput,
   REQUIRED_WRITE_POLICY
 } from '../policy/constants.js';
 import {
@@ -30,16 +33,19 @@ export function normalizeStage24WritePolicy(additionalPolicy = {}) {
   return Object.freeze({ ...REQUIRED_WRITE_POLICY, ...safeClone(additionalPolicy) });
 }
 
-export function buildApprovedPipelineManifest({ request_id, artifacts } = {}) {
+export function buildApprovedPipelineManifest({ request_id, artifacts, pipeline_profile } = {}) {
   if (!text(request_id)) throw new Error('approved pipeline manifest requires request_id.');
   if (!isObject(artifacts)) throw new Error('approved pipeline manifest requires artifacts.');
+  const profileInput = { pipeline_profile };
+  const artifactKeys = requiredArtifactKeysForInput(profileInput);
   return {
     version: 1,
     schema: STAGE24_MANIFEST_SCHEMA,
     request_id,
-    artifacts: REQUIRED_ARTIFACT_KEYS.map((artifactKey) => ({
+    ...(pipeline_profile ? { manifest_kind: pipeline_profile } : {}),
+    artifacts: artifactKeys.map((artifactKey) => ({
       artifact_key: artifactKey,
-      stage_id: ARTIFACT_STAGE_IDS[artifactKey],
+      stage_id: artifactStageIdForProfile(artifactKey, pipeline_profile),
       artifact_schema: artifacts[artifactKey]?.schema ?? null,
       artifact_digest: computeStage24Digest(artifacts[artifactKey])
     }))
@@ -53,6 +59,7 @@ export function buildStage24Input({
   approved_pipeline_manifest,
   party_database_schema,
   world_base_reference_snapshot,
+  pipeline_profile = null,
   additional_write_policy = {}
 } = {}) {
   if (!isObject(approved_pipeline_outputs)) throw new Error('Stage 24 requires approved_pipeline_outputs.');
@@ -61,13 +68,14 @@ export function buildStage24Input({
   const outputs = safeClone(approved_pipeline_outputs ?? {});
   const manifest = approved_pipeline_manifest
     ? safeClone(approved_pipeline_manifest)
-    : buildApprovedPipelineManifest({ request_id, artifacts: outputs });
+    : buildApprovedPipelineManifest({ request_id, artifacts: outputs, pipeline_profile });
   const schemaSnapshot = safeClone(party_database_schema);
   const worldSnapshot = safeClone(world_base_reference_snapshot);
   const input = {
     version: 1,
     schema: STAGE24_INPUT_SCHEMA,
     request_id,
+    ...(pipeline_profile ? { pipeline_profile } : {}),
     party_creation_context: safeClone(party_creation_context),
     approved_pipeline_outputs: outputs,
     approved_pipeline_manifest: manifest,
@@ -96,25 +104,83 @@ export function validateStage24Input(input = {}) {
   for (const key of ['world_revision_id', 'world_catalog_digest', 'materializer_version', 'rng_version', 'command_catalog_digest', 'profile_bundle_digest']) {
     if (!text(party?.version_pins?.[key])) concerns.push(issue('WRITE_PLAN_INPUT_BINDING_INVALID', `party_creation_context.version_pins.${key} is required.`, `party_creation_context.version_pins.${key}`));
   }
+  const phase1A = isLowerDvinaTracePhase1AInput(input);
+  if (!phase1A && input.pipeline_profile != null && input.pipeline_profile !== 'standard_new_game') {
+    concerns.push(issue('WRITE_PLAN_INPUT_BINDING_INVALID', `Unsupported Stage 24 pipeline_profile: ${input.pipeline_profile}.`, 'pipeline_profile'));
+  }
   concerns.push(...validateDomainCatalogPin(party?.domain_catalog_pin, party?.version_pins));
   if (!isObject(input.approved_pipeline_outputs)) concerns.push(issue('WRITE_PLAN_INPUT_BINDING_INVALID', 'approved_pipeline_outputs is required.', 'approved_pipeline_outputs'));
-  else for (const key of REQUIRED_ARTIFACT_KEYS) if (input.approved_pipeline_outputs[key] == null) concerns.push(issue('WRITE_PLAN_INPUT_BINDING_INVALID', `approved_pipeline_outputs.${key} is required.`, `approved_pipeline_outputs.${key}`));
-  concerns.push(...validateApprovedPipelineManifest(input.approved_pipeline_manifest, input.approved_pipeline_outputs, input.request_id));
+  else for (const key of requiredArtifactKeysForInput(input)) if (input.approved_pipeline_outputs[key] == null) concerns.push(issue('WRITE_PLAN_INPUT_BINDING_INVALID', `approved_pipeline_outputs.${key} is required.`, `approved_pipeline_outputs.${key}`));
+  concerns.push(...validateApprovedPipelineManifest(input.approved_pipeline_manifest, input.approved_pipeline_outputs, input.request_id, input));
   if (input.approved_pipeline_manifest_digest !== computeStage24Digest(input.approved_pipeline_manifest)) concerns.push(issue('WRITE_PLAN_MANIFEST_INVALID', 'approved_pipeline_manifest_digest mismatch.', 'approved_pipeline_manifest_digest'));
   concerns.push(...validatePartyDatabaseSchemaSnapshot(input.party_database_schema));
   if (input.party_database_schema_digest !== computeStage24Digest(input.party_database_schema)) concerns.push(issue('WRITE_PLAN_DATABASE_SCHEMA_INVALID', 'party_database_schema_digest mismatch.', 'party_database_schema_digest'));
   concerns.push(...validateWorldBaseReferenceSnapshot(input.world_base_reference_snapshot));
   if (input.world_base_reference_digest !== computeStage24Digest(input.world_base_reference_snapshot)) concerns.push(issue('WRITE_PLAN_INPUT_BINDING_INVALID', 'world_base_reference_digest mismatch.', 'world_base_reference_digest'));
   for (const [key, expected] of Object.entries(REQUIRED_WRITE_POLICY)) if (input.write_policy?.[key] !== expected) concerns.push(issue('WRITE_PLAN_INPUT_BINDING_INVALID', `write_policy.${key} cannot be weakened.`, `write_policy.${key}`));
-  concerns.push(...validateMaterializationVersionPins(
-    input.approved_pipeline_outputs?.g5_scene_graph?.materialization_run,
-    party?.version_pins,
-    party?.domain_catalog_pin
-  ));
-  concerns.push(...validateMaterializationIdentity(input.approved_pipeline_outputs?.g5_scene_graph, party));
+  if (phase1A) concerns.push(...validateLowerDvinaTracePhase1AArtifacts(input.approved_pipeline_outputs, party, input.request_id));
+  else {
+    concerns.push(...validateMaterializationVersionPins(
+      input.approved_pipeline_outputs?.g5_scene_graph?.materialization_run,
+      party?.version_pins,
+      party?.domain_catalog_pin
+    ));
+    concerns.push(...validateMaterializationIdentity(input.approved_pipeline_outputs?.g5_scene_graph, party));
+  }
   const expectedInputDigest = computeStage24Digest({ ...input, party_db_write_plan_input_digest: undefined });
   if (input.party_db_write_plan_input_digest !== expectedInputDigest) concerns.push(issue('WRITE_PLAN_INPUT_BINDING_INVALID', 'party_db_write_plan_input_digest mismatch.', 'party_db_write_plan_input_digest'));
-  concerns.push(...validateAuditApprovals(input.approved_pipeline_outputs, input.request_id));
+  if (!phase1A) concerns.push(...validateAuditApprovals(input.approved_pipeline_outputs, input.request_id));
+  return concerns;
+}
+
+function validateLowerDvinaTracePhase1AArtifacts(outputs, party, requestId) {
+  const concerns = [];
+  const result = outputs?.materialization_result;
+  const semantic = outputs?.player_character_audit;
+  const closure = outputs?.sealed_selection_closure;
+  if (!isObject(result)
+    || result.schema !== 'rus.lower_dvina_trace_party_materialization_result.v1'
+    || result.status !== 'materialized'
+    || result.validation_report?.pass !== true
+    || result.party_id !== party?.party_id
+    || result.immediate?.player?.instance_id !== party?.player_character_id) {
+    concerns.push(issue('WRITE_PLAN_INPUT_BINDING_INVALID', 'Phase 1A materialization result is incomplete or bound to another party.', 'approved_pipeline_outputs.materialization_result'));
+  } else {
+    const identity = result.request_identity;
+    for (const [resultKey, pinKey] of [
+      ['world_revision_id', 'world_revision_id'],
+      ['world_catalog_digest', 'world_catalog_digest'],
+      ['materializer_version', 'materializer_version'],
+      ['rng_algorithm_id', 'rng_version'],
+      ['scenario_manifest_digest', 'command_catalog_digest']
+    ]) {
+      if (identity?.[resultKey] !== party?.version_pins?.[pinKey]) {
+        concerns.push(issue('WRITE_PLAN_VERSION_PIN_MISMATCH', `Phase 1A ${resultKey} does not match party version pins.`, `approved_pipeline_outputs.materialization_result.request_identity.${resultKey}`));
+      }
+    }
+    if (identity?.idempotency_key !== party?.idempotency_key || identity?.idempotency_key !== requestId) {
+      concerns.push(issue('WRITE_PLAN_INPUT_BINDING_INVALID', 'Phase 1A idempotency identity does not match Stage 24.', 'approved_pipeline_outputs.materialization_result.request_identity.idempotency_key'));
+    }
+    if (result.trace?.result_digest !== computeMaterializationEnvelopeDigest(result)) {
+      concerns.push(issue('WRITE_PLAN_INPUT_BINDING_INVALID', 'Phase 1A materialization result digest mismatch.', 'approved_pipeline_outputs.materialization_result.trace.result_digest'));
+    }
+    concerns.push(...validateMaterializationVersionPins(
+      result.trace,
+      party?.version_pins,
+      party?.domain_catalog_pin
+    ));
+  }
+  if (semantic?.pass !== true || semantic?.stage11?.pass !== true || semantic?.stage12?.pass !== true) {
+    concerns.push(issue('WRITE_PLAN_INPUT_BINDING_INVALID', 'Phase 1A player audit must contain passing Stage 11 and Stage 12 proofs.', 'approved_pipeline_outputs.player_character_audit'));
+  }
+  if (!isObject(closure)
+    || closure.schema !== 'rus.lower_dvina_trace_sealed_selection_closure.v1'
+    || closure.pass !== true
+    || closure.party_id !== party?.party_id
+    || closure.materialization_result_digest !== result?.trace?.result_digest
+    || closure.sealed_selections_digest !== computeStage24Digest(result?.sealed_selections)) {
+    concerns.push(issue('WRITE_PLAN_INPUT_BINDING_INVALID', 'Phase 1A sealed selection closure does not match the materialization result.', 'approved_pipeline_outputs.sealed_selection_closure'));
+  }
   return concerns;
 }
 
@@ -184,14 +250,25 @@ export function validateWorldBaseReferenceSnapshot(snapshot = {}) {
   return concerns;
 }
 
-export function validateApprovedPipelineManifest(manifest, outputs, requestId) {
+export function validateApprovedPipelineManifest(manifest, outputs, requestId, input = {}) {
   const concerns = [];
   if (!isObject(manifest) || manifest.version !== 1 || manifest.schema !== STAGE24_MANIFEST_SCHEMA || manifest.request_id !== requestId) return [issue('WRITE_PLAN_MANIFEST_INVALID', `Expected ${STAGE24_MANIFEST_SCHEMA} version 1 with matching request_id.`, 'approved_pipeline_manifest')];
+  if (isLowerDvinaTracePhase1AInput(input) && manifest.manifest_kind !== LOWER_DVINA_TRACE_PHASE_1A_PIPELINE_PROFILE) {
+    concerns.push(issue('WRITE_PLAN_MANIFEST_INVALID', 'Phase 1A manifest_kind must match its exact internal pipeline profile.', 'approved_pipeline_manifest.manifest_kind'));
+  }
   const entries = new Map(array(manifest.artifacts).map((item) => [item?.artifact_key, item]));
-  for (const key of REQUIRED_ARTIFACT_KEYS) {
+  const requiredKeys = requiredArtifactKeysForInput(input);
+  if (entries.size !== requiredKeys.length || array(manifest.artifacts).length !== requiredKeys.length) {
+    concerns.push(issue('WRITE_PLAN_MANIFEST_INVALID', 'Manifest must contain every required artifact exactly once and no extras.', 'approved_pipeline_manifest.artifacts'));
+  }
+  for (const key of requiredKeys) {
     const entry = entries.get(key);
     if (!entry) concerns.push(issue('WRITE_PLAN_MANIFEST_INVALID', `Manifest entry missing: ${key}.`, `approved_pipeline_manifest.artifacts.${key}`));
-    else if (entry.artifact_digest !== computeStage24Digest(outputs?.[key])) concerns.push(issue('WRITE_PLAN_MANIFEST_INVALID', `Manifest digest mismatch: ${key}.`, `approved_pipeline_manifest.artifacts.${key}.artifact_digest`));
+    else {
+      if (entry.stage_id !== artifactStageIdForProfile(key, input.pipeline_profile)) concerns.push(issue('WRITE_PLAN_MANIFEST_INVALID', `Manifest stage mismatch: ${key}.`, `approved_pipeline_manifest.artifacts.${key}.stage_id`));
+      if (entry.artifact_schema !== (outputs?.[key]?.schema ?? null)) concerns.push(issue('WRITE_PLAN_MANIFEST_INVALID', `Manifest schema mismatch: ${key}.`, `approved_pipeline_manifest.artifacts.${key}.artifact_schema`));
+      if (entry.artifact_digest !== computeStage24Digest(outputs?.[key])) concerns.push(issue('WRITE_PLAN_MANIFEST_INVALID', `Manifest digest mismatch: ${key}.`, `approved_pipeline_manifest.artifacts.${key}.artifact_digest`));
+    }
   }
   return concerns;
 }

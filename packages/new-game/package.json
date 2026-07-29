@@ -9,6 +9,7 @@
     "./stages/stage-25": "./src/stages/stage-25-party-commit/index.js",
     "./stages/stage-25/compat": "./src/stages/stage-25-party-commit/compat.js",
     "./stages/stage-24": "./src/stages/stage-24-party-db-write-plan/index.js",
+    "./stages/stage-24/internal/lower-dvina-trace-phase-1a": "./src/stages/stage-24-party-db-write-plan/code/build-lower-dvina-trace-phase-1a-plan.js",
     "./stages/stage-24/compat": "./src/stages/stage-24-party-db-write-plan/compat.js",
     "./stages/stage-22": "./src/stages/stage-22-narrator-prose/index.js",
     "./stages/stage-22/compat": "./src/stages/stage-22-narrator-prose/compat.js",

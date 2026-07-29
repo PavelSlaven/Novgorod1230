@@ -1,0 +1,534 @@
+import { deepFreeze } from '@rus/kernel';
+import { computeMaterializationEnvelopeDigest } from '@rus/contracts';
+import {
+  canonicalDigest,
+  createRandomSource,
+  deriveSeed,
+  deterministicInstanceId,
+  MATERIALIZER_VERSION,
+  RNG_VERSION
+} from './core.js';
+import {
+  assertLowerDvinaTraceBundle,
+  assertLowerDvinaTraceRequest,
+  assertLowerDvinaTraceSemanticClosure,
+  assertLowerDvinaTraceTimestamp,
+  failLowerDvinaTraceMaterialization,
+  LOWER_DVINA_TRACE_ACCEPTANCE_SEED_CONTEXT,
+  LOWER_DVINA_TRACE_DEFINITION_REVISION,
+  LOWER_DVINA_TRACE_SCENARIO_ID,
+  lowerDvinaTraceRequestIdentity
+} from './lower-dvina-trace-contract.js';
+import { assertLowerDvinaTraceSelectionClosure } from './lower-dvina-trace-selection-closure.js';
+
+export {
+  assertLowerDvinaTraceSelectionClosure,
+  LOWER_DVINA_TRACE_ACCEPTANCE_SEED_CONTEXT,
+  LOWER_DVINA_TRACE_DEFINITION_REVISION,
+  LOWER_DVINA_TRACE_SCENARIO_ID
+};
+
+const fail = failLowerDvinaTraceMaterialization;
+
+export function materializeLowerDvinaTracePartyInstance(input) {
+  assertLowerDvinaTraceRequest(input);
+  const bundle = assertLowerDvinaTraceBundle(input.scenario_bundle, input);
+  const seedContext = {
+    party_id: input.party_id,
+    scenario_id: input.scenario_id,
+    scenario_definition_revision: input.scenario_definition_revision,
+    scenario_manifest_digest: input.scenario_manifest_digest,
+    world_revision_id: input.world_revision_id,
+    world_catalog_digest: input.world_catalog_digest,
+    trigger: input.trigger,
+    occurrence: input.occurrence,
+    materializer_version: input.materializer_version,
+    rng_algorithm_id: input.rng_algorithm_id,
+    seed_context: input.seed_context
+  };
+  const seed = deriveSeed(seedContext);
+  const random = createRandomSource({ seed: seed.uint32, version: input.rng_algorithm_id });
+  const runId = `trace_ld_v1_${seed.digest.slice(0, 24)}`;
+  const choices = [];
+
+  const name = choose({
+    key: 'player_name',
+    setRef: bundle.player_profile_set.profile_set_id,
+    candidates: bundle.player_profile_set.name_candidates,
+    idOf: (value) => value.id,
+    random,
+    choices
+  });
+  const profileRef = choose({
+    key: 'player_profile',
+    setRef: bundle.player_profile_set.profile_set_id,
+    candidates: bundle.player_profile_set.profile_candidates,
+    idOf: (value) => value.id,
+    random,
+    choices
+  });
+  if (profileRef.id !== bundle.player_profile.profile_id
+    || profileRef.revision !== bundle.player_profile.revision
+    || profileRef.digest !== bundle.artifact_pins.player_profile.digest) {
+    fail('TRACE_PLAYER_PROFILE_REF_INVALID', 'Selected player profile does not resolve to the pinned approved profile.');
+  }
+
+  const approvedMotives = approved(bundle.hidden_truth_candidate_set.motive_candidates);
+  const culprit = choose({
+    key: 'hidden_truth_culprit',
+    setRef: `${bundle.hidden_truth_candidate_set.hidden_truth_candidate_set_id}:culprit`,
+    candidates: [...new Set(approvedMotives.map((value) => value.principal_ref))],
+    idOf: String,
+    random,
+    choices
+  });
+  const motive = choose({
+    key: 'hidden_truth_motive',
+    setRef: bundle.hidden_truth_candidate_set.hidden_truth_candidate_set_id,
+    candidates: approvedMotives,
+    idOf: (value) => value.motive_id,
+    random,
+    choices
+  });
+  const sequence = choose({
+    key: 'hidden_truth_sequence',
+    setRef: bundle.hidden_truth_candidate_set.hidden_truth_candidate_set_id,
+    candidates: approved(bundle.hidden_truth_candidate_set.sequence_candidates),
+    idOf: (value) => value.hidden_sequence_candidate_id,
+    random,
+    choices
+  });
+  if (sequence.motive_ref !== motive.motive_id || motive.principal_ref !== culprit) {
+    fail('HIDDEN_TRUTH_INCOMPLETE', 'Hidden sequence does not bind the selected motive.');
+  }
+
+  const participantSelections = selectParticipants(
+    bundle.participant_profile_set,
+    bundle.player_profile,
+    bundle.materialization_bindings,
+    random,
+    choices
+  );
+  const locationSelections = selectLocations(bundle.location_topology_set, random, choices);
+  const wreck = locationSelections.find((value) => value.slot_key === 'trace_ld_v1_loc_wreck_shore');
+  if (!wreck) fail('MANDATORY_SLOT_MISSING', 'The wreck-shore start location is mandatory.');
+  const accessPolicy = requiredById(
+    bundle.location_access_policies.access_policies,
+    'resolves_gap_id',
+    wreck.location.access_contract_ref.gap_id
+  );
+  const capacityContract = requiredById(
+    bundle.location_capacity_contracts.capacity_contracts,
+    'resolves_gap_id',
+    wreck.location.capacity_contract_ref.gap_id
+  );
+  const startZone = requiredById(capacityContract.zones, 'zone_id', capacityContract.decision_anchor);
+  const spatialBinding = bundle.materialization_bindings.start_spatial_binding;
+  const participatingFisher = choose({
+    key: 'audience:participating_fisher',
+    setRef: 'trace_ld_v1_audience_slot_participating_fisher',
+    candidates: bundle.knowledge_lie_memory_rules.audience_candidate_slots[0]?.candidate_participant_refs ?? [],
+    idOf: String,
+    random,
+    choices
+  });
+  assertLowerDvinaTraceSemanticClosure(bundle, {
+    motive,
+    sequence,
+    participatingFisher
+  });
+  const bodyProfiles = bundle.body_environment_profiles;
+  const body = bodyProfiles.start_profile;
+  const environmentRef = bodyProfiles.start_timestamp_specification.environment_snapshot_candidate_refs;
+  if (!Array.isArray(environmentRef) || environmentRef.length !== 1) fail('ENVIRONMENT_SNAPSHOT_INCOMPLETE', 'Exactly one approved start environment is required.');
+  const environment = requiredById(bodyProfiles.environment_profiles, 'environment_profile_id', environmentRef[0]);
+
+  const sealedSelections = buildSealedSelections(bundle, {
+    participantSelections,
+    locationSelections,
+    participatingFisher,
+    motive,
+    sequence,
+    body,
+    environment
+  });
+  assertLowerDvinaTraceSelectionClosure(
+    sealedSelections,
+    bundle.materialization_bindings.sealed_selection_inventory
+  );
+
+  const playerId = deterministicInstanceId(input.party_id, runId, 'player_character', 'player_clerk', 0);
+  const g5NodeId = deterministicInstanceId(input.party_id, runId, 'g5_node', 'trace_ld_v1_loc_wreck_shore', 0);
+  const anchorId = deterministicInstanceId(input.party_id, runId, 'g5_anchor', spatialBinding.anchor_template.template_id, 0);
+  const knifeTemplate = requiredById(bundle.item_container_set.item_templates, 'item_template_id', 'trace_ld_v1_item_mikula_knife');
+  const knifeInventoryProfile = requiredPinnedById(
+    bundle.item_inventory_profiles,
+    'id',
+    knifeTemplate.base_catalog_ref.inventory_profile_id
+  );
+  if (knifeInventoryProfile.item_template_id !== knifeTemplate.base_catalog_ref.template_id
+    || !Number.isInteger(knifeInventoryProfile.mass_grams)
+    || ![0, 1, 2].includes(knifeInventoryProfile.external_hand_cost)) {
+    fail('START_ITEM_PROFILE_INCOMPLETE', 'The pinned starter-item inventory profile is incomplete or incompatible.');
+  }
+  const knifeId = deterministicInstanceId(input.party_id, runId, 'item', knifeTemplate.item_template_id, 0);
+  const conditionBindings = body.conditions.map((state) => ({
+    state,
+    source_body_profile_ref: {
+      id: body.profile_id,
+      schema: body.schema,
+      version: body.version,
+      record_digest: canonicalDigest(body)
+    }
+  }));
+  const timestamp = structuredClone(input.resolve_timestamp({
+    specification: bodyProfiles.start_timestamp_specification,
+    calendar_profile: bundle.calendar_profile
+  }));
+  assertLowerDvinaTraceTimestamp(timestamp);
+
+  const dossier = buildPlayerDossier({
+    input,
+    playerId,
+    name,
+    profile: bundle.player_profile,
+    policy: bundle.approved_policy,
+    body,
+    knifeTemplate,
+    knifeInventoryProfile,
+    wreck,
+    projection: bundle.materialization_bindings.player_dossier_projection,
+    sourceDigest: bundle.artifact_pins.player_profile.digest
+  });
+  const policyPins = Object.values(bundle.artifact_pins)
+    .map((pin) => structuredClone(pin))
+    .sort((left, right) => left.key.localeCompare(right.key));
+  const hiddenTruth = {
+    culprit_ref: culprit,
+    motive: structuredClone(motive),
+    sequence: structuredClone(sequence),
+    digest: canonicalDigest({ culprit, motive, sequence })
+  };
+  const immediate = {
+    player: { instance_id: playerId, dossier },
+    spatial: {
+      node: {
+        instance_id: g5NodeId,
+        parent_g4_id: wreck.selected.g4_node_ref.id,
+        template_id: spatialBinding.node_template_ref,
+        slot_key: spatialBinding.node_slot_ref,
+        state: { location_profile_ref: wreck.location.location_profile_id, environment_profile_ref: environment.environment_profile_id }
+      },
+      anchor: {
+        instance_id: anchorId,
+        node_id: g5NodeId,
+        template_id: spatialBinding.anchor_template.template_id,
+        slot_key: spatialBinding.anchor_template.slot_key,
+        npc_capacity: spatialBinding.anchor_template.npc_capacity,
+        item_capacity: spatialBinding.anchor_template.item_capacity,
+        container_capacity: spatialBinding.anchor_template.container_capacity,
+        state: structuredClone(spatialBinding.anchor_template.state)
+      },
+      position: { g4_id: wreck.selected.g4_node_ref.id, g5_node_id: g5NodeId, g5_anchor_id: anchorId }
+    },
+    body: {
+      ...structuredClone(body),
+      record_digest: canonicalDigest(body),
+      condition_bindings: conditionBindings
+    },
+    items: [{
+      instance_id: knifeId,
+      template_id: knifeTemplate.item_template_id,
+      profile_id: knifeTemplate.base_catalog_ref.inventory_profile_id,
+      category_id: knifeTemplate.semantic_category,
+      quantity: 1,
+      condition_state: bundle.materialization_bindings.player_dossier_projection
+        .inventory_item_projections[knifeTemplate.item_template_id].condition_state,
+      legal_status: bundle.materialization_bindings.player_dossier_projection
+        .inventory_item_projections[knifeTemplate.item_template_id].legal_status,
+      claim_state: bundle.materialization_bindings.player_dossier_projection
+        .inventory_item_projections[knifeTemplate.item_template_id].claim_state,
+      holder_character_id: playerId,
+      physical_position: bundle.materialization_bindings.player_dossier_projection
+        .inventory_item_projections[knifeTemplate.item_template_id].physical_position,
+      owner_character_id: playerId,
+      controller_character_id: playerId,
+      state: {
+        causal_basis: knifeTemplate.causal_basis,
+        weapon_contract: structuredClone(knifeTemplate.weapon_contract),
+        inventory_profile_snapshot: structuredClone(knifeInventoryProfile),
+        source_digest: bundle.artifact_pins.item_inventory_profiles.digest
+      }
+    }],
+    containers: [],
+    timestamp,
+    environment_snapshot: structuredClone(environment)
+  };
+  const validationReport = {
+    pass: true,
+    checks: {
+      request_identity: true,
+      immutable_bundle: true,
+      hidden_truth_complete: true,
+      selections_closed: true,
+      immediate_sealed_boundary: true
+    }
+  };
+  const trace = {
+    run_id: runId,
+    idempotency_key: input.idempotency_key,
+    materializer_version: MATERIALIZER_VERSION,
+    rng_version: RNG_VERSION,
+    seed_context: seedContext,
+    seed_digest: seed.digest,
+    input_digest: canonicalDigest(lowerDvinaTraceRequestIdentity(input)),
+    world_revision_id: input.world_revision_id,
+    catalog_digest: input.domain_catalog_pin.catalog_digest,
+    scenario_manifest_digest: input.scenario_manifest_digest,
+    policy_profile_pins: policyPins,
+    policy_profile_pin_digest: canonicalDigest(policyPins),
+    choices,
+    rng_draw_count: random.drawCount
+  };
+  const result = {
+    version: 1,
+    schema: 'rus.lower_dvina_trace_party_materialization_result.v1',
+    status: 'materialized',
+    party_id: input.party_id,
+    run_id: runId,
+    request_identity: lowerDvinaTraceRequestIdentity(input),
+    immediate,
+    hidden_truth: hiddenTruth,
+    sealed_selections: sealedSelections,
+    policy_profile_pins: policyPins,
+    validation_report: validationReport,
+    trace
+  };
+  trace.result_digest = computeMaterializationEnvelopeDigest(result);
+  return deepFreeze(result);
+}
+
+function selectParticipants(set, playerProfile, bindings, random, choices) {
+  const results = [];
+  if (!Array.isArray(set.candidate_sets) || !Array.isArray(set.profiles) || !Array.isArray(set.participant_slots)) {
+    fail('PARTICIPANT_SELECTION_INCOMPLETE', 'Exact participant data is required.');
+  }
+  for (const candidateSet of [...set.candidate_sets].sort((left, right) => left.candidate_set_id.localeCompare(right.candidate_set_id))) {
+    const slots = Array.isArray(candidateSet.slots)
+      ? exactArray(candidateSet.slots, `participant set ${candidateSet.candidate_set_id}.slots`)
+      : [requiredText(candidateSet.slot, `participant set ${candidateSet.candidate_set_id}.slot`)];
+    if (!slots.every(Boolean)) fail('MANDATORY_SLOT_MISSING', `Participant set ${candidateSet.candidate_set_id} has no exact slot.`);
+    for (const slot of slots) {
+      const selected = choose({ key: `participant:${slot}`, setRef: candidateSet.candidate_set_id, candidates: candidateSet.candidates, idOf: (value) => value.profile_id, random, choices });
+      const profileRecords = [...set.profiles, playerProfile].filter((value) => (
+        value?.profile_id === selected.profile_id && value?.revision === selected.revision
+      ));
+      if (profileRecords.length !== 1) fail('PARTICIPANT_PROFILE_REF_INVALID', `Participant profile ${selected.profile_id} is not exact.`);
+      const profile = profileRecords[0];
+      if (candidateSet.slot && profile.slot && profile.slot !== candidateSet.slot && slot !== 'player_clerk') {
+        fail('PARTICIPANT_PROFILE_REF_INVALID', `Participant profile ${selected.profile_id} is incompatible with slot ${slot}.`);
+      }
+      const materializationDepth = bindings.participant_materialization_depths?.[slot];
+      if (!materializationDepth
+        || (slot === 'player_clerk' && materializationDepth !== 'immediate_player')
+        || (slot !== 'player_clerk' && profile.initial_materialization_depth !== materializationDepth)) {
+        fail('PARTICIPANT_MATERIALIZATION_DEPTH_MISSING', `Participant slot ${slot} has no approved depth.`);
+      }
+      results.push({
+        selected_id: slot,
+        slot_key: slot,
+        selected_profile: structuredClone(selected),
+        candidate_set_ref: candidateSet.candidate_set_id,
+        candidate_record_digest: canonicalDigest(selected),
+        record_digest: canonicalDigest(profile),
+        causal_binding: slot === 'player_clerk'
+          ? requiredText(profile.approval?.basis, 'player profile approval.basis')
+          : requiredText(profile.causal_basis, `participant profile ${profile.profile_id}.causal_basis`),
+        materialization_rule: materializationDepth
+      });
+    }
+  }
+  const expected = new Set(set.participant_slots);
+  if (results.length !== expected.size || results.some((item) => !expected.has(item.slot_key))) fail('PARTICIPANT_SELECTION_INCOMPLETE', 'Participant slots must resolve exactly.');
+  return results;
+}
+
+function selectLocations(set, random, choices) {
+  const profiles = exactArray(set.location_profiles, 'location_topology_set.location_profiles');
+  return [...profiles].sort((left, right) => left.location_profile_id.localeCompare(right.location_profile_id)).map((location) => ({
+    selected_id: location.location_profile_id,
+    slot_key: location.location_profile_id,
+    location: structuredClone(location),
+    selected: structuredClone(choose({
+      key: `location:${location.location_profile_id}`,
+      setRef: location.spatial_candidate_set.candidate_set_id,
+      candidates: location.spatial_candidate_set.candidates,
+      idOf: (value) => value.g4_node_ref.id,
+      random,
+      choices
+    })),
+    record_digest: canonicalDigest(location)
+  }));
+}
+
+function buildSealedSelections(bundle, selected) {
+  const lateLocations = selected.locationSelections.filter((value) => value.slot_key !== 'trace_ld_v1_loc_wreck_shore');
+  const groups = [
+    ['participants', selected.participantSelections.filter((value) => value.slot_key !== 'player_clerk')],
+    ['locations', lateLocations],
+    ['items', bundle.item_container_set.item_templates.filter((value) => value.item_template_id !== 'trace_ld_v1_item_mikula_knife').map((record) => sealedRef(record.item_template_id, record))],
+    ['containers', bundle.item_container_set.container_templates.map((record) => sealedRef(record.container_template_id, record))],
+    ['clue_placements', bundle.item_container_set.placement_slots.map((record) => ({ ...sealedRef(record.placement_slot_id, record), causal_binding: record.location_ref }))],
+    ['evidence', bundle.clue_evidence_graph_set.evidence_records.map((record) => ({
+      ...sealedRef(record.evidence_id, record),
+      discovery_slot_ref: record.discovery_slot_ref,
+      causal_binding: {
+        location_refs: structuredClone(record.allowed_location_refs),
+        item_refs: structuredClone(record.allowed_item_refs)
+      }
+    }))],
+    ['knowledge', bundle.knowledge_lie_memory_rules.participant_knowledge_bindings.map((record) => ({ ...sealedRef(record.participant_ref, record), source_ref: record.knowledge_scope_ref }))],
+    ['lies_and_statements', bundle.knowledge_lie_memory_rules.statement_templates.map((record) => sealedRef(record.statement_template_id, record))],
+    ['memories', bundle.knowledge_lie_memory_rules.perception_source_templates.map((record) => sealedRef(record.perception_template_id, record))],
+    ['activities', exactRecordRefs(bundle.activity_check_consequence_profiles.activity_profiles, 'profile_id', 'activity profile')],
+    ['checks', exactRecordRefs(bundle.activity_check_consequence_profiles.check_profiles, 'check_id', 'check profile')],
+    ['consequences', exactRecordRefs(bundle.activity_check_consequence_profiles.consequence_profiles, 'consequence_id', 'consequence profile')],
+    ['npc_decisions', exactRecordRefs(bundle.npc_decision_schedule_policies.decision_policies, 'policy_id', 'NPC decision policy')],
+    ['npc_schedules', exactRecordRefs(bundle.npc_decision_schedule_policies.schedule_policies, 'schedule_policy_id', 'NPC schedule policy')],
+    ['movement', exactRecordRefs(bundle.movement_bindings.route_bindings, 'route_id', 'movement binding')],
+    ['body', [sealedRef(selected.body.profile_id, selected.body)]],
+    ['environment', [sealedRef(selected.environment.environment_profile_id, selected.environment)]],
+    ['promise', [sealedRef(requiredText(bundle.promise_policy.policy_id, 'promise_policy.policy_id'), bundle.promise_policy)]],
+    ['completion', [sealedRef(bundle.completion_rules.set_id, bundle.completion_rules)]],
+    ['epilogue', [sealedRef(bundle.epilogue_rules.set_id, bundle.epilogue_rules)]],
+    ['audience', [sealedRef(selected.participatingFisher, bundle.knowledge_lie_memory_rules.audience_candidate_slots[0])]]
+  ];
+  return groups.map(([selection_kind, records]) => ({
+    selection_kind,
+    source_pin: structuredClone(sourcePinForGroup(bundle, selection_kind)),
+    records: structuredClone(records).sort((left, right) => sealedRecordId(left).localeCompare(sealedRecordId(right)))
+  }));
+}
+
+function sealedRecordId(value) {
+  return requiredText(value?.selected_id, 'sealed selection selected_id');
+}
+
+function sourcePinForGroup(bundle, kind) {
+  const key = kind === 'participants' ? 'participant_profile_set'
+    : kind === 'locations' ? 'location_topology_set'
+      : ['items', 'containers', 'clue_placements'].includes(kind) ? 'item_container_set'
+        : kind === 'evidence' ? 'clue_evidence_graph_set'
+          : ['knowledge', 'lies_and_statements', 'memories', 'audience'].includes(kind) ? 'knowledge_lie_memory_rules'
+            : ['activities', 'checks', 'consequences'].includes(kind) ? 'activity_check_consequence_profiles'
+              : ['npc_decisions', 'npc_schedules'].includes(kind) ? 'npc_decision_schedule_policies'
+                : kind === 'movement' ? 'movement_bindings'
+                  : ['body', 'environment'].includes(kind) ? 'body_environment_profiles'
+                  : kind === 'promise' ? 'promise_policy'
+                    : kind === 'completion' ? 'completion_rules'
+                      : 'epilogue_rules';
+  return bundle.artifact_pins[key];
+}
+
+function buildPlayerDossier({ input, playerId, name, profile, policy, body, knifeTemplate, knifeInventoryProfile, wreck, projection, sourceDigest }) {
+  const itemProjection = projection.inventory_item_projections[knifeTemplate.item_template_id];
+  return {
+    schema: 'player_character_dossier',
+    version: 1,
+    request_id: input.idempotency_key,
+    generation_status: 'generated',
+    identity: { character_id: playerId, name: name.display_name, name_candidate_id: name.id },
+    social_status: { social_role_id: profile.role.id, occupation_id: profile.occupation_id, display_name: profile.role.display_name },
+    origin: { current_region_id: wreck.location.region_ref, year: projection.historical_year, biography_basis: profile.approval.basis },
+    body: { health: body.values.health, satiety: body.values.satiety, vigor: body.values.energy, active_states: body.conditions.map((state) => ({ state, cause: body.profile_id })) },
+    attributes: structuredClone(profile.attributes),
+    skills: structuredClone(profile.skills),
+    knowledge: structuredClone(projection.knowledge),
+    goals: structuredClone(projection.goals),
+    inventory: {
+      items: [{
+        item_profile_candidate_id: knifeTemplate.item_template_id,
+        owner: knifeTemplate.weapon_contract.owner_ref,
+        holder: knifeTemplate.weapon_contract.holder_ref,
+        access: knifeTemplate.weapon_contract.accessibility,
+        carry_location: itemProjection.physical_position,
+        weight: { grams: knifeInventoryProfile.mass_grams, source_profile_id: knifeInventoryProfile.id },
+        condition: itemProjection.condition_state,
+        risk: structuredClone(itemProjection.risk),
+        use: itemProjection.use
+      }],
+      total_weight: { grams: knifeInventoryProfile.mass_grams },
+      load_category: knifeInventoryProfile.carry_form,
+      occupied_hands: knifeInventoryProfile.external_hand_cost
+    },
+    property_and_access: structuredClone(projection.property_and_access),
+    relations: structuredClone(projection.relations),
+    start_place_connection: structuredClone(projection.start_place_connection),
+    selected_candidate_refs: {
+      social_role_id: profile.role.id,
+      occupation_id: profile.occupation_id,
+      name_candidate_id: name.id,
+      trace_definition_ref: {
+        id: 'lower_dvina_trace_v1',
+        revision: 1,
+        digest: input.scenario_bundle.artifact_pins.player_profile_definition.digest
+      },
+      trace_player_profile_ref: structuredClone(policy.profile_ref)
+    },
+    source_trace: [{ source_id: profile.profile_id, digest: sourceDigest }],
+    audit_self_check: structuredClone(projection.audit_self_check)
+  };
+}
+
+function choose({ key, setRef, candidates, idOf, random, choices }) {
+  if (!setRef || !Array.isArray(candidates) || candidates.length === 0) fail('REQUIRED_CANDIDATE_SET_EMPTY', `Candidate set ${String(setRef)} is empty.`);
+  const sorted = candidates.map((value) => ({ id: idOf(value), value })).sort((left, right) => String(left.id).localeCompare(String(right.id)));
+  if (sorted.some((entry) => !entry.id) || new Set(sorted.map((entry) => entry.id)).size !== sorted.length) fail('CANDIDATE_SET_INVALID', `Candidate set ${setRef} has missing or duplicate stable IDs.`);
+  const candidateIds = sorted.map((entry) => entry.id);
+  const digest = canonicalDigest(candidateIds);
+  const draw = random.nextUint32();
+  const selected = sorted[draw % sorted.length];
+  choices.push({
+    choice_ordinal: choices.length,
+    choice_key: key,
+    slot_key: key,
+    candidate_set_ref: setRef,
+    candidate_digest: digest,
+    candidate_set_digest: digest,
+    candidate_ids: candidateIds,
+    selected_id: selected.id,
+    selected_weight: 1,
+    rng_draw: draw,
+    rng_counter: random.drawCount,
+    rejection_summary: { rejected_count: 0, missing_count: 0, unapproved_count: 0, wrong_domain_count: 0 }
+  });
+  return selected.value;
+}
+
+function approved(values) {
+  return (values ?? []).filter((value) => value?.status === 'approved');
+}
+
+function exactRecordRefs(values, key, label) {
+  return exactArray(values, label).map((value) => sealedRef(requiredText(value?.[key], `${label}.${key}`), value));
+}
+
+function sealedRef(selectedId, record) {
+  return { selected_id: selectedId, record_digest: canonicalDigest(record) };
+}
+
+function requiredById(values, key, id) {
+  const matches = (values ?? []).filter((value) => value?.[key] === id && (value.status == null || value.status === 'approved'));
+  if (matches.length !== 1) fail('MANDATORY_RECORD_INVALID', `Required record ${id} must resolve exactly once.`);
+  return matches[0];
+}
+
+function requiredPinnedById(values, key, id) {
+  const matches = (values ?? []).filter((value) => value?.[key] === id);
+  if (matches.length !== 1) fail('MANDATORY_RECORD_INVALID', `Required pinned record ${id} must resolve exactly once.`);
+  return matches[0];
+}
+
+function exactArray(value, label) { if (!Array.isArray(value) || value.length === 0) fail('MANDATORY_RECORD_INVALID', `${label} must be a non-empty exact array.`); return value; }
+
+function requiredText(value, label) { if (typeof value !== 'string' || !value) fail('MANDATORY_RECORD_INVALID', `${label} is required.`); return value; }

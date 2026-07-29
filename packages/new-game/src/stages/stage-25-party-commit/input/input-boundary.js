@@ -88,7 +88,11 @@ export function validateStage25CommitInput(input = {}) {
   if (!text(input.request_id)) concerns.push(issue('STAGE25_REQUEST_ID_MISSING', 'request_id is required.', 'request_id'));
   concerns.push(...validatePartyCreationContext(input.party_creation_context, input.request_id));
   concerns.push(...validateStage24ApprovalBinding(input));
-  concerns.push(...validateManifestStructure(input.approved_pipeline_manifest, input.request_id));
+  concerns.push(...validateManifestStructure(
+    input.approved_pipeline_manifest,
+    input.request_id,
+    input.party_creation_context?.commit_mode
+  ));
   for (const item of validatePartyDatabaseSchemaSnapshot(input.party_database_schema)) {
     concerns.push(issue('STAGE25_DB_SCHEMA_INVALID', item.message, item.path ?? 'party_database_schema'));
   }
@@ -111,6 +115,9 @@ function validatePartyCreationContext(context, requestId) {
     if (!text(context[key])) concerns.push(issue('STAGE25_PARTY_CONTEXT_INVALID', `party_creation_context.${key} is required.`, `party_creation_context.${key}`));
   }
   if (context.schema_version !== 'party_runtime_v2') concerns.push(issue('STAGE25_PARTY_CONTEXT_INVALID', 'New parties require party_runtime_v2; legacy v1 is unsupported.', 'party_creation_context.schema_version'));
+  if (context.commit_mode != null && !['player_start', 'internal_materialization'].includes(context.commit_mode)) {
+    concerns.push(issue('STAGE25_PARTY_CONTEXT_INVALID', 'party_creation_context.commit_mode is unsupported.', 'party_creation_context.commit_mode'));
+  }
   for (const key of ['world_revision_id', 'world_catalog_digest', 'materializer_version', 'rng_version', 'command_catalog_digest', 'profile_bundle_digest']) {
     if (!text(context.version_pins?.[key])) concerns.push(issue('STAGE25_PARTY_CONTEXT_INVALID', `party_creation_context.version_pins.${key} is required.`, `party_creation_context.version_pins.${key}`));
   }
@@ -134,7 +141,7 @@ function validateStage24ApprovalBinding(input) {
   return concerns;
 }
 
-function validateManifestStructure(manifest, requestId) {
+function validateManifestStructure(manifest, requestId, commitMode) {
   const concerns = [];
   if (!isObject(manifest) || manifest.version !== 1 || manifest.schema !== STAGE24_MANIFEST_SCHEMA || manifest.request_id !== requestId) return [issue('STAGE25_MANIFEST_INVALID', 'Approved pipeline manifest schema/version/request_id is invalid.', 'approved_pipeline_manifest')];
   const entries = array(manifest.artifacts);
@@ -151,7 +158,15 @@ function validateManifestStructure(manifest, requestId) {
     byKey.set(entry.artifact_key, entry);
     stageKeys.add(stageKey);
   }
-  for (const key of REQUIRED_MANIFEST_ARTIFACT_KEYS) if (!byKey.has(key)) concerns.push(issue('STAGE25_MANIFEST_INVALID', `Manifest artifact missing: ${key}.`, 'approved_pipeline_manifest.artifacts'));
-  for (const key of REQUIRED_AUDIT_ARTIFACT_KEYS) if (!byKey.has(key)) concerns.push(issue('STAGE25_AUDIT_CHAIN_INCOMPLETE', `Audit-chain artifact missing: ${key}.`, 'approved_pipeline_manifest.artifacts'));
+  if (manifest.manifest_kind === 'lower_dvina_trace_phase_1a_internal_materialization') {
+    if (commitMode !== 'internal_materialization') concerns.push(issue('STAGE25_MANIFEST_INVALID', 'Internal materialization manifest requires internal_materialization commit mode.', 'approved_pipeline_manifest.manifest_kind'));
+    for (const key of ['scenario_definition', 'materialization_result', 'player_character_audit', 'sealed_selection_closure']) {
+      if (!byKey.has(key)) concerns.push(issue('STAGE25_MANIFEST_INVALID', `Internal materialization artifact missing: ${key}.`, 'approved_pipeline_manifest.artifacts'));
+    }
+  } else {
+    if (commitMode === 'internal_materialization') concerns.push(issue('STAGE25_MANIFEST_INVALID', 'Internal materialization commit mode requires its exact manifest kind.', 'approved_pipeline_manifest.manifest_kind'));
+    for (const key of REQUIRED_MANIFEST_ARTIFACT_KEYS) if (!byKey.has(key)) concerns.push(issue('STAGE25_MANIFEST_INVALID', `Manifest artifact missing: ${key}.`, 'approved_pipeline_manifest.artifacts'));
+    for (const key of REQUIRED_AUDIT_ARTIFACT_KEYS) if (!byKey.has(key)) concerns.push(issue('STAGE25_AUDIT_CHAIN_INCOMPLETE', `Audit-chain artifact missing: ${key}.`, 'approved_pipeline_manifest.artifacts'));
+  }
   return concerns;
 }

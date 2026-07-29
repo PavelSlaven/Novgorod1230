@@ -61,13 +61,34 @@ async function commit(pool, input) {
   const plan = input.physical_write_plan;
   try {
     await client.query('BEGIN');
-    const batchResults = await executePhysicalWritePlan(client, plan);
     const key = input.party_creation_context.idempotency_key;
-    await client.query(`INSERT INTO party_runtime.commit_idempotency
+    const claim = await client.query(`INSERT INTO party_runtime.commit_idempotency
       (idempotency_key, request_id, payload_hash, physical_plan_digest, status, updated_at)
-      VALUES ($1, $2, $3, $4, 'transaction_committed', NOW())
-      ON CONFLICT (idempotency_key) DO UPDATE SET status = EXCLUDED.status, updated_at = NOW()`,
+      VALUES ($1, $2, $3, $4, 'pending', NOW())
+      ON CONFLICT (idempotency_key) DO NOTHING
+      RETURNING idempotency_key`,
       [key, input.request_id, input.party_creation_context.payload_hash, input.physical_write_plan_digest]);
+    if (claim.rowCount !== 1) {
+      const existing = (await client.query(
+        `SELECT payload_hash,physical_plan_digest,status
+           FROM party_runtime.commit_idempotency
+          WHERE idempotency_key=$1
+          FOR UPDATE`,
+        [key]
+      )).rows[0];
+      const conflict = existing?.payload_hash !== input.party_creation_context.payload_hash
+        || existing?.physical_plan_digest !== input.physical_write_plan_digest;
+      const error = new Error(conflict ? 'Idempotency key is bound to another payload.' : 'Idempotent transaction already exists.');
+      error.code = conflict ? 'STAGE25_IDEMPOTENCY_CONFLICT' : 'STAGE25_IDEMPOTENCY_ALREADY_COMMITTED';
+      throw error;
+    }
+    const batchResults = await executePhysicalWritePlan(client, plan);
+    await client.query(
+      `UPDATE party_runtime.commit_idempotency
+          SET status='transaction_committed',updated_at=NOW()
+        WHERE idempotency_key=$1 AND payload_hash=$2 AND physical_plan_digest=$3`,
+      [key, input.party_creation_context.payload_hash, input.physical_write_plan_digest]
+    );
     await client.query('COMMIT');
     return {
       version: 1, schema: 'party_transaction_result', request_id: input.request_id,
@@ -87,7 +108,7 @@ async function commit(pool, input) {
       transaction_id: plan.transaction.transaction_id,
       physical_write_plan_digest: input.physical_write_plan_digest,
       pass: false, commit_status: 'rolled_back', executed_batches: [], batch_results: [], postcondition_checks: [],
-      rollback: { attempted: true, completed: true, reason: error.message }
+      rollback: { attempted: true, completed: true, reason: error.message, reason_code: error.code ?? 'POSTGRES_TRANSACTION_FAILED' }
     };
   } finally { client.release(); }
 }
@@ -95,8 +116,13 @@ async function commit(pool, input) {
 async function recordCommittedResult(pool, stage25Result) {
   const key = stage25Result?.idempotency_key ?? stage25Result?.idempotency?.idempotency_key ?? stage25Result?.party_creation_context?.idempotency_key;
   if (!key) return false;
-  await pool.query(`UPDATE party_runtime.commit_idempotency SET status = 'committed', committed_result = $2::jsonb, updated_at = NOW() WHERE idempotency_key = $1`, [key, JSON.stringify(stage25Result)]);
-  return true;
+  const updated = await pool.query(
+    `UPDATE party_runtime.commit_idempotency
+        SET status='committed',committed_result=$2::jsonb,updated_at=NOW()
+      WHERE idempotency_key=$1 AND payload_hash=$3 AND physical_plan_digest=$4`,
+    [key, JSON.stringify(stage25Result), stage25Result.payload_hash, stage25Result.physical_plan_digest]
+  );
+  return updated.rowCount === 1;
 }
 
 function result(input, fields) {

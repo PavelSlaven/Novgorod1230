@@ -4,6 +4,7 @@
   "type": "module",
   "exports": {
     ".": "./src/index.js",
+    "./internal/lower-dvina-trace-phase-1a": "./src/lower-dvina-trace-phase-1a-repository.js",
     "./spatial-v3": "./src/spatial-v3-ports.js",
     "./spatial-v3-domain-integration": "./src/spatial-v3-domain-integration.js",
     "./stage-25": "./src/stage-25/index.js"

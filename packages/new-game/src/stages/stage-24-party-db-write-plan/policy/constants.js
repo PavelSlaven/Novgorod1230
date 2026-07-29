@@ -49,6 +49,15 @@ export const REQUIRED_ARTIFACT_KEYS = Object.freeze([
   'narrator_prose_audit_approval'
 ]);
 
+export const STAGE24_STANDARD_PIPELINE_PROFILE = 'standard_new_game';
+export const LOWER_DVINA_TRACE_PHASE_1A_PIPELINE_PROFILE = 'lower_dvina_trace_phase_1a_internal_materialization';
+export const LOWER_DVINA_TRACE_PHASE_1A_ARTIFACT_KEYS = Object.freeze([
+  'scenario_definition',
+  'materialization_result',
+  'player_character_audit',
+  'sealed_selection_closure'
+]);
+
 export const ARTIFACT_STAGE_IDS = Object.freeze({
   historical_frame: 3, weather_state: 17, selected_start_node: 9, start_place_audit: 10,
   player_character: 11, player_character_audit: 12, g5_scene_graph: 13, g5_scene_audit: 14,
@@ -59,6 +68,29 @@ export const ARTIFACT_STAGE_IDS = Object.freeze({
   visible_context_audit_approval: 21, narrator_starting_prose: 22,
   narrator_prose_audit_approval: 23
 });
+
+export const LOWER_DVINA_TRACE_PHASE_1A_ARTIFACT_STAGE_IDS = Object.freeze({
+  scenario_definition: 0,
+  materialization_result: 1,
+  player_character_audit: 12,
+  sealed_selection_closure: 13
+});
+
+export function isLowerDvinaTracePhase1AInput(input) {
+  return input?.pipeline_profile === LOWER_DVINA_TRACE_PHASE_1A_PIPELINE_PROFILE;
+}
+
+export function requiredArtifactKeysForInput(input) {
+  return isLowerDvinaTracePhase1AInput(input)
+    ? LOWER_DVINA_TRACE_PHASE_1A_ARTIFACT_KEYS
+    : REQUIRED_ARTIFACT_KEYS;
+}
+
+export function artifactStageIdForProfile(key, pipelineProfile) {
+  return pipelineProfile === LOWER_DVINA_TRACE_PHASE_1A_PIPELINE_PROFILE
+    ? LOWER_DVINA_TRACE_PHASE_1A_ARTIFACT_STAGE_IDS[key]
+    : ARTIFACT_STAGE_IDS[key];
+}
 
 export const REQUIRED_AUDIT_CHECKS = Object.freeze([
   'plan_schema','transaction_atomicity','database_schema_compliance','write_order','dependency_graph',

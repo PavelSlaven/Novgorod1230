@@ -703,9 +703,14 @@ for (const appSpec of [
     name: 'game-server',
     required: ['MODULE.md', 'package.json', 'src/index.js', 'src/composition/root.js', 'src/http/handler.js', 'test/game-server.test.js'],
     approved: new Set([
-      '@rus/checks-rng', '@rus/contracts', '@rus/contracts/spatial-v3/registry', '@rus/knowledge-source', '@rus/llm-runtime', '@rus/new-game', '@rus/narration',
+      '@rus/checks-rng', '@rus/contracts', '@rus/contracts/spatial-v3/registry', '@rus/knowledge-source', '@rus/llm-runtime',
+      '@rus/materialization', '@rus/materialization/internal/lower-dvina-trace-phase-1a', '@rus/new-game',
+      '@rus/new-game/stages/stage-11', '@rus/new-game/stages/stage-12',
+      '@rus/new-game/stages/stage-24',
+      '@rus/new-game/stages/stage-24/internal/lower-dvina-trace-phase-1a', '@rus/new-game/stages/stage-25', '@rus/narration',
       '@rus/party-store', '@rus/presentation', '@rus/presentation/opening-delivery', '@rus/turn', '@rus/turn/spatial-v3-target-composition',
-      '@rus/runtime-catalog', '@rus/runtime-catalog/runtime-contract', '@rus/visibility-knowledge-memory', '@rus/world-base',
+      '@rus/runtime-catalog', '@rus/runtime-catalog/runtime-contract', '@rus/time-events-history/calendar',
+      '@rus/visibility-knowledge-memory', '@rus/world-base',
       '@rus/npc-runtime', 'pg'
     ])
   },

@@ -185,7 +185,8 @@ export function validateBodyStates(output) {
 export function validateAttributes(output) {
   const concerns = [];
   const attributes = output.attributes ?? {};
-  const values = extractNumericNamedValues(attributes, ['strength', 'dexterity', 'endurance', 'reason', 'attention', 'influence', 'сила', 'ловкость', 'выносливость', 'разум', 'внимание', 'влияние']);
+  const values = extractNumericNamedValues(attributes, ['strength', 'dexterity', 'endurance', 'reason', 'attention', 'influence', 'сила', 'ловкость', 'выносливость', 'разум', 'внимание', 'влияние'])
+    .filter((item) => !item.path.endsWith('.bonus'));
   for (const item of values) {
     if (!inRange(item.value, 3, 18)) {
       concerns.push(concern('PLAYER_CHARACTER_ATTRIBUTE_OUT_OF_RANGE', `${item.path} must be in 3..18.`, { field: item.path }));

@@ -24,6 +24,7 @@ export {
 export { buildPartyDbWritePlanCodePrecheck } from './precheck/build-precheck.js';
 export { validatePartyDbWritePlan } from './validation/plan-validation.js';
 export { validatePartyDbWritePlanAudit, validateStage24RepairRoute } from './audit/validation.js';
+export { auditPartyDbWritePlanByCode } from './audit/code-auditor.js';
 export { runStage24PartyDbWritePlanBlock } from './orchestration/run-stage-24.js';
 export { buildPartyRuntimeV2WritePlan } from './code/build-party-runtime-v2-plan.js';
 export {

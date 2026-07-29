@@ -11,7 +11,8 @@ const PARTY_RUNTIME_V2_TARGETS = new Set([
   'party_npc_relations', 'party_npc_knowledge', 'party_npc_schedules', 'party_containers', 'party_items', 'party_item_placements',
   'party_ownership', 'party_decision_requests', 'party_decision_options', 'party_decision_results', 'party_change_sets',
   'party_autonomous_updates', 'party_visible_read_models', 'party_catalog_pins',
-  'party_materialization_run_catalog_pins'
+  'party_materialization_run_catalog_pins', 'party_v3_change_sets', 'party_actor_profile_bindings',
+  'party_actor_body_states', 'party_actor_active_conditions', 'party_clocks'
 ]);
 
 const SPEC_STATUS_TO_DDL_STATUS = Object.freeze({
@@ -177,7 +178,8 @@ export const PARTY_SPEC_TARGET_MAPPINGS = Object.freeze({
     'party_npcs', 'party_npc_traits', 'party_npc_relations', 'party_npc_knowledge', 'party_npc_schedules', 'party_containers',
     'party_items', 'party_item_placements', 'party_ownership', 'party_decision_requests', 'party_decision_options',
     'party_decision_results', 'party_change_sets', 'party_autonomous_updates', 'party_visible_read_models',
-    'party_catalog_pins', 'party_materialization_run_catalog_pins'
+    'party_catalog_pins', 'party_materialization_run_catalog_pins', 'party_v3_change_sets',
+    'party_actor_profile_bindings', 'party_actor_body_states', 'party_actor_active_conditions', 'party_clocks'
   ].map((table) => [table, { actualTargetTable: table, storage: 'party_runtime_v2' }]))
 });
 

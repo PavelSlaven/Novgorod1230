@@ -7,7 +7,11 @@ export function validateStage25Result(result = {}) {
   if (!isObject(result) || result.version !== 1 || result.schema !== STAGE25_RESULT_SCHEMA) return [issue('STAGE25_RESULT_INVALID', `Expected ${STAGE25_RESULT_SCHEMA} version 1.`, 'stage25_result')];
   if (result.pass !== true || result.commit_status !== 'committed') concerns.push(issue('STAGE25_RESULT_INVALID', 'Successful Stage 25 result must be committed.', 'stage25_result.commit_status'));
   if (result.transaction_result?.commit_status !== 'committed' || result.postcommit_validation?.pass !== true) concerns.push(issue('STAGE25_RESULT_INVALID', 'Transaction and postcommit validation must pass.', 'stage25_result'));
-  for (const key of ['can_start_stage_26', 'can_show_player_output', 'can_accept_player_input']) if (result.handoff_permission?.[key] !== true) concerns.push(issue('STAGE25_RESULT_INVALID', `handoff_permission.${key} must be true.`, `stage25_result.handoff_permission.${key}`));
+  const internal = result.commit_mode === 'internal_materialization';
+  for (const key of ['can_start_stage_26', 'can_show_player_output', 'can_accept_player_input']) {
+    const expected = !internal;
+    if (result.handoff_permission?.[key] !== expected) concerns.push(issue('STAGE25_RESULT_INVALID', `handoff_permission.${key} must be ${String(expected)}.`, `stage25_result.handoff_permission.${key}`));
+  }
   if (result.physical_plan_digest !== result.transaction_result?.physical_write_plan_digest || result.physical_plan_digest !== result.postcommit_validation?.physical_write_plan_digest) concerns.push(issue('STAGE25_RESULT_DIGEST_MISMATCH', 'Stage 25 physical plan digest chain mismatch.', 'stage25_result.physical_plan_digest'));
   if (result.postcommit_state_digest !== computeStage25Digest(result.postcommit_state)) concerns.push(issue('STAGE25_RESULT_DIGEST_MISMATCH', 'Stage 25 postcommit state digest mismatch.', 'stage25_result.postcommit_state_digest'));
   if (result.party_start_committed_digest !== computeStage25Digest(result.party_start_committed)) concerns.push(issue('STAGE25_RESULT_DIGEST_MISMATCH', 'Stage 25 committed-state digest mismatch.', 'stage25_result.party_start_committed_digest'));
@@ -61,6 +65,7 @@ export function buildStage25Success({ input, preflight, dryRunResult, gateResult
     transaction_id: postcommitState.transaction_id,
     idempotency_key: input.party_creation_context.idempotency_key,
     payload_hash: input.party_creation_context.payload_hash,
+    commit_mode: input.party_creation_context.commit_mode ?? 'player_start',
     logical_plan_digest: preflight.digests.logical_plan_digest,
     physical_plan_digest: preflight.digests.physical_plan_digest,
     dry_run_result_digest: computeStage25Digest(dryRunResult),
@@ -77,11 +82,9 @@ export function buildStage25Success({ input, preflight, dryRunResult, gateResult
     postcommit_validation: safeClone(postcommitValidation),
     party_start_committed: partyStartCommitted,
     party_public_state: safeClone(committedPublicReadModel),
-    handoff_permission: {
-      can_start_stage_26: true,
-      can_show_player_output: true,
-      can_accept_player_input: true
-    }
+    handoff_permission: input.party_creation_context.commit_mode === 'internal_materialization'
+      ? { can_start_stage_26: false, can_show_player_output: false, can_accept_player_input: false }
+      : { can_start_stage_26: true, can_show_player_output: true, can_accept_player_input: true }
   };
   return deepFreeze(result);
 }
@@ -152,4 +155,3 @@ export function buildStage25Failure({
     }
   };
 }
-

@@ -1,6 +1,7 @@
 import {
   ALLOWED_PLAN_KEYS,
   HIDDEN_FIELD_PATTERN,
+  isLowerDvinaTracePhase1AInput,
   PLAYER_OUTPUT_FIELD_PATTERN,
   PUBLIC_TABLE_PATTERN,
   STAGE24_PLAN_SCHEMA,
@@ -166,6 +167,17 @@ function validateApprovedReferences(plan, input) {
 
 function validateKnowledgeProjection(plan, input) {
   const concerns = [];
+  if (isLowerDvinaTracePhase1AInput(input)) {
+    const actual = plan.knowledge_projection_validation;
+    if (!isObject(actual)
+      || canonicalJson(actual.expected_counts) !== canonicalJson({})
+      || canonicalJson(actual.expected_record_keys) !== canonicalJson([])
+      || canonicalJson(actual.planned_counts) !== canonicalJson({})
+      || canonicalJson(actual.planned_record_keys) !== canonicalJson([])) {
+      return [issue('WRITE_PLAN_KNOWLEDGE_PROJECTION_INCOMPLETE', 'Internal Phase 1A must preserve an exact empty knowledge projection.', 'knowledge_projection_validation')];
+    }
+    return concerns;
+  }
   const expected = input.approved_pipeline_outputs?.character_knowledge_write_projection?.projection_manifest;
   const actual = plan.knowledge_projection_validation;
   if (!isObject(expected) || !isObject(actual)) return [issue('WRITE_PLAN_KNOWLEDGE_PROJECTION_INCOMPLETE', 'knowledge projection validation is required.', 'knowledge_projection_validation')];
@@ -220,7 +232,10 @@ function validateAuditSnapshots(plan, input) {
   const snapshots = array(plan.audit_snapshots);
   if (snapshots.length === 0) return [issue('WRITE_PLAN_AUDIT_SNAPSHOT_INCOMPLETE', 'audit_snapshots must be non-empty.', 'audit_snapshots')];
   const stages = new Set(snapshots.map((item) => Number(item?.stage_id)).filter(Number.isFinite));
-  for (const stageId of [10, 12, 14, 15, 16, 17, 18, 19, 21, 23]) if (!stages.has(stageId)) concerns.push(issue('WRITE_PLAN_AUDIT_SNAPSHOT_INCOMPLETE', `Missing audit snapshot for stage ${stageId}.`, 'audit_snapshots'));
+  const requiredStages = isLowerDvinaTracePhase1AInput(input)
+    ? [12, 13]
+    : [10, 12, 14, 15, 16, 17, 18, 19, 21, 23];
+  for (const stageId of requiredStages) if (!stages.has(stageId)) concerns.push(issue('WRITE_PLAN_AUDIT_SNAPSHOT_INCOMPLETE', `Missing audit snapshot for stage ${stageId}.`, 'audit_snapshots'));
   if (plan.source_input_digest !== input.party_db_write_plan_input_digest) concerns.push(issue('WRITE_PLAN_INPUT_BINDING_INVALID', 'Plan source input digest is stale.', 'source_input_digest'));
   return concerns;
 }
@@ -241,4 +256,3 @@ function validateSelfAudit(plan) {
   if (!Array.isArray(plan.self_audit?.evidence) || plan.self_audit.evidence.length === 0) concerns.push(issue('WRITE_PLAN_SCHEMA_INVALID', 'self_audit.evidence must be non-empty.', 'self_audit.evidence'));
   return concerns;
 }
-

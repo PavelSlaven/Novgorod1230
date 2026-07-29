@@ -5,6 +5,12 @@ export function buildApprovedReferenceIndex(input) {
     npcIds: new Set(), itemIds: new Set(), containerIds: new Set(), anchorIds: new Set(), routeIds: new Set(), playerCharacterIds: new Set()
   };
   const outputs = input.approved_pipeline_outputs ?? {};
+  const phase1A = outputs.materialization_result;
+  if (phase1A?.schema === 'rus.lower_dvina_trace_party_materialization_result.v1') {
+    for (const item of array(phase1A.immediate?.items)) if (text(item?.instance_id)) sets.itemIds.add(item.instance_id);
+    if (text(phase1A.immediate?.spatial?.anchor?.instance_id)) sets.anchorIds.add(phase1A.immediate.spatial.anchor.instance_id);
+    if (text(phase1A.immediate?.player?.instance_id)) sets.playerCharacterIds.add(phase1A.immediate.player.instance_id);
+  }
   collectIds(outputs.initial_npc_placement, sets, 'npc');
   collectIds(outputs.initial_item_placement, sets, 'item');
   collectIds(outputs.initial_item_placement, sets, 'container');
@@ -40,7 +46,8 @@ export function referenceRule(key) {
 }
 
 export function findCurrentPosition(outputs) {
-  return outputs?.character_knowledge_map?.current_position_ref
+  return outputs?.materialization_result?.immediate?.spatial?.position
+    ?? outputs?.character_knowledge_map?.current_position_ref
     ?? outputs?.g5_scene_graph?.player_start_position
     ?? outputs?.visible_context_package?.frame?.position
     ?? outputs?.visible_context_package?.frame?.current_position
@@ -50,7 +57,9 @@ export function findCurrentPosition(outputs) {
 export function currentPositionMatchesApprovedScene(outputs) {
   const position = findCurrentPosition(outputs);
   if (!position) return false;
-  const start = outputs?.g5_scene_graph?.player_start_position ?? {};
+  const start = outputs?.materialization_result?.immediate?.spatial?.position
+    ?? outputs?.g5_scene_graph?.player_start_position
+    ?? {};
   for (const key of ['region_id', 'place_id', 'location_id', 'minilocation_id', 'anchor_id']) {
     if (position[key] != null && start[key] != null && position[key] !== start[key]) return false;
   }

@@ -3,13 +3,16 @@
     {
       "dependencies": [
         "@rus/checks-rng",
+        "@rus/contracts",
         "@rus/knowledge-source",
         "@rus/llm-runtime",
+        "@rus/materialization",
         "@rus/narration",
         "@rus/new-game",
         "@rus/party-store",
         "@rus/presentation",
         "@rus/runtime-catalog",
+        "@rus/time-events-history",
         "@rus/turn",
         "@rus/visibility-knowledge-memory",
         "@rus/world-base",

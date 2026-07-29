@@ -122,7 +122,7 @@ export function buildStage12CodePrecheck(input = {}) {
     }
   }
 
-  for (const value of extractNumericNamedValues(dossier?.attributes, [])) {
+  for (const value of extractNumericNamedValues(dossier?.attributes, []).filter((item) => !item.path.endsWith('.bonus'))) {
     if (!inRange(value.value, 3, 18)) {
       checks.attributes_valid = false;
       concerns.push(concern('PLAYER_AUDIT_ATTRIBUTE_RANGE_INVALID', 'attributes must be 3..18.', { field: value.path, severity: 'hard_block' }));

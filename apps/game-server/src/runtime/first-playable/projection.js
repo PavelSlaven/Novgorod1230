@@ -16,6 +16,7 @@ export function initialState({
   requestId,
   player,
   scenario,
+  creationIdentity,
   release,
   runtimeCatalogPin
 }) {
@@ -23,6 +24,7 @@ export function initialState({
     schema: 'lower_dvina_first_playable_state.v1',
     party_id: partyId,
     request_id: requestId,
+    creation_identity: structuredClone(creationIdentity),
     scenario_id: scenario ? SCENARIO_ID : null,
     player: {
       id: `actor:${partyId}:player`,

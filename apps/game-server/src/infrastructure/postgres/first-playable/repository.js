@@ -1,30 +1,108 @@
 import { serverError } from '../../../errors.js';
+import { isDeepStrictEqual } from 'node:util';
 import { json } from '../../../runtime/first-playable/shared.js';
+import { assertNewGameCreationIdentity, assertNewGameCreationIdentityAvailable } from './creation-identity.js';
 import { insertInitialParty } from './initial.js';
 import { loadSession, transaction } from './repository-support.js';
 
 export function createFirstPlayablePartyRepository({ partyPool } = {}) {
   if (!partyPool?.connect) throw new TypeError('partyPool is required');
   return Object.freeze({
+    async assertNewGameCreationIdentity({ partyId, creationIdentity }) {
+      await assertNewGameCreationIdentityAvailable(partyPool, {
+        partyId, creationIdentity
+      });
+    },
+
     async createInitial(input) {
       await transaction(partyPool, async (tx) => {
         const existing = await tx.query(
-          `SELECT request_id
-           FROM party_runtime.party_server_sessions
-           WHERE party_id=$1`,
+          `SELECT session.request_id,session.stage26_result,
+                  snapshot.state_payload
+             FROM party_runtime.parties party
+             JOIN party_runtime.party_state_snapshots snapshot
+               ON snapshot.party_id=party.party_id
+              AND snapshot.state_version=party.state_version
+             LEFT JOIN party_runtime.party_server_sessions session
+               ON session.party_id=party.party_id
+            WHERE party.party_id=$1
+            FOR UPDATE OF party`,
           [input.state.party_id]
         );
         if (existing.rows.length > 0) {
-          if (existing.rows[0].request_id !== input.state.request_id) {
-            throw serverError(
-              'NEW_GAME_IDEMPOTENCY_CONFLICT',
-              'New game identity conflict.',
-              { status: 409 }
-            );
-          }
+          assertNewGameCreationIdentity({
+            partyId: input.state.party_id,
+            expected: input.state.creation_identity,
+            statePayload: existing.rows[0].state_payload,
+            sessionIdentity: existing.rows[0].stage26_result
+          });
           return;
         }
         await insertInitialParty(tx, input);
+      });
+    },
+
+    async attachCommittedOpeningSession({
+      partyId,
+      requestId,
+      sessionIdentity,
+      deliveryAttempt,
+      screen
+    }) {
+      await transaction(partyPool, async (tx) => {
+        const party = await tx.query(
+          `SELECT schema_version,state_version,status
+             FROM party_runtime.parties
+            WHERE party_id=$1
+            FOR SHARE`,
+          [partyId]
+        );
+        const committed = party.rows[0];
+        if (!committed
+          || Number(committed.schema_version) !== 3
+          || Number(committed.state_version) !== 0
+          || committed.status !== 'active') {
+          throw serverError(
+            'TRACE_PHASE_1B_PARTY_NOT_COMMITTED',
+            'A complete committed Phase 1A party is required before session attachment.',
+            { status: 409 }
+          );
+        }
+        await tx.query(
+          `INSERT INTO party_runtime.party_server_sessions
+             (party_id,request_id,stage26_result,delivery_attempt,
+              delivery_ack_result,screen,turn_number,last_turn_id)
+           VALUES ($1,$2,$3::jsonb,$4::jsonb,NULL,$5::jsonb,0,NULL)
+           ON CONFLICT (party_id) DO NOTHING`,
+          [
+            partyId,
+            requestId,
+            json(sessionIdentity),
+            json(deliveryAttempt),
+            json(screen)
+          ]
+        );
+        const existing = (await tx.query(
+          `SELECT request_id,stage26_result,delivery_attempt,screen,
+                  turn_number,last_turn_id
+             FROM party_runtime.party_server_sessions
+            WHERE party_id=$1
+            FOR UPDATE`,
+          [partyId]
+        )).rows[0];
+        if (!existing
+          || existing.request_id !== requestId
+          || !isDeepStrictEqual(existing.stage26_result, sessionIdentity)
+          || !isDeepStrictEqual(existing.delivery_attempt, deliveryAttempt)
+          || !isDeepStrictEqual(existing.screen, screen)
+          || Number(existing.turn_number) !== 0
+          || existing.last_turn_id !== null) {
+          throw serverError(
+            'TRACE_PHASE_1B_SESSION_IDENTITY_CONFLICT',
+            'Existing public session is bound to another exact identity or screen.',
+            { status: 409 }
+          );
+        }
       });
     },
 
@@ -33,19 +111,46 @@ export function createFirstPlayablePartyRepository({ partyPool } = {}) {
       clientAckId,
       acknowledgedAt
     }) {
-      await partyPool.query(
-        `UPDATE party_runtime.party_server_sessions
-         SET delivery_ack_result=$2::jsonb,updated_at=now()
-         WHERE party_id=$1`,
-        [
-          partyId,
-          json({
+      return transaction(partyPool, async (tx) => {
+        const selected = await tx.query(
+          `SELECT delivery_ack_result
+             FROM party_runtime.party_server_sessions
+            WHERE party_id=$1
+            FOR UPDATE`,
+          [partyId]
+        );
+        if (selected.rows.length === 0) {
+          throw serverError(
+            'PARTY_NOT_FOUND',
+            'Party session was not found.',
+            { status: 404 }
+          );
+        }
+        const existing = selected.rows[0].delivery_ack_result;
+        if (existing != null) {
+          if (existing.pass === true
+            && existing.client_ack_id === clientAckId) {
+            return structuredClone(existing);
+          }
+          throw serverError(
+            'OPENING_ACK_IDENTITY_CONFLICT',
+            'Opening delivery was already acknowledged by another client acknowledgement identity.',
+            { status: 409 }
+          );
+        }
+        const result = {
             pass: true,
             client_ack_id: clientAckId,
             acknowledged_at: acknowledgedAt
-          })
-        ]
-      );
+        };
+        await tx.query(
+          `UPDATE party_runtime.party_server_sessions
+              SET delivery_ack_result=$2::jsonb,updated_at=now()
+            WHERE party_id=$1`,
+          [partyId, json(result)]
+        );
+        return result;
+      });
     },
 
     loadSession: (partyId) => loadSession(partyPool, partyId),
@@ -190,6 +295,4 @@ export function createFirstPlayablePartyRepository({ partyPool } = {}) {
   });
 }
 
-function optionalNumber(value) {
-  return value == null ? null : Number(value);
-}
+const optionalNumber = (value) => value == null ? null : Number(value);

@@ -1,16 +1,34 @@
 import { CONTENT_DIGEST, SCENARIO_ID } from './shared.js';
 
-export function scenarioCatalog() {
+export function scenarioCatalog(tracePublication) {
+  const publicProjection = tracePublication?.public_projection;
+  const trace = publicProjection?.public_metadata;
+  if (!tracePublication
+    || publicProjection?.scenario_id !== 'lower_dvina_trace_v1'
+    || trace?.available !== true) {
+    throw Object.assign(
+      new Error('Approved Lower Dvina trace publication is required.'),
+      { code: 'TRACE_PHASE_1B_PUBLICATION_INVALID', status: 409 }
+    );
+  }
   return {
     version: 1,
     schema: 'public_scenario_catalog',
-    scenarios: [{
-      scenario_id: SCENARIO_ID,
-      title: 'Нижняя Двина: позднее лето',
-      description:
-        'Лодочник на защищённой высокой площадке у открытой воды.',
-      available: true
-    }]
+    scenarios: [
+      {
+        scenario_id: SCENARIO_ID,
+        title: 'Нижняя Двина: позднее лето',
+        description:
+          'Лодочник на защищённой высокой площадке у открытой воды.',
+        available: true
+      },
+      {
+        scenario_id: publicProjection.scenario_id,
+        title: trace.title,
+        description: trace.description,
+        available: trace.available
+      }
+    ]
   };
 }
 

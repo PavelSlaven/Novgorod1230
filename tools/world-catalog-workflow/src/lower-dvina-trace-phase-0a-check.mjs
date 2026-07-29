@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const root = process.cwd();
@@ -44,6 +44,18 @@ const policy = readJson('approved-policy.json');
 const profileSet = readJson('player-profile-set.json');
 const manifest = readJson('manifest.json');
 const publicCatalogSource = readFileSync(resolve(root, 'apps/game-server/src/runtime/first-playable/setup.js'), 'utf8');
+const phase1BManifestPath = resolve(
+  root,
+  'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b/manifest.json'
+);
+const phase1BPublished = existsSync(phase1BManifestPath)
+  && (() => {
+    const value = JSON.parse(readFileSync(phase1BManifestPath, 'utf8'));
+    return value.schema === 'rus.lower_dvina_trace_phase_1b_manifest.v1'
+      && value.status === 'approved'
+      && value.publication_status === 'public'
+      && value.scenario_id === 'lower_dvina_trace_v1';
+  })();
 
 if (definition.schema !== 'rus.trace_scenario_definition.v1' || definition.scenario_id !== 'lower_dvina_trace_v1' || definition.revision !== 1 || definition.publication_status !== 'unpublished') fail('definition identity is invalid.');
 if (definition.applicability?.schema !== 'rus.trace_scenario_applicability.v1'
@@ -72,7 +84,10 @@ if (profile.schema !== 'rus.trace_player_profile.v1' || profile.profile_id !== '
 if (policy.schema !== 'rus.trace_player_profile_policy.v1' || policy.policy_id !== 'lower_dvina_trace_player_profile_v1' || policy.revision !== 1 || policy.publication_status !== 'unpublished') fail('policy identity is invalid.');
 if (profileSet.schema !== 'rus.trace_player_profile_set.v1' || profileSet.profile_set_id !== 'lower_dvina_trace_player_profile_set_v1' || profileSet.revision !== 1 || profileSet.publication_status !== 'unpublished') fail('profile-set identity is invalid.');
 if (manifest.schema !== 'rus.trace_phase_0a_manifest.v1' || manifest.package_id !== 'lower_dvina_trace_phase_0a_v1' || manifest.revision !== 1 || manifest.publication_status !== 'unpublished') fail('manifest identity is invalid.');
-if (publicCatalogSource.includes(definition.scenario_id)) fail('unpublished trace scenario must not be in the public catalog.');
+if (publicCatalogSource.includes(definition.scenario_id)
+  && !phase1BPublished) {
+  fail('unpublished trace scenario must not be in the public catalog.');
+}
 for (const [name, expected] of Object.entries(expectedDigests)) {
   if (!digestValue(manifest.files?.[name]) || manifest.files[name] !== expected || digest(name) !== expected) fail(`trusted digest mismatch for ${name}.`);
 }

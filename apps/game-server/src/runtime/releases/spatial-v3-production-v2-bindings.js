@@ -7,6 +7,9 @@ import {
 import {
   firstPlayableCommitRecheck
 } from '../../infrastructure/postgres/first-playable/recheck.js';
+import {
+  createLowerDvinaTracePhase1BProductionAdapter
+} from '../../infrastructure/postgres/lower-dvina-trace-phase-1b.js';
 
 export { firstPlayableCommitRecheck };
 
@@ -102,7 +105,14 @@ export async function createSpatialV3RuntimeBindings({
         partyPool: ports.partyPool,
         committer,
         release,
-        runtimeCatalogPin
+        runtimeCatalogPin,
+        traceStartAdapter:
+          createLowerDvinaTracePhase1BProductionAdapter({
+            partyPool: ports.partyPool,
+            worldPool: ports.worldPool,
+            release,
+            runtimeCatalogPin
+          })
       });
       return Object.freeze(Object.fromEntries([
         'listScenarios',

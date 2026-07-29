@@ -5,6 +5,10 @@ import { spawnSync } from 'node:child_process';
 import * as itemsProperty from '@rus/items-property';
 import * as combatHealth from '@rus/combat-health';
 import * as visibilityKnowledgeMemory from '@rus/visibility-knowledge-memory';
+import {
+  projectCalendar,
+  resolveGameTimestampFromCalendarDate
+} from '@rus/time-events-history/calendar';
 
 class TracePhase0DValidationError extends Error {
   constructor(code, message) {
@@ -20,6 +24,7 @@ const argumentValue = (name) => {
   return index === -1 ? null : process.argv[index + 1];
 };
 const validationOnly = process.argv.includes('--validation-only');
+const legacyV1 = process.argv.includes('--legacy-v1');
 const directoryArgument = argumentValue('--directory');
 if (directoryArgument && !validationOnly) {
   throw new TracePhase0DValidationError(
@@ -27,6 +32,577 @@ if (directoryArgument && !validationOnly) {
     'directory override is allowed only for validation fixtures'
   );
 }
+
+const correctionDirectory = directoryArgument
+  ? resolve(directoryArgument)
+  : resolve(root, 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0d-v2');
+
+const correctionSha256Path = (path) => createHash('sha256').update(readFileSync(path)).digest('hex');
+const correctionRequire = (condition, code, message) => {
+  if (!condition) throw new TracePhase0DValidationError(code, message);
+};
+const correctionReadJson = (path) => JSON.parse(readFileSync(path, 'utf8'));
+
+const APPROVED_START_DATE = Object.freeze({
+  calendar_system: 'Julian',
+  year: '1230',
+  month: '8',
+  day: '20',
+  local_minute_of_day: 420,
+  local_time: '07:00',
+  time_basis: 'local_mean_solar_time',
+  season_id: 'late_summer'
+});
+const V1_PACKAGE_PATH = 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0d/manifest.json';
+const V1_PACKAGE_DIGEST = 'cc4bdc04a87a10a0d37819b53a7de1359c672d5f4a82edfa7b796e101fe3025c';
+const V1_DEFINITION_PATH = 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0d/definition.json';
+const V1_DEFINITION_DIGEST = '76576704c1fbc73635ad89ced4a91598cdd5fffd583e4b3f96add36f0c0c20ba';
+const V1_BODY_PATH = 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0d/body-environment-profiles.json';
+const V1_BODY_DIGEST = '31f1b404868ac919e589acbc0d5c4bf7d5c04caa146b9201c065ee2a54f9757d';
+const CALENDAR_APPROVAL_PATH = 'data/world-catalogs/novgorod/temporal-v4/approvals/calendar_daylight_light_profiles.json';
+const CALENDAR_APPROVAL_DIGEST = 'ca020d053986a9796e7d5b4e747c33e7d8105bff366d36c11386812a7d145ea1';
+const CALENDAR_DATASET_PATH = 'data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json';
+const CALENDAR_DATASET_DIGEST = 'e861c4136307507880451532a76e8729a874d459650a905383b70661776fe86e';
+const TIME_OWNER_V1_CONTRACT_PATH = 'packages/time-events-history/src/declarative-content-contracts.v1.json';
+const TIME_OWNER_V1_CONTRACT_DIGEST = 'cdc4571c07e2c592cbfb469a7028c31791d82deadbc9b37a97f44ee58597a471';
+const TIME_OWNER_V2_CONTRACT_PATH = 'packages/time-events-history/src/declarative-content-contracts.v2.json';
+const TIME_OWNER_V2_CONTRACT_DIGEST = '6e72f137be19f77afa34aa853d9f12c0c8f3d7ce28e11c41c83ecc8ee6369a10';
+const TIME_OWNER_V2_REGISTRY_ID = 'rus.time_events_history.declarative_content_contracts.v2';
+const TIME_CALENDAR_CONTRACT_SCHEMA_ID = 'rus.time_events_history.calendar_projection.v1';
+const TIME_CALENDAR_INVERSE_ENTRYPOINT = '@rus/time-events-history/calendar:resolveGameTimestampFromCalendarDate';
+
+function compareCalendarDate(left, right) {
+  for (const key of ['year', 'month', 'day']) {
+    const difference = BigInt(left[key]) - BigInt(right[key]);
+    if (difference !== 0n) return difference < 0n ? -1 : 1;
+  }
+  return 0;
+}
+
+function validateCorrectionV2() {
+  const legacyResult = spawnSync(
+    process.execPath,
+    [resolve(root, 'tools/world-catalog-workflow/src/lower-dvina-trace-phase-0d-check.mjs'), '--legacy-v1'],
+    { cwd: root, encoding: 'utf8' }
+  );
+  correctionRequire(
+    legacyResult.status === 0,
+    'TRACE_0D_V1_REGRESSION',
+    `immutable phase 0D v1 validation failed: ${(legacyResult.stderr || legacyResult.stdout).trim()}`
+  );
+  correctionRequire(
+    correctionSha256Path(resolve(root, V1_PACKAGE_PATH)) === V1_PACKAGE_DIGEST
+      && correctionSha256Path(resolve(root, V1_DEFINITION_PATH)) === V1_DEFINITION_DIGEST
+      && correctionSha256Path(resolve(root, V1_BODY_PATH)) === V1_BODY_DIGEST,
+    'TRACE_0D_V1_REGRESSION',
+    'phase 0D package v1 artifacts changed'
+  );
+
+  const correctionFiles = ['definition.json', 'body-environment-profiles.json'];
+  correctionRequire(
+    JSON.stringify(
+      readdirSync(correctionDirectory).filter((name) => name.endsWith('.json')).sort()
+    ) === JSON.stringify([...correctionFiles, 'manifest.json'].sort()),
+    'TRACE_0D_V2_EXTRA_ARTIFACT',
+    'phase 0D correction directory contains an unknown JSON artifact'
+  );
+  const definitionPath = resolve(correctionDirectory, 'definition.json');
+  const bodyPath = resolve(correctionDirectory, 'body-environment-profiles.json');
+  const manifestPath = resolve(correctionDirectory, 'manifest.json');
+  const definition = correctionReadJson(definitionPath);
+  const body = correctionReadJson(bodyPath);
+  const manifest = correctionReadJson(manifestPath);
+  const definitionDigest = correctionSha256Path(definitionPath);
+  const bodyDigest = correctionSha256Path(bodyPath);
+
+  correctionRequire(
+    manifest.schema === 'rus.trace_phase_0d_correction_manifest.v1'
+      && manifest.package_id === 'lower_dvina_trace_phase_0d_v2'
+      && manifest.revision === 2
+      && manifest.scenario_definition_revision === 5
+      && manifest.publication_status === 'unpublished',
+    'TRACE_0D_V2_MANIFEST_IDENTITY',
+    'phase 0D correction manifest identity is invalid'
+  );
+  for (const key of ['fallback_policy', 'normalization_policy', 'alias_policy']) {
+    correctionRequire(manifest[key] === 'forbidden', 'TRACE_0D_V2_SEMANTIC_FALLBACK', `manifest ${key} must be forbidden`);
+  }
+  correctionRequire(
+    manifest.base_package_ref?.id === 'lower_dvina_trace_phase_0d_v1'
+      && manifest.base_package_ref?.revision === 1
+      && manifest.base_package_ref?.path === V1_PACKAGE_PATH
+      && manifest.base_package_ref?.digest === V1_PACKAGE_DIGEST,
+    'TRACE_0D_V2_BASE_PACKAGE_REF',
+    'base package v1 ref is not exact'
+  );
+  correctionRequire(
+    manifest.superseded_definition_ref?.id === 'lower_dvina_trace_v1'
+      && manifest.superseded_definition_ref?.revision === 4
+      && manifest.superseded_definition_ref?.path === V1_DEFINITION_PATH
+      && manifest.superseded_definition_ref?.digest === V1_DEFINITION_DIGEST,
+    'TRACE_0D_V2_SUPERSEDED_DEFINITION_REF',
+    'superseded definition revision 4 ref is not exact'
+  );
+  correctionRequire(
+    manifest.superseded_body_environment_ref?.id === 'trace_ld_v1_body_environment_profiles'
+      && manifest.superseded_body_environment_ref?.revision === 1
+      && manifest.superseded_body_environment_ref?.path === V1_BODY_PATH
+      && manifest.superseded_body_environment_ref?.digest === V1_BODY_DIGEST,
+    'TRACE_0D_V2_SUPERSEDED_BODY_REF',
+    'superseded body/environment revision 1 ref is not exact'
+  );
+  correctionRequire(
+    Object.keys(manifest.files ?? {}).sort().join('|') === correctionFiles.sort().join('|')
+      && manifest.files['definition.json'] === definitionDigest
+      && manifest.files['body-environment-profiles.json'] === bodyDigest,
+    'TRACE_0D_V2_DIGEST_MISMATCH',
+    'correction file digest set is invalid'
+  );
+  const aggregate = Object.entries(manifest.files)
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([name, digest]) => `${name}:${digest}`)
+    .join('\n') + '\n';
+  correctionRequire(
+    manifest.content_digest_algorithm === 'sha256_sorted_filename_colon_digest_lf_v1'
+      && manifest.content_digest === createHash('sha256').update(aggregate).digest('hex'),
+    'TRACE_0D_V2_CONTENT_DIGEST',
+    'correction aggregate digest is invalid'
+  );
+  correctionRequire(
+    manifest.content_refs?.definition?.path === 'definition.json'
+      && manifest.content_refs.definition.schema === 'rus.trace_scenario_definition.v1'
+      && manifest.content_refs.definition.id === 'lower_dvina_trace_v1'
+      && manifest.content_refs.definition.revision === 5
+      && manifest.content_refs.definition.digest === definitionDigest
+      && manifest.content_refs?.body_environment_profiles?.path === 'body-environment-profiles.json'
+      && manifest.content_refs.body_environment_profiles.schema === 'rus.trace_body_environment_profiles.v1'
+      && manifest.content_refs.body_environment_profiles.id === 'trace_ld_v1_body_environment_profiles'
+      && manifest.content_refs.body_environment_profiles.revision === 2
+      && manifest.content_refs.body_environment_profiles.digest === bodyDigest,
+    'TRACE_0D_V2_CONTENT_REF',
+    'correction content refs are invalid'
+  );
+
+  const baseManifest = correctionReadJson(resolve(root, V1_PACKAGE_PATH));
+  const expectedReusedKeys = [
+    'activity_check_consequence_profiles',
+    'npc_decision_schedule_policies',
+    'movement_bindings',
+    'location_access_policies',
+    'location_capacity_contracts',
+    'promise_policy',
+    'completion_rules',
+    'epilogue_rules'
+  ];
+  correctionRequire(
+    Object.keys(manifest.reused_content_refs ?? {}).sort().join('|') === expectedReusedKeys.sort().join('|'),
+    'TRACE_0D_V2_REUSED_REF_SET',
+    'reused phase 0D content ref set is incomplete or contains an unknown category'
+  );
+  for (const key of expectedReusedKeys) {
+    const expected = baseManifest.content_refs[key];
+    const actual = manifest.reused_content_refs[key];
+    const expectedPath = `data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0d/${expected.path}`;
+    correctionRequire(
+      actual?.schema === expected.schema
+        && actual?.id === expected.id
+        && actual?.revision === expected.revision
+        && actual?.path === expectedPath
+        && actual?.digest === expected.digest
+        && correctionSha256Path(resolve(root, expectedPath)) === expected.digest,
+      'TRACE_0D_V2_REUSED_CONTENT_REF',
+      `reused content ref is invalid: ${key}`
+    );
+  }
+
+  correctionRequire(
+    manifest.temporal_source_refs?.approval?.id === 'record:calendar_daylight_light_profiles:novgorod_1230_1233_v2'
+      && manifest.temporal_source_refs.approval.revision === 1
+      && manifest.temporal_source_refs.approval.path === CALENDAR_APPROVAL_PATH
+      && manifest.temporal_source_refs.approval.digest === CALENDAR_APPROVAL_DIGEST
+      && manifest.temporal_source_refs?.dataset?.id === 'record:calendar_daylight_light_profiles:novgorod_1230_1233_v2'
+      && manifest.temporal_source_refs.dataset.revision === 1
+      && manifest.temporal_source_refs.dataset.path === CALENDAR_DATASET_PATH
+      && manifest.temporal_source_refs.dataset.digest === CALENDAR_DATASET_DIGEST
+      && correctionSha256Path(resolve(root, CALENDAR_APPROVAL_PATH)) === CALENDAR_APPROVAL_DIGEST
+      && correctionSha256Path(resolve(root, CALENDAR_DATASET_PATH)) === CALENDAR_DATASET_DIGEST,
+    'TRACE_0D_V2_CALENDAR_DIGEST',
+    'calendar approval or dataset ref is invalid'
+  );
+  const timeOwnerContractRef = manifest.owner_contract_refs?.exact_calendar_projection;
+  correctionRequire(
+    Object.keys(manifest.owner_contract_refs ?? {}).join('|') === 'exact_calendar_projection'
+      && timeOwnerContractRef?.owner === '@rus/time-events-history'
+      && timeOwnerContractRef?.registry_id === TIME_OWNER_V2_REGISTRY_ID
+      && timeOwnerContractRef?.revision === 2
+      && timeOwnerContractRef?.schema_id === TIME_CALENDAR_CONTRACT_SCHEMA_ID
+      && timeOwnerContractRef?.schema_version === 1
+      && timeOwnerContractRef?.path === TIME_OWNER_V2_CONTRACT_PATH
+      && timeOwnerContractRef?.digest === TIME_OWNER_V2_CONTRACT_DIGEST
+      && timeOwnerContractRef?.public_entrypoint === TIME_CALENDAR_INVERSE_ENTRYPOINT
+      && correctionSha256Path(resolve(root, TIME_OWNER_V1_CONTRACT_PATH)) === TIME_OWNER_V1_CONTRACT_DIGEST
+      && correctionSha256Path(resolve(root, TIME_OWNER_V2_CONTRACT_PATH)) === TIME_OWNER_V2_CONTRACT_DIGEST,
+    'TRACE_0D_V2_TIME_OWNER_CONTRACT_REF',
+    'versioned time owner contract ref is missing or incompatible'
+  );
+  const timeOwnerContractRegistry = correctionReadJson(resolve(root, TIME_OWNER_V2_CONTRACT_PATH));
+  const timeOwnerCalendarContract = timeOwnerContractRegistry.contracts?.find(
+    ({ schema_id }) => schema_id === TIME_CALENDAR_CONTRACT_SCHEMA_ID
+  );
+  correctionRequire(
+    timeOwnerContractRegistry.schema === 'rus.declarative_content_contract_registry.v1'
+      && timeOwnerContractRegistry.registry_id === TIME_OWNER_V2_REGISTRY_ID
+      && timeOwnerContractRegistry.revision === 2
+      && timeOwnerContractRegistry.owner === '@rus/time-events-history'
+      && timeOwnerContractRegistry.status === 'approved'
+      && timeOwnerContractRegistry.supersedes_registry_ref?.registry_id === 'rus.time_events_history.declarative_content_contracts.v1'
+      && timeOwnerContractRegistry.supersedes_registry_ref?.revision === 1
+      && timeOwnerContractRegistry.supersedes_registry_ref?.path === TIME_OWNER_V1_CONTRACT_PATH
+      && timeOwnerContractRegistry.supersedes_registry_ref?.digest === TIME_OWNER_V1_CONTRACT_DIGEST
+      && timeOwnerCalendarContract?.schema_version === 1
+      && timeOwnerCalendarContract?.public_entrypoints?.includes(TIME_CALENDAR_INVERSE_ENTRYPOINT)
+      && timeOwnerCalendarContract?.required_invariants?.includes('bidirectional_round_trip')
+      && timeOwnerCalendarContract?.required_invariants?.includes('no_rng')
+      && timeOwnerCalendarContract?.forbidden_capabilities?.includes('date_selection'),
+    'TRACE_0D_V2_TIME_OWNER_CONTRACT',
+    'versioned time owner contract does not declare the exact inverse calendar API'
+  );
+  correctionRequire(
+    Object.keys(manifest.legacy_boatman_regression_refs ?? {}).sort().join('|') === 'manifest|scenario'
+      && manifest.legacy_boatman_regression_refs.scenario?.path === 'data/world-catalogs/novgorod/first-playable-v1/scenario.json'
+      && manifest.legacy_boatman_regression_refs.scenario?.digest === '50f00903cad0075edabd24bd69c9eaa6d88ee967a19eabb69de7c23c1898598f'
+      && manifest.legacy_boatman_regression_refs.manifest?.path === 'data/world-catalogs/novgorod/first-playable-v1/manifest.json'
+      && manifest.legacy_boatman_regression_refs.manifest?.digest === '0ce7b06b6a3706810976bc0dd7ac20695cb502594bf8e200b4e6d67e3e2162cb',
+    'TRACE_0D_V2_BOATMAN_REGRESSION',
+    'legacy boatman regression ref set is incomplete or changed'
+  );
+  for (const ref of Object.values(manifest.legacy_boatman_regression_refs)) {
+    correctionRequire(
+      typeof ref?.path === 'string'
+        && /^[a-f0-9]{64}$/u.test(ref?.digest)
+        && correctionSha256Path(resolve(root, ref.path)) === ref.digest,
+      'TRACE_0D_V2_BOATMAN_REGRESSION',
+      'legacy boatman artifact changed or ref is invalid'
+    );
+  }
+  correctionRequire(
+    manifest.legacy_boatman_regression_refs?.scenario?.scenario_id === 'lower_dvina_late_summer_open_water_v1',
+    'TRACE_0D_V2_BOATMAN_REGRESSION',
+    'legacy boatman scenario ID changed'
+  );
+  correctionRequire(
+    Array.isArray(manifest.remaining_unresolved_refs)
+      && manifest.remaining_unresolved_refs.length === 0,
+    'TRACE_0D_V2_UNRESOLVED',
+    'correction package contains unresolved refs'
+  );
+  correctionRequire(
+    [...(manifest.scope ?? [])].sort().join('|') === [
+      'exact_start_date_contract_correction',
+      'immutable_phase_0d_v1_composition'
+    ].sort().join('|')
+      && [...(manifest.excludes ?? [])].sort().join('|') === [
+        'materializer',
+        'party_instance',
+        'runtime_handlers',
+        'persistence',
+        'migrations',
+        'api',
+        'ui',
+        'phase_1a',
+        'phase_1b'
+      ].sort().join('|'),
+    'TRACE_0D_V2_PACKAGE_SCOPE',
+    'correction package scope or exclusions changed'
+  );
+
+  correctionRequire(
+    definition.schema === 'rus.trace_scenario_definition.v1'
+      && definition.scenario_id === 'lower_dvina_trace_v1'
+      && definition.revision === 5
+      && definition.publication_status === 'unpublished',
+    'TRACE_0D_V2_DEFINITION_IDENTITY',
+    'definition revision 5 identity is invalid'
+  );
+  correctionRequire(
+    definition.supersedes_definition_ref?.id === 'lower_dvina_trace_v1'
+      && definition.supersedes_definition_ref?.revision === 4
+      && definition.supersedes_definition_ref?.path === V1_DEFINITION_PATH
+      && definition.supersedes_definition_ref?.digest === V1_DEFINITION_DIGEST,
+    'TRACE_0D_V2_DEFINITION_CHAIN',
+    'definition revision 5 does not exact-supersede revision 4'
+  );
+  const baseDefinition = correctionReadJson(resolve(root, V1_DEFINITION_PATH));
+  correctionRequire(
+    JSON.stringify(definition.immutable_content_refs) === JSON.stringify(baseDefinition.immutable_content_refs),
+    'TRACE_0D_V2_IMMUTABLE_REFS',
+    'definition revision 5 changed phase 0A-0C immutable refs'
+  );
+  const expectedPolicyKeys = Object.keys(baseDefinition.resolved_policy_refs).sort();
+  correctionRequire(
+    Object.keys(definition.resolved_policy_refs ?? {}).sort().join('|') === expectedPolicyKeys.join('|'),
+    'TRACE_0D_V2_POLICY_REF_SET',
+    'definition revision 5 policy ref set changed'
+  );
+  for (const key of expectedPolicyKeys) {
+    const actual = definition.resolved_policy_refs[key];
+    if (key === 'body_environment_profiles') {
+      correctionRequire(
+        actual?.owner === '@rus/body-state'
+          && actual?.schema === 'rus.trace_body_environment_profiles.v1'
+          && actual?.id === 'trace_ld_v1_body_environment_profiles'
+          && actual?.revision === 2
+          && actual?.digest === bodyDigest,
+        'TRACE_0D_V2_BODY_POLICY_REF',
+        'definition revision 5 body/environment ref is invalid'
+      );
+    } else {
+      correctionRequire(
+        JSON.stringify(actual) === JSON.stringify(baseDefinition.resolved_policy_refs[key]),
+        'TRACE_0D_V2_REUSED_POLICY_REF',
+        `definition revision 5 changed reused policy ref: ${key}`
+      );
+    }
+  }
+  const normalizedDefinition = structuredClone(definition);
+  normalizedDefinition.revision = 4;
+  normalizedDefinition.supersedes_definition_ref = baseDefinition.supersedes_definition_ref;
+  normalizedDefinition.resolved_policy_refs.body_environment_profiles = baseDefinition.resolved_policy_refs.body_environment_profiles;
+  correctionRequire(
+    JSON.stringify(normalizedDefinition) === JSON.stringify(baseDefinition),
+    'TRACE_0D_V2_DEFINITION_SCOPE',
+    'definition revision 5 changes data outside supersession and the body/environment revision pin'
+  );
+  correctionRequire(
+    definition.applicability?.season_id === APPROVED_START_DATE.season_id
+      && definition.readiness?.phase_status === 'phase_0_complete'
+      && definition.readiness?.publication_status === 'not_publishable'
+      && definition.concrete_party_selections?.game_timestamp === null
+      && definition.concrete_party_selections?.environment_snapshot === null,
+    'TRACE_0D_V2_DEFINITION_SCOPE',
+    'definition revision 5 readiness, season, or non-materialized boundary is invalid'
+  );
+
+  correctionRequire(
+    body.schema === 'rus.trace_body_environment_profiles.v1'
+      && body.set_id === 'trace_ld_v1_body_environment_profiles'
+      && body.revision === 2
+      && body.publication_status === 'unpublished',
+    'TRACE_0D_V2_BODY_IDENTITY',
+    'body/environment revision 2 identity is invalid'
+  );
+  correctionRequire(
+    body.supersedes_ref?.id === 'trace_ld_v1_body_environment_profiles'
+      && body.supersedes_ref?.revision === 1
+      && body.supersedes_ref?.path === V1_BODY_PATH
+      && body.supersedes_ref?.digest === V1_BODY_DIGEST,
+    'TRACE_0D_V2_BODY_CHAIN',
+    'body/environment revision 2 does not exact-supersede revision 1'
+  );
+  const baseBody = correctionReadJson(resolve(root, V1_BODY_PATH));
+  const bodyWithoutRevisionChanges = structuredClone(body);
+  delete bodyWithoutRevisionChanges.supersedes_ref;
+  bodyWithoutRevisionChanges.revision = 1;
+  bodyWithoutRevisionChanges.start_timestamp_specification = baseBody.start_timestamp_specification;
+  correctionRequire(
+    JSON.stringify(bodyWithoutRevisionChanges) === JSON.stringify(baseBody),
+    'TRACE_0D_V2_BODY_SCOPE',
+    'body/environment revision 2 changes data outside the start timestamp contract'
+  );
+
+  const specification = body.start_timestamp_specification;
+  const contract = specification?.calendar_date_contract;
+  correctionRequire(
+    specification?.schema === 'rus.trace_start_game_timestamp_specification.v1'
+      && specification?.version === 2,
+    'TRACE_0D_V2_TIMESTAMP_SPEC',
+    'start timestamp specification version is invalid'
+  );
+  correctionRequire(
+    contract !== null
+      && typeof contract === 'object'
+      && !Array.isArray(contract)
+      && !Object.hasOwn(contract, 'year_range')
+      && contract.exact_date !== null
+      && typeof contract.exact_date === 'object'
+      && !Array.isArray(contract.exact_date)
+      && Object.keys(contract.exact_date).sort().join('|') === 'day|month|year',
+    'TRACE_0D_V2_EXACT_DATE',
+    'exact date contract is missing or still range-based'
+  );
+  correctionRequire(
+    contract.calendar_system === APPROVED_START_DATE.calendar_system,
+    'TRACE_0D_V2_CALENDAR_SYSTEM',
+    'calendar system must be exact Julian'
+  );
+  for (const value of Object.values(contract.exact_date ?? {})) {
+    correctionRequire(typeof value === 'string' && /^(?:0|[1-9][0-9]*)$/u.test(value), 'TRACE_0D_V2_EXACT_DATE_TYPE', 'exact date components must be canonical integer strings');
+  }
+  correctionRequire(
+    contract.season_id === APPROVED_START_DATE.season_id
+      && contract.selection_policy === 'fixed_approved_date'
+      && contract.rng_consumption === 'forbidden'
+      && contract.date_must_be_committed_by_materializer === true,
+    'TRACE_0D_V2_DATE_SELECTION_POLICY',
+    'fixed date selection policy is invalid'
+  );
+  correctionRequire(
+    specification.exact_local_minute_of_day === APPROVED_START_DATE.local_minute_of_day
+      && specification.exact_local_time_label === APPROVED_START_DATE.local_time
+      && specification.time_basis === APPROVED_START_DATE.time_basis
+      && specification.subminute_at_start?.numerator === '0'
+      && specification.subminute_at_start?.denominator === '1',
+    'TRACE_0D_V2_LOCAL_TIME',
+    'exact local time or subminute is invalid'
+  );
+  correctionRequire(
+    body.temporal_source_ref?.calendar_profile_id === 'novgorod_julian_lmst_1230_1233_v2'
+      && body.temporal_source_ref?.calendar_version === '2'
+      && body.temporal_source_ref?.record_id === 'record:calendar_daylight_light_profiles:novgorod_1230_1233_v2'
+      && body.temporal_source_ref?.approval_sha256 === CALENDAR_APPROVAL_DIGEST
+      && body.temporal_source_ref?.dataset_sha256 === CALENDAR_DATASET_DIGEST,
+    'TRACE_0D_V2_CALENDAR_PROFILE_REF',
+    'calendar profile/version/epoch refs are invalid'
+  );
+
+  const calendarDataset = correctionReadJson(resolve(root, CALENDAR_DATASET_PATH));
+  const calendarRecord = calendarDataset.find(({ record_id }) => record_id === body.temporal_source_ref.record_id);
+  correctionRequire(
+    calendarRecord?.status === 'approved'
+      && calendarRecord.payload?.calendar_profile_id === body.temporal_source_ref.calendar_profile_id
+      && calendarRecord.payload?.calendar_version === body.temporal_source_ref.calendar_version
+      && calendarRecord.payload?.calendar_system === APPROVED_START_DATE.calendar_system,
+    'TRACE_0D_V2_CALENDAR_PROFILE_REF',
+    'approved calendar record does not resolve exactly'
+  );
+  const coverage = calendarRecord.payload.daylight_boundary_rules?.coverage;
+  const exactDate = contract.exact_date;
+  correctionRequire(
+    coverage?.calendar_system === APPROVED_START_DATE.calendar_system
+      && compareCalendarDate(exactDate, coverage.start_inclusive) >= 0
+      && compareCalendarDate(exactDate, coverage.end_exclusive) < 0,
+    'TRACE_0D_V2_CALENDAR_COVERAGE',
+    'exact start date is outside approved calendar coverage'
+  );
+  correctionRequire(
+    exactDate.year === APPROVED_START_DATE.year
+      && exactDate.month === APPROVED_START_DATE.month
+      && exactDate.day === APPROVED_START_DATE.day,
+    'TRACE_0D_V2_APPROVED_DATE_MISMATCH',
+    'exact date differs from the approved authorial date'
+  );
+  const epoch = calendarRecord.payload.epoch_reference;
+  correctionRequire(
+    epoch?.calendar_date_at_zero?.calendar_system === APPROVED_START_DATE.calendar_system
+      && epoch.calendar_date_at_zero.year === APPROVED_START_DATE.year
+      && epoch.calendar_date_at_zero.month === '1'
+      && epoch.calendar_date_at_zero.day === '1'
+      && epoch.calendar_date_at_zero.local_minute_of_day === '0'
+      && epoch.game_timestamp_zero?.whole_minutes === '0'
+      && epoch.game_timestamp_zero?.subminute_numerator === '0'
+      && epoch.game_timestamp_zero?.subminute_denominator === '1'
+      && epoch.time_basis === APPROVED_START_DATE.time_basis,
+    'TRACE_0D_V2_EPOCH_REF',
+    'approved calendar epoch is incompatible with the fixed start date'
+  );
+  const monthLengths = calendarRecord.payload.day_month_leap_rules.month_lengths_common;
+  const projectionProfile = {
+    profile_id: calendarRecord.payload.calendar_profile_id,
+    version: calendarRecord.payload.calendar_version,
+    status: calendarRecord.status,
+    provenance: { source_id: calendarRecord.record_id, source_version: calendarRecord.version },
+    epoch: {
+      game_timestamp: epoch.game_timestamp_zero,
+      year: epoch.calendar_date_at_zero.year,
+      month: epoch.calendar_date_at_zero.month,
+      day: epoch.calendar_date_at_zero.day
+    },
+    calendar_system: calendarRecord.payload.calendar_system,
+    month_rules: { month_lengths: monthLengths },
+    leap_rules: { cycle_years: '4', leap_year_indexes: ['0'], leap_month: '2', leap_days: '1' },
+    day_start_rule: { local_minute: '0' },
+    local_offset_rule: { offset_minutes: '0' },
+    daypart_rule: { ranges: [{ id: 'approved_date_projection', start_minute: '0', end_minute: '1440' }] },
+    season_rule: { ranges: [{ id: 'approved_date_projection', start_day: '1', end_day: '366' }] },
+    daylight_rule: { ranges: [{ id: 'approved_date_projection', start_day: '1', end_day: '366' }] }
+  };
+  const derivedTimestamp = resolveGameTimestampFromCalendarDate({
+    calendar_system: contract.calendar_system,
+    year: exactDate.year,
+    month: exactDate.month,
+    day: exactDate.day,
+    local_minute_of_day: String(specification.exact_local_minute_of_day),
+    subminute_numerator: specification.subminute_at_start.numerator,
+    subminute_denominator: specification.subminute_at_start.denominator
+  }, projectionProfile);
+  const projected = projectCalendar(derivedTimestamp, projectionProfile);
+  correctionRequire(
+    projected.calendar_system === APPROVED_START_DATE.calendar_system
+      && projected.year === exactDate.year
+      && projected.month === exactDate.month
+      && projected.day === exactDate.day
+      && projected.local_time_of_day.numerator === String(specification.exact_local_minute_of_day)
+      && projected.local_time_of_day.denominator === '1',
+    'TRACE_0D_V2_TIMESTAMP_DERIVATION',
+    'time owner does not project the fixed date to one exact GameTimestamp'
+  );
+  correctionRequire(
+    specification.game_timestamp_derivation?.owner === '@rus/time-events-history'
+      && specification.game_timestamp_derivation?.entrypoint === TIME_CALENDAR_INVERSE_ENTRYPOINT
+      && specification.game_timestamp_derivation?.path === 'packages/time-events-history/src/calendar.js'
+      && specification.game_timestamp_derivation?.digest === '4b82d6a4f4c07a047ad1a2e38061b3223002914744edc206a419adb14cd0c4c0'
+      && correctionSha256Path(resolve(root, specification.game_timestamp_derivation.path)) === specification.game_timestamp_derivation.digest
+      && specification.game_timestamp_derivation?.package_manifest_path === 'packages/time-events-history/package.json'
+      && specification.game_timestamp_derivation?.package_manifest_digest === 'ca0f7736cc372a02b4f52ea7556c3638f5181daf7fed4c19a9dbf47ba6d88805'
+      && correctionSha256Path(resolve(root, specification.game_timestamp_derivation.package_manifest_path)) === specification.game_timestamp_derivation.package_manifest_digest
+      && specification.game_timestamp_derivation?.package_version === '0.13.0'
+      && specification.game_timestamp_derivation?.owner_contract_ref?.path === TIME_OWNER_V2_CONTRACT_PATH
+      && specification.game_timestamp_derivation?.owner_contract_ref?.digest === TIME_OWNER_V2_CONTRACT_DIGEST
+      && specification.game_timestamp_derivation?.owner_contract_ref?.registry_id === TIME_OWNER_V2_REGISTRY_ID
+      && specification.game_timestamp_derivation?.owner_contract_ref?.registry_revision === 2
+      && specification.game_timestamp_derivation?.owner_contract_ref?.schema_id === TIME_CALENDAR_CONTRACT_SCHEMA_ID
+      && specification.game_timestamp_derivation?.owner_contract_ref?.schema_version === 1
+      && specification.game_timestamp_derivation?.owner_contract_ref?.public_entrypoint === TIME_CALENDAR_INVERSE_ENTRYPOINT
+      && JSON.stringify(specification.game_timestamp_derivation.owner_contract_ref) === JSON.stringify({
+        path: timeOwnerContractRef.path,
+        digest: timeOwnerContractRef.digest,
+        registry_id: timeOwnerContractRef.registry_id,
+        registry_revision: timeOwnerContractRef.revision,
+        schema_id: timeOwnerContractRef.schema_id,
+        schema_version: timeOwnerContractRef.schema_version,
+        public_entrypoint: timeOwnerContractRef.public_entrypoint
+      })
+      && specification.game_timestamp_derivation?.policy === 'unique_inverse_from_approved_epoch_and_calendar_profile'
+      && specification.materialized_game_timestamp === null,
+    'TRACE_0D_V2_TIMESTAMP_DERIVATION',
+    'GameTimestamp derivation contract is missing or materialized prematurely'
+  );
+  correctionRequire(
+    !JSON.stringify([definition, body, manifest]).includes('Math.random')
+      && !JSON.stringify([definition, body, manifest]).includes('rng_date_selection'),
+    'TRACE_0D_V2_DATE_RNG',
+    'date selection must not consume RNG'
+  );
+
+  console.log(JSON.stringify({
+    package_id: manifest.package_id,
+    package_revision: manifest.revision,
+    scenario_revision: definition.revision,
+    body_environment_revision: body.revision,
+    exact_start: {
+      ...APPROVED_START_DATE,
+      subminute: '0/1',
+      derived_game_timestamp: derivedTimestamp
+    },
+    content_digest: manifest.content_digest
+  }));
+}
+
+if (!legacyV1) {
+  validateCorrectionV2();
+  process.exit(0);
+}
+
 const directory = directoryArgument
   ? resolve(directoryArgument)
   : resolve(root, 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0d');

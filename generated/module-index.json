@@ -407,7 +407,7 @@
       ],
       "name": "@rus/time-events-history",
       "owns": [
-        "Владеет canonical temporal digest, нормализацией и сравнением exact time, crossing whole-minute boundaries, `projectCalendar`, историческими phase handlers и `temporal-resolution-v1` (`normalizeTemporalBoundaryCandidates`, earliest batch, same-time cascade)"
+        "Владеет canonical temporal digest, нормализацией и сравнением exact time, crossing whole-minute boundaries, двусторонней календарной проекцией `projectCalendar` / `resolveGameTimestampFromCalendarDate`, историческими phase handlers и `temporal-resolution-v1` (`normalizeTemporalBoundaryCandidates`, earliest batch, same-time cascade)"
       ],
       "path": "packages/time-events-history",
       "public_entry": "./src/index.js",

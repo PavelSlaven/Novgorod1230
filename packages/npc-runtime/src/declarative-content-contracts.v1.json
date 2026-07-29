@@ -1,0 +1,18 @@
+{
+  "schema": "rus.declarative_content_contract_registry.v1",
+  "registry_id": "rus.npc_runtime.declarative_content_contracts.v1",
+  "revision": 1,
+  "owner": "@rus/npc-runtime",
+  "status": "approved",
+  "contracts": [
+    {
+      "schema_id": "rus.trace_npc_decision_schedule_policies.v1",
+      "schema_version": 1,
+      "record_kind": "scenario_npc_decision_schedule_definition",
+      "required_top_level_fields": ["set_id", "revision", "owner", "clock_owner", "co_owner_contract_refs", "schedule_elapsed_contract", "decision_policies", "decision_execution_bindings", "statement_effect_contracts", "schedule_policies", "schedule_execution_bindings", "schedule_resource_bindings", "property_transition_profiles"],
+      "required_invariants": ["closed_option_sets", "option_preconditions", "exact_execution_binding_per_decision_option", "exact_execution_binding_per_schedule_option", "explicit_no_additional_elapsed_or_exact_elapsed_roots", "closed_compatible_parent_elapsed_owner_for_no_additional_elapsed", "closed_statement_effects_never_write_objective_truth", "execution_specific_direct_clock_root", "single_root_elapsed_commit", "exact_rational_elapsed_binding", "included_child_intervals_never_additive", "typed_no_valid_option", "typed_execution_failure", "committed_state_inputs", "pinned_co_owner_contracts", "temporal_boundary_reconsideration", "no_semantic_state_invention"],
+      "forbidden_capabilities": ["scene_number_schedule", "runtime_handler", "persistence", "party_materialization", "api_publication", "ui"]
+    }
+  ],
+  "scenario_specific_ids_or_counts": "forbidden"
+}

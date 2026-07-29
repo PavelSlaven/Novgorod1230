@@ -1,0 +1,19 @@
+{
+  "schema": "rus.declarative_content_contract_registry.v1",
+  "registry_id": "rus.party_store.declarative_content_contracts.v1",
+  "revision": 1,
+  "owner": "@rus/party-store",
+  "package_version": "0.9.0",
+  "status": "approved",
+  "contracts": [
+    {
+      "schema_id": "rus.trace_scene_capacity_contract_set.v1",
+      "schema_version": 1,
+      "record_kind": "scenario_location_capacity_definition",
+      "required_top_level_fields": ["set_id", "revision", "owner", "capacity_contracts", "transit_and_holding_contracts"],
+      "required_invariants": ["explicit_zones", "constraint_based_admission", "allowed_slots_and_roles", "required_and_optional_bindings", "actor_and_carried_actor_bounds", "typed_zone_assignment_predicates", "typed_incompatible_combination_predicates", "typed_overflow_failure", "no_silent_participant_drop"],
+      "forbidden_capabilities": ["physical_transaction", "runtime_handler", "persistence_implementation", "party_materialization", "api_publication", "ui"]
+    }
+  ],
+  "scenario_specific_ids_or_counts": "forbidden"
+}

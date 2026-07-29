@@ -1,0 +1,21 @@
+{
+  "schema": "rus.declarative_content_contract_registry.v1",
+  "registry_id": "rus.narration.declarative_content_contracts.v1",
+  "revision": 1,
+  "owner": "@rus/narration",
+  "package_version": "0.15.0",
+  "status": "approved",
+  "contracts": [
+    {
+      "schema_id": "rus.narration.visible_only_flow.v1",
+      "schema_version": 1,
+      "record_kind": "visible_only_narration_workflow",
+      "public_entrypoints": ["@rus/narration:runNarrationFlow"],
+      "required_inputs": ["validated_visible_context", "narration_request", "narration_ports"],
+      "required_outputs": ["narration_flow_result", "narration_audit"],
+      "required_invariants": ["visible_only_input", "bounded_repair", "approved_output_only", "idempotent_input_projection", "no_factual_write"],
+      "forbidden_capabilities": ["hidden_state_read", "fact_creation", "completion_change", "persistence", "party_state_write"]
+    }
+  ],
+  "scenario_specific_ids_or_counts": "forbidden"
+}

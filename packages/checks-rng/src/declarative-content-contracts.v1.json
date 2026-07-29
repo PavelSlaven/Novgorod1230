@@ -1,0 +1,21 @@
+{
+  "schema": "rus.declarative_content_contract_registry.v1",
+  "registry_id": "rus.checks_rng.declarative_content_contracts.v1",
+  "revision": 1,
+  "owner": "@rus/checks-rng",
+  "package_version": "0.13.0",
+  "status": "approved",
+  "contracts": [
+    {
+      "schema_id": "rus.checks_rng.execute_check.v1",
+      "schema_version": 1,
+      "record_kind": "code_owned_d20_check_execution",
+      "public_entrypoints": ["@rus/checks-rng:executeCheck"],
+      "required_inputs": ["check_id", "difficulty", "attribute_value", "skill_bonus", "state_modifier", "equipment_modifier", "circumstance_modifier", "RandomSource"],
+      "required_outputs": ["roll", "modifiers", "total", "difficulty", "outcome", "audit"],
+      "required_invariants": ["injected_random_source", "d20_roll", "code_owned_formula", "auditable_roll", "no_semantic_consequence_selection"],
+      "forbidden_capabilities": ["global_randomness", "semantic_difficulty_selection", "factual_write", "persistence", "narration"]
+    }
+  ],
+  "scenario_specific_ids_or_counts": "forbidden"
+}

@@ -1,0 +1,26 @@
+{
+  "schema": "rus.declarative_content_contract_registry.v1",
+  "registry_id": "rus.time_events_history.declarative_content_contracts.v1",
+  "revision": 1,
+  "owner": "@rus/time-events-history",
+  "package_version": "0.13.0",
+  "status": "approved",
+  "contracts": [
+    {
+      "schema_id": "rus.time_events_history.game_timestamp_and_elapsed.v1",
+      "schema_version": 1,
+      "record_kind": "exact_game_timestamp_elapsed_and_boundary_arithmetic",
+      "public_entrypoints": [
+        "@rus/time-events-history:normalizeGameTimestamp",
+        "@rus/time-events-history:addElapsedTime",
+        "@rus/time-events-history:compareGameTimestamp",
+        "@rus/time-events-history:computeTemporalDigest"
+      ],
+      "required_inputs": ["exact_GameTimestamp", "approved_calendar_version", "exact_elapsed", "approved_boundary_candidates"],
+      "required_outputs": ["canonical_GameTimestamp", "exact_elapsed_result", "ordered_boundary_result", "temporal_digest"],
+      "required_invariants": ["exact_timestamp", "rational_minute_arithmetic", "earliest_boundary_first", "no_rounding", "no_hidden_time_read"],
+      "forbidden_capabilities": ["duration_formula_ownership", "global_clock", "factual_write", "persistence", "narration"]
+    }
+  ],
+  "scenario_specific_ids_or_counts": "forbidden"
+}

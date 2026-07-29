@@ -1,0 +1,144 @@
+{
+  "schema": "rus.trace_epilogue_rules.v1",
+  "set_id": "trace_ld_v1_epilogue_rules",
+  "revision": 1,
+  "publication_status": "unpublished",
+  "owner": "@rus/presentation",
+  "owner_schema_ref": {"path": "packages/presentation/src/declarative-content-contracts.v1.json", "digest": "fd2056d48f74ea912d465575dd2d2ff5e6947b0a49c10fce727bd16d52ff91e4", "registry_id": "rus.presentation.declarative_content_contracts.v1", "schema_id": "rus.trace_epilogue_rules.v1", "schema_version": 1},
+  "narration_owner": "@rus/narration",
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden",
+  "owner_contracts": ["@rus/presentation:player_facing_read_model"],
+  "co_owner_contract_refs": {
+    "visible_only_narration": {
+      "path": "packages/narration/src/declarative-content-contracts.v1.json",
+      "digest": "0c24c3ccf8d3b6b2e0838e825f73c9050c886204e6e0c5a5215937b0cc18f64f",
+      "registry_id": "rus.narration.declarative_content_contracts.v1",
+      "registry_revision": 1,
+      "schema_id": "rus.narration.visible_only_flow.v1",
+      "schema_version": 1,
+      "public_entrypoints": ["@rus/narration:runNarrationFlow"]
+    }
+  },
+  "trigger_preconditions": ["committed_composite_completion_outcome", "player_visible_terminal_projection_built_from_visible_committed_facts"],
+  "allowed_completion_states": [
+    "trace_ld_v1_completion_full",
+    "trace_ld_v1_completion_partial",
+    "trace_ld_v1_completion_case_open"
+  ],
+  "allowed_completion_dimensions": [
+    "onisim_fate",
+    "packet_state",
+    "seal_state",
+    "wreck_cause_resolution",
+    "ratsha_participation_resolution",
+    "principal_resolution",
+    "principal_presence",
+    "promise_state",
+    "temporary_disposition_state"
+  ],
+  "objective_to_player_visible_projection": {
+    "owner": "@rus/visibility-knowledge-memory",
+    "source": "committed_composite_completion_outcome",
+    "visibility_source": "visible_committed_facts",
+    "raw_objective_outcome_in_narration": "forbidden",
+    "raw_objective_dimensions_in_narration": "forbidden",
+    "visible_primary_state_policy": "preserve_primary_state_without_hidden_reason_or_unobserved_dimension_values",
+    "dimension_projection_rules": [
+      {
+        "dimension_id": "packet_state",
+        "objective_value_visibility": [
+          {"objective_value_id": "returned", "requires_visible_committed_fact": "sealed_packet_returned", "visible_value_id": "returned"},
+          {"objective_value_id": "lost_or_destroyed", "requires_visible_committed_fact": "destroyed_packet_state_observed", "visible_value_id": "lost_or_destroyed"}
+        ],
+        "unobserved_value_id": "unresolved"
+      },
+      {
+        "dimension_id": "seal_state",
+        "objective_value_visibility": [
+          {"objective_value_id": "intact", "requires_visible_committed_fact": "seal_intact", "visible_value_id": "intact"},
+          {"objective_value_id": "damaged", "requires_visible_committed_fact": "destroyed_seal_state_observed", "visible_value_id": "damaged"}
+        ],
+        "unobserved_value_id": "unresolved"
+      }
+    ],
+    "other_dimension_policy": "project_only_from_matching_visible_committed_fact_else_unresolved",
+    "visible_property_projection": {
+      "source": "committed_property_state",
+      "raw_source_in_narration": "forbidden",
+      "include_field_only_with_supporting_visible_committed_fact": true,
+      "unobserved_fields": "omit"
+    },
+    "typed_failure": "typed_player_visible_epilogue_projection_incomplete"
+  },
+  "terminal_projection_allowlist": [
+    "visible_completion_state",
+    "visible_completion_dimensions",
+    "visible_onisim_fate",
+    "visible_packet_state",
+    "visible_seal_state",
+    "visible_sealed_packet_holder",
+    "visible_sealed_packet_controller",
+    "visible_proved_conclusions",
+    "visible_committed_witnesses",
+    "visible_promise_state",
+    "visible_committed_relationships",
+    "visible_committed_injuries",
+    "visible_committed_property_projection",
+    "elapsed_game_time",
+    "visible_temporary_disposition",
+    "visible_committed_goods_reconciliation"
+  ],
+  "forbidden_hidden_fields": [
+    "hidden_truth",
+    "hidden_event_sequence",
+    "candidate_ids",
+    "hidden_motive",
+    "unselected_npc_options",
+    "hidden_schedule",
+    "internal_policy_ids",
+    "objective_completion_outcome",
+    "completion_dimensions",
+    "committed_property_state",
+    "unobserved_objective_facts"
+  ],
+  "player_safe_fact_vocabulary": [
+    "found_alive",
+    "returned",
+    "lost",
+    "destroyed",
+    "seal_intact",
+    "seal_damaged",
+    "proved",
+    "not_proved",
+    "promise_kept",
+    "promise_broken",
+    "case_open",
+    "temporary_disposition"
+  ],
+  "narration_input_schema": {
+    "schema": "rus.trace_epilogue_narration_input.v1",
+    "required": ["visible_completion_state", "visible_completion_dimensions", "visible_committed_facts", "elapsed_game_time"],
+    "additional_hidden_fields": "forbidden"
+  },
+  "partial_outcome_rules": ["state_only_what_is_committed", "name_unresolved_questions_without_hidden_answer"],
+  "unresolved_world_rules": ["world_and_npcs_continue", "local_acceptance_epilogue_is_not_world_end"],
+  "retry_idempotency_policy": "same_terminal_projection_produces_no_factual_write_and_does_not_change_completion",
+  "narration_factual_writes": "forbidden",
+  "completion_change_after_narration": "forbidden",
+  "forbidden_claims": [
+    "guaranteed_onisim_recovery",
+    "punishment_without_committed_authority_and_policy",
+    "guilt_from_hypothesis",
+    "promise_omission",
+    "restore_destroyed_item",
+    "restore_damaged_seal",
+    "invent_goods_reconciliation",
+    "reveal_hidden_ids_or_schedules",
+    "world_life_ended"
+  ],
+  "selected_epilogue": null,
+  "materialized_projection": null,
+  "excludes": ["runtime_handler", "evaluator", "factual_write", "persistence", "party_instance", "api", "ui"]
+}

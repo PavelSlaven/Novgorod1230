@@ -1,0 +1,18 @@
+{
+  "schema": "rus.declarative_content_contract_registry.v1",
+  "registry_id": "rus.body_state.declarative_content_contracts.v1",
+  "revision": 1,
+  "owner": "@rus/body-state",
+  "status": "approved",
+  "contracts": [
+    {
+      "schema_id": "rus.trace_body_environment_profiles.v1",
+      "schema_version": 1,
+      "record_kind": "scenario_body_environment_definition",
+      "required_top_level_fields": ["set_id", "revision", "owner", "clock_owner", "co_owner_contract_refs", "start_timestamp_specification", "value_bounds", "start_profile", "condition_profiles", "environment_profiles", "effect_profiles"],
+      "required_invariants": ["bounded_0_100_state", "exact_elapsed_input", "environment_snapshot_input", "condition_and_load_pins", "proposal_only_effects", "one_clock_owner", "pinned_co_owner_contracts"],
+      "forbidden_capabilities": ["direct_body_mutation", "second_body_engine", "runtime_handler", "persistence", "party_materialization", "api_publication", "ui"]
+    }
+  ],
+  "scenario_specific_ids_or_counts": "forbidden"
+}

@@ -1,0 +1,166 @@
+{
+  "schema": "rus.trace_promise_policy.v1",
+  "policy_id": "trace_ld_v1_promise_no_summary_killing",
+  "revision": 1,
+  "publication_status": "unpublished",
+  "owner": "@rus/social-law",
+  "owner_schema_ref": {"path": "packages/social-law/src/declarative-content-contracts.v1.json", "digest": "ab8de85822bdb778c280ba9fa4d20250addd02c058784d79dd69d05de8c7358e", "registry_id": "rus.social_law.declarative_content_contracts.v1", "schema_id": "rus.trace_promise_policy.v1", "schema_version": 1},
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden",
+  "owner_contracts": ["@rus/social-law:social_obligation_proposal"],
+  "promise_type": "conditional_protection_from_summary_killing_or_revenge",
+  "parties": {
+    "promisor_slot": "player_clerk",
+    "beneficiary_slot": "ratsha_storehouse_helper"
+  },
+  "witness_binding": {
+    "required_witness_slots": ["eremey_fisher", "trace_ld_v1_audience_slot_participating_fisher"],
+    "audience_slot_ref": "trace_ld_v1_audience_slot_participating_fisher",
+    "allowed_audience_candidates": ["background_fisher_1", "background_fisher_2"],
+    "separate_fisher_witness_selection": "forbidden"
+  },
+  "scope": {
+    "obligation": "prevent_immediate_killing_or_revenge_without_hearing",
+    "conditions": ["ratsha_surrenders", "ratsha_causes_no_further_harm"],
+    "does_not_mean": ["pardon", "innocence", "immunity", "release", "freedom_from_accountability", "final_judgment"]
+  },
+  "offer_timing": {
+    "must_precede_check_ref": "trace_ld_v1_check_ratsha_surrender_attempt",
+    "offer_is_active_fact": false,
+    "offer_write_class": "promise_offer",
+    "offer_preconditions": ["promisor_can_speak", "beneficiary_can_perceive", "required_witnesses_present"],
+    "acceptance_preconditions": ["promise_current_offered", "ratsha_surrender_without_further_harm_committed"],
+    "surrender_condition": "ratsha_surrender_without_further_harm_committed",
+    "no_further_harm_condition": "ratsha_surrender_without_further_harm_committed"
+  },
+  "lifecycle_input_projections": [
+    {
+      "projection_id": "trace_ld_v1_projection_surrender_to_promise_activation_basis",
+      "owner": "@rus/social-law",
+      "source_producer_ref": "trace_ld_v1_consequence_ratsha_surrender_committed",
+      "source_committed_facts": ["ratsha_surrender_without_further_harm_committed"],
+      "required_current_state_fact": "promise_current_offered",
+      "projected_committed_fact": "promise_activation_basis_committed",
+      "projection_semantics": "offer_accepted_by_committed_surrender_without_further_harm"
+    },
+    {
+      "projection_id": "trace_ld_v1_projection_disposition_to_promise_fulfillment_basis",
+      "owner": "@rus/social-law",
+      "source_producer_ref": "trace_ld_v1_temporary_disposition_contract",
+      "source_committed_facts": ["temporary_disposition_outcome_committed", "temporary_promise_obligation_preserved"],
+      "required_current_state_fact": "promise_current_active",
+      "projected_committed_fact": "promise_fulfillment_basis_committed",
+      "projection_semantics": "typed_temporary_disposition_preserves_no_summary_killing_scope"
+    },
+    {
+      "projection_id": "trace_ld_v1_projection_disposition_to_promise_breach_basis",
+      "owner": "@rus/social-law",
+      "source_producer_ref": "trace_ld_v1_temporary_disposition_contract",
+      "source_committed_facts": ["temporary_disposition_outcome_committed", "temporary_promise_scope_breach_committed"],
+      "required_current_state_fact": "promise_current_active",
+      "projected_committed_fact": "promise_breach_basis_committed",
+      "projection_semantics": "typed_temporary_disposition_commits_scope_breach"
+    }
+  ],
+  "completion_gate_projection": {
+    "projection_id": "trace_ld_v1_projection_promise_state_to_full_completion_gate",
+    "owner": "@rus/social-law",
+    "evaluation_after": ["factual_disposition_or_world_event_commit", "promise_current_state_transition"],
+    "allowed_current_state_facts": ["promise_current_not_offered", "promise_current_offered", "promise_current_fulfilled"],
+    "forbidden_current_state_facts": ["promise_current_active", "promise_current_broken"],
+    "projected_committed_fact": "promise_state_admitted_for_full_completion",
+    "missing_or_conflicting_current_state": "typed_promise_completion_gate_conflict"
+  },
+  "lifecycle_evaluation_order": [
+    "factual_disposition_or_world_event_commit",
+    "lifecycle_input_projection",
+    "promise_current_state_transition",
+    "promise_completion_gate_projection",
+    "completion_evaluation"
+  ],
+  "states": ["not_offered", "offered", "active", "fulfilled", "broken"],
+  "history_and_current_state_contract": {
+    "history_event_storage": "append_only",
+    "current_state_slot": "trace_ld_v1_promise_no_summary_killing_current_state",
+    "initial_current_state_fact": "promise_current_not_offered",
+    "initialization_boundary": "promise_instance_materialization",
+    "initialization_owner": "@rus/social-law",
+    "current_state_cardinality": "exactly_one",
+    "current_state_projection_write": "replace_previous_projection_atomically",
+    "history_events_as_current_state_or_completion_input": "forbidden",
+    "stale_current_state_fact_after_transition": "typed_promise_current_state_conflict",
+    "missing_or_multiple_current_state_facts": "typed_promise_current_state_conflict"
+  },
+  "transitions": [
+    {
+      "from": "not_offered",
+      "to": "offered",
+      "requires": ["promisor_offer_committed", "required_witnesses_present"],
+      "history_event_output": "promise_offered",
+      "current_state_projection": {
+        "state_slot": "trace_ld_v1_promise_no_summary_killing_current_state",
+        "expected_previous_fact": "promise_current_not_offered",
+        "next_fact": "promise_current_offered",
+        "replace_previous_projection": true,
+        "superseded_current_facts": ["promise_current_not_offered"]
+      }
+    },
+    {
+      "from": "offered",
+      "to": "active",
+      "requires": ["promise_activation_basis_committed"],
+      "history_event_output": "promise_activated",
+      "current_state_projection": {
+        "state_slot": "trace_ld_v1_promise_no_summary_killing_current_state",
+        "expected_previous_fact": "promise_current_offered",
+        "next_fact": "promise_current_active",
+        "replace_previous_projection": true,
+        "superseded_current_facts": ["promise_current_offered"]
+      }
+    },
+    {
+      "from": "active",
+      "to": "fulfilled",
+      "requires": ["promise_fulfillment_basis_committed"],
+      "history_event_output": "promise_fulfilled",
+      "current_state_projection": {
+        "state_slot": "trace_ld_v1_promise_no_summary_killing_current_state",
+        "expected_previous_fact": "promise_current_active",
+        "next_fact": "promise_current_fulfilled",
+        "replace_previous_projection": true,
+        "superseded_current_facts": ["promise_current_active"]
+      }
+    },
+    {
+      "from": "active",
+      "to": "broken",
+      "requires": ["promise_breach_basis_committed"],
+      "history_event_output": "promise_broken",
+      "current_state_projection": {
+        "state_slot": "trace_ld_v1_promise_no_summary_killing_current_state",
+        "expected_previous_fact": "promise_current_active",
+        "next_fact": "promise_current_broken",
+        "replace_previous_projection": true,
+        "superseded_current_facts": ["promise_current_active"]
+      }
+    }
+  ],
+  "forbidden_transitions": [
+    "not_offered_to_active",
+    "offered_to_fulfilled",
+    "offered_to_broken",
+    "broken_to_fulfilled",
+    "fulfilled_to_broken_without_new_committed_breach"
+  ],
+  "relation_effects": ["bounded_trust_delta_proposal", "breach_relationship_delta_proposal"],
+  "memory_effects": ["promisor_beneficiary_and_bound_witness_memory_after_activation"],
+  "testimony_effects": ["bound_witnesses_may_report_committed_offer_activation_fulfillment_or_breach"],
+  "permitted_npc_decision_influence": ["ratsha_surrender_options_may_become_admissible_after_offer"],
+  "write_target_allowlist": ["promise_offer", "promise_transition_history", "promise_current_state_projection", "promise_memory", "witness_testimony", "relationship_delta_proposal"],
+  "allowed_effects": ["promise_memory", "witness_testimony", "relationship_delta_proposal", "completion_input_promise_state"],
+  "forbidden_effects": ["hidden_truth_change", "ratsha_participation_erasure", "pardon", "innocence", "release", "legal_judgment"],
+  "selected_state": null,
+  "materialized_promise": null,
+  "excludes": ["runtime_handler", "evaluator", "persistence", "party_instance", "api", "ui"]
+}

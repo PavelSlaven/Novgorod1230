@@ -1,0 +1,61 @@
+{
+  "schema": "rus.declarative_content_contract_registry.v1",
+  "registry_id": "rus.items_property.declarative_content_contracts.v1",
+  "revision": 1,
+  "owner": "@rus/items-property",
+  "package_version": "0.13.0",
+  "status": "approved",
+  "contracts": [
+    {
+      "schema_id": "rus.items_property.approved_transition_profile.v1",
+      "schema_version": 1,
+      "record_kind": "approved_item_property_transition_definition",
+      "existing_support_entrypoints": [
+        "@rus/items-property:validateInventoryTopology",
+        "@rus/items-property:resolveInventoryAccess",
+        "@rus/items-property:validatePropertyRelation",
+        "@rus/items-property:planInventoryTransfer"
+      ],
+      "existing_support_scope": [
+        "inventory_topology_validation",
+        "physical_access_resolution",
+        "property_relation_validation",
+        "supported_placement_transfer_planning"
+      ],
+      "runtime_transition_execution": "deferred_to_first_use_integration",
+      "future_runtime_integration_inputs": [
+        "committed_item_container_property_state",
+        "expected_state_version",
+        "approved_transition_profile",
+        "bound_actor_or_controller"
+      ],
+      "future_runtime_integration_outputs": [
+        "typed_semantic_transition_result",
+        "approved_logical_write_targets_or_typed_failure"
+      ],
+      "required_invariants": [
+        "owner_holder_controller_separation",
+        "container_content_placement_inheritance",
+        "exact_source_and_target_state",
+        "owner_change_explicit",
+        "holder_controller_recovery_requires_typed_admission_basis",
+        "recovery_admission_fact_has_approved_producer",
+        "contained_items_follow_declared_parent_inheritance",
+        "closed_container_access_requires_approved_open_transition",
+        "no_destination_invention"
+      ],
+      "forbidden_capabilities": [
+        "runtime_handler",
+        "combined_write_plan_builder",
+        "physical_transaction",
+        "persistence",
+        "semantic_fallback",
+        "hidden_state_invention",
+        "party_materialization",
+        "api_publication",
+        "ui"
+      ]
+    }
+  ],
+  "scenario_specific_ids_or_counts": "forbidden"
+}

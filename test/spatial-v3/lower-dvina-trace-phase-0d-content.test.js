@@ -44,7 +44,7 @@ const readJson = (directory, name) => JSON.parse(readFileSync(resolve(directory,
 const writeJson = (directory, name, value) => writeFileSync(resolve(directory, name), `${JSON.stringify(value, null, 2)}\n`);
 const runChecker = (directory = source, validationOnly = directory !== source) => spawnSync(
   process.execPath,
-  [checker, ...(validationOnly ? ['--validation-only', '--directory', directory] : [])],
+  [checker, '--legacy-v1', ...(validationOnly ? ['--validation-only', '--directory', directory] : [])],
   { encoding: 'utf8' }
 );
 const refreshDigests = (directory) => {

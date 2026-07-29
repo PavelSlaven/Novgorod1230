@@ -1,0 +1,45 @@
+{
+  "schema": "rus.declarative_content_contract_registry.v1",
+  "registry_id": "rus.time_events_history.declarative_content_contracts.v2",
+  "revision": 2,
+  "supersedes_registry_ref": {
+    "registry_id": "rus.time_events_history.declarative_content_contracts.v1",
+    "revision": 1,
+    "path": "packages/time-events-history/src/declarative-content-contracts.v1.json",
+    "digest": "cdc4571c07e2c592cbfb469a7028c31791d82deadbc9b37a97f44ee58597a471"
+  },
+  "owner": "@rus/time-events-history",
+  "package_version": "0.13.0",
+  "status": "approved",
+  "contracts": [
+    {
+      "schema_id": "rus.time_events_history.game_timestamp_and_elapsed.v1",
+      "schema_version": 1,
+      "record_kind": "exact_game_timestamp_elapsed_and_boundary_arithmetic",
+      "public_entrypoints": [
+        "@rus/time-events-history:normalizeGameTimestamp",
+        "@rus/time-events-history:addElapsedTime",
+        "@rus/time-events-history:compareGameTimestamp",
+        "@rus/time-events-history:computeTemporalDigest"
+      ],
+      "required_inputs": ["exact_GameTimestamp", "approved_calendar_version", "exact_elapsed", "approved_boundary_candidates"],
+      "required_outputs": ["canonical_GameTimestamp", "exact_elapsed_result", "ordered_boundary_result", "temporal_digest"],
+      "required_invariants": ["exact_timestamp", "rational_minute_arithmetic", "earliest_boundary_first", "no_rounding", "no_hidden_time_read"],
+      "forbidden_capabilities": ["duration_formula_ownership", "global_clock", "factual_write", "persistence", "narration"]
+    },
+    {
+      "schema_id": "rus.time_events_history.calendar_projection.v1",
+      "schema_version": 1,
+      "record_kind": "approved_calendar_date_and_exact_game_timestamp_projection",
+      "public_entrypoints": [
+        "@rus/time-events-history/calendar:projectCalendar",
+        "@rus/time-events-history/calendar:resolveGameTimestampFromCalendarDate"
+      ],
+      "required_inputs": ["approved_calendar_profile", "exact_calendar_date", "exact_local_time_or_GameTimestamp"],
+      "required_outputs": ["canonical_GameTimestamp_or_calendar_projection"],
+      "required_invariants": ["approved_profile_only", "exact_rational_time", "bidirectional_round_trip", "no_rounding", "no_rng", "no_hidden_time_read"],
+      "forbidden_capabilities": ["date_selection", "calendar_profile_invention", "global_clock", "factual_write", "persistence", "narration"]
+    }
+  ],
+  "scenario_specific_ids_or_counts": "forbidden"
+}

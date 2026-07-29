@@ -1,8 +1,22 @@
+import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 const root = resolve(import.meta.dirname, '../..');
+const argumentValue = (name) => {
+  const index = process.argv.indexOf(name);
+  return index === -1 ? null : process.argv[index + 1];
+};
+const validationOnly = process.argv.includes('--validation-only');
+const registryArgument = argumentValue('--registry');
+if (registryArgument && !validationOnly) {
+  throw new Error('P08 registry override is allowed only for validation fixtures');
+}
+const registryPath = registryArgument
+  ? resolve(registryArgument)
+  : resolve(root, 'docs/migration/spatial-v3/p08-public-interface-registry.json');
+const sha256 = (value) => createHash('sha256').update(value).digest('hex');
 const ports = [
   ['@rus/space-map', 'packages/space-map/src/spatial-v3-ports.js', ['createSpatialContextLoader', 'createSpatialTopologyRepository']],
   ['@rus/movement-routes', 'packages/movement-routes/src/spatial-v3-ports.js', ['createTraversalResolver', 'createTraversalCommitValidator']],
@@ -22,15 +36,71 @@ for (const [packageName, file, symbols] of ports) {
 }
 const ownership = await readFile(resolve(root, 'docs/domain/OWNERSHIP_MAP.md'), 'utf8');
 for (const owner of ['@rus/space-map', '@rus/movement-routes', '@rus/materialization', '@rus/time-events-history', '@rus/party-store', '@rus/turn', '@rus/contracts']) if (!ownership.includes(owner)) errors.push(`ownership map: missing ${owner}`);
-const registry = JSON.parse(await readFile(resolve(root, 'docs/migration/spatial-v3/p08-public-interface-registry.json'), 'utf8').catch(() => '{}'));
+const registry = JSON.parse(await readFile(registryPath, 'utf8').catch(() => '{}'));
 if (registry.schema_version !== 'rus.spatial_v3_public_interface_registry.v1'
   || registry.status !== 'target'
   || registry.activation !== 'versioned production activation cutover only'
   || registry.failure_mode !== 'typed_fail_closed_without_fallback'
   || registry.contract_version !== '4.4.0-target.1'
   || registry.temporal_contract !== 'temporal-world-v1.1'
+  || !Array.isArray(registry.owner_contract_refs)
   || !Array.isArray(registry.interfaces)) {
   errors.push('P08 public interface registry metadata is invalid');
+}
+const expectedTimeContractRef = {
+  owner: '@rus/time-events-history',
+  registry_id: 'rus.time_events_history.declarative_content_contracts.v2',
+  revision: 2,
+  path: 'packages/time-events-history/src/declarative-content-contracts.v2.json',
+  digest: '6e72f137be19f77afa34aa853d9f12c0c8f3d7ce28e11c41c83ecc8ee6369a10'
+};
+if (registry.owner_contract_refs?.length !== 1
+  || JSON.stringify(registry.owner_contract_refs[0]) !== JSON.stringify(expectedTimeContractRef)) {
+  errors.push('P08 owner contract ref set is incomplete or changed');
+}
+const timeV1Path = resolve(root, 'packages/time-events-history/src/declarative-content-contracts.v1.json');
+const timeV2Path = resolve(root, expectedTimeContractRef.path);
+const timeV1Source = await readFile(timeV1Path, 'utf8').catch(() => '');
+const timeV2Source = await readFile(timeV2Path, 'utf8').catch(() => '');
+const timeV1Registry = timeV1Source ? JSON.parse(timeV1Source) : {};
+const timeV2Registry = timeV2Source ? JSON.parse(timeV2Source) : {};
+const expectedCalendarEntrypoints = [
+  '@rus/time-events-history/calendar:projectCalendar',
+  '@rus/time-events-history/calendar:resolveGameTimestampFromCalendarDate'
+];
+const timeV2Contracts = new Map(
+  Array.isArray(timeV2Registry.contracts)
+    ? timeV2Registry.contracts.map((contract) => [contract.schema_id, contract])
+    : []
+);
+const calendarContract = timeV2Contracts.get('rus.time_events_history.calendar_projection.v1');
+if (sha256(timeV1Source) !== 'cdc4571c07e2c592cbfb469a7028c31791d82deadbc9b37a97f44ee58597a471'
+  || sha256(timeV2Source) !== expectedTimeContractRef.digest
+  || timeV2Registry.schema !== 'rus.declarative_content_contract_registry.v1'
+  || timeV2Registry.registry_id !== expectedTimeContractRef.registry_id
+  || timeV2Registry.revision !== expectedTimeContractRef.revision
+  || timeV2Registry.owner !== expectedTimeContractRef.owner
+  || timeV2Registry.status !== 'approved'
+  || timeV2Registry.package_version !== '0.13.0'
+  || timeV2Registry.supersedes_registry_ref?.registry_id !== 'rus.time_events_history.declarative_content_contracts.v1'
+  || timeV2Registry.supersedes_registry_ref?.revision !== 1
+  || timeV2Registry.supersedes_registry_ref?.path !== 'packages/time-events-history/src/declarative-content-contracts.v1.json'
+  || timeV2Registry.supersedes_registry_ref?.digest !== 'cdc4571c07e2c592cbfb469a7028c31791d82deadbc9b37a97f44ee58597a471'
+  || timeV2Registry.contracts?.length !== 2
+  || timeV2Contracts.size !== 2
+  || JSON.stringify(timeV2Contracts.get('rus.time_events_history.game_timestamp_and_elapsed.v1'))
+    !== JSON.stringify(timeV1Registry.contracts?.[0])
+  || calendarContract?.schema_version !== 1
+  || JSON.stringify(calendarContract?.public_entrypoints) !== JSON.stringify(expectedCalendarEntrypoints)
+  || !calendarContract?.required_invariants?.includes('bidirectional_round_trip')
+  || !calendarContract?.required_invariants?.includes('no_rng')
+  || calendarContract?.forbidden_capabilities?.includes('date_selection') !== true
+  || timeV2Registry.scenario_specific_ids_or_counts !== 'forbidden') {
+  errors.push('time-events-history owner contract v2 is missing, incompatible, or not exact-superseding v1');
+}
+const timeModuleDocumentation = await readFile(resolve(root, 'packages/time-events-history/MODULE.md'), 'utf8').catch(() => '');
+if (!timeModuleDocumentation.includes('resolveGameTimestampFromCalendarDate(exactCalendarDate, approvedProfile)')) {
+  errors.push('time-events-history MODULE.md does not register the inverse calendar entrypoint');
 }
 const expectedInterfaces = [
   ['@rus/space-map', '@rus/space-map/spatial-v3', 'createSpatialContextLoader', 'load'],
@@ -43,6 +113,7 @@ const expectedInterfaces = [
   ['@rus/party-store', '@rus/party-store/spatial-v3', 'createCombinedWritePlanCommitter', 'commit'],
   ['@rus/time-events-history', '@rus/time-events-history', 'normalizeGameTimestamp', 'call'],
   ['@rus/time-events-history', '@rus/time-events-history/calendar', 'projectCalendar', 'call'],
+  ['@rus/time-events-history', '@rus/time-events-history/calendar', 'resolveGameTimestampFromCalendarDate', 'call'],
   ['@rus/time-events-history', '@rus/time-events-history/temporal-boundaries', 'resolveSameTimeCascade', 'call'],
   ['@rus/time-events-history', '@rus/time-events-history/historical-phases', 'provideHistoricalPhaseBoundaries', 'call'],
   ['@rus/turn', '@rus/turn/temporal-advance', 'createTemporalAdvanceEngine', 'advance'],

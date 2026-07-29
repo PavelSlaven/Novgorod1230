@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { projectCalendar } from '../src/calendar.js';
+import { projectCalendar, resolveGameTimestampFromCalendarDate } from '../src/calendar.js';
 import { addElapsedTime } from '../src/index.js';
 
 const timestamp = (whole_minutes, subminute_numerator = '0', subminute_denominator = '1') => ({ whole_minutes, subminute_numerator, subminute_denominator });
@@ -23,6 +23,79 @@ test('calendar projects epoch, local day boundary, daypart and daylight from an 
   const before = projectCalendar(timestamp('359'), profile());
   const after = projectCalendar(timestamp('360'), profile());
   assert.equal(before.day, '1'); assert.equal(after.day, '2'); assert.equal(after.daypart_id, 'day');
+});
+
+test('calendar owner resolves an exact calendar date and local time to one GameTimestamp', () => {
+  const resolved = resolveGameTimestampFromCalendarDate({
+    calendar_system: 'source-backed',
+    year: '1',
+    month: '2',
+    day: '1',
+    local_minute_of_day: '420',
+    subminute_numerator: '0',
+    subminute_denominator: '1'
+  }, profile());
+  assert.deepEqual(resolved, timestamp('42180'));
+  assert.deepEqual(projectCalendar(resolved, profile()), {
+    profile_id: 'novgorod-calendar',
+    profile_version: '1',
+    calendar_system: 'source-backed',
+    provenance: { source_id: 'chronicle-x', source_version: '1' },
+    year: '1',
+    month: '2',
+    day: '1',
+    local_time_of_day: { numerator: '420', denominator: '1' },
+    daypart_id: 'day',
+    season_id: 'warm',
+    daylight_phase_id: 'light'
+  });
+  assert.ok(Object.isFrozen(resolved));
+});
+
+test('calendar owner rejects unknown systems, impossible dates, and malformed local time', () => {
+  for (const invalid of [
+    { calendar_system: 'other', year: '1', month: '1', day: '1', local_minute_of_day: '0', subminute_numerator: '0', subminute_denominator: '1' },
+    { calendar_system: 'source-backed', year: '1', month: '3', day: '1', local_minute_of_day: '0', subminute_numerator: '0', subminute_denominator: '1' },
+    { calendar_system: 'source-backed', year: '1', month: '2', day: '31', local_minute_of_day: '0', subminute_numerator: '0', subminute_denominator: '1' },
+    { calendar_system: 'source-backed', year: '1', month: '1', day: '1', local_minute_of_day: '1440', subminute_numerator: '0', subminute_denominator: '1' }
+  ]) {
+    assert.throws(
+      () => resolveGameTimestampFromCalendarDate(invalid, profile()),
+      (error) => error?.code === 'time_calendar_profile_gap'
+    );
+  }
+});
+
+test('calendar owner inverse preserves leap dates, non-zero local offsets, and subminutes', () => {
+  const offsetProfile = profile();
+  offsetProfile.local_offset_rule = { offset_minutes: '125' };
+  const input = {
+    calendar_system: 'source-backed',
+    year: '3',
+    month: '2',
+    day: '31',
+    local_minute_of_day: '200',
+    subminute_numerator: '1',
+    subminute_denominator: '2'
+  };
+  const resolved = resolveGameTimestampFromCalendarDate(input, offsetProfile);
+  const projected = projectCalendar(resolved, offsetProfile);
+  assert.deepEqual(
+    {
+      calendar_system: projected.calendar_system,
+      year: projected.year,
+      month: projected.month,
+      day: projected.day,
+      local_time_of_day: projected.local_time_of_day
+    },
+    {
+      calendar_system: input.calendar_system,
+      year: input.year,
+      month: input.month,
+      day: input.day,
+      local_time_of_day: { numerator: '401', denominator: '2' }
+    }
+  );
 });
 
 test('calendar resolves finite leap cycles and never iterates by elapsed day or year', () => {

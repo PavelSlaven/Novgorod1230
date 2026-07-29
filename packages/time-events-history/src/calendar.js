@@ -158,8 +158,7 @@ function normalizeProfile(profile) {
   };
 }
 
-export function projectCalendar(timestamp, profile) {
-  const calendar = normalizeProfile(profile);
+function calendarArithmetic(calendar) {
   const isLeapYear = (year) => calendar.leapYearIndexes.has(modulo(year, calendar.cycleYears).toString());
   const daysInYear = (year) => calendar.yearDays + (isLeapYear(year) ? calendar.leapDays : 0n);
   const leapIndexesBefore = (relativeYear) => {
@@ -195,6 +194,79 @@ export function projectCalendar(timestamp, profile) {
     if (day > monthDays) gap();
     return total;
   };
+  return { cycleDays, daysBeforeYear, dayOfYear, daysInYear, daysWithinCycleBeforeYear, isLeapYear };
+}
+
+function normalizeCalendarDateInput(value, calendar) {
+  object(value, [
+    'calendar_system',
+    'year',
+    'month',
+    'day',
+    'local_minute_of_day',
+    'subminute_numerator',
+    'subminute_denominator'
+  ]);
+  if (id(value.calendar_system) !== calendar.calendar_system) gap();
+  const localTime = normalizeGameTimestamp({
+    whole_minutes: value.local_minute_of_day,
+    subminute_numerator: value.subminute_numerator,
+    subminute_denominator: value.subminute_denominator
+  });
+  if (BigInt(localTime.whole_minutes) >= DAY_MINUTES) gap();
+  return {
+    year: decimal(value.year, true),
+    month: decimal(value.month, true),
+    day: decimal(value.day, true),
+    localTime
+  };
+}
+
+export function resolveGameTimestampFromCalendarDate(value, profile) {
+  const calendar = normalizeProfile(profile);
+  const target = normalizeCalendarDateInput(value, calendar);
+  const { daysBeforeYear, dayOfYear } = calendarArithmetic(calendar);
+  const epochSerial = daysBeforeYear(calendar.epoch.year)
+    + dayOfYear(calendar.epoch.year, calendar.epoch.month, calendar.epoch.day);
+  const targetSerial = daysBeforeYear(target.year) + dayOfYear(target.year, target.month, target.day);
+  const epochLocal = localDayAndTime(calendar.epoch.timestamp, calendar.offset, calendar.dayStart);
+  const targetCalendarDay = targetSerial - epochSerial + epochLocal.day;
+  const denominator = BigInt(target.localTime.subminute_denominator);
+  const localMinuteNumerator = BigInt(target.localTime.whole_minutes) * denominator
+    + BigInt(target.localTime.subminute_numerator);
+  const beforeDayStart = localMinuteNumerator < calendar.dayStart * denominator;
+  const localMidnightDay = targetCalendarDay + (beforeDayStart ? 1n : 0n);
+  const timestampNumerator = localMidnightDay * DAY_MINUTES * denominator
+    + localMinuteNumerator
+    - calendar.offset * denominator;
+  if (timestampNumerator < 0n) gap();
+  const wholeMinutes = timestampNumerator / denominator;
+  const subminuteNumerator = timestampNumerator % denominator;
+  const timestamp = normalizeGameTimestamp({
+    whole_minutes: wholeMinutes.toString(),
+    subminute_numerator: subminuteNumerator.toString(),
+    subminute_denominator: denominator.toString()
+  });
+  const projected = projectCalendar(timestamp, profile);
+  if (projected.calendar_system !== value.calendar_system
+    || projected.year !== value.year
+    || projected.month !== value.month
+    || projected.day !== value.day
+    || projected.local_time_of_day.numerator !== localMinuteNumerator.toString()
+    || projected.local_time_of_day.denominator !== denominator.toString()) gap();
+  return deepFreeze(timestamp);
+}
+
+export function projectCalendar(timestamp, profile) {
+  const calendar = normalizeProfile(profile);
+  const {
+    cycleDays,
+    daysBeforeYear,
+    dayOfYear,
+    daysInYear,
+    daysWithinCycleBeforeYear,
+    isLeapYear
+  } = calendarArithmetic(calendar);
   const epochSerial = daysBeforeYear(calendar.epoch.year) + dayOfYear(calendar.epoch.year, calendar.epoch.month, calendar.epoch.day);
   const current = localDayAndTime(timestamp, calendar.offset, calendar.dayStart);
   const epochLocal = localDayAndTime(calendar.epoch.timestamp, calendar.offset, calendar.dayStart);

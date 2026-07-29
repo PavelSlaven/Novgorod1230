@@ -6,7 +6,7 @@
 
 ## Владеет
 
-- Владеет canonical temporal digest, нормализацией и сравнением exact time, crossing whole-minute boundaries, `projectCalendar`, историческими phase handlers и `temporal-resolution-v1` (`normalizeTemporalBoundaryCandidates`, earliest batch, same-time cascade).
+- Владеет canonical temporal digest, нормализацией и сравнением exact time, crossing whole-minute boundaries, двусторонней календарной проекцией `projectCalendar` / `resolveGameTimestampFromCalendarDate`, историческими phase handlers и `temporal-resolution-v1` (`normalizeTemporalBoundaryCandidates`, earliest batch, same-time cascade).
 
 ## Не владеет
 
@@ -15,7 +15,7 @@
 ## Public API
 
 - `.`: exact-time primitives `normalizeGameTimestamp`, `normalizeElapsedTime`, rational arithmetic, `addElapsedTime`, `subtractGameTimestamp`, `compareGameTimestamp`, `countCrossedWholeMinuteBoundaries`, `computeTemporalDigest`; historical-phase exports.
-- `./calendar`: `projectCalendar(timestamp, approvedProfile)`.
+- `./calendar`: `projectCalendar(timestamp, approvedProfile)`, `resolveGameTimestampFromCalendarDate(exactCalendarDate, approvedProfile)`.
 - `./temporal-boundaries`: `TEMPORAL_RESOLUTION_POLICY_VERSION`, order, `TemporalBoundaryError`, normalization, earliest-batch selection и `resolveSameTimeCascade`.
 - `./legacy`: compatibility-only clock/timer helpers; не является target temporal execution API.
 

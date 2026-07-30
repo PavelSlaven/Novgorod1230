@@ -6,12 +6,16 @@ import { resolveGameTimestampFromCalendarDate } from '@rus/time-events-history/c
 import { validateStage11PlayerCharacterOutput } from '@rus/new-game/stages/stage-11';
 import { buildStage12CodePrecheck } from '@rus/new-game/stages/stage-12';
 import { assertExactContentRef } from './lower-dvina-trace-phase-1a-ref-validation.js';
+import {
+  assertVersionedRawPin,
+  loadLowerDvinaTracePhase1ACutover
+} from './lower-dvina-trace-phase-1a-cutover.js';
 export { assertExactContentRef } from './lower-dvina-trace-phase-1a-ref-validation.js';
 
 const SCENARIO_ROOT = 'data/world-catalogs/novgorod/lower-dvina-trace-v1';
 const FILES = Object.freeze({
-  materialization_bindings: 'phase-1a/materialization-bindings.json',
-  definition: 'phase-0d-v2/definition.json',
+  materialization_bindings: 'phase-1a-v2/materialization-bindings.json',
+  definition: 'phase-0d-v3/definition.json',
   player_profile: 'player-profile.json',
   player_profile_definition: 'definition.json',
   player_profile_set: 'player-profile-set.json',
@@ -27,60 +31,41 @@ const FILES = Object.freeze({
   movement_bindings: 'phase-0d/movement-bindings.json',
   location_access_policies: 'phase-0d/location-access-policies.json',
   location_capacity_contracts: 'phase-0d/location-capacity-contracts.json',
-  body_environment_profiles: 'phase-0d-v2/body-environment-profiles.json',
+  body_environment_profiles: 'phase-0d-v3/body-environment-profiles.json',
   promise_policy: 'phase-0d/promise-policy.json',
   completion_rules: 'phase-0d/completion-rules.json',
   epilogue_rules: 'phase-0d/epilogue-rules.json'
 });
 
 export async function loadLowerDvinaTraceMaterializationBundle({ rootDir = process.cwd() } = {}) {
-  const phase1AManifestFile = await readJson(rootDir, `${SCENARIO_ROOT}/phase-1a/manifest.json`);
-  const correctionManifestFile = await readJson(rootDir, `${SCENARIO_ROOT}/phase-0d-v2/manifest.json`);
-  const baseManifestFile = await readJson(rootDir, `${SCENARIO_ROOT}/phase-0d/manifest.json`);
+  const {
+    phase1AManifestFile,
+    correctionManifestFile,
+    supersededBindingsFile
+  } = await loadLowerDvinaTracePhase1ACutover({
+    rootDir,
+    scenarioRoot: SCENARIO_ROOT,
+    readJson
+  });
   const phase0aManifest = await readJson(rootDir, `${SCENARIO_ROOT}/manifest.json`);
   const phase0bManifest = await readJson(rootDir, `${SCENARIO_ROOT}/phase-0b/manifest.json`);
   const phase0cManifest = await readJson(rootDir, `${SCENARIO_ROOT}/phase-0c/manifest.json`);
   const correction = correctionManifestFile.value;
   const phase1AManifest = phase1AManifestFile.value;
-  if (phase1AManifest.schema !== 'rus.lower_dvina_trace_phase_1a_manifest.v1'
-    || phase1AManifest.package_id !== 'lower_dvina_trace_phase_1a_v1'
-    || phase1AManifest.revision !== 1
-    || phase1AManifest.status !== 'approved'
-    || phase1AManifest.scenario_id !== 'lower_dvina_trace_v1'
-    || phase1AManifest.scenario_definition_revision !== 5
-    || phase1AManifest.publication_status !== 'internal_only'
-    || phase1AManifest.materialization_status !== 'phase_1a_internal'
-    || phase1AManifest.fallback_policy !== 'forbidden') {
-    fail('TRACE_PHASE_1A_MANIFEST_INVALID', 'Phase-1A materialization manifest is incomplete.');
-  }
-  if (correction.schema !== 'rus.trace_phase_0d_correction_manifest.v1'
-    || correction.package_id !== 'lower_dvina_trace_phase_0d_v2'
-    || correction.revision !== 2
-    || correction.scenario_definition_revision !== 5
-    || correction.publication_status !== 'unpublished'
-    || correction.remaining_unresolved_refs?.length !== 0) {
-    fail('TRACE_SCENARIO_MANIFEST_INVALID', 'Phase-0D correction manifest is incomplete.');
-  }
-  assertRawPin(
-    phase1AManifest.base_definition_ref,
-    correctionManifestFile,
-    `${SCENARIO_ROOT}/phase-0d-v2/manifest.json`
-  );
-  assertRawPin(correction.base_package_ref, baseManifestFile, `${SCENARIO_ROOT}/phase-0d/manifest.json`);
 
   const artifactPins = {};
   const bundle = {
     version: 1,
     schema: 'rus.lower_dvina_trace_materialization_bundle.v1',
     scenario_id: 'lower_dvina_trace_v1',
-    definition_revision: 5,
+    definition_revision: 6,
     manifest_digest: phase1AManifestFile.digest,
     phase_1a_manifest: phase1AManifest,
     artifact_pins: artifactPins
   };
   artifactPins.phase_1a_manifest = {
     key: 'phase_1a_manifest',
-    path: `${SCENARIO_ROOT}/phase-1a/manifest.json`,
+    path: `${SCENARIO_ROOT}/phase-1a-v2/manifest.json`,
     digest: phase1AManifestFile.digest,
     canonical_digest: canonicalDigest(phase1AManifest),
     schema: phase1AManifest.schema,
@@ -141,6 +126,17 @@ export async function loadLowerDvinaTraceMaterializationBundle({ rootDir = proce
       id: bundle.materialization_bindings.binding_set_id,
       revision: bundle.materialization_bindings.revision,
       schema: bundle.materialization_bindings.schema
+    }
+  );
+  assertVersionedRawPin(
+    bundle.materialization_bindings.superseded_binding_ref,
+    supersededBindingsFile,
+    {
+      path: `${SCENARIO_ROOT}/phase-1a/materialization-bindings.json`,
+      id: 'lower_dvina_trace_phase_1a_materialization_bindings_v1',
+      revision: 1,
+      schema: 'rus.lower_dvina_trace_phase_1a_materialization_bindings.v1',
+      idField: 'binding_set_id'
     }
   );
   assertManifestFile(phase0bManifest.value, 'participant-profile-set.json', artifactPins.participant_profile_set);
@@ -238,10 +234,6 @@ async function readJson(rootDir, relativePath) {
   if (typeof relativePath !== 'string' || !relativePath) fail('TRACE_SCENARIO_ARTIFACT_PATH_INVALID', 'Pinned artifact path is required.');
   const raw = await readFile(resolve(rootDir, relativePath));
   return { value: JSON.parse(raw.toString('utf8')), digest: createHash('sha256').update(raw).digest('hex') };
-}
-
-function assertRawPin(ref, loaded, expectedPath) {
-  if (ref?.path !== expectedPath || ref?.digest !== loaded.digest) fail('TRACE_SCENARIO_DEPENDENCY_MISMATCH', `Pinned dependency ${expectedPath} is stale.`);
 }
 
 function assertManifestFile(manifest, name, pin) { if (manifest?.files?.[name] !== pin.digest) fail('TRACE_SCENARIO_ARTIFACT_DIGEST_MISMATCH', `Manifest digest mismatch for ${name}.`); }

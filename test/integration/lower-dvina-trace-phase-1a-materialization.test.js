@@ -30,7 +30,7 @@ function request(overrides = {}) {
   return {
     party_id: 'trace-phase-1a-unit-party',
     scenario_id: 'lower_dvina_trace_v1',
-    scenario_definition_revision: 5,
+    scenario_definition_revision: 6,
     scenario_manifest_digest: bundle.manifest_digest,
     world_revision_id: bundle.location_topology_set.spatial_source_ref.world_revision_id,
     world_catalog_digest: bundle.location_topology_set.spatial_source_ref.world_revision_catalog_digest,
@@ -155,6 +155,51 @@ test('Phase 1A manifest binding ref is exact for path, id, revision, schema and 
       () => assertExactContentRef({ ...exact, [key]: value }, pin, expected),
       { code: 'TRACE_SCENARIO_ARTIFACT_REF_MISMATCH' },
       `${key} mutation must fail closed`
+    );
+  }
+});
+
+test('Phase 1A revision 6 exact-supersedes every immutable revision 5 dependency', () => {
+  assert.equal(bundle.definition_revision, 6);
+  assert.equal(bundle.phase_1a_manifest.revision, 2);
+  assert.equal(bundle.materialization_bindings.revision, 2);
+  assert.equal(bundle.body_environment_profiles.revision, 3);
+  for (const [artifactKey, mutate] of [
+    [
+      'phase_1a_manifest',
+      (artifact) => {
+        artifact.superseded_package_ref.digest = '0'.repeat(64);
+      }
+    ],
+    [
+      'materialization_bindings',
+      (artifact) => {
+        artifact.superseded_binding_ref.id = 'unknown_binding';
+      }
+    ],
+    [
+      'definition',
+      (artifact) => {
+        artifact.supersedes_definition_ref.revision = 4;
+      }
+    ],
+    [
+      'body_environment_profiles',
+      (artifact) => {
+        artifact.supersedes_ref.path = 'unknown/body-profiles.json';
+      }
+    ]
+  ]) {
+    const changed = structuredClone(bundle);
+    mutate(changed[artifactKey]);
+    changed.artifact_pins[artifactKey].canonical_digest =
+      canonicalDigest(changed[artifactKey]);
+    assert.throws(
+      () => materializeLowerDvinaTracePartyInstance(request({
+        scenario_bundle: changed
+      })),
+      { code: 'TRACE_PHASE_1A_CUTOVER_IDENTITY_INVALID' },
+      artifactKey
     );
   }
 });

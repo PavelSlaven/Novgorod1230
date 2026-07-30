@@ -1,7 +1,7 @@
 import { canonicalDigest, MATERIALIZER_VERSION, MaterializationError, RNG_VERSION } from './core.js';
 
 export const LOWER_DVINA_TRACE_SCENARIO_ID = 'lower_dvina_trace_v1';
-export const LOWER_DVINA_TRACE_DEFINITION_REVISION = 5;
+export const LOWER_DVINA_TRACE_DEFINITION_REVISION = 6;
 export const LOWER_DVINA_TRACE_ACCEPTANCE_SEED_CONTEXT = 'lower_dvina_trace_phase_1a_mikula_v1';
 export const LOWER_DVINA_TRACE_APPROVED_WORLD_COMPATIBILITY_DIGEST =
   '0e239d47657a9bdf996f5a0cc5ca46e57e42a5326feb540d8acca747ad257b54';
@@ -35,9 +35,9 @@ const REQUIRED_ARTIFACTS = Object.freeze([
 ]);
 
 const ARTIFACT_CONTRACTS = Object.freeze({
-  phase_1a_manifest: ['rus.lower_dvina_trace_phase_1a_manifest.v1', 1],
-  materialization_bindings: ['rus.lower_dvina_trace_phase_1a_materialization_bindings.v1', 1],
-  definition: ['rus.trace_scenario_definition.v1', 5],
+  phase_1a_manifest: ['rus.lower_dvina_trace_phase_1a_manifest.v1', 2],
+  materialization_bindings: ['rus.lower_dvina_trace_phase_1a_materialization_bindings.v1', 2],
+  definition: ['rus.trace_scenario_definition.v1', 6],
   player_profile: ['rus.trace_player_profile.v1', 1],
   player_profile_definition: ['rus.trace_scenario_definition.v1', 1],
   player_profile_set: ['rus.trace_player_profile_set.v1', 1],
@@ -54,7 +54,7 @@ const ARTIFACT_CONTRACTS = Object.freeze({
   movement_bindings: ['rus.trace_movement_bindings.v1', 1],
   location_access_policies: ['rus.trace_scene_access_policy_set.v1', 1],
   location_capacity_contracts: ['rus.trace_scene_capacity_contract_set.v1', 1],
-  body_environment_profiles: ['rus.trace_body_environment_profiles.v1', 2],
+  body_environment_profiles: ['rus.trace_body_environment_profiles.v2', 3],
   promise_policy: ['rus.trace_promise_policy.v1', 1],
   completion_rules: ['rus.trace_completion_rules.v1', 1],
   epilogue_rules: ['rus.trace_epilogue_rules.v1', 1],
@@ -66,7 +66,7 @@ export function assertLowerDvinaTraceRequest(input) {
   if (!input || typeof input !== 'object') fail('TRACE_MATERIALIZATION_REQUEST_INVALID', 'Materialization request is required.');
   const required = ['party_id', 'scenario_id', 'scenario_manifest_digest', 'world_revision_id', 'world_catalog_digest', 'materializer_version', 'rng_algorithm_id', 'seed_context', 'idempotency_key', 'trigger'];
   for (const key of required) if (typeof input[key] !== 'string' || !input[key]) fail('TRACE_MATERIALIZATION_REQUEST_INVALID', `Missing request field ${key}.`);
-  if (input.scenario_id !== LOWER_DVINA_TRACE_SCENARIO_ID || input.scenario_definition_revision !== LOWER_DVINA_TRACE_DEFINITION_REVISION) fail('TRACE_SCENARIO_REVISION_UNSUPPORTED', 'Only Lower Dvina trace definition revision 5 is supported.');
+  if (input.scenario_id !== LOWER_DVINA_TRACE_SCENARIO_ID || input.scenario_definition_revision !== LOWER_DVINA_TRACE_DEFINITION_REVISION) fail('TRACE_SCENARIO_REVISION_UNSUPPORTED', 'Only Lower Dvina trace definition revision 6 is supported for new materialization.');
   if (input.materializer_version !== MATERIALIZER_VERSION || input.rng_algorithm_id !== RNG_VERSION) fail('TRACE_MATERIALIZER_VERSION_UNSUPPORTED', 'Materializer and RNG pins must match production versions.');
   if (!Number.isInteger(input.occurrence) || input.occurrence < 0) fail('TRACE_MATERIALIZATION_REQUEST_INVALID', 'occurrence must be a non-negative integer.');
   if (input.existing_party_state?.baseline_exists === true) fail('BASELINE_ALREADY_MATERIALIZED', 'An existing baseline cannot be materialized again.');
@@ -107,12 +107,13 @@ export function assertLowerDvinaTraceBundle(bundle, input) {
       fail('TRACE_SCENARIO_ARTIFACT_CONTRACT_UNSUPPORTED', `Required artifact ${key} has an unsupported schema or revision.`);
     }
   }
-  if (bundle.definition?.scenario_id !== LOWER_DVINA_TRACE_SCENARIO_ID || bundle.definition?.revision !== LOWER_DVINA_TRACE_DEFINITION_REVISION || bundle.definition?.required_unresolved_refs?.length !== 0) fail('TRACE_SCENARIO_DEFINITION_INCOMPLETE', 'Scenario definition revision 5 must be fully resolved.');
+  if (bundle.definition?.scenario_id !== LOWER_DVINA_TRACE_SCENARIO_ID || bundle.definition?.revision !== LOWER_DVINA_TRACE_DEFINITION_REVISION || bundle.definition?.required_unresolved_refs?.length !== 0) fail('TRACE_SCENARIO_DEFINITION_INCOMPLETE', 'Scenario definition revision 6 must be fully resolved.');
   const spatial = bundle.location_topology_set?.spatial_source_ref;
   if (spatial?.manifest_digest !== bundle.artifact_pins.spatial_manifest.digest
     || !worldTupleIsDirectOrApprovedDescendant(spatial, input)) {
     fail('TRACE_WORLD_PIN_INCOMPATIBLE', 'Scenario spatial source does not match the requested world pin.');
   }
+  assertPhase1ACutoverIdentity(bundle);
   assertPhase1ABindings(bundle);
   return bundle;
 }
@@ -281,7 +282,7 @@ function exactArtifactContractIdentity(key, artifact, pin) {
 
 function assertPhase1ABindings(bundle) {
   const bindings = bundle.materialization_bindings;
-  if (bindings.binding_set_id !== 'lower_dvina_trace_phase_1a_materialization_bindings_v1'
+  if (bindings.binding_set_id !== 'lower_dvina_trace_phase_1a_materialization_bindings_v2'
     || bindings.status !== 'approved'
     || bindings.scenario_id !== LOWER_DVINA_TRACE_SCENARIO_ID
     || bindings.scenario_definition_revision !== LOWER_DVINA_TRACE_DEFINITION_REVISION
@@ -351,5 +352,57 @@ function assertPhase1ABindings(bundle) {
     ])
     || dossier.audit_self_check?.pass !== true) {
     fail('TRACE_PLAYER_DOSSIER_BINDING_INCOMPLETE', 'Player dossier semantics must resolve from the approved Phase-1A binding.');
+  }
+}
+
+function assertPhase1ACutoverIdentity(bundle) {
+  const manifest = bundle.phase_1a_manifest;
+  const bindings = bundle.materialization_bindings;
+  const definition = bundle.definition;
+  const body = bundle.body_environment_profiles;
+  if (manifest.package_id !== 'lower_dvina_trace_phase_1a_v2'
+    || manifest.superseded_package_ref?.path
+      !== 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a/manifest.json'
+    || manifest.superseded_package_ref.id
+      !== 'lower_dvina_trace_phase_1a_v1'
+    || manifest.superseded_package_ref.revision !== 1
+    || manifest.superseded_package_ref.schema
+      !== 'rus.lower_dvina_trace_phase_1a_manifest.v1'
+    || manifest.superseded_package_ref.digest
+      !== 'b458b646afe745e4f3eda6308eb3fa18ceeb6867d3f16fe87088d3a96c46e605'
+    || manifest.base_definition_ref?.path
+      !== 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0d-v3/manifest.json'
+    || manifest.base_definition_ref.package_id
+      !== 'lower_dvina_trace_phase_0d_v3'
+    || manifest.base_definition_ref.revision !== 3
+    || manifest.base_definition_ref.digest
+      !== 'edc5c49cbe9a2f778650daaa9ebf0089412ccc06b31b4b0f10aeee6a9c66ecd7'
+    || bindings.superseded_binding_ref?.path
+      !== 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a/materialization-bindings.json'
+    || bindings.superseded_binding_ref.id
+      !== 'lower_dvina_trace_phase_1a_materialization_bindings_v1'
+    || bindings.superseded_binding_ref.revision !== 1
+    || bindings.superseded_binding_ref.schema
+      !== 'rus.lower_dvina_trace_phase_1a_materialization_bindings.v1'
+    || bindings.superseded_binding_ref.digest
+      !== '4757537ec72f7e4116a2a91b9502e4c1996ec41169a2ef0642b84a3b5bb1479b'
+    || definition.supersedes_definition_ref?.path
+      !== 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0d-v2/definition.json'
+    || definition.supersedes_definition_ref.id
+      !== LOWER_DVINA_TRACE_SCENARIO_ID
+    || definition.supersedes_definition_ref.revision !== 5
+    || definition.supersedes_definition_ref.digest
+      !== '2d4c940867a34a292435915a0e201d986346c10f1eddc31423fe019025dbc6c0'
+    || body.supersedes_ref?.path
+      !== 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0d-v2/body-environment-profiles.json'
+    || body.supersedes_ref.id
+      !== 'trace_ld_v1_body_environment_profiles'
+    || body.supersedes_ref.revision !== 2
+    || body.supersedes_ref.digest
+      !== 'f8437ef19a77cccaceb4607695c95f528ffe5f09ec2287befe3772841de16227') {
+    fail(
+      'TRACE_PHASE_1A_CUTOVER_IDENTITY_INVALID',
+      'Phase 1A revision 6 must exact-supersede the immutable revision 5 chain.'
+    );
   }
 }

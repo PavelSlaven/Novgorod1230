@@ -28,7 +28,7 @@ export function assertLowerDvinaTraceSelectionClosure(groups, inventory) {
   const specifications = inventory?.required_groups;
   const sourceDigests = inventory?.source_artifact_digests;
   if (inventory?.schema !== 'rus.lower_dvina_trace_sealed_selection_inventory.v1'
-    || inventory?.inventory_id !== 'lower_dvina_trace_phase_1a_sealed_selection_inventory_v1'
+    || inventory?.inventory_id !== 'lower_dvina_trace_phase_1a_sealed_selection_inventory_v2'
     || inventory?.status !== 'approved'
     || inventory?.record_proof_contract !== 'canonical_sha256_sorted_record_id_and_record_digest_v1'
     || !sourceDigests

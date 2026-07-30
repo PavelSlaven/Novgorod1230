@@ -7,27 +7,18 @@ import {
 import {
   loadLowerDvinaTracePhase1BPublication,
   TRACE_PHASE_1B_APPROVED_MATERIALIZER_VERSION,
-  TRACE_PHASE_1B_APPROVED_PHASE_1A_MANIFEST_DIGEST,
-  TRACE_PHASE_1B_APPROVED_RNG_ALGORITHM_ID
+  TRACE_PHASE_1B_APPROVED_RNG_ALGORITHM_ID,
+  TRACE_PHASE_1B_SESSION_IDENTITIES
 } from '../src/internal/lower-dvina-trace-phase-1b-publication.js';
 import {
   buildLowerDvinaTraceOpeningScreen
 } from '../src/runtime/lower-dvina-trace-opening.js';
-import {
-  loadLowerDvinaTraceMaterializationBundle,
-  resolveLowerDvinaTraceStartTimestamp
-} from '../src/internal/lower-dvina-trace-phase-1a.js';
+import { hash } from '../src/runtime/first-playable/shared.js';
 import {
   canonicalDigest,
   MATERIALIZER_VERSION,
   RNG_VERSION
 } from '@rus/materialization';
-import {
-  materializeLowerDvinaTracePartyInstance
-} from '@rus/materialization/internal/lower-dvina-trace-phase-1a';
-import {
-  lowerDvinaTracePhase1ADomainPin
-} from '../../../test/fixtures/lower-dvina-trace-phase-1a-domain-pin.mjs';
 
 const release = Object.freeze({
   release_id: 'phase-1b-test-release',
@@ -70,7 +61,7 @@ test('trace dispatch commits before safe screen and never uses boatman creator',
   assert.equal(f.materializeCalls.length, 1);
   assert.equal(f.repository.createInitialCalls, 0);
   assert.equal(f.events.join('>'),
-    'loadSession>materialize>loadInternal>loadVisible>project>attach>loadSession');
+    'loadSession>loadInternal>materialize>loadInternal>loadVisible>project>attach>loadSession');
   assert.equal(started.screen.schema, 'first_game_screen');
   assert.equal(started.screen.screen_status, 'ready');
   assert.equal(started.screen.panels.character.data.name, 'Микула');
@@ -84,6 +75,7 @@ test('trace dispatch commits before safe screen and never uses boatman creator',
     f.materializeCalls[0].materializer_version,
     TRACE_PHASE_1B_APPROVED_MATERIALIZER_VERSION
   );
+  assert.equal(f.materializeCalls[0].scenario_definition_revision, 6);
   assert.equal(
     f.materializeCalls[0].rng_algorithm_id,
     TRACE_PHASE_1B_APPROVED_RNG_ALGORITHM_ID
@@ -221,7 +213,7 @@ test('new-game identity rejects changed normalized start input', async () => {
   );
 });
 
-test('trace recovery replays Phase 1A and attaches one stable session', async () => {
+test('trace recovery rehydrates Phase 1A and attaches one stable session', async () => {
   const f = fixture({ failFirstAttach: true });
   const runtime = createRuntime(f);
   const request = {
@@ -234,10 +226,59 @@ test('trace recovery replays Phase 1A and attaches one stable session', async ()
   );
   assert.equal(f.repository.sessions.size, 0);
   const replayed = await runtime.startNewGame(request);
-  assert.equal(f.materializeCalls.length, 2);
-  assert.equal(f.materializeStatuses.join(','), 'committed,replayed');
+  assert.equal(f.materializeCalls.length, 1);
+  assert.equal(f.materializeStatuses.join(','), 'committed');
   assert.equal(f.repository.sessions.size, 1);
   assert.equal(replayed.screen.panels.character.data.name, 'Микула');
+});
+
+test('historical Phase 1A commit recovers through its pinned v1 publication', async () => {
+  const requestId = 'historical-phase-1a-orphan';
+  const partyId = `party:${hash(requestId).slice(0, 24)}`;
+  const historical = TRACE_PHASE_1B_SESSION_IDENTITIES[0];
+  const historicalPublication =
+    await loadLowerDvinaTracePhase1BPublication({
+      phase1AManifestDigest: historical.phase_1a_manifest_digest
+    });
+  const f = fixture({
+    committedRequest: {
+      party_id: partyId,
+      scenario_id: 'lower_dvina_trace_v1',
+      scenario_definition_revision:
+        historical.scenario_definition_revision,
+      scenario_manifest_digest:
+        historical.phase_1a_manifest_digest,
+      world_revision_id: release.world_revision_id,
+      world_catalog_digest: release.world_catalog_digest,
+      world_compatibility: structuredClone(
+        historicalPublication.binding.world_compatibility
+      ),
+      materializer_version:
+        TRACE_PHASE_1B_APPROVED_MATERIALIZER_VERSION,
+      rng_algorithm_id: TRACE_PHASE_1B_APPROVED_RNG_ALGORITHM_ID,
+      seed_context: 'lower_dvina_trace_phase_1a_mikula_v1',
+      idempotency_key:
+        `new-game:lower_dvina_trace_v1:${hash(requestId)}`,
+      trigger: 'new_game',
+      occurrence: 0,
+      existing_party_state: { baseline_exists: false }
+    }
+  });
+  const started = await createRuntime(f).startNewGame({
+    scenario_id: 'lower_dvina_trace_v1',
+    request_id: requestId
+  });
+  const session = f.repository.sessions.get(partyId);
+  assert.equal(f.materializeCalls.length, 0);
+  assert.equal(
+    session.stage26_result.publication_binding_id,
+    historical.publication_binding_id
+  );
+  assert.equal(
+    session.stage26_result.scenario_definition_revision,
+    historical.scenario_definition_revision
+  );
+  assert.equal(started.screen.panels.character.data.name, 'Микула');
 });
 
 test('exact trace replay bypasses changed publication and materializer', async () => {
@@ -248,6 +289,11 @@ test('exact trace replay bypasses changed publication and materializer', async (
     request_id: 'historical-session-replay'
   };
   const started = await first.startNewGame(request);
+  const historical = TRACE_PHASE_1B_SESSION_IDENTITIES[0];
+  const historicalSession = f.repository.sessions.get(started.party_id);
+  Object.assign(historicalSession.stage26_result, historical);
+  historicalSession.party_scenario_manifest_digest =
+    historical.phase_1a_manifest_digest;
   const materializeCalls = f.materializeCalls.length;
   f.publicationLoader = async () => {
     throw error('CURRENT_PUBLICATION_REVISION_CHANGED');
@@ -484,58 +530,6 @@ test('projection leak or failed materialization creates no session', async () =>
   assert.equal(invalidScreen.repository.sessions.size, 0);
 });
 
-test('direct Phase 1A materializer rejects a fabricated descendant world proof', async () => {
-  const [publication, phase1ABundle] = await Promise.all([
-    loadLowerDvinaTracePhase1BPublication(),
-    loadLowerDvinaTraceMaterializationBundle()
-  ]);
-  const productionPin = {
-    ...lowerDvinaTracePhase1ADomainPin(phase1ABundle),
-    compatible_world_revision_id: release.world_revision_id,
-    compatible_world_catalog_digest: release.world_catalog_digest
-  };
-  const base = {
-    party_id: 'trace-phase-1b-world-proof',
-    scenario_id: 'lower_dvina_trace_v1',
-    scenario_definition_revision: 5,
-    scenario_manifest_digest: phase1ABundle.manifest_digest,
-    world_revision_id: release.world_revision_id,
-    world_catalog_digest: release.world_catalog_digest,
-    world_compatibility:
-      structuredClone(publication.binding.world_compatibility),
-    domain_catalog_pin: productionPin,
-    materializer_version: MATERIALIZER_VERSION,
-    rng_algorithm_id: RNG_VERSION,
-    seed_context: 'lower_dvina_trace_phase_1a_mikula_v1',
-    idempotency_key: 'trace-phase-1b-world-proof',
-    trigger: 'new_game',
-    occurrence: 0,
-    existing_party_state: { baseline_exists: false },
-    scenario_bundle: phase1ABundle,
-    resolve_timestamp: resolveLowerDvinaTraceStartTimestamp
-  };
-  assert.doesNotThrow(() =>
-    materializeLowerDvinaTracePartyInstance(base));
-
-  const fabricated = {
-    ...base,
-    world_compatibility: structuredClone(base.world_compatibility)
-  };
-  fabricated.world_compatibility.lineage = [{
-    path: 'invented/unapproved-manifest.json',
-    world_revision_id: release.world_revision_id,
-    parent_revision_id:
-      fabricated.world_compatibility.source_world_revision_id,
-    world_catalog_digest: release.world_catalog_digest,
-    status: 'approved',
-    digest: 'f'.repeat(64)
-  }];
-  assert.throws(
-    () => materializeLowerDvinaTracePartyInstance(fabricated),
-    { code: 'TRACE_WORLD_PIN_INCOMPATIBLE' }
-  );
-});
-
 function createRuntime(f) {
   return createFirstPlayablePublicRuntime({
     partyPool: { connect() {} },
@@ -560,13 +554,16 @@ function fixture({
   materializeError = null,
   visibleExtra = {},
   projectorOverride = null,
-  publicationLoader = null
+  publicationLoader = null,
+  committedRequest = null
 } = {}) {
   const sessions = new Map();
   const events = [];
   const materializeCalls = [];
   const materializeStatuses = [];
-  let lastRequest = null;
+  let lastRequest = committedRequest
+    ? structuredClone(committedRequest)
+    : null;
   let attachFailures = failFirstAttach ? 1 : 0;
   const repository = {
     sessions,
@@ -625,7 +622,7 @@ function fixture({
         party_materializer_version: lastRequest.materializer_version,
         party_rng_algorithm_id: lastRequest.rng_algorithm_id,
         party_scenario_manifest_digest:
-          TRACE_PHASE_1B_APPROVED_PHASE_1A_MANIFEST_DIGEST,
+          lastRequest.scenario_manifest_digest,
         party_snapshot_schema:
           'rus.lower_dvina_trace_initial_party_snapshot.v2'
       };

@@ -29,7 +29,16 @@ export async function startLowerDvinaTrace({
       { status: 503 }
     );
   }
-  const publication = await publicationLoader();
+  const loadedBeforeStart =
+    await traceStartAdapter.loadInternal(partyId);
+  const committedBeforeStart = loadedBeforeStart?.request_identity
+    ? loadedBeforeStart
+    : null;
+  const publication = await publicationLoader({
+    phase1AManifestDigest:
+      committedBeforeStart?.request_identity?.scenario_manifest_digest
+        ?? null
+  });
   const binding = publication.binding;
   if (binding.world_compatibility.production_world_revision_id
       !== release.world_revision_id
@@ -66,7 +75,9 @@ export async function startLowerDvinaTrace({
   traceStartAdapter.assertExecutionSupport(
     binding.execution_identity
   );
-  const outcome = await traceStartAdapter.materialize(request);
+  const outcome = committedBeforeStart
+    ? recoverCommittedMaterialization({ committedBeforeStart, request })
+    : await traceStartAdapter.materialize(request);
   if (!['committed', 'replayed', 'committed_recovered']
     .includes(outcome?.status)) {
     throw serverError(
@@ -75,7 +86,8 @@ export async function startLowerDvinaTrace({
       { status: 409 }
     );
   }
-  const internal = await traceStartAdapter.loadInternal(partyId);
+  const internal = committedBeforeStart
+    ?? await traceStartAdapter.loadInternal(partyId);
   const visible = await traceStartAdapter.loadVisible(partyId);
   if (!internal || !visible
     || internal.request_identity?.party_id !== partyId
@@ -157,4 +169,40 @@ export async function startLowerDvinaTrace({
         persisted.delivery_attempt.awaiting_client_ack
     }
   };
+}
+
+function recoverCommittedMaterialization({
+  committedBeforeStart,
+  request
+}) {
+  const identity = committedBeforeStart?.request_identity;
+  const exact = [
+    'party_id',
+    'scenario_id',
+    'scenario_definition_revision',
+    'scenario_manifest_digest',
+    'world_revision_id',
+    'world_catalog_digest',
+    'materializer_version',
+    'rng_algorithm_id',
+    'seed_context',
+    'idempotency_key',
+    'trigger',
+    'occurrence'
+  ];
+  if (!identity
+    || exact.some((key) => identity[key] !== request[key])
+    || !identity.world_compatibility
+    || !identity.existing_party_state
+    || canonicalDigest(identity.world_compatibility)
+      !== canonicalDigest(request.world_compatibility)
+    || canonicalDigest(identity.existing_party_state)
+      !== canonicalDigest(request.existing_party_state)) {
+    throw serverError(
+      'TRACE_PHASE_1B_COMMITTED_RECOVERY_IDENTITY_CONFLICT',
+      'Committed Phase 1A state does not match the exact public-start identity.',
+      { status: 409 }
+    );
+  }
+  return { status: 'committed_recovered' };
 }

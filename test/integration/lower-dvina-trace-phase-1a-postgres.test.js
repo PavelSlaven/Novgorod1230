@@ -360,7 +360,7 @@ function phase1ARequest(bundle, partyId) {
   return {
     party_id: partyId,
     scenario_id: 'lower_dvina_trace_v1',
-    scenario_definition_revision: 5,
+    scenario_definition_revision: 6,
     scenario_manifest_digest: bundle.manifest_digest,
     world_revision_id: bundle.location_topology_set.spatial_source_ref.world_revision_id,
     world_catalog_digest: bundle.location_topology_set.spatial_source_ref.world_revision_catalog_digest,

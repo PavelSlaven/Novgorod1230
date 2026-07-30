@@ -1,0 +1,255 @@
+{
+  "schema": "rus.lower_dvina_trace_phase_1a_materialization_bindings.v1",
+  "binding_set_id": "lower_dvina_trace_phase_1a_materialization_bindings_v2",
+  "revision": 2,
+  "status": "approved",
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 6,
+  "superseded_binding_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a/materialization-bindings.json",
+    "id": "lower_dvina_trace_phase_1a_materialization_bindings_v1",
+    "revision": 1,
+    "schema": "rus.lower_dvina_trace_phase_1a_materialization_bindings.v1",
+    "digest": "4757537ec72f7e4116a2a91b9502e4c1996ec41169a2ef0642b84a3b5bb1479b"
+  },
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "start_spatial_binding": {
+    "location_profile_ref": "trace_ld_v1_loc_wreck_shore",
+    "node_template_ref": "trace_ld_v1_tpl_wreck_shore",
+    "node_slot_ref": "trace_ld_v1_loc_wreck_shore",
+    "anchor_template": {
+      "template_id": "trace_ld_v1_g5_anchor_wreck_open_shore_v1",
+      "slot_key": "open_shore",
+      "npc_capacity": 7,
+      "item_capacity": 0,
+      "container_capacity": 0,
+      "state": {
+        "access_policy_ref": "trace_ld_v1_access_wreck_shore",
+        "capacity_contract_ref": "trace_ld_v1_capacity_wreck_shore",
+        "zone_ref": "open_shore"
+      }
+    },
+    "source_refs": {
+      "location_topology_set": "trace_ld_v1_location_topology_set",
+      "access_policy_set": "trace_ld_v1_location_access_policies",
+      "capacity_contract_set": "trace_ld_v1_location_capacity_contracts"
+    }
+  },
+  "participant_materialization_depths": {
+    "player_clerk": "immediate_player",
+    "onisim_boatman": "key",
+    "eremey_fisher": "scene",
+    "ratsha_storehouse_helper": "key",
+    "zhdanko_storehouse_controller": "key",
+    "background_fisher_1": "background",
+    "background_fisher_2": "background"
+  },
+  "sealed_selection_inventory": {
+    "schema": "rus.lower_dvina_trace_sealed_selection_inventory.v1",
+    "inventory_id": "lower_dvina_trace_phase_1a_sealed_selection_inventory_v2",
+    "status": "approved",
+    "record_proof_contract": "canonical_sha256_sorted_record_id_and_record_digest_v1",
+    "source_artifact_digests": {
+      "participant_profile_set": "33e45b8b8b57f98debb254e5e76c881cf3ffe10985042811ed85390e38f588ce",
+      "location_topology_set": "3410d8652aa87d76a2be37cf6f21b9179ac3dd61c88ea84b94486b19765342ce",
+      "item_container_set": "182fb92641c8c053027718f52eed3467ce9ed79971e7168f4bc8727e1a169a3f",
+      "clue_evidence_graph_set": "7ad621e00550ddf4b1a714c4effc9c678ed7c3c2e421ce0e4128bf998b0b8222",
+      "knowledge_lie_memory_rules": "6c296a6ebe096633ae58c9ff45dc4a44f92ce56d7843e10bc3133718e6155046",
+      "activity_check_consequence_profiles": "5eefc71c6a73c1604f606d1f84862cf5f6d7a774a957f10ad9ead7e950717654",
+      "npc_decision_schedule_policies": "d37ba0f3c22b248304ce108e20067f39e9c5bfd8bdae1b03350e270d51ad50ca",
+      "movement_bindings": "dcad38f997150d7cdab887db02ac51862b405284835bbefbd83c809810e34a29",
+      "body_environment_profiles": "d6481bdb2b460d13a3beb37486e325a37401ce0de9aa813930308e1e96f0cd26",
+      "promise_policy": "9b6c4096886782151bf49f80f2bfdb8a1062576824fbcafde92143859f69574b",
+      "completion_rules": "497e6ed12d4393f890e47e38e61a52a2f103a6ad0546793ec587b329364fc614",
+      "epilogue_rules": "959f42e52147d9e19f5ac945e336b0280090f2d7025e79c01159f341a2ed36c3"
+    },
+    "required_groups": [
+      {
+        "selection_kind": "participants",
+        "source_artifact_key": "participant_profile_set",
+        "required_record_count": 6,
+        "required_records_digest": "6bbcb00f2ec407405c040639ebf9f3e38f5282951b04142f46adce759c35a818"
+      },
+      {
+        "selection_kind": "locations",
+        "source_artifact_key": "location_topology_set",
+        "required_record_count": 3,
+        "required_records_digest": "06feff9d69116e12be0137aef0d07be09d9fe2b086c4dacb067bd70ef9a6dd96"
+      },
+      {
+        "selection_kind": "items",
+        "source_artifact_key": "item_container_set",
+        "required_record_count": 20,
+        "required_records_digest": "325079b42195fe42a5e1634951724c6b490bba2a4be5fa1f74309903c1896929"
+      },
+      {
+        "selection_kind": "containers",
+        "source_artifact_key": "item_container_set",
+        "required_record_count": 2,
+        "required_records_digest": "1baf876995c58f2c1469a2fc21f76ebe7609074f5406028116bfbadb7ce8598a"
+      },
+      {
+        "selection_kind": "clue_placements",
+        "source_artifact_key": "item_container_set",
+        "required_record_count": 5,
+        "required_records_digest": "c9580ccb07a4f8d251873142a3cc83efdf5cf0b3dcd7af17db03b34beabd58d6"
+      },
+      {
+        "selection_kind": "evidence",
+        "source_artifact_key": "clue_evidence_graph_set",
+        "required_record_count": 12,
+        "required_records_digest": "84f7c8ed7cf3fb9fccc43b0eb9e0de50a922d911b2c00ef3d784dce9d8155e79"
+      },
+      {
+        "selection_kind": "knowledge",
+        "source_artifact_key": "knowledge_lie_memory_rules",
+        "required_record_count": 7,
+        "required_records_digest": "57dd5512ebc42211ca1cd4ddd51dc58e577fd54cecfa9f3dca0c608b47312fef"
+      },
+      {
+        "selection_kind": "lies_and_statements",
+        "source_artifact_key": "knowledge_lie_memory_rules",
+        "required_record_count": 5,
+        "required_records_digest": "b3864eaf2fbb4ed067040d054f2da20f6f6922f8948192633c1abcf41ed56ae1"
+      },
+      {
+        "selection_kind": "memories",
+        "source_artifact_key": "knowledge_lie_memory_rules",
+        "required_record_count": 1,
+        "required_records_digest": "f5eb8c355bc01e9f84f24c005a18dda5e07f4a55c435165a33c64e9d721cfa3d"
+      },
+      {
+        "selection_kind": "activities",
+        "source_artifact_key": "activity_check_consequence_profiles",
+        "required_record_count": 26,
+        "required_records_digest": "b1f4be2475935afec5f67fe46952719fa02751a1572d9d6c1c302464fd5d36de"
+      },
+      {
+        "selection_kind": "checks",
+        "source_artifact_key": "activity_check_consequence_profiles",
+        "required_record_count": 4,
+        "required_records_digest": "2de9839af7731be864cf5ec9290913cfa735776a21c20f6a432958fa3121bae5"
+      },
+      {
+        "selection_kind": "consequences",
+        "source_artifact_key": "activity_check_consequence_profiles",
+        "required_record_count": 39,
+        "required_records_digest": "dd28481088b761bba7bbfaed33a756b1da4d63305e09e03ecd0e1640298a2d38"
+      },
+      {
+        "selection_kind": "npc_decisions",
+        "source_artifact_key": "npc_decision_schedule_policies",
+        "required_record_count": 6,
+        "required_records_digest": "5e5c3d27722be9c23abbae2be0b0c660a7883389c67b74c08402e04408a09f42"
+      },
+      {
+        "selection_kind": "npc_schedules",
+        "source_artifact_key": "npc_decision_schedule_policies",
+        "required_record_count": 1,
+        "required_records_digest": "89e9086486bc481f276b1e5c593989eda16fc5bc4b91076cd4433529e58238f8"
+      },
+      {
+        "selection_kind": "movement",
+        "source_artifact_key": "movement_bindings",
+        "required_record_count": 8,
+        "required_records_digest": "942fec86a58de260bec131c03b7889f0d148e16b7f36fa14c3a8cd172e786d54"
+      },
+      {
+        "selection_kind": "body",
+        "source_artifact_key": "body_environment_profiles",
+        "required_record_count": 1,
+        "required_records_digest": "328e6e12bc2779283e2101e2c8d07f7d2ed720458a85b5233468daeefcc59e6c"
+      },
+      {
+        "selection_kind": "environment",
+        "source_artifact_key": "body_environment_profiles",
+        "required_record_count": 1,
+        "required_records_digest": "7e2ad93846bb517eee2595ba209eb771a790d3d7d4218c399d532c5a65187093"
+      },
+      {
+        "selection_kind": "promise",
+        "source_artifact_key": "promise_policy",
+        "required_record_count": 1,
+        "required_records_digest": "a3aa59d4f634aed4e6ae4c1f404372e0d3c14dae43b917a50e137680a350273b"
+      },
+      {
+        "selection_kind": "completion",
+        "source_artifact_key": "completion_rules",
+        "required_record_count": 1,
+        "required_records_digest": "0716f75a1174638edffb9dcc2037178865df3f2273012cb55def9d72441766d5"
+      },
+      {
+        "selection_kind": "epilogue",
+        "source_artifact_key": "epilogue_rules",
+        "required_record_count": 1,
+        "required_records_digest": "965f33428610aaaf9ac50e8ae49ec59885b3fa49cdc2c260b4833eef6b5f3030"
+      },
+      {
+        "selection_kind": "audience",
+        "source_artifact_key": "knowledge_lie_memory_rules",
+        "required_record_count": 1,
+        "allowed_records_digests": [
+          "53329ab1693635f0a8428257a35c95b5099da568fd9268fdcd3b0c66d492a859",
+          "1ed9bbe0e5ee72b2fe0b2e823c1f8b098f0ec79ea51866465c2cc75400661d96"
+        ]
+      }
+    ]
+  },
+  "player_dossier_projection": {
+    "historical_year": 1230,
+    "knowledge": {
+      "region_id": "gn_nov_g1_xp017_yp026",
+      "current_year": 1230,
+      "initially_forbidden_categories": [
+        "culprit_identity",
+        "executor_identity",
+        "hidden_motive",
+        "hidden_event_sequence"
+      ]
+    },
+    "goals": {
+      "immediate_need": "прийти в себя после крушения",
+      "consequence_of_inaction": "переохлаждение и потеря следов происшествия"
+    },
+    "inventory_item_projections": {
+      "trace_ld_v1_item_mikula_knife": {
+        "use": "personal_travel_tool",
+        "risk": [],
+        "condition_state": "serviceable",
+        "legal_status": "owned",
+        "physical_position": "worn_quick",
+        "claim_state": "established"
+      }
+    },
+    "property_and_access": {
+      "rules": []
+    },
+    "relations": [],
+    "start_place_connection": {
+      "selected_candidate_id": "trace_ld_v1_loc_wreck_shore",
+      "region_id": "gn_nov_g1_xp017_yp026",
+      "year": 1230,
+      "reason": "крушение лодки на утверждённом маршруте"
+    },
+    "audit_self_check": {
+      "pass": true,
+      "concerns": [],
+      "evidence": [
+        "lower_dvina_trace_phase_1a_materialization_bindings_v2"
+      ]
+    },
+    "approved_empty_collections": [
+      "inventory_item_projections.trace_ld_v1_item_mikula_knife.risk",
+      "property_and_access.rules",
+      "relations"
+    ],
+    "source_refs": {
+      "player_profile": "lower_dvina_trace_player_profile_mikula_v1",
+      "body_profile": "trace_ld_v1_body_start_after_crash",
+      "item_template": "trace_ld_v1_item_mikula_knife",
+      "location_profile": "trace_ld_v1_loc_wreck_shore",
+      "knowledge_rules": "trace_ld_v1_knowledge_lie_memory_rules"
+    }
+  }
+}

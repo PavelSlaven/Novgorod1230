@@ -1,13 +1,10 @@
 import { canonicalDigest } from '@rus/materialization';
 import { serverError } from '../errors.js';
 import {
-  TRACE_PHASE_1B_APPROVED_BINDING_DIGEST,
-  TRACE_PHASE_1B_APPROVED_DEFINITION_DIGEST,
-  TRACE_PHASE_1B_APPROVED_MANIFEST_DIGEST,
   TRACE_PHASE_1B_APPROVED_MATERIALIZER_VERSION,
-  TRACE_PHASE_1B_APPROVED_PHASE_1A_MANIFEST_DIGEST,
-  TRACE_PHASE_1B_APPROVED_RNG_ALGORITHM_ID
-} from '../internal/lower-dvina-trace-phase-1b-publication.js';
+  TRACE_PHASE_1B_APPROVED_RNG_ALGORITHM_ID,
+  TRACE_PHASE_1B_SESSION_IDENTITIES
+} from '../internal/lower-dvina-trace-phase-1b-identities.js';
 import {
   assertLowerDvinaTracePublicScreen
 } from './lower-dvina-trace-opening.js';
@@ -19,8 +16,9 @@ export const TRACE_INITIAL_SNAPSHOT_SCHEMA =
 
 export function isLowerDvinaTraceSession(session) {
   return session?.party_snapshot_schema === TRACE_INITIAL_SNAPSHOT_SCHEMA
-    || session?.party_scenario_manifest_digest
-      === TRACE_PHASE_1B_APPROVED_PHASE_1A_MANIFEST_DIGEST
+    || TRACE_PHASE_1B_SESSION_IDENTITIES.some((expected) =>
+      session?.party_scenario_manifest_digest
+        === expected.phase_1a_manifest_digest)
     || session?.stage26_result?.scenario_id === TRACE_SCENARIO_ID;
 }
 
@@ -31,14 +29,18 @@ export function validateLowerDvinaTraceSessionRead({
   const identity = session?.stage26_result;
   const delivery = session?.delivery_attempt;
   const screen = session?.screen;
+  const expected = TRACE_PHASE_1B_SESSION_IDENTITIES.find((candidate) =>
+    candidate.publication_manifest_digest
+      === identity?.publication_manifest_digest);
   if (!session
+    || !expected
     || session.party_snapshot_schema !== TRACE_INITIAL_SNAPSHOT_SCHEMA
     || session.party_materializer_version
       !== TRACE_PHASE_1B_APPROVED_MATERIALIZER_VERSION
     || session.party_rng_algorithm_id
       !== TRACE_PHASE_1B_APPROVED_RNG_ALGORITHM_ID
     || session.party_scenario_manifest_digest
-      !== TRACE_PHASE_1B_APPROVED_PHASE_1A_MANIFEST_DIGEST
+      !== expected.phase_1a_manifest_digest
     || identity?.version !== 1
     || identity.schema
       !== 'rus.lower_dvina_trace_phase_1b_session_identity.v1'
@@ -59,19 +61,21 @@ export function validateLowerDvinaTraceSessionRead({
     || identity.party_id !== partyId
     || identity.request_id !== session.request_id
     || identity.publication_manifest_digest
-      !== TRACE_PHASE_1B_APPROVED_MANIFEST_DIGEST
+      !== expected.publication_manifest_digest
     || identity.publication_binding_id
-      !== 'lower_dvina_trace_phase_1b_publication_v1'
-    || identity.publication_binding_revision !== 1
+      !== expected.publication_binding_id
+    || identity.publication_binding_revision
+      !== expected.publication_binding_revision
     || identity.publication_binding_digest
-      !== TRACE_PHASE_1B_APPROVED_BINDING_DIGEST
+      !== expected.publication_binding_digest
     || identity.phase_1a_manifest_digest
-      !== TRACE_PHASE_1B_APPROVED_PHASE_1A_MANIFEST_DIGEST
-    || identity.scenario_definition_revision !== 5
+      !== expected.phase_1a_manifest_digest
+    || identity.scenario_definition_revision
+      !== expected.scenario_definition_revision
     || identity.scenario_definition_digest
-      !== TRACE_PHASE_1B_APPROVED_DEFINITION_DIGEST
+      !== expected.scenario_definition_digest
     || identity.materializer_binding_id
-      !== 'lower_dvina_trace_phase_1a_materialization_bindings_v1'
+      !== expected.materializer_binding_id
     || identity.materializer_version
       !== TRACE_PHASE_1B_APPROVED_MATERIALIZER_VERSION
     || identity.rng_algorithm_id

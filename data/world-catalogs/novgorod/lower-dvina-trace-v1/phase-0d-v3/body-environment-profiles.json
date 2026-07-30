@@ -1,0 +1,194 @@
+{
+  "schema": "rus.trace_body_environment_profiles.v2",
+  "set_id": "trace_ld_v1_body_environment_profiles",
+  "revision": 3,
+  "publication_status": "unpublished",
+  "supersedes_ref": {
+    "id": "trace_ld_v1_body_environment_profiles",
+    "revision": 2,
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0d-v2/body-environment-profiles.json",
+    "digest": "f8437ef19a77cccaceb4607695c95f528ffe5f09ec2287befe3772841de16227"
+  },
+  "owner": "@rus/body-state",
+  "owner_schema_ref": {
+    "path": "packages/body-state/src/declarative-content-contracts.v2.json",
+    "digest": "f9c19900015f9b183e6cc529c28554e24de5c2d382e8aaadab66f92b723f7afb",
+    "registry_id": "rus.body_state.declarative_content_contracts.v2",
+    "schema_id": "rus.trace_body_environment_profiles.v2",
+    "schema_version": 2
+  },
+  "clock_owner": "@rus/time-events-history",
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden",
+  "owner_contracts": [
+    "@rus/body-state:calculateBodyTimeEffectProposal",
+    "@rus/body-state:predictNearestBodyThreshold"
+  ],
+  "co_owner_contract_refs": {
+    "exact_time": {
+      "path": "packages/time-events-history/src/declarative-content-contracts.v1.json",
+      "digest": "cdc4571c07e2c592cbfb469a7028c31791d82deadbc9b37a97f44ee58597a471",
+      "registry_id": "rus.time_events_history.declarative_content_contracts.v1",
+      "registry_revision": 1,
+      "schema_id": "rus.time_events_history.game_timestamp_and_elapsed.v1",
+      "schema_version": 1,
+      "public_entrypoints": [
+        "@rus/time-events-history:normalizeGameTimestamp",
+        "@rus/time-events-history:addElapsedTime",
+        "@rus/time-events-history:compareGameTimestamp",
+        "@rus/time-events-history:computeTemporalDigest"
+      ]
+    }
+  },
+  "temporal_source_ref": {
+    "approval_path": "data/world-catalogs/novgorod/temporal-v4/approvals/calendar_daylight_light_profiles.json",
+    "approval_sha256": "ca020d053986a9796e7d5b4e747c33e7d8105bff366d36c11386812a7d145ea1",
+    "dataset_path": "data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json",
+    "dataset_sha256": "e861c4136307507880451532a76e8729a874d459650a905383b70661776fe86e",
+    "record_id": "record:calendar_daylight_light_profiles:novgorod_1230_1233_v2",
+    "record_status": "approved",
+    "calendar_profile_id": "novgorod_julian_lmst_1230_1233_v2",
+    "calendar_version": "2"
+  },
+  "start_timestamp_specification": {
+    "schema": "rus.trace_start_game_timestamp_specification.v1",
+    "version": 2,
+    "game_timestamp_shape": {
+      "whole_minutes": "integer_string",
+      "subminute_numerator": "integer_string",
+      "subminute_denominator": "positive_integer_string"
+    },
+    "epoch_mapping_ref": "record:calendar_daylight_light_profiles:novgorod_1230_1233_v2",
+    "calendar_date_contract": {
+      "calendar_system": "Julian",
+      "exact_date": {
+        "year": "1230",
+        "month": "8",
+        "day": "20"
+      },
+      "season_id": "late_summer",
+      "selection_policy": "fixed_approved_date",
+      "rng_consumption": "forbidden",
+      "date_must_be_committed_by_materializer": true
+    },
+    "exact_local_minute_of_day": 420,
+    "exact_local_time_label": "07:00",
+    "time_basis": "local_mean_solar_time",
+    "subminute_at_start": {
+      "numerator": "0",
+      "denominator": "1"
+    },
+    "game_timestamp_derivation": {
+      "owner": "@rus/time-events-history",
+      "entrypoint": "@rus/time-events-history/calendar:resolveGameTimestampFromCalendarDate",
+      "path": "packages/time-events-history/src/calendar.js",
+      "digest": "4b82d6a4f4c07a047ad1a2e38061b3223002914744edc206a419adb14cd0c4c0",
+      "package_manifest_path": "packages/time-events-history/package.json",
+      "package_manifest_digest": "ca0f7736cc372a02b4f52ea7556c3638f5181daf7fed4c19a9dbf47ba6d88805",
+      "package_version": "0.13.0",
+      "owner_contract_ref": {
+        "path": "packages/time-events-history/src/declarative-content-contracts.v2.json",
+        "digest": "6e72f137be19f77afa34aa853d9f12c0c8f3d7ce28e11c41c83ecc8ee6369a10",
+        "registry_id": "rus.time_events_history.declarative_content_contracts.v2",
+        "registry_revision": 2,
+        "schema_id": "rus.time_events_history.calendar_projection.v1",
+        "schema_version": 1,
+        "public_entrypoint": "@rus/time-events-history/calendar:resolveGameTimestampFromCalendarDate"
+      },
+      "policy": "unique_inverse_from_approved_epoch_and_calendar_profile"
+    },
+    "environment_snapshot_candidate_refs": [
+      "trace_ld_v1_env_cold_wet_shore"
+    ],
+    "materialized_game_timestamp": null,
+    "materialized_environment_snapshot": null
+  },
+  "value_bounds": {
+    "health": [0, 100],
+    "satiety": [0, 100],
+    "energy": [0, 100]
+  },
+  "start_profile": {
+    "profile_id": "trace_ld_v1_body_start_after_crash",
+    "schema": "rus.trace_body_profile.v1",
+    "version": 1,
+    "values": {
+      "health": 80,
+      "satiety": 60,
+      "energy": 40
+    },
+    "conditions": ["wet", "cold", "headache", "bruise"],
+    "forbidden_conditions": ["exact_diagnosis", "instant_recovery"]
+  },
+  "condition_profiles": [
+    {"condition_profile_id": "trace_ld_v1_condition_wet_clothing", "schema": "rus.trace_body_condition_profile.v1", "version": 1, "subject": "player_clerk", "state": "wet", "permitted_transitions": ["wet", "damp"], "forbidden_transitions": ["fully_dry_without_sufficient_elapsed_and_environment"]},
+    {"condition_profile_id": "trace_ld_v1_condition_cold_shivering", "schema": "rus.trace_body_condition_profile.v1", "version": 1, "subject": "player_clerk", "state": "cold_with_possible_shivering", "permitted_transitions": ["strong_shivering", "mild_shivering", "shivering_stopped"], "forbidden_transitions": ["instant_warm_recovery"]},
+    {"condition_profile_id": "trace_ld_v1_condition_headache", "schema": "rus.trace_body_condition_profile.v1", "version": 1, "subject": "player_clerk", "state": "headache", "permitted_transitions": ["persists", "worsens_on_committed_effect"], "forbidden_transitions": ["cured_by_fire_rest"]},
+    {"condition_profile_id": "trace_ld_v1_condition_shoulder_bruise", "schema": "rus.trace_body_condition_profile.v1", "version": 1, "subject": "player_clerk", "state": "shoulder_bruise", "permitted_transitions": ["persists", "load_penalty"], "forbidden_transitions": ["cured_by_fire_rest"]},
+    {"condition_profile_id": "trace_ld_v1_condition_cold_threshold", "schema": "rus.trace_body_condition_profile.v1", "version": 1, "subject": "any_materialized_actor", "state": "cold_threshold_pending", "permitted_transitions": ["threshold_crossed_only_by_body_owner"], "forbidden_transitions": ["scenario_direct_mutation"]},
+    {"condition_profile_id": "trace_ld_v1_condition_onisim_injury", "schema": "rus.trace_body_condition_profile.v1", "version": 1, "subject": "onisim_boatman", "state": "injured_unable_to_walk", "permitted_transitions": ["stabilized_unable_to_walk", "worsened_by_committed_effect"], "forbidden_transitions": ["instant_recovery", "exact_diagnosis_without_fact"]},
+    {"condition_profile_id": "trace_ld_v1_condition_onisim_leg_fixation", "schema": "rus.trace_body_condition_profile.v1", "version": 1, "subject": "onisim_boatman", "state": "leg_fixation_possible", "permitted_transitions": ["fixation_applied_with_resources_and_participants"], "forbidden_transitions": ["can_walk"]},
+    {"condition_profile_id": "trace_ld_v1_condition_ratsha_minor_head_wound", "schema": "rus.trace_body_condition_profile.v1", "version": 1, "subject": "ratsha_storehouse_helper", "state": "minor_head_wound_possible", "permitted_transitions": ["committed_minor_wound"], "forbidden_transitions": ["injury_without_atomic_effect"]}
+  ],
+  "environment_profiles": [
+    {"environment_profile_id": "trace_ld_v1_env_cold_wet_shore", "schema": "rus.trace_environment_profile.v1", "version": 1, "facts": ["cold", "wet", "exposed"], "source": "party_environment_snapshot"},
+    {"environment_profile_id": "trace_ld_v1_env_open_path", "schema": "rus.trace_environment_profile.v1", "version": 1, "facts": ["outdoor_route"], "source": "party_environment_snapshot"},
+    {"environment_profile_id": "trace_ld_v1_env_sheltered_shed", "schema": "rus.trace_environment_profile.v1", "version": 1, "facts": ["sheltered", "not_heated"], "source": "party_environment_snapshot"},
+    {"environment_profile_id": "trace_ld_v1_env_camp_fire", "schema": "rus.trace_environment_profile.v1", "version": 1, "facts": ["sheltered_from_wind", "lit_fire", "drying_place"], "source": "party_environment_snapshot"},
+    {"environment_profile_id": "trace_ld_v1_env_storehouse_yard", "schema": "rus.trace_environment_profile.v1", "version": 1, "facts": ["outdoor_yard", "storehouse_threshold"], "source": "party_environment_snapshot"}
+  ],
+  "effect_profiles": [
+    {
+      "effect_profile_id": "trace_ld_v1_body_wreck_inspection_15m",
+      "activity_ref": "trace_ld_v1_activity_detailed_wreck_inspection",
+      "time_profile_ref": "trace_ld_v1_time_15m",
+      "elapsed_minutes": 15,
+      "activity_intensity": "light_sustained",
+      "environment_ref": "trace_ld_v1_env_cold_wet_shore",
+      "condition_profile_refs": [
+        "trace_ld_v1_condition_wet_clothing",
+        "trace_ld_v1_condition_cold_shivering"
+      ],
+      "load_profile": "personal_load",
+      "body_profile_pin": "trace_ld_v1_body_start_after_crash",
+      "exact_deltas": {
+        "health": 0,
+        "satiety": 0,
+        "energy": -1
+      },
+      "condition_outcomes": [
+        {
+          "condition_profile_ref": "trace_ld_v1_condition_wet_clothing",
+          "from": "wet",
+          "to": "wet",
+          "outcome": "persists"
+        },
+        {
+          "condition_profile_ref": "trace_ld_v1_condition_cold_shivering",
+          "from": "cold_with_possible_shivering",
+          "to": "mild_shivering",
+          "outcome": "worsens"
+        }
+      ],
+      "selection_policy": "fixed_approved_effect",
+      "rng_consumption": "forbidden"
+    },
+    {"effect_profile_id": "trace_ld_v1_body_open_route_8m", "activity_ref": "trace_ld_v1_activity_route_to_camp", "time_profile_ref": "trace_ld_v1_time_8m", "elapsed_minutes": 8, "activity_intensity": "ordinary_walk", "environment_ref": "trace_ld_v1_env_open_path", "condition_profile_refs": ["trace_ld_v1_condition_wet_clothing"], "load_profile": "personal_load", "body_profile_pin": "trace_ld_v1_body_start_after_crash", "delta_bounds": {"health": [-1, 0], "satiety": [-1, 0], "energy": [-2, -1]}, "condition_transitions": ["wet_persists_without_drying"]},
+    {"effect_profile_id": "trace_ld_v1_body_open_route_12m", "activity_ref": "trace_ld_v1_activity_route_to_drying_shed", "time_profile_ref": "trace_ld_v1_time_12m", "elapsed_minutes": 12, "activity_intensity": "ordinary_walk", "environment_ref": "trace_ld_v1_env_open_path", "condition_profile_refs": ["trace_ld_v1_condition_cold_shivering"], "load_profile": "personal_load", "body_profile_pin": "trace_ld_v1_body_start_after_crash", "delta_bounds": {"health": [-1, 0], "satiety": [-1, 0], "energy": [-3, -1]}, "condition_transitions": ["cold_may_persist"]},
+    {"effect_profile_id": "trace_ld_v1_body_first_aid_onisim_25m", "activity_ref": "trace_ld_v1_activity_first_aid_onisim", "time_profile_ref": "trace_ld_v1_time_25m", "elapsed_minutes": 25, "activity_intensity": "careful_treatment", "environment_ref": "trace_ld_v1_env_sheltered_shed", "condition_profile_refs": ["trace_ld_v1_condition_onisim_injury", "trace_ld_v1_condition_onisim_leg_fixation"], "load_profile": "no_traversal_load", "body_profile_pin": "trace_ld_v1_condition_onisim_injury", "delta_bounds": {"health": [-1, 1], "satiety": [-1, 0], "energy": [-2, 0]}, "condition_transitions": ["onisim_may_be_stabilized", "onisim_remains_unable_to_walk"], "forbidden_effects": ["instant_recovery", "exact_diagnosis"]},
+    {"effect_profile_id": "trace_ld_v1_body_carry_20m", "activity_ref": "trace_ld_v1_activity_make_stretcher_and_carry", "time_profile_ref": "trace_ld_v1_time_20m", "elapsed_minutes": 20, "activity_intensity": "heavy_synchronized_carry", "environment_ref": "trace_ld_v1_env_open_path", "condition_profile_refs": ["trace_ld_v1_condition_onisim_injury", "trace_ld_v1_condition_shoulder_bruise"], "load_profile": "stretcher_carrier_load", "body_profile_pin": "materialized_actor_body_profile", "delta_bounds": {"health": [-1, 0], "satiety": [-2, -1], "energy": [-5, -2]}, "condition_transitions": ["carrier_fatigue_increases", "carried_actor_remains_unable_to_walk"]},
+    {"effect_profile_id": "trace_ld_v1_body_fire_rest_30m", "activity_ref": "trace_ld_v1_activity_fire_rest", "time_profile_ref": "trace_ld_v1_time_30m", "elapsed_minutes": 30, "activity_intensity": "rest", "environment_ref": "trace_ld_v1_env_camp_fire", "condition_profile_refs": ["trace_ld_v1_condition_wet_clothing", "trace_ld_v1_condition_cold_shivering", "trace_ld_v1_condition_headache", "trace_ld_v1_condition_shoulder_bruise"], "load_profile": "no_traversal_load", "body_profile_pin": "materialized_actor_body_profile", "delta_bounds": {"health": [0, 0], "satiety": [-1, 0], "energy": [1, 4]}, "condition_transitions": ["wet_to_damp_only", "strong_shivering_may_stop", "headache_persists", "bruise_persists"], "schedule_effect": "npc_schedule_advances_for_same_elapsed_interval", "forbidden_effects": ["clothes_fully_dry", "headache_cured", "bruise_cured"]},
+    {"effect_profile_id": "trace_ld_v1_body_danger_2m", "activity_ref": "trace_ld_v1_activity_danger_resolution", "time_profile_ref": "trace_ld_v1_time_2m", "elapsed_minutes": 2, "activity_intensity": "danger_composite", "environment_ref": "trace_ld_v1_env_storehouse_yard", "condition_profile_refs": ["trace_ld_v1_condition_ratsha_minor_head_wound"], "load_profile": "committed_scene_load", "body_profile_pin": "materialized_actor_body_profile", "required_committed_atomic_effect": "zhdanko_axe_poll_strike_on_ratsha_committed", "committed_fact_outputs": ["ratsha_minor_head_wound_committed"], "delta_bounds": {"health": [-20, 0], "satiety": [0, 0], "energy": [-4, -1]}, "condition_transitions": ["committed_injury_only", "ratsha_minor_head_wound_possible"], "forbidden_effects": ["injury_without_committed_atomic_effect"]},
+    {"effect_profile_id": "trace_ld_v1_body_guarded_return_15m", "activity_ref": "trace_ld_v1_activity_return_to_camp", "time_profile_ref": "trace_ld_v1_time_15m", "elapsed_minutes": 15, "activity_intensity": "guarded_walk", "environment_ref": "trace_ld_v1_env_open_path", "condition_profile_refs": ["trace_ld_v1_condition_shoulder_bruise"], "load_profile": "guarded_group_and_recovered_property", "body_profile_pin": "materialized_actor_body_profile", "delta_bounds": {"health": [-1, 0], "satiety": [-1, 0], "energy": [-3, -1]}, "condition_transitions": ["committed_conditions_persist"]}
+  ],
+  "applied_effects": [],
+  "excludes": [
+    "runtime_handler",
+    "direct_mutation",
+    "persistence",
+    "party_instance",
+    "api",
+    "ui"
+  ]
+}

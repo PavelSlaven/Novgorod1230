@@ -32,7 +32,7 @@ const mutateJson = (directory, name, mutate) => {
 };
 const runChecker = (directory = source) => spawnSync(
   process.execPath,
-  [checker, ...(directory === source ? [] : ['--validation-only', '--directory', directory])],
+  [checker, '--legacy-v2', ...(directory === source ? [] : ['--validation-only', '--directory', directory])],
   { encoding: 'utf8' }
 );
 const refreshDigests = (directory, { synchronizeBodyRef = true } = {}) => {

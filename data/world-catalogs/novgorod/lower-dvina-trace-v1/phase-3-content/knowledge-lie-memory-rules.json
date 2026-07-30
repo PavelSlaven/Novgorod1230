@@ -1,0 +1,661 @@
+{
+  "schema": "rus.trace_knowledge_lie_memory_rules.v1",
+  "knowledge_lie_memory_rules_id": "trace_ld_v1_knowledge_lie_memory_rules",
+  "revision": 2,
+  "supersedes_ref": {
+    "id": "trace_ld_v1_knowledge_lie_memory_rules",
+    "revision": 1,
+    "schema": "rus.trace_knowledge_lie_memory_rules.v1",
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0c/knowledge-lie-memory-rules.json",
+    "digest": "6c296a6ebe096633ae58c9ff45dc4a44f92ce56d7843e10bc3133718e6155046"
+  },
+  "publication_status": "unpublished",
+  "owner": "@rus/visibility-knowledge-memory",
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden",
+  "participant_profile_set_ref": {
+    "id": "trace_ld_v1_participant_profile_set",
+    "revision": 1,
+    "digest": "33e45b8b8b57f98debb254e5e76c881cf3ffe10985042811ed85390e38f588ce"
+  },
+  "hidden_truth_candidate_set_ref": {
+    "id": "trace_ld_v1_hidden_truth_candidate_set",
+    "revision": 1,
+    "digest": "b4601339813dd253a7a280cd68ad0925202c989998c6cae5bca9e820f1a7b616"
+  },
+  "clue_evidence_graph_set_ref": {
+    "id": "trace_ld_v1_clue_evidence_graph_set",
+    "revision": 1,
+    "digest": "7ad621e00550ddf4b1a714c4effc9c678ed7c3c2e421ce0e4128bf998b0b8222"
+  },
+  "record_types": [
+    "fact",
+    "perception",
+    "knowledge",
+    "hypothesis",
+    "rumor",
+    "false_assertion",
+    "memory",
+    "player_facing_text"
+  ],
+  "source_types": [
+    "approved_fact",
+    "direct_perception",
+    "received_message",
+    "received_instruction",
+    "own_action",
+    "own_instruction",
+    "own_intention",
+    "own_statement",
+    "prior_admitted_perception_or_message",
+    "derived_from_admitted_knowledge",
+    "approved_own_schedule_binding",
+    "approved_own_decision_binding"
+  ],
+  "type_rules": [
+    {
+      "rule_id": "trace_ld_v1_rule_fact_independent_of_discovery",
+      "record_type": "fact",
+      "requires_source_ref": true,
+      "invariant": "fact_exists_independently_of_discovery"
+    },
+    {
+      "rule_id": "trace_ld_v1_rule_perception_from_available_observation",
+      "record_type": "perception",
+      "requires_source_ref": true,
+      "allowed_source_types": [
+        "direct_perception"
+      ],
+      "invariant": "perception_requires_available_observation"
+    },
+    {
+      "rule_id": "trace_ld_v1_rule_knowledge_has_admitted_source",
+      "record_type": "knowledge",
+      "requires_source_ref": true,
+      "allowed_source_types": [
+        "direct_perception",
+        "received_message",
+        "received_instruction",
+        "own_action",
+        "own_instruction",
+        "own_intention",
+        "prior_admitted_perception_or_message",
+        "derived_from_admitted_knowledge",
+        "approved_own_schedule_binding",
+        "approved_own_decision_binding"
+      ],
+      "invariant": "knowledge_requires_perception_message_or_other_admitted_source"
+    },
+    {
+      "rule_id": "trace_ld_v1_rule_hypothesis_never_fact",
+      "record_type": "hypothesis",
+      "requires_source_ref": true,
+      "invariant": "hypothesis_cannot_change_or_be_reclassified_as_fact"
+    },
+    {
+      "rule_id": "trace_ld_v1_rule_rumor_requires_confirmation",
+      "record_type": "rumor",
+      "requires_source_ref": true,
+      "invariant": "rumor_does_not_become_knowledge_without_confirmation"
+    },
+    {
+      "rule_id": "trace_ld_v1_rule_false_assertion_preserves_fact",
+      "record_type": "false_assertion",
+      "requires_source_ref": true,
+      "invariant": "false_assertion_cannot_change_fact"
+    },
+    {
+      "rule_id": "trace_ld_v1_rule_memory_has_prior_event",
+      "record_type": "memory",
+      "requires_source_ref": true,
+      "allowed_source_types": [
+        "prior_admitted_perception_or_message",
+        "own_action",
+        "own_statement"
+      ],
+      "invariant": "memory_requires_prior_occurred_or_perceived_event"
+    },
+    {
+      "rule_id": "trace_ld_v1_rule_player_facing_projection",
+      "record_type": "player_facing_text",
+      "requires_source_ref": true,
+      "allowed_source_types": [
+        "direct_perception",
+        "received_message",
+        "derived_from_admitted_knowledge"
+      ],
+      "forbidden_source_classes": [
+        "hidden_truth",
+        "candidate_id",
+        "future_event",
+        "unperceived_fact"
+      ],
+      "invariant": "player_facing_text_uses_only_allowed_perception_and_knowledge_package"
+    }
+  ],
+  "testimony_contract": {
+    "required_fields": [
+      "speaker_ref",
+      "required_audience_refs",
+      "audience_candidate_slot_refs",
+      "source_knowledge_refs",
+      "statement_ref",
+      "message_completeness",
+      "truth_classification",
+      "assertion"
+    ],
+    "message_completeness_values": [
+      "complete",
+      "incomplete",
+      "withheld"
+    ],
+    "truth_classification_values": [
+      "truthful",
+      "false",
+      "mixed"
+    ],
+    "withholding_is_false_assertion": false,
+    "reload_mutates_committed_statement": false,
+    "audience_knowledge_creation_requires": [
+      "statement_committed",
+      "participant_bound_to_required_audience_or_candidate_slot",
+      "participant_present_at_statement",
+      "participant_perception_capable"
+    ],
+    "unselected_candidates_receive_knowledge": false,
+    "absent_participants_receive_knowledge": false
+  },
+  "audience_candidate_slots": [
+    {
+      "candidate_slot_id": "trace_ld_v1_audience_slot_participating_fisher",
+      "candidate_participant_refs": [
+        "background_fisher_1",
+        "background_fisher_2"
+      ],
+      "selection_cardinality": {
+        "minimum": 1,
+        "maximum": 1
+      },
+      "selection_status": "unbound_template",
+      "binding_owner": "code_driven_materializer",
+      "binding_phase": "phase_1a_before_first_screen",
+      "selected_candidate_requires_scene_presence": true,
+      "selected_candidate_requires_perception_capability": true,
+      "unselected_candidates_receive_statement_perception": false,
+      "causal_basis": "one_materialized_participating_fisher_witnesses_the_surrender_and_storehouse_scene"
+    }
+  ],
+  "participant_knowledge_bindings": [
+    {
+      "participant_ref": "player_clerk",
+      "knowledge_scope_ref": "lower_dvina_trace_player_profile_mikula_v1",
+      "initially_forbidden_categories": [
+        "culprit_identity",
+        "executor_identity",
+        "hidden_motive",
+        "hidden_event_sequence"
+      ]
+    },
+    {
+      "participant_ref": "onisim_boatman",
+      "knowledge_scope_ref": "trace_ld_v1_knowledge_scope_hired_boatman_v1",
+      "admitted_initial_basis": [
+        "direct_perception_before_unconsciousness_or_injury",
+        "direct_perception_after_reaching_shore"
+      ],
+      "forbidden_inference": [
+        "packet_location_without_perception_or_message",
+        "document_contents"
+      ]
+    },
+    {
+      "participant_ref": "eremey_fisher",
+      "knowledge_scope_ref": "trace_ld_v1_knowledge_scope_local_fisher_v1",
+      "admitted_initial_basis": [
+        "heard_impact",
+        "saw_wet_ratsha_with_foreign_bag"
+      ],
+      "forbidden_inference": [
+        "bag_contents",
+        "zhdanko_real_motive",
+        "approved_hidden_truth_fact_from_possession_observation"
+      ]
+    },
+    {
+      "participant_ref": "ratsha_storehouse_helper",
+      "knowledge_scope_ref": "trace_ld_v1_knowledge_scope_storehouse_helper_v1",
+      "admitted_initial_basis": [
+        "own_action",
+        "received_instruction"
+      ],
+      "forbidden_inference": [
+        "received_instruction_is_public_evidence",
+        "received_instruction_proves_principal_real_motive"
+      ]
+    },
+    {
+      "participant_ref": "zhdanko_storehouse_controller",
+      "knowledge_scope_ref": "trace_ld_v1_knowledge_scope_storehouse_controller_v1",
+      "admitted_initial_basis": [
+        "own_action",
+        "own_instruction",
+        "own_intention",
+        "approved_own_schedule_binding"
+      ],
+      "forbidden_inference": []
+    },
+    {
+      "participant_ref": "background_fisher_1",
+      "knowledge_scope_ref": "trace_ld_v1_knowledge_scope_background_fisher_v1",
+      "admitted_initial_basis": [
+        "direct_perception",
+        "received_message"
+      ],
+      "forbidden_inference": [
+        "hidden_truth_without_source"
+      ]
+    },
+    {
+      "participant_ref": "background_fisher_2",
+      "knowledge_scope_ref": "trace_ld_v1_knowledge_scope_background_fisher_v1",
+      "admitted_initial_basis": [
+        "direct_perception",
+        "received_message"
+      ],
+      "forbidden_inference": [
+        "hidden_truth_without_source"
+      ]
+    }
+  ],
+  "perception_source_templates": [
+    {
+      "perception_template_id": "trace_ld_v1_perception_onisim_hears_zhdanko_command",
+      "record_type": "perception_source_template",
+      "perceiver_ref": "onisim_boatman",
+      "source_hidden_event_ref": "trace_ld_v1_hidden_event_04_zhdanko_audible_command",
+      "source_type": "direct_perception",
+      "modality": "auditory",
+      "perceived_actor_ref": "zhdanko_storehouse_controller",
+      "content_scope": "recognized_zhdanko_voice_and_attack_command_without_verbatim_words",
+      "admitted_knowledge_categories": [
+        "incident_fact",
+        "executor_identity",
+        "memory_content"
+      ],
+      "memory_source_type": "prior_admitted_perception_or_message",
+      "admitted_statement_template_refs": [
+        "trace_ld_v1_statement_onisim_testimony"
+      ],
+      "creates_objective_fact": false,
+      "application_status": "template_only"
+    }
+  ],
+  "statement_templates": [
+    {
+      "statement_template_id": "trace_ld_v1_statement_eremey_first_answer",
+      "speaker_ref": "eremey_fisher",
+      "classification": "withholding",
+      "source_knowledge_categories": [
+        "incident_fact",
+        "observed_item_possession"
+      ],
+      "required_audience_refs": [
+        "player_clerk"
+      ],
+      "audience_candidate_slot_refs": [],
+      "source_knowledge_refs": [
+        "knowledge_scope:trace_ld_v1_knowledge_scope_local_fisher_v1#incident_fact",
+        "knowledge_scope:trace_ld_v1_knowledge_scope_local_fisher_v1#observed_item_possession"
+      ],
+      "statement_ref": "statement_template:trace_ld_v1_statement_eremey_first_answer",
+      "message_completeness": "incomplete",
+      "truth_classification": "truthful",
+      "assertion": {
+        "assertion_id": "trace_ld_v1_assertion_eremey_first_answer",
+        "record_type": "statement_assertion_template",
+        "content_scope": "evasive_partial_report"
+      },
+      "permitted_content_boundary": "evasive_or_incomplete_without_asserting_a_fact_known_false",
+      "does_not_create": [
+        "new_fact",
+        "bag_contents_knowledge",
+        "zhdanko_motive_knowledge"
+      ],
+      "application_status": "template_only"
+    },
+    {
+      "statement_template_id": "trace_ld_v1_statement_eremey_disclosure",
+      "speaker_ref": "eremey_fisher",
+      "classification": "truthful_testimony",
+      "source_knowledge_categories": [
+        "incident_fact",
+        "observed_item_possession"
+      ],
+      "required_audience_refs": [
+        "player_clerk"
+      ],
+      "audience_candidate_slot_refs": [],
+      "source_knowledge_refs": [
+        "knowledge_scope:trace_ld_v1_knowledge_scope_local_fisher_v1#incident_fact",
+        "knowledge_scope:trace_ld_v1_knowledge_scope_local_fisher_v1#observed_item_possession"
+      ],
+      "statement_ref": "statement_template:trace_ld_v1_statement_eremey_disclosure",
+      "message_completeness": "complete",
+      "truth_classification": "truthful",
+      "assertion": {
+        "assertion_id": "trace_ld_v1_assertion_eremey_disclosure",
+        "record_type": "statement_assertion_template",
+        "content_scope": "heard_impact_and_observed_foreign_bag_possession"
+      },
+      "permitted_content_boundary": "heard_impact_and_saw_wet_ratsha_with_foreign_bag",
+      "application_status": "template_only"
+    },
+    {
+      "statement_template_id": "trace_ld_v1_statement_ratsha_confession",
+      "speaker_ref": "ratsha_storehouse_helper",
+      "classification": "confession",
+      "source_knowledge_categories": [
+        "hidden_event_sequence",
+        "received_instruction_content"
+      ],
+      "required_audience_refs": [
+        "player_clerk",
+        "eremey_fisher"
+      ],
+      "audience_candidate_slot_refs": [
+        "trace_ld_v1_audience_slot_participating_fisher"
+      ],
+      "source_knowledge_refs": [
+        "knowledge_scope:trace_ld_v1_knowledge_scope_storehouse_helper_v1#hidden_event_sequence",
+        "knowledge_scope:trace_ld_v1_knowledge_scope_storehouse_helper_v1#received_instruction_content"
+      ],
+      "statement_ref": "statement_template:trace_ld_v1_statement_ratsha_confession",
+      "message_completeness": "complete",
+      "truth_classification": "truthful",
+      "assertion": {
+        "assertion_id": "trace_ld_v1_assertion_ratsha_confession",
+        "record_type": "statement_assertion_template",
+        "content_scope": "own_actions_and_received_instruction"
+      },
+      "requires_independent_confirmation": true,
+      "application_status": "template_only"
+    },
+    {
+      "statement_template_id": "trace_ld_v1_statement_onisim_testimony",
+      "speaker_ref": "onisim_boatman",
+      "classification": "truthful_testimony",
+      "source_knowledge_categories": [
+        "incident_fact",
+        "executor_identity",
+        "memory_content"
+      ],
+      "required_audience_refs": [
+        "player_clerk",
+        "eremey_fisher"
+      ],
+      "audience_candidate_slot_refs": [],
+      "source_knowledge_refs": [
+        "knowledge_scope:trace_ld_v1_knowledge_scope_hired_boatman_v1#incident_fact",
+        "knowledge_scope:trace_ld_v1_knowledge_scope_hired_boatman_v1#executor_identity",
+        "knowledge_scope:trace_ld_v1_knowledge_scope_hired_boatman_v1#memory_content"
+      ],
+      "source_perception_template_refs": [
+        "trace_ld_v1_perception_onisim_hears_zhdanko_command"
+      ],
+      "statement_ref": "statement_template:trace_ld_v1_statement_onisim_testimony",
+      "message_completeness": "complete",
+      "truth_classification": "truthful",
+      "assertion": {
+        "assertion_id": "trace_ld_v1_assertion_onisim_testimony",
+        "record_type": "statement_assertion_template",
+        "content_scope": "perceived_voice_and_ratsha_actions"
+      },
+      "permitted_content_boundary": "perceived_voice_and_ratsha_actions_only",
+      "application_status": "template_only"
+    },
+    {
+      "statement_template_id": "trace_ld_v1_statement_zhdanko_denial",
+      "speaker_ref": "zhdanko_storehouse_controller",
+      "classification": "false_assertion",
+      "source_knowledge_categories": [
+        "hidden_event_sequence",
+        "hidden_motive",
+        "private_item_state"
+      ],
+      "required_audience_refs": [
+        "player_clerk",
+        "eremey_fisher",
+        "ratsha_storehouse_helper"
+      ],
+      "audience_candidate_slot_refs": [
+        "trace_ld_v1_audience_slot_participating_fisher"
+      ],
+      "source_knowledge_refs": [
+        "knowledge_scope:trace_ld_v1_knowledge_scope_storehouse_controller_v1#hidden_event_sequence",
+        "knowledge_scope:trace_ld_v1_knowledge_scope_storehouse_controller_v1#hidden_motive",
+        "knowledge_scope:trace_ld_v1_knowledge_scope_storehouse_controller_v1#private_item_state"
+      ],
+      "statement_ref": "statement_template:trace_ld_v1_statement_zhdanko_denial",
+      "message_completeness": "complete",
+      "truth_classification": "false",
+      "assertion": {
+        "assertion_id": "trace_ld_v1_assertion_zhdanko_denial",
+        "record_type": "statement_assertion_template",
+        "content_scope": "denial_of_involvement"
+      },
+      "fact_mutation": "forbidden",
+      "application_status": "template_only"
+    }
+  ],
+  "hypothesis_templates": [
+    {
+      "hypothesis_template_id": "trace_ld_v1_hypothesis_wrong_culprit",
+      "holder_ref": "player_clerk",
+      "record_type": "hypothesis",
+      "candidate_subject_scope": "approved_participant_refs_except_committed_culprit",
+      "truth_mutation": "forbidden",
+      "application_status": "template_only"
+    }
+  ],
+  "promise_memory_compatibility_slot": {
+    "slot_id": "trace_ld_v1_future_ratsha_surrender_promise_memory",
+    "runtime_status": "not_active",
+    "promisor_ref": "player_clerk",
+    "beneficiary_ref": "ratsha_storehouse_helper",
+    "witness_refs": [
+      "eremey_fisher"
+    ],
+    "participating_fisher_witness_slot_ref": "trace_ld_v1_audience_slot_participating_fisher",
+    "witness_binding_inheritance": {
+      "participant_binding": "inherit_selected_candidate",
+      "presence_requirement": "inherit_selected_candidate_requires_scene_presence",
+      "perception_requirement": "inherit_selected_candidate_requires_perception_capability",
+      "unselected_candidate_memory": "forbidden"
+    },
+    "statement_ref": "future_statement:ratsha_surrender_conditional_protection",
+    "memory_applicability": "after_committed_statement_only",
+    "does_not_create": [
+      "promise_lifecycle",
+      "active_promise",
+      "forgiveness",
+      "innocence",
+      "release_from_responsibility"
+    ]
+  },
+  "fact_records": [],
+  "perception_records": [],
+  "knowledge_records": [],
+  "hypothesis_records": [],
+  "rumor_records": [],
+  "false_assertion_records": [],
+  "memory_records": [
+    {
+      "memory_template_id": "trace_ld_v1_memory_eremey_first_answer_v1",
+      "record_type": "npc_memory_template",
+      "remembering_participant_ref": "eremey_fisher",
+      "source_statement_ref": "trace_ld_v1_statement_eremey_first_answer",
+      "source_requirement": "committed_statement_with_materialized_present_speaker",
+      "summary_text": "Еремей помнит, что говорил с Микулой о крушении.",
+      "truth_projection": "forbidden",
+      "application_status": "template_only"
+    },
+    {
+      "memory_template_id": "trace_ld_v1_memory_eremey_disclosure_v1",
+      "record_type": "npc_memory_template",
+      "remembering_participant_ref": "eremey_fisher",
+      "source_statement_ref": "trace_ld_v1_statement_eremey_disclosure",
+      "source_requirement": "committed_statement_with_materialized_present_speaker",
+      "summary_text": "Еремей помнит, что сообщил Микуле об услышанном ударе и увиденной у Ратши чужой сумке.",
+      "truth_projection": "forbidden",
+      "application_status": "template_only"
+    }
+  ],
+  "player_facing_text_records": [
+    {
+      "journal_template_id": "trace_ld_v1_journal_eremey_first_answer_v1",
+      "record_type": "player_journal_template",
+      "remembering_participant_ref": "player_clerk",
+      "source_statement_ref": "trace_ld_v1_statement_eremey_first_answer",
+      "source_requirement": "committed_statement_with_materialized_present_audience",
+      "summary_text": "Еремей уклонился от полного ответа о крушении.",
+      "objective_truth_projection": "forbidden",
+      "application_status": "template_only"
+    },
+    {
+      "journal_template_id": "trace_ld_v1_journal_eremey_disclosure_v1",
+      "record_type": "player_journal_template",
+      "remembering_participant_ref": "player_clerk",
+      "source_statement_ref": "trace_ld_v1_statement_eremey_disclosure",
+      "source_requirement": "committed_statement_with_materialized_present_audience",
+      "summary_text": "Еремей сообщил, что слышал удар и видел мокрого Ратшу с чужой сумкой.",
+      "objective_truth_projection": "forbidden",
+      "application_status": "template_only"
+    }
+  ],
+  "interaction_persistence_mappings": [
+    {
+      "mapping_id": "trace_ld_v1_mapping_eremey_first_answer_v1",
+      "statement_template_ref": "trace_ld_v1_statement_eremey_first_answer",
+      "speaker_ref": "eremey_fisher",
+      "audience_refs": [
+        "player_clerk"
+      ],
+      "activity_refs": [
+        "trace_ld_v1_activity_first_eremey_talk",
+        "trace_ld_v1_activity_eremey_with_evidence"
+      ],
+      "decision_policy_ref": "trace_ld_v1_npc_eremey_decisions",
+      "decision_option_ref": "evade_and_withhold",
+      "required_committed_inputs": [
+        "materialized_present_speaker",
+        "materialized_present_audience",
+        "committed_activity",
+        "committed_npc_decision"
+      ],
+      "timestamp_projection": {
+        "source_record": "committed_activity",
+        "source_field": "game_timestamp",
+        "write_policy": "copy_exact_committed_value",
+        "clock_write": "forbidden"
+      },
+      "statement_projection": {
+        "write_target": "statement_record",
+        "source_kind": "npc_statement",
+        "objective_truth_projection": "forbidden"
+      },
+      "speaker_memory_projection": {
+        "write_target": "speaker_memory_record",
+        "template_ref": "trace_ld_v1_memory_eremey_first_answer_v1",
+        "remembering_participant_ref": "eremey_fisher"
+      },
+      "player_journal_projection": {
+        "write_target": "player_journal_entry",
+        "template_ref": "trace_ld_v1_journal_eremey_first_answer_v1",
+        "remembering_participant_ref": "player_clerk"
+      },
+      "audience_knowledge_proposal": null,
+      "route_knowledge_disclosure": null,
+      "evidence_input": null,
+      "forbidden_outputs": [
+        "objective_world_fact",
+        "route_knowledge_disclosure",
+        "culprit_fact",
+        "hidden_motive",
+        "knowledge_outside_speaker_scope"
+      ]
+    },
+    {
+      "mapping_id": "trace_ld_v1_mapping_eremey_disclosure_v1",
+      "statement_template_ref": "trace_ld_v1_statement_eremey_disclosure",
+      "speaker_ref": "eremey_fisher",
+      "audience_refs": [
+        "player_clerk"
+      ],
+      "activity_refs": [
+        "trace_ld_v1_activity_eremey_with_evidence"
+      ],
+      "decision_policy_ref": "trace_ld_v1_npc_eremey_decisions",
+      "decision_option_ref": "bounded_disclosure",
+      "required_committed_inputs": [
+        "materialized_present_speaker",
+        "materialized_present_audience",
+        "committed_activity",
+        "committed_npc_decision",
+        "committed_evidence_input"
+      ],
+      "timestamp_projection": {
+        "source_record": "committed_activity",
+        "source_field": "game_timestamp",
+        "write_policy": "copy_exact_committed_value",
+        "clock_write": "forbidden"
+      },
+      "statement_projection": {
+        "write_target": "statement_record",
+        "source_kind": "npc_statement",
+        "objective_truth_projection": "forbidden"
+      },
+      "speaker_memory_projection": {
+        "write_target": "speaker_memory_record",
+        "template_ref": "trace_ld_v1_memory_eremey_disclosure_v1",
+        "remembering_participant_ref": "eremey_fisher"
+      },
+      "player_journal_projection": {
+        "write_target": "player_journal_entry",
+        "template_ref": "trace_ld_v1_journal_eremey_disclosure_v1",
+        "remembering_participant_ref": "player_clerk"
+      },
+      "audience_knowledge_proposal": {
+        "write_target": "audience_knowledge_proposal",
+        "audience_ref": "player_clerk",
+        "source_statement_ref": "trace_ld_v1_statement_eremey_disclosure"
+      },
+      "route_knowledge_disclosure": {
+        "write_target": "route_knowledge_disclosure",
+        "route_ref": "trace_ld_v1_route_camp_to_shed",
+        "movement": "forbidden"
+      },
+      "evidence_input": {
+        "evidence_ref": "trace_ld_v1_evidence_blue_wool",
+        "admission": "committed_discovered_and_player_accessible_only",
+        "raw_text_claim_is_evidence": false
+      },
+      "forbidden_outputs": [
+        "objective_world_fact",
+        "automatic_actor_movement",
+        "culprit_fact",
+        "hidden_motive",
+        "knowledge_outside_speaker_scope"
+      ]
+    }
+  ],
+  "committed_statements": [],
+  "active_promises": [],
+  "excludes": [
+    "knowledge_runtime",
+    "statement_runtime",
+    "promise_lifecycle",
+    "player_projection_runtime",
+    "narration"
+  ]
+}

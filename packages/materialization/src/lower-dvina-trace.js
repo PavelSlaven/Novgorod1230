@@ -20,6 +20,12 @@ import {
   lowerDvinaTraceRequestIdentity
 } from './lower-dvina-trace-contract.js';
 import { assertLowerDvinaTraceSelectionClosure } from './lower-dvina-trace-selection-closure.js';
+import {
+  materializeLowerDvinaTracePreparedCamp
+} from './lower-dvina-trace-phase-3.js';
+import {
+  buildLowerDvinaTraceSealedSelections
+} from './lower-dvina-trace-sealed-selections.js';
 
 export {
   assertLowerDvinaTraceSelectionClosure,
@@ -143,7 +149,7 @@ export function materializeLowerDvinaTracePartyInstance(input) {
   if (!Array.isArray(environmentRef) || environmentRef.length !== 1) fail('ENVIRONMENT_SNAPSHOT_INCOMPLETE', 'Exactly one approved start environment is required.');
   const environment = requiredById(bodyProfiles.environment_profiles, 'environment_profile_id', environmentRef[0]);
 
-  const sealedSelections = buildSealedSelections(bundle, {
+  const sealedSelections = buildLowerDvinaTraceSealedSelections(bundle, {
     participantSelections,
     locationSelections,
     participatingFisher,
@@ -160,6 +166,15 @@ export function materializeLowerDvinaTracePartyInstance(input) {
   const playerId = deterministicInstanceId(input.party_id, runId, 'player_character', 'player_clerk', 0);
   const g5NodeId = deterministicInstanceId(input.party_id, runId, 'g5_node', 'trace_ld_v1_loc_wreck_shore', 0);
   const anchorId = deterministicInstanceId(input.party_id, runId, 'g5_anchor', spatialBinding.anchor_template.template_id, 0);
+  const phase3Prepared = input.scenario_definition_revision === 8
+    ? materializeLowerDvinaTracePreparedCamp({
+      input,
+      bundle,
+      runId,
+      participantSelections,
+      locationSelections
+    })
+    : null;
   const knifeTemplate = requiredById(bundle.item_container_set.item_templates, 'item_template_id', 'trace_ld_v1_item_mikula_knife');
   const knifeInventoryProfile = requiredPinnedById(
     bundle.item_inventory_profiles,
@@ -262,7 +277,13 @@ export function materializeLowerDvinaTracePartyInstance(input) {
     }],
     containers: [],
     timestamp,
-    environment_snapshot: structuredClone(environment)
+    environment_snapshot: structuredClone(environment),
+    ...(phase3Prepared
+      ? {
+        prepared_scenes: [phase3Prepared.scene],
+        npcs: phase3Prepared.npcs
+      }
+      : {})
   };
   const validationReport = {
     pass: true,
@@ -344,7 +365,8 @@ function selectParticipants(set, playerProfile, bindings, random, choices) {
         causal_binding: slot === 'player_clerk'
           ? requiredText(profile.approval?.basis, 'player profile approval.basis')
           : requiredText(profile.causal_basis, `participant profile ${profile.profile_id}.causal_basis`),
-        materialization_rule: materializationDepth
+        materialization_rule: materializationDepth,
+        candidate_set_digest: choices.at(-1).candidate_set_digest
       });
     }
   }
@@ -369,65 +391,6 @@ function selectLocations(set, random, choices) {
     })),
     record_digest: canonicalDigest(location)
   }));
-}
-
-function buildSealedSelections(bundle, selected) {
-  const lateLocations = selected.locationSelections.filter((value) => value.slot_key !== 'trace_ld_v1_loc_wreck_shore');
-  const groups = [
-    ['participants', selected.participantSelections.filter((value) => value.slot_key !== 'player_clerk')],
-    ['locations', lateLocations],
-    ['items', bundle.item_container_set.item_templates.filter((value) => value.item_template_id !== 'trace_ld_v1_item_mikula_knife').map((record) => sealedRef(record.item_template_id, record))],
-    ['containers', bundle.item_container_set.container_templates.map((record) => sealedRef(record.container_template_id, record))],
-    ['clue_placements', bundle.item_container_set.placement_slots.map((record) => ({ ...sealedRef(record.placement_slot_id, record), causal_binding: record.location_ref }))],
-    ['evidence', bundle.clue_evidence_graph_set.evidence_records.map((record) => ({
-      ...sealedRef(record.evidence_id, record),
-      discovery_slot_ref: record.discovery_slot_ref,
-      causal_binding: {
-        location_refs: structuredClone(record.allowed_location_refs),
-        item_refs: structuredClone(record.allowed_item_refs)
-      }
-    }))],
-    ['knowledge', bundle.knowledge_lie_memory_rules.participant_knowledge_bindings.map((record) => ({ ...sealedRef(record.participant_ref, record), source_ref: record.knowledge_scope_ref }))],
-    ['lies_and_statements', bundle.knowledge_lie_memory_rules.statement_templates.map((record) => sealedRef(record.statement_template_id, record))],
-    ['memories', bundle.knowledge_lie_memory_rules.perception_source_templates.map((record) => sealedRef(record.perception_template_id, record))],
-    ['activities', exactRecordRefs(bundle.activity_check_consequence_profiles.activity_profiles, 'profile_id', 'activity profile')],
-    ['checks', exactRecordRefs(bundle.activity_check_consequence_profiles.check_profiles, 'check_id', 'check profile')],
-    ['consequences', exactRecordRefs(bundle.activity_check_consequence_profiles.consequence_profiles, 'consequence_id', 'consequence profile')],
-    ['npc_decisions', exactRecordRefs(bundle.npc_decision_schedule_policies.decision_policies, 'policy_id', 'NPC decision policy')],
-    ['npc_schedules', exactRecordRefs(bundle.npc_decision_schedule_policies.schedule_policies, 'schedule_policy_id', 'NPC schedule policy')],
-    ['movement', exactRecordRefs(bundle.movement_bindings.route_bindings, 'route_id', 'movement binding')],
-    ['body', [sealedRef(selected.body.profile_id, selected.body)]],
-    ['environment', [sealedRef(selected.environment.environment_profile_id, selected.environment)]],
-    ['promise', [sealedRef(requiredText(bundle.promise_policy.policy_id, 'promise_policy.policy_id'), bundle.promise_policy)]],
-    ['completion', [sealedRef(bundle.completion_rules.set_id, bundle.completion_rules)]],
-    ['epilogue', [sealedRef(bundle.epilogue_rules.set_id, bundle.epilogue_rules)]],
-    ['audience', [sealedRef(selected.participatingFisher, bundle.knowledge_lie_memory_rules.audience_candidate_slots[0])]]
-  ];
-  return groups.map(([selection_kind, records]) => ({
-    selection_kind,
-    source_pin: structuredClone(sourcePinForGroup(bundle, selection_kind)),
-    records: structuredClone(records).sort((left, right) => sealedRecordId(left).localeCompare(sealedRecordId(right)))
-  }));
-}
-
-function sealedRecordId(value) {
-  return requiredText(value?.selected_id, 'sealed selection selected_id');
-}
-
-function sourcePinForGroup(bundle, kind) {
-  const key = kind === 'participants' ? 'participant_profile_set'
-    : kind === 'locations' ? 'location_topology_set'
-      : ['items', 'containers', 'clue_placements'].includes(kind) ? 'item_container_set'
-        : kind === 'evidence' ? 'clue_evidence_graph_set'
-          : ['knowledge', 'lies_and_statements', 'memories', 'audience'].includes(kind) ? 'knowledge_lie_memory_rules'
-            : ['activities', 'checks', 'consequences'].includes(kind) ? 'activity_check_consequence_profiles'
-              : ['npc_decisions', 'npc_schedules'].includes(kind) ? 'npc_decision_schedule_policies'
-                : kind === 'movement' ? 'movement_bindings'
-                  : ['body', 'environment'].includes(kind) ? 'body_environment_profiles'
-                  : kind === 'promise' ? 'promise_policy'
-                    : kind === 'completion' ? 'completion_rules'
-                      : 'epilogue_rules';
-  return bundle.artifact_pins[key];
 }
 
 function buildPlayerDossier({ input, playerId, name, profile, policy, body, knifeTemplate, knifeInventoryProfile, wreck, projection, sourceDigest }) {
@@ -507,14 +470,6 @@ function choose({ key, setRef, candidates, idOf, random, choices }) {
 
 function approved(values) {
   return (values ?? []).filter((value) => value?.status === 'approved');
-}
-
-function exactRecordRefs(values, key, label) {
-  return exactArray(values, label).map((value) => sealedRef(requiredText(value?.[key], `${label}.${key}`), value));
-}
-
-function sealedRef(selectedId, record) {
-  return { selected_id: selectedId, record_digest: canonicalDigest(record) };
 }
 
 function requiredById(values, key, id) {

@@ -3,13 +3,15 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { canonicalDigest, MaterializationError } from '@rus/materialization';
 import { resolveGameTimestampFromCalendarDate } from '@rus/time-events-history/calendar';
-import { validateStage11PlayerCharacterOutput } from '@rus/new-game/stages/stage-11';
-import { buildStage12CodePrecheck } from '@rus/new-game/stages/stage-12';
 import { assertExactContentRef } from './lower-dvina-trace-phase-1a-ref-validation.js';
 import {
   assertVersionedRawPin,
   loadLowerDvinaTracePhase1ACutover
 } from './lower-dvina-trace-phase-1a-cutover.js';
+import { loadLowerDvinaTraceRevision8Bundle } from './lower-dvina-trace-phase-3-bundle.js';
+import {
+  validateLowerDvinaTracePlayerDossier as validatePlayerDossier
+} from './lower-dvina-trace-player-validation.js';
 export { assertExactContentRef } from './lower-dvina-trace-phase-1a-ref-validation.js';
 
 const SCENARIO_ROOT = 'data/world-catalogs/novgorod/lower-dvina-trace-v1';
@@ -37,7 +39,23 @@ const FILES = Object.freeze({
   epilogue_rules: 'phase-0d/epilogue-rules.json'
 });
 
-export async function loadLowerDvinaTraceMaterializationBundle({ rootDir = process.cwd() } = {}) {
+export async function loadLowerDvinaTraceMaterializationBundle({
+  rootDir = process.cwd(),
+  scenarioDefinitionRevision = 7
+} = {}) {
+  if (scenarioDefinitionRevision === 7) {
+    return loadRevision7Bundle({ rootDir });
+  }
+  if (scenarioDefinitionRevision === 8) {
+    return loadRevision8Bundle({ rootDir });
+  }
+  fail(
+    'TRACE_SCENARIO_REVISION_UNSUPPORTED',
+    `Unsupported Lower Dvina trace definition revision ${String(scenarioDefinitionRevision)}.`
+  );
+}
+
+async function loadRevision7Bundle({ rootDir }) {
   const {
     phase1AManifestFile,
     correctionManifestFile,
@@ -178,6 +196,16 @@ export async function loadLowerDvinaTraceMaterializationBundle({ rootDir = proce
   return freezeDeep(bundle);
 }
 
+async function loadRevision8Bundle({ rootDir }) {
+  return loadLowerDvinaTraceRevision8Bundle({
+    rootDir,
+    historicalBundle: await loadRevision7Bundle({ rootDir }),
+    fail,
+    freezeDeep,
+    validateDefinitionPins
+  });
+}
+
 export function resolveLowerDvinaTraceStartTimestamp({ specification, calendar_profile }) {
   const contract = specification?.calendar_date_contract;
   if (contract?.calendar_system !== 'Julian' || contract?.selection_policy !== 'fixed_approved_date'
@@ -196,38 +224,7 @@ export function resolveLowerDvinaTraceStartTimestamp({ specification, calendar_p
 }
 
 export function validateLowerDvinaTracePlayerDossier(result, bundle) {
-  const dossier = result?.immediate?.player?.dossier;
-  const regional = {
-    social_context: { roles: [{ role_id: bundle.player_profile.role.id }] },
-    occupation_context: { occupations: [{ occupation_id: bundle.player_profile.occupation_id }] }
-  };
-  const itemCandidates = { item_profile_candidates: [{ item_profile_id: 'trace_ld_v1_item_mikula_knife' }] };
-  const common = {
-    request_id: result?.request_identity?.idempotency_key,
-    regional_context_package: regional,
-    item_profile_candidate_set: itemCandidates,
-    npc_candidate_set: {}
-  };
-  const stage11Concerns = validateStage11PlayerCharacterOutput(dossier, {
-    version: 1,
-    schema: 'player_character_generator_input',
-    ...common,
-    normalized_request: {},
-    historical_frame: { region: { region_id: 'gn_nov_g1_xp017_yp026' }, year: { value: 1230 } },
-    selected_start_node: { selected_candidate_id: 'trace_ld_v1_loc_wreck_shore' },
-    start_place_audit: { pass: true },
-    character_generation_policy: { trace_player_profile_policy: bundle.approved_policy }
-  });
-  const stage12 = buildStage12CodePrecheck({
-    ...common,
-    player_character_dossier: dossier,
-    audit_policy: { trace_player_profile_policy: bundle.approved_policy },
-    start_place_audit: { pass: true }
-  });
-  if (stage11Concerns.length > 0 || stage12.pass !== true) {
-    fail('TRACE_PLAYER_PROFILE_SEMANTIC_VALIDATION_FAILED', 'Approved player dossier failed Stage 11/12 validation.', { stage11Concerns, stage12 });
-  }
-  return Object.freeze({ pass: true, stage11: { pass: true, concerns: [] }, stage12 });
+  return validatePlayerDossier(result, bundle, fail);
 }
 
 async function readJson(rootDir, relativePath) {

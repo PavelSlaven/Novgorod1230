@@ -1,72 +1,30 @@
 import { canonicalDigest, MATERIALIZER_VERSION, MaterializationError, RNG_VERSION } from './core.js';
+import {
+  assertLowerDvinaTracePhase3Bindings,
+  assertLowerDvinaTracePhase3Cutover
+} from './lower-dvina-trace-phase-3-contract.js';
+import {
+  ARTIFACT_CONTRACTS,
+  PHASE_3_ARTIFACT_CONTRACT_OVERRIDES,
+  REQUIRED_ARTIFACTS
+} from './lower-dvina-trace-artifact-contracts.js';
 
 export const LOWER_DVINA_TRACE_SCENARIO_ID = 'lower_dvina_trace_v1';
 export const LOWER_DVINA_TRACE_DEFINITION_REVISION = 7;
+export const LOWER_DVINA_TRACE_PHASE_3_DEFINITION_REVISION = 8;
 export const LOWER_DVINA_TRACE_ACCEPTANCE_SEED_CONTEXT = 'lower_dvina_trace_phase_1a_mikula_v1';
 export const LOWER_DVINA_TRACE_APPROVED_WORLD_COMPATIBILITY_DIGEST =
   '0e239d47657a9bdf996f5a0cc5ca46e57e42a5326feb540d8acca747ad257b54';
-
-const REQUIRED_ARTIFACTS = Object.freeze([
-  'phase_1a_manifest',
-  'materialization_bindings',
-  'definition',
-  'player_profile',
-  'player_profile_definition',
-  'player_profile_set',
-  'approved_policy',
-  'participant_profile_set',
-  'location_topology_set',
-  'item_container_set',
-  'item_inventory_profiles',
-  'hidden_truth_candidate_set',
-  'clue_evidence_graph_set',
-  'knowledge_lie_memory_rules',
-  'activity_check_consequence_profiles',
-  'npc_decision_schedule_policies',
-  'movement_bindings',
-  'location_access_policies',
-  'location_capacity_contracts',
-  'body_environment_profiles',
-  'promise_policy',
-  'completion_rules',
-  'epilogue_rules',
-  'calendar_profile',
-  'spatial_manifest'
-]);
-
-const ARTIFACT_CONTRACTS = Object.freeze({
-  phase_1a_manifest: ['rus.lower_dvina_trace_phase_1a_manifest.v1', 3],
-  materialization_bindings: ['rus.lower_dvina_trace_phase_1a_materialization_bindings.v1', 3],
-  definition: ['rus.trace_scenario_definition.v1', 7],
-  player_profile: ['rus.trace_player_profile.v1', 1],
-  player_profile_definition: ['rus.trace_scenario_definition.v1', 1],
-  player_profile_set: ['rus.trace_player_profile_set.v1', 1],
-  approved_policy: ['rus.trace_player_profile_policy.v1', 1],
-  participant_profile_set: ['rus.trace_participant_profile_set.v1', 1],
-  location_topology_set: ['rus.trace_location_topology_set.v1', 1],
-  item_container_set: ['rus.trace_item_container_set.v1', 1],
-  item_inventory_profiles: ['rus.item_template_inventory_profiles.v1', 1],
-  hidden_truth_candidate_set: ['rus.trace_hidden_truth_candidate_set.v1', 1],
-  clue_evidence_graph_set: ['rus.trace_clue_evidence_graph_set.v1', 1],
-  knowledge_lie_memory_rules: ['rus.trace_knowledge_lie_memory_rules.v1', 1],
-  activity_check_consequence_profiles: ['rus.trace_activity_check_consequence_profiles.v1', 1],
-  npc_decision_schedule_policies: ['rus.trace_npc_decision_schedule_policies.v1', 1],
-  movement_bindings: ['rus.trace_movement_bindings.v1', 1],
-  location_access_policies: ['rus.trace_scene_access_policy_set.v1', 1],
-  location_capacity_contracts: ['rus.trace_scene_capacity_contract_set.v1', 1],
-  body_environment_profiles: ['rus.trace_body_environment_profiles.v2', 4],
-  promise_policy: ['rus.trace_promise_policy.v1', 1],
-  completion_rules: ['rus.trace_completion_rules.v1', 1],
-  epilogue_rules: ['rus.trace_epilogue_rules.v1', 1],
-  calendar_profile: ['rus.time.calendar_projection_profile.v1', 2],
-  spatial_manifest: ['rus.spatial-v3.world-base-authoring-bundle.v1', 1]
-});
 
 export function assertLowerDvinaTraceRequest(input) {
   if (!input || typeof input !== 'object') fail('TRACE_MATERIALIZATION_REQUEST_INVALID', 'Materialization request is required.');
   const required = ['party_id', 'scenario_id', 'scenario_manifest_digest', 'world_revision_id', 'world_catalog_digest', 'materializer_version', 'rng_algorithm_id', 'seed_context', 'idempotency_key', 'trigger'];
   for (const key of required) if (typeof input[key] !== 'string' || !input[key]) fail('TRACE_MATERIALIZATION_REQUEST_INVALID', `Missing request field ${key}.`);
-  if (input.scenario_id !== LOWER_DVINA_TRACE_SCENARIO_ID || input.scenario_definition_revision !== LOWER_DVINA_TRACE_DEFINITION_REVISION) fail('TRACE_SCENARIO_REVISION_UNSUPPORTED', 'Only Lower Dvina trace definition revision 7 is supported for new materialization.');
+  if (input.scenario_id !== LOWER_DVINA_TRACE_SCENARIO_ID
+    || ![LOWER_DVINA_TRACE_DEFINITION_REVISION, LOWER_DVINA_TRACE_PHASE_3_DEFINITION_REVISION]
+      .includes(input.scenario_definition_revision)) {
+    fail('TRACE_SCENARIO_REVISION_UNSUPPORTED', 'Only approved Lower Dvina trace definition revisions 7 and 8 are supported.');
+  }
   if (input.materializer_version !== MATERIALIZER_VERSION || input.rng_algorithm_id !== RNG_VERSION) fail('TRACE_MATERIALIZER_VERSION_UNSUPPORTED', 'Materializer and RNG pins must match production versions.');
   if (!Number.isInteger(input.occurrence) || input.occurrence < 0) fail('TRACE_MATERIALIZATION_REQUEST_INVALID', 'occurrence must be a non-negative integer.');
   if (input.existing_party_state?.baseline_exists === true) fail('BASELINE_ALREADY_MATERIALIZED', 'An existing baseline cannot be materialized again.');
@@ -101,21 +59,31 @@ export function assertLowerDvinaTraceBundle(bundle, input) {
     const artifact = bundle[key];
     const pin = bundle.artifact_pins?.[key];
     if (!artifact || !pin || pin.key !== key || !/^[a-f0-9]{64}$/.test(pin.digest ?? '') || canonicalDigest(artifact) !== pin.canonical_digest) fail('TRACE_SCENARIO_ARTIFACT_INVALID', `Required artifact ${key} is missing or stale.`);
-    const [schema, revision] = ARTIFACT_CONTRACTS[key];
+    const [schema, revision] = artifactContractFor(key, input.scenario_definition_revision);
     const [actualSchema, actualRevision] = exactArtifactContractIdentity(key, artifact, pin);
     if (actualSchema !== schema || actualRevision !== revision || pin.schema !== schema || pin.revision !== revision) {
       fail('TRACE_SCENARIO_ARTIFACT_CONTRACT_UNSUPPORTED', `Required artifact ${key} has an unsupported schema or revision.`);
     }
   }
-  if (bundle.definition?.scenario_id !== LOWER_DVINA_TRACE_SCENARIO_ID || bundle.definition?.revision !== LOWER_DVINA_TRACE_DEFINITION_REVISION || bundle.definition?.required_unresolved_refs?.length !== 0) fail('TRACE_SCENARIO_DEFINITION_INCOMPLETE', 'Scenario definition revision 7 must be fully resolved.');
+  if (bundle.definition?.scenario_id !== LOWER_DVINA_TRACE_SCENARIO_ID
+    || bundle.definition?.revision !== input.scenario_definition_revision
+    || bundle.definition?.required_unresolved_refs?.length !== 0) {
+    fail('TRACE_SCENARIO_DEFINITION_INCOMPLETE', `Scenario definition revision ${input.scenario_definition_revision} must be fully resolved.`);
+  }
   const spatial = bundle.location_topology_set?.spatial_source_ref;
   if (spatial?.manifest_digest !== bundle.artifact_pins.spatial_manifest.digest
     || !worldTupleIsDirectOrApprovedDescendant(spatial, input)) {
     fail('TRACE_WORLD_PIN_INCOMPATIBLE', 'Scenario spatial source does not match the requested world pin.');
   }
-  assertPhase1ACutoverIdentity(bundle);
-  assertPhase1ABindings(bundle);
+  assertPhase1ACutoverIdentity(bundle, input.scenario_definition_revision);
+  assertPhase1ABindings(bundle, input.scenario_definition_revision);
   return bundle;
+}
+
+function artifactContractFor(key, definitionRevision) {
+  return definitionRevision === LOWER_DVINA_TRACE_PHASE_3_DEFINITION_REVISION
+    ? (PHASE_3_ARTIFACT_CONTRACT_OVERRIDES[key] ?? ARTIFACT_CONTRACTS[key])
+    : ARTIFACT_CONTRACTS[key];
 }
 
 export function assertLowerDvinaTraceSemanticClosure(bundle, { motive, sequence, participatingFisher }) {
@@ -280,12 +248,15 @@ function exactArtifactContractIdentity(key, artifact, pin) {
   return [artifact.schema, artifact.revision];
 }
 
-function assertPhase1ABindings(bundle) {
+function assertPhase1ABindings(bundle, definitionRevision) {
   const bindings = bundle.materialization_bindings;
-  if (bindings.binding_set_id !== 'lower_dvina_trace_phase_1a_materialization_bindings_v3'
+  const expectedBindingId = definitionRevision === LOWER_DVINA_TRACE_PHASE_3_DEFINITION_REVISION
+    ? 'lower_dvina_trace_phase_1a_materialization_bindings_v4'
+    : 'lower_dvina_trace_phase_1a_materialization_bindings_v3';
+  if (bindings.binding_set_id !== expectedBindingId
     || bindings.status !== 'approved'
     || bindings.scenario_id !== LOWER_DVINA_TRACE_SCENARIO_ID
-    || bindings.scenario_definition_revision !== LOWER_DVINA_TRACE_DEFINITION_REVISION
+    || bindings.scenario_definition_revision !== definitionRevision
     || bindings.fallback_policy !== 'forbidden'
     || bindings.normalization_policy !== 'forbidden') {
     fail('TRACE_PHASE_1A_BINDING_INVALID', 'Approved exact Phase-1A materialization bindings are required.');
@@ -311,6 +282,9 @@ function assertPhase1ABindings(bundle) {
     || ![anchor.npc_capacity, anchor.item_capacity, anchor.container_capacity]
       .every((value) => Number.isInteger(value) && value >= 0)) {
     fail('TRACE_START_SPATIAL_BINDING_INCOMPLETE', 'Start G5 node/anchor template and capacities must resolve exactly.');
+  }
+  if (definitionRevision === LOWER_DVINA_TRACE_PHASE_3_DEFINITION_REVISION) {
+    assertLowerDvinaTracePhase3Bindings(bundle, fail);
   }
 
   const dossier = bindings.player_dossier_projection;
@@ -355,7 +329,11 @@ function assertPhase1ABindings(bundle) {
   }
 }
 
-function assertPhase1ACutoverIdentity(bundle) {
+function assertPhase1ACutoverIdentity(bundle, definitionRevision) {
+  if (definitionRevision === LOWER_DVINA_TRACE_PHASE_3_DEFINITION_REVISION) {
+    assertLowerDvinaTracePhase3Cutover(bundle, fail);
+    return;
+  }
   const manifest = bundle.phase_1a_manifest;
   const bindings = bundle.materialization_bindings;
   const definition = bundle.definition;

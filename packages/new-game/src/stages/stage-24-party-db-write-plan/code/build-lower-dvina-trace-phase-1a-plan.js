@@ -9,6 +9,9 @@ import {
   buildMaterializationRunCatalogPinRecord,
   buildPartyCatalogPinRecord
 } from './runtime-catalog-pins.js';
+import {
+  buildLowerDvinaTracePersistedProjection
+} from './lower-dvina-trace-persisted-projection.js';
 
 export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
   assertInput(input);
@@ -23,6 +26,7 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
   const player = result.immediate.player;
   const playerId = player.instance_id;
   const runId = result.run_id;
+  const { preparedScenes, preparedNpcs } = phase3PreparedInputs(result);
   const changeSetId = `change_${sha256([partyId, runId, 'phase_1a']).slice(0, 24)}`;
   const sourceTrace = [{
     source_id: result.request_identity.scenario_id,
@@ -53,6 +57,11 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
       { domain: 'player_character', instance_id: playerId },
       { domain: 'g5_node', instance_id: result.immediate.spatial.node.instance_id },
       { domain: 'g5_anchor', instance_id: result.immediate.spatial.anchor.instance_id },
+      ...preparedScenes.flatMap((scene) => [
+        { domain: 'g5_node', instance_id: scene.node.instance_id },
+        { domain: 'g5_anchor', instance_id: scene.anchor.instance_id }
+      ]),
+      ...preparedNpcs.map((npc) => ({ domain: 'npc', instance_id: npc.instance_id })),
       ...result.immediate.items.map((item) => ({ domain: 'item', instance_id: item.instance_id }))
     ]
   };
@@ -115,7 +124,15 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     template_id: result.immediate.spatial.node.template_id,
     slot_key: result.immediate.spatial.node.slot_key,
     state: result.immediate.spatial.node.state
-  }], ['party_materialization_runs'], sourceTrace);
+  }, ...preparedScenes.map((scene) => ({
+    party_id: partyId,
+    g5_node_id: scene.node.instance_id,
+    run_id: runId,
+    parent_g4_id: scene.node.parent_g4_id,
+    template_id: scene.node.template_id,
+    slot_key: scene.node.slot_key,
+    state: scene.node.state
+  }))], ['party_materialization_runs'], sourceTrace);
   addBatch(batches, 'party_g5_anchors', [{
     party_id: partyId,
     anchor_id: result.immediate.spatial.anchor.instance_id,
@@ -126,7 +143,35 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     item_capacity: result.immediate.spatial.anchor.item_capacity,
     container_capacity: result.immediate.spatial.anchor.container_capacity,
     state: result.immediate.spatial.anchor.state
-  }], ['party_g5_nodes'], sourceTrace);
+  }, ...preparedScenes.map((scene) => ({
+    party_id: partyId,
+    anchor_id: scene.anchor.instance_id,
+    g5_node_id: scene.anchor.node_id,
+    template_id: scene.anchor.template_id,
+    slot_key: scene.anchor.slot_key,
+    npc_capacity: scene.anchor.npc_capacity,
+    item_capacity: scene.anchor.item_capacity,
+    container_capacity: scene.anchor.container_capacity,
+    state: scene.anchor.state
+  }))], ['party_g5_nodes'], sourceTrace);
+  addBatch(batches, 'party_npcs', preparedNpcs.map((npc) => ({
+    party_id: partyId,
+    npc_id: npc.instance_id,
+    run_id: runId,
+    profile_set_id: npc.profile_id,
+    profile_level: npc.profile_level,
+    anchor_id: npc.anchor_id,
+    identity_state: npc.identity_state,
+    machine_state: npc.machine_state,
+    semantic_state: {
+      ...npc.semantic_state,
+      participant_slot_ref: npc.participant_slot_ref,
+      location_profile_ref: npc.location_profile_ref,
+      zone_ref: npc.zone_ref,
+      profile_revision: npc.profile_revision,
+      profile_record_digest: npc.profile_record_digest
+    }
+  })), ['party_materialization_runs', 'party_g5_anchors'], sourceTrace);
   addBatch(batches, 'party_positions', [{
     party_id: partyId,
     g4_id: result.immediate.spatial.position.g4_id,
@@ -152,7 +197,21 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     state_version: 1,
     created_change_set_id: changeSetId,
     updated_change_set_id: changeSetId
-  }], ['party_player_characters', 'party_v3_change_sets'], sourceTrace);
+  }, ...preparedNpcs.map((npc) => ({
+    party_id: partyId,
+    actor_kind: 'npc',
+    actor_id: npc.instance_id,
+    role_ref: npc.role_ref,
+    occupation_ref: npc.occupation_ref,
+    skill_profile_snapshot: {},
+    name_profile_snapshot: npc.identity_state,
+    language_profile_snapshot: {},
+    knowledge_profile_snapshot: npc.knowledge_profile_snapshot,
+    profile_candidate_set_digest: npc.profile_candidate_set_digest,
+    state_version: 1,
+    created_change_set_id: changeSetId,
+    updated_change_set_id: changeSetId
+  }))], ['party_player_characters', 'party_npcs', 'party_v3_change_sets'], sourceTrace);
   addBatch(batches, 'party_actor_body_states', [{
     party_id: partyId,
     actor_kind: 'player_character',
@@ -224,7 +283,7 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     state_version: 1,
     updated_change_set_id: changeSetId
   }], ['parties', 'party_v3_change_sets'], sourceTrace);
-  const persistedProjection = buildExpectedPersistedProjection({
+  const persistedProjection = buildLowerDvinaTracePersistedProjection({
     result,
     changeSetId,
     runRecord,
@@ -286,118 +345,6 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
   return plan;
 }
 
-function buildExpectedPersistedProjection({ result, changeSetId, runRecord, choiceRecords }) {
-  const player = result.immediate.player;
-  const playerId = player.instance_id;
-  return {
-    schema: 'rus.lower_dvina_trace_persisted_projection.v2',
-    materialization_run: structuredClone(runRecord),
-    materialization_choices: choiceRecords.map((choice) => ({
-      ...structuredClone(choice),
-      rng_draw: String(choice.rng_draw)
-    })),
-    player: {
-      character_id: playerId,
-      dossier: structuredClone(player.dossier),
-      role_ref: { id: player.dossier.social_status.social_role_id, source: 'approved_scenario_profile' },
-      occupation_ref: { id: player.dossier.social_status.occupation_id, source: 'approved_scenario_profile' },
-      skill_profile_snapshot: structuredClone(player.dossier.skills),
-      name_profile_snapshot: structuredClone(player.dossier.identity),
-      language_profile_snapshot: {},
-      knowledge_profile_snapshot: structuredClone(player.dossier.knowledge),
-      profile_candidate_set_digest: result.trace.choices
-        .find((choice) => choice.choice_key === 'player_profile').candidate_set_digest,
-      state_version: 1,
-      created_change_set_id: changeSetId,
-      updated_change_set_id: changeSetId
-    },
-    body: {
-      body_profile_ref: {
-        id: result.immediate.body.profile_id,
-        schema: result.immediate.body.schema,
-        revision: result.immediate.body.version,
-        digest: result.immediate.body.record_digest
-      },
-      health: result.immediate.body.values.health,
-      energy: result.immediate.body.values.energy,
-      satiety: result.immediate.body.values.satiety,
-      state_version: 1,
-      updated_change_set_id: changeSetId
-    },
-    conditions: result.immediate.body.condition_bindings.map((condition) => ({
-      condition_id: `condition_${sha256([result.party_id, playerId, condition.state]).slice(0, 24)}`,
-      condition_profile_ref: structuredClone(condition),
-      status: 'active',
-      state_version: 1,
-      created_change_set_id: changeSetId,
-      terminal_change_set_id: null
-    })).sort((left, right) => left.condition_id.localeCompare(right.condition_id)),
-    spatial: {
-      node: {
-        g5_node_id: result.immediate.spatial.node.instance_id,
-        run_id: result.run_id,
-        parent_g4_id: result.immediate.spatial.node.parent_g4_id,
-        template_id: result.immediate.spatial.node.template_id,
-        slot_key: result.immediate.spatial.node.slot_key,
-        state: structuredClone(result.immediate.spatial.node.state)
-      },
-      anchor: {
-        anchor_id: result.immediate.spatial.anchor.instance_id,
-        g5_node_id: result.immediate.spatial.anchor.node_id,
-        template_id: result.immediate.spatial.anchor.template_id,
-        slot_key: result.immediate.spatial.anchor.slot_key,
-        npc_capacity: result.immediate.spatial.anchor.npc_capacity,
-        item_capacity: result.immediate.spatial.anchor.item_capacity,
-        container_capacity: result.immediate.spatial.anchor.container_capacity,
-        state: structuredClone(result.immediate.spatial.anchor.state)
-      },
-      position: {
-        g4_id: result.immediate.spatial.position.g4_id,
-        g5_node_id: result.immediate.spatial.position.g5_node_id,
-        g5_anchor_id: result.immediate.spatial.position.g5_anchor_id
-      }
-    },
-    items: result.immediate.items.map((item) => ({
-      item_id: item.instance_id,
-      run_id: result.run_id,
-      template_id: item.template_id,
-      profile_id: item.profile_id,
-      category_id: item.category_id,
-      quantity: item.quantity,
-      condition_state: item.condition_state,
-      legal_status: item.legal_status,
-      state: structuredClone(item.state),
-      placement: {
-        anchor_id: null,
-        container_id: null,
-        holder_npc_id: null,
-        holder_character_id: item.holder_character_id,
-        physical_position: item.physical_position,
-        equipment_slot_category_id: null
-      },
-      ownership: {
-        ownership_id: `ownership_${item.instance_id}`,
-        container_id: null,
-        owner_npc_id: null,
-        owner_character_id: item.owner_character_id,
-        owner_party: false,
-        controller_npc_id: null,
-        controller_character_id: item.controller_character_id,
-        claim_state: item.claim_state
-      }
-    })).sort((left, right) => left.item_id.localeCompare(right.item_id)),
-    clock: {
-      whole_minutes: result.immediate.timestamp.whole_minutes,
-      subminute_numerator: result.immediate.timestamp.subminute_numerator,
-      subminute_denominator: result.immediate.timestamp.subminute_denominator,
-      clock_owner_kind: 'party',
-      clock_owner_id: null,
-      state_version: 1,
-      updated_change_set_id: changeSetId
-    }
-  };
-}
-
 function addBatch(batches, table, records, dependencies, sourceTrace) {
   if (records.length === 0) return;
   batches.push({
@@ -409,6 +356,23 @@ function addBatch(batches, table, records, dependencies, sourceTrace) {
     records,
     source_trace: sourceTrace
   });
+}
+
+function phase3PreparedInputs(result) {
+  if (result.request_identity.scenario_definition_revision !== 8) {
+    return { preparedScenes: [], preparedNpcs: [] };
+  }
+  const preparedScenes = result.immediate.prepared_scenes;
+  const preparedNpcs = result.immediate.npcs;
+  if (!Array.isArray(preparedScenes) || preparedScenes.length !== 1
+    || !Array.isArray(preparedNpcs) || preparedNpcs.length !== 3) {
+    const error = new Error(
+      'Lower Dvina trace revision 8 requires one prepared camp and three initial NPC placements.'
+    );
+    error.code = 'LOWER_DVINA_TRACE_PHASE_3_PREPARED_STATE_INVALID';
+    throw error;
+  }
+  return { preparedScenes, preparedNpcs };
 }
 
 function assertInput(input) {

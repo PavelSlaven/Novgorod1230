@@ -222,6 +222,13 @@ function replayOrConflict(existing, request) {
   ]) {
     if (stored?.[key] !== request?.[key]) fail('TRACE_PHASE_1A_REPLAY_CONFLICT', `Existing party conflicts on ${key}.`);
   }
+  if (canonicalDigest(stored?.world_compatibility ?? null)
+    !== canonicalDigest(request?.world_compatibility ?? null)) {
+    fail(
+      'TRACE_PHASE_1A_REPLAY_CONFLICT',
+      'Existing party conflicts on world_compatibility.'
+    );
+  }
   return Object.freeze({ status: 'replayed', instance: existing });
 }
 

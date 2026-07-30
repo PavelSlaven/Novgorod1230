@@ -708,7 +708,7 @@ for (const appSpec of [
       '@rus/new-game/stages/stage-11', '@rus/new-game/stages/stage-12',
       '@rus/new-game/stages/stage-24',
       '@rus/new-game/stages/stage-24/internal/lower-dvina-trace-phase-1a', '@rus/new-game/stages/stage-25', '@rus/narration',
-      '@rus/party-store', '@rus/presentation', '@rus/presentation/opening-delivery', '@rus/turn', '@rus/turn/spatial-v3-target-composition',
+      '@rus/party-store', '@rus/party-store/internal/lower-dvina-trace-phase-1a', '@rus/presentation', '@rus/presentation/opening-delivery', '@rus/turn', '@rus/turn/spatial-v3-target-composition',
       '@rus/runtime-catalog', '@rus/runtime-catalog/runtime-contract', '@rus/time-events-history/calendar',
       '@rus/visibility-knowledge-memory', '@rus/world-base',
       '@rus/npc-runtime', 'pg'

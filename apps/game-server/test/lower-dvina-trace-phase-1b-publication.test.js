@@ -1,0 +1,136 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
+import {
+  cp,
+  mkdtemp,
+  readFile,
+  rm,
+  writeFile
+} from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import {
+  loadLowerDvinaTracePhase1BPublication
+} from '../src/internal/lower-dvina-trace-phase-1b-publication.js';
+
+test('publication loader rejects an exact binding digest mismatch', async (t) => {
+  const root = await copyPublicationClosure();
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const path = join(root,
+    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b',
+    'publication-binding.json');
+  const binding = JSON.parse(await readFile(path, 'utf8'));
+  binding.public_metadata.title = 'Подменённое название';
+  await writeFile(path, `${JSON.stringify(binding, null, 2)}\n`);
+  await assert.rejects(
+    () => loadLowerDvinaTracePhase1BPublication({ rootDir: root }),
+    { code: 'TRACE_PHASE_1B_CONTENT_REF_MISMATCH' }
+  );
+});
+
+test('publication root pin rejects resealed semantic mutations', async (t) => {
+  for (const [label, mutate] of [
+    [
+      'opening prose',
+      (binding) => {
+        binding.opening_projection.opening_prose =
+          'Подменённая смысловая проза.';
+      }
+    ],
+    [
+      'public metadata',
+      (binding) => {
+        binding.public_metadata.description =
+          'Подменённое описание сценария.';
+      }
+    ],
+    [
+      'materializer version',
+      (binding) => {
+        binding.execution_identity.materializer_version =
+          'code_materializer_v3';
+      }
+    ],
+    [
+      'RNG version',
+      (binding) => {
+        binding.execution_identity.rng_algorithm_id =
+          'future_rng_v2';
+      }
+    ]
+  ]) {
+    const root = await copyPublicationClosure();
+    t.after(() => rm(root, { recursive: true, force: true }));
+    await mutateAndResealPublication(root, mutate);
+    await assert.rejects(
+      () => loadLowerDvinaTracePhase1BPublication({ rootDir: root }),
+      { code: 'TRACE_PHASE_1B_MANIFEST_ROOT_MISMATCH' },
+      label
+    );
+  }
+});
+
+test('publication loader rejects resealed dependency and lineage mutations', async (t) => {
+  for (const [label, mutate] of [
+    [
+      'Phase 1A manifest ref',
+      (binding) => {
+        binding.phase_1a_manifest_ref.digest = '0'.repeat(64);
+      }
+    ],
+    [
+      'definition ref',
+      (binding) => {
+        binding.scenario_definition_ref.revision = 4;
+      }
+    ],
+    [
+      'production lineage',
+      (binding) => {
+        binding.world_compatibility.lineage[1].parent_revision_id =
+          'unknown-parent';
+      }
+    ]
+  ]) {
+    const root = await copyPublicationClosure();
+    t.after(() => rm(root, { recursive: true, force: true }));
+    await mutateAndResealPublication(root, mutate);
+    await assert.rejects(
+      () => loadLowerDvinaTracePhase1BPublication({ rootDir: root }),
+      { code: 'TRACE_PHASE_1B_MANIFEST_ROOT_MISMATCH' },
+      label
+    );
+  }
+});
+
+async function copyPublicationClosure() {
+  const root = await mkdtemp(join(tmpdir(), 'trace-phase-1b-'));
+  for (const relative of [
+    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b',
+    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a/manifest.json',
+    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0d-v2/definition.json',
+    'data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v2/manifest.json',
+    'data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v3/manifest.json'
+  ]) {
+    await cp(relative, join(root, relative), { recursive: true });
+  }
+  return root;
+}
+
+async function mutateAndResealPublication(root, mutate) {
+  const directory = join(
+    root,
+    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b'
+  );
+  const bindingPath = join(directory, 'publication-binding.json');
+  const manifestPath = join(directory, 'manifest.json');
+  const binding = JSON.parse(await readFile(bindingPath, 'utf8'));
+  mutate(binding);
+  const raw = `${JSON.stringify(binding, null, 2)}\n`;
+  await writeFile(bindingPath, raw);
+  const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
+  manifest.content_refs.publication_binding.digest =
+    createHash('sha256').update(raw).digest('hex');
+  await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+}

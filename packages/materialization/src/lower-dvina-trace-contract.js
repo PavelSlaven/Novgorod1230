@@ -3,6 +3,8 @@ import { canonicalDigest, MATERIALIZER_VERSION, MaterializationError, RNG_VERSIO
 export const LOWER_DVINA_TRACE_SCENARIO_ID = 'lower_dvina_trace_v1';
 export const LOWER_DVINA_TRACE_DEFINITION_REVISION = 5;
 export const LOWER_DVINA_TRACE_ACCEPTANCE_SEED_CONTEXT = 'lower_dvina_trace_phase_1a_mikula_v1';
+export const LOWER_DVINA_TRACE_APPROVED_WORLD_COMPATIBILITY_DIGEST =
+  '0e239d47657a9bdf996f5a0cc5ca46e57e42a5326feb540d8acca747ad257b54';
 
 const REQUIRED_ARTIFACTS = Object.freeze([
   'phase_1a_manifest',
@@ -107,8 +109,8 @@ export function assertLowerDvinaTraceBundle(bundle, input) {
   }
   if (bundle.definition?.scenario_id !== LOWER_DVINA_TRACE_SCENARIO_ID || bundle.definition?.revision !== LOWER_DVINA_TRACE_DEFINITION_REVISION || bundle.definition?.required_unresolved_refs?.length !== 0) fail('TRACE_SCENARIO_DEFINITION_INCOMPLETE', 'Scenario definition revision 5 must be fully resolved.');
   const spatial = bundle.location_topology_set?.spatial_source_ref;
-  if (spatial?.world_revision_id !== input.world_revision_id || spatial?.world_revision_catalog_digest !== input.world_catalog_digest
-    || spatial?.manifest_digest !== bundle.artifact_pins.spatial_manifest.digest) {
+  if (spatial?.manifest_digest !== bundle.artifact_pins.spatial_manifest.digest
+    || !worldTupleIsDirectOrApprovedDescendant(spatial, input)) {
     fail('TRACE_WORLD_PIN_INCOMPATIBLE', 'Scenario spatial source does not match the requested world pin.');
   }
   assertPhase1ABindings(bundle);
@@ -209,7 +211,10 @@ export function lowerDvinaTraceRequestIdentity(input) {
     idempotency_key: input.idempotency_key,
     trigger: input.trigger,
     occurrence: input.occurrence,
-    existing_party_state: structuredClone(input.existing_party_state)
+    existing_party_state: structuredClone(input.existing_party_state),
+    ...(input.world_compatibility
+      ? { world_compatibility: structuredClone(input.world_compatibility) }
+      : {})
   };
 }
 
@@ -218,6 +223,42 @@ export function failLowerDvinaTraceMaterialization(code, message, details = {}) 
 }
 
 const fail = failLowerDvinaTraceMaterialization;
+
+function worldTupleIsDirectOrApprovedDescendant(spatial, input) {
+  if (spatial?.world_revision_id === input.world_revision_id
+    && spatial?.world_revision_catalog_digest === input.world_catalog_digest) {
+    return true;
+  }
+  const compatibility = input.world_compatibility;
+  const lineage = compatibility?.lineage;
+  if (canonicalDigest(compatibility)
+      !== LOWER_DVINA_TRACE_APPROVED_WORLD_COMPATIBILITY_DIGEST
+    || compatibility?.source_world_revision_id !== spatial?.world_revision_id
+    || compatibility?.source_world_catalog_digest
+      !== spatial?.world_revision_catalog_digest
+    || compatibility?.source_status !== 'approved'
+    || compatibility?.production_world_revision_id !== input.world_revision_id
+    || compatibility?.production_world_catalog_digest
+      !== input.world_catalog_digest
+    || compatibility?.production_status !== 'approved'
+    || !Array.isArray(lineage) || lineage.length === 0) {
+    return false;
+  }
+  let parent = spatial.world_revision_id;
+  for (const revision of lineage) {
+    if (revision?.parent_revision_id !== parent
+      || typeof revision.world_revision_id !== 'string'
+      || !revision.world_revision_id
+      || typeof revision.path !== 'string'
+      || !revision.path
+      || revision.status !== 'approved'
+      || !/^[a-f0-9]{64}$/u.test(revision.digest ?? '')) {
+      return false;
+    }
+    parent = revision.world_revision_id;
+  }
+  return parent === input.world_revision_id;
+}
 
 function exactIds(values, label) {
   if (!Array.isArray(values) || values.length === 0 || values.some((value) => typeof value !== 'string' || !value)

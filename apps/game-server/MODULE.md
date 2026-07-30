@@ -31,6 +31,16 @@ domain write.
 
 Infrastructure inputs are explicit pool/config/binding/plan DTO and transactional callbacks; output is a committed physical result, HTTP envelope or typed server/infrastructure error. SQL targets are explicitly `party_runtime`; world-base adapter is read-only. Temporal presentation persistence stores package/pending-delivery lifecycle separately from narrator output, atomically with factual write when required by the combined plan.
 
+Public new-game replay uses an exact persisted creation identity. Pre-Phase-1B
+`start_text` snapshots are admitted by a separate fail-closed compatibility
+policy: the server verifies party/request identity, the `start_text` branch
+and the persisted effective player name. Their original raw `start_text`
+cannot be proven because legacy snapshots did not persist it; this limited
+replay never permits switching the request to a scenario-ID branch.
+Trace publications pin materializer and RNG versions as historical execution
+identity. Current build support is checked only before a new materialization;
+persisted trace reads use the immutable publication/session/party pins.
+
 ## Ошибки, зависимости и effects
 
 Uses `pg` only under `src/infrastructure/postgres`; `GameServerError`/server error envelopes, startup probes and adapter failures are explicit. This is the persistence and external-I/O boundary: owns pool/transaction/HTTP/provider calls and rejects invalid schema, hidden public payload, stale knowledge artifacts and unqualified targets. No deterministic runtime fallback is allowed.

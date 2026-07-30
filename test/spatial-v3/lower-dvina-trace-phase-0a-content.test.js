@@ -76,7 +76,7 @@ test('checker rejects incomplete, duplicate, unknown, resolved, or wrongly owned
   }
 });
 
-test('public runtime catalog keeps the boatman binding and does not publish trace', async () => {
+test('public runtime catalog keeps the boatman binding when trace is published separately', async () => {
   const runtime = createFirstPlayablePublicRuntime({
     partyPool: { connect: () => { throw new Error('catalog test must not access PostgreSQL'); } },
     committer: { commit: () => { throw new Error('catalog test must not commit'); } },
@@ -89,12 +89,20 @@ test('public runtime catalog keeps the boatman binding and does not publish trac
   assert.deepEqual(catalog, {
     version: 1,
     schema: 'public_scenario_catalog',
-    scenarios: [{
-      scenario_id: SCENARIO_ID,
-      title: 'Нижняя Двина: позднее лето',
-      description: 'Лодочник на защищённой высокой площадке у открытой воды.',
-      available: true
-    }]
+    scenarios: [
+      {
+        scenario_id: SCENARIO_ID,
+        title: 'Нижняя Двина: позднее лето',
+        description: 'Лодочник на защищённой высокой площадке у открытой воды.',
+        available: true
+      },
+      {
+        scenario_id: 'lower_dvina_trace_v1',
+        title: 'След на Нижней Двине',
+        description: 'Младший приказчик приходит в себя после крушения на Нижней Двине.',
+        available: true
+      }
+    ]
   });
-  assert.equal(catalog.scenarios.some(({ scenario_id: id }) => id === 'lower_dvina_trace_v1'), false);
+  assert.equal(catalog.scenarios.some(({ scenario_id: id }) => id === 'lower_dvina_trace_v1'), true);
 });

@@ -24,7 +24,12 @@ export {
 export { TurnWorkflowError } from './errors.js';
 export { createTurnDecisionRequest, resolveTurnDecision } from './bounded-decision.js';
 export { enterG4WithMaterialization } from './first-entry-materialization.js';
-export { createTurnCommandRegistry, isCodeOwnedTurnWritePlan } from './command-registry.js';
+export {
+  createTurnAvailableActionSet,
+  createTurnCommandRegistry,
+  isCodeOwnedTurnWritePlan,
+  resolveTurnSemanticIntent
+} from './command-registry.js';
 export {
   createCombinedWritePlanBuilder,
   resolveApprovedActivityProfile,

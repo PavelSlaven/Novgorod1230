@@ -10,6 +10,27 @@ import {
 import {
   createLowerDvinaTracePhase1BProductionAdapter
 } from '../../infrastructure/postgres/lower-dvina-trace-phase-1b.js';
+import {
+  createLowerDvinaTracePhase2PostgresRepository
+} from '../../infrastructure/postgres/lower-dvina-trace-phase-2.js';
+import {
+  createLowerDvinaTracePhase2DurableNarrator
+} from '../../infrastructure/postgres/lower-dvina-trace-phase-2-presentation.js';
+import {
+  createLowerDvinaTracePhase2Runtime
+} from '../lower-dvina-trace-phase-2.js';
+import {
+  createLowerDvinaTraceNarrationService,
+  createLowerDvinaTraceSemanticResolver
+} from '../lower-dvina-trace-phase-2-llm.js';
+import {
+  createProductionLlmRoleRunner
+} from '../../infrastructure/provider/deepseek.js';
+import {
+  createSeededRandomSource
+} from '@rus/checks-rng';
+import { canonicalDigest } from '@rus/materialization';
+import { serverError } from '../../errors.js';
 
 export { firstPlayableCommitRecheck };
 
@@ -76,7 +97,9 @@ function createTargetCompositionPorts(getPublicRuntime) {
  */
 export async function createSpatialV3RuntimeBindings({
   ports,
-  release
+  release,
+  env = process.env,
+  config = {}
 } = {}) {
   if (!ports?.worldPool?.query || !ports?.partyPool?.query) {
     throw new TypeError('worldPool and partyPool are required');
@@ -112,7 +135,13 @@ export async function createSpatialV3RuntimeBindings({
             worldPool: ports.worldPool,
             release,
             runtimeCatalogPin
-          })
+          }),
+        traceTurnRuntime: createTraceTurnRuntime({
+          partyPool: ports.partyPool,
+          committer,
+          env,
+          config
+        })
       });
       return Object.freeze(Object.fromEntries([
         'listScenarios',
@@ -128,6 +157,50 @@ export async function createSpatialV3RuntimeBindings({
     },
     releaseBinding: Object.freeze({ ...release }),
     runtimeCatalogPin
+  });
+}
+
+function createTraceTurnRuntime({ partyPool, committer, env, config }) {
+  const decisionSecret = String(
+    config.traceTurnDecisionSecret
+      ?? env.RUS_TURN_DECISION_SECRET
+      ?? ''
+  ).trim();
+  if (!decisionSecret) {
+    return Object.freeze({
+      async submitTurn() {
+        throw serverError(
+          'TRACE_PHASE_2_DEPENDENCY_MISSING',
+          'RUS_TURN_DECISION_SECRET is required for semantic intent.',
+          { status: 503 }
+        );
+      }
+    });
+  }
+  const roleRunner = createProductionLlmRoleRunner({
+    env,
+    telemetry: config.telemetry ?? null
+  });
+  const narrationService =
+    createLowerDvinaTraceNarrationService({ roleRunner });
+  return createLowerDvinaTracePhase2Runtime({
+    repository: createLowerDvinaTracePhase2PostgresRepository({
+      partyPool,
+      committer
+    }),
+    semanticResolver:
+      createLowerDvinaTraceSemanticResolver({ roleRunner }),
+    narrator: createLowerDvinaTracePhase2DurableNarrator({
+      partyPool,
+      narrationService
+    }),
+    randomSourceFactory: (identity) => createSeededRandomSource(
+      canonicalDigest({
+        schema: 'rus.lower_dvina_trace_phase_2_rng_identity.v1',
+        ...identity
+      })
+    ),
+    decisionSecret
   });
 }
 

@@ -3,7 +3,7 @@ import { deepFreeze, stableStringify } from '@rus/kernel';
 import { canonicalDigest, MaterializationError } from './core.js';
 
 export function issueBoundedDecisionRequest({ requestId, partyId, actorId, policyId, policyVersion, stateVersion, expiresAt, issuedAt, options, secret }) {
-  if (!Array.isArray(options) || options.length < 2) throw new MaterializationError('DECISION_OPTIONS_INVALID', 'Bounded decision requires at least two options.');
+  if (!Array.isArray(options) || options.length < 1) throw new MaterializationError('DECISION_OPTIONS_INVALID', 'Bounded decision requires at least one closed option.');
   if (![requestId, partyId, actorId, policyId, policyVersion, expiresAt].every((value) => typeof value === 'string' && value.length > 0) || !Number.isInteger(stateVersion)) throw new MaterializationError('DECISION_ENVELOPE_INVALID', 'Bounded decision envelope is incomplete.');
   const issuedAtValue = issuedAt ?? new Date().toISOString();
   const expiresAtMs = parseRfc3339(expiresAt, 'expiresAt');

@@ -54,8 +54,16 @@ const expectedTimeContractRef = {
   path: 'packages/time-events-history/src/declarative-content-contracts.v2.json',
   digest: '6e72f137be19f77afa34aa853d9f12c0c8f3d7ce28e11c41c83ecc8ee6369a10'
 };
-if (registry.owner_contract_refs?.length !== 1
-  || JSON.stringify(registry.owner_contract_refs[0]) !== JSON.stringify(expectedTimeContractRef)) {
+const expectedTurnContractRef = {
+  owner: '@rus/turn',
+  registry_id: 'rus.turn.declarative_content_contracts.v2',
+  revision: 2,
+  path: 'packages/turn/src/declarative-content-contracts.v2.json',
+  digest: 'ad56d2f6980765e6b8e292a0dd536c2ffa4878db8af87ee972974ed495e13123'
+};
+if (registry.owner_contract_refs?.length !== 2
+  || JSON.stringify(registry.owner_contract_refs[0]) !== JSON.stringify(expectedTimeContractRef)
+  || JSON.stringify(registry.owner_contract_refs[1]) !== JSON.stringify(expectedTurnContractRef)) {
   errors.push('P08 owner contract ref set is incomplete or changed');
 }
 const timeV1Path = resolve(root, 'packages/time-events-history/src/declarative-content-contracts.v1.json');
@@ -102,6 +110,54 @@ const timeModuleDocumentation = await readFile(resolve(root, 'packages/time-even
 if (!timeModuleDocumentation.includes('resolveGameTimestampFromCalendarDate(exactCalendarDate, approvedProfile)')) {
   errors.push('time-events-history MODULE.md does not register the inverse calendar entrypoint');
 }
+const turnV1Path = resolve(root, 'packages/turn/src/declarative-content-contracts.v1.json');
+const turnV2Path = resolve(root, expectedTurnContractRef.path);
+const turnV1Source = await readFile(turnV1Path, 'utf8').catch(() => '');
+const turnV2Source = await readFile(turnV2Path, 'utf8').catch(() => '');
+const turnV1Registry = turnV1Source ? JSON.parse(turnV1Source) : {};
+const turnV2Registry = turnV2Source ? JSON.parse(turnV2Source) : {};
+const turnV2Contracts = new Map(
+  Array.isArray(turnV2Registry.contracts)
+    ? turnV2Registry.contracts.map((contract) => [contract.schema_id, contract])
+    : []
+);
+const semanticIntentContract = turnV2Contracts.get('rus.turn.semantic_intent_boundary.v1');
+const expectedSemanticEntrypoints = [
+  '@rus/turn:createTurnAvailableActionSet',
+  '@rus/turn:resolveTurnSemanticIntent'
+];
+if (sha256(turnV1Source) !== 'aa4dd295998f5fde3d64cf1718e532671f524c994f6742d0c5bddb176d2e7ed7'
+  || sha256(turnV2Source) !== expectedTurnContractRef.digest
+  || turnV2Registry.schema !== 'rus.declarative_content_contract_registry.v1'
+  || turnV2Registry.registry_id !== expectedTurnContractRef.registry_id
+  || turnV2Registry.revision !== expectedTurnContractRef.revision
+  || turnV2Registry.owner !== expectedTurnContractRef.owner
+  || turnV2Registry.status !== 'approved'
+  || turnV2Registry.package_version !== '0.15.0'
+  || turnV2Registry.supersedes_registry_ref?.registry_id !== 'rus.turn.declarative_content_contracts.v1'
+  || turnV2Registry.supersedes_registry_ref?.revision !== 1
+  || turnV2Registry.supersedes_registry_ref?.path !== 'packages/turn/src/declarative-content-contracts.v1.json'
+  || turnV2Registry.supersedes_registry_ref?.digest !== 'aa4dd295998f5fde3d64cf1718e532671f524c994f6742d0c5bddb176d2e7ed7'
+  || turnV2Registry.contracts?.length !== 2
+  || turnV2Contracts.size !== 2
+  || JSON.stringify(turnV2Contracts.get('rus.trace_activity_check_consequence_profiles.v1'))
+    !== JSON.stringify(turnV1Registry.contracts?.[0])
+  || semanticIntentContract?.schema_version !== 1
+  || JSON.stringify(semanticIntentContract?.public_entrypoints) !== JSON.stringify(expectedSemanticEntrypoints)
+  || !semanticIntentContract?.required_invariants?.includes('complete_registered_action_set_without_raw_text')
+  || !semanticIntentContract?.required_invariants?.includes('bounded_decision_membership_and_version_validation')
+  || !semanticIntentContract?.required_invariants?.includes('factual_commit_before_narration')
+  || semanticIntentContract?.forbidden_capabilities?.includes('regex_as_free_intent_owner') !== true
+  || semanticIntentContract?.forbidden_capabilities?.includes('narration_in_factual_write_plan') !== true
+  || turnV2Registry.scenario_specific_ids_or_counts !== 'forbidden') {
+  errors.push('turn owner contract v2 is missing, incompatible, or not exact-superseding v1');
+}
+const turnModuleDocumentation = await readFile(resolve(root, 'packages/turn/MODULE.md'), 'utf8').catch(() => '');
+for (const entrypoint of ['createTurnAvailableActionSet', 'resolveTurnSemanticIntent']) {
+  if (!turnModuleDocumentation.includes(entrypoint)) {
+    errors.push(`turn MODULE.md does not register ${entrypoint}`);
+  }
+}
 const expectedInterfaces = [
   ['@rus/space-map', '@rus/space-map/spatial-v3', 'createSpatialContextLoader', 'load'],
   ['@rus/space-map', '@rus/space-map/spatial-v3', 'createSpatialTopologyRepository', 'read'],
@@ -109,6 +165,8 @@ const expectedInterfaces = [
   ['@rus/movement-routes', '@rus/movement-routes/spatial-v3', 'createTraversalCommitValidator', 'validate'],
   ['@rus/materialization', '@rus/materialization/spatial-v3', 'createTopologyProposalValidator', 'validate'],
   ['@rus/turn', '@rus/turn/spatial-v3', 'createCombinedWritePlanBuilder', 'build'],
+  ['@rus/turn', '@rus/turn', 'createTurnAvailableActionSet', 'call'],
+  ['@rus/turn', '@rus/turn', 'resolveTurnSemanticIntent', 'call'],
   ['@rus/party-store', '@rus/party-store/spatial-v3', 'createSpatialV3Repository', 'read'],
   ['@rus/party-store', '@rus/party-store/spatial-v3', 'createCombinedWritePlanCommitter', 'commit'],
   ['@rus/time-events-history', '@rus/time-events-history', 'normalizeGameTimestamp', 'call'],

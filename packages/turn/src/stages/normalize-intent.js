@@ -9,6 +9,8 @@ export function normalizeTurnIntent(input = {}, now = new Date().toISOString()) 
     schema: 'player_turn_input',
     party_id: text(input.party_id ?? input.partyId),
     turn_number: Number.isInteger(turnNumber) ? turnNumber : 1,
+    request_id: text(input.request_id ?? input.requestId),
+    idempotency_key: text(input.idempotency_key ?? input.idempotencyKey),
     raw_text: rawText,
     selected_action_option_id: text(input.selected_action_option_id ?? input.selectedActionOptionId) || null,
     input_source: text(input.selected_action_option_id ?? input.selectedActionOptionId) ? 'suggested_action' : 'free_text',

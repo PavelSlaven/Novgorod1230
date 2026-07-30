@@ -84,17 +84,21 @@ export const TURN_ALLOWED_WRITE_TARGETS = deepFreeze([
 
 export const TURN_WORKFLOW_STAGE_IDS = deepFreeze([
   'normalize_intent',
-  'resolve_mode',
   'load_context',
+  'available_actions',
+  'resolve_mode',
+  'revalidate_context',
   'availability',
   'checks',
   'consequence',
   'time_update',
+  'body_update',
   'hidden_update',
   'visible_projection',
-  'narration',
   'persistence_plan',
   'commit',
+  'persisted_visible_projection',
+  'narration',
   'screen_projection'
 ]);
 

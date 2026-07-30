@@ -3,6 +3,7 @@ import { turnFailure } from './errors.js';
 const REQUIRED = Object.freeze({
   stateReader: 'read',
   visibleProjector: 'project',
+  persistedVisibleReader: 'read',
   narrator: 'run',
   partyStore: 'commit'
 });
@@ -13,6 +14,13 @@ export function validateTurnServices(services = {}) {
     if (!services?.[name] || typeof services[name][method] !== 'function') missing.push(`${name}.${method}`);
   }
   if (!services.commandRegistry) missing.push('commandRegistry');
+  if (typeof services.semanticResolver !== 'function') {
+    missing.push('semanticResolver');
+  }
+  if (typeof services.decisionSecret !== 'string'
+      || typeof services.decisionExpiresAt !== 'string') {
+    missing.push('boundedDecisionIdentity');
+  }
   if (missing.length) {
     throw turnFailure('TURN_SERVICES_MISSING', `Missing turn services: ${missing.join(', ')}`, { missing });
   }

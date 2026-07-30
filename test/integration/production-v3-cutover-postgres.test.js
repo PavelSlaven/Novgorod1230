@@ -143,7 +143,7 @@ test(
       health.party_schema_version,
       'party_runtime_v3_first_playable'
     );
-    assert.equal(health.migration_count, 11);
+    assert.equal(health.migration_count, 12);
     assert.match(health.migration_chain_digest, /^[a-f0-9]{64}$/u);
     assert.equal(
       health.runtime_catalog_pin.activation_event_id,

@@ -103,3 +103,47 @@ export function assertLowerDvinaTracePhase3Cutover(bundle, fail) {
     );
   }
 }
+
+export function assertLowerDvinaTracePhase3PickupCutover(bundle, fail) {
+  const manifest = bundle.phase_1a_manifest;
+  const definition = bundle.definition;
+  const items = bundle.item_container_set;
+  if (manifest.package_id !== 'lower_dvina_trace_phase_1a_v5'
+      || manifest.revision !== 5
+      || manifest.scenario_definition_revision !== 9
+      || manifest.superseded_package_ref?.path
+        !== 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v4/manifest.json'
+      || manifest.superseded_package_ref.id
+        !== 'lower_dvina_trace_phase_1a_v4'
+      || manifest.superseded_package_ref.revision !== 4
+      || manifest.superseded_package_ref.digest
+        !== 'd0edfe980348fbffa53d1f9984b52c8a7ef6235c3144ec38ea7964e31a684266'
+      || manifest.base_definition_ref?.path
+        !== 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-3-content-v2/manifest.json'
+      || manifest.base_definition_ref.package_id
+        !== 'lower_dvina_trace_phase_3_content_v2'
+      || manifest.base_definition_ref.revision !== 2
+      || manifest.base_definition_ref.digest
+        !== '2375f9c90405311a47f186cb1f6fe3ce3d9b823c96f1e784047ebd6b789f5076'
+      || manifest.content_refs?.materialization_bindings?.id
+        !== 'lower_dvina_trace_phase_1a_materialization_bindings_v5'
+      || manifest.content_refs.materialization_bindings.digest
+        !== 'd67e8543448872ee529893df60980771548fb07dada306303bb1003d0ffda0a3'
+      || definition.supersedes_definition_ref?.path
+        !== 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-3-content/definition.json'
+      || definition.supersedes_definition_ref.id !== SCENARIO_ID
+      || definition.supersedes_definition_ref.revision !== 8
+      || definition.supersedes_definition_ref.digest
+        !== '9e0b01449fb3343c078a053886c1920ce97a1ad5197879f4247bd31f13329a00'
+      || items.supersedes_ref?.path
+        !== 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0c/item-container-set.json'
+      || items.supersedes_ref.id !== 'trace_ld_v1_item_container_set'
+      || items.supersedes_ref.revision !== 1
+      || items.supersedes_ref.digest
+        !== '182fb92641c8c053027718f52eed3467ce9ed79971e7168f4bc8727e1a169a3f') {
+    fail(
+      'TRACE_PHASE_1A_CUTOVER_IDENTITY_INVALID',
+      'Phase 1A revision 9 must exact-supersede the immutable revision 8 chain.'
+    );
+  }
+}

@@ -230,7 +230,7 @@ test('production-v3 root is a sole-owner composition with no v2 fallback identit
     health.runtime_catalog_pin.activation_event_id,
     TEST_RUNTIME_CATALOG_PIN.activation_event_id
   );
-  assert.equal(health.migration_count, 11);
+  assert.equal(health.migration_count, 12);
   assert.match(health.migration_chain_digest, /^[a-f0-9]{64}$/u);
   assert.deepEqual(health.migration_readiness, {
     party_count: 0,
@@ -467,7 +467,7 @@ test('target DDL rolls back when the in-transaction release gate fails', async (
   assert.equal(statements.includes('COMMIT'), false);
 });
 
-test('restart reuses only the exact immutable applied migration ledger', async () => {
+test('restart extends the exact immutable catalog ledger only with migration 012', async () => {
   const statements = [];
   const migration = {
     migration_id:
@@ -496,12 +496,16 @@ test('restart reuses only the exact immutable applied migration ledger', async (
     exactAppliedMigration: migration,
     beforeCommit: async () => ({ status: 'ready' })
   });
-  assert.equal(result.execution_mode, 'verified_existing');
-  assert.equal(result.newly_applied, 0);
+  assert.equal(result.execution_mode, 'extended_existing');
+  assert.equal(result.newly_applied, 1);
   assert.equal(
     statements.some((sql) =>
       sql.includes('CREATE SCHEMA IF NOT EXISTS party_runtime')),
     false
+  );
+  assert.equal(
+    statements.filter((sql) => sql.includes('owner_external_ref')).length,
+    1
   );
   assert.equal(statements.at(-1), 'COMMIT');
 });

@@ -158,85 +158,60 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   assert.equal(result.clue.template_id,
     'trace_ld_v1_item_blue_wool_fragment');
   assert.deepEqual(result.clue.placement, {
-    placement_model: 'local_evidence_slot_within_g5_anchor',
-    placement_slot_id: 'trace_ld_v1_slot_wreck_willow_branch',
-    local_anchor_semantics: 'willow_branch',
-    location_ref: 'trace_ld_v1_loc_wreck_shore',
-    anchor_id: result.clue.placement.anchor_id,
-    capacity_contract_ref: 'trace_ld_v1_capacity_wreck_shore',
-    zone_ref: 'open_shore',
-    item_capacity_class: 'evidence',
-    g5_item_capacity_consumed: 0
+    holder_character_id: result.clue.property_state.holder_ref,
+    physical_position: 'hands'
   });
   const persistedCluePlacement = (await pool.query(
-    `SELECT p.anchor_id,i.state,a.template_id,a.slot_key,
-            a.item_capacity,a.state AS anchor_state
+    `SELECT p.anchor_id,p.holder_character_id,p.physical_position,
+            i.state,i.profile_id,i.quantity,i.legal_status
        FROM party_runtime.party_items i
        JOIN party_runtime.party_item_placements p
          ON p.party_id=i.party_id AND p.item_id=i.item_id
-       JOIN party_runtime.party_g5_anchors a
-         ON a.party_id=p.party_id AND a.anchor_id=p.anchor_id
       WHERE i.party_id=$1 AND i.template_id=$2`,
     [opened.party_id, 'trace_ld_v1_item_blue_wool_fragment']
   )).rows[0];
-  assert.equal(persistedCluePlacement.anchor_id,
-    result.clue.placement.anchor_id);
-  assert.deepEqual(persistedCluePlacement.state.placement_contract,
-    result.clue.placement);
-  assert.equal(persistedCluePlacement.template_id,
-    'trace_ld_v1_g5_anchor_wreck_open_shore_v1');
-  assert.equal(persistedCluePlacement.slot_key, 'open_shore');
-  assert.equal(Number(persistedCluePlacement.item_capacity), 0);
-  assert.equal(persistedCluePlacement.anchor_state.capacity_contract_ref,
-    'trace_ld_v1_capacity_wreck_shore');
-  assert.equal(persistedCluePlacement.anchor_state.zone_ref, 'open_shore');
-  const placementTamperClient = await pool.connect();
-  try {
-    await placementTamperClient.query('BEGIN');
-    const tamperedState = structuredClone(persistedCluePlacement.state);
-    tamperedState.placement_contract.anchor_id = 'tampered-anchor';
-    await placementTamperClient.query(
-      `UPDATE party_runtime.party_items
-          SET state=$3::jsonb
-        WHERE party_id=$1 AND template_id=$2`,
-      [
-        opened.party_id,
-        'trace_ld_v1_item_blue_wool_fragment',
-        JSON.stringify(tamperedState)
-      ]
-    );
-    assert.deepEqual(await firstPlayableCommitRecheck({
-      transaction: placementTamperClient,
-      party_id: opened.party_id,
-      check: {
-        kind: 'capacity',
-        capacity_model: 'local_evidence_slot_within_g5_anchor',
-        anchor_id: result.clue.placement.anchor_id,
-        anchor_template_id:
-          'trace_ld_v1_g5_anchor_wreck_open_shore_v1',
-        anchor_slot_key: 'open_shore',
-        expected_anchor_item_capacity: 0,
-        capacity_contract_ref: 'trace_ld_v1_capacity_wreck_shore',
-        zone_ref: 'open_shore',
-        location_ref: 'trace_ld_v1_loc_wreck_shore',
-        placement_slot_id:
-          'trace_ld_v1_slot_wreck_willow_branch',
-        local_anchor_semantics: 'willow_branch',
-        item_template_id: 'trace_ld_v1_item_blue_wool_fragment',
-        item_capacity_class: 'evidence',
-        placement_slot_capacity: 1,
-        expected_existing_item_count: 1,
-        placement_write_required: false
-      },
-      plan: { inserts: [] }
-    }), {
-      ok: false,
-      code: 'relation_capacity_undefined'
-    });
-  } finally {
-    await placementTamperClient.query('ROLLBACK');
-    placementTamperClient.release();
-  }
+  assert.equal(persistedCluePlacement.anchor_id, null);
+  assert.equal(persistedCluePlacement.holder_character_id,
+    result.clue.property_state.holder_ref);
+  assert.equal(persistedCluePlacement.physical_position, 'hands');
+  assert.equal(persistedCluePlacement.profile_id, result.clue.profile_id);
+  assert.equal(persistedCluePlacement.quantity, 1);
+  assert.equal(persistedCluePlacement.legal_status,
+    'owner_preserved_evidence_held');
+  assert.deepEqual(persistedCluePlacement.state.property_state,
+    result.clue.property_state);
+  assert.deepEqual(persistedCluePlacement.state.inventory_profile_snapshot,
+    result.clue.inventory_profile);
+  assert.equal(
+    persistedCluePlacement.state.pickup_transition.source_placement_ref,
+    'trace_ld_v1_slot_wreck_willow_branch'
+  );
+  assert.deepEqual(
+    persistedCluePlacement.state.pickup_transition.inventory_before,
+    { total_mass_grams: 400, hands_used: 0, hands_free: 2,
+      load_category: 'light' }
+  );
+  assert.deepEqual(
+    persistedCluePlacement.state.pickup_transition.inventory_after,
+    { total_mass_grams: 410, hands_used: 0, hands_free: 2,
+      load_category: 'light' }
+  );
+  const persistedOwnership = (await pool.query(
+    `SELECT o.owner_external_ref,o.controller_character_id,o.claim_state
+       FROM party_runtime.party_ownership o
+       JOIN party_runtime.party_items i
+         ON i.party_id=o.party_id AND i.item_id=o.item_id
+      WHERE o.party_id=$1 AND i.template_id=$2`,
+    [opened.party_id, 'trace_ld_v1_item_blue_wool_fragment']
+  )).rows[0];
+  assert.deepEqual(persistedOwnership.owner_external_ref, {
+    entity_kind: 'participant_slot',
+    entity_id: 'ratsha_storehouse_helper'
+  });
+  assert.equal(persistedOwnership.controller_character_id,
+    result.clue.property_state.controller_ref);
+  assert.equal(persistedOwnership.claim_state,
+    'owner_preserved_evidence_held');
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     opened.party_id), 1);
   assert.equal(await count(pool, 'party_runtime.party_items',
@@ -299,8 +274,9 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
     (snapshot) => {
       snapshot.items.find((item) =>
         item.template_id === 'trace_ld_v1_item_blue_wool_fragment')
-        .placement.anchor_id = 'tampered-anchor';
+        .placement.holder_character_id = 'tampered-holder';
     });
+  await assertBlueWoolOwnershipTamper(pool, restarted, opened.party_id);
   await assertScreenTamper(pool, restarted, opened.party_id);
 
   const repeated = await restarted.submitTurn(opened.party_id, {
@@ -599,7 +575,11 @@ function buildRuntime({
     repository,
     semanticResolver: async (request) => {
       semanticObserver(request);
-      return { option_id: request.action_set[0].option_id };
+      return {
+        option_id: request.action_set.find(
+          ({ option_id: id }) => id === 'inspect_wreck_in_detail'
+        )?.option_id
+      };
     },
     narrator: createLowerDvinaTracePhase2DurableNarrator({
       partyPool: pool,
@@ -837,6 +817,37 @@ async function assertResealedSnapshotTamper(pool, runtime, partyId, mutate) {
   );
 }
 
+async function assertBlueWoolOwnershipTamper(pool, runtime, partyId) {
+  const original = (await pool.query(
+    `SELECT ownership_id,owner_external_ref
+       FROM party_runtime.party_ownership o
+       JOIN party_runtime.party_items i
+         ON i.party_id=o.party_id AND i.item_id=o.item_id
+      WHERE o.party_id=$1
+        AND i.template_id='trace_ld_v1_item_blue_wool_fragment'`,
+    [partyId]
+  )).rows[0];
+  await pool.query(
+    `UPDATE party_runtime.party_ownership
+        SET owner_external_ref=$3::jsonb
+      WHERE party_id=$1 AND ownership_id=$2`,
+    [partyId, original.ownership_id, JSON.stringify({
+      entity_kind: 'participant_slot', entity_id: 'tampered-owner'
+    })]
+  );
+  await assert.rejects(
+    () => runtime.getPartyScreen(partyId),
+    { code: 'TRACE_PHASE_2_SESSION_READ_INVALID' }
+  );
+  await pool.query(
+    `UPDATE party_runtime.party_ownership
+        SET owner_external_ref=$3::jsonb
+      WHERE party_id=$1 AND ownership_id=$2`,
+    [partyId, original.ownership_id,
+      JSON.stringify(original.owner_external_ref)]
+  );
+}
+
 async function assertScreenTamper(pool, runtime, partyId) {
   const original = (await pool.query(
     `SELECT screen FROM party_runtime.party_server_sessions
@@ -865,14 +876,19 @@ async function assertScreenTamper(pool, runtime, partyId) {
 
 async function installSchemas(pool) {
   await pool.query('SELECT 1');
-  for (const file of (await readdir('schemas/party-db'))
-    .filter((value) => /^\d+.*\.sql$/u.test(value)).sort()) {
+  const partyFiles = (await readdir('schemas/party-db'))
+    .filter((value) => /^\d+.*\.sql$/u.test(value)).sort();
+  for (const file of partyFiles.filter((value) => !value.startsWith('012_'))) {
     await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
   }
   assert.equal(
     (await runPartyRuntimeCatalogMigration(pool)).status,
     'applied'
   );
+  await pool.query(await readFile(
+    'schemas/party-db/012_party_runtime_external_ownership.sql',
+    'utf8'
+  ));
 }
 
 async function installWorldLineage(pool) {

@@ -3,23 +3,7 @@ import assert from 'node:assert/strict';
 import { cp, mkdtemp, readFile, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
-import {
-  LOWER_DVINA_TRACE_ACCEPTANCE_SEED_CONTEXT,
-  materializeLowerDvinaTracePartyInstance
-} from '@rus/materialization/internal/lower-dvina-trace-phase-1a';
-import {
-  canonicalDigest,
-  MATERIALIZER_VERSION,
-  RNG_VERSION
-} from '@rus/materialization';
-import { createSeededRandomSource } from '@rus/checks-rng';
-import {
-  createLowerDvinaTracePhase2Runtime
-} from '../src/runtime/lower-dvina-trace-phase-2.js';
-import {
-  loadLowerDvinaTraceMaterializationBundle,
-  resolveLowerDvinaTraceStartTimestamp
-} from '../src/internal/lower-dvina-trace-phase-1a.js';
+import { canonicalDigest } from '@rus/materialization';
 import {
   loadLowerDvinaTracePhase2Bundle
 } from '../src/internal/lower-dvina-trace-phase-2-bundle.js';
@@ -30,10 +14,10 @@ import {
   assertPhase2CurrentStateVersion
 } from '../src/infrastructure/postgres/lower-dvina-trace-phase-2-commit-admission.js';
 import {
-  lowerDvinaTracePhase1ADomainPin
-} from '../../../test/fixtures/lower-dvina-trace-phase-1a-domain-pin.mjs';
-
-const bundle = await loadLowerDvinaTraceMaterializationBundle();
+  bundle,
+  bundle9,
+  fixture
+} from './lower-dvina-trace-phase-2-fixture.js';
 
 test('Phase 2 execution package is immutable, exact and excludes Phase 3', async () => {
   const phase2 = await loadLowerDvinaTracePhase2Bundle();
@@ -62,264 +46,6 @@ test('Phase 2 execution package is immutable, exact and excludes Phase 3', async
   );
 });
 
-function phase1AInstance(partyId) {
-  return materializeLowerDvinaTracePartyInstance({
-    party_id: partyId,
-    scenario_id: 'lower_dvina_trace_v1',
-    scenario_definition_revision: 7,
-    scenario_manifest_digest: bundle.manifest_digest,
-    world_revision_id:
-      bundle.location_topology_set.spatial_source_ref.world_revision_id,
-    world_catalog_digest:
-      bundle.location_topology_set.spatial_source_ref
-        .world_revision_catalog_digest,
-    domain_catalog_pin: lowerDvinaTracePhase1ADomainPin(bundle),
-    materializer_version: MATERIALIZER_VERSION,
-    rng_algorithm_id: RNG_VERSION,
-    seed_context: LOWER_DVINA_TRACE_ACCEPTANCE_SEED_CONTEXT,
-    idempotency_key: `phase1a:${partyId}`,
-    trigger: 'new_game',
-    occurrence: 0,
-    existing_party_state: { baseline_exists: false },
-    scenario_bundle: bundle,
-    resolve_timestamp: resolveLowerDvinaTraceStartTimestamp
-  });
-}
-
-function fixture({
-  semantic = 'resolved',
-  narrationFails = false,
-  scenarioBundle = bundle
-} = {}) {
-  const partyId = 'party:trace-phase-2';
-  const instance = phase1AInstance(partyId);
-  const state = {
-    party_id: partyId,
-    actor_id: instance.immediate.player.instance_id,
-    party_state: {
-      state_version: 1,
-      turn_number: 0
-    },
-    player_profile: instance.immediate.player.dossier,
-    body_state: {
-      ...instance.immediate.body.values,
-      active_conditions:
-        instance.immediate.body.condition_bindings.map((condition, ordinal) => ({
-          id: condition.state,
-          storage_condition_id: `condition-phase2-${ordinal}`,
-          condition_profile_ref: structuredClone(condition),
-          status: 'active',
-          state_version: 1
-        }))
-    },
-    body_effect_history: [],
-    position: {
-      ...instance.immediate.spatial.position,
-      location_ref: 'trace_ld_v1_loc_wreck_shore'
-    },
-    clock: instance.immediate.timestamp,
-    clock_weather_light: {
-      clock: instance.immediate.timestamp,
-      weather: {},
-      light: {}
-    },
-    environment_snapshot: instance.immediate.environment_snapshot,
-    materialization_trace: structuredClone(instance.trace),
-    sealed_selections: instance.sealed_selections,
-    policy_pins: structuredClone(instance.policy_profile_pins),
-    relevant_events: [],
-    historical_events: [],
-    items: instance.immediate.items.map((item) => ({
-      item_id: item.instance_id,
-      template_id: item.template_id
-    })),
-    knowledge: [],
-    opening_identity: {
-      opening_screen_digest: 'a'.repeat(64)
-    },
-    relevant_hidden_state: {
-      culprit: 'must-not-reach-llm',
-      motive: 'must-not-reach-llm'
-    },
-    temporal_source_proof: {
-      version: 1,
-      schema: 'lower_dvina_trace_phase_2_temporal_source_proof',
-      owner: '@rus/time-events-history/temporal-boundaries',
-      same_time_cascade_owner:
-        '@rus/time-events-history/temporal-boundaries:resolveSameTimeCascade',
-      admission_policy:
-        'fail_closed_before_activity_when_unbound_candidate_exists',
-      pending_event_count: 0,
-      active_schedule_count: 0,
-      candidate_count: 0
-    }
-  };
-  if (scenarioBundle !== bundle) {
-    const bodyPin = state.policy_pins.find(
-      (pin) => pin.key === 'body_environment_profiles'
-    );
-    bodyPin.canonical_digest = canonicalDigest(
-      scenarioBundle.body_environment_profiles
-    );
-  }
-  const replays = new Map();
-  const events = [];
-  let committedVisible = null;
-  let lastWritePlan = null;
-  let semanticInput = null;
-  let rollCount = 0;
-  let commitCount = 0;
-  let narratorInput = null;
-  const repository = {
-    async loadPhase2State() {
-      events.push('load_state');
-      return structuredClone(state);
-    },
-    async loadPhase2Replay({ idempotencyKey }) {
-      return structuredClone(replays.get(idempotencyKey) ?? null);
-    },
-    async commitPhase2Turn({ writePlan, inputDigest }) {
-      events.push('commit');
-      commitCount += 1;
-      lastWritePlan = structuredClone(writePlan);
-      const factual = writePlan.write_targets.find(
-        ({ target }) => target === 'party_state'
-      ).value;
-      committedVisible = writePlan.write_targets.find(
-        ({ target }) => target === 'party_visible_context_package'
-      ).value;
-      const clue = factual.consequence.clue_materialization;
-      if (clue && !state.items.some(
-        (item) => item.template_id === clue.template_id
-      )) {
-        state.items.push({
-          item_id: clue.instance_id,
-          template_id: clue.template_id,
-          placement: clue.placement
-        });
-      }
-      state.clock = factual.time_update.clock_after;
-      state.clock_weather_light.clock = state.clock;
-      state.body_state = factual.body_update.state_after;
-      state.body_effect_history.push({
-        history_id:
-          `body-history:${partyId}:trace-phase2:${state.party_state.turn_number + 1}`,
-        effect_ref: factual.consequence.body_effect_ref,
-        activity_attempt_id: factual.consequence.activity_attempt_id,
-        execution_variant_id:
-          factual.body_update.proposal.execution_variant_id,
-        occurred_at: structuredClone(factual.time_update.clock_after)
-      });
-      state.knowledge.push(
-        ...factual.consequence.knowledge_records.map(
-          (entry) => structuredClone(entry)
-        )
-      );
-      state.party_state.state_version += 1;
-      state.party_state.turn_number += 1;
-      const commit = {
-        committed: true,
-        state_version: state.party_state.state_version,
-        visible_package_digest: committedVisible.canonical_digest ?? null
-      };
-      replays.set(factual.player_input.idempotency_key, {
-        input_digest: inputDigest,
-        factual,
-        public_result: null
-      });
-      return commit;
-    },
-    async loadPhase2VisibleContext() {
-      events.push('read_committed_visible');
-      return structuredClone(committedVisible);
-    },
-    async persistPhase2Screen({ inputDigest, result }) {
-      events.push('persist_screen');
-      const publicResult = {
-        party_id: partyId,
-        turn_number: state.party_state.turn_number,
-        state_version: state.party_state.state_version,
-        option_id: result.checkpoint.stages.resolve_mode.option_id,
-        screen: result.screen,
-        check: result.checkpoint.stages.checks.results[0],
-        time_update: result.checkpoint.stages.time_update,
-        body_update: result.checkpoint.stages.body_update,
-        observations:
-          result.checkpoint.stages.consequence.observations,
-        evidence:
-          result.checkpoint.stages.consequence.evidence_relations,
-        clue:
-          result.checkpoint.stages.consequence.clue_materialization
-      };
-      const replay = [...replays.values()].find(
-        (entry) => entry.input_digest === inputDigest
-      );
-      replay.public_result = structuredClone(publicResult);
-      return publicResult;
-    }
-  };
-  const runtime = createLowerDvinaTracePhase2Runtime({
-    repository,
-    bundleLoader: async () => scenarioBundle,
-    decisionSecret: 'phase-2-decision-secret',
-    now: () => '2026-07-30T08:00:00.000Z',
-    semanticResolver: async (input) => {
-      semanticInput = structuredClone(input);
-      if (semantic === 'unknown' || semantic === 'ambiguous') {
-        return {
-          status: 'unknown',
-          reason_code: semantic === 'ambiguous'
-            ? 'ambiguous_intent'
-            : 'unknown_intent'
-        };
-      }
-      return { option_id: input.action_set[0].option_id };
-    },
-    randomSourceFactory: () => {
-      const source = createSeededRandomSource(
-        'lower-dvina-trace-phase-2-acceptance'
-      );
-      return {
-        next() {
-          rollCount += 1;
-          return source.next();
-        },
-        snapshot: () => source.snapshot()
-      };
-    },
-    narrator: {
-      async run(input) {
-        narratorInput = structuredClone(input);
-        if (narrationFails) {
-          return {
-            version: 1,
-            schema: 'narration_flow_result',
-            request_id: input.request_id,
-            surface: 'turn',
-            status: 'blocked',
-            pass: false,
-            approved_output: null,
-            final_audit: null
-          };
-        }
-        return approvedNarration(input.request_id);
-      }
-    }
-  });
-  return {
-    commitCount: () => commitCount,
-    events,
-    narratorInput: () => narratorInput,
-    lastWritePlan: () => lastWritePlan,
-    partyId,
-    repository,
-    rollCount: () => rollCount,
-    runtime,
-    semanticInput: () => semanticInput,
-    state
-  };
-}
-
 test('ranges-only body effect fails closed before resolver, roll or commit', async () => {
   const invalidBundle = structuredClone(bundle);
   const effect = invalidBundle.body_environment_profiles.effect_profiles.find(
@@ -332,7 +58,15 @@ test('ranges-only body effect fails closed before resolver, roll or commit', asy
     satiety: [-1, 0],
     energy: [-3, -1]
   };
-  const f = fixture({ scenarioBundle: invalidBundle });
+  const f = fixture({
+    scenarioBundle: invalidBundle,
+    materializationBundle: bundle
+  });
+  f.state.policy_pins.find(
+    ({ key }) => key === 'body_environment_profiles'
+  ).canonical_digest = canonicalDigest(
+    invalidBundle.body_environment_profiles
+  );
   await assert.rejects(
     () => f.runtime.submitTurn({
       partyId: f.partyId,
@@ -382,6 +116,7 @@ test('exact fast path commits one canonical inspection, check, elapsed, body eff
     }
   });
   assert.equal(result.option_id, 'inspect_wreck_in_detail');
+  assert.equal(f.bundleRequests[0].scenarioDefinitionRevision, 7);
   assert.equal(result.check.difficulty, 12);
   assert.equal(result.check.modifiers.attribute, 1);
   assert.equal(result.check.modifiers.skill, 2);
@@ -425,6 +160,84 @@ test('exact fast path commits one canonical inspection, check, elapsed, body eff
     'read_committed_visible',
     'persist_screen'
   ]);
+});
+
+test('revision 9 success atomically picks up blue wool with exact owner-preserving inventory state', async () => {
+  const f = fixture({ scenarioBundle: bundle9, rollValue: 0.99 });
+  const result = await f.runtime.submitTurn({
+    partyId: f.partyId,
+    input: {
+      request_id: 'phase2-revision9-pickup',
+      idempotency_key: 'phase2-revision9-pickup',
+      raw_text:
+        'Осмотреть лодку, верёвку и следы. Понять, что здесь случилось.'
+    }
+  });
+  const clue = result.clue;
+  assert.equal(clue.property_state.owner_ref, 'ratsha_storehouse_helper');
+  assert.equal(clue.property_state.holder_ref, f.state.actor_id);
+  assert.equal(clue.property_state.controller_ref, f.state.actor_id);
+  assert.deepEqual(clue.placement, {
+    holder_character_id: f.state.actor_id,
+    physical_position: 'hands'
+  });
+  assert.equal(clue.inventory_profile.mass_grams, 10);
+  assert.equal(clue.inventory_profile.carry_form, 'compact');
+  assert.equal(clue.inventory_profile.external_hand_cost, 0);
+  assert.deepEqual(clue.inventory_effect, {
+    mass_delta_grams: 10,
+    hands_used_delta: 0
+  });
+  assert.deepEqual(clue.pickup_transition.inventory_before, {
+    total_mass_grams: 400,
+    hands_used: 0,
+    hands_free: 2,
+    load_category: 'light'
+  });
+  assert.deepEqual(clue.pickup_transition.inventory_after, {
+    total_mass_grams: 410,
+    hands_used: 0,
+    hands_free: 2,
+    load_category: 'light'
+  });
+  assert.equal(
+    clue.pickup_transition.plan_trace.previous_placement.item_id,
+    clue.instance_id
+  );
+  assert.equal(
+    clue.pickup_transition.source_placement_ref,
+    'trace_ld_v1_slot_wreck_willow_branch'
+  );
+  assert.equal(clue.pickup_transition.clock_write, 'forbidden');
+  assert.equal(
+    f.state.items.filter((item) =>
+      item.template_id === 'trace_ld_v1_item_blue_wool_fragment').length,
+    1
+  );
+});
+
+test('revision 9 failed inspection commits time and body but no blue-wool item', async () => {
+  const f = fixture({ scenarioBundle: bundle9, rollValue: 0 });
+  const result = await f.runtime.submitTurn({
+    partyId: f.partyId,
+    input: {
+      request_id: 'phase2-revision9-failure',
+      idempotency_key: 'phase2-revision9-failure',
+      raw_text: 'Осмотреть место крушения подробно.'
+    }
+  });
+  assert.equal(result.check.outcome.success, false);
+  assert.equal(result.clue, null);
+  assert.deepEqual(result.time_update.exact_elapsed.exact_minutes, {
+    numerator: '15',
+    denominator: '1'
+  });
+  assert.equal(result.body_update.proposal.exact_deltas.energy, -1);
+  assert.equal(
+    f.state.items.some((item) =>
+      item.template_id === 'trace_ld_v1_item_blue_wool_fragment'),
+    false
+  );
 });
 
 test('free paraphrase resolves through a player-safe closed set to the same exact option', async () => {
@@ -707,38 +520,6 @@ test('narration failure happens after factual commit and cannot roll it back', a
   assert.equal(f.rollCount(), 1);
   assert.equal(f.state.party_state.state_version, 2);
 });
-
-function approvedNarration(requestId) {
-  return {
-    version: 1,
-    schema: 'narration_flow_result',
-    request_id: requestId,
-    surface: 'turn',
-    status: 'approved',
-    pass: true,
-    approved_output: {
-      version: 1,
-      schema: 'narration_output',
-      output_id: `narration:${requestId}`,
-      prose: 'Ты внимательно осматриваешь повреждённую лодку и следы на берегу.',
-      action_options: [],
-      used_references: [],
-      self_check: { no_new_world_facts: true }
-    },
-    final_audit: {
-      version: 1,
-      schema: 'narration_audit',
-      pass: true,
-      concerns: [],
-      evidence: ['Текст основан только на persisted visible context.']
-    },
-    repair_request: null,
-    generation_history: [],
-    audit_history: [],
-    repair_history: [],
-    diagnostics: {}
-  };
-}
 
 function temporalBoundary(id, wholeMinutes) {
   const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });

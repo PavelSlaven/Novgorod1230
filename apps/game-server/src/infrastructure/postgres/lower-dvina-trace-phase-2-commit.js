@@ -23,16 +23,30 @@ import {
 import {
   buildLowerDvinaTracePhase2CommitRechecks
 } from './lower-dvina-trace-phase-2-commit-rechecks.js';
+import {
+  commitLowerDvinaTracePhase3
+} from './lower-dvina-trace-phase-3-commit.js';
 export async function commitLowerDvinaTracePhase2({
   partyId,
   writePlan,
   inputDigest,
   contracts,
+  phase3Contracts,
   loadState,
   committer
 }) {
   const factual = writePlan.write_targets
     .find(({ target }) => target === 'party_state')?.value;
+  if (factual?.consequence?.phase3_kind) {
+    return commitLowerDvinaTracePhase3({
+      partyId,
+      writePlan,
+      inputDigest,
+      phase3Contracts,
+      loadState,
+      committer
+    });
+  }
   const visibleContext = writePlan.write_targets
     .find(({ target }) => target === 'party_visible_context_package')?.value;
   if (!factual || !visibleContext
@@ -243,11 +257,25 @@ function mergeItems(items, clue) {
   if (clue && !next.some(
     (item) => item.template_id === clue.template_id
   )) {
+    const exactPickup = Boolean(clue.pickup_transition);
     next.push({
       item_id: clue.instance_id,
       template_id: clue.template_id,
-      placement: clue.placement,
-      state: {
+      ...(exactPickup ? {
+        profile_id: clue.profile_id,
+        quantity: clue.quantity
+      } : {}),
+      placement: structuredClone(clue.placement),
+      state: exactPickup ? {
+        semantic_category: clue.semantic_category,
+        property_state: structuredClone(clue.property_state),
+        causal_basis: clue.causal_basis,
+        evidence_ref: 'trace_ld_v1_evidence_blue_wool',
+        inventory_profile_snapshot:
+          structuredClone(clue.inventory_profile),
+        inventory_effect: structuredClone(clue.inventory_effect),
+        pickup_transition: structuredClone(clue.pickup_transition)
+      } : {
         semantic_category: clue.semantic_category,
         property_state: clue.property_state,
         causal_basis: clue.causal_basis,

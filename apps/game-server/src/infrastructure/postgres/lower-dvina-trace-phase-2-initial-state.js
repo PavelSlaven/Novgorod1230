@@ -21,6 +21,10 @@ export async function loadInitialTracePhase2State({
   return {
     party_id: partyId,
     actor_id: actorId,
+    world_identity: {
+      world_revision_id: row.world_revision_id,
+      world_catalog_digest: row.world_catalog_digest
+    },
     party_state: {
       state_version: 0,
       session_state_version: Number(row.session_state_version),
@@ -38,6 +42,11 @@ export async function loadInitialTracePhase2State({
       ...initial.position,
       location_ref: 'trace_ld_v1_loc_wreck_shore'
     },
+    prepared_scenes: structuredClone(initial.prepared_scenes),
+    npcs: structuredClone(initial.npcs),
+    interactions: [],
+    route_history: [],
+    route_knowledge: [],
     clock: initial.timestamp,
     clock_weather_light: {
       clock: initial.timestamp,
@@ -52,9 +61,17 @@ export async function loadInitialTracePhase2State({
     items: initial.items.map((item) => ({
       item_id: item.item_id,
       template_id: item.template_id,
+      profile_id: item.profile_id,
+      quantity: item.quantity,
       placement: {
         anchor_id: item.anchor_id,
-        holder_character_id: item.holder_character_id
+        holder_character_id: item.holder_character_id,
+        physical_position: item.physical_position
+      },
+      ownership: {
+        owner_character_id: item.owner_character_id,
+        controller_character_id: item.controller_character_id,
+        claim_state: item.claim_state
       },
       state: item.state
     })),

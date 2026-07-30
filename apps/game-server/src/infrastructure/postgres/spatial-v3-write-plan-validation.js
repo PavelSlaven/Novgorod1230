@@ -138,8 +138,10 @@ export function validateSpatialV3CombinedWritePlan(plan) {
       keys.push(keyOf(write));
     }
   }
+  const versionedMutableWrites = [...plan.updates, ...plan.deletes]
+    .filter((write) => TABLES[write.target_table]?.version !== false);
   if (new Set(keys).size !== keys.length
-    || plan.updates.length + plan.deletes.length
+    || versionedMutableWrites.length
       !== plan.expected_state_versions.length) return false;
   const keySet = new Set(keys);
   if ([...plan.inserts, ...plan.updates, ...plan.appends, ...plan.deletes].some((write) =>
@@ -174,7 +176,7 @@ export function validateSpatialV3CombinedWritePlan(plan) {
   } else if (plan.visible_package_envelope != null || visibleWrites.length || narrationJobs.length) {
     return false;
   }
-  return [...plan.updates, ...plan.deletes].every((write) =>
+  return versionedMutableWrites.every((write) =>
     plan.expected_state_versions.some((item) =>
       item.target_table === write.target_table
       && item.id === write.id

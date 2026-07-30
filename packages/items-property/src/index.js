@@ -73,9 +73,9 @@ export function resolveLoadCategory(actor = {}) {
   const strength = finite(actor?.attributes?.strength);
   if (strength == null) return null;
   if (strength <= 0) return weight > 0 ? 'overloaded' : 'light';
-  if (weight <= strength * 2) return 'light';
-  if (weight <= strength * 4) return 'moderate';
-  if (weight <= strength * 6) return 'heavy';
+  if (weight <= strength * 2 * 1000) return 'light';
+  if (weight <= strength * 4 * 1000) return 'moderate';
+  if (weight <= strength * 6 * 1000) return 'heavy';
   return 'overloaded';
 }
 

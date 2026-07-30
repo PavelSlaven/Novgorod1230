@@ -35,12 +35,15 @@ export function assertLowerDvinaTraceSelectionClosure(groups, inventory) {
   const sourceDigests = inventory?.source_artifact_digests;
   const requiredKinds = inventory?.inventory_id ===
     'lower_dvina_trace_phase_1a_sealed_selection_inventory_v4'
+    || inventory?.inventory_id ===
+      'lower_dvina_trace_phase_1a_sealed_selection_inventory_v5'
     ? PHASE_3_REQUIRED_SELECTION_KINDS
     : REQUIRED_SELECTION_KINDS;
   if (inventory?.schema !== 'rus.lower_dvina_trace_sealed_selection_inventory.v1'
     || ![
       'lower_dvina_trace_phase_1a_sealed_selection_inventory_v3',
-      'lower_dvina_trace_phase_1a_sealed_selection_inventory_v4'
+      'lower_dvina_trace_phase_1a_sealed_selection_inventory_v4',
+      'lower_dvina_trace_phase_1a_sealed_selection_inventory_v5'
     ].includes(inventory?.inventory_id)
     || inventory?.status !== 'approved'
     || inventory?.record_proof_contract !== 'canonical_sha256_sorted_record_id_and_record_digest_v1'

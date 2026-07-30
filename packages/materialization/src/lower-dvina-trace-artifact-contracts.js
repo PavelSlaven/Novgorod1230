@@ -62,3 +62,14 @@ export const PHASE_3_ARTIFACT_CONTRACT_OVERRIDES = Object.freeze({
   activity_check_consequence_profiles: ['rus.trace_activity_check_consequence_profiles.v1', 2],
   npc_decision_schedule_policies: ['rus.trace_npc_decision_schedule_policies.v1', 2]
 });
+
+export const PHASE_3_PICKUP_ARTIFACT_CONTRACT_OVERRIDES = Object.freeze({
+  ...PHASE_3_ARTIFACT_CONTRACT_OVERRIDES,
+  phase_1a_manifest: ['rus.lower_dvina_trace_phase_1a_manifest.v1', 5],
+  materialization_bindings: [
+    'rus.lower_dvina_trace_phase_1a_materialization_bindings.v1',
+    5
+  ],
+  definition: ['rus.trace_scenario_definition.v1', 9],
+  item_container_set: ['rus.trace_item_container_set.v1', 2]
+});

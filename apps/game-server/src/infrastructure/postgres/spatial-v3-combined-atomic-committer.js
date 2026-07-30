@@ -20,7 +20,37 @@ export { validateSpatialV3CombinedWritePlan };
 
 async function apply(tx, write, mode, expectedStateVersion = null, sealedPlan = null, committedAtTurn = 0) {
   const spec = TABLES[write.target_table]; const record = write.target_table === 'party_v3_change_sets' ? { ...Object.fromEntries(Object.entries(write.record).filter(([key]) => !['idempotency_record_id', 'created_at_turn', 'committed_at_turn'].includes(key))), expected_state_version_set_digest: sealedPlan.expected_state_versions_digest.replace('sha256:', ''), expected_state_version_set: sealedPlan.expected_state_versions, committed_state_version_set_digest: sealedPlan.expected_state_versions_digest.replace('sha256:', ''), write_plan_digest: sealedPlan.write_set_digest.replace('sha256:', ''), created_at_turn: committedAtTurn, committed_at_turn: committedAtTurn } : write.record; const columns = Object.keys(record); const table = `party_runtime.${quote(write.target_table)}`;
-  if (mode === 'update') { const expected = expectedStateVersion; if (!Number.isInteger(expected) || expected < 0) throw Object.assign(new Error('update lacks expected version'), { spatialCode: 'state_version_conflict' }); const set = columns.filter((column) => !spec.key.includes(column) && column !== 'state_version'); const where = spec.key.map((column, index) => `${quote(column)}=$${set.length + index + 1}`).concat(`state_version=$${set.length + spec.key.length + 1}`); const params = [...set.map((column) => record[column]), ...spec.key.map((column) => record[column]), expected]; const result = await tx.query(`UPDATE ${table} SET ${set.map((column, index) => `${quote(column)}=$${index + 1}`).join(', ')}, state_version=state_version+1 WHERE ${where.join(' AND ')}`, params); if (result.rowCount !== 1) throw Object.assign(new Error('stale state version'), { spatialCode: 'state_version_conflict' }); return; }
+  if (mode === 'update') {
+    const set = columns.filter((column) =>
+      !spec.key.includes(column) && column !== 'state_version');
+    if (spec.version !== true) {
+      const where = spec.key.map((column, index) =>
+        `${quote(column)}=$${set.length + index + 1}`);
+      const params = [
+        ...set.map((column) => record[column]),
+        ...spec.key.map((column) => record[column])
+      ];
+      const result = await tx.query(
+        `UPDATE ${table} SET ${set.map((column, index) =>
+          `${quote(column)}=$${index + 1}`).join(', ')}
+          WHERE ${where.join(' AND ')}`,
+        params
+      );
+      if (result.rowCount !== 1) {
+        throw Object.assign(new Error('missing non-versioned aggregate row'), {
+          spatialCode: 'state_version_conflict'
+        });
+      }
+      return;
+    }
+    const expected = expectedStateVersion;
+    if (!Number.isInteger(expected) || expected < 0) throw Object.assign(new Error('update lacks expected version'), { spatialCode: 'state_version_conflict' });
+    const where = spec.key.map((column, index) => `${quote(column)}=$${set.length + index + 1}`).concat(`state_version=$${set.length + spec.key.length + 1}`);
+    const params = [...set.map((column) => record[column]), ...spec.key.map((column) => record[column]), expected];
+    const result = await tx.query(`UPDATE ${table} SET ${set.map((column, index) => `${quote(column)}=$${index + 1}`).join(', ')}, state_version=state_version+1 WHERE ${where.join(' AND ')}`, params);
+    if (result.rowCount !== 1) throw Object.assign(new Error('stale state version'), { spatialCode: 'state_version_conflict' });
+    return;
+  }
   if (mode === 'delete') { const expected = expectedStateVersion; if (!Number.isInteger(expected) || expected < 0) throw Object.assign(new Error('delete lacks expected version'), { spatialCode: 'state_version_conflict' }); const where = spec.key.map((column, index) => `${quote(column)}=$${index + 1}`).concat(`state_version=$${spec.key.length + 1}`); const params = [...spec.key.map((column) => record[column]), expected]; const result = await tx.query(`DELETE FROM ${table} WHERE ${where.join(' AND ')}`, params); if (result.rowCount !== 1) throw Object.assign(new Error('stale state version'), { spatialCode: 'state_version_conflict' }); return; }
   const lifecycleFinalizer = await applySealedLifecycleInsert(tx, {
     ...write,
@@ -116,9 +146,13 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
       }
       const lifecycleFinalizers = [];
       for (const { mode, write } of orderWrites(plan)) {
-        const expectedStateVersion = mode === 'update' || mode === 'delete'
-          ? plan.expected_state_versions.find((item) => item.target_table === write.target_table && item.id === write.id).state_version
-          : null;
+        const expectedStateVersion =
+          (mode === 'update' || mode === 'delete')
+            && TABLES[write.target_table]?.version !== false
+            ? plan.expected_state_versions.find((item) =>
+                item.target_table === write.target_table
+                && item.id === write.id).state_version
+            : null;
         const finalizeLifecycle = await apply(
           tx,
           write,

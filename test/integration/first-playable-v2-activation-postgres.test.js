@@ -108,7 +108,11 @@ test('approved Stage 3C rows activate for v2 and advance by CAS to the exact bou
   const partyMigrations = (await readdir('schemas/party-db'))
     .filter((file) => /^\d+.*\.sql$/u.test(file))
     .sort();
-  for (const file of partyMigrations) {
+  const catalogMigrationIndex = partyMigrations.findIndex((file) =>
+    file.startsWith('012_')
+  );
+  assert.equal(catalogMigrationIndex, 11);
+  for (const file of partyMigrations.slice(0, catalogMigrationIndex)) {
     await partyPool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
   }
   assert.equal((await runWorldRuntimeCatalogMigration(worldPool)).status, 'applied');
@@ -292,6 +296,9 @@ test('approved Stage 3C rows activate for v2 and advance by CAS to the exact bou
     v3Pin.compatible_world_catalog_digest,
     '1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e'
   );
+  for (const file of partyMigrations.slice(catalogMigrationIndex)) {
+    await partyPool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
+  }
   assert.equal((await partyPool.query(
     'SELECT count(*)::int AS count FROM party_runtime.parties'
   )).rows[0].count, 0);

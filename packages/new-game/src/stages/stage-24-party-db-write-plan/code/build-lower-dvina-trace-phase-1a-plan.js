@@ -359,7 +359,9 @@ function addBatch(batches, table, records, dependencies, sourceTrace) {
 }
 
 function phase3PreparedInputs(result) {
-  if (result.request_identity.scenario_definition_revision !== 8) {
+  if (![8, 9].includes(
+    result.request_identity.scenario_definition_revision
+  )) {
     return { preparedScenes: [], preparedNpcs: [] };
   }
   const preparedScenes = result.immediate.prepared_scenes;

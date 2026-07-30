@@ -4,9 +4,11 @@
       "dependencies": [
         "@rus/checks-rng",
         "@rus/contracts",
+        "@rus/items-property",
         "@rus/knowledge-source",
         "@rus/llm-runtime",
         "@rus/materialization",
+        "@rus/movement-routes",
         "@rus/narration",
         "@rus/new-game",
         "@rus/party-store",

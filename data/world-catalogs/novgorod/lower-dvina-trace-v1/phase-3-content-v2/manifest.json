@@ -1,0 +1,72 @@
+{
+  "schema": "rus.lower_dvina_trace_phase_3_content_manifest.v1",
+  "package_id": "lower_dvina_trace_phase_3_content_v2",
+  "revision": 2,
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 9,
+  "status": "approved",
+  "publication_status": "internal_only",
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden",
+  "superseded_package_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-3-content/manifest.json",
+    "id": "lower_dvina_trace_phase_3_content_v1",
+    "revision": 1,
+    "schema": "rus.lower_dvina_trace_phase_3_content_manifest.v1",
+    "digest": "dd0c293b3173444041cff9dd17f89ca6b042aaa982a129eb49badd51f03b9f60"
+  },
+  "reused_content_refs": {
+    "item_container_set": {
+      "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0c-v2/item-container-set.json",
+      "id": "trace_ld_v1_item_container_set",
+      "revision": 2,
+      "schema": "rus.trace_item_container_set.v1",
+      "digest": "c8774370a92a635fa8e7ba72796bc11ffee819e105a90b6bc790edcee44fa77c"
+    },
+    "knowledge_lie_memory_rules": {
+      "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-3-content/knowledge-lie-memory-rules.json",
+      "id": "trace_ld_v1_knowledge_lie_memory_rules",
+      "revision": 2,
+      "schema": "rus.trace_knowledge_lie_memory_rules.v1",
+      "digest": "2e4fc36faf83edb42aacf218f43815b4f4ff1bf04f2938b88208ce00b7e52c48"
+    },
+    "activity_check_consequence_profiles": {
+      "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-3-content/activity-check-consequence-profiles.json",
+      "id": "trace_ld_v1_activity_check_consequence_profiles",
+      "revision": 2,
+      "schema": "rus.trace_activity_check_consequence_profiles.v1",
+      "digest": "629e472a54b79dc92d053ea34c43f3da6b660ce5dbc296cab32d3a76c267cfda"
+    },
+    "npc_decision_schedule_policies": {
+      "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-3-content/npc-decision-schedule-policies.json",
+      "id": "trace_ld_v1_npc_decision_schedule_policies",
+      "revision": 2,
+      "schema": "rus.trace_npc_decision_schedule_policies.v1",
+      "digest": "1a3d5d8a5225a5ff98882dd66ba133a1903d3ead4f6d6912d694e0ff672a5969"
+    }
+  },
+  "content_refs": {
+    "definition": {
+      "path": "definition.json",
+      "id": "lower_dvina_trace_v1",
+      "revision": 9,
+      "schema": "rus.trace_scenario_definition.v1",
+      "digest": "f0cc939c6f8ebed70b2e02f5df5681d2988044012cc366209a4dd9ee763130f9"
+    }
+  },
+  "files": {
+    "definition.json": "f0cc939c6f8ebed70b2e02f5df5681d2988044012cc366209a4dd9ee763130f9"
+  },
+  "content_digest_algorithm": "sha256_sorted_filename_colon_digest_lf_v1",
+  "content_digest": "1b7a3ee0f0e282acc6c66aea8f92e5d2d0024f35c1a9d7df99d745178f788b53",
+  "scope": [
+    "phase_3_camp_materialization_prerequisite",
+    "blue_wool_pickup_contract"
+  ],
+  "excludes": [
+    "runtime_handlers",
+    "persistence_execution",
+    "existing_party_migration"
+  ]
+}

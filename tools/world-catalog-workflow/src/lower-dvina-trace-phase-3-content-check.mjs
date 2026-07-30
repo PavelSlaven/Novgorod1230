@@ -5,21 +5,24 @@ import { pathToFileURL } from 'node:url';
 
 const ROOT = 'data/world-catalogs/novgorod/lower-dvina-trace-v1';
 const PATHS = Object.freeze({
-  manifest: `${ROOT}/phase-3-content/manifest.json`,
-  definition: `${ROOT}/phase-3-content/definition.json`,
+  manifest: `${ROOT}/phase-3-content-v2/manifest.json`,
+  definition: `${ROOT}/phase-3-content-v2/definition.json`,
   knowledge_lie_memory_rules: `${ROOT}/phase-3-content/knowledge-lie-memory-rules.json`,
   npc_decision_schedule_policies: `${ROOT}/phase-3-content/npc-decision-schedule-policies.json`,
   activity_check_consequence_profiles:
     `${ROOT}/phase-3-content/activity-check-consequence-profiles.json`,
-  phase_1a_manifest: `${ROOT}/phase-1a-v4/manifest.json`,
-  materialization_bindings: `${ROOT}/phase-1a-v4/materialization-bindings.json`,
-  previous_definition: `${ROOT}/phase-0d-v4/definition.json`,
+  phase_1a_manifest: `${ROOT}/phase-1a-v5/manifest.json`,
+  materialization_bindings: `${ROOT}/phase-1a-v5/materialization-bindings.json`,
+  previous_definition: `${ROOT}/phase-3-content/definition.json`,
+  previous_phase_3_manifest: `${ROOT}/phase-3-content/manifest.json`,
+  item_container_set: `${ROOT}/phase-0c-v2/item-container-set.json`,
+  previous_item_container_set: `${ROOT}/phase-0c/item-container-set.json`,
   previous_knowledge_lie_memory_rules: `${ROOT}/phase-0c/knowledge-lie-memory-rules.json`,
   previous_npc_decision_schedule_policies: `${ROOT}/phase-0d/npc-decision-schedule-policies.json`,
   previous_activity_check_consequence_profiles:
     `${ROOT}/phase-0d/activity-check-consequence-profiles.json`,
-  previous_phase_1a_manifest: `${ROOT}/phase-1a-v3/manifest.json`,
-  previous_materialization_bindings: `${ROOT}/phase-1a-v3/materialization-bindings.json`,
+  previous_phase_1a_manifest: `${ROOT}/phase-1a-v4/manifest.json`,
+  previous_materialization_bindings: `${ROOT}/phase-1a-v4/materialization-bindings.json`,
   historical_phase_1b_manifest: `${ROOT}/phase-1b-v3/manifest.json`,
   historical_phase_1b_publication_binding: `${ROOT}/phase-1b-v3/publication-binding.json`,
   participant_profile_set: `${ROOT}/phase-0b/participant-profile-set.json`,
@@ -32,7 +35,9 @@ const PATHS = Object.freeze({
 });
 
 const EXPECTED = Object.freeze({
-  previous_definition: '1591b10d19deb48393b42fd4d84ad5c770ab8cdc153af2f94a4d7c749383f729',
+  previous_definition: '9e0b01449fb3343c078a053886c1920ce97a1ad5197879f4247bd31f13329a00',
+  previous_phase_3_manifest: 'dd0c293b3173444041cff9dd17f89ca6b042aaa982a129eb49badd51f03b9f60',
+  previous_item_container_set: '182fb92641c8c053027718f52eed3467ce9ed79971e7168f4bc8727e1a169a3f',
   previous_knowledge_lie_memory_rules:
     '6c296a6ebe096633ae58c9ff45dc4a44f92ce56d7843e10bc3133718e6155046',
   previous_npc_decision_schedule_policies:
@@ -40,9 +45,9 @@ const EXPECTED = Object.freeze({
   previous_activity_check_consequence_profiles:
     '5eefc71c6a73c1604f606d1f84862cf5f6d7a774a957f10ad9ead7e950717654',
   previous_phase_1a_manifest:
-    '6f115e878a663b6aacb654bf7fe86b651467e1da06161907faac06770d4a9925',
+    'd0edfe980348fbffa53d1f9984b52c8a7ef6235c3144ec38ea7964e31a684266',
   previous_materialization_bindings:
-    'f929b61aa1e5dcb6e6163837373b3d4ab1431ed786d32e262a019a362a3f51dd',
+    'e0a162a594bf1ef752fa93d9335fe9adcbe54938de13f296dc7740b50689a161',
   historical_phase_1b_manifest:
     'aee59570994151f9177445d03ae8a4dcf29c098f2ffb7c7a198c8c43406818eb',
   historical_phase_1b_publication_binding:
@@ -90,85 +95,43 @@ export function validateLowerDvinaTracePhase3Content(bundle) {
   validateInteractionMappings(bundle);
   validateActivityCheckConsequenceProfiles(bundle);
   validateNpcExecutionBindings(bundle);
+  validateBlueWoolPickupContract(bundle);
   validateDefinitionsAndManifests(bundle);
   validateImmutableDigests(bundle);
   return Object.freeze({
     pass: true,
-    scenario_definition_revision: 8,
-    phase_1a_revision: 4
+    scenario_definition_revision: 9,
+    phase_1a_revision: 5
   });
 }
 
 function validateSupersedes(bundle) {
   const manifest = bundle.manifest;
-  const knowledge = bundle.knowledge_lie_memory_rules;
-  const npc = bundle.npc_decision_schedule_policies;
-  const bindings = bundle.materialization_bindings;
   if (!exactRef(
-    manifest?.superseded_definition_ref,
-    PATHS.previous_definition,
-    'lower_dvina_trace_v1',
-    7,
-    'rus.trace_scenario_definition.v1',
-    EXPECTED.previous_definition
+    manifest?.superseded_package_ref,
+    PATHS.previous_phase_3_manifest,
+    'lower_dvina_trace_phase_3_content_v1',
+    1,
+    'rus.lower_dvina_trace_phase_3_content_manifest.v1',
+    EXPECTED.previous_phase_3_manifest
   )
     || !exactRef(
-      manifest?.superseded_content_refs?.knowledge_lie_memory_rules,
-      PATHS.previous_knowledge_lie_memory_rules,
-      'trace_ld_v1_knowledge_lie_memory_rules',
-      1,
-      'rus.trace_knowledge_lie_memory_rules.v1',
-      EXPECTED.previous_knowledge_lie_memory_rules
+      bundle.definition?.supersedes_definition_ref,
+      PATHS.previous_definition,
+      'lower_dvina_trace_v1',
+      8,
+      'rus.trace_scenario_definition.v1',
+      EXPECTED.previous_definition
     )
     || !exactRef(
-      manifest?.superseded_content_refs?.npc_decision_schedule_policies,
-      PATHS.previous_npc_decision_schedule_policies,
-      'trace_ld_v1_npc_decision_schedule_policies',
+      bundle.item_container_set?.supersedes_ref,
+      PATHS.previous_item_container_set,
+      'trace_ld_v1_item_container_set',
       1,
-      'rus.trace_npc_decision_schedule_policies.v1',
-      EXPECTED.previous_npc_decision_schedule_policies
-    )
-    || !exactRef(
-      manifest?.superseded_content_refs?.activity_check_consequence_profiles,
-      PATHS.previous_activity_check_consequence_profiles,
-      'trace_ld_v1_activity_check_consequence_profiles',
-      1,
-      'rus.trace_activity_check_consequence_profiles.v1',
-      EXPECTED.previous_activity_check_consequence_profiles
-    )
-    || !exactRef(
-      knowledge?.supersedes_ref,
-      PATHS.previous_knowledge_lie_memory_rules,
-      'trace_ld_v1_knowledge_lie_memory_rules',
-      1,
-      'rus.trace_knowledge_lie_memory_rules.v1',
-      EXPECTED.previous_knowledge_lie_memory_rules
-    )
-    || !exactRef(
-      npc?.supersedes_ref,
-      PATHS.previous_npc_decision_schedule_policies,
-      'trace_ld_v1_npc_decision_schedule_policies',
-      1,
-      'rus.trace_npc_decision_schedule_policies.v1',
-      EXPECTED.previous_npc_decision_schedule_policies
-    )
-    || !exactRef(
-      bundle.activity_check_consequence_profiles?.supersedes_ref,
-      PATHS.previous_activity_check_consequence_profiles,
-      'trace_ld_v1_activity_check_consequence_profiles',
-      1,
-      'rus.trace_activity_check_consequence_profiles.v1',
-      EXPECTED.previous_activity_check_consequence_profiles
-    )
-    || !exactRef(
-      bindings?.superseded_binding_ref,
-      PATHS.previous_materialization_bindings,
-      'lower_dvina_trace_phase_1a_materialization_bindings_v3',
-      3,
-      'rus.lower_dvina_trace_phase_1a_materialization_bindings.v1',
-      EXPECTED.previous_materialization_bindings
+      'rus.trace_item_container_set.v1',
+      EXPECTED.previous_item_container_set
     )) {
-    fail('TRACE_PHASE_3_SUPERSEDES_MISMATCH', 'Phase 3 must exact-supersede the immutable current chain.');
+    fail('TRACE_PHASE_3_SUPERSEDES_MISMATCH', 'Phase 3 pickup content must exact-supersede the immutable current chain.');
   }
 }
 
@@ -363,12 +326,12 @@ function validateDefinitionsAndManifests(bundle) {
   const phase1A = bundle.phase_1a_manifest;
   const bindings = bundle.materialization_bindings;
   if (manifest?.schema !== 'rus.lower_dvina_trace_phase_3_content_manifest.v1'
-    || manifest.package_id !== 'lower_dvina_trace_phase_3_content_v1'
-    || manifest.revision !== 1 || manifest.scenario_definition_revision !== 8
+    || manifest.package_id !== 'lower_dvina_trace_phase_3_content_v2'
+    || manifest.revision !== 2 || manifest.scenario_definition_revision !== 9
     || manifest.status !== 'approved' || manifest.publication_status !== 'internal_only'
     || ['fallback_policy', 'normalization_policy', 'alias_policy']
       .some((key) => manifest[key] !== 'forbidden')
-    || definition?.scenario_id !== 'lower_dvina_trace_v1' || definition.revision !== 8
+    || definition?.scenario_id !== 'lower_dvina_trace_v1' || definition.revision !== 9
     || definition.required_unresolved_refs?.length !== 0
     || definition.immutable_content_refs?.knowledge_lie_memory_rules?.revision !== 2
     || definition.immutable_content_refs.knowledge_lie_memory_rules.digest !==
@@ -379,17 +342,19 @@ function validateDefinitionsAndManifests(bundle) {
     || definition.resolved_policy_refs?.activity_check_consequence_profiles?.revision !== 2
     || definition.resolved_policy_refs.activity_check_consequence_profiles.digest !==
       bundle.raw_digests.activity_check_consequence_profiles
-    || phase1A?.package_id !== 'lower_dvina_trace_phase_1a_v4'
-    || phase1A.revision !== 4 || phase1A.scenario_definition_revision !== 8
+    || definition.immutable_content_refs?.item_container_set?.revision !== 2
+    || definition.immutable_content_refs.item_container_set.digest !== bundle.raw_digests.item_container_set
+    || phase1A?.package_id !== 'lower_dvina_trace_phase_1a_v5'
+    || phase1A.revision !== 5 || phase1A.scenario_definition_revision !== 9
     || phase1A.base_definition_ref?.path !== PATHS.manifest
     || phase1A.base_definition_ref?.digest !== bundle.raw_digests.manifest
     || phase1A.base_definition_ref?.package_id !== manifest.package_id
-    || bindings?.binding_set_id !== 'lower_dvina_trace_phase_1a_materialization_bindings_v4'
-    || bindings.revision !== 4 || bindings.scenario_definition_revision !== 8
+    || bindings?.binding_set_id !== 'lower_dvina_trace_phase_1a_materialization_bindings_v5'
+    || bindings.revision !== 5 || bindings.scenario_definition_revision !== 9
     || phase1A.content_refs?.materialization_bindings?.path !== PATHS.materialization_bindings
     || phase1A.content_refs.materialization_bindings.digest !==
       bundle.raw_digests.materialization_bindings) {
-    fail('TRACE_PHASE_3_MANIFEST_INVALID', 'Phase 3 definition and Phase 1A revision 4 are not exact.');
+    fail('TRACE_PHASE_3_MANIFEST_INVALID', 'Phase 3 definition and Phase 1A revision 5 are not exact.');
   }
 }
 
@@ -399,20 +364,20 @@ function validateImmutableDigests(bundle) {
       fail('TRACE_PHASE_3_IMMUTABLE_DEPENDENCY_CHANGED', `Immutable dependency ${key} changed.`);
     }
   }
-  for (const [key, manifestKey, id, schema] of [
-    ['participant_profile_set', 'participant_profile_set',
-      'trace_ld_v1_participant_profile_set', 'rus.trace_participant_profile_set.v1'],
-    ['location_topology_set', 'location_topology_set',
-      'trace_ld_v1_location_topology_set', 'rus.trace_location_topology_set.v1'],
-    ['location_access_policies', 'location_access_policies',
-      'trace_ld_v1_location_access_policies', 'rus.trace_scene_access_policy_set.v1'],
-    ['location_capacity_contracts', 'location_capacity_contracts',
-      'trace_ld_v1_location_capacity_contracts', 'rus.trace_scene_capacity_contract_set.v1'],
-    ['movement_bindings', 'movement_bindings',
-      'trace_ld_v1_movement_bindings', 'rus.trace_movement_bindings.v1']
+  for (const [key, manifestKey, id, revision, schema] of [
+    ['item_container_set', 'item_container_set',
+      'trace_ld_v1_item_container_set', 2, 'rus.trace_item_container_set.v1'],
+    ['knowledge_lie_memory_rules', 'knowledge_lie_memory_rules',
+      'trace_ld_v1_knowledge_lie_memory_rules', 2, 'rus.trace_knowledge_lie_memory_rules.v1'],
+    ['activity_check_consequence_profiles', 'activity_check_consequence_profiles',
+      'trace_ld_v1_activity_check_consequence_profiles', 2,
+      'rus.trace_activity_check_consequence_profiles.v1'],
+    ['npc_decision_schedule_policies', 'npc_decision_schedule_policies',
+      'trace_ld_v1_npc_decision_schedule_policies', 2,
+      'rus.trace_npc_decision_schedule_policies.v1']
   ]) {
     const ref = bundle.manifest?.reused_content_refs?.[manifestKey];
-    if (ref?.path !== PATHS[key] || ref.id !== id || ref.revision !== 1
+    if (ref?.path !== PATHS[key] || ref.id !== id || ref.revision !== revision
       || ref.schema !== schema || ref.digest !== bundle.raw_digests?.[key]) {
       fail(
         'TRACE_PHASE_3_REUSED_CONTENT_MISMATCH',
@@ -420,12 +385,7 @@ function validateImmutableDigests(bundle) {
       );
     }
   }
-  for (const [key, filename] of [
-    ['definition', 'definition.json'],
-    ['knowledge_lie_memory_rules', 'knowledge-lie-memory-rules.json'],
-    ['activity_check_consequence_profiles', 'activity-check-consequence-profiles.json'],
-    ['npc_decision_schedule_policies', 'npc-decision-schedule-policies.json']
-  ]) {
+  for (const [key, filename] of [['definition', 'definition.json']]) {
     const ref = bundle.manifest?.content_refs?.[key];
     if (ref?.path !== filename || ref.digest !== bundle.raw_digests?.[key]
       || bundle.manifest?.files?.[filename] !== bundle.raw_digests?.[key]) {
@@ -442,6 +402,57 @@ function validateImmutableDigests(bundle) {
     || bundle.phase_1a_manifest.content_refs.materialization_bindings.digest !==
       bundle.raw_digests.materialization_bindings) {
     fail('TRACE_PHASE_3_CONTENT_DIGEST_MISMATCH', 'Package root or Phase 1A binding digest mismatch.');
+  }
+}
+
+function validateBlueWoolPickupContract(bundle) {
+  const items = bundle.item_container_set;
+  const item = items?.item_templates?.find(
+    (value) => value.item_template_id === 'trace_ld_v1_item_blue_wool_fragment'
+  );
+  const profile = items?.item_inventory_profiles?.find(
+    (value) => value.inventory_profile_id === 'trace_ld_v1_inventory_profile_blue_wool_fragment'
+  );
+  const transition = items?.transition_templates?.find(
+    (value) => value.transition_template_id === 'trace_ld_v1_transition_blue_wool_pickup'
+  );
+  const knownParticipants = new Set(bundle.participant_profile_set?.participant_slots);
+  const knownSlots = new Set(items?.placement_slots?.map((value) => value.placement_slot_id));
+  if (items?.schema !== 'rus.trace_item_container_set.v1' || items.revision !== 2
+    || !item || item.physically_removable !== true
+    || item.property_state_template?.owner_ref !== 'ratsha_storehouse_helper'
+    || item.property_state_template?.holder_ref !== null
+    || item.property_state_template?.controller_ref !== null
+    || item.placement_slot_ref !== 'trace_ld_v1_slot_wreck_willow_branch'
+    || item.inventory_profile_ref !== profile?.inventory_profile_id
+    || profile?.item_template_ref !== item.item_template_id
+    || profile.mass_grams !== 10 || profile.carry_form !== 'compact'
+    || profile.external_hand_cost !== 0
+    || !transition
+    || transition.source_item_state?.owner_ref !== 'ratsha_storehouse_helper'
+    || transition.source_item_state?.holder_ref !== null
+    || transition.source_item_state?.controller_ref !== null
+    || transition.source_item_state?.physically_removable !== true
+    || transition.source_placement_ref !== 'trace_ld_v1_slot_wreck_willow_branch'
+    || transition.trigger?.activity_ref !== 'trace_ld_v1_activity_detailed_wreck_inspection'
+    || transition.trigger?.required_successful_consequence_ref !== 'trace_ld_v1_consequence_inspection_success'
+    || transition.trigger?.required_committed_evidence_ref !== 'trace_ld_v1_evidence_blue_wool'
+    || transition.trigger?.evidence_discovery_state !== 'committed'
+    || transition.destination_state?.holder_ref !== 'player_clerk'
+    || transition.destination_state?.controller_ref !== 'player_clerk'
+    || transition.destination_state?.physical_position !== 'hands'
+    || transition.owner_change !== 'forbidden'
+    || transition.owner_preservation !== 'ratsha_storehouse_helper'
+    || transition.inventory_profile_ref !== profile?.inventory_profile_id
+    || transition.clock_write !== 'forbidden'
+    || transition.atomic_with_parent_activity_commit !== true
+    || transition.idempotency_policy !== 'inherit_parent_turn_exact_replay'
+    || transition.failure_pickup !== 'forbidden'
+    || transition.repeat_application !== 'forbidden'
+    || !knownParticipants.has(transition.destination_state?.holder_ref)
+    || !knownParticipants.has(transition.destination_state?.controller_ref)
+    || !knownSlots.has(transition.source_placement_ref)) {
+    fail('TRACE_BLUE_WOOL_PICKUP_CONTRACT_INVALID', 'Blue-wool pickup must remain an exact, owner-preserving parent-turn transition.');
   }
 }
 

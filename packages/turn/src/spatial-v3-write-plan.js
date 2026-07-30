@@ -9,6 +9,7 @@ import {
   CHILD_TABLES,
   FIRST_ENTRY_BINDING_FIELDS,
   FIRST_ENTRY_PHYSICAL_RECHECK_FIELDS,
+  NON_VERSIONED_MUTABLE_TABLES,
   PRESENTATION_TABLES,
   TABLE_MODES,
   childParentIdentities,
@@ -220,7 +221,12 @@ export async function buildCombinedWritePlan(input = {}, { verifyApproval } = {}
       }
     }
   }
-  const mutableKeys = new Set([...sets.updates, ...sets.deletes].map(identity));
+  const mutableKeys = new Set(
+    [...sets.updates, ...sets.deletes]
+      .filter((write) =>
+        !NON_VERSIONED_MUTABLE_TABLES.includes(write.target_table))
+      .map(identity)
+  );
   if (expected_state_versions.length !== mutableKeys.size || expected_state_versions.some((expected) => !stable(expected?.target_table) || !stable(expected?.id) || !Number.isInteger(expected.state_version) || expected.state_version < 0 || !mutableKeys.has(`${expected.target_schema ?? 'party_runtime'}.${expected.target_table}:${expected.id}`))) return fail('state_version_conflict', party_id, { reason: 'every mutable update or delete requires one expected version' });
   if (write_plan_kind === 'blocked_audit' && (sets.inserts.length || sets.updates.length || sets.deletes.length || sets.appends.some((write) => !['party_v3_change_sets', 'party_command_idempotency', 'party_route_plan_execution_events'].includes(write.target_table)))) return fail('generated_schema_mismatch', party_id, { reason: 'blocked audit may append audit rows only' });
   const write_set = { inserts: sets.inserts, updates: sets.updates, appends: sets.appends, deletes: sets.deletes };

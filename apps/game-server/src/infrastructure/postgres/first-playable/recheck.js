@@ -1,3 +1,7 @@
+import {
+  recheckTracePhase3LocationCapacity
+} from './recheck-location-capacity.js';
+
 export async function firstPlayableCommitRecheck({
   transaction,
   party_id: partyId,
@@ -101,6 +105,11 @@ export async function firstPlayableCommitRecheck({
     );
   }
   if (check.kind === 'capacity') {
+    if (check.capacity_model === 'trace_phase3_location_actor_capacity') {
+      return recheckTracePhase3LocationCapacity({
+        transaction, partyId, check
+      });
+    }
     if (check.capacity_model == null) {
       const result = await transaction.query(
         `SELECT party_id

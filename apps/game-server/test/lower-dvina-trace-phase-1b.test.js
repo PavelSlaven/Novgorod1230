@@ -75,7 +75,7 @@ test('trace dispatch commits before safe screen and never uses boatman creator',
     f.materializeCalls[0].materializer_version,
     TRACE_PHASE_1B_APPROVED_MATERIALIZER_VERSION
   );
-  assert.equal(f.materializeCalls[0].scenario_definition_revision, 6);
+  assert.equal(f.materializeCalls[0].scenario_definition_revision, 7);
   assert.equal(
     f.materializeCalls[0].rng_algorithm_id,
     TRACE_PHASE_1B_APPROVED_RNG_ALGORITHM_ID
@@ -232,53 +232,52 @@ test('trace recovery rehydrates Phase 1A and attaches one stable session', async
   assert.equal(replayed.screen.panels.character.data.name, 'Микула');
 });
 
-test('historical Phase 1A commit recovers through its pinned v1 publication', async () => {
-  const requestId = 'historical-phase-1a-orphan';
-  const partyId = `party:${hash(requestId).slice(0, 24)}`;
-  const historical = TRACE_PHASE_1B_SESSION_IDENTITIES[0];
-  const historicalPublication =
-    await loadLowerDvinaTracePhase1BPublication({
-      phase1AManifestDigest: historical.phase_1a_manifest_digest
+test('historical Phase 1A commits recover through their pinned publications', async (t) => {
+  for (const [revision, historical] of TRACE_PHASE_1B_SESSION_IDENTITIES
+    .slice(0, 2).entries()) {
+    await t.test(`v${revision + 1}`, async () => {
+      const requestId = `historical-phase-1a-v${revision + 1}-orphan`;
+      const partyId = `party:${hash(requestId).slice(0, 24)}`;
+      const historicalPublication = await loadLowerDvinaTracePhase1BPublication({
+        phase1AManifestDigest: historical.phase_1a_manifest_digest
+      });
+      const f = fixture({
+        committedRequest: {
+          party_id: partyId,
+          scenario_id: 'lower_dvina_trace_v1',
+          scenario_definition_revision: historical.scenario_definition_revision,
+          scenario_manifest_digest: historical.phase_1a_manifest_digest,
+          world_revision_id: release.world_revision_id,
+          world_catalog_digest: release.world_catalog_digest,
+          world_compatibility: structuredClone(
+            historicalPublication.binding.world_compatibility
+          ),
+          materializer_version: TRACE_PHASE_1B_APPROVED_MATERIALIZER_VERSION,
+          rng_algorithm_id: TRACE_PHASE_1B_APPROVED_RNG_ALGORITHM_ID,
+          seed_context: historicalPublication.binding.execution_identity.seed_context,
+          idempotency_key: `new-game:lower_dvina_trace_v1:${hash(requestId)}`,
+          trigger: 'new_game',
+          occurrence: 0,
+          existing_party_state: { baseline_exists: false }
+        }
+      });
+      const started = await createRuntime(f).startNewGame({
+        scenario_id: 'lower_dvina_trace_v1',
+        request_id: requestId
+      });
+      const session = f.repository.sessions.get(partyId);
+      assert.equal(f.materializeCalls.length, 0);
+      assert.equal(
+        session.stage26_result.publication_binding_id,
+        historical.publication_binding_id
+      );
+      assert.equal(
+        session.stage26_result.scenario_definition_revision,
+        historical.scenario_definition_revision
+      );
+      assert.equal(started.screen.panels.character.data.name, 'Микула');
     });
-  const f = fixture({
-    committedRequest: {
-      party_id: partyId,
-      scenario_id: 'lower_dvina_trace_v1',
-      scenario_definition_revision:
-        historical.scenario_definition_revision,
-      scenario_manifest_digest:
-        historical.phase_1a_manifest_digest,
-      world_revision_id: release.world_revision_id,
-      world_catalog_digest: release.world_catalog_digest,
-      world_compatibility: structuredClone(
-        historicalPublication.binding.world_compatibility
-      ),
-      materializer_version:
-        TRACE_PHASE_1B_APPROVED_MATERIALIZER_VERSION,
-      rng_algorithm_id: TRACE_PHASE_1B_APPROVED_RNG_ALGORITHM_ID,
-      seed_context: 'lower_dvina_trace_phase_1a_mikula_v1',
-      idempotency_key:
-        `new-game:lower_dvina_trace_v1:${hash(requestId)}`,
-      trigger: 'new_game',
-      occurrence: 0,
-      existing_party_state: { baseline_exists: false }
-    }
-  });
-  const started = await createRuntime(f).startNewGame({
-    scenario_id: 'lower_dvina_trace_v1',
-    request_id: requestId
-  });
-  const session = f.repository.sessions.get(partyId);
-  assert.equal(f.materializeCalls.length, 0);
-  assert.equal(
-    session.stage26_result.publication_binding_id,
-    historical.publication_binding_id
-  );
-  assert.equal(
-    session.stage26_result.scenario_definition_revision,
-    historical.scenario_definition_revision
-  );
-  assert.equal(started.screen.panels.character.data.name, 'Микула');
+  }
 });
 
 test('exact trace replay bypasses changed publication and materializer', async () => {

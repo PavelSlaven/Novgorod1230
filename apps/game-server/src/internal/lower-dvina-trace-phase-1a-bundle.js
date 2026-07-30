@@ -14,8 +14,8 @@ export { assertExactContentRef } from './lower-dvina-trace-phase-1a-ref-validati
 
 const SCENARIO_ROOT = 'data/world-catalogs/novgorod/lower-dvina-trace-v1';
 const FILES = Object.freeze({
-  materialization_bindings: 'phase-1a-v2/materialization-bindings.json',
-  definition: 'phase-0d-v3/definition.json',
+  materialization_bindings: 'phase-1a-v3/materialization-bindings.json',
+  definition: 'phase-0d-v4/definition.json',
   player_profile: 'player-profile.json',
   player_profile_definition: 'definition.json',
   player_profile_set: 'player-profile-set.json',
@@ -31,7 +31,7 @@ const FILES = Object.freeze({
   movement_bindings: 'phase-0d/movement-bindings.json',
   location_access_policies: 'phase-0d/location-access-policies.json',
   location_capacity_contracts: 'phase-0d/location-capacity-contracts.json',
-  body_environment_profiles: 'phase-0d-v3/body-environment-profiles.json',
+  body_environment_profiles: 'phase-0d-v4/body-environment-profiles.json',
   promise_policy: 'phase-0d/promise-policy.json',
   completion_rules: 'phase-0d/completion-rules.json',
   epilogue_rules: 'phase-0d/epilogue-rules.json'
@@ -58,14 +58,14 @@ export async function loadLowerDvinaTraceMaterializationBundle({ rootDir = proce
     version: 1,
     schema: 'rus.lower_dvina_trace_materialization_bundle.v1',
     scenario_id: 'lower_dvina_trace_v1',
-    definition_revision: 6,
+    definition_revision: 7,
     manifest_digest: phase1AManifestFile.digest,
     phase_1a_manifest: phase1AManifest,
     artifact_pins: artifactPins
   };
   artifactPins.phase_1a_manifest = {
     key: 'phase_1a_manifest',
-    path: `${SCENARIO_ROOT}/phase-1a-v2/manifest.json`,
+    path: `${SCENARIO_ROOT}/phase-1a-v3/manifest.json`,
     digest: phase1AManifestFile.digest,
     canonical_digest: canonicalDigest(phase1AManifest),
     schema: phase1AManifest.schema,
@@ -132,9 +132,9 @@ export async function loadLowerDvinaTraceMaterializationBundle({ rootDir = proce
     bundle.materialization_bindings.superseded_binding_ref,
     supersededBindingsFile,
     {
-      path: `${SCENARIO_ROOT}/phase-1a/materialization-bindings.json`,
-      id: 'lower_dvina_trace_phase_1a_materialization_bindings_v1',
-      revision: 1,
+      path: `${SCENARIO_ROOT}/phase-1a-v2/materialization-bindings.json`,
+      id: 'lower_dvina_trace_phase_1a_materialization_bindings_v2',
+      revision: 2,
       schema: 'rus.lower_dvina_trace_phase_1a_materialization_bindings.v1',
       idField: 'binding_set_id'
     }

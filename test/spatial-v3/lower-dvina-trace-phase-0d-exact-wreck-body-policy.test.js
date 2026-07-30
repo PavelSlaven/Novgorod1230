@@ -63,7 +63,7 @@ const refreshDigests = (directory) => {
   writeJson(directory, manifestFile, manifest);
 };
 const runChecker = ({ directory = null, historicalV2Directory = null } = {}) => {
-  const args = [checker];
+  const args = [checker, '--legacy-v3'];
   if (directory || historicalV2Directory) args.push('--validation-only');
   if (directory) args.push('--directory', directory);
   if (historicalV2Directory) args.push('--historical-v2-directory', historicalV2Directory);

@@ -1,0 +1,86 @@
+{
+  "schema": "rus.lower_dvina_trace_publication_binding.v1",
+  "binding_id": "lower_dvina_trace_phase_1b_publication_v3",
+  "revision": 3,
+  "status": "approved",
+  "scenario_id": "lower_dvina_trace_v1",
+  "superseded_binding_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v2/publication-binding.json",
+    "id": "lower_dvina_trace_phase_1b_publication_v2",
+    "revision": 2,
+    "schema": "rus.lower_dvina_trace_publication_binding.v1",
+    "digest": "1e7a45b5017631f381fa972642455cdb8eef81c19d0ecf76bc284bd018560eb9"
+  },
+  "public_metadata": {
+    "title": "След на Нижней Двине",
+    "description": "Младший приказчик приходит в себя после крушения на Нижней Двине.",
+    "available": true
+  },
+  "phase_1a_manifest_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v3/manifest.json",
+    "id": "lower_dvina_trace_phase_1a_v3",
+    "revision": 3,
+    "schema": "rus.lower_dvina_trace_phase_1a_manifest.v1",
+    "digest": "6f115e878a663b6aacb654bf7fe86b651467e1da06161907faac06770d4a9925"
+  },
+  "scenario_definition_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0d-v4/definition.json",
+    "id": "lower_dvina_trace_v1",
+    "revision": 7,
+    "schema": "rus.trace_scenario_definition.v1",
+    "digest": "1591b10d19deb48393b42fd4d84ad5c770ab8cdc153af2f94a4d7c749383f729"
+  },
+  "materializer_binding_id": "lower_dvina_trace_phase_1a_materialization_bindings_v3",
+  "opening_projection": {
+    "projection_id": "lower_dvina_trace_phase_1b_opening_projection_v3",
+    "schema": "first_game_screen",
+    "version": 1,
+    "visible_field_allowlist": [
+      "party_id",
+      "player.name",
+      "player.social_status",
+      "position",
+      "timestamp",
+      "body",
+      "environment"
+    ],
+    "place_label": "берег крушения на Нижней Двине",
+    "calendar_label": "20 августа 1230 года по юлианскому календарю, 07:00 LMST",
+    "opening_prose": "Ты приходишь в себя на берегу Нижней Двины после крушения. Одежда промокла; холод, головная боль и ушиб плеча напоминают о случившемся."
+  },
+  "execution_identity": {
+    "materializer_version": "code_materializer_v2",
+    "rng_algorithm_id": "mulberry32_v1",
+    "seed_context": "lower_dvina_trace_phase_1a_mikula_v1",
+    "trigger": "new_game",
+    "occurrence": 0
+  },
+  "world_compatibility": {
+    "source_world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "source_world_catalog_digest": "0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e",
+    "source_status": "approved",
+    "production_world_revision_id": "novgorod_spatial_v3_production_v3_candidate_001",
+    "production_world_catalog_digest": "1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e",
+    "production_status": "approved",
+    "lineage": [
+      {
+        "path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v2/manifest.json",
+        "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001",
+        "parent_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "world_catalog_digest": "fd75d9cb1ad0e949ff3b0bb5ef044e510f340a967f43867e9c4d41c16ba9f255",
+        "status": "approved",
+        "digest": "3ed17f7d540f5707a8b72392d7e4d5736be947048673ff5135d5c07aacbb951a"
+      },
+      {
+        "path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v3/manifest.json",
+        "world_revision_id": "novgorod_spatial_v3_production_v3_candidate_001",
+        "parent_revision_id": "novgorod_spatial_v3_production_v2_candidate_001",
+        "world_catalog_digest": "1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e",
+        "status": "approved",
+        "digest": "593ccb341084f7433ec4ae9d7d0b2ea8b1dea07833636ef385550ba5a295ecea"
+      }
+    ]
+  },
+  "publication_availability": "public",
+  "fallback_policy": "forbidden"
+}

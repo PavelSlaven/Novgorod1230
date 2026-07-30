@@ -26,9 +26,11 @@ const argumentValue = (name) => {
 const validationOnly = process.argv.includes('--validation-only');
 const legacyV1 = process.argv.includes('--legacy-v1');
 const legacyV2 = process.argv.includes('--legacy-v2');
+const legacyV3 = process.argv.includes('--legacy-v3');
 const directoryArgument = argumentValue('--directory');
 const historicalV2DirectoryArgument = argumentValue('--historical-v2-directory');
-if ((directoryArgument || historicalV2DirectoryArgument) && !validationOnly) {
+const historicalV3DirectoryArgument = argumentValue('--historical-v3-directory');
+if ((directoryArgument || historicalV2DirectoryArgument || historicalV3DirectoryArgument) && !validationOnly) {
   throw new TracePhase0DValidationError(
     'TRACE_0D_SOURCE_OVERRIDE_FORBIDDEN',
     'directory override is allowed only for validation fixtures'
@@ -41,11 +43,16 @@ const correctionDirectory = directoryArgument
     root,
     legacyV2
       ? 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0d-v2'
-      : 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0d-v3'
+      : legacyV3
+        ? 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0d-v3'
+        : 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0d-v4'
   );
 const historicalV2Directory = historicalV2DirectoryArgument
   ? resolve(historicalV2DirectoryArgument)
   : resolve(root, 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0d-v2');
+const historicalV3Directory = historicalV3DirectoryArgument
+  ? resolve(historicalV3DirectoryArgument)
+  : resolve(root, 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0d-v3');
 
 const correctionSha256Path = (path) => createHash('sha256').update(readFileSync(path)).digest('hex');
 const correctionRequire = (condition, code, message) => {
@@ -75,6 +82,12 @@ const V2_DEFINITION_PATH = 'data/world-catalogs/novgorod/lower-dvina-trace-v1/ph
 const V2_DEFINITION_DIGEST = '2d4c940867a34a292435915a0e201d986346c10f1eddc31423fe019025dbc6c0';
 const V2_BODY_PATH = 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0d-v2/body-environment-profiles.json';
 const V2_BODY_DIGEST = 'f8437ef19a77cccaceb4607695c95f528ffe5f09ec2287befe3772841de16227';
+const V3_PACKAGE_PATH = 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0d-v3/manifest.json';
+const V3_PACKAGE_DIGEST = 'edc5c49cbe9a2f778650daaa9ebf0089412ccc06b31b4b0f10aeee6a9c66ecd7';
+const V3_DEFINITION_PATH = 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0d-v3/definition.json';
+const V3_DEFINITION_DIGEST = '3f181993af99ddd7e7d3c0292ac853e168960b99f5cc2c06aaaddd13b8db703c';
+const V3_BODY_PATH = 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0d-v3/body-environment-profiles.json';
+const V3_BODY_DIGEST = 'd6481bdb2b460d13a3beb37486e325a37401ce0de9aa813930308e1e96f0cd26';
 const BODY_OWNER_V1_CONTRACT_PATH = 'packages/body-state/src/declarative-content-contracts.v1.json';
 const BODY_OWNER_V1_CONTRACT_DIGEST = '221d58d9e4f282afef739f1187a9936a1596480d0cb11eb58b6e8511b51fbadd';
 const BODY_OWNER_V2_CONTRACT_PATH = 'packages/body-state/src/declarative-content-contracts.v2.json';
@@ -629,7 +642,7 @@ function validateCorrectionV2(directory = correctionDirectory, { report = true }
   };
 }
 
-function validateCorrectionV3(directory = correctionDirectory) {
+function validateCorrectionV3(directory = correctionDirectory, { report = true } = {}) {
   const v2 = validateCorrectionV2(historicalV2Directory, { report: false });
   correctionRequire(
     correctionSha256Path(resolve(historicalV2Directory, 'manifest.json')) === V2_PACKAGE_DIGEST
@@ -1031,7 +1044,7 @@ function validateCorrectionV3(directory = correctionDirectory) {
     'phase 0D v3 materializes or publishes runtime state'
   );
 
-  console.log(JSON.stringify({
+  const reportValue = {
     package_id: manifest.package_id,
     package_revision: manifest.revision,
     scenario_revision: definition.revision,
@@ -1043,12 +1056,285 @@ function validateCorrectionV3(directory = correctionDirectory) {
       rng_consumption: wreck.rng_consumption
     },
     content_digest: manifest.content_digest
+  };
+  if (report) console.log(JSON.stringify(reportValue));
+  return {
+    definition,
+    body,
+    manifest,
+    definitionDigest,
+    bodyDigest,
+    report: reportValue
+  };
+}
+
+function validateCorrectionV4(directory = correctionDirectory) {
+  const v3 = validateCorrectionV3(historicalV3Directory, { report: false });
+  correctionRequire(
+    correctionSha256Path(resolve(historicalV3Directory, 'manifest.json')) === V3_PACKAGE_DIGEST
+      && correctionSha256Path(resolve(historicalV3Directory, 'definition.json')) === V3_DEFINITION_DIGEST
+      && correctionSha256Path(resolve(historicalV3Directory, 'body-environment-profiles.json')) === V3_BODY_DIGEST,
+    'TRACE_0D_V4_V3_REGRESSION',
+    'phase 0D v3, definition revision 6, or body/environment revision 3 changed'
+  );
+
+  const correctionFiles = ['definition.json', 'body-environment-profiles.json'];
+  correctionRequire(
+    JSON.stringify(readdirSync(directory).filter((name) => name.endsWith('.json')).sort())
+      === JSON.stringify([...correctionFiles, 'manifest.json'].sort()),
+    'TRACE_0D_V4_EXTRA_ARTIFACT',
+    'phase 0D v4 correction directory contains an unknown JSON artifact'
+  );
+  const definitionPath = resolve(directory, 'definition.json');
+  const bodyPath = resolve(directory, 'body-environment-profiles.json');
+  const manifestPath = resolve(directory, 'manifest.json');
+  const definition = correctionReadJson(definitionPath);
+  const body = correctionReadJson(bodyPath);
+  const manifest = correctionReadJson(manifestPath);
+  const definitionDigest = correctionSha256Path(definitionPath);
+  const bodyDigest = correctionSha256Path(bodyPath);
+
+  correctionRequire(
+    manifest.schema === 'rus.trace_phase_0d_correction_manifest.v1'
+      && manifest.package_id === 'lower_dvina_trace_phase_0d_v4'
+      && manifest.revision === 4
+      && manifest.scenario_definition_revision === 7
+      && manifest.publication_status === 'unpublished',
+    'TRACE_0D_V4_MANIFEST_IDENTITY',
+    'phase 0D v4 correction manifest identity is invalid'
+  );
+  for (const key of ['fallback_policy', 'normalization_policy', 'alias_policy']) {
+    correctionRequire(
+      manifest[key] === 'forbidden' && body[key] === 'forbidden',
+      'TRACE_0D_V4_SEMANTIC_FALLBACK',
+      `${key} must be forbidden for the package and body profiles`
+    );
+  }
+  correctionRequire(
+    manifest.superseded_package_ref?.id === 'lower_dvina_trace_phase_0d_v3'
+      && manifest.superseded_package_ref?.revision === 3
+      && manifest.superseded_package_ref?.path === V3_PACKAGE_PATH
+      && manifest.superseded_package_ref?.digest === V3_PACKAGE_DIGEST
+      && manifest.superseded_definition_ref?.id === 'lower_dvina_trace_v1'
+      && manifest.superseded_definition_ref?.revision === 6
+      && manifest.superseded_definition_ref?.path === V3_DEFINITION_PATH
+      && manifest.superseded_definition_ref?.digest === V3_DEFINITION_DIGEST
+      && manifest.superseded_body_environment_ref?.id === 'trace_ld_v1_body_environment_profiles'
+      && manifest.superseded_body_environment_ref?.revision === 3
+      && manifest.superseded_body_environment_ref?.path === V3_BODY_PATH
+      && manifest.superseded_body_environment_ref?.digest === V3_BODY_DIGEST,
+    'TRACE_0D_V4_SUPERSEDED_REF',
+    'phase 0D v4 does not exact-supersede the immutable v3 chain'
+  );
+  correctionRequire(
+    Object.keys(manifest.files ?? {}).sort().join('|') === correctionFiles.sort().join('|')
+      && manifest.files['definition.json'] === definitionDigest
+      && manifest.files['body-environment-profiles.json'] === bodyDigest,
+    'TRACE_0D_V4_DIGEST_MISMATCH',
+    'phase 0D v4 file digest set is invalid'
+  );
+  const aggregate = Object.entries(manifest.files)
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([name, digest]) => `${name}:${digest}`)
+    .join('\n') + '\n';
+  correctionRequire(
+    manifest.content_digest_algorithm === 'sha256_sorted_filename_colon_digest_lf_v1'
+      && manifest.content_digest === createHash('sha256').update(aggregate).digest('hex'),
+    'TRACE_0D_V4_CONTENT_DIGEST',
+    'phase 0D v4 aggregate digest is invalid'
+  );
+  correctionRequire(
+    manifest.content_refs?.definition?.schema === 'rus.trace_scenario_definition.v1'
+      && manifest.content_refs.definition.id === 'lower_dvina_trace_v1'
+      && manifest.content_refs.definition.revision === 7
+      && manifest.content_refs.definition.path === 'definition.json'
+      && manifest.content_refs.definition.digest === definitionDigest
+      && manifest.content_refs?.body_environment_profiles?.schema === 'rus.trace_body_environment_profiles.v2'
+      && manifest.content_refs.body_environment_profiles.id === 'trace_ld_v1_body_environment_profiles'
+      && manifest.content_refs.body_environment_profiles.revision === 4
+      && manifest.content_refs.body_environment_profiles.path === 'body-environment-profiles.json'
+      && manifest.content_refs.body_environment_profiles.digest === bodyDigest,
+    'TRACE_0D_V4_CONTENT_REF',
+    'phase 0D v4 content refs are invalid'
+  );
+  correctionRequire(
+    JSON.stringify(manifest.reused_content_refs) === JSON.stringify(v3.manifest.reused_content_refs)
+      && JSON.stringify(manifest.temporal_source_refs) === JSON.stringify(v3.manifest.temporal_source_refs)
+      && JSON.stringify(manifest.owner_contract_refs) === JSON.stringify(v3.manifest.owner_contract_refs)
+      && JSON.stringify(manifest.legacy_boatman_regression_refs)
+        === JSON.stringify(v3.manifest.legacy_boatman_regression_refs),
+    'TRACE_0D_V4_REUSED_REF',
+    'phase 0D v4 changed a reused, owner, temporal, or boatman ref'
+  );
+  for (const ref of [
+    ...Object.values(manifest.reused_content_refs ?? {}),
+    ...Object.values(manifest.temporal_source_refs ?? {}),
+    ...Object.values(manifest.legacy_boatman_regression_refs ?? {})
+  ]) {
+    correctionRequire(
+      typeof ref?.path === 'string'
+        && correctionSha256Path(resolve(root, ref.path)) === ref.digest,
+      'TRACE_0D_V4_REUSED_REF',
+      'phase 0D v4 reused reference does not resolve exactly'
+    );
+  }
+  correctionRequire(
+    Array.isArray(manifest.remaining_unresolved_refs)
+      && manifest.remaining_unresolved_refs.length === 0
+      && [...(manifest.scope ?? [])].sort().join('|') === [
+        'canonical_start_condition_correction',
+        'immutable_phase_0d_v3_composition'
+      ].sort().join('|')
+      && [...(manifest.excludes ?? [])].sort().join('|') === [
+        'materializer',
+        'party_instance',
+        'runtime_handlers',
+        'persistence',
+        'migrations',
+        'api',
+        'ui',
+        'phase_1a',
+        'phase_1b',
+        'phase_2'
+      ].sort().join('|'),
+    'TRACE_0D_V4_PACKAGE_SCOPE',
+    'phase 0D v4 scope, exclusions, or unresolved refs are invalid'
+  );
+
+  correctionRequire(
+    definition.schema === 'rus.trace_scenario_definition.v1'
+      && definition.scenario_id === 'lower_dvina_trace_v1'
+      && definition.revision === 7
+      && definition.publication_status === 'unpublished'
+      && definition.supersedes_definition_ref?.id === 'lower_dvina_trace_v1'
+      && definition.supersedes_definition_ref?.revision === 6
+      && definition.supersedes_definition_ref?.path === V3_DEFINITION_PATH
+      && definition.supersedes_definition_ref?.digest === V3_DEFINITION_DIGEST,
+    'TRACE_0D_V4_DEFINITION_CHAIN',
+    'definition revision 7 does not exact-supersede revision 6'
+  );
+  const bodyPolicyRef = definition.resolved_policy_refs?.body_environment_profiles;
+  correctionRequire(
+    bodyPolicyRef?.owner === '@rus/body-state'
+      && bodyPolicyRef?.schema === 'rus.trace_body_environment_profiles.v2'
+      && bodyPolicyRef?.id === 'trace_ld_v1_body_environment_profiles'
+      && bodyPolicyRef?.revision === 4
+      && bodyPolicyRef?.digest === bodyDigest,
+    'TRACE_0D_V4_BODY_POLICY_REF',
+    'definition revision 7 body/environment ref is invalid'
+  );
+  const normalizedDefinition = structuredClone(definition);
+  normalizedDefinition.revision = v3.definition.revision;
+  normalizedDefinition.supersedes_definition_ref = v3.definition.supersedes_definition_ref;
+  normalizedDefinition.resolved_policy_refs.body_environment_profiles =
+    v3.definition.resolved_policy_refs.body_environment_profiles;
+  correctionRequire(
+    JSON.stringify(normalizedDefinition) === JSON.stringify(v3.definition),
+    'TRACE_0D_V4_DEFINITION_SCOPE',
+    'definition revision 7 changes data outside its body/environment pin'
+  );
+
+  const canonicalStartConditions = [
+    'wet',
+    'cold_with_possible_shivering',
+    'headache',
+    'shoulder_bruise'
+  ];
+  correctionRequire(
+    body.schema === 'rus.trace_body_environment_profiles.v2'
+      && body.set_id === 'trace_ld_v1_body_environment_profiles'
+      && body.revision === 4
+      && body.publication_status === 'unpublished'
+      && body.supersedes_ref?.id === 'trace_ld_v1_body_environment_profiles'
+      && body.supersedes_ref?.revision === 3
+      && body.supersedes_ref?.path === V3_BODY_PATH
+      && body.supersedes_ref?.digest === V3_BODY_DIGEST
+      && JSON.stringify(body.start_profile?.conditions) === JSON.stringify(canonicalStartConditions)
+      && new Set(body.start_profile.conditions).size === canonicalStartConditions.length,
+    'TRACE_0D_V4_BODY_START_CONDITIONS',
+    'body/environment revision 4 must use the exact canonical start conditions'
+  );
+  for (const state of canonicalStartConditions) {
+    const profiles = (body.condition_profiles ?? []).filter(
+      (profile) => profile?.state === state
+    );
+    correctionRequire(
+      profiles.length === 1 && profiles[0].subject === 'player_clerk',
+      'TRACE_0D_V4_CONDITION_PROFILE_RESOLUTION',
+      `start condition ${state} must resolve exactly once for player_clerk`
+    );
+  }
+  const conditionProfileById = new Map(
+    (body.condition_profiles ?? []).map((profile) => [profile.condition_profile_id, profile])
+  );
+  const outcomeQueue = (body.effect_profiles ?? []).flatMap((effect) =>
+    (effect.condition_outcomes ?? []).map((outcome) => ({
+      effect_profile_id: effect.effect_profile_id,
+      ...outcome
+    }))
+  );
+  const reachableStates = new Set(canonicalStartConditions);
+  let unresolvedOutcomes = outcomeQueue;
+  while (unresolvedOutcomes.length > 0) {
+    const next = [];
+    let advanced = false;
+    for (const outcome of unresolvedOutcomes) {
+      const profile = conditionProfileById.get(outcome.condition_profile_ref);
+      correctionRequire(
+        profile?.state === outcome.from
+          && profile.permitted_transitions?.includes(outcome.to)
+          && !profile.forbidden_transitions?.includes(outcome.to),
+        'TRACE_0D_V4_FIXED_EFFECT_PROFILE',
+        `fixed effect ${outcome.effect_profile_id} has an invalid condition profile ref`
+      );
+      if (reachableStates.has(outcome.from)) {
+        reachableStates.add(outcome.to);
+        advanced = true;
+      } else {
+        next.push(outcome);
+      }
+    }
+    correctionRequire(
+      advanced || next.length === 0,
+      'TRACE_0D_V4_FIXED_EFFECT_FROM_CHAIN',
+      'a fixed effect from state is neither materialized at start nor reached by a prior transition'
+    );
+    unresolvedOutcomes = next;
+  }
+  const normalizedBody = structuredClone(body);
+  normalizedBody.revision = v3.body.revision;
+  normalizedBody.supersedes_ref = v3.body.supersedes_ref;
+  normalizedBody.start_profile = structuredClone(v3.body.start_profile);
+  correctionRequire(
+    JSON.stringify(normalizedBody) === JSON.stringify(v3.body),
+    'TRACE_0D_V4_BODY_SCOPE',
+    'body/environment revision 4 changes data outside canonical start conditions'
+  );
+  correctionRequire(
+    definition.readiness?.phase_status === 'phase_0_complete'
+      && definition.readiness?.publication_status === 'not_publishable'
+      && definition.concrete_party_selections?.game_timestamp === null
+      && definition.concrete_party_selections?.environment_snapshot === null
+      && Array.isArray(body.applied_effects)
+      && body.applied_effects.length === 0,
+    'TRACE_0D_V4_RUNTIME_BOUNDARY',
+    'phase 0D v4 materializes or publishes runtime state'
+  );
+
+  console.log(JSON.stringify({
+    package_id: manifest.package_id,
+    package_revision: manifest.revision,
+    scenario_revision: definition.revision,
+    body_environment_revision: body.revision,
+    canonical_start_conditions: canonicalStartConditions,
+    content_digest: manifest.content_digest
   }));
 }
 
 if (!legacyV1) {
   if (legacyV2) validateCorrectionV2();
-  else validateCorrectionV3();
+  else if (legacyV3) validateCorrectionV3();
+  else validateCorrectionV4();
   process.exit(0);
 }
 

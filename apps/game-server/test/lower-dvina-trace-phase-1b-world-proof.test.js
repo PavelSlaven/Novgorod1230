@@ -27,7 +27,7 @@ test('direct Phase 1A materializer rejects a fabricated descendant world proof',
   const base = {
     party_id: 'trace-phase-1b-world-proof',
     scenario_id: 'lower_dvina_trace_v1',
-    scenario_definition_revision: 6,
+    scenario_definition_revision: 7,
     scenario_manifest_digest: bundle.manifest_digest,
     world_revision_id: world.production_world_revision_id,
     world_catalog_digest: world.production_world_catalog_digest,

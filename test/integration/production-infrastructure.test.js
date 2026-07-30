@@ -296,10 +296,14 @@ test('runTurnWorkflow preserves the code-owned plan seal through the production 
     commandRegistry,
     stateReader: { read: async () => ({ party_state: { party_id: 'party-e2e', state_version: 0 }, current_position: {}, clock_weather_light: { clock: { day: 1, hour: 1, minute: 0 }, weather: {}, light: {} }, visible_context: visible, character_knowledge_map: [], relevant_hidden_state: {}, relevant_events: [] }) },
     visibleProjector: { project: async () => visible },
+    persistedVisibleReader: { read: async () => visible },
+    semanticResolver: async () => ({ status: 'unknown' }),
+    decisionSecret: 'production-infrastructure-test',
+    decisionExpiresAt: '2030-01-01T00:05:00.000Z',
     narrator: { run: async ({ request_id: requestId }) => ({ version: 1, schema: 'narration_flow_result', request_id: requestId, surface: 'turn', status: 'approved', pass: true, approved_output: { version: 1, schema: 'narration_output', output_id: `narration:${requestId}`, prose: 'Проходит минута.', action_options: [], used_references: [], self_check: { no_new_world_facts: true } }, final_audit: { version: 1, schema: 'narration_audit', pass: true, concerns: [], evidence: ['visible'] }, repair_request: null, generation_history: [], audit_history: [], repair_history: [], diagnostics: {} }) },
     partyStore: store
   };
-  const result = await runTurnWorkflow({ party_id: 'party-e2e', turn_number: 1, raw_text: 'Жду.', received_at: '2030-01-01T00:00:00.000Z' }, services, { now: '2030-01-01T00:00:00.000Z', requestId: 'turn-e2e' });
+  const result = await runTurnWorkflow({ party_id: 'party-e2e', turn_number: 1, request_id: 'turn-e2e', idempotency_key: 'turn-e2e', raw_text: 'Жду.', received_at: '2030-01-01T00:00:00.000Z' }, services, { now: '2030-01-01T00:00:00.000Z', requestId: 'turn-e2e' });
   assert.equal(result.commit.committed, true);
   const state = (await pool.query("SELECT state_payload FROM party_runtime.party_state_snapshots WHERE party_id='party-e2e' AND state_version=1")).rows[0].state_payload;
   assert.deepEqual(state, { existing: true, party_events: { event: 'waited' } });

@@ -3,17 +3,21 @@
 | Block | Input | Output | Semantic owner |
 |---|---|---|---|
 | normalize_intent | raw player input | `player_turn_input` | structural code only |
-| resolve_mode | player input + routing context + command registry | `turn_mode_resolution` | registered code handler; bounded LLM choice only if ambiguous |
 | load_context | requested state blocks | `retrieved_turn_state` | state reader adapter |
+| available_actions | committed state + command registry | `turn_available_action_set` | registered code handlers |
+| resolve_mode | raw input + closed action set | `turn_mode_resolution` | exact code path or bounded LLM `option_id` |
+| revalidate_context | selected option + fresh committed state | `revalidated_turn_state` | state reader + command registry |
 | availability | command + retrieved facts | `turn_availability_decision` | registered code handler |
 | checks | approved check requests | `turn_check_results` | code RNG formula |
 | consequence | registered command + facts + checks | `turn_consequence_package` | registered code handler |
 | time_update | approved duration + clock | `turn_time_update` | time domain formula |
+| body_update | approved body effect + committed state | `turn_body_update` | body-state owner |
 | hidden_update | approved consequence | `turn_hidden_update` | code projection |
 | visible_projection | facts + approved changes | `visible_context_package` | semantic projector + security gate |
-| narration | visible package only | `turn_narration_result` | narrator + audit |
 | persistence_plan | approved artifacts + command handler | sealed `party_turn_write_plan` | code planner with logical target allowlist |
 | commit | in-process code-owned write plan | `turn_commit_result` | party-store physical mapping + idempotency |
+| persisted_visible_projection | commit identity | committed visible context | persisted-visible reader |
+| narration | persisted visible package only | `turn_narration_result` | narrator + audit |
 | screen_projection | visible context + prose | public read model | presentation projection |
 
 ## Forbidden shortcuts

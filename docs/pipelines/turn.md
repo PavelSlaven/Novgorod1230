@@ -11,19 +11,22 @@ authoritative read or fallback.
 ## Этапы
 
 1. `normalize_intent` — сохраняет слова игрока как намерение, а не факт мира.
-2. `resolve_mode` — code-owned command registry фильтрует зарегистрированные команды; при нескольких допустимых вариантах LLM выбирает только `option_id` через bounded decision protocol.
-3. `load_context` — читает состояние через `PartyStateReader`.
-4. `availability` — зарегистрированный code handler проверяет доступность по загруженному состоянию.
-5. `checks` — выполняет только явно запрошенные проверки через `RandomSource`.
-6. `consequence` — зарегистрированный code handler вычисляет последствия либо возвращает repair request.
-7. `time_update` — применяет утверждённую длительность к формуле времени.
-8. `hidden_update` — код применяет утверждённое consequence к immutable candidate post-change state.
-9. `visible_projection` — code-owned projection строит player-safe candidate.
-10. `hidden_leak_validation` — отклоняет unsafe candidate до write plan.
-11. `persistence_plan` — код строит и in-process запечатывает логический write plan из allowlist targets, включая safe package и presentation-pending metadata.
-12. `commit` — game-server одной PostgreSQL-транзакцией сохраняет facts, visible package и pending metadata.
-13. `narration` — после commit читает только persisted package и создаёт prose, но не facts.
-14. `screen_projection` — строит versioned `TurnScreen` из persisted package и narration.
+2. `load_context` — читает committed state через `PartyStateReader`.
+3. `available_actions` — строит полный закрытый player-safe набор доступных действий без raw text.
+4. `resolve_mode` — exact fast path либо bounded semantic resolver возвращает только точный `option_id` или typed unknown.
+5. `revalidate_context` — повторно читает committed state, перестраивает набор и отклоняет stale state/option до RNG.
+6. `availability` — зарегистрированный code handler повторно проверяет доступность выбранного действия.
+7. `checks` — выполняет только явно запрошенные проверки через `RandomSource`.
+8. `consequence` — зарегистрированный code handler вычисляет последствия либо возвращает repair request.
+9. `time_update` — применяет утверждённую длительность через владельца времени.
+10. `body_update` — применяет утверждённый body-effect к revalidated state.
+11. `hidden_update` — код применяет утверждённое consequence к immutable candidate post-change state.
+12. `visible_projection` — code-owned projection и security gate строят player-safe candidate.
+13. `persistence_plan` — код строит и in-process запечатывает логический write plan из allowlist targets.
+14. `commit` — game-server одной PostgreSQL-транзакцией сохраняет facts, visible package и pending metadata.
+15. `persisted_visible_projection` — повторно читает уже committed player-safe package.
+16. `narration` — получает только persisted package и создаёт prose, но не facts.
+17. `screen_projection` — строит versioned `TurnScreen` из persisted package и narration.
 
 ## Результат
 
@@ -31,7 +34,7 @@ authoritative read or fallback.
 
 ## Ports
 
-State reader, code-owned command registry, visible projector, narrator, party store, materializer, random source и screen projector передаются явно. Bounded decision executor, secret и expiry нужны только при неоднозначном закрытом наборе команд.
+State reader, code-owned command registry, visible projector, narrator, party store, materializer, random source и screen projector передаются явно. Для semantic resolver нужны exact decision identity, secret и expiry; после его ответа state reader вызывается повторно до RNG.
 
 Reload/turn получает item/container catalog только из persisted
 `party_catalog_pins` и exact historical import через `@rus/runtime-catalog`.

@@ -306,7 +306,7 @@ test('exact trace replay bypasses changed publication and materializer', async (
   assert.equal(f.repository.sessions.size, 1);
 });
 
-test('restart reads persisted trace screen and gameplay remains blocked', async () => {
+test('restart reads persisted trace screen and requires the Phase 2 dependency', async () => {
   const f = fixture();
   const first = createRuntime(f);
   const started = await first.startNewGame({
@@ -325,7 +325,7 @@ test('restart reads persisted trace screen and gameplay remains blocked', async 
     () => restarted.submitTurn(started.party_id, {
       raw_text: 'Осматриваюсь'
     }),
-    { code: 'TRACE_GAMEPLAY_NOT_AVAILABLE' }
+    { code: 'TRACE_PHASE_2_DEPENDENCY_MISSING' }
   );
   const session = f.repository.sessions.get(started.party_id);
   assert.equal(session.turn_number, 0);

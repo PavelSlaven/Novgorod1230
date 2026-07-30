@@ -148,7 +148,7 @@ function modularServices() {
     stateReader: {
       async read() {
         return {
-          party_state: { party_id: 'party-shadow' },
+          party_state: { party_id: 'party-shadow', state_version: 0 },
           current_position: { region_id: 'region-novgorod', place_id: 'place-gate' },
           clock_weather_light: { clock: { day: 1, hour: 9, minute: 0 }, weather: {}, light: {} },
           visible_context: visibleContext(),
@@ -175,6 +175,10 @@ function modularServices() {
       }
     },
     visibleProjector: { async project() { return visibleContext(); } },
+    persistedVisibleReader: { async read() { return visibleContext(); } },
+    semanticResolver: async () => ({ status: 'unknown' }),
+    decisionSecret: 'shadow-turn-secret',
+    decisionExpiresAt: '2030-01-01T00:05:00.000Z',
     narrator: { async run(request) { return approvedNarration(request.request_id); } },
     writePlanner: {
       async plan(request) {
@@ -260,7 +264,7 @@ test('legacy and modular turn routes preserve approved structural properties on 
   } finally {
     process.chdir(originalCwd);
   }
-  const modular = await runTurnWorkflow({ party_id: 'party-shadow', turn_number: 1, raw_text: RAW_TEXT, received_at: NOW }, modularServices(), { now: NOW, requestId: 'shadow-turn-1' });
+  const modular = await runTurnWorkflow({ party_id: 'party-shadow', turn_number: 1, request_id: 'shadow-turn-1', idempotency_key: 'shadow-turn-1', raw_text: RAW_TEXT, received_at: NOW }, modularServices(), { now: NOW, requestId: 'shadow-turn-1' });
   const comparison = compareStructuralObservations(normalizeLegacy(legacy), normalizeModular(modular));
   assert.equal(comparison.equivalent, true, JSON.stringify(comparison.differences, null, 2));
 });

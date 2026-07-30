@@ -14,6 +14,8 @@ export function validatePlayerTurnInput(value) {
   if (!plain(value)) return fail('player turn input must be an object');
   requiredText(errors, value.party_id, 'party_id');
   requiredText(errors, value.raw_text, 'raw_text');
+  requiredText(errors, value.request_id, 'request_id');
+  requiredText(errors, value.idempotency_key, 'idempotency_key');
   integer(errors, value.turn_number, 'turn_number', 1);
   if (value.schema !== 'player_turn_input') errors.push('schema must be player_turn_input');
   if (value.contract !== 'intent_not_fact') errors.push('contract must be intent_not_fact');

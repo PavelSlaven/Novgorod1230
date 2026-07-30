@@ -307,7 +307,7 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     () => restarted.runtime.submitTurn(partyId, {
       raw_text: 'Осматриваюсь'
     }),
-    { code: 'TRACE_GAMEPLAY_NOT_AVAILABLE' }
+    { code: 'TRACE_PHASE_2_DEPENDENCY_MISSING' }
   );
   assert.equal(
     (await pool.query(

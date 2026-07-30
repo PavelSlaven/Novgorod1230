@@ -27,6 +27,9 @@ import {
   startLowerDvinaTrace
 } from './lower-dvina-trace-public-start.js';
 import {
+  replayExistingLowerDvinaTraceStart
+} from './lower-dvina-trace-start-replay.js';
+import {
   isLowerDvinaTraceSession,
   TRACE_SCENARIO_ID,
   validateLowerDvinaTraceSessionRead
@@ -43,6 +46,7 @@ export function createFirstPlayablePublicRuntime({
   now = () => new Date().toISOString(),
   idFactory = randomUUID,
   traceStartAdapter = null,
+  traceTurnRuntime = null,
   publicationLoader = loadLowerDvinaTracePhase1BPublication,
   traceOpeningProjector = buildLowerDvinaTraceOpeningScreen,
   partyRepository = null
@@ -87,6 +91,12 @@ export function createFirstPlayablePublicRuntime({
       const session = await repository.loadSession(partyId);
       if (isLowerDvinaTraceSession(session)) {
         validateLowerDvinaTraceSessionRead({ partyId, session });
+        if (Number(session.turn_number) > 0) {
+          await traceTurnRuntime?.validateSessionRead?.({
+            partyId,
+            session
+          });
+        }
       }
       return {
         party_id: partyId,
@@ -98,11 +108,20 @@ export function createFirstPlayablePublicRuntime({
       const session = await repository.loadSession(partyId);
       if (isLowerDvinaTraceSession(session)) {
         validateLowerDvinaTraceSessionRead({ partyId, session });
-        throw serverError(
-          'TRACE_GAMEPLAY_NOT_AVAILABLE',
-          'Игровой ход сценария будет подключён в следующей фазе.',
-          { status: 409 }
-        );
+        if (typeof traceTurnRuntime?.submitTurn !== 'function') {
+          throw serverError(
+            'TRACE_PHASE_2_DEPENDENCY_MISSING',
+            'Игровой ход требует настроенный runtime фазы 2.',
+            { status: 503 }
+          );
+        }
+        if (Number(session.turn_number) > 0) {
+          await traceTurnRuntime.validateSessionRead?.({
+            partyId,
+            session
+          });
+        }
+        return traceTurnRuntime.submitTurn({ partyId, input, session });
       }
       return submitFirstPlayableTurn({
         partyId,
@@ -221,35 +240,6 @@ async function startNewGame({
       screen_digest: hash(json(persisted.screen)),
       status: 'sent',
       awaiting_client_ack: true
-    }
-  };
-}
-
-async function replayExistingLowerDvinaTraceStart({
-  partyId,
-  requestId,
-  repository
-}) {
-  let session;
-  try {
-    session = await repository.loadSession(partyId);
-  } catch (error) {
-    if (error?.code === 'PARTY_NOT_FOUND') return null;
-    throw error;
-  }
-  validateLowerDvinaTraceSessionRead({ partyId, session });
-  return {
-    request_id: requestId,
-    party_id: partyId,
-    screen: session.screen,
-    delivery: {
-      delivery_attempt_id:
-        session.delivery_attempt.delivery_attempt_id,
-      message_id: session.delivery_attempt.message_id,
-      screen_digest: session.delivery_attempt.screen_digest,
-      status: session.delivery_attempt.status,
-      awaiting_client_ack:
-        session.delivery_attempt.awaiting_client_ack
     }
   };
 }

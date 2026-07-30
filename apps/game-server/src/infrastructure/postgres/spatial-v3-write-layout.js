@@ -65,6 +65,14 @@ export const TABLES = Object.freeze({
   party_npcs: { modes: ['insert'], key: ['party_id', 'npc_id'] },
   party_npc_traits: { modes: ['insert'], key: ['party_id', 'npc_id', 'trait_domain', 'category_id'] },
   party_items: { modes: ['insert'], key: ['party_id', 'item_id'] },
+  party_item_placements: {
+    modes: ['insert'],
+    key: ['party_id', 'item_id']
+  },
+  party_character_knowledge: {
+    modes: ['insert'],
+    key: ['party_id', 'character_id', 'fact_id']
+  },
   party_containers: {
     modes: ['insert', 'update'],
     key: ['party_id', 'container_id'],
@@ -153,7 +161,9 @@ export const validIdentity = (write) => write?.target_table === 'entity_placemen
                               : write?.target_table === 'party_actor_npc_interaction_summaries' ? write.record?.summary_id === write.id
                                 : write?.target_table === 'party_npcs' ? write.record?.npc_id === write.id
                                   : write?.target_table === 'party_npc_traits' ? write.id === `${write.record?.npc_id}:${write.record?.trait_domain}:${write.record?.category_id}`
-                                    : write?.target_table === 'party_items' ? write.record?.item_id === write.id
+                                  : write?.target_table === 'party_items' ? write.record?.item_id === write.id
+                                    : write?.target_table === 'party_item_placements' ? write.record?.item_id === write.id
+                                      : write?.target_table === 'party_character_knowledge' ? write.id === `${write.record?.character_id}:${write.record?.fact_id}`
                                       : write?.target_table === 'party_containers' ? write.record?.container_id === write.id
               : write?.target_table === 'party_temporal_events' ? write.record?.event_id === write.id
                 : write?.target_table === 'party_temporal_event_subjects' ? write.id === `${write.record?.event_id}:${write.record?.subject_kind}:${write.record?.subject_id}:${write.record?.subject_role}`
@@ -209,6 +219,8 @@ export function childParentKeys(write) {
       return write.record?.event_id ? [`party_runtime.party_temporal_events:${write.record.event_id}`] : [];
     case 'party_perception_witnesses':
       return [`party_runtime.party_perception_records:${write.record?.perception_id}`];
+    case 'party_item_placements':
+      return [`party_runtime.party_items:${write.record?.item_id}`];
     case 'party_perception_replay_evidence':
       return [
         `party_runtime.party_perception_records:${write.record?.perception_id}`,

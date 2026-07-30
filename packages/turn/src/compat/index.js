@@ -45,13 +45,17 @@ export function bootstrapPartyRuntimeFromWorld(world, bootstrapPayload) {
 
 export async function runPartyTurnPipeline(options = {}) {
   const runtime = options.partyRuntimeState ?? createPartyTurnRuntimeState({ partyScreenPayload: options.partyScreenPayload ?? options.bootstrapPayload });
+  const requestId = text(options.requestId)
+    || `legacy-turn:${runtime.party_id}:${Number(runtime.current_turn_number ?? 0) + 1}`;
   const result = await runTurnWorkflow({
     party_id: runtime.party_id,
     turn_number: Number(runtime.current_turn_number ?? 0) + 1,
+    request_id: requestId,
+    idempotency_key: requestId,
     raw_text: options.rawText,
     selected_action_option_id: options.selectedActionOptionId,
     routing_context: runtime.public_state
-  }, options.services ?? {}, { now: options.now, requestId: options.requestId });
+  }, options.services ?? {}, { now: options.now, requestId });
   const nextState = deepFreeze({
     ...structuredClone(runtime),
     current_turn_number: result.turn_number,

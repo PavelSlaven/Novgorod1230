@@ -193,6 +193,39 @@ test('bounded decision rejects an option not offered by code', () => {
   assert.throws(() => validateBoundedDecisionResult({ request: decision, result: { version: 2, schema: 'bounded_decision_result_v2', request_id: 'd1', state_version: 3, option_id: 'invent', command_token: 'bad' }, secret: 'secret', now: '2029-01-01T00:00:00.000Z' }), (error) => error.code === 'DECISION_OPTION_NOT_ALLOWED');
 });
 
+test('bounded decision seals and validates a singleton closed option set', () => {
+  const decision = issueBoundedDecisionRequest({
+    requestId: 'd-single',
+    partyId: 'p1',
+    actorId: 'player1',
+    policyId: 'turn_semantic_intent',
+    policyVersion: '1',
+    stateVersion: 3,
+    issuedAt: '2029-01-01T00:00:00.000Z',
+    expiresAt: '2030-01-01T00:00:00.000Z',
+    secret: 'secret',
+    options: [decisionOption('inspect', 'inspect')]
+  });
+  const validated = validateBoundedDecisionResult({
+    request: decision,
+    result: {
+      version: 2,
+      schema: 'bounded_decision_result_v2',
+      request_id: 'd-single',
+      state_version: 3,
+      option_id: 'inspect',
+      command_token: decision.options[0].command_token
+    },
+    secret: 'secret',
+    now: '2029-01-01T00:00:00.000Z',
+    currentPolicyVersion: '1',
+    currentState: {},
+    evaluatePrecondition: () => true
+  });
+  assert.equal(decision.options.length, 1);
+  assert.equal(validated.option_id, 'inspect');
+});
+
 test('bounded decision rejects prose fields and unvalidated handler output', () => {
   const decision = issueBoundedDecisionRequest({ requestId: 'd2', partyId: 'p1', actorId: 'npc1', policyId: 'pol1', policyVersion: '1', stateVersion: 3, issuedAt: '2029-01-01T00:00:00.000Z', expiresAt: '2030-01-01T00:00:00.000Z', secret: 'secret', options: [decisionOption('wait', 'wait'), decisionOption('leave', 'leave')] });
   const result = { version: 2, schema: 'bounded_decision_result_v2', request_id: 'd2', state_version: 3, option_id: 'wait', command_token: decision.options[0].command_token, prose: 'invented' };

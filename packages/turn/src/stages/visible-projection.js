@@ -2,7 +2,7 @@ import { buildSafeNarratorPackage, validateVisibleContext } from '@rus/visibilit
 import { assertValid } from '../validators.js';
 import { freezeOutput } from './shared.js';
 
-export async function buildVisibleProjectionStage({ playerInput, modeResolution, retrievedState, consequence, timeUpdate, visibleProjector }) {
+export async function buildVisibleProjectionStage({ playerInput, modeResolution, retrievedState, consequence, timeUpdate, bodyUpdate, visibleProjector }) {
   const candidate = await visibleProjector.project({
     version: 1,
     schema: 'turn_visible_projection_request',
@@ -11,6 +11,7 @@ export async function buildVisibleProjectionStage({ playerInput, modeResolution,
     retrieved_state: structuredClone(retrievedState),
     consequence: structuredClone(consequence),
     time_update: structuredClone(timeUpdate),
+    body_update: structuredClone(bodyUpdate),
     visible_seed: structuredClone(consequence.visible_seed)
   });
   assertValid('visible_context_package', validateVisibleContext(candidate));

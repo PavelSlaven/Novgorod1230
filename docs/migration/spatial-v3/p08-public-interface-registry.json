@@ -12,6 +12,13 @@
       "revision": 2,
       "path": "packages/time-events-history/src/declarative-content-contracts.v2.json",
       "digest": "6e72f137be19f77afa34aa853d9f12c0c8f3d7ce28e11c41c83ecc8ee6369a10"
+    },
+    {
+      "owner": "@rus/turn",
+      "registry_id": "rus.turn.declarative_content_contracts.v2",
+      "revision": 2,
+      "path": "packages/turn/src/declarative-content-contracts.v2.json",
+      "digest": "ad56d2f6980765e6b8e292a0dd536c2ffa4878db8af87ee972974ed495e13123"
     }
   ],
   "interfaces": [
@@ -21,6 +28,8 @@
     { "owner": "@rus/movement-routes", "entry": "@rus/movement-routes/spatial-v3", "factory": "createTraversalCommitValidator", "method": "validate" },
     { "owner": "@rus/materialization", "entry": "@rus/materialization/spatial-v3", "factory": "createTopologyProposalValidator", "method": "validate" },
     { "owner": "@rus/turn", "entry": "@rus/turn/spatial-v3", "factory": "createCombinedWritePlanBuilder", "method": "build" },
+    { "owner": "@rus/turn", "entry": "@rus/turn", "factory": "createTurnAvailableActionSet", "method": "call" },
+    { "owner": "@rus/turn", "entry": "@rus/turn", "factory": "resolveTurnSemanticIntent", "method": "call" },
     { "owner": "@rus/party-store", "entry": "@rus/party-store/spatial-v3", "factory": "createSpatialV3Repository", "method": "read" },
     { "owner": "@rus/party-store", "entry": "@rus/party-store/spatial-v3", "factory": "createCombinedWritePlanCommitter", "method": "commit" },
     { "owner": "@rus/time-events-history", "entry": "@rus/time-events-history", "factory": "normalizeGameTimestamp", "method": "call" },

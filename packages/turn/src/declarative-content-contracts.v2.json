@@ -1,0 +1,51 @@
+{
+  "schema": "rus.declarative_content_contract_registry.v1",
+  "registry_id": "rus.turn.declarative_content_contracts.v2",
+  "revision": 2,
+  "owner": "@rus/turn",
+  "status": "approved",
+  "package_version": "0.15.0",
+  "supersedes_registry_ref": {
+    "registry_id": "rus.turn.declarative_content_contracts.v1",
+    "revision": 1,
+    "path": "packages/turn/src/declarative-content-contracts.v1.json",
+    "digest": "aa4dd295998f5fde3d64cf1718e532671f524c994f6742d0c5bddb176d2e7ed7"
+  },
+  "contracts": [
+    {
+      "schema_id": "rus.trace_activity_check_consequence_profiles.v1",
+      "schema_version": 1,
+      "record_kind": "scenario_activity_check_consequence_definition",
+      "required_top_level_fields": ["set_id", "revision", "owner", "clock_owner", "rng_owner", "co_owner_contract_refs", "time_profiles", "activity_profiles", "check_profiles", "consequence_profiles", "llm_authority"],
+      "required_invariants": ["closed_semantic_option_sets", "one_clock_owner", "pinned_co_owner_contracts", "code_owned_rng", "typed_outcomes", "explicit_write_targets", "interruptible_time_boundaries"],
+      "forbidden_capabilities": ["runtime_handler", "persistence", "party_materialization", "api_publication", "ui"]
+    },
+    {
+      "schema_id": "rus.turn.semantic_intent_boundary.v1",
+      "schema_version": 1,
+      "record_kind": "committed_state_available_action_resolution",
+      "public_entrypoints": [
+        "@rus/turn:createTurnAvailableActionSet",
+        "@rus/turn:resolveTurnSemanticIntent"
+      ],
+      "required_invariants": [
+        "committed_state_before_resolution",
+        "complete_registered_action_set_without_raw_text",
+        "stable_approved_option_id",
+        "deterministic_action_set_digest",
+        "bounded_decision_membership_and_version_validation",
+        "regex_exact_fast_path_only",
+        "semantic_result_cannot_own_consequence_time_check_or_writes",
+        "factual_commit_before_narration"
+      ],
+      "forbidden_capabilities": [
+        "hidden_state_in_semantic_input",
+        "ordinal_option_id",
+        "regex_as_free_intent_owner",
+        "llm_owned_consequence",
+        "narration_in_factual_write_plan"
+      ]
+    }
+  ],
+  "scenario_specific_ids_or_counts": "forbidden"
+}

@@ -14,7 +14,8 @@
 
 ## Public API
 
-- `.`: `runTurnWorkflow`, `createTurnWorkflowContext`, `TURN_WORKFLOW_STAGE_PLAN`, contract validators/constants.
+- `.`: `runTurnWorkflow`, `createTurnWorkflowContext`, `TURN_WORKFLOW_STAGE_PLAN`, contract validators/constants, `createTurnAvailableActionSet` и `resolveTurnSemanticIntent`.
+- `createTurnAvailableActionSet({ registry, committedState, actorId, policyPins })` строит полный детерминированный player-safe набор зарегистрированных и доступных действий без raw text. `resolveTurnSemanticIntent({ rawText, actionSet, decisionNow, ... })` применяет однозначный exact fast path либо существующий bounded-decision protocol и возвращает только точный approved `option_id` или typed unknown. После асинхронного resolver code-owned `decisionNow()` проверяет expiry; exact fast path clock не вызывает. Затем workflow повторно читает committed state и отклоняет stale option до RNG.
 - `./temporal-advance`: `createTemporalAdvanceEngine`; `./temporal-carriers`: `createTemporalCarrierProposalEngine`; `./temporal-proposal-merger`: `mergeTemporalProposals`, `TemporalProposalMergeError`.
 - `createTemporalAdvanceEngine` повторно собирает candidates после каждого
   deterministic slice из последней явно возвращённой immutable working
@@ -32,11 +33,11 @@
 
 ## Формальные входы, выходы и ошибки
 
-`runTurnWorkflow` получает validated intent, immutable state projection, explicit service ports и options; target temporal engines получают exact request, pinned rules/providers, clock-owner and carrier state. Выход — frozen turn result, temporal result/proposal or one merged logical `combined_write_plan`; failures — typed `TURN_*`, `TemporalProposalMergeError` and target typed temporal/contract codes. Merge отклоняет conflicting owners, duplicate targets и inconsistent exact elapsed; orchestration не продолжает pipeline после failed gate.
+`runTurnWorkflow` получает validated intent, immutable state projection, explicit service ports и options; после semantic resolution он обязательно повторно читает committed state, перестраивает action set и лишь затем допускает RNG. Target temporal engines получают exact request, pinned rules/providers, clock-owner and carrier state. Выход — frozen turn result, temporal result/proposal or one merged logical `combined_write_plan`; failures — typed `TURN_*`, `TemporalProposalMergeError` and target typed temporal/contract codes. Merge отклоняет conflicting owners, duplicate targets и inconsistent exact elapsed; orchestration не продолжает pipeline после failed gate.
 
 ## Зависимости и side effects
 
-Зависимости: declared public packages and injected ports (`commandRegistry`, state reader, projector, narrator, party store, optional decision executor/RNG). Сам модуль не использует DB/network/LLM implicitly и не пишет PostgreSQL: commit передаётся party-store/server adapter. Narrator получает только validated safe package после factual commit boundary.
+Зависимости: declared public packages and injected ports (`commandRegistry`, state reader, semantic resolver, post-resolver `decisionNow`, persisted-visible reader, projector, narrator, party store, bounded-decision identity, optional RNG). Сам модуль не использует DB/network/LLM implicitly и не пишет PostgreSQL: commit передаётся party-store/server adapter. Порядок общего workflow фиксирован как committed state → полный action set → semantic resolution → check/consequence/time/body → factual commit → persisted safe projection → narration.
 
 ## Target / activation
 

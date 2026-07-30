@@ -30,7 +30,7 @@ function request(overrides = {}) {
   return {
     party_id: 'trace-phase-1a-unit-party',
     scenario_id: 'lower_dvina_trace_v1',
-    scenario_definition_revision: 6,
+    scenario_definition_revision: 7,
     scenario_manifest_digest: bundle.manifest_digest,
     world_revision_id: bundle.location_topology_set.spatial_source_ref.world_revision_id,
     world_catalog_digest: bundle.location_topology_set.spatial_source_ref.world_revision_catalog_digest,
@@ -68,6 +68,16 @@ test('canonical seed deterministically resolves the complete internal Phase 1A i
     assert.equal(left.immediate.items[0].template_id, 'trace_ld_v1_item_mikula_knife');
     assert.equal(left.immediate.containers.length, 0);
     assert.equal(left.immediate.body.profile_id, 'trace_ld_v1_body_start_after_crash');
+    assert.deepEqual(left.immediate.body.conditions, [
+      'wet',
+      'cold_with_possible_shivering',
+      'headache',
+      'shoulder_bruise'
+    ]);
+    assert.deepEqual(
+      left.immediate.player.dossier.body.active_states.map(({ state }) => state),
+      left.immediate.body.conditions
+    );
     assert.equal(left.immediate.environment_snapshot.environment_profile_id, 'trace_ld_v1_env_cold_wet_shore');
     assert.equal('participants' in left.immediate, false);
     assert.equal(left.sealed_selections.find((item) => item.selection_kind === 'participants').records.length, 6);
@@ -159,11 +169,11 @@ test('Phase 1A manifest binding ref is exact for path, id, revision, schema and 
   }
 });
 
-test('Phase 1A revision 6 exact-supersedes every immutable revision 5 dependency', () => {
-  assert.equal(bundle.definition_revision, 6);
-  assert.equal(bundle.phase_1a_manifest.revision, 2);
-  assert.equal(bundle.materialization_bindings.revision, 2);
-  assert.equal(bundle.body_environment_profiles.revision, 3);
+test('Phase 1A revision 7 exact-supersedes every immutable revision 6 dependency', () => {
+  assert.equal(bundle.definition_revision, 7);
+  assert.equal(bundle.phase_1a_manifest.revision, 3);
+  assert.equal(bundle.materialization_bindings.revision, 3);
+  assert.equal(bundle.body_environment_profiles.revision, 4);
   for (const [artifactKey, mutate] of [
     [
       'phase_1a_manifest',

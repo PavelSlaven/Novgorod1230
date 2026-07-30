@@ -31,16 +31,17 @@ export function createLowerDvinaTracePhase1ARepository({ query } = {}) {
         [partyId]
       );
       const position = await one('SELECT g4_id,g5_node_id,g5_anchor_id FROM party_runtime.party_positions WHERE party_id=$1', [partyId]);
-      const spatial = await one(
+      const spatialRows = (await query(
         `SELECT n.g5_node_id,n.run_id,n.parent_g4_id,n.template_id AS node_template_id,n.slot_key AS node_slot_key,
                 n.state AS node_state,
                 a.anchor_id,a.template_id AS anchor_template_id,a.slot_key AS anchor_slot_key,
                 a.npc_capacity,a.item_capacity,a.container_capacity,a.state AS anchor_state
            FROM party_runtime.party_g5_nodes n
            JOIN party_runtime.party_g5_anchors a ON a.party_id=n.party_id AND a.g5_node_id=n.g5_node_id
-          WHERE n.party_id=$1`,
+          WHERE n.party_id=$1
+          ORDER BY n.g5_node_id,a.anchor_id`,
         [partyId]
-      );
+      )).rows;
       const clock = await one(
         `SELECT whole_minutes::text,subminute_numerator::text,subminute_denominator::text,
                 clock_owner_kind,clock_owner_id,state_version,updated_change_set_id
@@ -82,19 +83,53 @@ export function createLowerDvinaTracePhase1ARepository({ query } = {}) {
           ORDER BY condition_id`,
         [partyId, player?.character_id]
       )).rows;
+      const npcs = (await query(
+        `SELECT n.npc_id,n.run_id,n.profile_set_id,n.profile_level,n.anchor_id,
+                n.identity_state,n.machine_state,n.semantic_state,
+                apb.role_ref,apb.occupation_ref,apb.skill_profile_snapshot,
+                apb.name_profile_snapshot,apb.language_profile_snapshot,
+                apb.knowledge_profile_snapshot,apb.profile_candidate_set_digest,
+                apb.state_version,apb.created_change_set_id,apb.updated_change_set_id
+           FROM party_runtime.party_npcs n
+           JOIN party_runtime.party_actor_profile_bindings apb
+             ON apb.party_id=n.party_id AND apb.actor_kind='npc' AND apb.actor_id=n.npc_id
+          WHERE n.party_id=$1
+          ORDER BY n.npc_id`,
+        [partyId]
+      )).rows;
       const counts = await one(
         `SELECT
           (SELECT count(*)::int FROM party_runtime.party_g5_nodes WHERE party_id=$1) AS node_count,
           (SELECT count(*)::int FROM party_runtime.party_g5_anchors WHERE party_id=$1) AS anchor_count,
           (SELECT count(*)::int FROM party_runtime.party_g5_edges WHERE party_id=$1) AS edge_count,
           (SELECT count(*)::int FROM party_runtime.party_npcs WHERE party_id=$1) AS npc_count,
+          (SELECT count(*)::int FROM party_runtime.party_actor_profile_bindings WHERE party_id=$1) AS profile_binding_count,
           (SELECT count(*)::int FROM party_runtime.party_containers WHERE party_id=$1) AS container_count,
           (SELECT count(*)::int FROM party_runtime.party_character_knowledge WHERE party_id=$1) AS knowledge_count,
           (SELECT count(*)::int FROM party_runtime.party_visible_read_models WHERE party_id=$1) AS visible_count`,
         [partyId]
       );
       const payload = snapshot.state_payload;
-      assertRoundTrip({ snapshot, player, position, spatial, clock, run, choices, items, conditions, counts, payload });
+      const startSpatial = spatialRows.find(
+        (value) => value.g5_node_id === payload?.immediate?.spatial?.node?.instance_id
+          && value.anchor_id === payload?.immediate?.spatial?.anchor?.instance_id
+      );
+      const preparedSpatial = spatialRows.filter((value) => value !== startSpatial);
+      assertRoundTrip({
+        snapshot,
+        player,
+        position,
+        startSpatial,
+        preparedSpatial,
+        npcs,
+        clock,
+        run,
+        choices,
+        items,
+        conditions,
+        counts,
+        payload
+      });
       return deepFreeze({
         party_id: partyId,
         request_identity: payload.request_identity,
@@ -107,6 +142,8 @@ export function createLowerDvinaTracePhase1ARepository({ query } = {}) {
         },
         body: { profile_ref: player.body_profile_ref, health: Number(player.health), energy: Number(player.energy), satiety: Number(player.satiety) },
         position,
+        prepared_scenes: payload.immediate.prepared_scenes ?? [],
+        npcs: payload.immediate.npcs ?? [],
         timestamp: {
           whole_minutes: clock.whole_minutes,
           subminute_numerator: clock.subminute_numerator,
@@ -121,9 +158,10 @@ export function createLowerDvinaTracePhase1ARepository({ query } = {}) {
         items,
         initial_snapshot_identity: { state_version: 0, state_digest: snapshot.state_digest },
         integrity: {
-          anchors_match_plan: spatial.anchor_id === payload.immediate.spatial.anchor.instance_id,
+          anchors_match_plan: startSpatial.anchor_id === payload.immediate.spatial.anchor.instance_id
+            && preparedSpatial.length === (payload.immediate.prepared_scenes ?? []).length,
           routes_match_plan: counts.edge_count === 0,
-          npcs_match_plan: counts.npc_count === 0,
+          npcs_match_plan: counts.npc_count === (payload.immediate.npcs ?? []).length,
           items_match_plan: items.length === payload.immediate.items.length,
           containers_match_plan: counts.container_count === payload.immediate.containers.length,
           knowledge_hash_matches: counts.knowledge_count === 0,
@@ -160,8 +198,24 @@ export function createLowerDvinaTracePhase1ARepository({ query } = {}) {
   });
 }
 
-function assertRoundTrip({ snapshot, player, position, spatial, clock, run, choices, items, conditions, counts, payload }) {
+function assertRoundTrip({
+  snapshot,
+  player,
+  position,
+  startSpatial,
+  preparedSpatial,
+  npcs,
+  clock,
+  run,
+  choices,
+  items,
+  conditions,
+  counts,
+  payload
+}) {
   const expectedConditions = payload?.immediate?.body?.condition_bindings ?? [];
+  const expectedPreparedScenes = payload?.immediate?.prepared_scenes ?? [];
+  const expectedNpcs = payload?.immediate?.npcs ?? [];
   const materializationEnvelope = payload ? {
     version: 1,
     schema: 'rus.lower_dvina_trace_party_materialization_result.v1',
@@ -177,19 +231,25 @@ function assertRoundTrip({ snapshot, player, position, spatial, clock, run, choi
     trace: run?.trace
   } : null;
   if (!payload || payload.schema !== 'rus.lower_dvina_trace_initial_party_snapshot.v2'
-    || !player || !position || !spatial || !clock || !run || !counts || choices.length === 0 || items.length === 0
+    || !player || !position || !startSpatial || !clock || !run || !counts || choices.length === 0 || items.length === 0
     || payload.immediate.player.instance_id !== player.character_id
     || payload.immediate.spatial.position.g4_id !== position.g4_id
-    || payload.immediate.spatial.node.instance_id !== spatial.g5_node_id
-    || payload.immediate.spatial.anchor.instance_id !== spatial.anchor_id
+    || payload.immediate.spatial.node.instance_id !== startSpatial.g5_node_id
+    || payload.immediate.spatial.anchor.instance_id !== startSpatial.anchor_id
     || payload.immediate.timestamp.whole_minutes !== clock.whole_minutes
     || payload.materialization_trace.result_digest !== run.result_digest
     || computeMaterializationEnvelopeDigest(materializationEnvelope) !== run.result_digest
     || choices.length !== payload.materialization_trace.choices.length
     || items.length !== payload.immediate.items.length
     || conditions.length !== expectedConditions.length
-    || counts.node_count !== 1 || counts.anchor_count !== 1 || counts.edge_count !== 0
-    || counts.npc_count !== 0 || counts.container_count !== payload.immediate.containers.length
+    || counts.node_count !== 1 + expectedPreparedScenes.length
+    || counts.anchor_count !== 1 + expectedPreparedScenes.length
+    || preparedSpatial.length !== expectedPreparedScenes.length
+    || counts.edge_count !== 0
+    || counts.npc_count !== expectedNpcs.length
+    || npcs.length !== expectedNpcs.length
+    || counts.profile_binding_count !== 1 + expectedNpcs.length
+    || counts.container_count !== payload.immediate.containers.length
     || counts.knowledge_count !== 0 || counts.visible_count !== 0
     || snapshot.state_digest !== sha256(payload)) {
     const error = new Error('Committed Lower Dvina trace party is partial or inconsistent.');
@@ -197,7 +257,9 @@ function assertRoundTrip({ snapshot, player, position, spatial, clock, run, choi
     throw error;
   }
   const expectedItemIds = new Set(payload.immediate.items.map((value) => value.instance_id));
+  const expectedNpcIds = new Set(expectedNpcs.map((value) => value.instance_id));
   if (items.some((value) => !expectedItemIds.has(value.item_id))
+    || npcs.some((value) => !expectedNpcIds.has(value.npc_id))
     || conditions.some((value) => value.status !== 'active'
       || !expectedConditions.some((expected) => expected.state === value.condition_profile_ref?.state))
     || sha256(run.trace) !== sha256(payload.materialization_trace)
@@ -215,12 +277,16 @@ function assertRoundTrip({ snapshot, player, position, spatial, clock, run, choi
   const actualProjection = buildActualPersistedProjection({
     player,
     position,
-    spatial,
+    startSpatial,
+    preparedSpatial,
+    npcs,
     clock,
     items,
     conditions,
     run,
-    choices
+    choices,
+    includePreparedScenes: Object.hasOwn(expectedProjection?.spatial ?? {}, 'prepared_scenes'),
+    includeNpcs: Object.hasOwn(expectedProjection ?? {}, 'npcs')
   });
   const expectedDigest = sha256(expectedProjection);
   if (expectedProjection?.schema !== 'rus.lower_dvina_trace_persisted_projection.v2'
@@ -232,7 +298,20 @@ function assertRoundTrip({ snapshot, player, position, spatial, clock, run, choi
   }
 }
 
-function buildActualPersistedProjection({ player, position, spatial, clock, items, conditions, run, choices }) {
+function buildActualPersistedProjection({
+  player,
+  position,
+  startSpatial,
+  preparedSpatial,
+  npcs,
+  clock,
+  items,
+  conditions,
+  run,
+  choices,
+  includePreparedScenes,
+  includeNpcs
+}) {
   return {
     schema: 'rus.lower_dvina_trace_persisted_projection.v2',
     materialization_run: {
@@ -297,25 +376,70 @@ function buildActualPersistedProjection({ player, position, spatial, clock, item
     })),
     spatial: {
       node: {
-        g5_node_id: spatial.g5_node_id,
-        run_id: spatial.run_id,
-        parent_g4_id: spatial.parent_g4_id,
-        template_id: spatial.node_template_id,
-        slot_key: spatial.node_slot_key,
-        state: spatial.node_state
+        g5_node_id: startSpatial.g5_node_id,
+        run_id: startSpatial.run_id,
+        parent_g4_id: startSpatial.parent_g4_id,
+        template_id: startSpatial.node_template_id,
+        slot_key: startSpatial.node_slot_key,
+        state: startSpatial.node_state
       },
       anchor: {
-        anchor_id: spatial.anchor_id,
-        g5_node_id: spatial.g5_node_id,
-        template_id: spatial.anchor_template_id,
-        slot_key: spatial.anchor_slot_key,
-        npc_capacity: spatial.npc_capacity,
-        item_capacity: spatial.item_capacity,
-        container_capacity: spatial.container_capacity,
-        state: spatial.anchor_state
+        anchor_id: startSpatial.anchor_id,
+        g5_node_id: startSpatial.g5_node_id,
+        template_id: startSpatial.anchor_template_id,
+        slot_key: startSpatial.anchor_slot_key,
+        npc_capacity: startSpatial.npc_capacity,
+        item_capacity: startSpatial.item_capacity,
+        container_capacity: startSpatial.container_capacity,
+        state: startSpatial.anchor_state
       },
-      position
+      position,
+      ...(includePreparedScenes ? {
+        prepared_scenes: preparedSpatial.map((spatial) => ({
+          location_profile_ref: spatial.node_state.location_profile_ref,
+          node: {
+            g5_node_id: spatial.g5_node_id,
+            run_id: spatial.run_id,
+            parent_g4_id: spatial.parent_g4_id,
+            template_id: spatial.node_template_id,
+            slot_key: spatial.node_slot_key,
+            state: spatial.node_state
+          },
+          anchor: {
+            anchor_id: spatial.anchor_id,
+            g5_node_id: spatial.g5_node_id,
+            template_id: spatial.anchor_template_id,
+            slot_key: spatial.anchor_slot_key,
+            npc_capacity: spatial.npc_capacity,
+            item_capacity: spatial.item_capacity,
+            container_capacity: spatial.container_capacity,
+            state: spatial.anchor_state
+          }
+        }))
+      } : {})
     },
+    ...(includeNpcs ? {
+      npcs: npcs.map((npc) => ({
+        npc_id: npc.npc_id,
+        run_id: npc.run_id,
+        profile_set_id: npc.profile_set_id,
+        profile_level: npc.profile_level,
+        anchor_id: npc.anchor_id,
+        identity_state: npc.identity_state,
+        machine_state: npc.machine_state,
+        semantic_state: npc.semantic_state,
+        role_ref: npc.role_ref,
+        occupation_ref: npc.occupation_ref,
+        skill_profile_snapshot: npc.skill_profile_snapshot,
+        name_profile_snapshot: npc.name_profile_snapshot,
+        language_profile_snapshot: npc.language_profile_snapshot,
+        knowledge_profile_snapshot: npc.knowledge_profile_snapshot,
+        profile_candidate_set_digest: npc.profile_candidate_set_digest,
+        state_version: Number(npc.state_version),
+        created_change_set_id: npc.created_change_set_id,
+        updated_change_set_id: npc.updated_change_set_id
+      }))
+    } : {}),
     items: items.map((item) => ({
       item_id: item.item_id,
       run_id: item.run_id,

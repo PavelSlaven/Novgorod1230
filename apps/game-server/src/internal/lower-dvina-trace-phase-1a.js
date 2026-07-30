@@ -75,7 +75,10 @@ async function materializeAndCommit({ request, domainCatalogPinLoader, partyData
     world_revision_id: request.world_revision_id,
     world_catalog_digest: request.world_catalog_digest
   });
-  const bundle = await loadLowerDvinaTraceMaterializationBundle({ rootDir });
+  const bundle = await loadLowerDvinaTraceMaterializationBundle({
+    rootDir,
+    scenarioDefinitionRevision: request.scenario_definition_revision
+  });
   const materialization = materializeLowerDvinaTracePartyInstance({
     ...request,
     domain_catalog_pin: domainCatalogPin,

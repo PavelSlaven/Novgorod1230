@@ -102,6 +102,81 @@ test('Phase 1A commits atomically, replays, rehydrates and isolates hidden truth
     [request.party_id]
   )).rows[0].count, 1);
 
+  const phase3Bundle = await loadLowerDvinaTraceMaterializationBundle({
+    scenarioDefinitionRevision: 8
+  });
+  const phase3Request = phase1ARequest(
+    phase3Bundle,
+    'trace-phase-3-prerequisite-postgres',
+    8
+  );
+  const phase3Commit = await materializeLowerDvinaTraceParty({
+    request: phase3Request,
+    domainCatalogPinLoader,
+    partyDatabaseSchema: schema,
+    worldBaseReferenceSnapshot: world,
+    repository,
+    stage25Ports: ports
+  });
+  assert.equal(phase3Commit.status, 'committed');
+  assert.equal((await pool.query(
+    'SELECT count(*)::int AS count FROM party_runtime.party_g5_nodes WHERE party_id=$1',
+    [phase3Request.party_id]
+  )).rows[0].count, 2);
+  assert.equal((await pool.query(
+    'SELECT count(*)::int AS count FROM party_runtime.party_g5_anchors WHERE party_id=$1',
+    [phase3Request.party_id]
+  )).rows[0].count, 2);
+  assert.equal((await pool.query(
+    'SELECT count(*)::int AS count FROM party_runtime.party_npcs WHERE party_id=$1',
+    [phase3Request.party_id]
+  )).rows[0].count, 3);
+  const phase3Rehydrated = await repository.loadInternal(phase3Request.party_id);
+  assert.equal(phase3Rehydrated.prepared_scenes.length, 1);
+  assert.equal(phase3Rehydrated.npcs.length, 3);
+  assert.equal(
+    phase3Rehydrated.npcs.every(
+      (value) => value.anchor_id === phase3Rehydrated.prepared_scenes[0].anchor.instance_id
+    ),
+    true
+  );
+  const phase3Replay = await materializeLowerDvinaTraceParty({
+    request: structuredClone(phase3Request),
+    domainCatalogPinLoader,
+    partyDatabaseSchema: schema,
+    worldBaseReferenceSnapshot: world,
+    repository,
+    stage25Ports: ports
+  });
+  assert.equal(phase3Replay.status, 'replayed');
+  assert.deepEqual(phase3Replay.instance, phase3Rehydrated);
+  assert.equal((await pool.query(
+    'SELECT count(*)::int AS count FROM party_runtime.party_g5_nodes WHERE party_id=$1',
+    [phase3Request.party_id]
+  )).rows[0].count, 2);
+  assert.equal((await pool.query(
+    'SELECT count(*)::int AS count FROM party_runtime.party_g5_anchors WHERE party_id=$1',
+    [phase3Request.party_id]
+  )).rows[0].count, 2);
+  assert.equal((await pool.query(
+    'SELECT count(*)::int AS count FROM party_runtime.party_npcs WHERE party_id=$1',
+    [phase3Request.party_id]
+  )).rows[0].count, 3);
+  await assertNormalizedMutationRejected(pool, phase3Request.party_id, {
+    label: 'prepared NPC profile',
+    sql: `UPDATE party_runtime.party_npcs
+             SET profile_set_id='forged_profile'
+           WHERE party_id=$1 AND profile_level='scene'`
+  });
+  await assertNormalizedMutationRejected(pool, phase3Request.party_id, {
+    label: 'prepared camp anchor',
+    sql: `UPDATE party_runtime.party_g5_anchors
+             SET npc_capacity=npc_capacity-1
+           WHERE party_id=$1 AND anchor_id<>(
+             SELECT g5_anchor_id FROM party_runtime.party_positions WHERE party_id=$1
+           )`
+  });
+
   const recreated = createLowerDvinaTracePhase1ARepository({ query: pool.query.bind(pool) });
   const rehydrated = await recreated.loadInternal(request.party_id);
   assert.equal(rehydrated.player.instance_id, first.instance.player.instance_id);
@@ -356,11 +431,11 @@ test('Phase 1A commits atomically, replays, rehydrates and isolates hidden truth
   }
 });
 
-function phase1ARequest(bundle, partyId) {
+function phase1ARequest(bundle, partyId, scenarioDefinitionRevision = 7) {
   return {
     party_id: partyId,
     scenario_id: 'lower_dvina_trace_v1',
-    scenario_definition_revision: 7,
+    scenario_definition_revision: scenarioDefinitionRevision,
     scenario_manifest_digest: bundle.manifest_digest,
     world_revision_id: bundle.location_topology_set.spatial_source_ref.world_revision_id,
     world_catalog_digest: bundle.location_topology_set.spatial_source_ref.world_revision_catalog_digest,
@@ -443,6 +518,7 @@ async function readSchemaSnapshot(pool) {
     'party_materialization_choices',
     'party_g5_nodes',
     'party_g5_anchors',
+    'party_npcs',
     'party_positions',
     'party_player_characters',
     'party_actor_profile_bindings',

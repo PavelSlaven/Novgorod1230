@@ -23,12 +23,16 @@ import {
 import {
   buildLowerDvinaTracePhase2CommitRechecks
 } from './lower-dvina-trace-phase-2-commit-rechecks.js';
+import { phase2LockContext } from './lower-dvina-trace-phase-2-commit-plan.js';
 import {
   commitLowerDvinaTracePhase3
 } from './lower-dvina-trace-phase-3-commit.js';
 import {
   commitLowerDvinaTracePhase4
 } from './lower-dvina-trace-phase-4-commit.js';
+import {
+  commitLowerDvinaTracePhase5
+} from './lower-dvina-trace-phase-5-commit.js';
 export async function commitLowerDvinaTracePhase2({
   partyId,
   writePlan,
@@ -36,11 +40,17 @@ export async function commitLowerDvinaTracePhase2({
   contracts,
   phase3Contracts,
   phase4Contracts,
+  phase5Contracts,
   loadState,
   committer
 }) {
   const factual = writePlan.write_targets
     .find(({ target }) => target === 'party_state')?.value;
+  if (factual?.consequence?.phase5_kind) {
+    return commitLowerDvinaTracePhase5({
+      partyId, writePlan, inputDigest, phase5Contracts, loadState, committer
+    });
+  }
   if (factual?.consequence?.phase3_kind) {
     return commitLowerDvinaTracePhase3({
       partyId,
@@ -212,7 +222,7 @@ async function buildP16Plan(input) {
     change_set: { id: changeSetId },
     visible_package_envelope: visibleEnvelope,
     approved_write_sets: [writes],
-    lock_context: lockContext(writes, state),
+    lock_context: phase2LockContext(writes, state),
     commit_rechecks: buildLowerDvinaTracePhase2CommitRechecks({
       partyId, state, factual, contracts, inputDigest
     })
@@ -250,16 +260,6 @@ function expectedVersions(partyId, state, nextBodyState) {
       `player_character:${state.actor_id}:${condition.storage_condition_id}`,
       condition.state_version
     )));
-}
-function lockContext(writes, state) {
-  return {
-    owner_keys: [`actor:${state.actor_id}`],
-    execution_keys: [],
-    g4_keys: [],
-    physical_keys: Object.values(writes).flat().map(
-      (write) => `party_runtime.${write.target_table}:${write.id}`
-    )
-  };
 }
 function mergeItems(items, clue) {
   const next = structuredClone(items);

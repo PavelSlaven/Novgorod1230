@@ -1,3 +1,5 @@
+import { addElapsedTime } from '@rus/time-events-history';
+
 function quoted(value) {
   return `"${value}"`;
 }
@@ -21,7 +23,8 @@ export async function applySealedLifecycleInsert(tx, write) {
     return insertRouteExecution(tx, write.record);
   }
   if (write.target_table === 'party_timed_activity_executions'
-      && ['completed', 'failed', 'aborted'].includes(write.record.status)) {
+      && (write.record.status !== 'active'
+        || Number(write.record.state_version) > 1)) {
     return insertActivityExecution(tx, write.record);
   }
   if (write.target_table === 'party_temporal_events'
@@ -158,6 +161,19 @@ async function insertRouteExecution(tx, terminal) {
 
 async function insertActivityExecution(tx, terminal) {
   const elapsed = terminal.original_total_minutes;
+  const targetStateVersion = Math.max(2, Number(terminal.state_version));
+  const completion =
+    terminal.activity_snapshot?.completion_model_snapshot;
+  const firstBoundary = completion?.next_recheck_at
+    ?? addElapsedTime({
+      whole_minutes: String(terminal.started_at_whole_minutes),
+      subminute_numerator:
+        String(terminal.started_at_subminute_numerator),
+      subminute_denominator:
+        String(terminal.started_at_subminute_denominator)
+    }, { exact_minutes: completion?.fixed_duration ?? {
+      numerator: String(elapsed), denominator: '1'
+    } });
   await insertRecord(tx, 'party_timed_activity_executions', {
     ...terminal,
     cumulative_elapsed_numerator: 0,
@@ -166,38 +182,64 @@ async function insertActivityExecution(tx, terminal) {
     status: 'active',
     state_version: 1,
     terminal_change_set_id: null,
-    last_processed_at_whole_minutes:
-      terminal.started_at_whole_minutes,
-    next_boundary_at_whole_minutes:
-      terminal.started_at_whole_minutes + Number(elapsed),
-    next_boundary_at_subminute_numerator: 0,
-    next_boundary_at_subminute_denominator: 1,
+    last_processed_at_whole_minutes: terminal.started_at_whole_minutes,
+    last_processed_at_subminute_numerator:
+      terminal.started_at_subminute_numerator,
+    last_processed_at_subminute_denominator:
+      terminal.started_at_subminute_denominator,
+    next_boundary_at_whole_minutes: firstBoundary.whole_minutes,
+    next_boundary_at_subminute_numerator:
+      firstBoundary.subminute_numerator,
+    next_boundary_at_subminute_denominator:
+      firstBoundary.subminute_denominator,
+    progress: terminal.progress == null ? null : {
+      ...terminal.progress,
+      current: { numerator: '0', denominator: '1' }
+    },
     terminal_reason_code: null
   });
   return async () => {
-    await tx.query(
+    const result = await tx.query(
       `UPDATE party_runtime.party_timed_activity_executions
      SET cumulative_elapsed_numerator=$2,
-         remaining_time_numerator=0,
-         next_attempt_ordinal=1,
-         status=$3,
-         state_version=2,
-         updated_change_set_id=$4,
-         terminal_change_set_id=$4,
-         last_processed_at_whole_minutes=$5,
-         next_boundary_at_whole_minutes=NULL,
-         next_boundary_at_subminute_numerator=NULL,
-         next_boundary_at_subminute_denominator=NULL,
-         terminal_reason_code=$6
+         remaining_time_numerator=$3,
+         next_attempt_ordinal=$4,
+         status=$5,
+         state_version=$6,
+         updated_change_set_id=$7,
+         terminal_change_set_id=$8,
+         last_processed_at_whole_minutes=$9,
+         last_processed_at_subminute_numerator=$10,
+         last_processed_at_subminute_denominator=$11,
+         next_boundary_at_whole_minutes=$12,
+         next_boundary_at_subminute_numerator=$13,
+         next_boundary_at_subminute_denominator=$14,
+         terminal_reason_code=$15,
+         progress=$16
      WHERE id=$1 AND status='active' AND state_version=1`,
       [
         terminal.id,
-        elapsed,
+        terminal.cumulative_elapsed_numerator,
+        terminal.remaining_time_numerator,
+        terminal.next_attempt_ordinal,
         terminal.status,
+        targetStateVersion,
         terminal.updated_change_set_id,
+        terminal.terminal_change_set_id,
         terminal.last_processed_at_whole_minutes,
-        terminal.terminal_reason_code
+        terminal.last_processed_at_subminute_numerator,
+        terminal.last_processed_at_subminute_denominator,
+        terminal.next_boundary_at_whole_minutes,
+        terminal.next_boundary_at_subminute_numerator,
+        terminal.next_boundary_at_subminute_denominator,
+        terminal.terminal_reason_code,
+        terminal.progress
       ]
     );
+    if (result.rowCount !== 1) {
+      throw Object.assign(new Error('activity lifecycle transition failed'), {
+        spatialCode: 'state_version_conflict'
+      });
+    }
   };
 }

@@ -1,7 +1,7 @@
 import { deepFreeze, sha256 } from '@rus/kernel';
 import { computeMaterializationEnvelopeDigest } from '@rus/contracts';
 
-export function createLowerDvinaTracePhase1ARepository({ query } = {}) {
+export function createLowerDvinaTracePhase1ARepository({query}={}) {
   if (typeof query !== 'function') throw new TypeError('query function is required.');
   const one = async (sql, values) => (await query(sql, values)).rows[0] ?? null;
   return Object.freeze({
@@ -147,6 +147,8 @@ export function createLowerDvinaTracePhase1ARepository({ query } = {}) {
         template_id: item.template_id,
         profile_id: item.profile_id,
         quantity: item.quantity,
+        condition_state: item.condition_state,
+        legal_status: item.legal_status,
         state: item.state,
         placement: {
           anchor_id: item.anchor_id,
@@ -206,11 +208,7 @@ export function createLowerDvinaTracePhase1ARepository({ query } = {}) {
         position,
         prepared_scenes: payload.immediate.prepared_scenes ?? [],
         npcs: payload.immediate.npcs ?? [],
-        timestamp: {
-          whole_minutes: clock.whole_minutes,
-          subminute_numerator: clock.subminute_numerator,
-          subminute_denominator: clock.subminute_denominator
-        },
+        timestamp: { whole_minutes: clock.whole_minutes, subminute_numerator: clock.subminute_numerator, subminute_denominator: clock.subminute_denominator },
         environment_snapshot: payload.immediate.environment_snapshot,
         hidden_truth: payload.hidden_truth,
         sealed_selections: payload.sealed_selections,
@@ -227,8 +225,7 @@ export function createLowerDvinaTracePhase1ARepository({ query } = {}) {
           npcs_match_plan: counts.npc_count === (payload.immediate.npcs ?? []).length,
           items_match_plan: items.length === payload.immediate.items.length,
           containers_match_plan: counts.container_count === payload.immediate.containers.length,
-          knowledge_hash_matches: counts.knowledge_count === 0,
-          knowledge_counts_match: counts.knowledge_count === 0,
+          knowledge_hash_matches: counts.knowledge_count === 0, knowledge_counts_match: counts.knowledge_count === 0,
           single_current_knowledge_map: counts.knowledge_count === 0,
           visible_context_digest_matches: counts.visible_count === 0,
           narrator_prose_digest_matches: payload.immediate.narrator_output == null,
@@ -243,11 +240,7 @@ export function createLowerDvinaTracePhase1ARepository({ query } = {}) {
       if (!state) return null;
       return deepFreeze({
         party_id: state.party_id,
-        player: {
-          character_id: state.player.instance_id,
-          name: state.player.dossier.identity?.name,
-          social_status: state.player.dossier.social_status
-        },
+        player: { character_id: state.player.instance_id, name: state.player.dossier.identity?.name, social_status: state.player.dossier.social_status },
         position: state.position,
         timestamp: state.timestamp,
         body: state.body,

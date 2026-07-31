@@ -237,6 +237,47 @@ test('inventory foundation: approved actor transition moves a NPC-held quick ite
   }).errors[0].code, 'APPROVED_TRANSITION_POLICY_STATE_MISMATCH');
 });
 
+test('inventory foundation: an applied bandage may be worn without an equipment slot', () => {
+  const input = state({
+    strength: undefined,
+    items: [{ item_id: 'bandage-1', template_id: 'pouch', quantity: 1,
+      condition_state: 'clean_serviceable', state: {} }],
+    item_placements: [{ item_id: 'bandage-1', holder_npc_id: 'eremey', physical_position: 'worn_quick' }],
+    ownership: [{ item_id: 'bandage-1', owner_npc_id: 'eremey', controller_npc_id: 'eremey' }],
+    source: { actor_id: 'eremey', actor_kind: 'npc', controller_actor_id: 'eremey', physical_position: 'worn_quick', accessibility: 'quick', condition_state: 'clean_serviceable' },
+    destination: { actor_id: 'onisim', actor_kind: 'npc', controller_actor_id: 'onisim', physical_position: 'worn', accessibility: 'applied_not_available_as_resource', condition_state: 'applied_bandage', use_state: 'bound_to_injured_leg' },
+    approved_transition: {
+      transition_profile_id: 'bandage-applied',
+      subject_ref: 'pouch',
+      owner_change: 'forbidden',
+      requires: { owner_ref: 'eremey_slot', holder_ref: 'eremey_slot', controller_ref: 'eremey_slot', physical_position: 'worn_quick', accessibility: 'quick', condition_state: 'clean_serviceable', admission_fact: 'final-stage' },
+      writes: { holder_ref: 'onisim_slot', controller_ref: 'onisim_slot', physical_position: 'worn', accessibility: 'applied_not_available_as_resource', condition_state: 'applied_bandage', use_state: 'bound_to_injured_leg' }
+    },
+    resolved_actor_refs: { eremey_slot: 'eremey', onisim_slot: 'onisim' },
+    approved_facts: ['final-stage'],
+    item_id: 'bandage-1',
+    expected_state_version: 4
+  });
+  const planned = planApprovedActorItemTransition(input);
+  assert.equal(planned.pass, true);
+  assert.deepEqual(planned.proposal.placement, { instance_kind: 'item', party_id: partyId, item_id: 'bandage-1', holder_npc_id: 'onisim', physical_position: 'worn' });
+  assert.deepEqual(planned.proposal.item_state, {
+    item_id: 'bandage-1',
+    condition_state: 'applied_bandage',
+    use_state: 'bound_to_injured_leg'
+  });
+  assert.equal(validateInventoryTopology({
+    ...input,
+    actor_id: 'onisim',
+    item_placements: [{ item_id: 'bandage-1', holder_character_id: 'onisim', physical_position: 'worn' }]
+  }).pass, true);
+  assert.equal(validateInventoryTopology({
+    ...input,
+    actor_id: 'onisim',
+    item_placements: [{ item_id: 'bandage-1', holder_character_id: 'onisim', physical_position: 'equipped' }]
+  }).errors[0].code, 'INVENTORY_EQUIPMENT_SLOT_REQUIRED');
+});
+
 test('inventory foundation: approved actor transition rejects missing destination, incorrect source and inferred placement', () => {
   const base = state({
     actor_strengths: { source: 10, destination: 10 },

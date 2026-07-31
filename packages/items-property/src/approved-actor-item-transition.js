@@ -42,6 +42,10 @@ export function planApprovedActorItemTransition(input = {}) {
 
   const ownership = list(input.ownership).find((value) => value?.item_id === itemId);
   if (!ownership || controllerId(ownership) !== source.controller_actor_id) return failed('APPROVED_TRANSITION_SOURCE_OWNERSHIP_MISMATCH', 'property', { item_id: itemId });
+  if (transition.requires?.owner_ref != null
+      && ownerId(ownership) !== input.resolved_actor_refs?.[transition.requires.owner_ref]) {
+    return failed('APPROVED_TRANSITION_SOURCE_OWNER_MISMATCH', 'property', { item_id: itemId });
+  }
   const access = resolveInventoryAccess({ ...normalizedInput, actor_id: source.actor_id, item_id: itemId });
   if (!access.pass || access.access?.tier !== source.accessibility) return failed('APPROVED_TRANSITION_SOURCE_ACCESS_MISMATCH', 'access', { item_id: itemId, accessibility: source.accessibility });
 
@@ -77,6 +81,15 @@ export function planApprovedActorItemTransition(input = {}) {
       placement: deepFreeze({ instance_kind: 'item', ...nextPlacement }),
       ownership: deepFreeze({ item_id: itemId, owner_change: 'forbidden', previous: deepFreeze(structuredClone(ownership)), next: deepFreeze(ownershipProposal) }),
       accessibility: deepFreeze({ item_id: itemId, actor_id: destination.actor_id, value: destination.accessibility }),
+      item_state: deepFreeze({
+        item_id: itemId,
+        ...(destination.condition_state != null
+          ? { condition_state: destination.condition_state }
+          : {}),
+        ...(destination.use_state != null
+          ? { use_state: destination.use_state }
+          : {})
+      }),
       property_history: deepFreeze({ item_id: itemId, transition_profile_id: transition.transition_profile_id, approved_facts: deepFreeze([...list(input.approved_facts)]), source: deepFreeze(structuredClone(source)), destination: deepFreeze(structuredClone(destination)), owner_change: 'forbidden' })
     }),
     derived_after: deepFreeze({ source: sourceInventory.derived, destination: destinationInventory.derived }),
@@ -97,10 +110,20 @@ function validateExactPolicyState({
       || source.controller_actor_id !== refs[required.controller_ref]
       || source.physical_position !== required.physical_position
       || source.accessibility !== required.accessibility
+      || (required.condition_state != null
+        && (source.condition_state !== required.condition_state
+          || item.condition_state !== required.condition_state))
+      || (required.use_state != null
+        && (source.use_state !== required.use_state
+          || item.state?.use_state !== required.use_state))
       || destination.actor_id !== refs[writes.holder_ref]
       || destination.controller_actor_id !== refs[writes.controller_ref]
       || destination.physical_position !== writes.physical_position
-      || destination.accessibility !== writes.accessibility) {
+      || destination.accessibility !== writes.accessibility
+      || (writes.condition_state != null
+        && destination.condition_state !== writes.condition_state)
+      || (writes.use_state != null
+        && destination.use_state !== writes.use_state)) {
     return issue(
       'APPROVED_TRANSITION_POLICY_STATE_MISMATCH',
       'validation',
@@ -118,13 +141,24 @@ function exactState(value) {
   const accessibility = text(value?.accessibility);
   if (!actorId || !['character', 'npc'].includes(actorKind) || !controllerActorId
     || !PHYSICAL_POSITIONS.has(position) || !accessibility) return null;
-  return {
+  const exact = {
     actor_id: actorId,
     actor_kind: actorKind,
     controller_actor_id: controllerActorId,
     physical_position: position,
     accessibility
   };
+  if (value?.condition_state != null) {
+    const conditionState = text(value.condition_state);
+    if (!conditionState) return null;
+    exact.condition_state = conditionState;
+  }
+  if (value?.use_state != null) {
+    const useState = text(value.use_state);
+    if (!useState) return null;
+    exact.use_state = useState;
+  }
+  return exact;
 }
 function approvedFactsPresent(required, actual) {
   const facts = new Set(list(actual).map(text).filter(Boolean));
@@ -156,6 +190,7 @@ function validateActorInventory(input, actorId) {
   return { pass: true, derived: deepFreeze({ total_mass_grams: mass.total_mass_grams, hands_used: hands.hands_used, hands_free: hands.hands_free, load_category: load.load_category }) };
 }
 function controllerId(value) { return text(value?.controller_actor_id ?? value?.controller_character_id ?? value?.controller_npc_id); }
+function ownerId(value) { return text(value?.owner_actor_id ?? value?.owner_character_id ?? value?.owner_npc_id); }
 function withController(ownership, actorId) {
   const next = structuredClone(ownership);
   const field = next.controller_npc_id != null ? 'controller_npc_id' : next.controller_character_id != null ? 'controller_character_id' : 'controller_actor_id';

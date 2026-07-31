@@ -17,6 +17,10 @@ import { createTracePhase3Commands } from './lower-dvina-trace-phase-3-command.j
 import { createTracePhase4Commands } from './lower-dvina-trace-phase-4-command.js';
 import { resolveTracePhase4Contracts } from
   './lower-dvina-trace-phase-4-contracts.js';
+import { createTracePhase5Command } from
+  './lower-dvina-trace-phase-5-command.js';
+import { resolveTracePhase5Contracts } from
+  './lower-dvina-trace-phase-5-contracts.js';
 import {
   committedTraceScenarioDefinitionRevision
 } from './lower-dvina-trace-committed-revision.js';
@@ -97,11 +101,14 @@ export function createLowerDvinaTracePhase2Runtime({
         bundle,
         phase2Bundle
       });
-      const phase3Contracts = [9, 10].includes(bundle.definition_revision)
+      const phase3Contracts = [9, 10, 11].includes(bundle.definition_revision)
         ? resolveTracePhase3Contracts({ state, bundle })
         : null;
-      const phase4Contracts = bundle.definition_revision === 10
+      const phase4Contracts = [10, 11].includes(bundle.definition_revision)
         ? resolveTracePhase4Contracts({ state, bundle })
+        : null;
+      const phase5Contracts = bundle.definition_revision === 11
+        ? resolveTracePhase5Contracts({ state, bundle })
         : null;
       const registry = createTurnCommandRegistry([
         createTracePhase2InspectionCommand({ contracts, inputDigest }),
@@ -113,7 +120,11 @@ export function createLowerDvinaTracePhase2Runtime({
           contracts: phase4Contracts,
           inputDigest,
           selectNpcDecision: npcDecisionSelector
-        }) : [])
+        }) : []),
+        ...(phase5Contracts ? [createTracePhase5Command({
+          contracts: phase5Contracts,
+          inputDigest
+        })] : [])
       ]);
       const issuedAt = now();
       const result = await runTurnWorkflow({
@@ -130,7 +141,8 @@ export function createLowerDvinaTracePhase2Runtime({
           policy_pins: [
             contracts.activityPin,
             ...(phase3Contracts?.activityPins ?? []),
-            ...(phase4Contracts?.activityPins ?? [])
+            ...(phase4Contracts?.activityPins ?? []),
+            ...(phase5Contracts?.activityPins ?? [])
           ]
         }
       }, buildLowerDvinaTracePhase2Services({
@@ -143,6 +155,7 @@ export function createLowerDvinaTracePhase2Runtime({
         contracts,
         phase3Contracts,
         phase4Contracts,
+        phase5Contracts,
         registry,
         repository,
         semanticResolver,

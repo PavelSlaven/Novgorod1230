@@ -78,7 +78,8 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   const partyFiles = (await readdir('schemas/party-db'))
     .filter((value) => /^\d+.*\.sql$/u.test(value)).sort();
   for (const file of partyFiles.filter((value) =>
-    !value.startsWith('012_') && !value.startsWith('013_'))) {
+    !value.startsWith('012_') && !value.startsWith('013_')
+      && !value.startsWith('014_'))) {
     await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
   }
   assert.equal(
@@ -91,6 +92,10 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   ));
   await pool.query(await readFile(
     'schemas/party-db/013_party_runtime_obligations.sql',
+    'utf8'
+  ));
+  await pool.query(await readFile(
+    'schemas/party-db/014_party_runtime_activity_resume_terminal.sql',
     'utf8'
   ));
   await installWorldLineage(pool);

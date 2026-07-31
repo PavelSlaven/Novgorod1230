@@ -126,4 +126,59 @@ export function appendPhase4Movement({
     idemId,
     contracts
   });
+  if (contracts.resourceArrivalBinding != null) {
+    appendPhase5ArrivalResources({ inserts, state, next, partyId });
+  }
+}
+
+function appendPhase5ArrivalResources({ inserts, state, next, partyId }) {
+  const templates = new Set([
+    'trace_ld_v1_item_fishing_net',
+    'trace_ld_v1_item_carry_poles',
+    'trace_ld_v1_item_eremey_drinking_water_vessel'
+  ]);
+  if (state.items.some(({ template_id: id }) => templates.has(id))) {
+    throw new Error('TRACE_PHASE_5_RESOURCE_ALREADY_MATERIALIZED');
+  }
+  const items = next.items.filter(({ template_id: id }) => templates.has(id));
+  if (items.length !== templates.size) {
+    throw new Error('TRACE_PHASE_5_RESOURCE_ARRIVAL_WRITE_INCOMPLETE');
+  }
+  for (const item of items) {
+    inserts.push(row('party_items', item.item_id, {
+      party_id: partyId,
+      item_id: item.item_id,
+      run_id: state.materialization_trace.run_id,
+      template_id: item.template_id,
+      profile_id: item.profile_id,
+      category_id: item.category_id,
+      quantity: item.quantity,
+      condition_state: item.condition_state,
+      legal_status: item.legal_status,
+      state: item.state
+    }));
+    inserts.push(row('party_item_placements', item.item_id, {
+      party_id: partyId,
+      item_id: item.item_id,
+      anchor_id: null,
+      container_id: null,
+      holder_npc_id: item.placement.holder_npc_id,
+      holder_character_id: null,
+      physical_position: item.placement.physical_position,
+      equipment_slot_category_id: null
+    }));
+    inserts.push(row('party_ownership', item.ownership.ownership_id, {
+      party_id: partyId,
+      ownership_id: item.ownership.ownership_id,
+      item_id: item.item_id,
+      container_id: null,
+      owner_npc_id: item.ownership.owner_npc_id,
+      owner_character_id: null,
+      owner_party: false,
+      owner_external_ref: null,
+      controller_npc_id: item.ownership.controller_npc_id,
+      controller_character_id: null,
+      claim_state: item.ownership.claim_state
+    }));
+  }
 }

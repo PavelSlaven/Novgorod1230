@@ -6,12 +6,19 @@ import { tracePhase3PreconditionSatisfied } from './lower-dvina-trace-phase-3-co
 import { createTracePhase3TemporalAdvance, createTracePhase3VisibleProjector } from './lower-dvina-trace-phase-3-effects.js';
 import { tracePhase4PreconditionSatisfied } from './lower-dvina-trace-phase-4-command.js';
 import { createTracePhase4TemporalAdvance, createTracePhase4VisibleProjector } from './lower-dvina-trace-phase-4-effects.js';
+import { tracePhase5PreconditionSatisfied } from './lower-dvina-trace-phase-5-command.js';
+import {
+  createTracePhase5BodyEffect,
+  createTracePhase5TemporalAdvance,
+  createTracePhase5VisibleProjector
+} from './lower-dvina-trace-phase-5-effects.js';
 
 export function buildLowerDvinaTracePhase2Services(context) {
   const {
     partyId, requestId, idempotencyKey, inputDigest, issuedAt,
     state, contracts, registry, repository, semanticResolver,
-    narrator, randomSourceFactory, decisionSecret, phase3Contracts, phase4Contracts
+    narrator, randomSourceFactory, decisionSecret, phase3Contracts,
+    phase4Contracts, phase5Contracts
   } = context;
   const randomSource = randomSourceFactory({
     party_id: partyId,
@@ -48,21 +55,35 @@ export function buildLowerDvinaTracePhase2Services(context) {
           precondition, committedState, phase3Contracts
         )) || (phase4Contracts != null && tracePhase4PreconditionSatisfied(
           precondition, committedState, phase4Contracts
+        )) || (phase5Contracts != null && tracePhase5PreconditionSatisfied(
+          precondition, committedState, phase5Contracts
         ));
     },
     randomSource,
-    temporalAdvance: createTracePhase4TemporalAdvance({ phase3Advance: createTracePhase3TemporalAdvance({
-      phase2Advance: createTracePhase2TemporalAdvance({ contracts })
-    }) }),
-    bodyEffect: createTracePhase2BodyEffect({ contracts }),
-    visibleProjector: createTracePhase4VisibleProjector({ phase3Projector: createTracePhase3VisibleProjector({
-      phase2Projector: createTracePhase2VisibleProjector({ contracts }),
-      contracts: phase3Contracts
-    }) }),
+    temporalAdvance: createTracePhase5TemporalAdvance({
+      phase4Advance: createTracePhase4TemporalAdvance({
+        phase3Advance: createTracePhase3TemporalAdvance({
+          phase2Advance: createTracePhase2TemporalAdvance({ contracts })
+        })
+      })
+    }),
+    bodyEffect: createTracePhase5BodyEffect({
+      phase2BodyEffect: createTracePhase2BodyEffect({ contracts }),
+      contracts: phase5Contracts
+    }),
+    visibleProjector: createTracePhase5VisibleProjector({
+      phase4Projector: createTracePhase4VisibleProjector({
+        phase3Projector: createTracePhase3VisibleProjector({
+          phase2Projector: createTracePhase2VisibleProjector({ contracts }),
+          contracts: phase3Contracts
+        })
+      })
+    }),
     partyStore: {
       commit(writePlan) {
         return repository.commitPhase2Turn({
-          partyId, writePlan, inputDigest, contracts, phase3Contracts, phase4Contracts
+          partyId, writePlan, inputDigest, contracts, phase3Contracts,
+          phase4Contracts, phase5Contracts
         });
       }
     },

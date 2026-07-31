@@ -50,9 +50,25 @@ async function apply(tx, write, mode, expectedStateVersion = null, sealedPlan = 
     }
     const expected = expectedStateVersion;
     if (!Number.isInteger(expected) || expected < 0) throw Object.assign(new Error('update lacks expected version'), { spatialCode: 'state_version_conflict' });
-    const where = spec.key.map((column, index) => `${quote(column)}=$${set.length + index + 1}`).concat(`state_version=$${set.length + spec.key.length + 1}`);
-    const params = [...set.map((column) => serializePlanValue(record[column])), ...spec.key.map((column) => record[column]), expected];
-    const result = await tx.query(`UPDATE ${table} SET ${set.map((column, index) => `${quote(column)}=$${index + 1}`).join(', ')}, state_version=state_version+1 WHERE ${where.join(' AND ')}`, params);
+    const persistsOwnerVersion =
+      write.target_table === 'party_timed_activity_executions';
+    const nextVersion = persistsOwnerVersion
+      ? Number(record.state_version) : expected + 1;
+    if (!Number.isInteger(nextVersion) || nextVersion <= expected) {
+      throw Object.assign(new Error('update has invalid next version'), {
+        spatialCode: 'state_version_conflict'
+      });
+    }
+    const where = spec.key.map((column, index) =>
+      `${quote(column)}=$${set.length + index + 2}`)
+      .concat(`state_version=$${set.length + spec.key.length + 2}`);
+    const params = [
+      ...set.map((column) => serializePlanValue(record[column])),
+      nextVersion,
+      ...spec.key.map((column) => record[column]),
+      expected
+    ];
+    const result = await tx.query(`UPDATE ${table} SET ${set.map((column, index) => `${quote(column)}=$${index + 1}`).join(', ')}, state_version=$${set.length + 1} WHERE ${where.join(' AND ')}`, params);
     if (result.rowCount !== 1) throw Object.assign(new Error('stale state version'), { spatialCode: 'state_version_conflict' });
     return;
   }

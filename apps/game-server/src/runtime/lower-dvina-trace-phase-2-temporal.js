@@ -56,7 +56,10 @@ export function inspectTracePhase2TemporalWindow({
     }
   }
 }) {
-  assertTemporalSourceProof(state.temporal_source_proof);
+  assertTemporalSourceProof(
+    state.temporal_source_proof,
+    state.temporal_boundary_candidates ?? []
+  );
   const clockAfter = addElapsedTime(clockBefore, exactElapsed);
   const candidates =
     structuredClone(state.temporal_boundary_candidates ?? []);
@@ -75,19 +78,29 @@ export function inspectTracePhase2TemporalWindow({
   };
 }
 
-function assertTemporalSourceProof(proof) {
-  if (proof?.version !== 1
-      || proof.schema
-        !== 'lower_dvina_trace_phase_2_temporal_source_proof'
-      || proof.owner
-        !== '@rus/time-events-history/temporal-boundaries'
+function assertTemporalSourceProof(proof, candidates) {
+  const legacy = proof?.version === 1
+      && proof.schema
+        === 'lower_dvina_trace_phase_2_temporal_source_proof';
+  const current = proof?.version === 2
+    && proof.schema === 'lower_dvina_trace_temporal_source_proof'
+    && proof.admission_policy
+      === 'pass_exact_candidates_to_temporal_activity_owner'
+    && Array.isArray(proof.candidates)
+    && proof.candidate_count === proof.candidates.length
+    && JSON.stringify(proof.candidates) === JSON.stringify(candidates);
+  if ((!legacy && !current)
+      || proof.owner !== '@rus/time-events-history/temporal-boundaries'
       || proof.same_time_cascade_owner
         !== '@rus/time-events-history/temporal-boundaries:resolveSameTimeCascade'
-      || proof.admission_policy
-        !== 'fail_closed_before_activity_when_unbound_candidate_exists'
-      || proof.pending_event_count !== 0
-      || proof.active_schedule_count !== 0
-      || proof.candidate_count !== 0) {
+      || !Number.isInteger(proof.pending_event_count)
+      || !Number.isInteger(proof.active_schedule_count)
+      || !Number.isInteger(proof.candidate_count)
+      || (legacy && (proof.admission_policy
+          !== 'fail_closed_before_activity_when_unbound_candidate_exists'
+        || proof.pending_event_count !== 0
+        || proof.active_schedule_count !== 0
+        || proof.candidate_count !== 0))) {
     throw temporalError('TRACE_PHASE_2_TEMPORAL_SOURCE_UNPROVEN');
   }
 }

@@ -15,7 +15,8 @@ export const TRACE_PHASE_4_IDS = Object.freeze({
 });
 
 export function resolveTracePhase4Contracts({ state, bundle }) {
-  if (bundle.definition_revision !== 10 || bundle.definition?.revision !== 10) {
+  if (![10, 11].includes(bundle.definition_revision)
+      || ![10, 11].includes(bundle.definition?.revision)) {
     gap('TRACE_PHASE_4_REVISION_MISMATCH');
   }
   const ids = TRACE_PHASE_4_IDS;
@@ -73,7 +74,8 @@ export function resolveTracePhase4Contracts({ state, bundle }) {
     'statement_effect_contract_id',
     'trace_ld_v1_statement_effect_ratsha_threat_or_bargain'
   );
-  const actors = Object.fromEntries(['eremey_fisher', 'ratsha_storehouse_helper', 'onisim_boatman']
+  const actors = Object.fromEntries(['eremey_fisher', 'ratsha_storehouse_helper',
+    'onisim_boatman', 'background_fisher_1']
     .map((ref) => [ref, actor(state, ref)]));
   const promiseInstances = state.promise_instances ?? [];
   if (promiseInstances.length !== 1) gap('TRACE_PHASE_4_PROMISE_MISSING');
@@ -86,6 +88,26 @@ export function resolveTracePhase4Contracts({ state, bundle }) {
   );
   if (fishers.length !== 1) gap('TRACE_PHASE_4_PARTICIPATING_FISHER_MISSING');
   const fisher = fishers[0];
+  const phase5Enabled = bundle.definition_revision === 11;
+  const resourceArrivalBinding = phase5Enabled
+    ? bundle.materialization_bindings?.phase_5_initial_state_binding
+      ?.phase_5_resource_arrival_binding
+    : null;
+  const itemTemplates = phase5Enabled ? Object.fromEntries([
+    ['net', 'trace_ld_v1_item_fishing_net'],
+    ['poles', 'trace_ld_v1_item_carry_poles'],
+    ['water', 'trace_ld_v1_item_eremey_drinking_water_vessel']
+  ].map(([key, id]) => [key, exact(
+    bundle.item_container_set.item_templates, 'item_template_id', id
+  )])) : null;
+  const resourceInventoryProfiles = phase5Enabled ? Object.fromEntries([
+    ['net', 'trace_ld_v1_inventory_profile_fishing_net_group_load'],
+    ['poles', 'trace_ld_v1_inventory_profile_carry_poles_group_load']
+  ].map(([key, id]) => [key, exact(
+    bundle.item_container_set.item_inventory_profiles,
+    'inventory_profile_id',
+    id
+  )])) : null;
   const audienceGroups = (state.sealed_selections ?? []).filter(
     ({ selection_kind: kind }) => kind === 'audience'
   );
@@ -176,7 +198,14 @@ export function resolveTracePhase4Contracts({ state, bundle }) {
         !== 'materialized_present_audience_only'
       || !['objective_truth', 'confession', 'hidden_truth',
         'completion_state'].every((target) =>
-        threatEffect.forbidden_write_targets.includes(target))) {
+        threatEffect.forbidden_write_targets.includes(target))
+      || (phase5Enabled && !['net', 'poles'].every((key) => {
+        const profile = resourceInventoryProfiles[key];
+        return profile.mass_grams === 2500
+          && profile.carry_form === 'long'
+          && profile.external_hand_cost === 1
+          && profile.status === 'approved';
+      }))) {
     gap('TRACE_PHASE_4_APPROVED_CHAIN_INVALID');
   }
   return Object.freeze({ ids, routeActivity, negotiation, check, route,
@@ -185,6 +214,9 @@ export function resolveTracePhase4Contracts({ state, bundle }) {
     sourceEndpoint, destinationEndpoint, access, capacity, npcPolicy,
     observation, confessionStatement, confessionEffect, threatEffect,
     knifeTransition, promisePolicy: structuredClone(bundle.promise_policy),
+    resourceArrivalBinding: structuredClone(resourceArrivalBinding),
+    itemTemplates: structuredClone(itemTemplates),
+    resourceInventoryProfiles: structuredClone(resourceInventoryProfiles),
     npcExecutions: structuredClone(npcExecutions),
     anchors: {
       camp: preparedCamp.anchor.instance_id,

@@ -20,6 +20,7 @@ import { loadTracePhase2TemporalSourceProof } from './lower-dvina-trace-phase-2-
 import { assertPhase2PresentationAdmission } from './lower-dvina-trace-phase-2-presentation-admission.js';
 import { assertPhase3NormalizedRows } from './lower-dvina-trace-phase-3-read.js';
 import { assertPhase4NormalizedRows } from './lower-dvina-trace-phase-4-read.js';
+import { assertPhase5NormalizedRows } from './lower-dvina-trace-phase-5-read.js';
 export function createLowerDvinaTracePhase2PostgresRepository({
   partyPool,
   committer
@@ -100,6 +101,7 @@ export function createLowerDvinaTracePhase2PostgresRepository({
     if (payload.schema === 'rus.lower_dvina_trace_turn_snapshot.v2') {
       await assertPhase3NormalizedRows(partyPool, payload, row);
       await assertPhase4NormalizedRows(partyPool, payload, row);
+      await assertPhase5NormalizedRows(partyPool, payload, row);
     } else {
       await assertPhase2NormalizedRows(partyPool, payload, row);
     }
@@ -109,7 +111,8 @@ export function createLowerDvinaTracePhase2PostgresRepository({
         world_revision_id: row.world_revision_id,
         world_catalog_digest: row.world_catalog_digest
       },
-      temporal_boundary_candidates: [],
+      temporal_boundary_candidates:
+        structuredClone(temporalSourceProof.candidates),
       temporal_source_proof: structuredClone(temporalSourceProof)
     };
   }

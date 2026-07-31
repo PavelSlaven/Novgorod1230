@@ -64,6 +64,8 @@ export async function loadInitialTracePhase2State({
       template_id: item.template_id,
       profile_id: item.profile_id,
       quantity: item.quantity,
+      condition_state: item.condition_state,
+      legal_status: item.legal_status,
       placement: {
         anchor_id: item.placement.anchor_id,
         container_id: item.placement.container_id,
@@ -91,7 +93,8 @@ export async function loadInitialTracePhase2State({
     },
     initial_snapshot_identity: initial.initial_snapshot_identity,
     materialization_trace: initial.materialization_trace,
-    temporal_boundary_candidates: [],
+    temporal_boundary_candidates:
+      structuredClone(temporalSourceProof.candidates),
     temporal_source_proof: structuredClone(temporalSourceProof)
   };
 }

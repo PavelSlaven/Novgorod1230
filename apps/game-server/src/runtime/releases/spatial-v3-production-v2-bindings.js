@@ -21,6 +21,7 @@ import {
 } from '../lower-dvina-trace-phase-2.js';
 import {
   createLowerDvinaTraceNarrationService,
+  createLowerDvinaTraceNpcDecisionSelector,
   createLowerDvinaTraceSemanticResolver
 } from '../lower-dvina-trace-phase-2-llm.js';
 import {
@@ -190,6 +191,8 @@ function createTraceTurnRuntime({ partyPool, committer, env, config }) {
     }),
     semanticResolver:
       createLowerDvinaTraceSemanticResolver({ roleRunner }),
+    npcDecisionSelector:
+      createLowerDvinaTraceNpcDecisionSelector({ roleRunner }),
     narrator: createLowerDvinaTracePhase2DurableNarrator({
       partyPool,
       narrationService

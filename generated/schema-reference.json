@@ -930,6 +930,12 @@
       "type": "sql"
     },
     {
+      "bytes": 6235,
+      "path": "schemas/party-db/013_party_runtime_obligations.sql",
+      "sha256": "668f982f6f7772038700030c90dfdee89b6ff450dac7fac271d77e5cc8cb8786",
+      "type": "sql"
+    },
+    {
       "bytes": 18438,
       "path": "schemas/runtime-catalog/runtime-catalog-artifacts-v2.schema.json",
       "sha256": "2d8e9167f701e193b2e2eb03c162e4b8228cb2c46cea7cc26368de4304a3ed40",

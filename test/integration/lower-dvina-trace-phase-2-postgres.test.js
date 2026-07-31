@@ -215,7 +215,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     opened.party_id), 1);
   assert.equal(await count(pool, 'party_runtime.party_items',
-    opened.party_id), 2);
+    opened.party_id), 3);
   assert.equal((await pool.query(
     `SELECT count(*)::int AS count
        FROM party_runtime.party_narration_attempts attempts
@@ -232,7 +232,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   )).rows[0].state_payload;
   assert.equal('relevant_hidden_state' in firstSnapshot, false);
   assert.equal(
-    JSON.stringify(firstSnapshot).includes('approved_hidden_truth'),
+    containsObjectKey(firstSnapshot, 'hidden_truth'),
     false
   );
   assert.equal(
@@ -248,7 +248,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     opened.party_id), 1);
   assert.equal(await count(pool, 'party_runtime.party_items',
-    opened.party_id), 2);
+    opened.party_id), 3);
 
   await assertResealedSnapshotTamper(pool, restarted, opened.party_id,
     (snapshot) => {
@@ -310,7 +310,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   assert.equal(await count(pool, 'party_runtime.party_body_temporal_history',
     opened.party_id), 2);
   assert.equal(await count(pool, 'party_runtime.party_items',
-    opened.party_id), 2);
+    opened.party_id), 3);
   const attempts = (await pool.query(
     `SELECT effect_ref->>'activity_attempt_id' AS activity_attempt_id
        FROM party_runtime.party_body_temporal_history
@@ -326,7 +326,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     opened.party_id), 2);
   assert.equal(await count(pool, 'party_runtime.party_items',
-    opened.party_id), 2);
+    opened.party_id), 3);
 
   let failureRolls = 0;
   const failureRuntime = buildRuntime({
@@ -378,7 +378,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     failureParty.party_id), 1);
   assert.equal(await count(pool, 'party_runtime.party_items',
-    failureParty.party_id), 1);
+    failureParty.party_id), 2);
   assert.equal((await pool.query(
     `SELECT consequence_policy_ref->>'entity_id' AS consequence_ref
        FROM party_runtime.party_check_resolutions
@@ -878,7 +878,8 @@ async function installSchemas(pool) {
   await pool.query('SELECT 1');
   const partyFiles = (await readdir('schemas/party-db'))
     .filter((value) => /^\d+.*\.sql$/u.test(value)).sort();
-  for (const file of partyFiles.filter((value) => !value.startsWith('012_'))) {
+  for (const file of partyFiles.filter((value) =>
+    !value.startsWith('012_') && !value.startsWith('013_'))) {
     await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
   }
   assert.equal(
@@ -887,6 +888,10 @@ async function installSchemas(pool) {
   );
   await pool.query(await readFile(
     'schemas/party-db/012_party_runtime_external_ownership.sql',
+    'utf8'
+  ));
+  await pool.query(await readFile(
+    'schemas/party-db/013_party_runtime_obligations.sql',
     'utf8'
   ));
 }
@@ -914,6 +919,15 @@ async function installWorldLineage(pool) {
         'novgorod_spatial_v3_production_v2_candidate_001',
         '1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e','approved')`
   );
+}
+
+function containsObjectKey(value, forbiddenKey) {
+  if (Array.isArray(value)) {
+    return value.some((entry) => containsObjectKey(entry, forbiddenKey));
+  }
+  if (value == null || typeof value !== 'object') return false;
+  return Object.entries(value).some(([key, entry]) =>
+    key === forbiddenKey || containsObjectKey(entry, forbiddenKey));
 }
 
 async function count(pool, table, partyId, partyColumn = 'party_id') {

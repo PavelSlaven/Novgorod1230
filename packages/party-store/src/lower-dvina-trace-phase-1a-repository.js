@@ -68,7 +68,7 @@ export function createLowerDvinaTracePhase1ARepository({ query } = {}) {
         `SELECT i.item_id,i.run_id,i.template_id,i.profile_id,i.category_id,i.quantity,i.condition_state,i.legal_status,i.state,
                 ip.anchor_id,ip.container_id AS placement_container_id,ip.holder_npc_id,ip.holder_character_id,
                 ip.physical_position,ip.equipment_slot_category_id,
-                o.ownership_id,o.container_id AS ownership_container_id,o.owner_npc_id,o.owner_character_id,o.owner_party,
+                o.ownership_id,o.container_id AS ownership_container_id,o.owner_npc_id,o.owner_character_id,o.owner_party,o.owner_external_ref,
                 o.controller_npc_id,o.controller_character_id,o.claim_state
            FROM party_runtime.party_items i
            JOIN party_runtime.party_item_placements ip ON ip.party_id=i.party_id AND ip.item_id=i.item_id
@@ -97,6 +97,16 @@ export function createLowerDvinaTracePhase1ARepository({ query } = {}) {
           ORDER BY n.npc_id`,
         [partyId]
       )).rows;
+      const obligations = (await query(
+        `SELECT obligation_id,policy_ref,policy_version,promisor_ref,
+                beneficiary_ref,witness_refs,scope_snapshot,current_state,
+                current_state_fact,state_version,created_change_set_id,
+                last_change_set_id
+           FROM party_runtime.party_obligations
+          WHERE party_id=$1
+          ORDER BY obligation_id`,
+        [partyId]
+      )).rows;
       const counts = await one(
         `SELECT
           (SELECT count(*)::int FROM party_runtime.party_g5_nodes WHERE party_id=$1) AS node_count,
@@ -105,6 +115,7 @@ export function createLowerDvinaTracePhase1ARepository({ query } = {}) {
           (SELECT count(*)::int FROM party_runtime.party_npcs WHERE party_id=$1) AS npc_count,
           (SELECT count(*)::int FROM party_runtime.party_actor_profile_bindings WHERE party_id=$1) AS profile_binding_count,
           (SELECT count(*)::int FROM party_runtime.party_containers WHERE party_id=$1) AS container_count,
+          (SELECT count(*)::int FROM party_runtime.party_obligations WHERE party_id=$1) AS obligation_count,
           (SELECT count(*)::int FROM party_runtime.party_character_knowledge WHERE party_id=$1) AS knowledge_count,
           (SELECT count(*)::int FROM party_runtime.party_visible_read_models WHERE party_id=$1) AS visible_count`,
         [partyId]
@@ -126,9 +137,60 @@ export function createLowerDvinaTracePhase1ARepository({ query } = {}) {
         run,
         choices,
         items,
+        obligations,
         conditions,
         counts,
         payload
+      });
+      const normalizedItems = items.map((item) => ({
+        item_id: item.item_id,
+        template_id: item.template_id,
+        profile_id: item.profile_id,
+        quantity: item.quantity,
+        state: item.state,
+        placement: {
+          anchor_id: item.anchor_id,
+          container_id: item.placement_container_id,
+          holder_npc_id: item.holder_npc_id,
+          holder_character_id: item.holder_character_id,
+          physical_position: item.physical_position,
+          equipment_slot_category_id: item.equipment_slot_category_id
+        },
+        ownership: {
+          ownership_id: item.ownership_id,
+          owner_npc_id: item.owner_npc_id,
+          owner_character_id: item.owner_character_id,
+          owner_external_ref: item.owner_external_ref,
+          owner_party: item.owner_party,
+          controller_npc_id: item.controller_npc_id,
+          controller_character_id: item.controller_character_id,
+          claim_state: item.claim_state
+        }
+      }));
+      const normalizedObligations = obligations.map((obligation) => {
+        const sealed = (payload.immediate.promise_instances ?? []).find(
+          ({ instance_id: id }) => id === obligation.obligation_id
+        );
+        if (!sealed?.witness_slot_bindings) {
+          const error = new Error('Witness binding missing.');
+          error.code = 'LOWER_DVINA_TRACE_REHYDRATE_INCOMPLETE';
+          throw error;
+        }
+        return {
+          obligation_id: obligation.obligation_id,
+          policy_ref: obligation.policy_ref,
+          policy_version: obligation.policy_version,
+          promisor_actor_id: obligation.promisor_ref.entity_id,
+          beneficiary_actor_id: obligation.beneficiary_ref.entity_id,
+          witness_actor_ids: obligation.witness_refs.map((ref) => ref.entity_id),
+          witness_slot_bindings: structuredClone(sealed.witness_slot_bindings),
+          scope_snapshot: obligation.scope_snapshot,
+          current_state: obligation.current_state,
+          current_state_fact: obligation.current_state_fact,
+          state_version: Number(obligation.state_version),
+          created_change_set_id: obligation.created_change_set_id,
+          last_change_set_id: obligation.last_change_set_id
+        };
       });
       return deepFreeze({
         party_id: partyId,
@@ -155,7 +217,8 @@ export function createLowerDvinaTracePhase1ARepository({ query } = {}) {
         policy_profile_pins: payload.policy_profile_pins,
         materialization_trace: run.trace,
         choices,
-        items,
+        items: normalizedItems,
+        promise_instances: normalizedObligations,
         initial_snapshot_identity: { state_version: 0, state_digest: snapshot.state_digest },
         integrity: {
           anchors_match_plan: startSpatial.anchor_id === payload.immediate.spatial.anchor.instance_id
@@ -209,6 +272,7 @@ function assertRoundTrip({
   run,
   choices,
   items,
+  obligations,
   conditions,
   counts,
   payload
@@ -250,6 +314,7 @@ function assertRoundTrip({
     || npcs.length !== expectedNpcs.length
     || counts.profile_binding_count !== 1 + expectedNpcs.length
     || counts.container_count !== payload.immediate.containers.length
+    || counts.obligation_count !== (payload.immediate.promise_instances ?? []).length
     || counts.knowledge_count !== 0 || counts.visible_count !== 0
     || snapshot.state_digest !== sha256(payload)) {
     const error = new Error('Committed Lower Dvina trace party is partial or inconsistent.');
@@ -282,6 +347,7 @@ function assertRoundTrip({
     npcs,
     clock,
     items,
+    obligations,
     conditions,
     run,
     choices,
@@ -306,6 +372,7 @@ function buildActualPersistedProjection({
   npcs,
   clock,
   items,
+  obligations,
   conditions,
   run,
   choices,
@@ -464,10 +531,25 @@ function buildActualPersistedProjection({
         owner_npc_id: item.owner_npc_id,
         owner_character_id: item.owner_character_id,
         owner_party: item.owner_party,
+        owner_external_ref: item.owner_external_ref,
         controller_npc_id: item.controller_npc_id,
         controller_character_id: item.controller_character_id,
         claim_state: item.claim_state
       }
+    })),
+    obligations: obligations.map((obligation) => ({
+      obligation_id: obligation.obligation_id,
+      policy_ref: obligation.policy_ref,
+      policy_version: obligation.policy_version,
+      promisor_ref: obligation.promisor_ref,
+      beneficiary_ref: obligation.beneficiary_ref,
+      witness_refs: obligation.witness_refs,
+      scope_snapshot: obligation.scope_snapshot,
+      current_state: obligation.current_state,
+      current_state_fact: obligation.current_state_fact,
+      state_version: Number(obligation.state_version),
+      created_change_set_id: obligation.created_change_set_id,
+      last_change_set_id: obligation.last_change_set_id
     })),
     clock: {
       whole_minutes: clock.whole_minutes,

@@ -53,14 +53,14 @@ export function resolveTracePhase2Contracts({
     'placement_slot_id',
     ids.blueWoolSlot
   );
-  const pickupTransition = bundle.definition_revision === 9
+  const pickupTransition = [9, 10].includes(bundle.definition_revision)
     ? exactRecord(
         bundle.item_container_set.transition_templates,
         'transition_template_id',
         'trace_ld_v1_transition_blue_wool_pickup'
       )
     : null;
-  const inventoryProfile = bundle.definition_revision === 9
+  const inventoryProfile = [9, 10].includes(bundle.definition_revision)
     ? exactRecord(
         bundle.item_container_set.item_inventory_profiles,
         'inventory_profile_id',
@@ -115,7 +115,7 @@ export function resolveTracePhase2Contracts({
       || accessPolicy.unmaterialized_access !== 'forbidden') {
     throw dataGap('TRACE_PHASE_2_APPROVED_CHAIN_INVALID');
   }
-  if (bundle.definition_revision === 9) {
+  if ([9, 10].includes(bundle.definition_revision)) {
   assertBlueWoolPickupContract({
     item,
     placement,

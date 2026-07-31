@@ -8,6 +8,7 @@ import {
   MATERIALIZER_VERSION,
   RNG_VERSION
 } from './core.js';
+import { buildLowerDvinaTracePhase4Promise } from './lower-dvina-trace-phase-4-promise.js';
 import {
   assertLowerDvinaTraceBundle,
   assertLowerDvinaTraceRequest,
@@ -21,7 +22,8 @@ import {
 } from './lower-dvina-trace-contract.js';
 import { assertLowerDvinaTraceSelectionClosure } from './lower-dvina-trace-selection-closure.js';
 import {
-  materializeLowerDvinaTracePreparedCamp
+  materializeLowerDvinaTracePreparedCamp,
+  materializeLowerDvinaTracePreparedDryingShed
 } from './lower-dvina-trace-phase-3.js';
 import {
   buildLowerDvinaTraceSealedSelections
@@ -166,7 +168,7 @@ export function materializeLowerDvinaTracePartyInstance(input) {
   const playerId = deterministicInstanceId(input.party_id, runId, 'player_character', 'player_clerk', 0);
   const g5NodeId = deterministicInstanceId(input.party_id, runId, 'g5_node', 'trace_ld_v1_loc_wreck_shore', 0);
   const anchorId = deterministicInstanceId(input.party_id, runId, 'g5_anchor', spatialBinding.anchor_template.template_id, 0);
-  const phase3Prepared = [8, 9].includes(input.scenario_definition_revision)
+  const phase3Prepared = [8, 9, 10].includes(input.scenario_definition_revision)
     ? materializeLowerDvinaTracePreparedCamp({
       input,
       bundle,
@@ -174,6 +176,9 @@ export function materializeLowerDvinaTracePartyInstance(input) {
       participantSelections,
       locationSelections
     })
+    : null;
+  const phase4Prepared = input.scenario_definition_revision === 10
+    ? materializeLowerDvinaTracePreparedDryingShed({ input, bundle, runId, participantSelections, locationSelections })
     : null;
   const knifeTemplate = requiredById(bundle.item_container_set.item_templates, 'item_template_id', 'trace_ld_v1_item_mikula_knife');
   const knifeInventoryProfile = requiredPinnedById(
@@ -187,6 +192,41 @@ export function materializeLowerDvinaTracePartyInstance(input) {
     fail('START_ITEM_PROFILE_INCOMPLETE', 'The pinned starter-item inventory profile is incomplete or incompatible.');
   }
   const knifeId = deterministicInstanceId(input.party_id, runId, 'item', knifeTemplate.item_template_id, 0);
+  const ratshaKnifeTemplate = phase4Prepared
+    ? requiredById(bundle.item_container_set.item_templates, 'item_template_id', phase4Prepared.binding.ratsha_knife_initial_binding.item_template_ref)
+    : null;
+  const ratshaKnifeProfile = ratshaKnifeTemplate
+    ? requiredPinnedById(bundle.item_inventory_profiles, 'id', ratshaKnifeTemplate.base_catalog_ref.inventory_profile_id)
+    : null;
+  if (phase4Prepared) {
+    const binding = phase4Prepared.binding.ratsha_knife_initial_binding;
+    if (binding?.participant_slot_ref !== 'ratsha_storehouse_helper'
+      || binding.item_template_ref !== ratshaKnifeTemplate.item_template_id
+      || binding.owner_ref !== 'ratsha_storehouse_helper'
+      || binding.holder_ref !== 'ratsha_storehouse_helper'
+      || binding.controller_ref !== 'ratsha_storehouse_helper'
+      || binding.physical_position !== 'worn_quick'
+      || binding.accessibility !== 'quick'
+      || binding.inventory_profile_ref !== ratshaKnifeProfile.id
+      || binding.location_ref !== 'trace_ld_v1_loc_old_drying_shed'
+      || ratshaKnifeProfile.mass_grams !== 400
+      || ratshaKnifeProfile.carry_form !== 'compact'
+      || ratshaKnifeProfile.external_hand_cost !== 0) {
+      fail('TRACE_PHASE_4_RATSHA_KNIFE_BINDING_INVALID', 'The exact approved Ratsha knife placement is required.');
+    }
+  }
+  const phase4Promise = phase4Prepared
+    ? buildLowerDvinaTracePhase4Promise({
+      input,
+      runId,
+      bundle,
+      playerId,
+      phase3Prepared,
+      phase4Prepared,
+      participatingFisher,
+      fail
+    })
+    : null;
   const conditionBindings = body.conditions.map((state) => ({
     state,
     source_body_profile_ref: {
@@ -274,16 +314,35 @@ export function materializeLowerDvinaTracePartyInstance(input) {
         inventory_profile_snapshot: structuredClone(knifeInventoryProfile),
         source_digest: bundle.artifact_pins.item_inventory_profiles.digest
       }
-    }],
+    }, ...(phase4Prepared ? [{
+      instance_id: deterministicInstanceId(input.party_id, runId, 'item', ratshaKnifeTemplate.item_template_id, 0),
+      template_id: ratshaKnifeTemplate.item_template_id,
+      profile_id: ratshaKnifeProfile.id,
+      category_id: ratshaKnifeTemplate.semantic_category,
+      quantity: 1,
+      condition_state: 'serviceable',
+      legal_status: 'owned',
+      claim_state: 'established',
+      owner_npc_id: phase4Prepared.ratsha.instance_id,
+      holder_npc_id: phase4Prepared.ratsha.instance_id,
+      controller_npc_id: phase4Prepared.ratsha.instance_id,
+      physical_position: phase4Prepared.binding.ratsha_knife_initial_binding.physical_position,
+      state: {
+        causal_basis: ratshaKnifeTemplate.causal_basis,
+        accessibility: phase4Prepared.binding.ratsha_knife_initial_binding.accessibility,
+        inventory_profile_snapshot: structuredClone(ratshaKnifeProfile)
+      }
+    }] : [])],
     containers: [],
     timestamp,
     environment_snapshot: structuredClone(environment),
     ...(phase3Prepared
       ? {
-        prepared_scenes: [phase3Prepared.scene],
-        npcs: phase3Prepared.npcs
+        prepared_scenes: [phase3Prepared.scene, ...(phase4Prepared ? [phase4Prepared.scene] : [])],
+        npcs: [...phase3Prepared.npcs, ...(phase4Prepared ? phase4Prepared.npcs : [])]
       }
-      : {})
+      : {}),
+    ...(phase4Promise ? { promise_instances: [phase4Promise] } : {})
   };
   const validationReport = {
     pass: true,

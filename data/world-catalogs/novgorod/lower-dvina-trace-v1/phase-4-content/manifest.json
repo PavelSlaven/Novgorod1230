@@ -1,0 +1,33 @@
+{
+  "schema": "rus.lower_dvina_trace_phase_4_content_manifest.v1",
+  "package_id": "lower_dvina_trace_phase_4_content_v1",
+  "revision": 1,
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 10,
+  "status": "approved",
+  "publication_status": "internal_only",
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden",
+  "superseded_definition_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-3-content-v2/definition.json",
+    "id": "lower_dvina_trace_v1",
+    "revision": 9,
+    "schema": "rus.trace_scenario_definition.v1",
+    "digest": "f0cc939c6f8ebed70b2e02f5df5681d2988044012cc366209a4dd9ee763130f9"
+  },
+  "reused_content_refs": {
+    "item_container_set": {"path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0c-v2/item-container-set.json", "id": "trace_ld_v1_item_container_set", "revision": 2, "schema": "rus.trace_item_container_set.v1", "digest": "c8774370a92a635fa8e7ba72796bc11ffee819e105a90b6bc790edcee44fa77c"},
+    "knowledge_lie_memory_rules": {"path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-3-content/knowledge-lie-memory-rules.json", "id": "trace_ld_v1_knowledge_lie_memory_rules", "revision": 2, "schema": "rus.trace_knowledge_lie_memory_rules.v1", "digest": "2e4fc36faf83edb42aacf218f43815b4f4ff1bf04f2938b88208ce00b7e52c48"},
+    "activity_check_consequence_profiles": {"path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-3-content/activity-check-consequence-profiles.json", "id": "trace_ld_v1_activity_check_consequence_profiles", "revision": 2, "schema": "rus.trace_activity_check_consequence_profiles.v1", "digest": "629e472a54b79dc92d053ea34c43f3da6b660ce5dbc296cab32d3a76c267cfda"}
+  },
+  "content_refs": {
+    "definition": {"path": "definition.json", "id": "lower_dvina_trace_v1", "revision": 10, "schema": "rus.trace_scenario_definition.v1", "digest": "1b619e64077a6de447b8e3f9418d85ba4c06ce7e592f6a60bc38a4a4adaef556"},
+    "npc_decision_schedule_policies": {"path": "npc-decision-schedule-policies.json", "id": "trace_ld_v1_npc_decision_schedule_policies", "revision": 3, "schema": "rus.trace_npc_decision_schedule_policies.v1", "digest": "a36dfa60c2a9e93492dcb238b07c2faa44702b2db3d374ef69e12f6ad2c4adba"}
+  },
+  "files": {"definition.json": "1b619e64077a6de447b8e3f9418d85ba4c06ce7e592f6a60bc38a4a4adaef556", "npc-decision-schedule-policies.json": "a36dfa60c2a9e93492dcb238b07c2faa44702b2db3d374ef69e12f6ad2c4adba"},
+  "content_digest_algorithm": "sha256_sorted_filename_colon_digest_lf_v1",
+  "content_digest": "b4bf999f637a34f30d11754a3ccdf1a8be64bd2c5666ef01fe847fac99362c59",
+  "scope": ["phase_4_initial_materialization_cutover"],
+  "excludes": ["runtime_negotiation", "ddl", "social_law_persistence"]
+}

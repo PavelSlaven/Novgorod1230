@@ -6,6 +6,7 @@ import {
   calculateHandsState,
   calculateInventoryMass,
   deriveInventoryZone,
+  planApprovedActorItemTransition,
   planInventoryTransfer,
   resolveInventoryAccess,
   resolveInventoryLoad,
@@ -185,4 +186,116 @@ test('inventory foundation: generic item moves are planned as a validated change
   assert.equal(moved.pass, true);
   assert.deepEqual(moved.change_set.placement_changes[0], { instance_kind: 'item', party_id: partyId, item_id: 'knife-1', container_id: 'pouch-1' });
   assert.equal(planInventoryTransfer({ ...input, operation: 'equip', item_or_container_id: 'knife-1', expected_state_version: 4 }).errors[0].code, 'INVENTORY_EQUIPMENT_SLOT_REQUIRED');
+});
+
+test('inventory foundation: approved actor transition moves a NPC-held quick item to NPC hands without changing its owner', () => {
+  const input = state({
+    strength: undefined,
+    actor_strengths: { 'ratsha-npc': 10, 'fisher-npc': 10 },
+    items: [{ item_id: 'ratsha-knife', template_id: 'knife', quantity: 1 }],
+    item_profiles: { ...profiles, knife: { ...profiles.knife, mass_grams: 400, external_hand_cost: 0 } },
+    item_placements: [{ item_id: 'ratsha-knife', holder_npc_id: 'ratsha-npc', physical_position: 'worn_quick' }],
+    ownership: [{ item_id: 'ratsha-knife', owner_npc_id: 'ratsha-owner', controller_npc_id: 'ratsha-npc' }],
+    source: { actor_id: 'ratsha-npc', actor_kind: 'npc', controller_actor_id: 'ratsha-npc', physical_position: 'worn_quick', accessibility: 'quick' },
+    destination: { actor_id: 'fisher-npc', actor_kind: 'npc', controller_actor_id: 'fisher-npc', physical_position: 'hands', accessibility: 'secured_not_available_to_source' },
+    approved_transition: {
+      transition_profile_id: 'approved-surrender',
+      subject_ref: 'knife',
+      owner_change: 'forbidden',
+      requires: {
+        holder_ref: 'ratsha_slot',
+        controller_ref: 'ratsha_slot',
+        physical_position: 'worn_quick',
+        accessibility: 'quick',
+        admission_fact: 'surrender-committed'
+      },
+      writes: {
+        holder_ref: 'fisher_slot',
+        controller_ref: 'fisher_slot',
+        physical_position: 'hands',
+        accessibility: 'secured_not_available_to_source'
+      }
+    },
+    resolved_actor_refs: {
+      ratsha_slot: 'ratsha-npc',
+      fisher_slot: 'fisher-npc'
+    },
+    approved_facts: ['surrender-committed'],
+    item_id: 'ratsha-knife',
+    expected_state_version: 4
+  });
+  const planned = planApprovedActorItemTransition(input);
+  assert.equal(planned.pass, true);
+  assert.deepEqual(planned.proposal.placement, { instance_kind: 'item', party_id: partyId, item_id: 'ratsha-knife', holder_npc_id: 'fisher-npc', physical_position: 'hands' });
+  assert.equal(planned.proposal.ownership.owner_change, 'forbidden');
+  assert.equal(planned.proposal.ownership.next.owner_npc_id, 'ratsha-owner');
+  assert.equal(planned.proposal.ownership.next.controller_npc_id, 'fisher-npc');
+  assert.deepEqual(planned.derived_after.destination, { total_mass_grams: 400, hands_used: 0, hands_free: 2, load_category: 'light' });
+  assert.equal(planApprovedActorItemTransition({
+    ...input,
+    destination: { ...input.destination, physical_position: 'worn_quick' }
+  }).errors[0].code, 'APPROVED_TRANSITION_POLICY_STATE_MISMATCH');
+});
+
+test('inventory foundation: approved actor transition rejects missing destination, incorrect source and inferred placement', () => {
+  const base = state({
+    actor_strengths: { source: 10, destination: 10 },
+    items: [{ item_id: 'knife-1', template_id: 'knife', quantity: 1 }],
+    item_placements: [{ item_id: 'knife-1', holder_npc_id: 'source', physical_position: 'worn_quick' }],
+    ownership: [{ item_id: 'knife-1', owner_npc_id: 'owner', controller_npc_id: 'source' }],
+    source: { actor_id: 'source', actor_kind: 'npc', controller_actor_id: 'source', physical_position: 'worn_quick', accessibility: 'quick' },
+    destination: { actor_id: 'destination', actor_kind: 'npc', controller_actor_id: 'destination', physical_position: 'hands', accessibility: 'secured' },
+    approved_transition: { transition_profile_id: 'approved', owner_change: 'forbidden', required_facts: ['admitted'] },
+    approved_facts: ['admitted'],
+    item_id: 'knife-1',
+    expected_state_version: 4
+  });
+  assert.equal(planApprovedActorItemTransition({ ...base, destination: undefined }).errors[0].code, 'APPROVED_TRANSITION_EXACT_STATE_REQUIRED');
+  assert.equal(planApprovedActorItemTransition({ ...base, source: { ...base.source, physical_position: 'hands' } }).errors[0].code, 'APPROVED_TRANSITION_SOURCE_PLACEMENT_MISMATCH');
+  assert.equal(planApprovedActorItemTransition({ ...base, destination: { ...base.destination, physical_position: undefined } }).errors[0].code, 'APPROVED_TRANSITION_EXACT_STATE_REQUIRED');
+});
+
+test('inventory foundation: approved actor transition validates mass and hands without inventing missing NPC strength', () => {
+  const input = state({
+    strength: undefined,
+    actor_strengths: {},
+    items: [{ item_id: 'knife-1', template_id: 'knife', quantity: 1 }],
+    item_placements: [{
+      item_id: 'knife-1',
+      holder_npc_id: 'source',
+      physical_position: 'worn_quick'
+    }],
+    ownership: [{
+      item_id: 'knife-1',
+      owner_npc_id: 'source',
+      controller_npc_id: 'source'
+    }],
+    source: {
+      actor_id: 'source',
+      actor_kind: 'npc',
+      controller_actor_id: 'source',
+      physical_position: 'worn_quick',
+      accessibility: 'quick'
+    },
+    destination: {
+      actor_id: 'destination',
+      actor_kind: 'npc',
+      controller_actor_id: 'destination',
+      physical_position: 'hands',
+      accessibility: 'secured'
+    },
+    approved_transition: {
+      transition_profile_id: 'approved',
+      owner_change: 'forbidden',
+      required_facts: ['admitted']
+    },
+    approved_facts: ['admitted'],
+    item_id: 'knife-1',
+    expected_state_version: 4
+  });
+  const result = planApprovedActorItemTransition(input);
+  assert.equal(result.pass, true);
+  assert.equal(result.derived_after.source.load_category, null);
+  assert.equal(result.derived_after.destination.total_mass_grams, 300);
+  assert.equal(result.derived_after.destination.hands_used, 1);
 });

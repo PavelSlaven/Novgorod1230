@@ -24,10 +24,11 @@ Social role and occupation references, rights, restrictions, authority and legal
 - `validateAuthorityReference`
 - `buildSocialRisk`
 - `buildLegalConsequencePackage`
+- `planPromiseLifecycle`
 
 ## Контракты и инварианты
 
-Входы являются plain-object/array значениями. Функции нормализации не придумывают отсутствующие ID, имена, предметы, причины или последствия. Выходы, которые предназначены для handoff, замораживаются. Нарушения структуры возвращаются как `{ ok, errors }` либо выбрасываются только для неверно подключённого технического порта.
+Входы являются plain-object/array значениями. Функции нормализации не придумывают отсутствующие ID, имена, предметы, причины или последствия. `planPromiseLifecycle` принимает переданную exact approved policy и строит proposal только для разрешённых ею `initialize`, `not_offered → offered` или `offered → active`; persistence, legal completion и semantic fallback запрещены. Выходы, которые предназначены для handoff, замораживаются. Нарушения структуры возвращаются как `{ ok, errors }` либо выбрасываются только для неверно подключённого технического порта.
 
 ## Зависимости
 
@@ -35,7 +36,7 @@ Social role and occupation references, rights, restrictions, authority and legal
 
 ## Ошибки
 
-Структурные ошибки возвращаются списком. Ошибки обязательных технических портов (`RandomSource`) являются `TypeError`/`RangeError`.
+Структурные ошибки возвращаются списком. `planPromiseLifecycle` fail-closed выбрасывает `PromiseLifecyclePlanningError` с machine-readable `code`. Ошибки обязательных технических портов (`RandomSource`) являются `TypeError`/`RangeError`.
 
 ## Совместимость и тесты
 

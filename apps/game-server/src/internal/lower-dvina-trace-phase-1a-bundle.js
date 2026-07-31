@@ -8,10 +8,7 @@ import {
   assertVersionedRawPin,
   loadLowerDvinaTracePhase1ACutover
 } from './lower-dvina-trace-phase-1a-cutover.js';
-import {
-  loadLowerDvinaTraceRevision8Bundle,
-  loadLowerDvinaTraceRevision9Bundle
-} from './lower-dvina-trace-phase-3-bundle.js';
+import { loadLowerDvinaTraceRevisionBundle } from './lower-dvina-trace-phase-1a-revision-bundle.js';
 import {
   validateLowerDvinaTracePlayerDossier as validatePlayerDossier
 } from './lower-dvina-trace-player-validation.js';
@@ -49,11 +46,15 @@ export async function loadLowerDvinaTraceMaterializationBundle({
   if (scenarioDefinitionRevision === 7) {
     return loadRevision7Bundle({ rootDir });
   }
-  if (scenarioDefinitionRevision === 8) {
-    return loadRevision8Bundle({ rootDir });
-  }
-  if (scenarioDefinitionRevision === 9) {
-    return loadRevision9Bundle({ rootDir });
+  if ([8, 9, 10].includes(scenarioDefinitionRevision)) {
+    return loadLowerDvinaTraceRevisionBundle({
+      scenarioDefinitionRevision,
+      rootDir,
+      loadRevision7Bundle,
+      fail,
+      freezeDeep,
+      validateDefinitionPins
+    });
   }
   fail(
     'TRACE_SCENARIO_REVISION_UNSUPPORTED',
@@ -200,26 +201,6 @@ async function loadRevision7Bundle({ rootDir }) {
   };
   validateDefinitionPins(bundle);
   return freezeDeep(bundle);
-}
-
-async function loadRevision8Bundle({ rootDir }) {
-  return loadLowerDvinaTraceRevision8Bundle({
-    rootDir,
-    historicalBundle: await loadRevision7Bundle({ rootDir }),
-    fail,
-    freezeDeep,
-    validateDefinitionPins
-  });
-}
-
-async function loadRevision9Bundle({ rootDir }) {
-  return loadLowerDvinaTraceRevision9Bundle({
-    rootDir,
-    historicalBundle: await loadRevision8Bundle({ rootDir }),
-    fail,
-    freezeDeep,
-    validateDefinitionPins
-  });
 }
 
 export function resolveLowerDvinaTraceStartTimestamp({ specification, calendar_profile }) {

@@ -3,35 +3,23 @@ import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/regis
 import { createLowerDvinaTracePhase1ARepository } from '@rus/party-store/internal/lower-dvina-trace-phase-1a';
 import { serverError } from '../../errors.js';
 import { json } from '../../runtime/first-playable/shared.js';
-import {
-  commitLowerDvinaTracePhase2
-} from './lower-dvina-trace-phase-2-commit.js';
+import { commitLowerDvinaTracePhase2 } from './lower-dvina-trace-phase-2-commit.js';
 import {
   assertPhase2NormalizedRows,
   phase2IntegrityError
 } from './lower-dvina-trace-phase-2-read.js';
-import {
-  loadInitialTracePhase2State
-} from './lower-dvina-trace-phase-2-initial-state.js';
+import { loadInitialTracePhase2State } from './lower-dvina-trace-phase-2-initial-state.js';
 import {
   buildPhase2ReadyScreen,
   phase2PublicResult,
   phase2ScreenDigest,
   phase2VisibleContextFromPayload
 } from './lower-dvina-trace-phase-2-projection.js';
-import {
-  loadHistoricalPhase2Replay
-} from './lower-dvina-trace-phase-2-replay.js';
-import {
-  loadTracePhase2TemporalSourceProof
-} from './lower-dvina-trace-phase-2-temporal-state.js';
-import {
-  assertPhase2PresentationAdmission
-} from './lower-dvina-trace-phase-2-presentation-admission.js';
-import {
-  assertPhase3NormalizedRows
-} from './lower-dvina-trace-phase-3-read.js';
-
+import { loadHistoricalPhase2Replay } from './lower-dvina-trace-phase-2-replay.js';
+import { loadTracePhase2TemporalSourceProof } from './lower-dvina-trace-phase-2-temporal-state.js';
+import { assertPhase2PresentationAdmission } from './lower-dvina-trace-phase-2-presentation-admission.js';
+import { assertPhase3NormalizedRows } from './lower-dvina-trace-phase-3-read.js';
+import { assertPhase4NormalizedRows } from './lower-dvina-trace-phase-4-read.js';
 export function createLowerDvinaTracePhase2PostgresRepository({
   partyPool,
   committer
@@ -111,6 +99,7 @@ export function createLowerDvinaTracePhase2PostgresRepository({
       await loadTracePhase2TemporalSourceProof(partyPool, partyId);
     if (payload.schema === 'rus.lower_dvina_trace_turn_snapshot.v2') {
       await assertPhase3NormalizedRows(partyPool, payload, row);
+      await assertPhase4NormalizedRows(partyPool, payload, row);
     } else {
       await assertPhase2NormalizedRows(partyPool, payload, row);
     }

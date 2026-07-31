@@ -13,11 +13,54 @@ const externalOwnershipSql = readFileSync(
   new URL('../../schemas/party-db/012_party_runtime_external_ownership.sql', import.meta.url),
   'utf8'
 );
+const obligationsSql = readFileSync(
+  new URL('../../schemas/party-db/013_party_runtime_obligations.sql', import.meta.url),
+  'utf8'
+);
 
-test('target chain appends external ownership migration after first-playable', () => {
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 12);
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-2), sql);
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-1), externalOwnershipSql);
+test('target chain appends general obligations after external ownership', () => {
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 13);
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-3), sql);
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-2), externalOwnershipSql);
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-1), obligationsSql);
+});
+
+test('013 keeps general obligations in the P16 change-set transaction and history append-only', () => {
+  for (const table of ['party_obligations', 'party_obligation_transitions']) {
+    assert.match(obligationsSql, new RegExp(`CREATE TABLE party_runtime\\.${table}`, 'u'));
+  }
+  assert.match(obligationsSql, /policy_ref jsonb NOT NULL[\s\S]+policy_version text NOT NULL/u);
+  assert.match(obligationsSql, /promisor_ref jsonb NOT NULL[\s\S]+beneficiary_ref jsonb NOT NULL/u);
+  assert.match(obligationsSql, /witness_refs jsonb NOT NULL[\s\S]+scope_snapshot jsonb NOT NULL/u);
+  assert.match(obligationsSql, /state_version bigint NOT NULL DEFAULT 1[\s\S]+last_change_set_id text NOT NULL/u);
+  assert.match(obligationsSql, /transition_ordinal integer NOT NULL[\s\S]+from_state text[\s\S]+to_state text NOT NULL[\s\S]+transition_kind text NOT NULL/u);
+  assert.match(obligationsSql, /causal_basis jsonb NOT NULL[\s\S]+witness_snapshot jsonb NOT NULL/u);
+  assert.match(obligationsSql, /activity_execution_id text[\s\S]+check_resolution_id text[\s\S]+npc_decision_request_id text/u);
+  assert.match(obligationsSql, /idempotency_record_id text[\s\S]+occurred_at_turn bigint NOT NULL/u);
+  assert.match(obligationsSql, /game_timestamp_parts_valid\([\s\S]+occurred_at_whole_minutes/u);
+  assert.match(obligationsSql, /REFERENCES party_runtime\.party_v3_change_sets\(party_id, id\)/u);
+  assert.match(obligationsSql, /CREATE TRIGGER party_obligation_transition_append_only[\s\S]+temporal_append_only\(\)/u);
+  assert.match(obligationsSql, /CREATE TRIGGER party_obligation_current_immutable/u);
+  assert.doesNotMatch(obligationsSql, /lower_dvina|scenario_binding|fingerprint|_v2\b/u);
+});
+
+test('013 admits positioned NPC-held items while preserving placement targets and equipment rules', () => {
+  assert.match(
+    obligationsSql,
+    /party_item_placements[\s\S]+physical_position IS NULL%holder_character_id IS NOT NULL/u
+  );
+  assert.match(
+    obligationsSql,
+    /ADD CONSTRAINT party_item_placements_holder_position_check CHECK \([\s\S]+physical_position IS NOT NULL[\s\S]+holder_npc_id IS NOT NULL OR holder_character_id IS NOT NULL/u
+  );
+  assert.match(
+    obligationsSql,
+    /party_item_placements_holder_position_check[\s\S]+\);/u
+  );
+  assert.doesNotMatch(
+    obligationsSql,
+    /DROP CONSTRAINT.*party_item_placements.*(?:FOREIGN KEY|exactly_one)/u
+  );
 });
 
 test('012 admits one structured external owner without weakening existing owners', () => {

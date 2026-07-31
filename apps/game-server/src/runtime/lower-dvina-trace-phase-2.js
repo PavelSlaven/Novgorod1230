@@ -6,38 +6,29 @@ import { loadLowerDvinaTraceMaterializationBundle } from
 import { loadLowerDvinaTracePhase2Bundle } from
   '../internal/lower-dvina-trace-phase-2-bundle.js';
 import {
-  createTracePhase2InspectionCommand,
-  tracePhase2PreconditionSatisfied
+  createTracePhase2InspectionCommand
 } from './lower-dvina-trace-phase-2-command.js';
 import { resolveTracePhase2Contracts } from
   './lower-dvina-trace-phase-2-contracts.js';
 import {
-  createTracePhase2BodyEffect,
-  createTracePhase2VisibleProjector
-} from './lower-dvina-trace-phase-2-effects.js';
-import {
-  createTracePhase2TemporalAdvance
-} from './lower-dvina-trace-phase-2-temporal.js';
-import {
   resolveTracePhase3Contracts
 } from './lower-dvina-trace-phase-3-contracts.js';
-import {
-  createTracePhase3Commands,
-  tracePhase3PreconditionSatisfied
-} from './lower-dvina-trace-phase-3-command.js';
-import {
-  createTracePhase3TemporalAdvance,
-  createTracePhase3VisibleProjector
-} from './lower-dvina-trace-phase-3-effects.js';
+import { createTracePhase3Commands } from './lower-dvina-trace-phase-3-command.js';
+import { createTracePhase4Commands } from './lower-dvina-trace-phase-4-command.js';
+import { resolveTracePhase4Contracts } from
+  './lower-dvina-trace-phase-4-contracts.js';
 import {
   committedTraceScenarioDefinitionRevision
 } from './lower-dvina-trace-committed-revision.js';
+import { buildLowerDvinaTracePhase2Services } from
+  './lower-dvina-trace-phase-2-services.js';
 export function createLowerDvinaTracePhase2Runtime({
   repository,
   semanticResolver,
   narrator,
   randomSourceFactory,
   decisionSecret,
+  npcDecisionSelector = null,
   now = () => new Date().toISOString(),
   bundleLoader = ({ scenarioDefinitionRevision }) =>
     loadLowerDvinaTraceMaterializationBundle({
@@ -106,14 +97,22 @@ export function createLowerDvinaTracePhase2Runtime({
         bundle,
         phase2Bundle
       });
-      const phase3Contracts = bundle.definition_revision === 9
+      const phase3Contracts = [9, 10].includes(bundle.definition_revision)
         ? resolveTracePhase3Contracts({ state, bundle })
+        : null;
+      const phase4Contracts = bundle.definition_revision === 10
+        ? resolveTracePhase4Contracts({ state, bundle })
         : null;
       const registry = createTurnCommandRegistry([
         createTracePhase2InspectionCommand({ contracts, inputDigest }),
         ...(phase3Contracts ? createTracePhase3Commands({
           contracts: phase3Contracts,
           inputDigest
+        }) : []),
+        ...(phase4Contracts ? createTracePhase4Commands({
+          contracts: phase4Contracts,
+          inputDigest,
+          selectNpcDecision: npcDecisionSelector
         }) : [])
       ]);
       const issuedAt = now();
@@ -130,10 +129,11 @@ export function createLowerDvinaTracePhase2Runtime({
           policy_version: '1',
           policy_pins: [
             contracts.activityPin,
-            ...(phase3Contracts?.activityPins ?? [])
+            ...(phase3Contracts?.activityPins ?? []),
+            ...(phase4Contracts?.activityPins ?? [])
           ]
         }
-      }, buildServices({
+      }, buildLowerDvinaTracePhase2Services({
         partyId,
         requestId,
         idempotencyKey,
@@ -142,6 +142,7 @@ export function createLowerDvinaTracePhase2Runtime({
         state,
         contracts,
         phase3Contracts,
+        phase4Contracts,
         registry,
         repository,
         semanticResolver,
@@ -161,96 +162,6 @@ export function createLowerDvinaTracePhase2Runtime({
     }
   });
 }
-function buildServices(context) {
-  const {
-    partyId, requestId, idempotencyKey, inputDigest, issuedAt,
-    state, contracts, registry, repository, semanticResolver,
-    narrator, randomSourceFactory, decisionSecret, phase3Contracts
-  } = context;
-  const randomSource = randomSourceFactory({
-    party_id: partyId,
-    request_id: requestId,
-    idempotency_key: idempotencyKey
-  });
-  const randomSnapshot = randomSource?.snapshot?.();
-  if (!randomSnapshot?.algorithm
-      || randomSnapshot.algorithm
-        !== state.materialization_trace?.rng_version) {
-    throw serverError(
-      'TRACE_PHASE_2_RNG_PIN_MISMATCH',
-      'The check RandomSource does not match the committed party RNG pin.',
-      { status: 409 }
-    );
-  }
-  return {
-    commandRegistry: registry,
-    stateReader: {
-      async read(request) {
-        return request.revalidation === true
-          ? repository.loadPhase2State(partyId, {
-              presentationIdempotencyKey: idempotencyKey
-            })
-          : structuredClone(state);
-      }
-    },
-    semanticResolver,
-    decisionSecret,
-    decisionNow: context.decisionNow,
-    decisionExpiresAt: addMinutes(issuedAt, 5),
-    evaluatePrecondition(precondition, committedState) {
-      return tracePhase2PreconditionSatisfied(
-        precondition, committedState, contracts
-      ) || (phase3Contracts != null && tracePhase3PreconditionSatisfied(
-        precondition, committedState, phase3Contracts
-      ));
-    },
-    randomSource,
-    temporalAdvance: createTracePhase3TemporalAdvance({
-      phase2Advance: createTracePhase2TemporalAdvance({ contracts })
-    }),
-    bodyEffect: createTracePhase2BodyEffect({ contracts }),
-    visibleProjector: createTracePhase3VisibleProjector({
-      phase2Projector: createTracePhase2VisibleProjector({ contracts }),
-      contracts: phase3Contracts
-    }),
-    partyStore: {
-      commit(writePlan) {
-        return repository.commitPhase2Turn({
-          partyId,
-          writePlan,
-          inputDigest,
-          contracts,
-          phase3Contracts
-        });
-      }
-    },
-    persistedVisibleReader: {
-      read(request) {
-        return repository.loadPhase2VisibleContext({
-          partyId,
-          commit: request.commit
-        });
-      }
-    },
-    narrator,
-    screenProjector: {
-      project({ defaultScreen }) {
-        return {
-          ...defaultScreen,
-          delivery_state: {
-            ...defaultScreen.delivery_state,
-            generated_at: issuedAt
-          },
-          scenario_id: 'lower_dvina_trace_v1',
-          screen_kind: 'trace_turn',
-          opening_screen_digest:
-            state.opening_identity.opening_screen_digest
-        };
-      }
-    }
-  };
-}
-
 function validateDependencies({
   repository,
   semanticResolver,
@@ -282,10 +193,6 @@ function validateDependencies({
     );
   }
 }
-function addMinutes(value, minutes) {
-  return new Date(Date.parse(value) + minutes * 60000).toISOString();
-}
-
 function requiredText(value, code) {
   const normalized = String(value ?? '').trim();
   if (!normalized) {

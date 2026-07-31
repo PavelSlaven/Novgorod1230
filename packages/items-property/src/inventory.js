@@ -314,7 +314,7 @@ function validateParty(value, partyId, errors) { if (value?.party_id && partyId 
 function validateCharacterPhysicalPlacement(placement, errors) {
   const position = placement?.physical_position;
   const slot = placement?.equipment_slot_id ?? placement?.equipment_slot_category_id;
-  if (placement?.holder_character_id) {
+  if (placement?.holder_character_id || placement?.holder_npc_id) {
     if (!PHYSICAL_POSITIONS.has(position)) errors.push(error('INVENTORY_PHYSICAL_POSITION_REQUIRED', 'topology', { physical_position: position ?? null }));
     if (position === 'equipped' && !text(slot)) errors.push(error('INVENTORY_EQUIPMENT_SLOT_REQUIRED', 'topology', {}));
     if (text(slot) && position !== 'equipped') errors.push(error('INVENTORY_EQUIPMENT_SLOT_INVALID', 'topology', { physical_position: position ?? null }));

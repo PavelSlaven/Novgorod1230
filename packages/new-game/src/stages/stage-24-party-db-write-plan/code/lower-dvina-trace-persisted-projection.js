@@ -147,24 +147,48 @@ export function buildLowerDvinaTracePersistedProjection({
       legal_status: item.legal_status,
       state: structuredClone(item.state),
       placement: {
-        anchor_id: null,
+        anchor_id: item.anchor_id ?? null,
         container_id: null,
-        holder_npc_id: null,
-        holder_character_id: item.holder_character_id,
+        holder_npc_id: item.holder_npc_id ?? null,
+        holder_character_id: item.holder_character_id ?? null,
         physical_position: item.physical_position,
         equipment_slot_category_id: null
       },
       ownership: {
         ownership_id: `ownership_${item.instance_id}`,
         container_id: null,
-        owner_npc_id: null,
-        owner_character_id: item.owner_character_id,
+        owner_npc_id: item.owner_npc_id ?? null,
+        owner_character_id: item.owner_character_id ?? null,
         owner_party: false,
-        controller_npc_id: null,
-        controller_character_id: item.controller_character_id,
+        owner_external_ref: null,
+        controller_npc_id: item.controller_npc_id ?? null,
+        controller_character_id: item.controller_character_id ?? null,
         claim_state: item.claim_state
       }
     })).sort((left, right) => left.item_id.localeCompare(right.item_id)),
+    obligations: (result.immediate.promise_instances ?? []).map((promise) => ({
+      obligation_id: promise.instance_id,
+      policy_ref: structuredClone(promise.policy_ref),
+      policy_version: String(promise.policy_ref.revision),
+      promisor_ref: {
+        entity_kind: 'player_character',
+        entity_id: promise.promisor_actor_id
+      },
+      beneficiary_ref: {
+        entity_kind: 'npc',
+        entity_id: promise.beneficiary_actor_id
+      },
+      witness_refs: promise.witness_actor_ids.map((actorId) => ({
+        entity_kind: 'npc',
+        entity_id: actorId
+      })),
+      scope_snapshot: structuredClone(promise.scope_snapshot),
+      current_state: promise.current_state,
+      current_state_fact: promise.current_state_fact,
+      state_version: promise.state_version,
+      created_change_set_id: changeSetId,
+      last_change_set_id: changeSetId
+    })).sort((left, right) => left.obligation_id.localeCompare(right.obligation_id)),
     clock: {
       whole_minutes: result.immediate.timestamp.whole_minutes,
       subminute_numerator: result.immediate.timestamp.subminute_numerator,

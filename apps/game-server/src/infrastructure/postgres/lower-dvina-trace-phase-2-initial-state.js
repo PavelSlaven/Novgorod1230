@@ -44,6 +44,7 @@ export async function loadInitialTracePhase2State({
     },
     prepared_scenes: structuredClone(initial.prepared_scenes),
     npcs: structuredClone(initial.npcs),
+    promise_instances: structuredClone(initial.promise_instances ?? []),
     interactions: [],
     route_history: [],
     route_knowledge: [],
@@ -64,14 +65,23 @@ export async function loadInitialTracePhase2State({
       profile_id: item.profile_id,
       quantity: item.quantity,
       placement: {
-        anchor_id: item.anchor_id,
-        holder_character_id: item.holder_character_id,
-        physical_position: item.physical_position
+        anchor_id: item.placement.anchor_id,
+        container_id: item.placement.container_id,
+        holder_npc_id: item.placement.holder_npc_id,
+        holder_character_id: item.placement.holder_character_id,
+        physical_position: item.placement.physical_position,
+        equipment_slot_category_id:
+          item.placement.equipment_slot_category_id
       },
       ownership: {
-        owner_character_id: item.owner_character_id,
-        controller_character_id: item.controller_character_id,
-        claim_state: item.claim_state
+        ownership_id: item.ownership.ownership_id,
+        owner_npc_id: item.ownership.owner_npc_id,
+        owner_character_id: item.ownership.owner_character_id,
+        owner_external_ref: item.ownership.owner_external_ref,
+        owner_party: item.ownership.owner_party,
+        controller_npc_id: item.ownership.controller_npc_id,
+        controller_character_id: item.ownership.controller_character_id,
+        claim_state: item.ownership.claim_state
       },
       state: item.state
     })),

@@ -2,6 +2,8 @@ import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { canonicalDigest } from '@rus/materialization';
+import { resolveInventoryProfile } from '@rus/items-property';
+import { loadCommonCatalogLookupRecords } from '@rus/runtime-catalog/common-lookups';
 
 const ROOT = 'data/world-catalogs/novgorod/lower-dvina-trace-v1';
 
@@ -29,6 +31,7 @@ export async function loadLowerDvinaTraceRevision11Bundle({
   const phase1a = await readJson(rootDir, `${ROOT}/phase-1a-v7/manifest.json`);
   const bindings = await readJson(rootDir,
     `${ROOT}/phase-1a-v7/materialization-bindings.json`);
+  const lookupRecords = await loadCommonCatalogLookupRecords({ rootDir });
   if (phase5.value?.package_id !== 'lower_dvina_trace_phase_5_content_v1'
     || phase5.value.scenario_definition_revision !== 11
     || phase5.value.superseded_definition_ref?.digest
@@ -52,6 +55,20 @@ export async function loadLowerDvinaTraceRevision11Bundle({
       !== historical.artifact_pins.materialization_bindings.digest) {
     fail('TRACE_PHASE_5_CONTENT_INVALID',
       'Exact approved Phase 5 content is required.');
+  }
+  try {
+    loaded['item-container-set.json'].value = {
+      ...loaded['item-container-set.json'].value,
+      item_inventory_profiles: loaded['item-container-set.json'].value.item_inventory_profiles.map(
+        (profile) => resolveInventoryProfile({
+          profile,
+          archetypes: lookupRecords.inventory_archetypes
+        })
+      )
+    };
+  } catch {
+    fail('TRACE_PHASE_5_INVENTORY_ARCHETYPE_INVALID',
+      'Phase 5 inventory profiles must resolve from approved common archetypes.');
   }
   historical.definition_revision = 11;
   historical.manifest_digest = phase1a.digest;

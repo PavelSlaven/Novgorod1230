@@ -36,6 +36,7 @@ PR17-specific `buildPr17Stage3CApprovalRequest`, `buildPr17Stage3CPromotionPlan`
 
 - exported validators и calculators чисты: не читают сеть, БД, часы, случайность или глобальное состояние;
 - approved runtime projections также чисты и детерминированы: PostgreSQL readback и формирование `records_by_table` выполняет caller, модуль не открывает connection и не читает БД;
+- общий `inventory_archetypes` подключается как неперсистентный lookup через `loadCommonCatalogLookupRecords`, а item/container validation работает с уже разрешёнными точными профилями;
 - JSON Schema и DDL-derived rules являются входной нормативной зависимостью validator-а;
 - apply APIs имеют только явно переданные adapter side effects; Stage 3C дополнительно использует `transition/readTransition` для exact G4 status transitions в той же transaction;
 - CLI/readers могут читать явно переданные versioned files; публичные runtime projections принимают только уже прочитанные records и сами I/O не выполняют.

@@ -1,6 +1,8 @@
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
+import { resolveInventoryProfile } from '@rus/items-property';
+import { loadCommonCatalogLookupRecords } from '@rus/runtime-catalog/common-lookups';
 
 const ROOT = 'data/world-catalogs/novgorod/lower-dvina-trace-v1';
 const PATHS = Object.freeze({
@@ -28,6 +30,8 @@ export async function loadLowerDvinaTracePhase5Content({ rootDir = process.cwd()
     bundle[key] = value;
     bundle.raw_digests[key] = digest;
   }
+  const lookupRecords = await loadCommonCatalogLookupRecords({ rootDir });
+  bundle.inventoryArchetypes = lookupRecords.inventory_archetypes;
   return bundle;
 }
 
@@ -181,12 +185,16 @@ function validateCarrierResources(b) {
   const water = binding?.eremey_water_vessel_initial_binding;
   const net = one(binding?.arrival_item_bindings, 'item_template_ref', 'trace_ld_v1_item_fishing_net');
   const poles = one(binding?.arrival_item_bindings, 'item_template_ref', 'trace_ld_v1_item_carry_poles');
-  const netProfile = one(b.items?.item_inventory_profiles,
+  const profiles = resolvedInventoryProfiles(b);
+  const netProfile = one(profiles,
     'inventory_profile_id',
     'trace_ld_v1_inventory_profile_fishing_net_group_load');
-  const polesProfile = one(b.items?.item_inventory_profiles,
+  const polesProfile = one(profiles,
     'inventory_profile_id',
     'trace_ld_v1_inventory_profile_carry_poles_group_load');
+  const bandageProfile = one(profiles,
+    'inventory_profile_id',
+    'trace_ld_v1_inventory_profile_bandage_cloth');
   const transitions = b.npc?.property_transition_profiles;
   const rope = one(transitions, 'transition_profile_id', 'trace_ld_v1_property_ratsha_binding_rope_released_to_eremey');
   const waterUse = one(transitions, 'transition_profile_id', 'trace_ld_v1_property_eremey_water_vessel_used_for_onisim');
@@ -206,6 +214,8 @@ function validateCarrierResources(b) {
       'trace_ld_v1_inventory_profile_carry_poles_group_load')
     || !exactGroupLoadProfile(netProfile, 'trace_ld_v1_item_fishing_net')
     || !exactGroupLoadProfile(polesProfile, 'trace_ld_v1_item_carry_poles')
+    || !exactCompactZeroHandProfile(bandageProfile,
+      'trace_ld_v1_item_bandage_cloth')
     || !water || water.item_template_ref !== 'trace_ld_v1_item_eremey_drinking_water_vessel'
     || water.persistence_profile_ref !== 'trace_ld_v1_item_eremey_drinking_water_vessel'
     || !exactHeldState(water, 'eremey_fisher', 'worn_quick', 'quick', 'serviceable', 'one_patient_drink_available') || water.water_portions_remaining !== 1
@@ -221,7 +231,20 @@ function validateCarrierResources(b) {
 }
 
 function exactArrivalItem(item, owner, persistenceProfile) { return item?.owner_ref === owner && item.persistence_profile_ref === persistenceProfile && exactHeldState(item, 'resolved_participating_fisher', 'external_load', 'quick', 'serviceable', 'carried_for_group_use') && item.location_policy === 'follow_resolved_participating_fisher'; }
+function resolvedInventoryProfiles(bundle) {
+  try {
+    return (bundle.items?.item_inventory_profiles ?? []).map((profile) =>
+      resolveInventoryProfile({
+        profile,
+        archetypes: bundle.inventoryArchetypes
+      }));
+  } catch (error) {
+    fail('TRACE_PHASE_5_CARRIER_RESOURCE_INVALID',
+      `Phase 5 inventory profile resolution failed: ${error.code ?? 'unknown'}.`);
+  }
+}
 function exactGroupLoadProfile(value, itemTemplateRef) { return value?.item_template_ref === itemTemplateRef && value.mass_grams === 2500 && value.carry_form === 'long' && value.external_hand_cost === 1 && value.status === 'approved'; }
+function exactCompactZeroHandProfile(value, itemTemplateRef) { return value?.item_template_ref === itemTemplateRef && value.mass_grams === 100 && value.carry_form === 'compact' && value.external_hand_cost === 0 && value.status === 'approved'; }
 function exactHeldState(value, holder, position, accessibility, condition, use) { return value?.holder_ref === holder && value.controller_ref === holder && value.physical_position === position && value.accessibility === accessibility && value.condition_state === condition && value.use_state === use; }
 function exactRopeRelease(value) { return value?.subject_ref === 'trace_ld_v1_item_ratsha_binding_rope' && value?.owner_change === 'forbidden' && value.requires?.owner_ref === null && value.requires?.holder_ref === 'onisim_boatman' && value.requires?.controller_ref === 'ratsha_storehouse_helper' && value.requires?.use_state === 'binding_onisim' && exactHeldState(value.writes, 'eremey_fisher', 'external_load', 'secured_not_available_to_ratsha', 'serviceable', 'coiled_ready_for_reuse'); }
 function exactWaterUse(value) { return value?.subject_ref === 'trace_ld_v1_item_eremey_drinking_water_vessel' && value?.owner_change === 'forbidden' && value.requires?.admission_fact === 'trace_ld_v1_treatment_stage_prepare_committed' && value.requires?.water_portions_remaining === 1 && exactHeldState(value.requires, 'eremey_fisher', 'worn_quick', 'quick', 'serviceable', 'one_patient_drink_available') && value.writes?.water_portions_remaining === 0 && value.writes?.committed_fact === 'onisim_given_water' && exactHeldState(value.writes, 'eremey_fisher', 'worn_quick', 'quick', 'serviceable', 'empty_after_onisim_drink'); }

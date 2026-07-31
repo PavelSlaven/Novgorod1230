@@ -1,5 +1,9 @@
 import { digestValue } from './digest.js';
 import { resolveG4MaterializationBinding } from './g4-item-container-coverage.js';
+import {
+  resolveInventoryProfile,
+  validateInventoryArchetypes
+} from '@rus/items-property';
 
 const ALL_SEASONS = Object.freeze(['spring', 'summer', 'autumn', 'winter']);
 
@@ -7,8 +11,15 @@ export function buildApprovedItemCatalogSnapshot({ records_by_table: records = {
   requireApprovedRevision(records.world_revisions, worldRevisionId, sourceCatalogDigest);
   const itemTemplates = approvedRevisionMap(records.item_templates, worldRevisionId);
   const containerTemplates = approvedRevisionMap(records.container_templates, worldRevisionId);
-  const inventoryItems = indexBy(approvedForRevision(records.item_template_inventory_profiles, worldRevisionId), 'item_template_id');
-  const inventoryContainers = indexBy(approvedForRevision(records.container_template_inventory_profiles, worldRevisionId), 'container_template_id');
+  const inventoryArchetypes = records.inventory_archetypes == null
+    ? []
+    : validateInventoryArchetypes(records.inventory_archetypes);
+  const inventoryItems = indexBy(resolveInventoryProfiles(
+    approvedForRevision(records.item_template_inventory_profiles, worldRevisionId), inventoryArchetypes
+  ), 'item_template_id');
+  const inventoryContainers = indexBy(resolveInventoryProfiles(
+    approvedForRevision(records.container_template_inventory_profiles, worldRevisionId), inventoryArchetypes
+  ), 'container_template_id');
   const quantityProfiles = indexBy(approvedForRevision(records.item_template_quantity_profiles, worldRevisionId), 'item_template_id');
   const itemBindings = groupBy(approved(records.item_template_category_bindings), 'item_template_id');
   const containerBindings = groupBy(approved(records.container_template_facet_bindings), 'container_template_id');
@@ -211,6 +222,7 @@ export function buildAllowedG5TemplateSet({ records_by_table: records = {}, grap
 }
 
 function quantityRequirement(record) { return { quantity_requirement_id: record.id, item_template_id: record.item_template_id, world_revision_id: record.world_revision_id, quantity_unit_id: record.quantity_unit_id, quantity_dimension: record.quantity_dimension, minimum_quantity: record.minimum_quantity, maximum_quantity: record.maximum_quantity, default_quantity_policy: structuredClone(record.default_quantity_policy), mass_grams_per_unit: positiveNumber(record.mass_grams_per_unit, 'RUNTIME_QUANTITY_UNIT_MASS_INVALID', record.id), stackable: record.stackable, partial_consumption_allowed: record.partial_consumption_allowed, status: 'approved' }; }
+function resolveInventoryProfiles(profiles, archetypes) { return profiles.map((profile) => resolveInventoryProfile({ profile, archetypes })); }
 function propertyState(property) { return { property_rule_candidate_id: property.property_rule_candidate_id, owner_model: property.owner_model, holder_model: property.holder_model, controller_model: property.controller_model }; }
 function sourceTrace(record) { return { source_id: record.source_id, binding_id: record.id, claim_scope: record.claim_scope }; }
 function runtimeNode(record) { return { template_id: record.id, status: record.status, capacity: record.capacity, access_policy: structuredClone(record.access_policy), visibility_policy: structuredClone(record.visibility_policy), initial_state: structuredClone(record.initial_state) }; }

@@ -5,11 +5,13 @@ import {
   assessItemContainerClassificationReadiness,
   digestValue,
   importClassificationCatalog,
+  loadCommonCatalogLookupRecords,
   validateCatalogImportManifest,
   validateItemContainerClassificationCatalog
 } from '../src/index.js';
 
 const approved = { status: 'approved' };
+const commonLookupRecords = await loadCommonCatalogLookupRecords();
 
 function records() {
   return {
@@ -54,6 +56,37 @@ function records() {
 
 test('item facets and container facets accept normalized bindings', () => {
   assert.deepEqual(validateItemContainerClassificationCatalog(records()), []);
+});
+
+test('item and container inventory profiles resolve common archetypes before validation', () => {
+  const value = records();
+  value.item_templates[0].world_revision_id = 'revision-1';
+  value.world_revisions = [{ id: 'revision-1', ...approved }];
+  value.source_records = [{ id: 'source-1', ...approved }];
+  Object.assign(value, structuredClone(commonLookupRecords), {
+    item_template_inventory_profiles: [{
+      id: 'item-inventory',
+      item_template_id: 'knife-template',
+      world_revision_id: 'revision-1',
+      source_id: 'source-1',
+      inventory_archetype_ref: 'compact_zero_hand',
+      status: 'approved'
+    }],
+    container_template_inventory_profiles: [{
+      id: 'container-inventory',
+      container_template_id: 'chest-template',
+      world_revision_id: 'revision-1',
+      source_id: 'source-1',
+      inventory_archetype_ref: 'compact_zero_hand',
+      inventory_role: 'none',
+      status: 'approved'
+    }]
+  });
+  assert.deepEqual(validateItemContainerClassificationCatalog(value), []);
+
+  value.item_template_inventory_profiles[0].inventory_archetype_ref = 'unknown';
+  assert.ok(validateItemContainerClassificationCatalog(value)
+    .includes('INVENTORY_ARCHETYPE_NOT_FOUND:item-inventory'));
 });
 
 test('canonical item/container validation rejects source evidence from another template revision', () => {
@@ -160,6 +193,7 @@ test('migration inventory reports data gaps/conflicts and readiness distinguishe
 
 test('item/container authoring import remains dry-run-safe and transactionally verifies readback', async () => {
   const value = records();
+  Object.assign(value, structuredClone(commonLookupRecords));
   delete value.item_profile_sets;
   delete value.item_profile_entries;
   delete value.g4_item_materialization_rules;

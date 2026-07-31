@@ -9,12 +9,19 @@ import { buildStage14G5SceneCodePrecheck, normalizeStage14AuditPolicy, STAGE14_I
 import { buildStage16ItemPlacementCodePrecheck, normalizeStage16ItemPlacementPolicy } from '@rus/new-game/stages/stage-16';
 import { buildStage8ItemProfileInputFromPipeline, retrieveApprovedItemProfileCandidates } from '@rus/new-game/stages/stage-8';
 import { enterG4WithMaterialization } from '@rus/turn';
-import { buildAllowedG5TemplateSet, buildApprovedItemCatalogSnapshot } from '../src/index.js';
+import {
+  buildAllowedG5TemplateSet,
+  buildApprovedItemCatalogSnapshot,
+  loadCommonCatalogLookupRecords
+} from '../src/index.js';
 
 const root = resolve(import.meta.dirname, '../../..');
 const candidateRoot = resolve(root, 'data/knowledge-source/imports/item-container-120-v5/candidate');
 const requestPath = resolve(root, 'docs/implementation/item-container-120-approval-audit/evidence/G4_DEPENDENCY_APPROVAL_REQUEST.json');
 const worldRevisionId = 'world_revision_novgorod_1230_item_catalogue_001';
+const commonLookupRecords = await loadCommonCatalogLookupRecords({
+  rootDir: root
+});
 
 test('approved PR17 catalog feeds deterministic Stage 8, Stage 13 and Stage 16 materialization', async () => {
   const { manifest, records, mappings } = loadApprovedCandidate();
@@ -247,6 +254,53 @@ test('runtime catalog loaders refuse a catalog digest that is not pinned to the 
   );
 });
 
+test('runtime catalog resolves inventory archetypes before publishing item candidates', () => {
+  const { records } = loadApprovedCandidate();
+  const baseline = buildApprovedItemCatalogSnapshot({ records_by_table: records, world_revision_id: worldRevisionId, catalog_digest: runtimeDigest(records) });
+  const source = records.item_template_inventory_profiles.find((profile) => profile.mass_grams === 100 && profile.carry_form === 'compact' && profile.external_hand_cost === 0);
+  assert.ok(source);
+  source.inventory_archetype_ref = 'compact_zero_hand';
+  delete source.mass_grams;
+  delete source.carry_form;
+  delete source.external_hand_cost;
+  const resolved = buildApprovedItemCatalogSnapshot({ records_by_table: records, world_revision_id: worldRevisionId, catalog_digest: runtimeDigest(records) });
+  const candidateId = source.item_template_id;
+  assert.deepEqual(
+    resolved.item_profile_candidates.find((candidate) => candidate.item_template_id === candidateId).physical_state,
+    baseline.item_profile_candidates.find((candidate) => candidate.item_template_id === candidateId).physical_state
+  );
+  assert.equal(JSON.stringify(resolved).includes('inventory_archetype_ref'), false);
+});
+
+test('runtime catalog fails closed for a missing inventory archetype', () => {
+  const { records } = loadApprovedCandidate();
+  const source = records.item_template_inventory_profiles[0];
+  records.inventory_archetypes = [];
+  source.inventory_archetype_ref = 'missing';
+  delete source.mass_grams;
+  delete source.carry_form;
+  delete source.external_hand_cost;
+  assert.throws(
+    () => buildApprovedItemCatalogSnapshot({ records_by_table: records, world_revision_id: worldRevisionId, catalog_digest: runtimeDigest(records) }),
+    (error) => error.code === 'INVENTORY_ARCHETYPE_NOT_FOUND'
+  );
+});
+
+test('runtime catalog validates the complete supplied inventory archetype set', () => {
+  const { records } = loadApprovedCandidate();
+  records.inventory_archetypes = [{
+    inventory_archetype_id: 'unused_invalid',
+    mass_grams: 100,
+    carry_form: 'compact',
+    external_hand_cost: 0,
+    status: 'draft'
+  }];
+  assert.throws(
+    () => buildApprovedItemCatalogSnapshot({ records_by_table: records, world_revision_id: worldRevisionId, catalog_digest: runtimeDigest(records) }),
+    (error) => error.code === 'INVENTORY_ARCHETYPE_STATUS_INVALID'
+  );
+});
+
 test('Stage 8 snapshot normalizes PostgreSQL NUMERIC unit mass without accepting invalid values', () => {
   const { records } = loadApprovedCandidate();
   const profile = records.item_template_quantity_profiles[0];
@@ -385,7 +439,10 @@ test('representative V5 first-entry materializes once and repeat-entry reuses th
 
 function loadApprovedCandidate() {
   const manifest = readJson(resolve(candidateRoot, 'manifest.json'));
-  const records = Object.fromEntries(manifest.datasets.map((dataset) => [dataset.table, promote(readJson(resolve(candidateRoot, dataset.path)))]));
+  const records = {
+    ...Object.fromEntries(manifest.datasets.map((dataset) => [dataset.table, promote(readJson(resolve(candidateRoot, dataset.path)))])),
+    ...structuredClone(commonLookupRecords)
+  };
   const mappings = readJson(requestPath).profile_mappings;
   records.graph_nodes = mappings.map((mapping) => ({
     id: mapping.graph_node_id,

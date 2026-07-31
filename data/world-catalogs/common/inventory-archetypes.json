@@ -1,0 +1,8 @@
+{
+  "schema": "rus.inventory_archetype_set.v1",
+  "revision": 1,
+  "archetypes": [
+    { "inventory_archetype_id": "compact_zero_hand", "mass_grams": 100, "carry_form": "compact", "external_hand_cost": 0, "status": "approved" },
+    { "inventory_archetype_id": "long_bundle", "mass_grams": 2500, "carry_form": "long", "external_hand_cost": 1, "status": "approved" }
+  ]
+}

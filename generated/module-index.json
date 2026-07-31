@@ -358,6 +358,7 @@
     },
     {
       "dependencies": [
+        "@rus/items-property",
         "@rus/materialization",
         "@rus/world-base"
       ],
@@ -366,7 +367,8 @@
         "domain catalog pin и typed runtime-catalog errors",
         "exact reconstruction по immutable import membership",
         "проверкой compatible full-world pin и runtime contract",
-        "чистой projection по region/effective date после полной проверки"
+        "чистой projection по region/effective date после полной проверки",
+        "единой загрузкой неперсистентных common catalog lookups до projection"
       ],
       "path": "packages/runtime-catalog",
       "public_entry": "./src/index.js",

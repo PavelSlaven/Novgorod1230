@@ -1,6 +1,7 @@
 import { deepFreeze } from '@rus/kernel';
 export { validateInventoryTopology, calculateInventoryMass, resolveInventoryLoad, calculateHandsState, resolveInventoryAccess, deriveInventoryZone, calculateContainerUsage, buildInventoryStackSignature, planInventoryTransfer } from './inventory.js';
 export { planApprovedActorItemTransition } from './approved-actor-item-transition.js';
+export { InventoryArchetypeError, validateInventoryArchetypes, resolveInventoryProfile } from './inventory-archetypes.js';
 
 const ACCESS = new Set(['immediate','quick','top_bag','deep_bag','contained','closed_container','not_carried','borrowed','held_for_others','restricted']);
 const PLACEMENT = new Set(['held','equipped','carried','contained','property','borrowed','held_for_others']);

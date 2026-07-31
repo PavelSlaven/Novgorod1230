@@ -5,9 +5,7 @@ import {
   expectedPhase3Traversals,
   phase3ActivityReadProof,
   phase3ClueOwnershipMatches,
-  phase3NpcReadProof
-} from './lower-dvina-trace-phase-3-read-proofs.js';
-
+  phase3NpcReadProof } from './lower-dvina-trace-phase-3-read-proofs.js';
 export async function assertPhase3NormalizedRows(pool, payload) {
   const [
     clock,
@@ -140,14 +138,18 @@ export async function assertPhase3NormalizedRows(pool, payload) {
         [payload.party_id, `route-plan:${payload.party_id}:trace-phase3:`]
       )
     ]);
-  const expectedInteractions = payload.interactions ?? [];
+  const phase3InteractionPrefix = `interaction:${payload.party_id}:trace-phase3:`;
+  const expectedInteractions = (payload.interactions ?? []).filter(
+    ({ interaction_id: id }) => id.startsWith(phase3InteractionPrefix)
+  );
   const activityProof = phase3ActivityReadProof(payload, activities.rows);
-  const actualInteractions = interactions.rows.map((row) => ({
-    interaction_id: row.interaction_id,
-    npc_id: row.npc_id,
-    statement_ref: row.terminal_evidence_ref?.statement_ref,
-    consequence_ref: row.terminal_evidence_ref?.consequence_ref ?? null
-  }));
+  const actualInteractions = interactions.rows
+    .filter(({ interaction_id: id }) => id.startsWith(phase3InteractionPrefix))
+    .map((row) => ({
+      interaction_id: row.interaction_id, npc_id: row.npc_id,
+      statement_ref: row.terminal_evidence_ref?.statement_ref,
+      consequence_ref: row.terminal_evidence_ref?.consequence_ref ?? null
+    }));
   const expectedInteractionProof = expectedInteractions.map((entry) => ({
     interaction_id: entry.interaction_id,
     npc_id: entry.npc_id,
@@ -169,13 +171,14 @@ export async function assertPhase3NormalizedRows(pool, payload) {
       summary_text: entry.journal_text
     }]
   ).sort((left, right) => left.summary_id.localeCompare(right.summary_id));
-  const actualSummaries = summaries.rows.map((row) => ({
-    summary_id: row.summary_id,
-    interaction_id: row.interaction_id,
-    summary_scope: row.summary_scope,
-    remembering_subject_id: row.remembering_subject_id,
-    summary_text: row.summary_text
-  }));
+  const actualSummaries = summaries.rows
+    .filter(({ interaction_id: id }) => id.startsWith(phase3InteractionPrefix))
+    .map((row) => ({
+      summary_id: row.summary_id, interaction_id: row.interaction_id,
+      summary_scope: row.summary_scope,
+      remembering_subject_id: row.remembering_subject_id,
+      summary_text: row.summary_text
+    }));
   const expectedDecisions = expectedInteractions.map((entry) => ({
     request_id: entry.decision_trace.request_id,
     npc_id: entry.npc_id,
@@ -183,13 +186,14 @@ export async function assertPhase3NormalizedRows(pool, payload) {
     options_digest: entry.decision_trace.options_digest,
     trace_digest: entry.decision_trace.trace_digest
   })).sort((left, right) => left.request_id.localeCompare(right.request_id));
-  const actualDecisions = decisions.rows.map((row) => ({
-    request_id: row.request_id,
-    npc_id: row.npc_id,
-    option_id: row.option_id,
-    options_digest: row.options_digest,
-    trace_digest: row.trace_digest
-  }));
+  const expectedDecisionIds = new Set(expectedDecisions.map(({ request_id: id }) => id));
+  const actualDecisions = decisions.rows
+    .filter(({ request_id: id }) => expectedDecisionIds.has(id))
+    .map((row) => ({
+      request_id: row.request_id, npc_id: row.npc_id,
+      option_id: row.option_id, options_digest: row.options_digest,
+      trace_digest: row.trace_digest
+    }));
   const expectedChecks = (payload.activity_history ?? [])
     .filter((entry) => entry.execution_result?.check_result)
     .map((entry) => {

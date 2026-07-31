@@ -26,12 +26,16 @@ import {
 import {
   commitLowerDvinaTracePhase3
 } from './lower-dvina-trace-phase-3-commit.js';
+import {
+  commitLowerDvinaTracePhase4
+} from './lower-dvina-trace-phase-4-commit.js';
 export async function commitLowerDvinaTracePhase2({
   partyId,
   writePlan,
   inputDigest,
   contracts,
   phase3Contracts,
+  phase4Contracts,
   loadState,
   committer
 }) {
@@ -45,6 +49,11 @@ export async function commitLowerDvinaTracePhase2({
       phase3Contracts,
       loadState,
       committer
+    });
+  }
+  if (factual?.consequence?.phase4_kind) {
+    return commitLowerDvinaTracePhase4({
+      partyId, writePlan, inputDigest, phase4Contracts, loadState, committer
     });
   }
   const visibleContext = writePlan.write_targets

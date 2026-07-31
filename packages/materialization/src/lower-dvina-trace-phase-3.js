@@ -72,6 +72,62 @@ export function materializeLowerDvinaTracePreparedCamp({
   return { scene, npcs };
 }
 
+export function materializeLowerDvinaTracePreparedDryingShed({ input, bundle, runId, participantSelections, locationSelections }) {
+  const binding = bundle.materialization_bindings.phase_4_initial_state_binding;
+  const spatial = binding?.drying_shed_spatial_binding;
+  const location = locationSelections.find(({ slot_key: key }) => key === spatial?.location_profile_ref);
+  if (!location || !spatial || !Array.isArray(binding.initial_participant_placements)
+    || spatial.entry_route_ref !== 'trace_ld_v1_route_camp_to_shed'
+    || spatial.entry_endpoint_ref !== 'trace_ld_v1_ep_drying_shed_ridge_to_camp'
+    || spatial.anchor_template?.slot_key !== 'shed_approach'
+    || spatial.anchor_template?.state?.access_policy_ref !== 'trace_ld_v1_access_old_drying_shed'
+    || spatial.anchor_template?.state?.capacity_contract_ref !== 'trace_ld_v1_capacity_old_drying_shed'
+    || spatial.anchor_template?.state?.zone_ref !== 'shed_approach') {
+    fail('TRACE_PHASE_4_BINDING_INVALID', 'Approved drying-shed binding is required.');
+  }
+  const nodeId = deterministicInstanceId(input.party_id, runId, 'g5_node', spatial.location_profile_ref, 0);
+  const anchorId = deterministicInstanceId(input.party_id, runId, 'g5_anchor', spatial.anchor_template.template_id, 0);
+  const scene = {
+    location_profile_ref: spatial.location_profile_ref,
+    entry_route_ref: spatial.entry_route_ref,
+    entry_endpoint_ref: spatial.entry_endpoint_ref,
+    node: { instance_id: nodeId, parent_g4_id: location.selected.g4_node_ref.id, template_id: spatial.node_template_ref, slot_key: spatial.node_slot_ref, state: { location_profile_ref: location.location.location_profile_id, prepared_for_first_entry: true } },
+    anchor: { instance_id: anchorId, node_id: nodeId, template_id: spatial.anchor_template.template_id, slot_key: spatial.anchor_template.slot_key, npc_capacity: spatial.anchor_template.npc_capacity, item_capacity: spatial.anchor_template.item_capacity, container_capacity: spatial.anchor_template.container_capacity, state: structuredClone(spatial.anchor_template.state) }
+  };
+  const npcs = binding.initial_participant_placements.map((placement, ordinal) => materializeNpc({ input, bundle, runId, participantSelections, placement, ordinal, anchorId }));
+  const bySlot = new Map(npcs.map((npc) => [npc.participant_slot_ref, npc]));
+  const onisim = bySlot.get('onisim_boatman');
+  const ratsha = bySlot.get('ratsha_storehouse_helper');
+  if (!onisim || !ratsha) fail('TRACE_PHASE_4_NPC_BINDING_INVALID', 'Onisim and Ratsha must materialize exactly once.');
+  const rope = binding.onisim_injury_rope_binding;
+  if (rope?.condition_profile_ref !== 'trace_ld_v1_condition_onisim_injury'
+    || rope.condition_state !== 'injured_unable_to_walk'
+    || rope.rope_opening_state_contract_ref !== 'trace_ld_v1_opening_state_ratsha_binding_rope_onisim'
+    || rope.item_template_ref !== 'trace_ld_v1_item_ratsha_binding_rope'
+    || rope.owner_ref !== null
+    || rope.holder_ref !== 'onisim_boatman'
+    || rope.controller_ref !== 'ratsha_storehouse_helper'
+    || rope.location_ref !== spatial.location_profile_ref
+    || rope.use_state !== 'binding_onisim') {
+    fail('TRACE_PHASE_4_ONISIM_BINDING_INVALID', 'The approved Onisim injury and rope state is required.');
+  }
+  onisim.machine_state.body_condition = {
+    condition_profile_ref: rope.condition_profile_ref,
+    state: rope.condition_state
+  };
+  onisim.machine_state.binding_item = {
+    item_template_ref: rope.item_template_ref,
+    opening_state_contract_ref: rope.rope_opening_state_contract_ref,
+    owner_ref: rope.owner_ref,
+    holder_npc_id: onisim.instance_id,
+    controller_npc_id: ratsha.instance_id,
+    use_state: rope.use_state
+  };
+  ratsha.machine_state.surrender_state = 'not_surrendered';
+  ratsha.machine_state.restraint_state = 'not_restrained';
+  return { scene, npcs, onisim, ratsha, binding };
+}
+
 function materializeNpc({
   input,
   bundle,

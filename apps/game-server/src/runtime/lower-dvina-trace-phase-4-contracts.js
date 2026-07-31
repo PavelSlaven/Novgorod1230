@@ -1,0 +1,207 @@
+import { canonicalDigest } from '@rus/materialization';
+import { serverError } from '../errors.js';
+
+export const TRACE_PHASE_4_IDS = Object.freeze({
+  routeOption: 'follow_known_route_to_drying_shed',
+  negotiationOption: 'offer_conditional_protection_and_seek_surrender',
+  routeActivity: 'trace_ld_v1_activity_route_to_drying_shed',
+  negotiationActivity: 'trace_ld_v1_activity_ratsha_negotiation',
+  route: 'trace_ld_v1_route_camp_to_shed',
+  check: 'trace_ld_v1_check_ratsha_surrender_attempt',
+  camp: 'trace_ld_v1_loc_fishing_camp',
+  shed: 'trace_ld_v1_loc_old_drying_shed',
+  observation: 'trace_ld_v1_observation_onisim_alive_at_drying_shed',
+  ratshaPolicy: 'trace_ld_v1_npc_ratsha_decisions'
+});
+
+export function resolveTracePhase4Contracts({ state, bundle }) {
+  if (bundle.definition_revision !== 10 || bundle.definition?.revision !== 10) {
+    gap('TRACE_PHASE_4_REVISION_MISMATCH');
+  }
+  const ids = TRACE_PHASE_4_IDS;
+  const profiles = bundle.activity_check_consequence_profiles;
+  const routeActivity = exact(profiles.activity_profiles, 'profile_id', ids.routeActivity);
+  const negotiation = exact(profiles.activity_profiles, 'profile_id', ids.negotiationActivity);
+  const check = exact(profiles.check_profiles, 'check_id', ids.check);
+  const observation = exact(
+    profiles.scene_observation_profiles,
+    'profile_id',
+    ids.observation
+  );
+  const route = exact(bundle.movement_bindings.route_bindings, 'route_id', ids.route);
+  const reverseRoute = exact(
+    bundle.movement_bindings.route_bindings,
+    'route_id',
+    route.reverse_route_ref
+  );
+  const sourceEndpoint = exact(
+    bundle.location_topology_set.endpoints,
+    'endpoint_id',
+    route.source_endpoint
+  );
+  const destinationEndpoint = exact(
+    bundle.location_topology_set.endpoints,
+    'endpoint_id',
+    route.destination_endpoint
+  );
+  const access = exact(bundle.location_access_policies.access_policies, 'policy_id', negotiation.preconditions.access_policy_ref);
+  const capacity = exact(
+    bundle.location_capacity_contracts.capacity_contracts,
+    'contract_id',
+    bundle.location_capacity_contracts.capacity_contracts.find(
+      (entry) => entry.location_ref === ids.shed
+    )?.contract_id
+  );
+  const npcPolicy = exact(bundle.npc_decision_schedule_policies.decision_policies, 'policy_id', ids.ratshaPolicy);
+  const knifeTransition = exact(bundle.npc_decision_schedule_policies.property_transition_profiles,
+    'transition_profile_id', 'trace_ld_v1_property_ratsha_knife_surrendered_to_participating_fisher');
+  const npcExecutions =
+    bundle.npc_decision_schedule_policies.decision_execution_bindings
+      .filter((entry) => entry.policy_id === ids.ratshaPolicy);
+  const confessionStatement = exact(
+    bundle.knowledge_lie_memory_rules.statement_templates,
+    'statement_template_id',
+    'trace_ld_v1_statement_ratsha_confession'
+  );
+  const confessionEffect = exact(
+    bundle.npc_decision_schedule_policies.statement_effect_contracts,
+    'statement_effect_contract_id',
+    'trace_ld_v1_statement_effect_ratsha_confession'
+  );
+  const threatEffect = exact(
+    bundle.npc_decision_schedule_policies.statement_effect_contracts,
+    'statement_effect_contract_id',
+    'trace_ld_v1_statement_effect_ratsha_threat_or_bargain'
+  );
+  const actors = Object.fromEntries(['eremey_fisher', 'ratsha_storehouse_helper', 'onisim_boatman']
+    .map((ref) => [ref, actor(state, ref)]));
+  const promiseInstances = state.promise_instances ?? [];
+  if (promiseInstances.length !== 1) gap('TRACE_PHASE_4_PROMISE_MISSING');
+  const witnessIds = promiseInstances[0].witness_actor_ids
+    ?? promiseInstances[0].witness_refs?.map((entry) => entry.entity_id)
+    ?? [];
+  const fishers = (state.npcs ?? []).filter(
+    (entry) => /^background_fisher_[12]$/.test(entry.participant_slot_ref)
+      && witnessIds.includes(entry.instance_id)
+  );
+  if (fishers.length !== 1) gap('TRACE_PHASE_4_PARTICIPATING_FISHER_MISSING');
+  const fisher = fishers[0];
+  const audienceGroups = (state.sealed_selections ?? []).filter(
+    ({ selection_kind: kind }) => kind === 'audience'
+  );
+  const approvedAudienceRecords =
+    bundle.knowledge_lie_memory_rules.audience_candidate_slots ?? [];
+  const audienceRecord = audienceGroups[0]?.records?.[0];
+  if (audienceGroups.length !== 1
+      || audienceGroups[0].records?.length !== 1
+      || approvedAudienceRecords.length !== 1
+      || audienceRecord?.selected_id !== fisher.participant_slot_ref
+      || audienceRecord.record_digest
+        !== canonicalDigest(approvedAudienceRecords[0])
+      || promiseInstances[0].witness_slot_bindings
+        ?.trace_ld_v1_audience_slot_participating_fisher
+        !== fisher.instance_id
+      || promiseInstances[0].witness_slot_bindings?.eremey_fisher
+        !== actors.eremey_fisher.instance_id
+      || witnessIds.length !== 2) {
+    gap('TRACE_PHASE_4_AUDIENCE_BINDING_INVALID');
+  }
+  const preparedCamp = (state.prepared_scenes ?? []).find(
+    (entry) => entry.location_profile_ref === ids.camp
+  );
+  const preparedShed = (state.prepared_scenes ?? []).find(
+    (entry) => entry.location_profile_ref === ids.shed
+  );
+  if (!preparedCamp?.anchor?.instance_id || !preparedShed?.anchor?.instance_id
+      || preparedShed.entry_route_ref !== ids.route
+      || preparedShed.anchor.state?.access_policy_ref !== access.policy_id
+      || preparedShed.anchor.state?.capacity_contract_ref !== capacity.contract_id) {
+    gap('TRACE_PHASE_4_PREPARED_SCENE_INVALID');
+  }
+  const admittedSlots = new Set(
+    capacity.admission_model?.allowed_participant_slots ?? []
+  );
+  const approach = exact(capacity.zones, 'zone_id', 'shed_approach');
+  if (capacity.admission_model?.kind !== 'constraint_based'
+      || capacity.admission_model?.entry_group_bounds?.min > 3
+      || capacity.admission_model?.entry_group_bounds?.max < 3
+      || approach.max_actors < 5
+      || !['player_clerk', 'eremey_fisher', 'ratsha_storehouse_helper',
+        'onisim_boatman', fisher.participant_slot_ref].every(
+        (slot) => admittedSlots.has(slot)
+      )) {
+    gap('TRACE_PHASE_4_CAPACITY_CONTRACT_INVALID');
+  }
+  for (const record of [routeActivity, negotiation, check, route, npcPolicy,
+    confessionStatement]) {
+    const group = record === route ? 'movement' : record === npcPolicy ? 'npc_decisions' : record === check ? 'checks' : 'activities';
+    const selected = selection(
+      state,
+      record === confessionStatement ? 'lies_and_statements' : group,
+      record.profile_id ?? record.check_id ?? record.route_id
+        ?? record.policy_id ?? record.statement_template_id
+    );
+    if (!selected || selected.record_digest !== canonicalDigest(record)) gap('TRACE_PHASE_4_SEALED_SELECTION_MISMATCH');
+  }
+  if (routeActivity.duration_minutes !== 12 || negotiation.duration_minutes !== 10
+      || check.dc !== 13 || check.attribute !== 'influence' || check.skill !== 'communication'
+      || check.modifiers.state !== -1 || check.modifiers.item_or_evidence !== 0
+      || check.modifiers.circumstance !== 1 || route.duration_minutes !== 12
+      || route.knowledge_state !== 'closed_until_disclosed'
+      || route.reverse_route_ref !== reverseRoute.route_id
+      || reverseRoute.reverse_route_ref !== route.route_id
+      || reverseRoute.source_endpoint !== route.destination_endpoint
+      || reverseRoute.destination_endpoint !== route.source_endpoint
+      || reverseRoute.knowledge_state !== 'known_after_forward_traversal'
+      || !reverseRoute.knowledge_unlock_conditions.includes(
+        'trace_ld_v1_route_camp_to_shed_committed'
+      )
+      || sourceEndpoint.location_profile_id !== ids.camp
+      || destinationEndpoint.location_profile_id !== ids.shed
+      || !route.terminal_observation_profile_refs.includes(ids.observation)
+      || observation.committed_fact_output !== 'onisim_found_alive'
+      || observation.elapsed_minutes !== 0
+      || observation.body_state_mutation !== 'forbidden'
+      || confessionStatement.assertion?.assertion_id
+        !== 'trace_ld_v1_assertion_ratsha_confession'
+      || confessionStatement.requires_independent_confirmation !== true
+      || confessionEffect.statement_template_ref
+        !== confessionStatement.statement_template_id
+      || !['objective_truth', 'principal_fact', 'hidden_truth',
+        'completion_state'].every((target) =>
+        confessionEffect.forbidden_write_targets.includes(target))
+      || threatEffect.statement_template_ref !== null
+      || threatEffect.source_rule !== 'speaker_current_threat_or_offer_only'
+      || threatEffect.audience_rule
+        !== 'materialized_present_audience_only'
+      || !['objective_truth', 'confession', 'hidden_truth',
+        'completion_state'].every((target) =>
+        threatEffect.forbidden_write_targets.includes(target))) {
+    gap('TRACE_PHASE_4_APPROVED_CHAIN_INVALID');
+  }
+  return Object.freeze({ ids, routeActivity, negotiation, check, route,
+    reverseRoute: { ...structuredClone(reverseRoute),
+      digest: canonicalDigest(reverseRoute) },
+    sourceEndpoint, destinationEndpoint, access, capacity, npcPolicy,
+    observation, confessionStatement, confessionEffect, threatEffect,
+    knifeTransition, promisePolicy: structuredClone(bundle.promise_policy),
+    npcExecutions: structuredClone(npcExecutions),
+    anchors: {
+      camp: preparedCamp.anchor.instance_id,
+      shed: preparedShed.anchor.instance_id
+    },
+    actors: { ...actors, participating_fisher: structuredClone(fisher) },
+    activityPins: [routeActivity, negotiation, check, route, reverseRoute, npcPolicy,
+      observation, confessionStatement, confessionEffect, threatEffect].map((record) => ({
+      id: record.profile_id ?? record.check_id ?? record.route_id
+        ?? record.policy_id ?? record.statement_template_id
+        ?? record.statement_effect_contract_id,
+      version: record.version,
+      digest: canonicalDigest(record)
+    })) });
+}
+
+function actor(state, ref) { const value = (state.npcs ?? []).find((entry) => entry.participant_slot_ref === ref); if (!value?.instance_id) gap('TRACE_PHASE_4_PARTICIPANT_MISSING'); return structuredClone(value); }
+function selection(state, kind, id) { return state.sealed_selections?.find((g) => g.selection_kind === kind)?.records.find((r) => r.selected_id === id) ?? null; }
+function exact(records, key, id) { const matches = (records ?? []).filter((r) => r[key] === id); if (matches.length !== 1) gap('TRACE_PHASE_4_RECORD_GAP'); return matches[0]; }
+function gap(code) { throw serverError(code, 'The exact party-pinned Phase 4 chain is incomplete.', { status: 409 }); }

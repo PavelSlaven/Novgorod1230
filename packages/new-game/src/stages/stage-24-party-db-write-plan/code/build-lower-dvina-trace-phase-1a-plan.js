@@ -254,25 +254,52 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
   addBatch(batches, 'party_item_placements', result.immediate.items.map((item) => ({
     party_id: partyId,
     item_id: item.instance_id,
-    anchor_id: null,
+    anchor_id: item.anchor_id ?? null,
     container_id: null,
-    holder_npc_id: null,
-    holder_character_id: item.holder_character_id,
+    holder_npc_id: item.holder_npc_id ?? null,
+    holder_character_id: item.holder_character_id ?? null,
     physical_position: item.physical_position,
     equipment_slot_category_id: null
-  })), ['party_items', 'party_player_characters'], sourceTrace);
+  })), ['party_items', 'party_player_characters', 'party_npcs', 'party_g5_anchors'], sourceTrace);
   addBatch(batches, 'party_ownership', result.immediate.items.map((item) => ({
     party_id: partyId,
     ownership_id: `ownership_${item.instance_id}`,
     item_id: item.instance_id,
     container_id: null,
-    owner_npc_id: null,
-    owner_character_id: item.owner_character_id,
+    owner_npc_id: item.owner_npc_id ?? null,
+    owner_character_id: item.owner_character_id ?? null,
     owner_party: false,
-    controller_npc_id: null,
-    controller_character_id: item.controller_character_id,
+    owner_external_ref: null,
+    controller_npc_id: item.controller_npc_id ?? null,
+    controller_character_id: item.controller_character_id ?? null,
     claim_state: item.claim_state
-  })), ['party_items', 'party_player_characters'], sourceTrace);
+  })), ['party_items', 'party_player_characters', 'party_npcs'], sourceTrace);
+  addBatch(batches, 'party_obligations', (result.immediate.promise_instances ?? []).map(
+    (promise) => ({
+      obligation_id: promise.instance_id,
+      party_id: partyId,
+      policy_ref: promise.policy_ref,
+      policy_version: String(promise.policy_ref.revision),
+      promisor_ref: {
+        entity_kind: 'player_character',
+        entity_id: promise.promisor_actor_id
+      },
+      beneficiary_ref: {
+        entity_kind: 'npc',
+        entity_id: promise.beneficiary_actor_id
+      },
+      witness_refs: promise.witness_actor_ids.map((actorId) => ({
+        entity_kind: 'npc',
+        entity_id: actorId
+      })),
+      scope_snapshot: promise.scope_snapshot,
+      current_state: promise.current_state,
+      current_state_fact: promise.current_state_fact,
+      state_version: promise.state_version,
+      created_change_set_id: changeSetId,
+      last_change_set_id: changeSetId
+    })
+  ), ['party_player_characters', 'party_npcs', 'party_v3_change_sets'], sourceTrace);
   addBatch(batches, 'party_clocks', [{
     party_id: partyId,
     whole_minutes: Number(result.immediate.timestamp.whole_minutes),
@@ -359,17 +386,20 @@ function addBatch(batches, table, records, dependencies, sourceTrace) {
 }
 
 function phase3PreparedInputs(result) {
-  if (![8, 9].includes(
+  if (![8, 9, 10].includes(
     result.request_identity.scenario_definition_revision
   )) {
     return { preparedScenes: [], preparedNpcs: [] };
   }
   const preparedScenes = result.immediate.prepared_scenes;
   const preparedNpcs = result.immediate.npcs;
-  if (!Array.isArray(preparedScenes) || preparedScenes.length !== 1
-    || !Array.isArray(preparedNpcs) || preparedNpcs.length !== 3) {
+  const phase4 = result.request_identity.scenario_definition_revision === 10;
+  if (!Array.isArray(preparedScenes)
+    || preparedScenes.length !== (phase4 ? 2 : 1)
+    || !Array.isArray(preparedNpcs)
+    || preparedNpcs.length !== (phase4 ? 5 : 3)) {
     const error = new Error(
-      'Lower Dvina trace revision 8 requires one prepared camp and three initial NPC placements.'
+      'Lower Dvina trace prepared scene and NPC inventory is incomplete.'
     );
     error.code = 'LOWER_DVINA_TRACE_PHASE_3_PREPARED_STATE_INVALID';
     throw error;

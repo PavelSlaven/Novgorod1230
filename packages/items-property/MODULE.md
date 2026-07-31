@@ -26,6 +26,7 @@ Item identity, containers, ownership, access, inventory load, recognition and pr
 - `resolveLoadCategory`
 - `buildRecognitionRequest`
 - `validatePropertyRelation`
+- `planApprovedActorItemTransition` — pure proposal for an already approved actor-to-actor item transition
 
 ## Контракты и инварианты
 

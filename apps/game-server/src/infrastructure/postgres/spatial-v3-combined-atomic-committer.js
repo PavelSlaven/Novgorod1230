@@ -18,16 +18,21 @@ import {
 
 export { validateSpatialV3CombinedWritePlan };
 
+function serializePlanValue(value) {
+  return Array.isArray(value) ? JSON.stringify(value) : value;
+}
+
 async function apply(tx, write, mode, expectedStateVersion = null, sealedPlan = null, committedAtTurn = 0) {
   const spec = TABLES[write.target_table]; const record = write.target_table === 'party_v3_change_sets' ? { ...Object.fromEntries(Object.entries(write.record).filter(([key]) => !['idempotency_record_id', 'created_at_turn', 'committed_at_turn'].includes(key))), expected_state_version_set_digest: sealedPlan.expected_state_versions_digest.replace('sha256:', ''), expected_state_version_set: sealedPlan.expected_state_versions, committed_state_version_set_digest: sealedPlan.expected_state_versions_digest.replace('sha256:', ''), write_plan_digest: sealedPlan.write_set_digest.replace('sha256:', ''), created_at_turn: committedAtTurn, committed_at_turn: committedAtTurn } : write.record; const columns = Object.keys(record); const table = `party_runtime.${quote(write.target_table)}`;
   if (mode === 'update') {
     const set = columns.filter((column) =>
-      !spec.key.includes(column) && column !== 'state_version');
+      !spec.key.includes(column)
+      && (spec.version !== true || column !== 'state_version'));
     if (spec.version !== true) {
       const where = spec.key.map((column, index) =>
         `${quote(column)}=$${set.length + index + 1}`);
       const params = [
-        ...set.map((column) => record[column]),
+        ...set.map((column) => serializePlanValue(record[column])),
         ...spec.key.map((column) => record[column])
       ];
       const result = await tx.query(
@@ -46,7 +51,7 @@ async function apply(tx, write, mode, expectedStateVersion = null, sealedPlan = 
     const expected = expectedStateVersion;
     if (!Number.isInteger(expected) || expected < 0) throw Object.assign(new Error('update lacks expected version'), { spatialCode: 'state_version_conflict' });
     const where = spec.key.map((column, index) => `${quote(column)}=$${set.length + index + 1}`).concat(`state_version=$${set.length + spec.key.length + 1}`);
-    const params = [...set.map((column) => record[column]), ...spec.key.map((column) => record[column]), expected];
+    const params = [...set.map((column) => serializePlanValue(record[column])), ...spec.key.map((column) => record[column]), expected];
     const result = await tx.query(`UPDATE ${table} SET ${set.map((column, index) => `${quote(column)}=$${index + 1}`).join(', ')}, state_version=state_version+1 WHERE ${where.join(' AND ')}`, params);
     if (result.rowCount !== 1) throw Object.assign(new Error('stale state version'), { spatialCode: 'state_version_conflict' });
     return;
@@ -57,7 +62,8 @@ async function apply(tx, write, mode, expectedStateVersion = null, sealedPlan = 
     record
   });
   if (lifecycleFinalizer) return lifecycleFinalizer;
-  const values = columns.map((column) => Array.isArray(record[column]) ? JSON.stringify(record[column]) : record[column]); await tx.query(`INSERT INTO ${table} (${columns.map(quote).join(', ')}) VALUES (${values.map((_, index) => `$${index + 1}`).join(', ')})`, values);
+  const values = columns.map((column) => serializePlanValue(record[column]));
+  await tx.query(`INSERT INTO ${table} (${columns.map(quote).join(', ')}) VALUES (${values.map((_, index) => `$${index + 1}`).join(', ')})`, values);
 }
 
 export function createSpatialV3CombinedAtomicCommitter({ withTransaction, recheck, now = () => new Date() } = {}) {
@@ -170,7 +176,9 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
       }
       const settled = await tx.query(`UPDATE party_runtime.party_command_idempotency SET status='committed',result_change_set_id=$1,lease_token=NULL,lease_expires_at=NULL,finalized_at_turn=$2,state_version=state_version+1 WHERE party_id=$3 AND operation_kind=$4 AND idempotency_key=$5 AND status='leased'`, [plan.change_set_id, created_at_turn, plan.party_id, plan.operation_kind, plan.idempotency_key]); if (settled.rowCount !== 1) throw Object.assign(new Error('idempotency settle failed'), { spatialCode: 'idempotency_conflict' });
       return Object.freeze({ ok: true, replay: false, change_set_id: plan.change_set_id, lock_keys: Object.freeze(locks) });
-    }); } catch (cause) { return Object.freeze({ ok: false, error: error(cause.spatialCode ?? 'generated_schema_mismatch', plan.party_id, { reason: cause.message }) }); }
+    }); } catch (cause) {
+      return Object.freeze({ ok: false, error: error(cause.spatialCode ?? 'generated_schema_mismatch', plan.party_id, { reason: cause.message }) });
+    }
   } });
 }
 

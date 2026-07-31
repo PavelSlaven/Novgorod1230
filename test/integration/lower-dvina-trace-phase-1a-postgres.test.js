@@ -55,7 +55,8 @@ test('Phase 1A commits atomically, replays, rehydrates and isolates hidden truth
   await pool.query('SELECT 1');
   const partyFiles = (await readdir('schemas/party-db'))
     .filter((value) => /^\d+.*\.sql$/u.test(value)).sort();
-  for (const file of partyFiles.filter((value) => !value.startsWith('012_'))) {
+  for (const file of partyFiles.filter((value) =>
+    !value.startsWith('012_') && !value.startsWith('013_'))) {
     try {
       await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
     } catch (error) {
@@ -66,6 +67,10 @@ test('Phase 1A commits atomically, replays, rehydrates and isolates hidden truth
   assert.equal((await runPartyRuntimeCatalogMigration(pool)).status, 'applied');
   await pool.query(await readFile(
     'schemas/party-db/012_party_runtime_external_ownership.sql',
+    'utf8'
+  ));
+  await pool.query(await readFile(
+    'schemas/party-db/013_party_runtime_obligations.sql',
     'utf8'
   ));
   const schema = await readSchemaSnapshot(pool);

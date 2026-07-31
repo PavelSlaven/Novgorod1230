@@ -24,7 +24,38 @@ export async function applySealedLifecycleInsert(tx, write) {
       && ['completed', 'failed', 'aborted'].includes(write.record.status)) {
     return insertActivityExecution(tx, write.record);
   }
+  if (write.target_table === 'party_temporal_events'
+      && ['resolved', 'cancelled', 'blocked'].includes(write.record.status)) {
+    return insertTemporalEvent(tx, write.record);
+  }
   return null;
+}
+
+async function insertTemporalEvent(tx, terminal) {
+  await insertRecord(tx, 'party_temporal_events', {
+    ...terminal,
+    status: 'pending',
+    terminal_change_set_id: null,
+    state_version: 1
+  });
+  return async () => {
+    const result = await tx.query(
+      `UPDATE party_runtime.party_temporal_events
+          SET status=$2,terminal_change_set_id=$3,state_version=$4
+        WHERE event_id=$1 AND status='pending' AND state_version=1`,
+      [
+        terminal.event_id,
+        terminal.status,
+        terminal.terminal_change_set_id,
+        terminal.state_version
+      ]
+    );
+    if (result.rowCount !== 1) {
+      throw Object.assign(new Error('temporal event lifecycle transition failed'), {
+        spatialCode: 'state_version_conflict'
+      });
+    }
+  };
 }
 
 async function insertRouteExecution(tx, terminal) {

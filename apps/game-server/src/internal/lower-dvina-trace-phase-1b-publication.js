@@ -19,8 +19,8 @@ import {
 export * from './lower-dvina-trace-phase-1b-identities.js';
 
 const ROOT = 'data/world-catalogs/novgorod/lower-dvina-trace-v1';
-const MANIFEST_PATH = `${ROOT}/phase-1b-v4/manifest.json`;
-const BINDING_PATH = `${ROOT}/phase-1b-v4/publication-binding.json`;
+const MANIFEST_PATH = `${ROOT}/phase-1b-v5/manifest.json`;
+const BINDING_PATH = `${ROOT}/phase-1b-v5/publication-binding.json`;
 
 export async function loadLowerDvinaTracePhase1BPublication({
   rootDir = process.cwd(),
@@ -51,8 +51,8 @@ export async function loadLowerDvinaTracePhase1BPublication({
   }
   const manifest = manifestFile.value;
   if (manifest?.schema !== 'rus.lower_dvina_trace_phase_1b_manifest.v1'
-    || manifest.package_id !== 'lower_dvina_trace_phase_1b_v4'
-    || manifest.revision !== 4
+    || manifest.package_id !== 'lower_dvina_trace_phase_1b_v5'
+    || manifest.revision !== 5
     || manifest.status !== 'approved'
     || manifest.scenario_id !== 'lower_dvina_trace_v1'
     || manifest.publication_status !== 'public'
@@ -63,10 +63,16 @@ export async function loadLowerDvinaTracePhase1BPublication({
     );
   }
   const bindingFile = await readJson(rootDir, BINDING_PATH);
+  if (bindingFile.digest !== TRACE_PHASE_1B_APPROVED_BINDING_DIGEST) {
+    fail(
+      'TRACE_PHASE_1B_CONTENT_REF_MISMATCH',
+      'Phase 1B publication binding does not match its immutable digest pin.'
+    );
+  }
   assertExactRef(manifest.content_refs?.publication_binding, bindingFile, {
     path: BINDING_PATH,
-    id: 'lower_dvina_trace_phase_1b_publication_v4',
-    revision: 4,
+    id: 'lower_dvina_trace_phase_1b_publication_v5',
+    revision: 5,
     schema: 'rus.lower_dvina_trace_publication_binding.v1'
   });
   const binding = bindingFile.value;
@@ -76,9 +82,9 @@ export async function loadLowerDvinaTracePhase1BPublication({
     manifest.superseded_package_ref?.path
   );
   assertExactRef(manifest.superseded_package_ref, supersededManifest, {
-    path: `${ROOT}/phase-1b-v3/manifest.json`,
-    id: 'lower_dvina_trace_phase_1b_v3',
-    revision: 3,
+    path: `${ROOT}/phase-1b-v4/manifest.json`,
+    id: 'lower_dvina_trace_phase_1b_v4',
+    revision: 4,
     schema: 'rus.lower_dvina_trace_phase_1b_manifest.v1'
   }, 'package_id');
   const supersededBinding = await readJson(
@@ -86,9 +92,9 @@ export async function loadLowerDvinaTracePhase1BPublication({
     binding.superseded_binding_ref?.path
   );
   assertExactRef(binding.superseded_binding_ref, supersededBinding, {
-    path: `${ROOT}/phase-1b-v3/publication-binding.json`,
-    id: 'lower_dvina_trace_phase_1b_publication_v3',
-    revision: 3,
+    path: `${ROOT}/phase-1b-v4/publication-binding.json`,
+    id: 'lower_dvina_trace_phase_1b_publication_v4',
+    revision: 4,
     schema: 'rus.lower_dvina_trace_publication_binding.v1'
   });
 
@@ -96,14 +102,20 @@ export async function loadLowerDvinaTracePhase1BPublication({
     rootDir,
     binding.phase_1a_manifest_ref.path
   );
+  if (phase1A.digest !== TRACE_PHASE_1B_APPROVED_PHASE_1A_MANIFEST_DIGEST) {
+    fail(
+      'TRACE_PHASE_1B_PHASE_1A_REF_INVALID',
+      'Publication binding does not match the immutable Phase 1A creator pin.'
+    );
+  }
   assertExactRef(binding.phase_1a_manifest_ref, phase1A, {
-    path: `${ROOT}/phase-1a-v5/manifest.json`,
-    id: 'lower_dvina_trace_phase_1a_v5',
-    revision: 5,
+    path: `${ROOT}/phase-1a-v6/manifest.json`,
+    id: 'lower_dvina_trace_phase_1a_v6',
+    revision: 6,
     schema: 'rus.lower_dvina_trace_phase_1a_manifest.v1'
   }, 'package_id');
   if (phase1A.value.scenario_id !== binding.scenario_id
-    || phase1A.value.scenario_definition_revision !== 9
+    || phase1A.value.scenario_definition_revision !== 10
     || phase1A.value.content_refs?.materialization_bindings?.id
       !== binding.materializer_binding_id) {
     fail(
@@ -119,9 +131,9 @@ export async function loadLowerDvinaTracePhase1BPublication({
     phase1A.value.superseded_package_ref,
     supersededPhase1A,
     {
-      path: `${ROOT}/phase-1a-v4/manifest.json`,
-      id: 'lower_dvina_trace_phase_1a_v4',
-      revision: 4,
+      path: `${ROOT}/phase-1a-v5/manifest.json`,
+      id: 'lower_dvina_trace_phase_1a_v5',
+      revision: 5,
       schema: 'rus.lower_dvina_trace_phase_1a_manifest.v1'
     },
     'package_id'
@@ -131,16 +143,22 @@ export async function loadLowerDvinaTracePhase1BPublication({
     rootDir,
     binding.scenario_definition_ref.path
   );
+  if (definition.digest !== TRACE_PHASE_1B_APPROVED_DEFINITION_DIGEST) {
+    fail(
+      'TRACE_PHASE_1B_DEFINITION_REF_INVALID',
+      'Publication binding does not match the immutable scenario definition pin.'
+    );
+  }
   assertExactRef(binding.scenario_definition_ref, definition, {
-    path: `${ROOT}/phase-3-content-v2/definition.json`,
+    path: `${ROOT}/phase-4-content/definition.json`,
     id: 'lower_dvina_trace_v1',
-    revision: 9,
+    revision: 10,
     schema: 'rus.trace_scenario_definition.v1'
   }, 'scenario_id');
   if (definition.value.required_unresolved_refs?.length !== 0) {
     fail(
       'TRACE_PHASE_1B_DEFINITION_INCOMPLETE',
-      'Only the complete scenario definition revision 9 can be published.'
+      'Only the complete scenario definition revision 10 can be published.'
     );
   }
 
@@ -170,8 +188,8 @@ function assertBinding(binding) {
   const projection = binding?.opening_projection;
   const identity = binding?.execution_identity;
   if (binding?.schema !== 'rus.lower_dvina_trace_publication_binding.v1'
-    || binding.binding_id !== 'lower_dvina_trace_phase_1b_publication_v4'
-    || binding.revision !== 4
+    || binding.binding_id !== 'lower_dvina_trace_phase_1b_publication_v5'
+    || binding.revision !== 5
     || binding.status !== 'approved'
     || binding.scenario_id !== 'lower_dvina_trace_v1'
     || binding.publication_availability !== 'public'
@@ -180,9 +198,9 @@ function assertBinding(binding) {
     || !text(metadata?.description)
     || metadata.available !== true
     || binding.materializer_binding_id
-      !== 'lower_dvina_trace_phase_1a_materialization_bindings_v5'
+      !== 'lower_dvina_trace_phase_1a_materialization_bindings_v6'
     || projection?.projection_id
-      !== 'lower_dvina_trace_phase_1b_opening_projection_v4'
+      !== 'lower_dvina_trace_phase_1b_opening_projection_v5'
     || projection.schema !== 'first_game_screen'
     || projection.version !== 1
     || !Array.isArray(projection.visible_field_allowlist)

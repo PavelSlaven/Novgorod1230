@@ -5,9 +5,13 @@ import {
   assertLowerDvinaTracePhase3PickupCutover
 } from './lower-dvina-trace-phase-3-contract.js';
 import {
+  assertLowerDvinaTracePhase4Cutover
+} from './lower-dvina-trace-phase-4-contract.js';
+import {
   ARTIFACT_CONTRACTS,
   PHASE_3_ARTIFACT_CONTRACT_OVERRIDES,
   PHASE_3_PICKUP_ARTIFACT_CONTRACT_OVERRIDES,
+  PHASE_4_ARTIFACT_CONTRACT_OVERRIDES,
   REQUIRED_ARTIFACTS
 } from './lower-dvina-trace-artifact-contracts.js';
 
@@ -15,6 +19,7 @@ export const LOWER_DVINA_TRACE_SCENARIO_ID = 'lower_dvina_trace_v1';
 export const LOWER_DVINA_TRACE_DEFINITION_REVISION = 7;
 export const LOWER_DVINA_TRACE_PHASE_3_DEFINITION_REVISION = 8;
 export const LOWER_DVINA_TRACE_PHASE_3_PICKUP_DEFINITION_REVISION = 9;
+export const LOWER_DVINA_TRACE_PHASE_4_DEFINITION_REVISION = 10;
 export const LOWER_DVINA_TRACE_ACCEPTANCE_SEED_CONTEXT = 'lower_dvina_trace_phase_1a_mikula_v1';
 export const LOWER_DVINA_TRACE_APPROVED_WORLD_COMPATIBILITY_DIGEST =
   '0e239d47657a9bdf996f5a0cc5ca46e57e42a5326feb540d8acca747ad257b54';
@@ -27,12 +32,13 @@ export function assertLowerDvinaTraceRequest(input) {
     || ![
       LOWER_DVINA_TRACE_DEFINITION_REVISION,
       LOWER_DVINA_TRACE_PHASE_3_DEFINITION_REVISION,
-      LOWER_DVINA_TRACE_PHASE_3_PICKUP_DEFINITION_REVISION
+      LOWER_DVINA_TRACE_PHASE_3_PICKUP_DEFINITION_REVISION,
+      LOWER_DVINA_TRACE_PHASE_4_DEFINITION_REVISION
     ]
       .includes(input.scenario_definition_revision)) {
     fail(
       'TRACE_SCENARIO_REVISION_UNSUPPORTED',
-      'Only approved Lower Dvina trace definition revisions 7, 8 and 9 are supported.'
+      'Only approved Lower Dvina trace definition revisions 7, 8, 9 and 10 are supported.'
     );
   }
   if (input.materializer_version !== MATERIALIZER_VERSION || input.rng_algorithm_id !== RNG_VERSION) fail('TRACE_MATERIALIZER_VERSION_UNSUPPORTED', 'Materializer and RNG pins must match production versions.');
@@ -91,6 +97,7 @@ export function assertLowerDvinaTraceBundle(bundle, input) {
 }
 
 function artifactContractFor(key, definitionRevision) {
+  if (definitionRevision === LOWER_DVINA_TRACE_PHASE_4_DEFINITION_REVISION) return PHASE_4_ARTIFACT_CONTRACT_OVERRIDES[key] ?? ARTIFACT_CONTRACTS[key];
   if (definitionRevision
       === LOWER_DVINA_TRACE_PHASE_3_PICKUP_DEFINITION_REVISION) {
     return PHASE_3_PICKUP_ARTIFACT_CONTRACT_OVERRIDES[key]
@@ -267,13 +274,15 @@ function assertPhase1ABindings(bundle, definitionRevision) {
   const bindings = bundle.materialization_bindings;
   const phase3Definition = [
     LOWER_DVINA_TRACE_PHASE_3_DEFINITION_REVISION,
-    LOWER_DVINA_TRACE_PHASE_3_PICKUP_DEFINITION_REVISION
+    LOWER_DVINA_TRACE_PHASE_3_PICKUP_DEFINITION_REVISION,
+    LOWER_DVINA_TRACE_PHASE_4_DEFINITION_REVISION
   ].includes(definitionRevision);
   const expectedBindingId = phase3Definition
-    ? definitionRevision
-        === LOWER_DVINA_TRACE_PHASE_3_PICKUP_DEFINITION_REVISION
-      ? 'lower_dvina_trace_phase_1a_materialization_bindings_v5'
-      : 'lower_dvina_trace_phase_1a_materialization_bindings_v4'
+    ? definitionRevision === LOWER_DVINA_TRACE_PHASE_4_DEFINITION_REVISION
+      ? 'lower_dvina_trace_phase_1a_materialization_bindings_v6'
+      : definitionRevision === LOWER_DVINA_TRACE_PHASE_3_PICKUP_DEFINITION_REVISION
+        ? 'lower_dvina_trace_phase_1a_materialization_bindings_v5'
+        : 'lower_dvina_trace_phase_1a_materialization_bindings_v4'
     : 'lower_dvina_trace_phase_1a_materialization_bindings_v3';
   const expectedBindingDefinitionRevision =
     phase3Definition ? definitionRevision
@@ -359,6 +368,10 @@ function assertPhase1ACutoverIdentity(bundle, definitionRevision) {
   if (definitionRevision
       === LOWER_DVINA_TRACE_PHASE_3_PICKUP_DEFINITION_REVISION) {
     assertLowerDvinaTracePhase3PickupCutover(bundle, fail);
+    return;
+  }
+  if (definitionRevision === LOWER_DVINA_TRACE_PHASE_4_DEFINITION_REVISION) {
+    assertLowerDvinaTracePhase4Cutover(bundle, fail);
     return;
   }
   if (definitionRevision === LOWER_DVINA_TRACE_PHASE_3_DEFINITION_REVISION) {

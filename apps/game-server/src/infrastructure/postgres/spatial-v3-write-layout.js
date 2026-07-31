@@ -63,11 +63,16 @@ export const TABLES = Object.freeze({
   party_propagation_processes: { modes: ['insert', 'update'], key: ['process_id'], version: true },
   party_npc_knowledge_merge_states: { modes: ['update'], key: ['party_id', 'npc_id'], version: true },
   party_npc_knowledge: { modes: ['insert'], key: ['party_id', 'npc_id', 'fact_id'] },
-  party_npcs: { modes: ['insert'], key: ['party_id', 'npc_id'] },
+  party_npcs: { modes: ['insert', 'update'], key: ['party_id', 'npc_id'], version: false },
   party_npc_traits: { modes: ['insert'], key: ['party_id', 'npc_id', 'trait_domain', 'category_id'] },
-  party_items: { modes: ['insert'], key: ['party_id', 'item_id'] },
-  party_item_placements: { modes: ['insert'], key: ['party_id', 'item_id'] },
-  party_ownership: { modes: ['insert'], key: ['party_id', 'ownership_id'] },
+  party_items: { modes: ['insert', 'update'], key: ['party_id', 'item_id'], version: false },
+  party_item_placements: { modes: ['insert', 'update'], key: ['party_id', 'item_id'], version: false },
+  party_ownership: { modes: ['insert', 'update'], key: ['party_id', 'ownership_id'], version: false },
+  party_obligations: { modes: ['insert', 'update'], key: ['party_id', 'obligation_id'] },
+  party_obligation_transitions: {
+    modes: ['append'],
+    key: ['party_id', 'obligation_id', 'transition_ordinal']
+  },
   party_character_knowledge: {
     modes: ['insert'],
     key: ['party_id', 'character_id', 'fact_id']
@@ -165,6 +170,8 @@ export const validIdentity = (write) => write?.target_table === 'entity_placemen
                                     : write?.target_table === 'party_items' ? write.record?.item_id === write.id
                                       : write?.target_table === 'party_item_placements' ? write.record?.item_id === write.id
                                         : write?.target_table === 'party_ownership' ? write.record?.ownership_id === write.id
+                                        : write?.target_table === 'party_obligations' ? write.record?.obligation_id === write.id
+                                        : write?.target_table === 'party_obligation_transitions' ? write.id === `${write.record?.obligation_id}:${write.record?.transition_ordinal}`
                                         : write?.target_table === 'party_character_knowledge' ? write.id === `${write.record?.character_id}:${write.record?.fact_id}`
                                       : write?.target_table === 'party_containers' ? write.record?.container_id === write.id
               : write?.target_table === 'party_temporal_events' ? write.record?.event_id === write.id
@@ -227,6 +234,25 @@ export function childParentKeys(write) {
       return write.record?.item_id
         ? [`party_runtime.party_items:${write.record.item_id}`]
         : [`party_runtime.party_containers:${write.record?.container_id}`];
+    case 'party_obligations':
+      return [`party_runtime.party_v3_change_sets:${write.record?.last_change_set_id}`];
+    case 'party_obligation_transitions':
+      return [
+        `party_runtime.party_obligations:${write.record?.obligation_id}`,
+        `party_runtime.party_v3_change_sets:${write.record?.change_set_id}`,
+        ...(write.record?.activity_execution_id == null ? [] : [
+          `party_runtime.party_timed_activity_executions:${
+            write.record.activity_execution_id}`
+        ]),
+        ...(write.record?.check_resolution_id == null ? [] : [
+          `party_runtime.party_check_resolutions:${
+            write.record.check_resolution_id}`
+        ]),
+        ...(write.record?.npc_decision_request_id == null ? [] : [
+          `party_runtime.party_npc_decision_traces:${
+            write.record.npc_decision_request_id}`
+        ])
+      ];
     case 'party_perception_replay_evidence':
       return [
         `party_runtime.party_perception_records:${write.record?.perception_id}`,

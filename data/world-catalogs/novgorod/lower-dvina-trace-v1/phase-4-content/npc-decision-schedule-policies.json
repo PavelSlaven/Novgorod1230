@@ -1,0 +1,1441 @@
+{
+  "schema": "rus.trace_npc_decision_schedule_policies.v1",
+  "set_id": "trace_ld_v1_npc_decision_schedule_policies",
+  "revision": 3,
+  "supersedes_ref": {
+    "id": "trace_ld_v1_npc_decision_schedule_policies",
+    "revision": 2,
+    "schema": "rus.trace_npc_decision_schedule_policies.v1",
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-3-content/npc-decision-schedule-policies.json",
+    "digest": "1a3d5d8a5225a5ff98882dd66ba133a1903d3ead4f6d6912d694e0ff672a5969"
+  },
+  "publication_status": "unpublished",
+  "owner": "@rus/npc-runtime",
+  "owner_schema_ref": {"path": "packages/npc-runtime/src/declarative-content-contracts.v1.json", "digest": "2b11ebd5733869c4b9d24769f87ae36a6ffda313cb402e9de3768ea96c0ff009", "registry_id": "rus.npc_runtime.declarative_content_contracts.v1", "schema_id": "rus.trace_npc_decision_schedule_policies.v1", "schema_version": 1},
+  "clock_owner": "@rus/time-events-history",
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden",
+  "owner_contracts": [
+    "@rus/npc-runtime:npc_decision_request"
+  ],
+  "co_owner_contract_refs": {
+    "exact_time": {
+      "path": "packages/time-events-history/src/declarative-content-contracts.v1.json",
+      "digest": "cdc4571c07e2c592cbfb469a7028c31791d82deadbc9b37a97f44ee58597a471",
+      "registry_id": "rus.time_events_history.declarative_content_contracts.v1",
+      "registry_revision": 1,
+      "schema_id": "rus.time_events_history.game_timestamp_and_elapsed.v1",
+      "schema_version": 1,
+      "public_entrypoints": [
+        "@rus/time-events-history:normalizeGameTimestamp",
+        "@rus/time-events-history:addElapsedTime",
+        "@rus/time-events-history:compareGameTimestamp",
+        "@rus/time-events-history:computeTemporalDigest"
+      ]
+    },
+    "property_transition_profile": {
+      "path": "packages/items-property/src/declarative-content-contracts.v1.json",
+      "digest": "1b0d5c07b271eec3e5f3ab884a0f76c86c408cd3ae9b399d00a1f8a429e49e25",
+      "registry_id": "rus.items_property.declarative_content_contracts.v1",
+      "registry_revision": 1,
+      "schema_id": "rus.items_property.approved_transition_profile.v1",
+      "schema_version": 1,
+      "existing_support_entrypoints": [
+        "@rus/items-property:validateInventoryTopology",
+        "@rus/items-property:resolveInventoryAccess",
+        "@rus/items-property:validatePropertyRelation",
+        "@rus/items-property:planInventoryTransfer"
+      ],
+      "runtime_transition_execution": "deferred_to_first_use_integration"
+    }
+  },
+  "schedule_elapsed_contract": {
+    "schema": "rus.trace_schedule_elapsed_commit_contract.v1",
+    "version": 1,
+    "root_selection": "execution_elapsed_plan_root_ref",
+    "allowed_direct_owner_record_kinds": [
+      "schedule_execution_binding",
+      "movement_binding"
+    ],
+    "committed_elapsed_owner_mode": "direct_party_clock",
+    "clock_arithmetic_owner": "@rus/time-events-history",
+    "clock_entrypoint_ref": "@rus/time-events-history:addElapsedTime",
+    "clock_write_target": "elapsed_game_time",
+    "clock_write_count_per_completed_execution": 1,
+    "child_interval_accounting": "included_in_root_total_never_additive",
+    "activity_duration_role": "definition_metadata_must_equal_root_total",
+    "movement_duration_role": "included_child_interval_with_clock_write_forbidden",
+    "property_transition_duration_role": "included_stage_with_clock_write_forbidden",
+    "duplicate_clock_write_failure": "typed_duplicate_elapsed_commit"
+  },
+  "decision_policies": [
+    {
+      "policy_id": "trace_ld_v1_npc_onisim_decisions",
+      "schema": "rus.trace_npc_decision_policy.v1",
+      "version": 1,
+      "actor_slot": "onisim_boatman",
+      "applicable_state": ["alive", "injured", "unable_to_walk"],
+      "knowledge_and_perception_refs": ["trace_ld_v1_knowledge_scope_hired_boatman_v1"],
+      "goals": ["survive", "recover_entrusted_bag", "report_remembered_attack"],
+      "fears": ["further_assault", "being_left_without_help"],
+      "relations_and_obligations": ["contracted_transport_provider_for:player_clerk"],
+      "available_resources": [],
+      "location_access_constraints": ["trace_ld_v1_access_old_drying_shed", "trace_ld_v1_access_fishing_camp"],
+      "temporal_preconditions": ["current_game_timestamp", "fatigue_and_conversation_tolerance"],
+      "option_set": [
+        {"option_id": "report_reliable_memory_fragment", "preconditions": ["conscious", "conversation_tolerance_available"], "factual_effect_classes": ["statement"], "relation_knowledge_promise_effects": ["speaker_memory_report_only"]},
+        {"option_id": "defer_answer_due_to_injury", "preconditions": ["conscious"], "factual_effect_classes": ["decision_history"], "relation_knowledge_promise_effects": []},
+        {"option_id": "accept_first_aid", "preconditions": ["helper_present", "resources_present"], "factual_effect_classes": ["treatment_consent"], "relation_knowledge_promise_effects": []}
+      ],
+      "player_decision_boundary": "player_chooses_only_own_offer_and_action",
+      "forbidden_effects": ["walk_while_unable", "invent_memory", "objective_truth_from_statement"],
+      "no_valid_option_failure": "typed_npc_no_valid_option"
+    },
+    {
+      "policy_id": "trace_ld_v1_npc_eremey_decisions",
+      "schema": "rus.trace_npc_decision_policy.v1",
+      "version": 1,
+      "actor_slot": "eremey_fisher",
+      "applicable_state": ["guarded", "cooperation_enabled", "witness"],
+      "knowledge_and_perception_refs": ["trace_ld_v1_knowledge_scope_local_fisher_v1"],
+      "goals": ["protect_artel", "avoid_zhdanko_retribution", "help_injured_when_safe"],
+      "fears": ["zhdanko_retribution"],
+      "relations_and_obligations": ["work_artel_peer_of:background_fisher_1", "work_access_dependent_on:zhdanko_storehouse_controller"],
+      "available_resources": ["trace_ld_v1_item_fishing_net", "trace_ld_v1_item_bandage_cloth"],
+      "location_access_constraints": ["trace_ld_v1_access_fishing_camp", "trace_ld_v1_access_old_drying_shed", "trace_ld_v1_access_zhdanko_storehouse"],
+      "temporal_preconditions": ["current_game_timestamp", "current_location", "committed_cooperation_admission"],
+      "option_set": [
+        {"option_id": "evade_and_withhold", "preconditions": ["guarded"], "factual_effect_classes": ["statement", "speaker_memory_record", "player_journal_entry"], "relation_knowledge_promise_effects": []},
+        {"option_id": "bounded_disclosure", "preconditions": ["cooperation_enabled", "knowledge_origin_available"], "factual_effect_classes": ["statement", "route_knowledge_disclosure"], "relation_knowledge_promise_effects": ["witness_status_possible"]},
+        {"option_id": "guide_group", "preconditions": ["route_known", "access_available"], "factual_effect_classes": ["guide_commitment"], "relation_knowledge_promise_effects": []},
+        {"option_id": "assist_rescue_or_restraint", "preconditions": ["physically_present", "capacity_contract_satisfied"], "factual_effect_classes": ["group_action_effect"], "relation_knowledge_promise_effects": ["witness_status_possible"]}
+      ],
+      "player_decision_boundary": "player_cannot_choose_eremey_disclosure",
+      "forbidden_effects": ["invent_hidden_truth", "disclose_outside_knowledge_scope", "guaranteed_cooperation"],
+      "no_valid_option_failure": "typed_npc_no_valid_option"
+    },
+    {
+      "policy_id": "trace_ld_v1_npc_ratsha_decisions",
+      "schema": "rus.trace_npc_decision_policy.v1",
+      "version": 1,
+      "actor_slot": "ratsha_storehouse_helper",
+      "applicable_state": ["cornered", "negotiating", "surrendered", "restrained"],
+      "knowledge_and_perception_refs": ["trace_ld_v1_knowledge_scope_storehouse_helper_v1"],
+      "goals": ["survive", "avoid_summary_killing", "limit_responsibility"],
+      "fears": ["revenge", "zhdanko_retaliation", "formal_accountability"],
+      "relations_and_obligations": ["work_assistant_to:zhdanko_storehouse_controller"],
+      "available_resources": ["trace_ld_v1_item_ratsha_knife", "trace_ld_v1_item_hooking_pole"],
+      "location_access_constraints": ["trace_ld_v1_access_old_drying_shed", "trace_ld_v1_access_fishing_camp"],
+      "temporal_preconditions": ["current_game_timestamp", "current_threat_state", "promise_offer_state"],
+      "option_set": [
+        {"option_id": "attack_and_escape", "preconditions": ["not_surrendered", "at_old_drying_shed", "weapon_or_pole_controlled"], "factual_effect_classes": ["npc_attack_attempt", "player_decision_boundary"], "relation_knowledge_promise_effects": ["promise_activation_forbidden"]},
+        {
+          "option_id": "continue_escape_after_resolved_attack",
+          "preconditions": ["ratsha_attack_attempt_committed", "ratsha_attack_outcome_resolved", "ratsha_attack_player_response_committed", "trace_ld_v1_route_shed_to_camp_available"],
+          "required_any_of_committed_facts": [
+            "ratsha_defend_in_place_response_committed",
+            "ratsha_nonlethal_hold_failed_committed",
+            "player_break_contact_to_shed_approach_committed",
+            "player_break_contact_position_unchanged_committed"
+          ],
+          "none_of_committed_facts": ["ratsha_temporary_restraint_committed"],
+          "factual_effect_classes": ["movement_attempt"],
+          "relation_knowledge_promise_effects": ["promise_activation_forbidden"]
+        },
+        {"option_id": "threaten_and_bargain", "preconditions": ["not_surrendered", "can_speak"], "factual_effect_classes": ["threat", "statement"], "relation_knowledge_promise_effects": ["promise_remains_offer_only"]},
+        {"option_id": "surrender_without_confession", "preconditions": ["surrender_option_admitted", "can_comply_without_further_harm"], "factual_effect_classes": ["surrender_fact", "weapon_control_transition"], "relation_knowledge_promise_effects": ["promise_activation_candidate"]},
+        {"option_id": "surrender_and_confess", "preconditions": ["surrender_option_admitted", "can_comply_without_further_harm", "knowledge_origin_available"], "factual_effect_classes": ["surrender_fact", "statement", "weapon_control_transition"], "relation_knowledge_promise_effects": ["promise_activation_candidate", "confession_is_not_objective_truth"]}
+      ],
+      "player_decision_boundary": "player_offers_terms_but_npc_runtime_selects_ratsha_option",
+      "forbidden_effects": ["automatic_confession", "confession_establishes_whole_truth", "pardon", "completion_state"],
+      "no_valid_option_failure": "typed_npc_no_valid_option"
+    },
+    {
+      "policy_id": "trace_ld_v1_npc_zhdanko_decisions",
+      "schema": "rus.trace_npc_decision_policy.v1",
+      "version": 1,
+      "actor_slot": "zhdanko_storehouse_controller",
+      "applicable_state": ["unaware", "waiting", "preparing_departure", "confronted", "disarmed"],
+      "knowledge_and_perception_refs": ["trace_ld_v1_knowledge_scope_storehouse_controller_v1"],
+      "goals": ["conceal_committed_shortage_if_selected_truth", "retain_control_of_property", "avoid_accountability"],
+      "fears": ["witnesses", "documentary_reconciliation", "loss_of_escape_route"],
+      "relations_and_obligations": ["work_supervisor_of:ratsha_storehouse_helper"],
+      "available_resources": ["trace_ld_v1_container_road_bag", "trace_ld_v1_item_sealed_packet", "trace_ld_v1_item_second_small_boat", "trace_ld_v1_item_zhdanko_axe", "trace_ld_v1_item_zhdanko_rope"],
+      "location_access_constraints": ["trace_ld_v1_access_zhdanko_storehouse", "trace_ld_v1_zhdanko_external_access"],
+      "temporal_preconditions": ["current_game_timestamp", "current_location", "committed_knowledge_only", "temporal_boundaries_crossed"],
+      "option_set": [
+        {"option_id": "deny_and_submit", "preconditions": ["confronted", "group_present"], "factual_effect_classes": ["statement", "submission"], "relation_knowledge_promise_effects": []},
+        {"option_id": "deny_and_delay", "preconditions": ["confronted", "can_speak"], "factual_effect_classes": ["statement", "delay_attempt"], "relation_knowledge_promise_effects": []},
+        {"option_id": "bargain", "preconditions": ["confronted", "bargaining_resource_available"], "factual_effect_classes": ["statement", "offer"], "relation_knowledge_promise_effects": []},
+        {"option_id": "flee_without_weapon", "preconditions": ["at_storehouse_river_access", "trace_ld_v1_scope_exit_storehouse_by_small_boat_available", "second_small_boat_prepared", "axe_not_controlled"], "factual_effect_classes": ["movement_attempt"], "relation_knowledge_promise_effects": []},
+        {"option_id": "resist_with_axe", "preconditions": ["axe_controlled", "group_present", "movement_space_available"], "factual_effect_classes": ["threat", "npc_action"], "relation_knowledge_promise_effects": []}
+      ],
+      "player_decision_boundary": "player_chooses_retreat_or_own_response_only",
+      "forbidden_effects": ["forced_scene_presence", "automatic_guilt", "legal_judgment", "completion_state"],
+      "no_valid_option_failure": "typed_npc_no_valid_option"
+    },
+    {
+      "policy_id": "trace_ld_v1_npc_background_fisher_1_decisions",
+      "schema": "rus.trace_npc_decision_policy.v1",
+      "version": 1,
+      "actor_slot": "background_fisher_1",
+      "applicable_state": ["working", "assisting", "guarding", "witnessing"],
+      "knowledge_and_perception_refs": ["trace_ld_v1_knowledge_scope_background_fisher_v1"],
+      "goals": ["protect_artel", "assist_injured", "avoid_needless_harm"],
+      "fears": ["armed_violence"],
+      "relations_and_obligations": ["work_artel_peer_of:eremey_fisher"],
+      "available_resources": ["trace_ld_v1_item_carry_poles"],
+      "location_access_constraints": ["trace_ld_v1_access_fishing_camp", "trace_ld_v1_access_old_drying_shed", "trace_ld_v1_access_zhdanko_storehouse"],
+      "temporal_preconditions": ["current_game_timestamp", "current_location"],
+      "option_set": [
+        {"option_id": "observe", "preconditions": ["physically_present"], "factual_effect_classes": ["perception"], "relation_knowledge_promise_effects": ["witness_memory_possible"]},
+        {"option_id": "carry", "preconditions": ["carrier_slot_available", "resources_present"], "factual_effect_classes": ["group_action_effect"], "relation_knowledge_promise_effects": []},
+        {"option_id": "guard_or_hold", "preconditions": ["physically_present", "group_response_admitted"], "factual_effect_classes": ["group_action_effect"], "relation_knowledge_promise_effects": ["witness_memory_possible"]},
+        {"option_id": "escort", "preconditions": ["route_accessible"], "factual_effect_classes": ["movement_commitment"], "relation_knowledge_promise_effects": []}
+      ],
+      "player_decision_boundary": "player_requests_but_does_not_select_fisher_option",
+      "forbidden_effects": ["invent_testimony", "teleport", "summary_killing"],
+      "no_valid_option_failure": "typed_npc_no_valid_option"
+    },
+    {
+      "policy_id": "trace_ld_v1_npc_background_fisher_2_decisions",
+      "schema": "rus.trace_npc_decision_policy.v1",
+      "version": 1,
+      "actor_slot": "background_fisher_2",
+      "applicable_state": ["working", "assisting", "guarding", "witnessing"],
+      "knowledge_and_perception_refs": ["trace_ld_v1_knowledge_scope_background_fisher_v1"],
+      "goals": ["protect_artel", "assist_injured", "avoid_needless_harm"],
+      "fears": ["armed_violence"],
+      "relations_and_obligations": ["work_artel_peer_of:eremey_fisher"],
+      "available_resources": [],
+      "location_access_constraints": ["trace_ld_v1_access_fishing_camp", "trace_ld_v1_access_old_drying_shed", "trace_ld_v1_access_zhdanko_storehouse"],
+      "temporal_preconditions": ["current_game_timestamp", "current_location"],
+      "option_set": [
+        {"option_id": "observe", "preconditions": ["physically_present"], "factual_effect_classes": ["perception"], "relation_knowledge_promise_effects": ["witness_memory_possible"]},
+        {"option_id": "carry", "preconditions": ["carrier_slot_available", "resources_present"], "factual_effect_classes": ["group_action_effect"], "relation_knowledge_promise_effects": []},
+        {"option_id": "guard_or_hold", "preconditions": ["physically_present", "group_response_admitted"], "factual_effect_classes": ["group_action_effect"], "relation_knowledge_promise_effects": ["witness_memory_possible"]},
+        {"option_id": "escort", "preconditions": ["route_accessible"], "factual_effect_classes": ["movement_commitment"], "relation_knowledge_promise_effects": []}
+      ],
+      "player_decision_boundary": "player_requests_but_does_not_select_fisher_option",
+      "forbidden_effects": ["invent_testimony", "teleport", "summary_killing"],
+      "no_valid_option_failure": "typed_npc_no_valid_option"
+    }
+  ],
+  "statement_effect_contracts": [
+    {
+      "statement_effect_contract_id": "trace_ld_v1_statement_effect_onisim_memory_report",
+      "statement_template_ref": "trace_ld_v1_statement_onisim_testimony",
+      "source_rule": "speaker_committed_memory_only",
+      "audience_rule": "materialized_present_audience_only",
+      "write_targets": ["statement_record", "speaker_memory_report", "audience_perception"],
+      "forbidden_write_targets": ["objective_truth", "hidden_truth", "completion_state"]
+    },
+    {
+      "statement_effect_contract_id": "trace_ld_v1_statement_effect_eremey_evasion",
+      "statement_template_ref": "trace_ld_v1_statement_eremey_first_answer",
+      "source_rule": "speaker_admitted_knowledge_and_withholding_policy",
+      "audience_rule": "materialized_present_audience_only",
+      "write_targets": ["statement_record", "speaker_memory_record", "player_journal_entry"],
+      "forbidden_write_targets": ["objective_truth", "hidden_truth", "completion_state"]
+    },
+    {
+      "statement_effect_contract_id": "trace_ld_v1_statement_effect_eremey_disclosure",
+      "statement_template_ref": "trace_ld_v1_statement_eremey_disclosure",
+      "source_rule": "speaker_admitted_knowledge_origin_only",
+      "audience_rule": "materialized_present_audience_only",
+      "write_targets": ["statement_record", "speaker_memory_record", "player_journal_entry", "audience_knowledge_proposal", "route_knowledge_disclosure"],
+      "forbidden_write_targets": ["objective_truth", "hidden_truth", "completion_state"]
+    },
+    {
+      "statement_effect_contract_id": "trace_ld_v1_statement_effect_ratsha_threat_or_bargain",
+      "statement_template_ref": null,
+      "source_rule": "speaker_current_threat_or_offer_only",
+      "audience_rule": "materialized_present_audience_only",
+      "write_targets": ["statement_record", "immediate_threat", "relationship_delta_proposal"],
+      "forbidden_write_targets": ["objective_truth", "confession", "hidden_truth", "completion_state"]
+    },
+    {
+      "statement_effect_contract_id": "trace_ld_v1_statement_effect_ratsha_confession",
+      "statement_template_ref": "trace_ld_v1_statement_ratsha_confession",
+      "source_rule": "speaker_admitted_knowledge_origin_only",
+      "audience_rule": "bound_required_audience_and_materialized_observers",
+      "write_targets": ["statement_record", "confession_assertion", "audience_knowledge_proposal"],
+      "forbidden_write_targets": ["objective_truth", "principal_fact", "hidden_truth", "completion_state"]
+    },
+    {
+      "statement_effect_contract_id": "trace_ld_v1_statement_effect_zhdanko_denial",
+      "statement_template_ref": "trace_ld_v1_statement_zhdanko_denial",
+      "source_rule": "speaker_denial_assertion_only",
+      "audience_rule": "materialized_present_audience_only",
+      "write_targets": ["statement_record", "denial_assertion", "audience_perception"],
+      "forbidden_write_targets": ["objective_truth", "innocence_fact", "hidden_truth", "completion_state"]
+    },
+    {
+      "statement_effect_contract_id": "trace_ld_v1_statement_effect_zhdanko_delay_or_bargain",
+      "statement_template_ref": null,
+      "source_rule": "speaker_current_delay_or_offer_only",
+      "audience_rule": "materialized_present_audience_only",
+      "write_targets": ["statement_record", "relationship_delta_proposal", "npc_decision_history"],
+      "forbidden_write_targets": ["objective_truth", "legal_judgment", "hidden_truth", "completion_state"]
+    }
+  ],
+  "decision_execution_bindings": [
+    {
+      "execution_binding_id": "trace_ld_v1_decision_execution_onisim_report",
+      "policy_id": "trace_ld_v1_npc_onisim_decisions",
+      "option_id": "report_reliable_memory_fragment",
+      "execution_kind": "bounded_statement_effect",
+      "activity_profile_refs": [],
+      "time_contract": {"mode": "no_additional_elapsed_at_parent_conversation_boundary", "parent_execution_refs": ["trace_ld_v1_activity_first_aid_onisim", "trace_ld_v1_activity_fire_rest", "trace_ld_v1_activity_temporary_decision"], "parent_selection_policy": "one_current_committed_parent_activity_from_closed_refs", "clock_write": "forbidden"},
+      "movement_refs": [],
+      "consequence_refs": [],
+      "property_transition_refs": [],
+      "body_effect_refs": [],
+      "statement_effect_contract_ref": "trace_ld_v1_statement_effect_onisim_memory_report",
+      "write_targets": ["statement_record", "speaker_memory_report", "audience_perception", "npc_decision_history"],
+      "forbidden_write_targets": ["objective_truth", "hidden_truth", "completion_state"],
+      "typed_failure": "typed_decision_statement_precondition_failed"
+    },
+    {
+      "execution_binding_id": "trace_ld_v1_decision_execution_onisim_defer",
+      "policy_id": "trace_ld_v1_npc_onisim_decisions",
+      "option_id": "defer_answer_due_to_injury",
+      "execution_kind": "bounded_decision_history",
+      "activity_profile_refs": [],
+      "time_contract": {"mode": "no_additional_elapsed_at_parent_conversation_boundary", "parent_execution_refs": ["trace_ld_v1_activity_first_aid_onisim", "trace_ld_v1_activity_fire_rest", "trace_ld_v1_activity_temporary_decision"], "parent_selection_policy": "one_current_committed_parent_activity_from_closed_refs", "clock_write": "forbidden"},
+      "movement_refs": [],
+      "consequence_refs": [],
+      "property_transition_refs": [],
+      "body_effect_refs": [],
+      "statement_effect_contract_ref": null,
+      "write_targets": ["npc_decision_history"],
+      "forbidden_write_targets": ["body_recovery", "objective_truth", "hidden_truth", "completion_state"],
+      "typed_failure": "typed_decision_effect_precondition_failed"
+    },
+    {
+      "execution_binding_id": "trace_ld_v1_decision_execution_onisim_accept_first_aid",
+      "policy_id": "trace_ld_v1_npc_onisim_decisions",
+      "option_id": "accept_first_aid",
+      "execution_kind": "future_activity_admission",
+      "activity_profile_refs": ["trace_ld_v1_activity_first_aid_onisim"],
+      "time_contract": {"mode": "no_additional_elapsed_until_bound_activity_executes", "parent_execution_refs": ["trace_ld_v1_activity_first_aid_onisim"], "parent_selection_policy": "one_selected_bound_activity_from_closed_refs", "clock_write": "forbidden"},
+      "movement_refs": [],
+      "consequence_refs": [],
+      "property_transition_refs": [],
+      "body_effect_refs": ["trace_ld_v1_body_first_aid_onisim_25m"],
+      "statement_effect_contract_ref": null,
+      "write_targets": ["treatment_consent", "npc_decision_history"],
+      "forbidden_write_targets": ["treatment_result", "instant_recovery", "elapsed_game_time", "completion_state"],
+      "typed_failure": "typed_treatment_admission_precondition_failed"
+    },
+    {
+      "execution_binding_id": "trace_ld_v1_decision_execution_eremey_evade",
+      "policy_id": "trace_ld_v1_npc_eremey_decisions",
+      "option_id": "evade_and_withhold",
+      "execution_kind": "bounded_statement_effect",
+      "activity_profile_refs": [],
+      "time_contract": {"mode": "no_additional_elapsed_at_parent_conversation_boundary", "parent_execution_refs": ["trace_ld_v1_activity_first_eremey_talk", "trace_ld_v1_activity_eremey_with_evidence"], "parent_selection_policy": "one_current_committed_parent_activity_from_closed_refs", "clock_write": "forbidden"},
+      "movement_refs": [],
+      "consequence_refs": [],
+      "property_transition_refs": [],
+      "body_effect_refs": [],
+      "statement_effect_contract_ref": "trace_ld_v1_statement_effect_eremey_evasion",
+      "interaction_persistence_mapping_ref": "trace_ld_v1_mapping_eremey_first_answer_v1",
+      "write_targets": ["statement_record", "speaker_memory_record", "player_journal_entry", "npc_decision_history"],
+      "forbidden_write_targets": ["objective_truth", "hidden_truth", "completion_state"],
+      "typed_failure": "typed_decision_statement_precondition_failed"
+    },
+    {
+      "execution_binding_id": "trace_ld_v1_decision_execution_eremey_disclose",
+      "policy_id": "trace_ld_v1_npc_eremey_decisions",
+      "option_id": "bounded_disclosure",
+      "execution_kind": "bounded_statement_and_route_knowledge_effect",
+      "activity_profile_refs": [],
+      "time_contract": {"mode": "no_additional_elapsed_at_parent_conversation_boundary", "parent_execution_refs": ["trace_ld_v1_activity_first_eremey_talk", "trace_ld_v1_activity_eremey_with_evidence"], "parent_selection_policy": "one_current_committed_parent_activity_from_closed_refs", "clock_write": "forbidden"},
+      "movement_refs": ["trace_ld_v1_route_camp_to_shed"],
+      "movement_role": "knowledge_disclosure_only_no_traversal",
+      "consequence_refs": [],
+      "property_transition_refs": [],
+      "body_effect_refs": [],
+      "statement_effect_contract_ref": "trace_ld_v1_statement_effect_eremey_disclosure",
+      "interaction_persistence_mapping_ref": "trace_ld_v1_mapping_eremey_disclosure_v1",
+      "write_targets": ["statement_record", "speaker_memory_record", "player_journal_entry", "audience_knowledge_proposal", "route_knowledge_disclosure", "npc_decision_history"],
+      "forbidden_write_targets": ["actor_position", "elapsed_game_time", "objective_truth", "hidden_truth", "completion_state"],
+      "typed_failure": "typed_route_knowledge_disclosure_precondition_failed"
+    },
+    {
+      "execution_binding_id": "trace_ld_v1_decision_execution_eremey_guide",
+      "policy_id": "trace_ld_v1_npc_eremey_decisions",
+      "option_id": "guide_group",
+      "execution_kind": "future_route_activity_admission",
+      "activity_profile_refs": ["trace_ld_v1_activity_route_to_drying_shed", "trace_ld_v1_activity_route_to_storehouse"],
+      "time_contract": {"mode": "no_additional_elapsed_until_selected_route_activity_executes", "parent_execution_refs": ["trace_ld_v1_activity_route_to_drying_shed", "trace_ld_v1_activity_route_to_storehouse"], "parent_selection_policy": "one_selected_bound_activity_from_closed_refs", "clock_write": "forbidden"},
+      "movement_refs": ["trace_ld_v1_route_camp_to_shed", "trace_ld_v1_route_camp_to_storehouse"],
+      "variant_selection_inputs": ["committed_current_location", "player_requested_known_destination", "route_access"],
+      "variant_selection_policy": "select_one_exact_matching_route_or_fail_closed",
+      "consequence_refs": [],
+      "property_transition_refs": [],
+      "body_effect_refs": [],
+      "statement_effect_contract_ref": null,
+      "write_targets": ["guide_commitment", "route_activity_admission", "npc_decision_history"],
+      "forbidden_write_targets": ["actor_position", "elapsed_game_time", "invented_route", "completion_state"],
+      "typed_failure": "typed_no_exact_guide_route_variant"
+    },
+    {
+      "execution_binding_id": "trace_ld_v1_decision_execution_eremey_assist",
+      "policy_id": "trace_ld_v1_npc_eremey_decisions",
+      "option_id": "assist_rescue_or_restraint",
+      "execution_kind": "future_group_activity_admission",
+      "activity_profile_refs": ["trace_ld_v1_activity_first_aid_onisim", "trace_ld_v1_activity_make_stretcher_and_carry", "trace_ld_v1_activity_danger_resolution"],
+      "time_contract": {"mode": "no_additional_elapsed_until_selected_group_activity_executes", "parent_execution_refs": ["trace_ld_v1_activity_first_aid_onisim", "trace_ld_v1_activity_make_stretcher_and_carry", "trace_ld_v1_activity_danger_resolution"], "parent_selection_policy": "one_selected_bound_activity_from_closed_refs", "clock_write": "forbidden"},
+      "movement_refs": ["trace_ld_v1_route_shed_to_camp_carry_onisim"],
+      "consequence_refs": [],
+      "property_transition_refs": [],
+      "body_effect_refs": ["trace_ld_v1_body_first_aid_onisim_25m", "trace_ld_v1_body_carry_20m", "trace_ld_v1_body_danger_2m"],
+      "statement_effect_contract_ref": null,
+      "closed_context_variants": ["first_aid", "carry_onisim", "bounded_restraint"],
+      "write_targets": ["group_activity_participant_binding", "npc_decision_history"],
+      "forbidden_write_targets": ["activity_result_before_execution", "elapsed_game_time", "completion_state"],
+      "typed_failure": "typed_no_exact_group_activity_variant"
+    },
+    {
+      "execution_binding_id": "trace_ld_v1_decision_execution_ratsha_attack_escape",
+      "policy_id": "trace_ld_v1_npc_ratsha_decisions",
+      "option_id": "attack_and_escape",
+      "execution_kind": "attack_attempt_then_mandatory_player_boundary",
+      "activity_profile_refs": ["trace_ld_v1_activity_ratsha_attack_and_escape_attempt"],
+      "time_contract": {
+        "mode": "single_activity_root_then_stop",
+        "roots": [
+          {"root_ref": "trace_ld_v1_activity_ratsha_attack_and_escape_attempt", "time_profile_ref": "trace_ld_v1_time_2m", "clock_write": "single_if_completed"}
+        ],
+        "duplicate_clock_write": "forbidden"
+      },
+      "movement_refs": [],
+      "mandatory_stop_after_activity": "ratsha_attack_player_response_required",
+      "movement_before_attack_resolution_and_player_response": "forbidden",
+      "consequence_refs": ["trace_ld_v1_consequence_ratsha_attack_escape_attempt"],
+      "property_transition_refs": [],
+      "body_effect_refs": [],
+      "statement_effect_contract_ref": null,
+      "write_targets": ["npc_decision_history", "immediate_threat", "player_decision_boundary", "activity_history"],
+      "forbidden_write_targets": ["automatic_harm", "automatic_escape", "hidden_truth", "completion_state"],
+      "typed_failure": "typed_attack_or_escape_stage_precondition_failed"
+    },
+    {
+      "execution_binding_id": "trace_ld_v1_decision_execution_ratsha_continue_escape",
+      "policy_id": "trace_ld_v1_npc_ratsha_decisions",
+      "option_id": "continue_escape_after_resolved_attack",
+      "execution_kind": "post_player_boundary_route_attempt",
+      "activity_profile_refs": [],
+      "time_contract": {
+        "mode": "single_route_root_after_new_npc_decision",
+        "roots": [
+          {"root_ref": "trace_ld_v1_route_shed_to_camp", "time_profile_ref": "trace_ld_v1_time_12m", "clock_write": "single_if_route_admitted_and_completed"}
+        ],
+        "duplicate_clock_write": "forbidden"
+      },
+      "movement_refs": ["trace_ld_v1_route_shed_to_camp"],
+      "required_committed_facts": ["ratsha_attack_attempt_committed", "ratsha_attack_outcome_resolved", "ratsha_attack_player_response_committed"],
+      "required_any_of_committed_facts": [
+        "ratsha_defend_in_place_response_committed",
+        "ratsha_nonlethal_hold_failed_committed",
+        "player_break_contact_to_shed_approach_committed",
+        "player_break_contact_position_unchanged_committed"
+      ],
+      "none_of_committed_facts": ["ratsha_temporary_restraint_committed"],
+      "consequence_refs": [],
+      "property_transition_refs": [],
+      "body_effect_refs": [],
+      "statement_effect_contract_ref": null,
+      "write_targets": ["npc_decision_history", "movement_attempt", "movement_history"],
+      "forbidden_write_targets": ["attack_outcome", "automatic_harm", "hidden_truth", "completion_state"],
+      "typed_failure": "typed_post_attack_escape_not_admitted"
+    },
+    {
+      "execution_binding_id": "trace_ld_v1_decision_execution_ratsha_threaten_bargain",
+      "policy_id": "trace_ld_v1_npc_ratsha_decisions",
+      "option_id": "threaten_and_bargain",
+      "execution_kind": "bounded_statement_effect",
+      "activity_profile_refs": [],
+      "time_contract": {"mode": "no_additional_elapsed_at_parent_negotiation_boundary", "parent_execution_refs": ["trace_ld_v1_activity_ratsha_negotiation"], "parent_selection_policy": "one_current_committed_parent_activity_from_closed_refs", "clock_write": "forbidden"},
+      "movement_refs": [],
+      "consequence_refs": [],
+      "property_transition_refs": [],
+      "body_effect_refs": [],
+      "statement_effect_contract_ref": "trace_ld_v1_statement_effect_ratsha_threat_or_bargain",
+      "write_targets": ["statement_record", "immediate_threat", "npc_decision_history"],
+      "forbidden_write_targets": ["objective_truth", "surrender_fact", "hidden_truth", "completion_state"],
+      "typed_failure": "typed_decision_statement_precondition_failed"
+    },
+    {
+      "execution_binding_id": "trace_ld_v1_decision_execution_ratsha_surrender_without_confession",
+      "policy_id": "trace_ld_v1_npc_ratsha_decisions",
+      "option_id": "surrender_without_confession",
+      "execution_kind": "atomic_surrender_and_weapon_control_transition",
+      "activity_profile_refs": [],
+      "time_contract": {"mode": "no_additional_elapsed_at_parent_negotiation_boundary", "parent_execution_refs": ["trace_ld_v1_activity_ratsha_negotiation"], "parent_selection_policy": "one_current_committed_parent_activity_from_closed_refs", "clock_write": "forbidden"},
+      "movement_refs": [],
+      "consequence_refs": ["trace_ld_v1_consequence_ratsha_surrender_committed"],
+      "property_transition_refs": ["trace_ld_v1_property_ratsha_knife_surrendered_to_participating_fisher"],
+      "body_effect_refs": [],
+      "statement_effect_contract_ref": null,
+      "ordered_atomic_effects": ["commit_ratsha_surrender_without_further_harm", "transfer_ratsha_knife_control", "activate_promise_fact_if_offer_terms_match"],
+      "write_targets": ["surrender_fact", "weapon_control_transition", "promise_activation_candidate", "npc_decision_history"],
+      "forbidden_write_targets": ["confession", "pardon", "hidden_truth", "completion_state"],
+      "typed_failure": "typed_ratsha_surrender_execution_precondition_failed"
+    },
+    {
+      "execution_binding_id": "trace_ld_v1_decision_execution_ratsha_surrender_and_confess",
+      "policy_id": "trace_ld_v1_npc_ratsha_decisions",
+      "option_id": "surrender_and_confess",
+      "execution_kind": "atomic_surrender_weapon_and_statement_effect",
+      "activity_profile_refs": [],
+      "time_contract": {"mode": "no_additional_elapsed_at_parent_negotiation_boundary", "parent_execution_refs": ["trace_ld_v1_activity_ratsha_negotiation"], "parent_selection_policy": "one_current_committed_parent_activity_from_closed_refs", "clock_write": "forbidden"},
+      "movement_refs": [],
+      "consequence_refs": ["trace_ld_v1_consequence_ratsha_surrender_committed"],
+      "property_transition_refs": ["trace_ld_v1_property_ratsha_knife_surrendered_to_participating_fisher"],
+      "body_effect_refs": [],
+      "statement_effect_contract_ref": "trace_ld_v1_statement_effect_ratsha_confession",
+      "ordered_atomic_effects": ["commit_ratsha_surrender_without_further_harm", "transfer_ratsha_knife_control", "commit_confession_as_assertion_not_truth", "activate_promise_fact_if_offer_terms_match"],
+      "write_targets": ["surrender_fact", "weapon_control_transition", "statement_record", "confession_assertion", "promise_activation_candidate", "npc_decision_history"],
+      "forbidden_write_targets": ["objective_truth", "pardon", "hidden_truth", "completion_state"],
+      "typed_failure": "typed_ratsha_surrender_execution_precondition_failed"
+    },
+    {
+      "execution_binding_id": "trace_ld_v1_decision_execution_zhdanko_deny_submit",
+      "policy_id": "trace_ld_v1_npc_zhdanko_decisions",
+      "option_id": "deny_and_submit",
+      "execution_kind": "atomic_statement_submission_and_weapon_transition",
+      "activity_profile_refs": [],
+      "time_contract": {"mode": "no_additional_elapsed_at_parent_confrontation_boundary", "parent_execution_refs": ["trace_ld_v1_activity_accuse_zhdanko", "trace_ld_v1_activity_zhdanko_respond_to_arriving_group"], "parent_selection_policy": "one_current_committed_parent_activity_from_closed_refs", "clock_write": "forbidden"},
+      "movement_refs": [],
+      "consequence_refs": ["trace_ld_v1_consequence_zhdanko_submission_committed"],
+      "property_transition_refs": ["trace_ld_v1_property_zhdanko_axe_submitted_to_eremey"],
+      "body_effect_refs": [],
+      "statement_effect_contract_ref": "trace_ld_v1_statement_effect_zhdanko_denial",
+      "ordered_atomic_effects": ["commit_denial_as_assertion_not_truth", "commit_submission", "commit_voluntary_bag_handover_admission", "transfer_axe_control"],
+      "write_targets": ["statement_record", "submission_fact", "zhdanko_voluntary_bag_handover_committed", "weapon_control_transition", "npc_decision_history"],
+      "forbidden_write_targets": ["objective_truth", "legal_judgment", "completion_state"],
+      "typed_failure": "typed_zhdanko_submission_execution_precondition_failed"
+    },
+    {
+      "execution_binding_id": "trace_ld_v1_decision_execution_zhdanko_deny_delay",
+      "policy_id": "trace_ld_v1_npc_zhdanko_decisions",
+      "option_id": "deny_and_delay",
+      "execution_kind": "bounded_statement_effect",
+      "activity_profile_refs": [],
+      "time_contract": {"mode": "no_additional_elapsed_at_parent_confrontation_boundary", "parent_execution_refs": ["trace_ld_v1_activity_accuse_zhdanko", "trace_ld_v1_activity_zhdanko_respond_to_arriving_group"], "parent_selection_policy": "one_current_committed_parent_activity_from_closed_refs", "clock_write": "forbidden"},
+      "movement_refs": [],
+      "consequence_refs": [],
+      "property_transition_refs": [],
+      "body_effect_refs": [],
+      "statement_effect_contract_ref": "trace_ld_v1_statement_effect_zhdanko_delay_or_bargain",
+      "write_targets": ["statement_record", "delay_attempt", "npc_decision_history"],
+      "forbidden_write_targets": ["elapsed_game_time", "objective_truth", "legal_judgment", "completion_state"],
+      "typed_failure": "typed_decision_statement_precondition_failed"
+    },
+    {
+      "execution_binding_id": "trace_ld_v1_decision_execution_zhdanko_bargain",
+      "policy_id": "trace_ld_v1_npc_zhdanko_decisions",
+      "option_id": "bargain",
+      "execution_kind": "bounded_statement_effect",
+      "activity_profile_refs": [],
+      "time_contract": {"mode": "no_additional_elapsed_at_parent_confrontation_boundary", "parent_execution_refs": ["trace_ld_v1_activity_accuse_zhdanko", "trace_ld_v1_activity_zhdanko_respond_to_arriving_group"], "parent_selection_policy": "one_current_committed_parent_activity_from_closed_refs", "clock_write": "forbidden"},
+      "movement_refs": [],
+      "consequence_refs": [],
+      "property_transition_refs": [],
+      "body_effect_refs": [],
+      "statement_effect_contract_ref": "trace_ld_v1_statement_effect_zhdanko_delay_or_bargain",
+      "write_targets": ["statement_record", "offer", "npc_decision_history"],
+      "forbidden_write_targets": ["property_transfer", "objective_truth", "legal_judgment", "completion_state"],
+      "typed_failure": "typed_decision_statement_precondition_failed"
+    },
+    {
+      "execution_binding_id": "trace_ld_v1_decision_execution_zhdanko_flee_without_weapon",
+      "policy_id": "trace_ld_v1_npc_zhdanko_decisions",
+      "option_id": "flee_without_weapon",
+      "execution_kind": "active_scope_exit_attempt",
+      "activity_profile_refs": ["trace_ld_v1_activity_zhdanko_attempt_departure"],
+      "time_contract": {
+        "mode": "movement_binding_root",
+        "root_ref": "trace_ld_v1_scope_exit_storehouse_by_small_boat",
+        "time_profile_ref": "trace_ld_v1_time_15m",
+        "clock_write": "single_via_scope_exit_binding"
+      },
+      "movement_refs": ["trace_ld_v1_scope_exit_storehouse_by_small_boat"],
+      "consequence_refs": ["trace_ld_v1_consequence_zhdanko_departed"],
+      "property_transition_refs": ["trace_ld_v1_property_zhdanko_depart_leaving_bag", "trace_ld_v1_property_zhdanko_depart_with_bag"],
+      "property_variant_selection": "exact_committed_bag_load_state",
+      "body_effect_refs": [],
+      "statement_effect_contract_ref": null,
+      "write_targets": ["actor_scope_position", "transport_scope_position", "property_history", "npc_decision_history", "zhdanko_fled"],
+      "forbidden_write_targets": ["invented_destination_location", "teleport", "hidden_truth", "completion_state"],
+      "typed_failure": "typed_scope_exit_or_property_variant_precondition_failed"
+    },
+    {
+      "execution_binding_id": "trace_ld_v1_decision_execution_zhdanko_resist_with_axe",
+      "policy_id": "trace_ld_v1_npc_zhdanko_decisions",
+      "option_id": "resist_with_axe",
+      "execution_kind": "threat_escalation_then_player_boundary",
+      "activity_profile_refs": ["trace_ld_v1_activity_zhdanko_resist_with_axe"],
+      "time_contract": {"mode": "activity_root", "root_ref": "trace_ld_v1_activity_zhdanko_resist_with_axe", "time_profile_ref": "trace_ld_v1_time_2m", "clock_write": "single_if_completed"},
+      "movement_refs": [],
+      "consequence_refs": ["trace_ld_v1_consequence_zhdanko_resistance_threat_committed"],
+      "property_transition_refs": [],
+      "body_effect_refs": [],
+      "statement_effect_contract_ref": null,
+      "write_targets": ["immediate_threat", "npc_decision_history", "player_decision_boundary", "activity_history"],
+      "forbidden_write_targets": ["automatic_harm", "automatic_disarm", "automatic_restraint", "completion_state"],
+      "typed_failure": "typed_zhdanko_resistance_precondition_failed"
+    },
+    {
+      "execution_binding_id": "trace_ld_v1_decision_execution_fisher_1_observe",
+      "policy_id": "trace_ld_v1_npc_background_fisher_1_decisions",
+      "option_id": "observe",
+      "execution_kind": "bounded_perception_sample",
+      "activity_profile_refs": [],
+      "time_contract": {"mode": "no_additional_elapsed_at_parent_scene_boundary", "parent_execution_refs": ["trace_ld_v1_activity_first_eremey_talk", "trace_ld_v1_activity_eremey_with_evidence", "trace_ld_v1_activity_first_aid_onisim", "trace_ld_v1_activity_make_stretcher_and_carry", "trace_ld_v1_activity_fire_rest", "trace_ld_v1_activity_ratsha_negotiation", "trace_ld_v1_activity_accuse_zhdanko", "trace_ld_v1_activity_danger_resolution", "trace_ld_v1_activity_check_bag_and_seal", "trace_ld_v1_activity_return_to_camp", "trace_ld_v1_activity_temporary_decision"], "parent_selection_policy": "one_current_committed_parent_activity_from_closed_refs", "clock_write": "forbidden"},
+      "movement_refs": [],
+      "consequence_refs": [],
+      "property_transition_refs": [],
+      "body_effect_refs": [],
+      "statement_effect_contract_ref": null,
+      "write_targets": ["perception_record", "witness_memory_proposal", "npc_decision_history"],
+      "forbidden_write_targets": ["objective_truth", "invented_testimony", "completion_state"],
+      "typed_failure": "typed_perception_precondition_failed"
+    },
+    {
+      "execution_binding_id": "trace_ld_v1_decision_execution_fisher_1_carry",
+      "policy_id": "trace_ld_v1_npc_background_fisher_1_decisions",
+      "option_id": "carry",
+      "execution_kind": "future_group_activity_admission",
+      "activity_profile_refs": ["trace_ld_v1_activity_make_stretcher_and_carry"],
+      "time_contract": {"mode": "no_additional_elapsed_until_bound_carry_activity_executes", "parent_execution_refs": ["trace_ld_v1_activity_make_stretcher_and_carry"], "parent_selection_policy": "one_selected_bound_activity_from_closed_refs", "clock_write": "forbidden"},
+      "movement_refs": ["trace_ld_v1_route_shed_to_camp_carry_onisim"],
+      "consequence_refs": [],
+      "property_transition_refs": [],
+      "body_effect_refs": ["trace_ld_v1_body_carry_20m"],
+      "statement_effect_contract_ref": null,
+      "write_targets": ["carrier_binding", "npc_decision_history"],
+      "forbidden_write_targets": ["actor_position", "elapsed_game_time", "carry_result_before_execution", "completion_state"],
+      "typed_failure": "typed_carry_binding_precondition_failed"
+    },
+    {
+      "execution_binding_id": "trace_ld_v1_decision_execution_fisher_1_guard_hold",
+      "policy_id": "trace_ld_v1_npc_background_fisher_1_decisions",
+      "option_id": "guard_or_hold",
+      "execution_kind": "future_group_activity_admission",
+      "activity_profile_refs": ["trace_ld_v1_activity_danger_resolution"],
+      "time_contract": {"mode": "no_additional_elapsed_until_bound_danger_activity_executes", "parent_execution_refs": ["trace_ld_v1_activity_danger_resolution"], "parent_selection_policy": "one_selected_bound_activity_from_closed_refs", "clock_write": "forbidden"},
+      "movement_refs": [],
+      "consequence_refs": [],
+      "property_transition_refs": [],
+      "body_effect_refs": [],
+      "statement_effect_contract_ref": null,
+      "write_targets": ["group_activity_participant_binding", "guard_or_hold_admission", "npc_decision_history"],
+      "forbidden_write_targets": ["automatic_restraint", "automatic_harm", "elapsed_game_time", "completion_state"],
+      "typed_failure": "typed_guard_or_hold_binding_precondition_failed"
+    },
+    {
+      "execution_binding_id": "trace_ld_v1_decision_execution_fisher_1_escort",
+      "policy_id": "trace_ld_v1_npc_background_fisher_1_decisions",
+      "option_id": "escort",
+      "execution_kind": "future_route_activity_admission",
+      "activity_profile_refs": ["trace_ld_v1_activity_make_stretcher_and_carry", "trace_ld_v1_activity_return_to_camp"],
+      "time_contract": {"mode": "no_additional_elapsed_until_selected_route_activity_executes", "parent_execution_refs": ["trace_ld_v1_activity_make_stretcher_and_carry", "trace_ld_v1_activity_return_to_camp"], "parent_selection_policy": "one_selected_bound_activity_from_closed_refs", "clock_write": "forbidden"},
+      "movement_refs": ["trace_ld_v1_route_shed_to_camp_carry_onisim", "trace_ld_v1_route_storehouse_to_camp_guarded_return"],
+      "variant_selection_inputs": ["committed_current_location", "committed_escorted_actor_state", "route_access"],
+      "variant_selection_policy": "select_one_exact_matching_route_or_fail_closed",
+      "consequence_refs": [],
+      "property_transition_refs": [],
+      "body_effect_refs": ["trace_ld_v1_body_carry_20m", "trace_ld_v1_body_guarded_return_15m"],
+      "statement_effect_contract_ref": null,
+      "write_targets": ["escort_binding", "route_activity_admission", "npc_decision_history"],
+      "forbidden_write_targets": ["actor_position", "elapsed_game_time", "teleport", "completion_state"],
+      "typed_failure": "typed_no_exact_escort_route_variant"
+    },
+    {
+      "execution_binding_id": "trace_ld_v1_decision_execution_fisher_2_observe",
+      "policy_id": "trace_ld_v1_npc_background_fisher_2_decisions",
+      "option_id": "observe",
+      "execution_kind": "bounded_perception_sample",
+      "activity_profile_refs": [],
+      "time_contract": {"mode": "no_additional_elapsed_at_parent_scene_boundary", "parent_execution_refs": ["trace_ld_v1_activity_first_eremey_talk", "trace_ld_v1_activity_eremey_with_evidence", "trace_ld_v1_activity_first_aid_onisim", "trace_ld_v1_activity_make_stretcher_and_carry", "trace_ld_v1_activity_fire_rest", "trace_ld_v1_activity_ratsha_negotiation", "trace_ld_v1_activity_accuse_zhdanko", "trace_ld_v1_activity_danger_resolution", "trace_ld_v1_activity_check_bag_and_seal", "trace_ld_v1_activity_return_to_camp", "trace_ld_v1_activity_temporary_decision"], "parent_selection_policy": "one_current_committed_parent_activity_from_closed_refs", "clock_write": "forbidden"},
+      "movement_refs": [],
+      "consequence_refs": [],
+      "property_transition_refs": [],
+      "body_effect_refs": [],
+      "statement_effect_contract_ref": null,
+      "write_targets": ["perception_record", "witness_memory_proposal", "npc_decision_history"],
+      "forbidden_write_targets": ["objective_truth", "invented_testimony", "completion_state"],
+      "typed_failure": "typed_perception_precondition_failed"
+    },
+    {
+      "execution_binding_id": "trace_ld_v1_decision_execution_fisher_2_carry",
+      "policy_id": "trace_ld_v1_npc_background_fisher_2_decisions",
+      "option_id": "carry",
+      "execution_kind": "future_group_activity_admission",
+      "activity_profile_refs": ["trace_ld_v1_activity_make_stretcher_and_carry"],
+      "time_contract": {"mode": "no_additional_elapsed_until_bound_carry_activity_executes", "parent_execution_refs": ["trace_ld_v1_activity_make_stretcher_and_carry"], "parent_selection_policy": "one_selected_bound_activity_from_closed_refs", "clock_write": "forbidden"},
+      "movement_refs": ["trace_ld_v1_route_shed_to_camp_carry_onisim"],
+      "consequence_refs": [],
+      "property_transition_refs": [],
+      "body_effect_refs": ["trace_ld_v1_body_carry_20m"],
+      "statement_effect_contract_ref": null,
+      "write_targets": ["carrier_binding", "npc_decision_history"],
+      "forbidden_write_targets": ["actor_position", "elapsed_game_time", "carry_result_before_execution", "completion_state"],
+      "typed_failure": "typed_carry_binding_precondition_failed"
+    },
+    {
+      "execution_binding_id": "trace_ld_v1_decision_execution_fisher_2_guard_hold",
+      "policy_id": "trace_ld_v1_npc_background_fisher_2_decisions",
+      "option_id": "guard_or_hold",
+      "execution_kind": "future_group_activity_admission",
+      "activity_profile_refs": ["trace_ld_v1_activity_danger_resolution"],
+      "time_contract": {"mode": "no_additional_elapsed_until_bound_danger_activity_executes", "parent_execution_refs": ["trace_ld_v1_activity_danger_resolution"], "parent_selection_policy": "one_selected_bound_activity_from_closed_refs", "clock_write": "forbidden"},
+      "movement_refs": [],
+      "consequence_refs": [],
+      "property_transition_refs": [],
+      "body_effect_refs": [],
+      "statement_effect_contract_ref": null,
+      "write_targets": ["group_activity_participant_binding", "guard_or_hold_admission", "npc_decision_history"],
+      "forbidden_write_targets": ["automatic_restraint", "automatic_harm", "elapsed_game_time", "completion_state"],
+      "typed_failure": "typed_guard_or_hold_binding_precondition_failed"
+    },
+    {
+      "execution_binding_id": "trace_ld_v1_decision_execution_fisher_2_escort",
+      "policy_id": "trace_ld_v1_npc_background_fisher_2_decisions",
+      "option_id": "escort",
+      "execution_kind": "future_route_activity_admission",
+      "activity_profile_refs": ["trace_ld_v1_activity_make_stretcher_and_carry", "trace_ld_v1_activity_return_to_camp"],
+      "time_contract": {"mode": "no_additional_elapsed_until_selected_route_activity_executes", "parent_execution_refs": ["trace_ld_v1_activity_make_stretcher_and_carry", "trace_ld_v1_activity_return_to_camp"], "parent_selection_policy": "one_selected_bound_activity_from_closed_refs", "clock_write": "forbidden"},
+      "movement_refs": ["trace_ld_v1_route_shed_to_camp_carry_onisim", "trace_ld_v1_route_storehouse_to_camp_guarded_return"],
+      "variant_selection_inputs": ["committed_current_location", "committed_escorted_actor_state", "route_access"],
+      "variant_selection_policy": "select_one_exact_matching_route_or_fail_closed",
+      "consequence_refs": [],
+      "property_transition_refs": [],
+      "body_effect_refs": ["trace_ld_v1_body_carry_20m", "trace_ld_v1_body_guarded_return_15m"],
+      "statement_effect_contract_ref": null,
+      "write_targets": ["escort_binding", "route_activity_admission", "npc_decision_history"],
+      "forbidden_write_targets": ["actor_position", "elapsed_game_time", "teleport", "completion_state"],
+      "typed_failure": "typed_no_exact_escort_route_variant"
+    }
+  ],
+  "schedule_policies": [
+    {
+      "schedule_policy_id": "trace_ld_v1_zhdanko_autonomous_schedule",
+      "schema": "rus.trace_npc_schedule_policy.v1",
+      "version": 1,
+      "actor_slot": "zhdanko_storehouse_controller",
+      "decision_inputs": [
+        "current_game_timestamp",
+        "current_location",
+        "committed_knowledge",
+        "ratsha_presence_or_return",
+        "road_bag_state",
+        "sealed_packet_state",
+        "second_small_boat_availability",
+        "witness_presence",
+        "axe_control_state",
+        "available_exit_routes",
+        "crossed_temporal_boundaries"
+      ],
+      "boundary_policy": "reconsider_at_earliest_time_body_route_or_perception_boundary",
+      "option_set": [
+        {"option_id": "wait", "preconditions": ["safe_to_wait"], "execution_binding_ref": "trace_ld_v1_schedule_execution_wait"},
+        {"option_id": "check_ratsha_return", "preconditions": ["expected_return_boundary_crossed"], "execution_binding_ref": "trace_ld_v1_schedule_execution_check_ratsha_return"},
+        {"option_id": "move_bag", "preconditions": ["bag_controlled", "destination_accessible", "capacity_available"], "execution_binding_ref": "trace_ld_v1_schedule_execution_move_bag"},
+        {"option_id": "prepare_boat", "preconditions": ["boat_accessible", "route_to_boat_available", "necessary_resources_present"], "execution_binding_ref": "trace_ld_v1_schedule_execution_prepare_boat"},
+        {"option_id": "attempt_departure", "preconditions": ["exit_route_available", "travel_resources_present"], "execution_binding_ref": "trace_ld_v1_schedule_execution_attempt_departure"},
+        {"option_id": "hide_property", "preconditions": ["property_controlled", "approved_hiding_place_available"], "execution_binding_ref": "trace_ld_v1_schedule_execution_hide_property"},
+        {"option_id": "attempt_document_destruction", "preconditions": ["road_bag_controlled_and_openable", "packet_contained_in_road_bag", "destruction_means_available", "no_interrupting_witness_prevents_action"], "execution_binding_ref": "trace_ld_v1_schedule_execution_attempt_document_destruction"},
+        {"option_id": "respond_to_arriving_group", "preconditions": ["group_perceived"], "execution_binding_ref": "trace_ld_v1_schedule_execution_respond_to_arriving_group"}
+      ],
+      "forbidden_inputs": ["scene_number", "turn_number", "player_progress_flag"],
+      "may_leave_initial_location_without_player": true,
+      "no_valid_option_failure": "typed_npc_no_valid_option"
+    }
+  ],
+  "schedule_resource_bindings": [
+    {
+      "resource_binding_id": "trace_ld_v1_schedule_resource_road_bag",
+      "item_ref": "trace_ld_v1_container_road_bag",
+      "opening_state_source_ref": "trace_ld_v1_opening_state_stolen_road_bag",
+      "opening_location_ref": "trace_ld_v1_loc_zhdanko_storehouse",
+      "opening_zone_ref": "storehouse_interior",
+      "opening_closure_state": "tied",
+      "contents_require_open_container": true,
+      "owner_ref": "trace_ld_v1_external_owner_savva_tverdich",
+      "holder_ref": "zhdanko_storehouse_controller",
+      "controller_ref": "zhdanko_storehouse_controller",
+      "allowed_zone_refs": ["storehouse_interior", "yard", "river_access"],
+      "materialized_instance_required": true
+    },
+    {
+      "resource_binding_id": "trace_ld_v1_schedule_resource_sealed_packet",
+      "item_ref": "trace_ld_v1_item_sealed_packet",
+      "opening_state_source_ref": "trace_ld_v1_opening_state_stolen_road_bag",
+      "opening_location_ref": "trace_ld_v1_loc_zhdanko_storehouse",
+      "opening_zone_ref": "storehouse_interior",
+      "physical_parent_ref": "trace_ld_v1_container_road_bag",
+      "physical_position_rule": "inherit_parent_container_position",
+      "physical_access_rule": "requires_committed_open_container_transition",
+      "holder_rule": "inherit_parent_container_holder",
+      "controller_rule": "inherit_parent_container_controller",
+      "owner_rule": "preserve_item_owner",
+      "materialized_instance_required": true
+    },
+    {
+      "resource_binding_id": "trace_ld_v1_schedule_resource_second_small_boat",
+      "item_ref": "trace_ld_v1_item_second_small_boat",
+      "opening_location_ref": "trace_ld_v1_loc_zhdanko_storehouse",
+      "opening_zone_ref": "river_access",
+      "owner_ref": "zhdanko_storehouse_controller",
+      "holder_ref": "zhdanko_storehouse_controller",
+      "controller_ref": "zhdanko_storehouse_controller",
+      "opening_operational_state": "available",
+      "allowed_zone_refs": ["river_access"],
+      "materialized_instance_required": true
+    },
+    {
+      "resource_binding_id": "trace_ld_v1_schedule_resource_document_destruction_means",
+      "item_ref": "trace_ld_v1_item_zhdanko_axe",
+      "opening_location_ref": "trace_ld_v1_loc_zhdanko_storehouse",
+      "opening_zone_ref": "storehouse_interior",
+      "holder_ref": "zhdanko_storehouse_controller",
+      "controller_ref": "zhdanko_storehouse_controller",
+      "allowed_zone_refs": ["storehouse_interior", "yard", "river_access"],
+      "materialized_instance_required": true
+    }
+  ],
+  "property_transition_profiles": [
+    {
+      "transition_profile_id": "trace_ld_v1_property_bag_to_river_access",
+      "schema": "rus.items_property.approved_transition_profile.v1",
+      "version": 1,
+      "owner": "@rus/items-property",
+      "runtime_transition_execution": "deferred_to_first_use_integration",
+      "subject_ref": "trace_ld_v1_container_road_bag",
+      "requires": {
+        "location_ref": "trace_ld_v1_loc_zhdanko_storehouse",
+        "zone_ref": "storehouse_interior",
+        "holder_ref": "zhdanko_storehouse_controller",
+        "controller_ref": "zhdanko_storehouse_controller"
+      },
+      "writes": {
+        "location_ref": "trace_ld_v1_loc_zhdanko_storehouse",
+        "zone_ref": "river_access",
+        "holder_ref": "zhdanko_storehouse_controller",
+        "controller_ref": "zhdanko_storehouse_controller"
+      },
+      "owner_change": "forbidden",
+      "contained_item_effect": "inherit_parent_container_position_holder_and_controller",
+      "write_targets": ["item_position", "holder", "controller", "property_history"],
+      "typed_failure": "typed_property_precondition_failed"
+    },
+    {
+      "transition_profile_id": "trace_ld_v1_property_boat_prepared",
+      "schema": "rus.items_property.approved_transition_profile.v1",
+      "version": 1,
+      "owner": "@rus/items-property",
+      "runtime_transition_execution": "deferred_to_first_use_integration",
+      "subject_ref": "trace_ld_v1_item_second_small_boat",
+      "requires": {
+        "location_ref": "trace_ld_v1_loc_zhdanko_storehouse",
+        "zone_ref": "river_access",
+        "controller_ref": "zhdanko_storehouse_controller",
+        "operational_state": "available"
+      },
+      "writes": {
+        "location_ref": "trace_ld_v1_loc_zhdanko_storehouse",
+        "zone_ref": "river_access",
+        "operational_state": "prepared_for_departure"
+      },
+      "owner_change": "forbidden",
+      "write_targets": ["item_operational_state", "property_history"],
+      "typed_failure": "typed_property_precondition_failed"
+    },
+    {
+      "transition_profile_id": "trace_ld_v1_property_zhdanko_depart_leaving_bag",
+      "schema": "rus.items_property.approved_transition_profile.v1",
+      "version": 1,
+      "owner": "@rus/items-property",
+      "runtime_transition_execution": "deferred_to_first_use_integration",
+      "subject_ref": "trace_ld_v1_container_road_bag",
+      "requires": {
+        "location_ref": "trace_ld_v1_loc_zhdanko_storehouse",
+        "zone_ref_candidates": ["storehouse_interior", "yard", "river_access"],
+        "holder_ref": "zhdanko_storehouse_controller",
+        "controller_ref": "zhdanko_storehouse_controller"
+      },
+      "writes": {
+        "position_transition": "preserve_committed_location_and_zone",
+        "holder_ref": null,
+        "controller_ref": null,
+        "committed_fact": "road_bag_abandoned_at_committed_storehouse_zone"
+      },
+      "owner_change": "forbidden",
+      "contained_item_effect": "inherit_parent_container_position_holder_and_controller",
+      "write_targets": ["holder", "controller", "road_bag_abandoned_fact", "property_history"],
+      "typed_failure": "typed_property_precondition_failed"
+    },
+    {
+      "transition_profile_id": "trace_ld_v1_property_zhdanko_depart_with_bag",
+      "schema": "rus.items_property.approved_transition_profile.v1",
+      "version": 1,
+      "owner": "@rus/items-property",
+      "runtime_transition_execution": "deferred_to_first_use_integration",
+      "subject_ref": "trace_ld_v1_container_road_bag",
+      "requires": {
+        "location_ref": "trace_ld_v1_loc_zhdanko_storehouse",
+        "zone_ref": "river_access",
+        "holder_ref": "zhdanko_storehouse_controller",
+        "controller_ref": "zhdanko_storehouse_controller"
+      },
+      "writes": {
+        "scope_state": "outside_active_scenario_scope",
+        "location_ref": null,
+        "holder_ref": "zhdanko_storehouse_controller",
+        "controller_ref": "zhdanko_storehouse_controller"
+      },
+      "owner_change": "forbidden",
+      "contained_item_effect": "inherit_parent_container_scope_position_holder_and_controller",
+      "write_targets": ["item_scope_position", "holder", "controller", "property_history"],
+      "typed_failure": "typed_property_precondition_failed"
+    },
+    {
+      "transition_profile_id": "trace_ld_v1_property_bag_concealed_in_storehouse",
+      "schema": "rus.items_property.approved_transition_profile.v1",
+      "version": 1,
+      "owner": "@rus/items-property",
+      "runtime_transition_execution": "deferred_to_first_use_integration",
+      "subject_ref": "trace_ld_v1_container_road_bag",
+      "requires": {
+        "location_ref": "trace_ld_v1_loc_zhdanko_storehouse",
+        "zone_ref": "storehouse_interior",
+        "holder_ref": "zhdanko_storehouse_controller",
+        "controller_ref": "zhdanko_storehouse_controller"
+      },
+      "writes": {
+        "location_ref": "trace_ld_v1_loc_zhdanko_storehouse",
+        "zone_ref": "storehouse_interior",
+        "visibility_state": "concealed_requires_search"
+      },
+      "owner_change": "forbidden",
+      "contained_item_effect": "inherit_parent_container_position_holder_controller_and_visibility",
+      "write_targets": ["item_visibility_state", "property_history"],
+      "typed_failure": "typed_property_precondition_failed"
+    },
+    {
+      "transition_profile_id": "trace_ld_v1_property_ratsha_knife_surrendered_to_participating_fisher",
+      "schema": "rus.items_property.approved_transition_profile.v1",
+      "version": 1,
+      "owner": "@rus/items-property",
+      "runtime_transition_execution": "deferred_to_first_use_integration",
+      "subject_ref": "trace_ld_v1_item_ratsha_knife",
+      "requires": {
+      "holder_ref": "ratsha_storehouse_helper",
+      "controller_ref": "ratsha_storehouse_helper",
+      "physical_position": "worn_quick",
+      "accessibility": "quick",
+      "admission_fact": "ratsha_surrender_without_further_harm_committed"
+      },
+      "writes": {
+      "holder_ref": "trace_ld_v1_audience_slot_participating_fisher",
+      "controller_ref": "trace_ld_v1_audience_slot_participating_fisher",
+      "physical_position": "hands",
+      "accessibility": "secured_not_available_to_ratsha"
+      },
+      "owner_change": "forbidden",
+      "write_targets": ["holder", "controller", "item_physical_position", "accessibility", "property_history"],
+      "typed_failure": "typed_weapon_surrender_precondition_failed"
+    },
+    {
+      "transition_profile_id": "trace_ld_v1_property_zhdanko_axe_submitted_to_eremey",
+      "schema": "rus.items_property.approved_transition_profile.v1",
+      "version": 1,
+      "owner": "@rus/items-property",
+      "runtime_transition_execution": "deferred_to_first_use_integration",
+      "subject_ref": "trace_ld_v1_item_zhdanko_axe",
+      "requires": {
+        "holder_ref": "zhdanko_storehouse_controller",
+        "controller_ref": "zhdanko_storehouse_controller",
+        "admission_fact": "zhdanko_submission_committed"
+      },
+      "writes": {
+        "holder_ref": "eremey_fisher",
+        "controller_ref": "eremey_fisher",
+        "accessibility": "secured_not_available_to_zhdanko"
+      },
+      "owner_change": "forbidden",
+      "write_targets": ["holder", "controller", "accessibility", "property_history"],
+      "typed_failure": "typed_weapon_submission_precondition_failed"
+    },
+    {
+      "transition_profile_id": "trace_ld_v1_property_zhdanko_axe_disarmed_to_eremey",
+      "schema": "rus.items_property.approved_transition_profile.v1",
+      "version": 1,
+      "owner": "@rus/items-property",
+      "runtime_transition_execution": "deferred_to_first_use_integration",
+      "subject_ref": "trace_ld_v1_item_zhdanko_axe",
+      "requires": {
+        "holder_ref": "zhdanko_storehouse_controller",
+        "controller_ref": "zhdanko_storehouse_controller",
+        "admission_fact": "bounded_group_disarm_transition_admitted"
+      },
+      "writes": {
+        "holder_ref": "eremey_fisher",
+        "controller_ref": "eremey_fisher",
+        "accessibility": "secured_not_available_to_zhdanko"
+      },
+      "owner_change": "forbidden",
+      "committed_fact_outputs": ["axe_control_removed_from_zhdanko"],
+      "write_targets": ["holder", "controller", "accessibility", "property_history"],
+      "typed_failure": "typed_weapon_disarm_precondition_failed"
+    },
+    {
+      "transition_profile_id": "trace_ld_v1_property_road_bag_recovered_to_player_control",
+      "schema": "rus.items_property.approved_transition_profile.v1",
+      "version": 1,
+      "owner": "@rus/items-property",
+      "runtime_transition_execution": "deferred_to_first_use_integration",
+      "subject_ref": "trace_ld_v1_container_road_bag",
+      "time_profile_ref": "trace_ld_v1_time_2m",
+      "duration_minutes": 2,
+      "elapsed_accounting": {
+        "role": "included_child_interval",
+        "clock_write": "forbidden",
+        "duration_accounting": "included_in_parent_root_total_never_additive"
+      },
+      "admission_variants": [
+        {
+          "variant_id": "recovery_after_zhdanko_submission",
+          "requires_committed_fact": "road_bag_recovery_after_zhdanko_submission_admitted",
+          "source_holder_ref": "zhdanko_storehouse_controller",
+          "source_controller_ref": "zhdanko_storehouse_controller"
+        },
+        {
+          "variant_id": "recovery_after_zhdanko_disarm",
+          "requires_committed_fact": "road_bag_recovery_after_zhdanko_disarm_admitted",
+          "source_holder_ref": "zhdanko_storehouse_controller",
+          "source_controller_ref": "zhdanko_storehouse_controller"
+        },
+        {
+          "variant_id": "voluntary_handover",
+          "requires_committed_fact": "road_bag_voluntary_handover_acceptance_admitted",
+          "source_holder_ref": "zhdanko_storehouse_controller",
+          "source_controller_ref": "zhdanko_storehouse_controller"
+        },
+        {
+          "variant_id": "bounded_group_recovery",
+          "requires_committed_fact": "road_bag_bounded_group_recovery_admitted",
+          "source_holder_ref": "zhdanko_storehouse_controller",
+          "source_controller_ref": "zhdanko_storehouse_controller"
+        },
+        {
+          "variant_id": "recovery_after_departure_with_bag_left",
+          "requires_committed_fact": "road_bag_recovery_after_zhdanko_departure_admitted",
+          "source_holder_ref": null,
+          "source_controller_ref": null
+        }
+      ],
+      "variant_selection_policy": "select_exactly_one_variant_from_committed_facts_and_source_state",
+      "requires_common": {
+        "owner_ref": "trace_ld_v1_external_owner_savva_tverdich",
+        "location_ref": "trace_ld_v1_loc_zhdanko_storehouse",
+        "physical_access_rule": "player_and_bag_share_committed_accessible_zone"
+      },
+      "writes": {
+        "holder_ref": "player_clerk",
+        "controller_ref": "player_clerk",
+        "position_transition": "preserve_committed_location_and_zone"
+      },
+      "owner_change": "forbidden",
+      "contained_item_effect": "inherit_parent_container_position_holder_and_controller_while_preserving_each_item_owner",
+      "write_targets": ["holder", "controller", "item_position", "property_history"],
+      "typed_failure": "typed_road_bag_recovery_precondition_failed"
+    },
+    {
+      "transition_profile_id": "trace_ld_v1_property_road_bag_opened_for_access",
+      "schema": "rus.items_property.approved_transition_profile.v1",
+      "version": 1,
+      "owner": "@rus/items-property",
+      "runtime_transition_execution": "deferred_to_first_use_integration",
+      "subject_ref": "trace_ld_v1_container_road_bag",
+      "time_profile_ref": "trace_ld_v1_time_2m",
+      "duration_minutes": 2,
+      "elapsed_accounting": {
+        "role": "included_child_interval",
+        "clock_write": "forbidden",
+        "duration_accounting": "included_in_parent_root_total_never_additive"
+      },
+      "interruption_boundary": "container_open_transition_boundary",
+      "partial_progress_policy": "no_content_access_before_open_transition_commit",
+      "bound_actor_slots": [
+        "player_clerk",
+        "zhdanko_storehouse_controller"
+      ],
+      "requires": {
+        "closure_state": "tied",
+        "contents_require_open_container": true,
+        "holder_ref_rule": "bound_actor_is_committed_holder",
+        "controller_ref_rule": "bound_actor_is_committed_controller",
+        "physical_access_rule": "bound_actor_can_reach_container_in_committed_zone"
+      },
+      "writes": {
+        "closure_state": "open",
+        "content_access_state": "physically_accessible_to_bound_controller"
+      },
+      "owner_change": "forbidden",
+      "holder_change": "forbidden",
+      "controller_change": "forbidden",
+      "container_relation_change": "forbidden",
+      "contained_item_effect": "preserve_parent_relation_position_owner_holder_and_controller",
+      "write_targets": [
+        "container_closure_state",
+        "inventory_access",
+        "property_history"
+      ],
+      "typed_failure": "typed_container_open_precondition_failed"
+    },
+    {
+      "transition_profile_id": "trace_ld_v1_property_packet_recovered_to_player",
+      "schema": "rus.items_property.approved_transition_profile.v1",
+      "version": 1,
+      "owner": "@rus/items-property",
+      "runtime_transition_execution": "deferred_to_first_use_integration",
+      "subject_ref": "trace_ld_v1_item_sealed_packet",
+      "requires": {
+        "physical_parent_ref": "trace_ld_v1_container_road_bag",
+        "parent_closure_state": "open",
+        "parent_holder_ref": "player_clerk",
+        "parent_controller_ref": "player_clerk",
+        "seal_state": "intact"
+      },
+      "writes": {
+        "physical_parent_ref": null,
+        "holder_ref": "player_clerk",
+        "controller_ref": "player_clerk",
+        "position_derivation": "held_by_player_at_committed_bag_zone",
+        "seal_state": "preserve_committed"
+      },
+      "owner_change": "forbidden",
+      "container_relation_change": "exact_remove_from_road_bag_only",
+      "write_targets": ["container_relation", "item_position", "holder", "controller", "property_history"],
+      "typed_failure": "typed_packet_recovery_precondition_failed"
+    },
+    {
+      "transition_profile_id": "trace_ld_v1_property_destroyed_packet_recovered_to_player",
+      "schema": "rus.items_property.approved_transition_profile.v1",
+      "version": 1,
+      "owner": "@rus/items-property",
+      "runtime_transition_execution": "deferred_to_first_use_integration",
+      "subject_ref": "trace_ld_v1_item_sealed_packet",
+      "requires": {
+        "physical_parent_ref": "trace_ld_v1_container_road_bag",
+        "parent_closure_state": "open",
+        "parent_holder_ref": "player_clerk",
+        "parent_controller_ref": "player_clerk",
+        "seal_state": "destroyed",
+        "document_condition": "destroyed_unreadable",
+        "evidence_availability": "destroyed"
+      },
+      "writes": {
+        "physical_parent_ref": null,
+        "holder_ref": "player_clerk",
+        "controller_ref": "player_clerk",
+        "position_derivation": "held_by_player_at_committed_bag_zone",
+        "seal_state": "preserve_destroyed",
+        "document_condition": "preserve_destroyed_unreadable",
+        "evidence_availability": "preserve_destroyed"
+      },
+      "owner_change": "forbidden",
+      "container_relation_change": "exact_remove_from_road_bag_only",
+      "write_targets": ["container_relation", "item_position", "holder", "controller", "item_condition", "seal_state", "evidence_availability", "property_history"],
+      "typed_failure": "typed_destroyed_packet_recovery_precondition_failed"
+    },
+    {
+      "transition_profile_id": "trace_ld_v1_property_road_bag_assigned_to_participating_fisher",
+      "schema": "rus.items_property.approved_transition_profile.v1",
+      "version": 1,
+      "owner": "@rus/items-property",
+      "runtime_transition_execution": "deferred_to_first_use_integration",
+      "subject_ref": "trace_ld_v1_container_road_bag",
+      "requires": {
+        "holder_ref": "player_clerk",
+        "controller_ref": "player_clerk",
+        "closure_state": "open",
+        "packet_removed_by_transition_ref_candidates": [
+          "trace_ld_v1_property_packet_recovered_to_player",
+          "trace_ld_v1_property_destroyed_packet_recovered_to_player"
+        ],
+        "participating_fisher_slot_materialized": true
+      },
+      "writes": {
+        "holder_ref": "trace_ld_v1_audience_slot_participating_fisher",
+        "controller_ref": "trace_ld_v1_audience_slot_participating_fisher",
+        "position_transition": "held_by_bound_participating_fisher"
+      },
+      "owner_change": "forbidden",
+      "contained_item_effect": "remaining_contents_inherit_parent_position_holder_and_controller_while_preserving_each_item_owner",
+      "write_targets": ["holder", "controller", "item_position", "property_history"],
+      "typed_failure": "typed_bag_carrier_assignment_precondition_failed"
+    },
+    {
+      "transition_profile_id": "trace_ld_v1_property_packet_destroyed",
+      "schema": "rus.items_property.approved_transition_profile.v1",
+      "version": 1,
+      "owner": "@rus/items-property",
+      "runtime_transition_execution": "deferred_to_first_use_integration",
+      "subject_ref": "trace_ld_v1_item_sealed_packet",
+      "requires": {
+        "physical_parent_ref": "trace_ld_v1_container_road_bag",
+        "controller_ref": "zhdanko_storehouse_controller",
+        "parent_closure_state": "open",
+        "access_state": "physically_accessible_to_bound_controller",
+        "access_transition_ref": "trace_ld_v1_property_road_bag_opened_for_access",
+        "seal_state": "intact",
+        "destruction_means_ref": "trace_ld_v1_item_zhdanko_axe"
+      },
+      "writes": {
+        "seal_state": "destroyed",
+        "document_condition": "destroyed_unreadable",
+        "evidence_availability": "destroyed"
+      },
+      "owner_change": "forbidden",
+      "container_relation_change": "forbidden",
+      "write_targets": ["item_condition", "seal_state", "evidence_availability", "property_history"],
+      "typed_failure": "typed_property_precondition_failed"
+    }
+  ],
+  "schedule_execution_bindings": [
+    {
+      "execution_binding_id": "trace_ld_v1_schedule_execution_wait",
+      "schedule_option_id": "wait",
+      "activity_profile_ref": "trace_ld_v1_activity_zhdanko_wait",
+      "time_profile_ref": "trace_ld_v1_time_5m",
+      "elapsed_plan": {
+        "root_ref": "self",
+        "root_time_profile_ref": "trace_ld_v1_time_5m",
+        "clock_write": "single_via_schedule_elapsed_contract",
+        "stages": [
+          {"stage_id": "wait", "duration_minutes": 5, "child_clock_write": "forbidden"}
+        ]
+      },
+      "consequence_ref": "trace_ld_v1_consequence_zhdanko_wait",
+      "movement_ref": null,
+      "property_transition_refs": [],
+      "write_targets": ["npc_schedule_history", "elapsed_game_time"],
+      "completion_boundary": "five_minutes_committed",
+      "typed_failure": "typed_schedule_execution_precondition_failed"
+    },
+    {
+      "execution_binding_id": "trace_ld_v1_schedule_execution_check_ratsha_return",
+      "schedule_option_id": "check_ratsha_return",
+      "activity_profile_ref": "trace_ld_v1_activity_zhdanko_check_ratsha_return",
+      "time_profile_ref": "trace_ld_v1_time_2m",
+      "elapsed_plan": {
+        "root_ref": "self",
+        "root_time_profile_ref": "trace_ld_v1_time_2m",
+        "clock_write": "single_via_schedule_elapsed_contract",
+        "stages": [
+          {"stage_id": "sample_committed_perception", "duration_minutes": 2, "child_clock_write": "forbidden"}
+        ]
+      },
+      "consequence_ref": "trace_ld_v1_consequence_zhdanko_checked_ratsha_return",
+      "movement_ref": null,
+      "property_transition_refs": [],
+      "write_targets": ["npc_perception", "npc_schedule_history", "elapsed_game_time"],
+      "completion_boundary": "committed_perception_sample",
+      "typed_failure": "typed_schedule_execution_precondition_failed"
+    },
+    {
+      "execution_binding_id": "trace_ld_v1_schedule_execution_move_bag",
+      "schedule_option_id": "move_bag",
+      "activity_profile_ref": "trace_ld_v1_activity_zhdanko_move_bag",
+      "time_profile_ref": "trace_ld_v1_time_5m",
+      "elapsed_plan": {
+        "root_ref": "trace_ld_v1_local_transition_storehouse_to_river_access",
+        "root_time_profile_ref": "trace_ld_v1_time_5m",
+        "clock_write": "delegated_to_root_movement_binding",
+        "stages": [
+          {
+            "stage_id": "move_actor_and_bag_to_river_access",
+            "duration_minutes": 5,
+            "movement_ref": "trace_ld_v1_local_transition_storehouse_to_river_access",
+            "property_transition_refs": ["trace_ld_v1_property_bag_to_river_access"],
+            "child_clock_write": "forbidden"
+          }
+        ]
+      },
+      "consequence_ref": "trace_ld_v1_consequence_zhdanko_bag_moved",
+      "movement_ref": "trace_ld_v1_local_transition_storehouse_to_river_access",
+      "movement_subject_refs": ["zhdanko_storehouse_controller", "trace_ld_v1_container_road_bag"],
+      "property_transition_refs": ["trace_ld_v1_property_bag_to_river_access"],
+      "write_targets": ["actor_zone_position", "item_position", "holder", "controller", "property_history", "npc_schedule_history"],
+      "completion_boundary": "actor_and_property_transition_committed",
+      "typed_failure": "typed_schedule_execution_precondition_failed"
+    },
+    {
+      "execution_binding_id": "trace_ld_v1_schedule_execution_prepare_boat",
+      "schedule_option_id": "prepare_boat",
+      "activity_profile_ref": "trace_ld_v1_activity_zhdanko_prepare_boat",
+      "time_profile_ref": "trace_ld_v1_time_10m",
+      "elapsed_plan": {
+        "root_ref": "self",
+        "root_time_profile_ref": "trace_ld_v1_time_10m",
+        "clock_write": "single_via_schedule_elapsed_contract",
+        "variant_source": "committed_actor_zone",
+        "closed_variants": {
+          "storehouse_interior": {
+            "total_minutes": 10,
+            "stages": [
+              {"stage_id": "move_to_river_access", "duration_minutes": 5, "movement_ref": "trace_ld_v1_local_transition_storehouse_to_river_access", "child_clock_write": "forbidden"},
+              {"stage_id": "prepare_boat_after_arrival", "duration_minutes": 5, "property_transition_refs": ["trace_ld_v1_property_boat_prepared"], "child_clock_write": "forbidden"}
+            ]
+          },
+          "yard": {
+            "total_minutes": 10,
+            "stages": [
+              {"stage_id": "move_to_river_access", "duration_minutes": 5, "movement_ref": "trace_ld_v1_local_transition_storehouse_to_river_access", "child_clock_write": "forbidden"},
+              {"stage_id": "prepare_boat_after_arrival", "duration_minutes": 5, "property_transition_refs": ["trace_ld_v1_property_boat_prepared"], "child_clock_write": "forbidden"}
+            ]
+          },
+          "river_access": {
+            "total_minutes": 10,
+            "stages": [
+              {"stage_id": "prepare_boat_in_place", "duration_minutes": 10, "property_transition_refs": ["trace_ld_v1_property_boat_prepared"], "child_clock_write": "forbidden"}
+            ]
+          }
+        }
+      },
+      "consequence_ref": "trace_ld_v1_consequence_zhdanko_boat_prepared",
+      "movement_selection": {
+        "source": "committed_actor_zone",
+        "closed_variants": {
+          "storehouse_interior": "trace_ld_v1_local_transition_storehouse_to_river_access",
+          "yard": "trace_ld_v1_local_transition_storehouse_to_river_access",
+          "river_access": null
+        }
+      },
+      "movement_subject_refs": ["zhdanko_storehouse_controller"],
+      "property_transition_refs": ["trace_ld_v1_property_boat_prepared"],
+      "write_targets": ["actor_zone_position", "item_operational_state", "property_history", "npc_schedule_history", "elapsed_game_time"],
+      "completion_boundary": "actor_arrival_and_boat_state_committed",
+      "typed_failure": "typed_schedule_execution_precondition_failed"
+    },
+    {
+      "execution_binding_id": "trace_ld_v1_schedule_execution_attempt_departure",
+      "schedule_option_id": "attempt_departure",
+      "activity_profile_ref": "trace_ld_v1_activity_zhdanko_attempt_departure",
+      "time_profile_ref": "trace_ld_v1_time_15m",
+      "elapsed_plan": {
+        "root_ref": "trace_ld_v1_scope_exit_storehouse_by_small_boat",
+        "root_time_profile_ref": "trace_ld_v1_time_15m",
+        "clock_write": "delegated_to_root_movement_binding",
+        "stages": [
+          {
+            "stage_id": "exit_active_scope_by_small_boat",
+            "duration_minutes": 15,
+            "movement_ref": "trace_ld_v1_scope_exit_storehouse_by_small_boat",
+            "property_transition_selection": "committed_bag_load_state",
+            "child_clock_write": "forbidden"
+          }
+        ]
+      },
+      "consequence_ref": "trace_ld_v1_consequence_zhdanko_departed",
+      "movement_ref": "trace_ld_v1_scope_exit_storehouse_by_small_boat",
+      "movement_subject_refs": ["zhdanko_storehouse_controller", "trace_ld_v1_item_second_small_boat"],
+      "property_transition_selection": {
+        "source": "committed_bag_load_state",
+        "closed_variants": {
+          "bag_not_controlled": null,
+          "bag_controlled_not_loaded": "trace_ld_v1_property_zhdanko_depart_leaving_bag",
+          "bag_loaded": "trace_ld_v1_property_zhdanko_depart_with_bag"
+        }
+      },
+      "write_targets": ["actor_scope_position", "transport_scope_position", "property_history", "npc_schedule_history", "zhdanko_fled"],
+      "completion_boundary": "exit_interval_and_selected_property_transition_committed",
+      "typed_failure": "typed_schedule_execution_precondition_failed"
+    },
+    {
+      "execution_binding_id": "trace_ld_v1_schedule_execution_hide_property",
+      "schedule_option_id": "hide_property",
+      "activity_profile_ref": "trace_ld_v1_activity_zhdanko_hide_property",
+      "time_profile_ref": "trace_ld_v1_time_5m",
+      "elapsed_plan": {
+        "root_ref": "self",
+        "root_time_profile_ref": "trace_ld_v1_time_5m",
+        "clock_write": "single_via_schedule_elapsed_contract",
+        "stages": [
+          {"stage_id": "conceal_road_bag", "duration_minutes": 5, "property_transition_refs": ["trace_ld_v1_property_bag_concealed_in_storehouse"], "child_clock_write": "forbidden"}
+        ]
+      },
+      "consequence_ref": "trace_ld_v1_consequence_zhdanko_property_hidden",
+      "movement_ref": null,
+      "property_transition_refs": ["trace_ld_v1_property_bag_concealed_in_storehouse"],
+      "write_targets": ["item_visibility_state", "property_history", "npc_schedule_history", "elapsed_game_time"],
+      "completion_boundary": "visibility_transition_committed",
+      "typed_failure": "typed_schedule_execution_precondition_failed"
+    },
+    {
+      "execution_binding_id": "trace_ld_v1_schedule_execution_attempt_document_destruction",
+      "schedule_option_id": "attempt_document_destruction",
+      "activity_profile_ref": "trace_ld_v1_activity_zhdanko_attempt_document_destruction",
+      "time_profile_ref": "trace_ld_v1_time_5m",
+      "elapsed_plan": {
+        "root_ref": "self",
+        "root_time_profile_ref": "trace_ld_v1_time_5m",
+        "clock_write": "single_via_schedule_elapsed_contract",
+        "stages": [
+          {
+            "stage_id": "untie_and_open_road_bag",
+            "duration_minutes": 2,
+            "property_transition_refs": ["trace_ld_v1_property_road_bag_opened_for_access"],
+            "commit_boundary": "container_open_and_packet_accessible",
+            "child_clock_write": "forbidden"
+          },
+          {
+            "stage_id": "destroy_accessible_packet",
+            "duration_minutes": 3,
+            "property_transition_refs": ["trace_ld_v1_property_packet_destroyed"],
+            "requires_committed_stage_id": "untie_and_open_road_bag",
+            "commit_boundary": "packet_destroyed",
+            "child_clock_write": "forbidden"
+          }
+        ]
+      },
+      "consequence_ref": "trace_ld_v1_consequence_zhdanko_document_destroyed",
+      "movement_ref": null,
+      "property_transition_refs": ["trace_ld_v1_property_road_bag_opened_for_access", "trace_ld_v1_property_packet_destroyed"],
+      "write_targets": ["item_condition", "seal_state", "evidence_availability", "property_history", "npc_schedule_history", "elapsed_game_time"],
+      "completion_boundary": "packet_transition_committed_unless_interrupted",
+      "typed_failure": "typed_schedule_execution_precondition_failed"
+    },
+    {
+      "execution_binding_id": "trace_ld_v1_schedule_execution_respond_to_arriving_group",
+      "schedule_option_id": "respond_to_arriving_group",
+      "activity_profile_ref": "trace_ld_v1_activity_zhdanko_respond_to_arriving_group",
+      "time_profile_ref": "trace_ld_v1_time_2m",
+      "elapsed_plan": {
+        "root_ref": "self",
+        "root_time_profile_ref": "trace_ld_v1_time_2m",
+        "clock_write": "single_via_schedule_elapsed_contract",
+        "stages": [
+          {"stage_id": "request_response_decision", "duration_minutes": 2, "child_clock_write": "forbidden"}
+        ]
+      },
+      "consequence_ref": "trace_ld_v1_consequence_zhdanko_group_response_requested",
+      "movement_ref": null,
+      "property_transition_refs": [],
+      "write_targets": ["npc_decision_request", "npc_schedule_history", "elapsed_game_time"],
+      "completion_boundary": "npc_decision_request_committed",
+      "typed_failure": "typed_schedule_execution_precondition_failed"
+    }
+  ],
+  "selected_decisions": [],
+  "materialized_schedules": [],
+  "excludes": ["runtime_handler", "persistence", "party_instance", "api", "ui"]
+}

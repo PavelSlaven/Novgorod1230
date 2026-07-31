@@ -30,6 +30,29 @@ export function createLowerDvinaTraceSemanticResolver({
   };
 }
 
+export function createLowerDvinaTraceNpcDecisionSelector({
+  roleRunner
+} = {}) {
+  requireRoleRunner(roleRunner);
+  return async function selectNpcDecision(request) {
+    const response = await roleRunner.run({
+      scope: 'turn_runtime',
+      role_id: 'npc_bounded_decision',
+      messages: [{
+        role: 'system',
+        content: 'Choose exactly one option from the supplied closed NPC decision request. Return only {"request_id":"...","state_version":"...","option_id":"...","command_token":"..."}. Do not add facts, consequences, checks, prose, or writes.'
+      }, {
+        role: 'user', content: JSON.stringify(request)
+      }],
+      overrides: { temperature: 0, maxTokens: 800 }
+    });
+    if (!response?.output || typeof response.output !== 'object') {
+      throw dependencyError('NPC decision selector returned no JSON object.');
+    }
+    return response.output;
+  };
+}
+
 export function createLowerDvinaTraceNarrationService({
   roleRunner
 } = {}) {

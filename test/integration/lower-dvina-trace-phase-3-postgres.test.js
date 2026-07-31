@@ -196,7 +196,7 @@ test('Phase 3 movement and Eremey conversations commit atomically and survive re
       idempotency_key: 'phase-3-b-post-disclosure-talk',
       raw_text: 'Снова спросить Еремея о крушении.'
     }),
-    { code: 'TURN_AVAILABLE_ACTION_SET_EMPTY' }
+    { code: 'TURN_SEMANTIC_OPTION_INVALID' }
   );
   assert.equal(await summariesFor(pool, partyB.party_id), 2);
   assert.equal(await count(pool,
@@ -391,7 +391,8 @@ function semanticOption(rawText, actionSet) {
       : normalized.includes('стан')
         ? 'follow_path_to_fishing_camp'
         : 'ask_eremey_about_wreck';
-  assert.equal(actionSet.some(({ option_id: id }) => id === selected), true);
+  const available = actionSet.some(({ option_id: id }) => id === selected);
+  assert.equal(available, !normalized.includes('снова'));
   return selected;
 }
 
@@ -431,7 +432,8 @@ async function installSchemas(pool) {
   await pool.query('SELECT 1');
   const partyFiles = (await readdir('schemas/party-db'))
     .filter((value) => /^\d+.*\.sql$/u.test(value)).sort();
-  for (const file of partyFiles.filter((value) => !value.startsWith('012_'))) {
+  for (const file of partyFiles.filter((value) =>
+    !value.startsWith('012_') && !value.startsWith('013_'))) {
     await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
   }
   assert.equal(
@@ -440,6 +442,10 @@ async function installSchemas(pool) {
   );
   await pool.query(await readFile(
     'schemas/party-db/012_party_runtime_external_ownership.sql',
+    'utf8'
+  ));
+  await pool.query(await readFile(
+    'schemas/party-db/013_party_runtime_obligations.sql',
     'utf8'
   ));
 }

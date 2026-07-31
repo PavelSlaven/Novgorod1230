@@ -142,6 +142,12 @@ export function normalizeResolution(raw, candidate, clock, request, deferredCand
   if (raw.state_projection !== undefined && !object(raw.state_projection)) {
     fail('temporal_change_set_conflict', 'Temporal resolution state_projection must be an explicit object.', { boundary_id: candidate.boundary_id });
   }
+  if (raw.stop_after_current_batch !== undefined
+      && typeof raw.stop_after_current_batch !== 'boolean') {
+    fail('temporal_change_set_conflict',
+      'Temporal resolution stop_after_current_batch must be boolean.',
+      { boundary_id: candidate.boundary_id });
+  }
   return {
     disposition: raw.disposition,
     proposals: raw.proposals ?? [],
@@ -149,7 +155,8 @@ export function normalizeResolution(raw, candidate, clock, request, deferredCand
     replacement_outside_window: raw.disposition === 'replace' && compareGameTimestamp(raw.replacement.scheduled_at, request.inclusive_limit_timestamp) > 0,
     state_projection: raw.state_projection === undefined
       ? null
-      : cloneFrozen(raw.state_projection)
+      : cloneFrozen(raw.state_projection),
+    stop_after_current_batch: raw.stop_after_current_batch === true
   };
 }
 

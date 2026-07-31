@@ -1,0 +1,47 @@
+{
+  "schema": "rus.trace_item_container_set_overlay.v1",
+  "set_id": "trace_ld_v1_item_container_set",
+  "revision": 4,
+  "status": "approved",
+  "publication_status": "unpublished",
+  "supersedes_ref": {
+    "id": "trace_ld_v1_item_container_set",
+    "revision": 3,
+    "schema": "rus.trace_item_container_set.v1",
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-5-content/item-container-set.json",
+    "digest": "e45eaec89384ba8628e5685de6b53e6597e026dc78818a074629c8ee70d1b30d"
+  },
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden",
+  "item_template_overrides": [
+    {
+      "item_template_id": "trace_ld_v1_item_eremey_drinking_water_vessel",
+      "inventory_profile_ref": "trace_ld_v1_inventory_profile_eremey_drinking_water_vessel"
+    },
+    {
+      "item_template_id": "trace_ld_v1_item_ratsha_binding_rope",
+      "base_catalog_ref": {
+        "template_id": "item_tpl_nov_rope_v1",
+        "inventory_profile_id": "trace_ld_v1_inventory_profile_ratsha_binding_rope"
+      }
+    }
+  ],
+  "item_inventory_profiles": [
+    {
+      "inventory_profile_id": "trace_ld_v1_inventory_profile_eremey_drinking_water_vessel",
+      "item_template_ref": "trace_ld_v1_item_eremey_drinking_water_vessel",
+      "inventory_archetype_ref": "compact_zero_hand",
+      "status": "approved"
+    },
+    {
+      "inventory_profile_id": "trace_ld_v1_inventory_profile_ratsha_binding_rope",
+      "item_template_ref": "trace_ld_v1_item_ratsha_binding_rope",
+      "mass_grams": 1200,
+      "carry_form": "long",
+      "external_hand_cost": 1,
+      "status": "approved"
+    }
+  ],
+  "excludes": ["new_item_template", "runtime_handler", "persistence", "party_instance", "api", "ui"]
+}

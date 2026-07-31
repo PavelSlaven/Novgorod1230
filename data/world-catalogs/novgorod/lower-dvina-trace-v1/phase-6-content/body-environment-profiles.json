@@ -1,0 +1,95 @@
+{
+  "schema": "rus.trace_body_environment_profiles.v2",
+  "set_id": "trace_ld_v1_body_environment_profiles",
+  "revision": 6,
+  "publication_status": "unpublished",
+  "supersedes_ref": {
+    "id": "trace_ld_v1_body_environment_profiles",
+    "revision": 5,
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-5-content/body-environment-profiles.json",
+    "digest": "23b6ef4931f29613108025363924bdcd57c13bcb5d54ca52f8fd4bc9c9335720"
+  },
+  "owner": "@rus/body-state",
+  "clock_owner": "@rus/time-events-history",
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden",
+  "effect_profiles": [
+    {
+      "effect_profile_id": "trace_ld_v1_body_open_route_8m",
+      "activity_ref": "trace_ld_v1_activity_route_to_camp",
+      "time_profile_ref": "trace_ld_v1_time_8m",
+      "elapsed_minutes": 8,
+      "subject_role": "player_clerk",
+      "exact_deltas": {"health": -1, "satiety": -1, "energy": -1},
+      "condition_outcomes": [
+        {"condition_profile_ref": "trace_ld_v1_condition_wet_clothing", "from": "wet", "to": "wet", "outcome": "persists"},
+        {"condition_profile_ref": "trace_ld_v1_condition_cold_shivering", "from": "mild_shivering", "to": "strong_shivering", "outcome": "worsens"}
+      ],
+      "selection_policy": "fixed_approved_effect",
+      "rng_consumption": "forbidden"
+    },
+    {
+      "effect_profile_id": "trace_ld_v1_body_open_route_12m",
+      "activity_ref": "trace_ld_v1_activity_route_to_drying_shed",
+      "time_profile_ref": "trace_ld_v1_time_12m",
+      "elapsed_minutes": 12,
+      "subject_role": "player_clerk",
+      "exact_deltas": {"health": 0, "satiety": -1, "energy": -1},
+      "condition_outcomes": [
+        {"condition_profile_ref": "trace_ld_v1_condition_wet_clothing", "from": "wet", "to": "wet", "outcome": "persists"},
+        {"condition_profile_ref": "trace_ld_v1_condition_cold_shivering", "from": "strong_shivering", "to": "strong_shivering", "outcome": "persists"}
+      ],
+      "selection_policy": "fixed_approved_effect",
+      "rng_consumption": "forbidden"
+    },
+    {
+      "effect_profile_id": "trace_ld_v1_body_carry_carrier_20m",
+      "activity_ref": "trace_ld_v1_activity_make_stretcher_and_carry",
+      "time_profile_ref": "trace_ld_v1_time_20m",
+      "elapsed_minutes": 20,
+      "subject_role": "carrier",
+      "exact_deltas": {"health": 0, "satiety": -1, "energy": -4},
+      "condition_outcomes": [],
+      "selection_policy": "fixed_approved_effect",
+      "rng_consumption": "forbidden"
+    },
+    {
+      "effect_profile_id": "trace_ld_v1_body_carry_carrier_10m",
+      "activity_ref": "trace_ld_v1_activity_make_stretcher_and_carry",
+      "time_profile_ref": "trace_ld_v1_time_10m",
+      "elapsed_minutes": 10,
+      "subject_role": "carrier",
+      "exact_deltas": {"health": 0, "satiety": -1, "energy": -2},
+      "condition_outcomes": [],
+      "selection_policy": "fixed_approved_effect",
+      "rng_consumption": "forbidden"
+    },
+    {
+      "effect_profile_id": "trace_ld_v1_body_carry_carried_actor_stabilized_20m",
+      "activity_ref": "trace_ld_v1_activity_make_stretcher_and_carry",
+      "time_profile_ref": "trace_ld_v1_time_20m",
+      "elapsed_minutes": 20,
+      "subject_role": "carried_actor",
+      "precondition_committed_fact": "onisim_stabilized_unable_to_walk",
+      "exact_deltas": {"health": 0, "satiety": 0, "energy": 0},
+      "condition_outcomes": [{"condition_profile_ref": "trace_ld_v1_condition_onisim_injury", "from": "stabilized_unable_to_walk", "to": "stabilized_unable_to_walk", "outcome": "persists"}],
+      "selection_policy": "fixed_by_exact_committed_branch",
+      "rng_consumption": "forbidden"
+    },
+    {
+      "effect_profile_id": "trace_ld_v1_body_carry_carried_actor_unstabilized_20m",
+      "activity_ref": "trace_ld_v1_activity_make_stretcher_and_carry",
+      "time_profile_ref": "trace_ld_v1_time_20m",
+      "elapsed_minutes": 20,
+      "subject_role": "carried_actor",
+      "precondition_committed_fact": "onisim_first_aid_completed_without_stabilization",
+      "exact_deltas": {"health": 0, "satiety": 0, "energy": 0},
+      "condition_outcomes": [{"condition_profile_ref": "trace_ld_v1_condition_onisim_injury", "from": "injured_unable_to_walk", "to": "injured_unable_to_walk", "outcome": "persists"}],
+      "selection_policy": "fixed_by_exact_committed_branch",
+      "rng_consumption": "forbidden"
+    }
+  ],
+  "applied_effects": [],
+  "excludes": ["runtime_handler", "direct_mutation", "persistence", "party_instance", "api", "ui"]
+}

@@ -19,7 +19,15 @@ export function assertLowerDvinaTracePhase5Cutover(bundle, fail) {
     fail('TRACE_PHASE_5_CUTOVER_IDENTITY_INVALID',
       'Phase 5 must exact-supersede the immutable revision 10 chain.');
   }
-  const binding = bindings.phase_5_initial_state_binding
+  assertLowerDvinaTracePhase5InitialBindings(bundle, fail);
+}
+
+export function assertLowerDvinaTracePhase5InitialBindings(
+  bundle, fail, {
+    waterProfileRef = 'trace_ld_v1_item_eremey_drinking_water_vessel'
+  } = {}
+) {
+  const binding = bundle.materialization_bindings.phase_5_initial_state_binding
     ?.bandage_cloth_initial_binding;
   if (binding?.item_template_ref !== 'trace_ld_v1_item_bandage_cloth'
     || binding.participant_slot_ref !== 'eremey_fisher'
@@ -37,12 +45,14 @@ export function assertLowerDvinaTracePhase5Cutover(bundle, fail) {
       'The exact approved bandage materialization binding is required.');
   }
   assertPhase5ArrivalResources(
-    bindings.phase_5_initial_state_binding?.phase_5_resource_arrival_binding,
-    fail
+    bundle.materialization_bindings.phase_5_initial_state_binding
+      ?.phase_5_resource_arrival_binding,
+    fail,
+    waterProfileRef
   );
 }
 
-function assertPhase5ArrivalResources(binding, fail) {
+function assertPhase5ArrivalResources(binding, fail, waterProfileRef) {
   const byTemplate = new Map((binding?.arrival_item_bindings ?? [])
     .map((entry) => [entry.item_template_ref, entry]));
   const net = byTemplate.get('trace_ld_v1_item_fishing_net');
@@ -66,7 +76,7 @@ function assertPhase5ArrivalResources(binding, fail) {
       || water?.item_template_ref
         !== 'trace_ld_v1_item_eremey_drinking_water_vessel'
       || water.persistence_profile_ref
-        !== 'trace_ld_v1_item_eremey_drinking_water_vessel'
+        !== waterProfileRef
       || water.owner_ref !== 'eremey_fisher'
       || water.holder_ref !== 'eremey_fisher'
       || water.controller_ref !== 'eremey_fisher'

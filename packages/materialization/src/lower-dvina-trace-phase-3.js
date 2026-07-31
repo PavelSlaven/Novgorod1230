@@ -115,7 +115,7 @@ export function materializeLowerDvinaTracePreparedDryingShed({ input, bundle, ru
     condition_profile_ref: rope.condition_profile_ref,
     state: rope.condition_state
   };
-  onisim.machine_state.binding_item = {
+  const bindingItem = {
     item_template_ref: rope.item_template_ref,
     opening_state_contract_ref: rope.rope_opening_state_contract_ref,
     owner_ref: rope.owner_ref,
@@ -123,6 +123,45 @@ export function materializeLowerDvinaTracePreparedDryingShed({ input, bundle, ru
     controller_npc_id: ratsha.instance_id,
     use_state: rope.use_state
   };
+  if (input.scenario_definition_revision === 12) {
+    const template = requiredById(
+      bundle.item_container_set.item_templates,
+      'item_template_id',
+      rope.item_template_ref
+    );
+    const profile = requiredById(
+      bundle.item_container_set.item_inventory_profiles,
+      'inventory_profile_id',
+      rope.inventory_profile_ref
+    );
+    if (template.inventory_profile_ref !== profile.inventory_profile_id
+      && template.base_catalog_ref?.inventory_profile_id
+        !== profile.inventory_profile_id) {
+      fail('TRACE_PHASE_6_ROPE_PROFILE_INVALID',
+        'The revision 12 binding rope must resolve its exact local inventory profile.');
+    }
+    if (profile.item_template_ref !== template.item_template_id
+      || profile.mass_grams !== 1200
+      || profile.carry_form !== 'long'
+      || profile.external_hand_cost !== 1
+      || profile.status !== 'approved') {
+      fail('TRACE_PHASE_6_ROPE_PROFILE_INVALID',
+        'The exact approved revision 12 binding-rope inventory profile is required.');
+    }
+    const itemId = deterministicInstanceId(
+      input.party_id, runId, 'item', template.item_template_id, 0
+    );
+    Object.assign(bindingItem, {
+      reserved_instance_id: itemId,
+      run_id: runId,
+      template_id: template.item_template_id,
+      category_id: template.semantic_category,
+      profile_id: profile.inventory_profile_id,
+      legal_status: 'unowned',
+      inventory_profile_snapshot: structuredClone(profile)
+    });
+  }
+  onisim.machine_state.binding_item = bindingItem;
   ratsha.machine_state.surrender_state = 'not_surrendered';
   ratsha.machine_state.restraint_state = 'not_restrained';
   return { scene, npcs, onisim, ratsha, binding };

@@ -5,6 +5,8 @@ import { loadHistoricalLowerDvinaTracePhase1BV2Publication } from
   './lower-dvina-trace-phase-1b-historical-revision-2.js';
 import { loadHistoricalLowerDvinaTracePhase1BV3Publication } from
   './lower-dvina-trace-phase-1b-historical-revision-3.js';
+import { loadHistoricalLowerDvinaTracePhase1BV6Publication } from
+  './lower-dvina-trace-phase-1b-historical-revision-6.js';
 
 const ROOT = 'data/world-catalogs/novgorod/lower-dvina-trace-v1';
 const HISTORICAL_PHASE_1A_DIGEST =
@@ -17,11 +19,19 @@ const HISTORICAL_PHASE_1A_V4_DIGEST =
   'dc7e58dfa3382a2a91dd1954c645ad630c8de3b4fb42bdc68888cd72d5fff44f';
 const HISTORICAL_PHASE_1A_V5_DIGEST =
   'cde498946faa8c821f09dd80407f4053c7c54f546ba86928c6907908b1e47ac2';
+const HISTORICAL_PHASE_1A_V6_DIGEST =
+  '5cc5a06136b2f4cbdb8b842558b0d749a2c70c3eff0f1c088aca9a7e0395d1a9';
 
 export async function loadHistoricalLowerDvinaTracePhase1BPublication({
   rootDir,
   phase1AManifestDigest
 }) {
+  if (phase1AManifestDigest === HISTORICAL_PHASE_1A_V6_DIGEST) {
+    return loadHistoricalLowerDvinaTracePhase1BV6Publication({
+      rootDir, readJson, fail, freezeDeep,
+      phase1ADigest: HISTORICAL_PHASE_1A_V6_DIGEST
+    });
+  }
   if (phase1AManifestDigest === HISTORICAL_PHASE_1A_V5_DIGEST) {
     return loadHistoricalLowerDvinaTracePhase1BV5Publication({ rootDir });
   }
@@ -117,7 +127,8 @@ export function isHistoricalLowerDvinaTracePhase1AManifestDigest(value) {
     || value === HISTORICAL_PHASE_1A_V2_DIGEST
     || value === HISTORICAL_PHASE_1A_V3_DIGEST
     || value === HISTORICAL_PHASE_1A_V4_DIGEST
-    || value === HISTORICAL_PHASE_1A_V5_DIGEST;
+    || value === HISTORICAL_PHASE_1A_V5_DIGEST
+    || value === HISTORICAL_PHASE_1A_V6_DIGEST;
 }
 
 async function loadHistoricalLowerDvinaTracePhase1BV5Publication({

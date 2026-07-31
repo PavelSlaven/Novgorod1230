@@ -2,6 +2,8 @@ import {
   recheckTracePhase3LocationCapacity
 } from './recheck-location-capacity.js';
 import { recheckLocalEvidenceSlot } from './recheck-local-evidence-slot.js';
+import { recheckPhase6TargetedAdmission } from
+  './recheck-phase6-admission.js';
 
 export async function firstPlayableCommitRecheck({
   transaction,
@@ -54,6 +56,10 @@ export async function firstPlayableCommitRecheck({
   }
   if (check.kind === 'item') {
     return recheckExactItem({ transaction, partyId, check });
+  }
+  if (check.kind === 'physical'
+      && check.physical_model === 'trace_phase6_targeted_admission') {
+    return recheckPhase6TargetedAdmission({ transaction, partyId, check });
   }
   if (check.kind === 'activity') {
     return recheckExactActivity({ transaction, check });

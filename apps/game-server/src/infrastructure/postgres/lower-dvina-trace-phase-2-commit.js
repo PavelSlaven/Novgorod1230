@@ -30,9 +30,8 @@ import {
 import {
   commitLowerDvinaTracePhase4
 } from './lower-dvina-trace-phase-4-commit.js';
-import {
-  commitLowerDvinaTracePhase5
-} from './lower-dvina-trace-phase-5-commit.js';
+import { commitLowerDvinaTracePhase5 } from './lower-dvina-trace-phase-5-commit.js';
+import { commitLowerDvinaTracePhase6 } from './lower-dvina-trace-phase-6-commit.js';
 export async function commitLowerDvinaTracePhase2({
   partyId,
   writePlan,
@@ -40,12 +39,13 @@ export async function commitLowerDvinaTracePhase2({
   contracts,
   phase3Contracts,
   phase4Contracts,
-  phase5Contracts,
+  phase5Contracts, phase6Contracts,
   loadState,
   committer
 }) {
   const factual = writePlan.write_targets
     .find(({ target }) => target === 'party_state')?.value;
+  if (factual?.consequence?.phase6_kind) return commitLowerDvinaTracePhase6({ partyId, writePlan, inputDigest, phase6Contracts, loadState, committer });
   if (factual?.consequence?.phase5_kind) {
     return commitLowerDvinaTracePhase5({
       partyId, writePlan, inputDigest, phase5Contracts, loadState, committer

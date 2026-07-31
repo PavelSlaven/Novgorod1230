@@ -19,6 +19,7 @@ import {
 import {
   appendPhase4ActivityExecution
 } from './lower-dvina-trace-phase-4-activity-writes.js';
+import { appendRouteBodyWrites } from './lower-dvina-trace-route-body-writes.js';
 
 export function phase4Writes({ partyId, state, next, factual, visibleEnvelope,
   pendingScreen, nextVersion, turnNumber, changeSetId, idemId, contracts }) {
@@ -42,6 +43,8 @@ export function phase4Writes({ partyId, state, next, factual, visibleEnvelope,
   if (factual.consequence.phase4_kind === 'movement') {
     appendPhase4Movement({ inserts, updates, appends, partyId, state, next, factual,
       turnNumber, changeSetId, idemId, contracts });
+    appendRouteBodyWrites({ updates, appends, partyId, state, next, factual,
+      changeSetId, idemId, historyId: `body-history:${partyId}:trace-phase4:${turnNumber}` });
   } else if (factual.consequence.phase4_kind === 'negotiation') {
     appendNegotiation({ inserts, updates, appends, partyId, state, next, factual,
       turnNumber, changeSetId, idemId, contracts });

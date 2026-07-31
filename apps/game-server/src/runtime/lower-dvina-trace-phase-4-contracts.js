@@ -15,8 +15,8 @@ export const TRACE_PHASE_4_IDS = Object.freeze({
 });
 
 export function resolveTracePhase4Contracts({ state, bundle }) {
-  if (![10, 11].includes(bundle.definition_revision)
-      || ![10, 11].includes(bundle.definition?.revision)) {
+  if (![10, 11, 12].includes(bundle.definition_revision)
+      || ![10, 11, 12].includes(bundle.definition?.revision)) {
     gap('TRACE_PHASE_4_REVISION_MISMATCH');
   }
   const ids = TRACE_PHASE_4_IDS;
@@ -30,6 +30,8 @@ export function resolveTracePhase4Contracts({ state, bundle }) {
     ids.observation
   );
   const route = exact(bundle.movement_bindings.route_bindings, 'route_id', ids.route);
+  const routeBodyEffect = routeEffect(bundle.body_environment_profiles?.effect_profiles,
+    'trace_ld_v1_body_open_route_12m', ids.routeActivity, route.duration_minutes);
   const reverseRoute = exact(
     bundle.movement_bindings.route_bindings,
     'route_id',
@@ -88,7 +90,7 @@ export function resolveTracePhase4Contracts({ state, bundle }) {
   );
   if (fishers.length !== 1) gap('TRACE_PHASE_4_PARTICIPATING_FISHER_MISSING');
   const fisher = fishers[0];
-  const phase5Enabled = bundle.definition_revision === 11;
+  const phase5Enabled = [11, 12].includes(bundle.definition_revision);
   const resourceArrivalBinding = phase5Enabled
     ? bundle.materialization_bindings?.phase_5_initial_state_binding
       ?.phase_5_resource_arrival_binding
@@ -108,6 +110,13 @@ export function resolveTracePhase4Contracts({ state, bundle }) {
     'inventory_profile_id',
     id
   )])) : null;
+  if (bundle.definition_revision === 12) {
+    resourceInventoryProfiles.water = exact(
+      bundle.item_container_set.item_inventory_profiles,
+      'inventory_profile_id',
+      'trace_ld_v1_inventory_profile_eremey_drinking_water_vessel'
+    );
+  }
   const audienceGroups = (state.sealed_selections ?? []).filter(
     ({ selection_kind: kind }) => kind === 'audience'
   );
@@ -205,10 +214,17 @@ export function resolveTracePhase4Contracts({ state, bundle }) {
           && profile.carry_form === 'long'
           && profile.external_hand_cost === 1
           && profile.status === 'approved';
-      }))) {
+      }))
+      || (bundle.definition_revision === 12
+        && (resourceInventoryProfiles.water.item_template_ref
+          !== 'trace_ld_v1_item_eremey_drinking_water_vessel'
+          || resourceInventoryProfiles.water.mass_grams !== 100
+          || resourceInventoryProfiles.water.carry_form !== 'compact'
+          || resourceInventoryProfiles.water.external_hand_cost !== 0
+          || resourceInventoryProfiles.water.status !== 'approved'))) {
     gap('TRACE_PHASE_4_APPROVED_CHAIN_INVALID');
   }
-  return Object.freeze({ ids, routeActivity, negotiation, check, route,
+  return Object.freeze({ ids, routeActivity, negotiation, check, route, routeBodyEffect,
     reverseRoute: { ...structuredClone(reverseRoute),
       digest: canonicalDigest(reverseRoute) },
     sourceEndpoint, destinationEndpoint, access, capacity, npcPolicy,
@@ -231,6 +247,13 @@ export function resolveTracePhase4Contracts({ state, bundle }) {
       version: record.version,
       digest: canonicalDigest(record)
     })) });
+}
+function routeEffect(records, effectId, activityRef, elapsedMinutes) {
+  const effect = (records ?? []).find((entry) => entry.effect_profile_id === effectId);
+  if (!effect?.exact_deltas || !Array.isArray(effect.condition_outcomes)) return null;
+  if (effect.activity_ref !== activityRef || effect.elapsed_minutes !== elapsedMinutes
+      || effect.selection_policy !== 'fixed_approved_effect' || effect.rng_consumption !== 'forbidden') gap('TRACE_PHASE_4_ROUTE_BODY_EFFECT_INVALID');
+  return structuredClone(effect);
 }
 
 function actor(state, ref) { const value = (state.npcs ?? []).find((entry) => entry.participant_slot_ref === ref); if (!value?.instance_id) gap('TRACE_PHASE_4_PARTICIPANT_MISSING'); return structuredClone(value); }

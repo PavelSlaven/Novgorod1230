@@ -50,6 +50,8 @@ test('canonical agent instructions preserve critical project invariants without 
   assert.match(agents, /запрещено ослаблять фильтры и создавать смысловые fallback/u);
   assert.match(agents, /LLM выбирает только из переданного закрытого набора/u);
   assert.match(agents, /LLM не пишет непосредственно в базу данных/u);
+  assert.match(agents, /Сценарному коду запрещено:[\s\S]*создавать собственный resolver, scheduler или state machine/u);
+  assert.match(agents, /Наличие scenario-local orchestration общей механики является блокирующим архитектурным дефектом/u);
   assert.match(agents, /Для обычного локального исправления отдельный агент-критик не требуется/u);
   assert.doesNotMatch(agents, /Перед любой задачей полностью прочитай/u);
   assert.doesNotMatch(agents, /Перед grep, file search, GitHub code search/u);

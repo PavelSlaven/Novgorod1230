@@ -61,7 +61,8 @@ export function buildTracePhase5ArrivalResources({ state, contracts }) {
   );
   const waterBinding = binding.eremey_water_vessel_initial_binding;
   items.push(arrivalItem({ state, runId, binding: waterBinding,
-    template: contracts.itemTemplates.water, owner: eremey, holder: eremey }));
+    template: contracts.itemTemplates.water, owner: eremey, holder: eremey,
+    inventoryProfile: contracts.resourceInventoryProfiles.water }));
   if (new Set(items.map(({ item_id: id }) => id)).size !== items.length) {
     gap('TRACE_PHASE_5_RESOURCE_INSTANCE_AMBIGUOUS');
   }
@@ -99,13 +100,8 @@ function arrivalItem({ state, runId, binding, template, inventoryProfile = null,
     gap('TRACE_PHASE_5_RESOURCE_ARRIVAL_BINDING_INVALID');
   }
   if (inventoryProfile != null
-      && (binding.persistence_profile_ref
-        !== inventoryProfile.inventory_profile_id
-        || inventoryProfile.item_template_ref !== template.item_template_id
-        || inventoryProfile.mass_grams !== 2500
-        || inventoryProfile.carry_form !== 'long'
-        || inventoryProfile.external_hand_cost !== 1
-        || inventoryProfile.status !== 'approved')) {
+      && !approvedInventoryProfile({ binding, template,
+        inventoryProfile })) {
     gap('TRACE_PHASE_5_RESOURCE_INVENTORY_PROFILE_INVALID');
   }
   const itemId = deterministicResourceInstanceId(
@@ -154,6 +150,22 @@ function arrivalItem({ state, runId, binding, template, inventoryProfile = null,
       causal_basis: template.causal_basis
     }
   };
+}
+
+function approvedInventoryProfile({ binding, template, inventoryProfile }) {
+  const exactByTemplate = {
+    [TRACE_PHASE_5_RESOURCE_IDS.net]: [2500, 'long', 1],
+    [TRACE_PHASE_5_RESOURCE_IDS.poles]: [2500, 'long', 1],
+    [TRACE_PHASE_5_RESOURCE_IDS.water]: [100, 'compact', 0]
+  };
+  const exact = exactByTemplate[template.item_template_id];
+  return exact != null
+    && binding.persistence_profile_ref === inventoryProfile.inventory_profile_id
+    && inventoryProfile.item_template_ref === template.item_template_id
+    && inventoryProfile.mass_grams === exact[0]
+    && inventoryProfile.carry_form === exact[1]
+    && inventoryProfile.external_hand_cost === exact[2]
+    && inventoryProfile.status === 'approved';
 }
 
 function deterministicResourceInstanceId(partyId, runId, itemTemplateId) {

@@ -696,6 +696,10 @@ scheduled_at
 11. discover follow-up candidates at the same timestamp;
 12. repeat until stable.
 
+Все события одного timestamp образуют единый same-time batch. Общий temporal owner сортирует их по канонической policy, последовательно применяет к общей рабочей версии состояния, повторно проверяет условия перед каждым событием и обрабатывает возникшие follow-up события до стабильного состояния.
+
+Providers и сценарные модули только регистрируют candidates. Им запрещено исполнять их, разделять batch или самостоятельно задавать порядок событий разных подсистем.
+
 ### 10.3. Co-occurring outcomes
 
 - Если traversal progress достиг prepared endpoint, spatial-v3 `segment_completed` владеет location transition. Co-occurring damage или loss of consciousness не отменяет arrival, но применяется в том же change set.

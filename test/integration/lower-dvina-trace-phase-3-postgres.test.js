@@ -101,6 +101,11 @@ test('Phase 3 movement and Eremey conversations commit atomically and survive re
     pool, release, runtimeCatalogPin
   });
   const partyA = await createParty(pathA, 'phase-3-path-a');
+  await pathA.submitTurn(partyA.party_id, {
+    request_id: 'phase-3-a-inspection',
+    idempotency_key: 'phase-3-a-inspection',
+    raw_text: 'Осмотреть место крушения подробно.'
+  });
   const movedA = await pathA.submitTurn(partyA.party_id, {
     request_id: 'phase-3-a-move',
     idempotency_key: 'phase-3-a-move',

@@ -7,6 +7,7 @@ import {
   assertPhase5TreatmentKnowledge,
   assertPhase5TreatmentResources,
   exactSnapshotItem,
+  loadPhase5ReleasedRope,
   phase5Actor,
   phase5BandageItem,
   phase5ParticipatingFisher
@@ -18,7 +19,7 @@ export async function assertPhase5NormalizedRows(pool, payload, head) {
   const executionId = `activity:${partyId}:trace-phase5:treatment`;
   const [execution, attempts, participants, resources, decisions, checks,
     bodyHistory, npcTransitions, onisim, bandage, knowledge, visible,
-    treatmentResources, releaseTransition] =
+    treatmentResources, releaseTransition, releasedRope] =
     await Promise.all([
       pool.query(
         `SELECT id,status,state_version::text,original_total_minutes::text,
@@ -119,7 +120,7 @@ export async function assertPhase5NormalizedRows(pool, payload, head) {
            FROM party_runtime.party_visible_packages WHERE package_id=$1`,
         [payload.last_turn?.visible_package?.package_id ?? ''])
       , pool.query(
-        `SELECT i.item_id,i.template_id,i.profile_id,i.category_id,i.quantity,
+        `SELECT i.item_id,i.run_id,i.template_id,i.profile_id,i.category_id,i.quantity,
                 i.condition_state,i.legal_status,i.state,
                 p.anchor_id,p.container_id,p.holder_npc_id,
                 p.holder_character_id,p.physical_position,
@@ -142,7 +143,8 @@ export async function assertPhase5NormalizedRows(pool, payload, head) {
         `SELECT transition_id,npc_id,transition_kind,change_set_id,trace
            FROM party_runtime.party_npc_runtime_transitions
           WHERE party_id=$1 AND transition_id=$2`, [partyId,
-          `npc-transition:${partyId}:trace-phase5:release`])
+          `npc-transition:${partyId}:trace-phase5:release`]),
+      loadPhase5ReleasedRope(pool, partyId)
     ]);
   const treatment = payload.phase5_treatment;
   const expectedExecution = treatment?.activity_execution;
@@ -262,8 +264,7 @@ export async function assertPhase5NormalizedRows(pool, payload, head) {
       || decisions.rows[0].status !== 'committed') fail();
 
   const final = history.find(({ treatment: value }) => value.final)?.treatment;
-  assertPhase5TreatmentResources({ payload, treatmentResources, releaseTransition,
-    npcTransitions, history, onisim });
+  assertPhase5TreatmentResources({ payload, treatmentResources, releaseTransition, releasedRope, npcTransitions, history, onisim });
   assertPhase5TreatmentKnowledge({ knowledge, history, final,
     executionId });
   if (!final) {

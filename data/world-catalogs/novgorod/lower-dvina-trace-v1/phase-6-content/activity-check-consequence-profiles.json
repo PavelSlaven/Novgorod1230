@@ -1,0 +1,90 @@
+{
+  "schema": "rus.trace_activity_check_consequence_profiles.v1",
+  "set_id": "trace_ld_v1_activity_check_consequence_profiles",
+  "revision": 4,
+  "publication_status": "unpublished",
+  "supersedes_ref": {
+    "id": "trace_ld_v1_activity_check_consequence_profiles",
+    "revision": 3,
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-5-content/activity-check-consequence-profiles.json",
+    "digest": "9125cb1cee920c9ec8a5c92cad9a2ee5c0e874a867388c2fc4411aaebf8ca434"
+  },
+  "owner": "@rus/turn",
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden",
+  "activity_profiles": [
+    {
+      "profile_id": "trace_ld_v1_activity_make_stretcher_and_carry",
+      "schema": "rus.trace_activity_profile.v1",
+      "version": 2,
+      "semantic_option_ids": [
+        "make_stretcher_and_carry_onisim_to_camp"
+      ],
+      "action_category": "carry",
+      "activity_type": "synchronized_group_traversal",
+      "duration_minutes": 20,
+      "time_profile_ref": "trace_ld_v1_time_20m",
+      "required_free_external_hands": 1,
+      "participant_slots": {
+        "carried_actor": "onisim_boatman",
+        "initial_carriers": [
+          "player_clerk",
+          "eremey_fisher",
+          "ratsha_storehouse_helper"
+        ],
+        "replacement": "resolved_participating_fisher",
+        "replacement_source_slot": "trace_ld_v1_audience_slot_participating_fisher",
+        "minimum_bound_carriers": 3,
+        "new_selection_or_rng": "forbidden"
+      },
+      "resource_refs": [
+        "trace_ld_v1_item_carry_poles",
+        "trace_ld_v1_item_fishing_net"
+      ],
+      "preconditions": {
+        "location_ref": "trace_ld_v1_loc_old_drying_shed",
+        "access_policy_ref": "trace_ld_v1_access_old_drying_shed",
+        "item_refs": [
+          "trace_ld_v1_item_carry_poles",
+          "trace_ld_v1_item_fishing_net"
+        ],
+        "required_committed_facts": [
+          "onisim_first_aid_completed",
+          "ratsha_surrender_without_further_harm_committed"
+        ]
+      },
+      "interruptibility": "synchronized_route_boundaries",
+      "progress_policy": "single_root_clock_for_carrier_group",
+      "nearest_temporal_boundary_rule": "split_whole_group_before_earliest_boundary",
+      "completion_boundary": "all_group_terminal_positions_committed",
+      "cancellation_or_substitution": "attempt_approved_carrier_rebinding_at_committed_route_boundary_then_fail_closed",
+      "no_check_required": true,
+      "consequence_refs": [],
+      "write_target_classes": [
+        "activity_progress",
+        "participant_attendance",
+        "resource_binding",
+        "movement_history",
+        "terminal_position",
+        "body_effect_proposal"
+      ],
+      "forbidden_write_targets": [
+        "teleport",
+        "independent_carried_actor_movement",
+        "new_stretcher_item"
+      ],
+      "player_safe_result_class": "carry_result"
+    }
+  ],
+  "check_profiles": [],
+  "consequence_profiles": [],
+  "applied_records": [],
+  "excludes": [
+    "runtime_handler",
+    "persistence",
+    "party_instance",
+    "api",
+    "ui"
+  ]
+}

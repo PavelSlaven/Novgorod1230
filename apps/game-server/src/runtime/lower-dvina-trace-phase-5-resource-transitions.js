@@ -74,6 +74,53 @@ function applyRopeRelease({ next, contracts, changeSetId }) {
     last_transition: historyEntry({ transition, changeSetId,
       approvedFacts: ['trace_ld_v1_treatment_stage_prepare_committed'] })
   };
+  if (contracts.ropeInventoryProfile != null) {
+    normalizeReleasedRope({ next, source: target.machine_state.binding_item,
+      contracts });
+  }
+}
+
+function normalizeReleasedRope({ next, source, contracts }) {
+  const matches = next.items.filter(
+    ({ template_id: id }) => id === source.item_template_ref
+  );
+  const profile = contracts.ropeInventoryProfile;
+  if (matches.length !== 0
+      || !source.reserved_instance_id || !source.run_id || !source.template_id
+      || source.template_id !== source.item_template_ref
+      || source.profile_id !== profile.inventory_profile_id
+      || source.inventory_profile_snapshot?.inventory_profile_id
+        !== profile.inventory_profile_id
+      || source.owner_ref !== null) {
+    fail('TRACE_PHASE_5_ROPE_NORMALIZATION_INVALID');
+  }
+  next.items.push({
+    item_id: source.reserved_instance_id,
+    run_id: source.run_id,
+    template_id: source.template_id,
+    profile_id: source.profile_id,
+    category_id: source.category_id,
+    quantity: 1,
+    condition_state: source.condition_state,
+    legal_status: source.legal_status,
+    placement: {
+      anchor_id: null,
+      container_id: null,
+      holder_npc_id: source.holder_npc_id,
+      holder_character_id: null,
+      physical_position: source.physical_position,
+      equipment_slot_category_id: null
+    },
+    state: {
+      accessibility: source.accessibility,
+      use_state: source.use_state,
+      owner_ref: null,
+      controller_npc_id: source.controller_npc_id,
+      inventory_profile_snapshot: structuredClone(profile),
+      approved_transition_history: [structuredClone(source.last_transition)]
+    }
+  });
+  source.normalized_item_id = source.reserved_instance_id;
 }
 
 function applyItemTransition({ next, contracts, transition, changeSetId,

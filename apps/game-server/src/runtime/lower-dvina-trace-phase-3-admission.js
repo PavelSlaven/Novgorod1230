@@ -23,6 +23,14 @@ export function tracePhase3PreconditionSatisfied(
   if (precondition.kind === 'npc_policy_state') {
     return resolveEremeyPolicyState(state) === precondition.state;
   }
+  if (precondition.kind === 'approved_route_body_source_state') {
+    const required = contracts.routeBodyEffect?.condition_outcomes;
+    const current = new Set(
+      (state.body_state?.active_conditions ?? []).map(({ id }) => id)
+    );
+    return Array.isArray(required)
+      && required.every(({ from }) => current.has(from));
+  }
   return false;
 }
 

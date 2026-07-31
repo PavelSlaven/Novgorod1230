@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { MATERIALIZER_VERSION, RNG_VERSION } from '@rus/materialization';
+import { deterministicInstanceId } from
+  '../../packages/materialization/src/core.js';
 import {
   calculateHandsState,
   calculateInventoryMass,
@@ -19,6 +21,9 @@ import { lowerDvinaTracePhase1ADomainPin } from
 
 const bundle = await loadLowerDvinaTraceMaterializationBundle({
   scenarioDefinitionRevision: 11
+});
+const bundle12 = await loadLowerDvinaTraceMaterializationBundle({
+  scenarioDefinitionRevision: 12
 });
 const domainCatalogPin = lowerDvinaTracePhase1ADomainPin(bundle);
 
@@ -76,17 +81,129 @@ test('revision 11 materializes one exact bandage on Eremey', () => {
   }).access.tier, 'quick');
 });
 
+test('revision 12 preserves the revision 11 prepared NPCs and Phase 5 items', () => {
+  const revision11 = materializeLowerDvinaTracePartyInstance(request());
+  const revision12 = materializeLowerDvinaTracePartyInstance(request({
+    scenario_definition_revision: 12,
+    scenario_manifest_digest: bundle12.manifest_digest,
+    scenario_bundle: bundle12,
+    domain_catalog_pin: lowerDvinaTracePhase1ADomainPin(bundle12)
+  }));
+  assert.deepEqual(
+    revision12.immediate.npcs.map(({ participant_slot_ref }) => participant_slot_ref).sort(),
+    revision11.immediate.npcs.map(({ participant_slot_ref }) => participant_slot_ref).sort()
+  );
+  for (const templateId of [
+    'trace_ld_v1_item_ratsha_knife',
+    'trace_ld_v1_item_bandage_cloth'
+  ]) {
+    const revision11Item = revision11.immediate.items.find(
+      ({ template_id }) => template_id === templateId
+    );
+    const revision12Item = revision12.immediate.items.find(
+      ({ template_id }) => template_id === templateId
+    );
+    assert.ok(revision11Item);
+    assert.ok(revision12Item);
+    assert.deepEqual(
+      stripInstanceIdentity(revision12Item),
+      stripInstanceIdentity(revision11Item)
+    );
+  }
+  const onisim = revision12.immediate.npcs.find(
+    ({ participant_slot_ref }) => participant_slot_ref === 'onisim_boatman'
+  );
+  const rope = onisim.machine_state.binding_item;
+  const expectedItemId = deterministicInstanceId(
+    revision12.party_id,
+    revision12.run_id,
+    'item',
+    'trace_ld_v1_item_ratsha_binding_rope',
+    0
+  );
+  assert.deepEqual({
+    reserved_instance_id: rope.reserved_instance_id,
+    run_id: rope.run_id,
+    template_id: rope.template_id,
+    category_id: rope.category_id,
+    profile_id: rope.profile_id,
+    legal_status: rope.legal_status,
+    owner_ref: rope.owner_ref,
+    inventory_profile_snapshot: rope.inventory_profile_snapshot
+  }, {
+    reserved_instance_id: expectedItemId,
+    run_id: revision12.run_id,
+    template_id: 'trace_ld_v1_item_ratsha_binding_rope',
+    category_id: 'utility_rope',
+    profile_id: 'trace_ld_v1_inventory_profile_ratsha_binding_rope',
+    legal_status: 'unowned',
+    owner_ref: null,
+    inventory_profile_snapshot: {
+      inventory_profile_id: 'trace_ld_v1_inventory_profile_ratsha_binding_rope',
+      item_template_ref: 'trace_ld_v1_item_ratsha_binding_rope',
+      mass_grams: 1200,
+      carry_form: 'long',
+      external_hand_cost: 1,
+      status: 'approved'
+    }
+  });
+  assert.equal(
+    revision11.immediate.npcs.find(
+      ({ participant_slot_ref }) => participant_slot_ref === 'onisim_boatman'
+    ).machine_state.binding_item.reserved_instance_id,
+    undefined
+  );
+  assert.equal(
+    revision12.immediate.items.some(
+      ({ template_id }) => template_id === 'trace_ld_v1_item_ratsha_binding_rope'
+    ),
+    false
+  );
+  const plan = stage24Plan(revision12, request({
+    scenario_definition_revision: 12,
+    scenario_manifest_digest: bundle12.manifest_digest,
+    scenario_bundle: bundle12,
+    domain_catalog_pin: lowerDvinaTracePhase1ADomainPin(bundle12)
+  }), lowerDvinaTracePhase1ADomainPin(bundle12));
+  assert.equal(
+    plan.write_batches.find(({ target_table }) => target_table === 'party_npcs')
+      ?.records.length,
+    5
+  );
+});
+
 test('revision 11 Stage 24 persists the exact bandage identity once', () => {
   const result = materializeLowerDvinaTracePartyInstance(request());
   const creation = request();
-  const plan = buildLowerDvinaTracePhase1AWritePlan({
+  const plan = stage24Plan(result, creation, domainCatalogPin);
+  const batch = (name) => plan.write_batches.find(
+    ({ target_table: table }) => table === name
+  )?.records ?? [];
+  const items = batch('party_items').filter(
+    ({ template_id: id }) => id === 'trace_ld_v1_item_bandage_cloth'
+  );
+  assert.equal(items.length, 1);
+  const placement = batch('party_item_placements').find(
+    ({ item_id: id }) => id === items[0].item_id
+  );
+  const ownership = batch('party_ownership').find(
+    ({ item_id: id }) => id === items[0].item_id
+  );
+  assert.equal(placement.physical_position, 'worn_quick');
+  assert.ok(placement.holder_npc_id);
+  assert.equal(ownership.owner_npc_id, placement.holder_npc_id);
+  assert.equal(ownership.controller_npc_id, placement.holder_npc_id);
+});
+
+function stage24Plan(result, creation, pin) {
+  return buildLowerDvinaTracePhase1AWritePlan({
     request_id: 'phase-5-stage-24',
     party_creation_context: {
       party_id: result.party_id,
       player_character_id: result.immediate.player.instance_id,
       schema_version: 'party_runtime_v2',
       commit_mode: 'internal_materialization',
-      domain_catalog_pin: domainCatalogPin,
+      domain_catalog_pin: pin,
       idempotency_key: creation.idempotency_key,
       version_pins: {
         world_revision_id: result.request_identity.world_revision_id,
@@ -107,24 +224,7 @@ test('revision 11 Stage 24 persists the exact bandage identity once', () => {
     world_base_reference_digest: 'phase-5-world',
     approved_pipeline_manifest_digest: 'phase-5-manifest'
   });
-  const batch = (name) => plan.write_batches.find(
-    ({ target_table: table }) => table === name
-  )?.records ?? [];
-  const items = batch('party_items').filter(
-    ({ template_id: id }) => id === 'trace_ld_v1_item_bandage_cloth'
-  );
-  assert.equal(items.length, 1);
-  const placement = batch('party_item_placements').find(
-    ({ item_id: id }) => id === items[0].item_id
-  );
-  const ownership = batch('party_ownership').find(
-    ({ item_id: id }) => id === items[0].item_id
-  );
-  assert.equal(placement.physical_position, 'worn_quick');
-  assert.ok(placement.holder_npc_id);
-  assert.equal(ownership.owner_npc_id, placement.holder_npc_id);
-  assert.equal(ownership.controller_npc_id, placement.holder_npc_id);
-});
+}
 
 test('revision 11 fails closed without the exact bandage binding', () => {
   const mutated = structuredClone(bundle);
@@ -161,4 +261,13 @@ function inventoryInput(result, actorId) {
     container_relations: [],
     hands_total: 2
   };
+}
+
+function stripInstanceIdentity(item) {
+  const copy = structuredClone(item);
+  delete copy.instance_id;
+  delete copy.owner_npc_id;
+  delete copy.holder_npc_id;
+  delete copy.controller_npc_id;
+  return copy;
 }

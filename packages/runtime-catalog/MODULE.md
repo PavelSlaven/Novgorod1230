@@ -11,6 +11,7 @@ item/container runtime catalog.
 - exact reconstruction по immutable import membership;
 - проверкой compatible full-world pin и runtime contract;
 - чистой projection по region/effective date после полной проверки.
+- единой загрузкой неперсистентных common catalog lookups до projection.
 
 ## Не делает
 
@@ -26,6 +27,7 @@ item/container runtime catalog.
 - `loadApprovedItemCatalog({ pin })`;
 - `assertCompatibleWorldPin({ domainPin, worldPin })`;
 - `selectApplicableItemCatalog({ verifiedCatalog, regionId, effectiveDate })`.
+- `loadCommonCatalogLookupRecords({ rootDir })` — cached read-only lookup loader.
 - `RUNTIME_CATALOG_CONTRACT` и `RUNTIME_CATALOG_CONTRACT_DIGEST` из
   `@rus/runtime-catalog/runtime-contract`.
 
@@ -42,7 +44,7 @@ Materialization trace хранит `catalog_digest` exact domain pin. Digest
 
 ## Допустимые зависимости
 
-`@rus/world-base`, `@rus/materialization` и стандартная библиотека Node.js.
+`@rus/world-base`, `@rus/materialization`, `@rus/items-property` и стандартная библиотека Node.js.
 
 ## Запрещённые зависимости
 

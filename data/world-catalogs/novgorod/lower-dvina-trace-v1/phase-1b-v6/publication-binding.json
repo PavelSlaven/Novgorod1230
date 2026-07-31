@@ -21,14 +21,14 @@
     "id": "lower_dvina_trace_phase_1a_v7",
     "revision": 7,
     "schema": "rus.lower_dvina_trace_phase_1a_manifest.v1",
-    "digest": "ed416d2074dbd31ded8538a0708f740a513adf87e1603a3d7a5456034501f783"
+    "digest": "5cc5a06136b2f4cbdb8b842558b0d749a2c70c3eff0f1c088aca9a7e0395d1a9"
   },
   "scenario_definition_ref": {
     "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-5-content/definition.json",
     "id": "lower_dvina_trace_v1",
     "revision": 11,
     "schema": "rus.trace_scenario_definition.v1",
-    "digest": "bc414095365d4a1db866dfc3b76a2bec98def05a82b9bc272205b2d813a18c4b"
+    "digest": "65ea080f3ba0897b47fd9ac6ed4ce92b7831ba3cc04de965bcbe7f956d2f7cd9"
   },
   "materializer_binding_id": "lower_dvina_trace_phase_1a_materialization_bindings_v7",
   "opening_projection": {

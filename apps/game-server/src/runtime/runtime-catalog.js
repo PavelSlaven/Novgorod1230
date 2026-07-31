@@ -3,6 +3,7 @@ import {
   createRuntimeCatalogLoader,
   selectApplicableItemCatalog
 } from '@rus/runtime-catalog';
+import { loadCommonCatalogLookupRecords } from '@rus/runtime-catalog/common-lookups';
 import { RUNTIME_CATALOG_CONTRACT_DIGEST } from '@rus/runtime-catalog/runtime-contract';
 
 export const ITEM_CONTAINER_CATALOG_SCOPE = 'item_container_materialization_v2';
@@ -19,6 +20,7 @@ export class RuntimeCatalogBoundaryError extends Error {
 export function createRuntimeCatalogCoordinator({
   worldBaseReader,
   partyPool,
+  commonCatalogLookupLoader = loadCommonCatalogLookupRecords,
   supportedRuntimeContractDigests = [RUNTIME_CATALOG_CONTRACT_DIGEST],
   loader = createRuntimeCatalogLoader({
     worldBaseReader,
@@ -32,12 +34,12 @@ export function createRuntimeCatalogCoordinator({
   async function prepareNewPartyContext({ worldPin, regionId, effectiveDate }) {
     const pin = await loader.loadActivePin({ catalogScope: ITEM_CONTAINER_CATALOG_SCOPE });
     compatible({ domainPin: pin, worldPin });
-    return buildContext({ loader, projection, pin, worldPin, regionId, effectiveDate, source: 'active' });
+    return buildContext({ loader, projection, commonCatalogLookupLoader, pin, worldPin, regionId, effectiveDate, source: 'active' });
   }
 
   async function restoreNewPartyContext({ pin, worldPin, regionId, effectiveDate }) {
     compatible({ domainPin: pin, worldPin });
-    return buildContext({ loader, projection, pin, worldPin, regionId, effectiveDate, source: 'checkpoint' });
+    return buildContext({ loader, projection, commonCatalogLookupLoader, pin, worldPin, regionId, effectiveDate, source: 'checkpoint' });
   }
 
   async function loadPartyContext({ partyId, regionId = null, effectiveDate = null }) {
@@ -76,7 +78,7 @@ export function createRuntimeCatalogCoordinator({
       world_catalog_digest: row.world_catalog_digest
     };
     compatible({ domainPin: pin, worldPin });
-    return buildContext({ loader, projection, pin, worldPin, regionId, effectiveDate, source: 'persisted_party' });
+    return buildContext({ loader, projection, commonCatalogLookupLoader, pin, worldPin, regionId, effectiveDate, source: 'persisted_party' });
   }
 
   async function assertMaterializationRunPin({ partyId, runId, expectedPin }) {
@@ -145,13 +147,17 @@ export function createRuntimeCatalogCoordinator({
 async function buildContext({
   loader,
   projection,
+  commonCatalogLookupLoader,
   pin,
   worldPin,
   regionId,
   effectiveDate,
   source
 }) {
-  const verifiedCatalog = await loader.loadApprovedItemCatalog({ pin });
+  const verifiedCatalog = withCommonLookups(
+    await loader.loadApprovedItemCatalog({ pin }),
+    await commonCatalogLookupLoader()
+  );
   const applicableCatalog = regionId && effectiveDate
     ? projection({
       verifiedCatalog,
@@ -170,6 +176,16 @@ async function buildContext({
     },
     verified_catalog: verifiedCatalog,
     applicable_catalog: applicableCatalog
+  });
+}
+
+function withCommonLookups(catalog, lookupRecords) {
+  return deepFreeze({
+    ...structuredClone(catalog),
+    records_by_table: {
+      ...structuredClone(catalog?.records_by_table ?? {}),
+      ...structuredClone(lookupRecords)
+    }
   });
 }
 

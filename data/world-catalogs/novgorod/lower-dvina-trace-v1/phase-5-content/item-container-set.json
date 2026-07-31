@@ -599,24 +599,19 @@
     {
       "inventory_profile_id": "trace_ld_v1_inventory_profile_bandage_cloth",
       "item_template_ref": "trace_ld_v1_item_bandage_cloth",
-      "mass_grams": 100,
-      "carry_form": "compact",
-      "external_hand_cost": 0
+      "inventory_archetype_ref": "compact_zero_hand",
+      "status": "approved"
     },
     {
       "inventory_profile_id": "trace_ld_v1_inventory_profile_fishing_net_group_load",
       "item_template_ref": "trace_ld_v1_item_fishing_net",
-      "mass_grams": 2500,
-      "carry_form": "long",
-      "external_hand_cost": 1,
+      "inventory_archetype_ref": "long_bundle",
       "status": "approved"
     },
     {
       "inventory_profile_id": "trace_ld_v1_inventory_profile_carry_poles_group_load",
       "item_template_ref": "trace_ld_v1_item_carry_poles",
-      "mass_grams": 2500,
-      "carry_form": "long",
-      "external_hand_cost": 1,
+      "inventory_archetype_ref": "long_bundle",
       "status": "approved"
     }
   ],

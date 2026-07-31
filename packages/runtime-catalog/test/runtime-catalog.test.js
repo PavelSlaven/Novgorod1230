@@ -8,6 +8,7 @@ import {
   createRuntimeCatalogLoader,
   selectApplicableItemCatalog
 } from '../src/index.js';
+import { loadCommonCatalogLookupRecords } from '../src/common-catalog-lookups.js';
 import {
   canonicalStringify,
   computeCanonicalRecordDigest,
@@ -27,6 +28,15 @@ import {
 } from '../src/ledger-digests.js';
 
 const digest = (character) => character.repeat(64);
+
+test('common catalog lookup is validated and loaded once per root', async () => {
+  const first = await loadCommonCatalogLookupRecords();
+  const repeated = await loadCommonCatalogLookupRecords();
+  assert.strictEqual(repeated, first);
+  assert.deepEqual(first.inventory_archetypes.map(
+    ({ inventory_archetype_id: id }) => id),
+    ['compact_zero_hand', 'long_bundle']);
+});
 
 function domainPin(overrides = {}) {
   return {

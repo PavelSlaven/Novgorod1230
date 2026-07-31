@@ -40,7 +40,12 @@ test('runtime catalog boundary uses active state only for a new party and histor
       calls.push(`catalog:${actual.catalog_revision_id}`);
       return Object.freeze({ schema: 'verified', records_by_table: {} });
     },
-    selectApplicableItemCatalog() {
+    selectApplicableItemCatalog({ verifiedCatalog }) {
+      assert.equal(
+        verifiedCatalog.records_by_table.inventory_archetypes[0]
+          .inventory_archetype_id,
+        'compact_zero_hand'
+      );
       calls.push('projection');
       return Object.freeze({ schema: 'projection' });
     }
@@ -56,7 +61,22 @@ test('runtime catalog boundary uses active state only for a new party and histor
       };
     }
   };
-  const coordinator = createRuntimeCatalogCoordinator({ loader, partyPool });
+  const coordinator = createRuntimeCatalogCoordinator({
+    loader,
+    partyPool,
+    async commonCatalogLookupLoader() {
+      calls.push('lookups');
+      return {
+        inventory_archetypes: [{
+          inventory_archetype_id: 'compact_zero_hand',
+          mass_grams: 100,
+          carry_form: 'compact',
+          external_hand_cost: 0,
+          status: 'approved'
+        }]
+      };
+    }
+  });
 
   const created = await coordinator.prepareNewPartyContext({
     worldPin,
@@ -64,12 +84,18 @@ test('runtime catalog boundary uses active state only for a new party and histor
     effectiveDate: '1230-01-01'
   });
   assert.equal(created.source, 'active');
-  assert.deepEqual(calls, ['active', 'compatible', 'catalog:catalog-v2', 'projection']);
+  assert.deepEqual(calls, [
+    'active',
+    'compatible',
+    'catalog:catalog-v2',
+    'lookups',
+    'projection'
+  ]);
 
   calls.length = 0;
   const reloaded = await coordinator.loadPartyContext({ partyId: 'party-1' });
   assert.equal(reloaded.source, 'persisted_party');
-  assert.deepEqual(calls, ['compatible', 'catalog:catalog-v2']);
+  assert.deepEqual(calls, ['compatible', 'catalog:catalog-v2', 'lookups']);
 });
 
 test('runtime catalog boundary fails closed for a missing party or run pin', async () => {

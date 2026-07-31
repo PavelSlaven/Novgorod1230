@@ -44,7 +44,7 @@
     "item_container_set": {
       "id": "trace_ld_v1_item_container_set",
       "revision": 3,
-      "digest": "dfd52e7a22e0f34734685d03da3e2b9cf9fad0d710852ba52c01e7f66b38d398"
+      "digest": "e45eaec89384ba8628e5685de6b53e6597e026dc78818a074629c8ee70d1b30d"
     },
     "hidden_truth_candidate_set": {
       "id": "trace_ld_v1_hidden_truth_candidate_set",

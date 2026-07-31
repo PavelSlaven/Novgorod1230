@@ -27,6 +27,7 @@ Item identity, containers, ownership, access, inventory load, recognition and pr
 - `buildRecognitionRequest`
 - `validatePropertyRelation`
 - `planApprovedActorItemTransition` — pure proposal for an already approved actor-to-actor item transition
+- `validateInventoryArchetypes` / `resolveInventoryProfile` — разворачивают переданный authoring archetype в точный immutable inventory-профиль до runtime
 
 ## Контракты и инварианты
 

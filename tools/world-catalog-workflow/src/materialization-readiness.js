@@ -13,7 +13,7 @@ const AUTHORING_TABLES = new Set([
 ]);
 
 const INSTANCE_PREFIXES = ['party_', 'runtime_', 'instance_'];
-const LOOKUP_TABLES = new Set(['regions', 'graph_nodes', 'building_templates', 'item_templates', 'region_social_roles']);
+const LOOKUP_TABLES = new Set(['regions', 'graph_nodes', 'building_templates', 'item_templates', 'region_social_roles', 'inventory_archetypes']);
 const REQUIRED_FOR_G4 = [
   'source_records', 'record_sources', 'world_revisions', 'universal_categories', 'region_category_options', 'g4_materialization_profiles', 'g4_materialization_bindings',
   'room_templates', 'building_layout_templates', 'building_layout_nodes', 'building_layout_edges', 'g5_minilocation_templates', 'g5_anchor_templates', 'g5_edge_templates', 'materialization_slot_rules', 'g4_materialization_layout_edges', 'region_npc_profile_sets', 'item_profile_sets',
@@ -498,6 +498,10 @@ function checkLayoutGraph(concerns, layoutId, nodes, edges) {
 }
 import { digestValue } from './digest.js';
 import { calculatePackingSlots } from './packing-slots.js';
+import {
+  resolveInventoryProfile,
+  validateInventoryArchetypes
+} from '@rus/items-property';
 const ITEM_BINDING_FACETS = new Set(['object_type','primary_function','secondary_function','material','manufacturing_technique','component_type','physical_form','condition','quality_band','size_band','mass_band','use_context']);
 const CONTAINER_FACETS = new Set(['container_form','capacity_band','closure_type','access_model','portability','content_compatibility','condition','material']);
 
@@ -505,6 +509,28 @@ function isValidContainerCapacityPolicy(value) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
   const keys = Object.keys(value).sort();
   return keys.length === 3 && keys[0] === 'mode' && keys[1] === 'unit' && keys[2] === 'version' && value.version === 1 && value.mode === 'packing_slots' && value.unit === 'packing_slot';
+}
+
+function validatedInventoryArchetypes(errors, source) {
+  if (source == null) return [];
+  try {
+    return validateInventoryArchetypes(source);
+  } catch (error) {
+    errors.push(`${error.code ?? 'INVENTORY_ARCHETYPE_SET_INVALID'}:inventory_archetypes`);
+    return [];
+  }
+}
+
+function resolvedInventoryProfiles(errors, profiles, archetypes) {
+  const resolved = [];
+  for (const profile of profiles) {
+    try {
+      resolved.push(resolveInventoryProfile({ profile, archetypes }));
+    } catch (error) {
+      errors.push(`${error.code ?? 'INVENTORY_PROFILE_INVALID'}:${profile?.id ?? '?'}`);
+    }
+  }
+  return resolved;
 }
 
 function validateInventoryProfiles(errors, profiles, templateIds, templateKey, prefix, container = false) {
@@ -550,9 +576,21 @@ export function validateItemContainerClassificationCatalog(recordsByTable = {}, 
   const revisionIds = new Set((recordsByTable.world_revisions ?? []).map((value) => value.id));
   const containers = new Map((recordsByTable.container_templates ?? []).map((value) => [value.id, value]));
   const itemBindings = recordsByTable.item_template_category_bindings ?? [];
-  const itemInventoryProfiles = recordsByTable.item_template_inventory_profiles ?? [];
+  const inventoryArchetypes = validatedInventoryArchetypes(
+    errors,
+    recordsByTable.inventory_archetypes
+  );
+  const itemInventoryProfiles = resolvedInventoryProfiles(
+    errors,
+    recordsByTable.item_template_inventory_profiles ?? [],
+    inventoryArchetypes
+  );
   const itemSourceBindings = recordsByTable.item_template_source_bindings ?? [];
-  const containerInventoryProfiles = recordsByTable.container_template_inventory_profiles ?? [];
+  const containerInventoryProfiles = resolvedInventoryProfiles(
+    errors,
+    recordsByTable.container_template_inventory_profiles ?? [],
+    inventoryArchetypes
+  );
   const containerSourceBindings = recordsByTable.container_template_source_bindings ?? [];
   const containerBindings = recordsByTable.container_template_facet_bindings ?? [];
   const relations = recordsByTable.container_content_category_relations ?? [];

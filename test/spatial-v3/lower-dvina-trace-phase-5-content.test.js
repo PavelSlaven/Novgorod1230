@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import test from 'node:test';
+import { resolveInventoryProfile } from '@rus/items-property';
 import { loadLowerDvinaTracePhase5Content, validateLowerDvinaTracePhase5Content } from '../../tools/world-catalog-workflow/src/lower-dvina-trace-phase-5-check.mjs';
 
 const canonical = hydrateContentDigests(await loadLowerDvinaTracePhase5Content());
@@ -23,9 +24,13 @@ test('Phase 5 pins Onisim treatment content and the Phase 1A/1B publication chai
   assert.equal(arrival.eremey_water_vessel_initial_binding.item_template_ref, 'trace_ld_v1_item_eremey_drinking_water_vessel');
   assert.equal(arrival.eremey_water_vessel_initial_binding.use_state, 'one_patient_drink_available');
   assert.equal(arrival.eremey_water_vessel_initial_binding.water_portions_remaining, 1);
-  const groupProfiles = canonical.items.item_inventory_profiles.filter(
-    ({ inventory_profile_id: id }) => id.endsWith('_group_load')
-  );
+  const profiles = canonical.items.item_inventory_profiles.map((profile) =>
+    resolveInventoryProfile({
+      profile,
+      archetypes: canonical.inventoryArchetypes
+    }));
+  const groupProfiles = profiles.filter(({ inventory_profile_id: id }) =>
+    id.endsWith('_group_load'));
   assert.deepEqual(groupProfiles.map(({ mass_grams, carry_form,
     external_hand_cost, status }) => ({ mass_grams, carry_form,
     external_hand_cost, status })), [
@@ -34,6 +39,21 @@ test('Phase 5 pins Onisim treatment content and the Phase 1A/1B publication chai
     { mass_grams: 2500, carry_form: 'long', external_hand_cost: 1,
       status: 'approved' }
   ]);
+  const bandage = profiles.find(({ inventory_profile_id: id }) =>
+    id === 'trace_ld_v1_inventory_profile_bandage_cloth');
+  assert.deepEqual({
+    mass_grams: bandage.mass_grams,
+    carry_form: bandage.carry_form,
+    external_hand_cost: bandage.external_hand_cost
+  }, { mass_grams: 100, carry_form: 'compact', external_hand_cost: 0 });
+  const referencedArchetypes = new Set(canonical.items.item_inventory_profiles
+    .map(({ inventory_archetype_ref: ref }) => ref)
+    .filter(Boolean));
+  assert.deepEqual(canonical.inventoryArchetypes
+    .map(({ inventory_archetype_id: id }) => id),
+    ['compact_zero_hand', 'long_bundle']);
+  assert.deepEqual(referencedArchetypes,
+    new Set(['compact_zero_hand', 'long_bundle']));
 });
 
 mutation('a changed immutable superseded definition digest', (b) => { b.manifest.superseded_definition_ref.digest = '0'.repeat(64); }, 'TRACE_PHASE_5_MANIFEST_OR_LINEAGE_INVALID');
@@ -57,6 +77,7 @@ mutation('runtime scope expansion', (b) => { b.manifest.excludes = ['ddl']; }, '
 mutation('a fallback carrier resolution', (b) => { b.phase1aBindings.phase_5_initial_state_binding.phase_5_resource_arrival_binding.fallback_policy = 'allowed'; }, 'TRACE_PHASE_5_CARRIER_RESOURCE_INVALID');
 mutation('a non-participating net holder', (b) => { b.phase1aBindings.phase_5_initial_state_binding.phase_5_resource_arrival_binding.arrival_item_bindings[0].holder_ref = 'background_fisher_2'; }, 'TRACE_PHASE_5_CARRIER_RESOURCE_INVALID');
 mutation('a changed group-load inventory mass', (b) => { b.items.item_inventory_profiles.find((x) => x.inventory_profile_id === 'trace_ld_v1_inventory_profile_fishing_net_group_load').mass_grams = 1200; }, 'TRACE_PHASE_5_CARRIER_RESOURCE_INVALID');
+mutation('an unknown bandage inventory archetype', (b) => { b.items.item_inventory_profiles.find((x) => x.inventory_profile_id === 'trace_ld_v1_inventory_profile_bandage_cloth').inventory_archetype_ref = 'unknown'; }, 'TRACE_PHASE_5_CARRIER_RESOURCE_INVALID');
 mutation('a non-approved carry-poles profile', (b) => { b.items.item_inventory_profiles.find((x) => x.inventory_profile_id === 'trace_ld_v1_inventory_profile_carry_poles_group_load').status = 'draft'; }, 'TRACE_PHASE_5_CARRIER_RESOURCE_INVALID');
 mutation('a changed water initial state', (b) => { b.phase1aBindings.phase_5_initial_state_binding.phase_5_resource_arrival_binding.eremey_water_vessel_initial_binding.use_state = 'unused'; }, 'TRACE_PHASE_5_CARRIER_RESOURCE_INVALID');
 mutation('a wrong water item template', (b) => { b.phase1aBindings.phase_5_initial_state_binding.phase_5_resource_arrival_binding.eremey_water_vessel_initial_binding.item_template_ref = 'trace_ld_v1_item_water'; }, 'TRACE_PHASE_5_CARRIER_RESOURCE_INVALID');

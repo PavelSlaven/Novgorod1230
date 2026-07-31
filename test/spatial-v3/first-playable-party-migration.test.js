@@ -9,10 +9,33 @@ const sql = readFileSync(
   new URL('../../schemas/party-db/011_party_runtime_first_playable.sql', import.meta.url),
   'utf8'
 );
+const externalOwnershipSql = readFileSync(
+  new URL('../../schemas/party-db/012_party_runtime_external_ownership.sql', import.meta.url),
+  'utf8'
+);
 
-test('target chain appends first-playable migration as 011', () => {
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 11);
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-1), sql);
+test('target chain appends external ownership migration after first-playable', () => {
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 12);
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-2), sql);
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-1), externalOwnershipSql);
+});
+
+test('012 admits one structured external owner without weakening existing owners', () => {
+  assert.match(
+    externalOwnershipSql,
+    /ADD COLUMN IF NOT EXISTS owner_external_ref JSONB/u
+  );
+  assert.match(
+    externalOwnershipSql,
+    /owner_npc_id IS NULL[\s\S]+owner_character_id IS NULL[\s\S]+owner_party[\s\S]+owner_external_ref IS NULL[\s\S]+= 1/u
+  );
+  assert.match(
+    externalOwnershipSql,
+    /jsonb_typeof\(owner_external_ref\) = 'object'/u
+  );
+  assert.match(externalOwnershipSql, /owner_external_ref->>'entity_kind'/u);
+  assert.match(externalOwnershipSql, /owner_external_ref->>'entity_id'/u);
+  assert.doesNotMatch(externalOwnershipSql, /DROP CONSTRAINT.*FOREIGN KEY/u);
 });
 
 test('011 extends the existing activity owner with strict standalone XOR', () => {

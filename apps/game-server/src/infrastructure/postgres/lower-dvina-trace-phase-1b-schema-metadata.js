@@ -9,6 +9,7 @@ export const PHASE_1A_TABLES = Object.freeze([
   'party_g5_anchors',
   'party_positions',
   'party_player_characters',
+  'party_npcs',
   'party_actor_profile_bindings',
   'party_actor_body_states',
   'party_actor_active_conditions',

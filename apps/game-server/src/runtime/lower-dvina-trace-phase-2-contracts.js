@@ -3,6 +3,9 @@ import { serverError } from '../errors.js';
 import {
   assertTracePhase2ExecutionBinding
 } from './lower-dvina-trace-phase-2-binding.js';
+import {
+  assertBlueWoolPickupContract
+} from './lower-dvina-trace-phase-2-pickup-contract.js';
 
 export const TRACE_PHASE_2_IDS = Object.freeze({
   option: 'inspect_wreck_in_detail',
@@ -50,6 +53,20 @@ export function resolveTracePhase2Contracts({
     'placement_slot_id',
     ids.blueWoolSlot
   );
+  const pickupTransition = bundle.definition_revision === 9
+    ? exactRecord(
+        bundle.item_container_set.transition_templates,
+        'transition_template_id',
+        'trace_ld_v1_transition_blue_wool_pickup'
+      )
+    : null;
+  const inventoryProfile = bundle.definition_revision === 9
+    ? exactRecord(
+        bundle.item_container_set.item_inventory_profiles,
+        'inventory_profile_id',
+        item.inventory_profile_ref
+      )
+    : null;
   const cluePlacement =
     phase2Bundle.binding.clue_placement_contract;
   const capacityContract = exactRecord(
@@ -98,6 +115,17 @@ export function resolveTracePhase2Contracts({
       || accessPolicy.unmaterialized_access !== 'forbidden') {
     throw dataGap('TRACE_PHASE_2_APPROVED_CHAIN_INVALID');
   }
+  if (bundle.definition_revision === 9) {
+  assertBlueWoolPickupContract({
+    item,
+    placement,
+    pickupTransition,
+    inventoryProfile,
+    activity,
+    check,
+    fail: dataGap
+  });
+  }
   const activityRecord = selectionRecord(
     state,
     'activities',
@@ -127,6 +155,10 @@ export function resolveTracePhase2Contracts({
       digest: canonicalDigest(bundle.body_environment_profiles)
     },
     cluePlacementContract: structuredClone(cluePlacement),
+    blueWoolPickupTransition:
+      structuredClone(pickupTransition),
+    blueWoolInventoryProfile:
+      structuredClone(inventoryProfile),
     blueWoolClue: {
       instance_id: `item:${state.party_id}:blue-wool`,
       template_id: item.item_template_id,

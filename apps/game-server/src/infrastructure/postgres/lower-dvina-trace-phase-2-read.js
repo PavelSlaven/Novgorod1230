@@ -33,10 +33,16 @@ export async function assertPhase2NormalizedRows(pool, payload, head) {
         [payload.party_id]
       ),
       pool.query(
-        `SELECT i.item_id,i.template_id,i.state,p.anchor_id
+        `SELECT i.item_id,i.template_id,i.profile_id,i.quantity,i.state,
+                p.anchor_id,p.container_id,p.holder_npc_id,
+                p.holder_character_id,p.physical_position,
+                p.equipment_slot_category_id,
+                o.owner_external_ref,o.controller_character_id,o.claim_state
            FROM party_runtime.party_items i
            JOIN party_runtime.party_item_placements p
              ON p.party_id=i.party_id AND p.item_id=i.item_id
+           JOIN party_runtime.party_ownership o
+             ON o.party_id=i.party_id AND o.item_id=i.item_id
           WHERE i.party_id=$1 ORDER BY i.item_id`,
         [payload.party_id]
       ),
@@ -157,11 +163,35 @@ export async function assertPhase2NormalizedRows(pool, payload, head) {
       || Boolean(expectedClue) !== Boolean(actualClue)
       || (expectedClue
         && (expectedClue.item_id !== actualClue.item_id
-          || expectedClue.placement.anchor_id !== actualClue.anchor_id
+          || !cluePlacementMatches(expectedClue, actualClue)
+          || !clueOwnershipMatches(expectedClue, actualClue)
           || canonicalDigest(expectedClue.state)
             !== canonicalDigest(actualClue.state)))) {
     throw phase2IntegrityError();
   }
+}
+
+function cluePlacementMatches(expected, actual) {
+  if (!expected.state?.pickup_transition) {
+    return expected.placement.anchor_id === actual.anchor_id;
+  }
+  return expected.profile_id === actual.profile_id
+    && expected.quantity === actual.quantity
+    && canonicalDigest(expected.placement) === canonicalDigest({
+      holder_character_id: actual.holder_character_id,
+      physical_position: actual.physical_position
+    });
+}
+
+function clueOwnershipMatches(expected, actual) {
+  if (!expected.state?.pickup_transition) return true;
+  return canonicalDigest(actual.owner_external_ref) === canonicalDigest({
+    entity_kind: 'participant_slot',
+    entity_id: expected.state.property_state.owner_ref
+  })
+    && actual.controller_character_id
+      === expected.state.property_state.controller_ref
+    && actual.claim_state === 'owner_preserved_evidence_held';
 }
 
 export async function loadPhase2Conditions(pool, partyId, actorId) {

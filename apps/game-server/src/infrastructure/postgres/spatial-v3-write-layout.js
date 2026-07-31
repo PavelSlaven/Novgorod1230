@@ -44,6 +44,7 @@ export const TABLES = Object.freeze({
     version: true
   },
   party_clocks: { modes: ['update'], key: ['party_id'], version: true },
+  party_positions: { modes: ['update'], key: ['party_id'], version: false },
   party_carrier_attachments: { modes: ['insert', 'update'], key: ['id'], version: true },
   party_npc_spatial_schedules: { modes: ['update'], key: ['id'], version: true },
   entity_placements: { modes: ['insert', 'update', 'delete'], key: ['party_id', 'entity_kind', 'entity_id'], version: true },
@@ -65,10 +66,8 @@ export const TABLES = Object.freeze({
   party_npcs: { modes: ['insert'], key: ['party_id', 'npc_id'] },
   party_npc_traits: { modes: ['insert'], key: ['party_id', 'npc_id', 'trait_domain', 'category_id'] },
   party_items: { modes: ['insert'], key: ['party_id', 'item_id'] },
-  party_item_placements: {
-    modes: ['insert'],
-    key: ['party_id', 'item_id']
-  },
+  party_item_placements: { modes: ['insert'], key: ['party_id', 'item_id'] },
+  party_ownership: { modes: ['insert'], key: ['party_id', 'ownership_id'] },
   party_character_knowledge: {
     modes: ['insert'],
     key: ['party_id', 'character_id', 'fact_id']
@@ -137,7 +136,9 @@ export const keyOf = (write) => `${write.target_schema ?? 'party_runtime'}.${wri
 export const validIdentity = (write) => write?.target_table === 'entity_placements'
   ? write.id === `${write.record?.entity_kind}:${write.record?.entity_id}`
   : write?.target_table === 'party_entity_controls' ? write.id === `${write.record?.entity_kind}:${write.record?.entity_id}`
-    : write?.target_table === 'parties' ? write.record?.party_id === write.id
+  : write?.target_table === 'parties' ? write.record?.party_id === write.id
+    : write?.target_table === 'party_positions'
+      ? write.record?.party_id === write.id
       : write?.target_table === 'party_server_sessions'
         ? write.record?.party_id === write.id
         : write?.target_table === 'party_state_snapshots'
@@ -161,9 +162,10 @@ export const validIdentity = (write) => write?.target_table === 'entity_placemen
                               : write?.target_table === 'party_actor_npc_interaction_summaries' ? write.record?.summary_id === write.id
                                 : write?.target_table === 'party_npcs' ? write.record?.npc_id === write.id
                                   : write?.target_table === 'party_npc_traits' ? write.id === `${write.record?.npc_id}:${write.record?.trait_domain}:${write.record?.category_id}`
-                                  : write?.target_table === 'party_items' ? write.record?.item_id === write.id
-                                    : write?.target_table === 'party_item_placements' ? write.record?.item_id === write.id
-                                      : write?.target_table === 'party_character_knowledge' ? write.id === `${write.record?.character_id}:${write.record?.fact_id}`
+                                    : write?.target_table === 'party_items' ? write.record?.item_id === write.id
+                                      : write?.target_table === 'party_item_placements' ? write.record?.item_id === write.id
+                                        : write?.target_table === 'party_ownership' ? write.record?.ownership_id === write.id
+                                        : write?.target_table === 'party_character_knowledge' ? write.id === `${write.record?.character_id}:${write.record?.fact_id}`
                                       : write?.target_table === 'party_containers' ? write.record?.container_id === write.id
               : write?.target_table === 'party_temporal_events' ? write.record?.event_id === write.id
                 : write?.target_table === 'party_temporal_event_subjects' ? write.id === `${write.record?.event_id}:${write.record?.subject_kind}:${write.record?.subject_id}:${write.record?.subject_role}`
@@ -221,6 +223,10 @@ export function childParentKeys(write) {
       return [`party_runtime.party_perception_records:${write.record?.perception_id}`];
     case 'party_item_placements':
       return [`party_runtime.party_items:${write.record?.item_id}`];
+    case 'party_ownership':
+      return write.record?.item_id
+        ? [`party_runtime.party_items:${write.record.item_id}`]
+        : [`party_runtime.party_containers:${write.record?.container_id}`];
     case 'party_perception_replay_evidence':
       return [
         `party_runtime.party_perception_records:${write.record?.perception_id}`,

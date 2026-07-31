@@ -3,6 +3,9 @@ import {
   computeSpatialV3CanonicalDigest
 } from '@rus/contracts/spatial-v3/registry';
 import { row } from './first-playable/plan-shared.js';
+import {
+  appendPhase2Clue
+} from './lower-dvina-trace-phase-2-clue-writes.js';
 
 export function buildPhase2Writes(input) {
   const {
@@ -94,7 +97,7 @@ export function buildPhase2Writes(input) {
       })
   ];
   appendKnowledge({ inserts, state, factual, partyId });
-  appendClue({ inserts, state, clue, partyId });
+  appendPhase2Clue({ inserts, state, clue, partyId });
   return { inserts, updates, appends, deletes: [] };
 }
 
@@ -201,40 +204,6 @@ function appendKnowledge({ inserts, state, factual, partyId }) {
         evidence: knowledge.evidence_refs
       }));
   }
-}
-
-function appendClue({ inserts, state, clue, partyId }) {
-  if (!clue || state.items.some(
-    (item) => item.template_id === clue.template_id
-  )) return;
-  inserts.push(row('party_items', clue.instance_id, {
-    party_id: partyId,
-    item_id: clue.instance_id,
-    run_id: state.materialization_trace.run_id,
-    template_id: clue.template_id,
-    profile_id: clue.template_id,
-    category_id: clue.semantic_category,
-    quantity: 1,
-    condition_state: 'observed_in_place',
-    legal_status: 'evidence_not_transferred',
-    state: {
-      semantic_category: clue.semantic_category,
-      property_state: clue.property_state,
-      causal_basis: clue.causal_basis,
-      evidence_ref: 'trace_ld_v1_evidence_blue_wool',
-      placement_contract: clue.placement
-    }
-  }));
-  inserts.push(row('party_item_placements', clue.instance_id, {
-    party_id: partyId,
-    item_id: clue.instance_id,
-    anchor_id: clue.placement.anchor_id,
-    container_id: null,
-    holder_npc_id: null,
-    holder_character_id: null,
-    physical_position: null,
-    equipment_slot_category_id: null
-  }));
 }
 
 function checkRecord({

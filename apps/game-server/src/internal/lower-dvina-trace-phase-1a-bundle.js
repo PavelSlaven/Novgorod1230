@@ -8,7 +8,10 @@ import {
   assertVersionedRawPin,
   loadLowerDvinaTracePhase1ACutover
 } from './lower-dvina-trace-phase-1a-cutover.js';
-import { loadLowerDvinaTraceRevision8Bundle } from './lower-dvina-trace-phase-3-bundle.js';
+import {
+  loadLowerDvinaTraceRevision8Bundle,
+  loadLowerDvinaTraceRevision9Bundle
+} from './lower-dvina-trace-phase-3-bundle.js';
 import {
   validateLowerDvinaTracePlayerDossier as validatePlayerDossier
 } from './lower-dvina-trace-player-validation.js';
@@ -48,6 +51,9 @@ export async function loadLowerDvinaTraceMaterializationBundle({
   }
   if (scenarioDefinitionRevision === 8) {
     return loadRevision8Bundle({ rootDir });
+  }
+  if (scenarioDefinitionRevision === 9) {
+    return loadRevision9Bundle({ rootDir });
   }
   fail(
     'TRACE_SCENARIO_REVISION_UNSUPPORTED',
@@ -206,6 +212,16 @@ async function loadRevision8Bundle({ rootDir }) {
   });
 }
 
+async function loadRevision9Bundle({ rootDir }) {
+  return loadLowerDvinaTraceRevision9Bundle({
+    rootDir,
+    historicalBundle: await loadRevision8Bundle({ rootDir }),
+    fail,
+    freezeDeep,
+    validateDefinitionPins
+  });
+}
+
 export function resolveLowerDvinaTraceStartTimestamp({ specification, calendar_profile }) {
   const contract = specification?.calendar_date_contract;
   if (contract?.calendar_system !== 'Julian' || contract?.selection_policy !== 'fixed_approved_date'
@@ -226,17 +242,13 @@ export function resolveLowerDvinaTraceStartTimestamp({ specification, calendar_p
 export function validateLowerDvinaTracePlayerDossier(result, bundle) {
   return validatePlayerDossier(result, bundle, fail);
 }
-
 async function readJson(rootDir, relativePath) {
   if (typeof relativePath !== 'string' || !relativePath) fail('TRACE_SCENARIO_ARTIFACT_PATH_INVALID', 'Pinned artifact path is required.');
   const raw = await readFile(resolve(rootDir, relativePath));
   return { value: JSON.parse(raw.toString('utf8')), digest: createHash('sha256').update(raw).digest('hex') };
 }
-
 function assertManifestFile(manifest, name, pin) { if (manifest?.files?.[name] !== pin.digest) fail('TRACE_SCENARIO_ARTIFACT_DIGEST_MISMATCH', `Manifest digest mismatch for ${name}.`); }
-
 function assertContentRef(ref, pin) { if (!ref || ref.digest !== pin.digest || (ref.schema && ref.schema !== pin.schema)) fail('TRACE_SCENARIO_ARTIFACT_DIGEST_MISMATCH', `Content ref mismatch for ${pin.key}.`); }
-
 function validateDefinitionPins(bundle) {
   for (const [definitionKey, artifactKey] of Object.entries({
     player_profile_set: 'player_profile_set',
@@ -253,7 +265,6 @@ function validateDefinitionPins(bundle) {
     if (bundle.definition.resolved_policy_refs[key].digest !== bundle.artifact_pins[key]?.digest) fail('TRACE_DEFINITION_PIN_MISMATCH', `Policy pin ${key} is stale.`);
   }
 }
-
 function buildCalendarProjectionProfile(record) {
   const payload = record.payload;
   const epoch = payload.epoch_reference;
@@ -278,9 +289,7 @@ function buildCalendarProjectionProfile(record) {
     daylight_rule: { ranges: [{ id: 'approved_date_projection', start_day: '1', end_day: '366' }] }
   };
 }
-
 function fail(code, message, details = {}) { throw new MaterializationError(code, message, details); }
-
 function freezeDeep(value) {
   if (!value || typeof value !== 'object' || Object.isFrozen(value)) return value;
   for (const nested of Object.values(value)) freezeDeep(nested);

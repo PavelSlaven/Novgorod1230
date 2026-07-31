@@ -19,6 +19,8 @@ export const TRACE_INITIAL_SNAPSHOT_SCHEMA =
   'rus.lower_dvina_trace_initial_party_snapshot.v2';
 export const TRACE_PHASE_2_SNAPSHOT_SCHEMA =
   'rus.lower_dvina_trace_phase_2_snapshot.v1';
+export const TRACE_TURN_SNAPSHOT_SCHEMA =
+  'rus.lower_dvina_trace_turn_snapshot.v2';
 
 export function isLowerDvinaTraceSession(session) {
   return session?.party_snapshot_schema === TRACE_INITIAL_SNAPSHOT_SCHEMA
@@ -35,15 +37,15 @@ export function validateLowerDvinaTraceSessionRead({
   const identity = session?.stage26_result;
   const delivery = session?.delivery_attempt;
   const screen = session?.screen;
-  const expectedSnapshotSchema = Number(session?.turn_number) > 0
-    ? TRACE_PHASE_2_SNAPSHOT_SCHEMA
-    : TRACE_INITIAL_SNAPSHOT_SCHEMA;
+  const expectedSnapshotSchemas = Number(session?.turn_number) > 0
+    ? [TRACE_PHASE_2_SNAPSHOT_SCHEMA, TRACE_TURN_SNAPSHOT_SCHEMA]
+    : [TRACE_INITIAL_SNAPSHOT_SCHEMA];
   const expected = TRACE_PHASE_1B_SESSION_IDENTITIES.find((candidate) =>
     candidate.publication_manifest_digest
       === identity?.publication_manifest_digest);
   if (!session
     || !expected
-    || session.party_snapshot_schema !== expectedSnapshotSchema
+    || !expectedSnapshotSchemas.includes(session.party_snapshot_schema)
     || session.party_materializer_version
       !== TRACE_PHASE_1B_APPROVED_MATERIALIZER_VERSION
     || session.party_rng_algorithm_id
@@ -195,7 +197,8 @@ function validatePostTurnSession({ partyId, session, screen, identity }) {
   const expectedContext = payload && visibleContextFromPayload(payload);
   const narrationDigest = narration?.canonical_digest ?? null;
   const narrationText = narration?.text ?? null;
-  if (session.party_snapshot_schema !== TRACE_PHASE_2_SNAPSHOT_SCHEMA
+  if (![TRACE_PHASE_2_SNAPSHOT_SCHEMA, TRACE_TURN_SNAPSHOT_SCHEMA]
+      .includes(session.party_snapshot_schema)
       || !Number.isSafeInteger(turnNumber) || turnNumber < 1
       || !Number.isSafeInteger(stateVersion) || stateVersion < 1
       || session.last_turn_id !== screen.turn_id

@@ -1,19 +1,16 @@
 import { canonicalDigest } from '@rus/materialization';
-import { runTurnWorkflow } from '@rus/turn';
+import { createTurnCommandRegistry, runTurnWorkflow } from '@rus/turn';
 import { serverError } from '../errors.js';
+import { loadLowerDvinaTraceMaterializationBundle } from
+  '../internal/lower-dvina-trace-phase-1a-bundle.js';
+import { loadLowerDvinaTracePhase2Bundle } from
+  '../internal/lower-dvina-trace-phase-2-bundle.js';
 import {
-  loadLowerDvinaTraceMaterializationBundle
-} from '../internal/lower-dvina-trace-phase-1a-bundle.js';
-import {
-  loadLowerDvinaTracePhase2Bundle
-} from '../internal/lower-dvina-trace-phase-2-bundle.js';
-import {
-  createTracePhase2InspectionRegistry,
+  createTracePhase2InspectionCommand,
   tracePhase2PreconditionSatisfied
 } from './lower-dvina-trace-phase-2-command.js';
-import {
-  resolveTracePhase2Contracts
-} from './lower-dvina-trace-phase-2-contracts.js';
+import { resolveTracePhase2Contracts } from
+  './lower-dvina-trace-phase-2-contracts.js';
 import {
   createTracePhase2BodyEffect,
   createTracePhase2VisibleProjector
@@ -21,7 +18,20 @@ import {
 import {
   createTracePhase2TemporalAdvance
 } from './lower-dvina-trace-phase-2-temporal.js';
-
+import {
+  resolveTracePhase3Contracts
+} from './lower-dvina-trace-phase-3-contracts.js';
+import {
+  createTracePhase3Commands,
+  tracePhase3PreconditionSatisfied
+} from './lower-dvina-trace-phase-3-command.js';
+import {
+  createTracePhase3TemporalAdvance,
+  createTracePhase3VisibleProjector
+} from './lower-dvina-trace-phase-3-effects.js';
+import {
+  committedTraceScenarioDefinitionRevision
+} from './lower-dvina-trace-committed-revision.js';
 export function createLowerDvinaTracePhase2Runtime({
   repository,
   semanticResolver,
@@ -29,7 +39,10 @@ export function createLowerDvinaTracePhase2Runtime({
   randomSourceFactory,
   decisionSecret,
   now = () => new Date().toISOString(),
-  bundleLoader = loadLowerDvinaTraceMaterializationBundle,
+  bundleLoader = ({ scenarioDefinitionRevision }) =>
+    loadLowerDvinaTraceMaterializationBundle({
+      scenarioDefinitionRevision
+    }),
   phase2BundleLoader = loadLowerDvinaTracePhase2Bundle
 } = {}) {
   validateDependencies({
@@ -79,22 +92,30 @@ export function createLowerDvinaTracePhase2Runtime({
           ? repository.replayPhase2Turn({ partyId, replay, narrator })
           : replay.public_result;
       }
-      const [state, bundle, phase2Bundle] = await Promise.all([
+      const [state, phase2Bundle] = await Promise.all([
         repository.loadPhase2State(partyId, {
           presentationIdempotencyKey: idempotencyKey
         }),
-        bundleLoader(),
         phase2BundleLoader()
       ]);
+      const scenarioDefinitionRevision =
+        committedTraceScenarioDefinitionRevision(state);
+      const bundle = await bundleLoader({ scenarioDefinitionRevision });
       const contracts = resolveTracePhase2Contracts({
         state,
         bundle,
         phase2Bundle
       });
-      const registry = createTracePhase2InspectionRegistry({
-        contracts,
-        inputDigest
-      });
+      const phase3Contracts = bundle.definition_revision === 9
+        ? resolveTracePhase3Contracts({ state, bundle })
+        : null;
+      const registry = createTurnCommandRegistry([
+        createTracePhase2InspectionCommand({ contracts, inputDigest }),
+        ...(phase3Contracts ? createTracePhase3Commands({
+          contracts: phase3Contracts,
+          inputDigest
+        }) : [])
+      ]);
       const issuedAt = now();
       const result = await runTurnWorkflow({
         party_id: partyId,
@@ -107,7 +128,10 @@ export function createLowerDvinaTracePhase2Runtime({
           state_version: state.party_state.state_version,
           policy_id: 'lower_dvina_trace_semantic_intent',
           policy_version: '1',
-          policy_pins: [contracts.activityPin]
+          policy_pins: [
+            contracts.activityPin,
+            ...(phase3Contracts?.activityPins ?? [])
+          ]
         }
       }, buildServices({
         partyId,
@@ -117,6 +141,7 @@ export function createLowerDvinaTracePhase2Runtime({
         issuedAt,
         state,
         contracts,
+        phase3Contracts,
         registry,
         repository,
         semanticResolver,
@@ -136,12 +161,11 @@ export function createLowerDvinaTracePhase2Runtime({
     }
   });
 }
-
 function buildServices(context) {
   const {
     partyId, requestId, idempotencyKey, inputDigest, issuedAt,
     state, contracts, registry, repository, semanticResolver,
-    narrator, randomSourceFactory, decisionSecret
+    narrator, randomSourceFactory, decisionSecret, phase3Contracts
   } = context;
   const randomSource = randomSourceFactory({
     party_id: partyId,
@@ -175,24 +199,28 @@ function buildServices(context) {
     decisionExpiresAt: addMinutes(issuedAt, 5),
     evaluatePrecondition(precondition, committedState) {
       return tracePhase2PreconditionSatisfied(
-        precondition,
-        committedState,
-        contracts
-      );
+        precondition, committedState, contracts
+      ) || (phase3Contracts != null && tracePhase3PreconditionSatisfied(
+        precondition, committedState, phase3Contracts
+      ));
     },
     randomSource,
-    temporalAdvance:
-      createTracePhase2TemporalAdvance({ contracts }),
+    temporalAdvance: createTracePhase3TemporalAdvance({
+      phase2Advance: createTracePhase2TemporalAdvance({ contracts })
+    }),
     bodyEffect: createTracePhase2BodyEffect({ contracts }),
-    visibleProjector:
-      createTracePhase2VisibleProjector({ contracts }),
+    visibleProjector: createTracePhase3VisibleProjector({
+      phase2Projector: createTracePhase2VisibleProjector({ contracts }),
+      contracts: phase3Contracts
+    }),
     partyStore: {
       commit(writePlan) {
         return repository.commitPhase2Turn({
           partyId,
           writePlan,
           inputDigest,
-          contracts
+          contracts,
+          phase3Contracts
         });
       }
     },
@@ -254,7 +282,6 @@ function validateDependencies({
     );
   }
 }
-
 function addMinutes(value, minutes) {
   return new Date(Date.parse(value) + minutes * 60000).toISOString();
 }

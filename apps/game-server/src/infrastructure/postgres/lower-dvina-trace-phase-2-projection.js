@@ -11,9 +11,11 @@ export function phase2PublicResult({ payload, screen }) {
     check: payload.last_turn.check_result,
     time_update: payload.last_turn.time_update,
     body_update: payload.last_turn.body_update,
-    observations: payload.last_turn.consequence.observations,
-    evidence: payload.last_turn.consequence.evidence_relations,
-    clue: payload.last_turn.consequence.clue_materialization
+    observations: payload.last_turn.consequence.observations ?? [],
+    evidence: payload.last_turn.consequence.evidence_relations ?? [],
+    clue: payload.last_turn.consequence.clue_materialization ?? null,
+    movement: payload.last_turn.consequence.movement ?? null,
+    conversation: payload.last_turn.consequence.conversation ?? null
   };
 }
 

@@ -28,6 +28,9 @@ import {
 import {
   assertPhase2PresentationAdmission
 } from './lower-dvina-trace-phase-2-presentation-admission.js';
+import {
+  assertPhase3NormalizedRows
+} from './lower-dvina-trace-phase-3-read.js';
 
 export function createLowerDvinaTracePhase2PostgresRepository({
   partyPool,
@@ -49,6 +52,7 @@ export function createLowerDvinaTracePhase2PostgresRepository({
   ) {
     const head = await partyPool.query(
       `SELECT p.state_version AS party_state_version,
+              p.world_revision_id,p.world_catalog_digest,
               s.state_version AS session_state_version,
               s.turn_number,s.delivery_ack_result,
               s.stage26_result,s.screen,s.last_turn_id,
@@ -105,9 +109,17 @@ export function createLowerDvinaTracePhase2PostgresRepository({
     });
     const temporalSourceProof =
       await loadTracePhase2TemporalSourceProof(partyPool, partyId);
-    await assertPhase2NormalizedRows(partyPool, payload, row);
+    if (payload.schema === 'rus.lower_dvina_trace_turn_snapshot.v2') {
+      await assertPhase3NormalizedRows(partyPool, payload, row);
+    } else {
+      await assertPhase2NormalizedRows(partyPool, payload, row);
+    }
     return {
       ...structuredClone(payload),
+      world_identity: {
+        world_revision_id: row.world_revision_id,
+        world_catalog_digest: row.world_catalog_digest
+      },
       temporal_boundary_candidates: [],
       temporal_source_proof: structuredClone(temporalSourceProof)
     };
@@ -268,7 +280,10 @@ export function createLowerDvinaTracePhase2PostgresRepository({
 }
 
 function validSnapshot(payload, row, partyId) {
-  return payload?.schema === 'rus.lower_dvina_trace_phase_2_snapshot.v1'
+  return [
+    'rus.lower_dvina_trace_phase_2_snapshot.v1',
+    'rus.lower_dvina_trace_turn_snapshot.v2'
+  ].includes(payload?.schema)
     && row.state_digest === canonicalDigest(payload)
     && payload.party_id === partyId
     && payload.party_state.state_version

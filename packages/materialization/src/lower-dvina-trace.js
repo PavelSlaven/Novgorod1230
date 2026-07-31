@@ -166,7 +166,7 @@ export function materializeLowerDvinaTracePartyInstance(input) {
   const playerId = deterministicInstanceId(input.party_id, runId, 'player_character', 'player_clerk', 0);
   const g5NodeId = deterministicInstanceId(input.party_id, runId, 'g5_node', 'trace_ld_v1_loc_wreck_shore', 0);
   const anchorId = deterministicInstanceId(input.party_id, runId, 'g5_anchor', spatialBinding.anchor_template.template_id, 0);
-  const phase3Prepared = input.scenario_definition_revision === 8
+  const phase3Prepared = [8, 9].includes(input.scenario_definition_revision)
     ? materializeLowerDvinaTracePreparedCamp({
       input,
       bundle,

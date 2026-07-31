@@ -75,14 +75,19 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     max: 8
   });
   await pool.query('SELECT 1');
-  for (const file of (await readdir('schemas/party-db'))
-    .filter((value) => /^\d+.*\.sql$/u.test(value)).sort()) {
+  const partyFiles = (await readdir('schemas/party-db'))
+    .filter((value) => /^\d+.*\.sql$/u.test(value)).sort();
+  for (const file of partyFiles.filter((value) => !value.startsWith('012_'))) {
     await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
   }
   assert.equal(
     (await runPartyRuntimeCatalogMigration(pool)).status,
     'applied'
   );
+  await pool.query(await readFile(
+    'schemas/party-db/012_party_runtime_external_ownership.sql',
+    'utf8'
+  ));
   await installWorldLineage(pool);
   const schemaSnapshot = await readPartyDatabaseSchemaSnapshot(pool);
   assert.ok(schemaSnapshot.foreign_keys.length > 0);

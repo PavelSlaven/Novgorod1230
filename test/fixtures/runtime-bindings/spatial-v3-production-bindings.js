@@ -31,9 +31,9 @@ const releaseBinding = Object.freeze({
     '9f574d2782cdbaeeba190d8237fe38c26bddd65775f060749079d3d0163ef32d',
   party_runtime_catalog_target_fingerprint:
     '47cb21b39db8be7336d10533ed319fe314f5bda65d850f1297c8321de6c9d165',
-  target_migration_count: 11,
+  target_migration_count: 12,
   target_migration_chain_digest:
-    'b7a9eb899b5d302dc27bff6797f1bb6abf31b245ace3e7c285f94543e3039d45',
+    'd48ae385bd84bbc706da089aa24135c47b88eba309e9075079e535ae9f670871',
   compatible_world_pin_manifest_digest: 'e'.repeat(64),
   rollback_source_release_id: 'spatial-v3-production-v2',
   rollback_runtime_selectable: false,

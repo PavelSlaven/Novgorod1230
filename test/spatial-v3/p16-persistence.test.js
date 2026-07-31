@@ -172,6 +172,70 @@ test('P16 builder verifies approval, preserves three disjoint sets and rejects a
   assert.equal(forgedPresentationWrite.error.code, 'visible_package_persistence_gap');
 });
 
+test('P16 admits one exact non-versioned party position update without a fabricated state version', async () => {
+  const positionWrite = {
+    target_table: 'party_positions',
+    id: 'p',
+    record: {
+      party_id: 'p',
+      g4_id: 'g4-camp',
+      g5_node_id: 'g5-camp',
+      g5_anchor_id: 'anchor-camp',
+      updated_at: '2030-01-01T00:00:00.000Z'
+    }
+  };
+  const approved_write_sets = [{
+    inserts: [],
+    updates: [positionWrite],
+    appends: [{
+      target_table: 'party_v3_change_sets',
+      id: 'cs',
+      record: {
+        id: 'cs',
+        party_id: 'p',
+        operation_kind: 'move',
+        idempotency_record_id: 'idem'
+      }
+    }]
+  }];
+  const built = await buildCombinedWritePlan(input({
+    lock_context: {
+      owner_keys: [],
+      execution_keys: [],
+      g4_keys: [],
+      physical_keys: [
+        'party_runtime.party_v3_change_sets:cs',
+        'party_runtime.party_route_plan_executions:e',
+        'party_runtime.party_positions:p'
+      ]
+    },
+    approved_write_sets
+  }), { verifyApproval: approval });
+  assert.equal(built.ok, true);
+  assert.deepEqual(built.plan.expected_state_versions, []);
+
+  const fabricatedVersion = await buildCombinedWritePlan(input({
+    expected_state_versions: [{
+      target_table: 'party_positions',
+      id: 'p',
+      state_version: 0
+    }],
+    lock_context: {
+      owner_keys: [],
+      execution_keys: [],
+      g4_keys: [],
+      physical_keys: [
+        'party_runtime.party_v3_change_sets:cs',
+        'party_runtime.party_route_plan_executions:e',
+        'party_runtime.party_positions:p'
+      ]
+    },
+    approved_write_sets
+  }), { verifyApproval: approval });
+  assert.equal(fabricatedVersion.ok, false);
+  assert.equal(fabricatedVersion.error.code, 'state_version_conflict');
+});
+
 test('P16 committer locks ordered phases, rejects stale update before writes and never trusts foreign table', async () => {
   const built = await buildCombinedWritePlan(input({ expected_state_versions: [{ target_table: 'party_route_plan_executions', id: 'e', state_version: 2 }], approved_write_sets: [{ inserts: [], appends: [{ target_table: 'party_v3_change_sets', id: 'cs', record: { id: 'cs', party_id: 'p', operation_kind: 'move', idempotency_record_id: 'idem' } }], updates: [{ target_table: 'party_route_plan_executions', id: 'e', record: { id: 'e', party_id: 'p', status: 'active' } }] }] }), { verifyApproval: approval });
   const calls = []; const committer = createSpatialV3CombinedAtomicCommitter({ recheck: async () => ({ ok: true }), withTransaction: async (work) => work({ query: async (sql) => { calls.push(sql); if (sql.includes('party_command_idempotency') && sql.startsWith('SELECT')) return { rows: [] }; if (sql.startsWith('UPDATE party_runtime.') && sql.includes('party_route_plan_executions')) return { rowCount: 0, rows: [] }; return { rowCount: 1, rows: [] }; } }) });

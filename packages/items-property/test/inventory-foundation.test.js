@@ -100,11 +100,11 @@ test('inventory foundation: topology blocks duplicate placement, cycles, depth, 
 });
 
 test('inventory foundation: load thresholds and hands are independent hard gates', () => {
-  assert.equal(resolveInventoryLoad({ total_mass_grams: 20, strength: 10 }).load_category, 'light');
-  assert.equal(resolveInventoryLoad({ total_mass_grams: 21, strength: 10 }).load_category, 'moderate');
-  assert.equal(resolveInventoryLoad({ total_mass_grams: 41, strength: 10 }).load_category, 'heavy');
-  assert.deepEqual(resolveInventoryLoad({ total_mass_grams: 60, strength: 10 }), { pass: true, load_category: 'heavy', at_limit: true, errors: [] });
-  assert.equal(resolveInventoryLoad({ total_mass_grams: 61, strength: 10 }).load_category, 'overloaded');
+  assert.equal(resolveInventoryLoad({ total_mass_grams: 20_000, strength: 10 }).load_category, 'light');
+  assert.equal(resolveInventoryLoad({ total_mass_grams: 20_001, strength: 10 }).load_category, 'moderate');
+  assert.equal(resolveInventoryLoad({ total_mass_grams: 40_001, strength: 10 }).load_category, 'heavy');
+  assert.deepEqual(resolveInventoryLoad({ total_mass_grams: 60_000, strength: 10 }), { pass: true, load_category: 'heavy', at_limit: true, errors: [] });
+  assert.equal(resolveInventoryLoad({ total_mass_grams: 60_001, strength: 10 }).load_category, 'overloaded');
   const hands = state({ items: [{ item_id: 'knife-1', template_id: 'knife', quantity: 1 }, { item_id: 'bow-1', template_id: 'bow', quantity: 1 }, { item_id: 'chest-1', template_id: 'chest', quantity: 1 }], item_placements: [{ item_id: 'knife-1', holder_character_id: actorId, physical_position: 'hands' }, { item_id: 'bow-1', holder_character_id: actorId, physical_position: 'external' }, { item_id: 'chest-1', holder_character_id: actorId, physical_position: 'external' }] });
   assert.ok(calculateHandsState(hands).errors.some((error) => error.code === 'INVENTORY_HANDS_EXCEEDED'));
 });

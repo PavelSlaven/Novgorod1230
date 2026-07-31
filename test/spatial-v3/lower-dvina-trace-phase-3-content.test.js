@@ -87,6 +87,121 @@ test('Phase 3 prerequisite pins the camp, three participants and both Eremey map
   );
 });
 
+test('blue-wool pickup is an exact owner-preserving inventory transition', () => {
+  const items = canonical.item_container_set;
+  const wool = items.item_templates.find(
+    (value) => value.item_template_id === 'trace_ld_v1_item_blue_wool_fragment'
+  );
+  const profile = items.item_inventory_profiles.find(
+    (value) => value.inventory_profile_id === wool.inventory_profile_ref
+  );
+  const pickup = items.transition_templates.find(
+    (value) => value.transition_template_id === 'trace_ld_v1_transition_blue_wool_pickup'
+  );
+  assert.equal(items.revision, 2);
+  assert.equal(wool.property_state_template.holder_ref, null);
+  assert.equal(wool.property_state_template.controller_ref, null);
+  assert.equal(wool.placement_slot_ref, 'trace_ld_v1_slot_wreck_willow_branch');
+  assert.deepEqual(profile, {
+    inventory_profile_id: 'trace_ld_v1_inventory_profile_blue_wool_fragment',
+    item_template_ref: 'trace_ld_v1_item_blue_wool_fragment',
+    mass_grams: 10,
+    carry_form: 'compact',
+    external_hand_cost: 0
+  });
+  assert.equal(pickup.trigger.required_successful_consequence_ref, 'trace_ld_v1_consequence_inspection_success');
+  assert.equal(pickup.trigger.required_committed_evidence_ref, 'trace_ld_v1_evidence_blue_wool');
+  assert.equal(pickup.destination_state.holder_ref, 'player_clerk');
+  assert.equal(pickup.destination_state.controller_ref, 'player_clerk');
+  assert.equal(pickup.destination_state.physical_position, 'hands');
+  assert.equal(pickup.owner_preservation, 'ratsha_storehouse_helper');
+  assert.equal(pickup.owner_change, 'forbidden');
+  assert.equal(pickup.clock_write, 'forbidden');
+  assert.equal(pickup.atomic_with_parent_activity_commit, true);
+  assert.equal(pickup.failure_pickup, 'forbidden');
+  assert.equal(pickup.repeat_application, 'forbidden');
+});
+
+mutation(
+  'a blue-wool source holder',
+  (value) => {
+    value.item_container_set.transition_templates
+      .find((entry) => entry.transition_template_id === 'trace_ld_v1_transition_blue_wool_pickup')
+      .source_item_state.holder_ref = 'player_clerk';
+  },
+  'TRACE_BLUE_WOOL_PICKUP_CONTRACT_INVALID'
+);
+mutation(
+  'a blue-wool source controller',
+  (value) => {
+    value.item_container_set.transition_templates
+      .find((entry) => entry.transition_template_id === 'trace_ld_v1_transition_blue_wool_pickup')
+      .source_item_state.controller_ref = 'unknown_controller';
+  },
+  'TRACE_BLUE_WOOL_PICKUP_CONTRACT_INVALID'
+);
+mutation(
+  'a blue-wool source placement outside the willow branch',
+  (value) => {
+    value.item_container_set.transition_templates
+      .find((entry) => entry.transition_template_id === 'trace_ld_v1_transition_blue_wool_pickup')
+      .source_placement_ref = 'unknown_slot';
+  },
+  'TRACE_BLUE_WOOL_PICKUP_CONTRACT_INVALID'
+);
+mutation(
+  'a blue-wool destination with an unknown controller',
+  (value) => {
+    value.item_container_set.transition_templates
+      .find((entry) => entry.transition_template_id === 'trace_ld_v1_transition_blue_wool_pickup')
+      .destination_state.controller_ref = 'unknown_controller';
+  },
+  'TRACE_BLUE_WOOL_PICKUP_CONTRACT_INVALID'
+);
+mutation(
+  'a blue-wool inventory profile without mass',
+  (value) => {
+    delete value.item_container_set.item_inventory_profiles[0].mass_grams;
+  },
+  'TRACE_BLUE_WOOL_PICKUP_CONTRACT_INVALID'
+);
+mutation(
+  'an unknown blue-wool inventory profile',
+  (value) => {
+    value.item_container_set.transition_templates
+      .find((entry) => entry.transition_template_id === 'trace_ld_v1_transition_blue_wool_pickup')
+      .inventory_profile_ref = 'unknown_profile';
+  },
+  'TRACE_BLUE_WOOL_PICKUP_CONTRACT_INVALID'
+);
+mutation(
+  'a pickup without successful committed inspection',
+  (value) => {
+    value.item_container_set.transition_templates
+      .find((entry) => entry.transition_template_id === 'trace_ld_v1_transition_blue_wool_pickup')
+      .trigger.required_successful_consequence_ref = 'inspection_failure';
+  },
+  'TRACE_BLUE_WOOL_PICKUP_CONTRACT_INVALID'
+);
+mutation(
+  'a pickup that writes a separate clock change',
+  (value) => {
+    value.item_container_set.transition_templates
+      .find((entry) => entry.transition_template_id === 'trace_ld_v1_transition_blue_wool_pickup')
+      .clock_write = 'allowed';
+  },
+  'TRACE_BLUE_WOOL_PICKUP_CONTRACT_INVALID'
+);
+mutation(
+  'a replayable second pickup',
+  (value) => {
+    value.item_container_set.transition_templates
+      .find((entry) => entry.transition_template_id === 'trace_ld_v1_transition_blue_wool_pickup')
+      .repeat_application = 'allowed';
+  },
+  'TRACE_BLUE_WOOL_PICKUP_CONTRACT_INVALID'
+);
+
 mutation(
   'a missing camp anchor',
   (value) => { delete value.materialization_bindings.camp_spatial_binding.anchor_template; },
@@ -181,16 +296,16 @@ mutation(
   'TRACE_PHASE_3_EREMEY_RELATIONSHIP_RULE_MISSING'
 );
 mutation(
-  'the superseded definition digest',
+  'the superseded Phase 3 package digest',
   (value) => {
-    value.manifest.superseded_definition_ref.digest = '0'.repeat(64);
+    value.manifest.superseded_package_ref.digest = '0'.repeat(64);
   },
   'TRACE_PHASE_3_SUPERSEDES_MISMATCH'
 );
 mutation(
-  'a reused topology digest',
+  'a reused item-container digest',
   (value) => {
-    value.manifest.reused_content_refs.location_topology_set.digest = '0'.repeat(64);
+    value.manifest.reused_content_refs.item_container_set.digest = '0'.repeat(64);
   },
   'TRACE_PHASE_3_REUSED_CONTENT_MISMATCH'
 );

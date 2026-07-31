@@ -112,6 +112,10 @@ export async function loadLowerDvinaTraceRevision8Bundle({
   return freezeDeep(historical);
 }
 
+export {
+  loadLowerDvinaTraceRevision9Bundle
+} from './lower-dvina-trace-phase-3-bundle-revision9.js';
+
 function assertManifestIdentity(phase3, phase1A, fail) {
   if (phase3.schema !== 'rus.lower_dvina_trace_phase_3_content_manifest.v1'
     || phase3.package_id !== 'lower_dvina_trace_phase_3_content_v1'

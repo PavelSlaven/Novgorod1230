@@ -13,6 +13,7 @@ export function buildLowerDvinaTracePhase2CommitRechecks({
     ({ template_id: templateId }) =>
       templateId === placement.item_template_ref
   ).length;
+  const exactPickup = contracts.blueWoolPickupTransition != null;
   return [
     sealedCheck('physical', {
       party_id: partyId,
@@ -25,7 +26,9 @@ export function buildLowerDvinaTracePhase2CommitRechecks({
     sealedCheck('pin', { activity_pin: contracts.activityPin }),
     sealedCheck('endpoint', { destination_ref: null }),
     sealedCheck('route', { route_binding_ref: null }),
-    sealedCheck('capacity', {
+    sealedCheck('capacity', exactPickup ? {
+      party_id: partyId
+    } : {
       capacity_model: placement.placement_model,
       anchor_id: state.position.g5_anchor_id,
       anchor_template_id: anchor.template_id,

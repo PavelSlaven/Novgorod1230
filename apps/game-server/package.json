@@ -14,6 +14,8 @@
     "@rus/knowledge-source": "0.23.0",
     "@rus/llm-runtime": "0.9.0",
     "@rus/materialization": "2.0.0",
+    "@rus/items-property": "0.13.0",
+    "@rus/movement-routes": "0.13.0",
     "@rus/narration": "0.15.0",
     "@rus/new-game": "0.12.0",
     "@rus/party-store": "0.9.0",

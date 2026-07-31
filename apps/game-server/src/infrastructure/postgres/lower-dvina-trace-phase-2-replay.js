@@ -20,7 +20,10 @@ export async function loadHistoricalPhase2Replay({
             semantic_command_snapshot
        FROM party_runtime.party_command_idempotency
       WHERE party_id=$1
-        AND operation_kind='trace_wreck_inspection'
+        AND operation_kind IN (
+          'trace_wreck_inspection',
+          'trace_phase_3_turn'
+        )
         AND idempotency_key=$2`,
     [partyId, idempotencyKey]
   );

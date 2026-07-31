@@ -924,6 +924,12 @@
       "type": "sql"
     },
     {
+      "bytes": 1878,
+      "path": "schemas/party-db/012_party_runtime_external_ownership.sql",
+      "sha256": "f075187ee20cee962d7f215881eb89169770f555e5b556b3aa82f45afc5b9bab",
+      "type": "sql"
+    },
+    {
       "bytes": 18438,
       "path": "schemas/runtime-catalog/runtime-catalog-artifacts-v2.schema.json",
       "sha256": "2d8e9167f701e193b2e2eb03c162e4b8228cb2c46cea7cc26368de4304a3ed40",

@@ -53,7 +53,9 @@ test('Phase 1A commits atomically, replays, rehydrates and isolates hidden truth
   const port = Number(docker(['port', name, '5432']).stdout.match(/:(\d+)\s*$/u)?.[1]);
   pool = new pg.Pool({ host: '127.0.0.1', port, user: 'phase1a', password: 'local_only', database: 'phase1a', max: 6 });
   await pool.query('SELECT 1');
-  for (const file of (await readdir('schemas/party-db')).filter((value) => /^\d+.*\.sql$/u.test(value)).sort()) {
+  const partyFiles = (await readdir('schemas/party-db'))
+    .filter((value) => /^\d+.*\.sql$/u.test(value)).sort();
+  for (const file of partyFiles.filter((value) => !value.startsWith('012_'))) {
     try {
       await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
     } catch (error) {
@@ -62,6 +64,10 @@ test('Phase 1A commits atomically, replays, rehydrates and isolates hidden truth
     }
   }
   assert.equal((await runPartyRuntimeCatalogMigration(pool)).status, 'applied');
+  await pool.query(await readFile(
+    'schemas/party-db/012_party_runtime_external_ownership.sql',
+    'utf8'
+  ));
   const schema = await readSchemaSnapshot(pool);
   const world = worldSnapshot();
   const bundle = await loadLowerDvinaTraceMaterializationBundle();

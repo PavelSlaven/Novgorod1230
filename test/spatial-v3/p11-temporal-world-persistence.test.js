@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
 const migrationPath = new URL('../../schemas/party-db/007_party_runtime_temporal_world.sql', import.meta.url);
+const resumeTerminalMigrationPath = new URL('../../schemas/party-db/014_party_runtime_activity_resume_terminal.sql', import.meta.url);
 const loaderPath = new URL('../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js', import.meta.url);
 
 test('P11 temporal-world migration persists the bounded temporal runtime model', async () => {
@@ -77,7 +78,20 @@ test('P11 temporal-world migration persists the bounded temporal runtime model',
   assert.match(sql, /CREATE INDEX IF NOT EXISTS party_propagation_processes_due_idx/u);
 });
 
-test('P11 target migration loader applies the complete ordered 001 through 010 chain', async () => {
+test('P11 target migration loader applies the complete ordered 001 through 014 chain', async () => {
   const source = await readFile(loaderPath, 'utf8');
-  assert.match(source, /const files = \['001_party_runtime\.sql', '002_party_runtime_v3\.sql', '003_party_runtime_v3_planning\.sql', '004_party_runtime_v3_journeys\.sql', '005_party_runtime_v3_domain\.sql', '006_party_runtime_v3_migration\.sql', '007_party_runtime_temporal_world\.sql', '008_party_runtime_pr8_first_entry\.sql', '009_party_runtime_pr8_reaction_knowledge\.sql', '010_party_runtime_pr8_reaction_options\.sql'\]/u);
+  assert.match(source, /const files = \['001_party_runtime\.sql', '002_party_runtime_v3\.sql', '003_party_runtime_v3_planning\.sql', '004_party_runtime_v3_journeys\.sql', '005_party_runtime_v3_domain\.sql', '006_party_runtime_v3_migration\.sql', '007_party_runtime_temporal_world\.sql', '008_party_runtime_pr8_first_entry\.sql', '009_party_runtime_pr8_reaction_knowledge\.sql', '010_party_runtime_pr8_reaction_options\.sql', '011_party_runtime_first_playable\.sql', '012_party_runtime_external_ownership\.sql', '013_party_runtime_obligations\.sql', '014_party_runtime_activity_resume_terminal\.sql'\]/u);
+});
+
+test('P11 resume-terminal migration permits only one proven resumed attempt', async () => {
+  const sql = await readFile(resumeTerminalMigrationPath, 'utf8');
+  assert.match(sql, /OLD\.status='paused'[\s\S]*NEW\.status IN \('completed','failed'\)/u);
+  assert.match(sql, /NEW\.state_version=OLD\.state_version\+2/u);
+  assert.match(sql, /NEW\.next_attempt_ordinal=OLD\.next_attempt_ordinal\+1/u);
+  assert.match(sql, /NEW\.terminal_change_set_id IS NOT NULL/u);
+  assert.match(sql, /latest_attempt\.result_kind<>execution_row\.status/u);
+  assert.match(sql, /latest_attempt\.result_change_set_id[\s\S]*execution_row\.terminal_change_set_id/u);
+  assert.match(sql, /latest_attempt\.progress_after IS DISTINCT FROM execution_row\.progress/u);
+  assert.match(sql, /terminal activity execution does not match its append-only attempt/u);
+  assert.doesNotMatch(sql, /OLD\.status='paused'\s+AND NEW\.status IN \('completed','failed'\)\s*\)/u);
 });

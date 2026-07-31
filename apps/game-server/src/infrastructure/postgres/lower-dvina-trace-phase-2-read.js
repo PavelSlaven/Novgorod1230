@@ -41,7 +41,7 @@ export async function assertPhase2NormalizedRows(pool, payload, head) {
            FROM party_runtime.party_items i
            JOIN party_runtime.party_item_placements p
              ON p.party_id=i.party_id AND p.item_id=i.item_id
-           JOIN party_runtime.party_ownership o
+           LEFT JOIN party_runtime.party_ownership o
              ON o.party_id=i.party_id AND o.item_id=i.item_id
           WHERE i.party_id=$1 ORDER BY i.item_id`,
         [payload.party_id]

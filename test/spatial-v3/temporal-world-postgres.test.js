@@ -113,8 +113,8 @@ test('Temporal World target persistence is exact, party-isolated, replay-safe an
     'failure after migration 009 must roll back every 001→009 DDL effect'
   );
 
-  assert.equal((await runSpatialV3TargetMigrations(pool)).applied, 10);
-  assert.equal((await runSpatialV3TargetMigrations(pool)).applied, 10, '001→010 chain is re-applicable');
+  assert.equal((await runSpatialV3TargetMigrations(pool)).applied, 14);
+  assert.equal((await runSpatialV3TargetMigrations(pool)).applied, 14, '001→014 chain is re-applicable');
 
   const timestampTruth = await pool.query(`SELECT
     party_runtime.game_timestamp_parts_valid(12,1,3) AS valid,

@@ -3,6 +3,7 @@ import {
   loadLowerDvinaTraceRevision9Bundle
 } from './lower-dvina-trace-phase-3-bundle.js';
 import { loadLowerDvinaTraceRevision10Bundle } from './lower-dvina-trace-phase-4-bundle.js';
+import { loadLowerDvinaTraceRevision11Bundle } from './lower-dvina-trace-phase-5-bundle.js';
 
 export async function loadLowerDvinaTraceRevisionBundle({
   scenarioDefinitionRevision,
@@ -29,9 +30,17 @@ export async function loadLowerDvinaTraceRevisionBundle({
   });
   if (scenarioDefinitionRevision === 8) return revision8();
   if (scenarioDefinitionRevision === 9) return revision9();
-  return loadLowerDvinaTraceRevision10Bundle({
+  const revision10 = async () => loadLowerDvinaTraceRevision10Bundle({
     rootDir,
     historicalBundle: await revision9(),
+    fail,
+    freezeDeep,
+    validateDefinitionPins
+  });
+  if (scenarioDefinitionRevision === 10) return revision10();
+  return loadLowerDvinaTraceRevision11Bundle({
+    rootDir,
+    historicalBundle: await revision10(),
     fail,
     freezeDeep,
     validateDefinitionPins

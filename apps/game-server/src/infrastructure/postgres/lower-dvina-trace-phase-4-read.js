@@ -9,6 +9,10 @@ import {
 import {
   assertPhase4PromiseAndSurrender
 } from './lower-dvina-trace-phase-4-read-obligation.js';
+import {
+  assertPhase5ArrivalResourceRows,
+  loadPhase5ArrivalResourceRows
+} from './lower-dvina-trace-phase-4-arrival-resource-proof.js';
 
 /**
  * The snapshot is a cache, never the authority.  On every restart/replay the
@@ -21,8 +25,8 @@ export async function assertPhase4NormalizedRows(pool, payload, head) {
   const partyId = payload.party_id;
   const [traversals, activities, checks, decisions, obligations, transitions,
     knife, visible, perceptions, npcTransitions, interactions, summaries,
-    knowledge] = await Promise.all([
-    pool.query(
+    knowledge, phase5Resources] = await Promise.all([
+      pool.query(
       `SELECT p.id AS plan_id,e.id AS execution_id,t.id AS travel_state_id,
               r.id AS interval_id,p.option_id,p.planning_state_version,
               e.status,t.status AS travel_status,t.closed_result,r.result_kind,
@@ -135,6 +139,7 @@ export async function assertPhase4NormalizedRows(pool, payload, head) {
         WHERE party_id=$1 AND character_id=$2
         ORDER BY fact_id`,
       [partyId, payload.actor_id])
+    , loadPhase5ArrivalResourceRows(pool, partyId)
   ]);
   const movementHistory = history.filter(({ phase4_kind: kind }) => kind === 'movement');
   const negotiationHistory = history.filter(({ phase4_kind: kind }) => kind === 'negotiation');
@@ -181,6 +186,8 @@ export async function assertPhase4NormalizedRows(pool, payload, head) {
       fail();
     }
   }
+  assertPhase5ArrivalResourceRows({ payload, movementHistory,
+    rows: phase5Resources.rows });
 
   const expectedActivities = negotiationHistory.flatMap(({ turn_number: turn,
     consequence: c, time_update: timeUpdate }) => {

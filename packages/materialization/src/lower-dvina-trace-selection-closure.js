@@ -39,6 +39,8 @@ export function assertLowerDvinaTraceSelectionClosure(groups, inventory) {
       'lower_dvina_trace_phase_1a_sealed_selection_inventory_v5'
     || inventory?.inventory_id ===
       'lower_dvina_trace_phase_1a_sealed_selection_inventory_v6'
+    || inventory?.inventory_id ===
+      'lower_dvina_trace_phase_1a_sealed_selection_inventory_v7'
     ? PHASE_3_REQUIRED_SELECTION_KINDS
     : REQUIRED_SELECTION_KINDS;
   if (inventory?.schema !== 'rus.lower_dvina_trace_sealed_selection_inventory.v1'
@@ -46,7 +48,8 @@ export function assertLowerDvinaTraceSelectionClosure(groups, inventory) {
       'lower_dvina_trace_phase_1a_sealed_selection_inventory_v3',
       'lower_dvina_trace_phase_1a_sealed_selection_inventory_v4',
       'lower_dvina_trace_phase_1a_sealed_selection_inventory_v5',
-      'lower_dvina_trace_phase_1a_sealed_selection_inventory_v6'
+      'lower_dvina_trace_phase_1a_sealed_selection_inventory_v6',
+      'lower_dvina_trace_phase_1a_sealed_selection_inventory_v7'
     ].includes(inventory?.inventory_id)
     || inventory?.status !== 'approved'
     || inventory?.record_proof_contract !== 'canonical_sha256_sorted_record_id_and_record_digest_v1'
@@ -80,7 +83,14 @@ export function assertLowerDvinaTraceSelectionClosure(groups, inventory) {
       || recordProofs.some((record) => !record.record_id || !/^[a-f0-9]{64}$/.test(record.record_digest ?? ''))
       || new Set(recordProofs.map((record) => record.record_id)).size !== recordProofs.length
       || !allowedRecordDigests.includes(canonicalDigest(recordProofs))) {
-      fail(`Sealed selection ${group.selection_kind} does not match its exact approved record inventory.`);
+      fail(
+        `Sealed selection ${group.selection_kind} does not match its exact approved record inventory.`,
+        {
+          selection_kind: group.selection_kind,
+          actual_record_count: records.length,
+          actual_records_digest: canonicalDigest(recordProofs)
+        }
+      );
     }
   }
 }
@@ -96,6 +106,8 @@ function sealedRecordId(value) {
   return typeof value?.selected_id === 'string' ? value.selected_id : '';
 }
 
-function fail(message) {
-  throw new MaterializationError('LATE_SELECTIONS_INCOMPLETE', message);
+function fail(message, details = {}) {
+  throw new MaterializationError(
+    'LATE_SELECTIONS_INCOMPLETE', message, details
+  );
 }

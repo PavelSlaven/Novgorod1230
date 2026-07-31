@@ -1,3 +1,6 @@
+import { buildTracePhase5ArrivalResources } from
+  '../../runtime/lower-dvina-trace-phase-5-resources.js';
+
 export function nextPhase4State({ state, factual, nextVersion, turnNumber,
   inputDigest, changeSetId, contracts }) {
   const next = structuredClone(state);
@@ -15,6 +18,23 @@ export function nextPhase4State({ state, factual, nextVersion, turnNumber,
       g5_anchor_id: scene.anchor.instance_id, g5_node_id: scene.node.instance_id };
     next.npcs = next.npcs.map((npc) => c.movement.participants.includes(npc.instance_id)
       ? { ...npc, anchor_id: scene.anchor.instance_id } : npc);
+    if (contracts.resourceArrivalBinding != null) {
+      const resourceTemplates = new Set([
+        'trace_ld_v1_item_fishing_net',
+        'trace_ld_v1_item_carry_poles',
+        'trace_ld_v1_item_eremey_drinking_water_vessel'
+      ]);
+      const existingResources = next.items.filter(
+        ({ template_id: id }) => resourceTemplates.has(id)
+      );
+      if (existingResources.length !== 0) {
+        throw new Error('TRACE_PHASE_5_RESOURCE_ALREADY_MATERIALIZED');
+      }
+      next.items.push(...buildTracePhase5ArrivalResources({
+        state: next,
+        contracts
+      }));
+    }
     next.route_knowledge = [...new Set([...(next.route_knowledge ?? []),
       c.movement.route_ref, c.movement.reverse_route_ref])];
     next.knowledge = mergeKnowledge(next.knowledge, [{

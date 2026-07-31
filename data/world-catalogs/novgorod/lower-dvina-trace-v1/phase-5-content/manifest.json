@@ -1,0 +1,37 @@
+{
+  "schema": "rus.lower_dvina_trace_phase_5_content_manifest.v1",
+  "package_id": "lower_dvina_trace_phase_5_content_v1",
+  "revision": 1,
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 11,
+  "status": "approved",
+  "publication_status": "internal_only",
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden",
+  "superseded_definition_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-4-content/definition.json",
+    "id": "lower_dvina_trace_v1",
+    "revision": 10,
+    "schema": "rus.trace_scenario_definition.v1",
+    "digest": "1b619e64077a6de447b8e3f9418d85ba4c06ce7e592f6a60bc38a4a4adaef556"
+  },
+  "content_refs": {
+    "definition": {"path": "definition.json", "id": "lower_dvina_trace_v1", "revision": 11, "schema": "rus.trace_scenario_definition.v1", "digest": "bc414095365d4a1db866dfc3b76a2bec98def05a82b9bc272205b2d813a18c4b"},
+    "item_container_set": {"path": "item-container-set.json", "id": "trace_ld_v1_item_container_set", "revision": 3, "schema": "rus.trace_item_container_set.v1", "digest": "dfd52e7a22e0f34734685d03da3e2b9cf9fad0d710852ba52c01e7f66b38d398"},
+    "activity_check_consequence_profiles": {"path": "activity-check-consequence-profiles.json", "id": "trace_ld_v1_activity_check_consequence_profiles", "revision": 3, "schema": "rus.trace_activity_check_consequence_profiles.v1", "digest": "9125cb1cee920c9ec8a5c92cad9a2ee5c0e874a867388c2fc4411aaebf8ca434"},
+    "body_environment_profiles": {"path": "body-environment-profiles.json", "id": "trace_ld_v1_body_environment_profiles", "revision": 5, "schema": "rus.trace_body_environment_profiles.v2", "digest": "23b6ef4931f29613108025363924bdcd57c13bcb5d54ca52f8fd4bc9c9335720"},
+    "npc_decision_schedule_policies": {"path": "npc-decision-schedule-policies.json", "id": "trace_ld_v1_npc_decision_schedule_policies", "revision": 4, "schema": "rus.trace_npc_decision_schedule_policies.v1", "digest": "a00ae410328e3e392cde57484d18691fec01a295a3383a9bde84fac69db20a51"}
+  },
+  "files": {
+    "activity-check-consequence-profiles.json": "9125cb1cee920c9ec8a5c92cad9a2ee5c0e874a867388c2fc4411aaebf8ca434",
+    "body-environment-profiles.json": "23b6ef4931f29613108025363924bdcd57c13bcb5d54ca52f8fd4bc9c9335720",
+    "definition.json": "bc414095365d4a1db866dfc3b76a2bec98def05a82b9bc272205b2d813a18c4b",
+    "item-container-set.json": "dfd52e7a22e0f34734685d03da3e2b9cf9fad0d710852ba52c01e7f66b38d398",
+    "npc-decision-schedule-policies.json": "a00ae410328e3e392cde57484d18691fec01a295a3383a9bde84fac69db20a51"
+  },
+  "content_digest_algorithm": "sha256_sorted_filename_colon_digest_lf_v1",
+  "content_digest": "205ed806c41fa39d92ddd7f79326b9bf01aef0ef17880a1e408553c07e9a645b",
+  "scope": ["phase_5_onisim_treatment_content"],
+  "excludes": ["carry_runtime", "fire_rest_runtime", "zhdanko_runtime", "ddl"]
+}

@@ -915,7 +915,8 @@ async function installSchemas(pool) {
   const partyFiles = (await readdir('schemas/party-db'))
     .filter((value) => /^\d+.*\.sql$/u.test(value)).sort();
   for (const file of partyFiles.filter((value) =>
-    !value.startsWith('012_') && !value.startsWith('013_'))) {
+    !value.startsWith('012_') && !value.startsWith('013_')
+      && !value.startsWith('014_'))) {
     await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
   }
   assert.equal((await runPartyRuntimeCatalogMigration(pool)).status, 'applied');
@@ -923,6 +924,8 @@ async function installSchemas(pool) {
     'schemas/party-db/012_party_runtime_external_ownership.sql', 'utf8'));
   await pool.query(await readFile(
     'schemas/party-db/013_party_runtime_obligations.sql', 'utf8'));
+  await pool.query(await readFile(
+    'schemas/party-db/014_party_runtime_activity_resume_terminal.sql', 'utf8'));
 }
 
 async function installWorldLineage(pool) {

@@ -21,7 +21,7 @@ test('publication loader rejects an exact binding digest mismatch', async (t) =>
   const root = await copyPublicationClosure();
   t.after(() => rm(root, { recursive: true, force: true }));
   const path = join(root,
-    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v5',
+    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v6',
     'publication-binding.json');
   const binding = JSON.parse(await readFile(path, 'utf8'));
   binding.public_metadata.title = 'Подменённое название';
@@ -74,15 +74,15 @@ test('publication root pin rejects resealed semantic mutations', async (t) => {
   }
 });
 
-test('current publication resolves only the exact Phase 1A v6 and revision 10 definition', async () => {
+test('current publication resolves only the exact Phase 1A v7 and revision 11 definition', async () => {
   const publication = await loadLowerDvinaTracePhase1BPublication();
-  assert.equal(publication.manifest.revision, 5);
-  assert.equal(publication.binding.revision, 5);
-  assert.equal(publication.phase_1a_manifest.revision, 6);
-  assert.equal(publication.definition.revision, 10);
+  assert.equal(publication.manifest.revision, 6);
+  assert.equal(publication.binding.revision, 6);
+  assert.equal(publication.phase_1a_manifest.revision, 7);
+  assert.equal(publication.definition.revision, 11);
   assert.equal(
     publication.binding.materializer_binding_id,
-    'lower_dvina_trace_phase_1a_materialization_bindings_v6'
+    'lower_dvina_trace_phase_1a_materialization_bindings_v7'
   );
 });
 
@@ -121,9 +121,9 @@ test('publication loader rejects resealed dependency and lineage mutations', asy
 
 test('publication cutover rejects mutations of exact superseded packages', async (t) => {
   for (const relative of [
-    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v4/manifest.json',
-    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v4/publication-binding.json',
-    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v5/manifest.json'
+    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v5/manifest.json',
+    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v5/publication-binding.json',
+    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v6/manifest.json'
   ]) {
     const root = await copyPublicationClosure();
     t.after(() => rm(root, { recursive: true, force: true }));
@@ -237,17 +237,20 @@ test('historical recovery rejects an absent or unknown persisted identity', asyn
 async function copyPublicationClosure() {
   const root = await mkdtemp(join(tmpdir(), 'trace-phase-1b-'));
   for (const relative of [
+    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v6',
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v5',
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v4',
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v3',
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v2',
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b',
+    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v7/manifest.json',
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v6/manifest.json',
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v5/manifest.json',
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v4/manifest.json',
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v3/manifest.json',
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v2/manifest.json',
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a/manifest.json',
+    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-5-content/definition.json',
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0d-v4/definition.json',
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0d-v3/definition.json',
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0d-v2/definition.json',
@@ -264,7 +267,7 @@ async function copyPublicationClosure() {
 async function mutateAndResealPublication(root, mutate) {
   const directory = join(
     root,
-    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v5'
+    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v6'
   );
   const bindingPath = join(directory, 'publication-binding.json');
   const manifestPath = join(directory, 'manifest.json');

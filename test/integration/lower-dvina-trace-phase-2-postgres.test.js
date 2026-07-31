@@ -215,7 +215,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     opened.party_id), 1);
   assert.equal(await count(pool, 'party_runtime.party_items',
-    opened.party_id), 3);
+    opened.party_id), 4);
   assert.equal((await pool.query(
     `SELECT count(*)::int AS count
        FROM party_runtime.party_narration_attempts attempts
@@ -248,7 +248,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     opened.party_id), 1);
   assert.equal(await count(pool, 'party_runtime.party_items',
-    opened.party_id), 3);
+    opened.party_id), 4);
 
   await assertResealedSnapshotTamper(pool, restarted, opened.party_id,
     (snapshot) => {
@@ -310,7 +310,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   assert.equal(await count(pool, 'party_runtime.party_body_temporal_history',
     opened.party_id), 2);
   assert.equal(await count(pool, 'party_runtime.party_items',
-    opened.party_id), 3);
+    opened.party_id), 4);
   const attempts = (await pool.query(
     `SELECT effect_ref->>'activity_attempt_id' AS activity_attempt_id
        FROM party_runtime.party_body_temporal_history
@@ -326,7 +326,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     opened.party_id), 2);
   assert.equal(await count(pool, 'party_runtime.party_items',
-    opened.party_id), 3);
+    opened.party_id), 4);
 
   let failureRolls = 0;
   const failureRuntime = buildRuntime({
@@ -378,7 +378,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     failureParty.party_id), 1);
   assert.equal(await count(pool, 'party_runtime.party_items',
-    failureParty.party_id), 2);
+    failureParty.party_id), 3);
   assert.equal((await pool.query(
     `SELECT consequence_policy_ref->>'entity_id' AS consequence_ref
        FROM party_runtime.party_check_resolutions
@@ -879,7 +879,8 @@ async function installSchemas(pool) {
   const partyFiles = (await readdir('schemas/party-db'))
     .filter((value) => /^\d+.*\.sql$/u.test(value)).sort();
   for (const file of partyFiles.filter((value) =>
-    !value.startsWith('012_') && !value.startsWith('013_'))) {
+    !value.startsWith('012_') && !value.startsWith('013_')
+      && !value.startsWith('014_'))) {
     await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
   }
   assert.equal(
@@ -892,6 +893,10 @@ async function installSchemas(pool) {
   ));
   await pool.query(await readFile(
     'schemas/party-db/013_party_runtime_obligations.sql',
+    'utf8'
+  ));
+  await pool.query(await readFile(
+    'schemas/party-db/014_party_runtime_activity_resume_terminal.sql',
     'utf8'
   ));
 }

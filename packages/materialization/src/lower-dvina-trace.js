@@ -28,6 +28,7 @@ import {
 import {
   buildLowerDvinaTraceSealedSelections
 } from './lower-dvina-trace-sealed-selections.js';
+import { buildLowerDvinaTracePhase5InitialBandage } from './lower-dvina-trace-phase-5-initial-item.js';
 
 export {
   assertLowerDvinaTraceSelectionClosure,
@@ -168,7 +169,7 @@ export function materializeLowerDvinaTracePartyInstance(input) {
   const playerId = deterministicInstanceId(input.party_id, runId, 'player_character', 'player_clerk', 0);
   const g5NodeId = deterministicInstanceId(input.party_id, runId, 'g5_node', 'trace_ld_v1_loc_wreck_shore', 0);
   const anchorId = deterministicInstanceId(input.party_id, runId, 'g5_anchor', spatialBinding.anchor_template.template_id, 0);
-  const phase3Prepared = [8, 9, 10].includes(input.scenario_definition_revision)
+  const phase3Prepared = [8, 9, 10, 11].includes(input.scenario_definition_revision)
     ? materializeLowerDvinaTracePreparedCamp({
       input,
       bundle,
@@ -177,7 +178,7 @@ export function materializeLowerDvinaTracePartyInstance(input) {
       locationSelections
     })
     : null;
-  const phase4Prepared = input.scenario_definition_revision === 10
+  const phase4Prepared = [10, 11].includes(input.scenario_definition_revision)
     ? materializeLowerDvinaTracePreparedDryingShed({ input, bundle, runId, participantSelections, locationSelections })
     : null;
   const knifeTemplate = requiredById(bundle.item_container_set.item_templates, 'item_template_id', 'trace_ld_v1_item_mikula_knife');
@@ -198,6 +199,9 @@ export function materializeLowerDvinaTracePartyInstance(input) {
   const ratshaKnifeProfile = ratshaKnifeTemplate
     ? requiredPinnedById(bundle.item_inventory_profiles, 'id', ratshaKnifeTemplate.base_catalog_ref.inventory_profile_id)
     : null;
+  const phase5Bandage = buildLowerDvinaTracePhase5InitialBandage({
+    input, bundle, runId, phase3Prepared, requiredById, fail
+  });
   if (phase4Prepared) {
     const binding = phase4Prepared.binding.ratsha_knife_initial_binding;
     if (binding?.participant_slot_ref !== 'ratsha_storehouse_helper'
@@ -332,7 +336,7 @@ export function materializeLowerDvinaTracePartyInstance(input) {
         accessibility: phase4Prepared.binding.ratsha_knife_initial_binding.accessibility,
         inventory_profile_snapshot: structuredClone(ratshaKnifeProfile)
       }
-    }] : [])],
+    }] : []), ...(phase5Bandage ? [phase5Bandage] : [])],
     containers: [],
     timestamp,
     environment_snapshot: structuredClone(environment),

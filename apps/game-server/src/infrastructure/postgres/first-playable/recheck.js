@@ -1,6 +1,7 @@
 import {
   recheckTracePhase3LocationCapacity
 } from './recheck-location-capacity.js';
+import { recheckLocalEvidenceSlot } from './recheck-local-evidence-slot.js';
 
 export async function firstPlayableCommitRecheck({
   transaction,
@@ -50,6 +51,12 @@ export async function firstPlayableCommitRecheck({
       Number(actual?.state_version) === check.expected_state_version
       && Number(actual?.quantity_numerator) >= check.minimum_quantity
     );
+  }
+  if (check.kind === 'item') {
+    return recheckExactItem({ transaction, partyId, check });
+  }
+  if (check.kind === 'activity') {
+    return recheckExactActivity({ transaction, check });
   }
   if (check.kind === 'carrier_endpoint') {
     const result = await transaction.query(
@@ -130,116 +137,58 @@ export async function firstPlayableCommitRecheck({
   return Object.freeze({ ok: true });
 }
 
-async function recheckLocalEvidenceSlot({
-  transaction,
-  partyId,
-  check,
-  plan
-}) {
-  const writeMatches = placementWriteMatches({ check, plan });
-  const invalid = check.capacity_model
-        !== 'local_evidence_slot_within_g5_anchor'
-      || !nonEmpty(check.anchor_id)
-      || !nonEmpty(check.anchor_template_id)
-      || !nonEmpty(check.anchor_slot_key)
-      || !Number.isInteger(check.expected_anchor_item_capacity)
-      || check.expected_anchor_item_capacity < 0
-      || !nonEmpty(check.capacity_contract_ref)
-      || !nonEmpty(check.zone_ref)
-      || !nonEmpty(check.location_ref)
-      || !nonEmpty(check.placement_slot_id)
-      || !nonEmpty(check.local_anchor_semantics)
-      || !nonEmpty(check.item_template_id)
-      || check.item_capacity_class !== 'evidence'
-      || !Number.isInteger(check.placement_slot_capacity)
-      || check.placement_slot_capacity < 1
-      || !Number.isInteger(check.expected_existing_item_count)
-      || check.expected_existing_item_count < 0
-      || typeof check.placement_write_required !== 'boolean'
-      || !writeMatches;
-  if (invalid) {
-    return resultOf(false, 'relation_capacity_undefined');
+async function recheckExactItem({ transaction, partyId, check }) {
+  if (!nonEmpty(check.item_id)
+      || !nonEmpty(check.expected_holder_npc_id)
+      || !nonEmpty(check.expected_controller_npc_id)
+      || !nonEmpty(check.expected_condition_state)) {
+    return resultOf(false, 'generated_schema_mismatch');
   }
-  const anchorResult = await transaction.query(
-    `SELECT a.template_id,a.slot_key,a.item_capacity,a.state
-       FROM party_runtime.party_g5_anchors a
-      WHERE a.party_id=$1 AND a.anchor_id=$2
-      FOR UPDATE`,
-    [partyId, check.anchor_id]
-  );
-  const itemResult = await transaction.query(
-    `SELECT i.item_id,i.state,p.anchor_id
+  const result = await transaction.query(
+    `SELECT i.condition_state,p.holder_npc_id,o.controller_npc_id
        FROM party_runtime.party_items i
-       LEFT JOIN party_runtime.party_item_placements p
+       JOIN party_runtime.party_item_placements p
          ON p.party_id=i.party_id AND p.item_id=i.item_id
-      WHERE i.party_id=$1 AND i.template_id=$2
-      ORDER BY i.item_id
-      FOR UPDATE OF i`,
-    [partyId, check.item_template_id]
+       JOIN party_runtime.party_ownership o
+         ON o.party_id=i.party_id AND o.item_id=i.item_id
+      WHERE i.party_id=$1 AND i.item_id=$2
+      FOR UPDATE OF i,p,o`,
+    [partyId, check.item_id]
   );
-  const actual = anchorResult.rows[0];
-  const existing = itemResult.rows.length;
-  const existingPlacementsMatch = itemResult.rows.every(
-    (item) =>
-      item.anchor_id === check.anchor_id
-      && placementStateMatches(
-        item.state?.placement_contract,
-        check
-      )
-  );
-  const withinSlotCapacity = check.placement_write_required
-    ? existing < check.placement_slot_capacity
-    : existing <= check.placement_slot_capacity;
+  const actual = result.rows[0];
   return resultOf(
-    actual?.template_id === check.anchor_template_id
-    && actual?.slot_key === check.anchor_slot_key
-    && Number(actual?.item_capacity)
-      === check.expected_anchor_item_capacity
-    && actual?.state?.capacity_contract_ref
-      === check.capacity_contract_ref
-    && actual?.state?.zone_ref === check.zone_ref
-    && existing === check.expected_existing_item_count
-    && existingPlacementsMatch
-    && withinSlotCapacity,
-    'relation_capacity_undefined'
+    result.rowCount === 1
+    && actual.condition_state === check.expected_condition_state
+    && actual.holder_npc_id === check.expected_holder_npc_id
+    && actual.controller_npc_id === check.expected_controller_npc_id
   );
 }
 
-function placementWriteMatches({ check, plan }) {
-  const inserts = plan?.inserts ?? [];
-  const itemWrites = inserts.filter(
-    ({ target_table: table, record }) =>
-      table === 'party_items'
-      && record?.template_id === check.item_template_id
-  );
-  const placementWrites = inserts.filter(
-    ({ target_table: table, record }) =>
-      table === 'party_item_placements'
-      && itemWrites.some(({ record: item }) =>
-        item?.item_id === record?.item_id)
-  );
-  if (!check.placement_write_required) {
-    return itemWrites.length === 0 && placementWrites.length === 0;
+async function recheckExactActivity({ transaction, check }) {
+  if (!nonEmpty(check.execution_id)
+      || !Number.isInteger(check.expected_progress_before)
+      || check.expected_progress_before < 0) {
+    return resultOf(false, 'generated_schema_mismatch');
   }
-  return itemWrites.length === 1
-    && placementWrites.length === 1
-    && placementStateMatches(
-      itemWrites[0].record?.state?.placement_contract,
-      check
-    )
-    && placementWrites[0].record?.anchor_id === check.anchor_id;
-}
-
-function placementStateMatches(placement, check) {
-  return placement?.placement_model === check.capacity_model
-    && placement?.placement_slot_id === check.placement_slot_id
-    && placement?.local_anchor_semantics === check.local_anchor_semantics
-    && placement?.anchor_id === check.anchor_id
-    && placement?.capacity_contract_ref === check.capacity_contract_ref
-    && placement?.zone_ref === check.zone_ref
-    && placement?.location_ref === check.location_ref
-    && placement?.item_capacity_class === check.item_capacity_class
-    && placement?.g5_item_capacity_consumed === 0;
+  const result = await transaction.query(
+    `SELECT cumulative_elapsed_numerator::text,
+            cumulative_elapsed_denominator::text,status,state_version
+       FROM party_runtime.party_timed_activity_executions
+      WHERE id=$1
+      FOR UPDATE`,
+    [check.execution_id]
+  );
+  if (check.expected_progress_before === 0) {
+    return resultOf(result.rowCount === 0);
+  }
+  const actual = result.rows[0];
+  return resultOf(
+    result.rowCount === 1
+    && actual.cumulative_elapsed_numerator
+      === String(check.expected_progress_before)
+    && actual.cumulative_elapsed_denominator === '1'
+    && ['active', 'paused'].includes(actual.status)
+  );
 }
 
 function nonEmpty(value) {

@@ -936,6 +936,12 @@
       "type": "sql"
     },
     {
+      "bytes": 5728,
+      "path": "schemas/party-db/014_party_runtime_activity_resume_terminal.sql",
+      "sha256": "877954824b980740281cd9b5737771559ce38ac8817751703bb4996967fdb0c2",
+      "type": "sql"
+    },
+    {
       "bytes": 18438,
       "path": "schemas/runtime-catalog/runtime-catalog-artifacts-v2.schema.json",
       "sha256": "2d8e9167f701e193b2e2eb03c162e4b8228cb2c46cea7cc26368de4304a3ed40",
